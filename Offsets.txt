@@ -114,9 +114,9 @@ Outset Island - Underneath Link's House:
   Offset:
  
  Windfall Island - House of Wealth Chest:
-  Original Item:
-  Path:
-  Offset:
+  Original Item: Red Rupee
+  Path: Orichh_Room0.zs
+  Offset: 0x39A5DC
  
  Windfall Island - Maggie's Father - Give 20 Skull Necklaces:
   Original Item:
