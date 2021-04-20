@@ -1,0 +1,230 @@
+Outset Island - Underneath Link's House:
+  Original Item: Orange Rupee
+  Path: LinkUG_Stage.zs
+  Offset: 0x212DC
+ 
+ Outset Island - Mesa the Grasscutter's House:
+  Original Item: Red Rupee
+  Path: Omasao_Stage.zs
+  Offset: 0x9BCCE8
+ 
+ Outset Island - Orca - Give 10 Knight's Crests:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Outset Island - Orca - Hit 500 Times:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Outset Island - Great Fairy:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Outset Island - Jabun's Cave:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Outset Island - Dig up Black Soil:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Outset Island - Savage Labyrinth - Floor 30:
+  Original Item: Triforce Shard 6
+  Path: Cave09_Room20.zs
+  Offset: 0x31DD64
+ 
+ Outset Island - Savage Labyrinth - Floor 50:
+  Original Item: Hero's Charm
+  Path: Cave10_Room20.zs
+  Offset: 0x31DB94
+ 
+ Windfall Island - Jail - Tingle - First Gift:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Jail - Tingle - Second Gift:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Jail - Maze Chest:
+  Original Item: Picto Box
+  Path: Pnezumi_Stage.zs
+  Offset: 0x27968
+ 
+ Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Chu Jelly Juice Shop - Give 15 Blue Chu Jelly:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Ivan - Catch Killer Bees:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Mrs. Marie - Catch Killer Bees:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Mrs. Marie - Give 1 Joy Pendant:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Mrs. Marie - Give 21 Joy Pendants:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Mrs. Marie - Give 40 Joy Pendants:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Lenzo's House - Left Chest:
+  Original Item: Treasure Chart 29
+  Path: Ocmera_Stage.zs
+  Offset: 0x26E2C
+ 
+ Windfall Island - Lenzo's House - Right Chest:
+  Original Item: Purple Rupee
+  Path: Ocmera_Stage.zs
+  Offset: 0x26E4C
+ 
+ Windfall Island - Lenzo's House - Become Lenzo's Assistant:
+  Original Item:
+  Path:
+  Offset:
+ 
+ //Windfall Island - Lenzo's House - Bring Forest Firefly (Might just be assistant on HD):
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - House of Wealth Chest:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Maggie's Father - Give 20 Skull Necklaces:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Maggie - Free Item:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Maggie - Delivery Reward:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Cafe Bar - Postman:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Kreeb - Light Up Lighthouse:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Transparent Chest:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Tott - Teach Rhythm:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Pirate Ship:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - 5 Rupee Auction:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - 40 Rupee Auction:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - 60 Rupee Auction:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - 80 Rupee Auction:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Zunari - Stock Exotic Flower in Zunari's Shop:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Sam - Decorate the Town:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Mila - Follow the Thief:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Battlesquid - First Prize:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Battlesquid - Second Prize:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Battlesquid - Under 20 Shots Prize:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Pompie and Vera - Secret Meeting Photo:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Kamo - Full Moon Photo:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Minenco - Miss Windfall Photo:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Windfall Island - Linda and Anton:
+  Original Item:
+  Path:
+  Offset:
+ 
