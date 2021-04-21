@@ -42,6 +42,8 @@ Outset Island - Underneath Link's House:
   Original Item: Hero's Charm
   Path: Cave10_Room20.zs
   Offset: 0x31DB70
+  
+  
  
  Windfall Island - Jail - Tingle - First Gift:
   Original Item:
@@ -144,9 +146,9 @@ Outset Island - Underneath Link's House:
   Offset:
  
  Windfall Island - Transparent Chest:
-  Original Item:
-  Path:
-  Offset:
+  Original Item: Piece of Heart
+  Path: szs_permanent1/Sea_Room11.zs
+  Offset: 0x10631AC, 0x10632F4, 0x1063840
  
  Windfall Island - Tott - Teach Rhythm:
   Original Item:
@@ -154,9 +156,9 @@ Outset Island - Underneath Link's House:
   Offset:
  
  Windfall Island - Pirate Ship:
-  Original Item:
-  Path:
-  Offset:
+  Original Item: Bombs
+  Path: Asoko_Stage.zs
+  Offset: 0x2CE34, 0x2CE74
  
  Windfall Island - 5 Rupee Auction:
   Original Item:
@@ -224,6 +226,115 @@ Outset Island - Underneath Link's House:
   Offset:
  
  Windfall Island - Linda and Anton:
+  Original Item:
+  Path:
+  Offset:
+ 
+
+
+ Dragon Roost Island - Wind Shrine:
+ 
+ Dragon Roost Island - Rito Aerie - Give Hoskit 20 Golden Feathers:
+ 
+ Dragon Roost Island - Chest on Top of Boulder:
+  Original Item: Silver Rupee
+  Path: szs_permanent1/Sea_Room13.zs
+  Offset: 0xB9B8AC
+ 
+ Dragon Roost Island - Fly Across Platforms Around Island:
+  Original Item: Orange Rupee
+  Path: szs_permanent1/Sea_Room13.zs
+  Offset: 0xB9B8CC
+ 
+ Dragon Roost Island - Rito Aerie - Baito:
+ 
+ Dragon Roost Island - Secret Cave:
+  Original Item: Purple Rupee
+  Path: TF_06_Stage.zs
+  Offset: 0x1C7550
+ 
+ //DRC
+ Dragon Roost Cavern - First Room:
+  Original Item: Small Key
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC940
+ 
+ Dragon Roost Cavern - Alcove With Water Jugs:
+  Original Item: Dungeon Map
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC9A0
+ 
+ Dragon Roost Cavern - Boarded Up Chest:
+  Original Item: Small Key
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC960
+ 
+ Dragon Roost Cavern - Chest Across Lava Pit:
+  Original Item: Treasure Chart 11
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC9E0
+ 
+ Dragon Roost Cavern - Rat Room:
+  Original Item: Compass
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC980
+ 
+ Dragon Roost Cavern - Rat Room Boarded Up Chest:
+  Original Item: Small Key
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5ACA00
+ 
+ Dragon Roost Cavern - Bird's Nest:
+  Original Item: Small Key
+  Path: M_NewD2_Stage.zs
+  Offset:
+ 
+ Dragon Roost Cavern - Dark Room:
+  Original Item: Joy Pendant
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC920
+ 
+ Dragon Roost Cavern - Tingle Chest in Hub Room:
+  Original Item: Yellow Rupee
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5ACA40
+ 
+ Dragon Roost Cavern - Pot Room Chest:
+  Original Item: Treasure Chart 39
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC900
+ 
+ Dragon Roost Cavern - Mini-Boss:
+  Original Item:
+  Path:
+  Offset:
+ 
+ Dragon Roost Cavern - Under Rope Bridge:
+  Original Item: Joy Pendant
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC9C0
+ 
+ Dragon Roost Cavern - Tingle Statue Chest:
+  Original Item: Dragon Tingle Statue
+  Path: M_NewD2_Stage.zs
+  Offset: 5ACA20
+ 
+ Dragon Roost Cavern - Big Key Chest:
+  Original Item: Big Key
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC8A0
+ 
+ Dragon Roost Cavern - Boss Stairs Right Chest:
+  Original Item: Knight's Crest
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC8C0
+ 
+ Dragon Roost Cavern - Boss Stairs Left Chest:
+  Original Item: Yellow Rupee
+  Path: M_NewD2_Stage.zs
+  Offset: 0x5AC8E0
+ 
+ Dragon Roost Cavern - Gohma Heart Container:
   Original Item:
   Path:
   Offset:
