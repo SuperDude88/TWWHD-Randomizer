@@ -36,12 +36,12 @@ Outset Island - Underneath Link's House:
  Outset Island - Savage Labyrinth - Floor 30:
   Original Item: Triforce Shard 6
   Path: Cave09_Room20.zs
-  Offset: 0x31DD64
+  Offset: 0x31DD48
  
  Outset Island - Savage Labyrinth - Floor 50:
   Original Item: Hero's Charm
   Path: Cave10_Room20.zs
-  Offset: 0x31DB94
+  Offset: 0x31DB70
  
  Windfall Island - Jail - Tingle - First Gift:
   Original Item:
@@ -56,7 +56,7 @@ Outset Island - Underneath Link's House:
  Windfall Island - Jail - Maze Chest:
   Original Item: Picto Box
   Path: Pnezumi_Stage.zs
-  Offset: 0x27968
+  Offset: 0x2794C
  
  Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly:
   Original Item:
@@ -96,12 +96,12 @@ Outset Island - Underneath Link's House:
  Windfall Island - Lenzo's House - Left Chest:
   Original Item: Treasure Chart 29
   Path: Ocmera_Stage.zs
-  Offset: 0x26E2C
+  Offset: 0x26E10
  
  Windfall Island - Lenzo's House - Right Chest:
   Original Item: Purple Rupee
   Path: Ocmera_Stage.zs
-  Offset: 0x26E4C
+  Offset: 0x26E30
  
  Windfall Island - Lenzo's House - Become Lenzo's Assistant:
   Original Item:
@@ -116,7 +116,7 @@ Outset Island - Underneath Link's House:
  Windfall Island - House of Wealth Chest:
   Original Item: Red Rupee
   Path: Orichh_Room0.zs
-  Offset: 0x39A5DC
+  Offset: 0x39A5C0
  
  Windfall Island - Maggie's Father - Give 20 Skull Necklaces:
   Original Item:
