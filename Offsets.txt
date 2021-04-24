@@ -29,9 +29,9 @@ Outset Island - Underneath Link's House:
   Offset:
  
  Outset Island - Dig up Black Soil:
-  Original Item:
-  Path:
-  Offset:
+  Original Item: Piece of Heart
+  Path: szs_permanent2/sea_Room44.zs
+  Offset: 0x84CBD4
  
  Outset Island - Savage Labyrinth - Floor 30:
   Original Item: Triforce Shard 6
