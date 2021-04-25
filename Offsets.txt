@@ -1,53 +1,62 @@
 Outset Island - Underneath Link's House:
   Original Item: Orange Rupee
+  Category: Misc
   Path: LinkUG_Stage.zs
   Type: Chest
   Offset: 0x212DC
  
  Outset Island - Mesa the Grasscutter's House:
   Original Item: Red Rupee
+  Category: Misc
   Path: Omasao_Stage.zs
   Type: Chest
   Offset: 0x9BCCE8
  
  Outset Island - Orca - Give 10 Knight's Crests:
   Original Item:
+  Category: Spoils Trading
   Path:
   Type: ???
   Offset:
  
  Outset Island - Orca - Hit 500 Times:
   Original Item:
+  Category: 
   Path:
   Type: ???
   Offset:
  
  Outset Island - Great Fairy:
   Original Item:
+  Category: Great Fairies
   Path:
   Type: REL
   Offset:
  
  Outset Island - Jabun's Cave:
   Original Item:
+  Category: Island Puzzle
   Path:
   Type: ???
   Offset:
  
  Outset Island - Dig up Black Soil:
   Original Item: Piece of Heart
+  Category: Island Puzzle
   Path: szs_permanent2/sea_Room44.zs
   Type: SCOB
   Offset: 0x84CBD4
  
  Outset Island - Savage Labyrinth - Floor 30:
   Original Item: Triforce Shard 6
+  Category: Savage Labyrinth
   Path: Cave09_Room20.zs
   Type: Chest
   Offset: 0x31DD48
  
  Outset Island - Savage Labyrinth - Floor 50:
   Original Item: Hero's Charm
+  Category: Savage Labyrinth
   Path: Cave10_Room20.zs
   Type: Chest
   Offset: 0x31DB70
@@ -56,78 +65,91 @@ Outset Island - Underneath Link's House:
  
  Windfall Island - Jail - Tingle - First Gift:
   Original Item:
+  Category: Free Gift
   Path:
   Type: REL
   Offset:
  
  Windfall Island - Jail - Tingle - Second Gift:
   Original Item:
+  Category: Free Gift
   Path:
   Type: REL
   Offset:
  
  Windfall Island - Jail - Maze Chest:
   Original Item: Picto Box
+  Category: Island Puzzle
   Path: Pnezumi_Stage.zs
   Type: Chest
   Offset: 0x2794C
  
  Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly:
   Original Item:
+  Category: Spoils Trading, Long Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Chu Jelly Juice Shop - Give 15 Blue Chu Jelly:
   Original Item:
+  Category: Spoils Trading, Long Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Ivan - Catch Killer Bees:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Mrs. Marie - Catch Killer Bees:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Mrs. Marie - Give 1 Joy Pendant:
   Original Item:
+  Category: Spoils Trading
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Mrs. Marie - Give 21 Joy Pendants:
   Original Item:
+  Category: Spoils Trading
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Mrs. Marie - Give 40 Joy Pendants:
   Original Item:
+  Category: Spoils Trading
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Lenzo's House - Left Chest:
   Original Item: Treasure Chart 29
+  Category: Short Sidequest
   Path: Ocmera_Stage.zs
   Type: Chest
   Offset: 0x26E10
  
  Windfall Island - Lenzo's House - Right Chest:
   Original Item: Purple Rupee
+  Category: Short Sidequest
   Path: Ocmera_Stage.zs
   Type: Chest
   Offset: 0x26E30
  
  Windfall Island - Lenzo's House - Become Lenzo's Assistant:
   Original Item:
+  Category: Long Sidequest
   Path:
   Type: ???
   Offset:
@@ -139,138 +161,168 @@ Outset Island - Underneath Link's House:
  
  Windfall Island - House of Wealth Chest:
   Original Item: Red Rupee
+  Category: Misc
   Path: Orichh_Room0.zs
   Type: Chest
   Offset: 0x39A5C0
  
  Windfall Island - Maggie's Father - Give 20 Skull Necklaces:
   Original Item:
+  Category: Spoils Trading
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Maggie - Free Item:
   Original Item:
+  Category: Free Gift
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Maggie - Delivery Reward:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Cafe Bar - Postman:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: Event
   Offset:
  
  Windfall Island - Kreeb - Light Up Lighthouse:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Transparent Chest:
   Original Item: Piece of Heart
+  Category: Short Sidequest
   Path: szs_permanent1/Sea_Room11.zs
   Type: Chest
   Offset: 0x10631AC, 0x10632F4, 0x1063840
  
  Windfall Island - Tott - Teach Rhythm:
   Original Item:
+  Category: Free Gift
   Path:
   Type: Event
   Offset:
  
  Windfall Island - Pirate Ship:
   Original Item: Bombs
+  Category: Minigame
   Path: Asoko_Stage.zs
   Type: Chest
   Offset: 0x2CE34, 0x2CE74
  
  Windfall Island - 5 Rupee Auction:
   Original Item:
+  Category: Expensive Purchase, Minigame
   Path:
   Type: ???
   Offset:
  
  Windfall Island - 40 Rupee Auction:
   Original Item:
+  Category: Expensive Purchase, Minigame
   Path:
   Type: ???
   Offset:
  
  Windfall Island - 60 Rupee Auction:
   Original Item:
+  Category: Expensive Purchase, Minigame
   Path:
   Type: ???
   Offset:
  
  Windfall Island - 80 Rupee Auction:
   Original Item:
+  Category: Expensive Purchase, Minigame
+  Path:
+  Type: ???
+  Offset:
+  
+ Windfall Island - 100 Rupee Auction:
+  Original Item: Swift Sail
+  Category: Expensive Purchase, Minigame
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Zunari - Stock Exotic Flower in Zunari's Shop:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Sam - Decorate the Town:
   Original Item:
+  Category: Long Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Mila - Follow the Thief:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Battlesquid - First Prize:
   Original Item:
+  Category: Battlesquid
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Battlesquid - Second Prize:
   Original Item:
+  Category: Battlesquid
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Battlesquid - Under 20 Shots Prize:
   Original Item:
+  Category: Battlesquid
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Pompie and Vera - Secret Meeting Photo:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Kamo - Full Moon Photo:
   Original Item:
+  Category: Long Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Minenco - Miss Windfall Photo:
   Original Item:
+  Category: Short Sidequest
   Path:
   Type: ???
   Offset:
  
  Windfall Island - Linda and Anton:
   Original Item:
+  Category: Long Sidequest
   Path:
   Type: ???
   Offset:
@@ -279,36 +331,42 @@ Outset Island - Underneath Link's House:
 
  Dragon Roost Island - Wind Shrine:
   Original Item: 
+  Category: Misc
   Path: 
   Type: Event
   Offset: 
  
  Dragon Roost Island - Rito Aerie - Give Hoskit 20 Golden Feathers:
   Original Item: 
+  Category: Spoils Trading
   Path: 
   Type: ???
   Offset: 
  
  Dragon Roost Island - Chest on Top of Boulder:
   Original Item: Silver Rupee
+  Category: Island Puzzle
   Path: szs_permanent1/Sea_Room13.zs
   Type: Chest
   Offset: 0xB9B8AC
  
  Dragon Roost Island - Fly Across Platforms Around Island:
   Original Item: Orange Rupee
+  Category: Island Puzzle
   Path: szs_permanent1/Sea_Room13.zs
   Type: Chest
   Offset: 0xB9B8CC
  
  Dragon Roost Island - Rito Aerie - Baito:
   Original Item: 
+  Category: Minigame
   Path: 
   Type: ???
   Offset: 
  
  Dragon Roost Island - Secret Cave:
   Original Item: Purple Rupee
+  Category: Combat Secret Cave
   Path: TF_06_Stage.zs
   Type: Chest
   Offset: 0x1C7550
@@ -316,102 +374,119 @@ Outset Island - Underneath Link's House:
  //DRC
  Dragon Roost Cavern - First Room:
   Original Item: Small Key
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC940
  
  Dragon Roost Cavern - Alcove With Water Jugs:
   Original Item: Dungeon Map
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC9A0
  
  Dragon Roost Cavern - Boarded Up Chest:
   Original Item: Small Key
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC960
  
  Dragon Roost Cavern - Chest Across Lava Pit:
   Original Item: Treasure Chart 11
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC9E0
  
  Dragon Roost Cavern - Rat Room:
   Original Item: Compass
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC980
  
  Dragon Roost Cavern - Rat Room Boarded Up Chest:
   Original Item: Small Key
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5ACA00
  
  Dragon Roost Cavern - Bird's Nest:
   Original Item: Small Key
+  Category: Dungeon
   Path: M_NewD2_Room3.zs
   Type: Actor
   Offset: 0x40DEC8
  
  Dragon Roost Cavern - Dark Room:
   Original Item: Joy Pendant
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC920
  
  Dragon Roost Cavern - Tingle Chest in Hub Room:
   Original Item: Yellow Rupee
+  Category: Dungeon, Tingle Chest
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5ACA40
  
  Dragon Roost Cavern - Pot Room Chest:
   Original Item: Treasure Chart 39
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC900
  
  Dragon Roost Cavern - Mini-Boss:
   Original Item:
+  Category: Dungeon
   Path:
   Type: ???
   Offset:
  
  Dragon Roost Cavern - Under Rope Bridge:
   Original Item: Joy Pendant
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC9C0
  
  Dragon Roost Cavern - Tingle Statue Chest:
   Original Item: Dragon Tingle Statue
+  Category: Dungeon, Tingle Chest
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 5ACA20
  
  Dragon Roost Cavern - Big Key Chest:
   Original Item: Big Key
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC8A0
  
  Dragon Roost Cavern - Boss Stairs Right Chest:
   Original Item: Knight's Crest
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC8C0
  
  Dragon Roost Cavern - Boss Stairs Left Chest:
   Original Item: Yellow Rupee
+  Category: Dungeon
   Path: M_NewD2_Stage.zs
   Type: Chest
   Offset: 0x5AC8E0
  
  Dragon Roost Cavern - Gohma Heart Container:
   Original Item:
+  Category: Dungeon
   Path:
   Type: ???
   Offset:
@@ -420,6 +495,7 @@ Outset Island - Underneath Link's House:
   
  Forest Haven - On Tree Branch:
   Original Item: Deku Leaf
+  Category: Island Puzzle
   Path:
   Type: ???
   Offset:
