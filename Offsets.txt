@@ -270,6 +270,14 @@ Outset Island - Underneath Link's House:
   Path:
   Type: ???
   Offset:
+  
+ Windfall Island - Kane - Place Shop Guru Statue on Gate: #Obscure
+ 
+ Windfall Island - Kane - Place Postman Statue on Gate: #Obscure
+ 
+ Windfall Island - Kane - Place Six Flags on Gate: #Obscure
+ 
+ Windfall Island - Kane - Place Six Idols on Gate: #Obscure
  
  Windfall Island - Mila - Follow the Thief:
   Original Item:
