@@ -416,3 +416,6 @@ Outset Island - Underneath Link's House:
   Type: ???
   Offset:
  
+TotG Stone tablet
+  name offset: 0x4F7360
+  item id: 0x509B17
