@@ -2,8 +2,10 @@
 #include <cstdint>
 #include <Structs.h>
 #include <Import.h>
+#include <EditLocation.h>
+#include <Utility.h>
 
-ACTR ReadChest(std::ifstream& fptr, int offset) {
+ACTR ReadChest(std::fstream& fptr, int offset) {
 
 	ACTR chest;
 
@@ -21,7 +23,7 @@ ACTR ReadChest(std::ifstream& fptr, int offset) {
 	return chest;
 }
 
-ACTR ReadActor(std::ifstream& fptr, int offset) {
+ACTR ReadActor(std::fstream& fptr, int offset) {
 
 	ACTR actor;
 
@@ -39,7 +41,7 @@ ACTR ReadActor(std::ifstream& fptr, int offset) {
 	return actor;
 }
 
-SCOB ReadScob(std::ifstream& fptr, int offset) {
+SCOB ReadScob(std::fstream& fptr, int offset) {
 
 	SCOB scob;
 
