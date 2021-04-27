@@ -1,256 +1,256 @@
-00 - Heart (Pickup)
-01 - Green Rupee
-02 - Blue Rupee
-03 - Yellow Rupee
-04 - Red Rupee
-05 - Purple Rupee
-06 - Orange Rupee
-07 - Piece of Heart
-08 - Heart Container
-09 - Small Magic Jar (Pickup)
-0A - Large Magic Jar (Pickup)
-0B - 5 Bombs (Pickup)
-0C - 10 Bombs (Pickup)
-0D - 20 Bombs (Pickup)
-0E - 30 Bombs (Pickup)
-0F - Silver Rupee
-10 - 10 Arrows (Pickup)
-11 - 20 Arrows (Pickup)
-12 - 30 Arrows (Pickup)
-13 - 
-14 - 
-15 - Small Key
-16 - Fairy (Pickup)
-17 - 
-18 - 
-19 - 
-1A - Yellow Rupee (Joke Message)
-1B - 
-1C - 
-1D - 
-1E - Three Hearts (Pickup)
-1F - Joy Pendant
-20 - Telescope
-21 - Tingle Bottle
-22 - Wind Waker
-23 - Picto Box
-24 - Spoils Bag
-25 - Grappling Hook
-26 - Deluxe Picto Box
-27 - Hero's Bow
-28 - Power Bracelets
-29 - Iron Boots
-2A - Magic Armor
-2B - 
-2C - Bait Bag
-2D - Boomerang
-2E - 
-2F - Hookshot
-30 - Delivery Bag
-31 - Bombs
-32 - Hero's Clothes
-33 - Skull Hammer
-34 - Deku Leaf
-35 - Fire and Ice Arrows
-36 - Light Arrow
-37 - Hero's New Clothes
-38 - Hero's Sword
-39 - Master Sword (Powerless)
-3A - Master Sword (Half Power)
-3B - Hero's Shield
-3C - Mirror Shield
-3D - Recovered Hero's Sword
-3E - Master Sword (Full Power)
-3F - Piece of Heart (Alternate Message)
-40 - 
-41 - 
-42 - Pirate's Charm
-43 - Hero's Charm
-44 - 
-45 - Skull Necklace
-46 - Boko Baba Seed
-47 - Golden Feather
-48 - Knight's Crest
-49 - Red Chu Jelly
-4A - Green Chu Jelly
-4B - Blue Chu Jelly
-4C - Dungeon Map
-4D - Compass
-4E - Big Key
-4F - 
-50 - Empty Bottle
-51 - Red Potion
-52 - Green Potion
-53 - Blue Potion
-54 - Elixir Soup (1/2)
-55 - Elixir Soup
-56 - Bottled Water
-57 - Fairy in Bottle
-58 - Forest Firefly
-59 - Forest Water
-5A - 
-5B - 
-5C - 
-5D - 
-5E - 
-5F - 
-60 - 
-61 - Triforce Shard 1
-62 - Triforce Shard 2
-63 - Triforce Shard 3
-64 - Triforce Shard 4
-65 - Triforce Shard 5
-66 - Triforce Shard 6
-67 - Triforce Shard 7
-68 - Triforce Shard 8
-69 - Nayru's Pearl
-6A - Din's Pearl
-6B - Farore's Pearl
-6C - 
-6D - Wind's Requiem
-6E - Ballad of Gales
-6F - Command Melody
-70 - Earth God's Lyric
-71 - Wind God's Aria
-72 - Song of Passing
-73 - 
-74 - 
-75 - 
-76 - 
-77 - Swift Sail
-78 - Boat's Sail
-79 - Triforce Chart 1 got deciphered
-7A - Triforce Chart 2 got deciphered
-7B - Triforce Chart 3 got deciphered
-7C - Triforce Chart 4 got deciphered
-7D - Triforce Chart 5 got deciphered
-7E - Triforce Chart 6 got deciphered
-7F - Triforce Chart 7 got deciphered
-80 - Triforce Chart 8 got deciphered
-81 - 
-82 - All-Purpose Bait
-83 - Hyoi Pear
-84 - 
-85 - 
-86 - 
-87 - 
-88 - 
-89 - 
-8A - 
-8B - 
-8C - Town Flower
-8D - Sea Flower
-8E - Exotic Flower
-8F - Hero's Flag
-90 - Big Catch Flag
-91 - Big Sale Flag
-92 - Pinwheel
-93 - Sickle Moon Flag
-94 - Skull Tower Idol
-95 - Fountain Idol
-96 - Postman Statue
-97 - Shop Guru Statue
-98 - Father's Letter
-99 - Note to Mom
-9A - Maggie's Letter
-9B - Moblin's Letter
-9C - Cabana Deed
-9D - Complimentary ID
-9E - Fill-Up Coupon
-9F - Legendary Pictograph
-A0 - 
-A1 - 
-A2 - 
-A3 - Dragon Tingle Statue
-A4 - Forbidden Tingle Statue
-A5 - Goddess Tingle Statue
-A6 - Earth Tingle Statue
-A7 - Wind Tingle Statue
-A8 - 
-A9 - 
-AA - Hurricane Spin
-AB - 1000 Rupee Wallet
-AC - 5000 Rupee Wallet
-AD - 60 Bomb Bomb Bag
-AE - 99 Bomb Bomb Bag
-AF - 60 Arrow Quiver
-B0 - 99 Arrow Quiver
-B1 - 
-B2 - Magic Meter Upgrade
-B3 - 50 Rupees, reward for finding 1 Tingle Statue
-B4 - 100 Rupees, reward for finding 2 Tingle Statues
-B5 - 150 Rupees, reward for finding 3 Tingle Statues
-B6 - 200 Rupees, reward for finding 4 Tingle Statues
-B7 - 250 Rupees, reward for finding 5 Tingle Statues
-B8 - 500 Rupees, reward for finding all Tingle Statues
-B9 - 
-BA - 
-BB - 
-BC - 
-BD - 
-BE - 
-BF - 
-C0 - 
-C1 - 
-C2 - Submarine Chart
-C3 - Beedle's Chart
-C4 - Platform Chart
-C5 - Light Ring Chart
-C6 - Secret Cave Chart
-C7 - Sea Hearts Chart
-C8 - Island Hearts Chart
-C9 - Great Fairy Chart
-CA - Octo Chart
-CB - IN-credible Chart
-CC - Treasure Chart 7
-CD - Treasure Chart 27
-CE - Treasure Chart 21
-CF - Treasure Chart 13
-D0 - Treasure Chart 32
-D1 - Treasure Chart 19
-D2 - Treasure Chart 41
-D3 - Treasure Chart 26
-D4 - Treasure Chart 8
-D5 - Treasure Chart 37
-D6 - Treasure Chart 25
-D7 - Treasure Chart 17
-D8 - Treasure Chart 36
-D9 - Treasure Chart 22
-DA - Treasure Chart 9
-DB - Ghost Ship Chart
-DC - Tingle's Chart
-DD - Treasure Chart 14
-DE - Treasure Chart 10
-DF - Treasure Chart 40
-E0 - Treasure Chart 3
-E1 - Treasure Chart 4
-E2 - Treasure Chart 28
-E3 - Treasure Chart 16
-E4 - Treasure Chart 18
-E5 - Treasure Chart 34
-E6 - Treasure Chart 29
-E7 - Treasure Chart 1
-E8 - Treasure Chart 35
-E9 - Treasure Chart 12
-EA - Treasure Chart 6
-EB - Treasure Chart 24
-EC - Treasure Chart 39
-ED - Treasure Chart 38
-EE - Treasure Chart 2
-EF - Treasure Chart 33
-F0 - Treasure Chart 31
-F1 - Treasure Chart 23
-F2 - Treasure Chart 5
-F3 - Treasure Chart 20
-F4 - Treasure Chart 30
-F5 - Treasure Chart 15
-F6 - Treasure Chart 11
-F7 - Triforce Chart 8
-F8 - Triforce Chart 7
-F9 - Triforce Chart 6
-FA - Triforce Chart 5
-FB - Triforce Chart 4
-FC - Triforce Chart 3
-FD - Triforce Chart 2
-FE - Triforce Chart 1
-FF - 
+0x00 - Heart (Pickup)
+0x01 - Green Rupee
+0x02 - Blue Rupee
+0x03 - Yellow Rupee
+0x04 - Red Rupee
+0x05 - Purple Rupee
+0x06 - Orange Rupee
+0x07 - Piece of Heart
+0x08 - Heart Container
+0x09 - Small Magic Jar (Pickup)
+0x0A - Large Magic Jar (Pickup)
+0x0B - 5 Bombs (Pickup)
+0x0C - 10 Bombs (Pickup)
+0x0D - 20 Bombs (Pickup)
+0x0E - 30 Bombs (Pickup)
+0x0F - Silver Rupee
+0x10 - 10 Arrows (Pickup)
+0x11 - 20 Arrows (Pickup)
+0x12 - 30 Arrows (Pickup)
+0x13 - 
+0x14 - 
+0x15 - Small Key
+0x16 - Fairy (Pickup)
+0x17 - 
+0x18 - 
+0x19 - 
+0x1A - Yellow Rupee (Joke Message)
+0x1B - 
+0x1C - 
+0x1D - 
+0x1E - Three Hearts (Pickup)
+0x1F - Joy Pendant
+0x20 - Telescope
+0x21 - Tingle Bottle
+0x22 - Wind Waker
+0x23 - Picto Box
+0x24 - Spoils Bag
+0x25 - Grappling Hook
+0x26 - Deluxe Picto Box
+0x27 - Hero's Bow
+0x28 - Power Bracelets
+0x29 - Iron Boots
+0x2A - Magic Armor
+0x2B - 
+0x2C - Bait Bag
+0x2D - Boomerang
+0x2E - 
+0x2F - Hookshot
+0x30 - Delivery Bag
+0x31 - Bombs
+0x32 - Hero's Clothes
+0x33 - Skull Hammer
+0x34 - Deku Leaf
+0x35 - Fire and Ice Arrows
+0x36 - Light Arrow
+0x37 - Hero's New Clothes
+0x38 - Hero's Sword
+0x39 - Master Sword (Powerless)
+0x3A - Master Sword (Half Power)
+0x3B - Hero's Shield
+0x3C - Mirror Shield
+0x3D - Recovered Hero's Sword
+0x3E - Master Sword (Full Power)
+0x3F - Piece of Heart (Alternate Message)
+0x40 - 
+0x41 - 
+0x42 - Pirate's Charm
+0x43 - Hero's Charm
+0x44 - 
+0x45 - Skull Necklace
+0x46 - Boko Baba Seed
+0x47 - Golden Feather
+0x48 - Knight's Crest
+0x49 - Red Chu Jelly
+0x4A - Green Chu Jelly
+0x4B - Blue Chu Jelly
+0x4C - Dungeon Map
+0x4D - Compass
+0x4E - Big Key
+0x4F - 
+0x50 - Empty Bottle
+0x51 - Red Potion
+0x52 - Green Potion
+0x53 - Blue Potion
+0x54 - Elixir Soup (1/2)
+0x55 - Elixir Soup
+0x56 - Bottled Water
+0x57 - Fairy in Bottle
+0x58 - Forest Firefly
+0x59 - Forest Water
+0x5A - 
+0x5B - 
+0x5C - 
+0x5D - 
+0x5E - 
+0x5F - 
+0x60 - 
+0x61 - Triforce Shard 1
+0x62 - Triforce Shard 2
+0x63 - Triforce Shard 3
+0x64 - Triforce Shard 4
+0x65 - Triforce Shard 5
+0x66 - Triforce Shard 6
+0x67 - Triforce Shard 7
+0x68 - Triforce Shard 8
+0x69 - Nayru's Pearl
+0x6A - Din's Pearl
+0x6B - Farore's Pearl
+0x6C - 
+0x6D - Wind's Requiem
+0x6E - Ballad of Gales
+0x6F - Command Melody
+0x70 - Earth God's Lyric
+0x71 - Wind God's Aria
+0x72 - Song of Passing
+0x73 - 
+0x74 - 
+0x75 - 
+0x76 - 
+0x77 - Swift Sail
+0x78 - Boat's Sail
+0x79 - Triforce Chart 1 got deciphered
+0x7A - Triforce Chart 2 got deciphered
+0x7B - Triforce Chart 3 got deciphered
+0x7C - Triforce Chart 4 got deciphered
+0x7D - Triforce Chart 5 got deciphered
+0x7E - Triforce Chart 6 got deciphered
+0x7F - Triforce Chart 7 got deciphered
+0x80 - Triforce Chart 8 got deciphered
+0x81 - 
+0x82 - All-Purpose Bait
+0x83 - Hyoi Pear
+0x84 - 
+0x85 - 
+0x86 - 
+0x87 - 
+0x88 - 
+0x89 - 
+0x8A - 
+0x8B - 
+0x8C - Town Flower
+0x8D - Sea Flower
+0x8E - Exotic Flower
+0x8F - Hero's Flag
+0x90 - Big Catch Flag
+0x91 - Big Sale Flag
+0x92 - Pinwheel
+0x93 - Sickle Moon Flag
+0x94 - Skull Tower Idol
+0x95 - Fountain Idol
+0x96 - Postman Statue
+0x97 - Shop Guru Statue
+0x98 - Father's Letter
+0x99 - Note to Mom
+0x9A - Maggie's Letter
+0x9B - Moblin's Letter
+0x9C - Cabana Deed
+0x9D - Complimentary ID
+0x9E - Fill-Up Coupon
+0x9F - Legendary Pictograph
+0xA0 - 
+0xA1 - 
+0xA2 - 
+0xA3 - Dragon Tingle Statue
+0xA4 - Forbidden Tingle Statue
+0xA5 - Goddess Tingle Statue
+0xA6 - Earth Tingle Statue
+0xA7 - Wind Tingle Statue
+0xA8 - 
+0xA9 - 
+0xAA - Hurricane Spin
+0xAB - 1000 Rupee Wallet
+0xAC - 5000 Rupee Wallet
+0xAD - 60 Bomb Bomb Bag
+0xAE - 99 Bomb Bomb Bag
+0xAF - 60 Arrow Quiver
+0xB0 - 99 Arrow Quiver
+0xB1 - 
+0xB2 - Magic Meter Upgrade
+0xB3 - 50 Rupees, reward for finding 1 Tingle Statue
+0xB4 - 100 Rupees, reward for finding 2 Tingle Statues
+0xB5 - 150 Rupees, reward for finding 3 Tingle Statues
+0xB6 - 200 Rupees, reward for finding 4 Tingle Statues
+0xB7 - 250 Rupees, reward for finding 5 Tingle Statues
+0xB8 - 500 Rupees, reward for finding all Tingle Statues
+0xB9 - 
+0xBA - 
+0xBB - 
+0xBC - 
+0xBD - 
+0xBE - 
+0xBF - 
+0xC0 - 
+0xC1 - 
+0xC2 - Submarine Chart
+0xC3 - Beedle's Chart
+0xC4 - Platform Chart
+0xC5 - Light Ring Chart
+0xC6 - Secret Cave Chart
+0xC7 - Sea Hearts Chart
+0xC8 - Island Hearts Chart
+0xC9 - Great Fairy Chart
+0xCA - Octo Chart
+0xCB - IN-credible Chart
+0xCC - Treasure Chart 7
+0xCD - Treasure Chart 27
+0xCE - Treasure Chart 21
+0xCF - Treasure Chart 13
+0xD0 - Treasure Chart 32
+0xD1 - Treasure Chart 19
+0xD2 - Treasure Chart 41
+0xD3 - Treasure Chart 26
+0xD4 - Treasure Chart 8
+0xD5 - Treasure Chart 37
+0xD6 - Treasure Chart 25
+0xD7 - Treasure Chart 17
+0xD8 - Treasure Chart 36
+0xD9 - Treasure Chart 22
+0xDA - Treasure Chart 9
+0xDB - Ghost Ship Chart
+0xDC - Tingle's Chart
+0xDD - Treasure Chart 14
+0xDE - Treasure Chart 10
+0xDF - Treasure Chart 40
+0xE0 - Treasure Chart 3
+0xE1 - Treasure Chart 4
+0xE2 - Treasure Chart 28
+0xE3 - Treasure Chart 16
+0xE4 - Treasure Chart 18
+0xE5 - Treasure Chart 34
+0xE6 - Treasure Chart 29
+0xE7 - Treasure Chart 1
+0xE8 - Treasure Chart 35
+0xE9 - Treasure Chart 12
+0xEA - Treasure Chart 6
+0xEB - Treasure Chart 24
+0xEC - Treasure Chart 39
+0xED - Treasure Chart 38
+0xEE - Treasure Chart 2
+0xEF - Treasure Chart 33
+0xF0 - Treasure Chart 31
+0xF1 - Treasure Chart 23
+0xF2 - Treasure Chart 5
+0xF3 - Treasure Chart 20
+0xF4 - Treasure Chart 30
+0xF5 - Treasure Chart 15
+0xF6 - Treasure Chart 11
+0xF7 - Triforce Chart 8
+0xF8 - Triforce Chart 7
+0xF9 - Triforce Chart 6
+0xFA - Triforce Chart 5
+0xFB - Triforce Chart 4
+0xFC - Triforce Chart 3
+0xFD - Triforce Chart 2
+0xFE - Triforce Chart 1
+0xFF - 
