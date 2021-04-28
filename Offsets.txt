@@ -27,11 +27,11 @@ Outset Island - Underneath Link's House:
   Offset:
  
  Outset Island - Great Fairy:
-  Original Item:
-  Category: Great Fairies
-  Path:
+  Original Item: 5000 Rupee Wallet
+  Category: Great Fairy
+  Path: cking.rpx
   Type: REL
-  Offset:
+  Offset: 0x29DCC7
  
  Outset Island - Jabun's Cave:
   Original Item:
@@ -809,6 +809,11 @@ Outset Island - Underneath Link's House:
  
  
  Thorned Fairy Island - Great Fairy:
+  Original Item: 99 Arrow Quiver
+  Category: Great Fairy
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x29DD17
  
  Thorned Fairy Island - Northeastern Lookout Platform - Destroy the Cannons:
  
@@ -817,18 +822,33 @@ Outset Island - Underneath Link's House:
  
  
  Eastern Fairy Island - Great Fairy:
+  Original Item: 60 Bomb Bomb Bag
+  Category: Great Fairy
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x29DCF7
  
  Eastern Fairy Island - Lookout Platform - Defeat the Cannons and Enemies:
  
  
  
  Western Fairy Island - Great Fairy:
+  Original Item: 60 Arrow Quiver
+  Category: Great Fairy
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x29DD1F
  
  Western Fairy Island - Lookout Platform:
  
  
  
  Southern Fairy Island - Great Fairy:
+  Original Item: 99 Bomb Bomb Bag
+  Category: Great Fairy
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x29DCEF
  
  Southern Fairy Island - Lookout Platform - Destroy the Northwest Cannons:
  
@@ -837,6 +857,11 @@ Outset Island - Underneath Link's House:
  
  
  Northern Fairy Island - Great Fairy:
+  Original Item: 1000 Rupee Wallet
+  Category: Great Fairy
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x29DCCF
  
  Northern Fairy Island - Submarine:
  
