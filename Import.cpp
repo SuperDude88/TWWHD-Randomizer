@@ -1,9 +1,9 @@
 #include <fstream>
 #include <cstdint>
-#include <Structs.h>
-#include <Import.h>
-#include <EditLocation.h>
-#include <Utility.h>
+#include "Structs.hpp"
+#include "Import.hpp"
+#include "EditLocation.hpp"
+#include "Utility.hpp"
 
 ACTR ReadChest(std::fstream& fptr, int offset) {
 

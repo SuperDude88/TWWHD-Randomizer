@@ -1,7 +1,7 @@
-#include <Structs.h>
-#include <Import.h>
+#include "Structs.hpp"
+#include "Import.hpp"
 #include <fstream>
-#include <Utility.h>
+#include "Utility.hpp"
 
 int EditChest(std::fstream& fptr, ACTR chest, uint8_t item_id, int offset) {
 
@@ -89,6 +89,15 @@ int EditScob(std::fstream & fptr, SCOB scob, uint8_t item_id, int offset) {
 	fptr.write((char*)&scob.scale_y, sizeof(scob.scale_y));
 	fptr.write((char*)&scob.scale_z, sizeof(scob.scale_z));
 	fptr.write((char*)&scob.padding, sizeof(scob.padding));
+	fptr.close();
+
+	return 1;
+}
+
+int EditRPX(std::fstream& fptr, uint8_t item_id, int offset) {
+
+	fptr.seekp(offset, std::ios::beg);
+	fptr.write((char*)&item_id, sizeof(item_id));
 	fptr.close();
 
 	return 1;
