@@ -1,53 +1,53 @@
- Outset Island - Underneath Link's House
+Outset Island - Underneath Link's House
   Original Item: Orange Rupee
   Category: Misc
   Path: LinkUG_Stage.zs
   Type: Chest
   Offset: 0x212DC
   
-  Outset Island - Mesa the Grasscutter's House:
+Outset Island - Mesa the Grasscutter's House:
   Original Item: Red Rupee
   Category: Misc
   Path: Omasao_Stage.zs
   Type: Chest
   Offset: 0x9BCCE8
  
- Outset Island - Orca - Give 10 Knight's Crests:
+Outset Island - Orca - Give 10 Knight's Crests:
   Original Item:
   Category: Spoils Trading
   Path:
   Type: ???
   Offset:
  
- Outset Island - Orca - Hit 500 Times:
+Outset Island - Orca - Hit 500 Times:
   Original Item:
   Category: 
   Path:
   Type: ???
   Offset:
  
- Outset Island - Great Fairy:
+Outset Island - Great Fairy:
   Original Item: 5000 Rupee Wallet
   Category: Great Fairy
   Path: cking.rpx
   Type: REL
   Offset: 0x29DCC7
  
- Outset Island - Jabun's Cave:
+Outset Island - Jabun's Cave:
   Original Item:
   Category: Island Puzzle
   Path:
   Type: ???
   Offset:
  
- Outset Island - Dig up Black Soil:
+Outset Island - Dig up Black Soil:
   Original Item: Piece of Heart
   Category: Island Puzzle
   Path: szs_permanent2/sea_Room44.zs
   Type: SCOB
   Offset: 0x84CBD4
  
- Outset Island - Savage Labyrinth - Floor 30:
+Outset Island - Savage Labyrinth - Floor 30:
   Original Item: Triforce Shard 6
   Category: Savage Labyrinth
   Path: Cave09_Room20.zs
