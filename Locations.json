@@ -1,11 +1,13 @@
-Outset Island - Underneath Link's House:
-  Original Item: Orange Rupee
-  Category: Misc
-  Path: LinkUG_Stage.zs
-  Type: Chest
-  Offset: 0x212DC
+{
+  "Name": "Outset Island - Underneath Link's House",
+  "Original Item": "Orange Rupee",
+  "Category": "Misc",
+  "Path": "LinkUG_Stage.zs",
+  "Type": "Chest",
+  "Offset": 0x212DC
+}
  
- Outset Island - Mesa the Grasscutter's House:
+  Outset Island - Mesa the Grasscutter's House:
   Original Item: Red Rupee
   Category: Misc
   Path: Omasao_Stage.zs
