@@ -1,158 +1,158 @@
-Outset Island - Underneath Link's House
- Original Item: Orange Rupee
- Category: Misc
- Path: LinkUG_Stage.zs
- Type: Chest
- Offset: 0x212DC
+ Outset Island - Underneath Link's House
+  Original Item: Orange Rupee
+  Category: Misc
+  Path: LinkUG_Stage.zs
+  Type: Chest
+  Offset: 0x212DC
   
-Outset Island - Mesa the Grasscutter's House:
- Original Item: Red Rupee
- Category: Misc
- Path: Omasao_Stage.zs
- Type: Chest
- Offset: 0x9BCCE8
+ Outset Island - Mesa the Grasscutter's House:
+  Original Item: Red Rupee
+  Category: Misc
+  Path: Omasao_Stage.zs
+  Type: Chest
+  Offset: 0x9BCCE8
  
-Outset Island - Orca - Give 10 Knight's Crests:
- Original Item:
- Category: Spoils Trading
- Path:
- Type: ???
- Offset:
+ Outset Island - Orca - Give 10 Knight's Crests:
+  Original Item:
+  Category: Spoils Trading
+  Path:
+  Type: ???
+  Offset:
  
-Outset Island - Orca - Hit 500 Times:
- Original Item:
- Category: 
- Path:
- Type: ???
- Offset:
+ Outset Island - Orca - Hit 500 Times:
+  Original Item:
+  Category: 
+  Path:
+  Type: ???
+  Offset:
  
-Outset Island - Great Fairy:
- Original Item: 5000 Rupee Wallet
- Category: Great Fairy
- Path: cking.rpx
- Type: REL
- Offset: 0x29DCC7
+ Outset Island - Great Fairy:
+  Original Item: 5000 Rupee Wallet
+  Category: Great Fairy
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x29DCC7
  
-Outset Island - Jabun's Cave:
- Original Item:
- Category: Island Puzzle
- Path:
- Type: ???
- Offset:
+ Outset Island - Jabun's Cave:
+  Original Item:
+  Category: Island Puzzle
+  Path:
+  Type: ???
+  Offset:
  
-Outset Island - Dig up Black Soil:
- Original Item: Piece of Heart
- Category: Island Puzzle
- Path: szs_permanent2/sea_Room44.zs
- Type: SCOB
- Offset: 0x84CBD4
+ Outset Island - Dig up Black Soil:
+  Original Item: Piece of Heart
+  Category: Island Puzzle
+  Path: szs_permanent2/sea_Room44.zs
+  Type: SCOB
+  Offset: 0x84CBD4
  
-Outset Island - Savage Labyrinth - Floor 30:
- Original Item: Triforce Shard 6
- Category: Savage Labyrinth
- Path: Cave09_Room20.zs
- Type: Chest
- Offset: 0x31DD48
+ Outset Island - Savage Labyrinth - Floor 30:
+  Original Item: Triforce Shard 6
+  Category: Savage Labyrinth
+  Path: Cave09_Room20.zs
+  Type: Chest
+  Offset: 0x31DD48
  
-Outset Island - Savage Labyrinth - Floor 50:
- Original Item: Hero's Charm
- Category: Savage Labyrinth
- Path: Cave10_Room20.zs
- Type: Chest
- Offset: 0x31DB70
+ Outset Island - Savage Labyrinth - Floor 50:
+  Original Item: Hero's Charm
+  Category: Savage Labyrinth
+  Path: Cave10_Room20.zs
+  Type: Chest
+  Offset: 0x31DB70
   
   
  
-Windfall Island - Jail - Tingle - First Gift:
- Original Item:
- Category: Free Gift
- Path:
- Type: REL
- Offset:
-
-Windfall Island - Jail - Tingle - Second Gift:
- Original Item:
- Category: Free Gift
- Path:
- Type: REL
- Offset:
+ Windfall Island - Jail - Tingle - First Gift:
+  Original Item:
+  Category: Free Gift
+  Path:
+  Type: REL
+  Offset:
  
-Windfall Island - Jail - Maze Chest:
- Original Item: Picto Box
- Category: Island Puzzle
- Path: Pnezumi_Stage.zs
- Type: Chest
- Offset: 0x2794C
+ Windfall Island - Jail - Tingle - Second Gift:
+  Original Item:
+  Category: Free Gift
+  Path:
+  Type: REL
+  Offset:
  
-Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly:
- Original Item:
- Category: Spoils Trading, Long Sidequest
- Path:
- Type: ???
- Offset:
+ Windfall Island - Jail - Maze Chest:
+  Original Item: Picto Box
+  Category: Island Puzzle
+  Path: Pnezumi_Stage.zs
+  Type: Chest
+  Offset: 0x2794C
  
-Windfall Island - Chu Jelly Juice Shop - Give 15 Blue Chu Jelly:
- Original Item:
- Category: Spoils Trading, Long Sidequest
- Path:
- Type: ???
- Offset:
+ Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly:
+  Original Item:
+  Category: Spoils Trading, Long Sidequest
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Ivan - Catch Killer Bees:
- Original Item:
- Category: Short Sidequest
- Path:
- Type: ???
- Offset:
+ Windfall Island - Chu Jelly Juice Shop - Give 15 Blue Chu Jelly:
+  Original Item:
+  Category: Spoils Trading, Long Sidequest
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Mrs. Marie - Catch Killer Bees:
- Original Item:
- Category: Short Sidequest
- Path:
- Type: ???
- Offset:
+ Windfall Island - Ivan - Catch Killer Bees:
+  Original Item:
+  Category: Short Sidequest
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Mrs. Marie - Give 1 Joy Pendant:
- Original Item:
- Category: Spoils Trading
- Path:
- Type: ???
- Offset:
+ Windfall Island - Mrs. Marie - Catch Killer Bees:
+  Original Item:
+  Category: Short Sidequest
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Mrs. Marie - Give 21 Joy Pendants:
- Original Item:
- Category: Spoils Trading
- Path:
- Type: ???
- Offset:
+ Windfall Island - Mrs. Marie - Give 1 Joy Pendant:
+  Original Item:
+  Category: Spoils Trading
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Mrs. Marie - Give 40 Joy Pendants:
- Original Item:
- Category: Spoils Trading
- Path:
- Type: ???
- Offset:
+ Windfall Island - Mrs. Marie - Give 21 Joy Pendants:
+  Original Item:
+  Category: Spoils Trading
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Lenzo's House - Left Chest:
- Original Item: Treasure Chart 29
- Category: Short Sidequest
- Path: Ocmera_Stage.zs
- Type: Chest
- Offset: 0x26E10
+ Windfall Island - Mrs. Marie - Give 40 Joy Pendants:
+  Original Item:
+  Category: Spoils Trading
+  Path:
+  Type: ???
+  Offset:
  
-Windfall Island - Lenzo's House - Right Chest:
- Original Item: Purple Rupee
- Category: Short Sidequest
- Path: Ocmera_Stage.zs
- Type: Chest
- Offset: 0x26E30
+ Windfall Island - Lenzo's House - Left Chest:
+  Original Item: Treasure Chart 29
+  Category: Short Sidequest
+  Path: Ocmera_Stage.zs
+  Type: Chest
+  Offset: 0x26E10
  
-Windfall Island - Lenzo's House - Become Lenzo's Assistant:
- Original Item:
- Category: Long Sidequest
- Path:
- Type: ???
- Offset:
+ Windfall Island - Lenzo's House - Right Chest:
+  Original Item: Purple Rupee
+  Category: Short Sidequest
+  Path: Ocmera_Stage.zs
+  Type: Chest
+  Offset: 0x26E30
+ 
+ Windfall Island - Lenzo's House - Become Lenzo's Assistant:
+  Original Item:
+  Category: Long Sidequest
+  Path:
+  Type: ???
+  Offset:
  
  //Windfall Island - Lenzo's House - Bring Forest Firefly (Might just be assistant on HD):
   Original Item:
