@@ -1,9 +1,9 @@
  Outset Island - Underneath Link's House
   Original Item: Orange Rupee
   Category: Misc
-  Path": LinkUG_Stage.zs
+  Path: LinkUG_Stage.zs
   Type: Chest
-  Offset": 0x212DC
+  Offset: 0x212DC
   
   Outset Island - Mesa the Grasscutter's House:
   Original Item: Red Rupee
