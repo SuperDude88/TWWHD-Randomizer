@@ -13,18 +13,18 @@
   Offset: 0x9BCCE8
  
  Outset Island - Orca - Give 10 Knight's Crests:
-  Original Item:
+  Original Item: Hurricane Spin
   Category: Spoils Trading
-  Path:
-  Type: ???
-  Offset:
+  Path: cking.rpx
+  Type: REL, Event
+  Offset: 0x46078F, 0x?
  
  Outset Island - Orca - Hit 500 Times:
   Original Item:
   Category: 
   Path:
-  Type: ???
-  Offset:
+  Type: REL
+  Offset: 0x4608F2 (Might be innacurate, needs testing)
  
  Outset Island - Great Fairy:
   Original Item: 5000 Rupee Wallet
