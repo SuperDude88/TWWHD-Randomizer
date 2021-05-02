@@ -725,6 +725,11 @@
  The Great Sea - Beedle's Shop Ship - 20 Rupee Item:
  
  The Great Sea - Salvage Corp Gift:
+  Original Item: Treasure Chart 34
+  Category: Free Gift
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x1C6ABF
  
  The Great Sea - Cyclos:
  
