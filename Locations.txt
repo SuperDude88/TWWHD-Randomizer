@@ -729,6 +729,11 @@
  The Great Sea - Cyclos:
  
  The Great Sea - Goron Trading Reward:
+  Original Item: Piece of Heart
+  Category: Long Sidequest, Expensive Purchase
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x1C5B6F
  
  The Great Sea - Withered Trees:
  
