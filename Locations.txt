@@ -64,18 +64,18 @@
   
  
  Windfall Island - Jail - Tingle - First Gift:
-  Original Item:
+  Original Item: Tingle Bottle
   Category: Free Gift
-  Path:
+  Path: cking.rpx
   Type: REL
-  Offset:
+  Offset: 0x4F1A8F
  
  Windfall Island - Jail - Tingle - Second Gift:
-  Original Item:
+  Original Item: Tingle's Chart
   Category: Free Gift
-  Path:
+  Path: cking.rpx
   Type: REL
-  Offset:
+  Offset: 0x4F1AC3
  
  Windfall Island - Jail - Maze Chest:
   Original Item: Picto Box
@@ -868,6 +868,12 @@
  
  
  Tingle Island - Ankle - Reward for All Tingle Statues:
+  Original Item: 500 Rupees
+  Category: Misc
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x4F1B13
+ 
  
  Tingle Island - Big Octo:
  
