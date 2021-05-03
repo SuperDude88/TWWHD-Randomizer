@@ -99,11 +99,11 @@
   Offset:
  
  Windfall Island - Ivan - Catch Killer Bees:
-  Original Item:
+  Original Item: Piece of Heart
   Category: Short Sidequest
-  Path:
-  Type: ???
-  Offset:
+  Path: cking.rpx
+  Type: REL
+  Offset: 0x4A0D9F
  
  Windfall Island - Mrs. Marie - Catch Killer Bees:
   Original Item:
