@@ -102,3 +102,21 @@ int EditRPX(std::fstream& fptr, uint8_t item_id, int offset) {
 
 	return 1;
 }
+
+int EditEvent(std::fstream& fptr, uint8_t item_id, int offset, int nameoffset) {
+
+	fptr.seekp(nameoffset, std::ios::beg);
+
+	if (0x6D <= item_id && item_id <= 0x72) {
+		fptr.write((char*)"059get_dance", 12);
+		fptr.seekp(offset, std::ios::beg);
+		int itemid = item_id - 0x6D;
+		fptr.write((char*)&itemid, sizeof(item_id));
+	}
+	else {
+		fptr.write((char*)"011get_item\0", 12);
+		fptr.seekp(offset, std::ios::beg);
+		fptr.write((char*)&item_id, sizeof(item_id));
+	}
+	return 1;
+}
