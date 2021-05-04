@@ -1,7 +1,10 @@
-#ifndef Structs_H
 #define Structs_H
+#pragma once
 
+#include <map>
 #include <cstdint>
+#include <string>
+#include <vector>
 
 struct ACTR {
 	char name[8];
@@ -31,4 +34,17 @@ struct SCOB {
 	uint8_t padding;
 };
 
-#endif
+struct Location {
+	std::string Name;
+	std::string Item;
+	std::vector<std::string> Category;
+	std::string Path;
+	std::string Type;
+	std::vector<std::string> Offsets;
+	std::string Extra;
+};
+
+struct LocationLists {
+	std::vector<Location> ProgressLocations;
+	std::vector<Location> NonprogressLocations;
+};
