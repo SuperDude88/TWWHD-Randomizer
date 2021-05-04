@@ -139,6 +139,7 @@ int WriteLocations(LocationLists list, std::fstream fptr) {
 			}
 		}
 		//Need to add some special cases for weird types such as giving Orca 10 KC (Event + RPX data). This could probably be done differently but its the simplest/easiest way I can think of
+		//A section for writing nonprogress items will also be added later, as it is basically a copy of the above code and will be easier to port in 1 session once the other features are added
 	}
 return 1;
 }
