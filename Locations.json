@@ -27,8 +27,8 @@
 
  { 
   "Name": "Outset Island - Orca - Give 10 Knight's Crests",
-  "Original Item": "",
-  "Category": ["Spoils Trading", "Short Sidequest"],
+  "Original Item": "Hurricane Spin",
+  "Category": ["Spoils Trading"],
   "Needs": {
     //Implement "can farm knights crests" later because boy is that complex (also json sees this as data this is just written as a c++ comment for easy searching/reference)
   },
@@ -39,7 +39,7 @@
 
  { 
   "Name": "Outset Island - Orca - Hit 500 Times",
-  "Original Item": "",
+  "Original Item": "Piece of Heart",
   "Category": [""],
   "Needs": {
     "type": "count", "args": [{"count": "1", "args": "Sword"}]
@@ -54,13 +54,7 @@
   "Original Item": "5000 Rupee Wallet",
   "Category": ["Great Fairy"],
   "Needs": {
-    "type": "or", "args": [
-      {"type": "count", "args": [{"count": "1", "args": "Sword"}]},
-      {"type": "or",  "args": [
-        {"type": "has_item", "args": ["SkullHammer"]},
-       {"type": "has_item", "args": ["Boomerang"]}
-     ]}
-   ]
+   //This mostly uses macros which should be implemented later
   },
   "Path": "cking.rpx",
   "Type": "REL",
@@ -71,9 +65,12 @@
   "Name": "Outset Island - Jabun's Cave",
   "Original Item": "",
   "Category": "Island Puzzle",
+  "Needs": {
+   "type": "has_item", "args": ["Bombs"]
+  },
   "Path": "",
-  "Type": ???
-  "Offset":
+  "Type": "Chest",
+  "Offset": ["Pjavdou_Room0.zs"]
   },
 
   {
