@@ -411,7 +411,7 @@
   "Category": Combat Secret Cave
   "Path": TF_06_Stage.zs
   "Type": Chest
-  "Offset": 0x1C7550
+  "Offset": 0x1C7550 */
  
  //DRC
  {
@@ -674,7 +674,7 @@
  }
   
   
-  
+ /* 
  Forest Haven - On Tree Branch:
   "Original Item": Deku Leaf
   "Category": Island Puzzle
