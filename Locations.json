@@ -66,354 +66,450 @@
   "Type": "REL",
   "Offset": ["0x29DCC7"]
  },
- /* 
+
+ {
   "Name": "Outset Island - Jabun's Cave",
   "Original Item": "",
   "Category": "Island Puzzle",
   "Path": "",
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Outset Island - Dig up Black Soil",
   "Original Item": Piece of Heart
   "Category": Island Puzzle
   "Path": szs_permanent2/sea_Room44.zs
   "Type": SCOB
   "Offset": 0x84CBD4
- 
+  },
+
+  {
   "Name": Outset Island - Savage Labyrinth - Floor 30",
   "Original Item": Triforce Shard 6
   "Category": Savage Labyrinth
   "Path": Cave09_Room20.zs
   "Type": Chest
   "Offset": 0x31DD48
- 
+  },
+
+  {
   "Name": Outset Island - Savage Labyrinth - Floor 50",
   "Original Item": Hero's Charm
   "Category": Savage Labyrinth
   "Path": Cave10_Room20.zs
   "Type": Chest
   "Offset": 0x31DB70
+   },
+
   
-  
- 
+  {
   "Name": Windfall Island - Jail - Tingle - First Gift",
   "Original Item":
   "Category": Free Gift
   "Path":
   "Type": REL
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Jail - Tingle - Second Gift",
   "Original Item":
   "Category": Free Gift
   "Path":
   "Type": REL
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Jail - Maze Chest",
   "Original Item": Picto Box
   "Category": Island Puzzle
   "Path": Pnezumi_Stage.zs
   "Type": Chest
   "Offset": 0x2794C
- 
+  },
+
+  {
   "Name": Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly",
   "Original Item":
   "Category": Spoils Trading, Long Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Chu Jelly Juice Shop - Give 15 Blue Chu Jelly",
   "Original Item":
   "Category": Spoils Trading, Long Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Ivan - Catch Killer Bees",
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Mrs. Marie - Catch Killer Bees",
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Mrs. Marie - Give 1 Joy Pendant",
   "Original Item":
   "Category": Spoils Trading
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Mrs. Marie - Give 21 Joy Pendants",
   "Original Item":
   "Category": Spoils Trading
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Mrs. Marie - Give 40 Joy Pendants",
   "Original Item":
   "Category": Spoils Trading
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Lenzo's House - Left Chest",
   "Original Item": Treasure Chart 29
   "Category": Short Sidequest
   "Path": Ocmera_Stage.zs
   "Type": Chest
   "Offset": 0x26E10
- 
+  },
+
+  {
   "Name": Windfall Island - Lenzo's House - Right Chest",
   "Original Item": Purple Rupee
   "Category": Short Sidequest
   "Path": Ocmera_Stage.zs
   "Type": Chest
   "Offset": 0x26E30
- 
+  },
+
+  {
   "Name": Windfall Island - Lenzo's House - Become Lenzo's Assistant",
   "Original Item":
   "Category": Long Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
- // "Name": Windfall Island - Lenzo's House - Bring Forest Firefly (Might just be assistant on HD)",
-  "Original Item":
-  "Path":
-  "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - House of Wealth Chest",
   "Original Item": Red Rupee
   "Category": Misc
   "Path": Orichh_Room0.zs
   "Type": Chest
   "Offset": 0x39A5C0
- 
+  },
+
+  {
   "Name": Windfall Island - Maggie's Father - Give 20 Skull Necklaces",
   "Original Item":
   "Category": Spoils Trading
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Maggie - Free Item",
   "Original Item":
   "Category": Free Gift
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Maggie - Delivery Reward",
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Cafe Bar - Postman",
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": Event
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Kreeb - Light Up Lighthouse",
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Transparent Chest",
   "Original Item": Piece of Heart
   "Category": Short Sidequest
   "Path": szs_permanent1/Sea_Room11.zs
   "Type": Chest
   "Offset": 0x10631AC, 0x10632F4, 0x1063840
- 
+  },
+
+  {
   "Name": Windfall Island - Tott - Teach Rhythm",
   "Original Item":
   "Category": Free Gift
   "Path":
   "Type": Event
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Pirate Ship",
   "Original Item": Bombs
   "Category": Minigame
   "Path": Asoko_Stage.zs
   "Type": Chest
   "Offset": 0x2CE34, 0x2CE74
- 
+  },
+
+  {
   "Name": Windfall Island - 5 Rupee Auction",
   "Original Item":
   "Category": Expensive Purchase, Minigame
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - 40 Rupee Auction",
   "Original Item":
   "Category": Expensive Purchase, Minigame
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - 60 Rupee Auction",
   "Original Item":
   "Category": Expensive Purchase, Minigame
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - 80 Rupee Auction",
   "Original Item":
   "Category": Expensive Purchase, Minigame
   "Path":
   "Type": ???
   "Offset":
-  
+  },
+
+  {
   "Name": Windfall Island - 100 Rupee Auction",
   "Original Item": Swift Sail
   "Category": Expensive Purchase, Minigame
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Zunari - Stock Exotic Flower in Zunari's Shop",
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Sam - Decorate the Town",
   "Original Item":
   "Category": Long Sidequest
   "Path":
   "Type": ???
   "Offset":
-  
-  "Name": Windfall Island - Kane - Place Shop Guru Statue on Gate: #Obscure
- 
-  "Name": Windfall Island - Kane - Place Postman Statue on Gate: #Obscure
- 
-  "Name": Windfall Island - Kane - Place Six Flags on Gate: #Obscure
- 
-  "Name": Windfall Island - Kane - Place Six Idols on Gate: #Obscure
- 
+   },
+
+  {
+  "Name": "Windfall Island - Kane - Place Shop Guru Statue on Gate",
+  },
+
+  {
+  "Name": "Windfall Island - Kane - Place Postman Statue on Gate",
+  },
+
+  {
+  "Name": "Windfall Island - Kane - Place Six Flags on Gate",
+  },
+
+  {
+  "Name": "Windfall Island - Kane - Place Six Idols on Gate",
+  },
+
+  {
   "Name": Windfall Island - Mila - Follow the Thief:
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Battlesquid - First Prize:
   "Original Item":
   "Category": Battlesquid
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Battlesquid - Second Prize:
   "Original Item":
   "Category": Battlesquid
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Battlesquid - Under 20 Shots Prize:
   "Original Item":
   "Category": Battlesquid
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Pompie and Vera - Secret Meeting Photo:
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Kamo - Full Moon Photo:
   "Original Item":
   "Category": Long Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Minenco - Miss Windfall Photo:
   "Original Item":
   "Category": Short Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
+
+  {
   "Name": Windfall Island - Linda and Anton:
   "Original Item":
   "Category": Long Sidequest
   "Path":
   "Type": ???
   "Offset":
- 
+  },
 
-
+  
+  
+  {
  Dragon Roost Island - Wind Shrine:
   "Original Item": 
   "Category": Misc
   "Path": 
   "Type": Event
   "Offset": 
- 
+  },
+
+  {
  Dragon Roost Island - Rito Aerie - Give Hoskit 20 Golden Feathers:
   "Original Item": 
   "Category": Spoils Trading
   "Path": 
   "Type": ???
   "Offset": 
- 
+  },
+
+  {
  Dragon Roost Island - Chest on Top of Boulder:
   "Original Item": Silver Rupee
   "Category": Island Puzzle
   "Path": szs_permanent1/Sea_Room13.zs
   "Type": Chest
   "Offset": 0xB9B8AC
- 
+  },
+
+  {
  Dragon Roost Island - Fly Across Platforms Around Island:
   "Original Item": Orange Rupee
   "Category": Island Puzzle
   "Path": szs_permanent1/Sea_Room13.zs
   "Type": Chest
   "Offset": 0xB9B8CC
- 
+  },
+
+  {
  Dragon Roost Island - Rito Aerie - Baito:
   "Original Item": 
   "Category": Minigame
   "Path": 
   "Type": ???
   "Offset": 
- 
+  },
+
+  {
  Dragon Roost Island - Secret Cave:
   "Original Item": Purple Rupee
   "Category": Combat Secret Cave
   "Path": TF_06_Stage.zs
   "Type": Chest
-  "Offset": 0x1C7550 */
+  "Offset": 0x1C7550 
+  },
  
- //DRC
+
  {
   "Name": "Dragon Roost Cavern - First Room",
   "Original Item": "SmallKey",
@@ -671,275 +767,496 @@
   "Path": "",
   "Type": "",
   "Offset": [""]
- }
-  
-  
- /* 
+ },
+
+ {
  Forest Haven - On Tree Branch:
   "Original Item": Deku Leaf
   "Category": Island Puzzle
   "Path":
   "Type": ???
   "Offset":
- 
+ },
+
+ {
  Forest Haven - Small Island Chest:
- 
+ },
+
+  
+ {
  Forbidden Woods - First Room:
- 
+ },
+
+ {
  Forbidden Woods - Inside Hollow Tree's Mouth:
- 
+ },
+
+ {
  Forbidden Woods - Climb to Top Using Boko Baba Bulbs:
- 
+ },
+
+ {
  Forbidden Woods - Hole in Tree:
- 
+ },
+
+ {
  Forbidden Woods - Morth Pit:
- 
+ },
+
+ {
  Forbidden Woods - Vine Maze Left Chest:
- 
+ },
+
+ {
  Forbidden Woods - Vine Maze Right Chest:
- 
+ },
+
+ {
  Forbidden Woods - Tall Room Before Mini-Boss:
- 
+ },
+
+ {
  Forbidden Woods - Mothula Mini-Boss Room:
- 
+ },
+
+ {
  Forbidden Woods - Past Seeds Hanging by Vines:
- 
+ },
+
+ {
  Forbidden Woods - Chest Across Red Hanging Flower:
- 
+ },
+
+ {
  Forbidden Woods - Tingle Statue Chest:
- 
+ },
+
+ {
  Forbidden Woods - Chest in Locked Tree Trunk:
- 
+ },
+
+ {
  Forbidden Woods - Big Key Chest:
- 
+ },
+
+ {
  Forbidden Woods - Double Mothula Room:
- 
+ },
+
+ {
  Forbidden Woods - Kalle Demos Heart Container:
- 
- 
- 
+ },
+
+  
+  
+ {
  Greatfish Isle - Hidden Chest:
- 
- 
- 
+ },
+
+  
+  
+ {
  Tower of the Gods - Chest Behind Bombable Walls:
- 
+ },
+
+ {
  Tower of the Gods - Hop Across Floating Boxes:
- 
+ },
+
+ {
  Tower of the Gods - Light Two Torches:
- 
+ },
+
+ {
  Tower of the Gods - Skulls Room Chest:
- 
+ },
+
+ {
  Tower of the Gods - Shoot Eye Above Skulls Room Chest:
- 
+ },
+
+ {
  Tower of the Gods - Tingle Statue Chest:
- 
+ },
+
+ {
  Tower of the Gods - First Chest Guarded by Armos Knights:
- 
+ },
+
+ {
  Tower of the Gods - Stone Tablet:
   name "Offset": 0x4F7360
   item id: 0x509B17
- 
+ },
+
+ {
  Tower of the Gods - Darknut Mini-Boss Room:
- 
+ },
+
+ {
  Tower of the Gods - Second Chest Guarded by Armos Knights:
- 
+ },
+
+ {
  Tower of the Gods - Floating Platforms Room:
- 
+ },
+
+ {
  Tower of the Gods - Top of Floating Platforms Room:
- 
+ },
+
+ {
  Tower of the Gods - Big Key Chest:
- 
+ },
+
+ {
  Tower of the Gods - Gohdan Heart Container:
- 
- 
- 
+ },
+
+  
+  
+ {
  Hyrule - Master Sword Chamber:
- 
- 
- 
+ },
+
+  
+  
+ {
  Forsaken Fortress - Phantom Ganon:
- 
+ },
+
+ {
  Forsaken Fortress - Chest Outside Upper Jail Cell:
- 
+ },
+
+ {
  Forsaken Fortress - Chest Inside Lower Jail Cell:
- 
+ },
+
+ {
  Forsaken Fortress - Chest Guarded By Bokoblin:
- 
+ },
+
+ {
  Forsaken Fortress - Chest on Bed:
- 
+ },
+
+ {
  Forsaken Fortress - Helmaroc King Heart Container:
- 
- 
- 
+ },
+
+  
+  
+ {
  Mother and Child Isles - Inside Mother Isle:
- 
- 
- 
+ },
+
+  
+  
+ {
  Fire Mountain - Cave - Chest:
- 
+ },
+
+ {
  Fire Mountain - Lookout Platform Chest:
- 
+ },
+
+ {
  Fire Mountain - Lookout Platform - Destroy the Cannons:
- 
+ },
+
+ {
  Fire Mountain - Big Octo:
- 
- 
- 
+ },
+
+  
+  
+ {
  Ice Ring Isle - Frozen Chest:
- 
+ },
+
+ {
  Ice Ring Isle - Cave - Chest:
- 
+ },
+
+ {
  Ice Ring Isle - Inner Cave - Chest:
- 
- 
- 
+ },
+
+  
+  
+ {
  Headstone Island - Top of the Island:
- 
+ },
+
+ {
  Headstone Island - Submarine:
- 
- 
- 
+ },
+
+  
+ {
  Earth Temple - Transparent Chest In Warp Pot Room:
- 
+ },
+
+ {
  Earth Temple - Chest Behind Destructible Walls:
- 
+ },
+
+ {
  Earth Temple - Behind Curtain In Warp Pot Room: #Obscure
- 
+ },
+
+ {
  Earth Temple - Transparent Chest in First Crypt:
- 
+ },
+
+ {
  Earth Temple - Chest In Three Blocks Room:
- 
+ },
+
+ {
  Earth Temple - Chest Behind Statues:
- 
+ },
+
+ {
  Earth Temple - Casket in Second Crypt:
- 
+ },
+
+ {
  Earth Temple - Stalfos Mini-Boss Room:
- 
+ },
+
+ {
  Earth Temple - Tingle Statue Chest:
- 
+ },
+
+ {
  Earth Temple - End of Foggy Room With Floormasters:
- 
+ },
+
+ {
  Earth Temple - Kill All Floormasters in Foggy Room:
- 
+ },
+
+ {
  Earth Temple - Behind Curtain Next to Hammer Button: #Obscure
- 
+ },
+
+ {
  Earth Temple - Chest in Third Crypt:
- 
+ },
+
+ {
  Earth Temple - Many Mirrors Room Right Chest:
- 
+ },
+
+ {
  Earth Temple - Many Mirrors Room Left Chest:
- 
+ },
+
+ {
  Earth Temple - Stalfos Crypt Room:
- 
+ },
+
+ {
  Earth Temple - Big Key Chest:
- 
+ },
+
+ {
  Earth Temple - Jalhalla Heart Container:
- 
- 
+ },
 
+  
+  
+ {
  Wind Temple - Chest Between Two Dirt Patches:
+ },
 
+ {
  Wind Temple - Tingle Statue Chest:
+ },
 
+ {
  Wind Temple - Chest Behind Stone Head:
+ },
 
+ {
  Wind Temple - Chest in Left Alcove:
+ },
 
+ {
  Wind Temple - Big Key Chest:
- 
+ },
+
+ {
  Wind Temple - Chest In Many Cyclones Room:
- 
+ },
+
+ {
  Wind Temple - Chest In Middle Of Hub Room:
- 
+ },
+
+ {
  Wind Temple - Spike Wall Room - First Chest:
- 
+ },
+
+ {
  Wind Temple - Spike Wall Room - Destroy All Cracked Floors:
- 
+ },
+
+ {
  Wind Temple - Wizzrobe Mini-Boss Room:
- 
+ },
+
+ {
  Wind Temple - Chest at Top of Hub Room:
- 
+ },
+
+ {
  Wind Temple - Chest Behind Seven Armos:
- 
+ },
+
+ {
  Wind Temple - Kill All Enemies in Tall Basement Room:
- 
+ },
+
+ {
  Wind Temple - Molgera Heart Container:
- 
- 
- 
+ },
+
+  
+  
+ {
  Ganon's Tower - Maze Chest:
- 
- 
- 
+ },
+
+  
+  
+ {
  Mailbox - Letter from Baito's Mother:
- 
+ },
+
+ {
  Mailbox - Letter from Baito:
- 
+ },
+
+ {
  Mailbox - Letter from Komali's Father:
- 
+ },
+
+ {
  Mailbox - Letter Advertising Bombs in Beedle's Shop:
- 
+ },
+
+ {
  Mailbox - Letter Advertising Rock Spire Shop Ship:
- 
+ },
+
+ {
  Mailbox - Beedle's Silver Membership Reward:
- 
+ },
+
+ {
  Mailbox - Beedle's Gold Membership Reward:
- 
+ },
+
+ {
  Mailbox - Letter from Orca:
- 
+ },
+
+ {
  Mailbox - Letter from Grandma:
- 
+ },
+
+ {
  Mailbox - Letter from Aryll:
- 
+ },
+
+ {
  Mailbox - Letter from Tingle:
- 
- 
- 
+ },
+
+  
+  
+ {
  The Great Sea - Beedle's Shop Ship - 20 Rupee Item:
- 
+ },
+
+ {
  The Great Sea - Salvage Corp Gift:
- 
+ },
+
+ {
  The Great Sea - Cyclos:
- 
+ },
+
+ {
  The Great Sea - Goron Trading Reward:
- 
+ },
+
+ {
  The Great Sea - Withered Trees:
- 
+ },
+
+ {
  The Great Sea - Ghost Ship:
- 
- 
- 
+ },
+
+  
+  
+ {
  Private Oasis - Chest at Top of Waterfall:
- 
+ },
+
+ {
  Private Oasis - Cabana Labyrinth - Lower Floor Chest:
- 
+ },
+
+ {
  Private Oasis - Cabana Labyrinth - Upper Floor Chest:
- 
+ },
+
+ {
  Private Oasis - Big Octo:
- 
- 
- 
+ },
+
+  
+  
+ {
  Spectacle Island - Barrel Shooting - First Prize:
- 
+ },
+
+ {
  Spectacle Island - Barrel Shooting - Second Prize:
- 
- 
- 
+ },
+
+  
+  
+ {
  Needle Rock Isle - Chest:
- 
+ },
+
+ {
  Needle Rock Isle - Cave:
- 
+ },
+
+ {
  Needle Rock Isle - Golden Gunboat:
- 
- 
- 
+ },
+
+  
+  
+ {
  Angular Isles - Peak:
- 
+ },
+
+ {
  Angular Isles - Cave:
- 
- 
- 
+ },
+
+  
+  
+ {
  Boating Course - Raft:
  
  Boating Course - Cave:
@@ -1134,150 +1451,276 @@
  
  
  Seven-Star Isles - Center Lookout Platform:
- 
+ },
+
+ {
  Seven-Star Isles - Northern Lookout Platform:
- 
+ },
+
+ {
  Seven-Star Isles - Southern Lookout Platform:
- 
+ },
+
+ {
  Seven-Star Isles - Big Octo:
- 
- 
- 
+ },
+
+  
+  
+ {
  Cyclops Reef - Destroy the Cannons and Gunboats:
- 
+ },
+
+ {
  Cyclops Reef - Lookout Platform - Defeat the Enemies:
- 
- 
- 
+ },
+
+  
+  
+ {
  Two-Eye Reef - Destroy the Cannons and Gunboats:
- 
+ },
+
+ {
  Two-Eye Reef - Lookout Platform:
- 
+ },
+
+ {
  Two-Eye Reef - Big Octo Great Fairy:
- 
- 
- 
+ },
+
+  
+  
+ {
  Three-Eye Reef - Destroy the Cannons and Gunboats:
- 
- 
- 
+ },
+
+  
+  
+ {
  Four-Eye Reef - Destroy the Cannons and Gunboats:
- 
- 
- 
+ },
+
+  
+  
+ {
  Five-Eye Reef - Destroy the Cannons:
- 
+ },
+
+ {
  Five-Eye Reef - Lookout Platform:
- 
- 
- 
+ },
+
+  
+  
+ {
  Six-Eye Reef - Destroy the Cannons and Gunboats:
- 
+ },
+
+ {
  Six-Eye Reef - Lookout Platform - Destroy the Cannons:
- 
+ },
+
+ {
  Six-Eye Reef - Submarine:
- 
- 
- 
+ },
+  
+  
+  
+ {
  Forsaken Fortress - Sunken Treasure:
- 
+ },
+
+ {
  Star Island - Sunken Treasure:
- 
+ },
+
+ {
  Northern Fairy Island - Sunken Treasure:
- 
+ },
+
+ {
  Gale Isle - Sunken Treasure:
- 
+ },
+
+ {
  Crescent Moon Island - Sunken Treasure:
- 
+ },
+
+ {
  Seven-Star Isles - Sunken Treasure:
- 
+ },
+
+ {
  Overlook Island - Sunken Treasure:
- 
+ },
+
+ {
  Four-Eye Reef - Sunken Treasure:
- 
+ },
+
+ {
  Mother and Child Isles - Sunken Treasure:
- 
+ },
+
+ {
  Spectacle Island - Sunken Treasure:
- 
+ },
+
+ {
   "Name": Windfall Island - Sunken Treasure:
- 
+ },
+
+ {
  Pawprint Isle - Sunken Treasure:
- 
+ },
+
+ {
  Dragon Roost Island - Sunken Treasure:
- 
+ },
+
+ {
  Flight Control Platform - Sunken Treasure:
- 
+ },
+
+ {
  Western Fairy Island - Sunken Treasure:
- 
+ },
+
+ {
  Rock Spire Isle - Sunken Treasure:
- 
+ },
+
+ {
  Tingle Island - Sunken Treasure:
- 
+ },
+
+ {
  Northern Triangle Island - Sunken Treasure:
- 
+ },
+
+ {
  Eastern Fairy Island - Sunken Treasure:
- 
+ },
+
+ {
  Fire Mountain - Sunken Treasure:
- 
+ },
+
+ {
  Star Belt Archipelago - Sunken Treasure:
- 
+ },
+
+ {
  Three-Eye Reef - Sunken Treasure:
- 
+ },
+
+ {
  Greatfish Isle - Sunken Treasure:
- 
+ },
+
+ {
  Cyclops Reef - Sunken Treasure:
- 
+ },
+
+ {
  Six-Eye Reef - Sunken Treasure:
- 
+ },
+
+ {
  Tower of the Gods - Sunken Treasure:
- 
+ },
+
+ {
  Eastern Triangle Island - Sunken Treasure:
- 
+ },
+
+ {
  Thorned Fairy Island - Sunken Treasure:
- 
+ },
+
+ {
  Needle Rock Isle - Sunken Treasure:
- 
+ },
+
+ {
  Islet of Steel - Sunken Treasure:
- 
+ },
+
+ {
  Stone Watcher Island - Sunken Treasure:
- 
+ },
+
+ {
  Southern Triangle Island - Sunken Treasure:
- 
+ },
+
+ {
  Private Oasis - Sunken Treasure:
- 
+ },
+
+ {
  Bomb Island - Sunken Treasure:
- 
+ },
+
+ {
  Bird's Peak Rock - Sunken Treasure:
- 
+ },
+
+ {
  Diamond Steppe Island - Sunken Treasure:
- 
+ },
+
+ {
  Five-Eye Reef - Sunken Treasure:
- 
+ },
+
+ {
  Shark Island - Sunken Treasure:
- 
+ },
+
+ {
  Southern Fairy Island - Sunken Treasure:
- 
+ },
+
+ {
  Ice Ring Isle - Sunken Treasure:
- 
+ },
+
+ {
  Forest Haven - Sunken Treasure:
- 
+ },
+
+ {
  Cliff Plateau Isles - Sunken Treasure:
- 
+ },
+
+ {
  Horseshoe Island - Sunken Treasure:
- 
+ },
+
+ {
   "Name": Outset Island - Sunken Treasure:
- 
+ },
+
+ {
  Headstone Island - Sunken Treasure:
- 
+ },
+
+ {
  Two-Eye Reef - Sunken Treasure:
- 
+ },
+
+ {
  Angular Isles - Sunken Treasure:
- 
+ },
+
+ {
  Boating Course - Sunken Treasure:
  },
 
  { 
  Five-Star Isles - Sunken Treasure:
- }*/
+ }
  ]
 }
