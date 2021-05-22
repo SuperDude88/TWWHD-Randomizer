@@ -1,22 +1,18 @@
 # TWWHD-Randomizer
-The Wind Waker HD Randomizer
+A Randomizer for The Legend of Zelda: The Wind Waker HD
 
-Currently in early development and still has a lot to figure out. It will use offsets and pattern matching to find the useful values in the files, then use a modified version of FTPiiU Everywhere to load the modified game. Items will be placed with assumed fill and seeds can be shared via config files.
+Still in relatively early development and has barely touched ASM patches (of which there will be a lot). Current work is focused on compressing/decompressing/dumping/loading game files on the Wii U.
 
 Current to-do list:
 
-Extracting the files from the Wii U and putting them in appropriate folders (on the SD card)
+Writing the code to dump and replace game files on console (concept proven, code not so much)
 
 Yaz0 decoding the extracted files
 
-Decoding the RPX
-
 Offsets for more locations and reformatting the list as JSON
 
-Logic and seed generation
+Logic and some small bits of seed generation
 
 Re-encoding the modified files
 
-ASM patches
-
-Replacing the files on the system to load the randomized game
+ASM patches and other important tweaks
