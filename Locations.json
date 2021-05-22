@@ -1258,198 +1258,276 @@
   
  {
  Boating Course - Raft:
- 
+ },
+
+ {
  Boating Course - Cave:
- 
- 
- 
+ },
+
+  
+  
+ {
  Stone Watcher Island - Cave:
- 
+ },
+
+ {
  Stone Watcher Island - Lookout Platform Chest:
- 
+ },
+
+ {
  Stone Watcher Island - Lookout Platform - Destroy the Cannons:
- 
- 
- 
+ },
+
+ {
  Islet of Steel - Interior:
- 
+ },
+
+ {
  Islet of Steel - Lookout Platform - Defeat the Enemies:
- 
- 
- 
+ },
+
+ {
  Overlook Island - Cave:
- 
- 
- 
+ },
+
+ {
  Bird's Peak Rock - Cave:
- 
- 
- 
+ },
+
+ {
  Pawprint Isle - Chuchu Cave - Chest:
- 
+ },
+
+ {
  Pawprint Isle - Chuchu Cave - Behind Left Boulder:
- 
+ },
+
+ {
  Pawprint Isle - Chuchu Cave - Behind Right Boulder:
- 
+ },
+
+ {
  Pawprint Isle - Chuchu Cave - Scale the Wall:
- 
+ },
+
+ {
  Pawprint Isle - Wizzrobe Cave:
- 
+ },
+
+ {
  Pawprint Isle - Lookout Platform - Defeat the Enemies:
- 
- 
- 
+ },
+
+ {
  Thorned Fairy Island - Great Fairy:
   "Original Item": 99 Arrow Quiver
   "Category": Great Fairy
   "Path": cking.rpx
   "Type": REL
   "Offset": 0x29DD17
- 
+ },
+
+ {
  Thorned Fairy Island - Northeastern Lookout Platform - Destroy the Cannons:
- 
+ },
+
+ {
  Thorned Fairy Island - Southwestern Lookout Platform - Defeat the Enemies:
- 
- 
- 
+ },
+
+ {
  Eastern Fairy Island - Great Fairy:
   "Original Item": 60 Bomb Bomb Bag
   "Category": Great Fairy
   "Path": cking.rpx
   "Type": REL
   "Offset": 0x29DCF7
- 
+ },
+
+ {
  Eastern Fairy Island - Lookout Platform - Defeat the Cannons and Enemies:
- 
- 
- 
+ },
+
+ {
  Western Fairy Island - Great Fairy:
   "Original Item": 60 Arrow Quiver
   "Category": Great Fairy
   "Path": cking.rpx
   "Type": REL
   "Offset": 0x29DD1F
- 
+ },
+
+ {
  Western Fairy Island - Lookout Platform:
- 
- 
- 
+ },
+
+ {
  Southern Fairy Island - Great Fairy:
   "Original Item": 99 Bomb Bomb Bag
   "Category": Great Fairy
   "Path": cking.rpx
   "Type": REL
   "Offset": 0x29DCEF
- 
+ },
+
+ {
  Southern Fairy Island - Lookout Platform - Destroy the Northwest Cannons:
- 
+ },
+
+ {
  Southern Fairy Island - Lookout Platform - Destroy the Southeast Cannons:
- 
- 
- 
+ },
+
+ {
  Northern Fairy Island - Great Fairy:
   "Original Item": 1000 Rupee Wallet
   "Category": Great Fairy
   "Path": cking.rpx
   "Type": REL
   "Offset": 0x29DCCF
- 
+ },
+
+ {
  Northern Fairy Island - Submarine:
- 
- 
- 
+ },
+
+ {
  Tingle Island - Ankle - Reward for All Tingle Statues:
- 
+ },
+
+ {
  Tingle Island - Big Octo:
- 
- 
- 
+ },
+
+ {
  Diamond Steppe Island - Warp Maze Cave - First Chest:
- 
+ },
+
+ {
  Diamond Steppe Island - Warp Maze Cave - Second Chest:
- 
+ },
+
+ {
  Diamond Steppe Island - Big Octo:
- 
- 
- 
+ },
+
+ {
  Bomb Island - Cave:
- 
+ },
+
+ {
  Bomb Island - Lookout Platform - Defeat the Enemies:
- 
+ },
+
+ {
  Bomb Island - Submarine:
- 
- 
- 
+ },
+
+ {
  Rock Spire Isle - Cave:
- 
+ },
+
+ {
  Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item:
- 
+ },
+
+ {
  Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item:
- 
+ },
+
+ {
  Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item:
- 
+ },
+
+ {
  Rock Spire Isle - Western Lookout Platform - Destroy the Cannons:
- 
+ },
+
+ {
  Rock Spire Isle - Eastern Lookout Platform - Destroy the Cannons:
- 
+ },
+
+ {
  Rock Spire Isle - Center Lookout Platform:
- 
+ },
+
+ {
  Rock Spire Isle - Southeast Gunboat:
- 
- 
- 
+ },
+
+ {
  Shark Island - Cave:
- 
- 
- 
+ },
+
+ {
  Cliff Plateau Isles - Cave:
- 
+ },
+
+ {
  Cliff Plateau Isles - Highest Isle:
- 
+ },
+
+ {
  Cliff Plateau Isles - Lookout Platform:
- 
- 
- 
+ },
+
+ {
  Crescent Moon Island - Chest:
- 
+ },
+
+ {
  Crescent Moon Island - Submarine:
- 
- 
- 
+ },
+
+ {
  Horseshoe Island - Play Golf:
- 
+ },
+
+ {
  Horseshoe Island - Cave:
- 
+ },
+
+ {
  Horseshoe Island - Northwestern Lookout Platform:
- 
+ },
+
+ {
  Horseshoe Island - Southeastern Lookout Platform:
- 
- 
- 
+ },
+
+ {
  Flight Control Platform - Bird-Man Contest - First Prize:
- 
+ },
+
+ {
  Flight Control Platform - Submarine:
- 
- 
- 
+ },
+
+ {
  Star Island - Cave:
- 
+ },
+
+ {
  Star Island - Lookout Platform:
- 
- 
- 
+ },
+
+ {
  Star Belt Archipelago - Lookout Platform:
- 
- 
- 
+ },
+
+ {
  Five-Star Isles - Lookout Platform - Destroy the Cannons:
- 
+ },
+
+ {
  Five-Star Isles - Raft:
- 
+ },
+
+ {
  Five-Star Isles - Submarine:
- 
- 
- 
+ },
+
+ {
  Seven-Star Isles - Center Lookout Platform:
  },
 
