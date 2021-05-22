@@ -6,6 +6,9 @@
 #include "Parse.hpp"
 #include "Location.hpp"
 
+//temp, remove later
+#include <iostream>
+
 std::map<std::string, int> ItemId = {
 	{"HeartPickup", 0x00},
 	{"GreenRupee", 0x01},
@@ -86,14 +89,16 @@ std::map<std::string, int> ItemId = {
 	//Incomplete, start at 0x61 with shards
 };
 
-LocationLists FindPossibleProgressLocations(std::vector<Location> Locations, std::vector<std::string> settings) {
+LocationLists FindPossibleProgressLocations(std::vector<Location> Locations, std::unordered_set<std::string> settings) {
+
+	//Does not include race mode, this is handled in PlaceDungeonItems
 
 	LocationLists list;
 	list.ProgressLocations = Locations;
 
 	for (unsigned int i = 0; i < list.ProgressLocations.size(); i++) {
 		for (unsigned int x = 0; x < list.ProgressLocations[i].Category.size(); x++) {
-			if (std::find(settings.begin(), settings.end(), list.ProgressLocations[i].Category[x]) == settings.end()) {
+			if (settings.count(list.ProgressLocations[i].Category[x]) == 0) {
 				list.NonprogressLocations.push_back(list.ProgressLocations[i]);
 				list.ProgressLocations.erase(list.ProgressLocations.begin() + i);
 				i = i - 1;
@@ -108,38 +113,39 @@ LocationLists FindPossibleProgressLocations(std::vector<Location> Locations, std
 
 int WriteLocations(LocationLists list, std::fstream fptr) {
 
-	for (unsigned int i = 0; i < list.ProgressLocations.size(); i++) {
+	for (unsigned int i = 0; i < list.PlacedLocations.size(); i++) {
 
-		if (list.ProgressLocations[i].Type == "Chest") {
-			for (unsigned int x = 0; x < list.ProgressLocations[i].Offsets.size(); x++) {
-				ACTR chest = ReadChest(fptr, std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
-				EditChest(fptr, chest, ItemId[list.ProgressLocations[x].Item], std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
+		//Add section to convert dungeon-specific keys into generic "small key" items. This is to make the item ids work while simplifying some checks in the fill algorithms
+
+		if (list.PlacedLocations[i].Type == "Chest") {
+			for (unsigned int x = 0; x < list.PlacedLocations[i].Offsets.size(); x++) {
+				ACTR chest = ReadChest(fptr, std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
+				EditChest(fptr, chest, ItemId[list.PlacedLocations[x].Item], std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
 			}
 		}
-		else if (list.ProgressLocations[i].Type == "Actor") {
-			for (unsigned int x = 0; x < list.ProgressLocations[i].Offsets.size(); x++) {
-				ACTR actor = ReadActor(fptr, std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
-				EditActor(fptr, actor, ItemId[list.ProgressLocations[x].Item], std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
+		else if (list.PlacedLocations[i].Type == "Actor") {
+			for (unsigned int x = 0; x < list.PlacedLocations[i].Offsets.size(); x++) {
+				ACTR actor = ReadActor(fptr, std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
+				EditActor(fptr, actor, ItemId[list.PlacedLocations[x].Item], std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
 			}
 		}
-		else if (list.ProgressLocations[i].Type == "SCOB") {
-			for (unsigned int x = 0; x < list.ProgressLocations[i].Offsets.size(); x++) {
-				SCOB scob = ReadScob(fptr, std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
-				EditScob(fptr, scob, ItemId[list.ProgressLocations[x].Item], std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
+		else if (list.PlacedLocations[i].Type == "SCOB") {
+			for (unsigned int x = 0; x < list.PlacedLocations[i].Offsets.size(); x++) {
+				SCOB scob = ReadScob(fptr, std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
+				EditScob(fptr, scob, ItemId[list.PlacedLocations[x].Item], std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
 			}
 		}
-		else if (list.ProgressLocations[i].Type == "REL" || list.ProgressLocations[i].Type == "RPX") {
-			for (unsigned int x = 0; x < list.ProgressLocations[i].Offsets.size(); x++) {
-				EditRPX(fptr, ItemId[list.ProgressLocations[x].Item], std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16));
+		else if (list.PlacedLocations[i].Type == "REL" || list.PlacedLocations[i].Type == "RPX") {
+			for (unsigned int x = 0; x < list.PlacedLocations[i].Offsets.size(); x++) {
+				EditRPX(fptr, ItemId[list.PlacedLocations[x].Item], std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16));
 			}
 		}
-		else if (list.ProgressLocations[i].Type == "Event") {
-			for (unsigned int x = 0; x < list.ProgressLocations[i].Offsets.size(); x++) {
-				EditEvent(fptr, ItemId[list.ProgressLocations[x].Item], std::stoi(list.ProgressLocations[i].Offsets[x], nullptr, 16), std::stoi(list.ProgressLocations[i].Extra, nullptr, 16));
+		else if (list.PlacedLocations[i].Type == "Event") {
+			for (unsigned int x = 0; x < list.PlacedLocations[i].Offsets.size(); x++) {
+				EditEvent(fptr, ItemId[list.PlacedLocations[x].Item], std::stoi(list.PlacedLocations[i].Offsets[x], nullptr, 16), std::stoi(list.PlacedLocations[i].Extra, nullptr, 16));
 			}
 		}
 		//Need to add some special cases for weird types such as giving Orca 10 KC (Event + RPX data). This could probably be done differently but its the simplest/easiest way I can think of
-		//A section for writing nonprogress items will also be added later, as it is basically a copy of the above code and will be easier to port in 1 session once the other features are added
 	}
 return 1;
 }

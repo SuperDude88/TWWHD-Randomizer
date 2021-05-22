@@ -13,6 +13,8 @@ std::vector<Location> ParseLocations(std::string LocationsPath) {
 
 	std::vector<Location> Locations;
 	
+	//add section to read logical requirements 
+
 	nlohmann::json jsondata = nlohmann::json::parse(fptr);
 	for (auto& array : jsondata["Locations"]) {
 		Location location;
@@ -22,6 +24,8 @@ std::vector<Location> ParseLocations(std::string LocationsPath) {
 		for (unsigned int i = 0; i < (array["Category"].size()); i++) {
 			location.Category.push_back(array["Category"][i]);
 		}
+
+		location.Needs = array["Needs"];
 
 		location.Path = array["Path"];
 		location.Type = array["Type"];
