@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include "json.hpp"
+#include <unordered_set>
 
 struct ACTR {
 	char name[8];
@@ -38,6 +40,7 @@ struct Location {
 	std::string Name;
 	std::string Item;
 	std::vector<std::string> Category;
+	nlohmann::json Needs;
 	std::string Path;
 	std::string Type;
 	std::vector<std::string> Offsets;
@@ -47,4 +50,6 @@ struct Location {
 struct LocationLists {
 	std::vector<Location> ProgressLocations;
 	std::vector<Location> NonprogressLocations;
+	std::vector<Location> PlacedLocations;
+	std::vector<Location> UnplacedLocations;
 };
