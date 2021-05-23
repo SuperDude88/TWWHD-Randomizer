@@ -63,41 +63,45 @@
 
  {
   "Name": "Outset Island - Jabun's Cave",
-  "Original Item": "",
-  "Category": "Island Puzzle",
+  "Original Item": "Nayru's Pearl",
+  "Category": ["Island Puzzle"],
   "Needs": {
    "type": "has_item", "args": ["Bombs"]
   },
-  "Path": "",
+  "Path": "Pjavdou_Room0.zs",
   "Type": "Chest",
-  "Offset": ["Pjavdou_Room0.zs"]
+  "Offset": [""]
   },
 
   {
-  "Name": Outset Island - Dig up Black Soil",
-  "Original Item": Piece of Heart
-  "Category": Island Puzzle
-  "Path": szs_permanent2/sea_Room44.zs
-  "Type": SCOB
-  "Offset": 0x84CBD4
+  "Name": "Outset Island - Dig up Black Soil",
+  "Original Item": "Piece of Heart",
+  "Category": ["Island Puzzle"],
+  "Needs": {
+   //Add once macros are implemented
+  },
+  "Path": "szs_permanent2/sea_Room44.zs",
+  "Type": "SCOB",
+  "Offset": ["0x84CBD4"]
   },
 
   {
-  "Name": Outset Island - Savage Labyrinth - Floor 30",
-  "Original Item": Triforce Shard 6
-  "Category": Savage Labyrinth
-  "Path": Cave09_Room20.zs
-  "Type": Chest
-  "Offset": 0x31DD48
+  "Name": "Outset Island - Savage Labyrinth - Floor 30",
+  "Original Item": "Triforce Shard 6",
+  "Category": ["Savage Labyrinth"],
+  "Needs": {},
+  "Path": "Cave09_Room20.zs",
+  "Type": "Chest",
+  "Offset": ["0x31DD48"]
   },
 
   {
-  "Name": Outset Island - Savage Labyrinth - Floor 50",
-  "Original Item": Hero's Charm
-  "Category": Savage Labyrinth
-  "Path": Cave10_Room20.zs
-  "Type": Chest
-  "Offset": 0x31DB70
+  "Name": "Outset Island - Savage Labyrinth - Floor 50",
+  "Original Item": "Hero's Charm",
+  "Category": ["Savage Labyrinth"],
+  "Path": "Cave10_Room20.zs",
+  "Type": "Chest",
+  "Offset": ["0x31DB70"]
    },
 
   
