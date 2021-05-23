@@ -830,7 +830,7 @@ int main() {
 
     std::unordered_set<std::string> settings = {"Dungeon", "Great Fairy", "Misc", "Spoils Trading", "Tingle Chest"};
 
-    std::vector<Location> Locations = ParseLocations("LocationsSmall.json");
+    std::vector<Location> Locations = ParseLocations("Locations.json");
     LocationLists Lists = FindPossibleProgressLocations(Locations, settings);
 
     int NumRaceModeDungeons = 4;
