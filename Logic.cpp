@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <random>
+#include "Parse.hpp"
 
 //temp section - remove later
 #include "parse.hpp"
@@ -13,7 +14,7 @@
 std::vector<std::string> ProgressItems = {"WindWaker", "SpoilsBag", "GrapplingHook", "PowerBracelets", "IronBoots", "BaitBag", "Boomerang", "Hookshot", "DeliveryBag", "Bombs", "SkullHammer", "DekuLeaf",
 "Shard", "Shard", "Shard", "Shard", "Shard", "Shard", "Shard", "Shard", "NayrusPearl", "DinsPearl", "FaroresPearl", "WindsRequiem", "BalladofGales", "CommandMelody", "EarthGodsLyric", "WindGodsAria", "SongofPassing",
 "Sail", "NotetoMom", "MaggiesLetter", "MoblinsLetter", "CabanaDeed", "DragonTingleStatue", "ForbiddenTingleStatue", "GoddessTingleStatue", "EarthTingleStatue", "WindTingleStatue", "BombBag", "BombBag", "Quiver", "Quiver",
-"MagicMeter", "GhostShipChart", "Sword", "Sword", "Sword", "Sword", "Shield", "Shield", "Bow", "Bow", "Bow", "Wallet", "Wallet", "PictoBox", "PictoBox", "Bottle"};
+"MagicMeter", "GhostShipChart", "Sword", "Sword", "Sword", "Sword", "Shield", "Shield", "Bow", "Bow", "Bow", "Wallet", "PictoBox", "PictoBox", "Bottle"};
 
 std::vector<std::string> PermanentItems; //These are starting items that you always own, this ensures they arent randomized accidentally
 
@@ -30,8 +31,20 @@ std::vector<std::string> FFNonProgressItems = {"DungeonMap", "Compass"};
 std::vector<std::string> ETNonProgressItems = {"DungeonMap", "Compass"};
 std::vector<std::string> WTNonProgressItems = {"DungeonMap", "Compass"};
 
+LocationLists Locations;
+std::unordered_set<std::string> Settings;
+std::vector<Macro> Macros;
+
 bool has_item(std::vector<std::string> OwnedItems, std::string Item) {
     return std::find(OwnedItems.begin(), OwnedItems.end(), Item) != OwnedItems.end();
+}
+
+bool canAccess(std::vector<std::string> OwnedItems, std::string LocationName) {
+    std::vector<Location> AccessibleLocations = Locations.ProgressLocations;
+    AccessibleLocations.insert(AccessibleLocations.end(), Locations.NonprogressLocations.begin(), Locations.NonprogressLocations.end());
+    AccessibleLocations.insert(AccessibleLocations.end(), Locations.PlacedLocations.begin(), Locations.PlacedLocations.end());
+    auto it = std::find_if(AccessibleLocations.begin(), AccessibleLocations.end(), [&](const Location& loc) {return loc.Name == LocationName; });
+    return isAccessible(OwnedItems, (*it).Needs);
 }
 
 //Add "can_access" condition to both accessibility checks to allow randomized entrances and make certain things easier
@@ -39,7 +52,7 @@ bool has_item(std::vector<std::string> OwnedItems, std::string Item) {
 //This won't be added for a bit because its complex and I'm lazy (even though it would make things easier), plus core features come first
 bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression) {
 
-    //item is the input (location.needs)
+    //Add code to combine permanent items + progressitems + keys for this section
 
     std::string item_typ = expression["type"];
     auto& item_args = expression["args"];
@@ -60,6 +73,19 @@ bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression
             return has_item(OwnedItems, item_args[0]);
         }
     }
+    else if (item_typ == "macro") {
+        auto it = std::find_if(Macros.begin(), Macros.end(), [&](const Macro& item) {return item.Name == item_args; });
+        return isAccessible(OwnedItems, (*it).Expression);
+    }
+    else if (item_typ == "can_access") {
+        return canAccess(OwnedItems, item_args[0]);
+    }
+    else if (item_typ == "setting") {
+        return Settings.count(item_args[0]) == 1;
+    }
+    else if (item_typ == "not") {
+        return isAccessible(OwnedItems, item_args) == 0;
+    }
     else {
         printf("unknown type!");
         return false;
@@ -67,6 +93,8 @@ bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression
 }
 
 bool isAccessibleDungeon(std::vector<std::string> OwnedDungeonItems, nlohmann::json expression) {
+
+    //Add code to combine permanent items + progress items + dungeon items for this section
 
     std::vector<std::string> OwnedItems;
     OwnedItems.assign(ProgressItems.begin(), ProgressItems.end());
@@ -82,6 +110,7 @@ bool isAccessibleDungeon(std::vector<std::string> OwnedDungeonItems, nlohmann::j
     else if (item_typ == "count") {
         std::string count = item_args[0]["count"];
         std::string itemtocount = item_args[0]["args"]; //This exists entirely for the find function to work, otherwise it just gets mad and says you cant use find on a json thing
+        //Potentially remove the if statements here and just combine stuff to deal with it instead
         if (itemtocount.find("SmallKey") != std::string::npos) {
             return std::count(OwnedDungeonItems.begin(), OwnedDungeonItems.end(), item_args[0]["args"]) >= stoi(count, nullptr);
         }
@@ -91,6 +120,7 @@ bool isAccessibleDungeon(std::vector<std::string> OwnedDungeonItems, nlohmann::j
     }
     else if (item_typ == "has_item") {
         std::string itemtocheck = item_args[0]; //This exists entirely for the find function to work, otherwise it just gets mad and says you cant use find on a json thing
+        //Potentially remove the if statements here and just combine stuff to deal with it instead
         if (itemtocheck.find("SmallKey") != std::string::npos || itemtocheck.find("BigKey") != std::string::npos) {
             return has_item(OwnedDungeonItems, item_args[0]);
         }
@@ -98,6 +128,10 @@ bool isAccessibleDungeon(std::vector<std::string> OwnedDungeonItems, nlohmann::j
         else {
             return has_item(OwnedItems, item_args[0]);
         }
+    }
+    else if (item_typ == "macro") {
+        auto it = std::find_if(Macros.begin(), Macros.end(), [&](const Macro& item) {return item.Name == item_args; });
+        return isAccessible(OwnedItems, (*it).Expression);
     }
     else {
         printf("unknown type!");
@@ -133,7 +167,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     //Check if dungeons are in logic
     //This is used to determine which list to pull from
-    if (settings.count("Dungeon") > 0) {
+    if (Settings.count("Dungeon") > 0) {
         for (unsigned int i = 0; i < locations.ProgressLocations.size(); i++) {
             if (locations.ProgressLocations[i].Name.find("Dragon Roost Cavern") != std::string::npos && locations.ProgressLocations[i].Name.find("Dragon Roost Cavern")) {
                 DRCLocations.push_back(locations.ProgressLocations[i]);
@@ -206,7 +240,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     //Place DRC Items
   
-    if (settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "DRC") != RaceModeDungeons.end() && settings.count("Dungeon") > 0) {
+    if (Settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "DRC") != RaceModeDungeons.end() && Settings.count("Dungeon") > 0) {
         std::string RaceModeItemToPlace;
         bool item_placed = false;
         if (std::find(ProgressItems.begin(), ProgressItems.end(), "Shard") != ProgressItems.end()) {
@@ -295,7 +329,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     std::cout << std::endl;
 
     for (unsigned int z = 0; z < UnplacedDRCLocations.size(); z++) {
-        if ((settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "DRC") != RaceModeDungeons.end()) && settings.count("Dungeon") > 0) {
+        if ((Settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "DRC") != RaceModeDungeons.end()) && Settings.count("Dungeon") > 0) {
             locations.UnplacedLocations.push_back(UnplacedDRCLocations[z]);
         }
         else {
@@ -308,7 +342,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     
     //FW Placement
 
-    if (settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FW") != RaceModeDungeons.end() && settings.count("Dungeon") > 0) {
+    if (Settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FW") != RaceModeDungeons.end() && Settings.count("Dungeon") > 0) {
         std::string RaceModeItemToPlace;
         bool item_placed = false;
         if (std::find(ProgressItems.begin(), ProgressItems.end(), "Shard") != ProgressItems.end()) {
@@ -392,7 +426,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     std::cout << std::endl;
 
     for (unsigned int z = 0; z < UnplacedFWLocations.size(); z++) {
-        if ((settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FW") != RaceModeDungeons.end()) && settings.count("Dungeon") > 0) {
+        if ((Settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FW") != RaceModeDungeons.end()) && Settings.count("Dungeon") > 0) {
             locations.UnplacedLocations.push_back(UnplacedFWLocations[z]);
         }
         else {
@@ -405,7 +439,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     //TotG Placement
 
-    if (settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "TOTG") != RaceModeDungeons.end() && settings.count("Dungeon") > 0) {
+    if (Settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "TOTG") != RaceModeDungeons.end() && Settings.count("Dungeon") > 0) {
         std::string RaceModeItemToPlace;
         bool item_placed = false;
         if (std::find(ProgressItems.begin(), ProgressItems.end(), "Shard") != ProgressItems.end()) {
@@ -489,7 +523,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     std::cout << std::endl;
 
     for (unsigned int z = 0; z < UnplacedTOTGLocations.size(); z++) {
-        if ((settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "TOTG") != RaceModeDungeons.end()) && settings.count("Dungeon") > 0) {
+        if ((Settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "TOTG") != RaceModeDungeons.end()) && Settings.count("Dungeon") > 0) {
             locations.UnplacedLocations.push_back(UnplacedTOTGLocations[z]);
         }
         else {
@@ -502,7 +536,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     //FF Placement (No small keys or big key)
 
-    if (settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FF") != RaceModeDungeons.end() && settings.count("Dungeon") > 0) {
+    if (Settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FF") != RaceModeDungeons.end() && Settings.count("Dungeon") > 0) {
         std::string RaceModeItemToPlace;
         bool item_placed = false;
         if (std::find(ProgressItems.begin(), ProgressItems.end(), "Shard") != ProgressItems.end()) {
@@ -567,7 +601,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     std::cout << std::endl;
 
     for (unsigned int z = 0; z < UnplacedFFLocations.size(); z++) {
-        if ((settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FF") != RaceModeDungeons.end()) && settings.count("Dungeon") > 0) {
+        if ((Settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "FF") != RaceModeDungeons.end()) && Settings.count("Dungeon") > 0) {
             locations.UnplacedLocations.push_back(UnplacedFFLocations[z]);
         }
         else {
@@ -580,7 +614,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     //ET Placement
 
-    if (settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "ET") != RaceModeDungeons.end() && settings.count("Dungeon") > 0) {
+    if (Settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "ET") != RaceModeDungeons.end() && Settings.count("Dungeon") > 0) {
         std::string RaceModeItemToPlace;
         bool item_placed = false;
         if (std::find(ProgressItems.begin(), ProgressItems.end(), "Shard") != ProgressItems.end()) {
@@ -664,7 +698,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     std::cout << std::endl;
 
     for (unsigned int z = 0; z < UnplacedETLocations.size(); z++) {
-        if ((settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "ET") != RaceModeDungeons.end()) && settings.count("Dungeon") > 0) {
+        if ((Settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "ET") != RaceModeDungeons.end()) && Settings.count("Dungeon") > 0) {
             locations.UnplacedLocations.push_back(UnplacedETLocations[z]);
         }
         else {
@@ -677,7 +711,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     //WT Placement
 
-    if (settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "WT") != RaceModeDungeons.end() && settings.count("Dungeon") > 0) {
+    if (Settings.count("RaceMode") > 0 && std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "WT") != RaceModeDungeons.end() && Settings.count("Dungeon") > 0) {
         std::string RaceModeItemToPlace;
         bool item_placed = false;
         if (std::find(ProgressItems.begin(), ProgressItems.end(), "Shard") != ProgressItems.end()) {
@@ -761,7 +795,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     std::cout << std::endl;
 
     for (unsigned int z = 0; z < UnplacedWTLocations.size(); z++) {
-        if ((settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "WT") != RaceModeDungeons.end()) && settings.count("Dungeon") > 0) {
+        if ((Settings.count("RaceMode") == 0 || std::find(RaceModeDungeons.begin(), RaceModeDungeons.end(), "WT") != RaceModeDungeons.end()) && Settings.count("Dungeon") > 0) {
             locations.UnplacedLocations.push_back(UnplacedWTLocations[z]);
         }
         else {
@@ -775,7 +809,9 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     return locations;
 }
 
-LocationLists AssumedFill(LocationLists locations, std::vector<std::string> StartingItems, std::unordered_set<std::string> settings, int NumRaceModeDungeons) {
+LocationLists AssumedFill(std::vector<std::string> StartingItems, int NumRaceModeDungeons) {
+
+    Macros = ParseMacros("Macros.json");
 
     //Do something about triforce shards so they are numbered properly and the item ids dont overlap weirdly
     
@@ -784,7 +820,7 @@ LocationLists AssumedFill(LocationLists locations, std::vector<std::string> Star
         PermanentItems.push_back(StartingItems[i]);
     }
 
-    LocationLists Locations = PlaceDungeonItems(locations, settings, NumRaceModeDungeons);
+    Locations = PlaceDungeonItems(Locations, Settings, NumRaceModeDungeons);
 
     for (int i = 0; i < Locations.UnplacedLocations.size(); i++) {
         Locations.ProgressLocations.push_back(Locations.UnplacedLocations[i]);
@@ -819,7 +855,14 @@ LocationLists AssumedFill(LocationLists locations, std::vector<std::string> Star
 
 
 
-    return locations;
+    return Locations;
+}
+
+int initVars(std::unordered_set<std::string> settings) {
+    std::vector<Location> locations = ParseLocations("LocationsSmall.json");
+    Locations = FindPossibleProgressLocations(locations, settings);
+    Settings = settings;
+    return 1;
 }
 
 int main() { 
@@ -828,15 +871,15 @@ int main() {
     //I'll keep it in the code here for now for this reason and as some example stuff ig
     //Most of these comments are notes for things I need to do, and a couple things are explanations so I remember what they are for and don't delete them
 
-    std::unordered_set<std::string> settings = {"Dungeon", "Great Fairy", "Misc", "Spoils Trading", "Tingle Chest"};
+    Settings = {"Dungeon", "Great Fairy", "Misc", "Spoils Trading", "Tingle Chest"};
 
-    std::vector<Location> Locations = ParseLocations("Locations.json");
-    LocationLists Lists = FindPossibleProgressLocations(Locations, settings);
+    std::vector<Location> locations = ParseLocations("LocationsSmall.json");
+    Locations = FindPossibleProgressLocations(locations, Settings);
 
     int NumRaceModeDungeons = 4;
 
     std::vector<std::string> StartingItems = {"GrapplingHook", "HerosBow", "Bombs"};
     
-    AssumedFill(Lists, StartingItems, settings, NumRaceModeDungeons);
+    AssumedFill(StartingItems, NumRaceModeDungeons);
 
 }
