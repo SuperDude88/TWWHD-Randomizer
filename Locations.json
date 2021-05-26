@@ -1342,7 +1342,385 @@
   "Name": "Mother and Child Isles - Inside Mother Isle",
   "Original Item": "Fire and Ice Arrows",
   "Category": ["Misc"],
-  "Needs": {"type": "macro", "args": ["Can Play BoG"},
+  "Needs": {"type": "macro", "args": ["Can Play BoG"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Fire Mountain - Cave - Chest",
+  "Original Item": "Power Bracelets",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Magtails"]}, {"type": "macro", "args": ["Can Access Fire Mountain Secret Cave"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Fire Mountain - Lookout Platform Chest",
+  "Original Item": "Yellow Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Fire Mountain - Lookout Platform - Destroy the Cannons",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Destroy Cannons"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Fire Mountain - Big Octo",
+  "Original Item": "Orange Rupee",
+  "Category": ["Big Octo"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Big Octos"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Ice Ring Isle - Frozen Chest",
+  "Original Item": "Treasure Chart 36",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "macro", "args": ["Fire Arrows"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Ice Ring Isle - Cave - Chest",
+  "Original Item": "Iron Boots",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "macro", "args": ["Can Access Ice Ring Isle Secret Cave"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Ice Ring Isle - Inner Cave - Chest",
+  "Original Item": "",
+  "Category": ["Puzzle Secret Cave", "Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Ice Ring Isle Secret Cave"]}, {"type": "macro", "args": ["Fire Arrows"]}, {"type": "has_item", "args": ["IronBoots"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Headstone Island - Top of the Island",
+  "Original Item": "Piece of Heart",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Buy Hyoi Pears"]}, {"type": "has_item", "args": ["BaitBag"]}]},
+  "Path": "",
+  "Type": "Actor",
+  "Offset": [""]
+ },
+ {
+  "Name": "Headstone Island - Submarine",
+  "Original Item": "Treasure Chart 14",
+  "Category": ["Submarine"],
+  "Needs": {"type": "macro", "args": ["Can Defeat Bombchus"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+ {
+  "Name": "Earth Temple - Transparent Chest In Warp Pot Room",
+  "Original Item": "Dungeon Map",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Play CM"]}, {"type": "macro", "args": ["Can Access ET"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Chest Behind Destructible Walls",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Defeat Red ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Green ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Dark ChuChus"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Mirror Shield"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Behind Curtain In Warp Pot Room",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon", "Obscure"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Fire Arrows"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+  ]},
+  "Path": "",
+  "Type": "Actor",
+  "Offset": [""]
+ }, //Consider other 2 curtains as well
+ {
+  "Name": "Earth Temple - Transparent Chest in First Crypt",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "has_item", "args": ["PowerBracelets"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Chest In Three Blocks Room",
+  "Original Item": "Compass",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Fire Arrows"]},
+    {"type": "macro", "args": ["Can Defeat Floormasters"]},
+    {"type": "count", "args": [{"count": "2", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Chest Behind Statues",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Fire Arrows"]},
+    {"type": "macro", "args": ["Can Defeat Floormasters"]},
+    {"type": "count", "args": [{"count": "2", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Casket in Second Crypt",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Fire Arrows"]},
+    {"type": "macro", "args": ["Can Defeat Floormasters"]},
+    {"type": "count", "args": [{"count": "2", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]}
+  ]},
+  "Path": "",
+  "Type": "Actor",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Stalfos Mini-Boss Room",
+  "Original Item": "Mirror Shield",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Fire Arrows"]},
+    {"type": "macro", "args": ["Can Defeat Floormasters"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Can Defeat Stalfos"]}]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Tingle Statue Chest",
+  "Original Item": "Earth Tingle Statue",
+  "Category": ["Dungeon", "Tingle Chest"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "has_item", "args": ["Bombs"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - End of Foggy Room With Floormasters",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Kill All Floormasters in Foggy Room",
+  "Original Item": "Treasure Chart 20",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "macro", "args": ["Can Defeat Floormasters"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Behind Curtain Next to Hammer Button",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon", "Obscure"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Fire Arrows"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+   ]},
+  "Path": "",
+  "Type": "Actor",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Chest in Third Crypt",
+  "Original Item": "Red Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Many Mirrors Room Right Chest",
+  "Original Item": "Purple Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Many Mirrors Room Left Chest",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Stalfos Crypt Room",
+  "Original Item": "Treasure Chart 12",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]},
+    {"type": "macro", "args": ["Can Defeat Stalfos"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Big Key Chest",
+  "Original Item": "ET Big Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]},
+    {"type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+    {"type": "macro", "args": ["Can Defeat Darknuts"]}
+  ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Earth Temple - Jalhalla Heart Container",
+  "Original Item": "Heart Container",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access ET"]},
+    {"type": "macro", "args": ["Can Aim Mirror Shield"]},
+    {"type": "macro", "args": ["Can Play EGL"]},
+    {"type": "count", "args": [{"count": "3", "args": "ETSmallKey"}]},
+    {"type": "has_item", "args": ["PowerBracelets"]},
+    {"type": "has_item", "args": ["SkullHammer"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]},
+    {"type": "macro", "args": ["Can Defeat Jalhalla"]},
+    {"type": "has_item", "args": ["ETBigKey"]}
+  ]},
   "Path": "",
   "Type": "",
   "Offset": [""]
@@ -1350,139 +1728,150 @@
   
   
  {
- Fire Mountain - Cave - Chest:
+  "Name": "Wind Temple - Chest Between Two Dirt Patches",
+  "Original Item": "Orange Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Fire Mountain - Lookout Platform Chest:
+  "Name": "Wind Temple - Tingle Statue Chest",
+  "Original Item": "Wind Tingle Statue",
+  "Category": ["Dungeon", "Tingle Chest"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["Bombs"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Fire Mountain - Lookout Platform - Destroy the Cannons:
+  "Name": "Wind Temple - Chest Behind Stone Head",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Fire Mountain - Big Octo:
+  "Name": "Wind Temple - Chest in Left Alcove",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Big Key Chest",
+  "Original Item": "WT Big Key",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Chest In Many Cyclones Room",
+  "Original Item": "Dungeon Map",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Chest In Middle Of Hub Room",
+  "Original Item": "Compass",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Spike Wall Room - First Chest",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Spike Wall Room - Destroy All Cracked Floors",
+  "Original Item": "Treasure Chart 35",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Wizzrobe Mini-Boss Room",
+  "Original Item": "Hookshot",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Chest at Top of Hub Room",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Chest Behind Seven Armos",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Kill All Enemies in Tall Basement Room",
+  "Original Item": "Treasure Chart 5",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Wind Temple - Molgera Heart Container",
+  "Original Item": "Heart Container",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
   
   
  {
- Ice Ring Isle - Frozen Chest:
- },
- {
- Ice Ring Isle - Cave - Chest:
- },
- {
- Ice Ring Isle - Inner Cave - Chest:
- },
-  
-  
- {
- Headstone Island - Top of the Island:
- },
- {
- Headstone Island - Submarine:
- },
-  
- {
- Earth Temple - Transparent Chest In Warp Pot Room:
- },
- {
- Earth Temple - Chest Behind Destructible Walls:
- },
- {
- Earth Temple - Behind Curtain In Warp Pot Room: #Obscure
- },
- {
- Earth Temple - Transparent Chest in First Crypt:
- },
- {
- Earth Temple - Chest In Three Blocks Room:
- },
- {
- Earth Temple - Chest Behind Statues:
- },
- {
- Earth Temple - Casket in Second Crypt:
- },
- {
- Earth Temple - Stalfos Mini-Boss Room:
- },
- {
- Earth Temple - Tingle Statue Chest:
- },
- {
- Earth Temple - End of Foggy Room With Floormasters:
- },
- {
- Earth Temple - Kill All Floormasters in Foggy Room:
- },
- {
- Earth Temple - Behind Curtain Next to Hammer Button: #Obscure
- },
- {
- Earth Temple - Chest in Third Crypt:
- },
- {
- Earth Temple - Many Mirrors Room Right Chest:
- },
- {
- Earth Temple - Many Mirrors Room Left Chest:
- },
- {
- Earth Temple - Stalfos Crypt Room:
- },
- {
- Earth Temple - Big Key Chest:
- },
- {
- Earth Temple - Jalhalla Heart Container:
- },
-  
-  
- {
- Wind Temple - Chest Between Two Dirt Patches:
- },
- {
- Wind Temple - Tingle Statue Chest:
- },
- {
- Wind Temple - Chest Behind Stone Head:
- },
- {
- Wind Temple - Chest in Left Alcove:
- },
- {
- Wind Temple - Big Key Chest:
- },
- {
- Wind Temple - Chest In Many Cyclones Room:
- },
- {
- Wind Temple - Chest In Middle Of Hub Room:
- },
- {
- Wind Temple - Spike Wall Room - First Chest:
- },
- {
- Wind Temple - Spike Wall Room - Destroy All Cracked Floors:
- },
- {
- Wind Temple - Wizzrobe Mini-Boss Room:
- },
- {
- Wind Temple - Chest at Top of Hub Room:
- },
- {
- Wind Temple - Chest Behind Seven Armos:
- },
- {
- Wind Temple - Kill All Enemies in Tall Basement Room:
- },
- {
- Wind Temple - Molgera Heart Container:
- },
-  
-  
- {
- Ganon's Tower - Maze Chest:
+  "Name": "Ganon's Tower - Maze Chest",
+  "Original Item": "Light Arrows",
+  "Category": ["Dungeon"],
+  "Needs": {},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
   
   
