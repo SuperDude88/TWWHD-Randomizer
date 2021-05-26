@@ -596,7 +596,7 @@
   "Type": "Chest",
   "Offset": ["0x1C7550"]
   },
- //Update dungeon logic to simply and/or and to add "can access DRC" https://github.com/LagoLunatic/wwrando/blob/master/logic/item_locations.txt#L595
+
  {
   "Name": "Dragon Roost Cavern - First Room",
   "Original Item": "SmallKey",
@@ -847,75 +847,238 @@
  },
 
  {
- Forest Haven - On Tree Branch:
-  "Original Item": Deku Leaf
-  "Category": Island Puzzle
-  "Path":
-  "Type": ???
-  "Offset":
+  "Name": "Forest Haven - On Tree Branch",
+  "Original Item": "Deku Leaf",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forest Haven"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "Actor",
+  "Offset": [""]
  },
  {
- Forest Haven - Small Island Chest:
-  "Original Item": "",
-  "Category": [""],
-  "Needs": {},
+  "Name": "Forest Haven - Small Island Chest",
+  "Original Item": "Treasure Chart 3",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forest Haven"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}}]},
   "Path": "",
   "Type": "",
   "Offset": [""]
  },
   
  {
- Forbidden Woods - First Room:
+  "Name": "Forbidden Woods - First Room",
+  "Original Item": "Dungeon Map",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+  "Path": "kindan_stage.zs",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Inside Hollow Tree's Mouth:
+  "Name": "Forbidden Woods - Inside Hollow Tree's Mouth",
+  "Original Item": "Knight's Crest",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "or", "args": [{"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Climb to Top Using Boko Baba Bulbs:
+  "Name": "Forbidden Woods - Climb to Top Using Boko Baba Bulbs",
+  "Original Item": "Treasure Chart 1",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Hole in Tree:
+  "Name": "Forbidden Woods - Hole in Tree",
+  "Original Item": "Red Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Morth Pit:
+  "Name": "Forbidden Woods - Morth Pit",
+  "Original Item": "Yellow Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Vine Maze Left Chest:
+  "Name": "Forbidden Woods - Vine Maze Left Chest",
+  "Original Item": "Compass",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Vine Maze Right Chest:
+  "Name": "Forbidden Woods - Vine Maze Right Chest",
+  "Original Item": "FW Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Tall Room Before Mini-Boss:
+  "Name": "Forbidden Woods - Tall Room Before Mini-Boss",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "count", "args": [{"count": "1", "args": "FWSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Peahats"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Mothula Mini-Boss Room:
+  "Name": "Forbidden Woods - Mothula Mini-Boss Room",
+  "Original Item": "Boomerang",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "count", "args": [{"count": "1", "args": "FWSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Winged Mothulas"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Past Seeds Hanging by Vines:
+  "Name": "Forbidden Woods - Past Seeds Hanging by Vines",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "count", "args": [{"count": "1", "args": "FWSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Door Flowers"]},
+    {"type": "macro", "args": ["Can Destroy Hanging Seeds"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Chest Across Red Hanging Flower:
+  "Name": "Forbidden Woods - Chest Across Red Hanging Flower",
+  "Original Item": "Yellow Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "has_item", "args": ["Boomerang"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Tingle Statue Chest:
+  "Name": "Forbidden Woods - Tingle Statue Chest",
+  "Original Item": "Forbidden Tingle Statue",
+  "Category": ["Dungeon", "Tingle Chest"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "has_item", "args": ["Boomerang"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Chest in Locked Tree Trunk:
+  "Name": "Forbidden Woods - Chest in Locked Tree Trunk",
+  "Original Item": "Treasure Chart 15",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "has_item", "args": ["Boomerang"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Big Key Chest:
+  "Name": "Forbidden Woods - Big Key Chest",
+  "Original Item": "FW Big Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["GrapplingHook"]},
+    {"type": "has_item", "args": ["Boomerang"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Double Mothula Room:
+  "Name": "Forbidden Woods - Double Mothula Room",
+  "Original Item": "",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "macro", "args": ["Can Defeat Mothulas"]},
+    {"type": "or", "args": [{"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "has_item", "args": ["GrapplingHook"]}]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Forbidden Woods - Kalle Demos Heart Container:
+  "Name": "Forbidden Woods - Kalle Demos Heart Container",
+  "Original Item": "",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Defeat Boko Babas"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "macro", "args": ["Can Defeat Mothulas"]},
+    {"type": "or", "args": [{"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+    {"type": "macro", "args": ["Can Defeat Kalle Demos"]},
+    {"type": "has_item", "args": ["FWBigKey"]}
+   ]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
   
   
  {
- Greatfish Isle - Hidden Chest:
+  "Name": "Greatfish Isle - Hidden Chest",
+  "Original Item": "Piece of Heart",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
   
   
@@ -1532,7 +1695,7 @@
  Spectacle Island - Sunken Treasure:
  },
  {
-  "Name": "Windfall Island - Sunken Treasure:
+ Windfall Island - Sunken Treasure:
  },
  {
  Pawprint Isle - Sunken Treasure:
