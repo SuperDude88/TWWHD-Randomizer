@@ -107,7 +107,7 @@
       {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
       {"type": "macro", "args": ["Can Defeat Red Bubbles"]},
       {"type": "macro", "args": ["Can Defeat Darknuts"]},
-      {"type": "macro", "args": ["Can Play Winds Requiem"]},
+      {"type": "macro", "args": ["Can Play WR"]},
       {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Heros Sword"]}, {"type": "has_item", "args": ["SkullHammer"]}]},
     ]
   },
@@ -239,7 +239,7 @@
   "Name": "Windfall Island - Lenzo's House - Left Chest",
   "Original Item": "Treasure Chart 29",
   "Category": ["Short Sidequest"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Picto Box"]}, {"type": "macro", "args": ["Can Play Winds Requiem"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Picto Box"]}, {"type": "macro", "args": ["Can Play WR"]}]},
   "Path": "Ocmera_Stage.zs",
   "Type": "Chest",
   "Offset": ["0x26E10"]
@@ -248,7 +248,7 @@
   "Name": "Windfall Island - Lenzo's House - Right Chest",
   "Original Item": "Purple Rupee",
   "Category": ["Short Sidequest"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Picto Box"]}, {"type": "macro", "args": ["Can Play Winds Requiem"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Picto Box"]}, {"type": "macro", "args": ["Can Play WR"]}]},
   "Path": "Ocmera_Stage.zs",
   "Type": "Chest",
   "Offset": ["0x26E30"]
@@ -323,7 +323,7 @@
   "Name": "Windfall Island - Kreeb - Light Up Lighthouse",
   "Original Item": "Piece of Heart",
   "Category": ["Short Sidequest"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Play Winds Requiem"]}, {"type": "macro", "args": ["Fire Arrows"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Play WR"]}, {"type": "macro", "args": ["Fire Arrows"]}]},
   "Path": "cking.rpx",
   "Type": "REL",
   "Offset": [""]
@@ -332,7 +332,7 @@
   "Name": "Windfall Island - Transparent Chest",
   "Original Item": "Piece of Heart",
   "Category": ["Short Sidequest"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Play Winds Requiem"]}, {"type": "macro", "args": ["Fire Arrows"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Play WR"]}, {"type": "macro", "args": ["Fire Arrows"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]}]},
   "Path": "szs_permanent1.pack/Sea_Room11.zs",
   "Type": "Chest",
   "Offset": ["0x10631AC", "0x10632F4", "0x1063840"],
@@ -508,7 +508,7 @@
   "Name": "Windfall Island - Pompie and Vera - Secret Meeting Photo",
   "Original Item": "Treasure Chart 24",
   "Category": ["Short Sidequest"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Picto Box"]}, {"type": "macro", "args": ["Can Play Winds Requiem"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Picto Box"]}, {"type": "macro", "args": ["Can Play WR"]}]},
   "Path": "cking.rpx",
   "Type": "REL",
   "Offset": [""]
@@ -1039,7 +1039,7 @@
  },
  {
   "Name": "Forbidden Woods - Double Mothula Room",
-  "Original Item": "",
+  "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access Forbidden Woods"]},
@@ -1054,7 +1054,7 @@
  },
  {
   "Name": "Forbidden Woods - Kalle Demos Heart Container",
-  "Original Item": "",
+  "Original Item": "Heart Container",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access Forbidden Woods"]},
@@ -1083,78 +1083,269 @@
   
   
  {
- Tower of the Gods - Chest Behind Bombable Walls:
+  "Name": "Tower of the Gods - Chest Behind Bombable Walls",
+  "Original Item": "Dungeon Map",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Hop Across Floating Boxes:
+  "Name": "Tower of the Gods - Hop Across Floating Boxes",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "macro", "args": ["Can Access TOTG"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Light Two Torches:
+  "Name": "Tower of the Gods - Light Two Torches",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Skulls Room Chest:
+  "Name": "Tower of the Gods - Skulls Room Chest",
+  "Original Item": "Compass",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Shoot Eye Above Skulls Room Chest:
+  "Name": "Tower of the Gods - Shoot Eye Above Skulls Room Chest",
+  "Original Item": "Treasure Chart 6",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "macro", "args": ["Heros Bow"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Tingle Statue Chest:
+  "Name": "Tower of the Gods - Tingle Statue Chest",
+  "Original Item": "Goddess Tingle Statue",
+  "Category": ["Dungeon", "Tingle Chest"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]}, {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - First Chest Guarded by Armos Knights:
+  "Name": "Tower of the Gods - First Chest Guarded by Armos Knights",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]}, {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]}, {"type": "macro", "args": ["Heros Bow"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Stone Tablet:
-  name "Offset": 0x4F7360
-  item id: 0x509B17
+  "Name": "Tower of the Gods - Stone Tablet",
+  "Original Item": "Command Melody",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access TOTG"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]}, {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]}, {"type": "has_item", "args": ["WindWaker"]}]},
+  "Path": "",
+  "Type": "Event",
+  "Offset": ["0x509B17"],
+  "NameOffset": "0x4F7360"
  },
  {
- Tower of the Gods - Darknut Mini-Boss Room:
+  "Name": "Tower of the Gods - Darknut Mini-Boss Room",
+  "Original Item": "Hero's Bow",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access TOTG"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "has_item", "args": ["WindWaker"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+    {"type": "or", "args": [{"type": "macro", "args": ["Can Play CM"]}, {"type": "macro", "args": ["Heros Bow"]}]},
+    {"type": "macro", "args": ["Can Defeat Darknuts"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Second Chest Guarded by Armos Knights:
+  "Name": "Tower of the Gods - Second Chest Guarded by Armos Knights",
+  "Original Item": "Treasure Chart 30",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access TOTG"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "has_item", "args": ["WindWaker"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Heros Bow"]},
+    {"type": "macro", "args": ["Can Play WR"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Floating Platforms Room:
+  "Name": "Tower of the Gods - Floating Platforms Room",
+  "Original Item": "Small Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access TOTG"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "has_item", "args": ["WindWaker"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Heros Bow"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Top of Floating Platforms Room:
+  "Name": "Tower of the Gods - Top of Floating Platforms Room",
+  "Original Item": "Joy Pendant",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access TOTG"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "count", "args": [{"count": "1", "args": "TOTGSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "has_item", "args": ["WindWaker"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Heros Bow"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Big Key Chest:
+  "Name": "Tower of the Gods - Big Key Chest",
+  "Original Item": "TOTG Big Key",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access TOTG"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "count", "args": [{"count": "2", "args": "TOTGSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "has_item", "args": ["WindWaker"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Heros Bow"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Tower of the Gods - Gohdan Heart Container:
+  "Name": "Tower of the Gods - Gohdan Heart Container",
+  "Original Item": "Heart Container",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access TOTG"]},
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "count", "args": [{"count": "2", "args": "TOTGSmallKey"}]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "has_item", "args": ["WindWaker"]},
+    {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Heros Bow"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["TOTGBigKey"]},
+    {"type": "macro", "args": ["Can Defeat Armos"]},
+    {"type": "macro", "args": ["Can Defeat Gohdan"]}
+   ]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
   
   
  {
- Hyrule - Master Sword Chamber:
+  "Name": "Hyrule - Master Sword Chamber",
+  "Original Item": "Master Sword (Powerless)",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Hyrule"]}, {"type": "macro", "args": ["Can Defeat Mighty Darknuts"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
   
   
  {
- Forsaken Fortress - Phantom Ganon:
+  "Name": "Forsaken Fortress - Phantom Ganon",
+  "Original Item": "Skull Hammer",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "macro", "args": ["Can Reach and Defeat Phantom Ganon"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Forsaken Fortress - Chest Outside Upper Jail Cell:
+  "Name": "Forsaken Fortress - Chest Outside Upper Jail Cell",
+  "Original Item": "Dungeon Map",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}, {"type": "macro", "args": ["Can Get Inside Forsaken Fortress"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Forsaken Fortress - Chest Inside Lower Jail Cell:
+  "Name": "Forsaken Fortress - Chest Inside Lower Jail Cell",
+  "Original Item": "Piece of Heart",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Forsaken Fortress - Chest Guarded By Bokoblin:
+  "Name": "Forsaken Fortress - Chest Guarded By Bokoblin",
+  "Original Item": "Compass",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Forsaken Fortress - Chest on Bed:
+  "Name": "Forsaken Fortress - Chest on Bed",
+  "Original Item": "Yellow Rupee",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Forsaken Fortress - Helmaroc King Heart Container:
+  "Name": "Forsaken Fortress - Helmaroc King Heart Container",
+  "Original Item": "Heart Container",
+  "Category": ["Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}, {"type": "macro", "args": ["Can Get Inside Forsaken Fortress"]}, {"type": "macro", "args": ["Can Defeat Helmaroc King"]}, {"type": "has_item", "args": ["SkullHammer"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
   
   
  {
- Mother and Child Isles - Inside Mother Isle:
+  "Name": "Mother and Child Isles - Inside Mother Isle",
+  "Original Item": "Fire and Ice Arrows",
+  "Category": ["Misc"],
+  "Needs": {"type": "macro", "args": ["Can Play BoG"},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
   
   
