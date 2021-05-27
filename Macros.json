@@ -1125,6 +1125,301 @@
   "Expression": {
       "type": "not", "args": [{"type": "setting", "args": ["Swordless"]}]
     }
+ },
+
+ {
+  "Name": "Chart for Island 1",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 25"]
+    }
+ },
+ {
+  "Name": "Chart for Island 2",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 7"]
+    }
+ },
+ {
+  "Name": "Chart for Island 3",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 24"]
+    }
+ },
+ {
+  "Name": "Chart for Island 4",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 2"]
+    }
+ },
+ {
+  "Name": "Chart for Island 5",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 11"]
+    }
+ },
+ {
+  "Name": "Chart for Island 6",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 7"]
+    }
+ },
+ {
+  "Name": "Chart for Island 7",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 13"]
+    }
+ },
+ {
+  "Name": "Chart for Island 8",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 41"]
+    }
+ },
+ {
+  "Name": "Chart for Island 9",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 29"]
+    }
+ },
+ {
+  "Name": "Chart for Island 10",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 22"]
+    }
+ },
+ {
+  "Name": "Chart for Island 11",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 18"]
+    }
+ },
+ {
+  "Name": "Chart for Island 12",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 30"]
+    }
+ },
+ {
+  "Name": "Chart for Island 13",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 39"]
+    }
+ },
+ {
+  "Name": "Chart for Island 14",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 19"]
+    }
+ },
+ {
+  "Name": "Chart for Island 15",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 8"]
+    }
+ },
+ {
+  "Name": "Chart for Island 16",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 2"]
+    }
+ },
+ {
+  "Name": "Chart for Island 17",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 10"]
+    }
+ },
+ {
+  "Name": "Chart for Island 18",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 26"]
+    }
+ },
+ {
+  "Name": "Chart for Island 19",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 3"]
+    }
+ },
+ {
+  "Name": "Chart for Island 20",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 37"]
+    }
+ },
+ {
+  "Name": "Chart for Island 21",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 27"]
+    }
+ },
+ {
+  "Name": "Chart for Island 22",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 38"]
+    }
+ },
+ {
+  "Name": "Chart for Island 23",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 1"]
+    }
+ },
+ {
+  "Name": "Chart for Island 24",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 21"]
+    }
+ },
+ {
+  "Name": "Chart for Island 25",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 6"]
+    }
+ },
+ {
+  "Name": "Chart for Island 26",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 14"]
+    }
+ },
+ {
+  "Name": "Chart for Island 27",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 34"]
+    }
+ },
+ {
+  "Name": "Chart for Island 28",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 5"]
+    }
+ },
+ {
+  "Name": "Chart for Island 29",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 28"]
+    }
+ },
+ {
+  "Name": "Chart for Island 30",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 35"]
+    }
+ },
+ {
+  "Name": "Chart for Island 31",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 3"]
+    }
+ },
+ {
+  "Name": "Chart for Island 32",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 6"]
+    }
+ },
+ {
+  "Name": "Chart for Island 33",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 1"]
+    }
+ },
+ {
+  "Name": "Chart for Island 34",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 20"]
+    }
+ },
+ {
+  "Name": "Chart for Island 35",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 36"]
+    }
+ },
+ {
+  "Name": "Chart for Island 36",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 23"]
+    }
+ },
+ {
+  "Name": "Chart for Island 37",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 12"]
+    }
+ },
+ {
+  "Name": "Chart for Island 38",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 16"]
+    }
+ },
+ {
+  "Name": "Chart for Island 39",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 4"]
+    }
+ },
+ {
+  "Name": "Chart for Island 40",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 17"]
+    }
+ },
+ {
+  "Name": "Chart for Island 41",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 31"]
+    }
+ },
+ {
+  "Name": "Chart for Island 42",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 5"]
+    }
+ },
+ {
+  "Name": "Chart for Island 43",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 9"]
+    }
+ },
+ {
+  "Name": "Chart for Island 44",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 4"]
+    }
+ },
+ {
+  "Name": "Chart for Island 45",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 40"]
+    }
+ },
+ {
+  "Name": "Chart for Island 46",
+  "Expression": {
+      "type": "has_item", "args": ["Triforce Chart 8"]
+    }
+ },
+ {
+  "Name": "Chart for Island 47",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 15"]
+    }
+ },
+ {
+  "Name": "Chart for Island 48",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 32"]
+    }
+ },
+ {
+  "Name": "Chart for Island 49",
+  "Expression": {
+      "type": "has_item", "args": ["Treasure Chart 33"]
+    }
  }
 
  ]
