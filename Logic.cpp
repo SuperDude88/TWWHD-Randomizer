@@ -4,9 +4,9 @@
 #include <unordered_set>
 #include <random>
 #include "Parse.hpp"
-
-//temp section - remove later
 #include "parse.hpp"
+
+//temp section for testing- remove later
 #include "Location.hpp"
 #include <iostream>
 
