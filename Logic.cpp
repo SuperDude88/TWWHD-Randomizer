@@ -861,7 +861,7 @@ LocationLists AssumedFill(std::vector<std::string> StartingItems, int NumRaceMod
         ProgressItems.erase(ProgressItems.begin());
 
         bool removeditem = true;
-        while (removeditem) {
+        while (removeditem) { //This basically allows us to remove keys and then double check our accessible locations if they are removed. This ensures there isnt some strange edge case softlock if we assumed we had all keys
             for (unsigned int y = 0; y < Locations.ProgressLocations.size(); y++) {
                 removeditem = false;
                 std::cout << Locations.ProgressLocations.size() << std::endl;
