@@ -5,3 +5,5 @@
 #include "Structs.hpp"
 
 std::vector<Location> ParseLocations(std::string LocationsPath);
+
+std::vector<Macro> ParseMacros(std::string MacrosPath);

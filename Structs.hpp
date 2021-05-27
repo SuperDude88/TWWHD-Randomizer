@@ -53,3 +53,8 @@ struct LocationLists {
 	std::vector<Location> PlacedLocations;
 	std::vector<Location> UnplacedLocations;
 };
+
+struct Macro {
+	std::string Name;
+	nlohmann::json Expression;
+};
