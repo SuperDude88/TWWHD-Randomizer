@@ -108,9 +108,9 @@
       {"type": "macro", "args": ["Can Defeat Red Bubbles"]},
       {"type": "macro", "args": ["Can Defeat Darknuts"]},
       {"type": "macro", "args": ["Can Play WR"]},
-      {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Heros Sword"]}, {"type": "has_item", "args": ["SkullHammer"]}]},
-    ]
-  },
+      {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Heros Sword"]}, {"type": "has_item", "args": ["SkullHammer"]}]}
+      ]
+    },
   "Path": "Cave09_Room20.zs",
   "Type": "Chest",
   "Offset": ["0x31DD48"]
@@ -280,7 +280,6 @@
   "Type": "Chest",
   "Offset": ["0x39A5C0"]
   },
-  //Add name offsets for locations with events, not added yet becasue I have nothing to put there anyway
   {
   "Name": "Windfall Island - Maggie's Father - Give 20 Skull Necklaces",
   "Original Item": "Treasure Chart 2",
@@ -288,7 +287,8 @@
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Rescued Aryll"]}, {"type": "macro", "args": ["Can Farm Skull Necklaces"]}, {"type": "has_item", "args": ["SpoilsBag"]}]},
   "Path": "Orichh_Stage.zs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
   {
   "Name": "Windfall Island - Maggie - Free Item",
@@ -316,7 +316,8 @@
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Rescued Aryll"]}, {"type": "has_item", "args": ["DeliveryBag"]}, {"type": "has_item", "args": ["MaggiesLetter"]}]},
   "Path": "Opub_Stage.zs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
 
   {
@@ -335,7 +336,7 @@
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Play WR"]}, {"type": "macro", "args": ["Fire Arrows"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]}]},
   "Path": "szs_permanent1.pack/Sea_Room11.zs",
   "Type": "Chest",
-  "Offset": ["0x10631AC", "0x10632F4", "0x1063840"],
+  "Offset": ["0x10631AC", "0x10632F4", "0x1063840"]
   },
 
   {
@@ -345,7 +346,8 @@
   "Needs": {"type": "has_item", "args": ["WindWaker"]},
   "Path": "first_szs_permanent.pack/Sea_Stage.zs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
   {
   "Name": "Windfall Island - Pirate Ship",
@@ -466,7 +468,8 @@
   "Needs": {"type": "macro", "args": ["Rescued Aryll"]},
   "Path": "first_szs_permanent.pack/Sea_Stage.szs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
   {
   "Name": "Windfall Island - Battlesquid - First Prize",
@@ -549,7 +552,8 @@
   "Needs": {"type": "has_item", "args": ["WindWaker"]},
   "Path": "first_szs_permanent.pack/Sea_stage.zs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
   {
   "Name": "Dragon Roost Island - Rito Aerie - Give Hoskit 20 Golden Feathers",
@@ -558,7 +562,8 @@
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Farm Golden Feathers"]}, {"type": "has_item", "args": ["SpoilsBag"]}]},
   "Path": "Atorizk_Stage.zs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
   {
   "Name": "Dragon Roost Island - Chest on Top of Boulder",
@@ -585,7 +590,8 @@
   "Needs": {"type": "has_item", "args": ["nothing"]},
   "Path": "Atorizk_Stage.zs",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
   },
   {
   "Name": "Dragon Roost Island - Secret Cave",
@@ -599,7 +605,7 @@
 
  {
   "Name": "Dragon Roost Cavern - First Room",
-  "Original Item": "SmallKey",
+  "Original Item": "SmallKoy",
   "Category": ["Dungeon"],
   "Needs": {"type": "macro", "args": ["Can Access DRC"]},
   "Path": "M_NewD2_Stage.zs",
@@ -619,7 +625,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Boarded Up Chest",
-  "Original Item": "SmallKey",
+  "Original Item": "SmallKoy",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "1", "args": "DRCSmallKey"}]}]
@@ -658,7 +664,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Rat Room Boarded Up Chest",
-  "Original Item": "SmallKey",
+  "Original Item": "SmallKoy",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "2", "args": "DRCSmallKey"}]}]},
@@ -668,7 +674,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Bird's Nest",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "3", "args": "DRCSmallKey"}]}]},
@@ -754,11 +760,10 @@
           {"type": "macro", "args": ["Ice Arrows"]},
           {"type": "and", "args": [
             {"type": "count", "args": [{"count": "4", "args": "DRCSmallKey"}]},
-            {"type": "macro", "args": "Can Cut Down Hanging DRC Platform"}
+            {"type": "macro", "args": ["Can Cut Down Hanging DRC Platform"]}
            ]}
-        ]},
-       {},
-       {}]
+        ]}
+       ]
   },
   "Path": "M_NewD2_Stage.zs",
   "Type": "Chest",
@@ -766,7 +771,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Big Key Chest",
-  "Original Item": "BigKey",
+  "Original Item": "BigKoy",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [
@@ -780,9 +785,8 @@
             {"type": "count", "args": [{"count": "4", "args": "DRCSmallKey"}]},
             {"type": "macro", "args": "Can Cut Down Hanging DRC Platform"}
            ]}
-        ]},
-       {},
-       {}]
+        ]}
+    ]
   },
   "Path": "M_NewD2_Stage.zs",
   "Type": "Chest",
@@ -859,7 +863,7 @@
   "Name": "Forest Haven - Small Island Chest",
   "Original Item": "Treasure Chart 3",
   "Category": ["Island Puzzle"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forest Haven"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forest Haven"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]},
   "Path": "",
   "Type": "",
   "Offset": [""]
@@ -869,7 +873,7 @@
   "Name": "Forbidden Woods - First Room",
   "Original Item": "Dungeon Map",
   "Category": ["Dungeon"],
-  "Needs": {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+  "Needs": {"type": "macro", "args": ["Can Access FW"]},
   "Path": "kindan_stage.zs",
   "Type": "Chest",
   "Offset": [""]
@@ -878,7 +882,7 @@
   "Name": "Forbidden Woods - Inside Hollow Tree's Mouth",
   "Original Item": "Knight's Crest",
   "Category": ["Dungeon"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "or", "args": [{"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "or", "args": [{"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}]}]},
   "Path": "",
   "Type": "Chest",
   "Offset": [""]
@@ -887,7 +891,7 @@
   "Name": "Forbidden Woods - Climb to Top Using Boko Baba Bulbs",
   "Original Item": "Treasure Chart 1",
   "Category": ["Dungeon"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "macro", "args": ["Can Defeat Door Flowers"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
   "Path": "",
   "Type": "Chest",
   "Offset": [""]
@@ -896,7 +900,7 @@
   "Name": "Forbidden Woods - Hole in Tree",
   "Original Item": "Red Rupee",
   "Category": ["Dungeon"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
   "Path": "",
   "Type": "Chest",
   "Offset": [""]
@@ -905,7 +909,7 @@
   "Name": "Forbidden Woods - Morth Pit",
   "Original Item": "Yellow Rupee",
   "Category": ["Dungeon"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
   "Path": "",
   "Type": "Chest",
   "Offset": [""]
@@ -914,16 +918,16 @@
   "Name": "Forbidden Woods - Vine Maze Left Chest",
   "Original Item": "Compass",
   "Category": ["Dungeon"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
   "Path": "",
   "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Forbidden Woods - Vine Maze Right Chest",
-  "Original Item": "FW Small Key",
+  "Original Item": "FW Small Koy",
   "Category": ["Dungeon"],
-  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Forbidden Woods"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
   "Path": "",
   "Type": "Chest",
   "Offset": [""]
@@ -933,7 +937,7 @@
   "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -949,7 +953,7 @@
   "Original Item": "Boomerang",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -965,7 +969,7 @@
   "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -982,7 +986,7 @@
   "Original Item": "Yellow Rupee",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -997,7 +1001,7 @@
   "Original Item": "Forbidden Tingle Statue",
   "Category": ["Dungeon", "Tingle Chest"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "has_item", "args": ["Bombs"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -1012,7 +1016,7 @@
   "Original Item": "Treasure Chart 15",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -1024,10 +1028,10 @@
  },
  {
   "Name": "Forbidden Woods - Big Key Chest",
-  "Original Item": "FW Big Key",
+  "Original Item": "FW Big Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "has_item", "args": ["GrapplingHook"]},
@@ -1042,7 +1046,7 @@
   "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "macro", "args": ["Can Defeat Mothulas"]},
@@ -1057,7 +1061,7 @@
   "Original Item": "Heart Container",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
-    {"type": "macro", "args": ["Can Access Forbidden Woods"]},
+    {"type": "macro", "args": ["Can Access FW"]},
     {"type": "macro", "args": ["Can Defeat Boko Babas"]},
     {"type": "has_item", "args": ["DekuLeaf"]},
     {"type": "macro", "args": ["Can Defeat Mothulas"]},
@@ -1093,7 +1097,7 @@
  },
  {
   "Name": "Tower of the Gods - Hop Across Floating Boxes",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "macro", "args": ["Can Access TOTG"]},
   "Path": "",
@@ -1194,7 +1198,7 @@
  },
  {
   "Name": "Tower of the Gods - Floating Platforms Room",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access TOTG"]},
@@ -1230,7 +1234,7 @@
  },
  {
   "Name": "Tower of the Gods - Big Key Chest",
-  "Original Item": "TOTG Big Key",
+  "Original Item": "TOTG Big Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access TOTG"]},
@@ -1241,7 +1245,7 @@
     {"type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
     {"type": "macro", "args": ["Can Play CM"]},
     {"type": "macro", "args": ["Heros Bow"]},
-    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["DekuLeaf"]}
    ]},
   "Path": "",
   "Type": "Chest",
@@ -1474,10 +1478,10 @@
   "Path": "",
   "Type": "Actor",
   "Offset": [""]
- }, //Consider other 2 curtains as well
+ }, 
  {
   "Name": "Earth Temple - Transparent Chest in First Crypt",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1523,7 +1527,7 @@
  },
  {
   "Name": "Earth Temple - Casket in Second Crypt",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1570,7 +1574,7 @@
  },
  {
   "Name": "Earth Temple - End of Foggy Room With Floormasters",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1687,7 +1691,7 @@
  },
  {
   "Name": "Earth Temple - Big Key Chest",
-  "Original Item": "ET Big Key",
+  "Original Item": "ET Big Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1785,7 +1789,7 @@
  },
  {
   "Name": "Wind Temple - Big Key Chest",
-  "Original Item": "WT Big Key",
+  "Original Item": "WT Big Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1837,7 +1841,7 @@
  },
  {
   "Name": "Wind Temple - Spike Wall Room - First Chest",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1912,7 +1916,7 @@
  },
  {
   "Name": "Wind Temple - Chest Behind Seven Armos",
-  "Original Item": "Small Key",
+  "Original Item": "Small Koy",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -2132,7 +2136,8 @@
   "Needs": {"type": "macro", "args": ["Heros Bow"]},
   "Path": "",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
  },
  {
   "Name": "The Great Sea - Goron Trading Reward",
@@ -2985,7 +2990,8 @@
   "Needs": {"type": "macro", "args": ["Can Defeat Big Octos"]},
   "Path": "",
   "Type": "Event",
-  "Offset": [""]
+  "Offset": [""],
+  "NameOffset": ""
  },
   
   

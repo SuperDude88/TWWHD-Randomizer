@@ -31,6 +31,12 @@
     "type": "and", "args": [{"type": "has_item", "args": ["WindGodsAria"]}, {"type": "has_item", "args":["WindWaker"]}]
     }
  },
+ {
+  "Name": "Can Fly With Deku Leaf Outdoors",
+  "Expression": {
+    "type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "macro", "args":["Can Play WR"]}]
+    }
+ },
 
 
 
@@ -267,7 +273,7 @@
  {
   "Name": "Can Access DRC",
   "Expression": {
-      "type": "macro", "args": ["Can Access Dungeon Entrace On Dragon Roost Island"]
+      "type": "macro", "args": ["Can Access Dungeon Entrance On Dragon Roost Island"]
     }
  },
  {
@@ -594,7 +600,7 @@
  {
   "Name": "Can Complete DRC Trial",
   "Expression": {
-      "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Gohma"]}, {"type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["Grappling Hook"]}]}] //Consider grappling hook or ice arrows because of the ice arrow strat
+      "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Gohma"]}, {"type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["Grappling Hook"]}]}] 
     }
  },
  {
@@ -838,7 +844,7 @@
  {
   "Name": "Can Defeat Fire Keese",
   "Expression": {
-      "type": "macro", "args": [{"type": "macro", "args": ["Can Defeat Keese"]}]
+      "type": "macro", "args": ["Can Defeat Keese"]
     }
  },
  {
@@ -860,7 +866,7 @@
     }
  },
  {
-  "Name": "Can Defeat Peaheats",
+  "Name": "Can Defeat Peahats",
   "Expression": {
       "type": "or", "args": [{"type": "and", "args": [{"type": "macro", "args": ["Heros Sword"]}, {"type": "has_item", "args": ["Hookshot"]}]}, {"type": "and", "args": [{"type": "macro", "args": ["Heros Sword"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Heros Bow"]}]
     }
