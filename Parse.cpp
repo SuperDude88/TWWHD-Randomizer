@@ -14,6 +14,7 @@ std::vector<Location> ParseLocations(std::string LocationsPath) {
 	std::vector<Location> Locations;
 	
 	//add section to read logical requirements 
+	std::cout << "about to parse locations json" << std::endl;
 
 	nlohmann::json jsondata = nlohmann::json::parse(fptr);
 	for (auto& array : jsondata["Locations"]) {
@@ -41,4 +42,23 @@ std::vector<Location> ParseLocations(std::string LocationsPath) {
 		Locations.push_back(location);
 	}
 	return Locations;
+}
+
+std::vector<Macro> ParseMacros(std::string MacrosPath) {
+
+	std::ifstream fptr;
+	fptr.open(MacrosPath, std::ios::in);
+
+	std::vector<Macro> Macros;
+
+	nlohmann::json jsondata = nlohmann::json::parse(fptr);
+	for (auto& array : jsondata["Macros"]) {
+		Macro macro;
+		macro.Name = array["Name"];
+		macro.Expression = array["Expression"];
+		Macros.push_back(macro);
+	}
+
+	return Macros;
+
 }
