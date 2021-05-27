@@ -1758,106 +1758,213 @@
   "Name": "Wind Temple - Chest Behind Stone Head",
   "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["Hookshot"]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Chest in Left Alcove",
   "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Big Key Chest",
   "Original Item": "WT Big Key",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Play WGA"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "macro", "args": ["Can Defeat Darknuts"]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Chest In Many Cyclones Room",
   "Original Item": "Dungeon Map",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "or", "args": [
+      {"type": "or", "args": [{"type": "macro", "args": ["Can Cut Grass"]}, {"type": "has_item", "args": ["MagicMeter"]}]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Chest In Middle Of Hub Room",
   "Original Item": "Compass",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "or", "args": [
+      {"type": "macro", "args": ["Can Cut Grass"]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Spike Wall Room - First Chest",
   "Original Item": "Small Key",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "or", "args": [
+      {"type": "macro", "args": ["Can Cut Grass"]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Spike Wall Room - Destroy All Cracked Floors",
   "Original Item": "Treasure Chart 35",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "or", "args": [
+      {"type": "macro", "args": ["Can Cut Grass"]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Wizzrobe Mini-Boss Room",
   "Original Item": "Hookshot",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "macro", "args": ["Can Defeat Darknuts"]},
+    {"type": "macro", "args": ["Can Remove Peahat Armor"]},
+    {"type": "count", "args": [{"count": "2", "args": "WTSmallKey"}]},
+    {"type": "or", "args": [
+      {"type": "macro", "args": ["Can Cut Grass"]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Chest at Top of Hub Room",
   "Original Item": "Joy Pendant",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "or", "args": [
+      {"type": "macro", "args": ["Can Cut Grass"]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Chest Behind Seven Armos",
   "Original Item": "Small Key",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "macro", "args": ["Can Defeat Armos"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "or", "args": [
+      {"type": "macro", "args": ["Can Cut Grass"]},
+      {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Blue Bubbles"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+     ]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Kill All Enemies in Tall Basement Room",
   "Original Item": "Treasure Chart 5",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["Hookshot"]},
+    {"type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+    {"type": "macro", "args": ["Can Defeat Stalfos"]},
+    {"type": "macro", "args": ["Can Defeat Wizzrobes"]},
+    {"type": "macro", "args": ["Can Defeat Morths"]},
+    {"type": "count", "args": [{"count": "2", "args": "WTSmallKey"}]}
+   ]},
   "Path": "",
-  "Type": "",
+  "Type": "Chest",
   "Offset": [""]
  },
  {
   "Name": "Wind Temple - Molgera Heart Container",
   "Original Item": "Heart Container",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Play CM"]},
+    {"type": "macro", "args": ["Can Play WGA"]},
+    {"type": "macro", "args": ["Can Access WT"]},
+    {"type": "has_item", "args": ["IronBoots"]},
+    {"type": "has_item", "args": ["DekuLeaf"]},
+    {"type": "has_item", "args": ["Hookshot"]},
+    {"type": "has_item", "args": ["WTBigKey"]},
+    {"type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+    {"type": "macro", "args": ["Can Defeat Molgera"]},
+    {"type": "count", "args": [{"count": "2", "args": "WTSmallKey"}]}
+   ]},
   "Path": "",
   "Type": "",
   "Offset": [""]
@@ -1868,7 +1975,132 @@
   "Name": "Ganon's Tower - Maze Chest",
   "Original Item": "Light Arrows",
   "Category": ["Dungeon"],
-  "Needs": {},
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Reach Ganons Tower Phantom Ganon Room"]}, {"type": "macro", "args": ["Can Defeat Phantom Ganon"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+ {
+  "Name": "Mailbox - Letter from Hoskit's Girlfriend",
+  "Original Item": "Piece of Heart (Alternate Message)",
+  "Category": ["Mail", "Spoils Trading"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Farm Golden Feathers"]}, {"type": "has_item", "args": ["SongofPassing"]}, {"type": "has_item", "args": ["SpoilsBag"]}]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Baito's Mother",
+  "Original Item": "Piece of Heart",
+  "Category": ["Mail"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["NotetoMom"]}, {"type": "has_item", "args": ["SongofPassing"]}, {"type": "has_item", "args": ["DeliveryBag"]}]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Baito",
+  "Original Item": "Red Rupee",
+  "Category": ["Mail", "Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["NotetoMom"]}, {"type": "can_access", "args": ["Earth Temple - Jalhalla Heart Container"]}, {"type": "has_item", "args": ["DeliveryBag"]}]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Komali's Father",
+  "Original Item": "Piece of Heart",
+  "Category": ["Mail"],
+  "Needs": {"type": "has_item", "args": ["FaroresPearl"]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter Advertising Bombs in Beedle's Shop",
+  "Original Item": "Beedle's Chart",
+  "Category": ["Mail"],
+  "Needs": {"type": "has_item", "args": ["Bombs"]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter Advertising Rock Spire Shop Ship",
+  "Original Item": "Green Rupee",
+  "Category": ["Mail"],
+  "Needs": {"type": "macro", "args": ["Wallet Upgrade"]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Beedle's Silver Membership Reward",
+  "Original Item": "Complimentary ID",
+  "Category": [""],
+  "Needs": {"type": "and", "args": [
+    {"type": "or", "args": [
+      {"type": "has_item", "args": ["BaitBag"]},
+      {"type": "has_item", "args": ["Bombs"]},
+      {"type": "macro", "args": ["Heros Bow"]},
+      {"type": "has_item", "args": ["Bottle"]}
+     ]},
+    {"type": "has_item", "args": ["SongofPassing"]}
+   ]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Beedle's Gold Membership Reward",
+  "Original Item": "Fill-Up Coupon",
+  "Category": [""],
+  "Needs": {"type": "and", "args": [
+    {"type": "or", "args": [
+      {"type": "has_item", "args": ["BaitBag"]},
+      {"type": "has_item", "args": ["Bombs"]},
+      {"type": "macro", "args": ["Heros Bow"]},
+      {"type": "has_item", "args": ["Bottle"]}
+     ]},
+    {"type": "has_item", "args": ["SongofPassing"]}
+   ]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Orca",
+  "Original Item": "Red Rupee",
+  "Category": ["Mail", "Dungeon"],
+  "Needs": {"type": "can_access", "args": ["Forbidden Woods - Kalle Demos Heart Container"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Grandma",
+  "Original Item": "Red Rupee",
+  "Category": ["Mail"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["Bottle"]}, {"type": "macro", "args": ["Can Get Fairies"]}, {"type": "has_item", "args": ["SongofPassing"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Aryll",
+  "Original Item": "Red Rupee",
+  "Category": ["Mail", "Dungeon"],
+  "Needs": {"type": "and", "args": [{"type": "can_access", "args": ["Forsaken Fortress - Helmaroc King Heart Container"]}, {"type": "has_item", "args": ["SongofPassing"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Mailbox - Letter from Tingle",
+  "Original Item": "IN-credible Chart",
+  "Category": ["Mail", "Dungeon", "Expensive Purchase"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Rescued Tingle"]}, {"type": "macro", "args": ["Wallet Upgrade"]}, {"type": "can_access", "args": ["Forsaken Fortress - Helmaroc King Heart Container"]}, {"type": "macro", "args": ["SongofPassing"]}]},
   "Path": "",
   "Type": "",
   "Offset": [""]
@@ -1876,520 +2108,1399 @@
   
   
  {
- Mailbox - Letter from Baito's Mother:
+  "Name": "The Great Sea - Beedle's Shop Ship - 20 Rupee Item",
+  "Original Item": "Bait Bag",
+  "Category": ["Misc"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
  },
  {
- Mailbox - Letter from Baito:
+  "Name": "The Great Sea - Salvage Corp Gift",
+  "Original Item": "Treasure Chart 34",
+  "Category": ["Free Gift"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
  },
  {
- Mailbox - Letter from Komali's Father:
+  "Name": "The Great Sea - Cyclos",
+  "Original Item": "Ballad of Gales",
+  "Category": ["Misc"],
+  "Needs": {"type": "macro", "args": ["Heros Bow"]},
+  "Path": "",
+  "Type": "Event",
+  "Offset": [""]
  },
  {
- Mailbox - Letter Advertising Bombs in Beedle's Shop:
+  "Name": "The Great Sea - Goron Trading Reward",
+  "Original Item": "Piece of Heart",
+  "Category": ["Long Sidequest", "Expensive Purchase"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["DeliveryBag"]}, {"type": "macro", "args": ["Rescued Aryll"]}]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
  },
  {
- Mailbox - Letter Advertising Rock Spire Shop Ship:
+  "Name": "The Great Sea - Withered Trees",
+  "Original Item": "Piece of Heart",
+  "Category": ["Long Sidequest"],
+  "Needs": {"type": "and", "args": [
+    {"type": "has_item", "args": ["Bottle"]},
+    {"type": "macro", "args": ["Can Play BoG"]},
+    {"type": "macro", "args": ["Can Access Forest Haven"]},
+    {"type": "can_access", "args": ["Cliff Plateau Isles - Highest Isle"]}
+   ]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
  },
  {
- Mailbox - Beedle's Silver Membership Reward:
- },
- {
- Mailbox - Beedle's Gold Membership Reward:
- },
- {
- Mailbox - Letter from Orca:
- },
- {
- Mailbox - Letter from Grandma:
- },
- {
- Mailbox - Letter from Aryll:
- },
- {
- Mailbox - Letter from Tingle:
- },
-  
-  
- {
- The Great Sea - Beedle's Shop Ship - 20 Rupee Item:
- },
- {
- The Great Sea - Salvage Corp Gift:
- },
- {
- The Great Sea - Cyclos:
- },
- {
- The Great Sea - Goron Trading Reward:
- },
- {
- The Great Sea - Withered Trees:
- },
- {
- The Great Sea - Ghost Ship:
- },
-  
-  
- {
- Private Oasis - Chest at Top of Waterfall:
- },
- {
- Private Oasis - Cabana Labyrinth - Lower Floor Chest:
- },
- {
- Private Oasis - Cabana Labyrinth - Upper Floor Chest:
- },
- {
- Private Oasis - Big Octo:
- },
-  
-  
- {
- Spectacle Island - Barrel Shooting - First Prize:
- },
- {
- Spectacle Island - Barrel Shooting - Second Prize:
+  "Name": "The Great Sea - Ghost Ship",
+  "Original Item": "Triforce Shard 4",
+  "Category": ["Misc"],
+  "Needs": {"type": "and", "args": [
+    {"type": "has_item", "args": ["GhostShipChart"]},
+    {"type": "macro", "args": ["Can Play BoG"]},
+    {"type": "macro", "args": ["Can Defeat Wizzrobes"]},
+    {"type": "macro", "args": ["Can Defeat Poes"]},
+    {"type": "macro", "args": ["Can Defeat ReDeads"]},
+    {"type": "macro", "args": ["Can Defeat Stalfos"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
   
   
  {
- Needle Rock Isle - Chest:
+  "Name": "Private Oasis - Chest at Top of Waterfall",
+  "Original Item": "Treasure Chart 27",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "or", "args": [
+    {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+    {"type": "has_item", "args": ["Hookshot"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Needle Rock Isle - Cave:
+  "Name": "Private Oasis - Cabana Labyrinth - Lower Floor Chest",
+  "Original Item": "Orange Rupee",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "or", "args": [
+    {"type": "macro", "args": ["Can Access Cabana Labyrinth"]},
+    {"type": "has_item", "args": ["SkullHammer"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Needle Rock Isle - Golden Gunboat:
+  "Name": "Private Oasis - Cabana Labyrinth - Upper Floor Chest",
+  "Original Item": "Triforce Shard",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "or", "args": [
+    {"type": "macro", "args": ["Can Access Cabana Labyrinth"]},
+    {"type": "macro", "args": ["Can Play WR"]},
+    {"type": "has_item", "args": ["SkullHammer"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Private Oasis - Big Octo",
+  "Original Item": "Orange Rupee",
+  "Category": ["Big Octo"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Big Octos"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
  },
   
   
  {
- Angular Isles - Peak:
+  "Name": "Spectacle Island - Barrel Shooting - First Prize",
+  "Original Item": "Piece of Heart",
+  "Category": ["Minigame"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
  },
  {
- Angular Isles - Cave:
+  "Name": "Spectacle Island - Barrel Shooting - Second Prize",
+  "Original Item": "Treasure Chart 17",
+  "Category": ["Minigame"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
  },
   
   
  {
- Boating Course - Raft:
+  "Name": "Needle Rock Isle - Chest",
+  "Original Item": "Piece of Heart",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Buy Hyoi Pears"]}, {"type": "has_item", "args": ["BaitBag"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Boating Course - Cave:
+  "Name": "Needle Rock Isle - Cave",
+  "Original Item": "Orange Rupee",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Needle Rock Isle Secret Cave"]}, {"type": "macro", "args": ["Fire Arrows"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Needle Rock Isle - Golden Gunboat",
+  "Original Item": "Triforce Chart 3",
+  "Category": ["Gunboat"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
  },
   
   
  {
- Stone Watcher Island - Cave:
+  "Name": "Angular Isles - Peak",
+  "Original Item": "Piece of Heart",
+  "Category": ["Island Pizzle"],
+  "Needs": {"type": "has_item", "args": ["Nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Stone Watcher Island - Lookout Platform Chest:
- },
- {
- Stone Watcher Island - Lookout Platform - Destroy the Cannons:
- },
- {
- Islet of Steel - Interior:
- },
- {
- Islet of Steel - Lookout Platform - Defeat the Enemies:
- },
- {
- Overlook Island - Cave:
- },
- {
- Bird's Peak Rock - Cave:
- },
- {
- Pawprint Isle - Chuchu Cave - Chest:
- },
- {
- Pawprint Isle - Chuchu Cave - Behind Left Boulder:
- },
- {
- Pawprint Isle - Chuchu Cave - Behind Right Boulder:
- },
- {
- Pawprint Isle - Chuchu Cave - Scale the Wall:
- },
- {
- Pawprint Isle - Wizzrobe Cave:
- },
- {
- Pawprint Isle - Lookout Platform - Defeat the Enemies:
- },
- {
- Thorned Fairy Island - Great Fairy:
-  "Original Item": 99 Arrow Quiver
-  "Category": Great Fairy
-  "Path": cking.rpx
-  "Type": REL
-  "Offset": 0x29DD17
- },
- {
- Thorned Fairy Island - Northeastern Lookout Platform - Destroy the Cannons:
- },
- {
- Thorned Fairy Island - Southwestern Lookout Platform - Defeat the Enemies:
- },
- {
- Eastern Fairy Island - Great Fairy:
-  "Original Item": 60 Bomb Bomb Bag
-  "Category": Great Fairy
-  "Path": cking.rpx
-  "Type": REL
-  "Offset": 0x29DCF7
- },
- {
- Eastern Fairy Island - Lookout Platform - Defeat the Cannons and Enemies:
- },
- {
- Western Fairy Island - Great Fairy:
-  "Original Item": 60 Arrow Quiver
-  "Category": Great Fairy
-  "Path": cking.rpx
-  "Type": REL
-  "Offset": 0x29DD1F
- },
- {
- Western Fairy Island - Lookout Platform:
- },
- {
- Southern Fairy Island - Great Fairy:
-  "Original Item": 99 Bomb Bomb Bag
-  "Category": Great Fairy
-  "Path": cking.rpx
-  "Type": REL
-  "Offset": 0x29DCEF
- },
- {
- Southern Fairy Island - Lookout Platform - Destroy the Northwest Cannons:
- },
- {
- Southern Fairy Island - Lookout Platform - Destroy the Southeast Cannons:
- },
- {
- Northern Fairy Island - Great Fairy:
-  "Original Item": 1000 Rupee Wallet
-  "Category": Great Fairy
-  "Path": cking.rpx
-  "Type": REL
-  "Offset": 0x29DCCF
- },
- {
- Northern Fairy Island - Submarine:
- },
- {
- Tingle Island - Ankle - Reward for All Tingle Statues:
- },
- {
- Tingle Island - Big Octo:
- },
- {
- Diamond Steppe Island - Warp Maze Cave - First Chest:
- },
- {
- Diamond Steppe Island - Warp Maze Cave - Second Chest:
- },
- {
- Diamond Steppe Island - Big Octo:
- },
- {
- Bomb Island - Cave:
- },
- {
- Bomb Island - Lookout Platform - Defeat the Enemies:
- },
- {
- Bomb Island - Submarine:
- },
- {
- Rock Spire Isle - Cave:
- },
- {
- Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item:
- },
- {
- Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item:
- },
- {
- Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item:
- },
- {
- Rock Spire Isle - Western Lookout Platform - Destroy the Cannons:
- },
- {
- Rock Spire Isle - Eastern Lookout Platform - Destroy the Cannons:
- },
- {
- Rock Spire Isle - Center Lookout Platform:
- },
- {
- Rock Spire Isle - Southeast Gunboat:
- },
- {
- Shark Island - Cave:
- },
- {
- Cliff Plateau Isles - Cave:
- },
- {
- Cliff Plateau Isles - Highest Isle:
- },
- {
- Cliff Plateau Isles - Lookout Platform:
- },
- {
- Crescent Moon Island - Chest:
- },
- {
- Crescent Moon Island - Submarine:
- },
- {
- Horseshoe Island - Play Golf:
- },
- {
- Horseshoe Island - Cave:
- },
- {
- Horseshoe Island - Northwestern Lookout Platform:
- },
- {
- Horseshoe Island - Southeastern Lookout Platform:
- },
- {
- Flight Control Platform - Bird-Man Contest - First Prize:
- },
- {
- Flight Control Platform - Submarine:
- },
- {
- Star Island - Cave:
- },
- {
- Star Island - Lookout Platform:
- },
- {
- Star Belt Archipelago - Lookout Platform:
- },
- {
- Five-Star Isles - Lookout Platform - Destroy the Cannons:
- },
- {
- Five-Star Isles - Raft:
- },
- {
- Five-Star Isles - Submarine:
- },
- {
- Seven-Star Isles - Center Lookout Platform:
- },
- {
- Seven-Star Isles - Northern Lookout Platform:
- },
- {
- Seven-Star Isles - Southern Lookout Platform:
- },
- {
- Seven-Star Isles - Big Octo:
+  "Name": "Angular Isles - Cave",
+  "Original Item": "Silver Rupee",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Angular Isles Secret Cave"]}, {"type": "macro", "args": ["Can Aim Mirror Shield"]}, {"type": "or", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["Hookshot"]}]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
   
   
  {
- Cyclops Reef - Destroy the Cannons and Gunboats:
+  "Name": "Boating Course - Raft",
+  "Original Item": "Boko Baba Seed",
+  "Category": ["Raft"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Cyclops Reef - Lookout Platform - Defeat the Enemies:
- },
-  
-  
- {
- Two-Eye Reef - Destroy the Cannons and Gunboats:
- },
- {
- Two-Eye Reef - Lookout Platform:
- },
- {
- Two-Eye Reef - Big Octo Great Fairy:
- },
-  
-  
- {
- Three-Eye Reef - Destroy the Cannons and Gunboats:
- },
-  
-  
- {
- Four-Eye Reef - Destroy the Cannons and Gunboats:
+  "Name": "Boating Course - Cave",
+  "Original Item": "Submarine Chart",
+  "Category": ["Puzzle Secret Cave", "Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Boating Course Secret Cave"]},
+    {"type": "macro", "args": ["Can Hit Diamong Switches at Range"]},
+    {"type": "macro", "args": ["Can Defeat Miniblins Easily"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
   
   
  {
- Five-Eye Reef - Destroy the Cannons:
+  "Name": "Stone Watcher Island - Cave",
+  "Original Item": "Triforce Shard 7",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Stone Watcher Island Secret Cave"]},
+    {"type": "macro", "args": ["Can Defeat Armos"]},
+    {"type": "macro", "args": ["Can Defeat Wizzrobes"]},
+    {"type": "macro", "args": ["Can Defeat Darknuts"]},
+    {"type": "macro", "args": ["Can Play WR"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Five-Eye Reef - Lookout Platform:
+  "Name": "Stone Watcher Island - Lookout Platform Chest",
+  "Original Item": "Red Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Stone Watcher Island - Lookout Platform - Destroy the Cannons",
+  "Original Item": "Piece of Heart",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Destroy Cannons"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Islet of Steel - Interior",
+  "Original Item": "Triforce Chart 1",
+  "Category": ["Misc"],
+  "Needs": {"type": "and", "args": [
+    {"type": "has_item", "args": ["Bombs"]},
+    {"type": "macro", "args": ["Can Play WR"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Islet of Steel - Lookout Platform - Defeat the Enemies",
+  "Original Item": "Skull Necklace",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Defeat Wizzrobes at Range"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Overlook Island - Cave",
+  "Original Item": "Triforce Shard 8",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Overlook Island Secret Cave"]},
+    {"type": "macro", "args": ["Can Defeat Stalfos"]},
+    {"type": "macro", "args": ["Can Defeat Wizzrobes"]},
+    {"type": "macro", "args": ["Can Defeat Red ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Green ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Keese"]},
+    {"type": "macro", "args": ["Can Defeat Fire Keese"]},
+    {"type": "macro", "args": ["Can Defeat Morths"]},
+    {"type": "macro", "args": ["Can Defeat Kargarocs"]},
+    {"type": "macro", "args": ["Can Defeat Darknuts"]},
+    {"type": "macro", "args": ["Can Play WR"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Bird's Peak Rock - Cave",
+  "Original Item": "Triforce Chart 3",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Birds Peak Rock Secret Cave"]},
+    {"type": "macro", "args": ["Can Play WR"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Pawprint Isle - Chuchu Cave - Chest",
+  "Original Item": "Piece of Heart",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "macro", "args": ["Can Access Pawprint Isle Chuchu Cave"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Pawprint Isle - Chuchu Cave - Behind Left Boulder",
+  "Original Item": "Purple Rupee",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Pawprint Isle Chuchu Cave"]},
+    {"type": "macro", "args": ["Can Move Boulders"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Pawprint Isle - Chuchu Cave - Behind Right Boulder",
+  "Original Item": "Joy Pendant",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Pawprint Isle Chuchu Cave"]},
+    {"type": "macro", "args": ["Can Move Boulders"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Pawprint Isle - Chuchu Cave - Scale the Wall",
+  "Original Item": "Red Rupee",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Pawprint Isle Chuchu Cave"]},
+    {"type": "has_item", "args": ["GrapplingHook"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Pawprint Isle - Wizzrobe Cave",
+  "Original Item": "Silver Rupee",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Access Pawprint Isle Wizzrobe Cave"]},
+    {"type": "macro", "args": ["Can Defeat Wizzrobes at Range"]},
+    {"type": "macro", "args": ["Can Defeat Fire Keese"]},
+    {"type": "macro", "args": ["Can Defeat Magtails"]},
+    {"type": "macro", "args": ["Can Defeat Red ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Green ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Red Bubbles"]},
+    {"type": "macro", "args": ["Can Remove Peahat Armor"]}
+   ]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Pawprint Isle - Lookout Platform - Defeat the Enemies",
+  "Original Item": "Red Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Thorned Fairy Island - Great Fairy",
+  "Original Item": "99 Arrow Quiver",
+  "Category": ["Great Fairy"],
+  "Needs": {"type": "has_item", "args": ["SkullHammer"]},
+  "Path": "cking.rpx",
+  "Type": "REL",
+  "Offset": ["0x29DD17"]
+ },
+ {
+  "Name": "Thorned Fairy Island - Northeastern Lookout Platform - Destroy the Cannons",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Destroy Cannons"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Thorned Fairy Island - Southwestern Lookout Platform - Defeat the Enemies",
+  "Original Item": "Boko Baba Seed",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Eastern Fairy Island - Great Fairy",
+  "Original Item": "60 Bomb Bomb Bag",
+  "Category": ["Great Fairy"],
+  "Needs": {"type": "macro", "args": ["Can Move Boulders"]},
+  "Path": "cking.rpx",
+  "Type": "REL",
+  "Offset": ["0x29DCF7"]
+ },
+ {
+  "Name": "Eastern Fairy Island - Lookout Platform - Defeat the Cannons and Enemies",
+  "Original Item": "Boko Baba Seed",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Destroy Cannons"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Western Fairy Island - Great Fairy",
+  "Original Item": "60 Arrow Quiver",
+  "Category": ["Great Fairy"],
+  "Needs": {"type": "has_item", "args": ["SkullHammer"]},
+  "Path": "cking.rpx",
+  "Type": "REL",
+  "Offset": ["0x29DD1F"]
+ },
+ {
+  "Name": "Western Fairy Island - Lookout Platform",
+  "Original Item": "Skull Necklace",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Southern Fairy Island - Great Fairy",
+  "Original Item": "99 Bomb Bomb Bag",
+  "Category": ["Great Fairy"],
+  "Needs": {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "macro", "args": ["Fire Arrows"]}]},
+  "Path": "cking.rpx",
+  "Type": "REL",
+  "Offset": ["0x29DCEF"]
+ },
+ {
+  "Name": "Southern Fairy Island - Lookout Platform - Destroy the Northwest Cannons",
+  "Original Item": "Treasure Chart 40",
+  "Category": ["Platform"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Destroy Cannons"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Southern Fairy Island - Lookout Platform - Destroy the Southeast Cannons",
+  "Original Item": "Skull Necklace",
+  "Category": ["Platform"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Destroy Cannons"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Northern Fairy Island - Great Fairy",
+  "Original Item": "1000 Rupee Wallet",
+  "Category": ["Great Fairy"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "cking.rpx",
+  "Type": "REL",
+  "Offset": ["0x29DCCF"]
+ },
+ {
+  "Name": "Northern Fairy Island - Submarine",
+  "Original Item": "Treasure Chart 22",
+  "Category": ["Submarine"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Tingle Island - Ankle - Reward for All Tingle Statues",
+  "Original Item": "500 Rupees, reward for finding all Tingle Statues",
+  "Category": ["Misc"],
+  "Needs": {"type": "and", "args": [
+    {"type": "has_item", "args": ["DragonTingleStatue"]},
+    {"type": "has_item", "args": ["ForbiddenTingleStatue"]},
+    {"type": "has_item", "args": ["GoddessTingleStatue"]},
+    {"type": "has_item", "args": ["EarthTingleStatue"]},
+    {"type": "has_item", "args": ["WindTingleStatue"]}
+   ]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Tingle Island - Big Octo",
+  "Original Item": "Piece of Heart",
+  "Category": ["Big Octo"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat 12 Eye Big Octos"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
+ },
+ {
+  "Name": "Diamond Steppe Island - Warp Maze Cave - First Chest",
+  "Original Item": "Joy Pendant",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "macro", "args": ["Can Access Diamond Steppe Island Warp Maze Cave"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Diamond Steppe Island - Warp Maze Cave - Second Chest",
+  "Original Item": "Ghost Ship Chart",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "macro", "args": ["Can Access Diamond Steppe Island Warp Maze Cave"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Diamond Steppe Island - Big Octo",
+  "Original Item": "Orange Rupee",
+  "Category": ["Big Octo"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat Big Octos"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
+ },
+ {
+  "Name": "Bomb Island - Cave",
+  "Original Item": "Piece of Heart",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Stun Magtails"]}, {"type": "macro", "args": ["Can Access Bomb Island Secret Cave"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Bomb Island - Lookout Platform - Defeat the Enemies",
+  "Original Item": "Red Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Bomb Island - Submarine",
+  "Original Item": "Bottle",
+  "Category": ["Submarine"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Cave",
+  "Original Item": "Treasure Chart 37",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "macro", "args": ["Can Access Rock Spire Isle Secret Cave"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item",
+  "Original Item": "Bottle",
+  "Category": ["Expensive Purchase"],
+  "Needs": {"type": "macro", "args": ["Can Farm Lots of Rupees"]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item",
+  "Original Item": "Piece of Heart",
+  "Category": ["Expensive Purchase"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Wallet Upgrade"]}, {"type": "macro", "args": ["Can Farm Lots of Rupees"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item",
+  "Original Item": "Treasure Chart 4",
+  "Category": ["Expensive Purchase"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Wallet Upgrade"]}, {"type": "macro", "args": ["Can Farm Lots of Rupees"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Western Lookout Platform - Destroy the Cannons",
+  "Original Item": "Orange Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Destroy Cannons"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Eastern Lookout Platform - Destroy the Cannons",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Destroy Cannons"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Center Lookout Platform",
+  "Original Item": "Red Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Rock Spire Isle - Southeast Gunboat",
+  "Original Item": "Piece of Heart",
+  "Category": ["Gunboat"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
+ },
+ {
+  "Name": "Shark Island - Cave",
+  "Original Item": "Silver Rupee",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Shark Island Secret Cave"]}, {"type": "macro", "args": ["Can Defeat Miniblins"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Cliff Plateau Isles - Cave",
+  "Original Item": "Joy Pendant",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Cliff Plateau Isles Secret Cave"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Cliff Plateau Isles - Highest Isle",
+  "Original Item": "Treasure Chart 25",
+  "Category": ["Puzzle Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Shark Island Secret Cave"]}, {"type": "macro", "args": ["Can Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Cliff Plateau Isles - Lookout Platform",
+  "Original Item": "Boko Baba Seed",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Crescent Moon Island - Chest",
+  "Original Item": "Treasure Chart 10",
+  "Category": ["Misc"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Crescent Moon Island - Submarine",
+  "Original Item": "Treasure Chart 9",
+  "Category": ["Submarine"],
+  "Needs": {"type": "macro", "args": ["Can Defeat Miniblins"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Horseshoe Island - Play Golf",
+  "Original Item": "Treasure Chart 28",
+  "Category": ["Island Puzzle"],
+  "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Horseshoe Island - Cave",
+  "Original Item": "Treasure Chart 8",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Horseshoe Island Secret Cave"]}, {"type": "macro", "args": ["Can Defeat Mothulas"]}, {"type": "macro", "args": ["Can Defeat Winged Mothulas"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Horseshoe Island - Northwestern Lookout Platform",
+  "Original Item": "Skull Necklace",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Horseshoe Island - Southeastern Lookout Platform",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Flight Control Platform - Bird-Man Contest - First Prize",
+  "Original Item": "Piece of Heart",
+  "Category": ["Minigame"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["MagicMeter"]}]},
+  "Path": "",
+  "Type": "REL",
+  "Offset": [""]
+ },
+ {
+  "Name": "Flight Control Platform - Submarine",
+  "Original Item": "Platform Chart",
+  "Category": ["Submarine"],
+  "Needs": {"type": "and", "args": [
+    {"type": "macro", "args": ["Can Defeat Wizzrobes"]},
+    {"type": "macro", "args": ["Can Defeat Red ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Green ChuChus"]},
+    {"type": "macro", "args": ["Can Defeat Miniblins"]},
+    {"type": "macro", "args": ["Can Defeat Wizzrobes at Rande"]}
+   ]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Star Island - Cave",
+  "Original Item": "Piece of Heart",
+  "Category": ["Combat Secret Cave"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access Star Island Secret Cave"]}, {"type": "macro", "args": ["Can Defeat Magtails"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Star Island - Lookout Platform",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Star Belt Archipelago - Lookout Platform",
+  "Original Item": "Red Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Five-Star Isles - Lookout Platform - Destroy the Cannons",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Destroy Cannons"]},
+  "Path": "",
+  "Type": "Chset",
+  "Offset": [""]
+ },
+ {
+  "Name": "Five-Star Isles - Raft",
+  "Original Item": "Red Rupee",
+  "Category": ["Raft"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Five-Star Isles - Submarine",
+  "Original Item": "Piece of Heart",
+  "Category": ["Submarine"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Seven-Star Isles - Center Lookout Platform",
+  "Original Item": "Red Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Seven-Star Isles - Northern Lookout Platform",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Seven-Star Isles - Southern Lookout Platform",
+  "Original Item": "Treasure Chart 16",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Defeat Wizzrobes at Range"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Seven-Star Isles - Big Octo",
+  "Original Item": "Piece of Heart",
+  "Category": ["Big Octo"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Defeat 12 Eye Big Octos"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "SCOB",
+  "Offset": [""]
  },
   
   
  {
- Six-Eye Reef - Destroy the Cannons and Gunboats:
+  "Name": "Cyclops Reef - Destroy the Cannons and Gunboats",
+  "Original Item": "Treasure Chart 13",
+  "Category": ["Eye Reef Chest"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Six-Eye Reef - Lookout Platform - Destroy the Cannons:
+  "Name": "Cyclops Reef - Lookout Platform - Defeat the Enemies",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Two-Eye Reef - Destroy the Cannons and Gunboats",
+  "Original Item": "Treasure Chart 13",
+  "Category": ["Eye Reef Chest"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
  {
- Six-Eye Reef - Submarine:
+  "Name": "Two-Eye Reef - Lookout Platform",
+  "Original Item": "Purple Rupee",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Two-Eye Reef - Big Octo Great Fairy",
+  "Original Item": "Magic Meter Upgrade",
+  "Category": ["Big Octo", "Great Fairy"],
+  "Needs": {"type": "macro", "args": ["Can Defeat Big Octos"]},
+  "Path": "",
+  "Type": "Event",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Three-Eye Reef - Destroy the Cannons and Gunboats",
+  "Original Item": "Treasure Chart 32",
+  "Category": ["Eye Reef Chests"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Four-Eye Reef - Destroy the Cannons and Gunboats",
+  "Original Item": "Treasure Chart 19",
+  "Category": ["Eye Reef Chests"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Five-Eye Reef - Destroy the Cannons",
+  "Original Item": "Treasure Chart 41",
+  "Category": ["Eye Reef Chests"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Five-Eye Reef - Lookout Platform",
+  "Original Item": "Golden Feather",
+  "Category": ["Platform"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+  
+  
+ {
+  "Name": "Six-Eye Reef - Destroy the Cannons and Gunboats",
+  "Original Item": "Treasure Chart 26",
+  "Category": ["Eye Reef Chests"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Six-Eye Reef - Lookout Platform - Destroy the Cannons",
+  "Original Item": "Skull Necklace",
+  "Category": ["Platform"],
+  "Needs": {"type": "macro", "args": ["Can Destroy Cannons"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
+ },
+ {
+  "Name": "Six-Eye Reef - Submarine",
+  "Original Item": "Piece of Heart",
+  "Category": ["Submarine"],
+  "Needs": {"type": "has_item", "args": ["nothing"]},
+  "Path": "",
+  "Type": "Chest",
+  "Offset": [""]
  },
   
   
   
  {
- Forsaken Fortress - Sunken Treasure:
+  "Name": "Forsaken Fortress - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 1"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Star Island - Sunken Treasure:
+  "Name": "Star Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 2"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Northern Fairy Island - Sunken Treasure:
+  "Name": "Northern Fairy Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 3"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Gale Isle - Sunken Treasure:
+  "Name": "Gale Isle - Sunken Treasure",
+  "Original Item": "Triforce Shard 2",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 4"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Crescent Moon Island - Sunken Treasure:
+  "Name": "Crescent Moon Island - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 5"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Seven-Star Isles - Sunken Treasure:
+  "Name": "Seven-Star Isles - Sunken Treasure",
+  "Original Item": "",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 6"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Overlook Island - Sunken Treasure:
+  "Name": "Overlook Island - Sunken Treasure",
+  "Original Item": "Secret Cave Chart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 7"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Four-Eye Reef - Sunken Treasure:
+  "Name": "Four-Eye Reef - Sunken Treasure",
+  "Original Item": "Great Fairy Chart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 8"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Mother and Child Isles - Sunken Treasure:
+  "Name": "Mother and Child Isles - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 9"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Spectacle Island - Sunken Treasure:
+  "Name": "Spectacle Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 10"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Windfall Island - Sunken Treasure:
+  "Name": "Windfall Island - Sunken Treasure",
+  "Original Item": "Purple Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 11"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Pawprint Isle - Sunken Treasure:
+  "Name": "Pawprint Isle - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 12"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Dragon Roost Island - Sunken Treasure:
+  "Name": "Dragon Roost Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 13"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Flight Control Platform - Sunken Treasure:
+  "Name": "Flight Control Platform - Sunken Treasure",
+  "Original Item": "Island Hearts Chart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 14"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Western Fairy Island - Sunken Treasure:
+  "Name": "Western Fairy Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 15"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Rock Spire Isle - Sunken Treasure:
+  "Name": "Rock Spire Isle - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 16"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Tingle Island - Sunken Treasure:
+  "Name": "Tingle Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 17"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Northern Triangle Island - Sunken Treasure:
+  "Name": "Northern Triangle Island - Sunken Treasure",
+  "Original Item": "Octo Chart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 18"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Eastern Fairy Island - Sunken Treasure:
+  "Name": "Eastern Fairy Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 19"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Fire Mountain - Sunken Treasure:
+  "Name": "Fire Mountain - Sunken Treasure",
+  "Original Item": "",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 20"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Star Belt Archipelago - Sunken Treasure:
+  "Name": "Star Belt Archipelago - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 21"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Three-Eye Reef - Sunken Treasure:
+  "Name": "Three-Eye Reef - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 22"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Greatfish Isle - Sunken Treasure:
+  "Name": "Greatfish Isle - Sunken Treasure",
+  "Original Item": "Triforce Shard 1",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 23"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Cyclops Reef - Sunken Treasure:
+  "Name": "Cyclops Reef - Sunken Treasure",
+  "Original Item": "Light Ring Chart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 24"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Six-Eye Reef - Sunken Treasure:
+  "Name": "Six-Eye Reef - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 25"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Tower of the Gods - Sunken Treasure:
+  "Name": "Tower of the Gods - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 26"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Eastern Triangle Island - Sunken Treasure:
+  "Name": "Eastern Triangle Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 27"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Thorned Fairy Island - Sunken Treasure:
+  "Name": "Thorned Fairy Island - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 28"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Needle Rock Isle - Sunken Treasure:
+  "Name": "Needle Rock Isle - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 29"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Islet of Steel - Sunken Treasure:
+  "Name": "Islet of Steel - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 30"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Stone Watcher Island - Sunken Treasure:
+  "Name": "Stone Watcher Island - Sunken Treasure",
+  "Original Item": "Triforce Shard 3",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 31"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Southern Triangle Island - Sunken Treasure:
+  "Name": "Southern Triangle Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 32"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Can Defeat Seahats"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Private Oasis - Sunken Treasure:
+  "Name": "Private Oasis - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 33"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Bomb Island - Sunken Treasure:
+  "Name": "Bomb Island - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 34"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Bird's Peak Rock - Sunken Treasure:
+  "Name": "Bird's Peak Rock - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 35"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Diamond Steppe Island - Sunken Treasure:
+  "Name": "Diamond Steppe Island - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 36"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Five-Eye Reef - Sunken Treasure:
+  "Name": "Five-Eye Reef - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 37"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Can Destroy Cannons"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Shark Island - Sunken Treasure:
+  "Name": "Shark Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 38"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Southern Fairy Island - Sunken Treasure:
+  "Name": "Southern Fairy Island - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 39"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Ice Ring Isle - Sunken Treasure:
+  "Name": "Ice Ring Isle - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 40"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Forest Haven - Sunken Treasure:
+  "Name": "Forest Haven - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 41"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Cliff Plateau Isles - Sunken Treasure:
+  "Name": "Cliff Plateau Isles - Sunken Treasure",
+  "Original Item": "Triforce Shard 3",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 42"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Horseshoe Island - Sunken Treasure:
+  "Name": "Horseshoe Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 43"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
-  "Name": Outset Island - Sunken Treasure:
+  "Name": "Outset Island - Sunken Treasure",
+  "Original Item": "Triforce Shard 6",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 44"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Headstone Island - Sunken Treasure:
+  "Name": "Headstone Island - Sunken Treasure",
+  "Original Item": "Silver Rupee",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 45"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Two-Eye Reef - Sunken Treasure:
+  "Name": "Two-Eye Reef - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 46"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Angular Isles - Sunken Treasure:
+  "Name": "Angular Isles - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 47"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  {
- Boating Course - Sunken Treasure:
+  "Name": "Boating Course - Sunken Treasure",
+  "Original Item": "Sea Hearts Chart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 48"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  },
  { 
- Five-Star Isles - Sunken Treasure:
+  "Name": "Five-Star Isles - Sunken Treasure",
+  "Original Item": "Piece of Heart",
+  "Category": ["Sunken Treasure"],
+  "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 49"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
+  "Path": "",
+  "Type": "",
+  "Offset": ["", "", ""]
  }
  ]
 }
