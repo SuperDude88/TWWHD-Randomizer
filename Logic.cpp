@@ -17,6 +17,7 @@ std::vector<std::string> ProgressItems = {"WindWaker", "SpoilsBag", "GrapplingHo
 "MagicMeter", "GhostShipChart", "Sword", "Sword", "Sword", "Sword", "Shield", "Shield", "Bow", "Bow", "Bow", "Wallet", "PictoBox", "PictoBox", "Bottle"};
 
 std::vector<std::string> PermanentItems; //These are starting items that you always own, this ensures they arent randomized accidentally
+std::vector<std::string> SemiPermanentItems; //These are starting items that you always own, this ensures they arent randomized accidentally (this one includes dungeon items that are removed however)
 
 std::vector<std::string> DRCProgressItems = {"DRCBigKey", "DRCSmallKey", "DRCSmallKey", "DRCSmallKey", "DRCSmallKey"};
 std::vector<std::string> FWProgressItems = {"FWBigKey", "FWSmallKey"};
@@ -35,6 +36,8 @@ LocationLists Locations;
 std::unordered_set<std::string> Settings;
 std::vector<Macro> Macros;
 
+bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression);
+
 bool has_item(std::vector<std::string> OwnedItems, std::string Item) {
     return std::find(OwnedItems.begin(), OwnedItems.end(), Item) != OwnedItems.end();
 }
@@ -46,16 +49,17 @@ bool canAccess(std::vector<std::string> OwnedItems, std::string LocationName) {
     auto it = std::find_if(AccessibleLocations.begin(), AccessibleLocations.end(), [&](const Location& loc) {return loc.Name == LocationName; });
     return isAccessible(OwnedItems, (*it).Needs);
 }
-
 //Add "can_access" condition to both accessibility checks to allow randomized entrances and make certain things easier
 //Also probably add macros so that certain things, like farming knight's crests, aren't terrible to implement each time
 //This won't be added for a bit because its complex and I'm lazy (even though it would make things easier), plus core features come first
 bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression) {
 
     //Add code to combine permanent items + progressitems + keys for this section
+    OwnedItems.insert(OwnedItems.end(), SemiPermanentItems.begin(), SemiPermanentItems.end());
 
     std::string item_typ = expression["type"];
-    auto& item_args = expression["args"];
+    auto item_args = expression["args"];
+
     if (item_typ == "or") {
         return std::any_of(item_args.begin(), item_args.end(), [&](auto arg) {return isAccessible(OwnedItems, arg); });
     }
@@ -68,13 +72,77 @@ bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression
         return std::count(OwnedItems.begin(), OwnedItems.end(), item_args[0]["args"]) >= stoi(count, nullptr);
     }
     else if (item_typ == "has_item") {
-        if (item_args[0] == "Nothing") return true;
+        if (item_args[0] == "Nothing" || item_args[0] == "nothing") return true;
         else {
             return has_item(OwnedItems, item_args[0]);
         }
     }
     else if (item_typ == "macro") {
-        auto it = std::find_if(Macros.begin(), Macros.end(), [&](const Macro& item) {return item.Name == item_args; });
+        //std::cout << "attempting to use macro " << item_args << std::endl;
+        auto it = std::find_if(Macros.begin(), Macros.end(), [&](const Macro& item) {return item.Name == item_args[0]; });
+        //std::cout << item_args << std::endl;
+  //      if(it == Macros.end()) {
+  //          return false;
+  //      }
+        return isAccessible(OwnedItems, (*it).Expression);
+    }
+    else if (item_typ == "can_access") {
+        return canAccess(OwnedItems, item_args[0]);
+    }
+    else if (item_typ == "setting") {
+        return Settings.count(item_args[0]) == 1;
+    }
+    else if (item_typ == "not") {
+        return isAccessible(OwnedItems, item_args[0]) == 0;
+    }
+    else {
+        printf("unknown type!");
+        return false;
+    }
+}
+
+bool isAccessibleDungeon(std::vector<std::string> OwnedDungeonItems, nlohmann::json expression) {
+
+    //Add code to combine permanent items + progress items + dungeon items for this section
+
+    std::vector<std::string> OwnedItems;
+    OwnedItems.assign(ProgressItems.begin(), ProgressItems.end());
+    OwnedItems.insert(OwnedItems.end(), PermanentItems.begin(), PermanentItems.end());
+
+    std::string item_typ = expression["type"];
+    auto& item_args = expression["args"];
+    if (item_typ == "or") {
+        return std::any_of(item_args.begin(), item_args.end(), [&](auto arg) {return isAccessibleDungeon(OwnedDungeonItems, arg); });
+    }
+    else if (item_typ == "and") {
+        return std::all_of(item_args.begin(), item_args.end(), [&](auto arg) {return isAccessibleDungeon(OwnedDungeonItems, arg); });
+    }
+    else if (item_typ == "count") {
+        std::string count = item_args[0]["count"];
+        std::string itemtocount = item_args[0]["args"]; //This exists entirely for the find function to work, otherwise it just gets mad and says you cant use find on a json thing
+        //Potentially remove the if statements here and just combine stuff to deal with it instead
+        if (itemtocount.find("SmallKey") != std::string::npos) {
+            return std::count(OwnedDungeonItems.begin(), OwnedDungeonItems.end(), item_args[0]["args"]) >= stoi(count, nullptr);
+        }
+        else {
+            return std::count(OwnedItems.begin(), OwnedItems.end(), item_args[0]["args"]) >= stoi(count, nullptr);
+        }
+    }
+    else if (item_typ == "has_item") {
+        std::string itemtocheck = item_args[0]; //This exists entirely for the find function to work, otherwise it just gets mad and says you cant use find on a json thing
+        //Potentially remove the if statements here and just combine stuff to deal with it instead
+        if (itemtocheck.find("SmallKey") != std::string::npos || itemtocheck.find("BigKey") != std::string::npos) {
+            //std::cout << "checking for key" << std::endl;
+            return has_item(OwnedDungeonItems, item_args[0]);
+        }
+        else if (item_args[0] == "Nothing" || item_args[0] == "nothing") return true;
+        else {
+            return has_item(OwnedItems, item_args[0]);
+        }
+    }
+    else if (item_typ == "macro") {
+        auto it = std::find_if(Macros.begin(), Macros.end(), [&](const Macro& item) {return item.Name == item_args[0]; });
+        //std::cout << item_args << std::endl;
         return isAccessible(OwnedItems, (*it).Expression);
     }
     else if (item_typ == "can_access") {
@@ -92,60 +160,13 @@ bool isAccessible(std::vector<std::string> OwnedItems, nlohmann::json expression
     }
 }
 
-bool isAccessibleDungeon(std::vector<std::string> OwnedDungeonItems, nlohmann::json expression) {
-
-    //Add code to combine permanent items + progress items + dungeon items for this section
-
-    std::vector<std::string> OwnedItems;
-    OwnedItems.assign(ProgressItems.begin(), ProgressItems.end());
-
-    std::string item_typ = expression["type"];
-    auto& item_args = expression["args"];
-    if (item_typ == "or") {
-        return std::any_of(item_args.begin(), item_args.end(), [&](auto arg) {return isAccessible(OwnedItems, arg); });
-    }
-    else if (item_typ == "and") {
-        return std::all_of(item_args.begin(), item_args.end(), [&](auto arg) {return isAccessible(OwnedItems, arg); });
-    }
-    else if (item_typ == "count") {
-        std::string count = item_args[0]["count"];
-        std::string itemtocount = item_args[0]["args"]; //This exists entirely for the find function to work, otherwise it just gets mad and says you cant use find on a json thing
-        //Potentially remove the if statements here and just combine stuff to deal with it instead
-        if (itemtocount.find("SmallKey") != std::string::npos) {
-            return std::count(OwnedDungeonItems.begin(), OwnedDungeonItems.end(), item_args[0]["args"]) >= stoi(count, nullptr);
-        }
-        else {
-            return std::count(OwnedItems.begin(), OwnedItems.end(), item_args[0]["args"]) >= stoi(count, nullptr);
-        }
-    }
-    else if (item_typ == "has_item") {
-        std::string itemtocheck = item_args[0]; //This exists entirely for the find function to work, otherwise it just gets mad and says you cant use find on a json thing
-        //Potentially remove the if statements here and just combine stuff to deal with it instead
-        if (itemtocheck.find("SmallKey") != std::string::npos || itemtocheck.find("BigKey") != std::string::npos) {
-            return has_item(OwnedDungeonItems, item_args[0]);
-        }
-        else if (item_args[0] == "Nothing") return true;
-        else {
-            return has_item(OwnedItems, item_args[0]);
-        }
-    }
-    else if (item_typ == "macro") {
-        auto it = std::find_if(Macros.begin(), Macros.end(), [&](const Macro& item) {return item.Name == item_args; });
-        return isAccessible(OwnedItems, (*it).Expression);
-    }
-    else {
-        printf("unknown type!");
-        return false;
-    }
-}
-
 LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std::string> settings, int NumRaceModeDungeons) {
 
     std::vector<std::string> Dungeons = {"DRC", "FW", "TOTG", "FF", "ET", "WT"};
     std::vector<std::string> RaceModeDungeons;
 
     for (int a = 0; a < NumRaceModeDungeons; a++) {
-        std::shuffle(Dungeons.begin(), Dungeons.end(), std::default_random_engine(1234567)); //Replace with random seed later
+        std::shuffle(Dungeons.begin(), Dungeons.end(), std::default_random_engine(123489767)); //Replace with random seed later
         RaceModeDungeons.push_back(Dungeons[0]);
         Dungeons.erase(Dungeons.begin());
     }
@@ -169,7 +190,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     //This is used to determine which list to pull from
     if (Settings.count("Dungeon") > 0) {
         for (unsigned int i = 0; i < locations.ProgressLocations.size(); i++) {
-            if (locations.ProgressLocations[i].Name.find("Dragon Roost Cavern") != std::string::npos && locations.ProgressLocations[i].Name.find("Dragon Roost Cavern")) {
+            if (locations.ProgressLocations[i].Name.find("Dragon Roost Cavern") != std::string::npos) {
                 DRCLocations.push_back(locations.ProgressLocations[i]);
                 locations.ProgressLocations.erase(locations.ProgressLocations.begin() + i);
                 i = i - 1;
@@ -286,40 +307,48 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     
     AccessibleLocations.assign(DRCLocations.begin(), DRCLocations.end());
     for (unsigned int x = 0; DRCProgressItems.size() > 0; x++) {
-        std::shuffle(DRCProgressItems.begin(), DRCProgressItems.end(), std::default_random_engine(123456));
+        std::shuffle(DRCProgressItems.begin(), DRCProgressItems.end(), std::default_random_engine(12348976));
         std::string itemtoplace = DRCProgressItems[0];
-        //std::cout << "removed " << itemtoplace << std::endl;
+        std::cout << DRCProgressItems[0] << " Removed" << std::endl;
+        std::cout << DRCProgressItems.size() << std::endl;
         DRCProgressItems.erase(DRCProgressItems.begin());
         for (unsigned int y = 0; y < AccessibleLocations.size(); y++) {
-            if (isAccessibleDungeon(DRCProgressItems, AccessibleLocations[y].Needs) == false) {
+            std::cout << "checking " << AccessibleLocations[y].Name << std::endl;
+            std::cout << isAccessibleDungeon(DRCProgressItems, AccessibleLocations[y].Needs) << std::endl;
+            if (isAccessibleDungeon(DRCProgressItems, AccessibleLocations[y].Needs) == 0) {
                 UnplacedDRCLocations.push_back(AccessibleLocations[y]);
+                std::cout << AccessibleLocations[y].Name << " Added to unplaced locations" << std::endl;
                 AccessibleLocations.erase(AccessibleLocations.begin() + y);
                 y = y - 1;
             }
 
         }
-        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(1234567)); //Change static seed to something random in all instances, this is just for testing
-        int seed = 1234567;
-        while (std::count(DRCProgressItems.begin(), DRCProgressItems.end(), "SmallKey") > 0 && AccessibleLocations[0].Name == "Dragon Roost Cavern - First Room") { //This is to make sure only the last small key is placed in the first room to avoid failed placements
+        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(123489767)); //Change static seed to something random in all instances, this is just for testing
+        int seed = 123489767;
+        while (std::count(DRCProgressItems.begin(), DRCProgressItems.end(), "DRCSmallKey") > 0 && AccessibleLocations[0].Name == "Dragon Roost Cavern - First Room") { //This is to make sure only the last small key is placed in the first room to avoid failed placements
             seed = seed + 1;
             std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(seed));
         }
+        std::cout << AccessibleLocations.size() << std::endl;
         AccessibleLocations[0].Item = itemtoplace;
         std::cout << AccessibleLocations[0].Name << " contains " << AccessibleLocations[0].Item << std::endl;
-        locations.PlacedLocations.push_back(AccessibleLocations[0]);
+        locations.ProgressLocations.push_back(AccessibleLocations[0]); //This is added to progress locations instead of placed locations so that available keys can be accounted for later
         AccessibleLocations.erase(AccessibleLocations.begin());
+        std::cout << "location erased" << std::endl;
     }
 
     //Place DRC Nonprogress items
-    std::shuffle(UnplacedDRCLocations.begin(), UnplacedDRCLocations.end(), std::default_random_engine(1234567));
-    std::shuffle(DRCNonProgressItems.begin(), DRCNonProgressItems.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedDRCLocations.begin(), UnplacedDRCLocations.end(), std::default_random_engine(123489767));
+    std::shuffle(DRCNonProgressItems.begin(), DRCNonProgressItems.end(), std::default_random_engine(123489767));
+    std::cout << DRCNonProgressItems.size() << std::endl;
+    std::cout << UnplacedDRCLocations.size() << std::endl;
     UnplacedDRCLocations[0].Item = DRCNonProgressItems[0];
     std::cout << UnplacedDRCLocations[0].Name << " contains " << UnplacedDRCLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedDRCLocations[0]);
     UnplacedDRCLocations.erase(UnplacedDRCLocations.begin());
     DRCNonProgressItems.erase(DRCNonProgressItems.begin());
 
-    std::shuffle(UnplacedDRCLocations.begin(), UnplacedDRCLocations.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedDRCLocations.begin(), UnplacedDRCLocations.end(), std::default_random_engine(123489767));
     UnplacedDRCLocations[0].Item = DRCNonProgressItems[0];
     std::cout << UnplacedDRCLocations[0].Name << " contains " << UnplacedDRCLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedDRCLocations[0]);
@@ -335,7 +364,6 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
         else {
             locations.NonprogressLocations.push_back(UnplacedDRCLocations[z]);
         }
-        std::cout << locations.UnplacedLocations[z].Name << std::endl;
     }
 
     //End of DRC Placement
@@ -388,9 +416,8 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     AccessibleLocations.assign(FWLocations.begin(), FWLocations.end());
     for (unsigned int x = 0; FWProgressItems.size() > 0; x++) {
-        std::shuffle(FWProgressItems.begin(), FWProgressItems.end(), std::default_random_engine(123456));
+        std::shuffle(FWProgressItems.begin(), FWProgressItems.end(), std::default_random_engine(12348976));
         std::string itemtoplace = FWProgressItems[0];
-        //std::cout << "removed " << itemtoplace << std::endl;
         FWProgressItems.erase(FWProgressItems.begin());
         for (unsigned int y = 0; y < AccessibleLocations.size(); y++) {
             if (isAccessibleDungeon(FWProgressItems, AccessibleLocations[y].Needs) == false) {
@@ -400,23 +427,23 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
             }
 
         }
-        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(1234567)); //Change static seed to something random in all instances, this is just for testing
+        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(123489767)); //Change static seed to something random in all instances, this is just for testing
         AccessibleLocations[0].Item = itemtoplace;
         std::cout << AccessibleLocations[0].Name << " contains " << AccessibleLocations[0].Item << std::endl;
-        locations.PlacedLocations.push_back(AccessibleLocations[0]);
+        locations.ProgressLocations.push_back(AccessibleLocations[0]); //This is added to progress locations instead of placed locations so that available keys can be accounted for later
         AccessibleLocations.erase(AccessibleLocations.begin());
     }
 
     //Place FW Nonprogress items
-    std::shuffle(UnplacedFWLocations.begin(), UnplacedFWLocations.end(), std::default_random_engine(1234567));
-    std::shuffle(FWNonProgressItems.begin(), FWNonProgressItems.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedFWLocations.begin(), UnplacedFWLocations.end(), std::default_random_engine(123489767));
+    std::shuffle(FWNonProgressItems.begin(), FWNonProgressItems.end(), std::default_random_engine(123489767));
     UnplacedFWLocations[0].Item = FWNonProgressItems[0];
     std::cout << UnplacedFWLocations[0].Name << " contains " << UnplacedFWLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedFWLocations[0]);
     UnplacedFWLocations.erase(UnplacedFWLocations.begin());
     FWNonProgressItems.erase(FWNonProgressItems.begin());
 
-    std::shuffle(UnplacedFWLocations.begin(), UnplacedFWLocations.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedFWLocations.begin(), UnplacedFWLocations.end(), std::default_random_engine(123489767));
     UnplacedFWLocations[0].Item = FWNonProgressItems[0];
     std::cout << UnplacedFWLocations[0].Name << " contains " << UnplacedFWLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedFWLocations[0]);
@@ -432,7 +459,6 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
         else {
             locations.NonprogressLocations.push_back(UnplacedFWLocations[z]);
         }
-        std::cout << locations.UnplacedLocations[z].Name << std::endl;
     }
 
     //End of FW Placement
@@ -485,7 +511,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     AccessibleLocations.assign(TOTGLocations.begin(), TOTGLocations.end());
     for (unsigned int x = 0; TOTGProgressItems.size() > 0; x++) {
-        std::shuffle(TOTGProgressItems.begin(), TOTGProgressItems.end(), std::default_random_engine(123456));
+        std::shuffle(TOTGProgressItems.begin(), TOTGProgressItems.end(), std::default_random_engine(12348976));
         std::string itemtoplace = TOTGProgressItems[0];
         //std::cout << "removed " << itemtoplace << std::endl;
         TOTGProgressItems.erase(TOTGProgressItems.begin());
@@ -497,23 +523,23 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
             }
 
         }
-        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(1234567)); //Change static seed to something random in all instances, this is just for testing
+        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(123489767)); //Change static seed to something random in all instances, this is just for testing
         AccessibleLocations[0].Item = itemtoplace;
         std::cout << AccessibleLocations[0].Name << " contains " << AccessibleLocations[0].Item << std::endl;
-        locations.PlacedLocations.push_back(AccessibleLocations[0]);
+        locations.ProgressLocations.push_back(AccessibleLocations[0]); //This is added to progress locations instead of placed locations so that available keys can be accounted for later
         AccessibleLocations.erase(AccessibleLocations.begin());
     }
 
     //Place TotG Nonprogress items
-    std::shuffle(UnplacedTOTGLocations.begin(), UnplacedTOTGLocations.end(), std::default_random_engine(1234567));
-    std::shuffle(TOTGNonProgressItems.begin(), TOTGNonProgressItems.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedTOTGLocations.begin(), UnplacedTOTGLocations.end(), std::default_random_engine(123489767));
+    std::shuffle(TOTGNonProgressItems.begin(), TOTGNonProgressItems.end(), std::default_random_engine(123489767));
     UnplacedTOTGLocations[0].Item = TOTGNonProgressItems[0];
     std::cout << UnplacedTOTGLocations[0].Name << " contains " << UnplacedTOTGLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedTOTGLocations[0]);
     UnplacedTOTGLocations.erase(UnplacedTOTGLocations.begin());
     TOTGNonProgressItems.erase(TOTGNonProgressItems.begin());
 
-    std::shuffle(UnplacedTOTGLocations.begin(), UnplacedTOTGLocations.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedTOTGLocations.begin(), UnplacedTOTGLocations.end(), std::default_random_engine(123489767));
     UnplacedTOTGLocations[0].Item = TOTGNonProgressItems[0];
     std::cout << UnplacedTOTGLocations[0].Name << " contains " << UnplacedTOTGLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedTOTGLocations[0]);
@@ -529,7 +555,6 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
         else {
             locations.NonprogressLocations.push_back(UnplacedTOTGLocations[z]);
         }
-        std::cout << locations.UnplacedLocations[z].Name << std::endl;
     }
 
     //End of TotG Placement
@@ -583,15 +608,15 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
     UnplacedFFLocations.assign(FFLocations.begin(), FFLocations.end());
 
     //Place FF Nonprogress items
-    std::shuffle(UnplacedFFLocations.begin(), UnplacedFFLocations.end(), std::default_random_engine(1234567));
-    std::shuffle(FFNonProgressItems.begin(), FFNonProgressItems.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedFFLocations.begin(), UnplacedFFLocations.end(), std::default_random_engine(123489767));
+    std::shuffle(FFNonProgressItems.begin(), FFNonProgressItems.end(), std::default_random_engine(123489767));
     UnplacedFFLocations[0].Item = FFNonProgressItems[0];
     std::cout << UnplacedFFLocations[0].Name << " contains " << UnplacedFFLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedFFLocations[0]);
     UnplacedFFLocations.erase(UnplacedFFLocations.begin());
     FFNonProgressItems.erase(FFNonProgressItems.begin());
 
-    std::shuffle(UnplacedFFLocations.begin(), UnplacedFFLocations.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedFFLocations.begin(), UnplacedFFLocations.end(), std::default_random_engine(123489767));
     UnplacedFFLocations[0].Item = FFNonProgressItems[0];
     std::cout << UnplacedFFLocations[0].Name << " contains " << UnplacedFFLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedFFLocations[0]);
@@ -607,7 +632,6 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
         else {
             locations.NonprogressLocations.push_back(UnplacedFFLocations[z]);
         }
-        std::cout << locations.UnplacedLocations[z].Name << std::endl;
     }
 
     //End of FF Placement
@@ -660,7 +684,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     AccessibleLocations.assign(ETLocations.begin(), ETLocations.end());
     for (unsigned int x = 0; ETProgressItems.size() > 0; x++) {
-        std::shuffle(ETProgressItems.begin(), ETProgressItems.end(), std::default_random_engine(123456));
+        std::shuffle(ETProgressItems.begin(), ETProgressItems.end(), std::default_random_engine(12348976));
         std::string itemtoplace = ETProgressItems[0];
         //std::cout << "removed " << itemtoplace << std::endl;
         ETProgressItems.erase(ETProgressItems.begin());
@@ -672,23 +696,23 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
             }
 
         }
-        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(1234567)); //Change static seed to something random in all instances, this is just for testing
+        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(123489767)); //Change static seed to something random in all instances, this is just for testing
         AccessibleLocations[0].Item = itemtoplace;
         std::cout << AccessibleLocations[0].Name << " contains " << AccessibleLocations[0].Item << std::endl;
-        locations.PlacedLocations.push_back(AccessibleLocations[0]);
+        locations.ProgressLocations.push_back(AccessibleLocations[0]); //This is added to progress locations instead of placed locations so that available keys can be accounted for later
         AccessibleLocations.erase(AccessibleLocations.begin());
     }
 
     //Place ET Nonprogress items
-    std::shuffle(UnplacedETLocations.begin(), UnplacedETLocations.end(), std::default_random_engine(1234567));
-    std::shuffle(ETNonProgressItems.begin(), ETNonProgressItems.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedETLocations.begin(), UnplacedETLocations.end(), std::default_random_engine(123489767));
+    std::shuffle(ETNonProgressItems.begin(), ETNonProgressItems.end(), std::default_random_engine(123489767));
     UnplacedETLocations[0].Item = ETNonProgressItems[0];
     std::cout << UnplacedETLocations[0].Name << " contains " << UnplacedETLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedETLocations[0]);
     UnplacedETLocations.erase(UnplacedETLocations.begin());
     ETNonProgressItems.erase(ETNonProgressItems.begin());
 
-    std::shuffle(UnplacedETLocations.begin(), UnplacedETLocations.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedETLocations.begin(), UnplacedETLocations.end(), std::default_random_engine(123489767));
     UnplacedETLocations[0].Item = ETNonProgressItems[0];
     std::cout << UnplacedETLocations[0].Name << " contains " << UnplacedETLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedETLocations[0]);
@@ -704,7 +728,6 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
         else {
             locations.NonprogressLocations.push_back(UnplacedETLocations[z]);
         }
-        std::cout << locations.UnplacedLocations[z].Name << std::endl;
     }
 
     //End of ET Placement
@@ -757,7 +780,7 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
 
     AccessibleLocations.assign(WTLocations.begin(), WTLocations.end());
     for (unsigned int x = 0; WTProgressItems.size() > 0; x++) {
-        std::shuffle(WTProgressItems.begin(), WTProgressItems.end(), std::default_random_engine(123456));
+        std::shuffle(WTProgressItems.begin(), WTProgressItems.end(), std::default_random_engine(12348976));
         std::string itemtoplace = WTProgressItems[0];
         //std::cout << "removed " << itemtoplace << std::endl;
         WTProgressItems.erase(WTProgressItems.begin());
@@ -769,23 +792,23 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
             }
 
         }
-        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(1234567)); //Change static seed to something random in all instances, this is just for testing
+        std::shuffle(AccessibleLocations.begin(), AccessibleLocations.end(), std::default_random_engine(123489767)); //Change static seed to something random in all instances, this is just for testing
         AccessibleLocations[0].Item = itemtoplace;
         std::cout << AccessibleLocations[0].Name << " contains " << AccessibleLocations[0].Item << std::endl;
-        locations.PlacedLocations.push_back(AccessibleLocations[0]);
+        locations.ProgressLocations.push_back(AccessibleLocations[0]); //This is added to progress locations instead of placed locations so that available keys can be accounted for later
         AccessibleLocations.erase(AccessibleLocations.begin());
     }
 
     //Place WT Nonprogress items
-    std::shuffle(UnplacedWTLocations.begin(), UnplacedWTLocations.end(), std::default_random_engine(1234567));
-    std::shuffle(WTNonProgressItems.begin(), WTNonProgressItems.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedWTLocations.begin(), UnplacedWTLocations.end(), std::default_random_engine(123489767));
+    std::shuffle(WTNonProgressItems.begin(), WTNonProgressItems.end(), std::default_random_engine(123489767));
     UnplacedWTLocations[0].Item = WTNonProgressItems[0];
     std::cout << UnplacedWTLocations[0].Name << " contains " << UnplacedWTLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedWTLocations[0]);
     UnplacedWTLocations.erase(UnplacedWTLocations.begin());
     WTNonProgressItems.erase(WTNonProgressItems.begin());
 
-    std::shuffle(UnplacedWTLocations.begin(), UnplacedWTLocations.end(), std::default_random_engine(1234567));
+    std::shuffle(UnplacedWTLocations.begin(), UnplacedWTLocations.end(), std::default_random_engine(123489767));
     UnplacedWTLocations[0].Item = WTNonProgressItems[0];
     std::cout << UnplacedWTLocations[0].Name << " contains " << UnplacedWTLocations[0].Item << std::endl;
     locations.PlacedLocations.push_back(UnplacedWTLocations[0]);
@@ -801,7 +824,6 @@ LocationLists PlaceDungeonItems(LocationLists locations, std::unordered_set<std:
         else {
             locations.NonprogressLocations.push_back(UnplacedWTLocations[z]);
         }
-        std::cout << locations.UnplacedLocations[z].Name << std::endl;
     }
 
     //End of WT Placement
@@ -815,42 +837,74 @@ LocationLists AssumedFill(std::vector<std::string> StartingItems, int NumRaceMod
 
     //Do something about triforce shards so they are numbered properly and the item ids dont overlap weirdly
     
-    for (int i = 0; i < StartingItems.size(); i++) {
-        ProgressItems.erase(ProgressItems.begin() + std::distance(ProgressItems.begin(), std::find(ProgressItems.begin(), ProgressItems.end(), StartingItems[i])));
-        PermanentItems.push_back(StartingItems[i]);
-    }
+    //for (unsigned int i = 0; i < StartingItems.size(); i++) {
+    //    ProgressItems.erase(ProgressItems.begin() + std::distance(ProgressItems.begin(), std::find(ProgressItems.begin(), ProgressItems.end(), StartingItems[i])));
+    //    PermanentItems.push_back(StartingItems[i]);
+    //}
+
+    std::cout << Locations.ProgressLocations.size() << std::endl;
 
     Locations = PlaceDungeonItems(Locations, Settings, NumRaceModeDungeons);
 
-    for (int i = 0; i < Locations.UnplacedLocations.size(); i++) {
+    std::cout << "finished dungeon placement" << std::endl;
+
+    for (unsigned int i = 0; i < Locations.UnplacedLocations.size(); i++) {
         Locations.ProgressLocations.push_back(Locations.UnplacedLocations[i]);
     }
     Locations.UnplacedLocations.clear();
-    int i = 0;
+    unsigned int i = 0;
+    std::cout << Locations.ProgressLocations.size() << std::endl;
     while(i < ProgressItems.size()) {
-        std::shuffle(Locations.ProgressLocations.begin(), Locations.ProgressLocations.end(), std::default_random_engine(1234567)); //replace with random seed later
-        std::shuffle(ProgressItems.begin(), ProgressItems.end(), std::default_random_engine(1234567)); //replace with random seed later
+        std::shuffle(Locations.ProgressLocations.begin(), Locations.ProgressLocations.end(), std::default_random_engine(123489767)); //replace with random seed later
+        std::shuffle(ProgressItems.begin(), ProgressItems.end(), std::default_random_engine(123489767)); //replace with random seed later
         std::string itemtoplace = ProgressItems[0];
         ProgressItems.erase(ProgressItems.begin());
-        for (int y = 0; y < Locations.ProgressLocations.size(); y++) {
-            if (isAccessible(ProgressItems, Locations.ProgressLocations[y].Needs) != 1) {
-                Locations.NonprogressLocations.push_back(Locations.ProgressLocations[y]);
-                Locations.ProgressLocations.erase(Locations.ProgressLocations.begin() + y);
-                y = y - 1;
+
+        bool removeditem = true;
+        while (removeditem) {
+            for (unsigned int y = 0; y < Locations.ProgressLocations.size(); y++) {
+                removeditem = false;
+                std::cout << Locations.ProgressLocations.size() << std::endl;
+                if (isAccessible(ProgressItems, Locations.ProgressLocations[y].Needs) != 1) {
+
+                    if (Locations.ProgressLocations[y].Item.find("Key") != std::string::npos) {
+                        auto dist = std::distance(SemiPermanentItems.begin(), std::find(SemiPermanentItems.begin(), SemiPermanentItems.end(), Locations.ProgressLocations[y].Item));
+                        SemiPermanentItems.erase(SemiPermanentItems.begin() + dist);
+                        Locations.PlacedLocations.push_back(Locations.ProgressLocations[y]);
+                        Locations.ProgressLocations.erase(Locations.ProgressLocations.begin() + y);
+                        removeditem = true;
+                    }
+                    Locations.NonprogressLocations.push_back(Locations.ProgressLocations[y]);
+                    Locations.ProgressLocations.erase(Locations.ProgressLocations.begin() + y);
+                    y = y - 1;
+                }
             }
+            removeditem = false;
         }
-        std::shuffle(Locations.ProgressLocations.begin(), Locations.ProgressLocations.end(), std::default_random_engine(1234567));
+        std::shuffle(Locations.ProgressLocations.begin(), Locations.ProgressLocations.end(), std::default_random_engine(123489767));
+        if (Locations.ProgressLocations.size() < ProgressItems.size() && Locations.ProgressLocations.size() == 0) {
+            break;
+        }
         Locations.ProgressLocations[0].Item = itemtoplace;
         Locations.PlacedLocations.push_back(Locations.ProgressLocations[0]);
         Locations.ProgressLocations.erase(Locations.ProgressLocations.begin());
     }
 
-    for (int i = 0; i < Locations.ProgressLocations.size(); i++) { //Remaining unused progress locations get added to the nonprogress pool
+    for (unsigned int i = 0; i < Locations.ProgressLocations.size(); i++) { //Remaining unused progress locations get added to the nonprogress pool
         Locations.NonprogressLocations.push_back(Locations.ProgressLocations[i]);
         Locations.ProgressLocations.erase(Locations.ProgressLocations.begin() + i);
         i = i - 1;
     }
 
+    std::cout << ProgressItems.size() << std::endl;
+
+    for (unsigned int y = 0; y < Locations.PlacedLocations.size(); y++) {
+        std::cout << Locations.PlacedLocations[y].Name << " contains " << Locations.PlacedLocations[y].Item << std::endl;
+    }
+    std::cout << std::endl;
+    for (unsigned int y = 0; y < ProgressItems.size(); y++) {
+        std::cout << ProgressItems[y] << " was not placed" << std::endl;
+    }
     //Add nonprogress stuff
 
 
@@ -859,7 +913,7 @@ LocationLists AssumedFill(std::vector<std::string> StartingItems, int NumRaceMod
 }
 
 int initVars(std::unordered_set<std::string> settings) {
-    std::vector<Location> locations = ParseLocations("LocationsSmall.json");
+    std::vector<Location> locations = ParseLocations("Locations.json");
     Locations = FindPossibleProgressLocations(locations, settings);
     Settings = settings;
     return 1;
@@ -871,15 +925,17 @@ int main() {
     //I'll keep it in the code here for now for this reason and as some example stuff ig
     //Most of these comments are notes for things I need to do, and a couple things are explanations so I remember what they are for and don't delete them
 
-    Settings = {"Dungeon", "Great Fairy", "Misc", "Spoils Trading", "Tingle Chest"};
+    Settings = {"Dungeon", "Great Fairy", "Misc", "Spoils Trading", "Tingle Chest", "Platform", "Eye Reef Chest", "Raft"};
 
-    std::vector<Location> locations = ParseLocations("LocationsSmall.json");
+    std::vector<Location> locations = ParseLocations("Locations.json");
+    Macros = ParseMacros("Macros.json");
     Locations = FindPossibleProgressLocations(locations, Settings);
 
     int NumRaceModeDungeons = 4;
 
     std::vector<std::string> StartingItems = {"GrapplingHook", "HerosBow", "Bombs"};
-    
+    PermanentItems = {"GrapplingHook", "HerosBow", "Bombs"};
+    SemiPermanentItems = {"GrapplingHook", "HerosBow", "Bombs", "DRCBigKey", "DRCSmallKey", "DRCSmallKey", "DRCSmallKey", "DRCSmallKey", "FWBigKey", "FWSmallKey", "TOTGBigKey", "TOTGSmallKey", "TOTGSmallKey", "ETBigKey", "ETSmallKey", "ETSmallKey", "ETSmallKey", "WTBigKey", "WTSmallKey", "WTSmallKey"};
     AssumedFill(StartingItems, NumRaceModeDungeons);
 
 }
