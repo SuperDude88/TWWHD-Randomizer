@@ -81,7 +81,7 @@
   "Expression": {
       "type": "or", "args": [
        {"type": "has_item", "args": ["HerosBow"]},
-       {"type": "or", "args": [{"type": "has_item", "args": "Boomerang"}, {"type": "or", "args": [{"type": "has_item", "args": "Bombs"}, {"type": "has_item", "args": "Hookshot"}]}]}
+       {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
       ]
     }
  },
@@ -90,7 +90,7 @@
   "Expression": {
       "type": "or", "args": [
        {"type": "has_item", "args": ["HerosBow"]},
-       {"type": "or", "args": [{"type": "has_item", "args": "Boomerang"}, {"type": "has_item", "args": ["Hookshot"]}]}
+       {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]}
       ]
     }
  },
@@ -99,7 +99,7 @@
   "Expression": {
       "type": "or", "args": [
        {"type": "has_item", "args": ["HerosBow"]},
-       {"type": "or", "args": [{"type": "has_item", "args": "Boomerang"}, {"type": "or", "args": [{"type": "has_item", "args": "Bombs"}, {"type": "has_item", "args": "Hookshot"}]}]}
+       {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
       ]
     }
  },
