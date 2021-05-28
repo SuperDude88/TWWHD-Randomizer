@@ -605,7 +605,7 @@
 
  {
   "Name": "Dragon Roost Cavern - First Room",
-  "Original Item": "SmallKoy",
+  "Original Item": "SmallKey",
   "Category": ["Dungeon"],
   "Needs": {"type": "macro", "args": ["Can Access DRC"]},
   "Path": "M_NewD2_Stage.zs",
@@ -625,7 +625,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Boarded Up Chest",
-  "Original Item": "SmallKoy",
+  "Original Item": "SmallKey",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "1", "args": "DRCSmallKey"}]}]
@@ -664,7 +664,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Rat Room Boarded Up Chest",
-  "Original Item": "SmallKoy",
+  "Original Item": "SmallKey",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "2", "args": "DRCSmallKey"}]}]},
@@ -674,7 +674,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Bird's Nest",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "3", "args": "DRCSmallKey"}]}]},
@@ -771,7 +771,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Big Key Chest",
-  "Original Item": "BigKoy",
+  "Original Item": "BigKey",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [
@@ -925,7 +925,7 @@
  },
  {
   "Name": "Forbidden Woods - Vine Maze Right Chest",
-  "Original Item": "FW Small Koy",
+  "Original Item": "FW Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Access FW"]}, {"type": "macro", "args": ["Can Defeat Boko Babas"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
   "Path": "",
@@ -1028,7 +1028,7 @@
  },
  {
   "Name": "Forbidden Woods - Big Key Chest",
-  "Original Item": "FW Big Koy",
+  "Original Item": "FW Big Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access FW"]},
@@ -1097,7 +1097,7 @@
  },
  {
   "Name": "Tower of the Gods - Hop Across Floating Boxes",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "macro", "args": ["Can Access TOTG"]},
   "Path": "",
@@ -1198,7 +1198,7 @@
  },
  {
   "Name": "Tower of the Gods - Floating Platforms Room",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access TOTG"]},
@@ -1234,7 +1234,7 @@
  },
  {
   "Name": "Tower of the Gods - Big Key Chest",
-  "Original Item": "TOTG Big Koy",
+  "Original Item": "TOTG Big Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access TOTG"]},
@@ -1481,7 +1481,7 @@
  }, 
  {
   "Name": "Earth Temple - Transparent Chest in First Crypt",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1527,7 +1527,7 @@
  },
  {
   "Name": "Earth Temple - Casket in Second Crypt",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1574,7 +1574,7 @@
  },
  {
   "Name": "Earth Temple - End of Foggy Room With Floormasters",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1691,7 +1691,7 @@
  },
  {
   "Name": "Earth Temple - Big Key Chest",
-  "Original Item": "ET Big Koy",
+  "Original Item": "ET Big Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1789,7 +1789,7 @@
  },
  {
   "Name": "Wind Temple - Big Key Chest",
-  "Original Item": "WT Big Koy",
+  "Original Item": "WT Big Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1841,7 +1841,7 @@
  },
  {
   "Name": "Wind Temple - Spike Wall Room - First Chest",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
@@ -1916,7 +1916,7 @@
  },
  {
   "Name": "Wind Temple - Chest Behind Seven Armos",
-  "Original Item": "Small Koy",
+  "Original Item": "Small Key",
   "Category": ["Dungeon"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Play CM"]},
