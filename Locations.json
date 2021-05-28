@@ -227,7 +227,7 @@
 
   {
   "Name": "Windfall Island - Mrs. Marie - Give 40 Joy Pendants",
-  "Original Item": "Cabana Deed",
+  "Original Item": "Treasure Chart 45",
   "Category": ["Spoils Trading"],
   "Needs": {"type": "and", "args": [{"type": "has_item", "args": ["SpoilsBag"]}, {"type": "macro", "args": ["Can Farm Joy Pendants"]}]},
   "Path": "cking.rpx",
@@ -636,7 +636,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Chest Across Lava Pit",
-  "Original Item": "TreasureChart11",
+  "Original Item": "Treasure Chart 11",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [
@@ -709,7 +709,7 @@
  },
  
  {"Name": "Dragon Roost Cavern - Pot Room Chest",
-  "Original Item": "TreasureChart39",
+  "Original Item": "Treasure Chart 39",
   "Category": ["Dungeon"],
   "Needs": {
     "type": "and", "args": [{"type": "macro", "args": ["Can Access DRC"]}, {"type": "count", "args": [{"count": "4", "args": "DRCSmallKey"}]}]},
@@ -783,7 +783,7 @@
           {"type": "macro", "args": ["Ice Arrows"]},
           {"type": "and", "args": [
             {"type": "count", "args": [{"count": "4", "args": "DRCSmallKey"}]},
-            {"type": "macro", "args": "Can Cut Down Hanging DRC Platform"}
+            {"type": "macro", "args": ["Can Cut Down Hanging DRC Platform"]}
            ]}
         ]}
     ]
@@ -2206,7 +2206,7 @@
  },
  {
   "Name": "Private Oasis - Cabana Labyrinth - Upper Floor Chest",
-  "Original Item": "Triforce Shard",
+  "Original Item": "Triforce Shard 2",
   "Category": ["Puzzle Secret Cave"],
   "Needs": {"type": "or", "args": [
     {"type": "macro", "args": ["Can Access Cabana Labyrinth"]},
@@ -2455,7 +2455,7 @@
  },
  {
   "Name": "Pawprint Isle - Wizzrobe Cave",
-  "Original Item": "Silver Rupee",
+  "Original Item": "Treausre Chart 46",
   "Category": ["Combat Secret Cave"],
   "Needs": {"type": "and", "args": [
     {"type": "macro", "args": ["Can Access Pawprint Isle Wizzrobe Cave"]},
@@ -2813,7 +2813,7 @@
  },
  {
   "Name": "Horseshoe Island - Northwestern Lookout Platform",
-  "Original Item": "Skull Necklace",
+  "Original Item": "Treasure Chart 43",
   "Category": ["Platform"],
   "Needs": {"type": "has_item", "args": ["nothing"]},
   "Path": "",
@@ -2847,7 +2847,7 @@
     {"type": "macro", "args": ["Can Defeat Red ChuChus"]},
     {"type": "macro", "args": ["Can Defeat Green ChuChus"]},
     {"type": "macro", "args": ["Can Defeat Miniblins"]},
-    {"type": "macro", "args": ["Can Defeat Wizzrobes at Rande"]}
+    {"type": "macro", "args": ["Can Defeat Wizzrobes at Range"]}
    ]},
   "Path": "",
   "Type": "Chest",
@@ -2873,7 +2873,7 @@
  },
  {
   "Name": "Star Belt Archipelago - Lookout Platform",
-  "Original Item": "Red Rupee",
+  "Original Item": "Treasure Chart 44",
   "Category": ["Platform"],
   "Needs": {"type": "has_item", "args": ["nothing"]},
   "Path": "",
@@ -2947,7 +2947,7 @@
   
  {
   "Name": "Cyclops Reef - Destroy the Cannons and Gunboats",
-  "Original Item": "Treasure Chart 13",
+  "Original Item": "Treasure Chart 21",
   "Category": ["Eye Reef Chest"],
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Bombs"]}]},
   "Path": "",
@@ -3096,7 +3096,7 @@
  },
  {
   "Name": "Gale Isle - Sunken Treasure",
-  "Original Item": "Triforce Shard 2",
+  "Original Item": "Silver Rupee",
   "Category": ["Sunken Treasure"],
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 4"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
   "Path": "",
@@ -3114,7 +3114,7 @@
  },
  {
   "Name": "Seven-Star Isles - Sunken Treasure",
-  "Original Item": "",
+  "Original Item": "Silver Rupee",
   "Category": ["Sunken Treasure"],
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 6"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]},
   "Path": "",
@@ -3438,7 +3438,7 @@
  },
  {
   "Name": "Cliff Plateau Isles - Sunken Treasure",
-  "Original Item": "Triforce Shard 3",
+  "Original Item": "Triforce Shard 5",
   "Category": ["Sunken Treasure"],
   "Needs": {"type": "and", "args": [{"type": "macro", "args": ["Chart for Island 42"]}, {"type": "has_item", "args": ["GrapplingHook"]}]},
   "Path": "",
