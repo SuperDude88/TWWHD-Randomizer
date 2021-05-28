@@ -1154,7 +1154,7 @@
  {
   "Name": "Chart for Island 4",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 2"]
+      "type": "has_item", "args": ["Triforce Chart 42"]
     }
  },
  {
@@ -1166,7 +1166,7 @@
  {
   "Name": "Chart for Island 6",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 7"]
+      "type": "has_item", "args": ["Treasure Chart 45"]
     }
  },
  {
@@ -1316,13 +1316,13 @@
  {
   "Name": "Chart for Island 31",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 3"]
+      "type": "has_item", "args": ["Triforce Chart 2"]
     }
  },
  {
   "Name": "Chart for Island 32",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 6"]
+      "type": "has_item", "args": ["Treasure Chart 44"]
     }
  },
  {
@@ -1382,7 +1382,7 @@
  {
   "Name": "Chart for Island 42",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 5"]
+      "type": "has_item", "args": ["Triforce Chart 3"]
     }
  },
  {
@@ -1394,7 +1394,7 @@
  {
   "Name": "Chart for Island 44",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 4"]
+      "type": "has_item", "args": ["Treasure Chart 43"]
     }
  },
  {
@@ -1406,7 +1406,7 @@
  {
   "Name": "Chart for Island 46",
   "Expression": {
-      "type": "has_item", "args": ["Triforce Chart 8"]
+      "type": "has_item", "args": ["Treasure Chart 46"]
     }
  },
  {
