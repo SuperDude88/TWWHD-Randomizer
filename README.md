@@ -5,14 +5,8 @@ Still in relatively early development and has barely touched ASM patches (of whi
 
 Current to-do list:
 
-Writing the code to dump and replace game files on console (concept proven, code not so much)
+Offsets for remaining locations
 
-Yaz0 decoding the extracted files
-
-Offsets for more locations and reformatting the list as JSON
-
-Logic and some small bits of seed generation
-
-Re-encoding the modified files
+Fixing and testing seed generation
 
 ASM patches and other important tweaks
