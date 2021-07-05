@@ -251,6 +251,6 @@
 0xFA - Triforce Chart 5
 0xFB - Triforce Chart 4
 0xFC - Triforce Chart 3
-0xFD - Triforce Chart 2
+0xFD - Treasure Chart 42
 0xFE - Triforce Chart 1
 0xFF - 
