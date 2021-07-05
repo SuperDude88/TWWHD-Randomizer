@@ -246,7 +246,7 @@
 0xF5 - Treasure Chart 15
 0xF6 - Treasure Chart 11
 0xF7 - Triforce Chart 8
-0xF8 - Triforce Chart 7
+0xF8 - Treasure Chart 45
 0xF9 - Triforce Chart 6
 0xFA - Triforce Chart 5
 0xFB - Triforce Chart 4
