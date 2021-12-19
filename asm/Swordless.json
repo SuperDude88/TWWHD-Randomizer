@@ -1,0 +1,4 @@
+{
+  "Make PhG Check for Hammer Damage": [{"0x0213ae90": ["0x55", "0x48", "0x03", "0xdf"]}],
+  "Remove PhG Master Sword Check": [{"0x0213aea8": ["0x48", "0x00", "0x00", "0x14"]}]
+}
