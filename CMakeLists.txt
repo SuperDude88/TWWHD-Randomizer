@@ -12,8 +12,8 @@ endif()
 
 if(WIN32)
   # in windows case, we bundle a zlib static library
-  set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/server/libs_win/zlib/zlibstat.lib")
-  set(ZLIB_INCLUDE_DIR "server/libs_win/zlib")
+  set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/libs/zlib_win/zlibstat.lib")
+  set(ZLIB_INCLUDE_DIR "libs/zlib_win")
   add_library(zlib STATIC IMPORTED)
   set_target_properties(zlib PROPERTIES IMPORTED_LOCATION ${ZLIB_LIBRARY})
 else()
@@ -32,6 +32,7 @@ target_sources(wwhd_rando_patch PRIVATE "randomizer.cpp")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")
+add_subdirectory("logic")
 # we don't build tests for console currently
 
 if(WIN32)

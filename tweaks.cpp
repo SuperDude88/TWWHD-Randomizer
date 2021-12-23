@@ -115,7 +115,7 @@ nlohmann::json Load_Patches(std::string file_path) {
 	return patches;
 }
 
-void Apply_Patch(nlohmann::json patches, std::string name) {
+void Apply_Patch_OLD(nlohmann::json patches, std::string name) { //original format, keeping as reference for now
 	for (auto& data : patches[name]) {
 		for (auto& offset_pair : data.items()) {
 			int offset = std::stoi(offset_pair.key(), nullptr, 16);
@@ -125,6 +125,52 @@ void Apply_Patch(nlohmann::json patches, std::string name) {
 				offset++; //This is because we cycle through the bytes individually, so for this we need to increase the offset by one each time to make it work in the file
 			}
 		}
+	}
+	return;
+}
+
+void Apply_Patch(std::string file_path) {
+	std::ifstream fptr;
+	fptr.open(file_path, std::ios::in);
+
+	nlohmann::json patches = nlohmann::json::parse(fptr);
+
+	for (auto& patch : patches.items()) {
+		int offset = std::stoi(patch.key(), nullptr, 16);
+		for (std::string byte : patch.value()) {
+			uint8_t toWrite = std::stoi(byte, nullptr, 16);
+			write_u8_to_rpx(AddressToOffset(offset), toWrite);
+			offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+		}
+	}
+
+	return;
+}
+
+nlohmann::json Load_Relocations(std::string file_path) { //untested
+	std::ifstream fptr;
+	fptr.open(file_path, std::ios::in);
+
+	nlohmann::json relocations = nlohmann::json::parse(fptr);
+
+	return relocations;
+}
+
+void Add_Relocations(nlohmann::json in) { //untested
+	std::string entry;
+	entry.resize(12);
+	for (auto& relocation : in.items()) {
+		auto& data = relocation.value();
+		int section_index = std::stoi(relocation.key(), nullptr, 16);
+		Elf32_Rela reloc;
+		reloc.r_offset = std::stoi((std::string)data.at("r_offset"), nullptr, 16);
+		reloc.r_info = std::stoi((std::string)data.at("r_info"), nullptr, 16);
+		reloc.r_addend = std::stoi((std::string)data.at("r_addend"), nullptr, 16);
+
+		entry.replace(0, 4, (char*)&reloc.r_offset, 4);
+		entry.replace(4, 4, (char*)&reloc.r_info, 4);
+		entry.replace(8, 4, (char*)&reloc.r_addend, 4);
+		outRPX.extend_section(section_index, entry);
 	}
 	return;
 }
@@ -170,6 +216,7 @@ void change_ship_starting_island(int room_index) {
 		if (strncmp(&actor->data[0], "SHIP", 4) && ship_spawn_0 != nullptr) {
 			actor->data.replace(0xC, 0xC, ship_spawn_0->data, 0x0, 0xC);
 			actor->data.replace(0x1A, 0x2, ship_spawn_0->data, 0xC, 0x2);
+			actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
 		}
 	}
 	room_dzr.writeToFile(g_session.relToExtract(path, '@'));
@@ -343,8 +390,8 @@ void allow_all_items_to_be_field_items() {
 		write_u32_to_rpx(AddressToOffset(address), 0x60000000);
 	}
 
-	nlohmann::json patches = Load_Patches("../asm/FieldItems.json"); //update paths
-	Apply_Patch(patches, "Fix Ground Item Exec");
+	nlohmann::json patches = Load_Patches("../asm/patches/FieldItems.json"); //update paths
+	//Apply_Patch(patches, "Fix Ground Item Exec");
 
 	write_u32_to_rpx(AddressToOffset(0x0007a2d0, 7), 0x00011ed8); //Update the Y offset that is being read (.rela.text edit)
 
@@ -398,8 +445,8 @@ void remove_ff2_cutscenes() { //could be done with dzx code instead, hardcoded o
 }
 
 void make_items_progressive() {
-	nlohmann::json patches = Load_Patches("../asm/ProgressiveItems.json"); //Create this file once the offsets are finalized
-	Apply_Patch(patches, "Make Items Progressive");
+	nlohmann::json patches = Load_Patches("../asm/patches/ProgressiveItems.json"); //Create this file once the offsets are finalized
+	//Apply_Patch(patches, "Make Items Progressive");
 
 	int item_get_func_pointer = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
@@ -825,29 +872,78 @@ void allow_dungeon_items_to_appear_anywhere() {
 	return;
 }
 
-std::string word_wrap_string(std::u16string string, int line_len) {
+std::u16string word_wrap_string(std::u16string string, int max_line_len) {
 	unsigned int index_in_str = 0;
 	std::u16string wordwrapped_str;
 	std::u16string current_word;
-	int curr_word_len;
-	int len_curr_line;
+	int curr_word_len = 0;
+	int len_curr_line = 0;
 
 	while (index_in_str < string.length()) { //length is weird because its utf-16
 		char16_t character = string[index_in_str];
 
 		if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
+			std::u16string substr;
+			int code_len = 0;
 			if (string[index_in_str + 1] == u'\x00') {
-			 //https://github.com/LagoLunatic/wwrando/blob/master/tweaks.py#L664
+				if (string[index_in_str + 2] == u'\x03') { //color command
+					if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
+						code_len = 10;
+					}
+					else {
+						code_len = 5;
+					}
+				}
 			}
-			else if (string[index_in_str + 1] == u'\x02') {
-
+			else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
+				code_len = 4;
 			}
-			else if (string[index_in_str + 1] == u'\x00') {
+			else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+			else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
 
+			substr = string.substr(index_in_str, code_len);
+			current_word += substr;
+			index_in_str += code_len;
+		}
+		else if (character == u'\n') {
+			wordwrapped_str += current_word;
+			wordwrapped_str += character;
+			len_curr_line = 0;
+			current_word = u"";
+			curr_word_len = 0;
+			index_in_str += 1;
+		}
+		else if (character == u' ') {
+			wordwrapped_str += current_word;
+			wordwrapped_str += character;
+			len_curr_line = curr_word_len + 1;
+			current_word = u"";
+			curr_word_len = 0;
+			index_in_str += 1;
+		}
+		else {
+			current_word += character;
+			curr_word_len += 1;
+			index_in_str += 1;
+
+			if (len_curr_line + curr_word_len > max_line_len) {
+				wordwrapped_str += u'\n';
+				len_curr_line = 0;
+
+				if (curr_word_len > max_line_len) {
+					wordwrapped_str += current_word + u'\n';
+					current_word = u"";
+				}
 			}
 		}
 	}
-	return "just making compiler happy";
+	wordwrapped_str += current_word;
+
+	return wordwrapped_str;
 }
 
 std::string get_indefinite_article(std::string string) {
@@ -875,6 +971,11 @@ std::string upper_first_letter(std::string string) {
 	return string;
 }
 
+std::u16string upper_first_letter(std::u16string string) {
+	string[0] = std::toupper(string[0]);
+	return string;
+}
+
 std::string pad_str_4_lines(std::string string) {
 	std::vector<std::string> lines;
 	unsigned int index = 0;
@@ -894,6 +995,17 @@ std::string pad_str_4_lines(std::string string) {
 	}
 
 	return ret;
+}
+
+std::u16string pad_str_4_lines(std::u16string string) {
+	std::vector<std::u16string> lines = split_lines(string);
+
+	int padding_lines_needed = (4 - lines.size() % 4) % 4;
+	for (int i = 0; i < padding_lines_needed; i++) {
+		lines.push_back(u"");
+	}
+
+	return merge_lines(lines);
 }
 
 std::vector<std::string> split_lines(std::string string) {
@@ -921,7 +1033,7 @@ std::vector<std::u16string> split_lines(std::u16string string) {
 std::string merge_lines(std::vector<std::string> lines) {
 	std::string ret;
 	for (const std::string& segment : lines) {
-		ret = ret + segment + '\n';
+		ret += segment + '\n';
 	}
 
 	return ret;
@@ -930,7 +1042,7 @@ std::string merge_lines(std::vector<std::string> lines) {
 std::u16string merge_lines(std::vector<std::u16string> lines) {
 	std::u16string ret;
 	for (const std::u16string& segment : lines) {
-		ret = ret + segment + u'\n';
+		ret += segment + u'\n';
 	}
 
 	return ret;
@@ -985,18 +1097,18 @@ void update_shop_item_descriptions(std::string beedle20Item, std::string beedle5
 	std::string pathString = path.string();
 	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
 
-	std::u16string item_name = u"temp";
-
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromBinary(fptr);
-	msbt.messages_by_label["03906"].text.message = u"\x0E\x00\x03\x02\x01" + item_name; //not finished
+	
+	//msbt.messages_by_label["03906"].text.message = u"\x0E\x00\x03\x02\x01" + item_name; //not finished
+
 	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
 	g_session.repackGameFile(sepPath(pathString, '@'));
 
 	return;
 }
 
-//hints
+//hints, text updates
 
 void shorten_zephos_event() {
 	RandoSession::fspath path = "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@event_list.dat";
@@ -1327,6 +1439,7 @@ void increase_block_move_animation() {
 		write_u16_to_rpx(AddressToOffset(offset + 0x0A), 0x000C); // Reduce number frames for pulling to last from 20 to 12
 		offset += 0x9C;
 	}
+	return;
 }
 
 void increase_misc_animations() {
@@ -1338,9 +1451,15 @@ void increase_misc_animations() {
 	write_u32_to_rpx(AddressToOffset(0x0014e2d4, 7), 0x00035530);
 
 	write_u32_to_rpx(AddressToOffset(0x02508b50), 0x3880000A);
+	return;
 }
 
-//starting clothes, ship sail
+//starting clothes
+
+void hide_ship_sail() {
+	write_u32_to_rpx(AddressToOffset(0x02162B04), 0x4E800020);
+	return;
+}
 
 void shorten_auction_intro_event() {
 	RandoSession::fspath path = "content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat";
@@ -1419,7 +1538,7 @@ void add_hint_signs() {
 	attributes.lineAlignment = 3;
 	TSY1Entry tsy;
 	tsy.styleIndex = 0x12B;
-	std::u16string message(IMAGE(u"\x0A") u"\0", 5);
+	std::u16string message(IMAGE(u"\x0A") u"\0", 5); //right arrow
 	msbt.addMessage(new_message_label, attributes, tsy, message);
 	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
 	g_session.repackGameFile(sepPath(pathString, '@'));
@@ -1473,11 +1592,11 @@ void prevent_door_boulder_softlocks() {
 }
 
 void update_tingle_statue_item_get_funcs() {
-	uint32_t item_get_func_ptr = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
-	std::vector<uint32_t> item_func_ptr_list = { 0x0, 0x0, 0x0, 0x0, 0x0 }; //fill with item get func addresses IN ORDER
+	const uint32_t item_get_func_ptr = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
+	const std::vector<uint32_t> item_func_ptr_list = { 0x0, 0x0, 0x0, 0x0, 0x0 }; //fill with item get func addresses IN ORDER
 
 	for (const int statue_id : {0xA3, 0xA4, 0xA5, 0xA6, 0xA7}) {
-		uint32_t item_func_addr = item_get_func_ptr + statue_id * 0xC + 8;
+		uint32_t item_func_addr = item_get_func_ptr + (statue_id * 0xC) + 8;
 		uint32_t item_func_ptr = item_func_ptr_list[statue_id - 0xA3]; //convert statue id to index in list
 		write_u32_to_rpx(AddressToOffset(item_func_addr, 9), item_func_ptr - 0x02000000);
 	}
@@ -1488,25 +1607,9 @@ void update_tingle_statue_item_get_funcs() {
 
 //seed hash
 
-void prevent_fire_mountain_softlock() {
-	RandoSession::fspath path = "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs";
-	std::string pathString = path.string();
-	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
+//key bag
 
-	FileTypes::DZXFile stage;
-	stage.loadFromBinary(fptr);
-	std::vector<ChunkEntry*> actors = stage.entries_by_type("ACTR");
-	for (ChunkEntry* actor : actors) {
-		if (strncmp(&actor->data[0], "SHIP", 4)) {
-		actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //might not be right offset
-		}
-	}
-
-	stage.writeToFile(g_session.relToExtract(pathString, '@'));
-	g_session.repackGameFile(sepPath(pathString, '@'));
-
-	return;
-}
+//required dungeon map markers
 
 void add_chest_in_place_jabun_cutscene() {
 	RandoSession::fspath path = "content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr";
@@ -1853,6 +1956,12 @@ int main() {
 	//auto stop = std::chrono::high_resolution_clock::now();
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	//auto duration2 = duration.count();
+
+	std::ifstream fptr;
+	fptr.open("./asm/patch_diffs/Swordless_diff.txt", std::ios::in);
+
+	//throws error with a relative file path
+	nlohmann::json patches = nlohmann::json::parse(fptr);
 
 	return 0;
 }

@@ -1,0 +1,22 @@
+{
+    "Locations": [
+        {
+            "Name": "OutsetUnderLinksHouse",
+            "OriginalItem": "OrangeRupee",
+            "Category": [
+                "Misc"
+            ],
+            "Needs": {
+                "type": "has_item",
+                "args": [
+                    "Nothing"
+                ]
+            },
+            "Path": "LinkUG_Stage.zs",
+            "Type": "Chest",
+            "Offsets": [
+                "1"
+            ]
+        }
+    ]
+}
