@@ -11,8 +11,6 @@
 #include "server/filetypes/msbt.hpp"
 #include "server/utility/macros.hpp"
 
-#include<iostream>
-
 extern RandoSession g_session; //defined in randomizer.cpp, shared between main rando/logic/patches, easier than passing to every patch
 
 bool containsAddress(int address, int memAddress, int sectionLen);
