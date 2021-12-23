@@ -5,7 +5,7 @@ Still needs lots of development before it is useable. Current work is focused on
 
 Current to-do list:
 
-A few edge cases for item placement
+A bunch of stuff for item placement
 
 Finishing and testing seed generation
 
