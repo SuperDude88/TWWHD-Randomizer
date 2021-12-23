@@ -1,7 +1,7 @@
-.org 0x028f87f4
+.org @NextFreeSpace
 
-.global hurricane_spin_item_resource_arc_name
-hurricane_spin_item_resource_arc_name:
+.global hurricane_spin_item_resource_szs_name
+hurricane_spin_item_resource_szs_name:
 .string "Vscroll"
 .align 2
 
@@ -1224,13 +1224,15 @@ hookshot_sight_failsafe_check:
 jank_orca_counter_failsafe:
   cmpwi r12, 0x38 ; Hero's Sword
   bne not_heros_sword
-  beq 0x0225af1c ; Use Hero's Sword icon for the counter (icon 1)
+  beq heros_sword ; Use Hero's Sword icon for the counter (icon 1)
   not_heros_sword:
   cmpwi r12, 0xFF ; No sword
   bne master_sword
   b 0x0225afb4 ; Skip past the code to create the counter entirely
   master_sword:
   b 0x0225af80 ; Use Master Sword icon for the counter (icon 2)
+  heros_sword:
+  b 0x0225af1c
 
  .global ultra_sketch_beedle_patch ; REPLACE ble INSTRUCTION AT 0X02215864
  ultra_sketch_beedle_patch:
@@ -1489,7 +1491,7 @@ create_item_for_withered_trees_without_setting_speeds:
 
 .global withered_trees_custom_init
 withered_trees_custom_init:
-  li r11,0xffff
+  li r11,-0x1
   stw r11,0x76C(r30)
   li r11, 0x1
   b 0x02346d8c
@@ -1687,7 +1689,6 @@ zunari_give_item_and_set_magic_armor_event_bit_end:
 zunari_magic_armor_slot_item_id:
   .byte 0x2A ; Default item ID is Magic Armor. This value is updated by the randomizer when this item is randomized.
   .align 2 ; Align to the next 4 bytes
-.close
 
 .global salvage_corp_give_item_and_set_event_bit
 salvage_corp_give_item_and_set_event_bit:
@@ -2081,88 +2082,4 @@ give_pearl_and_raise_totg_if_necessary:
   addi sp, sp, 0x10
   blr
 
-;HD is weird so do this differently
-;JUMP TO THIS AT 0x025b2030
-.global give_temporary_sword_during_ganondorf_fight_in_swordless
-give_temporary_sword_during_ganondorf_fight_in_swordless:
-  
-  bl FUN_025200d4
-  addi r3, r3, 0x5133
-  lis r4, 0x1005336c@ha
-  addi r4, r4, 0x1005336c@l
-strcmp_2_start:
-  lbzu r5, 0x1(r3)
-  lbzu r6, 0x1(r4)
-  cmplw r5, r6
-  bne after_strcmp_2
-  cmplwi r5, 0
-  bne strcmp_2_start
-
-after_strcmp_2:
-  subf. r3, r5, r6
-  bne give_temporary_sword_during_ganondorf_fight_in_swordless_end
-
-  lis r30,0x1020
-  lwz r30,-0x7b24(r30)
-  lbz r0, 0x2E (r30) ; Read the player's currently equipped sword ID
-  cmpwi r0, 0xFF
-  ; If the player has any sword equipped, don't replace it with the Hero's Sword
-  bne give_temporary_sword_during_ganondorf_fight_in_swordless_end
-  
-  li r0, 0x38
-  stb r0, 0x2E (r30) ; Set the player's currently equipped sword ID to the regular Hero's Sword
-  
-give_temporary_sword_during_ganondorf_fight_in_swordless_end:
-  bl FUN_025200d4
-  b 0x025b2034 ; Return
-
-.global give_temporary_sword_in_orcas_house_in_swordless
-give_temporary_sword_in_orcas_house_in_swordless:
-  bl FUN_025200d4
-  addi r3, r3, 0x5133
-  lis r4, 0x10003d28@ha ; Pointer to the string "Ojhous", the stage for Orca's house
-  addi r4, r4, 0x10003d28@l
-  strcmp_3_start:
-  lbzu r5, 0x1(r3)
-  lbzu r6, 0x1(r4)
-  cmplw r5, r6
-  bne after_strcmp_3
-  cmplwi r5, 0
-  bne strcmp_3_start
-
-after_strcmp_3:
-  subf r3, r5, r6
-  cmpwi r3, 0
-  ; If the player did not just enter Orca's house, skip giving a temporary sword
-  bne give_temporary_sword_in_orcas_house_in_swordless_end
-  
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
-  lbz r0, 0x2E (r3) ; Read the player's currently equipped sword ID
-  cmpwi r0, 0xFF
-  ; If the player has any sword equipped, don't replace it with the Hero's Sword
-  bne give_temporary_sword_in_orcas_house_in_swordless_end
-
-  li r0, 0x38
-  stb r0, 0x2E (r3) ; Set the player's currently equipped sword ID to the regular Hero's Sword
-  
-  mr r5, r0
-  b 0x025b26fc
-  
-give_temporary_sword_in_orcas_house_in_swordless_end:
-  lwz r4,-0x7b24(r27) ; Replace the line we overwrote to branch here
-  b 0x025b26f8 ; Return
-
-.global remove_temporary_sword_when_loading_stage_in_swordless
-remove_temporary_sword_when_loading_stage_in_swordless:
-  lbz r0, 0xd4 (r4) ; Read the player's owned swords bitfield
-  cmpwi r0, 0
-  ; If the player owns any sword, don't remove their equipped sword since it's not temporary
-  bne remove_temporary_sword_when_loading_stage_in_swordless_end
-  
-  li r0, 0xFF
-  stb r0, 0x2E (r4) ; Set the player's currently equipped sword ID to no sword
-  
-remove_temporary_sword_when_loading_stage_in_swordless_end:
-  lbz r5,0x68(r4) ; Replace the line we overwrote to jump here
-  b 0x025b26fc ; Return
+.close

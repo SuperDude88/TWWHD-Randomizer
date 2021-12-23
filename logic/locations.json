@@ -1,0 +1,325 @@
+{
+    "Locations": [
+        {
+            "Name": "OutsetUnderLinksHouse",
+            "OriginalItem": "OrangeRupee",
+            "Category": [
+                "Misc"
+            ],
+            "Needs": {
+                "type": "has_item",
+                "args": [
+                    "Nothing"
+                ]
+            },
+            "Path": "LinkUG_Stage.zs",
+            "Type": "Chest",
+            "Offsets": [
+                "0x212DC"
+            ]
+        },
+        {
+            "Name": "OutsetMesaHouseChest",
+            "OriginalItem": "RedRupee",
+            "Category": [
+                "Misc"
+            ],
+            "Needs": {
+                "type": "has_item",
+                "args": [
+                    "Nothing"
+                ]
+            },
+            "Path": "Omasao_Stage.zs",
+            "Type": "Chest",
+            "Offsets": [
+                "0x9BCCE8"
+            ]
+        },
+        {
+            "Name": "OutsetOrca10KnightsCrest",
+            "OriginalItem": "HurricaneSpin",
+            "Category": [
+                "SpoilsTrading"
+            ],
+            "Needs": {
+                "type": "and",
+                "args": [
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Farm Knights Crests"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Sword Fight With Orca"
+                        ]
+                    },
+                    {
+                        "type": "has_item",
+                        "args": [
+                            "SpoilsBag"
+                        ]
+                    }
+                ]
+            },
+            "Path": "",
+            "Type": "Event",
+            "Offsets": [
+                "1"
+            ]
+        },
+        {
+            "Name": "OutsetOrca500Hits",
+            "OriginalItem": "PieceOfHeart",
+            "Category": [
+                "IslandPuzzle"
+            ],
+            "Needs": {
+                "type": "macro",
+                "args": [
+                    "Can Sword Fight With Orca"
+                ]
+            },
+            "Path": "",
+            "Type": "",
+            "Offsets": [
+                "0x10631AC",
+                "0x10632F4",
+                "0x1063840"
+            ]
+        },
+        {
+            "Name": "OutsetGreatFairy",
+            "OriginalItem": "Wallet",
+            "Category": [
+                "GreatFairy"
+            ],
+            "Needs": {
+                "type": "and",
+                "args": [
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Cut Down Outset Trees"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Fly With Deku Leaf Outdoors"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Move Boulders"
+                        ]
+                    }
+                ]
+            },
+            "Path": "cking.rpx",
+            "Type": "REL",
+            "Offsets": [
+                "0x29DCC7"
+            ]
+        },
+        {
+            "Name": "OusetJabunsCave",
+            "OriginalItem": "NayrusPearl",
+            "Category": [
+                "IslandPuzzle"
+            ],
+            "Needs": {
+                "type": "has_item",
+                "args": [
+                    "Bombs"
+                ]
+            },
+            "Path": "Pjavdou_Room0.zs",
+            "Type": "Chest",
+            "Offsets": [
+                "1"
+            ]
+        },
+        {
+            "Name": "OutsetDigBlackSoil",
+            "OriginalItem": "PieceOfHeart",
+            "Category": [
+                "IslandPuzzle"
+            ],
+            "Needs": {
+                "type": "and",
+                "args": [
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Buy Bait"
+                        ]
+                    },
+                    {
+                        "type": "has_item",
+                        "args": [
+                            "BaitBag"
+                        ]
+                    },
+                    {
+                        "type": "has_item",
+                        "args": [
+                            "PowerBracelets"
+                        ]
+                    }
+                ]
+            },
+            "Path": "szs_permanent2/sea_Room44.zs",
+            "Type": "SCOB",
+            "Offsets": [
+                "0x84CBD4"
+            ]
+        },
+        {
+            "Name": "OusetSavageFloor30",
+            "OriginalItem": "TriforceShard",
+            "Category": [
+                "SavageLabyrinth"
+            ],
+            "Needs": {
+                "type": "and",
+                "args": [
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Access Savage Labyrinth"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Keese"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Miniblins"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Red ChuChus"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Magtails"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Fire Keese"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Peahats"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Green ChuChus"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Boko Babas"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Mothulas"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Winged Mothulas"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Wizzrobes"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Armos"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Yellow ChuChus"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Red Bubbles"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Defeat Darknuts"
+                        ]
+                    },
+                    {
+                        "type": "macro",
+                        "args": [
+                            "Can Play WR"
+                        ]
+                    },
+                    {
+                        "type": "or",
+                        "args": [
+                            {
+                                "type": "has_item",
+                                "args": [
+                                    "GrapplingHook"
+                                ]
+                            },
+                            {
+                                "type": "macro",
+                                "args": [
+                                    "HerosSword"
+                                ]
+                            },
+                            {
+                                "type": "has_item",
+                                "args": [
+                                    "SkullHammer"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Path": "Cave09_Room20.zs",
+            "Type": "Chest",
+            "Offsets": [
+                "0x31DD48"
+            ]
+        }
+    ]
+}

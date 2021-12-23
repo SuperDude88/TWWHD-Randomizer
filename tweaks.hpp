@@ -1,6 +1,7 @@
+#include <cmath>
 #include <string>
 #include <fstream>
-#include "server/command/json.hpp"
+#include "libs/json.hpp"
 #include "server/command/RandoSession.hpp"
 #include "server/filetypes/bfres.hpp"
 #include "server/filetypes/dzx.hpp"
@@ -9,6 +10,8 @@
 #include "server/filetypes/jpc.hpp"
 #include "server/filetypes/msbt.hpp"
 #include "server/utility/macros.hpp"
+
+#include<iostream>
 
 extern RandoSession g_session; //defined in randomizer.cpp, shared between main rando/logic/patches, easier than passing to every patch
 
@@ -38,7 +41,11 @@ std::vector<uint8_t> read_rpx_bytes(std::pair<int, int> offset, int NumBytes);
 
 nlohmann::json Load_Patches(std::string file_path);
 
-void Apply_Patch(nlohmann::json patches, std::string name);
+void Apply_Patch(std::string file_path);
+
+nlohmann::json Load_Relocations(std::string file_path);
+
+void Add_Relocations(nlohmann::json patches, std::string name);
 
 //End of helper functions (might get moved into a separate file later)
 
@@ -76,7 +83,7 @@ void update_name_and_icon();
 
 void allow_dungeon_items_to_appear_anywhere();
 
-std::string word_wrap_string(std::u16string string, int line_len = 34);
+std::u16string word_wrap_string(std::u16string string, int max_line_len = 34);
 
 std::string get_indefinite_article(std::string string);
 
@@ -84,7 +91,11 @@ std::u16string get_indefinite_article(std::u16string string);
 
 std::string upper_first_letter(std::string string);
 
+std::u16string upper_first_letter(std::u16string string);
+
 std::string pad_str_4_lines(std::string string);
+
+std::u16string pad_str_4_lines(std::u16string string);
 
 std::vector<std::string> split_lines(std::string string);
 
@@ -143,8 +154,6 @@ void update_tingle_statue_item_get_funcs();
 //rainbow rupee
 
 //seed hash
-
-void prevent_fire_mountain_softlock();
 
 void add_chest_in_place_jabun_cutscene();
 

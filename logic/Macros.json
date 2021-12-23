@@ -1,0 +1,1400 @@
+{
+    "Macros": 
+    [
+    {
+     "Name": "Can Play WR",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["WindsRequiem"]}, {"type": "has_item", "args":["WindWaker"]}]
+       }
+    },
+    {
+     "Name": "Can Play BoG",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["BalladOfGales"]}, {"type": "has_item", "args":["WindWaker"]}]
+       }
+    },
+    {
+     "Name": "Can Play CM",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["CommandMelody"]}, {"type": "has_item", "args":["WindWaker"]}]
+       }
+    },
+    {
+     "Name": "Can Play EGL",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["EarthGodsLyric"]}, {"type": "has_item", "args":["WindWaker"]}]
+       }
+    },
+    {
+     "Name": "Can Play WGA",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["WindGodsAria"]}, {"type": "has_item", "args":["WindWaker"]}]
+       }
+    },
+    {
+     "Name": "Can Fly With Deku Leaf Outdoors",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "macro", "args":["Can Play WR"]}]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Aim Mirror Shield",
+     "Expression": {
+         "type": "and", "args": [
+           {"type": "macro", "args": ["Mirror Shield"]},
+             {"type": "or", "args": [
+               {"type": "macro", "args": ["HerosSword"]},
+               {"type": "or", "args": [
+                {"type": "has_item", "args": ["WindWaker"]},
+                {"type": "or", "args": [
+                 {"type": "has_item", "args": ["GrapplingHook"]},
+                 {"type": "or", "args": [
+                  {"type": "has_item", "args": ["Boomerang"]},
+                  {"type": "or", "args": [
+                   {"type": "has_item", "args": ["DekuLeaf"]},
+                   {"type": "or", "args": [
+                      {"type": "has_item", "args": ["Bow"]},
+                      {"type": "has_item", "args": ["Hookshot"]}
+                     ]}
+                   ]}
+                 ]}
+               ]}
+             ]}
+           ]}
+         ]
+       }
+    },
+    {
+     "Name": "Can Move Boulders",
+     "Expression": {
+         "type": "or", "args": [
+          {"type": "has_item", "args": ["Bombs"]},
+          {"type": "has_item", "args": ["PowerBracelets"]}
+         ]
+       }
+    },
+    {
+     "Name": "Can Defeat Door Flowers",
+     "Expression": {
+         "type": "or", "args": [
+          {"type": "has_item", "args": ["Bow"]},
+          {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
+         ]
+       }
+    },
+    {
+     "Name": "Can Hit Diamond Switches at Range",
+     "Expression": {
+         "type": "or", "args": [
+          {"type": "has_item", "args": ["Bow"]},
+          {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]}
+         ]
+       }
+    },
+    {
+     "Name": "Can Destroy Hanging Seeds",
+     "Expression": {
+         "type": "or", "args": [
+          {"type": "has_item", "args": ["Bow"]},
+          {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
+         ]
+       }
+    },
+    {
+     "Name": "Can Buy Bait",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Buy Hyoi Pears",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+     }
+    },
+    {
+     "Name": "HerosSword",
+     "Expression": {
+         "type": "count", "args": [1, "Sword"]
+       }
+    },
+    {
+     "Name": "Master Sword",
+     "Expression": {
+         "type": "count", "args": [2, "Sword"]
+       }
+    },
+    {
+     "Name": "Full Power Master Sword",
+     "Expression": {
+         "type": "count", "args": [3, "Sword"]
+       }
+    },
+    {
+     "Name": "Heros Shield",
+     "Expression": {
+         "type": "count", "args": [1, "Shield"]
+       }
+    },
+    {
+     "Name": "Mirror Shield",
+     "Expression": {
+         "type": "count", "args": [2, "Shield"]
+       }
+    },
+    {
+     "Name": "Heros Bow",
+     "Expression": {
+         "type": "count", "args": [1, "Bow"]
+       }
+    },
+    {
+     "Name": "Fire Arrows",
+     "Expression": {
+         "type": "count", "args": [2, "Bow"]
+       }
+    },
+    {
+     "Name": "Ice Arrows",
+     "Expression": {
+         "type": "count", "args": [2, "Bow"]
+       }
+    },
+    {
+     "Name": "Light Arrows",
+     "Expression": {
+         "type": "count", "args": [3, "Bow"]
+       }
+    },
+    {
+     "Name": "Wallet Upgrade",
+     "Expression": {
+         "type": "count", "args": [3, "Wallet"]
+       }
+    },
+    {
+     "Name": "60 Bomb Bag",
+     "Expression": {
+         "type": "count", "args": [1, "BombBagUpgrade"]
+       }
+    },
+    {
+     "Name": "99 Bomb Bag",
+     "Expression": {
+         "type": "count", "args": [2, "BombBagUpgrade"]
+       }
+    },
+    {
+     "Name": "60 Quiver",
+     "Expression": {
+         "type": "count", "args": [1, "QuiverUpgrade"]
+       }
+    },
+    {
+     "Name": "99 Quiver",
+     "Expression": {
+         "type": "count", "args": [2, "QuiverUpgrade"]
+       }
+    },
+    {
+     "Name": "All 8 Shards",
+     "Expression": {
+         "type": "count", "args": [8,  "TriforceShard"]
+       }
+    },
+    {
+     "Name": "Can Access Dungeon Entrance On Dragon Roost Island",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Access Forest Haven",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]
+       }
+    },
+    {
+     "Name": "Can Access Dungeon Entrance In Forest Haven Sector",
+     "Expression": {
+         "type": "and", "args": [
+           {"type": "has_item", "args": ["GrapplingHook"]},
+           {"type": "and", "args": [
+            {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+            {"type": "or", "args": [
+             {"type": "has_item", "args": ["MagicMeter"]},
+             {"type": "macro", "args": ["Can Cut Grass"]}
+             ]
+            }
+           ]
+          }
+         ]
+       }
+    },
+    {
+     "Name": "Can Access Dungeon Entrance In Tower of the Gods Sector",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["DinsPearl"]}, {"type": "and", "args": [{"type": "has_item", "args": ["FaroresPearl"]}, {"type": "has_item", "args": ["NayrusPearl"]}]}]
+       }
+    },
+    {
+     "Name": "Can Access Dungeon Entrance On Headstone Island",
+     "Expression": {
+         "type": "has_item", "args": ["PowerBracelets"]
+       }
+    },
+    {
+     "Name": "Can Access Dungeon Entrance On Gale Isle",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["IronBoots"]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Access DRC",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Dungeon Entrance On Dragon Roost Island"]
+       }
+    },
+    {
+     "Name": "Can Access FW",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Dungeon Entrance In Forest Haven Sector"]
+       }
+    },
+    {
+     "Name": "Can Access TOTG",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Dungeon Entrance In Tower of the Gods Sector"]
+       }
+    },
+    {
+     "Name": "Can Access ET",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Dungeon Entrance On Headstone Island"]
+       }
+    },
+    {
+     "Name": "Can Access WT",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Dungeon Entrance On Gale Isle"]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Access Secret Cave Entrance on Outset Island",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["PowerBracelets"]}, {"type": "or", "args": [{"type": "and", "args": [{"type": "macro", "args": ["Can Cut Down Outset Trees"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]}, {"type": "has_item", "args": ["Hookshot"]}]}]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Dragon Roost Island",
+     "Expression": {
+         "type": "macro", "args": ["Can Move Boulders"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Fire Mountain",
+     "Expression": {
+         "type": "macro", "args": ["Ice Arrows"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Ice Ring Isle",
+     "Expression": {
+         "type": "macro", "args": ["Fire Arrows"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Private Oasis",
+     "Expression": {
+         "type": "and", "args": [{"type": "and", "args": [{"type": "has_item", "args": ["DeliveryBag"]}, {"type": "has_item", "args": ["CabanaDeed"]}]}, {"type": "has_item", "args": ["GrapplingHook"]}]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Needle Rock Isle",
+     "Expression": {
+         "type": "macro", "args": ["Fire Arrows"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Angular Isles",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Boating Course",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Stone Watcher Island",
+     "Expression": {
+         "type": "has_item", "args": ["PowerBracelets"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Birds Peak Rock",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["BaitBag"]}, {"type": "macro", "args": ["Can Buy Hyoi Pears"]}]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Pawprint Isle",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Pawprint Isle Side Isle",
+     "Expression": {
+         "type": "has_item", "args": ["Hookshot"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Diamond Steppe Island",
+     "Expression": {
+         "type": "has_item", "args": ["Hookshot"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Bomb Island",
+     "Expression": {
+         "type": "macro", "args": ["Can Move Boulders"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Rock Spire Isle",
+     "Expression": {
+         "type": "has_item", "args": ["Bombs"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Shark Island",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["IronBoots"]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Cliff Plateau Isles",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Horseshoe Island",
+     "Expression": {
+         "type": "has_item", "args": ["DekuLeaf"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Star Island",
+     "Expression": {
+         "type": "macro", "args": ["Can Move Boulders"]
+       }
+    },
+    {
+     "Name": "Can Access Secret Cave Entrance on Overlook Island",
+     "Expression": {
+         "type": "has_item", "args": ["Hookshot"]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Access Savage Labyrinth",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Outset Island"]
+       }
+    },
+    {
+     "Name": "Can Access Dragon Roost Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Dragon Roost Island"]
+       }
+    },
+    {
+     "Name": "Can Access Fire Mountain Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Fire Mountain"]
+       }
+    },
+    {
+     "Name": "Can Access Ice Ring Isle Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Ice Ring Isle"]
+       }
+    },
+    {
+     "Name": "Can Access Cabana Labyrinth",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Private Oasis"]
+       }
+    },
+    {
+     "Name": "Can Access Needle Rock Isle Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Needle Rock Isle"]
+       }
+    },
+    {
+     "Name": "Can Access Angular Isles Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Angular Isles"]
+       }
+    },
+    {
+     "Name": "Can Access Boating Course Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Boating Course"]
+       }
+    },
+    {
+     "Name": "Can Access Stone Watcher Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Stone Watcher Island"]
+       }
+    },
+    {
+     "Name": "Can Access Overlook Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Overlook Island"]
+       }
+    },
+    {
+     "Name": "Can Access Birds Peak Rock Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Birds Peak Rock"]
+       }
+    },
+    {
+     "Name": "Can Access Pawprint Isle Chuch Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Pawprint Isle"]
+       }
+    },
+    {
+     "Name": "Can Access Pawprint Isle Wizzrobe Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Pawprint Isle Side Isle"]
+       }
+    },
+    {
+     "Name": "Can Access Diamond Steppe Island Warp Maze Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Diamond Steppe Island"]
+       }
+    },
+    {
+     "Name": "Can Access Bomb Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Bomb Island"]
+       }
+    },
+    {
+     "Name": "Can Access Rock Spire Isle Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Rock Spire Isle"]
+       }
+    },
+    {
+     "Name": "Can Access Shark Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Shark Island"]
+       }
+    },
+    {
+     "Name": "Can Access Cliff Plateau Isles Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Cliff Plateau Isles"]
+       }
+    },
+    {
+     "Name": "Can Access Horseshoe Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Horseshoe Island"]
+       }
+    },
+    {
+     "Name": "Can Access Star Island Secret Cave",
+     "Expression": {
+         "type": "macro", "args": ["Can Access Secret Cave Entrance on Star Island"]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Get Past Forsaken Fortress Gate",
+     "Expression": {
+         "type": "has_item", "args": ["Bombs"]
+       }
+    },
+    {
+     "Name": "Can Get Inside Forsaken Fortress",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["SkullHammer"]}, {"type": "macro", "args": ["Can Get Past Forsaken Fortress Gate"]}]
+       }
+    },
+    {
+     "Name": "Can Reach and Defeat Phantom Ganon",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Get Past Forsaken Fortress Gate"]}, {"type": "macro", "args": ["Can Defeat Phantom Ganon"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Phantom Ganon",
+     "Expression": {
+         "type": "or", "args": [{"type": "and", "args": [{"type": "macro", "args": ["Outside Swordless Mode"]}, {"type": "macro", "args": ["Master Sword"]}]}, {"type": "and", "args": [{"type": "macro", "args": ["In Swordless Mode"]}, {"type": "has_item", "args": ["SkullHammer"]}]}]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Access Hyrule",
+     "Expression": {
+         "type": "macro", "args": ["All 8 Shards"]
+       }
+    },
+    {
+     "Name": "Can Get Past Hyrule Barrier",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Access Hyrule"]}, {"type": "or", "args": [{"type": "macro", "args": ["In Swordless Mode"]}, {"type": "macro", "args": ["Full Power Master Sword"]}]}]
+       }
+    },
+    {
+     "Name": "Can Access Ganons Tower",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Get Past Hyrule Barrier"]}, {"type": "or", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["Hookshot"]}]}]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Complete DRC Trial",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Gohma"]}, {"type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]}] 
+       }
+    },
+    {
+     "Name": "Can Complete FW Trial",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Kalle Demos"]}, {"type": "has_item", "args": ["DekuLeaf"]}]
+       }
+    },
+    {
+     "Name": "Can Complete ET Trial",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Jalhalla"]
+       }
+    },
+    {
+     "Name": "Can Complete WT Trial",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Molgera"]}, {"type": "has_item", "args": ["DekuLeaf"]}]
+       }
+    },
+    {
+     "Name": "Can Complete All Trials",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Complete DRC Trial"]}, {"type": "macro", "args": ["Can Complete FW Trial"]}, {"type": "macro", "args": ["Can Complete ET Trial"]}, {"type": "macro", "args": ["Can Complete WT Trial"]}]
+       }
+    },
+    {
+     "Name": "Can Unlock Ganons Tower Four Boss Door",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Can Complete All Trials"]}, {"type": "macro", "args": ["Rematch Bosses Skipped"]}]
+       }
+    },
+    {
+     "Name": "Can Reach Ganons Tower Phantom Ganon Room",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Unlock Ganons Tower Four Boss Door"]}, {"type": "macro", "args": ["Can Access Ganons Tower"]}]
+       }
+    },
+    {
+     "Name": "Can Reach And Defeat Puppet Ganon",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Reach Ganons Tower Phantom Ganon Room"]}, {"type": "macro", "args": ["Light Arrows"]}, {"type": "macro", "args": ["Can Defeat Moblins"]}, {"type": "macro", "args": ["Can Defeat Mighty Darknuts"]}, {"type": "macro", "args": ["Can Defeat Puppet Ganon"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Puppet Ganon",
+     "Expression": {
+         "type": "has_item", "args": ["Boomerang"]
+       }
+    },
+    {
+     "Name": "Can Reach and Defeat Ganondorf",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Reach And Defeat Puppet Ganon"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Can Defeat Ganondorf"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Ganondorf",
+     "Expression": {
+         "type": "and", "args": [{"type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["In Swordless Mode"]}]}, {"type": "macro", "args": ["Heros Shield"]}]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Rescued Aryll",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Rescued Tingle",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Get Fairies",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Farm Knights Crests",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]},
+         {"type": "has_item", "args": ["SpoilsBag"]},
+         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["EarthTempleBigKeyChest"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
+         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["EarthTempleBigKeyChest"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
+         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["StoneWatcherCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
+         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["OverlookCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
+         {"type": "can_access", "args": ["IceRingInnerCaveChest"]},
+         {"type": "can_access", "args": ["OusetSavageFloor30"]},
+         {"type": "can_access", "args": ["SharkCave"]},
+         {"type": "macro", "args": ["Can Access Hyrule"]}]
+       }
+    },
+    {
+     "Name": "Can Farm Joy Pendants",
+     "Expression": {
+          "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SpoilsBag"]}]
+       }
+    },
+    {
+     "Name": "Can Farm Skull Necklaces",
+     "Expression": {
+          "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SpoilsBag"]}]
+       }
+    },
+    {
+     "Name": "Can Farm Golden Feathers",
+     "Expression": {
+          "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SpoilsBag"]}]
+       }
+    },
+    {
+     "Name": "Can Farm Green Chu Jelly",
+     "Expression": {
+          "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SpoilsBag"]}]
+       }
+    },
+    {
+     "Name": "Can Obtain 15 Blue Chu Jelly",
+     "Expression": {
+          "type": "and", "args": [{"type": "macro", "args": ["Can Get Blue Chu Jelly from Blue ChuChus"]}, {"type": "has_item", "args": ["SpoilsBag"]}, {"type": "or", "args": [{"type": "macro", "args": ["Can Move Boulders"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}, {"type": "macro", "args": ["Can Access Secret Cave Entrance on Boating Course"]}, {"type": "can_access", "args": ["CliffPlateauHighestIsle"]}, {"type": "and", "args": [{"type": "macro", "args": ["Can Access Secret Cave Entrance on Shark Island"]}, {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}]}]}]
+       }
+    },
+    {
+     "Name": "Can Farm Lots Of Rupees",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+   
+    {
+     "Name": "Can Defeat Bokoblins",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Green Bokoblins",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Bokoblins"]
+       }
+    },
+    {
+     "Name": "Can Defeat Blue Bokoblins",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Bokoblins"]
+       }
+    },
+    {
+     "Name": "Can Defeat Pink Bokoblins",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Bokoblins"]
+       }
+    },
+    {
+     "Name": "Can Defeat Moblins",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Darknuts",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Light Arrows"]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Darknuts Easily",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Light Arrows"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Mighty Darknuts",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Darknuts Easily"]
+       }
+    },
+    {
+     "Name": "Can Defeat Miniblins",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Miniblins Easily",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Red ChuChus",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Green ChuChus",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Red ChuChus"]
+       }
+    },
+    {
+     "Name": "Can Defeat Yellow ChuChus",
+     "Expression": {
+         "type": "or", "args": [{"type": "and", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Boomerang"]}]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "and", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Blue ChuChus",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Yellow ChuChus"]
+       }
+    },
+    {
+     "Name": "Can Get Blue Chu Jelly from Blue ChuChus",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "macro", "args": ["Can Defeat Blue ChuChus"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Dark ChuChus",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Defeat Keese",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Fire Keese",
+     "Expression": {
+         "type": "macro", "args": ["Can Defeat Keese"]
+       }
+    },
+    {
+     "Name": "Can Defeat Magtails",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Stun Magtails",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Kargarocs",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Peahats",
+     "Expression": {
+         "type": "or", "args": [{"type": "and", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Hookshot"]}]}, {"type": "and", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "macro", "args": ["Heros Bow"]}]
+       }
+    },
+    {
+     "Name": "Can Remove Peahat Armor",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["DekuLeaf"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Boko Babas",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Mothulas",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Winged Mothulas",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Wizzrobes",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Wizzrobes at Range",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Armos",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Armos Knights",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Light Arrows"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Big Octos",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat 12 Eye Big Octos",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Light Arrows"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "and", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "macro", "args": ["60 Quiver"]}]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Red Bubbles",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Blue Bubbles",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Ice Arrows"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "and", "args": [{"type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SkullHammer"]}]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["DekuLeaf"]}]}]}]
+       }
+    },
+    {
+     "Name": "Can Defeat ReDeads",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Light Arrows"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["SkullHammer"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Poes",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Defeat Poes Without Light Ray",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Jalhalla Poes",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Stalfos",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Light Arrows"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Floormasters",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Morths",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Rats",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["GrapplingHook"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Bombchus",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["GrapplingHook"]}]
+       }
+    },
+    {
+     "Name": "Can Cut Down Dexivines",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Freshwater Octoroks",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Saltwater Octoroks",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Beamos",
+     "Expression": {
+         "type": "has_item", "args": ["Nothing"]
+       }
+    },
+    {
+     "Name": "Can Defeat Gyorgs",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Defeat Gohma",
+     "Expression": {
+         "type": "has_item", "args": ["GrapplingHook"]
+       }
+    },
+    {
+     "Name": "Can Defeat Kalle Demos",
+     "Expression": {
+         "type": "has_item", "args": ["Boomerang"]
+       }
+    },
+    {
+     "Name": "Can Defeat Gohdan",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "macro", "args": ["Heros Bow"]}]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Helmaroc King",
+     "Expression": {
+         "type": "has_item", "args": ["SkullHammer"]
+       }
+    },
+    {
+     "Name": "Can Defeat Jalhalla",
+     "Expression": {
+         "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Jalhalla Poes"]}, {"type": "has_item", "args": ["PowerBracelets"]}, {"type": "or", "args": [{"type": "macro", "args": ["Can Aim Mirror Shield"]}, {"type": "macro", "args": ["Light Arrows"]}]}]
+       }
+    },
+    {
+     "Name": "Can Defeat Molgera",
+     "Expression": {
+         "type": "and", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]}]
+       }
+    },
+   
+   
+   
+    {
+     "Name": "Can Destroy Cannons",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Boomerang"]}]
+       }
+    },
+    {
+     "Name": "Can Cut Down Outset Trees",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "macro", "args": ["HerosSword"]}]
+       }
+    },
+    {
+     "Name": "Can Cut Down Hanging DRC Platform",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["SkullHammer"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Cut Grass",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "macro", "args": ["HerosSword"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
+    {
+     "Name": "Can Sword Fight With Orca",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["In Swordless Mode"]}]
+       }
+    },
+    {
+     "Name": "Rematch Bosses Skipped",
+     "Expression": {
+         "type": "setting", "args": ["SkipTrials"]
+       }
+    },
+    {
+     "Name": "In Swordless Mode",
+     "Expression": {
+         "type": "setting", "args": ["Swordless"]
+       }
+    },
+    {
+     "Name": "Outside Swordless Mode",
+     "Expression": {
+         "type": "not", "args": [{"type": "setting", "args": ["Swordless"]}]
+       }
+    },
+   
+    {
+     "Name": "Chart for Island 1",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart25"]
+       }
+    },
+    {
+     "Name": "Chart for Island 2",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart7"]
+       }
+    },
+    {
+     "Name": "Chart for Island 3",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart24"]
+       }
+    },
+    {
+     "Name": "Chart for Island 4",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart42"]
+       }
+    },
+    {
+     "Name": "Chart for Island 5",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart11"]
+       }
+    },
+    {
+     "Name": "Chart for Island 6",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart45"]
+       }
+    },
+    {
+     "Name": "Chart for Island 7",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart13"]
+       }
+    },
+    {
+     "Name": "Chart for Island 8",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart41"]
+       }
+    },
+    {
+     "Name": "Chart for Island 9",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart29"]
+       }
+    },
+    {
+     "Name": "Chart for Island 10",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart22"]
+       }
+    },
+    {
+     "Name": "Chart for Island 11",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart18"]
+       }
+    },
+    {
+     "Name": "Chart for Island 12",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart30"]
+       }
+    },
+    {
+     "Name": "Chart for Island 13",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart39"]
+       }
+    },
+    {
+     "Name": "Chart for Island 14",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart19"]
+       }
+    },
+    {
+     "Name": "Chart for Island 15",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart8"]
+       }
+    },
+    {
+     "Name": "Chart for Island 16",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart2"]
+       }
+    },
+    {
+     "Name": "Chart for Island 17",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart10"]
+       }
+    },
+    {
+     "Name": "Chart for Island 18",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart26"]
+       }
+    },
+    {
+     "Name": "Chart for Island 19",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart3"]
+       }
+    },
+    {
+     "Name": "Chart for Island 20",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart37"]
+       }
+    },
+    {
+     "Name": "Chart for Island 21",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart27"]
+       }
+    },
+    {
+     "Name": "Chart for Island 22",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart38"]
+       }
+    },
+    {
+     "Name": "Chart for Island 23",
+     "Expression": {
+         "type": "has_item", "args": ["TriforceChart1"]
+       }
+    },
+    {
+     "Name": "Chart for Island 24",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart21"]
+       }
+    },
+    {
+     "Name": "Chart for Island 25",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart6"]
+       }
+    },
+    {
+     "Name": "Chart for Island 26",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart14"]
+       }
+    },
+    {
+     "Name": "Chart for Island 27",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart34"]
+       }
+    },
+    {
+     "Name": "Chart for Island 28",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart5"]
+       }
+    },
+    {
+     "Name": "Chart for Island 29",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart28"]
+       }
+    },
+    {
+     "Name": "Chart for Island 30",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart35"]
+       }
+    },
+    {
+     "Name": "Chart for Island 31",
+     "Expression": {
+         "type": "has_item", "args": ["TriforceChart2"]
+       }
+    },
+    {
+     "Name": "Chart for Island 32",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart44"]
+       }
+    },
+    {
+     "Name": "Chart for Island 33",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart1"]
+       }
+    },
+    {
+     "Name": "Chart for Island 34",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart20"]
+       }
+    },
+    {
+     "Name": "Chart for Island 35",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart36"]
+       }
+    },
+    {
+     "Name": "Chart for Island 36",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart23"]
+       }
+    },
+    {
+     "Name": "Chart for Island 37",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart12"]
+       }
+    },
+    {
+     "Name": "Chart for Island 38",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart16"]
+       }
+    },
+    {
+     "Name": "Chart for Island 39",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart4"]
+       }
+    },
+    {
+     "Name": "Chart for Island 40",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart17"]
+       }
+    },
+    {
+     "Name": "Chart for Island 41",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart31"]
+       }
+    },
+    {
+     "Name": "Chart for Island 42",
+     "Expression": {
+         "type": "has_item", "args": ["TriforceChart3"]
+       }
+    },
+    {
+     "Name": "Chart for Island 43",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart9"]
+       }
+    },
+    {
+     "Name": "Chart for Island 44",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart43"]
+       }
+    },
+    {
+     "Name": "Chart for Island 45",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart40"]
+       }
+    },
+    {
+     "Name": "Chart for Island 46",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart46"]
+       }
+    },
+    {
+     "Name": "Chart for Island 47",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart15"]
+       }
+    },
+    {
+     "Name": "Chart for Island 48",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart32"]
+       }
+    },
+    {
+     "Name": "Chart for Island 49",
+     "Expression": {
+         "type": "has_item", "args": ["TreasureChart33"]
+       }
+    }
+   
+    ]
+   }
+   
