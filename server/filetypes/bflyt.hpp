@@ -5,8 +5,11 @@
 #include <string>
 #include <unordered_map>
 #include <optional>
+
 #include "../utility/byteswap.hpp"
 #include "../utility/macros.hpp"
+
+
 
 struct RGBA { //might want to move into a generic type macros hpp
 	uint8_t R;

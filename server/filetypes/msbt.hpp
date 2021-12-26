@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -6,7 +7,10 @@
 #include <cstring>
 #include <algorithm>
 #include <iterator>
+
 #include "../utility/byteswap.hpp"
+
+
 
 enum struct MSBTError
 {
@@ -139,7 +143,7 @@ namespace FileTypes {
 		MSBTError readSection(std::istream& msbt);
 		MSBTError loadFromBinary(std::istream& msbt);
 		MSBTError loadFromFile(const std::string& filePath);
-		Message& addMessage(std::string label, Attributes attributes, TSY1Entry style, std::u16string message);
+		Message& addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message);
 		MSBTError writeToStream(std::ostream& out);
 		MSBTError writeToFile(const std::string& outFilePath);
 	private:

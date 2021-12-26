@@ -5,3 +5,5 @@ out/*
 .vscode/*
 CMakeSettings.json
 asm/temp
+asm/backup
+asm/patches/to_write.txt

@@ -187,7 +187,7 @@ namespace FileTypes {
 		return loadFromBinary(file);
 	}
 
-	std::vector<ChunkEntry*> DZXFile::entries_by_type(std::string chunk_type) {
+	std::vector<ChunkEntry*> DZXFile::entries_by_type(const std::string chunk_type) {
 		std::vector<ChunkEntry*> entries;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type) {
@@ -199,7 +199,7 @@ namespace FileTypes {
 		return entries;
 	}
 
-	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(std::string chunk_type, int layer) {
+	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string chunk_type, int layer) {
 		std::vector<ChunkEntry*> entries;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {

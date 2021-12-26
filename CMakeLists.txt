@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(wwhd_rando_patch CXX)
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall)
+add_definitions(-DRANDO_ROOT="${CMAKE_SOURCE_DIR}")
 
 if(DEFINED DEVKITPRO)
   include("${DEVKITPRO}/wut/share/wut.cmake" REQUIRED)
