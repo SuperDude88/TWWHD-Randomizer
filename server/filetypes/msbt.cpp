@@ -659,7 +659,7 @@ namespace FileTypes {
         return loadFromBinary(file);
     }
 
-    Message& MSBTFile::addMessage(std::string label, Attributes attributes, TSY1Entry style, std::u16string message) {
+    Message& MSBTFile::addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message) {
         Message newMessage;
 
         Label newLabel;
@@ -758,7 +758,7 @@ namespace FileTypes {
     }
 
     MSBTError MSBTFile::writeToFile(const std::string& outFilePath) {
-        std::ofstream outFile(outFilePath, std::ios::binary | std::ios::in | std::ios::out);
+        std::ofstream outFile(outFilePath, std::ios::binary);
         if (!outFile.is_open()) {
             return MSBTError::COULD_NOT_OPEN;
         }

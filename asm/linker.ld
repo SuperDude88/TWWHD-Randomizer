@@ -63,5 +63,7 @@ GetTgHitObj = 0x02516300;
 fopScnM_ChangeReq = 0x025dc86c;
 FUN_025200d4 = 0x025200d4;
 subBgmStart_load_data = 0x025e1918;
+itemActionForArrow = 0x021815e8;
+itemActionForRupee = 0x02180de4;
 
-daObjFtree_talk_main = 0x023472bc
+daObjFtree_talk_main = 0x023472bc;

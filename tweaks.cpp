@@ -1,6 +1,12 @@
 #include "tweaks.hpp"
 
+
+
 FileTypes::ELF outRPX;
+
+static std::unordered_map<std::string, uint32_t> custom_symbols;
+
+
 
 struct dungeon_item_info {
 	std::u16string short_name;
@@ -28,7 +34,9 @@ struct pan_cs_info {
 	int evnt_index;
 };
 
-bool containsAddress(int address, int memAddress, int sectionLen) {
+
+
+bool containsAddress(const int address, const int memAddress, const int sectionLen) {
 	if (memAddress <= address && address < memAddress + sectionLen) {
 		return true;
 	}
@@ -37,7 +45,7 @@ bool containsAddress(int address, int memAddress, int sectionLen) {
 	}
 }
 
-std::pair<int, int> AddressToOffset(int address) { //calculates offset into section, returns first value as section index and second as offset
+std::pair<int, int> AddressToOffset(const uint32_t address) { //calculates offset into section, returns first value as section index and second as offset
 	for (int index : {2, 3, 4}) { //only check a few sections that might be written to
 		if (containsAddress(address, outRPX.shdr_table[index].second.sh_addr, outRPX.shdr_table[index].second.sh_size)) {
 			return {index, address - outRPX.shdr_table[index].second.sh_addr};
@@ -46,56 +54,56 @@ std::pair<int, int> AddressToOffset(int address) { //calculates offset into sect
 	return {0, 0};
 }
 
-std::pair<int, int> AddressToOffset(int address, int sectionIndex) { //.rela sections all have same address ranges, need to specify index to make it work
+std::pair<int, int> AddressToOffset(const uint32_t address, const int sectionIndex) { //.rela sections all have same address ranges, need to specify index to make it work
 	if (!containsAddress(address, outRPX.shdr_table[sectionIndex].second.sh_addr, outRPX.shdr_table[sectionIndex].second.sh_size)) {
 		return {0, 0};
 	}
 	return {sectionIndex, address - outRPX.shdr_table[sectionIndex].second.sh_addr};
 }
 
-void write_u8_to_rpx(std::pair<int, int> offset, uint8_t data) { //assume sections are sorted by index, always should be 
+void write_u8_to_rpx(const std::pair<int, int>& offset, const uint8_t data) { //assume sections are sorted by index, always should be 
 	outRPX.shdr_table[offset.first].second.data[offset.second] = (char)data;
 	return;
 }
 
-void write_u16_to_rpx(std::pair<int, int> offset, uint16_t data) { //assume sections are sorted by index, always should be 
-	data = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 2, (char*)&data, 2);
+void write_u16_to_rpx(const std::pair<int, int>& offset, const uint16_t data) { //assume sections are sorted by index, always should be 
+	uint16_t toWrite = Utility::byteswap(data);
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 2, (char*)&toWrite, 2);
 	return;
 }
 
-void write_u32_to_rpx(std::pair<int, int> offset, uint32_t data) { //assume sections are sorted by index, always should be 
-	data = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&data, 4);
+void write_u32_to_rpx(const std::pair<int, int>& offset, const uint32_t data) { //assume sections are sorted by index, always should be 
+	uint32_t toWrite = Utility::byteswap(data);
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
 	return;
 }
 
-void write_float_to_rpx(std::pair<int, int> offset, float data) { //assume sections are sorted by index, always should be 
-	data = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&data, 4);
+void write_float_to_rpx(const std::pair<int, int>& offset, const float data) { //assume sections are sorted by index, always should be 
+	float toWrite = Utility::byteswap(data);
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
 	return;
 }
 
-void write_bytes_to_rpx(std::pair<int, int> offset, std::vector<uint8_t> Bytes) { //assume sections are sorted by index, always should be 
+void write_bytes_to_rpx(const std::pair<int, int>& offset, const std::vector<uint8_t>& Bytes) { //assume sections are sorted by index, always should be 
 	for (unsigned int i = 0; i < Bytes.size(); i++) {
 		outRPX.shdr_table[offset.first].second.data[offset.second + i] = (char)Bytes[i];
 	}
 	return;
 }
 
-uint8_t read_rpx_u8(std::pair<int, int> offset) { //assume sections are sorted by index, always should be 
+uint8_t read_rpx_u8(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
 	return *(uint8_t*)&outRPX.shdr_table[offset.first].second.data[offset.second];
 }
 
-uint32_t read_rpx_u32(std::pair<int, int> offset) { //assume sections are sorted by index, always should be 
+uint32_t read_rpx_u32(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
 	return *(uint32_t*)&outRPX.shdr_table[offset.first].second.data[offset.second];
 }
 
-float read_rpx_float(std::pair<int, int> offset) { //assume sections are sorted by index, always should be 
+float read_rpx_float(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
 	return *(float*)&outRPX.shdr_table[offset.first].second.data[offset.second];
 }
 
-std::vector<uint8_t> read_rpx_bytes(std::pair<int, int> offset, int NumBytes) {
+std::vector<uint8_t> read_rpx_bytes(const std::pair<int, int>& offset, const int NumBytes) {
 	uint8_t buffer = 0x0;
 	std::vector<uint8_t> Bytes;
 	Bytes.reserve(NumBytes); //avoid extra reallocations
@@ -106,7 +114,7 @@ std::vector<uint8_t> read_rpx_bytes(std::pair<int, int> offset, int NumBytes) {
 	return Bytes;
 }
 
-nlohmann::json Load_Patches(std::string file_path) {
+nlohmann::json Load_Patches(const std::string& file_path) {
 	std::ifstream fptr;
 	fptr.open(file_path, std::ios::in);
 
@@ -115,7 +123,7 @@ nlohmann::json Load_Patches(std::string file_path) {
 	return patches;
 }
 
-void Apply_Patch_OLD(nlohmann::json patches, std::string name) { //original format, keeping as reference for now
+void Apply_Patch_OLD(const nlohmann::json& patches, const std::string& name) { //original format, keeping as reference for now
 	for (auto& data : patches[name]) {
 		for (auto& offset_pair : data.items()) {
 			int offset = std::stoi(offset_pair.key(), nullptr, 16);
@@ -129,7 +137,7 @@ void Apply_Patch_OLD(nlohmann::json patches, std::string name) { //original form
 	return;
 }
 
-void Apply_Patch(std::string file_path) {
+void Apply_Patch(const std::string& file_path) {
 	std::ifstream fptr;
 	fptr.open(file_path, std::ios::in);
 
@@ -137,17 +145,28 @@ void Apply_Patch(std::string file_path) {
 
 	for (auto& patch : patches.items()) {
 		int offset = std::stoi(patch.key(), nullptr, 16);
-		for (std::string byte : patch.value()) {
-			uint8_t toWrite = std::stoi(byte, nullptr, 16);
-			write_u8_to_rpx(AddressToOffset(offset), toWrite);
-			offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+		std::pair<int, int> sectionOffset = AddressToOffset(offset);
+		if (sectionOffset.first == 0 && sectionOffset.second == 0) { //address not in section
+			std::string data;
+			for (std::string byte : patch.value()) {
+				unsigned char val = std::stoi(byte, nullptr, 16);
+				data += val;
+			}
+			outRPX.extend_section(2, offset, data); //add data at the specified offset
+		}
+		else {
+			for (std::string byte : patch.value()) {
+				uint8_t toWrite = std::stoi(byte, nullptr, 16);
+				write_u8_to_rpx(sectionOffset, toWrite);
+				sectionOffset.second++; //Cycles through the bytes individually, need to increase the offset by one each time
+			}
 		}
 	}
 
 	return;
 }
 
-nlohmann::json Load_Relocations(std::string file_path) { //untested
+nlohmann::json Load_Relocations(const std::string& file_path) { //untested
 	std::ifstream fptr;
 	fptr.open(file_path, std::ios::in);
 
@@ -156,7 +175,7 @@ nlohmann::json Load_Relocations(std::string file_path) { //untested
 	return relocations;
 }
 
-void Add_Relocations(nlohmann::json in) { //untested
+void Add_Relocations(const nlohmann::json& in) { //untested
 	std::string entry;
 	entry.resize(12);
 	for (auto& relocation : in.items()) {
@@ -175,9 +194,195 @@ void Add_Relocations(nlohmann::json in) { //untested
 	return;
 }
 
-//End of helper functions (might get moved into a separate file later)
+void Remove_Relocation(const std::pair<int, int>& offset) {
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 0xC, 0xC, '\0');
+	return;
+}
 
-void set_new_game_starting_location(uint8_t spawn_id, uint8_t room_index) {
+void Load_Custom_Symbols(const std::string& file_path) {
+	std::ifstream fptr;
+	fptr.open(file_path, std::ios::in);
+
+	nlohmann::json symbols = nlohmann::json::parse(fptr);
+	for (auto& symbol : symbols.items()) {
+		uint32_t address = std::stoi((std::string)symbol.value(), nullptr, 16);
+		custom_symbols[symbol.key()] = address;
+	}
+
+	return;
+}
+
+
+
+std::u16string word_wrap_string(const std::u16string& string, const int max_line_len) {
+	unsigned int index_in_str = 0;
+	std::u16string wordwrapped_str;
+	std::u16string current_word;
+	int curr_word_len = 0;
+	int len_curr_line = 0;
+
+	while (index_in_str < string.length()) { //length is weird because its utf-16
+		char16_t character = string[index_in_str];
+
+		if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
+			std::u16string substr;
+			int code_len = 0;
+			if (string[index_in_str + 1] == u'\x00') {
+				if (string[index_in_str + 2] == u'\x03') { //color command
+					if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
+						code_len = 10;
+					}
+					else {
+						code_len = 5;
+					}
+				}
+			}
+			else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+			else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+			else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+
+			substr = string.substr(index_in_str, code_len);
+			current_word += substr;
+			index_in_str += code_len;
+		}
+		else if (character == u'\n') {
+			wordwrapped_str += current_word;
+			wordwrapped_str += character;
+			len_curr_line = 0;
+			current_word = u"";
+			curr_word_len = 0;
+			index_in_str += 1;
+		}
+		else if (character == u' ') {
+			wordwrapped_str += current_word;
+			wordwrapped_str += character;
+			len_curr_line = curr_word_len + 1;
+			current_word = u"";
+			curr_word_len = 0;
+			index_in_str += 1;
+		}
+		else {
+			current_word += character;
+			curr_word_len += 1;
+			index_in_str += 1;
+
+			if (len_curr_line + curr_word_len > max_line_len) {
+				wordwrapped_str += u'\n';
+				len_curr_line = 0;
+
+				if (curr_word_len > max_line_len) {
+					wordwrapped_str += current_word + u'\n';
+					current_word = u"";
+				}
+			}
+		}
+	}
+	wordwrapped_str += current_word;
+
+	return wordwrapped_str;
+}
+
+std::string get_indefinite_article(const std::string& string) {
+	char first_letter = std::tolower(string[0]);
+	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
+		return "an";
+	}
+	else {
+		return "a";
+	}
+}
+
+std::u16string get_indefinite_article(const std::u16string& string) {
+	char16_t first_letter = std::tolower(string[0]);
+	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
+		return u"an";
+	}
+	else {
+		return u"a";
+	}
+}
+
+std::string pad_str_4_lines(std::string& string) {
+	std::vector<std::string> lines;
+	unsigned int index = 0;
+	while (index = string.find_first_of('\n'), index != std::string::npos) {
+		lines.push_back(string.substr(0, index));
+		string = string.substr(index + 1);
+	}
+
+	int padding_lines_needed = (4 - lines.size() % 4) % 4;
+	for (int i = 0; i < padding_lines_needed; i++) {
+		lines.push_back("");
+	}
+
+	std::string ret;
+	for (const std::string& segment : lines) {
+		ret = ret + segment + '\n';
+	}
+
+	return ret;
+}
+
+std::u16string pad_str_4_lines(std::u16string& string) {
+	std::vector<std::u16string> lines = split_lines(string);
+
+	int padding_lines_needed = (4 - lines.size() % 4) % 4;
+	for (int i = 0; i < padding_lines_needed; i++) {
+		lines.push_back(u"");
+	}
+
+	return merge_lines(lines);
+}
+
+std::vector<std::string> split_lines(std::string& string) {
+	std::vector<std::string> lines;
+	unsigned int index = 0;
+	while (index = string.find_first_of('\n'), index != std::string::npos) {
+		lines.push_back(string.substr(0, index));
+		string = string.substr(index + 1);
+	}
+
+	return lines;
+}
+
+std::vector<std::u16string> split_lines(std::u16string& string) {
+	std::vector<std::u16string> lines;
+	unsigned int index = 0;
+	while (index = string.find_first_of('\n'), index != std::u16string::npos) {
+		lines.push_back(string.substr(0, index));
+		string = string.substr(index + 1);
+	}
+
+	return lines;
+}
+
+std::string merge_lines(std::vector<std::string>& lines) {
+	std::string ret;
+	for (const std::string& segment : lines) {
+		ret += segment + '\n';
+	}
+
+	return ret;
+}
+
+std::u16string merge_lines(std::vector<std::u16string>& lines) {
+	std::u16string ret;
+	for (const std::u16string& segment : lines) {
+		ret += segment + u'\n';
+	}
+
+	return ret;
+}
+
+
+
+void set_new_game_starting_location(const uint8_t spawn_id, const uint8_t room_index) {
 	write_u8_to_rpx(AddressToOffset(0x025b508F), room_index);
 	write_u8_to_rpx(AddressToOffset(0x025b50CB), room_index);
 	write_u8_to_rpx(AddressToOffset(0x025B5093), spawn_id);
@@ -185,7 +390,7 @@ void set_new_game_starting_location(uint8_t spawn_id, uint8_t room_index) {
 	return;
 }
 
-void change_ship_starting_island(int room_index) {
+void change_ship_starting_island(const uint8_t room_index) {
 	std::string path;
 	if (room_index == 1 || room_index == 11 || room_index == 13 || room_index == 17 || room_index == 23) {
 		path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
@@ -302,9 +507,9 @@ void allow_all_items_to_be_field_items() {
 	};
 
 	const std::unordered_map<int, int> szs_name_pointers{
-		{0x1a, 0x1004e5d8}, {0x20, 0x1004e414}, {0x21, 0x1004ec54}, {0x22, 0x1004e578}, {0x23, 0x1004e4a8}, {0x24, 0x1004e4d0}, {0x25, 0x1004e548}, {0x26, 0x1004e658}, {0x27, 0x1004e730}, {0x28, 0x1004e4f0}, {0x29, 0x1004e498}, {0x2a, 0x1004e550}, {0x2b, 0x1004e4a0}, {0x2c, 0x1004e4d8}, {0x2d, 0x1004e6b0}, {0x2e, 0x1004e5c0}, {0x2f, 0x1004e4e8}, {0x30, 0x1004e4c8}, {0x31, 0x1004e41c}, {0x32, 0x1004e5c0}, {0x33, 0x1004e510}, {0x35, 0x1004e580}, {0x36, 0x1004e590}, {0x36, 0x1004e558}, {0x3c, 0x1004e560}, {0x3f, 0x1004e440}, {0x42, 0x1004e518}, {0x43, 0x1004e520}, {0x4c, 0x1004e4b8}, {0x4d, 0x1004e4b0}, {0x4e, 0x1004e698}, {0x50, 0x1004e430}, {0x51, 0x1004e538}, {0x52, 0x1004e530},
+		{0x1a, 0x1004e5d8}, {0x20, 0x1004e414}, {0x21, 0x1004ec54}, {0x22, 0x1004e578}, {0x23, 0x1004e4a8}, {0x24, 0x1004e4d0}, {0x25, 0x1004e548}, {0x26, 0x1004e658}, {0x27, 0x1004e730}, {0x28, 0x1004e4f0}, {0x29, 0x1004e498}, {0x2a, 0x1004e550}, {0x2b, 0x1004e4a0}, {0x2c, 0x1004e4d8}, {0x2d, 0x1004e6b0}, {0x2e, 0x1004e5c0}, {0x2f, 0x1004e4e8}, {0x30, 0x1004e4c8}, {0x31, 0x1004e41c}, {0x32, 0x1004e5c0}, {0x33, 0x1004e510}, {0x35, 0x1004e580}, {0x36, 0x1004e590}, {0x38, 0x1004e558}, {0x3c, 0x1004e560}, {0x3f, 0x1004e440}, {0x42, 0x1004e518}, {0x43, 0x1004e520}, {0x4c, 0x1004e4b8}, {0x4d, 0x1004e4b0}, {0x4e, 0x1004e698}, {0x50, 0x1004e430}, {0x51, 0x1004e538}, {0x52, 0x1004e530},
 		{0x53, 0x1004e528}, {0x54, 0x1004e5b0}, {0x55, 0x1004e5b0}, {0x56, 0x1004e5b8}, {0x57, 0x1004e5a0}, {0x58, 0x1004e5a8}, {0x59, 0x1004e598}, {0x61, 0x1004e570}, {0x62, 0x1004e600}, {0x63, 0x1004e608}, {0x64, 0x1004e610}, {0x65, 0x1004e618}, {0x66, 0x1004e620}, {0x67, 0x1004e628}, {0x68, 0x1004e630}, {0x69, 0x1004ec24}, {0x6a, 0x1004ec3c}, {0x6b, 0x1004ec48}, {0x6c, 0x1004e518}, {0x6d, 0x1004e518}, {0x6e, 0x1004e518}, {0x6f, 0x1004e518}, {0x70, 0x1004e518}, {0x71, 0x1004e518}, {0x72, 0x1004e518}, {0x77, 0x1004e434}, {0x78, 0x1004e434}, {0x79, 0x1004e638}, {0x7a, 0x1004e638}, {0x7b, 0x1004e638}, {0x7c, 0x1004e638}, {0x7d, 0x1004e638}, {0x7e, 0x1004e638}, {0x7f, 0x1004e638}, {0x80, 0x1004e638}, {0x98, 0x1004e5e0},
-		{0x99, 0x1004e5e8}, {0x9a, 0x1004e5f0}, {0x9b, 0x1004e5f8}, {0x9c, 0x1004e688}, {0x9d, 0x1004e500}, {0x9e, 0x1004e4f8}, {0x9f, 0x1004e658}, {0xa0, 0x1004e518}, {0xa1, 0x1004e518}, {0xa2, 0x1004e518}, {0xa3, 0x1004e660}, {0xa4, 0x1004e668}, {0xa5, 0x1004e670}, {0xa6, 0x1004e678}, {0xa7, 0x1004e680}, {0xaa, 0x028f87f4}, {0xab, 0x1004e470}, {0xac, 0x1004e478}, {0xad, 0x1004e490}, {0xae, 0x1004e4a0}, {0xaf, 0x1004e480}, {0xb0, 0x1004e488}, {0xb3, 0x1004e5d8}, {0xb4, 0x1004e5d8}, {0xb5, 0x1004e5d8}, {0xb6, 0x1004e5d8}, {0xb7, 0x1004e5d8}, {0xb8, 0x1004e5d8}, {0xb9, 0x1004e5d8}, {0xba, 0x1004e5d8}, {0xbb, 0x1004e5d8}, {0xbc, 0x1004e5d8}, {0xbd, 0x1004e5d8},
+		{0x99, 0x1004e5e8}, {0x9a, 0x1004e5f0}, {0x9b, 0x1004e5f8}, {0x9c, 0x1004e688}, {0x9d, 0x1004e500}, {0x9e, 0x1004e4f8}, {0x9f, 0x1004e658}, {0xa0, 0x1004e518}, {0xa1, 0x1004e518}, {0xa2, 0x1004e518}, {0xa3, 0x1004e660}, {0xa4, 0x1004e668}, {0xa5, 0x1004e670}, {0xa6, 0x1004e678}, {0xa7, 0x1004e680}, {0xab, 0x1004e470}, {0xac, 0x1004e478}, {0xad, 0x1004e490}, {0xae, 0x1004e4a0}, {0xaf, 0x1004e480}, {0xb0, 0x1004e488}, {0xb3, 0x1004e5d8}, {0xb4, 0x1004e5d8}, {0xb5, 0x1004e5d8}, {0xb6, 0x1004e5d8}, {0xb7, 0x1004e5d8}, {0xb8, 0x1004e5d8}, {0xb9, 0x1004e5d8}, {0xba, 0x1004e5d8}, {0xbb, 0x1004e5d8}, {0xbc, 0x1004e5d8}, {0xbd, 0x1004e5d8},
 		{0xbe, 0x1004e5d8}, {0xbf, 0x1004e5d8}, {0xc0, 0x1004e5d8}, {0xc1, 0x1004e5d8}, {0xc2, 0x1004e588}, {0xc3, 0x1004e588}, {0xc4, 0x1004e588}, {0xc5, 0x1004e588}, {0xc6, 0x1004e588}, {0xc7, 0x1004e588}, {0xc8, 0x1004e588}, {0xc9, 0x1004e588}, {0xca, 0x1004e588}, {0xcb, 0x1004e468}, {0xcc, 0x1004e640}, {0xcd, 0x1004e640}, {0xce, 0x1004e640}, {0xcf, 0x1004e640}, {0xd0, 0x1004e640}, {0xd1, 0x1004e640}, {0xd2, 0x1004e640}, {0xd3, 0x1004e640}, {0xd4, 0x1004e640}, {0xd5, 0x1004e640}, {0xd6, 0x1004e640}, {0xd7, 0x1004e640}, {0xd8, 0x1004e640}, {0xd9, 0x1004e640}, {0xda, 0x1004e640}, {0xdb, 0x1004e650}, {0xdc, 0x1004e468}, {0xdd, 0x1004e640}, {0xde, 0x1004e640}, {0xdf, 0x1004e640}, {0xe0, 0x1004e640}, {0xe1, 0x1004e640}, {0xe2, 0x1004e640},
 		{0xe3, 0x1004e640}, {0xe4, 0x1004e640}, {0xe5, 0x1004e640}, {0xe6, 0x1004e640}, {0xe7, 0x1004e640}, {0xe8, 0x1004e640}, {0xe9, 0x1004e640}, {0xea, 0x1004e640}, {0xeb, 0x1004e640}, {0xec, 0x1004e640}, {0xed, 0x1004e648}, {0xee, 0x1004e648}, {0xef, 0x1004e648}, {0xf0, 0x1004e648}, {0xf1, 0x1004e648}, {0xf2, 0x1004e648}, {0xf3, 0x1004e648}, {0xf4, 0x1004e648}, {0xf5, 0x1004e648}, {0xf6, 0x1004e648}, {0xf7, 0x1004e648}, {0xf8, 0x1004e648}, {0xf9, 0x1004e648}, {0xfa, 0x1004e638}, {0xfb, 0x1004e648}, {0xfc, 0x1004e638}, {0xfd, 0x1004e648}, {0xfe, 0x1004e638}
 	};
@@ -330,13 +535,16 @@ void allow_all_items_to_be_field_items() {
 
 		uint32_t item_resources_addr_to_copy_from = item_resources_list_start + item_id_to_copy_from * 0x24;
 		uint32_t field_item_resources_addr = field_item_resources_list_start + item_id * 0x1c;
-		uint32_t szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
+		uint32_t szs_name_pointer = 0;
 		int section_start = 0x10000000;
 
 		if (item_id == 0xAA) {
-			szs_name_pointer = 0x028f87f4; //issues with custom .szs currently, may need to use sword model instead
+			szs_name_pointer = custom_symbols.at("hurricane_spin_item_resource_arc_name"); //issues with custom .szs currently, may need to use sword model instead
 			item_resources_addr_to_fix = item_resources_list_start + item_id * 0x24;
 			section_start = 0x02000000; //custom stuff only gets put in .text
+		}
+		else {
+			szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
 		}
 
 		write_u32_to_rpx(AddressToOffset(field_item_resources_addr), szs_name_pointer);
@@ -390,8 +598,7 @@ void allow_all_items_to_be_field_items() {
 		write_u32_to_rpx(AddressToOffset(address), 0x60000000);
 	}
 
-	nlohmann::json patches = Load_Patches("../asm/patches/FieldItems.json"); //update paths
-	//Apply_Patch(patches, "Fix Ground Item Exec");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/field_items_diff.json"); //some special stuff because HD silly
 
 	write_u32_to_rpx(AddressToOffset(0x0007a2d0, 7), 0x00011ed8); //Update the Y offset that is being read (.rela.text edit)
 
@@ -407,11 +614,6 @@ void allow_all_items_to_be_field_items() {
 			write_u8_to_rpx(AddressToOffset(item_extra_data_entry_addr + 2), 0x28);
 		}
 	}
-
-	write_u32_to_rpx(AddressToOffset(0x02182d84), 0x4BFFE865);
-	write_u32_to_rpx(AddressToOffset(0x02182da8), 0x41800030);
-	write_u32_to_rpx(AddressToOffset(0x02182db8), 0x4bffe831);
-	//02182e58 (item ids 16-34, no 1e,1f), custom branch to check if <= 0x20, use itemactionforarrow, else use rupee, branch back
 	//Add vscroll.szs
 
 	return;
@@ -445,38 +647,38 @@ void remove_ff2_cutscenes() { //could be done with dzx code instead, hardcoded o
 }
 
 void make_items_progressive() {
-	nlohmann::json patches = Load_Patches("../asm/patches/ProgressiveItems.json"); //Create this file once the offsets are finalized
-	//Apply_Patch(patches, "Make Items Progressive");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/make_items_progressive_diff.json");
 
-	int item_get_func_pointer = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
+	uint32_t item_get_func_pointer = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
-	for (const int sword_id : {0x38, 0x39, 0x3A, 0x3D, 0x3E}) {
-		int item_get_func_addr = item_get_func_pointer + sword_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t sword_id : {0x38U, 0x39U, 0x3AU, 0x3DU, 0x3EU}) {
+		int item_get_func_addr = item_get_func_pointer + (sword_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_sword_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int shield_id : {0x3B, 0x3C}) {
-		int item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t shield_id : {0x3BU, 0x3CU}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_shield_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int bow_id : {0x27, 0x35, 0x36}) {
-		int item_get_func_addr = item_get_func_pointer + bow_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t bow_id : {0x27U, 0x35U, 0x36U}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (bow_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_bow_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+		//bow func crashes LA
 	}
-	for (const int wallet_id : {0xAB, 0xAC}) {
-		int item_get_func_addr = item_get_func_pointer + wallet_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t wallet_id : {0xABU, 0xACU}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (wallet_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_wallet_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int bomb_bag_id : {0xAD, 0xAE}) {
-		int item_get_func_addr = item_get_func_pointer + bomb_bag_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t bomb_bag_id : {0xADU, 0xAEU}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (bomb_bag_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_bomb_bag_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int quiver_id : {0xAF, 0xB0}) {
-		int item_get_func_addr = item_get_func_pointer + quiver_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t quiver_id : {0xAFU, 0xB0U}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (quiver_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_quiver_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int picto_id : {0x23, 0x26}) {
-		int item_get_func_addr = item_get_func_pointer + picto_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t picto_id : {0x23U, 0x26U}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (picto_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_picto_box_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
 
 	write_u32_to_rpx(AddressToOffset(0x0254e8c4), 0x60000000);
@@ -743,31 +945,6 @@ void allow_dungeon_items_to_appear_anywhere() {
 		{u"WT", u"Compass", 0x86}
 	} };
 
-	const std::unordered_map<std::u16string, int> item_func_addresses{ { //update pointers when tested
-		{u"DRC Small Key", 0x1},
-		{u"FW Small Key", 0x1},
-		{u"TotG Small Key", 0x1},
-		{u"ET Small Key", 0x1},
-		{u"WT Small Key", 0x1},
-		{u"DRC Big Key", 0x1},
-		{u"FW Big Key", 0x1},
-		{u"TotG Big Key", 0x1},
-		{u"ET Big Key", 0x1},
-		{u"WT Big Key", 0x1},
-		{u"DRC Dungeon Map", 0x1},
-		{u"FW Dungeon Map", 0x1},
-		{u"TotG Dungeon Map", 0x1},
-		{u"FF Dungeon Map", 0x1},
-		{u"ET Dungeon Map", 0x1},
-		{u"WT Dungeon Map", 0x1},
-		{u"DRC Compass", 0x1},
-		{u"FW Compass", 0x1},
-		{u"TotG Compass", 0x1},
-		{u"FF Compass", 0x1},
-		{u"ET Compass", 0x1},
-		{u"WT Compass", 0x1}
-	} };
-
 	const std::unordered_map<int, int> szs_name_pointers{
 		{0x15, 0x1004e448},
 		{0x4C, 0x1004e4b8},
@@ -786,7 +963,8 @@ void allow_dungeon_items_to_appear_anywhere() {
 		uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
 		std::u16string dungeon_name = dungeon_names.at(item_data.short_name);
 
-		write_u32_to_rpx(AddressToOffset(item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), item_func_addresses.at(item_name) - 0x02000000); //write to the relocation entries
+		//std::u16string item_func_name = std::tolower(item_name, std::locale()) + u"_item_get_func"; //convert to std::string somehow for map key
+		//write_u32_to_rpx(AddressToOffset(item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), custom_symbols.at(item_func_name) - 0x02000000); //write to the relocation entries
 		
 		int message_id = 101 + item_data.item_id;
 		Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
@@ -872,182 +1050,6 @@ void allow_dungeon_items_to_appear_anywhere() {
 	return;
 }
 
-std::u16string word_wrap_string(std::u16string string, int max_line_len) {
-	unsigned int index_in_str = 0;
-	std::u16string wordwrapped_str;
-	std::u16string current_word;
-	int curr_word_len = 0;
-	int len_curr_line = 0;
-
-	while (index_in_str < string.length()) { //length is weird because its utf-16
-		char16_t character = string[index_in_str];
-
-		if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
-			std::u16string substr;
-			int code_len = 0;
-			if (string[index_in_str + 1] == u'\x00') {
-				if (string[index_in_str + 2] == u'\x03') { //color command
-					if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
-						code_len = 10;
-					}
-					else {
-						code_len = 5;
-					}
-				}
-			}
-			else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-			else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-			else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-
-			substr = string.substr(index_in_str, code_len);
-			current_word += substr;
-			index_in_str += code_len;
-		}
-		else if (character == u'\n') {
-			wordwrapped_str += current_word;
-			wordwrapped_str += character;
-			len_curr_line = 0;
-			current_word = u"";
-			curr_word_len = 0;
-			index_in_str += 1;
-		}
-		else if (character == u' ') {
-			wordwrapped_str += current_word;
-			wordwrapped_str += character;
-			len_curr_line = curr_word_len + 1;
-			current_word = u"";
-			curr_word_len = 0;
-			index_in_str += 1;
-		}
-		else {
-			current_word += character;
-			curr_word_len += 1;
-			index_in_str += 1;
-
-			if (len_curr_line + curr_word_len > max_line_len) {
-				wordwrapped_str += u'\n';
-				len_curr_line = 0;
-
-				if (curr_word_len > max_line_len) {
-					wordwrapped_str += current_word + u'\n';
-					current_word = u"";
-				}
-			}
-		}
-	}
-	wordwrapped_str += current_word;
-
-	return wordwrapped_str;
-}
-
-std::string get_indefinite_article(std::string string) {
-	char first_letter = std::tolower(string[0]);
-	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
-		return "an";
-	}
-	else {
-		return "a";
-	}
-}
-
-std::u16string get_indefinite_article(std::u16string string) {
-	char16_t first_letter = std::tolower(string[0]);
-	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
-		return u"an";
-	}
-	else {
-		return u"a";
-	}
-}
-
-std::string upper_first_letter(std::string string) {
-	string[0] = std::toupper(string[0]);
-	return string;
-}
-
-std::u16string upper_first_letter(std::u16string string) {
-	string[0] = std::toupper(string[0]);
-	return string;
-}
-
-std::string pad_str_4_lines(std::string string) {
-	std::vector<std::string> lines;
-	unsigned int index = 0;
-	while (index = string.find_first_of('\n'), index != std::string::npos) {
-		lines.push_back(string.substr(0, index));
-		string = string.substr(index + 1);
-	}
-
-	int padding_lines_needed = (4 - lines.size() % 4) % 4;
-	for (int i = 0; i < padding_lines_needed; i++) {
-		lines.push_back("");
-	}
-
-	std::string ret;
-	for (const std::string& segment : lines) {
-		ret = ret + segment + '\n';
-	}
-
-	return ret;
-}
-
-std::u16string pad_str_4_lines(std::u16string string) {
-	std::vector<std::u16string> lines = split_lines(string);
-
-	int padding_lines_needed = (4 - lines.size() % 4) % 4;
-	for (int i = 0; i < padding_lines_needed; i++) {
-		lines.push_back(u"");
-	}
-
-	return merge_lines(lines);
-}
-
-std::vector<std::string> split_lines(std::string string) {
-	std::vector<std::string> lines;
-	unsigned int index = 0;
-	while (index = string.find_first_of('\n'), index != std::string::npos) {
-		lines.push_back(string.substr(0, index));
-		string = string.substr(index + 1);
-	}
-
-	return lines;
-}
-
-std::vector<std::u16string> split_lines(std::u16string string) {
-	std::vector<std::u16string> lines;
-	unsigned int index = 0;
-	while (index = string.find_first_of('\n'), index != std::u16string::npos) {
-		lines.push_back(string.substr(0, index));
-		string = string.substr(index + 1);
-	}
-
-	return lines;
-}
-
-std::string merge_lines(std::vector<std::string> lines) {
-	std::string ret;
-	for (const std::string& segment : lines) {
-		ret += segment + '\n';
-	}
-
-	return ret;
-}
-
-std::u16string merge_lines(std::vector<std::u16string> lines) {
-	std::u16string ret;
-	for (const std::u16string& segment : lines) {
-		ret += segment + u'\n';
-	}
-
-	return ret;
-}
-
 void remove_bog_warp_in_cs() {
 	for (int i = 1; i < 50; i++) {
 		std::string path;
@@ -1092,7 +1094,7 @@ void fix_shop_item_y_offsets() {
 	}
 }
 
-void update_shop_item_descriptions(std::string beedle20Item, std::string beedle500Item, std::string beedle950Item, std::string beedle900Item) {
+void update_shop_item_descriptions(const std::string& beedle20Item, const std::string& beedle500Item, const std::string& beedle950Item, const std::string& beedle900Item) {
 	RandoSession::fspath path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt";
 	std::string pathString = path.string();
 	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
@@ -1168,7 +1170,28 @@ void update_korl_dialog() {
 	return;
 }
 
-//starting shards, health, magic
+void set_num_starting_triforce_shards(const uint8_t numShards) {
+	uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
+	write_u8_to_rpx(AddressToOffset(num_shards_address), numShards);
+	return;
+}
+
+void set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers) {
+	uint16_t base_health = 12;
+
+	uint16_t starting_health = base_health + (heartContainers * 4) + heartPieces;
+
+	uint32_t starting_quarter_hearts_address = custom_symbols.at("starting_quarter_hearts");
+
+	write_u16_to_rpx(AddressToOffset(starting_quarter_hearts_address), starting_health);
+	return;
+}
+
+void give_double_magic() {
+	uint32_t starting_magic_address = custom_symbols.at("starting_magic");
+	write_u8_to_rpx(AddressToOffset(starting_magic_address), 32);
+	return;
+}
 
 void add_pirate_ship_to_windfall() {
 	//https://github.com/LagoLunatic/wwrando/blob/master/tweaks.py#L1060
@@ -1593,17 +1616,24 @@ void prevent_door_boulder_softlocks() {
 
 void update_tingle_statue_item_get_funcs() {
 	const uint32_t item_get_func_ptr = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
-	const std::vector<uint32_t> item_func_ptr_list = { 0x0, 0x0, 0x0, 0x0, 0x0 }; //fill with item get func addresses IN ORDER
+	const std::unordered_map<int, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
 
 	for (const int statue_id : {0xA3, 0xA4, 0xA5, 0xA6, 0xA7}) {
 		uint32_t item_func_addr = item_get_func_ptr + (statue_id * 0xC) + 8;
-		uint32_t item_func_ptr = item_func_ptr_list[statue_id - 0xA3]; //convert statue id to index in list
+		uint32_t item_func_ptr = custom_symbols.at(symbol_name_by_item_id.at(statue_id));
 		write_u32_to_rpx(AddressToOffset(item_func_addr, 9), item_func_ptr - 0x02000000);
 	}
 	return;
 }
 
-//rainbow rupee
+void make_tingle_statue_reward_rupee_rainbow_colored() {
+	uint32_t item_resources_list_start = 0x101e4674;
+
+	uint32_t rainbow_rupee_item_resource_addr = item_resources_list_start + 0xB8 * 0x24;
+
+	write_u8_to_rpx(AddressToOffset(rainbow_rupee_item_resource_addr + 0x14), 0x07);
+	return;
+}
 
 //seed hash
 
@@ -1702,7 +1732,7 @@ void add_chest_in_place_master_sword() {
 	FileTypes::DZXFile dzr;
 	dzr.loadFromBinary(fptr);
 
-	std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", default_layer);
+	std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER);
 	dzr.remove_entity(default_layer_actors[5]);
 	dzr.remove_entity(default_layer_actors[6]);
 
@@ -1957,11 +1987,24 @@ int main() {
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	//auto duration2 = duration.count();
 
-	std::ifstream fptr;
-	fptr.open("./asm/patch_diffs/Swordless_diff.txt", std::ios::in);
+	Load_Custom_Symbols(RANDO_ROOT"/asm/custom_symbols.txt");
 
-	//throws error with a relative file path
-	nlohmann::json patches = nlohmann::json::parse(fptr);
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/custom_data_diff.json"); //RANDO_ROOT uses will be replaced with relative paths later
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/custom_funcs_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/fix_vanilla_bugs_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/flexible_item_locations_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/make_game_nonlinear_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/misc_rando_features_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/remove_cutscenes_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/reveal_sea_chart_diff.json");
+
+	Remove_Relocation({7, 0x0007b6fc}); //temporary until relocation json is a thing
+
+	allow_all_items_to_be_field_items();
+	make_tingle_statue_reward_rupee_rainbow_colored();
+	update_tingle_statue_item_get_funcs();
+	make_items_progressive();
+	fix_shop_item_y_offsets();
 
 	return 0;
 }
