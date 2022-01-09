@@ -5,3 +5,4 @@ out/*
 .vscode/*
 CMakeSettings.json
 asm/temp
+logic/build/*
