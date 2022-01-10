@@ -5,5 +5,4 @@ out/*
 .cache/*
 .vscode/*
 CMakeSettings.json
-asm/patches/to_write.txt
 misc
