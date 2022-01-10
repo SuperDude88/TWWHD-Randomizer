@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 project(wwhd_rando_patch CXX)
 set(CMAKE_CXX_STANDARD 17)
-add_compile_options(-Wall)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -Wall") #would have implicit conversions off, breaks some tweaks
 add_definitions(-DRANDO_ROOT="${CMAKE_SOURCE_DIR}")
 
 if(DEFINED DEVKITPRO)
@@ -29,7 +29,7 @@ if(CMAKE_USE_PTHREADS_INIT)
 endif()
 
 add_executable(wwhd_rando_patch tweaks.cpp)
-target_sources(wwhd_rando_patch PRIVATE "randomizer.cpp")
+target_sources(wwhd_rando_patch PRIVATE "randomizer.cpp" "options.cpp")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")

@@ -275,12 +275,12 @@ bool LocationManager::evaluateRequirement(const Requirement& req, const ItemSet&
             return false;
         }
         item = std::get<GameItem>(req.args[0]);
-        if (item == GameItem::Nothing) return true;
+        if (item == GameItem::NOTHING) return true;
         return ownedItems.count(item) > 0;
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
         item = std::get<GameItem>(req.args[0]);
-        if (item == GameItem::Nothing) return true;
+        if (item == GameItem::NOTHING) return true;
         return ownedItems.count(item) >= expectedCount;
     case RequirementType::CAN_ACCESS:
         return evaluateRequirement(locationEntries[locationAsIndex(std::get<Location>(req.args[0]))].requirement, ownedItems, settings);

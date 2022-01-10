@@ -1,6 +1,6 @@
 dSv_save_c_init = 0x025b9938;
 
-d_item_execItemGet = 0x0254da38;
+execItemGet = 0x0254da38;
 item_func_sword = 0x0254ee14;
 item_func_shield = 0x0254eed4;
 item_func_mirror_shield = 0x0254ef14;
@@ -67,3 +67,8 @@ itemActionForArrow = 0x021815e8;
 itemActionForRupee = 0x02180de4;
 
 daObjFtree_talk_main = 0x023472bc;
+
+gameInfo_ptr = 0x101f84dc;
+GTower_str = 0x1005336c;
+Ojhous_str = 0x10003d28;
+y_diff_float = 0x1000efe8;

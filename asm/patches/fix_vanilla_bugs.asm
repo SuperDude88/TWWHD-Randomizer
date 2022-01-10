@@ -253,7 +253,7 @@ magtail_respawn_when_head_light_arrowed:
 .global phantom_ganon_check_link_within_y_diff
 phantom_ganon_check_link_within_y_diff:
   lfs f10, 0x24 (sp) ; Read the Y difference between Link and Phantom Ganon
-  lfs f1, -0x1018(r9) ; load from 0x1000efe8
+  lfs f1, y_diff_float@l(r9) ; load from 0x1000efe8
   
   ; If the Link is 1000.0 units or more higher than PG, do not trigger the fight.
   ; (Does not account for negative difference. Still extends infinitely downwards.)

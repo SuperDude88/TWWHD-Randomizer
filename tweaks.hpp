@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cmath>
 #include <string>
 #include <fstream>
@@ -12,6 +14,8 @@
 #include "server/filetypes/jpc.hpp"
 #include "server/filetypes/msbt.hpp"
 #include "server/utility/macros.hpp"
+#include "options.hpp"
+#include "logic/Location.hpp"
 
 
 
@@ -19,7 +23,7 @@ extern RandoSession g_session; //defined in randomizer.cpp, shared between main 
 
 
 
-bool containsAddress(const int address, const int memAddress, const int sectionLen);
+bool containsAddress(const uint32_t address, const uint32_t memAddress, const uint32_t sectionLen);
 
 std::pair<int, int> AddressToOffset(const uint32_t address);
 
@@ -49,9 +53,7 @@ void Apply_Patch_OLD(const nlohmann::json& patches, const std::string& name);
 
 void Apply_Patch(const std::string& file_path);
 
-nlohmann::json Load_Relocations(const std::string& file_path);
-
-void Add_Relocations(const nlohmann::json& in);
+void Add_Relocations(const std::string file_path);
 
 void Remove_Relocation(const std::pair<int, int>& offset);
 
@@ -76,6 +78,8 @@ std::vector<std::u16string> split_lines(std::u16string& string);
 std::string merge_lines(std::vector<std::string>& lines);
 
 std::u16string merge_lines(std::vector<std::u16string>& lines);
+
+std::u16string gameItemToName(const GameItem item);
 
 
 
@@ -117,9 +121,17 @@ void remove_bog_warp_in_cs();
 
 void fix_shop_item_y_offsets();
 
-void update_shop_item_descriptions(const std::string& beedle20Item, const std::string& beedle500Item, const std::string& beedle950Item, const std::string& beedle900Item);
+void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item);
 
-//hints, text updates
+void update_auction_item_names(const GameItem& auction5, const GameItem& auction40, const GameItem& auction60, const GameItem& auction80, const GameItem& auction100);
+
+void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& secondPrize);
+
+void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item);
+
+void update_savage_labyrinth_hint_tablet(const GameItem& floor30, const GameItem& floor50);
+
+//hints
 
 void shorten_zephos_event();
 
@@ -130,6 +142,8 @@ void set_num_starting_triforce_shards(const uint8_t numShards);
 void set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers);
 
 void give_double_magic();
+
+void set_damage_multiplier(float multiplier);
 
 void add_pirate_ship_to_windfall();
 
@@ -155,7 +169,11 @@ void shorten_auction_intro_event();
 
 void disable_invisible_walls();
 
-//trials variable, sword mode, starting gear
+void update_skip_rematch_bosses_game_variable(const bool skipRefights);
+
+void update_sword_mode_game_variable(const SwordMode swordMode);
+
+void update_starting_gear(std::vector<GameItem>& startingItems);
 
 void update_swordless_text();
 
@@ -196,3 +214,11 @@ void remove_minor_pan_cs();
 void fix_stone_head_bugs();
 
 void show_tingle_statues_on_quest_screen();
+
+
+
+void apply_necessary_tweaks(uint8_t startingShards, uint16_t startingHP, uint16_t startingHC);
+
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::unordered_map<std::string, Location>& itemLocations);
+
+void init_tweaks(const std::string& rpxPath);

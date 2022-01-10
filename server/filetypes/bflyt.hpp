@@ -1,13 +1,117 @@
 #pragma once
 
 #include <fstream>
+#include <cstring>
+#include <memory>
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <optional>
+#include <variant>
 
 #include "../utility/byteswap.hpp"
-#include "../utility/macros.hpp"
+//#include "../utility/macros.hpp"
+
+
+enum struct WrapMode {
+	NEAR_CLAMP = 0,
+	NEAR_REPEAT,
+	NEAR_MIRROR,
+	GX2_MIRROR_ONCE,
+	CLAMP,
+	REPEAT,
+	MIRROR,
+	GX2_MIRROR_ONCE_BORDER
+};
+
+enum struct TexGenMatrixType {
+	MATRIX_2x4 = 0
+};
+
+enum struct TexGenType {
+	TEX_COORD_0 = 0,
+	TEX_COORD_1,
+	TEX_COORD_2,
+	ORTHO_PROJECT,
+	PANE_PROJECT,
+	PERSPECTIVE_PROJECT
+};
+
+enum struct tevMode {
+	REPLACE = 0,
+	MODULATE,
+	ADD,
+	EXCLUDE,
+	INTERPOLATE,
+	SUBTRACT,
+	DODGE,
+	BURN,
+	OVERLAY,
+	INDIRECT,
+	BLEND_INDIRECT,
+	EACH_INDIRECT
+};
+
+enum struct alphaCompareType {
+	NEVER = 0,
+	LESS,
+	LESS_OR_EQUAL,
+	EQUAL,
+	NOT_EQUAL,
+	GREATER_OR_EQUAL,
+	GREATER,
+	ALWAYS
+};
+
+enum struct GX2BlendOp {
+	DISABLE = 0,
+	ADD,
+	SUBTRACT,
+	REVERSE_SUBTRACT,
+	SELECT_MIN,
+	SELECT_MAX
+};
+
+enum struct GX2BlendFactor {
+	FACTOR_0 = 0,
+	FACTOR_1,
+	DEST_COLOR,
+	DEST_INV_COLOR,
+	SOURCE_ALPHA,
+	SOURCE_INV_ALPHA,
+	DEST_ALPHA,
+	DEST_INV_ALPHA,
+	SOURCE_COLOR,
+	SOURCE_INV_COLOR
+};
+
+enum struct GX2LogicOp {
+	DISABLE = 0,
+	NO_OP,
+	CLEAR,
+	SET,
+	COPY,
+	INV_COPY,
+	INV,
+	AND,
+	NAND,
+	OR,
+	NOR,
+	XOR,
+	EQUIV,
+	REV_AND,
+	INV_AD,
+	REV_OR,
+	INV_OR
+};
+
+enum struct UserDataType : uint8_t {
+	STRING = 0,
+	INT,
+	FLOAT,
+	STRUCT //only seen in Switch files?
+};
 
 
 
@@ -25,6 +129,97 @@ struct UVCoords {
 	float coordBR[2]; //0 is X, 1 is Y
 };
 
+struct texRef {
+	uint16_t nameIndex;
+	
+	WrapMode wrapModeU;
+	WrapMode wrapModeV;
+};
+
+struct texTransform {
+	float translation[2];
+	float rotation;
+	float scale[2];
+};
+
+struct texCoordGen {
+	TexGenMatrixType matrix;
+	TexGenType source;
+	uint8_t unk[6];
+};
+
+struct tevStage {
+	tevMode colorMode;
+	tevMode alphaMode;
+	uint8_t padding_0x00[2];
+};
+
+struct alphaCompare {
+	alphaCompareType compareMode;
+	uint8_t unk[3];
+	float value;
+};
+
+struct blendMode {
+	GX2BlendOp blendOp;
+	GX2BlendFactor sourceFactor;
+	GX2BlendFactor destFactor;
+	GX2LogicOp logicOp;
+};
+
+struct indirectParam {
+	float rotation;
+	float scaleX;
+	float scaleY;
+};
+
+struct projectionMap {
+	float posX;
+	float posY;
+	float scaleX;
+	float scaleY;
+	uint8_t flags;
+	uint8_t unk[3];
+};
+
+struct fontShadowParameter {
+	RGBA blackColor;
+	RGBA whiteColor;
+};
+
+
+
+struct material {
+	std::string name;
+
+	RGBA blackColor;
+	RGBA whiteColor;
+
+	uint32_t texCount : 2;
+	uint32_t mtxCount : 2;
+	uint32_t texCoordGenCount : 2;
+	uint32_t tevStageCount : 3;
+	uint32_t enableAlphaCompare : 1;
+	uint32_t enableBlend : 1;
+	uint32_t textureOnly : 1;
+	uint32_t blendLogic : 1;
+	uint32_t indParams : 1;
+	uint32_t projMapCount : 3;
+	uint32_t fontShadowParams : 1;
+	uint32_t alphaInterpolation : 1;
+
+	std::vector<texRef> texRefs = {};
+	std::vector<texTransform> texTransforms = {};
+	std::vector<texCoordGen> texCoordGens = {};
+	std::vector<tevStage> tevStages = {};
+	std::optional<alphaCompare> alphaComparison = std::nullopt;
+	std::optional<blendMode> blendingMode = std::nullopt;
+	std::optional<blendMode> blendModeLogic = std::nullopt;
+	std::optional<indirectParam> indParameter = std::nullopt;
+	std::vector<projectionMap> projectionMaps = {};
+	std::optional<fontShadowParameter> fontShadowParam = std::nullopt;
+};
+
 
 
 enum struct FLYTError {
@@ -35,7 +230,8 @@ enum struct FLYTError {
 	UNEXPECTED_VALUE,
 	UNKNOWN_SECTION,
 	REACHED_EOF,
-	UNKNOWN
+	UNKNOWN,
+	COUNT
 };
 
 struct FLYTHeader {
@@ -61,6 +257,8 @@ struct lyt1 {
 };
 
 struct txl1 {
+	unsigned int offset;
+
 	char magicTXL1[4];
 	uint32_t sectionSize;
 	uint16_t numTextures;
@@ -70,28 +268,80 @@ struct txl1 {
 };
 
 struct fnl1 {
+	unsigned int offset;
+
 	char magicFNL1[4];
 	uint32_t sectionSize;
-	uint16_t fontNum;
+	uint16_t numFonts;
 	uint8_t padding_0x00[2];
 	std::vector<uint32_t> fontStrOffsets;
 	std::vector<std::string> fontNames;
 };
 
 struct mat1 {
+	unsigned int offset;
+
 	char magicMAT1[4];
 	uint32_t sectionSize;
-	uint16_t numMat;
-	std::vector<uint32_t> offsets;
-	std::vector<std::string> matData; //fields don't really need editing, just need to read data (theyre also quite complex)
+	uint16_t numMats;
+	uint8_t padding_0x00[2];
+	std::vector<uint32_t> matOffsets;
+	std::vector<material> materials; //fields don't really need editing, just need to read data (theyre also quite complex)
+};
+
+class cnt1 {
+public:
+	unsigned int offset;
+
+	char magic[4] = { 'c', 'n', 't', '1' };
+	uint32_t sectionSize;
+	uint32_t paneNamesOffset;
+	uint16_t paneCount;
+	uint16_t animCount;
+	std::string name;
+
+	std::vector<std::string> paneNames;
+
+	unsigned int animNameTableOffset; //offset in section, not file
+	std::vector<uint32_t> animNameOffsets;
+	std::vector<std::string> animNames;
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
+	FLYTError save_changes(std::ostream& out);
+};
+
+struct userDataEntry {
+	uint32_t nameOffset;
+	uint32_t dataOffset;
+	uint16_t dataLen;
+	UserDataType dataType;
+	uint8_t unk;
+
+	std::string name;
+	std::variant<std::string, std::vector<int32_t>, std::vector<float>> data;
+};
+
+class usd1 {
+public:
+	unsigned int offset;
+
+	char magic[4] = { 'u', 's', 'd', '1' };
+	uint32_t sectionSize;
+	uint16_t numEntries;
+	uint8_t padding_0x00[2];
+	std::vector<userDataEntry> entries;
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
+	FLYTError save_changes(std::ostream& out);
 };
 
 struct paneData {
 	uint8_t bitFlags;
 	uint8_t originFlags;
 	uint8_t alpha;
-	uint8_t scale;
+	uint8_t paneMagFlags;
 	std::string name; //always 32 bytes, padded with null (hence no char array)
+	std::string userInfo;
 	float transX;
 	float transY;
 	float transZ;
@@ -106,27 +356,33 @@ struct paneData {
 
 class PaneBase {
 public:
-	int offset;
+	unsigned int offset;
 
 	char magic[4];
 	uint32_t sectionSize;
 	paneData baseData;
 
-	virtual FLYTError read(std::istream& bflyt, int offset) = 0;
+	virtual ~PaneBase();
+
+	virtual FLYTError read(std::istream& bflyt, const unsigned int offset) = 0;
 	virtual FLYTError save_changes(std::ostream& out) = 0;
 };
 
 class pan1 : public PaneBase {
-	magic = 'pan1';
+public:
 
-	FLYTError read(std::istream& bflyt, int offset);
+	~pan1();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 };
 
 class bnd1 : public PaneBase {
-	magic = 'bnd1';
+public:
 
-	FLYTError read(std::istream& bflyt, int offset);
+	~bnd1();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 };
 
@@ -137,18 +393,18 @@ struct windowContent {
 	RGBA vertexColBR;
 	uint16_t matIndex;
 	uint8_t numCoords;
-	uint8_t padding;
+	uint8_t padding_0x00;
 	std::vector<UVCoords> coords;
 };
 
 struct windowFrame {
 	uint16_t matIndex;
 	uint8_t texFlip;
-	uint8_t padding;
+	uint8_t padding_0x00;
 };
 
 class wnd1 : public PaneBase {
-	magic = 'wnd1';
+public:
 	int16_t leftStretch;
 	int16_t rightStretch;
 	int16_t topStretch;
@@ -159,15 +415,17 @@ class wnd1 : public PaneBase {
 	int16_t frameSizeBottom;
 	uint8_t frameNum;
 	uint8_t bitFlags;
-	uint8_t padding[2];
+	uint8_t padding_0x00[2];
 	uint32_t contentOffset;
 	uint32_t frameTableOffset;
 
 	windowContent content;
 	std::vector<uint32_t> frameTable; //table of frame offsets
-	windowFrame frames;
+	std::vector<windowFrame> frames;
 
-	FLYTError read(std::istream& bflyt, int offset);
+	~wnd1();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 };
 
@@ -177,12 +435,11 @@ struct perCharTransform {
 	uint8_t loopType;
 	uint8_t verticalOrigin;
 	bool hasAnimInfo;
-	uint8_t padding;
+	uint8_t padding_0x00;
 };
 
 class txt1 : public PaneBase {
-	magic = 'txt1';
-
+public:
 	uint16_t texLen;
 	uint16_t restrictedLen;
 	uint16_t matIndex;
@@ -190,7 +447,7 @@ class txt1 : public PaneBase {
 	uint8_t textAlignment;
 	uint8_t lineAlignment;
 	uint8_t bitflags;
-	uint8_t padding;
+	uint8_t padding_0x00;
 	float italicTilt;
 	uint32_t textOffset;
 	RGBA fontColorTop;
@@ -204,30 +461,35 @@ class txt1 : public PaneBase {
 	float shadowPosY;
 	float shadowSizeX;
 	float shadowSizeY;
-	RGBA shadorColorTop;
-	RGBA shadorColorBottom;
+	RGBA shadowColorTop;
+	RGBA shadowColorBottom;
 	float shadowItalicTilt;
 	std::optional<uint32_t> charTransformOffset;
-	
+
+	std::u16string text;
+	std::string textBoxName;
 	std::optional<perCharTransform> charTransform;
 
-	FLYTError read(std::istream& bflyt, int offset);
+	~txt1();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 };
 
 class pic1 : public PaneBase {
-	magic = 'pic1';
-
+public:
 	RGBA vertexColorTL;
 	RGBA vertexColorTR;
 	RGBA vertexColorBL;
 	RGBA vertexColorBR;
 	uint16_t matIndex;
 	uint8_t numCoords;
-	uint8_t padding;
+	uint8_t padding_0x00;
 	std::vector<UVCoords> coords;
 
-	FLYTError read(std::istream& bflyt, int offset);
+	~pic1();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 };
 
@@ -236,66 +498,59 @@ struct partProperty {
 	uint8_t usageFlag;
 	uint8_t basicUsageFlag;
 	uint8_t matUsageFlag;
-	uint8_t padding;
+	uint8_t padding_0x00;
 	uint32_t propOffset;
 	uint32_t userDataOffset;
 	uint32_t panelInfoOffset;
 
-	std::optional<PaneBase*> prop;
+	std::optional<std::unique_ptr<PaneBase>> prop; //do something here to deal with unique_ptr
 	std::optional<usd1> userData;
 	std::optional<std::string> paneInfo;
 };
 
 class prt1 : public PaneBase {
-	magic = 'prt1';
-
+public:
 	uint32_t propCount;
-	float scaleX;
-	float scaleY;
-	std::vector<UVCoords> coords;
+	float magnifyX;
+	float magnifyY;
 	std::vector<partProperty> properties;
 	std::string lytFilename;
 
-	FLYTError read(std::istream& bflyt, int offset);
+	~prt1();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 };
 
 class grp1 {
-	char magic[4] = 'grp1';
+public:
+	unsigned int offset;
+
+	char magic[4] = {'g', 'r', 'p', '1'};
 	uint32_t sectionSize;
 	std::string groupName;
-	uint16_t numChildren;
-	uint8_t[2] padding;
+	uint16_t numPanes;
+	uint8_t padding_0x00[2];
 	std::vector<std::string> paneNames; //names of panes in group
 
-	std::vector<grp1> children; //child groups
-};
+	std::vector<grp1> children;
 
-class cnt1 {
-	char magic[4] = 'grp1';
-	uint32_t sectionSize;
-	uint32_t paneNamesOffset;
-	uint16_t paneCount;
-	uint16_t animCount;
-	std::string name;
-};
-
-struct userDataEntry {
-	//some stuff here i dont have the brain to handle rn https://github.com/KillzXGaming/Switch-Toolbox/blob/12dfbaadafb1ebcd2e07d239361039a8d05df3f7/File_Format_Library/FileFormats/Layout/Common.cs#L896 https://github.com/KillzXGaming/Switch-Toolbox/blob/12dfbaadafb1ebcd2e07d239361039a8d05df3f7/File_Format_Library/FileFormats/Layout/CAFE/USD1.cs#L10
-};
-
-class usd1 {
-	char magic[4] = 'usd1';
-	uint32_t sectionSize;
-	uint16_t numEntries;
-	std::vector<userDataEntry> entries;
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
+	FLYTError save_changes(std::ostream& out);
 };
 
 class Pane {
-	PaneBase* pane;
+public:
+	unsigned int offset;
+
+	char magic[4];
+	std::unique_ptr<PaneBase> pane;
+	std::optional<usd1> userData;
 	std::vector<Pane> children;
 
-	FLYTError read(std::istream& bflyt, int offset);
+	Pane();
+
+	FLYTError read(std::istream& bflyt, const unsigned int offset);
 	FLYTError save_changes(std::ostream& out);
 	//idk what else i need
 };
@@ -318,10 +573,17 @@ namespace FileTypes {
 		grp1 rootGroup;
 
 		FLYTFile();
+
 		static FLYTFile createNew(const std::string& filename);
 		FLYTError loadFromBinary(std::istream& bflyt);
 		FLYTError loadFromFile(const std::string& filePath);
 		FLYTError writeToStream(std::ostream& out);
 		FLYTError writeToFile(const std::string& outFilePath);
+	private:
+		void initNew();
+		FLYTError readLYT1(std::istream& bflyt);
+		FLYTError readTextures(std::istream& bflyt);
+		FLYTError readFonts(std::istream& bflyt);
+		FLYTError readMaterials(std::istream& bflyt);
 	};
 }

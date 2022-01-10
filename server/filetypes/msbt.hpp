@@ -25,7 +25,8 @@ enum struct MSBTError
 	NOT_TSY1,
 	NOT_TXT2,
 	REACHED_EOF,
-	UNKNOWN
+	UNKNOWN,
+	COUNT
 };
 
 struct MSBTHeader {
@@ -54,7 +55,8 @@ struct LBLEntry {
 };
 
 struct LBL1Header {
-	int offset;
+	uint32_t offset;
+
 	char magicLBL1[4];
 	uint32_t tableSize;
 	uint8_t padding_0x00[8];
@@ -83,7 +85,8 @@ struct Attributes {
 };
 
 struct ATR1Header {
-	int offset;
+	uint32_t offset;
+
 	char magicATR1[4];
 	uint32_t tableSize;
 	uint8_t padding_0x00[8];
@@ -97,7 +100,8 @@ struct TSY1Entry {
 };
 
 struct TSY1Header {
-	int offset;
+	uint32_t offset;
+
 	char magicTSY1[4];
 	uint32_t tableSize;
 	uint8_t padding_0x00[8];
@@ -111,7 +115,8 @@ struct TXT2Entry {
 };
 
 struct TXT2Header {
-	int offset;
+	uint32_t offset;
+
 	char magicTXT2[4];
 	uint32_t tableSize;
 	uint8_t padding_0x00[8];
@@ -125,6 +130,7 @@ struct Message {
 	TSY1Entry style;
 	TXT2Entry text;
 };
+
 namespace FileTypes {
 
 	const char* MSBTErrorGetName(MSBTError err);
