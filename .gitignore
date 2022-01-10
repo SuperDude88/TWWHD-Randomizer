@@ -1,9 +1,9 @@
+__pycache__
 build/*
 out/*
 .vs/*
 .cache/*
 .vscode/*
 CMakeSettings.json
-asm/temp
-asm/backup
 asm/patches/to_write.txt
+misc

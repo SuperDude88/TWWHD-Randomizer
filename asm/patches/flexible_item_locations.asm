@@ -130,8 +130,8 @@ set_shop_item_in_bait_bag_slot_sold_out:
   
   ; Set event bit 6902 (bit 02 of byte 803C5295).
   ; This bit was unused in the base game, but we repurpose it to keep track of whether you've purchased whatever item is in the Bait Bag slot of Beedle's shop.
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6902 ; Unused event bit
   bl onEventBit
@@ -268,8 +268,8 @@ create_item_and_set_event_bit_for_townsperson:
   rlwinm. r4,r31,16,16,31 ; Get the upper halfword (0xFFFF0000), which has the event bit to set
   beq create_item_and_set_event_bit_for_townsperson_end ; If the event bit specified is 0000, skip to the end of the function instead
   mr r31, r3 ; Preserve the return value from createItemForPresentDemo so we can still return that
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   bl onEventBit ; Otherwise, set that event bit
   mr r3, r31
@@ -283,39 +283,39 @@ create_item_and_set_event_bit_for_townsperson_end:
 
 .org 0x022BE9D8 ; For Pompie and Vera
 	li r3, 0x6904
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022BFD4C ; For Kamo
 	li r3, 0x6910
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022C3360 ; For Kamo
 	li r3, 0x6910
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022C6D94 ; For Minenco
 	li r3, 0x6908
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022C7AE0 ; For Kamo
 	li r3, 0x6910
 .org 0x022C7AE8
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022C7B74 ; For Kamo
 	li r3, 0x6910
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022BEF34 ; For Kamo
 	li r3, 0x6910
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022BF178 ; For Kamo
 	li r3, 0x6910
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022BF310 ; For Pompie and Vera
 	li r3, 0x6904
-	bl isEventBit
+	bl isEventBit_wrapper
 
 .org 0x022CC550
 	li r3, 0x6904
 .org 0x022CC558
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022CC578
-	bl isEventBit
+	bl isEventBit_wrapper
 
 .org 0x022CFA80
 	bl lenzo_set_deluxe_picto_box_event_bit
@@ -330,8 +330,8 @@ lenzo_set_deluxe_picto_box_event_bit:
   stb r10,0xb39(r31)
   
   ; Next set an originally-unused event bit to keep track of whether the player got the item that was the Deluxe Picto Box in vanilla.
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6920
   bl onEventBit
@@ -343,10 +343,10 @@ lenzo_set_deluxe_picto_box_event_bit:
 
 .org 0x022d07FC
 	li r3, 0x6920
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022D05B4
 	li r3, 0x6920
-	bl isEventBit
+	bl isEventBit_wrapper
 
 
 ; Zunari usually checks if he's given you the item in the Magic Armor item slot by calling checkGetItem.
@@ -355,7 +355,7 @@ lenzo_set_deluxe_picto_box_event_bit:
 	; We replace this with a call to isEventBit checking our custom event bit.
 	li r3, 0x6940
 	nop
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022DA8A4
 	bl zunari_give_item_and_set_magic_armor_event_bit
 .org @NextFreeSpace
@@ -376,8 +376,8 @@ zunari_give_item_and_set_magic_armor_event_bit:
   cmpw r31, r4 ; Check if the item ID given is the same one from the Magic Armor slot.
   bne zunari_give_item_and_set_magic_armor_event_bit_end ; If it's not the item in the Magic Armor slot, skip to the end of the function
   mr r31, r3 ; Preserve the return value from createItemForPresentDemo so we can still return that
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6940 ; Unused event bit that we use to keep track of whether Zunari has given the Magic Armor item
   bl onEventBit
@@ -401,7 +401,7 @@ zunari_magic_armor_slot_item_id:
 .org 0x022E512C
 	li r3, 0x6980
 .org 0x022E5154
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022e5fb0
 	bl salvage_corp_give_item_and_set_event_bit
 .org 0x022e5fdc
@@ -417,8 +417,8 @@ salvage_corp_give_item_and_set_event_bit:
   bl fopAcM_createItemForPresentDemo
   
   mr r31, r3 ; Preserve the return value from createItemForPresentDemo so we can still return that
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6980 ; Unused event bit that we use to keep track of whether the Salvage Corp has given you their item yet or not
   bl onEventBit
@@ -434,7 +434,7 @@ salvage_corp_give_item_and_set_event_bit:
 .org 0x0227d244
 	li r3, 0x6A01
 .org 0x0227d24c
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x0227c2b8
 	bl maggie_give_item_and_set_event_bit
 .org @NextFreeSpace
@@ -448,8 +448,8 @@ maggie_give_item_and_set_event_bit:
   bl fopAcM_createItemForPresentDemo
   
   mr r31, r3 ; Preserve the return value from createItemForPresentDemo so we can still return that
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6A01 ; Unused event bit
   bl onEventBit
@@ -467,11 +467,11 @@ maggie_give_item_and_set_event_bit:
 .org 0x021fccd4
 	li r3, 0x6A02
 .org 0x021fcce0
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x022022f0
 	li r3, 0x6A02
 .org 0x022022f8
-	bl isEventBit
+	bl isEventBit_wrapper
 .org 0x02200d54
 	bl rito_cafe_postman_start_event_and_set_event_bit
 .org @NextFreeSpace
@@ -490,8 +490,8 @@ rito_cafe_postman_start_event_and_set_event_bit:
   bne rito_cafe_postman_start_event_and_set_event_bit_end
   
   mr r31, r3 ; Preserve the return value from orderOtherEventId so we can still return that (not sure if necessary, but just to be safe)
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6A02 ; Unused event bit
   bl onEventBit

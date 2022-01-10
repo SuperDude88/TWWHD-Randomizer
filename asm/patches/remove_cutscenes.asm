@@ -36,8 +36,8 @@ check_hyrule_warp_unlocked:
   mflr r0
   stw r0, 0x14 (sp)
   
-  lis r3, 0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3,gameInfo_ptr@l(r3)
   
   addi r3, r3, 0xD4
   bl getTriforceNum
@@ -79,7 +79,15 @@ check_hyrule_warp_unlocked:
 	nop
 
 
-; skipping song replays breaks a lot
+; Set the flag for having played each song before displaying text (skips the conducting)
+	; .org 0x0243acf4
+	; 	b 0x0243b090
+	; .org 0x0243b09c
+	; 	mr r3, r31
+	; 	lfs f31, 0x5128(r6)
+	; 	cmpwi r7, 0x0
+	; 	b 0x0243acf8
+; very broken
 
 
 ; Change Tott to only dance once to teach you the Song of Passing, instead of twice.
@@ -112,8 +120,8 @@ give_pearl_and_raise_totg_if_necessary:
   
   bl onSymbol ; Replace the call we overwrote to jump here, which gives the player a specific pearl
   
-  lis r3, 0x1020
-  lwz r3, -0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   
   ; Check the pearl index to know which event flag to set for the pearl being placed
@@ -140,8 +148,8 @@ give_pearl_and_raise_totg_if_necessary:
   bl onEventBit
   
   check_should_raise_totg:
-  lis r5, 0x1020
-  lwz r5, -0x7b24(r3)
+  lis r5, gameInfo_ptr@ha
+  lwz r5, gameInfo_ptr@l(r5)
   addi r5,r5,0xDF
   lbz r4, 0 (r5)
   cmpwi r4, 7
@@ -174,7 +182,12 @@ give_pearl_and_raise_totg_if_necessary:
 	b 0x024b745c
 .org 0x024b74d4
 	nop
-; some data edits that would be compiled strangely
+.org 0x101d232e
+	.short 9
+.org 0x101d233a
+	.short 9
+.org 0x101d2346
+	.short 9
 
 
 ; Prevent Ivan from automatically triggering the cutscene where the Killer Bees tell you about Mrs. Marie's birthday and the Joy Pendant in the tree.

@@ -28,8 +28,8 @@ set_starting_health:
 .org @NextFreeSpace
 .global fully_refill_magic_meter_on_load_save
 fully_refill_magic_meter_on_load_save:
-  lis r3, 0x1020
-  lwz r3, -0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3, r3, 0x33
   lbz r4, 0 (r3) ; Load max magic meter
   stb r4, 1 (r3) ; Store to current magic meter
@@ -275,5 +275,21 @@ custom_warp_pot_prm_color:
 .global custom_warp_pot_env_color ; The outline color
 custom_warp_pot_env_color:
   .int 0x3C379D80 ; Dark purple
+
+
+ ; set an arbitrary damage multiplier for hero mode
+.org 0x023F5218
+	b multiply_damage
+.org @NextFreeSpace
+.global multiply_damage
+multiply_damage:
+	lis r11, custom_damage_multiplier@ha
+	lfs f0, custom_damage_multiplier@l(r11)
+	fmuls f31, f31, f0
+	b 0x023f521c
+	
+.global custom_damage_multiplier
+custom_damage_multiplier:
+	.float 2.0
 
 .close

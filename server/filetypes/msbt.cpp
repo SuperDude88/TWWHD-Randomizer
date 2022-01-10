@@ -73,7 +73,7 @@ MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
     {
         return MSBTError::NOT_LBL1;
     }
-    header.offset = (int)msbt.tellg() - 4;
+    header.offset = (uint32_t)msbt.tellg() - 4;
     if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
     {
         return MSBTError::REACHED_EOF;
@@ -142,7 +142,7 @@ MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
     // ^ may be a faster way to do the same thing, depends on speed of istream read
 
     if (msbt.tellg() % 16 != 0) {
-        int padding_size = 16 - (msbt.tellg() % 16);
+        unsigned int padding_size = 16 - (msbt.tellg() % 16);
         std::string padding;
         padding.resize(padding_size);
         if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
@@ -162,7 +162,7 @@ MSBTError readATR1(std::istream& msbt, ATR1Header& header) {
     {
         return MSBTError::NOT_ATR1;
     }
-    header.offset = (int)msbt.tellg() - 4;
+    header.offset = (uint32_t)msbt.tellg() - 4;
     if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
     {
         return MSBTError::REACHED_EOF;
@@ -256,7 +256,7 @@ MSBTError readATR1(std::istream& msbt, ATR1Header& header) {
 
     msbt.seekg(header.offset + 0x10 + header.tableSize, std::ios::beg);
     if (msbt.tellg() % 16 != 0) {
-        int padding_size = 16 - (msbt.tellg() % 16);
+        unsigned int padding_size = 16 - (msbt.tellg() % 16);
         std::string padding;
         padding.resize(padding_size);
         if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
@@ -276,7 +276,7 @@ MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
     {
         return MSBTError::NOT_ATR1;
     }
-    header.offset = (int)msbt.tellg() - 4;
+    header.offset = (uint32_t)msbt.tellg() - 4;
     if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
     {
         return MSBTError::REACHED_EOF;
@@ -288,8 +288,8 @@ MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
 
     Utility::byteswap_inplace(header.tableSize);
 
-    header.entries.reserve((header.tableSize + 0x10 + header.offset) / 4);
-    for (uint32_t i = header.offset + 0x10; i < (header.tableSize + 0x10 + header.offset); i += 4) {
+    header.entries.reserve((header.tableSize + 0x10U + header.offset) / 4);
+    for (uint32_t i = header.offset + 0x10U; i < (header.tableSize + 0x10U + header.offset); i += 4) {
         msbt.seekg(i, std::ios::beg);
         TSY1Entry entry;
         if (!msbt.read(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex)))
@@ -303,7 +303,7 @@ MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
     }
 
     if (msbt.tellg() % 16 != 0) {
-        int padding_size = 16 - (msbt.tellg() % 16);
+        unsigned int padding_size = 16 - (msbt.tellg() % 16);
         std::string padding;
         padding.resize(padding_size);
         if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
@@ -323,7 +323,7 @@ MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
     {
         return MSBTError::NOT_ATR1;
     }
-    header.offset = (int)msbt.tellg() - 4;
+    header.offset = (uint32_t)msbt.tellg() - 4;
     if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
     {
         return MSBTError::REACHED_EOF;
@@ -375,7 +375,7 @@ MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
     }
 
     if (msbt.tellg() % 16 != 0) {
-        int padding_size = 16 - (msbt.tellg() % 16);
+        unsigned int padding_size = 16 - (msbt.tellg() % 16);
         std::string padding;
         padding.resize(padding_size);
         if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
@@ -424,7 +424,7 @@ void writeLBL1(std::ostream& out, LBL1Header& header) {
     }
 
     if (out.tellp() % 16 != 0) { //Write padding if needed
-        int padding_size = 16 - (out.tellp() % 16);
+        unsigned int padding_size = 16 - (out.tellp() % 16);
         std::string padding;
         padding.resize(padding_size, '\xab');
         out.write(&padding[0], padding_size);
@@ -456,7 +456,7 @@ void writeATR1(std::ostream& out, ATR1Header& header) {
     }
 
     if (out.tellp() % 16 != 0) { //Write padding if needed
-        int padding_size = 16 - (out.tellp() % 16);
+        unsigned int padding_size = 16 - (out.tellp() % 16);
         std::string padding;
         padding.resize(padding_size, '\xab');
         out.write(&padding[0], padding_size);
@@ -481,7 +481,7 @@ void writeTSY1(std::ostream& out, TSY1Header& header) {
     }
 
     if (out.tellp() % 16 != 0) { //Write padding if needed
-        int padding_size = 16 - (out.tellp() % 16);
+        unsigned int padding_size = 16 - (out.tellp() % 16);
         std::string padding;
         padding.resize(padding_size, '\xab');
         out.write(&padding[0], padding_size);
@@ -512,7 +512,7 @@ void writeTXT2(std::ostream& out, TXT2Header& header) {
     }
 
     if (out.tellp() % 16 != 0) { //Write padding if needed
-        int padding_size = 16 - (out.tellp() % 16);
+        unsigned int padding_size = 16 - (out.tellp() % 16);
         std::string padding;
         padding.resize(padding_size, '\xab');
         out.write(&padding[0], padding_size);
