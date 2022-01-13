@@ -5,7 +5,7 @@
 
 GameItem nameToGameItem(const std::string& name)
 {
-	static std::unordered_map<std::string, GameItem> itemNameMap = {
+	static std::unordered_map<std::string, GameItem> nameItemMap = {
 		{"INVALID", GameItem::INVALID},
 		{"GreenRupee", GameItem::GreenRupee},
 		{"BlueRupee", GameItem::BlueRupee},
@@ -112,11 +112,127 @@ GameItem nameToGameItem(const std::string& name)
 		{"Nothing", GameItem::Nothing}
 	};
 
-	if (itemNameMap.count(name) == 0)
+	if (nameItemMap.count(name) == 0)
 	{
 		return GameItem::INVALID;
 	}
-	return itemNameMap.at(name);
+	return nameItemMap.at(name);
+}
+
+std::string gameItemToName(GameItem item)
+{
+	static std::unordered_map<GameItem, std::string> itemNameMap = {
+		{GameItem::INVALID, "INVALID"},
+		{GameItem::GreenRupee, "GreenRupee"},
+		{GameItem::BlueRupee, "BlueRupee"},
+		{GameItem::YellowRupee, "YellowRupee"},
+		{GameItem::RedRupee, "RedRupee"},
+		{GameItem::PurpleRupee, "PurpleRupee"},
+		{GameItem::OrangeRupee, "OrangeRupee"},
+		{GameItem::PieceOfHeart, "PieceOfHeart"},
+		{GameItem::HeartContainer, "HeartContainer"},
+		{GameItem::WindWaker, "WindWaker"},
+		{GameItem::SpoilsBag, "SpoilsBag"},
+		{GameItem::HurricaneSpin, "HurricaneSpin"},
+		{GameItem::GrapplingHook, "GrapplingHook"},
+		{GameItem::PowerBracelets, "PowerBracelets"},
+		{GameItem::IronBoots, "IronBoots"},
+		{GameItem::BaitBag, "BaitBag"},
+		{GameItem::Boomerang, "Boomerang"},
+		{GameItem::Hookshot, "Hookshot"},
+		{GameItem::DeliveryBag, "DeliveryBag"},
+		{GameItem::Bombs, "Bombs"},
+		{GameItem::SkullHammer, "SkullHammer"},
+		{GameItem::DekuLeaf, "DekuLeaf"},
+		{GameItem::TriforceShard, "TriforceShard"},
+		{GameItem::NayrusPearl, "NayrusPearl"},
+		{GameItem::DinsPearl, "DinsPearl"},
+		{GameItem::FaroresPearl, "FaroresPearl"},
+		{GameItem::WindsRequiem, "WindsRequiem"},
+		{GameItem::BalladOfGales, "BalladOfGales"},
+		{GameItem::CommandMelody, "CommandMelody"},
+		{GameItem::EarthGodsLyric, "EarthGodsLyric"},
+		{GameItem::WindGodsAria, "WindGodsAria"},
+		{GameItem::SongofPassing, "SongofPassing"},
+		{GameItem::Sail, "Sail"},
+		{GameItem::NoteToMom, "NoteToMom"},
+		{GameItem::MaggiesLetter, "MaggiesLetter"},
+		{GameItem::MoblinsLetter, "MoblinsLetter"},
+		{GameItem::CabanaDeed, "CabanaDeed"},
+		{GameItem::DragonTingleStatue, "DragonTingleStatue"},
+		{GameItem::ForbiddenTingleStatue, "ForbiddenTingleStatue"},
+		{GameItem::GoddessTingleStatue, "GoddessTingleStatue"},
+		{GameItem::EarthTingleStatue, "EarthTingleStatue"},
+		{GameItem::WindTingleStatue, "WindTingleStatue"},
+		{GameItem::BombBagUpgrade, "BombBagUpgrade"},
+		{GameItem::QuiverUpgrade, "QuiverUpgrade"},
+		{GameItem::MagicMeter, "MagicMeter"},
+		{GameItem::GhostShipChart, "GhostShipChart"},
+		{GameItem::Sword, "Sword"},
+		{GameItem::Shield, "Shield"},
+		{GameItem::Shield, "Shield"},
+		{GameItem::Bow, "Bow"},
+		{GameItem::Wallet, "Wallet"},
+		{GameItem::PictoBox, "PictoBox"},
+		{GameItem::DeluxePictoBox, "DeluxePictoBox"},
+		{GameItem::Bottle, "Bottle"},
+		{GameItem::TriforceChart1, "TriforceChart1"},
+		{GameItem::TriforceChart2, "TriforceChart2"},
+		{GameItem::TriforceChart3, "TriforceChart3"},
+		{GameItem::TreasureChart1, "TreasureChart1"},
+		{GameItem::TreasureChart2, "TreasureChart2"},
+		{GameItem::TreasureChart3, "TreasureChart3"},
+		{GameItem::TreasureChart4, "TreasureChart4"},
+		{GameItem::TreasureChart5, "TreasureChart5"},
+		{GameItem::TreasureChart6, "TreasureChart6"},
+		{GameItem::TreasureChart7, "TreasureChart7"},
+		{GameItem::TreasureChart8, "TreasureChart8"},
+		{GameItem::TreasureChart9, "TreasureChart9"},
+		{GameItem::TreasureChart10, "TreasureChart10"},
+		{GameItem::TreasureChart11, "TreasureChart11"},
+		{GameItem::TreasureChart12, "TreasureChart12"},
+		{GameItem::TreasureChart13, "TreasureChart13"},
+		{GameItem::TreasureChart14, "TreasureChart14"},
+		{GameItem::TreasureChart15, "TreasureChart15"},
+		{GameItem::TreasureChart16, "TreasureChart16"},
+		{GameItem::TreasureChart17, "TreasureChart17"},
+		{GameItem::TreasureChart18, "TreasureChart18"},
+		{GameItem::TreasureChart19, "TreasureChart19"},
+		{GameItem::TreasureChart20, "TreasureChart20"},
+		{GameItem::TreasureChart21, "TreasureChart21"},
+		{GameItem::TreasureChart22, "TreasureChart22"},
+		{GameItem::TreasureChart23, "TreasureChart23"},
+		{GameItem::TreasureChart24, "TreasureChart24"},
+		{GameItem::TreasureChart25, "TreasureChart25"},
+		{GameItem::TreasureChart26, "TreasureChart26"},
+		{GameItem::TreasureChart27, "TreasureChart27"},
+		{GameItem::TreasureChart28, "TreasureChart28"},
+		{GameItem::TreasureChart29, "TreasureChart29"},
+		{GameItem::TreasureChart30, "TreasureChart30"},
+		{GameItem::TreasureChart31, "TreasureChart31"},
+		{GameItem::TreasureChart32, "TreasureChart32"},
+		{GameItem::TreasureChart33, "TreasureChart33"},
+		{GameItem::TreasureChart34, "TreasureChart34"},
+		{GameItem::TreasureChart35, "TreasureChart35"},
+		{GameItem::TreasureChart36, "TreasureChart36"},
+		{GameItem::TreasureChart37, "TreasureChart37"},
+		{GameItem::TreasureChart38, "TreasureChart38"},
+		{GameItem::TreasureChart39, "TreasureChart39"},
+		{GameItem::TreasureChart40, "TreasureChart40"},
+		{GameItem::TreasureChart41, "TreasureChart41"},
+		{GameItem::TreasureChart42, "TreasureChart42"},
+		{GameItem::TreasureChart43, "TreasureChart43"},
+		{GameItem::TreasureChart44, "TreasureChart44"},
+		{GameItem::TreasureChart45, "TreasureChart45"},
+		{GameItem::TreasureChart46, "TreasureChart46"},
+		{GameItem::Nothing, "Nothing"}
+	};
+
+	if (itemNameMap.count(item) == 0)
+	{
+		return "INVALID";
+	}
+	return itemNameMap.at(item);
 }
 
 GameItem indexToGameItem(uint32_t index)

@@ -122,7 +122,8 @@ enum struct GameItem
 };
 
 GameItem nameToGameItem(const std::string& name);
-//std::string gameItemToName(GameItem item);
+
+std::string gameItemToName(GameItem item);
 
 GameItem indexToGameItem(uint32_t index);
 

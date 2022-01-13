@@ -1,5 +1,6 @@
 
-#include "LocationManager.hpp"
+#include "World.hpp"
+#include "ItemPool.hpp"
 #include "../libs/json.hpp"
 #include <string>
 #include <unordered_set>
@@ -7,59 +8,17 @@
 #include <fstream>
 #include <iostream>
 
-constexpr const char* macro = R"~({
-    "Name": "Can Buy Bait",
-    "Expression": {
-        "type": "has_item", "args": ["Nothing"]
-    }
-})~";
-
-constexpr const char* req = R"~({
-    "type": "and", "args": [{"type": "has_item", "args": ["BalladOfGales"]}, {"type": "has_item", "args":["WindWaker"]}, {"type": "macro", "args": ["Can Play WR"]}]
-    })~";
-
-constexpr const char* locationStr = R"~({
-    "Name": "OutsetDigBlackSoil",
-    "OriginalItem": "PieceOfHeart",
-    "Category": [
-        "IslandPuzzle"
-    ],
-    "Needs": {
-        "type": "and",
-        "args": [
-            {
-                "type": "macro",
-                "args": [
-                    "Can Buy Bait"
-                ]
-            },
-            {
-                "type": "has_item",
-                "args": [
-                    "BaitBag"
-                ]
-            },
-            {
-                "type": "has_item",
-                "args": [
-                    "PowerBracelets"
-                ]
-            }
-        ]
-    },
-    "Path": "szs_permanent2/sea_Room44.zs",
-    "Type": "SCOB",
-    "Offsets": [
-        "0x84CBD4"
-    ]
-})~";
-
-
 int main()
 {
+    // Important variables, do not erase
     int kwando = 1313;
     const char* citri = "gamer";
     std::vector<uint8_t> nat = {4, 2, 0};
+    // End of important variables
+
+    #ifdef ENABLE_DEBUG
+        std::cout << "Debugging is ON" << std::endl;
+    #endif
 
     using json = nlohmann::json;
 
@@ -69,14 +28,13 @@ int main()
         std::cout << "unable to open macro file" << std::endl;
         return 1;
     }
-    std::ifstream locationsFile("../locations.json");
-    if (!locationsFile.is_open())
+    std::ifstream worldFile("../world.json");
+    if (!worldFile.is_open())
     {
-        std::cout << "Unable to open Locations file" << std::endl;
+        std::cout << "Unable to open world file" << std::endl;
     }
 
-    json req_j = json::parse(req, nullptr, false);
-    json loc_j = json::parse(locationsFile, nullptr, false);
+    json world_j = json::parse(worldFile, nullptr, false);
     auto macroFileObj = json::parse(macroFile, nullptr, false);
     if (macroFileObj.is_discarded())
     {
@@ -84,46 +42,57 @@ int main()
         return 1;
     }
 
-    LocationManager manager{};
-    auto err = manager.loadMacros(macroFileObj["Macros"].get<std::vector<json>>());
-    if (err != LocationManager::LocationError::NONE)
+    World baseWorld{};
+
+    auto err = baseWorld.loadMacros(macroFileObj["Macros"].get<std::vector<json>>());
+    if (err != World::WorldLoadingError::NONE)
     {
-        std::cout << "Got error loading macros: " << LocationManager::errorToName(err) << std::endl;
-        std::cout << manager.getLastErrorDetails() << std::endl;
+        std::cout << "Got error loading macros: " << World::errorToName(err) << std::endl;
+        std::cout << baseWorld.getLastErrorDetails() << std::endl;
         return 1;
     }
-    if (!loc_j.contains("Locations"))
+    if (!world_j.contains("Areas"))
     {
-        std::cout << "Improperly formatted locations file" << std::endl;
+        std::cout << "Improperly formatted world file" << std::endl;
         return 1;
     }
-    for (const auto& location : loc_j.at("Locations"))
+    for (const auto& area : world_j.at("Areas"))
     {
-        Location locOut;
-        err = manager.loadLocation(location, locOut);
-        if (err != LocationManager::LocationError::NONE)
+        Area areaOut;
+        err = baseWorld.loadArea(area, areaOut);
+        if (err != World::WorldLoadingError::NONE)
         {
-            std::cout << "Got error loading location: " << LocationManager::errorToName(err) << std::endl;
-            std::cout << manager.getLastErrorDetails() << std::endl;
+            std::cout << "Got error loading area: " << World::errorToName(err) << std::endl;
+            std::cout << baseWorld.getLastErrorDetails() << std::endl;
             return 1;
         }
     }
 
-    LocationManager::Settings settings;
-    LocationManager::ItemSet items;
+    Settings settings;
 
-    // add all the items with max count; make a function in one of the modules later?
-    for (uint32_t idx = 0; idx < LocationManager::LOCATION_COUNT; idx++)
-    {
-        GameItem toAdd = indexToGameItem(idx);
-        int countToAdd = maxItemCount(toAdd);
-        for (int count = 0; count < countToAdd; count++)
-        {
-            items.insert(toAdd);
-        }
+    // Create all necessary worlds (for any potential multiworld support in the future)
+    int worldCount = 2;
+    std::vector<World> worlds = {};
+    worlds.resize(worldCount);
+    for (World& world : worlds) {
+        world = baseWorld.copy();
+        // world.worldId = i + 1;
+        world.setSettings(settings);
+        world.setItemPool();
+        // Randomize Entrances (if necessary)
     }
 
-    manager.assumedFill(items, settings);
+    #ifdef ENABLE_DEBUG
+        for (World& world : worlds) {
+            // world.dumpWorldGraph("World #" + std::to_string(world.worldId));
+        }
+    #endif
+
+    // if (fillError == World::FillError::NONE) {
+    //     std::cout << "Fill Successful" << std::endl;
+    // } else {
+    //     std::cout << "Fill Unsuccessful. Error Code: " << World::errorToName(fillError) << std::endl;
+    // }
 
     return 0;
 }

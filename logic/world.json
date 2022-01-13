@@ -5,8 +5,7 @@
             "Locations": [],
             "Exits": [
                 {
-                    "ConnectedArea": "LinksSpawn",
-                    "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "LinksSpawn", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
@@ -15,8 +14,7 @@
             "Locations": [],
             "Exits": [
                 {
-                    "ConnectedArea": "OutsetIsland",
-                    "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
@@ -47,32 +45,32 @@
                     "Path": "szs_permanent2/sea_Room44.zs",
                     "Type": "SCOB",
                     "Offsets": ["0x84CBD4"]
-                },
+                }
             ],
             "Exits": [
                 {
-                    "ConnectedArea": "TheGreatSea", "Needs": { "type", "has_item", "args": ["Sail"]}
+                    "ConnectedArea": "TheGreatSea", "Needs": { "type": "has_item", "args": ["Sail"]}
                 },
                 {
-                    "ConnectedArea": "LinksHouse", "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetLinksHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "LinksBasement", "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetUnderLinksHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "OrcasHouse", "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetOrcasHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "SturgeonsHouse", "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetSturgeonsHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "RosesHouse", "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetRosesHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "RosesAttic", "Needs": { "type", "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetRosesAttic", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "OutsetMesasHouse", "Needs": { "type", "macro", "args": ["Can Play SoP"]}
+                    "ConnectedArea": "OutsetMesasHouse", "Needs": { "type": "macro", "args": ["Can Play SoP"]}
                 },
                 {
                     "ConnectedArea": "OutsetNearBridge", "Needs": { "type": "or", "args": [{"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "macro", "args": ["HerosSword"]}]}
@@ -86,7 +84,7 @@
             ]
         },
         {
-            "Name": "LinksHouse",
+            "Name": "OutsetLinksHouse",
             "Locations": [],
             "Exits": [
                 {
@@ -95,14 +93,13 @@
             ]
         },
         {
-            "Name": "LinksBasement",
+            "Name": "OutsetUnderLinksHouse",
             "Locations": [
                 {
-                    "Name": "UnderLinksHouse",
+                    "Name": "OutsetUnderLinksHouseChest",
                     "OriginalItem": "OrangeRupee",
                     "Category": ["Misc"],
-                    "Needs": { "type": "has_item", "args": ["Nothing"]
-                    },
+                    "Needs": { "type": "has_item", "args": ["Nothing"]},
                     "Path": "LinkUG_Stage.zs",
                     "Type": "Chest",
                     "Offsets": ["0x212DC"]
@@ -115,7 +112,7 @@
             ]
         },
         {
-            "Name": "OrcasHouse",
+            "Name": "OutsetOrcasHouse",
             "Locations": [
                 {
                     "Name": "OutsetOrca10KnightsCrest",
@@ -149,34 +146,34 @@
             ],
             "Exits": [
                 {
-                    "Name": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
         {
-            "Name": "SturgeonsHouse",
+            "Name": "OutsetSturgeonsHouse",
             "Locations": [],
             "Exits":  [
                 {
-                    "Name": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
         {
-            "Name": "RosesHouse",
+            "Name": "OutsetRosesHouse",
             "Locations": [],
             "Exits":  [
                 {
-                    "Name": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
         {
-            "Name": "RosesAttic",
+            "Name": "OutsetRosesAttic",
             "Locations": [],
             "Exits":  [
                 {
-                    "Name": "RosesHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetRosesHouse", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
@@ -196,7 +193,7 @@
             ],
             "Exits": [
                 {
-                    "Name": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
@@ -220,7 +217,7 @@
                     "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "ForestofFairies", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetForestofFairies", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
                     "ConnectedArea": "OutsetNearSavageHeadstone", "Needs": { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
@@ -235,19 +232,19 @@
                     "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "ConnectedArea": "SavageLabyrinth", "Needs": { "type": "has_item", "args": ["PowerBracelets"]}
+                    "ConnectedArea": "OutsetSavageLabyrinth", "Needs": { "type": "has_item", "args": ["PowerBracelets"]}
                 }
             ]
         },
         {
-            "Name": "ForestofFairies",
+            "Name": "OutsetForestofFairies",
             "Locations": [],
             "Exits": [
                 {
-                    "Name": "OutsetAcrossBridge", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetAcrossBridge", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 },
                 {
-                    "Name": "OutsetGreatFairyFountain", "Needs": { "type": "macro", "args": ["Can Move Boulders"]}
+                    "ConnectedArea": "OutsetGreatFairyFountain", "Needs": { "type": "macro", "args": ["Can Move Boulders"]}
                 }
             ]
         },
@@ -258,7 +255,7 @@
                     "Name": "OutsetGreatFairy",
                     "OriginalItem": "Wallet",
                     "Category": ["GreatFairy"],
-                    "Needs": { "type", "has_item", "args": ["Nothing"]},
+                    "Needs": { "type": "has_item", "args": ["Nothing"]},
                     "Path": "cking.rpx",
                     "Type": "REL",
                     "Offsets": ["0x29DCC7"]
@@ -266,12 +263,12 @@
             ],
             "Exits": [
                 {
-                    "Name": "ForestofFairies", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetForestofFairies", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
         {
-            "Name": "SavageLabyrinth":
+            "Name": "OutsetSavageLabyrinth",
             "Locations": [
                 {
                     "Name": "OutsetSavageFloor30",
@@ -349,7 +346,7 @@
             ],
             "Exits": [
                 {
-                    "Name": "OutsetNearSavageHeadstone", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetNearSavageHeadstone", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         },
@@ -364,12 +361,13 @@
                     "Path": "Pjavdou_Room0.zs",
                     "Type": "Chest",
                     "Offsets": ["1"]
-                },
+                }
             ],
             "Exits": [
                 {
-                    "Name": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                    "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
         }
     ]
+}

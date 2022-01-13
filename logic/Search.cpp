@@ -1,7 +1,6 @@
 
-
 #include "Search.hpp"
-#include "LocationManager.hpp"
+#include "World.hpp"
 #include "GameItem.hpp"
 
 #include <unordered_set>
@@ -10,7 +9,7 @@
 #include <algorithm>
 #include <random>
 
-std::vector<uint32_t> assumedSearch(std::vector<GameItem>& ownedItems, const LocationManager& locationManager)
+std::vector<uint32_t> assumedSearch(std::vector<GameItem>& ownedItems, const World& World)
 {
     std::unordered_set<GameItem> newItems;
     std::vector<uint32_t> reachable;
