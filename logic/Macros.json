@@ -1,5 +1,5 @@
 {
-    "Macros": 
+    "Macros":
     [
     {
      "Name": "Can Play WR",
@@ -32,14 +32,20 @@
        }
     },
     {
+     "Name": "Can Play SoP",
+     "Expression": {
+       "type": "and", "args": [{"type": "has_item", "args": ["SongofPassing"]}, {"type": "has_item", "args":["WindWaker"]}]
+       }
+    },
+    {
      "Name": "Can Fly With Deku Leaf Outdoors",
      "Expression": {
        "type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "macro", "args":["Can Play WR"]}]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Aim Mirror Shield",
      "Expression": {
@@ -282,9 +288,9 @@
          "type": "macro", "args": ["Can Access Dungeon Entrance On Gale Isle"]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Access Secret Cave Entrance on Outset Island",
      "Expression": {
@@ -405,9 +411,9 @@
          "type": "has_item", "args": ["Hookshot"]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Access Savage Labyrinth",
      "Expression": {
@@ -528,9 +534,9 @@
          "type": "macro", "args": ["Can Access Secret Cave Entrance on Star Island"]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Get Past Forsaken Fortress Gate",
      "Expression": {
@@ -555,9 +561,9 @@
          "type": "or", "args": [{"type": "and", "args": [{"type": "macro", "args": ["Outside Swordless Mode"]}, {"type": "macro", "args": ["Master Sword"]}]}, {"type": "and", "args": [{"type": "macro", "args": ["In Swordless Mode"]}, {"type": "has_item", "args": ["SkullHammer"]}]}]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Access Hyrule",
      "Expression": {
@@ -576,13 +582,13 @@
          "type": "and", "args": [{"type": "macro", "args": ["Can Get Past Hyrule Barrier"]}, {"type": "or", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["Hookshot"]}]}]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Complete DRC Trial",
      "Expression": {
-         "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Gohma"]}, {"type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]}] 
+         "type": "and", "args": [{"type": "macro", "args": ["Can Defeat Gohma"]}, {"type": "and", "args": [{"type": "has_item", "args": ["DekuLeaf"]}, {"type": "has_item", "args": ["GrapplingHook"]}]}]
        }
     },
     {
@@ -645,9 +651,9 @@
          "type": "and", "args": [{"type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["In Swordless Mode"]}]}, {"type": "macro", "args": ["Heros Shield"]}]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Rescued Aryll",
      "Expression": {
@@ -666,9 +672,9 @@
          "type": "has_item", "args": ["Nothing"]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Farm Knights Crests",
      "Expression": {
@@ -679,7 +685,7 @@
          {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["StoneWatcherCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
          {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["OverlookCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
          {"type": "can_access", "args": ["IceRingInnerCaveChest"]},
-         {"type": "can_access", "args": ["OusetSavageFloor30"]},
+         {"type": "can_access", "args": ["OutsetSavageFloor30"]},
          {"type": "can_access", "args": ["SharkCave"]},
          {"type": "macro", "args": ["Can Access Hyrule"]}]
        }
@@ -720,7 +726,7 @@
          "type": "has_item", "args": ["Nothing"]
        }
     },
-   
+
     {
      "Name": "Can Defeat Bokoblins",
      "Expression": {
@@ -1009,9 +1015,9 @@
          "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Defeat Gohma",
      "Expression": {
@@ -1048,9 +1054,9 @@
          "type": "and", "args": [{"type": "has_item", "args": ["Hookshot"]}, {"type": "or", "args": [{"type": "macro", "args": ["HerosSword"]}, {"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["GrapplingHook"]}, {"type": "has_item", "args": ["SkullHammer"]}, {"type": "has_item", "args": ["Bombs"]}]}]
        }
     },
-   
-   
-   
+
+
+
     {
      "Name": "Can Destroy Cannons",
      "Expression": {
@@ -1099,7 +1105,7 @@
          "type": "not", "args": [{"type": "setting", "args": ["Swordless"]}]
        }
     },
-   
+
     {
      "Name": "Chart for Island 1",
      "Expression": {
@@ -1394,7 +1400,6 @@
          "type": "has_item", "args": ["TreasureChart33"]
        }
     }
-   
+
     ]
    }
-   

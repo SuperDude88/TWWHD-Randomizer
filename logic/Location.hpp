@@ -9,15 +9,15 @@
 enum struct Location : uint32_t
 {
     INVALID = 0,
-    OutsetUnderLinksHouse,
-    OutsetMesaHouseChest,
+    OutsetUnderLinksHouseChest,
+    OutsetMesasHouseChest,
     OutsetOrca10KnightsCrest,
     OutsetOrca500Hits,
     OutsetGreatFairy,
-    OusetJabunsCave,
+    OutsetJabunsCaveChest,
     OutsetDigBlackSoil,
-    OusetSavageFloor30,
-    OusetSavageFloor50,
+    OutsetSavageFloor30,
+    OutsetSavageFloor50,
     WindfallTingleFirstGift,
     WindfallTingleSecondGift,
     WindfallJailMazeChest,
@@ -214,7 +214,7 @@ enum struct Location : uint32_t
     ThornedFairyGreatFairy,
     ThornedFairyNortheasternLookoutPlatformDestroyCannons,
     ThornedFairySouthwesternLookoutPlatformDefeatEnemies,
-    EasternFairyGreayFairy,
+    EasternFairyGreatFairy,
     EasternFairyLookoutPlatformDefeatCannonsAndEnemies,
     WesternFairyGreatFairy,
     WesternFairyLookoutPlatform,
@@ -370,5 +370,6 @@ struct LocationModificationMethod
 };
 
 Location nameToLocation(const std::string& name);
+std::string locationToName(Location location);
 LocationCategory nameToLocationCategory(const std::string& name);
 LocationModificationType nameToModificationType(const std::string& name);
