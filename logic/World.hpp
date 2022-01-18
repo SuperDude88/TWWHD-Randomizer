@@ -38,13 +38,6 @@ public:
         INVALID_GAME_ITEM
     };
 
-    enum struct FillError
-    {
-        NONE = 0,
-        RAN_OUT_OF_RETRIES,
-        MORE_ITEMS_THAN_LOCATIONS,
-    };
-
     using LocationIndex = uint32_t;
     constexpr static uint32_t LOCATION_COUNT = static_cast<std::underlying_type_t<Location>>(Location::COUNT);
     constexpr static uint32_t AREA_COUNT = static_cast<std::underlying_type_t<Area>>(Area::COUNT);
@@ -63,9 +56,7 @@ public:
                                         std::vector<Location>& allowedLocations);
     void assumedFill(const ItemPool& items, std::vector<Location>& locationsToFill, const Settings& settings);
     void fastFill(const ItemPool& itemsToPlace, const std::vector<Location>& allowedLocations);
-    FillError fillWorld(const ItemPool& items, const Settings& settings);
     static const char* errorToName(WorldLoadingError err);
-    static const char* errorToName(FillError err);
 
     std::string getLastErrorDetails();
 

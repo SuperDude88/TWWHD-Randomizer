@@ -1,6 +1,7 @@
 
 #include "World.hpp"
 #include "ItemPool.hpp"
+#include "Fill.hpp"
 #include "../libs/json.hpp"
 #include <string>
 #include <unordered_set>
@@ -74,25 +75,28 @@ int main()
     int worldCount = 2;
     std::vector<World> worlds = {};
     worlds.resize(worldCount);
-    for (World& world : worlds) {
+    for (size_t i = 0; i < worldCount; i++) {
+        World& world = worlds[i];
         world = baseWorld.copy();
-        // world.worldId = i + 1;
+        world.worldId = i + 1;
         world.setSettings(settings);
         world.setItemPool();
-        // Randomize Entrances (if necessary)
+        // world.randomizeEntrances();
     }
+
+    FillError fillError = fill(worlds);
 
     #ifdef ENABLE_DEBUG
         for (World& world : worlds) {
-            // world.dumpWorldGraph("World #" + std::to_string(world.worldId));
+            // world.dumpWorldGraph("World" + std::to_string(world.worldId));
         }
     #endif
 
-    // if (fillError == World::FillError::NONE) {
-    //     std::cout << "Fill Successful" << std::endl;
-    // } else {
-    //     std::cout << "Fill Unsuccessful. Error Code: " << World::errorToName(fillError) << std::endl;
-    // }
+    if (fillError == FillError::NONE) {
+        std::cout << "Fill Successful" << std::endl;
+    } else {
+        std::cout << "Fill Unsuccessful. Error Code: " << errorToName(fillError) << std::endl;
+    }
 
     return 0;
 }
