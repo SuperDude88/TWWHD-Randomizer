@@ -10,4 +10,4 @@ if(DEBUG_ON)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
 endif()
 
-add_executable(assumed_fill_test main.cpp GameItem.cpp Location.cpp World.cpp Setting.cpp ItemPool.cpp Area.cpp)
+add_executable(assumed_fill_test main.cpp GameItem.cpp Location.cpp World.cpp Setting.cpp ItemPool.cpp Area.cpp Fill.cpp)

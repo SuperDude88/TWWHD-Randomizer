@@ -2,13 +2,13 @@
 #include "PoolFunctions.hpp"
 
 static const ItemPool alwaysItems = {
-    GameItem::Boomerang,
-    GameItem::Hookshot,
-    GameItem::DekuLeaf,
-    GameItem::Bombs,
-    GameItem::BaitBag,
-    GameItem::SpoilsBag,
-    GameItem::Sword,
+    GameItem::GreenRupee,
+    GameItem::GreenRupee,
+    GameItem::GreenRupee,
+    GameItem::GreenRupee,
+    GameItem::GreenRupee,
+    GameItem::GreenRupee,
+    GameItem::GreenRupee,
 };
 
 static const ItemPool startingItems = {
@@ -18,6 +18,13 @@ static const ItemPool startingItems = {
     GameItem::SongofPassing,
     GameItem::BalladOfGales,
     GameItem::Sail,
+    GameItem::Boomerang,
+    GameItem::Hookshot,
+    GameItem::DekuLeaf,
+    GameItem::Bombs,
+    GameItem::BaitBag,
+    GameItem::SpoilsBag,
+    GameItem::Sword,
 };
 
 ItemPool generateItemPool(const Settings& settings, int worldId)

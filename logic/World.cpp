@@ -521,33 +521,33 @@ void World::fastFill(const ItemPool& itemsToPlace, const std::vector<Location>& 
 
 // Place all the items within the world. Certain groups of items will be placed first
 // depending on settings and failure based restrictions
-World::FillError World::fillWorld(const ItemPool& completeItemPool, const Settings& settings)
-{
-    int retries = 0;
-    while (retries < 10) {
-        retries++;
-        std::cout << "Beginning Fill Attempt " << std::to_string(retries) << std::endl;
-
-        // Get all locations with no current items
-        std::vector<Location> allLocations = {};
-        for (auto& locationEntry : locationEntries) {
-            if (locationEntry.originalItem != GameItem::INVALID) {
-                allLocations.push_back(locationEntry.location);
-            }
-        }
-
-        std::cout << "All Locations obtained. Total Size: " << std::to_string(allLocations.size()) << std::endl;
-
-        // Place all advancement items first using assumed fill
-        assumedFill(completeItemPool, allLocations, settings);
-
-        // Then place all junk items using fast fill
-
-        // If the world is still beatable, we have a successful placement
-        return FillError::NONE;
-    }
-    return FillError::RAN_OUT_OF_RETRIES;
-}
+// World::FillError World::fillWorld(const ItemPool& completeItemPool, const Settings& settings)
+// {
+//     int retries = 0;
+//     while (retries < 10) {
+//         retries++;
+//         std::cout << "Beginning Fill Attempt " << std::to_string(retries) << std::endl;
+//
+//         // Get all locations with no current items
+//         std::vector<Location> allLocations = {};
+//         for (auto& locationEntry : locationEntries) {
+//             if (locationEntry.originalItem != GameItem::INVALID) {
+//                 allLocations.push_back(locationEntry.location);
+//             }
+//         }
+//
+//         std::cout << "All Locations obtained. Total Size: " << std::to_string(allLocations.size()) << std::endl;
+//
+//         // Place all advancement items first using assumed fill
+//         assumedFill(completeItemPool, allLocations, settings);
+//
+//         // Then place all junk items using fast fill
+//
+//         // If the world is still beatable, we have a successful placement
+//         return FillError::NONE;
+//     }
+//     return FillError::RAN_OUT_OF_RETRIES;
+// }
 
 const char* World::errorToName(WorldLoadingError err)
 {
@@ -593,21 +593,6 @@ const char* World::errorToName(WorldLoadingError err)
         return "INVALID_OFFSET_VALUE";
     case WorldLoadingError::INVALID_GAME_ITEM:
         return "INVALID_GAME_ITEM";
-    default:
-        return "UNKNOWN";
-    }
-}
-
-const char* World::errorToName(FillError err)
-{
-    switch(err)
-    {
-    case FillError::NONE:
-        return "NONE";
-    case FillError::RAN_OUT_OF_RETRIES:
-        return "RAN_OUT_OF_RETRIES";
-    case FillError::MORE_ITEMS_THAN_LOCATIONS:
-        return "MORE_ITEMS_THAN_LOCATIONS";
     default:
         return "UNKNOWN";
     }
