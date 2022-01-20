@@ -8,4 +8,4 @@ Current to-do list:
  - Writing and testing seed generation
  - A little more file management testing
  - A few remaining ASM patches and other tweaks
- - GUI/making it usable
+ - GUI/making it useable
