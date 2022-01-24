@@ -21,6 +21,399 @@
         {
             "Name": "TheGreatSea",
             "Locations": [],
+            "Exits": [
+                {
+                    "ConnectedArea": "ForsakenFortress", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "StarIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "NorthernFairyIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "GaleIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "CrescentMoonIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "SevenStarIsles", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "OverlookIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "FourEyeReef", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "MotherAndChildIsles", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "SpectacleIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "WindfallIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "PawprintIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "DragonRoostIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "FlightControlPlatform", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "WesternFairyIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "RockSpireIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "TingleIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "NorthernTriangleIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "EasternFairyIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "FireMountain", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "StarBeltArchipelago", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "ThreeEyeReef", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "GreatfishIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "CyclopsReef", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "SixEyeReef", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "TowerOfTheGods", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "EasternTriangleIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "ThornedFairyIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "NeedleRockIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "IsletOfSteel", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "StonewatcherIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "SouthernTriangleIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "PrivateOasis", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "BombIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "BirdsPeakRock", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "DiamondSteppeIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "FiveEyeReef", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "SharkIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "SouthernFairyIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "IceRingIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "ForestHaven", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "CliffPlateauIsles", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "HorseshoeIsle", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "OutsetIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "HeadstoneIsland", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "TwoEyeReef", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "AngularIsles", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "BoatingCourse", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                },
+                {
+                    "ConnectedArea": "FiveStarIsles", "Needs": {"type": "has_item", "args": ["Nothing"]}
+                }
+            ]
+        },
+        {
+            "Name": "ForsakenFortress",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "StarIsland",
+            "Locations": [],
+            "Exits": [
+                {
+                    "ConnectedArea": "TheGreatSea", "Needs": { "type": "has_item", "args": ["Sail"]}
+                },
+                {
+                    "ConnectedArea": "StarIslandCave", "Needs": { "type": "macro", "args": ["Can Move Boulders"]}
+                }
+            ]
+        },
+        {
+            "Name": "StarIslandCave",
+            "Locations": [
+                {
+                   "Name": "StarIslandCaveChest",
+                   "OriginalItem": "PieceOfHeart",
+                   "Category": ["CombatSecretCave"],
+                   "Needs": { "type": "macro", "args": ["Can Defeat Magtails"]},
+                   "Path": "content/Common/Stage/Cave02_Stage.szs@YAZ0",
+                   "Type": "Chest",
+                   "Offsets": ["0x20c10"]
+                }
+            ],
+            "Exits": [
+                {
+                    "ConnectedArea": "StarIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                }
+            ]
+        },
+        {
+            "Name": "NorthernFairyIsland",
+            "Locations": [],
+            "Exits": [
+                {
+                    "ConnectedArea": "TheGreatSea", "Needs": { "type": "has_item", "args": ["Sail"]}
+                }
+            ]
+        },
+        {
+            "Name": "GaleIsle",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "CrescentMoonIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "SevenStarIsles",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "OverlookIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "FourEyeReef",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "MotherAndChildIsles",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "SpectacleIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "WindfallIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "PawprintIsle",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "DragonRoostIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "FlightControlPlatform",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "WesternFairyIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "RockSpireIsle",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "TingleIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "NorthernTriangleIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "EasternFairyIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "FireMountain",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "StarBeltArchipelago",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "ThreeEyeReef",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "GreatfishIsle",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "CyclopsReef",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "SixEyeReef",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "TowerOfTheGods",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "EasternTriangleIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "ThornedFairyIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "NeedleRockIsle",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "IsletOfSteel",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "StonewatcherIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "SouthernTriangleIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "PrivateOasis",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "BombIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "BirdsPeakRock",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "DiamondSteppeIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "FiveEyeReef",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "SharkIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "SouthernFairyIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "IceRingIsle",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "ForestHaven",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "CliffPlateauIsles",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "HorseshoeIsle",
+            "Locations": [],
             "Exits": []
         },
         {
@@ -368,6 +761,31 @@
                     "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }
             ]
+        },
+        {
+            "Name": "HeadstoneIsland",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "TwoEyeReef",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "AngularIsles",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "BoatingCourse",
+            "Locations": [],
+            "Exits": []
+        },
+        {
+            "Name": "FiveStarIsles",
+            "Locations": [],
+            "Exits": []
         }
     ]
 }

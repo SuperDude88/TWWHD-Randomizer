@@ -249,7 +249,7 @@ Location nameToLocation(const std::string& name)
         {"HorshoeSoutheasternLookoutPlatformChest", Location::HorshoeSoutheasternLookoutPlatformChest},
         {"FlightControlBirdManFirstPrize", Location::FlightControlBirdManFirstPrize},
         {"FlightControlSubmarine", Location::FlightControlSubmarine},
-        {"StarCave", Location::StarCave},
+        {"StarIslandCaveChest", Location::StarIslandCaveChest},
         {"StarLookoutPlatformChest", Location::StarLookoutPlatformChest},
         {"StarBeltLookoutPlatformChest", Location::StarBeltLookoutPlatformChest},
         {"FiveStarLookoutPlatformDestroyCannons", Location::FiveStarLookoutPlatformDestroyCannons},
@@ -574,7 +574,7 @@ std::string locationToName(Location location)
         {Location::HorshoeSoutheasternLookoutPlatformChest, "HorshoeSoutheasternLookoutPlatformChest"},
         {Location::FlightControlBirdManFirstPrize, "FlightControlBirdManFirstPrize"},
         {Location::FlightControlSubmarine, "FlightControlSubmarine"},
-        {Location::StarCave, "StarCave"},
+        {Location::StarIslandCaveChest, "StarIslandCaveChest"},
         {Location::StarLookoutPlatformChest, "StarLookoutPlatformChest"},
         {Location::StarBeltLookoutPlatformChest, "StarBeltLookoutPlatformChest"},
         {Location::FiveStarLookoutPlatformDestroyCannons, "FiveStarLookoutPlatformDestroyCannons"},
@@ -704,4 +704,15 @@ LocationModificationType nameToModificationType(const std::string& name)
     }
 
     return methodNameMap.at(name);
+}
+
+uint32_t locationAsIndex(Location loc)
+{
+    return static_cast<std::underlying_type_t<Location>>(loc);
+}
+
+Location indexAsLocation(uint32_t index)
+{
+    if (index >= LOCATION_COUNT) return Location::INVALID;
+    return static_cast<Location>(index);
 }

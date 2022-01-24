@@ -1,35 +1,23 @@
 #include "ItemPool.hpp"
 #include "PoolFunctions.hpp"
+#include <iostream>
 
-static const ItemPool alwaysItems = {
-    GameItem::GreenRupee,
-    GameItem::GreenRupee,
-    GameItem::GreenRupee,
-    GameItem::GreenRupee,
-    GameItem::GreenRupee,
-    GameItem::GreenRupee,
-    GameItem::GreenRupee,
-};
-
-static const ItemPool startingItems = {
+static const GameItemPool alwaysItems = {
     GameItem::WindWaker,
     GameItem::WindsRequiem,
     GameItem::Shield,
     GameItem::SongofPassing,
     GameItem::BalladOfGales,
     GameItem::Sail,
-    GameItem::Boomerang,
-    GameItem::Hookshot,
     GameItem::DekuLeaf,
-    GameItem::Bombs,
-    GameItem::BaitBag,
-    GameItem::SpoilsBag,
     GameItem::Sword,
+    GameItem::PowerBracelets,
+    GameItem::Bombs,
 };
 
-ItemPool generateItemPool(const Settings& settings, int worldId)
+GameItemPool generateGameItemPool(const Settings& settings, int worldId)
 {
-    ItemPool completeItemPool = {};
+    GameItemPool completeItemPool = {};
 
     // Add items which will always be in the item pool
     AddElementsToPool(completeItemPool, alwaysItems);
@@ -37,10 +25,25 @@ ItemPool generateItemPool(const Settings& settings, int worldId)
     return completeItemPool;
 }
 
-ItemPool getStartingInventory(const Settings& settings, int worldId)
+GameItemPool generateStartingGameItemPool(const Settings& settings, int worldId)
 {
-
+    static const GameItemPool startingItems = {
+        GameItem::WindWaker,
+        GameItem::WindsRequiem,
+        GameItem::Shield,
+        GameItem::SongofPassing,
+        GameItem::BalladOfGales,
+        GameItem::Sail,
+    };
     // Add more items depending on settings
 
     return startingItems;
+}
+
+void printItemPool(const std::string& poolName, const ItemPool& itemPool)
+{
+    std::cout << poolName << ": " << std::endl;
+    for (auto item : itemPool) {
+        std::cout << "\t" << gameItemToName(item.getGameItemId()) << " for world " << std::to_string(item.getWorldId()) << std::endl;
+    }
 }

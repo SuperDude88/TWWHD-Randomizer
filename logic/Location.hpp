@@ -251,7 +251,7 @@ enum struct Location : uint32_t
     HorshoeSoutheasternLookoutPlatformChest,
     FlightControlBirdManFirstPrize,
     FlightControlSubmarine,
-    StarCave,
+    StarIslandCaveChest,
     StarLookoutPlatformChest,
     StarBeltLookoutPlatformChest,
     FiveStarLookoutPlatformDestroyCannons,
@@ -325,6 +325,8 @@ enum struct Location : uint32_t
     COUNT
 };
 
+#define LOCATION_COUNT static_cast<std::underlying_type_t<Location>>(Location::COUNT)
+
 // move this and mod type into location entry or own file?
 enum struct LocationCategory
 {
@@ -373,3 +375,5 @@ Location nameToLocation(const std::string& name);
 std::string locationToName(Location location);
 LocationCategory nameToLocationCategory(const std::string& name);
 LocationModificationType nameToModificationType(const std::string& name);
+uint32_t locationAsIndex(Location loc);
+Location indexAsLocation(uint32_t index);
