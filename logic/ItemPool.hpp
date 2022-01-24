@@ -3,8 +3,11 @@
 
 #include "GameItem.hpp"
 #include "Setting.hpp"
+#include <vector>
 
-using ItemPool = std::unordered_multiset<GameItem>;
+using GameItemPool = std::vector<GameItem>;
+using ItemPool = std::vector<Item>;
 
-ItemPool generateItemPool(const Settings& settings, int worldId);
-ItemPool getStartingInventory(const Settings& settings, int worldId);
+GameItemPool generateGameItemPool(const Settings& settings, int worldId);
+GameItemPool generateStartingGameItemPool(const Settings& settings, int worldId);
+void printItemPool(const std::string& poolName, const ItemPool& itemPool);

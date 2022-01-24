@@ -128,3 +128,34 @@ std::string gameItemToName(GameItem item);
 GameItem indexToGameItem(uint32_t index);
 
 uint32_t maxItemCount(GameItem item);
+
+class Item
+{
+public:
+    Item() = default;
+    Item(GameItem gameItemId_, int worldId_);
+
+    void setWorldId(int newWorldId);
+    int getWorldId() const;
+    GameItem getGameItemId() const;
+    std::string getName() const;
+    bool operator==(const Item& rhs) const;
+    bool isMajorItem() const;
+
+private:
+    GameItem gameItemId = GameItem::INVALID;
+    int worldId = -1; // The world that this item is *FOR*
+};
+
+// Hash function for Item class, copied from
+// https://en.cppreference.com/w/cpp/utility/hash
+template<>
+struct std::hash<Item>
+{
+    size_t operator()(Item const& i) const noexcept
+    {
+        size_t h1 = std::hash<GameItem>{}(i.getGameItemId());
+        size_t h2 = std::hash<int>{}(i.getWorldId());
+        return h1 ^ (h2 << 1);
+    }
+};

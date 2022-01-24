@@ -14,30 +14,17 @@
 // some error checking macros for brevity and since we can't use exceptions
 #define FIELD_CHECK(j, field, err) if(!j.contains(field)) {lastError << "Unable to retrieve field: \"" << field << '"'; return err;}
 #define OBJECT_CHECK(j, msg) if(!j.is_object()) {lastError << msg << ": Not an Object."; return WorldLoadingError::EXPECTED_JSON_OBJECT;}
-#define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << str1 << " does not equal " << str2; return WorldLoadingError::MAPPING_MISMATCH;}
+#define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(area, Area::INVALID, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, Location::INVALID, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
 #define SETTING_VALID_CHECK(set, msg) VALID_CHECK(set, Setting::INVALID, msg, WorldLoadingError::SETTING_DOES_NOT_EXIST)
 
-
 World::World()
 {
-
-}
-
-World World::copy()
-{
-    World newWorld = World();
-    newWorld.locationEntries = this->locationEntries;
-    newWorld.areaEntries = this->areaEntries;
-    newWorld.macros = this->macros;
-    newWorld.macroNameMap = this->macroNameMap;
-    newWorld.worldId = this->worldId;
-    newWorld.settings = this->settings;
-    newWorld.itemPool = this->itemPool;
-    return newWorld;
+    areaEntries.resize(AREA_COUNT);
+    locationEntries.resize(LOCATION_COUNT);
 }
 
 // Somehow set different settings for different worlds
@@ -46,10 +33,75 @@ void World::setSettings(Settings& settings_)
     settings = settings_;
 }
 
-// Generate the item pool for this specific world
-void World::setItemPool()
+const Settings& World::getSettings() const
 {
-    itemPool = generateItemPool(settings, worldId);
+    return settings;
+}
+
+void World::setWorldId(int newWorldId)
+{
+    worldId = newWorldId;
+}
+
+int World::getWorldId() const
+{
+    return worldId;
+}
+
+// Generate the pools of starting items and items to place for this world
+void World::setItemPools()
+{
+    itemPool.clear();
+    startingItems.clear();
+    auto gameItemPool = generateGameItemPool(settings, worldId);
+    auto startingGameItems = generateStartingGameItemPool(settings, worldId);
+    // Set worldId for each item in each pool
+    #ifdef ENABLE_DEBUG
+        //std::cout << "Starting Items for world " << std::to_string(worldId) << ": " << std::endl;
+    #endif
+    for (auto gameItem : startingGameItems)
+    {
+        startingItems.emplace_back(gameItem, worldId);
+        #ifdef ENABLE_DEBUG
+            //std::cout << "\t" + gameItemToName(gameItem) << std::endl;
+        #endif
+        // If a starting item is in the main item pool, replace it with some junk
+        auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), gameItem);
+        if (itemPoolItr != gameItemPool.end())
+        {
+            // Optimize with smarter junk replacement later
+            *itemPoolItr = GameItem::GreenRupee;
+        }
+    }
+    #ifdef ENABLE_DEBUG
+        std::cout << "Item Pool for world " << std::to_string(worldId) << ": " << std::endl;
+    #endif
+    for (auto gameItem : gameItemPool)
+    {
+        itemPool.emplace_back(gameItem, worldId);
+        #ifdef ENABLE_DEBUG
+            std::cout << "\t" + gameItemToName(gameItem) << std::endl;
+        #endif
+    }
+}
+
+ItemPool World::getItemPool() const
+{
+    return itemPool;
+}
+
+ItemPool World::getStartingItems() const
+{
+    return startingItems;
+}
+
+LocationPool World::getLocations() const
+{
+    LocationPool locations = {};
+    for (auto locationEntry : locationEntries) {
+        locations.push_back(&locationEntry);
+    }
+    return locations;
 }
 
 World::WorldLoadingError World::parseElement(RequirementType type, const std::vector<json>& args, std::vector<Requirement::Argument>& out)
@@ -204,8 +256,10 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     std::string locationName = locationObject.at("Name").get<std::string>();
     loadedLocation = nameToLocation(locationName);
     LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
+    MAPPING_CHECK(locationName, locationToName(nameToLocation(locationName)));
     LocationEntry& newEntry = locationEntries[locationAsIndex(loadedLocation)];
-    newEntry.location = loadedLocation;
+    newEntry.locationId = loadedLocation;
+    newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
     FIELD_CHECK(locationObject, "Category", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& categories = locationObject.at("Category").get<std::vector<json>>();
@@ -259,9 +313,9 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     }
     FIELD_CHECK(locationObject, "OriginalItem", WorldLoadingError::LOCATION_MISSING_KEY);
     const std::string& itemName = locationObject.at("OriginalItem").get<std::string>();
-    newEntry.originalItem = nameToGameItem(itemName);
+    newEntry.originalItem = {nameToGameItem(itemName), worldId};
     ITEM_VALID_CHECK(
-        newEntry.originalItem,
+        newEntry.originalItem.getGameItemId(),
         "Error processing location " << locationName << ": Item of name " << itemName << " Does Not Exist."
     );
     return WorldLoadingError::NONE;
@@ -277,8 +331,10 @@ World::WorldLoadingError World::loadExit(const json& exitObject, Exit& loadedExi
     std::string connectedAreaName = exitObject.at("ConnectedArea").get<std::string>();
     auto connectedArea = nameToArea(connectedAreaName);
     AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedAreaName << "\" does not exist!");
+    MAPPING_CHECK(connectedAreaName, areaToName(nameToArea(connectedAreaName)));
     loadedExit.parentArea = parentArea;
     loadedExit.connectedArea = connectedArea;
+    loadedExit.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
     // load exit requirements
     FIELD_CHECK(exitObject, "Needs", WorldLoadingError::EXIT_MISSING_KEY);
@@ -305,8 +361,10 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
 
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
+    MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
     AreaEntry& newEntry = areaEntries[areaAsIndex(loadedArea)];
     newEntry.area = loadedArea;
+    newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
 
     // load locations in this area
@@ -323,7 +381,7 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
         #ifdef ENABLE_DEBUG
              // std::cout << "\tAdding location " << locationToName(locOut) << std::endl;
         #endif
-        newEntry.locations.insert(locOut);
+        newEntry.locations.push_back(&locationEntries[locationAsIndex(locOut)]);
     }
 
     // load exits in this area
@@ -346,175 +404,114 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     return WorldLoadingError::NONE;
 }
 
-bool World::evaluateRequirement(const Requirement& req, const ItemPool& ownedItems, const Settings& settings)
+bool World::isAccessible(Location location, const GameItemPool& ownedItems, const Settings& settings)
 {
-    uint32_t expectedCount = 0;
-    GameItem item;
-    switch(req.type)
-    {
-    case RequirementType::OR:
-        return std::any_of(
-            req.args.begin(),
-            req.args.end(),
-            [&](const Requirement::Argument& arg){
-                return evaluateRequirement(std::get<Requirement>(arg), ownedItems, settings);
-            }
-        );
-    case RequirementType::AND:
-        return std::all_of(
-            req.args.begin(),
-            req.args.end(),
-            [&](const Requirement::Argument& arg){
-                if (arg.index() != 2)
-                {
-                    return false;
-                }
-                return evaluateRequirement(std::get<Requirement>(arg), ownedItems, settings);
-            }
-        );
-    case RequirementType::NOT:
-        if (req.args[0].index() != 2)
-        {
-            return false;
-        }
-        return !evaluateRequirement(std::get<Requirement>(req.args[0]), ownedItems, settings);
-    case RequirementType::HAS_ITEM:
-        // we can expect ownedItems will contain entires for every item type
-        if (req.args[0].index() != 3)
-        {
-            return false;
-        }
-        item = std::get<GameItem>(req.args[0]);
-        if (item == GameItem::Nothing) return true;
-        return ownedItems.count(item) > 0;
-    case RequirementType::COUNT:
-        expectedCount = std::get<int>(req.args[0]);
-        item = std::get<GameItem>(req.args[1]);
-        if (item == GameItem::Nothing) return true;
-        return ownedItems.count(item) >= expectedCount;
-    case RequirementType::CAN_ACCESS:
-        return evaluateRequirement(locationEntries[locationAsIndex(std::get<Location>(req.args[0]))].requirement, ownedItems, settings);
-    case RequirementType::SETTING:
-        // TODO: assuming all boolean settings for now
-        return settings.count(std::get<Setting>(req.args[0])) > 0;
-    case RequirementType::MACRO:
-        return evaluateRequirement(macros[std::get<MacroIndex>(req.args[0])], ownedItems, settings);
-    case RequirementType::NONE:
-    default:
-        // actually needs to be some error state?
-        return false;
-    }
+    // const LocationEntry& entry = locationEntries[locationAsIndex(location)];
+    // return evaluateRequirement(entry.requirement, ownedItems, settings);
     return false;
 }
 
-bool World::isAccessible(Location location, const ItemPool& ownedItems, const Settings& settings)
+void World::getAccessibleLocations(const GameItemPool& ownedItems,
+                                   const Settings& settings,
+                                   std::vector<Location>& accessibleLocations,
+                                   std::vector<Location>& allowedLocations)
 {
-    const LocationEntry& entry = locationEntries[locationAsIndex(location)];
-    return evaluateRequirement(entry.requirement, ownedItems, settings);
+    // // Add starting inventory items to use when checking logic
+    // GameItemPool itemsInInventory = ownedItems;
+    // AddElementsToPool(itemsInInventory, getStartingInventory(settings, 0));
+    // for (auto& location : allowedLocations)
+    // {
+    //     if (evaluateRequirement(locationEntries[locationAsIndex(location)].requirement, itemsInInventory, settings))
+    //     {
+    //         accessibleLocations.push_back(location);
+    //     }
+    // }
 }
 
-void World::getAccessibleLocations(const ItemPool& ownedItems,
-                                             const Settings& settings,
-                                             std::vector<Location>& accessibleLocations,
-                                             std::vector<Location>& allowedLocations)
-{
-    // Add starting inventory items to use when checking logic
-    ItemPool itemsInInventory = ownedItems;
-    AddElementsToPool(itemsInInventory, getStartingInventory(settings, 0));
-    for (auto& location : allowedLocations)
-    {
-        if (evaluateRequirement(locationEntries[locationAsIndex(location)].requirement, itemsInInventory, settings))
-        {
-            accessibleLocations.push_back(location);
-        }
-    }
-}
-
-std::vector<Location> World::assumedSearch(ItemPool& ownedItems,
+std::vector<Location> World::assumedSearch(GameItemPool& ownedItems,
                                                      const Settings& settings,
                                                      std::vector<Location>& allowedLocations)
 {
-    ItemPool newItems;
+    GameItemPool newItems = {};
     std::vector<Location> reachable;
-    do
-    {
-        reachable.clear();
-        getAccessibleLocations(ownedItems, settings, reachable, allowedLocations);
-        std::unordered_set<GameItem> newItems;
-        // newItems = R.GetItems()
-        for (const auto& r : reachable)
-        {
-            auto currentItem = locationEntries[locationAsIndex(r)].currentItem;
-            // invalid => not yet filled
-            if (currentItem == GameItem::INVALID) continue;
-            newItems.insert(currentItem);
-        }
-        // NewItems = NewItems - I
-        for (const auto& o : ownedItems)
-        {
-            newItems.erase(o);
-        }
-        // I.Add(NewItems);
-        for ( const auto& n : newItems)
-        {
-            ownedItems.insert(n);
-        }
-    } while(!newItems.empty());
+    // do
+    // {
+    //     reachable.clear();
+    //     getAccessibleLocations(ownedItems, settings, reachable, allowedLocations);
+    //     // newItems = R.GetItems()
+    //     for (const auto& r : reachable)
+    //     {
+    //         auto currentItem = locationEntries[locationAsIndex(r)].currentItem;
+    //         // invalid => not yet filled
+    //         if (currentItem == GameItem::INVALID) continue;
+    //         newItems.push_back(currentItem);
+    //     }
+    //     // NewItems = NewItems - I
+    //     for (const auto& o : ownedItems)
+    //     {
+    //         //newItems.erase(o);
+    //     }
+    //     // I.Add(NewItems);
+    //     for ( const auto& n : newItems)
+    //     {
+    //         ownedItems.push_back(n);
+    //     }
+    // } while(!newItems.empty());
     return reachable;
 }
 
-void World::assumedFill(const ItemPool& itemsToPlace, std::vector<Location>& allowedLocations, const Settings& settings)
+void World::assumedFill(const GameItemPool& itemsToPlace, std::vector<Location>& allowedLocations, const Settings& settings)
 {
-    std::vector<GameItem> ownedItemsList;
-    ItemPool ownedItemsSet = itemsToPlace;
-    ItemPool availableItems{};
-    std::vector<Location> nullReachable;
-
-    for (const auto& item : itemsToPlace)
-    {
-        ownedItemsList.push_back(item);
-    }
-
-    // null out all locations
-    for (size_t locIdx = 0; locIdx < locationEntries.size(); locIdx++)
-    {
-        locationEntries[locIdx].currentItem = GameItem::INVALID;
-    }
-
-    size_t nullLocationsRemaining = locationEntries.size();
-    // put seed here later
-    auto randomEngine = std::default_random_engine();
-    std::shuffle(ownedItemsList.begin(), ownedItemsList.end(), randomEngine);
-    while(nullLocationsRemaining > 0 && !ownedItemsList.empty())
-    {
-        auto removed = ownedItemsList.back();
-        std::cout << "Removed Item: " << gameItemToName(removed) << std::endl;
-        ownedItemsList.pop_back();
-        ownedItemsSet.erase(removed);
-        auto reachable = assumedSearch(ownedItemsSet, settings, allowedLocations);
-        nullReachable.clear();
-        for (uint32_t idx = 0; idx < reachable.size(); idx++)
-        {
-            auto reachableLocation = reachable[idx];
-            if (locationEntries[locationAsIndex(reachableLocation)].currentItem == GameItem::INVALID)
-            {
-                nullReachable.push_back(reachableLocation);
-            }
-        }
-        std::cout << "Filtered Locations. Number remaining: " << std::to_string(nullReachable.size()) << std::endl;
-        auto rand = std::uniform_int_distribution<size_t>(0, nullReachable.size() - 1);
-        auto randomNullLoc = nullReachable[rand(randomEngine)];
-        std::cout << "Random Location Chosen: " << locationToName(randomNullLoc) << std::endl;
-        locationEntries[locationAsIndex(randomNullLoc)].currentItem = removed;
-        availableItems.insert(removed);
-        nullLocationsRemaining--;
-    }
+    // std::vector<GameItem> ownedItemsList;
+    // GameItemPool ownedItemsSet = itemsToPlace;
+    // GameItemPool availableItems{};
+    // std::vector<Location> nullReachable;
+    //
+    // for (const auto& item : itemsToPlace)
+    // {
+    //     ownedItemsList.push_back(item);
+    // }
+    //
+    // // null out all locations
+    // for (size_t locIdx = 0; locIdx < locationEntries.size(); locIdx++)
+    // {
+    //     locationEntries[locIdx].currentItem = GameItem::INVALID;
+    // }
+    //
+    // size_t nullLocationsRemaining = locationEntries.size();
+    // // put seed here later
+    // auto randomEngine = std::default_random_engine();
+    // std::shuffle(ownedItemsList.begin(), ownedItemsList.end(), randomEngine);
+    // while(nullLocationsRemaining > 0 && !ownedItemsList.empty())
+    // {
+    //     auto removed = ownedItemsList.back();
+    //     std::cout << "Removed Item: " << gameItemToName(removed) << std::endl;
+    //     ownedItemsList.pop_back();
+    //     //ownedItemsSet.erase(removed);
+    //     auto reachable = assumedSearch(ownedItemsSet, settings, allowedLocations);
+    //     nullReachable.clear();
+    //     for (uint32_t idx = 0; idx < reachable.size(); idx++)
+    //     {
+    //         auto reachableLocation = reachable[idx];
+    //         if (locationEntries[locationAsIndex(reachableLocation)].currentItem == GameItem::INVALID)
+    //         {
+    //             nullReachable.push_back(reachableLocation);
+    //         }
+    //     }
+    //     std::cout << "Filtered Locations. Number remaining: " << std::to_string(nullReachable.size()) << std::endl;
+    //     auto rand = std::uniform_int_distribution<size_t>(0, nullReachable.size() - 1);
+    //     auto randomNullLoc = nullReachable[rand(randomEngine)];
+    //     std::cout << "Random Location Chosen: " << locationToName(randomNullLoc) << std::endl;
+    //     locationEntries[locationAsIndex(randomNullLoc)].currentItem = removed;
+    //     availableItems.push_back(removed);
+    //     nullLocationsRemaining--;
+    // }
 }
 
 // Places items completely randomly without checking to see if the game is still
 // beatable. This is used to place all of the junk items after all the advancement
 // items have been placed using assumedFill since junk items won't change reachability.
-void World::fastFill(const ItemPool& itemsToPlace, const std::vector<Location>& locationsToFill)
+void World::fastFill(const GameItemPool& itemsToPlace, const std::vector<Location>& locationsToFill)
 {
 
 }
@@ -616,7 +613,6 @@ void World::dumpWorldGraph(const std::string& filename)
   worldGraph.open (filename + ".dot");
   worldGraph << "digraph {\n\tcenter=true;\n";
 
-
   for (const AreaEntry& areaEntry : areaEntries) {
 
       std::string parentName = areaToName(areaEntry.area);
@@ -632,9 +628,10 @@ void World::dumpWorldGraph(const std::string& filename)
 
       // Make edge connections between areas and their locations
       for (const auto& location : areaEntry.locations) {
-          std::string connectedLocation = locationToName(location);
+          std::string connectedLocation = locationToName(location->locationId);
+          std::string itemAtLocation = location->currentItem.getName();
           if (parentName != "INVALID" && connectedLocation != "INVALID"){
-              worldGraph << "\t\"" << connectedLocation << "\"[shape=\"plain\" fontcolor=\"blue\"];" << std::endl;
+              worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=\"blue\"];" << std::endl;
               worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=\"blue\"]" << std::endl;
           }
       }

@@ -264,3 +264,43 @@ uint32_t maxItemCount(GameItem item)
 	if (progressionItemCount.count(item) == 0) return 1;
 	return progressionItemCount.at(item);
 }
+
+Item::Item(GameItem gameItemId_, int worldId_)
+{
+		gameItemId = gameItemId_;
+		worldId = worldId_;
+}
+
+void Item::setWorldId(int newWorldId)
+{
+		worldId = newWorldId;
+}
+
+int Item::getWorldId() const
+{
+		return worldId;
+}
+
+GameItem Item::getGameItemId() const
+{
+		return gameItemId;
+}
+
+std::string Item::getName() const
+{
+		return "Player " + std::to_string(worldId) + "'s " + gameItemToName(gameItemId);
+}
+
+bool Item::operator==(const Item& rhs) const
+{
+		return gameItemId == rhs.gameItemId && worldId == rhs.worldId;
+}
+
+bool Item::isMajorItem() const
+{
+		if (gameItemId == GameItem::GreenRupee)
+		{
+				return false;
+		}
+		return true;
+}
