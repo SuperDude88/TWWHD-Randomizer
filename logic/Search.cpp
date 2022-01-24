@@ -49,13 +49,13 @@ bool evaluateRequirement(const World& world, const Requirement& req, const ItemP
             return false;
         }
         gameItem = std::get<GameItem>(req.args[0]);
-        if (gameItem == GameItem::Nothing) return true;
+        if (gameItem == GameItem::NOTHING) return true;
         item = {gameItem, world.getWorldId()};
         return ElementInPool(item, ownedItems);
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
         gameItem = std::get<GameItem>(req.args[1]);
-        if (gameItem == GameItem::Nothing) return true;
+        if (gameItem == GameItem::NOTHING) return true;
         item = {gameItem, world.getWorldId()};
         return ElementCountInPool(item, ownedItems) >= expectedCount;
     case RequirementType::CAN_ACCESS:

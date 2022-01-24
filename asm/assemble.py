@@ -11,16 +11,45 @@ import traceback
 import sys
 import subprocess
 
-if os.path.isdir("./temp"):
-    shutil.rmtree("./temp")
+from elf import *
 
 os.mkdir("./temp")
 temp_dir = "./temp"
 
 custom_symbols = OrderedDict()
+to_relocate = OrderedDict()
 
 free_space_start_offset = 0x028f87f4
 next_free_space_offset = free_space_start_offset
+
+# only handles relocations for things that are in .text, pointing to .data
+def get_relocations_for_elf(o_path, start_addr, symbol_addresses):
+    elf = ELF()
+    elf.read_from_file(o_path)
+    symtab_symbols = elf.symbols[".symtab"]
+
+    relocations = []
+    
+    if ".rela.text" in elf.relocations.keys():
+        for relocation in elf.relocations[".rela.text"]:
+            symbol = symtab_symbols[relocation.symbol_index]
+            if symbol.name in to_relocate.keys():
+                if to_relocate[symbol.name] == ".data":
+                    reloc = OrderedDict() #formatted like this for json dumping later
+                    reloc["r_offset"] = "0x%08X" % (start_addr + relocation.relocation_offset)
+                    reloc["r_info"] = "0x%08X" % (0x00000200 | relocation.type)
+                    addend = (int(symbol_addresses[symbol.name], base=16)) - 0x10000000
+                    reloc["r_addend"] = "0x%08X" % addend
+                    relocations.append(reloc)
+                if to_relocate[symbol.name] == ".text":
+                    reloc = OrderedDict() #formatted like this for json dumping later
+                    reloc["r_offset"] = "0x%08X" % (start_addr + relocation.relocation_offset)
+                    reloc["r_info"] = "0x%08X" % (0x00000100 | relocation.type)
+                    addend = (int(symbol_addresses[symbol.name], base=16)) - 0x02000000
+                    reloc["r_addend"] = "0x%08X" % addend
+                    relocations.append(reloc)
+
+    return relocations
 
 try:
   
@@ -29,20 +58,23 @@ try:
   
   with open("linker.ld") as f:
       linker_script = f.read()
+
+  with open("symbols_to_relocate.txt") as f:
+    to_relocate = json.loads(f.read(), object_pairs_hook=OrderedDict)
   
   all_asm_file_paths = glob.glob('./patches/*.asm')
   all_asm_files = [os.path.basename(asm_path) for asm_path in all_asm_file_paths]
   all_asm_files.sort()
   
-  all_asm_files.remove("CustomCode.asm")
-  all_asm_files = ["CustomCode.asm"] + all_asm_files
+  all_asm_files.remove("custom_data.asm")
+  all_asm_files.remove("custom_funcs.asm")
+  all_asm_files = ["custom_data.asm", "custom_funcs.asm"] + all_asm_files
   
   code_chunks = OrderedDict()
   temp_linker_script = ""
   next_free_space_id = 1
   
   for patch_filename in all_asm_files:
-      print("Assembling " + patch_filename)
       patch_path = os.path.join(".", "patches", patch_filename)
       with open(patch_path) as f:
         asm = f.read()
@@ -51,19 +83,22 @@ try:
       code_chunks[patch_name] = OrderedDict()
       
       most_recent_org_offset = None
+      print("Parsing " + patch_filename)
       for line in asm.splitlines():
         line = re.sub(r";.+$", "", line)
         line = line.strip()
         
         #don't need to use .open, patches are always in cking.rpx
-        #stil include .close for some cross-patch-file checking
+        #still include .close for some cross-patch-file checking
         org_match = re.match(r"\.org\s+0x([0-9a-f]+)$", line, re.IGNORECASE)
         org_symbol_match = re.match(r"\.org\s+([\._a-z][\._a-z0-9]+|@NextFreeSpace)$", line, re.IGNORECASE)
         branch_match = re.match(r"(?:b|beq|bne|blt|bgt|ble|bge)\s+0x([0-9a-f]+)(?:$|\s)", line, re.IGNORECASE)
         if org_match:
           org_offset = int(org_match.group(1), 16)
-          if org_offset >= free_space_start_offset:
-            raise Exception("Tried to manually set the origin point to after the start of free space.\n.org offset: 0x%X\nFile path: %s\n\nUse \".org @NextFreeSpace\" instead to get an automatically assigned free space offset." % (org_offset, most_recent_file_path))
+          if org_offset >= 0x10000000: #0x10000000 or above is in .data instead of .text, do not raise exception
+              pass
+          elif org_offset >= free_space_start_offset:
+            raise Exception("Tried to manually set the origin point to after the start of free space.\n.org offset: 0x%X\nUse \".org @NextFreeSpace\" instead to get an automatically assigned free space offset." % org_offset)
           
           code_chunks[patch_name][org_offset] = ""
           most_recent_org_offset = org_offset
@@ -88,6 +123,8 @@ try:
         elif line == ".close":
           most_recent_org_offset = None
           continue
+        elif line.find(".global") != -1 and most_recent_org_offset.find("@FreeSpace") == -1:
+          raise Exception("Declared new symbol %s inside original code space at %s" % (line, most_recent_org_offset));
         elif not line:
           # Blank line
           continue
@@ -106,11 +143,21 @@ try:
       if most_recent_org_offset is not None:
         raise Exception("File %s was not closed before the end of the file" % most_recent_file_path)
   
+  temp_linker_script = linker_script + "\n" + temp_linker_script
+
+  # populate dict for relocation stuff
+  linker_dict = OrderedDict()
+  for line in linker_script.splitlines():
+      if not line:
+          continue
+      if line.find("=") != -1: # basic check to find a symbol on the line
+          name = line.split(" = ")[0]
+          addr = line.split(" = ")[1].replace(";", "")
+          linker_dict[name] = addr
+
   for patch_name, code_chunks_for_file in code_chunks.items():
       diffs = OrderedDict()
-      
-      custom_symbols = OrderedDict()
-      
+      relocations_for_patch = []
       # Sort code chunks in this patch so that free space chunks come first.
       # This is necessary so non-free-space chunks can branch to the free space chunks.
       def free_space_org_list_sorter(code_chunk_tuple):
@@ -128,10 +175,9 @@ try:
       code_chunks_for_file_sorted = list(code_chunks_for_file.items())
       code_chunks_for_file_sorted.sort(key=free_space_org_list_sorter)
       
-      temp_linker_script = linker_script + ";\n" + temp_linker_script
       # Add custom symbols in the current file to the temporary linker script.
       for symbol_name, symbol_address in custom_symbols.items():
-        temp_linker_script += "%s = 0x%08X;\n" % (symbol_name, symbol_address)
+        temp_linker_script += "%s = %s;\n" % (symbol_name, symbol_address)
       # And add any local branches inside this file.
       
       for org_offset_or_symbol, temp_asm in code_chunks_for_file_sorted:
@@ -145,7 +191,7 @@ try:
             org_offset = next_free_space_offset
             using_free_space = True
           else:
-            if org_symbol not in custom_symbols_for_file:
+            if org_symbol not in custom_symbols:
               raise Exception(".org specified an invalid custom symbol: %s" % org_symbol)
             org_offset = custom_symbols[org_symbol]
         
@@ -164,6 +210,7 @@ try:
         o_name_abs = o_name_abs.replace("C:/", "/mnt/c/")
         temp_asm_name_abs = temp_asm_name_abs.replace("C:/", "/mnt/c/")
         command = "wsl /opt/devkitpro/devkitPPC/bin/powerpc-eabi-as -mregnames " + temp_asm_name_abs + " -o " + o_name_abs
+        print("Assembling " + "tmp_" + patch_name + "_%08X.asm" % org_offset)
         p = subprocess.Popen(["powershell.exe", command])
         p.wait()
         p.terminate()
@@ -176,6 +223,7 @@ try:
         map_name = map_name.replace("C:/", "/mnt/c/")
 
         command = "wsl /opt/devkitpro/devkitPPC/bin/powerpc-eabi-ld -Ttext " + str(hex(org_offset)) + " -T " + linker_script_abs + " -Map=\"" + map_name + "\" " + o_name_abs + " -o " + bin_name + " --oformat=binary"
+        print("Linking tmp_" + patch_name + "_%08X.o" % org_offset)
         p2 = subprocess.Popen(["powershell.exe", command])
         p2.wait()
         p2.terminate()
@@ -193,8 +241,9 @@ try:
               match = re.search(r" +0x(?:00000000)?([0-9a-f]{8}) +(\S+)", line)
               symbol_address = int(match.group(1), 16)
               symbol_name = match.group(2)
-              custom_symbols[symbol_name] = symbol_address
+              custom_symbols[symbol_name] = "0x%08X" % symbol_address
               temp_linker_script += "%s = 0x%08X;\n" % (symbol_name, symbol_address)
+              linker_dict[symbol_name] = "0x%08X" % symbol_address
         
         # Keep track of changed bytes.
         if org_offset in diffs:
@@ -213,6 +262,11 @@ try:
         for byte in bytes:
             bytes_hex.append("0x%02X" % byte)
         diffs[org_offset] = bytes_hex
+
+        # generate relocations for the patch
+        o_name = os.path.join(temp_dir, "tmp_" + patch_name + "_%08X.o" % org_offset)
+        print("Generating relocations for tmp_" + patch_name + "_%08X.o" % org_offset)
+        relocations_for_patch += get_relocations_for_elf(o_name, org_offset, linker_dict)
    
       diffs_hex = OrderedDict()
       for org, bytes in diffs.items():
@@ -220,13 +274,21 @@ try:
 
       diff_path = os.path.join(".", "patch_diffs", patch_name + "_diff.json")
       with open(diff_path, "w") as f:
-        f.write(json.dumps(diffs_hex))
-  
-  output_custom_symbols = OrderedDict()
-  output_custom_symbols = custom_symbols
+        f.write(json.dumps(diffs_hex) + "\n")
+
+      if len(relocations_for_patch) != 0:
+          reloc_path = os.path.join(".", "patch_diffs", patch_name + "_reloc.json")
+          with open(reloc_path, "w") as f:
+           f.write(json.dumps(relocations_for_patch) + "\n")
+        
 
   with open("./custom_symbols.txt", "w") as f:
-    f.write(json.dumps(output_custom_symbols))
+    f.write(json.dumps(custom_symbols, indent=2) + "\n")
+    print("Dumped custom symbols")
+
+  shutil.rmtree("./temp")
+  print("Finished generating diffs")
+  input()
 
 except Exception as e:
   stack_trace = traceback.format_exc()

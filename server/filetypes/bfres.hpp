@@ -8,7 +8,10 @@
 #include <fstream>
 #include <algorithm>
 #include <filesystem>
+
 #include "../utility/byteswap.hpp"
+
+
 
 enum struct FRESError
 {
@@ -27,105 +30,7 @@ enum struct FRESError
     COUNT
 };
 
-//This was for parsing the individual subfiles to extract them, but rando only needs embedded files currently
-//Only embedded files will be implemented at first to simplify/accelerate dev
-/*namespace BFRES_Subfiles {
-    namespace FMDL {
-        struct FMDLHeader {
-            char magicFMDL[4];
-            int32_t nameOffset;
-            int32_t filePathOffset; //Looks to be stripped in some or all WWHD files
-            int32_t FSKLOffset;
-            int32_t FVTXArrayOffset;
-            int32_t FSHPIndexGroup;
-            int32_t FMATIndexGroup;
-            int32_t UserIndexGroup;
-            uint16_t FVTXCount;
-            uint16_t FSHPCount;
-            uint16_t FMATCount;
-            uint16_t UserCount;
-            uint32_t vertexCount;
-            uint32_t userPointer;
-        };
-        struct FVTXHeader {
-            char magicFVTX[4];
-            uint8_t attributeCount;
-            uint8_t bufferCount;
-            uint16_t arrayIndex;
-            uint32_t vertexCount;
-            uint8_t skinCount;
-            char padding[3];
-            int32_t attributeArray;
-            int32_t attributeIndexGroup;
-            int32_t bufferArray;
-            uint32_t userPointer;
-        };
-        struct FVTXAttributes {
-            int32_t nameOffset;
-            uint8_t bufferIndex;
-            char padding;
-            uint16_t bufferOffset;
-            uint32_t dataFormat;
-        };
-        typedef uint8_t unorm_8;
-        typedef uint8_t unorm_8_8[2];
-        typedef uint16_t unorm_16_16[2];
-        typedef uint8_t unorm_8_8_8_8[4];
-        typedef uint8_t uint_8;
-        typedef uint8_t uint_8_8[2];
-        typedef uint8_t uint_8_8_8_8[4];
-        typedef int8_t snorm_8;
-        typedef int8_t snorm_8_8[2];
-        typedef int16_t snorm_16_16[2];
-        typedef int8_t snorm_8_8_8_8[4];
-        typedef int10_t snorm_10_10_10_2[3];
-        typedef int8_t sint_8;
-        typedef int8_t sint_8_8[2];
-        typedef int8_t sint_8_8_8_8[4];
-        typedef float float_32;
-        typedef _Float16 float_16_16[2]; //GCC might support this type, not sure for Visual Studio
-        typedef float float_32_32[2];
-        typedef _Float16 float_16_16_16_16[4]; //Same as last float16
-        typedef float float_32_32_32[3];
-        typedef float float_32_32_32_32[4];
-        struct buffer {
-            uint32_t dataPointer;
-            uint32_t bufferSize;
-            uint32_t bufferHandle;
-            uint16_t stride;
-            uint16_t count_0x1;
-            uint32_t contextPointer;
-            int32_t dataOffset;
-        };
-        struct FMAT {
-            char magicFMAT[4];
-            int32_t nameOffset;
-            uint32_t flags;
-            uint16_t sectionIndex;
-            uint16_t renderInfParamCount;
-            uint8_t texReferenceCount;
-            uint8_t texSamplerCount;
-            uint16_t materialParamCount;
-            uint16_t volatileParamCount;
-            uint16_t matParamLen;
-            uint16_t rawParamLen;
-            uint16_t userEntryCount;
-            int32_t renderInfParamGroup;
-            int32_t renderStateOffset;
-            int32_t shaderAssignOffset;
-            int32_t texReferenceOffset;
-            int32_t texSamplerOffset;
-            int32_t texSamplerGroup;
-            int32_t matParamOffset;
-            int32_t matParamGroup;
-            int32_t matParamData;
-            int32_t userGroup;
-            int32_t volatileFlagsOffset;
-            int32_t userPointer;
-        };
-    }
-}
-*/
+//Only embedded files are currently implemented
 
 struct EmbeddedFileSpec {
     int location; //Used to deal with relative offsets, not a part of the file data
@@ -209,8 +114,8 @@ namespace FileTypes
         FRESError insertIntoFile(const FRESFileSpec& file, const std::string& data, uint32_t offset);
         FRESError appendToFile(const FRESFileSpec& file, const std::string& data);*/ //Not sure these are needed, will implement if a use comes up
         FRESError replaceEmbeddedFile(unsigned int fileIndex, const std::string& newFile);
-        FRESError replaceEmbeddedFile(std::string fileName, const std::string& newFile);
-        FRESError replaceFromDir(std::string dirPath);
+        FRESError replaceEmbeddedFile(std::string& fileName, const std::string& newFile);
+        FRESError replaceFromDir(std::string& dirPath);
         FRESError extractToDir(const std::string& dirPath); //Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
         FRESError writeToFile(const std::string& outFilePath);

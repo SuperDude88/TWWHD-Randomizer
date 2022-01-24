@@ -425,7 +425,7 @@ namespace FileTypes {
 		return loadFromBinary(file);
 	}
 
-	JPCError JPC::addParticle(Particle particle) {
+	JPCError JPC::addParticle(const Particle& particle) {
 		if (particles_by_id.find(particle.particle_id) != particles_by_id.end()) {
 			return JPCError::DUPLICATE_PARTICLE_ID;
 		}
@@ -434,18 +434,18 @@ namespace FileTypes {
 		return JPCError::NONE;
 	}
 
-	JPCError JPC::replaceParticle(Particle particle) {
-		if (particles_by_id.find(particle.particle_id) == particles_by_id.end()) {
+	JPCError JPC::replaceParticle(const Particle& newParticle) {
+		if (particles_by_id.find(newParticle.particle_id) == particles_by_id.end()) {
 			return JPCError::MISSING_PARTICLE;
 		}
-		Particle old_particle = particles_by_id[particle.particle_id];
-		auto it = std::find_if(particles.begin(), particles.end(), [old_particle](const Particle& particle) {return particle.data == old_particle.data; });
+		Particle old_particle = particles_by_id[newParticle.particle_id];
+		auto it = std::find_if(particles.begin(), particles.end(), [old_particle](const Particle& particle) {return particle.data == old_particle.data; }); //get iterator to old_particle in the vector
 		if (it == particles.end()) {
 			return JPCError::MISSING_PARTICLE;
 		}
 		int particle_index = it - particles.begin(); //Get old_particle index in particles vector
-		particles[particle_index] = particle;
-		particles_by_id[particle.particle_id] = particle;
+		particles[particle_index] = newParticle;
+		particles_by_id[newParticle.particle_id] = newParticle;
 		return JPCError::NONE;
 	}
 

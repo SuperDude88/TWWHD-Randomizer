@@ -6,5 +6,6 @@ Still needs lots of development before it is useable. Most patches and tweaks ar
 Current to-do list:
  - A bunch of stuff for item placement
  - Writing and testing seed generation
- - Extracting/repacking/managing edits to files
- - Remaining ASM patches and other tweaks
+ - A little more file management testing
+ - A few remaining ASM patches and other tweaks
+ - GUI/making it useable

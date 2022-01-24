@@ -1,10 +1,14 @@
 #pragma once
+
 #include <cstring>
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
 #include <fstream>
+
 #include "../utility/byteswap.hpp"
+
+
 
 enum struct JPCError {
 	NONE = 0,
@@ -128,8 +132,8 @@ namespace FileTypes {
 		static JPC createNew(const std::string& filename);
 		JPCError loadFromBinary(std::istream& jpc);
 		JPCError loadFromFile(const std::string& filePath);
-		JPCError addParticle(Particle particle);
-		JPCError replaceParticle(Particle particle);
+		JPCError addParticle(const Particle& particle);
+		JPCError replaceParticle(const Particle& particle);
 		JPCError addTexture(TEX1& tex);
 		JPCError replaceTexture(TEX1& tex);
 		JPCError writeToStream(std::ostream& out);

@@ -196,22 +196,7 @@ namespace FileTypes {
 		return loadFromBinary(file);
 	}
 
-	ELFError ELF::extend_section(int index, uint32_t newSize, std::string newData) { //newData is data to append, not replace
-		if(isEmpty == true) {
-			return ELFError::HEADER_DATA_NOT_LOADED;
-		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_shdr>& a, const std::pair<int, Elf32_shdr>& b) { //Make sure the items are sorted by index so we get the correct section
-			return a.first < b.first;
-			});
-		if(shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
-			return ELFError::SECTION_DATA_NOT_LOADED;
-		}
-		shdr_table[index].second.sh_size = newSize;
-		shdr_table[index].second.data.append(newData);
-		return ELFError::NONE;
-	}
-
-	ELFError ELF::extend_section(int index, std::string newData) { //newData is data to append, not replace
+	ELFError ELF::extend_section(int index, const std::string& newData) { //newData is data to append, not replace
 		if (isEmpty == true) {
 			return ELFError::HEADER_DATA_NOT_LOADED;
 		}
@@ -223,6 +208,24 @@ namespace FileTypes {
 		}
 		shdr_table[index].second.sh_size += newData.size();
 		shdr_table[index].second.data.append(newData);
+		return ELFError::NONE;
+	}
+
+	ELFError ELF::extend_section(int index, uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
+		if (isEmpty == true) {
+			return ELFError::HEADER_DATA_NOT_LOADED;
+		}
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_shdr>& a, const std::pair<int, Elf32_shdr>& b) { //Make sure the items are sorted by index so we get the correct section
+			return a.first < b.first;
+			});
+		if (shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
+			return ELFError::SECTION_DATA_NOT_LOADED;
+		}
+		int sectionOffset = startAddr - shdr_table[index].second.sh_addr;
+		int sizeToData = sectionOffset - shdr_table[index].second.sh_size;
+		shdr_table[index].second.sh_size += sizeToData + newData.size();
+		shdr_table[index].second.data.resize(shdr_table[index].second.sh_size);
+		shdr_table[index].second.data.replace(sectionOffset, newData.size(), newData);
 		return ELFError::NONE;
 	}
 
@@ -331,7 +334,7 @@ namespace FileTypes {
 	}
 
 	ELFError ELF::writeToFile(const std::string& outFilePath) {
-		std::ofstream outFile(outFilePath, std::ios::binary | std::ios::in | std::ios::out);
+		std::ofstream outFile(outFilePath, std::ios::binary);
 		if(!outFile.is_open()) {
 			return ELFError::COULD_NOT_OPEN;
 		}

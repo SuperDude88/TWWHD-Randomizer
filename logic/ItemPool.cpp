@@ -5,12 +5,12 @@
 static const GameItemPool alwaysItems = {
     GameItem::WindWaker,
     GameItem::WindsRequiem,
-    GameItem::Shield,
-    GameItem::SongofPassing,
+    GameItem::ProgressiveShield,
+    GameItem::SongOfPassing,
     GameItem::BalladOfGales,
-    GameItem::Sail,
+    GameItem::BoatsSail,
     GameItem::DekuLeaf,
-    GameItem::Sword,
+    GameItem::ProgressiveSword,
     GameItem::PowerBracelets,
     GameItem::Bombs,
 };
@@ -30,10 +30,10 @@ GameItemPool generateStartingGameItemPool(const Settings& settings, int worldId)
     static const GameItemPool startingItems = {
         GameItem::WindWaker,
         GameItem::WindsRequiem,
-        GameItem::Shield,
-        GameItem::SongofPassing,
+        GameItem::ProgressiveShield,
+        GameItem::SongOfPassing,
         GameItem::BalladOfGales,
-        GameItem::Sail,
+        GameItem::BoatsSail,
     };
     // Add more items depending on settings
 

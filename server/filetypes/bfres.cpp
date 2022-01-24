@@ -362,7 +362,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceEmbeddedFile(std::string fileName, const std::string& newFile) {
+    FRESError resFile::replaceEmbeddedFile(std::string& fileName, const std::string& newFile) {
         GroupHeader group;
         group.groupLength = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C]);
         group.entryCount = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C] + 4);
@@ -420,7 +420,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceFromDir(std::string dirPath) {
+    FRESError resFile::replaceFromDir(std::string& dirPath) {
         for (auto& p : std::filesystem::directory_iterator(dirPath)) {
             replaceEmbeddedFile(p.path().string().substr(dirPath.size()), p.path().string());
         }
