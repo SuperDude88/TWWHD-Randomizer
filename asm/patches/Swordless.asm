@@ -13,8 +13,8 @@ give_temporary_sword_during_ganondorf_fight_in_swordless:
   
   bl FUN_025200d4
   addi r3, r3, 0x5133
-  lis r4, 0x1005336c@ha
-  addi r4, r4, 0x1005336c@l
+  lis r4, GTower_str@ha
+  addi r4, r4, GTower_str@l
 strcmp_2_start:
   lbzu r5, 0x1(r3)
   lbzu r6, 0x1(r4)
@@ -27,8 +27,8 @@ after_strcmp_2:
   subf. r3, r5, r6
   bne give_temporary_sword_during_ganondorf_fight_in_swordless_end
 
-  lis r30,0x1020
-  lwz r30,-0x7b24(r30)
+  lis r30, gameInfo_ptr@ha
+  lwz r30, gameInfo_ptr@l(r30)
   lbz r0, 0x2E (r30) ; Read the player's currently equipped sword ID
   cmpwi r0, 0xFF
   ; If the player has any sword equipped, don't replace it with the Hero's Sword
@@ -49,8 +49,8 @@ give_temporary_sword_during_ganondorf_fight_in_swordless_end:
 give_temporary_sword_in_orcas_house_in_swordless:
   bl FUN_025200d4
   addi r3, r3, 0x5133
-  lis r4, 0x10003d28@ha ; Pointer to the string "Ojhous", the stage for Orca's house
-  addi r4, r4, 0x10003d28@l
+  lis r4, Ojhous_str@ha ; Pointer to the string "Ojhous", the stage for Orca's house
+  addi r4, r4, Ojhous_str@l
  strcmp_3_start:
   lbzu r5, 0x1(r3)
   lbzu r6, 0x1(r4)
@@ -65,8 +65,8 @@ give_temporary_sword_in_orcas_house_in_swordless:
   ; If the player did not just enter Orca's house, skip giving a temporary sword
   bne give_temporary_sword_in_orcas_house_in_swordless_end
   
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   lbz r0, 0x2E (r3) ; Read the player's currently equipped sword ID
   cmpwi r0, 0xFF
   ; If the player has any sword equipped, don't replace it with the Hero's Sword
@@ -79,7 +79,7 @@ give_temporary_sword_in_orcas_house_in_swordless:
   b 0x025b26fc
   
 give_temporary_sword_in_orcas_house_in_swordless_end:
-  lwz r4,-0x7b24(r27) ; Replace the line we overwrote to branch here
+  lwz r4, gameInfo_ptr@l(r27) ; Replace the line we overwrote to branch here
   b 0x025b26f8 ; Return
 
 .org 0x025b26f8

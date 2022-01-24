@@ -1,6 +1,10 @@
+#pragma once
+
 #include <cmath>
 #include <string>
 #include <fstream>
+#include <locale>
+
 #include "libs/json.hpp"
 #include "server/command/RandoSession.hpp"
 #include "server/filetypes/bfres.hpp"
@@ -10,46 +14,78 @@
 #include "server/filetypes/jpc.hpp"
 #include "server/filetypes/msbt.hpp"
 #include "server/utility/macros.hpp"
+#include "options.hpp"
+#include "logic/Location.hpp"
+
+
 
 extern RandoSession g_session; //defined in randomizer.cpp, shared between main rando/logic/patches, easier than passing to every patch
 
-bool containsAddress(int address, int memAddress, int sectionLen);
 
-std::pair<int, int> AddressToOffset(int address);
 
-std::pair<int, int> AddressToOffset(int address, int sectionIndex);
+bool containsAddress(const uint32_t address, const uint32_t memAddress, const uint32_t sectionLen);
 
-void write_u8_to_rpx(std::pair<int, int> offset, uint8_t data);
+std::pair<int, int> AddressToOffset(const uint32_t address);
 
-void write_u16_to_rpx(std::pair<int, int> offset, uint16_t data);
+std::pair<int, int> AddressToOffset(const uint32_t address, const int sectionIndex);
 
-void write_u32_to_rpx(std::pair<int, int> offset, uint32_t data);
+void write_u8_to_rpx(const std::pair<int, int>& offset, const uint8_t data);
 
-void write_float_to_rpx(std::pair<int, int> offset, float data);
+void write_u16_to_rpx(const std::pair<int, int>& offset, const uint16_t data);
 
-void write_bytes_to_rpx(std::pair<int, int> offset, std::vector<uint8_t> Bytes);
+void write_u32_to_rpx(const std::pair<int, int>& offset, const uint32_t data);
 
-uint8_t read_rpx_u8(std::pair<int, int> offset);
+void write_float_to_rpx(const std::pair<int, int>& offset, const float data);
 
-uint32_t read_rpx_u32(std::pair<int, int> offset);
+void write_bytes_to_rpx(const std::pair<int, int>& offset, const std::vector<uint8_t>& Bytes);
 
-float read_rpx_float(std::pair<int, int> offset);
+uint8_t read_rpx_u8(const std::pair<int, int>& offset);
 
-std::vector<uint8_t> read_rpx_bytes(std::pair<int, int> offset, int NumBytes);
+uint32_t read_rpx_u32(const std::pair<int, int>& offset);
 
-nlohmann::json Load_Patches(std::string file_path);
+float read_rpx_float(const std::pair<int, int>& offset);
 
-void Apply_Patch(std::string file_path);
+std::vector<uint8_t> read_rpx_bytes(const std::pair<int, int>& offset, const int NumBytes);
 
-nlohmann::json Load_Relocations(std::string file_path);
+nlohmann::json Load_Patches(const std::string& file_path);
 
-void Add_Relocations(nlohmann::json patches, std::string name);
+void Apply_Patch_OLD(const nlohmann::json& patches, const std::string& name);
 
-//End of helper functions (might get moved into a separate file later)
+void Apply_Patch(const std::string& file_path);
+
+void Add_Relocations(const std::string file_path);
+
+void Remove_Relocation(const std::pair<int, int>& offset);
+
+void Load_Custom_Symbols(const std::string& file_path);
+
+
+
+std::u16string word_wrap_string(const std::u16string& string, const int max_line_len);
+
+std::string get_indefinite_article(const std::string& string);
+
+std::u16string get_indefinite_article(const std::u16string& string);
+
+std::string pad_str_4_lines(std::string& string);
+
+std::u16string pad_str_4_lines(std::u16string& string);
+
+std::vector<std::string> split_lines(std::string& string);
+
+std::vector<std::u16string> split_lines(std::u16string& string);
+
+std::string merge_lines(std::vector<std::string>& lines);
+
+std::u16string merge_lines(std::vector<std::u16string>& lines);
+
+std::u16string gameItemToName(const GameItem item);
+
+
 
 void set_new_game_starting_location(uint8_t spawn_id, uint8_t room_index);
 
-void change_ship_starting_island(int room_index);
+void change_ship_starting_island(const uint8_t room_index);
 
 void start_at_outset_dock();
 
@@ -81,33 +117,19 @@ void update_name_and_icon();
 
 void allow_dungeon_items_to_appear_anywhere();
 
-std::u16string word_wrap_string(std::u16string string, int max_line_len = 34);
-
-std::string get_indefinite_article(std::string string);
-
-std::u16string get_indefinite_article(std::u16string string);
-
-std::string upper_first_letter(std::string string);
-
-std::u16string upper_first_letter(std::u16string string);
-
-std::string pad_str_4_lines(std::string string);
-
-std::u16string pad_str_4_lines(std::u16string string);
-
-std::vector<std::string> split_lines(std::string string);
-
-std::vector<std::u16string> split_lines(std::u16string string);
-
-std::string merge_lines(std::vector<std::string> lines);
-
-std::u16string merge_lines(std::vector<std::u16string> lines);
-
 void remove_bog_warp_in_cs();
 
 void fix_shop_item_y_offsets();
 
-void update_shop_item_descriptions(std::string beedle20Item, std::string beedle500Item, std::string beedle950Item, std::string beedle900Item);
+void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item);
+
+void update_auction_item_names(const GameItem& auction5, const GameItem& auction40, const GameItem& auction60, const GameItem& auction80, const GameItem& auction100);
+
+void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& secondPrize);
+
+void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item);
+
+void update_savage_labyrinth_hint_tablet(const GameItem& floor30, const GameItem& floor50);
 
 //hints
 
@@ -115,7 +137,13 @@ void shorten_zephos_event();
 
 void update_korl_dialog();
 
-//starting shards, health, magic
+void set_num_starting_triforce_shards(const uint8_t numShards);
+
+void set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers);
+
+void give_double_magic();
+
+void set_damage_multiplier(float multiplier);
 
 void add_pirate_ship_to_windfall();
 
@@ -133,13 +161,19 @@ void increase_block_move_animation();
 
 void increase_misc_animations();
 
-//starting clothes, ship sail
+//starting clothes
+
+void hide_ship_sail();
 
 void shorten_auction_intro_event();
 
 void disable_invisible_walls();
 
-//trials variable, sword mode, starting gear
+void update_skip_rematch_bosses_game_variable(const bool skipRefights);
+
+void update_sword_mode_game_variable(const SwordMode swordMode);
+
+void update_starting_gear(std::vector<GameItem>& startingItems);
 
 void update_swordless_text();
 
@@ -149,9 +183,13 @@ void prevent_door_boulder_softlocks();
 
 void update_tingle_statue_item_get_funcs();
 
-//rainbow rupee
+void make_tingle_statue_reward_rupee_rainbow_colored();
 
 //seed hash
+
+//key bag
+
+//required dungeon map markers
 
 void add_chest_in_place_jabun_cutscene();
 
@@ -176,3 +214,11 @@ void remove_minor_pan_cs();
 void fix_stone_head_bugs();
 
 void show_tingle_statues_on_quest_screen();
+
+
+
+void apply_necessary_tweaks(uint8_t startingShards, uint16_t startingHP, uint16_t startingHC);
+
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::unordered_map<std::string, Location>& itemLocations);
+
+void init_tweaks(const std::string& rpxPath);

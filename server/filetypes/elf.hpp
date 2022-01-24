@@ -6,7 +6,10 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+
 #include "../utility/byteswap.hpp"
+
+
 
 enum struct ELFError
 {
@@ -72,8 +75,8 @@ namespace FileTypes {
 		static ELF createNew(const std::string& filename);
 		ELFError loadFromBinary(std::istream& elf);
 		ELFError loadFromFile(const std::string& filePath);
-		ELFError extend_section(int index, uint32_t newSize, std::string newData);
-		ELFError extend_section(int index, std::string newData);
+		ELFError extend_section(int index, const std::string& newData);
+		ELFError extend_section(int index, uint32_t startAddr, const std::string& newData);
 		ELFError writeToStream(std::ostream& out);
 		ELFError writeToFile(const std::string& outFilePath);
 	private:

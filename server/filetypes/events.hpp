@@ -1,4 +1,5 @@
 #pragma once
+
 #include <fstream>
 #include <cstring>
 #include <algorithm>
@@ -9,7 +10,10 @@
 #include <variant>
 #include <optional>
 #include <functional>
+
 #include "../utility/byteswap.hpp"
+
+
 
 enum struct EventlistError
 {
@@ -78,8 +82,8 @@ public:
 
 	EventlistError read(std::istream& file, int offset);
 	void save_changes(std::ostream& fptr);
-	std::optional<std::reference_wrapper<Property>> get_prop(std::string prop_name);
-	Property& add_property(std::string name);
+	std::optional<std::reference_wrapper<Property>> get_prop(const std::string& prop_name);
+	Property& add_property(const std::string& name);
 };
 
 class Actor {
@@ -99,7 +103,7 @@ public:
 
 	EventlistError read(std::istream& file, int offset);
 	EventlistError save_changes(std::ostream& fptr);
-	std::optional<std::reference_wrapper<Action>> add_action(FileTypes::EventList* list, std::string name, std::vector<Prop> properties);
+	std::optional<std::reference_wrapper<Action>> add_action(const FileTypes::EventList* list, const std::string& name, const std::vector<Prop>& properties);
 };
 
 class Event {
@@ -121,8 +125,8 @@ public:
 
 	EventlistError read(std::istream& file, int offset);
 	void save_changes(std::ostream& fptr);
-	std::optional<std::reference_wrapper<Actor>> get_actor(std::string name);
-	std::optional<std::reference_wrapper<Actor>> add_actor(FileTypes::EventList* list, std::string name);
+	std::optional<std::reference_wrapper<Actor>> get_actor(const std::string& name);
+	std::optional<std::reference_wrapper<Actor>> add_actor(const FileTypes::EventList* list, const std::string& name);
 };
 
 namespace FileTypes
@@ -160,7 +164,7 @@ namespace FileTypes
 		std::vector<int> All_Integers;
 		std::unordered_map<int, std::string> All_Strings_By_Offset;
 
-		std::vector<uint32_t> unused_flag_ids;
+		mutable std::vector<uint32_t> unused_flag_ids;
 
 		EventList();
 		static EventList createNew(const std::string& filename);
@@ -168,8 +172,8 @@ namespace FileTypes
 		EventlistError loadFromFile(const std::string& filePath);
 		EventlistError writeToStream(std::ostream& file_entry);
 		EventlistError writeToFile(const std::string& outFilePath);
-		Event& add_event(std::string name);
-		std::optional<int> get_unused_flag_id();
+		Event& add_event(const std::string& name);
+		std::optional<int> get_unused_flag_id() const;
 	private:
 		void initNew();
 	};

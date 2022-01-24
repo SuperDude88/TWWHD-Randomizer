@@ -1,6 +1,13 @@
 #include "tweaks.hpp"
 
+#define MAXIMUM_ADDITIONAL_STARTING_ITEMS 47
+
+
 FileTypes::ELF outRPX;
+
+static std::unordered_map<std::string, uint32_t> custom_symbols;
+
+
 
 struct dungeon_item_info {
 	std::u16string short_name;
@@ -28,7 +35,9 @@ struct pan_cs_info {
 	int evnt_index;
 };
 
-bool containsAddress(int address, int memAddress, int sectionLen) {
+
+
+bool containsAddress(const uint32_t address, const uint32_t memAddress, const uint32_t sectionLen) {
 	if (memAddress <= address && address < memAddress + sectionLen) {
 		return true;
 	}
@@ -37,7 +46,7 @@ bool containsAddress(int address, int memAddress, int sectionLen) {
 	}
 }
 
-std::pair<int, int> AddressToOffset(int address) { //calculates offset into section, returns first value as section index and second as offset
+std::pair<int, int> AddressToOffset(const uint32_t address) { //calculates offset into section, returns first value as section index and second as offset
 	for (int index : {2, 3, 4}) { //only check a few sections that might be written to
 		if (containsAddress(address, outRPX.shdr_table[index].second.sh_addr, outRPX.shdr_table[index].second.sh_size)) {
 			return {index, address - outRPX.shdr_table[index].second.sh_addr};
@@ -46,56 +55,56 @@ std::pair<int, int> AddressToOffset(int address) { //calculates offset into sect
 	return {0, 0};
 }
 
-std::pair<int, int> AddressToOffset(int address, int sectionIndex) { //.rela sections all have same address ranges, need to specify index to make it work
+std::pair<int, int> AddressToOffset(const uint32_t address, const int sectionIndex) { //.rela sections all have same address ranges, need to specify index to make it work
 	if (!containsAddress(address, outRPX.shdr_table[sectionIndex].second.sh_addr, outRPX.shdr_table[sectionIndex].second.sh_size)) {
 		return {0, 0};
 	}
 	return {sectionIndex, address - outRPX.shdr_table[sectionIndex].second.sh_addr};
 }
 
-void write_u8_to_rpx(std::pair<int, int> offset, uint8_t data) { //assume sections are sorted by index, always should be 
+void write_u8_to_rpx(const std::pair<int, int>& offset, const uint8_t data) { //assume sections are sorted by index, always should be 
 	outRPX.shdr_table[offset.first].second.data[offset.second] = (char)data;
 	return;
 }
 
-void write_u16_to_rpx(std::pair<int, int> offset, uint16_t data) { //assume sections are sorted by index, always should be 
-	data = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 2, (char*)&data, 2);
+void write_u16_to_rpx(const std::pair<int, int>& offset, const uint16_t data) { //assume sections are sorted by index, always should be 
+	uint16_t toWrite = Utility::byteswap(data);
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 2, (char*)&toWrite, 2);
 	return;
 }
 
-void write_u32_to_rpx(std::pair<int, int> offset, uint32_t data) { //assume sections are sorted by index, always should be 
-	data = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&data, 4);
+void write_u32_to_rpx(const std::pair<int, int>& offset, const uint32_t data) { //assume sections are sorted by index, always should be 
+	uint32_t toWrite = Utility::byteswap(data);
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
 	return;
 }
 
-void write_float_to_rpx(std::pair<int, int> offset, float data) { //assume sections are sorted by index, always should be 
-	data = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&data, 4);
+void write_float_to_rpx(const std::pair<int, int>& offset, const float data) { //assume sections are sorted by index, always should be 
+	float toWrite = Utility::byteswap(data);
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
 	return;
 }
 
-void write_bytes_to_rpx(std::pair<int, int> offset, std::vector<uint8_t> Bytes) { //assume sections are sorted by index, always should be 
+void write_bytes_to_rpx(const std::pair<int, int>& offset, const std::vector<uint8_t>& Bytes) { //assume sections are sorted by index, always should be 
 	for (unsigned int i = 0; i < Bytes.size(); i++) {
 		outRPX.shdr_table[offset.first].second.data[offset.second + i] = (char)Bytes[i];
 	}
 	return;
 }
 
-uint8_t read_rpx_u8(std::pair<int, int> offset) { //assume sections are sorted by index, always should be 
+uint8_t read_rpx_u8(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
 	return *(uint8_t*)&outRPX.shdr_table[offset.first].second.data[offset.second];
 }
 
-uint32_t read_rpx_u32(std::pair<int, int> offset) { //assume sections are sorted by index, always should be 
+uint32_t read_rpx_u32(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
 	return *(uint32_t*)&outRPX.shdr_table[offset.first].second.data[offset.second];
 }
 
-float read_rpx_float(std::pair<int, int> offset) { //assume sections are sorted by index, always should be 
+float read_rpx_float(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
 	return *(float*)&outRPX.shdr_table[offset.first].second.data[offset.second];
 }
 
-std::vector<uint8_t> read_rpx_bytes(std::pair<int, int> offset, int NumBytes) {
+std::vector<uint8_t> read_rpx_bytes(const std::pair<int, int>& offset, const int NumBytes) {
 	uint8_t buffer = 0x0;
 	std::vector<uint8_t> Bytes;
 	Bytes.reserve(NumBytes); //avoid extra reallocations
@@ -106,7 +115,7 @@ std::vector<uint8_t> read_rpx_bytes(std::pair<int, int> offset, int NumBytes) {
 	return Bytes;
 }
 
-nlohmann::json Load_Patches(std::string file_path) {
+nlohmann::json Load_Patches(const std::string& file_path) {
 	std::ifstream fptr;
 	fptr.open(file_path, std::ios::in);
 
@@ -115,7 +124,7 @@ nlohmann::json Load_Patches(std::string file_path) {
 	return patches;
 }
 
-void Apply_Patch_OLD(nlohmann::json patches, std::string name) { //original format, keeping as reference for now
+void Apply_Patch_OLD(const nlohmann::json& patches, const std::string& name) { //original format, keeping as reference for now
 	for (auto& data : patches[name]) {
 		for (auto& offset_pair : data.items()) {
 			int offset = std::stoi(offset_pair.key(), nullptr, 16);
@@ -129,7 +138,7 @@ void Apply_Patch_OLD(nlohmann::json patches, std::string name) { //original form
 	return;
 }
 
-void Apply_Patch(std::string file_path) {
+void Apply_Patch(const std::string& file_path) {
 	std::ifstream fptr;
 	fptr.open(file_path, std::ios::in);
 
@@ -137,47 +146,479 @@ void Apply_Patch(std::string file_path) {
 
 	for (auto& patch : patches.items()) {
 		int offset = std::stoi(patch.key(), nullptr, 16);
-		for (std::string byte : patch.value()) {
-			uint8_t toWrite = std::stoi(byte, nullptr, 16);
-			write_u8_to_rpx(AddressToOffset(offset), toWrite);
-			offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+		std::pair<int, int> sectionOffset = AddressToOffset(offset);
+		if (sectionOffset.first == 0 && sectionOffset.second == 0) { //address not in section
+			std::string data;
+			for (std::string byte : patch.value()) {
+				unsigned char val = std::stoi(byte, nullptr, 16);
+				data += val;
+			}
+			outRPX.extend_section(2, offset, data); //add data at the specified offset
+		}
+		else {
+			for (std::string byte : patch.value()) {
+				uint8_t toWrite = std::stoi(byte, nullptr, 16);
+				write_u8_to_rpx(sectionOffset, toWrite);
+				sectionOffset.second++; //Cycles through the bytes individually, need to increase the offset by one each time
+			}
 		}
 	}
 
 	return;
 }
 
-nlohmann::json Load_Relocations(std::string file_path) { //untested
+//only applies relocations for .rela.text
+void Add_Relocations(const std::string file_path) { //untested
 	std::ifstream fptr;
 	fptr.open(file_path, std::ios::in);
 
 	nlohmann::json relocations = nlohmann::json::parse(fptr);
 
-	return relocations;
-}
-
-void Add_Relocations(nlohmann::json in) { //untested
 	std::string entry;
 	entry.resize(12);
-	for (auto& relocation : in.items()) {
-		auto& data = relocation.value();
-		int section_index = std::stoi(relocation.key(), nullptr, 16);
+	for (auto& relocation : relocations) {
 		Elf32_Rela reloc;
-		reloc.r_offset = std::stoi((std::string)data.at("r_offset"), nullptr, 16);
-		reloc.r_info = std::stoi((std::string)data.at("r_info"), nullptr, 16);
-		reloc.r_addend = std::stoi((std::string)data.at("r_addend"), nullptr, 16);
+		reloc.r_offset = std::stoi((std::string)relocation["r_offset"], nullptr, 16);
+		reloc.r_info = std::stoi((std::string)relocation["r_info"], nullptr, 16);
+		reloc.r_addend = std::stoi((std::string)relocation["r_addend"], nullptr, 16);
 
 		entry.replace(0, 4, (char*)&reloc.r_offset, 4);
 		entry.replace(4, 4, (char*)&reloc.r_info, 4);
 		entry.replace(8, 4, (char*)&reloc.r_addend, 4);
-		outRPX.extend_section(section_index, entry);
+		outRPX.extend_section(7, entry);
 	}
+
 	return;
 }
 
-//End of helper functions (might get moved into a separate file later)
+void Remove_Relocation(const std::pair<int, int>& offset) {
+	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 0xC, 0xC, '\0');
+	return;
+}
 
-void set_new_game_starting_location(uint8_t spawn_id, uint8_t room_index) {
+void Load_Custom_Symbols(const std::string& file_path) {
+	std::ifstream fptr;
+	fptr.open(file_path, std::ios::in);
+
+	nlohmann::json symbols = nlohmann::json::parse(fptr);
+	for (auto& symbol : symbols.items()) {
+		uint32_t address = std::stoi((std::string)symbol.value(), nullptr, 16);
+		custom_symbols[symbol.key()] = address;
+	}
+
+	return;
+}
+
+
+
+std::u16string word_wrap_string(const std::u16string& string, const int max_line_len) {
+	unsigned int index_in_str = 0;
+	std::u16string wordwrapped_str;
+	std::u16string current_word;
+	int curr_word_len = 0;
+	int len_curr_line = 0;
+
+	while (index_in_str < string.length()) { //length is weird because its utf-16
+		char16_t character = string[index_in_str];
+
+		if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
+			std::u16string substr;
+			int code_len = 0;
+			if (string[index_in_str + 1] == u'\x00') {
+				if (string[index_in_str + 2] == u'\x03') { //color command
+					if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
+						code_len = 10;
+					}
+					else {
+						code_len = 5;
+					}
+				}
+			}
+			else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+			else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+			else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
+				code_len = 4;
+			}
+
+			substr = string.substr(index_in_str, code_len);
+			current_word += substr;
+			index_in_str += code_len;
+		}
+		else if (character == u'\n') {
+			wordwrapped_str += current_word;
+			wordwrapped_str += character;
+			len_curr_line = 0;
+			current_word = u"";
+			curr_word_len = 0;
+			index_in_str += 1;
+		}
+		else if (character == u' ') {
+			wordwrapped_str += current_word;
+			wordwrapped_str += character;
+			len_curr_line = curr_word_len + 1;
+			current_word = u"";
+			curr_word_len = 0;
+			index_in_str += 1;
+		}
+		else {
+			current_word += character;
+			curr_word_len += 1;
+			index_in_str += 1;
+
+			if (len_curr_line + curr_word_len > max_line_len) {
+				wordwrapped_str += u'\n';
+				len_curr_line = 0;
+
+				if (curr_word_len > max_line_len) {
+					wordwrapped_str += current_word + u'\n';
+					current_word = u"";
+				}
+			}
+		}
+	}
+	wordwrapped_str += current_word;
+
+	return wordwrapped_str;
+}
+
+std::string get_indefinite_article(const std::string& string) {
+	char first_letter = std::tolower(string[0]);
+	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
+		return "an";
+	}
+	else {
+		return "a";
+	}
+}
+
+std::u16string get_indefinite_article(const std::u16string& string) {
+	char16_t first_letter = std::tolower(string[0]);
+	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
+		return u"an";
+	}
+	else {
+		return u"a";
+	}
+}
+
+std::string pad_str_4_lines(std::string& string) {
+	std::vector<std::string> lines;
+	unsigned int index = 0;
+	while (index = string.find_first_of('\n'), index != std::string::npos) {
+		lines.push_back(string.substr(0, index));
+		string = string.substr(index + 1);
+	}
+
+	int padding_lines_needed = (4 - lines.size() % 4) % 4;
+	for (int i = 0; i < padding_lines_needed; i++) {
+		lines.push_back("");
+	}
+
+	std::string ret;
+	for (const std::string& segment : lines) {
+		ret = ret + segment + '\n';
+	}
+
+	return ret;
+}
+
+std::u16string pad_str_4_lines(std::u16string& string) {
+	std::vector<std::u16string> lines = split_lines(string);
+
+	int padding_lines_needed = (4 - lines.size() % 4) % 4;
+	for (int i = 0; i < padding_lines_needed; i++) {
+		lines.push_back(u"");
+	}
+
+	return merge_lines(lines);
+}
+
+std::vector<std::string> split_lines(std::string& string) {
+	std::vector<std::string> lines;
+	unsigned int index = 0;
+	while (index = string.find_first_of('\n'), index != std::string::npos) {
+		lines.push_back(string.substr(0, index));
+		string = string.substr(index + 1);
+	}
+
+	return lines;
+}
+
+std::vector<std::u16string> split_lines(std::u16string& string) {
+	std::vector<std::u16string> lines;
+	unsigned int index = 0;
+	while (index = string.find_first_of('\n'), index != std::u16string::npos) {
+		lines.push_back(string.substr(0, index));
+		string = string.substr(index + 1);
+	}
+
+	return lines;
+}
+
+std::string merge_lines(std::vector<std::string>& lines) {
+	std::string ret;
+	for (const std::string& segment : lines) {
+		ret += segment + '\n';
+	}
+
+	return ret;
+}
+
+std::u16string merge_lines(std::vector<std::u16string>& lines) {
+	std::u16string ret;
+	for (const std::u16string& segment : lines) {
+		ret += segment + u'\n';
+	}
+
+	return ret;
+}
+
+std::u16string gameItemToName(const GameItem item) {
+	static std::unordered_map<GameItem, std::u16string> itemNameMap = { //terrible indentation is to make copying/editing easier, will remove once stuff is more finalized
+		{GameItem::HeartDrop, 						u"Heart (Pickup)"},
+		{GameItem::GreenRupee, 						u"Green Rupee"},
+		{GameItem::BlueRupee, 						u"Blue Rupee"},
+		{GameItem::YellowRupee, 					u"Yellow Rupee"},
+		{GameItem::RedRupee, 						u"Red Rupee"},
+		{GameItem::PurpleRupee, 					u"Purple Rupee"},
+		{GameItem::OrangeRupee, 					u"Orange Rupee"},
+		{GameItem::PieceOfHeart, 					u"Piece of Heart"},
+		{GameItem::HeartContainer, 					u"Heart Container"},
+		{GameItem::SmallMagicDrop, 					u"Small Magic Jar(Pickup)"},
+		{GameItem::LargeMagicDrop, 					u"Large Magic Jar(Pickup)"},
+		{GameItem::FiveBombs, 						u"5 Bombs(Pickup)"},
+		{GameItem::TenBombs, 						u"10 Bombs(Pickup)"},
+		{GameItem::TwentyBombs, 					u"20 Bombs(Pickup)"},
+		{GameItem::ThirtyBombs, 					u"30 Bombs(Pickup)"},
+		{GameItem::SilverRupee, 					u"Silver Rupee"},
+		{GameItem::TenArrows, 						u"10 Arrows(Pickup)"},
+		{GameItem::TwentyArrows, 					u"20 Arrows(Pickup)"},
+		{GameItem::ThirtyArrows, 					u"30 Arrows(Pickup)"},
+		{GameItem::DRCSmallKey, 					u"DRC Small Key"},
+		{GameItem::DRCBigKey, 						u"DRC Big Key"},
+		{GameItem::SmallKey, 						u"Small Key"},
+		{GameItem::Fairy, 							u"Fairy(Pickup)"},
+		{GameItem::YellowRupee2, 					u"Yellow Rupee(Joke Message)"},
+		{GameItem::DRCDungeonMap, 					u"DRC Dungeon Map"},
+		{GameItem::DRCCompass, 						u"DRC Compass"},
+		{GameItem::FWSmallKey, 						u"FW Small Key"},
+		{GameItem::ThreeHearts, 					u"Three Hearts(Pickup)"},
+		{GameItem::JoyPendant, 						u"Joy Pendant"},
+		{GameItem::Telescope, 						u"Telescope"},
+		{GameItem::TingleBottle, 					u"Tingle Bottle"},
+		{GameItem::WindWaker, 						u"Wind Waker"},
+		{GameItem::ProgressivePictoBox, 			u"Picto Box"},
+		{GameItem::SpoilsBag, 						u"Spoils Bag"},
+		{GameItem::GrapplingHook, 					u"Grappling Hook"},
+		{GameItem::DeluxePicto, 					u"Deluxe Picto Box"},
+		{GameItem::ProgressiveBow, 					u"Hero's Bow"},
+		{GameItem::PowerBracelets, 					u"Power Bracelets"},
+		{GameItem::IronBoots, 						u"Iron Boots"},
+		{GameItem::MagicArmor, 						u"Magic Armor"},
+		{GameItem::BaitBag, 						u"Bait Bag"},
+		{GameItem::Boomerang, 						u"Boomerang"},
+		{GameItem::Hookshot, 						u"Hookshot"},
+		{GameItem::DeliveryBag, 					u"Delivery Bag"},
+		{GameItem::Bombs, 							u"Bombs"},
+		{GameItem::HerosClothes, 					u"Hero's Clothes"},
+		{GameItem::SkullHammer, 					u"Skull Hammer"},
+		{GameItem::DekuLeaf, 						u"Deku Leaf"},
+		{GameItem::FireIceArrows, 					u"Fire and Ice Arrows"},
+		{GameItem::LightArrow, 						u"Light Arrow"},
+		{GameItem::HerosNewClothes, 				u"Hero's New Clothes"},
+		{GameItem::ProgressiveSword, 				u"Hero's Sword"},
+		{GameItem::MasterSwordPowerless, 			u"Master Sword(Powerless)"},
+		{GameItem::MasterSwordHalf, 				u"Master Sword(Half Power)"},
+		{GameItem::ProgressiveShield, 				u"Hero's Shield"},
+		{GameItem::MirrorShield, 					u"Mirror Shield"},
+		{GameItem::RecoveredHerosSword, 			u"Recovered Hero's Sword"},
+		{GameItem::MasterSwordFull, 				u"Master Sword(Full Power)"},
+		{GameItem::PieceOfHeart2, 					u"Piece of Heart(Alternate Message)"},
+		{GameItem::FWBigKey, 						u"FW Big Key"},
+		{GameItem::FWDungeonMap, 					u"FW Dungeon Map"},
+		{GameItem::PiratesCharm, 					u"Pirate's Charm"},
+		{GameItem::HerosCharm, 						u"Hero's Charm"},
+		{GameItem::SkullNecklace, 					u"Skull Necklace"},
+		{GameItem::BokoBabaSeed, 					u"Boko Baba Seed"},
+		{GameItem::GoldenFeather, 					u"Golden Feather"},
+		{GameItem::KnightsCrest, 					u"Knight's Crest"},
+		{GameItem::RedChuJelly, 					u"Red Chu Jelly"},
+		{GameItem::GreenChuJelly, 					u"Green Chu Jelly"},
+		{GameItem::BlueChuJelly, 					u"Blue Chu Jelly"},
+		{GameItem::DungeonMap, 						u"Dungeon Map"},
+		{GameItem::Compass, 						u"Compass"},
+		{GameItem::BigKey, 							u"Big Key"},
+		{GameItem::EmptyBottle, 					u"Empty Bottle"},
+		{GameItem::RedPotion, 						u"Red Potion"},
+		{GameItem::GreenPotion, 					u"Green Potion"},
+		{GameItem::BluePotion, 						u"Blue Potion"},
+		{GameItem::ElixirSoupHalf, 					u"Elixir Soup(1 / 2)"},
+		{GameItem::ElixirSoup, 						u"Elixir Soup"},
+		{GameItem::BottledWater, 					u"Bottled Water"},
+		{GameItem::FairyInBottle, 					u"Fairy in Bottle"},
+		{GameItem::ForestFirefly, 					u"Forest Firefly"},
+		{GameItem::ForestWater, 					u"Forest Water"},
+		{GameItem::FWCompass, 						u"FW Compass"},
+		{GameItem::TotGSmallKey, 					u"TotG Small Key"},
+		{GameItem::TotGBigKey, 						u"TotG Big Key"},
+		{GameItem::TotGDungeonMap, 					u"TotG Dungeon Map"},
+		{GameItem::TotGCompass, 					u"TotG Compass"},
+		{GameItem::FFDungeonMap, 					u"FF Dungeon Map"},
+		{GameItem::FFCompass, 						u"FF Compass"},
+		{GameItem::TriforceShard1, 					u"Triforce Shard 1"},
+		{GameItem::TriforceShard2, 					u"Triforce Shard 2"},
+		{GameItem::TriforceShard3, 					u"Triforce Shard 3"},
+		{GameItem::TriforceShard4, 					u"Triforce Shard 4"},
+		{GameItem::TriforceShard5, 					u"Triforce Shard 5"},
+		{GameItem::TriforceShard6, 					u"Triforce Shard 6"},
+		{GameItem::TriforceShard7, 					u"Triforce Shard 7"},
+		{GameItem::TriforceShard8, 					u"Triforce Shard 8"},
+		{GameItem::NayrusPearl, 					u"Nayru's Pearl"},
+		{GameItem::DinsPearl, 						u"Din's Pearl"},
+		{GameItem::FaroresPearl, 					u"Farore's Pearl"},
+		{GameItem::WindsRequiem, 					u"Wind's Requiem"},
+		{GameItem::BalladOfGales, 					u"Ballad of Gales"},
+		{GameItem::CommandMelody, 					u"Command Melody"},
+		{GameItem::EarthGodsLyric, 					u"Earth God's Lyric"},
+		{GameItem::WindGodsAria, 					u"Wind God's Aria"},
+		{GameItem::SongOfPassing, 					u"Song of Passing"},
+		{GameItem::ETSmallKey, 						u"ET Small Key"},
+		{GameItem::ETBigKey, 						u"ET Big Key"},
+		{GameItem::ETDungeonMap, 					u"ET Dungeon Map"},
+		{GameItem::ETCompass, 						u"ET Compass"},
+		{GameItem::SwiftSail, 						u"Swift Sail"},
+		{GameItem::BoatsSail, 						u"Boat's Sail"},
+		{GameItem::TriforceChart1Deciphered, 		u"Triforce Chart 1 got deciphered"},
+		{GameItem::TriforceChart2Deciphered, 		u"Triforce Chart 2 got deciphered"},
+		{GameItem::TriforceChart3Deciphered, 		u"Triforce Chart 3 got deciphered"},
+		{GameItem::TriforceChart4Deciphered, 		u"Triforce Chart 4 got deciphered"},
+		{GameItem::TriforceChart5Deciphered, 		u"Triforce Chart 5 got deciphered"},
+		{GameItem::TriforceChart6Deciphered, 		u"Triforce Chart 6 got deciphered"},
+		{GameItem::TriforceChart7Deciphered, 		u"Triforce Chart 7 got deciphered"},
+		{GameItem::TriforceChart8Deciphered, 		u"Triforce Chart 8 got deciphered"},
+		{GameItem::WTSmallKey, 						u"WT Small Key"},
+		{GameItem::AllPurposeBait, 					u"All - Purpose Bait"},
+		{GameItem::HyoiPear, 						u"Hyoi Pear"},
+		{GameItem::WTBigKey, 						u"WT Big Key"},
+		{GameItem::WTDungeonMap, 					u"WT Dungeon Map"},
+		{GameItem::WTCompass, 						u"WT Compass"},
+		{GameItem::TownFlower, 						u"Town Flower"},
+		{GameItem::SeaFlower, 						u"Sea Flower"},
+		{GameItem::ExoticFlower, 					u"Exotic Flower"},
+		{GameItem::HerosFlag, 						u"Hero's Flag"},
+		{GameItem::BigCatchFlag, 					u"Big Catch Flag"},
+		{GameItem::BigSaleFlag, 					u"Big Sale Flag"},
+		{GameItem::Pinwheel, 						u"Pinwheel"},
+		{GameItem::SickleMoonFlag, 					u"Sickle Moon Flag"},
+		{GameItem::SkullTowerIdol, 					u"Skull Tower Idol"},
+		{GameItem::FountainIdol, 					u"Fountain Idol"},
+		{GameItem::PostmanStatue, 					u"Postman Statue"},
+		{GameItem::ShopGuruStatue, 					u"Shop Guru Statue"},
+		{GameItem::FathersLetter, 					u"Father's Letter"},
+		{GameItem::NoteToMom, 						u"Note to Mom"},
+		{GameItem::MaggiesLetter, 					u"Maggie's Letter"},
+		{GameItem::MoblinsLetter, 					u"Moblin's Letter"},
+		{GameItem::CabanaDeed, 						u"Cabana Deed"},
+		{GameItem::ComplimentaryID, 				u"Complimentary ID"},
+		{GameItem::FillUpCoupon, 					u"Fill - Up Coupon"},
+		{GameItem::LegendaryPictograph, 			u"Legendary Pictograph"},
+		{GameItem::DragonTingleStatue, 				u"Dragon Tingle Statue"},
+		{GameItem::ForbiddenTingleStatue, 			u"Forbidden Tingle Statue"},
+		{GameItem::GoddessTingleStatue, 			u"Goddess Tingle Statue"},
+		{GameItem::EarthTingleStatue, 				u"Earth Tingle Statue"},
+		{GameItem::WindTingleStatue, 				u"Wind Tingle Statue"},
+		{GameItem::HurricaneSpin, 					u"Hurricane Spin"},
+		{GameItem::ProgressiveWallet, 				u"1000 Rupee Wallet"},
+		{GameItem::FiveThousandWallet, 				u"5000 Rupee Wallet"},
+		{GameItem::ProgressiveBombBag, 				u"60 Bomb Bomb Bag"},
+		{GameItem::NinetyNineBombBag, 				u"99 Bomb Bomb Bag"},
+		{GameItem::ProgressiveQuiver, 				u"60 Arrow Quiver"},
+		{GameItem::NinetyNineQuiver, 				u"99 Arrow Quiver"},
+		{GameItem::MagicMeterUpgrade, 				u"Magic Meter Upgrade"},
+		{GameItem::FiftyRupees, 					u"50 Rupees, reward for finding 1 Tingle Statue"},
+		{GameItem::HundredRupees, 					u"100 Rupees, reward for finding 2 Tingle Statues"},
+		{GameItem::HundredFiftyRupees, 				u"150 Rupees, reward for finding 3 Tingle Statues"},
+		{GameItem::TwoHundredRupees, 				u"200 Rupees, reward for finding 4 Tingle Statues"},
+		{GameItem::TwoHundredFiftyRupees, 			u"250 Rupees, reward for finding 5 Tingle Statues"},
+		{GameItem::RainbowRupee, 					u"Rainbow Rupee"},
+		{GameItem::SubmarineChart, 					u"Submarine Chart"},
+		{GameItem::BeedlesChart, 					u"Beedle's Chart"},
+		{GameItem::PlatformChart, 					u"Platform Chart"},
+		{GameItem::LightRingChart, 					u"Light Ring Chart"},
+		{GameItem::SecretCaveChart, 				u"Secret Cave Chart"},
+		{GameItem::SeaHeartsChart, 					u"Sea Hearts Chart"},
+		{GameItem::IslandHeartsChart, 				u"Island Hearts Chart"},
+		{GameItem::GreatFairyChart, 				u"Great Fairy Chart"},
+		{GameItem::OctoChart, 						u"Octo Chart"},
+		{GameItem::INcredibleChart, 				u"IN - credible Chart"},
+		{GameItem::TreasureChart7, 					u"Treasure Chart 7"},
+		{GameItem::TreasureChart27, 				u"Treasure Chart 27"},
+		{GameItem::TreasureChart21, 				u"Treasure Chart 21"},
+		{GameItem::TreasureChart13, 				u"Treasure Chart 13"},
+		{GameItem::TreasureChart32, 				u"Treasure Chart 32"},
+		{GameItem::TreasureChart19, 				u"Treasure Chart 19"},
+		{GameItem::TreasureChart41, 				u"Treasure Chart 41"},
+		{GameItem::TreasureChart26, 				u"Treasure Chart 26"},
+		{GameItem::TreasureChart8, 					u"Treasure Chart 8"},
+		{GameItem::TreasureChart37, 				u"Treasure Chart 37"},
+		{GameItem::TreasureChart25, 				u"Treasure Chart 25"},
+		{GameItem::TreasureChart17, 				u"Treasure Chart 17"},
+		{GameItem::TreasureChart36, 				u"Treasure Chart 36"},
+		{GameItem::TreasureChart22, 				u"Treasure Chart 22"},
+		{GameItem::TreasureChart9, 					u"Treasure Chart 9"},
+		{GameItem::GhostShipChart, 					u"Ghost Ship Chart"},
+		{GameItem::TinglesChart, 					u"Tingle's Chart"},
+		{GameItem::TreasureChart14, 				u"Treasure Chart 14"},
+		{GameItem::TreasureChart10, 				u"Treasure Chart 10"},
+		{GameItem::TreasureChart40, 				u"Treasure Chart 40"},
+		{GameItem::TreasureChart3, 					u"Treasure Chart 3"},
+		{GameItem::TreasureChart4, 					u"Treasure Chart 4"},
+		{GameItem::TreasureChart28, 				u"Treasure Chart 28"},
+		{GameItem::TreasureChart16, 				u"Treasure Chart 16"},
+		{GameItem::TreasureChart18, 				u"Treasure Chart 18"},
+		{GameItem::TreasureChart34, 				u"Treasure Chart 34"},
+		{GameItem::TreasureChart29, 				u"Treasure Chart 29"},
+		{GameItem::TreasureChart1, 					u"Treasure Chart 1"},
+		{GameItem::TreasureChart35, 				u"Treasure Chart 35"},
+		{GameItem::TreasureChart12, 				u"Treasure Chart 12"},
+		{GameItem::TreasureChart6, 					u"Treasure Chart 6"},
+		{GameItem::TreasureChart24, 				u"Treasure Chart 24"},
+		{GameItem::TreasureChart39, 				u"Treasure Chart 39"},
+		{GameItem::TreasureChart38, 				u"Treasure Chart 38"},
+		{GameItem::TreasureChart2, 					u"Treasure Chart 2"},
+		{GameItem::TreasureChart33, 				u"Treasure Chart 33"},
+		{GameItem::TreasureChart31, 				u"Treasure Chart 31"},
+		{GameItem::TreasureChart23, 				u"Treasure Chart 23"},
+		{GameItem::TreasureChart5, 					u"Treasure Chart 5"},
+		{GameItem::TreasureChart20, 				u"Treasure Chart 20"},
+		{GameItem::TreasureChart30, 				u"Treasure Chart 30"},
+		{GameItem::TreasureChart15, 				u"Treasure Chart 15"},
+		{GameItem::TreasureChart11, 				u"Treasure Chart 11"},
+		{GameItem::TreasureChart46, 				u"Treasure Chart 46"},
+		{GameItem::TreasureChart45, 				u"Treasure Chart 45"},
+		{GameItem::TreasureChart44, 				u"Treasure Chart 44"},
+		{GameItem::TriforceChart3, 					u"Triforce Chart 3"},
+		{GameItem::TreasureChart43, 				u"Treasure Chart 43"},
+		{GameItem::TriforceChart2, 					u"Triforce Chart 2"},
+		{GameItem::TreasureChart42, 				u"Treasure Chart 42"},
+		{GameItem::TriforceChart1, 					u"Triforce Chart 1"},
+		{GameItem::INVALID,							u"Nothing"}
+	};
+
+	if (itemNameMap.count(item) == 0)
+	{
+		return u"INVALID";
+	}
+	return itemNameMap.at(item);
+}
+
+
+
+void set_new_game_starting_location(const uint8_t spawn_id, const uint8_t room_index) {
 	write_u8_to_rpx(AddressToOffset(0x025b508F), room_index);
 	write_u8_to_rpx(AddressToOffset(0x025b50CB), room_index);
 	write_u8_to_rpx(AddressToOffset(0x025B5093), spawn_id);
@@ -185,7 +626,7 @@ void set_new_game_starting_location(uint8_t spawn_id, uint8_t room_index) {
 	return;
 }
 
-void change_ship_starting_island(int room_index) {
+void change_ship_starting_island(const uint8_t room_index) {
 	std::string path;
 	if (room_index == 1 || room_index == 11 || room_index == 13 || room_index == 17 || room_index == 23) {
 		path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
@@ -302,9 +743,9 @@ void allow_all_items_to_be_field_items() {
 	};
 
 	const std::unordered_map<int, int> szs_name_pointers{
-		{0x1a, 0x1004e5d8}, {0x20, 0x1004e414}, {0x21, 0x1004ec54}, {0x22, 0x1004e578}, {0x23, 0x1004e4a8}, {0x24, 0x1004e4d0}, {0x25, 0x1004e548}, {0x26, 0x1004e658}, {0x27, 0x1004e730}, {0x28, 0x1004e4f0}, {0x29, 0x1004e498}, {0x2a, 0x1004e550}, {0x2b, 0x1004e4a0}, {0x2c, 0x1004e4d8}, {0x2d, 0x1004e6b0}, {0x2e, 0x1004e5c0}, {0x2f, 0x1004e4e8}, {0x30, 0x1004e4c8}, {0x31, 0x1004e41c}, {0x32, 0x1004e5c0}, {0x33, 0x1004e510}, {0x35, 0x1004e580}, {0x36, 0x1004e590}, {0x36, 0x1004e558}, {0x3c, 0x1004e560}, {0x3f, 0x1004e440}, {0x42, 0x1004e518}, {0x43, 0x1004e520}, {0x4c, 0x1004e4b8}, {0x4d, 0x1004e4b0}, {0x4e, 0x1004e698}, {0x50, 0x1004e430}, {0x51, 0x1004e538}, {0x52, 0x1004e530},
+		{0x1a, 0x1004e5d8}, {0x20, 0x1004e414}, {0x21, 0x1004ec54}, {0x22, 0x1004e578}, {0x23, 0x1004e4a8}, {0x24, 0x1004e4d0}, {0x25, 0x1004e548}, {0x26, 0x1004e658}, {0x27, 0x1004e730}, {0x28, 0x1004e4f0}, {0x29, 0x1004e498}, {0x2a, 0x1004e550}, {0x2b, 0x1004e4a0}, {0x2c, 0x1004e4d8}, {0x2d, 0x1004e6b0}, {0x2e, 0x1004e5c0}, {0x2f, 0x1004e4e8}, {0x30, 0x1004e4c8}, {0x31, 0x1004e41c}, {0x32, 0x1004e5c0}, {0x33, 0x1004e510}, {0x35, 0x1004e580}, {0x36, 0x1004e590}, {0x38, 0x1004e558}, {0x3c, 0x1004e560}, {0x3f, 0x1004e440}, {0x42, 0x1004e518}, {0x43, 0x1004e520}, {0x4c, 0x1004e4b8}, {0x4d, 0x1004e4b0}, {0x4e, 0x1004e698}, {0x50, 0x1004e430}, {0x51, 0x1004e538}, {0x52, 0x1004e530},
 		{0x53, 0x1004e528}, {0x54, 0x1004e5b0}, {0x55, 0x1004e5b0}, {0x56, 0x1004e5b8}, {0x57, 0x1004e5a0}, {0x58, 0x1004e5a8}, {0x59, 0x1004e598}, {0x61, 0x1004e570}, {0x62, 0x1004e600}, {0x63, 0x1004e608}, {0x64, 0x1004e610}, {0x65, 0x1004e618}, {0x66, 0x1004e620}, {0x67, 0x1004e628}, {0x68, 0x1004e630}, {0x69, 0x1004ec24}, {0x6a, 0x1004ec3c}, {0x6b, 0x1004ec48}, {0x6c, 0x1004e518}, {0x6d, 0x1004e518}, {0x6e, 0x1004e518}, {0x6f, 0x1004e518}, {0x70, 0x1004e518}, {0x71, 0x1004e518}, {0x72, 0x1004e518}, {0x77, 0x1004e434}, {0x78, 0x1004e434}, {0x79, 0x1004e638}, {0x7a, 0x1004e638}, {0x7b, 0x1004e638}, {0x7c, 0x1004e638}, {0x7d, 0x1004e638}, {0x7e, 0x1004e638}, {0x7f, 0x1004e638}, {0x80, 0x1004e638}, {0x98, 0x1004e5e0},
-		{0x99, 0x1004e5e8}, {0x9a, 0x1004e5f0}, {0x9b, 0x1004e5f8}, {0x9c, 0x1004e688}, {0x9d, 0x1004e500}, {0x9e, 0x1004e4f8}, {0x9f, 0x1004e658}, {0xa0, 0x1004e518}, {0xa1, 0x1004e518}, {0xa2, 0x1004e518}, {0xa3, 0x1004e660}, {0xa4, 0x1004e668}, {0xa5, 0x1004e670}, {0xa6, 0x1004e678}, {0xa7, 0x1004e680}, {0xaa, 0x028f87f4}, {0xab, 0x1004e470}, {0xac, 0x1004e478}, {0xad, 0x1004e490}, {0xae, 0x1004e4a0}, {0xaf, 0x1004e480}, {0xb0, 0x1004e488}, {0xb3, 0x1004e5d8}, {0xb4, 0x1004e5d8}, {0xb5, 0x1004e5d8}, {0xb6, 0x1004e5d8}, {0xb7, 0x1004e5d8}, {0xb8, 0x1004e5d8}, {0xb9, 0x1004e5d8}, {0xba, 0x1004e5d8}, {0xbb, 0x1004e5d8}, {0xbc, 0x1004e5d8}, {0xbd, 0x1004e5d8},
+		{0x99, 0x1004e5e8}, {0x9a, 0x1004e5f0}, {0x9b, 0x1004e5f8}, {0x9c, 0x1004e688}, {0x9d, 0x1004e500}, {0x9e, 0x1004e4f8}, {0x9f, 0x1004e658}, {0xa0, 0x1004e518}, {0xa1, 0x1004e518}, {0xa2, 0x1004e518}, {0xa3, 0x1004e660}, {0xa4, 0x1004e668}, {0xa5, 0x1004e670}, {0xa6, 0x1004e678}, {0xa7, 0x1004e680}, {0xab, 0x1004e470}, {0xac, 0x1004e478}, {0xad, 0x1004e490}, {0xae, 0x1004e4a0}, {0xaf, 0x1004e480}, {0xb0, 0x1004e488}, {0xb3, 0x1004e5d8}, {0xb4, 0x1004e5d8}, {0xb5, 0x1004e5d8}, {0xb6, 0x1004e5d8}, {0xb7, 0x1004e5d8}, {0xb8, 0x1004e5d8}, {0xb9, 0x1004e5d8}, {0xba, 0x1004e5d8}, {0xbb, 0x1004e5d8}, {0xbc, 0x1004e5d8}, {0xbd, 0x1004e5d8},
 		{0xbe, 0x1004e5d8}, {0xbf, 0x1004e5d8}, {0xc0, 0x1004e5d8}, {0xc1, 0x1004e5d8}, {0xc2, 0x1004e588}, {0xc3, 0x1004e588}, {0xc4, 0x1004e588}, {0xc5, 0x1004e588}, {0xc6, 0x1004e588}, {0xc7, 0x1004e588}, {0xc8, 0x1004e588}, {0xc9, 0x1004e588}, {0xca, 0x1004e588}, {0xcb, 0x1004e468}, {0xcc, 0x1004e640}, {0xcd, 0x1004e640}, {0xce, 0x1004e640}, {0xcf, 0x1004e640}, {0xd0, 0x1004e640}, {0xd1, 0x1004e640}, {0xd2, 0x1004e640}, {0xd3, 0x1004e640}, {0xd4, 0x1004e640}, {0xd5, 0x1004e640}, {0xd6, 0x1004e640}, {0xd7, 0x1004e640}, {0xd8, 0x1004e640}, {0xd9, 0x1004e640}, {0xda, 0x1004e640}, {0xdb, 0x1004e650}, {0xdc, 0x1004e468}, {0xdd, 0x1004e640}, {0xde, 0x1004e640}, {0xdf, 0x1004e640}, {0xe0, 0x1004e640}, {0xe1, 0x1004e640}, {0xe2, 0x1004e640},
 		{0xe3, 0x1004e640}, {0xe4, 0x1004e640}, {0xe5, 0x1004e640}, {0xe6, 0x1004e640}, {0xe7, 0x1004e640}, {0xe8, 0x1004e640}, {0xe9, 0x1004e640}, {0xea, 0x1004e640}, {0xeb, 0x1004e640}, {0xec, 0x1004e640}, {0xed, 0x1004e648}, {0xee, 0x1004e648}, {0xef, 0x1004e648}, {0xf0, 0x1004e648}, {0xf1, 0x1004e648}, {0xf2, 0x1004e648}, {0xf3, 0x1004e648}, {0xf4, 0x1004e648}, {0xf5, 0x1004e648}, {0xf6, 0x1004e648}, {0xf7, 0x1004e648}, {0xf8, 0x1004e648}, {0xf9, 0x1004e648}, {0xfa, 0x1004e638}, {0xfb, 0x1004e648}, {0xfc, 0x1004e638}, {0xfd, 0x1004e648}, {0xfe, 0x1004e638}
 	};
@@ -330,13 +771,16 @@ void allow_all_items_to_be_field_items() {
 
 		uint32_t item_resources_addr_to_copy_from = item_resources_list_start + item_id_to_copy_from * 0x24;
 		uint32_t field_item_resources_addr = field_item_resources_list_start + item_id * 0x1c;
-		uint32_t szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
+		uint32_t szs_name_pointer = 0;
 		int section_start = 0x10000000;
 
 		if (item_id == 0xAA) {
-			szs_name_pointer = 0x028f87f4; //issues with custom .szs currently, may need to use sword model instead
+			szs_name_pointer = custom_symbols.at("hurricane_spin_item_resource_arc_name"); //issues with custom .szs currently, may need to use sword model instead
 			item_resources_addr_to_fix = item_resources_list_start + item_id * 0x24;
 			section_start = 0x02000000; //custom stuff only gets put in .text
+		}
+		else {
+			szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
 		}
 
 		write_u32_to_rpx(AddressToOffset(field_item_resources_addr), szs_name_pointer);
@@ -390,8 +834,7 @@ void allow_all_items_to_be_field_items() {
 		write_u32_to_rpx(AddressToOffset(address), 0x60000000);
 	}
 
-	nlohmann::json patches = Load_Patches("../asm/patches/FieldItems.json"); //update paths
-	//Apply_Patch(patches, "Fix Ground Item Exec");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/field_items_diff.json"); //some special stuff because HD silly
 
 	write_u32_to_rpx(AddressToOffset(0x0007a2d0, 7), 0x00011ed8); //Update the Y offset that is being read (.rela.text edit)
 
@@ -407,11 +850,6 @@ void allow_all_items_to_be_field_items() {
 			write_u8_to_rpx(AddressToOffset(item_extra_data_entry_addr + 2), 0x28);
 		}
 	}
-
-	write_u32_to_rpx(AddressToOffset(0x02182d84), 0x4BFFE865);
-	write_u32_to_rpx(AddressToOffset(0x02182da8), 0x41800030);
-	write_u32_to_rpx(AddressToOffset(0x02182db8), 0x4bffe831);
-	//02182e58 (item ids 16-34, no 1e,1f), custom branch to check if <= 0x20, use itemactionforarrow, else use rupee, branch back
 	//Add vscroll.szs
 
 	return;
@@ -445,38 +883,38 @@ void remove_ff2_cutscenes() { //could be done with dzx code instead, hardcoded o
 }
 
 void make_items_progressive() {
-	nlohmann::json patches = Load_Patches("../asm/patches/ProgressiveItems.json"); //Create this file once the offsets are finalized
-	//Apply_Patch(patches, "Make Items Progressive");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/make_items_progressive_diff.json");
 
-	int item_get_func_pointer = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
+	uint32_t item_get_func_pointer = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
-	for (const int sword_id : {0x38, 0x39, 0x3A, 0x3D, 0x3E}) {
-		int item_get_func_addr = item_get_func_pointer + sword_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t sword_id : {0x38U, 0x39U, 0x3AU, 0x3DU, 0x3EU}) {
+		int item_get_func_addr = item_get_func_pointer + (sword_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_sword_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int shield_id : {0x3B, 0x3C}) {
-		int item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t shield_id : {0x3BU, 0x3CU}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_shield_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int bow_id : {0x27, 0x35, 0x36}) {
-		int item_get_func_addr = item_get_func_pointer + bow_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t bow_id : {0x27U, 0x35U, 0x36U}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (bow_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_bow_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+		//bow func crashes LA
 	}
-	for (const int wallet_id : {0xAB, 0xAC}) {
-		int item_get_func_addr = item_get_func_pointer + wallet_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t wallet_id : {0xABU, 0xACU}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (wallet_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_wallet_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int bomb_bag_id : {0xAD, 0xAE}) {
-		int item_get_func_addr = item_get_func_pointer + bomb_bag_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t bomb_bag_id : {0xADU, 0xAEU}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (bomb_bag_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_bomb_bag_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int quiver_id : {0xAF, 0xB0}) {
-		int item_get_func_addr = item_get_func_pointer + quiver_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t quiver_id : {0xAFU, 0xB0U}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (quiver_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_quiver_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
-	for (const int picto_id : {0x23, 0x26}) {
-		int item_get_func_addr = item_get_func_pointer + picto_id * 0xC + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 7), 0x11111111); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
+	for (const uint8_t picto_id : {0x23U, 0x26U}) {
+		uint32_t item_get_func_addr = item_get_func_pointer + (picto_id * 0xC) + 8;
+		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_picto_box_item_func") - 0x02000000); //replace value with offset in .text section to custom func (REPLACES DATA IN .rela)
 	}
 
 	write_u32_to_rpx(AddressToOffset(0x0254e8c4), 0x60000000);
@@ -743,30 +1181,30 @@ void allow_dungeon_items_to_appear_anywhere() {
 		{u"WT", u"Compass", 0x86}
 	} };
 
-	const std::unordered_map<std::u16string, int> item_func_addresses{ { //update pointers when tested
-		{u"DRC Small Key", 0x1},
-		{u"FW Small Key", 0x1},
-		{u"TotG Small Key", 0x1},
-		{u"ET Small Key", 0x1},
-		{u"WT Small Key", 0x1},
-		{u"DRC Big Key", 0x1},
-		{u"FW Big Key", 0x1},
-		{u"TotG Big Key", 0x1},
-		{u"ET Big Key", 0x1},
-		{u"WT Big Key", 0x1},
-		{u"DRC Dungeon Map", 0x1},
-		{u"FW Dungeon Map", 0x1},
-		{u"TotG Dungeon Map", 0x1},
-		{u"FF Dungeon Map", 0x1},
-		{u"ET Dungeon Map", 0x1},
-		{u"WT Dungeon Map", 0x1},
-		{u"DRC Compass", 0x1},
-		{u"FW Compass", 0x1},
-		{u"TotG Compass", 0x1},
-		{u"FF Compass", 0x1},
-		{u"ET Compass", 0x1},
-		{u"WT Compass", 0x1}
-	} };
+	const std::unordered_map<uint8_t, std::string> idToFunc = {
+		{0x13, "drc_small_key_item_get_func"},
+		{0x14, "drc_big_key_item_get_func"},
+		{0x1B, "drc_dungeon_map_item_get_func"},
+		{0x1C, "drc_compass_item_get_func"},
+		{0x1D, "fw_small_key_item_get_func"},
+		{0x40, "fw_big_key_item_get_func"},
+		{0x41, "fw_dungeon_map_item_get_func"},
+		{0x5A, "fw_compass_item_get_func"},
+		{0x5B, "totg_small_key_item_get_func"},
+		{0x5C, "totg_big_key_item_get_func"},
+		{0x5D, "totg_dungeon_map_item_get_func"},
+		{0x5E, "totg_compass_item_get_func"},
+		{0x5F, "ff_dungeon_map_item_get_func"},
+		{0x60, "ff_compass_item_get_func"},
+		{0x73, "et_small_key_item_get_func"},
+		{0x74, "et_big_key_item_get_func"},
+		{0x75, "et_dungeon_map_item_get_func"},
+		{0x76, "et_compass_item_get_func"},
+		{0x81, "wt_small_key_item_get_func"},
+		{0x84, "wt_big_key_item_get_func"},
+		{0x85, "wt_dungeon_map_item_get_func"},
+		{0x86, "wt_compass_item_get_func"},
+	};
 
 	const std::unordered_map<int, int> szs_name_pointers{
 		{0x15, 0x1004e448},
@@ -786,7 +1224,7 @@ void allow_dungeon_items_to_appear_anywhere() {
 		uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
 		std::u16string dungeon_name = dungeon_names.at(item_data.short_name);
 
-		write_u32_to_rpx(AddressToOffset(item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), item_func_addresses.at(item_name) - 0x02000000); //write to the relocation entries
+		write_u32_to_rpx(AddressToOffset(item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000); //write to the relocation entries
 		
 		int message_id = 101 + item_data.item_id;
 		Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
@@ -872,182 +1310,6 @@ void allow_dungeon_items_to_appear_anywhere() {
 	return;
 }
 
-std::u16string word_wrap_string(std::u16string string, int max_line_len) {
-	unsigned int index_in_str = 0;
-	std::u16string wordwrapped_str;
-	std::u16string current_word;
-	int curr_word_len = 0;
-	int len_curr_line = 0;
-
-	while (index_in_str < string.length()) { //length is weird because its utf-16
-		char16_t character = string[index_in_str];
-
-		if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
-			std::u16string substr;
-			int code_len = 0;
-			if (string[index_in_str + 1] == u'\x00') {
-				if (string[index_in_str + 2] == u'\x03') { //color command
-					if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
-						code_len = 10;
-					}
-					else {
-						code_len = 5;
-					}
-				}
-			}
-			else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-			else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-			else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-
-			substr = string.substr(index_in_str, code_len);
-			current_word += substr;
-			index_in_str += code_len;
-		}
-		else if (character == u'\n') {
-			wordwrapped_str += current_word;
-			wordwrapped_str += character;
-			len_curr_line = 0;
-			current_word = u"";
-			curr_word_len = 0;
-			index_in_str += 1;
-		}
-		else if (character == u' ') {
-			wordwrapped_str += current_word;
-			wordwrapped_str += character;
-			len_curr_line = curr_word_len + 1;
-			current_word = u"";
-			curr_word_len = 0;
-			index_in_str += 1;
-		}
-		else {
-			current_word += character;
-			curr_word_len += 1;
-			index_in_str += 1;
-
-			if (len_curr_line + curr_word_len > max_line_len) {
-				wordwrapped_str += u'\n';
-				len_curr_line = 0;
-
-				if (curr_word_len > max_line_len) {
-					wordwrapped_str += current_word + u'\n';
-					current_word = u"";
-				}
-			}
-		}
-	}
-	wordwrapped_str += current_word;
-
-	return wordwrapped_str;
-}
-
-std::string get_indefinite_article(std::string string) {
-	char first_letter = std::tolower(string[0]);
-	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
-		return "an";
-	}
-	else {
-		return "a";
-	}
-}
-
-std::u16string get_indefinite_article(std::u16string string) {
-	char16_t first_letter = std::tolower(string[0]);
-	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
-		return u"an";
-	}
-	else {
-		return u"a";
-	}
-}
-
-std::string upper_first_letter(std::string string) {
-	string[0] = std::toupper(string[0]);
-	return string;
-}
-
-std::u16string upper_first_letter(std::u16string string) {
-	string[0] = std::toupper(string[0]);
-	return string;
-}
-
-std::string pad_str_4_lines(std::string string) {
-	std::vector<std::string> lines;
-	unsigned int index = 0;
-	while (index = string.find_first_of('\n'), index != std::string::npos) {
-		lines.push_back(string.substr(0, index));
-		string = string.substr(index + 1);
-	}
-
-	int padding_lines_needed = (4 - lines.size() % 4) % 4;
-	for (int i = 0; i < padding_lines_needed; i++) {
-		lines.push_back("");
-	}
-
-	std::string ret;
-	for (const std::string& segment : lines) {
-		ret = ret + segment + '\n';
-	}
-
-	return ret;
-}
-
-std::u16string pad_str_4_lines(std::u16string string) {
-	std::vector<std::u16string> lines = split_lines(string);
-
-	int padding_lines_needed = (4 - lines.size() % 4) % 4;
-	for (int i = 0; i < padding_lines_needed; i++) {
-		lines.push_back(u"");
-	}
-
-	return merge_lines(lines);
-}
-
-std::vector<std::string> split_lines(std::string string) {
-	std::vector<std::string> lines;
-	unsigned int index = 0;
-	while (index = string.find_first_of('\n'), index != std::string::npos) {
-		lines.push_back(string.substr(0, index));
-		string = string.substr(index + 1);
-	}
-
-	return lines;
-}
-
-std::vector<std::u16string> split_lines(std::u16string string) {
-	std::vector<std::u16string> lines;
-	unsigned int index = 0;
-	while (index = string.find_first_of('\n'), index != std::u16string::npos) {
-		lines.push_back(string.substr(0, index));
-		string = string.substr(index + 1);
-	}
-
-	return lines;
-}
-
-std::string merge_lines(std::vector<std::string> lines) {
-	std::string ret;
-	for (const std::string& segment : lines) {
-		ret += segment + '\n';
-	}
-
-	return ret;
-}
-
-std::u16string merge_lines(std::vector<std::u16string> lines) {
-	std::u16string ret;
-	for (const std::u16string& segment : lines) {
-		ret += segment + u'\n';
-	}
-
-	return ret;
-}
-
 void remove_bog_warp_in_cs() {
 	for (int i = 1; i < 50; i++) {
 		std::string path;
@@ -1092,7 +1354,7 @@ void fix_shop_item_y_offsets() {
 	}
 }
 
-void update_shop_item_descriptions(std::string beedle20Item, std::string beedle500Item, std::string beedle950Item, std::string beedle900Item) {
+void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item) {
 	RandoSession::fspath path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt";
 	std::string pathString = path.string();
 	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
@@ -1100,15 +1362,107 @@ void update_shop_item_descriptions(std::string beedle20Item, std::string beedle5
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromBinary(fptr);
 	
-	//msbt.messages_by_label["03906"].text.message = u"\x0E\x00\x03\x02\x01" + item_name; //not finished
+	msbt.messages_by_label["03906"].text.message = TEXT_COLOR_RED + gameItemToName(beedle20Item) + u"  20 Rupees" TEXT_COLOR_WHITE;
+	msbt.messages_by_label["03909"].text.message = gameItemToName(beedle20Item) + u"  20 Rupees\nWill you buy it?\n" TWO_CHOICES u"I'll buy it\nNo thanks";
 
 	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
+	g_session.repackGameFile(sepPath(pathString, '@'), false);
+
+	path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message4.msbt";
+	pathString = path.string();
+	fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
+
+	FileTypes::MSBTFile msbt2;
+	msbt2.loadFromBinary(fptr);
+
+	msbt2.messages_by_label["12106"].text.message = TEXT_COLOR_RED + gameItemToName(beedle500Item) + u"  500 Rupees\n" TEXT_COLOR_WHITE u"This is my last one.";
+	msbt2.messages_by_label["12109"].text.message = u"This " TEXT_COLOR_RED + gameItemToName(beedle500Item) + TEXT_COLOR_WHITE u" is a mere " TEXT_COLOR_RED u"500 Rupees" TEXT_COLOR_WHITE u"!\nBuy it! Buy it! Buy buy buy!\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+
+	msbt2.messages_by_label["12107"].text.message = TEXT_COLOR_RED + gameItemToName(beedle950Item) + u"  950 Rupees\n" TEXT_COLOR_WHITE u"This is my last one of these, too.";
+	msbt2.messages_by_label["12110"].text.message = u"This " TEXT_COLOR_RED + gameItemToName(beedle950Item) + TEXT_COLOR_WHITE u" is only " TEXT_COLOR_RED u"950 Rupees" TEXT_COLOR_WHITE u"!\nBuy it! Buy it! Buy buy buy!\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+
+	msbt2.messages_by_label["12108"].text.message = TEXT_COLOR_RED + gameItemToName(beedle900Item) + u"  900 Rupees\n" TEXT_COLOR_WHITE u"The price may be high, but it'll pay\noff handsomely in the end!";
+	msbt2.messages_by_label["12111"].text.message = u"This " TEXT_COLOR_RED + gameItemToName(beedle900Item) + TEXT_COLOR_WHITE u" is just " TEXT_COLOR_RED u"900 Rupees" TEXT_COLOR_WHITE u"!\nBuy it! Buy it! Buy buy buy!\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+
+	msbt2.writeToFile(g_session.relToExtract(pathString, '@'));
 	g_session.repackGameFile(sepPath(pathString, '@'));
+	return;
+}
+
+void update_auction_item_names(const GameItem& auction5, const GameItem& auction40, const GameItem& auction60, const GameItem& auction80, const GameItem& auction100) {
+	RandoSession::fspath path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message3.msbt";
+	std::string pathString = path.string();
+	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
+
+	FileTypes::MSBTFile msbt;
+	msbt.loadFromBinary(fptr);
+
+	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + gameItemToName(auction40) + TEXT_COLOR_WHITE;
+	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + gameItemToName(auction5) + TEXT_COLOR_WHITE;
+	msbt.messages_by_label["07442"].text.message = TEXT_COLOR_RED + gameItemToName(auction60) + TEXT_COLOR_WHITE;
+	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + gameItemToName(auction80) + TEXT_COLOR_WHITE;
+	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + gameItemToName(auction100) + TEXT_COLOR_WHITE;
+
+	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
+	g_session.repackGameFile(sepPath(pathString, '@'), false);
 
 	return;
 }
 
-//hints, text updates
+void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& secondPrize) {
+	RandoSession::fspath path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message3.msbt";
+	std::string pathString = path.string();
+	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
+
+	FileTypes::MSBTFile msbt;
+	msbt.loadFromBinary(fptr);
+
+	msbt.messages_by_label["07520"].text.message = SOUND(u"\x8E") u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you, Mr. Sailor!\n\n\n" + word_wrap_string(u"Please take this " TEXT_COLOR_RED + gameItemToName(firstPrize) + TEXT_COLOR_WHITE u" as a sign of our gratitude.You are soooooo GREAT!", 43);
+	msbt.messages_by_label["07521"].text.message = SOUND(u"\x8E") u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you so much, Mr. Sailor!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here..." TEXT_COLOR_RED IMAGE(u"\x15") TEXT_COLOR_WHITE u"Please accept this " TEXT_COLOR_RED + gameItemToName(firstPrize) + TEXT_COLOR_WHITE u"!", 43);
+
+	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
+	g_session.repackGameFile(sepPath(pathString, '@'), false);
+
+	return;
+}
+
+void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item) {
+	RandoSession::fspath path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt";
+	std::string pathString = path.string();
+	std::ifstream fptr = g_session.openGameFile(sepPath(pathString, '@'), path);
+
+	FileTypes::MSBTFile msbt;
+	msbt.loadFromBinary(fptr);
+
+	std::u16string stringBefore = msbt.messages_by_label["03325"].text.message.substr(0, 194);
+	std::u16string stringAfter = msbt.messages_by_label["03325"].text.message.substr(396, 323);
+	std::u16string hintString = u"Do you have need of " + get_indefinite_article(gameItemToName(beedle500Item)) + u" " TEXT_COLOR_RED + gameItemToName(beedle500Item) + TEXT_COLOR_WHITE u", " + get_indefinite_article(gameItemToName(beedle950Item)) + u" " TEXT_COLOR_RED + gameItemToName(beedle950Item) + TEXT_COLOR_WHITE u", or " + get_indefinite_article(gameItemToName(beedle900Item)) + u" " TEXT_COLOR_RED + gameItemToName(beedle900Item) + TEXT_COLOR_WHITE u"? We have them at special bargain prices.";
+	hintString = word_wrap_string(hintString, 39);
+	hintString = pad_str_4_lines(hintString);
+	std::vector<std::u16string> hintLines = split_lines(hintString);
+
+	msbt.messages_by_label["03325"].text.message = stringBefore;
+	for (std::u16string& line : hintLines) {
+		if (line != u"") {
+			line = u"  " + line; //might be UB?
+		}
+	}
+
+	hintString = merge_lines(hintLines);
+	msbt.messages_by_label["03325"].text.message += hintString;
+	msbt.messages_by_label["03325"].text.message += stringAfter;
+
+	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
+	g_session.repackGameFile(sepPath(pathString, '@'), false);
+
+	return;
+}
+
+void update_savage_labyrinth_hint_tablet(const GameItem& floor30, const GameItem& floor50) {
+	//https://github.com/LagoLunatic/wwrando/blob/master/tweaks.py#L843
+}
+
+//hints
 
 void shorten_zephos_event() {
 	RandoSession::fspath path = "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@event_list.dat";
@@ -1161,14 +1515,41 @@ void update_korl_dialog() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromBinary(fptr);
-	msbt.messages_by_label["03443"].text.message = std::u16string(PLAYER_NAME u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you.Remember\nthat your quest is to defeat Ganondorf.\0", 144); //need to use constructor with length because of null characters
+	msbt.messages_by_label["03443"].text.message = std::u16string(CAPITAL PLAYER_NAME u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you.Remember\nthat your quest is to defeat Ganondorf.\0", 144); //need to use constructor with length because of null characters
 	msbt.writeToFile(g_session.relToExtract(pathString, '@'));
 	g_session.repackGameFile(sepPath(pathString, '@'));
 
 	return;
 }
 
-//starting shards, health, magic
+void set_num_starting_triforce_shards(const uint8_t numShards) {
+	uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
+	write_u8_to_rpx(AddressToOffset(num_shards_address), numShards);
+	return;
+}
+
+void set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers) {
+	uint16_t base_health = 12;
+
+	uint16_t starting_health = base_health + (heartContainers * 4) + heartPieces;
+
+	uint32_t starting_quarter_hearts_address = custom_symbols.at("starting_quarter_hearts");
+
+	write_u16_to_rpx(AddressToOffset(starting_quarter_hearts_address), starting_health);
+	return;
+}
+
+void give_double_magic() {
+	uint32_t starting_magic_address = custom_symbols.at("starting_magic");
+	write_u8_to_rpx(AddressToOffset(starting_magic_address), 32);
+	return;
+}
+
+void set_damage_multiplier(float multiplier) {
+	uint32_t damage_multiplier_address = custom_symbols.at("custom_damage_multiplier");
+	write_float_to_rpx(AddressToOffset(damage_multiplier_address), multiplier);
+	return;
+}
 
 void add_pirate_ship_to_windfall() {
 	//https://github.com/LagoLunatic/wwrando/blob/master/tweaks.py#L1060
@@ -1505,7 +1886,53 @@ void disable_invisible_walls() {
 	return;
 }
 
-//trials variable, sword mode, starting gear
+void update_skip_rematch_bosses_game_variable(const bool skipRefights) {
+	uint32_t skip_rematch_bosses_addr = custom_symbols.at("skip_rematch_bosses");
+	if (skipRefights) {
+		write_u8_to_rpx(AddressToOffset(skip_rematch_bosses_addr), 0x01);
+	}
+	else {
+		write_u8_to_rpx(AddressToOffset(skip_rematch_bosses_addr), 0x00);
+	}
+}
+
+void update_sword_mode_game_variable(const SwordMode swordMode) {
+	uint32_t sword_mode_addr = custom_symbols.at("sword_mode");
+
+	if (swordMode == SwordMode::StartWithSword) {
+		write_u8_to_rpx(AddressToOffset(sword_mode_addr), 0x00);
+	}
+	else if (swordMode == SwordMode::RandomSword) {
+		write_u8_to_rpx(AddressToOffset(sword_mode_addr), 0x01);
+	}
+	else if (swordMode == SwordMode::NoSword) {
+		write_u8_to_rpx(AddressToOffset(sword_mode_addr), 0x02);
+	}
+
+	return;
+}
+
+void update_starting_gear(std::vector<GameItem>& startingItems) {
+	std::vector<GameItem> startingGear = startingItems; //copy so we can edit without causing problems
+	if (auto it = std::find(startingGear.begin(), startingGear.end(), GameItem::MagicMeterUpgrade); it != startingItems.end()) {
+		give_double_magic();
+		startingGear.erase(it);
+	}
+
+	if (startingGear.size() > MAXIMUM_ADDITIONAL_STARTING_ITEMS) {
+		return; //error
+	}
+
+	uint32_t starting_gear_array_addr = custom_symbols["starting_gear"];
+	for (unsigned int i = 0; i < startingGear.size(); i++) {
+		uint8_t item_id = static_cast<uint8_t>(startingGear[i]);
+		write_u8_to_rpx(AddressToOffset(starting_gear_array_addr + i), item_id);
+	}
+
+	write_u8_to_rpx(AddressToOffset(starting_gear_array_addr + startingGear.size()), 0xFF);
+
+	return;
+}
 
 void update_swordless_text() {
 	RandoSession::fspath path = "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt";
@@ -1593,17 +2020,24 @@ void prevent_door_boulder_softlocks() {
 
 void update_tingle_statue_item_get_funcs() {
 	const uint32_t item_get_func_ptr = 0x0001da54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
-	const std::vector<uint32_t> item_func_ptr_list = { 0x0, 0x0, 0x0, 0x0, 0x0 }; //fill with item get func addresses IN ORDER
+	const std::unordered_map<int, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
 
 	for (const int statue_id : {0xA3, 0xA4, 0xA5, 0xA6, 0xA7}) {
 		uint32_t item_func_addr = item_get_func_ptr + (statue_id * 0xC) + 8;
-		uint32_t item_func_ptr = item_func_ptr_list[statue_id - 0xA3]; //convert statue id to index in list
+		uint32_t item_func_ptr = custom_symbols.at(symbol_name_by_item_id.at(statue_id));
 		write_u32_to_rpx(AddressToOffset(item_func_addr, 9), item_func_ptr - 0x02000000);
 	}
 	return;
 }
 
-//rainbow rupee
+void make_tingle_statue_reward_rupee_rainbow_colored() {
+	uint32_t item_resources_list_start = 0x101e4674;
+
+	uint32_t rainbow_rupee_item_resource_addr = item_resources_list_start + 0xB8 * 0x24;
+
+	write_u8_to_rpx(AddressToOffset(rainbow_rupee_item_resource_addr + 0x14), 0x07);
+	return;
+}
 
 //seed hash
 
@@ -1702,7 +2136,7 @@ void add_chest_in_place_master_sword() {
 	FileTypes::DZXFile dzr;
 	dzr.loadFromBinary(fptr);
 
-	std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", default_layer);
+	std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER);
 	dzr.remove_entity(default_layer_actors[5]);
 	dzr.remove_entity(default_layer_actors[6]);
 
@@ -1948,6 +2382,94 @@ void show_tingle_statues_on_quest_screen() {
 
 
 
+void init_tweaks(const std::string& rpxPath) {
+	outRPX.loadFromFile(rpxPath);
+	Load_Custom_Symbols(RANDO_ROOT"/asm/custom_symbols.txt");
+
+	return;
+}
+
+void apply_necessary_tweaks(uint8_t startingShards, uint16_t startingHP, uint16_t startingHC) {
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/custom_data_diff.json"); //RANDO_ROOT uses will be replaced with relative paths later
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/custom_funcs_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/make_game_nonlinear_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/remove_cutscenes_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/flexible_item_locations_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/fix_vanilla_bugs_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/misc_rando_features_diff.json");
+	
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/custom_funcs_reloc.json");
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/make_game_nonlinear_reloc.json");
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/remove_cutscenes_reloc.json");
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/flexible_item_locations_reloc.json");
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/fix_vanilla_bugs_reloc.json");
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/misc_rando_features_reloc.json");
+
+	
+	start_at_outset_dock();
+	start_ship_at_outset();
+	fix_deku_leaf_model();
+	allow_all_items_to_be_field_items();
+	remove_shop_item_forced_uniqueness_bit();
+	remove_ff2_cutscenes();
+	make_items_progressive();
+	add_ganons_tower_warp_to_ff2();
+	add_chest_in_place_medli_gift();
+	add_chest_in_place_queen_fairy_cutscene();
+	add_more_magic_jars();
+	modify_title_screen();
+	update_name_and_icon();
+	allow_dungeon_items_to_appear_anywhere();
+	fix_shop_item_y_offsets();
+	shorten_zephos_event();
+	update_korl_dialog();
+	set_num_starting_triforce_shards(startingShards);
+	set_starting_health(startingHP, startingHC);
+	add_pirate_ship_to_windfall();
+	remove_makar_kidnapping();
+	increase_crawl_speed();
+	//chart numbers
+	increase_grapple_animation_speed();
+	increase_block_move_animation();
+	increase_misc_animations();
+	shorten_auction_intro_event();
+	disable_invisible_walls();
+	add_hint_signs();
+	prevent_door_boulder_softlocks();
+	update_tingle_statue_item_get_funcs();
+	make_tingle_statue_reward_rupee_rainbow_colored();
+	//seed hash
+	//key bag
+	add_chest_in_place_jabun_cutscene();
+	add_chest_in_place_master_sword();
+	update_spoil_sell_text();
+	fix_totg_warp_spawn();
+	remove_phantom_ganon_req_for_reefs();
+	fix_ff_door();
+	//bog warp
+	//rat hole visibility
+	add_failsafe_id_0_spawns(); //unfinished
+	remove_minor_pan_cs();
+	fix_stone_head_bugs();
+	show_tingle_statues_on_quest_screen();
+
+	return;
+}
+
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::unordered_map<std::string, Location>& itemLocations) {
+	if (randomizeItems) {
+		//placeholders, will change based on logic implementation
+		//update_shop_item_descriptions(itemLocations.at("The Great Sea - Beedle's Shop Ship - 20 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item").currentItem);
+		//update_auction_item_names(itemLocations.at("Windfall Island - 5 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 40 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 60 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 80 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 100 Rupee Auction").currentItem);
+		//update_battlesquid_item_names(itemLocations.at("Windfall Island - Battlesquid - First Prize").currentItem, itemLocations.at("Windfall Island - Battlesquid - Second Prize").currentItem);
+		//update_item_names_in_letter_advertising_rock_spire_shop(itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item").currentItem);
+		//update_savage_labyrinth_hint_tablet(itemLocations.at("Outset Island - Savage Labyrinth - Floor 30").currentItem, itemLocations.at("Outset Island - Savage Labyrinth - Floor 50").currentItem);
+	}
+	//dungeon sea quest markers
+}
+
+
+
 //this is just for testing 
 int main() {
 
@@ -1957,11 +2479,30 @@ int main() {
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	//auto duration2 = duration.count();
 
-	std::ifstream fptr;
-	fptr.open("./asm/patch_diffs/Swordless_diff.txt", std::ios::in);
 
-	//throws error with a relative file path
-	nlohmann::json patches = nlohmann::json::parse(fptr);
+	Load_Custom_Symbols(RANDO_ROOT"/asm/custom_symbols.txt");
+
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/custom_data_diff.json"); //RANDO_ROOT uses will be replaced with relative paths later
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/custom_funcs_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/fix_vanilla_bugs_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/flexible_item_locations_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/make_game_nonlinear_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/misc_rando_features_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/remove_cutscenes_diff.json");
+	Apply_Patch(RANDO_ROOT"/asm/patch_diffs/reveal_sea_chart_diff.json");
+
+	Add_Relocations(RANDO_ROOT"/asm/patch_diffs/custom_funcs_reloc.json");
+
+	Remove_Relocation({7, 0x0007b6fc}); //temporary until relocation json is a thing
+	write_u32_to_rpx(AddressToOffset(0x0001e254, 7), custom_symbols.at("hurricane_spin_item_func"));
+	write_u32_to_rpx(AddressToOffset(0x00153168, 7), 0x0243B0A2);
+
+	allow_all_items_to_be_field_items();
+	make_tingle_statue_reward_rupee_rainbow_colored();
+	update_tingle_statue_item_get_funcs();
+	make_items_progressive();
+	fix_shop_item_y_offsets();
+
 
 	return 0;
-}
+} 

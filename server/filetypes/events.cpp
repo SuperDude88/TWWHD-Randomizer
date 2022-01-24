@@ -183,7 +183,7 @@ void Action::save_changes(std::ostream& fptr) {
 	return;
 }
 
-std::optional<std::reference_wrapper<Property>> Action::get_prop(std::string prop_name) {
+std::optional<std::reference_wrapper<Property>> Action::get_prop(const std::string& prop_name) {
 	for (unsigned int i = 0; i < properties.size(); i++) {
 		if (properties[i].name == prop_name) {
 			return properties[i];
@@ -192,7 +192,7 @@ std::optional<std::reference_wrapper<Property>> Action::get_prop(std::string pro
 	return std::nullopt;
 }
 
-Property& Action::add_property(std::string name) {
+Property& Action::add_property(const std::string& name) {
 	Property prop;
 	prop.name = name;
 	properties.push_back(prop);
@@ -260,7 +260,7 @@ EventlistError Actor::save_changes(std::ostream& fptr) {
 	return EventlistError::NONE;
 }
 
-std::optional<std::reference_wrapper<Action>> Actor::add_action(FileTypes::EventList* list, std::string name, std::vector<Prop> properties) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+std::optional<std::reference_wrapper<Action>> Actor::add_action(const FileTypes::EventList* list, const std::string& name, const std::vector<Prop>& properties) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 	Action action;
 	action.name = name;
 	std::optional<int> flag_id_to_set = list->get_unused_flag_id();
@@ -268,9 +268,9 @@ std::optional<std::reference_wrapper<Action>> Actor::add_action(FileTypes::Event
 		return std::nullopt;
 	}
 	action.flag_id_to_set = flag_id_to_set.value();
-	for (Prop& property_data : properties) {
-		Property& prop = action.add_property(property_data.prop_name);
-		prop.value = property_data.prop_value;
+	for (const Prop& property : properties) {
+		Property& prop = action.add_property(property.prop_name);
+		prop.value = property.prop_value;
 	}
 	actions.push_back(action);
 	return actions.back();
@@ -395,7 +395,7 @@ void Event::save_changes(std::ostream& fptr) {
 	return;
 }
 
-std::optional<std::reference_wrapper<Actor>> Event::get_actor(std::string name) {
+std::optional<std::reference_wrapper<Actor>> Event::get_actor(const std::string& name) {
 	for (Actor& actor : actors) {
 		if (actor.name == name) {
 			return actor;
@@ -404,7 +404,7 @@ std::optional<std::reference_wrapper<Actor>> Event::get_actor(std::string name) 
 	return std::nullopt;
 }
 
-std::optional<std::reference_wrapper<Actor>> Event::add_actor(FileTypes::EventList* list, std::string name) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+std::optional<std::reference_wrapper<Actor>> Event::add_actor(const FileTypes::EventList* list, const std::string& name) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 	Actor actor; 
 	actor.name = name;
 	std::optional<int> flag_id_to_set = list->get_unused_flag_id();
@@ -1022,7 +1022,7 @@ namespace FileTypes
 		return writeToStream(outFile);
 	}
 
-	Event& EventList::add_event(std::string name) {
+	Event& EventList::add_event(const std::string& name) {
 		Event event;
 		event.name = name;
 		Events.push_back(event);
@@ -1030,7 +1030,7 @@ namespace FileTypes
 		return Events_By_Name[name];
 	}
 
-	std::optional<int> EventList::get_unused_flag_id() { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+	std::optional<int> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 		if (unused_flag_ids.size() == 0) {
 			return std::nullopt;
 		}

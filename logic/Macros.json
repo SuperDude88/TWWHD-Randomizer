@@ -34,7 +34,7 @@
     {
      "Name": "Can Play SoP",
      "Expression": {
-       "type": "and", "args": [{"type": "has_item", "args": ["SongofPassing"]}, {"type": "has_item", "args":["WindWaker"]}]
+       "type": "and", "args": [{"type": "has_item", "args": ["SongOfPassing"]}, {"type": "has_item", "args":["WindWaker"]}]
        }
     },
     {
