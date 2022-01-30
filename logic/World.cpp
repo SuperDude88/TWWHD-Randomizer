@@ -1,8 +1,10 @@
 
 #include "World.hpp"
 #include "Requirements.hpp"
-#include "Setting.hpp"
 #include "PoolFunctions.hpp"
+#include "Debug.hpp"
+#include "../libs/json.hpp"
+#include "../options.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <climits>
@@ -18,8 +20,8 @@
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(area, Area::INVALID, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
-#define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, Location::INVALID, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
-#define SETTING_VALID_CHECK(set, msg) VALID_CHECK(set, Setting::INVALID, msg, WorldLoadingError::SETTING_DOES_NOT_EXIST)
+#define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, LocationId::INVALID, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
+#define OPTION_VALID_CHECK(opt, msg) VALID_CHECK(opt, Option::INVALID, msg, WorldLoadingError::OPTION_DOES_NOT_EXIST)
 
 World::World()
 {
@@ -27,10 +29,10 @@ World::World()
     locationEntries.resize(LOCATION_COUNT);
 }
 
-// Somehow set different settings for different worlds
-void World::setSettings(Settings& settings_)
+// Potentially set different settings for different worlds
+void World::setSettings(const Settings& settings_)
 {
-    settings = settings_;
+    settings = std::move(settings_);
 }
 
 const Settings& World::getSettings() const
@@ -56,15 +58,12 @@ void World::setItemPools()
     auto gameItemPool = generateGameItemPool(settings, worldId);
     auto startingGameItems = generateStartingGameItemPool(settings, worldId);
     // Set worldId for each item in each pool
-    #ifdef ENABLE_DEBUG
-        //std::cout << "Starting Items for world " << std::to_string(worldId) << ": " << std::endl;
-    #endif
+
+    debugLog("Starting Items for world " + std::to_string(worldId) + ": ");
     for (auto gameItem : startingGameItems)
     {
         startingItems.emplace_back(gameItem, worldId);
-        #ifdef ENABLE_DEBUG
-            //std::cout << "\t" + gameItemToName(gameItem) << std::endl;
-        #endif
+        debugLog("\t" + gameItemToName(gameItem));
         // If a starting item is in the main item pool, replace it with some junk
         auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), gameItem);
         if (itemPoolItr != gameItemPool.end())
@@ -73,15 +72,12 @@ void World::setItemPools()
             *itemPoolItr = GameItem::GreenRupee;
         }
     }
-    #ifdef ENABLE_DEBUG
-        std::cout << "Item Pool for world " << std::to_string(worldId) << ": " << std::endl;
-    #endif
+
+    debugLog("Item Pool for world " + std::to_string(worldId) + ": ");
     for (auto gameItem : gameItemPool)
     {
         itemPool.emplace_back(gameItem, worldId);
-        #ifdef ENABLE_DEBUG
-            std::cout << "\t" + gameItemToName(gameItem) << std::endl;
-        #endif
+        debugLog("\t" + gameItemToName(gameItem));
     }
 }
 
@@ -95,11 +91,11 @@ ItemPool World::getStartingItems() const
     return startingItems;
 }
 
-LocationPool World::getLocations() const
+LocationPool World::getLocations()
 {
     LocationPool locations = {};
-    for (auto locationEntry : locationEntries) {
-        locations.push_back(&locationEntry);
+    for (size_t i = 0; i < locationIdAsIndex(LocationId::COUNT); i++) {
+        locations.push_back(&locationEntries[i]);
     }
     return locations;
 }
@@ -108,9 +104,9 @@ World::WorldLoadingError World::parseElement(RequirementType type, const std::ve
 {
     std::string argStr;
     GameItem argItem = GameItem::INVALID;
-    Location argLoc = Location::INVALID;
-    Setting argSetting = Setting::INVALID;
+    Area argArea = Area::INVALID;
     int countValue = 0;
+    int optionEvaluation = 0;
     WorldLoadingError err = WorldLoadingError::NONE;
     if (args.size() == 0) return WorldLoadingError::INCORRECT_ARG_COUNT; // all ops require at least one arg
     switch(type)
@@ -146,16 +142,21 @@ World::WorldLoadingError World::parseElement(RequirementType type, const std::ve
         out.push_back(argItem);
         return WorldLoadingError::NONE;
     case RequirementType::CAN_ACCESS:
-        argLoc = nameToLocation(args[0].get<std::string>());
-        LOCATION_VALID_CHECK(argLoc, "Location " << args[0].get<std::string>() << "does not exist");
-        out.push_back(argLoc);
+        argArea = nameToArea(args[0].get<std::string>());
+        AREA_VALID_CHECK(argArea, "Area " << args[0].get<std::string>() << " does not exist");
+        out.push_back(argArea);
         return WorldLoadingError::NONE;
     case RequirementType::SETTING:
-        // setting just expects a settings name
+        // setting just expects a settings name. Resolve settings to a true/false
+        // value now since they won't change during world building/item placement
         argStr = args[0].get<std::string>();
-        argSetting = nameToSetting(argStr);
-        SETTING_VALID_CHECK(argSetting, "Setting " << argStr << " Does Not Exist.");
-        out.push_back(argSetting);
+        optionEvaluation = evaluateOption(settings, argStr);
+        // -1 means the setting doesn't exist
+        if (optionEvaluation == -1)
+        {
+            OPTION_VALID_CHECK(Option::INVALID, "Setting " << argStr << " does not exist");
+        }
+        out.push_back(optionEvaluation);
         return WorldLoadingError::NONE;
     case RequirementType::MACRO:
         // macro just stores index into macro vector
@@ -246,7 +247,7 @@ World::WorldLoadingError World::loadMacros(const std::vector<json>& macroObjectL
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadLocation(const json& locationObject, Location& loadedLocation)
+World::WorldLoadingError World::loadLocation(const json& locationObject, LocationId& loadedLocation)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
@@ -254,10 +255,10 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     OBJECT_CHECK(locationObject, locationObject.dump());
     FIELD_CHECK(locationObject, "Name", WorldLoadingError::LOCATION_MISSING_KEY);
     std::string locationName = locationObject.at("Name").get<std::string>();
-    loadedLocation = nameToLocation(locationName);
+    loadedLocation = nameToLocationId(locationName);
     LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
-    MAPPING_CHECK(locationName, locationToName(nameToLocation(locationName)));
-    LocationEntry& newEntry = locationEntries[locationAsIndex(loadedLocation)];
+    MAPPING_CHECK(locationName, locationIdToName(nameToLocationId(locationName)));
+    Location& newEntry = locationEntries[locationIdAsIndex(loadedLocation)];
     newEntry.locationId = loadedLocation;
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
@@ -354,11 +355,7 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     OBJECT_CHECK(areaObject, areaObject.dump());
     FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
     std::string areaName = areaObject.at("Name").get<std::string>();
-
-    #ifdef ENABLE_DEBUG
-         // std::cout << "Now Loading Area " << areaName << std::endl;
-    #endif
-
+    debugLog("Now Loading Area " + areaName);
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
     MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
@@ -371,17 +368,15 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     FIELD_CHECK(areaObject, "Locations", WorldLoadingError::AREA_MISSING_KEY);
     const auto& locations = areaObject.at("Locations").get<std::vector<json>>();
     for (const auto& loc : locations) {
-        Location locOut;
+        LocationId locOut;
         err = loadLocation(loc, locOut);
         if (err != World::WorldLoadingError::NONE)
         {
             std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
             return err;
         }
-        #ifdef ENABLE_DEBUG
-             // std::cout << "\tAdding location " << locationToName(locOut) << std::endl;
-        #endif
-        newEntry.locations.push_back(&locationEntries[locationAsIndex(locOut)]);
+        debugLog("\tAdding location " + locationIdToName(locOut));
+        newEntry.locations.push_back(&locationEntries[locationIdAsIndex(locOut)]);
     }
 
     // load exits in this area
@@ -395,156 +390,70 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
             std::cout << "Got error loading exit: " << World::errorToName(err) << std::endl;
             return err;
         }
-        #ifdef ENABLE_DEBUG
-            // std::cout << "\tAdding exit -> " << areaToName(exitOut.connectedArea) << std::endl;
-        #endif
+        debugLog("\tAdding exit -> " + areaToName(exitOut.connectedArea));
         newEntry.exits.push_back(exitOut);
     }
 
     return WorldLoadingError::NONE;
 }
 
-bool World::isAccessible(Location location, const GameItemPool& ownedItems, const Settings& settings)
+// Load the world based on the given world file and macros file
+int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath)
 {
-    // const LocationEntry& entry = locationEntries[locationAsIndex(location)];
-    // return evaluateRequirement(entry.requirement, ownedItems, settings);
-    return false;
+    using json = nlohmann::json;
+
+    std::ifstream macroFile(macrosFilePath);
+    if (!macroFile.is_open())
+    {
+        std::cout << "unable to open macro file for world " << std::to_string(worldId) << std::endl;
+        closeDebugLog();
+        return 1;
+    }
+    std::ifstream worldFile(worldFilePath);
+    if (!worldFile.is_open())
+    {
+        std::cout << "Unable to open world file for world " << std::to_string(worldId) << std::endl;
+        closeDebugLog();
+        return 1;
+    }
+
+    json world_j = json::parse(worldFile, nullptr, false);
+    auto macroFileObj = json::parse(macroFile, nullptr, false);
+    if (macroFileObj.is_discarded())
+    {
+        std::cout << "unable to parse macros from file for world " << std::to_string(worldId) << std::endl;
+        closeDebugLog();
+        return 1;
+    }
+
+    auto err = loadMacros(macroFileObj["Macros"].get<std::vector<json>>());
+    if (err != World::WorldLoadingError::NONE)
+    {
+        std::cout << "Got error loading macros for world " << std::to_string(worldId) << ": " << World::errorToName(err) << std::endl;
+        std::cout << getLastErrorDetails() << std::endl;
+        closeDebugLog();
+        return 1;
+    }
+    if (!world_j.contains("Areas"))
+    {
+        std::cout << "Improperly formatted world file for world " << std::to_string(worldId) << std::endl;
+        closeDebugLog();
+        return 1;
+    }
+    for (const auto& area : world_j.at("Areas"))
+    {
+        Area areaOut;
+        err = loadArea(area, areaOut);
+        if (err != World::WorldLoadingError::NONE)
+        {
+            std::cout << "Got error loading area for world " << std::to_string(worldId) << ": " << World::errorToName(err) << std::endl;
+            std::cout << getLastErrorDetails() << std::endl;
+            closeDebugLog();
+            return 1;
+        }
+    }
+    return 0;
 }
-
-void World::getAccessibleLocations(const GameItemPool& ownedItems,
-                                   const Settings& settings,
-                                   std::vector<Location>& accessibleLocations,
-                                   std::vector<Location>& allowedLocations)
-{
-    // // Add starting inventory items to use when checking logic
-    // GameItemPool itemsInInventory = ownedItems;
-    // AddElementsToPool(itemsInInventory, getStartingInventory(settings, 0));
-    // for (auto& location : allowedLocations)
-    // {
-    //     if (evaluateRequirement(locationEntries[locationAsIndex(location)].requirement, itemsInInventory, settings))
-    //     {
-    //         accessibleLocations.push_back(location);
-    //     }
-    // }
-}
-
-std::vector<Location> World::assumedSearch(GameItemPool& ownedItems,
-                                                     const Settings& settings,
-                                                     std::vector<Location>& allowedLocations)
-{
-    GameItemPool newItems = {};
-    std::vector<Location> reachable;
-    // do
-    // {
-    //     reachable.clear();
-    //     getAccessibleLocations(ownedItems, settings, reachable, allowedLocations);
-    //     // newItems = R.GetItems()
-    //     for (const auto& r : reachable)
-    //     {
-    //         auto currentItem = locationEntries[locationAsIndex(r)].currentItem;
-    //         // invalid => not yet filled
-    //         if (currentItem == GameItem::INVALID) continue;
-    //         newItems.push_back(currentItem);
-    //     }
-    //     // NewItems = NewItems - I
-    //     for (const auto& o : ownedItems)
-    //     {
-    //         //newItems.erase(o);
-    //     }
-    //     // I.Add(NewItems);
-    //     for ( const auto& n : newItems)
-    //     {
-    //         ownedItems.push_back(n);
-    //     }
-    // } while(!newItems.empty());
-    return reachable;
-}
-
-void World::assumedFill(const GameItemPool& itemsToPlace, std::vector<Location>& allowedLocations, const Settings& settings)
-{
-    // std::vector<GameItem> ownedItemsList;
-    // GameItemPool ownedItemsSet = itemsToPlace;
-    // GameItemPool availableItems{};
-    // std::vector<Location> nullReachable;
-    //
-    // for (const auto& item : itemsToPlace)
-    // {
-    //     ownedItemsList.push_back(item);
-    // }
-    //
-    // // null out all locations
-    // for (size_t locIdx = 0; locIdx < locationEntries.size(); locIdx++)
-    // {
-    //     locationEntries[locIdx].currentItem = GameItem::INVALID;
-    // }
-    //
-    // size_t nullLocationsRemaining = locationEntries.size();
-    // // put seed here later
-    // auto randomEngine = std::default_random_engine();
-    // std::shuffle(ownedItemsList.begin(), ownedItemsList.end(), randomEngine);
-    // while(nullLocationsRemaining > 0 && !ownedItemsList.empty())
-    // {
-    //     auto removed = ownedItemsList.back();
-    //     std::cout << "Removed Item: " << gameItemToName(removed) << std::endl;
-    //     ownedItemsList.pop_back();
-    //     //ownedItemsSet.erase(removed);
-    //     auto reachable = assumedSearch(ownedItemsSet, settings, allowedLocations);
-    //     nullReachable.clear();
-    //     for (uint32_t idx = 0; idx < reachable.size(); idx++)
-    //     {
-    //         auto reachableLocation = reachable[idx];
-    //         if (locationEntries[locationAsIndex(reachableLocation)].currentItem == GameItem::INVALID)
-    //         {
-    //             nullReachable.push_back(reachableLocation);
-    //         }
-    //     }
-    //     std::cout << "Filtered Locations. Number remaining: " << std::to_string(nullReachable.size()) << std::endl;
-    //     auto rand = std::uniform_int_distribution<size_t>(0, nullReachable.size() - 1);
-    //     auto randomNullLoc = nullReachable[rand(randomEngine)];
-    //     std::cout << "Random Location Chosen: " << locationToName(randomNullLoc) << std::endl;
-    //     locationEntries[locationAsIndex(randomNullLoc)].currentItem = removed;
-    //     availableItems.push_back(removed);
-    //     nullLocationsRemaining--;
-    // }
-}
-
-// Places items completely randomly without checking to see if the game is still
-// beatable. This is used to place all of the junk items after all the advancement
-// items have been placed using assumedFill since junk items won't change reachability.
-void World::fastFill(const GameItemPool& itemsToPlace, const std::vector<Location>& locationsToFill)
-{
-
-}
-
-// Place all the items within the world. Certain groups of items will be placed first
-// depending on settings and failure based restrictions
-// World::FillError World::fillWorld(const ItemPool& completeItemPool, const Settings& settings)
-// {
-//     int retries = 0;
-//     while (retries < 10) {
-//         retries++;
-//         std::cout << "Beginning Fill Attempt " << std::to_string(retries) << std::endl;
-//
-//         // Get all locations with no current items
-//         std::vector<Location> allLocations = {};
-//         for (auto& locationEntry : locationEntries) {
-//             if (locationEntry.originalItem != GameItem::INVALID) {
-//                 allLocations.push_back(locationEntry.location);
-//             }
-//         }
-//
-//         std::cout << "All Locations obtained. Total Size: " << std::to_string(allLocations.size()) << std::endl;
-//
-//         // Place all advancement items first using assumed fill
-//         assumedFill(completeItemPool, allLocations, settings);
-//
-//         // Then place all junk items using fast fill
-//
-//         // If the world is still beatable, we have a successful placement
-//         return FillError::NONE;
-//     }
-//     return FillError::RAN_OUT_OF_RETRIES;
-// }
 
 const char* World::errorToName(WorldLoadingError err)
 {
@@ -568,8 +477,8 @@ const char* World::errorToName(WorldLoadingError err)
         return "LOCATION_DOES_NOT_EXIST";
     case WorldLoadingError::EXIT_MISSING_KEY:
         return "EXIT_MISSING_KEY";
-    case WorldLoadingError::SETTING_DOES_NOT_EXIST:
-        return "SETTING_DOES_NOT_EXIST";
+    case WorldLoadingError::OPTION_DOES_NOT_EXIST:
+        return "OPTION_DOES_NOT_EXIST";
     case WorldLoadingError::INCORRECT_ARG_COUNT:
         return "INCORRECT_ARG_COUNT";
     case WorldLoadingError::EXPECTED_JSON_OBJECT:
@@ -600,44 +509,47 @@ std::string World::getLastErrorDetails()
     std::string out = lastError.str();
     lastError.str(std::string());
     lastError.clear();
+    debugLog(out);
     return out;
 }
 
 // Will dump a file which can be turned into a visual graph using graphviz
+// Although the way it's presented isn't great.
 // https://graphviz.org/download/
-// Use command: dot -Tsvg <filename> -o world.svg
+// Use this command if things are too spread out: fdp   -Tsvg <filename> -o world.svg
+// Use this command if things are too squished:   circo -Tsvg <filename> -o world.svg
 // Then, open world.svg in a browser and CTRL + F to find the area of interest
 void World::dumpWorldGraph(const std::string& filename)
 {
-  std::ofstream worldGraph;
-  worldGraph.open (filename + ".dot");
-  worldGraph << "digraph {\n\tcenter=true;\n";
+    std::ofstream worldGraph;
+    worldGraph.open (filename + ".dot");
+    worldGraph << "digraph {\n\tcenter=true;\n";
 
-  for (const AreaEntry& areaEntry : areaEntries) {
+    for (const AreaEntry& areaEntry : areaEntries) {
 
-      std::string parentName = areaToName(areaEntry.area);
-      worldGraph << "\t\"" << parentName << "\"[shape=\"plain\"];" << std::endl;
+        std::string parentName = areaToName(areaEntry.area);
+        worldGraph << "\t\"" << parentName << "\"[shape=\"plain\"];" << std::endl;
 
-      // Make edge connections defined by exits
-      for (const auto& exit : areaEntry.exits) {
-          std::string connectedName = areaToName(exit.connectedArea);
-          if (parentName != "INVALID" && connectedName != "INVALID"){
-              worldGraph << "\t\"" << parentName << "\" -> \"" << connectedName << "\"" << std::endl;
-          }
-      }
+        // Make edge connections defined by exits
+        for (const auto& exit : areaEntry.exits) {
+            std::string connectedName = areaToName(exit.connectedArea);
+            if (parentName != "INVALID" && connectedName != "INVALID"){
+                worldGraph << "\t\"" << parentName << "\" -> \"" << connectedName << "\"" << std::endl;
+            }
+        }
 
-      // Make edge connections between areas and their locations
-      for (const auto& location : areaEntry.locations) {
-          std::string connectedLocation = locationToName(location->locationId);
-          std::string itemAtLocation = location->currentItem.getName();
-          if (parentName != "INVALID" && connectedLocation != "INVALID"){
-              worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=\"blue\"];" << std::endl;
-              worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=\"blue\"]" << std::endl;
-          }
-      }
-  }
+        // Make edge connections between areas and their locations
+        for (const auto& location : areaEntry.locations) {
+            std::string connectedLocation = locationIdToName(location->locationId);
+            std::string itemAtLocation = location->currentItem.getName();
+            if (parentName != "INVALID" && connectedLocation != "INVALID"){
+                worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=\"blue\"];" << std::endl;
+                worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=\"blue\"]" << std::endl;
+            }
+        }
+    }
 
-  worldGraph << "}";
-  worldGraph.close();
-  std::cout << "Dumped world graph at " << filename << ".dot" << std::endl;
+    worldGraph << "}";
+    worldGraph.close();
+    std::cout << "Dumped world graph at " << filename << ".dot" << std::endl;
 }

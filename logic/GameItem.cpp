@@ -233,6 +233,7 @@ GameItem nameToGameItem(const std::string& name)
 		{"TriforceChart2", GameItem::TriforceChart2},
 		{"TreasureChart42", GameItem::TreasureChart42},
 		{"TriforceChart1", GameItem::TriforceChart1},
+		{"GameBeatable", GameItem::GameBeatable},
 		{"Nothing", GameItem::NOTHING}
 	};
 
@@ -473,6 +474,7 @@ std::string gameItemToName(GameItem item)
 		{GameItem::TriforceChart2, "TriforceChart2"},
 		{GameItem::TreasureChart42, "TreasureChart42"},
 		{GameItem::TriforceChart1, "TriforceChart1"},
+		{GameItem::GameBeatable, "GameBeatable"},
 		{GameItem::NOTHING, "Nothing"}
 	};
 
@@ -486,26 +488,6 @@ std::string gameItemToName(GameItem item)
 GameItem idToGameItem(uint8_t id)
 {
 	return static_cast<GameItem>(id);
-}
-
-uint32_t maxItemCount(GameItem item)
-{
-	static std::unordered_map<GameItem, uint32_t> progressionItemCount = {
-		{GameItem::ProgressiveSword, 4},
-		{GameItem::ProgressiveShield, 2},
-		{GameItem::ProgressiveBow, 3},
-		{GameItem::ProgressiveQuiver, 2},
-		{GameItem::ProgressiveBombBag, 2},
-		{GameItem::DRCSmallKey, 4},
-		{GameItem::FWSmallKey, 1},
-		{GameItem::TotGSmallKey, 2},
-		{GameItem::ETSmallKey, 3},
-		{GameItem::WTSmallKey, 2},
-		{GameItem::ProgressiveWallet, 3},
-	};
-
-	if (progressionItemCount.count(item) == 0) return 1;
-	return progressionItemCount.at(item);
 }
 
 Item::Item(GameItem gameItemId_, int worldId_)
@@ -531,7 +513,7 @@ GameItem Item::getGameItemId() const
 
 std::string Item::getName() const
 {
-		return "Player " + std::to_string(worldId) + "'s " + gameItemToName(gameItemId);
+		return gameItemToName(gameItemId) + " for Player " + std::to_string(worldId + 1);
 }
 
 bool Item::operator==(const Item& rhs) const
@@ -539,11 +521,12 @@ bool Item::operator==(const Item& rhs) const
 		return gameItemId == rhs.gameItemId && worldId == rhs.worldId;
 }
 
+void setMajorness()
+{
+	
+}
+
 bool Item::isMajorItem() const
 {
-		if (gameItemId == GameItem::GreenRupee)
-		{
-				return false;
-		}
 		return true;
 }

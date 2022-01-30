@@ -8,10 +8,9 @@
 #include <unordered_map>
 #include "../libs/jsonexcept.hpp"
 #include "../libs/json.hpp"
+#include "../options.hpp"
 #include "GameItem.hpp"
-#include "Location.hpp"
-#include "Setting.hpp"
-
+#include "Area.hpp"
 
 enum struct RequirementType
 {
@@ -23,7 +22,7 @@ enum struct RequirementType
     COUNT,
     CAN_ACCESS,
     SETTING,
-    MACRO, 
+    MACRO,
     INVALID
 };
 
@@ -31,9 +30,9 @@ using json = nlohmann::json;
 using MacroIndex = size_t;
 struct Requirement;
 
-struct Requirement 
+struct Requirement
 {
-    using Argument = std::variant<int, std::string, Requirement, GameItem, MacroIndex, Location, Setting>;
+    using Argument = std::variant<int, std::string, Requirement, GameItem, Area, Option, MacroIndex>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };

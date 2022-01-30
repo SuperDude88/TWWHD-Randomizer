@@ -2,7 +2,7 @@
 #pragma once
 
 #include "GameItem.hpp"
-#include "Setting.hpp"
+#include "../options.hpp"
 #include <vector>
 
 using GameItemPool = std::vector<GameItem>;

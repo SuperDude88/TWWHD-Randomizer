@@ -3,26 +3,29 @@
 #include "Search.hpp"
 #include "PoolFunctions.hpp"
 #include "Random.hpp"
+#include "Debug.hpp"
 
-static void printLocation(LocationEntry* loc)
+static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
 {
-    std::cout << "\t" << locationToName(loc->locationId) << " in world " << std::to_string(loc->worldId) << std::endl;
+    debugLog("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
+    debugLog("Items:");
+    for (auto& item : items)
+    {
+        debugLog("\t" + item.getName());
+    }
+    for (auto location : locations)
+    {
+        debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
+    }
 }
 
-static void printItemAtLocation(LocationEntry* loc)
-{
-    std::cout << loc->currentItem.getName() << " place at " << locationToName(loc->locationId) << " in world " << std::to_string(loc->worldId) << std::endl;
-}
-
-// Place the given items completely randomly among the given locations
-// The given locations are assumed to not be filled yet
+// Place the given items completely randomly among the given locations.
+// The given locations are assumed to not be filled yet.
 static FillError fastFill(ItemPool& items, LocationPool& locations)
 {
     if (items.size() > locations.size())
     {
-        #ifdef ENABLE_DEBUG
-            std::cout << "num items: " << std::to_string(items.size()) << " num locations: " << std::to_string(locations.size()) << std::endl;
-        #endif
+        logItemsAndLocations(items, locations);
         return FillError::MORE_ITEMS_THAN_LOCATIONS;
     }
     while (!items.empty() && !locations.empty())
@@ -30,10 +33,7 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
         auto item = popRandomElement(items);
         auto location = popRandomElement(locations);
         location->currentItem = item;
-        #ifdef ENABLE_DEBUG
-            std::cout << "Placed " << item.getName() << " at ";
-            printLocation(location);
-        #endif
+        debugLog("Placed " + item.getName() + " at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
     }
 
     return FillError::NONE;
@@ -43,10 +43,14 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
 // The given locations are assumed to not be filled yet
 static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const ItemPool& itemsNotYetPlaced, LocationPool& allowedLocations)
 {
+    if (itemsToPlace.size() > allowedLocations.size())
+    {
+        logItemsAndLocations(itemsToPlace, allowedLocations);
+        return FillError::MORE_ITEMS_THAN_LOCATIONS;
+    }
 
     int retries = 10;
     bool unsuccessfulPlacement = false;
-
     do
     {
         retries--;
@@ -67,16 +71,17 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             // Assume we have all items which haven't been placed yet
             // (except for the one we're about to place).
             ItemPool assumedItems (itemsNotYetPlaced);
-            AddElementsToPool(assumedItems, itemsToPlace);
+            addElementsToPool(assumedItems, itemsToPlace);
 
+            // Get a list of accessible locations
             const auto& accessibleLocations = getAccessibleLocations(worlds, assumedItems, allowedLocations);
 
             // If there aren't any accessible locations, rollback any previously
             // placed items in this group.
             if (accessibleLocations.empty())
             {
-                std::cout << "No Accessible Locations" << std::endl;
-                AddElementsToPool(itemsToPlace, rollbacks);
+                // debugLog("No Accessible Locations to place " + item.getName());
+                addElementsToPool(itemsToPlace, rollbacks);
                 rollbacks.clear();
                 // Break out of the item placement loop and flag an unsuccessful
                 // placement attempt to try again.
@@ -87,41 +92,56 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             // Place the item within one of the allowed locations
             auto location = RandomElement(accessibleLocations);
             location->currentItem = std::move(item);
-            printItemAtLocation(location);
+            // debugLog("Placed " + item.getName() + " at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
         }
     }
     while(unsuccessfulPlacement);
     return FillError::NONE;
 }
 
-FillError fill(std::vector<World>& worlds)
+static void placeHardcodedItems(WorldPool& worlds)
 {
+    for (auto& world : worlds)
+    {
+        world.locationEntries[locationIdAsIndex(LocationId::DefeatGanondorf)].currentItem = {GameItem::GameBeatable, world.getWorldId()};
+    }
+}
+
+FillError fill(WorldPool& worlds)
+{
+    std::cout << "Filling Worlds" << std::endl;
+    placeHardcodedItems(worlds);
+
     FillError err;
     // Combine all worlds' item pools
     ItemPool itemPool;
     LocationPool allLocations;
     for (auto& world : worlds)
     {
-        AddElementsToPool(itemPool, world.getItemPool());
-        AddElementsToPool(allLocations, world.getLocations());
+        addElementsToPool(itemPool, world.getItemPool());
+        addElementsToPool(allLocations, world.getLocations());
     }
 
-    std::cout << "All items:" << std::endl;
-    for (auto& item : itemPool)
-    {
-        std::cout << "\t" << item.getName() << std::endl;
-    }
+    #ifdef ENABLE_DEBUG
+        debugLog("All items:");
+        for (auto& item : itemPool)
+        {
+            debugLog("\t" + item.getName());
+        }
+    #endif
 
-    auto majorItems = filterFromPool(itemPool, [](const Item& i){return i.isMajorItem();});
-    std::cout << std::to_string(majorItems.size()) << std::endl;
+    auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& i){return i.isMajorItem();});
 
-    std::cout << "Major items:" << std::endl;
-    for (auto& item : majorItems)
-    {
-        std::cout << "Item";
-        std::cout << "\t" << item.getName() << std::endl;
-    }
-    std::cout << "End of Major items:" << std::endl << std::endl;
+    #ifdef ENABLE_DEBUG
+        debugLog("Major items:");
+        for (auto& item : majorItems)
+        {
+            debugLog("\t" + item.getName());
+            std::cout <<  << std::endl;
+        }
+        debugLog("End of Major items");
+        debugLog();
+    #endif
 
     // Place all major items in the Item Pool using assumed fill
     err = assumedFill(worlds, majorItems, itemPool, allLocations);
@@ -131,7 +151,16 @@ FillError fill(std::vector<World>& worlds)
     }
 
     // Then fast fill for the rest
+    err = fastFill(itemPool, allLocations);
+    if (err != FillError::NONE)
+    {
+        return err;
+    }
 
+    if (!gameBeatable(worlds))
+    {
+        return FillError::GAME_NOT_BEATABLE;
+    }
 
     return FillError::NONE;
 }
@@ -146,6 +175,8 @@ const char* errorToName(FillError err)
         return "RAN_OUT_OF_RETRIES";
     case FillError::MORE_ITEMS_THAN_LOCATIONS:
         return "MORE_ITEMS_THAN_LOCATIONS";
+    case FillError::GAME_NOT_BEATABLE:
+        return "GAME_NOT_BEATABLE";
     default:
         return "UNKNOWN";
     }

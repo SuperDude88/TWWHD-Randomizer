@@ -29,6 +29,7 @@ enum struct GameItem : uint8_t
     Fairy,
 
     NOTHING, //not an item, uses a free space to represent no item (but not invalid)
+    GameBeatable, // Dummy item to check for game beatability
 
     YellowRupee2 = 0x1A, //joke message
     DRCDungeonMap,
@@ -269,10 +270,12 @@ public:
     GameItem getGameItemId() const;
     std::string getName() const;
     bool operator==(const Item& rhs) const;
+    void setMajorness();
     bool isMajorItem() const;
 
 private:
     GameItem gameItemId = GameItem::INVALID;
+    bool majorItem = false;
     int worldId = -1; // The world that this item is *FOR*
 };
 

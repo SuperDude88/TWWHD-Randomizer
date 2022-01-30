@@ -2,6 +2,15 @@
     "Macros":
     [
     {
+     "Name": "Can Sail Away",
+     "Expression": {
+      "type": "or", "args":[
+        {"type": "and", "args": [{"type": "macro", "args": ["Can Play WR"]}, {"type": "has_item", "args":["BoatsSail"]}]},
+        {"type": "has_item", "args": ["SwiftSail"]}
+      ]
+     }
+    },
+    {
      "Name": "Can Play WR",
      "Expression": {
        "type": "and", "args": [{"type": "has_item", "args": ["WindsRequiem"]}, {"type": "has_item", "args":["WindWaker"]}]
@@ -62,7 +71,7 @@
                   {"type": "or", "args": [
                    {"type": "has_item", "args": ["DekuLeaf"]},
                    {"type": "or", "args": [
-                      {"type": "has_item", "args": ["Bow"]},
+                      {"type": "has_item", "args": ["ProgressiveBow"]},
                       {"type": "has_item", "args": ["Hookshot"]}
                      ]}
                    ]}
@@ -86,7 +95,7 @@
      "Name": "Can Defeat Door Flowers",
      "Expression": {
          "type": "or", "args": [
-          {"type": "has_item", "args": ["Bow"]},
+          {"type": "has_item", "args": ["ProgressiveBow"]},
           {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
          ]
        }
@@ -95,7 +104,7 @@
      "Name": "Can Hit Diamond Switches at Range",
      "Expression": {
          "type": "or", "args": [
-          {"type": "has_item", "args": ["Bow"]},
+          {"type": "has_item", "args": ["ProgressiveBow"]},
           {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]}
          ]
        }
@@ -104,7 +113,7 @@
      "Name": "Can Destroy Hanging Seeds",
      "Expression": {
          "type": "or", "args": [
-          {"type": "has_item", "args": ["Bow"]},
+          {"type": "has_item", "args": ["ProgressiveBow"]},
           {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
          ]
        }
@@ -124,91 +133,112 @@
     {
      "Name": "HerosSword",
      "Expression": {
-         "type": "count", "args": [1, "Sword"]
+         "type": "count", "args": [1, "ProgressiveSword"]
        }
     },
     {
      "Name": "Master Sword",
      "Expression": {
-         "type": "count", "args": [2, "Sword"]
+         "type": "count", "args": [2, "ProgressiveSword"]
        }
     },
     {
      "Name": "Full Power Master Sword",
      "Expression": {
-         "type": "count", "args": [3, "Sword"]
+         "type": "count", "args": [4, "ProgressiveSword"]
        }
     },
     {
      "Name": "Heros Shield",
      "Expression": {
-         "type": "count", "args": [1, "Shield"]
+         "type": "count", "args": [1, "ProgressiveShield"]
        }
     },
     {
      "Name": "Mirror Shield",
      "Expression": {
-         "type": "count", "args": [2, "Shield"]
+         "type": "count", "args": [2, "ProgressiveShield"]
        }
     },
     {
      "Name": "Heros Bow",
      "Expression": {
-         "type": "count", "args": [1, "Bow"]
+         "type": "count", "args": [1, "ProgressiveBow"]
        }
     },
     {
      "Name": "Fire Arrows",
      "Expression": {
-         "type": "count", "args": [2, "Bow"]
+         "type": "count", "args": [2, "ProgressiveBow"]
        }
     },
     {
      "Name": "Ice Arrows",
      "Expression": {
-         "type": "count", "args": [2, "Bow"]
+         "type": "count", "args": [2, "ProgressiveBow"]
        }
     },
     {
      "Name": "Light Arrows",
      "Expression": {
-         "type": "count", "args": [3, "Bow"]
+         "type": "count", "args": [3, "ProgressiveBow"]
        }
     },
     {
      "Name": "Wallet Upgrade",
      "Expression": {
-         "type": "count", "args": [3, "Wallet"]
+         "type": "count", "args": [1, "ProgressiveWallet"]
        }
     },
     {
      "Name": "60 Bomb Bag",
      "Expression": {
-         "type": "count", "args": [1, "BombBagUpgrade"]
+         "type": "count", "args": [1, "ProgressiveBombBag"]
        }
     },
     {
      "Name": "99 Bomb Bag",
      "Expression": {
-         "type": "count", "args": [2, "BombBagUpgrade"]
+         "type": "count", "args": [2, "ProgressiveBombBag"]
        }
     },
     {
      "Name": "60 Quiver",
      "Expression": {
-         "type": "count", "args": [1, "QuiverUpgrade"]
+         "type": "count", "args": [1, "ProgressiveQuiver"]
        }
     },
     {
      "Name": "99 Quiver",
      "Expression": {
-         "type": "count", "args": [2, "QuiverUpgrade"]
+         "type": "count", "args": [2, "ProgressiveQuiver"]
        }
+    },
+    {
+      "Name": "Picto Box",
+      "Expression": {
+          "type": "count", "args": [1, "ProgressivePictoBox"]
+      }
+    },
+    {
+      "Name": "Deluxe Picto Box",
+      "Expression": {
+          "type": "count", "args": [2, "ProgressivePictoBox"]
+      }
     },
     {
      "Name": "All 8 Shards",
      "Expression": {
-         "type": "count", "args": [8,  "TriforceShard"]
+         "type": "and", "args": [
+            {"type": "has_item", "args": ["TriforceShard1"]},
+            {"type": "has_item", "args": ["TriforceShard2"]},
+            {"type": "has_item", "args": ["TriforceShard3"]},
+            {"type": "has_item", "args": ["TriforceShard4"]},
+            {"type": "has_item", "args": ["TriforceShard5"]},
+            {"type": "has_item", "args": ["TriforceShard6"]},
+            {"type": "has_item", "args": ["TriforceShard7"]},
+            {"type": "has_item", "args": ["TriforceShard8"]}
+         ]
        }
     },
     {
@@ -231,7 +261,7 @@
            {"type": "and", "args": [
             {"type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
             {"type": "or", "args": [
-             {"type": "has_item", "args": ["MagicMeter"]},
+             {"type": "has_item", "args": ["MagicMeterUpgrade"]},
              {"type": "macro", "args": ["Can Cut Grass"]}
              ]
             }
@@ -573,7 +603,7 @@
     {
      "Name": "Can Get Past Hyrule Barrier",
      "Expression": {
-         "type": "and", "args": [{"type": "macro", "args": ["Can Access Hyrule"]}, {"type": "or", "args": [{"type": "macro", "args": ["In Swordless Mode"]}, {"type": "macro", "args": ["Full Power Master Sword"]}]}]
+         "type": "or", "args": [{"type": "macro", "args": ["In Swordless Mode"]}, {"type": "macro", "args": ["Full Power Master Sword"]}]
        }
     },
     {
@@ -680,13 +710,13 @@
      "Expression": {
          "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]},
          {"type": "has_item", "args": ["SpoilsBag"]},
-         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["EarthTempleBigKeyChest"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
-         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["EarthTempleBigKeyChest"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
+         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["ETBigKeyChestRoom"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
+         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["WTBigKeyChestRoom"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
          {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["StoneWatcherCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
          {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["OverlookCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
-         {"type": "can_access", "args": ["IceRingInnerCaveChest"]},
+         {"type": "can_access", "args": ["IceRingInnerCave"]},
          {"type": "can_access", "args": ["OutsetSavageFloor30"]},
-         {"type": "can_access", "args": ["SharkCave"]},
+         {"type": "can_access", "args": ["SharkIslandCave"]},
          {"type": "macro", "args": ["Can Access Hyrule"]}]
        }
     },
@@ -725,6 +755,17 @@
      "Expression": {
          "type": "has_item", "args": ["Nothing"]
        }
+    },
+
+    {
+      "Name": "Can Trade With All Gorons",
+      "Expression": {
+          "type": "and", "args": [
+              { "type": "can_access", "args": ["GreatfishIsle"]},
+              { "type": "can_access", "args": ["MotherAndChildIsles"]},
+              { "type": "can_access", "args": ["BombIsland"]}
+          ]
+        }
     },
 
     {
@@ -820,7 +861,16 @@
     {
      "Name": "Can Defeat Dark ChuChus",
      "Expression": {
-         "type": "has_item", "args": ["Nothing"]
+         "type": "macro", "args": ["Light Arrows"]
+       }
+    },
+    {
+     "Name": "Can Defeat Dark ChuChus With Light Ray",
+     "Expression": {
+         "type": "or", "args": [
+           { "type": "macro", "args": ["Can Defeat Dark ChuChus"]},
+           { "type": "macro", "args": ["Can Aim Mirror Shield"]}
+         ]
        }
     },
     {
@@ -1015,6 +1065,12 @@
          "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]
        }
     },
+    {
+     "Name": "Can Defeat Seahats",
+     "Expression": {
+         "type": "or", "args": [{"type": "macro", "args": ["Heros Bow"]}, {"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}, {"type": "has_item", "args": ["Bombs"]}]
+       }
+    },
 
 
 
@@ -1056,7 +1112,12 @@
     },
 
 
-
+    {
+     "Name": "Can Destroy Wooden Barrier",
+     "Expression": {
+         "type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "macro", "args": ["Fire Arrows"]}]
+       }
+    },
     {
      "Name": "Can Destroy Cannons",
      "Expression": {
@@ -1090,19 +1151,19 @@
     {
      "Name": "Rematch Bosses Skipped",
      "Expression": {
-         "type": "setting", "args": ["SkipTrials"]
+         "type": "setting", "args": ["SkipRefights"]
        }
     },
     {
      "Name": "In Swordless Mode",
      "Expression": {
-         "type": "setting", "args": ["Swordless"]
+         "type": "setting", "args": ["NoSword"]
        }
     },
     {
      "Name": "Outside Swordless Mode",
      "Expression": {
-         "type": "not", "args": [{"type": "setting", "args": ["Swordless"]}]
+         "type": "not", "args": [{"type": "setting", "args": ["NoSword"]}]
        }
     },
 

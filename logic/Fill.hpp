@@ -8,6 +8,7 @@ enum struct FillError
     NONE = 0,
     RAN_OUT_OF_RETRIES,
     MORE_ITEMS_THAN_LOCATIONS,
+    GAME_NOT_BEATABLE,
 };
 
 FillError fill(std::vector<World>& worlds);

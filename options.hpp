@@ -9,7 +9,8 @@
 enum struct SwordMode {
     StartWithSword = 0,
     RandomSword,
-    NoSword
+    NoSword,
+    INVALID
 };
 
 enum struct EntranceRando {
@@ -17,7 +18,8 @@ enum struct EntranceRando {
     Dungeons,
     Caves,
     DungeonsAndCaves, //caves and dungeons separately
-    DungeonsWithCaves //caves and dungeons together
+    DungeonsWithCaves, //caves and dungeons together
+    INVALID
 };
 
 enum struct Option {
@@ -71,9 +73,9 @@ enum struct Option {
 };
 
 struct Settings {
-	bool progression_dungeons = false;
-	bool progression_great_fairies = false;
-	bool progression_puzzle_secret_caves = false;
+	  bool progression_dungeons = false;
+	  bool progression_great_fairies = false;
+	  bool progression_puzzle_secret_caves = false;
     bool progression_combat_secret_caves = false;
     bool progression_short_sidequests = false;
     bool progression_long_sidequests = false;
@@ -122,3 +124,5 @@ struct Settings {
 Option nameToSetting(const std::string& name);
 
 int getSetting(const Settings& settings, const Option& option);
+
+int evaluateOption(const Settings& settings, const std::string& optionStr);
