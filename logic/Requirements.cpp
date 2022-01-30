@@ -33,7 +33,7 @@
 //         if (!parseRequirement(args[0], reqOut)) return false;
 //         out.push_back(reqOut);
 //         break;
-//     case RequirementType::HAS_ITEM: 
+//     case RequirementType::HAS_ITEM:
 //         // has item expects a single string arg that maps to an item
 //         if (!args[0].is_string()) return false;
 //         argStr = args[0].get<std::string>();
@@ -55,7 +55,7 @@
 //         return true;
 //     case RequirementType::CAN_ACCESS:
 //         if(!args[0].is_string()) return false;
-//         argLoc = nameToLocation(args[0].get<std::string>());
+//         argLoc = nameToLocationId(args[0].get<std::string>());
 //         if (argLoc == Location::INVALID) return false;
 //         out.push_back(argLoc);
 //         return true;
@@ -144,7 +144,7 @@
 // // to avoid string mapping too
 // bool RequirementParser::evaluate(const Requirement& requirement,
 //                                  const std::unordered_map<std::string, std::reference_wrapper<Requirement>>& locReqMap,
-//                                  const std::unordered_map<GameItem, uint32_t>& ownedItems, 
+//                                  const std::unordered_map<GameItem, uint32_t>& ownedItems,
 //                                  const std::unordered_set<std::string>& settings)
 // {
 //     uint32_t expectedCount = 0;
@@ -153,16 +153,16 @@
 //     {
 //     case RequirementType::OR:
 //         return std::any_of(
-//             requirement.args.begin(), 
-//             requirement.args.end(), 
+//             requirement.args.begin(),
+//             requirement.args.end(),
 //             [&](const Requirement::Argument& arg){
 //                 return evaluate(std::get<Requirement>(arg), locReqMap, ownedItems, settings);
 //             }
 //         );
 //     case RequirementType::AND:
 //         return std::all_of(
-//             requirement.args.begin(), 
-//             requirement.args.end(), 
+//             requirement.args.begin(),
+//             requirement.args.end(),
 //             [&](const Requirement::Argument& arg){
 //                 return evaluate(std::get<Requirement>(arg), locReqMap, ownedItems, settings);
 //             }

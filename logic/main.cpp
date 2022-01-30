@@ -2,12 +2,15 @@
 #include "World.hpp"
 #include "ItemPool.hpp"
 #include "Fill.hpp"
-#include "../libs/json.hpp"
+#include "SpoilerLog.hpp"
+#include "Random.hpp"
+#include "Debug.hpp"
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
 #include <fstream>
 #include <iostream>
+#include <chrono>
 
 int main()
 {
@@ -19,87 +22,64 @@ int main()
 
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
+        openDebugLog();
     #endif
-    #ifndef ENABLE_DEBUG
-        std::cout << "Debugging is OFF" << std::endl;
-    #endif
-
-    using json = nlohmann::json;
-
-    std::ifstream macroFile("../Macros.json");
-    if (!macroFile.is_open())
-    {
-        std::cout << "unable to open macro file" << std::endl;
-        return 1;
-    }
-    std::ifstream worldFile("../world.json");
-    if (!worldFile.is_open())
-    {
-        std::cout << "Unable to open world file" << std::endl;
-    }
-
-    json world_j = json::parse(worldFile, nullptr, false);
-    auto macroFileObj = json::parse(macroFile, nullptr, false);
-    if (macroFileObj.is_discarded())
-    {
-        std::cout << "unable to parse macros from file" << std::endl;
-        return 1;
-    }
 
     Settings settings;
+    // Set settings in code for now
+
+    // End of in code settings
 
     World blankWorld{};
-
     // Create all necessary worlds (for any potential multiworld support in the future)
-    int worldCount = 2;
+    int worldCount = 1;
     std::vector<World> worlds(worldCount, blankWorld);
 
-    // Load worlds on a per-world basis incase we ever support different worlds
+    // Build worlds on a per-world basis incase we ever support different world graphs
     // per player
+    std::cout << "Building Worlds" << std::endl;
     for (size_t i = 0; i < worldCount; i++)
     {
         worlds[i].setWorldId(i);
-        auto err = worlds[i].loadMacros(macroFileObj["Macros"].get<std::vector<json>>());
-        if (err != World::WorldLoadingError::NONE)
-        {
-            std::cout << "Got error loading macros: " << World::errorToName(err) << std::endl;
-            std::cout << worlds[i].getLastErrorDetails() << std::endl;
-            return 1;
-        }
-        if (!world_j.contains("Areas"))
-        {
-            std::cout << "Improperly formatted world file" << std::endl;
-            return 1;
-        }
-        for (const auto& area : world_j.at("Areas"))
-        {
-            Area areaOut;
-            err = worlds[i].loadArea(area, areaOut);
-            if (err != World::WorldLoadingError::NONE)
-            {
-                std::cout << "Got error loading area: " << World::errorToName(err) << std::endl;
-                std::cout << worlds[i].getLastErrorDetails() << std::endl;
-                return 1;
-            }
-        }
         worlds[i].setSettings(settings);
+        if (worlds[i].loadWorld("../world.json", "../Macros.json"))
+        {
+            return 1;
+        }
         worlds[i].setItemPools();
+        // worlds[i].randomizeEntrances()
     }
 
-    FillError fillError = fill(worlds);
+    // Time how long the fill takes
+    auto start = std::chrono::high_resolution_clock::now();
 
+    FillError fillError = fill(worlds);
+    if (fillError == FillError::NONE) {
+        std::cout << "Fill Successful" << std::endl;
+    } else {
+        std::cout << "Fill Unsuccessful. Error Code: " << errorToName(fillError) << std::endl;
+        closeDebugLog();
+        return 1;
+    }
+
+    // Calculate time difference
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    auto seconds = static_cast<double>(duration.count()) / 1000000.0f;
+    std::cout << "Fill took " << std::to_string(seconds) << " seconds" << std::endl;
+
+    // Dump world graphs for debugging
     #ifdef ENABLE_DEBUG
         for (World& world : worlds) {
             world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
         }
     #endif
 
-    if (fillError == FillError::NONE) {
-        std::cout << "Fill Successful" << std::endl;
-    } else {
-        std::cout << "Fill Unsuccessful. Error Code: " << errorToName(fillError) << std::endl;
-        return 1;
-    }
+    std::cout << "Generating Playthrough" << std::endl;
+    generatePlaythrough(worlds);
+    std::cout << "Generating Spoiler Log" << std::endl;
+    generateSpoilerLog(worlds);
 
+    closeDebugLog();
     return 0;
 }

@@ -1,6 +1,36 @@
 #include "options.hpp"
 
+SwordMode nameToSwordMode(const std::string& name) {
+    static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
+        {"StartWithSword", SwordMode::StartWithSword},
+        {"RandomSword", SwordMode::RandomSword},
+        {"NoSword", SwordMode::NoSword},
+    };
 
+    if (nameSwordModeMap.count(name) == 0)
+    {
+        return SwordMode::INVALID;
+    }
+
+    return nameSwordModeMap.at(name);
+}
+
+EntranceRando nameToEntranceRando(const std::string& name) {
+    static std::unordered_map<std::string, EntranceRando> nameEntranceRandoMap = {
+        {"None", EntranceRando::None},
+        {"Dungeons", EntranceRando::Dungeons},
+        {"Caves", EntranceRando::Caves},
+        {"DungeonsAndCaves", EntranceRando::DungeonsAndCaves},
+        {"DungeonsWithCaves", EntranceRando::DungeonsWithCaves},
+    };
+
+    if (nameEntranceRandoMap.count(name) == 0)
+    {
+        return EntranceRando::INVALID;
+    }
+
+    return nameEntranceRandoMap.at(name);
+}
 
 Option nameToSetting(const std::string& name) {
     static std::unordered_map<std::string, Option> optionNameMap = {
@@ -147,4 +177,22 @@ int getSetting(const Settings& settings, const Option& option) {
         return 0;
 	}
 
+}
+
+int evaluateOption(const Settings& settings, const std::string& optionStr) {
+    if (nameToSwordMode(optionStr) != SwordMode::INVALID)
+    {
+        return getSetting(settings, Option::SwordMode) == static_cast<int>(nameToSwordMode(optionStr));
+    }
+    else if (nameToEntranceRando(optionStr) != EntranceRando::INVALID)
+    {
+        return getSetting(settings, Option::RandomEntrances) == static_cast<int>(nameToEntranceRando(optionStr));
+    }
+    else if (nameToSetting(optionStr) != Option::INVALID)
+    {
+        return getSetting(settings, nameToSetting(optionStr));
+    }
+
+    // -1 means that the setting doesn't exist
+    return -1;
 }
