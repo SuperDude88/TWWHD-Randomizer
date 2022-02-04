@@ -265,7 +265,8 @@ void World::determineRaceModeDungeons()
                 // If we've already chosen our race mode dungeons, then set all
                 // the other dungeons' locations as non-progression. If dungeons
                 // are set as progression locations, we already set them all as
-                // progression previously, so we don't need to set them again.
+                // progression previously, so here we unset those which aren't
+                // progression dungeons.
                 for (auto& locationId : dungeonIdToDungeon(dungeons[i]).locations)
                 {
                     locationEntries[locationIdAsIndex(locationId)].progression = false;
