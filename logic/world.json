@@ -39,7 +39,7 @@
                 {
                     "ConnectedArea": "MailboxChecks",
                     "Needs": {
-                        "type": "and", "args": [
+                        "type": "or", "args": [
                             { "type": "can_access", "args": ["NorthernFairyIsland"]},
                             { "type": "can_access", "args": ["SpectacleIsland"]},
                             { "type": "can_access", "args": ["WindfallIsland"]},

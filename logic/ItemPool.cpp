@@ -342,6 +342,11 @@ GameItemPool generateStartingGameItemPool(const Settings& settings)
         startingItems.push_back(GameItem::ProgressiveSword);
     }
 
+    for (auto& item : settings.starting_gear)
+    {
+        startingItems.push_back(item);
+    }
+
     return startingItems;
 }
 

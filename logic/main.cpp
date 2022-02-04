@@ -60,7 +60,7 @@ int main()
     // End of in code settings
 
     // Create all necessary worlds (for any potential multiworld support in the future)
-    int worldCount = 2;
+    int worldCount = 1;
     World blankWorld;
     WorldPool worlds (worldCount, blankWorld);
     std::vector<Settings> settingsVector (worldCount, settings);
