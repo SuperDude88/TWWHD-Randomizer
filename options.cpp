@@ -35,7 +35,7 @@ EntranceRando nameToEntranceRando(const std::string& name) {
 Option nameToSetting(const std::string& name) {
     static std::unordered_map<std::string, Option> optionNameMap = {
         {"ProgressDungeons", Option::ProgressDungeons},
-        {"ProgressFairies", Option::ProgressFairies},
+        {"ProgressGreatFairies", Option::ProgressGreatFairies},
         {"ProgressPuzzleCaves", Option::ProgressPuzzleCaves},
         {"ProgressCombatCaves", Option::ProgressCombatCaves},
         {"ProgressShortSidequests", Option::ProgressShortSidequests},
@@ -91,7 +91,7 @@ int getSetting(const Settings& settings, const Option& option) {
 	switch (option) {
     case Option::ProgressDungeons:
         return settings.progression_dungeons;
-    case Option::ProgressFairies:
+    case Option::ProgressGreatFairies:
         return settings.progression_great_fairies;
     case Option::ProgressPuzzleCaves:
         return settings.progression_puzzle_secret_caves;

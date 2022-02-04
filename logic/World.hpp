@@ -9,10 +9,14 @@
 #include "Area.hpp"
 #include "Location.hpp"
 #include "ItemPool.hpp"
+#include "Dungeon.hpp"
 
 static std::stringstream lastError;
 
+class World;
+using WorldPool = std::vector<World>;
 using LocationPool = std::vector<Location*>;
+
 
 struct Exit
 {
@@ -69,8 +73,12 @@ public:
     int getWorldId() const;
     void setItemPools();
     ItemPool getItemPool() const;
+    void addToItemPool(const GameItem gameItem);
     ItemPool getStartingItems() const;
     LocationPool getLocations();
+    void determineChartMappings();
+    void determineProgressionLocations();
+    void determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
@@ -78,10 +86,15 @@ public:
 
     std::vector<AreaEntry> areaEntries = {};
     std::vector<Location> locationEntries = {};
+    std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
     std::vector<std::list<Location*>> playthroughSpheres = {};
+    std::array<GameItem, 49> chartMappings;
+    std::vector<DungeonId> raceModeDungeons;
 
 private:
+
+    bool chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix);
 
     WorldLoadingError parseElement(RequirementType type, const std::vector<json>& args, std::vector<Requirement::Argument>& out);
     WorldLoadingError parseRequirement(const json& requirementsObject, Requirement& out);
@@ -91,7 +104,6 @@ private:
     WorldLoadingError loadMacros(const std::vector<json>& macroObjectList);
     WorldLoadingError loadArea(const json& areaObject, Area& loadedArea);
 
-    std::unordered_map<std::string, MacroIndex> macroNameMap;
     Settings settings;
     ItemPool itemPool;
     ItemPool startingItems;

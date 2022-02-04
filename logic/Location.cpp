@@ -695,6 +695,45 @@ LocationCategory nameToLocationCategory(const std::string& name)
     return categoryNameMap.at(name);
 }
 
+std::string locationCategoryToName(LocationCategory category)
+{
+    static std::unordered_map<LocationCategory, std::string> nameCategoryMap = {
+        {LocationCategory::Misc, "Misc"},
+        {LocationCategory::Dungeon, "Dungeon"},
+        {LocationCategory::GreatFairy, "GreatFairy"},
+        {LocationCategory::IslandPuzzle, "IslandPuzzle"},
+        {LocationCategory::SpoilsTrading, "SpoilsTrading"},
+        {LocationCategory::Mail, "Mail"},
+        {LocationCategory::SavageLabyrinth, "SavageLabyrinth"},
+        {LocationCategory::FreeGift, "FreeGift"},
+        {LocationCategory::Minigame, "Minigame"},
+        {LocationCategory::BattleSquid, "BattleSquid"},
+        {LocationCategory::TingleChest, "TingleChest"},
+        {LocationCategory::PuzzleSecretCave, "PuzzleSecretCave"},
+        {LocationCategory::CombatSecretCave, "CombatSecretCave"},
+        {LocationCategory::Platform, "Platform"},
+        {LocationCategory::Raft, "Raft"},
+        {LocationCategory::EyeReefChests, "EyeReefChests"},
+        {LocationCategory::BigOcto, "BigOcto"},
+        {LocationCategory::Submarine, "Submarine"},
+        {LocationCategory::Gunboat, "Gunboat"},
+        {LocationCategory::LongSideQuest, "LongSideQuest"},
+        {LocationCategory::ShortSideQuest, "ShortSideQuest"},
+        {LocationCategory::ExpensivePurchase, "ExpensivePurchase"},
+        {LocationCategory::SunkenTreasure, "SunkenTreasure"},
+        {LocationCategory::Obscure,  "Obscure"},
+        {LocationCategory::Junk, "Junk"},
+        {LocationCategory::Other, "Other"},
+    };
+
+    if (nameCategoryMap.count(category) == 0)
+    {
+        return "INVALID";
+    }
+
+    return nameCategoryMap.at(category);
+}
+
 LocationModificationType nameToModificationType(const std::string& name)
 {
     static std::unordered_map<std::string, LocationModificationType> methodNameMap = {
@@ -727,4 +766,9 @@ LocationId indexAsLocationId(uint32_t index)
 {
     if (index >= LOCATION_COUNT) return LocationId::INVALID;
     return static_cast<LocationId>(index);
+}
+
+std::string locationName(const Location* location)
+{
+    return locationIdToName(location->locationId) + " [W" + std::to_string(location->worldId + 1) + "]";
 }

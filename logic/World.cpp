@@ -3,6 +3,8 @@
 #include "Requirements.hpp"
 #include "PoolFunctions.hpp"
 #include "Debug.hpp"
+#include "Search.hpp"
+#include "Random.hpp"
 #include "../libs/json.hpp"
 #include "../options.hpp"
 #include <algorithm>
@@ -55,35 +57,39 @@ void World::setItemPools()
 {
     itemPool.clear();
     startingItems.clear();
-    auto gameItemPool = generateGameItemPool(settings, worldId);
-    auto startingGameItems = generateStartingGameItemPool(settings, worldId);
-    // Set worldId for each item in each pool
+    auto gameItemPool = generateGameItemPool(settings);
+    auto startingGameItems = generateStartingGameItemPool(settings);
 
-    debugLog("Starting Items for world " + std::to_string(worldId) + ": ");
+    // Set worldId for each item in each pool
     for (auto gameItem : startingGameItems)
     {
         startingItems.emplace_back(gameItem, worldId);
-        debugLog("\t" + gameItemToName(gameItem));
         // If a starting item is in the main item pool, replace it with some junk
         auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), gameItem);
         if (itemPoolItr != gameItemPool.end())
         {
-            // Optimize with smarter junk replacement later
-            *itemPoolItr = GameItem::GreenRupee;
+            *itemPoolItr = getRandomJunk();
         }
     }
 
-    debugLog("Item Pool for world " + std::to_string(worldId) + ": ");
     for (auto gameItem : gameItemPool)
     {
         itemPool.emplace_back(gameItem, worldId);
-        debugLog("\t" + gameItemToName(gameItem));
     }
+    logItemPool("Items for world " + std::to_string(worldId), itemPool);
 }
 
 ItemPool World::getItemPool() const
 {
     return itemPool;
+}
+
+void World::addToItemPool(const GameItem gameItem)
+{
+    if (gameItem != GameItem::INVALID && gameItem != GameItem::NOTHING)
+    {
+        itemPool.emplace_back(gameItem, worldId);
+    }
 }
 
 ItemPool World::getStartingItems() const
@@ -94,10 +100,179 @@ ItemPool World::getStartingItems() const
 LocationPool World::getLocations()
 {
     LocationPool locations = {};
-    for (size_t i = 0; i < locationIdAsIndex(LocationId::COUNT); i++) {
+    // start at 1 since 0 is the INVALID entry
+    for (size_t i = 1; i < locationIdAsIndex(LocationId::COUNT); i++) {
         locations.push_back(&locationEntries[i]);
     }
     return locations;
+}
+
+void World::determineChartMappings()
+{
+    // The ordering of this array corresponds each treasure/triforce chart with
+    // the island sector it's located in
+    static std::array<GameItem, 49> charts = {
+        GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
+        GameItem::TreasureChart7,  // Sector 2 Star Island
+        GameItem::TreasureChart24, // etc...
+        GameItem::TreasureChart42,
+        GameItem::TreasureChart11,
+        GameItem::TreasureChart45,
+        GameItem::TreasureChart13,
+        GameItem::TreasureChart41,
+        GameItem::TreasureChart29,
+        GameItem::TreasureChart22,
+        GameItem::TreasureChart18,
+        GameItem::TreasureChart30,
+        GameItem::TreasureChart39,
+        GameItem::TreasureChart19,
+        GameItem::TreasureChart8,
+        GameItem::TreasureChart2,
+        GameItem::TreasureChart10,
+        GameItem::TreasureChart26,
+        GameItem::TreasureChart3,
+        GameItem::TreasureChart37,
+        GameItem::TreasureChart27,
+        GameItem::TreasureChart38,
+        GameItem::TriforceChart1,
+        GameItem::TreasureChart21,
+        GameItem::TreasureChart6,
+        GameItem::TreasureChart14,
+        GameItem::TreasureChart34,
+        GameItem::TreasureChart5,
+        GameItem::TreasureChart28,
+        GameItem::TreasureChart35,
+        GameItem::TriforceChart2,
+        GameItem::TreasureChart44,
+        GameItem::TreasureChart1,
+        GameItem::TreasureChart20,
+        GameItem::TreasureChart36,
+        GameItem::TreasureChart23,
+        GameItem::TreasureChart12,
+        GameItem::TreasureChart16,
+        GameItem::TreasureChart4,
+        GameItem::TreasureChart17,
+        GameItem::TreasureChart31,
+        GameItem::TriforceChart3,
+        GameItem::TreasureChart9,
+        GameItem::TreasureChart43,
+        GameItem::TreasureChart40,
+        GameItem::TreasureChart46,
+        GameItem::TreasureChart15,
+        GameItem::TreasureChart32,
+        GameItem::TreasureChart33, // Sector 49 Five Star Isles
+    };
+
+    // Only shuffle around the charts of we're randomizing them
+    if (settings.randomize_charts)
+    {
+        shufflePool(charts);
+    }
+
+    for (size_t i = 0; i < charts.size(); i++)
+    {
+        auto chart = charts[i];
+        chartMappings[i] = chart;
+        // Change the macro for this island's chart to the one at this index in the array.
+        // "Chart for Island <sector number>" macros are type "HAS_ITEM" and have
+        // one argument which is the chart GameItem.
+        size_t sector = i + 1;
+        macros[macroNameMap.at("Chart for Island " + std::to_string(sector))].args[0] = chart;
+
+        debugLog("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+    }
+}
+
+// Returns whether or not the sunken treasure location has a treasure/triforce chart leading to it
+bool World::chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix)
+{
+    auto locationId = location.locationId;
+    // If this isn't a sunken treasure location, then a chart won't lead to it
+    if (locationId < LocationId::ForsakenFortressSunkenTreasure || locationId > LocationId::FiveStarSunkenTreasure)
+    {
+        debugLog("Non-sunken treasure location passed into sunken treasure check: " + locationName(&location));
+        return false;
+    }
+
+    size_t islandNumber = locationIdAsIndex(locationId) - locationIdAsIndex(LocationId::ForsakenFortressSunkenTreasure);
+    return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
+}
+
+void World::determineProgressionLocations()
+{
+    for (auto& location : locationEntries)
+    {
+        // If all of the location categories are set as progression, then this is a location which
+        // is allowed to contain progression items (but it won't necessarily get one)
+        if (std::all_of(location.categories.begin(), location.categories.end(), [this, location](LocationCategory category)
+        {
+
+            return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons)            ||
+                   ( category == LocationCategory::GreatFairy        && this->settings.progression_great_fairies)       ||
+                   ( category == LocationCategory::PuzzleSecretCave  && this->settings.progression_puzzle_secret_caves) ||
+                   ( category == LocationCategory::CombatSecretCave  && this->settings.progression_combat_secret_caves) ||
+                   ( category == LocationCategory::ShortSideQuest    && this->settings.progression_short_sidequests)    ||
+                   ( category == LocationCategory::LongSideQuest     && this->settings.progression_long_sidequests)     ||
+                   ( category == LocationCategory::SpoilsTrading     && this->settings.progression_spoils_trading)      ||
+                   ( category == LocationCategory::Minigame          && this->settings.progression_minigames)           ||
+                   ( category == LocationCategory::FreeGift          && this->settings.progression_free_gifts)          ||
+                   ( category == LocationCategory::Mail              && this->settings.progression_mail)                ||
+                   ( category == LocationCategory::Submarine         && this->settings.progression_submarines)          ||
+                   ( category == LocationCategory::EyeReefChests     && this->settings.progression_eye_reef_chests)     ||
+                   ( category == LocationCategory::SunkenTreasure    && this->settings.progression_triforce_charts && chartLeadsToSunkenTreasure(location, "TriforceChart")) ||
+                   ( category == LocationCategory::SunkenTreasure    && this->settings.progression_treasure_charts && chartLeadsToSunkenTreasure(location, "TreasureChart")) ||
+                   ( category == LocationCategory::ExpensivePurchase && this->settings.progression_expensive_purchases) ||
+                   ( category == LocationCategory::Misc              && this->settings.progression_misc)                ||
+                   ( category == LocationCategory::TingleChest       && this->settings.progression_tingle_chests)       ||
+                   ( category == LocationCategory::BattleSquid       && this->settings.progression_battlesquid)         ||
+                   ( category == LocationCategory::SavageLabyrinth   && this->settings.progression_savage_labyrinth)    ||
+                   ( category == LocationCategory::IslandPuzzle      && this->settings.progression_island_puzzles)      ||
+                   ( category == LocationCategory::Obscure           && this->settings.progression_obscure)             ||
+                   ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && settings.progression_platforms_rafts) ||
+                   ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && settings.progression_big_octos_gunboats) ||
+                   // or if this location is DefeatGanondorf
+                   location.locationId == LocationId::DefeatGanondorf;
+        }))
+        {
+            location.progression = true;
+        }
+    }
+}
+
+void World::determineRaceModeDungeons()
+{
+    if (settings.race_mode)
+    {
+        static std::array<DungeonId, 6> dungeons = {
+            DungeonId::DragonRoostCavern,
+            DungeonId::ForbiddenWoods,
+            DungeonId::TowerOfTheGods,
+            DungeonId::ForsakenFortress,
+            DungeonId::EarthTemple,
+            DungeonId::WindTemple,
+        };
+
+        shufflePool(dungeons);
+
+        for (size_t i = 0; i < dungeons.size(); i++)
+        {
+            if (i < settings.num_race_mode_dungeons)
+            {
+                raceModeDungeons.push_back(dungeons[i]);
+            }
+            else
+            {
+                // If we've already chosen our race mode dungeons, then set all
+                // the other dungeons' locations as non-progression. If dungeons
+                // are set as progression locations, we already set them all as
+                // progression previously, so we don't need to set them again.
+                for (auto& locationId : dungeonIdToDungeon(dungeons[i]).locations)
+                {
+                    locationEntries[locationIdAsIndex(locationId)].progression = false;
+                }
+            }
+        }
+    }
 }
 
 World::WorldLoadingError World::parseElement(RequirementType type, const std::vector<json>& args, std::vector<Requirement::Argument>& out)
@@ -261,6 +436,7 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     Location& newEntry = locationEntries[locationIdAsIndex(loadedLocation)];
     newEntry.locationId = loadedLocation;
     newEntry.worldId = worldId;
+    newEntry.categories.clear();
     WorldLoadingError err = WorldLoadingError::NONE;
     FIELD_CHECK(locationObject, "Category", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& categories = locationObject.at("Category").get<std::vector<json>>();
@@ -276,6 +452,8 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
         }
         newEntry.categories.insert(cat);
     }
+    // Set whether or not this location can contain progression items based on its
+    // categories
     FIELD_CHECK(locationObject, "Needs", WorldLoadingError::LOCATION_MISSING_KEY);
     if((err = parseRequirement(locationObject.at("Needs"), newEntry.requirement)) != WorldLoadingError::NONE)
     {
@@ -355,7 +533,7 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     OBJECT_CHECK(areaObject, areaObject.dump());
     FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
     std::string areaName = areaObject.at("Name").get<std::string>();
-    debugLog("Now Loading Area " + areaName);
+    // debugLog("Now Loading Area " + areaName);
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
     MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
@@ -375,7 +553,7 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
             std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
             return err;
         }
-        debugLog("\tAdding location " + locationIdToName(locOut));
+        // debugLog("\tAdding location " + locationIdToName(locOut));
         newEntry.locations.push_back(&locationEntries[locationIdAsIndex(locOut)]);
     }
 
@@ -390,7 +568,7 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
             std::cout << "Got error loading exit: " << World::errorToName(err) << std::endl;
             return err;
         }
-        debugLog("\tAdding exit -> " + areaToName(exitOut.connectedArea));
+        // debugLog("\tAdding exit -> " + areaToName(exitOut.connectedArea));
         newEntry.exits.push_back(exitOut);
     }
 
@@ -406,14 +584,12 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     if (!macroFile.is_open())
     {
         std::cout << "unable to open macro file for world " << std::to_string(worldId) << std::endl;
-        closeDebugLog();
         return 1;
     }
     std::ifstream worldFile(worldFilePath);
     if (!worldFile.is_open())
     {
         std::cout << "Unable to open world file for world " << std::to_string(worldId) << std::endl;
-        closeDebugLog();
         return 1;
     }
 
@@ -422,7 +598,6 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     if (macroFileObj.is_discarded())
     {
         std::cout << "unable to parse macros from file for world " << std::to_string(worldId) << std::endl;
-        closeDebugLog();
         return 1;
     }
 
@@ -431,13 +606,12 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     {
         std::cout << "Got error loading macros for world " << std::to_string(worldId) << ": " << World::errorToName(err) << std::endl;
         std::cout << getLastErrorDetails() << std::endl;
-        closeDebugLog();
         return 1;
     }
+
     if (!world_j.contains("Areas"))
     {
         std::cout << "Improperly formatted world file for world " << std::to_string(worldId) << std::endl;
-        closeDebugLog();
         return 1;
     }
     for (const auto& area : world_j.at("Areas"))
@@ -448,7 +622,6 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         {
             std::cout << "Got error loading area for world " << std::to_string(worldId) << ": " << World::errorToName(err) << std::endl;
             std::cout << getLastErrorDetails() << std::endl;
-            closeDebugLog();
             return 1;
         }
     }
@@ -527,8 +700,10 @@ void World::dumpWorldGraph(const std::string& filename)
 
     for (const AreaEntry& areaEntry : areaEntries) {
 
+        std::string color = areaEntry.isAccessible ? "\"black\"" : "\"red\"";
+
         std::string parentName = areaToName(areaEntry.area);
-        worldGraph << "\t\"" << parentName << "\"[shape=\"plain\"];" << std::endl;
+        worldGraph << "\t\"" << parentName << "\"[shape=\"plain\" fontcolor=" << color << "];" << std::endl;
 
         // Make edge connections defined by exits
         for (const auto& exit : areaEntry.exits) {
@@ -543,8 +718,8 @@ void World::dumpWorldGraph(const std::string& filename)
             std::string connectedLocation = locationIdToName(location->locationId);
             std::string itemAtLocation = location->currentItem.getName();
             if (parentName != "INVALID" && connectedLocation != "INVALID"){
-                worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=\"blue\"];" << std::endl;
-                worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=\"blue\"]" << std::endl;
+                worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=" << color << "];" << std::endl;
+                worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=" << color << "]" << std::endl;
             }
         }
     }

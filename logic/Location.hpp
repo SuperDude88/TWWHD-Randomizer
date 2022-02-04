@@ -275,6 +275,7 @@ enum struct LocationId : uint32_t
     SixEyeReefDestroyCannonsAndGunboats,
     SixEyeReefLookoutPlatformDestroyCannons,
     SixEyeReefSubmarineChest,
+    // Don't change the ordering of the sunken treasure locations
     ForsakenFortressSunkenTreasure,
     StarIslandSunkenTreasure,
     NorthernFairySunkenTreasure,
@@ -393,10 +394,13 @@ LocationId indexAsLocationId(uint32_t index);
 struct Location
 {
     LocationId locationId = LocationId::INVALID;
-    std::unordered_set<LocationCategory> categories;
+    std::unordered_set<LocationCategory> categories = {LocationCategory::INVALID};
+    bool progression = false;
     Item originalItem = {GameItem::INVALID, -1};
     Item currentItem = {GameItem::INVALID, -1};
     Requirement requirement;
     LocationModificationMethod method;
     int worldId = -1;
 };
+
+std::string locationName(const Location* location);

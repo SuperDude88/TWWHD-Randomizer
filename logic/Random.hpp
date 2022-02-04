@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <utility>
-#include <list>
 #include <vector>
+#include <array>
 
 void Random_Init(uint32_t seed);
 uint32_t Random(int min, int max);
@@ -36,10 +36,10 @@ void shufflePool(std::vector<T>& vector) {
         std::swap(vector[i], vector[Random(i, vector.size())]);
     }
 }
-// template <typename T, std::size_t size>
-// void Shuffle(std::array<T, size>& arr) {
-//     for (std::size_t i = 0; i + 1 < arr.size(); i++)
-//     {
-//         std::swap(arr[i], arr[Random(i, arr.size())]);
-//     }
-// }
+template <typename T, std::size_t size>
+void shufflePool(std::array<T, size>& arr) {
+    for (std::size_t i = 0; i + 1 < arr.size(); i++)
+    {
+        std::swap(arr[i], arr[Random(i, arr.size())]);
+    }
+}

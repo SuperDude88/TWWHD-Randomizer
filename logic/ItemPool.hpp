@@ -8,6 +8,7 @@
 using GameItemPool = std::vector<GameItem>;
 using ItemPool = std::vector<Item>;
 
-GameItemPool generateGameItemPool(const Settings& settings, int worldId);
-GameItemPool generateStartingGameItemPool(const Settings& settings, int worldId);
-void printItemPool(const std::string& poolName, const ItemPool& itemPool);
+GameItem getRandomJunk();
+GameItemPool generateGameItemPool(const Settings& settings);
+GameItemPool generateStartingGameItemPool(const Settings& settings);
+void logItemPool(const std::string& poolName, const ItemPool& itemPool);
