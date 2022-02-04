@@ -1,5 +1,6 @@
 #include "tweaks.hpp"
 #include "options.hpp"
+#include "logic/SpoilerLog.hpp"
 
 RandoSession g_session{ "will be set up later", "will be set up later", "will be set up later" }; //declared outside of class for extern stuff
 
@@ -15,6 +16,8 @@ private:
 	bool noLogs = false;
 	bool bulkTest = false;
 	bool randomizeItems = true;
+	int numPlayers = 1;
+	int playerId = 1;
 
 	//Logic logic; placeholder, might not be in a class like this
 
@@ -49,27 +52,25 @@ public:
 			}
 		}
 
-		if (settings.randomize_charts) {
-			//randomize charts
-		}
-
-		if (settings.randomize_starting_island) {
-			//randomize_starting_island
-		}
-
-		if (settings.randomize_entrances != EntranceRando::None) {
-			//randomize entrances
-		}
+		// Create all necessary worlds (for any potential multiworld support in the future)
+		World blankWorld;
+		WorldPool worlds (numPlayers, blankWorld);
+		std::vector<Settings> settingsVector (numPlayers, settings);
 
 		if (randomizeItems) {
-			//randomize items
+			if (!generateWorlds(worlds, settingsVector, 0/*put seed int here*/) {
+				// generating worlds failed
+				return;
+			}
 		}
 
 		if (randomizeItems && !dryRun) {
 			//save items
+			//get world locations with "worlds[playerNum - 1].locationEntries"
 		}
 
 		if (!dryRun) {
+			//get world with "worlds[playerNum - 1]"
 			//apply_necessary_post_randomization_tweaks(randomizeItems, logic.item_locations);
 		}
 
@@ -79,14 +80,14 @@ public:
 
 		if (randomizeItems) {
 			if (!settings.do_not_generate_spoiler_log) {
-				//write SL
+				generateSpoilerLog(worlds);
 			}
-			//write non-spoiler log
+			// generateNonSpoilerLog(worlds);
 		}
 
 		//done!
+		closeDebugLog();
 		return;
 	}
 
 };
-

@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-using WorldPool = std::vector<World>;
-
 enum struct SearchMode
 {
     INVALID = 0,
@@ -16,6 +14,7 @@ enum struct SearchMode
     GeneratePlaythrough,
 };
 
-LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations);
+LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch = -1);
 bool gameBeatable(WorldPool& worlds);
 void generatePlaythrough(WorldPool& worlds);
+bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locationsToCheck, int worldToSearch = -1);

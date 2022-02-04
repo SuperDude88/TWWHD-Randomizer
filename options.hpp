@@ -25,7 +25,7 @@ enum struct EntranceRando {
 enum struct Option {
     INVALID = 0,
     ProgressDungeons,
-    ProgressFairies,
+    ProgressGreatFairies,
     ProgressPuzzleCaves,
     ProgressCombatCaves,
     ProgressShortSidequests,

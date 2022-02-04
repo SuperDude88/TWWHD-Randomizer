@@ -1,16 +1,11 @@
 
-#include "World.hpp"
-#include "ItemPool.hpp"
-#include "Fill.hpp"
-#include "SpoilerLog.hpp"
+#include "Generate.hpp"
 #include "Random.hpp"
 #include "Debug.hpp"
+#include "SpoilerLog.hpp"
 #include <string>
-#include <unordered_set>
-#include <unordered_map>
 #include <fstream>
 #include <iostream>
-#include <chrono>
 
 int main()
 {
@@ -20,66 +15,61 @@ int main()
     std::vector<uint8_t> nat = {4, 2, 0};
     // End of important variables
 
+    int seed = Random(0, 100000);
+
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
-        openDebugLog();
+        openDebugLog(std::to_string(seed));
     #endif
+
+    std::cout << "Using seed " << std::to_string(seed) << std::endl;
 
     Settings settings;
     // Set settings in code for now
-
+    settings.progression_dungeons = true;
+    settings.progression_puzzle_secret_caves = true;
+    settings.progression_combat_secret_caves = true;
+    settings.progression_mail = true;
+    settings.progression_dungeons = true;
+    settings.progression_great_fairies = true;
+    settings.progression_puzzle_secret_caves = true;
+    settings.progression_combat_secret_caves = true;
+    settings.progression_short_sidequests = true;
+    settings.progression_long_sidequests = true;
+    settings.progression_spoils_trading = true;
+    settings.progression_minigames = true;
+    settings.progression_free_gifts = true;
+    settings.progression_mail = true;
+    settings.progression_platforms_rafts = true;
+    settings.progression_submarines = true;
+    settings.progression_eye_reef_chests = true;
+    settings.progression_big_octos_gunboats = true;
+    settings.progression_triforce_charts = true;
+    settings.progression_treasure_charts = true;
+    settings.progression_expensive_purchases = true;
+    settings.progression_misc = true;
+    settings.progression_tingle_chests = true;
+    settings.progression_battlesquid = true;
+    settings.progression_savage_labyrinth = true;
+    settings.progression_island_puzzles = true;
+    settings.progression_obscure = true;
+    settings.keylunacy = false;
+    settings.randomize_charts = true;
+    settings.race_mode = true;
+    settings.num_race_mode_dungeons = 3;
     // End of in code settings
 
-    World blankWorld{};
     // Create all necessary worlds (for any potential multiworld support in the future)
-    int worldCount = 1;
-    std::vector<World> worlds(worldCount, blankWorld);
+    int worldCount = 2;
+    World blankWorld;
+    WorldPool worlds (worldCount, blankWorld);
+    std::vector<Settings> settingsVector (worldCount, settings);
 
-    // Build worlds on a per-world basis incase we ever support different world graphs
-    // per player
-    std::cout << "Building Worlds" << std::endl;
-    for (size_t i = 0; i < worldCount; i++)
+    int retVal = generateWorlds(worlds, settingsVector, seed);
+
+    if (retVal == 0)
     {
-        worlds[i].setWorldId(i);
-        worlds[i].setSettings(settings);
-        if (worlds[i].loadWorld("../world.json", "../Macros.json"))
-        {
-            return 1;
-        }
-        worlds[i].setItemPools();
-        // worlds[i].randomizeEntrances()
+        std::cout << "Generating Spoiler Log" << std::endl;
+        generateSpoilerLog(worlds);
     }
-
-    // Time how long the fill takes
-    auto start = std::chrono::high_resolution_clock::now();
-
-    FillError fillError = fill(worlds);
-    if (fillError == FillError::NONE) {
-        std::cout << "Fill Successful" << std::endl;
-    } else {
-        std::cout << "Fill Unsuccessful. Error Code: " << errorToName(fillError) << std::endl;
-        closeDebugLog();
-        return 1;
-    }
-
-    // Calculate time difference
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    auto seconds = static_cast<double>(duration.count()) / 1000000.0f;
-    std::cout << "Fill took " << std::to_string(seconds) << " seconds" << std::endl;
-
-    // Dump world graphs for debugging
-    #ifdef ENABLE_DEBUG
-        for (World& world : worlds) {
-            world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
-        }
-    #endif
-
-    std::cout << "Generating Playthrough" << std::endl;
-    generatePlaythrough(worlds);
-    std::cout << "Generating Spoiler Log" << std::endl;
-    generateSpoilerLog(worlds);
-
-    closeDebugLog();
-    return 0;
 }

@@ -708,17 +708,21 @@
     {
      "Name": "Can Farm Knights Crests",
      "Expression": {
-         "type": "and", "args": [{"type": "has_item", "args": ["GrapplingHook"]},
-         {"type": "has_item", "args": ["SpoilsBag"]},
-         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["ETBigKeyChestRoom"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
-         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["WTBigKeyChestRoom"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
-         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["StoneWatcherCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
-         {"type": "or", "args": [{"type": "and", "args": [{"type": "can_access", "args": ["OverlookCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]}]},
-         {"type": "can_access", "args": ["IceRingInnerCave"]},
-         {"type": "can_access", "args": ["OutsetSavageFloor30"]},
-         {"type": "can_access", "args": ["SharkIslandCave"]},
-         {"type": "macro", "args": ["Can Access Hyrule"]}]
-       }
+         "type": "and", "args": [
+             {"type": "has_item", "args": ["GrapplingHook"]},
+             {"type": "has_item", "args": ["SpoilsBag"]},
+             {"type": "or", "args": [
+                 {"type": "and", "args": [{"type": "can_access", "args": ["ETBigKeyChestRoom"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]},
+                 {"type": "and", "args": [{"type": "can_access", "args": ["WTBigKeyChestRoom"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]},
+                 {"type": "and", "args": [{"type": "can_access", "args": ["StoneWatcherCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]},
+                 {"type": "and", "args": [{"type": "can_access", "args": ["OverlookCave"]}, {"type": "macro", "args": ["Can Defeat Darknuts Easily"]}]},
+                 {"type": "can_access", "args": ["IceRingInnerCave"]},
+                 {"type": "can_access", "args": ["OutsetSavageFloor30"]},
+                 {"type": "can_access", "args": ["SharkIslandCave"]},
+                 {"type": "macro", "args": ["Can Access Hyrule"]}
+             ]}
+         ]
+      }
     },
     {
      "Name": "Can Farm Joy Pendants",

@@ -494,6 +494,16 @@ Item::Item(GameItem gameItemId_, int worldId_)
 {
 		gameItemId = gameItemId_;
 		worldId = worldId_;
+
+		if (junkItems.count(gameItemId) > 0)
+		{
+				junkItem = true;
+		}
+		else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
+						 gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
+		{
+				chartForSunkenTreasure = true;
+		}
 }
 
 void Item::setWorldId(int newWorldId)
@@ -506,9 +516,25 @@ int Item::getWorldId() const
 		return worldId;
 }
 
+void Item::setGameItemId(GameItem newGameItemId)
+{
+		gameItemId = newGameItemId;
+}
+
 GameItem Item::getGameItemId() const
 {
 		return gameItemId;
+}
+
+void Item::setDelayedItemId(GameItem newDelayedItemId)
+{
+		delayedGameItemId = newDelayedItemId;
+}
+
+void Item::saveDelayedItemId()
+{
+		gameItemId = delayedGameItemId;
+		delayedGameItemId = GameItem::INVALID;
 }
 
 std::string Item::getName() const
@@ -516,17 +542,32 @@ std::string Item::getName() const
 		return gameItemToName(gameItemId) + " for Player " + std::to_string(worldId + 1);
 }
 
+void Item::setAsMajorItem()
+{
+		majorItem = true;
+}
+
+bool Item::isMajorItem() const
+{
+		return majorItem;
+}
+
+bool Item::isChartForSunkenTreasure() const
+{
+		return chartForSunkenTreasure;
+}
+
+bool Item::isJunkItem() const
+{
+		return junkItem;
+}
+
 bool Item::operator==(const Item& rhs) const
 {
 		return gameItemId == rhs.gameItemId && worldId == rhs.worldId;
 }
 
-void setMajorness()
+bool Item::operator<(const Item& rhs) const
 {
-	
-}
-
-bool Item::isMajorItem() const
-{
-		return true;
+		return (worldId == rhs.worldId) ? gameItemId < rhs.gameItemId : worldId < rhs.worldId;
 }

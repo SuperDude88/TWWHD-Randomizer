@@ -2,6 +2,15 @@
     "Areas": [
         {
             "Name": "Root",
+            "Locations": [],
+            "Exits": [
+                {
+                    "ConnectedArea": "LinksSpawn", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                }
+            ]
+        },
+        {
+            "Name": "LinksSpawn",
             "Locations": [
                 {
                     "Name": "GreatSeaBeedleShop20Rupee",
@@ -23,15 +32,6 @@
                     "Offsets": ["0x1eb5a7", "0x41ae07", "0x41ae13", "0x41d5e3"]
                 }
             ],
-            "Exits": [
-                {
-                    "ConnectedArea": "LinksSpawn", "Needs": { "type": "has_item", "args": ["Nothing"]}
-                }
-            ]
-        },
-        {
-            "Name": "LinksSpawn",
-            "Locations": [],
             "Exits": [
                 {
                     "ConnectedArea": "OutsetIsland", "Needs": { "type": "has_item", "args": ["Nothing"]}
@@ -2311,6 +2311,9 @@
             "Name": "PawprintWizzrobeCaveIsle",
             "Locations": [],
             "Exits": [
+                {
+                    "ConnectedArea": "PawprintWizzrobeCave", "Needs": { "type": "has_item", "args": ["Nothing"]}
+                },
                 {
                     "ConnectedArea": "PawprintIsle", "Needs": { "type": "has_item", "args": ["Nothing"]}
                 }

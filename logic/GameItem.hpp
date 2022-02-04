@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <set>
 
 enum struct GameItem : uint8_t
 {
@@ -259,6 +260,84 @@ GameItem nameToGameItem(const std::string& name);
 
 uint32_t maxItemCount(GameItem item);
 
+static const std::set<GameItem> junkItems = {
+    GameItem::HeartDrop,
+    GameItem::GreenRupee,
+    GameItem::BlueRupee,
+    GameItem::YellowRupee,
+    GameItem::RedRupee,
+    GameItem::PurpleRupee,
+    GameItem::OrangeRupee,
+    GameItem::PieceOfHeart,
+    GameItem::HeartContainer,
+    GameItem::SmallMagicDrop,
+    GameItem::LargeMagicDrop,
+    GameItem::FiveBombs,
+    GameItem::TenBombs,
+    GameItem::TwentyBombs,
+    GameItem::ThirtyBombs,
+    GameItem::SilverRupee,
+    GameItem::TenArrows,
+    GameItem::TwentyArrows,
+    GameItem::ThirtyArrows,
+    GameItem::Fairy,
+    GameItem::YellowRupee2, //joke message
+    GameItem::DRCDungeonMap,
+    GameItem::DRCCompass,
+    GameItem::ThreeHearts,
+    GameItem::JoyPendant,
+    GameItem::Telescope,
+    GameItem::TingleBottle,
+    GameItem::MagicArmor,
+    GameItem::HerosClothes,
+    GameItem::HerosNewClothes,
+    GameItem::PieceOfHeart2, //alternate message
+    GameItem::FWDungeonMap,
+    GameItem::PiratesCharm,
+    GameItem::HerosCharm,
+    GameItem::SkullNecklace,
+    GameItem::BokoBabaSeed,
+    GameItem::GoldenFeather,
+    GameItem::KnightsCrest,
+    GameItem::RedChuJelly,
+    GameItem::GreenChuJelly,
+    GameItem::BlueChuJelly,
+    GameItem::DungeonMap,
+    GameItem::Compass,
+    GameItem::FWCompass,
+    GameItem::TotGDungeonMap,
+    GameItem::TotGCompass,
+    GameItem::FFDungeonMap,
+    GameItem::FFCompass,
+    GameItem::ETDungeonMap,
+    GameItem::ETCompass,
+    GameItem::AllPurposeBait,
+    GameItem::HyoiPear,
+    GameItem::WTDungeonMap,
+    GameItem::WTCompass,
+    GameItem::ComplimentaryID,
+    GameItem::FillUpCoupon,
+    GameItem::LegendaryPictograph,
+    GameItem::HurricaneSpin,
+    GameItem::FiftyRupees,
+    GameItem::HundredRupees,
+    GameItem::HundredFiftyRupees,
+    GameItem::TwoHundredRupees,
+    GameItem::TwoHundredFiftyRupees,
+    GameItem::RainbowRupee,
+    GameItem::SubmarineChart,
+    GameItem::BeedlesChart,
+    GameItem::PlatformChart,
+    GameItem::LightRingChart,
+    GameItem::SecretCaveChart,
+    GameItem::SeaHeartsChart,
+    GameItem::IslandHeartsChart,
+    GameItem::GreatFairyChart,
+    GameItem::OctoChart,
+    GameItem::INcredibleChart,
+    GameItem::TinglesChart,
+};
+
 class Item
 {
 public:
@@ -267,15 +346,24 @@ public:
 
     void setWorldId(int newWorldId);
     int getWorldId() const;
+    void setGameItemId(GameItem newGameItemId);
     GameItem getGameItemId() const;
+    void setDelayedItemId(GameItem delayedItemId);
+    void saveDelayedItemId();
     std::string getName() const;
-    bool operator==(const Item& rhs) const;
-    void setMajorness();
+    void setAsMajorItem();
     bool isMajorItem() const;
+    bool isChartForSunkenTreasure() const;
+    bool isJunkItem() const;
+    bool operator==(const Item& rhs) const;
+    bool operator<(const Item& rhs) const;
 
 private:
     GameItem gameItemId = GameItem::INVALID;
+    GameItem delayedGameItemId = GameItem::INVALID;
     bool majorItem = false;
+    bool chartForSunkenTreasure = false;
+    bool junkItem = false;
     int worldId = -1; // The world that this item is *FOR*
 };
 

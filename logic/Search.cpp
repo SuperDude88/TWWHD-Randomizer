@@ -3,13 +3,9 @@
 #include "PoolFunctions.hpp"
 #include "Debug.hpp"
 #include <list>
+#include <algorithm>
 
-void printExit(Exit* exit)
-{
-    std::cout << areaToName(exit->parentArea) << " -> " << areaToName(exit->connectedArea) << " in world " << std::to_string(exit->worldId) << std::endl;
-}
-
-bool evaluateRequirement(const World& world, const Requirement& req, const ItemPool& ownedItems)
+static bool evaluateRequirement(const World& world, const Requirement& req, const ItemPool& ownedItems)
 {
     uint32_t expectedCount = 0;
     GameItem gameItem;
@@ -106,8 +102,9 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, ItemPool& items, A
 }
 
 // Argument 2 is a copy of the passed in ItemPool since we want to modify
-// it locally
-static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items)
+// it locally. If worldToSearch is not -1 then only the world with that worldId
+// will be searched.
+static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch = -1)
 {
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)
@@ -115,32 +112,27 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         addElementsToPool(items, world.getStartingItems());
     }
 
-    #ifdef ENABLE_DEBUG
-      // debugLog("Searching with the following items:");
-      for (auto item : items)
-      {
-          // debugLog("\t" + item.getName());
-      }
-    #endif
-
     LocationPool accessibleLocations = {};
     // Lists of exits and locations whose requirement returned false.
     // These will be tried and explored on the next iteration. Start
     // by putting the root exit of each world into the list of exits
-    // to try.
+    // to try (or only the exit of the single world to explore).
     std::list<Exit*> exitsToTry = {};
     std::list<Location*> locationsToTry = {};
     for (auto& world : worlds)
     {
-        for (auto& exit : world.areaEntries[areaAsIndex(Area::Root)].exits)
+        if (worldToSearch == -1 || worldToSearch == world.getWorldId())
         {
-            exitsToTry.push_back(&exit);
-        }
+            for (auto& exit : world.areaEntries[areaAsIndex(Area::Root)].exits)
+            {
+                exitsToTry.push_back(&exit);
+            }
 
-        // Reset search variables for all areas and exits
-        for (auto& areaEntry : world.areaEntries)
-        {
-            areaEntry.isAccessible = false;
+            // Reset search variables for all areas and exits
+            for (auto& areaEntry : world.areaEntries)
+            {
+                areaEntry.isAccessible = false;
+            }
         }
     }
 
@@ -151,7 +143,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     do
     {
         newThingsFound = false;
-        // debugLog("SPHERE " + std::to_string(sphere));
         // Search each exit in the exitsToTry list and explore any new areas found as well.
         // For any exits which we try and don't meet the requirements for, put them
         // into exitsToTry for the next iteration. Any locations we come across will
@@ -160,7 +151,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         {
             auto exit = *exitItr;
             if (evaluateRequirement(worlds[exit->worldId], exit->requirement, items)) {
-                //std::cout << areaToName(exit->parentArea) << " -> " << areaToName(exit->connectedArea) << " in world " << std::to_string(exit->worldId) << " found " << std::endl;
+                newThingsFound = true;
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
                 exitItr--;
@@ -169,7 +160,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 if (!connectedArea.isAccessible)
                 {
                     connectedArea.isAccessible = true;
-                    // std::cout << "Now Exploring " << areaToName(connectedArea.area) << std::endl;
                     explore(searchMode, worlds, items, connectedArea, exitsToTry, locationsToTry);
                 }
             }
@@ -196,17 +186,16 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         {
             worlds[0].playthroughSpheres.push_back({});
         }
+
         // Now apply any effects of newly accessible locations for the next iteration.
         // This lets us properly keep track of spheres for playthrough generation
-
         for (auto location : accessibleThisIteration)
         {
             accessibleLocations.push_back(location);
-            if (location->currentItem.getGameItemId() != GameItem::INVALID)
+            if (location->currentItem.getGameItemId() != GameItem::INVALID && !location->currentItem.isJunkItem())
             {
-                // Eventually optimize only adding advancement items
-                items.push_back(location->currentItem);
-                if (searchMode == SearchMode::GeneratePlaythrough)
+                items.emplace_back(location->currentItem.getGameItemId(), location->currentItem.getWorldId());
+                if (searchMode == SearchMode::GeneratePlaythrough && location->progression)
                 {
                     worlds[0].playthroughSpheres[sphere].push_back(location);
                 }
@@ -216,14 +205,18 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     }
     while (newThingsFound);
 
-    // Do stuff depending on the SearchMode
+    if (searchMode == SearchMode::GeneratePlaythrough)
+    {
+        std::sort(items.begin(), items.end());
+        logItemPool("Items found in playthrough:", items);
+    }
 
     return accessibleLocations;
 }
 
-LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations)
+LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch /*= -1*/)
 {
-    auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items);
+    auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
     // Filter to only those locations which are allowed
     return filterFromPool(accessibleLocations, [allowedLocations](Location* loc){return elementInPool(loc, allowedLocations) && loc->currentItem.getGameItemId() == GameItem::INVALID;});
 }
@@ -236,6 +229,8 @@ bool gameBeatable(WorldPool& worlds)
     return worldsBeatable.size() == worlds.size();
 }
 
+// Whittle down the playthrough to only the items which are absolutely necessary
+// for beating the game
 static void pareDownPlaythrough(WorldPool& worlds)
 {
 
@@ -252,6 +247,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
             if (gameBeatable(worlds))
             {
                 // If the game is still beatable, then this item is not required
+                // and we can erase it from the playthrough
                 loc = playthroughSpheres[sphere].erase(loc);
                 loc--;
             }
@@ -268,4 +264,20 @@ void generatePlaythrough(WorldPool& worlds)
     ItemPool emptyItems = {};
     search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
     pareDownPlaythrough(worlds);
+}
+
+bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locationsToCheck, int worldToSearch /*= -1*/)
+{
+    auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
+    // Check if every location in locationsToCheck is in accessibleLocations
+    return std::all_of(locationsToCheck.begin(), locationsToCheck.end(), [accessibleLocations, items](const Location* loc){
+        bool inPool = elementInPool(loc, accessibleLocations);
+        #ifdef ENABLE_DEBUG
+            if (!inPool)
+            {
+                debugLog("Missing location " + locationName(loc));
+            }
+        #endif
+        return inPool;
+    });
 }
