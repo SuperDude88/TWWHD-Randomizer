@@ -11,7 +11,6 @@
 #include "../options.hpp"
 #include "GameItem.hpp"
 #include "Area.hpp"
-#include "Location.hpp"
 #include "../options.hpp"
 
 
