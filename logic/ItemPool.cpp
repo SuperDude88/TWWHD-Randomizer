@@ -285,10 +285,8 @@ GameItem getRandomJunk()
 
 GameItemPool generateGameItemPool(const Settings& settings)
 {
-    GameItemPool completeItemPool = {};
-
     // Add items which will always be in the item pool
-    addElementsToPool(completeItemPool, alwaysItems);
+    GameItemPool completeItemPool (alwaysItems);
 
     // Add dungeon items
     const static std::array<std::string, 6> dungeonNames = {
@@ -315,12 +313,17 @@ GameItemPool generateGameItemPool(const Settings& settings)
         addElementToPool(completeItemPool, dungeon.compass);
     }
 
-
-    // Determine how many swords should be in the pool
+    // Add swords to the pool if we aren't playing in swordless mode
     if (settings.sword_mode != SwordMode::NoSword)
     {
         addElementToPool(completeItemPool, GameItem::ProgressiveSword, 4);
     }
+
+    // Add apropriate numbers of heart containers and heart pieces
+    int numContainers = 6 - settings.starting_hcs;
+    int numPieces = 44 - settings.starting_pohs;
+    addElementToPool(completeItemPool, GameItem::HeartContainer, numContainers);
+    addElementToPool(completeItemPool, GameItem::PieceOfHeart, numPieces);
 
     return completeItemPool;
 }
