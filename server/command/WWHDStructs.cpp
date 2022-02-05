@@ -1,5 +1,9 @@
 #include "WWHDStructs.hpp"
 
+#include "../utility/byteswap.hpp"
+
+
+
 namespace WWHDStructs {
     ACTR readACTR(std::istream& in)
     {

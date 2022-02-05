@@ -12,6 +12,7 @@
 	"makar_possible_wt_spawn_positions": ".text",
 	"medli_possible_et_spawn_positions": ".text",
 	"num_triforce_shards_to_start_with": ".text",
+	"outset_pig_color": ".text",
 	"phantom_ganon_maze_stage_name": ".text",
 	"rainbow_rupee_keyframe": ".text",
 	"should_start_with_heros_clothes": ".text",
@@ -20,5 +21,8 @@
 	"starting_magic": ".text",
 	"starting_quarter_hearts": ".text",
 	"sword_mode": ".text",
+	"withered_tree_item_actor_id": ".text",
+	"withered_tree_item_speeds": ".text",
+	"withered_tree_launched_flag": ".text",
 	"zunari_magic_armor_slot_item_id": ".text"
 }

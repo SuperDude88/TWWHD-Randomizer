@@ -1,7 +1,7 @@
 #include "Commands.hpp"
+
 #include "../filetypes/wiiurpx.hpp"
 #include "../filetypes/yaz0.hpp"
-#include <fstream>
 
 namespace Commands {
     const char* getErrorName(CommandError err)
@@ -64,7 +64,7 @@ namespace Commands {
         if(!rpxFile.is_open()) return CommandError::CANNOT_OPEN_FILE;
         std::ofstream elfFile(outPath, std::ios::binary);
         if(!elfFile.is_open()) return CommandError::CANNOT_OPEN_FILE;
-        if(FileTypes::rpx_decompress(rpxFile, elfFile))
+        if(RPXError err = FileTypes::rpx_decompress(rpxFile, elfFile); err != RPXError::NONE)
         {
             return CommandError::RPX_OPERATION_FAILED;
         }
@@ -77,7 +77,7 @@ namespace Commands {
         if(!elfFile.is_open()) return CommandError::CANNOT_OPEN_FILE;
         std::ofstream rpxFile(outPath, std::ios::binary);
         if(!rpxFile.is_open()) return CommandError::CANNOT_OPEN_FILE;
-        if(FileTypes::rpx_decompress(elfFile, rpxFile))
+        if(RPXError err = FileTypes::rpx_decompress(elfFile, rpxFile); err != RPXError::NONE)
         {
             return CommandError::RPX_OPERATION_FAILED;
         }
@@ -86,7 +86,7 @@ namespace Commands {
 
     CommandError yaz0Decompress(std::istream& in, std::ostream& out)
     {
-        if(!FileTypes::yaz0Decode(in, out))
+        if(YAZ0Error err = FileTypes::yaz0Decode(in, out); err != YAZ0Error::NONE)
         {
             return CommandError::YAZ0_OPERATION_FAILED;
         }
@@ -95,7 +95,7 @@ namespace Commands {
 
     CommandError yaz0Compress(std::istream& in, std::ostream& out)
     {
-        if(!FileTypes::yaz0Encode(in, out))
+        if(YAZ0Error err = FileTypes::yaz0Encode(in, out); err != YAZ0Error::NONE)
         {
             return CommandError::YAZ0_OPERATION_FAILED;
         }

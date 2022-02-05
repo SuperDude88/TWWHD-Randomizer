@@ -1,628 +1,416 @@
 #include "sarc.hpp"
-#include "../utility/byteswap.hpp"
-#include <fstream>
+
 #include <cstring>
 #include <algorithm>
-#include <iterator>
 
-constexpr uint32_t MAX_SFAT_STRING_LEN = 256;
+#include "../utility/byteswap.hpp"
+#include "../utility/common.hpp"
 
-inline bool attrToStringTableOffset(uint32_t attr, uint32_t& offset)
-{
-    if ((attr & 0x01000000) == 0) return false;
-    offset = (attr & 0xFFFF) << 2;
-    return true;
-}
+const std::unordered_map<std::string, uint32_t> alignments = {
+	{"bflan", 0x00000004},
+	{"bflyt", 0x00000004},
+	{"szs", 0x00002000},
+	{"sarc", 0x00002000},
+	{"bfres", 0x00002000}, //seems to be 0x2000 usually
+	{"sharcfb", 0x00002000}, //seems to be 0x2000 usually, sometimes 0x100 in .sarc files?
+};
 
-uint32_t SFATNameHash(const char* name, int length, uint32_t key)
-{
-	uint32_t result = 0;
-	for(int i = 0; i < length; i++)
-	{
-        char c = name[i];
-        // early terminate if we hit null
-        if (c == '\0') return result;
-		result = c + result * key;
+
+uint32_t calculateHash(const std::string& name, uint32_t multiplier) {
+	uint32_t hash = 0;
+	for (const int8_t byte : name) {
+		if (byte == 0x00) break; //string is null-terminated
+		hash = hash * multiplier + byte;
 	}
-	return result;
+
+	return hash;
 }
 
-SARCError readSARCHeader(std::istream& sarc, SARCHeader& hdr)
-{
-    // magicSARC
-    if(!sarc.read(hdr.magicSARC, 4)) return SARCError::REACHED_EOF;
-    if(std::strncmp(hdr.magicSARC, "SARC", 4) != 0)
-    {
-        return SARCError::NOT_SARC;
-    }
-    // headerLength_0x14
-    if(!sarc.read(reinterpret_cast<char*>(&hdr.headerLength_0x14), sizeof(hdr.headerLength_0x14)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(hdr.headerLength_0x14);
-    if(hdr.headerLength_0x14 != 0x14) return SARCError::NOT_SARC;
-    // byteOrderMarker
-    if(!sarc.read(reinterpret_cast<char*>(&hdr.byteOrderMarker), sizeof(hdr.byteOrderMarker)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(hdr.byteOrderMarker);
-    // fileSize
-    if(!sarc.read(reinterpret_cast<char*>(&hdr.fileSize), sizeof(hdr.fileSize)))
-    {
-        return SARCError::REACHED_EOF; 
-    }
-    Utility::byteswap_inplace(hdr.fileSize);
-    // dataStartOffset
-    if(!sarc.read(reinterpret_cast<char*>(&hdr.dataStartOffset), sizeof(hdr.dataStartOffset)))
-    {
-        return SARCError::REACHED_EOF; 
-    }
-    Utility::byteswap_inplace(hdr.dataStartOffset);
-    // versionNumber_0x0100
-    if(!sarc.read(reinterpret_cast<char*>(&hdr.versionNumber_0x0100), sizeof(hdr.versionNumber_0x0100)))
-    {
-        return SARCError::REACHED_EOF; 
-    }
-    Utility::byteswap_inplace(hdr.versionNumber_0x0100);
-    if(hdr.versionNumber_0x0100 != 0x0100) return SARCError::NOT_SARC;
-    // _unused
-    if(!sarc.read(hdr._unused, sizeof(hdr._unused))) return SARCError::REACHED_EOF;
-    return SARCError::NONE;
+uint32_t getAlignment(const std::string& fileExt, const file& file) {
+	if (alignments.find(fileExt) != alignments.end()) {
+		return alignments.at(fileExt);
+	}
+	else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
+		uint16_t alignment = *(uint16_t*)&file.data[(file.data.size() - 8)];
+		Utility::byteswap_inplace(alignment);
+		return alignment;
+	}
+	else {
+		return 0;
+	}
 }
 
-void writeSARCHeader(std::ostream& out, const SARCHeader& hdr)
-{
-    out.write(hdr.magicSARC, 4);
-    auto headerLength = Utility::byteswap(hdr.headerLength_0x14);
-    out.write(reinterpret_cast<char*>(&headerLength), 2);
-    auto byteOrderMarker = Utility::byteswap(hdr.byteOrderMarker);
-    out.write(reinterpret_cast<char*>(&byteOrderMarker), 2);
-    auto fileSize = Utility::byteswap(hdr.fileSize);
-    out.write(reinterpret_cast<char*>(&fileSize), 4);
-    auto dataStartOffset = Utility::byteswap(hdr.dataStartOffset);
-    out.write(reinterpret_cast<char*>(&dataStartOffset), 4);
-    auto versionNumber = Utility::byteswap(hdr.versionNumber_0x0100);
-    out.write(reinterpret_cast<char*>(&versionNumber), 2);
-    out.write(hdr._unused, 2);
-}
+namespace FileTypes{
 
-SARCError readSFATHeader(std::istream& sfat, SFATHeader& hdr)
-{
-    // magicSFAT
-    if(!sfat.read(hdr.magicSFAT, sizeof(hdr.magicSFAT))) return SARCError::REACHED_EOF;
-    if(std::strncmp(hdr.magicSFAT, "SFAT", 4) != 0)
-    {
-        return SARCError::NOT_SARC;
-    }
-    // headerLength
-    if(!sfat.read(reinterpret_cast<char*>(&hdr.headerLength_0xC), sizeof(hdr.headerLength_0xC)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(hdr.headerLength_0xC);
-    if(hdr.headerLength_0xC != 0xC) return SARCError::NOT_SARC;
-    // nodeCount
-    if(!sfat.read(reinterpret_cast<char*>(&hdr.nodeCount), sizeof(hdr.nodeCount)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(hdr.nodeCount);
-    // hashKey_0x65
-    if(!sfat.read(reinterpret_cast<char*>(&hdr.hashKey_0x65), sizeof(hdr.hashKey_0x65)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(hdr.hashKey_0x65);
-    if(hdr.hashKey_0x65 != 0x65) return SARCError::NOT_SARC;
-    return SARCError::NONE;
-}
+	const char* SARCErrorGetName(SARCError err) {
+		switch (err) {
+		case SARCError::NONE:
+			return "NONE";
+		case SARCError::COULD_NOT_OPEN:
+			return "COULD_NOT_OPEN";
+		case SARCError::NOT_SARC:
+			return "NOT_SARC";
+		case SARCError::UNKNOWN_VERSION:
+			return "UNKNOWN_VERSION";
+		case SARCError::REACHED_EOF:
+			return "REACHED_EOF";
+		case SARCError::STRING_TOO_LONG:
+			return "STRING_TOO_LONG";
+		case SARCError::BAD_NODE_ATTR:
+			return "BAD_NODE_ATTR";
+		case SARCError::STRING_NOT_FOUND:
+			return "STRING_NOT_FOUND";
+		case SARCError::FILENAME_HASH_MISMATCH:
+			return "FILENAME_HASH_MISMATCH";
+		case SARCError::UNEXPECTED_VALUE:
+			return "UNEXPECTED_VALUE";
+		default:
+			return "UNKNOWN";
+		}
+	}
 
-void writeSFATHeader(std::ostream& out, const SFATHeader& hdr)
-{
-    out.write(hdr.magicSFAT, 4);
-    auto headerLength = Utility::byteswap(hdr.headerLength_0xC);
-    out.write(reinterpret_cast<char*>(&headerLength), 2);
-    auto nodeCount = Utility::byteswap(hdr.nodeCount);
-    out.write(reinterpret_cast<char*>(&nodeCount), 2);
-    auto hashKey = Utility::byteswap(hdr.hashKey_0x65);
-    out.write(reinterpret_cast<char*>(&hashKey), 4);
-}
+	SARCFile::SARCFile() {
+		
+	}
 
-SARCError readSFATNode(std::istream& sfat, SFATNode& node)
-{
-    // fileNameHash
-    if(!sfat.read(reinterpret_cast<char*>(&node.fileNameHash), sizeof(node.fileNameHash))) 
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(node.fileNameHash);
-    // fileAttributes
-    if(!sfat.read(reinterpret_cast<char*>(&node.fileAttributes), sizeof(node.fileAttributes)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(node.fileAttributes);
-    // nodeDataOffset
-    if(!sfat.read(reinterpret_cast<char*>(&node.nodeDataOffset), sizeof(node.nodeDataOffset)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(node.nodeDataOffset);
-    // nodeDataEnd
-    if(!sfat.read(reinterpret_cast<char*>(&node.nodeDataEnd), sizeof(node.nodeDataEnd)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(node.nodeDataEnd);
-    // data end should be after offset
-    if(node.nodeDataEnd <= node.nodeDataOffset)
-    {
-        return SARCError::NOT_SARC;
-    }
-    return SARCError::NONE;
-}
+	void SARCFile::initNew() {
+		memcpy(&header.magicSARC, "SARC", 4);
+		header.headerSize_0x14 = 0x14;
+		header.byteOrderMarker = 0xFEFF;
+		header.fileSize = 0;
+		header.dataOffset = 0;
+		header.version_0x0100 = 0x0100;
+		header.padding_0x00[0] = 0x00;
+		header.padding_0x00[1] = 0x00;
 
-void writeSFATNode(std::ostream& out, const SFATNode& node)
-{
-    auto fileNameHash = Utility::byteswap(node.fileNameHash);
-    out.write(reinterpret_cast<char*>(&fileNameHash), 4);
-    auto fileAttributes = Utility::byteswap(node.fileAttributes);
-    out.write(reinterpret_cast<char*>(&fileAttributes), 4);
-    auto nodeDataOffset = Utility::byteswap(node.nodeDataOffset);
-    out.write(reinterpret_cast<char*>(&nodeDataOffset), 4);
-    auto nodeDataEnd = Utility::byteswap(node.nodeDataEnd);
-    out.write(reinterpret_cast<char*>(&nodeDataEnd), 4);
-}
+		fileTable.offset = 0;
+		memcpy(&fileTable.magicSFAT, "SFAT", 4);
+		fileTable.headerSize_0xC = 0xC;
+		fileTable.numFiles = 0;
+		fileTable.hashKey_0x65 = 0x00000065;
+		fileTable.nodes = {};
 
-SARCError readSFATFileNameTableHeader(std::istream& sfat, SFATFileNameTableHeader& hdr)
-{
-    // magicSFNT
-    if(!sfat.read(hdr.magicSFNT, sizeof(hdr.magicSFNT))) return SARCError::REACHED_EOF;
-    if(strncmp(hdr.magicSFNT, "SFNT", 4) != 0) return SARCError::NOT_SARC;
-    // headerLength_0x8
-    if(!sfat.read(reinterpret_cast<char*>(&hdr.headerLength_0x8), sizeof(hdr.headerLength_0x8)))
-    {
-        return SARCError::REACHED_EOF;
-    }
-    Utility::byteswap_inplace(hdr.headerLength_0x8);
-    if(hdr.headerLength_0x8 != 0x8) return SARCError::NOT_SARC;
-    // _unused
-    if(!sfat.read(hdr._unused, sizeof(hdr._unused))) return SARCError::REACHED_EOF;
-    return SARCError::NONE;
-}
+		nameTable.offset = 0;
+		memcpy(&nameTable.magicSFNT, "SFNT", 4);
+		nameTable.headerSize_0x8 = 0x8;
+		nameTable.padding_0x00[0] = 0x00;
+		nameTable.padding_0x00[1] = 0x00;
+		nameTable.filenames = {};
 
-void writeSFATFileNameTableHeader(std::ostream& out, const SFATFileNameTableHeader& hdr)
-{
-    out.write(hdr.magicSFNT, 4);
-    auto headerLength = Utility::byteswap(hdr.headerLength_0x8);
-    out.write(reinterpret_cast<char*>(&headerLength), 2);
-    out.write(hdr._unused, 2);
-}
+		file_index_by_name = {};
+		files = {};
+	}
 
-SARCError readSFATStringTable(std::istream& sfat, std::vector<StringTableEntry>& out, uint32_t tableOffset, uint32_t dataOffset)
-{
-    char buffer[MAX_SFAT_STRING_LEN];
-    while(sfat.tellg() < dataOffset)
-    {
-        uint32_t stringOffset = static_cast<uint32_t>(sfat.tellg()) - tableOffset;
-        if(!sfat.getline(buffer, MAX_SFAT_STRING_LEN, '\0'))
-        {
-            return SARCError::STRING_TOO_LONG;
-        }
-        // n.b. getline() extracts and counts the delimiter character, but 
-        // doesn't put it in buffer. A null character is also always added
-        // so in our case we do gcount() - 1 to not include the null
-        std::string str(buffer, sfat.gcount() - 1);
-        out.emplace_back(StringTableEntry{stringOffset, str});
-        char next = 0;
-        auto end = sfat.tellg();
-        end += 8;
-        // continue until non-null character, as strings may be 
-        // byte aligned with zero pads, but only go as far as 8 bytes
-        while(sfat.tellg() < end && (next = sfat.get()) == '\0');
-        if(next != '\0')
-        {
-            sfat.unget();
-        }
-    }
-    return SARCError::NONE;
-}
+	SARCFile SARCFile::createNew(const std::string& filename) {
+		SARCFile newSARC{};
+		newSARC.initNew();
+		return newSARC;
+	}
 
-namespace FileTypes {
-    const char* SARCErrorGetName(SARCError err)
-    {
-        switch(err)
-        {
-        case SARCError::NONE:
-            return "NONE";
-        case SARCError::COULD_NOT_OPEN:
-            return "COULD_NOT_OPEN";
-        case SARCError::NOT_SARC:
-            return "NOT_SARC";
-        case SARCError::REACHED_EOF:
-            return "REACHED_EOF";
-        case SARCError::STRING_TOO_LONG:
-            return "STRING_TOO_LONG";
-        case SARCError::BAD_NODE_ATTR:
-            return "BAD_NODE_ATTR";
-        case SARCError::STRING_NOT_FOUND:
-            return "STRING_NOT_FOUND";
-        case SARCError::FILENAME_HASH_MISMATCH:
-            return "FILENAME_HASH_MISMATCH";
-        case SARCError::HEADER_DATA_NOT_LOADED:
-            return "HEADER_DATA_NOT_LOADED";
-        case SARCError::FILE_DATA_NOT_LOADED:
-            return "FILE_DATA_NOT_LOADED";
-        case SARCError::SARC_NOT_EMPTY:
-            return "SARC_NOT_EMPTY";
-        case SARCError::SARC_IS_EMTPY:
-            return "SARC_IS_EMPTY";
-        case SARCError::UNKNOWN:
-            return "UNKNOWN";
-        case SARCError::COUNT:
-            return "COUNT";
-        default:
-            return "UNKNOWN";
-        }
-    }
+	SARCError SARCFile::loadFromBinary(std::istream& sarc) {
+		if (!sarc.read(header.magicSARC, 4)) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&header.dataOffset), sizeof(header.dataOffset))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&header.version_0x0100), sizeof(header.version_0x0100))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00))) return SARCError::REACHED_EOF;
 
-    SARCFile::SARCFile()
-    {
+		Utility::byteswap_inplace(header.headerSize_0x14);
+		Utility::byteswap_inplace(header.byteOrderMarker);
+		Utility::byteswap_inplace(header.fileSize);
+		Utility::byteswap_inplace(header.dataOffset);
+		Utility::byteswap_inplace(header.version_0x0100);
 
-    }
+		if (std::strncmp("SARC", header.magicSARC, 4) != 0) return SARCError::NOT_SARC;
+		if (header.headerSize_0x14 != 0x0014) return SARCError::UNEXPECTED_VALUE;
+		if (header.byteOrderMarker != 0xFEFF) return SARCError::UNEXPECTED_VALUE;
+		if (header.version_0x0100 != 0x0100) return SARCError::UNKNOWN_VERSION;
+		if (header.padding_0x00[0] != 0x00 || header.padding_0x00[1] != 0x00) return SARCError::UNEXPECTED_VALUE;
 
-    void SARCFile::initNew()
-    {
-        isEmpty = false;
-        // init sarc header
-        std::memcpy(sarcHeader.magicSARC, "SARC", 4);
-        sarcHeader.headerLength_0x14 = 0x14;
-        sarcHeader.byteOrderMarker = 0xFEFF;
-        sarcHeader.fileSize = 0;
-        sarcHeader.dataStartOffset = 0;
-        sarcHeader.versionNumber_0x0100 = 0x0100;
-        std::memset(sarcHeader._unused, '\0', 2);
-        // init SFAT Header
-        std::memcpy(sfatHeader.magicSFAT, "SFAT", 4);
-        sfatHeader.headerLength_0xC = 0xC;
-        sfatHeader.nodeCount = 0;
-        sfatHeader.hashKey_0x65 = 0x65;
-        // init SFNT header
-        std::memcpy(sfntHeader.magicSFNT, "SFNT", 4);
-        sfntHeader.headerLength_0x8 = 0x8;
-        std::memset(sfntHeader._unused, '\0', 2);
-    }
+		fileTable.offset = sarc.tellg();
+		if (!sarc.read(fileTable.magicSFAT, 4)) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&fileTable.headerSize_0xC), sizeof(fileTable.headerSize_0xC))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&fileTable.numFiles), sizeof(fileTable.numFiles))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&fileTable.hashKey_0x65), sizeof(fileTable.hashKey_0x65))) return SARCError::REACHED_EOF;
 
-    SARCFile SARCFile::createNew(const std::string& filename)
-    {
-        SARCFile newSARC{};
-        newSARC.initNew();
-        return newSARC;
-    }
+		Utility::byteswap_inplace(fileTable.headerSize_0xC);
+		Utility::byteswap_inplace(fileTable.numFiles);
+		Utility::byteswap_inplace(fileTable.hashKey_0x65);
 
-    SARCError SARCFile::loadFromBinary(std::istream& sarc, bool headerOnly)
-    {
-        SARCError err = SARCError::NONE;
-        if((err = readSARCHeader(sarc, sarcHeader)) != SARCError::NONE)
-        {
-            return err;
-        }
-        // read SARC File Allocation Table
-        if((err = readSFATHeader(sarc, sfatHeader)) != SARCError::NONE)
-        {
-            return err;
-        }
-        // read SFAT nodes
-        nodes.resize(sfatHeader.nodeCount);
-        for (int nodeIdx = 0; nodeIdx < sfatHeader.nodeCount; nodeIdx++)
-        {
-            if((err = readSFATNode(sarc, nodes[nodeIdx])) != SARCError::NONE)
-            {
-                return err;
-            }
-        }
-        if((err = readSFATFileNameTableHeader(sarc, sfntHeader)) != SARCError::NONE)
-        {
-            return err;
-        }
-        uint32_t stringTableStartOffset = sarc.tellg();
-        uint32_t fileDataStartOffset = sarcHeader.dataStartOffset;
-        if((err = readSFATStringTable(sarc, stringTable, stringTableStartOffset, fileDataStartOffset)) != SARCError::NONE)
-        {
-            return err;
-        }
+		if (std::strncmp("SFAT", fileTable.magicSFAT, 4)) return SARCError::UNEXPECTED_VALUE;
+		if (fileTable.headerSize_0xC != 0xC) return SARCError::UNEXPECTED_VALUE;
+		if (fileTable.hashKey_0x65 != 0x65) return SARCError::UNEXPECTED_VALUE;
 
-        for(const auto& node : nodes)
-        {
-            SARCFileSpec spec;
-            uint32_t strOffset;
-            if (!attrToStringTableOffset(node.fileAttributes, strOffset))
-            {
-                return SARCError::BAD_NODE_ATTR;
-            }
-            // linear search for string table entry with matching offset
-            auto match = std::find_if(
-                stringTable.begin(), 
-                stringTable.end(), 
-                [&](const StringTableEntry& e){return e.offset == strOffset;}
-            );
-            if (match == stringTable.end())
-            {
-                return SARCError::STRING_NOT_FOUND;
-            }
-            auto hash = SFATNameHash(match->str.data(), match->str.size(), sfatHeader.hashKey_0x65);
-            if (hash != node.fileNameHash)
-            {
-                return SARCError::FILENAME_HASH_MISMATCH;
-            }
-            spec.fileName = match->str;
-            spec.fileOffset = node.nodeDataOffset;
-            spec.fileLength = node.nodeDataEnd - node.nodeDataOffset;
-            files.emplace_back(spec);
-        }
+		for (uint16_t i = 0; i < fileTable.numFiles; i++) {
+			SFATNode& node = fileTable.nodes.emplace_back();
+			if (!sarc.read(reinterpret_cast<char*>(&node.nameHash), sizeof(node.nameHash))) return SARCError::REACHED_EOF;
+			if (!sarc.read(reinterpret_cast<char*>(&node.attributes), sizeof(node.attributes))) return SARCError::REACHED_EOF;
+			if (!sarc.read(reinterpret_cast<char*>(&node.dataStart), sizeof(node.dataStart))) return SARCError::REACHED_EOF;
+			if (!sarc.read(reinterpret_cast<char*>(&node.dataEnd), sizeof(node.dataEnd))) return SARCError::REACHED_EOF;
 
-        // sort file specs by offset (may already be sorted by nintendo, but they
-        // don't HAVE to be in theory)
-        std::sort(
-            files.begin(), 
-            files.end(), 
-            [](const SARCFileSpec& l, const SARCFileSpec& r) {return l.fileOffset < r.fileOffset;}
-        );
+			Utility::byteswap_inplace(node.nameHash);
+			Utility::byteswap_inplace(node.attributes);
+			Utility::byteswap_inplace(node.dataStart);
+			Utility::byteswap_inplace(node.dataEnd);
+		}
 
-        sarc.seekg(sarcHeader.dataStartOffset);
-        if(headerOnly)
-        {
-            // exit early case for only reading header
-            isEmpty = false;
-            return SARCError::NONE;
-        }
+		nameTable.offset = sarc.tellg();
+		if (!sarc.read(nameTable.magicSFNT, 4)) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&nameTable.headerSize_0x8), sizeof(nameTable.headerSize_0x8))) return SARCError::REACHED_EOF;
+		if (!sarc.read(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00))) return SARCError::REACHED_EOF;
 
-        uint32_t remainingData = sarcHeader.fileSize - sarcHeader.dataStartOffset;
-        fileData.resize(remainingData);
-        if(!sarc.read(&fileData[0], remainingData))
-        {
-            return SARCError::REACHED_EOF;
-        }
-        auto bytesRead = sarc.gcount();
-        if(bytesRead != remainingData)
-        {
-            return SARCError::REACHED_EOF;
-        }
+		Utility::byteswap_inplace(nameTable.headerSize_0x8);
 
-        isEmpty = false;
-        return SARCError::NONE;
-    }
+		if (std::strncmp("SFNT", nameTable.magicSFNT, 4)) return SARCError::UNEXPECTED_VALUE;
+		if (nameTable.headerSize_0x8 != 0x8) return SARCError::UNEXPECTED_VALUE;
+		if (nameTable.padding_0x00[0] != 0x00 || nameTable.padding_0x00[1] != 0x00) return SARCError::UNEXPECTED_VALUE;
 
-    SARCError SARCFile::loadFromFile(const std::string& filePath, bool headerOnly)
-    {
-        std::ifstream file(filePath, std::ios::binary);
-        if(!file.is_open())
-        {
-            return SARCError::COULD_NOT_OPEN;
-        }
-        return loadFromBinary(file, headerOnly);
-    }
+		for (const SFATNode& node : fileTable.nodes) {
+			if ((node.attributes & 0xFF000000) >> 24 != 0x01) return SARCError::BAD_NODE_ATTR;
+			uint32_t nameOffset = (node.attributes & 0x00FFFFFF) * 4;
+			const std::string name = readNullTerminatedStr(sarc, nameTable.offset + 0x8 + nameOffset);
+			if (name.empty()) return SARCError::REACHED_EOF;
+			nameTable.filenames.push_back(name);
 
-    std::vector<SARCFileSpec> SARCFile::getFileList()
-    {
-        return files;
-    }
+			uint32_t hash = calculateHash(name, fileTable.hashKey_0x65);
+			if (hash != node.nameHash) return SARCError::FILENAME_HASH_MISMATCH;
 
-    SARCError SARCFile::readFile(const SARCFileSpec& file, std::string& dataOut, uint32_t offset, uint32_t bytes)
-    {
-        if (isEmpty) return SARCError::HEADER_DATA_NOT_LOADED;
-        if (fileData.size() == 0) return SARCError::FILE_DATA_NOT_LOADED;
-        if (bytes == 0)
-        {
-            bytes = file.fileLength;
-        }
-        uint32_t totalOffset = file.fileOffset + offset;
-        uint32_t endOffset = totalOffset + bytes;
-        if (endOffset > fileData.size() || bytes > file.fileLength)
-        {
-            return SARCError::REACHED_EOF;
-        }
-        dataOut.append(fileData, totalOffset, bytes);
-        return SARCError::NONE;
-    }
+			file& fileEntry = files.emplace_back();
+			file_index_by_name[name] = files.size() - 1;
+			fileEntry.name = name;
+			fileEntry.data.resize(node.dataEnd - node.dataStart);
+			sarc.seekg(header.dataOffset + node.dataStart, std::ios::beg);
+			if (!sarc.read(&fileEntry.data[0], fileEntry.data.size())) return SARCError::REACHED_EOF;
+		}
 
-    SARCError SARCFile::patchFile(const SARCFileSpec& file, const std::string& patch, uint32_t offset)
-    {
-        return SARCError::UNKNOWN;
-    }
+		return SARCError::NONE;
+	}
 
-    SARCError SARCFile::insertIntoFile(const SARCFileSpec& file, const std::string& data, uint32_t offset)
-    {
-        return SARCError::UNKNOWN; 
-    }
+	SARCError SARCFile::loadFromFile(const std::string& filePath) {
+		std::ifstream file(filePath, std::ios::binary);
+		if (!file.is_open()) {
+			return SARCError::COULD_NOT_OPEN;
+		}
+		return loadFromBinary(file);
+	}
 
-    SARCError SARCFile::appendToFile(const SARCFileSpec& file, const std::string& data)
-    {
-        return SARCError::UNKNOWN;
-    }
+	const file& SARCFile::getFile(const std::string& filename) {
+		if (file_index_by_name.count(filename) == 0) {
+			file blankFile;
+			return blankFile;
+		}
+		return files[file_index_by_name.at(filename)];
+	}
 
-    SARCError SARCFile::writeToStream(std::ostream& out, uint32_t minDataOffset)
-    {
-        if (isEmpty) return SARCError::HEADER_DATA_NOT_LOADED;
-        // determine current output file size and start of data segment
-        uint32_t fileSize = 0, dataStartOffset = 0;
-        dataStartOffset += sarcHeader.headerLength_0x14;
-        dataStartOffset += sfatHeader.headerLength_0xC;
-        dataStartOffset += sfatHeader.nodeCount * sizeof(SFATNode);
-        dataStartOffset += sfntHeader.headerLength_0x8;
-        // nintendo seems to pad file offsets to nearest 0x2000, so we can't just
-        // sum filesizes
-        for (const auto& fileSpec : files)
-        {
-            uint32_t filenameLen = fileSpec.fileName.size() + 1;
-            filenameLen = Utility::byte_align<uint32_t>(filenameLen);
-            dataStartOffset += filenameLen;
-        }
+	SARCError SARCFile::writeToStream(std::ostream& out) {
+		{
+			uint16_t headerSize_BE = Utility::byteswap(header.headerSize_0x14);
+			uint16_t byteOrderMarker_BE = Utility::byteswap(header.byteOrderMarker);
+			uint32_t dataOffset_BE = Utility::byteswap(header.dataOffset);
+			uint16_t version_BE = Utility::byteswap(header.version_0x0100);
 
-        // nintendo seems to like enforcing a minimum data offset;
-        // possibly to make computing the string table stuff simpler
-        if (dataStartOffset < minDataOffset)
-        {
-            dataStartOffset = minDataOffset;
-        }
-        fileSize = dataStartOffset;
-        const auto& lastFile = files.back();
-        fileSize += lastFile.fileOffset + lastFile.fileLength;
+			out.write(header.magicSARC, 4);
+			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
+			out.write(reinterpret_cast<char*>(&byteOrderMarker_BE), sizeof(byteOrderMarker_BE));
+			out.seekp(4, std::ios::cur); //skip over filesize for now
+			out.write(reinterpret_cast<char*>(&dataOffset_BE), sizeof(dataOffset_BE));
+			out.write(reinterpret_cast<char*>(&version_BE), sizeof(version_BE));
+			out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+		}
 
-        sarcHeader.fileSize = fileSize;
-        sarcHeader.dataStartOffset = dataStartOffset;
+		{
+			uint16_t headerSize_BE = Utility::byteswap(fileTable.headerSize_0xC);
+			uint16_t numFiles_BE = Utility::byteswap(fileTable.numFiles);
+			uint32_t hashKey_BE = Utility::byteswap(fileTable.hashKey_0x65);
 
-        writeSARCHeader(out, sarcHeader);
-        writeSFATHeader(out, sfatHeader);
+			out.write(fileTable.magicSFAT, 4);
+			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
+			out.write(reinterpret_cast<char*>(&numFiles_BE), sizeof(numFiles_BE));
+			out.write(reinterpret_cast<char*>(&hashKey_BE), sizeof(hashKey_BE));
 
-        for(const auto& node : nodes)
-        {
-            writeSFATNode(out, node);
-        }
+			for (const SFATNode& node : fileTable.nodes) {
+				uint32_t nameHash_BE = Utility::byteswap(node.nameHash);
+				uint32_t attributes_BE = Utility::byteswap(node.attributes);
+				uint32_t dataStart_BE = Utility::byteswap(node.dataStart);
+				uint32_t dataEnd_BE = Utility::byteswap(node.dataEnd);
 
-        writeSFATFileNameTableHeader(out, sfntHeader);
-        // write out file names
-        for (const auto& fileSpec : files)
-        {
-            std::string byteAligned{fileSpec.fileName};
-            // add null terminator so calc is correct
-            byteAligned.append(1, '\0');
-            uint32_t toAppend = Utility::byte_align_offset<uint32_t>(byteAligned.size());
-            byteAligned.append(toAppend, '\0');
-            if(!out.write(byteAligned.data(), byteAligned.size()))
-            {
-                return SARCError::REACHED_EOF;
-            }
-        }
+				out.write(reinterpret_cast<char*>(&nameHash_BE), sizeof(nameHash_BE));
+				out.write(reinterpret_cast<char*>(&attributes_BE), sizeof(attributes_BE));
+				out.write(reinterpret_cast<char*>(&dataStart_BE), sizeof(dataStart_BE));
+				out.write(reinterpret_cast<char*>(&dataEnd_BE), sizeof(dataEnd_BE));
+			}
+		}
 
-        uint32_t padSize = dataStartOffset;
-        padSize -= out.tellp();
-        std::fill_n(std::ostream_iterator<char>(out), padSize, '\0');
-        if(!out.write(fileData.data(), fileData.size()))
-        {
-            return SARCError::REACHED_EOF;
-        }
+		{
+			uint16_t headerSize_BE = Utility::byteswap(nameTable.headerSize_0x8);
 
-        return SARCError::NONE;
-    }
+			out.write(nameTable.magicSFNT, 4);
+			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
+			out.write(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00));
 
-    SARCError SARCFile::writeToFile(const std::string& outFilePath)
-    {
-        std::ofstream outFile(outFilePath, std::ios::binary);
-        if(!outFile.is_open())
-        {
-            return SARCError::COULD_NOT_OPEN;
-        }
-        return writeToStream(outFile);
-    }
+			for (const std::string& filename : nameTable.filenames) {
+				out.write(&filename[0], filename.length());
+				padToLen(out, 4);
+			}
+		}
 
-    uint32_t SARCFile::insertIntoStringList(std::string str)
-    {
-        StringTableEntry newEntry;
-        uint16_t endOfPrev = 0;
-        newEntry.str = str;
-        if (!stringTable.empty())
-        {
-            auto maxOffEntryIt = std::max_element(
-                stringTable.begin(),
-                stringTable.end(),
-                [](const StringTableEntry& l, const StringTableEntry& r) {return l.offset < r.offset; }
-            );
-            const auto& maxOffEntry = *maxOffEntryIt;
-            endOfPrev = maxOffEntry.offset;
-            endOfPrev += maxOffEntry.str.length();
-        }
-        // add whatever was needed before for 4 byte alignment
-        endOfPrev += Utility::byte_align_offset<uint32_t>(endOfPrev);
-        newEntry.offset = endOfPrev;
-        stringTable.push_back(newEntry);
-        return newEntry.offset;
-    }
+		out.seekp(header.dataOffset, std::ios::beg);
+		for (unsigned int i = 0; i < files.size(); i++) {
+			out.seekp(header.dataOffset + fileTable.nodes[i].dataStart, std::ios::beg);
+			out.write(&files[i].data[0], files[i].data.size());
+		}
 
-    SARCError SARCFile::extractToDir(const std::string& dirPath)
-    {
-        if (isEmpty) return SARCError::HEADER_DATA_NOT_LOADED;
-        if (fileData.size() == 0) return SARCError::FILE_DATA_NOT_LOADED;
-        for (const auto& file : files)
-        {
-            // test on msvc for portability
-            std::ofstream outFile(dirPath + '/' + file.fileName, std::ios::binary);
-            if (!outFile.is_open())
-            {
-                return SARCError::COULD_NOT_OPEN;
-            }
-            outFile.write(&fileData[file.fileOffset], file.fileLength);
-        }
-        return SARCError::NONE;
-    }
+		header.fileSize = out.tellp();
+		out.seekp(8, std::ios::beg);
+		uint32_t fileSize_BE = Utility::byteswap(header.fileSize);
+		out.write(reinterpret_cast<char*>(&fileSize_BE), sizeof(fileSize_BE));
 
-    // note: filename must not be null terminated (I mean, it is a std::string)
-    SARCError SARCFile::addFile(const std::string& addFileName, std::istream& inputData)
-    {
-        SFATNode newNode{};
-        SARCFileSpec newSpec{};
-        uint32_t fileLength = 0, dataPadSize = 0;
+		return SARCError::NONE;
+	}
 
-        if (isEmpty)
-        {
-            return SARCError::SARC_IS_EMTPY;
-        }
+	SARCError SARCFile::writeToFile(const std::string& outFilePath) {
+		std::ofstream outFile(outFilePath, std::ios::binary);
+		if (!outFile.is_open()) {
+			return SARCError::COULD_NOT_OPEN;
+		}
+		return writeToStream(outFile);
+	}
 
-        sfatHeader.nodeCount += 1;
-        newNode.fileNameHash = SFATNameHash(addFileName.data(), addFileName.length(), sfatHeader.hashKey_0x65);
-        auto newEntryOffset = insertIntoStringList(addFileName);
-        // offset is divided by 4 in file attributes
-        newEntryOffset /= 4;
-        newNode.fileAttributes = 0x01000000 | newEntryOffset;
-        if (sfatHeader.nodeCount == 1)
-        {
-            newNode.nodeDataOffset = 0;
-            dataPadSize = 0;
-        }
-        else
-        {
-            // we guarantee the file spec list is sorted during reading
-            const auto& trailingFile = files.back();
-            newNode.nodeDataOffset = trailingFile.fileOffset + trailingFile.fileLength;
-            // byte align, although the "standard" is non-specific
-            newNode.nodeDataOffset = Utility::byte_align<uint32_t>(newNode.nodeDataOffset, 0x2000);
-            // will need to pad out file data to the offset point to copy file data
-            dataPadSize = newNode.nodeDataOffset - fileData.size();
-        }
-        // append padding zeros to data
-        fileData.append(dataPadSize, '\0');
+	SARCError SARCFile::extractToDir(const std::string& dirPath) {
+		for (const file& file : files)
+		{
+			std::filesystem::path path = dirPath + '/' + file.name;
+			std::filesystem::create_directories(path.parent_path()); //handle any folder structure stuff contained in the SARC
+			std::ofstream outFile(dirPath + '/' + file.name, std::ios::binary);
+			if (!outFile.is_open())
+			{
+				return SARCError::COULD_NOT_OPEN;
+			}
+			outFile.write(&file.data[0], file.data.size());
+		}
+		return SARCError::NONE;
+	}
 
-        if (!inputData.seekg(0, std::ios::end))
-        {
-            return SARCError::REACHED_EOF;
-        }
-        fileLength = inputData.tellg();
-        if (!inputData.seekg(0, std::ios::beg))
-        {
-            return SARCError::REACHED_EOF;
-        }
-        newNode.nodeDataEnd = newNode.nodeDataOffset + fileLength;
-        nodes.push_back(newNode);
+	SARCError SARCFile::rebuildFromDir(const std::string& dirPath) {
+		//rebuild using the original filename list (so extraneous unpacked stuff isnt added accidentally)
 
-        // see notes of https://en.cppreference.com/w/cpp/container/vector/resize if 
-        // this becomes a bottleneck
-        fileData.resize(newNode.nodeDataEnd);
-        if (!inputData.read(&fileData[newNode.nodeDataOffset], fileLength))
-        {
-            return SARCError::REACHED_EOF;
-        }
+		uint32_t curDataOffset = 0;
+		for (unsigned int i = 0; i < nameTable.filenames.size(); i++) {
+			const std::string& filename = nameTable.filenames[i];
+			std::filesystem::path absPath = dirPath + '/' + filename;
+			uint32_t fileSize = std::filesystem::file_size(absPath);
+			SFATNode& node = fileTable.nodes[i];
 
-        newSpec.fileName = addFileName;
-        newSpec.fileOffset = newNode.nodeDataOffset;
-        newSpec.fileLength = fileLength;
-        files.push_back(newSpec);
-        return SARCError::NONE;
-    }
+			file& entry = files[i];
+			entry.name = filename;
+			entry.data.resize(fileSize);
 
-    SARCError SARCFile::removeFile(const std::string& fileName)
-    {
-        return SARCError::UNKNOWN;
-    }
+			std::ifstream inFile(absPath.string(), std::ios::binary);
+			if (!inFile.read(&entry.data[0], fileSize)) return SARCError::REACHED_EOF;
+
+			//silly alignment stuff
+			std::string filetype = filename.substr(filename.find(".") + 1);
+			filetype.pop_back();
+			uint32_t alignment = getAlignment(filetype, entry);
+			if (alignment != 0) {
+				unsigned int padLen = alignment - (curDataOffset % alignment);
+				if (padLen == alignment) padLen = 0;
+				node.dataStart = curDataOffset + padLen;
+			}
+			else {
+				node.dataStart = curDataOffset;
+			}
+
+			node.dataEnd = node.dataStart + entry.data.size();
+			curDataOffset = node.dataEnd;
+
+			file_index_by_name[filename] = i;
+		}
+
+		return SARCError::NONE;
+	}
+
+	SARCError SARCFile::buildFromDir(const std::string& dirPath) { //needs some implementation updates to work completely from a new sarc
+		fileTable.numFiles = 0;
+		fileTable.nodes.clear();
+		nameTable.filenames.clear();
+		files.clear();
+
+		uint32_t curDataOffset = 0x14 + 0xC + 0x8; //header sizes
+		uint32_t curNameOffset = 0;
+		for (const auto& path : std::filesystem::recursive_directory_iterator(dirPath)) {
+			if (path.is_regular_file()) {
+				std::filesystem::path absPath = path.path();
+				std::string filename = absPath.string().substr(absPath.string().find(dirPath) + dirPath.size() + 1); //could use std::filesystem::relative(absPath, dirPath).string(), but gives undefined reference errors with devkitPro stuff
+				// ^ include everything after the dirPath, and exclude 1 extra character for the path separator connecting them
+				filename += '\0'; //add null terminator
+#ifdef _WIN32
+				std::replace(filename.begin(), filename.end(), '\\', '/');
+#endif
+
+				uint32_t fileSize = std::filesystem::file_size(absPath);
+				SFATNode& node = fileTable.nodes.emplace_back();
+				node.nameHash = calculateHash(filename, fileTable.hashKey_0x65);
+
+				file& entry = files.emplace_back();
+				entry.name = filename;
+				entry.data.resize(fileSize);
+
+				curDataOffset += 0x10 + filename.size(); //add node + filename length
+				unsigned int numPaddingBytes = 4 - (filename.size() % 4);
+				if (numPaddingBytes == 4) numPaddingBytes = 0;
+				curDataOffset += numPaddingBytes; //add name padding
+
+				std::ifstream inFile(absPath.string(), std::ios::binary);
+				if (!inFile.read(&entry.data[0], fileSize)) return SARCError::REACHED_EOF;
+			}
+		}
+
+		unsigned int numPaddingBytes = 0x100 - (curDataOffset % 0x100);
+		if (numPaddingBytes == 0x100) numPaddingBytes = 0;
+		curDataOffset += numPaddingBytes; //pad to nearest 0x100, maybe not needed but haven't seen something to disprove it
+
+		header.dataOffset = curDataOffset;
+
+		std::sort(files.begin(), files.end(), [&](const file& a, const file& b) {return calculateHash(a.name, fileTable.hashKey_0x65) < calculateHash(b.name, fileTable.hashKey_0x65); });
+		std::sort(fileTable.nodes.begin(), fileTable.nodes.end(), [&](const SFATNode& a, const SFATNode& b) {return a.nameHash < b.nameHash; });
+		fileTable.numFiles = files.size();
+
+		curDataOffset = 0;
+
+		for (unsigned int i = 0; i < files.size(); i++) {
+			const file& entry = files[i];
+			SFATNode& node = fileTable.nodes[i];
+
+			//silly alignment stuff
+			const std::string& filename = entry.name;
+			std::string filetype = filename.substr(filename.find(".") + 1);
+			filetype.pop_back();
+			uint32_t alignment = getAlignment(filetype, entry);
+			if (alignment != 0) {
+				unsigned int padLen = alignment - (curDataOffset % alignment);
+				if (padLen == alignment) padLen = 0;
+				node.dataStart = curDataOffset + padLen;
+			}
+			else {
+				node.dataStart = curDataOffset;
+			}
+
+			node.dataEnd = node.dataStart + entry.data.size();
+			curDataOffset = node.dataEnd;
+
+			node.attributes = 0x01000000 | ((curNameOffset / 4) & 0x00FFFFFF);
+			curNameOffset += filename.size();
+			numPaddingBytes = 4 - (curNameOffset % 4);
+			if (numPaddingBytes == 4) numPaddingBytes = 0;
+			curNameOffset += numPaddingBytes;
+			nameTable.filenames.push_back(filename);
+			file_index_by_name[filename] = i;
+		}
+
+		header.fileSize = header.dataOffset + fileTable.nodes.back().dataEnd;
+
+		return SARCError::NONE;
+	}
 }

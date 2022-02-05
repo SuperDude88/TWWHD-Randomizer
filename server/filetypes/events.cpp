@@ -1,40 +1,14 @@
 #include "events.hpp"
 
-std::optional<std::string> read_str_until_null_character(std::istream& fptr, int offset) { //only possible error is EventlistError::REACHED_EOF
-	fptr.seekg(0, std::ios::end);
-	int data_length = fptr.tellg();
-	if (offset > data_length) {
-		return std::nullopt;
-	}
+#include <cstring>
+#include <algorithm>
+#include <functional>
 
-	int temp_offset = offset;
-	int str_length = 0;
-	while (offset < data_length) {
-		fptr.seekg(temp_offset, std::ios::beg);
-		char character;
-		if(!fptr.read(&character, 1)) {
-			return std::nullopt;
-		}
-		if (character == '\0') {
-			break;
-		}
-		else {
-			str_length = str_length + 1;
-		}
-		temp_offset = temp_offset + 1;
-	}
+#include "../utility/byteswap.hpp"
 
-	fptr.seekg(offset);
-	std::string str;
-	str.resize(str_length);
-	if(!fptr.read(&str[0], str_length)) {
-		return std::nullopt;
-	}
 
-	return str;
-}
 
-EventlistError Property::read(std::istream& file, int offset) {
+EventlistError Property::read(std::istream& file, const unsigned int offset) {
 	std::istream& fptr = file;
 	this->offset = offset;
 
@@ -94,7 +68,7 @@ void Property::save_changes(std::ostream& fptr) {
 	return;
 }
 
-EventlistError Action::read(std::istream& file, int offset) {
+EventlistError Action::read(std::istream& file, const unsigned int offset) {
 	std::istream& fptr = file;
 	this->offset = offset;
 
@@ -199,7 +173,7 @@ Property& Action::add_property(const std::string& name) {
 	return properties.back();
 }
 
-EventlistError Actor::read(std::istream& file, int offset) {
+EventlistError Actor::read(std::istream& file, const unsigned int offset) {
 	std::istream& fptr = file;
 	this->offset = offset;
 
@@ -260,7 +234,7 @@ EventlistError Actor::save_changes(std::ostream& fptr) {
 	return EventlistError::NONE;
 }
 
-std::optional<std::reference_wrapper<Action>> Actor::add_action(const FileTypes::EventList* list, const std::string& name, const std::vector<Prop>& properties) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+std::optional<std::reference_wrapper<Action>> Actor::add_action(const FileTypes::EventList* const list, const std::string& name, const std::vector<Prop>& properties) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 	Action action;
 	action.name = name;
 	std::optional<int> flag_id_to_set = list->get_unused_flag_id();
@@ -276,7 +250,7 @@ std::optional<std::reference_wrapper<Action>> Actor::add_action(const FileTypes:
 	return actions.back();
 }
 
-EventlistError Event::read(std::istream& file, int offset) {
+EventlistError Event::read(std::istream& file, const unsigned int offset) {
 	std::istream& fptr = file;
 	this->offset = offset;
 
@@ -298,7 +272,7 @@ EventlistError Event::read(std::istream& file, int offset) {
 	Utility::byteswap_inplace(unknown_1);
 	Utility::byteswap_inplace(priority);
 
-	for (int i = 0; i < 0x14; i++) {
+	for (unsigned int i = 0; i < 0x14; i++) {
 		int32_t actor_index;
 		fptr.seekg(this->offset + 0x2C + i * 4, std::ios::beg);
 		if(!file.read((char*)&actor_index, 4)) {
@@ -313,7 +287,7 @@ EventlistError Event::read(std::istream& file, int offset) {
 	}
 	Utility::byteswap_inplace(num_actors);
 
-	for (int i = 0; i < 2; i++) {
+	for (unsigned int i = 0; i < 2; i++) {
 		int32_t flag_id;
 		fptr.seekg(this->offset + 0x80 + i * 4, std::ios::beg);
 		if(!file.read((char*)&flag_id, 4)) {
@@ -323,7 +297,7 @@ EventlistError Event::read(std::istream& file, int offset) {
 		starting_flags[i] = flag_id;
 	}
 
-	for (int i = 0; i < 3; i++) {
+	for (unsigned int i = 0; i < 3; i++) {
 		int32_t flag_id;
 		fptr.seekg(this->offset + 0x88 + i * 4, std::ios::beg);
 		if(!file.read((char*)&flag_id, 4)) {
@@ -375,15 +349,15 @@ void Event::save_changes(std::ostream& fptr) {
 	Utility::byteswap_inplace(num_actors);
 	fptr.write((char*)&num_actors, 4);
 
-	for (int i = 0; i < 2; i++) {
+	for (unsigned int i = 0; i < 2; i++) {
 		int flag_id = starting_flags[i];
 		fptr.seekp(offset + 0x80 + i * 4, std::ios::beg);
 		Utility::byteswap_inplace(flag_id);
 		fptr.write((char*)&flag_id, 4);
 	}
 
-	for (int i = 0; i < 3; i++) {
-		int flag_id = ending_flags[i];
+	for (unsigned int i = 0; i < 3; i++) {
+		int32_t flag_id = ending_flags[i];
 		fptr.seekp(offset + 0x88 + i * 4, std::ios::beg);
 		Utility::byteswap_inplace(flag_id);
 		fptr.write((char*)&flag_id, 4);
@@ -404,7 +378,7 @@ std::optional<std::reference_wrapper<Actor>> Event::get_actor(const std::string&
 	return std::nullopt;
 }
 
-std::optional<std::reference_wrapper<Actor>> Event::add_actor(const FileTypes::EventList* list, const std::string& name) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+std::optional<std::reference_wrapper<Actor>> Event::add_actor(const FileTypes::EventList* const list, const std::string& name) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 	Actor actor; 
 	actor.name = name;
 	std::optional<int> flag_id_to_set = list->get_unused_flag_id();
@@ -568,8 +542,8 @@ namespace FileTypes
 		}
 
 		Events.reserve(num_events); //Minimize copies
-		for (unsigned int event_index = 0; event_index < num_events; event_index++) {
-			int offset = event_list_offset + event_index * 0xB0;
+		for (uint32_t event_index = 0; event_index < num_events; event_index++) {
+			uint32_t offset = event_list_offset + event_index * 0xB0;
 			Event event;
 			err = event.read(file_entry, offset);
 			if(err != EventlistError::NONE) {
@@ -583,8 +557,8 @@ namespace FileTypes
 		}
 
 		All_Actors.reserve(num_actors); //Minmize copies
-		for (unsigned int actor_index = 0; actor_index < num_actors; actor_index++) {
-			int offset = actor_list_offset + actor_index * 0x50;
+		for (uint32_t actor_index = 0; actor_index < num_actors; actor_index++) {
+			uint32_t offset = actor_list_offset + actor_index * 0x50;
 			Actor actor;
 			err = actor.read(file_entry, offset);
 			if (err != EventlistError::NONE) {
@@ -594,8 +568,8 @@ namespace FileTypes
 		}
 
 		All_Actions.reserve(num_actions); //Minmize copies
-		for (unsigned int action_index = 0; action_index < num_actions; action_index++) {
-			int offset = action_list_offset + action_index * 0x50;
+		for (uint32_t action_index = 0; action_index < num_actions; action_index++) {
+			uint32_t offset = action_list_offset + action_index * 0x50;
 			Action action;
 			err = action.read(file_entry, offset);
 			if (err != EventlistError::NONE) {
@@ -605,8 +579,8 @@ namespace FileTypes
 		}
 
 		All_Properties.reserve(num_properties); //Minmize copies
-		for (unsigned int property_index = 0; property_index < num_properties; property_index++) { //Populate properties
-			int offset = property_list_offset + property_index * 0x40;
+		for (uint32_t property_index = 0; property_index < num_properties; property_index++) { //Populate properties
+			uint32_t offset = property_list_offset + property_index * 0x40;
 			Property property;
 			err = property.read(file_entry, offset);
 			if (err != EventlistError::NONE) {
@@ -616,8 +590,8 @@ namespace FileTypes
 		}
 
 		All_Floats.reserve(num_floats); //Minmize copies
-		for (unsigned int float_index = 0; float_index < num_floats; float_index++) {
-			int offset = float_list_offset + float_index * 4;
+		for (uint32_t float_index = 0; float_index < num_floats; float_index++) {
+			uint32_t offset = float_list_offset + float_index * 4;
 			float float_val;
 			file_entry.seekg(offset, std::ios::beg);
 			if(!file_entry.read((char*)&float_val, 4)) {
@@ -628,8 +602,8 @@ namespace FileTypes
 		}
 
 		All_Integers.reserve(num_integers); //Minmize copies
-		for (unsigned int integer_index = 0; integer_index < num_integers; integer_index++) {
-			int offset = integer_list_offset + integer_index * 4;
+		for (uint32_t integer_index = 0; integer_index < num_integers; integer_index++) {
+			uint32_t offset = integer_list_offset + integer_index * 4;
 			int32_t integer;
 			file_entry.seekg(offset, std::ios::beg);
 			if(!file_entry.read((char*)&integer, 4)) {
@@ -641,12 +615,12 @@ namespace FileTypes
 
 		uint32_t offset = string_list_offset;
 		while (offset < string_list_offset + string_list_total_size) {
-			std::optional<std::string> string = read_str_until_null_character(file_entry, offset);
-			if (!string.has_value()) {
+			std::string string = readNullTerminatedStr(file_entry, offset);
+			if (string.empty()) {
 				return EventlistError::REACHED_EOF; //only error that can happen in read_str
 			}
-			All_Strings_By_Offset[offset - string_list_offset] = string.value();
-			int string_length_with_null = string.value().length() + 1;
+			All_Strings_By_Offset[offset - string_list_offset] = string;
+			int string_length_with_null = string.length() + 1;
 			offset = offset + string_length_with_null;
 
 			if (string_length_with_null % 8 != 0) {
@@ -677,19 +651,18 @@ namespace FileTypes
 				property.value = value;
 			}
 			else if (property.data_type == 1) {
-				std::vector<XYZ> value(property.data_size);
+				std::vector<vec3<float>> value(property.data_size);
 				for (unsigned int i = 0; i < property.data_size; i++) {
-					XYZ temp;
-					temp.x = All_Floats[property.data_index + i * 3];
-					temp.y = All_Floats[property.data_index + i * 3 + 1];
-					temp.z = All_Floats[property.data_index + i * 3 + 2];
-					value.push_back(temp);
+					vec3<float>& temp = value.emplace_back();
+					temp.X = All_Floats[property.data_index + i * 3];
+					temp.Y = All_Floats[property.data_index + i * 3 + 1];
+					temp.Z = All_Floats[property.data_index + i * 3 + 2];
 				}
 				property.value = value;
 			}
 			else if (property.data_type == 3) {
-				std::vector<int> value(property.data_size);
-				for (unsigned int i = 0; i < property.data_size; i++) {
+				std::vector<int32_t> value(property.data_size);
+				for (uint32_t i = 0; i < property.data_size; i++) {
 					value.push_back(All_Integers[property.data_index + i]);
 				}
 				property.value = value;
@@ -731,7 +704,7 @@ namespace FileTypes
 
 		for (Event& event : Events) {
 			bool found_blank = false;
-			for (const int actor_index : event.actor_indexes) {
+			for (const int32_t actor_index : event.actor_indexes) {
 				if (actor_index == -1) {
 					found_blank = true;
 				}
@@ -748,7 +721,7 @@ namespace FileTypes
 		}
 
 		unused_flag_ids.reserve(TOTAL_NUM_FLAGS);
-		for (int i = 0; i < TOTAL_NUM_FLAGS; i++) { //Populate the list of all flags (SD randomizer uses range but this is c++ so we don't have a super good substitute)
+		for (int32_t i = 0; i < TOTAL_NUM_FLAGS; i++) { //Populate the list of all flags (SD randomizer uses range but this is c++ so we don't have a super good substitute)
 			unused_flag_ids.push_back(i);
 		}
 
@@ -802,11 +775,11 @@ namespace FileTypes
 		All_Integers.clear();
 		std::vector<std::string> All_Strings;
 
-		int offset = 0x40;
+		uint32_t offset = 0x40;
 
-		int event_list_offset = offset;
-		int num_events = All_Events.size();
-		for (int i = 0; i < num_events; i++) {
+		uint32_t event_list_offset = offset;
+		uint32_t num_events = All_Events.size();
+		for (uint32_t i = 0; i < num_events; i++) {
 			Event& event = All_Events[i];
 			event.offset = offset;
 			event.event_index = i;
@@ -816,9 +789,9 @@ namespace FileTypes
 			All_Actors.insert(All_Actors.end(), event.actors.begin(), event.actors.end());
 		}
 
-		int actor_list_offset = offset;
-		int num_actors = All_Actors.size();
-		for (int i = 0; i < num_actors; i++) {
+		uint32_t actor_list_offset = offset;
+		uint32_t num_actors = All_Actors.size();
+		for (uint32_t i = 0; i < num_actors; i++) {
 			Actor& actor = All_Actors[i];
 			actor.offset = offset;
 			actor.actor_index = i;
@@ -839,9 +812,9 @@ namespace FileTypes
 
 		}
 
-		int action_list_offset = offset;
-		int num_actions = All_Actions.size();
-		for (int i = 0; i < num_actions; i++) {
+		uint32_t action_list_offset = offset;
+		uint32_t num_actions = All_Actions.size();
+		for (uint32_t i = 0; i < num_actions; i++) {
 			Action& action = All_Actions[i];
 			action.offset = offset;
 			action.action_index = i;
@@ -862,16 +835,16 @@ namespace FileTypes
 			}
 		}
 
-		int property_list_offset = offset;
-		int num_properties = All_Properties.size();
-		for (int i = 0; i < num_properties; i++) {
+		uint32_t property_list_offset = offset;
+		uint32_t num_properties = All_Properties.size();
+		for (uint32_t i = 0; i < num_properties; i++) {
 			Property& property = All_Properties[i];
 			property.offset = offset;
 			property.property_index = i;
 
 			offset = offset + property.DATA_SIZE;
 
-			std::variant<std::vector<float>, std::vector<XYZ>, std::vector<int>, std::string> property_value = property.value;
+			std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int32_t>, std::string> property_value = property.value;
 			if (property_value.index() != 3) {
 				if (property_value.index() == 0) {
 					property.data_size = std::get<0>(property_value).size();
@@ -887,10 +860,10 @@ namespace FileTypes
 					property.data_type = 1;
 					property.data_index = All_Floats.size();
 
-					for (const XYZ& vector3 : std::get<1>(property_value)) {
-						All_Floats.push_back(vector3.x);
-						All_Floats.push_back(vector3.y);
-						All_Floats.push_back(vector3.z);
+					for (const vec3<float>& vector3 : std::get<1>(property_value)) {
+						All_Floats.push_back(vector3.X);
+						All_Floats.push_back(vector3.Y);
+						All_Floats.push_back(vector3.Z);
 					}
 				}
 				else if (property_value.index() == 2) {
@@ -898,7 +871,7 @@ namespace FileTypes
 					property.data_type = 3;
 					property.data_index = All_Integers.size();
 
-					for (const int& integer : std::get<2>(property_value)) {
+					for (const int32_t& integer : std::get<2>(property_value)) {
 						All_Integers.push_back(integer);
 					}
 				}
@@ -928,7 +901,7 @@ namespace FileTypes
 
 		integer_list_offset = offset;
 		num_integers = All_Integers.size();
-		for (int& integer : All_Integers) {
+		for (int32_t& integer : All_Integers) {
 			file_entry.seekp(offset, std::ios::beg);
 			Utility::byteswap_inplace(integer);
 			file_entry.write((char*)&integer, 4);
@@ -948,10 +921,7 @@ namespace FileTypes
 
 				uint32_t string_length_with_padding = string_length_with_null;
 				if (string_length_with_null % 8 != 0) {
-					int padding_bytes_needed = (8 - (string_length_with_null % 8));
-					std::string padding;
-					padding.resize(padding_bytes_needed, '\0');
-					file_entry.write(&padding[0], padding_bytes_needed);
+					unsigned int padding_bytes_needed = padToLen(file_entry, 8);
 					offset = offset + padding_bytes_needed;
 					string_length_with_padding = string_length_with_null + padding_bytes_needed;
 				}
@@ -1030,11 +1000,11 @@ namespace FileTypes
 		return Events_By_Name[name];
 	}
 
-	std::optional<int> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+	std::optional<uint32_t> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 		if (unused_flag_ids.size() == 0) {
 			return std::nullopt;
 		}
-		int flag_id = unused_flag_ids[0];
+		uint32_t flag_id = unused_flag_ids[0];
 		unused_flag_ids.erase(unused_flag_ids.begin(), unused_flag_ids.begin() + 1);
 		return flag_id;
 	}
