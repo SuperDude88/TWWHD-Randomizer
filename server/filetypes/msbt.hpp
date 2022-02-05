@@ -4,15 +4,10 @@
 #include <string>
 #include <unordered_map>
 #include <fstream>
-#include <cstring>
-#include <algorithm>
-#include <iterator>
-
-#include "../utility/byteswap.hpp"
 
 
 
-enum struct MSBTError
+enum struct [[nodiscard]] MSBTError
 {
 	NONE = 0,
 	COULD_NOT_OPEN,
@@ -137,22 +132,23 @@ namespace FileTypes {
 
 	class MSBTFile {
 	public:
-		MSBTHeader header;
-		LBL1Header LBL1;
-		ATR1Header ATR1;
-		TSY1Header TSY1;
-		TXT2Header TXT2;
 		std::unordered_map<std::string, Message> messages_by_label;
 
 		MSBTFile();
 		static MSBTFile createNew(const std::string& filename);
-		MSBTError readSection(std::istream& msbt);
 		MSBTError loadFromBinary(std::istream& msbt);
 		MSBTError loadFromFile(const std::string& filePath);
 		Message& addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message);
 		MSBTError writeToStream(std::ostream& out);
 		MSBTError writeToFile(const std::string& outFilePath);
 	private:
+		MSBTHeader header;
+		LBL1Header LBL1;
+		ATR1Header ATR1;
+		TSY1Header TSY1;
+		TXT2Header TXT2;
+
 		void initNew();
+		MSBTError readSection(std::istream& msbt);
 	};
 }

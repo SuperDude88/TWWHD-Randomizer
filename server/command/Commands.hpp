@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <iostream>
+#include <fstream>
 
 namespace Commands {
     enum struct CommandError

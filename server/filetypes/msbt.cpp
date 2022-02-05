@@ -1,5 +1,13 @@
 #include "msbt.hpp"
 
+#include <cstring>
+#include <algorithm>
+
+#include "../utility/byteswap.hpp"
+#include "../utility/common.hpp"
+
+
+
 uint32_t LabelChecksum(uint32_t groupCount, std::string label) {
     unsigned int group = 0;
 
@@ -358,12 +366,12 @@ MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
 
         msbt.seekg(header.offset + 0x10 + entry.offset); //Offsets are relative to the "end" of the header, 4 bytes before the offset data starts (add 0x10 instead of 0x14)
         uint32_t length;
-        if (i + 1 != header.entryCount) { //Check if the index is the last in the file
-            length = entry.nextOffset - entry.offset;
-        }
-        else {
+        if (i + 1 == header.entryCount) { //Check if the index is the last in the file
             length = header.tableSize - entry.offset;
             entry.nextOffset = header.tableSize;
+        }
+        else {
+            length = entry.nextOffset - entry.offset;
         }
         entry.message.resize(length / 2); //length is bytes, 2 bytes per char
         if (!msbt.read((char*)&entry.message[0], length))
@@ -423,12 +431,7 @@ void writeLBL1(std::ostream& out, LBL1Header& header) {
         i = i + 1;
     }
 
-    if (out.tellp() % 16 != 0) { //Write padding if needed
-        unsigned int padding_size = 16 - (out.tellp() % 16);
-        std::string padding;
-        padding.resize(padding_size, '\xab');
-        out.write(&padding[0], padding_size);
-    }
+    padToLen(out, 16, '\xab');
 
     return;
 
@@ -452,15 +455,24 @@ void writeATR1(std::ostream& out, ATR1Header& header) {
         Utility::byteswap_inplace(attributes.demoID);
         Utility::byteswap_inplace(attributes.commentE_1);
         Utility::byteswap_inplace(attributes.commentE_2);
-        out.write(reinterpret_cast<char*>(&attributes), sizeof(Attributes));
+
+        out.write(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character));
+        out.write(reinterpret_cast<char*>(&attributes.boxStyle), sizeof(attributes.boxStyle));
+        out.write(reinterpret_cast<char*>(&attributes.drawType), sizeof(attributes.drawType));
+        out.write(reinterpret_cast<char*>(&attributes.screenPos), sizeof(attributes.screenPos));
+        out.write(reinterpret_cast<char*>(&attributes.price), sizeof(attributes.price));
+        out.write(reinterpret_cast<char*>(&attributes.nextNo), sizeof(attributes.nextNo));
+        out.write(reinterpret_cast<char*>(&attributes.item), sizeof(attributes.item));
+        out.write(reinterpret_cast<char*>(&attributes.lineAlignment), sizeof(attributes.lineAlignment));
+        out.write(reinterpret_cast<char*>(&attributes.soundEffect), sizeof(attributes.soundEffect));
+        out.write(reinterpret_cast<char*>(&attributes.camera), sizeof(attributes.camera));
+        out.write(reinterpret_cast<char*>(&attributes.demoID), sizeof(attributes.demoID));
+        out.write(reinterpret_cast<char*>(&attributes.animation), sizeof(attributes.animation));
+        out.write(reinterpret_cast<char*>(&attributes.commentE_1), sizeof(attributes.commentE_1));
+        out.write(reinterpret_cast<char*>(&attributes.commentE_2), sizeof(attributes.commentE_2));
     }
 
-    if (out.tellp() % 16 != 0) { //Write padding if needed
-        unsigned int padding_size = 16 - (out.tellp() % 16);
-        std::string padding;
-        padding.resize(padding_size, '\xab');
-        out.write(&padding[0], padding_size);
-    }
+    padToLen(out, 16, '\xab');
 
     return;
 
@@ -480,12 +492,7 @@ void writeTSY1(std::ostream& out, TSY1Header& header) {
         out.write(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex));
     }
 
-    if (out.tellp() % 16 != 0) { //Write padding if needed
-        unsigned int padding_size = 16 - (out.tellp() % 16);
-        std::string padding;
-        padding.resize(padding_size, '\xab');
-        out.write(&padding[0], padding_size);
-    }
+    padToLen(out, 16, '\xab');
 
     return;
 
@@ -511,12 +518,7 @@ void writeTXT2(std::ostream& out, TXT2Header& header) {
         out.write((char*)&entry.message[0], entry.message.size() * 2); //double the size because it is the number of 2-byte chars to write, but functions treats them as 1-byte
     }
 
-    if (out.tellp() % 16 != 0) { //Write padding if needed
-        unsigned int padding_size = 16 - (out.tellp() % 16);
-        std::string padding;
-        padding.resize(padding_size, '\xab');
-        out.write(&padding[0], padding_size);
-    }
+    padToLen(out, 16, '\xab');
 
     return;
 
@@ -526,7 +528,6 @@ namespace FileTypes {
 
     const char* MSBTErrorGetName(MSBTError err) {
         switch (err) {
-
             case MSBTError::NONE:
                 return "NONE";
             case MSBTError::COULD_NOT_OPEN:
@@ -559,7 +560,7 @@ namespace FileTypes {
     }
 
     void MSBTFile::initNew() {
-        memcpy(header.magicMsgStdBn, "MsgStdBn", 8);
+        memcpy(&header.magicMsgStdBn, "MsgStdBn", 8);
         header.byteOrderMarker = 0xFEFF;
         header.unknown_0x00 = 0;
         header.encoding_0x01 = 0x01;
@@ -567,29 +568,29 @@ namespace FileTypes {
         header.sectionCount = 4;
         header.unknown2_0x00 = 0;
         header.fileSize = 0;
-        memset(header.padding_0x00, '\0', 10);
+        memset(&header.padding_0x00, '\0', 10);
         LBL1.offset = 0;
         memcpy(LBL1.magicLBL1, "LBL1", 4);
         LBL1.tableSize = 0;
-        memset(LBL1.padding_0x00, '\0', 8);
+        memset(&LBL1.padding_0x00, '\0', 8);
         LBL1.entryCount = 0;
         LBL1.entries = {};
         ATR1.offset = 0;
-        memcpy(ATR1.magicATR1, "ATR1", 4);
+        memcpy(&ATR1.magicATR1, "ATR1", 4);
         ATR1.tableSize = 0;
-        memset(ATR1.padding_0x00, '\0', 8);
+        memset(&ATR1.padding_0x00, '\0', 8);
         ATR1.entryCount = 0;
         ATR1.entrySize = 0x17; //WWHD always uses this for its entry size
         ATR1.entries = {};
         TSY1.offset = 0;
-        memcpy(TSY1.magicTSY1, "TSY1", 4);
+        memcpy(&TSY1.magicTSY1, "TSY1", 4);
         TSY1.tableSize = 0;
-        memset(TSY1.padding_0x00, '\0', 8);
+        memset(&TSY1.padding_0x00, '\0', 8);
         TSY1.entries = {};
         TXT2.offset = 0;
-        memcpy(TXT2.magicTXT2, "TXT2", 4);
+        memcpy(&TXT2.magicTXT2, "TXT2", 4);
         TXT2.tableSize = 0;
-        memset(TXT2.padding_0x00, '\0', 8);
+        memset(&TXT2.padding_0x00, '\0', 8);
         TXT2.entryCount = 0;
         TXT2.entries = {};
         messages_by_label = {};
@@ -686,7 +687,6 @@ namespace FileTypes {
         Utility::byteswap_inplace(header.unknown_0x00);
         Utility::byteswap_inplace(header.sectionCount);
         Utility::byteswap_inplace(header.unknown2_0x00);
-        Utility::byteswap_inplace(header.fileSize);
 
         out.write(header.magicMsgStdBn, 8);
         out.write((char*)&header.byteOrderMarker, sizeof(header.byteOrderMarker));
@@ -695,7 +695,7 @@ namespace FileTypes {
         out.write((char*)&header.version_0x03, sizeof(header.version_0x03));
         out.write((char*)&header.sectionCount, sizeof(header.sectionCount));
         out.write((char*)&header.unknown2_0x00, sizeof(header.unknown2_0x00));
-        out.write((char*)&header.fileSize, sizeof(header.fileSize));
+        out.seekp(4, std::ios::cur); //skip filesize for now
         out.write((char*)&header.padding_0x00, sizeof(header.padding_0x00));
 
         //Go through and update all the sections based on the messages by ID
@@ -708,12 +708,12 @@ namespace FileTypes {
         TSY1.entries.resize(messages_by_label.size());
         TXT2.entries.resize(messages_by_label.size());
 
-        for (const std::pair<const std::string, Message>& message : messages_by_label) {
-            LBL1.entries[message.second.label.checksum].stringCount = LBL1.entries[message.second.label.checksum].stringCount + 1;
-            LBL1.entries[message.second.label.checksum].labels.push_back(message.second.label);
-            ATR1.entries[message.second.label.messageIndex] = message.second.attributes;
-            TSY1.entries[message.second.label.messageIndex] = message.second.style;
-            TXT2.entries[message.second.label.messageIndex] = message.second.text;
+        for (const auto& [label, message] : messages_by_label) {
+            LBL1.entries[message.label.checksum].stringCount += 1;
+            LBL1.entries[message.label.checksum].labels.push_back(message.label);
+            ATR1.entries[message.label.messageIndex] = message.attributes;
+            TSY1.entries[message.label.messageIndex] = message.style;
+            TXT2.entries[message.label.messageIndex] = message.text;
         }
 
         LBL1.tableSize = LBL1.entryCount * 0x8;
@@ -750,11 +750,10 @@ namespace FileTypes {
         header.fileSize = out.tellp();
         out.seekp(0x12, std::ios::beg);
 
-        Utility::byteswap_inplace(header.fileSize);
-        out.write((char*)&header.fileSize, sizeof(header.fileSize)); //Update full file size
+        uint32_t fileSize_BE = Utility::byteswap(header.fileSize);
+        out.write((char*)&fileSize_BE, sizeof(fileSize_BE)); //Update full file size
 
         return MSBTError::NONE;
-
     }
 
     MSBTError MSBTFile::writeToFile(const std::string& outFilePath) {

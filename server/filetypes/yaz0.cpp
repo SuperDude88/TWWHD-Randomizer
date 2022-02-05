@@ -1,7 +1,9 @@
 #include "yaz0.hpp"
-#include "../utility/byteswap.hpp"
+
 #include <cstring>
 #include <string>
+
+#include "../utility/byteswap.hpp"
 
 constexpr uint32_t READ_CHUNK_SIZE = 4096;
 constexpr uint32_t MAX_SEARCH_RANGE = 0x1000;
@@ -14,22 +16,22 @@ struct Yaz0Header
     char _unused0[8];
 };
 
-bool readYaz0Header(std::istream& in, Yaz0Header& header)
+YAZ0Error readYaz0Header(std::istream& in, Yaz0Header& header)
 {
-    if(!in.read(header.magic, sizeof(header.magic))) return false;
+    if(!in.read(header.magic, sizeof(header.magic))) return YAZ0Error::REACHED_EOF;
     // check magic string in header
-    if(std::strncmp(header.magic, "Yaz0", 4) != 0) return false;
-    if(!in.read(reinterpret_cast<char*>(&header.uncompressedSize), sizeof(header.uncompressedSize))) return false;
+    if(std::strncmp(header.magic, "Yaz0", 4) != 0) return YAZ0Error::NOT_YAZ0;
+    if(!in.read(reinterpret_cast<char*>(&header.uncompressedSize), sizeof(header.uncompressedSize))) return YAZ0Error::REACHED_EOF;
     Utility::byteswap_inplace(header.uncompressedSize);
-    if(!in.read(header._unused0, sizeof(header._unused0))) return false;
-    return true;
+    if(!in.read(header._unused0, sizeof(header._unused0))) return YAZ0Error::REACHED_EOF;
+    return YAZ0Error::NONE;
 }
 
 // simple and straight encoding scheme for Yaz0
-inline uint32_t simpleEnc(const uint8_t* src, uint32_t size, int pos, uint32_t& matchPosOut, int searchRange)
+inline uint32_t simpleEnc(const uint8_t* src, uint32_t size, uint32_t pos, uint32_t& matchPosOut, uint32_t searchRange)
 {
-    int startPos = pos - searchRange;
-    int i = 0;
+    uint32_t startPos = pos - searchRange;
+    uint32_t i = 0;
     uint32_t runLen = 0, maxRunLen;
     // numBytes is length of best match found
     uint32_t numBytes = 1;
@@ -49,10 +51,6 @@ inline uint32_t simpleEnc(const uint8_t* src, uint32_t size, int pos, uint32_t& 
         return 1;
     }
 
-    if (startPos < 0)
-    {
-        startPos = 0;
-    }
     for (i = startPos; i < pos; i++)
     {
         // loop unwind pre-check
@@ -83,7 +81,7 @@ inline uint32_t simpleEnc(const uint8_t* src, uint32_t size, int pos, uint32_t& 
 }
 
 // a lookahead encoding scheme for ngc Yaz0
-uint32_t nintendoEnc(const uint8_t* src, int size, int pos, uint32_t& matchPosOut, int searchRange)
+uint32_t nintendoEnc(const uint8_t* src, uint32_t size, uint32_t pos, uint32_t& matchPosOut, uint32_t searchRange)
 {
     uint32_t numBytes = 1;
     static uint32_t numBytes1;
@@ -114,98 +112,94 @@ uint32_t nintendoEnc(const uint8_t* src, int size, int pos, uint32_t& matchPosOu
     return numBytes;
 }
 
-struct Ret
+uint32_t yaz0DataEncode(const uint8_t* src, uint32_t srcSize, std::ostream& out, uint32_t level = 9)
 {
-  int srcPos, dstPos;
-};
+    uint32_t srcPos = 0;
+    uint32_t dstPos = 0;
 
-
-int yaz0DataEncode(const uint8_t* src, int srcSize, std::ostream& out, uint32_t level = 9)
-{
-    Ret r = { 0, 0 };
     uint8_t dst[24];    // 8 codes * 3 bytes maximum
-    int dstSize = 0;
+    uint32_t dstSize = 0;
     
     uint32_t validBitCount = 0; //number of valid bits left in "code" byte
     uint8_t currCodeByte = 0;
-    int searchRange = MAX_SEARCH_RANGE;
+    uint32_t searchRange = MAX_SEARCH_RANGE;
     if (level > 0 && level < 9)
     {
         searchRange >>= (9 - level);
     }
 
-    while(r.srcPos < srcSize)
+    while(srcPos < srcSize)
     {
         uint32_t numBytes;
         uint32_t matchPos;
 
-        numBytes = nintendoEnc(src, srcSize, r.srcPos, matchPos, searchRange);
+        numBytes = nintendoEnc(src, srcSize, srcPos, matchPos, searchRange);
         if (numBytes < 3)
         {
             //straight copy
-            dst[r.dstPos] = src[r.srcPos];
-            r.dstPos++;
-            r.srcPos++;
+            dst[dstPos] = src[srcPos];
+            dstPos++;
+            srcPos++;
             //set flag for straight copy
             currCodeByte |= (0x80 >> validBitCount);
         }
         else 
         {
             //RLE part
-            uint32_t dist = r.srcPos - matchPos - 1; 
+            uint32_t dist = srcPos - matchPos - 1; 
             uint8_t byte1, byte2, byte3;
 
             if (numBytes >= 0x12)  // 3 byte encoding
             {
                 byte1 = 0 | (dist >> 8);
                 byte2 = dist & 0xff;
-                dst[r.dstPos++] = byte1;
-                dst[r.dstPos++] = byte2;
+                dst[dstPos++] = byte1;
+                dst[dstPos++] = byte2;
                 // maximum runlength for 3 byte encoding
                 if (numBytes > 0xff + 0x12)
                 {
                     numBytes = 0xff + 0x12;
                 }
                 byte3 = numBytes - 0x12;
-                dst[r.dstPos++] = byte3;
+                dst[dstPos++] = byte3;
             } 
             else  // 2 byte encoding
             {
                 byte1 = ((numBytes - 2) << 4) | (dist >> 8);
                 byte2 = dist & 0xff;
-                dst[r.dstPos++] = byte1;
-                dst[r.dstPos++] = byte2;
+                dst[dstPos++] = byte1;
+                dst[dstPos++] = byte2;
             }
-            r.srcPos += numBytes;
+            srcPos += numBytes;
         }
         validBitCount++;
         //write eight codes
         if(validBitCount == 8)
         {
             out.put(currCodeByte);
-            out.write(reinterpret_cast<char*>(dst), r.dstPos);
-            dstSize += r.dstPos+1;
+            out.write(reinterpret_cast<char*>(dst), dstPos);
+            dstSize += dstPos+1;
 
             currCodeByte = 0;
             validBitCount = 0;
-            r.dstPos = 0;
+            dstPos = 0;
         }
     }
     if(validBitCount > 0)
     {
         out.put(currCodeByte);
-        out.write(reinterpret_cast<char*>(dst), r.dstPos);
-        dstSize += r.dstPos + 1;
+        out.write(reinterpret_cast<char*>(dst), dstPos);
+        dstSize += dstPos + 1;
 
         currCodeByte = 0;
         validBitCount = 0;
-        r.dstPos = 0;
+        dstPos = 0;
     }
 
     return dstSize;
 }
 
-bool yaz0DataDecode(const char* in, char* out, uint32_t outTotalSize)
+YAZ0Error yaz0DataDecode(const char* in, char* out, uint32_t outTotalSize)
 {
     uint32_t runLength = 0, runOffset = 0;
     uint8_t codeInfoBlockMSB = 0, codeInfoBlockLSB = 0;
@@ -255,11 +249,29 @@ bool yaz0DataDecode(const char* in, char* out, uint32_t outTotalSize)
         codingModeByte <<= 1;
         validCodingBitCount -= 1;
     }
-    return true;
+
+    return YAZ0Error::NONE;
 }
 
 namespace FileTypes {
-    uint32_t yaz0Encode(std::istream& in, std::ostream& out, int compressionLevel)
+    const char* YAZ0ErrorGetName(YAZ0Error err) {
+        switch (err) {
+            case YAZ0Error::NONE:
+                return "NONE";
+            case YAZ0Error::COULD_NOT_OPEN:
+                return "COULD_NOT_OPEN";
+            case YAZ0Error::NOT_YAZ0:
+                return "NOT_YAZ0";
+            case YAZ0Error::DATA_SIZE_0:
+                return "DATA_SIZE_0";
+            case YAZ0Error::REACHED_EOF:
+                return "REACHED_EOF";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    YAZ0Error yaz0Encode(std::istream& in, std::ostream& out, uint32_t compressionLevel)
     {
         char readChunkBuf[READ_CHUNK_SIZE];
         std::string inData{};
@@ -279,19 +291,22 @@ namespace FileTypes {
         out.write(reinterpret_cast<char*>(&outDataSize), 4);
         out.write(dummyData, 8);
 
-        return yaz0DataEncode(reinterpret_cast<const uint8_t*>(inData.data()), dataSize, out, compressionLevel);
+        if (yaz0DataEncode(reinterpret_cast<const uint8_t*>(inData.data()), dataSize, out, compressionLevel) == 0) return YAZ0Error::DATA_SIZE_0;
+        return YAZ0Error::NONE;
     }
 
-    uint32_t yaz0Decode(std::istream& in, std::ostream& out)
+    YAZ0Error yaz0Decode(std::istream& in, std::ostream& out)
     {
         char readChunkBuf[READ_CHUNK_SIZE];
         std::string inData{};
 
         Yaz0Header header;
 
-        if(!readYaz0Header(in, header))
+        YAZ0Error err = YAZ0Error::NONE;
+        err = readYaz0Header(in, header);
+        if(err != YAZ0Error::NONE)
         {
-            return 0;
+            return err;
         }
 
         // TODO: for now we are reading entire file into memory
@@ -309,13 +324,15 @@ namespace FileTypes {
         inData.append(readChunkBuf, in.gcount());
 
         char* outData = new char[header.uncompressedSize];
-        if(!yaz0DataDecode(inData.data(), outData, header.uncompressedSize))
+        err = yaz0DataDecode(inData.data(), outData, header.uncompressedSize);
+        if(err != YAZ0Error::NONE)
         {
-            return 0;
+            delete[] outData;
+            return err;
         }
         out.write(outData, header.uncompressedSize);
 
         delete[] outData;
-        return header.uncompressedSize;
+        return YAZ0Error::NONE;
     }
 }

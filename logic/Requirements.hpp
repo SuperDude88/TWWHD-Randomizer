@@ -10,7 +10,7 @@
 #include "../libs/json.hpp"
 #include "GameItem.hpp"
 #include "Location.hpp"
-#include "Setting.hpp"
+#include "../options.hpp"
 
 
 enum struct RequirementType
@@ -33,7 +33,7 @@ struct Requirement;
 
 struct Requirement 
 {
-    using Argument = std::variant<int, std::string, Requirement, GameItem, MacroIndex, Location, Setting>;
+    using Argument = std::variant<int, std::string, Requirement, GameItem, MacroIndex, Location, Option>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };

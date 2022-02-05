@@ -42,7 +42,7 @@ orca_counter_failsafe:
 	b beedle_dont_buy_blue_chu
 
 .org @NextFreeSpace
-.global beedle_dont_buy_blue_chu ; REPLACE ble INSTRUCTION AT 0X02215864
+.global beedle_dont_buy_blue_chu
 beedle_dont_buy_blue_chu:
   bne beedle_not_blue_chu_jelly
   li r31, 0xF75

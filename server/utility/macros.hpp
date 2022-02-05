@@ -1,16 +1,9 @@
 #pragma once
 
-#ifdef PLATFORM_DKP
-	#define byteswap(x) //Don't byteswap on Wii U, already big endian
-	#define byteswap_inplace(x)
-#else
-	//#include "../utility/byteswap.hpp"
-	//#define byteswap(x) Utility::byteswap(x)
-	//#define byteswap_inplace(x) Utility::byteswap_inplace(x)
-#endif
+
 
 //commands from "System" group (00)
-#define TEXT_COLOR_WHITE u"\x0E\x00\x03\x02\xFF\xFF0E\x00\x03\x02\x00"
+#define TEXT_COLOR_DEFAULT u"\x0E\x00\x03\x02\xFF\xFF0E\x00\x03\x02\x00" //looks to set the text color to that textbox's default, specified in the TSY entry
 #define TEXT_COLOR_RED u"\x0E\x00\x03\x02\x01"
 #define TEXT_COLOR_GREEN u"\x0E\x00\x03\x02\x02"
 #define TEXT_COLOR_BLUE u"\x0E\x00\x03\x02\x03"
@@ -19,7 +12,6 @@
 #define TEXT_COLOR_MAGENTA u"\x0E\x00\x03\x02\x06"
 #define TEXT_COLOR_GRAY u"\x0E\x00\x03\x02\x07"
 #define TEXT_COLOR_ORANGE u"\x0E\x00\x03\x02\x08"
-
 
 
 //commands from "ControlTags" group (01)
@@ -40,14 +32,13 @@
 #define CAPITAL u"\x0E\x01\x0B\x00" //presumably capitalizes following letter
 
 
-
 //commands from "ReplaceTags" group (02)
 #define PLAYER_NAME u"\x0E\x02\x00\x00"
 
 
-
 //commands from "PictureFontTags" group (03)
 #define IMAGE(image) u"\x0E\x03" image u"\x00" //input image as a hex string
+
 
 //commands from "SoundTags" group (04)
 #define SOUND(sound) u"\x0E\x04" sound u"\x00" //input image as a hex string

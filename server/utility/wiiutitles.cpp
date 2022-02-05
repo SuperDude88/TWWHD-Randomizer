@@ -28,7 +28,7 @@ std::string convertToPosixPath(const char* volPath) {
     std::string posixPath;
 
     // volPath has to start with /vol/
-    if (strncmp("/vol/", volPath, 5) != 0) return "";
+    if (std::strncmp("/vol/", volPath, 5) != 0) return "";
 
     // Get and append the mount path
     const char* drivePathEnd = strchr(volPath + 5, '/');
