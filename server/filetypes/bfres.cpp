@@ -1,5 +1,12 @@
 #include "bfres.hpp"
 
+#include <cstring>
+#include <algorithm>
+#include <filesystem>
+#include <variant>
+
+#include "../utility/byteswap.hpp"
+
 //This code should probably be optimized a bit, minimize loops etc, it runs more compared to the other load functions
 
 std::variant<FRESError, std::string> read_string(std::istream& bfres, int offset) {
@@ -20,7 +27,7 @@ std::variant<FRESError, std::string> read_string(std::istream& bfres, int offset
 FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
     // magicFRES
     if (!bfres.read(hdr.magicFRES, 4)) return FRESError::REACHED_EOF;
-    if (strncmp(hdr.magicFRES, "FRES", 4) != 0)
+    if (std::strncmp(hdr.magicFRES, "FRES", 4) != 0)
     {
         return FRESError::NOT_FRES;
     }
@@ -335,7 +342,7 @@ namespace FileTypes {
         return loadFromBinary(file);
     }
 
-    FRESError resFile::replaceEmbeddedFile(unsigned int fileIndex, const std::string& newFile) {
+    FRESError resFile::replaceEmbeddedFile(const unsigned int fileIndex, const std::string& newFile) {
         uint32_t originalLen = fresHeader.embeddedFiles[fileIndex].fileLength;
 
         std::ifstream inFile(newFile, std::ios::binary);
@@ -362,7 +369,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceEmbeddedFile(std::string& fileName, const std::string& newFile) {
+    FRESError resFile::replaceEmbeddedFile(const std::string& fileName, const std::string& newFile) {
         GroupHeader group;
         group.groupLength = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C]);
         group.entryCount = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C] + 4);
@@ -420,9 +427,9 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceFromDir(std::string& dirPath) {
-        for (auto& p : std::filesystem::directory_iterator(dirPath)) {
-            replaceEmbeddedFile(p.path().string().substr(dirPath.size()), p.path().string());
+    FRESError resFile::replaceFromDir(const std::string& dirPath) {
+        for (const auto& p : std::filesystem::directory_iterator(dirPath)) {
+            if(FRESError err = replaceEmbeddedFile(p.path().string().substr(dirPath.size()), p.path().string()); err != FRESError::NONE) return err;
         }
         return FRESError::NONE;
     }

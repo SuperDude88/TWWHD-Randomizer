@@ -1,10 +1,10 @@
 ; skip some code so the long intro movie is skipped.
-.org 0x025aed5c
-	b 0x025aee18
-.org 0x025aef08
+.org 0x025aedcc
 	nop
-.org 0x025aeec0
-	mr. r0, r30
+.org 0x025aede0
+	nop
+.org 0x025aee00
+	b 0x025aee18
 
 
 ; This makes the warps out of boss rooms always skip the cutscene usually shown the first time you beat the boss and warp out.
@@ -79,15 +79,7 @@ check_hyrule_warp_unlocked:
 	nop
 
 
-; Set the flag for having played each song before displaying text (skips the conducting)
-	; .org 0x0243acf4
-	; 	b 0x0243b090
-	; .org 0x0243b09c
-	; 	mr r3, r31
-	; 	lfs f31, 0x5128(r6)
-	; 	cmpwi r7, 0x0
-	; 	b 0x0243acf8
-; very broken
+; Skipping song replays is very broken, not as big of a deal on HD since you only see the anim once after each savewarp (for each song)
 
 
 ; Change Tott to only dance once to teach you the Song of Passing, instead of twice.

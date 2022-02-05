@@ -35,7 +35,7 @@ public:
     using LocationIndex = uint32_t;
     using ItemSet = std::unordered_multiset<GameItem>;
     // right now assuming all settings are boolean (will change later)
-    using Settings = std::unordered_set<Setting>;
+    using Settings = std::unordered_set<Option>;
     constexpr static uint32_t LOCATION_COUNT = static_cast<std::underlying_type_t<Location>>(Location::COUNT);
 
     LocationManager();

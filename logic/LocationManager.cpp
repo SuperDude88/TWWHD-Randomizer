@@ -1,7 +1,7 @@
 
 #include "LocationManager.hpp"
 #include "Requirements.hpp"
-#include "Setting.hpp"
+#include "../options.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <climits>
@@ -14,7 +14,7 @@
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << msg; return err;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, LocationError::GAME_ITEM_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, Location::INVALID, msg, LocationError::LOCATION_DOES_NOT_EXIST)
-#define SETTING_VALID_CHECK(set, msg) VALID_CHECK(set, Setting::INVALID, msg, LocationError::SETTING_DOES_NOT_EXIST)
+#define SETTING_VALID_CHECK(set, msg) VALID_CHECK(set, Option::INVALID, msg, LocationError::SETTING_DOES_NOT_EXIST)
 
 
 LocationManager::LocationManager()
@@ -27,7 +27,7 @@ LocationManager::LocationError LocationManager::parseElement(RequirementType typ
     std::string argStr;
     GameItem argItem = GameItem::INVALID;
     Location argLoc = Location::INVALID;
-    Setting argSetting = Setting::INVALID;
+    Option argSetting = Option::INVALID;
     int countValue = 0;
     LocationError err = LocationError::NONE;
     if (args.size() == 0) return LocationError::INCORRECT_ARG_COUNT; // all ops require at least one arg
@@ -286,7 +286,7 @@ bool LocationManager::evaluateRequirement(const Requirement& req, const ItemSet&
         return evaluateRequirement(locationEntries[locationAsIndex(std::get<Location>(req.args[0]))].requirement, ownedItems, settings);
     case RequirementType::SETTING:
         // TODO: assuming all boolean settings for now
-        return settings.count(std::get<Setting>(req.args[0])) > 0;
+        return settings.count(std::get<Option>(req.args[0])) > 0;
     case RequirementType::MACRO:
         return evaluateRequirement(macros[std::get<MacroIndex>(req.args[0])], ownedItems, settings);
     case RequirementType::NONE:

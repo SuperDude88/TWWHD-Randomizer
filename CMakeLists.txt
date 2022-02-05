@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.7)
 project(wwhd_rando_patch CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -Wall") #would have implicit conversions off, breaks some tweaks
-add_definitions(-DRANDO_ROOT="${CMAKE_SOURCE_DIR}")
 
 if(DEFINED DEVKITPRO)
   include("${DEVKITPRO}/wut/share/wut.cmake" REQUIRED)
@@ -30,11 +29,11 @@ endif()
 
 add_executable(wwhd_rando_patch tweaks.cpp)
 target_sources(wwhd_rando_patch PRIVATE "randomizer.cpp" "options.cpp")
+add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")
-add_subdirectory("logic")
-# we don't build tests for console currently
+add_subdirectory("logic") # not currently implemented, kept for some includes
 
 if(WIN32)
   target_link_libraries(wwhd_rando_patch zlib)
@@ -53,3 +52,7 @@ endif()
 if(DEFINED DEVKITPRO)
   wut_create_rpx(wwhd_rando_patch)
 endif()
+
+file(COPY "asm/custom_symbols.txt" DESTINATION "${CMAKE_BINARY_DIR}/asm")
+file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/asm")
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

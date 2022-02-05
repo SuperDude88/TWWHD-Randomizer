@@ -1,5 +1,13 @@
 #include "elf.hpp"
 
+#include <cstring>
+#include <algorithm>
+
+#include "../utility/byteswap.hpp"
+#include "../utility/common.hpp"
+
+
+
 namespace FileTypes {
 
 	const char* ELFErrorGetName(ELFError err) {
@@ -120,8 +128,8 @@ namespace FileTypes {
 		Utility::byteswap_inplace(ehdr.e_shstrndx);
 
 		shdr_table.reserve(ehdr.e_shnum); //Allocate the memory from the start to minimize copies
-		for (int i = 0; i < ehdr.e_shnum; i++) {
-			Elf32_shdr shdr;
+		for (unsigned int i = 0; i < ehdr.e_shnum; i++) {
+			Elf32_Shdr shdr;
 			elf.seekg(ehdr.e_shoff + ehdr.e_shentsize * i, std::ios::beg);
 			if(!elf.read(reinterpret_cast<char*>(&shdr.sh_name), sizeof(shdr.sh_name))) {
 				return ELFError::REACHED_EOF;
@@ -155,7 +163,7 @@ namespace FileTypes {
 			}
 
 			Utility::byteswap_inplace(shdr.sh_name);
-			Utility::byteswap_inplace(shdr.sh_type);
+			shdr.sh_type = static_cast<SectionType>(Utility::byteswap(static_cast<uint32_t>(shdr.sh_type))); //weird enum casting stuff
 			Utility::byteswap_inplace(shdr.sh_flags);
 			Utility::byteswap_inplace(shdr.sh_addr);
 			Utility::byteswap_inplace(shdr.sh_offset);
@@ -165,17 +173,17 @@ namespace FileTypes {
 			Utility::byteswap_inplace(shdr.sh_addralign);
 			Utility::byteswap_inplace(shdr.sh_entsize);
 
-			if (shdr.sh_type != 8) {
+			if (shdr.sh_type != SectionType::SHT_NOBITS) {
 				elf.seekg(shdr.sh_offset, std::ios::beg);
 				shdr.data.resize(shdr.sh_size);
 				if(!elf.read(&shdr.data[0], shdr.sh_size)) {
 					return ELFError::REACHED_EOF;
 				}
-				if(shdr.sh_type != 0 && shdr.sh_size == 0) { //If type isn't nobits or NULL and the size is 0, should not happen for WWHD
+				if(shdr.sh_type != SectionType::SHT_NULL && shdr.sh_size == 0) { //If type isn't nobits or NULL and the size is 0, should not happen for WWHD
 					return ELFError::USED_SECTION_IS_EMTPY;
 				}
 			}
-			else {//Don't read data if type is 8 (SHT_NOBITS) since the data would be useless
+			else { //Don't read data if type is 8 (SHT_NOBITS) since the data would be useless
 				if(shdr.sh_offset != 0) {
 					return ELFError::NOBITS_SECTION_NOT_EMPTY; //Offset in file should always be 0
 				}
@@ -200,7 +208,7 @@ namespace FileTypes {
 		if (isEmpty == true) {
 			return ELFError::HEADER_DATA_NOT_LOADED;
 		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_shdr>& a, const std::pair<int, Elf32_shdr>& b) { //Make sure the items are sorted by index so we get the correct section
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) { //Make sure the items are sorted by index so we get the correct section
 			return a.first < b.first;
 			});
 		if (shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
@@ -211,18 +219,18 @@ namespace FileTypes {
 		return ELFError::NONE;
 	}
 
-	ELFError ELF::extend_section(int index, uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
+	ELFError ELF::extend_section(const size_t index, const uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
 		if (isEmpty == true) {
 			return ELFError::HEADER_DATA_NOT_LOADED;
 		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_shdr>& a, const std::pair<int, Elf32_shdr>& b) { //Make sure the items are sorted by index so we get the correct section
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) { //Make sure the items are sorted by index so we get the correct section
 			return a.first < b.first;
 			});
 		if (shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
 			return ELFError::SECTION_DATA_NOT_LOADED;
 		}
-		int sectionOffset = startAddr - shdr_table[index].second.sh_addr;
-		int sizeToData = sectionOffset - shdr_table[index].second.sh_size;
+		uint32_t sectionOffset = startAddr - shdr_table[index].second.sh_addr;
+		uint32_t sizeToData = sectionOffset - shdr_table[index].second.sh_size;
 		shdr_table[index].second.sh_size += sizeToData + newData.size();
 		shdr_table[index].second.data.resize(shdr_table[index].second.sh_size);
 		shdr_table[index].second.data.replace(sectionOffset, newData.size(), newData);
@@ -277,57 +285,47 @@ namespace FileTypes {
 		Utility::byteswap_inplace(ehdr.e_shnum);
 		Utility::byteswap_inplace(ehdr.e_shstrndx);
 
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_shdr>& a, const std::pair<int, Elf32_shdr>& b) {
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) {
 			return a.second.sh_offset < b.second.sh_offset;
 			});
-		int nextOffset = ehdr.e_shoff + ehdr.e_shentsize * ehdr.e_shnum;
-		for (int i = 0; i < ehdr.e_shnum; i++) {
-			if (shdr_table[i].second.sh_type != 8 && shdr_table[i].second.sh_type != 0) { //Ignore null or nobits sections since their offsets are 0 and have no data in the file
-				out.seekp(nextOffset, std::ios::beg);
-				shdr_table[i].second.sh_offset = nextOffset;
-				shdr_table[i].second.sh_size = shdr_table[i].second.data.size();
-				if (shdr_table[i].second.sh_size != 0) { //Check if the size is non-zero (we check if section is SHT_NOBITS earlier)
-					out.write(&shdr_table[i].second.data[0], shdr_table[i].second.data.size());
-				}
-				int padding_size = 0;
-				if (i != ehdr.e_shnum - 1) { //No padding on the last entry, skip it
-					if (out.tellp() % shdr_table[i + 1].second.sh_addralign != 0) {
-						padding_size = shdr_table[i + 1].second.sh_addralign - (out.tellp() % shdr_table[i + 1].second.sh_addralign);
-						std::string padding;
-						padding.resize(padding_size);
-						out.write(&padding[0], padding_size);
-					}
-				}
-				nextOffset = nextOffset + shdr_table[i].second.sh_size + padding_size;
+
+		out.seekp(ehdr.e_shoff + ehdr.e_shentsize * ehdr.e_shnum, std::ios::beg);
+		for (auto& [index, section] : shdr_table) {
+			if (section.sh_type != SectionType::SHT_NOBITS && section.sh_type != SectionType::SHT_NULL) { //Ignore null or nobits sections since their offsets are 0 and have no data in the file
+				padToLen(out, section.sh_addralign);
+
+				section.sh_offset = out.tellp();
+				section.sh_size = section.data.size();
+				out.write(&section.data[0], section.data.size());
 			}
 		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_shdr>& a, const std::pair<int, Elf32_shdr>& b) { //Sort again so they are written by index, to update offsets we needed to write the data first
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) { //Sort again so they are written by index, to update offsets we needed to write the data first
 			return a.first < b.first;
 			});
 
 		out.seekp(ehdr.e_shoff, std::ios::beg);
-		for (int i = 0; i < ehdr.e_shnum; i++) {
-			Utility::byteswap_inplace(shdr_table[i].second.sh_name);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_type);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_flags);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_addr);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_offset);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_size);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_link);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_info);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_addralign);
-			Utility::byteswap_inplace(shdr_table[i].second.sh_entsize);
+		for (auto& [index, section] : shdr_table) {
+			Utility::byteswap_inplace(section.sh_name);
+			section.sh_type = static_cast<SectionType>(Utility::byteswap(static_cast<uint32_t>(section.sh_type))); //weird enum casting stuff
+			Utility::byteswap_inplace(section.sh_flags);
+			Utility::byteswap_inplace(section.sh_addr);
+			Utility::byteswap_inplace(section.sh_offset);
+			Utility::byteswap_inplace(section.sh_size);
+			Utility::byteswap_inplace(section.sh_link);
+			Utility::byteswap_inplace(section.sh_info);
+			Utility::byteswap_inplace(section.sh_addralign);
+			Utility::byteswap_inplace(section.sh_entsize);
 
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_name), sizeof(shdr_table[i].second.sh_name));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_type), sizeof(shdr_table[i].second.sh_type));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_flags), sizeof(shdr_table[i].second.sh_flags));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_addr), sizeof(shdr_table[i].second.sh_addr));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_offset), sizeof(shdr_table[i].second.sh_offset));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_size), sizeof(shdr_table[i].second.sh_size));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_link), sizeof(shdr_table[i].second.sh_link));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_info), sizeof(shdr_table[i].second.sh_info));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_addralign), sizeof(shdr_table[i].second.sh_addralign));
-			out.write(reinterpret_cast<char*>(&shdr_table[i].second.sh_entsize), sizeof(shdr_table[i].second.sh_entsize));
+			out.write(reinterpret_cast<char*>(&section.sh_name), sizeof(section.sh_name));
+			out.write(reinterpret_cast<char*>(&section.sh_type), sizeof(section.sh_type));
+			out.write(reinterpret_cast<char*>(&section.sh_flags), sizeof(section.sh_flags));
+			out.write(reinterpret_cast<char*>(&section.sh_addr), sizeof(section.sh_addr));
+			out.write(reinterpret_cast<char*>(&section.sh_offset), sizeof(section.sh_offset));
+			out.write(reinterpret_cast<char*>(&section.sh_size), sizeof(section.sh_size));
+			out.write(reinterpret_cast<char*>(&section.sh_link), sizeof(section.sh_link));
+			out.write(reinterpret_cast<char*>(&section.sh_info), sizeof(section.sh_info));
+			out.write(reinterpret_cast<char*>(&section.sh_addralign), sizeof(section.sh_addralign));
+			out.write(reinterpret_cast<char*>(&section.sh_entsize), sizeof(section.sh_entsize));
 		}
 
 		return ELFError::NONE;

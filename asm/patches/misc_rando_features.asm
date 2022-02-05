@@ -1,5 +1,6 @@
  ; save init needs more research before it can be added
-
+.org 0x025aece4
+	bl init_save_with_tweaks
 
 ; Set initial HP from a custom symbol and also also allow the initial current HP to be rounded down from the initial max HP (for starting with some heart pieces).
 .org 0x025b4dd4
@@ -161,26 +162,35 @@ check_player_in_casual_clothes:
 
 
 ; Change the condition for Outset switching to its alternate BGM theme from checking event bit 0E20 (PIRATES_ON_OUTSET, for Aryll being kidnapped) to instead check if the Pirate Ship chest has been opened (since Aryll is in the Pirate Ship in the randomizer).
-.org 0x020251f8
-	li r3, 13
-	li r4, 5
-	bl custom_isTbox_for_unloaded_stage_save_info
+.org 0x02025200
+	bl check_outset_bgm
 	
-.org 0x020238c4
-	li r3, 13
-	li r4, 5
-	bl custom_isTbox_for_unloaded_stage_save_info
-	
-.org 0x020268b4
-	li r3, 13
-	li r4, 5
+.org 0x020238cc
+	bl check_outset_bgm
 
 .org 0x020268c0
-	bl custom_isTbox_for_unloaded_stage_save_info
+	bl check_outset_bgm
 	
 .org 0x020268d0
+	bl check_outset_bgm
+.org @NextFreeSpace
+.global check_outset_bgm
+check_outset_bgm:
+	stwu sp, -0x10 (sp)
+	mflr r0
+	stw r0, 0x14 (sp)
+	li r3, 13
+	li r4, 5
 	bl custom_isTbox_for_unloaded_stage_save_info
+	lwz r0, 0x14 (sp)
+	mtlr r0
+	addi sp, sp, 0x10
+	blr
 
+ ; Also remove a check for watching the outset intro
+ ; HD save init oddities mean the event bit isn't set until after this function runs
+.org 0x02026804
+	li r3, 1
 
 ; Replace the calls to getCollectMapNum on the quest status screen with a call to a custom function that checks the number of owned tingle statues.
 .org 0x0263b250

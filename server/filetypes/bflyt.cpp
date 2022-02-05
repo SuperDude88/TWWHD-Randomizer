@@ -1,5 +1,10 @@
 #include "bflyt.hpp"
 
+#include <cstring>
+#include <unordered_set>
+
+#include "../utility/byteswap.hpp"
+
 static const std::unordered_set<std::string> sections = {
 	"cnt1",
 	"usd1",
@@ -12,21 +17,7 @@ static const std::unordered_set<std::string> sections = {
 	"grp1"
 };
 
-std::string readNullTerminatedStr(std::istream& in, const unsigned int offset) {
-	in.seekg(offset, std::ios::beg);
 
-	std::string ret;
-	char character = '\x00';
-	do {
-		if (!in.read(&character, 1)) {
-			ret.clear();
-			return ret;
-		}
-		ret += character;
-	} while (character != '\x00');
-
-	return ret;
-}
 
 std::u16string readNullTerminatedU16str(std::istream& in, const unsigned int offset) {
 	in.seekg(offset, std::ios::beg);
@@ -34,7 +25,7 @@ std::u16string readNullTerminatedU16str(std::istream& in, const unsigned int off
 	std::u16string ret;
 	char16_t character = '\x0000';
 	do {
-		if (!in.read(reinterpret_cast<char*>(&character), 2)) {
+		if (!in.read(reinterpret_cast<char*>(&character), sizeof(char16_t))) {
 			ret.clear();
 			return ret;
 		}
@@ -44,1531 +35,2104 @@ std::u16string readNullTerminatedU16str(std::istream& in, const unsigned int off
 	return ret;
 }
 
-std::optional<RGBA> readRGBA(std::istream& in, const unsigned int offset) {
-	in.seekg(offset, std::ios::beg);
 
-	RGBA ret;
-	if (!in.read(reinterpret_cast<char*>(&ret.R), sizeof(ret.R))) return std::nullopt;
-	if (!in.read(reinterpret_cast<char*>(&ret.G), sizeof(ret.G))) return std::nullopt;
-	if (!in.read(reinterpret_cast<char*>(&ret.B), sizeof(ret.B))) return std::nullopt;
-	if (!in.read(reinterpret_cast<char*>(&ret.A), sizeof(ret.A))) return std::nullopt;
+namespace NintendoWare {
+	namespace Layout {
+		namespace Blocks {
+			FLYTError lyt1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
 
-	return ret;
-}
+				if (!bflyt.read(magicLYT1, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magicLYT1, "lyt1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&drawCentered), sizeof(drawCentered))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&width), sizeof(width))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&height), sizeof(height))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&maxPartWidth), sizeof(maxPartWidth))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&maxPartHeight), sizeof(maxPartHeight))) {
+					return FLYTError::REACHED_EOF;
+				}
 
-FLYTError readMaterial(std::istream& bflyt, const unsigned int offset, material& out) {
-	bflyt.seekg(offset, std::ios::beg);
+				if (padding_0x00[0] != 0x00 || padding_0x00[1] != 0x00 || padding_0x00[2] != 0x00) {
+					return FLYTError::UNEXPECTED_VALUE;
+				}
 
-	out.name.resize(0x1C);
-	if (!bflyt.read(&out.name[0], 0x1C)) return FLYTError::REACHED_EOF;
+				if (std::string name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
+					return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+				}
+				else {
+					layoutName = name; //read the name properly
+				}
 
-	{
-		std::optional<RGBA> color = readRGBA(bflyt, bflyt.tellg());
-		if (!color.has_value()) {
-			return FLYTError::REACHED_EOF; //returns nullopt if read fails
-		}
-		out.blackColor = color.value();
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(width);
+				Utility::byteswap_inplace(height);
+				Utility::byteswap_inplace(maxPartWidth);
+				Utility::byteswap_inplace(maxPartHeight);
 
-		color = readRGBA(bflyt, bflyt.tellg());
-		if (!color.has_value()) {
-			return FLYTError::REACHED_EOF; //returns nullopt if read fails
-		}
-		out.whiteColor = color.value();
-	}
-
-	uint32_t flags = 0;
-	if (!bflyt.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return FLYTError::REACHED_EOF;
-
-	Utility::byteswap_inplace(flags);
-
-	out.texCount = flags & 3;
-	out.mtxCount = (flags >> 2) & 3;
-	out.texCoordGenCount = (flags >> 4) & 3;
-	out.tevStageCount = (flags >> 6) & 7;
-	out.enableAlphaCompare = (flags >> 9) & 1;
-	out.enableBlend = (flags >> 10) & 1;
-	out.textureOnly = (flags >> 11) & 1;
-	out.blendLogic = (flags >> 12) & 1;
-	out.indParams = (flags >> 14) & 1;
-	out.projMapCount = (flags >> 15) & 3;
-	out.fontShadowParams = (flags >> 17) & 1;
-	out.alphaInterpolation = (flags >> 18) & 1;
-
-	out.texRefs.reserve(out.texCount);
-	for (unsigned int i = 0; i < out.texCount; i++) {
-		texRef ref;
-		if (!bflyt.read(reinterpret_cast<char*>(&ref.nameIndex), sizeof(ref.nameIndex))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&ref.wrapModeU), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&ref.wrapModeV), 1)) return FLYTError::REACHED_EOF;
-
-		Utility::byteswap_inplace(ref.nameIndex);
-
-		out.texRefs.push_back(ref);
-	}
-
-	out.texTransforms.reserve(out.mtxCount);
-	for (unsigned int i = 0; i < out.mtxCount; i++) {
-		texTransform transform;
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.translation[0]), sizeof(transform.translation[0]))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.translation[1]), sizeof(transform.translation[1]))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.rotation), sizeof(transform.rotation))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.scale[0]), sizeof(transform.scale[0]))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.scale[1]), sizeof(transform.scale[1]))) return FLYTError::REACHED_EOF;
-
-		Utility::byteswap_inplace(transform.translation[0]);
-		Utility::byteswap_inplace(transform.translation[1]);
-		Utility::byteswap_inplace(transform.rotation);
-		Utility::byteswap_inplace(transform.scale[0]);
-		Utility::byteswap_inplace(transform.scale[1]);
-
-		out.texTransforms.push_back(transform);
-	}
-
-	out.texCoordGens.reserve(out.texCoordGenCount);
-	for (unsigned int i = 0; i < out.texCoordGenCount; i++) {
-		texCoordGen coordGen;
-		if (!bflyt.read(reinterpret_cast<char*>(&coordGen.matrix), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&coordGen.source), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&coordGen.unk), sizeof(coordGen.unk))) return FLYTError::REACHED_EOF;
-
-		out.texCoordGens.push_back(coordGen);
-	}
-
-	out.tevStages.reserve(out.tevStageCount);
-	for (unsigned int i = 0; i < out.tevStageCount; i++) {
-		tevStage stage;
-		if (!bflyt.read(reinterpret_cast<char*>(&stage.colorMode), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&stage.alphaMode), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&stage.padding_0x00), sizeof(stage.padding_0x00))) return FLYTError::REACHED_EOF;
-
-		out.tevStages.push_back(stage);
-	}
-
-	if (out.enableAlphaCompare) {
-		alphaCompare compare;
-		if (!bflyt.read(reinterpret_cast<char*>(&compare.compareMode), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&compare.unk), 3)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&compare.value), sizeof(compare.value))) return FLYTError::REACHED_EOF;
-
-		Utility::byteswap_inplace(compare.value);
-
-		out.alphaComparison = compare;
-	}
-
-	if (out.enableBlend) {
-		blendMode blend;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.blendOp), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.sourceFactor), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.destFactor), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.logicOp), 1)) return FLYTError::REACHED_EOF;
-
-		out.blendingMode = blend;
-	}
-
-	if (out.blendLogic) {
-		blendMode blend;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.blendOp), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.sourceFactor), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.destFactor), 1)) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&blend.logicOp), 1)) return FLYTError::REACHED_EOF;
-
-		out.blendModeLogic = blend;
-	}
-
-	if (out.indParams) {
-		indirectParam param;
-		if (!bflyt.read(reinterpret_cast<char*>(&param.rotation), sizeof(param.rotation))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&param.scaleX), sizeof(param.scaleX))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&param.scaleY), sizeof(param.scaleY))) return FLYTError::REACHED_EOF;
-
-		Utility::byteswap_inplace(param.rotation);
-		Utility::byteswap_inplace(param.scaleX);
-		Utility::byteswap_inplace(param.scaleY);
-
-		out.indParameter = param;
-	}
-
-	out.projectionMaps.reserve(out.projMapCount);
-	for (unsigned int i = 0; i < out.projMapCount; i++) {
-		projectionMap map;
-		if (!bflyt.read(reinterpret_cast<char*>(&map.posX), sizeof(map.posX))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&map.posY), sizeof(map.posY))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&map.scaleX), sizeof(map.scaleX))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&map.scaleY), sizeof(map.scaleY))) return FLYTError::REACHED_EOF;
-		if (!bflyt.read(reinterpret_cast<char*>(&map.flags), sizeof(map.flags))) return FLYTError::REACHED_EOF;
-
-		Utility::byteswap_inplace(map.posX);
-		Utility::byteswap_inplace(map.posY);
-		Utility::byteswap_inplace(map.scaleX);
-		Utility::byteswap_inplace(map.scaleY);
-		Utility::byteswap_inplace(map.flags);
-
-		out.projectionMaps.push_back(map);
-	}
-
-	if (out.fontShadowParams) {
-		fontShadowParameter param;
-
-		std::optional<RGBA> color = readRGBA(bflyt, bflyt.tellg());
-		if (!color.has_value()) {
-			return FLYTError::REACHED_EOF; //returns nullopt if read fails
-		}
-		param.blackColor = color.value();
-
-		color = readRGBA(bflyt, bflyt.tellg());
-		if (!color.has_value()) {
-			return FLYTError::REACHED_EOF; //returns nullopt if read fails
-		}
-		param.whiteColor = color.value();
-
-		out.fontShadowParam = param;
-	}
-
-	return FLYTError::NONE;
-}
-
-
-
-FLYTError cnt1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "cnt1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&paneNamesOffset), sizeof(paneNamesOffset))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&paneCount), sizeof(paneCount))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&animCount), sizeof(animCount))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(paneNamesOffset);
-	Utility::byteswap_inplace(paneCount);
-	Utility::byteswap_inplace(animCount);
-
-	if (std::string& name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
-		return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-	}
-	else {
-		this->name = name;
-	}
-
-	bflyt.seekg(this->offset + paneNamesOffset, std::ios::beg);
-	for (unsigned int i = 0; i < paneCount; i++) {
-		std::string paneName;
-		paneName.resize(0x18);
-		if (!bflyt.read(reinterpret_cast<char*>(&paneName[0]), 0x18)) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		paneNames.push_back(paneName);
-	}
-
-	unsigned int numPaddingBytes = 4 - (bflyt.tellg() % 4);
-	if (numPaddingBytes == 4) {
-		numPaddingBytes = 0;
-	}
-	bflyt.seekg(numPaddingBytes, std::ios::cur);
-	animNameTableOffset = (unsigned int)bflyt.tellg() - this->offset;
-
-	for (unsigned int i = 0; i < animCount; i++) {
-		uint32_t nameOffset = 0;
-		if (!bflyt.read(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(nameOffset);
-		animNameOffsets.push_back(nameOffset);
-	}
-
-	for (const uint32_t nameOffset : animNameOffsets) {
-		if (std::string& name = readNullTerminatedStr(bflyt, this->offset + animNameTableOffset + nameOffset); name.empty()) {
-			return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-		}
-		else {
-			animNames.push_back(name);
-		}
-	}
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError cnt1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-FLYTError usd1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "usd1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&numEntries), sizeof(numEntries))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(numEntries);
-
-	for (unsigned int i = 0; i < numEntries; i++) {
-		userDataEntry entry;
-		if (!bflyt.read(reinterpret_cast<char*>(&entry.nameOffset), sizeof(entry.nameOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&entry.dataOffset), sizeof(entry.dataOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&entry.dataLen), sizeof(entry.dataLen))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&entry.dataType), 1)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&entry.unk), sizeof(entry.unk))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(entry.nameOffset);
-		Utility::byteswap_inplace(entry.dataOffset);
-		Utility::byteswap_inplace(entry.dataLen);
-
-		if (entry.nameOffset != 0) {
-			bflyt.seekg(this->offset + entry.nameOffset, std::ios::beg);
-			if (std::string& name = readNullTerminatedStr(bflyt, this->offset + entry.nameOffset); name.empty()) {
-				return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
 			}
-			else {
-				entry.name = name;
-			}
-		}
 
-		if (entry.dataOffset != 0) {
-			bflyt.seekg(this->offset + entry.dataOffset, std::ios::beg);
-			switch (entry.dataType) {
-				case UserDataType::STRING:
-					if (entry.dataLen != 0) {
-						std::string data;
-						data.resize(entry.dataLen);
-						if (!bflyt.read(reinterpret_cast<char*>(&data[0]), entry.dataLen)) {
-							return FLYTError::REACHED_EOF;
-						}
-						entry.data = data;
+			FLYTError lyt1::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+
+				sectionSize = 0x1C + layoutName.size();
+				unsigned int padLen = 4 - (((unsigned int)out.tellp() + sectionSize) % 4); //dont use padToLen function so we can calculate the length ahead of time (removes a seek later)
+				if (padLen == 4) padLen = 0;
+				sectionSize += padLen;
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(width);
+				Utility::byteswap_inplace(height);
+				Utility::byteswap_inplace(maxPartWidth);
+				Utility::byteswap_inplace(maxPartHeight);
+
+				out.write(magicLYT1, 4);
+				out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize));
+				out.write(reinterpret_cast<char*>(&drawCentered), sizeof(drawCentered));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+				out.write(reinterpret_cast<char*>(&width), sizeof(width));
+				out.write(reinterpret_cast<char*>(&height), sizeof(height));
+				out.write(reinterpret_cast<char*>(&maxPartWidth), sizeof(maxPartWidth));
+				out.write(reinterpret_cast<char*>(&maxPartHeight), sizeof(maxPartHeight));
+				out.write(&layoutName[0], layoutName.size());
+				padToLen(out, 4);
+
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError txl1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+
+				if (!bflyt.read(magicTXL1, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magicTXL1, "txl1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&numTextures), sizeof(numTextures))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numTextures);
+
+				texStrOffsets.reserve(numTextures);
+				for (unsigned int i = 0; i < numTextures; i++) {
+					uint32_t strOffset = 0;
+					if (!bflyt.read(reinterpret_cast<char*>(&strOffset), sizeof(strOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					Utility::byteswap_inplace(strOffset);
+					texStrOffsets.push_back(strOffset);
+				}
+
+				texNames.reserve(numTextures);
+				for (uint32_t strOffset : texStrOffsets) {
+					if (std::string name = readNullTerminatedStr(bflyt, this->offset + 0xC + strOffset); name.empty()) {
+						return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
 					}
 					else {
-						if (std::string& data = readNullTerminatedStr(bflyt, this->offset + entry.dataOffset); data.empty()) {
+						texNames.push_back(name);
+					}
+				}
+
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+			FLYTError txl1::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+
+				numTextures = texNames.size();
+				texStrOffsets.clear();
+				texStrOffsets.reserve(numTextures);
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numTextures);
+
+				out.write(magicTXL1, 4);
+				out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
+				out.write(reinterpret_cast<char*>(&numTextures), sizeof(numTextures));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+
+				{
+					uint32_t strOffset = 0x4 * texNames.size();
+					out.seekp(this->offset + 0xC + strOffset, std::ios::beg);
+					for (const std::string& name : texNames) {
+						texStrOffsets.push_back(strOffset);
+						out.write(&name[0], name.size());
+						strOffset += name.size();
+					}
+					padToLen(out, 4);
+					sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after names
+				}
+
+				out.seekp(this->offset + 0xC);
+				for (uint32_t& strOffset : texStrOffsets) { //write updated offsets
+					Utility::byteswap_inplace(strOffset);
+					out.write(reinterpret_cast<const char*>(&strOffset), sizeof(strOffset));
+				}
+
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError fnl1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+
+				if (!bflyt.read(magicFNL1, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magicFNL1, "fnl1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&numFonts), sizeof(numFonts))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numFonts);
+
+				fontStrOffsets.reserve(numFonts);
+				for (unsigned int i = 0; i < numFonts; i++) {
+					uint32_t strOffset = 0;
+					if (!bflyt.read(reinterpret_cast<char*>(&strOffset), sizeof(strOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					Utility::byteswap_inplace(strOffset);
+					fontStrOffsets.push_back(strOffset);
+				}
+
+				fontNames.reserve(numFonts);
+				for (uint32_t strOffset : fontStrOffsets) {
+					if (std::string name = readNullTerminatedStr(bflyt, this->offset + 0xC + strOffset); name.empty()) {
+						return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+					}
+					else {
+						fontNames.push_back(name);
+					}
+				}
+
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+			FLYTError fnl1::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+
+				numFonts = fontNames.size();
+				fontStrOffsets.clear();
+				fontStrOffsets.reserve(numFonts);
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numFonts);
+
+				out.write(magicFNL1, 4);
+				out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
+				out.write(reinterpret_cast<char*>(&numFonts), sizeof(numFonts));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+
+				{
+					uint32_t strOffset = 0x4 * fontNames.size();
+					out.seekp(this->offset + 0xC + strOffset, std::ios::beg);
+					for (const std::string& name : fontNames) {
+						fontStrOffsets.push_back(strOffset);
+						out.write(&name[0], name.size());
+						strOffset += name.size();
+					}
+					padToLen(out, 4);
+					sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after names
+				}
+
+				out.seekp(this->offset + 0xC);
+				for (uint32_t& strOffset : fontStrOffsets) { //write updated offsets
+					Utility::byteswap_inplace(strOffset);
+					out.write(reinterpret_cast<const char*>(&strOffset), sizeof(strOffset));
+				}
+
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError material::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+
+				name.resize(0x1C);
+				if (!bflyt.read(&name[0], 0x1C)) return FLYTError::REACHED_EOF;
+
+				if (!readRGBA8(bflyt, bflyt.tellg(), blackColor)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+
+				if (!readRGBA8(bflyt, bflyt.tellg(), whiteColor)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+
+				if (!bflyt.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return FLYTError::REACHED_EOF;
+
+				Utility::byteswap_inplace(flags);
+
+				uint32_t texCount = flags & 3;
+				uint32_t mtxCount = (flags >> 2) & 3;
+				uint32_t texCoordGenCount = (flags >> 4) & 3;
+				uint32_t tevStageCount = (flags >> 6) & 7;
+				uint32_t enableAlphaCompare = (flags >> 9) & 1;
+				uint32_t enableBlend = (flags >> 10) & 1;
+				textureOnly = (flags >> 11) & 1;
+				uint32_t blendLogic = (flags >> 12) & 1;
+				uint32_t indParams = (flags >> 14) & 1;
+				uint32_t projMapCount = (flags >> 15) & 3;
+				uint32_t fontShadowParams = (flags >> 17) & 1;
+				alphaInterpolation = (flags >> 18) & 1;
+
+				texRefs.reserve(texCount);
+				for (unsigned int i = 0; i < texCount; i++) {
+					texRef ref;
+					if (!bflyt.read(reinterpret_cast<char*>(&ref.nameIndex), sizeof(ref.nameIndex))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&ref.wrapModeU), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&ref.wrapModeV), 1)) return FLYTError::REACHED_EOF;
+
+					Utility::byteswap_inplace(ref.nameIndex);
+
+					texRefs.push_back(ref);
+				}
+
+				texTransforms.reserve(mtxCount);
+				for (unsigned int i = 0; i < mtxCount; i++) {
+					texTransform& transform = texTransforms.emplace_back();
+
+					if (!readVec2(bflyt, bflyt.tellg(), transform.translation)) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.rotation), sizeof(transform.rotation))) return FLYTError::REACHED_EOF;
+
+					if (!readVec2(bflyt, bflyt.tellg(), transform.scale)) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					Utility::byteswap_inplace(transform.rotation);
+				}
+
+				texCoordGens.reserve(texCoordGenCount);
+				for (unsigned int i = 0; i < texCoordGenCount; i++) {
+					texCoordGen coordGen;
+					if (!bflyt.read(reinterpret_cast<char*>(&coordGen.matrix), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&coordGen.source), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&coordGen.unk), sizeof(coordGen.unk))) return FLYTError::REACHED_EOF;
+
+					texCoordGens.push_back(coordGen);
+				}
+
+				tevStages.reserve(tevStageCount);
+				for (unsigned int i = 0; i < tevStageCount; i++) {
+					tevStage stage;
+					if (!bflyt.read(reinterpret_cast<char*>(&stage.colorMode), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&stage.alphaMode), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&stage.padding_0x00), sizeof(stage.padding_0x00))) return FLYTError::REACHED_EOF;
+
+					tevStages.push_back(stage);
+				}
+
+				if (enableAlphaCompare) {
+					alphaCompare compare;
+					if (!bflyt.read(reinterpret_cast<char*>(&compare.compareMode), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&compare.unk), 3)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&compare.value), sizeof(compare.value))) return FLYTError::REACHED_EOF;
+
+					Utility::byteswap_inplace(compare.value);
+
+					alphaComparison = compare;
+				}
+
+				if (enableBlend) {
+					blendMode blend;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.blendOp), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.sourceFactor), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.destFactor), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.logicOp), 1)) return FLYTError::REACHED_EOF;
+
+					blendingMode = blend;
+				}
+
+				if (blendLogic) {
+					blendMode blend;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.blendOp), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.sourceFactor), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.destFactor), 1)) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&blend.logicOp), 1)) return FLYTError::REACHED_EOF;
+
+					blendModeLogic = blend;
+				}
+
+				if (indParams) {
+					indirectParam param;
+					if (!bflyt.read(reinterpret_cast<char*>(&param.rotation), sizeof(param.rotation))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&param.scaleX), sizeof(param.scaleX))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&param.scaleY), sizeof(param.scaleY))) return FLYTError::REACHED_EOF;
+
+					Utility::byteswap_inplace(param.rotation);
+					Utility::byteswap_inplace(param.scaleX);
+					Utility::byteswap_inplace(param.scaleY);
+
+					indParameter = param;
+				}
+
+				projectionMaps.reserve(projMapCount);
+				for (unsigned int i = 0; i < projMapCount; i++) {
+					projectionMap map;
+					if (!bflyt.read(reinterpret_cast<char*>(&map.posX), sizeof(map.posX))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&map.posY), sizeof(map.posY))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&map.scaleX), sizeof(map.scaleX))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&map.scaleY), sizeof(map.scaleY))) return FLYTError::REACHED_EOF;
+					if (!bflyt.read(reinterpret_cast<char*>(&map.flags), sizeof(map.flags))) return FLYTError::REACHED_EOF;
+
+					Utility::byteswap_inplace(map.posX);
+					Utility::byteswap_inplace(map.posY);
+					Utility::byteswap_inplace(map.scaleX);
+					Utility::byteswap_inplace(map.scaleY);
+					Utility::byteswap_inplace(map.flags);
+
+					projectionMaps.push_back(map);
+				}
+
+				if (fontShadowParams) {
+					fontShadowParameter& param = fontShadowParam.emplace();
+
+					if (!readRGBA8(bflyt, bflyt.tellg(), param.blackColor)) {
+						return FLYTError::REACHED_EOF; //returns false if read fails
+					}
+
+					if (!readRGBA8(bflyt, bflyt.tellg(), param.whiteColor)) {
+						return FLYTError::REACHED_EOF; //returns false if read fails
+					}
+				}
+
+				return FLYTError::NONE;
+			}
+
+			FLYTError material::save_changes(std::ostream& out) {
+				std::streamoff beg = out.tellp();
+				out.write(&name[0], 0x1C);
+
+				writeRGBA8(out, blackColor);
+				writeRGBA8(out, whiteColor);
+
+				out.seekp(4, std::ios::cur); //skip over flags for now
+
+				setFlag(texRefs.size(), 0x00000003, 0);
+				for (texRef& ref : texRefs) {
+					Utility::byteswap_inplace(ref.nameIndex);
+
+					out.write(reinterpret_cast<const char*>(&ref.nameIndex), sizeof(ref.nameIndex));
+					out.write(reinterpret_cast<const char*>(&ref.wrapModeU), 1);
+					out.write(reinterpret_cast<const char*>(&ref.wrapModeV), 1);
+				}
+
+				setFlag(texTransforms.size(), 0x0000000C, 2);
+				for (texTransform& transform : texTransforms) {
+					Utility::byteswap_inplace(transform.rotation);
+
+					writeVec2(out, transform.translation);
+
+					out.write(reinterpret_cast<const char*>(&transform.rotation), sizeof(transform.rotation));
+
+					writeVec2(out, transform.scale);
+				}
+
+				setFlag(texCoordGens.size(), 0x00000030, 4);
+				for (const texCoordGen& coordGen : texCoordGens) {
+					out.write(reinterpret_cast<const char*>(&coordGen.matrix), 1);
+					out.write(reinterpret_cast<const char*>(&coordGen.source), 1);
+					out.write(reinterpret_cast<const char*>(&coordGen.unk), sizeof(coordGen.unk));
+				}
+
+				setFlag(tevStages.size(), 0x000001C0, 6);
+				for (const tevStage& stage : tevStages) {
+					out.write(reinterpret_cast<const char*>(&stage.colorMode), 1);
+					out.write(reinterpret_cast<const char*>(&stage.alphaMode), 1);
+					out.write(reinterpret_cast<const char*>(&stage.padding_0x00), sizeof(stage.padding_0x00));
+				}
+
+				setFlag(false, 0x00000200, 9);
+				if (alphaComparison.has_value()) {
+					setFlag(true, 0x00000200, 9);
+					alphaCompare& compare = alphaComparison.value();
+
+					Utility::byteswap_inplace(compare.value);
+
+					out.write(reinterpret_cast<char*>(&compare.compareMode), 1);
+					out.write(reinterpret_cast<char*>(&compare.unk), 3);
+					out.write(reinterpret_cast<char*>(&compare.value), sizeof(compare.value));
+				}
+
+				setFlag(false, 0x00000400, 10);
+				if (blendingMode.has_value()) {
+					setFlag(true, 0x00000400, 10);
+					const blendMode& blend = blendingMode.value();
+
+					out.write(reinterpret_cast<const char*>(&blend.blendOp), 1);
+					out.write(reinterpret_cast<const char*>(&blend.sourceFactor), 1);
+					out.write(reinterpret_cast<const char*>(&blend.destFactor), 1);
+					out.write(reinterpret_cast<const char*>(&blend.logicOp), 1);
+				}
+
+				setFlag(textureOnly, 0x00000800, 11);
+
+				setFlag(false, 0x00001000, 12);
+				if (blendModeLogic.has_value()) {
+					setFlag(true, 0x00001000, 12);
+					const blendMode& blend = blendModeLogic.value();
+
+					out.write(reinterpret_cast<const char*>(&blend.blendOp), 1);
+					out.write(reinterpret_cast<const char*>(&blend.sourceFactor), 1);
+					out.write(reinterpret_cast<const char*>(&blend.destFactor), 1);
+					out.write(reinterpret_cast<const char*>(&blend.logicOp), 1);
+				}
+
+				setFlag(false, 0x00004000, 14);
+				if (indParameter.has_value()) {
+					setFlag(true, 0x00004000, 14);
+					indirectParam& param = indParameter.value();
+
+					Utility::byteswap_inplace(param.rotation);
+					Utility::byteswap_inplace(param.scaleX);
+					Utility::byteswap_inplace(param.scaleY);
+
+					out.write(reinterpret_cast<char*>(&param.rotation), sizeof(param.rotation));
+					out.write(reinterpret_cast<char*>(&param.scaleX), sizeof(param.scaleX));
+					out.write(reinterpret_cast<char*>(&param.scaleY), sizeof(param.scaleY));
+				}
+
+				setFlag(projectionMaps.size(), 0x00018000, 15);
+				for (projectionMap& map : projectionMaps) {
+					Utility::byteswap_inplace(map.posX);
+					Utility::byteswap_inplace(map.posY);
+					Utility::byteswap_inplace(map.scaleX);
+					Utility::byteswap_inplace(map.scaleY);
+					Utility::byteswap_inplace(map.flags);
+
+					out.write(reinterpret_cast<char*>(&map.posX), sizeof(map.posX));
+					out.write(reinterpret_cast<char*>(&map.posY), sizeof(map.posY));
+					out.write(reinterpret_cast<char*>(&map.scaleX), sizeof(map.scaleX));
+					out.write(reinterpret_cast<char*>(&map.scaleY), sizeof(map.scaleY));
+					out.write(reinterpret_cast<char*>(&map.flags), sizeof(map.flags));
+				}
+
+				setFlag(false, 0x00020000, 17);
+				if (fontShadowParam.has_value()) {
+					setFlag(true, 0x00020000, 17);
+
+					writeRGBA8(out, blackColor);
+					writeRGBA8(out, whiteColor);
+				}
+
+				setFlag(alphaInterpolation, 0x00040000, 18);
+
+				std::streamoff end = out.tellp();
+				out.seekp(beg + 0x24, std::ios::beg);
+
+				Utility::byteswap_inplace(flags);
+				out.write(reinterpret_cast<char*>(&flags), sizeof(flags)); //write flags
+
+				out.seekp(end, std::ios::beg); //seek back to end of material so things are written sequentially
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError mat1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+
+				if (!bflyt.read(magicMAT1, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magicMAT1, "mat1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&numMats), sizeof(numMats))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numMats);
+
+				matOffsets.reserve(numMats);
+				for (unsigned int i = 0; i < numMats; i++) {
+					uint32_t matOffset;
+					if (!bflyt.read(reinterpret_cast<char*>(&matOffset), sizeof(matOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					Utility::byteswap_inplace(matOffset);
+					matOffsets.push_back(matOffset);
+				}
+
+				FLYTError err = FLYTError::NONE;
+				materials.reserve(numMats);
+				for (uint32_t matOffset : matOffsets) {
+					err = materials.emplace_back().read(bflyt, this->offset + matOffset);
+					if (err != FLYTError::NONE) {
+						return err;
+					}
+				}
+
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+			FLYTError mat1::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+
+				numMats = materials.size();
+				matOffsets.clear();
+				matOffsets.reserve(numMats);
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numMats);
+
+				out.write(magicMAT1, 4);
+				out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
+				out.write(reinterpret_cast<char*>(&numMats), sizeof(numMats));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+
+				{
+					uint32_t matOffset = 0xC + 0x4 * materials.size();
+					out.seekp(this->offset + matOffset, std::ios::beg);
+					for (material& mat : materials) {
+						matOffsets.push_back(matOffset);
+						if (FLYTError err = mat.save_changes(out); err != FLYTError::NONE) {
+							return err;
+						}
+
+						matOffset = (unsigned int)out.tellp() - this->offset;
+					}
+					padToLen(out, 4);
+					sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after materials
+				}
+
+				out.seekp(this->offset + 0xC);
+				for (uint32_t& matOffset : matOffsets) { //write updated offsets
+					Utility::byteswap_inplace(matOffset);
+					out.write(reinterpret_cast<const char*>(&matOffset), sizeof(matOffset));
+				}
+
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError usd1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+
+				if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magic, "usd1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&numEntries), sizeof(numEntries))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numEntries);
+
+				for (unsigned int i = 0; i < numEntries; i++) {
+					std::streamoff entryStart = bflyt.tellg();
+					userDataEntry entry;
+					if (!bflyt.read(reinterpret_cast<char*>(&entry.nameOffset), sizeof(entry.nameOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&entry.dataOffset), sizeof(entry.dataOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&entry.dataLen), sizeof(entry.dataLen))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&entry.dataType), 1)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&entry.unk), sizeof(entry.unk))) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					Utility::byteswap_inplace(entry.nameOffset);
+					Utility::byteswap_inplace(entry.dataOffset);
+					Utility::byteswap_inplace(entry.dataLen);
+
+					if (entry.nameOffset != 0) {
+						if (std::string name = readNullTerminatedStr(bflyt, entryStart + entry.nameOffset); name.empty()) {
 							return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
 						}
 						else {
-							entry.data = data;
+							entry.name = name;
 						}
 					}
-					break;
-				case UserDataType::INT:
-					entry.data.emplace<std::vector<int32_t>>();
-					std::get<std::vector<int32_t>>(entry.data).reserve(entry.dataLen);
-					for (unsigned int i = 0; i < entry.dataLen; i++) {
-						int32_t value;
-						if (!bflyt.read(reinterpret_cast<char*>(&value), sizeof(value))) {
+
+					if (entry.dataOffset != 0) {
+						bflyt.seekg(entryStart + entry.dataOffset, std::ios::beg);
+						switch (entry.dataType) {
+						case UserDataType::STRING:
+							if (entry.dataLen != 0) {
+								std::string data;
+								data.resize(entry.dataLen);
+								if (!bflyt.read(reinterpret_cast<char*>(&data[0]), entry.dataLen)) {
+									return FLYTError::REACHED_EOF;
+								}
+								entry.data = data;
+							}
+							else {
+								if (std::string data = readNullTerminatedStr(bflyt, this->offset + entry.dataOffset); data.empty()) {
+									return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+								}
+								else {
+									entry.data = data;
+								}
+							}
+							break;
+						case UserDataType::INT:
+							entry.data.emplace<std::vector<int32_t>>();
+							std::get<std::vector<int32_t>>(entry.data).reserve(entry.dataLen);
+							for (unsigned int i = 0; i < entry.dataLen; i++) {
+								int32_t value;
+								if (!bflyt.read(reinterpret_cast<char*>(&value), sizeof(value))) {
+									return FLYTError::REACHED_EOF;
+								}
+
+								Utility::byteswap_inplace(value);
+
+								std::get<std::vector<int32_t>>(entry.data).push_back(value);
+							}
+							break;
+						case UserDataType::FLOAT:
+							entry.data.emplace<std::vector<float>>();
+							std::get<std::vector<float>>(entry.data).reserve(entry.dataLen);
+							for (unsigned int i = 0; i < entry.dataLen; i++) {
+								float value;
+								if (!bflyt.read(reinterpret_cast<char*>(&value), sizeof(value))) {
+									return FLYTError::REACHED_EOF;
+								}
+
+								Utility::byteswap_inplace(value);
+
+								std::get<std::vector<float>>(entry.data).push_back(value);
+							}
+							break;
+						case UserDataType::STRUCT:
+							break; //type not implemented, should not appear in Wii U files
+						}
+					}
+
+					entries.push_back(entry);
+				}
+
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+			FLYTError usd1::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+
+				numEntries = entries.size();
+				Utility::byteswap_inplace(numEntries);
+
+				out.write(magic, 4);
+				out.seekp(4, std::ios::cur); //skip section size for now
+				out.write(reinterpret_cast<char*>(&numEntries), sizeof(numEntries));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+				for (userDataEntry& entry : entries) {
+					std::streamoff entryStart = out.tellp();
+					entry.dataType = static_cast<UserDataType>(entry.data.index());
+					out.seekp(0xA, std::ios::cur);
+					out.write(reinterpret_cast<char*>(&entry.dataType), 1);
+					out.write(reinterpret_cast<char*>(&entry.unk), sizeof(entry.unk));
+					entry.dataOffset = out.tellp() - entryStart;
+					switch (entry.dataType) {
+					case UserDataType::STRING:
+						out.write(&std::get<0>(entry.data)[0], std::get<0>(entry.data).size());
+						padToLen(out, 4); //might not be padded, probably is though
+						entry.dataLen = (unsigned int)out.tellp() - entry.dataOffset - entryStart;
+						break;
+					case UserDataType::INT:
+						entry.dataLen = std::get<1>(entry.data).size();
+						for (int32_t& value : std::get<1>(entry.data)) {
+							Utility::byteswap_inplace(value);
+							out.write(reinterpret_cast<char*>(&value), sizeof(value));
+						}
+						break;
+					case UserDataType::FLOAT:
+						entry.dataLen = std::get<2>(entry.data).size();
+						for (float& value : std::get<2>(entry.data)) {
+							Utility::byteswap_inplace(value);
+							out.write(reinterpret_cast<char*>(&value), sizeof(value));
+						}
+						break;
+					case UserDataType::STRUCT:
+						return FLYTError::UNEXPECTED_VALUE;
+					}
+					entry.nameOffset = out.tellp() - entryStart;
+					out.write(&entry.name[0], entry.name.size());
+					padToLen(out, 4);
+					std::streamoff entryEnd = out.tellp();
+					out.seekp(entryStart, std::ios::beg);
+
+					Utility::byteswap_inplace(entry.nameOffset);
+					Utility::byteswap_inplace(entry.dataOffset);
+					Utility::byteswap_inplace(entry.dataLen);
+
+					out.write(reinterpret_cast<char*>(&entry.nameOffset), sizeof(entry.nameOffset));
+					out.write(reinterpret_cast<char*>(&entry.dataOffset), sizeof(entry.dataOffset));
+					out.write(reinterpret_cast<char*>(&entry.dataLen), sizeof(entry.dataLen));
+					out.seekp(entryEnd, std::ios::beg);
+				}
+
+				sectionSize = (unsigned int)out.tellp() - this->offset;
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError cnt1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+
+				if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magic, "cnt1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&paneNamesOffset), sizeof(paneNamesOffset))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&paneCount), sizeof(paneCount))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&animCount), sizeof(animCount))) {
+					return FLYTError::REACHED_EOF;
+				}
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(paneNamesOffset);
+				Utility::byteswap_inplace(paneCount);
+				Utility::byteswap_inplace(animCount);
+
+				if (std::string name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
+					return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+				}
+				else {
+					this->name = name;
+				}
+
+				bflyt.seekg(this->offset + paneNamesOffset, std::ios::beg);
+				paneNames.reserve(paneCount);
+				for (unsigned int i = 0; i < paneCount; i++) {
+					std::string paneName;
+					paneName.resize(0x18);
+					if (!bflyt.read(&paneName[0], 0x18)) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					paneNames.push_back(paneName);
+				}
+
+				unsigned int numPaddingBytes = 4 - (bflyt.tellg() % 4);
+				if (numPaddingBytes == 4) {
+					numPaddingBytes = 0;
+				}
+				bflyt.seekg(numPaddingBytes, std::ios::cur);
+				animNameTableOffset = (unsigned int)bflyt.tellg() - this->offset;
+
+				animNameOffsets.reserve(animCount);
+				for (unsigned int i = 0; i < animCount; i++) {
+					uint32_t nameOffset = 0;
+					if (!bflyt.read(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					Utility::byteswap_inplace(nameOffset);
+					animNameOffsets.push_back(nameOffset);
+				}
+
+				animNames.reserve(animCount);
+				for (const uint32_t nameOffset : animNameOffsets) {
+					if (std::string name = readNullTerminatedStr(bflyt, this->offset + animNameTableOffset + nameOffset); name.empty()) {
+						return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+					}
+					else {
+						animNames.push_back(name);
+					}
+				}
+
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+			FLYTError cnt1::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+
+				paneCount = paneNames.size();
+				animCount = animNames.size();
+
+				//Utility::byteswap_inplace(paneNamesOffset);
+				Utility::byteswap_inplace(paneCount);
+				Utility::byteswap_inplace(animCount);
+
+				out.write(magic, 4);
+				out.seekp(8, std::ios::cur); //skip section size and pane names offset
+				out.write(reinterpret_cast<char*>(&paneCount), sizeof(paneCount));
+				out.write(reinterpret_cast<char*>(&animCount), sizeof(animCount));
+				out.write(&name[0], name.size());
+				padToLen(out, 4);
+
+				paneNamesOffset = (unsigned int)out.tellp() - this->offset;
+
+				for (const std::string& paneName : paneNames) {
+					out.write(&paneName[0], 0x18);
+				}
+
+				padToLen(out, 4);
+				animNameTableOffset = (unsigned int)out.tellp() - this->offset;
+
+				animNameOffsets.clear();
+				animNameOffsets.reserve(animCount);
+				{
+					uint32_t nameOffset = animNames.size() * 0x4;
+					for (const std::string& animName : animNames) {
+						animNameOffsets.push_back(nameOffset);
+						out.write(&animName[0], animName.size());
+						nameOffset += animName.size();
+					}
+					padToLen(out, 4);
+					sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after materials
+				}
+
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+
+				Utility::byteswap_inplace(paneNamesOffset);
+				out.write(reinterpret_cast<char*>(&paneNamesOffset), sizeof(paneNamesOffset));
+
+				out.seekp(this->offset + animNameTableOffset, std::ios::beg);
+				for (uint32_t nameOffset : animNameOffsets) {
+					Utility::byteswap_inplace(nameOffset);
+					out.write(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset));
+				}
+
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+
+
+			FLYTError grp1::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+
+				if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
+				if (std::strncmp(magic, "grp1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				groupName.resize(0x18);
+				if (!bflyt.read(reinterpret_cast<char*>(&groupName[0]), 0x18)) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&numPanes), sizeof(numPanes))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(numPanes);
+
+				paneNames.reserve(numPanes);
+				for (unsigned int i = 0; i < numPanes; i++) {
+					std::string paneName;
+					paneName.resize(0x18);
+					if (!bflyt.read(reinterpret_cast<char*>(&paneName[0]), 0x18)) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					paneNames.push_back(paneName);
+				}
+
+				char nextSection[4];
+				if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (std::strncmp(nextSection, "grs1", 4) == 0) {
+					uint32_t grs1Size;
+					if (!bflyt.read(reinterpret_cast<char*>(&grs1Size), sizeof(grs1Size))) {
+						return FLYTError::REACHED_EOF;
+					}
+					Utility::byteswap_inplace(grs1Size);
+					if (grs1Size != 0x8) {
+						return FLYTError::UNEXPECTED_VALUE;
+					}
+
+					if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
+						return FLYTError::REACHED_EOF;
+					}
+
+					while (std::strncmp(nextSection, "gre1", 4) != 0) {
+						bflyt.seekg(-4, std::ios::cur);
+
+						if (std::strncmp(nextSection, "grp1", 4) != 0) return FLYTError::UNKNOWN_SECTION; //should never happen
+
+						grp1 child;
+						FLYTError err = FLYTError::NONE;
+
+						err = child.read(bflyt, bflyt.tellg());
+						if (err != FLYTError::NONE) {
+							return err;
+						}
+						children.push_back(child);
+
+						if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
 							return FLYTError::REACHED_EOF;
 						}
-
-						Utility::byteswap_inplace(value);
-
-						std::get<std::vector<int32_t>>(entry.data).push_back(value);
 					}
-					break;
-				case UserDataType::FLOAT:
-					entry.data.emplace<std::vector<float>>();
-					std::get<std::vector<float>>(entry.data).reserve(entry.dataLen);
-					for (unsigned int i = 0; i < entry.dataLen; i++) {
-						float value;
-						if (!bflyt.read(reinterpret_cast<char*>(&value), sizeof(value))) {
+
+					uint32_t gre1Size;
+					if (!bflyt.read(reinterpret_cast<char*>(&gre1Size), sizeof(gre1Size))) {
+						return FLYTError::REACHED_EOF;
+					}
+					Utility::byteswap_inplace(gre1Size);
+					if (gre1Size != 0x8) {
+						return FLYTError::UNEXPECTED_VALUE;
+					}
+				}
+				else {
+					bflyt.seekg(-4, std::ios::cur);
+				}
+
+				return FLYTError::NONE;
+			}
+
+			FLYTError grp1::save_changes(std::ostream& out, uint16_t& sectionNum) {
+				sectionNum += 1; //add each group to section count
+				this->offset = out.tellp();
+
+				numPanes = paneNames.size();
+				sectionSize = 0x24 + numPanes * 0x18;
+
+				Utility::byteswap_inplace(numPanes);
+				Utility::byteswap_inplace(sectionSize);
+
+				out.write(magic, 4);
+				out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize));
+				out.write(&groupName[0], 0x18);
+				out.write(reinterpret_cast<char*>(&numPanes), sizeof(numPanes));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+
+				for (const std::string& paneName : paneNames) {
+					out.write(&paneName[0], 0x18);
+				}
+
+				if (children.size() > 0) {
+					uint32_t size = 0x8;
+					Utility::byteswap_inplace(size);
+
+					out.write("grs1", 4);
+					out.write(reinterpret_cast<char*>(&size), sizeof(size));
+					sectionNum += 1; //grs counts as section
+
+					for (grp1& group : children) {
+						if (FLYTError err = group.save_changes(out, sectionNum); err != FLYTError::NONE) {
+							return err;
+						}
+					}
+
+					out.write("gre1", 4);
+					out.write(reinterpret_cast<char*>(&size), sizeof(size));
+					sectionNum += 1; //gre counts as section
+				}
+
+				return FLYTError::NONE;
+			}
+		}
+
+		namespace Panes {
+			PaneBase::~PaneBase() {
+			
+			}
+			
+			FLYTError PaneBase::read(std::istream& bflyt, const unsigned int offset) {
+				bflyt.seekg(offset, std::ios::beg);
+				this->offset = offset;
+			
+				if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
+				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&bitFlags), 1)) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&originFlags), 1)) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&alpha), 1)) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&paneMagFlags), 1)) {
+					return FLYTError::REACHED_EOF;
+				}
+				name.resize(0x18);
+				userInfo.resize(0x8);
+				if (!bflyt.read(&name[0], 0x18)) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(&userInfo[0], 0x8)) {
+					return FLYTError::REACHED_EOF;
+				}
+				
+				if (!readVec3(bflyt, bflyt.tellg(), translation)) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				if (!readVec3(bflyt, bflyt.tellg(), rotation)) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				if (!readVec2(bflyt, bflyt.tellg(), scale)) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&width), sizeof(width))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&height), sizeof(height))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(width);
+				Utility::byteswap_inplace(height);
+			
+				return FLYTError::NONE;
+			}
+			
+			std::unique_ptr<PaneBase> PaneBase::clonePane() {
+				return std::make_unique<PaneBase>(*this);
+			}
+			
+			FLYTError PaneBase::save_changes(std::ostream& out) {
+				this->offset = out.tellp();
+			
+				Utility::byteswap_inplace(sectionSize);
+				Utility::byteswap_inplace(width);
+				Utility::byteswap_inplace(height);
+			
+				out.write(magic, 4);
+				out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize));
+				out.write(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags));
+				out.write(reinterpret_cast<char*>(&originFlags), sizeof(originFlags));
+				out.write(reinterpret_cast<char*>(&alpha), sizeof(alpha));
+				out.write(reinterpret_cast<char*>(&paneMagFlags), sizeof(paneMagFlags));
+				out.write(&name[0], 0x18);
+				out.write(&userInfo[0], 0x8);
+				
+				writeVec3(out, translation);
+				writeVec3(out, rotation);
+				writeVec2(out, scale);
+			
+				out.write(reinterpret_cast<char*>(&width), sizeof(width));
+				out.write(reinterpret_cast<char*>(&height), sizeof(height));
+			
+				return FLYTError::NONE;
+			}
+			
+			
+			pan1::~pan1() {
+				
+			}
+			
+			FLYTError pan1::read(std::istream& bflyt, const unsigned int offset) {
+				if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
+					return err;
+				}
+				if (std::strncmp(magic, "pan1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (sectionSize != 0x54) {
+					return FLYTError::UNEXPECTED_VALUE;
+				}
+			
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			std::unique_ptr<PaneBase> pan1::clonePane() {
+				return std::make_unique<pan1>(*this);
+			}
+			
+			FLYTError pan1::save_changes(std::ostream& out) {
+				return PaneBase::save_changes(out);
+			}
+			
+			
+			bnd1::~bnd1() {
+				
+			}
+			
+			FLYTError bnd1::read(std::istream& bflyt, const unsigned int offset) {
+				if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
+					return err;
+				}
+				if (std::strncmp(magic, "bnd1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+				if (sectionSize != 0x54) {
+					return FLYTError::UNEXPECTED_VALUE;
+				}
+			
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			std::unique_ptr<PaneBase> bnd1::clonePane() {
+				return std::make_unique<bnd1>(*this);
+			}
+			
+			FLYTError bnd1::save_changes(std::ostream& out) {
+				return PaneBase::save_changes(out);
+			}
+			
+			
+			wnd1::~wnd1() {
+				
+			}
+			
+			FLYTError wnd1::read(std::istream& bflyt, const unsigned int offset) {
+				if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
+					return err;
+				}
+				if (std::strncmp(magic, "wnd1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&leftStretch), sizeof(leftStretch))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&rightStretch), sizeof(rightStretch))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&topStretch), sizeof(topStretch))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&bottomStretch), sizeof(bottomStretch))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&frameSizeLeft), sizeof(frameSizeLeft))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&frameSizeRight), sizeof(frameSizeRight))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&frameSizeTop), sizeof(frameSizeTop))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&frameSizeBottom), sizeof(frameSizeBottom))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&frameNum), sizeof(frameNum))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&contentOffset), sizeof(contentOffset))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&frameTableOffset), sizeof(frameTableOffset))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				Utility::byteswap_inplace(leftStretch);
+				Utility::byteswap_inplace(rightStretch);
+				Utility::byteswap_inplace(topStretch);
+				Utility::byteswap_inplace(bottomStretch);
+				Utility::byteswap_inplace(frameSizeLeft);
+				Utility::byteswap_inplace(frameSizeRight);
+				Utility::byteswap_inplace(frameSizeTop);
+				Utility::byteswap_inplace(frameSizeBottom);
+				Utility::byteswap_inplace(contentOffset);
+				Utility::byteswap_inplace(frameTableOffset);
+			
+				bflyt.seekg(this->offset + contentOffset, std::ios::beg);
+				if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorTL)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorTR)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorBL)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorBR)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&content.matIndex), sizeof(content.matIndex))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&content.numCoords), sizeof(content.numCoords))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&content.padding_0x00), sizeof(content.padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				Utility::byteswap_inplace(content.matIndex);
+			
+				content.coords.reserve(content.numCoords);
+				for (uint8_t i = 0; i < content.numCoords; i++) {
+					UVCoords& coord = content.coords.emplace_back();
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordTL)) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordTR)) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordBL)) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordBR)) {
+						return FLYTError::REACHED_EOF;
+					}
+				}
+			
+			
+				bflyt.seekg(this->offset + frameTableOffset);
+				frameTable.reserve(frameNum);
+				for (unsigned int i = 0; i < frameNum; i++) {
+					uint32_t frameOffset = 0;
+					if (!bflyt.read(reinterpret_cast<char*>(&frameOffset), sizeof(frameOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					Utility::byteswap_inplace(frameOffset);
+					frameTable.push_back(frameOffset);
+				}
+			
+				frames.reserve(frameNum);
+				for (const uint32_t frameOffset : frameTable) {
+					bflyt.seekg(this->offset + frameOffset, std::ios::beg);
+			
+					windowFrame frame;
+					if (!bflyt.read(reinterpret_cast<char*>(&frame.matIndex), sizeof(frame.matIndex))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&frame.texFlip), sizeof(frame.texFlip))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&frame.padding_0x00), sizeof(frame.padding_0x00))) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					Utility::byteswap_inplace(frame.matIndex);
+			
+					frames.push_back(frame);
+				}
+			
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			std::unique_ptr<PaneBase> wnd1::clonePane() {
+				return std::make_unique<wnd1>(*this);
+			}
+			
+			FLYTError wnd1::save_changes(std::ostream& out) {
+				if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
+					return err;
+				}
+			
+				frameNum = frames.size();
+			
+				Utility::byteswap_inplace(leftStretch);
+				Utility::byteswap_inplace(rightStretch);
+				Utility::byteswap_inplace(topStretch);
+				Utility::byteswap_inplace(bottomStretch);
+				Utility::byteswap_inplace(frameSizeLeft);
+				Utility::byteswap_inplace(frameSizeRight);
+				Utility::byteswap_inplace(frameSizeTop);
+				Utility::byteswap_inplace(frameSizeBottom);
+				//update content and frame table offsets later
+			
+				out.write(reinterpret_cast<char*>(&leftStretch), sizeof(leftStretch));
+				out.write(reinterpret_cast<char*>(&rightStretch), sizeof(rightStretch));
+				out.write(reinterpret_cast<char*>(&topStretch), sizeof(topStretch));
+				out.write(reinterpret_cast<char*>(&bottomStretch), sizeof(bottomStretch));
+				out.write(reinterpret_cast<char*>(&frameSizeLeft), sizeof(frameSizeLeft));
+				out.write(reinterpret_cast<char*>(&frameSizeRight), sizeof(frameSizeRight));
+				out.write(reinterpret_cast<char*>(&frameSizeTop), sizeof(frameSizeTop));
+				out.write(reinterpret_cast<char*>(&frameSizeBottom), sizeof(frameSizeBottom));
+				out.write(reinterpret_cast<char*>(&frameNum), sizeof(frameNum));
+				out.write(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+				out.seekp(8, std::ios::cur); //skip content and frame table offsets
+			
+				contentOffset = (unsigned int)out.tellp() - this->offset;
+				writeRGBA8(out, content.vertexColorTL);
+				writeRGBA8(out, content.vertexColorTR);
+				writeRGBA8(out, content.vertexColorBL);
+				writeRGBA8(out, content.vertexColorBR);
+			
+				content.numCoords = content.coords.size();
+				Utility::byteswap_inplace(content.matIndex);
+			
+				out.write(reinterpret_cast<char*>(&content.matIndex), sizeof(content.matIndex));
+				out.write(reinterpret_cast<char*>(&content.numCoords), sizeof(content.numCoords));
+				out.write(reinterpret_cast<char*>(&content.padding_0x00), sizeof(content.padding_0x00));
+			
+				for (UVCoords& coord : content.coords) {
+					writeVec2(out, coord.coordTL);
+					writeVec2(out, coord.coordTR);
+					writeVec2(out, coord.coordBL);
+					writeVec2(out, coord.coordBR);
+				}
+			
+			
+				frameTableOffset = (unsigned int)out.tellp() - this->offset;
+				frameTable.clear();
+				frameTable.reserve(frameNum);
+			
+				{
+					uint32_t frameOffset = frameTableOffset + (frameNum * 0x4);
+					out.seekp(this->offset + frameOffset, std::ios::beg);
+					for (windowFrame& frame : frames) {
+						frameTable.push_back(frameOffset);
+						Utility::byteswap_inplace(frame.matIndex);
+			
+						out.write(reinterpret_cast<char*>(&frame.matIndex), sizeof(frame.matIndex));
+						out.write(reinterpret_cast<char*>(&frame.texFlip), sizeof(frame.texFlip));
+						out.write(reinterpret_cast<char*>(&frame.padding_0x00), sizeof(frame.padding_0x00));
+			
+						frameOffset = (unsigned int)out.tellp() - this->offset;
+					}
+					padToLen(out, 4);
+					sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after frames
+				}
+			
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+			
+				out.seekp(this->offset + 0x68, std::ios::beg);
+			
+				Utility::byteswap_inplace(contentOffset);
+				uint32_t frameTableOffset_BE = Utility::byteswap(frameTableOffset);
+			
+				out.write(reinterpret_cast<char*>(&contentOffset), sizeof(contentOffset));
+				out.write(reinterpret_cast<char*>(&frameTableOffset_BE), sizeof(frameTableOffset_BE));
+			
+				out.seekp(this->offset + frameTableOffset, std::ios::beg);
+			
+				for (uint32_t& frameOffset : frameTable) {
+					Utility::byteswap_inplace(frameOffset);
+					out.write(reinterpret_cast<char*>(&frameOffset), sizeof(frameOffset));
+				}
+			
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			
+			txt1::~txt1() {
+				
+			}
+			
+			FLYTError txt1::read(std::istream& bflyt, const unsigned int offset) {
+				if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
+					return err;
+				}
+				if (std::strncmp(magic, "txt1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&texLen), sizeof(texLen))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&restrictedLen), sizeof(restrictedLen))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&matIndex), sizeof(matIndex))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&fontIndex), sizeof(fontIndex))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&textAlignment), sizeof(textAlignment))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&lineAlignment), sizeof(lineAlignment))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&bitflags), sizeof(bitflags))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&italicTilt), sizeof(italicTilt))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&textOffset), sizeof(textOffset))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), fontColorTop)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+				
+				if (!readRGBA8(bflyt, bflyt.tellg(), fontColorBottom)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&fontSizeX), sizeof(fontSizeX))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&fontSizeY), sizeof(fontSizeY))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&charSpace), sizeof(charSpace))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&lineSpace), sizeof(lineSpace))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&shadowPosX), sizeof(shadowPosX))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&shadowPosY), sizeof(shadowPosY))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&shadowSizeX), sizeof(shadowSizeX))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&shadowSizeY), sizeof(shadowSizeY))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), shadowColorTop)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), shadowColorBottom)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&shadowItalicTilt), sizeof(shadowItalicTilt))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				Utility::byteswap_inplace(texLen);
+				Utility::byteswap_inplace(restrictedLen);
+				Utility::byteswap_inplace(matIndex);
+				Utility::byteswap_inplace(fontIndex);
+				Utility::byteswap_inplace(italicTilt);
+				Utility::byteswap_inplace(textOffset);
+				Utility::byteswap_inplace(fontSizeX);
+				Utility::byteswap_inplace(fontSizeY);
+				Utility::byteswap_inplace(charSpace);
+				Utility::byteswap_inplace(lineSpace);
+				Utility::byteswap_inplace(nameOffset);
+				Utility::byteswap_inplace(shadowPosX);
+				Utility::byteswap_inplace(shadowPosY);
+				Utility::byteswap_inplace(shadowSizeX);
+				Utility::byteswap_inplace(shadowSizeY);
+				Utility::byteswap_inplace(shadowItalicTilt);
+			
+				if (textOffset != 0) {
+					if (std::u16string name = readNullTerminatedU16str(bflyt, this->offset + textOffset); name.empty()) {
+						return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+					}
+					else {
+						text = name;
+					}
+				}
+				else {
+					text.clear();
+				}
+			
+				if (nameOffset != 0) {
+					if (std::string name = readNullTerminatedStr(bflyt, this->offset + nameOffset); name.empty()) {
+						return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+					}
+					else {
+						textBoxName = name;
+					}
+				}
+				else {
+					textBoxName.clear();
+				}
+			
+				if ((bitflags >> 4) & 0x01) { //per char transform flag
+					uint32_t transformOffset = 0;
+					bflyt.seekg(this->offset + 0xA0, std::ios::beg);
+					if (!bflyt.read(reinterpret_cast<char*>(&transformOffset), sizeof(transformOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					Utility::byteswap_inplace(transformOffset);
+					charTransformOffset = transformOffset;
+			
+					bflyt.seekg(this->offset + transformOffset);
+					perCharTransform transform;
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.animCurveWidth), sizeof(transform.animCurveWidth))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.loopType), sizeof(transform.loopType))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.verticalOrigin), sizeof(transform.verticalOrigin))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.hasAnimInfo), 1)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&transform.padding_0x00), sizeof(transform.padding_0x00))) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					Utility::byteswap_inplace(transform.curveTimeOffset);
+					Utility::byteswap_inplace(transform.animCurveWidth);
+			
+					charTransform = transform;
+				}
+				else {
+					charTransformOffset = std::nullopt;
+					charTransform = std::nullopt;
+				}
+			
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			std::unique_ptr<PaneBase> txt1::clonePane() {
+				return std::make_unique<txt1>(*this);
+			}
+			
+			FLYTError txt1::save_changes(std::ostream& out) {
+				if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
+					return err;
+				}
+			
+				texLen = text.size() * 2; //need len in bytes, size returns num chars
+				//might want to set restricted len?
+			
+				Utility::byteswap_inplace(texLen);
+				Utility::byteswap_inplace(restrictedLen);
+				Utility::byteswap_inplace(matIndex);
+				Utility::byteswap_inplace(fontIndex);
+				Utility::byteswap_inplace(italicTilt);
+				Utility::byteswap_inplace(fontSizeX);
+				Utility::byteswap_inplace(fontSizeY);
+				Utility::byteswap_inplace(charSpace);
+				Utility::byteswap_inplace(lineSpace);
+				Utility::byteswap_inplace(shadowPosX);
+				Utility::byteswap_inplace(shadowPosY);
+				Utility::byteswap_inplace(shadowSizeX);
+				Utility::byteswap_inplace(shadowSizeY);
+				Utility::byteswap_inplace(shadowItalicTilt);
+			
+				out.write(reinterpret_cast<char*>(&texLen), sizeof(texLen));
+				out.write(reinterpret_cast<char*>(&restrictedLen), sizeof(restrictedLen));
+				out.write(reinterpret_cast<char*>(&matIndex), sizeof(matIndex));
+				out.write(reinterpret_cast<char*>(&fontIndex), sizeof(fontIndex));
+				out.write(reinterpret_cast<char*>(&textAlignment), sizeof(textAlignment));
+				out.write(reinterpret_cast<char*>(&lineAlignment), 1);
+				out.write(reinterpret_cast<char*>(&bitflags), sizeof(bitflags));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+				out.write(reinterpret_cast<char*>(&italicTilt), sizeof(italicTilt));
+				out.seekp(4, std::ios::cur); //skip text offset
+			
+				writeRGBA8(out, fontColorTop);
+				writeRGBA8(out, fontColorBottom);
+			
+				out.write(reinterpret_cast<char*>(&fontSizeX), sizeof(fontSizeX));
+				out.write(reinterpret_cast<char*>(&fontSizeY), sizeof(fontSizeY));
+				out.write(reinterpret_cast<char*>(&charSpace), sizeof(charSpace));
+				out.write(reinterpret_cast<char*>(&lineSpace), sizeof(lineSpace));
+				out.seekp(4, std::ios::cur); //skip name offset
+				out.write(reinterpret_cast<char*>(&shadowPosX), sizeof(shadowPosX));
+				out.write(reinterpret_cast<char*>(&shadowPosY), sizeof(shadowPosY));
+				out.write(reinterpret_cast<char*>(&shadowSizeX), sizeof(shadowSizeX));
+				out.write(reinterpret_cast<char*>(&shadowSizeY), sizeof(shadowSizeY));
+			
+				writeRGBA8(out, shadowColorTop);
+				writeRGBA8(out, shadowColorBottom);
+			
+				out.write(reinterpret_cast<char*>(&shadowItalicTilt), sizeof(shadowItalicTilt));
+				if (charTransform.has_value()) {
+					out.seekp(4, std::ios::cur); //skip char transform offset
+				}
+			
+				textOffset = 0;
+				if (!text.empty()) {
+					textOffset = (unsigned int)out.tellp() - this->offset;
+					out.write(reinterpret_cast<char*>(&text[0]), text.size() * 2);
+					padToLen(out, 4);
+				}
+			
+				nameOffset = 0;
+				if (!textBoxName.empty()) {
+					nameOffset = (unsigned int)out.tellp() - this->offset;
+					out.write(&textBoxName[0], textBoxName.size());
+					padToLen(out, 4);
+				}
+			
+				charTransformOffset = std::nullopt;
+				if (charTransform.has_value()) {
+					charTransformOffset = (unsigned int)out.tellp() - this->offset;
+					perCharTransform& transform = charTransform.value();
+			
+					Utility::byteswap_inplace(transform.curveTimeOffset);
+					Utility::byteswap_inplace(transform.animCurveWidth);
+			
+					out.write(reinterpret_cast<char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset));
+					out.write(reinterpret_cast<char*>(&transform.animCurveWidth), sizeof(transform.animCurveWidth));
+					out.write(reinterpret_cast<char*>(&transform.loopType), sizeof(transform.loopType));
+					out.write(reinterpret_cast<char*>(&transform.verticalOrigin), sizeof(transform.verticalOrigin));
+					out.write(reinterpret_cast<char*>(&transform.hasAnimInfo), 1);
+					out.write(reinterpret_cast<char*>(&transform.padding_0x00), sizeof(transform.padding_0x00));
+				}
+			
+				sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after text/transform
+			
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+			
+				if (textOffset != 0) {
+					out.seekp(this->offset + 0x64, std::ios::beg);
+					Utility::byteswap_inplace(textOffset);
+					out.write(reinterpret_cast<char*>(&textOffset), sizeof(textOffset)); //update value
+				}
+			
+				if (nameOffset != 0) {
+					out.seekp(this->offset + 0x80, std::ios::beg);
+					Utility::byteswap_inplace(nameOffset);
+					out.write(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset)); //update value
+				}
+			
+				if (charTransformOffset.has_value()) {
+					uint32_t& transformOffset = charTransformOffset.value();
+					out.seekp(this->offset + 0xA0, std::ios::beg);
+					Utility::byteswap_inplace(transformOffset);
+					out.write(reinterpret_cast<char*>(&transformOffset), sizeof(transformOffset)); //update value
+				}
+			
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			
+			pic1::~pic1() {
+			
+			}
+			
+			FLYTError pic1::read(std::istream& bflyt, const unsigned int offset) {
+				if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
+					return err;
+				}
+				if (std::strncmp(magic, "pic1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorTL)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorTR)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorBL)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorBR)) {
+					return FLYTError::REACHED_EOF; //returns false if read fails
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&matIndex), sizeof(matIndex))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&numCoords), sizeof(numCoords))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				Utility::byteswap_inplace(matIndex);
+			
+				coords.reserve(numCoords);
+				for (uint8_t i = 0; i < numCoords; i++) {
+					UVCoords& coord = coords.emplace_back();
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordTL)) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordTR)) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordBL)) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					if (!readVec2(bflyt, bflyt.tellg(), coord.coordBR)) {
+						return FLYTError::REACHED_EOF;
+					}
+				}
+			
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			std::unique_ptr<PaneBase> pic1::clonePane() {
+				return std::make_unique<pic1>(*this);
+			}
+			
+			FLYTError pic1::save_changes(std::ostream& out) {
+				if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
+					return err;
+				}
+			
+				writeRGBA8(out, vertexColorTL);
+				writeRGBA8(out, vertexColorTR);
+				writeRGBA8(out, vertexColorBL);
+				writeRGBA8(out, vertexColorBR);
+			
+				numCoords = coords.size();
+				Utility::byteswap_inplace(matIndex);
+			
+				out.write(reinterpret_cast<char*>(&matIndex), sizeof(matIndex));
+				out.write(reinterpret_cast<char*>(&numCoords), sizeof(numCoords));
+				out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+			
+				for (UVCoords& coord : coords) {
+					writeVec2(out, coord.coordTL);
+					writeVec2(out, coord.coordTR);
+					writeVec2(out, coord.coordBL);
+					writeVec2(out, coord.coordBR);
+				}
+			
+				//doesnt need padding, length will always be a multiple of 4
+				sectionSize = (unsigned int)out.tellp() - this->offset; //section ends after coords
+			
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+			
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
+			}
+			
+			
+			partProperty::partProperty(const partProperty& property) : 
+				propName(property.propName),
+				usageFlag(property.usageFlag),
+				basicUsageFlag(property.basicUsageFlag),
+				matUsageFlag(property.matUsageFlag),
+				padding_0x00(property.padding_0x00),
+				propOffset(property.propOffset),
+				userDataOffset(property.userDataOffset),
+				panelInfoOffset(property.panelInfoOffset),
+				userData(property.userData),
+				paneInfo(property.paneInfo)
+			{
+				if(prop.has_value()) {
+					prop = property.prop.value()->clonePane();
+				}
+				else {
+					prop = std::nullopt;
+				}
+			}
+			
+			
+			prt1::~prt1() {
+			
+			}
+			
+			FLYTError prt1::read(std::istream& bflyt, const unsigned int offset) {
+				if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
+					return err;
+				}
+				if (std::strncmp(magic, "prt1", 4) != 0) {
+					return FLYTError::UNKNOWN_SECTION;
+				}
+			
+				if (!bflyt.read(reinterpret_cast<char*>(&propCount), sizeof(propCount))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&magnifyX), sizeof(magnifyX))) {
+					return FLYTError::REACHED_EOF;
+				}
+				if (!bflyt.read(reinterpret_cast<char*>(&magnifyY), sizeof(magnifyY))) {
+					return FLYTError::REACHED_EOF;
+				}
+			
+				Utility::byteswap_inplace(propCount);
+				Utility::byteswap_inplace(magnifyX);
+				Utility::byteswap_inplace(magnifyY);
+			
+				properties.reserve(propCount);
+				for (unsigned int i = 0; i < propCount; i++) {
+					partProperty& prop = properties.emplace_back();
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.propName), 0x18)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.usageFlag), 1)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.basicUsageFlag), 1)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.matUsageFlag), 1)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.padding_0x00), 1)) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.propOffset), sizeof(prop.propOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.userDataOffset), sizeof(prop.userDataOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+					if (!bflyt.read(reinterpret_cast<char*>(&prop.panelInfoOffset), sizeof(prop.panelInfoOffset))) {
+						return FLYTError::REACHED_EOF;
+					}
+			
+					Utility::byteswap_inplace(prop.propOffset);
+					Utility::byteswap_inplace(prop.userDataOffset);
+					Utility::byteswap_inplace(prop.panelInfoOffset);
+			
+					FLYTError err = FLYTError::NONE;
+					if (prop.propOffset != 0) {
+						bflyt.seekg(this->offset + prop.propOffset, std::ios::beg);
+			
+						char propMagic[4];
+						if (!bflyt.read(reinterpret_cast<char*>(&propMagic), sizeof(propMagic))) return FLYTError::REACHED_EOF;
+						bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
+			
+						if (std::strncmp(propMagic, "pic1", 4) == 0) {
+							prop.prop = std::make_unique<pic1>();
+						}
+						else if (std::strncmp(propMagic, "txt1", 4) == 0) {
+							prop.prop = std::make_unique<txt1>();
+						}
+						else if (std::strncmp(propMagic, "wnd1", 4) == 0) {
+							prop.prop = std::make_unique<wnd1>();
+						}
+						else if (std::strncmp(propMagic, "bnd1", 4) == 0) {
+							prop.prop = std::make_unique<bnd1>();
+						}
+						else if (std::strncmp(propMagic, "prt1", 4) == 0) {
+							prop.prop = std::make_unique<prt1>();
+						}
+						else {
+							return FLYTError::UNKNOWN_SECTION;
+						}
+						err = prop.prop.value()->read(bflyt, this->offset + prop.propOffset);
+						if (err != FLYTError::NONE) {
+							return err;
+						}
+					}
+					else {
+						prop.prop = std::nullopt;
+					}
+			
+					if (prop.userDataOffset != 0) {
+						err = prop.userData.emplace().read(bflyt, this->offset + prop.userDataOffset);
+					}
+					else {
+						prop.prop = std::nullopt;
+					}
+			
+					if (prop.panelInfoOffset != 0) {
+						std::string& info = prop.paneInfo.emplace(0x34, '\x00');
+						if (!bflyt.read(reinterpret_cast<char*>(&info[0]), 0x34)) {
 							return FLYTError::REACHED_EOF;
 						}
-
-						Utility::byteswap_inplace(value);
-
-						std::get<std::vector<float>>(entry.data).push_back(value);
 					}
-					break;
-				case UserDataType::STRUCT:
-					break; //type not implemented, should not appear in Wii U files
+					else {
+						prop.paneInfo = std::nullopt;
+					}
+				}
+			
+				if (std::string name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
+					return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
+				}
+				else {
+					lytFilename = name;
+				}
+			
+				bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
 			}
-		}
-	}
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError usd1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-PaneBase::~PaneBase() {
-
-}
-
-
-pan1::~pan1() {
-	
-}
-
-FLYTError pan1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "pan1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.bitFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.originFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.alpha), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.paneMagFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	baseData.name.resize(0x18);
-	baseData.userInfo.resize(0x8);
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.name[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.userInfo[0]), 0x8)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transX), sizeof(baseData.transX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transY), sizeof(baseData.transY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transZ), sizeof(baseData.transZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotX), sizeof(baseData.rotX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotY), sizeof(baseData.rotY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotZ), sizeof(baseData.rotZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleX), sizeof(baseData.scaleX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleY), sizeof(baseData.scaleY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.width), sizeof(baseData.width))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.height), sizeof(baseData.height))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(baseData.transX);
-	Utility::byteswap_inplace(baseData.transY);
-	Utility::byteswap_inplace(baseData.transZ);
-	Utility::byteswap_inplace(baseData.rotX);
-	Utility::byteswap_inplace(baseData.rotY);
-	Utility::byteswap_inplace(baseData.rotZ);
-	Utility::byteswap_inplace(baseData.scaleX);
-	Utility::byteswap_inplace(baseData.scaleY);
-	Utility::byteswap_inplace(baseData.width);
-	Utility::byteswap_inplace(baseData.height);
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError pan1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-bnd1::~bnd1() {
-	
-}
-
-FLYTError bnd1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "bnd1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.bitFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.originFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.alpha), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.paneMagFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	baseData.name.resize(0x18);
-	baseData.userInfo.resize(0x8);
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.name[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.userInfo[0]), 0x8)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transX), sizeof(baseData.transX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transY), sizeof(baseData.transY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transZ), sizeof(baseData.transZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotX), sizeof(baseData.rotX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotY), sizeof(baseData.rotY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotZ), sizeof(baseData.rotZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleX), sizeof(baseData.scaleX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleY), sizeof(baseData.scaleY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.width), sizeof(baseData.width))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.height), sizeof(baseData.height))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(baseData.transX);
-	Utility::byteswap_inplace(baseData.transY);
-	Utility::byteswap_inplace(baseData.transZ);
-	Utility::byteswap_inplace(baseData.rotX);
-	Utility::byteswap_inplace(baseData.rotY);
-	Utility::byteswap_inplace(baseData.rotZ);
-	Utility::byteswap_inplace(baseData.scaleX);
-	Utility::byteswap_inplace(baseData.scaleY);
-	Utility::byteswap_inplace(baseData.width);
-	Utility::byteswap_inplace(baseData.height);
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError bnd1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-wnd1::~wnd1() {
-	
-}
-
-FLYTError wnd1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "wnd1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.bitFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.originFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.alpha), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.paneMagFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	baseData.name.resize(0x18);
-	baseData.userInfo.resize(0x8);
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.name[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.userInfo[0]), 0x8)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transX), sizeof(baseData.transX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transY), sizeof(baseData.transY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transZ), sizeof(baseData.transZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotX), sizeof(baseData.rotX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotY), sizeof(baseData.rotY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotZ), sizeof(baseData.rotZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleX), sizeof(baseData.scaleX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleY), sizeof(baseData.scaleY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.width), sizeof(baseData.width))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.height), sizeof(baseData.height))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(baseData.transX);
-	Utility::byteswap_inplace(baseData.transY);
-	Utility::byteswap_inplace(baseData.transZ);
-	Utility::byteswap_inplace(baseData.rotX);
-	Utility::byteswap_inplace(baseData.rotY);
-	Utility::byteswap_inplace(baseData.rotZ);
-	Utility::byteswap_inplace(baseData.scaleX);
-	Utility::byteswap_inplace(baseData.scaleY);
-	Utility::byteswap_inplace(baseData.width);
-	Utility::byteswap_inplace(baseData.height);
-
-	if (!bflyt.read(reinterpret_cast<char*>(&leftStretch), sizeof(leftStretch))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&rightStretch), sizeof(rightStretch))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&topStretch), sizeof(topStretch))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&bottomStretch), sizeof(bottomStretch))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&frameSizeLeft), sizeof(frameSizeLeft))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&frameSizeRight), sizeof(frameSizeRight))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&frameSizeTop), sizeof(frameSizeTop))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&frameSizeBottom), sizeof(frameSizeBottom))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&frameNum), sizeof(frameNum))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&contentOffset), sizeof(contentOffset))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&frameTableOffset), sizeof(frameTableOffset))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(leftStretch);
-	Utility::byteswap_inplace(rightStretch);
-	Utility::byteswap_inplace(topStretch);
-	Utility::byteswap_inplace(bottomStretch);
-	Utility::byteswap_inplace(frameSizeLeft);
-	Utility::byteswap_inplace(frameSizeRight);
-	Utility::byteswap_inplace(frameSizeTop);
-	Utility::byteswap_inplace(frameSizeBottom);
-	Utility::byteswap_inplace(contentOffset);
-	Utility::byteswap_inplace(frameTableOffset);
-
-	bflyt.seekg(this->offset + contentOffset, std::ios::beg);
-	std::optional<RGBA> color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	content.vertexColTL = color.value();
-
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	content.vertexColTR = color.value();
-
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	content.vertexColBL = color.value();
-
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	content.vertexColBR = color.value();
-
-	if (!bflyt.read(reinterpret_cast<char*>(&content.matIndex), sizeof(content.matIndex))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&content.numCoords), sizeof(content.numCoords))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&content.padding_0x00), sizeof(content.padding_0x00))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(content.matIndex);
-
-	content.coords.reserve(content.numCoords);
-	for (uint8_t i = 0; i < content.numCoords; i++) {
-		UVCoords coord;
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTL[0]), sizeof(coord.coordTL[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTL[1]), sizeof(coord.coordTL[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTR[0]), sizeof(coord.coordTR[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTR[1]), sizeof(coord.coordTR[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBL[0]), sizeof(coord.coordBL[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBL[1]), sizeof(coord.coordBL[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBR[0]), sizeof(coord.coordBR[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBR[1]), sizeof(coord.coordBR[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(coord.coordTL[0]);
-		Utility::byteswap_inplace(coord.coordTL[1]);
-		Utility::byteswap_inplace(coord.coordTR[0]);
-		Utility::byteswap_inplace(coord.coordTR[1]);
-		Utility::byteswap_inplace(coord.coordBL[0]);
-		Utility::byteswap_inplace(coord.coordBL[1]);
-		Utility::byteswap_inplace(coord.coordBR[0]);
-		Utility::byteswap_inplace(coord.coordBR[1]);
-
-		content.coords.push_back(coord);
-	}
-
-
-	bflyt.seekg(this->offset + frameTableOffset);
-	for (unsigned int i = 0; i < frameNum; i++) {
-		uint32_t frameOffset = 0;
-		if (!bflyt.read(reinterpret_cast<char*>(&frameOffset), sizeof(frameOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(frameOffset);
-		frameTable.push_back(frameOffset);
-	}
-
-	for (const uint32_t frameOffset : frameTable) {
-		bflyt.seekg(this->offset + frameOffset, std::ios::beg);
-
-		windowFrame frame;
-		if (!bflyt.read(reinterpret_cast<char*>(&frame.matIndex), sizeof(frame.matIndex))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&frame.texFlip), sizeof(frame.texFlip))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&frame.padding_0x00), sizeof(frame.padding_0x00))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(frame.matIndex);
-
-		frames.push_back(frame);
-	}
-
-	return FLYTError::NONE;
-}
-
-FLYTError wnd1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-txt1::~txt1() {
-	
-}
-
-FLYTError txt1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "txt1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.bitFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.originFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.alpha), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.paneMagFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	baseData.name.resize(0x18);
-	baseData.userInfo.resize(0x8);
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.name[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.userInfo[0]), 0x8)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transX), sizeof(baseData.transX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transY), sizeof(baseData.transY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transZ), sizeof(baseData.transZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotX), sizeof(baseData.rotX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotY), sizeof(baseData.rotY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotZ), sizeof(baseData.rotZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleX), sizeof(baseData.scaleX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleY), sizeof(baseData.scaleY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.width), sizeof(baseData.width))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.height), sizeof(baseData.height))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(baseData.transX);
-	Utility::byteswap_inplace(baseData.transY);
-	Utility::byteswap_inplace(baseData.transZ);
-	Utility::byteswap_inplace(baseData.rotX);
-	Utility::byteswap_inplace(baseData.rotY);
-	Utility::byteswap_inplace(baseData.rotZ);
-	Utility::byteswap_inplace(baseData.scaleX);
-	Utility::byteswap_inplace(baseData.scaleY);
-	Utility::byteswap_inplace(baseData.width);
-	Utility::byteswap_inplace(baseData.height);
-
-	if (!bflyt.read(reinterpret_cast<char*>(&texLen), sizeof(texLen))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&restrictedLen), sizeof(restrictedLen))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&matIndex), sizeof(matIndex))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&fontIndex), sizeof(fontIndex))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&textAlignment), sizeof(textAlignment))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&lineAlignment), sizeof(lineAlignment))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&bitflags), sizeof(bitflags))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&italicTilt), sizeof(italicTilt))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&textOffset), sizeof(textOffset))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	std::optional<RGBA> color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	fontColorTop = color.value();
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	fontColorBottom = color.value();
-
-	if (!bflyt.read(reinterpret_cast<char*>(&fontSizeX), sizeof(fontSizeX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&fontSizeY), sizeof(fontSizeY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&charSpace), sizeof(charSpace))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&lineSpace), sizeof(lineSpace))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&shadowPosX), sizeof(shadowPosX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&shadowPosY), sizeof(shadowPosY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&shadowSizeX), sizeof(shadowSizeX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&shadowSizeY), sizeof(shadowSizeY))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	shadowColorTop = color.value();
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	shadowColorBottom = color.value();
-
-	if (!bflyt.read(reinterpret_cast<char*>(&shadowItalicTilt), sizeof(shadowItalicTilt))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(texLen);
-	Utility::byteswap_inplace(restrictedLen);
-	Utility::byteswap_inplace(matIndex);
-	Utility::byteswap_inplace(fontIndex);
-	Utility::byteswap_inplace(italicTilt);
-	Utility::byteswap_inplace(textOffset);
-	Utility::byteswap_inplace(fontSizeX);
-	Utility::byteswap_inplace(fontSizeY);
-	Utility::byteswap_inplace(charSpace);
-	Utility::byteswap_inplace(lineSpace);
-	Utility::byteswap_inplace(nameOffset);
-	Utility::byteswap_inplace(shadowPosX);
-	Utility::byteswap_inplace(shadowPosY);
-	Utility::byteswap_inplace(shadowSizeX);
-	Utility::byteswap_inplace(shadowSizeY);
-	Utility::byteswap_inplace(shadowItalicTilt);
-
-	if (textOffset != 0) {
-		if (std::u16string& name = readNullTerminatedU16str(bflyt, this->offset + textOffset); name.empty()) {
-			return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-		}
-		else {
-			text = name;
-		}
-	}
-
-	if (nameOffset != 0) {
-		if (std::string& name = readNullTerminatedStr(bflyt, this->offset + nameOffset); name.empty()) {
-			return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-		}
-		else {
-			textBoxName = name;
-		}
-	}
-
-	if ((bitflags >> 4) & 0x01) { //per char transform flag
-		uint32_t transformOffset = 0;
-		if (!bflyt.read(reinterpret_cast<char*>(&transformOffset), sizeof(transformOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(transformOffset);
-		charTransformOffset = transformOffset;
-
-		bflyt.seekg(this->offset + transformOffset);
-		perCharTransform transform;
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.animCurveWidth), sizeof(transform.animCurveWidth))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.loopType), sizeof(transform.loopType))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.verticalOrigin), sizeof(transform.verticalOrigin))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.hasAnimInfo), 1)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&transform.padding_0x00), sizeof(transform.padding_0x00))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(transform.curveTimeOffset);
-		Utility::byteswap_inplace(transform.animCurveWidth);
-
-		charTransform = transform;
-	}
-	else {
-		charTransformOffset = std::nullopt;
-		charTransform = std::nullopt;
-	}
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError txt1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-pic1::~pic1() {
-
-}
-
-FLYTError pic1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "pic1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.bitFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.originFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.alpha), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.paneMagFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	baseData.name.resize(0x18);
-	baseData.userInfo.resize(0x8);
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.name[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.userInfo[0]), 0x8)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transX), sizeof(baseData.transX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transY), sizeof(baseData.transY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transZ), sizeof(baseData.transZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotX), sizeof(baseData.rotX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotY), sizeof(baseData.rotY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotZ), sizeof(baseData.rotZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleX), sizeof(baseData.scaleX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleY), sizeof(baseData.scaleY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.width), sizeof(baseData.width))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.height), sizeof(baseData.height))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(baseData.transX);
-	Utility::byteswap_inplace(baseData.transY);
-	Utility::byteswap_inplace(baseData.transZ);
-	Utility::byteswap_inplace(baseData.rotX);
-	Utility::byteswap_inplace(baseData.rotY);
-	Utility::byteswap_inplace(baseData.rotZ);
-	Utility::byteswap_inplace(baseData.scaleX);
-	Utility::byteswap_inplace(baseData.scaleY);
-	Utility::byteswap_inplace(baseData.width);
-	Utility::byteswap_inplace(baseData.height);
-
-	std::optional<RGBA> color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	vertexColorTL = color.value();
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	vertexColorTR = color.value();
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	vertexColorBL = color.value();
-	color = readRGBA(bflyt, bflyt.tellg());
-	if (!color.has_value()) {
-		return FLYTError::REACHED_EOF; //returns nullopt if read fails
-	}
-	vertexColorBR = color.value();
-
-	if (!bflyt.read(reinterpret_cast<char*>(&matIndex), sizeof(matIndex))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&numCoords), sizeof(numCoords))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(matIndex);
-
-	coords.reserve(numCoords);
-	for (uint8_t i = 0; i < numCoords; i++) {
-		UVCoords coord;
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTL[0]), sizeof(coord.coordTL[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTL[1]), sizeof(coord.coordTL[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTR[0]), sizeof(coord.coordTR[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordTR[1]), sizeof(coord.coordTR[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBL[0]), sizeof(coord.coordBL[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBL[1]), sizeof(coord.coordBL[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBR[0]), sizeof(coord.coordBR[0]))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&coord.coordBR[1]), sizeof(coord.coordBR[1]))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(coord.coordTL[0]);
-		Utility::byteswap_inplace(coord.coordTL[1]);
-		Utility::byteswap_inplace(coord.coordTR[0]);
-		Utility::byteswap_inplace(coord.coordTR[1]);
-		Utility::byteswap_inplace(coord.coordBL[0]);
-		Utility::byteswap_inplace(coord.coordBL[1]);
-		Utility::byteswap_inplace(coord.coordBR[0]);
-		Utility::byteswap_inplace(coord.coordBR[1]);
-
-		coords.push_back(coord);
-	}
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError pic1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-prt1::~prt1() {
-
-}
-
-FLYTError prt1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "prt1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.bitFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.originFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.alpha), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.paneMagFlags), 1)) {
-		return FLYTError::REACHED_EOF;
-	}
-	baseData.name.resize(0x18);
-	baseData.userInfo.resize(0x8);
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.name[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.userInfo[0]), 0x8)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transX), sizeof(baseData.transX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transY), sizeof(baseData.transY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.transZ), sizeof(baseData.transZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotX), sizeof(baseData.rotX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotY), sizeof(baseData.rotY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.rotZ), sizeof(baseData.rotZ))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleX), sizeof(baseData.scaleX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.scaleY), sizeof(baseData.scaleY))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.width), sizeof(baseData.width))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&baseData.height), sizeof(baseData.height))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(baseData.transX);
-	Utility::byteswap_inplace(baseData.transY);
-	Utility::byteswap_inplace(baseData.transZ);
-	Utility::byteswap_inplace(baseData.rotX);
-	Utility::byteswap_inplace(baseData.rotY);
-	Utility::byteswap_inplace(baseData.rotZ);
-	Utility::byteswap_inplace(baseData.scaleX);
-	Utility::byteswap_inplace(baseData.scaleY);
-	Utility::byteswap_inplace(baseData.width);
-	Utility::byteswap_inplace(baseData.height);
-
-	if (!bflyt.read(reinterpret_cast<char*>(&propCount), sizeof(propCount))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&magnifyX), sizeof(magnifyX))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&magnifyY), sizeof(magnifyY))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(propCount);
-	Utility::byteswap_inplace(magnifyX);
-	Utility::byteswap_inplace(magnifyY);
-
-	properties.reserve(propCount);
-	for (unsigned int i = 0; i < propCount; i++) {
-		partProperty& prop = properties.emplace_back();
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.propName), 0x18)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.usageFlag), 1)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.basicUsageFlag), 1)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.matUsageFlag), 1)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.padding_0x00), 1)) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.propOffset), sizeof(prop.propOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.userDataOffset), sizeof(prop.userDataOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&prop.panelInfoOffset), sizeof(prop.panelInfoOffset))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(prop.propOffset);
-		Utility::byteswap_inplace(prop.userDataOffset);
-		Utility::byteswap_inplace(prop.panelInfoOffset);
-
-		if (prop.propOffset != 0) {
-			bflyt.seekg(this->offset + prop.propOffset, std::ios::beg);
-
-			char propMagic[4];
-			if (!bflyt.read(reinterpret_cast<char*>(&propMagic), sizeof(propMagic))) return FLYTError::REACHED_EOF;
-			bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
-
-			FLYTError err = FLYTError::NONE;
-			if (strncmp(propMagic, "pic1", 4) == 0) {
-				prop.prop = std::make_unique<pic1>();
-				err = dynamic_cast<pic1*>(prop.prop.value().get())->read(bflyt, this->offset + prop.propOffset);
-				if (err != FLYTError::NONE) {
+			
+			std::unique_ptr<PaneBase> prt1::clonePane() {
+				return std::make_unique<prt1>(*this);
+			}
+			
+			FLYTError prt1::save_changes(std::ostream& out) {
+				if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
 					return err;
 				}
-			}
-			else if (strncmp(propMagic, "txt1", 4) == 0) {
-				prop.prop = std::make_unique<txt1>();
-				err = dynamic_cast<txt1*>(prop.prop.value().get())->read(bflyt, this->offset + prop.propOffset);
-				if (err != FLYTError::NONE) {
-					return err;
+			
+				propCount = properties.size();
+			
+				Utility::byteswap_inplace(propCount);
+				Utility::byteswap_inplace(magnifyX);
+				Utility::byteswap_inplace(magnifyY);
+			
+				out.write(reinterpret_cast<char*>(&propCount), sizeof(propCount));
+				out.write(reinterpret_cast<char*>(&magnifyX), sizeof(magnifyX));
+				out.write(reinterpret_cast<char*>(&magnifyY), sizeof(magnifyY));
+			
+				for (partProperty& prop : properties) {
+					std::streamoff propOffset = out.tellp();
+					out.write(reinterpret_cast<char*>(&prop.propName), 0x18);
+					out.write(reinterpret_cast<char*>(&prop.usageFlag), 1);
+					out.write(reinterpret_cast<char*>(&prop.basicUsageFlag), 1);
+					out.write(reinterpret_cast<char*>(&prop.matUsageFlag), 1);
+					out.write(reinterpret_cast<char*>(&prop.padding_0x00), 1);
+					out.seekp(0xC, std::ios::cur); //skip over offsets for now
+			
+					prop.propOffset = 0;
+					if (prop.prop.has_value()) {
+						prop.propOffset = (unsigned int)out.tellp() - this->offset;
+						if (FLYTError err = prop.prop.value()->save_changes(out); err != FLYTError::NONE) {
+							return err;
+						}
+					}
+			
+					prop.userDataOffset = 0;
+					if (prop.userData.has_value()) {
+						prop.userDataOffset = (unsigned int)out.tellp() - this->offset;
+						if (FLYTError err = prop.userData.value().save_changes(out); err != FLYTError::NONE) {
+							return err;
+						}
+					}
+			
+					prop.panelInfoOffset = 0;
+					if (prop.paneInfo.has_value()) {
+						prop.panelInfoOffset = (unsigned int)out.tellp() - this->offset;
+						out.write(&prop.paneInfo.value()[0], 0x34);
+					}
+			
+					std::streamoff propEnd = out.tellp();
+					out.seekp(propOffset + 0x1C, std::ios::beg);
+			
+					Utility::byteswap_inplace(prop.propOffset);
+					Utility::byteswap_inplace(prop.userDataOffset);
+					Utility::byteswap_inplace(prop.panelInfoOffset);
+			
+					out.write(reinterpret_cast<char*>(&prop.propOffset), sizeof(prop.propOffset));
+					out.write(reinterpret_cast<char*>(&prop.userDataOffset), sizeof(prop.userDataOffset));
+					out.write(reinterpret_cast<char*>(&prop.panelInfoOffset), sizeof(prop.panelInfoOffset));
+			
+					out.seekp(propEnd, std::ios::beg);
 				}
-			}
-			else if (strncmp(propMagic, "wnd1", 4) == 0) {
-				prop.prop = std::make_unique<wnd1>();
-				err = dynamic_cast<wnd1*>(prop.prop.value().get())->read(bflyt, this->offset + prop.propOffset);
-				if (err != FLYTError::NONE) {
-					return err;
-				}
-			}
-			else if (strncmp(propMagic, "bnd1", 4) == 0) {
-				prop.prop = std::make_unique<bnd1>();
-				err = dynamic_cast<bnd1*>(prop.prop.value().get())->read(bflyt, this->offset + prop.propOffset);
-				if (err != FLYTError::NONE) {
-					return err;
-				}
-			}
-			else if (strncmp(propMagic, "prt1", 4) == 0) {
-				prop.prop = std::make_unique<prt1>();
-				err = dynamic_cast<prt1*>(prop.prop.value().get())->read(bflyt, this->offset + prop.propOffset);
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+			
+				out.write(&lytFilename[0], lytFilename.size());
+				padToLen(out, 4);
+				sectionSize = (unsigned int)out.tellp() - this->offset;
+			
+				uint32_t sectionSize_BE = Utility::byteswap(sectionSize);
+				out.seekp(this->offset + 0x4, std::ios::beg);
+				out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+			
+				out.seekp(this->offset + sectionSize, std::ios::beg);
+				return FLYTError::NONE;
 			}
 		}
-		else {
-			prop.prop = std::nullopt;
-		}
-
-		if (prop.userDataOffset != 0) {
-			usd1 data;
-			data.read(bflyt, this->offset + prop.userDataOffset);
-			prop.userData = data;
-		}
-		else {
-			prop.prop = std::nullopt;
-		}
-
-		if (prop.panelInfoOffset != 0) {
-			std::string data;
-			data.resize(52);
-			if (!bflyt.read(reinterpret_cast<char*>(&data[0]), 52)) {
-				return FLYTError::REACHED_EOF;
-			}
-			prop.paneInfo = data;
-		}
-		else {
-			prop.paneInfo = std::nullopt;
-		}
 	}
-
-	if (std::string& name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
-		return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-	}
-	else {
-		lytFilename = name;
-	}
-
-	bflyt.seekg(this->offset + sectionSize, std::ios::beg);
-
-	return FLYTError::NONE;
-}
-
-FLYTError prt1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
-}
-
-
-FLYTError grp1::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
-
-	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
-	if (strncmp(magic, "grp1", 4) != 0) {
-		return FLYTError::UNKNOWN_SECTION;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-		return FLYTError::REACHED_EOF;
-	}
-	groupName.resize(0x18);
-	if (!bflyt.read(reinterpret_cast<char*>(&groupName[0]), 0x18)) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&numPanes), sizeof(numPanes))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
-		return FLYTError::REACHED_EOF;
-	}
-
-	Utility::byteswap_inplace(sectionSize);
-	Utility::byteswap_inplace(numPanes);
-
-	for (unsigned int i = 0; i < numPanes; i++) {
-		std::string paneName;
-		paneName.resize(0x18);
-		if (!bflyt.read(reinterpret_cast<char*>(&paneName[0]), 0x18)) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		paneNames.push_back(paneName);
-	}
-
-	char nextSection[4];
-	if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
-		return FLYTError::REACHED_EOF;
-	}
-	if (strncmp(nextSection, "grs1", 4) == 0) {
-		uint32_t grs1Size;
-		if (!bflyt.read(reinterpret_cast<char*>(&grs1Size), sizeof(grs1Size))) {
-			return FLYTError::REACHED_EOF;
-		}
-		Utility::byteswap_inplace(grs1Size);
-		if (grs1Size != 0x8) {
-			return FLYTError::UNEXPECTED_VALUE;
-		}
-
-		if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		while (strncmp(nextSection, "gre1", 4) != 0) {
-			bflyt.seekg(-4, std::ios::cur);
-
-			if (strncmp(nextSection, "grp1", 4) != 0) return FLYTError::UNKNOWN_SECTION; //should never happen
-
-			grp1 child;
-			FLYTError err = FLYTError::NONE;
-
-			err = child.read(bflyt, bflyt.tellg());
-			if (err != FLYTError::NONE) {
-				return err;
-			}
-			children.push_back(child);
-
-			if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
-				return FLYTError::REACHED_EOF;
-			}
-		}
-
-		uint32_t gre1Size;
-		if (!bflyt.read(reinterpret_cast<char*>(&gre1Size), sizeof(gre1Size))) {
-			return FLYTError::REACHED_EOF;
-		}
-		Utility::byteswap_inplace(gre1Size);
-		if (gre1Size != 0x8) {
-			return FLYTError::UNEXPECTED_VALUE;
-		}
-	}
-	else {
-		bflyt.seekg(-4, std::ios::cur);
-	}
-
-	return FLYTError::NONE;
-}
-
-FLYTError grp1::save_changes(std::ostream& out) {
-	return FLYTError::NONE;
 }
 
 
@@ -1584,57 +2148,37 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 	if (!bflyt.read(magic, 4)) return FLYTError::REACHED_EOF;
 	
 	FLYTError err = FLYTError::NONE;
-	if (strncmp(magic, "pan1", 4) == 0) {
-		pane = std::make_unique<pan1>();
-		err = dynamic_cast<pan1*>(pane.get())->read(bflyt, this->offset);
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+	if (std::strncmp(magic, "pan1", 4) == 0) {
+		pane = std::make_unique<NintendoWare::Layout::Panes::pan1>();
 	}
-	else if (strncmp(magic, "bnd1", 4) == 0) {
-		pane = std::make_unique<bnd1>();
-		err = dynamic_cast<bnd1*>(pane.get())->read(bflyt, this->offset);
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+	else if (std::strncmp(magic, "bnd1", 4) == 0) {
+		pane = std::make_unique<NintendoWare::Layout::Panes::bnd1>();
 	}
-	else if (strncmp(magic, "wnd1", 4) == 0) {
-		pane = std::make_unique<wnd1>();
-		err = dynamic_cast<wnd1*>(pane.get())->read(bflyt, this->offset);
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+	else if (std::strncmp(magic, "wnd1", 4) == 0) {
+		pane = std::make_unique<NintendoWare::Layout::Panes::wnd1>();
 	}
-	else if (strncmp(magic, "txt1", 4) == 0) {
-		pane = std::make_unique<txt1>();
-		err = dynamic_cast<txt1*>(pane.get())->read(bflyt, this->offset);
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+	else if (std::strncmp(magic, "txt1", 4) == 0) {
+		pane = std::make_unique<NintendoWare::Layout::Panes::txt1>();
 	}
-	else if (strncmp(magic, "pic1", 4) == 0) {
-		pane = std::make_unique<pic1>();
-		err = dynamic_cast<pic1*>(pane.get())->read(bflyt, this->offset);
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+	else if (std::strncmp(magic, "pic1", 4) == 0) {
+		pane = std::make_unique<NintendoWare::Layout::Panes::pic1>();
 	}
-	else if (strncmp(magic, "prt1", 4) == 0) {
-		pane = std::make_unique<prt1>();
-		err = dynamic_cast<prt1*>(pane.get())->read(bflyt, this->offset);
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+	else if (std::strncmp(magic, "prt1", 4) == 0) {
+		pane = std::make_unique<NintendoWare::Layout::Panes::prt1>();
 	}
 	else {
 		return FLYTError::UNKNOWN_SECTION;
+	}
+	err = pane->read(bflyt, this->offset);
+	if (err != FLYTError::NONE) {
+		return err;
 	}
 
 	char nextSection[4];
 	if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
 		return FLYTError::REACHED_EOF;
 	}
-	if (strncmp(nextSection, "pas1", 4) == 0) {
+	if (std::strncmp(nextSection, "pas1", 4) == 0) {
 		uint32_t pas1Size;
 		if (!bflyt.read(reinterpret_cast<char*>(&pas1Size), sizeof(pas1Size))) {
 			return FLYTError::REACHED_EOF;
@@ -1648,26 +2192,14 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 			return FLYTError::REACHED_EOF;
 		}
 
-		while (strncmp(nextSection, "pae1", 4) != 0) {
-			if (strncmp(nextSection, "usd1", 4) == 0) {
-				bflyt.seekg(-4, std::ios::cur);
+		while (std::strncmp(nextSection, "pae1", 4) != 0) {
+			bflyt.seekg(-4, std::ios::cur);
 
-				usd1& data = userData.emplace();
-				err = data.read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
-			}
-			else {
-				bflyt.seekg(-4, std::ios::cur);
+			Pane& child = children.emplace_back(); //do this because unique_ptr can't be copied
 
-				Pane& child = children.emplace_back(); //do this because unique_ptr can't be copied
-				FLYTError err = FLYTError::NONE;
-
-				err = child.read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+			err = child.read(bflyt, bflyt.tellg());
+			if (err != FLYTError::NONE) {
+				return err;
 			}
 			
 			if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
@@ -1684,6 +2216,15 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 			return FLYTError::UNEXPECTED_VALUE;
 		}
 	}
+	else if(std::strncmp(nextSection, "usd1", 4) == 0) {
+		bflyt.seekg(-4, std::ios::cur);
+
+		NintendoWare::Layout::Blocks::usd1 & data = userData.emplace();
+		err = data.read(bflyt, bflyt.tellg());
+		if (err != FLYTError::NONE) {
+			return err;
+		}
+	}
 	else {
 		bflyt.seekg(-4, std::ios::cur);
 	}
@@ -1691,7 +2232,48 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 	return FLYTError::NONE;
 }
 
-FLYTError Pane::save_changes(std::ostream& out) {
+Pane& Pane::duplicateChildPane(const unsigned int originalIndex) {
+	Pane& pane = children.emplace_back();
+	memcpy(&pane.magic, &children[originalIndex].magic, 4);
+	pane.userData = children[originalIndex].userData;
+	pane.pane = children[originalIndex].pane->clonePane();
+	return pane; //leaves offset unintialized
+}
+
+FLYTError Pane::save_changes(std::ostream& out, uint16_t& sectionNum) {
+	sectionNum += 1; //add each pane to section num
+	this->offset = out.tellp();
+
+	if (FLYTError err = pane->save_changes(out); err != FLYTError::NONE) {
+		return err;
+	}
+
+	if (userData.has_value()) {
+		sectionNum += 1;
+		if (FLYTError err = userData.value().save_changes(out); err != FLYTError::NONE) {
+			return err;
+		}
+	}
+
+	if (children.size() > 0) {
+		uint32_t size = 0x8;
+		Utility::byteswap_inplace(size);
+
+		out.write("pas1", 4);
+		out.write(reinterpret_cast<char*>(&size), sizeof(size));
+		sectionNum += 1; //pas counts as section
+
+		for (Pane& child : children) {
+			if (FLYTError err = child.save_changes(out, sectionNum); err != FLYTError::NONE) {
+				return err;
+			}
+		}
+
+		out.write("pae1", 4);
+		out.write(reinterpret_cast<char*>(&size), sizeof(size));
+		sectionNum += 1; //pae counts as section
+	}
+
 	return FLYTError::NONE;
 }
 
@@ -1728,12 +2310,10 @@ namespace FileTypes {
 		memcpy(header.magicFLYT, "FLYT", 4);
 		header.byteOrderMarker = 0xFEFF;
 		header.headerSize_0x14 = 0x14;
-		header.version_0x0202 = 0x0202;
+		header.version_0x0202 = 0x02020000;
 		header.fileSize = 0;
 		header.numSections = 0;
 
-		memcpy(LYT1.magicLYT1, "LYT1", 4);
-		LYT1.sectionSize = 0;
 		LYT1.drawCentered = true;
 		LYT1.width = 1280;
 		LYT1.height = 720;
@@ -1747,7 +2327,7 @@ namespace FileTypes {
 		container = std::nullopt;
 		userData = std::nullopt;
 
-		//init rootpane and rootgroup
+		//init rootPane and rootGroup?
 		return;
 	}
 
@@ -1757,195 +2337,9 @@ namespace FileTypes {
 		return newFLYT;
 	}
 
-	FLYTError FLYTFile::readLYT1(std::istream& bflyt) {
-		if (!bflyt.read(LYT1.magicLYT1, 4)) return FLYTError::REACHED_EOF;
-		if (strncmp(LYT1.magicLYT1, "lyt1", 4) != 0) {
-			return FLYTError::UNKNOWN_SECTION;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.sectionSize), sizeof(LYT1.sectionSize))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.drawCentered), sizeof(LYT1.drawCentered))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.padding_0x00), sizeof(LYT1.padding_0x00))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.width), sizeof(LYT1.width))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.height), sizeof(LYT1.height))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.maxPartWidth), sizeof(LYT1.maxPartWidth))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&LYT1.maxPartHeight), sizeof(LYT1.maxPartHeight))) {
-			return FLYTError::REACHED_EOF;
-		}
-		
-		if (std::string& name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
-			return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-		}
-		else {
-			LYT1.layoutName = name; //read the name properly
-		}
-
-		Utility::byteswap_inplace(LYT1.sectionSize);
-		Utility::byteswap_inplace(LYT1.width);
-		Utility::byteswap_inplace(LYT1.height);
-		Utility::byteswap_inplace(LYT1.maxPartWidth);
-		Utility::byteswap_inplace(LYT1.maxPartHeight);
-
-		bflyt.seekg(0x14 + LYT1.sectionSize, std::ios::beg);
-
-		return FLYTError::NONE;
-	}
-
-	FLYTError FLYTFile::readTextures(std::istream& bflyt) {
-		txl1& textureList = textures.emplace();
-
-		textureList.offset = bflyt.tellg();
-
-		if (!bflyt.read(textureList.magicTXL1, 4)) return FLYTError::REACHED_EOF;
-		if (strncmp(textureList.magicTXL1, "txl1", 4) != 0) {
-			return FLYTError::UNKNOWN_SECTION;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&textureList.sectionSize), sizeof(textureList.sectionSize))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&textureList.numTextures), sizeof(textureList.numTextures))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&textureList.padding_0x00), sizeof(textureList.padding_0x00))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(textureList.sectionSize);
-		Utility::byteswap_inplace(textureList.numTextures);
-
-		for (unsigned int i = 0; i < textureList.numTextures; i++) {
-			uint32_t nameOffset = 0;
-			if (!bflyt.read(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset))) {
-				return FLYTError::REACHED_EOF;
-			}
-
-			Utility::byteswap_inplace(nameOffset);
-			textureList.texStrOffsets.push_back(nameOffset);
-		}
-
-		for (uint32_t offset : textureList.texStrOffsets) {
-			bflyt.seekg(textureList.offset + 0xC + offset);
-			if (std::string& name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
-				return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-			}
-			else {
-				textureList.texNames.push_back(name);
-			}
-		}
-
-		bflyt.seekg(textureList.offset + textureList.sectionSize, std::ios::beg);
-
-		return FLYTError::NONE;
-	}
-
-	FLYTError FLYTFile::readFonts(std::istream& bflyt) {
-		fnl1& fontList = fonts.emplace();
-
-		fontList.offset = bflyt.tellg();
-
-		if (!bflyt.read(fontList.magicFNL1, 4)) return FLYTError::REACHED_EOF;
-		if (strncmp(fontList.magicFNL1, "fnl1", 4) != 0) {
-			return FLYTError::UNKNOWN_SECTION;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&fontList.sectionSize), sizeof(fontList.sectionSize))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&fontList.numFonts), sizeof(fontList.numFonts))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&fontList.padding_0x00), sizeof(fontList.padding_0x00))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(fontList.sectionSize);
-		Utility::byteswap_inplace(fontList.numFonts);
-
-		for (unsigned int i = 0; i < fontList.numFonts; i++) {
-			uint32_t nameOffset = 0;
-			if (!bflyt.read(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset))) {
-				return FLYTError::REACHED_EOF;
-			}
-
-			Utility::byteswap_inplace(nameOffset);
-			fontList.fontStrOffsets.push_back(nameOffset);
-		}
-
-		for (uint32_t offset : fontList.fontStrOffsets) {
-			bflyt.seekg(fontList.offset + 0xC + offset);
-			if (std::string& name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
-				return FLYTError::REACHED_EOF; //empty string means it could not read a character from file
-			}
-			else {
-				fontList.fontNames.push_back(name);
-			}
-		}
-
-		bflyt.seekg(fontList.offset + fontList.sectionSize, std::ios::beg);
-
-		return FLYTError::NONE;
-	}
-
-	FLYTError FLYTFile::readMaterials(std::istream& bflyt) {
-		mat1& matList = materials.emplace();
-
-		matList.offset = bflyt.tellg();
-
-		if (!bflyt.read(matList.magicMAT1, 4)) return FLYTError::REACHED_EOF;
-		if (strncmp(matList.magicMAT1, "mat1", 4) != 0) {
-			return FLYTError::UNKNOWN_SECTION;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&matList.sectionSize), sizeof(matList.sectionSize))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&matList.numMats), sizeof(matList.numMats))) {
-			return FLYTError::REACHED_EOF;
-		}
-		if (!bflyt.read(reinterpret_cast<char*>(&matList.padding_0x00), sizeof(matList.padding_0x00))) {
-			return FLYTError::REACHED_EOF;
-		}
-
-		Utility::byteswap_inplace(matList.sectionSize);
-		Utility::byteswap_inplace(matList.numMats);
-
-		for (unsigned int i = 0; i < matList.numMats; i++) {
-			uint32_t matOffset = 0;
-			if (!bflyt.read(reinterpret_cast<char*>(&matOffset), sizeof(matOffset))) {
-				return FLYTError::REACHED_EOF;
-			}
-
-			Utility::byteswap_inplace(matOffset);
-			matList.matOffsets.push_back(matOffset);
-		}
-
-		for (uint32_t offset : matList.matOffsets) {
-			material mat;
-			FLYTError err = FLYTError::NONE;
-			err = readMaterial(bflyt, matList.offset + offset, mat);
-			if (err != FLYTError::NONE) {
-				return err;
-			}
-			matList.materials.push_back(mat);
-		}
-
-		bflyt.seekg(matList.offset + matList.sectionSize, std::ios::beg);
-
-		return FLYTError::NONE;
-	}
-
 	FLYTError FLYTFile::loadFromBinary(std::istream& bflyt) {
 		if (!bflyt.read(header.magicFLYT, 4)) return FLYTError::REACHED_EOF;
-		if (strncmp(header.magicFLYT, "FLYT", 4) != 0) {
+		if (std::strncmp(header.magicFLYT, "FLYT", 4) != 0) {
 			return FLYTError::NOT_FLYT;
 		}
 		if (!bflyt.read(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker))) {
@@ -1979,7 +2373,7 @@ namespace FileTypes {
 		if (header.padding_0x00[0] != 0x00 || header.padding_0x00[1] != 0x00) return FLYTError::UNEXPECTED_VALUE;
 
 		FLYTError err = FLYTError::NONE;
-		err = readLYT1(bflyt);
+		err = LYT1.read(bflyt, 0x14); //should always come immediately after the header
 		if (err != FLYTError::NONE) {
 			return err;
 		}
@@ -1989,7 +2383,7 @@ namespace FileTypes {
 		bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
 
 		if (magic == "txl1") {
-			err = readTextures(bflyt);
+			err = textures.emplace().read(bflyt, bflyt.tellg());
 			if (err != FLYTError::NONE) {
 				return err;
 			}
@@ -1999,7 +2393,7 @@ namespace FileTypes {
 		}
 
 		if (magic == "fnl1") {
-			err = readFonts(bflyt);
+			err = fonts.emplace().read(bflyt, bflyt.tellg());
 			if (err != FLYTError::NONE) {
 				return err;
 			}
@@ -2009,7 +2403,7 @@ namespace FileTypes {
 		}
 
 		if (magic == "mat1") {
-			err = readMaterials(bflyt);
+			err = materials.emplace().read(bflyt, bflyt.tellg());
 			if (err != FLYTError::NONE) {
 				return err;
 			}
@@ -2020,15 +2414,13 @@ namespace FileTypes {
 
 		while (sections.count(magic) > 0) {
 			if (magic == "usd1") {
-				userData.emplace();
-				err = userData.value().read(bflyt, bflyt.tellg());
+				err = userData.emplace().read(bflyt, bflyt.tellg());
 				if (err != FLYTError::NONE) {
 					return err;
 				}
 			}
 			else if (magic == "cnt1") {
-				container.emplace();
-				err = container.value().read(bflyt, bflyt.tellg());
+				err = container.emplace().read(bflyt, bflyt.tellg());
 				if (err != FLYTError::NONE) {
 					return err;
 				}
@@ -2046,8 +2438,9 @@ namespace FileTypes {
 				}
 			}
 
+			if (bflyt.tellg() >= header.fileSize) break; //reached end of last section
 			if (!bflyt.read(reinterpret_cast<char*>(&magic[0]), 4)) {
-				break; //tried to read past the last section
+				return FLYTError::REACHED_EOF;
 			}
 			bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
 		}
@@ -2064,6 +2457,67 @@ namespace FileTypes {
 	}
 
 	FLYTError FLYTFile::writeToStream(std::ostream& out) {
+		out.write(header.magicFLYT, 4);
+
+		Utility::byteswap_inplace(header.byteOrderMarker);
+		Utility::byteswap_inplace(header.headerSize_0x14);
+		Utility::byteswap_inplace(header.version_0x0202);
+
+		out.write(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker));
+		out.write(reinterpret_cast<char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14));
+		out.write(reinterpret_cast<char*>(&header.version_0x0202), sizeof(header.version_0x0202));
+		out.seekp(6, std::ios::cur); //skip filesize and section count for now
+		out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+
+		header.numSections = 1;
+
+		if (FLYTError err = LYT1.save_changes(out); err != FLYTError::NONE) {
+			return err;
+		}
+		if (textures.has_value()) {
+			if (FLYTError err = textures.value().save_changes(out); err != FLYTError::NONE) {
+				return err;
+			}
+			header.numSections += 1;
+		}
+		if (fonts.has_value()) {
+			if (FLYTError err = fonts.value().save_changes(out); err != FLYTError::NONE) {
+				return err;
+			}
+			header.numSections += 1;
+		}
+		if (materials.has_value()) {
+			if (FLYTError err = materials.value().save_changes(out); err != FLYTError::NONE) {
+				return err;
+			}
+			header.numSections += 1;
+		}
+
+		if (FLYTError err = rootPane.save_changes(out, header.numSections); err != FLYTError::NONE) return err;
+		if (FLYTError err = rootGroup.save_changes(out, header.numSections); err != FLYTError::NONE) return err;
+
+		if (container.has_value()) {
+			if (FLYTError err = container.value().save_changes(out); err != FLYTError::NONE) {
+				return err;
+			}
+			header.numSections += 1;
+		}
+		if (userData.has_value()) {
+			if (FLYTError err = userData.value().save_changes(out); err != FLYTError::NONE) {
+				return err;
+			}
+			header.numSections += 1;
+		}
+
+		header.fileSize = out.tellp();
+
+		Utility::byteswap_inplace(header.fileSize);
+		Utility::byteswap_inplace(header.numSections);
+
+		out.seekp(0xC, std::ios::beg);
+		out.write(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize));
+		out.write(reinterpret_cast<char*>(&header.numSections), sizeof(header.numSections));
+
 		return FLYTError::NONE;
 	}
 

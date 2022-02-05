@@ -1,6 +1,5 @@
 import glob
 import re
-from subprocess import call
 import os
 import shutil
 from collections import OrderedDict
@@ -66,9 +65,11 @@ try:
   all_asm_files = [os.path.basename(asm_path) for asm_path in all_asm_file_paths]
   all_asm_files.sort()
   
-  all_asm_files.remove("custom_data.asm")
+  # Don't need custom_data
+  #all_asm_files.remove("custom_data.asm")
   all_asm_files.remove("custom_funcs.asm")
-  all_asm_files = ["custom_data.asm", "custom_funcs.asm"] + all_asm_files
+  #all_asm_files = ["custom_data.asm", "custom_funcs.asm"] + all_asm_files
+  all_asm_files = ["custom_funcs.asm"] + all_asm_files
   
   code_chunks = OrderedDict()
   temp_linker_script = ""
