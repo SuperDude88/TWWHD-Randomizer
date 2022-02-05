@@ -1,6 +1,13 @@
 #include"dzx.hpp"
 
-DZXError Chunk::read(std::istream& file, int offset) {
+
+#include <cstring>
+
+#include "../utility/byteswap.hpp"
+
+
+
+DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	file.seekg(offset, std::ios::beg);
 
 	this->offset = offset;
@@ -20,7 +27,7 @@ DZXError Chunk::read(std::istream& file, int offset) {
 		return DZXError::UNKNOWN_CHUNK;
 	}
 	
-	if (strncmp("TRE", type, 3) == 0) {
+	if (std::strncmp("TRE", type, 3) == 0) {
 		char layer_char = type[3];
 		layer = 0xFF;
 		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
@@ -31,7 +38,7 @@ DZXError Chunk::read(std::istream& file, int offset) {
 		}
 		memcpy(type, "TRES", 4);
 	}
-	else if (strncmp("ACT", type, 3) == 0) {
+	else if (std::strncmp("ACT", type, 3) == 0) {
 		char layer_char = type[3];
 		layer = 0xFF;
 		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
@@ -42,7 +49,7 @@ DZXError Chunk::read(std::istream& file, int offset) {
 		}
 		memcpy(type, "ACTR", 4);
 	}
-	else if (strncmp("SCO", type, 3) == 0) {
+	else if (std::strncmp("SCO", type, 3) == 0) {
 		char layer_char = type[3];
 		layer = 0xFF;
 		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
@@ -57,7 +64,7 @@ DZXError Chunk::read(std::istream& file, int offset) {
 	entry_size = size_by_type.at(type);
 
 	file.seekg(first_entry_offset, std::ios::beg);
-	if (strncmp("RTBL", type, 4) == 0) { //RTBL has dynamic length based on the number of rooms, needs a special case
+	if (std::strncmp("RTBL", type, 4) == 0) { //RTBL has dynamic length based on the number of rooms, needs a special case
 		for (unsigned int entry_index = 0; entry_index < num_entries; entry_index++) {
 			ChunkEntry entry;
 			file.seekg(entry_index * 0x4 + first_entry_offset, std::ios::beg);
@@ -99,6 +106,8 @@ DZXError Chunk::read(std::istream& file, int offset) {
 }
 
 DZXError Chunk::save_changes(std::ostream& out) {
+	offset = out.tellp();
+
 	num_entries = entries.size();
 	if (num_entries == 0) {
 		return DZXError::CHUNK_NO_ENTRIES;
@@ -199,7 +208,7 @@ namespace FileTypes {
 		return entries;
 	}
 
-	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string chunk_type, int layer) {
+	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string chunk_type, const unsigned int layer) {
 		std::vector<ChunkEntry*> entries;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {
@@ -211,12 +220,10 @@ namespace FileTypes {
 		return entries;
 	}
 
-	ChunkEntry& DZXFile::add_entity(const char chunk_type[4], int layer) {
-		Chunk* chunk_to_add_to = nullptr; //needs to be initialized to null, cant use reference
+	ChunkEntry& DZXFile::add_entity(const char chunk_type[4], const unsigned int layer) {
 		ChunkEntry entity;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {
-				chunk_to_add_to = &chunk;
 				chunk.entries.push_back(entity);
 				return chunk.entries.back(); //return reference to the entity we added
 			}
@@ -249,7 +256,6 @@ namespace FileTypes {
 
 		DZXError err = DZXError::NONE;
 		for (Chunk& chunk : chunks) {
-			chunk.offset = out.tellp();
 			err = chunk.save_changes(out);
 			if(err != DZXError::NONE) {
 				return err;
@@ -274,7 +280,7 @@ namespace FileTypes {
 			if (chunk.entries.size() == 0) {
 				return DZXError::CHUNK_NO_ENTRIES;
 			}
-			if (strncmp("RTBL", chunk.type, 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently
+			if (std::strncmp("RTBL", chunk.type, 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently
 				int rooms_offset = chunk.first_entry_offset + chunk.entries.size() * 0xC;
 				for (unsigned int entry_index = 0; entry_index < chunk.entries.size(); entry_index++) {
 					ChunkEntry& entry = chunk.entries[entry_index];

@@ -7,10 +7,6 @@ stwu sp, -0x10 (sp)
 mflr r0
 stw r0, 0x14 (sp)
 
-
-bl dSv_save_c_init ; To call this custom func we overwrote a call to init__10dSv_save_cFv, so call that now.
-
-
 lis r5, sword_mode@ha
 addi r5, r5, sword_mode@l
 lbz r5, 0 (r5)
@@ -67,10 +63,15 @@ stb r4, 1 (r3) ; Current magic meter
 ; Give user-selected custom starting items
 bl init_starting_gear
 
-
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x644
+lis r4, 0x1
+subi r4, r4, 0x4001
+lis r5, outset_pig_color@ha
+addi r5, r5, outset_pig_color@l
+lbz r5, 0 (r5) ; Load pig color
+bl setEventReg
 li r4, 0x3510 ; HAS_SEEN_INTRO
 bl onEventBit
 li r4, 0x2A80 ; HAS_HEROS_CLOTHES (This should be set even if the player wants to wear casual clothes, it's overridden elsewhere)
@@ -316,6 +317,8 @@ li r4, 0x3A80 ; Recollection Molgera defeated
 bl onEventBit
 after_skipping_rematch_bosses:
 
+lis r12, gameInfo_ptr@ha ; replace the line we overwrote to jump here
+
 ; Function end stuff
 lwz r0, 0x14 (sp)
 mtlr r0
@@ -377,6 +380,10 @@ starting_quarter_hearts:
 .global starting_magic
 starting_magic:
 .byte 16 ; By default start with 16 units of magic (small magic meter)
+
+.global outset_pig_color
+outset_pig_color:
+.byte 0
 
 .align 2 ; Align to the next 4 bytes
 
@@ -445,6 +452,11 @@ cmpwi r3, 0x23
 beq convert_progressive_picto_box_id
 cmpwi r3, 0x26
 beq convert_progressive_picto_box_id
+
+cmpwi r3, 0x78
+beq convert_progressive_sail_id
+cmpwi r3, 0x77
+beq convert_progressive_sail_id
 
 b convert_progressive_item_id_func_end
 
@@ -593,7 +605,7 @@ cmpwi r4, 0
 beq convert_progressive_picto_box_id_to_normal_picto_box
 cmpwi r4, 1
 beq convert_progressive_picto_box_id_to_deluxe_picto_box
-li r3, 0x23 ; Invalid bomb bag state; this shouldn't happen so just return the base bomb bag ID
+li r3, 0x23 ; Invalid picto box state; this shouldn't happen so just return the base picto box ID
 b convert_progressive_item_id_func_end
 
 convert_progressive_picto_box_id_to_normal_picto_box:
@@ -603,12 +615,31 @@ convert_progressive_picto_box_id_to_deluxe_picto_box:
 li r3, 0x26
 b convert_progressive_item_id_func_end
 
+convert_progressive_sail_id:
+lis r3, gameInfo_ptr@ha
+lwz r3, gameInfo_ptr@l(r3)
+addi r3,r3,0x5D
+lbz r4, 0 (r3) ; equipped sail ID
+cmpwi r4, 0xFF ; no sail
+beq convert_progressive_sail_id_to_normal_sail
+cmpwi r4, 0x78 ; normal sail
+beq convert_progressive_sail_id_to_swift_sail
+li r3, 0x78 ; Invalid sail state; this shouldn't happen so just return the base sail ID
+b convert_progressive_item_id_func_end
+
+convert_progressive_sail_id_to_normal_sail:
+li r3, 0x78
+b convert_progressive_item_id_func_end
+convert_progressive_sail_id_to_swift_sail:
+li r3, 0x77
+b convert_progressive_item_id_func_end
 
 convert_progressive_item_id_func_end:
 lwz r0, 0x14 (sp)
 mtlr r0
 addi sp, sp, 0x10
 blr
+
 
 .global progressive_sword_item_func
 progressive_sword_item_func:
@@ -825,6 +856,37 @@ get_deluxe_picto_box:
 bl item_func_camera2
 
 picto_box_func_end:
+; Function end stuff
+lwz r0, 0x14 (sp)
+mtlr r0
+addi sp, sp, 0x10
+blr
+
+.global progressive_sail_item_func
+progressive_sail_item_func:
+; Function start stuff
+stwu sp, -0x10 (sp)
+mflr r0
+stw r0, 0x14 (sp)
+
+lis r3, gameInfo_ptr@ha
+lwz r3, gameInfo_ptr@l(r3)
+addi r3,r3,0x5D
+lbz r4, 0 (r3) ; Equipped sail
+cmpwi r4, 0xFF ; no sail
+beq get_normal_sail
+cmpwi r4, 0x78 ; normal sail
+beq get_swift_sail
+b sail_func_end
+
+get_normal_sail:
+bl item_func_normal_sail
+b sail_func_end
+
+get_swift_sail:
+bl item_func_swift_sail
+
+sail_func_end:
 ; Function end stuff
 lwz r0, 0x14 (sp)
 mtlr r0

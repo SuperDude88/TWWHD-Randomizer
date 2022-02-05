@@ -1,8 +1,22 @@
 #pragma once
 
-#include <iostream>
+#include <fstream>
+
+
+
+enum struct [[nodiscard]] YAZ0Error {
+	NONE = 0,
+	COULD_NOT_OPEN,
+	NOT_YAZ0,
+	DATA_SIZE_0,
+	REACHED_EOF,
+	UNKNOWN,
+	COUNT
+};
 
 namespace FileTypes {
-    uint32_t yaz0Encode(std::istream& in, std::ostream& out, int compressionLevel = 9);
-    uint32_t yaz0Decode(std::istream& in, std::ostream& out);
+	const char* YAZ0ErrorGetName(YAZ0Error err);
+
+    YAZ0Error yaz0Encode(std::istream& in, std::ostream& out, uint32_t compressionLevel = 9);
+    YAZ0Error yaz0Decode(std::istream& in, std::ostream& out);
 }

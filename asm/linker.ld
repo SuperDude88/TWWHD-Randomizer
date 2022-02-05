@@ -62,6 +62,7 @@ subBgmStop = 0x025e1928;
 GetTgHitObj = 0x02516300;
 fopScnM_ChangeReq = 0x025dc86c;
 FUN_025200d4 = 0x025200d4;
+FUN_02721880 = 0x02721880;
 subBgmStart_load_data = 0x025e1918;
 itemActionForArrow = 0x021815e8;
 itemActionForRupee = 0x02180de4;

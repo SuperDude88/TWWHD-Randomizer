@@ -178,6 +178,171 @@ check_shop_item_in_bait_bag_slot_sold_out:
 	nop
 
 
+ ; Withered trees
+.org 0x02347c34
+	bl custom_createItem
+	b custom_createItem_return_check
+.org @NextFreeSpace
+.global custom_createItem_return_check
+custom_createItem_return_check:
+	mr r30, r3
+	cmpwi r30, -1
+	beq createItem_not_success
+	mr r10, r30
+	lis r3, withered_tree_item_actor_id@ha
+	addi r3, r3, withered_tree_item_actor_id@l
+	stw r10, 0(r3) ; store created actor id
+	
+	lis r3, withered_tree_launched_flag@ha ; make sure launched flag is 0
+	addi r3, r3, withered_tree_launched_flag@l
+	li r10, 0
+	stb r10, 0x0(r3)
+	b 0x02347c40
+  createItem_not_success:
+	b 0x02347cd4
+
+.global withered_tree_item_actor_id
+withered_tree_item_actor_id:
+	.int -1
+
+.global withered_tree_launched_flag
+withered_tree_launched_flag:
+	.byte 0
+
+.align 4
+
+.org 0x02347c48
+	nop ; dont store parent ID to object, not created yet
+
+.org 0x02347cb4
+	nop ; dont set flags for object, not created yet
+
+;in place_heart_part
+.org 0x02347abc
+	bl create_item_for_withered_trees_without_setting_speeds
+.org @NextFreeSpace
+.global create_item_for_withered_trees_without_setting_speeds
+create_item_for_withered_trees_without_setting_speeds:
+	stwu sp, -0x10 (sp)
+	mflr r0
+	stw r0, 0x14 (sp)
+  
+	bl custom_createItem
+	
+	mr r5, r3
+	lis r3, withered_tree_item_actor_id@ha
+	addi r3, r3, withered_tree_item_actor_id@l
+	stw r5, 0(r3) ; store created actor id
+
+	; We need to set our custom flag to 1 to prevent withered_tree_item_try_give_momentum from setting the speeds for this item actor.
+	lis r3, withered_tree_launched_flag@ha
+	addi r3, r3, withered_tree_launched_flag@l
+	li r5, 1
+	stb r5, 0x0(r3)
+  
+	lwz r0, 0x14 (sp)
+	mtlr r0
+	addi sp, sp, 0x10
+	blr
+
+.org 0x02347ac0
+	cmpwi r3, -1
+.org 0x02347acc
+	nop
+
+ ; We need to partially re-create a function from SD that checked if the heart was created
+ ; Since custom_createItem can't store a velocity to the item, we need to check each frame to see if it exists and store the velocity to it
+.org 0x02347d18
+	bl withered_tree_item_try_give_momentum
+.org @NextFreeSpace
+.global withered_tree_item_try_give_momentum
+withered_tree_item_try_give_momentum:
+	stwu sp, -0x20 (sp)
+	mflr r0
+	stw r0, 0x24 (sp)
+	stw r30, 0x18(sp)
+	stw r31, 0x1C(sp)
+
+	mr r30, r3
+	lis r3, withered_tree_item_actor_id@ha
+	addi r3, r3, withered_tree_item_actor_id@l
+	lwz r3, 0x0(r3)
+	cmplwi r3, -1
+	beq withered_tree_item_try_give_momentum_end ; item not created yet
+	addi r4, sp, 0x8
+	bl fopAcM_SearchByID
+	cmpwi r3, 0
+	beq withered_tree_item_try_give_momentum_end ; Item actor has already been picked up
+
+	lwz r4, 0x8(sp)
+	cmpwi r4, 0
+	beq withered_tree_item_try_give_momentum_end ; Item actor was just created a few frames ago and hasn't actually been properly spawned yet
+
+	; Update a store that could not be done earlier because the item was not fully spawned
+	lwz r10, 0x4(r30)
+	stw r10, 0x2e8(r4) ; store parent PcId to item
+
+	; Now that we have the item actor pointer in r4, we need to check if the actor was just created this frame or not.
+	; To do that we store a custom flag to an unused byte in the withered tree actor struct.
+	lis r3, withered_tree_launched_flag@ha
+	addi r3, r3, withered_tree_launched_flag@l
+	lbz r5, 0x0(r3)
+	cmpwi r5, 0
+	bne withered_tree_item_try_give_momentum_end ; Already set the flag, so this isn't the first frame it spawned on.
+
+	; Since this is the first frame since the item actor was properly created, we can set its momentum.
+
+	lis r10, withered_tree_item_speeds@ha
+	addi r10, r10, withered_tree_item_speeds@l
+	lfs f0, 0 (r10) ; Read forward velocity
+	stfs f0, 0x370 (r4)
+	lfs f0, 4 (r10) ; Read the Y velocity
+	stfs f0, 0x340 (r4)
+	lfs f0, 8 (r10) ; Read gravity
+	stfs f0, 0x374 (r4)
+
+	; Also set bit 0x40 in some bitfield for the item actor.
+	; Apparently this bit is for allowing the actor to still move while events are going on. It doesn't seem to really matter in this specific case, but set it just to be completely safe.
+	lwz r5, 0x2e0 (r4)
+	ori r5, r5, 0x40
+	stw r5, 0x2e0 (r4)
+
+	; Now store the custom flag meaning that we've already set the item actor's momentum so we don't do it again.
+	lis r3, withered_tree_launched_flag@ha
+	addi r3, r3, withered_tree_launched_flag@l
+	li r5, 1
+	stb r5, 0x0(r3)
+
+  withered_tree_item_try_give_momentum_end:
+	mr r3, r30
+	bl daObjFtree_talk_main ; replace the line we overwrote to jump here
+
+	lwz r0, 0x24(sp)
+	lwz r30, 0x18(sp)
+	lwz r31, 0x1C(sp)
+	mtlr r0
+	addi sp, sp, 0x20
+	blr
+
+.global withered_tree_item_speeds
+withered_tree_item_speeds:
+	.float 1.75 ; Initial forward velocity
+	.float 30 ; Initial Y velocity
+	.float -2.1 ; Gravity (Y acceleration)
+
+.org 0x023472a4
+	b unset_actor_id_when_tree_unloaded
+.org @NextFreeSpace
+.global unset_actor_id_when_tree_unloaded
+unset_actor_id_when_tree_unloaded:
+	lis r3, withered_tree_item_actor_id@ha
+	addi r3, r3, withered_tree_item_actor_id@l
+	li r4, -1
+	stw r4, 0(r3) ; store -1 to id
+	li r3, 1
+	b 0x023472a8
+
+
 ; Fix the Phantom Ganon from Ganon's Tower so he doesn't disappear from the maze when the player gets Light Arrows, but instead when they open the chest at the end of the maze which originally had Light Arrows.
 ; We replace where he calls dComIfGs_checkGetItem__FUc with a custom function that checks the appropriate treasure chest open flag.
 ; We only make this change for Phanton Ganon 2 (in the maze) not Phantom Ganon 3 (when you kill him with Light Arrows).

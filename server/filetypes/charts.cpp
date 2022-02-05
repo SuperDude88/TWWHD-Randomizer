@@ -1,8 +1,13 @@
 #include "charts.hpp"
 
+#include <cmath>
+#include <algorithm>
+
+#include "../utility/byteswap.hpp"
 
 
-ChartError ChartPos::read(std::istream& in, const int offset) {
+
+ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
 	this->offset = offset;
 	in.seekg(offset, std::ios::beg);
 
@@ -45,7 +50,7 @@ void ChartPos::save_changes(std::ostream& out) {
 
 
 
-ChartError Chart::read(std::istream& in, const int offset) {
+ChartError Chart::read(std::istream& in, const unsigned int offset) {
 	this->offset = offset;
 	in.seekg(offset, std::ios::beg);
 
@@ -79,7 +84,7 @@ ChartError Chart::read(std::istream& in, const int offset) {
 
 	island_number = sector_x + 3 + (sector_y + 3) * 7 + 1;
 
-	if (!(1 <= number <= 49)) {
+	if (number < 1 || number > 49) {
 		return ChartError::INVALID_NUMBER;
 	}
 	if (number <= 3) { //may be different on HD
@@ -113,7 +118,7 @@ uint8_t Chart::getIslandNumber() const {
 }
 
 ChartError Chart::setIslandNumber(const uint8_t value) {
-	if (!(1 <= value <= 49)) {
+	if (number < 1 || number > 49) {
 		return ChartError::INVALID_NUMBER;
 	}
 
@@ -131,7 +136,7 @@ std::string Chart::getName() const {
 }
 
 ChartError Chart::setName(const uint8_t value) {
-	if (!(1 <= value <= 49)) {
+	if (number < 1 || number > 49) {
 		return ChartError::INVALID_NUMBER;
 	}
 
@@ -175,7 +180,7 @@ namespace FileTypes {
 		int offset = 4;
 		for (unsigned int i = 0; i < num_charts; i++) {
 			Chart chart;
-			chart.read(in, offset);
+			if (ChartError err = chart.read(in, offset); err != ChartError::NONE) return err;
 			charts.push_back(chart);
 			offset += 0x26;
 		}

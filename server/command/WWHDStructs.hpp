@@ -1,6 +1,7 @@
+#pragma once
+
 #include <cstdint>
 #include <istream>
-#include "../utility/byteswap.hpp"
 
 struct ACTR {
 	char name[8];

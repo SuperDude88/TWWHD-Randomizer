@@ -1,21 +1,12 @@
 #pragma once
 
-#include <cmath>
 #include <string>
-#include <fstream>
-#include <locale>
 
 #include "libs/json.hpp"
 #include "server/command/RandoSession.hpp"
-#include "server/filetypes/bfres.hpp"
-#include "server/filetypes/dzx.hpp"
-#include "server/filetypes/events.hpp"
-#include "server/filetypes/elf.hpp"
-#include "server/filetypes/jpc.hpp"
-#include "server/filetypes/msbt.hpp"
-#include "server/utility/macros.hpp"
 #include "options.hpp"
 #include "logic/Location.hpp"
+#include "logic/GameItem.hpp"
 
 
 
@@ -25,9 +16,9 @@ extern RandoSession g_session; //defined in randomizer.cpp, shared between main 
 
 bool containsAddress(const uint32_t address, const uint32_t memAddress, const uint32_t sectionLen);
 
-std::pair<int, int> AddressToOffset(const uint32_t address);
+std::pair<uint32_t, uint32_t> AddressToOffset(const uint32_t address);
 
-std::pair<int, int> AddressToOffset(const uint32_t address, const int sectionIndex);
+std::pair<uint32_t, uint32_t> AddressToOffset(const uint32_t address, const unsigned int sectionIndex);
 
 void write_u8_to_rpx(const std::pair<int, int>& offset, const uint8_t data);
 
@@ -49,8 +40,6 @@ std::vector<uint8_t> read_rpx_bytes(const std::pair<int, int>& offset, const int
 
 nlohmann::json Load_Patches(const std::string& file_path);
 
-void Apply_Patch_OLD(const nlohmann::json& patches, const std::string& name);
-
 void Apply_Patch(const std::string& file_path);
 
 void Add_Relocations(const std::string file_path);
@@ -67,23 +56,23 @@ std::string get_indefinite_article(const std::string& string);
 
 std::u16string get_indefinite_article(const std::u16string& string);
 
-std::string pad_str_4_lines(std::string& string);
+std::string pad_str_4_lines(const std::string& string);
 
-std::u16string pad_str_4_lines(std::u16string& string);
+std::u16string pad_str_4_lines(const std::u16string& string);
 
-std::vector<std::string> split_lines(std::string& string);
+std::vector<std::string> split_lines(const std::string& string);
 
-std::vector<std::u16string> split_lines(std::u16string& string);
+std::vector<std::u16string> split_lines(const std::u16string& string);
 
-std::string merge_lines(std::vector<std::string>& lines);
+std::string merge_lines(const std::vector<std::string>& lines);
 
-std::u16string merge_lines(std::vector<std::u16string>& lines);
+std::u16string merge_lines(const std::vector<std::u16string>& lines);
 
 std::u16string gameItemToName(const GameItem item);
 
 
 
-void set_new_game_starting_location(uint8_t spawn_id, uint8_t room_index);
+void set_new_game_starting_location(const uint8_t spawn_id, const uint8_t room_index);
 
 void change_ship_starting_island(const uint8_t room_index);
 
@@ -145,6 +134,8 @@ void give_double_magic();
 
 void set_damage_multiplier(float multiplier);
 
+void set_pig_color(const PigColor color);
+
 void add_pirate_ship_to_windfall();
 
 void add_cross_dungeon_warps();
@@ -173,7 +164,7 @@ void update_skip_rematch_bosses_game_variable(const bool skipRefights);
 
 void update_sword_mode_game_variable(const SwordMode swordMode);
 
-void update_starting_gear(std::vector<GameItem>& startingItems);
+void update_starting_gear(const std::vector<GameItem>& startingItems);
 
 void update_swordless_text();
 
@@ -216,9 +207,9 @@ void fix_stone_head_bugs();
 void show_tingle_statues_on_quest_screen();
 
 
+void init_tweaks();
 
-void apply_necessary_tweaks(uint8_t startingShards, uint16_t startingHP, uint16_t startingHC);
+void apply_necessary_tweaks(const Settings& settings, const std::string& seedHash);
 
 void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::unordered_map<std::string, Location>& itemLocations);
 
-void init_tweaks(const std::string& rpxPath);

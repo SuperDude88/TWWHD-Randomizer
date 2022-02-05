@@ -1,10 +1,15 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
 #include <unordered_map>
 
 #include "logic/GameItem.hpp"
+
+enum struct PigColor : uint8_t {
+    BLACK = 0,
+    PINK,
+    SPOTTED
+};
 
 enum struct SwordMode {
     StartWithSword = 0,
@@ -63,8 +68,10 @@ enum struct Option {
     InvertCompass,
     RaceMode,
     NumRaceModeDungeons,
+    DamageMultiplier,
 
     CasualClothes,
+    PigColor,
 
     StartingGear,
     StartingHP,
@@ -112,8 +119,10 @@ struct Settings {
     bool invert_sea_compass_x_axis = false;
     bool race_mode = false;
     uint8_t num_race_mode_dungeons = false;
+    float damage_multiplier = 1.0f;
 
     bool player_in_casual_clothes = false;
+    PigColor pigColor = PigColor::BLACK;
 
     std::vector<GameItem> starting_gear;
     uint16_t starting_pohs = false;

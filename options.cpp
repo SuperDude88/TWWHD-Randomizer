@@ -71,7 +71,9 @@ Option nameToSetting(const std::string& name) {
         {"InvertCompass", Option::InvertCompass},
         {"RaceMode", Option::RaceMode},
         {"NumRaceModeDungeons", Option::NumRaceModeDungeons},
+        {"DamageMultiplier", Option::DamageMultiplier},
         {"CasualClothes", Option::CasualClothes},
+        {"PigColor", Option::PigColor},
         {"StartingGear", Option::StartingGear},
         {"StartingHP", Option::StartingHP},
         {"StartingHC", Option::StartingHC},
@@ -138,7 +140,7 @@ int getSetting(const Settings& settings, const Option& option) {
     case Option::Keylunacy:
         return settings.keylunacy;
     case Option::RandomEntrances:
-        return static_cast<int>(settings.randomize_entrances);
+        return static_cast<std::underlying_type_t<EntranceRando>>(settings.randomize_entrances);
     case Option::RandomCharts:
         return settings.randomize_charts;
     case Option::RandomStartIsland:
@@ -154,7 +156,7 @@ int getSetting(const Settings& settings, const Option& option) {
     case Option::NoSpoilerLog:
         return settings.do_not_generate_spoiler_log;
     case Option::SwordMode:
-        return static_cast<int>(settings.sword_mode);
+        return static_cast<std::underlying_type_t<SwordMode>>(settings.sword_mode);
     case Option::SkipRefights:
         return settings.skip_rematch_bosses;
     case Option::InvertCompass:
@@ -163,8 +165,12 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.race_mode;
     case Option::NumRaceModeDungeons:
         return settings.num_race_mode_dungeons;
+    case Option::DamageMultiplier:
+        return settings.damage_multiplier;
     case Option::CasualClothes:
         return settings.player_in_casual_clothes;
+    case Option::PigColor:
+        return static_cast<std::underlying_type_t<PigColor>>(settings.pigColor);
     case Option::StartingGear: //cant return this like everything else, just here as placeholder
         return 0;
     case Option::StartingHP:

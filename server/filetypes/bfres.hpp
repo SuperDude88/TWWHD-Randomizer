@@ -1,19 +1,12 @@
 #pragma once
 
-#include <cstdint>
-#include <cstring>
 #include <string>
 #include <vector>
-#include <variant>
 #include <fstream>
-#include <algorithm>
-#include <filesystem>
-
-#include "../utility/byteswap.hpp"
 
 
 
-enum struct FRESError
+enum struct [[nodiscard]] FRESError
 {
     NONE = 0,
     COULD_NOT_OPEN,
@@ -33,7 +26,7 @@ enum struct FRESError
 //Only embedded files are currently implemented
 
 struct EmbeddedFileSpec {
-    int location; //Used to deal with relative offsets, not a part of the file data
+    unsigned int location; //Used to deal with relative offsets, not a part of the file data
     int32_t dataOffset;
     uint32_t fileLength;
 };
@@ -57,7 +50,7 @@ struct FRESHeader
 
 struct GroupEntry
 {
-    int location; //Used to deal with relative offsets, not a part of the file data
+    unsigned int location; //Used to deal with relative offsets, not a part of the file data
     uint32_t searchValue;
     uint16_t leftIndex;
     uint16_t rightIndex;
@@ -113,9 +106,9 @@ namespace FileTypes
         FRESError patchFile(const FRESFileSpec& file, const std::string& patch, uint32_t offset);
         FRESError insertIntoFile(const FRESFileSpec& file, const std::string& data, uint32_t offset);
         FRESError appendToFile(const FRESFileSpec& file, const std::string& data);*/ //Not sure these are needed, will implement if a use comes up
-        FRESError replaceEmbeddedFile(unsigned int fileIndex, const std::string& newFile);
-        FRESError replaceEmbeddedFile(std::string& fileName, const std::string& newFile);
-        FRESError replaceFromDir(std::string& dirPath);
+        FRESError replaceEmbeddedFile(const unsigned int fileIndex, const std::string& newFile);
+        FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFile);
+        FRESError replaceFromDir(const std::string& dirPath);
         FRESError extractToDir(const std::string& dirPath); //Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
         FRESError writeToFile(const std::string& outFilePath);
