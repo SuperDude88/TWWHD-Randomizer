@@ -38,7 +38,7 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
         auto item = popRandomElement(items);
         auto location = popRandomElement(locations);
         location->currentItem = item;
-        debugLog("Placed " + item.getName() + " at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
+        // debugLog("Placed " + item.getName() + " at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
     }
 
     return FillError::NONE;
@@ -375,7 +375,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isMajorItem();});
     generateRaceModeItems(raceModeLocations, raceModeItems, majorItems, itemPool);
 
-    logItemPool("raceModeItems", raceModeItems);
+    // logItemPool("raceModeItems", raceModeItems);
 
     if (raceModeItems.size() < raceModeLocations.size())
     {

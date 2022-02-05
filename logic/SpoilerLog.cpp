@@ -30,7 +30,7 @@ void generateSpoilerLog(WorldPool& worlds)
             std::string worldNumber = " [W";
             worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->worldId + 1) + "]" : "";
                                                                          // Don't add an extra space if the world id is two digits long
-            size_t numSpaces = (longestNameLength - locationIdToName(location->locationId).length()) + (location->worldId >= 9) ? 0 : 1;
+            size_t numSpaces = (longestNameLength - locationIdToName(location->locationId).length()) + ((location->worldId >= 9) ? 0 : 1);
             std::string spaces (numSpaces, ' ');
 
             log << "\t" << locationIdToName(location->locationId) << worldNumber << ":" << spaces << location->currentItem.getName() << std::endl;
