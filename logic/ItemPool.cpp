@@ -40,7 +40,8 @@ static const GameItemPool alwaysItems = {
     GameItem::EarthGodsLyric,
     GameItem::WindGodsAria,
 
-    GameItem::BoatsSail,
+    GameItem::ProgressiveSail,
+    GameItem::ProgressiveSail,
 
     GameItem::NoteToMom,
     GameItem::MaggiesLetter,
@@ -336,7 +337,7 @@ GameItemPool generateStartingGameItemPool(const Settings& settings)
         GameItem::ProgressiveShield,
         GameItem::SongOfPassing,
         GameItem::BalladOfGales,
-        GameItem::BoatsSail,
+        GameItem::ProgressiveSail,
     };
 
     // Add more items depending on settings

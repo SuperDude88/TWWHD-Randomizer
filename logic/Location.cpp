@@ -741,9 +741,7 @@ LocationModificationType nameToModificationType(const std::string& name)
         {"Actor", LocationModificationType::Actor},
         {"Boss", LocationModificationType::Boss},
         {"SCOB", LocationModificationType::SCOB},
-        {"Assembly", LocationModificationType::Assembly},
         {"Event", LocationModificationType::Event},
-        {"REL", LocationModificationType::REL},
         {"RPX", LocationModificationType::RPX},
         {"Custom_Symbol", LocationModificationType::Custom_Symbol},
         {"DoNothing", LocationModificationType::DoNothing}

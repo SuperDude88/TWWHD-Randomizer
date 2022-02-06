@@ -126,7 +126,7 @@ enum struct GameItem : uint8_t
     ETDungeonMap,
     ETCompass,
     SwiftSail,
-    BoatsSail,
+    ProgressiveSail,
     TriforceChart1Deciphered,
     TriforceChart2Deciphered,
     TriforceChart3Deciphered,
