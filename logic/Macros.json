@@ -5,8 +5,8 @@
      "Name": "Can Sail Away",
      "Expression": {
       "type": "or", "args":[
-        {"type": "and", "args": [{"type": "macro", "args": ["Can Play WR"]}, {"type": "has_item", "args":["BoatsSail"]}]},
-        {"type": "has_item", "args": ["SwiftSail"]}
+        {"type": "and", "args": [{"type": "macro", "args": ["Can Play WR"]}, {"type": "macro", "args":["Boats Sail"]}]},
+        {"type": "macro", "args": ["Swift Sail"]}
       ]
      }
     },
@@ -71,7 +71,7 @@
                   {"type": "or", "args": [
                    {"type": "has_item", "args": ["DekuLeaf"]},
                    {"type": "or", "args": [
-                      {"type": "has_item", "args": ["ProgressiveBow"]},
+                      {"type": "macro", "args": ["Heros Bow"]},
                       {"type": "has_item", "args": ["Hookshot"]}
                      ]}
                    ]}
@@ -95,7 +95,7 @@
      "Name": "Can Defeat Door Flowers",
      "Expression": {
          "type": "or", "args": [
-          {"type": "has_item", "args": ["ProgressiveBow"]},
+          {"type": "macro", "args": ["Heros Bow"]},
           {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
          ]
        }
@@ -104,7 +104,7 @@
      "Name": "Can Hit Diamond Switches at Range",
      "Expression": {
          "type": "or", "args": [
-          {"type": "has_item", "args": ["ProgressiveBow"]},
+          {"type": "macro", "args": ["Heros Bow"]},
           {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "has_item", "args": ["Hookshot"]}]}
          ]
        }
@@ -113,7 +113,7 @@
      "Name": "Can Destroy Hanging Seeds",
      "Expression": {
          "type": "or", "args": [
-          {"type": "has_item", "args": ["ProgressiveBow"]},
+          {"type": "macro", "args": ["Heros Bow"]},
           {"type": "or", "args": [{"type": "has_item", "args": ["Boomerang"]}, {"type": "or", "args": [{"type": "has_item", "args": ["Bombs"]}, {"type": "has_item", "args": ["Hookshot"]}]}]}
          ]
        }
@@ -129,6 +129,18 @@
      "Expression": {
          "type": "has_item", "args": ["Nothing"]
      }
+    },
+    {
+     "Name": "Boats Sail",
+     "Expression": {
+         "type": "count", "args": [1, "ProgressiveSail"]
+       }
+    },
+    {
+     "Name": "Swift Sail",
+     "Expression": {
+         "type": "count", "args": [2, "ProgressiveSail"]
+       }
     },
     {
      "Name": "HerosSword",

@@ -5292,8 +5292,8 @@
                     "OriginalItem": "ProgressiveWallet",
                     "Category": ["GreatFairy"],
                     "Needs": { "type": "has_item", "args": ["Nothing"]},
-                    "Path": "cking.rpx",
-                    "Type": "REL",
+                    "Path": "cking.rpx@RPX",
+                    "Type": "RPX",
                     "Offsets": ["0x29DCC7"]
                 }
             ],
