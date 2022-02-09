@@ -24,46 +24,60 @@ int main()
 
     std::cout << "Using seed " << std::to_string(seed) << std::endl;
 
-    Settings settings;
+    Settings settings1;
+    Settings settings2;
+
     // Set settings in code for now
-    settings.progression_dungeons = true;
-    settings.progression_puzzle_secret_caves = true;
-    settings.progression_combat_secret_caves = true;
-    settings.progression_mail = true;
-    settings.progression_dungeons = true;
-    settings.progression_great_fairies = true;
-    settings.progression_puzzle_secret_caves = true;
-    settings.progression_combat_secret_caves = true;
-    settings.progression_short_sidequests = true;
-    settings.progression_long_sidequests = true;
-    settings.progression_spoils_trading = true;
-    settings.progression_minigames = true;
-    settings.progression_free_gifts = true;
-    settings.progression_mail = true;
-    settings.progression_platforms_rafts = true;
-    settings.progression_submarines = true;
-    settings.progression_eye_reef_chests = true;
-    settings.progression_big_octos_gunboats = true;
-    settings.progression_triforce_charts = true;
-    settings.progression_treasure_charts = true;
-    settings.progression_expensive_purchases = true;
-    settings.progression_misc = true;
-    settings.progression_tingle_chests = true;
-    settings.progression_battlesquid = true;
-    settings.progression_savage_labyrinth = true;
-    settings.progression_island_puzzles = true;
-    settings.progression_obscure = true;
-    settings.keylunacy = false;
-    settings.randomize_charts = true;
-    settings.race_mode = true;
-    settings.num_race_mode_dungeons = 3;
+    settings1.progression_dungeons = true;
+    settings1.progression_mail = true;
+    settings1.progression_dungeons = true;
+    settings1.progression_great_fairies = true;
+    settings1.progression_puzzle_secret_caves = true;
+    settings1.progression_combat_secret_caves = true;
+    settings1.progression_submarines = true;
+    settings1.progression_eye_reef_chests = true;
+    settings1.progression_big_octos_gunboats = true;
+    settings1.progression_triforce_charts = true;
+    settings1.progression_treasure_charts = true;
+    settings1.progression_expensive_purchases = true;
+    settings1.progression_misc = true;
+    settings1.progression_tingle_chests = true;
+    settings1.progression_battlesquid = true;
+    settings1.progression_savage_labyrinth = true;
+    settings1.progression_island_puzzles = true;
+    settings1.progression_obscure = true;
+    settings1.keylunacy = true;
+    settings1.randomize_charts = true;
+    settings1.race_mode = true;
+    settings1.num_race_mode_dungeons = 3;
+
+    settings2.progression_dungeons = true;
+    settings2.progression_mail = true;
+    settings2.progression_dungeons = true;
+    settings2.progression_great_fairies = true;
+    settings2.progression_puzzle_secret_caves = true;
+    settings2.progression_combat_secret_caves = true;
+    settings2.progression_short_sidequests = true;
+    settings2.progression_long_sidequests = true;
+    settings2.progression_spoils_trading = true;
+    settings2.progression_minigames = true;
+    settings2.progression_free_gifts = true;
+    settings2.progression_platforms_rafts = true;
+    settings2.progression_submarines = true;
+    settings2.progression_eye_reef_chests = true;
+    settings2.progression_big_octos_gunboats = true;
+    settings2.progression_triforce_charts = true;
+    settings2.keylunacy = false;
+    settings2.randomize_charts = true;
+    settings2.race_mode = true;
+    settings2.num_race_mode_dungeons = 5;
     // End of in code settings
 
     // Create all necessary worlds (for any potential multiworld support in the future)
     int worldCount = 1;
     World blankWorld;
     WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector (worldCount, settings);
+    std::vector<Settings> settingsVector {settings1};
 
     int retVal = generateWorlds(worlds, settingsVector, seed);
 
