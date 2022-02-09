@@ -3,9 +3,12 @@
 #include "PoolFunctions.hpp"
 #include "Debug.hpp"
 #include <list>
+#include <unordered_set>
 #include <algorithm>
 
-static bool evaluateRequirement(const World& world, const Requirement& req, const ItemPool& ownedItems)
+using ItemMultiSet = std::unordered_multiset<Item>;
+
+static bool evaluateRequirement(const World& world, const Requirement& req, const ItemMultiSet& ownedItems)
 {
     uint32_t expectedCount = 0;
     GameItem gameItem;
@@ -47,13 +50,13 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
         gameItem = std::get<GameItem>(req.args[0]);
         if (gameItem == GameItem::NOTHING) return true;
         item = {gameItem, world.getWorldId()};
-        return elementInPool(item, ownedItems);
+        return ownedItems.count(item) > 0;
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
         gameItem = std::get<GameItem>(req.args[1]);
         if (gameItem == GameItem::NOTHING) return true;
         item = {gameItem, world.getWorldId()};
-        return elementCountInPool(item, ownedItems) >= expectedCount;
+        return ownedItems.count(item) >= expectedCount;
     case RequirementType::CAN_ACCESS:
         return world.areaEntries[areaAsIndex(std::get<Area>(req.args[0]))].isAccessible;
     case RequirementType::SETTING:
@@ -70,7 +73,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
 }
 
 // Recursively explore new areas based on the given areaEntry
-void explore(const SearchMode& searchMode, WorldPool& worlds, ItemPool& items, AreaEntry& areaEntry, std::list<Exit*>& exitsToTry, std::list<Location*>& locationsToTry)
+void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, AreaEntry& areaEntry, std::list<Exit*>& exitsToTry, std::list<Location*>& locationsToTry)
 {
     for (auto& exit : areaEntry.exits)
     {
@@ -79,11 +82,11 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, ItemPool& items, A
         // is ignored since it won't matter for logical access
         if (!connectedArea.isAccessible)
         {
-            if (evaluateRequirement(worlds[exit.worldId], exit.requirement, items))
+            if (evaluateRequirement(worlds[exit.worldId], exit.requirement, ownedItems))
             {
                 connectedArea.isAccessible = true;
                 // std::cout << "Now Exploring " << areaToName(connectedArea.area) << std::endl;
-                explore(searchMode, worlds, items, connectedArea, exitsToTry, locationsToTry);
+                explore(searchMode, worlds, ownedItems, connectedArea, exitsToTry, locationsToTry);
             }
             else
             {
@@ -111,6 +114,8 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     {
         addElementsToPool(items, world.getStartingItems());
     }
+
+    ItemMultiSet ownedItems (items.begin(), items.end());
 
     LocationPool accessibleLocations = {};
     // Lists of exits and locations whose requirement returned false.
@@ -150,8 +155,8 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); exitItr++)
         {
             auto exit = *exitItr;
-            if (evaluateRequirement(worlds[exit->worldId], exit->requirement, items)) {
-                newThingsFound = true;
+            if (evaluateRequirement(worlds[exit->worldId], exit->requirement, ownedItems)) {
+
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
                 exitItr--;
@@ -159,8 +164,9 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 auto& connectedArea = worlds[exit->worldId].areaEntries[areaAsIndex(exit->connectedArea)];
                 if (!connectedArea.isAccessible)
                 {
+                    newThingsFound = true;
                     connectedArea.isAccessible = true;
-                    explore(searchMode, worlds, items, connectedArea, exitsToTry, locationsToTry);
+                    explore(searchMode, worlds, ownedItems, connectedArea, exitsToTry, locationsToTry);
                 }
             }
         }
@@ -170,7 +176,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); locItr++)
         {
             auto location = *locItr;
-            if (evaluateRequirement(worlds[location->worldId], location->requirement, items))
+            if (evaluateRequirement(worlds[location->worldId], location->requirement, ownedItems))
             {
                 // debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;
@@ -194,7 +200,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             accessibleLocations.push_back(location);
             if (location->currentItem.getGameItemId() != GameItem::INVALID && !location->currentItem.isJunkItem())
             {
-                items.emplace_back(location->currentItem.getGameItemId(), location->currentItem.getWorldId());
+                ownedItems.emplace(location->currentItem.getGameItemId(), location->currentItem.getWorldId());
                 if (searchMode == SearchMode::GeneratePlaythrough && location->progression)
                 {
                     worlds[0].playthroughSpheres[sphere].push_back(location);
