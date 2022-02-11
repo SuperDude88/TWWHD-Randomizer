@@ -36,6 +36,26 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       // worlds[i].randomizeEntrances()
   }
 
+  std::ofstream worldLogicDump;
+  worldLogicDump.open("WorldLogic.txt");
+  for (auto& area : worlds[0].areaEntries)
+  {
+      worldLogicDump << areaToName(area.area) << std::endl;
+      worldLogicDump << "Exits:" << std::endl;
+      for (auto& exit : area.exits)
+      {
+          worldLogicDump << printRequirement(exit.requirement) << std::endl;
+      }
+      worldLogicDump << "Locations:" << std::endl;
+      for (auto location : area.locations)
+      {
+          worldLogicDump << locationName(location) << std::endl;
+          worldLogicDump << printRequirement(location->requirement) << std::endl;
+      }
+  }
+  worldLogicDump.close();
+
+
   FillError fillError = fill(worlds);
   if (fillError == FillError::NONE) {
       std::cout << "Fill Successful" << std::endl;

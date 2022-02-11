@@ -38,3 +38,5 @@ struct Requirement
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };
+
+std::string printRequirement(Requirement& req, int nestingLevel = 0);

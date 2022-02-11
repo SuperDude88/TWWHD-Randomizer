@@ -62,7 +62,11 @@ public:
         INVALID_LOCATION_CATEGORY,
         INVALID_MODIFICATION_TYPE,
         INVALID_OFFSET_VALUE,
-        INVALID_GAME_ITEM
+        INVALID_GAME_ITEM,
+        LOGIC_SYMBOL_DOES_NOT_EXIST,
+        COULD_NOT_DETERMINE_TYPE,
+        SAME_NESTING_LEVEL,
+        EXTRA_OR_MISSING_PARENTHESIS,
     };
 
     World();
@@ -76,6 +80,7 @@ public:
     void addToItemPool(const GameItem gameItem);
     ItemPool getStartingItems() const;
     LocationPool getLocations();
+
     void determineChartMappings();
     void determineProgressionLocations();
     void determineRaceModeDungeons();
@@ -96,8 +101,7 @@ private:
 
     bool chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix);
 
-    WorldLoadingError parseElement(RequirementType type, const std::vector<json>& args, std::vector<Requirement::Argument>& out);
-    WorldLoadingError parseRequirement(const json& requirementsObject, Requirement& out);
+    WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const json& macroObject, Requirement& reqOut);
     WorldLoadingError loadExit(const json& exitObject, Exit& loadedExit, Area& parentArea);
     WorldLoadingError loadLocation(const json& locationObject, LocationId& loadedLocation);

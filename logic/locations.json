@@ -24,8 +24,8 @@
    "Category": ["SpoilsTrading"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Farm Knights Crests"]},
-     { "type": "macro", "args": ["Can Sword Fight With Orca"]},
+     { "type": "macro", "args": ["CanFarmKnightsCrests"]},
+     { "type": "macro", "args": ["CanSwordFightWithOrca"]},
      { "type": "has_item", "args": ["SpoilsBag"]}
     ]
    },
@@ -40,7 +40,7 @@
    "Category": [
     "Junk" //make sure this is implemented/updated
    ],
-   "Needs": { "type": "macro", "args": ["Can Sword Fight With Orca"]},
+   "Needs": { "type": "macro", "args": ["CanSwordFightWithOrca"]},
    "Path": "cking.rpx@RPX",
    "Type": "RPX",
    "Offsets": ["0x4608d7"]
@@ -51,9 +51,9 @@
    "Category": ["GreatFairy"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Cut Down Outset Trees"]},
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
-     { "type": "macro", "args": ["Can Move Boulders"]}
+     { "type": "macro", "args": ["CanCutDownOutsetTrees"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
+     { "type": "macro", "args": ["CanMoveBoulders"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -75,7 +75,7 @@
    "Category": ["IslandPuzzle"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Buy Bait"]},
+     { "type": "macro", "args": ["CanBuyBait"]},
      { "type": "has_item", "args": ["BaitBag"]},
      { "type": "has_item", "args": ["PowerBracelets"]}
     ]
@@ -91,22 +91,22 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Savage Labyrinth"]},
-     { "type": "macro", "args": ["Can Defeat Keese"]},
-     { "type": "macro", "args": ["Can Defeat Miniblins"]},
-     { "type": "macro", "args": ["Can Defeat Red ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Magtails"]},
-     { "type": "macro", "args": ["Can Defeat Fire Keese"]},
-     { "type": "macro", "args": ["Can Defeat Peahats"]},
-     { "type": "macro", "args": ["Can Defeat Green ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
-     { "type": "macro", "args": ["Can Defeat Mothulas"]},
-     { "type": "macro", "args": ["Can Defeat Winged Mothulas"]},
-     { "type": "macro", "args": ["Can Defeat Wizzrobes"]},
-     { "type": "macro", "args": ["Can Defeat Armos"]},
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Darknuts"]},
-     { "type": "macro", "args": ["Can Play WR"]},
+     { "type": "macro", "args": ["CanDefeatKeese"]},
+     { "type": "macro", "args": ["CanDefeatMiniblins"]},
+     { "type": "macro", "args": ["CanDefeatRedChuChus"]},
+     { "type": "macro", "args": ["CanDefeatMagtails"]},
+     { "type": "macro", "args": ["CanDefeatFireKeese"]},
+     { "type": "macro", "args": ["CanDefeatPeahats"]},
+     { "type": "macro", "args": ["CanDefeatGreenChuChus"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
+     { "type": "macro", "args": ["CanDefeatMothulas"]},
+     { "type": "macro", "args": ["CanDefeatWingedMothulas"]},
+     { "type": "macro", "args": ["CanDefeatWizzrobes"]},
+     { "type": "macro", "args": ["CanDefeatArmos"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]},
+     { "type": "macro", "args": ["CanDefeatDarknuts"]},
+     { "type": "macro", "args": ["CanPlayWR"]},
      {
       "type": "or",
       "args": [
@@ -133,12 +133,12 @@
        "Outset Island - Savage Labyrinth - Floor 30"
       ]
      },
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Defeat ReDeads"]},
-     { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Dark ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Poes"]},
-     { "type": "macro", "args": ["Can Defeat Stalfos"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanDefeatReDeads"]},
+     { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
+     { "type": "macro", "args": ["CanDefeatDarkChuChus"]},
+     { "type": "macro", "args": ["CanDefeatPoes"]},
+     { "type": "macro", "args": ["CanDefeatStalfos"]},
      { "type": "has_item", "args": ["SkullHammer"]}
     ]
    },
@@ -166,7 +166,7 @@
   },
   {
    "Name": "Windfall Island - Jail - Maze Chest",
-   "OriginalItem": "Picto Box",
+   "OriginalItem": "PictoBox",
    "Category": ["IslandPuzzle"],
    "Needs": { "type": "has_item", "args": ["Nothing"]},
    "Path": "content/Common/Stage/Pnezumi_Stage.szs@YAZ0",
@@ -177,7 +177,7 @@
    "Name": "Windfall Island - Chu Jelly Juice Shop - Give 15 Green Chu Jelly",
    "OriginalItem": "Green Potion",
    "Category": ["SpoilsTrading"],
-   "Needs": { "type": "macro", "args": ["Can Farm Green Chu Jelly"]},
+   "Needs": { "type": "macro", "args": ["CanFarmGreenChuJelly"]},
    "Path": "cking.rpx@RPX",
    "Type": "Custom_Symbol",
    "Offsets": [""]
@@ -189,7 +189,7 @@
     "SpoilsTrading",
     "LongSidequest"
    ],
-   "Needs": { "type": "macro", "args": ["Can Obtain 15 Blue Chu Jelly"]},
+   "Needs": { "type": "macro", "args": ["CanObtain15BlueChuJelly"]},
    "Path": "cking.rpx@RPX",
    "Type": "Custom_Symbol",
    "Offsets": [""]
@@ -228,7 +228,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["SpoilsBag"]},
-     { "type": "macro", "args": ["Can Farm Joy Pendants"]}
+     { "type": "macro", "args": ["CanFarmJoyPendants"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -242,7 +242,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["SpoilsBag"]},
-     { "type": "macro", "args": ["Can Farm Joy Pendants"]}
+     { "type": "macro", "args": ["CanFarmJoyPendants"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -255,8 +255,8 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Picto Box"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["PictoBox"]},
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "content/Common/Stage/Ocmera_Stage.szs@YAZ0",
@@ -269,8 +269,8 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Picto Box"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["PictoBox"]},
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "content/Common/Stage/Ocmera_Stage.szs@YAZ0",
@@ -279,9 +279,9 @@
   },
   {
    "Name": "Windfall Island - Lenzo's House - Become Lenzo's Assistant",
-   "OriginalItem": "Deluxe Picto Box",
+   "OriginalItem": "DeluxePictoBox",
    "Category": ["LongSidequest"],
-   "Needs": { "type": "macro", "args": ["Picto Box"]},
+   "Needs": { "type": "macro", "args": ["PictoBox"]},
    "Path": "cking.rpx@RPX",
    "Type": "RPX",
    "Offsets": [
@@ -295,7 +295,7 @@
    "Category": ["LongSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Picto Box"]},
+     { "type": "macro", "args": ["PictoBox"]},
      { "type": "has_item", "args": ["Bottle"]},
      { "type": "macro", "args": ["Can Access Forest Haven"]}
     ]
@@ -319,8 +319,8 @@
    "Category": ["SpoilsTrading"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
-     { "type": "macro", "args": ["Can Farm Skull Necklaces"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
+     { "type": "macro", "args": ["CanFarmSkullNecklaces"]},
      { "type": "has_item", "args": ["SpoilsBag"]}
     ]
    },
@@ -333,7 +333,7 @@
    "Name": "Windfall Island - Maggie - Free Item",
    "OriginalItem": "Maggie's Letter",
    "Category": ["FreeGift"],
-   "Needs": { "type": "macro", "args": ["Rescued Aryll"]},
+   "Needs": { "type": "macro", "args": ["RescuedAryll"]},
    "Path": "cking.rpx@RPX",
    "Type": "RPX",
    "Offsets": ["0x484443"]
@@ -344,7 +344,7 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]},
      { "type": "has_item", "args": ["MoblinsLetter"]}
     ]
@@ -359,7 +359,7 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]},
      { "type": "has_item", "args": ["MaggiesLetter"]}
     ]
@@ -375,8 +375,8 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play WR"]},
-     { "type": "macro", "args": ["Fire Arrows"]}
+     { "type": "macro", "args": ["CanPlayWR"]},
+     { "type": "macro", "args": ["FireArrows"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -389,13 +389,13 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play WR"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
+     { "type": "macro", "args": ["CanPlayWR"]},
+     { "type": "macro", "args": ["FireArrows"]},
      {
       "type": "or",
       "args": [
        { "type": "has_item", "args": ["Hookshot"]},
-       { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+       { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
       ]
      }
     ]
@@ -480,7 +480,7 @@
   },
   {
    "Name": "Windfall Island - 100 Rupee Auction",
-   "OriginalItem": "Swift Sail",
+   "OriginalItem": "SwiftSail",
    "Category": [
     "ExpensivePurchase",
     "Minigame"
@@ -496,7 +496,7 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]}
     ]
    },
@@ -510,7 +510,7 @@
    "Category": ["LongSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]}
     ]
    },
@@ -524,7 +524,7 @@
    "Category": ["Obscure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]}
     ]
    },
@@ -538,7 +538,7 @@
    "Category": ["Obscure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]}
     ]
    },
@@ -552,7 +552,7 @@
    "Category": ["Obscure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]}
     ]
    },
@@ -566,7 +566,7 @@
    "Category": ["Obscure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
      { "type": "has_item", "args": ["DeliveryBag"]}
     ]
    },
@@ -578,7 +578,7 @@
    "Name": "Windfall Island - Mila - Follow the Thief",
    "OriginalItem": "Empty Bottle",
    "Category": ["ShortSidequest"],
-   "Needs": { "type": "macro", "args": ["Rescued Aryll"]},
+   "Needs": { "type": "macro", "args": ["RescuedAryll"]},
    "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
    "Type": "Event",
    "Offsets": ["0xd64290"],
@@ -617,8 +617,8 @@
    "Category": ["Minigame"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Aryll"]},
-     { "type": "macro", "args": ["Can Farm Skull Necklaces"]},
+     { "type": "macro", "args": ["RescuedAryll"]},
+     { "type": "macro", "args": ["CanFarmSkullNecklaces"]},
      { "type": "has_item", "args": ["SpoilsBag"]}
     ]
    },
@@ -635,8 +635,8 @@
    "Category": ["ShortSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Picto Box"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["PictoBox"]},
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -649,7 +649,7 @@
    "Category": ["LongSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Deluxe Picto Box"]},
+     { "type": "macro", "args": ["DeluxePictoBox"]},
      { "type": "has_item", "args": ["SongOfPassing"]}
     ]
    },
@@ -661,7 +661,7 @@
    "Name": "Windfall Island - Minenco - Miss Windfall Photo",
    "OriginalItem": "TreasureChart33",
    "Category": ["ShortSidequest"],
-   "Needs": { "type": "macro", "args": ["Deluxe Picto Box"]},
+   "Needs": { "type": "macro", "args": ["DeluxePictoBox"]},
    "Path": "cking.rpx@RPX",
    "Type": "RPX",
    "Offsets": ["0x1c40a3"]
@@ -672,7 +672,7 @@
    "Category": ["LongSidequest"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Deluxe Picto Box"]},
+     { "type": "macro", "args": ["DeluxePictoBox"]},
      { "type": "has_item", "args": ["SongOfPassing"]}
     ]
    },
@@ -696,7 +696,7 @@
    "Category": ["SpoilsTrading"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Farm Golden Feathers"]},
+     { "type": "macro", "args": ["CanFarmGoldenFeathers"]},
      { "type": "has_item", "args": ["SpoilsBag"]}
     ]
    },
@@ -712,13 +712,13 @@
    "Needs": {
     "type": "or",
     "args": [
-     { "type": "macro", "args": ["Heros Bow"]},
+     { "type": "macro", "args": ["HerosBow"]},
      { "type": "has_item", "args": ["Boomerang"]},
      { "type": "has_item", "args": ["Bombs"]},
      {
       "type": "and", "args": [
        { "type": "has_item", "args": ["BaitBag"]},
-       { "type": "macro", "args": ["Can Buy Hyoi Pears"]}
+       { "type": "macro", "args": ["CanBuyHyoiPears"]}
       ]
      }
     ]
@@ -733,11 +733,11 @@
    "Category": ["IslandPuzzle"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        { "type": "has_item", "args": ["MagicMeterUpgrade"]}
       ]
      }
@@ -764,8 +764,8 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Dragon Roost Island Secret Cave"]},
-     { "type": "macro", "args": ["Can Defeat Keese"]},
-     { "type": "macro", "args": ["Can Defeat Red ChuChus"]}
+     { "type": "macro", "args": ["CanDefeatKeese"]},
+     { "type": "macro", "args": ["CanDefeatRedChuChus"]}
     ]
    },
    "Path": "content/Common/Stage/TF_06_Stage.szs@YAZ0",
@@ -1066,7 +1066,7 @@
       "type": "or",
       "args": [
        { "type": "has_item", "args": ["DekuLeaf"]},
-       { "type": "macro", "args": ["Ice Arrows"]},
+       { "type": "macro", "args": ["IceArrows"]},
        {
         "type": "and", "args": [
          {
@@ -1078,7 +1078,7 @@
            }
           ]
          },
-         { "type": "macro", "args": ["Can Cut Down Hanging DRC Platform"]}
+         { "type": "macro", "args": ["CanCutDownHangingDRCPlatform"]}
         ]
        }
       ]
@@ -1110,7 +1110,7 @@
       "type": "or",
       "args": [
        { "type": "has_item", "args": ["DekuLeaf"]},
-       { "type": "macro", "args": ["Ice Arrows"]},
+       { "type": "macro", "args": ["IceArrows"]},
        {
         "type": "and", "args": [
          {
@@ -1122,7 +1122,7 @@
            }
           ]
          },
-         { "type": "macro", "args": ["Can Cut Down Hanging DRC Platform"]}
+         { "type": "macro", "args": ["CanCutDownHangingDRCPlatform"]}
         ]
        }
       ]
@@ -1155,7 +1155,7 @@
        { "type": "has_item", "args": ["GrapplingHook"]},
        { "type": "has_item", "args": ["DekuLeaf"]},
        { "type": "has_item", "args": ["Hookshot"]},
-       { "type": "macro", "args": ["Ice Arrows"]}
+       { "type": "macro", "args": ["IceArrows"]}
       ]
      }
     ]
@@ -1186,7 +1186,7 @@
        { "type": "has_item", "args": ["GrapplingHook"]},
        { "type": "has_item", "args": ["DekuLeaf"]},
        { "type": "has_item", "args": ["Hookshot"]},
-       { "type": "macro", "args": ["Ice Arrows"]}
+       { "type": "macro", "args": ["IceArrows"]}
       ]
      }
     ]
@@ -1213,7 +1213,7 @@
      },
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["DRCBigKey"]},
-     { "type": "macro", "args": ["Can Defeat Gohma"]}
+     { "type": "macro", "args": ["CanDefeatGohma"]}
     ]
    },
    "Path": "content/Common/Stage/M_DragB_Room0.szs@YAZ0",
@@ -1245,7 +1245,7 @@
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Forest Haven"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
     ]
    },
    "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0",
@@ -1271,8 +1271,8 @@
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Defeat Door Flowers"]},
-       { "type": "macro", "args": ["Can Defeat Boko Babas"]}
+       { "type": "macro", "args": ["CanDefeatDoorFlowers"]},
+       { "type": "macro", "args": ["CanDefeatBokoBabas"]}
       ]
      }
     ]
@@ -1288,7 +1288,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Door Flowers"]},
+     { "type": "macro", "args": ["CanDefeatDoorFlowers"]},
      { "type": "has_item", "args": ["DekuLeaf"]}
     ]
    },
@@ -1303,7 +1303,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]}
     ]
    },
@@ -1318,7 +1318,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
@@ -1334,7 +1334,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
@@ -1350,7 +1350,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
@@ -1366,7 +1366,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      {
@@ -1378,7 +1378,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Peahats"]}
+     { "type": "macro", "args": ["CanDefeatPeahats"]}
     ]
    },
    "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
@@ -1392,7 +1392,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      {
@@ -1404,7 +1404,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Winged Mothulas"]}
+     { "type": "macro", "args": ["CanDefeatWingedMothulas"]}
     ]
    },
    "Path": "content/Common/Stage/kinMB_Stage.szs@YAZ0",
@@ -1418,7 +1418,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      {
@@ -1430,8 +1430,8 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Door Flowers"]},
-     { "type": "macro", "args": ["Can Destroy Hanging Seeds"]}
+     { "type": "macro", "args": ["CanDefeatDoorFlowers"]},
+     { "type": "macro", "args": ["CanDestroyHangingSeeds"]}
     ]
    },
    "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
@@ -1445,7 +1445,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Boomerang"]}
@@ -1482,7 +1482,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Boomerang"]}
@@ -1499,7 +1499,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Boomerang"]}
@@ -1516,13 +1516,13 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
-     { "type": "macro", "args": ["Can Defeat Mothulas"]},
+     { "type": "macro", "args": ["CanDefeatMothulas"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Defeat Door Flowers"]},
+       { "type": "macro", "args": ["CanDefeatDoorFlowers"]},
        { "type": "has_item", "args": ["GrapplingHook"]}
       ]
      }
@@ -1539,17 +1539,17 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access FW"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]},
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
-     { "type": "macro", "args": ["Can Defeat Mothulas"]},
+     { "type": "macro", "args": ["CanDefeatMothulas"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Defeat Door Flowers"]},
+       { "type": "macro", "args": ["CanDefeatDoorFlowers"]},
        { "type": "has_item", "args": ["GrapplingHook"]}
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Kalle Demos"]},
+     { "type": "macro", "args": ["CanDefeatKalleDemos"]},
      { "type": "has_item", "args": ["FWBigKey"]}
     ]
    },
@@ -1563,7 +1563,7 @@
    "Name": "Greatfish Isle - Hidden Chest",
    "OriginalItem": "PieceOfHeart",
    "Category": ["IslandPuzzle"],
-   "Needs": { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+   "Needs": { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
    "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x5c8478"]
@@ -1627,7 +1627,7 @@
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access TOTG"]},
      { "type": "has_item", "args": ["Bombs"]},
-     { "type": "macro", "args": ["Heros Bow"]}
+     { "type": "macro", "args": ["HerosBow"]}
     ]
    },
    "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
@@ -1654,7 +1654,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]}
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]}
     ]
    },
    "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
@@ -1678,8 +1678,8 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
-     { "type": "macro", "args": ["Heros Bow"]}
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
+     { "type": "macro", "args": ["HerosBow"]}
     ]
    },
    "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
@@ -1703,7 +1703,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]}
     ]
    },
@@ -1729,7 +1729,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]},
      {
       "type": "or",
@@ -1741,11 +1741,11 @@
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Play CM"]},
-       { "type": "macro", "args": ["Heros Bow"]}
+       { "type": "macro", "args": ["CanPlayCM"]},
+       { "type": "macro", "args": ["HerosBow"]}
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Darknuts"]}
+     { "type": "macro", "args": ["CanDefeatDarknuts"]}
     ]
    },
    "Path": "content/Common/Stage/SirenMB_Stage.szs@YAZ0",
@@ -1769,7 +1769,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]},
      {
       "type": "or",
@@ -1778,9 +1778,9 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Heros Bow"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["HerosBow"]},
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
@@ -1804,7 +1804,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]},
      {
       "type": "or",
@@ -1813,8 +1813,8 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Heros Bow"]}
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["HerosBow"]}
     ]
    },
    "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
@@ -1838,7 +1838,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]},
      {
       "type": "or",
@@ -1847,8 +1847,8 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Heros Bow"]}
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["HerosBow"]}
     ]
    },
    "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
@@ -1872,7 +1872,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]},
      {
       "type": "or",
@@ -1881,8 +1881,8 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Heros Bow"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["HerosBow"]},
      { "type": "has_item", "args": ["DekuLeaf"]}
     ]
    },
@@ -1907,7 +1907,7 @@
        }
       ]
      },
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
      { "type": "has_item", "args": ["WindWaker"]},
      {
       "type": "or",
@@ -1916,12 +1916,12 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Heros Bow"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["HerosBow"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["TOTGBigKey"]},
-     { "type": "macro", "args": ["Can Defeat Armos"]},
-     { "type": "macro", "args": ["Can Defeat Gohdan"]}
+     { "type": "macro", "args": ["CanDefeatArmos"]},
+     { "type": "macro", "args": ["CanDefeatGohdan"]}
     ]
    },
    "Path": "content/Common/Stage/SirenB_Room0.szs@YAZ0",
@@ -1929,13 +1929,13 @@
    "Offsets": ["0x320ac0"]
   },
   {
-   "Name": "Hyrule - Master Sword Chamber",
-   "OriginalItem": "Master Sword (Powerless)",
+   "Name": "Hyrule - MasterSword Chamber",
+   "OriginalItem": "MasterSword (Powerless)",
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Access Hyrule"]},
-     { "type": "macro", "args": ["Can Defeat Mighty Darknuts"]}
+     { "type": "macro", "args": ["CanAccessHyrule"]},
+     { "type": "macro", "args": ["CanDefeatMightyDarknuts"]}
     ]
    },
    "Path": "content/Common/Stage/kenroom_Room0.szs@YAZ0",
@@ -1946,7 +1946,7 @@
    "Name": "Forsaken Fortress - Phantom Ganon",
    "OriginalItem": "Skull Hammer",
    "Category": ["Dungeon"],
-   "Needs": { "type": "macro", "args": ["Can Reach and Defeat Phantom Ganon"]},
+   "Needs": { "type": "macro", "args": ["CanReachAndDefeatPhantomGanon"]},
    "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0xb48038"]
@@ -1964,7 +1964,7 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Get Inside Forsaken Fortress"]}
+     { "type": "macro", "args": ["CanGetInsideForsakenFortress"]}
     ]
    },
    "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
@@ -1975,7 +1975,7 @@
    "Name": "Forsaken Fortress - Chest Inside Lower Jail Cell",
    "OriginalItem": "PieceOfHeart",
    "Category": ["Dungeon"],
-   "Needs": { "type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
+   "Needs": { "type": "macro", "args": ["CanGetInsideForsakenFortress"]},
    "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x413c44"]
@@ -1984,7 +1984,7 @@
    "Name": "Forsaken Fortress - Chest Guarded By Bokoblin",
    "OriginalItem": "Compass",
    "Category": ["Dungeon"],
-   "Needs": { "type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
+   "Needs": { "type": "macro", "args": ["CanGetInsideForsakenFortress"]},
    "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x413c24"]
@@ -1993,7 +1993,7 @@
    "Name": "Forsaken Fortress - Chest on Bed",
    "OriginalItem": "YellowRupee",
    "Category": ["Dungeon"],
-   "Needs": { "type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
+   "Needs": { "type": "macro", "args": ["CanGetInsideForsakenFortress"]},
    "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x413c04"]
@@ -2011,8 +2011,8 @@
        { "type": "has_item", "args": ["DekuLeaf"]}
       ]
      },
-     { "type": "macro", "args": ["Can Get Inside Forsaken Fortress"]},
-     { "type": "macro", "args": ["Can Defeat Helmaroc King"]},
+     { "type": "macro", "args": ["CanGetInsideForsakenFortress"]},
+     { "type": "macro", "args": ["CanDefeatHelmarocKing"]},
      { "type": "has_item", "args": ["SkullHammer"]}
     ]
    },
@@ -2025,9 +2025,9 @@
   },
   {
    "Name": "Mother and Child Isles - Inside Mother Isle",
-   "OriginalItem": "Fire and Ice Arrows",
+   "OriginalItem": "Fire and IceArrows",
    "Category": ["Misc"],
-   "Needs": { "type": "macro", "args": ["Can Play BoG"]},
+   "Needs": { "type": "macro", "args": ["CanPlayBoG"]},
    "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0",
    "Type": "Chest",
    "Offsets": [""]
@@ -2038,7 +2038,7 @@
    "Category": ["PuzzleSecretCave"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat Magtails"]},
+     { "type": "macro", "args": ["CanDefeatMagtails"]},
      { "type": "macro", "args": ["Can Access Fire Mountain Secret Cave"]}
     ]
    },
@@ -2059,7 +2059,7 @@
    "Name": "Fire Mountain - Lookout Platform - Destroy the Cannons",
    "OriginalItem": "GoldenFeather",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Destroy Cannons"]},
+   "Needs": { "type": "macro", "args": ["CanDestroyCannons"]},
    "Path": "content/Common/Stage/sea_Room20.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x1f3c2c"]
@@ -2070,7 +2070,7 @@
    "Category": ["BigOcto"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat Big Octos"]},
+     { "type": "macro", "args": ["CanDefeatBigOctos"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -2082,7 +2082,7 @@
    "Name": "Ice Ring Isle - Frozen Chest",
    "OriginalItem": "TreasureChart36",
    "Category": ["IslandPuzzle"],
-   "Needs": { "type": "macro", "args": ["Fire Arrows"]},
+   "Needs": { "type": "macro", "args": ["FireArrows"]},
    "Path": "content/Common/Stage/sea_Room40.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x4b6994"]
@@ -2106,7 +2106,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Ice Ring Isle Secret Cave"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
+     { "type": "macro", "args": ["FireArrows"]},
      { "type": "has_item", "args": ["IronBoots"]}
     ]
    },
@@ -2120,7 +2120,7 @@
    "Category": ["IslandPuzzle"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Buy Hyoi Pears"]},
+     { "type": "macro", "args": ["CanBuyHyoiPears"]},
      { "type": "has_item", "args": ["BaitBag"]}
     ]
    },
@@ -2132,7 +2132,7 @@
    "Name": "Headstone Island - Submarine",
    "OriginalItem": "TreasureChart14",
    "Category": ["Submarine"],
-   "Needs": { "type": "macro", "args": ["Can Defeat Bombchus"]},
+   "Needs": { "type": "macro", "args": ["CanDefeatBombchus"]},
    "Path": "content/Common/Stage/Abship_Room5.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x2967f4"]
@@ -2143,7 +2143,7 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]}
     ]
    },
@@ -2157,13 +2157,13 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Defeat Red ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Green ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Dark ChuChus"]},
+     { "type": "macro", "args": ["CanDefeatRedChuChus"]},
+     { "type": "macro", "args": ["CanDefeatGreenChuChus"]},
+     { "type": "macro", "args": ["CanDefeatDarkChuChus"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Mirror Shield"]}
+     { "type": "macro", "args": ["MirrorShield"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2179,9 +2179,9 @@
    ],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
+     { "type": "macro", "args": ["FireArrows"]},
      {
       "type": "or",
       "args": [
@@ -2201,7 +2201,7 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
      { "type": "has_item", "args": ["SkullHammer"]},
      { "type": "has_item", "args": ["PowerBracelets"]}
@@ -2217,10 +2217,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
-     { "type": "macro", "args": ["Can Defeat Floormasters"]},
+     { "type": "macro", "args": ["FireArrows"]},
+     { "type": "macro", "args": ["CanDefeatFloormasters"]},
      {
       "type": "count",
       "args": [
@@ -2243,10 +2243,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
-     { "type": "macro", "args": ["Can Defeat Floormasters"]},
+     { "type": "macro", "args": ["FireArrows"]},
+     { "type": "macro", "args": ["CanDefeatFloormasters"]},
      {
       "type": "count",
       "args": [
@@ -2269,10 +2269,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
-     { "type": "macro", "args": ["Can Defeat Floormasters"]},
+     { "type": "macro", "args": ["FireArrows"]},
+     { "type": "macro", "args": ["CanDefeatFloormasters"]},
      {
       "type": "count",
       "args": [
@@ -2291,14 +2291,14 @@
   },
   {
    "Name": "Earth Temple - Stalfos Mini-Boss Room",
-   "OriginalItem": "Mirror Shield",
+   "OriginalItem": "MirrorShield",
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
-     { "type": "macro", "args": ["Can Defeat Floormasters"]},
+     { "type": "macro", "args": ["FireArrows"]},
+     { "type": "macro", "args": ["CanDefeatFloormasters"]},
      {
       "type": "count",
       "args": [
@@ -2313,7 +2313,7 @@
       "type": "or",
       "args": [
        { "type": "has_item", "args": ["Hookshot"]},
-       { "type": "macro", "args": ["Can Defeat Stalfos"]}
+       { "type": "macro", "args": ["CanDefeatStalfos"]}
       ]
      }
     ]
@@ -2331,9 +2331,9 @@
    ],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
    },
@@ -2347,10 +2347,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]}
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2363,11 +2363,11 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
-     { "type": "macro", "args": ["Can Defeat Floormasters"]}
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
+     { "type": "macro", "args": ["CanDefeatFloormasters"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2383,10 +2383,10 @@
    ],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Fire Arrows"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["FireArrows"]},
      {
       "type": "or",
       "args": [
@@ -2406,10 +2406,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      {
       "type": "count",
       "args": [
@@ -2421,7 +2421,7 @@
      },
      { "type": "has_item", "args": ["PowerBracelets"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]}
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2434,10 +2434,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      {
       "type": "count",
       "args": [
@@ -2449,7 +2449,7 @@
      },
      { "type": "has_item", "args": ["PowerBracelets"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]}
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2462,10 +2462,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      {
       "type": "count",
       "args": [
@@ -2477,7 +2477,7 @@
      },
      { "type": "has_item", "args": ["PowerBracelets"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]}
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2490,10 +2490,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      {
       "type": "count",
       "args": [
@@ -2505,8 +2505,8 @@
      },
      { "type": "has_item", "args": ["PowerBracelets"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Stalfos"]}
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]},
+     { "type": "macro", "args": ["CanDefeatStalfos"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2519,10 +2519,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      {
       "type": "count",
       "args": [
@@ -2534,9 +2534,9 @@
      },
      { "type": "has_item", "args": ["PowerBracelets"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Darknuts"]}
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]},
+     { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
+     { "type": "macro", "args": ["CanDefeatDarknuts"]}
     ]
    },
    "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
@@ -2549,10 +2549,10 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access ET"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
-     { "type": "macro", "args": ["Can Play EGL"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
+     { "type": "macro", "args": ["CanPlayEGL"]},
      {
       "type": "count",
       "args": [
@@ -2564,8 +2564,8 @@
      },
      { "type": "has_item", "args": ["PowerBracelets"]},
      { "type": "has_item", "args": ["SkullHammer"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Jalhalla"]},
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]},
+     { "type": "macro", "args": ["CanDefeatJalhalla"]},
      { "type": "has_item", "args": ["ETBigKey"]}
     ]
    },
@@ -2579,7 +2579,7 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]}
     ]
    },
@@ -2596,7 +2596,7 @@
    ],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
@@ -2613,7 +2613,7 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
@@ -2630,7 +2630,7 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]}
@@ -2646,12 +2646,12 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Can Play WGA"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["CanPlayWGA"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
-     { "type": "macro", "args": ["Can Defeat Darknuts"]}
+     { "type": "macro", "args": ["CanDefeatDarknuts"]}
     ]
    },
    "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
@@ -2664,7 +2664,7 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
@@ -2674,13 +2674,13 @@
        {
         "type": "or",
         "args": [
-         { "type": "macro", "args": ["Can Cut Grass"]},
+         { "type": "macro", "args": ["CanCutGrass"]},
          { "type": "has_item", "args": ["MagicMeterUpgrade"]}
         ]
        },
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2698,17 +2698,17 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2726,17 +2726,17 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2754,17 +2754,17 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2782,12 +2782,12 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
-     { "type": "macro", "args": ["Can Defeat Darknuts"]},
-     { "type": "macro", "args": ["Can Remove Peahat Armor"]},
+     { "type": "macro", "args": ["CanDefeatDarknuts"]},
+     { "type": "macro", "args": ["CanRemovePeahatArmor"]},
      {
       "type": "count",
       "args": [
@@ -2800,10 +2800,10 @@
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2821,17 +2821,17 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2849,18 +2849,18 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
-     { "type": "macro", "args": ["Can Defeat Armos"]},
+     { "type": "macro", "args": ["CanDefeatArmos"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      {
       "type": "or",
       "args": [
-       { "type": "macro", "args": ["Can Cut Grass"]},
+       { "type": "macro", "args": ["CanCutGrass"]},
        {
         "type": "and", "args": [
-         { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
+         { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
          { "type": "has_item", "args": ["Hookshot"]}
         ]
        }
@@ -2878,15 +2878,15 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["Hookshot"]},
-     { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Stalfos"]},
-     { "type": "macro", "args": ["Can Defeat Wizzrobes"]},
-     { "type": "macro", "args": ["Can Defeat Morths"]},
+     { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
+     { "type": "macro", "args": ["CanDefeatStalfos"]},
+     { "type": "macro", "args": ["CanDefeatWizzrobes"]},
+     { "type": "macro", "args": ["CanDefeatMorths"]},
      {
       "type": "count",
       "args": [
@@ -2908,15 +2908,15 @@
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Play CM"]},
-     { "type": "macro", "args": ["Can Play WGA"]},
+     { "type": "macro", "args": ["CanPlayCM"]},
+     { "type": "macro", "args": ["CanPlayWGA"]},
      { "type": "macro", "args": ["Can Access WT"]},
      { "type": "has_item", "args": ["IronBoots"]},
      { "type": "has_item", "args": ["DekuLeaf"]},
      { "type": "has_item", "args": ["Hookshot"]},
      { "type": "has_item", "args": ["WTBigKey"]},
-     { "type": "macro", "args": ["Can Defeat Blue Bubbles"]},
-     { "type": "macro", "args": ["Can Defeat Molgera"]},
+     { "type": "macro", "args": ["CanDefeatBlueBubbles"]},
+     { "type": "macro", "args": ["CanDefeatMolgera"]},
      {
       "type": "count",
       "args": [
@@ -2934,12 +2934,12 @@
   },
   {
    "Name": "Ganon's Tower - Maze Chest",
-   "OriginalItem": "Light Arrows",
+   "OriginalItem": "LightArrows",
    "Category": ["Dungeon"],
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Reach Ganons Tower Phantom Ganon Room"]},
-     { "type": "macro", "args": ["Can Defeat Phantom Ganon"]}
+     { "type": "macro", "args": ["CanDefeatPhantomGanon"]}
     ]
    },
    "Path": "content/Common/Stage/GanonJ_Stage.szs@YAZ0",
@@ -2955,7 +2955,7 @@
    ],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Farm Golden Feathers"]},
+     { "type": "macro", "args": ["CanFarmGoldenFeathers"]},
      { "type": "has_item", "args": ["SongOfPassing"]},
      { "type": "has_item", "args": ["SpoilsBag"]}
     ]
@@ -3027,7 +3027,7 @@
    "Name": "Mailbox - Letter Advertising Rock Spire Shop Ship",
    "OriginalItem": "Green Rupee",
    "Category": ["Mail"],
-   "Needs": { "type": "macro", "args": ["Wallet Upgrade"]},
+   "Needs": { "type": "macro", "args": ["WalletUpgrade"]},
    "Path": "cking.rpx@RPX",
    "Type": "RPX",
    "Offsets": ["0x31c48"]
@@ -3045,7 +3045,7 @@
       "args": [
        { "type": "has_item", "args": ["BaitBag"]},
        { "type": "has_item", "args": ["Bombs"]},
-       { "type": "macro", "args": ["Heros Bow"]},
+       { "type": "macro", "args": ["HerosBow"]},
        { "type": "has_item", "args": ["Bottle"]}
       ]
      },
@@ -3069,7 +3069,7 @@
       "args": [
        { "type": "has_item", "args": ["BaitBag"]},
        { "type": "has_item", "args": ["Bombs"]},
-       { "type": "macro", "args": ["Heros Bow"]},
+       { "type": "macro", "args": ["HerosBow"]},
        { "type": "has_item", "args": ["Bottle"]}
       ]
      },
@@ -3104,7 +3104,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["Bottle"]},
-     { "type": "macro", "args": ["Can Get Fairies"]},
+     { "type": "macro", "args": ["CanGetFairies"]},
      { "type": "has_item", "args": ["SongOfPassing"]}
     ]
    },
@@ -3144,8 +3144,8 @@
    ],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Rescued Tingle"]},
-     { "type": "macro", "args": ["Wallet Upgrade"]},
+     { "type": "macro", "args": ["RescuedTingle"]},
+     { "type": "macro", "args": ["WalletUpgrade"]},
      {
       "type": "can_access",
       "args": [
@@ -3186,7 +3186,7 @@
    "Name": "The Great Sea - Cyclos",
    "OriginalItem": "Ballad of Gales",
    "Category": ["Misc"],
-   "Needs": { "type": "macro", "args": ["Heros Bow"]},
+   "Needs": { "type": "macro", "args": ["HerosBow"]},
    "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
    "Type": "Event",
    "Offsets": ["0xd86f20"],
@@ -3202,7 +3202,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["DeliveryBag"]},
-     { "type": "macro", "args": ["Rescued Aryll"]}
+     { "type": "macro", "args": ["RescuedAryll"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -3216,7 +3216,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["Bottle"]},
-     { "type": "macro", "args": ["Can Play BoG"]},
+     { "type": "macro", "args": ["CanPlayBoG"]},
      { "type": "macro", "args": ["Can Access Forest Haven"]},
      {
       "type": "can_access",
@@ -3240,11 +3240,11 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["GhostShipChart"]},
-     { "type": "macro", "args": ["Can Play BoG"]},
-     { "type": "macro", "args": ["Can Defeat Wizzrobes"]},
-     { "type": "macro", "args": ["Can Defeat Poes"]},
-     { "type": "macro", "args": ["Can Defeat ReDeads"]},
-     { "type": "macro", "args": ["Can Defeat Stalfos"]}
+     { "type": "macro", "args": ["CanPlayBoG"]},
+     { "type": "macro", "args": ["CanDefeatWizzrobes"]},
+     { "type": "macro", "args": ["CanDefeatPoes"]},
+     { "type": "macro", "args": ["CanDefeatReDeads"]},
+     { "type": "macro", "args": ["CanDefeatStalfos"]}
     ]
    },
    "Path": "content/Common/Stage/PShip_Stage.szs@YAZ0",
@@ -3258,7 +3258,7 @@
    "Needs": {
     "type": "or",
     "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["Hookshot"]}
     ]
    },
@@ -3289,7 +3289,7 @@
     "type": "or",
     "args": [
      { "type": "macro", "args": ["Can Access Cabana Labyrinth"]},
-     { "type": "macro", "args": ["Can Play WR"]},
+     { "type": "macro", "args": ["CanPlayWR"]},
      { "type": "has_item", "args": ["SkullHammer"]}
     ]
    },
@@ -3303,7 +3303,7 @@
    "Category": ["BigOcto"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat Big Octos"]},
+     { "type": "macro", "args": ["CanDefeatBigOctos"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -3338,7 +3338,7 @@
    "Category": ["IslandPuzzle"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Buy Hyoi Pears"]},
+     { "type": "macro", "args": ["CanBuyHyoiPears"]},
      { "type": "has_item", "args": ["BaitBag"]}
     ]
    },
@@ -3353,7 +3353,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Needle Rock Isle Secret Cave"]},
-     { "type": "macro", "args": ["Fire Arrows"]}
+     { "type": "macro", "args": ["FireArrows"]}
     ]
    },
    "Path": "content/Common/Stage/SubD42_Stage.szs@YAZ0",
@@ -3390,7 +3390,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Angular Isles Secret Cave"]},
-     { "type": "macro", "args": ["Can Aim Mirror Shield"]},
+     { "type": "macro", "args": ["CanAimMirrorShield"]},
      {
       "type": "or",
       "args": [
@@ -3424,7 +3424,7 @@
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Boating Course Secret Cave"]},
      { "type": "macro", "args": ["Can Hit Diamong Switches at Range"]},
-     { "type": "macro", "args": ["Can Defeat Miniblins Easily"]}
+     { "type": "macro", "args": ["CanDefeatMiniblinsEasily"]}
     ]
    },
    "Path": "content/Common/Stage/SubD71_Stage.szs@YAZ0",
@@ -3444,7 +3444,7 @@
    "Name": "Stone Watcher Island - Lookout Platform - Destroy the Cannons",
    "OriginalItem": "PieceOfHeart",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Destroy Cannons"]},
+   "Needs": { "type": "macro", "args": ["CanDestroyCannons"]},
    "Path": "content/Common/Stage/sea_Room31.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x343540"]
@@ -3456,7 +3456,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "has_item", "args": ["Bombs"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "content/Common/Stage/ShipD_Stage.szs@YAZ0",
@@ -3467,7 +3467,7 @@
    "Name": "Islet of Steel - Lookout Platform - Defeat the Enemies",
    "OriginalItem": "SkullNecklace",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Defeat Wizzrobes at Range"]},
+   "Needs": { "type": "macro", "args": ["CanDefeatWizzrobesAtRange"]},
    "Path": "content/Common/Stage/sea_Room30.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x635bd8"]
@@ -3479,16 +3479,16 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Overlook Island Secret Cave"]},
-     { "type": "macro", "args": ["Can Defeat Stalfos"]},
-     { "type": "macro", "args": ["Can Defeat Wizzrobes"]},
-     { "type": "macro", "args": ["Can Defeat Red ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Green ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Keese"]},)
-     { "type": "macro", "args": ["Can Defeat Fire Keese"]},
-     { "type": "macro", "args": ["Can Defeat Morths"]},
-     { "type": "macro", "args": ["Can Defeat Kargarocs"]},
-     { "type": "macro", "args": ["Can Defeat Darknuts"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["CanDefeatStalfos"]},
+     { "type": "macro", "args": ["CanDefeatWizzrobes"]},
+     { "type": "macro", "args": ["CanDefeatRedChuChus"]},
+     { "type": "macro", "args": ["CanDefeatGreenChuChus"]},
+     { "type": "macro", "args": ["CanDefeatKeese"]},)
+     { "type": "macro", "args": ["CanDefeatFireKeese"]},
+     { "type": "macro", "args": ["CanDefeatMorths"]},
+     { "type": "macro", "args": ["CanDefeatKargarocs"]},
+     { "type": "macro", "args": ["CanDefeatDarknuts"]},
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "content/Common/Stage/TF_02_Stage.szs@YAZ0",
@@ -3502,7 +3502,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Birds Peak Rock Secret Cave"]},
-     { "type": "macro", "args": ["Can Play WR"]}
+     { "type": "macro", "args": ["CanPlayWR"]}
     ]
    },
    "Path": "content/Common/Stage/TF_03_Stage.szs@YAZ0",
@@ -3525,7 +3525,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Pawprint Isle Chuchu Cave"]},
-     { "type": "macro", "args": ["Can Move Boulders"]}
+     { "type": "macro", "args": ["CanMoveBoulders"]}
     ]
    },
    "Path": "content/Common/Stage/TyuTyu_Stage.szs@YAZ0",
@@ -3539,7 +3539,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Pawprint Isle Chuchu Cave"]},
-     { "type": "macro", "args": ["Can Move Boulders"]}
+     { "type": "macro", "args": ["CanMoveBoulders"]}
     ]
    },
    "Path": "content/Common/Stage/TyuTyu_Stage.szs@YAZ0",
@@ -3567,14 +3567,14 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Pawprint Isle Wizzrobe Cave"]},
-     { "type": "macro", "args": ["Can Defeat Wizzrobes at Range"]},
-     { "type": "macro", "args": ["Can Defeat Fire Keese"]},
-     { "type": "macro", "args": ["Can Defeat Magtails"]},
-     { "type": "macro", "args": ["Can Defeat Red ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Green ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Yellow ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Red Bubbles"]},
-     { "type": "macro", "args": ["Can Remove Peahat Armor"]}
+     { "type": "macro", "args": ["CanDefeatWizzrobesAtRange"]},
+     { "type": "macro", "args": ["CanDefeatFireKeese"]},
+     { "type": "macro", "args": ["CanDefeatMagtails"]},
+     { "type": "macro", "args": ["CanDefeatRedChuChus"]},
+     { "type": "macro", "args": ["CanDefeatGreenChuChus"]},
+     { "type": "macro", "args": ["CanDefeatYellowChuChus"]},
+     { "type": "macro", "args": ["CanDefeatRedBubbles"]},
+     { "type": "macro", "args": ["CanRemovePeahatArmor"]}
     ]
    },
    "Path": "content/Common/Stage/Cave07_Stage.szs@YAZ0",
@@ -3603,7 +3603,7 @@
    "Name": "Thorned Fairy Island - Northeastern Lookout Platform - Destroy the Cannons",
    "OriginalItem": "GoldenFeather",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Destroy Cannons"]},
+   "Needs": { "type": "macro", "args": ["CanDestroyCannons"]},
    "Path": "content/Common/Stage/sea_Room28.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x2abe80"]
@@ -3612,7 +3612,7 @@
    "Name": "Thorned Fairy Island - Southwestern Lookout Platform - Defeat the Enemies",
    "OriginalItem": "BokoBabaSeed",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+   "Needs": { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
    "Path": "content/Common/Stage/sea_Room28.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x2abea0"]
@@ -3621,7 +3621,7 @@
    "Name": "Eastern Fairy Island - Great Fairy",
    "OriginalItem": "60 Bomb Bomb Bag",
    "Category": ["GreatFairy"],
-   "Needs": { "type": "macro", "args": ["Can Move Boulders"]},
+   "Needs": { "type": "macro", "args": ["CanMoveBoulders"]},
    "Path": "cking.rpx@RPX",
    "Type": "RPX",
    "Offsets": ["0x29DCF7"]
@@ -3630,7 +3630,7 @@
    "Name": "Eastern Fairy Island - Lookout Platform - Defeat the Cannons and Enemies",
    "OriginalItem": "BokoBabaSeed",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Destroy Cannons"]},
+   "Needs": { "type": "macro", "args": ["CanDestroyCannons"]},
    "Path": "content/Common/Stage/sea_Room19.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x1d2274"]
@@ -3661,7 +3661,7 @@
     "type": "or",
     "args": [
      { "type": "has_item", "args": ["Bombs"]},
-     { "type": "macro", "args": ["Fire Arrows"]}
+     { "type": "macro", "args": ["FireArrows"]}
     ]
    },
    "Path": "cking.rpx@RPX",
@@ -3674,8 +3674,8 @@
    "Category": ["Platform"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Destroy Cannons"]},
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+     { "type": "macro", "args": ["CanDestroyCannons"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
     ]
    },
    "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0",
@@ -3688,8 +3688,8 @@
    "Category": ["Platform"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Destroy Cannons"]},
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+     { "type": "macro", "args": ["CanDestroyCannons"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
     ]
    },
    "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0",
@@ -3737,7 +3737,7 @@
    "Category": ["BigOcto"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat 12 Eye Big Octos"]},
+     { "type": "macro", "args": ["CanDefeat12EyeBigOctos"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -3769,7 +3769,7 @@
    "Category": ["BigOcto"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat Big Octos"]},
+     { "type": "macro", "args": ["CanDefeatBigOctos"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -3783,7 +3783,7 @@
    "Category": ["PuzzleSecretCave"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Stun Magtails"]},
+     { "type": "macro", "args": ["CanStunMagtails"]},
      { "type": "macro", "args": ["Can Access Bomb Island Secret Cave"]}
     ]
    },
@@ -3837,7 +3837,7 @@
    "Category": ["ExpensivePurchase"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Wallet Upgrade"]},
+     { "type": "macro", "args": ["WalletUpgrade"]},
      { "type": "macro", "args": ["Can Farm Lots of Rupees"]}
     ]
    },
@@ -3855,7 +3855,7 @@
    "Category": ["ExpensivePurchase"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Wallet Upgrade"]},
+     { "type": "macro", "args": ["WalletUpgrade"]},
      { "type": "macro", "args": ["Can Farm Lots of Rupees"]}
     ]
    },
@@ -3873,8 +3873,8 @@
    "Category": ["Platform"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Destroy Cannons"]},
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+     { "type": "macro", "args": ["CanDestroyCannons"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
     ]
    },
    "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
@@ -3887,8 +3887,8 @@
    "Category": ["Platform"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Destroy Cannons"]},
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+     { "type": "macro", "args": ["CanDestroyCannons"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
     ]
    },
    "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
@@ -3925,7 +3925,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Shark Island Secret Cave"]},
-     { "type": "macro", "args": ["Can Defeat Miniblins"]}
+     { "type": "macro", "args": ["CanDefeatMiniblins"]}
     ]
    },
    "Path": "content/Common/Stage/ITest63_Stage.szs@YAZ0",
@@ -3939,7 +3939,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Cliff Plateau Isles Secret Cave"]},
-     { "type": "macro", "args": ["Can Defeat Boko Babas"]}
+     { "type": "macro", "args": ["CanDefeatBokoBabas"]}
     ]
    },
    "Path": "content/Common/Stage/Cave03_Stage.szs@YAZ0",
@@ -3983,7 +3983,7 @@
    "Name": "Crescent Moon Island - Submarine",
    "OriginalItem": "TreasureChart9",
    "Category": ["Submarine"],
-   "Needs": { "type": "macro", "args": ["Can Defeat Miniblins"]},
+   "Needs": { "type": "macro", "args": ["CanDefeatMiniblins"]},
    "Path": "content/Common/Stage/Abship_Room7.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x120a64"]
@@ -3999,7 +3999,7 @@
       "type": "or",
       "args": [
        { "type": "has_item", "args": ["Hookshot"]},
-       { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]}
+       { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]}
       ]
      }
     ]
@@ -4015,8 +4015,8 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Horseshoe Island Secret Cave"]},
-     { "type": "macro", "args": ["Can Defeat Mothulas"]},
-     { "type": "macro", "args": ["Can Defeat Winged Mothulas"]}
+     { "type": "macro", "args": ["CanDefeatMothulas"]},
+     { "type": "macro", "args": ["CanDefeatWingedMothulas"]}
     ]
    },
    "Path": "content/Common/Stage/Cave05_Stage.szs@YAZ0",
@@ -4047,7 +4047,7 @@
    "Category": ["Minigame"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["MagicMeterUpgrade"]}
     ]
    },
@@ -4061,11 +4061,11 @@
    "Category": ["Submarine"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat Wizzrobes"]},
-     { "type": "macro", "args": ["Can Defeat Red ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Green ChuChus"]},
-     { "type": "macro", "args": ["Can Defeat Miniblins"]},
-     { "type": "macro", "args": ["Can Defeat Wizzrobes at Range"]}
+     { "type": "macro", "args": ["CanDefeatWizzrobes"]},
+     { "type": "macro", "args": ["CanDefeatRedChuChus"]},
+     { "type": "macro", "args": ["CanDefeatGreenChuChus"]},
+     { "type": "macro", "args": ["CanDefeatMiniblins"]},
+     { "type": "macro", "args": ["CanDefeatWizzrobesAtRange"]}
     ]
    },
    "Path": "content/Common/Stage/Abship_Room6.szs@YAZ0",
@@ -4079,7 +4079,7 @@
    "Needs": {
     "type": "and", "args": [
      { "type": "macro", "args": ["Can Access Star Island Secret Cave"]},
-     { "type": "macro", "args": ["Can Defeat Magtails"]}
+     { "type": "macro", "args": ["CanDefeatMagtails"]}
     ]
    },
    "Path": "content/Common/Stage/Cave02_Stage.szs@YAZ0",
@@ -4108,7 +4108,7 @@
    "Name": "Five-Star Isles - Lookout Platform - Destroy the Cannons",
    "OriginalItem": "GoldenFeather",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Destroy Cannons"]},
+   "Needs": { "type": "macro", "args": ["CanDestroyCannons"]},
    "Path": "content/Common/Stage/sea_Room49.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0xba09c"]
@@ -4153,7 +4153,7 @@
    "Name": "Seven-Star Isles - Southern Lookout Platform",
    "OriginalItem": "TreasureChart16",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Defeat Wizzrobes at Range"]},
+   "Needs": { "type": "macro", "args": ["CanDefeatWizzrobesAtRange"]},
    "Path": "content/Common/Stage/sea_Room6.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0xbed88"]
@@ -4164,7 +4164,7 @@
    "Category": ["BigOcto"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Defeat 12 Eye Big Octos"]},
+     { "type": "macro", "args": ["CanDefeat12EyeBigOctos"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4178,7 +4178,7 @@
    "Category": ["EyeReefChests"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
    },
@@ -4201,7 +4201,7 @@
    "Category": ["EyeReefChests"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
    },
@@ -4225,7 +4225,7 @@
     "BigOcto",
     "GreatFairy"
    ],
-   "Needs": { "type": "macro", "args": ["Can Defeat Big Octos"]},
+   "Needs": { "type": "macro", "args": ["CanDefeatBigOctos"]},
    "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
    "Type": "Event",
    "Offsets": ["0xd52270"],
@@ -4237,7 +4237,7 @@
    "Category": ["EyeReefChests"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
    },
@@ -4249,7 +4249,7 @@
    "Name": "Four-Eye Reef - Destroy the Cannons and Gunboats",
    "OriginalItem": "TreasureChart19",
    "Category": [    "EyeReefChests"   ],
-   "Needs": { "type": "and", "args": [     { "type": "macro", "args": [       "Can Fly With Deku Leaf Outdoors"      ]},
+   "Needs": { "type": "and", "args": [     { "type": "macro", "args": [       "CanFlyWithDekuLeafOutdoors"      ]},
      { "type": "has_item", "args": [       "Bombs"      ]}    ]},
    "Path": "content/Common/Stage/sea_Room8.szs@YAZ0",
    "Type": "Chest",
@@ -4262,7 +4262,7 @@
    "Category": ["EyeReefChests"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
    },
@@ -4285,7 +4285,7 @@
    "Category": ["EyeReefChests"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Can Fly With Deku Leaf Outdoors"]},
+     { "type": "macro", "args": ["CanFlyWithDekuLeafOutdoors"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
    },
@@ -4297,7 +4297,7 @@
    "Name": "Six-Eye Reef - Lookout Platform - Destroy the Cannons",
    "OriginalItem": "SkullNecklace",
    "Category": ["Platform"],
-   "Needs": { "type": "macro", "args": ["Can Destroy Cannons"]},
+   "Needs": { "type": "macro", "args": ["CanDestroyCannons"]},
    "Path": "content/Common/Stage/sea_Room25.szs@YAZ0",
    "Type": "Chest",
    "Offsets": ["0x1f4650"]
@@ -4317,7 +4317,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 1"]},
+     { "type": "macro", "args": ["ChartForIsland1"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4336,7 +4336,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 2"]},
+     { "type": "macro", "args": ["ChartForIsland2"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4355,7 +4355,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 3"]},
+     { "type": "macro", "args": ["ChartForIsland3"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4374,7 +4374,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 4"]},
+     { "type": "macro", "args": ["ChartForIsland4"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4393,7 +4393,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 5"]},
+     { "type": "macro", "args": ["ChartForIsland5"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4412,7 +4412,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 6"]},
+     { "type": "macro", "args": ["ChartForIsland6"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
@@ -4432,7 +4432,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 7"]},
+     { "type": "macro", "args": ["ChartForIsland7"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4451,7 +4451,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 8"]},
+     { "type": "macro", "args": ["ChartForIsland8"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
@@ -4471,7 +4471,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 9"]},
+     { "type": "macro", "args": ["ChartForIsland9"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4490,7 +4490,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 10"]},
+     { "type": "macro", "args": ["ChartForIsland10"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4509,7 +4509,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 11"]},
+     { "type": "macro", "args": ["ChartForIsland11"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4528,7 +4528,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 12"]},
+     { "type": "macro", "args": ["ChartForIsland12"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4547,7 +4547,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 13"]},
+     { "type": "macro", "args": ["ChartForIsland13"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4566,7 +4566,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 14"]},
+     { "type": "macro", "args": ["ChartForIsland14"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4585,7 +4585,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 15"]},
+     { "type": "macro", "args": ["ChartForIsland15"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4604,7 +4604,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 16"]},
+     { "type": "macro", "args": ["ChartForIsland16"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4623,7 +4623,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 17"]},
+     { "type": "macro", "args": ["ChartForIsland17"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4642,7 +4642,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 18"]},
+     { "type": "macro", "args": ["ChartForIsland18"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4661,7 +4661,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 19"]},
+     { "type": "macro", "args": ["ChartForIsland19"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4680,7 +4680,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 20"]},
+     { "type": "macro", "args": ["ChartForIsland20"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4699,7 +4699,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 21"]},
+     { "type": "macro", "args": ["ChartForIsland21"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4718,7 +4718,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 22"]},
+     { "type": "macro", "args": ["ChartForIsland22"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
@@ -4738,7 +4738,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 23"]},
+     { "type": "macro", "args": ["ChartForIsland23"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4757,7 +4757,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 24"]},
+     { "type": "macro", "args": ["ChartForIsland24"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
@@ -4777,7 +4777,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 25"]},
+     { "type": "macro", "args": ["ChartForIsland25"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
@@ -4797,7 +4797,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 26"]},
+     { "type": "macro", "args": ["ChartForIsland26"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4816,7 +4816,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 27"]},
+     { "type": "macro", "args": ["ChartForIsland27"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4835,7 +4835,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 28"]},
+     { "type": "macro", "args": ["ChartForIsland28"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4854,7 +4854,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 29"]},
+     { "type": "macro", "args": ["ChartForIsland29"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4873,7 +4873,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 30"]},
+     { "type": "macro", "args": ["ChartForIsland30"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4892,7 +4892,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 31"]},
+     { "type": "macro", "args": ["ChartForIsland31"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4911,9 +4911,9 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 32"]},
+     { "type": "macro", "args": ["ChartForIsland32"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
-     { "type": "macro", "args": ["Can Defeat Seahats"]}
+     { "type": "macro", "args": ["CanDefeatSeahats"]}
     ]
    },
    "Path": "content/Common/Stage/sea_Room32.szs@YAZ0",
@@ -4931,7 +4931,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 33"]},
+     { "type": "macro", "args": ["ChartForIsland33"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4950,7 +4950,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 34"]},
+     { "type": "macro", "args": ["ChartForIsland34"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4969,7 +4969,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 35"]},
+     { "type": "macro", "args": ["ChartForIsland35"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -4988,7 +4988,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 36"]},
+     { "type": "macro", "args": ["ChartForIsland36"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5007,9 +5007,9 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 37"]},
+     { "type": "macro", "args": ["ChartForIsland37"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
-     { "type": "macro", "args": ["Can Destroy Cannons"]}
+     { "type": "macro", "args": ["CanDestroyCannons"]}
     ]
    },
    "Path": "content/Common/Stage/sea_Room37.szs@YAZ0",
@@ -5027,7 +5027,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 38"]},
+     { "type": "macro", "args": ["ChartForIsland38"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5046,7 +5046,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 39"]},
+     { "type": "macro", "args": ["ChartForIsland39"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5065,7 +5065,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 40"]},
+     { "type": "macro", "args": ["ChartForIsland40"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5084,7 +5084,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 41"]},
+     { "type": "macro", "args": ["ChartForIsland41"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5103,7 +5103,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 42"]},
+     { "type": "macro", "args": ["ChartForIsland42"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5122,7 +5122,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 43"]},
+     { "type": "macro", "args": ["ChartForIsland43"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5141,7 +5141,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 44"]},
+     { "type": "macro", "args": ["ChartForIsland44"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5160,7 +5160,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 45"]},
+     { "type": "macro", "args": ["ChartForIsland45"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5179,7 +5179,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 46"]},
+     { "type": "macro", "args": ["ChartForIsland46"]},
      { "type": "has_item", "args": ["GrapplingHook"]},
      { "type": "has_item", "args": ["Bombs"]}
     ]
@@ -5199,7 +5199,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 47"]},
+     { "type": "macro", "args": ["ChartForIsland47"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5218,7 +5218,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 48"]},
+     { "type": "macro", "args": ["ChartForIsland48"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
@@ -5237,7 +5237,7 @@
    "Category": ["SunkenTreasure"],
    "Needs": {
     "type": "and", "args": [
-     { "type": "macro", "args": ["Chart for Island 49"]},
+     { "type": "macro", "args": ["ChartForIsland49"]},
      { "type": "has_item", "args": ["GrapplingHook"]}
     ]
    },
