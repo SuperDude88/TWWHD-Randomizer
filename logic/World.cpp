@@ -174,12 +174,12 @@ void World::determineChartMappings()
         auto chart = charts[i];
         chartMappings[i] = chart;
         // Change the macro for this island's chart to the one at this index in the array.
-        // "Chart for Island <sector number>" macros are type "HAS_ITEM" and have
+        // "ChartForIsland<sector number>" macros are type "HAS_ITEM" and have
         // one argument which is the chart GameItem.
         size_t sector = i + 1;
-        macros[macroNameMap.at("Chart for Island " + std::to_string(sector))].args[0] = chart;
+        macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = chart;
 
-        debugLog("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+        debugLog("\tChartForIsland" + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
 }
 
@@ -276,111 +276,224 @@ void World::determineRaceModeDungeons()
     }
 }
 
-World::WorldLoadingError World::parseElement(RequirementType type, const std::vector<json>& args, std::vector<Requirement::Argument>& out)
+// Takes a logic expression string and stores it as a requirement within the passed in Requirement
+// object. This means we only have to parse the string once and then evaluating it many times
+// later is a lot faster. An example of a logic expression string is: "GrapplingHook and (DekuLeaf or Hookshot)"
+World::WorldLoadingError World::parseRequirementString(const std::string& str, Requirement& req)
 {
-    std::string argStr;
-    GameItem argItem = GameItem::INVALID;
-    Area argArea = Area::INVALID;
-    int countValue = 0;
-    int optionEvaluation = 0;
-    WorldLoadingError err = WorldLoadingError::NONE;
-    if (args.size() == 0) return WorldLoadingError::INCORRECT_ARG_COUNT; // all ops require at least one arg
-    switch(type)
+    WorldLoadingError err;
+    std::string logicStr (str);
+
+    // First, we make sure that the expression has no missing or extra parenthesis
+    // and that the nesting level at the beginning is the same at the end.
+    //
+    // Logic expressions are split up via spaces, but we only want to evaluate the parts of
+    // the expression at the highest nesting level for the string that was passed in.
+    // (We'll recursively call the function later to eveluate deeper levels.) So we replace
+    // all the spaces on the highest nesting level with an arbitrarily chosen delimeter
+    // (in this case: '+').
+    int nestingLevel = 1;
+    const char delimeter = '+';
+    for (auto& ch : logicStr)
     {
-    case RequirementType::OR: // and/or expects list of sub-requirements
-    case RequirementType::AND:
-        for (const auto& arg : args) {
-            out.emplace_back(Requirement());
-            OBJECT_CHECK(arg, "Requirement element of type " << static_cast<int>(type) << " has unexpected type");
-            if ((err = parseRequirement(arg, std::get<Requirement>(out.back()))) != WorldLoadingError::NONE) return err;
-        }
-        return WorldLoadingError::NONE;
-    case RequirementType::NOT:
-        out.emplace_back(Requirement());
-        OBJECT_CHECK(args[0], "Requirement element of type " << static_cast<int>(type) << " has unexpected type");
-        if ((err = parseRequirement(args[0], std::get<Requirement>(out.back()))) != WorldLoadingError::NONE) return err;
-        return WorldLoadingError::NONE;
-    case RequirementType::HAS_ITEM:
-        // has item expects a single string arg that maps to an item
-        argStr = args[0].get<std::string>();
-        argItem = nameToGameItem(argStr);
-        ITEM_VALID_CHECK(argItem, "Game Item of name \"" << argStr << " Does Not Exist");
-        out.push_back(argItem);
-        return WorldLoadingError::NONE;
-    case RequirementType::COUNT:
-        // count expects a value count and a string mapping to an item
-        if (args.size() != 2) return WorldLoadingError::INCORRECT_ARG_COUNT;
-        countValue = args[0].get<int>();
-        argStr = args[1].get<std::string>();
-        argItem = nameToGameItem(argStr);
-        ITEM_VALID_CHECK(argItem, "Game Item of name \"" << argStr << " Does Not Exist");
-        out.push_back(countValue);
-        out.push_back(argItem);
-        return WorldLoadingError::NONE;
-    case RequirementType::CAN_ACCESS:
-        argArea = nameToArea(args[0].get<std::string>());
-        AREA_VALID_CHECK(argArea, "Area " << args[0].get<std::string>() << " does not exist");
-        out.push_back(argArea);
-        return WorldLoadingError::NONE;
-    case RequirementType::SETTING:
-        // setting just expects a settings name. Resolve settings to a true/false
-        // value now since they won't change during world building/item placement
-        argStr = args[0].get<std::string>();
-        optionEvaluation = evaluateOption(settings, argStr);
-        // -1 means the setting doesn't exist
-        if (optionEvaluation == -1)
+        if (ch == '(')
         {
-            OPTION_VALID_CHECK(Option::INVALID, "Setting " << argStr << " does not exist");
+            nestingLevel++;
         }
-        out.push_back(optionEvaluation);
-        return WorldLoadingError::NONE;
-    case RequirementType::MACRO:
-        // macro just stores index into macro vector
-        argStr = args[0].get<std::string>();
-        if (macroNameMap.count(argStr) == 0)
+        else if (ch == ')')
         {
-            lastError << "Macro of name " << argStr << " Does Not Exist.";
-            return WorldLoadingError::MACRO_DOES_NOT_EXIST;
+            nestingLevel--;
         }
-        out.push_back(macroNameMap.at(argStr));
+
+        if (nestingLevel == 1 && ch == ' ')
+        {
+            ch = delimeter;
+        }
+    }
+
+    // If the nesting level isn't the same as what we started with, then the logic
+    // expression is invalid.
+    if (nestingLevel != 1)
+    {
+        std::cout << "Extra or missing parenthesis within expression: \"" << str << "\"" << std::endl;
+        return WorldLoadingError::EXTRA_OR_MISSING_PARENTHESIS;
+    }
+
+    // Next we split up the expression by the delimeter in the previous step
+    size_t pos = 0;
+    std::vector<std::string> splitLogicStr = {};
+    while ((pos = logicStr.find(delimeter)) != std::string::npos)
+    {
+        splitLogicStr.push_back(logicStr.substr(0, pos));
+        logicStr.erase(0, pos + 1);
+    }
+    splitLogicStr.push_back(logicStr);
+
+    // Once we have the different parts of our expression, we can use the number
+    // of parts we have to determine what kind of expression it is.
+
+    // If we only have one part, then we have either an item, a macro,
+    // a can_access check, a setting, or a count
+    if (splitLogicStr.size() == 1)
+    {
+        // First test if we have a macro
+        std::string argStr = splitLogicStr[0];
+        if (macroNameMap.count(argStr) > 0)
+        {
+            req.type = RequirementType::MACRO;
+            req.args.push_back(macroNameMap.at(argStr));
+            return WorldLoadingError::NONE;
+        }
+        // Then an item...
+        else if (nameToGameItem(argStr) != GameItem::INVALID)
+        {
+            req.type = RequirementType::HAS_ITEM;
+            req.args.push_back(nameToGameItem(argStr));
+            return WorldLoadingError::NONE;
+        }
+        // Then a can_access check...
+        else if (argStr.find("can_access") != std::string::npos)
+        {
+            req.type = RequirementType::CAN_ACCESS;
+            std::string areaName (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
+            Area argArea = nameToArea(areaName);
+            AREA_VALID_CHECK(argArea, "Area " << areaName << " does not exist");
+            req.args.push_back(argArea);
+            return WorldLoadingError::NONE;
+        }
+        // Then a setting...
+        else if (evaluateOption(settings, argStr) != -1)
+        {
+            req.type = RequirementType::SETTING;
+            req.args.push_back(evaluateOption(settings, argStr));
+            return WorldLoadingError::NONE;
+        }
+        // And finally a count...
+        else if (argStr.find("count") != std::string::npos)
+        {
+            req.type = RequirementType::COUNT;
+            // Since a count has two arguments (a number and an item), we have
+            // to split up the string in the parenthesis into those arguments.
+
+            // Get rid of parenthesis
+            std::string countArgs (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
+            // Erase any spaces
+            countArgs.erase(std::remove(countArgs.begin(), countArgs.end(), ' '), countArgs.end());
+
+            // Split up the arguments
+            pos = 0;
+            splitLogicStr = {};
+            while ((pos = countArgs.find(",")) != std::string::npos)
+            {
+                splitLogicStr.push_back(countArgs.substr(0, pos));
+                countArgs.erase(0, pos + 1);
+            }
+            splitLogicStr.push_back(countArgs);
+
+            // Get the arguments
+            int count = std::stoi(splitLogicStr[0]);
+            std::string itemName = splitLogicStr[1];
+            auto argItem = nameToGameItem(itemName);
+            ITEM_VALID_CHECK(argItem, "Game Item of name \"" << itemName << " Does Not Exist");
+            req.args.push_back(count);
+            req.args.push_back(argItem);
+            return WorldLoadingError::NONE;
+        }
+
+        std::cout << "Unrecognized logic symbol: \"" << argStr << "\"" << std::endl;
+        return WorldLoadingError::LOGIC_SYMBOL_DOES_NOT_EXIST;
+    }
+
+    // If our expression has two parts, then the only type of requirement
+    // that can currently be is a "not" requirement
+    if (splitLogicStr.size() == 2)
+    {
+        if (splitLogicStr[0] == "not")
+        {
+            req.type = RequirementType::NOT;
+            req.args.emplace_back(Requirement());
+            // The second part of the not expression is another expression
+            // so we have to evaluate that one as well.
+            auto reqStr = splitLogicStr[1];
+            // Get rid of parenthesis around the expression if it has them
+            if (reqStr[0] == '(')
+            {
+                reqStr = reqStr.substr(1, reqStr.length() - 2);
+            }
+            // Evaluate the deeper expression and add it to the requirement object if it's valid
+            if ((err = parseRequirementString(reqStr, std::get<Requirement>(req.args.back()))) != WorldLoadingError::NONE) return err;
+        }
+        else
+        {
+            std::cout << "Unrecognized 2 part expression: " << str << std::endl;
+            return WorldLoadingError::LOGIC_SYMBOL_DOES_NOT_EXIST;
+        }
+    }
+
+    // If we have more than two parts to our expression, then we have either "and"
+    // or "or".
+    bool andType = elementInPool("and", splitLogicStr);
+    bool orType = elementInPool("or", splitLogicStr);
+
+    // If we have both of them, there's a problem with the logic expression
+    if (andType && orType)
+    {
+        std::cout << "\"and\" & \"or\" in same nesting level when parsing \"" << str << "\"" << std::endl;
+        return WorldLoadingError::SAME_NESTING_LEVEL;
+    }
+
+    if (andType || orType)
+    {
+        // Set the appropriate type
+        if (andType)
+        {
+            req.type = RequirementType::AND;
+        }
+        else if (orType)
+        {
+            req.type = RequirementType::OR;
+        }
+
+        // Once we know the type, we can erase the "and"s or "or"s and are left with just the deeper
+        // expressions to be logically operated on.
+        filterAndEraseFromPool(splitLogicStr, [](const std::string& arg){return arg == "and" || arg == "or";});
+
+        // If we have any deeper "not" expressions, we have to recombine them here since they got separated
+        // by the delimeter earlier
+        for (auto itr = splitLogicStr.begin(); itr != splitLogicStr.end(); itr++)
+        {
+            if (*itr == "not")
+            {
+                *itr = *itr + " " + *(itr + 1);
+                splitLogicStr.erase(itr + 1);
+            }
+        }
+
+        // For each deeper expression, parse it and add it as an argument to the
+        // Requirement
+        for (auto& reqStr : splitLogicStr)
+        {
+            req.args.emplace_back(Requirement());
+            // Get rid of parenthesis surrounding each deeper expression
+            if (reqStr[0] == '(')
+            {
+                reqStr = reqStr.substr(1, reqStr.length() - 2);
+            }
+            if ((err = parseRequirementString(reqStr, std::get<Requirement>(req.args.back()))) != WorldLoadingError::NONE) return err;
+        }
+    }
+
+
+    if (req.type != RequirementType::NONE)
+    {
         return WorldLoadingError::NONE;
-    case RequirementType::NONE:
-    default:
-        return WorldLoadingError::REQUIREMENT_TYPE_DOES_NOT_EXIST;
     }
-    return WorldLoadingError::REQUIREMENT_TYPE_DOES_NOT_EXIST;
-}
-
-World::WorldLoadingError World::parseRequirement(const json &requirementsObject, Requirement& out)
-{
-    static std::unordered_map<std::string, RequirementType> typeMap = {
-        {"or", RequirementType::OR},
-        {"and", RequirementType::AND},
-        {"not", RequirementType::NOT},
-        {"has_item", RequirementType::HAS_ITEM},
-        {"count", RequirementType::COUNT},
-        {"can_access", RequirementType::CAN_ACCESS},
-        {"setting", RequirementType::SETTING},
-        {"macro", RequirementType::MACRO}
-    };
-
-    WorldLoadingError err = WorldLoadingError::NONE;
-
-    FIELD_CHECK(requirementsObject, "type", WorldLoadingError::REQUIREMENT_MISISNG_KEY);
-    const std::string& typeStr = requirementsObject.at("type").get<std::string>();
-    if(typeMap.count(typeStr) == 0)
+    else
+    // If we've reached this point, we weren't able to determine a logical operator within the expression
     {
-        lastError << "Requirement Type " << typeStr << " Does Not Exist.";
-        return WorldLoadingError::REQUIREMENT_TYPE_DOES_NOT_EXIST;
+        std::cout << "Could not determine logical operator type from expression: \"" << str << "\"" << std::endl;
+        return WorldLoadingError::COULD_NOT_DETERMINE_TYPE;
     }
-    out.type = typeMap[typeStr];
-    FIELD_CHECK(requirementsObject, "args", WorldLoadingError::REQUIREMENT_MISISNG_KEY);
-    const auto& args = requirementsObject.at("args").get<std::vector<json>>();
-    if ((err = parseElement(out.type, args, out.args)) != WorldLoadingError::NONE)
-    {
-        return err;
-    }
-    return WorldLoadingError::NONE;
 }
 
 World::WorldLoadingError World::parseMacro(const json& macroObject, Requirement& reqOut)
@@ -389,7 +502,7 @@ World::WorldLoadingError World::parseMacro(const json& macroObject, Requirement&
     WorldLoadingError err = WorldLoadingError::NONE;
     // readd prechecks?
     FIELD_CHECK(macroObject, "Expression", WorldLoadingError::MACRO_MISSING_KEY);
-    if ((err = parseRequirement(macroObject.at("Expression"), reqOut)) != WorldLoadingError::NONE) return err;
+    if ((err = parseRequirementString(macroObject.at("Expression").get<std::string>(), reqOut)) != WorldLoadingError::NONE) return err;
     return WorldLoadingError::NONE;
 }
 
@@ -456,7 +569,7 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     // Set whether or not this location can contain progression items based on its
     // categories
     FIELD_CHECK(locationObject, "Needs", WorldLoadingError::LOCATION_MISSING_KEY);
-    if((err = parseRequirement(locationObject.at("Needs"), newEntry.requirement)) != WorldLoadingError::NONE)
+    if((err = parseRequirementString(locationObject.at("Needs").get<std::string>(), newEntry.requirement)) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing location " << locationName;
         return err;
@@ -518,7 +631,7 @@ World::WorldLoadingError World::loadExit(const json& exitObject, Exit& loadedExi
     WorldLoadingError err = WorldLoadingError::NONE;
     // load exit requirements
     FIELD_CHECK(exitObject, "Needs", WorldLoadingError::EXIT_MISSING_KEY);
-    if((err = parseRequirement(exitObject.at("Needs"), loadedExit.requirement)) != WorldLoadingError::NONE)
+    if((err = parseRequirementString(exitObject.at("Needs").get<std::string>(), loadedExit.requirement)) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing exit " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << std::endl;
         return err;
@@ -673,6 +786,14 @@ const char* World::errorToName(WorldLoadingError err)
         return "INVALID_OFFSET_VALUE";
     case WorldLoadingError::INVALID_GAME_ITEM:
         return "INVALID_GAME_ITEM";
+    case WorldLoadingError::LOGIC_SYMBOL_DOES_NOT_EXIST:
+        return "LOGIC_SYMBOL_DOES_NOT_EXIST";
+    case WorldLoadingError::COULD_NOT_DETERMINE_TYPE:
+        return "COULD_NOT_DETERMINE_TYPE";
+    case WorldLoadingError::SAME_NESTING_LEVEL:
+        return "SAME_NESTING_LEVEL";
+    case WorldLoadingError::EXTRA_OR_MISSING_PARENTHESIS:
+        return "EXTRA_OR_MISSING_PARENTHESIS";
     default:
         return "UNKNOWN";
     }
