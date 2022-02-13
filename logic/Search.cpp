@@ -152,14 +152,13 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         // For any exits which we try and don't meet the requirements for, put them
         // into exitsToTry for the next iteration. Any locations we come across will
         // be added to locationsToTry.
-        for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); exitItr++)
+        for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
         {
             auto exit = *exitItr;
             if (evaluateRequirement(worlds[exit->worldId], exit->requirement, ownedItems)) {
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
-                exitItr--;
                 // If this exit's connected region has not been explored yet, then explore it
                 auto& connectedArea = worlds[exit->worldId].areaEntries[areaAsIndex(exit->connectedArea)];
                 if (!connectedArea.isAccessible)
@@ -169,11 +168,15 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                     explore(searchMode, worlds, ownedItems, connectedArea, exitsToTry, locationsToTry);
                 }
             }
+            else
+            {
+                exitItr++; // Only increment if we don't erase
+            }
         }
         // Note which locations are now accessible on this iteration
         LocationPool accessibleThisIteration = {};
         // debugLog("New Locations Accessible:");
-        for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); locItr++)
+        for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); )
         {
             auto location = *locItr;
             if (evaluateRequirement(worlds[location->worldId], location->requirement, ownedItems))
@@ -183,7 +186,10 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 // Delete newly accessible locations from the list
                 accessibleThisIteration.push_back(location);
                 locItr = locationsToTry.erase(locItr);
-                locItr--;
+            }
+            else
+            {
+                locItr++; // Only increment if we don't erase
             }
         }
 
@@ -244,7 +250,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
 
     for (size_t sphere = 0; sphere < playthroughSpheres.size(); sphere++)
     {
-        for (auto loc = playthroughSpheres[sphere].begin(); loc != playthroughSpheres[sphere].end(); loc++)
+        for (auto loc = playthroughSpheres[sphere].begin(); loc != playthroughSpheres[sphere].end(); )
         {
             // Remove the item at the current location and check if the game is still beatable
             auto location = *loc;
@@ -255,7 +261,10 @@ static void pareDownPlaythrough(WorldPool& worlds)
                 // If the game is still beatable, then this item is not required
                 // and we can erase it from the playthrough
                 loc = playthroughSpheres[sphere].erase(loc);
-                loc--;
+            }
+            else
+            {
+                loc++; // Only increment if we don't erase
             }
             location->currentItem = itemAtLocation;
         }
