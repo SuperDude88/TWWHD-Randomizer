@@ -496,40 +496,32 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     }
 }
 
-World::WorldLoadingError World::parseMacro(const json& macroObject, Requirement& reqOut)
+World::WorldLoadingError World::parseMacro(const std::string& macroLogicExpression, Requirement& reqOut)
 {
 
     WorldLoadingError err = WorldLoadingError::NONE;
     // readd prechecks?
-    FIELD_CHECK(macroObject, "Expression", WorldLoadingError::MACRO_MISSING_KEY);
-    if ((err = parseRequirementString(macroObject.at("Expression").get<std::string>(), reqOut)) != WorldLoadingError::NONE) return err;
+    if ((err = parseRequirementString(macroLogicExpression, reqOut)) != WorldLoadingError::NONE) return err;
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadMacros(const std::vector<json>& macroObjectList)
+World::WorldLoadingError World::loadMacros(const json& macroList)
 {
     std::string name;
     WorldLoadingError err = WorldLoadingError::NONE;
     uint32_t macroCount = 0;
 
     // first pass to get all macro names
-    for (const auto& macroObject : macroObjectList)
+    for (const auto& macro : macroList.items())
     {
-        FIELD_CHECK(macroObject, "Name", WorldLoadingError::MACRO_MISSING_KEY);
-        name = macroObject.at("Name").get<std::string>();
-        if (macroNameMap.count(name) > 0)
-        {
-            lastError << "Macro of name " << name << " has already been added";
-            return WorldLoadingError::DUPLICATE_MACRO_NAME;
-        }
-        macroNameMap.emplace(name, macroCount++);
+        macroNameMap.emplace(macro.key(), macroCount++);
     }
-    for (const auto& macroObject : macroObjectList)
+    for (const auto& [macro, logicExpression] : macroList.items())
     {
         macros.emplace_back();
-        if ((err = parseMacro(macroObject, macros.back())) != WorldLoadingError::NONE)
+        if ((err = parseMacro(logicExpression.get<std::string>(), macros.back())) != WorldLoadingError::NONE)
         {
-            lastError << " | Encountered parsing macro of name " << macroObject.at("Name").get<std::string>();
+            lastError << " | Encountered parsing macro of name " << macro;
             return err;
         }
     }
@@ -551,7 +543,6 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     newEntry.locationId = loadedLocation;
     newEntry.worldId = worldId;
     newEntry.categories.clear();
-    WorldLoadingError err = WorldLoadingError::NONE;
     FIELD_CHECK(locationObject, "Category", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& categories = locationObject.at("Category").get<std::vector<json>>();
     for (const auto& categoryName : categories)
@@ -565,14 +556,6 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
             return WorldLoadingError::INVALID_LOCATION_CATEGORY;
         }
         newEntry.categories.insert(cat);
-    }
-    // Set whether or not this location can contain progression items based on its
-    // categories
-    FIELD_CHECK(locationObject, "Needs", WorldLoadingError::LOCATION_MISSING_KEY);
-    if((err = parseRequirementString(locationObject.at("Needs").get<std::string>(), newEntry.requirement)) != WorldLoadingError::NONE)
-    {
-        lastError << "| Encountered parsing location " << locationName;
-        return err;
     }
     FIELD_CHECK(locationObject, "Path", WorldLoadingError::LOCATION_MISSING_KEY);
     newEntry.method.filePath = locationObject.at("Path").get<std::string>();
@@ -614,14 +597,29 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadExit(const json& exitObject, Exit& loadedExit, Area& parentArea)
+World::WorldLoadingError World::loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationId& loadedLocation)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    OBJECT_CHECK(exitObject, exitObject.dump());
-    FIELD_CHECK(exitObject, "ConnectedArea", WorldLoadingError::EXIT_MISSING_KEY);
-    std::string connectedAreaName = exitObject.at("ConnectedArea").get<std::string>();
+    loadedLocation = nameToLocationId(locationName);
+    LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
+    MAPPING_CHECK(locationName, locationIdToName(nameToLocationId(locationName)));
+    Location& entry = locationEntries[locationIdAsIndex(loadedLocation)];
+    WorldLoadingError err = WorldLoadingError::NONE;
+    if((err = parseRequirementString(logicExpression, entry.requirement)) != WorldLoadingError::NONE)
+    {
+        lastError << "| Encountered parsing location " << locationName;
+        return err;
+    }
+    return WorldLoadingError::NONE;
+}
+
+World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea)
+{
+    // failure indicated by INVALID type for category
+    // maybe change to Optional later if thats determined to work
+    // on wii u
     auto connectedArea = nameToArea(connectedAreaName);
     AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedAreaName << "\" does not exist!");
     MAPPING_CHECK(connectedAreaName, areaToName(nameToArea(connectedAreaName)));
@@ -630,8 +628,7 @@ World::WorldLoadingError World::loadExit(const json& exitObject, Exit& loadedExi
     loadedExit.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
     // load exit requirements
-    FIELD_CHECK(exitObject, "Needs", WorldLoadingError::EXIT_MISSING_KEY);
-    if((err = parseRequirementString(exitObject.at("Needs").get<std::string>(), loadedExit.requirement)) != WorldLoadingError::NONE)
+    if((err = parseRequirementString(logicExpression, loadedExit.requirement)) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing exit " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << std::endl;
         return err;
@@ -656,41 +653,46 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
 
-    // load locations in this area
-    FIELD_CHECK(areaObject, "Locations", WorldLoadingError::AREA_MISSING_KEY);
-    const auto& locations = areaObject.at("Locations").get<std::vector<json>>();
-    for (const auto& loc : locations) {
-        LocationId locOut;
-        err = loadLocation(loc, locOut);
-        if (err != World::WorldLoadingError::NONE)
-        {
-            std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
-            return err;
+    // load locations and their requirements in this area if there are any
+    if (areaObject.contains("Locations"))
+    {
+        const auto& locations = areaObject.at("Locations").get<json>();
+        for (const auto& [loc, logicExpression] : locations.items()) {
+            LocationId locOut;
+            err = loadLocationRequirement(loc, logicExpression.get<std::string>(), locOut);
+            if (err != World::WorldLoadingError::NONE)
+            {
+                std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
+                return err;
+            }
+            // debugLog("\tAdding location " + locationIdToName(locOut));
+            newEntry.locations.push_back(&locationEntries[locationIdAsIndex(locOut)]);
         }
-        // debugLog("\tAdding location " + locationIdToName(locOut));
-        newEntry.locations.push_back(&locationEntries[locationIdAsIndex(locOut)]);
     }
 
-    // load exits in this area
-    FIELD_CHECK(areaObject, "Exits", WorldLoadingError::AREA_MISSING_KEY);
-    const auto& exits = areaObject.at("Exits").get<std::vector<json>>();
-    for (const auto& exit : exits) {
-        Exit exitOut;
-        err = loadExit(exit, exitOut, loadedArea);
-        if (err != World::WorldLoadingError::NONE)
-        {
-            std::cout << "Got error loading exit: " << World::errorToName(err) << std::endl;
-            return err;
+
+    // load exits in this area if there are any
+    if (areaObject.contains("Exits"))
+    {
+        const auto& exits = areaObject.at("Exits").get<json>();
+        for (const auto& [connectedAreaName, logicExpression] : exits.items()) {
+            Exit exitOut;
+            err = loadExit(connectedAreaName, logicExpression.get<std::string>(), exitOut, loadedArea);
+            if (err != World::WorldLoadingError::NONE)
+            {
+                std::cout << "Got error loading exit: " << World::errorToName(err) << std::endl;
+                return err;
+            }
+            // debugLog("\tAdding exit -> " + areaToName(exitOut.connectedArea));
+            newEntry.exits.push_back(exitOut);
         }
-        // debugLog("\tAdding exit -> " + areaToName(exitOut.connectedArea));
-        newEntry.exits.push_back(exitOut);
     }
 
     return WorldLoadingError::NONE;
 }
 
-// Load the world based on the given world file and macros file
-int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath)
+// Load the world based on the given world graph file, macros file, and loation data file
+int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath)
 {
     using json = nlohmann::json;
 
@@ -706,16 +708,24 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         std::cout << "Unable to open world file for world " << std::to_string(worldId) << std::endl;
         return 1;
     }
-
-    json world_j = json::parse(worldFile, nullptr, false);
-    auto macroFileObj = json::parse(macroFile, nullptr, false);
-    if (macroFileObj.is_discarded())
+    std::ifstream locationDataFile(locationDataPath);
+    if (!locationDataFile.is_open())
     {
-        std::cout << "unable to parse macros from file for world " << std::to_string(worldId) << std::endl;
+        std::cout << "Unable to open location data file for world " << std::to_string(worldId) << std::endl;
         return 1;
     }
 
-    auto err = loadMacros(macroFileObj["Macros"].get<std::vector<json>>());
+    json world_j = json::parse(worldFile, nullptr, false);
+    auto macroFileObj = json::parse(macroFile, nullptr, false);
+    auto locationData = json::parse(locationDataFile, nullptr, false);
+
+    if (macroFileObj.is_discarded())
+    {
+        std::cout << "unable to parse macro file for world " << std::to_string(worldId) << std::endl;
+        return 1;
+    }
+
+    auto err = loadMacros(macroFileObj);
     if (err != World::WorldLoadingError::NONE)
     {
         std::cout << "Got error loading macros for world " << std::to_string(worldId) << ": " << World::errorToName(err) << std::endl;
@@ -723,12 +733,29 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         return 1;
     }
 
-    if (!world_j.contains("Areas"))
+    if (locationData.is_discarded())
     {
-        std::cout << "Improperly formatted world file for world " << std::to_string(worldId) << std::endl;
+        std::cout << "unable to parse location data file for world " << std::to_string(worldId) << std::endl;
         return 1;
     }
-    for (const auto& area : world_j.at("Areas"))
+    for (const auto& locationObject : locationData)
+    {
+        LocationId locOut;
+        err = loadLocation(locationObject, locOut);
+        if (err != World::WorldLoadingError::NONE)
+        {
+            std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
+            std::cout << getLastErrorDetails() << std::endl;
+            return 1;
+        }
+    }
+
+    if (world_j.is_discarded())
+    {
+        std::cout << "unable to parse world graph file for world " << std::to_string(worldId) << std::endl;
+        return 1;
+    }
+    for (const auto& area : world_j)
     {
         Area areaOut;
         err = loadArea(area, areaOut);
