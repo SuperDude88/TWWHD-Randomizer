@@ -84,7 +84,7 @@ public:
     void determineChartMappings();
     void determineProgressionLocations();
     void determineRaceModeDungeons();
-    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath);
+    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename);
@@ -102,10 +102,11 @@ private:
     bool chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix);
 
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
-    WorldLoadingError parseMacro(const json& macroObject, Requirement& reqOut);
-    WorldLoadingError loadExit(const json& exitObject, Exit& loadedExit, Area& parentArea);
+    WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
+    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea);
     WorldLoadingError loadLocation(const json& locationObject, LocationId& loadedLocation);
-    WorldLoadingError loadMacros(const std::vector<json>& macroObjectList);
+    WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationId& loadedLocation);
+    WorldLoadingError loadMacros(const json& macroList);
     WorldLoadingError loadArea(const json& areaObject, Area& loadedArea);
 
     Settings settings;

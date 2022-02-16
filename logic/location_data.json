@@ -1,0 +1,2525 @@
+[
+    {
+        "Name": "MailboxHoskitGirlfriendLetter",
+        "OriginalItem": "PieceOfHeart2",
+        "Category": ["Mail","SpoilsTrading"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c84"]
+    },
+    {
+        "Name": "MailboxBaitoMotherLetter",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Mail"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c0c","0x31c6c"]
+    },
+    {
+        "Name": "MailboxBaitoLetter",
+        "OriginalItem": "RedRupee",
+        "Category": ["Mail","Dungeon"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c90"]
+    },
+    {
+        "Name": "MailboxKomaliFatherLetter",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Mail"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c18"]
+    },
+    {
+        "Name": "MailboxBeedleBombAdLetter",
+        "OriginalItem": "BeedlesChart",
+        "Category": ["Mail"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c24"]
+    },
+    {
+        "Name": "MailboxRockSpireShopAdLetter",
+        "OriginalItem": "GreenRupee",
+        "Category": ["Mail"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c48"]
+    },
+    {
+        "Name": "MailboxSilverMembershipRewardLetter",
+        "OriginalItem": "ComplimentaryID",
+        "Category": ["Junk"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c78"]
+    },
+    {
+        "Name": "MailboxGoldMembershipRewardLetter",
+        "OriginalItem": "FillUpCoupon",
+        "Category": ["Junk"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c9c"]
+    },
+    {
+        "Name": "MailboxOrcaLetter",
+        "OriginalItem": "RedRupee",
+        "Category": ["Mail","Dungeon"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c30"]
+    },
+    {
+        "Name": "MailboxGrandmaLetter",
+        "OriginalItem": "RedRupee",
+        "Category": ["Mail"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c3c"]
+    },
+    {
+        "Name": "MailboxAryllLetter",
+        "OriginalItem": "RedRupee",
+        "Category": ["Mail","Dungeon"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c60"]
+    },
+    {
+        "Name": "MailboxTingleLetter",
+        "OriginalItem": "INcredibleChart",
+        "Category": ["Mail","Dungeon","ExpensivePurchase"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x31c54"]
+    },
+    {
+        "Name": "GreatSeaBeedleShop20Rupee",
+        "OriginalItem": "BaitBag",
+        "Category": ["Misc"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1eb5a7","0x41ae07","0x41ae13","0x41d5e3"]
+    },
+    {
+        "Name": "GreatSeaSalvageCorpGift",
+        "OriginalItem": "TreasureChart34",
+        "Category": ["FreeGift"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c6abf"]
+    },
+    {
+        "Name": "GreatSeaCyclos",
+        "OriginalItem": "BalladOfGales",
+        "Category": ["Misc"],
+        "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0xd86f20"],
+        "NameOffsets": "0xdd43f3"
+    },
+    {
+        "Name": "GreatSeaGoronTradingReward",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["LongSideQuest","ExpensivePurchase"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c5b6f"]
+    },
+    {
+        "Name": "GreatSeaWitheredTrees",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x54fdcb","0x54fc4b"]
+    },
+    {
+        "Name": "ForsakenFortressSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xb47a98","0xb47c00","0xb47c24","0xb47c48"]
+    },
+    {
+        "Name": "ForsakenFortressPhantomGanon",
+        "OriginalItem": "SkullHammer",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xb48038"]
+    },
+    {
+        "Name": "ForsakenFortressChestInsideLowerJailCell",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x413c44"]
+    },
+    {
+        "Name": "ForsakenFortressChestOnBed",
+        "OriginalItem": "YellowRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x413c04"]
+    },
+    {
+        "Name": "ForsakenFortressChestOutsideUpperJailCell",
+        "OriginalItem": "DungeonMap",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x413be4"]
+    },
+    {
+        "Name": "ForsakenFortressBokoblinGuardedChest",
+        "OriginalItem": "Compass",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/ma3room_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x413c24"]
+    },
+    {
+        "Name": "ForsakenFortressHelmarocKingHeartContainer",
+        "OriginalItem": "HeartContainer",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0xb48af4","0xb48c38"]
+    },
+    {
+        "Name": "StarIslandSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room2.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xf5704","0xf5728","0xf574c","0xf5770"]
+    },
+    {
+        "Name": "StarIslandLookoutPlatformChest",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room2.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xf57dc"]
+    },
+    {
+        "Name": "StarIslandCaveChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/Cave02_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c10"]
+    },
+    {
+        "Name": "NorthernFairySunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room3.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1d20bc","0x1d20e0","0x1d2104","0x1d2128"]
+    },
+    {
+        "Name": "NorthernFairyIslandSubmarineChest",
+        "OriginalItem": "TreasureChart22",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room4.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x120bb0"]
+    },
+    {
+        "Name": "NorthernFairyIslandGreatFairy",
+        "OriginalItem": "ProgressiveWallet",
+        "Category": ["GreatFairy"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x29DCCF"]
+    },
+    {
+        "Name": "GaleIsleSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room4.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x3ae5d4","0x3ae5f8","0x3ae61c","0x3ae640"]
+    },
+    {
+        "Name": "CrescentMoonChest",
+        "OriginalItem": "TreasureChart10",
+        "Category": ["Misc"],
+        "Path": "content/Common/Stage/sea_Room5.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xcc980"]
+    },
+    {
+        "Name": "CrescentMoonSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room5.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xcc8a8","0xcc8cc","0xcc8f0","0xcc914"]
+    },
+    {
+        "Name": "CrescentMoonSubmarineChest",
+        "OriginalItem": "TreasureChart9",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room7.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x120a64"]
+    },
+    {
+        "Name": "SevenStarBigOcto",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["BigOcto"],
+        "Path": "content/Common/Stage/sea_Room6.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xbea78"]
+    },
+    {
+        "Name": "SevenStarSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room6.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xbeb98","0xbebbc","0xbebe0","0xbec04"]
+    },
+    {
+        "Name": "SevenStarCenterLookoutPlatformChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room6.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xbed68"]
+    },
+    {
+        "Name": "SevenStarNorthernLookoutPlatformChest",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room6.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xbed48"]
+    },
+    {
+        "Name": "SevenStarSouthernLookoutPlatformDefeatWizzrobes",
+        "OriginalItem": "TreasureChart16",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room6.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xbed88"]
+    },
+    {
+        "Name": "OverlookSunkenTreasure",
+        "OriginalItem": "SecretCaveChart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room7.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x2ae348","0x2ae36c","0x2ae390","0x2ae3b4"]
+    },
+    {
+        "Name": "OverlookCaveChest",
+        "OriginalItem": "TriforceShard8",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/TF_02_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1c7084"]
+    },
+    {
+        "Name": "FourEyeReefDestroyCannonsAndGunboats",
+        "OriginalItem": "TreasureChart19",
+        "Category": ["EyeReefChests"],
+        "Path": "content/Common/Stage/sea_Room8.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1eb4d4"]
+    },
+    {
+        "Name": "FourEyeReefSunkenTreasure",
+        "OriginalItem": "GreatFairyChart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room8.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1eb3fc","0x1eb420","0x1eb444","0x1eb468"]
+    },
+    {
+        "Name": "MotherAndChildSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x61eef4","0x61ef18","0x61ef3c","0x61ef60"]
+    },
+    {
+        "Name": "MotherAndChildInsideMotherIsleChest",
+        "OriginalItem": "FireIceArrows",
+        "Category": ["Misc"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "SpectacleBarrelShootingFirstPrize",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c894","0x1c895"]
+    },
+    {
+        "Name": "SpectacleBarrelShootingSecondPrize",
+        "OriginalItem": "TreasureChart17",
+        "Category": ["Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c896"]
+    },
+    {
+        "Name": "SpectacleSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room10.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x61eef4","0x61ef18","0x61ef3c","0x61ef60"]
+    },
+    {
+        "Name": "WindfallIvanCatchKillerBees",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4a0d9f"]
+    },
+    {
+        "Name": "WindfallTransparentChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["ShortSideQuest"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x10631ac","0x10632f4","0x1063840"]
+    },
+    {
+        "Name": "WindfallTottTeachRhythm",
+        "OriginalItem": "SongOfPassing",
+        "Category": ["FreeGift"],
+        "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0xd87a10"],
+        "NameOffsets": "0xdd445f"
+    },
+    {
+        "Name": "WindfallZunariExoticFlower",
+        "OriginalItem": "MagicArmor",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "Custom_Symbol",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "WindfallSamDecorateFlower",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c409b"]
+    },
+    {
+        "Name": "WindfallKaneDecorateShopGuru",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["Obscure"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c3f73"]
+    },
+    {
+        "Name": "WindfallKaneDecoratePostmanStatue",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["Obscure"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c3f77"]
+    },
+    {
+        "Name": "WindfallKaneDecorateSixFlags",
+        "OriginalItem": "RedRupee",
+        "Category": ["Obscure"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c3f7b"]
+    },
+    {
+        "Name": "WindfallKaneDecorateSixIdols",
+        "OriginalItem": "RedRupee",
+        "Category": ["Obscure"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c3f7f"]
+    },
+    {
+        "Name": "WindfallMilaCatchThief",
+        "OriginalItem": "EmptyBottle",
+        "Category": ["ShortSideQuest"],
+        "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0xd64290"],
+        "NameOffsets": "0xdd33af"
+    },
+    {
+        "Name": "WindfallDampaPigMinigame",
+        "OriginalItem": "TreasureChart42",
+        "Category": ["Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4ce5e3","0x4ce5f7"]
+    },
+    {
+        "Name": "WindfallPompieVeraPictoSecretMeeting",
+        "OriginalItem": "TreasureChart24",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c409f"]
+    },
+    {
+        "Name": "WindfallKamoPictoFullMoon",
+        "OriginalItem": "TreasureChart31",
+        "Category": ["LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c40af"]
+    },
+    {
+        "Name": "WindfallMinecoPictoMissWindfall",
+        "OriginalItem": "TreasureChart33",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c40a3"]
+    },
+    {
+        "Name": "WindfallSunkenTreasure",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1062a80","0x1062aa4","0x1062ac8","0x1062aec"]
+    },
+    {
+        "Name": "WindfallTingleFirstGift",
+        "OriginalItem": "TingleBottle",
+        "Category": ["FreeGift"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4F1A8F"]
+    },
+    {
+        "Name": "WindfallTingleSecondGift",
+        "OriginalItem": "TinglesChart",
+        "Category": ["FreeGift"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4F1AC3"]
+    },
+    {
+        "Name": "WindfallJailMazeChest",
+        "OriginalItem": "ProgressivePictoBox",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/Pnezumi_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2794c"]
+    },
+    {
+        "Name": "WindfallMrsMarieCatchKillerBees",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x447e1f"]
+    },
+    {
+        "Name": "WindfallMrsMarie1JoyPendant",
+        "OriginalItem": "RedRupee",
+        "Category": ["SpoilsTrading"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x447f33"]
+    },
+    {
+        "Name": "WindfallMrsMarie21JoyPendant",
+        "OriginalItem": "CabanaDeed",
+        "Category": ["SpoilsTrading"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x447f63"]
+    },
+    {
+        "Name": "WindfallMrsMarie40JoyPendant",
+        "OriginalItem": "TreasureChart45",
+        "Category": ["SpoilsTrading"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x44805b"]
+    },
+    {
+        "Name": "WindfallLenzoBecomeAssistant",
+        "OriginalItem": "ProgressivePictoBox",
+        "Category": ["LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4d7c17","0x4d899f"]
+    },
+    {
+        "Name": "WindfallLenzoBringFirefly",
+        "OriginalItem": "JoyPendant",
+        "Category": ["LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4d7c4b"]
+    },
+    {
+        "Name": "WindfallLenzoHouseLeftChest",
+        "OriginalItem": "TreasureChart29",
+        "Category": ["ShortSideQuest"],
+        "Path": "content/Common/Stage/Ocmera_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x26e10"]
+    },
+    {
+        "Name": "WindfallLenzoHouseRightChest",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["ShortSideQuest"],
+        "Path": "content/Common/Stage/Ocmera_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x26e30"]
+    },
+    {
+        "Name": "WindfallCafePostmanDelivery",
+        "OriginalItem": "MoblinsLetter",
+        "Category": ["ShortSideQuest"],
+        "Path": "content/Common/Stage/Opub_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0x289d40"],
+        "NameOffsets": "0x2a0d43"
+    },
+    {
+        "Name": "WindfallAntonPictoLinda",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c40a7"]
+    },
+    {
+        "Name": "WindfallBattleSquidFirstPrize",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["BattleSquid"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x46f327"]
+    },
+    {
+        "Name": "WindfallBattleSquidSecondPrize",
+        "OriginalItem": "TreasureChart7",
+        "Category": ["BattleSquid"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x46f337"]
+    },
+    {
+        "Name": "WindfallBattleSquidUnder20Prize",
+        "OriginalItem": "TreasureChart23",
+        "Category": ["BattleSquid"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x46f33f"]
+    },
+    {
+        "Name": "WindfallKreebLightLighthouse",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1c40ab"]
+    },
+    {
+        "Name": "WindfallAuction5Rupee",
+        "OriginalItem": "TreasureChart18",
+        "Category": ["ExpensivePurchase","Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x190875"]
+    },
+    {
+        "Name": "WindfallAuction40Rupee",
+        "OriginalItem": "JoyPendant",
+        "Category": ["ExpensivePurchase","Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x19086d"]
+    },
+    {
+        "Name": "WindfallAuction60Rupee",
+        "OriginalItem": "TreasureChart38",
+        "Category": ["ExpensivePurchase","Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x19087d"]
+    },
+    {
+        "Name": "WindfallAuction80Rupee",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["ExpensivePurchase","Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x190885"]
+    },
+    {
+        "Name": "WindfallAuction100Rupee",
+        "OriginalItem": "SwiftSail",
+        "Category": ["ExpensivePurchase","Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x19088d"]
+    },
+    {
+        "Name": "WindfallHouseOfWealthChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Misc"],
+        "Path": "content/Common/Stage/Orichh_Room0.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x39a5c0"]
+    },
+    {
+        "Name": "WindfallMaggiesFatherGive20SkullNecklace",
+        "OriginalItem": "TreasureChart2",
+        "Category": ["SpoilsTrading"],
+        "Path": "content/Common/Stage/Orichh_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0x29a4c0"],
+        "NameOffsets": "0x2ab29f"
+    },
+    {
+        "Name": "WindfallMaggieFreeItem",
+        "OriginalItem": "MaggiesLetter",
+        "Category": ["FreeGift"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x484443"]
+    },
+    {
+        "Name": "WindfallMaggieDeliveryReward",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["ShortSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x48447f"]
+    },
+    {
+        "Name": "WindfallPotionShop15Green",
+        "OriginalItem": "GreenPotion",
+        "Category": ["SpoilsTrading"],
+        "Path": "cking.rpx@RPX",
+        "Type": "Custom_Symbol",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "WindfallPotionShop15Blue",
+        "OriginalItem": "BluePotion",
+        "Category": ["SpoilsTrading","LongSideQuest"],
+        "Path": "cking.rpx@RPX",
+        "Type": "Custom_Symbol",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "WindfallPirateShipChest",
+        "OriginalItem": "Bombs",
+        "Category": ["Minigame"],
+        "Path": "content/Common/Stage/Asoko_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2ce54","0x2ce74"]
+    },
+    {
+        "Name": "PawprintSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room12.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x246b40","0x246b64","0x246b88","0x246bac"]
+    },
+    {
+        "Name": "PawprintChuchuCaveChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TyuTyu_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c10"]
+    },
+    {
+        "Name": "PawprintChuchuCaveBehindLeftBoulder",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TyuTyu_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20bd0"]
+    },
+    {
+        "Name": "PawprintChuchuCaveBehindRightBoulder",
+        "OriginalItem": "JoyPendant",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TyuTyu_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20bf0"]
+    },
+    {
+        "Name": "PawprintChuchuCaveScaleWall",
+        "OriginalItem": "RedRupee",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TyuTyu_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20bb0"]
+    },
+    {
+        "Name": "PawprintWizzrobeCaveChest",
+        "OriginalItem": "TreasureChart46",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/Cave07_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c10"]
+    },
+    {
+        "Name": "PawprintLookoutPlatformDefeatEnemies",
+        "OriginalItem": "RedRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room12.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x246cf0"]
+    },
+    {
+        "Name": "DragonRoostIslandWindShrine",
+        "OriginalItem": "WindsRequiem",
+        "Category": ["Misc"],
+        "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0xd85080"],
+        "NameOffsets": "0xdd4263"
+    },
+    {
+        "Name": "DragonRoostIslandBoulderChest",
+        "OriginalItem": "SilverRupee",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xb9b8ac"]
+    },
+    {
+        "Name": "DragonRoostIslandSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xb9b600","0xb9b624","0xb9b648","0xb9b66c"]
+    },
+    {
+        "Name": "DragonRoostIslandHoskit20GoldenFeathers",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["SpoilsTrading"],
+        "Path": "content/Common/Stage/Atorizk_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0x17b060"],
+        "NameOffsets": "0x19253b"
+    },
+    {
+        "Name": "DragonRoostIslandBaitoMailgame",
+        "OriginalItem": "NoteToMom",
+        "Category": ["Minigame"],
+        "Path": "content/Common/Stage/Atorizk_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0x17b380"],
+        "NameOffsets": "0x19254b"
+    },
+    {
+        "Name": "DragonRoostIslandLeafPlatforms",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xb9b8cc"]
+    },
+    {
+        "Name": "DragonRoostIslandCaveChest",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/TF_06_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1c7550"]
+    },
+    {
+        "Name": "FlightControlBirdManFirstPrize",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Minigame"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x40e79b"]
+    },
+    {
+        "Name": "FlightControlSunkenTreasure",
+        "OriginalItem": "IslandHeartsChart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room14.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x239820","0x239844","0x239868","0x23988c"]
+    },
+    {
+        "Name": "FlightControlSubmarineChest",
+        "OriginalItem": "PlatformChart",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room6.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x120ac8"]
+    },
+    {
+        "Name": "WesternFairySunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room15.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1d2380","0x1d23a4","0x1d23c8","0x1d23ec"]
+    },
+    {
+        "Name": "WesternFairyGreatFairy",
+        "OriginalItem": "ProgressiveQuiver",
+        "Category": ["GreatFairy"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x29DD1F"]
+    },
+    {
+        "Name": "WesternFairyLookoutPlatformChest",
+        "OriginalItem": "SkullNecklace",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room15.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1d2458"]
+    },
+    {
+        "Name": "RockSpireSoutheastGunboat",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Gunboat"],
+        "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x237b84"]
+    },
+    {
+        "Name": "RockSpireSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x237ca4","0x237cc8","0x237cec","0x237d10"]
+    },
+    {
+        "Name": "RockSpireBeedle500RupeeItem",
+        "OriginalItem": "EmptyBottle",
+        "Category": ["ExpensivePurchase"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1eb657","0x41d71f","0x41d75b"]
+    },
+    {
+        "Name": "RockSpireBeedle950RupeeItem",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["ExpensivePurchase"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1eb667","0x41d727","0x41d74f"]
+    },
+    {
+        "Name": "RockSpireBeedle900RupeeItem",
+        "OriginalItem": "TreasureChart4",
+        "Category": ["ExpensivePurchase"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x1eb677","0x41d72f","0x41d763"]
+    },
+    {
+        "Name": "RockSpireWesternLookoutPlatformDestroyCannons",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x237de8"]
+    },
+    {
+        "Name": "RockSpireEasternLookoutPlatformDestroyCannons",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x237e08"]
+    },
+    {
+        "Name": "RockSpireCenterLookoutPlatformChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room16.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x237e28"]
+    },
+    {
+        "Name": "RockSpireCaveChest",
+        "OriginalItem": "TreasureChart37",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/Cave04_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c40"]
+    },
+    {
+        "Name": "TingleIslandAnkleAllStatuesReward",
+        "OriginalItem": "RainbowRupee",
+        "Category": ["Misc"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x4f1b13"]
+    },
+    {
+        "Name": "TingleIslandBigOcto",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["BigOcto"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x5bf0d0"]
+    },
+    {
+        "Name": "TingleIslandSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x5bf238","0x5bf25c","0x5bf280","0x5bf2a4"]
+    },
+    {
+        "Name": "NorthernTriangleSunkenTreasure",
+        "OriginalItem": "OctoChart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room18.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x65ec0","0x65ee4","0x65f08","0x65f2c"]
+    },
+    {
+        "Name": "EasternFairySunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room19.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1d2178","0x1d219c","0x1d21c0","0x1d21e4"]
+    },
+    {
+        "Name": "EasternFairyGreatFairy",
+        "OriginalItem": "ProgressiveBombBag",
+        "Category": ["GreatFairy"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x29DCF7"]
+    },
+    {
+        "Name": "EasternFairyLookoutPlatformDefeatCannonsAndEnemies",
+        "OriginalItem": "BokoBabaSeed",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room19.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1d2274"]
+    },
+    {
+        "Name": "FireMountainBigOcto",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["BigOcto"],
+        "Path": "content/Common/Stage/sea_Room20.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1f39c8"]
+    },
+    {
+        "Name": "FireMountainSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room20.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1f3b30","0x1f3b54","0x1f3b78","0x1f3b9c"]
+    },
+    {
+        "Name": "FireMountainInteriorChest",
+        "OriginalItem": "PowerBracelets",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/MiniKaz_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20cc8"]
+    },
+    {
+        "Name": "FireMountainLookoutPlatformChest",
+        "OriginalItem": "YellowRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room20.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1f3c4c"]
+    },
+    {
+        "Name": "FireMountainLookoutPlatformDestroyCannons",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room20.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1f3c2c"]
+    },
+    {
+        "Name": "StarBeltSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room21.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xbebe8","0xbec0c","0xbec30","0xbec54"]
+    },
+    {
+        "Name": "StarBeltLookoutPlatformChest",
+        "OriginalItem": "TreasureChart44",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room21.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xbecc0"]
+    },
+    {
+        "Name": "ThreeEyeReefDestroyCannonsAndGunboats",
+        "OriginalItem": "TreasureChart32",
+        "Category": ["EyeReefChests"],
+        "Path": "content/Common/Stage/sea_Room22.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1f51a4"]
+    },
+    {
+        "Name": "ThreeEyeReefSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room22.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1f5018","0x1f503c","0x1f5060","0x1f5084"]
+    },
+    {
+        "Name": "GreatfishHiddenChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5c8478"]
+    },
+    {
+        "Name": "GreatfishSunkenTreasure",
+        "OriginalItem": "TriforceShard1",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x5c8160","0x5c8184","0x5c81a8","0x5c81cc"]
+    },
+    {
+        "Name": "CyclopsReefDestroyCannonsAndGunboats",
+        "OriginalItem": "TreasureChart21",
+        "Category": ["EyeReefChests"],
+        "Path": "content/Common/Stage/sea_Room24.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1d719c"]
+    },
+    {
+        "Name": "CyclopsReefSunkenTreasure",
+        "OriginalItem": "LightRingChart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room24.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1d70c4","0x1d70e8","0x1d710c","0x1d7130"]
+    },
+    {
+        "Name": "CyclopsReefLookoutPlatformDefeatEnemies",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room24.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1d71bc"]
+    },
+    {
+        "Name": "SixEyeReefDestroyCannonsAndGunboats",
+        "OriginalItem": "TreasureChart26",
+        "Category": ["EyeReefChests"],
+        "Path": "content/Common/Stage/sea_Room25.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1f4630"]
+    },
+    {
+        "Name": "SixEyeReefSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room25.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1f44a4","0x1f44c8","0x1f44ec","0x1f4510"]
+    },
+    {
+        "Name": "SixEyeReefSubmarineChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room1.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x12093c"]
+    },
+    {
+        "Name": "SixEyeReefLookoutPlatformDestroyCannons",
+        "OriginalItem": "SkullNecklace",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room25.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1f4650"]
+    },
+    {
+        "Name": "TOTGSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room26.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x2ba4","0x2bc8","0x2bec","0x2c10"]
+    },
+    {
+        "Name": "EasternTriangleSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room27.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x662ec","0x66310","0x66334","0x66358"]
+    },
+    {
+        "Name": "ThornedFairySunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room28.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x2abd84","0x2abda8","0x2abdcc","0x2abdf0"]
+    },
+    {
+        "Name": "ThornedFairyGreatFairy",
+        "OriginalItem": "ProgressiveQuiver",
+        "Category": ["GreatFairy"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x29DD17"]
+    },
+    {
+        "Name": "ThornedFairyNortheasternLookoutPlatformDestroyCannons",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room28.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2abe80"]
+    },
+    {
+        "Name": "ThornedFairySouthwesternLookoutPlatformDefeatEnemies",
+        "OriginalItem": "BokoBabaSeed",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room28.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2abea0"]
+    },
+    {
+        "Name": "NeedleRockChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/sea_Room29.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x12ee24"]
+    },
+    {
+        "Name": "NeedleRockGoldenGunboat",
+        "OriginalItem": "TriforceChart3",
+        "Category": ["Gunboat"],
+        "Path": "content/Common/Stage/sea_Room29.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x12ed94"]
+    },
+    {
+        "Name": "NeedleRockSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room29.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x12ec98","0x12ecbc","0x12ece0","0x12ed04"]
+    },
+    {
+        "Name": "NeedleRockCaveChest",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/SubD42_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c0c"]
+    },
+    {
+        "Name": "IsletOfSteelSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room30.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x635a70","0x635a94","0x635ab8","0x635adc"]
+    },
+    {
+        "Name": "IsletOfSteelInteriorChest",
+        "OriginalItem": "TriforceChart1",
+        "Category": ["Misc"],
+        "Path": "content/Common/Stage/ShipD_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20bb8"]
+    },
+    {
+        "Name": "IsletOfSteelLookoutPlatformDefeatEnemies",
+        "OriginalItem": "SkullNecklace",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room30.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x635bd8"]
+    },
+    {
+        "Name": "StoneWatcherSunkenTreasure",
+        "OriginalItem": "TriforceShard3",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room31.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x3433fc","0x343420","0x343444","0x343468"]
+    },
+    {
+        "Name": "StoneWatcherCaveChest",
+        "OriginalItem": "TriforceShard7",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/TF_01_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1c7084"]
+    },
+    {
+        "Name": "StoneWatcherLookoutPlatformChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room31.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x343560"]
+    },
+    {
+        "Name": "StoneWatcherLookoutPlatformDestroyCannons",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room31.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x343540"]
+    },
+    {
+        "Name": "SouthernTriangleSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room32.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x660c0","0x660e4","0x66108","0x6612c"]
+    },
+    {
+        "Name": "PrivateOasisTopOfWaterfallChest",
+        "OriginalItem": "TreasureChart27",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/sea_Room33.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5a6928"]
+    },
+    {
+        "Name": "PrivateOasisBigOcto",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["BigOcto"],
+        "Path": "content/Common/Stage/sea_Room33.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x5a68e0"]
+    },
+    {
+        "Name": "PrivateOasisSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room33.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x5a670c","0x5a6730","0x5a6754","0x5a6778"]
+    },
+    {
+        "Name": "PrivateOasisCabanaLabyrinthLowerFloorChest",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TF_04_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c74"]
+    },
+    {
+        "Name": "PrivateOasisCabanaLabyrinthUpperFloorChest",
+        "OriginalItem": "TriforceShard2",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TF_04_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c54"]
+    },
+    {
+        "Name": "BombIslandSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room34.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xbeacc","0xbeaf0","0xbeb14","0xbeb38"]
+    },
+    {
+        "Name": "BombIslandCaveChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/Cave01_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1c6e78"]
+    },
+    {
+        "Name": "BombIslandSubmarineChest",
+        "OriginalItem": "EmptyBottle",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room2.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1208a4"]
+    },
+    {
+        "Name": "BombIslandLookoutPlatformDefeatEnemies",
+        "OriginalItem": "RedRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room34.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xbec10"]
+    },
+    {
+        "Name": "BirdsPeakSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room35.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xbcffb8","0xbcffdc","0xbd0000","0xbd0024"]
+    },
+    {
+        "Name": "BirdsPeakRockCaveChest",
+        "OriginalItem": "TriforceChart3",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/TF_03_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20b8c"]
+    },
+    {
+        "Name": "DiamondSteppeBigOcto",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["BigOcto"],
+        "Path": "content/Common/Stage/sea_Room36.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x2b706c"]
+    },
+    {
+        "Name": "DiamondSteppeSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room36.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x2b718c","0x2b71b0","0x2b71d4","0x2b71f8"]
+    },
+    {
+        "Name": "DiamondSteppeWarpMazeFirstChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/WarpD_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20be8"]
+    },
+    {
+        "Name": "DiamondSteppeWarpMazeSecondChest",
+        "OriginalItem": "GhostShipChart",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/WarpD_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20bc8"]
+    },
+    {
+        "Name": "FiveEyeReefDestroyCannonsAndGunboats",
+        "OriginalItem": "TreasureChart41",
+        "Category": ["EyeReefChests"],
+        "Path": "content/Common/Stage/sea_Room37.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1eff00"]
+    },
+    {
+        "Name": "FiveEyeReefSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room37.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1efd2c","0x1efd50","0x1efd74","0x1efd98"]
+    },
+    {
+        "Name": "FiveEyeReefLookoutPlatformChest",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room37.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1eff20"]
+    },
+    {
+        "Name": "SharkIslandSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room38.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x122250","0x122274","0x122298","0x1222bc"]
+    },
+    {
+        "Name": "SharkIslandCaveChest",
+        "OriginalItem": "SilverRupee",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/ITest63_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c10"]
+    },
+    {
+        "Name": "SouthernFairySunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1d2d40","0x1d2d64","0x1d2d88","0x1d2dac"]
+    },
+    {
+        "Name": "SouthernFairyGreatFairy",
+        "OriginalItem": "ProgressiveBombBag",
+        "Category": ["GreatFairy"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x29DCEF"]
+    },
+    {
+        "Name": "SouthernFairyLookoutPlatformDestroyNorthwestCannons",
+        "OriginalItem": "TreasureChart40",
+        "Category": ["Platform"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1d2e3c"]
+    },
+    {
+        "Name": "SouthernFairyLookoutPlatformDestroySoutheastCannons",
+        "OriginalItem": "SkullNecklace",
+        "Category": ["Platform"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1d2e5c"]
+    },
+    {
+        "Name": "IceRingFrozenChest",
+        "OriginalItem": "TreasureChart36",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/sea_Room40.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x4b6994"]
+    },
+    {
+        "Name": "IceRingSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room40.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x4b67c0","0x4b67e4","0x4b6808","0x4b682c"]
+    },
+    {
+        "Name": "IceRingInteriorChest",
+        "OriginalItem": "IronBoots",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/MiniHyo_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20d0c"]
+    },
+    {
+        "Name": "IceRingInnerCaveChest",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["PuzzleSecretCave","CombatSecretCave"],
+        "Path": "content/Common/Stage/ITest62_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c10"]
+    },
+    {
+        "Name": "ForestHavenSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x88524c","0x885270","0x885294","0x8852b8"]
+    },
+    {
+        "Name": "ForestHavenOnTreeBranch",
+        "OriginalItem": "DekuLeaf",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/Omori_Room0.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x33b704","0x33b9c4"]
+    },
+    {
+        "Name": "ForestHavenSmallIslandChest",
+        "OriginalItem": "TreasureChart3",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x885588"]
+    },
+    {
+        "Name": "CliffPlateauSunkenTreasure",
+        "OriginalItem": "TriforceShard5",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room42.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xe2300","0xe2324","0xe2348","0xe236c"]
+    },
+    {
+        "Name": "CliffPlateauCaveChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/Cave03_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c0c"]
+    },
+    {
+        "Name": "CliffPlateauHighestIsleChest",
+        "OriginalItem": "TreasureChart25",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/sea_Room42.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xe263c"]
+    },
+    {
+        "Name": "CliffPlateauLookoutPlatformChest",
+        "OriginalItem": "BokoBabaSeed",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room42.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xe265c"]
+    },
+    {
+        "Name": "HorseshoeSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room43.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x19d4ec","0x19d510","0x19d534","0x19d558"]
+    },
+    {
+        "Name": "HorseshoePlayGolf",
+        "OriginalItem": "TreasureChart28",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/sea_Room43.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x19d774"]
+    },
+    {
+        "Name": "HorseshoeCaveChest",
+        "OriginalItem": "TreasureChart8",
+        "Category": ["CombatSecretCave"],
+        "Path": "content/Common/Stage/Cave05_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20bb0"]
+    },
+    {
+        "Name": "HorseshoeNorthwesternLookoutPlatformChest",
+        "OriginalItem": "TreasureChart43",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room43.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x19d794"]
+    },
+    {
+        "Name": "HorseshoeSoutheasternLookoutPlatformChest",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room43.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x19d7b4"]
+    },
+    {
+        "Name": "OutsetDigBlackSoil",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["IslandPuzzle"],
+        "Path": "szs_permanent2/sea_Room44.zs",
+        "Type": "SCOB",
+        "Offsets": ["0x84CBD4"]
+    },
+    {
+        "Name": "OutsetSunkenTreasure",
+        "OriginalItem": "TriforceShard6",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x84c67c","0x84c6a0","0x84c6c4","0x84c6e8"]
+    },
+    {
+        "Name": "OutsetUnderLinksHouseChest",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["Misc"],
+        "Path": "LinkUG_Stage.zs",
+        "Type": "Chest",
+        "Offsets": ["0x212DC"]
+    },
+    {
+        "Name": "OutsetOrca10KnightsCrest",
+        "OriginalItem": "HurricaneSpin",
+        "Category": ["SpoilsTrading"],
+        "Path": "content/Common/Stage/Ojhous_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0x8a1740"],
+        "NameOffsets": "0x8bf31b"
+    },
+    {
+        "Name": "OutsetOrca500Hits",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Junk"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x10631AC","0x10632F4","0x1063840"]
+    },
+    {
+        "Name": "OutsetMesasHouseChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Misc"],
+        "Path": "Omasao_Stage.zs",
+        "Type": "Chest",
+        "Offsets": ["0x9BCCE8"]
+    },
+    {
+        "Name": "OutsetGreatFairy",
+        "OriginalItem": "ProgressiveWallet",
+        "Category": ["GreatFairy"],
+        "Path": "cking.rpx@RPX",
+        "Type": "RPX",
+        "Offsets": ["0x29DCC7"]
+    },
+    {
+        "Name": "OutsetSavageFloor30Chest",
+        "OriginalItem": "TriforceShard6",
+        "Category": ["SavageLabyrinth"],
+        "Path": "Cave09_Room20.zs",
+        "Type": "Chest",
+        "Offsets": ["0x31DD48"]
+    },
+    {
+        "Name": "OutsetSavageFloor50Chest",
+        "OriginalItem": "HerosCharm",
+        "Category": ["SavageLabyrinth"],
+        "Path": "content/Common/Stage/Cave10_Room20.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x31db78"]
+    },
+    {
+        "Name": "OutsetJabunsCaveChest",
+        "OriginalItem": "NayrusPearl",
+        "Category": ["IslandPuzzle"],
+        "Path": "Pjavdou_Room0.zs",
+        "Type": "Chest",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "HeadstoneTopOfIsland",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/sea_Room45.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x24714c"]
+    },
+    {
+        "Name": "HeadstoneSunkenTreasure",
+        "OriginalItem": "SilverRupee",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room45.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x247964","0x247988","0x2479ac","0x2479d0"]
+    },
+    {
+        "Name": "HeadstoneIslandSubmarineChest",
+        "OriginalItem": "TreasureChart14",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room5.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2967f4"]
+    },
+    {
+        "Name": "TwoEyeReefDestroyCannonsAndGunboats",
+        "OriginalItem": "TreasureChart13",
+        "Category": ["EyeReefChests"],
+        "Path": "content/Common/Stage/sea_Room46.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1e5d2c"]
+    },
+    {
+        "Name": "TwoEyeReefBigOctoGreatFairy",
+        "OriginalItem": "MagicMeterUpgrade",
+        "Category": ["BigOcto","GreatFairy"],
+        "Path": "content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0xd52270"],
+        "NameOffsets": "0xdd2c9f"
+    },
+    {
+        "Name": "TwoEyeReefSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room46.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x1e5b10","0x1e5b34","0x1e5b58","0x1e5b7c"]
+    },
+    {
+        "Name": "TwoEyeReefLookoutPlatformChest",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room46.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1e5d4c"]
+    },
+    {
+        "Name": "AngularIslesPeak",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["IslandPuzzle"],
+        "Path": "content/Common/Stage/sea_Room47.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2a9730"]
+    },
+    {
+        "Name": "AngularSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room47.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x2a9634","0x2a9658","0x2a967c","0x2a96a0"]
+    },
+    {
+        "Name": "AngularIslesCaveChest",
+        "OriginalItem": "SilverRupee",
+        "Category": ["PuzzleSecretCave"],
+        "Path": "content/Common/Stage/SubD43_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c54"]
+    },
+    {
+        "Name": "BoatingCourseRaftChest",
+        "OriginalItem": "BokoBabaSeed",
+        "Category": ["Raft"],
+        "Path": "content/Common/Stage/sea_Room48.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x129594"]
+    },
+    {
+        "Name": "BoatingCourseSunkenTreasure",
+        "OriginalItem": "SeaHeartsChart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room48.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0x129498","0x1294bc","0x1294e0","0x129504"]
+    },
+    {
+        "Name": "BoatingCourseCaveChest",
+        "OriginalItem": "SubmarineChart",
+        "Category": ["PuzzleSecretCave","CombatSecretCave"],
+        "Path": "content/Common/Stage/SubD71_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x20c10"]
+    },
+    {
+        "Name": "FiveStarSunkenTreasure",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["SunkenTreasure"],
+        "Path": "content/Common/Stage/sea_Room49.szs@YAZ0",
+        "Type": "SCOB",
+        "Offsets": ["0xb9f38","0xb9f5c","0xb9f80","0xb9fa4"]
+    },
+    {
+        "Name": "FiveStarRaftChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Raft"],
+        "Path": "content/Common/Stage/sea_Room49.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xba07c"]
+    },
+    {
+        "Name": "FiveStarSubmarineChest",
+        "OriginalItem": "PieceOfHeart",
+        "Category": ["Submarine"],
+        "Path": "content/Common/Stage/Abship_Room0.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x1208c8"]
+    },
+    {
+        "Name": "FiveStarLookoutPlatformDestroyCannons",
+        "OriginalItem": "GoldenFeather",
+        "Category": ["Platform"],
+        "Path": "content/Common/Stage/sea_Room49.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0xba09c"]
+    },
+    {
+        "Name": "GhostShipChest",
+        "OriginalItem": "TriforceShard4",
+        "Category": ["Misc"],
+        "Path": "content/Common/Stage/PShip_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x21aac"]
+    },
+    {
+        "Name": "DragonRoostCavernFirstRoomChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac940"]
+    },
+    {
+        "Name": "DragonRoostCavernWaterJugAlcove",
+        "OriginalItem": "DungeonMap",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac9a0"]
+    },
+    {
+        "Name": "DragonRoostCavernBoardedUpChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac960"]
+    },
+    {
+        "Name": "DragonRoostCavernSwingAcrossLavaChest",
+        "OriginalItem": "TreasureChart11",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac9e0"]
+    },
+    {
+        "Name": "DragonRoostCavernRatRoomChest",
+        "OriginalItem": "Compass",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac980"]
+    },
+    {
+        "Name": "DragonRoostCavernRatRoomBoardedUpChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5aca00"]
+    },
+    {
+        "Name": "DragonRoostCavernBirdsNest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Room3.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x40dec8"]
+    },
+    {
+        "Name": "DragonRoostCavernDarkRoomChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac920"]
+    },
+    {
+        "Name": "DragonRoostCavernHubRoomTingleChest",
+        "OriginalItem": "YellowRupee",
+        "Category": ["Dungeon","TingleChest"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5aca40"]
+    },
+    {
+        "Name": "DragonRoostCavernPotRoomChest",
+        "OriginalItem": "TreasureChart39",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac900"]
+    },
+    {
+        "Name": "DragonRoostCavernBossStairsRightChest",
+        "OriginalItem": "KnightsCrest",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac8c0"]
+    },
+    {
+        "Name": "DragonRoostCavernBossStairsLeftChest",
+        "OriginalItem": "YellowRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac8e0"]
+    },
+    {
+        "Name": "DragonRoostCavernMiniBoss",
+        "OriginalItem": "GrapplingHook",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dra09_Room9.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "DragonRoostCavernUnderRopeBridge",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac9c0"]
+    },
+    {
+        "Name": "DragonRoostCavernTingleStatueChest",
+        "OriginalItem": "DragonTingleStatue",
+        "Category": ["Dungeon","TingleChest"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5aca20"]
+    },
+    {
+        "Name": "DragonRoostCavernBigKeyChest",
+        "OriginalItem": "BigKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_NewD2_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5ac8a0"]
+    },
+    {
+        "Name": "DragonRoostCavernGohmaHeartContainer",
+        "OriginalItem": "HeartContainer",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_DragB_Room0.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x46dac0"]
+    },
+    {
+        "Name": "ForbiddenWoodsFirstRoomChest",
+        "OriginalItem": "DungeonMap",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8934"]
+    },
+    {
+        "Name": "ForbiddenWoodsBokoBabaClimb",
+        "OriginalItem": "TreasureChart1",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f88f4"]
+    },
+    {
+        "Name": "ForbiddenWoodsInsideHollowTree",
+        "OriginalItem": "KnightsCrest",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8914"]
+    },
+    {
+        "Name": "ForbiddenWoodsHoleInTreeChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8974"]
+    },
+    {
+        "Name": "ForbiddenWoodsMorthPit",
+        "OriginalItem": "YellowRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8a74"]
+    },
+    {
+        "Name": "ForbiddenWoodsVineMazeLeftChest",
+        "OriginalItem": "Compass",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f89b4"]
+    },
+    {
+        "Name": "ForbiddenWoodsVineMazeRightChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8954"]
+    },
+    {
+        "Name": "ForbiddenWoodsTallRoomChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8a14"]
+    },
+    {
+        "Name": "ForbiddenWoodsMothulaMiniBoss",
+        "OriginalItem": "Boomerang",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kinMB_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x5338ac"]
+    },
+    {
+        "Name": "ForbiddenWoodsByHangingSeedsChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8a54"]
+    },
+    {
+        "Name": "ForbiddenWoodsChestAcrossHangingFlower",
+        "OriginalItem": "YellowRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8a94"]
+    },
+    {
+        "Name": "ForbiddenWoodsTingleStatueChest",
+        "OriginalItem": "ForbiddenTingleStatue",
+        "Category": ["Dungeon","TingleChest"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8ab4"]
+    },
+    {
+        "Name": "ForbiddenWoodsLockedTreeTrunkChest",
+        "OriginalItem": "TreasureChart15",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f89d4"]
+    },
+    {
+        "Name": "ForbiddenWoodsBigKeyChest",
+        "OriginalItem": "FWBigKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f89f4"]
+    },
+    {
+        "Name": "ForbiddenWoodsDoubleMothulaRoomChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kindan_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x6f8a34"]
+    },
+    {
+        "Name": "ForbiddenWoodsKalleDemosHeartContainer",
+        "OriginalItem": "HeartContainer",
+        "Category": ["Dungeon"],
+        "Path": "code/cking.rpx@RPX,content/Common/Stage/kinBOSS_Room0.szs@YAZ0",
+        "Type": "Boss",
+        "Offsets": ["0x2b7ab6","0x1bea14"]
+    },
+    {
+        "Name": "TOTGHopAcrossFloatingBoxesChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bc24"]
+    },
+    {
+        "Name": "TOTGChestBehindBombableWall",
+        "OriginalItem": "DungeonMap",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bc44"]
+    },
+    {
+        "Name": "TOTGLightTwoTorches",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bcc4"]
+    },
+    {
+        "Name": "TOTGSkullRoomChest",
+        "OriginalItem": "Compass",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bc64"]
+    },
+    {
+        "Name": "TOTGShootEyeAboveSkulls",
+        "OriginalItem": "TreasureChart6",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bce4"]
+    },
+    {
+        "Name": "TOTGTingleStatueChest",
+        "OriginalItem": "GoddessTingleStatue",
+        "Category": ["Dungeon","TingleChest"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bd64"]
+    },
+    {
+        "Name": "TOTGStoneTablet",
+        "OriginalItem": "CommandMelody",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Event",
+        "Offsets": ["0x4f7360"],
+        "NameOffsets": "0x509b17"
+    },
+    {
+        "Name": "TOTGFirstArmosKnightsChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bca4"]
+    },
+    {
+        "Name": "TOTGDarknutMiniBoss",
+        "OriginalItem": "ProgressiveBow",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/SirenMB_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x26fb20"]
+    },
+    {
+        "Name": "TOTGFloatingPlatformsRoomLowerChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bd24"]
+    },
+    {
+        "Name": "TOTGFloatingPlatformsRoomUpperChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bd44"]
+    },
+    {
+        "Name": "TOTGSecondArmostKnightsChest",
+        "OriginalItem": "TreasureChart30",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bd04"]
+    },
+    {
+        "Name": "TOTGBigKeyChest",
+        "OriginalItem": "TotGBigKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/Siren_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x50bd84"]
+    },
+    {
+        "Name": "TOTGGohdanHeartContainer",
+        "OriginalItem": "HeartContainer",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/SirenB_Room0.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x320ac0"]
+    },
+    {
+        "Name": "EarthTempleWarpPotRoomChest",
+        "OriginalItem": "DungeonMap",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e388"]
+    },
+    {
+        "Name": "EarthTempleWarpPotRoomBehindCurtain",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon","Obscure"],
+        "Path": "content/Common/Stage/M_Dai_Room2.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x27de14"]
+    },
+    {
+        "Name": "EarthTempleFirstCryptChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e3a8"]
+    },
+    {
+        "Name": "EarthTempleBehindDestructableWall",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e4c8"]
+    },
+    {
+        "Name": "EarthTempleThreeBlocksRoomChest",
+        "OriginalItem": "Compass",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e3c8"]
+    },
+    {
+        "Name": "EarthTempleBehindStatuesChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e3e8"]
+    },
+    {
+        "Name": "EarthTempleSecondCryptCasket",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Room8.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x2c4534"]
+    },
+    {
+        "Name": "EarthTempleStalfosMiniBoss",
+        "OriginalItem": "MirrorShield",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_DaiMB_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x2f313c"]
+    },
+    {
+        "Name": "EarthTempleTingleStatueChest",
+        "OriginalItem": "EarthTingleStatue",
+        "Category": ["Dungeon","TingleChest"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e528"]
+    },
+    {
+        "Name": "EarthTempleFoggyFloormasterRoomEndChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e408"]
+    },
+    {
+        "Name": "EarthTempleKillAllFloormastersChest",
+        "OriginalItem": "TreasureChart20",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e4a8"]
+    },
+    {
+        "Name": "EarthTempleNearHammerButtonBehindCurtain",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon","Obscure"],
+        "Path": "content/Common/Stage/M_Dai_Room13.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x44ac90"]
+    },
+    {
+        "Name": "EarthTempleThirdCryptChest",
+        "OriginalItem": "RedRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e428"]
+    },
+    {
+        "Name": "EarthTempleManyMirrorsRoomRightChest",
+        "OriginalItem": "PurpleRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e468"]
+    },
+    {
+        "Name": "EarthTempleManyMirrorsRoomLeftChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e488"]
+    },
+    {
+        "Name": "EarthTempleBigKeyChest",
+        "OriginalItem": "ETBigKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e448"]
+    },
+    {
+        "Name": "EarthTempleStalfosCryptRoomChest",
+        "OriginalItem": "TreasureChart12",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_Dai_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14e4e8"]
+    },
+    {
+        "Name": "EarthTempleJalhallaHeartContainer",
+        "OriginalItem": "HeartContainer",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/M_DaiB_Room0.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x50cec0"]
+    },
+    {
+        "Name": "WindTempleBetweenDirtPatchesChest",
+        "OriginalItem": "OrangeRupee",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d384"]
+    },
+    {
+        "Name": "WindTempleTingleStatueChest",
+        "OriginalItem": "WindTingleStatue",
+        "Category": ["Dungeon","TingleChest"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d464"]
+    },
+    {
+        "Name": "WindTempleBehindStoneHeadChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d3a4"]
+    },
+    {
+        "Name": "WindTempleLeftAlcoveChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d364"]
+    },
+    {
+        "Name": "WindTempleBigKeyChest",
+        "OriginalItem": "WTBigKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d324"]
+    },
+    {
+        "Name": "WindTempleManyCyclesRoomChest",
+        "OriginalItem": "DungeonMap",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d3e4"]
+    },
+    {
+        "Name": "WindTempleHubRoomCenterChest",
+        "OriginalItem": "Compass",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d424"]
+    },
+    {
+        "Name": "WindTempleWizzrobeMiniBoss",
+        "OriginalItem": "Hookshot",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kazeMB_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x222ed8"]
+    },
+    {
+        "Name": "WindTempleSpikeWallRoomFirstChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d344"]
+    },
+    {
+        "Name": "WindTempleSpikeWallRoomDestroyFloors",
+        "OriginalItem": "TreasureChart35",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d3c4"]
+    },
+    {
+        "Name": "WindTempleHubRoomTopChest",
+        "OriginalItem": "JoyPendant",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d2e4"]
+    },
+    {
+        "Name": "WindTempleBehindArmosChest",
+        "OriginalItem": "SmallKey",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d304"]
+    },
+    {
+        "Name": "WindTempleKillAllBasmentRoomEnemies",
+        "OriginalItem": "TreasureChart5",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kaze_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x14d404"]
+    },
+    {
+        "Name": "WindTempleMolgeraHeartContainer",
+        "OriginalItem": "HeartContainer",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kazeB_Room0.szs@YAZ0",
+        "Type": "Actor",
+        "Offsets": ["0x8ca914"]
+    },
+    {
+        "Name": "HyruleCastleSwordChamberChest",
+        "OriginalItem": "MasterSwordPowerless",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/kenroom_Room0.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["1"]
+    },
+    {
+        "Name": "GanonsTowerMazeChest",
+        "OriginalItem": "LightArrow",
+        "Category": ["Dungeon"],
+        "Path": "content/Common/Stage/GanonJ_Stage.szs@YAZ0",
+        "Type": "Chest",
+        "Offsets": ["0x255f58"]
+    },
+    {
+        "Name": "DefeatGanondorf",
+        "OriginalItem": "GameBeatable",
+        "Category": ["Other"],
+        "Path": "",
+        "Type": "DoNothing",
+        "Offsets": ["1"]
+    }
+]

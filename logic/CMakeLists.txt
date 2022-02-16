@@ -1,9 +1,17 @@
 
 if(FILL_TESTING)
+  cmake_minimum_required(VERSION 3.7)
+  if(CMAKE_VERSION VERSION_LESS "3.13")
+    if (POLICY CMP0076)
+      cmake_policy(SET CMP0076 OLD)
+    endif()
+  else()
+    cmake_policy(SET CMP0076 NEW)
+  endif()
   project(assumed_fill_test CXX)
   set(CMAKE_CXX_STANDARD 20)
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -Wall")
 
   if(ENABLE_DEBUG)
     message("Debugging is ON")

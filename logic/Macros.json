@@ -1,666 +1,164 @@
 {
-    "Macros":
-    [
-    {
-     "Name": "CanSailAway",
-     "Expression": "(CanPlayWR and BoatsSail) or SwiftSail"
-    },
-    {
-     "Name": "CanPlayWR",
-     "Expression": "WindsRequiem and WindWaker"
-    },
-    {
-     "Name": "CanPlayBoG",
-     "Expression": "BalladOfGales and WindWaker"
-    },
-    {
-     "Name": "CanPlayCM",
-     "Expression": "CommandMelody and WindWaker"
-    },
-    {
-     "Name": "CanPlayEGL",
-     "Expression": "EarthGodsLyric and WindWaker"
-    },
-    {
-     "Name": "CanPlayWGA",
-     "Expression": "WindGodsAria and WindWaker"
-    },
-    {
-     "Name": "CanPlaySoP",
-     "Expression": "SongOfPassing and WindWaker"
-    },
-    {
-     "Name": "CanFlyWithDekuLeafOutdoors",
-     "Expression": "DekuLeaf and CanPlayWR"
-    },
-
-
-    {
-     "Name": "CanAimMirrorShield",
-     "Expression": "MirrorShield and (HerosSword or WindWaker or GrapplingHook or Boomerang or DekuLeaf or HerosBow or Hookshot)"
-    },
-    {
-     "Name": "CanMoveBoulders",
-     "Expression": "Bombs or PowerBracelets"
-    },
-    {
-     "Name": "CanDefeatDoorFlowers",
-     "Expression": "HerosBow or Boomerang or Bombs or Hookshot"
-    },
-    {
-     "Name": "CanHitDiamondSwitchesAtRange",
-     "Expression": "HerosBow or Boomerang or Hookshot"
-    },
-    {
-     "Name": "CanDestroyHangingSeeds",
-     "Expression": "HerosBow or Boomerang or Bombs or Hookshot"
-    },
-    {
-     "Name": "CanBuyBait",
-     "Expression": "Nothing"
-    },
-    {
-     "Name": "CanBuyHyoiPears",
-     "Expression": "Nothing"
-    },
-    {
-     "Name": "BoatsSail",
-     "Expression": "count(1, ProgressiveSail)"
-    },
-    {
-     "Name": "SwiftSail",
-     "Expression": "count(2, ProgressiveSail)"
-    },
-    {
-     "Name": "HerosSword",
-     "Expression": "count(1, ProgressiveSword)"
-    },
-    {
-     "Name": "MasterSword",
-     "Expression": "count(2, ProgressiveSword)"
-    },
-    {
-     "Name": "FullPowerMasterSword",
-     "Expression": "count(4, ProgressiveSword)"
-    },
-    {
-     "Name": "HerosShield",
-     "Expression": "count(1, ProgressiveShield)"
-    },
-    {
-     "Name": "MirrorShield",
-     "Expression": "count(2, ProgressiveShield)"
-    },
-    {
-     "Name": "HerosBow",
-     "Expression": "count(1, ProgressiveBow)"
-    },
-    {
-     "Name": "FireArrows",
-     "Expression": "count(2, ProgressiveBow)"
-    },
-    {
-     "Name": "IceArrows",
-     "Expression": "count(2, ProgressiveBow)"
-    },
-    {
-     "Name": "LightArrows",
-     "Expression": "count(3, ProgressiveBow)"
-    },
-    {
-     "Name": "WalletUpgrade",
-     "Expression": "count(1, ProgressiveWallet)"
-    },
-    {
-     "Name": "60BombBag",
-     "Expression": "count(1, ProgressiveBombBag)"
-    },
-    {
-     "Name": "99BombBag",
-     "Expression": "count(2, ProgressiveBombBag)"
-    },
-    {
-     "Name": "60Quiver",
-     "Expression": "count(1, ProgressiveQuiver)"
-    },
-    {
-     "Name": "99Quiver",
-     "Expression": "count(2, ProgressiveQuiver)"
-    },
-    {
-      "Name": "PictoBox",
-      "Expression": "count(1, ProgressivePictoBox)"
-    },
-    {
-      "Name": "DeluxePictoBox",
-      "Expression": "count(2, ProgressivePictoBox)"
-    },
-    {
-     "Name": "All8Shards",
-     "Expression": "TriforceShard1 and TriforceShard2 and TriforceShard3 and TriforceShard4 and TriforceShard5 and TriforceShard6 and TriforceShard7 and TriforceShard8"
-    },
-    {
-     "Name": "CanDefeatPhantomGanon",
-     "Expression": "(OutsideSwordlessMode and MasterSword) or (InSwordlessMode and SkullHammer)"
-    },
-
-    {
-     "Name": "CanGetPastHyruleBarrier",
-     "Expression": "InSwordlessMode or FullPowerMasterSword"
-    },
-    {
-     "Name": "CanDefeatGanondorf",
-     "Expression": "HerosShield and (InSwordlessMode or HerosSword)"
-    },
-
-
-    {
-     "Name": "RescuedAryll",
-     "Expression": "Nothing"
-    },
-    {
-     "Name": "RescuedTingle",
-     "Expression": "can_access(WindfallJail)"
-    },
-    {
-     "Name": "CanGetFairies",
-     "Expression": "Nothing"
-    },
-
-    {
-     "Name": "CanFarmKnightsCrests",
-     "Expression": "GrapplingHook and SpoilsBag and (can_access(HyruleCastleInterior) or can_access(IceRingInnerCave) or can_access(OutsetSavageFloor30) or can_access(SharkIslandCave) or (CanDefeatDarknutsEasily and (can_access(ETBigKeyChestRoom) or can_access(WTBigKeyChestRoom) or can_access(StoneWatcherCave) or can_access(OverlookCave))))"
-    },
-    {
-     "Name": "CanFarmJoyPendants",
-     "Expression": "GrapplingHook and SpoilsBag"
-    },
-    {
-     "Name": "CanFarmSkullNecklaces",
-     "Expression": "GrapplingHook and SpoilsBag"
-    },
-    {
-     "Name": "CanFarmGoldenFeathers",
-     "Expression": "GrapplingHook and SpoilsBag"
-    },
-    {
-     "Name": "CanFarmGreenChuJelly",
-     "Expression": "GrapplingHook and SpoilsBag"
-    },
-    {
-     "Name": "CanObtain15BlueChuJelly",
-     "Expression": "CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or DekuLeaf or can_access(BoatingCourseSmallIsle) or can_access(CliffPlateauHighestIsle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))"
-    },
-    {
-     "Name": "CanFarmLotsOfRupees",
-     "Expression": "Nothing"
-    },
-
-    {
-      "Name": "CanTradeWithAllGorons",
-      "Expression": "can_access(GreatfishIsle) and can_access(MotherAndChildIsles) and can_access(BombIsland)"
-    },
-
-    {
-     "Name": "CanDefeatBokoblins",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs"
-    },
-    {
-     "Name": "CanDefeatGreenBokoblins",
-     "Expression": "CanDefeatBokoblins"
-    },
-    {
-     "Name": "CanDefeatBlueBokoblins",
-     "Expression": "CanDefeatBokoblins"
-    },
-    {
-     "Name": "CanDefeatPinkBokoblins",
-     "Expression": "CanDefeatBokoblins"
-    },
-    {
-     "Name": "CanDefeatMoblins",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs"
-    },
-    {
-     "Name": "CanDefeatDarknuts",
-     "Expression": "HerosSword or LightArrows or SkullHammer"
-    },
-    {
-     "Name": "CanDefeatDarknutsEasily",
-     "Expression": "HerosSword or LightArrows"
-    },
-    {
-     "Name": "CanDefeatMightyDarknuts",
-     "Expression": "CanDefeatDarknutsEasily"
-    },
-    {
-     "Name": "CanDefeatMiniblins",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang"
-    },
-    {
-     "Name": "CanDefeatMiniblinsEasily",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs or Boomerang"
-    },
-    {
-     "Name": "CanDefeatRedChuChus",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs"
-    },
-    {
-     "Name": "CanDefeatGreenChuChus",
-     "Expression": "CanDefeatRedChuChus"
-    },
-    {
-     "Name": "CanDefeatYellowChuChus",
-     "Expression": "HerosBow or Bombs or SkullHammer or (HerosSword and (Boomerang or DekuLeaf))"
-    },
-    {
-     "Name": "CanDefeatBlueChuChus",
-     "Expression": "CanDefeatYellowChuChus"
-    },
-    {
-     "Name": "CanGetBlueChuJellyFromBlueChuChus",
-     "Expression": "GrapplingHook and CanDefeatBlueChuChus"
-    },
-    {
-     "Name": "CanDefeatDarkChuChus",
-     "Expression": "LightArrows"
-    },
-    {
-     "Name": "CanDefeatDarkChuChusWithLightRay",
-     "Expression": "CanAimMirrorShield or CanDefeatDarkChuChus"
-    },
-    {
-     "Name": "CanDefeatKeese",
-     "Expression": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang"
-    },
-    {
-     "Name": "CanDefeatFireKeese",
-     "Expression": "CanDefeatKeese"
-    },
-    {
-     "Name": "CanDefeatMagtails",
-     "Expression": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang"
-    },
-    {
-     "Name": "CanStunMagtails",
-     "Expression": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang"
-    },
-    {
-     "Name": "CanDefeatKargarocs",
-     "Expression": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang"
-    },
-    {
-     "Name": "CanDefeatPeahats",
-     "Expression": "HerosBow or SkullHammer or Bombs or Boomerang or (HerosSword and (Hookshot or DekuLeaf))"
-    },
-    {
-     "Name": "CanRemovePeahatArmor",
-     "Expression": "HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or DekuLeaf"
-    },
-    {
-     "Name": "CanDefeatBokoBabas",
-     "Expression": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang or (GrapplingHook and DekuLeaf)"
-    },
-    {
-     "Name": "CanDefeatMothulas",
-     "Expression": "HerosSword or HerosBow or Bombs or SkullHammer"
-    },
-    {
-     "Name": "CanDefeatWingedMothulas",
-     "Expression": "HerosSword or HerosBow or Bombs or SkullHammer"
-    },
-    {
-     "Name": "CanDefeatWizzrobes",
-     "Expression": "HerosSword or HerosBow or Bombs or SkullHammer or Hookshot"
-    },
-    {
-     "Name": "CanDefeatWizzrobesAtRange",
-     "Expression": "HerosBow or Hookshot"
-    },
-    {
-     "Name": "CanDefeatArmos",
-     "Expression": "HerosSword or HerosBow or Bombs or SkullHammer or Hookshot"
-    },
-    {
-     "Name": "CanDefeatArmosKnights",
-     "Expression": "Bombs or LightArrows"
-    },
-    {
-     "Name": "CanDefeatBigOctos",
-     "Expression": "HerosBow or Bombs or Boomerang"
-    },
-    {
-     "Name": "CanDefeat12EyeBigOctos",
-     "Expression": "LightArrows or Bombs or Boomerang or (HerosBow and 60Quiver)"
-    },
-    {
-     "Name": "CanDefeatRedBubbles",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs or (GrapplingHook and (Hookshot or DekuLeaf))"
-    },
-    {
-     "Name": "CanDefeatBlueBubbles",
-     "Expression": "IceArrows or Bombs or ((HerosSword or HerosBow or GrapplingHook or SkullHammer) and (Hookshot or DekuLeaf))"
-    },
-    {
-     "Name": "CanDefeatReDeads",
-     "Expression": "HerosSword or LightArrows or Bombs or SkullHammer"
-    },
-    {
-     "Name": "CanDefeatPoes",
-     "Expression": "Nothing"
-    },
-    {
-     "Name": "CanDefeatPoesWithoutLightRay",
-     "Expression": "HerosSword or HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or GrapplingHook"
-    },
-    {
-     "Name": "CanDefeatJalhallaPoes",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs"
-    },
-    {
-     "Name": "CanDefeatStalfos",
-     "Expression": "HerosSword or LightArrows or SkullHammer or Bombs"
-    },
-    {
-     "Name": "CanDefeatFloormasters",
-     "Expression": "HerosSword or HerosBow"
-    },
-    {
-     "Name": "CanDefeatMorths",
-     "Expression": "HerosSword or HerosBow or Boomerang or Hookshot"
-    },
-    {
-     "Name": "CanDefeatRats",
-     "Expression": "HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook"
-    },
-    {
-     "Name": "CanDefeatBombchus",
-     "Expression": "HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook"
-    },
-    {
-     "Name": "CanCutDownDexivines",
-     "Expression": "HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook or Hookshot"
-    },
-    {
-     "Name": "CanDefeatFreshwaterOctoroks",
-     "Expression": "HerosBow or Hookshot or Boomerang"
-    },
-    {
-     "Name": "CanDefeatSaltwaterOctoroks",
-     "Expression": "HerosBow or Hookshot or Boomerang"
-    },
-    {
-     "Name": "CanDefeatBeamos",
-     "Expression": "Nothing"
-    },
-    {
-     "Name": "CanDefeatGyorgs",
-     "Expression": "HerosBow or Hookshot or Boomerang"
-    },
-    {
-     "Name": "CanDefeatSeahats",
-     "Expression": "HerosBow or Hookshot or Bombs or Boomerang"
-    },
-
-
-    {
-     "Name": "CanDefeatGohma",
-     "Expression": "GrapplingHook"
-    },
-    {
-     "Name": "CanDefeatKalleDemos",
-     "Expression": "Boomerang"
-    },
-    {
-     "Name": "CanDefeatGohdan",
-     "Expression": "Bombs and (Hookshot or HerosBow)"
-    },
-    {
-     "Name": "CanDefeatHelmarocKing",
-     "Expression": "SkullHammer"
-    },
-    {
-     "Name": "CanDefeatJalhalla",
-     "Expression": "CanDefeatJalhallaPoes and PowerBracelets and (CanAimMirrorShield or LightArrows)"
-    },
-    {
-     "Name": "CanDefeatMolgera",
-     "Expression": "Hookshot and (HerosSword or HerosBow or Boomerang or GrapplingHook or SkullHammer or Bombs)"
-    },
-
-
-    {
-     "Name": "CanDestroyWoodenBarriers",
-     "Expression": "Bombs or FireArrows"
-    },
-    {
-     "Name": "CanDestroyCannons",
-     "Expression": "Bombs or Boomerang"
-    },
-    {
-     "Name": "CanCutDownOutsetTrees",
-     "Expression": "SkullHammer or Boomerang or HerosSword"
-    },
-    {
-     "Name": "CanCutDownHangingDRCPlatform",
-     "Expression": "HerosSword or HerosBow or SkullHammer or Bombs"
-    },
-    {
-     "Name": "CanCutGrass",
-     "Expression": "HerosSword or SkullHammer or Bombs or Boomerang"
-    },
-    {
-     "Name": "CanSwordFightWithOrca",
-     "Expression": "HerosSword or InSwordlessMode"
-    },
-    {
-     "Name": "RematchBossesSkipped",
-     "Expression": "SkipRefights"
-    },
-    {
-     "Name": "InSwordlessMode",
-     "Expression": "NoSword"
-    },
-    {
-     "Name": "OutsideSwordlessMode",
-     "Expression": "not NoSword"
-    },
-
-    {
-     "Name": "ChartForIsland1",
-     "Expression": "TreasureChart25"
-    },
-    {
-     "Name": "ChartForIsland2",
-     "Expression": "TreasureChart7"
-    },
-    {
-     "Name": "ChartForIsland3",
-     "Expression": "TreasureChart24"
-    },
-    {
-     "Name": "ChartForIsland4",
-     "Expression": "TreasureChart42"
-    },
-    {
-     "Name": "ChartForIsland5",
-     "Expression": "TreasureChart11"
-    },
-    {
-     "Name": "ChartForIsland6",
-     "Expression": "TreasureChart45"
-    },
-    {
-     "Name": "ChartForIsland7",
-     "Expression": "TreasureChart13"
-    },
-    {
-     "Name": "ChartForIsland8",
-     "Expression": "TreasureChart41"
-    },
-    {
-     "Name": "ChartForIsland9",
-     "Expression": "TreasureChart29"
-    },
-    {
-     "Name": "ChartForIsland10",
-     "Expression": "TreasureChart22"
-    },
-    {
-     "Name": "ChartForIsland11",
-     "Expression": "TreasureChart18"
-    },
-    {
-     "Name": "ChartForIsland12",
-     "Expression": "TreasureChart30"
-    },
-    {
-     "Name": "ChartForIsland13",
-     "Expression": "TreasureChart39"
-    },
-    {
-     "Name": "ChartForIsland14",
-     "Expression": "TreasureChart19"
-    },
-    {
-     "Name": "ChartForIsland15",
-     "Expression": "TreasureChart8"
-    },
-    {
-     "Name": "ChartForIsland16",
-     "Expression": "TreasureChart2"
-    },
-    {
-     "Name": "ChartForIsland17",
-     "Expression": "TreasureChart10"
-    },
-    {
-     "Name": "ChartForIsland18",
-     "Expression": "TreasureChart26"
-    },
-    {
-     "Name": "ChartForIsland19",
-     "Expression": "TreasureChart3"
-    },
-    {
-     "Name": "ChartForIsland20",
-     "Expression": "TreasureChart37"
-    },
-    {
-     "Name": "ChartForIsland21",
-     "Expression": "TreasureChart27"
-    },
-    {
-     "Name": "ChartForIsland22",
-     "Expression": "TreasureChart38"
-    },
-    {
-     "Name": "ChartForIsland23",
-     "Expression": "TriforceChart1"
-    },
-    {
-     "Name": "ChartForIsland24",
-     "Expression": "TreasureChart21"
-    },
-    {
-     "Name": "ChartForIsland25",
-     "Expression": "TreasureChart6"
-    },
-    {
-     "Name": "ChartForIsland26",
-     "Expression": "TreasureChart14"
-    },
-    {
-     "Name": "ChartForIsland27",
-     "Expression": "TreasureChart34"
-    },
-    {
-     "Name": "ChartForIsland28",
-     "Expression": "TreasureChart5"
-    },
-    {
-     "Name": "ChartForIsland29",
-     "Expression": "TreasureChart28"
-    },
-    {
-     "Name": "ChartForIsland30",
-     "Expression": "TreasureChart35"
-    },
-    {
-     "Name": "ChartForIsland31",
-     "Expression": "TriforceChart2"
-    },
-    {
-     "Name": "ChartForIsland32",
-     "Expression": "TreasureChart44"
-    },
-    {
-     "Name": "ChartForIsland33",
-     "Expression": "TreasureChart1"
-    },
-    {
-     "Name": "ChartForIsland34",
-     "Expression": "TreasureChart20"
-    },
-    {
-     "Name": "ChartForIsland35",
-     "Expression": "TreasureChart36"
-    },
-    {
-     "Name": "ChartForIsland36",
-     "Expression": "TreasureChart23"
-    },
-    {
-     "Name": "ChartForIsland37",
-     "Expression": "TreasureChart12"
-    },
-    {
-     "Name": "ChartForIsland38",
-     "Expression": "TreasureChart16"
-    },
-    {
-     "Name": "ChartForIsland39",
-     "Expression": "TreasureChart4"
-    },
-    {
-     "Name": "ChartForIsland40",
-     "Expression": "TreasureChart17"
-    },
-    {
-     "Name": "ChartForIsland41",
-     "Expression": "TreasureChart31"
-    },
-    {
-     "Name": "ChartForIsland42",
-     "Expression": "TriforceChart3"
-    },
-    {
-     "Name": "ChartForIsland43",
-     "Expression": "TreasureChart9"
-    },
-    {
-     "Name": "ChartForIsland44",
-     "Expression": "TreasureChart43"
-    },
-    {
-     "Name": "ChartForIsland45",
-     "Expression": "TreasureChart40"
-    },
-    {
-     "Name": "ChartForIsland46",
-     "Expression": "TreasureChart46"
-    },
-    {
-     "Name": "ChartForIsland47",
-     "Expression": "TreasureChart15"
-    },
-    {
-     "Name": "ChartForIsland48",
-     "Expression": "TreasureChart32"
-    },
-    {
-     "Name": "ChartForIsland49",
-     "Expression": "TreasureChart33"
-    }
-    ]
-   }
+     "CanSailAway": "(CanPlayWR and BoatsSail) or SwiftSail",
+     "CanPlayWR": "WindsRequiem and WindWaker",
+     "CanPlayBoG": "BalladOfGales and WindWaker",
+     "CanPlayCM": "CommandMelody and WindWaker",
+     "CanPlayEGL": "EarthGodsLyric and WindWaker",
+     "CanPlayWGA": "WindGodsAria and WindWaker",
+     "CanPlaySoP": "SongOfPassing and WindWaker",
+     "CanFlyWithDekuLeafOutdoors": "DekuLeaf and CanPlayWR",
+     "CanAimMirrorShield": "MirrorShield and (HerosSword or WindWaker or GrapplingHook or Boomerang or DekuLeaf or HerosBow or Hookshot)",
+     "CanMoveBoulders": "Bombs or PowerBracelets",
+     "CanDefeatDoorFlowers": "HerosBow or Boomerang or Bombs or Hookshot",
+     "CanHitDiamondSwitchesAtRange": "HerosBow or Boomerang or Hookshot",
+     "CanDestroyHangingSeeds": "HerosBow or Boomerang or Bombs or Hookshot",
+     "CanBuyBait": "Nothing",
+     "CanBuyHyoiPears": "Nothing",
+     "BoatsSail": "count(1, ProgressiveSail)",
+     "SwiftSail": "count(2, ProgressiveSail)",
+     "HerosSword": "count(1, ProgressiveSword)",
+     "MasterSword": "count(2, ProgressiveSword)",
+     "FullPowerMasterSword": "count(4, ProgressiveSword)",
+     "HerosShield": "count(1, ProgressiveShield)",
+     "MirrorShield": "count(2, ProgressiveShield)",
+     "HerosBow": "count(1, ProgressiveBow)",
+     "FireArrows": "count(2, ProgressiveBow)",
+     "IceArrows": "count(2, ProgressiveBow)",
+     "LightArrows": "count(3, ProgressiveBow)",
+     "WalletUpgrade": "count(1, ProgressiveWallet)",
+     "60BombBag": "count(1, ProgressiveBombBag)",
+     "99BombBag": "count(2, ProgressiveBombBag)",
+     "60Quiver": "count(1, ProgressiveQuiver)",
+     "99Quiver": "count(2, ProgressiveQuiver)",
+     "PictoBox": "count(1, ProgressivePictoBox)",
+     "DeluxePictoBox": "count(2, ProgressivePictoBox)",
+     "All8Shards": "TriforceShard1 and TriforceShard2 and TriforceShard3 and TriforceShard4 and TriforceShard5 and TriforceShard6 and TriforceShard7 and TriforceShard8",
+     "CanDefeatPhantomGanon": "(OutsideSwordlessMode and MasterSword) or (InSwordlessMode and SkullHammer)",
+     "CanGetPastHyruleBarrier": "InSwordlessMode or FullPowerMasterSword",
+     "CanDefeatGanondorf": "HerosShield and (InSwordlessMode or HerosSword)",
+     "RescuedAryll": "Nothing",
+     "RescuedTingle": "can_access(WindfallJail)",
+     "CanGetFairies": "Nothing",
+     "CanFarmKnightsCrests": "GrapplingHook and SpoilsBag and (can_access(HyruleCastleInterior) or can_access(IceRingInnerCave) or can_access(OutsetSavageFloor30) or can_access(SharkIslandCave) or (CanDefeatDarknutsEasily and (can_access(ETBigKeyChestRoom) or can_access(WTBigKeyChestRoom) or can_access(StoneWatcherCave) or can_access(OverlookCave))))",
+     "CanFarmJoyPendants": "GrapplingHook and SpoilsBag",
+     "CanFarmSkullNecklaces": "GrapplingHook and SpoilsBag",
+     "CanFarmGoldenFeathers": "GrapplingHook and SpoilsBag",
+     "CanFarmGreenChuJelly": "GrapplingHook and SpoilsBag",
+     "CanObtain15BlueChuJelly": "CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or DekuLeaf or can_access(BoatingCourseSmallIsle) or can_access(CliffPlateauHighestIsle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))",
+     "CanFarmLotsOfRupees": "Nothing",
+     "CanTradeWithAllGorons": "can_access(GreatfishIsle) and can_access(MotherAndChildIsles) and can_access(BombIsland)",
+     "CanDefeatBokoblins": "HerosSword or HerosBow or SkullHammer or Bombs",
+     "CanDefeatGreenBokoblins": "CanDefeatBokoblins",
+     "CanDefeatBlueBokoblins": "CanDefeatBokoblins",
+     "CanDefeatPinkBokoblins": "CanDefeatBokoblins",
+     "CanDefeatMoblins": "HerosSword or HerosBow or SkullHammer or Bombs",
+     "CanDefeatDarknuts": "HerosSword or LightArrows or SkullHammer",
+     "CanDefeatDarknutsEasily": "HerosSword or LightArrows",
+     "CanDefeatMightyDarknuts": "CanDefeatDarknutsEasily",
+     "CanDefeatMiniblins": "HerosSword or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang",
+     "CanDefeatMiniblinsEasily": "HerosSword or HerosBow or SkullHammer or Bombs or Boomerang",
+     "CanDefeatRedChuChus": "HerosSword or HerosBow or SkullHammer or Bombs",
+     "CanDefeatGreenChuChus": "CanDefeatRedChuChus",
+     "CanDefeatYellowChuChus": "HerosBow or Bombs or SkullHammer or (HerosSword and (Boomerang or DekuLeaf))",
+     "CanDefeatBlueChuChus": "CanDefeatYellowChuChus",
+     "CanGetBlueChuJellyFromBlueChuChus": "GrapplingHook and CanDefeatBlueChuChus",
+     "CanDefeatDarkChuChus": "LightArrows",
+     "CanDefeatDarkChuChusWithLightRay": "CanAimMirrorShield or CanDefeatDarkChuChus",
+     "CanDefeatKeese": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang",
+     "CanDefeatFireKeese": "CanDefeatKeese",
+     "CanDefeatMagtails": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang",
+     "CanStunMagtails": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang",
+     "CanDefeatKargarocs": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang",
+     "CanDefeatPeahats": "HerosBow or SkullHammer or Bombs or Boomerang or (HerosSword and (Hookshot or DekuLeaf))",
+     "CanRemovePeahatArmor": "HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or DekuLeaf",
+     "CanDefeatBokoBabas": "HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang or (GrapplingHook and DekuLeaf)",
+     "CanDefeatMothulas": "HerosSword or HerosBow or Bombs or SkullHammer",
+     "CanDefeatWingedMothulas": "HerosSword or HerosBow or Bombs or SkullHammer",
+     "CanDefeatWizzrobes": "HerosSword or HerosBow or Bombs or SkullHammer or Hookshot",
+     "CanDefeatWizzrobesAtRange": "HerosBow or Hookshot",
+     "CanDefeatArmos": "HerosSword or HerosBow or Bombs or SkullHammer or Hookshot",
+     "CanDefeatArmosKnights": "Bombs or LightArrows",
+     "CanDefeatBigOctos": "HerosBow or Bombs or Boomerang",
+     "CanDefeat12EyeBigOctos": "LightArrows or Bombs or Boomerang or (HerosBow and 60Quiver)",
+     "CanDefeatRedBubbles": "HerosSword or HerosBow or SkullHammer or Bombs or (GrapplingHook and (Hookshot or DekuLeaf))",
+     "CanDefeatBlueBubbles": "IceArrows or Bombs or ((HerosSword or HerosBow or GrapplingHook or SkullHammer) and (Hookshot or DekuLeaf))",
+     "CanDefeatReDeads": "HerosSword or LightArrows or Bombs or SkullHammer",
+     "CanDefeatPoes": "Nothing",
+     "CanDefeatPoesWithoutLightRay": "HerosSword or HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or GrapplingHook",
+     "CanDefeatJalhallaPoes": "HerosSword or HerosBow or SkullHammer or Bombs",
+     "CanDefeatStalfos": "HerosSword or LightArrows or SkullHammer or Bombs",
+     "CanDefeatFloormasters": "HerosSword or HerosBow",
+     "CanDefeatMorths": "HerosSword or HerosBow or Boomerang or Hookshot",
+     "CanDefeatRats": "HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook",
+     "CanDefeatBombchus": "HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook",
+     "CanCutDownDexivines": "HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook or Hookshot",
+     "CanDefeatFreshwaterOctoroks": "HerosBow or Hookshot or Boomerang",
+     "CanDefeatSaltwaterOctoroks": "HerosBow or Hookshot or Boomerang",
+     "CanDefeatBeamos": "Nothing",
+     "CanDefeatGyorgs": "HerosBow or Hookshot or Boomerang",
+     "CanDefeatSeahats": "HerosBow or Hookshot or Bombs or Boomerang",
+     "CanDefeatGohma": "GrapplingHook",
+     "CanDefeatKalleDemos": "Boomerang",
+     "CanDefeatGohdan": "Bombs and (Hookshot or HerosBow)",
+     "CanDefeatHelmarocKing": "SkullHammer",
+     "CanDefeatJalhalla": "CanDefeatJalhallaPoes and PowerBracelets and (CanAimMirrorShield or LightArrows)",
+     "CanDefeatMolgera": "Hookshot and (HerosSword or HerosBow or Boomerang or GrapplingHook or SkullHammer or Bombs)",
+     "CanDestroyWoodenBarriers": "Bombs or FireArrows",
+     "CanDestroyCannons": "Bombs or Boomerang",
+     "CanCutDownOutsetTrees": "SkullHammer or Boomerang or HerosSword",
+     "CanCutDownHangingDRCPlatform": "HerosSword or HerosBow or SkullHammer or Bombs",
+     "CanCutGrass": "HerosSword or SkullHammer or Bombs or Boomerang",
+     "CanSwordFightWithOrca": "HerosSword or InSwordlessMode",
+     "RematchBossesSkipped": "SkipRefights",
+     "InSwordlessMode": "NoSword",
+     "OutsideSwordlessMode": "not NoSword",
+     "ChartForIsland1": "TreasureChart25",
+     "ChartForIsland2": "TreasureChart7",
+     "ChartForIsland3": "TreasureChart24",
+     "ChartForIsland4": "TreasureChart42",
+     "ChartForIsland5": "TreasureChart11",
+     "ChartForIsland6": "TreasureChart45",
+     "ChartForIsland7": "TreasureChart13",
+     "ChartForIsland8": "TreasureChart41",
+     "ChartForIsland9": "TreasureChart29",
+     "ChartForIsland10": "TreasureChart22",
+     "ChartForIsland11": "TreasureChart18",
+     "ChartForIsland12": "TreasureChart30",
+     "ChartForIsland13": "TreasureChart39",
+     "ChartForIsland14": "TreasureChart19",
+     "ChartForIsland15": "TreasureChart8",
+     "ChartForIsland16": "TreasureChart2",
+     "ChartForIsland17": "TreasureChart10",
+     "ChartForIsland18": "TreasureChart26",
+     "ChartForIsland19": "TreasureChart3",
+     "ChartForIsland20": "TreasureChart37",
+     "ChartForIsland21": "TreasureChart27",
+     "ChartForIsland22": "TreasureChart38",
+     "ChartForIsland23": "TriforceChart1",
+     "ChartForIsland24": "TreasureChart21",
+     "ChartForIsland25": "TreasureChart6",
+     "ChartForIsland26": "TreasureChart14",
+     "ChartForIsland27": "TreasureChart34",
+     "ChartForIsland28": "TreasureChart5",
+     "ChartForIsland29": "TreasureChart28",
+     "ChartForIsland30": "TreasureChart35",
+     "ChartForIsland31": "TriforceChart2",
+     "ChartForIsland32": "TreasureChart44",
+     "ChartForIsland33": "TreasureChart1",
+     "ChartForIsland34": "TreasureChart20",
+     "ChartForIsland35": "TreasureChart36",
+     "ChartForIsland36": "TreasureChart23",
+     "ChartForIsland37": "TreasureChart12",
+     "ChartForIsland38": "TreasureChart16",
+     "ChartForIsland39": "TreasureChart4",
+     "ChartForIsland40": "TreasureChart17",
+     "ChartForIsland41": "TreasureChart31",
+     "ChartForIsland42": "TriforceChart3",
+     "ChartForIsland43": "TreasureChart9",
+     "ChartForIsland44": "TreasureChart43",
+     "ChartForIsland45": "TreasureChart40",
+     "ChartForIsland46": "TreasureChart46",
+     "ChartForIsland47": "TreasureChart15",
+     "ChartForIsland48": "TreasureChart32",
+     "ChartForIsland49": "TreasureChart33"
+}

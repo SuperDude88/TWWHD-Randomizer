@@ -4,25 +4,25 @@
 #include <iostream>
 #include <fstream>
 
-static std::ofstream log;
+static std::ofstream logger;
 
 void debugLog(const std::string& msg /*= ""*/)
 {
     #ifdef ENABLE_DEBUG
-        log << msg << std::endl;
+        logger << msg << std::endl;
     #endif
 }
 
 void openDebugLog(const std::string& seed)
 {
     #ifdef ENABLE_DEBUG
-        log.open("debug_log" + seed + ".txt");
+        logger.open("debug_logger" + seed + ".txt");
     #endif
 }
 
 void closeDebugLog()
 {
     #ifdef ENABLE_DEBUG
-        log.close();
+        logger.close();
     #endif
 }
