@@ -7,4 +7,6 @@ out/*
 CMakeSettings.json
 asm/temp
 logic/build/*
+logic/.vs/*
+logic/out/*
 misc

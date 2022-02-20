@@ -25,7 +25,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       debugLog("Building World " + std::to_string(i));
       worlds[i].setWorldId(i);
       worlds[i].setSettings(settingsVector[i]);
-      if (worlds[i].loadWorld("../world.json", "../Macros.json", "../location_data.json"))
+      if (worlds[i].loadWorld("../data/world.yaml", "../data/macros.yaml", "../data/location_data.yaml"))
       {
           return 1;
       }
