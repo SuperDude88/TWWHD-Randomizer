@@ -73,7 +73,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
 }
 
 // Recursively explore new areas based on the given areaEntry
-void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, AreaEntry& areaEntry, std::list<Exit*>& exitsToTry, std::list<Location*>& locationsToTry)
+void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, AreaEntry& areaEntry, std::list<Exit*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
 {
     for (auto& exit : areaEntry.exits)
     {
@@ -96,11 +96,11 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             }
         }
     }
-    for (auto location : areaEntry.locations)
+    for (auto& locAccess : areaEntry.locations)
     {
         // Add new locations we come across to try them and potentially account
         // for any items on the next iteration
-        locationsToTry.push_back(location);
+        locationsToTry.push_back(&locAccess);
     }
 }
 
@@ -123,7 +123,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     // by putting the root exit of each world into the list of exits
     // to try (or only the exit of the single world to explore).
     std::list<Exit*> exitsToTry = {};
-    std::list<Location*> locationsToTry = {};
+    std::list<LocationAccess*> locationsToTry = {};
     for (auto& world : worlds)
     {
         if (worldToSearch == -1 || worldToSearch == world.getWorldId())
@@ -137,6 +137,11 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             for (auto& areaEntry : world.areaEntries)
             {
                 areaEntry.isAccessible = false;
+            }
+
+            for (auto& location : world.locationEntries)
+            {
+                location.hasBeenFound = false;
             }
         }
     }
@@ -178,11 +183,18 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         // debugLog("New Locations Accessible:");
         for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); )
         {
-            auto location = *locItr;
-            if (evaluateRequirement(worlds[location->worldId], location->requirement, ownedItems))
+            auto locAccess = *locItr;
+            auto location = locAccess->location;
+            // Erase locations which have already been found
+            if (location->hasBeenFound)
+            {
+                locItr = locationsToTry.erase(locItr);
+            }
+            else if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems))
             {
                 // debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;
+                location->hasBeenFound = true;
                 // Delete newly accessible locations from the list
                 accessibleThisIteration.push_back(location);
                 locItr = locationsToTry.erase(locItr);

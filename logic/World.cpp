@@ -278,7 +278,7 @@ void World::determineRaceModeDungeons()
     }
 }
 
-std::string substrToString(const ryml::csubstr substr)
+std::string substrToString(const ryml::csubstr& substr)
 {
     return std::string(substr.data(), substr.size());
 }
@@ -612,17 +612,17 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationId& loadedLocation)
+World::WorldLoadingError World::loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& locAccess)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    loadedLocation = nameToLocationId(locationName);
-    LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
+    const auto& loadedLocationId = nameToLocationId(locationName);
+    LOCATION_VALID_CHECK(loadedLocationId, "Location of name \"" << locationName << "\" does not exist!");
     MAPPING_CHECK(locationName, locationIdToName(nameToLocationId(locationName)));
-    Location& entry = locationEntries[locationIdAsIndex(loadedLocation)];
+    locAccess.location = &locationEntries[locationIdAsIndex(loadedLocationId)];
     WorldLoadingError err = WorldLoadingError::NONE;
-    if((err = parseRequirementString(logicExpression, entry.requirement)) != WorldLoadingError::NONE)
+    if((err = parseRequirementString(logicExpression, locAccess.requirement)) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing location " << locationName;
         return err;
@@ -672,7 +672,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     if (areaObject.has_child("Locations"))
     {
         for (const ryml::NodeRef& location : areaObject["Locations"].children()) {
-            LocationId locOut;
+            LocationAccess locOut;
             const std::string locationName = substrToString(location.key());
             const std::string logicExpression = substrToString(location.val());
             err = loadLocationRequirement(locationName, logicExpression, locOut);
@@ -682,7 +682,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
                 return err;
             }
             // debugLog("\tAdding location " + locationIdToName(locOut));
-            newEntry.locations.push_back(&locationEntries[locationIdAsIndex(locOut)]);
+            newEntry.locations.push_back(locOut);
         }
     }
 
@@ -882,9 +882,9 @@ void World::dumpWorldGraph(const std::string& filename)
         }
 
         // Make edge connections between areas and their locations
-        for (const auto& location : areaEntry.locations) {
-            std::string connectedLocation = locationIdToName(location->locationId);
-            std::string itemAtLocation = location->currentItem.getName();
+        for (const auto& locAccess : areaEntry.locations) {
+            std::string connectedLocation = locationIdToName(locAccess.location->locationId);
+            std::string itemAtLocation = locAccess.location->currentItem.getName();
             if (parentName != "INVALID" && connectedLocation != "INVALID"){
                 worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=" << color << "];" << std::endl;
                 worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=" << color << "]" << std::endl;

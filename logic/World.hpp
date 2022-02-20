@@ -27,10 +27,16 @@ struct Exit
     int worldId = -1;
 };
 
+struct LocationAccess
+{
+    Location* location = nullptr;
+    Requirement requirement;
+};
+
 struct AreaEntry
 {
     Area area = Area::INVALID;
-    std::list<Location*> locations;
+    std::list<LocationAccess> locations;
     std::list<Exit> exits;
     int worldId = -1;
 
@@ -108,7 +114,7 @@ private:
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea);
     WorldLoadingError loadLocation(const ryml::NodeRef& locationObject, LocationId& loadedLocation);
-    WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationId& loadedLocation);
+    WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(const ryml::Tree& macroListTree);
     WorldLoadingError loadArea(const ryml::NodeRef& areaObject, Area& loadedArea);
     int getFileContents(const std::string& filename, std::string& fileContents);

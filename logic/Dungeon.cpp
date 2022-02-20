@@ -1,5 +1,6 @@
 
 #include "Dungeon.hpp"
+#include <unordered_map>
 
 // The last locationId in each list of dungeon locations is the race mode location
 static const Dungeon DragonRoostCavern = {4, GameItem::DRCSmallKey, GameItem::DRCBigKey, GameItem::DRCDungeonMap, GameItem::DRCCompass, {
