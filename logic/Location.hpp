@@ -5,7 +5,6 @@
 #include <vector>
 #include <unordered_set>
 #include "GameItem.hpp"
-#include "Requirements.hpp"
 
 enum struct LocationId : uint32_t
 {
@@ -396,9 +395,11 @@ struct Location
     bool progression = false;
     Item originalItem = {GameItem::INVALID, -1};
     Item currentItem = {GameItem::INVALID, -1};
-    Requirement requirement;
     LocationModificationMethod method;
     int worldId = -1;
+
+    // Variables used for the searching algorithm
+    bool hasBeenFound = false;
 };
 
 std::string locationName(const Location* location);

@@ -4,11 +4,6 @@
 
 
 - Name: LinksSpawn
-  Locations:
-      GreatSeaBeedleShop20Rupee: can_access(SpectacleBeedleShop) or can_access(PawprintBeedleShop)
-          or can_access(DragonRoostBeedleShop) or can_access(EasternTriangleBeedleShop)
-          or can_access(SouthernTriangleBeedleShop) or can_access(ForestHavenBeedleShop)
-          or can_access(OutsetBeedleShop)
   Exits:
       OutsetIsland: Nothing
 
@@ -442,6 +437,8 @@
 
 
 - Name: SpectacleBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       SpectacleIsland: Nothing
 
@@ -642,6 +639,8 @@
 
 
 - Name: PawprintBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       PawprintIsle: Nothing
 
@@ -709,6 +708,8 @@
 
 
 - Name: DragonRoostBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       DragonRoostIsland: Nothing
 
@@ -981,6 +982,8 @@
 
 
 - Name: EasternTriangleBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       EasternTriangleIsland: Nothing
 
@@ -1090,6 +1093,8 @@
 
 
 - Name: SouthernTriangleBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       SouthernTriangleIsland: Nothing
 
@@ -1399,6 +1404,8 @@
 
 
 - Name: ForestHavenBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       ForestHaven: Nothing
 
@@ -1604,6 +1611,8 @@
 
 
 - Name: OutsetBeedleShop
+  Locations:
+      GreatSeaBeedleShop20Rupee: Nothing
   Exits:
       OutsetIsland: Nothing
 
