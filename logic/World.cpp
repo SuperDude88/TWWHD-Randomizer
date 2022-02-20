@@ -5,8 +5,9 @@
 #include "Debug.hpp"
 #include "Search.hpp"
 #include "Random.hpp"
-#include "../libs/json.hpp"
 #include "../options.hpp"
+#define RYML_SINGLE_HDR_DEFINE_NOW
+#include "../libs/ryml.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <climits>
@@ -17,6 +18,7 @@
 
 // some error checking macros for brevity and since we can't use exceptions
 #define FIELD_CHECK(j, field, err) if(!j.contains(field)) {lastError << "Unable to retrieve field: \"" << field << '"'; return err;}
+#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {lastError << "Unable to find key: \"" << key << '"'; return err;}
 #define OBJECT_CHECK(j, msg) if(!j.is_object()) {lastError << msg << ": Not an Object."; return WorldLoadingError::EXPECTED_JSON_OBJECT;}
 #define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
@@ -276,6 +278,11 @@ void World::determineRaceModeDungeons()
     }
 }
 
+std::string substrToString(const ryml::csubstr substr)
+{
+    return std::string(substr.data(), substr.size());
+}
+
 // Takes a logic expression string and stores it as a requirement within the passed in Requirement
 // object. This means we only have to parse the string once and then evaluating it many times
 // later is a lot faster. An example of a logic expression string is: "GrapplingHook and (DekuLeaf or Hookshot)"
@@ -505,21 +512,32 @@ World::WorldLoadingError World::parseMacro(const std::string& macroLogicExpressi
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadMacros(const json& macroList)
+World::WorldLoadingError World::loadMacros(const ryml::Tree& macroListTree)
 {
     std::string name;
     WorldLoadingError err = WorldLoadingError::NONE;
     uint32_t macroCount = 0;
 
     // first pass to get all macro names
-    for (const auto& macro : macroList.items())
+    for (const ryml::NodeRef& macro : macroListTree.rootref().children())
     {
-        macroNameMap.emplace(macro.key(), macroCount++);
+        if (!macro.has_key())
+        {
+            return WorldLoadingError::MACRO_MISSING_KEY;
+        }
+        macroNameMap.emplace(std::string(macro.key().data(), macro.key().size()), macroCount++);
     }
-    for (const auto& [macro, logicExpression] : macroList.items())
+    for (const ryml::NodeRef& macro : macroListTree.rootref().children())
     {
         macros.emplace_back();
-        if ((err = parseMacro(logicExpression.get<std::string>(), macros.back())) != WorldLoadingError::NONE)
+        if (!macro.has_val())
+        {
+            std::cout << "Macro \"" << macro.key() << "\" has no value" << std::endl;
+            return WorldLoadingError::MACRO_MISSING_VAL;
+        }
+
+        std::string logicExpression = substrToString(macro.val());
+        if ((err = parseMacro(logicExpression, macros.back())) != WorldLoadingError::NONE)
         {
             lastError << " | Encountered parsing macro of name " << macro;
             return err;
@@ -528,14 +546,15 @@ World::WorldLoadingError World::loadMacros(const json& macroList)
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadLocation(const json& locationObject, LocationId& loadedLocation)
+World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject, LocationId& loadedLocation)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    OBJECT_CHECK(locationObject, locationObject.dump());
-    FIELD_CHECK(locationObject, "Name", WorldLoadingError::LOCATION_MISSING_KEY);
-    std::string locationName = locationObject.at("Name").get<std::string>();
+    // OBJECT_CHECK(locationObject, locationObject.dump());
+    YAML_FIELD_CHECK(locationObject, "Name", WorldLoadingError::LOCATION_MISSING_KEY);
+    const auto& locName = locationObject["Name"].val();
+    std::string locationName = std::string(locName.data(), locName.size());
     loadedLocation = nameToLocationId(locationName);
     LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
     MAPPING_CHECK(locationName, locationIdToName(nameToLocationId(locationName)));
@@ -543,56 +562,52 @@ World::WorldLoadingError World::loadLocation(const json& locationObject, Locatio
     newEntry.locationId = loadedLocation;
     newEntry.worldId = worldId;
     newEntry.categories.clear();
-    FIELD_CHECK(locationObject, "Category", WorldLoadingError::LOCATION_MISSING_KEY);
-    const auto& categories = locationObject.at("Category").get<std::vector<json>>();
-    for (const auto& categoryName : categories)
+    YAML_FIELD_CHECK(locationObject, "Category", WorldLoadingError::LOCATION_MISSING_KEY);
+    for (const ryml::NodeRef& category : locationObject["Category"].children())
     {
-        const std::string& categoryNameStr = categoryName.get<std::string>();
+        const auto& catName = category.val();
+        const std::string& categoryNameStr = std::string(catName.data(), catName.size());
         const auto& cat = nameToLocationCategory(categoryNameStr);
         if (cat == LocationCategory::INVALID)
         {
-            lastError << "Encountered unknown location category " << categoryNameStr;
-            lastError << " while parsing location " << locationName;
+            lastError << "Encountered unknown location category \"" << categoryNameStr << "\"";
+            lastError << " while parsing location " << locationName << " in world " << std::to_string(worldId + 1);
             return WorldLoadingError::INVALID_LOCATION_CATEGORY;
         }
         newEntry.categories.insert(cat);
     }
-    FIELD_CHECK(locationObject, "Path", WorldLoadingError::LOCATION_MISSING_KEY);
-    newEntry.method.filePath = locationObject.at("Path").get<std::string>();
-    FIELD_CHECK(locationObject, "Type", WorldLoadingError::LOCATION_MISSING_KEY);
-    const std::string& modificationType = locationObject.at("Type").get<std::string>();
+    YAML_FIELD_CHECK(locationObject, "Path", WorldLoadingError::LOCATION_MISSING_KEY);
+    const auto& path = locationObject["Path"].val();
+    newEntry.method.filePath = std::string(path.data(), path.size());
+    YAML_FIELD_CHECK(locationObject, "Type", WorldLoadingError::LOCATION_MISSING_KEY);
+    const auto& type = locationObject["Type"].val();
+    const std::string& modificationType = std::string(type.data(), type.size());
     newEntry.method.type = nameToModificationType(modificationType);
     if (newEntry.method.type == LocationModificationType::INVALID)
     {
-        lastError << "Error processing location " << locationName << ": ";
+        lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
         lastError << "Modificaiton Type \"" << modificationType << "\" Does Not Exist";
         return WorldLoadingError::INVALID_MODIFICATION_TYPE;
     }
-    FIELD_CHECK(locationObject, "Offsets", WorldLoadingError::LOCATION_MISSING_KEY);
-    const auto& offsets = locationObject.at("Offsets").get<std::vector<json>>();
-    for (const auto& offset_j : offsets)
+    YAML_FIELD_CHECK(locationObject, "Offsets", WorldLoadingError::LOCATION_MISSING_KEY);
+    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
     {
-        if (offset_j.is_number())
+        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+        if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            newEntry.method.offsets.push_back(offset_j.get<uint32_t>());
+            lastError << "Encountered an invalid offset for location " << locationName << " in world " << std::to_string(worldId + 1);
+            return WorldLoadingError::INVALID_OFFSET_VALUE;
         }
-        else
-        {
-            unsigned long offsetValue = std::strtoul(offset_j.get<std::string>().c_str(), nullptr, 16);
-            if (offsetValue == 0 || offsetValue == ULONG_MAX)
-            {
-                lastError << "Encountered an invalid offset for location " << locationName;
-                return WorldLoadingError::INVALID_OFFSET_VALUE;
-            }
-            newEntry.method.offsets.push_back(offsetValue);
-        }
+        newEntry.method.offsets.push_back(offsetValue);
     }
-    FIELD_CHECK(locationObject, "OriginalItem", WorldLoadingError::LOCATION_MISSING_KEY);
-    const std::string& itemName = locationObject.at("OriginalItem").get<std::string>();
+    YAML_FIELD_CHECK(locationObject, "OriginalItem", WorldLoadingError::LOCATION_MISSING_KEY);
+    const auto& item = locationObject["OriginalItem"].val();
+    const std::string& itemName = std::string(item.data(), item.size());
     newEntry.originalItem = {nameToGameItem(itemName), worldId};
     ITEM_VALID_CHECK(
         newEntry.originalItem.getGameItemId(),
-        "Error processing location " << locationName << ": Item of name " << itemName << " Does Not Exist."
+        "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
     );
     return WorldLoadingError::NONE;
 }
@@ -636,14 +651,14 @@ World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, c
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedArea)
+World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& loadedArea)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    OBJECT_CHECK(areaObject, areaObject.dump());
-    FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
-    std::string areaName = areaObject.at("Name").get<std::string>();
+    //OBJECT_CHECK(areaObject, areaObject.dump());
+    YAML_FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
+    const std::string areaName = substrToString(areaObject["Name"].val());
     // debugLog("Now Loading Area " + areaName);
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
@@ -654,12 +669,13 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     WorldLoadingError err = WorldLoadingError::NONE;
 
     // load locations and their requirements in this area if there are any
-    if (areaObject.contains("Locations"))
+    if (areaObject.has_child("Locations"))
     {
-        const auto& locations = areaObject.at("Locations").get<json>();
-        for (const auto& [loc, logicExpression] : locations.items()) {
+        for (const ryml::NodeRef& location : areaObject["Locations"].children()) {
             LocationId locOut;
-            err = loadLocationRequirement(loc, logicExpression.get<std::string>(), locOut);
+            const std::string locationName = substrToString(location.key());
+            const std::string logicExpression = substrToString(location.val());
+            err = loadLocationRequirement(locationName, logicExpression, locOut);
             if (err != World::WorldLoadingError::NONE)
             {
                 std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
@@ -672,12 +688,13 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
 
 
     // load exits in this area if there are any
-    if (areaObject.contains("Exits"))
+    if (areaObject.has_child("Exits"))
     {
-        const auto& exits = areaObject.at("Exits").get<json>();
-        for (const auto& [connectedAreaName, logicExpression] : exits.items()) {
+        for (const ryml::NodeRef& exit : areaObject["Exits"].children()) {
             Exit exitOut;
-            err = loadExit(connectedAreaName, logicExpression.get<std::string>(), exitOut, loadedArea);
+            const std::string connectedAreaName = substrToString(exit.key());
+            const std::string logicExpression = substrToString(exit.val());
+            err = loadExit(connectedAreaName, logicExpression, exitOut, loadedArea);
             if (err != World::WorldLoadingError::NONE)
             {
                 std::cout << "Got error loading exit: " << World::errorToName(err) << std::endl;
@@ -691,41 +708,47 @@ World::WorldLoadingError World::loadArea(const json& areaObject, Area& loadedAre
     return WorldLoadingError::NONE;
 }
 
+// Short function for getting the string data from a file
+int World::getFileContents(const std::string& filename, std::string& fileContents)
+{
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        std::cout << "unable to open file \"" << filename << "\" for world " << std::to_string(worldId) << std::endl;
+        return 1;
+    }
+
+    // Read and load file contents
+    auto ss = std::ostringstream{};
+    ss << file.rdbuf();
+    fileContents = ss.str();
+
+    return 0;
+}
+
 // Load the world based on the given world graph file, macros file, and loation data file
 int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath)
 {
-    using json = nlohmann::json;
 
-    std::ifstream macroFile(macrosFilePath);
-    if (!macroFile.is_open())
+    std::string macrosStr;
+    if (getFileContents(macrosFilePath, macrosStr) != 0)
     {
-        std::cout << "unable to open macro file for world " << std::to_string(worldId) << std::endl;
         return 1;
     }
-    std::ifstream worldFile(worldFilePath);
-    if (!worldFile.is_open())
+    std::string worldStr;
+    if (getFileContents(worldFilePath, worldStr) != 0)
     {
-        std::cout << "Unable to open world file for world " << std::to_string(worldId) << std::endl;
         return 1;
     }
-    std::ifstream locationDataFile(locationDataPath);
-    if (!locationDataFile.is_open())
+    std::string locationDataStr;
+    if (getFileContents(locationDataPath, locationDataStr) != 0)
     {
-        std::cout << "Unable to open location data file for world " << std::to_string(worldId) << std::endl;
         return 1;
     }
 
-    json world_j = json::parse(worldFile, nullptr, false);
-    auto macroFileObj = json::parse(macroFile, nullptr, false);
-    auto locationData = json::parse(locationDataFile, nullptr, false);
-
-    if (macroFileObj.is_discarded())
-    {
-        std::cout << "unable to parse macro file for world " << std::to_string(worldId) << std::endl;
-        return 1;
-    }
-
-    auto err = loadMacros(macroFileObj);
+    // Read and parse macros
+    const ryml::Tree macroListTree = ryml::parse_in_place(ryml::to_substr(macrosStr));
+    auto err = loadMacros(macroListTree);
     if (err != World::WorldLoadingError::NONE)
     {
         std::cout << "Got error loading macros for world " << std::to_string(worldId) << ": " << World::errorToName(err) << std::endl;
@@ -733,12 +756,9 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         return 1;
     }
 
-    if (locationData.is_discarded())
-    {
-        std::cout << "unable to parse location data file for world " << std::to_string(worldId) << std::endl;
-        return 1;
-    }
-    for (const auto& locationObject : locationData)
+    // Read and parse location data
+    const ryml::Tree locationDataTree = ryml::parse_in_place(ryml::to_substr(locationDataStr));
+    for (const ryml::NodeRef& locationObject : locationDataTree.rootref().children())
     {
         LocationId locOut;
         err = loadLocation(locationObject, locOut);
@@ -750,12 +770,9 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         }
     }
 
-    if (world_j.is_discarded())
-    {
-        std::cout << "unable to parse world graph file for world " << std::to_string(worldId) << std::endl;
-        return 1;
-    }
-    for (const auto& area : world_j)
+    // Read and load world graph
+    const ryml::Tree worldDataTree = ryml::parse_in_place(ryml::to_substr(worldStr));
+    for (const ryml::NodeRef& area : worldDataTree.rootref().children())
     {
         Area areaOut;
         err = loadArea(area, areaOut);
@@ -803,6 +820,8 @@ const char* World::errorToName(WorldLoadingError err)
         return "LOCATION_MISSING_KEY";
     case WorldLoadingError::MACRO_MISSING_KEY:
         return "MACRO_MISSING_KEY";
+    case WorldLoadingError::MACRO_MISSING_VAL:
+        return "MACRO_MISSING_VAL";
     case WorldLoadingError::REQUIREMENT_MISISNG_KEY:
         return "REQUIREMENT_MISISNG_KEY";
     case WorldLoadingError::INVALID_LOCATION_CATEGORY:

@@ -10,6 +10,7 @@
 #include "Location.hpp"
 #include "ItemPool.hpp"
 #include "Dungeon.hpp"
+#include "../libs/ryml.hpp"
 
 static std::stringstream lastError;
 
@@ -58,6 +59,7 @@ public:
         AREA_MISSING_KEY,
         LOCATION_MISSING_KEY,
         MACRO_MISSING_KEY,
+        MACRO_MISSING_VAL,
         REQUIREMENT_MISISNG_KEY,
         INVALID_LOCATION_CATEGORY,
         INVALID_MODIFICATION_TYPE,
@@ -101,13 +103,15 @@ private:
 
     bool chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix);
 
+
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea);
-    WorldLoadingError loadLocation(const json& locationObject, LocationId& loadedLocation);
+    WorldLoadingError loadLocation(const ryml::NodeRef& locationObject, LocationId& loadedLocation);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationId& loadedLocation);
-    WorldLoadingError loadMacros(const json& macroList);
-    WorldLoadingError loadArea(const json& areaObject, Area& loadedArea);
+    WorldLoadingError loadMacros(const ryml::Tree& macroListTree);
+    WorldLoadingError loadArea(const ryml::NodeRef& areaObject, Area& loadedArea);
+    int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;
     ItemPool itemPool;
