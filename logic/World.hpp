@@ -93,7 +93,6 @@ public:
     int getWorldId() const;
     void setItemPools();
     ItemPool getItemPool() const;
-    void addToItemPool(const GameItem gameItem);
     ItemPool getStartingItems() const;
     LocationPool getLocations();
 
