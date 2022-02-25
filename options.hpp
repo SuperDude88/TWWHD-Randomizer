@@ -76,7 +76,8 @@ enum struct Option {
     StartingGear,
     StartingHP,
     StartingHC,
-    RemoveMusic
+    RemoveMusic,
+    COUNT
 };
 
 struct Settings {
@@ -131,6 +132,8 @@ struct Settings {
 };
 
 Option nameToSetting(const std::string& name);
+
+std::string settingToName(const Option& setting);
 
 int getSetting(const Settings& settings, const Option& option);
 

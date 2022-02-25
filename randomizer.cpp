@@ -87,7 +87,7 @@ public:
 			if (!settings.do_not_generate_spoiler_log) {
 				generateSpoilerLog(worlds);
 			}
-			// generateNonSpoilerLog(worlds);
+			generateNonSpoilerLog(worlds);
 		}
 
 		//done!

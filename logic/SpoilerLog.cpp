@@ -1,12 +1,46 @@
 
 #include "SpoilerLog.hpp"
+#include "../options.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 
+static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
+{
+    log << "Wind Waker HD Randomizer Version <insert version number here>" /*<< VERSION*/ << std::endl;
+    log << "Permalink: <insert permalink here>" /*<< PERMALINK*/ << std::endl;
+    log << "Seed: <insert seed here>" /*<< SEED*/ << std::endl;
+
+    // Print options selected for each world
+    for (const auto& world : worlds)
+    {
+        log << ((worlds.size() > 1) ? "Selected options for world " + std::to_string(world.getWorldId() + 1) + ":" : "Selected options:") << std::endl << "\t";
+        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
+        {
+            Option setting = static_cast<Option>(settingInt);
+
+            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier)
+            {
+                log << settingToName(setting) << ": " << std::to_string(getSetting(world.getSettings(), setting)) << ", ";
+            }
+            else
+            {
+                log << (getSetting(world.getSettings(), setting) ? settingToName(setting) + ", " : "");
+            }
+        }
+        log << std::endl;
+    }
+    log << std::endl;
+}
+
 void generateSpoilerLog(WorldPool& worlds)
 {
+    std::ofstream log;
+    log.open("spoiler.txt");
+
+    printBasicInfo(log, worlds);
+
     // Find the longest location name for formatting the file
     size_t longestNameLength = 0;
     for (size_t sphere = 0; sphere < worlds[0].playthroughSpheres.size(); sphere++)
@@ -17,9 +51,7 @@ void generateSpoilerLog(WorldPool& worlds)
         }
     }
 
-    std::ofstream log;
-    log.open("spoiler.txt");
-
+    // Print the playthrough
     for (size_t sphere = 0; sphere < worlds[0].playthroughSpheres.size(); sphere++)
     {
         log << "Sphere " << std::to_string(sphere) << ":" << std::endl;
@@ -48,5 +80,37 @@ void generateSpoilerLog(WorldPool& worlds)
     }
 
     log.close();
+}
 
+void generateNonSpoilerLog(WorldPool& worlds)
+{
+    std::ofstream log;
+    log.open("nonspoiler.txt");
+
+    printBasicInfo(log, worlds);
+    log << "### Locations that may or may not have progress items in them on this run:" << std::endl;
+    for (auto& world : worlds)
+    {
+        for (auto location : world.getLocations())
+        {
+            if (location->progression)
+            {
+                log << "\t" << locationName(location) << std::endl;
+            }
+        }
+    }
+
+    log << "### Locations that cannot have progress items in them on this run:" << std::endl;
+    for (auto& world : worlds)
+    {
+        for (auto location : world.getLocations())
+        {
+            if (!location->progression)
+            {
+                log << "\t" << locationName(location) << std::endl;
+            }
+        }
+    }
+
+    log.close();
 }

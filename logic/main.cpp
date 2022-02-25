@@ -85,5 +85,6 @@ int main()
     {
         std::cout << "Generating Spoiler Log" << std::endl;
         generateSpoilerLog(worlds);
+        generateNonSpoilerLog(worlds);
     }
 }
