@@ -86,14 +86,6 @@ ItemPool World::getItemPool() const
     return itemPool;
 }
 
-void World::addToItemPool(const GameItem gameItem)
-{
-    if (gameItem != GameItem::INVALID && gameItem != GameItem::NOTHING)
-    {
-        itemPool.emplace_back(gameItem, worldId);
-    }
-}
-
 ItemPool World::getStartingItems() const
 {
     return startingItems;
