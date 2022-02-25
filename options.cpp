@@ -88,6 +88,62 @@ Option nameToSetting(const std::string& name) {
     return optionNameMap.at(name);
 }
 
+std::string settingToName(const Option& setting) {
+    static std::unordered_map<Option, std::string> optionNameMap = {
+        {Option::ProgressDungeons, "ProgressDungeons"},
+        {Option::ProgressGreatFairies, "ProgressGreatFairies"},
+        {Option::ProgressPuzzleCaves, "ProgressPuzzleCaves"},
+        {Option::ProgressCombatCaves, "ProgressCombatCaves"},
+        {Option::ProgressShortSidequests, "ProgressShortSidequests"},
+        {Option::ProgressLongSidequests, "ProgressLongSidequests"},
+        {Option::ProgressSpoilsTrading, "ProgressSpoilsTrading"},
+        {Option::ProgressMinigames, "ProgressMinigames"},
+        {Option::ProgressFreeGifts, "ProgressFreeGifts"},
+        {Option::ProgressMail, "ProgressMail"},
+        {Option::ProgressPlatformsRafts, "ProgressPlatformsRafts"},
+        {Option::ProgressSubmarines, "ProgressSubmarines"},
+        {Option::ProgressEyeReefs, "ProgressEyeReefs"},
+        {Option::ProgressOctosGunboats, "ProgressOctosGunboats"},
+        {Option::ProgressTriforceCharts, "ProgressTriforceCharts"},
+        {Option::ProgressTreasureCharts, "ProgressTreasureCharts"},
+        {Option::ProgressExpPurchases, "ProgressExpPurchases"},
+        {Option::ProgressMisc, "ProgressMisc"},
+        {Option::ProgressTingleChests, "ProgressTingleChests"},
+        {Option::ProgressBattlesquid, "ProgressBattlesquid"},
+        {Option::ProgressSavageLabyrinth, "ProgressSavageLabyrinth"},
+        {Option::ProgressIslandPuzzles, "ProgressIslandPuzzles"},
+        {Option::ProgressObscure, "ProgressObscure"},
+        {Option::Keylunacy, "Keylunacy"},
+        {Option::RandomEntrances, "RandomEntrances"},
+        {Option::RandomCharts, "RandomCharts"},
+        {Option::RandomStartIsland, "RandomStartIsland"},
+        {Option::InstantText, "InstantText"},
+        {Option::RevealSeaChart, "RevealSeaChart"},
+        {Option::NumShards, "NumShards"},
+        {Option::AddShortcutWarps, "AddShortcutWarps"},
+        {Option::NoSpoilerLog, "NoSpoilerLog"},
+        {Option::SwordMode, "SwordMode"},
+        {Option::SkipRefights, "SkipRefights"},
+        {Option::InvertCompass, "InvertCompass"},
+        {Option::RaceMode, "RaceMode"},
+        {Option::NumRaceModeDungeons, "NumRaceModeDungeons"},
+        {Option::DamageMultiplier, "DamageMultiplier"},
+        {Option::CasualClothes, "CasualClothes"},
+        {Option::PigColor, "PigColor"},
+        {Option::StartingGear, "StartingGear"},
+        {Option::StartingHP, "StartingHP"},
+        {Option::StartingHC, "StartingHC"},
+        {Option::RemoveMusic, "RemoveMusic"},
+    };
+
+    if (optionNameMap.count(setting) == 0)
+    {
+        return "Invalid Option";
+    }
+
+    return optionNameMap.at(setting);
+}
+
 int getSetting(const Settings& settings, const Option& option) {
 
 	switch (option) {
