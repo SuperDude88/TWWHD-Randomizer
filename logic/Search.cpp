@@ -7,12 +7,14 @@
 #include <algorithm>
 
 using ItemMultiSet = std::unordered_multiset<Item>;
+using EventSet = std::unordered_set<std::string>;
 
-static bool evaluateRequirement(const World& world, const Requirement& req, const ItemMultiSet& ownedItems)
+static bool evaluateRequirement(const World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
 {
     uint32_t expectedCount = 0;
     GameItem gameItem;
     Item item;
+    std::string eventName;
     switch(req.type)
     {
     case RequirementType::OR:
@@ -20,7 +22,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
             req.args.begin(),
             req.args.end(),
             [&](const Requirement::Argument& arg){
-                return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems);
+                return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
             }
         );
     case RequirementType::AND:
@@ -32,7 +34,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
                 {
                     return false;
                 }
-                return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems);
+                return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
             }
         );
     case RequirementType::NOT:
@@ -40,7 +42,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
         {
             return false;
         }
-        return !evaluateRequirement(world, std::get<Requirement>(req.args[0]), ownedItems);
+        return !evaluateRequirement(world, std::get<Requirement>(req.args[0]), ownedItems, ownedEvents);
     case RequirementType::HAS_ITEM:
         // we can expect ownedItems will contain entires for every item type
         if (req.args[0].index() != 3)
@@ -51,6 +53,8 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
         if (gameItem == GameItem::NOTHING) return true;
         item = {gameItem, world.getWorldId()};
         return ownedItems.count(item) > 0;
+    case RequirementType::EVENT:
+        return ownedEvents.count(std::get<std::string>(req.args[0])) > 0;
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
         gameItem = std::get<GameItem>(req.args[1]);
@@ -63,7 +67,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
         // Settings are resolved to a true/false value when building the world
         return std::get<int>(req.args[0]);
     case RequirementType::MACRO:
-        return evaluateRequirement(world, world.macros[std::get<MacroIndex>(req.args[0])], ownedItems);
+        return evaluateRequirement(world, world.macros[std::get<MacroIndex>(req.args[0])], ownedItems, ownedEvents);
     case RequirementType::NONE:
     default:
         // actually needs to be some error state?
@@ -73,8 +77,12 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
 }
 
 // Recursively explore new areas based on the given areaEntry
-void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, AreaEntry& areaEntry, std::list<Exit*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
+void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, AreaEntry& areaEntry, std::list<EventAccess*>& eventsToTry, std::list<Exit*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
 {
+    for (auto& eventAccess : areaEntry.events)
+    {
+        eventsToTry.push_back(&eventAccess);
+    }
     for (auto& exit : areaEntry.exits)
     {
         auto& connectedArea = worlds[exit.worldId].areaEntries[areaAsIndex(exit.connectedArea)];
@@ -82,11 +90,11 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
         // is ignored since it won't matter for logical access
         if (!connectedArea.isAccessible)
         {
-            if (evaluateRequirement(worlds[exit.worldId], exit.requirement, ownedItems))
+            if (evaluateRequirement(worlds[exit.worldId], exit.requirement, ownedItems, ownedEvents))
             {
                 connectedArea.isAccessible = true;
                 // std::cout << "Now Exploring " << areaToName(connectedArea.area) << std::endl;
-                explore(searchMode, worlds, ownedItems, connectedArea, exitsToTry, locationsToTry);
+                explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
             }
             else
             {
@@ -116,12 +124,14 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     }
 
     ItemMultiSet ownedItems (items.begin(), items.end());
+    EventSet ownedEvents = {};
 
     LocationPool accessibleLocations = {};
-    // Lists of exits and locations whose requirement returned false.
+    // Lists of events, exits and locations whose requirement returned false.
     // These will be tried and explored on the next iteration. Start
     // by putting the root exit of each world into the list of exits
     // to try (or only the exit of the single world to explore).
+    std::list<EventAccess*> eventsToTry = {};
     std::list<Exit*> exitsToTry = {};
     std::list<LocationAccess*> locationsToTry = {};
     for (auto& world : worlds)
@@ -152,7 +162,26 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
 
     do
     {
+        // Variable to keep track of making logical progress. We want to keep
+        // looping as long as we're finding new things on each iteration
         newThingsFound = false;
+        // Loop through and see if there are any events that we are now accessible.
+        // Add them to the ownedEvents list if they are.
+        for (auto eventItr = eventsToTry.begin(); eventItr != eventsToTry.end(); )
+        {
+            auto eventAccess = *eventItr;
+            if (evaluateRequirement(worlds[eventAccess->worldId], eventAccess->requirement, ownedItems, ownedEvents))
+            {
+                newThingsFound = true;
+                eventItr = eventsToTry.erase(eventItr);
+                ownedEvents.insert(eventAccess->event);
+            }
+            else
+            {
+                eventItr++; // Only increment if we don't erase
+            }
+        }
+
         // Search each exit in the exitsToTry list and explore any new areas found as well.
         // For any exits which we try and don't meet the requirements for, put them
         // into exitsToTry for the next iteration. Any locations we come across will
@@ -160,7 +189,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
         {
             auto exit = *exitItr;
-            if (evaluateRequirement(worlds[exit->worldId], exit->requirement, ownedItems)) {
+            if (evaluateRequirement(worlds[exit->worldId], exit->requirement, ownedItems, ownedEvents)) {
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
@@ -170,7 +199,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 {
                     newThingsFound = true;
                     connectedArea.isAccessible = true;
-                    explore(searchMode, worlds, ownedItems, connectedArea, exitsToTry, locationsToTry);
+                    explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
                 }
             }
             else
@@ -185,12 +214,14 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         {
             auto locAccess = *locItr;
             auto location = locAccess->location;
-            // Erase locations which have already been found
+            // Erase locations which have already been found. Some item locations
+            // can be obtained from multiple areas, so this check is necessary
+            // in those circumstances
             if (location->hasBeenFound)
             {
                 locItr = locationsToTry.erase(locItr);
             }
-            else if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems))
+            else if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
             {
                 // debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;

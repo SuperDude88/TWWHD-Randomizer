@@ -16,8 +16,8 @@ CanMoveBoulders: Bombs or PowerBracelets
 CanDefeatDoorFlowers: HerosBow or Boomerang or Bombs or Hookshot
 CanHitDiamondSwitchesAtRange: HerosBow or Boomerang or Hookshot
 CanDestroyHangingSeeds: HerosBow or Boomerang or Bombs or Hookshot
-CanBuyBait: Nothing # This needs fixing eventually
-CanBuyHyoiPears: Nothing # ^
+# CanBuyBait: This is now an event
+# CanBuyHyoiPears: This is now an event
 BoatsSail: count(1, ProgressiveSail)
 SwiftSail: count(2, ProgressiveSail)
 HerosSword: count(1, ProgressiveSword)
@@ -41,8 +41,8 @@ CanDefeatPhantomGanon: (OutsideSwordlessMode and MasterSword) or (InSwordlessMod
 CanGetPastHyruleBarrier: InSwordlessMode or FullPowerMasterSword
 CanDefeatGanondorf: HerosShield and (InSwordlessMode or HerosSword)
 RescuedAryll: Nothing
-RescuedTingle: can_access(WindfallJail)
-CanGetFairies: Nothing
+# RescuedTingle: This is now an event
+# CanGetFairies: This is now an event
 CanFarmKnightsCrests: GrapplingHook and SpoilsBag and
                        (can_access(HyruleCastleInterior) or
                         can_access(IceRingInnerCave) or

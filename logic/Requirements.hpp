@@ -21,6 +21,7 @@ enum struct RequirementType
     AND,
     NOT,
     HAS_ITEM,
+    EVENT,
     COUNT,
     CAN_ACCESS,
     SETTING,

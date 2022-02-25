@@ -1,3 +1,28 @@
+# This file contains the listings for each predefined logical area. Areas can contain
+# Events, Locations, and Exits.
+#
+# Events are logic variables which become true when their requirement string evaluates
+# to true and are surrounded with single quotes when used in other logic statements
+# (unlike macros which are defined in macros.yaml). It's possible to add new events
+# to the logic simply by defining them in an area and then using them in whichever
+# logic statements you wish. No modifications to the code are necessary.
+#
+# Locations are places which can contain randomized items. Adding new locations
+# will require adding them in the code as well.
+#
+# Exits define how the areas of the world graph connect to each other. Each exit
+# is a one way connection, so when making new areas remember to define the exit
+# connections both ways if applicable. Adding new areas to the logic will require
+# defining them in the code as well.
+#
+# The following logical operators/functions are available for logic statements:
+# - and
+# - or
+# - not
+# - count(<number>, <item>)
+# - can_access(<area name>)
+
+
 - Name: Root
   Exits:
       LinksSpawn: Nothing
@@ -19,9 +44,9 @@
       MailboxSilverMembershipRewardLetter: CanPlaySoP and (BaitBag or Bombs or HerosBow or EmptyBottle)
       MailboxGoldMembershipRewardLetter: CanPlaySoP and (BaitBag or Bombs or HerosBow or EmptyBottle)
       MailboxOrcaLetter: CanDefeatKalleDemos and can_access(FWBossRoom)
-      MailboxGrandmaLetter: CanPlaySoP and can_access(OutsetLinksHouse) and EmptyBottle and CanGetFairies
+      MailboxGrandmaLetter: CanPlaySoP and can_access(OutsetLinksHouse) and EmptyBottle and 'CanGetFairies'
       MailboxAryllLetter: can_access(ForsakenFortressBossRoom) and CanDefeatHelmarocKing and CanPlaySoP
-      MailboxTingleLetter: can_access(ForsakenFortressBossRoom) and CanDefeatHelmarocKing and CanPlaySoP and RescuedTingle and WalletUpgrade
+      MailboxTingleLetter: can_access(ForsakenFortressBossRoom) and CanDefeatHelmarocKing and CanPlaySoP and 'RescuedTingle' and WalletUpgrade
 
 
 - Name: TheGreatSea
@@ -328,6 +353,8 @@
 
 
 - Name: NorthernFairyIslandGreatFairyFountain
+  Events:
+      CanGetFairies: Nothing
   Locations:
       NorthernFairyIslandGreatFairy: Nothing
   Exits:
@@ -421,6 +448,8 @@
 
 
 - Name: MotherAndChildInsideMotherIsle
+  Events:
+      CanGetFairies: Nothing
   Locations:
       MotherAndChildInsideMotherIsleChest: Nothing
 
@@ -437,6 +466,9 @@
 
 
 - Name: SpectacleBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -479,6 +511,8 @@
 
 
 - Name: WindfallJail
+  Events:
+      RescuedTingle: Nothing
   Locations:
       WindfallTingleFirstGift: Nothing
       WindfallTingleSecondGift: Nothing
@@ -590,6 +624,9 @@
 
 
 - Name: WindfallBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Exits:
       WindfallIsland: Nothing
 
@@ -639,6 +676,9 @@
 
 
 - Name: PawprintBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -648,7 +688,7 @@
 - Name: DragonRoostIsland
   Locations:
       DragonRoostIslandWindShrine: WindWaker
-      DragonRoostIslandBoulderChest: HerosBow or Bombs or Boomerang or (BaitBag and CanBuyHyoiPears)
+      DragonRoostIslandBoulderChest: HerosBow or Bombs or Boomerang or (BaitBag and 'CanBuyHyoiPears')
       DragonRoostIslandSunkenTreasure: ChartForIsland13 and GrapplingHook
   Exits:
       DragonRoostRitoAerie: Nothing
@@ -708,6 +748,9 @@
 
 
 - Name: DragonRoostBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -754,6 +797,8 @@
 
 
 - Name: WesternFairyGreatFairyFountain
+  Events:
+      CanGetFairies: Nothing
   Locations:
       WesternFairyGreatFairy: Nothing
   Exits:
@@ -837,6 +882,8 @@
 
 
 - Name: EasternFairyGreatFairyFountain
+  Events:
+      CanGetFairies: Nothing
   Locations:
       EasternFairyGreatFairy: Nothing
   Exits:
@@ -982,6 +1029,9 @@
 
 
 - Name: EasternTriangleBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -1004,6 +1054,8 @@
 
 
 - Name: ThornedFairyGreatFairyFountain
+  Events:
+      CanGetFairies: Nothing
   Locations:
       ThornedFairyGreatFairy: Nothing
   Exits:
@@ -1020,7 +1072,7 @@
 
 - Name: NeedleRockIsle
   Locations:
-      NeedleRockChest: CanBuyHyoiPears and BaitBag
+      NeedleRockChest: BaitBag and 'CanBuyHyoiPears'
       NeedleRockGoldenGunboat: Bombs and GrapplingHook
       NeedleRockSunkenTreasure: ChartForIsland29 and GrapplingHook
   Exits:
@@ -1085,6 +1137,9 @@
 
 
 - Name: SouthernTriangleIsland
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       SouthernTriangleSunkenTreasure: ChartForIsland32 and GrapplingHook and CanDefeatSeahats
   Exits:
@@ -1166,7 +1221,7 @@
   Locations:
       BirdsPeakSunkenTreasure: ChartForIsland35 and GrapplingHook
   Exits:
-      BirdsPeakRockBehindBars: BaitBag and CanBuyHyoiPears
+      BirdsPeakRockBehindBars: BaitBag and 'CanBuyHyoiPears'
       MailboxChecks: Nothing
       TheGreatSea: Nothing
 
@@ -1259,6 +1314,8 @@
 
 
 - Name: SouthernFairyGreatFairyFountain
+  Events:
+      CanGetFairies: Nothing
   Locations:
       SouthernFairyGreatFairy: Nothing
   Exits:
@@ -1404,6 +1461,9 @@
 
 
 - Name: ForestHavenBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -1483,7 +1543,7 @@
 
 - Name: OutsetIsland
   Locations:
-      OutsetDigBlackSoil: PowerBracelets and BaitBag and CanBuyBait
+      OutsetDigBlackSoil: PowerBracelets and BaitBag and 'CanBuyBait'
       OutsetSunkenTreasure: ChartForIsland44 and GrapplingHook
   Exits:
       OutsetLinksHouse: Nothing
@@ -1569,6 +1629,8 @@
 
 
 - Name: OutsetGreatFairyFountain
+  Events:
+      CanGetFairies: Nothing
   Locations:
       OutsetGreatFairy: Nothing
   Exits:
@@ -1611,6 +1673,9 @@
 
 
 - Name: OutsetBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -1619,7 +1684,7 @@
 
 - Name: HeadstoneIsland
   Locations:
-      HeadstoneTopOfIsland: BaitBag and CanBuyHyoiPears
+      HeadstoneTopOfIsland: BaitBag and 'CanBuyHyoiPears'
       HeadstoneSunkenTreasure: ChartForIsland45 and GrapplingHook
   Exits:
       HeadstoneIslandInterior: PowerBracelets
