@@ -33,9 +33,17 @@ struct LocationAccess
     Requirement requirement;
 };
 
+struct EventAccess
+{
+    std::string event;
+    Requirement requirement;
+    int worldId = -1;
+};
+
 struct AreaEntry
 {
     Area area = Area::INVALID;
+    std::list<EventAccess> events;
     std::list<LocationAccess> locations;
     std::list<Exit> exits;
     int worldId = -1;
@@ -114,6 +122,7 @@ private:
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea);
     WorldLoadingError loadLocation(const ryml::NodeRef& locationObject, LocationId& loadedLocation);
+    WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(const ryml::Tree& macroListTree);
     WorldLoadingError loadArea(const ryml::NodeRef& areaObject, Area& loadedArea);

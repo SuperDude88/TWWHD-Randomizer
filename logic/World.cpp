@@ -339,12 +339,23 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     // Once we have the different parts of our expression, we can use the number
     // of parts we have to determine what kind of expression it is.
 
-    // If we only have one part, then we have either an item, a macro,
+    // If we only have one part, then we have either an event, an item, a macro,
     // a can_access check, a setting, or a count
     if (splitLogicStr.size() == 1)
     {
-        // First test if we have a macro
+
         std::string argStr = splitLogicStr[0];
+        // First see if we have an event
+        if (argStr[0] == '\'')
+        {
+            req.type = RequirementType::EVENT;
+            std::string eventName (argStr.begin() + 1, argStr.end() - 1);
+            eventName += "W" + std::to_string(worldId);
+            req.args.push_back(eventName);
+            return WorldLoadingError::NONE;
+        }
+
+        // Then a macro...
         if (macroNameMap.count(argStr) > 0)
         {
             req.type = RequirementType::MACRO;
@@ -612,6 +623,24 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     return WorldLoadingError::NONE;
 }
 
+World::WorldLoadingError World::loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess)
+{
+    // failure indicated by INVALID type for category
+    // maybe change to Optional later if thats determined to work
+    // on wii u
+    // Add the world number to the end of each event to differentiate the same
+    // event in different worlds
+    eventAccess.event = eventName + "W" + std::to_string(worldId);
+    eventAccess.worldId = worldId;
+    WorldLoadingError err = WorldLoadingError::NONE;
+    if((err = parseRequirementString(logicExpression, eventAccess.requirement)) != WorldLoadingError::NONE)
+    {
+        lastError << "| Encountered parsing event " << eventName;
+        return err;
+    }
+    return WorldLoadingError::NONE;
+}
+
 World::WorldLoadingError World::loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& locAccess)
 {
     // failure indicated by INVALID type for category
@@ -667,6 +696,24 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     newEntry.area = loadedArea;
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
+
+    // load events and their requirements in this area if there are any
+    if (areaObject.has_child("Events"))
+    {
+        for (const ryml::NodeRef& location : areaObject["Events"].children()) {
+            EventAccess eventOut;
+            const std::string eventName = substrToString(location.key());
+            const std::string logicExpression = substrToString(location.val());
+            err = loadEventRequirement(eventName, logicExpression, eventOut);
+            if (err != World::WorldLoadingError::NONE)
+            {
+                std::cout << "Got error loading event: " << World::errorToName(err) << std::endl;
+                return err;
+            }
+            // debugLog("\tAdding location " + locationIdToName(locOut));
+            newEntry.events.push_back(eventOut);
+        }
+    }
 
     // load locations and their requirements in this area if there are any
     if (areaObject.has_child("Locations"))
