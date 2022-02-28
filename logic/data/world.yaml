@@ -1848,6 +1848,11 @@
   Locations:
       GhostShipChest: CanDefeatWizzrobes and CanDefeatPoes and CanDefeatReDeads and CanDefeatStalfos
 
+# Each dungeon in the world graph is at least defined on a room by room basis
+# (although in many cases rooms are split up into multiple parts). This is to
+# help simplify glitched logic should anybody ever want to write it, and if
+# anybody ever wants to go to the effort of splicing dungeon rooms together,
+# that's logically supported as well.
 
 - Name: DRCFirstRoom
   Locations:
@@ -1976,7 +1981,7 @@
       DragonRoostCavernBossStairsRightChest: Nothing
       DragonRoostCavernBossStairsLeftChest: Nothing
   Exits:
-      DRCBossDoorRoomBeforeLava: GrapplingHook or DekuLeaf
+      DRCBossDoorRoomBeforeLava: GrapplingHook or DekuLeaf or IceArrows
       DRCBossRoom: DRCBigKey
 
 
