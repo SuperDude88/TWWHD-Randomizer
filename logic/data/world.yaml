@@ -476,9 +476,11 @@
 
 
 - Name: WindfallIsland
+  Events:
+      ActivateWindmill: CanPlayWR
   Locations:
       WindfallIvanCatchKillerBees: can_access(WindfallSchoolOfJoy)
-      WindfallTransparentChest: CanPlayWR and FireArrows and (Hookshot or CanFlyWithDekuLeafOutdoors)
+      WindfallTransparentChest: FireArrows and 'ActivateWindmill' and (Hookshot or CanFlyWithDekuLeafOutdoors)
       WindfallTottTeachRhythm: WindWaker
       WindfallZunariExoticFlower: RescuedAryll and DeliveryBag and can_access(GreatfishIsle)
       WindfallSamDecorateFlower: RescuedAryll and DeliveryBag
@@ -488,18 +490,18 @@
       WindfallKaneDecorateSixIdols: RescuedAryll and DeliveryBag and CanTradeWithAllGorons
       WindfallMilaCatchThief: RescuedAryll
       WindfallDampaPigMinigame: RescuedAryll and CanFarmSkullNecklaces and SpoilsBag
-      WindfallPompieVeraPictoSecretMeeting: PictoBox and CanPlayWR and can_access(WindfallLenzosHouseUpper)
+      WindfallPompieVeraPictoSecretMeeting: can_access(WindfallLenzosHouseUpper) and 'CanStartLenzoQuest'
       WindfallKamoPictoFullMoon: DeluxePictoBox and CanPlaySoP
       WindfallMinecoPictoMissWindfall: DeluxePictoBox
       WindfallSunkenTreasure: ChartForIsland11 and GrapplingHook
   Exits:
       WindfallJail: Nothing
       WindfallSchoolOfJoy: Nothing
-      WindfallLenzosHouseLower: Nothing
-      WindfallLenzosUpperLedge: CanPlayWR
+      WindfallLenzosHouseFromBottomEntry: Nothing
+      WindfallLenzosUpperLedge: "'ActivateWindmill'"
       WindfallCafeBar: Nothing
       WindfallBattleSquidInterior: Nothing
-      WindfallBattleSquidUpperLedge: CanPlayWR
+      WindfallBattleSquidUpperLedge: "'ActivateWindmill'"
       WindfallHouseOfWealthLower: Nothing
       WindfallHouseOfWealthUpper: Nothing
       WindfallPotionShop: Nothing
@@ -530,12 +532,19 @@
   Exits:
       WindfallIsland: Nothing
 
+# This intermidiate area is necessary for making sure Link can access Lenzo's House
+# specifically from the bottom (and not from the top and dropping down)
+- Name: WindfallLenzosHouseFromBottomEntry
+  Events:
+      CanStartLenzoQuest: PictoBox
+  Exits:
+      WindfallLenzosHouseLower: Nothing
+
 
 - Name: WindfallLenzosHouseLower
   Locations:
-      WindfallLenzoBecomeAssistant: PictoBox and can_access(WindfallIsland) and can_access(WindfallCafeBar)
-      WindfallLenzoBringFirefly: PictoBox and can_access(WindfallIsland) and can_access(WindfallCafeBar)
-          and EmptyBottle and can_access(ForestHavenInterior)
+      WindfallLenzoBecomeAssistant: can_access(WindfallIsland) and can_access(WindfallCafeBar) and 'CanStartLenzoQuest'
+      WindfallLenzoBringFirefly: can_access(WindfallIsland) and can_access(WindfallCafeBar) and 'CanStartLenzoQuest' and EmptyBottle and can_access(ForestHavenInterior)
   Exits:
       WindfallIsland: Nothing
 
@@ -575,7 +584,7 @@
 
 - Name: WindfallBattleSquidUpperLedge
   Locations:
-      WindfallKreebLightLighthouse: CanPlayWR and FireArrows
+      WindfallKreebLightLighthouse: FireArrows and 'ActivateWindmill'
   Exits:
       WindfallIsland: Nothing
       WindfallBattleSquidInterior: Nothing
@@ -1640,11 +1649,31 @@
 - Name: OutsetSavageLabyrinth
   Exits:
       OutsetNearSavageHeadstone: Nothing
-      OutsetSavageFloor30: CanDefeatKeese and CanDefeatMiniblins and CanDefeatRedChuChus
-          and CanDefeatMagtails and CanDefeatFireKeese and CanDefeatPeahats and CanDefeatGreenChuChus
-          and CanDefeatBokoBabas and CanDefeatMothulas and CanDefeatWingedMothulas and
-          CanDefeatWizzrobes and CanDefeatArmos and CanDefeatYellowChuChus and CanDefeatRedBubbles
-          and CanDefeatDarknuts and (GrapplingHook or HerosSword or SkullHammer)
+      # The last condition for having grappling hook or a melee weapon is to avoid cases where your only weapon for damaging most enemies is bow or bombs and you run out of arrows or bombs. Grappling hook can be used to steal ammo from enemies.
+      # The following floors don't have requirements listed because you can trick enemies into hitting each other, pick up one of their dropped weapons, and kill the enemies with the weapon:
+      # * Floor 4 (4x Green Bokoblins)
+      # * Floor 9 (4x Green Bokoblins, 2x Fire Keese)
+      # * Floor 10 (2x Moblins)
+      # * Floor 15 (4x Green Bokoblins)
+      # * Floor 18 (4x Blue Bokoblins, 4x Green ChuChus)
+      # * Floor 19 (2x Green Bokoblins, 3x Mothulas)
+      # * Floor 27 (2x Green Bokoblins, 1x Darknut)
+      OutsetSavageFloor30: CanDefeatKeese and
+                           CanDefeatMiniblins and
+                           CanDefeatRedChuChus and
+                           CanDefeatMagtails and
+                           CanDefeatFireKeese and
+                           CanDefeatPeahats and
+                           CanDefeatGreenChuChus and
+                           CanDefeatBokoBabas and
+                           CanDefeatMothulas and
+                           CanDefeatWingedMothulas and
+                           CanDefeatWizzrobes and
+                           CanDefeatArmos and
+                           CanDefeatYellowChuChus and
+                           CanDefeatRedBubbles and
+                           CanDefeatDarknuts and
+                           (GrapplingHook or HerosSword or SkullHammer)
 
 
 - Name: OutsetSavageFloor30
@@ -1652,10 +1681,22 @@
       OutsetSavageFloor30Chest: CanPlayWR
   Exits:
       OutsetNearSavageHeadstone: CanPlayWR
-      OutsetSavageFloor50: CanAimMirrorShield and CanDefeatReDeads and CanDefeatBlueBubbles
-          and CanDefeatDarkChuChusWithLightRay and CanDefeatPoes and CanDefeatStalfos
-          and CanDefeatDarknuts and CanDefeatWingedMothulas and CanDefeatWizzrobes and
-          SkullHammer
+      # 2 of the 3 Wizzrobes on floor 48 never seem to come down to ground level, but it doesn't matter since you can throw the swords the Darknuts drop at them to kill them.
+      # The following floors don't have requirements listed because you can trick enemies into hitting each other, pick up one of their dropped weapons, and kill the enemies with the weapon:
+      # * Floor 37 (2x Moblins, 3x ReDeads)
+      # * Floor 39 (2x Moblins, 5x Poes)
+      # * Floor 45 (16x Bokoblins)
+      # * Floor 47 (3x Moblins, 2x Darknuts)
+      OutsetSavageFloor50: CanAimMirrorShield and
+                           CanDefeatReDeads and
+                           CanDefeatBlueBubbles and
+                           CanDefeatDarkChuChusWithLightRay and
+                           CanDefeatPoes and
+                           CanDefeatStalfos and
+                           CanDefeatDarknuts and
+                           CanDefeatWingedMothulas and
+                           CanDefeatWizzrobes and
+                           SkullHammer
 
 
 - Name: OutsetSavageFloor50
@@ -1926,7 +1967,7 @@
 - Name: DRCBossDoorRoomBeforeLava
   Exits:
       DRCMiniBossUpperArea: Nothing
-      DRCBossDoorRoomAcrossLava: GrapplingHook or Hookshot or DekuLeaf
+      DRCBossDoorRoomAcrossLava: GrapplingHook or Hookshot or DekuLeaf or IceArrows
       DRCMagtailLavaGeyserRoom: Nothing
 
 
