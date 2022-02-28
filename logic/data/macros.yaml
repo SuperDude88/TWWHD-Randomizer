@@ -1,3 +1,8 @@
+# Macros are simply a way to shorten or make more explicit the logical requirements
+# for certain things. Macros can be used on logic statements like any item and do
+# not need any code modifications to run. Simply add them here and they can be used
+# in world.yaml
+
 CanPlayWR: WindsRequiem and WindWaker
 CanPlayBoG: BalladOfGales and WindWaker
 CanPlayCM: CommandMelody and WindWaker

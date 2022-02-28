@@ -61,6 +61,7 @@ enum struct Area : uint32_t
     WindfallIsland,
     WindfallJail,
     WindfallSchoolOfJoy,
+    WindfallLenzosHouseFromBottomEntry,
     WindfallLenzosHouseLower,
     WindfallLenzosHouseUpper,
     WindfallLenzosUpperLedge,
