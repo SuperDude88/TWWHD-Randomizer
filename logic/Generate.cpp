@@ -36,25 +36,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       // worlds[i].randomizeEntrances()
   }
 
-  std::ofstream worldLogicDump;
-  worldLogicDump.open("WorldLogic.txt");
-  for (auto& area : worlds[0].areaEntries)
-  {
-      worldLogicDump << areaToName(area.area) << std::endl;
-      worldLogicDump << "Exits:" << std::endl;
-      for (auto& exit : area.exits)
-      {
-          worldLogicDump << printRequirement(exit.requirement) << std::endl;
-      }
-      worldLogicDump << "Locations:" << std::endl;
-      for (auto& locAccess : area.locations)
-      {
-          worldLogicDump << locationName(locAccess.location) << std::endl;
-          worldLogicDump << printRequirement(locAccess.requirement) << std::endl;
-      }
-  }
-  worldLogicDump.close();
-
+  // Retry the main fill algorithm a couple times incase it completely fails.
   int totalFillAttempts = 5;
   FillError fillError;
   std::cout << "Filling World" << (worlds.size() > 1 ? "s" : "") << std::endl;
