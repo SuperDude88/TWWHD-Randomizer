@@ -18,15 +18,6 @@ enum struct SwordMode {
     INVALID
 };
 
-enum struct EntranceRando {
-    None = 0,
-    Dungeons,
-    Caves,
-    DungeonsAndCaves, //caves and dungeons separately
-    DungeonsWithCaves, //caves and dungeons together
-    INVALID
-};
-
 enum struct Option {
     INVALID = 0,
     ProgressDungeons,
@@ -54,9 +45,11 @@ enum struct Option {
     ProgressObscure,
 
     Keylunacy,
-    RandomEntrances,
     RandomCharts,
     RandomStartIsland,
+    RandomizeDungeonEntrances,
+    RandomizeCaveEntrances,
+    MixEntrancePools,
 
     InstantText,
     RevealSeaChart,
@@ -106,9 +99,11 @@ struct Settings {
     bool progression_obscure = false;
 
     bool keylunacy = false;
-    EntranceRando randomize_entrances = EntranceRando::None;
     bool randomize_charts = false;
     bool randomize_starting_island = false;
+    bool randomize_dungeon_entrances = false;
+    bool randomize_cave_entrances = false;
+    bool mix_entrance_pools = false;
 
     bool instant_text_boxes = false;
     bool reveal_full_sea_chart = false;

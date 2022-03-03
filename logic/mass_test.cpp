@@ -105,12 +105,14 @@ int main()
     TEST(settings1, settings1.progression_obscure, "progression obscure");
     TEST(settings1, settings1.keylunacy, "keylunacy");
     TEST(settings1, settings1.randomize_charts, "randomize charts");
+    TEST(settings1, settings1.randomize_starting_island, "random starting island");
 
     // Now set all settings in reverse
     std::cout << "REVERSEING TEST DIRECTION" << std::endl;
     Settings settings2;
 
     TEST(settings2, settings2.progression_dungeons, "progression dungeons");
+    TEST(settings2, settings2.randomize_starting_island, "random starting island");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
     TEST(settings2, settings2.keylunacy, "keylunacy");
     TEST(settings2, settings2.progression_obscure, "progression obscure");

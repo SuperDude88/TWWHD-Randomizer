@@ -15,23 +15,6 @@ SwordMode nameToSwordMode(const std::string& name) {
     return nameSwordModeMap.at(name);
 }
 
-EntranceRando nameToEntranceRando(const std::string& name) {
-    static std::unordered_map<std::string, EntranceRando> nameEntranceRandoMap = {
-        {"None", EntranceRando::None},
-        {"Dungeons", EntranceRando::Dungeons},
-        {"Caves", EntranceRando::Caves},
-        {"DungeonsAndCaves", EntranceRando::DungeonsAndCaves},
-        {"DungeonsWithCaves", EntranceRando::DungeonsWithCaves},
-    };
-
-    if (nameEntranceRandoMap.count(name) == 0)
-    {
-        return EntranceRando::INVALID;
-    }
-
-    return nameEntranceRandoMap.at(name);
-}
-
 Option nameToSetting(const std::string& name) {
     static std::unordered_map<std::string, Option> optionNameMap = {
         {"ProgressDungeons", Option::ProgressDungeons},
@@ -58,9 +41,11 @@ Option nameToSetting(const std::string& name) {
         {"ProgressIslandPuzzles", Option::ProgressIslandPuzzles},
         {"ProgressObscure", Option::ProgressObscure},
         {"Keylunacy", Option::Keylunacy},
-        {"RandomEntrances", Option::RandomEntrances},
         {"RandomCharts", Option::RandomCharts},
         {"RandomStartIsland", Option::RandomStartIsland},
+        {"RandomizeDungeonEntrances", Option::RandomizeDungeonEntrances},
+        {"RandomizeCaveEntrances", Option::RandomizeCaveEntrances},
+        {"MixEntrancePools", Option::MixEntrancePools},
         {"InstantText", Option::InstantText},
         {"RevealSeaChart", Option::RevealSeaChart},
         {"NumShards", Option::NumShards},
@@ -114,9 +99,11 @@ std::string settingToName(const Option& setting) {
         {Option::ProgressIslandPuzzles, "ProgressIslandPuzzles"},
         {Option::ProgressObscure, "ProgressObscure"},
         {Option::Keylunacy, "Keylunacy"},
-        {Option::RandomEntrances, "RandomEntrances"},
         {Option::RandomCharts, "RandomCharts"},
         {Option::RandomStartIsland, "RandomStartIsland"},
+        {Option::RandomizeDungeonEntrances, "RandomizeDungeonEntrances"},
+        {Option::RandomizeCaveEntrances, "RandomizeCaveEntrances"},
+        {Option::MixEntrancePools, "MixEntrancePools"},
         {Option::InstantText, "InstantText"},
         {Option::RevealSeaChart, "RevealSeaChart"},
         {Option::NumShards, "NumShards"},
@@ -195,12 +182,16 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.progression_obscure;
     case Option::Keylunacy:
         return settings.keylunacy;
-    case Option::RandomEntrances:
-        return static_cast<std::underlying_type_t<EntranceRando>>(settings.randomize_entrances);
     case Option::RandomCharts:
         return settings.randomize_charts;
     case Option::RandomStartIsland:
         return settings.randomize_starting_island;
+    case Option::RandomizeDungeonEntrances:
+        return settings.randomize_dungeon_entrances;
+    case Option::RandomizeCaveEntrances:
+        return settings.randomize_cave_entrances;
+    case Option::MixEntrancePools:
+        return settings.mix_entrance_pools;
     case Option::InstantText:
         return settings.instant_text_boxes;
     case Option::RevealSeaChart:
@@ -245,10 +236,6 @@ int evaluateOption(const Settings& settings, const std::string& optionStr) {
     if (nameToSwordMode(optionStr) != SwordMode::INVALID)
     {
         return getSetting(settings, Option::SwordMode) == static_cast<int>(nameToSwordMode(optionStr));
-    }
-    else if (nameToEntranceRando(optionStr) != EntranceRando::INVALID)
-    {
-        return getSetting(settings, Option::RandomEntrances) == static_cast<int>(nameToEntranceRando(optionStr));
     }
     else if (nameToSetting(optionStr) != Option::INVALID)
     {

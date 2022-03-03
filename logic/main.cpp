@@ -48,6 +48,7 @@ int main()
     settings1.progression_obscure = true;
     settings1.keylunacy = true;
     settings1.randomize_charts = true;
+    settings1.randomize_starting_island = true;
     settings1.race_mode = true;
     settings1.num_race_mode_dungeons = 3;
 
@@ -71,13 +72,14 @@ int main()
     settings2.randomize_charts = true;
     settings2.race_mode = true;
     settings2.num_race_mode_dungeons = 5;
+    settings2.randomize_starting_island = true;
     // End of in code settings
 
     // Create all necessary worlds (for any potential multiworld support in the future)
-    int worldCount = 1;
+    int worldCount = 2;
     World blankWorld;
     WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector {settings1};
+    std::vector<Settings> settingsVector {settings1, settings2};
 
     int retVal = generateWorlds(worlds, settingsVector, seed);
 
