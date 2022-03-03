@@ -924,6 +924,7 @@ void World::dumpWorldGraph(const std::string& filename)
         for (const auto& locAccess : areaEntry.locations) {
             std::string connectedLocation = locationIdToName(locAccess.location->locationId);
             std::string itemAtLocation = locAccess.location->currentItem.getName();
+            color = locAccess.location->hasBeenFound ? "\"black\"" : "\"red\"";
             if (parentName != "INVALID" && connectedLocation != "INVALID"){
                 worldGraph << "\t\"" << connectedLocation << "\"[label=<" << connectedLocation << ":<br/>" << itemAtLocation << "> shape=\"plain\" fontcolor=" << color << "];" << std::endl;
                 worldGraph << "\t\"" << parentName << "\" -> \"" << connectedLocation << "\"" << "[dir=forward color=" << color << "]" << std::endl;

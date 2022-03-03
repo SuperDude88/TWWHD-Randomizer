@@ -55,10 +55,22 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
   }
   worldLogicDump.close();
 
-  FillError fillError = fill(worlds);
-  if (fillError == FillError::NONE) {
-      std::cout << "Fill Successful" << std::endl;
-  } else {
+  int totalFillAttempts = 5;
+  FillError fillError;
+  std::cout << "Filling World" << (worlds.size() > 1 ? "s" : "") << std::endl;
+  while (totalFillAttempts > 0)
+  {
+      totalFillAttempts--;
+      fillError = fill(worlds);
+      if (fillError == FillError::NONE) {
+          break;
+      }
+      debugLog("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
+      clearWorlds(worlds);
+  }
+
+  if (fillError != FillError::NONE)
+  {
       std::cout << "Fill Unsuccessful. Error Code: " << errorToName(fillError) << std::endl;
       #ifdef ENABLE_DEBUG
           if (fillError == FillError::GAME_NOT_BEATABLE)

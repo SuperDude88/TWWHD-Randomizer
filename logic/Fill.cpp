@@ -390,7 +390,6 @@ FillError fill(WorldPool& worlds)
 {
     // Time how long the fill takes
     auto start = std::chrono::high_resolution_clock::now();
-    std::cout << "Filling World" << (worlds.size() > 1 ? "s" : "") << std::endl;
     FillError err;
     ItemPool itemPool;
     LocationPool allLocations;
@@ -461,6 +460,17 @@ FillError fill(WorldPool& worlds)
     std::cout << "Fill took " << std::to_string(seconds) << " seconds" << std::endl;
 
     return FillError::NONE;
+}
+
+void clearWorlds(WorldPool& worlds)
+{
+    for (auto& world : worlds)
+    {
+        for (auto& location : world.locationEntries)
+        {
+            location.currentItem = {GameItem::INVALID, -1};
+        }
+    }
 }
 
 const char* errorToName(FillError err)

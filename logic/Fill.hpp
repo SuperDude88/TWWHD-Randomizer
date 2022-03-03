@@ -13,4 +13,5 @@ enum struct FillError
 };
 
 FillError fill(std::vector<World>& worlds);
+void clearWorlds(WorldPool& worlds);
 const char* errorToName(FillError err);
