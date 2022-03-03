@@ -95,11 +95,13 @@ public:
     ItemPool getItemPool() const;
     ItemPool getStartingItems() const;
     LocationPool getLocations();
+    AreaEntry& getArea(const Area& area);
 
     void determineChartMappings();
     void determineProgressionLocations();
     void determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
+    Exit& getExit(const Area& parentArea, const Area& connectedArea);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename);
@@ -111,6 +113,7 @@ public:
     std::vector<std::list<Location*>> playthroughSpheres = {};
     std::array<GameItem, 49> chartMappings;
     std::vector<DungeonId> raceModeDungeons;
+    uint8_t startingIslandRoomIndex = 44;
 
 private:
 

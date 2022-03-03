@@ -101,6 +101,11 @@ LocationPool World::getLocations()
     return locations;
 }
 
+AreaEntry& World::getArea(const Area& area)
+{
+    return areaEntries[areaAsIndex(area)];
+}
+
 void World::determineChartMappings()
 {
     // The ordering of this array corresponds each treasure/triforce chart with
@@ -270,7 +275,8 @@ void World::determineRaceModeDungeons()
     }
 }
 
-std::string substrToString(const ryml::csubstr& substr)
+// Helper function for dealing with YAML library strings
+static std::string substrToString(const ryml::csubstr& substr)
 {
     return std::string(substr.data(), substr.size());
 }
@@ -823,6 +829,21 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         }
     }
     return 0;
+}
+
+Exit& World::getExit(const Area& parentArea, const Area& connectedArea)
+{
+    auto& parentAreaEntry = areaEntries[areaAsIndex(parentArea)];
+
+    for (auto& exit : parentAreaEntry.exits)
+    {
+        if (exit.connectedArea == connectedArea)
+        {
+            return exit;
+        }
+    }
+
+    return areaEntries[areaAsIndex(Area::INVALID)].exits.front();
 }
 
 const char* World::errorToName(WorldLoadingError err)

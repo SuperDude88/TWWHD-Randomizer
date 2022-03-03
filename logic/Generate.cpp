@@ -6,6 +6,7 @@
 #include "SpoilerLog.hpp"
 #include "Random.hpp"
 #include "Debug.hpp"
+#include "Entrance.hpp"
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
@@ -33,8 +34,11 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       worlds[i].determineProgressionLocations();
       worlds[i].determineRaceModeDungeons();
       worlds[i].setItemPools();
-      // worlds[i].randomizeEntrances()
   }
+
+  // Randomize entrances before placing items
+  std::cout << "Randomizing Entrances" << std::endl;
+  randomizeEntrances(worlds);
 
   // Retry the main fill algorithm a couple times incase it completely fails.
   int totalFillAttempts = 5;

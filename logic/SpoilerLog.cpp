@@ -41,6 +41,17 @@ void generateSpoilerLog(WorldPool& worlds)
 
     printBasicInfo(log, worlds);
 
+    // Print the random starting island if there is one
+    for (auto& world : worlds)
+    {
+        if (world.getSettings().randomize_starting_island)
+        {
+            auto startingIsland = areaToName(world.getArea(Area::LinksSpawn).exits.front().connectedArea);
+            log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
+        }
+    }
+    log << std::endl;
+
     // Find the longest location name for formatting the file
     size_t longestNameLength = 0;
     for (size_t sphere = 0; sphere < worlds[0].playthroughSpheres.size(); sphere++)
