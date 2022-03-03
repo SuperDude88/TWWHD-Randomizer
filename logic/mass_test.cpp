@@ -17,6 +17,11 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     std::cout << "Using seed " << std::to_string(seed) << std::endl;
 
+    #ifdef ENABLE_DEBUG
+        std::cout << "Debugging is ON" << std::endl;
+        openDebugLog(std::to_string(seed));
+    #endif
+
     int worldCount = 1;
     World blankWorld;
     WorldPool worlds (worldCount, blankWorld);
@@ -32,9 +37,11 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
     }
     else
     {
-        std::cout << "Generation after changing setting " << settingName << " failed." << std::endl;
+        std::cout << "Generation after changing setting \"" << settingName << "\" failed." << std::endl;
+        closeDebugLog();
         return 1;
     }
+    closeDebugLog();
     return 0;
 }
 
@@ -96,12 +103,16 @@ int main()
     TEST(settings1, settings1.progression_savage_labyrinth, "progression savage labyrinth");
     TEST(settings1, settings1.progression_island_puzzles, "progression island puzzles");
     TEST(settings1, settings1.progression_obscure, "progression obscure");
+    TEST(settings1, settings1.keylunacy, "keylunacy");
+    TEST(settings1, settings1.randomize_charts, "randomize charts");
 
     // Now set all settings in reverse
     std::cout << "REVERSEING TEST DIRECTION" << std::endl;
     Settings settings2;
 
     TEST(settings2, settings2.progression_dungeons, "progression dungeons");
+    TEST(settings2, settings2.randomize_charts, "randomize charts");
+    TEST(settings2, settings2.keylunacy, "keylunacy");
     TEST(settings2, settings2.progression_obscure, "progression obscure");
     TEST(settings2, settings2.progression_island_puzzles, "progression island puzzles");
     TEST(settings2, settings2.progression_savage_labyrinth, "progression savage labyrinth");
