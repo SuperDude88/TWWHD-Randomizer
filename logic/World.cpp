@@ -657,7 +657,7 @@ World::WorldLoadingError World::loadLocationRequirement(const std::string& locat
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea)
+World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
@@ -665,12 +665,14 @@ World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, c
     auto connectedArea = nameToArea(connectedAreaName);
     AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedAreaName << "\" does not exist!");
     MAPPING_CHECK(connectedAreaName, areaToName(nameToArea(connectedAreaName)));
-    loadedExit.parentArea = parentArea;
-    loadedExit.connectedArea = connectedArea;
-    loadedExit.worldId = worldId;
+    loadedExit.setParentArea(parentArea);
+    loadedExit.setConnectedArea(connectedArea);
+    loadedExit.setWorldId(worldId);
+    loadedExit.setWorld(this);
+    loadedExit.setOriginalName();
     WorldLoadingError err = WorldLoadingError::NONE;
     // load exit requirements
-    if((err = parseRequirementString(logicExpression, loadedExit.requirement)) != WorldLoadingError::NONE)
+    if((err = parseRequirementString(logicExpression, loadedExit.getRequirement())) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing exit " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << std::endl;
         return err;
@@ -683,7 +685,6 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    //OBJECT_CHECK(areaObject, areaObject.dump());
     YAML_FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
     const std::string areaName = substrToString(areaObject["Name"].val());
     // debugLog("Now Loading Area " + areaName);
@@ -736,7 +737,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     if (areaObject.has_child("Exits"))
     {
         for (const ryml::NodeRef& exit : areaObject["Exits"].children()) {
-            Exit exitOut;
+            Entrance exitOut;
             const std::string connectedAreaName = substrToString(exit.key());
             const std::string logicExpression = substrToString(exit.val());
             err = loadExit(connectedAreaName, logicExpression, exitOut, loadedArea);
@@ -831,19 +832,47 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     return 0;
 }
 
-Exit& World::getExit(const Area& parentArea, const Area& connectedArea)
+Entrance& World::getEntrance(const Area& parentArea, const Area& connectedArea)
 {
     auto& parentAreaEntry = areaEntries[areaAsIndex(parentArea)];
 
     for (auto& exit : parentAreaEntry.exits)
     {
-        if (exit.connectedArea == connectedArea)
+        if (exit.getConnectedArea() == connectedArea)
         {
             return exit;
         }
     }
 
+    std::cout << "WARNING: " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << " is not a connection" << std::endl;
     return areaEntries[areaAsIndex(Area::INVALID)].exits.front();
+}
+
+void World::removeEntrance(Entrance* entranceToRemove)
+{
+    auto& areaExits = areaEntries[areaAsIndex(entranceToRemove->getParentArea())].exits;
+    std::erase_if(areaExits, [entranceToRemove](Entrance& entrance)
+    {
+        return &entrance == entranceToRemove;
+    });
+}
+
+EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary /*= false*/)
+{
+    std::vector<Entrance*> shufflableEntrances = {};
+
+    for (auto& areaEntry : areaEntries)
+    {
+        for (auto& exit : areaEntry.exits)
+        {
+            if ((exit.getEntranceType() == type || type == EntranceType::NONE) && (!onlyPrimary || exit.isPrimary()))
+            {
+                shufflableEntrances.push_back(&exit);
+            }
+        }
+    }
+
+    return shufflableEntrances;
 }
 
 const char* World::errorToName(WorldLoadingError err)
@@ -920,10 +949,11 @@ std::string World::getLastErrorDetails()
 // Use this command if things are too spread out: fdp   -Tsvg <filename> -o world.svg
 // Use this command if things are too squished:   circo -Tsvg <filename> -o world.svg
 // Then, open world.svg in a browser and CTRL + F to find the area of interest
-void World::dumpWorldGraph(const std::string& filename)
+void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits /*= false*/)
 {
     std::ofstream worldGraph;
-    worldGraph.open (filename + ".dot");
+    std::string fullFilename = filename + ".gv";
+    worldGraph.open (fullFilename);
     worldGraph << "digraph {\n\tcenter=true;\n";
 
     for (const AreaEntry& areaEntry : areaEntries) {
@@ -935,7 +965,12 @@ void World::dumpWorldGraph(const std::string& filename)
 
         // Make edge connections defined by exits
         for (const auto& exit : areaEntry.exits) {
-            std::string connectedName = areaToName(exit.connectedArea);
+            // Only dump shuffled exits if set
+            if (!exit.isShuffled() && onlyRandomizedExits)
+            {
+                continue;
+            }
+            std::string connectedName = areaToName(exit.getConnectedArea());
             if (parentName != "INVALID" && connectedName != "INVALID"){
                 worldGraph << "\t\"" << parentName << "\" -> \"" << connectedName << "\"" << std::endl;
             }
@@ -955,5 +990,5 @@ void World::dumpWorldGraph(const std::string& filename)
 
     worldGraph << "}";
     worldGraph.close();
-    std::cout << "Dumped world graph at " << filename << ".dot" << std::endl;
+    std::cout << "Dumped world graph at " << fullFilename << std::endl;
 }

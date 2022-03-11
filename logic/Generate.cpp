@@ -6,7 +6,7 @@
 #include "SpoilerLog.hpp"
 #include "Random.hpp"
 #include "Debug.hpp"
-#include "Entrance.hpp"
+#include "EntranceShuffle.hpp"
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
@@ -38,7 +38,12 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
 
   // Randomize entrances before placing items
   std::cout << "Randomizing Entrances" << std::endl;
-  randomizeEntrances(worlds);
+  EntranceShuffleError entranceErr = randomizeEntrances(worlds);
+  if (entranceErr != EntranceShuffleError::NONE)
+  {
+      std::cout << "Entrance Randomization unsuccessful. Error Code: " << errorToName(entranceErr) << std::endl;
+      return 1;
+  }
 
   // Retry the main fill algorithm a couple times incase it completely fails.
   int totalFillAttempts = 5;

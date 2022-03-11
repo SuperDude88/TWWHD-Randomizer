@@ -49,6 +49,8 @@ int main()
     settings1.keylunacy = true;
     settings1.randomize_charts = true;
     settings1.randomize_starting_island = true;
+    settings1.randomize_dungeon_entrances = true;
+    settings1.randomize_cave_entrances = true;
     settings1.race_mode = true;
     settings1.num_race_mode_dungeons = 3;
 
@@ -76,7 +78,7 @@ int main()
     // End of in code settings
 
     // Create all necessary worlds (for any potential multiworld support in the future)
-    int worldCount = 2;
+    int worldCount = 1;
     World blankWorld;
     WorldPool worlds (worldCount, blankWorld);
     std::vector<Settings> settingsVector {settings1, settings2};

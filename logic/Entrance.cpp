@@ -1,79 +1,236 @@
 
 #include "Entrance.hpp"
-#include "Random.hpp"
+#include "World.hpp"
 
-static Area roomIndexToStartingIslandArea(const uint8_t& startingIslandRoomIndex)
+Entrance::Entrance() {}
+
+Entrance::Entrance(const Area& parentArea_, const Area& connectedArea_, World* world_)
 {
-    constexpr std::array<Area, 49> startingIslandAreaArray = {
-        Area::ForsakenFortress,
-        Area::StarIsland,
-        Area::NorthernFairyIsland,
-        Area::GaleIsle,
-        Area::CrescentMoonIsland,
-        Area::SevenStarIsles,
-        Area::OverlookIsland,
-        Area::FourEyeReef,
-        Area::MotherAndChildIsles,
-        Area::SpectacleIsland,
-        Area::WindfallIsland,
-        Area::PawprintIsle,
-        Area::DragonRoostIsland,
-        Area::FlightControlPlatform,
-        Area::WesternFairyIsland,
-        Area::RockSpireIsle,
-        Area::TingleIsland,
-        Area::NorthernTriangleIsland,
-        Area::EasternFairyIsland,
-        Area::FireMountain,
-        Area::StarBeltArchipelago,
-        Area::ThreeEyeReef,
-        Area::GreatfishIsle,
-        Area::CyclopsReef,
-        Area::SixEyeReef,
-        Area::TowerOfTheGods,
-        Area::EasternTriangleIsland,
-        Area::ThornedFairyIsland,
-        Area::NeedleRockIsle,
-        Area::IsletOfSteel,
-        Area::StoneWatcherIsland,
-        Area::SouthernTriangleIsland,
-        Area::PrivateOasis,
-        Area::BombIsland,
-        Area::BirdsPeakRock,
-        Area::DiamondSteppeIsland,
-        Area::FiveEyeReef,
-        Area::SharkIsland,
-        Area::SouthernFairyIsland,
-        Area::IceRingIsle,
-        Area::ForestHaven,
-        Area::CliffPlateauIsles,
-        Area::HorseshoeIsle,
-        Area::OutsetIsland,
-        Area::HeadstoneIsland,
-        Area::TwoEyeReef,
-        Area::AngularIsles,
-        Area::BoatingCourse,
-        Area::FiveStarIsles,
-    };
-
-    return startingIslandAreaArray[startingIslandRoomIndex];
+    parentArea = parentArea_;
+    connectedArea = connectedArea_;
+    world = world_;
+    worldId = world->getWorldId();
+    requirement = {RequirementType::HAS_ITEM, {GameItem::NOTHING}};
+    setOriginalName();
 }
 
-EntranceError randomizeEntrances(WorldPool& worlds)
+Area Entrance::getParentArea() const
 {
-    for (auto& world : worlds)
+    return parentArea;
+}
+
+void Entrance::setParentArea(Area newParentArea)
+{
+    parentArea = newParentArea;
+}
+
+Area Entrance::getConnectedArea() const
+{
+    return connectedArea;
+}
+
+void Entrance::setConnectedArea(Area newConnectedArea)
+{
+    connectedArea = newConnectedArea;
+}
+
+Requirement& Entrance::getRequirement()
+{
+    return requirement;
+}
+
+void Entrance::setRequirement(const Requirement newRequirement)
+{
+    requirement = std::move(newRequirement);
+}
+
+EntranceType Entrance::getEntranceType() const
+{
+    return type;
+}
+
+void Entrance::setEntranceType(EntranceType& newType)
+{
+    type = newType;
+}
+
+bool Entrance::isPrimary() const
+{
+    return primary;
+}
+
+void Entrance::setAsPrimary()
+{
+    primary = true;
+}
+
+std::string Entrance::getStageName() const
+{
+    return stageName;
+}
+
+void Entrance::setStageName(std::string newStageName)
+{
+    stageName = std::move(newStageName);
+}
+
+std::string Entrance::getOriginalName() const
+{
+    return originalName;
+}
+
+void Entrance::setOriginalName()
+{
+    if (!alreadySetOriginalName)
     {
-        if (world.getSettings().randomize_starting_island)
-        {
-            // Rooms 2 - 49 include every island except Forsaken Fortress
-            world.startingIslandRoomIndex = Random(2, 50);
-            auto startingIsland = roomIndexToStartingIslandArea(world.startingIslandRoomIndex);
-
-            // Set the new starting island in the world graph
-            auto& linksSpawnExit = world.getExit(Area::LinksSpawn, Area::OutsetIsland);
-            linksSpawnExit.connectedArea = startingIsland;
-        }
+        originalName = areaToName(parentArea) + " -> " + areaToName(connectedArea);
+        alreadySetOriginalName = true;
     }
+}
 
-    return EntranceError::NONE;
+std::string Entrance::getCurrentName() const
+{
+    return areaToName(parentArea) + " -> " + areaToName(connectedArea);
+}
+
+uint8_t Entrance::getRoomNum() const
+{
+    return roomNum;
+}
+
+void Entrance::setRoomNum(uint8_t& newRoomNum)
+{
+    roomNum = newRoomNum;
+}
+
+uint8_t Entrance::getSclsExitIndex() const
+{
+    return sclsExitIndex;
+}
+
+void Entrance::setSclsExitIndex(uint8_t& newExitIndex)
+{
+    sclsExitIndex = newExitIndex;
+}
+
+uint8_t Entrance::getSpawnId() const
+{
+    return spawnId;
+}
+
+void Entrance::setSpawnId(uint8_t& newSpawnId)
+{
+    spawnId = newSpawnId;
+}
+
+int Entrance::getWorldId() const
+{
+    return worldId;
+}
+
+void Entrance::setWorldId(int& newWorldId)
+{
+    worldId = newWorldId;
+}
+
+Entrance* Entrance::getReverse()
+{
+    return reverse;
+}
+
+void Entrance::setReverse(Entrance* reverseEntrance)
+{
+    reverse = reverseEntrance;
+}
+
+Entrance* Entrance::getReplaces()
+{
+    return replaces;
+}
+
+void Entrance::setReplaces(Entrance* replacedEntrance)
+{
+    replaces = replacedEntrance;
+}
+
+Entrance* Entrance::getAssumed()
+{
+    return assumed;
+}
+
+bool Entrance::isShuffled() const
+{
+    return shuffled;
+}
+
+void Entrance::setAsShuffled()
+{
+    shuffled = true;
+}
+
+World* Entrance::getWorld()
+{
+    return world;
+}
+
+void Entrance::setWorld(World* newWorld)
+{
+    world = newWorld;
+}
+
+void Entrance::connect(const Area newConnectedArea)
+{
+    connectedArea = newConnectedArea;
+    world->areaEntries[areaAsIndex(connectedArea)].entrances.push_back(this);
+}
+
+Area Entrance::disconnect()
+{
+    world->areaEntries[areaAsIndex(connectedArea)].entrances.remove(this);
+    Area previouslyConnected = connectedArea;
+    connectedArea = Area::INVALID;
+    return previouslyConnected;
+}
+
+void Entrance::bindTwoWay(Entrance* otherEntrance)
+{
+    reverse = otherEntrance;
+    otherEntrance->setReverse(this);
+}
+
+Entrance* Entrance::getNewTarget()
+{
+    auto& root = world->areaEntries[areaAsIndex(Area::Root)];
+    Entrance targetEntrance = Entrance(Area::Root, connectedArea, world);
+    targetEntrance.connect(connectedArea);
+    targetEntrance.setReplaces(this);
+    root.exits.push_back(targetEntrance);
+    return &root.exits.back();
+}
+
+Entrance* Entrance::assumeReachable()
+{
+    if (assumed == nullptr)
+    {
+        assumed = getNewTarget();
+        disconnect();
+    }
+    return assumed;
+}
+
+std::string entranceTypeToName(const EntranceType& type)
+{
+    std::unordered_map<EntranceType, std::string> typeNameMap = {
+        {EntranceType::NONE, "NONE"},
+        {EntranceType::DUNGEON, "DUNGEON"},
+        {EntranceType::CAVE, "CAVE"},
+        {EntranceType::MIXED, "MIXED"},
+        {EntranceType::ALL, "ALL"},
+    };
+
+    if (typeNameMap.count(type) == 0)
+    {
+        return "INVALID ENTRANCE TYPE";
+    }
+    return typeNameMap.at(type);
 }
