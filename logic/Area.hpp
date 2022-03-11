@@ -52,6 +52,7 @@ enum struct Area : uint32_t
     SevenStarIsles,
     SevenStarLookoutPlatforms,
     OverlookIsland,
+    OverlookIslandUpperIsles,
     OverlookCave,
     FourEyeReef,
     MotherAndChildIsles,

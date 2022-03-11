@@ -30,44 +30,44 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {
 
     {EntranceType::CAVE,    {Area::OutsetNearSavageHeadstone,  Area::OutsetSavageLabyrinth,      "sea",     44,          8,    10,         "sea",       44,        10},
                             {Area::OutsetSavageLabyrinth,      Area::OutsetNearSavageHeadstone,  "Cave09",   0,          1,     0}},
-    {EntranceType::CAVE,    {Area::DragonRoostIsland,          Area::DragonRoostIslandCave,      "sea",     13, 2, 5, "sea", 13, 5},
-                            {Area::DragonRoostIslandCave,      Area::DragonRoostIsland,          "TF_06",    0, 0, 0}},
-    {EntranceType::CAVE,    {Area::FireMountain,               Area::FireMountainInterior,       "sea",     20, 0, 0, "sea", 20, 0},
-                            {Area::FireMountainInterior,       Area::FireMountain,               "MiniKaz",  0, 0, 0}},
-    {EntranceType::CAVE,    {Area::IceRingIsle,                Area::IceRingInterior,            "sea",     40, 0, 0, "sea", 40, 0},
-                            {Area::IceRingInterior,            Area::IceRingIsle,                "MiniHyo",  0, 0, 0}},
-    {EntranceType::CAVE,    {Area::TheCabana,                  Area::CabanaLabyrinth,            "Abesso",   0, 1, 1, "Abesso", 0, 1},
-                            {Area::CabanaLabyrinth,            Area::TheCabana,                  "TF_04",    0, 0, 0}},
-    {EntranceType::CAVE,    {Area::NeedleRockIsle,             Area::NeedleRockCave,             "sea",     29, 0, 5, "sea", 29, 5},
-                            {Area::NeedleRockCave,             Area::NeedleRockIsle,             "SubD42",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::AngularIslesSmallIsle,      Area::AngularIslesCave,           "sea",     47, 1, 5, "sea", 47, 5},
-                            {Area::AngularIslesCave,           Area::AngularIslesSmallIsle,      "SubD43",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::BoatingCourseSmallIsle,     Area::BoatingCourseCave,          "sea",     48, 0, 5, "sea", 48, 5},
-                            {Area::BoatingCourseCave,          Area::BoatingCourseSmallIsle,     "SubD71",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::StoneWatcherIsland,         Area::StoneWatcherCave,           "sea",     31, 0, 1, "sea", 31, 1},
-                            {Area::StoneWatcherCave,           Area::StoneWatcherIsland,         "TF_01",    0, 0, 0}},
-    {EntranceType::CAVE,    {Area::OverlookIsland,             Area::OverlookCave,               "sea",      7, 0, 1, "sea", 7, 1},
-                            {Area::OverlookCave,               Area::OverlookIsland,             "TF_02",    0, 0, 0}},
-    {EntranceType::CAVE,    {Area::BirdsPeakRockBehindBars,    Area::BirdsPeakRockCave,          "sea",     35, 0, 1, "sea", 35, 1},
-                            {Area::BirdsPeakRockCave,          Area::BirdsPeakRockBehindBars,    "TF_03",    0, 0, 0}},
-    {EntranceType::CAVE,    {Area::PawprintIsle,               Area::PawprintChuChuCave,         "sea",     12, 0, 1, "sea", 12, 1},
-                            {Area::PawprintChuChuCave,         Area::PawprintIsle,               "TyuTyu",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::PawprintWizzrobeCaveIsle,   Area::PawprintWizzrobeCave,       "sea",     12, 1, 5, "sea", 12, 5},
-                            {Area::PawprintWizzrobeCave,       Area::PawprintWizzrobeCaveIsle,   "Cave07",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::DiamondSteppeUpperIsland,   Area::DiamondSteppeWarpMaze,      "sea",     36, 0, 1, "sea", 36, 1},
-                            {Area::DiamondSteppeWarpMaze,      Area::DiamondSteppeUpperIsland,   "WarpD",    0, 0, 0}},
-    {EntranceType::CAVE,    {Area::BombIsland,                 Area::BombIslandCave,             "sea",     34, 0, 1, "sea", 34, 1},
-                            {Area::BombIslandCave,             Area::BombIsland,                 "Cave01",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::RockSpireIsle,              Area::RockSpireCave,              "sea",     16, 0, 1, "sea", 16, 1},
-                            {Area::RockSpireCave,              Area::RockSpireIsle,              "Cave04",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::SharkIsland,                Area::SharkIslandCave,            "sea",     38, 0, 5, "sea", 38, 5},
-                            {Area::SharkIslandCave,            Area::SharkIsland,                "ITest63",  0, 0, 0}},
-    {EntranceType::CAVE,    {Area::CliffPlateauIsles,          Area::CliffPlateauCave,           "sea",     42, 0, 2, "sea", 42, 2},
-                            {Area::CliffPlateauCave,           Area::CliffPlateauIsles,          "Cave03",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::HorseshoeIslePastTentacles, Area::HorseshoeCave,              "sea",     43, 0, 5, "sea", 43, 5},
-                            {Area::HorseshoeCave,              Area::HorseshoeIslePastTentacles, "Cave05",   0, 0, 0}},
-    {EntranceType::CAVE,    {Area::StarIsland,                 Area::StarIslandCave,             "sea",      2, 0, 1, "sea", 2, 1},
-                            {Area::StarIslandCave,             Area::StarIsland,                 "Cave02",   0, 0, 0}},
+    {EntranceType::CAVE,    {Area::DragonRoostIsland,          Area::DragonRoostIslandCave,      "sea",     13,          2,     5,         "sea",       13,         5},
+                            {Area::DragonRoostIslandCave,      Area::DragonRoostIsland,          "TF_06",    0,          0,     0}},
+    {EntranceType::CAVE,    {Area::FireMountain,               Area::FireMountainInterior,       "sea",     20,          0,     0,         "sea",       20,         0},
+                            {Area::FireMountainInterior,       Area::FireMountain,               "MiniKaz",  0,          0,     0}},
+    {EntranceType::CAVE,    {Area::IceRingIsle,                Area::IceRingInterior,            "sea",     40,          0,     0,         "sea",       40,         0},
+                            {Area::IceRingInterior,            Area::IceRingIsle,                "MiniHyo",  0,          0,     0}},
+    {EntranceType::CAVE,    {Area::TheCabana,                  Area::CabanaLabyrinth,            "Abesso",   0,          1,     1,      "Abesso",        0,         1},
+                            {Area::CabanaLabyrinth,            Area::TheCabana,                  "TF_04",    0,          0,     0}},
+    {EntranceType::CAVE,    {Area::NeedleRockIsle,             Area::NeedleRockCave,             "sea",     29,          0,     5,         "sea",       29,         5},
+                            {Area::NeedleRockCave,             Area::NeedleRockIsle,             "SubD42",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::AngularIslesSmallIsle,      Area::AngularIslesCave,           "sea",     47,          1,     5,         "sea",       47,         5},
+                            {Area::AngularIslesCave,           Area::AngularIslesSmallIsle,      "SubD43",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::BoatingCourseSmallIsle,     Area::BoatingCourseCave,          "sea",     48,          0,     5,         "sea",       48,         5},
+                            {Area::BoatingCourseCave,          Area::BoatingCourseSmallIsle,     "SubD71",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::StoneWatcherIsland,         Area::StoneWatcherCave,           "sea",     31,          0,     1,         "sea",       31,         1},
+                            {Area::StoneWatcherCave,           Area::StoneWatcherIsland,         "TF_01",    0,          0,     0}},
+    {EntranceType::CAVE,    {Area::OverlookIslandUpperIsles,   Area::OverlookCave,               "sea",      7,          0,     1,         "sea",        7,         1},
+                            {Area::OverlookCave,               Area::OverlookIslandUpperIsles,   "TF_02",    0,          0,     0}},
+    {EntranceType::CAVE,    {Area::BirdsPeakRockBehindBars,    Area::BirdsPeakRockCave,          "sea",     35,          0,     1,         "sea",       35,         1},
+                            {Area::BirdsPeakRockCave,          Area::BirdsPeakRockBehindBars,    "TF_03",    0,          0,     0}},
+    {EntranceType::CAVE,    {Area::PawprintIsle,               Area::PawprintChuChuCave,         "sea",     12,          0,     1,         "sea",       12,         1},
+                            {Area::PawprintChuChuCave,         Area::PawprintIsle,               "TyuTyu",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::PawprintWizzrobeCaveIsle,   Area::PawprintWizzrobeCave,       "sea",     12,          1,     5,         "sea",       12,         5},
+                            {Area::PawprintWizzrobeCave,       Area::PawprintWizzrobeCaveIsle,   "Cave07",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::DiamondSteppeUpperIsland,   Area::DiamondSteppeWarpMaze,      "sea",     36,          0,     1,         "sea",       36,         1},
+                            {Area::DiamondSteppeWarpMaze,      Area::DiamondSteppeUpperIsland,   "WarpD",    0,          0,     0}},
+    {EntranceType::CAVE,    {Area::BombIsland,                 Area::BombIslandCave,             "sea",     34,          0,     1,         "sea",       34,         1},
+                            {Area::BombIslandCave,             Area::BombIsland,                 "Cave01",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::RockSpireIsle,              Area::RockSpireCave,              "sea",     16,          0,     1,         "sea",       16,         1},
+                            {Area::RockSpireCave,              Area::RockSpireIsle,              "Cave04",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::SharkIsland,                Area::SharkIslandCave,            "sea",     38,          0,     5,         "sea",       38,         5},
+                            {Area::SharkIslandCave,            Area::SharkIsland,                "ITest63",  0,          0,     0}},
+    {EntranceType::CAVE,    {Area::CliffPlateauIsles,          Area::CliffPlateauCave,           "sea",     42,          0,     2,         "sea",       42,         2},
+                            {Area::CliffPlateauCave,           Area::CliffPlateauIsles,          "Cave03",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::HorseshoeIslePastTentacles, Area::HorseshoeCave,              "sea",     43,          0,     5,         "sea",       43,         5},
+                            {Area::HorseshoeCave,              Area::HorseshoeIslePastTentacles, "Cave05",   0,          0,     0}},
+    {EntranceType::CAVE,    {Area::StarIsland,                 Area::StarIslandCave,             "sea",      2,          0,     1,         "sea",        2,         1},
+                            {Area::StarIslandCave,             Area::StarIsland,                 "Cave02",   0,          0,     0}},
 };
 
 static void logEntrancePool(EntrancePool& entrancePool, const std::string poolName)
@@ -88,6 +88,9 @@ static void setAllEntrancesData(World& world)
         forwardEntrance.setRoomNum(forwardEntry.roomNum);
         forwardEntrance.setSclsExitIndex(forwardEntry.sclsExitIndex);
         forwardEntrance.setSpawnId(forwardEntry.spawnId);
+        forwardEntrance.setWarpOutStageName(forwardEntry.warpOutStageName);
+        forwardEntrance.setWarpOutRoomNum(forwardEntry.warpOutRoomNum);
+        forwardEntrance.setWarpOutSpawnId(forwardEntry.warpOutSpawnId);
         forwardEntrance.setEntranceType(type);
         forwardEntrance.setAsPrimary();
         if (returnEntry.parentArea != Area::INVALID)
@@ -97,6 +100,9 @@ static void setAllEntrancesData(World& world)
             returnEntrance.setRoomNum(returnEntry.roomNum);
             returnEntrance.setSclsExitIndex(returnEntry.sclsExitIndex);
             returnEntrance.setSpawnId(returnEntry.spawnId);
+            returnEntrance.setWarpOutStageName(returnEntry.warpOutStageName);
+            returnEntrance.setWarpOutRoomNum(returnEntry.warpOutRoomNum);
+            returnEntrance.setWarpOutSpawnId(returnEntry.warpOutSpawnId);
             returnEntrance.setEntranceType(type);
             forwardEntrance.bindTwoWay(&returnEntrance);
         }
@@ -361,6 +367,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 
         // Determine entrance pools based on settings, to be shuffled in the order we set them by
         EntrancePools entrancePools = {};
+        EntrancePools targetEntrancePools = {};
         if (world.getSettings().randomize_dungeon_entrances)
         {
             entrancePools[EntranceType::DUNGEON] = world.getShuffleableEntrances(EntranceType::DUNGEON, true);
@@ -374,9 +381,22 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         SetShuffledEntrances(entrancePools);
 
         // Combine all entrance pools into one when mixing pools
+        if (world.getSettings().mix_entrance_pools)
+        {
+            entrancePools[EntranceType::MIXED] = {};
+            // For each entrance type, add the entrance to the mixed pool instead
+            for (auto& [type, entrancePool] : entrancePools)
+            {
+                // Not for the mixed pool of course
+                if (type != EntranceType::MIXED)
+                {
+                    addElementsToPool(entrancePools[EntranceType::MIXED], entrancePool);
+                    entrancePools[type].clear();
+                }
+            }
+        }
 
         // Create target pool to correspond with each pool
-        EntrancePools targetEntrancePools = {};
         for (auto& [type, entrancePool] : entrancePools)
         {
             targetEntrancePools[type] = assumeEntrancePool(entrancePool);
