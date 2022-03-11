@@ -10,6 +10,7 @@
 #include "Location.hpp"
 #include "ItemPool.hpp"
 #include "Dungeon.hpp"
+#include "Entrance.hpp"
 #include "../libs/ryml.hpp"
 
 static std::stringstream lastError;
@@ -17,15 +18,7 @@ static std::stringstream lastError;
 class World;
 using WorldPool = std::vector<World>;
 using LocationPool = std::vector<Location*>;
-
-
-struct Exit
-{
-    Area parentArea = Area::INVALID;
-    Area connectedArea = Area::INVALID;
-    Requirement requirement;
-    int worldId = -1;
-};
+using EntrancePool = std::vector<Entrance*>;
 
 struct LocationAccess
 {
@@ -45,7 +38,8 @@ struct AreaEntry
     Area area = Area::INVALID;
     std::list<EventAccess> events;
     std::list<LocationAccess> locations;
-    std::list<Exit> exits;
+    std::list<Entrance> exits;
+    std::list<Entrance*> entrances;
     int worldId = -1;
 
     // variables used for the searching algorithm
@@ -101,10 +95,12 @@ public:
     void determineProgressionLocations();
     void determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
-    Exit& getExit(const Area& parentArea, const Area& connectedArea);
+    Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
+    void removeEntrance(Entrance* entranceToRemove);
+    EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
-    void dumpWorldGraph(const std::string& filename);
+    void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
     std::vector<AreaEntry> areaEntries = {};
     std::vector<Location> locationEntries = {};
@@ -122,7 +118,7 @@ private:
 
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
-    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea);
+    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea);
     WorldLoadingError loadLocation(const ryml::NodeRef& locationObject, LocationId& loadedLocation);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);

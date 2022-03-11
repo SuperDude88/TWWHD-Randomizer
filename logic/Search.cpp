@@ -77,7 +77,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
 }
 
 // Recursively explore new areas based on the given areaEntry
-void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, AreaEntry& areaEntry, std::list<EventAccess*>& eventsToTry, std::list<Exit*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
+void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, AreaEntry& areaEntry, std::list<EventAccess*>& eventsToTry, std::list<Entrance*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
 {
     for (auto& eventAccess : areaEntry.events)
     {
@@ -85,12 +85,12 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
     }
     for (auto& exit : areaEntry.exits)
     {
-        auto& connectedArea = worlds[exit.worldId].areaEntries[areaAsIndex(exit.connectedArea)];
+        auto& connectedArea = worlds[exit.getWorldId()].areaEntries[areaAsIndex(exit.getConnectedArea())];
         // If the connected area is already reachable, then the current exit
         // is ignored since it won't matter for logical access
         if (!connectedArea.isAccessible)
         {
-            if (evaluateRequirement(worlds[exit.worldId], exit.requirement, ownedItems, ownedEvents))
+            if (evaluateRequirement(worlds[exit.getWorldId()], exit.getRequirement(), ownedItems, ownedEvents))
             {
                 connectedArea.isAccessible = true;
                 // std::cout << "Now Exploring " << areaToName(connectedArea.area) << std::endl;
@@ -120,7 +120,10 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)
     {
-        addElementsToPool(items, world.getStartingItems());
+        if (worldToSearch == -1 || worldToSearch == world.getWorldId())
+        {
+            addElementsToPool(items, world.getStartingItems());
+        }
     }
 
     ItemMultiSet ownedItems (items.begin(), items.end());
@@ -132,7 +135,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     // by putting the root exit of each world into the list of exits
     // to try (or only the exit of the single world to explore).
     std::list<EventAccess*> eventsToTry = {};
-    std::list<Exit*> exitsToTry = {};
+    std::list<Entrance*> exitsToTry = {};
     std::list<LocationAccess*> locationsToTry = {};
     for (auto& world : worlds)
     {
@@ -189,12 +192,12 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
         {
             auto exit = *exitItr;
-            if (evaluateRequirement(worlds[exit->worldId], exit->requirement, ownedItems, ownedEvents)) {
+            if (evaluateRequirement(worlds[exit->getWorldId()], exit->getRequirement(), ownedItems, ownedEvents)) {
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
                 // If this exit's connected region has not been explored yet, then explore it
-                auto& connectedArea = worlds[exit->worldId].areaEntries[areaAsIndex(exit->connectedArea)];
+                auto& connectedArea = worlds[exit->getWorldId()].areaEntries[areaAsIndex(exit->getConnectedArea())];
                 if (!connectedArea.isAccessible)
                 {
                     newThingsFound = true;
@@ -324,6 +327,7 @@ void generatePlaythrough(WorldPool& worlds)
     pareDownPlaythrough(worlds);
 }
 
+// Checks to see if the specific locations from the passed in location pool are all accessible
 bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locationsToCheck, int worldToSearch /*= -1*/)
 {
     auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
@@ -338,4 +342,17 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
         #endif
         return inPool;
     });
+}
+
+// Checks to see if ALL locations are accessible
+bool allLocationsReachable(WorldPool& worlds, ItemPool& items, int worldToSearch /*= -1*/)
+{
+    auto accessibleLocations = search(SearchMode::AllLocationsReachable, worlds, items, worldToSearch);
+    auto totalLocationsFound = accessibleLocations.size();
+    if (worldToSearch == -1)
+    {
+        return totalLocationsFound == worlds.size() * (LOCATION_COUNT - 1); // subtract 1 since LocationId::INVALID is never accessible
+    }
+
+    return totalLocationsFound == LOCATION_COUNT - 1;
 }
