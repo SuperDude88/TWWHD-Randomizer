@@ -420,8 +420,13 @@
       OverlookSunkenTreasure: ChartForIsland7 and GrapplingHook
   Exits:
       TheGreatSea: Nothing
-      OverlookCave: Hookshot
+      OverlookIslandUpperIsles: Hookshot
 
+
+- Name: OverlookIslandUpperIsles
+  Exits:
+      OverlookCave: Nothing
+      OverlookIsland: Nothing
 
 - Name: OverlookCave
   Locations:
@@ -429,7 +434,7 @@
           and CanDefeatGreenChuChus and CanDefeatKeese and CanDefeatFireKeese and CanDefeatMorths
           and CanDefeatKargarocs and CanDefeatDarknuts and CanPlayWR
   Exits:
-      OverlookIsland: Nothing
+      OverlookIslandUpperIsles: Nothing
 
 
 - Name: FourEyeReef

@@ -123,6 +123,36 @@ void Entrance::setSpawnId(uint8_t& newSpawnId)
     spawnId = newSpawnId;
 }
 
+std::string Entrance::getWarpOutStageName() const
+{
+    return warpOutStageName;
+}
+
+void Entrance::setWarpOutStageName(std::string newWarpOutStageName)
+{
+    warpOutStageName = std::move(newWarpOutStageName);
+}
+
+uint8_t Entrance::getWarpOutRoomNum() const
+{
+    return warpOutRoomNum;
+}
+
+void Entrance::setWarpOutRoomNum(uint8_t& newWarpOutRoomNum)
+{
+    warpOutRoomNum = newWarpOutRoomNum;
+}
+
+uint8_t Entrance::getWarpOutSpawnId() const
+{
+    return warpOutSpawnId;
+}
+
+void Entrance::setWarpOutSpawnId(uint8_t& newWarpOutSpawnId)
+{
+    warpOutSpawnId = newWarpOutSpawnId;
+}
+
 int Entrance::getWorldId() const
 {
     return worldId;
