@@ -3,9 +3,9 @@
 #include <cmath>
 #include <algorithm>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
 
-
+using eType = Utility::Endian::Type;
 
 ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
 	this->offset = offset;
@@ -24,10 +24,10 @@ ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
 		return ChartError::REACHED_EOF;
 	}
 
-	Utility::byteswap_inplace(tex_x_offset);
-	Utility::byteswap_inplace(tex_y_offset);
-	Utility::byteswap_inplace(salvage_x_pos);
-	Utility::byteswap_inplace(salvage_y_pos);
+	Utility::Endian::toPlatform_inplace(eType::Big, tex_x_offset);
+	Utility::Endian::toPlatform_inplace(eType::Big, tex_y_offset);
+	Utility::Endian::toPlatform_inplace(eType::Big, salvage_x_pos);
+	Utility::Endian::toPlatform_inplace(eType::Big, salvage_y_pos);
 
 	return ChartError::NONE;
 }
@@ -35,10 +35,10 @@ ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
 void ChartPos::save_changes(std::ostream& out) {
 	out.seekp(offset, std::ios::beg);
 
-	uint16_t tex_x = Utility::byteswap(tex_x_offset);
-	uint16_t tex_y = Utility::byteswap(tex_y_offset);
-	uint16_t salvage_x = Utility::byteswap(salvage_x_pos);
-	uint16_t salvage_y = Utility::byteswap(salvage_y_pos);
+	uint16_t tex_x = Utility::Endian::toPlatform(eType::Big, tex_x_offset);
+	uint16_t tex_y = Utility::Endian::toPlatform(eType::Big, tex_y_offset);
+	uint16_t salvage_x = Utility::Endian::toPlatform(eType::Big, salvage_x_pos);
+	uint16_t salvage_y = Utility::Endian::toPlatform(eType::Big, salvage_y_pos);
 
 	out.write((char*)&tex_x, sizeof(tex_x));
 	out.write((char*)&tex_y, sizeof(tex_y));
@@ -175,7 +175,7 @@ namespace FileTypes {
 			return ChartError::REACHED_EOF;
 		}
 
-		Utility::byteswap_inplace(num_charts);
+		Utility::Endian::toPlatform_inplace(eType::Big, num_charts);
 
 		int offset = 4;
 		for (unsigned int i = 0; i < num_charts; i++) {

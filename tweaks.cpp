@@ -15,15 +15,11 @@
 #include "server/filetypes/jpc.hpp"
 #include "server/filetypes/msbt.hpp"
 #include "server/filetypes/bflyt.hpp"
-#include "server/utility/macros.hpp"
+#include "server/filetypes/util/elfUtil.hpp"
+#include "server/filetypes/util/msbtMacros.hpp"
+#include "server/utility/stringUtil.hpp"
 
-
-
-bool initialized = false;
-
-FileTypes::ELF outRPX;
-static std::unordered_map<std::string, uint32_t> custom_symbols;
-
+using eType = Utility::Endian::Type;
 
 struct dungeon_item_info {
 	std::u16string short_name;
@@ -57,92 +53,21 @@ struct pan_cs_info {
 };
 
 
+namespace {
+	FileTypes::ELF gRPX;
+	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
-bool containsAddress(const uint32_t address, const uint32_t memAddress, const uint32_t sectionLen) {
-	if (memAddress <= address && address < memAddress + sectionLen) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
+	void Load_Custom_Symbols(const std::string& file_path) {
+		std::ifstream fptr(file_path, std::ios::in);
 
-std::pair<uint32_t, uint32_t> AddressToOffset(const uint32_t address) { //calculates offset into section, returns first value as section index and second as offset
-	for (unsigned int index : {2, 3, 4}) { //only check a few sections that might be written to
-		if (containsAddress(address, outRPX.shdr_table[index].second.sh_addr, outRPX.shdr_table[index].second.sh_size)) {
-			return {index, address - outRPX.shdr_table[index].second.sh_addr};
+		nlohmann::json symbols = nlohmann::json::parse(fptr);
+		for (const auto& symbol : symbols.items()) {
+			uint32_t address = std::stoi(symbol.value().get<std::string>(), nullptr, 16);
+			custom_symbols[symbol.key()] = address;
 		}
+
+		return;
 	}
-	return {0, 0};
-}
-
-std::pair<uint32_t, uint32_t> AddressToOffset(const uint32_t address, const unsigned int sectionIndex) { //.rela sections all have same address ranges, need to specify index to make it work
-	if (!containsAddress(address, outRPX.shdr_table[sectionIndex].second.sh_addr, outRPX.shdr_table[sectionIndex].second.sh_size)) {
-		return {0, 0};
-	}
-	return {sectionIndex, address - outRPX.shdr_table[sectionIndex].second.sh_addr};
-}
-
-void write_u8_to_rpx(const std::pair<int, int>& offset, const uint8_t data) { //assume sections are sorted by index, always should be 
-	outRPX.shdr_table[offset.first].second.data[offset.second] = (char)data;
-	return;
-}
-
-void write_u16_to_rpx(const std::pair<int, int>& offset, const uint16_t data) { //assume sections are sorted by index, always should be 
-	uint16_t toWrite = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 2, (char*)&toWrite, 2);
-	return;
-}
-
-void write_u32_to_rpx(const std::pair<int, int>& offset, const uint32_t data) { //assume sections are sorted by index, always should be 
-	uint32_t toWrite = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
-	return;
-}
-
-void write_float_to_rpx(const std::pair<int, int>& offset, const float data) { //assume sections are sorted by index, always should be 
-	float toWrite = Utility::byteswap(data);
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
-	return;
-}
-
-void write_bytes_to_rpx(const std::pair<int, int>& offset, const std::vector<uint8_t>& Bytes) { //assume sections are sorted by index, always should be 
-	for (unsigned int i = 0; i < Bytes.size(); i++) {
-		outRPX.shdr_table[offset.first].second.data[offset.second + i] = (char)Bytes[i];
-	}
-	return;
-}
-
-uint8_t read_rpx_u8(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
-	return *(uint8_t*)&outRPX.shdr_table[offset.first].second.data[offset.second];
-}
-
-uint32_t read_rpx_u32(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
-	return *(uint32_t*)&outRPX.shdr_table[offset.first].second.data[offset.second];
-}
-
-float read_rpx_float(const std::pair<int, int>& offset) { //assume sections are sorted by index, always should be 
-	return *(float*)&outRPX.shdr_table[offset.first].second.data[offset.second];
-}
-
-std::vector<uint8_t> read_rpx_bytes(const std::pair<int, int>& offset, const int NumBytes) {
-	uint8_t buffer = 0x0;
-	std::vector<uint8_t> Bytes;
-	Bytes.reserve(NumBytes); //avoid extra reallocations
-	for (int i = 0; i < NumBytes; i++) {
-		buffer = *(uint8_t*)&outRPX.shdr_table[offset.first].second.data[offset.second + i];
-		Bytes.push_back(buffer);
-	}
-	return Bytes;
-}
-
-nlohmann::json Load_Patches(const std::string& file_path) {
-	std::ifstream fptr;
-	fptr.open(file_path, std::ios::in);
-
-	nlohmann::json patches = nlohmann::json::parse(fptr);
-
-	return patches;
 }
 
 void Apply_Patch(const std::string& file_path) {
@@ -152,19 +77,19 @@ void Apply_Patch(const std::string& file_path) {
 
 	for (auto& patch : patches.items()) {
 		uint32_t offset = std::stoi(patch.key(), nullptr, 16);
-		std::pair<uint32_t, uint32_t> sectionOffset = AddressToOffset(offset);
+		std::pair<uint32_t, uint32_t> sectionOffset = elfUtil::AddressToOffset(gRPX, offset);
 		if (sectionOffset.first == 0 && sectionOffset.second == 0) { //address not in section
 			std::string data;
-			for (const std::string byte : patch.value()) {
+			for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
 				unsigned char val = std::stoi(byte, nullptr, 16);
 				data += val;
 			}
-			outRPX.extend_section(2, offset, data); //add data at the specified offset
+			gRPX.extend_section(2, offset, data); //add data at the specified offset
 		}
 		else {
-			for (const std::string byte : patch.value()) {
+			for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
 				uint8_t toWrite = std::stoi(byte, nullptr, 16);
-				write_u8_to_rpx(sectionOffset, toWrite);
+				elfUtil::write_u8(gRPX, sectionOffset, toWrite);
 				sectionOffset.second++; //Cycles through the bytes individually, need to increase the offset by one each time
 			}
 		}
@@ -184,44 +109,24 @@ void Add_Relocations(const std::string file_path) { //untested
 	entry.resize(12);
 	for (auto& relocation : relocations) {
 		Elf32_Rela reloc;
-		reloc.r_offset = std::stoi((std::string)relocation["r_offset"], nullptr, 16);
-		reloc.r_info = std::stoi((std::string)relocation["r_info"], nullptr, 16);
-		reloc.r_addend = std::stoi((std::string)relocation["r_addend"], nullptr, 16);
+		reloc.r_offset = std::stoi(relocation["r_offset"].get<std::string>(), nullptr, 16);
+		reloc.r_info = std::stoi(relocation["r_info"].get<std::string>(), nullptr, 16);
+		reloc.r_addend = std::stoi(relocation["r_addend"].get<std::string>(), nullptr, 16);
 
-		entry.replace(0, 4, (char*)&reloc.r_offset, 4);
-		entry.replace(4, 4, (char*)&reloc.r_info, 4);
-		entry.replace(8, 4, (char*)&reloc.r_addend, 4);
-		outRPX.extend_section(7, entry);
+		entry.replace(0, 4, reinterpret_cast<const char*>(&reloc.r_offset), 4);
+		entry.replace(4, 4, reinterpret_cast<const char*>(&reloc.r_info), 4);
+		entry.replace(8, 4, reinterpret_cast<const char*>(&reloc.r_addend), 4);
+		gRPX.extend_section(7, entry);
 	}
 
 	return;
 }
 
 void Remove_Relocation(const std::pair<int, int>& offset) {
-	outRPX.shdr_table[offset.first].second.data.replace(offset.second, 0xC, 0xC, '\0');
+	gRPX.shdr_table[offset.first].second.data.replace(offset.second, 0xC, 0xC, '\0');
 	return;
 }
 
-void Load_Custom_Symbols(const std::string& file_path) {
-	std::ifstream fptr;
-	fptr.open(file_path, std::ios::in);
-
-	nlohmann::json symbols = nlohmann::json::parse(fptr);
-	for (auto& symbol : symbols.items()) {
-		uint32_t address = std::stoi((std::string)symbol.value(), nullptr, 16);
-		custom_symbols[symbol.key()] = address;
-	}
-
-	return;
-}
-
-
-
-std::u16string toUTF16(const std::string& str)
-{
-	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
-	return conv.from_bytes(str);
-}
 
 std::u16string word_wrap_string(const std::u16string& string, const int max_line_len) {
 	unsigned int index_in_str = 0;
@@ -318,75 +223,28 @@ std::u16string get_indefinite_article(const std::u16string& string) {
 }
 
 std::string pad_str_4_lines(const std::string& string) {
-	std::vector<std::string> lines = split_lines(string);
+	std::vector<std::string> lines = Utility::Str::split(string, '\n');
 
 	unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
 	for (unsigned int i = 0; i < padding_lines_needed; i++) {
 		lines.push_back("");
 	}
 
-	return merge_lines(lines);
+	return Utility::Str::merge(lines, '\n');
 }
 
 std::u16string pad_str_4_lines(const std::u16string& string) {
-	std::vector<std::u16string> lines = split_lines(string);
+	std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
 
 	unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
 	for (unsigned int i = 0; i < padding_lines_needed; i++) {
 		lines.push_back(u"");
 	}
 
-	return merge_lines(lines);
+	return Utility::Str::merge(lines, u'\n');
 }
 
-std::vector<std::string> split_lines(const std::string& string) {
-	std::vector<std::string> lines;
-	std::string tail = string;
-	size_t index = 0;
-	while (index = tail.find_first_of('\n'), index != std::string::npos) {
-		lines.push_back(tail.substr(0, index));
-		tail = tail.substr(index + 1);
-		index = tail.find_first_of('\n');
-	}
-	lines.push_back(string); //add anything after last line break
-
-	return lines;
-}
-
-std::vector<std::u16string> split_lines(const std::u16string& string) {
-	std::vector<std::u16string> lines;
-	std::u16string tail = string;
-	size_t index = 0;
-
-	while (index = tail.find_first_of(u'\n'), index != std::u16string::npos) {
-		lines.push_back(tail.substr(0, index));
-		tail = tail.substr(index + 1);
-		index = tail.find_first_of(u'\n');
-	}
-	lines.push_back(string); //add anything after last line break
-
-	return lines;
-}
-
-std::string merge_lines(const std::vector<std::string>& lines) {
-	std::string ret;
-	for (const std::string& segment : lines) {
-		ret += segment + '\n';
-	}
-
-	return ret;
-}
-
-std::u16string merge_lines(const std::vector<std::u16string>& lines) {
-	std::u16string ret;
-	for (const std::u16string& segment : lines) {
-		ret += segment + u'\n';
-	}
-
-	return ret;
-}
-
-std::u16string gameItemToName(const GameItem item) {
+/*std::u16string gameItemToName(const GameItem item) {
 	static std::unordered_map<GameItem, std::u16string> itemNameMap = { //terrible indentation is to make copying/editing easier, will remove once stuff is more finalized
 		{GameItem::HeartDrop, 						u"Heart (Pickup)"},
 		{GameItem::GreenRupee, 						u"Green Rupee"},
@@ -500,7 +358,7 @@ std::u16string gameItemToName(const GameItem item) {
 		{GameItem::ETDungeonMap, 					u"ET Dungeon Map"},
 		{GameItem::ETCompass, 						u"ET Compass"},
 		{GameItem::SwiftSail, 						u"Swift Sail"},
-		{GameItem::BoatsSail, 						u"Boat's Sail"},
+		{GameItem::ProgressiveSail, 				u"ProgressiveSail"},
 		{GameItem::TriforceChart1Deciphered, 		u"Triforce Chart 1 got deciphered"},
 		{GameItem::TriforceChart2Deciphered, 		u"Triforce Chart 2 got deciphered"},
 		{GameItem::TriforceChart3Deciphered, 		u"Triforce Chart 3 got deciphered"},
@@ -623,15 +481,15 @@ std::u16string gameItemToName(const GameItem item) {
 		return u"INVALID";
 	}
 	return itemNameMap.at(item);
-}
+}*/
 
 
 
 void set_new_game_starting_location(const uint8_t spawn_id, const uint8_t room_index) {
-	write_u8_to_rpx(AddressToOffset(0x025b508F), room_index);
-	write_u8_to_rpx(AddressToOffset(0x025b50CB), room_index);
-	write_u8_to_rpx(AddressToOffset(0x025B5093), spawn_id);
-	write_u8_to_rpx(AddressToOffset(0x025B50CF), spawn_id);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B508F), room_index);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B50CB), room_index);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B5093), spawn_id);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B50CF), spawn_id);
 	return;
 }
 
@@ -650,7 +508,7 @@ void change_ship_starting_island(const uint8_t room_index) {
 	FileTypes::DZXFile room_dzr;
 	room_dzr.loadFromFile(inPath.string());
 	std::vector<ChunkEntry*> ship_spawns = room_dzr.entries_by_type("SHIP");
-	ChunkEntry* ship_spawn_0 = (ChunkEntry*)0; //initialization is just to make compiler happy
+	ChunkEntry* ship_spawn_0 = nullptr; //initialization is just to make compiler happy
 	for (ChunkEntry* spawn : ship_spawns) { //Find spawn with ID 0
 		if (reinterpret_cast<uint8_t*>(&spawn->data[0xE]) == 0) ship_spawn_0 = spawn;
 	}
@@ -660,7 +518,7 @@ void change_ship_starting_island(const uint8_t room_index) {
 	stage_dzs.loadFromFile(stagePath.string());
 	std::vector<ChunkEntry*> actors = stage_dzs.entries_by_type("ACTR");
 	for (ChunkEntry* actor : actors) {
-		if (strncmp(&actor->data[0], "SHIP", 4) && ship_spawn_0 != nullptr) {
+		if (std::strncmp(&actor->data[0], "SHIP", 4) == 0 && ship_spawn_0 != nullptr) {
 			actor->data.replace(0xC, 0xC, ship_spawn_0->data, 0x0, 0xC);
 			actor->data.replace(0x1A, 0x2, ship_spawn_0->data, 0xC, 0x2);
 			actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
@@ -733,7 +591,7 @@ void fix_deku_leaf_model() {
 	dzr.loadFromFile(path.string());
 	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 	for (ChunkEntry* actor : actors) {
-		if (strncmp(&actor->data[0], "itemDek\x00", 8)) actor->data = data;
+		if (std::strncmp(&actor->data[0], "itemDek\x00", 8) == 0) actor->data = data;
 	}
 	dzr.writeToFile(path.string());
 
@@ -802,9 +660,9 @@ void allow_all_items_to_be_field_items() {
 			szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
 		}
 
-		write_u32_to_rpx(AddressToOffset(field_item_resources_addr), szs_name_pointer);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr), szs_name_pointer);
 		if (item_resources_addr_to_fix) {
-			write_u32_to_rpx(AddressToOffset(item_resources_addr_to_fix), szs_name_pointer);
+			elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_fix), szs_name_pointer);
 		}
 
 		//need relocation entries so pointers work on console
@@ -820,10 +678,10 @@ void allow_all_items_to_be_field_items() {
 
 		std::string entry;
 		entry.resize(12);
-		entry.replace(0, 4, (char*)&relocation.r_offset, 4);
-		entry.replace(4, 4, (char*)&relocation.r_info, 4);
-		entry.replace(8, 4, (char*)&relocation.r_addend, 4);
-		outRPX.extend_section(9, entry);
+		entry.replace(0, 4, reinterpret_cast<const char*>(&relocation.r_offset), 4);
+		entry.replace(4, 4, reinterpret_cast<const char*>(&relocation.r_info), 4);
+		entry.replace(8, 4, reinterpret_cast<const char*>(&relocation.r_addend), 4);
+		gRPX.extend_section(9, entry);
 
 		if (item_resources_addr_to_fix) {
 			Elf32_Rela relocation2;
@@ -833,40 +691,40 @@ void allow_all_items_to_be_field_items() {
 
 			std::string entry2;
 			entry2.resize(12);
-			entry2.replace(0, 4, (char*)&relocation2.r_offset, 4);
-			entry2.replace(4, 4, (char*)&relocation2.r_info, 4);
-			entry2.replace(8, 4, (char*)&relocation2.r_addend, 4);
-			outRPX.extend_section(9, entry2);
+			entry2.replace(0, 4, reinterpret_cast<const char*>(&relocation2.r_offset), 4);
+			entry2.replace(4, 4, reinterpret_cast<const char*>(&relocation2.r_info), 4);
+			entry2.replace(8, 4, reinterpret_cast<const char*>(&relocation2.r_addend), 4);
+			gRPX.extend_section(9, entry2);
 		}
 
-		std::vector<uint8_t> data1 = read_rpx_bytes(AddressToOffset(item_resources_addr_to_copy_from + 8), 0xD);
-		std::vector<uint8_t> data2 = read_rpx_bytes(AddressToOffset(item_resources_addr_to_copy_from + 0x1C), 4);
-		write_bytes_to_rpx(AddressToOffset(field_item_resources_addr + 4), data1);
-		write_bytes_to_rpx(AddressToOffset(field_item_resources_addr + 0x14), data2);
+		std::vector<uint8_t> data1 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 8), 0xD);
+		std::vector<uint8_t> data2 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x1C), 4);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 4), data1);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x14), data2);
 		if (item_resources_addr_to_fix) {
-			write_bytes_to_rpx(AddressToOffset(item_resources_addr_to_fix + 8), data1);
-			write_bytes_to_rpx(AddressToOffset(item_resources_addr_to_fix + 0x1C) , data2);
+			elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_fix + 8), data1);
+			elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_fix + 0x1C) , data2);
 		}
 	}
 
 	for (const uint32_t& address : { 0x0255220CU, 0x02552214U, 0x0255221CU, 0x02552224U, 0x0255222CU, 0x02552234U, 0x02552450U }) { //unsigned to make compiler happy
-		write_u32_to_rpx(AddressToOffset(address), 0x60000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, address), 0x60000000);
 	}
 
 	Apply_Patch("./asm/patch_diffs/field_items_diff.json"); //some special stuff because HD silly
 
-	write_u32_to_rpx(AddressToOffset(0x0007a2d0, 7), 0x00011ed8); //Update the Y offset that is being read (.rela.text edit)
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0007a2d0, 7), 0x00011ed8); //Update the Y offset that is being read (.rela.text edit)
 
 	uint32_t extra_item_data_list_start = 0x101e8674;
 	for (int item_id = 0x00; item_id < 0xFF + 1; item_id++) {
 		uint32_t item_extra_data_entry_addr = extra_item_data_list_start + 4 * item_id;
-		uint8_t original_y_offset = read_rpx_u8(AddressToOffset(item_extra_data_entry_addr + 1));
+		uint8_t original_y_offset = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 1));
 		if (original_y_offset == 0) {
-			write_u8_to_rpx(AddressToOffset(item_extra_data_entry_addr + 1), 0x28);
+			elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 1), 0x28);
 		}
-		uint8_t original_radius = read_rpx_u8(AddressToOffset(item_extra_data_entry_addr + 2));
+		uint8_t original_radius = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 2));
 		if (original_radius == 0) {
-			write_u8_to_rpx(AddressToOffset(item_extra_data_entry_addr + 2), 0x28);
+			elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 2), 0x28);
 		}
 	}
 	//Add vscroll.szs
@@ -880,9 +738,9 @@ void remove_shop_item_forced_uniqueness_bit() {
 	const std::array<uint8_t, 4> item_indexes = { 0x0, 0xB, 0xC, 0xD };
 	for (const uint8_t& shop_item_index : item_indexes) {
 		uint32_t shop_item_data_addr = shop_item_data_list_start + shop_item_index * 0x10;
-		uint8_t buy_requirements_bitfield = read_rpx_u8(AddressToOffset(shop_item_data_addr + 0xC));
+		uint8_t buy_requirements_bitfield = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, shop_item_data_addr + 0xC));
 		buy_requirements_bitfield = (buy_requirements_bitfield & (~0x2));
-		write_u8_to_rpx(AddressToOffset(shop_item_data_addr + 0xC), buy_requirements_bitfield);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, shop_item_data_addr + 0xC), buy_requirements_bitfield);
 	}
 }
 
@@ -899,7 +757,7 @@ void remove_ff2_cutscenes() {
 
 	std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
 	for (ChunkEntry* exit : exits) {
-		if (strncmp(&exit->data[0], "M2ganon\x00", 8)) exit->data = std::string("sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF", 0xC);
+		if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) exit->data = std::string("sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF", 0xC);
 	}
 	dzr.writeToFile(path.string());
 
@@ -913,44 +771,44 @@ void make_items_progressive() {
 
 	for (const uint8_t sword_id : {0x38U, 0x39U, 0x3AU, 0x3DU, 0x3EU}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (sword_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_sword_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_sword_item_func") - 0x02000000);
 	}
 	for (const uint8_t shield_id : {0x3BU, 0x3CU}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_shield_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_shield_item_func") - 0x02000000);
 	}
 	for (const uint8_t bow_id : {0x27U, 0x35U, 0x36U}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (bow_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_bow_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_bow_item_func") - 0x02000000);
 	}
 	for (const uint8_t wallet_id : {0xABU, 0xACU}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (wallet_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_wallet_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_wallet_item_func") - 0x02000000);
 	}
 	for (const uint8_t bomb_bag_id : {0xADU, 0xAEU}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (bomb_bag_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_bomb_bag_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_bomb_bag_item_func") - 0x02000000);
 	}
 	for (const uint8_t quiver_id : {0xAFU, 0xB0U}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (quiver_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_quiver_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_quiver_item_func") - 0x02000000);
 	}
 	for (const uint8_t picto_id : {0x23U, 0x26U}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (picto_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_picto_box_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_picto_box_item_func") - 0x02000000);
 	}
 	for (const uint8_t sail_id : {0x77U, 0x78U}) {
 		uint32_t item_get_func_addr = item_get_func_pointer + (sail_id * 0xC) + 8;
-		write_u32_to_rpx(AddressToOffset(item_get_func_addr, 9), custom_symbols.at("progressive_sail_item_func") - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_sail_item_func") - 0x02000000);
 	}
 
-	write_u32_to_rpx(AddressToOffset(0x0254e8c4), 0x60000000);
-	write_u32_to_rpx(AddressToOffset(0x0254e8cc), 0x60000000);
-	write_u32_to_rpx(AddressToOffset(0x0254e66c), 0x60000000);
-	write_u32_to_rpx(AddressToOffset(0x0254e674), 0x60000000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e8c4), 0x60000000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e8cc), 0x60000000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e66c), 0x60000000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e674), 0x60000000);
 
-	write_u32_to_rpx(AddressToOffset(0x0254e96c), 0x60000000);
-	write_u32_to_rpx(AddressToOffset(0x0254e97c), 0x60000000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e96c), 0x60000000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e97c), 0x60000000);
 
 	return;
 }
@@ -1007,7 +865,7 @@ void add_more_magic_jars() {
 		std::vector<ChunkEntry*> actors = drc_hub.entries_by_type("ACTR");
 		std::vector<ChunkEntry*> skulls;
 		for (ChunkEntry* actor : actors) {
-			if (strncmp(&actor->data[0], "Odokuro\x00", 8)) skulls.push_back(actor);
+			if (std::strncmp(&actor->data[0], "Odokuro\x00", 8) == 0) skulls.push_back(actor);
 		}
 		skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
 		skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
@@ -1022,7 +880,7 @@ void add_more_magic_jars() {
 		std::vector<ChunkEntry*> actors = drc_before_boss.entries_by_type("ACTR");
 		std::vector<ChunkEntry*> skulls;
 		for (ChunkEntry* actor : actors) {
-			if (strncmp(&actor->data[0], "Odokuro\x00", 8)) skulls.push_back(actor);
+			if (std::strncmp(&actor->data[0], "Odokuro\x00", 8) == 0) skulls.push_back(actor);
 		}
 		skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
 		skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
@@ -1049,7 +907,7 @@ void add_more_magic_jars() {
 		std::vector<ChunkEntry*> actors = totg.entries_by_type("ACTR");
 		std::vector<ChunkEntry*> pots;
 		for (ChunkEntry* actor : actors) {
-			if (strncmp(&actor->data[0], "kotubo\x00\x00", 8)) pots.push_back(actor);
+			if (std::strncmp(&actor->data[0], "kotubo\x00\x00", 8) == 0) pots.push_back(actor);
 		}
 		pots[1]->data = std::string("\x6B\x6F\x74\x75\x62\x6F\x00\x00\x70\x7F\xFF\x0A\xC5\x6E\x20\x00\x43\x66\x00\x05\xC5\xDF\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF", 0x20);
 		totg.writeToFile(path.string());
@@ -1068,10 +926,10 @@ void modify_title_screen() {
 	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
 	newPane.pane->name = "T_Version";
 	newPane.pane->name.resize(0x18);
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->text = std::u16string(u"Ver 01.00.00a\0", 0xE);
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->fontIndex = 0;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->lineAlignment = Panes::txt1::LineAlignment::CENTER;
+	dynamic_cast<txt1*>(newPane.pane.get())->text = std::u16string(u"Ver 01.00.00a\0", 0xE);
+	dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
+	dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
+	dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
 
 	//update "HD" image position
 	layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.X = -165.0f;
@@ -1095,9 +953,9 @@ void modify_title_screen() {
 	g_session.copyToGameFile("./assets/Subtitle_Mask.bflim", "content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
 
 	//update sparkle size/position
-	write_u32_to_rpx(AddressToOffset(0x101f7048), 0x3fb33333); //scale
-	write_u32_to_rpx(AddressToOffset(0x101f7044), 0x40100000); //possibly particle size, JP changes it for its larger title text
-	write_u32_to_rpx(AddressToOffset(0x10108280), 0xc2180000); //vertical position
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7048), 0x3fb33333); //scale
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7044), 0x40100000); //possibly particle size, JP changes it for its larger title text
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x10108280), 0xc2180000); //vertical position
 	return;
 }
 
@@ -1209,28 +1067,28 @@ void allow_dungeon_items_to_appear_anywhere() {
 		uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
 		std::u16string dungeon_name = dungeon_names.at(item_data.short_name);
 
-		write_u32_to_rpx(AddressToOffset(item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000); //write to the relocation entries
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000); //write to the relocation entries
 		
 		int message_id = 101 + item_data.item_id;
 		Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
 		if (item_data.base_item_name == u"Small Key") {
 			std::u16string article = get_indefinite_article(dungeon_name); //this is to avoid a duplicate function call
-			std::u16string message(DRAW_INSTANT u"You got " + article + u" " TEXT_COLOR_RED + dungeon_name + u" small key" TEXT_COLOR_DEFAULT u"!", 39 + article.size() + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message(DRAW_INSTANT + u"You got " + article + u" " + TEXT_COLOR_RED + dungeon_name + u" small key" + TEXT_COLOR_DEFAULT + u"!", 39 + article.size() + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		} 
 		else if (item_data.base_item_name == u"Big Key") {
-			std::u16string message(DRAW_INSTANT u"You got the " TEXT_COLOR_RED + dungeon_name + u" Big Key" TEXT_COLOR_DEFAULT u"!", 40 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message(DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Big Key" + TEXT_COLOR_DEFAULT + u"!", 40 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		}
 		else if (item_data.base_item_name == u"Dungeon Map") {
-			std::u16string message(DRAW_INSTANT u"You got the " TEXT_COLOR_RED + dungeon_name + u" Dungeon Map" TEXT_COLOR_DEFAULT u"!", 44 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message(DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Dungeon Map" + TEXT_COLOR_DEFAULT + u"!", 44 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		}
 		else if (item_data.base_item_name == u"Compass") {
-			std::u16string message(DRAW_INSTANT u"You got the " TEXT_COLOR_RED + dungeon_name + u" Compass" TEXT_COLOR_DEFAULT u"!", 40 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message(DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Compass" + TEXT_COLOR_DEFAULT + u"!", 40 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		}
@@ -1243,8 +1101,8 @@ void allow_dungeon_items_to_appear_anywhere() {
 
 		uint32_t szs_name_pointer = szs_name_pointers.at(base_item_id);
 
-		write_u32_to_rpx(AddressToOffset(field_item_resources_addr), szs_name_pointer);
-		write_u32_to_rpx(AddressToOffset(item_resources_addr), szs_name_pointer);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr), szs_name_pointer);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr), szs_name_pointer);
 
 		//need relocation entries so pointers work on console
 		Elf32_Rela relocation;
@@ -1254,10 +1112,10 @@ void allow_dungeon_items_to_appear_anywhere() {
 
 		std::string entry;
 		entry.resize(12);
-		entry.replace(0, 4, (char*)&relocation.r_offset, 4);
-		entry.replace(4, 4, (char*)&relocation.r_info, 4);
-		entry.replace(8, 4, (char*)&relocation.r_addend, 4);
-		outRPX.extend_section(9, entry);
+		entry.replace(0, 4, reinterpret_cast<const char*>(&relocation.r_offset), 4);
+		entry.replace(4, 4, reinterpret_cast<const char*>(&relocation.r_info), 4);
+		entry.replace(8, 4, reinterpret_cast<const char*>(&relocation.r_addend), 4);
+		gRPX.extend_section(9, entry);
 
 		Elf32_Rela relocation2;
 		relocation2.r_offset = item_resources_addr;
@@ -1266,27 +1124,27 @@ void allow_dungeon_items_to_appear_anywhere() {
 
 		std::string entry2;
 		entry2.resize(12);
-		entry2.replace(0, 4, (char*)&relocation2.r_offset, 4);
-		entry2.replace(4, 4, (char*)&relocation2.r_info, 4);
-		entry2.replace(8, 4, (char*)&relocation2.r_addend, 4);
-		outRPX.extend_section(9, entry2);
+		entry2.replace(0, 4, reinterpret_cast<const char*>(&relocation2.r_offset), 4);
+		entry2.replace(4, 4, reinterpret_cast<const char*>(&relocation2.r_info), 4);
+		entry2.replace(8, 4, reinterpret_cast<const char*>(&relocation2.r_addend), 4);
+		gRPX.extend_section(9, entry2);
 
-		std::vector<uint8_t> data1 = read_rpx_bytes(AddressToOffset(item_resources_addr_to_copy_from + 8), 0xD);
-		write_bytes_to_rpx(AddressToOffset(item_resources_addr + 8), data1);
-		write_bytes_to_rpx(AddressToOffset(field_item_resources_addr + 4), data1);
-		std::vector<uint8_t> data2 = read_rpx_bytes(AddressToOffset(item_resources_addr_to_copy_from + 0x1C), 4);
-		write_bytes_to_rpx(AddressToOffset(item_resources_addr + 0x1C), data2);
-		write_bytes_to_rpx(AddressToOffset(field_item_resources_addr + 0x14), data2);
+		std::vector<uint8_t> data1 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 8), 0xD);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 8), data1);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 4), data1);
+		std::vector<uint8_t> data2 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x1C), 4);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x1C), data2);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x14), data2);
 
-		std::vector<uint8_t> data3 = read_rpx_bytes(AddressToOffset(item_resources_addr_to_copy_from + 0x15), 0x7);
-		write_bytes_to_rpx(AddressToOffset(item_resources_addr + 0x15), data3);
-		std::vector<uint8_t> data4 = read_rpx_bytes(AddressToOffset(item_resources_addr_to_copy_from + 0x20), 0x4);
-		write_bytes_to_rpx(AddressToOffset(item_resources_addr + 0x20), data4);
+		std::vector<uint8_t> data3 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x15), 0x7);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x15), data3);
+		std::vector<uint8_t> data4 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x20), 0x4);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x20), data4);
 
-		std::vector<uint8_t> data5 = read_rpx_bytes(AddressToOffset(field_item_resources_addr_to_copy_from + 0x11), 0x3);
-		write_bytes_to_rpx(AddressToOffset(field_item_resources_addr + 0x11), data5);
-		std::vector<uint8_t> data6 = read_rpx_bytes(AddressToOffset(field_item_resources_addr_to_copy_from + 0x18), 0x4);
-		write_bytes_to_rpx(AddressToOffset(field_item_resources_addr + 0x18), data6);
+		std::vector<uint8_t> data5 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x11), 0x3);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x11), data5);
+		std::vector<uint8_t> data6 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x18), 0x4);
+		elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x18), data6);
 		
 	}
 	msbt.writeToFile(path.string());
@@ -1310,7 +1168,7 @@ void remove_bog_warp_in_cs() {
 		FileTypes::DZXFile room_dzr;
 		room_dzr.loadFromFile(filePath.string());
 		for (ChunkEntry* spawn : room_dzr.entries_by_type("PLYR")) {
-			uint8_t spawn_type = ((*(uint8_t*)&spawn->data[0xB]) & 0xF0) >> 4;
+			uint8_t spawn_type = ((*reinterpret_cast<uint8_t*>(&spawn->data[0xB]) & 0xF0) >> 4);
 			if (spawn_type == 0x09) {
 				spawn->data[0xB] = (spawn->data[0xB] & 0x0F) | 0x20;
 			}
@@ -1324,14 +1182,14 @@ void fix_shop_item_y_offsets() {
 
 	for (uint8_t id = 0; id < 0xFF; id++) {
 		uint32_t display_data_addr = shop_item_display_data_list_start + id * 0x20;
-		float y_offset = read_rpx_float(AddressToOffset(display_data_addr + 0x10));
+		float y_offset = elfUtil::read_float(gRPX, elfUtil::AddressToOffset(gRPX, display_data_addr + 0x10));
 		uint8_t ArrowID[] = { 0x10, 0x11, 0x12 };
 
 		if (y_offset == 0 && std::find(std::begin(ArrowID), std::end(ArrowID), id) == std::end(ArrowID)) {
 			//If the item didn't originally have a Y offset we need to give it one so it's not sunken into the pedestal.
 			// Only exception are for items 10 11 and 12 - arrow refill pickups.Those have no Y offset but look fine already.
 			float new_y_offset = 20.0f;
-			write_float_to_rpx(AddressToOffset(display_data_addr + 0x10), new_y_offset);
+			elfUtil::write_float(gRPX, elfUtil::AddressToOffset(gRPX, display_data_addr + 0x10), new_y_offset);
 		}
 	}
 }
@@ -1342,8 +1200,8 @@ void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem&
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
 	
-	msbt.messages_by_label["03906"].text.message = TEXT_COLOR_RED + gameItemToName(beedle20Item) + u"  20 Rupees" TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["03909"].text.message = gameItemToName(beedle20Item) + u"  20 Rupees\nWill you buy it?\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+	msbt.messages_by_label["03906"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle20Item)) + u"  20 Rupees" + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["03909"].text.message = Utility::Str::toUTF16(gameItemToName(beedle20Item)) + u"  20 Rupees\nWill you buy it?\n" + TWO_CHOICES + u"I'll buy it\nNo thanks";
 
 	msbt.writeToFile(path.string());
 
@@ -1352,14 +1210,14 @@ void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem&
 	FileTypes::MSBTFile msbt2;
 	msbt2.loadFromFile(path.string());
 
-	msbt2.messages_by_label["12106"].text.message = TEXT_COLOR_RED + gameItemToName(beedle500Item) + u"  500 Rupees\n" TEXT_COLOR_DEFAULT u"This is my last one.";
-	msbt2.messages_by_label["12109"].text.message = u"This " TEXT_COLOR_RED + gameItemToName(beedle500Item) + TEXT_COLOR_DEFAULT u" is a mere " TEXT_COLOR_RED u"500 Rupees" TEXT_COLOR_DEFAULT u"!\nBuy it! Buy it! Buy buy buy!\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+	msbt2.messages_by_label["12106"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + u"  500 Rupees\n" + TEXT_COLOR_DEFAULT + u"This is my last one.";
+	msbt2.messages_by_label["12109"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + TEXT_COLOR_DEFAULT + u" is a mere " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks";
 
-	msbt2.messages_by_label["12107"].text.message = TEXT_COLOR_RED + gameItemToName(beedle950Item) + u"  950 Rupees\n" TEXT_COLOR_DEFAULT u"This is my last one of these, too.";
-	msbt2.messages_by_label["12110"].text.message = u"This " TEXT_COLOR_RED + gameItemToName(beedle950Item) + TEXT_COLOR_DEFAULT u" is only " TEXT_COLOR_RED u"950 Rupees" TEXT_COLOR_DEFAULT u"!\nBuy it! Buy it! Buy buy buy!\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+	msbt2.messages_by_label["12107"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle950Item)) + u"  950 Rupees\n" + TEXT_COLOR_DEFAULT + u"This is my last one of these, too.";
+	msbt2.messages_by_label["12110"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle950Item)) + TEXT_COLOR_DEFAULT + u" is only " + TEXT_COLOR_RED + u"950 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks";
 
-	msbt2.messages_by_label["12108"].text.message = TEXT_COLOR_RED + gameItemToName(beedle900Item) + u"  900 Rupees\n" TEXT_COLOR_DEFAULT u"The price may be high, but it'll pay\noff handsomely in the end!";
-	msbt2.messages_by_label["12111"].text.message = u"This " TEXT_COLOR_RED + gameItemToName(beedle900Item) + TEXT_COLOR_DEFAULT u" is just " TEXT_COLOR_RED u"900 Rupees" TEXT_COLOR_DEFAULT u"!\nBuy it! Buy it! Buy buy buy!\n" TWO_CHOICES u"I'll buy it\nNo thanks";
+	msbt2.messages_by_label["12108"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + u"  900 Rupees\n" + TEXT_COLOR_DEFAULT + u"The price may be high, but it'll pay\noff handsomely in the end!";
+	msbt2.messages_by_label["12111"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u" is just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks";
 
 	msbt2.writeToFile(path.string());
 	return;
@@ -1371,11 +1229,11 @@ void update_auction_item_names(const GameItem& auction5, const GameItem& auction
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
 
-	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + gameItemToName(auction40) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + gameItemToName(auction5) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07442"].text.message = TEXT_COLOR_RED + gameItemToName(auction60) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + gameItemToName(auction80) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + gameItemToName(auction100) + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction40)) + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction5)) + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07442"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction60)) + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction80)) + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction100)) + TEXT_COLOR_DEFAULT;
 
 	msbt.writeToFile(path.string());
 
@@ -1387,54 +1245,54 @@ void update_auction_item_names(const GameItem& auction5, const GameItem& auction
 	msbt2.messages_by_label["00804"].text.message.pop_back(); //remove null terminator, we want to add things before it
 	msbt2.messages_by_label["00804"].text.message += u"\n\nParticipate for the chance to win ";
 	std::u16string itemStr = std::u16string(TEXT_COLOR_RED, 5);
-	if (gameItemToName(auction5).find(u"Treasure Chart") != std::u16string::npos) {
-		itemStr += std::u16string(u"Treasure Chart" TEXT_COLOR_DEFAULT u", ", 26);
+	if (gameItemToName(auction5).find("Treasure Chart") != std::string::npos) {
+		itemStr += std::u16string(u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 26);
 	}
-	else if (gameItemToName(auction5).find(u"Triforce Chart") != std::u16string::npos) {
-		itemStr += std::u16string(u"Triforce Chart" TEXT_COLOR_DEFAULT u", ", 26);
+	else if (gameItemToName(auction5).find("Triforce Chart") != std::string::npos) {
+		itemStr += std::u16string(u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 26);
 	}
 	else {
-		itemStr += gameItemToName(auction5) + std::u16string(TEXT_COLOR_DEFAULT u", ", 12);
+		itemStr += Utility::Str::toUTF16(gameItemToName(auction5)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
 	}
 
-	if (gameItemToName(auction40).find(u"Treasure Chart") != std::u16string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED u"Treasure Chart" TEXT_COLOR_DEFAULT u", ", 31);
+	if (gameItemToName(auction40).find("Treasure Chart") != std::string::npos) {
+		itemStr += std::u16string(TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
 	}
-	else if (gameItemToName(auction40).find(u"Triforce Chart") != std::u16string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED u"Triforce Chart" TEXT_COLOR_DEFAULT u", ", 31);
+	else if (gameItemToName(auction40).find("Triforce Chart") != std::string::npos) {
+		itemStr += std::u16string(TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
 	}
 	else {
-		itemStr += std::u16string(TEXT_COLOR_RED, 5) + gameItemToName(auction40) + std::u16string(TEXT_COLOR_DEFAULT u", ", 12);
+		itemStr += std::u16string(TEXT_COLOR_RED, 5) + Utility::Str::toUTF16(gameItemToName(auction40)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
 	}
 
-	if (gameItemToName(auction60).find(u"Treasure Chart") != std::u16string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED u"Treasure Chart" TEXT_COLOR_DEFAULT u", ", 31);
+	if (gameItemToName(auction60).find("Treasure Chart") != std::string::npos) {
+		itemStr += std::u16string(TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
 	}
-	else if (gameItemToName(auction60).find(u"Triforce Chart") != std::u16string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED u"Triforce Chart" TEXT_COLOR_DEFAULT u", ", 31);
+	else if (gameItemToName(auction60).find("Triforce Chart") != std::string::npos) {
+		itemStr += std::u16string(TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
 	}
 	else {
-		itemStr += std::u16string(TEXT_COLOR_RED, 5) + gameItemToName(auction60) + std::u16string(TEXT_COLOR_DEFAULT u", ", 12);
+		itemStr += std::u16string(TEXT_COLOR_RED, 5) + Utility::Str::toUTF16(gameItemToName(auction60)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
 	}
 
-	if (gameItemToName(auction80).find(u"Treasure Chart") != std::u16string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED u"Treasure Chart" TEXT_COLOR_DEFAULT u", ", 31);
+	if (gameItemToName(auction80).find("Treasure Chart") != std::string::npos) {
+		itemStr += std::u16string(TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
 	}
-	else if (gameItemToName(auction80).find(u"Triforce Chart") != std::u16string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED u"Triforce Chart" TEXT_COLOR_DEFAULT u", ", 31);
+	else if (gameItemToName(auction80).find("Triforce Chart") != std::string::npos) {
+		itemStr += std::u16string(TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
 	}
 	else {
-		itemStr += std::u16string(TEXT_COLOR_RED, 5) + gameItemToName(auction80) + std::u16string(TEXT_COLOR_DEFAULT u", ", 12);
+		itemStr += std::u16string(TEXT_COLOR_RED, 5) + Utility::Str::toUTF16(gameItemToName(auction80)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
 	}
 
-	if (gameItemToName(auction100).find(u"Treasure Chart") != std::u16string::npos) {
-		itemStr += std::u16string(u"or " TEXT_COLOR_RED u"Treasure Chart" TEXT_COLOR_DEFAULT u"!", 33);
+	if (gameItemToName(auction100).find("Treasure Chart") != std::string::npos) {
+		itemStr += std::u16string(u"or " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u"!", 33);
 	}
-	else if (gameItemToName(auction100).find(u"Triforce Chart") != std::u16string::npos) {
-		itemStr += std::u16string(u"or " TEXT_COLOR_RED u"Triforce Chart" TEXT_COLOR_DEFAULT u"!", 33);
+	else if (gameItemToName(auction100).find("Triforce Chart") != std::string::npos) {
+		itemStr += std::u16string(u"or " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u"!", 33);
 	}
 	else {
-		itemStr += std::u16string(u"or " TEXT_COLOR_RED, 8) + gameItemToName(auction100) + std::u16string(TEXT_COLOR_DEFAULT u"!", 11);
+		itemStr += std::u16string(u"or " + TEXT_COLOR_RED, 8) + Utility::Str::toUTF16(gameItemToName(auction100)) + std::u16string(TEXT_COLOR_DEFAULT + u"!", 11);
 	}
 
 	msbt2.messages_by_label["00804"].text.message += word_wrap_string(itemStr, 44);
@@ -1450,8 +1308,8 @@ void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& s
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
 
-	msbt.messages_by_label["07520"].text.message = SOUND(u"\x8E") u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you, Mr. Sailor!\n\n\n" + word_wrap_string(u"Please take this " TEXT_COLOR_RED + gameItemToName(firstPrize) + TEXT_COLOR_DEFAULT u" as a sign of our gratitude.You are soooooo GREAT!", 43);
-	msbt.messages_by_label["07521"].text.message = SOUND(u"\x8E") u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you so much, Mr. Sailor!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here..." TEXT_COLOR_RED IMAGE(u"\x15") TEXT_COLOR_DEFAULT u"Please accept this " TEXT_COLOR_RED + gameItemToName(firstPrize) + TEXT_COLOR_DEFAULT u"!", 43);
+	msbt.messages_by_label["07520"].text.message = SOUND(0x8E) + u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you, Mr. Sailor!\n\n\n" + word_wrap_string(u"Please take this " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(firstPrize)) + TEXT_COLOR_DEFAULT + u" as a sign of our gratitude.You are soooooo GREAT!", 43);
+	msbt.messages_by_label["07521"].text.message = SOUND(0x8E) + u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you so much, Mr. Sailor!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here..." + TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"Please accept this " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(secondPrize)) + TEXT_COLOR_DEFAULT + u"!", 43);
 
 	msbt.writeToFile(path.string());
 	return;
@@ -1465,10 +1323,10 @@ void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& bee
 
 	std::u16string stringBefore = msbt.messages_by_label["03325"].text.message.substr(0, 194);
 	std::u16string stringAfter = msbt.messages_by_label["03325"].text.message.substr(396, 323);
-	std::u16string hintString = u"Do you have need of " + get_indefinite_article(gameItemToName(beedle500Item)) + u" " TEXT_COLOR_RED + gameItemToName(beedle500Item) + TEXT_COLOR_DEFAULT u", " + get_indefinite_article(gameItemToName(beedle950Item)) + u" " TEXT_COLOR_RED + gameItemToName(beedle950Item) + TEXT_COLOR_DEFAULT u", or " + get_indefinite_article(gameItemToName(beedle900Item)) + u" " TEXT_COLOR_RED + gameItemToName(beedle900Item) + TEXT_COLOR_DEFAULT u"? We have them at special bargain prices.";
+	std::u16string hintString = u"Do you have need of " + get_indefinite_article(Utility::Str::toUTF16(gameItemToName(beedle500Item))) + u" " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + TEXT_COLOR_DEFAULT + u", " + Utility::Str::toUTF16(get_indefinite_article(gameItemToName(beedle950Item))) + u" " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle950Item)) + TEXT_COLOR_DEFAULT + u", or " + get_indefinite_article(Utility::Str::toUTF16(gameItemToName(beedle900Item))) + u" " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u"? We have them at special bargain prices.";
 	hintString = word_wrap_string(hintString, 39);
 	hintString = pad_str_4_lines(hintString);
-	std::vector<std::u16string> hintLines = split_lines(hintString);
+	std::vector<std::u16string> hintLines = Utility::Str::split(hintString, u'\n');
 
 	msbt.messages_by_label["03325"].text.message = stringBefore;
 	for (std::u16string& line : hintLines) {
@@ -1477,7 +1335,7 @@ void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& bee
 		}
 	}
 
-	hintString = merge_lines(hintLines);
+	hintString = Utility::Str::merge(hintLines, u'\n');
 	msbt.messages_by_label["03325"].text.message += hintString;
 	msbt.messages_by_label["03325"].text.message += stringAfter;
 
@@ -1536,7 +1394,7 @@ void update_korl_dialog() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
-	msbt.messages_by_label["03443"].text.message = std::u16string(CAPITAL PLAYER_NAME u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you.Remember\nthat your quest is to defeat Ganondorf.\0", 144); //need to use constructor with length because of null characters
+	msbt.messages_by_label["03443"].text.message = std::u16string(CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you.Remember\nthat your quest is to defeat Ganondorf.\0", 144); //need to use constructor with length because of null characters
 	msbt.writeToFile(path.string());
 
 	return;
@@ -1544,7 +1402,7 @@ void update_korl_dialog() {
 
 void set_num_starting_triforce_shards(const uint8_t numShards) {
 	uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
-	write_u8_to_rpx(AddressToOffset(num_shards_address), numShards);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, num_shards_address), numShards);
 	return;
 }
 
@@ -1555,25 +1413,25 @@ void set_starting_health(const uint16_t heartPieces, const uint16_t heartContain
 
 	uint32_t starting_quarter_hearts_address = custom_symbols.at("starting_quarter_hearts");
 
-	write_u16_to_rpx(AddressToOffset(starting_quarter_hearts_address), starting_health);
+	elfUtil::write_u16(gRPX, elfUtil::AddressToOffset(gRPX, starting_quarter_hearts_address), starting_health);
 	return;
 }
 
 void give_double_magic() {
 	uint32_t starting_magic_address = custom_symbols.at("starting_magic");
-	write_u8_to_rpx(AddressToOffset(starting_magic_address), 32);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_magic_address), 32);
 	return;
 }
 
 void set_damage_multiplier(const float multiplier) {
 	uint32_t damage_multiplier_address = custom_symbols.at("custom_damage_multiplier");
-	write_float_to_rpx(AddressToOffset(damage_multiplier_address), multiplier);
+	elfUtil::write_float(gRPX, elfUtil::AddressToOffset(gRPX, damage_multiplier_address), multiplier);
 	return;
 }
 
 void set_pig_color(const PigColor color) {
 	uint32_t pig_color_address = custom_symbols.at("outset_pig_color");
-	write_u8_to_rpx(AddressToOffset(pig_color_address), static_cast<std::underlying_type_t<PigColor>>(color));
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, pig_color_address), static_cast<std::underlying_type_t<PigColor>>(color));
 }
 
 void add_pirate_ship_to_windfall() {
@@ -1589,7 +1447,7 @@ void add_pirate_ship_to_windfall() {
 	std::vector<ChunkEntry*> wf_layer_2_actors = windfallDzr.entries_by_type_and_layer("ACTR", 2);
 	ChunkEntry* layer_2_ship = nullptr;
 	for (ChunkEntry* actor : wf_layer_2_actors) {
-		if (strncmp(&actor->data[0], "Pirates\x00", 8)) layer_2_ship = actor;
+		if (std::strncmp(&actor->data[0], "Pirates\x00", 8) == 0) layer_2_ship = actor;
 	}
 
 	ChunkEntry& default_layer_ship = windfallDzr.add_entity("ACTR", 2);
@@ -1601,7 +1459,7 @@ void add_pirate_ship_to_windfall() {
 	for (const int layer_num : {2, 3}) {
 		std::vector<ChunkEntry*> actors = shipDzr.entries_by_type_and_layer("ACTR", layer_num);
 		for (ChunkEntry* actor : actors) {
-			if (strncmp(&actor->data[0], "P2b\x00\x00\x00\x00\x00", 8)) shipDzr.remove_entity(actor);
+			if (std::strncmp(&actor->data[0], "P2b\x00\x00\x00\x00\x00", 8) == 0) shipDzr.remove_entity(actor);
 		}
 	}
 
@@ -1617,7 +1475,7 @@ void add_pirate_ship_to_windfall() {
 	msbt.messages_by_label["03008"].text.message = u"'Hoy! Big Brother!\n";
 	msbt.messages_by_label["03008"].text.message += u"Wanna play a game? It's fun, trust me!";
 	msbt.messages_by_label["03008"].text.message  = pad_str_4_lines(msbt.messages_by_label["03008"].text.message);
-	msbt.messages_by_label["03008"].text.message += word_wrap_string(std::u16string(u"Just " TEXT_COLOR_RED u"step on this button" TEXT_COLOR_DEFAULT u", and try to swing across the ropes to reach that door over there before time's up!\0", 123), 44);
+	msbt.messages_by_label["03008"].text.message += word_wrap_string(std::u16string(u"Just " + TEXT_COLOR_RED + u"step on this button" + TEXT_COLOR_DEFAULT + u", and try to swing across the ropes to reach that door over there before time's up!\0", 123), 44);
 
 	uint32_t stage_bgm_info_list_start = 0x1018e428;
 	uint32_t second_dynamic_scene_waves_list_start = 0x1018e2ec;
@@ -1627,8 +1485,8 @@ void add_pirate_ship_to_windfall() {
 
 	uint32_t asoko_bgm_info_ptr = stage_bgm_info_list_start + asoko_spot_id * 0x4;
 	uint32_t new_second_scene_wave_ptr = second_dynamic_scene_waves_list_start + new_second_scene_wave_index * 2;
-	write_u8_to_rpx(AddressToOffset(asoko_bgm_info_ptr + 3), new_second_scene_wave_index);
-	write_u8_to_rpx(AddressToOffset(new_second_scene_wave_ptr), isle_link_0_aw_index);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, asoko_bgm_info_ptr + 3), new_second_scene_wave_index);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, new_second_scene_wave_ptr), isle_link_0_aw_index);
 
 	shipDzr.writeToFile(shipRoomPath.string());
 }
@@ -1650,26 +1508,26 @@ void add_cross_dungeon_warps() {
 		FileTypes::DZXFile* dzx_for_spawn;
 		dzx_for_spawn = &room;
 
-		Utility::byteswap_inplace(warp.x);
-		Utility::byteswap_inplace(warp.y);
-		Utility::byteswap_inplace(warp.z);
-		Utility::byteswap_inplace(warp.y_rot);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.x);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.y);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.z);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.y_rot);
 
 		ChunkEntry& spawn = dzx_for_spawn->add_entity("PLYR");
 		spawn.data = std::string("Link\x00\x00\x00\x00\xFF\xFF\x70", 0xC);
 		spawn.data.resize(0x20);
 		spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
-		spawn.data.replace(0xC, 1, (char*)&warp.x, 4);
-		spawn.data.replace(0x10, 1, (char*)&warp.y, 4);
-		spawn.data.replace(0x14, 1, (char*)&warp.z, 4);
+		spawn.data.replace(0xC, 1, reinterpret_cast<const char*>(&warp.x), 4);
+		spawn.data.replace(0x10, 1, reinterpret_cast<const char*>(&warp.y), 4);
+		spawn.data.replace(0x14, 1, reinterpret_cast<const char*>(&warp.z), 4);
 		spawn.data.replace(0x18, 1, "\x00\x00", 2);
-		spawn.data.replace(0x1A, 1, (char*)&warp.y_rot, 2);
+		spawn.data.replace(0x1A, 1, reinterpret_cast<const char*>(&warp.y_rot), 2);
 		spawn.data.replace(0x1C, 1, "\xFF\x45\xFF\xFF", 4);
 
 		std::vector<ChunkEntry*> spawns = dzx_for_spawn->entries_by_type("PLYR");
 		std::vector<ChunkEntry*> spawn_id_69;
 		for (ChunkEntry* spawn_to_check : spawns) {
-			if (strncmp(&spawn_to_check->data[0x1D], "\x45", 1)) spawn_id_69.push_back(spawn_to_check);
+			if (std::strncmp(&spawn_to_check->data[0x1D], "\x45", 1) == 0) spawn_id_69.push_back(spawn_to_check);
 		}
 		if (spawn_id_69.size() != 1) return; //should always be 1
 
@@ -1681,7 +1539,7 @@ void add_cross_dungeon_warps() {
 			scls_exit.data.resize(0xC);
 			scls_exit.data.replace(0, 8, dest_stage);
 			scls_exit.data.replace(8, 1, "\x45", 1);
-			scls_exit.data.replace(0x9, 1, (char*)&other_warp.room_num, 1);
+			scls_exit.data.replace(0x9, 1, reinterpret_cast<const char*>(&other_warp.room_num), 1);
 			scls_exit.data.replace(0xA, 2, "\x04\xFF", 2);
 			pot_index_to_exit.push_back(room.entries_by_type("SCLS").size() - 1);
 		}
@@ -1696,12 +1554,12 @@ void add_cross_dungeon_warps() {
 		ChunkEntry& warp_pot = room.add_entity("ACTR");
 		warp_pot.data = "Warpts" + std::to_string(warp_index + 1);
 		warp_pot.data.resize(0x20);
-		warp_pot.data.replace(0x8, 4, (char*)&params, 4);
-		warp_pot.data.replace(0xC, 4, (char*)&warp.x, 4);
-		warp_pot.data.replace(0x10, 4, (char*)&warp.y, 4);
-		warp_pot.data.replace(0x14, 4, (char*)&warp.z, 4);
+		warp_pot.data.replace(0x8, 4, reinterpret_cast<const char*>(&params), 4);
+		warp_pot.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
+		warp_pot.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
+		warp_pot.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
 		warp_pot.data.replace(0x18, 2, "\xFF\xFF", 4);
-		warp_pot.data.replace(0x1A, 2, (char*)&warp.y_rot, 4);
+		warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 4);
 		warp_pot.data.replace(0x1C, 4, "\xFF\xFF\xFF\xFF", 4);
 
 		room.writeToFile(roomPath.string());
@@ -1728,26 +1586,26 @@ void add_cross_dungeon_warps() {
 			dzx_for_spawn = &room;
 		}
 
-		Utility::byteswap_inplace(warp.x);
-		Utility::byteswap_inplace(warp.y);
-		Utility::byteswap_inplace(warp.z);
-		Utility::byteswap_inplace(warp.y_rot);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.x);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.y);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.z);
+		Utility::Endian::toPlatform_inplace(eType::Big, warp.y_rot);
 
 		ChunkEntry& spawn = dzx_for_spawn->add_entity("PLYR");
 		spawn.data = std::string("Link\x00\x00\x00\x00\xFF\xFF\x70", 0xC);
 		spawn.data.resize(0x20);
 		spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
-		spawn.data.replace(0xC, 1, (char*)&warp.x, 4);
-		spawn.data.replace(0x10, 1, (char*)&warp.y, 4);
-		spawn.data.replace(0x14, 1, (char*)&warp.z, 4);
+		spawn.data.replace(0xC, 1, reinterpret_cast<const char*>(&warp.x), 4);
+		spawn.data.replace(0x10, 1, reinterpret_cast<const char*>(&warp.y), 4);
+		spawn.data.replace(0x14, 1, reinterpret_cast<const char*>(&warp.z), 4);
 		spawn.data.replace(0x18, 1, "\x00\x00", 2);
-		spawn.data.replace(0x1A, 1, (char*)&warp.y_rot, 2);
+		spawn.data.replace(0x1A, 1, reinterpret_cast<const char*>(&warp.y_rot), 2);
 		spawn.data.replace(0x1C, 1, "\xFF\x45\xFF\xFF", 4);
 
 		std::vector<ChunkEntry*> spawns = dzx_for_spawn->entries_by_type("PLYR");
 		std::vector<ChunkEntry*> spawn_id_69;
 		for (ChunkEntry* spawn_to_check : spawns) {
-			if (strncmp(&spawn_to_check->data[0x1D], "\x45", 1)) spawn_id_69.push_back(spawn_to_check);
+			if (std::strncmp(&spawn_to_check->data[0x1D], "\x45", 1) == 0) spawn_id_69.push_back(spawn_to_check);
 		}
 		if (spawn_id_69.size() != 1) return; //should always be 1
 
@@ -1759,7 +1617,7 @@ void add_cross_dungeon_warps() {
 			scls_exit.data.resize(0xC);
 			scls_exit.data.replace(0, 8, dest_stage);
 			scls_exit.data.replace(8, 1, "\x45", 1);
-			scls_exit.data.replace(0x9, 1, (char*)&other_warp.room_num, 1);
+			scls_exit.data.replace(0x9, 1, reinterpret_cast<const char*>(&other_warp.room_num), 1);
 			scls_exit.data.replace(0xA, 2, "\x04\xFF", 2);
 			pot_index_to_exit.push_back(room.entries_by_type("SCLS").size() - 1);
 		}
@@ -1774,12 +1632,12 @@ void add_cross_dungeon_warps() {
 		ChunkEntry& warp_pot = room.add_entity("ACTR");
 		warp_pot.data = "Warpts" + std::to_string(warp_index + 1);
 		warp_pot.data.resize(0x20);
-		warp_pot.data.replace(0x8, 4, (char*)&params, 4);
-		warp_pot.data.replace(0xC, 4, (char*)&warp.x, 4);
-		warp_pot.data.replace(0x10, 4, (char*)&warp.y, 4);
-		warp_pot.data.replace(0x14, 4, (char*)&warp.z, 4);
+		warp_pot.data.replace(0x8, 4, reinterpret_cast<const char*>(&params), 4);
+		warp_pot.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
+		warp_pot.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
+		warp_pot.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
 		warp_pot.data.replace(0x18, 2, "\xFF\xFF", 2);
-		warp_pot.data.replace(0x1A, 2, (char*)&warp.y_rot, 2);
+		warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
 		warp_pot.data.replace(0x1C, 4, "\xFF\xFF\xFF\xFF", 4);
 
 		room.writeToFile(roomPath.string());
@@ -1829,14 +1687,14 @@ void remove_makar_kidnapping() {
 	dzr.loadFromFile(path.string());
 	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
-	ChunkEntry* switch_actor = (ChunkEntry*)0; //initialization is just to make compiler happy
+	ChunkEntry* switch_actor = nullptr; //initialization is just to make compiler happy
 	for (ChunkEntry* actor : actors) {
-		if (strncmp(&actor->data[0], "AND_SW2\x00", 8)) switch_actor = actor;
+		if (std::strncmp(&actor->data[0], "AND_SW2\x00", 8) == 0) switch_actor = actor;
 	}
 	dzr.remove_entity(switch_actor);
 
 	for (ChunkEntry* actor : actors) {
-		if (strncmp(&actor->data[0], "wiz_r\x00\x00\x00", 8)) {
+		if (std::strncmp(&actor->data[0], "wiz_r\x00\x00\x00", 8) == 0) {
 			actor->data.replace(0xA, 1, "\xFF", 1);
 		}
 	}
@@ -1847,8 +1705,8 @@ void remove_makar_kidnapping() {
 void increase_crawl_speed() {
 	//The 3.0 float crawling uses is shared with other things in HD, can't change it directly
 	//Redirect both instances to load 6.0 from elsewhere
-	write_u32_to_rpx(AddressToOffset(0x0014ec04, 7), 0x000355C4); //update .rela.text entry
-	write_u32_to_rpx(AddressToOffset(0x0014ec4c, 7), 0x000355C4); //update .rela.text entry
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014ec04, 7), 0x000355C4); //update .rela.text entry
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014ec4c, 7), 0x000355C4); //update .rela.text entry
 	return;
 }
 
@@ -1860,7 +1718,7 @@ void add_chart_number_to_item_get_messages() {
 	for (uint8_t item_id = 0xCC; item_id < 0xFF; item_id++) {
 		if (item_id == 0xDB || item_id == 0xDC) continue; //skip ghost ship chart and tingle's chart
 		
-		std::u16string itemName = gameItemToName(idToGameItem(item_id));
+		std::u16string itemName = Utility::Str::toUTF16(gameItemToName(idToGameItem(item_id)));
 		msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message.replace(12, 21, itemName);
 	}
 	msbt.writeToFile(path.string());
@@ -1869,21 +1727,21 @@ void add_chart_number_to_item_get_messages() {
 }
 
 void increase_grapple_animation_speed() {
-	write_u32_to_rpx(AddressToOffset(0x02170250), 0x394B000A);
-	write_u32_to_rpx(AddressToOffset(0x00075170, 7), 0x00010ffc); //update .rela.text entry
-	write_u32_to_rpx(AddressToOffset(0x100110c8), 0x41C80000);
-	write_u32_to_rpx(AddressToOffset(0x021711d4), 0x390B0006);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02170250), 0x394B000A);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00075170, 7), 0x00010ffc); //update .rela.text entry
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x100110c8), 0x41C80000);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x021711d4), 0x390B0006);
 	return;
 }
 
 void increase_block_move_animation() {
-	write_u32_to_rpx(AddressToOffset(0x00153b00, 7), 0x00035AAC); //update .rela.text entries
-	write_u32_to_rpx(AddressToOffset(0x00153b48, 7), 0x00035AAC);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00153b00, 7), 0x00035AAC); //update .rela.text entries
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00153b48, 7), 0x00035AAC);
 
 	uint32_t offset = 0x101cb424;
 	for (int i = 0; i < 13; i++) { //13 types of blocks total
-		write_u16_to_rpx(AddressToOffset(offset + 0x04), 0x000C); // Reduce number frames for pushing to last from 20 to 12
-		write_u16_to_rpx(AddressToOffset(offset + 0x0A), 0x000C); // Reduce number frames for pulling to last from 20 to 12
+		elfUtil::write_u16(gRPX, elfUtil::AddressToOffset(gRPX, offset + 0x04), 0x000C); // Reduce number frames for pushing to last from 20 to 12
+		elfUtil::write_u16(gRPX, elfUtil::AddressToOffset(gRPX, offset + 0x0A), 0x000C); // Reduce number frames for pulling to last from 20 to 12
 		offset += 0x9C;
 	}
 	return;
@@ -1891,23 +1749,23 @@ void increase_block_move_animation() {
 
 void increase_misc_animations() {
 	//Float is shared, redirect it to read another float with the right value
-	write_u32_to_rpx(AddressToOffset(0x00148820, 7), 0x000358D8);
-	write_u32_to_rpx(AddressToOffset(0x001482a4, 7), 0x00035124);
-	write_u32_to_rpx(AddressToOffset(0x00148430, 7), 0x000358D8);
-	write_u32_to_rpx(AddressToOffset(0x00148310, 7), 0x00035AAC);
-	write_u32_to_rpx(AddressToOffset(0x0014e2d4, 7), 0x00035530);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00148820, 7), 0x000358D8);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x001482a4, 7), 0x00035124);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00148430, 7), 0x000358D8);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00148310, 7), 0x00035AAC);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014e2d4, 7), 0x00035530);
 
-	write_u32_to_rpx(AddressToOffset(0x02508b50), 0x3880000A);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02508b50), 0x3880000A);
 	return;
 }
 
 void set_casual_clothes() {
 	uint32_t starting_clothes_addr = custom_symbols.at("should_start_with_heros_clothes");
-	write_u8_to_rpx(AddressToOffset(starting_clothes_addr), 0);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_clothes_addr), 0);
 }
 
 void hide_ship_sail() {
-	write_u32_to_rpx(AddressToOffset(0x02162B04), 0x4E800020);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02162B04), 0x4E800020);
 	return;
 }
 
@@ -1937,7 +1795,7 @@ void disable_invisible_walls() {
 	std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
 
 	for (ChunkEntry* scob : scobs) {
-		if (strncmp(&scob->data[0], "Akabe\x00\x00\x00", 8)) {
+		if (std::strncmp(&scob->data[0], "Akabe\x00\x00\x00", 8) == 0) {
 			scob->data[0xB] = '\xFF';
 		}
 	}
@@ -1949,10 +1807,10 @@ void disable_invisible_walls() {
 void update_skip_rematch_bosses_game_variable(const bool skipRefights) {
 	uint32_t skip_rematch_bosses_addr = custom_symbols.at("skip_rematch_bosses");
 	if (skipRefights) {
-		write_u8_to_rpx(AddressToOffset(skip_rematch_bosses_addr), 0x01);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, skip_rematch_bosses_addr), 0x01);
 	}
 	else {
-		write_u8_to_rpx(AddressToOffset(skip_rematch_bosses_addr), 0x00);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, skip_rematch_bosses_addr), 0x00);
 	}
 }
 
@@ -1960,13 +1818,13 @@ void update_sword_mode_game_variable(const SwordMode swordMode) {
 	uint32_t sword_mode_addr = custom_symbols.at("sword_mode");
 
 	if (swordMode == SwordMode::StartWithSword) {
-		write_u8_to_rpx(AddressToOffset(sword_mode_addr), 0x00);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, sword_mode_addr), 0x00);
 	}
 	else if (swordMode == SwordMode::RandomSword) {
-		write_u8_to_rpx(AddressToOffset(sword_mode_addr), 0x01);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, sword_mode_addr), 0x01);
 	}
 	else if (swordMode == SwordMode::NoSword) {
-		write_u8_to_rpx(AddressToOffset(sword_mode_addr), 0x02);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, sword_mode_addr), 0x02);
 	}
 
 	return;
@@ -1986,10 +1844,10 @@ void update_starting_gear(const std::vector<GameItem>& startingItems) {
 	uint32_t starting_gear_array_addr = custom_symbols["starting_gear"];
 	for (unsigned int i = 0; i < startingGear.size(); i++) {
 		uint8_t item_id = static_cast<std::underlying_type_t<GameItem>>(startingGear[i]);
-		write_u8_to_rpx(AddressToOffset(starting_gear_array_addr + i), item_id);
+		elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_gear_array_addr + i), item_id);
 	}
 
-	write_u8_to_rpx(AddressToOffset(starting_gear_array_addr + startingGear.size()), 0xFF);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_gear_array_addr + startingGear.size()), 0xFF);
 
 	return;
 }
@@ -1999,8 +1857,8 @@ void update_swordless_text() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
-	msbt.messages_by_label["01128"].text.message = std::u16string(CAPITAL PLAYER_NAME u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\nEven as his ball of fell magic bears down\non you, you can " TEXT_COLOR_RED u"knock it back\nwith an empty bottle" TEXT_COLOR_DEFAULT u"!\n\n...I am sure you will have a shot at victory!\0", 287);;
-	msbt.messages_by_label["01590"].text.message = std::u16string(CAPITAL PLAYER_NAME u"! Do not run! Trust in the\npower of the Skull Hammer!\0", 62);
+	msbt.messages_by_label["01128"].text.message = std::u16string(CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\nEven as his ball of fell magic bears down\non you, you can " + TEXT_COLOR_RED + u"knock it back\nwith an empty bottle" + TEXT_COLOR_DEFAULT + u"!\n\n...I am sure you will have a shot at victory!\0", 287);;
+	msbt.messages_by_label["01590"].text.message = std::u16string(CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!\0", 62);
 	msbt.writeToFile(path.string());
 
 	return;
@@ -2020,7 +1878,7 @@ void add_hint_signs() {
 	attributes.lineAlignment = 3;
 	TSY1Entry tsy;
 	tsy.styleIndex = 0x12B;
-	std::u16string message(IMAGE(u"\x0A") u"\0", 5); //right arrow
+	std::u16string message(IMAGE(ImageTags::R_ARROW) + u"\0", 5);
 	msbt.addMessage(new_message_label, attributes, tsy, message);
 	msbt.writeToFile(path.string());
 
@@ -2032,7 +1890,7 @@ void add_hint_signs() {
 
 	std::vector<ChunkEntry*> bomb_flowers;
 	for (ChunkEntry* actor : actors) {
-		if (strncmp(&actor->data[0], "BFlower", 8)) bomb_flowers.push_back(actor);
+		if (std::strncmp(&actor->data[0], "BFlower", 8) == 0) bomb_flowers.push_back(actor);
 	}
 	bomb_flowers[0]->data = std::string("\x4B\x61\x6E\x62\x61\x6E\x00\x00\x00\x00\x03\x4F\x44\x34\x96\xEB\x42\x47\xFF\xFF\xC2\x40\xB0\x3A\x00\x00\x20\x00\x00\x00\xFF\xFF", 0x20);
 
@@ -2070,7 +1928,7 @@ void update_tingle_statue_item_get_funcs() {
 	for (const int statue_id : {0xA3, 0xA4, 0xA5, 0xA6, 0xA7}) {
 		uint32_t item_func_addr = item_get_func_ptr + (statue_id * 0xC) + 8;
 		uint32_t item_func_ptr = custom_symbols.at(symbol_name_by_item_id.at(statue_id));
-		write_u32_to_rpx(AddressToOffset(item_func_addr, 9), item_func_ptr - 0x02000000);
+		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_func_addr, 9), item_func_ptr - 0x02000000);
 	}
 	return;
 }
@@ -2080,7 +1938,7 @@ void make_tingle_statue_reward_rupee_rainbow_colored() {
 
 	uint32_t rainbow_rupee_item_resource_addr = item_resources_list_start + 0xB8 * 0x24;
 
-	write_u8_to_rpx(AddressToOffset(rainbow_rupee_item_resource_addr + 0x14), 0x07);
+	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, rainbow_rupee_item_resource_addr + 0x14), 0x07);
 	return;
 }
 
@@ -2096,14 +1954,14 @@ void show_seed_hash_on_title_screen(const std::u16string& hash) { //make sure ha
 	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
 	newPane.pane->name = "T_Hash";
 	newPane.pane->name.resize(0x18);
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->text = u"Seed Hash:\n" + hash;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->fontIndex = 0;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->restrictedLen = 11 + hash.length();
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->lineAlignment = Panes::txt1::LineAlignment::CENTER;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->translation.X = -491.0f;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->translation.Y = -113.0f;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->width = 205.0f;
-	dynamic_cast<Panes::txt1*>(newPane.pane.get())->height = 100.0f;
+	dynamic_cast<txt1*>(newPane.pane.get())->text = u"Seed Hash:\n" + hash;
+	dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
+	dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 11 + hash.length();
+	dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
+	dynamic_cast<txt1*>(newPane.pane.get())->translation.X = -491.0f;
+	dynamic_cast<txt1*>(newPane.pane.get())->translation.Y = -113.0f;
+	dynamic_cast<txt1*>(newPane.pane.get())->width = 205.0f;
+	dynamic_cast<txt1*>(newPane.pane.get())->height = 100.0f;
 
 	layout.writeToFile(path.string());
 	return;
@@ -2219,10 +2077,10 @@ void update_spoil_sell_text() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
-	std::vector<std::u16string> lines = split_lines(msbt.messages_by_label["03957"].text.message);
+	std::vector<std::u16string> lines = Utility::Str::split(msbt.messages_by_label["03957"].text.message, u'\n');
 	if (lines.size() != 5) return; //incorrect number of lines
 	lines[2] = u"And no Blue Chu Jelly, either!";
-	msbt.messages_by_label["03957"].text.message = merge_lines(lines);
+	msbt.messages_by_label["03957"].text.message = Utility::Str::merge(lines, u'\n');
 	msbt.writeToFile(path.string());
 
 	return;
@@ -2250,13 +2108,13 @@ void remove_phantom_ganon_req_for_reefs() {
 		room_dzr.loadFromFile(filePath.string());
 		std::vector<ChunkEntry*> actors = room_dzr.entries_by_type("ACTR");
 		for (ChunkEntry* actor : actors) {
-			if (strncmp(&actor->data[0], "Ocanon\x00\x00", 8)) {
-				if (strncmp(&actor->data[0xA], "\x2A", 1)) {
+			if (std::strncmp(&actor->data[0], "Ocanon\x00\x00", 8) == 0) {
+				if (std::strncmp(&actor->data[0xA], "\x2A", 1) == 0) {
 					actor->data[0xA] = '\xFF'; //check if this is right index
 				}
 			}
-			else if (strncmp(&actor->data[0], "Oship\x00\x00\x00", 8)) {
-				if (strncmp(&actor->data[0x18], "\x2A", 1)) {
+			else if (std::strncmp(&actor->data[0], "Oship\x00\x00\x00", 8) == 0) {
+				if (std::strncmp(&actor->data[0x18], "\x2A", 1) == 0) {
 					actor->data[0x18] = '\xFF'; //check if this is right index
 				}
 			}
@@ -2275,11 +2133,11 @@ void fix_ff_door() {
 
 	fptr.seekg(0xC, std::ios::beg);
 	uint32_t face_list_offset;
-	fptr.read((char*)&face_list_offset, 4);
-	Utility::byteswap_inplace(face_list_offset);
+	fptr.read(reinterpret_cast<char*>(&face_list_offset), 4);
+	Utility::Endian::toPlatform_inplace(eType::Big, face_list_offset);
 
 	fptr.seekp((face_list_offset + face_index * 0xA) + 6, std::ios::beg);
-	fptr.write((char*)&new_prop_index, 2);
+	fptr.write(reinterpret_cast<const char*>(&new_prop_index), 2);
 
 	return;
 }
@@ -2374,9 +2232,9 @@ void fix_ff_door() {
 		std::vector<ChunkEntry*> doors = room_dzr.entries_by_type("TGDR");
 
 		float spawn_dist_from_door = 200.0f;
-		float x_pos = 0;
-		float y_pos = 0;
-		float z_pos = 0;
+		float x_pos = 0.0f;
+		float y_pos = 0.0f;
+		float z_pos = 0.0f;
 		uint16_t y_rot = 0;
 		for (const ChunkEntry* door : doors) {
 			if (((*(uint16_t*)&door->data[0x18]) & 0x0FC0) == spawn_info.room_num || ((*(uint16_t*)&door->data[0x18]) & 0x003F) == spawn_info.room_num) {
@@ -2389,9 +2247,9 @@ void fix_ff_door() {
 				float x_offset = sin((y_rot_degrees * M_PI) / 180.0) * spawn_dist_from_door;
 				float z_offset = cos((y_rot_degrees * M_PI) / 180.0) * spawn_dist_from_door;
 
-				float door_x_pos = Utility::byteswap(*(float*)&door->data[0xC]);
-				float door_y_pos = Utility::byteswap(*(float*)&door->data[0x10]);
-				float door_z_pos = Utility::byteswap(*(float*)&door->data[0x14]);
+				float door_x_pos = Utility::Endian::toPlatform(eType::Big, *(float*)&door->data[0xC]);
+				float door_y_pos = Utility::Endian::toPlatform(eType::Big, *(float*)&door->data[0x10]);
+				float door_z_pos = Utility::Endian::toPlatform(eType::Big, *(float*)&door->data[0x14]);
 				x_pos = door_x_pos + x_offset;
 				y_pos = door_y_pos;
 				z_pos = door_z_pos + z_offset;
@@ -2435,7 +2293,7 @@ void remove_minor_pan_cs() {
 		dzx.loadFromFile(filePath.string());
 		std::vector<ChunkEntry*> scobs = dzx.entries_by_type("SCOB");
 		for (ChunkEntry* scob : scobs) {
-			if (strncmp(&scob->data[0], "TagEv\x00\x00\x00", 8)) {
+			if (std::strncmp(&scob->data[0], "TagEv\x00\x00\x00", 8) == 0) {
 				if (scob->data[0xA] == cs_info.evnt_index) {
 					dzx.remove_entity(scob);
 				}
@@ -2457,11 +2315,11 @@ void remove_minor_pan_cs() {
 //custom actors?
 
 void fix_stone_head_bugs() {
-	uint32_t status_bits = read_rpx_u32(AddressToOffset(0x101ca100));
-	Utility::byteswap_inplace(status_bits);
+	uint32_t status_bits = elfUtil::read_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101ca100));
+	Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
 	status_bits &= ~0x00000080;
-	Utility::byteswap_inplace(status_bits);
-	write_u32_to_rpx(AddressToOffset(0x101ca100), status_bits);
+	Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
+	elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101ca100), status_bits);
 
 	return;
 }
@@ -2476,7 +2334,7 @@ void show_tingle_statues_on_quest_screen() {
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
 	msbt.messages_by_label["00503"].text.message = std::u16string(u"Tingle Statues\0", 15);
-	msbt.messages_by_label["00703"].text.message = std::u16string(u"Golden statues of a mysterious dashing\n figure. They can be traded to " TEXT_COLOR_RED u"Ankle" TEXT_COLOR_DEFAULT u" on" TEXT_COLOR_RED u"Tingle Island" TEXT_COLOR_DEFAULT u" for a reward!\0", 137); //need to use constructor with length because of null characters
+	msbt.messages_by_label["00703"].text.message = std::u16string(u"Golden statues of a mysterious dashing\n figure. They can be traded to " + TEXT_COLOR_RED + u"Ankle" + TEXT_COLOR_DEFAULT + u" on" + TEXT_COLOR_RED + u"Tingle Island" + TEXT_COLOR_DEFAULT + u" for a reward!\0", 137); //need to use constructor with length because of null characters
 	msbt.writeToFile(path.string());
 
 	return;
@@ -2499,19 +2357,13 @@ void add_shortcut_warps_into_dungeons() {
 
 
 
-void init_tweaks() {
-	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
-	outRPX.loadFromFile(rpxPath.string());
-	Load_Custom_Symbols("./asm/custom_symbols.txt");
-	initialized = true;
-
-	return;
-}
-
 void apply_necessary_tweaks(const Settings& settings, const std::string& seedHash) {
-	if (initialized == false) return; //cant apply tweaks if they arent initialized
+	Load_Custom_Symbols("./asm/custom_symbols.txt");
 
-	std::u16string u16_seedHash = toUTF16(seedHash);
+	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
+	gRPX.loadFromFile(rpxPath.string());
+
+	std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
 
 	Apply_Patch("./asm/patch_diffs/custom_data_diff.json");
 	Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
@@ -2579,11 +2431,14 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 	fix_stone_head_bugs();
 	show_tingle_statues_on_quest_screen();
 
+	gRPX.writeToFile(rpxPath.string());
 	return;
 }
 
-void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::unordered_map<std::string, Location>& itemLocations) {
-	if (initialized == false) return; //cant apply tweaks if they arent initialized
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations) {
+	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
+	gRPX.loadFromFile(rpxPath.string()); //reload to avoid conflicts written between pre- and post- randomization tweaks
+
 	if (randomizeItems) {
 		//placeholders, will change based on logic implementation
 		// 
@@ -2594,11 +2449,17 @@ void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const 
 		//update_savage_labyrinth_hint_tablet(itemLocations.at("Outset Island - Savage Labyrinth - Floor 30").currentItem, itemLocations.at("Outset Island - Savage Labyrinth - Floor 50").currentItem);
 	}
 	//dungeon sea quest markers
+	gRPX.writeToFile(rpxPath.string());
 }
 
-
+#define ENABLE_DEBUG 1
+#define FILL_TESTING 1
 
 //this is just for testing 
+#include "logic/SpoilerLog.hpp"
+#include "logic/Generate.hpp"
+#include "logic/Random.hpp"
+
 int main() {
 
 	//timing stuff
@@ -2607,33 +2468,94 @@ int main() {
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	//auto duration2 = duration.count();
 
-	init_tweaks();
+	Load_Custom_Symbols("./asm/custom_symbols.txt");
 
-	//Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
-	//Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json");
-	//Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json");
-	//Apply_Patch("./asm/patch_diffs/flexible_item_locations_diff.json");
-	//Apply_Patch("./asm/patch_diffs/fix_vanilla_bugs_diff.json");
-	//Apply_Patch("./asm/patch_diffs/misc_rando_features_diff.json");
+	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
+	gRPX.loadFromFile(rpxPath.string());
 
-	//Add_Relocations("./asm/patch_diffs/custom_funcs_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/make_game_nonlinear_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/remove_cutscenes_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json");
+	Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
+	Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json");
+	Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json");
+	Apply_Patch("./asm/patch_diffs/flexible_item_locations_diff.json");
+	Apply_Patch("./asm/patch_diffs/fix_vanilla_bugs_diff.json");
+	Apply_Patch("./asm/patch_diffs/misc_rando_features_diff.json");
+	
+	Add_Relocations("./asm/patch_diffs/custom_funcs_reloc.json");
+	Add_Relocations("./asm/patch_diffs/make_game_nonlinear_reloc.json");
+	Add_Relocations("./asm/patch_diffs/remove_cutscenes_reloc.json");
+	Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json");
+	Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json");
+	Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json");
 
-	//show_tingle_statues_on_quest_screen();
+	show_tingle_statues_on_quest_screen();
 
-	//allow_all_items_to_be_field_items();
+	allow_all_items_to_be_field_items();
 
-	//write_u32_to_rpx({28, 0x00000058}, outRPX.shdr_table[2].second.data.size());
-	//Remove_Relocation({ 7, 0x001c0ae8 }); //would mess with the custom save_init call
-	//start_at_outset_dock();
+	elfUtil::write_u32(gRPX, {28, 0x00000058}, gRPX.shdr_table[2].second.data.size());
+	Remove_Relocation({ 7, 0x001c0ae8 }); //would mess with the custom save_init call
+	start_at_outset_dock();
 	//modify_title_screen();
 	//show_seed_hash_on_title_screen(u"helmarocKing\njun-Roberto");
 
-	outRPX.writeToFile(g_session.openGameFile("code/cking.rpx@RPX").string());
+	//fix_deku_leaf_model();
+	//
+	//add_chest_in_place_queen_fairy_cutscene();
+	//add_chest_in_place_jabun_cutscene();
+	//add_chest_in_place_master_sword();
+	//add_chest_in_place_medli_gift();
+
+	Settings settings;
+	
+	settings.progression_dungeons = true;
+	settings.progression_mail = true;
+	settings.progression_dungeons = true;
+	settings.progression_great_fairies = true;
+	settings.progression_puzzle_secret_caves = true;
+	settings.progression_combat_secret_caves = true;
+	settings.progression_submarines = true;
+	settings.progression_eye_reef_chests = true;
+	settings.progression_big_octos_gunboats = true;
+	settings.progression_triforce_charts = true;
+	settings.progression_treasure_charts = true;
+	settings.progression_expensive_purchases = true;
+	settings.progression_misc = true;
+	settings.progression_tingle_chests = true;
+	settings.progression_battlesquid = true;
+	settings.progression_savage_labyrinth = true;
+	settings.progression_island_puzzles = true;
+	settings.progression_obscure = true;
+	settings.keylunacy = true;
+	settings.randomize_charts = true;
+	settings.race_mode = true;
+	settings.num_race_mode_dungeons = 3;
+
+	int seed = Random(0, 100000);
+
+	int worldCount = 1;
+	World blankWorld;
+	WorldPool worlds(worldCount, blankWorld);
+	std::vector<Settings> settingsVector{ settings };
+
+	int retVal = generateWorlds(worlds, settingsVector, seed);
+	
+	if (retVal == 0)
+	{
+		std::cout << "Generating Spoiler Log" << std::endl;
+		generateSpoilerLog(worlds);
+	}
+
+	//get world locations with "worlds[playerNum - 1].locationEntries"
+	//assume 1 world for now, modifying multiple copies needs work
+	for (const Location& location : worlds[0].locationEntries) {
+		if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) return 1; //handle err somehow
+	}
+	saveRPX();
+
+	//get world with "worlds[playerNum - 1]"
+	//assume 1 world for now, modifying multiple copies needs work
+	//apply_necessary_post_randomization_tweaks(1, worlds[0].locationEntries);
+
+	gRPX.writeToFile(g_session.openGameFile("code/cking.rpx@RPX").string());
 	g_session.repackCache();
 	return 0;
 }

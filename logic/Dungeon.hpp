@@ -12,7 +12,7 @@ enum struct DungeonId : uint32_t
     ForsakenFortress,
     EarthTemple,
     WindTemple,
-    INVALID,
+    INVALID
 };
 
 struct Dungeon {

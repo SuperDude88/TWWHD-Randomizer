@@ -34,10 +34,6 @@ struct Prop {
 	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> prop_value;
 };
 
-namespace FileTypes {
-	class EventList;
-};
-
 class Property {
 public:
 	static constexpr int DATA_SIZE = 0x40; //could be a define?
@@ -78,6 +74,10 @@ public:
 	std::optional<std::reference_wrapper<Property>> get_prop(const std::string& prop_name);
 	Property& add_property(const std::string& name);
 };
+
+namespace FileTypes {
+	class EventList;
+}
 
 class Actor {
 public:

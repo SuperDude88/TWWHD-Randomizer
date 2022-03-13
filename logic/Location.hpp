@@ -5,6 +5,8 @@
 #include <vector>
 #include <unordered_set>
 #include "GameItem.hpp"
+#include "Requirements.hpp"
+#include "../server/command/WriteLocations.hpp"
 
 enum struct LocationId : uint32_t
 {
@@ -358,7 +360,7 @@ enum struct LocationCategory
     SunkenTreasure,
     Obscure, // <-- the good stuff :)
     Junk,
-    Other,
+    Other
 };
 
 enum struct LocationModificationType
@@ -366,19 +368,12 @@ enum struct LocationModificationType
     INVALID = 0,
     Chest,
     Actor,
-    Boss,
     SCOB,
     Event,
     RPX,
     Custom_Symbol,
-    DoNothing,
-};
-
-struct LocationModificationMethod
-{
-    std::string filePath;
-    LocationModificationType type = LocationModificationType::INVALID;
-    std::vector<uint32_t> offsets;
+    Boss,
+    DoNothing
 };
 
 LocationId nameToLocationId(const std::string& name);
@@ -395,11 +390,24 @@ struct Location
     bool progression = false;
     Item originalItem = {GameItem::INVALID, -1};
     Item currentItem = {GameItem::INVALID, -1};
-    LocationModificationMethod method;
+    std::unique_ptr<LocationModification> method = std::make_unique<LocationModification>();
     int worldId = -1;
-
+    
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
+
+    Location() = default;
+    ~Location() = default;
+    Location(const Location& loc) :
+        locationId(loc.locationId),
+        categories(loc.categories),
+        progression(loc.progression),
+        originalItem(loc.originalItem),
+        currentItem(loc.currentItem),
+        worldId(loc.worldId)
+    {
+        if(loc.method) method = loc.method->duplicate();
+    }
 };
 
 std::string locationName(const Location* location);

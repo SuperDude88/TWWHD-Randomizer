@@ -3,11 +3,11 @@
 #include <cstring>
 #include <string>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
 
 constexpr uint32_t READ_CHUNK_SIZE = 4096;
 constexpr uint32_t MAX_SEARCH_RANGE = 0x1000;
-constexpr uint32_t MAX_ENCODED_SIZE = 0x111; 
+constexpr uint32_t MAX_ENCODED_SIZE = 0x111;
 
 struct Yaz0Header 
 {
@@ -22,7 +22,7 @@ YAZ0Error readYaz0Header(std::istream& in, Yaz0Header& header)
     // check magic string in header
     if(std::strncmp(header.magic, "Yaz0", 4) != 0) return YAZ0Error::NOT_YAZ0;
     if(!in.read(reinterpret_cast<char*>(&header.uncompressedSize), sizeof(header.uncompressedSize))) return YAZ0Error::REACHED_EOF;
-    Utility::byteswap_inplace(header.uncompressedSize);
+    Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, header.uncompressedSize);
     if(!in.read(header._unused0, sizeof(header._unused0))) return YAZ0Error::REACHED_EOF;
     return YAZ0Error::NONE;
 }
@@ -287,7 +287,7 @@ namespace FileTypes {
         // write magic
         out.write("Yaz0", 4);
         uint32_t dataSize = inData.size();
-        uint32_t outDataSize = Utility::byteswap(dataSize);
+        uint32_t outDataSize = Utility::Endian::toPlatform(Utility::Endian::Type::Big, dataSize);
         out.write(reinterpret_cast<char*>(&outDataSize), 4);
         out.write(dummyData, 8);
 

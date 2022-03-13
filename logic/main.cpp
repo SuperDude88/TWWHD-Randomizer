@@ -1,13 +1,16 @@
 
 #include "Generate.hpp"
 #include "Random.hpp"
-#include "Debug.hpp"
 #include "SpoilerLog.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
 
-int main()
+#ifdef ENABLE_DEBUG
+#include "Debug.hpp"
+#endif
+
+/*int main()
 {
     // Important variables, do not erase
     int kwando = 1313;
@@ -89,4 +92,4 @@ int main()
         generateSpoilerLog(worlds);
         generateNonSpoilerLog(worlds);
     }
-}
+}*/

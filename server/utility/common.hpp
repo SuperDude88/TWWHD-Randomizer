@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 
-#include "byteswap.hpp"
+#include "endian.hpp"
 
 
 
@@ -36,8 +36,8 @@ bool readVec2(std::istream& in, const std::streamoff offset, vec2<T>& out) {
 	if (!in.read(reinterpret_cast<char*>(&out.Y), sizeof(out.Y))) return false;
 
 	if constexpr (sizeof(T) > 1) {
-		Utility::byteswap_inplace(out.X);
-		Utility::byteswap_inplace(out.Y);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.X);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.Y);
 	}
 
 
@@ -47,8 +47,8 @@ bool readVec2(std::istream& in, const std::streamoff offset, vec2<T>& out) {
 template<typename T>
 void writeVec2(std::ostream& out, const vec2<T>& vec) {
 	if constexpr (sizeof(T) > 1) {
-		T X_BE = Utility::byteswap(vec.X);
-		T Y_BE = Utility::byteswap(vec.Y);
+		T X_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.X);
+		T Y_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.Y);
 
 		out.write(reinterpret_cast<const char*>(&X_BE), sizeof(X_BE));
 		out.write(reinterpret_cast<const char*>(&Y_BE), sizeof(Y_BE));
@@ -71,9 +71,9 @@ bool readVec3(std::istream& in, const std::streamoff offset, vec3<T>& out) {
 	if (!in.read(reinterpret_cast<char*>(&out.Z), sizeof(out.Z))) return false;
 
 	if constexpr (sizeof(T) > 1) {
-		Utility::byteswap_inplace(out.X);
-		Utility::byteswap_inplace(out.Y);
-		Utility::byteswap_inplace(out.Z);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.X);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.Y);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.Z);
 	}
 
 	return true;
@@ -82,9 +82,9 @@ bool readVec3(std::istream& in, const std::streamoff offset, vec3<T>& out) {
 template<typename T>
 void writeVec3(std::ostream& out, const vec3<T>& vec) {
 	if constexpr (sizeof(T) > 1) {
-		T X_BE = Utility::byteswap(vec.X);
-		T Y_BE = Utility::byteswap(vec.Y);
-		T Z_BE = Utility::byteswap(vec.Z);
+		T X_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.X);
+		T Y_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.Y);
+		T Z_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.Z);
 
 		out.write(reinterpret_cast<const char*>(&X_BE), sizeof(X_BE));
 		out.write(reinterpret_cast<const char*>(&Y_BE), sizeof(Y_BE));
@@ -106,5 +106,7 @@ void writeRGBA8(std::ostream& out, const RGBA& color);
 
 
 std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset);
+
+std::u16string readNullTerminatedWStr(std::istream& in, const unsigned int offset);
 
 unsigned int padToLen(std::ostream& out, const unsigned int& len, const char pad = '\x00');

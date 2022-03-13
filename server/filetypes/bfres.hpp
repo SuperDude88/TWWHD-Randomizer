@@ -12,12 +12,7 @@ enum struct [[nodiscard]] FRESError
     COULD_NOT_OPEN,
     NOT_FRES,
     REACHED_EOF,
-    STRING_TOO_LONG,
-    STRING_NOT_FOUND,
-    HEADER_DATA_NOT_LOADED,
-    FILE_DATA_NOT_LOADED,
-    FRES_NOT_EMPTY,
-    FRES_IS_EMTPY,
+    STRING_LEN_MISMATCH,
     GROUP_IS_EMPTY,
     UNKNOWN,
     COUNT
@@ -27,6 +22,7 @@ enum struct [[nodiscard]] FRESError
 
 struct EmbeddedFileSpec {
     unsigned int location; //Used to deal with relative offsets, not a part of the file data
+    
     int32_t dataOffset;
     uint32_t fileLength;
 };

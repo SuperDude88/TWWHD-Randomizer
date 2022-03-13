@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "libs/json.hpp"
 #include "server/command/RandoSession.hpp"
@@ -14,61 +15,17 @@ extern RandoSession g_session; //defined in randomizer.cpp, shared between main 
 
 
 
-bool containsAddress(const uint32_t address, const uint32_t memAddress, const uint32_t sectionLen);
-
-std::pair<uint32_t, uint32_t> AddressToOffset(const uint32_t address);
-
-std::pair<uint32_t, uint32_t> AddressToOffset(const uint32_t address, const unsigned int sectionIndex);
-
-void write_u8_to_rpx(const std::pair<int, int>& offset, const uint8_t data);
-
-void write_u16_to_rpx(const std::pair<int, int>& offset, const uint16_t data);
-
-void write_u32_to_rpx(const std::pair<int, int>& offset, const uint32_t data);
-
-void write_float_to_rpx(const std::pair<int, int>& offset, const float data);
-
-void write_bytes_to_rpx(const std::pair<int, int>& offset, const std::vector<uint8_t>& Bytes);
-
-uint8_t read_rpx_u8(const std::pair<int, int>& offset);
-
-uint32_t read_rpx_u32(const std::pair<int, int>& offset);
-
-float read_rpx_float(const std::pair<int, int>& offset);
-
-std::vector<uint8_t> read_rpx_bytes(const std::pair<int, int>& offset, const int NumBytes);
-
-nlohmann::json Load_Patches(const std::string& file_path);
+//Shouldn't be called outside of the cpp
+// 
+//void Load_Custom_Symbols(const std::string& file_path);
+//
+//nlohmann::json Load_Patches(const std::string& file_path);
 
 void Apply_Patch(const std::string& file_path);
 
 void Add_Relocations(const std::string file_path);
 
 void Remove_Relocation(const std::pair<int, int>& offset);
-
-void Load_Custom_Symbols(const std::string& file_path);
-
-
-
-std::u16string word_wrap_string(const std::u16string& string, const int max_line_len);
-
-std::string get_indefinite_article(const std::string& string);
-
-std::u16string get_indefinite_article(const std::u16string& string);
-
-std::string pad_str_4_lines(const std::string& string);
-
-std::u16string pad_str_4_lines(const std::u16string& string);
-
-std::vector<std::string> split_lines(const std::string& string);
-
-std::vector<std::u16string> split_lines(const std::u16string& string);
-
-std::string merge_lines(const std::vector<std::string>& lines);
-
-std::u16string merge_lines(const std::vector<std::u16string>& lines);
-
-std::u16string gameItemToName(const GameItem item);
 
 
 
@@ -207,9 +164,8 @@ void fix_stone_head_bugs();
 void show_tingle_statues_on_quest_screen();
 
 
-void init_tweaks();
 
 void apply_necessary_tweaks(const Settings& settings, const std::string& seedHash);
 
-void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::unordered_map<std::string, Location>& itemLocations);
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations);
 
