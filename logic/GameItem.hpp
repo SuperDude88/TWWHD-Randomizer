@@ -335,7 +335,7 @@ static const std::set<GameItem> junkItems = {
     GameItem::GreatFairyChart,
     GameItem::OctoChart,
     GameItem::INcredibleChart,
-    GameItem::TinglesChart,
+    GameItem::TinglesChart
 };
 
 class Item

@@ -1,8 +1,14 @@
 #include "tweaks.hpp"
 #include "options.hpp"
 #include "logic/SpoilerLog.hpp"
+#include "logic/Generate.hpp"
+#include "server/command/WriteLocations.hpp"
 
-RandoSession g_session("will be set up later", "will be set up later", "will be set up later"); //declared outside of class for extern stuff
+#ifdef ENABLE_DEBUG
+#include "Debug.hpp"
+#endif
+
+RandoSession g_session("to be set up later", "to be set up later", "to be set up later"); //declared outside of class for extern stuff
 
 class Randomizer {
 private:
@@ -23,7 +29,6 @@ public:
 	void randomize() {
 
 		if (!dryRun) {
-			init_tweaks();
 			apply_necessary_tweaks(settings, seedHash);
 			if (settings.instant_text_boxes) {
 				make_all_text_instant();
@@ -63,24 +68,29 @@ public:
 		std::vector<Settings> settingsVector (numPlayers, settings);
 
 		if (randomizeItems) {
-			if (!generateWorlds(worlds, settingsVector, 0/*put seed int here*/) {
+			if (!generateWorlds(worlds, settingsVector, 0/*put seed int here*/)) {
 				// generating worlds failed
 				return;
 			}
 		}
 
 		if (randomizeItems && !dryRun) {
-			//save items
 			//get world locations with "worlds[playerNum - 1].locationEntries"
+			//assume 1 world for now, modifying multiple copies needs work
+			for (const Location& location : worlds[0].locationEntries) {
+				if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) return; //handle err somehow
+			}
+			saveRPX();
 		}
 
 		if (!dryRun) {
 			//get world with "worlds[playerNum - 1]"
-			//apply_necessary_post_randomization_tweaks(randomizeItems, logic.item_locations);
+			//assume 1 world for now, modifying multiple copies needs work
+			apply_necessary_post_randomization_tweaks(randomizeItems, worlds[0].locationEntries);
 		}
 
 		if (!dryRun) {
-			//save everything
+			g_session.repackCache();
 		}
 
 		if (randomizeItems) {
@@ -91,7 +101,11 @@ public:
 		}
 
 		//done!
+
+#ifdef ENABLE_DEBUG
 		closeDebugLog();
+#endif
+		
 		return;
 	}
 

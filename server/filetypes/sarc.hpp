@@ -88,7 +88,9 @@ namespace FileTypes {
         SFNT nameTable;
         std::unordered_map<std::string, size_t> file_index_by_name;
         std::vector<file> files; //store as vector to keep insertion order
+        uint32_t guessed_alignment;
 
         void initNew();
+        uint32_t guessDefaultAlignment();
     };
 }

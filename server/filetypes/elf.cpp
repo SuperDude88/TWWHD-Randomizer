@@ -3,10 +3,10 @@
 #include <cstring>
 #include <algorithm>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
 #include "../utility/common.hpp"
 
-
+using eType = Utility::Endian::Type;
 
 namespace FileTypes {
 
@@ -113,19 +113,19 @@ namespace FileTypes {
             return ELFError::REACHED_EOF;
         }
 
-		Utility::byteswap_inplace(ehdr.e_type);
-		Utility::byteswap_inplace(ehdr.e_machine);
-		Utility::byteswap_inplace(ehdr.e_version);
-		Utility::byteswap_inplace(ehdr.e_entry);
-		Utility::byteswap_inplace(ehdr.e_phoff);
-		Utility::byteswap_inplace(ehdr.e_shoff);
-		Utility::byteswap_inplace(ehdr.e_flags);
-		Utility::byteswap_inplace(ehdr.e_ehsize);
-		Utility::byteswap_inplace(ehdr.e_phentsize);
-		Utility::byteswap_inplace(ehdr.e_phnum);
-		Utility::byteswap_inplace(ehdr.e_shentsize);
-		Utility::byteswap_inplace(ehdr.e_shnum);
-		Utility::byteswap_inplace(ehdr.e_shstrndx);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_machine);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_version);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_entry);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phoff);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shoff);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_flags);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_ehsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phentsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phnum);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shentsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
 
 		shdr_table.reserve(ehdr.e_shnum); //Allocate the memory from the start to minimize copies
 		for (unsigned int i = 0; i < ehdr.e_shnum; i++) {
@@ -162,16 +162,16 @@ namespace FileTypes {
 				return ELFError::REACHED_EOF;
 			}
 
-			Utility::byteswap_inplace(shdr.sh_name);
-			shdr.sh_type = static_cast<SectionType>(Utility::byteswap(static_cast<uint32_t>(shdr.sh_type))); //weird enum casting stuff
-			Utility::byteswap_inplace(shdr.sh_flags);
-			Utility::byteswap_inplace(shdr.sh_addr);
-			Utility::byteswap_inplace(shdr.sh_offset);
-			Utility::byteswap_inplace(shdr.sh_size);
-			Utility::byteswap_inplace(shdr.sh_link);
-			Utility::byteswap_inplace(shdr.sh_info);
-			Utility::byteswap_inplace(shdr.sh_addralign);
-			Utility::byteswap_inplace(shdr.sh_entsize);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_name);
+			shdr.sh_type = static_cast<SectionType>(Utility::Endian::toPlatform(eType::Big, static_cast<uint32_t>(shdr.sh_type))); //weird enum casting stuff
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_flags);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addr);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_offset);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_size);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_link);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_info);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addralign);
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_entsize);
 
 			if (shdr.sh_type != SectionType::SHT_NOBITS) {
 				elf.seekg(shdr.sh_offset, std::ios::beg);
@@ -242,19 +242,19 @@ namespace FileTypes {
 			return ELFError::HEADER_DATA_NOT_LOADED;
 		}
 		ehdr.e_shnum = shdr_table.size();
-		Utility::byteswap_inplace(ehdr.e_type);
-		Utility::byteswap_inplace(ehdr.e_machine);
-		Utility::byteswap_inplace(ehdr.e_version);
-		Utility::byteswap_inplace(ehdr.e_entry);
-		Utility::byteswap_inplace(ehdr.e_phoff);
-		Utility::byteswap_inplace(ehdr.e_shoff);
-		Utility::byteswap_inplace(ehdr.e_flags);
-		Utility::byteswap_inplace(ehdr.e_ehsize);
-		Utility::byteswap_inplace(ehdr.e_phentsize);
-		Utility::byteswap_inplace(ehdr.e_phnum);
-		Utility::byteswap_inplace(ehdr.e_shentsize);
-		Utility::byteswap_inplace(ehdr.e_shnum);
-		Utility::byteswap_inplace(ehdr.e_shstrndx);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_machine);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_version);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_entry);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phoff);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shoff);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_flags);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_ehsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phentsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phnum);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shentsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
 
 		out.write(reinterpret_cast<char*>(&ehdr.e_ident), sizeof(ehdr.e_ident));
 		out.write(reinterpret_cast<char*>(&ehdr.e_type), sizeof(ehdr.e_type));
@@ -271,19 +271,19 @@ namespace FileTypes {
 		out.write(reinterpret_cast<char*>(&ehdr.e_shnum), sizeof(ehdr.e_shnum));
 		out.write(reinterpret_cast<char*>(&ehdr.e_shstrndx), sizeof(ehdr.e_shstrndx));
 
-		Utility::byteswap_inplace(ehdr.e_type); //Swap ehdr data back so the data is correct for use later, byteswap inplace so things can be more easily converted to cross-platform
-		Utility::byteswap_inplace(ehdr.e_machine);
-		Utility::byteswap_inplace(ehdr.e_version);
-		Utility::byteswap_inplace(ehdr.e_entry);
-		Utility::byteswap_inplace(ehdr.e_phoff);
-		Utility::byteswap_inplace(ehdr.e_shoff);
-		Utility::byteswap_inplace(ehdr.e_flags);
-		Utility::byteswap_inplace(ehdr.e_ehsize);
-		Utility::byteswap_inplace(ehdr.e_phentsize);
-		Utility::byteswap_inplace(ehdr.e_phnum);
-		Utility::byteswap_inplace(ehdr.e_shentsize);
-		Utility::byteswap_inplace(ehdr.e_shnum);
-		Utility::byteswap_inplace(ehdr.e_shstrndx);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type); //Swap ehdr data back so the data is correct for use later, byteswap inplace so things can be more easily converted to cross-platform
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_machine);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_version);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_entry);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phoff);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shoff);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_flags);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_ehsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phentsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phnum);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shentsize);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
+		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
 
 		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) {
 			return a.second.sh_offset < b.second.sh_offset;
@@ -305,16 +305,16 @@ namespace FileTypes {
 
 		out.seekp(ehdr.e_shoff, std::ios::beg);
 		for (auto& [index, section] : shdr_table) {
-			Utility::byteswap_inplace(section.sh_name);
-			section.sh_type = static_cast<SectionType>(Utility::byteswap(static_cast<uint32_t>(section.sh_type))); //weird enum casting stuff
-			Utility::byteswap_inplace(section.sh_flags);
-			Utility::byteswap_inplace(section.sh_addr);
-			Utility::byteswap_inplace(section.sh_offset);
-			Utility::byteswap_inplace(section.sh_size);
-			Utility::byteswap_inplace(section.sh_link);
-			Utility::byteswap_inplace(section.sh_info);
-			Utility::byteswap_inplace(section.sh_addralign);
-			Utility::byteswap_inplace(section.sh_entsize);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_name);
+			section.sh_type = static_cast<SectionType>(Utility::Endian::toPlatform(eType::Big, static_cast<uint32_t>(section.sh_type))); //weird enum casting stuff
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_flags);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_addr);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_offset);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_size);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_link);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_info);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_addralign);
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_entsize);
 
 			out.write(reinterpret_cast<char*>(&section.sh_name), sizeof(section.sh_name));
 			out.write(reinterpret_cast<char*>(&section.sh_type), sizeof(section.sh_type));

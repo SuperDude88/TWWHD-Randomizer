@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <list>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -31,5 +32,5 @@ private:
     fspath workingDir;
     fspath outputDir;
     std::unordered_set<std::string> fileCache;
-    std::vector<std::string> orderedCache;
+    std::list<std::string> orderedCache;
 };

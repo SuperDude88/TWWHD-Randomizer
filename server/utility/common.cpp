@@ -27,7 +27,7 @@ std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset) 
 	in.seekg(offset, std::ios::beg);
 
 	std::string ret;
-	char character = '\x00';
+	char character = '\0';
 	do {
 		if (!in.read(&character, sizeof(char))) {
 			ret.clear();
@@ -35,6 +35,22 @@ std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset) 
 		}
 		ret += character;
 	} while (character != '\x00');
+
+	return ret;
+}
+
+std::u16string readNullTerminatedWStr(std::istream& in, const unsigned int offset) {
+	in.seekg(offset, std::ios::beg);
+
+	std::u16string ret;
+	char16_t character = u'\0';
+	do {
+		if (!in.read(reinterpret_cast<char*>(&character), sizeof(char16_t))) {
+			ret.clear();
+			return ret;
+		}
+		ret += character;
+	} while (character != u'\0');
 
 	return ret;
 }

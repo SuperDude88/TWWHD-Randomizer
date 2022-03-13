@@ -159,7 +159,7 @@ void World::determineChartMappings()
         GameItem::TreasureChart46,
         GameItem::TreasureChart15,
         GameItem::TreasureChart32,
-        GameItem::TreasureChart33, // Sector 49 Five Star Isles
+        GameItem::TreasureChart33 // Sector 49 Five Star Isles
     };
 
     // Only shuffle around the charts of we're randomizing them
@@ -178,7 +178,8 @@ void World::determineChartMappings()
         size_t sector = i + 1;
         macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = chart;
 
-        debugLog("\tChartForIsland" + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+
+        debugLog("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
 }
 
@@ -203,7 +204,7 @@ void World::determineProgressionLocations()
     {
         // If all of the location categories are set as progression, then this is a location which
         // is allowed to contain progression items (but it won't necessarily get one)
-        if (std::all_of(location.categories.begin(), location.categories.end(), [this, location](LocationCategory category)
+        if (std::all_of(location.categories.begin(), location.categories.end(), [this, &location](LocationCategory category)
         {
 
             return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons)            ||
@@ -248,7 +249,7 @@ void World::determineRaceModeDungeons()
             DungeonId::TowerOfTheGods,
             DungeonId::ForsakenFortress,
             DungeonId::EarthTemple,
-            DungeonId::WindTemple,
+            DungeonId::WindTemple
         };
 
         shufflePool(dungeons);
@@ -585,31 +586,24 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
         }
         newEntry.categories.insert(cat);
     }
-    YAML_FIELD_CHECK(locationObject, "Path", WorldLoadingError::LOCATION_MISSING_KEY);
-    const auto& path = locationObject["Path"].val();
-    newEntry.method.filePath = std::string(path.data(), path.size());
+    
+
+
     YAML_FIELD_CHECK(locationObject, "Type", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& type = locationObject["Type"].val();
-    const std::string& modificationType = std::string(type.data(), type.size());
-    newEntry.method.type = nameToModificationType(modificationType);
-    if (newEntry.method.type == LocationModificationType::INVALID)
+    const std::string& modificationTypeStr = std::string(type.data(), type.size());
+    const LocationModificationType modificationType = nameToModificationType(modificationTypeStr);
+    if (modificationType == LocationModificationType::INVALID)
     {
         lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
         lastError << "Modificaiton Type \"" << modificationType << "\" Does Not Exist";
         return WorldLoadingError::INVALID_MODIFICATION_TYPE;
     }
-    YAML_FIELD_CHECK(locationObject, "Offsets", WorldLoadingError::LOCATION_MISSING_KEY);
-    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
-    {
-        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
-        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == ULONG_MAX)
-        {
-            lastError << "Encountered an invalid offset for location " << locationName << " in world " << std::to_string(worldId + 1);
-            return WorldLoadingError::INVALID_OFFSET_VALUE;
-        }
-        newEntry.method.offsets.push_back(offsetValue);
+    switch(modificationType) {
+
     }
+
+
     YAML_FIELD_CHECK(locationObject, "OriginalItem", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& item = locationObject["OriginalItem"].val();
     const std::string& itemName = std::string(item.data(), item.size());

@@ -3,10 +3,10 @@
 #include <cstring>
 #include <algorithm>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
 #include "../utility/common.hpp"
 
-
+using eType = Utility::Endian::Type;
 
 uint32_t LabelChecksum(uint32_t groupCount, std::string label) {
     unsigned int group = 0;
@@ -59,11 +59,11 @@ MSBTError readHeader(std::istream& msbt, MSBTHeader& header) {
         return MSBTError::REACHED_EOF;
     }
 
-    Utility::byteswap_inplace(header.byteOrderMarker);
-    Utility::byteswap_inplace(header.unknown_0x00);
-    Utility::byteswap_inplace(header.sectionCount);
-    Utility::byteswap_inplace(header.unknown2_0x00);
-    Utility::byteswap_inplace(header.fileSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.byteOrderMarker);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.unknown_0x00);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.sectionCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.unknown2_0x00);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.fileSize);
 
     if (header.unknown_0x00 != 0x0000) return MSBTError::UNEXPECTED_VALUE;
     if (header.encoding_0x01 != 0x01) return MSBTError::UNEXPECTED_VALUE;
@@ -95,8 +95,8 @@ MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
         return MSBTError::REACHED_EOF;
     }
 
-    Utility::byteswap_inplace(header.tableSize);
-    Utility::byteswap_inplace(header.entryCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
 
     header.entries.reserve(header.entryCount);
     for (uint32_t i = 0; i < header.entryCount; i++) {
@@ -110,8 +110,8 @@ MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
         {
             return MSBTError::REACHED_EOF;
         }
-        Utility::byteswap_inplace(entry.stringCount);
-        Utility::byteswap_inplace(entry.stringOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
         msbt.seekg(entry.stringOffset + header.offset + 0x10); //Seek to the start of the entries before the loop so it doesnt reset to the same string each time
         entry.labels.reserve(entry.stringCount);
         for (uint32_t x = 0; x < entry.stringCount; x++) {
@@ -130,7 +130,7 @@ MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
             {
                 return MSBTError::REACHED_EOF;
             }
-            Utility::byteswap_inplace(label.messageIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, label.messageIndex);
             entry.labels.push_back(label);
         }
         header.entries.push_back(entry);
@@ -188,9 +188,9 @@ MSBTError readATR1(std::istream& msbt, ATR1Header& header) {
         return MSBTError::REACHED_EOF;
     }
 
-    Utility::byteswap_inplace(header.tableSize);
-    Utility::byteswap_inplace(header.entryCount);
-    Utility::byteswap_inplace(header.entrySize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entrySize);
 
     header.entries.reserve(header.entryCount);
     for (uint32_t i = 0; i < header.entryCount; i++) {
@@ -253,11 +253,11 @@ MSBTError readATR1(std::istream& msbt, ATR1Header& header) {
             return MSBTError::REACHED_EOF;
         }
 
-        Utility::byteswap_inplace(attributes.price);
-        Utility::byteswap_inplace(attributes.nextNo);
-        Utility::byteswap_inplace(attributes.demoID);
-        Utility::byteswap_inplace(attributes.commentE_1);
-        Utility::byteswap_inplace(attributes.commentE_2);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.price);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.nextNo);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.demoID);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_1);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_2);
 
         header.entries.push_back(attributes);
     }
@@ -294,7 +294,7 @@ MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
         return MSBTError::REACHED_EOF;
     }
 
-    Utility::byteswap_inplace(header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
 
     header.entries.reserve((header.tableSize + 0x10U + header.offset) / 4);
     for (uint32_t i = header.offset + 0x10U; i < (header.tableSize + 0x10U + header.offset); i += 4) {
@@ -305,7 +305,7 @@ MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
             return MSBTError::REACHED_EOF;
         }
 
-        Utility::byteswap_inplace(entry.styleIndex);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
 
         header.entries.push_back(entry);
     }
@@ -345,8 +345,8 @@ MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
         return MSBTError::REACHED_EOF;
     }
 
-    Utility::byteswap_inplace(header.tableSize);
-    Utility::byteswap_inplace(header.entryCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
 
     header.entries.reserve(header.entryCount);
     for (uint32_t i = 0; i < header.entryCount; i++) {
@@ -361,10 +361,11 @@ MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
             return MSBTError::REACHED_EOF;
         }
 
-        Utility::byteswap_inplace(entry.offset);
-        Utility::byteswap_inplace(entry.nextOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.nextOffset);
 
-        msbt.seekg(header.offset + 0x10 + entry.offset); //Offsets are relative to the "end" of the header, 4 bytes before the offset data starts (add 0x10 instead of 0x14)
+        //can't use null-terminated string read, some commands include null characters that would break things
+        msbt.seekg(header.offset + 0x10 + entry.offset);
         uint32_t length;
         if (i + 1 == header.entryCount) { //Check if the index is the last in the file
             length = header.tableSize - entry.offset;
@@ -398,8 +399,8 @@ MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
 
 void writeLBL1(std::ostream& out, LBL1Header& header) {
     header.offset = out.tellp();
-    Utility::byteswap_inplace(header.tableSize);
-    Utility::byteswap_inplace(header.entryCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
 
     out.write(header.magicLBL1, 4);
     out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
@@ -409,8 +410,8 @@ void writeLBL1(std::ostream& out, LBL1Header& header) {
     int i = 0;
     for (LBLEntry& entry : header.entries) {
         out.seekp(header.offset + 0x14 + 0x8 * i, std::ios::beg);
-        Utility::byteswap_inplace(entry.stringCount); //byteswap inplace here and swap back later so all the swaps can be grouped in 1 spot instead of in each write (allows for easier Wii U conversion later)
-        Utility::byteswap_inplace(entry.stringOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringCount); //byteswap inplace here and swap back later so all the swaps can be grouped in 1 spot instead of in each write (allows for easier Wii U conversion later)
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
 
         out.write(reinterpret_cast<char*>(&entry.stringCount), sizeof(entry.stringCount));
         out.write(reinterpret_cast<char*>(&entry.stringOffset), sizeof(entry.stringOffset));
@@ -418,10 +419,10 @@ void writeLBL1(std::ostream& out, LBL1Header& header) {
             int IDa = std::stoi(a.string), IDb = std::stoi(b.string);
             return IDa < IDb;
         });
-        Utility::byteswap_inplace(entry.stringOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
         out.seekp(header.offset + 0x10 + entry.stringOffset, std::ios::beg);
         for (Label& label : entry.labels) {
-            Utility::byteswap_inplace(label.messageIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, label.messageIndex);
 
             label.length = label.string.size();
             out.write(reinterpret_cast<char*>(&label.length), sizeof(label.length));
@@ -439,9 +440,9 @@ void writeLBL1(std::ostream& out, LBL1Header& header) {
 
 void writeATR1(std::ostream& out, ATR1Header& header) {
     header.offset = out.tellp();
-    Utility::byteswap_inplace(header.tableSize);
-    Utility::byteswap_inplace(header.entryCount);
-    Utility::byteswap_inplace(header.entrySize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entrySize);
 
     out.write(header.magicATR1, 4);
     out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
@@ -450,11 +451,11 @@ void writeATR1(std::ostream& out, ATR1Header& header) {
     out.write(reinterpret_cast<char*>(&header.entrySize), sizeof(header.entrySize));
 
     for (Attributes& attributes : header.entries) {
-        Utility::byteswap_inplace(attributes.price);
-        Utility::byteswap_inplace(attributes.nextNo);
-        Utility::byteswap_inplace(attributes.demoID);
-        Utility::byteswap_inplace(attributes.commentE_1);
-        Utility::byteswap_inplace(attributes.commentE_2);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.price);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.nextNo);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.demoID);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_1);
+        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_2);
 
         out.write(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character));
         out.write(reinterpret_cast<char*>(&attributes.boxStyle), sizeof(attributes.boxStyle));
@@ -480,14 +481,14 @@ void writeATR1(std::ostream& out, ATR1Header& header) {
 
 void writeTSY1(std::ostream& out, TSY1Header& header) {
     header.offset = out.tellp();
-    Utility::byteswap_inplace(header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
 
     out.write(header.magicTSY1, 4);
     out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
     out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
 
     for (TSY1Entry& entry : header.entries) {
-        Utility::byteswap_inplace(entry.styleIndex);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
 
         out.write(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex));
     }
@@ -500,8 +501,8 @@ void writeTSY1(std::ostream& out, TSY1Header& header) {
 
 void writeTXT2(std::ostream& out, TXT2Header& header) {
     header.offset = out.tellp();
-    Utility::byteswap_inplace(header.tableSize);
-    Utility::byteswap_inplace(header.entryCount);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
 
     out.write(header.magicTXT2, 4);
     out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
@@ -509,7 +510,7 @@ void writeTXT2(std::ostream& out, TXT2Header& header) {
     out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
 
     for (TXT2Entry& entry : header.entries) {
-        Utility::byteswap_inplace(entry.offset);
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
 
         out.write(reinterpret_cast<char*>(&entry.offset), sizeof(entry.offset));
     }
@@ -683,10 +684,10 @@ namespace FileTypes {
 
     MSBTError MSBTFile::writeToStream(std::ostream& out) {
 
-        Utility::byteswap_inplace(header.byteOrderMarker);
-        Utility::byteswap_inplace(header.unknown_0x00);
-        Utility::byteswap_inplace(header.sectionCount);
-        Utility::byteswap_inplace(header.unknown2_0x00);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.byteOrderMarker);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.unknown_0x00);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.sectionCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.unknown2_0x00);
 
         out.write(header.magicMsgStdBn, 8);
         out.write((char*)&header.byteOrderMarker, sizeof(header.byteOrderMarker));
@@ -750,7 +751,7 @@ namespace FileTypes {
         header.fileSize = out.tellp();
         out.seekp(0x12, std::ios::beg);
 
-        uint32_t fileSize_BE = Utility::byteswap(header.fileSize);
+        uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
         out.write((char*)&fileSize_BE, sizeof(fileSize_BE)); //Update full file size
 
         return MSBTError::NONE;

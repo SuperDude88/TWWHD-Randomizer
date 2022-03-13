@@ -3,8 +3,13 @@
 
 #include <cstring>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
 
+using eType = Utility::Endian::Type;
+
+static const std::unordered_map<std::string, int> size_by_type{ {"SCOB", 0x24}, {"ACTR", 0x20}, {"TRES", 0x20}, {"PLYR", 0x20}, {"SCLS", 0xC}, {"STAG", 0x14}, {"FILI", 0x8}, {"SHIP", 0x10}, {"RTBL", 0x4}, {"RTBL_SubEntry", 0x8}, {"RTBL_AdjacentRoom", 0x1}, {"RPAT", 0xC}, {"RPPN", 0x10}, {"TGOB", 0x20}, {"TGSC", 0x24}, {"DOOR", 0x24}, {"TGDR", 0x24}, {"EVNT", 0x18}, {"2DMA", 0x38}, {"MULT", 0xC}, {"FLOR", 0x14}, {"LBNK", 0x1}, {"SOND", 0x1C}, {"RCAM", 0x14}, {"RARO", 0x14}, {"DMAP", 0x10}, {"EnvR", 0x8}, {"Colo", 0xC}, {"Pale", 0x6C}, {"Virt", 0x38}, {"LGHT", 0x1C}, {"LGTV", 0x1C}, {"MECO", 0x2}, {"MEMA", 0x4}, {"PATH", 0xC}, {"PPNT", 0x10}, {"CAMR", 0x14}, {"AROB", 0x14} };
+
+static const std::unordered_map<char, unsigned int> layer_char_to_layer_index{ {'0', 0}, {'1', 1}, {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'a', 10}, {'b', 11} };
 
 
 DZXError Chunk::read(std::istream& file, const unsigned int offset) {
@@ -20,12 +25,8 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	if (!file.read((char*)&first_entry_offset, 4)) {
 		return DZXError::REACHED_EOF;
 	}
-	Utility::byteswap_inplace(num_entries);
-	Utility::byteswap_inplace(first_entry_offset);
-
-	if (size_by_type.find(type) == size_by_type.end()) {
-		return DZXError::UNKNOWN_CHUNK;
-	}
+	Utility::Endian::toPlatform_inplace(eType::Big, num_entries);
+	Utility::Endian::toPlatform_inplace(eType::Big, first_entry_offset);
 	
 	if (std::strncmp("TRE", type, 3) == 0) {
 		char layer_char = type[3];
@@ -61,6 +62,9 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		memcpy(type, "SCOB", 4);
 	}
 
+	if (size_by_type.count(type) == 0) {
+		return DZXError::UNKNOWN_CHUNK;
+	}
 	entry_size = size_by_type.at(type);
 
 	file.seekg(first_entry_offset, std::ios::beg);
@@ -73,7 +77,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 				return DZXError::REACHED_EOF;
 			}
 			uint32_t subentry_offset = *(reinterpret_cast<uint32_t*>(&entry.data[0]));
-			Utility::byteswap_inplace(subentry_offset);
+			Utility::Endian::toPlatform_inplace(eType::Big, subentry_offset);
 
 			file.seekg(subentry_offset, std::ios::beg);
 			if (!file.read(&entry.data[4], 8)) {
@@ -81,7 +85,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 			}
 			uint8_t num_rooms = *(reinterpret_cast<uint8_t*>(&entry.data[4]));
 			uint32_t adjacent_rooms_offset = *(reinterpret_cast<uint32_t*>(&entry.data[8]));
-			Utility::byteswap_inplace(adjacent_rooms_offset);
+			Utility::Endian::toPlatform_inplace(eType::Big, adjacent_rooms_offset);
 
 			entry.data.resize(12 + num_rooms);
 			file.seekg(adjacent_rooms_offset, std::ios::beg);
@@ -114,7 +118,7 @@ DZXError Chunk::save_changes(std::ostream& out) {
 	}
 
 	out.write(&type[0], 4);
-	const auto num_entries_byteswap = Utility::byteswap(num_entries); //Need to use num_entries later, can't byteswap inplace
+	const auto num_entries_byteswap = Utility::Endian::toPlatform(eType::Big, num_entries); //Need to use num_entries later, can't byteswap inplace
 	out.write((char*)&num_entries_byteswap, 4);
 	out.write("\0\0\0\0", 4); //placeholder data, is filled in later
 
@@ -170,7 +174,7 @@ namespace FileTypes {
 		if (!dzx.read((char*)&num_chunks, 4)) {
 			return DZXError::REACHED_EOF;
 		}
-		Utility::byteswap_inplace(num_chunks);
+		Utility::Endian::toPlatform_inplace(eType::Big, num_chunks);
 		if (num_chunks == 0) {
 			return DZXError::NO_CHUNKS;
 		}
@@ -251,7 +255,7 @@ namespace FileTypes {
 		if (num_chunks == 0) {
 			return DZXError::NO_CHUNKS;
 		}
-		Utility::byteswap_inplace(num_chunks);
+		Utility::Endian::toPlatform_inplace(eType::Big, num_chunks);
 		out.write((char*)&num_chunks, 4);
 
 		DZXError err = DZXError::NONE;
@@ -273,7 +277,7 @@ namespace FileTypes {
 
 			chunk.first_entry_offset = out.tellp();
 			out.seekp(chunk.offset + 8, std::ios::beg);
-			const auto first_entry_offset = Utility::byteswap(chunk.first_entry_offset);
+			const auto first_entry_offset = Utility::Endian::toPlatform(eType::Big, chunk.first_entry_offset);
 			out.write((char*)&first_entry_offset, 4);
 
 			out.seekp(chunk.first_entry_offset, std::ios::beg);
@@ -285,7 +289,7 @@ namespace FileTypes {
 				for (unsigned int entry_index = 0; entry_index < chunk.entries.size(); entry_index++) {
 					ChunkEntry& entry = chunk.entries[entry_index];
 					uint32_t subentry_offset = chunk.first_entry_offset + entry_index * 0x8 + chunk.entries.size() * 0x4; //update the subentry's offset
-					const auto subentry_offset_byteswap = Utility::byteswap(subentry_offset);
+					const auto subentry_offset_byteswap = Utility::Endian::toPlatform(eType::Big, subentry_offset);
 					entry.data.replace(0, 4, (char*)&subentry_offset_byteswap, 4);
 					out.seekp(chunk.first_entry_offset + entry_index * 4, std::ios::beg);
 					out.write((char*)&subentry_offset_byteswap, 4);
@@ -293,7 +297,7 @@ namespace FileTypes {
 					out.seekp(subentry_offset, std::ios::beg);
 					out.write(&entry.data[4], 4);
 					entry.data.replace(8, 4, (char*)&rooms_offset, 4);
-					const auto rooms_offset_byteswap = Utility::byteswap(rooms_offset);
+					const auto rooms_offset_byteswap = Utility::Endian::toPlatform(eType::Big, rooms_offset);
 					out.write((char*)&rooms_offset_byteswap, 4);
 					out.seekp(rooms_offset, std::ios::beg);
 

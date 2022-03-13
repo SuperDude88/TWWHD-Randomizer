@@ -411,9 +411,16 @@ phantom_ganon_maze_stage_name:
 
 
 ; Fix some Windfall townspeople not properly keeping track of whether they've given you their quest reward item yet or not.
-; Pompie/Vera, Minenco, and Kamo give you treasure charts in the vanilla game, and they check if they've given you their item by calling checkGetItem.
+; Pompie/Vera, Minenco, Dampa, and Kamo give you treasure charts in the vanilla game, and they check if they've given you their item by calling checkGetItem.
 ; But that doesn't work for non-unique items, such as progressive items, rupees, etc.
 ; So we need to change their code to set and check event bits that were originally unused in the base game.
+.org 0x101c399c ; For Pompie and Vera
+	.short 0x6904
+.org 0x101c39a0 ; For Minenco
+	.short 0x6908
+.org 0x101c39ac ; For Kamo
+	.short 0x6910
+
 .org 0x022C1038
 	bl create_item_and_set_event_bit_for_townsperson
 .org 0x022C1064
@@ -475,12 +482,30 @@ create_item_and_set_event_bit_for_townsperson_end:
 	li r3, 0x6904
 	bl isEventBit_wrapper
 
+.org 0x022c6440 ; For Dampa
+	li r3, 0x6a04
+.org 0x022c6448
+	bl isEventBit_wrapper
+
 .org 0x022CC550
 	li r3, 0x6904
 .org 0x022CC558
 	bl isEventBit_wrapper
 .org 0x022CC578
 	bl isEventBit_wrapper
+
+.org 0x022c6454 ; For Dampa
+	b set_dampa_event_bit
+.org @NextFreeSpace
+.global set_dampa_event_bit
+set_dampa_event_bit:
+	lis r3, gameInfo_ptr@ha
+	lwz r3, gameInfo_ptr@l(r3)
+	addi r3, r3, 0x644
+	li r4, 0x6a04
+	bl onEventBit
+	li r12, 0xFD
+	b 0x022c6458
 
 .org 0x022CFA80
 	bl lenzo_set_deluxe_picto_box_event_bit

@@ -5,23 +5,27 @@
 #include <filesystem>
 #include <variant>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
+#include "../utility/common.hpp"
 
-//This code should probably be optimized a bit, minimize loops etc, it runs more compared to the other load functions
+//This code should probably be optimized a bit, minimize loops etc, it runs quite often
+using eType = Utility::Endian::Type;
 
-std::variant<FRESError, std::string> read_string(std::istream& bfres, int offset) {
+std::variant<FRESError, std::string> readStringTableEntry(std::istream& bfres, unsigned int offset) {
     bfres.seekg(offset - 4, std::ios::beg); //BFRES stores offsets to strings directly, but the 4 bytes preceding it store length which we want
-    FRESStringTableEntry string;
-    if (!bfres.read((char*)&string.length, sizeof(string.length))) {
+    uint32_t len;
+    if (!bfres.read((char*)&len, sizeof(len))) {
         return FRESError::REACHED_EOF;
     }
-    Utility::byteswap_inplace(string.length);
+    Utility::Endian::toPlatform_inplace(eType::Big, len);
 
-    string.str.resize(string.length);
-    if (!bfres.read(&string.str[0], string.length)) {
-        return FRESError::REACHED_EOF;
-    }
-    return string.str;
+    if (std::string str = readNullTerminatedStr(bfres, offset); str.empty()) {
+		return FRESError::REACHED_EOF; //empty string means it could not read a character from file
+	}
+	else {
+        if (len != str.length()) return FRESError::STRING_LEN_MISMATCH;
+		return str;
+	}
 }
 
 FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
@@ -77,7 +81,7 @@ FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
         {
             return FRESError::REACHED_EOF;
         }
-        Utility::byteswap_inplace(hdr.groupOffsets[i]);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupOffsets[i]);
         //calculate global offset
     }
     for (int i = 0; i < 12; i++) {
@@ -85,21 +89,21 @@ FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
         {
             return FRESError::REACHED_EOF;
         }
-        Utility::byteswap_inplace(hdr.groupCounts[i]);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupCounts[i]);
     }
     // userPointer
     if (!bfres.read(reinterpret_cast<char*>(&hdr.userPointer), sizeof(hdr.userPointer)))
     {
         return FRESError::REACHED_EOF;
     }
-    Utility::byteswap_inplace(hdr.byteOrderMarker);
-    Utility::byteswap_inplace(hdr.headerLength_0x10);
-    Utility::byteswap_inplace(hdr.fileSize);
-    Utility::byteswap_inplace(hdr.fileAlignment);
-    Utility::byteswap_inplace(hdr.nameOffset);
-    Utility::byteswap_inplace(hdr.stringTableSize);
-    Utility::byteswap_inplace(hdr.stringTableOffset);
-    Utility::byteswap_inplace(hdr.userPointer);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.byteOrderMarker);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.headerLength_0x10);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.fileSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.fileAlignment);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.nameOffset);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableSize);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableOffset);
+    Utility::Endian::toPlatform_inplace(eType::Big, hdr.userPointer);
     return FRESError::NONE;
 }
 
@@ -161,8 +165,8 @@ std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bf
             return FRESError::REACHED_EOF;
         }
 
-        Utility::byteswap_inplace(group.groupLength);
-        Utility::byteswap_inplace(group.entryCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
+        Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
 
         for (int entry_index = 0; entry_index < group.entryCount; entry_index++) {
             GroupEntry entry;
@@ -184,15 +188,15 @@ std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bf
                 return FRESError::REACHED_EOF;
             }
 
-            Utility::byteswap_inplace(entry.searchValue);
-            Utility::byteswap_inplace(entry.leftIndex);
-            Utility::byteswap_inplace(entry.rightIndex);
-            Utility::byteswap_inplace(entry.namePointer);
-            Utility::byteswap_inplace(entry.dataPointer);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.leftIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.rightIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.namePointer);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
             group.entries.push_back(entry);
 
             FRESFileSpec file;
-            std::variant<FRESError, std::string> name = read_string(bfres, entry.location + 0x8 + entry.namePointer);
+            std::variant<FRESError, std::string> name = readStringTableEntry(bfres, entry.location + 0x8 + entry.namePointer);
             if (name.index() == 0) {
                 return std::get<0>(name);
             }
@@ -207,8 +211,8 @@ std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bf
             if (!bfres.read((char*)&fileInfo.fileLength, sizeof(fileInfo.fileLength))) {
                 return FRESError::REACHED_EOF;
             }
-            Utility::byteswap_inplace(fileInfo.dataOffset);
-            Utility::byteswap_inplace(fileInfo.fileLength);
+            Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.dataOffset);
+            Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.fileLength);
 
             file.fileLength = fileInfo.fileLength;
             file.fileOffset = fileInfo.location + fileInfo.dataOffset;
@@ -223,14 +227,14 @@ std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bf
 }
 
 FRESError writeFRESHeader(std::ostream& out, FRESHeader& hdr) {
-    auto BOM = Utility::byteswap(hdr.byteOrderMarker);
-    auto headerLength = Utility::byteswap(hdr.headerLength_0x10);
-    auto fileSize = Utility::byteswap(hdr.fileSize);
-    auto Alignment = Utility::byteswap(hdr.fileAlignment);
-    auto nameOffset = Utility::byteswap(hdr.nameOffset);
-    auto stringTableSize = Utility::byteswap(hdr.stringTableSize);
-    auto stringTableOffset = Utility::byteswap(hdr.stringTableOffset);
-    auto userPointer = Utility::byteswap(hdr.userPointer);
+    auto BOM = Utility::Endian::toPlatform(eType::Big, hdr.byteOrderMarker);
+    auto headerLength = Utility::Endian::toPlatform(eType::Big, hdr.headerLength_0x10);
+    auto fileSize = Utility::Endian::toPlatform(eType::Big, hdr.fileSize);
+    auto Alignment = Utility::Endian::toPlatform(eType::Big, hdr.fileAlignment);
+    auto nameOffset = Utility::Endian::toPlatform(eType::Big, hdr.nameOffset);
+    auto stringTableSize = Utility::Endian::toPlatform(eType::Big, hdr.stringTableSize);
+    auto stringTableOffset = Utility::Endian::toPlatform(eType::Big, hdr.stringTableOffset);
+    auto userPointer = Utility::Endian::toPlatform(eType::Big, hdr.userPointer);
     out.write(hdr.magicFRES, 4);
     for (int i = 0; i < 4; i++) {
         out.write(reinterpret_cast<char*>(&hdr.version[i]), 1);
@@ -243,18 +247,18 @@ FRESError writeFRESHeader(std::ostream& out, FRESHeader& hdr) {
     out.write(reinterpret_cast<char*>(&stringTableSize), 4);
     out.write(reinterpret_cast<char*>(&stringTableOffset), 4);
     for (int i = 0; i < 12; i++) {
-        auto fileOffset = Utility::byteswap(hdr.groupOffsets[i]);
+        auto fileOffset = Utility::Endian::toPlatform(eType::Big, hdr.groupOffsets[i]);
         out.write(reinterpret_cast<char*>(&fileOffset), 4);
     }
     for (int i = 0; i < 12; i++) {
-        auto fileCount = Utility::byteswap(hdr.groupCounts[i]);
+        auto fileCount = Utility::Endian::toPlatform(eType::Big, hdr.groupCounts[i]);
         out.write(reinterpret_cast<char*>(&fileCount), 2);
     }
     out.write(reinterpret_cast<char*>(&userPointer), 4);
 
     for (const EmbeddedFileSpec& file : hdr.embeddedFiles) {
-        auto offset = Utility::byteswap(file.dataOffset);
-        auto length = Utility::byteswap(file.fileLength);
+        auto offset = Utility::Endian::toPlatform(eType::Big, file.dataOffset);
+        auto length = Utility::Endian::toPlatform(eType::Big, file.fileLength);
         out.write(reinterpret_cast<char*>(&offset), 4);
         out.write(reinterpret_cast<char*>(&length), 4);
     }
@@ -274,18 +278,8 @@ namespace FileTypes {
             return "NOT_FRES";
         case FRESError::REACHED_EOF:
             return "REACHED_EOF";
-        case FRESError::STRING_TOO_LONG:
-            return "STRING_TOO_LONG";
-        case FRESError::STRING_NOT_FOUND:
-            return "STRING_NOT_FOUND";
-        case FRESError::HEADER_DATA_NOT_LOADED:
-            return "HEADER_DATA_NOT_LOADED";
-        case FRESError::FILE_DATA_NOT_LOADED:
-            return "FILE_DATA_NOT_LOADED";
-        case FRESError::FRES_NOT_EMPTY:
-            return "FRES_NOT_EMPTY";
-        case FRESError::FRES_IS_EMTPY:
-            return "FRES_IS_EMTPY";
+        case FRESError::STRING_LEN_MISMATCH:
+            return "STRING_LEN_MISMATCH";
         case FRESError::GROUP_IS_EMPTY:
             return "GROUP_IS_EMPTY";
         case FRESError::COUNT:
@@ -374,8 +368,8 @@ namespace FileTypes {
         group.groupLength = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C]);
         group.entryCount = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C] + 4);
 
-        Utility::byteswap_inplace(group.groupLength);
-        Utility::byteswap_inplace(group.entryCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
+        Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
 
         int offset = 0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C + 8;
         for (int entry_index = 0; entry_index <= group.entryCount; entry_index++) {
@@ -386,11 +380,11 @@ namespace FileTypes {
             entry.namePointer = *reinterpret_cast<int32_t*>(&fileData[offset + 8]);
             entry.dataPointer = *reinterpret_cast<int32_t*>(&fileData[offset + 12]);
 
-            Utility::byteswap_inplace(entry.searchValue);
-            Utility::byteswap_inplace(entry.leftIndex);
-            Utility::byteswap_inplace(entry.rightIndex);
-            Utility::byteswap_inplace(entry.namePointer);
-            Utility::byteswap_inplace(entry.dataPointer);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.leftIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.rightIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.namePointer);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
             group.entries.push_back(entry);
             offset += 0x10;
         }
@@ -454,7 +448,7 @@ namespace FileTypes {
         out.write(&fileData[fresHeader.embeddedFiles.size() * 0x8], fileData.size() - fresHeader.embeddedFiles.size() * 0x8); //Skip over the embedded file info at the start of the file
         uint32_t fileLen = out.tellp();
         out.seekp(0xC, std::ios::beg);
-        Utility::byteswap_inplace(fileLen);
+        Utility::Endian::toPlatform_inplace(eType::Big, fileLen);
         out.write((char*)&fileLen, sizeof(fileLen));
         return FRESError::NONE;
     }

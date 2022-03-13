@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-#include "../filetypes/shared/elf_structs.hpp"
+#include "./shared/elf_structs.hpp"
 
 
 

@@ -6,35 +6,9 @@
 #include "../filetypes/yaz0.hpp"
 #include "../filetypes/sarc.hpp"
 #include "../filetypes/bfres.hpp"
+#include "../utility/stringUtil.hpp"
 
-
-
-#ifdef _WIN32
-constexpr char PATHSEP = '\\';
-#else
-constexpr char PATHSEP = '/';
-#endif
-
-
-
-bool endsWith(const std::string& a, const std::string& b) {
-    if (b.size() > a.size()) return false;
-    return std::equal(a.end() - b.size(), a.end(), b.begin());
-}
-
-std::vector<std::string> splitPath(const std::string& relPath, char delim) {
-    std::vector<std::string> path;
-    std::string tail = relPath;
-    std::string segment;
-    auto sepIndex = tail.find_first_of(delim);
-    while ((sepIndex = tail.find_first_of(delim)), sepIndex != std::string::npos) {
-        segment = tail.substr(0, sepIndex);
-        tail = tail.substr(sepIndex + 1);
-        path.push_back(segment);
-    }
-    path.push_back(tail); //add anything past the last delim to the list
-    return path;
-}
+using namespace Utility;
 
 
 
@@ -179,24 +153,22 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
 
 RandoSession::fspath RandoSession::openGameFile(const RandoSession::fspath& relPath)
 {
-    auto workingPath = extractFile(splitPath(relPath.string(), '@'));
-    return workingPath; //some cases we dont want to open the file, any others it can be opened afterwards
+    return extractFile(Str::split(relPath.string(), '@')); //some cases only need the path, not stream
 }
 
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
-    const fspath destPath = extractFile(splitPath(relPath.string(), '@'));
+    const fspath destPath = extractFile(Str::split(relPath.string(), '@'));
     return std::filesystem::copy_file(source, destPath, std::filesystem::copy_options::overwrite_existing);
 }
 
 bool RandoSession::repackCache()
 {
     std::string resultKey;
-    while (orderedCache.size() > 0) { //Repack
-        auto it = orderedCache.end() - 1;
+    for (auto it = orderedCache.rbegin(); it != orderedCache.rend(); it = orderedCache.rbegin()) {
         const std::string& element = *it;
         if (element.empty()) continue;
 
-        if (endsWith(element, ".elf"))
+        if (Str::endsWith(element, ".elf"))
         {
             resultKey = element.substr(0, element.size() - 4);
             std::ifstream inputFile((workingDir / element), std::ios::binary);
@@ -211,7 +183,7 @@ bool RandoSession::repackCache()
                 return 0;
             }
         }
-        else if (endsWith(element, ".dec"))
+        else if (Str::endsWith(element, ".dec"))
         {
             resultKey = element.substr(0, element.size() - 4);
             std::ifstream inputFile((workingDir / element), std::ios::binary);
@@ -226,7 +198,7 @@ bool RandoSession::repackCache()
                 return 0;
             }
         }
-        else if (endsWith(element, ".unpack/"))
+        else if (Str::endsWith(element, ".unpack/"))
         {
             resultKey = element.substr(0, element.size() - 8);
             FileTypes::SARCFile sarc;
@@ -240,9 +212,9 @@ bool RandoSession::repackCache()
             err = sarc.writeToFile((workingDir / resultKey).string());
             if (err != SARCError::NONE) return 0;
         }
-        else if (endsWith(element, ".res/"))
+        else if (Str::endsWith(element, ".res/"))
         {
-            resultKey = resultKey.substr(0, element.size() - 5);
+            resultKey = element.substr(0, element.size() - 5);
             FileTypes::resFile fres;
             auto err = fres.loadFromFile((workingDir / resultKey).string()); //load the original BFRES
             if (err != FRESError::NONE) return 0;
@@ -258,7 +230,8 @@ bool RandoSession::repackCache()
         else
         {
             if (std::filesystem::exists((outputDir / element))) { //if it exists in the output directory (the game files on console storage), copy to that file
-                if(!std::filesystem::copy_file(workingDir / element, outputDir / element, std::filesystem::copy_options::overwrite_existing)) return 0;
+                if(!std::filesystem::copy_file(workingDir / element, outputDir / element, std::filesystem::copy_options::overwrite_existing)) 
+                    return 0;
             }
         }
         
