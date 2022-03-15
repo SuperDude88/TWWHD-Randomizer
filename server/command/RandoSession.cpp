@@ -12,10 +12,10 @@ using namespace Utility;
 
 
 
-RandoSession::RandoSession(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& outputDir) : 
-    gameBaseDirectory(gameBaseDir),
+RandoSession::RandoSession(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& randoOutputDir) : 
+    baseDir(gameBaseDir),
     workingDir(randoWorkingDir),
-    outputDir(outputDir)
+    outputDir(randoOutputDir)
 {
     clearWorkingDir(); //should be cleared at the start of each session
 }
@@ -30,7 +30,7 @@ void RandoSession::clearWorkingDir() {
 
 RandoSession::fspath RandoSession::relToGameAbsolute(const RandoSession::fspath& relPath)
 {
-    return gameBaseDirectory / relPath;
+    return baseDir / relPath;
 }
 
 /*RandoSession::fspath RandoSession::absToGameRelative(const RandoSession::fspath& absPath)

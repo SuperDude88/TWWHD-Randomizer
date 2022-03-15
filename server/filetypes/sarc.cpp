@@ -18,28 +18,29 @@ const std::unordered_map<std::string, uint32_t> alignments = {
 	{"sharcfb", 0x00002000} //seems to be 0x2000 usually, sometimes 0x100 in .sarc files?
 };
 
-
-uint32_t calculateHash(const std::string& name, uint32_t multiplier) {
-	uint32_t hash = 0;
-	for (const int8_t byte : name) {
-		if (byte == 0x00) break; //string is null-terminated
-		hash = hash * multiplier + byte;
+namespace {
+	uint32_t calculateHash(const std::string& name, uint32_t multiplier) {
+		uint32_t hash = 0;
+		for (const int8_t byte : name) {
+			if (byte == 0x00) break; //string is null-terminated
+			hash = hash * multiplier + byte;
+		}
+	
+		return hash;
 	}
-
-	return hash;
-}
-
-uint32_t getAlignment(const std::string& fileExt, const file& file) {
-	if (alignments.find(fileExt) != alignments.end()) {
-		return alignments.at(fileExt);
-	}
-	else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
-		uint16_t alignment = *(uint16_t*)&file.data[(file.data.size() - 8)];
-		Utility::Endian::toPlatform_inplace(eType::Big, alignment);
-		return alignment;
-	}
-	else {
-		return 0;
+	
+	uint32_t getAlignment(const std::string& fileExt, const file& file) {
+		if (alignments.find(fileExt) != alignments.end()) {
+			return alignments.at(fileExt);
+		}
+		else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
+			uint16_t alignment = *(uint16_t*)&file.data[(file.data.size() - 8)];
+			Utility::Endian::toPlatform_inplace(eType::Big, alignment);
+			return alignment;
+		}
+		else {
+			return 0;
+		}
 	}
 }
 

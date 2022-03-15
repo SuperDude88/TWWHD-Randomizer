@@ -6,15 +6,9 @@
 #include "WWHDStructs.hpp"
 #include "../filetypes/elf.hpp"
 #include "../filetypes/util/elfUtil.hpp"
-#include "../../libs/ryml.hpp"
+#include "../../libs/json.hpp"
 
-#define FIELD_CHECK(j, field, err) if(!j.contains(field)) {lastError << "Unable to retrieve field: \"" << field << '"'; return err;}
-#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {lastError << "Unable to find key: \"" << key << '"'; return err;}
-#define OBJECT_CHECK(j, msg) if(!j.is_object()) {lastError << msg << ": Not an Object."; return WorldLoadingError::EXPECTED_JSON_OBJECT;}
-#define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
-#define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
-
-
+#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {return err;}
 
 static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_name = {
     {std::string("Bitem\0\0\0", 8), 0x0000FF00},
@@ -43,22 +37,22 @@ namespace {
 
 		nlohmann::json symbols = nlohmann::json::parse(fptr);
 		for (const auto& symbol : symbols.items()) {
-			uint32_t address = std::stoi((std::string)symbol.value(), nullptr, 16);
+			uint32_t address = std::stoi(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
 		}
 
 		return;
 	}
-}
-
-
-void loadRPX() {
-    RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
-    gRPX.loadFromFile(filePath.string());
-    rpxOpen = true;
     
-    return;
+    void loadRPX() {
+        RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
+        gRPX.loadFromFile(filePath.string());
+        rpxOpen = true;
+
+        return;
+    }
 }
+
 
 void saveRPX() {
     RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
@@ -93,29 +87,27 @@ ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
 
 
 ModificationError ModifyChest::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY);
+    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
     const auto& path = locationObject["Path"].val();
     filePath = std::string(path.data(), path.size());
 
-	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY);
+	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
     for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
     {
         const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            lastError << "Encountered an invalid offset for location " << locationName << " in world " << std::to_string(worldId + 1);
             return ModificationError::INVALID_OFFSET;
         }
-        newEntry.method.offsets.push_back(offsetValue);
+        offsets.push_back(offsetValue);
     }
 
     return ModificationError::NONE;
 }
 
 ModificationError ModifyChest::writeLocation(const Item& item) {
-    RandoSession::fspath filePath = g_session.openGameFile(this->filePath);
-    std::fstream file(filePath, std::ios::in | std::ios::out | std::ios::binary);
+    std::fstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
 
     for (const uint32_t& offset : offsets) {
         file.seekg(offset, std::ios::beg);
@@ -133,33 +125,27 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
 
 
 ModificationError ModifyActor::parseArgs(const ryml::NodeRef& locationObject) {
-    FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY);
-    filePath = locationObject.at("Path").get<std::string>();
-    FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY);
-    const auto& offsets_j = locationObject.at("Offsets").get<std::vector<nlohmann::json>>();
-    for (const auto& offset_j : offsets_j)
+    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
+    const auto& path = locationObject["Path"].val();
+    filePath = std::string(path.data(), path.size());
+
+	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
+    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
     {
-        if (offset_j.is_number())
+        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+        if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            offsets.push_back(offset_j.get<uint32_t>());
+            return ModificationError::INVALID_OFFSET;
         }
-        else
-        {
-            uint32_t offsetValue = std::stoi(offset_j.get<std::string>().c_str(), nullptr, 16);
-            if (offsetValue == 0 || offsetValue == UINT32_MAX)
-            {
-                return ModificationError::INVALID_OFFSET;
-            }
-            offsets.push_back(offsetValue);
-        }
+        offsets.push_back(offsetValue);
     }
 
     return ModificationError::NONE;
 }
 
 ModificationError ModifyActor::writeLocation(const Item& item) {
-    RandoSession::fspath filePath = g_session.openGameFile(this->filePath);
-    std::fstream file(filePath, std::ios::in | std::ios::out | std::ios::binary);
+    std::fstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
 
     for (const uint32_t& offset : offsets) {
         file.seekg(offset, std::ios::beg);
@@ -179,33 +165,27 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
 
 
 ModificationError ModifySCOB::parseArgs(const ryml::NodeRef& locationObject) {
-    FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY);
-    filePath = locationObject.at("Path").get<std::string>();
-    FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY);
-    const auto& offsets_j = locationObject.at("Offsets").get<std::vector<nlohmann::json>>();
-    for (const auto& offset_j : offsets_j)
+    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
+    const auto& path = locationObject["Path"].val();
+    filePath = std::string(path.data(), path.size());
+
+	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
+    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
     {
-        if (offset_j.is_number())
+        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+        if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            offsets.push_back(offset_j.get<uint32_t>());
+            return ModificationError::INVALID_OFFSET;
         }
-        else
-        {
-            uint32_t offsetValue = std::stoi(offset_j.get<std::string>().c_str(), nullptr, 16);
-            if (offsetValue == 0 || offsetValue == UINT32_MAX)
-            {
-                return ModificationError::INVALID_OFFSET;
-            }
-            offsets.push_back(offsetValue);
-        }
+        offsets.push_back(offsetValue);
     }
 
     return ModificationError::NONE;
 }
 
 ModificationError ModifySCOB::writeLocation(const Item& item) {
-    RandoSession::fspath filePath = g_session.openGameFile(this->filePath);
-    std::fstream file(filePath, std::ios::in | std::ios::out | std::ios::binary);
+    std::fstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
 
     for (const uint32_t& offset : offsets) {
         file.seekg(offset, std::ios::beg);
@@ -225,32 +205,33 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
 
 
 ModificationError ModifyEvent::parseArgs(const ryml::NodeRef& locationObject) {
-    FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY);
-    filePath = locationObject.at("Path").get<std::string>();
-    FIELD_CHECK(locationObject, "Offset", ModificationError::MISSING_KEY);
-    const std::string& offset_s = locationObject.at("Offset").get<std::string>();
-    uint32_t offsetValue = std::stoi(offset_s.c_str(), nullptr, 16);
-    if (offsetValue == 0 || offsetValue == UINT32_MAX)
-    {
-        return ModificationError::INVALID_OFFSET;
-    }
-    offset = offsetValue;
+    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
+    const auto& path = locationObject["Path"].val();
+    filePath = std::string(path.data(), path.size());
 
-    FIELD_CHECK(locationObject, "NameOffset", ModificationError::MISSING_KEY);
-    const std::string& nameOffset_s = locationObject.at("NameOffset").get<std::string>();
-    offsetValue = std::stoi(nameOffset_s.c_str(), nullptr, 16);
-    if (offsetValue == 0 || offsetValue == UINT32_MAX)
+	YAML_FIELD_CHECK(locationObject, "Offset", ModificationError::MISSING_KEY)
+    std::string offsetStr(locationObject["Offset"].val().data(), locationObject["Offset"].val().size());
+    unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+    if (offsetValue == 0 || offsetValue == ULONG_MAX)
     {
         return ModificationError::INVALID_OFFSET;
     }
-    nameOffset = offsetValue;
+    this->offset = offsetValue;
+    
+	YAML_FIELD_CHECK(locationObject, "NameOffset", ModificationError::MISSING_KEY)
+    offsetStr = std::string(locationObject["NameOffset"].val().data(), locationObject["NameOffset"].val().size());
+    offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+    if (offsetValue == 0 || offsetValue == ULONG_MAX)
+    {
+        return ModificationError::INVALID_OFFSET;
+    }
+    this->nameOffset = offsetValue;
 
     return ModificationError::NONE;
 }
 
 ModificationError ModifyEvent::writeLocation(const Item& item) {
-    RandoSession::fspath filePath = g_session.openGameFile(this->filePath);
-    std::ofstream file(filePath, std::ios::out | std::ios::binary);
+    std::ofstream file(g_session.openGameFile(filePath), std::ios::out | std::ios::binary);
 
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
@@ -272,23 +253,16 @@ ModificationError ModifyEvent::writeLocation(const Item& item) {
 
 
 ModificationError ModifyRPX::parseArgs(const ryml::NodeRef& locationObject) {
-    FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY);
-    const auto& offsets_j = locationObject.at("Offsets").get<std::vector<nlohmann::json>>();
-    for (const auto& offset_j : offsets_j)
+    YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
+    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
     {
-        if (offset_j.is_number())
+        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+        if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            offsets.push_back(offset_j.get<uint32_t>());
+            return ModificationError::INVALID_OFFSET;
         }
-        else
-        {
-            uint32_t offsetValue = std::stoi(offset_j.get<std::string>().c_str(), nullptr, 16);
-            if (offsetValue == 0 || offsetValue == UINT32_MAX)
-            {
-                return ModificationError::INVALID_OFFSET;
-            }
-            offsets.push_back(offsetValue);
-        }
+        offsets.push_back(offsetValue);
     }
 
     return ModificationError::NONE;
@@ -307,8 +281,9 @@ ModificationError ModifyRPX::writeLocation(const Item& item) {
 
 
 ModificationError ModifySymbol::parseArgs(const ryml::NodeRef& locationObject) {
-    FIELD_CHECK(locationObject, "SymbolName", ModificationError::MISSING_KEY);
-    symbolName = locationObject.at("SymbolName").get<std::string>();
+    YAML_FIELD_CHECK(locationObject, "SymbolName", ModificationError::MISSING_KEY)
+    const auto& path = locationObject["SymbolName"].val();
+    symbolName = std::string(path.data(), path.size());
 
     return ModificationError::NONE;
 }
@@ -327,31 +302,23 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
 
 
 ModificationError ModifyBoss::parseArgs(const ryml::NodeRef& locationObject) {
-    FIELD_CHECK(locationObject, "Paths", ModificationError::MISSING_KEY);
-    FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY);
-    const auto& paths_j = locationObject.at("Paths").get<std::vector<nlohmann::json>>();
-    const auto& offsets_j = locationObject.at("Offsets").get<std::vector<nlohmann::json>>();
-    if (paths_j.size() != offsets_j.size()) return ModificationError::MISSING_VALUE;
+    YAML_FIELD_CHECK(locationObject, "Paths", ModificationError::MISSING_KEY)
+    if(locationObject["Paths"].num_children() != locationObject["Offsets"].num_children()) return ModificationError::MISSING_VALUE;
 
-    offsetsWithPath.reserve(paths_j.size());
-    for (size_t i = 0; i < paths_j.size(); i++)
+    offsetsWithPath.reserve(locationObject["Paths"].num_children());
+    for (size_t i = 0; i < locationObject["Paths"].num_children(); i++) 
     {
         std::pair<std::string, uint32_t> offset_with_path;
-        if (offsets_j[i].is_number())
-        {
-            offset_with_path.second = offsets_j[i].get<uint32_t>();
-        }
-        else
-        {
-            uint32_t offsetValue = std::stoi(offsets_j[i].get<std::string>().c_str(), nullptr, 16);
-            if (offsetValue == 0 || offsetValue == UINT32_MAX)
-            {
-                return ModificationError::INVALID_OFFSET;
-            }
-            offset_with_path.second = offsetValue;
-        }
 
-        offset_with_path.first = paths_j[i].get<std::string>();
+        std::string offsetStr(locationObject["Offsets"][i].val().data(), locationObject["Offsets"].val().size());
+        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
+        if (offsetValue == 0 || offsetValue == ULONG_MAX)
+        {
+            return ModificationError::INVALID_OFFSET;
+        }
+        offset_with_path.first = std::string(locationObject["Paths"][i].val().data(), locationObject["Paths"].val().size());
+        offset_with_path.second = offsetValue;
+
         offsetsWithPath.push_back(offset_with_path);
     }
 

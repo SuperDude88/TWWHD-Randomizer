@@ -63,10 +63,9 @@ namespace FileTypes {
 
 	class ChartList {
 	private:
-		unsigned int offset = 0;
+		uint32_t num_charts = 0;
 
 	public:
-		uint32_t num_charts = 0;
 
 		std::vector<Chart> charts;
 

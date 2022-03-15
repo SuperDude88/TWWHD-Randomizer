@@ -25,30 +25,32 @@ struct Elf32_Shdr_Sort {
 
 static uint32_t pos;
 
-uint32_t crc32_rpx(uint32_t crc, uint8_t* buff, uint32_t len)
-{
-    uint32_t crc_table[256];
-    for (uint32_t i = 0; i < 256; i++)
+namespace {
+    uint32_t crc32_rpx(uint32_t crc, uint8_t* buff, uint32_t len)
     {
-        uint32_t c = i;
-        for (uint32_t j = 0; j < 8; j++)
+        uint32_t crc_table[256];
+        for (uint32_t i = 0; i < 256; i++)
         {
-            if (c & 1)
-                c = 0xedb88320L ^ (c >> 1);
-            else
-                c = c >> 1;
+            uint32_t c = i;
+            for (uint32_t j = 0; j < 8; j++)
+            {
+                if (c & 1)
+                    c = 0xedb88320L ^ (c >> 1);
+                else
+                    c = c >> 1;
+            }
+            crc_table[i] = c;
         }
-        crc_table[i] = c;
+        crc = ~crc;
+        for (uint32_t i = 0; i < len; i++)
+            crc = (crc >> 8) ^ crc_table[(crc ^ buff[i]) & 0xff];
+        return ~crc;
     }
-    crc = ~crc;
-    for (uint32_t i = 0; i < len; i++)
-        crc = (crc >> 8) ^ crc_table[(crc ^ buff[i]) & 0xff];
-    return ~crc;
-}
-
-bool SortFunc(const Elf32_Shdr_Sort& v1, const Elf32_Shdr_Sort& v2)
-{
-    return v1.sh_offset < v2.sh_offset;
+    
+    bool SortFunc(const Elf32_Shdr_Sort& v1, const Elf32_Shdr_Sort& v2)
+    {
+        return v1.sh_offset < v2.sh_offset;
+    }
 }
 
 

@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "../utility/endian.hpp"
+#include "../utility/common.hpp"
 
 using eType = Utility::Endian::Type;
 
@@ -19,10 +20,10 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	if (!file.read(type, 4)) {
 		return DZXError::REACHED_EOF;
 	}
-	if (!file.read((char*)&num_entries, 4)) {
+	if (!file.read(reinterpret_cast<char*>(&num_entries), 4)) {
 		return DZXError::REACHED_EOF;
 	}
-	if (!file.read((char*)&first_entry_offset, 4)) {
+	if (!file.read(reinterpret_cast<char*>(&first_entry_offset), 4)) {
 		return DZXError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, num_entries);
@@ -119,8 +120,8 @@ DZXError Chunk::save_changes(std::ostream& out) {
 
 	out.write(&type[0], 4);
 	const auto num_entries_byteswap = Utility::Endian::toPlatform(eType::Big, num_entries); //Need to use num_entries later, can't byteswap inplace
-	out.write((char*)&num_entries_byteswap, 4);
-	out.write("\0\0\0\0", 4); //placeholder data, is filled in later
+	out.write(reinterpret_cast<const char*>(&num_entries_byteswap), 4);
+	out.seekp(4, std::ios::cur); //filled in later
 
 	return DZXError::NONE;
 }
@@ -147,8 +148,6 @@ namespace FileTypes {
 				return "HEADER_DATA_NOT_LOADED";
 			case DZXError::FILE_DATA_NOT_LOADED:
 				return "FILE_DATA_NOT_LOADED";
-			case DZXError::COUNT:
-				return "COUNT";
 			default:
 				return "UNKNOWN";
 		}
@@ -171,7 +170,7 @@ namespace FileTypes {
 
 	DZXError DZXFile::loadFromBinary(std::istream& dzx) {
 
-		if (!dzx.read((char*)&num_chunks, 4)) {
+		if (!dzx.read(reinterpret_cast<char*>(&num_chunks), 4)) {
 			return DZXError::REACHED_EOF;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, num_chunks);
@@ -256,7 +255,7 @@ namespace FileTypes {
 			return DZXError::NO_CHUNKS;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, num_chunks);
-		out.write((char*)&num_chunks, 4);
+		out.write(reinterpret_cast<const char*>(&num_chunks), 4);
 
 		DZXError err = DZXError::NONE;
 		for (Chunk& chunk : chunks) {
@@ -278,27 +277,27 @@ namespace FileTypes {
 			chunk.first_entry_offset = out.tellp();
 			out.seekp(chunk.offset + 8, std::ios::beg);
 			const auto first_entry_offset = Utility::Endian::toPlatform(eType::Big, chunk.first_entry_offset);
-			out.write((char*)&first_entry_offset, 4);
+			out.write(reinterpret_cast<const char*>(&first_entry_offset), 4);
 
 			out.seekp(chunk.first_entry_offset, std::ios::beg);
 			if (chunk.entries.size() == 0) {
 				return DZXError::CHUNK_NO_ENTRIES;
 			}
 			if (std::strncmp("RTBL", chunk.type, 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently
-				int rooms_offset = chunk.first_entry_offset + chunk.entries.size() * 0xC;
+				unsigned int rooms_offset = chunk.first_entry_offset + chunk.entries.size() * 0xC;
 				for (unsigned int entry_index = 0; entry_index < chunk.entries.size(); entry_index++) {
 					ChunkEntry& entry = chunk.entries[entry_index];
 					uint32_t subentry_offset = chunk.first_entry_offset + entry_index * 0x8 + chunk.entries.size() * 0x4; //update the subentry's offset
 					const auto subentry_offset_byteswap = Utility::Endian::toPlatform(eType::Big, subentry_offset);
-					entry.data.replace(0, 4, (char*)&subentry_offset_byteswap, 4);
+					entry.data.replace(0, 4, reinterpret_cast<const char*>(&subentry_offset_byteswap), 4);
 					out.seekp(chunk.first_entry_offset + entry_index * 4, std::ios::beg);
-					out.write((char*)&subentry_offset_byteswap, 4);
+					out.write(reinterpret_cast<const char*>(&subentry_offset_byteswap), 4);
 					
 					out.seekp(subentry_offset, std::ios::beg);
 					out.write(&entry.data[4], 4);
 					entry.data.replace(8, 4, (char*)&rooms_offset, 4);
 					const auto rooms_offset_byteswap = Utility::Endian::toPlatform(eType::Big, rooms_offset);
-					out.write((char*)&rooms_offset_byteswap, 4);
+					out.write(reinterpret_cast<const char*>(&rooms_offset_byteswap), 4);
 					out.seekp(rooms_offset, std::ios::beg);
 
 					out.write(&entry.data[12], entry.data[4]);
@@ -312,14 +311,7 @@ namespace FileTypes {
 				}
 			}
 		}
-		int file_size = out.tellp();
-		int padded_size = 0x20 - file_size % 0x20;
-		if (padded_size == 0x20) {
-			padded_size = 0;
-		}
-		for (int byte = 0; byte < padded_size; byte++) { //pad to nearest 0x20 bytes
-			out.write("\xFF", 1);
-		}
+		padToLen(out, 0x20, '\xFF');
 
 		return DZXError::NONE;
 	}

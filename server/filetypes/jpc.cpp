@@ -18,13 +18,13 @@ std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, 
 		if (!in.read(reinterpret_cast<char*>(&keyframe.time), sizeof(keyframe.time))) {
 			table.clear(); //return empty vector to signal error
 			return table;
-		};
+		}
 		Utility::Endian::toPlatform_inplace(eType::Big, keyframe.time);
 
 		if (!readRGBA8(in, in.tellg(), keyframe.color)) {
 			table.clear(); //return empty vector to signal error
 			return table;
-		};
+		}
 	}
 
 	return table;
@@ -1093,31 +1093,31 @@ JPCError Particle::read(std::istream& jpc, unsigned int particle_offset) {
 	if (std::strncmp(magicJEFF, "JEFFjpa1", 8) != 0) {
 		return JPCError::UNEXPECTED_VALUE;
 	}
-	if (!jpc.read((char*)&unknown_1, sizeof(unknown_1))) {
+	if (!jpc.read(reinterpret_cast<char*>(&unknown_1), sizeof(unknown_1))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&num_chunks, sizeof(num_chunks))) {
+	if (!jpc.read(reinterpret_cast<char*>(&num_chunks), sizeof(num_chunks))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&size, sizeof(size))) {
+	if (!jpc.read(reinterpret_cast<char*>(&size), sizeof(size))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&num_kfa1_chunks, sizeof(num_kfa1_chunks))) {
+	if (!jpc.read(reinterpret_cast<char*>(&num_kfa1_chunks), sizeof(num_kfa1_chunks))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&num_fld1_chunks, sizeof(num_fld1_chunks))) {
+	if (!jpc.read(reinterpret_cast<char*>(&num_fld1_chunks), sizeof(num_fld1_chunks))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&num_textures, sizeof(num_textures))) {
+	if (!jpc.read(reinterpret_cast<char*>(&num_textures), sizeof(num_textures))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&unknown_5, sizeof(unknown_5))) {
+	if (!jpc.read(reinterpret_cast<char*>(&unknown_5), sizeof(unknown_5))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&particle_id, sizeof(particle_id))) {
+	if (!jpc.read(reinterpret_cast<char*>(&particle_id), sizeof(particle_id))) {
 		return JPCError::REACHED_EOF;
 	}
-	if (!jpc.read((char*)&unknown_6, sizeof(unknown_6))) {
+	if (!jpc.read(reinterpret_cast<char*>(&unknown_6), sizeof(unknown_6))) {
 		return JPCError::REACHED_EOF;
 	}
 
@@ -1320,10 +1320,10 @@ namespace FileTypes {
 		if (std::strncmp(magicJPAC, "JPAC1-00", 8) != 0) {
 			return JPCError::NOT_JPC;
 		}
-		if (!jpc.read((char*)&num_particles, sizeof(num_particles))) {
+		if (!jpc.read(reinterpret_cast<char*>(&num_particles), sizeof(num_particles))) {
 			return JPCError::REACHED_EOF;
 		}
-		if (!jpc.read((char*)&num_textures, sizeof(num_textures))) {
+		if (!jpc.read(reinterpret_cast<char*>(&num_textures), sizeof(num_textures))) {
 			return JPCError::REACHED_EOF;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, num_particles);

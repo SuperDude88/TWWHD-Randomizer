@@ -157,7 +157,7 @@ namespace FileTypes
 		std::vector<int32_t> All_Integers;
 		std::unordered_map<uint32_t, std::string> All_Strings_By_Offset;
 
-		mutable std::vector<uint32_t> unused_flag_ids;
+		mutable std::vector<int32_t> unused_flag_ids;
 
 		EventList();
 		static EventList createNew(const std::string& filename);
@@ -166,7 +166,7 @@ namespace FileTypes
 		EventlistError writeToStream(std::ostream& file_entry);
 		EventlistError writeToFile(const std::string& outFilePath);
 		Event& add_event(const std::string& name);
-		std::optional<uint32_t> get_unused_flag_id() const;
+		std::optional<int32_t> get_unused_flag_id() const;
 	private:
 		void initNew();
 	};

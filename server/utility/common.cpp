@@ -34,7 +34,7 @@ std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset) 
 			return ret;
 		}
 		ret += character;
-	} while (character != '\x00');
+	} while (character != '\0');
 
 	return ret;
 }
