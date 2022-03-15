@@ -28,8 +28,6 @@ namespace FileTypes {
                 return "NOBITS_SECTION_NOT_EMPTY";
 			case ELFError::USED_SECTION_IS_EMTPY:
                 return "USED_SECTION_IS_EMPTY";
-			case ELFError::COUNT:
-				return "COUNT";
 			default:
 				return "UNKNOWN";
 		}

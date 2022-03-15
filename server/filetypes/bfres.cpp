@@ -11,259 +11,261 @@
 //This code should probably be optimized a bit, minimize loops etc, it runs quite often
 using eType = Utility::Endian::Type;
 
-std::variant<FRESError, std::string> readStringTableEntry(std::istream& bfres, unsigned int offset) {
-    bfres.seekg(offset - 4, std::ios::beg); //BFRES stores offsets to strings directly, but the 4 bytes preceding it store length which we want
-    uint32_t len;
-    if (!bfres.read((char*)&len, sizeof(len))) {
-        return FRESError::REACHED_EOF;
-    }
-    Utility::Endian::toPlatform_inplace(eType::Big, len);
+namespace {
+    std::variant<FRESError, std::string> readStringTableEntry(std::istream& bfres, unsigned int offset) {
+        bfres.seekg(offset - 4, std::ios::beg); //BFRES stores offsets to strings directly, but the 4 bytes preceding it store length which we want
+        uint32_t len;
+        if (!bfres.read(reinterpret_cast<char*>(&len), sizeof(len))) {
+            return FRESError::REACHED_EOF;
+        }
+        Utility::Endian::toPlatform_inplace(eType::Big, len);
 
-    if (std::string str = readNullTerminatedStr(bfres, offset); str.empty()) {
-		return FRESError::REACHED_EOF; //empty string means it could not read a character from file
-	}
-	else {
-        if (len != str.length()) return FRESError::STRING_LEN_MISMATCH;
-		return str;
-	}
-}
+        if (std::string str = readNullTerminatedStr(bfres, offset); str.empty()) {
+    		return FRESError::REACHED_EOF; //empty string means it could not read a character from file
+    	}
+    	else {
+            if (len != str.length()) return FRESError::STRING_LEN_MISMATCH;
+    		return str;
+    	}
+    }
 
-FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
-    // magicFRES
-    if (!bfres.read(hdr.magicFRES, 4)) return FRESError::REACHED_EOF;
-    if (std::strncmp(hdr.magicFRES, "FRES", 4) != 0)
-    {
-        return FRESError::NOT_FRES;
-    }
-    // version number, doesn't affect much
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.version), sizeof(hdr.version)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // byteOrderMarker
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.byteOrderMarker), sizeof(hdr.byteOrderMarker)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // headerLength_0x10
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.headerLength_0x10), sizeof(hdr.headerLength_0x10)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // fileSize
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.fileSize), sizeof(hdr.fileSize)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // fileAlignment
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.fileAlignment), sizeof(hdr.fileAlignment)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // nameOffset
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.nameOffset), sizeof(hdr.nameOffset)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // stringTableSize
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableSize), sizeof(hdr.stringTableSize)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // stringTableOffset
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableOffset), sizeof(hdr.stringTableOffset)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    // Index group info
-    for (int i = 0; i < 12; i++) {
-        if (!bfres.read(reinterpret_cast<char*>(&hdr.groupOffsets[i]), sizeof(hdr.groupOffsets[i])))
+    FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
+        // magicFRES
+        if (!bfres.read(hdr.magicFRES, 4)) return FRESError::REACHED_EOF;
+        if (std::strncmp(hdr.magicFRES, "FRES", 4) != 0)
+        {
+            return FRESError::NOT_FRES;
+        }
+        // version number, doesn't affect much
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.version), sizeof(hdr.version)))
         {
             return FRESError::REACHED_EOF;
         }
-        Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupOffsets[i]);
-        //calculate global offset
-    }
-    for (int i = 0; i < 12; i++) {
-        if (!bfres.read(reinterpret_cast<char*>(&hdr.groupCounts[i]), sizeof(hdr.groupCounts[i])))
+        // byteOrderMarker
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.byteOrderMarker), sizeof(hdr.byteOrderMarker)))
         {
             return FRESError::REACHED_EOF;
         }
-        Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupCounts[i]);
-    }
-    // userPointer
-    if (!bfres.read(reinterpret_cast<char*>(&hdr.userPointer), sizeof(hdr.userPointer)))
-    {
-        return FRESError::REACHED_EOF;
-    }
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.byteOrderMarker);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.headerLength_0x10);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.fileSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.fileAlignment);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.nameOffset);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableOffset);
-    Utility::Endian::toPlatform_inplace(eType::Big, hdr.userPointer);
-    return FRESError::NONE;
-}
-
-//Not finished used because of partial implementation, they're not needed yet
-/*
-std::variant<FRESError, std::vector<FRESFileSpec>> readFMDL(std::istream& bfres, FRESHeader& hdr) {
-    hdr.groupOffsets[0];
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFTEX(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFSKA(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUShader(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUColor(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUTex(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFTXP(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFVISBone(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFVISMat(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFSHA(std::istream& bfres, FRESHeader& hdr) {
-
-}
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readFSCN(std::istream& bfres, FRESHeader& hdr) {
-
-}*/
-
-std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bfres, FRESHeader& hdr) {
-    if (hdr.groupCounts[11] != 0) {
-        std::vector<FRESFileSpec> fileList;
-        bfres.seekg(0x20 + (11 * 0x4) + hdr.groupOffsets[11], std::ios::beg);
-        GroupHeader group;
-        if (!bfres.read((char*)&group.groupLength, sizeof(group.groupLength))) {
+        // headerLength_0x10
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.headerLength_0x10), sizeof(hdr.headerLength_0x10)))
+        {
             return FRESError::REACHED_EOF;
         }
-        if (!bfres.read((char*)&group.entryCount, sizeof(group.entryCount))) {
+        // fileSize
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.fileSize), sizeof(hdr.fileSize)))
+        {
             return FRESError::REACHED_EOF;
         }
-
-        Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
-        Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
-
-        for (int entry_index = 0; entry_index < group.entryCount; entry_index++) {
-            GroupEntry entry;
-            bfres.seekg(0x20 + 11 * 0x4 + hdr.groupOffsets[11] + 0x8 + 0x10 * (1 + entry_index), std::ios::beg);
-            entry.location = bfres.tellg();
-            if (!bfres.read((char*)&entry.searchValue, sizeof(entry.searchValue))) {
-                return FRESError::REACHED_EOF;
-            }
-            if (!bfres.read((char*)&entry.leftIndex, sizeof(entry.leftIndex))) {
-                return FRESError::REACHED_EOF;
-            }
-            if (!bfres.read((char*)&entry.rightIndex, sizeof(entry.rightIndex))) {
-                return FRESError::REACHED_EOF;
-            }
-            if (!bfres.read((char*)&entry.namePointer, sizeof(entry.namePointer))) {
-                return FRESError::REACHED_EOF;
-            }
-            if (!bfres.read((char*)&entry.dataPointer, sizeof(entry.dataPointer))) {
-                return FRESError::REACHED_EOF;
-            }
-
-            Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
-            Utility::Endian::toPlatform_inplace(eType::Big, entry.leftIndex);
-            Utility::Endian::toPlatform_inplace(eType::Big, entry.rightIndex);
-            Utility::Endian::toPlatform_inplace(eType::Big, entry.namePointer);
-            Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
-            group.entries.push_back(entry);
-
-            FRESFileSpec file;
-            std::variant<FRESError, std::string> name = readStringTableEntry(bfres, entry.location + 0x8 + entry.namePointer);
-            if (name.index() == 0) {
-                return std::get<0>(name);
-            }
-            file.fileName = std::get<1>(name);
-
-            EmbeddedFileSpec fileInfo;
-            bfres.seekg(entry.location + 0xC + entry.dataPointer, std::ios::beg);
-            fileInfo.location = bfres.tellg();
-            if (!bfres.read((char*)&fileInfo.dataOffset, sizeof(fileInfo.dataOffset))) {
-                return FRESError::REACHED_EOF;
-            }
-            if (!bfres.read((char*)&fileInfo.fileLength, sizeof(fileInfo.fileLength))) {
-                return FRESError::REACHED_EOF;
-            }
-            Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.dataOffset);
-            Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.fileLength);
-
-            file.fileLength = fileInfo.fileLength;
-            file.fileOffset = fileInfo.location + fileInfo.dataOffset;
-
-            hdr.embeddedFiles.push_back(fileInfo); //Add the embedded files to the header
-
-            fileList.push_back(file);
+        // fileAlignment
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.fileAlignment), sizeof(hdr.fileAlignment)))
+        {
+            return FRESError::REACHED_EOF;
         }
-        return fileList;
+        // nameOffset
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.nameOffset), sizeof(hdr.nameOffset)))
+        {
+            return FRESError::REACHED_EOF;
+        }
+        // stringTableSize
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableSize), sizeof(hdr.stringTableSize)))
+        {
+            return FRESError::REACHED_EOF;
+        }
+        // stringTableOffset
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableOffset), sizeof(hdr.stringTableOffset)))
+        {
+            return FRESError::REACHED_EOF;
+        }
+        // Index group info
+        for (int i = 0; i < 12; i++) {
+            if (!bfres.read(reinterpret_cast<char*>(&hdr.groupOffsets[i]), sizeof(hdr.groupOffsets[i])))
+            {
+                return FRESError::REACHED_EOF;
+            }
+            Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupOffsets[i]);
+            //calculate global offset
+        }
+        for (int i = 0; i < 12; i++) {
+            if (!bfres.read(reinterpret_cast<char*>(&hdr.groupCounts[i]), sizeof(hdr.groupCounts[i])))
+            {
+                return FRESError::REACHED_EOF;
+            }
+            Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupCounts[i]);
+        }
+        // userPointer
+        if (!bfres.read(reinterpret_cast<char*>(&hdr.userPointer), sizeof(hdr.userPointer)))
+        {
+            return FRESError::REACHED_EOF;
+        }
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.byteOrderMarker);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.headerLength_0x10);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.fileSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.fileAlignment);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.nameOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, hdr.userPointer);
+        return FRESError::NONE;
     }
-    return FRESError::GROUP_IS_EMPTY; //Not sure the best way to handle this error, it isnt really an error but still useful info that doesnt fit elsewhere
-}
 
-FRESError writeFRESHeader(std::ostream& out, FRESHeader& hdr) {
-    auto BOM = Utility::Endian::toPlatform(eType::Big, hdr.byteOrderMarker);
-    auto headerLength = Utility::Endian::toPlatform(eType::Big, hdr.headerLength_0x10);
-    auto fileSize = Utility::Endian::toPlatform(eType::Big, hdr.fileSize);
-    auto Alignment = Utility::Endian::toPlatform(eType::Big, hdr.fileAlignment);
-    auto nameOffset = Utility::Endian::toPlatform(eType::Big, hdr.nameOffset);
-    auto stringTableSize = Utility::Endian::toPlatform(eType::Big, hdr.stringTableSize);
-    auto stringTableOffset = Utility::Endian::toPlatform(eType::Big, hdr.stringTableOffset);
-    auto userPointer = Utility::Endian::toPlatform(eType::Big, hdr.userPointer);
-    out.write(hdr.magicFRES, 4);
-    for (int i = 0; i < 4; i++) {
-        out.write(reinterpret_cast<char*>(&hdr.version[i]), 1);
-    }
-    out.write(reinterpret_cast<char*>(&BOM), 2);
-    out.write(reinterpret_cast<char*>(&headerLength), 2);
-    out.write(reinterpret_cast<char*>(&fileSize), 4);
-    out.write(reinterpret_cast<char*>(&Alignment), 4);
-    out.write(reinterpret_cast<char*>(&nameOffset), 4);
-    out.write(reinterpret_cast<char*>(&stringTableSize), 4);
-    out.write(reinterpret_cast<char*>(&stringTableOffset), 4);
-    for (int i = 0; i < 12; i++) {
-        auto fileOffset = Utility::Endian::toPlatform(eType::Big, hdr.groupOffsets[i]);
-        out.write(reinterpret_cast<char*>(&fileOffset), 4);
-    }
-    for (int i = 0; i < 12; i++) {
-        auto fileCount = Utility::Endian::toPlatform(eType::Big, hdr.groupCounts[i]);
-        out.write(reinterpret_cast<char*>(&fileCount), 2);
-    }
-    out.write(reinterpret_cast<char*>(&userPointer), 4);
-
-    for (const EmbeddedFileSpec& file : hdr.embeddedFiles) {
-        auto offset = Utility::Endian::toPlatform(eType::Big, file.dataOffset);
-        auto length = Utility::Endian::toPlatform(eType::Big, file.fileLength);
-        out.write(reinterpret_cast<char*>(&offset), 4);
-        out.write(reinterpret_cast<char*>(&length), 4);
+    //Not finished used because of partial implementation, they're not needed yet
+    /*
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFMDL(std::istream& bfres, FRESHeader& hdr) {
+        hdr.groupOffsets[0];
     }
 
-    return FRESError::NONE;
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFTEX(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFSKA(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUShader(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUColor(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUTex(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFTXP(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFVISBone(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFVISMat(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHA(std::istream& bfres, FRESHeader& hdr) {
+
+    }
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readFSCN(std::istream& bfres, FRESHeader& hdr) {
+
+    }*/
+
+    std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bfres, FRESHeader& hdr) {
+        if (hdr.groupCounts[11] != 0) {
+            std::vector<FRESFileSpec> fileList;
+            bfres.seekg(0x20 + (11 * 0x4) + hdr.groupOffsets[11], std::ios::beg);
+            GroupHeader group;
+            if (!bfres.read(reinterpret_cast<char*>(&group.groupLength), sizeof(group.groupLength))) {
+                return FRESError::REACHED_EOF;
+            }
+            if (!bfres.read(reinterpret_cast<char*>(&group.entryCount), sizeof(group.entryCount))) {
+                return FRESError::REACHED_EOF;
+            }
+
+            Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
+            Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
+
+            for (int entry_index = 0; entry_index < group.entryCount; entry_index++) {
+                GroupEntry entry;
+                bfres.seekg(0x20 + 11 * 0x4 + hdr.groupOffsets[11] + 0x8 + 0x10 * (1 + entry_index), std::ios::beg);
+                entry.location = bfres.tellg();
+                if (!bfres.read((char*)&entry.searchValue, sizeof(entry.searchValue))) {
+                    return FRESError::REACHED_EOF;
+                }
+                if (!bfres.read(reinterpret_cast<char*>(&entry.leftIndex), sizeof(entry.leftIndex))) {
+                    return FRESError::REACHED_EOF;
+                }
+                if (!bfres.read(reinterpret_cast<char*>(&entry.rightIndex), sizeof(entry.rightIndex))) {
+                    return FRESError::REACHED_EOF;
+                }
+                if (!bfres.read(reinterpret_cast<char*>(&entry.namePointer), sizeof(entry.namePointer))) {
+                    return FRESError::REACHED_EOF;
+                }
+                if (!bfres.read(reinterpret_cast<char*>(&entry.dataPointer), sizeof(entry.dataPointer))) {
+                    return FRESError::REACHED_EOF;
+                }
+
+                Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
+                Utility::Endian::toPlatform_inplace(eType::Big, entry.leftIndex);
+                Utility::Endian::toPlatform_inplace(eType::Big, entry.rightIndex);
+                Utility::Endian::toPlatform_inplace(eType::Big, entry.namePointer);
+                Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
+                group.entries.push_back(entry);
+
+                FRESFileSpec file;
+                std::variant<FRESError, std::string> name = readStringTableEntry(bfres, entry.location + 0x8 + entry.namePointer);
+                if (name.index() == 0) {
+                    return std::get<FRESError>(name);
+                }
+                file.fileName = std::get<std::string>(name);
+
+                EmbeddedFileSpec fileInfo;
+                bfres.seekg(entry.location + 0xC + entry.dataPointer, std::ios::beg);
+                fileInfo.location = bfres.tellg();
+                if (!bfres.read(reinterpret_cast<char*>(&fileInfo.dataOffset), sizeof(fileInfo.dataOffset))) {
+                    return FRESError::REACHED_EOF;
+                }
+                if (!bfres.read(reinterpret_cast<char*>(&fileInfo.fileLength), sizeof(fileInfo.fileLength))) {
+                    return FRESError::REACHED_EOF;
+                }
+                Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.dataOffset);
+                Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.fileLength);
+
+                file.fileLength = fileInfo.fileLength;
+                file.fileOffset = fileInfo.location + fileInfo.dataOffset;
+
+                hdr.embeddedFiles.push_back(fileInfo); //Add the embedded files to the header
+
+                fileList.push_back(file);
+            }
+            return fileList;
+        }
+        return FRESError::GROUP_IS_EMPTY; //Not sure the best way to handle this error, it isnt really an error but still useful info that doesnt fit elsewhere
+    }
+
+    FRESError writeFRESHeader(std::ostream& out, FRESHeader& hdr) {
+        auto BOM = Utility::Endian::toPlatform(eType::Big, hdr.byteOrderMarker);
+        auto headerLength = Utility::Endian::toPlatform(eType::Big, hdr.headerLength_0x10);
+        auto fileSize = Utility::Endian::toPlatform(eType::Big, hdr.fileSize);
+        auto Alignment = Utility::Endian::toPlatform(eType::Big, hdr.fileAlignment);
+        auto nameOffset = Utility::Endian::toPlatform(eType::Big, hdr.nameOffset);
+        auto stringTableSize = Utility::Endian::toPlatform(eType::Big, hdr.stringTableSize);
+        auto stringTableOffset = Utility::Endian::toPlatform(eType::Big, hdr.stringTableOffset);
+        auto userPointer = Utility::Endian::toPlatform(eType::Big, hdr.userPointer);
+        out.write(hdr.magicFRES, 4);
+        for (int i = 0; i < 4; i++) {
+            out.write(reinterpret_cast<const char*>(&hdr.version[i]), 1);
+        }
+        out.write(reinterpret_cast<const char*>(&BOM), 2);
+        out.write(reinterpret_cast<const char*>(&headerLength), 2);
+        out.write(reinterpret_cast<const char*>(&fileSize), 4);
+        out.write(reinterpret_cast<const char*>(&Alignment), 4);
+        out.write(reinterpret_cast<const char*>(&nameOffset), 4);
+        out.write(reinterpret_cast<const char*>(&stringTableSize), 4);
+        out.write(reinterpret_cast<const char*>(&stringTableOffset), 4);
+        for (int i = 0; i < 12; i++) {
+            auto fileOffset = Utility::Endian::toPlatform(eType::Big, hdr.groupOffsets[i]);
+            out.write(reinterpret_cast<const char*>(&fileOffset), 4);
+        }
+        for (int i = 0; i < 12; i++) {
+            auto fileCount = Utility::Endian::toPlatform(eType::Big, hdr.groupCounts[i]);
+            out.write(reinterpret_cast<const char*>(&fileCount), 2);
+        }
+        out.write(reinterpret_cast<const char*>(&userPointer), 4);
+
+        for (const EmbeddedFileSpec& file : hdr.embeddedFiles) {
+            auto offset = Utility::Endian::toPlatform(eType::Big, file.dataOffset);
+            auto length = Utility::Endian::toPlatform(eType::Big, file.fileLength);
+            out.write(reinterpret_cast<const char*>(&offset), 4);
+            out.write(reinterpret_cast<const char*>(&length), 4);
+        }
+
+        return FRESError::NONE;
+    }
 }
 
 namespace FileTypes {
@@ -282,8 +284,6 @@ namespace FileTypes {
             return "STRING_LEN_MISMATCH";
         case FRESError::GROUP_IS_EMPTY:
             return "GROUP_IS_EMPTY";
-        case FRESError::COUNT:
-            return "COUNT";
         default:
             return "UNKNOWN";
         }
@@ -310,11 +310,11 @@ namespace FileTypes {
 
         std::variant<FRESError, std::vector<FRESFileSpec>> readFiles = readEmbedded(bfres, fresHeader);
         if (readFiles.index() == 0) {
-            if (std::get<0>(readFiles) != FRESError::GROUP_IS_EMPTY) { //ignore the group is empty error since we can still continue execution
-                return std::get<0>(readFiles);
+            if (std::get<FRESError>(readFiles) != FRESError::GROUP_IS_EMPTY) { //ignore the group is empty error since we can still continue execution
+                return std::get<FRESError>(readFiles);
             }
         }
-        files.insert(files.end(), std::get<1>(readFiles).begin(), std::get<1>(readFiles).end());
+        files.insert(files.end(), std::get<std::vector<FRESFileSpec>>(readFiles).begin(), std::get<std::vector<FRESFileSpec>>(readFiles).end());
 
         // sort file specs by offset (may already be sorted by nintendo, but they don't HAVE to be in theory)
         std::sort(files.begin(), files.end(), [](const FRESFileSpec& a, const FRESFileSpec& b) {return a.fileOffset < b.fileOffset; });
@@ -449,7 +449,7 @@ namespace FileTypes {
         uint32_t fileLen = out.tellp();
         out.seekp(0xC, std::ios::beg);
         Utility::Endian::toPlatform_inplace(eType::Big, fileLen);
-        out.write((char*)&fileLen, sizeof(fileLen));
+        out.write(reinterpret_cast<const char*>(&fileLen), sizeof(fileLen));
         return FRESError::NONE;
     }
 

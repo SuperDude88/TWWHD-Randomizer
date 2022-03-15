@@ -8,521 +8,522 @@
 
 using eType = Utility::Endian::Type;
 
-uint32_t LabelChecksum(uint32_t groupCount, std::string label) {
-    unsigned int group = 0;
+namespace {
+    uint32_t LabelChecksum(uint32_t groupCount, std::string label) {
+        unsigned int group = 0;
 
-    for (unsigned int i = 0; i < label.length(); i++) {
-        group = group * 0x492;
-        group = group + label[i];
-        group = group & 0xFFFFFFFF;
-    }
+        for (unsigned int i = 0; i < label.length(); i++) {
+            group = group * 0x492;
+            group = group + label[i];
+            group = group & 0xFFFFFFFF;
+        }
 
-    return group % groupCount;
-}
-
-MSBTError readHeader(std::istream& msbt, MSBTHeader& header) {
-    if (!msbt.read(header.magicMsgStdBn, 8)) return MSBTError::REACHED_EOF;
-    if (std::strncmp(header.magicMsgStdBn, "MsgStdBn", 8) != 0)
-    {
-        return MSBTError::NOT_MSBT;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.unknown_0x00), sizeof(header.unknown_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.encoding_0x01), sizeof(header.encoding_0x01)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.version_0x03), sizeof(header.version_0x03)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.sectionCount), sizeof(header.sectionCount)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.unknown2_0x00), sizeof(header.unknown2_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
+        return group % groupCount;
     }
 
-    Utility::Endian::toPlatform_inplace(eType::Big, header.byteOrderMarker);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.unknown_0x00);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.sectionCount);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.unknown2_0x00);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.fileSize);
-
-    if (header.unknown_0x00 != 0x0000) return MSBTError::UNEXPECTED_VALUE;
-    if (header.encoding_0x01 != 0x01) return MSBTError::UNEXPECTED_VALUE;
-    if (header.version_0x03 != 0x03) return MSBTError::UNKNOWN_VERSION;
-    if (header.sectionCount != 0x0004) return MSBTError::UNEXPECTED_VALUE;
-    if (header.unknown2_0x00 != 0x0000) return MSBTError::UNEXPECTED_VALUE;
-
-    return MSBTError::NONE;
-}
-
-MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
-    msbt.seekg(-4, std::ios::cur);
-    if (!msbt.read(header.magicLBL1, 4)) return MSBTError::REACHED_EOF;
-    if (std::strncmp(header.magicLBL1, "LBL1", 4) != 0)
-    {
-        return MSBTError::NOT_LBL1;
-    }
-    header.offset = (uint32_t)msbt.tellg() - 4;
-    if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
-
-    header.entries.reserve(header.entryCount);
-    for (uint32_t i = 0; i < header.entryCount; i++) {
-        msbt.seekg(header.offset + 0x14 + i * 0x8, std::ios::beg);
-        LBLEntry entry;
-        if (!msbt.read(reinterpret_cast<char*>(&entry.stringCount), sizeof(entry.stringCount)))
+    MSBTError readHeader(std::istream& msbt, MSBTHeader& header) {
+        if (!msbt.read(header.magicMsgStdBn, 8)) return MSBTError::REACHED_EOF;
+        if (std::strncmp(header.magicMsgStdBn, "MsgStdBn", 8) != 0)
+        {
+            return MSBTError::NOT_MSBT;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker)))
         {
             return MSBTError::REACHED_EOF;
         }
-        if (!msbt.read(reinterpret_cast<char*>(&entry.stringOffset), sizeof(entry.stringOffset)))
+        if (!msbt.read(reinterpret_cast<char*>(&header.unknown_0x00), sizeof(header.unknown_0x00)))
         {
             return MSBTError::REACHED_EOF;
         }
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringCount);
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
-        msbt.seekg(entry.stringOffset + header.offset + 0x10); //Seek to the start of the entries before the loop so it doesnt reset to the same string each time
-        entry.labels.reserve(entry.stringCount);
-        for (uint32_t x = 0; x < entry.stringCount; x++) {
-            Label label;
-            label.checksum = i;
-            if (!msbt.read(reinterpret_cast<char*>(&label.length), sizeof(label.length)))
+        if (!msbt.read(reinterpret_cast<char*>(&header.encoding_0x01), sizeof(header.encoding_0x01)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.version_0x03), sizeof(header.version_0x03)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.sectionCount), sizeof(header.sectionCount)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.unknown2_0x00), sizeof(header.unknown2_0x00)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+
+        Utility::Endian::toPlatform_inplace(eType::Big, header.byteOrderMarker);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.unknown_0x00);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.sectionCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.unknown2_0x00);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.fileSize);
+
+        if (header.unknown_0x00 != 0x0000) return MSBTError::UNEXPECTED_VALUE;
+        if (header.encoding_0x01 != 0x01) return MSBTError::UNEXPECTED_VALUE;
+        if (header.version_0x03 != 0x03) return MSBTError::UNKNOWN_VERSION;
+        if (header.sectionCount != 0x0004) return MSBTError::UNEXPECTED_VALUE;
+        if (header.unknown2_0x00 != 0x0000) return MSBTError::UNEXPECTED_VALUE;
+
+        return MSBTError::NONE;
+    }
+
+    MSBTError readLBL1(std::istream& msbt, LBL1Header& header) {
+        msbt.seekg(-4, std::ios::cur);
+        if (!msbt.read(header.magicLBL1, 4)) return MSBTError::REACHED_EOF;
+        if (std::strncmp(header.magicLBL1, "LBL1", 4) != 0)
+        {
+            return MSBTError::NOT_LBL1;
+        }
+        header.offset = (uint32_t)msbt.tellg() - 4;
+        if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+
+        header.entries.reserve(header.entryCount);
+        for (uint32_t i = 0; i < header.entryCount; i++) {
+            msbt.seekg(header.offset + 0x14 + i * 0x8, std::ios::beg);
+            LBLEntry entry;
+            if (!msbt.read(reinterpret_cast<char*>(&entry.stringCount), sizeof(entry.stringCount)))
             {
                 return MSBTError::REACHED_EOF;
             }
-            label.string.resize(label.length); //Length is 1 bit so no byteswap
-            if (!msbt.read(&label.string[0], label.length))
+            if (!msbt.read(reinterpret_cast<char*>(&entry.stringOffset), sizeof(entry.stringOffset)))
             {
                 return MSBTError::REACHED_EOF;
             }
-            if (!msbt.read(reinterpret_cast<char*>(&label.messageIndex), sizeof(label.messageIndex)))
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.stringCount);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
+            msbt.seekg(entry.stringOffset + header.offset + 0x10); //Seek to the start of the entries before the loop so it doesnt reset to the same string each time
+            entry.labels.reserve(entry.stringCount);
+            for (uint32_t x = 0; x < entry.stringCount; x++) {
+                Label label;
+                label.checksum = i;
+                if (!msbt.read(reinterpret_cast<char*>(&label.length), sizeof(label.length)))
+                {
+                    return MSBTError::REACHED_EOF;
+                }
+                label.string.resize(label.length); //Length is 1 bit so no byteswap
+                if (!msbt.read(&label.string[0], label.length))
+                {
+                    return MSBTError::REACHED_EOF;
+                }
+                if (!msbt.read(reinterpret_cast<char*>(&label.messageIndex), sizeof(label.messageIndex)))
+                {
+                    return MSBTError::REACHED_EOF;
+                }
+                Utility::Endian::toPlatform_inplace(eType::Big, label.messageIndex);
+                entry.labels.push_back(label);
+            }
+            header.entries.push_back(entry);
+        }
+
+
+        /*
+        if (msbt.tellg() % 16 != 0) {
+            int padding_size = 16 - (msbt.tellg() % 16);
+            char charater;
+            for (int i = 16 - (msbt.tellg() % 16); i > 0; i--) {
+                if (!msbt.read(&character, 1)) return MSBTError::REACHED_EOF;
+                if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+            }
+        }
+        */
+        // ^ may be a faster way to do the same thing, depends on speed of istream read
+
+        if (msbt.tellg() % 16 != 0) {
+            unsigned int padding_size = 16 - (msbt.tellg() % 16);
+            std::string padding;
+            padding.resize(padding_size);
+            if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
+            for (const char& character : padding) {
+                if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+            }
+        }
+
+        return MSBTError::NONE;
+
+    }
+
+    MSBTError readATR1(std::istream& msbt, ATR1Header& header) {
+        msbt.seekg(-4, std::ios::cur);
+        if (!msbt.read(header.magicATR1, 4)) return MSBTError::REACHED_EOF;
+        if (std::strncmp(header.magicATR1, "ATR1", 4) != 0)
+        {
+            return MSBTError::NOT_ATR1;
+        }
+        header.offset = (uint32_t)msbt.tellg() - 4;
+        if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.entrySize), sizeof(header.entrySize)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entrySize);
+
+        header.entries.reserve(header.entryCount);
+        for (uint32_t i = 0; i < header.entryCount; i++) {
+            msbt.seekg(header.offset + 0x18 + i * header.entrySize, std::ios::beg);
+            Attributes attributes;
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character))) //need to read fields individually, otherwise most do not get populated properly
             {
                 return MSBTError::REACHED_EOF;
             }
-            Utility::Endian::toPlatform_inplace(eType::Big, label.messageIndex);
-            entry.labels.push_back(label);
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.boxStyle), sizeof(attributes.boxStyle)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.drawType), sizeof(attributes.drawType)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.screenPos), sizeof(attributes.screenPos)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.price), sizeof(attributes.price)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.nextNo), sizeof(attributes.nextNo)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.item), sizeof(attributes.item)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.lineAlignment), sizeof(attributes.lineAlignment)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.soundEffect), sizeof(attributes.soundEffect)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.camera), sizeof(attributes.camera)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.demoID), sizeof(attributes.demoID)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.animation), sizeof(attributes.animation)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.commentE_1), sizeof(attributes.commentE_1)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&attributes.commentE_2), sizeof(attributes.commentE_2)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.price);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.nextNo);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.demoID);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_1);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_2);
+
+            header.entries.push_back(attributes);
         }
-        header.entries.push_back(entry);
+
+        msbt.seekg(header.offset + 0x10 + header.tableSize, std::ios::beg);
+        if (msbt.tellg() % 16 != 0) {
+            unsigned int padding_size = 16 - (msbt.tellg() % 16);
+            std::string padding;
+            padding.resize(padding_size);
+            if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
+            for (const char& character : padding) {
+                if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+            }
+        }
+
+        return MSBTError::NONE;
+
     }
 
-
-    /*
-    if (msbt.tellg() % 16 != 0) {
-        int padding_size = 16 - (msbt.tellg() % 16);
-        char charater;
-        for (int i = 16 - (msbt.tellg() % 16); i > 0; i--) {
-            if (!msbt.read(&character, 1)) return MSBTError::REACHED_EOF;
-            if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+    MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
+        msbt.seekg(-4, std::ios::cur);
+        if (!msbt.read(header.magicTSY1, 4)) return MSBTError::REACHED_EOF;
+        if (std::strncmp(header.magicTSY1, "TSY1", 4) != 0)
+        {
+            return MSBTError::NOT_ATR1;
         }
-    }
-    */
-    // ^ may be a faster way to do the same thing, depends on speed of istream read
-
-    if (msbt.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (msbt.tellg() % 16);
-        std::string padding;
-        padding.resize(padding_size);
-        if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
-        for (const char& character : padding) {
-            if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
-        }
-    }
-
-    return MSBTError::NONE;
-
-}
-
-MSBTError readATR1(std::istream& msbt, ATR1Header& header) {
-    msbt.seekg(-4, std::ios::cur);
-    if (!msbt.read(header.magicATR1, 4)) return MSBTError::REACHED_EOF;
-    if (std::strncmp(header.magicATR1, "ATR1", 4) != 0)
-    {
-        return MSBTError::NOT_ATR1;
-    }
-    header.offset = (uint32_t)msbt.tellg() - 4;
-    if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.entrySize), sizeof(header.entrySize)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entrySize);
-
-    header.entries.reserve(header.entryCount);
-    for (uint32_t i = 0; i < header.entryCount; i++) {
-        msbt.seekg(header.offset + 0x18 + i * header.entrySize, std::ios::beg);
-        Attributes attributes;
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character))) //need to read fields individually, otherwise most do not get populated properly
+        header.offset = (uint32_t)msbt.tellg() - 4;
+        if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
         {
             return MSBTError::REACHED_EOF;
         }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.boxStyle), sizeof(attributes.boxStyle)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.drawType), sizeof(attributes.drawType)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.screenPos), sizeof(attributes.screenPos)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.price), sizeof(attributes.price)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.nextNo), sizeof(attributes.nextNo)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.item), sizeof(attributes.item)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.lineAlignment), sizeof(attributes.lineAlignment)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.soundEffect), sizeof(attributes.soundEffect)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.camera), sizeof(attributes.camera)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.demoID), sizeof(attributes.demoID)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.animation), sizeof(attributes.animation)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.commentE_1), sizeof(attributes.commentE_1)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&attributes.commentE_2), sizeof(attributes.commentE_2)))
+        if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
         {
             return MSBTError::REACHED_EOF;
         }
 
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.price);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.nextNo);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.demoID);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_1);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_2);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
 
-        header.entries.push_back(attributes);
-    }
+        header.entries.reserve((header.tableSize + 0x10U + header.offset) / 4);
+        for (uint32_t i = header.offset + 0x10U; i < (header.tableSize + 0x10U + header.offset); i += 4) {
+            msbt.seekg(i, std::ios::beg);
+            TSY1Entry entry;
+            if (!msbt.read(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
 
-    msbt.seekg(header.offset + 0x10 + header.tableSize, std::ios::beg);
-    if (msbt.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (msbt.tellg() % 16);
-        std::string padding;
-        padding.resize(padding_size);
-        if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
-        for (const char& character : padding) {
-            if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
+
+            header.entries.push_back(entry);
         }
+
+        if (msbt.tellg() % 16 != 0) {
+            unsigned int padding_size = 16 - (msbt.tellg() % 16);
+            std::string padding;
+            padding.resize(padding_size);
+            if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
+            for (const char& character : padding) {
+                if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+            }
+        }
+
+        return MSBTError::NONE;
+
     }
 
-    return MSBTError::NONE;
-
-}
-
-MSBTError readTSY1(std::istream& msbt, TSY1Header& header) {
-    msbt.seekg(-4, std::ios::cur);
-    if (!msbt.read(header.magicTSY1, 4)) return MSBTError::REACHED_EOF;
-    if (std::strncmp(header.magicTSY1, "TSY1", 4) != 0)
-    {
-        return MSBTError::NOT_ATR1;
-    }
-    header.offset = (uint32_t)msbt.tellg() - 4;
-    if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-
-    header.entries.reserve((header.tableSize + 0x10U + header.offset) / 4);
-    for (uint32_t i = header.offset + 0x10U; i < (header.tableSize + 0x10U + header.offset); i += 4) {
-        msbt.seekg(i, std::ios::beg);
-        TSY1Entry entry;
-        if (!msbt.read(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex)))
+    MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
+        msbt.seekg(-4, std::ios::cur);
+        if (!msbt.read(header.magicTXT2, 4)) return MSBTError::REACHED_EOF;
+        if (std::strncmp(header.magicTXT2, "TXT2", 4) != 0)
+        {
+            return MSBTError::NOT_ATR1;
+        }
+        header.offset = (uint32_t)msbt.tellg() - 4;
+        if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
+        {
+            return MSBTError::REACHED_EOF;
+        }
+        if (!msbt.read(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount)))
         {
             return MSBTError::REACHED_EOF;
         }
 
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
 
-        header.entries.push_back(entry);
-    }
+        header.entries.reserve(header.entryCount);
+        for (uint32_t i = 0; i < header.entryCount; i++) {
+            msbt.seekg(header.offset + 0x14 + i * 0x4); //0x14 comes from the header info size
+            TXT2Entry entry;
+            if (!msbt.read(reinterpret_cast<char*>(&entry.offset), sizeof(entry.offset)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
+            if (!msbt.read(reinterpret_cast<char*>(&entry.nextOffset), sizeof(entry.nextOffset)))
+            {
+                return MSBTError::REACHED_EOF;
+            }
 
-    if (msbt.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (msbt.tellg() % 16);
-        std::string padding;
-        padding.resize(padding_size);
-        if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
-        for (const char& character : padding) {
-            if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
-        }
-    }
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.nextOffset);
 
-    return MSBTError::NONE;
+            //can't use null-terminated string read, some commands include null characters that would break things
+            msbt.seekg(header.offset + 0x10 + entry.offset);
+            uint32_t length;
+            if (i + 1 == header.entryCount) { //Check if the index is the last in the file
+                length = header.tableSize - entry.offset;
+                entry.nextOffset = header.tableSize;
+            }
+            else {
+                length = entry.nextOffset - entry.offset;
+            }
+            entry.message.resize(length / 2); //length is bytes, 2 bytes per char
+            if (!msbt.read(reinterpret_cast<char*>(&entry.message[0]), length))
+            {
+                return MSBTError::REACHED_EOF;
+            }
 
-}
-
-MSBTError readTXT2(std::istream& msbt, TXT2Header& header) {
-    msbt.seekg(-4, std::ios::cur);
-    if (!msbt.read(header.magicTXT2, 4)) return MSBTError::REACHED_EOF;
-    if (std::strncmp(header.magicTXT2, "TXT2", 4) != 0)
-    {
-        return MSBTError::NOT_ATR1;
-    }
-    header.offset = (uint32_t)msbt.tellg() - 4;
-    if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-    if (!msbt.read(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount)))
-    {
-        return MSBTError::REACHED_EOF;
-    }
-
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
-
-    header.entries.reserve(header.entryCount);
-    for (uint32_t i = 0; i < header.entryCount; i++) {
-        msbt.seekg(header.offset + 0x14 + i * 0x4); //0x14 comes from the header info size
-        TXT2Entry entry;
-        if (!msbt.read(reinterpret_cast<char*>(&entry.offset), sizeof(entry.offset)))
-        {
-            return MSBTError::REACHED_EOF;
-        }
-        if (!msbt.read(reinterpret_cast<char*>(&entry.nextOffset), sizeof(entry.nextOffset)))
-        {
-            return MSBTError::REACHED_EOF;
+            header.entries.push_back(entry);
         }
 
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.nextOffset);
-
-        //can't use null-terminated string read, some commands include null characters that would break things
-        msbt.seekg(header.offset + 0x10 + entry.offset);
-        uint32_t length;
-        if (i + 1 == header.entryCount) { //Check if the index is the last in the file
-            length = header.tableSize - entry.offset;
-            entry.nextOffset = header.tableSize;
-        }
-        else {
-            length = entry.nextOffset - entry.offset;
-        }
-        entry.message.resize(length / 2); //length is bytes, 2 bytes per char
-        if (!msbt.read((char*)&entry.message[0], length))
-        {
-            return MSBTError::REACHED_EOF;
+        if (msbt.tellg() % 16 != 0) {
+            unsigned int padding_size = 16 - (msbt.tellg() % 16);
+            std::string padding;
+            padding.resize(padding_size);
+            if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
+            for (const char& character : padding) {
+                if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+            }
         }
 
-        header.entries.push_back(entry);
+        return MSBTError::NONE;
+
     }
 
-    if (msbt.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (msbt.tellg() % 16);
-        std::string padding;
-        padding.resize(padding_size);
-        if (!msbt.read(&padding[0], padding_size)) return MSBTError::REACHED_EOF;
-        for (const char& character : padding) {
-            if (character != '\xab') return MSBTError::UNEXPECTED_VALUE;
+    void writeLBL1(std::ostream& out, LBL1Header& header) {
+        header.offset = out.tellp();
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+
+        out.write(header.magicLBL1, 4);
+        out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
+        out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+        out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
+
+        unsigned int i = 0;
+        for (LBLEntry& entry : header.entries) {
+            out.seekp(header.offset + 0x14 + 0x8 * i, std::ios::beg);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.stringCount); //byteswap inplace here and swap back later so all the swaps can be grouped in 1 spot instead of in each write (allows for easier Wii U conversion later)
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
+
+            out.write(reinterpret_cast<char*>(&entry.stringCount), sizeof(entry.stringCount));
+            out.write(reinterpret_cast<char*>(&entry.stringOffset), sizeof(entry.stringOffset));
+            std::sort(entry.labels.begin(), entry.labels.end(), [](const Label& a, const Label& b) {
+                int IDa = std::stoi(a.string), IDb = std::stoi(b.string);
+                return IDa < IDb;
+            });
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
+            out.seekp(header.offset + 0x10 + entry.stringOffset, std::ios::beg);
+            for (Label& label : entry.labels) {
+                Utility::Endian::toPlatform_inplace(eType::Big, label.messageIndex);
+
+                label.length = label.string.size();
+                out.write(reinterpret_cast<char*>(&label.length), sizeof(label.length));
+                out.write(&label.string[0], label.length);
+                out.write(reinterpret_cast<char*>(&label.messageIndex), 4);
+            }
+            i += 1;
         }
+        padToLen(out, 16, '\xab');
+
+        return;
+
     }
 
-    return MSBTError::NONE;
+    void writeATR1(std::ostream& out, ATR1Header& header) {
+        header.offset = out.tellp();
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entrySize);
 
-}
+        out.write(header.magicATR1, 4);
+        out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
+        out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+        out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
+        out.write(reinterpret_cast<char*>(&header.entrySize), sizeof(header.entrySize));
 
-void writeLBL1(std::ostream& out, LBL1Header& header) {
-    header.offset = out.tellp();
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
+        for (Attributes& attributes : header.entries) {
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.price);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.nextNo);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.demoID);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_1);
+            Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_2);
 
-    out.write(header.magicLBL1, 4);
-    out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
-    out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
-    out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
-
-    int i = 0;
-    for (LBLEntry& entry : header.entries) {
-        out.seekp(header.offset + 0x14 + 0x8 * i, std::ios::beg);
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringCount); //byteswap inplace here and swap back later so all the swaps can be grouped in 1 spot instead of in each write (allows for easier Wii U conversion later)
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
-
-        out.write(reinterpret_cast<char*>(&entry.stringCount), sizeof(entry.stringCount));
-        out.write(reinterpret_cast<char*>(&entry.stringOffset), sizeof(entry.stringOffset));
-        std::sort(entry.labels.begin(), entry.labels.end(), [](const Label& a, const Label& b) {
-            int IDa = std::stoi(a.string), IDb = std::stoi(b.string);
-            return IDa < IDb;
-        });
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.stringOffset);
-        out.seekp(header.offset + 0x10 + entry.stringOffset, std::ios::beg);
-        for (Label& label : entry.labels) {
-            Utility::Endian::toPlatform_inplace(eType::Big, label.messageIndex);
-
-            label.length = label.string.size();
-            out.write(reinterpret_cast<char*>(&label.length), sizeof(label.length));
-            out.write(&label.string[0], label.length);
-            out.write(reinterpret_cast<char*>(&label.messageIndex), 4);
+            out.write(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character));
+            out.write(reinterpret_cast<char*>(&attributes.boxStyle), sizeof(attributes.boxStyle));
+            out.write(reinterpret_cast<char*>(&attributes.drawType), sizeof(attributes.drawType));
+            out.write(reinterpret_cast<char*>(&attributes.screenPos), sizeof(attributes.screenPos));
+            out.write(reinterpret_cast<char*>(&attributes.price), sizeof(attributes.price));
+            out.write(reinterpret_cast<char*>(&attributes.nextNo), sizeof(attributes.nextNo));
+            out.write(reinterpret_cast<char*>(&attributes.item), sizeof(attributes.item));
+            out.write(reinterpret_cast<char*>(&attributes.lineAlignment), sizeof(attributes.lineAlignment));
+            out.write(reinterpret_cast<char*>(&attributes.soundEffect), sizeof(attributes.soundEffect));
+            out.write(reinterpret_cast<char*>(&attributes.camera), sizeof(attributes.camera));
+            out.write(reinterpret_cast<char*>(&attributes.demoID), sizeof(attributes.demoID));
+            out.write(reinterpret_cast<char*>(&attributes.animation), sizeof(attributes.animation));
+            out.write(reinterpret_cast<char*>(&attributes.commentE_1), sizeof(attributes.commentE_1));
+            out.write(reinterpret_cast<char*>(&attributes.commentE_2), sizeof(attributes.commentE_2));
         }
-        i = i + 1;
+
+        padToLen(out, 16, '\xab');
+
+        return;
+
     }
 
-    padToLen(out, 16, '\xab');
+    void writeTSY1(std::ostream& out, TSY1Header& header) {
+        header.offset = out.tellp();
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
 
-    return;
+        out.write(header.magicTSY1, 4);
+        out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
+        out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
 
-}
+        for (TSY1Entry& entry : header.entries) {
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
 
-void writeATR1(std::ostream& out, ATR1Header& header) {
-    header.offset = out.tellp();
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entrySize);
+            out.write(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex));
+        }
 
-    out.write(header.magicATR1, 4);
-    out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
-    out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
-    out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
-    out.write(reinterpret_cast<char*>(&header.entrySize), sizeof(header.entrySize));
+        padToLen(out, 16, '\xab');
 
-    for (Attributes& attributes : header.entries) {
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.price);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.nextNo);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.demoID);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_1);
-        Utility::Endian::toPlatform_inplace(eType::Big, attributes.commentE_2);
+        return;
 
-        out.write(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character));
-        out.write(reinterpret_cast<char*>(&attributes.boxStyle), sizeof(attributes.boxStyle));
-        out.write(reinterpret_cast<char*>(&attributes.drawType), sizeof(attributes.drawType));
-        out.write(reinterpret_cast<char*>(&attributes.screenPos), sizeof(attributes.screenPos));
-        out.write(reinterpret_cast<char*>(&attributes.price), sizeof(attributes.price));
-        out.write(reinterpret_cast<char*>(&attributes.nextNo), sizeof(attributes.nextNo));
-        out.write(reinterpret_cast<char*>(&attributes.item), sizeof(attributes.item));
-        out.write(reinterpret_cast<char*>(&attributes.lineAlignment), sizeof(attributes.lineAlignment));
-        out.write(reinterpret_cast<char*>(&attributes.soundEffect), sizeof(attributes.soundEffect));
-        out.write(reinterpret_cast<char*>(&attributes.camera), sizeof(attributes.camera));
-        out.write(reinterpret_cast<char*>(&attributes.demoID), sizeof(attributes.demoID));
-        out.write(reinterpret_cast<char*>(&attributes.animation), sizeof(attributes.animation));
-        out.write(reinterpret_cast<char*>(&attributes.commentE_1), sizeof(attributes.commentE_1));
-        out.write(reinterpret_cast<char*>(&attributes.commentE_2), sizeof(attributes.commentE_2));
     }
 
-    padToLen(out, 16, '\xab');
+    void writeTXT2(std::ostream& out, TXT2Header& header) {
+        header.offset = out.tellp();
+        Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
 
-    return;
+        out.write(header.magicTXT2, 4);
+        out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
+        out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+        out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
 
-}
+        for (TXT2Entry& entry : header.entries) { //Loop through all the header and offset table data, then write the strings
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
 
-void writeTSY1(std::ostream& out, TSY1Header& header) {
-    header.offset = out.tellp();
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
+            out.write(reinterpret_cast<char*>(&entry.offset), sizeof(entry.offset));
+        }
 
-    out.write(header.magicTSY1, 4);
-    out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
-    out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+        for (TXT2Entry& entry : header.entries) { //Write strings
+            out.write(reinterpret_cast<const char*>(&entry.message[0]), entry.message.size() * 2); //size() returns number of 2-byte chars, function needs bytes total
+        }
 
-    for (TSY1Entry& entry : header.entries) {
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
+        padToLen(out, 16, '\xab');
 
-        out.write(reinterpret_cast<char*>(&entry.styleIndex), sizeof(entry.styleIndex));
+        return;
+
     }
-
-    padToLen(out, 16, '\xab');
-
-    return;
-
-}
-
-void writeTXT2(std::ostream& out, TXT2Header& header) {
-    header.offset = out.tellp();
-    Utility::Endian::toPlatform_inplace(eType::Big, header.tableSize);
-    Utility::Endian::toPlatform_inplace(eType::Big, header.entryCount);
-
-    out.write(header.magicTXT2, 4);
-    out.write(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize));
-    out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
-    out.write(reinterpret_cast<char*>(&header.entryCount), sizeof(header.entryCount));
-
-    for (TXT2Entry& entry : header.entries) {
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
-
-        out.write(reinterpret_cast<char*>(&entry.offset), sizeof(entry.offset));
-    }
-
-    for (TXT2Entry& entry : header.entries) { //Instead of looping through stuff with indexes and seeking back and forth, we loop through all the header and offset table data and then write the strings
-        out.write((char*)&entry.message[0], entry.message.size() * 2); //double the size because it is the number of 2-byte chars to write, but functions treats them as 1-byte
-    }
-
-    padToLen(out, 16, '\xab');
-
-    return;
-
 }
 
 namespace FileTypes {
@@ -665,10 +666,10 @@ namespace FileTypes {
         Message newMessage;
 
         Label newLabel;
-        newLabel.checksum = LabelChecksum(LBL1.entryCount, label); //Entry count is always 0x65 for the main text blocks
+        newLabel.checksum = LabelChecksum(LBL1.entryCount, label); //Entry count is always 0x65 for .msbt
         newLabel.length = label.size();
         newLabel.string = label;
-        newLabel.messageIndex = TXT2.entryCount; //Number of entries = index of message 1 past the end of existing list
+        newLabel.messageIndex = TXT2.entryCount; //Next index after list = total number of entries
 
         TXT2Entry newEntry;
         newEntry.message = message;
@@ -690,14 +691,14 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, header.unknown2_0x00);
 
         out.write(header.magicMsgStdBn, 8);
-        out.write((char*)&header.byteOrderMarker, sizeof(header.byteOrderMarker));
-        out.write((char*)&header.unknown_0x00, sizeof(header.unknown_0x00));
-        out.write((char*)&header.encoding_0x01, sizeof(header.encoding_0x01));
-        out.write((char*)&header.version_0x03, sizeof(header.version_0x03));
-        out.write((char*)&header.sectionCount, sizeof(header.sectionCount));
-        out.write((char*)&header.unknown2_0x00, sizeof(header.unknown2_0x00));
+        out.write(reinterpret_cast<const char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker));
+        out.write(reinterpret_cast<const char*>(&header.unknown_0x00), sizeof(header.unknown_0x00));
+        out.write(reinterpret_cast<const char*>(&header.encoding_0x01), sizeof(header.encoding_0x01));
+        out.write(reinterpret_cast<const char*>(&header.version_0x03), sizeof(header.version_0x03));
+        out.write(reinterpret_cast<const char*>(&header.sectionCount), sizeof(header.sectionCount));
+        out.write(reinterpret_cast<const char*>(&header.unknown2_0x00), sizeof(header.unknown2_0x00));
         out.seekp(4, std::ios::cur); //skip filesize for now
-        out.write((char*)&header.padding_0x00, sizeof(header.padding_0x00));
+        out.write(reinterpret_cast<const char*>(&header.padding_0x00), sizeof(header.padding_0x00));
 
         //Go through and update all the sections based on the messages by ID
         LBLEntry temp; //Fill all the entries with blank entries
@@ -752,7 +753,7 @@ namespace FileTypes {
         out.seekp(0x12, std::ios::beg);
 
         uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
-        out.write((char*)&fileSize_BE, sizeof(fileSize_BE)); //Update full file size
+        out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE)); //Update full file size
 
         return MSBTError::NONE;
     }

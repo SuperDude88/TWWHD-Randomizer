@@ -363,9 +363,9 @@ namespace NintendoWare::Layout {
 
 	class PaneBase {
 	protected:
-		unsigned int offset;	
+		unsigned int offset;
 		char magic[4];
-		uint32_t sectionSize;	
+		uint32_t sectionSize;
 	public:
 		uint8_t bitFlags;
 		uint8_t originFlags;
@@ -377,26 +377,26 @@ namespace NintendoWare::Layout {
 		vec3<float> rotation;
 		vec2<float> scale;
 		float width;
-		float height;	
-		virtual ~PaneBase();	
+		float height;
+		virtual ~PaneBase();
 		virtual FLYTError read(std::istream& bflyt, const unsigned int offset);
 		virtual std::unique_ptr<PaneBase> clonePane();
 		virtual FLYTError save_changes(std::ostream& out);
-	};	
+	};
 	class pan1 : public PaneBase {
 	public:	
-		~pan1();	
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
-		std::unique_ptr<PaneBase> clonePane();
-		FLYTError save_changes(std::ostream& out);
-	};	
+		~pan1() override;
+		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		std::unique_ptr<PaneBase> clonePane() override;
+		FLYTError save_changes(std::ostream& out) override;
+	};
 	class bnd1 : public PaneBase {
 	public:	
-		~bnd1();	
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
-		std::unique_ptr<PaneBase> clonePane();
-		FLYTError save_changes(std::ostream& out);
-	};	
+		~bnd1() override;
+		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		std::unique_ptr<PaneBase> clonePane() override;
+		FLYTError save_changes(std::ostream& out) override;
+	};
 	struct windowContent {
 		RGBA vertexColorTL;
 		RGBA vertexColorTR;
@@ -406,12 +406,12 @@ namespace NintendoWare::Layout {
 		uint8_t numCoords;
 		uint8_t padding_0x00;
 		std::vector<UVCoords> coords;
-	};	
+	};
 	struct windowFrame {
 		uint16_t matIndex;
 		uint8_t texFlip;
 		uint8_t padding_0x00;
-	};	
+	};
 	class wnd1 : public PaneBase {
 	private:
 		uint8_t padding_0x00[2];
@@ -428,14 +428,14 @@ namespace NintendoWare::Layout {
 		int16_t frameSizeRight;
 		int16_t frameSizeTop;
 		int16_t frameSizeBottom;
-		uint8_t bitFlags;	
+		uint8_t wndFlags;
 		windowContent content;
-		std::vector<windowFrame> frames;	
-		~wnd1();	
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
-		std::unique_ptr<PaneBase> clonePane();
-		FLYTError save_changes(std::ostream& out);
-	};	
+		std::vector<windowFrame> frames;
+		~wnd1() override;
+		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		std::unique_ptr<PaneBase> clonePane() override;
+		FLYTError save_changes(std::ostream& out) override;
+	};
 	struct perCharTransform {
 		float curveTimeOffset;
 		float animCurveWidth;
@@ -443,20 +443,20 @@ namespace NintendoWare::Layout {
 		uint8_t verticalOrigin;
 		uint8_t hasAnimInfo;
 		uint8_t padding_0x00;
-	};	
+	};
 	class txt1 : public PaneBase {
 	private:
 		uint8_t padding_0x00;
 		uint32_t textOffset;
 		uint32_t nameOffset;
-		std::optional<uint32_t> charTransformOffset;	
+		std::optional<uint32_t> charTransformOffset;
 	public:
 		enum struct LineAlignment : uint8_t {
 			NOT_SPECIFIED = 0,
 			LEFT,
 			CENTER,
 			RIGHT
-		};	
+		};
 		uint16_t texLen;
 		uint16_t restrictedLen;
 		uint16_t matIndex;
@@ -477,31 +477,31 @@ namespace NintendoWare::Layout {
 		float shadowSizeY;
 		RGBA shadowColorTop;
 		RGBA shadowColorBottom;
-		float shadowItalicTilt;	
+		float shadowItalicTilt;
 		std::u16string text;
 		std::string textBoxName;
-		std::optional<perCharTransform> charTransform;	
-		~txt1();	
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
-		std::unique_ptr<PaneBase> clonePane();
-		FLYTError save_changes(std::ostream& out);
-	};	
+		std::optional<perCharTransform> charTransform;
+		~txt1() override;
+		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		std::unique_ptr<PaneBase> clonePane() override;
+		FLYTError save_changes(std::ostream& out) override;
+	};
 	class pic1 : public PaneBase {
 	private:
 		uint8_t padding_0x00;
-		uint8_t numCoords;	
+		uint8_t numCoords;
 	public:
 		RGBA vertexColorTL;
 		RGBA vertexColorTR;
 		RGBA vertexColorBL;
 		RGBA vertexColorBR;
 		uint16_t matIndex;
-		std::vector<UVCoords> coords;	
-		~pic1();	
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
-		std::unique_ptr<PaneBase> clonePane();
-		FLYTError save_changes(std::ostream& out);
-	};	
+		std::vector<UVCoords> coords;
+		~pic1() override;
+		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		std::unique_ptr<PaneBase> clonePane() override;
+		FLYTError save_changes(std::ostream& out) override;
+	};
 	struct partProperty {
 		std::string propName;
 		uint8_t usageFlag;
@@ -510,25 +510,25 @@ namespace NintendoWare::Layout {
 		uint8_t padding_0x00;
 		uint32_t propOffset;
 		uint32_t userDataOffset;
-		uint32_t panelInfoOffset;	
+		uint32_t panelInfoOffset;
 		std::optional<std::unique_ptr<PaneBase>> prop;
 		std::optional<usd1> userData;
-		std::optional<std::string> paneInfo;	
+		std::optional<std::string> paneInfo;
 		partProperty() = default;
 		partProperty(const partProperty& property); //define this manually to deepcopy unique_ptr
-	};	
+	};
 	class prt1 : public PaneBase {
 	private:
-		uint32_t propCount;	
+		uint32_t propCount;
 	public:
 		float magnifyX;
 		float magnifyY;
 		std::vector<partProperty> properties;
-		std::string lytFilename;	
-		~prt1();	
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
-		std::unique_ptr<PaneBase> clonePane();
-		FLYTError save_changes(std::ostream& out);
+		std::string lytFilename;
+		~prt1() override;
+		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		std::unique_ptr<PaneBase> clonePane() override;
+		FLYTError save_changes(std::ostream& out) override;
 	};
 
 }

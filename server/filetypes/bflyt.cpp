@@ -415,7 +415,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, map.posY);
 			Utility::Endian::toPlatform_inplace(eType::Big, map.scaleX);
 			Utility::Endian::toPlatform_inplace(eType::Big, map.scaleY);
-			Utility::Endian::toPlatform_inplace(eType::Big, map.flags);
 
 			projectionMaps.push_back(map);
 		}
@@ -787,20 +786,20 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			entry.dataOffset = out.tellp() - entryStart;
 			switch (entry.dataType) {
 			case UserDataType::STRING:
-				out.write(&std::get<0>(entry.data)[0], std::get<0>(entry.data).size());
+				out.write(&std::get<std::string>(entry.data)[0], std::get<std::string>(entry.data).size());
 				padToLen(out, 4); //might not be padded, probably is though
 				entry.dataLen = (unsigned int)out.tellp() - entry.dataOffset - entryStart;
 				break;
 			case UserDataType::INT:
-				entry.dataLen = std::get<1>(entry.data).size();
-				for (int32_t& value : std::get<1>(entry.data)) {
+				entry.dataLen = std::get<std::vector<int32_t>>(entry.data).size();
+				for (int32_t& value : std::get<std::vector<int32_t>>(entry.data)) {
 					Utility::Endian::toPlatform_inplace(eType::Big, value);
 					out.write(reinterpret_cast<char*>(&value), sizeof(value));
 				}
 				break;
 			case UserDataType::FLOAT:
-				entry.dataLen = std::get<2>(entry.data).size();
-				for (float& value : std::get<2>(entry.data)) {
+				entry.dataLen = std::get<std::vector<float>>(entry.data).size();
+				for (float& value : std::get<std::vector<float>>(entry.data)) {
 					Utility::Endian::toPlatform_inplace(eType::Big, value);
 					out.write(reinterpret_cast<char*>(&value), sizeof(value));
 				}

@@ -6,6 +6,7 @@
 #include "Search.hpp"
 #include "Random.hpp"
 #include "../options.hpp"
+#include <memory>
 #define RYML_SINGLE_HDR_DEFINE_NOW
 #include "../libs/ryml.hpp"
 #include <algorithm>
@@ -596,13 +597,47 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     if (modificationType == LocationModificationType::INVALID)
     {
         lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
-        lastError << "Modificaiton Type \"" << modificationType << "\" Does Not Exist";
+        lastError << "Modificaiton Type \"" << modificationTypeStr << "\" Does Not Exist";
         return WorldLoadingError::INVALID_MODIFICATION_TYPE;
     }
     switch(modificationType) {
-
+        case LocationModificationType::Chest:
+            newEntry.method = std::make_unique<ModifyChest>();
+        case LocationModificationType::Actor:
+            newEntry.method = std::make_unique<ModifyActor>();
+        case LocationModificationType::SCOB:
+            newEntry.method = std::make_unique<ModifySCOB>();
+        case LocationModificationType::Event:
+            newEntry.method = std::make_unique<ModifyEvent>();
+        case LocationModificationType::RPX:
+            newEntry.method = std::make_unique<ModifyRPX>();
+        case LocationModificationType::Custom_Symbol:
+            newEntry.method = std::make_unique<ModifySymbol>();
+        case LocationModificationType::Boss:
+            newEntry.method = std::make_unique<ModifyBoss>();
+        default:
+            newEntry.method = std::make_unique<LocationModification>();
     }
-
+    if(ModificationError err = newEntry.method->parseArgs(locationObject); err != ModificationError::NONE) {
+        switch(err) {
+            case ModificationError::MISSING_KEY:
+                lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
+                lastError << "Location Key Does Not Exist";
+                return WorldLoadingError::LOCATION_MISSING_KEY;
+            case ModificationError::MISSING_VALUE:
+                lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
+                lastError << "Location Value Does Not Exist";
+                return WorldLoadingError::LOCATION_MISSING_VAL;
+            case ModificationError::INVALID_OFFSET:
+                lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
+                lastError << "Invalid Location Offset";
+                return WorldLoadingError::INVALID_OFFSET_VALUE;
+            default:
+                lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
+                lastError << "Encountered Unknown Error";
+                return WorldLoadingError::UNKNOWN;
+        }
+    }
 
     YAML_FIELD_CHECK(locationObject, "OriginalItem", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& item = locationObject["OriginalItem"].val();

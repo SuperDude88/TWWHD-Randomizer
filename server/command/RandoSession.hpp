@@ -16,7 +16,7 @@ class RandoSession
 public:
     using fspath = std::filesystem::path;
 
-    RandoSession(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& outputDir);
+    RandoSession(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& randoOutputDir);
 
     [[nodiscard]] fspath openGameFile(const fspath& relPath);
     [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath);
@@ -28,7 +28,7 @@ private:
     fspath relToGameAbsolute(const fspath& relPath);
     //fspath absToGameRelative(const fspath& absPath);
 
-    fspath gameBaseDirectory;
+    fspath baseDir;
     fspath workingDir;
     fspath outputDir;
     std::unordered_set<std::string> fileCache;

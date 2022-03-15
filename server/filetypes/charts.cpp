@@ -11,16 +11,16 @@ ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
 	this->offset = offset;
 	in.seekg(offset, std::ios::beg);
 
-	if (!in.read((char*)&tex_x_offset, sizeof(tex_x_offset))) {
+	if (!in.read(reinterpret_cast<char*>(&tex_x_offset), sizeof(tex_x_offset))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&tex_y_offset, sizeof(tex_y_offset))) {
+	if (!in.read(reinterpret_cast<char*>(&tex_y_offset), sizeof(tex_y_offset))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&salvage_x_pos, sizeof(salvage_x_pos))) {
+	if (!in.read(reinterpret_cast<char*>(&salvage_x_pos), sizeof(salvage_x_pos))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&salvage_y_pos, sizeof(salvage_y_pos))) {
+	if (!in.read(reinterpret_cast<char*>(&salvage_y_pos), sizeof(salvage_y_pos))) {
 		return ChartError::REACHED_EOF;
 	}
 
@@ -40,10 +40,10 @@ void ChartPos::save_changes(std::ostream& out) {
 	uint16_t salvage_x = Utility::Endian::toPlatform(eType::Big, salvage_x_pos);
 	uint16_t salvage_y = Utility::Endian::toPlatform(eType::Big, salvage_y_pos);
 
-	out.write((char*)&tex_x, sizeof(tex_x));
-	out.write((char*)&tex_y, sizeof(tex_y));
-	out.write((char*)&salvage_x, sizeof(salvage_x));
-	out.write((char*)&salvage_y, sizeof(salvage_y));
+	out.write(reinterpret_cast<const char*>(&tex_x), sizeof(tex_x));
+	out.write(reinterpret_cast<const char*>(&tex_y), sizeof(tex_y));
+	out.write(reinterpret_cast<const char*>(&salvage_x), sizeof(salvage_x));
+	out.write(reinterpret_cast<const char*>(&salvage_y), sizeof(salvage_y));
 
 	return;
 }
@@ -54,22 +54,22 @@ ChartError Chart::read(std::istream& in, const unsigned int offset) {
 	this->offset = offset;
 	in.seekg(offset, std::ios::beg);
 
-	if (!in.read((char*)&texture_id, sizeof(texture_id))) {
+	if (!in.read(reinterpret_cast<char*>(&texture_id), sizeof(texture_id))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&owned_chart_index_plus_1, sizeof(owned_chart_index_plus_1))) {
+	if (!in.read(reinterpret_cast<char*>(&owned_chart_index_plus_1), sizeof(owned_chart_index_plus_1))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&number, sizeof(number))) {
+	if (!in.read(reinterpret_cast<char*>(&number), sizeof(number))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&type, sizeof(type))) {
+	if (!in.read(reinterpret_cast<char*>(&type), sizeof(type))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&sector_x, sizeof(sector_x))) {
+	if (!in.read(reinterpret_cast<char*>(&sector_x), sizeof(sector_x))) {
 		return ChartError::REACHED_EOF;
 	}
-	if (!in.read((char*)&sector_y, sizeof(sector_y))) {
+	if (!in.read(reinterpret_cast<char*>(&sector_y), sizeof(sector_y))) {
 		return ChartError::REACHED_EOF;
 	}
 
@@ -82,7 +82,7 @@ ChartError Chart::read(std::istream& in, const unsigned int offset) {
 		possible_positions[i] = pos;
 	}
 
-	island_number = sector_x + 3 + (sector_y + 3) * 7 + 1;
+	island_number = sector_x + 3 + ((sector_y + 3) * 7) + 1;
 
 	if (number < 1 || number > 49) {
 		return ChartError::INVALID_NUMBER;
@@ -100,13 +100,13 @@ ChartError Chart::read(std::istream& in, const unsigned int offset) {
 void Chart::save_changes(std::ostream& out) {
 	out.seekp(offset, std::ios::beg);
 
-	out.write((char*)&texture_id, sizeof(texture_id));
-	out.write((char*)&owned_chart_index_plus_1, sizeof(owned_chart_index_plus_1));
-	out.write((char*)&number, sizeof(number));
-	out.write((char*)&type, sizeof(type));
+	out.write(reinterpret_cast<const char*>(&texture_id), sizeof(texture_id));
+	out.write(reinterpret_cast<const char*>(&owned_chart_index_plus_1), sizeof(owned_chart_index_plus_1));
+	out.write(reinterpret_cast<const char*>(&number), sizeof(number));
+	out.write(reinterpret_cast<const char*>(&type), sizeof(type));
 
-	out.write((char*)&sector_x, sizeof(sector_x));
-	out.write((char*)&sector_y, sizeof(sector_y));
+	out.write(reinterpret_cast<const char*>(&sector_x), sizeof(sector_x));
+	out.write(reinterpret_cast<const char*>(&sector_y), sizeof(sector_y));
 
 	for (ChartPos& pos : possible_positions) {
 		pos.save_changes(out);
@@ -124,7 +124,7 @@ ChartError Chart::setIslandNumber(const uint8_t value) {
 
 	uint8_t island_index = value - 1;
 	sector_x = (island_index % 7) - 3;
-	sector_y = floor(island_index / 7) - 3;
+	sector_y = std::floor(island_index / 7) - 3;
 
 	island_number = sector_x + 3 + (sector_y + 3) * 7 + 1;
 
@@ -163,21 +163,19 @@ namespace FileTypes {
 				return "INVALID_NUMBER";
 			case ChartError::REACHED_EOF:
 				return "REACHED_EOF";
-			case ChartError::COUNT:
-				return "COUNT";
 			default:
 				return "UNKNOWN";
 		}
 	}
 
 	ChartError ChartList::loadFromBinary(std::istream& in) {
-		if (!in.read((char*)&num_charts, sizeof(num_charts))) {
+		if (!in.read(reinterpret_cast<char*>(&num_charts), sizeof(num_charts))) {
 			return ChartError::REACHED_EOF;
 		}
 
 		Utility::Endian::toPlatform_inplace(eType::Big, num_charts);
 
-		int offset = 4;
+		unsigned int offset = 4;
 		for (unsigned int i = 0; i < num_charts; i++) {
 			Chart chart;
 			if (ChartError err = chart.read(in, offset); err != ChartError::NONE) return err;

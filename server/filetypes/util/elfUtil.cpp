@@ -30,31 +30,31 @@ namespace elfUtil {
 	}
 
 	void write_u8(FileTypes::ELF& out, const std::pair<int, int>& offset, const uint8_t& data) {
-		out.shdr_table[offset.first].second.data[offset.second] = (char)data;
+		out.shdr_table[offset.first].second.data[offset.second] = reinterpret_cast<const char&>(data);
 		return;
 	}
 
 	void write_u16(FileTypes::ELF& out, const std::pair<int, int>& offset, const uint16_t& data) {
 		uint16_t toWrite = Utility::Endian::toPlatform(eType::Big, data);
-		out.shdr_table[offset.first].second.data.replace(offset.second, 2, (char*)&toWrite, 2);
+		out.shdr_table[offset.first].second.data.replace(offset.second, 2, reinterpret_cast<const char*>(&toWrite), 2);
 		return;
 	}
 
 	void write_u32(FileTypes::ELF& out, const std::pair<int, int>& offset, const uint32_t& data) {
 		uint32_t toWrite = Utility::Endian::toPlatform(eType::Big, data);
-		out.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
+		out.shdr_table[offset.first].second.data.replace(offset.second, 4, reinterpret_cast<const char*>(&toWrite), 4);
 		return;
 	}
 
 	void write_float(FileTypes::ELF& out, const std::pair<int, int>& offset, const float& data) {
 		float toWrite = Utility::Endian::toPlatform(eType::Big, data);
-		out.shdr_table[offset.first].second.data.replace(offset.second, 4, (char*)&toWrite, 4);
+		out.shdr_table[offset.first].second.data.replace(offset.second, 4, reinterpret_cast<const char*>(&toWrite), 4);
 		return;
 	}
 
 	void write_bytes(FileTypes::ELF& out, const std::pair<int, int>& offset, const std::vector<uint8_t>& bytes) {
 		for (unsigned int i = 0; i < bytes.size(); i++) {
-			out.shdr_table[offset.first].second.data[offset.second + i] = (char)bytes[i];
+			out.shdr_table[offset.first].second.data[offset.second + i] = reinterpret_cast<const char&>(bytes[i]);
 		}
 		return;
 	}
@@ -81,7 +81,7 @@ namespace elfUtil {
 
 		bytes.reserve(numBytes); //avoid reallocations
 		for (unsigned int i = 0; i < numBytes; i++) {
-			buffer = *(uint8_t*)&in.shdr_table[offset.first].second.data[offset.second + i];
+			buffer = reinterpret_cast<const uint8_t&>(in.shdr_table[offset.first].second.data[offset.second + i]);
 			bytes.push_back(buffer);
 		}
 

@@ -68,6 +68,123 @@ namespace {
 
 		return;
 	}
+
+	
+	std::u16string word_wrap_string(const std::u16string& string, const int max_line_len) {
+		unsigned int index_in_str = 0;
+		std::u16string wordwrapped_str;
+		std::u16string current_word;
+		int curr_word_len = 0;
+		int len_curr_line = 0;
+	
+		while (index_in_str < string.length()) { //length is weird because its utf-16
+			char16_t character = string[index_in_str];
+	
+			if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
+				std::u16string substr;
+				int code_len = 0;
+				if (string[index_in_str + 1] == u'\x00') {
+					if (string[index_in_str + 2] == u'\x03') { //color command
+						if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
+							code_len = 10;
+						}
+						else {
+							code_len = 5;
+						}
+					}
+				}
+				else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
+					code_len = 4;
+				}
+				else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
+					code_len = 4;
+				}
+				else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
+					code_len = 4;
+				}
+	
+				substr = string.substr(index_in_str, code_len);
+				current_word += substr;
+				index_in_str += code_len;
+			}
+			else if (character == u'\n') {
+				wordwrapped_str += current_word;
+				wordwrapped_str += character;
+				len_curr_line = 0;
+				current_word = u"";
+				curr_word_len = 0;
+				index_in_str += 1;
+			}
+			else if (character == u' ') {
+				wordwrapped_str += current_word;
+				wordwrapped_str += character;
+				len_curr_line = curr_word_len + 1;
+				current_word = u"";
+				curr_word_len = 0;
+				index_in_str += 1;
+			}
+			else {
+				current_word += character;
+				curr_word_len += 1;
+				index_in_str += 1;
+	
+				if (len_curr_line + curr_word_len > max_line_len) {
+					wordwrapped_str += u'\n';
+					len_curr_line = 0;
+	
+					if (curr_word_len > max_line_len) {
+						wordwrapped_str += current_word + u'\n';
+						current_word = u"";
+					}
+				}
+			}
+		}
+		wordwrapped_str += current_word;
+	
+		return wordwrapped_str;
+	}
+	
+	std::string get_indefinite_article(const std::string& string) {
+		char first_letter = std::tolower(string[0]);
+		if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
+			return "an";
+		}
+		else {
+			return "a";
+		}
+	}
+	
+	std::u16string get_indefinite_article(const std::u16string& string) {
+		char16_t first_letter = std::tolower(string[0]);
+		if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
+			return u"an";
+		}
+		else {
+			return u"a";
+		}
+	}
+	
+	std::string pad_str_4_lines(const std::string& string) {
+		std::vector<std::string> lines = Utility::Str::split(string, '\n');
+	
+		unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
+		for (unsigned int i = 0; i < padding_lines_needed; i++) {
+			lines.push_back("");
+		}
+	
+		return Utility::Str::merge(lines, '\n');
+	}
+	
+	std::u16string pad_str_4_lines(const std::u16string& string) {
+		std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
+	
+		unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
+		for (unsigned int i = 0; i < padding_lines_needed; i++) {
+			lines.push_back(u"");
+		}
+	
+		return Utility::Str::merge(lines, u'\n');
+	}
 }
 
 void Apply_Patch(const std::string& file_path) {
@@ -125,123 +242,6 @@ void Add_Relocations(const std::string file_path) { //untested
 void Remove_Relocation(const std::pair<int, int>& offset) {
 	gRPX.shdr_table[offset.first].second.data.replace(offset.second, 0xC, 0xC, '\0');
 	return;
-}
-
-
-std::u16string word_wrap_string(const std::u16string& string, const int max_line_len) {
-	unsigned int index_in_str = 0;
-	std::u16string wordwrapped_str;
-	std::u16string current_word;
-	int curr_word_len = 0;
-	int len_curr_line = 0;
-
-	while (index_in_str < string.length()) { //length is weird because its utf-16
-		char16_t character = string[index_in_str];
-
-		if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
-			std::u16string substr;
-			int code_len = 0;
-			if (string[index_in_str + 1] == u'\x00') {
-				if (string[index_in_str + 2] == u'\x03') { //color command
-					if (string[index_in_str + 4] == u'\xFF') { //text color white, weird length
-						code_len = 10;
-					}
-					else {
-						code_len = 5;
-					}
-				}
-			}
-			else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-			else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-			else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
-				code_len = 4;
-			}
-
-			substr = string.substr(index_in_str, code_len);
-			current_word += substr;
-			index_in_str += code_len;
-		}
-		else if (character == u'\n') {
-			wordwrapped_str += current_word;
-			wordwrapped_str += character;
-			len_curr_line = 0;
-			current_word = u"";
-			curr_word_len = 0;
-			index_in_str += 1;
-		}
-		else if (character == u' ') {
-			wordwrapped_str += current_word;
-			wordwrapped_str += character;
-			len_curr_line = curr_word_len + 1;
-			current_word = u"";
-			curr_word_len = 0;
-			index_in_str += 1;
-		}
-		else {
-			current_word += character;
-			curr_word_len += 1;
-			index_in_str += 1;
-
-			if (len_curr_line + curr_word_len > max_line_len) {
-				wordwrapped_str += u'\n';
-				len_curr_line = 0;
-
-				if (curr_word_len > max_line_len) {
-					wordwrapped_str += current_word + u'\n';
-					current_word = u"";
-				}
-			}
-		}
-	}
-	wordwrapped_str += current_word;
-
-	return wordwrapped_str;
-}
-
-std::string get_indefinite_article(const std::string& string) {
-	char first_letter = std::tolower(string[0]);
-	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
-		return "an";
-	}
-	else {
-		return "a";
-	}
-}
-
-std::u16string get_indefinite_article(const std::u16string& string) {
-	char16_t first_letter = std::tolower(string[0]);
-	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
-		return u"an";
-	}
-	else {
-		return u"a";
-	}
-}
-
-std::string pad_str_4_lines(const std::string& string) {
-	std::vector<std::string> lines = Utility::Str::split(string, '\n');
-
-	unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-	for (unsigned int i = 0; i < padding_lines_needed; i++) {
-		lines.push_back("");
-	}
-
-	return Utility::Str::merge(lines, '\n');
-}
-
-std::u16string pad_str_4_lines(const std::u16string& string) {
-	std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
-
-	unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-	for (unsigned int i = 0; i < padding_lines_needed; i++) {
-		lines.push_back(u"");
-	}
-
-	return Utility::Str::merge(lines, u'\n');
 }
 
 /*std::u16string gameItemToName(const GameItem item) {

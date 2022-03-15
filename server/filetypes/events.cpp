@@ -17,19 +17,19 @@ EventlistError Property::read(std::istream& file, const unsigned int offset) {
 	if(!file.read(&name[0], 0x20)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&property_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&property_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&data_type, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&data_type), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&data_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&data_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&data_size, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&data_size), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&next_property_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&next_property_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, property_index);
@@ -51,10 +51,10 @@ void Property::save_changes(std::ostream& fptr) {
 	Utility::Endian::toPlatform_inplace(eType::Big, data_type);
 	Utility::Endian::toPlatform_inplace(eType::Big, data_index);
 	Utility::Endian::toPlatform_inplace(eType::Big, data_size);
-	fptr.write((char*)&property_index, 4);
-	fptr.write((char*)&data_type, 4);
-	fptr.write((char*)&data_index, 4);
-	fptr.write((char*)&data_size, 4);
+	fptr.write(reinterpret_cast<const char*>(&property_index), 4);
+	fptr.write(reinterpret_cast<const char*>(&data_type), 4);
+	fptr.write(reinterpret_cast<const char*>(&data_index), 4);
+	fptr.write(reinterpret_cast<const char*>(&data_size), 4);
 
 	if (next_property == nullptr) {
 		next_property_index = -1;
@@ -77,10 +77,10 @@ EventlistError Action::read(std::istream& file, const unsigned int offset) {
 	if(!file.read(&name[0], 0x20)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&duplicate_id, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&duplicate_id), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&action_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&action_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, duplicate_id);
@@ -89,7 +89,7 @@ EventlistError Action::read(std::istream& file, const unsigned int offset) {
 	for (int i = 0; i < 3; i++) {
 		int32_t flag_id;
 		fptr.seekg(this->offset + 0x28 + i * 4, std::ios::beg);
-		if(!file.read((char*)&flag_id, 4)) {
+		if(!file.read(reinterpret_cast<char*>(&flag_id), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, flag_id);
@@ -97,13 +97,13 @@ EventlistError Action::read(std::istream& file, const unsigned int offset) {
 	}
 
 	fptr.seekg(this->offset + 0x34, std::ios::beg);
-	if(!fptr.read((char*)&flag_id_to_set, 4)) {
+	if(!fptr.read(reinterpret_cast<char*>(&flag_id_to_set), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!fptr.read((char*)&first_property_index, 4)) {
+	if(!fptr.read(reinterpret_cast<char*>(&first_property_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!fptr.read((char*)&next_action_index, 4)) {
+	if(!fptr.read(reinterpret_cast<char*>(&next_action_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, flag_id_to_set);
@@ -121,19 +121,19 @@ void Action::save_changes(std::ostream& fptr) {
 	fptr.write(&name[0], 0x20);
 	Utility::Endian::toPlatform_inplace(eType::Big, duplicate_id);
 	Utility::Endian::toPlatform_inplace(eType::Big, action_index);
-	fptr.write((char*)&duplicate_id, 4);
-	fptr.write((char*)&action_index, 4);
+	fptr.write(reinterpret_cast<const char*>(&duplicate_id), 4);
+	fptr.write(reinterpret_cast<const char*>(&action_index), 4);
 
 	for (int i = 0; i < 3; i++) {
 		int flag_id = starting_flags[i];
 		Utility::Endian::toPlatform_inplace(eType::Big, flag_id);
 		fptr.seekp(offset + 0x28 + i * 4, std::ios::beg);
-		fptr.write((char*)&flag_id, 4);
+		fptr.write(reinterpret_cast<const char*>(&flag_id), 4);
 	}
 
 	fptr.seekp(offset + 0x34, std::ios::beg);
 	Utility::Endian::toPlatform_inplace(eType::Big, flag_id_to_set);
-	fptr.write((char*)&flag_id_to_set, 4);
+	fptr.write(reinterpret_cast<const char*>(&flag_id_to_set), 4);
 	if (properties.size() == 0) {
 		first_property_index = -1;
 	}
@@ -142,7 +142,7 @@ void Action::save_changes(std::ostream& fptr) {
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, first_property_index);
 	fptr.seekp(offset + 0x38, std::ios::beg);
-	fptr.write((char*)&first_property_index, 4);
+	fptr.write(reinterpret_cast<const char*>(&first_property_index), 4);
 
 	if (next_action == nullptr) {
 		next_action_index = -1;
@@ -152,7 +152,7 @@ void Action::save_changes(std::ostream& fptr) {
 	}
 	fptr.seekp(offset + 0x3C, std::ios::beg);
 	Utility::Endian::toPlatform_inplace(eType::Big, next_action_index);
-	fptr.write((char*)&next_action_index, 4);
+	fptr.write(reinterpret_cast<const char*>(&next_action_index), 4);
 	fptr.write(zero_initialized_runtime_data, sizeof(zero_initialized_runtime_data));
 	return;
 }
@@ -182,19 +182,19 @@ EventlistError Actor::read(std::istream& file, const unsigned int offset) {
 	if(!file.read(&name[0], 0x20)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&staff_identifier, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&staff_identifier), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&actor_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&actor_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&flag_id_to_set, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&flag_id_to_set), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&staff_type, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&staff_type), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&initial_action_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&initial_action_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, staff_identifier);
@@ -203,7 +203,7 @@ EventlistError Actor::read(std::istream& file, const unsigned int offset) {
 	Utility::Endian::toPlatform_inplace(eType::Big, staff_type);
 	Utility::Endian::toPlatform_inplace(eType::Big, initial_action_index);
 
-	if(!file.read((char*)&zero_initialized_runtime_data, 0x1C)) {
+	if(!file.read(reinterpret_cast<char*>(&zero_initialized_runtime_data), 0x1C)) {
 		return EventlistError::REACHED_EOF;
 	}
 	return EventlistError::NONE;
@@ -220,15 +220,15 @@ EventlistError Actor::save_changes(std::ostream& fptr) {
 	Utility::Endian::toPlatform_inplace(eType::Big, actor_index);
 	Utility::Endian::toPlatform_inplace(eType::Big, flag_id_to_set);
 	Utility::Endian::toPlatform_inplace(eType::Big, staff_type);
-	fptr.write((char*)&staff_identifier, 4);
-	fptr.write((char*)&actor_index, 4);
-	fptr.write((char*)&flag_id_to_set, 4);
-	fptr.write((char*)&staff_type, 4);
+	fptr.write(reinterpret_cast<const char*>(&staff_identifier), 4);
+	fptr.write(reinterpret_cast<const char*>(&actor_index), 4);
+	fptr.write(reinterpret_cast<const char*>(&flag_id_to_set), 4);
+	fptr.write(reinterpret_cast<const char*>(&staff_type), 4);
 
 	initial_action = actions[0];
 	initial_action_index = initial_action.action_index;
 	Utility::Endian::toPlatform_inplace(eType::Big, initial_action_index);
-	fptr.write((char*)&initial_action_index, 4);
+	fptr.write(reinterpret_cast<const char*>(&initial_action_index), 4);
 
 	fptr.write(zero_initialized_runtime_data, sizeof(zero_initialized_runtime_data));
 	return EventlistError::NONE;
@@ -259,13 +259,13 @@ EventlistError Event::read(std::istream& file, const unsigned int offset) {
 	if(!file.read(&name[0], 0x20)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&event_index, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&event_index), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&unknown_1, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&unknown_1), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
-	if(!file.read((char*)&priority, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&priority), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, event_index);
@@ -275,14 +275,14 @@ EventlistError Event::read(std::istream& file, const unsigned int offset) {
 	for (unsigned int i = 0; i < 0x14; i++) {
 		int32_t actor_index;
 		fptr.seekg(this->offset + 0x2C + i * 4, std::ios::beg);
-		if(!file.read((char*)&actor_index, 4)) {
+		if(!file.read(reinterpret_cast<char*>(&actor_index), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, actor_index);
 		actor_indexes[i] = actor_index;
 	}
 	fptr.seekg(this->offset + 0x7C, std::ios::beg);
-	if(!file.read((char*)&num_actors, 4)) {
+	if(!file.read(reinterpret_cast<char*>(&num_actors), 4)) {
 		return EventlistError::REACHED_EOF;
 	}
 	Utility::Endian::toPlatform_inplace(eType::Big, num_actors);
@@ -290,7 +290,7 @@ EventlistError Event::read(std::istream& file, const unsigned int offset) {
 	for (unsigned int i = 0; i < 2; i++) {
 		int32_t flag_id;
 		fptr.seekg(this->offset + 0x80 + i * 4, std::ios::beg);
-		if(!file.read((char*)&flag_id, 4)) {
+		if(!file.read(reinterpret_cast<char*>(&flag_id), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, flag_id);
@@ -300,7 +300,7 @@ EventlistError Event::read(std::istream& file, const unsigned int offset) {
 	for (unsigned int i = 0; i < 3; i++) {
 		int32_t flag_id;
 		fptr.seekg(this->offset + 0x88 + i * 4, std::ios::beg);
-		if(!file.read((char*)&flag_id, 4)) {
+		if(!file.read(reinterpret_cast<char*>(&flag_id), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, flag_id);
@@ -308,7 +308,7 @@ EventlistError Event::read(std::istream& file, const unsigned int offset) {
 	}
 
 	fptr.seekg(this->offset + 0x94, std::ios::beg);
-	if(!file.read((char*)&play_jingle, 1)) {
+	if(!file.read(reinterpret_cast<char*>(&play_jingle), 1)) {
 		return EventlistError::REACHED_EOF;
 	}
 
@@ -326,9 +326,9 @@ void Event::save_changes(std::ostream& fptr) {
 	Utility::Endian::toPlatform_inplace(eType::Big, event_index);
 	Utility::Endian::toPlatform_inplace(eType::Big, unknown_1);
 	Utility::Endian::toPlatform_inplace(eType::Big, priority);
-	fptr.write((char*)&event_index, 4);
-	fptr.write((char*)&unknown_1, 4);
-	fptr.write((char*)&priority, 4);
+	fptr.write(reinterpret_cast<const char*>(&event_index), 4);
+	fptr.write(reinterpret_cast<const char*>(&unknown_1), 4);
+	fptr.write(reinterpret_cast<const char*>(&priority), 4);
 
 	for (unsigned int i = 0; i < 0x14; i++) {
 		int32_t actor_index;
@@ -341,30 +341,30 @@ void Event::save_changes(std::ostream& fptr) {
 		actor_indexes[i] = actor_index;
 		fptr.seekp(offset + 0x2C + i * 4, std::ios::beg);
 		Utility::Endian::toPlatform_inplace(eType::Big, actor_index);
-		fptr.write((char*)&actor_index, 4);
+		fptr.write(reinterpret_cast<const char*>(&actor_index), 4);
 	}
 
 	num_actors = actors.size();
 	fptr.seekp(offset + 0x7C, std::ios::beg);
 	Utility::Endian::toPlatform_inplace(eType::Big, num_actors);
-	fptr.write((char*)&num_actors, 4);
+	fptr.write(reinterpret_cast<const char*>(&num_actors), 4);
 
 	for (unsigned int i = 0; i < 2; i++) {
 		int flag_id = starting_flags[i];
 		fptr.seekp(offset + 0x80 + i * 4, std::ios::beg);
 		Utility::Endian::toPlatform_inplace(eType::Big, flag_id);
-		fptr.write((char*)&flag_id, 4);
+		fptr.write(reinterpret_cast<const char*>(&flag_id), 4);
 	}
 
 	for (unsigned int i = 0; i < 3; i++) {
 		int32_t flag_id = ending_flags[i];
 		fptr.seekp(offset + 0x88 + i * 4, std::ios::beg);
 		Utility::Endian::toPlatform_inplace(eType::Big, flag_id);
-		fptr.write((char*)&flag_id, 4);
+		fptr.write(reinterpret_cast<const char*>(&flag_id), 4);
 	}
 
 	fptr.seekp(offset + 0x94, std::ios::beg);
-	fptr.write((char*)&play_jingle, 1);
+	fptr.write(reinterpret_cast<const char*>(&play_jingle), 1);
 	fptr.write(zero_initialized_runtime_data, sizeof(zero_initialized_runtime_data));
 	return;
 }
@@ -417,8 +417,6 @@ namespace FileTypes
                 return "NO_UNUSED_FLAGS_TO_USE";
 			case EventlistError::CANNOT_SAVE_ACTOR_WITH_NO_ACTIONS:
                 return "CANNOT_SAVE_ACTOR_WITH_NO_ACTIONS";
-			case EventlistError::COUNT:
-				return "COUNT";
 			default:
 				return "UNKNOWN";
 		}
@@ -477,48 +475,52 @@ namespace FileTypes
 
 		EventlistError err = EventlistError::NONE;
 
-		if(!file_entry.read((char*)&event_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&event_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&num_events, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&num_events), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&actor_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&actor_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&num_actors, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&num_actors), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&action_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&action_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&num_actions, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&num_actions), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&property_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&property_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&num_properties, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&num_properties), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&float_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&float_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&num_floats, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&num_floats), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&integer_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&integer_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&num_integers, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&num_integers), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&string_list_offset, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&string_list_offset), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
-		if(!file_entry.read((char*)&string_list_total_size, 4)) {
+		if(!file_entry.read(reinterpret_cast<char*>(&string_list_total_size), 4)) {
 			return EventlistError::REACHED_EOF;
 		}
+		if(!file_entry.read(padding, 8)) {
+			return EventlistError::REACHED_EOF;
+		}
+
 		Utility::Endian::toPlatform_inplace(eType::Big, event_list_offset);
 		Utility::Endian::toPlatform_inplace(eType::Big, num_events);
 		Utility::Endian::toPlatform_inplace(eType::Big, actor_list_offset);
@@ -533,9 +535,6 @@ namespace FileTypes
 		Utility::Endian::toPlatform_inplace(eType::Big, num_integers);
 		Utility::Endian::toPlatform_inplace(eType::Big, string_list_offset);
 		Utility::Endian::toPlatform_inplace(eType::Big, string_list_total_size);
-		if(!file_entry.read(padding, 8)) {
-			return EventlistError::REACHED_EOF;
-		}
 
 		if (event_list_offset != 0x40) {
 			return EventlistError::UNEXPECTED_EVENT_OFFSET;
@@ -556,7 +555,7 @@ namespace FileTypes
 			Events_By_Name[event.name] = event;
 		}
 
-		All_Actors.reserve(num_actors); //Minmize copies
+		All_Actors.reserve(num_actors); //Minimize copies
 		for (uint32_t actor_index = 0; actor_index < num_actors; actor_index++) {
 			uint32_t offset = actor_list_offset + actor_index * 0x50;
 			Actor actor;
@@ -567,7 +566,7 @@ namespace FileTypes
 			All_Actors.push_back(actor);
 		}
 
-		All_Actions.reserve(num_actions); //Minmize copies
+		All_Actions.reserve(num_actions); //Minimize copies
 		for (uint32_t action_index = 0; action_index < num_actions; action_index++) {
 			uint32_t offset = action_list_offset + action_index * 0x50;
 			Action action;
@@ -578,7 +577,7 @@ namespace FileTypes
 			All_Actions.push_back(action);
 		}
 
-		All_Properties.reserve(num_properties); //Minmize copies
+		All_Properties.reserve(num_properties); //Minimize copies
 		for (uint32_t property_index = 0; property_index < num_properties; property_index++) { //Populate properties
 			uint32_t offset = property_list_offset + property_index * 0x40;
 			Property property;
@@ -589,20 +588,20 @@ namespace FileTypes
 			All_Properties.push_back(property);
 		}
 
-		All_Floats.reserve(num_floats); //Minmize copies
+		All_Floats.reserve(num_floats); //Minimize copies
 		for (uint32_t float_index = 0; float_index < num_floats; float_index++) {
 			float float_val;
-			if(!file_entry.read((char*)&float_val, 4)) {
+			if(!file_entry.read(reinterpret_cast<char*>(&float_val), 4)) {
 				return EventlistError::REACHED_EOF;
 			}
 			Utility::Endian::toPlatform_inplace(eType::Big, float_val);
 			All_Floats.push_back(float_val);
 		}
 
-		All_Integers.reserve(num_integers); //Minmize copies
+		All_Integers.reserve(num_integers); //Minimize copies
 		for (uint32_t integer_index = 0; integer_index < num_integers; integer_index++) {
 			int32_t integer;
-			if(!file_entry.read((char*)&integer, 4)) {
+			if(!file_entry.read(reinterpret_cast<char*>(&integer), 4)) {
 				return EventlistError::REACHED_EOF;
 			}
 			Utility::Endian::toPlatform_inplace(eType::Big, integer);
@@ -620,9 +619,9 @@ namespace FileTypes
 			offset += string_length_with_null;
 
 			if (string_length_with_null % 8 != 0) {
-				int padding_bytes_to_skip = 8 - (string_length_with_null % 8);
+				unsigned int padding_bytes_to_skip = 8 - (string_length_with_null % 8);
 
-				for (int i = 0; i < padding_bytes_to_skip; i++) {
+				for (unsigned int i = 0; i < padding_bytes_to_skip; i++) {
 					char padding_byte;
 					file_entry.seekg(offset + i, std::ios::beg);
 					if(!file_entry.read(&padding_byte, 1)) {
@@ -750,20 +749,20 @@ namespace FileTypes
 		Utility::Endian::toPlatform_inplace(eType::Big, num_integers);
 		Utility::Endian::toPlatform_inplace(eType::Big, string_list_offset);
 		Utility::Endian::toPlatform_inplace(eType::Big, string_list_total_size);
-		file_entry.write((char*)&event_list_offset, 4);
-		file_entry.write((char*)&num_events, 4);
-		file_entry.write((char*)&actor_list_offset, 4);
-		file_entry.write((char*)&num_actors, 4);
-		file_entry.write((char*)&action_list_offset, 4);
-		file_entry.write((char*)&num_actions, 4);
-		file_entry.write((char*)&property_list_offset, 4);
-		file_entry.write((char*)&num_properties, 4);
-		file_entry.write((char*)&float_list_offset, 4);
-		file_entry.write((char*)&num_floats, 4);
-		file_entry.write((char*)&integer_list_offset, 4);
-		file_entry.write((char*)&num_integers, 4);
-		file_entry.write((char*)&string_list_offset, 4);
-		file_entry.write((char*)&string_list_total_size, 4);
+		file_entry.write(reinterpret_cast<const char*>(&event_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_events), 4);
+		file_entry.write(reinterpret_cast<const char*>(&actor_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_actors), 4);
+		file_entry.write(reinterpret_cast<const char*>(&action_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_actions), 4);
+		file_entry.write(reinterpret_cast<const char*>(&property_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_properties), 4);
+		file_entry.write(reinterpret_cast<const char*>(&float_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_floats), 4);
+		file_entry.write(reinterpret_cast<const char*>(&integer_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_integers), 4);
+		file_entry.write(reinterpret_cast<const char*>(&string_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&string_list_total_size), 4);
 		file_entry.write(padding, 8);
 
 		std::vector<Event> All_Events = Events;
@@ -846,31 +845,31 @@ namespace FileTypes
 			std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int32_t>, std::string> property_value = property.value;
 			if (property_value.index() != 3) {
 				if (property_value.index() == 0) {
-					property.data_size = std::get<0>(property_value).size();
+					property.data_size = std::get<std::vector<float>>(property_value).size();
 					property.data_type = 0;
 					property.data_index = All_Floats.size();
 
-					for (const float& float_val : std::get<0>(property_value)) {
+					for (const float& float_val : std::get<std::vector<float>>(property_value)) {
 						All_Floats.push_back(float_val);
 					}
 				}
 				else if (property_value.index() == 1) {
-					property.data_size = std::get<1>(property_value).size();
+					property.data_size = std::get<std::vector<vec3<float>>>(property_value).size();
 					property.data_type = 1;
 					property.data_index = All_Floats.size();
 
-					for (const vec3<float>& vector3 : std::get<1>(property_value)) {
+					for (const vec3<float>& vector3 : std::get<std::vector<vec3<float>>>(property_value)) {
 						All_Floats.push_back(vector3.X);
 						All_Floats.push_back(vector3.Y);
 						All_Floats.push_back(vector3.Z);
 					}
 				}
 				else if (property_value.index() == 2) {
-					property.data_size = std::get<2>(property_value).size();
+					property.data_size = std::get<std::vector<int32_t>>(property_value).size();
 					property.data_type = 3;
 					property.data_index = All_Integers.size();
 
-					for (const int32_t& integer : std::get<2>(property_value)) {
+					for (const int32_t& integer : std::get<std::vector<int32_t>>(property_value)) {
 						All_Integers.push_back(integer);
 					}
 				}
@@ -883,7 +882,7 @@ namespace FileTypes
 				property.data_index = 0; //gets set later
 				property.data_size = 0; //gets set later
 
-				All_Strings.push_back(std::get<3>(property_value));
+				All_Strings.push_back(std::get<std::string>(property_value));
 			}
 
 		}
@@ -892,9 +891,9 @@ namespace FileTypes
 		num_floats = All_Floats.size();
 		for (float& float_val : All_Floats) {
 			file_entry.seekp(offset, std::ios::beg);
-			uint32_t value = reinterpret_cast<const uint32_t&>(float_val); //byteswap as a uint32 because casting it back to float in reversed order treats it as NaN and changes the value
+			int32_t value = reinterpret_cast<uint32_t&>(float_val); //byteswap as a uint32 because casting it back to float in reversed order treats it as NaN and changes the value
 			Utility::Endian::toPlatform_inplace(eType::Big, value);
-			file_entry.write((char*)&value, 4);
+			file_entry.write(reinterpret_cast<const char*>(&value), 4);
 			offset = offset + 4;
 		}
 
@@ -912,10 +911,9 @@ namespace FileTypes
 			if (property.data_type == 4) {
 				std::string string = std::get<std::string>(property.value);
 				file_entry.write(&string[0], string.length()); //Write string
-				file_entry.write("\x00", 1); //Write null byte
 				uint32_t new_relative_string_offset = offset - string_list_offset;
 
-				uint32_t string_length_with_null = string.length() + 1;
+				uint32_t string_length_with_null = string.length();
 				offset = offset + string_length_with_null;
 
 				uint32_t string_length_with_padding = string_length_with_null;
@@ -965,20 +963,20 @@ namespace FileTypes
 		Utility::Endian::toPlatform_inplace(eType::Big, string_list_offset);
 		Utility::Endian::toPlatform_inplace(eType::Big, string_list_total_size);
 
-		file_entry.write((char*)&event_list_offset, 4);
-		file_entry.write((char*)&num_events, 4);
-		file_entry.write((char*)&actor_list_offset, 4);
-		file_entry.write((char*)&num_actors, 4);
-		file_entry.write((char*)&action_list_offset, 4);
-		file_entry.write((char*)&num_actions, 4);
-		file_entry.write((char*)&property_list_offset, 4);
-		file_entry.write((char*)&num_properties, 4);
-		file_entry.write((char*)&float_list_offset, 4);
-		file_entry.write((char*)&num_floats, 4);
-		file_entry.write((char*)&integer_list_offset, 4);
-		file_entry.write((char*)&num_integers, 4);
-		file_entry.write((char*)&string_list_offset, 4);
-		file_entry.write((char*)&string_list_total_size, 4);
+		file_entry.write(reinterpret_cast<const char*>(&event_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_events), 4);
+		file_entry.write(reinterpret_cast<const char*>(&actor_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_actors), 4);
+		file_entry.write(reinterpret_cast<const char*>(&action_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_actions), 4);
+		file_entry.write(reinterpret_cast<const char*>(&property_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_properties), 4);
+		file_entry.write(reinterpret_cast<const char*>(&float_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_floats), 4);
+		file_entry.write(reinterpret_cast<const char*>(&integer_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&num_integers), 4);
+		file_entry.write(reinterpret_cast<const char*>(&string_list_offset), 4);
+		file_entry.write(reinterpret_cast<const char*>(&string_list_total_size), 4);
 		file_entry.write(padding, sizeof(padding));
 		return EventlistError::NONE;
 	}
@@ -999,11 +997,11 @@ namespace FileTypes
 		return Events_By_Name[name];
 	}
 
-	std::optional<uint32_t> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+	std::optional<int32_t> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
 		if (unused_flag_ids.size() == 0) {
 			return std::nullopt;
 		}
-		uint32_t flag_id = unused_flag_ids[0];
+		int32_t flag_id = unused_flag_ids[0];
 		unused_flag_ids.erase(unused_flag_ids.begin(), unused_flag_ids.begin() + 1);
 		return flag_id;
 	}
