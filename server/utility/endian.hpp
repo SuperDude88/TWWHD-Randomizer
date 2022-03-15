@@ -35,12 +35,14 @@ namespace Utility::Endian
 
     template<typename T>
     T toPlatform(const Type& src, const T& value) {
+        static_assert(sizeof(T) > 1, "Cannot byteswap a single-byte value");
         if (src != target) return byteswap(value);
         return value;
     }
 
     template<typename T>
     void toPlatform_inplace(const Type& src, T& value) {
+        static_assert(sizeof(T) > 1, "Cannot byteswap a single-byte value");
         if (src != target) value = byteswap(value);
     }
 }
