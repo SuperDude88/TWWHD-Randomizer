@@ -40,7 +40,6 @@ bool readVec2(std::istream& in, const std::streamoff offset, vec2<T>& out) {
 		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.Y);
 	}
 
-
 	return true;
 }
 

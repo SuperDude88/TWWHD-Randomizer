@@ -533,7 +533,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, map.posY);
 			Utility::Endian::toPlatform_inplace(eType::Big, map.scaleX);
 			Utility::Endian::toPlatform_inplace(eType::Big, map.scaleY);
-			Utility::Endian::toPlatform_inplace(eType::Big, map.flags);
 
 			out.write(reinterpret_cast<char*>(&map.posX), sizeof(map.posX));
 			out.write(reinterpret_cast<char*>(&map.posY), sizeof(map.posY));
