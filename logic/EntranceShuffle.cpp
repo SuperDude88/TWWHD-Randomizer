@@ -308,9 +308,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     ItemPool noItems = {};
     LocationPool progLocations = {};
     GET_COMPLETE_PROGRESSION_LOCATION_POOL(progLocations, worlds);
-    auto numSphereZeroLocations = getAccessibleLocations(worlds, noItems, progLocations).size();
-    // debugLog("sphere 0 locations: " + std::to_string(numSphereZeroLocations));
-    if (numSphereZeroLocations < worlds.size())
+    if (getAccessibleLocations(worlds, noItems, progLocations).size() < worlds.size())
     {
         debugLog("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
@@ -324,13 +322,13 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     {
         if (world.getSettings().race_mode)
         {
-            std::list<HintRegion> raceModeIslands = {};
+            std::unordered_set<HintRegion> raceModeIslands = {};
             for (auto& dungeon : getDungeonList())
             {
                 auto dungeonFirstRoom = dungeonIdToFirstRoom(dungeon);
                 auto dungeonIslands = world.getIslands(dungeonFirstRoom);
 
-                if (elementInPool(dungeon, world.raceModeDungeons))
+                if (world.raceModeDungeons.contains(dungeon))
                 {
                     if (dungeonIslands.size() > 1)
                     {
@@ -341,16 +339,16 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
 
                 if (dungeonIslands.size() == 1)
                 {
-                    auto& dungeonIsland = dungeonIslands.front();
-                    if (elementInPool(dungeonIsland, raceModeIslands))
+                    auto dungeonIsland = *dungeonIslands.begin();
+                    if (raceModeIslands.contains(dungeonIsland))
                     {
                         debugLog("Error: Island " + hintRegionToName(dungeonIsland) + " has an ambiguous race mode dungeon");
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
-                    if (elementInPool(dungeon, world.raceModeDungeons))
+                    if (world.raceModeDungeons.contains(dungeon))
                     {
-                        raceModeIslands.push_back(dungeonIsland);
+                        raceModeIslands.insert(dungeonIsland);
                     }
                 }
             }

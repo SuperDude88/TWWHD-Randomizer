@@ -101,7 +101,7 @@ public:
     Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
-    std::list<HintRegion> getIslands(const Area& area);
+    std::unordered_set<HintRegion> getIslands(const Area& area);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
@@ -112,7 +112,7 @@ public:
     std::vector<Requirement> macros;
     std::vector<std::list<Location*>> playthroughSpheres = {};
     std::array<GameItem, 49> chartMappings;
-    std::vector<DungeonId> raceModeDungeons;
+    std::unordered_set<DungeonId> raceModeDungeons;
     uint8_t startingIslandRoomIndex = 44;
 
 private:
