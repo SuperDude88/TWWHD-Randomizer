@@ -21,27 +21,41 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
   std::cout << "Building World" << (worlds.size() > 1 ? "s" : "") << std::endl;
-  for (size_t i = 0; i < worlds.size(); i++)
+  int buildRetryCount = 5;
+  EntranceShuffleError entranceErr;
+  while (buildRetryCount > 0)
   {
-      debugLog("Building World " + std::to_string(i));
-      worlds[i].setWorldId(i);
-      worlds[i].setSettings(settingsVector[i]);
-      if (worlds[i].loadWorld("../data/world.yaml", "../data/macros.yaml", "../data/location_data.yaml"))
+      buildRetryCount--;
+      for (size_t i = 0; i < worlds.size(); i++)
       {
-          return 1;
+          debugLog("Building World " + std::to_string(i));
+          worlds[i] = World();
+          worlds[i].setWorldId(i);
+          worlds[i].setSettings(settingsVector[i]);
+          if (worlds[i].loadWorld("../data/world.yaml", "../data/macros.yaml", "../data/location_data.yaml"))
+          {
+              return 1;
+          }
+          worlds[i].determineChartMappings();
+          worlds[i].determineProgressionLocations();
+          worlds[i].determineRaceModeDungeons();
+          worlds[i].setItemPools();
       }
-      worlds[i].determineChartMappings();
-      worlds[i].determineProgressionLocations();
-      worlds[i].determineRaceModeDungeons();
-      worlds[i].setItemPools();
+
+      // Randomize entrances before placing items
+      debugLog("Randomizing Entrances");
+      entranceErr = randomizeEntrances(worlds);
+      if (entranceErr != EntranceShuffleError::NONE)
+      {
+          debugLog("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
+          continue;
+      }
+      break;
   }
 
-  // Randomize entrances before placing items
-  std::cout << "Randomizing Entrances" << std::endl;
-  EntranceShuffleError entranceErr = randomizeEntrances(worlds);
-  if (entranceErr != EntranceShuffleError::NONE)
+  if (buildRetryCount == 0)
   {
-      std::cout << "Entrance Randomization unsuccessful. Error Code: " << errorToName(entranceErr) << std::endl;
+      std::cout << "Build retry count exceeded. Error: " << errorToName(entranceErr) << std::endl;
       return 1;
   }
 
@@ -53,7 +67,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
   {
       totalFillAttempts--;
       fillError = fill(worlds);
-      if (fillError == FillError::NONE) {
+      if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS) {
           break;
       }
       debugLog("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
@@ -75,13 +89,6 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       #endif
       return 1;
   }
-
-  // Dump world graphs if debugging
-  #ifdef ENABLE_DEBUG
-      for (World& world : worlds) {
-          world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
-      }
-  #endif
 
   std::cout << "Generating Playthrough" << std::endl;
   generatePlaythrough(worlds);

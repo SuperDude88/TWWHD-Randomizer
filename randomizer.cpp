@@ -58,8 +58,8 @@ public:
 		}
 
 		// Create all necessary worlds (for any potential multiworld support in the future)
-		World blankWorld;
-		WorldPool worlds (numPlayers, blankWorld);
+		WorldPool worlds;
+		worlds.resize(numPlayers);
 		std::vector<Settings> settingsVector (numPlayers, settings);
 
 		if (randomizeItems) {
@@ -71,11 +71,11 @@ public:
 
 		if (randomizeItems && !dryRun) {
 			//save items
-			//get world locations with "worlds[playerNum - 1].locationEntries"
+			//get world locations with "worlds[playerId - 1].locationEntries"
 		}
 
 		if (!dryRun) {
-			//get world with "worlds[playerNum - 1]"
+			//get world with "worlds[playerId - 1]"
 			//apply_necessary_post_randomization_tweaks(randomizeItems, logic.item_locations);
 		}
 

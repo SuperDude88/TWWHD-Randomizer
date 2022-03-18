@@ -266,24 +266,15 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
 
 static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    static std::array<std::string, 6> dungeonNames = {
-        "DragonRoostCavern",
-        "ForbiddenWoods",
-        "TowerOfTheGods",
-        "ForsakenFortress",
-        "EarthTemple",
-        "WindTemple",
-    };
-
     // For each world, either add the dungeon items to the main item pool
     // or place them within their dungeon if the world has keylunacy disabled
     for (auto& world : worlds)
     {
         auto worldId = world.getWorldId();
 
-        for (auto& dungeonName : dungeonNames)
+        for (auto& dungeonId : getDungeonList())
         {
-            auto dungeon = nameToDungeon(dungeonName);
+            auto dungeon = dungeonIdToDungeon(dungeonId);
 
             // If keylunacy is disabled, then add dungeon items to the world's
             // item pool
@@ -428,7 +419,7 @@ FillError fill(WorldPool& worlds)
                 debugLog("\t" + locationName(location));
             }
         #endif
-        return FillError::MORE_ITEMS_THAN_LOCATIONS;
+        return FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS;
     }
 
     // Place all major items in the Item Pool using assumed fill
@@ -487,6 +478,8 @@ const char* errorToName(FillError err)
         return "NO_REACHABLE_LOCATIONS";
     case FillError::GAME_NOT_BEATABLE:
         return "GAME_NOT_BEATABLE";
+    case FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS:
+        return "NOT_ENOUGH_PROGRESSION_LOCATIONS";
     default:
         return "UNKNOWN";
     }

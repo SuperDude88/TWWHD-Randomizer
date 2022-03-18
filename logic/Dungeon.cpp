@@ -2,7 +2,7 @@
 #include "Dungeon.hpp"
 #include <unordered_map>
 
-// The last locationId in each list of dungeon locations is the race mode location
+// The last locationId in each list of dungeon locations is the initial race mode location
 static const Dungeon DragonRoostCavern = {4, GameItem::DRCSmallKey, GameItem::DRCBigKey, GameItem::DRCDungeonMap, GameItem::DRCCompass, {
          LocationId::DragonRoostCavernFirstRoomChest,
          LocationId::DragonRoostCavernWaterJugAlcove,
@@ -102,6 +102,18 @@ static const Dungeon WindTemple = {2, GameItem::WTSmallKey, GameItem::WTBigKey, 
 }};
 static const Dungeon InvalidDungeon = {0, GameItem::INVALID, GameItem::INVALID, GameItem::INVALID, GameItem::INVALID, {}};
 
+const std::array<DungeonId, 6> getDungeonList()
+{
+    return {
+        DungeonId::DragonRoostCavern,
+        DungeonId::ForbiddenWoods,
+        DungeonId::TowerOfTheGods,
+        DungeonId::ForsakenFortress,
+        DungeonId::EarthTemple,
+        DungeonId::WindTemple,
+    };
+}
+
 const Dungeon nameToDungeon(const std::string& name)
 {
     static std::unordered_map<std::string, const Dungeon> nameDungeonMap = {
@@ -157,6 +169,25 @@ DungeonId nameToDungeonId(const std::string& name)
     }
 
     return nameDungeonIdMap.at(name);
+}
+
+Area dungeonIdToFirstRoom(const DungeonId& dungeonId)
+{
+    static std::unordered_map<DungeonId, Area> dungeonIdAreaMap = {
+        {DungeonId::DragonRoostCavern, Area::DRCFirstRoom},
+        {DungeonId::ForbiddenWoods, Area::FWFirstRoom},
+        {DungeonId::TowerOfTheGods, Area::TOTGEntranceRoom},
+        {DungeonId::ForsakenFortress, Area::ForsakenFortressInnerCourtyard},
+        {DungeonId::EarthTemple, Area::ETFirstRoom},
+        {DungeonId::WindTemple, Area::WTFirstRoom},
+    };
+
+    if (dungeonIdAreaMap.count(dungeonId) == 0)
+    {
+        return Area::INVALID;
+    }
+
+    return dungeonIdAreaMap.at(dungeonId);
 }
 
 const Dungeon dungeonIdToDungeon(const DungeonId& dungeonId)

@@ -3,6 +3,8 @@
 
 #include "GameItem.hpp"
 #include "Location.hpp"
+#include "Area.hpp"
+#include <array>
 
 enum struct DungeonId : uint32_t
 {
@@ -24,7 +26,9 @@ struct Dungeon {
     std::vector<LocationId> locations = {};
 };
 
+const std::array<DungeonId, 6> getDungeonList();
 const Dungeon nameToDungeon(const std::string& name);
 std::string dungeonIdToName(const DungeonId& dungeonId);
 DungeonId nameToDungeonId(const std::string& name);
+Area dungeonIdToFirstRoom(const DungeonId& dungeonId);
 const Dungeon dungeonIdToDungeon(const DungeonId& dungeonId);

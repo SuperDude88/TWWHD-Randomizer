@@ -11,6 +11,7 @@
 #include "ItemPool.hpp"
 #include "Dungeon.hpp"
 #include "Entrance.hpp"
+#include "HintRegion.hpp"
 #include "../libs/ryml.hpp"
 
 static std::stringstream lastError;
@@ -36,6 +37,8 @@ struct EventAccess
 struct AreaEntry
 {
     Area area = Area::INVALID;
+    HintRegion island = HintRegion::NONE;
+    HintRegion dungeon = HintRegion::NONE;
     std::list<EventAccess> events;
     std::list<LocationAccess> locations;
     std::list<Entrance> exits;
@@ -88,7 +91,7 @@ public:
     void setItemPools();
     ItemPool getItemPool() const;
     ItemPool getStartingItems() const;
-    LocationPool getLocations();
+    LocationPool getLocations(bool onlyProgression = false);
     AreaEntry& getArea(const Area& area);
 
     void determineChartMappings();
@@ -98,6 +101,7 @@ public:
     Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
+    std::list<HintRegion> getIslands(const Area& area);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
