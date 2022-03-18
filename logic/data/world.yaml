@@ -34,6 +34,7 @@
 
 
 - Name: MailboxChecks
+  Island: Mailbox
   Locations:
       MailboxHoskitGirlfriendLetter: CanFarmGoldenFeathers and CanPlaySoP and SpoilsBag and can_access(DragonRoostRitoAerie)
       MailboxBaitoMotherLetter: CanPlaySoP and NoteToMom and DeliveryBag
@@ -46,7 +47,7 @@
       MailboxOrcaLetter: CanDefeatKalleDemos and can_access(FWBossRoom)
       MailboxGrandmaLetter: CanPlaySoP and can_access(OutsetLinksHouse) and EmptyBottle and 'CanGetFairies'
       MailboxAryllLetter: can_access(ForsakenFortressBossRoom) and CanDefeatHelmarocKing and CanPlaySoP
-      MailboxTingleLetter: can_access(ForsakenFortressBossRoom) and CanDefeatHelmarocKing and CanPlaySoP and 'RescuedTingle' and WalletUpgrade
+      MailboxTingleLetter: can_access(ForsakenFortressBossRoom) and CanDefeatHelmarocKing and CanPlaySoP and 'RescuedTingle'
 
 
 - Name: TheGreatSea
@@ -113,6 +114,7 @@
 
 
 - Name: ForsakenFortress
+  Island: ForsakenFortress
   Locations:
       ForsakenFortressSunkenTreasure: GrapplingHook and ChartForIsland1
   Exits:
@@ -121,6 +123,7 @@
 
 
 - Name: ForsakenFortressInnerCourtyard
+  Island: ForsakenFortress
   Locations:
       ForsakenFortressPhantomGanon: CanDefeatPhantomGanon
   Exits:
@@ -191,12 +194,14 @@
 
 
 - Name: ForsakenFortressSleepingQuartersOutsideLedge
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressInnerCourtyard: Nothing
       ForsakenFortressSleepingQuarters: CanDefeatPhantomGanon
 
 
 - Name: ForsakenFortressSouthHallwayUpper
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressUpSwitchBackStairs: Nothing
       ForsakenFortressSleepingQuartersOutsideLedge: Nothing
@@ -205,6 +210,7 @@
 
 
 - Name: ForsakenFortressUpSwitchBackStairs
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressJailCellUpper: Nothing
       ForsakenFortressSouthHallwayUpper: DekuLeaf
@@ -239,6 +245,7 @@
 
 
 - Name: ForsakenFortressNorthHallwayUpper
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressBarrelStorageRoomUpperEast: Nothing
       ForsakenFortressInnerCourtyard: Nothing
@@ -260,6 +267,7 @@
 
 
 - Name: ForsakenFortressNorthwestHallwayUpper
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressBoatRoomUpper: Nothing
       ForsakenFortressInnerCourtyard: Nothing
@@ -288,6 +296,7 @@
 
 
 - Name: ForsakenFortressOutsidePathToBoss
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressOutsidePathToBossPastSidleGaps: CanFlyWithDekuLeafOutdoors or GrapplingHook
       ForsakenFortressInnerCourtyard: Nothing
@@ -295,6 +304,7 @@
 
 
 - Name: ForsakenFortressOutsidePathToBossPastSidleGaps
+  Island: ForsakenFortress
   Exits:
       ForsakenFortressBossRoom: SkullHammer
       ForsakenFortressInnerCourtyard: Nothing
@@ -307,6 +317,7 @@
 
 
 - Name: StarIsland
+  Island: StarIsland
   Locations:
       StarIslandSunkenTreasure: ChartForIsland2 and GrapplingHook
   Exits:
@@ -316,6 +327,7 @@
 
 
 - Name: StarIslandLookoutPlatform
+  Island: StarIsland
   Locations:
       StarIslandLookoutPlatformChest: Nothing
   Exits:
@@ -330,6 +342,7 @@
 
 
 - Name: NorthernFairyIsland
+  Island: NorthernFairyIsland
   Locations:
       NorthernFairySunkenTreasure: ChartForIsland3 and GrapplingHook
   Exits:
@@ -340,6 +353,7 @@
 
 
 - Name: NorthernFairyIslandSubmarineExterior
+  Island: NorthernFairyIsland
   Exits:
       NorthernFairyIslandSubmarineInterior: Nothing
       NorthernFairyIsland: CanSailAway
@@ -362,6 +376,7 @@
 
 
 - Name: GaleIsle
+  Island: GaleIsle
   Locations:
       GaleIsleSunkenTreasure: ChartForIsland4 and GrapplingHook
   Exits:
@@ -376,6 +391,7 @@
 
 
 - Name: CrescentMoonIsland
+  Island: CrescentMoonIsland
   Locations:
       CrescentMoonChest: Nothing
       CrescentMoonSunkenTreasure: ChartForIsland5 and GrapplingHook
@@ -385,6 +401,7 @@
 
 
 - Name: CrescentMoonSubmarineExterior
+  Island: CrescentMoonIsland
   Exits:
       CrescentMoonSubmarineInterior: Nothing
       CrescentMoonIsland: CanSailAway
@@ -398,6 +415,7 @@
 
 
 - Name: SevenStarIsles
+  Island: SevenStarIsles
   Locations:
       SevenStarBigOcto: CanDefeat12EyeBigOctos and GrapplingHook
       SevenStarSunkenTreasure: ChartForIsland6 and GrapplingHook and Bombs
@@ -407,6 +425,7 @@
 
 
 - Name: SevenStarLookoutPlatforms
+  Island: SevenStarIsles
   Locations:
       SevenStarCenterLookoutPlatformChest: Nothing
       SevenStarNorthernLookoutPlatformChest: Nothing
@@ -416,6 +435,7 @@
 
 
 - Name: OverlookIsland
+  Island: OverlookIsland
   Locations:
       OverlookSunkenTreasure: ChartForIsland7 and GrapplingHook
   Exits:
@@ -424,6 +444,7 @@
 
 
 - Name: OverlookIslandUpperIsles
+  Island: OverlookIsland
   Exits:
       OverlookCave: Nothing
       OverlookIsland: Nothing
@@ -438,6 +459,7 @@
 
 
 - Name: FourEyeReef
+  Island: FourEyeReef
   Locations:
       FourEyeReefDestroyCannonsAndGunboats: CanFlyWithDekuLeafOutdoors and Bombs
       FourEyeReefSunkenTreasure: ChartForIsland8 and GrapplingHook and Bombs
@@ -446,6 +468,7 @@
 
 
 - Name: MotherAndChildIsles
+  Island: MotherAndChildIsles
   Locations:
       MotherAndChildSunkenTreasure: ChartForIsland9 and GrapplingHook
   Exits:
@@ -453,6 +476,7 @@
 
 
 - Name: MotherAndChildInsideMotherIsle
+  Island: MotherAndChildIsles
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -460,6 +484,7 @@
 
 
 - Name: SpectacleIsland
+  Island: SpectacleIsland
   Locations:
       SpectacleBarrelShootingFirstPrize: Nothing
       SpectacleBarrelShootingSecondPrize: Nothing
@@ -481,6 +506,7 @@
 
 
 - Name: WindfallIsland
+  Island: WindfallIsland
   Events:
       ActivateWindmill: CanPlayWR
   Locations:
@@ -503,14 +529,15 @@
       WindfallJail: Nothing
       WindfallSchoolOfJoy: Nothing
       WindfallLenzosHouseFromBottomEntry: Nothing
-      WindfallLenzosUpperLedge: "'ActivateWindmill'"
+      WindfallLenzosUpperLedge: "'ActivateWindmill' and (HerosSword or SkullHammer)"
       WindfallCafeBar: Nothing
       WindfallBattleSquidInterior: Nothing
-      WindfallBattleSquidUpperLedge: "'ActivateWindmill'"
+      WindfallBattleSquidUpperLedge: "'ActivateWindmill' and (HerosSword or SkullHammer)"
       WindfallHouseOfWealthLower: Nothing
       WindfallHouseOfWealthUpper: Nothing
       WindfallPotionShop: Nothing
       WindfallBombShop: Nothing
+      WindfallBombShopUpperLedge: Nothing
       WindfallPirateShip: Nothing
       WindfallBeedleShop: Nothing
       MailboxChecks: Nothing
@@ -564,8 +591,9 @@
 
 
 - Name: WindfallLenzosUpperLedge
+  Island: WindfallIsland
   Exits:
-      WindfallLenzosHouseUpper: PictoBox and can_access(WindfallLenzosHouseLower)
+      WindfallLenzosHouseUpper: PictoBox and 'CanStartLenzoQuest'
       WindfallIsland: Nothing
 
 
@@ -588,6 +616,7 @@
 
 
 - Name: WindfallBattleSquidUpperLedge
+  Island: WindfallIsland
   Locations:
       WindfallKreebLightLighthouse: FireArrows and 'ActivateWindmill'
   Exits:
@@ -629,6 +658,10 @@
   Exits:
       WindfallIsland: Nothing
 
+- Name: WindfallBombShopUpperLedge
+  Exits:
+      WindfallBombShop: Nothing
+      WindfallIsland: Nothing
 
 - Name: WindfallPirateShip
   Locations:
@@ -646,6 +679,7 @@
 
 
 - Name: PawprintIsle
+  Island: PawprintIsle
   Locations:
       PawprintSunkenTreasure: ChartForIsland12 and GrapplingHook
   Exits:
@@ -668,6 +702,7 @@
 
 
 - Name: PawprintWizzrobeCaveIsle
+  Island: PawprintIsle
   Exits:
       PawprintWizzrobeCave: Nothing
       PawprintIsle: Nothing
@@ -683,6 +718,7 @@
 
 
 - Name: PawprintLookoutPlatform
+  Island: PawprintIsle
   Locations:
       PawprintLookoutPlatformDefeatEnemies: Nothing
   Exits:
@@ -700,6 +736,7 @@
 
 
 - Name: DragonRoostIsland
+  Island: DragonRoostIsland
   Locations:
       DragonRoostIslandWindShrine: WindWaker
       DragonRoostIslandBoulderChest: HerosBow or Bombs or Boomerang or (BaitBag and 'CanBuyHyoiPears')
@@ -742,6 +779,7 @@
 
 
 - Name: DragonRoostIslandFlightDeck
+  Island: DragonRoostIsland
   Locations:
       DragonRoostIslandLeafPlatforms: CanFlyWithDekuLeafOutdoors and (CanCutGrass or MagicMeterUpgrade)
   Exits:
@@ -772,6 +810,7 @@
 
 
 - Name: FlightControlPlatform
+  Island: FlightControlPlatform
   Locations:
       FlightControlBirdManFirstPrize: CanFlyWithDekuLeafOutdoors and MagicMeterUpgrade
       FlightControlSunkenTreasure: ChartForIsland14 and GrapplingHook
@@ -782,6 +821,7 @@
 
 
 - Name: FlightControlSubmarineExterior
+  Island: FlightControlPlatform
   Exits:
       FlightControlSubmarineInterior: Nothing
       FlightControlPlatform: CanSailAway
@@ -796,6 +836,7 @@
 
 
 - Name: WesternFairyIsland
+  Island: WesternFairyIsland
   Locations:
       WesternFairySunkenTreasure: ChartForIsland15 and GrapplingHook
   Exits:
@@ -806,6 +847,7 @@
 
 
 - Name: WesternFairyIslandPastFlames
+  Island: WesternFairyIsland
   Exits:
       WesternFairyGreatFairyFountain: Nothing
 
@@ -820,6 +862,7 @@
 
 
 - Name: WesternFairyLookoutPlatform
+  Island: WesternFairyIsland
   Locations:
       WesternFairyLookoutPlatformChest: Nothing
   Exits:
@@ -827,15 +870,21 @@
 
 
 - Name: RockSpireIsle
+  Island: RockSpireIsle
   Locations:
       RockSpireSoutheastGunboat: Bombs and GrapplingHook
       RockSpireSunkenTreasure: ChartForIsland16 and GrapplingHook
   Exits:
       RockSpireBeedleShop: Nothing
-      RockSpireCave: Bombs
+      RockSpireUpperLedges: Bombs
       RockSpirePlatforms: CanSailAway
       TheGreatSea: Nothing
 
+- Name: RockSpireUpperLedges
+  Island: RockSpireIsle
+  Exits:
+      RockSpireCave: Nothing
+      RockSpireIsle: Nothing
 
 - Name: RockSpireBeedleShop
   Locations:
@@ -859,10 +908,11 @@
   Locations:
       RockSpireCaveChest: Nothing
   Exits:
-      RockSpireIsle: CanSailAway
+      RockSpireUpperLedges: Nothing
 
 
 - Name: TingleIsland
+  Island: TingleIsland
   Locations:
       TingleIslandAnkleAllStatuesReward: DragonTingleStatue and ForbiddenTingleStatue and GoddessTingleStatue and EarthTingleStatue and WindTingleStatue
       TingleIslandBigOcto: CanDefeat12EyeBigOctos and GrapplingHook
@@ -873,6 +923,7 @@
 
 
 - Name: NorthernTriangleIsland
+  Island: NorthernTriangleIsland
   Locations:
       NorthernTriangleSunkenTreasure: ChartForIsland18 and GrapplingHook
   Exits:
@@ -880,6 +931,7 @@
 
 
 - Name: EasternFairyIsland
+  Island: EasternFairyIsland
   Locations:
       EasternFairySunkenTreasure: ChartForIsland19 and GrapplingHook
   Exits:
@@ -890,6 +942,7 @@
 
 
 - Name: EasternFairyIslandPastBoulder
+  Island: EasternFairyIsland
   Exits:
       EasternFairyGreatFairyFountain: Nothing
       EasternFairyIsland: CanMoveBoulders
@@ -905,6 +958,7 @@
 
 
 - Name: EasternFairyLookoutPlatform
+  Island: EasternFairyIsland
   Locations:
       EasternFairyLookoutPlatformDefeatCannonsAndEnemies: CanDestroyCannons
   Exits:
@@ -912,6 +966,7 @@
 
 
 - Name: FireMountain
+  Island: FireMountain
   Locations:
       FireMountainBigOcto: CanDefeatBigOctos and GrapplingHook
       FireMountainSunkenTreasure: ChartForIsland20 and GrapplingHook
@@ -929,6 +984,7 @@
 
 
 - Name: FireMountainLookoutPlatform
+  Island: FireMountain
   Locations:
       FireMountainLookoutPlatformChest: Nothing
       FireMountainLookoutPlatformDestroyCannons: CanDestroyCannons
@@ -937,6 +993,7 @@
 
 
 - Name: StarBeltArchipelago
+  Island: StarBeltArchipelago
   Locations:
       StarBeltSunkenTreasure: ChartForIsland21 and GrapplingHook
   Exits:
@@ -945,6 +1002,7 @@
 
 
 - Name: StarBeltLookoutPlatform
+  Island: StarBeltArchipelago
   Locations:
       StarBeltLookoutPlatformChest: Nothing
   Exits:
@@ -952,6 +1010,7 @@
 
 
 - Name: ThreeEyeReef
+  Island: ThreeEyeReef
   Locations:
       ThreeEyeReefDestroyCannonsAndGunboats: CanFlyWithDekuLeafOutdoors and Bombs
       ThreeEyeReefSunkenTreasure: ChartForIsland22 and GrapplingHook
@@ -960,6 +1019,7 @@
 
 
 - Name: GreatfishIsle
+  Island: GreatfishIsle
   Locations:
       GreatfishHiddenChest: CanFlyWithDekuLeafOutdoors
       GreatfishSunkenTreasure: ChartForIsland23 and GrapplingHook
@@ -974,6 +1034,7 @@
 
 
 - Name: CyclopsReef
+  Island: CyclopsReef
   Locations:
       CyclopsReefDestroyCannonsAndGunboats: CanFlyWithDekuLeafOutdoors and Bombs
       CyclopsReefSunkenTreasure: ChartForIsland24 and GrapplingHook and Bombs
@@ -983,6 +1044,7 @@
 
 
 - Name: CyclopsReefLookoutPlatform
+  Island: CyclopsReef
   Locations:
       CyclopsReefLookoutPlatformDefeatEnemies: Nothing
   Exits:
@@ -990,6 +1052,7 @@
 
 
 - Name: SixEyeReef
+  Island: SixEyeReef
   Locations:
       SixEyeReefDestroyCannonsAndGunboats: CanFlyWithDekuLeafOutdoors and Bombs
       SixEyeReefSunkenTreasure: ChartForIsland25 and GrapplingHook and Bombs
@@ -1000,6 +1063,7 @@
 
 
 - Name: SixEyeReefSubmarineExterior
+  Island: SixEyeReef
   Exits:
       SixEyeReefSubmarineInterior: Nothing
       SixEyeReef: CanSailAway
@@ -1013,6 +1077,7 @@
 
 
 - Name: SixEyeReefLookoutPlatform
+  Island: SixEyeReef
   Locations:
       SixEyeReefLookoutPlatformDestroyCannons: CanDestroyCannons
   Exits:
@@ -1020,6 +1085,7 @@
 
 
 - Name: TowerOfTheGods
+  Island: TotGSector
   Locations:
       TOTGSunkenTreasure: ChartForIsland26 and GrapplingHook
   Exits:
@@ -1035,6 +1101,7 @@
 
 
 - Name: EasternTriangleIsland
+  Island: EasternTriangleIsland
   Locations:
       EasternTriangleSunkenTreasure: ChartForIsland27 and GrapplingHook
   Exits:
@@ -1053,6 +1120,7 @@
 
 
 - Name: ThornedFairyIsland
+  Island: ThornedFairyIsland
   Locations:
       ThornedFairySunkenTreasure: ChartForIsland28 and GrapplingHook
   Exits:
@@ -1063,6 +1131,7 @@
 
 
 - Name: ThornedFairyIslandPastTentacles
+  Island: ThornedFairyIsland
   Exits:
       ThornedFairyGreatFairyFountain: CanSailAway
 
@@ -1077,6 +1146,7 @@
 
 
 - Name: ThornedFairyLookoutPlatforms
+  Island: ThornedFairyIsland
   Locations:
       ThornedFairyNortheasternLookoutPlatformDestroyCannons: CanDestroyCannons
       ThornedFairySouthwesternLookoutPlatformDefeatEnemies: CanFlyWithDekuLeafOutdoors
@@ -1085,6 +1155,7 @@
 
 
 - Name: NeedleRockIsle
+  Island: NeedleRockIsle
   Locations:
       NeedleRockChest: BaitBag and 'CanBuyHyoiPears'
       NeedleRockGoldenGunboat: Bombs and GrapplingHook
@@ -1103,6 +1174,7 @@
 
 
 - Name: IsletOfSteel
+  Island: IsletOfSteel
   Locations:
       IsletOfSteelSunkenTreasure: ChartForIsland30 and GrapplingHook
   Exits:
@@ -1119,6 +1191,7 @@
 
 
 - Name: IsletOfSteelLookoutPlatform
+  Island: IsletOfSteel
   Locations:
       IsletOfSteelLookoutPlatformDefeatEnemies: CanDefeatWizzrobesAtRange
   Exits:
@@ -1126,6 +1199,7 @@
 
 
 - Name: StoneWatcherIsland
+  Island: StoneWatcherIsland
   Locations:
       StoneWatcherSunkenTreasure: ChartForIsland31 and GrapplingHook
   Exits:
@@ -1143,6 +1217,7 @@
 
 
 - Name: StoneWatcherLookoutPlatform
+  Island: StoneWatcherIsland
   Locations:
       StoneWatcherLookoutPlatformChest: Nothing
       StoneWatcherLookoutPlatformDestroyCannons: CanDestroyCannons
@@ -1151,9 +1226,7 @@
 
 
 - Name: SouthernTriangleIsland
-  Events:
-      CanBuyBait: Nothing
-      CanBuyHyoiPears: Nothing
+  Island: SouthernTriangleIsland
   Locations:
       SouthernTriangleSunkenTreasure: ChartForIsland32 and GrapplingHook and CanDefeatSeahats
   Exits:
@@ -1162,6 +1235,9 @@
 
 
 - Name: SouthernTriangleBeedleShop
+  Events:
+      CanBuyBait: Nothing
+      CanBuyHyoiPears: Nothing
   Locations:
       GreatSeaBeedleShop20Rupee: Nothing
   Exits:
@@ -1169,6 +1245,7 @@
 
 
 - Name: PrivateOasis
+  Island: PrivateOasis
   Locations:
       PrivateOasisTopOfWaterfallChest: CanFlyWithDekuLeafOutdoors or Hookshot
       PrivateOasisBigOcto: CanDefeatBigOctos and GrapplingHook
@@ -1194,6 +1271,7 @@
 
 
 - Name: BombIsland
+  Island: BombIsland
   Locations:
       BombIslandSunkenTreasure: ChartForIsland34 and GrapplingHook
   Exits:
@@ -1212,6 +1290,7 @@
 
 
 - Name: BombIslandSubmarineExterior
+  Island: BombIsland
   Exits:
       BombIslandSubmarineInterior: Nothing
       BombIsland: CanSailAway
@@ -1225,6 +1304,7 @@
 
 
 - Name: BombIslandLookoutPlatform
+  Island: BombIsland
   Locations:
       BombIslandLookoutPlatformDefeatEnemies: Nothing
   Exits:
@@ -1232,6 +1312,7 @@
 
 
 - Name: BirdsPeakRock
+  Island: BirdsPeakRock
   Locations:
       BirdsPeakSunkenTreasure: ChartForIsland35 and GrapplingHook
   Exits:
@@ -1241,6 +1322,7 @@
 
 
 - Name: BirdsPeakRockBehindBars
+  Island: BirdsPeakRock
   Exits:
       BirdsPeakRockCave: Nothing
 
@@ -1253,6 +1335,7 @@
 
 
 - Name: DiamondSteppeIsland
+  Island: DiamondSteppeIsland
   Locations:
       DiamondSteppeBigOcto: CanDefeatBigOctos and GrapplingHook
       DiamondSteppeSunkenTreasure: ChartForIsland36 and GrapplingHook
@@ -1262,6 +1345,7 @@
 
 
 - Name: DiamondSteppeUpperIsland
+  Island: DiamondSteppeIsland
   Exits:
       DiamondSteppeWarpMaze: Nothing
       DiamondSteppeIsland: Nothing
@@ -1276,6 +1360,7 @@
 
 
 - Name: FiveEyeReef
+  Island: FiveEyeReef
   Locations:
       FiveEyeReefDestroyCannonsAndGunboats: CanFlyWithDekuLeafOutdoors and Bombs
       FiveEyeReefSunkenTreasure: ChartForIsland37 and GrapplingHook and CanDestroyCannons
@@ -1285,6 +1370,7 @@
 
 
 - Name: FiveEyeReefLookoutPlatform
+  Island: FiveEyeReef
   Locations:
       FiveEyeReefLookoutPlatformChest: Nothing
   Exits:
@@ -1292,6 +1378,7 @@
 
 
 - Name: SharkIsland
+  Island: SharkIsland
   Locations:
       SharkIslandSunkenTreasure: ChartForIsland38 and GrapplingHook
   Exits:
@@ -1313,6 +1400,7 @@
 
 
 - Name: SouthernFairyIsland
+  Island: SouthernFairyIsland
   Locations:
       SouthernFairySunkenTreasure: ChartForIsland39 and GrapplingHook
   Exits:
@@ -1323,6 +1411,7 @@
 
 
 - Name: SouthernFairyIslandBehindWoodenBarrier
+  Island: SouthernFairyIsland
   Exits:
       SouthernFairyGreatFairyFountain: Nothing
 
@@ -1337,6 +1426,7 @@
 
 
 - Name: SouthernFairyLookoutPlatforms
+  Island: SouthernFairyIsland
   Locations:
       SouthernFairyLookoutPlatformDestroyNorthwestCannons: CanDestroyCannons and CanFlyWithDekuLeafOutdoors
       SouthernFairyLookoutPlatformDestroySoutheastCannons: CanDestroyCannons and CanFlyWithDekuLeafOutdoors
@@ -1345,6 +1435,7 @@
 
 
 - Name: IceRingIsle
+  Island: IceRingIsle
   Locations:
       IceRingFrozenChest: FireArrows
       IceRingSunkenTreasure: ChartForIsland40 and GrapplingHook
@@ -1369,6 +1460,7 @@
 
 
 - Name: ForestHaven
+  Island: ForestHaven
   Locations:
       ForestHavenSunkenTreasure: ChartForIsland41 and GrapplingHook
   Exits:
@@ -1382,9 +1474,13 @@
 - Name: ForestHavenInterior
   Exits:
       ForestHaven: Nothing
+      ForestPotionShop: Nothing
       ForestHavenInteriorUpperBabaBuds: GrapplingHook
       ForestHavenInteriorWestLowerLedge: DekuLeaf
 
+- Name: ForestPotionShop
+  Exits:
+      ForestHavenInterior: Nothing
 
 - Name: ForestHavenInteriorUpperBabaBuds
   Locations:
@@ -1422,17 +1518,20 @@
 
 
 - Name: ForestHavenExteriorNorthLedge
+  Island: ForestHaven
   Exits:
       ForestHavenExteriorWestUpperLedge: CanFlyWithDekuLeafOutdoors
       ForestHavenInteriorNorthLedge: Nothing
 
 
 - Name: ForestHavenExteriorWestLowerLedge
+  Island: ForestHaven
   Exits:
       ForestHavenInteriorWestLowerLedge: Nothing
 
 
 - Name: ForestHavenExteriorWestUpperLedge
+  Island: ForestHaven
   Exits:
       FWEntrancePlatform: CanFlyWithDekuLeafOutdoors and CanCutGrass
       ForestHavenExteriorWestLowerLedge: Nothing
@@ -1442,6 +1541,7 @@
 
 
 - Name: ForestHavenExteriorSouthLedge
+  Island: ForestHaven
   Exits:
       ForestHavenSouthIsle: CanFlyWithDekuLeafOutdoors and CanCutGrass
       ForestHavenExteriorWestUpperLedge: CanFlyWithDekuLeafOutdoors
@@ -1449,16 +1549,19 @@
 
 
 - Name: ForestHavenSouthIsle
+  Island: ForestHaven
   Locations:
       ForestHavenSmallIslandChest: Nothing
 
 
 - Name: FWEntrancePlatform
+  Island: ForestHaven
   Exits:
       FWFirstRoom: Nothing
 
 
 - Name: ForestHavenNintendoGalleryIsle
+  Island: ForestHaven
   Exits:
       ForestHavenNintendoGallery: Nothing
       ForestHaven: Nothing
@@ -1485,6 +1588,7 @@
 
 
 - Name: CliffPlateauIsles
+  Island: CliffPlateauIsles
   Locations:
       CliffPlateauSunkenTreasure: ChartForIsland42 and GrapplingHook
   Exits:
@@ -1509,6 +1613,7 @@
 
 
 - Name: CliffPlateauHighestIsle
+  Island: CliffPlateauIsles
   Locations:
       CliffPlateauHighestIsleChest: Nothing
   Exits:
@@ -1517,6 +1622,7 @@
 
 
 - Name: CliffPlateauLookoutPlatform
+  Island: CliffPlateauIsles
   Locations:
       CliffPlateauLookoutPlatformChest: Nothing
   Exits:
@@ -1524,6 +1630,7 @@
 
 
 - Name: HorseshoeIsle
+  Island: HorseshoeIsle
   Locations:
       HorseshoeSunkenTreasure: ChartForIsland43 and GrapplingHook
   Exits:
@@ -1533,6 +1640,7 @@
 
 
 - Name: HorseshoeIslePastTentacles
+  Island: HorseshoeIsle
   Locations:
       HorseshoePlayGolf: Hookshot or CanFlyWithDekuLeafOutdoors
   Exits:
@@ -1548,6 +1656,7 @@
 
 
 - Name: HorseshoeLookoutPlatforms
+  Island: HorseshoeIsle
   Locations:
       HorseshoeNorthwesternLookoutPlatformChest: Nothing
       HorseshoeSoutheasternLookoutPlatformChest: Nothing
@@ -1556,6 +1665,7 @@
 
 
 - Name: OutsetIsland
+  Island: OutsetIsland
   Locations:
       OutsetDigBlackSoil: PowerBracelets and BaitBag and 'CanBuyBait'
       OutsetSunkenTreasure: ChartForIsland44 and GrapplingHook
@@ -1618,12 +1728,14 @@
 
 
 - Name: OutsetNearBridge
+  Island: OutsetIsland
   Exits:
       OutsetIsland: Nothing
       OutsetAcrossBridge: CanFlyWithDekuLeafOutdoors
 
 
 - Name: OutsetAcrossBridge
+  Island: OutsetIsland
   Exits:
       OutsetIsland: Nothing
       OutsetForestOfFairies: Nothing
@@ -1631,6 +1743,7 @@
 
 
 - Name: OutsetNearSavageHeadstone
+  Island: OutsetIsland
   Exits:
       OutsetIsland: Nothing
       OutsetSavageLabyrinth: PowerBracelets
@@ -1729,6 +1842,7 @@
 
 
 - Name: HeadstoneIsland
+  Island: HeadstoneIsland
   Locations:
       HeadstoneTopOfIsland: BaitBag and 'CanBuyHyoiPears'
       HeadstoneSunkenTreasure: ChartForIsland45 and GrapplingHook
@@ -1745,6 +1859,7 @@
 
 
 - Name: HeadstoneIslandSubmarineExterior
+  Island: HeadstoneIsland
   Exits:
       HeadstoneIslandSubmarineInterior: Nothing
       HeadstoneIsland: CanSailAway
@@ -1758,6 +1873,7 @@
 
 
 - Name: TwoEyeReef
+  Island: TwoEyeReef
   Locations:
       TwoEyeReefDestroyCannonsAndGunboats: Bombs and CanFlyWithDekuLeafOutdoors
       TwoEyeReefBigOctoGreatFairy: CanDefeatBigOctos
@@ -1768,6 +1884,7 @@
 
 
 - Name: TwoEyeReefLookoutPlatform
+  Island: TwoEyeReef
   Locations:
       TwoEyeReefLookoutPlatformChest: Nothing
   Exits:
@@ -1775,6 +1892,7 @@
 
 
 - Name: AngularIsles
+  Island: AngularIsles
   Locations:
       AngularIslesPeak: Nothing
       AngularSunkenTreasure: ChartForIsland47 and GrapplingHook
@@ -1784,6 +1902,7 @@
 
 
 - Name: AngularIslesSmallIsle
+  Island: AngularIsles
   Exits:
       AngularIslesCave: Nothing
       AngularIsles: Nothing
@@ -1797,6 +1916,7 @@
 
 
 - Name: BoatingCourse
+  Island: BoatingCourse
   Locations:
       BoatingCourseRaftChest: Nothing
       BoatingCourseSunkenTreasure: ChartForIsland48 and GrapplingHook
@@ -1806,6 +1926,7 @@
 
 
 - Name: BoatingCourseSmallIsle
+  Island: BoatingCourse
   Exits:
       BoatingCourseCave: Nothing
       BoatingCourse: Nothing
@@ -1819,6 +1940,7 @@
 
 
 - Name: FiveStarIsles
+  Island: FiveStarIsles
   Locations:
       FiveStarSunkenTreasure: ChartForIsland49 and GrapplingHook
   Exits:
@@ -1828,6 +1950,7 @@
 
 
 - Name: FiveStarSubmarineExterior
+  Island: FiveStarIsles
   Locations:
       FiveStarRaftChest: Nothing
   Exits:
@@ -1843,6 +1966,7 @@
 
 
 - Name: FiveStarLookoutPlatform
+  Island: FiveStarIsles
   Locations:
       FiveStarLookoutPlatformDestroyCannons: CanDestroyCannons
   Exits:
@@ -1850,6 +1974,7 @@
 
 
 - Name: GhostShipInterior
+  Island: GhostShip
   Locations:
       GhostShipChest: CanDefeatWizzrobes and CanDefeatPoes and CanDefeatReDeads and CanDefeatStalfos
 
@@ -1860,6 +1985,7 @@
 # that's logically supported as well.
 
 - Name: DRCFirstRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernFirstRoomChest: Nothing
   Exits:
@@ -1868,21 +1994,25 @@
 
 
 - Name: DRCHubRoomLowerArea
+  Dungeon: DragonRoostCavern
   Exits:
       DRCMapChestRoom: Nothing
       DRCHubRoomLowerAreaNearDimRoom: DekuLeaf or CanMoveBoulders
       DRCSwitchBehindWoodenBarrierRoom: count(2, DRCSmallKey)
       DRCHubRoomMouthArea: DekuLeaf or IceArrows or
                            (can_access(DRCHubRoomHighestPlatform) and CanCutDownHangingDRCPlatform)
+      DRCFirstRoom: Nothing
 
 
 - Name: DRCHubRoomLowerAreaNearDimRoom
+  Dungeon: DragonRoostCavern
   Exits:
       DRCHubRoomLowerArea: Nothing
       DRCLowerDimRoomChuchuArea: Nothing
 
 
 - Name: DRCMapChestRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernWaterJugAlcove: Nothing
   Exits:
@@ -1891,12 +2021,14 @@
 
 
 - Name: DRCLowerDimRoomBokoblinArea
+  Dungeon: DragonRoostCavern
   Exits:
       DRCMapChestRoom: Nothing
       DRCLowerDimRoomChuchuArea: Nothing
 
 
 - Name: DRCLowerDimRoomChuchuArea
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernBoardedUpChest: CanDestroyWoodenBarriers or can_access(DRCLowerDimRoomBokoblinArea)
   Exits:
@@ -1905,6 +2037,7 @@
 
 
 - Name: DRCSwitchBehindWoodenBarrierRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernSwingAcrossLavaChest: GrapplingHook or DekuLeaf
   Exits:
@@ -1913,12 +2046,14 @@
 
 
 - Name: DRCOutsideLowerArea
+  Dungeon: DragonRoostCavern
   Exits:
       DRCSwitchBehindWoodenBarrierRoom: Nothing
       DRCRatRoom: Nothing
 
 
 - Name: DRCRatRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernRatRoomChest: Nothing
       DragonRoostCavernRatRoomBoardedUpChest: Nothing
@@ -1928,6 +2063,7 @@
 
 
 - Name: DRCOutsideUpperArea
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernBirdsNest: Nothing
   Exits:
@@ -1937,6 +2073,7 @@
 
 
 - Name: DRCDarkRoomChestArea
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernDarkRoomChest: Nothing
   Exits:
@@ -1945,12 +2082,14 @@
 
 
 - Name: DRCDarkRoomPastWoodenBarrier
+  Dungeon: DragonRoostCavern
   Exits:
       DRCDarkRoomChestArea: CanDestroyWoodenBarriers
       DRCHubRoomUpperBridge: FireArrows or can_access(DRCDarkRoomChestArea)
 
 
 - Name: DRCHubRoomUpperBridge
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernHubRoomTingleChest: Bombs
   Exits:
@@ -1961,6 +2100,7 @@
 
 
 - Name: DRCTripleBokoblinRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernPotRoomChest: Nothing
   Exits:
@@ -1969,12 +2109,14 @@
 
 
 - Name: DRCMagtailLavaGeyserRoom
+  Dungeon: DragonRoostCavern
   Exits:
       DRCBossDoorRoomBeforeLava: Nothing
       DRCTripleBokoblinRoom: Nothing
 
 
 - Name: DRCBossDoorRoomBeforeLava
+  Dungeon: DragonRoostCavern
   Exits:
       DRCMiniBossUpperArea: Nothing
       DRCBossDoorRoomAcrossLava: GrapplingHook or Hookshot or DekuLeaf or IceArrows
@@ -1982,6 +2124,7 @@
 
 
 - Name: DRCBossDoorRoomAcrossLava
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernBossStairsRightChest: Nothing
       DragonRoostCavernBossStairsLeftChest: Nothing
@@ -1991,6 +2134,7 @@
 
 
 - Name: DRCMiniBossUpperArea
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernMiniBoss: Nothing
   Exits:
@@ -1999,12 +2143,14 @@
 
 
 - Name: DRCMiniBossLowerArea
+  Dungeon: DragonRoostCavern
   Exits:
       DRCRopeBridgeUnderpassRoom: Nothing
       DRCMiniBossUpperArea: GrapplingHook
 
 
 - Name: DRCRopeBridgeUnderpassRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernUnderRopeBridge: Nothing
   Exits:
@@ -2013,6 +2159,7 @@
 
 
 - Name: DRCHubRoomHighestPlatform
+  Dungeon: DragonRoostCavern
   Exits:
       DRCRopeBridgeUnderpassRoom: Nothing
       DRCHubRoomUpperBridge: DekuLeaf
@@ -2020,12 +2167,14 @@
 
 
 - Name: DRCHubRoomMouthArea
+  Dungeon: DragonRoostCavern
   Exits:
       DRCHubRoomLowerArea: GrapplingHook or DekuLeaf
       DRCBeforeBigKeyRoomUpper: GrapplingHook
 
 
 - Name: DRCBeforeBigKeyRoomUpper
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernTingleStatueChest: Bombs and (GrapplingHook or DekuLeaf)
   Exits:
@@ -2034,12 +2183,14 @@
 
 
 - Name: DRCBeforeBigKeyRoomLower
+  Dungeon: DragonRoostCavern
   Exits:
       DRCBigKeyRoom: Nothing
       DRCBeforeBigKeyRoomUpper: GrapplingHook
 
 
 - Name: DRCBigKeyRoom
+  Dungeon: DragonRoostCavern
   Locations:
       DragonRoostCavernBigKeyChest: CanStunMagtails
   Exits:
@@ -2052,6 +2203,7 @@
 
 
 - Name: FWFirstRoom
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsFirstRoomChest: Nothing
   Exits:
@@ -2060,6 +2212,7 @@
 
 
 - Name: FWSecondRoomSouthPlatform
+  Dungeon: ForbiddenWoods
   Exits:
       FWFirstRoom: Nothing
       FWSecondRoomGroundPath: Nothing
@@ -2067,6 +2220,7 @@
 
 
 - Name: FWSecondRoomNorthPlatform
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsBokoBabaClimb: DekuLeaf and CanDefeatDoorFlowers
   Exits:
@@ -2075,6 +2229,7 @@
 
 
 - Name: FWSecondRoomGroundPath
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsInsideHollowTree: CanDefeatDoorFlowers or CanDefeatBokoBabas
   Exits:
@@ -2082,24 +2237,28 @@
 
 
 - Name: FWShortCableRideRoomSouthSide
+  Dungeon: ForbiddenWoods
   Exits:
       FWShortCableRideRoomNorthSide: DekuLeaf
       FWSecondRoomNorthPlatform: DekuLeaf
 
 
 - Name: FWShortCableRideRoomNorthSide
+  Dungeon: ForbiddenWoods
   Exits:
       FWHoleInTreeRoomNearLowerDoor: Nothing
       FWShortCableRideRoomSouthSide: DekuLeaf
 
 
 - Name: FWHoleInTreeRoomNearLowerDoor
+  Dungeon: ForbiddenWoods
   Exits:
       FWShortCableRideRoomNorthSide: Nothing
       FWHoleInTreeRoomNearUpperDoor: CanDefeatBokoBabas
 
 
 - Name: FWHoleInTreeRoomNearUpperDoor
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsHoleInTreeChest: DekuLeaf
   Exits:
@@ -2108,12 +2267,14 @@
 
 
 - Name: FWVineCircleHallway
+  Dungeon: ForbiddenWoods
   Exits:
       FWHoleInTreeRoomNearUpperDoor: Nothing
       FWHubRoomMiddleArea: DekuLeaf or CanDefeatDoorFlowers
 
 
 - Name: FWHubRoomMiddleArea
+  Dungeon: ForbiddenWoods
   Exits:
       FWHubRoomUpperArea: GrapplingHook
       FWMothulaHallway: CanDefeatDoorFlowers or can_access(FWHubRoomUpperArea)
@@ -2121,6 +2282,7 @@
 
 
 - Name: FWHubRoomUpperArea
+  Dungeon: ForbiddenWoods
   Exits:
       FWMorthPitHallway: Nothing
       FWCableRideAbovePoisonWaterRoomLowerWest: count(1, FWSmallKey)
@@ -2129,6 +2291,7 @@
 
 
 - Name: FWMorthPitHallway
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsMorthPit: Nothing
   Exits:
@@ -2137,6 +2300,7 @@
 
 
 - Name: FWVineMazeRoom
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsVineMazeLeftChest: Nothing
       ForbiddenWoodsVineMazeRightChest: Nothing
@@ -2145,18 +2309,21 @@
 
 
 - Name: FWCableRideAbovePoisonWaterRoomLowerWest
+  Dungeon: ForbiddenWoods
   Exits:
       FWCableRideAbovePoisonWaterRoomLowerEast: DekuLeaf
       FWHubRoomUpperArea: Nothing
 
 
 - Name: FWCableRideAbovePoisonWaterRoomLowerEast
+  Dungeon: ForbiddenWoods
   Exits:
       FWTallRoomBeforeMiniBoss: Nothing
       FWCableRideAbovePoisonWaterRoomLowerWest: Nothing
 
 
 - Name: FWTallRoomBeforeMiniBoss
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsTallRoomChest: GrapplingHook
   Exits:
@@ -2166,6 +2333,7 @@
 
 
 - Name: FWMiniBossRoom
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsMothulaMiniBoss: CanDefeatWingedMothulas
   Exits:
@@ -2173,14 +2341,15 @@
 
 
 - Name: FWCableRideAbovePoisonWaterRoomUpperEast
+  Dungeon: ForbiddenWoods
   Exits:
-      FWCableRideAbovePoisonWaterRoomUpperWest: CanDestroyHangingSeeds and (Hookshot
-          or DekuLeaf)
+      FWCableRideAbovePoisonWaterRoomUpperWest: CanDestroyHangingSeeds and (Hookshot or DekuLeaf)
       FWCableRideAbovePoisonWaterRoomLowerEast: Nothing
       FWTallRoomBeforeMiniBoss: Nothing
 
 
 - Name: FWCableRideAbovePoisonWaterRoomUpperWest
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsByHangingSeedsChest: Nothing
   Exits:
@@ -2190,24 +2359,28 @@
 
 
 - Name: FWHubRoomHighestPlatform
+  Dungeon: ForbiddenWoods
   Exits:
       FWCableRideAbovePoisonWaterRoomUpperWest: Nothing
       FWHubRoomUpperArea: Nothing
 
 
 - Name: FWHubRoomLowerArea
+  Dungeon: ForbiddenWoods
   Exits:
       FWForkedHallwayLower: Nothing
       FWHubRoomMiddleArea: DekuLeaf
 
 
 - Name: FWForkedHallwayLower
+  Dungeon: ForbiddenWoods
   Exits:
       FWPoisonRiverRoomBeforeRiver: Nothing
       FWHubRoomLowerArea: Nothing
 
 
 - Name: FWPoisonRiverRoomBeforeRiver
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsChestAcrossHangingFlower: Nothing
   Exits:
@@ -2217,21 +2390,23 @@
 
 
 - Name: FWPoisonRiverRoomAfterRiver
+  Dungeon: ForbiddenWoods
   Exits:
       FWPoisonRiverRoomBeforeRiver: Nothing
       FWBigKeyRoom: Nothing
 
 
 - Name: FWTingleChestRoom
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsTingleStatueChest: Bombs
-      ForbiddenWoodsLockedTreeTrunkChest: CanDefeatBokoBabas and (FireArrows or Bombs
-          or DekuLeaf)
+      ForbiddenWoodsLockedTreeTrunkChest: CanDefeatBokoBabas and (FireArrows or Bombs or DekuLeaf)
   Exits:
       FWPoisonRiverRoomBeforeRiver: Nothing
 
 
 - Name: FWBigKeyRoom
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsBigKeyChest: Boomerang
   Exits:
@@ -2239,18 +2414,21 @@
 
 
 - Name: FWBigKeyRoomHigherLedge
+  Dungeon: ForbiddenWoods
   Exits:
       FWForkedHallwayHigherLedge: Boomerang and CanDefeatMoblins and can_access(FWBigKeyRoom)
       FWBigKeyRoom: Nothing
 
 
 - Name: FWForkedHallwayHigherLedge
+  Dungeon: ForbiddenWoods
   Exits:
       FWForkedHallwayLower: Nothing
       FWBigKeyRoomHigherLedge: Nothing
 
 
 - Name: FWMothulaHallway
+  Dungeon: ForbiddenWoods
   Locations:
       ForbiddenWoodsDoubleMothulaRoomChest: CanDefeatMothulas
   Exits:
@@ -2259,6 +2437,7 @@
 
 
 - Name: FWBossDoorRoom
+  Dungeon: ForbiddenWoods
   Exits:
       FWBossRoom: FWBigKey
       FWMothulaHallway: Nothing
@@ -2270,6 +2449,7 @@
 
 
 - Name: TOTGEntranceRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGEastGoldenStatueRoom: Nothing
       TOTGEntranceRoomPastGate: can_access(TOTGEastGoldenStatueRoom)
@@ -2280,17 +2460,20 @@
 
 
 - Name: TOTGEastGoldenStatueRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGEntranceRoom: Nothing
 
 
 - Name: TOTGEntranceRoomPastGate
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGHopAcrossFloatingBoxesRoom: Nothing
       TOTGEntranceRoom: can_access(TOTGEastGoldenStatueRoom)
 
 
 - Name: TOTGHopAcrossFloatingBoxesRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGHopAcrossFloatingBoxesChest: Nothing
   Exits:
@@ -2298,6 +2481,7 @@
 
 
 - Name: TOTGMapChestRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGChestBehindBombableWall: Bombs
   Exits:
@@ -2305,6 +2489,7 @@
 
 
 - Name: TOTGEntranceRoomPastBombableWalls
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGLightTwoTorches: Nothing
   Exits:
@@ -2314,6 +2499,7 @@
 
 
 - Name: TOTGSkullsRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGSkullRoomChest: Nothing
       TOTGShootEyeAboveSkulls: HerosBow
@@ -2322,17 +2508,20 @@
 
 
 - Name: TOTGWestGoldenStatueRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGEntranceRoomPastBombableWalls: Nothing
 
 
 - Name: TOTGEntranceRoomPastWaterfall
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGRisingPlatformsRoom: Nothing
       TOTGEntranceRoom: can_access(TOTGWestGoldenStatueRoom)
 
 
 - Name: TOTGRisingPlatformsRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGTingleStatueChest: Bombs
   Exits:
@@ -2341,6 +2530,7 @@
 
 
 - Name: TOTGHubRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGStoneTablet: can_access(TOTGFirstStatueRoom)
   Exits:
@@ -2352,6 +2542,7 @@
 
 
 - Name: TOTGFirstStatueCorridor
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGFirstStatueRoom: Nothing
       TOTGFirstStatueCorridorArmosKnightsRoom: HerosBow
@@ -2359,11 +2550,13 @@
 
 
 - Name: TOTGFirstStatueRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGFirstStatueCorridor: Nothing
 
 
 - Name: TOTGFirstStatueCorridorArmosKnightsRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGFirstArmosKnightsChest: Bombs
   Exits:
@@ -2371,6 +2564,7 @@
 
 
 - Name: TOTGSecondStatueCorridorNearHubRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGSecondStatueCorridorNearSecondStatueRoom: HerosBow or GrapplingHook
       TOTGSecondStatueCorridorNearMiniBossRoom: GrapplingHook or DekuLeaf
@@ -2378,6 +2572,7 @@
 
 
 - Name: TOTGSecondStatueCorridorNearSecondStatueRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGSecondStatueRoomNearCorridor: Nothing
       TOTGSecondStatueCorridorNearMiniBossRoom: GrapplingHook or DekuLeaf
@@ -2385,6 +2580,7 @@
 
 
 - Name: TOTGSecondStatueCorridorNearMiniBossRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGMiniBossRoom: CanPlayCM and can_access(TOTGSecondStatueRoomNearStatue) and
           can_access(TOTGSecondStatueCorridorNearSecondStatueRoom)
@@ -2393,17 +2589,20 @@
 
 
 - Name: TOTGSecondStatueRoomNearCorridor
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGSecondStatueCorridorNearSecondStatueRoom: Nothing
       TOTGSecondStatueRoomNearStatue: GrapplingHook or DekuLeaf
 
 
 - Name: TOTGSecondStatueRoomNearStatue
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGSecondStatueRoomNearCorridor: CanPlayCM
 
 
 - Name: TOTGMiniBossRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGDarknutMiniBoss: CanDefeatDarknuts
   Exits:
@@ -2411,6 +2610,7 @@
 
 
 - Name: TOTGThirdStatueCorridor
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGHubRoom: Nothing
       TOTGManyMovingPlatformsRoom: Nothing
@@ -2419,6 +2619,7 @@
 
 
 - Name: TOTGManyMovingPlatformsRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGFloatingPlatformsRoomLowerChest: HerosBow or DekuLeaf
       TOTGFloatingPlatformsRoomUpperChest: HerosBow
@@ -2427,12 +2628,14 @@
 
 
 - Name: TOTGThirdStatueCorridorPastBombableWall
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGThirdStatueCorridorArmosKnightsRoom: Nothing
       TOTGThirdStatueCorridor: Bombs
 
 
 - Name: TOTGThirdStatueCorridorArmosKnightsRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGSecondArmostKnightsChest: CanPlayWR
   Exits:
@@ -2440,17 +2643,20 @@
 
 
 - Name: TOTGThirdStatueRoom
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGThirdStatueRoomPastLasers: DekuLeaf
       TOTGThirdStatueCorridor: Nothing
 
 
 - Name: TOTGThirdStatueRoomPastLasers
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGThirdStatueRoom: CanPlayCM
 
 
 - Name: TOTGBigKeyRoom
+  Dungeon: TowerOfTheGods
   Locations:
       TOTGBigKeyChest: Nothing
   Exits:
@@ -2459,6 +2665,7 @@
 
 
 - Name: TOTGOutsideArea
+  Dungeon: TowerOfTheGods
   Exits:
       TOTGBigKeyRoom: Nothing
       TOTGBossRoom: TotGBigKey
@@ -2470,18 +2677,21 @@
 
 
 - Name: ETFirstRoom
+  Dungeon: EarthTemple
   Exits:
       ETEarlyTwoSwitchesRoom: Nothing
       HeadstoneIslandInterior: Nothing
 
 
 - Name: ETEarlyTwoSwitchesRoom
+  Dungeon: EarthTemple
   Exits:
       ETMapChestRoom: CanPlayCM
       ETFirstRoom: Nothing
 
 
 - Name: ETMapChestRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleWarpPotRoomChest: CanPlayCM and CanAimMirrorShield
       EarthTempleWarpPotRoomBehindCurtain: FireArrows and (Hookshot or Boomerang)
@@ -2491,6 +2701,7 @@
 
 
 - Name: ETGiantStatueRoom
+  Dungeon: EarthTemple
   Exits:
       ETFirstCrypt: SkullHammer and CanPlayCM
       ETChuChusAndSwitchesRoom: count(2, ETSmallKey)
@@ -2499,6 +2710,7 @@
 
 
 - Name: ETFirstCrypt
+  Dungeon: EarthTemple
   Locations:
       EarthTempleFirstCryptChest: PowerBracelets and CanPlayCM
   Exits:
@@ -2507,6 +2719,7 @@
 
 
 - Name: ETSmallRoomSouthOfFirstCrypt
+  Dungeon: EarthTemple
   Locations:
       EarthTempleBehindDestructableWall: CanAimMirrorShield
   Exits:
@@ -2514,12 +2727,14 @@
 
 
 - Name: ETChuChusAndSwitchesRoom
+  Dungeon: EarthTemple
   Exits:
       ETBlockPushCorridor: PowerBracelets and FireArrows
       ETGiantStatueRoom: Nothing
 
 
 - Name: ETBlockPushCorridor
+  Dungeon: EarthTemple
   Locations:
       EarthTempleThreeBlocksRoomChest: CanDefeatFloormasters and (CanPlayCM or CanAimMirrorShield)
   Exits:
@@ -2528,6 +2743,7 @@
 
 
 - Name: ETTwoMoblinsAndPoesRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleBehindStatuesChest: CanPlayCM or CanAimMirrorShield
   Exits:
@@ -2538,12 +2754,14 @@
 
 
 - Name: ETTwoMoblinsAndPoesRoomPastStairs
+  Dungeon: EarthTemple
   Exits:
       ETSecondCrypt: Nothing
       ETMiniBossRoom: count(3, ETSmallKey)
 
 
 - Name: ETSecondCrypt
+  Dungeon: EarthTemple
   Locations:
       EarthTempleSecondCryptCasket: CanDefeatReDeads
   Exits:
@@ -2551,12 +2769,14 @@
 
 
 - Name: ETMiniBossRoom
+  Dungeon: EarthTemple
   Exits:
       ETMiniBossRoomUpperLedge: CanDefeatStalfos
       ETTwoMoblinsAndPoesRoomPastStairs: CanAimMirrorShield and can_access(ETMiniBossRoomUpperLedge)
 
 
 - Name: ETMiniBossRoomUpperLedge
+  Dungeon: EarthTemple
   Locations:
       EarthTempleStalfosMiniBoss: Nothing
   Exits:
@@ -2564,22 +2784,26 @@
 
 
 - Name: ETTwoMoblinsAndPoesRoomPastLightWall
+  Dungeon: EarthTemple
   Exits:
       ETGiantStatueRoomUpperLedge: Nothing
 
 
 - Name: ETGiantStatueRoomUpperLedge
+  Dungeon: EarthTemple
   Exits:
       ETTwoMoblinsAndPoesRoomPastLightWall: Nothing
       ETGiantStatueRoom: Nothing
 
 
 - Name: ETGiantStatueRoomUnderStatue
+  Dungeon: EarthTemple
   Exits:
       ETHangingBridgeRoom: Nothing
 
 
 - Name: ETHangingBridgeRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleTingleStatueChest: Bombs
   Exits:
@@ -2588,6 +2812,7 @@
 
 
 - Name: ETBasementHubRoom
+  Dungeon: EarthTemple
   Exits:
       ETFoggyFloormastersRoom: CanPlayCM or CanAimMirrorShield
       ETPoesAndBubblesRoomBehindGrating: CanPlayCM or CanAimMirrorShield
@@ -2596,6 +2821,7 @@
 
 
 - Name: ETFoggyFloormastersRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleFoggyFloormasterRoomEndChest: Nothing
       EarthTempleKillAllFloormastersChest: CanDefeatFloormasters
@@ -2604,6 +2830,7 @@
 
 
 - Name: ETPoesAndBubblesRoomBehindGrating
+  Dungeon: EarthTemple
   Locations:
       EarthTempleNearHammerButtonBehindCurtain: FireArrows and (Hookshot or Boomerang)
   Exits:
@@ -2611,12 +2838,14 @@
 
 
 - Name: ETBasementHubRoomUpperLedge
+  Dungeon: EarthTemple
   Exits:
       ETPoesAndBubblesRoom: count(3, ETSmallKey)
       ETBasementHubRoom: Nothing
 
 
 - Name: ETPoesAndBubblesRoom
+  Dungeon: EarthTemple
   Exits:
       ETBasementHubRoomUpperLedge: Nothing
       ETThirdCrypt: SkullHammer and PowerBracelets and CanPlayCM and CanAimMirrorShield
@@ -2624,6 +2853,7 @@
 
 
 - Name: ETThirdCrypt
+  Dungeon: EarthTemple
   Locations:
       EarthTempleThirdCryptChest: Nothing
   Exits:
@@ -2632,6 +2862,7 @@
 
 
 - Name: ETBossDoorRoom
+  Dungeon: EarthTemple
   Exits:
       ETManyMirrorsRoom: Nothing
       ETBossRoom: ETBigKey
@@ -2639,6 +2870,7 @@
 
 
 - Name: ETManyMirrorsRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleManyMirrorsRoomRightChest: CanPlayCM
       EarthTempleManyMirrorsRoomLeftChest: PowerBracelets and CanPlayCM and CanAimMirrorShield
@@ -2649,6 +2881,7 @@
 
 
 - Name: ETBigKeyChestRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleBigKeyChest: CanDefeatBlueBubbles and CanDefeatDarknuts
   Exits:
@@ -2656,11 +2889,13 @@
 
 
 - Name: ETManyMirrorsRoomPastLightWall
+  Dungeon: EarthTemple
   Exits:
       ETTripleStalfosRoom: Nothing
 
 
 - Name: ETTripleStalfosRoom
+  Dungeon: EarthTemple
   Locations:
       EarthTempleStalfosCryptRoomChest: CanAimMirrorShield and CanDefeatStalfos
   Exits:
@@ -2673,12 +2908,14 @@
 
 
 - Name: WTFirstRoom
+  Dungeon: WindTemple
   Exits:
       WTFirstWarpPotRoomFront: Nothing
       GaleIsleInterior: Nothing
 
 
 - Name: WTFirstWarpPotRoomFront
+  Dungeon: WindTemple
   Locations:
       WindTempleBetweenDirtPatchesChest: CanPlayCM
   Exits:
@@ -2687,24 +2924,28 @@
 
 
 - Name: WTFirstWarpPotRoomBack
+  Dungeon: WindTemple
   Exits:
       WTFirstWarpPotRoomFront: IronBoots
       WTEarlyTurnFloorRoom: Nothing
 
 
 - Name: WTEarlyTurnFloorRoom
+  Dungeon: WindTemple
   Exits:
       WTFirstWarpPotRoomBack: Nothing
       WTEarlyTurnFloorRoomPastTurnFloor: DekuLeaf
 
 
 - Name: WTEarlyTurnFloorRoomPastTurnFloor
+  Dungeon: WindTemple
   Exits:
       WTMakarCaptureRoom: CanPlayCM
       WTEarlyTurnFloorRoom: DekuLeaf
 
 
 - Name: WTMakarCaptureRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleTingleStatueChest: Bombs
   Exits:
@@ -2714,6 +2955,7 @@
 
 
 - Name: WTHubRoomMiddleWestPlatform
+  Dungeon: WindTemple
   Exits:
       WTHubRoomMiddleNorthPlatform: Hookshot or DekuLeaf
       WTHubRoomCompassChestPlatform: IronBoots and can_access(WTHubRoomMiddleSouthPlatform)
@@ -2721,6 +2963,7 @@
 
 
 - Name: WTHubRoomMiddleNorthPlatform
+  Dungeon: WindTemple
   Locations:
       WindTempleBehindStoneHeadChest: Hookshot and IronBoots
   Exits:
@@ -2730,6 +2973,7 @@
 
 
 - Name: WTHubRoomMiddleEastPlatform
+  Dungeon: WindTemple
   Exits:
       WTSongStoneAndTurnPlatformRoomNearHubRoom: Nothing
       WTHubRoomMiddleNorthPlatform: DekuLeaf
@@ -2737,12 +2981,14 @@
 
 
 - Name: WTSongStoneAndTurnPlatformRoomNearHubRoom
+  Dungeon: WindTemple
   Exits:
       WTHubRoomMiddleEastPlatform: Nothing
       WTSongStoneAndTurnPlatformRoomNearCyclonesRoom: IronBoots and DekuLeaf
 
 
 - Name: WTSongStoneAndTurnPlatformRoomNearCyclonesRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleLeftAlcoveChest: Nothing
   Exits:
@@ -2752,6 +2998,7 @@
 
 
 - Name: WTBigKeyChestRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleBigKeyChest: CanDefeatDarknuts
   Exits:
@@ -2759,6 +3006,7 @@
 
 
 - Name: WTManyCyclonesRoomEastSide
+  Dungeon: WindTemple
   Exits:
       WTManyCyclonesRoomWestSide: DekuLeaf and (CanCutGrass or MagicMeterUpgrade)
       WTHubRoomUpperSouthPlatform: DekuLeaf and CanPlayCM and can_access(WTHubRoomLowerArea)
@@ -2766,6 +3014,7 @@
 
 
 - Name: WTManyCyclonesRoomWestSide
+  Dungeon: WindTemple
   Locations:
       WindTempleManyCyclesRoomChest: DekuLeaf and (CanCutGrass or MagicMeterUpgrade)
   Exits:
@@ -2775,6 +3024,7 @@
 
 
 - Name: WTHubRoomMiddleSouthPlatform
+  Dungeon: WindTemple
   Exits:
       WTHubRoomCompassChestPlatform: IronBoots
       WTHubRoomMiddleEastPlatform: DekuLeaf
@@ -2784,6 +3034,7 @@
 
 
 - Name: WTHubRoomCompassChestPlatform
+  Dungeon: WindTemple
   Locations:
       WindTempleHubRoomCenterChest: Nothing
   Exits:
@@ -2792,6 +3043,7 @@
 
 
 - Name: WTHubRoomLowerArea
+  Dungeon: WindTemple
   Exits:
       WTCrackedFloorsRoom: Nothing
       WTMiniBossRoom: count(2, WTSmallKey)
@@ -2801,6 +3053,7 @@
 
 
 - Name: WTMiniBossRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleWizzrobeMiniBoss: CanDefeatDarknuts and CanDefeatWizzrobes and CanRemovePeahatArmor
   Exits:
@@ -2808,6 +3061,7 @@
 
 
 - Name: WTCrackedFloorsRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleSpikeWallRoomFirstChest: IronBoots
       WindTempleSpikeWallRoomDestroyFloors: IronBoots and CanDefeatFloormasters
@@ -2816,24 +3070,28 @@
 
 
 - Name: WTMakarCaptureRoomUpperPlatform
+  Dungeon: WindTemple
   Exits:
       WTMakarCaptureRoom: Nothing
       WTBlueBubblesRoom: Nothing
 
 
 - Name: WTBlueBubblesRoom
+  Dungeon: WindTemple
   Exits:
       WTBlueBubblesRoomUpperLedge: Hookshot and CanPlayCM and CanDefeatBlueBubbles
       WTMakarCaptureRoomUpperPlatform: Nothing
 
 
 - Name: WTBlueBubblesRoomUpperLedge
+  Dungeon: WindTemple
   Exits:
       WTHubRoomUpperNorthPlatform: Nothing
       WTBlueBubblesRoom: Nothing
 
 
 - Name: WTHubRoomUpperNorthPlatform
+  Dungeon: WindTemple
   Exits:
       WTHubRoomUpperEastPlatform: DekuLeaf
       WTHubRoomMiddleNorthPlatform: Nothing
@@ -2841,6 +3099,7 @@
 
 
 - Name: WTHubRoomUpperEastPlatform
+  Dungeon: WindTemple
   Locations:
       WindTempleHubRoomTopChest: Nothing
   Exits:
@@ -2848,6 +3107,7 @@
 
 
 - Name: WTHubRoomUpperSouthPlatform
+  Dungeon: WindTemple
   Exits:
       WTSevenArmosRoom: Nothing
       WTHubRoomUpperEastPlatform: DekuLeaf
@@ -2855,6 +3115,7 @@
 
 
 - Name: WTSevenArmosRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleBehindArmosChest: CanDefeatArmos
   Exits:
@@ -2862,12 +3123,14 @@
 
 
 - Name: WTHubRoomBelowFan
+  Dungeon: WindTemple
   Exits:
       WTHubRoomLowerArea: Nothing
       WTTallBasementRoom: count(2, WTSmallKey)
 
 
 - Name: WTTallBasementRoom
+  Dungeon: WindTemple
   Locations:
       WindTempleKillAllBasmentRoomEnemies: Hookshot and IronBoots and DekuLeaf and
                                            CanDefeatBlueBubbles and CanDefeatStalfos and CanDefeatWizzrobes and CanDefeatMorths
@@ -2877,24 +3140,28 @@
 
 
 - Name: WTLongNarrowRoom
+  Dungeon: WindTemple
   Exits:
       WTLongNarrowRoomPastGap: Hookshot and CanPlayCM
       WTTallBasementRoom: Nothing
 
 
 - Name: WTLongNarrowRoomPastGap
+  Dungeon: WindTemple
   Exits:
       WTLongNarrowRoom: DekuLeaf
       WTThreeBigFansRoom: Nothing
 
 
 - Name: WTThreeBigFansRoom
+  Dungeon: WindTemple
   Exits:
       WTThreeBigFansRoomPastSongStone: IronBoots and CanPlayWGA
       WTLongNarrowRoomPastGap: Nothing
 
 
 - Name: WTThreeBigFansRoomPastSongStone
+  Dungeon: WindTemple
   Exits:
       WTBossRoom: WTBigKey
 
@@ -2943,6 +3210,7 @@
 
 
 - Name: GanonsTowerTrialsHub
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerDRCTrial: Nothing
       GanonsTowerFWTrial: Nothing
@@ -2957,54 +3225,64 @@
 
 
 - Name: GanonsTowerDRCTrial
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerGohmaRefight: GrapplingHook and DekuLeaf
       GanonsTowerTrialsHub: Nothing
 
 
 - Name: GanonsTowerGohmaRefight
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerTrialsHub: CanDefeatGohma
 
 
 - Name: GanonsTowerFWTrial
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerKalleDemosRefight: DekuLeaf
       GanonsTowerTrialsHub: Nothing
 
 
 - Name: GanonsTowerKalleDemosRefight
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerTrialsHub: CanDefeatKalleDemos
 
 - Name: GanonsTowerETTrial
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerJalhallaRefight: CanAimMirrorShield
       GanonsTowerTrialsHub: Nothing
 
 
 - Name: GanonsTowerJalhallaRefight
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerTrialsHub: CanDefeatJalhalla
 
 
 - Name: GanonsTowerWTTrial
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerMolgeraRefight: Hookshot and DekuLeaf
       GanonsTowerTrialsHub: Nothing
 
 
 - Name: GanonsTowerMolgeraRefight
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerTrialsHub: CanDefeatMolgera
 
 - Name: GanonsTowerFirstStaircase
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerMiddleHubRoom: Nothing
       GanonsTowerTrialsHub: Nothing
 
 
 - Name: GanonsTowerMiddleHubRoom
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerPhantomGanonMaze: Nothing
       ForsakenFortressInnerCourtyard: Boomerang
@@ -3013,6 +3291,7 @@
 
 
 - Name: GanonsTowerPhantomGanonMaze
+  Dungeon: GanonsTower
   Locations:
       GanonsTowerMazeChest: CanDefeatPhantomGanon
   Exits:
@@ -3020,16 +3299,19 @@
 
 
 - Name: GanonsTowerFinalStaircase
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerPuppetGanonBossRoom: CanDefeatMoblins and CanDefeatMightyDarknuts
       GanonsTowerMiddleHubRoom: Nothing
 
 
 - Name: GanonsTowerPuppetGanonBossRoom
+  Dungeon: GanonsTower
   Exits:
       GanonsTowerSpire: LightArrows and Hookshot and GrapplingHook and Boomerang
 
 
 - Name: GanonsTowerSpire
+  Dungeon: GanonsTower
   Locations:
       DefeatGanondorf: CanDefeatGanondorf

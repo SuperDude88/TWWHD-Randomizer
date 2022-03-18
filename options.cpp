@@ -45,6 +45,8 @@ Option nameToSetting(const std::string& name) {
         {"RandomStartIsland", Option::RandomStartIsland},
         {"RandomizeDungeonEntrances", Option::RandomizeDungeonEntrances},
         {"RandomizeCaveEntrances", Option::RandomizeCaveEntrances},
+        {"RandomizeDoorEntrances", Option::RandomizeDoorEntrances},
+        {"RandomizeMiscEntrances", Option::RandomizeMiscEntrances},
         {"MixEntrancePools", Option::MixEntrancePools},
         {"InstantText", Option::InstantText},
         {"RevealSeaChart", Option::RevealSeaChart},
@@ -103,6 +105,8 @@ std::string settingToName(const Option& setting) {
         {Option::RandomStartIsland, "RandomStartIsland"},
         {Option::RandomizeDungeonEntrances, "RandomizeDungeonEntrances"},
         {Option::RandomizeCaveEntrances, "RandomizeCaveEntrances"},
+        {Option::RandomizeDoorEntrances, "RandomizeDoorEntrances"},
+        {Option::RandomizeMiscEntrances, "RandomizeMiscEntrances"},
         {Option::MixEntrancePools, "MixEntrancePools"},
         {Option::InstantText, "InstantText"},
         {Option::RevealSeaChart, "RevealSeaChart"},
@@ -190,6 +194,10 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.randomize_dungeon_entrances;
     case Option::RandomizeCaveEntrances:
         return settings.randomize_cave_entrances;
+    case Option::RandomizeDoorEntrances:
+        return settings.randomize_door_entrances;
+    case Option::RandomizeMiscEntrances:
+        return settings.randomize_misc_entrances;
     case Option::MixEntrancePools:
         return settings.mix_entrance_pools;
     case Option::InstantText:

@@ -208,6 +208,11 @@ void Entrance::setWorld(World* newWorld)
     world = newWorld;
 }
 
+std::list<HintRegion> Entrance::getIslands()
+{
+    return world->getIslands(parentArea);
+}
+
 void Entrance::connect(const Area newConnectedArea)
 {
     connectedArea = newConnectedArea;
@@ -231,11 +236,11 @@ void Entrance::bindTwoWay(Entrance* otherEntrance)
 Entrance* Entrance::getNewTarget()
 {
     auto& root = world->areaEntries[areaAsIndex(Area::Root)];
-    Entrance targetEntrance = Entrance(Area::Root, connectedArea, world);
+    root.exits.emplace_back(Area::Root, connectedArea, world);
+    Entrance& targetEntrance = root.exits.back();
     targetEntrance.connect(connectedArea);
     targetEntrance.setReplaces(this);
-    root.exits.push_back(targetEntrance);
-    return &root.exits.back();
+    return &targetEntrance;
 }
 
 Entrance* Entrance::assumeReachable()
@@ -254,6 +259,10 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::NONE, "NONE"},
         {EntranceType::DUNGEON, "DUNGEON"},
         {EntranceType::CAVE, "CAVE"},
+        {EntranceType::DOOR, "DOOR"},
+        {EntranceType::MISC, "MISC"},
+        {EntranceType::MISC_RESTRICTIVE, "MISC_RESTRICTIVE"},
+        {EntranceType::MISC_CRAWLSPACE, "MISC_CRAWLSPACE"},
         {EntranceType::MIXED, "MIXED"},
         {EntranceType::ALL, "ALL"},
     };

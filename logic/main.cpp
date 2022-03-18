@@ -29,11 +29,16 @@ int main()
 
     // Set settings in code for now
     settings1.progression_dungeons = true;
-    settings1.progression_mail = true;
-    settings1.progression_dungeons = true;
     settings1.progression_great_fairies = true;
     settings1.progression_puzzle_secret_caves = true;
     settings1.progression_combat_secret_caves = true;
+    settings1.progression_short_sidequests = true;
+    settings1.progression_long_sidequests = true;
+    settings1.progression_spoils_trading = true;
+    settings1.progression_minigames = true;
+    settings1.progression_free_gifts = true;
+    settings1.progression_mail = true;
+    settings1.progression_platforms_rafts = true;
     settings1.progression_submarines = true;
     settings1.progression_eye_reef_chests = true;
     settings1.progression_big_octos_gunboats = true;
@@ -51,37 +56,46 @@ int main()
     settings1.randomize_starting_island = true;
     settings1.randomize_dungeon_entrances = true;
     settings1.randomize_cave_entrances = true;
+    settings1.randomize_door_entrances = true;
+    settings1.randomize_misc_entrances = true;
     settings1.mix_entrance_pools = true;
     settings1.race_mode = true;
-    settings1.num_race_mode_dungeons = 3;
+    settings1.num_race_mode_dungeons = 6;
 
     settings2.progression_dungeons = true;
-    settings2.progression_mail = true;
-    settings2.progression_dungeons = true;
-    settings2.progression_great_fairies = true;
-    settings2.progression_puzzle_secret_caves = true;
-    settings2.progression_combat_secret_caves = true;
-    settings2.progression_short_sidequests = true;
-    settings2.progression_long_sidequests = true;
-    settings2.progression_spoils_trading = true;
-    settings2.progression_minigames = true;
-    settings2.progression_free_gifts = true;
-    settings2.progression_platforms_rafts = true;
-    settings2.progression_submarines = true;
-    settings2.progression_eye_reef_chests = true;
-    settings2.progression_big_octos_gunboats = true;
-    settings2.progression_triforce_charts = true;
-    settings2.keylunacy = false;
-    settings2.randomize_charts = true;
-    settings2.race_mode = true;
-    settings2.num_race_mode_dungeons = 5;
+    settings2.mix_entrance_pools = true;
+    settings2.randomize_misc_entrances = true;
+    settings2.randomize_door_entrances = true;
+    settings2.randomize_cave_entrances = true;
+    settings2.randomize_dungeon_entrances = true;
     settings2.randomize_starting_island = true;
+    settings2.randomize_charts = true;
+    // settings2.progression_mail = true;
+    // settings2.progression_dungeons = true;
+    // settings2.progression_great_fairies = true;
+    // settings2.progression_puzzle_secret_caves = true;
+    // settings2.progression_combat_secret_caves = true;
+    // settings2.progression_short_sidequests = true;
+    // settings2.progression_long_sidequests = true;
+    // settings2.progression_spoils_trading = true;
+    // settings2.progression_minigames = true;
+    // settings2.progression_free_gifts = true;
+    // settings2.progression_platforms_rafts = true;
+    // settings2.progression_submarines = true;
+    // settings2.progression_eye_reef_chests = true;
+    // settings2.progression_big_octos_gunboats = true;
+    // settings2.progression_triforce_charts = true;
+    // settings2.keylunacy = false;
+    // settings2.randomize_charts = true;
+    // settings2.race_mode = true;
+    // settings2.num_race_mode_dungeons = 5;
+    // settings2.randomize_starting_island = true;
     // End of in code settings
 
     // Create all necessary worlds (for any potential multiworld support in the future)
     int worldCount = 1;
-    World blankWorld;
-    WorldPool worlds (worldCount, blankWorld);
+    WorldPool worlds;
+    worlds.resize(worldCount);
     std::vector<Settings> settingsVector {settings1, settings2};
 
     int retVal = generateWorlds(worlds, settingsVector, seed);

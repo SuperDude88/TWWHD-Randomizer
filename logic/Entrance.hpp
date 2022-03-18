@@ -2,13 +2,19 @@
 #pragma once
 
 #include "Requirements.hpp"
+#include "HintRegion.hpp"
 #include "Area.hpp"
+#include <list>
 
 enum struct EntranceType
 {
     NONE = 0,
     DUNGEON,
     CAVE,
+    DOOR,
+    MISC,
+    MISC_RESTRICTIVE,
+    MISC_CRAWLSPACE,
     MIXED,
     ALL,
 };
@@ -61,6 +67,7 @@ public:
     void setAsShuffled();
     World* getWorld();
     void setWorld(World* newWorld);
+    std::list<HintRegion> getIslands();
 
     void connect(const Area newConnectedArea);
     Area disconnect();

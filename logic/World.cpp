@@ -91,12 +91,15 @@ ItemPool World::getStartingItems() const
     return startingItems;
 }
 
-LocationPool World::getLocations()
+LocationPool World::getLocations(bool onlyProgression /*= false*/)
 {
     LocationPool locations = {};
     // start at 1 since 0 is the INVALID entry
     for (size_t i = 1; i < locationIdAsIndex(LocationId::COUNT); i++) {
-        locations.push_back(&locationEntries[i]);
+        if (!onlyProgression || locationEntries[i].progression)
+        {
+            locations.push_back(&locationEntries[i]);
+        }
     }
     return locations;
 }
@@ -242,14 +245,7 @@ void World::determineRaceModeDungeons()
 {
     if (settings.race_mode)
     {
-        static std::array<DungeonId, 6> dungeons = {
-            DungeonId::DragonRoostCavern,
-            DungeonId::ForbiddenWoods,
-            DungeonId::TowerOfTheGods,
-            DungeonId::ForsakenFortress,
-            DungeonId::EarthTemple,
-            DungeonId::WindTemple,
-        };
+        auto dungeons = getDungeonList();
 
         shufflePool(dungeons);
 
@@ -696,6 +692,24 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
 
+    // Check to see if this area is assigned to an island
+    if (areaObject.has_child("Island"))
+    {
+        const std::string islandName = substrToString(areaObject["Island"].val());
+        auto island = nameToHintRegion(islandName);
+        MAPPING_CHECK(islandName, hintRegionToName(nameToHintRegion(islandName)));
+        newEntry.island = island;
+    }
+
+    // Check to see if this area is assigned to a dungeon
+    if (areaObject.has_child("Dungeon"))
+    {
+        const std::string dungeonName = substrToString(areaObject["Dungeon"].val());
+        auto dungeon = nameToHintRegion(dungeonName);
+        MAPPING_CHECK(dungeonName, hintRegionToName(nameToHintRegion(dungeonName)));
+        newEntry.dungeon = dungeon;
+    }
+
     // load events and their requirements in this area if there are any
     if (areaObject.has_child("Events"))
     {
@@ -829,6 +843,17 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
             return 1;
         }
     }
+
+    // Once all areas have been loaded, create the entrance lists. This lets us
+    // find assigned islands later
+    for (auto& areaEntry : areaEntries)
+    {
+        for (auto& exit : areaEntry.exits)
+        {
+            exit.connect(exit.getConnectedArea());
+        }
+    }
+
     return 0;
 }
 
@@ -873,6 +898,54 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
     }
 
     return shufflableEntrances;
+}
+
+// Peforms a breadth first search to find all the islands that lead to the given
+// area. In some cases of entrance randomizer, multiple islands can lead to the
+// same area
+std::list<HintRegion> World::getIslands(const Area& startArea)
+{
+    std::list<HintRegion> islands = {};
+    std::unordered_set<uint32_t> alreadyChecked = {};
+    std::vector<Area> areaQueue = {startArea};
+
+    while (!areaQueue.empty())
+    {
+        auto area = areaQueue.back();
+        alreadyChecked.insert(areaAsIndex(area));
+        areaQueue.pop_back();
+
+        auto& areaEntry = areaEntries[areaAsIndex(area)];
+
+        if (areaEntry.island != HintRegion::NONE)
+        {
+            if (area == startArea)
+            {
+                return {areaEntry.island};
+            }
+            else
+            {
+                // Don't search islands we've already put on the list
+                if (!elementInPool(areaEntry.island, islands))
+                {
+                    islands.push_back(areaEntry.island);
+                }
+                continue;
+            }
+        }
+
+        // If this area isn't an island, add its entrances to the queue as long
+        // as they haven't been checked yet
+        for (auto entrance : areaEntry.entrances)
+        {
+            if (alreadyChecked.count(areaAsIndex(entrance->getParentArea())) == 0)
+            {
+                areaQueue.push_back(entrance->getParentArea());
+            }
+        }
+    }
+
+    return islands;
 }
 
 const char* World::errorToName(WorldLoadingError err)
@@ -946,13 +1019,12 @@ std::string World::getLastErrorDetails()
 // Will dump a file which can be turned into a visual graph using graphviz
 // Although the way it's presented isn't great.
 // https://graphviz.org/download/
-// Use this command if things are too spread out: fdp   -Tsvg <filename> -o world.svg
-// Use this command if things are too squished:   circo -Tsvg <filename> -o world.svg
+// Use this command to generate the graph: dot -Tsvg <filename> -o world.svg
 // Then, open world.svg in a browser and CTRL + F to find the area of interest
 void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits /*= false*/)
 {
     std::ofstream worldGraph;
-    std::string fullFilename = filename + ".gv";
+    std::string fullFilename = "dumps/" + filename + ".gv";
     worldGraph.open (fullFilename);
     worldGraph << "digraph {\n\tcenter=true;\n";
 
