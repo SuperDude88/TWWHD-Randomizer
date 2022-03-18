@@ -4,7 +4,7 @@
 #include "Requirements.hpp"
 #include "HintRegion.hpp"
 #include "Area.hpp"
-#include <list>
+#include <unordered_set>
 
 enum struct EntranceType
 {
@@ -67,7 +67,7 @@ public:
     void setAsShuffled();
     World* getWorld();
     void setWorld(World* newWorld);
-    std::list<HintRegion> getIslands();
+    std::unordered_set<HintRegion> getIslands();
 
     void connect(const Area newConnectedArea);
     Area disconnect();

@@ -253,7 +253,7 @@ void World::determineRaceModeDungeons()
         {
             if (i < settings.num_race_mode_dungeons)
             {
-                raceModeDungeons.push_back(dungeons[i]);
+                raceModeDungeons.insert(dungeons[i]);
             }
             else
             {
@@ -903,16 +903,16 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
 // Peforms a breadth first search to find all the islands that lead to the given
 // area. In some cases of entrance randomizer, multiple islands can lead to the
 // same area
-std::list<HintRegion> World::getIslands(const Area& startArea)
+std::unordered_set<HintRegion> World::getIslands(const Area& startArea)
 {
-    std::list<HintRegion> islands = {};
-    std::unordered_set<uint32_t> alreadyChecked = {};
+    std::unordered_set<HintRegion> islands = {};
+    std::unordered_set<Area> alreadyChecked = {};
     std::vector<Area> areaQueue = {startArea};
 
     while (!areaQueue.empty())
     {
         auto area = areaQueue.back();
-        alreadyChecked.insert(areaAsIndex(area));
+        alreadyChecked.insert(area);
         areaQueue.pop_back();
 
         auto& areaEntry = areaEntries[areaAsIndex(area)];
@@ -926,10 +926,7 @@ std::list<HintRegion> World::getIslands(const Area& startArea)
             else
             {
                 // Don't search islands we've already put on the list
-                if (!elementInPool(areaEntry.island, islands))
-                {
-                    islands.push_back(areaEntry.island);
-                }
+                islands.insert(areaEntry.island);
                 continue;
             }
         }
@@ -938,7 +935,7 @@ std::list<HintRegion> World::getIslands(const Area& startArea)
         // as they haven't been checked yet
         for (auto entrance : areaEntry.entrances)
         {
-            if (alreadyChecked.count(areaAsIndex(entrance->getParentArea())) == 0)
+            if (alreadyChecked.count(entrance->getParentArea()) == 0)
             {
                 areaQueue.push_back(entrance->getParentArea());
             }

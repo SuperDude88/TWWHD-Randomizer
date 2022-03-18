@@ -208,7 +208,7 @@ void Entrance::setWorld(World* newWorld)
     world = newWorld;
 }
 
-std::list<HintRegion> Entrance::getIslands()
+std::unordered_set<HintRegion> Entrance::getIslands()
 {
     return world->getIslands(parentArea);
 }
