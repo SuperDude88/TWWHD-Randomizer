@@ -128,6 +128,7 @@ int main()
     TEST(settings1, settings1.randomize_cave_entrances, "randomize cave entrances");
     TEST(settings1, settings1.randomize_door_entrances, "randomize door entrances");
     TEST(settings1, settings1.randomize_misc_entrances, "randomize misc entrances");
+    TEST(settings1, settings1.decouple_entrances, "decouple entrances");
     TEST(settings1, settings1.mix_entrance_pools, "mix entrance pools");
 
     // Now set all settings in reverse (except dungeons since they have a lot of checks)

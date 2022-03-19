@@ -7,7 +7,6 @@
 #include <map>
 #include <utility>
 #include <iostream>
-#include <chrono>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {debugLog("Error: " + errorToName(err)); return err;}
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
@@ -225,7 +224,7 @@ static EntrancePool assumeEntrancePool(EntrancePool& entrancePool)
     for (auto entrance : entrancePool)
     {
         auto assumedForward = entrance->assumeReachable();
-        if (entrance->getReverse() != nullptr /*&& not decoupled entrances*/)
+        if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
         {
             auto assumedReturn = entrance->getReverse()->assumeReachable();
             assumedForward->bindTwoWay(assumedReturn);
@@ -253,7 +252,7 @@ static void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 {
     entrance->connect(targetEntrance->disconnect());
     entrance->setReplaces(targetEntrance->getReplaces());
-    if (entrance->getReverse() != nullptr /*and not decouple entrances*/)
+    if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
     {
         targetEntrance->getReplaces()->getReverse()->connect(entrance->getReverse()->getAssumed()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(entrance->getReverse());
@@ -264,7 +263,7 @@ static void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
 {
     targetEntrance->connect(entrance->disconnect());
     entrance->setReplaces(nullptr);
-    if (entrance->getReverse() != nullptr /*&& not decoupled entrances*/)
+    if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
     {
         entrance->getReverse()->getAssumed()->connect(targetEntrance->getReplaces()->getReverse()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(nullptr);
@@ -286,7 +285,7 @@ static void deleteTargetEntrance(Entrance* targetEntrance)
 static void confirmReplacement(Entrance* entrance, Entrance* targetEntrance)
 {
     deleteTargetEntrance(targetEntrance);
-    if (entrance->getReverse() != nullptr /*and not decouple entrances*/)
+    if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
     {
         deleteTargetEntrance(entrance->getReverse()->getAssumed());
     }
@@ -302,7 +301,6 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         // logMissingLocations(worlds);
         return EntranceShuffleError::ALL_LOCATIONS_NOT_REACHABLE;
     }
-
     // Ensure that there's at least one sphere zero location available to place an item
     // for the beginning of the seed
     ItemPool noItems = {};
@@ -313,7 +311,6 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         debugLog("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
     }
-
     // Ensure that all race mode dungeons are assigned to a single island and that
     // there aren't any other dungeons on those islands. Since quest markers for
     // race mode dungeons indicate an entire island, we don't want the there to be
@@ -455,6 +452,16 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
     return EntranceShuffleError::RAN_OUT_OF_RETRIES;
 }
 
+static EntrancePool getReverseEntrances(EntrancePools& entrancePools, EntranceType type)
+{
+    EntrancePool reversePool = {};
+    for (auto entrance : entrancePools[type])
+    {
+        reversePool.push_back(entrance->getReverse());
+    }
+    return reversePool;
+}
+
 // Set all entrances in the passed in pools as shuffled
 static void SetShuffledEntrances(EntrancePools& entrancePools) {
     for (auto& [type, entrancePool] : entrancePools)
@@ -531,8 +538,6 @@ static Area roomIndexToStartingIslandArea(const uint8_t& startingIslandRoomIndex
 
 EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 {
-    // Time how long the entrance randomization takes
-    auto start = std::chrono::high_resolution_clock::now();
     EntranceShuffleError err = EntranceShuffleError::NONE;
 
     ItemPool completeItemPool;
@@ -564,28 +569,44 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         if (world.getSettings().randomize_dungeon_entrances)
         {
             entrancePools[EntranceType::DUNGEON] = world.getShuffleableEntrances(EntranceType::DUNGEON, true);
+            if (world.getSettings().decouple_entrances)
+            {
+                entrancePools[EntranceType::DUNGEON_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DUNGEON);
+            }
         }
 
         if (world.getSettings().randomize_cave_entrances)
         {
             entrancePools[EntranceType::CAVE] = world.getShuffleableEntrances(EntranceType::CAVE, true);
+            if (world.getSettings().decouple_entrances)
+            {
+                entrancePools[EntranceType::CAVE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::CAVE);
+            }
         }
 
         if (world.getSettings().randomize_door_entrances)
         {
             entrancePools[EntranceType::DOOR] = world.getShuffleableEntrances(EntranceType::DOOR, true);
+            if (world.getSettings().decouple_entrances)
+            {
+                entrancePools[EntranceType::DOOR_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DOOR);
+            }
         }
 
         if (world.getSettings().randomize_misc_entrances)
         {
             // Allow both primary and non-primary entrances in the MISC pool unless
             // we're mixing the entrance pools and aren't decoupling entrances
-            entrancePools[EntranceType::MISC] = world.getShuffleableEntrances(EntranceType::MISC, world.getSettings().mix_entrance_pools /*&& not decouple_entrances*/);
+            entrancePools[EntranceType::MISC] = world.getShuffleableEntrances(EntranceType::MISC, world.getSettings().mix_entrance_pools && !world.getSettings().decouple_entrances);
             auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, true);
             addElementsToPool(entrancePools[EntranceType::MISC], miscRestrictiveEntrances);
 
             // Keep crawlspaces separate for the time-being
             entrancePools[EntranceType::MISC_CRAWLSPACE] = world.getShuffleableEntrances(EntranceType::MISC_CRAWLSPACE, true);
+            if (world.getSettings().decouple_entrances)
+            {
+                entrancePools[EntranceType::MISC_CRAWLSPACE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MISC_CRAWLSPACE);
+            }
         }
 
         SetShuffledEntrances(entrancePools);
@@ -598,7 +619,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             for (auto& [type, entrancePool] : entrancePools)
             {
                 // Don't re-add the mixed pool to itself and don't mix crawlspaces
-                if (type != EntranceType::MIXED && type != EntranceType::MISC_CRAWLSPACE)
+                if (type != EntranceType::MIXED && type != EntranceType::MISC_CRAWLSPACE && type != EntranceType::MISC_CRAWLSPACE_REVERSE)
                 {
                     addElementsToPool(entrancePools[EntranceType::MIXED], entrancePool);
                     entrancePools[type].clear();
@@ -627,12 +648,6 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
     // Validate the worlds one last time to ensure everything went okay
     err = validateWorld(worlds, nullptr, completeItemPool);
     ENTRANCE_SHUFFLE_ERROR_CHECK(err);
-
-    // Calculate time difference
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    auto seconds = static_cast<double>(duration.count()) / 1000000.0f;
-    std::cout << "Entrance randomizing took " << std::to_string(seconds) << " seconds" << std::endl;
 
     return EntranceShuffleError::NONE;
 }

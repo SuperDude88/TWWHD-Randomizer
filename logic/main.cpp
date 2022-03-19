@@ -15,7 +15,7 @@ int main()
     std::vector<uint8_t> nat = {4, 2, 0};
     // End of important variables
 
-    int seed = Random(0, 100000);
+    int seed = Random(0, 10000000);
 
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
@@ -58,7 +58,8 @@ int main()
     settings1.randomize_cave_entrances = true;
     settings1.randomize_door_entrances = true;
     settings1.randomize_misc_entrances = true;
-    settings1.mix_entrance_pools = true;
+    settings1.mix_entrance_pools = false;
+    settings1.decouple_entrances = true;
     settings1.race_mode = true;
     settings1.num_race_mode_dungeons = 6;
 

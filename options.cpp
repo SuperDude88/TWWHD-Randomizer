@@ -48,6 +48,7 @@ Option nameToSetting(const std::string& name) {
         {"RandomizeDoorEntrances", Option::RandomizeDoorEntrances},
         {"RandomizeMiscEntrances", Option::RandomizeMiscEntrances},
         {"MixEntrancePools", Option::MixEntrancePools},
+        {"DecoupleEntrances", Option::DecoupleEntrances},
         {"InstantText", Option::InstantText},
         {"RevealSeaChart", Option::RevealSeaChart},
         {"NumShards", Option::NumShards},
@@ -108,6 +109,7 @@ std::string settingToName(const Option& setting) {
         {Option::RandomizeDoorEntrances, "RandomizeDoorEntrances"},
         {Option::RandomizeMiscEntrances, "RandomizeMiscEntrances"},
         {Option::MixEntrancePools, "MixEntrancePools"},
+        {Option::DecoupleEntrances, "DecoupleEntrances"},
         {Option::InstantText, "InstantText"},
         {Option::RevealSeaChart, "RevealSeaChart"},
         {Option::NumShards, "NumShards"},
@@ -200,6 +202,8 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.randomize_misc_entrances;
     case Option::MixEntrancePools:
         return settings.mix_entrance_pools;
+    case Option::DecoupleEntrances:
+        return settings.decouple_entrances;
     case Option::InstantText:
         return settings.instant_text_boxes;
     case Option::RevealSeaChart:
