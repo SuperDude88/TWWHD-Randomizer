@@ -258,11 +258,17 @@ std::string entranceTypeToName(const EntranceType& type)
     std::unordered_map<EntranceType, std::string> typeNameMap = {
         {EntranceType::NONE, "NONE"},
         {EntranceType::DUNGEON, "DUNGEON"},
+        {EntranceType::DUNGEON_REVERSE, "DUNGEON_REVERSE"},
         {EntranceType::CAVE, "CAVE"},
+        {EntranceType::CAVE_REVERSE, "CAVE_REVERSE"},
         {EntranceType::DOOR, "DOOR"},
+        {EntranceType::DOOR_REVERSE, "DOOR_REVERSE"},
         {EntranceType::MISC, "MISC"},
+        {EntranceType::MISC_REVERSE, "MISC_REVERSE"},
         {EntranceType::MISC_RESTRICTIVE, "MISC_RESTRICTIVE"},
+        {EntranceType::MISC_RESTRICTIVE_REVERSE, "MISC_RESTRICTIVE_REVERSE"},
         {EntranceType::MISC_CRAWLSPACE, "MISC_CRAWLSPACE"},
+        {EntranceType::MISC_CRAWLSPACE_REVERSE, "MISC_CRAWLSPACE_REVERSE"},
         {EntranceType::MIXED, "MIXED"},
         {EntranceType::ALL, "ALL"},
     };

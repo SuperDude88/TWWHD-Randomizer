@@ -21,11 +21,10 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
   std::cout << "Building World" << (worlds.size() > 1 ? "s" : "") << std::endl;
-  int buildRetryCount = 5;
+  int buildRetryCount = 10;
   EntranceShuffleError entranceErr;
   while (buildRetryCount > 0)
   {
-      buildRetryCount--;
       for (size_t i = 0; i < worlds.size(); i++)
       {
           debugLog("Building World " + std::to_string(i));
@@ -48,6 +47,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       if (entranceErr != EntranceShuffleError::NONE)
       {
           debugLog("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
+          buildRetryCount--;
           continue;
       }
       break;
