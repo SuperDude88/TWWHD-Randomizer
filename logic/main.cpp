@@ -55,11 +55,11 @@ int main()
     settings1.randomize_charts = true;
     settings1.randomize_starting_island = true;
     settings1.randomize_dungeon_entrances = true;
-    settings1.randomize_cave_entrances = true;
-    settings1.randomize_door_entrances = true;
-    settings1.randomize_misc_entrances = true;
-    settings1.mix_entrance_pools = false;
-    settings1.decouple_entrances = true;
+    // settings1.randomize_cave_entrances = true;
+    // settings1.randomize_door_entrances = true;
+    // settings1.randomize_misc_entrances = true;
+    settings1.mix_entrance_pools = true;
+    settings1.decouple_entrances = false;
     settings1.race_mode = true;
     settings1.num_race_mode_dungeons = 6;
 
@@ -100,6 +100,26 @@ int main()
     std::vector<Settings> settingsVector {settings1, settings2};
 
     int retVal = generateWorlds(worlds, settingsVector, seed);
+
+    debugLog("All entrances to be shuffled:");
+    auto entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
+    for (auto entrance : entrances)
+    {
+        auto fileStage = entrance->getFilepathStage();
+        auto fileRoom = std::to_string(entrance->getFilepathRoomNum());
+        auto sclsExitIndex = entrance->getSclsExitIndex();
+
+        auto replacementStage = entrance->getReplaces()->getStageName();
+        auto replacementRoom = entrance->getReplaces()->getRoomNum();
+        auto replacementSpawn = entrance->getReplaces()->getSpawnId();
+
+        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+        debugLog("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
+        debugLog("\tStage: \"" + replacementStage + "\"");
+        debugLog("\tRoom: " + std::to_string(replacementRoom));
+        debugLog("\tSpawn: " + std::to_string(replacementSpawn));
+
+    }
 
     if (retVal == 0)
     {

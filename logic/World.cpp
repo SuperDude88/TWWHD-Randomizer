@@ -290,7 +290,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     //
     // Logic expressions are split up via spaces, but we only want to evaluate the parts of
     // the expression at the highest nesting level for the string that was passed in.
-    // (We'll recursively call the function later to eveluate deeper levels.) So we replace
+    // (We'll recursively call the function later to evaluate deeper levels.) So we replace
     // all the spaces on the highest nesting level with an arbitrarily chosen delimeter
     // (in this case: '+').
     int nestingLevel = 1;
@@ -344,6 +344,8 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         {
             req.type = RequirementType::EVENT;
             std::string eventName (argStr.begin() + 1, argStr.end() - 1);
+            // Add "WX" where X is the world Id to the end of the string to
+            // differentiate between events of different worlds
             eventName += "W" + std::to_string(worldId);
             req.args.push_back(eventName);
             return WorldLoadingError::NONE;
@@ -890,7 +892,7 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
     {
         for (auto& exit : areaEntry.exits)
         {
-            if ((exit.getEntranceType() == type || type == EntranceType::NONE) && (!onlyPrimary || exit.isPrimary()))
+            if ((exit.getEntranceType() == type || type == EntranceType::ALL) && (!onlyPrimary || exit.isPrimary()))
             {
                 shufflableEntrances.push_back(&exit);
             }
@@ -898,6 +900,12 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
     }
 
     return shufflableEntrances;
+}
+
+EntrancePool World::getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary /*= false*/)
+{
+    auto entrances = getShuffleableEntrances(type, onlyPrimary);
+    return filterFromPool(entrances, [](Entrance* e){return e->isShuffled();});
 }
 
 // Peforms a breadth first search to find all the islands that lead to the given

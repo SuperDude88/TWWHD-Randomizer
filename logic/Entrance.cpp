@@ -64,16 +64,6 @@ void Entrance::setAsPrimary()
     primary = true;
 }
 
-std::string Entrance::getStageName() const
-{
-    return stageName;
-}
-
-void Entrance::setStageName(std::string newStageName)
-{
-    stageName = std::move(newStageName);
-}
-
 std::string Entrance::getOriginalName() const
 {
     return originalName;
@@ -93,14 +83,24 @@ std::string Entrance::getCurrentName() const
     return areaToName(parentArea) + " -> " + areaToName(connectedArea);
 }
 
-uint8_t Entrance::getRoomNum() const
+std::string Entrance::getFilepathStage() const
 {
-    return roomNum;
+    return filepathStage;
 }
 
-void Entrance::setRoomNum(uint8_t& newRoomNum)
+void Entrance::setFilepathStage(std::string newFilepathStage)
 {
-    roomNum = newRoomNum;
+    filepathStage = std::move(newFilepathStage);
+}
+
+uint8_t Entrance::getFilepathRoomNum() const
+{
+    return filepathRoom;
+}
+
+void Entrance::setFilepathRoomNum(uint8_t& newFilepathRoomNum)
+{
+    filepathRoom = newFilepathRoomNum;
 }
 
 uint8_t Entrance::getSclsExitIndex() const
@@ -113,6 +113,27 @@ void Entrance::setSclsExitIndex(uint8_t& newExitIndex)
     sclsExitIndex = newExitIndex;
 }
 
+std::string Entrance::getStageName() const
+{
+    return stage;
+}
+
+void Entrance::setStageName(std::string newStageName)
+{
+    stage = std::move(newStageName);
+}
+
+
+uint8_t Entrance::getRoomNum() const
+{
+    return room;
+}
+
+void Entrance::setRoomNum(uint8_t& newRoomNum)
+{
+    room = newRoomNum;
+}
+
 uint8_t Entrance::getSpawnId() const
 {
     return spawnId;
@@ -123,34 +144,44 @@ void Entrance::setSpawnId(uint8_t& newSpawnId)
     spawnId = newSpawnId;
 }
 
-std::string Entrance::getWarpOutStageName() const
+std::string Entrance::getBossFilepathStageName() const
 {
-    return warpOutStageName;
+    return bossFilepathStage;
 }
 
-void Entrance::setWarpOutStageName(std::string newWarpOutStageName)
+void Entrance::setBossFilepathStageName(std::string newBossOutStageName)
 {
-    warpOutStageName = std::move(newWarpOutStageName);
+    bossFilepathStage = std::move(newBossOutStageName);
 }
 
-uint8_t Entrance::getWarpOutRoomNum() const
+std::string Entrance::getBossOutStageName() const
 {
-    return warpOutRoomNum;
+    return bossOutStage;
 }
 
-void Entrance::setWarpOutRoomNum(uint8_t& newWarpOutRoomNum)
+void Entrance::setBossOutStageName(std::string newBossOutStageName)
 {
-    warpOutRoomNum = newWarpOutRoomNum;
+    bossOutStage = std::move(newBossOutStageName);
 }
 
-uint8_t Entrance::getWarpOutSpawnId() const
+uint8_t Entrance::getBossOutRoomNum() const
 {
-    return warpOutSpawnId;
+    return bossOutRoom;
 }
 
-void Entrance::setWarpOutSpawnId(uint8_t& newWarpOutSpawnId)
+void Entrance::setBossOutRoomNum(uint8_t& newBossOutRoomNum)
 {
-    warpOutSpawnId = newWarpOutSpawnId;
+    bossOutRoom = newBossOutRoomNum;
+}
+
+uint8_t Entrance::getBossOutSpawnId() const
+{
+    return bossOutSpawnId;
+}
+
+void Entrance::setBossOutSpawnId(uint8_t& newBossOutSpawnId)
+{
+    bossOutSpawnId = newBossOutSpawnId;
 }
 
 int Entrance::getWorldId() const

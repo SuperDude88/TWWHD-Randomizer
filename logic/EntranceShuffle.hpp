@@ -20,13 +20,16 @@ struct EntranceInfo
 {
     Area parentArea = Area::INVALID;
     Area connectedArea = Area::INVALID;
-    std::string stageName;
-    uint8_t roomNum;
-    uint8_t sclsExitIndex;
-    uint8_t spawnId;
-    std::string warpOutStageName = "";
-    uint8_t warpOutRoomNum;
-    uint8_t warpOutSpawnId;
+    std::string filepathStage = "";
+    uint8_t filepathRoom = 0xFF;
+    uint8_t sclsExitIndex = 0xFF;
+    std::string stage = "";
+    uint8_t room = 0xFF;
+    uint8_t spawnId = 0xFF;
+    std::string bossFilepathStage = "";
+    std::string bossOutStage = "";
+    uint8_t bossOutRoom = 0xFF;
+    uint8_t bossOutSpawnId = 0xFF;
 };
 
 struct EntranceInfoPair
