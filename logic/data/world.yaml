@@ -529,10 +529,10 @@
       WindfallJail: Nothing
       WindfallSchoolOfJoy: Nothing
       WindfallLenzosHouseFromBottomEntry: Nothing
-      WindfallLenzosUpperLedge: "'ActivateWindmill' and (HerosSword or SkullHammer)"
+      WindfallLenzosUpperLedge: CanFlyWithDekuLeafOutdoors or ('ActivateWindmill' and (HerosSword or SkullHammer))
       WindfallCafeBar: Nothing
       WindfallBattleSquidInterior: Nothing
-      WindfallBattleSquidUpperLedge: "'ActivateWindmill' and (HerosSword or SkullHammer)"
+      WindfallBattleSquidUpperLedge: CanFlyWithDekuLeafOutdoors or ('ActivateWindmill' and (HerosSword or SkullHammer))
       WindfallHouseOfWealthLower: Nothing
       WindfallHouseOfWealthUpper: Nothing
       WindfallPotionShop: Nothing

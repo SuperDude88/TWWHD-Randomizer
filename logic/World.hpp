@@ -101,6 +101,7 @@ public:
     Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
+    EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     std::unordered_set<HintRegion> getIslands(const Area& area);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
