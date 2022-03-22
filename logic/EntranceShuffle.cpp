@@ -590,6 +590,11 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             {
                 entrancePools[EntranceType::CAVE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::CAVE);
             }
+            // Don't randomize the cliff plateau upper isles grotto unless entrances are decoupled
+            else
+            {
+                filterFromPool(entrancePools[EntranceType::CAVE], [](Entrance* e){return e->getParentArea() == Area::CliffPlateauHighestIsle;});
+            }
         }
 
         if (world.getSettings().randomize_door_entrances)
