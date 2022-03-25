@@ -284,6 +284,16 @@ Entrance* Entrance::assumeReachable()
     return assumed;
 }
 
+bool Entrance::operator<(const Entrance& rhs) const
+{
+    if (this->worldId != rhs.worldId)
+    {
+        return this->worldId < rhs.worldId;
+    }
+
+    return this->parentArea < rhs.parentArea;
+}
+
 std::string entranceTypeToName(const EntranceType& type)
 {
     std::unordered_map<EntranceType, std::string> typeNameMap = {
