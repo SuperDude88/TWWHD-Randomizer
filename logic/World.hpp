@@ -111,7 +111,8 @@ public:
     std::vector<Location> locationEntries = {};
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
-    std::vector<std::list<Location*>> playthroughSpheres = {};
+    std::list<std::list<Location*>> playthroughSpheres = {};
+    std::list<std::list<Entrance*>> entranceSpheres = {};
     std::array<GameItem, 49> chartMappings;
     std::unordered_set<DungeonId> raceModeDungeons;
     uint8_t startingIslandRoomIndex = 44;

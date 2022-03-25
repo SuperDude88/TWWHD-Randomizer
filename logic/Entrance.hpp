@@ -87,6 +87,7 @@ public:
     Entrance* getNewTarget();
     Entrance* assumeReachable();
 
+    bool operator<(const Entrance& rhs) const;
 
 private:
 

@@ -55,9 +55,9 @@ int main()
     settings1.randomize_charts = true;
     settings1.randomize_starting_island = true;
     settings1.randomize_dungeon_entrances = true;
-    // settings1.randomize_cave_entrances = true;
-    // settings1.randomize_door_entrances = true;
-    // settings1.randomize_misc_entrances = true;
+    settings1.randomize_cave_entrances = true;
+    settings1.randomize_door_entrances = true;
+    settings1.randomize_misc_entrances = true;
     settings1.mix_entrance_pools = true;
     settings1.decouple_entrances = false;
     settings1.race_mode = true;

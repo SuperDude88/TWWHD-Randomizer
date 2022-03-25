@@ -16,7 +16,7 @@ using EntrancePools = std::map<EntranceType, EntrancePool>;
 using EntrancePair = std::pair<Entrance*, Entrance*>;
 
 static std::list<EntranceInfoPair> entranceShuffleTable = {                                                     //----File path info------|---entrance info---//
-                            // Parent Area                            Connected Area                            stage,   room, scls index,  stage,  room, spawn, boss stage and out info
+                            // Parent Area                            Connected Area                            stage,   room, scls index,  stage,  room, spawn, boss stage and out info (stage, room, spawn)
     {EntranceType::DUNGEON, {Area::DragonRoostPondPastStatues,        Area::DRCFirstRoom,                       "Adanmae",  0,          2, "M_NewD2",  0,     0},
     /*Dragon Roost Cavern*/ {Area::DRCFirstRoom,                      Area::DragonRoostPondPastStatues,         "M_NewD2",  0,          0, "Adanmae",  0,     2, "M_DragB", "sea",  13, 211}},
     {EntranceType::DUNGEON, {Area::FWEntrancePlatform,                Area::FWFirstRoom,                        "sea",     41,          6, "kindan",   0,     0},

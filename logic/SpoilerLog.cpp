@@ -6,6 +6,28 @@
 #include <fstream>
 #include <algorithm>
 
+static std::string getSpoilerFormatEntrance(Entrance* entrance, const size_t& longestEntranceLength, const WorldPool& worlds)
+{
+    // Print the world number if more than 1 world
+    std::string worldNumber = " [W";
+    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(entrance->getWorldId() + 1) + "]" : "";
+    // Add an extra space if the world id is only 1 digit
+    size_t numSpaces = (longestEntranceLength - entrance->getOriginalName().length()) + ((entrance->getWorldId() >= 9) ? 0 : 1);
+    std::string spaces (numSpaces, ' ');
+
+    auto name = entrance->getOriginalName();
+    auto replacement = entrance->getReplaces()->getOriginalName();
+    // Parse out the parent and connection for a more friendly formatting
+    auto pos = replacement.find(" -> ");
+    // The parent area is the first one
+    auto parent = replacement.substr(0, pos);
+    // Then just delete the parent plus the ' -> ' and we're left with
+    // only the connected area
+    replacement.erase(0, pos+4);
+
+    return name + worldNumber + ": " + spaces + replacement + " from " + parent;
+}
+
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
     log << "Wind Waker HD Randomizer Version <insert version number here>" /*<< VERSION*/ << std::endl;
@@ -37,9 +59,14 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 void generateSpoilerLog(WorldPool& worlds)
 {
     std::ofstream log;
-    log.open("spoiler.txt");
+    log.open("spoiler.txt"); // Rventually add seed/hash to filename
 
     printBasicInfo(log, worlds);
+
+    // Playthroughs are stored in world 1 for the time being, regardless of how
+    // many worlds there are.
+    auto& playthroughSpheres = worlds[0].playthroughSpheres;
+    auto& entranceSpheres = worlds[0].entranceSpheres;
 
     // Print the random starting island if there is one
     for (auto& world : worlds)
@@ -52,21 +79,36 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-    // Find the longest location name for formatting the file
+    // Find the longest location/entrances names for formatting the file
     size_t longestNameLength = 0;
-    for (size_t sphere = 0; sphere < worlds[0].playthroughSpheres.size(); sphere++)
+    size_t longestEntranceLength = 0;
+    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
     {
-        for (auto location : worlds[0].playthroughSpheres[sphere])
+        for (auto location : *sphereItr)
         {
             longestNameLength = std::max(longestNameLength, locationIdToName(location->locationId).length());
         }
     }
 
-    // Print the playthrough
-    for (size_t sphere = 0; sphere < worlds[0].playthroughSpheres.size(); sphere++)
+    for (auto sphereItr = entranceSpheres.begin(); sphereItr != entranceSpheres.end(); sphereItr++)
     {
-        log << "Sphere " << std::to_string(sphere) << ":" << std::endl;
-        for (auto location : worlds[0].playthroughSpheres[sphere])
+        for (auto entrance : *sphereItr)
+        {
+            if (entrance->isShuffled())
+            {
+                longestEntranceLength = std::max(longestEntranceLength, entrance->getOriginalName().length());
+            }
+        }
+    }
+
+
+    // Print the playthrough
+    log << "Playthrough:" << std::endl;
+    int sphere = 0;
+    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
+    {
+        log << "\tSphere " << std::to_string(sphere) << ":" << std::endl;
+        for (auto location : *sphereItr)
         {
 
             // Print the world number if more than 1 world
@@ -76,12 +118,55 @@ void generateSpoilerLog(WorldPool& worlds)
             size_t numSpaces = (longestNameLength - locationIdToName(location->locationId).length()) + ((location->worldId >= 9) ? 0 : 1);
             std::string spaces (numSpaces, ' ');
 
-            log << "\t" << locationIdToName(location->locationId) << worldNumber << ":" << spaces << location->currentItem.getName() << std::endl;
+            // Don't say which player the item is for if there's only 1 world
+            std::string itemName = worlds.size() > 1 ? location->currentItem.getName() : gameItemToName(location->currentItem.getGameItemId());
+
+            log << "\t\t" << locationIdToName(location->locationId) << worldNumber << ":" << spaces << itemName << std::endl;
         }
     }
+    log << std::endl;
+
+
+    // Print the randomized entrances/playthrough
+    log << "Entrance Playthrough:" << std::endl;
+    sphere = 0;
+    for (auto sphereItr = entranceSpheres.begin(); sphereItr != entranceSpheres.end(); sphereItr++, sphere++)
+    {
+        // Don't print empty spheres in the entrance playthrough
+        if (sphereItr->empty())
+        {
+            continue;
+        }
+        log << "\tSphere " << std::to_string(sphere) << ":" << std::endl;
+        auto& sphereEntrances = *sphereItr;
+        sphereEntrances.sort([](Entrance* a, Entrance* b){return *a < *b;});
+        for (auto entrance : sphereEntrances)
+        {
+            log << "\t\t" << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
+        }
+    }
+    log << std::endl;
+
+
+    for (auto& world : worlds)
+    {
+        auto entrances = world.getShuffledEntrances(EntranceType::ALL, world.getSettings().decouple_entrances);
+        if (entrances.empty())
+        {
+            continue;
+        }
+
+        log << "Entrances for world " << std::to_string(world.getWorldId()) << ":" << std::endl;
+        std::sort(entrances.begin(), entrances.end(), [](Entrance* a, Entrance* b){return *a < *b;});
+        for (auto entrance : entrances)
+        {
+            log << "\t" << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
+        }
+        log << std::endl;
+    }
+
 
     log << std::endl << "All Locations:" << std::endl;
-
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
