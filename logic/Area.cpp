@@ -2,6 +2,8 @@
 #include "Area.hpp"
 #include <unordered_map>
 
+static std::unordered_map<Area, std::string> areaPrettyNameMap;
+
 Area nameToArea(const std::string& name)
 {
     static std::unordered_map<std::string, Area> nameAreaMap = {
@@ -808,6 +810,20 @@ std::string areaToName(const Area& area)
         return "INVALID AREA";
     }
     return areaNameMap.at(area);
+}
+
+void storeNewAreaPrettyName(const Area& area, std::string prettyName)
+{
+    areaPrettyNameMap.emplace(area, prettyName);
+}
+
+std::string areaToPrettyName(const Area& area)
+{
+    if (areaPrettyNameMap.count(area) == 0)
+    {
+        return "INVALID AREA OR NO PRETTY NAME";
+    }
+    return areaPrettyNameMap.at(area);
 }
 
 uint32_t areaAsIndex(Area area)

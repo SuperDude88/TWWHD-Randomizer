@@ -1,5 +1,6 @@
 
 - Name: MailboxHoskitGirlfriendLetter
+  PrettyName: Mailbox - Letter from Hoskit's Girlfriend
   OriginalItem: PieceOfHeart2
   Category:
   - Mail
@@ -10,6 +11,7 @@
   - 0x31c84
 
 - Name: MailboxBaitoMotherLetter
+  PrettyName: Mailbox - Letter from Baito's Mother
   OriginalItem: PieceOfHeart
   Category:
   - Mail
@@ -20,6 +22,7 @@
   - 0x31c6c
 
 - Name: MailboxBaitoLetter
+  PrettyName: Mailbox - Letter from Baito
   OriginalItem: RedRupee
   Category:
   - Mail
@@ -30,6 +33,7 @@
   - 0x31c90
 
 - Name: MailboxKomaliFatherLetter
+  PrettyName: Mailbox - Letter from Komali's Father
   OriginalItem: PieceOfHeart
   Category:
   - Mail
@@ -39,6 +43,7 @@
   - 0x31c18
 
 - Name: MailboxBeedleBombAdLetter
+  PrettyName: Mailbox - Letter Advertising Bombs
   OriginalItem: BeedlesChart
   Category:
   - Mail
@@ -48,6 +53,7 @@
   - 0x31c24
 
 - Name: MailboxRockSpireShopAdLetter
+  PrettyName: Mailbox - Letter Advertising Rock Spire Shop Ship
   OriginalItem: GreenRupee
   Category:
   - Mail
@@ -57,6 +63,7 @@
   - 0x31c48
 
 - Name: MailboxSilverMembershipRewardLetter
+  PrettyName: Mailbox - Beedle's Silver Membership Reward
   OriginalItem: ComplimentaryID
   Category:
   - Junk
@@ -66,6 +73,7 @@
   - 0x31c78
 
 - Name: MailboxGoldMembershipRewardLetter
+  PrettyName: Mailbox - Beedle's Gold Membership Reward
   OriginalItem: FillUpCoupon
   Category:
   - Junk
@@ -75,6 +83,7 @@
   - 0x31c9c
 
 - Name: MailboxOrcaLetter
+  PrettyName: Mailbox - Letter from Orca
   OriginalItem: RedRupee
   Category:
   - Mail
@@ -85,6 +94,7 @@
   - 0x31c30
 
 - Name: MailboxGrandmaLetter
+  PrettyName: Mailbox - Letter from Grandma
   OriginalItem: RedRupee
   Category:
   - Mail
@@ -94,6 +104,7 @@
   - 0x31c3c
 
 - Name: MailboxAryllLetter
+  PrettyName: Mailbox - Letter from Aryll
   OriginalItem: RedRupee
   Category:
   - Mail
@@ -104,6 +115,7 @@
   - 0x31c60
 
 - Name: MailboxTingleLetter
+  PrettyName: Mailbox - Letter from Tingle
   OriginalItem: INcredibleChart
   Category:
   - Mail
@@ -115,6 +127,7 @@
   - 0x31c54
 
 - Name: GreatSeaBeedleShop20Rupee
+  PrettyName: Great Sea - Beedle Shop 20 Rupee Item
   OriginalItem: BaitBag
   Category:
   - Misc
@@ -127,6 +140,7 @@
   - 0x41d5e3
 
 - Name: GreatSeaSalvageCorpGift
+  PrettyName: Great Sea - Salvage Corp Gift
   OriginalItem: TreasureChart34
   Category:
   - FreeGift
@@ -136,6 +150,7 @@
   - 0x1c6abf
 
 - Name: GreatSeaCyclos
+  PrettyName: Great Sea - Cyclos
   OriginalItem: BalladOfGales
   Category:
   - Misc
@@ -146,6 +161,7 @@
   NameOffsets: 0xdd43f3
 
 - Name: GreatSeaGoronTradingReward
+  PrettyName: Great Sea - Goron Trading Reward
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
@@ -156,6 +172,7 @@
   - 0x1c5b6f
 
 - Name: GreatSeaWitheredTrees
+  PrettyName: Great Sea - Withered Trees
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
@@ -166,6 +183,7 @@
   - 0x54fc4b
 
 - Name: ForsakenFortressSunkenTreasure
+  PrettyName: Forsaken Fortress - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -178,6 +196,7 @@
   - 0xb47c48
 
 - Name: ForsakenFortressPhantomGanon
+  PrettyName: Forsaken Fortress - Phantom Ganon
   OriginalItem: SkullHammer
   Category:
   - Dungeon
@@ -187,6 +206,7 @@
   - 0xb48038
 
 - Name: ForsakenFortressChestInsideLowerJailCell
+  PrettyName: Forsaken Fortress - Chest Inside Lower Jail Cell
   OriginalItem: PieceOfHeart
   Category:
   - Dungeon
@@ -196,6 +216,7 @@
   - 0x413c44
 
 - Name: ForsakenFortressChestOnBed
+  PrettyName: Forsaken Fortress - Chest on Bed
   OriginalItem: YellowRupee
   Category:
   - Dungeon
@@ -205,6 +226,7 @@
   - 0x413c04
 
 - Name: ForsakenFortressChestOutsideUpperJailCell
+  PrettyName: Forsaken Fortress - Chest Outside Upper Jail Cell
   OriginalItem: DungeonMap
   Category:
   - Dungeon
@@ -214,6 +236,7 @@
   - 0x413be4
 
 - Name: ForsakenFortressBokoblinGuardedChest
+  PrettyName: Forsaken Fortress - Chest Guarded by Bokoblin
   OriginalItem: Compass
   Category:
   - Dungeon
@@ -223,6 +246,7 @@
   - 0x413c24
 
 - Name: ForsakenFortressHelmarocKingHeartContainer
+  PrettyName: Forsaken Fortress - Helmaroc King Heart Container
   OriginalItem: HeartContainer
   Category:
   - Dungeon
@@ -233,6 +257,7 @@
   - 0xb48c38
 
 - Name: StarIslandSunkenTreasure
+  PrettyName: Star Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -245,6 +270,7 @@
   - 0xf5770
 
 - Name: StarIslandLookoutPlatformChest
+  PrettyName: Star Island - Lookout Platform Chest
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -254,6 +280,7 @@
   - 0xf57dc
 
 - Name: StarIslandCaveChest
+  PrettyName: Star Island - Cave Chest
   OriginalItem: PieceOfHeart
   Category:
   - CombatSecretCave
@@ -263,6 +290,7 @@
   - 0x20c10
 
 - Name: NorthernFairySunkenTreasure
+  PrettyName: Northern Fairy Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -275,6 +303,7 @@
   - 0x1d2128
 
 - Name: NorthernFairyIslandSubmarineChest
+  PrettyName: Northern Fairy Island - Submarine Chest
   OriginalItem: TreasureChart22
   Category:
   - Submarine
@@ -284,6 +313,7 @@
   - 0x120bb0
 
 - Name: NorthernFairyIslandGreatFairy
+  PrettyName: Northern Fairy Island - Great Fairy
   OriginalItem: ProgressiveWallet
   Category:
   - GreatFairy
@@ -293,6 +323,7 @@
   - 0x29DCCF
 
 - Name: GaleIsleSunkenTreasure
+  PrettyName: Gale Isle - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -305,6 +336,7 @@
   - 0x3ae640
 
 - Name: CrescentMoonChest
+  PrettyName: Crescent Moon Island - Chest on Island
   OriginalItem: TreasureChart10
   Category:
   - Misc
@@ -314,6 +346,7 @@
   - 0xcc980
 
 - Name: CrescentMoonSunkenTreasure
+  PrettyName: Crescent Moon Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -326,6 +359,7 @@
   - 0xcc914
 
 - Name: CrescentMoonSubmarineChest
+  PrettyName: Crescent Moon Island - Submarine Chest
   OriginalItem: TreasureChart9
   Category:
   - Submarine
@@ -335,6 +369,7 @@
   - 0x120a64
 
 - Name: SevenStarBigOcto
+  PrettyName: Seven Star Isles - Big Octo
   OriginalItem: PieceOfHeart
   Category:
   - BigOcto
@@ -344,6 +379,7 @@
   - 0xbea78
 
 - Name: SevenStarSunkenTreasure
+  PrettyName: Seven Star Isles - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -356,6 +392,7 @@
   - 0xbec04
 
 - Name: SevenStarCenterLookoutPlatformChest
+  PrettyName: Seven Star Isles - Center Lookout Platform Chest
   OriginalItem: RedRupee
   Category:
   - Platform
@@ -365,6 +402,7 @@
   - 0xbed68
 
 - Name: SevenStarNorthernLookoutPlatformChest
+  PrettyName: Seven Star Isles - Northern Lookout Platform Chest
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -374,6 +412,7 @@
   - 0xbed48
 
 - Name: SevenStarSouthernLookoutPlatformDefeatWizzrobes
+  PrettyName: Seven Star Isles - Southern Lookout Platform Chest
   OriginalItem: TreasureChart16
   Category:
   - Platform
@@ -383,6 +422,7 @@
   - 0xbed88
 
 - Name: OverlookSunkenTreasure
+  PrettyName: Overlook Isles - Sunken Treasure
   OriginalItem: SecretCaveChart
   Category:
   - SunkenTreasure
@@ -395,6 +435,7 @@
   - 0x2ae3b4
 
 - Name: OverlookCaveChest
+  PrettyName: Overlook Isles - Cave Chest
   OriginalItem: TriforceShard8
   Category:
   - CombatSecretCave
@@ -404,6 +445,7 @@
   - 0x1c7084
 
 - Name: FourEyeReefDestroyCannonsAndGunboats
+  PrettyName: Four Eye Reef - Destroy Cannons and Gunboats
   OriginalItem: TreasureChart19
   Category:
   - EyeReefChests
@@ -413,6 +455,7 @@
   - 0x1eb4d4
 
 - Name: FourEyeReefSunkenTreasure
+  PrettyName: Four Eye Reef - Sunken Treasure
   OriginalItem: GreatFairyChart
   Category:
   - SunkenTreasure
@@ -425,6 +468,7 @@
   - 0x1eb468
 
 - Name: MotherAndChildSunkenTreasure
+  PrettyName: Mother and Child Isles - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -437,6 +481,7 @@
   - 0x61ef60
 
 - Name: MotherAndChildInsideMotherIsleChest
+  PrettyName: Mother and Child Isles - Inside Mother Isle
   OriginalItem: FireIceArrows
   Category:
   - Misc
@@ -446,6 +491,7 @@
   - 1
 
 - Name: SpectacleBarrelShootingFirstPrize
+  PrettyName: Spectacle Island - Barrel Shooting First Prize
   OriginalItem: PieceOfHeart
   Category:
   - Minigame
@@ -456,6 +502,7 @@
   - 0x1c895
 
 - Name: SpectacleBarrelShootingSecondPrize
+  PrettyName: Spectacle Island - Barrel Shooting Second Prize
   OriginalItem: TreasureChart17
   Category:
   - Minigame
@@ -465,6 +512,7 @@
   - 0x1c896
 
 - Name: SpectacleSunkenTreasure
+  PrettyName: Spectacle Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -477,6 +525,7 @@
   - 0x61ef60
 
 - Name: WindfallIvanCatchKillerBees
+  PrettyName: Windfall Island - Ivan Catch Killer Bees
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
@@ -486,6 +535,7 @@
   - 0x4a0d9f
 
 - Name: WindfallTransparentChest
+  PrettyName: Windfall Island - Transparent Chest
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
@@ -497,6 +547,7 @@
   - 0x1063840
 
 - Name: WindfallTottTeachRhythm
+  PrettyName: Windfall Island - Tott Teach Rhythm
   OriginalItem: SongOfPassing
   Category:
   - FreeGift
@@ -507,6 +558,7 @@
   NameOffsets: 0xdd445f
 
 - Name: WindfallZunariExoticFlower
+  PrettyName: Windfall Island - Zunari Exotic Flower
   OriginalItem: MagicArmor
   Category:
   - ShortSideQuest
@@ -516,6 +568,7 @@
   - 1
 
 - Name: WindfallSamDecorateFlower
+  PrettyName: Windfall Island - Sam Decorate Island
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
@@ -525,6 +578,7 @@
   - 0x1c409b
 
 - Name: WindfallKaneDecorateShopGuru
+  PrettyName: Windfall Island - Kane Decorate Shop Guru
   OriginalItem: PurpleRupee
   Category:
   - Obscure
@@ -534,6 +588,7 @@
   - 0x1c3f73
 
 - Name: WindfallKaneDecoratePostmanStatue
+  PrettyName: Windfall Island - Kane Decorate Postman Statue
   OriginalItem: PurpleRupee
   Category:
   - Obscure
@@ -543,6 +598,7 @@
   - 0x1c3f77
 
 - Name: WindfallKaneDecorateSixFlags
+  PrettyName: Windfall Island - Kane Decorate Six Flags
   OriginalItem: RedRupee
   Category:
   - Obscure
@@ -552,6 +608,7 @@
   - 0x1c3f7b
 
 - Name: WindfallKaneDecorateSixIdols
+  PrettyName: Windfall Island - Kane Decorate Six Idols
   OriginalItem: RedRupee
   Category:
   - Obscure
@@ -561,6 +618,7 @@
   - 0x1c3f7f
 
 - Name: WindfallMilaCatchThief
+  PrettyName: Windfall Island - Mila Catch Thief
   OriginalItem: EmptyBottle
   Category:
   - ShortSideQuest
@@ -571,6 +629,7 @@
   NameOffsets: 0xdd33af
 
 - Name: WindfallDampaPigMinigame
+  PrettyName: Windfall Island - Dampa Pig Minigame
   OriginalItem: TreasureChart42
   Category:
   - Minigame
@@ -581,6 +640,7 @@
   - 0x4ce5f7
 
 - Name: WindfallPompieVeraPictoSecretMeeting
+  PrettyName: Windfall Island - Pompie & Vera Secret Meeting Photo
   OriginalItem: TreasureChart24
   Category:
   - ShortSideQuest
@@ -590,6 +650,7 @@
   - 0x1c409f
 
 - Name: WindfallKamoPictoFullMoon
+  PrettyName: Windfall Island - Kamo Full Moon Picture
   OriginalItem: TreasureChart31
   Category:
   - LongSideQuest
@@ -599,6 +660,7 @@
   - 0x1c40af
 
 - Name: WindfallMinecoPictoMissWindfall
+  PrettyName: Windfall Island - Mineco Miss Windfall Picture
   OriginalItem: TreasureChart33
   Category:
   - ShortSideQuest
@@ -608,6 +670,7 @@
   - 0x1c40a3
 
 - Name: WindfallSunkenTreasure
+  PrettyName: Windfall Island - Sunken Treasure
   OriginalItem: PurpleRupee
   Category:
   - SunkenTreasure
@@ -620,6 +683,7 @@
   - 0x1062aec
 
 - Name: WindfallTingleFirstGift
+  PrettyName: Windfall Island - Tingle First Gift
   OriginalItem: TingleBottle
   Category:
   - FreeGift
@@ -629,6 +693,7 @@
   - 0x4F1A8F
 
 - Name: WindfallTingleSecondGift
+  PrettyName: Windfall Island - Tingle Second Gift
   OriginalItem: TinglesChart
   Category:
   - FreeGift
@@ -638,6 +703,7 @@
   - 0x4F1AC3
 
 - Name: WindfallJailMazeChest
+  PrettyName: Windfall Island - Windfall Jail Maze Chest
   OriginalItem: ProgressivePictoBox
   Category:
   - IslandPuzzle
@@ -647,6 +713,7 @@
   - 0x2794c
 
 - Name: WindfallMrsMarieCatchKillerBees
+  PrettyName: Windfall Island - Mrs. Marie Catch Killer Bees
   OriginalItem: PurpleRupee
   Category:
   - ShortSideQuest
@@ -656,6 +723,7 @@
   - 0x447e1f
 
 - Name: WindfallMrsMarie1JoyPendant
+  PrettyName: Windfall Island - Mrs. Marie 1 Joy Pendant
   OriginalItem: RedRupee
   Category:
   - SpoilsTrading
@@ -665,6 +733,7 @@
   - 0x447f33
 
 - Name: WindfallMrsMarie21JoyPendant
+  PrettyName: Windfall Island - Mrs. Marie 21 Joy Pendant
   OriginalItem: CabanaDeed
   Category:
   - SpoilsTrading
@@ -674,6 +743,7 @@
   - 0x447f63
 
 - Name: WindfallMrsMarie40JoyPendant
+  PrettyName: Windfall Island - Mrs. Marie 40 Joy Pendant
   OriginalItem: TreasureChart45
   Category:
   - SpoilsTrading
@@ -683,6 +753,7 @@
   - 0x44805b
 
 - Name: WindfallLenzoBecomeAssistant
+  PrettyName: Windfall Island - Lenzo Become Assistant
   OriginalItem: ProgressivePictoBox
   Category:
   - LongSideQuest
@@ -693,6 +764,7 @@
   - 0x4d899f
 
 - Name: WindfallLenzoBringFirefly
+  PrettyName: Windfall Island - Lenzo Bring Forest Firefly
   OriginalItem: JoyPendant
   Category:
   - LongSideQuest
@@ -702,6 +774,7 @@
   - 0x4d7c4b
 
 - Name: WindfallLenzoHouseLeftChest
+  PrettyName: Windfall Island - Lenzo House Left Chest
   OriginalItem: TreasureChart29
   Category:
   - ShortSideQuest
@@ -711,6 +784,7 @@
   - 0x26e10
 
 - Name: WindfallLenzoHouseRightChest
+  PrettyName: Windfall Island - Lenzo House Right Chest
   OriginalItem: PurpleRupee
   Category:
   - ShortSideQuest
@@ -720,6 +794,7 @@
   - 0x26e30
 
 - Name: WindfallCafePostmanDelivery
+  PrettyName: Windfall Island - Cafe Postman Delivery
   OriginalItem: MoblinsLetter
   Category:
   - ShortSideQuest
@@ -730,6 +805,7 @@
   NameOffsets: 0x2a0d43
 
 - Name: WindfallAntonPictoLinda
+  PrettyName: Windfall Island - Linda and Anton
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
@@ -739,6 +815,7 @@
   - 0x1c40a7
 
 - Name: WindfallBattleSquidFirstPrize
+  PrettyName: Windfall Island - Battle Squid First Prize
   OriginalItem: PieceOfHeart
   Category:
   - BattleSquid
@@ -748,6 +825,7 @@
   - 0x46f327
 
 - Name: WindfallBattleSquidSecondPrize
+  PrettyName: Windfall Island - Battle Squid Second Prize
   OriginalItem: TreasureChart7
   Category:
   - BattleSquid
@@ -757,6 +835,7 @@
   - 0x46f337
 
 - Name: WindfallBattleSquidUnder20Prize
+  PrettyName: Windfall Island - Battle Squid Under 20 Prize
   OriginalItem: TreasureChart23
   Category:
   - BattleSquid
@@ -766,6 +845,7 @@
   - 0x46f33f
 
 - Name: WindfallKreebLightLighthouse
+  PrettyName: Windfall Island - Kreeb Light the Lighthouse
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
@@ -775,6 +855,7 @@
   - 0x1c40ab
 
 - Name: WindfallAuction5Rupee
+  PrettyName: Windfall Island - Auction 5 Rupee
   OriginalItem: TreasureChart18
   Category:
   - ExpensivePurchase
@@ -785,6 +866,7 @@
   - 0x190875
 
 - Name: WindfallAuction40Rupee
+  PrettyName: Windfall Island - Auction 40 Rupee
   OriginalItem: JoyPendant
   Category:
   - ExpensivePurchase
@@ -795,6 +877,7 @@
   - 0x19086d
 
 - Name: WindfallAuction60Rupee
+  PrettyName: Windfall Island - Auction 60 Rupee
   OriginalItem: TreasureChart38
   Category:
   - ExpensivePurchase
@@ -805,6 +888,7 @@
   - 0x19087d
 
 - Name: WindfallAuction80Rupee
+  PrettyName: Windfall Island - Auction 80 Rupee
   OriginalItem: PieceOfHeart
   Category:
   - ExpensivePurchase
@@ -815,6 +899,7 @@
   - 0x190885
 
 - Name: WindfallAuction100Rupee
+  PrettyName: Windfall Island - Auction 100 Rupee
   OriginalItem: SwiftSail
   Category:
   - ExpensivePurchase
@@ -825,6 +910,7 @@
   - 0x19088d
 
 - Name: WindfallHouseOfWealthChest
+  PrettyName: Windfall Island - House of Wealth Chest
   OriginalItem: RedRupee
   Category:
   - Misc
@@ -834,6 +920,7 @@
   - 0x39a5c0
 
 - Name: WindfallMaggiesFatherGive20SkullNecklace
+  PrettyName: Windfall Island - Maggie's Father Give 20 Skull Necklaces
   OriginalItem: TreasureChart2
   Category:
   - SpoilsTrading
@@ -844,6 +931,7 @@
   NameOffsets: 0x2ab29f
 
 - Name: WindfallMaggieFreeItem
+  PrettyName: Windfall Island - Maggie Free Item
   OriginalItem: MaggiesLetter
   Category:
   - FreeGift
@@ -853,6 +941,7 @@
   - 0x484443
 
 - Name: WindfallMaggieDeliveryReward
+  PrettyName: Windfall Island - Maggie Delivery Reward
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
@@ -862,6 +951,7 @@
   - 0x48447f
 
 - Name: WindfallPotionShop15Green
+  PrettyName: Windfall Island - Potion Shop 15 Green Chu
   OriginalItem: GreenPotion
   Category:
   - SpoilsTrading
@@ -871,6 +961,7 @@
   - 1
 
 - Name: WindfallPotionShop15Blue
+  PrettyName: Windfall Island - Potion Shop 15 Blue Chu
   OriginalItem: BluePotion
   Category:
   - SpoilsTrading
@@ -881,6 +972,7 @@
   - 1
 
 - Name: WindfallPirateShipChest
+  PrettyName: Windfall Island - Pirate Ship Chest
   OriginalItem: Bombs
   Category:
   - Minigame
@@ -891,6 +983,7 @@
   - 0x2ce74
 
 - Name: PawprintSunkenTreasure
+  PrettyName: Pawprint Isle - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -903,6 +996,7 @@
   - 0x246bac
 
 - Name: PawprintChuchuCaveChest
+  PrettyName: Pawprint Isle - Chu Chu Cave Chest
   OriginalItem: PieceOfHeart
   Category:
   - PuzzleSecretCave
@@ -912,6 +1006,7 @@
   - 0x20c10
 
 - Name: PawprintChuchuCaveBehindLeftBoulder
+  PrettyName: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
   OriginalItem: PurpleRupee
   Category:
   - PuzzleSecretCave
@@ -921,6 +1016,7 @@
   - 0x20bd0
 
 - Name: PawprintChuchuCaveBehindRightBoulder
+  PrettyName: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
   OriginalItem: JoyPendant
   Category:
   - PuzzleSecretCave
@@ -930,6 +1026,7 @@
   - 0x20bf0
 
 - Name: PawprintChuchuCaveScaleWall
+  PrettyName: Pawprint Isle - Chu Chu Cave Chest Scale Wall
   OriginalItem: RedRupee
   Category:
   - PuzzleSecretCave
@@ -939,6 +1036,7 @@
   - 0x20bb0
 
 - Name: PawprintWizzrobeCaveChest
+  PrettyName: Pawprint Isle - Wizzrobe Cave Chest
   OriginalItem: TreasureChart46
   Category:
   - CombatSecretCave
@@ -948,6 +1046,7 @@
   - 0x20c10
 
 - Name: PawprintLookoutPlatformDefeatEnemies
+  PrettyName: Pawprint Isle - Lookout Platform Defeat Enemies
   OriginalItem: RedRupee
   Category:
   - Platform
@@ -957,6 +1056,7 @@
   - 0x246cf0
 
 - Name: DragonRoostIslandWindShrine
+  PrettyName: Dragon Roost Island - Wind Shrine
   OriginalItem: WindsRequiem
   Category:
   - Misc
@@ -967,6 +1067,7 @@
   NameOffsets: 0xdd4263
 
 - Name: DragonRoostIslandBoulderChest
+  PrettyName: Dragon Roost Island - Boulder Chest
   OriginalItem: SilverRupee
   Category:
   - IslandPuzzle
@@ -976,6 +1077,7 @@
   - 0xb9b8ac
 
 - Name: DragonRoostIslandSunkenTreasure
+  PrettyName: Dragon Roost Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -988,6 +1090,7 @@
   - 0xb9b66c
 
 - Name: DragonRoostIslandHoskit20GoldenFeathers
+  PrettyName: Dragon Roost Island - Hoskit Give 20 Golden Feathers
   OriginalItem: OrangeRupee
   Category:
   - SpoilsTrading
@@ -998,6 +1101,7 @@
   NameOffsets: 0x19253b
 
 - Name: DragonRoostIslandBaitoMailgame
+  PrettyName: Dragon Roost Island - Baito Mail Game
   OriginalItem: NoteToMom
   Category:
   - Minigame
@@ -1008,6 +1112,7 @@
   NameOffsets: 0x19254b
 
 - Name: DragonRoostIslandLeafPlatforms
+  PrettyName: Dragon Roost Island - Fly Across Platforms Around Island
   OriginalItem: OrangeRupee
   Category:
   - IslandPuzzle
@@ -1017,6 +1122,7 @@
   - 0xb9b8cc
 
 - Name: DragonRoostIslandCaveChest
+  PrettyName: Dragon Roost Island - Cave Chest
   OriginalItem: PurpleRupee
   Category:
   - CombatSecretCave
@@ -1026,6 +1132,7 @@
   - 0x1c7550
 
 - Name: FlightControlBirdManFirstPrize
+  PrettyName: Flight Control Platform - First Prize
   OriginalItem: PieceOfHeart
   Category:
   - Minigame
@@ -1035,6 +1142,7 @@
   - 0x40e79b
 
 - Name: FlightControlSunkenTreasure
+  PrettyName: Flight Control Platform - Sunken Treasure
   OriginalItem: IslandHeartsChart
   Category:
   - SunkenTreasure
@@ -1047,6 +1155,7 @@
   - 0x23988c
 
 - Name: FlightControlSubmarineChest
+  PrettyName: Flight Control Platform - Submarine Chest
   OriginalItem: PlatformChart
   Category:
   - Submarine
@@ -1056,6 +1165,7 @@
   - 0x120ac8
 
 - Name: WesternFairySunkenTreasure
+  PrettyName: Western Fairy Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1068,6 +1178,7 @@
   - 0x1d23ec
 
 - Name: WesternFairyGreatFairy
+  PrettyName: Western Fairy Island - Great Fairy
   OriginalItem: ProgressiveQuiver
   Category:
   - GreatFairy
@@ -1077,6 +1188,7 @@
   - 0x29DD1F
 
 - Name: WesternFairyLookoutPlatformChest
+  PrettyName: Western Fairy Island - Lookout Platform Chest
   OriginalItem: SkullNecklace
   Category:
   - Platform
@@ -1086,6 +1198,7 @@
   - 0x1d2458
 
 - Name: RockSpireSoutheastGunboat
+  PrettyName: Rock Spire Isle - Defeat Southeast Gunboat
   OriginalItem: PieceOfHeart
   Category:
   - Gunboat
@@ -1095,6 +1208,7 @@
   - 0x237b84
 
 - Name: RockSpireSunkenTreasure
+  PrettyName: Rock Spire Isle - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1107,6 +1221,7 @@
   - 0x237d10
 
 - Name: RockSpireBeedle500RupeeItem
+  PrettyName: Rock Spire Isle - Beedle 500 Rupee Item
   OriginalItem: EmptyBottle
   Category:
   - ExpensivePurchase
@@ -1118,6 +1233,7 @@
   - 0x41d75b
 
 - Name: RockSpireBeedle950RupeeItem
+  PrettyName: Rock Spire Isle - Beedle 950 Rupee Item
   OriginalItem: PieceOfHeart
   Category:
   - ExpensivePurchase
@@ -1129,6 +1245,7 @@
   - 0x41d74f
 
 - Name: RockSpireBeedle900RupeeItem
+  PrettyName: Rock Spire Isle - Beedle 900 Ruppe Item
   OriginalItem: TreasureChart4
   Category:
   - ExpensivePurchase
@@ -1140,6 +1257,7 @@
   - 0x41d763
 
 - Name: RockSpireWesternLookoutPlatformDestroyCannons
+  PrettyName: Rock Spire Isle - Western Lookout Platform Destroy Cannons
   OriginalItem: OrangeRupee
   Category:
   - Platform
@@ -1149,6 +1267,7 @@
   - 0x237de8
 
 - Name: RockSpireEasternLookoutPlatformDestroyCannons
+  PrettyName: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -1158,6 +1277,7 @@
   - 0x237e08
 
 - Name: RockSpireCenterLookoutPlatformChest
+  PrettyName: Rock Spire Isle - Center Lookout Platform Chest
   OriginalItem: RedRupee
   Category:
   - Platform
@@ -1167,6 +1287,7 @@
   - 0x237e28
 
 - Name: RockSpireCaveChest
+  PrettyName: Rock Spire Isle - Cave Chest
   OriginalItem: TreasureChart37
   Category:
   - CombatSecretCave
@@ -1176,6 +1297,7 @@
   - 0x20c40
 
 - Name: TingleIslandAnkleAllStatuesReward
+  PrettyName: Tingle Island - Ankle All Statues Reward
   OriginalItem: RainbowRupee
   Category:
   - Misc
@@ -1185,6 +1307,7 @@
   - 0x4f1b13
 
 - Name: TingleIslandBigOcto
+  PrettyName: Tingle Island - Big Octo
   OriginalItem: PieceOfHeart
   Category:
   - BigOcto
@@ -1194,6 +1317,7 @@
   - 0x5bf0d0
 
 - Name: TingleIslandSunkenTreasure
+  PrettyName: Tingle Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1206,6 +1330,7 @@
   - 0x5bf2a4
 
 - Name: NorthernTriangleSunkenTreasure
+  PrettyName: Northern Triangle Island - Sunken Treasure
   OriginalItem: OctoChart
   Category:
   - SunkenTreasure
@@ -1218,6 +1343,7 @@
   - 0x65f2c
 
 - Name: EasternFairySunkenTreasure
+  PrettyName: Eastern Fairy Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1230,6 +1356,7 @@
   - 0x1d21e4
 
 - Name: EasternFairyGreatFairy
+  PrettyName: Eastern Fairy Island - Great Fairy
   OriginalItem: ProgressiveBombBag
   Category:
   - GreatFairy
@@ -1239,6 +1366,7 @@
   - 0x29DCF7
 
 - Name: EasternFairyLookoutPlatformDefeatCannonsAndEnemies
+  PrettyName: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
   OriginalItem: BokoBabaSeed
   Category:
   - Platform
@@ -1248,6 +1376,7 @@
   - 0x1d2274
 
 - Name: FireMountainBigOcto
+  PrettyName: Fire Mountain - Big Octo
   OriginalItem: OrangeRupee
   Category:
   - BigOcto
@@ -1257,6 +1386,7 @@
   - 0x1f39c8
 
 - Name: FireMountainSunkenTreasure
+  PrettyName: Fire Mountain - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1269,6 +1399,7 @@
   - 0x1f3b9c
 
 - Name: FireMountainInteriorChest
+  PrettyName: Fire Mountain - Interior Chest
   OriginalItem: PowerBracelets
   Category:
   - PuzzleSecretCave
@@ -1278,6 +1409,7 @@
   - 0x20cc8
 
 - Name: FireMountainLookoutPlatformChest
+  PrettyName: Fire Mountain - Lookout Platform Chest
   OriginalItem: YellowRupee
   Category:
   - Platform
@@ -1287,6 +1419,7 @@
   - 0x1f3c4c
 
 - Name: FireMountainLookoutPlatformDestroyCannons
+  PrettyName: Fire Mountain - Lookout Platform Destroy Cannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -1296,6 +1429,7 @@
   - 0x1f3c2c
 
 - Name: StarBeltSunkenTreasure
+  PrettyName: Star Belt Archipelago - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1308,6 +1442,7 @@
   - 0xbec54
 
 - Name: StarBeltLookoutPlatformChest
+  PrettyName: Star Belt Archipelago - Lookout Platform Chest
   OriginalItem: TreasureChart44
   Category:
   - Platform
@@ -1317,6 +1452,7 @@
   - 0xbecc0
 
 - Name: ThreeEyeReefDestroyCannonsAndGunboats
+  PrettyName: Three Eye Reef - Destroy Cannons and Gunboats
   OriginalItem: TreasureChart32
   Category:
   - EyeReefChests
@@ -1326,6 +1462,7 @@
   - 0x1f51a4
 
 - Name: ThreeEyeReefSunkenTreasure
+  PrettyName: Three Eye Reef - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1338,6 +1475,7 @@
   - 0x1f5084
 
 - Name: GreatfishHiddenChest
+  PrettyName: Greatfish Isle - Hidden Chest
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
@@ -1347,6 +1485,7 @@
   - 0x5c8478
 
 - Name: GreatfishSunkenTreasure
+  PrettyName: Greatfish Isle - Sunken Treasure
   OriginalItem: TriforceShard1
   Category:
   - SunkenTreasure
@@ -1359,6 +1498,7 @@
   - 0x5c81cc
 
 - Name: CyclopsReefDestroyCannonsAndGunboats
+  PrettyName: Cyclops Reef - Destroy Cannons and Gunboats
   OriginalItem: TreasureChart21
   Category:
   - EyeReefChests
@@ -1368,6 +1508,7 @@
   - 0x1d719c
 
 - Name: CyclopsReefSunkenTreasure
+  PrettyName: Cyclops Reef - Sunken Treasure
   OriginalItem: LightRingChart
   Category:
   - SunkenTreasure
@@ -1380,6 +1521,7 @@
   - 0x1d7130
 
 - Name: CyclopsReefLookoutPlatformDefeatEnemies
+  PrettyName: Cyclops Reef - Lookout Platform Defeat Enemies
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -1389,6 +1531,7 @@
   - 0x1d71bc
 
 - Name: SixEyeReefDestroyCannonsAndGunboats
+  PrettyName: Six Eye Reef - Destroy Cannons and Gunboats
   OriginalItem: TreasureChart26
   Category:
   - EyeReefChests
@@ -1398,6 +1541,7 @@
   - 0x1f4630
 
 - Name: SixEyeReefSunkenTreasure
+  PrettyName: Six Eye Reef - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1410,6 +1554,7 @@
   - 0x1f4510
 
 - Name: SixEyeReefSubmarineChest
+  PrettyName: Six Eye Reef - Submarine Chest
   OriginalItem: PieceOfHeart
   Category:
   - Submarine
@@ -1419,6 +1564,7 @@
   - 0x12093c
 
 - Name: SixEyeReefLookoutPlatformDestroyCannons
+  PrettyName: Six Eye Reef - Lookout Platform Destroy Cannons
   OriginalItem: SkullNecklace
   Category:
   - Platform
@@ -1428,6 +1574,7 @@
   - 0x1f4650
 
 - Name: TOTGSunkenTreasure
+  PrettyName: Tower of the Gods - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1440,6 +1587,7 @@
   - 0x2c10
 
 - Name: EasternTriangleSunkenTreasure
+  PrettyName: Eastern Triangle Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1452,6 +1600,7 @@
   - 0x66358
 
 - Name: ThornedFairySunkenTreasure
+  PrettyName: Thorned Fairy Island - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1464,6 +1613,7 @@
   - 0x2abdf0
 
 - Name: ThornedFairyGreatFairy
+  PrettyName: Thorned Fairy Island - Great Fairy
   OriginalItem: ProgressiveQuiver
   Category:
   - GreatFairy
@@ -1473,6 +1623,7 @@
   - 0x29DD17
 
 - Name: ThornedFairyNortheasternLookoutPlatformDestroyCannons
+  PrettyName: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -1482,6 +1633,7 @@
   - 0x2abe80
 
 - Name: ThornedFairySouthwesternLookoutPlatformDefeatEnemies
+  PrettyName: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
   OriginalItem: BokoBabaSeed
   Category:
   - Platform
@@ -1491,6 +1643,7 @@
   - 0x2abea0
 
 - Name: NeedleRockChest
+  PrettyName: Needle Rock Isle - Chest
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
@@ -1500,6 +1653,7 @@
   - 0x12ee24
 
 - Name: NeedleRockGoldenGunboat
+  PrettyName: Needle Rock Isle - Golden Gunboat
   OriginalItem: TriforceChart3
   Category:
   - Gunboat
@@ -1509,6 +1663,7 @@
   - 0x12ed94
 
 - Name: NeedleRockSunkenTreasure
+  PrettyName: Needle Rock Isle - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1521,6 +1676,7 @@
   - 0x12ed04
 
 - Name: NeedleRockCaveChest
+  PrettyName: Needle Rock Isle - Cave Chest
   OriginalItem: OrangeRupee
   Category:
   - PuzzleSecretCave
@@ -1530,6 +1686,7 @@
   - 0x20c0c
 
 - Name: IsletOfSteelSunkenTreasure
+  PrettyName: Islet of Steel - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1542,6 +1699,7 @@
   - 0x635adc
 
 - Name: IsletOfSteelInteriorChest
+  PrettyName: Islet of Steel - Interior Chest
   OriginalItem: TriforceChart1
   Category:
   - Misc
@@ -1551,6 +1709,7 @@
   - 0x20bb8
 
 - Name: IsletOfSteelLookoutPlatformDefeatEnemies
+  PrettyName: Islet of Steel - Lookout PLatform Defeat Enemies
   OriginalItem: SkullNecklace
   Category:
   - Platform
@@ -1560,6 +1719,7 @@
   - 0x635bd8
 
 - Name: StoneWatcherSunkenTreasure
+  PrettyName: Stone Watcher Island - Sunken Treasure
   OriginalItem: TriforceShard3
   Category:
   - SunkenTreasure
@@ -1572,6 +1732,7 @@
   - 0x343468
 
 - Name: StoneWatcherCaveChest
+  PrettyName: Stone Watcher Island - Cave Chest
   OriginalItem: TriforceShard7
   Category:
   - CombatSecretCave
@@ -1581,6 +1742,7 @@
   - 0x1c7084
 
 - Name: StoneWatcherLookoutPlatformChest
+  PrettyName: Stone Watcher Island - Lookout Platform Chest
   OriginalItem: RedRupee
   Category:
   - Platform
@@ -1590,6 +1752,7 @@
   - 0x343560
 
 - Name: StoneWatcherLookoutPlatformDestroyCannons
+  PrettyName: Stone Watcher Island - Lookout Platform Destroy Cannons
   OriginalItem: PieceOfHeart
   Category:
   - Platform
@@ -1599,6 +1762,7 @@
   - 0x343540
 
 - Name: SouthernTriangleSunkenTreasure
+  PrettyName: Stone Watcher Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1611,6 +1775,7 @@
   - 0x6612c
 
 - Name: PrivateOasisTopOfWaterfallChest
+  PrettyName: Private Oasis - Top of Waterfall Chest
   OriginalItem: TreasureChart27
   Category:
   - IslandPuzzle
@@ -1620,6 +1785,7 @@
   - 0x5a6928
 
 - Name: PrivateOasisBigOcto
+  PrettyName: Private Oasis - Big Octo
   OriginalItem: OrangeRupee
   Category:
   - BigOcto
@@ -1629,6 +1795,7 @@
   - 0x5a68e0
 
 - Name: PrivateOasisSunkenTreasure
+  PrettyName: Private Oasis - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1641,6 +1808,7 @@
   - 0x5a6778
 
 - Name: PrivateOasisCabanaLabyrinthLowerFloorChest
+  PrettyName: Private Oasis - Cabana Labyrinth Lower Floor Chest
   OriginalItem: OrangeRupee
   Category:
   - PuzzleSecretCave
@@ -1650,6 +1818,7 @@
   - 0x20c74
 
 - Name: PrivateOasisCabanaLabyrinthUpperFloorChest
+  PrettyName: Private Oasis - Cabana Labyrinth Upper Floor Chest
   OriginalItem: TriforceShard2
   Category:
   - PuzzleSecretCave
@@ -1659,6 +1828,7 @@
   - 0x20c54
 
 - Name: BombIslandSunkenTreasure
+  PrettyName: Bomb Island - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1671,6 +1841,7 @@
   - 0xbeb38
 
 - Name: BombIslandCaveChest
+  PrettyName: Bomb Island - Cave Chest
   OriginalItem: PieceOfHeart
   Category:
   - PuzzleSecretCave
@@ -1680,6 +1851,7 @@
   - 0x1c6e78
 
 - Name: BombIslandSubmarineChest
+  PrettyName: Bomb Island - Submarine Chest
   OriginalItem: EmptyBottle
   Category:
   - Submarine
@@ -1689,6 +1861,7 @@
   - 0x1208a4
 
 - Name: BombIslandLookoutPlatformDefeatEnemies
+  PrettyName: Bomb Island - Lookout Platform Defeat Enemies
   OriginalItem: RedRupee
   Category:
   - Platform
@@ -1698,6 +1871,7 @@
   - 0xbec10
 
 - Name: BirdsPeakSunkenTreasure
+  PrettyName: Birds Peak Rock - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1710,6 +1884,7 @@
   - 0xbd0024
 
 - Name: BirdsPeakRockCaveChest
+  PrettyName: Birds Peak Rock - Cave Chest
   OriginalItem: TriforceChart3
   Category:
   - PuzzleSecretCave
@@ -1719,6 +1894,7 @@
   - 0x20b8c
 
 - Name: DiamondSteppeBigOcto
+  PrettyName: Diamond Steppe Isle - Big Octo
   OriginalItem: OrangeRupee
   Category:
   - BigOcto
@@ -1728,6 +1904,7 @@
   - 0x2b706c
 
 - Name: DiamondSteppeSunkenTreasure
+  PrettyName: Diamond Steppe Isle - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1740,6 +1917,7 @@
   - 0x2b71f8
 
 - Name: DiamondSteppeWarpMazeFirstChest
+  PrettyName: Diamond Steppe Isle - Maze First Chest
   OriginalItem: JoyPendant
   Category:
   - PuzzleSecretCave
@@ -1749,6 +1927,7 @@
   - 0x20be8
 
 - Name: DiamondSteppeWarpMazeSecondChest
+  PrettyName: Diamond Steppe Isle - Maze Second Chest
   OriginalItem: GhostShipChart
   Category:
   - PuzzleSecretCave
@@ -1758,6 +1937,7 @@
   - 0x20bc8
 
 - Name: FiveEyeReefDestroyCannonsAndGunboats
+  PrettyName: Five Eye Reef - Destroy Cannons and Gunboats
   OriginalItem: TreasureChart41
   Category:
   - EyeReefChests
@@ -1767,6 +1947,7 @@
   - 0x1eff00
 
 - Name: FiveEyeReefSunkenTreasure
+  PrettyName: Five Eye Reef - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1779,6 +1960,7 @@
   - 0x1efd98
 
 - Name: FiveEyeReefLookoutPlatformChest
+  PrettyName: Five Eye Reef - Lookout Platform Chest
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -1788,6 +1970,7 @@
   - 0x1eff20
 
 - Name: SharkIslandSunkenTreasure
+  PrettyName: Shark Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1800,6 +1983,7 @@
   - 0x1222bc
 
 - Name: SharkIslandCaveChest
+  PrettyName: Shark Island - Cave Chest
   OriginalItem: SilverRupee
   Category:
   - CombatSecretCave
@@ -1809,6 +1993,7 @@
   - 0x20c10
 
 - Name: SouthernFairySunkenTreasure
+  PrettyName: Southern Fairy Island - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1821,6 +2006,7 @@
   - 0x1d2dac
 
 - Name: SouthernFairyGreatFairy
+  PrettyName: Southern Fairy Island - Great Fairy
   OriginalItem: ProgressiveBombBag
   Category:
   - GreatFairy
@@ -1830,6 +2016,7 @@
   - 0x29DCEF
 
 - Name: SouthernFairyLookoutPlatformDestroyNorthwestCannons
+  PrettyName: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
   OriginalItem: TreasureChart40
   Category:
   - Platform
@@ -1839,6 +2026,7 @@
   - 0x1d2e3c
 
 - Name: SouthernFairyLookoutPlatformDestroySoutheastCannons
+  PrettyName: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
   OriginalItem: SkullNecklace
   Category:
   - Platform
@@ -1848,6 +2036,7 @@
   - 0x1d2e5c
 
 - Name: IceRingFrozenChest
+  PrettyName: Ice Ring Isle - Frozen Chest
   OriginalItem: TreasureChart36
   Category:
   - IslandPuzzle
@@ -1857,6 +2046,7 @@
   - 0x4b6994
 
 - Name: IceRingSunkenTreasure
+  PrettyName: Ice Ring Isle - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1869,6 +2059,7 @@
   - 0x4b682c
 
 - Name: IceRingInteriorChest
+  PrettyName: Ice Ring Isle - Interior Chest
   OriginalItem: IronBoots
   Category:
   - PuzzleSecretCave
@@ -1878,6 +2069,7 @@
   - 0x20d0c
 
 - Name: IceRingInnerCaveChest
+  PrettyName: Ice Ring Isle - Inner Cave Chest
   OriginalItem: OrangeRupee
   Category:
   - PuzzleSecretCave
@@ -1888,6 +2080,7 @@
   - 0x20c10
 
 - Name: ForestHavenSunkenTreasure
+  PrettyName: Forset Haven - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -1900,6 +2093,7 @@
   - 0x8852b8
 
 - Name: ForestHavenOnTreeBranch
+  PrettyName: Forset Haven - On Tree Branch
   OriginalItem: DekuLeaf
   Category:
   - IslandPuzzle
@@ -1910,6 +2104,7 @@
   - 0x33b9c4
 
 - Name: ForestHavenSmallIslandChest
+  PrettyName: Forset Haven - Chest on Small Island
   OriginalItem: TreasureChart3
   Category:
   - IslandPuzzle
@@ -1919,6 +2114,7 @@
   - 0x885588
 
 - Name: CliffPlateauSunkenTreasure
+  PrettyName: Cliff Plateau Isles - Sunken Treasure
   OriginalItem: TriforceShard5
   Category:
   - SunkenTreasure
@@ -1931,6 +2127,7 @@
   - 0xe236c
 
 - Name: CliffPlateauCaveChest
+  PrettyName: Cliff Plateau Isles - Cave Chest
   OriginalItem: JoyPendant
   Category:
   - PuzzleSecretCave
@@ -1940,6 +2137,7 @@
   - 0x20c0c
 
 - Name: CliffPlateauHighestIsleChest
+  PrettyName: Cliff Plateau Isles - Highest Isle Chest
   OriginalItem: TreasureChart25
   Category:
   - PuzzleSecretCave
@@ -1949,6 +2147,7 @@
   - 0xe263c
 
 - Name: CliffPlateauLookoutPlatformChest
+  PrettyName: Cliff Plateau Isles - Sunken Treasure
   OriginalItem: BokoBabaSeed
   Category:
   - Platform
@@ -1958,6 +2157,7 @@
   - 0xe265c
 
 - Name: HorseshoeSunkenTreasure
+  PrettyName: Horseshoe Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -1970,6 +2170,7 @@
   - 0x19d558
 
 - Name: HorseshoePlayGolf
+  PrettyName: Horseshoe Island - Play Golf
   OriginalItem: TreasureChart28
   Category:
   - IslandPuzzle
@@ -1979,6 +2180,7 @@
   - 0x19d774
 
 - Name: HorseshoeCaveChest
+  PrettyName: Horseshoe Island - Cave Chest
   OriginalItem: TreasureChart8
   Category:
   - CombatSecretCave
@@ -1988,6 +2190,7 @@
   - 0x20bb0
 
 - Name: HorseshoeNorthwesternLookoutPlatformChest
+  PrettyName: Horseshoe Island - Northwestern Lookout Platform Chest
   OriginalItem: TreasureChart43
   Category:
   - Platform
@@ -1997,6 +2200,7 @@
   - 0x19d794
 
 - Name: HorseshoeSoutheasternLookoutPlatformChest
+  PrettyName: Horseshoe Island - Southeastern Lookout Platform Chest
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -2006,6 +2210,7 @@
   - 0x19d7b4
 
 - Name: OutsetDigBlackSoil
+  PrettyName: Outset Island - Dig up Black Soil
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
@@ -2015,6 +2220,7 @@
   - 0x84CBD4
 
 - Name: OutsetSunkenTreasure
+  PrettyName: Outset Island - Sunken Treasure
   OriginalItem: TriforceShard6
   Category:
   - SunkenTreasure
@@ -2027,6 +2233,7 @@
   - 0x84c6e8
 
 - Name: OutsetUnderLinksHouseChest
+  PrettyName: Outset Island - Under Link's House
   OriginalItem: OrangeRupee
   Category:
   - Misc
@@ -2036,6 +2243,7 @@
   - 0x212DC
 
 - Name: OutsetOrca10KnightsCrest
+  PrettyName: Outset Island - Orca Give 10 Knight's Crests
   OriginalItem: HurricaneSpin
   Category:
   - SpoilsTrading
@@ -2046,6 +2254,7 @@
   NameOffsets: 0x8bf31b
 
 - Name: OutsetOrca500Hits
+  PrettyName: Outset Island - Orca Hit 500 Times
   OriginalItem: PieceOfHeart
   Category:
   - Junk
@@ -2057,6 +2266,7 @@
   - 0x1063840
 
 - Name: OutsetMesasHouseChest
+  PrettyName: Outset Island - Mesa's House Chest
   OriginalItem: RedRupee
   Category:
   - Misc
@@ -2066,6 +2276,7 @@
   - 0x9BCCE8
 
 - Name: OutsetGreatFairy
+  PrettyName: Outset Island - Great Fairy
   OriginalItem: ProgressiveWallet
   Category:
   - GreatFairy
@@ -2075,6 +2286,7 @@
   - 0x29DCC7
 
 - Name: OutsetSavageFloor30Chest
+  PrettyName: Outset Island - Savage Labyrinth Floor 30
   OriginalItem: TriforceShard6
   Category:
   - SavageLabyrinth
@@ -2084,6 +2296,7 @@
   - 0x31DD48
 
 - Name: OutsetSavageFloor50Chest
+  PrettyName: Outset Island - Savage Labyrinth Floor 50
   OriginalItem: HerosCharm
   Category:
   - SavageLabyrinth
@@ -2093,6 +2306,7 @@
   - 0x31db78
 
 - Name: OutsetJabunsCaveChest
+  PrettyName: Outset Island - Jabun's Cave Chest
   OriginalItem: NayrusPearl
   Category:
   - IslandPuzzle
@@ -2102,6 +2316,7 @@
   - 1
 
 - Name: HeadstoneTopOfIsland
+  PrettyName: Headstone Island - Top of Island
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
@@ -2111,6 +2326,7 @@
   - 0x24714c
 
 - Name: HeadstoneSunkenTreasure
+  PrettyName: Headstone Island - Sunken Treasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
@@ -2123,6 +2339,7 @@
   - 0x2479d0
 
 - Name: HeadstoneIslandSubmarineChest
+  PrettyName: Headstone Island - Submarine Chest
   OriginalItem: TreasureChart14
   Category:
   - Submarine
@@ -2132,6 +2349,7 @@
   - 0x2967f4
 
 - Name: TwoEyeReefDestroyCannonsAndGunboats
+  PrettyName: Two Eye Reef - Destroy Cannons and Gunboats
   OriginalItem: TreasureChart13
   Category:
   - EyeReefChests
@@ -2141,6 +2359,7 @@
   - 0x1e5d2c
 
 - Name: TwoEyeReefBigOctoGreatFairy
+  PrettyName: Two Eye Reef - Big Octo Great Fairy
   OriginalItem: MagicMeterUpgrade
   Category:
   - BigOcto
@@ -2152,6 +2371,7 @@
   NameOffsets: 0xdd2c9f
 
 - Name: TwoEyeReefSunkenTreasure
+  PrettyName: Two Eye Reef - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -2164,6 +2384,7 @@
   - 0x1e5b7c
 
 - Name: TwoEyeReefLookoutPlatformChest
+  PrettyName: Two Eye Reef - Lookout Platform Chest
   OriginalItem: PurpleRupee
   Category:
   - Platform
@@ -2173,6 +2394,7 @@
   - 0x1e5d4c
 
 - Name: AngularIslesPeak
+  PrettyName: Angular Isles - Peak Chest
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
@@ -2182,6 +2404,7 @@
   - 0x2a9730
 
 - Name: AngularSunkenTreasure
+  PrettyName: Angular Isles - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -2194,6 +2417,7 @@
   - 0x2a96a0
 
 - Name: AngularIslesCaveChest
+  PrettyName: Angular Isles - Cave Chest
   OriginalItem: SilverRupee
   Category:
   - PuzzleSecretCave
@@ -2203,6 +2427,7 @@
   - 0x20c54
 
 - Name: BoatingCourseRaftChest
+  PrettyName: Boating Course - Raft Chest
   OriginalItem: BokoBabaSeed
   Category:
   - Raft
@@ -2212,6 +2437,7 @@
   - 0x129594
 
 - Name: BoatingCourseSunkenTreasure
+  PrettyName: Boating Course - Sunken Treasure
   OriginalItem: SeaHeartsChart
   Category:
   - SunkenTreasure
@@ -2224,6 +2450,7 @@
   - 0x129504
 
 - Name: BoatingCourseCaveChest
+  PrettyName: Boating Course - Cave Chest
   OriginalItem: SubmarineChart
   Category:
   - PuzzleSecretCave
@@ -2234,6 +2461,7 @@
   - 0x20c10
 
 - Name: FiveStarSunkenTreasure
+  PrettyName: Five Star Isles - Sunken Treasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
@@ -2246,6 +2474,7 @@
   - 0xb9fa4
 
 - Name: FiveStarRaftChest
+  PrettyName: Five Star Isles - Raft Chest
   OriginalItem: RedRupee
   Category:
   - Raft
@@ -2255,6 +2484,7 @@
   - 0xba07c
 
 - Name: FiveStarSubmarineChest
+  PrettyName: Five Star Isles - Submarine Chest
   OriginalItem: PieceOfHeart
   Category:
   - Submarine
@@ -2264,6 +2494,7 @@
   - 0x1208c8
 
 - Name: FiveStarLookoutPlatformDestroyCannons
+  PrettyName: Five Star Isles - Lookout Platform Destroy Cannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
@@ -2273,6 +2504,7 @@
   - 0xba09c
 
 - Name: GhostShipChest
+  PrettyName: Great Sea - Ghost Ship Chest
   OriginalItem: TriforceShard4
   Category:
   - Misc
@@ -2282,6 +2514,7 @@
   - 0x21aac
 
 - Name: DragonRoostCavernFirstRoomChest
+  PrettyName: Dragon Roost Cavern - First Room Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2291,6 +2524,7 @@
   - 0x5ac940
 
 - Name: DragonRoostCavernWaterJugAlcove
+  PrettyName: Dragon Roost Cavern - Water Jug Alcove Chest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
@@ -2300,6 +2534,7 @@
   - 0x5ac9a0
 
 - Name: DragonRoostCavernBoardedUpChest
+  PrettyName: Dragon Roost Cavern - Boarded Up Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2309,6 +2544,7 @@
   - 0x5ac960
 
 - Name: DragonRoostCavernSwingAcrossLavaChest
+  PrettyName: Dragon Roost Cavern - Swing Across Lava Chest
   OriginalItem: TreasureChart11
   Category:
   - Dungeon
@@ -2318,6 +2554,7 @@
   - 0x5ac9e0
 
 - Name: DragonRoostCavernRatRoomChest
+  PrettyName: Dragon Roost Cavern - Rat Room Chest
   OriginalItem: Compass
   Category:
   - Dungeon
@@ -2327,6 +2564,7 @@
   - 0x5ac980
 
 - Name: DragonRoostCavernRatRoomBoardedUpChest
+  PrettyName: Dragon Roost Cavern - Rat Room Boarded Up Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2336,6 +2574,7 @@
   - 0x5aca00
 
 - Name: DragonRoostCavernBirdsNest
+  PrettyName: Dragon Roost Cavern - Bird's Nest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2345,6 +2584,7 @@
   - 0x40dec8
 
 - Name: DragonRoostCavernDarkRoomChest
+  PrettyName: Dragon Roost Cavern - Dark Room Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2354,6 +2594,7 @@
   - 0x5ac920
 
 - Name: DragonRoostCavernHubRoomTingleChest
+  PrettyName: Dragon Roost Cavern - Hub Room Tingle Chest
   OriginalItem: YellowRupee
   Category:
   - Dungeon
@@ -2364,6 +2605,7 @@
   - 0x5aca40
 
 - Name: DragonRoostCavernPotRoomChest
+  PrettyName: Dragon Roost Cavern - Pot Room Chest
   OriginalItem: TreasureChart39
   Category:
   - Dungeon
@@ -2373,6 +2615,7 @@
   - 0x5ac900
 
 - Name: DragonRoostCavernBossStairsRightChest
+  PrettyName: Dragon Roost Cavern - Boss Stairs Right Chest
   OriginalItem: KnightsCrest
   Category:
   - Dungeon
@@ -2382,6 +2625,7 @@
   - 0x5ac8c0
 
 - Name: DragonRoostCavernBossStairsLeftChest
+  PrettyName: Dragon Roost Cavern - Boss Stairs Left Chest
   OriginalItem: YellowRupee
   Category:
   - Dungeon
@@ -2391,6 +2635,7 @@
   - 0x5ac8e0
 
 - Name: DragonRoostCavernMiniBoss
+  PrettyName: Dragon Roost Cavern - Mini Boss
   OriginalItem: GrapplingHook
   Category:
   - Dungeon
@@ -2400,6 +2645,7 @@
   - 1
 
 - Name: DragonRoostCavernUnderRopeBridge
+  PrettyName: Dragon Roost Cavern - Under Rope Bridge Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2409,6 +2655,7 @@
   - 0x5ac9c0
 
 - Name: DragonRoostCavernTingleStatueChest
+  PrettyName: Dragon Roost Cavern - Tingle Statue Chest
   OriginalItem: DragonTingleStatue
   Category:
   - Dungeon
@@ -2419,6 +2666,7 @@
   - 0x5aca20
 
 - Name: DragonRoostCavernBigKeyChest
+  PrettyName: Dragon Roost Cavern - Big Key Chest
   OriginalItem: BigKey
   Category:
   - Dungeon
@@ -2428,6 +2676,7 @@
   - 0x5ac8a0
 
 - Name: DragonRoostCavernGohmaHeartContainer
+  PrettyName: Dragon Roost Cavern - Gohma Heart Container
   OriginalItem: HeartContainer
   Category:
   - Dungeon
@@ -2437,6 +2686,7 @@
   - 0x46dac0
 
 - Name: ForbiddenWoodsFirstRoomChest
+  PrettyName: Forbidden Woods - First Room Chest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
@@ -2446,6 +2696,7 @@
   - 0x6f8934
 
 - Name: ForbiddenWoodsBokoBabaClimb
+  PrettyName: Forbidden Woods - Boko Baba Climb Chest
   OriginalItem: TreasureChart1
   Category:
   - Dungeon
@@ -2455,6 +2706,7 @@
   - 0x6f88f4
 
 - Name: ForbiddenWoodsInsideHollowTree
+  PrettyName: Forbidden Woods - Inside Hollow Tree Chest
   OriginalItem: KnightsCrest
   Category:
   - Dungeon
@@ -2464,6 +2716,7 @@
   - 0x6f8914
 
 - Name: ForbiddenWoodsHoleInTreeChest
+  PrettyName: Forbidden Woods - Hole In Tree Chest
   OriginalItem: RedRupee
   Category:
   - Dungeon
@@ -2473,6 +2726,7 @@
   - 0x6f8974
 
 - Name: ForbiddenWoodsMorthPit
+  PrettyName: Forbidden Woods - Morth Pit Chest
   OriginalItem: YellowRupee
   Category:
   - Dungeon
@@ -2482,6 +2736,7 @@
   - 0x6f8a74
 
 - Name: ForbiddenWoodsVineMazeLeftChest
+  PrettyName: Forbidden Woods - Vine Maze Left Chest
   OriginalItem: Compass
   Category:
   - Dungeon
@@ -2491,6 +2746,7 @@
   - 0x6f89b4
 
 - Name: ForbiddenWoodsVineMazeRightChest
+  PrettyName: Forbidden Woods - Vine Maze Right Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2500,6 +2756,7 @@
   - 0x6f8954
 
 - Name: ForbiddenWoodsTallRoomChest
+  PrettyName: Forbidden Woods - Tall Room Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2509,6 +2766,7 @@
   - 0x6f8a14
 
 - Name: ForbiddenWoodsMothulaMiniBoss
+  PrettyName: Forbidden Woods - Mothula Mini Boss Chest
   OriginalItem: Boomerang
   Category:
   - Dungeon
@@ -2518,6 +2776,7 @@
   - 0x5338ac
 
 - Name: ForbiddenWoodsByHangingSeedsChest
+  PrettyName: Forbidden Woods - Past Seeds Hanging by Vines Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2527,6 +2786,7 @@
   - 0x6f8a54
 
 - Name: ForbiddenWoodsChestAcrossHangingFlower
+  PrettyName: Forbidden Woods - Chest Across Hanging Flower
   OriginalItem: YellowRupee
   Category:
   - Dungeon
@@ -2536,6 +2796,7 @@
   - 0x6f8a94
 
 - Name: ForbiddenWoodsTingleStatueChest
+  PrettyName: Forbidden Woods - Tingle Statue Chest
   OriginalItem: ForbiddenTingleStatue
   Category:
   - Dungeon
@@ -2546,6 +2807,7 @@
   - 0x6f8ab4
 
 - Name: ForbiddenWoodsLockedTreeTrunkChest
+  PrettyName: Forbidden Woods - Locked Tree Trunk Chest
   OriginalItem: TreasureChart15
   Category:
   - Dungeon
@@ -2555,6 +2817,7 @@
   - 0x6f89d4
 
 - Name: ForbiddenWoodsBigKeyChest
+  PrettyName: Forbidden Woods - Big Key Chest
   OriginalItem: FWBigKey
   Category:
   - Dungeon
@@ -2564,6 +2827,7 @@
   - 0x6f89f4
 
 - Name: ForbiddenWoodsDoubleMothulaRoomChest
+  PrettyName: Forbidden Woods - Double Mothula Room Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2573,6 +2837,7 @@
   - 0x6f8a34
 
 - Name: ForbiddenWoodsKalleDemosHeartContainer
+  PrettyName: Forbidden Woods - Kalle Demoms Heart Container
   OriginalItem: HeartContainer
   Category:
   - Dungeon
@@ -2583,6 +2848,7 @@
   - 0x1bea14
 
 - Name: TOTGHopAcrossFloatingBoxesChest
+  PrettyName: Tower of the Gods - Hop Across Floating Boxes Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2592,6 +2858,7 @@
   - 0x50bc24
 
 - Name: TOTGChestBehindBombableWall
+  PrettyName: Tower of the Gods - Chest Behind Bombable Wall
   OriginalItem: DungeonMap
   Category:
   - Dungeon
@@ -2601,6 +2868,7 @@
   - 0x50bc44
 
 - Name: TOTGLightTwoTorches
+  PrettyName: Tower of the Gods - Light Two Torches Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2610,6 +2878,7 @@
   - 0x50bcc4
 
 - Name: TOTGSkullRoomChest
+  PrettyName: Tower of the Gods - Skull Room Chest
   OriginalItem: Compass
   Category:
   - Dungeon
@@ -2619,6 +2888,7 @@
   - 0x50bc64
 
 - Name: TOTGShootEyeAboveSkulls
+  PrettyName: Tower of the Gods - Shoot Eye Above Skulls Chest
   OriginalItem: TreasureChart6
   Category:
   - Dungeon
@@ -2628,6 +2898,7 @@
   - 0x50bce4
 
 - Name: TOTGTingleStatueChest
+  PrettyName: Tower of the Gods - Tingle Statue Chest
   OriginalItem: GoddessTingleStatue
   Category:
   - Dungeon
@@ -2638,6 +2909,7 @@
   - 0x50bd64
 
 - Name: TOTGStoneTablet
+  PrettyName: Tower of the Gods - Stone Tablet
   OriginalItem: CommandMelody
   Category:
   - Dungeon
@@ -2648,6 +2920,7 @@
   NameOffsets: 0x509b17
 
 - Name: TOTGFirstArmosKnightsChest
+  PrettyName: Tower of the Gods - First Armos Knight Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2657,6 +2930,7 @@
   - 0x50bca4
 
 - Name: TOTGDarknutMiniBoss
+  PrettyName: Tower of the Gods - Darknut Mini Boss
   OriginalItem: ProgressiveBow
   Category:
   - Dungeon
@@ -2666,6 +2940,7 @@
   - 0x26fb20
 
 - Name: TOTGFloatingPlatformsRoomLowerChest
+  PrettyName: Tower of the Gods - Floating Platforms Room Lower Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2675,6 +2950,7 @@
   - 0x50bd24
 
 - Name: TOTGFloatingPlatformsRoomUpperChest
+  PrettyName: Tower of the Gods - Floating Platforms Room Upper Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2684,6 +2960,7 @@
   - 0x50bd44
 
 - Name: TOTGSecondArmostKnightsChest
+  PrettyName: Tower of the Gods - Second Armos Knights Chest
   OriginalItem: TreasureChart30
   Category:
   - Dungeon
@@ -2693,6 +2970,7 @@
   - 0x50bd04
 
 - Name: TOTGBigKeyChest
+  PrettyName: Tower of the Gods - Big Key Chest
   OriginalItem: TotGBigKey
   Category:
   - Dungeon
@@ -2702,6 +2980,7 @@
   - 0x50bd84
 
 - Name: TOTGGohdanHeartContainer
+  PrettyName: Tower of the Gods - Gohdan Heart Container
   OriginalItem: HeartContainer
   Category:
   - Dungeon
@@ -2711,6 +2990,7 @@
   - 0x320ac0
 
 - Name: EarthTempleWarpPotRoomChest
+  PrettyName: Earth Temple - Warp Pot Room Chest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
@@ -2720,6 +3000,7 @@
   - 0x14e388
 
 - Name: EarthTempleWarpPotRoomBehindCurtain
+  PrettyName: Earth Temple - Warp Pot Room Behind Curtain
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2730,6 +3011,7 @@
   - 0x27de14
 
 - Name: EarthTempleFirstCryptChest
+  PrettyName: Earth Temple - First Crypt Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2739,6 +3021,7 @@
   - 0x14e3a8
 
 - Name: EarthTempleBehindDestructableWall
+  PrettyName: Earth Temple - Chest Behind Detructable Wall
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2748,6 +3031,7 @@
   - 0x14e4c8
 
 - Name: EarthTempleThreeBlocksRoomChest
+  PrettyName: Earth Temple - Three Blocks Room Chest
   OriginalItem: Compass
   Category:
   - Dungeon
@@ -2757,6 +3041,7 @@
   - 0x14e3c8
 
 - Name: EarthTempleBehindStatuesChest
+  PrettyName: Earth Temple - Behind Statues Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2766,6 +3051,7 @@
   - 0x14e3e8
 
 - Name: EarthTempleSecondCryptCasket
+  PrettyName: Earth Temple - Second Crypt Casket
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2775,6 +3061,7 @@
   - 0x2c4534
 
 - Name: EarthTempleStalfosMiniBoss
+  PrettyName: Earth Temple - Stalfos Mini Boss
   OriginalItem: MirrorShield
   Category:
   - Dungeon
@@ -2784,6 +3071,7 @@
   - 0x2f313c
 
 - Name: EarthTempleTingleStatueChest
+  PrettyName: Earth Temple - Tingle Statue Chest
   OriginalItem: EarthTingleStatue
   Category:
   - Dungeon
@@ -2794,6 +3082,7 @@
   - 0x14e528
 
 - Name: EarthTempleFoggyFloormasterRoomEndChest
+  PrettyName: Earth Temple - Foggy Floormaster Room End Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2803,6 +3092,7 @@
   - 0x14e408
 
 - Name: EarthTempleKillAllFloormastersChest
+  PrettyName: Earth Temple - Kill All Floormasters Chest
   OriginalItem: TreasureChart20
   Category:
   - Dungeon
@@ -2812,6 +3102,7 @@
   - 0x14e4a8
 
 - Name: EarthTempleNearHammerButtonBehindCurtain
+  PrettyName: Earth Temple - Near Hammer Button Behind Curtain
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2822,6 +3113,7 @@
   - 0x44ac90
 
 - Name: EarthTempleThirdCryptChest
+  PrettyName: Earth Temple - Third Crypt Chest
   OriginalItem: RedRupee
   Category:
   - Dungeon
@@ -2831,6 +3123,7 @@
   - 0x14e428
 
 - Name: EarthTempleManyMirrorsRoomRightChest
+  PrettyName: Earth Temple - Many Mirrors Room Right Chest
   OriginalItem: PurpleRupee
   Category:
   - Dungeon
@@ -2840,6 +3133,7 @@
   - 0x14e468
 
 - Name: EarthTempleManyMirrorsRoomLeftChest
+  PrettyName: Earth Temple - Many Mirrors Room Left Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2849,6 +3143,7 @@
   - 0x14e488
 
 - Name: EarthTempleBigKeyChest
+  PrettyName: Earth Temple - Big Key Chest
   OriginalItem: ETBigKey
   Category:
   - Dungeon
@@ -2858,6 +3153,7 @@
   - 0x14e448
 
 - Name: EarthTempleStalfosCryptRoomChest
+  PrettyName: Earth Temple - Stalfos Crypt Room Chest
   OriginalItem: TreasureChart12
   Category:
   - Dungeon
@@ -2867,6 +3163,7 @@
   - 0x14e4e8
 
 - Name: EarthTempleJalhallaHeartContainer
+  PrettyName: Earth Temple - Jalhalla Heart Container
   OriginalItem: HeartContainer
   Category:
   - Dungeon
@@ -2876,6 +3173,7 @@
   - 0x50cec0
 
 - Name: WindTempleBetweenDirtPatchesChest
+  PrettyName: Wind Temple - Between Dirt Patches Chest
   OriginalItem: OrangeRupee
   Category:
   - Dungeon
@@ -2885,6 +3183,7 @@
   - 0x14d384
 
 - Name: WindTempleTingleStatueChest
+  PrettyName: Wind Temple - Tingle Statue Chest
   OriginalItem: WindTingleStatue
   Category:
   - Dungeon
@@ -2895,6 +3194,7 @@
   - 0x14d464
 
 - Name: WindTempleBehindStoneHeadChest
+  PrettyName: Wind Temple - Behind Stone Head Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2904,6 +3204,7 @@
   - 0x14d3a4
 
 - Name: WindTempleLeftAlcoveChest
+  PrettyName: Wind Temple - Left Alcove Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2913,6 +3214,7 @@
   - 0x14d364
 
 - Name: WindTempleBigKeyChest
+  PrettyName: Wind Temple - Big Key Chest
   OriginalItem: WTBigKey
   Category:
   - Dungeon
@@ -2922,6 +3224,7 @@
   - 0x14d324
 
 - Name: WindTempleManyCyclesRoomChest
+  PrettyName: Wind Temple - Cyclos Room Chest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
@@ -2931,6 +3234,7 @@
   - 0x14d3e4
 
 - Name: WindTempleHubRoomCenterChest
+  PrettyName: Wind Temple - Hub Room Center Chest
   OriginalItem: Compass
   Category:
   - Dungeon
@@ -2940,6 +3244,7 @@
   - 0x14d424
 
 - Name: WindTempleWizzrobeMiniBoss
+  PrettyName: Wind Temple - Wizzrobe Mini Boss
   OriginalItem: Hookshot
   Category:
   - Dungeon
@@ -2949,6 +3254,7 @@
   - 0x222ed8
 
 - Name: WindTempleSpikeWallRoomFirstChest
+  PrettyName: Wind Temple - Spike Wall Room First Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2958,6 +3264,7 @@
   - 0x14d344
 
 - Name: WindTempleSpikeWallRoomDestroyFloors
+  PrettyName: Wind Temple - Spike Wall Room Destroy Floors
   OriginalItem: TreasureChart35
   Category:
   - Dungeon
@@ -2967,6 +3274,7 @@
   - 0x14d3c4
 
 - Name: WindTempleHubRoomTopChest
+  PrettyName: Wind Temple - Hub Room Top Chest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
@@ -2976,6 +3284,7 @@
   - 0x14d2e4
 
 - Name: WindTempleBehindArmosChest
+  PrettyName: Wind Temple - Behind Armos Chest
   OriginalItem: SmallKey
   Category:
   - Dungeon
@@ -2985,6 +3294,7 @@
   - 0x14d304
 
 - Name: WindTempleKillAllBasmentRoomEnemies
+  PrettyName: Wind Temple - Kill All Basement Room Enemies
   OriginalItem: TreasureChart5
   Category:
   - Dungeon
@@ -2994,6 +3304,7 @@
   - 0x14d404
 
 - Name: WindTempleMolgeraHeartContainer
+  PrettyName: Wind Temple - Molgera Heart Container
   OriginalItem: HeartContainer
   Category:
   - Dungeon
@@ -3003,6 +3314,7 @@
   - 0x8ca914
 
 - Name: HyruleCastleSwordChamberChest
+  PrettyName: Hyrule Castle - Sword Chamber Chest
   OriginalItem: MasterSwordPowerless
   Category:
   - Misc
@@ -3012,6 +3324,7 @@
   - 1
 
 - Name: GanonsTowerMazeChest
+  PrettyName: Ganon's Tower - Maze Chest
   OriginalItem: LightArrow
   Category:
   - Dungeon
@@ -3021,6 +3334,7 @@
   - 0x255f58
 
 - Name: DefeatGanondorf
+  PrettyName: Ganon's Tower - Defeat Ganondorf
   OriginalItem: GameBeatable
   Category:
   - Other

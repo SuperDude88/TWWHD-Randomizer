@@ -28,6 +28,21 @@ static std::string getSpoilerFormatEntrance(Entrance* entrance, const size_t& lo
     return name + worldNumber + ": " + spaces + replacement + " from " + parent;
 }
 
+static std::string getSpoilerFormatLocation(Location* location, const size_t& longestNameLength, const WorldPool& worlds)
+{
+    // Print the world number if more than 1 world
+    std::string worldNumber = " [W";
+    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->worldId + 1) + "]" : "";
+                                                                 // Don't add an extra space if the world id is two digits long
+    size_t numSpaces = (longestNameLength - locationIdToPrettyName(location->locationId).length()) + ((location->worldId >= 9) ? 0 : 1);
+    std::string spaces (numSpaces, ' ');
+
+    // Don't say which player the item is for if there's only 1 world
+    std::string itemName = worlds.size() > 1 ? location->currentItem.getPrettyName() : gameItemToPrettyName(location->currentItem.getGameItemId());
+
+    return locationIdToPrettyName(location->locationId) + worldNumber + ":" + spaces + itemName;
+}
+
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
     log << "Wind Waker HD Randomizer Version <insert version number here>" /*<< VERSION*/ << std::endl;
@@ -86,7 +101,7 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         for (auto location : *sphereItr)
         {
-            longestNameLength = std::max(longestNameLength, locationIdToName(location->locationId).length());
+            longestNameLength = std::max(longestNameLength, locationIdToPrettyName(location->locationId).length());
         }
     }
 
@@ -108,27 +123,21 @@ void generateSpoilerLog(WorldPool& worlds)
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
     {
         log << "\tSphere " << std::to_string(sphere) << ":" << std::endl;
-        for (auto location : *sphereItr)
+        auto& sphereLocations = *sphereItr;
+        sphereLocations.sort([](Location* a, Location* b){return *a < *b;});
+        for (auto location : sphereLocations)
         {
-
-            // Print the world number if more than 1 world
-            std::string worldNumber = " [W";
-            worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->worldId + 1) + "]" : "";
-                                                                         // Don't add an extra space if the world id is two digits long
-            size_t numSpaces = (longestNameLength - locationIdToName(location->locationId).length()) + ((location->worldId >= 9) ? 0 : 1);
-            std::string spaces (numSpaces, ' ');
-
-            // Don't say which player the item is for if there's only 1 world
-            std::string itemName = worlds.size() > 1 ? location->currentItem.getName() : gameItemToName(location->currentItem.getGameItemId());
-
-            log << "\t\t" << locationIdToName(location->locationId) << worldNumber << ":" << spaces << itemName << std::endl;
+            log << "\t\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
         }
     }
     log << std::endl;
 
 
     // Print the randomized entrances/playthrough
-    log << "Entrance Playthrough:" << std::endl;
+    if (longestEntranceLength != 0)
+    {
+        log << "Entrance Playthrough:" << std::endl;
+    }
     sphere = 0;
     for (auto sphereItr = entranceSpheres.begin(); sphereItr != entranceSpheres.end(); sphereItr++, sphere++)
     {
@@ -167,11 +176,21 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     log << std::endl << "All Locations:" << std::endl;
+    // Update the longest location name considering all locations
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
-            log << "\t" << locationName(location) << ": " << location->currentItem.getName() << std::endl;
+            longestNameLength = std::max(longestNameLength, locationIdToPrettyName(location->locationId).length());
+        }
+    }
+
+    for (auto& world : worlds)
+    {
+        for (auto location : world.getLocations())
+        {
+
+            log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
         }
     }
 
