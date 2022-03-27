@@ -73,14 +73,14 @@ void Entrance::setOriginalName()
 {
     if (!alreadySetOriginalName)
     {
-        originalName = areaToName(parentArea) + " -> " + areaToName(connectedArea);
+        originalName = areaToPrettyName(parentArea) + " -> " + areaToPrettyName(connectedArea);
         alreadySetOriginalName = true;
     }
 }
 
 std::string Entrance::getCurrentName() const
 {
-    return areaToName(parentArea) + " -> " + areaToName(connectedArea);
+    return areaToPrettyName(parentArea) + " -> " + areaToPrettyName(connectedArea);
 }
 
 std::string Entrance::getFilepathStage() const

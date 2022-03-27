@@ -383,6 +383,8 @@ struct LocationModificationMethod
 
 LocationId nameToLocationId(const std::string& name);
 std::string locationIdToName(LocationId location);
+void storeNewLocationPrettyName(const LocationId& lcoationId, const std::string& prettyName);
+std::string locationIdToPrettyName(const LocationId& locationId);
 LocationCategory nameToLocationCategory(const std::string& name);
 LocationModificationType nameToModificationType(const std::string& name);
 uint32_t locationIdAsIndex(LocationId loc);
@@ -400,6 +402,10 @@ struct Location
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
+
+    bool operator<(const Location& rhs) const;
 };
+
+
 
 std::string locationName(const Location* location);

@@ -405,5 +405,7 @@ enum struct Area : uint32_t
 
 Area nameToArea(const std::string& name);
 std::string areaToName(const Area& area);
+void storeNewAreaPrettyName(const Area& area, std::string prettyName);
+std::string areaToPrettyName(const Area& area);
 uint32_t areaAsIndex(Area area);
 Area indexAsArea(uint32_t index);

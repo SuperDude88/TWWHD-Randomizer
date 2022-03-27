@@ -558,13 +558,19 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    // OBJECT_CHECK(locationObject, locationObject.dump());
     YAML_FIELD_CHECK(locationObject, "Name", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& locName = locationObject["Name"].val();
     std::string locationName = std::string(locName.data(), locName.size());
     loadedLocation = nameToLocationId(locationName);
     LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
     MAPPING_CHECK(locationName, locationIdToName(nameToLocationId(locationName)));
+
+    // Add the pretty name to the map of pretty names to use later
+    YAML_FIELD_CHECK(locationObject, "PrettyName", WorldLoadingError::LOCATION_MISSING_KEY);
+    const auto& prettyName = locationObject["PrettyName"].val();
+    std::string locationPrettyName = std::string(prettyName.data(), prettyName.size());
+    storeNewLocationPrettyName(loadedLocation, locationPrettyName);
+
     Location& newEntry = locationEntries[locationIdAsIndex(loadedLocation)];
     newEntry.locationId = loadedLocation;
     newEntry.worldId = worldId;
@@ -667,7 +673,6 @@ World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, c
     loadedExit.setConnectedArea(connectedArea);
     loadedExit.setWorldId(worldId);
     loadedExit.setWorld(this);
-    loadedExit.setOriginalName();
     WorldLoadingError err = WorldLoadingError::NONE;
     // load exit requirements
     if((err = parseRequirementString(logicExpression, loadedExit.getRequirement())) != WorldLoadingError::NONE)
@@ -689,6 +694,12 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
     MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
+
+    // Store the pretty name to use for later
+    YAML_FIELD_CHECK(areaObject, "PrettyName", WorldLoadingError::AREA_MISSING_KEY);
+    const std::string areaPrettyName = substrToString(areaObject["PrettyName"].val());
+    storeNewAreaPrettyName(loadedArea, areaPrettyName);
+
     AreaEntry& newEntry = areaEntries[areaAsIndex(loadedArea)];
     newEntry.area = loadedArea;
     newEntry.worldId = worldId;
@@ -853,6 +864,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         for (auto& exit : areaEntry.exits)
         {
             exit.connect(exit.getConnectedArea());
+            exit.setOriginalName();
         }
     }
 
