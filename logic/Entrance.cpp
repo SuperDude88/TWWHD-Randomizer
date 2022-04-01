@@ -1,6 +1,7 @@
 
 #include "Entrance.hpp"
 #include "World.hpp"
+#include "Debug.hpp"
 
 Entrance::Entrance() {}
 

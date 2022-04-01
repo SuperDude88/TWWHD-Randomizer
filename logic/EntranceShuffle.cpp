@@ -15,6 +15,13 @@
 using EntrancePools = std::map<EntranceType, EntrancePool>;
 using EntrancePair = std::pair<Entrance*, Entrance*>;
 
+// The entrance randomization algorithm used here is heavily inspired by the entrance
+// randomization algorithm from the Ocarina of Time Randomizer. While the algorithm
+// has been adapted to work for The Wind Waker, credit also goes to those who developed
+// it for Ocarina of Time.
+//
+// https://github.com/TestRunnerSRL/OoT-Randomizer/blob/Dev/EntranceShuffle.py
+
 static std::list<EntranceInfoPair> entranceShuffleTable = {                                                     //----File path info------|---entrance info---//
                             // Parent Area                            Connected Area                            stage,   room, scls index,  stage,  room, spawn, boss stage and out info (stage, room, spawn)
     {EntranceType::DUNGEON, {Area::DragonRoostPondPastStatues,        Area::DRCFirstRoom,                       "Adanmae",  0,          2, "M_NewD2",  0,     0},
@@ -181,8 +188,8 @@ static void logMissingLocations(WorldPool& worlds)
                 debugLog("\t" + locationIdToName(location.locationId));
                 if (identifier++ < 10)
                 {
-                    world.dumpWorldGraph(std::to_string(identifier));
-                    debugLog("Now Dumping " + std::to_string(identifier));
+                    // world.dumpWorldGraph(std::to_string(identifier));
+                    // debugLog("Now Dumping " + std::to_string(identifier));
                 }
                 break;
             }
@@ -226,6 +233,9 @@ static void setAllEntrancesData(World& world)
     }
 }
 
+// Disconnect each entrance in the pool and create a corresponding target entrance
+// which is connected to the root of the world graph. This creates the assumption
+// that we have access to all the connected areas of each entrance
 static EntrancePool assumeEntrancePool(EntrancePool& entrancePool)
 {
     EntrancePool assumedPool = {};
@@ -269,6 +279,7 @@ static void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 
 static void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
 {
+    debugLog("Restoring Connection for " + entrance->getOriginalName());
     targetEntrance->connect(entrance->disconnect());
     entrance->setReplaces(nullptr);
     if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
@@ -306,7 +317,9 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     if (!allLocationsReachable(worlds, itemPool))
     {
         debugLog("Error: All locations not reachable");
-        // logMissingLocations(worlds);
+        #ifdef ENABLE_DEBUG
+            logMissingLocations(worlds);
+        #endif
         return EntranceShuffleError::ALL_LOCATIONS_NOT_REACHABLE;
     }
     // Ensure that there's at least one sphere zero location available to place an item
@@ -362,6 +375,8 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     return EntranceShuffleError::NONE;
 }
 
+// Attempt to connect the given entrance to the given target and verify that the
+// new world graph is valid for this world's settings
 static EntranceShuffleError replaceEntrance(WorldPool& worlds, Entrance* entrance, Entrance* target, std::vector<EntrancePair>& rollbacks, ItemPool& itemPool)
 {
     debugLog("Attempting to Connect " + entrance->getOriginalName() + " To " + target->getReplaces()->getOriginalName());
@@ -392,7 +407,10 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
 
     shufflePool(entrances);
 
-    // Place all entrances in the pool, validating worlds after each placement
+    // Place all entrances in the pool, validating worlds after each placement.
+    // We first choose a random entrance from the list of entrances and attempt
+    // to connect it with random target entrances from the target pool until
+    // one of the connections produces a valid world graph.
     for (auto entrance : entrances)
     {
         EntranceShuffleError err;
@@ -423,9 +441,23 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
         }
     }
 
+    // Verify that all targets were disconnected and that we didn't create any closed root loops
+    for (auto target : targetEntrances)
+    {
+        if (target->getConnectedArea() != Area::INVALID)
+        {
+            debugLog("Error: Target entrance " + target->getCurrentName() + " was never disconnected");
+            return EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET;
+        }
+    }
+
     return EntranceShuffleError::NONE;
 }
 
+// Attempt to shuffle the given entrance pool with the given pool of target entrances
+// When choosing connections randomly, it's possible that the algorithm can lock itself
+// out of producing a valid world which is why we give it some number of retries
+// in hopes that a complete failure with valid settings is exceedingly rare.
 static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds, EntrancePool& entrancePool, EntrancePool& targetEntrances, int retryCount = 20)
 {
     EntranceShuffleError err;
@@ -460,6 +492,7 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
     return EntranceShuffleError::RAN_OUT_OF_RETRIES;
 }
 
+// Helper function for getting the reverse entrances from a given entrance pool
 static EntrancePool getReverseEntrances(EntrancePools& entrancePools, EntranceType type)
 {
     EntrancePool reversePool = {};
@@ -611,7 +644,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             // Allow both primary and non-primary entrances in the MISC pool unless
             // we're mixing the entrance pools and aren't decoupling entrances
             entrancePools[EntranceType::MISC] = world.getShuffleableEntrances(EntranceType::MISC, world.getSettings().mix_entrance_pools && !world.getSettings().decouple_entrances);
-            auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, true);
+            auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, !world.getSettings().decouple_entrances);
             addElementsToPool(entrancePools[EntranceType::MISC], miscRestrictiveEntrances);
 
             // Keep crawlspaces separate for the time-being
@@ -640,10 +673,18 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             }
         }
 
-        // Create target pool to correspond with each pool
+        // This algorithm works similarly to the assumed fill algorithm used to
+        // place items within the world. First, we disconnect all the entrances
+        // that we're going to shuffle and "assume" that we have access to them
+        // by creating a *target entrance* that corresponds to each disconnected
+        // entrance. These target entrances are connected directly to the Root
+        // of the world graph so that they have no requirements for access.
+
+        // Create the pool of target entrances for each entrance type
         for (auto& [type, entrancePool] : entrancePools)
         {
             targetEntrancePools[type] = assumeEntrancePool(entrancePool);
+            logEntrancePool(targetEntrancePools[type], "Targets for entrance type " + entranceTypeToName(type));
         }
 
         // Shuffle the entrances
@@ -685,6 +726,8 @@ const std::string errorToName(EntranceShuffleError err)
             return "NOT_ENOUGH_SPHERE_ZERO_LOCATIONS";
         case EntranceShuffleError::ATTEMPTED_SELF_CONNECTION:
             return "ATTEMPTED_SELF_CONNECTION";
+        case EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET:
+            return "FAILED_TO_DISCONNECT_TARGET";
         default:
             return "UNKNOWN";
     }

@@ -1,6 +1,7 @@
 
 #include "SpoilerLog.hpp"
 #include "../options.hpp"
+#include "Debug.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -74,7 +75,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 void generateSpoilerLog(WorldPool& worlds)
 {
     std::ofstream log;
-    log.open("spoiler.txt"); // Rventually add seed/hash to filename
+    log.open("spoiler.txt"); // Eventually add seed/hash to filename
 
     printBasicInfo(log, worlds);
 
@@ -83,12 +84,13 @@ void generateSpoilerLog(WorldPool& worlds)
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
 
+    debugLog("Starting Island");
     // Print the random starting island if there is one
     for (auto& world : worlds)
     {
         if (world.getSettings().randomize_starting_island)
         {
-            auto startingIsland = areaToName(world.getArea(Area::LinksSpawn).exits.front().getConnectedArea());
+            auto startingIsland = areaToPrettyName(world.getArea(Area::LinksSpawn).exits.front().getConnectedArea());
             log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
         }
     }
@@ -97,6 +99,7 @@ void generateSpoilerLog(WorldPool& worlds)
     // Find the longest location/entrances names for formatting the file
     size_t longestNameLength = 0;
     size_t longestEntranceLength = 0;
+    debugLog("Getting Name Lengths");
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
     {
         for (auto location : *sphereItr)
@@ -104,20 +107,17 @@ void generateSpoilerLog(WorldPool& worlds)
             longestNameLength = std::max(longestNameLength, locationIdToPrettyName(location->locationId).length());
         }
     }
-
-    for (auto sphereItr = entranceSpheres.begin(); sphereItr != entranceSpheres.end(); sphereItr++)
+    for (auto& world : worlds)
     {
-        for (auto entrance : *sphereItr)
+        auto entrances = world.getShuffledEntrances(EntranceType::ALL, false);
+        for (auto entrance : entrances)
         {
-            if (entrance->isShuffled())
-            {
-                longestEntranceLength = std::max(longestEntranceLength, entrance->getOriginalName().length());
-            }
+            longestEntranceLength = std::max(longestEntranceLength, entrance->getOriginalName().length());
         }
     }
 
-
     // Print the playthrough
+    debugLog("Print Playthrough");
     log << "Playthrough:" << std::endl;
     int sphere = 0;
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
@@ -134,6 +134,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     // Print the randomized entrances/playthrough
+    debugLog("Print Entrance Playthrough");
     if (longestEntranceLength != 0)
     {
         log << "Entrance Playthrough:" << std::endl;
@@ -156,10 +157,10 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-
+    debugLog("Entrance Listing");
     for (auto& world : worlds)
     {
-        auto entrances = world.getShuffledEntrances(EntranceType::ALL, world.getSettings().decouple_entrances);
+        auto entrances = world.getShuffledEntrances(EntranceType::ALL, !world.getSettings().decouple_entrances);
         if (entrances.empty())
         {
             continue;
@@ -176,6 +177,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     log << std::endl << "All Locations:" << std::endl;
+    debugLog("All Locations");
     // Update the longest location name considering all locations
     for (auto& world : worlds)
     {
