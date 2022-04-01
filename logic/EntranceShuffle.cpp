@@ -518,65 +518,6 @@ static void SetShuffledEntrances(EntrancePools& entrancePools) {
     }
 }
 
-static Area roomIndexToStartingIslandArea(const uint8_t& startingIslandRoomIndex)
-{
-    // Island room number corresponds with index in the below array
-    constexpr std::array<Area, 50> startingIslandAreaArray = {
-        Area::INVALID,
-        Area::ForsakenFortress,
-        Area::StarIsland,
-        Area::NorthernFairyIsland,
-        Area::GaleIsle,
-        Area::CrescentMoonIsland,
-        Area::SevenStarIsles,
-        Area::OverlookIsland,
-        Area::FourEyeReef,
-        Area::MotherAndChildIsles,
-        Area::SpectacleIsland,
-        Area::WindfallIsland,
-        Area::PawprintIsle,
-        Area::DragonRoostIsland,
-        Area::FlightControlPlatform,
-        Area::WesternFairyIsland,
-        Area::RockSpireIsle,
-        Area::TingleIsland,
-        Area::NorthernTriangleIsland,
-        Area::EasternFairyIsland,
-        Area::FireMountain,
-        Area::StarBeltArchipelago,
-        Area::ThreeEyeReef,
-        Area::GreatfishIsle,
-        Area::CyclopsReef,
-        Area::SixEyeReef,
-        Area::TowerOfTheGods,
-        Area::EasternTriangleIsland,
-        Area::ThornedFairyIsland,
-        Area::NeedleRockIsle,
-        Area::IsletOfSteel,
-        Area::StoneWatcherIsland,
-        Area::SouthernTriangleIsland,
-        Area::PrivateOasis,
-        Area::BombIsland,
-        Area::BirdsPeakRock,
-        Area::DiamondSteppeIsland,
-        Area::FiveEyeReef,
-        Area::SharkIsland,
-        Area::SouthernFairyIsland,
-        Area::IceRingIsle,
-        Area::ForestHaven,
-        Area::CliffPlateauIsles,
-        Area::HorseshoeIsle,
-        Area::OutsetIsland,
-        Area::HeadstoneIsland,
-        Area::TwoEyeReef,
-        Area::AngularIsles,
-        Area::BoatingCourse,
-        Area::FiveStarIsles,
-    };
-
-    return startingIslandAreaArray[startingIslandRoomIndex];
-}
-
 EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 {
     EntranceShuffleError err = EntranceShuffleError::NONE;
@@ -592,7 +533,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         {
             // Rooms 2 - 49 include every island except Forsaken Fortress
             world.startingIslandRoomIndex = Random(2, 50);
-            auto startingIsland = roomIndexToStartingIslandArea(world.startingIslandRoomIndex);
+            auto startingIsland = roomIndexToIslandArea(world.startingIslandRoomIndex);
 
             // Set the new starting island in the world graph
             auto& linksSpawn = world.getEntrance(Area::LinksSpawn, Area::OutsetIsland);

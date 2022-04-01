@@ -409,3 +409,4 @@ void storeNewAreaPrettyName(const Area& area, std::string prettyName);
 std::string areaToPrettyName(const Area& area);
 uint32_t areaAsIndex(Area area);
 Area indexAsArea(uint32_t index);
+Area roomIndexToIslandArea(const uint8_t& startingIslandRoomIndex);

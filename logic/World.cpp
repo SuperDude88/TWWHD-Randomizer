@@ -165,7 +165,7 @@ void World::determineChartMappings()
         GameItem::TreasureChart33, // Sector 49 Five Star Isles
     };
 
-    // Only shuffle around the charts of we're randomizing them
+    // Only shuffle around the charts if we're randomizing them
     if (settings.randomize_charts)
     {
         shufflePool(charts);

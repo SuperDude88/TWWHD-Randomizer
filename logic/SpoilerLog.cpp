@@ -44,6 +44,17 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
     return locationIdToPrettyName(location->locationId) + worldNumber + ":" + spaces + itemName;
 }
 
+// Compatator for sorting the chart mappings
+struct chartComparator {
+    bool operator()(const std::string& a, const std::string& b) const {
+        if (a.length() != b.length())
+        {
+            return a.length() < b.length();
+        }
+        return a < b;
+    }
+};
+
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
     log << "Wind Waker HD Randomizer Version <insert version number here>" /*<< VERSION*/ << std::endl;
@@ -191,8 +202,38 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-
             log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+        }
+    }
+    log << std::endl;
+
+    debugLog("Chart Mappings");
+    for (auto& world : worlds)
+    {
+        log << "Charts for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
+        std::map<std::string, std::string> spoilerTriforceMappings = {};
+        std::map<std::string, std::string, chartComparator> spoilerTreasureMappings = {};
+        for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
+        {
+            auto chart = gameItemToPrettyName(world.chartMappings[islandRoom - 1]);
+            auto island = areaToPrettyName(roomIndexToIslandArea(islandRoom));
+            if (chart.find("Treasure") != std::string::npos)
+            {
+                spoilerTreasureMappings[chart] = island;
+            }
+            else
+            {
+                spoilerTriforceMappings[chart] = island;
+            }
+
+        }
+        for (auto& [chart, island] : spoilerTriforceMappings)
+        {
+            log << "\t" << chart << ":\t" << island << std::endl;
+        }
+        for (auto& [chart, island] : spoilerTreasureMappings)
+        {
+            log << "\t" << chart << ":\t" << island << std::endl;
         }
     }
 
@@ -212,7 +253,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
         {
             if (location->progression)
             {
-                log << "\t" << locationName(location) << std::endl;
+                log << "\t" << locationIdToPrettyName(location->locationId) << std::endl;
             }
         }
     }
@@ -224,7 +265,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
         {
             if (!location->progression)
             {
-                log << "\t" << locationName(location) << std::endl;
+                log << "\t" << locationIdToPrettyName(location->locationId) << std::endl;
             }
         }
     }
