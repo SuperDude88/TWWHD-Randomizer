@@ -1967,6 +1967,8 @@
 
 - Name: OutsetSavageLabyrinth
   PrettyName: Outset Savage Labyrinth
+  Events:
+      CanGetFairies: Nothing
   Exits:
       OutsetNearSavageHeadstone: Nothing
       # The last condition for having grappling hook or a melee weapon is to avoid cases where your only weapon for damaging most enemies is bow or bombs and you run out of arrows or bombs. Grappling hook can be used to steal ammo from enemies.
@@ -2365,6 +2367,8 @@
 - Name: DRCBossDoorRoomAcrossLava
   PrettyName: DRC Boss Door Room Across Lava
   Dungeon: DragonRoostCavern
+  Events:
+      CanGetFairies: Nothing
   Locations:
       DragonRoostCavernBossStairsRightChest: Nothing
       DragonRoostCavernBossStairsLeftChest: Nothing
@@ -2976,6 +2980,8 @@
 - Name: TOTGOutsideArea
   PrettyName: TOTG Outside Area
   Dungeon: TowerOfTheGods
+  Events:
+      CanGetFairies: Nothing
   Exits:
       TOTGBigKeyRoom: Nothing
       TOTGBossRoom: TotGBigKey
@@ -3198,6 +3204,8 @@
 - Name: ETBossDoorRoom
   PrettyName: ET Boss Door Room
   Dungeon: EarthTemple
+  Events:
+      CanGetFairies: Nothing
   Exits:
       ETManyMirrorsRoom: Nothing
       ETBossRoom: ETBigKey
@@ -3534,6 +3542,8 @@
 - Name: WTThreeBigFansRoomPastSongStone
   PrettyName: WT Three Big Fans Room Past Song Stone
   Dungeon: WindTemple
+  Events:
+      CanGetFairies: Nothing
   Exits:
       WTBossRoom: WTBigKey
 
