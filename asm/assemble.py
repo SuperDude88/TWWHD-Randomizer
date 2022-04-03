@@ -52,13 +52,13 @@ def get_relocations_for_elf(o_path, start_addr, symbol_addresses):
 
 try:
   
-  for diff_path in glob.glob('./patch_diffs/*_diff.txt'):
+  for diff_path in glob.glob('./patch_diffs/*_diff.json'):
     os.remove(diff_path)
   
   with open("linker.ld") as f:
       linker_script = f.read()
 
-  with open("symbols_to_relocate.txt") as f:
+  with open("symbols_to_relocate.json") as f:
     to_relocate = json.loads(f.read(), object_pairs_hook=OrderedDict)
   
   all_asm_file_paths = glob.glob('./patches/*.asm')
@@ -283,7 +283,7 @@ try:
            f.write(json.dumps(relocations_for_patch) + "\n")
         
 
-  with open("./custom_symbols.txt", "w") as f:
+  with open("./custom_symbols.json", "w") as f:
     f.write(json.dumps(custom_symbols, indent=2) + "\n")
     print("Dumped custom symbols")
 

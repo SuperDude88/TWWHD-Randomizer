@@ -5,10 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-
-#ifdef ENABLE_DEBUG
-#include "Debug.hpp"
-#endif
+#include "../server/command/Log.hpp"
 
 /*int main()
 {
@@ -22,7 +19,6 @@
 
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
-        openDebugLog(std::to_string(seed));
     #endif
 
     std::cout << "Using seed " << std::to_string(seed) << std::endl;

@@ -7,6 +7,7 @@
 #include "../filetypes/sarc.hpp"
 #include "../filetypes/bfres.hpp"
 #include "../utility/stringUtil.hpp"
+#include "./Log.hpp"
 
 using namespace Utility;
 

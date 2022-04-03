@@ -4,11 +4,12 @@
 #include <fstream>
 
 #include "WWHDStructs.hpp"
+#include "Log.hpp"
 #include "../filetypes/elf.hpp"
 #include "../filetypes/util/elfUtil.hpp"
 #include "../../libs/json.hpp"
 
-#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {return err;}
+#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {LOG_ERR_AND_RETURN(err)}
 
 static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_name = {
     {std::string("Bitem\0\0\0", 8), 0x0000FF00},
@@ -78,7 +79,7 @@ uint8_t getLowestSetBit(uint32_t mask) {
 template<typename T>
 ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
     uint8_t shiftAmount = getLowestSetBit(mask);
-    if (shiftAmount == 0xFF) return ModificationError::INVALID_MASK;
+    if (shiftAmount == 0xFF) LOG_ERR_AND_RETURN(ModificationError::INVALID_MASK)
 
     actor.params = (actor.params & (~mask)) | ((value << shiftAmount) & mask);
     return ModificationError::NONE;
@@ -98,7 +99,7 @@ ModificationError ModifyChest::parseArgs(const ryml::NodeRef& locationObject) {
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            return ModificationError::INVALID_OFFSET;
+            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET);
         }
         offsets.push_back(offsetValue);
     }
@@ -136,7 +137,7 @@ ModificationError ModifyActor::parseArgs(const ryml::NodeRef& locationObject) {
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            return ModificationError::INVALID_OFFSET;
+            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
         offsets.push_back(offsetValue);
     }
@@ -154,7 +155,7 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
         if (item_id_mask_by_actor_name.count(actor.name) == 0) {
             continue;
         }
-        if (ModificationError err = setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())); err != ModificationError::NONE) return err;
+        LOG_IF_ERR_AND_RETURN(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 
         file.seekp(offset, std::ios::beg);
         WWHDStructs::writeACTR(file, actor);
@@ -176,7 +177,7 @@ ModificationError ModifySCOB::parseArgs(const ryml::NodeRef& locationObject) {
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            return ModificationError::INVALID_OFFSET;
+            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
         offsets.push_back(offsetValue);
     }
@@ -194,7 +195,7 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
         if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
             continue;
         }
-        if (ModificationError err = setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())); err != ModificationError::NONE) return err;
+        LOG_ERR_AND_RETURN(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
 
         file.seekp(offset, std::ios::beg);
         WWHDStructs::writeSCOB(file, scob);
@@ -214,7 +215,7 @@ ModificationError ModifyEvent::parseArgs(const ryml::NodeRef& locationObject) {
     unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
     if (offsetValue == 0 || offsetValue == ULONG_MAX)
     {
-        return ModificationError::INVALID_OFFSET;
+        LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
     }
     this->offset = offsetValue;
     
@@ -223,7 +224,7 @@ ModificationError ModifyEvent::parseArgs(const ryml::NodeRef& locationObject) {
     offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
     if (offsetValue == 0 || offsetValue == ULONG_MAX)
     {
-        return ModificationError::INVALID_OFFSET;
+        LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
     }
     this->nameOffset = offsetValue;
 
@@ -231,7 +232,7 @@ ModificationError ModifyEvent::parseArgs(const ryml::NodeRef& locationObject) {
 }
 
 ModificationError ModifyEvent::writeLocation(const Item& item) {
-    std::ofstream file(g_session.openGameFile(filePath), std::ios::out | std::ios::binary);
+    std::ofstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
 
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
@@ -260,7 +261,7 @@ ModificationError ModifyRPX::parseArgs(const ryml::NodeRef& locationObject) {
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            return ModificationError::INVALID_OFFSET;
+            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
         offsets.push_back(offsetValue);
     }
@@ -290,8 +291,8 @@ ModificationError ModifySymbol::parseArgs(const ryml::NodeRef& locationObject) {
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
     if (rpxOpen == false) loadRPX();
-    if (custom_symbols.size() == 0) Load_Custom_Symbols("./asm/custom_symbols.txt");
-    if (custom_symbols.count(symbolName) == 0) return ModificationError::INVALID_SYMBOL;
+    if (custom_symbols.size() == 0) Load_Custom_Symbols("./asm/custom_symbols.json");
+    if (custom_symbols.count(symbolName) == 0) LOG_ERR_AND_RETURN(ModificationError::INVALID_SYMBOL)
 
     uint32_t address = custom_symbols.at(symbolName);
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
@@ -303,7 +304,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
 
 ModificationError ModifyBoss::parseArgs(const ryml::NodeRef& locationObject) {
     YAML_FIELD_CHECK(locationObject, "Paths", ModificationError::MISSING_KEY)
-    if(locationObject["Paths"].num_children() != locationObject["Offsets"].num_children()) return ModificationError::MISSING_VALUE;
+    if(locationObject["Paths"].num_children() != locationObject["Offsets"].num_children()) LOG_ERR_AND_RETURN(ModificationError::MISSING_VALUE)
 
     offsetsWithPath.reserve(locationObject["Paths"].num_children());
     for (size_t i = 0; i < locationObject["Paths"].num_children(); i++) 
@@ -314,7 +315,7 @@ ModificationError ModifyBoss::parseArgs(const ryml::NodeRef& locationObject) {
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
-            return ModificationError::INVALID_OFFSET;
+            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
         offset_with_path.first = std::string(locationObject["Paths"][i].val().data(), locationObject["Paths"].val().size());
         offset_with_path.second = offsetValue;
@@ -342,7 +343,7 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
         file.seekg(offset, std::ios::beg);
         ACTR actor = WWHDStructs::readACTR(file);
 
-        if(ModificationError err = setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID); err != ModificationError::NONE) return err;
+        LOG_IF_ERR_AND_RETURN(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
 
         file.seekp(offset, std::ios::beg);
         WWHDStructs::writeACTR(file, actor);

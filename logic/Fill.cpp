@@ -3,23 +3,23 @@
 #include "Search.hpp"
 #include "PoolFunctions.hpp"
 #include "Random.hpp"
-#include "Debug.hpp"
 #include "Dungeon.hpp"
+#include "../server/command/Log.hpp"
 #include <chrono>
 
 #define FILL_ERROR_CHECK(err) if (err != FillError::NONE) {return err;}
 
 static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
 {
-    debugLog("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
-    debugLog("Items:");
+    DebugLog::getInstance().log("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
+    DebugLog::getInstance().log("Items:");
     for (auto& item : items)
     {
-        debugLog("\t" + item.getName());
+        DebugLog::getInstance().log("\t" + item.getName());
     }
     for (auto location : locations)
     {
-        debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
+        DebugLog::getInstance().log("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
     }
 }
 
@@ -75,13 +75,13 @@ static FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& item
 
     if (accessibleLocations.empty())
     {
-        debugLog("No reachable locations during forward fill attempt");
+        DebugLog::getInstance().log("No reachable locations during forward fill attempt");
         return FillError::NO_REACHABLE_LOCATIONS;
     }
 
     while (accessibleLocations.size() < openLocations * worlds.size())
     {
-        debugLog("Not enough locations available. Need: " + std::to_string(openLocations * worlds.size()) + " Have: " + std::to_string(accessibleLocations.size()));
+        DebugLog::getInstance().log("Not enough locations available. Need: " + std::to_string(openLocations * worlds.size()) + " Have: " + std::to_string(accessibleLocations.size()));
         // Filter out already accessible locations
         filterAndEraseFromPool(allowedLocations, [accessibleLocations](const Location* loc){return elementInPool(loc, accessibleLocations);});
         shufflePool(itemsToPlace);
@@ -96,8 +96,8 @@ static FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& item
             {
 
                 auto location = RandomElement(accessibleLocations);
-                debugLog("Item " + item.getName() + " opened up more space");
-                debugLog("Placing item at " + locationName(location));
+                DebugLog::getInstance().log("Item " + item.getName() + " opened up more space");
+                DebugLog::getInstance().log("Placing item at " + locationName(location));
                 RandomElement(accessibleLocations)->currentItem = item;
                 break;
             }
@@ -109,7 +109,7 @@ static FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& item
         // If no new items were placed, then we can't progress
         if (forwardPlacedItems.size() == sizeBefore)
         {
-            debugLog("No items opened up progression during forward fill attempt");
+            DebugLog::getInstance().log("No items opened up progression during forward fill attempt");
             return FillError::RAN_OUT_OF_RETRIES;
         }
 
@@ -137,7 +137,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
     {
         if (retries <= 0)
         {
-            debugLog("Ran out of retries, attempting forward fill as last resort");
+            DebugLog::getInstance().log("Ran out of retries, attempting forward fill as last resort");
             if (forwardFillUntilMoreFreeSpace(worlds, itemsToPlace, allowedLocations) != FillError::NONE)
             {
                 return FillError::RAN_OUT_OF_RETRIES;
@@ -171,7 +171,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             // itemsToPlace vector
             if (accessibleLocations.empty())
             {
-                debugLog("No Accessible Locations to place " + item.getName() + ". Retrying " + std::to_string(retries) + " more times.");
+                DebugLog::getInstance().log("No Accessible Locations to place " + item.getName() + ". Retrying " + std::to_string(retries) + " more times.");
                 for (auto location : rollbacks)
                 {
                     itemsToPlace.push_back(location->currentItem);
@@ -422,10 +422,10 @@ FillError fill(WorldPool& worlds)
         #ifdef ENABLE_DEBUG
             logItemPool("Major Items:", majorItems);
 
-            debugLog("Progression Locations:");
+            DebugLog::getInstance().log("Progression Locations:");
             for (auto location : progressionLocations)
             {
-                debugLog("\t" + locationName(location));
+                DebugLog::getInstance().log("\t" + locationName(location));
             }
         #endif
         return FillError::MORE_ITEMS_THAN_LOCATIONS;

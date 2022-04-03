@@ -78,3 +78,5 @@ struct Elf32_Rela {
 	uint32_t r_info;
 	int32_t r_addend;
 };
+
+typedef std::pair<uint16_t, Elf32_Shdr> shdr_index_t;

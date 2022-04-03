@@ -2,54 +2,56 @@
 
 #include <string>
 
+using namespace std::literals::string_literals; //spooky namespace in header, not sure of workaround
+
 //color commands from "System" group (00)
-#define TEXT_COLOR_DEFAULT          std::u16string(u"\x0E\x00\x03\x02\xFF\xFF0E\x00\x03\x02\x00", 10) //resets to color from TSY entry?
-#define TEXT_COLOR_RED              std::u16string(u"\x0E\x00\x03\x02\x01", 5)
-#define TEXT_COLOR_GREEN            std::u16string(u"\x0E\x00\x03\x02\x02", 5)
-#define TEXT_COLOR_BLUE             std::u16string(u"\x0E\x00\x03\x02\x03", 5)
-#define TEXT_COLOR_YELLOW           std::u16string(u"\x0E\x00\x03\x02\x04", 5)
-#define TEXT_COLOR_CYAN             std::u16string(u"\x0E\x00\x03\x02\x05", 5)
-#define TEXT_COLOR_MAGENTA          std::u16string(u"\x0E\x00\x03\x02\x06", 5)
-#define TEXT_COLOR_GRAY             std::u16string(u"\x0E\x00\x03\x02\x07", 5)
-#define TEXT_COLOR_ORANGE           std::u16string(u"\x0E\x00\x03\x02\x08", 5)
+#define TEXT_COLOR_DEFAULT          u"\x0E\x00\x03\x02\xFF\xFF0E\x00\x03\x02\x00"s //resets to color from TSY entry?
+#define TEXT_COLOR_RED              u"\x0E\x00\x03\x02\x01"s
+#define TEXT_COLOR_GREEN            u"\x0E\x00\x03\x02\x02"s
+#define TEXT_COLOR_BLUE             u"\x0E\x00\x03\x02\x03"s
+#define TEXT_COLOR_YELLOW           u"\x0E\x00\x03\x02\x04"s
+#define TEXT_COLOR_CYAN             u"\x0E\x00\x03\x02\x05"s
+#define TEXT_COLOR_MAGENTA          u"\x0E\x00\x03\x02\x06"s
+#define TEXT_COLOR_GRAY             u"\x0E\x00\x03\x02\x07"s
+#define TEXT_COLOR_ORANGE           u"\x0E\x00\x03\x02\x08"s
 
 
 //commands from "ControlTags" group (01)
-#define DRAW_INSTANT                std::u16string(u"\x0E\x01\x00\x00", 4)
-#define DRAW_CHAR                   std::u16string(u"\x0E\x01\x01\x00", 4)
-#define WAIT_DISMISS_PROMPT(frames) std::u16string(u"\x0E\x01\x02\x02", 4) + (char16_t)frames //input frames as int
-#define WAIT_DISMISS(frames)        std::u16string(u"\x0E\x01\x03\x02", 4) + (char16_t)frames //input frames as int
-#define DISMISS(frames)             std::u16string(u"\x0E\x01\x04\x02", 4) + (char16_t)frames //input frames as int
-#define STEP(frames)                std::u16string(u"\x0E\x01\x05\x02", 4) + (char16_t)frames //input frames as int, exact purpose unknown
-#define WAIT(frames)                std::u16string(u"\x0E\x01\x06\x02", 4) + (char16_t)frames //input frames as int
-#define TWO_CHOICES                 std::u16string(u"\x0E\x01\x07\x00", 4) //two choices in a textbox
-#define THREE_CHOICES               std::u16string(u"\x0E\x01\x08\x00", 4) //three choices in a textbox
-#define TWO_CHOICES_LEFT            std::u16string(u"\x0E\x01\x09\x00", 4) //first choice, left side
-#define TWO_CHOICES_RIGHT           std::u16string(u"\x0E\x01\x0A\x00", 4) //second choice, right side
-#define CAPITAL                     std::u16string(u"\x0E\x01\x0B\x00", 4) //presumably capitalizes following letter
-#define CREDIT_POSITION             std::u16string(u"\x0E\x01\x0C\x00", 4) //unknown effect
-#define TWO_CHOICES_LEFT_B          std::u16string(u"\x0E\x01\x0D\x00", 4) //first choice, (bottom?) left side
-#define TWO_CHOICES_RIGHT_B         std::u16string(u"\x0E\x01\x0E\x00", 4) //second choice, (bottom?) right side
+#define DRAW_INSTANT                u"\x0E\x01\x00\x00"s
+#define DRAW_CHAR                   u"\x0E\x01\x01\x00"s
+#define WAIT_DISMISS_PROMPT(frames) u"\x0E\x01\x02\x02"s + (char16_t)frames //input frames as int
+#define WAIT_DISMISS(frames)        u"\x0E\x01\x03\x02"s + (char16_t)frames //input frames as int
+#define DISMISS(frames)             u"\x0E\x01\x04\x02"s + (char16_t)frames //input frames as int
+#define STEP(frames)                u"\x0E\x01\x05\x02"s + (char16_t)frames //input frames as int, exact purpose unknown
+#define WAIT(frames)                u"\x0E\x01\x06\x02"s + (char16_t)frames //input frames as int
+#define TWO_CHOICES                 u"\x0E\x01\x07\x00"s //two choices in a textbox
+#define THREE_CHOICES               u"\x0E\x01\x08\x00"s //three choices in a textbox
+#define TWO_CHOICES_LEFT            u"\x0E\x01\x09\x00"s //first choice, left side
+#define TWO_CHOICES_RIGHT           u"\x0E\x01\x0A\x00"s //second choice, right side
+#define CAPITAL                     u"\x0E\x01\x0B\x00"s //presumably capitalizes following letter
+#define CREDIT_POSITION             u"\x0E\x01\x0C\x00"s //unknown effect
+#define TWO_CHOICES_LEFT_B          u"\x0E\x01\x0D\x00"s //first choice, (bottom?) left side
+#define TWO_CHOICES_RIGHT_B         u"\x0E\x01\x0E\x00"s //second choice, (bottom?) right side
 
 
 //commands from "ReplaceTags" group (02)
-#define REPLACE(replaceNum)         std::u16string(u"\x0E\x02", 2) + (char16_t)replaceNum + std::u16string(u"\x00", 1)
+#define REPLACE(replaceNum)         u"\x0E\x02"s + static_cast<char16_t>(replaceNum) + u"\x00"s
 
 
 //commands from "PictureFontTags" group (03)
-#define IMAGE(image)                std::u16string(u"\x0E\x03", 2) + (char16_t)image + std::u16string(u"\x00", 1)
+#define IMAGE(image)                u"\x0E\x03"s + static_cast<char16_t>(image) + u"\x00"s
 
 
 //commands from "SoundTags" group (04)
-#define SOUND(sound)                std::u16string(u"\x0E\x04", 2) + (char16_t)sound + std::u16string(u"\x00", 1)
+#define SOUND(sound)                u"\x0E\x04"s + static_cast<char16_t>(sound) + u"\x00"s
 
 
 //commands from "Camera" group (05)
-#define CAMERA(camPos)              std::u16string(u"\x0E\x05", 2) + (char16_t)camPos + std::u16string(u"\x00", 1)
+#define CAMERA(camPos)              u"\x0E\x05"s + static_cast<char16_t>(camPos) + u"\x00"s
 
 
 //commands from "Action" group (06)
-#define ACTION(action)              std::u16string(u"\x0E\x05", 2) + (char16_t)action + std::u16string(u"\x00", 1)
+#define ACTION(action)              u"\x0E\x05"s + static_cast<char16_t>(action) + u"\x00"s
 
 
 enum struct ReplaceTags : uint16_t {

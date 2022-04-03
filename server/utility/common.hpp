@@ -18,6 +18,12 @@ template<typename T>
 struct vec2 {
 	T X;
 	T Y;
+
+	vec2() {}
+	vec2(const T& val) :
+		X(val),
+		Y(val)
+	{}
 };
 
 template<typename T>
@@ -25,6 +31,13 @@ struct vec3 {
 	T X;
 	T Y;
 	T Z;
+
+	vec3() {}
+	vec3(const T& val) :
+		X(val),
+		Y(val),
+		Z(val)
+	{}
 };
 
 

@@ -181,7 +181,7 @@ namespace FileTypes {
 					return ELFError::USED_SECTION_IS_EMTPY;
 				}
 			}
-			else { //Don't read data if type is 8 (SHT_NOBITS) since the data would be useless
+			else { //Don't read data if section is nobits
 				if(shdr.sh_offset != 0) {
 					return ELFError::NOBITS_SECTION_NOT_EMPTY; //Offset in file should always be 0
 				}
@@ -202,28 +202,27 @@ namespace FileTypes {
 		return loadFromBinary(file);
 	}
 
-	ELFError ELF::extend_section(int index, const std::string& newData) { //newData is data to append, not replace
+	ELFError ELF::extend_section(const uint16_t index, const std::string& newData) { //newData is data to append, not replace
 		if (isEmpty == true) {
 			return ELFError::HEADER_DATA_NOT_LOADED;
 		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) { //Make sure the items are sorted by index so we get the correct section
-			return a.first < b.first;
-			});
-		if (shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
+
+		//Assume items are sorted by index, always should be
+		if (shdr_table[index].second.data.size() == 0) { //Can't append data to an empty section
 			return ELFError::SECTION_DATA_NOT_LOADED;
 		}
+
 		shdr_table[index].second.sh_size += newData.size();
 		shdr_table[index].second.data.append(newData);
 		return ELFError::NONE;
 	}
 
-	ELFError ELF::extend_section(const size_t index, const uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
+	ELFError ELF::extend_section(const uint16_t index, const uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
 		if (isEmpty == true) {
 			return ELFError::HEADER_DATA_NOT_LOADED;
 		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) { //Make sure the items are sorted by index so we get the correct section
-			return a.first < b.first;
-			});
+
+		//Assume items are sorted by index, always should be
 		if (shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
 			return ELFError::SECTION_DATA_NOT_LOADED;
 		}
@@ -283,9 +282,7 @@ namespace FileTypes {
 		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
 		Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
 
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) {
-			return a.second.sh_offset < b.second.sh_offset;
-			});
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
 
 		out.seekp(ehdr.e_shoff + ehdr.e_shentsize * ehdr.e_shnum, std::ios::beg);
 		for (auto& [index, section] : shdr_table) {
@@ -297,9 +294,8 @@ namespace FileTypes {
 				out.write(&section.data[0], section.data.size());
 			}
 		}
-		std::sort(shdr_table.begin(), shdr_table.end(), [](const std::pair<int, Elf32_Shdr>& a, const std::pair<int, Elf32_Shdr>& b) { //Sort again so they are written by index, to update offsets we needed to write the data first
-			return a.first < b.first;
-			});
+		//Sort again so they are written by index, to update offsets we needed to write the data first
+		std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
 
 		out.seekp(ehdr.e_shoff, std::ios::beg);
 		for (auto& [index, section] : shdr_table) {

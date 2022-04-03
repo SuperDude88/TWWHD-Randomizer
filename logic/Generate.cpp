@@ -5,13 +5,13 @@
 #include "Fill.hpp"
 #include "SpoilerLog.hpp"
 #include "Random.hpp"
-#include "Debug.hpp"
 #include "Entrance.hpp"
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
 #include <fstream>
 #include <iostream>
+#include "../server/command/Log.hpp"
 
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, const int seed)
 {
@@ -23,10 +23,10 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
   std::cout << "Building World" << (worlds.size() > 1 ? "s" : "") << std::endl;
   for (size_t i = 0; i < worlds.size(); i++)
   {
-      debugLog("Building World " + std::to_string(i));
+      DebugLog::getInstance().log("Building World " + std::to_string(i));
       worlds[i].setWorldId(i);
       worlds[i].setSettings(settingsVector[i]);
-      if (worlds[i].loadWorld("../data/world.yaml", "../data/macros.yaml", "../data/location_data.yaml"))
+      if (worlds[i].loadWorld("./logic/data/world.yaml", "./logic/data/macros.yaml", "./logic/data/location_data.yaml"))
       {
           return 1;
       }
@@ -51,7 +51,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       if (fillError == FillError::NONE) {
           break;
       }
-      debugLog("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
+      DebugLog::getInstance().log("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
       clearWorlds(worlds);
   }
 

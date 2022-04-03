@@ -29,7 +29,12 @@ void saveRPX();
 class LocationModification
 {
 public:
+    LocationModification() {}
     virtual ~LocationModification() {}
+    LocationModification(const LocationModification& other) = default;
+    LocationModification& operator=(const LocationModification& other) = default;
+    LocationModification(LocationModification&& other) = default;
+    LocationModification& operator=(LocationModification&& other) = default;
 
     virtual std::unique_ptr<LocationModification> duplicate() const { return std::make_unique<LocationModification>(*this); }
     virtual ModificationError parseArgs(const ryml::NodeRef& locationObject) { return ModificationError::NONE; }
@@ -42,7 +47,12 @@ private:
     std::vector<uint32_t> offsets;
 
 public:
+    ModifyChest() {}
     ~ModifyChest() override {}
+    ModifyChest(const ModifyChest& other) = default;
+    ModifyChest& operator=(const ModifyChest& other) = default;
+    ModifyChest(ModifyChest&& other) = default;
+    ModifyChest& operator=(ModifyChest&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
@@ -55,7 +65,12 @@ private:
     std::vector<uint32_t> offsets;
 
 public:
+    ModifyActor() {}
     ~ModifyActor() override {}
+    ModifyActor(const ModifyActor& other) = default;
+    ModifyActor& operator=(const ModifyActor& other) = default;
+    ModifyActor(ModifyActor&& other) = default;
+    ModifyActor& operator=(ModifyActor&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyActor>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
@@ -68,7 +83,12 @@ private:
     std::vector<uint32_t> offsets;
 
 public:
+    ModifySCOB() {}
     ~ModifySCOB() override {}
+    ModifySCOB(const ModifySCOB& other) = default;
+    ModifySCOB& operator=(const ModifySCOB& other) = default;
+    ModifySCOB(ModifySCOB&& other) = default;
+    ModifySCOB& operator=(ModifySCOB&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifySCOB>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
@@ -82,7 +102,12 @@ private:
     uint32_t nameOffset;
 
 public:
+    ModifyEvent() {}
     ~ModifyEvent() override {}
+    ModifyEvent(const ModifyEvent& other) = default;
+    ModifyEvent& operator=(const ModifyEvent& other) = default;
+    ModifyEvent(ModifyEvent&& other) = default;
+    ModifyEvent& operator=(ModifyEvent&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyEvent>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
@@ -94,7 +119,12 @@ private:
     std::vector<uint32_t> offsets;
 
 public:
+    ModifyRPX() {}
     ~ModifyRPX() override {}
+    ModifyRPX(const ModifyRPX& other) = default;
+    ModifyRPX& operator=(const ModifyRPX& other) = default;
+    ModifyRPX(ModifyRPX&& other) = default;
+    ModifyRPX& operator=(ModifyRPX&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyRPX>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
@@ -106,7 +136,12 @@ private:
     std::string symbolName;
 
 public:
+    ModifySymbol() {}
     ~ModifySymbol() override {}
+    ModifySymbol(const ModifySymbol& other) = default;
+    ModifySymbol& operator=(const ModifySymbol& other) = default;
+    ModifySymbol(ModifySymbol&& other) = default;
+    ModifySymbol& operator=(ModifySymbol&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifySymbol>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
@@ -118,7 +153,12 @@ private:
     std::vector<std::pair<std::string, uint32_t>> offsetsWithPath;
 
 public:
+    ModifyBoss() {}
     ~ModifyBoss() override {}
+    ModifyBoss(const ModifyBoss& other) = default;
+    ModifyBoss& operator=(const ModifyBoss& other) = default;
+    ModifyBoss(ModifyBoss&& other) = default;
+    ModifyBoss& operator=(ModifyBoss&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyBoss>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
