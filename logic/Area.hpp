@@ -52,6 +52,7 @@ enum struct Area : uint32_t
     SevenStarIsles,
     SevenStarLookoutPlatforms,
     OverlookIsland,
+    OverlookIslandUpperIsles,
     OverlookCave,
     FourEyeReef,
     MotherAndChildIsles,
@@ -72,6 +73,7 @@ enum struct Area : uint32_t
     WindfallHouseOfWealthUpper,
     WindfallPotionShop,
     WindfallBombShop,
+    WindfallBombShopUpperLedge,
     WindfallPirateShip,
     WindfallBeedleShop,
     PawprintIsle,
@@ -97,6 +99,7 @@ enum struct Area : uint32_t
     WesternFairyGreatFairyFountain,
     WesternFairyLookoutPlatform,
     RockSpireIsle,
+    RockSpireUpperLedges,
     RockSpireBeedleShop,
     RockSpirePlatforms,
     RockSpireCave,
@@ -166,6 +169,7 @@ enum struct Area : uint32_t
     IceRingInnerCave,
     ForestHaven,
     ForestHavenInterior,
+    ForestPotionShop,
     ForestHavenInteriorUpperBabaBuds,
     ForestHavenInteriorNorthLedge,
     ForestHavenInteriorWestLowerLedge,
@@ -401,5 +405,8 @@ enum struct Area : uint32_t
 
 Area nameToArea(const std::string& name);
 std::string areaToName(const Area& area);
+void storeNewAreaPrettyName(const Area& area, std::string prettyName);
+std::string areaToPrettyName(const Area& area);
 uint32_t areaAsIndex(Area area);
 Area indexAsArea(uint32_t index);
+Area roomIndexToIslandArea(const uint8_t& startingIslandRoomIndex);

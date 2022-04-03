@@ -15,7 +15,7 @@
     std::vector<uint8_t> nat = {4, 2, 0};
     // End of important variables
 
-    int seed = Random(0, 100000);
+    int seed = Random(0, 10000000);
 
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
@@ -28,11 +28,16 @@
 
     // Set settings in code for now
     settings1.progression_dungeons = true;
-    settings1.progression_mail = true;
-    settings1.progression_dungeons = true;
     settings1.progression_great_fairies = true;
     settings1.progression_puzzle_secret_caves = true;
     settings1.progression_combat_secret_caves = true;
+    settings1.progression_short_sidequests = true;
+    settings1.progression_long_sidequests = true;
+    settings1.progression_spoils_trading = true;
+    settings1.progression_minigames = true;
+    settings1.progression_free_gifts = true;
+    settings1.progression_mail = true;
+    settings1.progression_platforms_rafts = true;
     settings1.progression_submarines = true;
     settings1.progression_eye_reef_chests = true;
     settings1.progression_big_octos_gunboats = true;
@@ -48,10 +53,23 @@
     settings1.keylunacy = true;
     settings1.randomize_charts = true;
     settings1.randomize_starting_island = true;
+    settings1.randomize_dungeon_entrances = true;
+    settings1.randomize_cave_entrances = true;
+    settings1.randomize_door_entrances = true;
+    settings1.randomize_misc_entrances = true;
+    settings1.mix_entrance_pools = true;
+    settings1.decouple_entrances = false;
     settings1.race_mode = true;
-    settings1.num_race_mode_dungeons = 3;
+    settings1.num_race_mode_dungeons = 6;
 
     settings2.progression_dungeons = true;
+    settings2.mix_entrance_pools = true;
+    settings2.randomize_misc_entrances = true;
+    settings2.randomize_door_entrances = true;
+    settings2.randomize_cave_entrances = true;
+    settings2.randomize_dungeon_entrances = true;
+    settings2.randomize_starting_island = true;
+    settings2.randomize_charts = true;
     settings2.progression_mail = true;
     settings2.progression_dungeons = true;
     settings2.progression_great_fairies = true;
@@ -75,12 +93,32 @@
     // End of in code settings
 
     // Create all necessary worlds (for any potential multiworld support in the future)
-    int worldCount = 2;
-    World blankWorld;
-    WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector {settings1, settings2};
+    int worldCount = 1;
+    WorldPool worlds;
+    worlds.resize(worldCount);
+    std::vector<Settings> settingsVector {settings1, settings2, settings1, settings2, settings1, settings2, settings1, settings2, settings1, settings2, settings1};
 
     int retVal = generateWorlds(worlds, settingsVector, seed);
+
+    debugLog("All entrances to be shuffled:");
+    auto entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
+    for (auto entrance : entrances)
+    {
+        auto fileStage = entrance->getFilepathStage();
+        auto fileRoom = std::to_string(entrance->getFilepathRoomNum());
+        auto sclsExitIndex = entrance->getSclsExitIndex();
+
+        auto replacementStage = entrance->getReplaces()->getStageName();
+        auto replacementRoom = entrance->getReplaces()->getRoomNum();
+        auto replacementSpawn = entrance->getReplaces()->getSpawnId();
+
+        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+        debugLog("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
+        debugLog("\tStage: \"" + replacementStage + "\"");
+        debugLog("\tRoom: " + std::to_string(replacementRoom));
+        debugLog("\tSpawn: " + std::to_string(replacementSpawn));
+
+    }
 
     if (retVal == 0)
     {

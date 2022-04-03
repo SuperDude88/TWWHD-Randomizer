@@ -49,7 +49,10 @@ enum struct Option {
     RandomStartIsland,
     RandomizeDungeonEntrances,
     RandomizeCaveEntrances,
+    RandomizeDoorEntrances,
+    RandomizeMiscEntrances,
     MixEntrancePools,
+    DecoupleEntrances,
 
     InstantText,
     RevealSeaChart,
@@ -103,7 +106,10 @@ struct Settings {
     bool randomize_starting_island = false;
     bool randomize_dungeon_entrances = false;
     bool randomize_cave_entrances = false;
+    bool randomize_door_entrances = false;
+    bool randomize_misc_entrances = false;
     bool mix_entrance_pools = false;
+    bool decouple_entrances = false;
 
     bool instant_text_boxes = false;
     bool reveal_full_sea_chart = false;
