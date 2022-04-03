@@ -1,7 +1,7 @@
 
 #include "SpoilerLog.hpp"
 #include "../options.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -95,7 +95,7 @@ void generateSpoilerLog(WorldPool& worlds)
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
 
-    debugLog("Starting Island");
+    DebugLog::getInstance().log("Starting Island");
     // Print the random starting island if there is one
     for (auto& world : worlds)
     {
@@ -110,7 +110,7 @@ void generateSpoilerLog(WorldPool& worlds)
     // Find the longest location/entrances names for formatting the file
     size_t longestNameLength = 0;
     size_t longestEntranceLength = 0;
-    debugLog("Getting Name Lengths");
+    DebugLog::getInstance().log("Getting Name Lengths");
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
     {
         for (auto location : *sphereItr)
@@ -128,7 +128,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
 
     // Print the playthrough
-    debugLog("Print Playthrough");
+    DebugLog::getInstance().log("Print Playthrough");
     log << "Playthrough:" << std::endl;
     int sphere = 0;
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
@@ -145,7 +145,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     // Print the randomized entrances/playthrough
-    debugLog("Print Entrance Playthrough");
+    DebugLog::getInstance().log("Print Entrance Playthrough");
     if (longestEntranceLength != 0)
     {
         log << "Entrance Playthrough:" << std::endl;
@@ -168,7 +168,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-    debugLog("Entrance Listing");
+    DebugLog::getInstance().log("Entrance Listing");
     for (auto& world : worlds)
     {
         auto entrances = world.getShuffledEntrances(EntranceType::ALL, !world.getSettings().decouple_entrances);
@@ -188,7 +188,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     log << std::endl << "All Locations:" << std::endl;
-    debugLog("All Locations");
+    DebugLog::getInstance().log("All Locations");
     // Update the longest location name considering all locations
     for (auto& world : worlds)
     {
@@ -207,7 +207,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-    debugLog("Chart Mappings");
+    DebugLog::getInstance().log("Chart Mappings");
     for (auto& world : worlds)
     {
         log << "Charts for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
