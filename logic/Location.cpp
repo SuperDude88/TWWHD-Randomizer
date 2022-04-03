@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_map>
 
+static std::unordered_map<LocationId, std::string> locationIdPrettyNameMap;
+
 LocationId nameToLocationId(const std::string& name)
 {
     static std::unordered_map<std::string, LocationId> nameLocationIdMap = {
@@ -656,6 +658,20 @@ std::string locationIdToName(LocationId locationId)
     return locationIdNameMap.at(locationId);
 }
 
+void storeNewLocationPrettyName(const LocationId& locationId, const std::string& prettyName)
+{
+    locationIdPrettyNameMap.emplace(locationId, prettyName);
+}
+
+std::string locationIdToPrettyName(const LocationId& locationId)
+{
+    if (locationIdPrettyNameMap.count(locationId) == 0)
+    {
+        return "INVALID LOCATION";
+    }
+    return locationIdPrettyNameMap.at(locationId);
+}
+
 LocationCategory nameToLocationCategory(const std::string& name)
 {
     static std::unordered_map<std::string, LocationCategory> categoryNameMap = {
@@ -764,6 +780,16 @@ LocationId indexAsLocationId(uint32_t index)
 {
     if (index >= LOCATION_COUNT) return LocationId::INVALID;
     return static_cast<LocationId>(index);
+}
+
+bool Location::operator<(const Location& rhs) const
+{
+  if (this->worldId != rhs.worldId)
+  {
+      return this->worldId < rhs.worldId;
+  }
+
+  return this->locationId < rhs.locationId;
 }
 
 std::string locationName(const Location* location)

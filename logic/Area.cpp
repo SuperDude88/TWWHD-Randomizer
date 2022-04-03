@@ -1,6 +1,9 @@
 
 #include "Area.hpp"
 #include <unordered_map>
+#include <array>
+
+static std::unordered_map<Area, std::string> areaPrettyNameMap;
 
 Area nameToArea(const std::string& name)
 {
@@ -51,6 +54,7 @@ Area nameToArea(const std::string& name)
         {"SevenStarIsles", Area::SevenStarIsles},
         {"SevenStarLookoutPlatforms", Area::SevenStarLookoutPlatforms},
         {"OverlookIsland", Area::OverlookIsland},
+        {"OverlookIslandUpperIsles", Area::OverlookIslandUpperIsles},
         {"OverlookCave", Area::OverlookCave},
         {"FourEyeReef", Area::FourEyeReef},
         {"MotherAndChildIsles", Area::MotherAndChildIsles},
@@ -71,6 +75,7 @@ Area nameToArea(const std::string& name)
         {"WindfallHouseOfWealthUpper", Area::WindfallHouseOfWealthUpper},
         {"WindfallPotionShop", Area::WindfallPotionShop},
         {"WindfallBombShop", Area::WindfallBombShop},
+        {"WindfallBombShopUpperLedge", Area::WindfallBombShopUpperLedge},
         {"WindfallPirateShip", Area::WindfallPirateShip},
         {"WindfallBeedleShop", Area::WindfallBeedleShop},
         {"PawprintIsle", Area::PawprintIsle},
@@ -96,6 +101,7 @@ Area nameToArea(const std::string& name)
         {"WesternFairyGreatFairyFountain", Area::WesternFairyGreatFairyFountain},
         {"WesternFairyLookoutPlatform", Area::WesternFairyLookoutPlatform},
         {"RockSpireIsle", Area::RockSpireIsle},
+        {"RockSpireUpperLedges", Area::RockSpireUpperLedges},
         {"RockSpireBeedleShop", Area::RockSpireBeedleShop},
         {"RockSpirePlatforms", Area::RockSpirePlatforms},
         {"RockSpireCave", Area::RockSpireCave},
@@ -165,6 +171,7 @@ Area nameToArea(const std::string& name)
         {"IceRingInnerCave", Area::IceRingInnerCave},
         {"ForestHaven", Area::ForestHaven},
         {"ForestHavenInterior", Area::ForestHavenInterior},
+        {"ForestPotionShop", Area::ForestPotionShop},
         {"ForestHavenInteriorUpperBabaBuds", Area::ForestHavenInteriorUpperBabaBuds},
         {"ForestHavenInteriorNorthLedge", Area::ForestHavenInteriorNorthLedge},
         {"ForestHavenInteriorWestLowerLedge", Area::ForestHavenInteriorWestLowerLedge},
@@ -451,6 +458,7 @@ std::string areaToName(const Area& area)
         {Area::SevenStarIsles, "SevenStarIsles"},
         {Area::SevenStarLookoutPlatforms, "SevenStarLookoutPlatforms"},
         {Area::OverlookIsland, "OverlookIsland"},
+        {Area::OverlookIslandUpperIsles, "OverlookIslandUpperIsles"},
         {Area::OverlookCave, "OverlookCave"},
         {Area::FourEyeReef, "FourEyeReef"},
         {Area::MotherAndChildIsles, "MotherAndChildIsles"},
@@ -471,6 +479,7 @@ std::string areaToName(const Area& area)
         {Area::WindfallHouseOfWealthUpper, "WindfallHouseOfWealthUpper"},
         {Area::WindfallPotionShop, "WindfallPotionShop"},
         {Area::WindfallBombShop, "WindfallBombShop"},
+        {Area::WindfallBombShopUpperLedge, "WindfallBombShopUpperLedge"},
         {Area::WindfallPirateShip, "WindfallPirateShip"},
         {Area::WindfallBeedleShop, "WindfallBeedleShop"},
         {Area::PawprintIsle, "PawprintIsle"},
@@ -496,6 +505,7 @@ std::string areaToName(const Area& area)
         {Area::WesternFairyGreatFairyFountain, "WesternFairyGreatFairyFountain"},
         {Area::WesternFairyLookoutPlatform, "WesternFairyLookoutPlatform"},
         {Area::RockSpireIsle, "RockSpireIsle"},
+        {Area::RockSpireUpperLedges, "RockSpireUpperLedges"},
         {Area::RockSpireBeedleShop, "RockSpireBeedleShop"},
         {Area::RockSpirePlatforms, "RockSpirePlatforms"},
         {Area::RockSpireCave, "RockSpireCave"},
@@ -565,6 +575,7 @@ std::string areaToName(const Area& area)
         {Area::IceRingInnerCave, "IceRingInnerCave"},
         {Area::ForestHaven, "ForestHaven"},
         {Area::ForestHavenInterior, "ForestHavenInterior"},
+        {Area::ForestPotionShop, "ForestPotionShop"},
         {Area::ForestHavenInteriorUpperBabaBuds, "ForestHavenInteriorUpperBabaBuds"},
         {Area::ForestHavenInteriorNorthLedge, "ForestHavenInteriorNorthLedge"},
         {Area::ForestHavenInteriorWestLowerLedge, "ForestHavenInteriorWestLowerLedge"},
@@ -802,6 +813,20 @@ std::string areaToName(const Area& area)
     return areaNameMap.at(area);
 }
 
+void storeNewAreaPrettyName(const Area& area, std::string prettyName)
+{
+    areaPrettyNameMap.emplace(area, prettyName);
+}
+
+std::string areaToPrettyName(const Area& area)
+{
+    if (areaPrettyNameMap.count(area) == 0)
+    {
+        return "INVALID AREA OR NO PRETTY NAME";
+    }
+    return areaPrettyNameMap.at(area);
+}
+
 uint32_t areaAsIndex(Area area)
 {
     return static_cast<std::underlying_type_t<Area>>(area);
@@ -811,4 +836,63 @@ Area indexAsArea(uint32_t index)
 {
     if (index >= AREA_COUNT) return Area::INVALID;
     return static_cast<Area>(index);
+}
+
+Area roomIndexToIslandArea(const uint8_t& startingIslandRoomIndex)
+{
+    // Island room number corresponds with index in the below array
+    constexpr std::array<Area, 50> startingIslandAreaArray = {
+        Area::INVALID,
+        Area::ForsakenFortress,
+        Area::StarIsland,
+        Area::NorthernFairyIsland,
+        Area::GaleIsle,
+        Area::CrescentMoonIsland,
+        Area::SevenStarIsles,
+        Area::OverlookIsland,
+        Area::FourEyeReef,
+        Area::MotherAndChildIsles,
+        Area::SpectacleIsland,
+        Area::WindfallIsland,
+        Area::PawprintIsle,
+        Area::DragonRoostIsland,
+        Area::FlightControlPlatform,
+        Area::WesternFairyIsland,
+        Area::RockSpireIsle,
+        Area::TingleIsland,
+        Area::NorthernTriangleIsland,
+        Area::EasternFairyIsland,
+        Area::FireMountain,
+        Area::StarBeltArchipelago,
+        Area::ThreeEyeReef,
+        Area::GreatfishIsle,
+        Area::CyclopsReef,
+        Area::SixEyeReef,
+        Area::TowerOfTheGods,
+        Area::EasternTriangleIsland,
+        Area::ThornedFairyIsland,
+        Area::NeedleRockIsle,
+        Area::IsletOfSteel,
+        Area::StoneWatcherIsland,
+        Area::SouthernTriangleIsland,
+        Area::PrivateOasis,
+        Area::BombIsland,
+        Area::BirdsPeakRock,
+        Area::DiamondSteppeIsland,
+        Area::FiveEyeReef,
+        Area::SharkIsland,
+        Area::SouthernFairyIsland,
+        Area::IceRingIsle,
+        Area::ForestHaven,
+        Area::CliffPlateauIsles,
+        Area::HorseshoeIsle,
+        Area::OutsetIsland,
+        Area::HeadstoneIsland,
+        Area::TwoEyeReef,
+        Area::AngularIsles,
+        Area::BoatingCourse,
+        Area::FiveStarIsles,
+    };
+
+    return startingIslandAreaArray[startingIslandRoomIndex];
 }

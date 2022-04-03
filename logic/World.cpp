@@ -92,12 +92,15 @@ ItemPool World::getStartingItems() const
     return startingItems;
 }
 
-LocationPool World::getLocations()
+LocationPool World::getLocations(bool onlyProgression /*= false*/)
 {
     LocationPool locations = {};
     // start at 1 since 0 is the INVALID entry
     for (size_t i = 1; i < locationIdAsIndex(LocationId::COUNT); i++) {
-        locations.push_back(&locationEntries[i]);
+        if (!onlyProgression || locationEntries[i].progression)
+        {
+            locations.push_back(&locationEntries[i]);
+        }
     }
     return locations;
 }
@@ -163,7 +166,7 @@ void World::determineChartMappings()
         GameItem::TreasureChart33 // Sector 49 Five Star Isles
     };
 
-    // Only shuffle around the charts of we're randomizing them
+    // Only shuffle around the charts if we're randomizing them
     if (settings.randomize_charts)
     {
         shufflePool(charts);
@@ -244,14 +247,7 @@ void World::determineRaceModeDungeons()
 {
     if (settings.race_mode)
     {
-        static std::array<DungeonId, 6> dungeons = {
-            DungeonId::DragonRoostCavern,
-            DungeonId::ForbiddenWoods,
-            DungeonId::TowerOfTheGods,
-            DungeonId::ForsakenFortress,
-            DungeonId::EarthTemple,
-            DungeonId::WindTemple
-        };
+        auto dungeons = getDungeonList();
 
         shufflePool(dungeons);
 
@@ -259,7 +255,7 @@ void World::determineRaceModeDungeons()
         {
             if (i < settings.num_race_mode_dungeons)
             {
-                raceModeDungeons.push_back(dungeons[i]);
+                raceModeDungeons.insert(dungeons[i]);
             }
             else
             {
@@ -296,7 +292,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     //
     // Logic expressions are split up via spaces, but we only want to evaluate the parts of
     // the expression at the highest nesting level for the string that was passed in.
-    // (We'll recursively call the function later to eveluate deeper levels.) So we replace
+    // (We'll recursively call the function later to evaluate deeper levels.) So we replace
     // all the spaces on the highest nesting level with an arbitrarily chosen delimeter
     // (in this case: '+').
     int nestingLevel = 1;
@@ -350,6 +346,8 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         {
             req.type = RequirementType::EVENT;
             std::string eventName (argStr.begin() + 1, argStr.end() - 1);
+            // Add "WX" where X is the world Id to the end of the string to
+            // differentiate between events of different worlds
             eventName += "W" + std::to_string(worldId);
             req.args.push_back(eventName);
             return WorldLoadingError::NONE;
@@ -562,13 +560,19 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    // OBJECT_CHECK(locationObject, locationObject.dump());
     YAML_FIELD_CHECK(locationObject, "Name", WorldLoadingError::LOCATION_MISSING_KEY);
     const auto& locName = locationObject["Name"].val();
     std::string locationName = std::string(locName.data(), locName.size());
     loadedLocation = nameToLocationId(locationName);
     LOCATION_VALID_CHECK(loadedLocation, "Location of name \"" << locationName << "\" does not exist!");
     MAPPING_CHECK(locationName, locationIdToName(nameToLocationId(locationName)));
+
+    // Add the pretty name to the map of pretty names to use later
+    YAML_FIELD_CHECK(locationObject, "PrettyName", WorldLoadingError::LOCATION_MISSING_KEY);
+    const auto& prettyName = locationObject["PrettyName"].val();
+    std::string locationPrettyName = std::string(prettyName.data(), prettyName.size());
+    storeNewLocationPrettyName(loadedLocation, locationPrettyName);
+
     Location& newEntry = locationEntries[locationIdAsIndex(loadedLocation)];
     newEntry.locationId = loadedLocation;
     newEntry.worldId = worldId;
@@ -686,7 +690,7 @@ World::WorldLoadingError World::loadLocationRequirement(const std::string& locat
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Exit& loadedExit, Area& parentArea)
+World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
@@ -694,12 +698,13 @@ World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, c
     auto connectedArea = nameToArea(connectedAreaName);
     AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedAreaName << "\" does not exist!");
     MAPPING_CHECK(connectedAreaName, areaToName(nameToArea(connectedAreaName)));
-    loadedExit.parentArea = parentArea;
-    loadedExit.connectedArea = connectedArea;
-    loadedExit.worldId = worldId;
+    loadedExit.setParentArea(parentArea);
+    loadedExit.setConnectedArea(connectedArea);
+    loadedExit.setWorldId(worldId);
+    loadedExit.setWorld(this);
     WorldLoadingError err = WorldLoadingError::NONE;
     // load exit requirements
-    if((err = parseRequirementString(logicExpression, loadedExit.requirement)) != WorldLoadingError::NONE)
+    if((err = parseRequirementString(logicExpression, loadedExit.getRequirement())) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing exit " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << std::endl;
         return err;
@@ -712,17 +717,40 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    //OBJECT_CHECK(areaObject, areaObject.dump());
     YAML_FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
     const std::string areaName = substrToString(areaObject["Name"].val());
     // DebugLog::getInstance().log("Now Loading Area " + areaName);
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
     MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
+
+    // Store the pretty name to use for later
+    YAML_FIELD_CHECK(areaObject, "PrettyName", WorldLoadingError::AREA_MISSING_KEY);
+    const std::string areaPrettyName = substrToString(areaObject["PrettyName"].val());
+    storeNewAreaPrettyName(loadedArea, areaPrettyName);
+
     AreaEntry& newEntry = areaEntries[areaAsIndex(loadedArea)];
     newEntry.area = loadedArea;
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
+
+    // Check to see if this area is assigned to an island
+    if (areaObject.has_child("Island"))
+    {
+        const std::string islandName = substrToString(areaObject["Island"].val());
+        auto island = nameToHintRegion(islandName);
+        MAPPING_CHECK(islandName, hintRegionToName(nameToHintRegion(islandName)));
+        newEntry.island = island;
+    }
+
+    // Check to see if this area is assigned to a dungeon
+    if (areaObject.has_child("Dungeon"))
+    {
+        const std::string dungeonName = substrToString(areaObject["Dungeon"].val());
+        auto dungeon = nameToHintRegion(dungeonName);
+        MAPPING_CHECK(dungeonName, hintRegionToName(nameToHintRegion(dungeonName)));
+        newEntry.dungeon = dungeon;
+    }
 
     // load events and their requirements in this area if there are any
     if (areaObject.has_child("Events"))
@@ -765,7 +793,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     if (areaObject.has_child("Exits"))
     {
         for (const ryml::NodeRef& exit : areaObject["Exits"].children()) {
-            Exit exitOut;
+            Entrance exitOut;
             const std::string connectedAreaName = substrToString(exit.key());
             const std::string logicExpression = substrToString(exit.val());
             err = loadExit(connectedAreaName, logicExpression, exitOut, loadedArea);
@@ -857,22 +885,113 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
             return 1;
         }
     }
+
+    // Once all areas have been loaded, create the entrance lists. This lets us
+    // find assigned islands later
+    for (auto& areaEntry : areaEntries)
+    {
+        for (auto& exit : areaEntry.exits)
+        {
+            exit.connect(exit.getConnectedArea());
+            exit.setOriginalName();
+        }
+    }
+
     return 0;
 }
 
-Exit& World::getExit(const Area& parentArea, const Area& connectedArea)
+Entrance& World::getEntrance(const Area& parentArea, const Area& connectedArea)
 {
     auto& parentAreaEntry = areaEntries[areaAsIndex(parentArea)];
 
     for (auto& exit : parentAreaEntry.exits)
     {
-        if (exit.connectedArea == connectedArea)
+        if (exit.getConnectedArea() == connectedArea)
         {
             return exit;
         }
     }
 
+    std::cout << "WARNING: " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << " is not a connection" << std::endl;
     return areaEntries[areaAsIndex(Area::INVALID)].exits.front();
+}
+
+void World::removeEntrance(Entrance* entranceToRemove)
+{
+    auto& areaExits = areaEntries[areaAsIndex(entranceToRemove->getParentArea())].exits;
+    std::erase_if(areaExits, [entranceToRemove](Entrance& entrance)
+    {
+        return &entrance == entranceToRemove;
+    });
+}
+
+EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary /*= false*/)
+{
+    std::vector<Entrance*> shufflableEntrances = {};
+
+    for (auto& areaEntry : areaEntries)
+    {
+        for (auto& exit : areaEntry.exits)
+        {
+            if ((exit.getEntranceType() == type || type == EntranceType::ALL) && (!onlyPrimary || exit.isPrimary()))
+            {
+                shufflableEntrances.push_back(&exit);
+            }
+        }
+    }
+
+    return shufflableEntrances;
+}
+
+EntrancePool World::getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary /*= false*/)
+{
+    auto entrances = getShuffleableEntrances(type, onlyPrimary);
+    return filterFromPool(entrances, [](Entrance* e){return e->isShuffled();});
+}
+
+// Peforms a breadth first search to find all the islands that lead to the given
+// area. In some cases of entrance randomizer, multiple islands can lead to the
+// same area
+std::unordered_set<HintRegion> World::getIslands(const Area& startArea)
+{
+    std::unordered_set<HintRegion> islands = {};
+    std::unordered_set<Area> alreadyChecked = {};
+    std::vector<Area> areaQueue = {startArea};
+
+    while (!areaQueue.empty())
+    {
+        auto area = areaQueue.back();
+        alreadyChecked.insert(area);
+        areaQueue.pop_back();
+
+        auto& areaEntry = areaEntries[areaAsIndex(area)];
+
+        if (areaEntry.island != HintRegion::NONE)
+        {
+            if (area == startArea)
+            {
+                return {areaEntry.island};
+            }
+            else
+            {
+                // Don't search islands we've already put on the list
+                islands.insert(areaEntry.island);
+                continue;
+            }
+        }
+
+        // If this area isn't an island, add its entrances to the queue as long
+        // as they haven't been checked yet
+        for (auto entrance : areaEntry.entrances)
+        {
+            if (alreadyChecked.count(entrance->getParentArea()) == 0)
+            {
+                areaQueue.push_back(entrance->getParentArea());
+            }
+        }
+    }
+
+    return islands;
 }
 
 const char* World::errorToName(WorldLoadingError err)
@@ -946,13 +1065,13 @@ std::string World::getLastErrorDetails()
 // Will dump a file which can be turned into a visual graph using graphviz
 // Although the way it's presented isn't great.
 // https://graphviz.org/download/
-// Use this command if things are too spread out: fdp   -Tsvg <filename> -o world.svg
-// Use this command if things are too squished:   circo -Tsvg <filename> -o world.svg
+// Use this command to generate the graph: dot -Tsvg <filename> -o world.svg
 // Then, open world.svg in a browser and CTRL + F to find the area of interest
-void World::dumpWorldGraph(const std::string& filename)
+void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits /*= false*/)
 {
     std::ofstream worldGraph;
-    worldGraph.open (filename + ".dot");
+    std::string fullFilename = "dumps/" + filename + ".gv";
+    worldGraph.open (fullFilename);
     worldGraph << "digraph {\n\tcenter=true;\n";
 
     for (const AreaEntry& areaEntry : areaEntries) {
@@ -964,7 +1083,12 @@ void World::dumpWorldGraph(const std::string& filename)
 
         // Make edge connections defined by exits
         for (const auto& exit : areaEntry.exits) {
-            std::string connectedName = areaToName(exit.connectedArea);
+            // Only dump shuffled exits if set
+            if (!exit.isShuffled() && onlyRandomizedExits)
+            {
+                continue;
+            }
+            std::string connectedName = areaToName(exit.getConnectedArea());
             if (parentName != "INVALID" && connectedName != "INVALID"){
                 worldGraph << "\t\"" << parentName << "\" -> \"" << connectedName << "\"" << std::endl;
             }
@@ -984,5 +1108,5 @@ void World::dumpWorldGraph(const std::string& filename)
 
     worldGraph << "}";
     worldGraph.close();
-    std::cout << "Dumped world graph at " << filename << ".dot" << std::endl;
+    std::cout << "Dumped world graph at " << fullFilename << std::endl;
 }

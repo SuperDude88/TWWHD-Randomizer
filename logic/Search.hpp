@@ -18,3 +18,4 @@ LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, Location
 bool gameBeatable(WorldPool& worlds);
 void generatePlaythrough(WorldPool& worlds);
 bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locationsToCheck, int worldToSearch = -1);
+bool allLocationsReachable(WorldPool& worlds, ItemPool& items, int worldToSearch = -1);

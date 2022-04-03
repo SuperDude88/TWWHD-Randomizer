@@ -76,8 +76,10 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
     return false;
 }
 
+
+
 // Recursively explore new areas based on the given areaEntry
-void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, AreaEntry& areaEntry, std::list<EventAccess*>& eventsToTry, std::list<Exit*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
+void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, AreaEntry& areaEntry, std::list<EventAccess*>& eventsToTry, std::list<Entrance*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
 {
     for (auto& eventAccess : areaEntry.events)
     {
@@ -85,12 +87,38 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
     }
     for (auto& exit : areaEntry.exits)
     {
-        auto& connectedArea = worlds[exit.worldId].areaEntries[areaAsIndex(exit.connectedArea)];
+        // If we're generating the playthrough, evaluate the entrance requirement
+        // if it's shuffled to potentially add it to the entrance spheres
+        if (searchMode == SearchMode::GeneratePlaythrough && exit.isShuffled())
+        {
+            // If entrances are not decoupled we only want to add the first entrance
+            // of a bound two way entrance to the entrance playthrough for
+            // spoiler log simplicity
+            bool reverseInPlaythrough = false;
+            if (!worlds[exit.getWorldId()].getSettings().decouple_entrances && exit.getReplaces()->getReverse() != nullptr)
+            {
+                for (auto& sphere : worlds[0].entranceSpheres)
+                {
+                    if (std::find(sphere.begin(), sphere.end(), exit.getReplaces()->getReverse()) != sphere.end())
+                    {
+                        reverseInPlaythrough = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!reverseInPlaythrough && evaluateRequirement(worlds[exit.getWorldId()], exit.getRequirement(), ownedItems, ownedEvents))
+            {
+                worlds[0].entranceSpheres.back().push_back(&exit);
+            }
+        }
+
+        auto& connectedArea = worlds[exit.getWorldId()].areaEntries[areaAsIndex(exit.getConnectedArea())];
         // If the connected area is already reachable, then the current exit
         // is ignored since it won't matter for logical access
         if (!connectedArea.isAccessible)
         {
-            if (evaluateRequirement(worlds[exit.worldId], exit.requirement, ownedItems, ownedEvents))
+            if (evaluateRequirement(worlds[exit.getWorldId()], exit.getRequirement(), ownedItems, ownedEvents))
             {
                 connectedArea.isAccessible = true;
                 // std::cout << "Now Exploring " << areaToName(connectedArea.area) << std::endl;
@@ -120,7 +148,10 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)
     {
-        addElementsToPool(items, world.getStartingItems());
+        if (worldToSearch == -1 || worldToSearch == world.getWorldId())
+        {
+            addElementsToPool(items, world.getStartingItems());
+        }
     }
 
     ItemMultiSet ownedItems (items.begin(), items.end());
@@ -132,7 +163,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     // by putting the root exit of each world into the list of exits
     // to try (or only the exit of the single world to explore).
     std::list<EventAccess*> eventsToTry = {};
-    std::list<Exit*> exitsToTry = {};
+    std::list<Entrance*> exitsToTry = {};
     std::list<LocationAccess*> locationsToTry = {};
     for (auto& world : worlds)
     {
@@ -162,6 +193,14 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
 
     do
     {
+
+        // push_back an empty sphere if we're generating the playthroughs
+        if (searchMode == SearchMode::GeneratePlaythrough)
+        {
+            worlds[0].playthroughSpheres.push_back({});
+            worlds[0].entranceSpheres.push_back({});
+        }
+
         // Variable to keep track of making logical progress. We want to keep
         // looping as long as we're finding new things on each iteration
         newThingsFound = false;
@@ -189,12 +228,17 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
         {
             auto exit = *exitItr;
-            if (evaluateRequirement(worlds[exit->worldId], exit->requirement, ownedItems, ownedEvents)) {
+            if (evaluateRequirement(worlds[exit->getWorldId()], exit->getRequirement(), ownedItems, ownedEvents)) {
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
+                // If we're generating the playthrough, add it to the entranceSpheres if it's randomized
+                if (searchMode == SearchMode::GeneratePlaythrough && exit->isShuffled())
+                {
+                    worlds[0].entranceSpheres.back().push_back(exit);
+                }
                 // If this exit's connected region has not been explored yet, then explore it
-                auto& connectedArea = worlds[exit->worldId].areaEntries[areaAsIndex(exit->connectedArea)];
+                auto& connectedArea = worlds[exit->getWorldId()].areaEntries[areaAsIndex(exit->getConnectedArea())];
                 if (!connectedArea.isAccessible)
                 {
                     newThingsFound = true;
@@ -236,12 +280,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             }
         }
 
-        // push_back an empty sphere if we're generating the playthrough
-        if (searchMode == SearchMode::GeneratePlaythrough)
-        {
-            worlds[0].playthroughSpheres.push_back({});
-        }
-
         // Now apply any effects of newly accessible locations for the next iteration.
         // This lets us properly keep track of spheres for playthrough generation
         for (auto location : accessibleThisIteration)
@@ -252,19 +290,13 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 ownedItems.emplace(location->currentItem.getGameItemId(), location->currentItem.getWorldId());
                 if (searchMode == SearchMode::GeneratePlaythrough && location->progression)
                 {
-                    worlds[0].playthroughSpheres[sphere].push_back(location);
+                    worlds[0].playthroughSpheres.back().push_back(location);
                 }
             }
         }
         sphere++;
     }
     while (newThingsFound);
-
-    if (searchMode == SearchMode::GeneratePlaythrough)
-    {
-        std::sort(items.begin(), items.end());
-        logItemPool("Items found in playthrough:", items);
-    }
 
     return accessibleLocations;
 }
@@ -290,10 +322,12 @@ static void pareDownPlaythrough(WorldPool& worlds)
 {
 
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
+    auto& entranceSpheres = worlds[0].entranceSpheres;
 
-    for (size_t sphere = 0; sphere < playthroughSpheres.size(); sphere++)
+    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
     {
-        for (auto loc = playthroughSpheres[sphere].begin(); loc != playthroughSpheres[sphere].end(); )
+        auto& sphere = *sphereItr;
+        for (auto loc = sphere.begin(); loc != sphere.end(); )
         {
             // Remove the item at the current location and check if the game is still beatable
             auto location = *loc;
@@ -303,7 +337,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
             {
                 // If the game is still beatable, then this item is not required
                 // and we can erase it from the playthrough
-                loc = playthroughSpheres[sphere].erase(loc);
+                loc = sphere.erase(loc);
             }
             else
             {
@@ -313,17 +347,36 @@ static void pareDownPlaythrough(WorldPool& worlds)
         }
     }
 
-    // Get rid of any empty spheres
-    filterAndEraseFromPool(playthroughSpheres, [](std::list<Location*> locPool){return locPool.empty();});
+    // Get rid of any empty spheres in both the item playthrough and entrance playthrough
+    // based only on if the item playthrough has empty spheres. Both the playthroughs
+    // will have the same number of spheres, so we only need to conditionally
+    // check one of them.
+    auto itemItr = playthroughSpheres.begin();
+    auto entranceItr = entranceSpheres.begin();
+    while (itemItr != playthroughSpheres.end())
+    {
+        if (itemItr->empty() && entranceItr->empty())
+        {
+            itemItr = playthroughSpheres.erase(itemItr);
+            entranceItr = entranceSpheres.erase(entranceItr);
+        }
+        else
+        {
+            itemItr++;     // Only incremement if we don't erase
+            entranceItr++;
+        }
+    }
 }
 
 void generatePlaythrough(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
     search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
+    debugLog("Pare Down");
     pareDownPlaythrough(worlds);
 }
 
+// Checks to see if the specific locations from the passed in location pool are all accessible
 bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locationsToCheck, int worldToSearch /*= -1*/)
 {
     auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
@@ -338,4 +391,17 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
         #endif
         return inPool;
     });
+}
+
+// Checks to see if ALL locations are accessible
+bool allLocationsReachable(WorldPool& worlds, ItemPool& items, int worldToSearch /*= -1*/)
+{
+    auto accessibleLocations = search(SearchMode::AllLocationsReachable, worlds, items, worldToSearch);
+    auto totalLocationsFound = accessibleLocations.size();
+    if (worldToSearch == -1)
+    {
+        return totalLocationsFound == worlds.size() * (LOCATION_COUNT - 1); // subtract 1 since LocationId::INVALID is never accessible
+    }
+
+    return totalLocationsFound == LOCATION_COUNT - 1;
 }

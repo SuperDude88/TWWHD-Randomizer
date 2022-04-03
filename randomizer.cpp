@@ -85,6 +85,26 @@ public:
 			//get world with "worlds[playerNum - 1]"
 			//assume 1 world for now, modifying multiple copies needs work
 			apply_necessary_post_randomization_tweaks(randomizeItems, worlds[0].locationEntries);
+
+			// Info for entrance rando:
+			auto entrances = worlds[playerId - 1].getShuffledEntrances(EntranceType::ALL);
+	    for (auto entrance : entrances)
+	    {
+	        std::string fileStage = entrance->getFilepathStage();
+	        std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
+	        uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+
+	        std::string replacementStage = entrance->getReplaces()->getStageName();
+	        uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
+	        uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
+
+	        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+	        // In the above file, replace data at exit index <sclsExitIndex> with:
+					// - replacementStage
+					// - replacementRoom
+					// - replacementSpawn
+
+	    }
 		}
 
 		if (!dryRun) {

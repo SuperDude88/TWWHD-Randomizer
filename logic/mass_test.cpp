@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <cstdio>
 
 static int testSettings(const Settings& settings, bool& settingToChange, const std::string& settingName)
 {
@@ -100,18 +101,49 @@ int main()
     TEST(settings1, settings1.progression_savage_labyrinth, "progression savage labyrinth");
     TEST(settings1, settings1.progression_island_puzzles, "progression island puzzles");
     TEST(settings1, settings1.progression_obscure, "progression obscure");
+    settings1.num_race_mode_dungeons = 1;
+    TEST(settings1, settings1.race_mode, "race mode 1 dungeon");
+    settings1.num_race_mode_dungeons = 2;
+    TEST(settings1, settings1.race_mode, "race mode 2 dungeon");
+    settings1.num_race_mode_dungeons = 3;
+    TEST(settings1, settings1.race_mode, "race mode 3 dungeon");
+    settings1.num_race_mode_dungeons = 4;
+    TEST(settings1, settings1.race_mode, "race mode 4 dungeon");
+    settings1.num_race_mode_dungeons = 5;
+    TEST(settings1, settings1.race_mode, "race mode 5 dungeon");
+    settings1.num_race_mode_dungeons = 6;
+    TEST(settings1, settings1.race_mode, "race mode 6 dungeon");
     TEST(settings1, settings1.keylunacy, "keylunacy");
     TEST(settings1, settings1.randomize_charts, "randomize charts");
     TEST(settings1, settings1.randomize_starting_island, "random starting island");
+    TEST(settings1, settings1.randomize_dungeon_entrances, "randomize dungeon entrances");
+    TEST(settings1, settings1.randomize_cave_entrances, "randomize cave entrances");
+    TEST(settings1, settings1.randomize_door_entrances, "randomize door entrances");
+    TEST(settings1, settings1.randomize_misc_entrances, "randomize misc entrances");
+    TEST(settings1, settings1.decouple_entrances, "decouple entrances");
+    TEST(settings1, settings1.mix_entrance_pools, "mix entrance pools");
 
-    // Now set all settings in reverse
-    std::cout << "REVERSEING TEST DIRECTION" << std::endl;
+    // Now set all settings in reverse (except dungeons since they have a lot of checks)
+    std::cout << "REVERSING TEST DIRECTION" << std::endl;
     Settings settings2;
 
     TEST(settings2, settings2.progression_dungeons, "progression dungeons");
+    TEST(settings2, settings2.mix_entrance_pools, "mix entrance pools");
+    TEST(settings2, settings2.randomize_misc_entrances, "randomize misc entrances");
+    TEST(settings2, settings2.randomize_door_entrances, "randomize door entrances");
+    TEST(settings2, settings2.randomize_cave_entrances, "randomize cave entrances");
+    TEST(settings2, settings2.randomize_dungeon_entrances, "randomize dungeon entrances");
     TEST(settings2, settings2.randomize_starting_island, "random starting island");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
     TEST(settings2, settings2.keylunacy, "keylunacy");
+    settings2.num_race_mode_dungeons = 3;
+    TEST(settings2, settings2.race_mode, "race mode 3 dungeon");
+    settings2.num_race_mode_dungeons = 4;
+    TEST(settings2, settings2.race_mode, "race mode 4 dungeon");
+    settings2.num_race_mode_dungeons = 5;
+    TEST(settings2, settings2.race_mode, "race mode 5 dungeon");
+    settings2.num_race_mode_dungeons = 6;
+    TEST(settings2, settings2.race_mode, "race mode 6 dungeon");
     TEST(settings2, settings2.progression_obscure, "progression obscure");
     TEST(settings2, settings2.progression_island_puzzles, "progression island puzzles");
     TEST(settings2, settings2.progression_savage_labyrinth, "progression savage labyrinth");
@@ -137,6 +169,6 @@ int main()
 
     multiWorldTest(settings1);
 
-    std::cout << "All settings passed" << std::endl;
+    std::cout << "All settings tests passed" << std::endl;
     return 0;
 }
