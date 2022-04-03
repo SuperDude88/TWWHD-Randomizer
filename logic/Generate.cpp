@@ -5,7 +5,7 @@
 #include "Fill.hpp"
 #include "SpoilerLog.hpp"
 #include "Random.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
 #include "EntranceShuffle.hpp"
 #include <string>
 #include <unordered_set>
@@ -43,11 +43,11 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       }
 
       // Randomize entrances before placing items
-      debugLog("Randomizing Entrances");
+      DebugLog::getInstance().log("Randomizing Entrances");
       entranceErr = randomizeEntrances(worlds);
       if (entranceErr != EntranceShuffleError::NONE)
       {
-          debugLog("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
+          DebugLog::getInstance().log("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
           buildRetryCount--;
           continue;
       }

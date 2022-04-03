@@ -100,7 +100,7 @@
 
     int retVal = generateWorlds(worlds, settingsVector, seed);
 
-    debugLog("All entrances to be shuffled:");
+    DebugLog::getInstance().log("All entrances to be shuffled:");
     auto entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
     for (auto entrance : entrances)
     {
@@ -113,10 +113,10 @@
         auto replacementSpawn = entrance->getReplaces()->getSpawnId();
 
         std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
-        debugLog("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
-        debugLog("\tStage: \"" + replacementStage + "\"");
-        debugLog("\tRoom: " + std::to_string(replacementRoom));
-        debugLog("\tSpawn: " + std::to_string(replacementSpawn));
+        DebugLog::getInstance().log("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
+        DebugLog::getInstance().log("\tStage: \"" + replacementStage + "\"");
+        DebugLog::getInstance().log("\tRoom: " + std::to_string(replacementRoom));
+        DebugLog::getInstance().log("\tSpawn: " + std::to_string(replacementSpawn));
 
     }
 

@@ -372,7 +372,7 @@ void generatePlaythrough(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
     search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
-    debugLog("Pare Down");
+    DebugLog::getInstance().log("Pare Down");
     pareDownPlaythrough(worlds);
 }
 

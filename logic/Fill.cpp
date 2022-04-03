@@ -38,7 +38,7 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
         auto item = popRandomElement(items);
         auto location = popRandomElement(locations);
         location->currentItem = item;
-        // debugLog("Placed " + item.getName() + " at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
+        // DebugLog::getInstance().log("Placed " + item.getName() + " at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
     }
 
     return FillError::NONE;
@@ -203,7 +203,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             auto location = RandomElement(accessibleLocations);
             location->currentItem = std::move(item);
             rollbacks.push_back(location);
-            // debugLog("Placed " + item.getName() + "(" + std::to_string(static_cast<int>(item.getGameItemId())) + ") at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
+            // DebugLog::getInstance().log("Placed " + item.getName() + "(" + std::to_string(static_cast<int>(item.getGameItemId())) + ") at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
         }
 
     }
@@ -231,7 +231,7 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
         // Don't check junk items
         if (!item.isJunkItem())
         {
-            // debugLog("Determining item " + item.getName());
+            // DebugLog::getInstance().log("Determining item " + item.getName());
             // Temporarily take this item out of the pool
             auto gameItemId = item.getGameItemId();
             item.setGameItemId(GameItem::NOTHING);
