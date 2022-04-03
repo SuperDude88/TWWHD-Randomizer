@@ -2,7 +2,16 @@ cmake_minimum_required(VERSION 3.7)
 project(wwhd_rando CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything") # -Weverything isn't great but other flags don't want to work
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic") # -Weverything isn't great but other flags don't want to work
+
+if(ENABLE_DEBUG)
+  message("Debugging is ON")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
+endif()
+
+# Some path related stuff for logging
+string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
+add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
 
 if(DEFINED DEVKITPRO)
   include("${DEVKITPRO}/wut/share/wut.cmake" REQUIRED)
@@ -54,7 +63,7 @@ if(DEFINED DEVKITPRO)
   wut_create_rpx(wwhd_rando)
 endif()
 
-file(COPY "asm/custom_symbols.txt" DESTINATION "${CMAKE_BINARY_DIR}/asm")
+file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/asm")
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/asm")
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/logic")

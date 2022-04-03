@@ -1,8 +1,8 @@
 #include "ItemPool.hpp"
 #include "PoolFunctions.hpp"
 #include "Random.hpp"
-#include "Debug.hpp"
 #include "Dungeon.hpp"
+#include "../server/command/Log.hpp"
 
 static const GameItemPool alwaysItems = {
 
@@ -356,8 +356,8 @@ GameItemPool generateStartingGameItemPool(const Settings& settings)
 
 void logItemPool(const std::string& poolName, const ItemPool& itemPool)
 {
-    debugLog(poolName + ":");
+    DebugLog::getInstance().log(poolName + ":");
     for (auto& item : itemPool) {
-        debugLog("\t" + item.getName());
+        DebugLog::getInstance().log("\t" + item.getName());
     }
 }

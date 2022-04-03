@@ -4,104 +4,93 @@
   Category:
   - Mail
   - SpoilsTrading
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c84
+  - 0x10031584
 
 - Name: MailboxBaitoMotherLetter
   OriginalItem: PieceOfHeart
   Category:
   - Mail
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c0c
-  - 0x31c6c
+  - 0x1003150C
+  - 0x1003156C
 
 - Name: MailboxBaitoLetter
   OriginalItem: RedRupee
   Category:
   - Mail
   - Dungeon
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c90
+  - 0x10031590
   
 - Name: MailboxKomaliFatherLetter
   OriginalItem: PieceOfHeart
   Category:
   - Mail
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c18
+  - 0x10031518
 
 - Name: MailboxBeedleBombAdLetter
   OriginalItem: BeedlesChart
   Category:
   - Mail
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c24
+  - 0x10031524
 
 - Name: MailboxRockSpireShopAdLetter
   OriginalItem: GreenRupee
   Category:
   - Mail
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c48
+  - 0x10031548
 
 - Name: MailboxSilverMembershipRewardLetter
   OriginalItem: ComplimentaryID
   Category:
   - Junk
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c78
+  - 0x10031578
 
 - Name: MailboxGoldMembershipRewardLetter
   OriginalItem: FillUpCoupon
   Category:
   - Junk
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c9c
+  - 0x1003159C
 
 - Name: MailboxOrcaLetter
   OriginalItem: RedRupee
   Category:
   - Mail
   - Dungeon
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c30
+  - 0x10031530
 
 - Name: MailboxGrandmaLetter
   OriginalItem: RedRupee
   Category:
   - Mail
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c3c
+  - 0x1003153C
 
 - Name: MailboxAryllLetter
   OriginalItem: RedRupee
   Category:
   - Mail
   - Dungeon
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c60
+  - 0x10031560
 
 - Name: MailboxTingleLetter
   OriginalItem: INcredibleChart
@@ -109,378 +98,373 @@
   - Mail
   - Dungeon
   - ExpensivePurchase
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x31c54
+  - 0x10031554
 
 - Name: GreatSeaBeedleShop20Rupee
   OriginalItem: BaitBag
   Category:
   - Misc
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1eb5a7
-  - 0x41ae07
-  - 0x41ae13
-  - 0x41d5e3
+  - 0x101EAEA7
+  - 0x02212C67
+  - 0x02215443
 
 - Name: GreatSeaSalvageCorpGift
   OriginalItem: TreasureChart34
   Category:
   - FreeGift
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c6abf
+  - 0x101C63BF
 
 - Name: GreatSeaCyclos
   OriginalItem: BalladOfGales
   Category:
   - Misc
-  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0xd86f20
-  NameOffsets: 0xdd43f3
+  Offset: 0x000A82F3
+  NameOffset: 0x0005AE20
 
 - Name: GreatSeaGoronTradingReward
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
   - ExpensivePurchase
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c5b6f
+  - 0x101C546F
 
 - Name: GreatSeaWitheredTrees
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x54fdcb
-  - 0x54fc4b
+  - 0x02347C2B
+  - 0x02347AAB
 
 - Name: ForsakenFortressSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xb47a98
-  - 0xb47c00
-  - 0xb47c24
-  - 0xb47c48
+  - 0x00002298
+  - 0x00002400
+  - 0x00002424
+  - 0x00002448
 
 - Name: ForsakenFortressPhantomGanon
   OriginalItem: SkullHammer
   Category:
   - Dungeon
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xb48038
+  - 0x00002838
 
 - Name: ForsakenFortressChestInsideLowerJailCell
   OriginalItem: PieceOfHeart
   Category:
   - Dungeon
-  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0
+  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x413c44
+  - 0x00000B44
 
 - Name: ForsakenFortressChestOnBed
   OriginalItem: YellowRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0
+  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x413c04
+  - 0x00000B04
 
 - Name: ForsakenFortressChestOutsideUpperJailCell
   OriginalItem: DungeonMap
   Category:
   - Dungeon
-  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0
+  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x413be4
+  - 0x00000AE4
 
 - Name: ForsakenFortressBokoblinGuardedChest
   OriginalItem: Compass
   Category:
   - Dungeon
-  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0
+  Path: content/Common/Stage/ma3room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x413c24
+  - 0x00000B24
 
 - Name: ForsakenFortressHelmarocKingHeartContainer
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0
-  Type: Actor
+  Paths:
+  - "code/cking.rpx@RPX"
+  - "content/Common/Stage/M2Tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr"
+  - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
+  - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
+  Type: Boss
   Offsets:
-  - 0xb48af4
-  - 0xb48c38
+  - 0x0206C096
+  - 0x000018AC
+  - 0x000032F4
+  - 0x00003438
 
 - Name: StarIslandSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room2.szs@YAZ0
+  Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xf5704
-  - 0xf5728
-  - 0xf574c
-  - 0xf5770
+  - 0x00003004
+  - 0x00003028
+  - 0x0000304C
+  - 0x00003070
 
 - Name: StarIslandLookoutPlatformChest
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room2.szs@YAZ0
+  Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xf57dc
+  - 0x000030DC
 
 - Name: StarIslandCaveChest
   OriginalItem: PieceOfHeart
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/Cave02_Stage.szs@YAZ0
+  Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c10
+  - 0x00000210
 
 - Name: NorthernFairySunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room3.szs@YAZ0
+  Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1d20bc
-  - 0x1d20e0
-  - 0x1d2104
-  - 0x1d2128
+  - 0x000009C0
+  - 0x000009E4
+  - 0x00000A08
+  - 0x00000A2C
 
 - Name: NorthernFairyIslandSubmarineChest
   OriginalItem: TreasureChart22
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room4.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x120bb0
+  - 0x000004B0
 
 - Name: NorthernFairyIslandGreatFairy
   OriginalItem: ProgressiveWallet
   Category:
   - GreatFairy
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x29DCCF
+  - 0x02095B2F
 
 - Name: GaleIsleSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room4.szs@YAZ0
+  Path: content/Common/Stage/sea_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x3ae5d4
-  - 0x3ae5f8
-  - 0x3ae61c
-  - 0x3ae640
+  - 0x00001CD4
+  - 0x00001CF8
+  - 0x00001D1C
+  - 0x00001D40
 
 - Name: CrescentMoonChest
   OriginalItem: TreasureChart10
   Category:
   - Misc
-  Path: content/Common/Stage/sea_Room5.szs@YAZ0
+  Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xcc980
+  - 0x00000980
 
 - Name: CrescentMoonSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room5.szs@YAZ0
+  Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xcc8a8
-  - 0xcc8cc
-  - 0xcc8f0
-  - 0xcc914
+  - 0x000008A8
+  - 0x000008CC
+  - 0x000008F0
+  - 0x00000914
 
 - Name: CrescentMoonSubmarineChest
   OriginalItem: TreasureChart9
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room7.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x120a64
+  - 0x00000664
 
 - Name: SevenStarBigOcto
   OriginalItem: PieceOfHeart
   Category:
   - BigOcto
-  Path: content/Common/Stage/sea_Room6.szs@YAZ0
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xbea78
+  - 0x00001278
 
 - Name: SevenStarSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room6.szs@YAZ0
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xbeb98
-  - 0xbebbc
-  - 0xbebe0
-  - 0xbec04
+  - 0x00001398
+  - 0x000013BC
+  - 0x000013E0
+  - 0x00001404
 
 - Name: SevenStarCenterLookoutPlatformChest
   OriginalItem: RedRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room6.szs@YAZ0
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xbed68
+  - 0x00001568
 
 - Name: SevenStarNorthernLookoutPlatformChest
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room6.szs@YAZ0
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xbed48
+  - 0x00001548
 
 - Name: SevenStarSouthernLookoutPlatformDefeatWizzrobes
   OriginalItem: TreasureChart16
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room6.szs@YAZ0
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xbed88
+  - 0x00001588
 
 - Name: OverlookSunkenTreasure
   OriginalItem: SecretCaveChart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room7.szs@YAZ0
+  Path: content/Common/Stage/sea_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x2ae348
-  - 0x2ae36c
-  - 0x2ae390
-  - 0x2ae3b4
+  - 0x00001548
+  - 0x0000156C
+  - 0x00001590
+  - 0x000015B4
 
 - Name: OverlookCaveChest
   OriginalItem: TriforceShard8
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/TF_02_Stage.szs@YAZ0
+  Path: content/Common/Stage/TF_02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x1c7084
+  - 0x00000484
 
 - Name: FourEyeReefDestroyCannonsAndGunboats
   OriginalItem: TreasureChart19
   Category:
   - EyeReefChests
-  Path: content/Common/Stage/sea_Room8.szs@YAZ0
+  Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1eb4d4
+  - 0x00001FD4
 
 - Name: FourEyeReefSunkenTreasure
   OriginalItem: GreatFairyChart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room8.szs@YAZ0
+  Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1eb3fc
-  - 0x1eb420
-  - 0x1eb444
-  - 0x1eb468
+  - 0x00001EFC
+  - 0x00001F20
+  - 0x00001F44
+  - 0x00001F68
 
 - Name: MotherAndChildSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x61eef4
-  - 0x61ef18
-  - 0x61ef3c
-  - 0x61ef60
+  - 0x00001968
+  - 0x0000198C
+  - 0x000019B0
+  - 0x000019D4
 
 - Name: MotherAndChildInsideMotherIsleChest
   OriginalItem: FireIceArrows
   Category:
   - Misc
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 1
+  - 0x00001BB0
 
 - Name: SpectacleBarrelShootingFirstPrize
   OriginalItem: PieceOfHeart
   Category:
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c894
-  - 0x1c895
+  - 0x1001C194
+  - 0x1001C195
 
 - Name: SpectacleBarrelShootingSecondPrize
   OriginalItem: TreasureChart17
   Category:
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c896
+  - 0x1001C196
 
 - Name: SpectacleSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room10.szs@YAZ0
+  Path: content/Common/Stage/sea_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x61eef4
-  - 0x61ef18
-  - 0x61ef3c
-  - 0x61ef60
+  - 0x00000BF0
+  - 0x00000C14
+  - 0x00000C38
+  - 0x00000C5C
 
 - Name: WindfallIvanCatchKillerBees
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
   - 0x4a0d9f
@@ -489,697 +473,647 @@
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x10631ac
-  - 0x10632f4
-  - 0x1063840
+  - 0x000038AC
+  - 0x000039F4
+  - 0x00003F40
 
 - Name: WindfallTottTeachRhythm
   OriginalItem: SongOfPassing
   Category:
   - FreeGift
-  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0xd87a10
-  NameOffsets: 0xdd445f
+  Offset: 0x000A835F
+  NameOffset: 0x0005B910
 
 - Name: WindfallZunariExoticFlower
   OriginalItem: MagicArmor
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: Custom_Symbol
-  Offsets:
-  - 1
+  SymbolName: zunari_magic_armor_slot_item_id
 
 - Name: WindfallSamDecorateFlower
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c409b
+  - 0x101C399B
 
 - Name: WindfallKaneDecorateShopGuru
   OriginalItem: PurpleRupee
   Category:
   - Obscure
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c3f73
+  - 0x101C3873
 
 - Name: WindfallKaneDecoratePostmanStatue
   OriginalItem: PurpleRupee
   Category:
   - Obscure
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c3f77
+  - 0x101C3877
 
 - Name: WindfallKaneDecorateSixFlags
   OriginalItem: RedRupee
   Category:
   - Obscure
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c3f7b
+  - 0x101C387B
 
 - Name: WindfallKaneDecorateSixIdols
   OriginalItem: RedRupee
   Category:
   - Obscure
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c3f7f
+  - 0x101C387F
 
 - Name: WindfallMilaCatchThief
   OriginalItem: EmptyBottle
   Category:
   - ShortSideQuest
-  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0xd64290
-  NameOffsets: 0xdd33af
+  Offset: 0x000A72AF
+  NameOffset: 0x00038190
 
 - Name: WindfallDampaPigMinigame
   OriginalItem: TreasureChart42
   Category:
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x4ce5e3
-  - 0x4ce5f7
+  - 0x022C6457
 
 - Name: WindfallPompieVeraPictoSecretMeeting
   OriginalItem: TreasureChart24
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c409f
+  - 0x101C399F
 
 - Name: WindfallKamoPictoFullMoon
   OriginalItem: TreasureChart31
   Category:
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c40af
+  - 0x101C39AF
 
 - Name: WindfallMinecoPictoMissWindfall
   OriginalItem: TreasureChart33
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c40a3
+  - 0x101C39A3
 
 - Name: WindfallSunkenTreasure
   OriginalItem: PurpleRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1062a80
-  - 0x1062aa4
-  - 0x1062ac8
-  - 0x1062aec
+  - 0x00003138
+  - 0x0000315C
+  - 0x00003180
+  - 0x000031A4
 
 - Name: WindfallTingleFirstGift
   OriginalItem: TingleBottle
   Category:
   - FreeGift
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x4F1A8F
+  - 0x022E98EF
 
 - Name: WindfallTingleSecondGift
   OriginalItem: TinglesChart
   Category:
   - FreeGift
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x4F1AC3
+  - 0x022E9923
 
 - Name: WindfallJailMazeChest
   OriginalItem: ProgressivePictoBox
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0
+  Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x2794c
+  - 0x0000094C
 
 - Name: WindfallMrsMarieCatchKillerBees
   OriginalItem: PurpleRupee
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x447e1f
+  - 0x0223FC7F
 
 - Name: WindfallMrsMarie1JoyPendant
   OriginalItem: RedRupee
   Category:
   - SpoilsTrading
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x447f33
+  - 0x0223FD93
 
 - Name: WindfallMrsMarie21JoyPendant
   OriginalItem: CabanaDeed
   Category:
   - SpoilsTrading
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x447f63
+  - 0x0223FDC3
 
 - Name: WindfallMrsMarie40JoyPendant
   OriginalItem: TreasureChart45
   Category:
   - SpoilsTrading
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x44805b
+  - 0x0223FEC3
 
 - Name: WindfallLenzoBecomeAssistant
   OriginalItem: ProgressivePictoBox
   Category:
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x4d7c17
-  - 0x4d899f
+  - 0x022CFA77
 
 - Name: WindfallLenzoBringFirefly
   OriginalItem: JoyPendant
   Category:
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x4d7c4b
+  - 0x022CFAAB
 
 - Name: WindfallLenzoHouseLeftChest
   OriginalItem: TreasureChart29
   Category:
   - ShortSideQuest
-  Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0
+  Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x26e10
+  - 0x00000910
 
 - Name: WindfallLenzoHouseRightChest
   OriginalItem: PurpleRupee
   Category:
   - ShortSideQuest
-  Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0
+  Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x26e30
+  - 0x00000930
 
 - Name: WindfallCafePostmanDelivery
   OriginalItem: MoblinsLetter
   Category:
   - ShortSideQuest
-  Path: content/Common/Stage/Opub_Stage.szs@YAZ0
+  Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0x289d40
-  NameOffsets: 0x2a0d43
+  Offset: 0x00022443
+  NameOffset: 0x0000B440
 
 - Name: WindfallAntonPictoLinda
   OriginalItem: PieceOfHeart
   Category:
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c40a7
+  - 0x101C39A7
 
 - Name: WindfallBattleSquidFirstPrize
   OriginalItem: PieceOfHeart
   Category:
   - BattleSquid
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x46f327
+  - 0x02267187
 
 - Name: WindfallBattleSquidSecondPrize
   OriginalItem: TreasureChart7
   Category:
   - BattleSquid
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x46f337
+  - 0x02267197
 
 - Name: WindfallBattleSquidUnder20Prize
   OriginalItem: TreasureChart23
   Category:
   - BattleSquid
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x46f33f
+  - 0x02267367
 
 - Name: WindfallKreebLightLighthouse
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1c40ab
+  - 0x101C39AB
 
 - Name: WindfallAuction5Rupee
   OriginalItem: TreasureChart18
   Category:
   - ExpensivePurchase
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x190875
+  - 0x10190175
 
 - Name: WindfallAuction40Rupee
   OriginalItem: JoyPendant
   Category:
   - ExpensivePurchase
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x19086d
+  - 0x1019016D
 
 - Name: WindfallAuction60Rupee
   OriginalItem: TreasureChart38
   Category:
   - ExpensivePurchase
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x19087d
+  - 0x1019017D
 
 - Name: WindfallAuction80Rupee
   OriginalItem: PieceOfHeart
   Category:
   - ExpensivePurchase
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x190885
+  - 0x10190185
 
 - Name: WindfallAuction100Rupee
   OriginalItem: SwiftSail
   Category:
   - ExpensivePurchase
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x19088d
+  - 0x1019018D
 
 - Name: WindfallHouseOfWealthChest
   OriginalItem: RedRupee
   Category:
   - Misc
-  Path: content/Common/Stage/Orichh_Room0.szs@YAZ0
+  Path: content/Common/Stage/Orichh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x39a5c0
+  - 0x000008C0
 
 - Name: WindfallMaggiesFatherGive20SkullNecklace
   OriginalItem: TreasureChart2
   Category:
   - SpoilsTrading
-  Path: content/Common/Stage/Orichh_Stage.szs@YAZ0
+  Path: content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0x29a4c0
-  NameOffsets: 0x2ab29f
+  Offset: 0x0002C99F
+  NameOffset: 0x0001BBC0
 
 - Name: WindfallMaggieFreeItem
   OriginalItem: MaggiesLetter
   Category:
   - FreeGift
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x484443
+  - 0x0227C2A3
 
 - Name: WindfallMaggieDeliveryReward
   OriginalItem: PieceOfHeart
   Category:
   - ShortSideQuest
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x48447f
+  - 0x0227C2DF
 
 - Name: WindfallPotionShop15Green
   OriginalItem: GreenPotion
   Category:
   - SpoilsTrading
-  Path: cking.rpx@RPX
   Type: Custom_Symbol
-  Offsets:
-  - 1
+  SymbolName: doc_bandam_green_potion_slot_item_id
 
 - Name: WindfallPotionShop15Blue
   OriginalItem: BluePotion
   Category:
   - SpoilsTrading
   - LongSideQuest
-  Path: cking.rpx@RPX
   Type: Custom_Symbol
-  Offsets:
-  - 1
+  SymbolName: doc_bandam_blue_potion_slot_item_id
 
 - Name: WindfallPirateShipChest
   OriginalItem: Bombs
   Category:
   - Minigame
-  Path: content/Common/Stage/Asoko_Stage.szs@YAZ0
+  Path: content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x2ce54
-  - 0x2ce74
+  - 0x00000754
+  - 0x00000774
 
 - Name: PawprintSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room12.szs@YAZ0
+  Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x246b40
-  - 0x246b64
-  - 0x246b88
-  - 0x246bac
+  - 0x00002B40
+  - 0x00002B64
+  - 0x00002B88
+  - 0x00002BAC
 
 - Name: PawprintChuchuCaveChest
   OriginalItem: PieceOfHeart
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c10
+  - 0x00000210
 
 - Name: PawprintChuchuCaveBehindLeftBoulder
   OriginalItem: PurpleRupee
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20bd0
+  - 0x000001D0
 
 - Name: PawprintChuchuCaveBehindRightBoulder
   OriginalItem: JoyPendant
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20bf0
+  - 0x000001F0
 
 - Name: PawprintChuchuCaveScaleWall
   OriginalItem: RedRupee
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20bb0
+  - 0x000001B0
 
 - Name: PawprintWizzrobeCaveChest
   OriginalItem: TreasureChart46
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/Cave07_Stage.szs@YAZ0
+  Path: content/Common/Stage/Cave07_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c10
+  - 0x00000210
 
 - Name: PawprintLookoutPlatformDefeatEnemies
   OriginalItem: RedRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room12.szs@YAZ0
+  Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x246cf0
+  - 0x00002CF0
 
 - Name: DragonRoostIslandWindShrine
   OriginalItem: WindsRequiem
   Category:
   - Misc
-  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0xd85080
-  NameOffsets: 0xdd4263
+  Offset: 0x000A8163
+  NameOffset: 0x00058F80
 
 - Name: DragonRoostIslandBoulderChest
   OriginalItem: SilverRupee
   Category:
   - IslandPuzzle
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xb9b8ac
+  - 0x00002BAC
 
 - Name: DragonRoostIslandSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xb9b600
-  - 0xb9b624
-  - 0xb9b648
-  - 0xb9b66c
+  - 0x00002900
+  - 0x00002924
+  - 0x00002948
+  - 0x0000296C
 
 - Name: DragonRoostIslandHoskit20GoldenFeathers
   OriginalItem: OrangeRupee
   Category:
   - SpoilsTrading
-  Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0
+  Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0x17b060
-  NameOffsets: 0x19253b
+  Offset: 0x0001FC3B
+  NameOffset: 0x00008760
 
 - Name: DragonRoostIslandBaitoMailgame
   OriginalItem: NoteToMom
   Category:
   - Minigame
-  Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0
+  Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0x17b380
-  NameOffsets: 0x19254b
+  Offset: 0x0001FC4B
+  NameOffset: 0x00008A80
 
 - Name: DragonRoostIslandLeafPlatforms
   OriginalItem: OrangeRupee
   Category:
   - IslandPuzzle
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xb9b8cc
+  - 0x00002BCC
 
 - Name: DragonRoostIslandCaveChest
   OriginalItem: PurpleRupee
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/TF_06_Stage.szs@YAZ0
+  Path: content/Common/Stage/TF_06_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x1c7550
+  - 0x00000950
 
 - Name: FlightControlBirdManFirstPrize
   OriginalItem: PieceOfHeart
   Category:
   - Minigame
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x40e79b
+  - 0x022065FB
 
 - Name: FlightControlSunkenTreasure
   OriginalItem: IslandHeartsChart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room14.szs@YAZ0
+  Path: content/Common/Stage/sea_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x239820
-  - 0x239844
-  - 0x239868
-  - 0x23988c
+  - 0x00001120
+  - 0x00001144
+  - 0x00001168
+  - 0x0000118C
 
 - Name: FlightControlSubmarineChest
   OriginalItem: PlatformChart
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room6.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x120ac8
+  - 0x000006C8
 
 - Name: WesternFairySunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room15.szs@YAZ0
+  Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1d2380
-  - 0x1d23a4
-  - 0x1d23c8
-  - 0x1d23ec
+  - 0x00001680
+  - 0x000016A4
+  - 0x000016C8
+  - 0x000016EC
 
 - Name: WesternFairyGreatFairy
   OriginalItem: ProgressiveQuiver
   Category:
   - GreatFairy
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x29DD1F
+  - 0x02095B7F
 
 - Name: WesternFairyLookoutPlatformChest
   OriginalItem: SkullNecklace
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room15.szs@YAZ0
+  Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1d2458
+  - 0x00001758
 
 - Name: RockSpireSoutheastGunboat
   OriginalItem: PieceOfHeart
   Category:
   - Gunboat
-  Path: content/Common/Stage/sea_Room16.szs@YAZ0
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x237b84
+  - 0x00001A84
 
 - Name: RockSpireSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room16.szs@YAZ0
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x237ca4
-  - 0x237cc8
-  - 0x237cec
-  - 0x237d10
+  - 0x00001BA4
+  - 0x00001BC8
+  - 0x00001BEC
+  - 0x00001C10
 
 - Name: RockSpireBeedle500RupeeItem
   OriginalItem: EmptyBottle
   Category:
   - ExpensivePurchase
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1eb657
-  - 0x41d71f
-  - 0x41d75b
+  - 0x101EAF57
+  - 0x0221557F
+  - 0x022155BB
 
 - Name: RockSpireBeedle950RupeeItem
   OriginalItem: PieceOfHeart
   Category:
   - ExpensivePurchase
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1eb667
-  - 0x41d727
-  - 0x41d74f
+  - 0x101EAF67
+  - 0x02215587
+  - 0x022155AF
 
 - Name: RockSpireBeedle900RupeeItem
   OriginalItem: TreasureChart4
   Category:
   - ExpensivePurchase
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x1eb677
-  - 0x41d72f
-  - 0x41d763
+  - 0x101EAF77
+  - 0x0221558F
+  - 0x022155C3
 
 - Name: RockSpireWesternLookoutPlatformDestroyCannons
   OriginalItem: OrangeRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room16.szs@YAZ0
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x237de8
+  - 0x00001CE8
 
 - Name: RockSpireEasternLookoutPlatformDestroyCannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room16.szs@YAZ0
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x237e08
+  - 0x00001D08
 
 - Name: RockSpireCenterLookoutPlatformChest
   OriginalItem: RedRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room16.szs@YAZ0
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x237e28
+  - 0x00001D28
 
 - Name: RockSpireCaveChest
   OriginalItem: TreasureChart37
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/Cave04_Stage.szs@YAZ0
+  Path: content/Common/Stage/Cave04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c40
+  - 0x00000240
 
 - Name: TingleIslandAnkleAllStatuesReward
   OriginalItem: RainbowRupee
   Category:
   - Misc
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
   - 0x4f1b13
@@ -1188,1152 +1122,1143 @@
   OriginalItem: PieceOfHeart
   Category:
   - BigOcto
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x5bf0d0
+  - 0x00000BD0
 
 - Name: TingleIslandSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x5bf238
-  - 0x5bf25c
-  - 0x5bf280
-  - 0x5bf2a4
+  - 0x00000D38
+  - 0x00000D5C
+  - 0x00000D80
+  - 0x00000DA4
 
 - Name: NorthernTriangleSunkenTreasure
   OriginalItem: OctoChart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room18.szs@YAZ0
+  Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x65ec0
-  - 0x65ee4
-  - 0x65f08
-  - 0x65f2c
+  - 0x000009C0
+  - 0x000009E4
+  - 0x00000A08
+  - 0x00000A2C
 
 - Name: EasternFairySunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room19.szs@YAZ0
+  Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1d2178
-  - 0x1d219c
-  - 0x1d21c0
-  - 0x1d21e4
+  - 0x00001478
+  - 0x0000149C
+  - 0x000014C0
+  - 0x000014E4
 
 - Name: EasternFairyGreatFairy
   OriginalItem: ProgressiveBombBag
   Category:
   - GreatFairy
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x29DCF7
+  - 0x02095B57
 
 - Name: EasternFairyLookoutPlatformDefeatCannonsAndEnemies
   OriginalItem: BokoBabaSeed
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room19.szs@YAZ0
+  Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1d2274
+  - 0x00001574
 
 - Name: FireMountainBigOcto
   OriginalItem: OrangeRupee
   Category:
   - BigOcto
-  Path: content/Common/Stage/sea_Room20.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room20.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1f39c8
+  - 0x00000EC8
 
 - Name: FireMountainSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room20.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room20.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1f3b30
-  - 0x1f3b54
-  - 0x1f3b78
-  - 0x1f3b9c
+  - 0x00001030
+  - 0x00001054
+  - 0x00001078
+  - 0x0000109C
 
 - Name: FireMountainInteriorChest
   OriginalItem: PowerBracelets
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0
+  Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20cc8
+  - 0x000001C8
 
 - Name: FireMountainLookoutPlatformChest
   OriginalItem: YellowRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room20.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room20.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1f3c4c
+  - 0x0000114C
 
 - Name: FireMountainLookoutPlatformDestroyCannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room20.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room20.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1f3c2c
+  - 0x0000112C
 
 - Name: StarBeltSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room21.szs@YAZ0
+  Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xbebe8
-  - 0xbec0c
-  - 0xbec30
-  - 0xbec54
+  - 0x000012E8
+  - 0x0000130C
+  - 0x00001330
+  - 0x00001354
 
 - Name: StarBeltLookoutPlatformChest
   OriginalItem: TreasureChart44
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room21.szs@YAZ0
+  Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xbecc0
+  - 0x000013C0
 
 - Name: ThreeEyeReefDestroyCannonsAndGunboats
   OriginalItem: TreasureChart32
   Category:
   - EyeReefChests
-  Path: content/Common/Stage/sea_Room22.szs@YAZ0
+  Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1f51a4
+  - 0x000022A4
 
 - Name: ThreeEyeReefSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room22.szs@YAZ0
+  Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1f5018
-  - 0x1f503c
-  - 0x1f5060
-  - 0x1f5084
+  - 0x00002118
+  - 0x0000213C
+  - 0x00002160
+  - 0x00002184
 
 - Name: GreatfishHiddenChest
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x5c8478
+  - 0x00001D78
 
 - Name: GreatfishSunkenTreasure
   OriginalItem: TriforceShard1
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x5c8160
-  - 0x5c8184
-  - 0x5c81a8
-  - 0x5c81cc
+  - 0x00001A60
+  - 0x00001A84
+  - 0x00001AA8
+  - 0x00001ACC
 
 - Name: CyclopsReefDestroyCannonsAndGunboats
   OriginalItem: TreasureChart21
   Category:
   - EyeReefChests
-  Path: content/Common/Stage/sea_Room24.szs@YAZ0
+  Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1d719c
+  - 0x0000279C
 
 - Name: CyclopsReefSunkenTreasure
   OriginalItem: LightRingChart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room24.szs@YAZ0
+  Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1d70c4
-  - 0x1d70e8
-  - 0x1d710c
-  - 0x1d7130
+  - 0x000026C4
+  - 0x000026E8
+  - 0x0000270C
+  - 0x00002730
 
 - Name: CyclopsReefLookoutPlatformDefeatEnemies
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room24.szs@YAZ0
+  Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1d71bc
+  - 0x000027BC
 
 - Name: SixEyeReefDestroyCannonsAndGunboats
   OriginalItem: TreasureChart26
   Category:
   - EyeReefChests
-  Path: content/Common/Stage/sea_Room25.szs@YAZ0
+  Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1f4630
+  - 0x00002C30
 
 - Name: SixEyeReefSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room25.szs@YAZ0
+  Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1f44a4
-  - 0x1f44c8
-  - 0x1f44ec
-  - 0x1f4510
+  - 0x00002AA4
+  - 0x00002AC8
+  - 0x00002AEC
+  - 0x00002B10
 
 - Name: SixEyeReefSubmarineChest
   OriginalItem: PieceOfHeart
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room1.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x12093c
+  - 0x0000053C
 
 - Name: SixEyeReefLookoutPlatformDestroyCannons
   OriginalItem: SkullNecklace
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room25.szs@YAZ0
+  Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1f4650
+  - 0x00002C50
 
 - Name: TOTGSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room26.szs@YAZ0
+  Path: content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x2ba4
-  - 0x2bc8
-  - 0x2bec
-  - 0x2c10
+  - 0x000006A4
+  - 0x000006C8
+  - 0x000006EC
+  - 0x00000710
 
 - Name: EasternTriangleSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room27.szs@YAZ0
+  Path: content/Common/Stage/sea_Room27.szs@YAZ0@SARC@Room27.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x662ec
-  - 0x66310
-  - 0x66334
-  - 0x66358
+  - 0x00000DEC
+  - 0x00000E10
+  - 0x00000E34
+  - 0x00000E58
 
 - Name: ThornedFairySunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room28.szs@YAZ0
+  Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x2abd84
-  - 0x2abda8
-  - 0x2abdcc
-  - 0x2abdf0
+  - 0x00001A84
+  - 0x00001AA8
+  - 0x00001ACC
+  - 0x00001AF0
 
 - Name: ThornedFairyGreatFairy
   OriginalItem: ProgressiveQuiver
   Category:
   - GreatFairy
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x29DD17
+  - 0x02095B77
 
 - Name: ThornedFairyNortheasternLookoutPlatformDestroyCannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room28.szs@YAZ0
+  Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x2abe80
+  - 0x00001B80
 
 - Name: ThornedFairySouthwesternLookoutPlatformDefeatEnemies
   OriginalItem: BokoBabaSeed
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room28.szs@YAZ0
+  Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x2abea0
+  - 0x00001BA0
 
 - Name: NeedleRockChest
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/sea_Room29.szs@YAZ0
+  Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x12ee24
+  - 0x00002224
 
 - Name: NeedleRockGoldenGunboat
   OriginalItem: TriforceChart3
   Category:
   - Gunboat
-  Path: content/Common/Stage/sea_Room29.szs@YAZ0
+  Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x12ed94
+  - 0x00002194
 
 - Name: NeedleRockSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room29.szs@YAZ0
+  Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x12ec98
-  - 0x12ecbc
-  - 0x12ece0
-  - 0x12ed04
+  - 0x00002098
+  - 0x000020BC
+  - 0x000020E0
+  - 0x00002104
 
 - Name: NeedleRockCaveChest
   OriginalItem: OrangeRupee
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/SubD42_Stage.szs@YAZ0
+  Path: content/Common/Stage/SubD42_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c0c
+  - 0x0000020C
 
 - Name: IsletOfSteelSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room30.szs@YAZ0
+  Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x635a70
-  - 0x635a94
-  - 0x635ab8
-  - 0x635adc
+  - 0x00000C70
+  - 0x00000C94
+  - 0x00000CB8
+  - 0x00000CDC
 
 - Name: IsletOfSteelInteriorChest
   OriginalItem: TriforceChart1
   Category:
   - Misc
-  Path: content/Common/Stage/ShipD_Stage.szs@YAZ0
+  Path: content/Common/Stage/ShipD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20bb8
+  - 0x000001B8
 
 - Name: IsletOfSteelLookoutPlatformDefeatEnemies
   OriginalItem: SkullNecklace
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room30.szs@YAZ0
+  Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x635bd8
+  - 0x00000DD8
 
 - Name: StoneWatcherSunkenTreasure
   OriginalItem: TriforceShard3
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room31.szs@YAZ0
+  Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x3433fc
-  - 0x343420
-  - 0x343444
-  - 0x343468
+  - 0x000022FC
+  - 0x00002320
+  - 0x00002344
+  - 0x00002368
 
 - Name: StoneWatcherCaveChest
   OriginalItem: TriforceShard7
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/TF_01_Stage.szs@YAZ0
+  Path: content/Common/Stage/TF_01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x1c7084
+  - 0x00000484
 
 - Name: StoneWatcherLookoutPlatformChest
   OriginalItem: RedRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room31.szs@YAZ0
+  Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x343560
+  - 0x00002460
 
 - Name: StoneWatcherLookoutPlatformDestroyCannons
   OriginalItem: PieceOfHeart
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room31.szs@YAZ0
+  Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x343540
+  - 0x00002440
 
 - Name: SouthernTriangleSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room32.szs@YAZ0
+  Path: content/Common/Stage/sea_Room32.szs@YAZ0@SARC@Room32.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x660c0
-  - 0x660e4
-  - 0x66108
-  - 0x6612c
+  - 0x00000AC0
+  - 0x00000AE4
+  - 0x00000B08
+  - 0x00000B2C
 
 - Name: PrivateOasisTopOfWaterfallChest
   OriginalItem: TreasureChart27
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/sea_Room33.szs@YAZ0
+  Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x5a6928
+  - 0x00002628
 
 - Name: PrivateOasisBigOcto
   OriginalItem: OrangeRupee
   Category:
   - BigOcto
-  Path: content/Common/Stage/sea_Room33.szs@YAZ0
+  Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x5a68e0
+  - 0x000025E0
 
 - Name: PrivateOasisSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room33.szs@YAZ0
+  Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x5a670c
-  - 0x5a6730
-  - 0x5a6754
-  - 0x5a6778
+  - 0x0000240C
+  - 0x00002430
+  - 0x00002454
+  - 0x00002478
 
 - Name: PrivateOasisCabanaLabyrinthLowerFloorChest
   OriginalItem: OrangeRupee
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TF_04_Stage.szs@YAZ0
+  Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c74
+  - 0x00000274
 
 - Name: PrivateOasisCabanaLabyrinthUpperFloorChest
   OriginalItem: TriforceShard2
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TF_04_Stage.szs@YAZ0
+  Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c54
+  - 0x00000254
 
 - Name: BombIslandSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room34.szs@YAZ0
+  Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xbeacc
-  - 0xbeaf0
-  - 0xbeb14
-  - 0xbeb38
+  - 0x00001FCC
+  - 0x00001FF0
+  - 0x00002014
+  - 0x00002038
 
 - Name: BombIslandCaveChest
   OriginalItem: PieceOfHeart
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/Cave01_Stage.szs@YAZ0
+  Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x1c6e78
+  - 0x00000278
 
 - Name: BombIslandSubmarineChest
   OriginalItem: EmptyBottle
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room2.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1208a4
+  - 0x000004A4
 
 - Name: BombIslandLookoutPlatformDefeatEnemies
   OriginalItem: RedRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room34.szs@YAZ0
+  Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xbec10
+  - 0x00002110
 
 - Name: BirdsPeakSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room35.szs@YAZ0
+  Path: content/Common/Stage/sea_Room35.szs@YAZ0@SARC@Room35.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xbcffb8
-  - 0xbcffdc
-  - 0xbd0000
-  - 0xbd0024
+  - 0x000015B8
+  - 0x000015DC
+  - 0x00001600
+  - 0x00001624
 
 - Name: BirdsPeakRockCaveChest
   OriginalItem: TriforceChart3
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/TF_03_Stage.szs@YAZ0
+  Path: content/Common/Stage/TF_03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20b8c
+  - 0x0000018C
 
 - Name: DiamondSteppeBigOcto
   OriginalItem: OrangeRupee
   Category:
   - BigOcto
-  Path: content/Common/Stage/sea_Room36.szs@YAZ0
+  Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x2b706c
+  - 0x0000166C
 
 - Name: DiamondSteppeSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room36.szs@YAZ0
+  Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x2b718c
-  - 0x2b71b0
-  - 0x2b71d4
-  - 0x2b71f8
+  - 0x0000178C
+  - 0x000017B0
+  - 0x000017D4
+  - 0x000017F8
 
 - Name: DiamondSteppeWarpMazeFirstChest
   OriginalItem: JoyPendant
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/WarpD_Stage.szs@YAZ0
+  Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20be8
+  - 0x000001E8
 
 - Name: DiamondSteppeWarpMazeSecondChest
   OriginalItem: GhostShipChart
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/WarpD_Stage.szs@YAZ0
+  Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20bc8
+  - 0x000001C8
 
 - Name: FiveEyeReefDestroyCannonsAndGunboats
   OriginalItem: TreasureChart41
   Category:
   - EyeReefChests
-  Path: content/Common/Stage/sea_Room37.szs@YAZ0
+  Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1eff00
+  - 0x00002E00
 
 - Name: FiveEyeReefSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room37.szs@YAZ0
+  Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1efd2c
-  - 0x1efd50
-  - 0x1efd74
-  - 0x1efd98
+  - 0x00002C2C
+  - 0x00002C50
+  - 0x00002C74
+  - 0x00002C98
 
 - Name: FiveEyeReefLookoutPlatformChest
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room37.szs@YAZ0
+  Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1eff20
+  - 0x00002E20
 
 - Name: SharkIslandSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room38.szs@YAZ0
+  Path: content/Common/Stage/sea_Room38.szs@YAZ0@SARC@Room38.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x122250
-  - 0x122274
-  - 0x122298
-  - 0x1222bc
+  - 0x00001550
+  - 0x00001574
+  - 0x00001598
+  - 0x000015BC
 
 - Name: SharkIslandCaveChest
   OriginalItem: SilverRupee
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/ITest63_Stage.szs@YAZ0
+  Path: content/Common/Stage/ITest63_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c10
+  - 0x00000210
 
 - Name: SouthernFairySunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1d2d40
-  - 0x1d2d64
-  - 0x1d2d88
-  - 0x1d2dac
+  - 0x00002040
+  - 0x00002064
+  - 0x00002088
+  - 0x000020AC
 
 - Name: SouthernFairyGreatFairy
   OriginalItem: ProgressiveBombBag
   Category:
   - GreatFairy
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x29DCEF
+  - 0x02095B4F
 
 - Name: SouthernFairyLookoutPlatformDestroyNorthwestCannons
   OriginalItem: TreasureChart40
   Category:
   - Platform
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1d2e3c
+  - 0x0000213C
 
 - Name: SouthernFairyLookoutPlatformDestroySoutheastCannons
   OriginalItem: SkullNecklace
   Category:
   - Platform
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1d2e5c
+  - 0x0000215C
 
 - Name: IceRingFrozenChest
   OriginalItem: TreasureChart36
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/sea_Room40.szs@YAZ0
+  Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x4b6994
+  - 0x00001494
 
 - Name: IceRingSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room40.szs@YAZ0
+  Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x4b67c0
-  - 0x4b67e4
-  - 0x4b6808
-  - 0x4b682c
+  - 0x000012C0
+  - 0x000012E4
+  - 0x00001308
+  - 0x0000132C
 
 - Name: IceRingInteriorChest
   OriginalItem: IronBoots
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0
+  Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20d0c
+  - 0x0000020C
 
 - Name: IceRingInnerCaveChest
   OriginalItem: OrangeRupee
   Category:
   - PuzzleSecretCave
   - CombatSecretCave
-  Path: content/Common/Stage/ITest62_Stage.szs@YAZ0
+  Path: content/Common/Stage/ITest62_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c10
+  - 0x00000210
 
 - Name: ForestHavenSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x88524c
-  - 0x885270
-  - 0x885294
-  - 0x8852b8
+  - 0x00003D28
+  - 0x00003D4C
+  - 0x00003D70
+  - 0x00003D94
 
 - Name: ForestHavenOnTreeBranch
   OriginalItem: DekuLeaf
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/Omori_Room0.szs@YAZ0
+  Path: content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x33b704
-  - 0x33b9c4
+  - 0x00001E04
+  - 0x000020C4
 
 - Name: ForestHavenSmallIslandChest
   OriginalItem: TreasureChart3
   Category:
   - IslandPuzzle
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x885588
+  - 0x00004088
 
 - Name: CliffPlateauSunkenTreasure
   OriginalItem: TriforceShard5
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room42.szs@YAZ0
+  Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xe2300
-  - 0xe2324
-  - 0xe2348
-  - 0xe236c
+  - 0x00001500
+  - 0x00001524
+  - 0x00001548
+  - 0x0000156C
 
 - Name: CliffPlateauCaveChest
   OriginalItem: JoyPendant
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/Cave03_Stage.szs@YAZ0
+  Path: content/Common/Stage/Cave03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c0c
+  - 0x0000020C
 
 - Name: CliffPlateauHighestIsleChest
   OriginalItem: TreasureChart25
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/sea_Room42.szs@YAZ0
+  Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xe263c
+  - 0x0000183C
 
 - Name: CliffPlateauLookoutPlatformChest
   OriginalItem: BokoBabaSeed
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room42.szs@YAZ0
+  Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xe265c
+  - 0x0000185C
 
 - Name: HorseshoeSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room43.szs@YAZ0
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x19d4ec
-  - 0x19d510
-  - 0x19d534
-  - 0x19d558
+  - 0x00001CEC
+  - 0x00001D10
+  - 0x00001D34
+  - 0x00001D58
 
 - Name: HorseshoePlayGolf
   OriginalItem: TreasureChart28
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/sea_Room43.szs@YAZ0
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x19d774
+  - 0x00001F74
 
 - Name: HorseshoeCaveChest
   OriginalItem: TreasureChart8
   Category:
   - CombatSecretCave
-  Path: content/Common/Stage/Cave05_Stage.szs@YAZ0
+  Path: content/Common/Stage/Cave05_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20bb0
+  - 0x000001B0
 
 - Name: HorseshoeNorthwesternLookoutPlatformChest
   OriginalItem: TreasureChart43
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room43.szs@YAZ0
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x19d794
+  - 0x00001F94
 
 - Name: HorseshoeSoutheasternLookoutPlatformChest
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room43.szs@YAZ0
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x19d7b4
+  - 0x00001FB4
 
 - Name: OutsetDigBlackSoil
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
-  Path: szs_permanent2/sea_Room44.zs
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x84CBD4
+  - 0x00003AD4
 
 - Name: OutsetSunkenTreasure
   OriginalItem: TriforceShard6
   Category:
   - SunkenTreasure
-  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x84c67c
-  - 0x84c6a0
-  - 0x84c6c4
-  - 0x84c6e8
+  - 0x00003558
+  - 0x0000357C
+  - 0x000035A0
+  - 0x000035C4
 
 - Name: OutsetUnderLinksHouseChest
   OriginalItem: OrangeRupee
   Category:
   - Misc
-  Path: LinkUG_Stage.zs
+  Path: content/Common/Stage/LinkUG_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x212DC
+  - 0x000008DC
 
 - Name: OutsetOrca10KnightsCrest
   OriginalItem: HurricaneSpin
   Category:
   - SpoilsTrading
-  Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0
+  Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0x8a1740
-  NameOffsets: 0x8bf31b
+  Offset: 0x0002D61B
+  NameOffset: 0x0000FA40
 
 - Name: OutsetOrca500Hits
   OriginalItem: PieceOfHeart
   Category:
   - Junk
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x10631AC
-  - 0x10632F4
-  - 0x1063840
+  - 0x02258737
 
 - Name: OutsetMesasHouseChest
   OriginalItem: RedRupee
   Category:
   - Misc
-  Path: Omasao_Stage.zs
+  Path: content/Common/Stage/Omasao_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x9BCCE8
+  - 0x000008E8
 
 - Name: OutsetGreatFairy
   OriginalItem: ProgressiveWallet
   Category:
   - GreatFairy
-  Path: cking.rpx@RPX
   Type: RPX
   Offsets:
-  - 0x29DCC7
+  - 0x02095B27
 
 - Name: OutsetSavageFloor30Chest
   OriginalItem: TriforceShard6
   Category:
   - SavageLabyrinth
-  Path: Cave09_Room20.zs
+  Path: content/Common/Stage/Cave09_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x31DD48
+  - 0x00000348
 
 - Name: OutsetSavageFloor50Chest
   OriginalItem: HerosCharm
   Category:
   - SavageLabyrinth
-  Path: content/Common/Stage/Cave10_Room20.szs@YAZ0
+  Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x31db78
+  - 0x00000178
 
 - Name: OutsetJabunsCaveChest
   OriginalItem: NayrusPearl
   Category:
   - IslandPuzzle
-  Path: Pjavdou_Room0.zs
+  Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 1
+  - 0x000001C4
 
 - Name: HeadstoneTopOfIsland
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/sea_Room45.szs@YAZ0
+  Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x24714c
+  - 0x00000D4C
 
 - Name: HeadstoneSunkenTreasure
   OriginalItem: SilverRupee
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room45.szs@YAZ0
+  Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x247964
-  - 0x247988
-  - 0x2479ac
-  - 0x2479d0
+  - 0x00001564
+  - 0x00001588
+  - 0x000015AC
+  - 0x000015D0
 
 - Name: HeadstoneIslandSubmarineChest
   OriginalItem: TreasureChart14
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room5.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x2967f4
+  - 0x000003F4
 
 - Name: TwoEyeReefDestroyCannonsAndGunboats
   OriginalItem: TreasureChart13
   Category:
   - EyeReefChests
-  Path: content/Common/Stage/sea_Room46.szs@YAZ0
+  Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1e5d2c
+  - 0x0000272C
 
 - Name: TwoEyeReefBigOctoGreatFairy
   OriginalItem: MagicMeterUpgrade
   Category:
   - BigOcto
   - GreatFairy
-  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0xd52270
-  NameOffsets: 0xdd2c9f
+  Offset: 0x000A6B9F
+  NameOffset: 0x00026170
 
 - Name: TwoEyeReefSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room46.szs@YAZ0
+  Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x1e5b10
-  - 0x1e5b34
-  - 0x1e5b58
-  - 0x1e5b7c
+  - 0x00002510
+  - 0x00002534
+  - 0x00002558
+  - 0x0000257C
 
 - Name: TwoEyeReefLookoutPlatformChest
   OriginalItem: PurpleRupee
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room46.szs@YAZ0
+  Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1e5d4c
+  - 0x0000274C
 
 - Name: AngularIslesPeak
   OriginalItem: PieceOfHeart
   Category:
   - IslandPuzzle
-  Path: content/Common/Stage/sea_Room47.szs@YAZ0
+  Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x2a9730
+  - 0x00000830
 
 - Name: AngularSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room47.szs@YAZ0
+  Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x2a9634
-  - 0x2a9658
-  - 0x2a967c
-  - 0x2a96a0
+  - 0x00000734
+  - 0x00000758
+  - 0x0000077C
+  - 0x000007A0
 
 - Name: AngularIslesCaveChest
   OriginalItem: SilverRupee
   Category:
   - PuzzleSecretCave
-  Path: content/Common/Stage/SubD43_Stage.szs@YAZ0
+  Path: content/Common/Stage/SubD43_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c54
+  - 0x00000254
 
 - Name: BoatingCourseRaftChest
   OriginalItem: BokoBabaSeed
   Category:
   - Raft
-  Path: content/Common/Stage/sea_Room48.szs@YAZ0
+  Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x129594
+  - 0x00000F94
 
 - Name: BoatingCourseSunkenTreasure
   OriginalItem: SeaHeartsChart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room48.szs@YAZ0
+  Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0x129498
-  - 0x1294bc
-  - 0x1294e0
-  - 0x129504
+  - 0x00000E98
+  - 0x00000EBC
+  - 0x00000EE0
+  - 0x00000F04
 
 - Name: BoatingCourseCaveChest
   OriginalItem: SubmarineChart
   Category:
   - PuzzleSecretCave
   - CombatSecretCave
-  Path: content/Common/Stage/SubD71_Stage.szs@YAZ0
+  Path: content/Common/Stage/SubD71_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x20c10
+  - 0x00000210
 
 - Name: FiveStarSunkenTreasure
   OriginalItem: PieceOfHeart
   Category:
   - SunkenTreasure
-  Path: content/Common/Stage/sea_Room49.szs@YAZ0
+  Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
   Type: SCOB
   Offsets:
-  - 0xb9f38
-  - 0xb9f5c
-  - 0xb9f80
-  - 0xb9fa4
+  - 0x00001338
+  - 0x0000135C
+  - 0x00001380
+  - 0x000013A4
 
 - Name: FiveStarRaftChest
   OriginalItem: RedRupee
   Category:
   - Raft
-  Path: content/Common/Stage/sea_Room49.szs@YAZ0
+  Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xba07c
+  - 0x0000147C
 
 - Name: FiveStarSubmarineChest
   OriginalItem: PieceOfHeart
   Category:
   - Submarine
-  Path: content/Common/Stage/Abship_Room0.szs@YAZ0
+  Path: content/Common/Stage/Abship_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0x1208c8
+  - 0x000004C8
 
 - Name: FiveStarLookoutPlatformDestroyCannons
   OriginalItem: GoldenFeather
   Category:
   - Platform
-  Path: content/Common/Stage/sea_Room49.szs@YAZ0
+  Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 0xba09c
+  - 0x0000149C
 
 - Name: GhostShipChest
   OriginalItem: TriforceShard4
   Category:
   - Misc
-  Path: content/Common/Stage/PShip_Stage.szs@YAZ0
+  Path: content/Common/Stage/PShip_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x21aac
+  - 0x00000DAC
 
 - Name: DragonRoostCavernFirstRoomChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac940
+  - 0x00001E40
 
 - Name: DragonRoostCavernWaterJugAlcove
   OriginalItem: DungeonMap
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac9a0
+  - 0x00001EA0
 
 - Name: DragonRoostCavernBoardedUpChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac960
+  - 0x00001E60
 
 - Name: DragonRoostCavernSwingAcrossLavaChest
   OriginalItem: TreasureChart11
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac9e0
+  - 0x00001EE0
 
 - Name: DragonRoostCavernRatRoomChest
   OriginalItem: Compass
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac980
+  - 0x00001E80
 
 - Name: DragonRoostCavernRatRoomBoardedUpChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5aca00
+  - 0x00001F00
 
 - Name: DragonRoostCavernBirdsNest
   OriginalItem: SmallKey
@@ -2342,689 +2267,699 @@
   Path: content/Common/Stage/M_NewD2_Room3.szs@YAZ0
   Type: Actor
   Offsets:
-  - 0x40dec8
+  - 0x00000BC8
 
 - Name: DragonRoostCavernDarkRoomChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac920
+  - 0x00001E20
 
 - Name: DragonRoostCavernHubRoomTingleChest
   OriginalItem: YellowRupee
   Category:
   - Dungeon
   - TingleChest
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5aca40
+  - 0x00001F40
 
 - Name: DragonRoostCavernPotRoomChest
   OriginalItem: TreasureChart39
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac900
+  - 0x00001E00
 
 - Name: DragonRoostCavernBossStairsRightChest
   OriginalItem: KnightsCrest
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac8c0
+  - 0x00001DC0
 
 - Name: DragonRoostCavernBossStairsLeftChest
   OriginalItem: YellowRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac8e0
+  - 0x00001DE0
 
 - Name: DragonRoostCavernMiniBoss
   OriginalItem: GrapplingHook
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dra09_Room9.szs@YAZ0
+  Path: content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 1
+  - 0x00000688
 
 - Name: DragonRoostCavernUnderRopeBridge
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac9c0
+  - 0x00001EC0
 
 - Name: DragonRoostCavernTingleStatueChest
   OriginalItem: DragonTingleStatue
   Category:
   - Dungeon
   - TingleChest
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5aca20
+  - 0x00001F20
 
 - Name: DragonRoostCavernBigKeyChest
   OriginalItem: BigKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5ac8a0
+  - 0x00001DA0
 
 - Name: DragonRoostCavernGohmaHeartContainer
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_DragB_Room0.szs@YAZ0
-  Type: Actor
+  Paths:
+  - code/cking.rpx@RPX
+  - content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Type: Boss
   Offsets:
-  - 0x46dac0
+  - 0x020F5ED6
+  - 0x000006C0
 
 - Name: ForbiddenWoodsFirstRoomChest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8934
+  - 0x00001934
 
 - Name: ForbiddenWoodsBokoBabaClimb
   OriginalItem: TreasureChart1
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f88f4
+  - 0x000018F4
 
 - Name: ForbiddenWoodsInsideHollowTree
   OriginalItem: KnightsCrest
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8914
+  - 0x00001914
 
 - Name: ForbiddenWoodsHoleInTreeChest
   OriginalItem: RedRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8974
+  - 0x00001974
 
 - Name: ForbiddenWoodsMorthPit
   OriginalItem: YellowRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8a74
+  - 0x00001A74
 
 - Name: ForbiddenWoodsVineMazeLeftChest
   OriginalItem: Compass
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f89b4
+  - 0x000019B4
 
 - Name: ForbiddenWoodsVineMazeRightChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8954
+  - 0x00001954
 
 - Name: ForbiddenWoodsTallRoomChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8a14
+  - 0x00001A14
 
 - Name: ForbiddenWoodsMothulaMiniBoss
   OriginalItem: Boomerang
   Category:
   - Dungeon
-  Path: content/Common/Stage/kinMB_Stage.szs@YAZ0
+  Path: content/Common/Stage/kinMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x5338ac
+  - 0x000004AC
 
 - Name: ForbiddenWoodsByHangingSeedsChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8a54
+  - 0x00001A54
 
 - Name: ForbiddenWoodsChestAcrossHangingFlower
   OriginalItem: YellowRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8a94
+  - 0x00001A94
 
 - Name: ForbiddenWoodsTingleStatueChest
   OriginalItem: ForbiddenTingleStatue
   Category:
   - Dungeon
   - TingleChest
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8ab4
+  - 0x00001AB4
 
 - Name: ForbiddenWoodsLockedTreeTrunkChest
   OriginalItem: TreasureChart15
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f89d4
+  - 0x000019D4
 
 - Name: ForbiddenWoodsBigKeyChest
   OriginalItem: FWBigKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f89f4
+  - 0x000019F4
 
 - Name: ForbiddenWoodsDoubleMothulaRoomChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/kindan_Stage.szs@YAZ0
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x6f8a34
+  - 0x00001A34
 
 - Name: ForbiddenWoodsKalleDemosHeartContainer
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path: code/cking.rpx@RPX,content/Common/Stage/kinBOSS_Room0.szs@YAZ0
+  Path:
+  - code/cking.rpx@RPX
+  - content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Boss
   Offsets:
-  - 0x2b7ab6
-  - 0x1bea14
+  - 0x020AF916
+  - 0x00000114
 
 - Name: TOTGHopAcrossFloatingBoxesChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bc24
+  - 0x00001924
 
 - Name: TOTGChestBehindBombableWall
   OriginalItem: DungeonMap
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bc44
+  - 0x00001944
 
 - Name: TOTGLightTwoTorches
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bcc4
+  - 0x000019C4
 
 - Name: TOTGSkullRoomChest
   OriginalItem: Compass
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bc64
+  - 0x00001964
 
 - Name: TOTGShootEyeAboveSkulls
   OriginalItem: TreasureChart6
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bce4
+  - 0x000019E4
 
 - Name: TOTGTingleStatueChest
   OriginalItem: GoddessTingleStatue
   Category:
   - Dungeon
   - TingleChest
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bd64
+  - 0x00001A64
 
 - Name: TOTGStoneTablet
   OriginalItem: CommandMelody
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Type: Event
-  Offsets:
-  - 0x4f7360
-  NameOffsets: 0x509b17
+  Offset: 0x00030E17
+  NameOffset: 0x0001E660
 
 - Name: TOTGFirstArmosKnightsChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bca4
+  - 0x000019A4
 
 - Name: TOTGDarknutMiniBoss
   OriginalItem: ProgressiveBow
   Category:
   - Dungeon
-  Path: content/Common/Stage/SirenMB_Stage.szs@YAZ0
+  Path: content/Common/Stage/SirenMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x26fb20
+  - 0x00000520
 
 - Name: TOTGFloatingPlatformsRoomLowerChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bd24
+  - 0x00001A24
 
 - Name: TOTGFloatingPlatformsRoomUpperChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bd44
+  - 0x00001A44
 
 - Name: TOTGSecondArmostKnightsChest
   OriginalItem: TreasureChart30
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bd04
+  - 0x00001A04
 
 - Name: TOTGBigKeyChest
   OriginalItem: TotGBigKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/Siren_Stage.szs@YAZ0
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x50bd84
+  - 0x00001A84
 
 - Name: TOTGGohdanHeartContainer
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path: content/Common/Stage/SirenB_Room0.szs@YAZ0
-  Type: Actor
+  Path:
+  - code/cking.rpx@RPX
+  - content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Type: Boss
   Offsets:
-  - 0x320ac0
+  - 0x020EFE1A
+  - 0x000003C0
 
 - Name: EarthTempleWarpPotRoomChest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e388
+  - 0x00001988
 
 - Name: EarthTempleWarpPotRoomBehindCurtain
   OriginalItem: JoyPendant
   Category:
   - Dungeon
   - Obscure
-  Path: content/Common/Stage/M_Dai_Room2.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x27de14
+  - 0x00000414
 
 - Name: EarthTempleFirstCryptChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e3a8
+  - 0x000019A8
 
 - Name: EarthTempleBehindDestructableWall
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e4c8
+  - 0x00001AC8
 
 - Name: EarthTempleThreeBlocksRoomChest
   OriginalItem: Compass
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e3c8
+  - 0x000019C8
 
 - Name: EarthTempleBehindStatuesChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e3e8
+  - 0x000019E8
 
 - Name: EarthTempleSecondCryptCasket
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Room8.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x2c4534
+  - 0x00000234
 
 - Name: EarthTempleStalfosMiniBoss
   OriginalItem: MirrorShield
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_DaiMB_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_DaiMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x2f313c
+  - 0x0000063C
 
 - Name: EarthTempleTingleStatueChest
   OriginalItem: EarthTingleStatue
   Category:
   - Dungeon
   - TingleChest
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e528
+  - 0x00001B28
 
 - Name: EarthTempleFoggyFloormasterRoomEndChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e408
+  - 0x00001A08
 
 - Name: EarthTempleKillAllFloormastersChest
   OriginalItem: TreasureChart20
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e4a8
+  - 0x00001AA8
 
 - Name: EarthTempleNearHammerButtonBehindCurtain
   OriginalItem: JoyPendant
   Category:
   - Dungeon
   - Obscure
-  Path: content/Common/Stage/M_Dai_Room13.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x44ac90
+  - 0x00000490
 
 - Name: EarthTempleThirdCryptChest
   OriginalItem: RedRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e428
+  - 0x00001A28
 
 - Name: EarthTempleManyMirrorsRoomRightChest
   OriginalItem: PurpleRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e468
+  - 0x00001A68
 
 - Name: EarthTempleManyMirrorsRoomLeftChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e488
+  - 0x00001A88
 
 - Name: EarthTempleBigKeyChest
   OriginalItem: ETBigKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e448
+  - 0x00001A48
 
 - Name: EarthTempleStalfosCryptRoomChest
   OriginalItem: TreasureChart12
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14e4e8
+  - 0x00001AE8
 
 - Name: EarthTempleJalhallaHeartContainer
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path: content/Common/Stage/M_DaiB_Room0.szs@YAZ0
+  Path:
+  - code/cking.rpx@RPX
+  - content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x50cec0
+  - 0x020DADDE
+  - 0x000000C0
 
 - Name: WindTempleBetweenDirtPatchesChest
   OriginalItem: OrangeRupee
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d384
+  - 0x00000F84
 
 - Name: WindTempleTingleStatueChest
   OriginalItem: WindTingleStatue
   Category:
   - Dungeon
   - TingleChest
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d464
+  - 0x00001064
 
 - Name: WindTempleBehindStoneHeadChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d3a4
+  - 0x00000FA4
 
 - Name: WindTempleLeftAlcoveChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d364
+  - 0x00000F64
 
 - Name: WindTempleBigKeyChest
   OriginalItem: WTBigKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d324
+  - 0x00000F24
 
 - Name: WindTempleManyCyclesRoomChest
   OriginalItem: DungeonMap
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d3e4
+  - 0x00000FE4
 
 - Name: WindTempleHubRoomCenterChest
   OriginalItem: Compass
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d424
+  - 0x00001024
 
 - Name: WindTempleWizzrobeMiniBoss
   OriginalItem: Hookshot
   Category:
   - Dungeon
-  Path: content/Common/Stage/kazeMB_Stage.szs@YAZ0
+  Path: content/Common/Stage/kazeMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x222ed8
+  - 0x000002D8
 
 - Name: WindTempleSpikeWallRoomFirstChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d344
+  - 0x00000F44
 
 - Name: WindTempleSpikeWallRoomDestroyFloors
   OriginalItem: TreasureChart35
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d3c4
+  - 0x00000FC4
 
 - Name: WindTempleHubRoomTopChest
   OriginalItem: JoyPendant
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d2e4
+  - 0x00000EE4
 
 - Name: WindTempleBehindArmosChest
   OriginalItem: SmallKey
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d304
+  - 0x00000F04
 
 - Name: WindTempleKillAllBasmentRoomEnemies
   OriginalItem: TreasureChart5
   Category:
   - Dungeon
-  Path: content/Common/Stage/kaze_Stage.szs@YAZ0
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x14d404
+  - 0x00001004
 
 - Name: WindTempleMolgeraHeartContainer
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path: content/Common/Stage/kazeB_Room0.szs@YAZ0
+  Path:
+  - code/cking.rpx@RPX
+  - content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Actor
   Offsets:
-  - 0x8ca914
+  - 0x021031E6
+  - 0x00000114
 
 - Name: HyruleCastleSwordChamberChest
   OriginalItem: MasterSwordPowerless
   Category:
   - Dungeon
-  Path: content/Common/Stage/kenroom_Room0.szs@YAZ0
+  Path: content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Chest
   Offsets:
-  - 1
+  - 0x000013D8
 
 - Name: GanonsTowerMazeChest
   OriginalItem: LightArrow
   Category:
   - Dungeon
-  Path: content/Common/Stage/GanonJ_Stage.szs@YAZ0
+  Path: content/Common/Stage/GanonJ_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Type: Chest
   Offsets:
-  - 0x255f58
+  - 0x00000858
 
 - Name: DefeatGanondorf
   OriginalItem: GameBeatable
   Category:
   - Other
-  Path:
   Type: DoNothing
-  Offsets:
-  - 1

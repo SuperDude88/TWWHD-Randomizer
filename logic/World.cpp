@@ -2,7 +2,7 @@
 #include "World.hpp"
 #include "Requirements.hpp"
 #include "PoolFunctions.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
 #include "Search.hpp"
 #include "Random.hpp"
 #include "../options.hpp"
@@ -180,7 +180,7 @@ void World::determineChartMappings()
         macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = chart;
 
 
-        debugLog("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+        DebugLog::getInstance().log("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
 }
 
@@ -191,7 +191,7 @@ bool World::chartLeadsToSunkenTreasure(const Location& location, const std::stri
     // If this isn't a sunken treasure location, then a chart won't lead to it
     if (locationId < LocationId::ForsakenFortressSunkenTreasure || locationId > LocationId::FiveStarSunkenTreasure)
     {
-        debugLog("Non-sunken treasure location passed into sunken treasure check: " + locationName(&location));
+        DebugLog::getInstance().log("Non-sunken treasure location passed into sunken treasure check: " + locationName(&location));
         return false;
     }
 
@@ -205,7 +205,7 @@ void World::determineProgressionLocations()
     {
         // If all of the location categories are set as progression, then this is a location which
         // is allowed to contain progression items (but it won't necessarily get one)
-        if (std::all_of(location.categories.begin(), location.categories.end(), [this, &location](LocationCategory category)
+        if (std::all_of(location.categories.begin(), location.categories.end(), [this, &location = location](LocationCategory category)
         {
 
             return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons)            ||
@@ -715,7 +715,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     //OBJECT_CHECK(areaObject, areaObject.dump());
     YAML_FIELD_CHECK(areaObject, "Name", WorldLoadingError::AREA_MISSING_KEY);
     const std::string areaName = substrToString(areaObject["Name"].val());
-    // debugLog("Now Loading Area " + areaName);
+    // DebugLog::getInstance().log("Now Loading Area " + areaName);
     loadedArea = nameToArea(areaName);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
     MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
@@ -737,7 +737,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
                 std::cout << "Got error loading event: " << World::errorToName(err) << std::endl;
                 return err;
             }
-            // debugLog("\tAdding location " + locationIdToName(locOut));
+            // DebugLog::getInstance().log("\tAdding location " + locationIdToName(locOut));
             newEntry.events.push_back(eventOut);
         }
     }
@@ -755,7 +755,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
                 std::cout << "Got error loading location: " << World::errorToName(err) << std::endl;
                 return err;
             }
-            // debugLog("\tAdding location " + locationIdToName(locOut));
+            // DebugLog::getInstance().log("\tAdding location " + locationIdToName(locOut));
             newEntry.locations.push_back(locOut);
         }
     }
@@ -774,7 +774,7 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
                 std::cout << "Got error loading exit: " << World::errorToName(err) << std::endl;
                 return err;
             }
-            // debugLog("\tAdding exit -> " + areaToName(exitOut.connectedArea));
+            // DebugLog::getInstance().log("\tAdding exit -> " + areaToName(exitOut.connectedArea));
             newEntry.exits.push_back(exitOut);
         }
     }
@@ -939,7 +939,7 @@ std::string World::getLastErrorDetails()
     std::string out = lastError.str();
     lastError.str(std::string());
     lastError.clear();
-    debugLog(out);
+    DebugLog::getInstance().log(out);
     return out;
 }
 

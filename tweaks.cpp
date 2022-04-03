@@ -18,6 +18,7 @@
 #include "server/filetypes/util/elfUtil.hpp"
 #include "server/filetypes/util/msbtMacros.hpp"
 #include "server/utility/stringUtil.hpp"
+#include "server/command/Log.hpp"
 
 using eType = Utility::Endian::Type;
 
@@ -555,26 +556,26 @@ void make_all_text_instant() {
 		for (auto& [label, message] : msbt.messages_by_label) {
 			std::u16string& String = message.text.message;
 
-			std::u16string::size_type wait = String.find(std::u16string(u"\x0e\x01\x06\x02", 4)); //dont use macro because duration shouldnt matter
+			std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); //dont use macro because duration shouldnt matter
 			while (wait != std::u16string::npos) {
 				String.erase(wait, 5);
-				wait = String.find(std::u16string(u"\x0e\x01\x06\x02", 4));
+				wait = String.find(u"\x0e\x01\x06\x02"s);
 			}
 
-			std::u16string::size_type wait_dismiss = String.find(std::u16string(u"\x0e\x01\x03\x02", 4)); //dont use macro because duration shouldnt matter
+			std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
 			while (wait_dismiss != std::u16string::npos) {
 				if (label == "07726" || label == "02488") { //exclude messages that are broken by removing the command
-					wait_dismiss = String.find(std::u16string(u"\x0e\x01\x03\x02", 4));
+					wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
 					continue;
 				}
 				String.erase(wait_dismiss, 5);
-				wait_dismiss = String.find(std::u16string(u"\x0e\x01\x03\x02", 4));
+				wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
 			}
 
-			std::u16string::size_type wait_dismiss_prompt = String.find(std::u16string(u"\x0e\x01\x02\x02", 4)); //dont use macro because duration shouldnt matter
+			std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
 			while (wait_dismiss_prompt != std::u16string::npos) {
 				String.erase(wait_dismiss_prompt, 5);
-				wait_dismiss_prompt = String.find(std::u16string(u"\x0e\x01\x02\x02", 4));
+				wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
 			}
 		}
 		msbt.writeToFile(inPath.string());
@@ -926,7 +927,7 @@ void modify_title_screen() {
 	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
 	newPane.pane->name = "T_Version";
 	newPane.pane->name.resize(0x18);
-	dynamic_cast<txt1*>(newPane.pane.get())->text = std::u16string(u"Ver 01.00.00a\0", 0xE);
+	dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver 01.00.00a\0"s;
 	dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
 	dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
 	dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
@@ -1069,26 +1070,25 @@ void allow_dungeon_items_to_appear_anywhere() {
 
 		elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_pointer + 0x8 + (0xC * item_data.item_id)), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000); //write to the relocation entries
 		
-		int message_id = 101 + item_data.item_id;
-		Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
+		uint32_t message_id = 101 + item_data.item_id;
+		const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
 		if (item_data.base_item_name == u"Small Key") {
-			std::u16string article = get_indefinite_article(dungeon_name); //this is to avoid a duplicate function call
-			std::u16string message(DRAW_INSTANT + u"You got " + article + u" " + TEXT_COLOR_RED + dungeon_name + u" small key" + TEXT_COLOR_DEFAULT + u"!", 39 + article.size() + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message = DRAW_INSTANT + u"You got " + get_indefinite_article(dungeon_name) + u" " + TEXT_COLOR_RED + dungeon_name + u" small key" + TEXT_COLOR_DEFAULT + u"!\0"s;
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		} 
 		else if (item_data.base_item_name == u"Big Key") {
-			std::u16string message(DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Big Key" + TEXT_COLOR_DEFAULT + u"!", 40 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message = DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Big Key" + TEXT_COLOR_DEFAULT + u"!\0"s; //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		}
 		else if (item_data.base_item_name == u"Dungeon Map") {
-			std::u16string message(DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Dungeon Map" + TEXT_COLOR_DEFAULT + u"!", 44 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message = DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Dungeon Map" + TEXT_COLOR_DEFAULT + u"!\0"s; //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		}
 		else if (item_data.base_item_name == u"Compass") {
-			std::u16string message(DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Compass" + TEXT_COLOR_DEFAULT + u"!", 40 + dungeon_name.size()); //calculate string length for initalizer to handle null characters inside string
+			std::u16string message = DRAW_INSTANT + u"You got the " + TEXT_COLOR_RED + dungeon_name + u" Compass" + TEXT_COLOR_DEFAULT + u"!\0"s; //calculate string length for initalizer to handle null characters inside string
 			//word_wrap_string
 			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 		}
@@ -1244,55 +1244,55 @@ void update_auction_item_names(const GameItem& auction5, const GameItem& auction
 
 	msbt2.messages_by_label["00804"].text.message.pop_back(); //remove null terminator, we want to add things before it
 	msbt2.messages_by_label["00804"].text.message += u"\n\nParticipate for the chance to win ";
-	std::u16string itemStr = std::u16string(TEXT_COLOR_RED, 5);
+	std::u16string itemStr = TEXT_COLOR_RED;
 	if (gameItemToName(auction5).find("Treasure Chart") != std::string::npos) {
-		itemStr += std::u16string(u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 26);
+		itemStr += u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else if (gameItemToName(auction5).find("Triforce Chart") != std::string::npos) {
-		itemStr += std::u16string(u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 26);
+		itemStr += u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += Utility::Str::toUTF16(gameItemToName(auction5)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
+		itemStr += Utility::Str::toUTF16(gameItemToName(auction5)) + TEXT_COLOR_DEFAULT + u", ";
 	}
 
 	if (gameItemToName(auction40).find("Treasure Chart") != std::string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
+		itemStr += TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else if (gameItemToName(auction40).find("Triforce Chart") != std::string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
+		itemStr += TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += std::u16string(TEXT_COLOR_RED, 5) + Utility::Str::toUTF16(gameItemToName(auction40)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
+		itemStr += TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction40)) + TEXT_COLOR_DEFAULT + u", ";
 	}
 
 	if (gameItemToName(auction60).find("Treasure Chart") != std::string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
+		itemStr += TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else if (gameItemToName(auction60).find("Triforce Chart") != std::string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
+		itemStr += TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += std::u16string(TEXT_COLOR_RED, 5) + Utility::Str::toUTF16(gameItemToName(auction60)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
+		itemStr += TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction60)) + TEXT_COLOR_DEFAULT + u", ";
 	}
 
 	if (gameItemToName(auction80).find("Treasure Chart") != std::string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
+		itemStr += TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else if (gameItemToName(auction80).find("Triforce Chart") != std::string::npos) {
-		itemStr += std::u16string(TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ", 31);
+		itemStr += TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += std::u16string(TEXT_COLOR_RED, 5) + Utility::Str::toUTF16(gameItemToName(auction80)) + std::u16string(TEXT_COLOR_DEFAULT + u", ", 12);
+		itemStr += TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction80)) + TEXT_COLOR_DEFAULT + u", ";
 	}
 
 	if (gameItemToName(auction100).find("Treasure Chart") != std::string::npos) {
-		itemStr += std::u16string(u"or " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u"!", 33);
+		itemStr += u"or " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u"!";
 	}
 	else if (gameItemToName(auction100).find("Triforce Chart") != std::string::npos) {
-		itemStr += std::u16string(u"or " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u"!", 33);
+		itemStr += u"or " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u"!";
 	}
 	else {
-		itemStr += std::u16string(u"or " + TEXT_COLOR_RED, 8) + Utility::Str::toUTF16(gameItemToName(auction100)) + std::u16string(TEXT_COLOR_DEFAULT + u"!", 11);
+		itemStr += u"or " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction100)) + TEXT_COLOR_DEFAULT + u"!";
 	}
 
 	msbt2.messages_by_label["00804"].text.message += word_wrap_string(itemStr, 44);
@@ -1394,7 +1394,7 @@ void update_korl_dialog() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
-	msbt.messages_by_label["03443"].text.message = std::u16string(CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you.Remember\nthat your quest is to defeat Ganondorf.\0", 144); //need to use constructor with length because of null characters
+	msbt.messages_by_label["03443"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you.Remember\nthat your quest is to defeat Ganondorf.\0"s;
 	msbt.writeToFile(path.string());
 
 	return;
@@ -1475,7 +1475,7 @@ void add_pirate_ship_to_windfall() {
 	msbt.messages_by_label["03008"].text.message = u"'Hoy! Big Brother!\n";
 	msbt.messages_by_label["03008"].text.message += u"Wanna play a game? It's fun, trust me!";
 	msbt.messages_by_label["03008"].text.message  = pad_str_4_lines(msbt.messages_by_label["03008"].text.message);
-	msbt.messages_by_label["03008"].text.message += word_wrap_string(std::u16string(u"Just " + TEXT_COLOR_RED + u"step on this button" + TEXT_COLOR_DEFAULT + u", and try to swing across the ropes to reach that door over there before time's up!\0", 123), 44);
+	msbt.messages_by_label["03008"].text.message += word_wrap_string(u"Just " + TEXT_COLOR_RED + u"step on this button" + TEXT_COLOR_DEFAULT + u", and try to swing across the ropes to reach that door over there before time's up!\0", 44);
 
 	uint32_t stage_bgm_info_list_start = 0x1018e428;
 	uint32_t second_dynamic_scene_waves_list_start = 0x1018e2ec;
@@ -1857,8 +1857,8 @@ void update_swordless_text() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
-	msbt.messages_by_label["01128"].text.message = std::u16string(CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\nEven as his ball of fell magic bears down\non you, you can " + TEXT_COLOR_RED + u"knock it back\nwith an empty bottle" + TEXT_COLOR_DEFAULT + u"!\n\n...I am sure you will have a shot at victory!\0", 287);;
-	msbt.messages_by_label["01590"].text.message = std::u16string(CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!\0", 62);
+	msbt.messages_by_label["01128"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\nEven as his ball of fell magic bears down\non you, you can " + TEXT_COLOR_RED + u"knock it back\nwith an empty bottle" + TEXT_COLOR_DEFAULT + u"!\n\n...I am sure you will have a shot at victory!\0"s;
+	msbt.messages_by_label["01590"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!\0"s;
 	msbt.writeToFile(path.string());
 
 	return;
@@ -1878,7 +1878,7 @@ void add_hint_signs() {
 	attributes.lineAlignment = 3;
 	TSY1Entry tsy;
 	tsy.styleIndex = 0x12B;
-	std::u16string message(IMAGE(ImageTags::R_ARROW) + u"\0", 5);
+	std::u16string message = IMAGE(ImageTags::R_ARROW) + u"\0"s;
 	msbt.addMessage(new_message_label, attributes, tsy, message);
 	msbt.writeToFile(path.string());
 
@@ -2325,7 +2325,6 @@ void fix_stone_head_bugs() {
 }
 
 void show_tingle_statues_on_quest_screen() {
-
 	g_session.copyToGameFile("./assets/Tingle.bflim", "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim");
 	g_session.copyToGameFile("./assets/Tingle_Shadow.bflim", "content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
 
@@ -2333,8 +2332,8 @@ void show_tingle_statues_on_quest_screen() {
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
-	msbt.messages_by_label["00503"].text.message = std::u16string(u"Tingle Statues\0", 15);
-	msbt.messages_by_label["00703"].text.message = std::u16string(u"Golden statues of a mysterious dashing\n figure. They can be traded to " + TEXT_COLOR_RED + u"Ankle" + TEXT_COLOR_DEFAULT + u" on" + TEXT_COLOR_RED + u"Tingle Island" + TEXT_COLOR_DEFAULT + u" for a reward!\0", 137); //need to use constructor with length because of null characters
+	msbt.messages_by_label["00503"].text.message = u"Tingle Statues\0"s;
+	msbt.messages_by_label["00703"].text.message = u"Golden statues of a mysterious dashing\n figure. They can be traded to " + TEXT_COLOR_RED + u"Ankle" + TEXT_COLOR_DEFAULT + u" on" + TEXT_COLOR_RED + u"Tingle Island" + TEXT_COLOR_DEFAULT + u" for a reward!\0"s;
 	msbt.writeToFile(path.string());
 
 	return;
@@ -2358,7 +2357,7 @@ void add_shortcut_warps_into_dungeons() {
 
 
 void apply_necessary_tweaks(const Settings& settings, const std::string& seedHash) {
-	Load_Custom_Symbols("./asm/custom_symbols.txt");
+	Load_Custom_Symbols("./asm/custom_symbols.json");
 
 	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
 	gRPX.loadFromFile(rpxPath.string());
@@ -2459,6 +2458,7 @@ void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const 
 #include "logic/SpoilerLog.hpp"
 #include "logic/Generate.hpp"
 #include "logic/Random.hpp"
+#include "server/filetypes/yaz0.hpp"
 
 int main() {
 
@@ -2468,32 +2468,35 @@ int main() {
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	//auto duration2 = duration.count();
 
-	Load_Custom_Symbols("./asm/custom_symbols.txt");
+	BasicLog::getInstance().initLog("testSeed");
+	DebugLog::getInstance().initLog("testSeed");
+
+	Load_Custom_Symbols("./asm/custom_symbols.json");
 
 	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
 	gRPX.loadFromFile(rpxPath.string());
 
-	Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
-	Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json");
-	Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json");
-	Apply_Patch("./asm/patch_diffs/flexible_item_locations_diff.json");
-	Apply_Patch("./asm/patch_diffs/fix_vanilla_bugs_diff.json");
-	Apply_Patch("./asm/patch_diffs/misc_rando_features_diff.json");
-	
-	Add_Relocations("./asm/patch_diffs/custom_funcs_reloc.json");
-	Add_Relocations("./asm/patch_diffs/make_game_nonlinear_reloc.json");
-	Add_Relocations("./asm/patch_diffs/remove_cutscenes_reloc.json");
-	Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json");
-	Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json");
-	Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json");
+	//Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
+	//Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json");
+	//Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json");
+	//Apply_Patch("./asm/patch_diffs/flexible_item_locations_diff.json");
+	//Apply_Patch("./asm/patch_diffs/fix_vanilla_bugs_diff.json");
+	//Apply_Patch("./asm/patch_diffs/misc_rando_features_diff.json");
+	//
+	//Add_Relocations("./asm/patch_diffs/custom_funcs_reloc.json");
+	//Add_Relocations("./asm/patch_diffs/make_game_nonlinear_reloc.json");
+	//Add_Relocations("./asm/patch_diffs/remove_cutscenes_reloc.json");
+	//Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json");
+	//Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json");
+	//Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json");
 
-	show_tingle_statues_on_quest_screen();
+	//show_tingle_statues_on_quest_screen();
 
-	allow_all_items_to_be_field_items();
+	//allow_all_items_to_be_field_items();
 
-	elfUtil::write_u32(gRPX, {28, 0x00000058}, gRPX.shdr_table[2].second.data.size());
-	Remove_Relocation({ 7, 0x001c0ae8 }); //would mess with the custom save_init call
-	start_at_outset_dock();
+	//elfUtil::write_u32(gRPX, {28, 0x00000058}, gRPX.shdr_table[2].second.data.size());
+	//Remove_Relocation({ 7, 0x001c0ae8 }); //would mess with the custom save_init call
+	//start_at_outset_dock();
 	//modify_title_screen();
 	//show_seed_hash_on_title_screen(u"helmarocKing\njun-Roberto");
 
@@ -2532,30 +2535,29 @@ int main() {
 	int seed = Random(0, 100000);
 
 	int worldCount = 1;
-	World blankWorld;
-	WorldPool worlds(worldCount, blankWorld);
+	WorldPool worlds(worldCount);
 	std::vector<Settings> settingsVector{ settings };
 
 	int retVal = generateWorlds(worlds, settingsVector, seed);
 	
-	if (retVal == 0)
-	{
-		std::cout << "Generating Spoiler Log" << std::endl;
-		generateSpoilerLog(worlds);
-	}
+	//if (retVal == 0)
+	//{
+	//	std::cout << "Generating Spoiler Log" << std::endl;
+	//	//generateSpoilerLog(worlds);
+	//}
 
 	//get world locations with "worlds[playerNum - 1].locationEntries"
 	//assume 1 world for now, modifying multiple copies needs work
-	for (const Location& location : worlds[0].locationEntries) {
-		if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) return 1; //handle err somehow
-	}
-	saveRPX();
+	//for (const Location& location : worlds[0].locationEntries) {
+	//	if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) return 1; //handle err somehow
+	//}
+	//saveRPX();
 
 	//get world with "worlds[playerNum - 1]"
 	//assume 1 world for now, modifying multiple copies needs work
 	//apply_necessary_post_randomization_tweaks(1, worlds[0].locationEntries);
 
-	gRPX.writeToFile(g_session.openGameFile("code/cking.rpx@RPX").string());
-	g_session.repackCache();
+	//gRPX.writeToFile(g_session.openGameFile("code/cking.rpx@RPX").string());
+	//g_session.repackCache();
 	return 0;
 }

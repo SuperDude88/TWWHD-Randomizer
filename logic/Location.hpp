@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <unordered_set>
@@ -385,29 +386,34 @@ LocationId indexAsLocationId(uint32_t index);
 
 struct Location
 {
-    LocationId locationId = LocationId::INVALID;
-    std::unordered_set<LocationCategory> categories = {LocationCategory::INVALID};
-    bool progression = false;
-    Item originalItem = {GameItem::INVALID, -1};
-    Item currentItem = {GameItem::INVALID, -1};
-    std::unique_ptr<LocationModification> method = std::make_unique<LocationModification>();
+    LocationId locationId;
+    std::unordered_set<LocationCategory> categories;
+    bool progression;
+    Item originalItem;
+    Item currentItem;
+    std::unique_ptr<LocationModification> method;
     int worldId = -1;
     
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
 
-    Location() = default;
-    ~Location() = default;
-    Location(const Location& loc) :
-        locationId(loc.locationId),
-        categories(loc.categories),
-        progression(loc.progression),
-        originalItem(loc.originalItem),
-        currentItem(loc.currentItem),
-        worldId(loc.worldId)
+    Location() :
+        locationId(LocationId::INVALID),
+        categories({LocationCategory::INVALID}),
+        progression(false),
+        originalItem(GameItem::INVALID, -1),
+        currentItem(GameItem::INVALID, -1),
+        method(),
+        worldId(-1),
+        hasBeenFound(false)
     {
-        if(loc.method) method = loc.method->duplicate();
+        std::make_unique<LocationModification>();
     }
+    ~Location() = default;
+    Location(const Location& loc) = delete;
+    Location& operator=(const Location&) = delete;
+    Location(Location&&) = default;
+    Location& operator=(Location&&) = default;
 };
 
 std::string locationName(const Location* location);

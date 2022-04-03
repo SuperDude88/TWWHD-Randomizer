@@ -3,12 +3,11 @@
 #include "logic/SpoilerLog.hpp"
 #include "logic/Generate.hpp"
 #include "server/command/WriteLocations.hpp"
-
-#ifdef ENABLE_DEBUG
-#include "Debug.hpp"
-#endif
+#include "server/command/Log.hpp"
 
 RandoSession g_session("to be set up later", "to be set up later", "to be set up later"); //declared outside of class for extern stuff
+
+
 
 class Randomizer {
 private:
@@ -63,8 +62,7 @@ public:
 		}
 
 		// Create all necessary worlds (for any potential multiworld support in the future)
-		World blankWorld;
-		WorldPool worlds (numPlayers, blankWorld);
+		WorldPool worlds(numPlayers);
 		std::vector<Settings> settingsVector (numPlayers, settings);
 
 		if (randomizeItems) {
@@ -101,11 +99,6 @@ public:
 		}
 
 		//done!
-
-#ifdef ENABLE_DEBUG
-		closeDebugLog();
-#endif
-		
 		return;
 	}
 

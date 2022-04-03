@@ -1,7 +1,7 @@
 
 #include "Generate.hpp"
 #include "Random.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
 #include "SpoilerLog.hpp"
 #include <string>
 #include <fstream>
@@ -19,7 +19,6 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
-        openDebugLog(std::to_string(seed));
     #endif
 
     int worldCount = 1;
@@ -38,10 +37,8 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
     else
     {
         std::cout << "Generation after changing setting \"" << settingName << "\" failed." << std::endl;
-        closeDebugLog();
         return 1;
     }
-    closeDebugLog();
     return 0;
 }
 

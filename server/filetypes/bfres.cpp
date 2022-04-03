@@ -23,7 +23,8 @@ namespace {
         if (std::string str = readNullTerminatedStr(bfres, offset); str.empty()) {
     		return FRESError::REACHED_EOF; //empty string means it could not read a character from file
     	}
-    	else {
+        else {
+            str.pop_back(); //remove null terminator because it breaks length
             if (len != str.length()) return FRESError::STRING_LEN_MISMATCH;
     		return str;
     	}
