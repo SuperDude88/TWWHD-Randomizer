@@ -11,6 +11,11 @@
 
 
 
+class CacheEntry {
+public:
+    std::unordered_map<std::string, CacheEntry> children;
+};
+
 class RandoSession
 {
 public:
@@ -24,6 +29,8 @@ public:
 private:
     void clearWorkingDir();
     fspath extractFile(const std::vector<std::string>& fileSpec);
+    bool RandoSession::repackFile(const std::string& element);
+    bool RandoSession::repackChildren(CacheEntry& entry, const std::string& temp);
     
     fspath relToGameAbsolute(const fspath& relPath);
     //fspath absToGameRelative(const fspath& absPath);
@@ -31,6 +38,7 @@ private:
     fspath baseDir;
     fspath workingDir;
     fspath outputDir;
-    std::unordered_set<std::string> fileCache;
-    std::list<std::string> orderedCache;
+    CacheEntry fileCache;
+
+    friend int main();
 };

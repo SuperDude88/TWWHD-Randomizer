@@ -55,11 +55,10 @@ struct chartComparator {
     }
 };
 
-static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
+static void printBasicInfo(std::ofstream& log, const WorldPool& worlds, const std::string& seed)
 {
-    log << "Wind Waker HD Randomizer Version <insert version number here>" /*<< VERSION*/ << std::endl;
-    log << "Permalink: <insert permalink here>" /*<< PERMALINK*/ << std::endl;
-    log << "Seed: <insert seed here>" /*<< SEED*/ << std::endl;
+    log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    log << "Seed: " << seed << std::endl;
 
     // Print options selected for each world
     for (const auto& world : worlds)
@@ -83,12 +82,12 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
     log << std::endl;
 }
 
-void generateSpoilerLog(WorldPool& worlds)
+void generateSpoilerLog(WorldPool& worlds, const std::string& seed)
 {
     std::ofstream log;
-    log.open("spoiler.txt"); // Eventually add seed/hash to filename
+    log.open("Spoiler Log.txt"); // Eventually add seed/hash to filename
 
-    printBasicInfo(log, worlds);
+    printBasicInfo(log, worlds, seed);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
     // many worlds there are.
@@ -242,33 +241,27 @@ void generateSpoilerLog(WorldPool& worlds)
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log;
-    log.open("nonspoiler.txt");
-
-    printBasicInfo(log, worlds);
-    log << "### Locations that may or may not have progress items in them on this run:" << std::endl;
+    BasicLog::getInstance().logBasicInfo("### Locations that may or may not have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (location->progression)
             {
-                log << "\t" << locationIdToPrettyName(location->locationId) << std::endl;
+                BasicLog::getInstance().logBasicInfo("\t" + locationIdToPrettyName(location->locationId));
             }
         }
     }
 
-    log << "### Locations that cannot have progress items in them on this run:" << std::endl;
+    BasicLog::getInstance().logBasicInfo("### Locations that cannot have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (!location->progression)
             {
-                log << "\t" << locationIdToPrettyName(location->locationId) << std::endl;
+                BasicLog::getInstance().logBasicInfo("\t" + locationIdToPrettyName(location->locationId));
             }
         }
     }
-
-    log.close();
 }

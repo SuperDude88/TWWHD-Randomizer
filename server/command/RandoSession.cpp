@@ -1,6 +1,10 @@
 #include "RandoSession.hpp"
 
 #include <fstream>
+#include <mutex>
+#include <syncstream>
+#include <unordered_map>
+#include <future>
 
 #include "../filetypes/wiiurpx.hpp"
 #include "../filetypes/yaz0.hpp"
@@ -9,7 +13,8 @@
 #include "../utility/stringUtil.hpp"
 #include "./Log.hpp"
 
-using namespace Utility;
+using namespace Utility::Str;
+using namespace std::literals::chrono_literals;
 
 
 
@@ -46,6 +51,7 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
     // first part is an extant game file
     std::string cacheKey{""};
     std::string resultKey{""};
+    CacheEntry* curEntry = &fileCache;
     for (const auto& element : fileSpec)
     {
         if (element.empty()) continue;
@@ -71,9 +77,10 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
             resultKey = cacheKey + element;
         }
         // if we've already cached this
-        if (fileCache.count(resultKey) > 0)
+        if (curEntry->children.count(resultKey) > 0)
         {
             cacheKey = resultKey;
+            curEntry = &curEntry->children.at(cacheKey);
             continue;
         }
         
@@ -145,100 +152,125 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
                 }
             }
         }
-        fileCache.emplace(resultKey);
-        orderedCache.push_back(resultKey);
         cacheKey = resultKey;
+        curEntry = &curEntry->children[cacheKey];
     }
+
     return workingDir / resultKey;
 }
 
 RandoSession::fspath RandoSession::openGameFile(const RandoSession::fspath& relPath)
 {
-    return extractFile(Str::split(relPath.string(), '@')); //some cases only need the path, not stream
+    return extractFile(split(relPath.string(), '@')); //some cases only need the path, not stream
 }
 
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
-    const fspath destPath = extractFile(Str::split(relPath.string(), '@'));
+    const fspath destPath = extractFile(split(relPath.string(), '@'));
     return std::filesystem::copy_file(source, destPath, std::filesystem::copy_options::overwrite_existing);
+}
+
+bool RandoSession::repackFile(const std::string& element) {
+    std::string resultKey;
+    if (endsWith(element, ".elf"))
+    {
+        resultKey = element.substr(0, element.size() - 4);
+        std::ifstream inputFile((workingDir / element), std::ios::binary);
+        if (!inputFile.is_open()) return 0;
+        std::ofstream outputFile;
+        if (std::filesystem::exists((workingDir / resultKey)) == false) {
+            std::filesystem::create_directories((workingDir / resultKey).parent_path());
+        }
+        outputFile.open((workingDir / resultKey), std::ios::binary);
+        if (RPXError err = FileTypes::rpx_compress(inputFile, outputFile); err != RPXError::NONE)
+        {
+            return 0;
+        }
+    }
+    else if (endsWith(element, ".dec"))
+    {
+        resultKey = element.substr(0, element.size() - 4);
+        std::ifstream inputFile((workingDir / element), std::ios::binary);
+        if (!inputFile.is_open()) return 0;
+        std::ofstream outputFile;
+        if (std::filesystem::exists((workingDir / resultKey)) == false) {
+            std::filesystem::create_directories((workingDir / resultKey).parent_path());
+        }
+        outputFile.open((workingDir / resultKey), std::ios::binary);
+        if (YAZ0Error err = FileTypes::yaz0Encode(inputFile, outputFile); err != YAZ0Error::NONE)
+        {
+            return 0;
+        }
+    }
+    else if (endsWith(element, ".unpack/"))
+    {
+        resultKey = element.substr(0, element.size() - 8);
+        FileTypes::SARCFile sarc;
+        auto err = sarc.loadFromFile((workingDir / resultKey).string());
+        if (err != SARCError::NONE) return 0;
+        err = sarc.rebuildFromDir((workingDir / element).string());
+        if (err != SARCError::NONE) return 0;
+        if (std::filesystem::exists((workingDir / resultKey)) == false) {
+            std::filesystem::create_directories((workingDir / resultKey).parent_path());
+        }
+        err = sarc.writeToFile((workingDir / resultKey).string());
+        if (err != SARCError::NONE) return 0;
+    }
+    else if (endsWith(element, ".res/"))
+    {
+        resultKey = element.substr(0, element.size() - 5);
+        FileTypes::resFile fres;
+        auto err = fres.loadFromFile((workingDir / resultKey).string()); //load the original BFRES
+        if (err != FRESError::NONE) return 0;
+        err = fres.replaceFromDir((workingDir / element).string()); //Update embedded files
+        if (err != FRESError::NONE) return 0;
+        
+        if (std::filesystem::exists((workingDir / resultKey)) == false) {
+            std::filesystem::create_directories((workingDir / resultKey).parent_path());
+        }
+        err = fres.writeToFile((workingDir / resultKey).string());
+        if (err != FRESError::NONE) return 0;
+    }
+    else
+    {
+        if (std::filesystem::exists((outputDir / element))) { //if it exists in the output directory (the game files on console storage), copy to that file
+            if(!std::filesystem::copy_file(workingDir / element, outputDir / element, std::filesystem::copy_options::overwrite_existing)) 
+                return 0;
+        }
+    }
+
+    return 1;
+}
+
+bool RandoSession::repackChildren(CacheEntry& entry, const std::string& temp) {
+    std::vector<std::future<bool>> futures;
+
+    for(auto& child : entry.children) { //go down the tree
+        futures.push_back(std::async(std::launch::async, &RandoSession::repackChildren, this, std::ref(child.second), child.first));
+    }
+
+    while(futures.size() != 0) { //wait for lower parts of tree to finish
+        futures[0].wait();
+        if(futures[0].get() == false) return false;
+        futures.erase(futures.begin());
+    }
+
+    std::vector<std::future<bool>> futures2;
+    for(const auto& child : entry.children)  { //repack this level once children are done
+        futures2.push_back(std::async(std::launch::async, &RandoSession::repackFile, this, child.first));
+    }
+
+    while(futures2.size() != 0) { //wait for children to finish
+        futures2[0].wait();
+        if(futures2[0].get() == false) return false;
+        futures2.erase(futures2.begin());
+    }
+    entry.children.clear(); //children no longer cached
+
+    return true;
 }
 
 bool RandoSession::repackCache()
 {
-    std::string resultKey;
-    for (auto it = orderedCache.rbegin(); it != orderedCache.rend(); it = orderedCache.rbegin()) {
-        const std::string& element = *it;
-        if (element.empty()) continue;
-
-        if (Str::endsWith(element, ".elf"))
-        {
-            resultKey = element.substr(0, element.size() - 4);
-            std::ifstream inputFile((workingDir / element), std::ios::binary);
-            if (!inputFile.is_open()) return 0;
-            std::ofstream outputFile;
-            if (std::filesystem::exists((workingDir / resultKey)) == false) {
-                std::filesystem::create_directories((workingDir / resultKey).parent_path());
-            }
-            outputFile.open((workingDir / resultKey), std::ios::binary);
-            if (RPXError err = FileTypes::rpx_compress(inputFile, outputFile); err != RPXError::NONE)
-            {
-                return 0;
-            }
-        }
-        else if (Str::endsWith(element, ".dec"))
-        {
-            resultKey = element.substr(0, element.size() - 4);
-            std::ifstream inputFile((workingDir / element), std::ios::binary);
-            if (!inputFile.is_open()) return 0;
-            std::ofstream outputFile;
-            if (std::filesystem::exists((workingDir / resultKey)) == false) {
-                std::filesystem::create_directories((workingDir / resultKey).parent_path());
-            }
-            outputFile.open((workingDir / resultKey), std::ios::binary);
-            if (YAZ0Error err = FileTypes::yaz0Encode(inputFile, outputFile); err != YAZ0Error::NONE)
-            {
-                return 0;
-            }
-        }
-        else if (Str::endsWith(element, ".unpack/"))
-        {
-            resultKey = element.substr(0, element.size() - 8);
-            FileTypes::SARCFile sarc;
-            auto err = sarc.loadFromFile((workingDir / resultKey).string());
-            if (err != SARCError::NONE) return 0;
-            err = sarc.rebuildFromDir((workingDir / element).string());
-            if (err != SARCError::NONE) return 0;
-            if (std::filesystem::exists((workingDir / resultKey)) == false) {
-                std::filesystem::create_directories((workingDir / resultKey).parent_path());
-            }
-            err = sarc.writeToFile((workingDir / resultKey).string());
-            if (err != SARCError::NONE) return 0;
-        }
-        else if (Str::endsWith(element, ".res/"))
-        {
-            resultKey = element.substr(0, element.size() - 5);
-            FileTypes::resFile fres;
-            auto err = fres.loadFromFile((workingDir / resultKey).string()); //load the original BFRES
-            if (err != FRESError::NONE) return 0;
-            err = fres.replaceFromDir((workingDir / element).string()); //Update embedded files
-            if (err != FRESError::NONE) return 0;
-            
-            if (std::filesystem::exists((workingDir / resultKey)) == false) {
-                std::filesystem::create_directories((workingDir / resultKey).parent_path());
-            }
-            err = fres.writeToFile((workingDir / resultKey).string());
-            if (err != FRESError::NONE) return 0;
-        }
-        else
-        {
-            if (std::filesystem::exists((outputDir / element))) { //if it exists in the output directory (the game files on console storage), copy to that file
-                if(!std::filesystem::copy_file(workingDir / element, outputDir / element, std::filesystem::copy_options::overwrite_existing)) 
-                    return 0;
-            }
-        }
-        
-        fileCache.erase(element);
-        orderedCache.pop_back();
-    }
-
-    return 1;
+    //traverse tree, give each child a thread, when no children repack, wait until all children finish and pack back up tree
+    return repackChildren(fileCache, "root");
 }

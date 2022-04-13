@@ -21,7 +21,7 @@ public:
     BasicLog& operator=(const BasicLog&) = delete;
 
     static BasicLog& getInstance();
-    bool initLog(const std::string& seed);
+    void logBasicInfo(const std::string& seed);
     void log(const std::string& msg = "");
 };
 
@@ -30,7 +30,7 @@ public:
     return error; \
 }
 
-#define LOG_IF_ERR_AND_RETURN(func) { /*TODO: maybe make version that returns bool*/ \
+#define LOG_AND_RETURN_IF_ERR(func) { /*TODO: maybe make version that returns bool*/ \
     if(const auto error = func; error != decltype(error)::NONE) {\
         BasicLog::getInstance().log(std::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__); \
         return error;  \
@@ -50,7 +50,7 @@ public:
     DebugLog& operator=(const DebugLog&) = delete;
 
     static DebugLog& getInstance();
-    bool initLog(const std::string& seed);
+    void logBasicInfo(const std::string& seed);
     void log(const std::string& msg = "");
 };
 

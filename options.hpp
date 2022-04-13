@@ -8,7 +8,8 @@
 enum struct PigColor : uint8_t {
     BLACK = 0,
     PINK,
-    SPOTTED
+    SPOTTED,
+    RANDOM
 };
 
 enum struct SwordMode {
@@ -77,9 +78,9 @@ enum struct Option {
 };
 
 struct Settings {
-	  bool progression_dungeons = false;
-	  bool progression_great_fairies = false;
-	  bool progression_puzzle_secret_caves = false;
+    bool progression_dungeons = false;
+    bool progression_great_fairies = false;
+    bool progression_puzzle_secret_caves = false;
     bool progression_combat_secret_caves = false;
     bool progression_short_sidequests = false;
     bool progression_long_sidequests = false;
@@ -122,9 +123,10 @@ struct Settings {
     bool race_mode = false;
     uint8_t num_race_mode_dungeons = false;
     float damage_multiplier = 1.0f;
+    bool chest_type_matches_contents = false;
 
     bool player_in_casual_clothes = false;
-    PigColor pigColor = PigColor::BLACK;
+    PigColor pigColor = PigColor::RANDOM;
 
     std::vector<GameItem> starting_gear;
     uint16_t starting_pohs = false;

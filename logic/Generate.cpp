@@ -82,7 +82,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
           if (fillError == FillError::GAME_NOT_BEATABLE)
           {
               generatePlaythrough(worlds);
-              generateSpoilerLog(worlds);
+              //generateSpoilerLog(worlds, seed);
           }
           for (World& world : worlds) {
               world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));

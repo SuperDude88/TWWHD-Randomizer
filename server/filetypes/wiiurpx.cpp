@@ -19,8 +19,6 @@ using eType = Utility::Endian::Type;
 
 
 
-static uint32_t pos;
-
 namespace {
     uint32_t crc32_rpx(uint32_t crc, uint8_t* buff, uint32_t len)
     {
@@ -168,8 +166,7 @@ namespace FileTypes {
         {
             if(entry.sh_offset == 0) continue;
 
-            pos = entry.sh_offset;
-            if (!in.seekg(pos))
+            if (!in.seekg(entry.sh_offset))
             {
                 return RPXError::REACHED_EOF;
             }
@@ -393,8 +390,7 @@ namespace FileTypes {
         {
             if(entry.sh_offset == 0) continue;
 
-            pos = entry.sh_offset; 
-            in.seekg(pos);
+            in.seekg(entry.sh_offset);
             entry.sh_offset = out.tellp();
             if ((entry.sh_type == SectionType::SHT_RPL_FILEINFO)||
                 (entry.sh_type == SectionType::SHT_RPL_CRCS)||

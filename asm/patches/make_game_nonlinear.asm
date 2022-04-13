@@ -22,10 +22,9 @@
 .org 0x0221f8d8
 	b 0x0221f8ec
 
-; medli/makar map things are different
-
 ; Originally the withered trees and the Koroks next to them only appear after you get Farore's Pearl.
 ; This gets rid of all those checks so they appear from the start of the game.
+; TODO: fix these, theyre broken
 .org 0x023465dc
 	nop
 .org 0x021f3f1c

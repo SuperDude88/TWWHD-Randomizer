@@ -58,6 +58,62 @@ namespace {
 	FileTypes::ELF gRPX;
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
+	static const std::unordered_map<std::string, std::string> progress_hints {
+		{"WindWaker", "the wand of the wind conductor"},
+		{"SpoilsBag", "a storage for collectibles"},
+		{"GrapplingHook", "an item to swing across platforms"},
+		{"PowerBracelets", "the strength to lift heavy rocks"},
+		{"IronBoots", "a very heavy item"},
+		{"BaitBag", "a storage for food"},
+		{"Boomerang", "an item that always comes back to you"},
+		{"Hookshot", "an item that reels"},
+		{"Delivery Bag", "a storage for letters"},
+		{"Bombs", "an explosive item"},
+		{"SkullHammer", "the hammer of the dead"},
+		{"DekuLeaf", "a magic leaf"},
+		{"Progressive Shield", "a defensive item"},
+		{"TriforceShard1", "a piece of the power of the gods"},
+		{"TriforceShard2", "a piece of the power of the gods"},
+		{"TriforceShard3", "a piece of the power of the gods"},
+		{"TriforceShard4", "a piece of the power of the gods"},
+		{"TriforceShard5", "a piece of the power of the gods"},
+		{"TriforceShard6", "a piece of the power of the gods"},
+		{"TriforceShard7", "a piece of the power of the gods"},
+		{"TriforceShard8", "a piece of the power of the gods"},
+		{"NayrusPearl", "a blue jewel"},
+		{"DinsPearl", "a red jewel"},
+		{"FaroresPearl", "a green jewel"},
+		{"WindsRequiem", "the song of wind"},
+		{"BalladOfGales", "the song of gales"},
+		{"CommandMelody", "the song of command"},
+		{"EarthGodsLyric", "the song of earths god"},
+		{"WindGodsAria", "the song of winds god"},
+		{"SongOfPassing", "the song of time"},
+		{"BoatsSail", "the wind follower"},
+		{"NoteToMom", "the writings of a letter sorter"},
+		{"MaggiesLetter", "the writings of a woman"},
+		{"MoblinsLetter", "the writings of a creature"},
+		{"CabanaDeed", "a pass for a private residence"},
+		{"MagicMeterUpgrade", "an upgrade for your magic"},
+		{"GhostShipChart", "the chart of fears"},
+		{"ProgressiveSword", "an upgrade for your blade"},
+		{"ProgressiveBow", "an upgrade for your bow"},
+		{"ProgressiveWallet", "an upgrade for your Rupee bag"},
+		{"ProgressivePicto Box", "an upgrade for your camera"},
+		{"EmptyBottle", "a glass container"},
+		{"SmallKey", "a key"},
+		{"BigKey", "an ominous key"},
+		{"TreasureChart", "a blue map"},
+		{"TriforceChart", "a purple map"},
+		{"DragonTingleStatue", "a statue of a fairy"},
+		{"ForbiddenTingleStatue", "a statue of a fairy"},
+		{"GoddessTingleStatue", "a statue of a fairy"},
+		{"EarthTingleStatue", "a statue of a fairy"},
+		{"WindTingleStatue", "a statue of a fairy"},
+		{"ProgressiveBombBag", "an upgrade for your bomb bag"},
+		{"ProgressiveQuiver", "an upgrade for your quiver"}
+	};
+
 	void Load_Custom_Symbols(const std::string& file_path) {
 		std::ifstream fptr(file_path, std::ios::in);
 
@@ -186,6 +242,23 @@ namespace {
 	
 		return Utility::Str::merge(lines, u'\n');
 	}
+
+	std::string get_hint_item_name(const std::string& item_name) {
+		if (item_name.find("TriforceChart") != std::string::npos) {
+			return "TriforceChart";
+		}
+		if (item_name.find("TreasureChart") != std::string::npos) {
+			return "TreasureChart";
+		}
+		if (item_name.find("SmallKey") != std::string::npos) {
+			return "SmallKey";
+		}
+		if(item_name.find("BigKey") != std::string::npos) {
+			return "BigKey";
+		}
+
+		return item_name;
+	}
 }
 
 void Apply_Patch(const std::string& file_path) {
@@ -244,245 +317,6 @@ void Remove_Relocation(const std::pair<int, int>& offset) {
 	gRPX.shdr_table[offset.first].second.data.replace(offset.second, 0xC, 0xC, '\0');
 	return;
 }
-
-/*std::u16string gameItemToName(const GameItem item) {
-	static std::unordered_map<GameItem, std::u16string> itemNameMap = { //terrible indentation is to make copying/editing easier, will remove once stuff is more finalized
-		{GameItem::HeartDrop, 						u"Heart (Pickup)"},
-		{GameItem::GreenRupee, 						u"Green Rupee"},
-		{GameItem::BlueRupee, 						u"Blue Rupee"},
-		{GameItem::YellowRupee, 					u"Yellow Rupee"},
-		{GameItem::RedRupee, 						u"Red Rupee"},
-		{GameItem::PurpleRupee, 					u"Purple Rupee"},
-		{GameItem::OrangeRupee, 					u"Orange Rupee"},
-		{GameItem::PieceOfHeart, 					u"Piece of Heart"},
-		{GameItem::HeartContainer, 					u"Heart Container"},
-		{GameItem::SmallMagicDrop, 					u"Small Magic Jar(Pickup)"},
-		{GameItem::LargeMagicDrop, 					u"Large Magic Jar(Pickup)"},
-		{GameItem::FiveBombs, 						u"5 Bombs(Pickup)"},
-		{GameItem::TenBombs, 						u"10 Bombs(Pickup)"},
-		{GameItem::TwentyBombs, 					u"20 Bombs(Pickup)"},
-		{GameItem::ThirtyBombs, 					u"30 Bombs(Pickup)"},
-		{GameItem::SilverRupee, 					u"Silver Rupee"},
-		{GameItem::TenArrows, 						u"10 Arrows(Pickup)"},
-		{GameItem::TwentyArrows, 					u"20 Arrows(Pickup)"},
-		{GameItem::ThirtyArrows, 					u"30 Arrows(Pickup)"},
-		{GameItem::DRCSmallKey, 					u"DRC Small Key"},
-		{GameItem::DRCBigKey, 						u"DRC Big Key"},
-		{GameItem::SmallKey, 						u"Small Key"},
-		{GameItem::Fairy, 							u"Fairy(Pickup)"},
-		{GameItem::YellowRupee2, 					u"Yellow Rupee(Joke Message)"},
-		{GameItem::DRCDungeonMap, 					u"DRC Dungeon Map"},
-		{GameItem::DRCCompass, 						u"DRC Compass"},
-		{GameItem::FWSmallKey, 						u"FW Small Key"},
-		{GameItem::ThreeHearts, 					u"Three Hearts(Pickup)"},
-		{GameItem::JoyPendant, 						u"Joy Pendant"},
-		{GameItem::Telescope, 						u"Telescope"},
-		{GameItem::TingleBottle, 					u"Tingle Bottle"},
-		{GameItem::WindWaker, 						u"Wind Waker"},
-		{GameItem::ProgressivePictoBox, 			u"Picto Box"},
-		{GameItem::SpoilsBag, 						u"Spoils Bag"},
-		{GameItem::GrapplingHook, 					u"Grappling Hook"},
-		{GameItem::DeluxePicto, 					u"Deluxe Picto Box"},
-		{GameItem::ProgressiveBow, 					u"Hero's Bow"},
-		{GameItem::PowerBracelets, 					u"Power Bracelets"},
-		{GameItem::IronBoots, 						u"Iron Boots"},
-		{GameItem::MagicArmor, 						u"Magic Armor"},
-		{GameItem::BaitBag, 						u"Bait Bag"},
-		{GameItem::Boomerang, 						u"Boomerang"},
-		{GameItem::Hookshot, 						u"Hookshot"},
-		{GameItem::DeliveryBag, 					u"Delivery Bag"},
-		{GameItem::Bombs, 							u"Bombs"},
-		{GameItem::HerosClothes, 					u"Hero's Clothes"},
-		{GameItem::SkullHammer, 					u"Skull Hammer"},
-		{GameItem::DekuLeaf, 						u"Deku Leaf"},
-		{GameItem::FireIceArrows, 					u"Fire and Ice Arrows"},
-		{GameItem::LightArrow, 						u"Light Arrow"},
-		{GameItem::HerosNewClothes, 				u"Hero's New Clothes"},
-		{GameItem::ProgressiveSword, 				u"Hero's Sword"},
-		{GameItem::MasterSwordPowerless, 			u"Master Sword(Powerless)"},
-		{GameItem::MasterSwordHalf, 				u"Master Sword(Half Power)"},
-		{GameItem::ProgressiveShield, 				u"Hero's Shield"},
-		{GameItem::MirrorShield, 					u"Mirror Shield"},
-		{GameItem::RecoveredHerosSword, 			u"Recovered Hero's Sword"},
-		{GameItem::MasterSwordFull, 				u"Master Sword(Full Power)"},
-		{GameItem::PieceOfHeart2, 					u"Piece of Heart(Alternate Message)"},
-		{GameItem::FWBigKey, 						u"FW Big Key"},
-		{GameItem::FWDungeonMap, 					u"FW Dungeon Map"},
-		{GameItem::PiratesCharm, 					u"Pirate's Charm"},
-		{GameItem::HerosCharm, 						u"Hero's Charm"},
-		{GameItem::SkullNecklace, 					u"Skull Necklace"},
-		{GameItem::BokoBabaSeed, 					u"Boko Baba Seed"},
-		{GameItem::GoldenFeather, 					u"Golden Feather"},
-		{GameItem::KnightsCrest, 					u"Knight's Crest"},
-		{GameItem::RedChuJelly, 					u"Red Chu Jelly"},
-		{GameItem::GreenChuJelly, 					u"Green Chu Jelly"},
-		{GameItem::BlueChuJelly, 					u"Blue Chu Jelly"},
-		{GameItem::DungeonMap, 						u"Dungeon Map"},
-		{GameItem::Compass, 						u"Compass"},
-		{GameItem::BigKey, 							u"Big Key"},
-		{GameItem::EmptyBottle, 					u"Empty Bottle"},
-		{GameItem::RedPotion, 						u"Red Potion"},
-		{GameItem::GreenPotion, 					u"Green Potion"},
-		{GameItem::BluePotion, 						u"Blue Potion"},
-		{GameItem::ElixirSoupHalf, 					u"Elixir Soup(1 / 2)"},
-		{GameItem::ElixirSoup, 						u"Elixir Soup"},
-		{GameItem::BottledWater, 					u"Bottled Water"},
-		{GameItem::FairyInBottle, 					u"Fairy in Bottle"},
-		{GameItem::ForestFirefly, 					u"Forest Firefly"},
-		{GameItem::ForestWater, 					u"Forest Water"},
-		{GameItem::FWCompass, 						u"FW Compass"},
-		{GameItem::TotGSmallKey, 					u"TotG Small Key"},
-		{GameItem::TotGBigKey, 						u"TotG Big Key"},
-		{GameItem::TotGDungeonMap, 					u"TotG Dungeon Map"},
-		{GameItem::TotGCompass, 					u"TotG Compass"},
-		{GameItem::FFDungeonMap, 					u"FF Dungeon Map"},
-		{GameItem::FFCompass, 						u"FF Compass"},
-		{GameItem::TriforceShard1, 					u"Triforce Shard 1"},
-		{GameItem::TriforceShard2, 					u"Triforce Shard 2"},
-		{GameItem::TriforceShard3, 					u"Triforce Shard 3"},
-		{GameItem::TriforceShard4, 					u"Triforce Shard 4"},
-		{GameItem::TriforceShard5, 					u"Triforce Shard 5"},
-		{GameItem::TriforceShard6, 					u"Triforce Shard 6"},
-		{GameItem::TriforceShard7, 					u"Triforce Shard 7"},
-		{GameItem::TriforceShard8, 					u"Triforce Shard 8"},
-		{GameItem::NayrusPearl, 					u"Nayru's Pearl"},
-		{GameItem::DinsPearl, 						u"Din's Pearl"},
-		{GameItem::FaroresPearl, 					u"Farore's Pearl"},
-		{GameItem::WindsRequiem, 					u"Wind's Requiem"},
-		{GameItem::BalladOfGales, 					u"Ballad of Gales"},
-		{GameItem::CommandMelody, 					u"Command Melody"},
-		{GameItem::EarthGodsLyric, 					u"Earth God's Lyric"},
-		{GameItem::WindGodsAria, 					u"Wind God's Aria"},
-		{GameItem::SongOfPassing, 					u"Song of Passing"},
-		{GameItem::ETSmallKey, 						u"ET Small Key"},
-		{GameItem::ETBigKey, 						u"ET Big Key"},
-		{GameItem::ETDungeonMap, 					u"ET Dungeon Map"},
-		{GameItem::ETCompass, 						u"ET Compass"},
-		{GameItem::SwiftSail, 						u"Swift Sail"},
-		{GameItem::ProgressiveSail, 				u"ProgressiveSail"},
-		{GameItem::TriforceChart1Deciphered, 		u"Triforce Chart 1 got deciphered"},
-		{GameItem::TriforceChart2Deciphered, 		u"Triforce Chart 2 got deciphered"},
-		{GameItem::TriforceChart3Deciphered, 		u"Triforce Chart 3 got deciphered"},
-		{GameItem::TriforceChart4Deciphered, 		u"Triforce Chart 4 got deciphered"},
-		{GameItem::TriforceChart5Deciphered, 		u"Triforce Chart 5 got deciphered"},
-		{GameItem::TriforceChart6Deciphered, 		u"Triforce Chart 6 got deciphered"},
-		{GameItem::TriforceChart7Deciphered, 		u"Triforce Chart 7 got deciphered"},
-		{GameItem::TriforceChart8Deciphered, 		u"Triforce Chart 8 got deciphered"},
-		{GameItem::WTSmallKey, 						u"WT Small Key"},
-		{GameItem::AllPurposeBait, 					u"All - Purpose Bait"},
-		{GameItem::HyoiPear, 						u"Hyoi Pear"},
-		{GameItem::WTBigKey, 						u"WT Big Key"},
-		{GameItem::WTDungeonMap, 					u"WT Dungeon Map"},
-		{GameItem::WTCompass, 						u"WT Compass"},
-		{GameItem::TownFlower, 						u"Town Flower"},
-		{GameItem::SeaFlower, 						u"Sea Flower"},
-		{GameItem::ExoticFlower, 					u"Exotic Flower"},
-		{GameItem::HerosFlag, 						u"Hero's Flag"},
-		{GameItem::BigCatchFlag, 					u"Big Catch Flag"},
-		{GameItem::BigSaleFlag, 					u"Big Sale Flag"},
-		{GameItem::Pinwheel, 						u"Pinwheel"},
-		{GameItem::SickleMoonFlag, 					u"Sickle Moon Flag"},
-		{GameItem::SkullTowerIdol, 					u"Skull Tower Idol"},
-		{GameItem::FountainIdol, 					u"Fountain Idol"},
-		{GameItem::PostmanStatue, 					u"Postman Statue"},
-		{GameItem::ShopGuruStatue, 					u"Shop Guru Statue"},
-		{GameItem::FathersLetter, 					u"Father's Letter"},
-		{GameItem::NoteToMom, 						u"Note to Mom"},
-		{GameItem::MaggiesLetter, 					u"Maggie's Letter"},
-		{GameItem::MoblinsLetter, 					u"Moblin's Letter"},
-		{GameItem::CabanaDeed, 						u"Cabana Deed"},
-		{GameItem::ComplimentaryID, 				u"Complimentary ID"},
-		{GameItem::FillUpCoupon, 					u"Fill - Up Coupon"},
-		{GameItem::LegendaryPictograph, 			u"Legendary Pictograph"},
-		{GameItem::DragonTingleStatue, 				u"Dragon Tingle Statue"},
-		{GameItem::ForbiddenTingleStatue, 			u"Forbidden Tingle Statue"},
-		{GameItem::GoddessTingleStatue, 			u"Goddess Tingle Statue"},
-		{GameItem::EarthTingleStatue, 				u"Earth Tingle Statue"},
-		{GameItem::WindTingleStatue, 				u"Wind Tingle Statue"},
-		{GameItem::HurricaneSpin, 					u"Hurricane Spin"},
-		{GameItem::ProgressiveWallet, 				u"1000 Rupee Wallet"},
-		{GameItem::FiveThousandWallet, 				u"5000 Rupee Wallet"},
-		{GameItem::ProgressiveBombBag, 				u"60 Bomb Bomb Bag"},
-		{GameItem::NinetyNineBombBag, 				u"99 Bomb Bomb Bag"},
-		{GameItem::ProgressiveQuiver, 				u"60 Arrow Quiver"},
-		{GameItem::NinetyNineQuiver, 				u"99 Arrow Quiver"},
-		{GameItem::MagicMeterUpgrade, 				u"Magic Meter Upgrade"},
-		{GameItem::FiftyRupees, 					u"50 Rupees, reward for finding 1 Tingle Statue"},
-		{GameItem::HundredRupees, 					u"100 Rupees, reward for finding 2 Tingle Statues"},
-		{GameItem::HundredFiftyRupees, 				u"150 Rupees, reward for finding 3 Tingle Statues"},
-		{GameItem::TwoHundredRupees, 				u"200 Rupees, reward for finding 4 Tingle Statues"},
-		{GameItem::TwoHundredFiftyRupees, 			u"250 Rupees, reward for finding 5 Tingle Statues"},
-		{GameItem::RainbowRupee, 					u"Rainbow Rupee"},
-		{GameItem::SubmarineChart, 					u"Submarine Chart"},
-		{GameItem::BeedlesChart, 					u"Beedle's Chart"},
-		{GameItem::PlatformChart, 					u"Platform Chart"},
-		{GameItem::LightRingChart, 					u"Light Ring Chart"},
-		{GameItem::SecretCaveChart, 				u"Secret Cave Chart"},
-		{GameItem::SeaHeartsChart, 					u"Sea Hearts Chart"},
-		{GameItem::IslandHeartsChart, 				u"Island Hearts Chart"},
-		{GameItem::GreatFairyChart, 				u"Great Fairy Chart"},
-		{GameItem::OctoChart, 						u"Octo Chart"},
-		{GameItem::INcredibleChart, 				u"IN - credible Chart"},
-		{GameItem::TreasureChart7, 					u"Treasure Chart 7"},
-		{GameItem::TreasureChart27, 				u"Treasure Chart 27"},
-		{GameItem::TreasureChart21, 				u"Treasure Chart 21"},
-		{GameItem::TreasureChart13, 				u"Treasure Chart 13"},
-		{GameItem::TreasureChart32, 				u"Treasure Chart 32"},
-		{GameItem::TreasureChart19, 				u"Treasure Chart 19"},
-		{GameItem::TreasureChart41, 				u"Treasure Chart 41"},
-		{GameItem::TreasureChart26, 				u"Treasure Chart 26"},
-		{GameItem::TreasureChart8, 					u"Treasure Chart 8"},
-		{GameItem::TreasureChart37, 				u"Treasure Chart 37"},
-		{GameItem::TreasureChart25, 				u"Treasure Chart 25"},
-		{GameItem::TreasureChart17, 				u"Treasure Chart 17"},
-		{GameItem::TreasureChart36, 				u"Treasure Chart 36"},
-		{GameItem::TreasureChart22, 				u"Treasure Chart 22"},
-		{GameItem::TreasureChart9, 					u"Treasure Chart 9"},
-		{GameItem::GhostShipChart, 					u"Ghost Ship Chart"},
-		{GameItem::TinglesChart, 					u"Tingle's Chart"},
-		{GameItem::TreasureChart14, 				u"Treasure Chart 14"},
-		{GameItem::TreasureChart10, 				u"Treasure Chart 10"},
-		{GameItem::TreasureChart40, 				u"Treasure Chart 40"},
-		{GameItem::TreasureChart3, 					u"Treasure Chart 3"},
-		{GameItem::TreasureChart4, 					u"Treasure Chart 4"},
-		{GameItem::TreasureChart28, 				u"Treasure Chart 28"},
-		{GameItem::TreasureChart16, 				u"Treasure Chart 16"},
-		{GameItem::TreasureChart18, 				u"Treasure Chart 18"},
-		{GameItem::TreasureChart34, 				u"Treasure Chart 34"},
-		{GameItem::TreasureChart29, 				u"Treasure Chart 29"},
-		{GameItem::TreasureChart1, 					u"Treasure Chart 1"},
-		{GameItem::TreasureChart35, 				u"Treasure Chart 35"},
-		{GameItem::TreasureChart12, 				u"Treasure Chart 12"},
-		{GameItem::TreasureChart6, 					u"Treasure Chart 6"},
-		{GameItem::TreasureChart24, 				u"Treasure Chart 24"},
-		{GameItem::TreasureChart39, 				u"Treasure Chart 39"},
-		{GameItem::TreasureChart38, 				u"Treasure Chart 38"},
-		{GameItem::TreasureChart2, 					u"Treasure Chart 2"},
-		{GameItem::TreasureChart33, 				u"Treasure Chart 33"},
-		{GameItem::TreasureChart31, 				u"Treasure Chart 31"},
-		{GameItem::TreasureChart23, 				u"Treasure Chart 23"},
-		{GameItem::TreasureChart5, 					u"Treasure Chart 5"},
-		{GameItem::TreasureChart20, 				u"Treasure Chart 20"},
-		{GameItem::TreasureChart30, 				u"Treasure Chart 30"},
-		{GameItem::TreasureChart15, 				u"Treasure Chart 15"},
-		{GameItem::TreasureChart11, 				u"Treasure Chart 11"},
-		{GameItem::TreasureChart46, 				u"Treasure Chart 46"},
-		{GameItem::TreasureChart45, 				u"Treasure Chart 45"},
-		{GameItem::TreasureChart44, 				u"Treasure Chart 44"},
-		{GameItem::TriforceChart3, 					u"Triforce Chart 3"},
-		{GameItem::TreasureChart43, 				u"Treasure Chart 43"},
-		{GameItem::TriforceChart2, 					u"Triforce Chart 2"},
-		{GameItem::TreasureChart42, 				u"Treasure Chart 42"},
-		{GameItem::TriforceChart1, 					u"Triforce Chart 1"},
-		{GameItem::INVALID,							u"Nothing"}
-	};
-
-	if (itemNameMap.count(item) == 0)
-	{
-		return u"INVALID";
-	}
-	return itemNameMap.at(item);
-}*/
 
 
 
@@ -758,7 +592,7 @@ void remove_ff2_cutscenes() {
 
 	std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
 	for (ChunkEntry* exit : exits) {
-		if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) exit->data = std::string("sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF", 0xC);
+		if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
 	}
 	dzr.writeToFile(path.string());
 
@@ -820,7 +654,7 @@ void add_ganons_tower_warp_to_ff2() {
 	FileTypes::DZXFile dzr;
 	dzr.loadFromFile(path.string());
 	ChunkEntry& warp = dzr.add_entity("ACTR", 1);
-	warp.data = std::string("Warpmj\x00\x00\x00\x00\x00\x11\xc8\x93\x0f\xd9\x00\x00\x00\x00\xc8\x91\xf7\xfa\x00\x00\x00\x00\x00\x00\xff\xff", 0x20);
+	warp.data = "Warpmj\x00\x00\x00\x00\x00\x11\xc8\x93\x0f\xd9\x00\x00\x00\x00\xc8\x91\xf7\xfa\x00\x00\x00\x00\x00\x00\xff\xff"s;
 	dzr.writeToFile(path.string());
 
 	return;
@@ -832,7 +666,7 @@ void add_chest_in_place_medli_gift() {
 	FileTypes::DZXFile dzs;
 	dzs.loadFromFile(path.string());
 	ChunkEntry& chest = dzs.add_entity("TRES");
-	chest.data = std::string("takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff", 0x20);
+	chest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
 	dzs.writeToFile(path.string());
 
 	RandoSession::fspath path2 = g_session.openGameFile("content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
@@ -840,7 +674,7 @@ void add_chest_in_place_medli_gift() {
 	FileTypes::DZXFile dzs2;
 	dzs2.loadFromFile(path2.string());
 	ChunkEntry& dummyChest = dzs2.add_entity("TRES");
-	dummyChest.data = std::string("takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff", 0x20);
+	dummyChest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
 	dzs2.writeToFile(path2.string());
 	return;
 }
@@ -851,7 +685,7 @@ void add_chest_in_place_queen_fairy_cutscene() {
 	FileTypes::DZXFile dzr;
 	dzr.loadFromFile(path.string());
 	ChunkEntry& chest = dzr.add_entity("TRES");
-	chest.data = std::string("takara3\x00\xFF\x20\x0e\x00\xc8\x2f\xcf\xc0\x44\x34\xc0\x00\xc8\x43\x4e\xc0\x00\x09\x10\x00\xa5\xff\xff\xff", 0x20);
+	chest.data = "takara3\x00\xFF\x20\x0e\x00\xc8\x2f\xcf\xc0\x44\x34\xc0\x00\xc8\x43\x4e\xc0\x00\x09\x10\x00\xa5\xff\xff\xff"s;
 	dzr.writeToFile(path.string());
 
 	return;
@@ -894,9 +728,9 @@ void add_more_magic_jars() {
 		FileTypes::DZXFile dri;
 		dri.loadFromFile(path.string());
 		ChunkEntry& grass1 = dri.add_entity("ACTR");
-		grass1.data = std::string("\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF", 0x20);
+		grass1.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
 		ChunkEntry& grass2 = dri.add_entity("ACTR");
-		grass2.data = std::string("\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF", 0x20);
+		grass2.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
 		dri.writeToFile(path.string());
 	}
 
@@ -910,7 +744,7 @@ void add_more_magic_jars() {
 		for (ChunkEntry* actor : actors) {
 			if (std::strncmp(&actor->data[0], "kotubo\x00\x00", 8) == 0) pots.push_back(actor);
 		}
-		pots[1]->data = std::string("\x6B\x6F\x74\x75\x62\x6F\x00\x00\x70\x7F\xFF\x0A\xC5\x6E\x20\x00\x43\x66\x00\x05\xC5\xDF\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF", 0x20);
+		pots[1]->data = "\x6B\x6F\x74\x75\x62\x6F\x00\x00\x70\x7F\xFF\x0A\xC5\x6E\x20\x00\x43\x66\x00\x05\xC5\xDF\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF"s;
 		totg.writeToFile(path.string());
 	}
 }
@@ -927,7 +761,7 @@ void modify_title_screen() {
 	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
 	newPane.pane->name = "T_Version";
 	newPane.pane->name.resize(0x18);
-	dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver 01.00.00a\0"s;
+	dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0';
 	dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
 	dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
 	dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
@@ -1194,7 +1028,12 @@ void fix_shop_item_y_offsets() {
 	}
 }
 
-void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item) {
+void update_shop_item_descriptions(const Location& beedle20, const Location& beedle500, const Location& beedle950, const Location& beedle900) {
+	const GameItem beedle20Item = beedle20.currentItem.getGameItemId();
+	const GameItem beedle500Item = beedle500.currentItem.getGameItemId();
+	const GameItem beedle900Item = beedle900.currentItem.getGameItemId();
+	const GameItem beedle950Item = beedle950.currentItem.getGameItemId();
+
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
 
 	FileTypes::MSBTFile msbt;
@@ -1223,17 +1062,23 @@ void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem&
 	return;
 }
 
-void update_auction_item_names(const GameItem& auction5, const GameItem& auction40, const GameItem& auction60, const GameItem& auction80, const GameItem& auction100) {
+void update_auction_item_names(const Location& auction5_, const Location& auction40_, const Location& auction60_, const Location& auction80_, const Location& auction100_) {
+	const std::u16string auction5 = Utility::Str::toUTF16(gameItemToName(auction5_.currentItem.getGameItemId()));
+	const std::u16string auction40 = Utility::Str::toUTF16(gameItemToName(auction40_.currentItem.getGameItemId()));
+	const std::u16string auction60 = Utility::Str::toUTF16(gameItemToName(auction60_.currentItem.getGameItemId()));
+	const std::u16string auction80 = Utility::Str::toUTF16(gameItemToName(auction80_.currentItem.getGameItemId()));
+	const std::u16string auction100 = Utility::Str::toUTF16(gameItemToName(auction100_.currentItem.getGameItemId()));
+	
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
 
 	FileTypes::MSBTFile msbt;
 	msbt.loadFromFile(path.string());
 
-	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction40)) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction5)) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07442"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction60)) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction80)) + TEXT_COLOR_DEFAULT;
-	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction100)) + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + auction40 + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + auction5 + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07442"].text.message = TEXT_COLOR_RED + auction60 + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + auction80 + TEXT_COLOR_DEFAULT;
+	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + auction100 + TEXT_COLOR_DEFAULT;
 
 	msbt.writeToFile(path.string());
 
@@ -1245,54 +1090,54 @@ void update_auction_item_names(const GameItem& auction5, const GameItem& auction
 	msbt2.messages_by_label["00804"].text.message.pop_back(); //remove null terminator, we want to add things before it
 	msbt2.messages_by_label["00804"].text.message += u"\n\nParticipate for the chance to win ";
 	std::u16string itemStr = TEXT_COLOR_RED;
-	if (gameItemToName(auction5).find("Treasure Chart") != std::string::npos) {
-		itemStr += u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
+	if (auction5.find(u"Treasure Chart") != std::string::npos) {
+		itemStr += u"a Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
-	else if (gameItemToName(auction5).find("Triforce Chart") != std::string::npos) {
-		itemStr += u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
+	else if (auction5.find(u"Triforce Chart") != std::string::npos) {
+		itemStr += u"a Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += Utility::Str::toUTF16(gameItemToName(auction5)) + TEXT_COLOR_DEFAULT + u", ";
+		itemStr += get_indefinite_article(auction5) + auction5 + TEXT_COLOR_DEFAULT + u", ";
 	}
 
-	if (gameItemToName(auction40).find("Treasure Chart") != std::string::npos) {
-		itemStr += TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
+	if (auction40.find(u"Treasure Chart") != std::string::npos) {
+		itemStr += TEXT_COLOR_RED + u"a Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
-	else if (gameItemToName(auction40).find("Triforce Chart") != std::string::npos) {
-		itemStr += TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
+	else if (auction40.find(u"Triforce Chart") != std::string::npos) {
+		itemStr += TEXT_COLOR_RED + u"a Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction40)) + TEXT_COLOR_DEFAULT + u", ";
+		itemStr += TEXT_COLOR_RED + get_indefinite_article(auction40) + auction40 + TEXT_COLOR_DEFAULT + u", ";
 	}
 
-	if (gameItemToName(auction60).find("Treasure Chart") != std::string::npos) {
-		itemStr += TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
+	if (auction60.find(u"Treasure Chart") != std::string::npos) {
+		itemStr += TEXT_COLOR_RED + u"a Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
-	else if (gameItemToName(auction60).find("Triforce Chart") != std::string::npos) {
-		itemStr += TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
+	else if (auction60.find(u"Triforce Chart") != std::string::npos) {
+		itemStr += TEXT_COLOR_RED + u"a Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction60)) + TEXT_COLOR_DEFAULT + u", ";
+		itemStr += TEXT_COLOR_RED + get_indefinite_article(auction60) + auction60 + TEXT_COLOR_DEFAULT + u", ";
 	}
 
-	if (gameItemToName(auction80).find("Treasure Chart") != std::string::npos) {
-		itemStr += TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
+	if (auction80.find(u"Treasure Chart") != std::string::npos) {
+		itemStr += TEXT_COLOR_RED + u"a Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
-	else if (gameItemToName(auction80).find("Triforce Chart") != std::string::npos) {
-		itemStr += TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
+	else if (auction80.find(u"Triforce Chart") != std::string::npos) {
+		itemStr += TEXT_COLOR_RED + u"a Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
 	}
 	else {
-		itemStr += TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction80)) + TEXT_COLOR_DEFAULT + u", ";
+		itemStr += TEXT_COLOR_RED + get_indefinite_article(auction80) + auction80 + TEXT_COLOR_DEFAULT + u", ";
 	}
 
-	if (gameItemToName(auction100).find("Treasure Chart") != std::string::npos) {
-		itemStr += u"or " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u"!";
+	if (auction100.find(u"Treasure Chart") != std::string::npos) {
+		itemStr += u"or " + TEXT_COLOR_RED + u"a Treasure Chart" + TEXT_COLOR_DEFAULT + u"!";
 	}
-	else if (gameItemToName(auction100).find("Triforce Chart") != std::string::npos) {
-		itemStr += u"or " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u"!";
+	else if (auction100.find(u"Triforce Chart") != std::string::npos) {
+		itemStr += u"or " + TEXT_COLOR_RED + u"a Triforce Chart" + TEXT_COLOR_DEFAULT + u"!";
 	}
 	else {
-		itemStr += u"or " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(auction100)) + TEXT_COLOR_DEFAULT + u"!";
+		itemStr += u"or " + TEXT_COLOR_RED + get_indefinite_article(auction100) + auction100 + TEXT_COLOR_DEFAULT + u"!";
 	}
 
 	msbt2.messages_by_label["00804"].text.message += word_wrap_string(itemStr, 44);
@@ -1302,7 +1147,10 @@ void update_auction_item_names(const GameItem& auction5, const GameItem& auction
 	return;
 }
 
-void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& secondPrize) {
+void update_battlesquid_item_names(const Location& firstPrize_, const Location& secondPrize_) {
+	const GameItem firstPrize = firstPrize_.currentItem.getGameItemId();
+	const GameItem secondPrize = secondPrize_.currentItem.getGameItemId();
+
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message3.msbt");
 
 	FileTypes::MSBTFile msbt;
@@ -1315,7 +1163,11 @@ void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& s
 	return;
 }
 
-void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item) {
+void update_item_names_in_letter_advertising_rock_spire_shop(const Location& beedle500, const Location& beedle950, const Location& beedle900) {
+	const std::u16string beedle500Item = Utility::Str::toUTF16(gameItemToName(beedle500.currentItem.getGameItemId()));
+	const std::u16string beedle900Item = Utility::Str::toUTF16(gameItemToName(beedle900.currentItem.getGameItemId()));
+	const std::u16string beedle950Item = Utility::Str::toUTF16(gameItemToName(beedle950.currentItem.getGameItemId()));
+
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
 
 	FileTypes::MSBTFile msbt;
@@ -1323,7 +1175,7 @@ void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& bee
 
 	std::u16string stringBefore = msbt.messages_by_label["03325"].text.message.substr(0, 194);
 	std::u16string stringAfter = msbt.messages_by_label["03325"].text.message.substr(396, 323);
-	std::u16string hintString = u"Do you have need of " + get_indefinite_article(Utility::Str::toUTF16(gameItemToName(beedle500Item))) + u" " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + TEXT_COLOR_DEFAULT + u", " + Utility::Str::toUTF16(get_indefinite_article(gameItemToName(beedle950Item))) + u" " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle950Item)) + TEXT_COLOR_DEFAULT + u", or " + get_indefinite_article(Utility::Str::toUTF16(gameItemToName(beedle900Item))) + u" " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u"? We have them at special bargain prices.";
+	std::u16string hintString = u"Do you have need of " + get_indefinite_article(beedle500Item) + u" " + TEXT_COLOR_RED + beedle500Item + TEXT_COLOR_DEFAULT + u", " + get_indefinite_article(beedle950Item) + u" " + TEXT_COLOR_RED + beedle950Item + TEXT_COLOR_DEFAULT + u", or " + get_indefinite_article(beedle900Item) + u" " + TEXT_COLOR_RED + beedle900Item + TEXT_COLOR_DEFAULT + u"? We have them at special bargain prices.";
 	hintString = word_wrap_string(hintString, 39);
 	hintString = pad_str_4_lines(hintString);
 	std::vector<std::u16string> hintLines = Utility::Str::split(hintString, u'\n');
@@ -1343,8 +1195,40 @@ void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& bee
 	return;
 }
 
-void update_savage_labyrinth_hint_tablet(const GameItem& floor30, const GameItem& floor50) {
-	//https://github.com/LagoLunatic/wwrando/blob/master/tweaks.py#L843
+void update_savage_labyrinth_hint_tablet(const Location& floor30_, const Location& floor50_) {
+	bool floor30Progress = floor30_.currentItem.isMajorItem();
+	bool floor50Progress = floor50_.currentItem.isMajorItem();
+
+	const std::string floor30item = get_hint_item_name(gameItemToName(floor30_.currentItem.getGameItemId()));
+	const std::string floor50item = get_hint_item_name(gameItemToName(floor50_.currentItem.getGameItemId()));
+
+	std::u16string hint;
+	if(floor30Progress && floor50Progress) {
+		std::u16string floor30Hint = Utility::Str::toUTF16(progress_hints.at(floor30item));
+		std::u16string floor50Hint = Utility::Str::toUTF16(progress_hints.at(floor50item));
+		hint = u"the way to " + TEXT_COLOR_RED + floor30Hint + TEXT_COLOR_DEFAULT + u" and " + TEXT_COLOR_RED + floor50Hint + TEXT_COLOR_DEFAULT + u" await.";
+	}
+	else if(floor30Progress) {
+		std::u16string floor30Hint = Utility::Str::toUTF16(progress_hints.at(floor30item));
+		hint = u"the way to " + TEXT_COLOR_RED + floor30Hint + TEXT_COLOR_DEFAULT + u" and a challenge await.";
+	}
+	else if(floor50Progress) {
+		std::u16string floor50Hint = Utility::Str::toUTF16(progress_hints.at(floor50item));
+		hint = u"a challenge and " + TEXT_COLOR_RED + floor50Hint + TEXT_COLOR_DEFAULT + u" await.";
+	}
+	else {
+		hint = u"a challenge awaits.";
+	}
+	
+	const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+
+	FileTypes::MSBTFile msbt;
+	msbt.loadFromFile(path.string());
+	msbt.messages_by_label["00837"].text.message = u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"The Savage Labyrinth" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n";
+	msbt.messages_by_label["00837"].text.message += word_wrap_string(u"Deep in the never-ending darkness, " + hint, 43) + u'\0';
+	msbt.writeToFile(path.string());
+
+	return;
 }
 
 //hints
@@ -1429,7 +1313,7 @@ void set_damage_multiplier(const float multiplier) {
 	return;
 }
 
-void set_pig_color(const PigColor color) {
+void set_pig_color(const PigColor& color) {
 	uint32_t pig_color_address = custom_symbols.at("outset_pig_color");
 	elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, pig_color_address), static_cast<std::underlying_type_t<PigColor>>(color));
 }
@@ -1445,13 +1329,13 @@ void add_pirate_ship_to_windfall() {
 	shipDzr.loadFromFile(shipRoomPath.string());
 
 	std::vector<ChunkEntry*> wf_layer_2_actors = windfallDzr.entries_by_type_and_layer("ACTR", 2);
-	ChunkEntry* layer_2_ship = nullptr;
+	std::string layer_2_ship_data; //copy actor data, add_entity reallocates vector and invalidates pointer
 	for (ChunkEntry* actor : wf_layer_2_actors) {
-		if (std::strncmp(&actor->data[0], "Pirates\x00", 8) == 0) layer_2_ship = actor;
+		if (std::strncmp(&actor->data[0], "Pirates\x00", 8) == 0) layer_2_ship_data = actor->data;
 	}
 
-	ChunkEntry& default_layer_ship = windfallDzr.add_entity("ACTR", 2);
-	default_layer_ship.data = layer_2_ship->data;
+	ChunkEntry& default_layer_ship = windfallDzr.add_entity("ACTR");
+	default_layer_ship.data = layer_2_ship_data;
 	default_layer_ship.data[0x10] = '\x00';
 
 	windfallDzr.writeToFile(windfallPath.string());
@@ -1464,7 +1348,7 @@ void add_pirate_ship_to_windfall() {
 	}
 
 	ChunkEntry& aryll = shipDzr.add_entity("ACTR");
-	aryll.data = std::string("Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF", 0x20);
+	aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
 
 	RandoSession::fspath msbtPath = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
 
@@ -1514,7 +1398,7 @@ void add_cross_dungeon_warps() {
 		Utility::Endian::toPlatform_inplace(eType::Big, warp.y_rot);
 
 		ChunkEntry& spawn = dzx_for_spawn->add_entity("PLYR");
-		spawn.data = std::string("Link\x00\x00\x00\x00\xFF\xFF\x70", 0xC);
+		spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x70"s;
 		spawn.data.resize(0x20);
 		spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
 		spawn.data.replace(0xC, 1, reinterpret_cast<const char*>(&warp.x), 4);
@@ -1592,7 +1476,7 @@ void add_cross_dungeon_warps() {
 		Utility::Endian::toPlatform_inplace(eType::Big, warp.y_rot);
 
 		ChunkEntry& spawn = dzx_for_spawn->add_entity("PLYR");
-		spawn.data = std::string("Link\x00\x00\x00\x00\xFF\xFF\x70", 0xC);
+		spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x70"s;
 		spawn.data.resize(0x20);
 		spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
 		spawn.data.replace(0xC, 1, reinterpret_cast<const char*>(&warp.x), 4);
@@ -1832,7 +1716,7 @@ void update_sword_mode_game_variable(const SwordMode swordMode) {
 
 void update_starting_gear(const std::vector<GameItem>& startingItems) {
 	std::vector<GameItem> startingGear = startingItems; //copy so we can edit without causing problems
-	if (auto it = std::find(startingGear.begin(), startingGear.end(), GameItem::MagicMeterUpgrade); it != startingItems.end()) {
+	if (auto it = std::find(startingGear.begin(), startingGear.end(), GameItem::MagicMeterUpgrade); it != startingGear.end()) {
 		give_double_magic();
 		startingGear.erase(it);
 	}
@@ -1892,7 +1776,7 @@ void add_hint_signs() {
 	for (ChunkEntry* actor : actors) {
 		if (std::strncmp(&actor->data[0], "BFlower", 8) == 0) bomb_flowers.push_back(actor);
 	}
-	bomb_flowers[0]->data = std::string("\x4B\x61\x6E\x62\x61\x6E\x00\x00\x00\x00\x03\x4F\x44\x34\x96\xEB\x42\x47\xFF\xFF\xC2\x40\xB0\x3A\x00\x00\x20\x00\x00\x00\xFF\xFF", 0x20);
+	bomb_flowers[0]->data = "\x4B\x61\x6E\x62\x61\x6E\x00\x00\x00\x00\x03\x4F\x44\x34\x96\xEB\x42\x47\xFF\xFF\xC2\x40\xB0\x3A\x00\x00\x20\x00\x00\x00\xFF\xFF"s;
 
 	dzr.writeToFile(path.string());
 
@@ -1906,7 +1790,7 @@ void prevent_door_boulder_softlocks() {
 	room13.loadFromFile(path.string());
 
 	ChunkEntry& swc00 = room13.add_entity("SCOB");
-	swc00.data = std::string("\x53\x57\x5F\x43\x30\x30\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF", 0x24);
+	swc00.data = "\x53\x57\x5F\x43\x30\x30\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
 	room13.writeToFile(path.string());
 
 	path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
@@ -1915,7 +1799,7 @@ void prevent_door_boulder_softlocks() {
 	room14.loadFromFile(path.string());
 
 	swc00 = room14.add_entity("SCOB");
-	swc00.data = std::string("\x53\x57\x5F\x43\x30\x30\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF", 0x24);
+	swc00.data = "\x53\x57\x5F\x43\x30\x30\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
 	room14.writeToFile(path.string());
 
 	return;
@@ -1978,8 +1862,8 @@ void add_chest_in_place_jabun_cutscene() {
 	dzr.loadFromFile(path.string());
 	ChunkEntry& raft = dzr.add_entity("ACTR");
 	ChunkEntry& chest = dzr.add_entity("TRES");
-	raft.data = std::string("Ikada\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\xFF\xFF", 0x20);
-	chest.data = std::string("takara3\x00\xFF\x2F\xF3\x05\x00\x00\x00\x00\x43\x96\x00\x00\xC3\x48\x00\x00\x00\x00\x80\x00\x05\xFF\xFF\xFF", 0x20);
+	raft.data = "Ikada\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\xFF\xFF"s;
+	chest.data = "takara3\x00\xFF\x2F\xF3\x05\x00\x00\x00\x00\x43\x96\x00\x00\xC3\x48\x00\x00\x00\x00\x80\x00\x05\xFF\xFF\xFF"s;
 	dzr.writeToFile(path.string());
 
 	return;
@@ -1992,16 +1876,16 @@ void add_jabun_obstacles_to_default_layer() {
 	dzr.loadFromFile(path.string());
 
 	std::vector<ChunkEntry*> layer_5_actors = dzr.entries_by_type_and_layer("ACTR", 5);
-	ChunkEntry* layer_5_door = layer_5_actors[0];
-	ChunkEntry* layer_5_whirlpool = layer_5_actors[1];
+	const std::string layer_5_door_data = layer_5_actors[0]->data;
+	const std::string layer_5_whirlpool_data = layer_5_actors[1]->data;
+
+	dzr.remove_entity(layer_5_actors[0]);
+	dzr.remove_entity(layer_5_actors[1]);
 
 	ChunkEntry& newDoor = dzr.add_entity("ACTR");
 	ChunkEntry& newWhirlpool = dzr.add_entity("ACTR");
-	newDoor.data = layer_5_door->data;
-	newWhirlpool.data = layer_5_whirlpool->data;
-
-	dzr.remove_entity(layer_5_door);
-	dzr.remove_entity(layer_5_whirlpool);
+	newDoor.data = layer_5_door_data;
+	newWhirlpool.data = layer_5_whirlpool_data;
 
 	dzr.writeToFile(path.string());
 
@@ -2065,7 +1949,7 @@ void add_chest_in_place_master_sword() {
 	}
 
 	ChunkEntry& chest = dzr.add_entity("TRES");
-	chest.data = std::string("takara3\x00\xFF\x20\x50\x04\xc2\xf6\xfd\x71\xc5\x49\x40\x00\xc5\xf4\xe9\x0a\x00\x00\x00\x00\x6a\xff\xff\xff", 0x20);
+	chest.data = "takara3\x00\xFF\x20\x50\x04\xc2\xf6\xfd\x71\xc5\x49\x40\x00\xc5\xf4\xe9\x0a\x00\x00\x00\x00\x6a\xff\xff\xff"s;
 
 	dzr.writeToFile(path.string());
 
@@ -2087,14 +1971,14 @@ void update_spoil_sell_text() {
 }
 
 void fix_totg_warp_spawn() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr");
 
 	FileTypes::DZXFile dzr;
 	dzr.loadFromFile(path.string());
 
 	std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
 	ChunkEntry* spawn = spawns[9];
-	spawn->data = std::string("\x4C\x69\x6E\x6B\x00\x00\x00\x00\x32\xFF\x20\x1A\x47\xC3\x4F\x5F\x00\x00\x00\x00\xBF\xBE\xBF\x90\x00\x00\x00\x00\x01\x01\xFF\xFF", 0x20);
+	spawn->data = "\x4C\x69\x6E\x6B\x00\x00\x00\x00\x32\xFF\x20\x1A\x47\xC3\x4F\x5F\x00\x00\x00\x00\xBF\xBE\xBF\x90\x00\x00\x00\x00\x01\x01\xFF\xFF"s;
 
 	dzr.writeToFile(path.string());
 }
@@ -2258,7 +2142,7 @@ void fix_ff_door() {
 		}
 
 		ChunkEntry& newSpawn = room_dzr.add_entity("PLYR");
-		newSpawn.data = std::string("Link\x00\x00\x00\x00");
+		newSpawn.data = "Link\x00\x00\x00\x00"s;
 		newSpawn.data.resize(0x20);
 
 		uint32_t params = 0xFFFFFFFF;
@@ -2345,10 +2229,10 @@ void add_shortcut_warps_into_dungeons() {
 	FileTypes::DZXFile dzr;
 	dzr.loadFromFile(path.string());
 	ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
-	sw_c00.data = std::string("SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF", 0x24);
+	sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
 
 	ChunkEntry& warp = dzr.add_entity("SCOB");
-	warp.data = std::string("Ysdls00\x00\x10\xFF\x06\x7F\x48\x54\x16\x86\x42\x0B\xFF\xF8\x48\x3E\xD3\xED\x00\x00\x00\x00\x00\x00\xFF\xFF", 0x20);
+	warp.data = "Ysdls00\x00\x10\xFF\x06\x7F\x48\x54\x16\x86\x42\x0B\xFF\xF8\x48\x3E\xD3\xED\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
 
 	dzr.writeToFile(path.string());
 	return;
@@ -2364,7 +2248,6 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 
 	std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
 
-	Apply_Patch("./asm/patch_diffs/custom_data_diff.json");
 	Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
 	Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json");
 	Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json");
@@ -2379,7 +2262,8 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 	Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json");
 	Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json");
 
-	Remove_Relocation({7, 0x001c0ae8}); //would mess with the custom save_init call
+	Remove_Relocation({7, 0x001c0ae8}); //would mess with save init
+	Remove_Relocation({7, 0x00160224}); //would mess with the chart stuff
 
 	start_at_outset_dock();
 	start_ship_at_outset();
@@ -2388,7 +2272,6 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 	remove_shop_item_forced_uniqueness_bit();
 	remove_ff2_cutscenes();
 	make_items_progressive();
-	add_ganons_tower_warp_to_ff2();
 	add_chest_in_place_medli_gift();
 	add_chest_in_place_queen_fairy_cutscene();
 	add_more_magic_jars();
@@ -2401,8 +2284,6 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 	set_num_starting_triforce_shards(settings.num_starting_triforce_shards);
 	set_starting_health(settings.starting_pohs, settings.starting_hcs);
 	set_damage_multiplier(settings.damage_multiplier);
-	set_pig_color(settings.pigColor);
-	add_pirate_ship_to_windfall(); //doesnt fix getting stuck behind door
 	remove_makar_kidnapping();
 	increase_crawl_speed();
 	add_chart_number_to_item_get_messages();
@@ -2411,8 +2292,6 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 	increase_misc_animations();
 	shorten_auction_intro_event();
 	disable_invisible_walls();
-	add_hint_signs();
-	prevent_door_boulder_softlocks();
 	update_tingle_statue_item_get_funcs();
 	make_tingle_statue_reward_rupee_rainbow_colored();
 	show_seed_hash_on_title_screen(u16_seedHash);
@@ -2429,135 +2308,37 @@ void apply_necessary_tweaks(const Settings& settings, const std::string& seedHas
 	remove_minor_pan_cs();
 	fix_stone_head_bugs();
 	show_tingle_statues_on_quest_screen();
+	//TODO: ctmc chest texture
+
+	update_skip_rematch_bosses_game_variable(settings.skip_rematch_bosses);
+	update_sword_mode_game_variable(settings.sword_mode);
+	update_starting_gear(settings.starting_gear);
 
 	gRPX.writeToFile(rpxPath.string());
 	return;
 }
 
-void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations) {
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations, const PigColor& pigColor) {
+	gRPX = FileTypes::ELF();
 	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
 	gRPX.loadFromFile(rpxPath.string()); //reload to avoid conflicts written between pre- and post- randomization tweaks
 
+	set_pig_color(pigColor);
 	if (randomizeItems) {
-		//placeholders, will change based on logic implementation
-		// 
-		//update_shop_item_descriptions(itemLocations.at("The Great Sea - Beedle's Shop Ship - 20 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item").currentItem);
-		//update_auction_item_names(itemLocations.at("Windfall Island - 5 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 40 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 60 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 80 Rupee Auction").currentItem, itemLocations.at("Windfall Island - 100 Rupee Auction").currentItem);
-		//update_battlesquid_item_names(itemLocations.at("Windfall Island - Battlesquid - First Prize").currentItem, itemLocations.at("Windfall Island - Battlesquid - Second Prize").currentItem);
-		//update_item_names_in_letter_advertising_rock_spire_shop(itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 500 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 950 Rupee Item").currentItem, itemLocations.at("Rock Spire Isle - Beedle's Special Shop Ship - 900 Rupee Item").currentItem);
-		//update_savage_labyrinth_hint_tablet(itemLocations.at("Outset Island - Savage Labyrinth - Floor 30").currentItem, itemLocations.at("Outset Island - Savage Labyrinth - Floor 50").currentItem);
+		update_shop_item_descriptions(itemLocations[locationIdAsIndex(nameToLocationId("GreatSeaBeedleShop20Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle500RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle950RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle900RupeeItem"))]);
+		update_auction_item_names(itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction5Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction40Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction60Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction80Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction100Rupee"))]);
+		update_battlesquid_item_names(itemLocations[locationIdAsIndex(nameToLocationId("WindfallBattleSquidFirstPrize"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallBattleSquidSecondPrize"))]);
+		update_item_names_in_letter_advertising_rock_spire_shop(itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle500RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle950RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle900RupeeItem"))]);
+		update_savage_labyrinth_hint_tablet(itemLocations[locationIdAsIndex(nameToLocationId("OutsetSavageFloor30Chest"))], itemLocations[locationIdAsIndex(nameToLocationId("OutsetSavageFloor50Chest"))]);
 	}
+	//Run some things after writing items to preserve offsets
+	add_ganons_tower_warp_to_ff2();
+	add_pirate_ship_to_windfall(); //doesnt fix getting stuck behind door
+	add_hint_signs();
+	prevent_door_boulder_softlocks();
+	add_shortcut_warps_into_dungeons();
+	add_jabun_obstacles_to_default_layer();
+
 	//dungeon sea quest markers
 	gRPX.writeToFile(rpxPath.string());
-}
-
-#define ENABLE_DEBUG 1
-#define FILL_TESTING 1
-
-//this is just for testing 
-#include "logic/SpoilerLog.hpp"
-#include "logic/Generate.hpp"
-#include "logic/Random.hpp"
-#include "server/filetypes/yaz0.hpp"
-
-int main() {
-
-	//timing stuff
-	//auto start = std::chrono::high_resolution_clock::now();
-	//auto stop = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	//auto duration2 = duration.count();
-
-	BasicLog::getInstance().initLog("testSeed");
-	DebugLog::getInstance().initLog("testSeed");
-
-	Load_Custom_Symbols("./asm/custom_symbols.json");
-
-	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
-	gRPX.loadFromFile(rpxPath.string());
-
-	//Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json");
-	//Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json");
-	//Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json");
-	//Apply_Patch("./asm/patch_diffs/flexible_item_locations_diff.json");
-	//Apply_Patch("./asm/patch_diffs/fix_vanilla_bugs_diff.json");
-	//Apply_Patch("./asm/patch_diffs/misc_rando_features_diff.json");
-	//
-	//Add_Relocations("./asm/patch_diffs/custom_funcs_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/make_game_nonlinear_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/remove_cutscenes_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json");
-	//Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json");
-
-	//show_tingle_statues_on_quest_screen();
-
-	//allow_all_items_to_be_field_items();
-
-	//elfUtil::write_u32(gRPX, {28, 0x00000058}, gRPX.shdr_table[2].second.data.size());
-	//Remove_Relocation({ 7, 0x001c0ae8 }); //would mess with the custom save_init call
-	//start_at_outset_dock();
-	//modify_title_screen();
-	//show_seed_hash_on_title_screen(u"helmarocKing\njun-Roberto");
-
-	//fix_deku_leaf_model();
-	//
-	//add_chest_in_place_queen_fairy_cutscene();
-	//add_chest_in_place_jabun_cutscene();
-	//add_chest_in_place_master_sword();
-	//add_chest_in_place_medli_gift();
-
-	Settings settings;
-	
-	settings.progression_dungeons = true;
-	settings.progression_mail = true;
-	settings.progression_dungeons = true;
-	settings.progression_great_fairies = true;
-	settings.progression_puzzle_secret_caves = true;
-	settings.progression_combat_secret_caves = true;
-	settings.progression_submarines = true;
-	settings.progression_eye_reef_chests = true;
-	settings.progression_big_octos_gunboats = true;
-	settings.progression_triforce_charts = true;
-	settings.progression_treasure_charts = true;
-	settings.progression_expensive_purchases = true;
-	settings.progression_misc = true;
-	settings.progression_tingle_chests = true;
-	settings.progression_battlesquid = true;
-	settings.progression_savage_labyrinth = true;
-	settings.progression_island_puzzles = true;
-	settings.progression_obscure = true;
-	settings.keylunacy = true;
-	settings.randomize_charts = true;
-	settings.race_mode = true;
-	settings.num_race_mode_dungeons = 3;
-
-	int seed = Random(0, 100000);
-
-	int worldCount = 1;
-	WorldPool worlds(worldCount);
-	std::vector<Settings> settingsVector{ settings };
-
-	int retVal = generateWorlds(worlds, settingsVector, seed);
-	
-	//if (retVal == 0)
-	//{
-	//	std::cout << "Generating Spoiler Log" << std::endl;
-	//	//generateSpoilerLog(worlds);
-	//}
-
-	//get world locations with "worlds[playerNum - 1].locationEntries"
-	//assume 1 world for now, modifying multiple copies needs work
-	//for (const Location& location : worlds[0].locationEntries) {
-	//	if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) return 1; //handle err somehow
-	//}
-	//saveRPX();
-
-	//get world with "worlds[playerNum - 1]"
-	//assume 1 world for now, modifying multiple copies needs work
-	//apply_necessary_post_randomization_tweaks(1, worlds[0].locationEntries);
-
-	//gRPX.writeToFile(g_session.openGameFile("code/cking.rpx@RPX").string());
-	//g_session.repackCache();
-	return 0;
 }
