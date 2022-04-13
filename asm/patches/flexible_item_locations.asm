@@ -217,7 +217,7 @@ withered_tree_launched_flag:
 .org 0x02347cb4
 	nop ; dont set flags for object, not created yet
 
-;in place_heart_part
+; in place_heart_part
 .org 0x02347abc
 	bl create_item_for_withered_trees_without_setting_speeds
 .org @NextFreeSpace

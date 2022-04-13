@@ -11,6 +11,8 @@
 
 extern RandoSession g_session;
 
+enum struct DungeonId : uint32_t; //forward declared because of circular include issues
+
 enum struct [[nodiscard]] ModificationError {
     NONE = 0,
     MISSING_KEY = 0,
@@ -43,9 +45,12 @@ public:
 
 class ModifyChest : public LocationModification {
 private:
+    inline static bool isCTMC = false;
+
     std::string filePath;
     std::vector<uint32_t> offsets;
 
+    ModificationError setCTMCType(ACTR& chest, const Item& item);
 public:
     ModifyChest() {}
     ~ModifyChest() override {}
@@ -57,6 +62,7 @@ public:
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
     ModificationError parseArgs(const ryml::NodeRef& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
+    static void setCTMC(const bool& isCTMC_) { isCTMC = isCTMC_; }
 };
 
 class ModifyActor : public LocationModification {

@@ -5,6 +5,7 @@
 using namespace std::literals::string_literals; //spooky namespace in header, not sure of workaround
 
 //color commands from "System" group (00)
+#define TEXT_SIZE(size)             u"\x0E\x00\x02\x02"s + static_cast<char16_t>(size)
 #define TEXT_COLOR_DEFAULT          u"\x0E\x00\x03\x02\xFF\xFF0E\x00\x03\x02\x00"s //resets to color from TSY entry?
 #define TEXT_COLOR_RED              u"\x0E\x00\x03\x02\x01"s
 #define TEXT_COLOR_GREEN            u"\x0E\x00\x03\x02\x02"s

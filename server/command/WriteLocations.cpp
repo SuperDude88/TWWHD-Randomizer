@@ -2,28 +2,31 @@
 
 #include <unordered_map>
 #include <fstream>
-
+#include "../../logic/Dungeon.hpp"
 #include "WWHDStructs.hpp"
 #include "Log.hpp"
 #include "../filetypes/elf.hpp"
 #include "../filetypes/util/elfUtil.hpp"
 #include "../../libs/json.hpp"
+#include "../utility/stringUtil.hpp"
 
 #define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {LOG_ERR_AND_RETURN(err)}
 
+using namespace std::literals::string_literals;
+
 static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_name = {
-    {std::string("Bitem\0\0\0", 8), 0x0000FF00},
-    {std::string("Ritem\0\0\0", 8), 0x000000FF},
-    {std::string("STBox\0\0\0", 8), 0x00000FF0},
-    {std::string("Salvage\0", 8), 0x00000FF0},
-    {std::string("SwSlvg\0\0", 8), 0x00000FF0},
-    {std::string("Salvag2\0", 8), 0x00000FF0},
-    {std::string("SalvagN\0", 8), 0x00000FF0},
-    {std::string("SalvagE\0", 8), 0x00000FF0},
-    {std::string("SalvFM\0\0", 8), 0x00000FF0},
-    {std::string("TagKb\0\0\0", 8), 0x000000FF},
-    {std::string("item\0\0\0\0", 8), 0x000000FF},
-    {std::string("itemFLY\0", 8), 0x000000FF}
+    {"Bitem\0\0\0"s, 0x0000FF00},
+    {"Ritem\0\0\0"s, 0x000000FF},
+    {"STBox\0\0\0"s, 0x00000FF0},
+    {"Salvage\0"s, 0x00000FF0},
+    {"SwSlvg\0\0"s, 0x00000FF0},
+    {"Salvag2\0"s, 0x00000FF0},
+    {"SalvagN\0"s, 0x00000FF0},
+    {"SalvagE\0"s, 0x00000FF0},
+    {"SalvFM\0\0"s, 0x00000FF0},
+    {"TagKb\0\0\0"s, 0x000000FF},
+    {"item\0\0\0\0"s, 0x000000FF},
+    {"itemFLY\0"s, 0x000000FF}
 };
 
 
@@ -114,6 +117,8 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
         file.seekg(offset, std::ios::beg);
         ACTR chest = WWHDStructs::readACTR(file);
 
+        if(isCTMC) LOG_AND_RETURN_IF_ERR(setCTMCType(chest, item))
+
         chest.aux_params_2 &= 0x00FF;
         chest.aux_params_2 |= static_cast<uint16_t>(item.getGameItemId()) << 8;
 
@@ -121,6 +126,19 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
         WWHDStructs::writeACTR(file, chest);
     }
 
+    return ModificationError::NONE;
+}
+
+ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
+    if(!item.isMajorItem()) {
+        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, 0)) // Light wood chests for non-progress items, consumables, and keys for empty dungeons (in race mode)
+        return ModificationError::NONE;
+    }
+    if(!Utility::Str::endsWith(gameItemToName(item.getGameItemId()), "Key")) {
+        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, 2)) // Metal chests for progress items (excluding keys)
+        return ModificationError::NONE;
+    }
+    LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, 1)) // Dark wood chest for Small and Big Keys
     return ModificationError::NONE;
 }
 
@@ -133,7 +151,7 @@ ModificationError ModifyActor::parseArgs(const ryml::NodeRef& locationObject) {
 	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
     for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
     {
-        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        const std::string& offsetStr = std::string(offset.val().data(), offset.val().size());
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
@@ -155,7 +173,7 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
         if (item_id_mask_by_actor_name.count(actor.name) == 0) {
             continue;
         }
-        LOG_IF_ERR_AND_RETURN(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
+        LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 
         file.seekp(offset, std::ios::beg);
         WWHDStructs::writeACTR(file, actor);
@@ -195,7 +213,7 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
         if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
             continue;
         }
-        LOG_ERR_AND_RETURN(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
+        LOG_AND_RETURN_IF_ERR(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
 
         file.seekp(offset, std::ios::beg);
         WWHDStructs::writeSCOB(file, scob);
@@ -307,20 +325,26 @@ ModificationError ModifyBoss::parseArgs(const ryml::NodeRef& locationObject) {
     if(locationObject["Paths"].num_children() != locationObject["Offsets"].num_children()) LOG_ERR_AND_RETURN(ModificationError::MISSING_VALUE)
 
     offsetsWithPath.reserve(locationObject["Paths"].num_children());
+
+    auto cur_path = locationObject["Paths"].first_child();
+    auto cur_offset = locationObject["Offsets"].first_child();
     for (size_t i = 0; i < locationObject["Paths"].num_children(); i++) 
     {
         std::pair<std::string, uint32_t> offset_with_path;
 
-        std::string offsetStr(locationObject["Offsets"][i].val().data(), locationObject["Offsets"].val().size());
+        std::string offsetStr(cur_offset.val().data(), cur_offset.val().size());
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
         if (offsetValue == 0 || offsetValue == ULONG_MAX)
         {
             LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
-        offset_with_path.first = std::string(locationObject["Paths"][i].val().data(), locationObject["Paths"].val().size());
+        offset_with_path.first = std::string(cur_path.val().data(), cur_path.val().size());
         offset_with_path.second = offsetValue;
 
         offsetsWithPath.push_back(offset_with_path);
+
+        cur_path = cur_path.next_sibling();
+        cur_offset = cur_offset.next_sibling();
     }
 
     return ModificationError::NONE;
@@ -343,7 +367,7 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
         file.seekg(offset, std::ios::beg);
         ACTR actor = WWHDStructs::readACTR(file);
 
-        LOG_IF_ERR_AND_RETURN(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
+        LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
 
         file.seekp(offset, std::ios::beg);
         WWHDStructs::writeACTR(file, actor);

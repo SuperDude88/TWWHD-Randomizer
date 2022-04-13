@@ -85,9 +85,9 @@ namespace {
     uint32_t nintendoEnc(const uint8_t* src, uint32_t size, uint32_t pos, uint32_t& matchPosOut, uint32_t searchRange)
     {
         uint32_t numBytes = 1;
-        static uint32_t numBytes1;
-        static uint32_t matchPos;
-        static int prevFlag = 0;
+        static thread_local uint32_t numBytes1;
+        static thread_local uint32_t matchPos;
+        static thread_local int prevFlag = 0;
     
         // if prevFlag is set, it means that the previous position was determined by look-ahead try.
         // so just use it. this is not the best optimization, but nintendo's choice for speed.

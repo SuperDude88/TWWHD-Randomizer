@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.7)
 project(wwhd_rando CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic") # -Weverything isn't great but other flags don't want to work
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ENABLE_DEBUG=1 -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
+add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
 
 if(ENABLE_DEBUG)
   message("Debugging is ON")
@@ -29,7 +30,7 @@ if(WIN32)
 else()
   include(FindPkgConfig)
   pkg_check_modules(ZLIB zlib REQUIRED)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 endif()
 
 if(CMAKE_USE_PTHREADS_INIT)
@@ -37,8 +38,8 @@ if(CMAKE_USE_PTHREADS_INIT)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
 endif()
 
-add_executable(wwhd_rando tweaks.cpp)
-target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp")
+add_executable(wwhd_rando randomizer.cpp)
+target_sources(wwhd_rando PRIVATE "tweaks.cpp" "options.cpp")
 add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")

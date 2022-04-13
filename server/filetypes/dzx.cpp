@@ -2,6 +2,7 @@
 
 
 #include <cstring>
+#include <cstdio>
 
 #include "../utility/endian.hpp"
 #include "../utility/common.hpp"
@@ -17,7 +18,8 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	file.seekg(offset, std::ios::beg);
 
 	this->offset = offset;
-	if (!file.read(type, 4)) {
+	type.resize(4);
+	if (!file.read(&type[0], 4)) {
 		return DZXError::REACHED_EOF;
 	}
 	if (!file.read(reinterpret_cast<char*>(&num_entries), 4)) {
@@ -29,38 +31,38 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	Utility::Endian::toPlatform_inplace(eType::Big, num_entries);
 	Utility::Endian::toPlatform_inplace(eType::Big, first_entry_offset);
 	
-	if (std::strncmp("TRE", type, 3) == 0) {
+	if (std::strncmp("TRE", &type[0], 3) == 0) {
 		char layer_char = type[3];
-		layer = 0xFF;
+		layer = DEFAULT_LAYER;
 		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
 		else if (layer_char != 'S') { //Should always be 'S' if it is not a unique layer char
 			return DZXError::UNKNOWN_LAYER_CHAR;
 		}
-		memcpy(type, "TRES", 4);
+		type = "TRES";
 	}
-	else if (std::strncmp("ACT", type, 3) == 0) {
+	else if (std::strncmp("ACT", &type[0], 3) == 0) {
 		char layer_char = type[3];
-		layer = 0xFF;
+		layer = DEFAULT_LAYER;
 		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
 		else if (layer_char != 'R') { //Should always be 'R' if it is not a unique layer char
 			return DZXError::UNKNOWN_LAYER_CHAR;
 		}
-		memcpy(type, "ACTR", 4);
+		type = "ACTR";
 	}
-	else if (std::strncmp("SCO", type, 3) == 0) {
+	else if (std::strncmp("SCO", &type[0], 3) == 0) {
 		char layer_char = type[3];
-		layer = 0xFF;
+		layer = DEFAULT_LAYER;
 		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
 		else if (layer_char != 'B') { //Should always be 'B' if it is not a unique layer char
 			return DZXError::UNKNOWN_LAYER_CHAR;
 		}
-		memcpy(type, "SCOB", 4);
+		type = "SCOB";
 	}
 
 	if (size_by_type.count(type) == 0) {
@@ -69,7 +71,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	entry_size = size_by_type.at(type);
 
 	file.seekg(first_entry_offset, std::ios::beg);
-	if (std::strncmp("RTBL", type, 4) == 0) { //RTBL has dynamic length based on the number of rooms, needs a special case
+	if (std::strncmp("RTBL", &type[0], 4) == 0) { //RTBL has dynamic length based on the number of rooms, needs a special case
 		for (unsigned int entry_index = 0; entry_index < num_entries; entry_index++) {
 			ChunkEntry entry;
 			file.seekg(entry_index * 0x4 + first_entry_offset, std::ios::beg);
@@ -118,6 +120,11 @@ DZXError Chunk::save_changes(std::ostream& out) {
 		return DZXError::CHUNK_NO_ENTRIES;
 	}
 
+	if(layer != DEFAULT_LAYER) {
+		char buf[2];
+		std::snprintf(buf, 2, "%x", layer);
+		type[3] = buf[0];
+	}
 	out.write(&type[0], 4);
 	const auto num_entries_byteswap = Utility::Endian::toPlatform(eType::Big, num_entries); //Need to use num_entries later, can't byteswap inplace
 	out.write(reinterpret_cast<const char*>(&num_entries_byteswap), 4);
@@ -199,7 +206,7 @@ namespace FileTypes {
 		return loadFromBinary(file);
 	}
 
-	std::vector<ChunkEntry*> DZXFile::entries_by_type(const std::string chunk_type) {
+	std::vector<ChunkEntry*> DZXFile::entries_by_type(const std::string& chunk_type) {
 		std::vector<ChunkEntry*> entries;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type) {
@@ -211,7 +218,7 @@ namespace FileTypes {
 		return entries;
 	}
 
-	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string chunk_type, const unsigned int layer) {
+	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string& chunk_type, const unsigned int layer) {
 		std::vector<ChunkEntry*> entries;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {
@@ -223,7 +230,7 @@ namespace FileTypes {
 		return entries;
 	}
 
-	ChunkEntry& DZXFile::add_entity(const char chunk_type[4], const unsigned int layer) {
+	ChunkEntry& DZXFile::add_entity(const std::string& chunk_type, const unsigned int layer) {
 		ChunkEntry entity;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {
@@ -234,7 +241,7 @@ namespace FileTypes {
 
 		//if chunk does not already exist
 		Chunk chunk;
-		memcpy(chunk.type, chunk_type, 4);
+		chunk.type = chunk_type;
 		chunk.layer = layer;
 		chunk.entry_size = size_by_type.at(chunk_type);
 		chunk.entries.push_back(entity);
@@ -283,7 +290,7 @@ namespace FileTypes {
 			if (chunk.entries.size() == 0) {
 				return DZXError::CHUNK_NO_ENTRIES;
 			}
-			if (std::strncmp("RTBL", chunk.type, 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently
+			if (std::strncmp("RTBL", &chunk.type[0], 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently
 				unsigned int rooms_offset = chunk.first_entry_offset + chunk.entries.size() * 0xC;
 				for (unsigned int entry_index = 0; entry_index < chunk.entries.size(); entry_index++) {
 					ChunkEntry& entry = chunk.entries[entry_index];

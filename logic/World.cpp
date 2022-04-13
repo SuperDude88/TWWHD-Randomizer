@@ -607,21 +607,30 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     switch(modificationType) {
         case LocationModificationType::Chest:
             newEntry.method = std::make_unique<ModifyChest>();
+            break;
         case LocationModificationType::Actor:
             newEntry.method = std::make_unique<ModifyActor>();
+            break;
         case LocationModificationType::SCOB:
             newEntry.method = std::make_unique<ModifySCOB>();
+            break;
         case LocationModificationType::Event:
             newEntry.method = std::make_unique<ModifyEvent>();
+            break;
         case LocationModificationType::RPX:
             newEntry.method = std::make_unique<ModifyRPX>();
+            break;
         case LocationModificationType::Custom_Symbol:
             newEntry.method = std::make_unique<ModifySymbol>();
+            break;
         case LocationModificationType::Boss:
             newEntry.method = std::make_unique<ModifyBoss>();
+            break;
         default:
             newEntry.method = std::make_unique<LocationModification>();
+            break;
     }
+
     if(ModificationError err = newEntry.method->parseArgs(locationObject); err != ModificationError::NONE) {
         switch(err) {
             case ModificationError::MISSING_KEY:
@@ -650,7 +659,8 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
     ITEM_VALID_CHECK(
         newEntry.originalItem.getGameItemId(),
         "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
-    );
+    )
+
     return WorldLoadingError::NONE;
 }
 

@@ -2769,7 +2769,7 @@
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path:
+  Paths:
   - code/cking.rpx@RPX
   - content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Boss
@@ -2913,7 +2913,7 @@
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path:
+  Paths:
   - code/cking.rpx@RPX
   - content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Type: Boss
@@ -3099,10 +3099,10 @@
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path:
+  Paths:
   - code/cking.rpx@RPX
   - content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
-  Type: Actor
+  Type: Boss
   Offsets:
   - 0x020DADDE
   - 0x000000C0
@@ -3243,10 +3243,10 @@
   OriginalItem: HeartContainer
   Category:
   - Dungeon
-  Path:
+  Paths:
   - code/cking.rpx@RPX
   - content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
-  Type: Actor
+  Type: Boss
   Offsets:
   - 0x021031E6
   - 0x00000114

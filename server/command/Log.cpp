@@ -2,7 +2,9 @@
 
 
 
-BasicLog::BasicLog() {}
+BasicLog::BasicLog() {
+    output.open("Non-Spoiler Log.txt");
+}
 
 BasicLog::~BasicLog() {}
 
@@ -11,13 +13,9 @@ BasicLog& BasicLog::getInstance() {
     return s_Instance;
 }
 
-bool BasicLog::initLog(const std::string &seed) {
-    if(!output.is_open()) {
-        output.open("TWWHDR-" + seed + " (Non-Spoiler Log).txt");
-        return output.is_open();
-    }
-
-    return true;
+void BasicLog::logBasicInfo(const std::string &seed) {
+    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    output << "Seed: " << seed << std::endl;
 }
 
 void BasicLog::log(const std::string& msg) {
@@ -26,7 +24,9 @@ void BasicLog::log(const std::string& msg) {
 
 
 
-DebugLog::DebugLog() {}
+DebugLog::DebugLog() {
+    output.open("Debug Log.txt");
+}
 
 DebugLog::~DebugLog() {}
 
@@ -35,13 +35,9 @@ DebugLog& DebugLog::getInstance() {
     return s_Instance;
 }
 
-bool DebugLog::initLog(const std::string &seed) {
-    if(!output.is_open()) {
-        output.open("TWWHDR-" + seed + " (Debug Log).txt");
-        return output.is_open();
-    }
-
-    return true;
+void DebugLog::logBasicInfo(const std::string &seed) {
+    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    output << "Seed: " << seed << std::endl;
 }
 
 void DebugLog::log(const std::string& msg) {

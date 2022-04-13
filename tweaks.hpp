@@ -67,15 +67,15 @@ void remove_bog_warp_in_cs();
 
 void fix_shop_item_y_offsets();
 
-void update_shop_item_descriptions(const GameItem& beedle20Item, const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item);
+void update_shop_item_descriptions(const Location& beedle20, const Location& beedle500, const Location& beedle950, const Location& beedle900);
 
-void update_auction_item_names(const GameItem& auction5, const GameItem& auction40, const GameItem& auction60, const GameItem& auction80, const GameItem& auction100);
+void update_auction_item_names(const Location& auction5, const Location& auction40, const Location& auction60, const Location& auction80, const Location& auction100);
 
-void update_battlesquid_item_names(const GameItem& firstPrize, const GameItem& secondPrize);
+void update_battlesquid_item_names(const Location& firstPrize_, const Location& secondPrize_);
 
-void update_item_names_in_letter_advertising_rock_spire_shop(const GameItem& beedle500Item, const GameItem& beedle950Item, const GameItem& beedle900Item);
+void update_item_names_in_letter_advertising_rock_spire_shop(const Location& beedle500, const Location& beedle950, const Location& beedle900);
 
-void update_savage_labyrinth_hint_tablet(const GameItem& floor30, const GameItem& floor50);
+void update_savage_labyrinth_hint_tablet(const Location& floor30, const Location& floor50);
 
 //hints
 
@@ -91,7 +91,7 @@ void give_double_magic();
 
 void set_damage_multiplier(float multiplier);
 
-void set_pig_color(const PigColor color);
+void set_pig_color(const PigColor& color);
 
 void add_pirate_ship_to_windfall();
 
@@ -167,5 +167,5 @@ void show_tingle_statues_on_quest_screen();
 
 void apply_necessary_tweaks(const Settings& settings, const std::string& seedHash);
 
-void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations);
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations, const PigColor& pigColor);
 
