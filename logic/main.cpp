@@ -1,129 +1,130 @@
 
-#include "LocationManager.hpp"
-#include "../libs/json.hpp"
+#include "Generate.hpp"
+#include "Random.hpp"
+#include "Debug.hpp"
+#include "SpoilerLog.hpp"
 #include <string>
-#include <unordered_set>
-#include <unordered_map>
 #include <fstream>
 #include <iostream>
 
-constexpr const char* macro = R"~({
-    "Name": "Can Buy Bait",
-    "Expression": {
-        "type": "has_item", "args": ["Nothing"]
-    }
-})~";
-
-constexpr const char* req = R"~({
-    "type": "and", "args": [{"type": "has_item", "args": ["BalladOfGales"]}, {"type": "has_item", "args":["WindWaker"]}, {"type": "macro", "args": ["Can Play WR"]}]
-    })~";
-
-constexpr const char* locationStr = R"~({
-    "Name": "OutsetDigBlackSoil",
-    "OriginalItem": "PieceOfHeart",
-    "Category": [
-        "IslandPuzzle"
-    ],
-    "Needs": {
-        "type": "and",
-        "args": [
-            {
-                "type": "macro",
-                "args": [
-                    "Can Buy Bait"
-                ]
-            },
-            {
-                "type": "has_item",
-                "args": [
-                    "BaitBag"
-                ]
-            },
-            {
-                "type": "has_item",
-                "args": [
-                    "PowerBracelets"
-                ]
-            }
-        ]
-    },
-    "Path": "szs_permanent2/sea_Room44.zs",
-    "Type": "SCOB",
-    "Offsets": [
-        "0x84CBD4"
-    ]
-})~";
-
-
 int main()
 {
+    // Important variables, do not erase
     int kwando = 1313;
     const char* citri = "gamer";
     std::vector<uint8_t> nat = {4, 2, 0};
+    // End of important variables
 
-    using json = nlohmann::json;
+    int seed = Random(0, 10000000);
 
-    std::ifstream macroFile("../Macros.json");
-    if (!macroFile.is_open())
+    #ifdef ENABLE_DEBUG
+        std::cout << "Debugging is ON" << std::endl;
+        openDebugLog(std::to_string(seed));
+    #endif
+
+    std::cout << "Using seed " << std::to_string(seed) << std::endl;
+
+    Settings settings1;
+    Settings settings2;
+
+    // Set settings in code for now
+    settings1.progression_dungeons = true;
+    settings1.progression_great_fairies = true;
+    settings1.progression_puzzle_secret_caves = true;
+    settings1.progression_combat_secret_caves = true;
+    settings1.progression_short_sidequests = true;
+    settings1.progression_long_sidequests = true;
+    settings1.progression_spoils_trading = true;
+    settings1.progression_minigames = true;
+    settings1.progression_free_gifts = true;
+    settings1.progression_mail = true;
+    settings1.progression_platforms_rafts = true;
+    settings1.progression_submarines = true;
+    settings1.progression_eye_reef_chests = true;
+    settings1.progression_big_octos_gunboats = true;
+    settings1.progression_triforce_charts = true;
+    settings1.progression_treasure_charts = true;
+    settings1.progression_expensive_purchases = true;
+    settings1.progression_misc = true;
+    settings1.progression_tingle_chests = true;
+    settings1.progression_battlesquid = true;
+    settings1.progression_savage_labyrinth = true;
+    settings1.progression_island_puzzles = true;
+    settings1.progression_obscure = true;
+    settings1.keylunacy = true;
+    settings1.randomize_charts = true;
+    settings1.randomize_starting_island = true;
+    settings1.randomize_dungeon_entrances = true;
+    settings1.randomize_cave_entrances = true;
+    settings1.randomize_door_entrances = true;
+    settings1.randomize_misc_entrances = true;
+    settings1.mix_entrance_pools = true;
+    settings1.decouple_entrances = false;
+    settings1.race_mode = true;
+    settings1.num_race_mode_dungeons = 6;
+
+    settings2.progression_dungeons = true;
+    settings2.mix_entrance_pools = true;
+    settings2.randomize_misc_entrances = true;
+    settings2.randomize_door_entrances = true;
+    settings2.randomize_cave_entrances = true;
+    settings2.randomize_dungeon_entrances = true;
+    settings2.randomize_starting_island = true;
+    settings2.randomize_charts = true;
+    settings2.progression_mail = true;
+    settings2.progression_dungeons = true;
+    settings2.progression_great_fairies = true;
+    settings2.progression_puzzle_secret_caves = true;
+    settings2.progression_combat_secret_caves = true;
+    settings2.progression_short_sidequests = true;
+    settings2.progression_long_sidequests = true;
+    settings2.progression_spoils_trading = true;
+    settings2.progression_minigames = true;
+    settings2.progression_free_gifts = true;
+    settings2.progression_platforms_rafts = true;
+    settings2.progression_submarines = true;
+    settings2.progression_eye_reef_chests = true;
+    settings2.progression_big_octos_gunboats = true;
+    settings2.progression_triforce_charts = true;
+    settings2.keylunacy = false;
+    settings2.randomize_charts = true;
+    settings2.race_mode = true;
+    settings2.num_race_mode_dungeons = 5;
+    settings2.randomize_starting_island = true;
+    // End of in code settings
+
+    // Create all necessary worlds (for any potential multiworld support in the future)
+    int worldCount = 1;
+    WorldPool worlds;
+    worlds.resize(worldCount);
+    std::vector<Settings> settingsVector {settings1, settings2, settings1, settings2, settings1, settings2, settings1, settings2, settings1, settings2, settings1};
+
+    int retVal = generateWorlds(worlds, settingsVector, seed);
+
+    debugLog("All entrances to be shuffled:");
+    auto entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
+    for (auto entrance : entrances)
     {
-        std::cout << "unable to open macro file" << std::endl;
-        return 1;
-    }
-    std::ifstream locationsFile("../locations.json");
-    if (!locationsFile.is_open())
-    {
-        std::cout << "Unable to open Locations file" << std::endl;
+        auto fileStage = entrance->getFilepathStage();
+        auto fileRoom = std::to_string(entrance->getFilepathRoomNum());
+        auto sclsExitIndex = entrance->getSclsExitIndex();
+
+        auto replacementStage = entrance->getReplaces()->getStageName();
+        auto replacementRoom = entrance->getReplaces()->getRoomNum();
+        auto replacementSpawn = entrance->getReplaces()->getSpawnId();
+
+        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+        debugLog("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
+        debugLog("\tStage: \"" + replacementStage + "\"");
+        debugLog("\tRoom: " + std::to_string(replacementRoom));
+        debugLog("\tSpawn: " + std::to_string(replacementSpawn));
+
     }
 
-    json req_j = json::parse(req, nullptr, false);
-    json loc_j = json::parse(locationsFile, nullptr, false);
-    auto macroFileObj = json::parse(macroFile, nullptr, false);
-    if (macroFileObj.is_discarded())
+    if (retVal == 0)
     {
-        std::cout << "unable to parse macros from file" << std::endl;
-        return 1;
+        std::cout << "Generating Spoiler Log" << std::endl;
+        generateSpoilerLog(worlds);
+        generateNonSpoilerLog(worlds);
     }
-
-    LocationManager manager{};
-    auto err = manager.loadMacros(macroFileObj["Macros"].get<std::vector<json>>());
-    if (err != LocationManager::LocationError::NONE)
-    {
-        std::cout << "Got error loading macros: " << LocationManager::errorToName(err) << std::endl;
-        std::cout << manager.getLastErrorDetails() << std::endl;
-        return 1;
-    }
-    if (!loc_j.contains("Locations"))
-    {
-        std::cout << "Improperly formatted locations file" << std::endl;
-        return 1;
-    }
-    for (const auto& location : loc_j.at("Locations"))
-    {
-        Location locOut;
-        err = manager.loadLocation(location, locOut);
-        if (err != LocationManager::LocationError::NONE)
-        {
-            std::cout << "Got error loading location: " << LocationManager::errorToName(err) << std::endl;
-            std::cout << manager.getLastErrorDetails() << std::endl;
-            return 1;
-        }
-    }
-
-    LocationManager::Settings settings;
-    LocationManager::ItemSet items;
-
-    // add all the items with max count; make a function in one of the modules later?
-    for (uint32_t idx = 0; idx < LocationManager::LOCATION_COUNT; idx++)
-    {
-        GameItem toAdd = indexToGameItem(idx);
-        int countToAdd = maxItemCount(toAdd);
-        for (int count = 0; count < countToAdd; count++)
-        {
-            items.insert(toAdd);
-        }
-    }
-
-    manager.assumedFill(items, settings);
-
-    return 0;
 }

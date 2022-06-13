@@ -6,18 +6,18 @@
 #include <unordered_set>
 #include "GameItem.hpp"
 
-enum struct Location : uint32_t
+enum struct LocationId : uint32_t
 {
     INVALID = 0,
-    OutsetUnderLinksHouse,
-    OutsetMesaHouseChest,
+    OutsetUnderLinksHouseChest,
+    OutsetMesasHouseChest,
     OutsetOrca10KnightsCrest,
     OutsetOrca500Hits,
     OutsetGreatFairy,
-    OusetJabunsCave,
+    OutsetJabunsCaveChest,
     OutsetDigBlackSoil,
-    OusetSavageFloor30,
-    OusetSavageFloor50,
+    OutsetSavageFloor30Chest,
+    OutsetSavageFloor50Chest,
     WindfallTingleFirstGift,
     WindfallTingleSecondGift,
     WindfallJailMazeChest,
@@ -31,7 +31,7 @@ enum struct Location : uint32_t
     WindfallLenzoHouseLeftChest,
     WindfallLenzoHouseRightChest,
     WindfallLenzoBecomeAssistant,
-    WindfalLenzoBringFirefly,
+    WindfallLenzoBringFirefly,
     WindfallHouseOfWealthChest,
     WindfallMaggiesFatherGive20SkullNecklace,
     WindfallMaggieFreeItem,
@@ -40,7 +40,7 @@ enum struct Location : uint32_t
     WindfallKreebLightLighthouse,
     WindfallTransparentChest,
     WindfallTottTeachRhythm,
-    WindfallPirateShip,
+    WindfallPirateShipChest,
     WindfallAuction5Rupee,
     WindfallAuction40Rupee,
     WindfallAuction60Rupee,
@@ -53,9 +53,9 @@ enum struct Location : uint32_t
     WindfallKaneDecorateSixFlags,
     WindfallKaneDecorateSixIdols,
     WindfallMilaCatchThief,
-    WindfallSplooshFirstPrize,
-    WindfallSplooshSecondPrize,
-    WindfallSplooshUnder20Prize,
+    WindfallBattleSquidFirstPrize,
+    WindfallBattleSquidSecondPrize,
+    WindfallBattleSquidUnder20Prize,
     WindfallDampaPigMinigame,
     WindfallPompieVeraPictoSecretMeeting,
     WindfallKamoPictoFullMoon,
@@ -66,15 +66,15 @@ enum struct Location : uint32_t
     DragonRoostIslandBoulderChest,
     DragonRoostIslandLeafPlatforms,
     DragonRoostIslandBaitoMailgame,
-    DragonRoostIslandSecretCave,
-    DragonRoostCavernFirstRoom,
+    DragonRoostIslandCaveChest,
+    DragonRoostCavernFirstRoomChest,
     DragonRoostCavernWaterJugAlcove,
     DragonRoostCavernBoardedUpChest,
     DragonRoostCavernSwingAcrossLavaChest,
-    DragonRoostCavernRatRoom,
+    DragonRoostCavernRatRoomChest,
     DragonRoostCavernRatRoomBoardedUpChest,
     DragonRoostCavernBirdsNest,
-    DragonRoostCavernDarkRoom,
+    DragonRoostCavernDarkRoomChest,
     DragonRoostCavernHubRoomTingleChest,
     DragonRoostCavernPotRoomChest,
     DragonRoostCavernMiniBoss,
@@ -86,25 +86,25 @@ enum struct Location : uint32_t
     DragonRoostCavernGohmaHeartContainer,
     ForestHavenOnTreeBranch,
     ForestHavenSmallIslandChest,
-    ForbiddenWoodsFirstRoom,
+    ForbiddenWoodsFirstRoomChest,
     ForbiddenWoodsInsideHollowTree,
     ForbiddenWoodsBokoBabaClimb,
-    ForbiddenWoodsHoleInTree,
+    ForbiddenWoodsHoleInTreeChest,
     ForbiddenWoodsMorthPit,
     ForbiddenWoodsVineMazeLeftChest,
     ForbiddenWoodsVineMazeRightChest,
-    ForbiddenWoodsTallRoom,
+    ForbiddenWoodsTallRoomChest,
     ForbiddenWoodsMothulaMiniBoss,
-    ForbiddenWoodsByHangingVines,
+    ForbiddenWoodsByHangingSeedsChest,
     ForbiddenWoodsChestAcrossHangingFlower,
     ForbiddenWoodsTingleStatueChest,
     ForbiddenWoodsLockedTreeTrunkChest,
     ForbiddenWoodsBigKeyChest,
-    ForbiddenWoodsDoubleMothulaRoom,
+    ForbiddenWoodsDoubleMothulaRoomChest,
     ForbiddenWoodsKalleDemosHeartContainer,
     GreatfishHiddenChest,
     TOTGChestBehindBombableWall,
-    TOTGHopAcrossFloatingBoxes,
+    TOTGHopAcrossFloatingBoxesChest,
     TOTGLightTwoTorches,
     TOTGSkullRoomChest,
     TOTGShootEyeAboveSkulls,
@@ -117,14 +117,14 @@ enum struct Location : uint32_t
     TOTGFloatingPlatformsRoomUpperChest,
     TOTGBigKeyChest,
     TOTGGohdanHeartContainer,
-    HyruleMasterSwordChamber,
+    HyruleCastleSwordChamberChest,
     ForsakenFortressPhantomGanon,
     ForsakenFortressChestOutsideUpperJailCell,
     ForsakenFortressChestInsideLowerJailCell,
     ForsakenFortressBokoblinGuardedChest,
     ForsakenFortressChestOnBed,
     ForsakenFortressHelmarocKingHeartContainer,
-    MotherAndChildInsideMotherIsle,
+    MotherAndChildInsideMotherIsleChest,
     FireMountainInteriorChest,
     FireMountainLookoutPlatformChest,
     FireMountainLookoutPlatformDestroyCannons,
@@ -133,7 +133,7 @@ enum struct Location : uint32_t
     IceRingInteriorChest,
     IceRingInnerCaveChest,
     HeadstoneTopOfIsland,
-    HeadstoneSubmarine,
+    HeadstoneIslandSubmarineChest,
     EarthTempleWarpPotRoomChest,
     EarthTempleBehindDestructableWall,
     EarthTempleWarpPotRoomBehindCurtain,
@@ -147,9 +147,9 @@ enum struct Location : uint32_t
     EarthTempleKillAllFloormastersChest,
     EarthTempleNearHammerButtonBehindCurtain,
     EarthTempleThirdCryptChest,
-    EarthTempleMirrorPuzzleRoomRightChest,
-    EarthTempleMirrorPuzzleRoomLeftChest,
-    EarthTempleStalfosCryptRoom,
+    EarthTempleManyMirrorsRoomRightChest,
+    EarthTempleManyMirrorsRoomLeftChest,
+    EarthTempleStalfosCryptRoomChest,
     EarthTempleBigKeyChest,
     EarthTempleJalhallaHeartContainer,
     WindTempleBetweenDirtPatchesChest,
@@ -167,6 +167,7 @@ enum struct Location : uint32_t
     WindTempleKillAllBasmentRoomEnemies,
     WindTempleMolgeraHeartContainer,
     GanonsTowerMazeChest,
+    DefeatGanondorf,
     MailboxHoskitGirlfriendLetter,
     MailboxBaitoMotherLetter,
     MailboxBaitoLetter,
@@ -184,7 +185,7 @@ enum struct Location : uint32_t
     GreatSeaCyclos,
     GreatSeaGoronTradingReward,
     GreatSeaWitheredTrees,
-    GreatSeaGhostShip,
+    GhostShipChest,
     PrivateOasisTopOfWaterfallChest,
     PrivateOasisCabanaLabyrinthLowerFloorChest,
     PrivateOasisCabanaLabyrinthUpperFloorChest,
@@ -192,46 +193,46 @@ enum struct Location : uint32_t
     SpectacleBarrelShootingFirstPrize,
     SpectacleBarrelShootingSecondPrize,
     NeedleRockChest,
-    NeedleRockCave,
+    NeedleRockCaveChest,
     NeedleRockGoldenGunboat,
-    AngularPeak,
-    AngularCave,
-    BoatingCourseRaft,
-    BoatingCourseCave,
-    StoneWatcherCave,
+    AngularIslesPeak,
+    AngularIslesCaveChest,
+    BoatingCourseRaftChest,
+    BoatingCourseCaveChest,
+    StoneWatcherCaveChest,
     StoneWatcherLookoutPlatformChest,
     StoneWatcherLookoutPlatformDestroyCannons,
     IsletOfSteelInteriorChest,
     IsletOfSteelLookoutPlatformDefeatEnemies,
-    OverlookCave,
-    BirdsPeakRockCave,
+    OverlookCaveChest,
+    BirdsPeakRockCaveChest,
     PawprintChuchuCaveChest,
     PawprintChuchuCaveBehindLeftBoulder,
     PawprintChuchuCaveBehindRightBoulder,
     PawprintChuchuCaveScaleWall,
-    PawprintWizzrobeCave,
+    PawprintWizzrobeCaveChest,
     PawprintLookoutPlatformDefeatEnemies,
     ThornedFairyGreatFairy,
     ThornedFairyNortheasternLookoutPlatformDestroyCannons,
     ThornedFairySouthwesternLookoutPlatformDefeatEnemies,
-    EasternFairyGreayFairy,
+    EasternFairyGreatFairy,
     EasternFairyLookoutPlatformDefeatCannonsAndEnemies,
     WesternFairyGreatFairy,
-    WesternFairyLookoutPlatform,
+    WesternFairyLookoutPlatformChest,
     SouthernFairyGreatFairy,
     SouthernFairyLookoutPlatformDestroyNorthwestCannons,
     SouthernFairyLookoutPlatformDestroySoutheastCannons,
     NorthernFairyIslandGreatFairy,
-    NorthernFairyIslandSubmarine,
+    NorthernFairyIslandSubmarineChest,
     TingleIslandAnkleAllStatuesReward,
     TingleIslandBigOcto,
     DiamondSteppeWarpMazeFirstChest,
     DiamondSteppeWarpMazeSecondChest,
     DiamondSteppeBigOcto,
-    BombIslandCave,
+    BombIslandCaveChest,
     BombIslandLookoutPlatformDefeatEnemies,
-    BombIslandSubmarine,
-    RockSpireCave,
+    BombIslandSubmarineChest,
+    RockSpireCaveChest,
     RockSpireBeedle500RupeeItem,
     RockSpireBeedle950RupeeItem,
     RockSpireBeedle900RupeeItem,
@@ -239,24 +240,24 @@ enum struct Location : uint32_t
     RockSpireEasternLookoutPlatformDestroyCannons,
     RockSpireCenterLookoutPlatformChest,
     RockSpireSoutheastGunboat,
-    SharkCave,
-    CliffPlateauCave,
-    CliffPlateauHighestIsle,
+    SharkIslandCaveChest,
+    CliffPlateauCaveChest,
+    CliffPlateauHighestIsleChest,
     CliffPlateauLookoutPlatformChest,
     CrescentMoonChest,
-    CrescentMoonSubmarine,
-    HorshoePlayGolf,
-    HorshoeCave,
-    HorshoeNorthwesternLookoutPlatformChest,
-    HorshoeSoutheasternLookoutPlatformChest,
+    CrescentMoonSubmarineChest,
+    HorseshoePlayGolf,
+    HorseshoeCaveChest,
+    HorseshoeNorthwesternLookoutPlatformChest,
+    HorseshoeSoutheasternLookoutPlatformChest,
     FlightControlBirdManFirstPrize,
-    FlightControlSubmarine,
-    StarCave,
-    StarLookoutPlatformChest,
+    FlightControlSubmarineChest,
+    StarIslandCaveChest,
+    StarIslandLookoutPlatformChest,
     StarBeltLookoutPlatformChest,
     FiveStarLookoutPlatformDestroyCannons,
     FiveStarRaftChest,
-    FiveStarSubmarine,
+    FiveStarSubmarineChest,
     SevenStarCenterLookoutPlatformChest,
     SevenStarNorthernLookoutPlatformChest,
     SevenStarSouthernLookoutPlatformDefeatWizzrobes,
@@ -264,7 +265,7 @@ enum struct Location : uint32_t
     CyclopsReefDestroyCannonsAndGunboats,
     CyclopsReefLookoutPlatformDefeatEnemies,
     TwoEyeReefDestroyCannonsAndGunboats,
-    TwoEyeReefLookoutPlatform,
+    TwoEyeReefLookoutPlatformChest,
     TwoEyeReefBigOctoGreatFairy,
     ThreeEyeReefDestroyCannonsAndGunboats,
     FourEyeReefDestroyCannonsAndGunboats,
@@ -272,7 +273,8 @@ enum struct Location : uint32_t
     FiveEyeReefLookoutPlatformChest,
     SixEyeReefDestroyCannonsAndGunboats,
     SixEyeReefLookoutPlatformDestroyCannons,
-    SixEyeReefSubmarine,
+    SixEyeReefSubmarineChest,
+    // Don't change the ordering of the sunken treasure locations
     ForsakenFortressSunkenTreasure,
     StarIslandSunkenTreasure,
     NorthernFairySunkenTreasure,
@@ -310,12 +312,12 @@ enum struct Location : uint32_t
     BirdsPeakSunkenTreasure,
     DiamondSteppeSunkenTreasure,
     FiveEyeReefSunkenTreasure,
-    SharkSunkenTreasure,
+    SharkIslandSunkenTreasure,
     SouthernFairySunkenTreasure,
     IceRingSunkenTreasure,
     ForestHavenSunkenTreasure,
     CliffPlateauSunkenTreasure,
-    HorshoeSunkenTreasure,
+    HorseshoeSunkenTreasure,
     OutsetSunkenTreasure,
     HeadstoneSunkenTreasure,
     TwoEyeReefSunkenTreasure,
@@ -324,6 +326,8 @@ enum struct Location : uint32_t
     FiveStarSunkenTreasure,
     COUNT
 };
+
+#define LOCATION_COUNT static_cast<std::underlying_type_t<LocationId>>(LocationId::COUNT)
 
 // move this and mod type into location entry or own file?
 enum struct LocationCategory
@@ -338,17 +342,23 @@ enum struct LocationCategory
     SavageLabyrinth,
     FreeGift,
     Minigame,
+    BattleSquid,
     TingleChest,
     PuzzleSecretCave,
     CombatSecretCave,
     Platform,
     Raft,
+    EyeReefChests,
     BigOcto,
     Submarine,
+    Gunboat,
     LongSideQuest,
     ShortSideQuest,
     ExpensivePurchase,
-    Obscure // <-- the good stuff :)
+    SunkenTreasure,
+    Obscure, // <-- the good stuff :)
+    Junk,
+    Other,
 };
 
 enum struct LocationModificationType
@@ -356,10 +366,12 @@ enum struct LocationModificationType
     INVALID = 0,
     Chest,
     Actor,
+    Boss,
     SCOB,
-    Assembly,
     Event,
-    REL
+    RPX,
+    Custom_Symbol,
+    DoNothing,
 };
 
 struct LocationModificationMethod
@@ -369,6 +381,31 @@ struct LocationModificationMethod
     std::vector<uint32_t> offsets;
 };
 
-Location nameToLocation(const std::string& name);
+LocationId nameToLocationId(const std::string& name);
+std::string locationIdToName(LocationId location);
+void storeNewLocationPrettyName(const LocationId& lcoationId, const std::string& prettyName);
+std::string locationIdToPrettyName(const LocationId& locationId);
 LocationCategory nameToLocationCategory(const std::string& name);
 LocationModificationType nameToModificationType(const std::string& name);
+uint32_t locationIdAsIndex(LocationId loc);
+LocationId indexAsLocationId(uint32_t index);
+
+struct Location
+{
+    LocationId locationId = LocationId::INVALID;
+    std::unordered_set<LocationCategory> categories = {LocationCategory::INVALID};
+    bool progression = false;
+    Item originalItem = {GameItem::INVALID, -1};
+    Item currentItem = {GameItem::INVALID, -1};
+    LocationModificationMethod method;
+    int worldId = -1;
+
+    // Variables used for the searching algorithm
+    bool hasBeenFound = false;
+
+    bool operator<(const Location& rhs) const;
+};
+
+
+
+std::string locationName(const Location* location);

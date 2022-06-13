@@ -1,11 +1,24 @@
 #include "options.hpp"
 
+SwordMode nameToSwordMode(const std::string& name) {
+    static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
+        {"StartWithSword", SwordMode::StartWithSword},
+        {"RandomSword", SwordMode::RandomSword},
+        {"NoSword", SwordMode::NoSword},
+    };
 
+    if (nameSwordModeMap.count(name) == 0)
+    {
+        return SwordMode::INVALID;
+    }
+
+    return nameSwordModeMap.at(name);
+}
 
 Option nameToSetting(const std::string& name) {
     static std::unordered_map<std::string, Option> optionNameMap = {
         {"ProgressDungeons", Option::ProgressDungeons},
-        {"ProgressFairies", Option::ProgressFairies},
+        {"ProgressGreatFairies", Option::ProgressGreatFairies},
         {"ProgressPuzzleCaves", Option::ProgressPuzzleCaves},
         {"ProgressCombatCaves", Option::ProgressCombatCaves},
         {"ProgressShortSidequests", Option::ProgressShortSidequests},
@@ -28,9 +41,14 @@ Option nameToSetting(const std::string& name) {
         {"ProgressIslandPuzzles", Option::ProgressIslandPuzzles},
         {"ProgressObscure", Option::ProgressObscure},
         {"Keylunacy", Option::Keylunacy},
-        {"RandomEntrances", Option::RandomEntrances},
         {"RandomCharts", Option::RandomCharts},
         {"RandomStartIsland", Option::RandomStartIsland},
+        {"RandomizeDungeonEntrances", Option::RandomizeDungeonEntrances},
+        {"RandomizeCaveEntrances", Option::RandomizeCaveEntrances},
+        {"RandomizeDoorEntrances", Option::RandomizeDoorEntrances},
+        {"RandomizeMiscEntrances", Option::RandomizeMiscEntrances},
+        {"MixEntrancePools", Option::MixEntrancePools},
+        {"DecoupleEntrances", Option::DecoupleEntrances},
         {"InstantText", Option::InstantText},
         {"RevealSeaChart", Option::RevealSeaChart},
         {"NumShards", Option::NumShards},
@@ -58,12 +76,73 @@ Option nameToSetting(const std::string& name) {
     return optionNameMap.at(name);
 }
 
+std::string settingToName(const Option& setting) {
+    static std::unordered_map<Option, std::string> optionNameMap = {
+        {Option::ProgressDungeons, "ProgressDungeons"},
+        {Option::ProgressGreatFairies, "ProgressGreatFairies"},
+        {Option::ProgressPuzzleCaves, "ProgressPuzzleCaves"},
+        {Option::ProgressCombatCaves, "ProgressCombatCaves"},
+        {Option::ProgressShortSidequests, "ProgressShortSidequests"},
+        {Option::ProgressLongSidequests, "ProgressLongSidequests"},
+        {Option::ProgressSpoilsTrading, "ProgressSpoilsTrading"},
+        {Option::ProgressMinigames, "ProgressMinigames"},
+        {Option::ProgressFreeGifts, "ProgressFreeGifts"},
+        {Option::ProgressMail, "ProgressMail"},
+        {Option::ProgressPlatformsRafts, "ProgressPlatformsRafts"},
+        {Option::ProgressSubmarines, "ProgressSubmarines"},
+        {Option::ProgressEyeReefs, "ProgressEyeReefs"},
+        {Option::ProgressOctosGunboats, "ProgressOctosGunboats"},
+        {Option::ProgressTriforceCharts, "ProgressTriforceCharts"},
+        {Option::ProgressTreasureCharts, "ProgressTreasureCharts"},
+        {Option::ProgressExpPurchases, "ProgressExpPurchases"},
+        {Option::ProgressMisc, "ProgressMisc"},
+        {Option::ProgressTingleChests, "ProgressTingleChests"},
+        {Option::ProgressBattlesquid, "ProgressBattlesquid"},
+        {Option::ProgressSavageLabyrinth, "ProgressSavageLabyrinth"},
+        {Option::ProgressIslandPuzzles, "ProgressIslandPuzzles"},
+        {Option::ProgressObscure, "ProgressObscure"},
+        {Option::Keylunacy, "Keylunacy"},
+        {Option::RandomCharts, "RandomCharts"},
+        {Option::RandomStartIsland, "RandomStartIsland"},
+        {Option::RandomizeDungeonEntrances, "RandomizeDungeonEntrances"},
+        {Option::RandomizeCaveEntrances, "RandomizeCaveEntrances"},
+        {Option::RandomizeDoorEntrances, "RandomizeDoorEntrances"},
+        {Option::RandomizeMiscEntrances, "RandomizeMiscEntrances"},
+        {Option::MixEntrancePools, "MixEntrancePools"},
+        {Option::DecoupleEntrances, "DecoupleEntrances"},
+        {Option::InstantText, "InstantText"},
+        {Option::RevealSeaChart, "RevealSeaChart"},
+        {Option::NumShards, "NumShards"},
+        {Option::AddShortcutWarps, "AddShortcutWarps"},
+        {Option::NoSpoilerLog, "NoSpoilerLog"},
+        {Option::SwordMode, "SwordMode"},
+        {Option::SkipRefights, "SkipRefights"},
+        {Option::InvertCompass, "InvertCompass"},
+        {Option::RaceMode, "RaceMode"},
+        {Option::NumRaceModeDungeons, "NumRaceModeDungeons"},
+        {Option::DamageMultiplier, "DamageMultiplier"},
+        {Option::CasualClothes, "CasualClothes"},
+        {Option::PigColor, "PigColor"},
+        {Option::StartingGear, "StartingGear"},
+        {Option::StartingHP, "StartingHP"},
+        {Option::StartingHC, "StartingHC"},
+        {Option::RemoveMusic, "RemoveMusic"},
+    };
+
+    if (optionNameMap.count(setting) == 0)
+    {
+        return "Invalid Option";
+    }
+
+    return optionNameMap.at(setting);
+}
+
 int getSetting(const Settings& settings, const Option& option) {
 
 	switch (option) {
     case Option::ProgressDungeons:
         return settings.progression_dungeons;
-    case Option::ProgressFairies:
+    case Option::ProgressGreatFairies:
         return settings.progression_great_fairies;
     case Option::ProgressPuzzleCaves:
         return settings.progression_puzzle_secret_caves;
@@ -109,12 +188,22 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.progression_obscure;
     case Option::Keylunacy:
         return settings.keylunacy;
-    case Option::RandomEntrances:
-        return static_cast<std::underlying_type_t<EntranceRando>>(settings.randomize_entrances);
     case Option::RandomCharts:
         return settings.randomize_charts;
     case Option::RandomStartIsland:
         return settings.randomize_starting_island;
+    case Option::RandomizeDungeonEntrances:
+        return settings.randomize_dungeon_entrances;
+    case Option::RandomizeCaveEntrances:
+        return settings.randomize_cave_entrances;
+    case Option::RandomizeDoorEntrances:
+        return settings.randomize_door_entrances;
+    case Option::RandomizeMiscEntrances:
+        return settings.randomize_misc_entrances;
+    case Option::MixEntrancePools:
+        return settings.mix_entrance_pools;
+    case Option::DecoupleEntrances:
+        return settings.decouple_entrances;
     case Option::InstantText:
         return settings.instant_text_boxes;
     case Option::RevealSeaChart:
@@ -153,4 +242,18 @@ int getSetting(const Settings& settings, const Option& option) {
         return 0;
 	}
 
+}
+
+int evaluateOption(const Settings& settings, const std::string& optionStr) {
+    if (nameToSwordMode(optionStr) != SwordMode::INVALID)
+    {
+        return getSetting(settings, Option::SwordMode) == static_cast<int>(nameToSwordMode(optionStr));
+    }
+    else if (nameToSetting(optionStr) != Option::INVALID)
+    {
+        return getSetting(settings, nameToSetting(optionStr));
+    }
+
+    // -1 means that the setting doesn't exist
+    return -1;
 }
