@@ -323,8 +323,11 @@ static void pareDownPlaythrough(WorldPool& worlds)
 
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
+    // Keep track of all locations we temporarily take items away from to give them back
+    // after the playthrough calculation
+    std::unordered_map<Location*, Item> nonRequiredLocations = {};
 
-    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
+    for (auto sphereItr = playthroughSpheres.rbegin(); sphereItr != playthroughSpheres.rend(); sphereItr++)
     {
         auto& sphere = *sphereItr;
         for (auto loc = sphere.begin(); loc != sphere.end(); )
@@ -338,13 +341,19 @@ static void pareDownPlaythrough(WorldPool& worlds)
                 // If the game is still beatable, then this item is not required
                 // and we can erase it from the playthrough
                 loc = sphere.erase(loc);
+                nonRequiredLocations.insert({location, itemAtLocation});
             }
             else
             {
+                location->currentItem = itemAtLocation;
                 loc++; // Only increment if we don't erase
             }
-            location->currentItem = itemAtLocation;
         }
+    }
+    // Give back nonrequired items
+    for (auto& [location, item] : nonRequiredLocations)
+    {
+        location->currentItem = item;
     }
 
     // Get rid of any empty spheres in both the item playthrough and entrance playthrough
