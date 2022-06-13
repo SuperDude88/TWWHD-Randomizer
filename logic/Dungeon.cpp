@@ -39,6 +39,8 @@ static const Dungeon ForbiddenWoods = {1, GameItem::FWSmallKey, GameItem::FWBigK
          LocationId::ForbiddenWoodsBigKeyChest,
          LocationId::ForbiddenWoodsDoubleMothulaRoomChest,
          LocationId::ForbiddenWoodsKalleDemosHeartContainer,
+}, {     // Outside dungeon dependencies
+         LocationId::MailboxOrcaLetter,
 }};
 static const Dungeon TowerOfTheGods = {2, GameItem::TotGSmallKey, GameItem::TotGBigKey, GameItem::TotGDungeonMap, GameItem::TotGCompass, {
          LocationId::TOTGChestBehindBombableWall,
@@ -63,6 +65,9 @@ static const Dungeon ForsakenFortress = {0, GameItem::INVALID, GameItem::INVALID
          LocationId::ForsakenFortressBokoblinGuardedChest,
          LocationId::ForsakenFortressChestOnBed,
          LocationId::ForsakenFortressHelmarocKingHeartContainer,
+}, {     // Outside dungeon dependencies
+         LocationId::MailboxTingleLetter,
+         LocationId::MailboxAryllLetter,
 }};
 static const Dungeon EarthTemple = {3, GameItem::ETSmallKey,   GameItem::ETBigKey,   GameItem::ETDungeonMap,   GameItem::ETCompass, {
          LocationId::EarthTempleWarpPotRoomChest,
@@ -83,6 +88,8 @@ static const Dungeon EarthTemple = {3, GameItem::ETSmallKey,   GameItem::ETBigKe
          LocationId::EarthTempleStalfosCryptRoomChest,
          LocationId::EarthTempleBigKeyChest,
          LocationId::EarthTempleJalhallaHeartContainer,
+}, {     // Outside dungeon dependencies
+         LocationId::MailboxBaitoLetter,
 }};
 static const Dungeon WindTemple = {2, GameItem::WTSmallKey, GameItem::WTBigKey, GameItem::WTDungeonMap, GameItem::WTCompass, {
          LocationId::WindTempleBetweenDirtPatchesChest,

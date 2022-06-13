@@ -24,6 +24,7 @@ struct Dungeon {
     GameItem map = GameItem::INVALID;
     GameItem compass = GameItem::INVALID;
     std::vector<LocationId> locations = {};
+    std::vector<LocationId> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
 };
 
 const std::array<DungeonId, 6> getDungeonList();

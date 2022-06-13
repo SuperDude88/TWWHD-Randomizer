@@ -268,6 +268,12 @@ void World::determineRaceModeDungeons()
                 {
                     locationEntries[locationIdAsIndex(locationId)].progression = false;
                 }
+                // Also set any locations outside the dungeon which are dependent
+                // on beating it as non-progression locations
+                for (auto& locationId : dungeonIdToDungeon(dungeons[i]).outsideDependentLocations)
+                {
+                    locationEntries[locationIdAsIndex(locationId)].progression = false;
+                }
             }
         }
     }
