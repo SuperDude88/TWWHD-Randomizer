@@ -14,21 +14,14 @@ enum struct PigColor : uint8_t {
 enum struct SwordMode {
     StartWithSword = 0,
     RandomSword,
-    NoSword
-};
-
-enum struct EntranceRando {
-    None = 0,
-    Dungeons,
-    Caves,
-    DungeonsAndCaves, //caves and dungeons separately
-    DungeonsWithCaves //caves and dungeons together
+    NoSword,
+    INVALID
 };
 
 enum struct Option {
     INVALID = 0,
     ProgressDungeons,
-    ProgressFairies,
+    ProgressGreatFairies,
     ProgressPuzzleCaves,
     ProgressCombatCaves,
     ProgressShortSidequests,
@@ -52,9 +45,14 @@ enum struct Option {
     ProgressObscure,
 
     Keylunacy,
-    RandomEntrances,
     RandomCharts,
     RandomStartIsland,
+    RandomizeDungeonEntrances,
+    RandomizeCaveEntrances,
+    RandomizeDoorEntrances,
+    RandomizeMiscEntrances,
+    MixEntrancePools,
+    DecoupleEntrances,
 
     InstantText,
     RevealSeaChart,
@@ -74,13 +72,14 @@ enum struct Option {
     StartingGear,
     StartingHP,
     StartingHC,
-    RemoveMusic
+    RemoveMusic,
+    COUNT
 };
 
 struct Settings {
-	bool progression_dungeons = false;
-	bool progression_great_fairies = false;
-	bool progression_puzzle_secret_caves = false;
+	  bool progression_dungeons = false;
+	  bool progression_great_fairies = false;
+	  bool progression_puzzle_secret_caves = false;
     bool progression_combat_secret_caves = false;
     bool progression_short_sidequests = false;
     bool progression_long_sidequests = false;
@@ -103,9 +102,14 @@ struct Settings {
     bool progression_obscure = false;
 
     bool keylunacy = false;
-    EntranceRando randomize_entrances = EntranceRando::None;
     bool randomize_charts = false;
     bool randomize_starting_island = false;
+    bool randomize_dungeon_entrances = false;
+    bool randomize_cave_entrances = false;
+    bool randomize_door_entrances = false;
+    bool randomize_misc_entrances = false;
+    bool mix_entrance_pools = false;
+    bool decouple_entrances = false;
 
     bool instant_text_boxes = false;
     bool reveal_full_sea_chart = false;
@@ -130,4 +134,8 @@ struct Settings {
 
 Option nameToSetting(const std::string& name);
 
+std::string settingToName(const Option& setting);
+
 int getSetting(const Settings& settings, const Option& option);
+
+int evaluateOption(const Settings& settings, const std::string& optionStr);

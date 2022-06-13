@@ -1,23 +1,21 @@
 
 #pragma once
 
+#include "World.hpp"
 #include <string>
 #include <vector>
 
-
-enum struct LocationID
+enum struct SearchMode
 {
-    UNDER_GRANDMAS_HOUSE,
-    PIG_DIG,
-    MESA_HOUSE
+    INVALID = 0,
+    AccessibleLocations,
+    GameBeatable,
+    AllLocationsReachable,
+    GeneratePlaythrough,
 };
 
-struct ItemLocation
-{
-    ItemLocation(LocationID id, std::string reqData) : id(id), requirementsData(reqData) {}
-    LocationID id;
-    std::string requirementsData;
-    int32_t currentItem = -1;
-};
-
-void assumedFill(const std::vector<uint8_t>& items, std::vector<ItemLocation>& locations);
+LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch = -1);
+bool gameBeatable(WorldPool& worlds);
+void generatePlaythrough(WorldPool& worlds);
+bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locationsToCheck, int worldToSearch = -1);
+bool allLocationsReachable(WorldPool& worlds, ItemPool& items, int worldToSearch = -1);

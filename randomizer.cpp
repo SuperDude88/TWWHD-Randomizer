@@ -1,5 +1,6 @@
 #include "tweaks.hpp"
 #include "options.hpp"
+#include "logic/SpoilerLog.hpp"
 
 RandoSession g_session("will be set up later", "will be set up later", "will be set up later"); //declared outside of class for extern stuff
 
@@ -15,6 +16,8 @@ private:
 	bool noLogs = false;
 	bool bulkTest = false;
 	bool randomizeItems = true;
+	int numPlayers = 1;
+	int playerId = 1;
 
 public:
 	void randomize() {
@@ -54,28 +57,46 @@ public:
 			}
 		}
 
-		if (settings.randomize_charts) {
-			//randomize charts
-		}
-
-		if (settings.randomize_starting_island) {
-			//randomize_starting_island
-		}
-
-		if (settings.randomize_entrances != EntranceRando::None) {
-			//randomize entrances
-		}
+		// Create all necessary worlds (for any potential multiworld support in the future)
+		WorldPool worlds;
+		worlds.resize(numPlayers);
+		std::vector<Settings> settingsVector (numPlayers, settings);
 
 		if (randomizeItems) {
-			//randomize items
+			if (!generateWorlds(worlds, settingsVector, 0/*put seed int here*/) {
+				// generating worlds failed
+				return;
+			}
 		}
 
 		if (randomizeItems && !dryRun) {
 			//save items
+			//get world locations with "worlds[playerId - 1].locationEntries"
 		}
 
 		if (!dryRun) {
+			//get world with "worlds[playerId - 1]"
 			//apply_necessary_post_randomization_tweaks(randomizeItems, logic.item_locations);
+
+			// Info for entrance rando:
+			auto entrances = worlds[playerId - 1].getShuffledEntrances(EntranceType::ALL);
+	    for (auto entrance : entrances)
+	    {
+	        std::string fileStage = entrance->getFilepathStage();
+	        std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
+	        uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+
+	        std::string replacementStage = entrance->getReplaces()->getStageName();
+	        uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
+	        uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
+
+	        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+	        // In the above file, replace data at exit index <sclsExitIndex> with:
+					// - replacementStage
+					// - replacementRoom
+					// - replacemntSpawn
+
+	    }
 		}
 
 		if (!dryRun) {
@@ -84,14 +105,14 @@ public:
 
 		if (randomizeItems) {
 			if (!settings.do_not_generate_spoiler_log) {
-				//write SL
+				generateSpoilerLog(worlds);
 			}
-			//write non-spoiler log
+			generateNonSpoilerLog(worlds);
 		}
 
 		//done!
+		closeDebugLog();
 		return;
 	}
 
 };
-
