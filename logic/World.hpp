@@ -114,7 +114,7 @@ public:
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::array<GameItem, 49> chartMappings;
-    std::unordered_set<DungeonId> raceModeDungeons;
+    std::unordered_map<DungeonId, HintRegion> raceModeDungeons; // map of dungeonId to the island it's in
     uint8_t startingIslandRoomIndex = 44;
 
 private:

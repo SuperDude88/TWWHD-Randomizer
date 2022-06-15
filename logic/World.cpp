@@ -251,9 +251,10 @@ void World::determineRaceModeDungeons()
 
         for (size_t i = 0; i < dungeons.size(); i++)
         {
+            auto dungeon = dungeonIdToDungeon(dungeons[i]);
             if (i < settings.num_race_mode_dungeons)
             {
-                raceModeDungeons.insert(dungeons[i]);
+                raceModeDungeons.insert({dungeons[i], HintRegion::INVALID});
             }
             else
             {
@@ -262,13 +263,13 @@ void World::determineRaceModeDungeons()
                 // are set as progression locations, we already set them all as
                 // progression previously, so here we unset those which aren't
                 // progression dungeons.
-                for (auto& locationId : dungeonIdToDungeon(dungeons[i]).locations)
+                for (auto& locationId : dungeon.locations)
                 {
                     locationEntries[locationIdAsIndex(locationId)].progression = false;
                 }
                 // Also set any locations outside the dungeon which are dependent
                 // on beating it as non-progression locations
-                for (auto& locationId : dungeonIdToDungeon(dungeons[i]).outsideDependentLocations)
+                for (auto& locationId : dungeon.outsideDependentLocations)
                 {
                     locationEntries[locationIdAsIndex(locationId)].progression = false;
                 }
