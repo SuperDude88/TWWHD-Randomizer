@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.7)
-project(wwhd_rando_patch CXX)
-set(CMAKE_CXX_STANDARD 17)
+project(wwhd_rando CXX)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -Wall") #would have implicit conversions off, breaks some tweaks
 
 if(DEFINED DEVKITPRO)
@@ -9,6 +9,10 @@ if(DEFINED DEVKITPRO)
 else()
   find_package(Threads REQUIRED)
 endif()
+
+# Some path related stuff for logging
+string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
+add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
 
 if(WIN32)
   # in windows case, we bundle a zlib static library
@@ -27,8 +31,8 @@ if(CMAKE_USE_PTHREADS_INIT)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
 endif()
 
-add_executable(wwhd_rando_patch tweaks.cpp)
-target_sources(wwhd_rando_patch PRIVATE "randomizer.cpp" "options.cpp")
+add_executable(wwhd_rando tweaks.cpp)
+target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp")
 add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
@@ -36,21 +40,21 @@ add_subdirectory("server/filetypes")
 add_subdirectory("logic") # not currently implemented, kept for some includes
 
 if(WIN32)
-  target_link_libraries(wwhd_rando_patch zlib)
-  target_include_directories(wwhd_rando_patch PRIVATE ${ZLIB_INCLUDE_DIR})
+  target_link_libraries(wwhd_rando zlib)
+  target_include_directories(wwhd_rando PRIVATE ${ZLIB_INCLUDE_DIR})
 else()
-  target_link_libraries(wwhd_rando_patch ${ZLIB_LDFLAGS})
-  target_compile_options(wwhd_rando_patch PRIVATE ${ZLIB_CFLAGS})
+  target_link_libraries(wwhd_rando ${ZLIB_LDFLAGS})
+  target_compile_options(wwhd_rando PRIVATE ${ZLIB_CFLAGS})
 endif()
 if(DEFINED DEVKITPRO)
-  target_link_libraries(wwhd_rando_patch iosuhax)
+  target_link_libraries(wwhd_rando iosuhax)
 endif()
 if(CMAKE_USE_PTHREADS_INIT)
-  target_link_libraries(wwhd_rando_patch Threads::Threads)
+  target_link_libraries(wwhd_rando Threads::Threads)
 endif()
 
 if(DEFINED DEVKITPRO)
-  wut_create_rpx(wwhd_rando_patch)
+  wut_create_rpx(wwhd_rando)
 endif()
 
 file(COPY "asm/custom_symbols.txt" DESTINATION "${CMAKE_BINARY_DIR}/asm")

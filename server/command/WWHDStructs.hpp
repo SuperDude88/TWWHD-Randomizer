@@ -2,9 +2,10 @@
 
 #include <cstdint>
 #include <istream>
+#include <string>
 
 struct ACTR {
-	char name[8];
+	std::string name;
 	uint32_t params;
 	float x_pos;
 	float y_pos;
@@ -28,6 +29,6 @@ namespace WWHDStructs {
     ACTR readACTR(std::istream& in);
     SCOB readSCOB(std::istream& in);
 
-    uint8_t getChestItem(const ACTR& chest);
-    void setChestItem(ACTR& chest, uint8_t itemID);
+	void writeACTR(std::ostream& out, const ACTR& actr);
+	void writeSCOB(std::ostream& out, const SCOB& scob);
 }
