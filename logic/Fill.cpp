@@ -342,7 +342,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     ItemPool raceModeItems;
     for (auto& world : worlds)
     {
-        for (auto& dungeonId : world.raceModeDungeons)
+        for (auto& [dungeonId, hintRegion] : world.raceModeDungeons)
         {
             const auto& dungeon = dungeonIdToDungeon(dungeonId);
             // The race mode location for each dungeon is the last one listed
