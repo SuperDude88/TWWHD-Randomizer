@@ -1,5 +1,7 @@
 #include "options.hpp"
 
+
+
 SwordMode nameToSwordMode(const std::string& name) {
     static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
         {"StartWithSword", SwordMode::StartWithSword},
@@ -60,6 +62,7 @@ Option nameToSetting(const std::string& name) {
         {"RaceMode", Option::RaceMode},
         {"NumRaceModeDungeons", Option::NumRaceModeDungeons},
         {"DamageMultiplier", Option::DamageMultiplier},
+        {"CTMC", Option::CTMC},
         {"CasualClothes", Option::CasualClothes},
         {"PigColor", Option::PigColor},
         {"StartingGear", Option::StartingGear},
@@ -121,6 +124,7 @@ std::string settingToName(const Option& setting) {
         {Option::RaceMode, "RaceMode"},
         {Option::NumRaceModeDungeons, "NumRaceModeDungeons"},
         {Option::DamageMultiplier, "DamageMultiplier"},
+        {Option::CTMC, "CTMC"},
         {Option::CasualClothes, "CasualClothes"},
         {Option::PigColor, "PigColor"},
         {Option::StartingGear, "StartingGear"},
@@ -226,6 +230,8 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.num_race_mode_dungeons;
     case Option::DamageMultiplier:
         return settings.damage_multiplier;
+    case Option::CTMC:
+        return settings.chest_type_matches_contents;
     case Option::CasualClothes:
         return settings.player_in_casual_clothes;
     case Option::PigColor:
@@ -247,7 +253,7 @@ int getSetting(const Settings& settings, const Option& option) {
 int evaluateOption(const Settings& settings, const std::string& optionStr) {
     if (nameToSwordMode(optionStr) != SwordMode::INVALID)
     {
-        return getSetting(settings, Option::SwordMode) == static_cast<int>(nameToSwordMode(optionStr));
+        return settings.sword_mode == nameToSwordMode(optionStr);
     }
     else if (nameToSetting(optionStr) != Option::INVALID)
     {

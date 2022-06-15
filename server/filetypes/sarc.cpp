@@ -2,9 +2,12 @@
 
 #include <cstring>
 #include <algorithm>
+#include <numeric>
 
-#include "../utility/byteswap.hpp"
+#include "../utility/endian.hpp"
 #include "../utility/common.hpp"
+
+using eType = Utility::Endian::Type;
 
 const std::unordered_map<std::string, uint32_t> alignments = {
 	{"bflan", 0x00000004},
@@ -12,31 +15,32 @@ const std::unordered_map<std::string, uint32_t> alignments = {
 	{"szs", 0x00002000},
 	{"sarc", 0x00002000},
 	{"bfres", 0x00002000}, //seems to be 0x2000 usually
-	{"sharcfb", 0x00002000}, //seems to be 0x2000 usually, sometimes 0x100 in .sarc files?
+	{"sharcfb", 0x00002000} //seems to be 0x2000 usually, sometimes 0x100 in .sarc files?
 };
 
-
-uint32_t calculateHash(const std::string& name, uint32_t multiplier) {
-	uint32_t hash = 0;
-	for (const int8_t byte : name) {
-		if (byte == 0x00) break; //string is null-terminated
-		hash = hash * multiplier + byte;
+namespace {
+	uint32_t calculateHash(const std::string& name, uint32_t multiplier) {
+		uint32_t hash = 0;
+		for (const int8_t byte : name) {
+			if (byte == 0x00) break; //string is null-terminated
+			hash = hash * multiplier + byte;
+		}
+	
+		return hash;
 	}
-
-	return hash;
-}
-
-uint32_t getAlignment(const std::string& fileExt, const file& file) {
-	if (alignments.find(fileExt) != alignments.end()) {
-		return alignments.at(fileExt);
-	}
-	else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
-		uint16_t alignment = *(uint16_t*)&file.data[(file.data.size() - 8)];
-		Utility::byteswap_inplace(alignment);
-		return alignment;
-	}
-	else {
-		return 0;
+	
+	uint32_t getAlignment(const std::string& fileExt, const file& file) {
+		if (alignments.find(fileExt) != alignments.end()) {
+			return alignments.at(fileExt);
+		}
+		else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
+			uint16_t alignment = *reinterpret_cast<const uint16_t*>(&file.data[(file.data.size() - 8)]);
+			Utility::Endian::toPlatform_inplace(eType::Big, alignment);
+			return alignment;
+		}
+		else {
+			return 0;
+		}
 	}
 }
 
@@ -107,6 +111,23 @@ namespace FileTypes{
 		return newSARC;
 	}
 
+	uint32_t SARCFile::guessDefaultAlignment() { //most taken from https://github.com/zeldamods/sarc/blob/master/sarc/sarc.py#L98
+		if(files.size() <= 2) {
+			return 4;
+		}
+
+		uint32_t gcd = header.dataOffset;
+		for(const SFATNode& node : fileTable.nodes) {
+			gcd = std::gcd(gcd, node.dataStart + header.dataOffset);
+		}
+
+		if(gcd == 0 || (gcd & (gcd - 1)) != 0) {
+			return 4;
+		}
+
+		return gcd;
+	}
+
 	SARCError SARCFile::loadFromBinary(std::istream& sarc) {
 		if (!sarc.read(header.magicSARC, 4)) return SARCError::REACHED_EOF;
 		if (!sarc.read(reinterpret_cast<char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14))) return SARCError::REACHED_EOF;
@@ -116,11 +137,11 @@ namespace FileTypes{
 		if (!sarc.read(reinterpret_cast<char*>(&header.version_0x0100), sizeof(header.version_0x0100))) return SARCError::REACHED_EOF;
 		if (!sarc.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00))) return SARCError::REACHED_EOF;
 
-		Utility::byteswap_inplace(header.headerSize_0x14);
-		Utility::byteswap_inplace(header.byteOrderMarker);
-		Utility::byteswap_inplace(header.fileSize);
-		Utility::byteswap_inplace(header.dataOffset);
-		Utility::byteswap_inplace(header.version_0x0100);
+		Utility::Endian::toPlatform_inplace(eType::Big, header.headerSize_0x14);
+		Utility::Endian::toPlatform_inplace(eType::Big, header.byteOrderMarker);
+		Utility::Endian::toPlatform_inplace(eType::Big, header.fileSize);
+		Utility::Endian::toPlatform_inplace(eType::Big, header.dataOffset);
+		Utility::Endian::toPlatform_inplace(eType::Big, header.version_0x0100);
 
 		if (std::strncmp("SARC", header.magicSARC, 4) != 0) return SARCError::NOT_SARC;
 		if (header.headerSize_0x14 != 0x0014) return SARCError::UNEXPECTED_VALUE;
@@ -134,9 +155,9 @@ namespace FileTypes{
 		if (!sarc.read(reinterpret_cast<char*>(&fileTable.numFiles), sizeof(fileTable.numFiles))) return SARCError::REACHED_EOF;
 		if (!sarc.read(reinterpret_cast<char*>(&fileTable.hashKey_0x65), sizeof(fileTable.hashKey_0x65))) return SARCError::REACHED_EOF;
 
-		Utility::byteswap_inplace(fileTable.headerSize_0xC);
-		Utility::byteswap_inplace(fileTable.numFiles);
-		Utility::byteswap_inplace(fileTable.hashKey_0x65);
+		Utility::Endian::toPlatform_inplace(eType::Big, fileTable.headerSize_0xC);
+		Utility::Endian::toPlatform_inplace(eType::Big, fileTable.numFiles);
+		Utility::Endian::toPlatform_inplace(eType::Big, fileTable.hashKey_0x65);
 
 		if (std::strncmp("SFAT", fileTable.magicSFAT, 4)) return SARCError::UNEXPECTED_VALUE;
 		if (fileTable.headerSize_0xC != 0xC) return SARCError::UNEXPECTED_VALUE;
@@ -149,10 +170,10 @@ namespace FileTypes{
 			if (!sarc.read(reinterpret_cast<char*>(&node.dataStart), sizeof(node.dataStart))) return SARCError::REACHED_EOF;
 			if (!sarc.read(reinterpret_cast<char*>(&node.dataEnd), sizeof(node.dataEnd))) return SARCError::REACHED_EOF;
 
-			Utility::byteswap_inplace(node.nameHash);
-			Utility::byteswap_inplace(node.attributes);
-			Utility::byteswap_inplace(node.dataStart);
-			Utility::byteswap_inplace(node.dataEnd);
+			Utility::Endian::toPlatform_inplace(eType::Big, node.nameHash);
+			Utility::Endian::toPlatform_inplace(eType::Big, node.attributes);
+			Utility::Endian::toPlatform_inplace(eType::Big, node.dataStart);
+			Utility::Endian::toPlatform_inplace(eType::Big, node.dataEnd);
 		}
 
 		nameTable.offset = sarc.tellg();
@@ -160,7 +181,7 @@ namespace FileTypes{
 		if (!sarc.read(reinterpret_cast<char*>(&nameTable.headerSize_0x8), sizeof(nameTable.headerSize_0x8))) return SARCError::REACHED_EOF;
 		if (!sarc.read(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00))) return SARCError::REACHED_EOF;
 
-		Utility::byteswap_inplace(nameTable.headerSize_0x8);
+		Utility::Endian::toPlatform_inplace(eType::Big, nameTable.headerSize_0x8);
 
 		if (std::strncmp("SFNT", nameTable.magicSFNT, 4)) return SARCError::UNEXPECTED_VALUE;
 		if (nameTable.headerSize_0x8 != 0x8) return SARCError::UNEXPECTED_VALUE;
@@ -184,6 +205,7 @@ namespace FileTypes{
 			if (!sarc.read(&fileEntry.data[0], fileEntry.data.size())) return SARCError::REACHED_EOF;
 		}
 
+		guessed_alignment = guessDefaultAlignment();
 		return SARCError::NONE;
 	}
 
@@ -205,10 +227,10 @@ namespace FileTypes{
 
 	SARCError SARCFile::writeToStream(std::ostream& out) {
 		{
-			uint16_t headerSize_BE = Utility::byteswap(header.headerSize_0x14);
-			uint16_t byteOrderMarker_BE = Utility::byteswap(header.byteOrderMarker);
-			uint32_t dataOffset_BE = Utility::byteswap(header.dataOffset);
-			uint16_t version_BE = Utility::byteswap(header.version_0x0100);
+			uint16_t headerSize_BE = Utility::Endian::toPlatform(eType::Big, header.headerSize_0x14);
+			uint16_t byteOrderMarker_BE = Utility::Endian::toPlatform(eType::Big, header.byteOrderMarker);
+			uint32_t dataOffset_BE = Utility::Endian::toPlatform(eType::Big, header.dataOffset);
+			uint16_t version_BE = Utility::Endian::toPlatform(eType::Big, header.version_0x0100);
 
 			out.write(header.magicSARC, 4);
 			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
@@ -220,9 +242,9 @@ namespace FileTypes{
 		}
 
 		{
-			uint16_t headerSize_BE = Utility::byteswap(fileTable.headerSize_0xC);
-			uint16_t numFiles_BE = Utility::byteswap(fileTable.numFiles);
-			uint32_t hashKey_BE = Utility::byteswap(fileTable.hashKey_0x65);
+			uint16_t headerSize_BE = Utility::Endian::toPlatform(eType::Big, fileTable.headerSize_0xC);
+			uint16_t numFiles_BE = Utility::Endian::toPlatform(eType::Big, fileTable.numFiles);
+			uint32_t hashKey_BE = Utility::Endian::toPlatform(eType::Big, fileTable.hashKey_0x65);
 
 			out.write(fileTable.magicSFAT, 4);
 			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
@@ -230,10 +252,10 @@ namespace FileTypes{
 			out.write(reinterpret_cast<char*>(&hashKey_BE), sizeof(hashKey_BE));
 
 			for (const SFATNode& node : fileTable.nodes) {
-				uint32_t nameHash_BE = Utility::byteswap(node.nameHash);
-				uint32_t attributes_BE = Utility::byteswap(node.attributes);
-				uint32_t dataStart_BE = Utility::byteswap(node.dataStart);
-				uint32_t dataEnd_BE = Utility::byteswap(node.dataEnd);
+				uint32_t nameHash_BE = Utility::Endian::toPlatform(eType::Big, node.nameHash);
+				uint32_t attributes_BE = Utility::Endian::toPlatform(eType::Big, node.attributes);
+				uint32_t dataStart_BE = Utility::Endian::toPlatform(eType::Big, node.dataStart);
+				uint32_t dataEnd_BE = Utility::Endian::toPlatform(eType::Big, node.dataEnd);
 
 				out.write(reinterpret_cast<char*>(&nameHash_BE), sizeof(nameHash_BE));
 				out.write(reinterpret_cast<char*>(&attributes_BE), sizeof(attributes_BE));
@@ -243,7 +265,7 @@ namespace FileTypes{
 		}
 
 		{
-			uint16_t headerSize_BE = Utility::byteswap(nameTable.headerSize_0x8);
+			uint16_t headerSize_BE = Utility::Endian::toPlatform(eType::Big, nameTable.headerSize_0x8);
 
 			out.write(nameTable.magicSFNT, 4);
 			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
@@ -263,7 +285,7 @@ namespace FileTypes{
 
 		header.fileSize = out.tellp();
 		out.seekp(8, std::ios::beg);
-		uint32_t fileSize_BE = Utility::byteswap(header.fileSize);
+		uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
 		out.write(reinterpret_cast<char*>(&fileSize_BE), sizeof(fileSize_BE));
 
 		return SARCError::NONE;
@@ -312,7 +334,7 @@ namespace FileTypes{
 			//silly alignment stuff
 			std::string filetype = filename.substr(filename.find(".") + 1);
 			filetype.pop_back();
-			uint32_t alignment = getAlignment(filetype, entry);
+			uint32_t alignment = std::max(guessed_alignment, getAlignment(filetype, entry));
 			if (alignment != 0) {
 				unsigned int padLen = alignment - (curDataOffset % alignment);
 				if (padLen == alignment) padLen = 0;
@@ -387,7 +409,7 @@ namespace FileTypes{
 			const std::string& filename = entry.name;
 			std::string filetype = filename.substr(filename.find(".") + 1);
 			filetype.pop_back();
-			uint32_t alignment = getAlignment(filetype, entry);
+			uint32_t alignment = std::max(guessed_alignment, getAlignment(filetype, entry));
 			if (alignment != 0) {
 				unsigned int padLen = alignment - (curDataOffset % alignment);
 				if (padLen == alignment) padLen = 0;
