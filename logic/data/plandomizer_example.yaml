@@ -8,7 +8,7 @@
 # of the location name followed by a colon(:) and the item name you want placed
 # at that location. The following example places Bombs at Windfall Island - Maggie Free Item
 # and Power Bracelets at Wind Temple - Wizzrobe Mini Boss. Note that the hyphen(-)
-# is important for the YAML format and must always be on the *FIRST LINE* in the plandomizer file
+# is important for the YAML format and must always be on the *FIRST ELEMENT* in the plandomizer file
 - locations:
       Windfall Island - Maggie Free Item: Bombs
       Wind Temple - Wizzrobe Mini Boss: Power Bracelets
