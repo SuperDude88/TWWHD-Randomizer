@@ -363,6 +363,14 @@ static void pareDownPlaythrough(WorldPool& worlds)
             }
         }
     }
+
+    // Now regenerate the playthrough with only the required locations incase
+    // some spheres were flattened by non-required locations having progress items
+    playthroughSpheres.clear();
+    entranceSpheres.clear();
+    ItemPool emptyItems = {};
+    search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
+
     // Give back nonrequired items
     for (auto& [location, item] : nonRequiredLocations)
     {
