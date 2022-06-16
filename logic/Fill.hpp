@@ -11,6 +11,7 @@ enum struct FillError
     NO_REACHABLE_LOCATIONS,
     GAME_NOT_BEATABLE,
     NOT_ENOUGH_PROGRESSION_LOCATIONS,
+    PLANDOMIZER_ERROR,
 };
 
 FillError fill(std::vector<World>& worlds);
