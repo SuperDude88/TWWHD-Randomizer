@@ -80,9 +80,11 @@ public:
         COULD_NOT_DETERMINE_TYPE,
         SAME_NESTING_LEVEL,
         EXTRA_OR_MISSING_PARENTHESIS,
+        PLANDOMIZER_ERROR,
     };
 
     World();
+    World(size_t numWorlds_);
 
     void setSettings(const Settings& settings);
     const Settings& getSettings() const;
@@ -96,7 +98,7 @@ public:
 
     void determineChartMappings();
     void determineProgressionLocations();
-    void determineRaceModeDungeons();
+    WorldLoadingError determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
     Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
@@ -109,6 +111,7 @@ public:
 
     std::vector<AreaEntry> areaEntries = {};
     std::vector<Location> locationEntries = {};
+    std::unordered_map<Location*, Item> plandomizerLocations = {};
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
     std::list<std::list<Location*>> playthroughSpheres = {};
@@ -130,10 +133,12 @@ private:
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(const ryml::Tree& macroListTree);
     WorldLoadingError loadArea(const ryml::NodeRef& areaObject, Area& loadedArea);
+    WorldLoadingError loadPlandomizerLocations();
     int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;
     ItemPool itemPool;
     ItemPool startingItems;
     int worldId = -1;
+    size_t numWorlds = 1;
 };

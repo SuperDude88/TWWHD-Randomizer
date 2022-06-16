@@ -346,7 +346,13 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
         {
             const auto& dungeon = dungeonIdToDungeon(dungeonId);
             // The race mode location for each dungeon is the last one listed
-            raceModeLocations.push_back(&world.locationEntries[locationIdAsIndex(dungeon.locations.back())]);
+            Location* raceModeLocation = &world.locationEntries[locationIdAsIndex(dungeon.locations.back())];
+            // If this location already has an item placed at it, then skip it
+            if (raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
+            {
+                continue;
+            }
+            raceModeLocations.push_back(raceModeLocation);
         }
     }
 
@@ -377,6 +383,31 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     return assumedFill(worlds, raceModeItems, itemPool, raceModeLocations);
 }
 
+static FillError placePlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
+{
+    std::unordered_map<Location*, Item> allPlandoLocations = {};
+    for (auto& world : worlds)
+    {
+        allPlandoLocations.insert(world.plandomizerLocations.begin(), world.plandomizerLocations.end());
+    }
+    for (auto& [location, item] : allPlandoLocations)
+    {
+        if (!item.isJunkItem())
+        {
+            item = removeElementFromPool(itemPool, item);
+            // Don't accept trying to place major items in non-progress locations
+            if (item.isMajorItem() && !location->progression)
+            {
+                std::cout << "Error: Attempted to plandomize major item " << item.getName() << " in non-progress location " << locationName(location) << std::endl;
+                std::cout << "Plandomizing major items in non-progress locations is not allowed." << std::endl;
+                return FillError::PLANDOMIZER_ERROR;
+            }
+        }
+        location->currentItem = item;
+    }
+    return FillError::NONE;
+}
+
 FillError fill(WorldPool& worlds)
 {
     // Time how long the fill takes
@@ -395,6 +426,8 @@ FillError fill(WorldPool& worlds)
     }
 
     determineMajorItems(worlds, itemPool, allLocations);
+    err = placePlandomizerItems(worlds, itemPool);
+    FILL_ERROR_CHECK(err);
     // Handle dungeon items and race mode dungeons first if necessary. Generally
     // we need to place items that go into more restrictive location pools first before
     // we can place other items.
@@ -402,12 +435,12 @@ FillError fill(WorldPool& worlds)
     handleDungeonItems(worlds, itemPool);
 
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& i){return i.isMajorItem();});
-    auto progressionLocations = filterFromPool(allLocations, [](const Location* loc){return loc->progression && loc->locationId != LocationId::DefeatGanondorf;});
+    auto progressionLocations = filterFromPool(allLocations, [](const Location* loc){return loc->progression && loc->locationId != LocationId::DefeatGanondorf && loc->currentItem.getGameItemId() == GameItem::INVALID;});
 
     if (majorItems.size() > progressionLocations.size())
     {
         std::cout << "Major Items: " << std::to_string(majorItems.size()) << std::endl;
-        std::cout << "Progression Locations: " << std::to_string(progressionLocations.size()) << std::endl;
+        std::cout << "Available Progression Locations: " << std::to_string(progressionLocations.size()) << std::endl;
         std::cout << "Please enable more spots for major items." << std::endl;
 
         #ifdef ENABLE_DEBUG
@@ -480,6 +513,8 @@ const char* errorToName(FillError err)
         return "GAME_NOT_BEATABLE";
     case FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS:
         return "NOT_ENOUGH_PROGRESSION_LOCATIONS";
+    case FillError::PLANDOMIZER_ERROR:
+        return "PLANDOMIZER_ERROR";
     default:
         return "UNKNOWN";
     }

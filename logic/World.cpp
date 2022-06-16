@@ -33,6 +33,13 @@ World::World()
     locationEntries.resize(LOCATION_COUNT);
 }
 
+World::World(size_t numWorlds_)
+{
+    areaEntries.resize(AREA_COUNT);
+    locationEntries.resize(LOCATION_COUNT);
+    numWorlds = numWorlds_;
+}
+
 // Potentially set different settings for different worlds
 void World::setSettings(const Settings& settings_)
 {
@@ -241,7 +248,7 @@ void World::determineProgressionLocations()
     }
 }
 
-void World::determineRaceModeDungeons()
+World::WorldLoadingError World::determineRaceModeDungeons()
 {
     if (settings.race_mode)
     {
@@ -249,12 +256,67 @@ void World::determineRaceModeDungeons()
 
         shufflePool(dungeons);
 
-        for (size_t i = 0; i < dungeons.size(); i++)
+        int setRaceModeDungeons = 0;
+        // Loop through all the dungeons and see if any of them have items plandomized
+        // within them. If they have major items plandomized, then select those dungeons
+        // as race mode dungeons
+        if (settings.plandomizer)
         {
-            auto dungeon = dungeonIdToDungeon(dungeons[i]);
-            if (i < settings.num_race_mode_dungeons)
+            for (const auto& dungeonId : dungeons)
             {
-                raceModeDungeons.insert({dungeons[i], HintRegion::INVALID});
+                auto dungeon = dungeonIdToDungeon(dungeonId);
+                for (auto& locationId : dungeon.locations)
+                {
+                    auto dungeonLocation = &locationEntries[locationIdAsIndex(locationId)];
+                    bool dungeonLocationForcesRaceMode = plandomizerLocations.count(dungeonLocation) == 0 ? false : !plandomizerLocations[dungeonLocation].isJunkItem();
+                    if (dungeonLocationForcesRaceMode)
+                    {
+                        // However, if the dungeon's race mode location is junk then
+                        // that's an error on the user's part.
+                        Location* raceModeLocation = &locationEntries[locationIdAsIndex(dungeon.locations.back())];
+                        bool raceModeLocationIsAcceptable = plandomizerLocations.count(raceModeLocation) == 0 ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
+                        if (!raceModeLocationIsAcceptable)
+                        {
+                            std::cout << "Plandomizer Error: Junk item placed at race mode location in dungeon \"" << dungeonIdToName(dungeonId) << "\" with potentially major item" << std::endl;
+                            return WorldLoadingError::PLANDOMIZER_ERROR;
+                        }
+                        debugLog("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
+                        raceModeDungeons.insert({dungeonId, HintRegion::INVALID});
+                        setRaceModeDungeons++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If too many are set, return an error
+        if (setRaceModeDungeons > settings.num_race_mode_dungeons)
+        {
+            std::cout << "Plandomizer Error: Too many race mode locations set with potentially major items" << std::endl;
+            std::cout << "set race mode locations: " << std::to_string(setRaceModeDungeons) << std::endl;
+            std::cout << "Set number of race mode dungeons: " << std::to_string(settings.num_race_mode_dungeons) << std::endl;
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
+
+        // Now check again and fill in any more dungeons that may be necessary
+        // Also set non-race mode dungeons locations as non-progress
+        for (const auto& dungeonId : dungeons)
+        {
+            // If this dungeon was already selected, then skip it
+            if (raceModeDungeons.count(dungeonId) > 0)
+            {
+                continue;
+            }
+            auto dungeon = dungeonIdToDungeon(dungeonId);
+            // If this dungeon has a junk item placed as its race mode
+            // location, then skip it
+            auto dungeonLocation = &locationEntries[locationIdAsIndex(dungeon.locations.back())];
+            bool raceModeLocationIsAcceptable = plandomizerLocations.count(dungeonLocation) == 0 ? false : plandomizerLocations[dungeonLocation].isJunkItem();
+            if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
+            {
+                debugLog("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
+                raceModeDungeons.insert({dungeonId, HintRegion::INVALID});
+                setRaceModeDungeons++;
             }
             else
             {
@@ -275,7 +337,15 @@ void World::determineRaceModeDungeons()
                 }
             }
         }
+        if (setRaceModeDungeons < settings.num_race_mode_dungeons)
+        {
+            std::cout << "Plandomizer Error: Not enough race mode locations for set number of race mode dungeons" << std::endl;
+            std::cout << "Possible race mode locations: " << std::to_string(setRaceModeDungeons) << std::endl;
+            std::cout << "Set number of race mode dungeons: " << std::to_string(settings.num_race_mode_dungeons) << std::endl;
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
     }
+    return WorldLoadingError::NONE;
 }
 
 // Helper function for dealing with YAML library strings
@@ -788,6 +858,130 @@ World::WorldLoadingError World::loadArea(const ryml::NodeRef& areaObject, Area& 
     return WorldLoadingError::NONE;
 }
 
+World::WorldLoadingError World::loadPlandomizerLocations()
+{
+    std::string plandoFilepath = "";
+    #ifdef LOCAL_TESTING
+        plandoFilepath = "../data/plandomizer.yaml";
+    #endif
+    #ifndef LOCAL_TESTING
+        // plandoFilepath = "user/friendly/path/plandomizer.yaml"
+    #endif
+
+    std::string plandoStr;
+    if (getFileContents(plandoFilepath, plandoStr) != 0)
+    {
+        std::cout << "Will skip using plando file" << std::endl;
+        return WorldLoadingError::NONE;
+    }
+
+    const ryml::Tree plandoTree = ryml::parse_in_place(ryml::to_substr(plandoStr));
+    std::string worldName = "World " + std::to_string(worldId + 1);
+    ryml::substr world = ryml::to_substr(worldName);
+    ryml::NodeRef plandoLocations;
+    // Grab the YAML object which holds the locations for this world.
+    // If there's only one world, then allow the plandomizer file to not
+    // have the world specification
+    for (const ryml::NodeRef& ref : plandoTree.rootref().children())
+    {
+        switch (numWorlds)
+        {
+            // If only 1 world, just look for "locations"
+            case 1:
+                if (ref.has_child("locations"))
+                {
+                    plandoLocations = ref["locations"];
+                    break;
+                }
+                [[fallthrough]];
+            // If more than one world, look for "World 1", "World 2", etc.
+            default:
+                if (ref.has_child(world))
+                {
+                    if (ref[world].has_child("locations"))
+                    {
+                        plandoLocations = ref[world]["locations"];
+                    }
+                }
+                else
+                {
+                    debugLog("No plando locations found for world " + std::to_string(worldId + 1));
+                    return WorldLoadingError::NONE;
+                }
+        }
+    }
+
+    for (const ryml::NodeRef& locationObject : plandoLocations.children())
+    {
+        if (!locationObject.has_key())
+        {
+            std::cout << "Plandomizer Error: One of the plando items is missing a location" << std::endl;
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
+        std::string locationName = substrToString(locationObject.key());
+        // If the location object has children instead of a value, then parse
+        // the item name and potential world id from those children.
+        // If no world id is given, then the current world's id will be used.
+        int plandoWorldId = worldId;
+        std::string itemName;
+        if (!locationObject.has_val())
+        {
+            if (locationObject.has_child("item"))
+            {
+                itemName = substrToString(locationObject["item"].val());
+            }
+            else
+            {
+                std::cout << "Plandomizer Error: Missing key \"item\" in location \"" << locationName << "\"" << std::endl;
+                return WorldLoadingError::PLANDOMIZER_ERROR;
+            }
+            if (locationObject.has_child("world"))
+            {
+                plandoWorldId = std::stoi(substrToString(locationObject["world"].val()));
+                if ((size_t) plandoWorldId > numWorlds || plandoWorldId < 1)
+                {
+                    std::cout << "Plandomizer Error: Bad World ID \"" << std::to_string(plandoWorldId) << "\"" << std::endl;
+                    std::cout << "Only " << std::to_string(numWorlds) << " worlds are being generated" << std::endl;
+                    std::cout << "Valid World IDs: 1-" << std::to_string(numWorlds) << "" << std::endl;
+                    return WorldLoadingError::PLANDOMIZER_ERROR;
+                }
+                plandoWorldId--;
+            }
+        }
+        // Otherwise treat the value as an item for the same world as the location
+        else
+        {
+            itemName = substrToString(locationObject.val());
+        }
+
+
+        // Allow pretty names for the locations since that's what people see in the
+        // spoiler log and might be inclined to use
+        auto locationId = prettyNameToLocationId(locationName);
+        auto locationNameNoSpaces = locationName;
+        if (locationId == LocationId::INVALID)
+        {
+            // Remove spaces from location name if it's not the pretty name
+            locationNameNoSpaces.erase(std::remove_if(locationNameNoSpaces.begin(), locationNameNoSpaces.end(), [](char& c){return c == ' ';}), locationNameNoSpaces.end());
+            locationId = nameToLocationId(locationNameNoSpaces);
+            LOCATION_VALID_CHECK(locationId, "Plandomizer Error: Unknown location name \"" << locationName << "\" in plandomizer file");
+        }
+
+        // Remove spaces from item name
+        auto itemNameNoSpaces = itemName;
+        itemNameNoSpaces.erase(std::remove_if(itemNameNoSpaces.begin(), itemNameNoSpaces.end(), [](char& c){return c == ' ';}), itemNameNoSpaces.end());
+        auto itemId = nameToGameItem(itemNameNoSpaces);
+        ITEM_VALID_CHECK(itemId, "Plandomizer Error: Unknown item name \"" << itemName << "\" in plandomizer file");
+
+        debugLog("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + "[W" + std::to_string(plandoWorldId) + "]");
+        Location* location = &locationEntries[locationIdAsIndex(locationId)];
+        Item item = {itemId, plandoWorldId};
+        plandomizerLocations.insert({location, item});
+    }
+
+    return WorldLoadingError::NONE;
+}
+
 // Short function for getting the string data from a file
 int World::getFileContents(const std::string& filename, std::string& fileContents)
 {
@@ -875,6 +1069,16 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         }
     }
 
+
+
+    if (settings.plandomizer)
+    {
+        if (loadPlandomizerLocations() != WorldLoadingError::NONE)
+        {
+            std::cout << getLastErrorDetails() << std::endl;
+            return 1;
+        }
+    }
     return 0;
 }
 
@@ -1026,6 +1230,8 @@ const char* World::errorToName(WorldLoadingError err)
         return "SAME_NESTING_LEVEL";
     case WorldLoadingError::EXTRA_OR_MISSING_PARENTHESIS:
         return "EXTRA_OR_MISSING_PARENTHESIS";
+    case WorldLoadingError::PLANDOMIZER_ERROR:
+        return "PLANDOMIZER_ERROR";
     default:
         return "UNKNOWN";
     }
