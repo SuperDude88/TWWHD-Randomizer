@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-#include "../filetypes/shared/elf_structs.hpp"
+#include "./shared/elf_structs.hpp"
 
 
 
@@ -29,14 +29,14 @@ namespace FileTypes {
 	class ELF {
 	public:
 		Elf32_Ehdr ehdr;
-		std::vector<std::pair<size_t, Elf32_Shdr>> shdr_table; //std::pair so we can have index + section header without the "sort" struct
+		std::vector<shdr_index_t> shdr_table;
 
 		ELF();
 		static ELF createNew(const std::string& filename);
 		ELFError loadFromBinary(std::istream& elf);
 		ELFError loadFromFile(const std::string& filePath);
-		ELFError extend_section(const int index, const std::string& newData);
-		ELFError extend_section(const size_t index, const uint32_t startAddr, const std::string& newData);
+		ELFError extend_section(const uint16_t index, const std::string& newData);
+		ELFError extend_section(const uint16_t index, const uint32_t startAddr, const std::string& newData);
 		ELFError writeToStream(std::ostream& out);
 		ELFError writeToFile(const std::string& outFilePath);
 	private:
