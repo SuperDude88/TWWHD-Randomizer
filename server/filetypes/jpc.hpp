@@ -165,309 +165,308 @@ namespace JParticle {
 		float tanOut;
 	};
 
-	namespace chunks {
-		class BEM1 {
-		private:
-			unsigned int offset;
+	class BEM1 {
+	private:
+		unsigned int offset;
 
-			char magic[4];
-			uint32_t sectionSize;
-			uint32_t flags;
-		public:
-			JParticle::EmitFlags emitFlags;
-			JParticle::VolumeType volumeType;
-			float volumeSweep;
-			float volumeMinRad;
-			int16_t volumeSize;
-			int16_t divNumber;
-			float rate;
-			float rateRndm;
-			uint8_t rateStep;
+		char magic[4];
+		uint32_t sectionSize;
+		uint32_t flags;
+	public:
+		JParticle::EmitFlags emitFlags;
+		JParticle::VolumeType volumeType;
+		float volumeSweep;
+		float volumeMinRad;
+		int16_t volumeSize;
+		int16_t divNumber;
+		float rate;
+		float rateRndm;
+		uint8_t rateStep;
 
-			int16_t maxFrame;
-			int16_t startFrame;
-			int16_t lifeTime;
-			float lifeTimeRndm;
+		int16_t maxFrame;
+		int16_t startFrame;
+		int16_t lifeTime;
+		float lifeTimeRndm;
 
-			float initialVelOmni;
-			float initialVelAxis;
-			float initialVelRndm;
-			float initialVelDir;
-			float initialVelRatio;
+		float initialVelOmni;
+		float initialVelAxis;
+		float initialVelRndm;
+		float initialVelDir;
+		float initialVelRatio;
 
-			float spread;
-			float airResist;
-			float airResistRndm;
+		float spread;
+		float airResist;
+		float airResistRndm;
 
-			float moment;
-			float momentRndm;
-			float accel;
-			float accelRndm;
+		float moment;
+		float momentRndm;
+		float accel;
+		float accelRndm;
 
-			vec3<float> emitterScale;
-			vec3<float> emitterTrans;
-			vec3<float> emitterDir;
-			vec3<int16_t> emitterRot;
-
-
-
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
-
-		class BSP1 {
-		private:
-			unsigned int offset;
-
-			char magic[4];
-			uint32_t sectionSize;
-			uint32_t flags;
-			uint8_t colorFlags;
-			uint8_t texFlags;
-		public:
-			JParticle::ShapeType shapeType;
-			JParticle::DirType dirType;
-			JParticle::RotType rotType;
-			JParticle::PlaneType planeType;
-			vec2<float> baseSize;
-			float tilingS;
-			float tilingT;
-			bool isDrawFwdAhead;
-			bool isDrawPrntAhead;
-			// stopDrawParent is in SSP1 in JPA1
-			// isNoDrawChild does not exist in JPA1
-
-			//TEV / PE Settings
-			uint8_t colorInSelect;
-			uint8_t alphaInSelect;
-			uint16_t blendModeFlags;
-			uint8_t alphaCompareFlags;
-			uint8_t alphaRef0;
-			uint8_t alphaRef1;
-			uint8_t zModeFlags;
-			int16_t anmRndm;
-
-			//Texture palette animation
-			bool isEnableTexture;
-			bool isGlblTexAnm;
-			JParticle::CalcIdxType texCalcIdxType;
-			uint8_t texIdx;
-			std::vector<uint8_t> texIdxAnimData;
-			uint8_t texIdxLoopOfstMask;
-
-			//Texture coordinate animation
-			bool isEnableProjection;
-			bool isEnableTexScrollAnm;
-			vec2<float> texInitTrans;
-			vec2<float> texInitScale;
-			//float texInitRot		not a thing until JPA2?
-			vec2<float> texIncTrans;
-			vec2<float> texIncScale;
-			float texIncRot;
-
-			//Color animation settings
-			bool isGlblClrAnm;
-			JParticle::CalcIdxType colorCalcIdxType;
-			RGBA colorPrm;
-			RGBA colorEnv;
-			std::vector<ColorAnimationKeyframe> colorPrmAnimData; //somethign iwth durations?
-			std::vector<ColorAnimationKeyframe> colorEnvAnimData; //somethign iwth durations?
-			uint16_t colorAnimMaxFrm;
-			uint8_t colorLoopOfstMask;
+		vec3<float> emitterScale;
+		vec3<float> emitterTrans;
+		vec3<float> emitterDir;
+		vec3<int16_t> emitterRot;
 
 
 
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
 
-		class ESP1 {
-		private:
-			unsigned int offset;
+	class BSP1 {
+	private:
+		unsigned int offset;
 
-			char magic[4];
-			uint32_t sectionSize;
-			uint32_t flags;
-		public:
-			bool isEnableScale;
-			bool isDiffXY;
-			bool isEnableScaleAnmY;
-			bool isEnableScaleAnmX;
-			bool isEnableScaleBySpeedX;
-			bool isEnableScaleBySpeedY;
-			bool isEnableRotate;
-			bool isEnableAlpha;
-			bool isEnableSinWave;
-			JParticle::CalcAlphaWaveType alphaWaveType;
-			bool anmTypeX;
-			bool anmTypeY;
-			uint8_t pivotX;
-			uint8_t pivotY;
-			float scaleInTiming;
-			float scaleOutTiming;
-			float scaleInValueX;
-			float scaleOutValueX;
-			float scaleInValueY;
-			float scaleOutValueY;
-			float scaleOutRandom;
-			vec2<uint16_t> scaleAnmMaxFrame;
-			float alphaInTiming;
-			float alphaOutTiming;
-			float alphaInValue;
-			float alphaBaseValue;
-			float alphaOutValue;
-			float alphaWaveParam1;
-			float alphaWaveParam2;
-			float alphaWaveParam3;
-			float alphaWaveRandom;
-			float rotateAngle;
-			float rotateAngleRandom;
-			float rotateSpeed;
-			float rotateSpeedRandom;
-			float rotateDirection;
+		char magic[4];
+		uint32_t sectionSize;
+		uint32_t flags;
+		uint8_t colorFlags;
+		uint8_t texFlags;
+	public:
+		JParticle::ShapeType shapeType;
+		JParticle::DirType dirType;
+		JParticle::RotType rotType;
+		JParticle::PlaneType planeType;
+		vec2<float> baseSize;
+		float tilingS;
+		float tilingT;
+		bool isDrawFwdAhead;
+		bool isDrawPrntAhead;
+		// stopDrawParent is in SSP1 in JPA1
+		// isNoDrawChild does not exist in JPA1
 
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
+		//TEV / PE Settings
+		uint8_t colorInSelect;
+		uint8_t alphaInSelect;
+		uint16_t blendModeFlags;
+		uint8_t alphaCompareFlags;
+		uint8_t alphaRef0;
+		uint8_t alphaRef1;
+		uint8_t zModeFlags;
+		int16_t anmRndm;
 
-		class ETX1 {
-		private:
-			unsigned int offset;
+		//Texture palette animation
+		bool isEnableTexture;
+		bool isGlblTexAnm;
+		JParticle::CalcIdxType texCalcIdxType;
+		uint8_t texIdx;
+		std::vector<uint8_t> texIdxAnimData;
+		uint8_t texIdxLoopOfstMask;
 
-			char magic[4];
-			uint32_t sectionSize;
-			uint32_t flags;
-		public:
-			JParticle::IndTextureMode indTextureMode;
-			float p00, p01, p02, p10, p11, p12, scale;
-			//std::array<float, 8> indTextureMtx;
-			uint8_t indTextureID;
-			uint8_t subTextureID;
-			uint8_t secondTextureIndex;
-			bool useSecondTex;
+		//Texture coordinate animation
+		bool isEnableProjection;
+		bool isEnableTexScrollAnm;
+		vec2<float> texInitTrans;
+		vec2<float> texInitScale;
+		//float texInitRot		not a thing until JPA2?
+		vec2<float> texIncTrans;
+		vec2<float> texIncScale;
+		float texIncRot;
 
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
-
-		class SSP1 {
-		private:
-			unsigned int offset;
-
-			char magic[4];
-			uint32_t sectionSize;
-			uint32_t flags;
-		public:
-			bool isInheritedScale;
-			bool isInheritedRGB;
-			bool isInheritedAlpha;
-			bool isEnableAlphaOut;
-			bool isEnableField;
-			bool isEnableRotate;
-			bool isEnableScaleOut;
-
-			bool isDrawParent;
-
-			JParticle::ShapeType shapeType;
-			JParticle::DirType dirType;
-			JParticle::RotType rotType;
-			JParticle::PlaneType planeType;
-			float posRndm;
-			float baseVel;
-			float baseVelRndm;
-			float velInfRate;
-			float gravity;
-			float timing;
-			uint16_t life;
-			uint16_t rate;
-			uint32_t step;
-			vec2<float> globalScale2D;
-			float rotateSpeed;
-			float inheritScale;
-			float inheritAlpha;
-			float inheritRGB;
-			RGBA colorPrm;
-			RGBA colorEnv;
-			uint8_t texIdx;
-
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
-
-		class FLD1 {
-		private:
-			unsigned int offset;
-
-			char magic[4];
-			uint32_t sectionSize;
-			uint32_t flags;
-		public:
-			JParticle::FieldStatusFlag statusFlag;
-			JParticle::FieldType type;
-			JParticle::FieldAddType addType;
-
-			// Used by Gravity, Air, Magnet, Newton, Vortex, Random, Drag, Convection, Spin
-			float mag;
-			// Used by Drag
-			float magRndm;
-
-			float maxDist;
-			vec3<float> pos;
-			vec3<float> dir;
-			float fadeIn;
-			float fadeOut;
-			float enTime;
-			float disTime;
-			uint8_t cycle;
-			uint8_t unk1;
-
-			float param1;
-			float param2;
-			float param3;
-			// Used by Newton, Air and Convection
-			//float refDistance;
-			// Used by Vortex and Spin
-			//float innerSpeed;
-			// Used by Vortex
-			//float outerSpeed;
+		//Color animation settings
+		bool isGlblClrAnm;
+		JParticle::CalcIdxType colorCalcIdxType;
+		RGBA colorPrm;
+		RGBA colorEnv;
+		std::vector<ColorAnimationKeyframe> colorPrmAnimData; //somethign iwth durations?
+		std::vector<ColorAnimationKeyframe> colorEnvAnimData; //somethign iwth durations?
+		uint16_t colorAnimMaxFrm;
+		uint8_t colorLoopOfstMask;
 
 
 
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
 
-		class KFA1 {
-		private:
-			unsigned int offset;
+	class ESP1 {
+	private:
+		unsigned int offset;
 
-			char magic[4];
-			uint32_t sectionSize;
-		public:
-			JParticle::KeyType keyType;
-			std::vector<CurveKeyframe> keys;
-			bool isLoopEnable;
-			uint8_t unk1;
+		char magic[4];
+		uint32_t sectionSize;
+		uint32_t flags;
+	public:
+		bool isEnableScale;
+		bool isDiffXY;
+		bool isEnableScaleAnmY;
+		bool isEnableScaleAnmX;
+		bool isEnableScaleBySpeedX;
+		bool isEnableScaleBySpeedY;
+		bool isEnableRotate;
+		bool isEnableAlpha;
+		bool isEnableSinWave;
+		JParticle::CalcAlphaWaveType alphaWaveType;
+		bool anmTypeX;
+		bool anmTypeY;
+		uint8_t pivotX;
+		uint8_t pivotY;
+		float scaleInTiming;
+		float scaleOutTiming;
+		float scaleInValueX;
+		float scaleOutValueX;
+		float scaleInValueY;
+		float scaleOutValueY;
+		float scaleOutRandom;
+		vec2<uint16_t> scaleAnmMaxFrame;
+		float alphaInTiming;
+		float alphaOutTiming;
+		float alphaInValue;
+		float alphaBaseValue;
+		float alphaOutValue;
+		float alphaWaveParam1;
+		float alphaWaveParam2;
+		float alphaWaveParam3;
+		float alphaWaveRandom;
+		float rotateAngle;
+		float rotateAngleRandom;
+		float rotateSpeed;
+		float rotateSpeedRandom;
+		float rotateDirection;
 
-			JPCError read(std::istream& jpc, const unsigned int offset);
-			JPCError save_changes(std::ostream& out);
-		};
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
 
-		class TDB1 {
-		private:
-			unsigned int offset;
+	class ETX1 {
+	private:
+		unsigned int offset;
 
-			char magic[4];
-			uint32_t sectionSize;
-			std::vector<uint16_t> texIDs;
-		public:
-			std::vector<std::string> texFilenames;
+		char magic[4];
+		uint32_t sectionSize;
+		uint32_t flags;
+	public:
+		JParticle::IndTextureMode indTextureMode;
+		float p00, p01, p02, p10, p11, p12, scale;
+		//std::array<float, 8> indTextureMtx;
+		uint8_t indTextureID;
+		uint8_t subTextureID;
+		uint8_t secondTextureIndex;
+		bool useSecondTex;
 
-			JPCError read(std::istream& jpc, const unsigned int offset, const uint8_t texCount);
-			JPCError populateFilenames(const std::vector<std::string>& texList);
-			JPCError save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures);
-		};
-	}
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
+
+	class SSP1 {
+	private:
+		unsigned int offset;
+
+		char magic[4];
+		uint32_t sectionSize;
+		uint32_t flags;
+	public:
+		bool isInheritedScale;
+		bool isInheritedRGB;
+		bool isInheritedAlpha;
+		bool isEnableAlphaOut;
+		bool isEnableField;
+		bool isEnableRotate;
+		bool isEnableScaleOut;
+
+		bool isDrawParent;
+
+		JParticle::ShapeType shapeType;
+		JParticle::DirType dirType;
+		JParticle::RotType rotType;
+		JParticle::PlaneType planeType;
+		float posRndm;
+		float baseVel;
+		float baseVelRndm;
+		float velInfRate;
+		float gravity;
+		float timing;
+		uint16_t life;
+		uint16_t rate;
+		uint32_t step;
+		vec2<float> globalScale2D;
+		float rotateSpeed;
+		float inheritScale;
+		float inheritAlpha;
+		float inheritRGB;
+		RGBA colorPrm;
+		RGBA colorEnv;
+		uint8_t texIdx;
+
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
+
+	class FLD1 {
+	private:
+		unsigned int offset;
+
+		char magic[4];
+		uint32_t sectionSize;
+		uint32_t flags;
+	public:
+		JParticle::FieldStatusFlag statusFlag;
+		JParticle::FieldType type;
+		JParticle::FieldAddType addType;
+
+		// Used by Gravity, Air, Magnet, Newton, Vortex, Random, Drag, Convection, Spin
+		float mag;
+		// Used by Drag
+		float magRndm;
+
+		float maxDist;
+		vec3<float> pos;
+		vec3<float> dir;
+		float fadeIn;
+		float fadeOut;
+		float enTime;
+		float disTime;
+		uint8_t cycle;
+		uint8_t unk1;
+
+		float param1;
+		float param2;
+		float param3;
+		// Used by Newton, Air and Convection
+		//float refDistance;
+		// Used by Vortex and Spin
+		//float innerSpeed;
+		// Used by Vortex
+		//float outerSpeed;
+
+
+
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
+
+	class KFA1 {
+	private:
+		unsigned int offset;
+
+		char magic[4];
+		uint32_t sectionSize;
+	public:
+		JParticle::KeyType keyType;
+		std::vector<CurveKeyframe> keys;
+		bool isLoopEnable;
+		uint8_t unk1;
+
+		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError save_changes(std::ostream& out);
+	};
+
+	class TDB1 {
+	private:
+		unsigned int offset;
+
+		char magic[4];
+		uint32_t sectionSize;
+		std::vector<uint16_t> texIDs;
+	public:
+		std::vector<std::string> texFilenames;
+
+		JPCError read(std::istream& jpc, const unsigned int offset, const uint8_t texCount);
+		JPCError populateFilenames(const std::vector<std::string>& texList);
+		JPCError save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures);
+	};
+
 }
 
 
@@ -487,14 +486,14 @@ public:
 
 	uint8_t unknown_6[6];
 
-	std::optional<JParticle::chunks::BEM1> emitter = std::nullopt;
-	std::optional<JParticle::chunks::BSP1> baseShape = std::nullopt;
-	std::optional<JParticle::chunks::ESP1> extraShape = std::nullopt;
-	std::optional<JParticle::chunks::ETX1> extraTex = std::nullopt;
-	std::optional<JParticle::chunks::SSP1> childShape = std::nullopt;
-	std::vector<JParticle::chunks::FLD1> fields = {};
-	std::vector<JParticle::chunks::KFA1> curves = {};
-	std::optional<JParticle::chunks::TDB1> texDatabase = std::nullopt;
+	std::optional<JParticle::BEM1> emitter = std::nullopt;
+	std::optional<JParticle::BSP1> baseShape = std::nullopt;
+	std::optional<JParticle::ESP1> extraShape = std::nullopt;
+	std::optional<JParticle::ETX1> extraTex = std::nullopt;
+	std::optional<JParticle::SSP1> childShape = std::nullopt;
+	std::vector<JParticle::FLD1> fields = {};
+	std::vector<JParticle::KFA1> curves = {};
+	std::optional<JParticle::TDB1> texDatabase = std::nullopt;
 
 	JPCError read(std::istream& jpc, unsigned int particle_offset);
 	JPCError save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures);

@@ -21,11 +21,6 @@ enum struct [[nodiscard]] RPXError {
 	COUNT
 };
 
-struct Elf32_Shdr_Sort {
-	uint32_t index;
-	uint32_t sh_offset;
-};
-
 struct Rpl_Fileinfo {
 	uint32_t magic_version;
 	uint32_t mRegBytes_Text;

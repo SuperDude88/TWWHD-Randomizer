@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <memory>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -29,97 +30,124 @@ enum struct [[nodiscard]] EventlistError
 	COUNT
 };
 
+//class Action;
+//class Actor;
+//class Event;
+namespace FileTypes {
+	class EventList; //forward declare
+}
+
 struct Prop {
 	std::string prop_name;
 	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> prop_value;
 };
 
-namespace FileTypes {
-	class EventList;
-};
-
 class Property {
 public:
 	static constexpr int DATA_SIZE = 0x40; //could be a define?
-	unsigned int offset;
 
 	std::string name;
+	std::shared_ptr<Property> next_property; //Pointer because of initialization stuff
+	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> value;
+
+	EventlistError read(std::istream& in, const unsigned int offset);
+	void save_changes(std::ostream& out);
+private:
+	unsigned int offset;
+
 	int32_t property_index;
 	uint32_t data_type;
 	uint32_t data_index;
 	uint32_t data_size;
 	int32_t next_property_index;
 	char zero_initialized_runtime_data[0xC] = { "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" };
-	Property* next_property; //Pointer because of initialization stuff
-	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> value;
 
-	EventlistError read(std::istream& file, const unsigned int offset);
-	void save_changes(std::ostream& fptr);
+	friend class FileTypes::EventList;
+	friend class Action;
+	friend class Actor;
+	friend class Event;
 };
 
 class Action {
 public:
 	static constexpr int DATA_SIZE = 0x50; //could be a define?
-	unsigned int offset;
 
 	std::string name;
-	uint32_t duplicate_id = 0;
-	int32_t action_index;
 	std::array<int32_t, 3> starting_flags = { -1, -1, -1 };
 	int32_t flag_id_to_set;
+	std::vector<std::shared_ptr<Property>> properties;
+	std::shared_ptr<Action> next_action; //Pointer because of initialization stuff
+
+	EventlistError read(std::istream& in, const unsigned int offset);
+	void save_changes(std::ostream& out);
+	std::shared_ptr<Property> get_prop(const std::string& prop_name);
+	Property& add_property(const std::string& name);
+private:
+	unsigned int offset;
+	
+	uint32_t duplicate_id = 0;
+	int32_t action_index;
 	int32_t first_property_index;
 	int32_t next_action_index;
 	char zero_initialized_runtime_data[0x10] = { "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" };
-	std::vector<Property> properties;
-	Action* next_action; //Pointer because of initialization stuff
-
-	EventlistError read(std::istream& file, const unsigned int offset);
-	void save_changes(std::ostream& fptr);
-	std::optional<std::reference_wrapper<Property>> get_prop(const std::string& prop_name);
-	Property& add_property(const std::string& name);
+	
+	friend class FileTypes::EventList;
+	friend class Actor;
+	friend class Event;
 };
 
 class Actor {
 public:
 	static constexpr int DATA_SIZE = 0x50; //could be a define?
-	unsigned int offset;
 
 	std::string name;
 	uint32_t staff_identifier = 0;
-	int32_t actor_index;
 	int32_t flag_id_to_set;
 	uint32_t staff_type = 0;
+	std::vector<std::shared_ptr<Action>> actions;
+	std::shared_ptr<Action> initial_action;
+
+	EventlistError read(std::istream& in, const unsigned int offset);
+	EventlistError save_changes(std::ostream& out);
+	std::shared_ptr<Action> add_action(const FileTypes::EventList* const list, const std::string& name, const std::vector<Prop>& properties);
+private:
+	unsigned int offset;
+
+	int32_t actor_index;
 	int32_t initial_action_index;
 	char zero_initialized_runtime_data[0x1C] = { "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" };
-	std::vector<Action> actions;
-	Action initial_action;
-
-	EventlistError read(std::istream& file, const unsigned int offset);
-	EventlistError save_changes(std::ostream& fptr);
-	std::optional<std::reference_wrapper<Action>> add_action(const FileTypes::EventList* const list, const std::string& name, const std::vector<Prop>& properties);
+	
+	friend class FileTypes::EventList;
+	friend class Action;
+	friend class Event;
 };
 
 class Event {
 public:
 	static constexpr int DATA_SIZE = 0xB0; //could be a define?
-	unsigned int offset;
 
 	std::string name;
-	int32_t event_index;
 	uint32_t unknown_1 = 0;
 	uint32_t priority = 0;
-	std::array<int32_t, 0x14> actor_indexes = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-	uint32_t num_actors = 0;
 	std::array<int32_t, 2> starting_flags = { -1, -1 };
 	std::array<int32_t, 3> ending_flags = { -1, -1, -1 };
 	bool play_jingle = false;
-	char zero_initialized_runtime_data[0x1B] = { "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" };
-	std::vector<Actor> actors;
+	std::vector<std::shared_ptr<Actor>> actors;
 
-	EventlistError read(std::istream& file, const unsigned int offset);
-	void save_changes(std::ostream& fptr);
-	std::optional<std::reference_wrapper<Actor>> get_actor(const std::string& name);
-	std::optional<std::reference_wrapper<Actor>> add_actor(const FileTypes::EventList* const list, const std::string& name);
+	EventlistError read(std::istream& in, const unsigned int offset);
+	void save_changes(std::ostream& out);
+	std::shared_ptr<Actor> get_actor(const std::string& name);
+	std::shared_ptr<Actor> add_actor(const FileTypes::EventList* const list, const std::string& name);
+private:
+	unsigned int offset;
+	int32_t event_index;
+	std::array<int32_t, 0x14> actor_indexes = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+	uint32_t num_actors = 0;
+	char zero_initialized_runtime_data[0x1B] = { "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" };
+	
+	friend class FileTypes::EventList;
+	friend class Action;
+	friend class Actor;
 };
 
 namespace FileTypes
@@ -131,6 +159,17 @@ namespace FileTypes
 	public:
 		static constexpr int32_t TOTAL_NUM_FLAGS = 0x2800; //could be a define?
 
+		std::unordered_map<std::string, std::shared_ptr<Event>> Events_By_Name;
+
+		EventList();
+		static EventList createNew(const std::string& filename);
+		EventlistError loadFromBinary(std::istream& in);
+		EventlistError loadFromFile(const std::string& filePath);
+		EventlistError writeToStream(std::ostream& out);
+		EventlistError writeToFile(const std::string& outFilePath);
+		Event& add_event(const std::string& name);
+		std::optional<int32_t> get_unused_flag_id() const;
+	private:
 		uint32_t event_list_offset;
 		uint32_t num_events;
 		uint32_t actor_list_offset;
@@ -147,27 +186,17 @@ namespace FileTypes
 		uint32_t string_list_total_size;
 		char padding[8];
 
-		std::vector<Event> Events;
-		std::unordered_map<std::string, Event> Events_By_Name;
+		std::vector<std::shared_ptr<Event>> Events;
 
-		std::vector<Actor> All_Actors;
-		std::vector<Action> All_Actions;
-		std::vector<Property> All_Properties;
+		std::vector<std::shared_ptr<Actor>> All_Actors;
+		std::vector<std::shared_ptr<Action>> All_Actions;
+		std::vector<std::shared_ptr<Property>> All_Properties;
 		std::vector<float> All_Floats;
 		std::vector<int32_t> All_Integers;
 		std::unordered_map<uint32_t, std::string> All_Strings_By_Offset;
 
-		mutable std::vector<uint32_t> unused_flag_ids;
+		mutable std::vector<int32_t> unused_flag_ids;
 
-		EventList();
-		static EventList createNew(const std::string& filename);
-		EventlistError loadFromBinary(std::istream& file_entry);
-		EventlistError loadFromFile(const std::string& filePath);
-		EventlistError writeToStream(std::ostream& file_entry);
-		EventlistError writeToFile(const std::string& outFilePath);
-		Event& add_event(const std::string& name);
-		std::optional<uint32_t> get_unused_flag_id() const;
-	private:
 		void initNew();
 	};
 }
