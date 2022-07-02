@@ -75,13 +75,13 @@
       MotherAndChildIsles: CanSailAway
       MotherAndChildInsideMotherIsle: CanPlayBoG
       SpectacleIsland: CanSailAway
-      WindfallIsland: CanSailAway
+      WindfallIsland: CanSailAway or CanPlayBoG
       PawprintIsle: CanSailAway
-      DragonRoostIsland: CanSailAway
+      DragonRoostIsland: CanSailAway or CanPlayBoG
       FlightControlPlatform: CanSailAway
       WesternFairyIsland: CanSailAway
       RockSpireIsle: CanSailAway
-      TingleIsland: CanSailAway
+      TingleIsland: CanSailAway or CanPlayBoG
       NorthernTriangleIsland: CanSailAway
       EasternFairyIsland: CanSailAway
       FireMountain: CanSailAway
@@ -90,7 +90,7 @@
       GreatfishIsle: CanSailAway
       CyclopsReef: CanSailAway
       SixEyeReef: CanSailAway
-      TowerOfTheGods: CanSailAway
+      TowerOfTheGods: CanSailAway or CanPlayBoG
       EasternTriangleIsland: CanSailAway
       ThornedFairyIsland: CanSailAway
       NeedleRockIsle: CanSailAway
@@ -103,12 +103,12 @@
       DiamondSteppeIsland: CanSailAway
       FiveEyeReef: CanSailAway
       SharkIsland: CanSailAway
-      SouthernFairyIsland: CanSailAway
+      SouthernFairyIsland: CanSailAway or CanPlayBoG
       IceRingIsle: CanSailAway
-      ForestHaven: CanSailAway
+      ForestHaven: CanSailAway or CanPlayBoG
       CliffPlateauIsles: CanSailAway
       HorseshoeIsle: CanSailAway
-      OutsetIsland: CanSailAway
+      OutsetIsland: CanSailAway or CanPlayBoG
       HeadstoneIsland: CanSailAway
       TwoEyeReef: CanSailAway
       AngularIsles: CanSailAway
