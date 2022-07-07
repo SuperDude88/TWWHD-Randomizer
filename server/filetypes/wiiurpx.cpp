@@ -9,6 +9,7 @@
 
 #include <zlib.h>
 #include <vector>
+#include <array>
 #include <fstream>
 #include <algorithm>
 #include <cstring>
@@ -22,7 +23,7 @@ using eType = Utility::Endian::Type;
 namespace {
     uint32_t crc32_rpx(uint32_t crc, uint8_t* buff, uint32_t len)
     {
-        uint32_t crc_table[256];
+        std::array<uint32_t, 256> crc_table;
         for (uint32_t i = 0; i < 256; i++)
         {
             uint32_t c = i;

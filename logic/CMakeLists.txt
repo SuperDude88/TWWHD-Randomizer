@@ -15,7 +15,7 @@ if(FILL_TESTING)
 
   if(ENABLE_DEBUG)
     message("Debugging is ON")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG -DLOCAL_TESTING")
   endif()
 
   add_executable(assumed_fill_test main.cpp GameItem.cpp Location.cpp World.cpp ../options.cpp ItemPool.cpp Area.cpp Fill.cpp Random.cpp Search.cpp SpoilerLog.cpp Dungeon.cpp Generate.cpp Requirements.cpp Entrance.cpp EntranceShuffle.cpp HintRegion.cpp "../server/command/Log.cpp")
@@ -35,7 +35,7 @@ elseif(MASS_TESTING)
 
   if(ENABLE_DEBUG)
     message("Debugging is ON")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG -DLOCAL_TESTING")
   endif()
 
   add_executable(mass_test mass_test.cpp GameItem.cpp Location.cpp World.cpp ../options.cpp ItemPool.cpp Area.cpp Fill.cpp Random.cpp Search.cpp SpoilerLog.cpp Dungeon.cpp Generate.cpp Requirements.cpp Entrance.cpp EntranceShuffle.cpp HintRegion.cpp "../server/command/Log.cpp")

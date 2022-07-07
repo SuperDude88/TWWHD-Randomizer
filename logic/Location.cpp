@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 static std::unordered_map<LocationId, std::string> locationIdPrettyNameMap;
+static std::unordered_map<std::string, LocationId> prettyNameLocationIdMap;
 
 LocationId nameToLocationId(const std::string& name)
 {
@@ -661,6 +662,7 @@ std::string locationIdToName(LocationId locationId)
 void storeNewLocationPrettyName(const LocationId& locationId, const std::string& prettyName)
 {
     locationIdPrettyNameMap.emplace(locationId, prettyName);
+    prettyNameLocationIdMap.emplace(prettyName, locationId);
 }
 
 std::string locationIdToPrettyName(const LocationId& locationId)
@@ -670,6 +672,15 @@ std::string locationIdToPrettyName(const LocationId& locationId)
         return "INVALID LOCATION";
     }
     return locationIdPrettyNameMap.at(locationId);
+}
+
+LocationId prettyNameToLocationId(const std::string& prettyName)
+{
+    if (prettyNameLocationIdMap.count(prettyName) == 0)
+    {
+        return LocationId::INVALID;
+    }
+    return prettyNameLocationIdMap.at(prettyName);
 }
 
 LocationCategory nameToLocationCategory(const std::string& name)

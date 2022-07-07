@@ -82,7 +82,7 @@ namespace {
         {
             return MSBTError::NOT_LBL1;
         }
-        header.offset = (uint32_t)msbt.tellg() - 4;
+        header.offset = static_cast<uint32_t>(msbt.tellg()) - 4;
         if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
         {
             return MSBTError::REACHED_EOF;
@@ -171,7 +171,7 @@ namespace {
         {
             return MSBTError::NOT_ATR1;
         }
-        header.offset = (uint32_t)msbt.tellg() - 4;
+        header.offset = static_cast<uint32_t>(msbt.tellg()) - 4;
         if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
         {
             return MSBTError::REACHED_EOF;
@@ -285,7 +285,7 @@ namespace {
         {
             return MSBTError::NOT_ATR1;
         }
-        header.offset = (uint32_t)msbt.tellg() - 4;
+        header.offset = static_cast<uint32_t>(msbt.tellg()) - 4;
         if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
         {
             return MSBTError::REACHED_EOF;
@@ -332,7 +332,7 @@ namespace {
         {
             return MSBTError::NOT_ATR1;
         }
-        header.offset = (uint32_t)msbt.tellg() - 4;
+        header.offset = static_cast<uint32_t>(msbt.tellg()) - 4;
         if (!msbt.read(reinterpret_cast<char*>(&header.tableSize), sizeof(header.tableSize)))
         {
             return MSBTError::REACHED_EOF;
@@ -380,6 +380,7 @@ namespace {
             {
                 return MSBTError::REACHED_EOF;
             }
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.message);
 
             header.entries.push_back(entry);
         }
@@ -516,6 +517,7 @@ namespace {
         }
 
         for (TXT2Entry& entry : header.entries) { //Write strings
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.message);
             out.write(reinterpret_cast<const char*>(&entry.message[0]), entry.message.size() * 2); //size() returns number of 2-byte chars, function needs bytes total
         }
 
@@ -663,24 +665,20 @@ namespace FileTypes {
     }
 
     Message& MSBTFile::addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message) {
-        Message newMessage;
+        Message& newMessage = messages_by_label[label];
 
-        Label newLabel;
-        newLabel.checksum = LabelChecksum(LBL1.entryCount, label); //Entry count is always 0x65 for .msbt
-        newLabel.length = label.size();
-        newLabel.string = label;
-        newLabel.messageIndex = TXT2.entryCount; //Next index after list = total number of entries
+        newMessage.label.checksum = LabelChecksum(LBL1.entryCount, label); //Entry count is always 0x65 for .msbt
+        newMessage.label.length = label.size();
+        newMessage.label.string = label;
+        newMessage.label.messageIndex = TXT2.entryCount; //Next index after list = total number of entries
 
-        TXT2Entry newEntry;
-        newEntry.message = message;
-
-        newMessage.label = newLabel;
         newMessage.attributes = attributes;
         newMessage.style = style;
-        newMessage.text = newEntry;
-        messages_by_label[newLabel.string] = newMessage;
+        newMessage.text.message = message;
 
-        return messages_by_label[newLabel.string];
+        TXT2.entryCount += 1;
+
+        return messages_by_label[label];
     }
 
     MSBTError MSBTFile::writeToStream(std::ostream& out) {
@@ -724,8 +722,8 @@ namespace FileTypes {
             entry.stringCount = entry.labels.size();
             entry.stringOffset = nextGroupOffset;
             for (Label& label : entry.labels) {
-                nextGroupOffset = nextGroupOffset + label.string.size() + 0x5; //loop through the labels in the group and add their length for the next group offset
-                LBL1.tableSize = LBL1.tableSize + label.string.size() + 0x5; //Add entry lengths to the table length
+                nextGroupOffset += label.string.size() + 0x5; //loop through the labels in the group and add their length for the next group offset
+                LBL1.tableSize += label.string.size() + 0x5; //Add entry lengths to the table length
             }
         }
 

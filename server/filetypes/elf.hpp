@@ -29,7 +29,7 @@ namespace FileTypes {
 	class ELF {
 	public:
 		Elf32_Ehdr ehdr;
-		std::vector<shdr_index_t> shdr_table; //std::pair so we can have index + section header without the "sort" struct
+		std::vector<shdr_index_t> shdr_table;
 
 		ELF();
 		static ELF createNew(const std::string& filename);

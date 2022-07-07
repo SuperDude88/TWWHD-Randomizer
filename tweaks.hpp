@@ -3,9 +3,10 @@
 #include <string>
 #include <utility>
 
-#include "libs/json.hpp"
 #include "server/command/RandoSession.hpp"
+#include "server/filetypes/util/elfUtil.hpp"
 #include "options.hpp"
+#include "logic/World.hpp"
 #include "logic/Location.hpp"
 #include "logic/GameItem.hpp"
 
@@ -14,21 +15,7 @@
 extern RandoSession g_session; //defined in randomizer.cpp, shared between main rando/logic/patches, easier than passing to every patch
 
 
-
-//Shouldn't be called outside of the cpp
-// 
-//void Load_Custom_Symbols(const std::string& file_path);
-//
-//nlohmann::json Load_Patches(const std::string& file_path);
-
-void Apply_Patch(const std::string& file_path);
-
-void Add_Relocations(const std::string file_path);
-
-void Remove_Relocation(const std::pair<int, int>& offset);
-
-
-
+/*
 void set_new_game_starting_location(const uint8_t spawn_id, const uint8_t room_index);
 
 void change_ship_starting_island(const uint8_t room_index);
@@ -79,6 +66,7 @@ void update_savage_labyrinth_hint_tablet(const Location& floor30, const Location
 
 //hints
 
+/*
 void shorten_zephos_event();
 
 void update_korl_dialog();
@@ -101,7 +89,7 @@ void remove_makar_kidnapping();
 
 void increase_crawl_speed();
 
-//chart numbers
+void add_chart_number_to_item_get_messages();
 
 void increase_grapple_animation_speed();
 
@@ -109,7 +97,7 @@ void increase_block_move_animation();
 
 void increase_misc_animations();
 
-//starting clothes
+void set_casual_clothes();
 
 void hide_ship_sail();
 
@@ -133,12 +121,14 @@ void update_tingle_statue_item_get_funcs();
 
 void make_tingle_statue_reward_rupee_rainbow_colored();
 
-//seed hash
+void show_seed_hash_on_title_screen();
+*/
 
 //key bag
 
 //required dungeon map markers
 
+/*
 void add_chest_in_place_jabun_cutscene();
 
 void add_jabun_obstacles_to_default_layer();
@@ -162,10 +152,11 @@ void remove_minor_pan_cs();
 void fix_stone_head_bugs();
 
 void show_tingle_statues_on_quest_screen();
+*/
 
 
 
 void apply_necessary_tweaks(const Settings& settings, const std::string& seedHash);
 
-void apply_necessary_post_randomization_tweaks(const bool randomizeItems, const std::vector<Location>& itemLocations, const PigColor& pigColor);
+void apply_necessary_post_randomization_tweaks(const bool randomizeItems, WorldPool& worlds, const PigColor& pigColor, const uint8_t& startIsland);
 

@@ -379,7 +379,8 @@ enum struct LocationModificationType
 
 LocationId nameToLocationId(const std::string& name);
 std::string locationIdToName(LocationId location);
-void storeNewLocationPrettyName(const LocationId& lcoationId, const std::string& prettyName);
+void storeNewLocationPrettyName(const LocationId& locationId, const std::string& prettyName);
+LocationId prettyNameToLocationId(const std::string& prettyName);
 std::string locationIdToPrettyName(const LocationId& locationId);
 LocationCategory nameToLocationCategory(const std::string& name);
 LocationModificationType nameToModificationType(const std::string& name);

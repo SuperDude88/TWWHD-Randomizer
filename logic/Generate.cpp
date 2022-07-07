@@ -38,7 +38,12 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
           }
           worlds[i].determineChartMappings();
           worlds[i].determineProgressionLocations();
-          worlds[i].determineRaceModeDungeons();
+          World::WorldLoadingError err = World::WorldLoadingError::NONE;
+          err = worlds[i].determineRaceModeDungeons();
+          if (err != World::WorldLoadingError::NONE)
+          {
+              return 1;
+          }
           worlds[i].setItemPools();
       }
 
@@ -68,7 +73,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
   {
       totalFillAttempts--;
       fillError = fill(worlds);
-      if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS) {
+      if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS || fillError == FillError::PLANDOMIZER_ERROR) {
           break;
       }
       DebugLog::getInstance().log("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");

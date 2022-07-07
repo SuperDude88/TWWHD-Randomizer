@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "../utility/endian.hpp"
+#include "../utility/stringUtil.hpp"
 #include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
@@ -1609,6 +1610,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			}
 			else {
 				text = name;
+            	Utility::Endian::toPlatform_inplace(eType::Big, text);
 			}
 		}
 		else {
@@ -1681,6 +1683,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			return err;
 		}
 
+		text = Utility::Str::assureNullTermination(text);
 		texLen = text.size() * 2; //need len in bytes, size returns num chars
 		//might want to set restricted len?
 
@@ -1734,6 +1737,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		textOffset = 0;
 		if (!text.empty()) {
 			textOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+            Utility::Endian::toPlatform_inplace(eType::Big, text);
 			out.write(reinterpret_cast<char*>(&text[0]), text.size() * 2);
 			padToLen(out, 4);
 		}

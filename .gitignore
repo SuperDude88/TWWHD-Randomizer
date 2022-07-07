@@ -9,4 +9,5 @@ asm/temp
 logic/build/*
 logic/.vs/*
 logic/out/*
+logic/data/plandomizer.yaml
 misc

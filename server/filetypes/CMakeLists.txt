@@ -8,3 +8,5 @@ else()
 	cmake_policy(SET CMP0076 NEW)
 	target_sources(wwhd_rando PRIVATE wiiurpx.cpp yaz0.cpp sarc.cpp msbt.cpp elf.cpp events.cpp bfres.cpp jpc.cpp dzx.cpp charts.cpp bflyt.cpp util/elfUtil.cpp)
 endif()
+
+add_subdirectory("bflim")

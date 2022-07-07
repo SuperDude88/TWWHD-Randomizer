@@ -34,7 +34,7 @@ namespace {
 			return alignments.at(fileExt);
 		}
 		else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
-			uint16_t alignment = *(uint16_t*)&file.data[(file.data.size() - 8)];
+			uint16_t alignment = *reinterpret_cast<const uint16_t*>(&file.data[(file.data.size() - 8)]);
 			Utility::Endian::toPlatform_inplace(eType::Big, alignment);
 			return alignment;
 		}

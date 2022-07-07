@@ -9,7 +9,7 @@
 
 using eType = Utility::Endian::Type;
 
-static const std::unordered_map<std::string, int> size_by_type{ {"SCOB", 0x24}, {"ACTR", 0x20}, {"TRES", 0x20}, {"PLYR", 0x20}, {"SCLS", 0xC}, {"STAG", 0x14}, {"FILI", 0x8}, {"SHIP", 0x10}, {"RTBL", 0x4}, {"RTBL_SubEntry", 0x8}, {"RTBL_AdjacentRoom", 0x1}, {"RPAT", 0xC}, {"RPPN", 0x10}, {"TGOB", 0x20}, {"TGSC", 0x24}, {"DOOR", 0x24}, {"TGDR", 0x24}, {"EVNT", 0x18}, {"2DMA", 0x38}, {"MULT", 0xC}, {"FLOR", 0x14}, {"LBNK", 0x1}, {"SOND", 0x1C}, {"RCAM", 0x14}, {"RARO", 0x14}, {"DMAP", 0x10}, {"EnvR", 0x8}, {"Colo", 0xC}, {"Pale", 0x6C}, {"Virt", 0x38}, {"LGHT", 0x1C}, {"LGTV", 0x1C}, {"MECO", 0x2}, {"MEMA", 0x4}, {"PATH", 0xC}, {"PPNT", 0x10}, {"CAMR", 0x14}, {"AROB", 0x14} };
+static const std::unordered_map<std::string, unsigned int> size_by_type{ {"SCOB", 0x24}, {"ACTR", 0x20}, {"TRES", 0x20}, {"PLYR", 0x20}, {"SCLS", 0xC}, {"STAG", 0x14}, {"FILI", 0x8}, {"SHIP", 0x10}, {"RTBL", 0x4}, {"RTBL_SubEntry", 0x8}, {"RTBL_AdjacentRoom", 0x1}, {"RPAT", 0xC}, {"RPPN", 0x10}, {"TGOB", 0x20}, {"TGSC", 0x24}, {"DOOR", 0x24}, {"TGDR", 0x24}, {"EVNT", 0x18}, {"2DMA", 0x38}, {"MULT", 0xC}, {"FLOR", 0x14}, {"LBNK", 0x1}, {"SOND", 0x1C}, {"RCAM", 0x14}, {"RARO", 0x14}, {"DMAP", 0x10}, {"EnvR", 0x8}, {"Colo", 0xC}, {"Pale", 0x6C}, {"Virt", 0x38}, {"LGHT", 0x1C}, {"LGTV", 0x1C}, {"MECO", 0x2}, {"MEMA", 0x4}, {"PATH", 0xC}, {"PPNT", 0x10}, {"CAMR", 0x14}, {"AROB", 0x14} };
 
 static const std::unordered_map<char, unsigned int> layer_char_to_layer_index{ {'0', 0}, {'1', 1}, {'2', 2}, {'3', 3}, {'4', 4}, {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}, {'a', 10}, {'b', 11} };
 
@@ -116,9 +116,10 @@ DZXError Chunk::save_changes(std::ostream& out) {
 	offset = out.tellp();
 
 	num_entries = entries.size();
-	if (num_entries == 0) {
-		return DZXError::CHUNK_NO_ENTRIES;
-	}
+	//When nintendo deleted tuner triggers they left some empty chunks
+	//if (num_entries == 0) {
+	//	return DZXError::CHUNK_NO_ENTRIES;
+	//}
 
 	if(layer != DEFAULT_LAYER) {
 		char buf[2];
@@ -250,13 +251,16 @@ namespace FileTypes {
 	}
 
 	void DZXFile::remove_entity(ChunkEntry* entity) {
-		int len = entity->data.size();
+		size_t len = entity->data.size();
 		entity->data.clear();
 		entity->data.resize(len, '\x00'); //clear entity, replace it with null data
 		return;
 	}
 
 	DZXError DZXFile::writeToStream(std::ostream& out) {
+		for (auto it = chunks.begin(); it != chunks.end(); it++) {
+			if((*it).entries.size() == 0) it = chunks.erase(it); //remove empty chunks
+		}
 		num_chunks = chunks.size();
 		if (num_chunks == 0) {
 			return DZXError::NO_CHUNKS;
@@ -302,7 +306,7 @@ namespace FileTypes {
 					
 					out.seekp(subentry_offset, std::ios::beg);
 					out.write(&entry.data[4], 4);
-					entry.data.replace(8, 4, (char*)&rooms_offset, 4);
+					entry.data.replace(8, 4, reinterpret_cast<char*>(&rooms_offset), 4);
 					const auto rooms_offset_byteswap = Utility::Endian::toPlatform(eType::Big, rooms_offset);
 					out.write(reinterpret_cast<const char*>(&rooms_offset_byteswap), 4);
 					out.seekp(rooms_offset, std::ios::beg);
