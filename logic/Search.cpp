@@ -135,7 +135,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
     for (auto& locAccess : areaEntry.locations)
     {
         // Add new locations we come across to try them and potentially account
-        // for any items on the next iteration
+        // for any items on the next iteration.
         locationsToTry.push_back(&locAccess);
     }
 }
@@ -326,6 +326,19 @@ static void pareDownPlaythrough(WorldPool& worlds)
     // Keep track of all locations we temporarily take items away from to give them back
     // after the playthrough calculation
     std::unordered_map<Location*, Item> nonRequiredLocations = {};
+    // None of the items in non progress locations should be considered in the playthrough
+    // Temporarily take these items away
+    for (auto& world : worlds)
+    {
+        for (auto& location : world.locationEntries)
+        {
+            if (!location.progression)
+            {
+                nonRequiredLocations.insert({&location, location.currentItem});
+                location.currentItem = {GameItem::INVALID, location.worldId};
+            }
+        }
+    }
 
     for (auto sphereItr = playthroughSpheres.rbegin(); sphereItr != playthroughSpheres.rend(); sphereItr++)
     {
@@ -350,6 +363,14 @@ static void pareDownPlaythrough(WorldPool& worlds)
             }
         }
     }
+
+    // Now regenerate the playthrough with only the required locations incase
+    // some spheres were flattened by non-required locations having progress items
+    playthroughSpheres.clear();
+    entranceSpheres.clear();
+    ItemPool emptyItems = {};
+    search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
+
     // Give back nonrequired items
     for (auto& [location, item] : nonRequiredLocations)
     {

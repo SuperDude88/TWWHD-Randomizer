@@ -244,6 +244,8 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.starting_hcs;
     case Option::RemoveMusic:
         return settings.remove_music;
+    case Option::Plandomizer:
+        return settings.plandomizer;
     default:
         return 0;
 	}
