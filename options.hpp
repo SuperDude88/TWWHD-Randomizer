@@ -75,6 +75,8 @@ enum struct Option {
     StartingHP,
     StartingHC,
     RemoveMusic,
+
+    Plandomizer,
     COUNT
 };
 
@@ -133,6 +135,8 @@ struct Settings {
     uint16_t starting_pohs = 0;
     uint16_t starting_hcs = 0;
     bool remove_music = false;
+
+    bool plandomizer = false;
 };
 
 Option nameToSetting(const std::string& name);
