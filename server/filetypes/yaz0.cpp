@@ -29,7 +29,7 @@ namespace {
     }
     
     // simple and straight encoding scheme for Yaz0
-    inline uint32_t simpleEnc(const uint8_t* src, uint32_t size, uint32_t pos, uint32_t& matchPosOut, uint32_t searchRange)
+    inline uint32_t simpleEnc(const uint8_t* src, const uint32_t size, const uint32_t pos, uint32_t& matchPosOut, const uint32_t searchRange)
     {
         uint32_t startPos = pos - searchRange;
         uint32_t i = 0;
@@ -82,12 +82,13 @@ namespace {
     }
     
     // a lookahead encoding scheme for ngc Yaz0
-    uint32_t nintendoEnc(const uint8_t* src, uint32_t size, uint32_t pos, uint32_t& matchPosOut, uint32_t searchRange)
+    uint32_t nintendoEnc(uint32_t& numBytes1, uint32_t& matchPos, int& prevFlag, const uint8_t* src, const uint32_t size, const uint32_t pos, uint32_t& matchPosOut, const uint32_t searchRange)
     {
         uint32_t numBytes = 1;
-        static thread_local uint32_t numBytes1;
-        static thread_local uint32_t matchPos;
-        static thread_local int prevFlag = 0;
+        //can't use thread_local because it causes unsupported relocation errors for console
+        //static thread_local uint32_t numBytes1;
+        //static thread_local uint32_t matchPos;
+        //static thread_local int prevFlag = 0;
     
         // if prevFlag is set, it means that the previous position was determined by look-ahead try.
         // so just use it. this is not the best optimization, but nintendo's choice for speed.
@@ -128,13 +129,17 @@ namespace {
         {
             searchRange >>= (9 - level);
         }
+
+        uint32_t nintendoEnc_numBytes1; //these could be static and thread_local but that causes relocation issues on console
+        uint32_t nintendoEnc_matchPos;  //these could be static and thread_local but that causes relocation issues on console
+        int nintendoEnc_prevFlag = 0;   //these could be static and thread_local but that causes relocation issues on console
     
         while(srcPos < srcSize)
         {
             uint32_t numBytes;
             uint32_t matchPos;
     
-            numBytes = nintendoEnc(src, srcSize, srcPos, matchPos, searchRange);
+            numBytes = nintendoEnc(nintendoEnc_numBytes1, nintendoEnc_matchPos, nintendoEnc_prevFlag, src, srcSize, srcPos, matchPos, searchRange);
             if (numBytes < 3)
             {
                 //straight copy
@@ -311,7 +316,7 @@ namespace FileTypes {
             return err;
         }
 
-        // TODO: for now we are reading entire file into memory
+        // IMPROVEMENT: for now we are reading entire file into memory
         // and allocating a full size output buffer. This can
         // take up quite a lot of memory, so if it becomes a
         // problem, we can switch to decoding as chunks. This

@@ -174,7 +174,7 @@ namespace {
                 GroupEntry entry;
                 bfres.seekg(0x20 + 11 * 0x4 + hdr.groupOffsets[11] + 0x8 + 0x10 * (1 + entry_index), std::ios::beg);
                 entry.location = bfres.tellg();
-                if (!bfres.read((char*)&entry.searchValue, sizeof(entry.searchValue))) {
+                if (!bfres.read(reinterpret_cast<char*>(&entry.searchValue), sizeof(entry.searchValue))) {
                     return FRESError::REACHED_EOF;
                 }
                 if (!bfres.read(reinterpret_cast<char*>(&entry.leftIndex), sizeof(entry.leftIndex))) {

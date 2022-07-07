@@ -1,0 +1,79 @@
+# Example Plandomizer file. Please read all the insutrctions here so you know
+# how to properly create a plandomizer file. To use a plandomizer file for local
+# development, put your plandomized locations in the file "plandomizer.yaml" in the
+# same directory as this example file (which should be logic/data/plandomizer.yaml in
+# the project structure).
+
+# All plandomized locations are defined under a "locations" element and consist
+# of the location name followed by a colon(:) and the item name you want placed
+# at that location. The following example places Bombs at Windfall Island - Maggie Free Item
+# and Power Bracelets at Wind Temple - Wizzrobe Mini Boss. Note that the hyphen(-)
+# is important for the YAML format and must always be on the *FIRST ELEMENT* in the plandomizer file
+- locations:
+      Windfall Island - Maggie Free Item: Bombs
+      Wind Temple - Wizzrobe Mini Boss: Power Bracelets
+
+# NAMES
+# As a general rule, capitalize the first letter of all item and location names.
+# "Power Bracelets" is okay. "power bracelets" will be unrecognized.
+#
+# Location names can either be the pretty name that's used in the spoiler log, or
+# the internal name of the location in the logic code. So to place a Progressive Sword
+# at Outset Island - Mesas House Chest you can type either:
+      Outset Island - Mesa's House Chest: Progressive Sword
+# or
+      OutsetMesasHouseChest: Progressive Sword
+
+# When using the internal name, spaces are automatically removed. So typing
+      OutsetMesasHouseChest: Progressive Sword
+# and
+      Outset Mesas House Chest: Progressive Sword
+# are equivalent. Note that this ONLY goes for the internal name and not for the
+# pretty name in the spoiler log
+
+# PROGRESS_LOCATIONS
+# Attempting to place a major item in a non-progression location will give you a
+# Plandomizer Error and the seed won't generate.
+
+# RACE_MODE_DUNGEONS
+# If you have race mode enabled and place a major item inside a dungeon, then
+# that dungeon will automatically be one of the race mode dungeons. For example
+# if you have race mode enabled and have the number of race mode dungeons set to 2,
+# then placing a Progressive Bow at Earth Temple - Stalfos Mini Boss will automatically
+# make Earth Temple one of the two race mode dungeons:
+    Earth Temple - Stalfos Mini Boss: Progressive Bow
+# If you place major items in more dungeons than you have set as the number of
+# dungeons for race mode, you'll get a Plandomizer Error and the seed won't generate.
+#
+# Additionally, since race mode dungeons are required to have a progress item at their
+# boss check, placing a junk item at the boss heart container will force the dungeon
+# to *NOT* be one of the selected race mode dungeons.
+#
+# In the event that you place a progress item in the dungeon AND a junk item on the
+# boss heart container, you'll get a Plandomizer Error and the seed won't generate
+# if race mode is turned on
+
+# MULTIWORLD_PLANDOMIZER
+# If you'd like to plandomize a multiworld seed, then each list of locations must be under
+# a "World #" element, with the '#' being the world number the locations will be for.
+# For example, if we want place the Telescope at Outset Island - Under Link's House
+# in World 1 and the Bait Bag at Gale Isle - Sunken Treasure in World 2, then we'd type
+- World 1:
+      locations:
+          Outset Island - Under Link's House: Telescope
+  World 2:
+      locations:
+          Gale Isle - Sunken Treasure: Bait Bag
+# Using this format, the item being plandomized will be for the world that the
+# location is currently under. If we want to specify the item for a different
+# world we can use the "item" and "world" elements to do so. For example, if we want
+# to place Bombs for World 1 at World 2's Hyrule Castle - Sword Chamber Chest
+# and the Heros Charm for World 1 at World 2's Ganon's Tower - Maze Chest we would type:
+- World 2:
+      locations:
+          Hyrule Castle - Sword Chamber Chest:
+              item: Bombs
+              world: 1
+          Ganon's Tower - Maze Chest:
+              item: Heros Charm
+              world: 1

@@ -171,7 +171,7 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
         ACTR actor = WWHDStructs::readACTR(file);
 
         if (item_id_mask_by_actor_name.count(actor.name) == 0) {
-            continue;
+            LOG_ERR_AND_RETURN(ModificationError::UNKNOWN_ACTOR_NAME)
         }
         LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 

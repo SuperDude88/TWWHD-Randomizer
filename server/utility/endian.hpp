@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 
 
@@ -32,6 +33,10 @@ namespace Utility::Endian
     float byteswap(const float& value);
 
     double byteswap(const double& value);
+
+    char16_t byteswap(const char16_t& value);
+
+    std::u16string byteswap(const std::u16string& value);
 
     template<typename T>
     T toPlatform(const Type& src, const T& value) {

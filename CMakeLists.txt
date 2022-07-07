@@ -21,6 +21,10 @@ else()
   find_package(Threads REQUIRED)
 endif()
 
+# Some path related stuff for logging
+string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
+add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
+
 if(WIN32)
   # in windows case, we bundle a zlib static library
   set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/libs/zlib_win/zlibstat.lib")

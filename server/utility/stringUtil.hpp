@@ -37,4 +37,11 @@ namespace Utility::Str {
 
     	return ret;
     }
+
+	template<typename T>
+    T assureNullTermination(const T& string) {
+    	if(string.back() == typename T::value_type(0)) return string;
+
+		return string + typename T::value_type(0);
+    }
 }

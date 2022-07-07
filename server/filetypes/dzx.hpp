@@ -11,7 +11,6 @@
 using namespace std::literals::string_literals; //probably not great in header
 
 
-
 enum struct [[nodiscard]] DZXError
 {
 	NONE = 0,
@@ -39,7 +38,7 @@ public:
 	unsigned int layer = DEFAULT_LAYER; //Uses 255 to signify default layer, default for chunks that don't use it
 	uint32_t num_entries = 0;
 	uint32_t first_entry_offset = 0;
-	int entry_size = 0;
+	unsigned int entry_size = 0;
 	std::vector<ChunkEntry> entries;
 
 	DZXError read(std::istream& data, const unsigned int offset);

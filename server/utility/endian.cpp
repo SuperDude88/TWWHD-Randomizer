@@ -56,4 +56,19 @@ namespace Utility::Endian
             uint64_t result = byteswap(reinterpret_cast<const uint64_t&>(value));
             return *(reinterpret_cast<double*>(&result));
         }
+        
+        char16_t byteswap(const char16_t& value)
+        {
+            uint16_t result = byteswap(reinterpret_cast<const uint16_t&>(value));
+            return *(reinterpret_cast<char16_t*>(&result));
+        }
+
+        std::u16string byteswap(const std::u16string& value) {
+            std::u16string result = value;
+            for(char16_t& character : result) {
+                character = byteswap(character);
+            }
+
+            return result;
+        }
 }

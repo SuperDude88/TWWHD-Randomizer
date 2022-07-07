@@ -8,10 +8,26 @@
 
 
 struct RGBA {
-	uint8_t R;
-	uint8_t G;
-	uint8_t B;
-	uint8_t A;
+	uint8_t R = 0x00;
+	uint8_t G = 0x00;
+	uint8_t B = 0x00;
+	uint8_t A = 0xFF;
+
+	RGBA() {}
+
+	RGBA(const uint8_t& val, const uint8_t alpha) :
+		R(val),
+		G(val),
+		B(val),
+		A(alpha)
+	{}
+
+	RGBA(const uint8_t& r_, const uint8_t& g_, const uint8_t& b_ , const uint8_t a_) :
+		R(r_),
+		G(g_),
+		B(b_),
+		A(a_)
+	{}
 };
 
 template<typename T>

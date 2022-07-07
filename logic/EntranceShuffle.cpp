@@ -638,6 +638,12 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
                 return err;
             }
         }
+
+        // Now set the islands the race mode dungeons are in
+        for (auto& [dungeonId, hintRegion] : world.raceModeDungeons)
+        {
+            hintRegion = *world.getIslands(dungeonIdToFirstRoom(dungeonId)).begin();
+        }
     }
 
     // Validate the worlds one last time to ensure everything went okay

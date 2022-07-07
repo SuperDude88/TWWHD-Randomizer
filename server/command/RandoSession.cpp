@@ -4,6 +4,8 @@
 #include <mutex>
 #include <syncstream>
 #include <unordered_map>
+#include <memory>
+#include <mutex>
 #include <future>
 
 #include "../filetypes/wiiurpx.hpp"
@@ -23,7 +25,14 @@ RandoSession::RandoSession(const fspath& gameBaseDir, const fspath& randoWorking
     workingDir(randoWorkingDir),
     outputDir(randoOutputDir)
 {
-    clearWorkingDir(); //should be cleared at the start of each session
+    //need to mount filesystem before clearing, global construction might cause issues with that on console
+    //still need to clear the directory first though
+    //clearWorkingDir();
+}
+
+void RandoSession::init() { //might have more init stuff later
+    clearWorkingDir();
+    initialized = true;
 }
 
 void RandoSession::clearWorkingDir() {
@@ -39,10 +48,6 @@ RandoSession::fspath RandoSession::relToGameAbsolute(const RandoSession::fspath&
     return baseDir / relPath;
 }
 
-/*RandoSession::fspath RandoSession::absToGameRelative(const RandoSession::fspath& absPath)
-{
-    return std::filesystem::relative(absPath, gameBaseDirectory);
-}*/
 
 
 RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& fileSpec)
@@ -80,7 +85,7 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
         if (curEntry->children.count(resultKey) > 0)
         {
             cacheKey = resultKey;
-            curEntry = &curEntry->children.at(cacheKey);
+            curEntry = curEntry->children.at(cacheKey).get();
             continue;
         }
         
@@ -153,7 +158,8 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
             }
         }
         cacheKey = resultKey;
-        curEntry = &curEntry->children[cacheKey];
+        curEntry->children[cacheKey] = std::make_unique<CacheEntry>();
+        curEntry = curEntry->children[cacheKey].get();
     }
 
     return workingDir / resultKey;
@@ -165,6 +171,7 @@ RandoSession::fspath RandoSession::openGameFile(const RandoSession::fspath& relP
 }
 
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
+    if(!initialized) return false;
     const fspath destPath = extractFile(split(relPath.string(), '@'));
     return std::filesystem::copy_file(source, destPath, std::filesystem::copy_options::overwrite_existing);
 }

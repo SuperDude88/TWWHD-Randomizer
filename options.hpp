@@ -66,6 +66,7 @@ enum struct Option {
     RaceMode,
     NumRaceModeDungeons,
     DamageMultiplier,
+    CTMC,
 
     CasualClothes,
     PigColor,
@@ -74,6 +75,8 @@ enum struct Option {
     StartingHP,
     StartingHC,
     RemoveMusic,
+
+    Plandomizer,
     COUNT
 };
 
@@ -114,14 +117,14 @@ struct Settings {
 
     bool instant_text_boxes = false;
     bool reveal_full_sea_chart = false;
-    uint8_t num_starting_triforce_shards = false;
+    uint8_t num_starting_triforce_shards = 0;
     bool add_shortcut_warps_between_dungeons = false;
     bool do_not_generate_spoiler_log = false;
     SwordMode sword_mode = SwordMode::StartWithSword;
     bool skip_rematch_bosses = false;
     bool invert_sea_compass_x_axis = false;
     bool race_mode = false;
-    uint8_t num_race_mode_dungeons = false;
+    uint8_t num_race_mode_dungeons = 3;
     float damage_multiplier = 1.0f;
     bool chest_type_matches_contents = false;
 
@@ -129,9 +132,11 @@ struct Settings {
     PigColor pigColor = PigColor::RANDOM;
 
     std::vector<GameItem> starting_gear;
-    uint16_t starting_pohs = false;
-    uint16_t starting_hcs = false;
+    uint16_t starting_pohs = 0;
+    uint16_t starting_hcs = 0;
     bool remove_music = false;
+
+    bool plandomizer = false;
 };
 
 Option nameToSetting(const std::string& name);
