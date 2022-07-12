@@ -11,7 +11,7 @@ Entrance::Entrance(const Area& parentArea_, const Area& connectedArea_, World* w
     connectedArea = connectedArea_;
     world = world_;
     worldId = world->getWorldId();
-    requirement = {RequirementType::HAS_ITEM, {GameItem::NOTHING}};
+    requirement = {RequirementType::TRUE, {}};
     setOriginalName();
 }
 

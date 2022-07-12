@@ -12,11 +12,16 @@ using EventSet = std::unordered_set<std::string>;
 static bool evaluateRequirement(const World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
 {
     uint32_t expectedCount = 0;
-    GameItem gameItem;
     Item item;
     std::string eventName;
     switch(req.type)
     {
+    case RequirementType::TRUE:
+        return true;
+
+    case RequirementType::FALSE:
+        return false;
+
     case RequirementType::OR:
         return std::any_of(
             req.args.begin(),
@@ -25,6 +30,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
                 return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
             }
         );
+
     case RequirementType::AND:
         return std::all_of(
             req.args.begin(),
@@ -37,37 +43,36 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
                 return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
             }
         );
+
     case RequirementType::NOT:
         if (req.args[0].index() != 2)
         {
             return false;
         }
         return !evaluateRequirement(world, std::get<Requirement>(req.args[0]), ownedItems, ownedEvents);
+
     case RequirementType::HAS_ITEM:
-        // we can expect ownedItems will contain entires for every item type
-        if (req.args[0].index() != 3)
-        {
-            return false;
-        }
-        gameItem = std::get<GameItem>(req.args[0]);
-        if (gameItem == GameItem::NOTHING) return true;
-        item = {gameItem, world.getWorldId()};
+        item = std::get<Item>(req.args[0]);
         return ownedItems.count(item) > 0;
+
     case RequirementType::EVENT:
         return ownedEvents.count(std::get<std::string>(req.args[0])) > 0;
+
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
-        gameItem = std::get<GameItem>(req.args[1]);
-        if (gameItem == GameItem::NOTHING) return true;
-        item = {gameItem, world.getWorldId()};
+        item = std::get<Item>(req.args[1]);
         return ownedItems.count(item) >= expectedCount;
+
     case RequirementType::CAN_ACCESS:
         return world.areaEntries[areaAsIndex(std::get<Area>(req.args[0]))].isAccessible;
+
     case RequirementType::SETTING:
         // Settings are resolved to a true/false value when building the world
         return std::get<int>(req.args[0]);
+
     case RequirementType::MACRO:
         return evaluateRequirement(world, world.macros[std::get<MacroIndex>(req.args[0])], ownedItems, ownedEvents);
+
     case RequirementType::NONE:
     default:
         // actually needs to be some error state?
