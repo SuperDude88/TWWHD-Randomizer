@@ -33,11 +33,12 @@ enum struct RequirementType
 
 using json = nlohmann::json;
 using MacroIndex = size_t;
+using EventId = size_t;
 struct Requirement;
 
 struct Requirement
 {
-    using Argument = std::variant<int, std::string, Requirement, GameItem, Area, Option, MacroIndex, Item>;
+    using Argument = std::variant<int, size_t, std::string, Requirement, GameItem, Area, Option, Item>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };

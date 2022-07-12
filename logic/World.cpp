@@ -22,6 +22,7 @@
 #define OBJECT_CHECK(j, msg) if(!j.is_object()) {lastError << msg << ": Not an Object."; return WorldLoadingError::EXPECTED_JSON_OBJECT;}
 #define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
+#define EVENT_CHECK(eventName) if (eventMap.count(eventName) == 0) {eventMap[eventName] = eventMap.size();}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(area, Area::INVALID, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, LocationId::INVALID, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
@@ -177,19 +178,20 @@ void World::determineChartMappings()
     {
         shufflePool(charts);
     }
-
+    debugLog("[");
     for (size_t i = 0; i < charts.size(); i++)
     {
         auto chart = charts[i];
         chartMappings[i] = chart;
         // Change the macro for this island's chart to the one at this index in the array.
         // "ChartForIsland<sector number>" macros are type "HAS_ITEM" and have
-        // one argument which is the chart GameItem.
+        // one argument which is the chart Item.
         size_t sector = i + 1;
         macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = Item(chart, worldId);
 
         debugLog("\tChartForIsland" + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
+    debugLog("]");
 }
 
 // Returns whether or not the sunken treasure location has a treasure/triforce chart leading to it
@@ -427,11 +429,12 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         if (argStr[0] == '\'')
         {
             req.type = RequirementType::EVENT;
-            std::string eventName (argStr.begin() + 1, argStr.end() - 1);
-            // Add "WX" where X is the world Id to the end of the string to
-            // differentiate between events of different worlds
-            eventName += "W" + std::to_string(worldId);
-            req.args.push_back(eventName);
+            std::string eventName (argStr.begin() + 1, argStr.end() - 1); // Remove quotes
+            EVENT_CHECK(eventName);
+
+            EventId eventId = eventMap[eventName] + (worldId * 10000);
+
+            req.args.push_back(eventId);
             return WorldLoadingError::NONE;
         }
 
@@ -711,19 +714,15 @@ World::WorldLoadingError World::loadLocation(const ryml::NodeRef& locationObject
 
 World::WorldLoadingError World::loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess)
 {
-    // failure indicated by INVALID type for category
-    // maybe change to Optional later if thats determined to work
-    // on wii u
-    // Add the world number to the end of each event to differentiate the same
-    // event in different worlds
-    eventAccess.event = eventName + "W" + std::to_string(worldId);
-    eventAccess.worldId = worldId;
+    EVENT_CHECK(eventName);
     WorldLoadingError err = WorldLoadingError::NONE;
     if((err = parseRequirementString(logicExpression, eventAccess.requirement)) != WorldLoadingError::NONE)
     {
         lastError << "| Encountered parsing event " << eventName;
         return err;
     }
+    eventAccess.event = eventMap[eventName] + (worldId * 10000);
+    eventAccess.worldId = worldId;
     return WorldLoadingError::NONE;
 }
 
