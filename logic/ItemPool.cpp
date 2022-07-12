@@ -356,8 +356,9 @@ GameItemPool generateStartingGameItemPool(const Settings& settings)
 
 void logItemPool(const std::string& poolName, const ItemPool& itemPool)
 {
-    debugLog(poolName + ":");
+    debugLog(poolName + ": [");
     for (auto& item : itemPool) {
         debugLog("\t" + item.getName());
     }
+    debugLog("]");
 }

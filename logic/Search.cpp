@@ -7,12 +7,13 @@
 #include <algorithm>
 
 using ItemMultiSet = std::unordered_multiset<Item>;
-using EventSet = std::unordered_set<std::string>;
+using EventSet = std::unordered_set<EventId>;
 
 static bool evaluateRequirement(const World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
 {
     uint32_t expectedCount = 0;
     Item item;
+    EventId event;
     std::string eventName;
     switch(req.type)
     {
@@ -36,19 +37,11 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
             req.args.begin(),
             req.args.end(),
             [&](const Requirement::Argument& arg){
-                if (arg.index() != 2)
-                {
-                    return false;
-                }
                 return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
             }
         );
 
     case RequirementType::NOT:
-        if (req.args[0].index() != 2)
-        {
-            return false;
-        }
         return !evaluateRequirement(world, std::get<Requirement>(req.args[0]), ownedItems, ownedEvents);
 
     case RequirementType::HAS_ITEM:
@@ -56,7 +49,8 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
         return ownedItems.count(item) > 0;
 
     case RequirementType::EVENT:
-        return ownedEvents.count(std::get<std::string>(req.args[0])) > 0;
+        event = std::get<EventId>(req.args[0]);
+        return ownedEvents.count(event) > 0;
 
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
@@ -214,6 +208,11 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto eventItr = eventsToTry.begin(); eventItr != eventsToTry.end(); )
         {
             auto eventAccess = *eventItr;
+            if (ownedEvents.count(eventAccess->event) > 0)
+            {
+                eventItr = eventsToTry.erase(eventItr);
+                continue;
+            }
             if (evaluateRequirement(worlds[eventAccess->worldId], eventAccess->requirement, ownedItems, ownedEvents))
             {
                 newThingsFound = true;

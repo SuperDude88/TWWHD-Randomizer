@@ -29,7 +29,7 @@ struct LocationAccess
 
 struct EventAccess
 {
-    std::string event;
+    EventId event;
     Requirement requirement;
     int worldId = -1;
 };
@@ -139,6 +139,7 @@ private:
     Settings settings;
     ItemPool itemPool;
     ItemPool startingItems;
+    std::unordered_map<std::string, EventId> eventMap = {};
     int worldId = -1;
     size_t numWorlds = 1;
 };
