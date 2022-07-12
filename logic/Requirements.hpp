@@ -17,6 +17,8 @@
 enum struct RequirementType
 {
     NONE = 0,
+    TRUE,
+    FALSE,
     OR,
     AND,
     NOT,
@@ -35,7 +37,7 @@ struct Requirement;
 
 struct Requirement
 {
-    using Argument = std::variant<int, std::string, Requirement, GameItem, Area, Option, MacroIndex>;
+    using Argument = std::variant<int, std::string, Requirement, GameItem, Area, Option, MacroIndex, Item>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };

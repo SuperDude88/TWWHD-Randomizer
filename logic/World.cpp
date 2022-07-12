@@ -186,7 +186,7 @@ void World::determineChartMappings()
         // "ChartForIsland<sector number>" macros are type "HAS_ITEM" and have
         // one argument which is the chart GameItem.
         size_t sector = i + 1;
-        macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = chart;
+        macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = Item(chart, worldId);
 
         debugLog("\tChartForIsland" + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
@@ -416,7 +416,14 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     {
 
         std::string argStr = splitLogicStr[0];
-        // First see if we have an event
+        // First, see if we have nothing
+        if (argStr == "Nothing")
+        {
+            req.type = RequirementType::TRUE;
+            return WorldLoadingError::NONE;
+        }
+
+        // Then an event...
         if (argStr[0] == '\'')
         {
             req.type = RequirementType::EVENT;
@@ -439,7 +446,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         else if (nameToGameItem(argStr) != GameItem::INVALID)
         {
             req.type = RequirementType::HAS_ITEM;
-            req.args.push_back(nameToGameItem(argStr));
+            req.args.push_back(Item(nameToGameItem(argStr), worldId));
             return WorldLoadingError::NONE;
         }
         // Then a can_access check...
@@ -487,7 +494,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             auto argItem = nameToGameItem(itemName);
             ITEM_VALID_CHECK(argItem, "Game Item of name \"" << itemName << " Does Not Exist");
             req.args.push_back(count);
-            req.args.push_back(argItem);
+            req.args.push_back(Item(argItem, worldId));
             return WorldLoadingError::NONE;
         }
 
