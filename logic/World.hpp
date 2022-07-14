@@ -119,6 +119,8 @@ public:
     std::array<GameItem, 49> chartMappings;
     std::unordered_map<DungeonId, HintRegion> raceModeDungeons; // map of dungeonId to the island it's in
     uint8_t startingIslandRoomIndex = 44;
+    std::unordered_map<std::string, EventId> eventMap = {};
+    std::unordered_map<EventId, std::string> reverseEventMap = {};
 
 private:
 
@@ -139,7 +141,6 @@ private:
     Settings settings;
     ItemPool itemPool;
     ItemPool startingItems;
-    std::unordered_map<std::string, EventId> eventMap = {};
     int worldId = -1;
     size_t numWorlds = 1;
 };

@@ -22,7 +22,7 @@
 #define OBJECT_CHECK(j, msg) if(!j.is_object()) {lastError << msg << ": Not an Object."; return WorldLoadingError::EXPECTED_JSON_OBJECT;}
 #define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
-#define EVENT_CHECK(eventName) if (eventMap.count(eventName) == 0) {eventMap[eventName] = eventMap.size();}
+#define EVENT_CHECK(eventName) if (eventMap.count(eventName) == 0) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(area, Area::INVALID, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, LocationId::INVALID, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
@@ -295,7 +295,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
         if (setRaceModeDungeons > settings.num_race_mode_dungeons)
         {
             std::cout << "Plandomizer Error: Too many race mode locations set with potentially major items" << std::endl;
-            std::cout << "set race mode locations: " << std::to_string(setRaceModeDungeons) << std::endl;
+            std::cout << "Set race mode locations: " << std::to_string(setRaceModeDungeons) << std::endl;
             std::cout << "Set number of race mode dungeons: " << std::to_string(settings.num_race_mode_dungeons) << std::endl;
             return WorldLoadingError::PLANDOMIZER_ERROR;
         }

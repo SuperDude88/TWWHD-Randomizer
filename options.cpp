@@ -131,6 +131,7 @@ std::string settingToName(const Option& setting) {
         {Option::StartingHP, "StartingHP"},
         {Option::StartingHC, "StartingHC"},
         {Option::RemoveMusic, "RemoveMusic"},
+        {Option::Plandomizer, "Plandomizer"},
     };
 
     if (optionNameMap.count(setting) == 0)

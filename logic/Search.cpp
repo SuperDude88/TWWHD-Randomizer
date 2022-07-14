@@ -268,8 +268,9 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             if (location->hasBeenFound)
             {
                 locItr = locationsToTry.erase(locItr);
+                continue;
             }
-            else if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
+            if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
             {
                 // debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;
@@ -315,7 +316,7 @@ LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, Location
 bool gameBeatable(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
-    auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, emptyItems);
+    auto accessibleLocations = search(SearchMode::GameBeatable, worlds, emptyItems);
     auto worldsBeatable = filterFromPool(accessibleLocations, [](Location* loc){return loc->currentItem.getGameItemId() == GameItem::GameBeatable;});
     return worldsBeatable.size() == worlds.size();
 }
@@ -420,7 +421,7 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
         #ifdef ENABLE_DEBUG
             if (!inPool)
             {
-                debugLog("Missing location " + locationName(loc));
+                debugLog("\tMissing location " + locationName(loc));
             }
         #endif
         return inPool;

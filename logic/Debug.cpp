@@ -17,6 +17,10 @@ void openDebugLog(const std::string& seed)
 {
     #ifdef ENABLE_DEBUG
         logger.open("debug_logger" + seed + ".txt");
+        if (!logger.is_open())
+        {
+            std::cout << "Failed to open debug log" << std::endl;
+        }
     #endif
 }
 
