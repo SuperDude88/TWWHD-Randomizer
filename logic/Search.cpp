@@ -382,6 +382,37 @@ static void pareDownPlaythrough(WorldPool& worlds)
         location->currentItem = item;
     }
 
+    // Now do the same process for the entrances to pare down the entrance playthrough
+    std::unordered_map<Entrance*, Area> nonRequiredEntrances = {};
+    for (auto entranceSphereItr = entranceSpheres.rbegin(); entranceSphereItr != entranceSpheres.rend(); entranceSphereItr++)
+    {
+        auto& entranceSphere = *entranceSphereItr;
+        for (auto entranceItr = entranceSphere.begin(); entranceItr != entranceSphere.end(); )
+        {
+            auto entrance = *entranceItr;
+            // Disconnect the entrance and then see if the world is still beatable
+            auto connectedArea = entrance->disconnect();
+            if (gameBeatable(worlds))
+            {
+                // If the game is still beatable, then this entrance is not required
+                // and we can erase it from the playthrough
+                entranceItr = entranceSphere.erase(entranceItr);
+                nonRequiredEntrances[entrance] = connectedArea;
+            }
+            else
+            {
+                // If the entrance is required, then reconnect it
+                entrance->connect(connectedArea);
+                entranceItr++; // Only increment if we don't erase
+            }
+        }
+    }
+
+    for (auto& [entrance, area] : nonRequiredEntrances)
+    {
+        entrance->connect(area);
+    }
+
     // Get rid of any empty spheres in both the item playthrough and entrance playthrough
     // based only on if the item playthrough has empty spheres. Both the playthroughs
     // will have the same number of spheres, so we only need to conditionally
