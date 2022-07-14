@@ -17,10 +17,10 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
     std::string eventName;
     switch(req.type)
     {
-    case RequirementType::TRUE:
+    case RequirementType::NOTHING:
         return true;
 
-    case RequirementType::FALSE:
+    case RequirementType::IMPOSSIBLE:
         return false;
 
     case RequirementType::OR:
