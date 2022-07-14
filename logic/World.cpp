@@ -421,7 +421,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         // First, see if we have nothing
         if (argStr == "Nothing")
         {
-            req.type = RequirementType::TRUE;
+            req.type = RequirementType::NOTHING;
             return WorldLoadingError::NONE;
         }
 

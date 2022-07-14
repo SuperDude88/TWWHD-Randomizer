@@ -130,6 +130,7 @@ int main()
     TEST(settings1, settings1.randomize_misc_entrances, "randomize misc entrances");
     TEST(settings1, settings1.decouple_entrances, "decouple entrances");
     TEST(settings1, settings1.mix_entrance_pools, "mix entrance pools");
+    TEST(settings1, settings1.plandomizer, "plandomizer");
 
     // Now set all settings in reverse (except dungeons since they have a lot of checks)
     std::cout << "REVERSING TEST DIRECTION" << std::endl;
@@ -174,6 +175,7 @@ int main()
     TEST(settings2, settings2.progression_combat_secret_caves, "progression combat secret caves");
     TEST(settings2, settings2.progression_puzzle_secret_caves, "progression puzzle secret caves");
     TEST(settings2, settings2.progression_great_fairies, "progression great faires");
+    TEST(settings2, settings2.plandomizer, "plandomizer");
 
     multiWorldTest(settings1);
 

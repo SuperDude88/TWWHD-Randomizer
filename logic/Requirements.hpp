@@ -17,8 +17,8 @@
 enum struct RequirementType
 {
     NONE = 0,
-    TRUE,
-    FALSE,
+    NOTHING,
+    IMPOSSIBLE,
     OR,
     AND,
     NOT,
