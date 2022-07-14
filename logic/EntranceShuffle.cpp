@@ -168,17 +168,18 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
 
 static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolName)
 {
-    debugLog(poolName + ":");
+    debugLog(poolName + ": [");
     for (auto entrance : entrancePool)
     {
         debugLog("\t" + entrance->getOriginalName());
     }
+    debugLog("]");
 }
 
 static void logMissingLocations(WorldPool& worlds)
 {
     static int identifier = 0;
-    debugLog("Missing Locations:");
+    debugLog("Missing Locations: [");
     for (auto& world : worlds)
     {
         for (auto& location : world.locationEntries)
@@ -195,6 +196,7 @@ static void logMissingLocations(WorldPool& worlds)
             }
         }
     }
+    debugLog("]");
 }
 
 static void setAllEntrancesData(World& world)
@@ -588,7 +590,8 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, !world.getSettings().decouple_entrances);
             addElementsToPool(entrancePools[EntranceType::MISC], miscRestrictiveEntrances);
 
-            // Keep crawlspaces separate for the time-being
+            // Keep crawlspaces separate for the time-being since spawning in a crawlspace
+            // entrance while standing up can potentially softlock
             entrancePools[EntranceType::MISC_CRAWLSPACE] = world.getShuffleableEntrances(EntranceType::MISC_CRAWLSPACE, true);
             if (world.getSettings().decouple_entrances)
             {

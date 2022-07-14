@@ -224,6 +224,8 @@ static void placeHardcodedItems(WorldPool& worlds)
 // for access to any progression location and/or game beatability
 void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
 {
+    debugLog("Determining Major Items");
+    debugLog("Major Items: [");
     auto progressionLocations = filterFromPool(allLocations, [](const Location* location){return location->progression;});
     shufflePool(itemPool);
     for (auto& item : itemPool)
@@ -231,7 +233,6 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
         // Don't check junk items
         if (!item.isJunkItem())
         {
-            // debugLog("Determining item " + item.getName());
             // Temporarily take this item out of the pool
             auto gameItemId = item.getGameItemId();
             item.setGameItemId(GameItem::NOTHING);
@@ -244,16 +245,18 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
             {
                 item.setAsMajorItem();
                 item.setGameItemId(gameItemId);
+                debugLog("\t" + item.getName());
             }
             // Otherwise save the gameItemId to re-apply later once all major items
             // have been determined
             else
             {
+
                 item.setDelayedItemId(gameItemId);
             }
         }
     }
-
+    debugLog("]");
     // Re-apply all items which had delayed items set
     for (auto& item : itemPool)
     {
@@ -385,6 +388,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
 
 static FillError placePlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
+    debugLog("Placing Plandomizer Items");
     std::unordered_map<Location*, Item> allPlandoLocations = {};
     for (auto& world : worlds)
     {
@@ -455,8 +459,10 @@ FillError fill(WorldPool& worlds)
         return FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS;
     }
 
-    // Place all major items in the Item Pool using assumed fill
-    err = assumedFill(worlds, majorItems, itemPool, progressionLocations);
+    // Place all major items in the Item Pool using assumed fill.
+    // Don't assume we have any non-major items.
+    ItemPool noAssumedItems = {};
+    err = assumedFill(worlds, majorItems, noAssumedItems, progressionLocations);
     FILL_ERROR_CHECK(err);
 
     // Then place the rest of the non-major progression items using assumed fill.
