@@ -1,13 +1,13 @@
 
 #include "Generate.hpp"
-#include "Random.hpp"
-#include "Debug.hpp"
+#include "../seedgen/random.hpp"
 #include "SpoilerLog.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "../server/command/Log.hpp"
 
-int main()
+/*int main()
 {
     // Important variables, do not erase
     int kwando = 1313;
@@ -19,7 +19,6 @@ int main()
 
     #ifdef ENABLE_DEBUG
         std::cout << "Debugging is ON" << std::endl;
-        openDebugLog(std::to_string(seed));
     #endif
 
     std::cout << "Using seed " << std::to_string(seed) << std::endl;
@@ -101,7 +100,7 @@ int main()
 
     int retVal = generateWorlds(worlds, settingsVector, seed);
 
-    debugLog("All entrances to be shuffled:");
+    DebugLog::getInstance().log("All entrances to be shuffled:");
     auto entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
     for (auto entrance : entrances)
     {
@@ -114,10 +113,10 @@ int main()
         auto replacementSpawn = entrance->getReplaces()->getSpawnId();
 
         std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
-        debugLog("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
-        debugLog("\tStage: \"" + replacementStage + "\"");
-        debugLog("\tRoom: " + std::to_string(replacementRoom));
-        debugLog("\tSpawn: " + std::to_string(replacementSpawn));
+        DebugLog::getInstance().log("Replace data at " + filepath + " scls exit index " + std::to_string(sclsExitIndex) + " with: ");
+        DebugLog::getInstance().log("\tStage: \"" + replacementStage + "\"");
+        DebugLog::getInstance().log("\tRoom: " + std::to_string(replacementRoom));
+        DebugLog::getInstance().log("\tSpawn: " + std::to_string(replacementSpawn));
 
     }
 
@@ -127,4 +126,4 @@ int main()
         generateSpoilerLog(worlds);
         generateNonSpoilerLog(worlds);
     }
-}
+}*/

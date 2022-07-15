@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <algorithm>
 #include <functional>
-#include <iostream>
 
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"or", RequirementType::OR},

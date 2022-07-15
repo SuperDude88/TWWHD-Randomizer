@@ -31,7 +31,6 @@ https://www.codeproject.com/Articles/28720/YAML-Parser-in-C
 
 #pragma once
 
-#include <exception>
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -140,48 +139,48 @@ namespace Yaml
     * @breif Exception class.
     *
     */
-    class Exception : public std::runtime_error
-    {
-
-    public:
-
-        /**
-        * @breif Enumeration of exception types.
-        *
-        */
-        enum eType
-        {
-            InternalError,  ///< Internal error.
-            ParsingError,   ///< Invalid parsing data.
-            OperationError  ///< User operation error.
-        };
-
-        /**
-        * @breif Constructor.
-        *
-        * @param message    Exception message.
-        * @param type       Type of exception.
-        *
-        */
-        Exception(const std::string & message, const eType type);
-
-        /**
-        * @breif Get type of exception.
-        *
-        */
-        eType Type() const;
-
-        /**
-        * @breif Get message of exception.
-        *
-        */
-        const char * Message() const;
-
-    private:
-
-        eType m_Type;   ///< Type of exception.
-
-    };
+    //class Exception : public std::runtime_error
+    //{
+//
+    //public:
+//
+    //    /**
+    //    * @breif Enumeration of exception types.
+    //    *
+    //    */
+    //    enum eType
+    //    {
+    //        InternalError,  ///< Internal error.
+    //        ParsingError,   ///< Invalid parsing data.
+    //        OperationError  ///< User operation error.
+    //    };
+//
+    //    /**
+    //    * @breif Constructor.
+    //    *
+    //    * @param message    Exception message.
+    //    * @param type       Type of exception.
+    //    *
+    //    */
+    //    Exception(const std::string & message, const eType type);
+//
+    //    /**
+    //    * @breif Get type of exception.
+    //    *
+    //    */
+    //    eType Type() const;
+//
+    //    /**
+    //    * @breif Get message of exception.
+    //    *
+    //    */
+    //    const char * Message() const;
+//
+    //private:
+//
+    //    eType m_Type;   ///< Type of exception.
+//
+    //};
 
 
     /**
@@ -190,64 +189,64 @@ namespace Yaml
     * @see Exception
     *
     */
-    class InternalException : public Exception
-    {
-
-    public:
-
-        /**
-        * @breif Constructor.
-        *
-        * @param message Exception message.
-        *
-        */
-        InternalException(const std::string & message);
-
-    };
-
-
-    /**
-    * @breif Parsing exception class.
-    *
-    * @see Exception
-    *
-    */
-    class ParsingException : public Exception
-    {
-
-    public:
-
-        /**
-        * @breif Constructor.
-        *
-        * @param message Exception message.
-        *
-        */
-        ParsingException(const std::string & message);
-
-    };
-
-
-    /**
-    * @breif Operation exception class.
-    *
-    * @see Exception
-    *
-    */
-    class OperationException : public Exception
-    {
-
-    public:
-
-        /**
-        * @breif Constructor.
-        *
-        * @param message Exception message.
-        *
-        */
-        OperationException(const std::string & message);
-
-    };
+    //class InternalException : public Exception
+    //{
+//
+    //public:
+//
+    //    /**
+    //    * @breif Constructor.
+    //    *
+    //    * @param message Exception message.
+    //    *
+    //    */
+    //    InternalException(const std::string & message);
+//
+    //};
+//
+//
+    ///**
+    //* @breif Parsing exception class.
+    //*
+    //* @see Exception
+    //*
+    //*/
+    //class ParsingException : public Exception
+    //{
+//
+    //public:
+//
+    //    /**
+    //    * @breif Constructor.
+    //    *
+    //    * @param message Exception message.
+    //    *
+    //    */
+    //    ParsingException(const std::string & message);
+//
+    //};
+//
+//
+    ///**
+    //* @breif Operation exception class.
+    //*
+    //* @see Exception
+    //*
+    //*/
+    //class OperationException : public Exception
+    //{
+//
+    //public:
+//
+    //    /**
+    //    * @breif Constructor.
+    //    *
+    //    * @param message Exception message.
+    //    *
+    //    */
+    //    OperationException(const std::string & message);
+//
+    //};
 
 
     /**

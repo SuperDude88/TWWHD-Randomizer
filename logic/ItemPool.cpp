@@ -1,8 +1,8 @@
 #include "ItemPool.hpp"
 #include "PoolFunctions.hpp"
-#include "Random.hpp"
-#include "Debug.hpp"
+#include "../seedgen/random.hpp"
 #include "Dungeon.hpp"
+#include "../server/command/Log.hpp"
 
 static const GameItemPool alwaysItems = {
 
@@ -58,7 +58,8 @@ static const GameItemPool alwaysItems = {
     GameItem::ProgressiveBombBag,
     GameItem::ProgressiveQuiver,
     GameItem::ProgressiveQuiver,
-    GameItem::MagicMeterUpgrade,
+    GameItem::ProgressiveMagicMeter,
+    GameItem::ProgressiveMagicMeter,
 
     GameItem::ProgressiveShield,
     GameItem::ProgressiveShield,
@@ -331,13 +332,11 @@ GameItemPool generateGameItemPool(const Settings& settings)
 
 GameItemPool generateStartingGameItemPool(const Settings& settings)
 {
+    //Should be able to randomize wind waker/sail but it would require some logic changes/fixes which aren't in yet
     GameItemPool startingItems = {
         GameItem::WindWaker,
         GameItem::WindsRequiem,
-        GameItem::ProgressiveShield,
-        GameItem::SongOfPassing,
-        GameItem::BalladOfGales,
-        GameItem::ProgressiveSail,
+        GameItem::ProgressiveSail
     };
 
     // Add more items depending on settings
@@ -356,8 +355,8 @@ GameItemPool generateStartingGameItemPool(const Settings& settings)
 
 void logItemPool(const std::string& poolName, const ItemPool& itemPool)
 {
-    debugLog(poolName + ":");
+    DebugLog::getInstance().log(poolName + ":");
     for (auto& item : itemPool) {
-        debugLog("\t" + item.getName());
+        DebugLog::getInstance().log("\t" + item.getName());
     }
 }

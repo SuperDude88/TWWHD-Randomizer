@@ -1,7 +1,7 @@
 
 #include "Entrance.hpp"
 #include "World.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
 
 Entrance::Entrance() {}
 

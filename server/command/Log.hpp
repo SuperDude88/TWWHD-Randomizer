@@ -10,8 +10,6 @@
 
 
 
-//make these thread safe?
-
 class BasicLog {
 private:
     std::ofstream output;

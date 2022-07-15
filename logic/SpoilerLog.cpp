@@ -1,7 +1,8 @@
 
 #include "SpoilerLog.hpp"
 #include "../options.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
+#include "../server/utility/platform.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -57,9 +58,11 @@ struct chartComparator {
 
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
-    log << "Wind Waker HD Randomizer Version <insert version number here>" /*<< VERSION*/ << std::endl;
-    log << "Permalink: <insert permalink here>" /*<< PERMALINK*/ << std::endl;
-    log << "Seed: <insert seed here>" /*<< SEED*/ << std::endl;
+    time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
+    log << "Program opened " << std::ctime(&point); //time string ends with \n
+    
+    log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    log << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
     // Print options selected for each world
     for (const auto& world : worlds)
@@ -69,7 +72,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
         {
             Option setting = static_cast<Option>(settingInt);
 
-            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier)
+            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
                 log << settingToName(setting) << ": " << std::to_string(getSetting(world.getSettings(), setting)) << ", ";
             }
@@ -80,14 +83,15 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
         }
         log << std::endl;
     }
+    
     log << std::endl;
 }
 
 void generateSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log;
-    log.open("spoiler.txt"); // Eventually add seed/hash to filename
+    std::ofstream log("./Spoiler Log.txt");
 
+	Utility::platformLog("Generating spoiler log...\n");
     printBasicInfo(log, worlds);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
@@ -95,7 +99,7 @@ void generateSpoilerLog(WorldPool& worlds)
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
 
-    debugLog("Starting Island");
+    DebugLog::getInstance().log("Starting Island");
     // Print the random starting island if there is one
     for (auto& world : worlds)
     {
@@ -110,7 +114,7 @@ void generateSpoilerLog(WorldPool& worlds)
     // Find the longest location/entrances names for formatting the file
     size_t longestNameLength = 0;
     size_t longestEntranceLength = 0;
-    debugLog("Getting Name Lengths");
+    DebugLog::getInstance().log("Getting Name Lengths");
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
     {
         for (auto location : *sphereItr)
@@ -128,7 +132,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
 
     // Print the playthrough
-    debugLog("Print Playthrough");
+    DebugLog::getInstance().log("Print Playthrough");
     log << "Playthrough:" << std::endl;
     int sphere = 0;
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
@@ -145,7 +149,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     // Print the randomized entrances/playthrough
-    debugLog("Print Entrance Playthrough");
+    DebugLog::getInstance().log("Print Entrance Playthrough");
     if (longestEntranceLength != 0)
     {
         log << "Entrance Playthrough:" << std::endl;
@@ -168,7 +172,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-    debugLog("Entrance Listing");
+    DebugLog::getInstance().log("Entrance Listing");
     for (auto& world : worlds)
     {
         auto entrances = world.getShuffledEntrances(EntranceType::ALL, !world.getSettings().decouple_entrances);
@@ -188,7 +192,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     log << std::endl << "All Locations:" << std::endl;
-    debugLog("All Locations");
+    DebugLog::getInstance().log("All Locations");
     // Update the longest location name considering all locations
     for (auto& world : worlds)
     {
@@ -207,7 +211,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-    debugLog("Chart Mappings");
+    DebugLog::getInstance().log("Chart Mappings");
     for (auto& world : worlds)
     {
         log << "Charts for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
@@ -242,33 +246,27 @@ void generateSpoilerLog(WorldPool& worlds)
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log;
-    log.open("nonspoiler.txt");
-
-    printBasicInfo(log, worlds);
-    log << "### Locations that may or may not have progress items in them on this run:" << std::endl;
+    BasicLog::getInstance().log("### Locations that may or may not have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (location->progression)
             {
-                log << "\t" << locationIdToPrettyName(location->locationId) << std::endl;
+                BasicLog::getInstance().log("\t" + locationIdToPrettyName(location->locationId));
             }
         }
     }
 
-    log << "### Locations that cannot have progress items in them on this run:" << std::endl;
+    BasicLog::getInstance().log("### Locations that cannot have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (!location->progression)
             {
-                log << "\t" << locationIdToPrettyName(location->locationId) << std::endl;
+                BasicLog::getInstance().log("\t" + locationIdToPrettyName(location->locationId));
             }
         }
     }
-
-    log.close();
 }

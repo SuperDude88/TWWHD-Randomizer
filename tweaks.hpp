@@ -63,7 +63,6 @@ void update_battlesquid_item_names(const Location& firstPrize_, const Location& 
 void update_item_names_in_letter_advertising_rock_spire_shop(const Location& beedle500, const Location& beedle950, const Location& beedle900);
 
 void update_savage_labyrinth_hint_tablet(const Location& floor30, const Location& floor50);
-*/
 
 //hints
 
