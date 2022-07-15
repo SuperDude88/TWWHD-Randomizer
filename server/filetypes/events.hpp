@@ -96,6 +96,10 @@ private:
 	friend class Event;
 };
 
+namespace FileTypes {
+	class EventList;
+}
+
 class Actor {
 public:
 	static constexpr int DATA_SIZE = 0x50; //could be a define?
