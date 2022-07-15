@@ -1,6 +1,6 @@
 
 #include "Generate.hpp"
-#include "Random.hpp"
+#include "../seedgen/random.hpp"
 #include "SpoilerLog.hpp"
 #include <string>
 #include <fstream>

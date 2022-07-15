@@ -160,7 +160,7 @@ enum struct LocationId : uint32_t
     WindTempleBehindStoneHeadChest,
     WindTempleLeftAlcoveChest,
     WindTempleBigKeyChest,
-    WindTempleManyCyclesRoomChest,
+    WindTempleManyCyclonesRoomChest,
     WindTempleHubRoomCenterChest,
     WindTempleSpikeWallRoomFirstChest,
     WindTempleSpikeWallRoomDestroyFloors,
@@ -406,11 +406,10 @@ struct Location
         progression(false),
         originalItem(GameItem::INVALID, -1),
         currentItem(GameItem::INVALID, -1),
-        method(),
         worldId(-1),
         hasBeenFound(false)
     {
-        std::make_unique<LocationModification>();
+        method = std::make_unique<LocationModification>();
     }
     ~Location() = default;
     Location(const Location& loc) = delete;

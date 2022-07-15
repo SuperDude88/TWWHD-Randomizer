@@ -10,7 +10,11 @@ CanPlayEGL: EarthGodsLyric and WindWaker
 CanPlayWGA: WindGodsAria and WindWaker
 CanPlaySoP: SongOfPassing and WindWaker
 CanSailAway: (CanPlayWR and BoatsSail) or SwiftSail
-CanFlyWithDekuLeafOutdoors: DekuLeaf and CanPlayWR
+CanFanWithDekuLeaf: DekuLeaf
+CanFlyWithDekuLeafIndoors: DekuLeaf and Magic
+CanFlyWithDekuLeafOutdoors: DekuLeaf and Magic and CanPlayWR
+CanUseMagicArmor: MagicArmor and Magic
+CanUseHurricaneSpin: HurricaneSpin and Magic
 
 # You need to be holding an item in your hand in order to aim your shield around. Otherwise you can only aim it behind you at an angle or straight in front of you.
 # (Empty Bottle also works, but you would need to use the contents first so not in the logic.)
@@ -31,9 +35,9 @@ FullPowerMasterSword: count(4, ProgressiveSword)
 HerosShield: count(1, ProgressiveShield)
 MirrorShield: count(2, ProgressiveShield)
 HerosBow: count(1, ProgressiveBow)
-FireArrows: count(2, ProgressiveBow)
-IceArrows: count(2, ProgressiveBow)
-LightArrows: count(3, ProgressiveBow)
+FireArrows: count(2, ProgressiveBow) and Magic
+IceArrows: count(2, ProgressiveBow) and Magic
+LightArrows: count(3, ProgressiveBow) and Magic
 WalletUpgrade: count(1, ProgressiveWallet)
 60BombBag: count(1, ProgressiveBombBag)
 99BombBag: count(2, ProgressiveBombBag)
@@ -41,6 +45,8 @@ WalletUpgrade: count(1, ProgressiveWallet)
 99Quiver: count(2, ProgressiveQuiver)
 PictoBox: count(1, ProgressivePictoBox)
 DeluxePictoBox: count(2, ProgressivePictoBox)
+Magic: count(1, ProgressiveMagicMeter)
+DoubleMagic: count(2, ProgressiveMagicMeter)
 All8Shards: TriforceShard1 and TriforceShard2 and TriforceShard3 and TriforceShard4 and TriforceShard5 and TriforceShard6 and TriforceShard7 and TriforceShard8
 CanDefeatPhantomGanon: (OutsideSwordlessMode and MasterSword) or (InSwordlessMode and SkullHammer)
 CanGetPastHyruleBarrier: InSwordlessMode or FullPowerMasterSword
@@ -48,21 +54,12 @@ CanDefeatGanondorf: HerosShield and (InSwordlessMode or HerosSword)
 RescuedAryll: Nothing
 # RescuedTingle: This is now an event
 # CanGetFairies: This is now an event
-CanFarmKnightsCrests: GrapplingHook and SpoilsBag and
-                       (can_access(HyruleCastleInterior) or
-                        can_access(IceRingInnerCave) or
-                        can_access(OutsetSavageFloor30) or
-                        can_access(SharkIslandCave) or
-                        (CanDefeatDarknutsEasily and
-                         (can_access(ETBigKeyChestRoom) or
-                          can_access(WTBigKeyChestRoom) or
-                          can_access(StoneWatcherCave) or
-                          can_access(OverlookCave))))
+# CanFarmKnightsCrests: This is now an event
 CanFarmJoyPendants: GrapplingHook and SpoilsBag
 CanFarmSkullNecklaces: GrapplingHook and SpoilsBag
 CanFarmGoldenFeathers: GrapplingHook and SpoilsBag
 CanFarmGreenChuJelly: GrapplingHook and SpoilsBag
-CanObtain15BlueChuJelly: CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or DekuLeaf or can_access(BoatingCourseSmallIsle) or can_access(CliffPlateauHighestIsle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))
+CanObtain15BlueChuJelly: CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or CanFanWithDekuLeaf or can_access(BoatingCourseSmallIsle) or can_access(CliffPlateauHighestIsle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))
 CanFarmLotsOfRupees: Nothing
 CanTradeWithAllGorons: can_access(GreatfishIsle) and can_access(MotherAndChildIsles) and can_access(BombIsland)
 CanDefeatBokoblins: HerosSword or HerosBow or SkullHammer or Bombs
@@ -77,7 +74,7 @@ CanDefeatMiniblins: HerosSword or HerosBow or SkullHammer or Bombs or GrapplingH
 CanDefeatMiniblinsEasily: HerosSword or HerosBow or SkullHammer or Bombs or Boomerang
 CanDefeatRedChuChus: HerosSword or HerosBow or SkullHammer or Bombs
 CanDefeatGreenChuChus: CanDefeatRedChuChus
-CanDefeatYellowChuChus: HerosBow or Bombs or SkullHammer or (HerosSword and (Boomerang or DekuLeaf))
+CanDefeatYellowChuChus: HerosBow or Bombs or SkullHammer or (HerosSword and (Boomerang or CanFanWithDekuLeaf))
 CanDefeatBlueChuChus: CanDefeatYellowChuChus
 CanGetBlueChuJellyFromBlueChuChus: GrapplingHook and CanDefeatBlueChuChus
 CanDefeatDarkChuChus: LightArrows
@@ -87,9 +84,9 @@ CanDefeatFireKeese: CanDefeatKeese
 CanDefeatMagtails: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang
 CanStunMagtails: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang
 CanDefeatKargarocs: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang
-CanDefeatPeahats: HerosBow or SkullHammer or Bombs or Boomerang or (HerosSword and (Hookshot or DekuLeaf))
-CanRemovePeahatArmor: HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or DekuLeaf
-CanDefeatBokoBabas: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang or (GrapplingHook and DekuLeaf)
+CanDefeatPeahats: HerosBow or SkullHammer or Bombs or Boomerang or (HerosSword and (Hookshot or CanFanWithDekuLeaf))
+CanRemovePeahatArmor: HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or CanFanWithDekuLeaf
+CanDefeatBokoBabas: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang or (GrapplingHook and CanFanWithDekuLeaf)
 CanDefeatMothulas: HerosSword or HerosBow or Bombs or SkullHammer
 CanDefeatWingedMothulas: HerosSword or HerosBow or Bombs or SkullHammer
 CanDefeatWizzrobes: HerosSword or HerosBow or Bombs or SkullHammer or Hookshot
@@ -98,8 +95,8 @@ CanDefeatArmos: HerosSword or HerosBow or Bombs or SkullHammer or Hookshot
 CanDefeatArmosKnights: Bombs or LightArrows
 CanDefeatBigOctos: HerosBow or Bombs or Boomerang
 CanDefeat12EyeBigOctos: LightArrows or Bombs or Boomerang or (HerosBow and 60Quiver)
-CanDefeatRedBubbles: HerosSword or HerosBow or SkullHammer or Bombs or (GrapplingHook and (Hookshot or DekuLeaf))
-CanDefeatBlueBubbles: IceArrows or Bombs or ((HerosSword or HerosBow or GrapplingHook or SkullHammer) and (Hookshot or DekuLeaf))
+CanDefeatRedBubbles: HerosSword or HerosBow or SkullHammer or Bombs or (GrapplingHook and (Hookshot or CanFanWithDekuLeaf))
+CanDefeatBlueBubbles: IceArrows or Bombs or ((HerosSword or HerosBow or GrapplingHook or SkullHammer) and (Hookshot or CanFanWithDekuLeaf))
 CanDefeatReDeads: HerosSword or LightArrows or Bombs or SkullHammer
 CanDefeatPoes: Nothing
 CanDefeatPoesWithoutLightRay: HerosSword or HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or GrapplingHook

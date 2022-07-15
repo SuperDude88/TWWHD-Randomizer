@@ -3,5 +3,5 @@
 
 #include "Search.hpp"
 
-void generateSpoilerLog(WorldPool& worlds, const std::string& seed);
+void generateSpoilerLog(WorldPool& worlds);
 void generateNonSpoilerLog(WorldPool& worlds);

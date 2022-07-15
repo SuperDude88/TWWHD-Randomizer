@@ -1,6 +1,6 @@
 #include "ItemPool.hpp"
 #include "PoolFunctions.hpp"
-#include "Random.hpp"
+#include "../seedgen/random.hpp"
 #include "Dungeon.hpp"
 #include "../server/command/Log.hpp"
 
@@ -58,7 +58,8 @@ static const GameItemPool alwaysItems = {
     GameItem::ProgressiveBombBag,
     GameItem::ProgressiveQuiver,
     GameItem::ProgressiveQuiver,
-    GameItem::MagicMeterUpgrade,
+    GameItem::ProgressiveMagicMeter,
+    GameItem::ProgressiveMagicMeter,
 
     GameItem::ProgressiveShield,
     GameItem::ProgressiveShield,
@@ -331,13 +332,11 @@ GameItemPool generateGameItemPool(const Settings& settings)
 
 GameItemPool generateStartingGameItemPool(const Settings& settings)
 {
+    //Should be able to randomize wind waker/sail but it would require some logic changes/fixes which aren't in yet
     GameItemPool startingItems = {
         GameItem::WindWaker,
         GameItem::WindsRequiem,
-        GameItem::ProgressiveShield,
-        GameItem::SongOfPassing,
-        GameItem::BalladOfGales,
-        GameItem::ProgressiveSail,
+        GameItem::ProgressiveSail
     };
 
     // Add more items depending on settings

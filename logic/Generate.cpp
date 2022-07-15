@@ -4,26 +4,23 @@
 #include "ItemPool.hpp"
 #include "Fill.hpp"
 #include "SpoilerLog.hpp"
-#include "Random.hpp"
+#include "../seedgen/random.hpp"
 #include "../server/command/Log.hpp"
+#include "../server/utility/platform.hpp"
 #include "EntranceShuffle.hpp"
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
 #include <fstream>
-#include <iostream>
-#include "../server/command/Log.hpp"
+#include <filesystem>
 
-int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, const int seed)
+int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
-
-  Random_Init(seed);
-
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
-  std::cout << "Building World" << (worlds.size() > 1 ? "s" : "") << std::endl;
+  Utility::platformLog(std::string("Building World\n") + (worlds.size() > 1 ? "s" : ""));
   int buildRetryCount = 10;
-  EntranceShuffleError entranceErr;
+  EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
   while (buildRetryCount > 0)
   {
       for (size_t i = 0; i < worlds.size(); i++)
@@ -61,14 +58,14 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
 
   if (buildRetryCount == 0)
   {
-      std::cout << "Build retry count exceeded. Error: " << errorToName(entranceErr) << std::endl;
+      ErrorLog::getInstance().log("Build retry count exceeded. Error: " + errorToName(entranceErr));
       return 1;
   }
 
   // Retry the main fill algorithm a couple times incase it completely fails.
   int totalFillAttempts = 5;
-  FillError fillError;
-  std::cout << "Filling World" << (worlds.size() > 1 ? "s" : "") << std::endl;
+  FillError fillError = FillError::NONE;
+  Utility::platformLog(std::string("Filling World\n") + (worlds.size() > 1 ? "s" : ""));
   while (totalFillAttempts > 0)
   {
       totalFillAttempts--;
@@ -82,7 +79,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
 
   if (fillError != FillError::NONE)
   {
-      std::cout << "Fill Unsuccessful. Error Code: " << errorToName(fillError) << std::endl;
+      ErrorLog::getInstance().log(std::string("Fill Unsuccessful. Error Code: ") + errorToName(fillError));
       #ifdef ENABLE_DEBUG
           if (fillError == FillError::GAME_NOT_BEATABLE)
           {
@@ -96,7 +93,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector, con
       return 1;
   }
 
-  std::cout << "Generating Playthrough" << std::endl;
+  Utility::platformLog("Generating Playthrough\n");
   generatePlaythrough(worlds);
 
   return 0;

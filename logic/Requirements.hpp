@@ -6,8 +6,6 @@
 #include <variant>
 #include <unordered_set>
 #include <unordered_map>
-#include "../libs/jsonexcept.hpp"
-#include "../libs/json.hpp"
 #include "../options.hpp"
 #include "GameItem.hpp"
 #include "Area.hpp"
@@ -29,7 +27,6 @@ enum struct RequirementType
     INVALID
 };
 
-using json = nlohmann::json;
 using MacroIndex = size_t;
 struct Requirement;
 

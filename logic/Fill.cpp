@@ -2,7 +2,7 @@
 #include "Fill.hpp"
 #include "Search.hpp"
 #include "PoolFunctions.hpp"
-#include "Random.hpp"
+#include "../seedgen/random.hpp"
 #include "Dungeon.hpp"
 #include "../server/command/Log.hpp"
 #include <chrono>
@@ -480,7 +480,7 @@ FillError fill(WorldPool& worlds)
     // Calculate time difference
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    auto seconds = static_cast<double>(duration.count()) / 1000000.0f;
+    auto seconds = static_cast<double>(duration.count()) / 1000000.0;
     std::cout << "Fill took " << std::to_string(seconds) << " seconds" << std::endl;
 
     return FillError::NONE;

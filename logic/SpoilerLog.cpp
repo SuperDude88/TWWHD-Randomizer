@@ -2,6 +2,7 @@
 #include "SpoilerLog.hpp"
 #include "../options.hpp"
 #include "../server/command/Log.hpp"
+#include "../server/utility/platform.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -55,10 +56,13 @@ struct chartComparator {
     }
 };
 
-static void printBasicInfo(std::ofstream& log, const WorldPool& worlds, const std::string& seed)
+static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
+    time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
+    log << "Program opened " << std::ctime(&point); //time string ends with \n
+    
     log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    log << "Seed: " << seed << std::endl;
+    log << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
     // Print options selected for each world
     for (const auto& world : worlds)
@@ -68,7 +72,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds, const st
         {
             Option setting = static_cast<Option>(settingInt);
 
-            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier)
+            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
                 log << settingToName(setting) << ": " << std::to_string(getSetting(world.getSettings(), setting)) << ", ";
             }
@@ -79,15 +83,16 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds, const st
         }
         log << std::endl;
     }
+    
     log << std::endl;
 }
 
-void generateSpoilerLog(WorldPool& worlds, const std::string& seed)
+void generateSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log;
-    log.open("Spoiler Log.txt"); // Eventually add seed/hash to filename
+    std::ofstream log("./Spoiler Log.txt");
 
-    printBasicInfo(log, worlds, seed);
+	Utility::platformLog("Generating spoiler log...\n");
+    printBasicInfo(log, worlds);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
     // many worlds there are.
@@ -241,26 +246,26 @@ void generateSpoilerLog(WorldPool& worlds, const std::string& seed)
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    BasicLog::getInstance().logBasicInfo("### Locations that may or may not have progress items in them on this run:");
+    BasicLog::getInstance().log("### Locations that may or may not have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (location->progression)
             {
-                BasicLog::getInstance().logBasicInfo("\t" + locationIdToPrettyName(location->locationId));
+                BasicLog::getInstance().log("\t" + locationIdToPrettyName(location->locationId));
             }
         }
     }
 
-    BasicLog::getInstance().logBasicInfo("### Locations that cannot have progress items in them on this run:");
+    BasicLog::getInstance().log("### Locations that cannot have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (!location->progression)
             {
-                BasicLog::getInstance().logBasicInfo("\t" + locationIdToPrettyName(location->locationId));
+                BasicLog::getInstance().log("\t" + locationIdToPrettyName(location->locationId));
             }
         }
     }
