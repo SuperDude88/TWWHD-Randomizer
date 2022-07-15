@@ -176,8 +176,8 @@ enum struct GameItem : uint8_t
     NinetyNineBombBag,
     ProgressiveQuiver,
     NinetyNineQuiver,
-
-    MagicMeterUpgrade = 0xB2,
+    MagicMeter, //Added by rando
+    ProgressiveMagicMeter,  //Replaces magic upgrade
     FiftyRupees,
     HundredRupees,
     HundredFiftyRupees,

@@ -1,12 +1,11 @@
 
 #include "EntranceShuffle.hpp"
-#include "Random.hpp"
+#include "../seedgen/random.hpp"
 #include "PoolFunctions.hpp"
 #include "../server/command/Log.hpp"
 #include "Search.hpp"
 #include <map>
 #include <utility>
-#include <iostream>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {DebugLog::getInstance().log("Error: " + errorToName(err)); return err;}
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
@@ -28,8 +27,8 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     /*Dragon Roost Cavern*/ {Area::DRCFirstRoom,                      Area::DragonRoostPondPastStatues,         "M_NewD2",  0,          0, "Adanmae",  0,     2, "M_DragB", "sea",  13, 211}},
     {EntranceType::DUNGEON, {Area::FWEntrancePlatform,                Area::FWFirstRoom,                        "sea",     41,          6, "kindan",   0,     0},
     /*Forbidden Woods*/     {Area::FWFirstRoom,                       Area::FWEntrancePlatform,                 "kindan",   0,          0, "sea",     41,     6, "kinBOSS", "Omori", 0, 215}},
-    {EntranceType::DUNGEON, {Area::TowerOfTheGods,                    Area::TOTGEntranceRoom,                   "sea",     26,          0, "Siren",    0,     0},
-    /*Tower of the Gods*/   {Area::TOTGEntranceRoom,                  Area::TowerOfTheGods,                     "Siren",    0,          0, "sea",     26,     2, "SirenB",  "sea",  26,   1}},
+    {EntranceType::DUNGEON, {Area::TotGSector,                    Area::TOTGEntranceRoom,                   "sea",     26,          0, "Siren",    0,     0},
+    /*Tower of the Gods*/   {Area::TOTGEntranceRoom,                  Area::TotGSector,                     "Siren",    0,          0, "sea",     26,     2, "SirenB",  "sea",  26,   1}},
     {EntranceType::DUNGEON, {Area::HeadstoneIslandInterior,           Area::ETFirstRoom,                        "Edaichi",  0,          0, "M_Dai",  255,     0},
     /*Earth Temple*/        {Area::ETFirstRoom,                       Area::HeadstoneIslandInterior,            "M_Dai",    0,          0, "Edaichi",  0,     1, "M_DaiB",  "sea",  45, 229}},
     {EntranceType::DUNGEON, {Area::GaleIsleInterior,                  Area::WTFirstRoom,                        "Ekaze",    0,          0, "kaze",    15,    15},
@@ -103,7 +102,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
 //  {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallPirateShip,                 "",        -1,         -1, "",        -1,    -1},
 //                          {Area::WindfallPirateShip,                Area::WindfallIsland,                     "",        -1,         -1, "",        -1,    -1}},
     {EntranceType::DOOR,    {Area::DragonRoostRitoAerie,              Area::DragonRoostKomalisRoom,             "Atorizk",  0,          4, "Comori",   0,     0},
-                            {Area::DragonRoostKomalisRoom,            Area::DragonRoostRitoAerie,               "Comori",   0,          1, "Atorizk",  0,     4}},
+                            {Area::DragonRoostKomalisRoom,            Area::DragonRoostRitoAerie,               "Comori",   0,          0, "Atorizk",  0,     4}},
     {EntranceType::DOOR,    {Area::PrivateOasis,                      Area::TheCabana,                          "sea",     33,          0, "Abesso",   0,     0},
                             {Area::TheCabana,                         Area::PrivateOasis,                       "Abesso",   0,          0, "sea",     33,     1}},
     {EntranceType::DOOR,    {Area::OutsetIsland,                      Area::OutsetLinksHouse,                   "sea",     44,          0, "LinkRM",   0,     1},
@@ -141,7 +140,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     {EntranceType::MISC_RESTRICTIVE, {Area::DragonRoostRitoAerie,              Area::DragonRoostPondUpperLedge,          "Atorizk",  0, 3, "Adanmae",  0,     1},
                                      {Area::DragonRoostPondUpperLedge,         Area::DragonRoostRitoAerie,               "Adanmae",  0, 1, "Atorizk",  0,     3}},
     {EntranceType::MISC_RESTRICTIVE, {Area::IsletOfSteel,                      Area::IsletOfSteelInterior,               "sea",     30, 0, "ShipD",    0,     0},
-                                     {Area::IsletOfSteelInterior,              Area::IsletOfSteel,                       "Ship",     0, 0, "sea",     30,     1}},
+                                     {Area::IsletOfSteelInterior,              Area::IsletOfSteel,                       "ShipD",     0, 0, "sea",     30,     1}},
     {EntranceType::MISC,             {Area::ForestHaven,                       Area::ForestHavenInterior,                "sea",     41, 5, "Omori",    0,     5},
                                      {Area::ForestHavenInterior,               Area::ForestHaven,                        "Omori",    0, 5, "sea",     41,     5}},
     {EntranceType::MISC_RESTRICTIVE, {Area::ForestHaven,                       Area::ForestHavenWaterfallCave,           "sea",     41, 7, "Otkura",   0,     0},
@@ -346,7 +345,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 auto dungeonFirstRoom = dungeonIdToFirstRoom(dungeon);
                 auto dungeonIslands = world.getIslands(dungeonFirstRoom);
 
-                if (world.raceModeDungeons.contains(dungeon))
+                if (world.raceModeDungeons.count(dungeon) > 0) //contains() is c++20
                 {
                     if (dungeonIslands.size() > 1)
                     {
@@ -358,13 +357,13 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 if (dungeonIslands.size() == 1)
                 {
                     auto dungeonIsland = *dungeonIslands.begin();
-                    if (raceModeIslands.contains(dungeonIsland))
+                    if (raceModeIslands.count(dungeonIsland) > 0)
                     {
                         DebugLog::getInstance().log("Error: Island " + hintRegionToName(dungeonIsland) + " has an ambiguous race mode dungeon");
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
-                    if (world.raceModeDungeons.contains(dungeon))
+                    if (world.raceModeDungeons.count(dungeon) > 0)
                     {
                         raceModeIslands.insert(dungeonIsland);
                     }
@@ -413,7 +412,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
     // one of the connections produces a valid world graph.
     for (auto entrance : entrances)
     {
-        EntranceShuffleError err;
+        EntranceShuffleError err = EntranceShuffleError::NONE;
         if (entrance->getConnectedArea() != Area::INVALID)
         {
             continue;
@@ -460,7 +459,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
 // in hopes that a complete failure with valid settings is exceedingly rare.
 static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds, EntrancePool& entrancePool, EntrancePool& targetEntrances, int retryCount = 20)
 {
-    EntranceShuffleError err;
+    EntranceShuffleError err = EntranceShuffleError::NONE;
 
     while (retryCount > 0)
     {

@@ -12,7 +12,7 @@
 #include "Dungeon.hpp"
 #include "Entrance.hpp"
 #include "HintRegion.hpp"
-#include "../libs/ryml.hpp"
+#include "../libs/Yaml.hpp"
 
 static std::stringstream lastError;
 
@@ -131,11 +131,11 @@ private:
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea);
-    WorldLoadingError loadLocation(const ryml::NodeRef& locationObject, LocationId& loadedLocation);
+    WorldLoadingError loadLocation(Yaml::Node& locationObject, LocationId& loadedLocation);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
-    WorldLoadingError loadMacros(const ryml::Tree& macroListTree);
-    WorldLoadingError loadArea(const ryml::NodeRef& areaObject, Area& loadedArea);
+    WorldLoadingError loadMacros(Yaml::Node& macroListTree);
+    WorldLoadingError loadArea(Yaml::Node& areaObject, Area& loadedArea);
     WorldLoadingError loadPlandomizerLocations();
     int getFileContents(const std::string& filename, std::string& fileContents);
 

@@ -2,8 +2,8 @@
 #pragma once
 
 #include <algorithm>
+#include <iterator>
 #include <vector>
-#include <iostream>
 
 template <typename T, typename Predicate>
 static void erase_if(std::vector<T>& vector, Predicate pred) {
