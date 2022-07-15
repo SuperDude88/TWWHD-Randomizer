@@ -14,7 +14,7 @@ enum struct DungeonId : uint32_t
     ForsakenFortress,
     EarthTemple,
     WindTemple,
-    INVALID,
+    INVALID
 };
 
 struct Dungeon {
@@ -33,3 +33,4 @@ std::string dungeonIdToName(const DungeonId& dungeonId);
 DungeonId nameToDungeonId(const std::string& name);
 Area dungeonIdToFirstRoom(const DungeonId& dungeonId);
 const Dungeon dungeonIdToDungeon(const DungeonId& dungeonId);
+DungeonId dungeonItemToDungeon(const GameItem& item);

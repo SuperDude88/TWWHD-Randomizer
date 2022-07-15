@@ -1,6 +1,9 @@
 #include "RandoSession.hpp"
 
 #include <fstream>
+#include <mutex>
+#include <syncstream>
+#include <unordered_map>
 #include <memory>
 #include <mutex>
 #include <future>
@@ -164,9 +167,6 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
 
 RandoSession::fspath RandoSession::openGameFile(const RandoSession::fspath& relPath)
 {
-    if(relPath == "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr")
-        volatile int i = 1;
-    if(!initialized) return "";
     return extractFile(split(relPath.string(), '@')); //some cases only need the path, not stream
 }
 
@@ -248,11 +248,11 @@ bool RandoSession::repackFile(const std::string& element) {
     return 1;
 }
 
-bool RandoSession::repackChildren(CacheEntry& entry) {
+bool RandoSession::repackChildren(CacheEntry& entry, const std::string& temp) {
     std::vector<std::future<bool>> futures;
 
     for(auto& child : entry.children) { //go down the tree
-        futures.push_back(std::async(std::launch::async, &RandoSession::repackChildren, this, std::ref(*child.second.get())));
+        futures.push_back(std::async(std::launch::async, &RandoSession::repackChildren, this, std::ref(child.second), child.first));
     }
 
     while(futures.size() != 0) { //wait for lower parts of tree to finish
@@ -261,14 +261,15 @@ bool RandoSession::repackChildren(CacheEntry& entry) {
         futures.erase(futures.begin());
     }
 
+    std::vector<std::future<bool>> futures2;
     for(const auto& child : entry.children)  { //repack this level once children are done
-        futures.push_back(std::async(std::launch::async, &RandoSession::repackFile, this, child.first));
+        futures2.push_back(std::async(std::launch::async, &RandoSession::repackFile, this, child.first));
     }
 
-    while(futures.size() != 0) { //wait for children to finish
-        futures[0].wait();
-        if(futures[0].get() == false) return false;
-        futures.erase(futures.begin());
+    while(futures2.size() != 0) { //wait for children to finish
+        futures2[0].wait();
+        if(futures2[0].get() == false) return false;
+        futures2.erase(futures2.begin());
     }
     entry.children.clear(); //children no longer cached
 
@@ -277,6 +278,6 @@ bool RandoSession::repackChildren(CacheEntry& entry) {
 
 bool RandoSession::repackCache()
 {
-    if(!initialized) return false;
-    return repackChildren(fileCache);
+    //traverse tree, give each child a thread, when no children repack, wait until all children finish and pack back up tree
+    return repackChildren(fileCache, "root");
 }

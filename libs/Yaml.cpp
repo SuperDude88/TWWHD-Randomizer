@@ -65,10 +65,10 @@ namespace Yaml
     static Yaml::Node        g_NoneNode;
 
     // Global function definitions. Implemented at end of this source file.
-    static std::string ExceptionMessage(const std::string & message, ReaderLine & line);
-    static std::string ExceptionMessage(const std::string & message, ReaderLine & line, const size_t errorPos);
-    static std::string ExceptionMessage(const std::string & message, const size_t errorLine, const size_t errorPos);
-    static std::string ExceptionMessage(const std::string & message, const size_t errorLine, const std::string & data);
+    //static std::string ExceptionMessage(const std::string & message, ReaderLine & line);
+    //static std::string ExceptionMessage(const std::string & message, ReaderLine & line, const size_t errorPos);
+    //static std::string ExceptionMessage(const std::string & message, const size_t errorLine, const size_t errorPos);
+    //static std::string ExceptionMessage(const std::string & message, const size_t errorLine, const std::string & data);
 
     static bool FindQuote(const std::string & input, size_t & start, size_t & end, size_t searchPos = 0);
     static size_t FindNotCited(const std::string & input, char token, size_t & preQuoteCount);
@@ -80,39 +80,39 @@ namespace Yaml
     static void RemoveAllEscapeTokens(std::string & input);
 
     // Exception implementations
-    Exception::Exception(const std::string & message, const eType type) :
-        std::runtime_error(message),
-        m_Type(type)
-    {
-    }
-
-    Exception::eType Exception::Type() const
-    {
-        return m_Type;
-    }
-
-    const char * Exception::Message() const
-    {
-        return what();
-    }
-
-    InternalException::InternalException(const std::string & message) :
-        Exception(message, InternalError)
-    {
-
-    }
-
-    ParsingException::ParsingException(const std::string & message) :
-        Exception(message, ParsingError)
-    {
-
-    }
-
-    OperationException::OperationException(const std::string & message) :
-        Exception(message, OperationError)
-    {
-
-    }
+    //Exception::Exception(const std::string & message, const eType type) :
+    //    std::runtime_error(message),
+    //    m_Type(type)
+    //{
+    //}
+//
+    //Exception::eType Exception::Type() const
+    //{
+    //    return m_Type;
+    //}
+//
+    //const char * Exception::Message() const
+    //{
+    //    return what();
+    //}
+//
+    //InternalException::InternalException(const std::string & message) :
+    //    Exception(message, InternalError)
+    //{
+//
+    //}
+//
+    //ParsingException::ParsingException(const std::string & message) :
+    //    Exception(message, ParsingError)
+    //{
+//
+    //}
+//
+    //OperationException::OperationException(const std::string & message) :
+    //    Exception(message, OperationError)
+    //{
+//
+    //}
 
 
     class TypeImp
@@ -1368,19 +1368,11 @@ namespace Yaml
         */
         void Parse(Node & root, std::iostream & stream)
         {
-            try
-            {
-                root.Clear();
-                ReadLines(stream);
-                PostProcessLines();
-                //Print();
-                ParseRoot(root);
-            }
-            catch(Exception e)
-            {
-                root.Clear();
-                throw;
-            }
+            root.Clear();
+            ReadLines(stream);
+            PostProcessLines();
+            //Print();
+            ParseRoot(root);
         }
 
     private:
@@ -1459,7 +1451,7 @@ namespace Yaml
                 {
                     if (line[i] != '\t' && (line[i] < 32 || line[i] > 125))
                     {
-                        throw ParsingException(ExceptionMessage(g_ErrorInvalidCharacter, lineNo, i + 1));
+                        return;
                     }
                 }
 
@@ -1472,7 +1464,7 @@ namespace Yaml
                 {
                     if(firstTabPos < startOffset)
                     {
-                        throw ParsingException(ExceptionMessage(g_ErrorTabInOffset, lineNo, firstTabPos));
+                        return;
                     }
 
                     // Remove front spaces.
@@ -1532,7 +1524,7 @@ namespace Yaml
             {
                 if (m_Lines.back()->Type != Node::ScalarType)
                 {
-                    throw ParsingException(ExceptionMessage(g_ErrorUnexpectedDocumentEnd, *m_Lines.back()));
+                    return;
                 }
 
                 if (m_Lines.size() > 1)
@@ -1606,7 +1598,7 @@ namespace Yaml
             }
             if(preKeyQuotes > 1)
             {
-                throw ParsingException(ExceptionMessage(g_ErrorKeyIncorrect, *pLine));
+                return false;
             }
 
             pLine->Type = Node::MapType;
@@ -1616,7 +1608,7 @@ namespace Yaml
             const size_t keyEnd = key.find_last_not_of(" \t");
             if (keyEnd == std::string::npos)
             {
-                throw ParsingException(ExceptionMessage(g_ErrorKeyMissing, *pLine));
+                return false;
             }
             key.resize(keyEnd + 1);
 
@@ -1625,7 +1617,7 @@ namespace Yaml
             {
                 if(key.front() != '"' || key.back() != '"')
                 {
-                    throw ParsingException(ExceptionMessage(g_ErrorKeyIncorrect, *pLine));
+                    return false;
                 }
 
                 key = key.substr(1, key.size() - 2);
@@ -1647,7 +1639,7 @@ namespace Yaml
             // Make sure the value is not a sequence start.
             if (IsSequenceStart(value) == true)
             {
-                throw ParsingException(ExceptionMessage(g_ErrorBlockSequenceNotAllowed, *pLine, valueStart));
+                return false;
             }
 
             pLine->Data = key;
@@ -1762,7 +1754,7 @@ namespace Yaml
 
             if(it != m_Lines.end())
             {
-                throw InternalException(ExceptionMessage(g_ErrorUnexpectedDocumentEnd, *pLine));
+                return;
             }
 
         }
@@ -1783,7 +1775,7 @@ namespace Yaml
                 ++it;
                 if(it == m_Lines.end())
                 {
-                    throw InternalException(ExceptionMessage(g_ErrorUnexpectedDocumentEnd, *pLine));
+                    return;
                 }
 
                 // Handle value of map
@@ -1811,11 +1803,11 @@ namespace Yaml
                 }
                 if(pNextLine->Offset > pLine->Offset)
                 {
-                    throw ParsingException(ExceptionMessage(g_ErrorIncorrectOffset, *pNextLine));
+                    return;
                 }
                 if(pNextLine->Type != Node::SequenceType)
                 {
-                    throw InternalException(ExceptionMessage(g_ErrorDiffEntryNotAllowed, *pNextLine));
+                    return;
                 }
 
             }
@@ -1837,7 +1829,7 @@ namespace Yaml
                 ++it;
                 if(it == m_Lines.end())
                 {
-                    throw InternalException(ExceptionMessage(g_ErrorUnexpectedDocumentEnd, *pLine));
+                    return;
                 }
 
                 // Handle value of map
@@ -1865,11 +1857,11 @@ namespace Yaml
                 }
                 if(pNextLine->Offset > pLine->Offset)
                 {
-                    throw ParsingException(ExceptionMessage(g_ErrorIncorrectOffset, *pNextLine));
+                    return;
                 }
                 if(pNextLine->Type != pLine->Type)
                 {
-                    throw InternalException(ExceptionMessage(g_ErrorDiffEntryNotAllowed, *pNextLine));
+                    return;
                 }
 
             }
@@ -1920,7 +1912,7 @@ namespace Yaml
 
                     if(parentOffset != 0 && pLine->Offset <= parentOffset)
                     {
-                        throw ParsingException(ExceptionMessage(g_ErrorIncorrectOffset, *pLine));
+                        return;
                     }
 
                     const size_t endOffset = pLine->Data.find_last_not_of(" \t");
@@ -1945,7 +1937,7 @@ namespace Yaml
 
                 if(ValidateQuote(data) == false)
                 {
-                    throw ParsingException(ExceptionMessage(g_ErrorInvalidQuote, *pFirstLine));
+                    return;
                 }
             }
             // Block scalar
@@ -1955,7 +1947,7 @@ namespace Yaml
                 size_t blockOffset = pLine->Offset;
                 if(blockOffset <= parentOffset)
                 {
-                    throw ParsingException(ExceptionMessage(g_ErrorIncorrectOffset, *pLine));
+                    return;
                 }
 
                 bool addedSpace = false;
@@ -1966,7 +1958,7 @@ namespace Yaml
                     const size_t endOffset = pLine->Data.find_last_not_of(" \t");
                     if(endOffset != std::string::npos && pLine->Offset < blockOffset)
                     {
-                        throw ParsingException(ExceptionMessage(g_ErrorIncorrectOffset, *pLine));
+                        return;
                     }
 
                     if(endOffset == std::string::npos)
@@ -2186,7 +2178,7 @@ namespace Yaml
                 {
                     if(data[1] != '-' && data[1] != ' ' && data[1] != '\t')
                     {
-                        throw ParsingException(ExceptionMessage(g_ErrorInvalidBlockScalar, line, data));
+                        return false;
                     }
                 }
                 else
@@ -2203,7 +2195,7 @@ namespace Yaml
                 {
                     if(data[1] != '-' && data[1] != ' ' && data[1] != '\t')
                     {
-                        throw ParsingException(ExceptionMessage(g_ErrorInvalidBlockScalar, line, data));
+                        return false;
                     }
                 }
                 else
@@ -2227,7 +2219,7 @@ namespace Yaml
         std::ifstream f(filename, std::ifstream::binary);
         if (f.is_open() == false)
         {
-            throw OperationException(g_ErrorCannotOpenFile);
+            return;
         }
 
         f.seekg(0, f.end);
@@ -2245,17 +2237,9 @@ namespace Yaml
     {
         ParseImp * pImp = nullptr;
 
-        try
-        {
-            pImp = new ParseImp;
-            pImp->Parse(root, stream);
-            delete pImp;
-        }
-        catch (const Exception e)
-        {
-            delete pImp;
-            throw;
-        }
+        pImp = new ParseImp;
+        pImp->Parse(root, stream);
+        delete pImp;
     }
 
     void Parse(Node & root, const std::string & string)
@@ -2293,7 +2277,7 @@ namespace Yaml
         std::ofstream f(filename);
         if (f.is_open() == false)
         {
-            throw OperationException(g_ErrorCannotOpenFile);
+            return;
         }
 
         f.write(stream.str().c_str(), stream.str().size());
@@ -2493,7 +2477,7 @@ namespace Yaml
     {
         if(config.SpaceIndentation < 2)
         {
-            throw OperationException(g_ErrorIndentation);
+            return;
         }
 
         SerializeLoop(root, stream, false, 0, config);
@@ -2509,25 +2493,25 @@ namespace Yaml
 
 
     // Static function implementations
-    std::string ExceptionMessage(const std::string & message, ReaderLine & line)
-    {
-        return message + std::string(" Line ") + std::to_string(line.No) + std::string(": ") + line.Data;
-    }
-
-    std::string ExceptionMessage(const std::string & message, ReaderLine & line, const size_t errorPos)
-    {
-        return message + std::string(" Line ") + std::to_string(line.No) + std::string(" column ") + std::to_string(errorPos + 1) + std::string(": ") + line.Data;
-    }
-
-    std::string ExceptionMessage(const std::string & message, const size_t errorLine, const size_t errorPos)
-    {
-        return message + std::string(" Line ") + std::to_string(errorLine) + std::string(" column ") + std::to_string(errorPos);
-    }
-
-    std::string ExceptionMessage(const std::string & message, const size_t errorLine, const std::string & data)
-    {
-        return message + std::string(" Line ") + std::to_string(errorLine) + std::string(": ") + data;
-    }
+    //std::string ExceptionMessage(const std::string & message, ReaderLine & line)
+    //{
+    //    return message + std::string(" Line ") + std::to_string(line.No) + std::string(": ") + line.Data;
+    //}
+//
+    //std::string ExceptionMessage(const std::string & message, ReaderLine & line, const size_t errorPos)
+    //{
+    //    return message + std::string(" Line ") + std::to_string(line.No) + std::string(" column ") + std::to_string(errorPos + 1) + std::string(": ") + line.Data;
+    //}
+//
+    //std::string ExceptionMessage(const std::string & message, const size_t errorLine, const size_t errorPos)
+    //{
+    //    return message + std::string(" Line ") + std::to_string(errorLine) + std::string(" column ") + std::to_string(errorPos);
+    //}
+//
+    //std::string ExceptionMessage(const std::string & message, const size_t errorLine, const std::string & data)
+    //{
+    //    return message + std::string(" Line ") + std::to_string(errorLine) + std::string(": ") + data;
+    //}
 
     bool FindQuote(const std::string & input, size_t & start, size_t & end, size_t searchPos)
     {

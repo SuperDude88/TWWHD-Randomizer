@@ -14,7 +14,7 @@ BasicLog& BasicLog::getInstance() {
 }
 
 void BasicLog::logBasicInfo(const std::string &seed) {
-    // output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     output << "Seed: " << seed << std::endl;
 }
 
@@ -36,7 +36,7 @@ DebugLog& DebugLog::getInstance() {
 }
 
 void DebugLog::logBasicInfo(const std::string &seed) {
-    // output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     output << "Seed: " << seed << std::endl;
 }
 

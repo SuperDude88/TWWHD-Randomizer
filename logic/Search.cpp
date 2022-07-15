@@ -1,7 +1,7 @@
 
 #include "Search.hpp"
 #include "PoolFunctions.hpp"
-#include "Debug.hpp"
+#include "../server/command/Log.hpp"
 #include <list>
 #include <unordered_set>
 #include <algorithm>
@@ -257,7 +257,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         }
         // Note which locations are now accessible on this iteration
         LocationPool accessibleThisIteration = {};
-        // debugLog("New Locations Accessible:");
+        // DebugLog::getInstance().log("New Locations Accessible:");
         for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); )
         {
             auto locAccess = *locItr;
@@ -272,7 +272,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             }
             if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
             {
-                // debugLog("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
+                // DebugLog::getInstance().log("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;
                 location->hasBeenFound = true;
                 // Delete newly accessible locations from the list
@@ -438,7 +438,7 @@ void generatePlaythrough(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
     search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
-    debugLog("Pare Down");
+    DebugLog::getInstance().log("Pare Down");
     pareDownPlaythrough(worlds);
 }
 
@@ -452,7 +452,7 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
         #ifdef ENABLE_DEBUG
             if (!inPool)
             {
-                debugLog("\tMissing location " + locationName(loc));
+                DebugLog::getInstance().log("Missing location " + locationName(loc));
             }
         #endif
         return inPool;

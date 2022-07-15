@@ -1,7 +1,18 @@
 cmake_minimum_required(VERSION 3.7)
 project(wwhd_rando CXX)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -Wall") #would have implicit conversions off, breaks some tweaks
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ENABLE_DEBUG=1 -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
+add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
+
+if(ENABLE_DEBUG)
+  message("Debugging is ON")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
+endif()
+
+# Some path related stuff for logging
+string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
+add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
 
 if(DEFINED DEVKITPRO)
   include("${DEVKITPRO}/wut/share/wut.cmake" REQUIRED)
@@ -23,7 +34,7 @@ if(WIN32)
 else()
   include(FindPkgConfig)
   pkg_check_modules(ZLIB zlib REQUIRED)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 endif()
 
 if(CMAKE_USE_PTHREADS_INIT)
@@ -31,13 +42,13 @@ if(CMAKE_USE_PTHREADS_INIT)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
 endif()
 
-add_executable(wwhd_rando tweaks.cpp)
-target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp")
+add_executable(wwhd_rando randomizer.cpp)
+target_sources(wwhd_rando PRIVATE "tweaks.cpp" "options.cpp")
 add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")
-add_subdirectory("logic") # not currently implemented, kept for some includes
+add_subdirectory("logic")
 
 if(WIN32)
   target_link_libraries(wwhd_rando zlib)
@@ -57,6 +68,7 @@ if(DEFINED DEVKITPRO)
   wut_create_rpx(wwhd_rando)
 endif()
 
-file(COPY "asm/custom_symbols.txt" DESTINATION "${CMAKE_BINARY_DIR}/asm")
+file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/asm")
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/asm")
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/logic")

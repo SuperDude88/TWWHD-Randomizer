@@ -123,7 +123,7 @@ enum struct Area : uint32_t
     SixEyeReefSubmarineExterior,
     SixEyeReefSubmarineInterior,
     SixEyeReefLookoutPlatform,
-    TowerOfTheGods,
+    TotGSector,
     TowerOfTheGodsBeedleShop,
     EasternTriangleIsland,
     EasternTriangleBeedleShop,
@@ -410,3 +410,4 @@ std::string areaToPrettyName(const Area& area);
 uint32_t areaAsIndex(Area area);
 Area indexAsArea(uint32_t index);
 Area roomIndexToIslandArea(const uint8_t& startingIslandRoomIndex);
+uint8_t islandAreaToRoomIndex(const Area& islandArea);
