@@ -2391,7 +2391,7 @@ XMLError XMLDocument::SaveFile( const char* filename, bool compact )
         return _errorID;
     }
 
-    FILE* fp = callfopen( filename, "w" );
+    FILE* fp = callfopen( filename, "wb" ); //Change this so the line endings aren't weird
     if ( !fp ) {
         SetError( XML_ERROR_FILE_COULD_NOT_BE_OPENED, 0, "filename=%s", filename );
         return _errorID;

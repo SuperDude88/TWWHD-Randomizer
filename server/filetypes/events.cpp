@@ -10,6 +10,7 @@
 using eType = Utility::Endian::Type;
 
 
+using eType = Utility::Endian::Type;
 
 EventlistError Property::read(std::istream& in, const unsigned int offset) {
 	this->offset = offset;

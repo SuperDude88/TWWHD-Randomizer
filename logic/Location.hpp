@@ -1,10 +1,13 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <unordered_set>
 #include "GameItem.hpp"
+#include "Requirements.hpp"
+#include "../server/command/WriteLocations.hpp"
 
 enum struct LocationId : uint32_t
 {
@@ -157,7 +160,7 @@ enum struct LocationId : uint32_t
     WindTempleBehindStoneHeadChest,
     WindTempleLeftAlcoveChest,
     WindTempleBigKeyChest,
-    WindTempleManyCyclesRoomChest,
+    WindTempleManyCyclonesRoomChest,
     WindTempleHubRoomCenterChest,
     WindTempleSpikeWallRoomFirstChest,
     WindTempleSpikeWallRoomDestroyFloors,
@@ -358,7 +361,7 @@ enum struct LocationCategory
     SunkenTreasure,
     Obscure, // <-- the good stuff :)
     Junk,
-    Other,
+    Other
 };
 
 enum struct LocationModificationType
@@ -366,19 +369,12 @@ enum struct LocationModificationType
     INVALID = 0,
     Chest,
     Actor,
-    Boss,
     SCOB,
     Event,
     RPX,
     Custom_Symbol,
-    DoNothing,
-};
-
-struct LocationModificationMethod
-{
-    std::string filePath;
-    LocationModificationType type = LocationModificationType::INVALID;
-    std::vector<uint32_t> offsets;
+    Boss,
+    DoNothing
 };
 
 LocationId nameToLocationId(const std::string& name);
@@ -393,17 +389,33 @@ LocationId indexAsLocationId(uint32_t index);
 
 struct Location
 {
-    LocationId locationId = LocationId::INVALID;
-    std::unordered_set<LocationCategory> categories = {LocationCategory::INVALID};
-    bool progression = false;
-    Item originalItem = {GameItem::INVALID, -1};
-    Item currentItem = {GameItem::INVALID, -1};
-    LocationModificationMethod method;
+    LocationId locationId;
+    std::unordered_set<LocationCategory> categories;
+    bool progression;
+    Item originalItem;
+    Item currentItem;
+    std::unique_ptr<LocationModification> method;
     int worldId = -1;
-
+    
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
 
+    Location() :
+        locationId(LocationId::INVALID),
+        categories({LocationCategory::INVALID}),
+        progression(false),
+        originalItem(GameItem::INVALID, -1),
+        currentItem(GameItem::INVALID, -1),
+        worldId(-1),
+        hasBeenFound(false)
+    {
+        method = std::make_unique<LocationModification>();
+    }
+    ~Location() = default;
+    Location(const Location& loc) = delete;
+    Location& operator=(const Location&) = delete;
+    Location(Location&&) = default;
+    Location& operator=(Location&&) = default;
     bool operator<(const Location& rhs) const;
 };
 
