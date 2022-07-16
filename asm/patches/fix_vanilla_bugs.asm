@@ -120,7 +120,7 @@ miniblin_set_death_switch_when_light_arrowed:
 
 
 .org 0x0244A694
-	b 0x0244A6b8
+	b 0x0244A69C
 
 .org 0x0244A6b8
 	bl poe_fix_light_arrows_bug
@@ -266,5 +266,18 @@ phantom_ganon_check_link_within_y_diff:
 
 phantom_ganon_check_link_within_y_diff_outside_range:
   b 0x02139e4c
+
+.org 0x025b0aa0
+  b stop_sub_bgm_when_unloading_stage
+
+.org @NextFreeSpace
+.global stop_sub_bgm_when_unloading_stage
+stop_sub_bgm_when_unloading_stage:
+  ; Stop the music
+  bl subBgmStop_load_data
+
+  bl FUN_025200d4 ; replace the line we overwrote to jump here
+
+  b 0x025b0aa4 ; return
 
 .close

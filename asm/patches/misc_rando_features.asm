@@ -94,26 +94,113 @@ rainbow_rupee_keyframe:
   .float -6.0 ; Minimum keyframe
 
 
+
 ; Checks if the upcoming message text to parse has a custom text command.
-;	.org 0x02600634
-;		b check_run_new_text_commands
+.org 0x02600634
+	b check_run_new_text_commands
 ; Check the ID of the upcoming text command to see if it's a custom one, and runs custom code for it if so.
-;	.org @NextFreeSpace
-;	.global check_run_new_text_commands
-;	check_run_new_text_commands:
-;		cmplwi r0,0x7
-;		bne check_run_new_text_commands_check_failed
-;	
-;		lhz r0, 0x4(r6)
-;		cmplwi r0, 0x4B
-;		blt check_run_new_text_commands_check_failed
-;		cmplwi r0, 0x4F
-;		bgt check_run_new_text_commands_check_failed
-;		b exec_curr_num_keys_text_command
-;	
-;	check_run_new_text_commands_check_failed:
-; 		i r3, -0x1
-;		b 0x02600638 ; jump back
+.org @NextFreeSpace
+.global check_run_new_text_commands
+check_run_new_text_commands:
+	cmplwi r0, 0x7
+	bne check_run_new_text_commands_check_failed
+
+	lhz r0, 0x4(r6)
+	cmplwi r0, 0x4B
+	blt check_run_new_text_commands_check_failed
+	cmplwi r0, 0x4F
+	bgt check_run_new_text_commands_check_failed
+  mr r30, r0
+  stwu sp, -0x18(sp)
+  stw r30, 0x10(sp)
+  stw r31, 0x14(sp)
+  stw r29, 0xC(sp)
+  mflr r0
+  stw r0, 0x1C(sp)
+	bl exec_curr_num_keys_text_command
+  b 0x025fdfe4
+
+check_run_new_text_commands_check_failed:
+	li r3, -0x1
+	b 0x02600638 ; jump back
+
+; Updates the current message string with the number of keys for a certain dungeon.
+.global exec_curr_num_keys_text_command
+exec_curr_num_keys_text_command:
+  stwu sp, -0x10 (sp)
+  mflr r0
+  stw r0, 0x14 (sp)
+  mr r13, r6
+  ; Convert the text command ID to the dungeon stage ID.
+  ; The text command ID ranges from 0x4B-0x4F, for DRC, FW, TotG, ET, and WT.
+  ; The the dungeon stage IDs for those same 5 dungeons range from 3-7.
+  ; So just subtract 0x48 to get the right stage ID.
+  addi r6, r30, -0x48
+  
+  lis r9, gameInfo_ptr@ha
+  lwz r9, gameInfo_ptr@l(r9)
+  addi r9,r9,0x7bc ; stage ID of the current stage
+  lbz r10, 0 (r9)
+  cmpw r10, r6 ; Check if we're currently in the right dungeon for this key
+  beq exec_curr_num_keys_text_command_in_correct_dungeon
+  
+exec_curr_num_keys_text_command_not_in_correct_dungeon:
+  ; Read the current number of small keys from that dungeon's stage info.
+  lis r9, gameInfo_ptr@ha
+  lwz r9, gameInfo_ptr@l(r9)
+  addi r9,r9,0x3a0
+  mulli r6, r6, 0x24 ; Use stage ID of the dungeon as the index, each entry in the list is 0x24 bytes long
+  add r9, r9, r6
+  lbz r6, 0x20 (r9) ; Current number of keys for the correct dungeon
+  mr r30, r9 ; Remember the correct stage info pointer for later when we check the big key
+  b exec_curr_num_keys_text_command_after_reading_num_keys
+  
+exec_curr_num_keys_text_command_in_correct_dungeon:
+  ; Read the current number of small keys from the currently loaded dungeon info.
+  lis r9, gameInfo_ptr@ha
+  lwz r9, gameInfo_ptr@l(r9)
+  addi r9,r9,0x798
+  lbz r6, 0x20 (r9) ; Current number of keys for the current dungeon
+  mr r30, r9 ; Remember the correct stage info pointer for later when we check the big key
+  
+exec_curr_num_keys_text_command_after_reading_num_keys:
+  li r7, 0
+  li r8, 1
+  bl FUN_025fcb90
+  
+  ; Check whether the player has the big key or not.
+  lbz r6, 0x21 (r30) ; Bitfield of dungeon-specific flags in the appropriate stage info
+  rlwinm. r6, r6, 0, 29, 29 ; Extract the has big key bit
+  beq exec_curr_num_keys_text_command_after_appending_big_key_text
+  
+; Do a silly hack to overwrite extra space we add to the message (appending properly is much more complex)
+exec_curr_num_keys_text_command_has_big_key:
+  lis r7, key_text_command_has_big_key_text@ha
+  addi r7, r7, key_text_command_has_big_key_text@l
+	addi r13, r13, 0x8
+  li r8, 5
+
+  copy_char_begin:
+    lhz r9, 0(r7)
+    sth r9, 0(r13)
+    addi r13, r13, 2
+    addi r7, r7, 2
+    addi r8, r8, -0x1
+    cmpwi r8, 0
+    ble exec_curr_num_keys_text_command_after_appending_big_key_text
+    b copy_char_begin
+  
+exec_curr_num_keys_text_command_after_appending_big_key_text:
+  lwz r0, 0x14 (sp)
+  mtlr r0
+  addi sp, sp, 0x10
+  blr
+
+key_text_command_has_big_key_text:
+  .string "\0 \0+\0B\0i\0g"
+
+.align 2
+
 
 
 ; Make cannons die in 1 hit from the boomerang instead of 2.
@@ -301,5 +388,16 @@ multiply_damage:
 .global custom_damage_multiplier
 custom_damage_multiplier:
 	.float 2.0
+
+
+
+
+; Change the Deku Leaf so that you can still fan it to create a gust of air when you have zero magic.
+; In vanilla, you needed at least one magic to fan it, but it didn't consume any magic.
+; This is done so that the Deku Leaf still has some usefulness when starting without a magic meter.
+; It also allows the fan ability (which allows accessing Horseshoe Island's golf) to be separated from the flying ability.
+.org 0x023E77CC ; In daPy_lk_c::setShapeFanLeaf(void)
+  ; Remove branch taken when having less than 1 magic.
+  nop
 
 .close
