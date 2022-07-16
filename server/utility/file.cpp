@@ -1,6 +1,4 @@
 #include "file.hpp"
-#include <thread>
-#include <csignal>
 #include <mutex>
 
 namespace Utility {
