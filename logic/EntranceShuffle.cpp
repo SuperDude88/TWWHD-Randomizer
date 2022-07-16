@@ -172,7 +172,7 @@ static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolN
     {
         DebugLog::getInstance().log("\t" + entrance->getOriginalName());
     }
-    debugLog("]");
+    DebugLog::getInstance().log("]");
 }
 
 static void logMissingLocations(WorldPool& worlds)
@@ -195,7 +195,7 @@ static void logMissingLocations(WorldPool& worlds)
             }
         }
     }
-    debugLog("]");
+    DebugLog::getInstance().log("]");
 }
 
 static void setAllEntrancesData(World& world)

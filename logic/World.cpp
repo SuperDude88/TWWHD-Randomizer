@@ -175,7 +175,7 @@ void World::determineChartMappings()
     {
         shufflePool(charts);
     }
-    debugLog("[");
+    DebugLog::getInstance().log("[");
     for (size_t i = 0; i < charts.size(); i++)
     {
         auto chart = charts[i];
@@ -189,7 +189,7 @@ void World::determineChartMappings()
 
         DebugLog::getInstance().log("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
-    debugLog("]");
+    DebugLog::getInstance().log("]");
 }
 
 // Returns whether or not the sunken treasure location has a treasure/triforce chart leading to it
@@ -655,7 +655,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject, Locatio
         }
         newEntry.categories.insert(cat);
     }
-    
+
     const std::string& modificationTypeStr = locationObject["Type"].As<std::string>();
     const LocationModificationType modificationType = nameToModificationType(modificationTypeStr);
     if (modificationType == LocationModificationType::INVALID)
