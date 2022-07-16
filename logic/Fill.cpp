@@ -224,8 +224,8 @@ static void placeHardcodedItems(WorldPool& worlds)
 // for access to any progression location and/or game beatability
 void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
 {
-    debugLog("Determining Major Items");
-    debugLog("Major Items: [");
+    DebugLog::getInstance().log("Determining Major Items");
+    DebugLog::getInstance().log("Major Items: [");
     auto progressionLocations = filterFromPool(allLocations, [](const Location* location){return location->progression;});
     shufflePool(itemPool);
     for (auto& item : itemPool)
@@ -245,7 +245,7 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
             {
                 item.setAsMajorItem();
                 item.setGameItemId(gameItemId);
-                debugLog("\t" + item.getName());
+                DebugLog::getInstance().log("\t" + item.getName());
             }
             // Otherwise save the gameItemId to re-apply later once all major items
             // have been determined
@@ -256,7 +256,7 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
             }
         }
     }
-    debugLog("]");
+    DebugLog::getInstance().log("]");
     // Re-apply all items which had delayed items set
     for (auto& item : itemPool)
     {
@@ -388,7 +388,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
 
 static FillError placePlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    debugLog("Placing Plandomizer Items");
+    DebugLog::getInstance().log("Placing Plandomizer Items");
     std::unordered_map<Location*, Item> allPlandoLocations = {};
     for (auto& world : worlds)
     {

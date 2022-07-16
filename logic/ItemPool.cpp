@@ -359,5 +359,5 @@ void logItemPool(const std::string& poolName, const ItemPool& itemPool)
     for (auto& item : itemPool) {
         DebugLog::getInstance().log("\t" + item.getName());
     }
-    debugLog("]");
+    DebugLog::getInstance().log("]");
 }
