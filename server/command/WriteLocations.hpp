@@ -2,11 +2,13 @@
 
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include <memory>
 #include <utility>
 
 #include "./RandoSession.hpp"
 #include "../../logic/GameItem.hpp"
+#include "../../logic/HintRegion.hpp"
 #include "../../libs/Yaml.hpp"
 
 extern RandoSession g_session;
@@ -21,7 +23,7 @@ enum struct [[nodiscard]] ModificationError {
     UNKNOWN_ACTOR_NAME,
     INVALID_MASK,
     INVALID_SYMBOL,
-    RPX_NOT_OPEN,
+    RPX_ERROR,
     UNKNOWN,
     COUNT
 };
@@ -46,12 +48,15 @@ public:
 class ModifyChest : public LocationModification {
 private:
     inline static bool isCTMC = false;
+    inline static bool raceMode = false;
+    inline static std::unordered_map<DungeonId, HintRegion> raceModeDungeons;
 
     std::string filePath;
     std::vector<uint32_t> offsets;
 
     ModificationError setCTMCType(ACTR& chest, const Item& item);
 public:
+
     ModifyChest() {}
     ~ModifyChest() override {}
     ModifyChest(const ModifyChest& other) = default;
@@ -62,7 +67,7 @@ public:
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
     ModificationError parseArgs(Yaml::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
-    static void setCTMC(const bool& isCTMC_) { isCTMC = isCTMC_; }
+    static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::unordered_map<DungeonId, HintRegion>& dungeons_) { isCTMC = isCTMC_; raceMode = raceMode_; raceModeDungeons = dungeons_; }
 };
 
 class ModifyActor : public LocationModification {

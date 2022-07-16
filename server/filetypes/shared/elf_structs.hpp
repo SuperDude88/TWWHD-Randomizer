@@ -83,7 +83,7 @@ struct offset_t {
 	uint16_t shdrIdx;
 	uint32_t offset;
 
-	explicit operator bool() {
+	explicit operator bool() const {
 		if(shdrIdx == 0 && offset == 0) return false;
 		return true;
 	}

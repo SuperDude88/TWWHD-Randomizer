@@ -1,62 +1,28 @@
+//Format is part of LibMessageStudio
+//MSBT files store text along with labels and other info
+
 #pragma once
 
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <fstream>
+#include "./shared/lms.hpp"
 
 
 
-enum struct [[nodiscard]] MSBTError
-{
-	NONE = 0,
-	COULD_NOT_OPEN,
-	NOT_MSBT,
-	UNKNOWN_VERSION,
-	UNEXPECTED_VALUE,
-	UNKNOWN_SECTION,
-	NOT_LBL1,
-	NOT_ATR1,
-	NOT_TSY1,
-	NOT_TXT2,
-	REACHED_EOF,
-	UNKNOWN,
-	COUNT
+class MSBTHeader : public FileHeader {
+public:
+    virtual ~MSBTHeader() override = default;
+    virtual LMSError read(std::istream& in) override;
+    //virtual void write(std::ostream& out) override;
 };
 
-struct MSBTHeader {
-	char magicMsgStdBn[8];
-	uint16_t byteOrderMarker;
-	uint16_t unknown_0x00;
-	uint8_t encoding_0x01;
-	uint8_t version_0x03;
-	uint16_t sectionCount;
-	uint16_t unknown2_0x00;
-	uint32_t fileSize;
-	uint8_t padding_0x00[10];
-};
-
-struct Label {
-	uint32_t checksum;
-	uint8_t length;
-	std::string string;
-	uint32_t messageIndex;
-};
-
-struct LBLEntry {
-	uint32_t stringCount;
-	uint32_t stringOffset;
-	std::vector<Label> labels;
-};
-
-struct LBL1Header {
-	uint32_t offset;
-
-	char magicLBL1[4];
-	uint32_t tableSize;
-	uint8_t padding_0x00[8];
-	uint32_t entryCount;
-	std::vector<LBLEntry> entries;
+class LBL1 : public SectionHeader, public HashTable {
+public:
+    virtual ~LBL1() override = default;
+    virtual LMSError read(std::istream& in) override;
+    virtual void write(std::ostream& out) override;
 };
 
 struct Attributes {
@@ -79,28 +45,30 @@ struct Attributes {
 	uint8_t mctTester = 0; //internally "MCT Tester", unknown purpose, seemingly cut off by attribute entry length
 };
 
-struct ATR1Header {
-	uint32_t offset;
+class ATR1 : public SectionHeader {
+public:
+	std::vector<Attributes> entries;
 
-	char magicATR1[4];
-	uint32_t tableSize;
-	uint8_t padding_0x00[8];
+    virtual ~ATR1() override = default;
+    virtual LMSError read(std::istream& in) override;
+    virtual void write(std::ostream& out) override;
+	uint32_t getEntrySize() const { return entrySize; }
+private:
 	uint32_t entryCount;
 	uint32_t entrySize;
-	std::vector<Attributes> entries;
 };
 
 struct TSY1Entry {
 	uint32_t styleIndex; //Index in the MSBP style list
 };
 
-struct TSY1Header {
-	uint32_t offset;
-
-	char magicTSY1[4];
-	uint32_t tableSize;
-	uint8_t padding_0x00[8];
+class TSY1 : public SectionHeader {
+public:
 	std::vector<TSY1Entry> entries;
+	
+    virtual ~TSY1() override = default;
+    virtual LMSError read(std::istream& in) override;
+    virtual void write(std::ostream& out) override;
 };
 
 struct TXT2Entry {
@@ -109,14 +77,15 @@ struct TXT2Entry {
 	std::u16string message;
 };
 
-struct TXT2Header {
-	uint32_t offset;
-
-	char magicTXT2[4];
-	uint32_t tableSize;
-	uint8_t padding_0x00[8];
+class TXT2 : public SectionHeader {
+public:
+	std::vector<TXT2Entry> entries;
+	
+    virtual ~TXT2() override = default;
+    virtual LMSError read(std::istream& in) override;
+    virtual void write(std::ostream& out) override;
+private:
 	uint32_t entryCount;
-	std::vector <TXT2Entry> entries;
 };
 
 struct Message {
@@ -127,28 +96,26 @@ struct Message {
 };
 
 namespace FileTypes {
-
-	const char* MSBTErrorGetName(MSBTError err);
-
+	
 	class MSBTFile {
 	public:
 		std::unordered_map<std::string, Message> messages_by_label;
 
 		MSBTFile();
 		static MSBTFile createNew(const std::string& filename);
-		MSBTError loadFromBinary(std::istream& msbt);
-		MSBTError loadFromFile(const std::string& filePath);
+		LMSError loadFromBinary(std::istream& msbt);
+		LMSError loadFromFile(const std::string& filePath);
 		Message& addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message);
-		MSBTError writeToStream(std::ostream& out);
-		MSBTError writeToFile(const std::string& outFilePath);
+		LMSError writeToStream(std::ostream& out);
+		LMSError writeToFile(const std::string& outFilePath);
+
 	private:
-		MSBTHeader header;
-		LBL1Header LBL1;
-		ATR1Header ATR1;
-		TSY1Header TSY1;
-		TXT2Header TXT2;
+		FileHeader header;
+		LBL1 labels;
+		ATR1 attributes;
+		TSY1 styles;
+		TXT2 text;
 
 		void initNew();
-		MSBTError readSection(std::istream& msbt);
 	};
 }

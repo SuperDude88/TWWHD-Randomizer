@@ -1,9 +1,12 @@
+//DDS files store image data
+
 #pragma once
 
 #include <string>
 #include <array>
 #include <fstream>
 #include <type_traits>
+#include <unordered_set>
 
 
 
@@ -18,6 +21,8 @@ enum struct [[nodiscard]] DDSError {
 	UNKNOWN,
 	COUNT
 };
+
+static const std::unordered_set<std::string> dx10_formats = {"BC4U", "BC4S", "BC5U", "BC5S"};
 
 enum struct DDSFlags : uint32_t {
     CAPS = 0x1,
@@ -77,7 +82,7 @@ struct DDSHeader {
     uint32_t size;
     uint32_t depth;
     uint32_t numMips;
-    uint32_t reserved[11];
+    std::array<uint32_t, 11> reserved;
     DDSPixelFormat pixelFormat;
     DDSCaps caps;
     DDSCaps2 caps2;
@@ -97,7 +102,7 @@ namespace FileTypes {
 
         uint32_t format_;
         uint32_t size;
-        std::array<int, 4> compSel;
+        std::array<uint8_t, 4> compSel;
 
         DDSFile();
 		static DDSFile createNew(const std::string& filename);

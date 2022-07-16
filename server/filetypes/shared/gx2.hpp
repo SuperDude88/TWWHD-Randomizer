@@ -3,14 +3,16 @@
 
 #include <cstdint>
 
-enum class GX2AAMode
+//use non-scoped enums to allow implicit conversions and related operator things
+
+enum GX2AAMode : uint32_t
 {
    GX2_AA_MODE1X                          = 0,
    GX2_AA_MODE2X                          = 1,
    GX2_AA_MODE4X                          = 2
 };
 
-enum class GX2AlphaToMaskMode
+enum GX2AlphaToMaskMode : uint32_t
 {
    GX2_ALPHA_TO_MASK_MODE_NON_DITHERED    = 0,
    GX2_ALPHA_TO_MASK_MODE_DITHER_0        = 1,
@@ -19,7 +21,7 @@ enum class GX2AlphaToMaskMode
    GX2_ALPHA_TO_MASK_MODE_DITHER_270      = 4,
 };
 
-enum class GX2AttribFormat
+enum GX2AttribFormat : uint32_t
 {
    GX2_ATTRIB_TYPE_8                      = 0x00,
    GX2_ATTRIB_TYPE_4_4                    = 0x01,
@@ -69,13 +71,13 @@ enum class GX2AttribFormat
    GX2_ATTRIB_FORMAT_FLOAT_32_32_32_32    = GX2_ATTRIB_FLAG_SCALED | GX2_ATTRIB_TYPE_32_32_32_32_FLOAT,
 };
 
-enum class GX2AttribIndexType
+enum GX2AttribIndexType : uint32_t
 {
    GX2_ATTRIB_INDEX_PER_VERTEX            = 0,
    GX2_ATTRIB_INDEX_PER_INSTANCE          = 1,
 };
 
-enum class GX2BlendMode
+enum GX2BlendMode : uint32_t
 {
    GX2_BLEND_MODE_ZERO                    = 0,
    GX2_BLEND_MODE_ONE                     = 1,
@@ -98,7 +100,7 @@ enum class GX2BlendMode
    GX2_BLEND_MODE_INV_SRC1_ALPHA          = 18,
 };
 
-enum class GX2BlendCombineMode
+enum GX2BlendCombineMode : uint32_t
 {
    GX2_BLEND_COMBINE_MODE_ADD             = 0,
    GX2_BLEND_COMBINE_MODE_SUB             = 1,
@@ -107,14 +109,14 @@ enum class GX2BlendCombineMode
    GX2_BLEND_COMBINE_MODE_REV_SUB         = 4,
 };
 
-enum class GX2BufferingMode
+enum GX2BufferingMode : uint32_t
 {
    GX2_BUFFERING_MODE_SINGLE              = 1,
    GX2_BUFFERING_MODE_DOUBLE              = 2,
    GX2_BUFFERING_MODE_TRIPLE              = 3,
 };
 
-enum class GX2ChannelMask
+enum GX2ChannelMask : uint32_t
 {
    GX2_CHANNEL_MASK_R                     = 1,
    GX2_CHANNEL_MASK_G                     = 2,
@@ -133,14 +135,14 @@ enum class GX2ChannelMask
    GX2_CHANNEL_MASK_RGBA                  = 15,
 };
 
-enum class GX2ClearFlags
+enum GX2ClearFlags : uint32_t
 {
    GX2_CLEAR_FLAGS_DEPTH                  = 1,
    GX2_CLEAR_FLAGS_STENCIL                = 2,
    GX2_CLEAR_FLAGS_BOTH                   = (GX2_CLEAR_FLAGS_DEPTH | GX2_CLEAR_FLAGS_STENCIL),
 };
 
-enum class GX2CompareFunction
+enum GX2CompareFunction : uint32_t
 {
    GX2_COMPARE_FUNC_NEVER                 = 0,
    GX2_COMPARE_FUNC_LESS                  = 1,
@@ -152,13 +154,13 @@ enum class GX2CompareFunction
    GX2_COMPARE_FUNC_ALWAYS                = 7,
 };
 
-enum class GX2DrcRenderMode
+enum GX2DrcRenderMode : uint32_t
 {
    GX2_DRC_RENDER_MODE_DISABLED           = 0,
    GX2_DRC_RENDER_MODE_SINGLE             = 1,
 };
 
-enum class GX2EventType
+enum GX2EventType : uint32_t
 {
    GX2_EVENT_TYPE_START_OF_PIPE_INTERRUPT = 0,
    GX2_EVENT_TYPE_END_OF_PIPE_INTERRUPT   = 1,
@@ -167,7 +169,7 @@ enum class GX2EventType
    GX2_EVENT_TYPE_DISPLAY_LIST_OVERRUN    = 4,
 };
 
-enum class GX2EndianSwapMode
+enum GX2EndianSwapMode : uint32_t
 {
    GX2_ENDIAN_SWAP_NONE                   = 0,
    GX2_ENDIAN_SWAP_8_IN_16                = 1,
@@ -175,7 +177,7 @@ enum class GX2EndianSwapMode
    GX2_ENDIAN_SWAP_DEFAULT                = 3,
 };
 
-enum class GX2FetchShaderType
+enum GX2FetchShaderType : uint32_t
 {
    GX2_FETCH_SHADER_TESSELLATION_NONE     = 0,
    GX2_FETCH_SHADER_TESSELLATION_LINE     = 1,
@@ -183,13 +185,13 @@ enum class GX2FetchShaderType
    GX2_FETCH_SHADER_TESSELLATION_QUAD     = 3,
 };
 
-enum class GX2FrontFace
+enum GX2FrontFace : uint32_t
 {
   GX2_FRONT_FACE_CCW                      = 0,
   GX2_FRONT_FACE_CW                       = 1,
 };
 
-enum class GX2IndexType
+enum GX2IndexType : uint32_t
 {
    GX2_INDEX_TYPE_U16_LE                  = 0,
    GX2_INDEX_TYPE_U32_LE                  = 1,
@@ -197,7 +199,7 @@ enum class GX2IndexType
    GX2_INDEX_TYPE_U32                     = 9,
 };
 
-enum class GX2InvalidateMode
+enum GX2InvalidateMode : uint32_t
 {
    GX2_INVALIDATE_MODE_NONE                = 0,
    GX2_INVALIDATE_MODE_ATTRIBUTE_BUFFER    = 1 << 0,
@@ -214,7 +216,7 @@ enum class GX2InvalidateMode
    GX2_INVALIDATE_MODE_CPU_SHADER          = GX2_INVALIDATE_MODE_CPU | GX2_INVALIDATE_MODE_SHADER,
 };
 
-enum class GX2InitAttributes
+enum GX2InitAttributes : uint32_t
 {
    GX2_INIT_END                           = 0,
    GX2_INIT_CMD_BUF_BASE                  = 1,
@@ -226,7 +228,7 @@ enum class GX2InitAttributes
    GX2_INIT_APP_IO_THREAD_STACK_SIZE      = 11,
 };
 
-enum class GX2LogicOp
+enum GX2LogicOp : uint32_t
 {
    GX2_LOGIC_OP_CLEAR                     = 0x00,
    GX2_LOGIC_OP_NOR                       = 0x11,
@@ -246,7 +248,7 @@ enum class GX2LogicOp
    GX2_LOGIC_OP_SET                       = 0xFF,
 };
 
-enum class GX2PrimitiveMode
+enum GX2PrimitiveMode : uint32_t
 {
    GX2_PRIMITIVE_MODE_POINTS                    = 1,
    GX2_PRIMITIVE_MODE_LINES                     = 2,
@@ -264,14 +266,14 @@ enum class GX2PrimitiveMode
    GX2_PRIMITIVE_MODE_QUAD_STRIP                = 20,
 };
 
-enum class GX2PolygonMode
+enum GX2PolygonMode : uint32_t
 {
    GX2_POLYGON_MODE_POINT                 = 0,
    GX2_POLYGON_MODE_LINE                  = 1,
    GX2_POLYGON_MODE_TRIANGLE              = 2,
 };
 
-enum class GX2RenderTarget
+enum GX2RenderTarget : uint32_t
 {
    GX2_RENDER_TARGET_0                    = 0,
    GX2_RENDER_TARGET_1                    = 1,
@@ -283,13 +285,13 @@ enum class GX2RenderTarget
    GX2_RENDER_TARGET_7                    = 7,
 };
 
-enum class GX2RoundingMode
+enum GX2RoundingMode : uint32_t
 {
    GX2_ROUNDING_MODE_ROUND_TO_EVEN        = 0,
    GX2_ROUNDING_MODE_TRUNCATE             = 1,
 };
 
-enum class GX2SamplerVarType
+enum GX2SamplerVarType : uint32_t
 {
    GX2_SAMPLER_VAR_TYPE_SAMPLER_1D        = 0,
    GX2_SAMPLER_VAR_TYPE_SAMPLER_2D        = 1,
@@ -297,13 +299,13 @@ enum class GX2SamplerVarType
    GX2_SAMPLER_VAR_TYPE_SAMPLER_CUBE      = 4,
 };
 
-enum class GX2ScanTarget
+enum GX2ScanTarget : uint32_t
 {
    GX2_SCAN_TARGET_TV                     = 1,
    GX2_SCAN_TARGET_DRC                    = 4,
 };
 
-enum class GX2ShaderMode
+enum GX2ShaderMode : uint32_t
 {
    GX2_SHADER_MODE_UNIFORM_REGISTER       = 0,
    GX2_SHADER_MODE_UNIFORM_BLOCK          = 1,
@@ -311,7 +313,7 @@ enum class GX2ShaderMode
    GX2_SHADER_MODE_COMPUTE_SHADER         = 3,
 };
 
-enum class GX2ShaderVarType
+enum GX2ShaderVarType : uint32_t
 {
    GX2_SHADER_VAR_TYPE_VOID               = 0,
    GX2_SHADER_VAR_TYPE_BOOL               = 1,
@@ -354,7 +356,7 @@ enum class GX2ShaderVarType
    GX2_SHADER_VAR_TYPE_DOUBLE4X4          = 38,
 };
 
-enum class GX2StencilFunction
+enum GX2StencilFunction : uint32_t
 {
    GX2_STENCIL_FUNCTION_KEEP              = 0,
    GX2_STENCIL_FUNCTION_ZERO              = 1,
@@ -366,7 +368,7 @@ enum class GX2StencilFunction
    GX2_STENCIL_FUNCTION_DECR_WRAP         = 7,
 };
 
-enum class GX2SurfaceDim
+enum GX2SurfaceDim : uint32_t
 {
    GX2_SURFACE_DIM_TEXTURE_1D             = 0,
    GX2_SURFACE_DIM_TEXTURE_2D             = 1,
@@ -378,7 +380,7 @@ enum class GX2SurfaceDim
    GX2_SURFACE_DIM_TEXTURE_2D_MSAA_ARRAY  = 7,
 };
 
-enum class GX2SurfaceFormat
+enum GX2SurfaceFormat : uint32_t
 {
    GX2_SURFACE_FORMAT_INVALID                   = 0x00,
    GX2_SURFACE_FORMAT_UNORM_R4_G4               = 0x02,
@@ -453,25 +455,25 @@ enum class GX2SurfaceFormat
    GX2_SURFACE_FORMAT_FLOAT_X8_X24              = 0x81c,
 };
 
-enum class GX2SurfaceUse
+enum GX2SurfaceUse : uint32_t
 {
    GX2_SURFACE_USE_NONE                         = 0,
    GX2_SURFACE_USE_TEXTURE                      = 1 << 0,
    GX2_SURFACE_USE_COLOR_BUFFER                 = 1 << 1,
    GX2_SURFACE_USE_DEPTH_BUFFER                 = 1 << 2,
    GX2_SURFACE_USE_SCAN_BUFFER                  = 1 << 3,
-   GX2_SURFACE_USE_TV                           = 1 << 31,
+   GX2_SURFACE_USE_TV                           = 1U << 31, //error if it shifts a signed value
    GX2_SURFACE_USE_TEXTURE_COLOR_BUFFER_TV      = (GX2_SURFACE_USE_TEXTURE | GX2_SURFACE_USE_COLOR_BUFFER | GX2_SURFACE_USE_TV)
 };
 
-enum class GX2TessellationMode
+enum GX2TessellationMode : uint32_t
 {
    GX2_TESSELLATION_MODE_DISCRETE         = 0,
    GX2_TESSELLATION_MODE_CONTINUOUS       = 1,
    GX2_TESSELLATION_MODE_ADAPTIVE         = 2,
 };
 
-enum class GX2TexBorderType
+enum GX2TexBorderType : uint32_t
 {
    GX2_TEX_BORDER_TYPE_TRANSPARENT_BLACK  = 0,
    GX2_TEX_BORDER_TYPE_BLACK              = 1,
@@ -479,7 +481,7 @@ enum class GX2TexBorderType
    GX2_TEX_BORDER_TYPE_VARIABLE           = 3,
 };
 
-enum class GX2TexClampMode
+enum GX2TexClampMode : uint32_t
 {
    GX2_TEX_CLAMP_MODE_WRAP                = 0,
    GX2_TEX_CLAMP_MODE_MIRROR              = 1,
@@ -488,42 +490,42 @@ enum class GX2TexClampMode
    GX2_TEX_CLAMP_MODE_CLAMP_BORDER        = 6,
 };
 
-enum class GX2TexMipFilterMode
+enum GX2TexMipFilterMode : uint32_t
 {
    GX2_TEX_MIP_FILTER_MODE_NONE           = 0,
    GX2_TEX_MIP_FILTER_MODE_POINT          = 1,
    GX2_TEX_MIP_FILTER_MODE_LINEAR         = 2,
 };
 
-enum class GX2TexMipPerfMode
+enum GX2TexMipPerfMode : uint32_t
 {
    GX2_TEX_MIP_PERF_MODE_DISABLE          = 0,
 };
 
-enum class GX2TexXYFilterMode
+enum GX2TexXYFilterMode : uint32_t
 {
    GX2_TEX_XY_FILTER_MODE_POINT          = 0,
    GX2_TEX_XY_FILTER_MODE_LINEAR         = 1,
 };
 
-enum class GX2TexAnisoRatio
+enum GX2TexAnisoRatio : uint32_t
 {
    GX2_TEX_ANISO_RATIO_NONE               = 0,
 };
 
-enum class GX2TexZFilterMode
+enum GX2TexZFilterMode : uint32_t
 {
    GX2_TEX_Z_FILTER_MODE_NONE             = 0,
    GX2_TEX_Z_FILTER_MODE_POINT            = 1,
    GX2_TEX_Z_FILTER_MODE_LINEAR           = 2,
 };
 
-enum class GX2TexZPerfMode
+enum GX2TexZPerfMode : uint32_t
 {
    GX2_TEX_Z_PERF_MODE_DISABLED           = 0,
 };
 
-enum class GX2TileMode
+enum GX2TileMode : uint32_t
 {
    GX2_TILE_MODE_DEFAULT                  = 0,
    GX2_TILE_MODE_LINEAR_ALIGNED           = 1,
@@ -544,7 +546,7 @@ enum class GX2TileMode
    GX2_TILE_MODE_LINEAR_SPECIAL           = 16,
 };
 
-enum class GX2TVRenderMode
+enum GX2TVRenderMode : uint32_t
 {
    GX2_TV_RENDER_MODE_DISABLED            = 0,
    GX2_TV_RENDER_MODE_STANDARD_480P       = 1,
@@ -553,7 +555,7 @@ enum class GX2TVRenderMode
    GX2_TV_RENDER_MODE_WIDE_1080P          = 5,
 };
 
-enum class GX2TVScanMode
+enum GX2TVScanMode : uint32_t
 {
    GX2_TV_SCAN_MODE_NONE                  = 0,
    GX2_TV_SCAN_MODE_576I                  = 1,
