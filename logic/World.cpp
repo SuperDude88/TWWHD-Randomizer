@@ -947,9 +947,9 @@ World::WorldLoadingError World::loadPlandomizerLocations()
                 plandoWorldId = std::stoi(locationObject.second["world"].As<std::string>());
                 if (static_cast<size_t>(plandoWorldId) > numWorlds || plandoWorldId < 1)
                 {
-                    Utility::platformLog("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"");
-                    Utility::platformLog("Only " + std::to_string(numWorlds) + " worlds are being generated");
-                    Utility::platformLog("Valid World IDs: 1-" + std::to_string(numWorlds) + "");
+                    Utility::platformLog("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"\n");
+                    Utility::platformLog("Only " + std::to_string(numWorlds) + " worlds are being generated\n");
+                    Utility::platformLog("Valid World IDs: 1-" + std::to_string(numWorlds) + "\n");
                     return WorldLoadingError::PLANDOMIZER_ERROR;
                 }
                 plandoWorldId--;
@@ -1089,7 +1089,7 @@ Entrance& World::getEntrance(const Area& parentArea, const Area& connectedArea)
         }
     }
 
-    Utility::platformLog("WARNING: " + areaToName(parentArea) + " -> " + areaToName(connectedArea) + " is not a connection");
+    Utility::platformLog("WARNING: " + areaToName(parentArea) + " -> " + areaToName(connectedArea) + " is not a connection\n");
     return areaEntries[areaAsIndex(Area::INVALID)].exits.front();
 }
 
@@ -1287,5 +1287,5 @@ void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits
 
     worldGraph << "}";
     worldGraph.close();
-    Utility::platformLog("Dumped world graph at " + fullFilename);
+    Utility::platformLog("Dumped world graph at " + fullFilename + '\n');
 }

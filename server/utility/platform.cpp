@@ -12,7 +12,7 @@
 	#include <iosuhax.h>
 	#include <iosuhax_cfw.h>
 	#include <iosuhax_devoptab.h>
-	#include "wiiutitles.hpp"
+	#include "../platform/wiiutitles.hpp"
 	#define PRINTF_BUFFER_LENGTH 2048
 	static int32_t mcpHookHandle = -1;
 	static int32_t fsaHandle = -1;
@@ -66,6 +66,18 @@ namespace Utility
 		va_end(args);
 	}
 
+	void platformLog(const std::string& str)
+	{
+		std::unique_lock<std::mutex> lock(printMut);
+#ifdef PLATFORM_DKP
+		WHBLogWrite(str.c_str());
+		WHBLogConsoleDraw();
+#else
+		printf("%s", str.c_str());
+#endif
+		lock.unlock();
+	}
+
 	bool platformInit()
 	{
 #ifdef PLATFORM_DKP
@@ -102,16 +114,6 @@ namespace Utility
 			platformShutdown();
 			return false;
 		}
-
-		// for debug
-		for (const auto& title : wiiuTitlesList)
-		{
-			if(title.normalizedTitle.find("The Wind Waker") != std::string::npos)
-			{
-				Utility::platformLog("TWW:HD found @ %s\n", title.base.path.c_str());
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			}
-		}
 #else
 		signal(SIGINT, sigHandler);
 #ifdef SIGBREAK
@@ -120,6 +122,8 @@ namespace Utility
 #endif
 		return true;
 	}
+
+	
 
 	bool platformIsRunning()
 	{
@@ -172,6 +176,12 @@ namespace Utility
 		return -1;
 #endif
 	}
+
+	#ifdef PLATFORM_DKP
+		const std::vector<Utility::titleEntry>* getLoadedTitles() {
+			return &wiiuTitlesList;
+		}
+	#endif
 }
 
 #ifdef PLATFORM_DKP

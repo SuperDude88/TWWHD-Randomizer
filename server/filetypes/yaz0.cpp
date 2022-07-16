@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../utility/endian.hpp"
+#include "../command/Log.hpp"
 
 constexpr uint32_t READ_CHUNK_SIZE = 4096;
 constexpr uint32_t MAX_SEARCH_RANGE = 0x1000;
@@ -19,12 +20,12 @@ struct Yaz0Header
 namespace {
     YAZ0Error readYaz0Header(std::istream& in, Yaz0Header& header)
     {
-        if(!in.read(header.magic, sizeof(header.magic))) return YAZ0Error::REACHED_EOF;
+        if(!in.read(header.magic, sizeof(header.magic))) LOG_ERR_AND_RETURN(YAZ0Error::REACHED_EOF);
         // check magic string in header
-        if(std::strncmp(header.magic, "Yaz0", 4) != 0) return YAZ0Error::NOT_YAZ0;
-        if(!in.read(reinterpret_cast<char*>(&header.uncompressedSize), sizeof(header.uncompressedSize))) return YAZ0Error::REACHED_EOF;
+        if(std::strncmp(header.magic, "Yaz0", 4) != 0) LOG_ERR_AND_RETURN(YAZ0Error::NOT_YAZ0);
+        if(!in.read(reinterpret_cast<char*>(&header.uncompressedSize), sizeof(header.uncompressedSize))) LOG_ERR_AND_RETURN(YAZ0Error::REACHED_EOF);
         Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, header.uncompressedSize);
-        if(!in.read(header._unused0, sizeof(header._unused0))) return YAZ0Error::REACHED_EOF;
+        if(!in.read(header._unused0, sizeof(header._unused0))) LOG_ERR_AND_RETURN(YAZ0Error::REACHED_EOF);
         return YAZ0Error::NONE;
     }
     
@@ -183,7 +184,7 @@ namespace {
             if(validBitCount == 8)
             {
                 out.put(currCodeByte);
-                out.write(reinterpret_cast<char*>(dst), dstPos);
+                out.write(reinterpret_cast<const char*>(dst), dstPos);
                 dstSize += dstPos+1;
     
                 currCodeByte = 0;
@@ -194,7 +195,7 @@ namespace {
         if(validBitCount > 0)
         {
             out.put(currCodeByte);
-            out.write(reinterpret_cast<char*>(dst), dstPos);
+            out.write(reinterpret_cast<const char*>(dst), dstPos);
             dstSize += dstPos + 1;
     
             currCodeByte = 0;
@@ -295,10 +296,10 @@ namespace FileTypes {
         out.write("Yaz0", 4);
         uint32_t dataSize = inData.size();
         uint32_t outDataSize = Utility::Endian::toPlatform(Utility::Endian::Type::Big, dataSize);
-        out.write(reinterpret_cast<char*>(&outDataSize), 4);
+        out.write(reinterpret_cast<const char*>(&outDataSize), 4);
         out.write(dummyData, 8);
 
-        if (yaz0DataEncode(reinterpret_cast<const uint8_t*>(inData.data()), dataSize, out, compressionLevel) == 0) return YAZ0Error::DATA_SIZE_0;
+        if (yaz0DataEncode(reinterpret_cast<const uint8_t*>(inData.data()), dataSize, out, compressionLevel) == 0) LOG_ERR_AND_RETURN(YAZ0Error::DATA_SIZE_0);
         return YAZ0Error::NONE;
     }
 
@@ -309,12 +310,7 @@ namespace FileTypes {
 
         Yaz0Header header;
 
-        YAZ0Error err = YAZ0Error::NONE;
-        err = readYaz0Header(in, header);
-        if(err != YAZ0Error::NONE)
-        {
-            return err;
-        }
+        LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
         // IMPROVEMENT: for now we are reading entire file into memory
         // and allocating a full size output buffer. This can
@@ -331,11 +327,10 @@ namespace FileTypes {
         inData.append(readChunkBuf, in.gcount());
 
         char* outData = new char[header.uncompressedSize];
-        err = yaz0DataDecode(inData.data(), outData, header.uncompressedSize);
-        if(err != YAZ0Error::NONE)
-        {
+        if (const YAZ0Error error = yaz0DataDecode(inData.data(), outData, header.uncompressedSize); error != YAZ0Error::NONE) {
+            ErrorLog ::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
             delete[] outData;
-            return err;
+            return error;
         }
         out.write(outData, header.uncompressedSize);
 

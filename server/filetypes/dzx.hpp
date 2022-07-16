@@ -1,3 +1,6 @@
+//DZx files (.dzr and .dzs) are used in the game's stages and rooms to store entity data
+//It is a list of actors, exits, room information, and various other things
+
 #pragma once
 
 #include <fstream>
@@ -8,7 +11,6 @@
 
 #define DEFAULT_LAYER 255 //Helps check for default layer (layer 0/NULL is a valid layer, 255 is not)
 
-using namespace std::literals::string_literals; //probably not great in header
 
 
 enum struct [[nodiscard]] DZXError
@@ -34,7 +36,7 @@ class Chunk {
 public:
 	unsigned int offset = 0;
 
-	std::string type = "\0\0\0\0"s;
+	std::string type{"\0\0\0\0", 4};
 	unsigned int layer = DEFAULT_LAYER; //Uses 255 to signify default layer, default for chunks that don't use it
 	uint32_t num_entries = 0;
 	uint32_t first_entry_offset = 0;

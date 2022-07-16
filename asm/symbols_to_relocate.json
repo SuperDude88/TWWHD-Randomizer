@@ -1,5 +1,6 @@
 {
 	"gameInfo_ptr": ".data",
+	"something_button_related": ".data",
 	"GTower_str": ".data",
 	"Ojhous_str": ".data",
 	"y_diff_float": ".data",

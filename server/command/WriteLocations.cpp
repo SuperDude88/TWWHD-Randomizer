@@ -1,7 +1,9 @@
 #include "WriteLocations.hpp"
 
+#include <limits>
 #include <unordered_map>
 #include <fstream>
+#include <filesystem>
 #include "../../logic/Dungeon.hpp"
 #include "WWHDStructs.hpp"
 #include "Log.hpp"
@@ -10,14 +12,11 @@
 #include "../../libs/json.hpp"
 #include "../utility/stringUtil.hpp"
 
-#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {LOG_ERR_AND_RETURN(err)}
-
 using namespace std::literals::string_literals;
 
 static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_name = {
     {"Bitem\0\0\0"s, 0x0000FF00},
     {"Ritem\0\0\0"s, 0x000000FF},
-    {"STBox\0\0\0"s, 0x00000FF0},
     {"Salvage\0"s, 0x00000FF0},
     {"SwSlvg\0\0"s, 0x00000FF0},
     {"Salvag2\0"s, 0x00000FF0},
@@ -90,19 +89,18 @@ ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
 
 
 
-ModificationError ModifyChest::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
-    const auto& path = locationObject["Path"].val();
+ModificationError ModifyChest::parseArgs(Yaml::Node& locationObject) {
+    const auto& path = locationObject["Path"].As<std::string>();
     filePath = std::string(path.data(), path.size());
 
-	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
-    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
+    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
     {
-        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        Yaml::Node offset = (*offsetIt).second;
+        const auto& offsetStr = offset.As<std::string>();
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == ULONG_MAX)
+        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
         {
-            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET);
+            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
         offsets.push_back(offsetValue);
     }
@@ -130,32 +128,45 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
 }
 
 ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
-    if(!item.isMajorItem()) {
-        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, 0)) // Light wood chests for non-progress items, consumables, and keys for empty dungeons (in race mode)
+    if(item.isMajorItem()) {
+        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(2))) // Metal chests for progress items (excluding keys)
         return ModificationError::NONE;
     }
-    if(!Utility::Str::endsWith(gameItemToName(item.getGameItemId()), "Key")) {
-        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, 2)) // Metal chests for progress items (excluding keys)
+
+    if(Utility::Str::endsWith(gameItemToName(item.getGameItemId()), "Key")) {
+        // In race mode, only put the dungeon keys for required dungeons in dark wood chests.
+        // The other keys go into light wood chests.
+        if(raceMode) {
+            if(raceModeDungeons.count(dungeonItemToDungeon(item.getGameItemId())) > 0) {
+                LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
+                return ModificationError::NONE;
+            }
+            else {
+                LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(0))) // Light wood chests for keys for empty dungeons (in race mode)
+                return ModificationError::NONE;
+            }
+        }
+        
+        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
         return ModificationError::NONE;
     }
-    LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, 1)) // Dark wood chest for Small and Big Keys
+
+    LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(0))) // Light wood chests for non-progress items and consumables
     return ModificationError::NONE;
 }
 
 
-ModificationError ModifyActor::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
-    const auto& path = locationObject["Path"].val();
+ModificationError ModifyActor::parseArgs(Yaml::Node& locationObject) {
+    const auto& path = locationObject["Path"].As<std::string>();
     filePath = std::string(path.data(), path.size());
 
-	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
-    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
+    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
     {
-        const std::string& offsetStr = std::string(offset.val().data(), offset.val().size());
+        Yaml::Node offset = (*offsetIt).second;
+        const auto& offsetStr = offset.As<std::string>();
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == ULONG_MAX)
-        {
-            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
+        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max()) {
+          LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
         offsets.push_back(offsetValue);
     }
@@ -183,17 +194,16 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifySCOB::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
-    const auto& path = locationObject["Path"].val();
+ModificationError ModifySCOB::parseArgs(Yaml::Node& locationObject) {
+    const auto& path = locationObject["Path"].As<std::string>();
     filePath = std::string(path.data(), path.size());
 
-	YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
-    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
+    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
     {
-        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        Yaml::Node offset = (*offsetIt).second;
+        const auto& offsetStr = offset.As<std::string>();
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == ULONG_MAX)
+        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
         {
             LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
@@ -211,7 +221,7 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
         SCOB scob = WWHDStructs::readSCOB(file);
 
         if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
-            continue;
+            LOG_ERR_AND_RETURN(ModificationError::UNKNOWN_ACTOR_NAME)
         }
         LOG_AND_RETURN_IF_ERR(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
 
@@ -223,24 +233,21 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifyEvent::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Path", ModificationError::MISSING_KEY)
-    const auto& path = locationObject["Path"].val();
+ModificationError ModifyEvent::parseArgs(Yaml::Node& locationObject) {
+    const auto& path = locationObject["Path"].As<std::string>();
     filePath = std::string(path.data(), path.size());
 
-	YAML_FIELD_CHECK(locationObject, "Offset", ModificationError::MISSING_KEY)
-    std::string offsetStr(locationObject["Offset"].val().data(), locationObject["Offset"].val().size());
+    std::string offsetStr(locationObject["Offset"].As<std::string>());
     unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-    if (offsetValue == 0 || offsetValue == ULONG_MAX)
+    if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
     {
         LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
     }
     this->offset = offsetValue;
     
-	YAML_FIELD_CHECK(locationObject, "NameOffset", ModificationError::MISSING_KEY)
-    offsetStr = std::string(locationObject["NameOffset"].val().data(), locationObject["NameOffset"].val().size());
+    offsetStr = locationObject["NameOffset"].As<std::string>();
     offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-    if (offsetValue == 0 || offsetValue == ULONG_MAX)
+    if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
     {
         LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
     }
@@ -265,19 +272,19 @@ ModificationError ModifyEvent::writeLocation(const Item& item) {
     file.write(&name[0], 0x20);
 
     file.seekp(offset, std::ios::beg);
-    file.write(reinterpret_cast<char*>(&itemID), 1);
+    file.write(reinterpret_cast<const char*>(&itemID), 1);
 
     return ModificationError::NONE;
 }
 
 
-ModificationError ModifyRPX::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Offsets", ModificationError::MISSING_KEY)
-    for (const ryml::NodeRef& offset : locationObject["Offsets"].children())
+ModificationError ModifyRPX::parseArgs(Yaml::Node& locationObject) {
+    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
     {
-        const auto& offsetStr = std::string(offset.val().data(), offset.val().size());
+        Yaml::Node offset = (*offsetIt).second;
+        const auto& offsetStr = offset.As<std::string>();
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == ULONG_MAX)
+        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
         {
             LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
@@ -292,17 +299,21 @@ ModificationError ModifyRPX::writeLocation(const Item& item) {
 
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
     for (const uint32_t& address : offsets) {
-        elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, address), itemID);
+        if(const auto& err = elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, address), itemID); err != ELFError::NONE) {
+            LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
+        }
     }
 
     return ModificationError::NONE;
 }
 
 
-ModificationError ModifySymbol::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "SymbolName", ModificationError::MISSING_KEY)
-    const auto& path = locationObject["SymbolName"].val();
-    symbolName = std::string(path.data(), path.size());
+ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
+    for (auto it = locationObject["SymbolNames"].Begin(); it != locationObject["SymbolNames"].End(); it++)
+    {
+        Yaml::Node symbol = (*it).second;
+        symbolNames.push_back(symbol.As<std::string>());
+    }
 
     return ModificationError::NONE;
 }
@@ -310,41 +321,51 @@ ModificationError ModifySymbol::parseArgs(const ryml::NodeRef& locationObject) {
 ModificationError ModifySymbol::writeLocation(const Item& item) {
     if (rpxOpen == false) loadRPX();
     if (custom_symbols.size() == 0) Load_Custom_Symbols("./asm/custom_symbols.json");
-    if (custom_symbols.count(symbolName) == 0) LOG_ERR_AND_RETURN(ModificationError::INVALID_SYMBOL)
+    
+    for(const auto& symbol : symbolNames) {
+        uint32_t address;
+        uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
-    uint32_t address = custom_symbols.at(symbolName);
-    uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
+        if (symbol[0] == '@') { //support hardcoding addresses for checks like zunari (where a symbol and address are needed)
+            const std::string offsetStr = symbol.substr(1);
+            address = std::strtoul(offsetStr.c_str(), nullptr, 0);
+            if (address == 0 || address == std::numeric_limits<unsigned long>::max())
+            {
+                LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
+            }
+        }
+        else {
+            if (custom_symbols.count(symbol) == 0) LOG_ERR_AND_RETURN(ModificationError::INVALID_SYMBOL);
+            address = custom_symbols.at(symbol);
+        }
 
-    elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, address), itemID);
+        if(const auto& err = elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, address), itemID); err != ELFError::NONE) {
+            LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
+        }
+    }
     return ModificationError::NONE;
 }
 
 
-ModificationError ModifyBoss::parseArgs(const ryml::NodeRef& locationObject) {
-    YAML_FIELD_CHECK(locationObject, "Paths", ModificationError::MISSING_KEY)
-    if(locationObject["Paths"].num_children() != locationObject["Offsets"].num_children()) LOG_ERR_AND_RETURN(ModificationError::MISSING_VALUE)
+ModificationError ModifyBoss::parseArgs(Yaml::Node& locationObject) {
+    if(locationObject["Paths"].Size() != locationObject["Offsets"].Size()) LOG_ERR_AND_RETURN(ModificationError::MISSING_VALUE)
 
-    offsetsWithPath.reserve(locationObject["Paths"].num_children());
+    offsetsWithPath.reserve(locationObject["Paths"].Size());
 
-    auto cur_path = locationObject["Paths"].first_child();
-    auto cur_offset = locationObject["Offsets"].first_child();
-    for (size_t i = 0; i < locationObject["Paths"].num_children(); i++) 
+    for (size_t i = 0; i < locationObject["Paths"].Size(); i++) 
     {
         std::pair<std::string, uint32_t> offset_with_path;
 
-        std::string offsetStr(cur_offset.val().data(), cur_offset.val().size());
+        std::string offsetStr(locationObject["Offsets"][i].As<std::string>());
         unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == ULONG_MAX)
+        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
         {
             LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
         }
-        offset_with_path.first = std::string(cur_path.val().data(), cur_path.val().size());
+        offset_with_path.first = locationObject["Paths"][i].As<std::string>();
         offset_with_path.second = offsetValue;
 
         offsetsWithPath.push_back(offset_with_path);
-
-        cur_path = cur_path.next_sibling();
-        cur_offset = cur_offset.next_sibling();
     }
 
     return ModificationError::NONE;
@@ -360,7 +381,9 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
         if (path == "code/cking.rpx@RPX") {
-            elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, offset), itemID);
+            if(const auto& err = elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, offset), itemID); err != ELFError::NONE) {
+                LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
+            }
             continue;
         }
 
@@ -392,8 +415,8 @@ const char* modErrorToName(ModificationError err) {
             return "INVALID_MASK";
         case ModificationError::INVALID_SYMBOL:
             return "INVALID_SYMBOL";
-        case ModificationError::RPX_NOT_OPEN:
-            return "RPX_NOT_OPEN";
+        case ModificationError::RPX_ERROR:
+            return "RPX_ERROR";
         default:
             return "UNKNOWN";
     }

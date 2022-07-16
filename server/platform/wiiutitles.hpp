@@ -1,8 +1,5 @@
 #pragma once
 
-#include "platform.hpp"
-
-#ifdef PLATFORM_DKP
 #include <string>
 #include <vector>
 #include <coreinit/mcp.h>
@@ -25,6 +22,25 @@ namespace Utility {
         Nand,
         USB,
         Disc,
+    };
+    
+    enum class dumpTypeFlags {
+        Game = 1 << 0,
+        Update = 1 << 1,
+        DLC = 1 << 2,
+        SystemApp = 1 << 3,
+        Saves = 1 << 4,
+        Custom = 1 << 5
+    };
+
+    struct dumpingConfig {
+        dumpTypeFlags filterTypes;
+        dumpTypeFlags dumpTypes;
+        nn::act::PersistentId accountId = 0;
+        bool dumpAsDefaultUser = true;
+        bool queue = false;
+        bool ignoreCopyErrors = false;
+        dumpLocation location = dumpLocation::SDFat;
     };
 
     struct titlePart {
@@ -79,6 +95,5 @@ namespace Utility {
     bool isUpdate(MCPAppType type);
     bool isDLC(MCPAppType type);
     bool isSystemApp(MCPAppType type);
+    bool dumpGame(const titleEntry& entry, const dumpingConfig& config, const std::string& outPath);
 }
-
-#endif
