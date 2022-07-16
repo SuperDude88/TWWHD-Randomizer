@@ -24,20 +24,16 @@
 
 ; Originally the withered trees and the Koroks next to them only appear after you get Farore's Pearl.
 ; This gets rid of all those checks so they appear from the start of the game.
-; TODO: fix these, theyre broken
 .org 0x023465dc
 	nop
 .org 0x021f3f1c
-	li r0, 0x1F
-	li r31, 0
+	li r3, 1
 .org 0x021f3fb8
-	li r0, 0x1F
-	li r31, 0
+	li r3, 1
 .org 0x021f4064
-	li r0, 0x1F
-	li r31, 0
-.org 0x021f4100
-	li r0, 0
+	li r3, 1
+.org 0x021f40fc
+	li r3, 1
 .org 0x021f8be0
 	nop
 
@@ -285,10 +281,12 @@ medli_possible_et_spawn_positions:
 	b 0x02190f0c
 
 
-; Hide the blue main quest markers from the sea chart.
+; Remove some code that hides the quest markers when files are created
+.org 0x02677d3c
+  blr
+; Skip the function that normally updates the markers
 .org 0x02678b74
 	blr
-
 
 ; Fixes new game+ so that picto box related things aren't flagged as done already.
 ; (Note: There are some more things the new game+ initialization function besides these ones that seem like they could potentially cause other issues, but their purpose is unknown, so theyre not removed for now.)
@@ -350,5 +348,30 @@ medli_possible_et_spawn_positions:
 	li r3, 1
 .org 0x02208d34
 	li r3, 1
+
+
+; Remove a check that stops time passage until you get the Wind Waker
+.org 0x0255B46C
+  li r3, 1
+
+; Make KoRL assume you always have the sail
+; This avoids several textboxes he normally gives the player
+.org 0x0247348C
+  li r3, 1
+.org 0x024731E8
+  li r3, 1
+
+; Several NPCs show different text until you own the sail
+; Remove this check so they give their normal text
+.org 0x022C7A4C ; Kamo
+  b 0x022C7A70
+.org 0x022C7D4C ; Kane
+  b 0x022C7D70
+.org 0x022c7e40 ; Candy
+  b 0x022c7e64
+.org 0x022d9520 ; Zunari
+  b 0x022d95d8
+.org 0x022e0a5c ; Fishmen
+  b 0x022e0a70
 
 .close

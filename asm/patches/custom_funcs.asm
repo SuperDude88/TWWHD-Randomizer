@@ -7,6 +7,10 @@ stwu sp, -0x10 (sp)
 mflr r0
 stw r0, 0x14 (sp)
 
+bl item_func_wind_tact ; Wind Waker
+bl item_func_tact_song1 ; Wind's Requiem
+bl progressive_sail_item_func ; Normal sail
+
 lis r5, sword_mode@ha
 addi r5, r5, sword_mode@l
 lbz r5, 0 (r5)
@@ -31,11 +35,6 @@ bl onEventBit
 
 after_sword_mode_initialization:
 
-bl item_func_swift_sail
-bl item_func_wind_tact ; Wind Waker
-bl item_func_tact_song1 ; Wind's Requiem
-bl item_func_tact_song2 ; Ballad of Gales
-bl item_func_tact_song6 ; Song of Passing
 bl item_func_pirates_omamori ; Pirate's Charm
 
 ; Start the player with 30 bombs and arrows. (But not the ability to actually use them.)
@@ -50,7 +49,7 @@ stb r4, 1 (r3) ; Current bombs
 stb r4, 6 (r3) ; Max arrows
 stb r4, 7 (r3) ; Max bombs
 
-; Start the player with a magic meter so items that use it work correctly.
+; Set the player's magic meter size based on the value of a custom symbol.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x33
@@ -371,12 +370,14 @@ skip_rematch_bosses:
 
 .global starting_gear
 starting_gear:
-.space 47, 0xFF ; Allocate space for up to 47 additional items (when changing this also update the constant in tweaks.py)
+.space 70, 0xFF ; Allocate space for up to 70 additional items (when changing this also update the constant in tweaks.py)
 .byte 0xFF
 .align 1 ; Align to the next 2 bytes
+
 .global starting_quarter_hearts
 starting_quarter_hearts:
 .short 12 ; By default start with 12 quarter hearts (3 heart containers)
+
 .global starting_magic
 starting_magic:
 .byte 16 ; By default start with 16 units of magic (small magic meter)
@@ -452,6 +453,11 @@ cmpwi r3, 0x23
 beq convert_progressive_picto_box_id
 cmpwi r3, 0x26
 beq convert_progressive_picto_box_id
+
+cmpwi r3, 0xB1
+beq convert_progressive_magic_meter_id
+cmpwi r3, 0xB2
+beq convert_progressive_magic_meter_id
 
 cmpwi r3, 0x78
 beq convert_progressive_sail_id
@@ -599,7 +605,7 @@ b convert_progressive_item_id_func_end
 convert_progressive_picto_box_id:
 lis r3, gameInfo_ptr@ha
 lwz r3, gameInfo_ptr@l(r3)
-addi r3,r3,0x76
+addi r3,r3,0x79
 lbz r4, 0 (r3) ; Bitfield of picto boxes you own
 cmpwi r4, 0
 beq convert_progressive_picto_box_id_to_normal_picto_box
@@ -632,6 +638,26 @@ li r3, 0x78
 b convert_progressive_item_id_func_end
 convert_progressive_sail_id_to_swift_sail:
 li r3, 0x77
+b convert_progressive_item_id_func_end
+
+
+convert_progressive_magic_meter_id:
+lis r3,gameInfo_ptr@ha
+lwz r3,gameInfo_ptr@l(r3)
+addi r3,r3, 0x33
+lbz r4, 0 (r3) ; Max magic meter
+cmpwi r4, 0
+beq convert_progressive_magic_meter_id_to_normal_magic_meter
+cmpwi r4, 16
+beq convert_progressive_magic_meter_id_to_magic_meter_upgrade
+li r3, 0xB1 ; Invalid magic meter state; this shouldn't happen so just return the base magic meter ID
+b convert_progressive_item_id_func_end
+
+convert_progressive_magic_meter_id_to_normal_magic_meter:
+li r3, 0xB1
+b convert_progressive_item_id_func_end
+convert_progressive_magic_meter_id_to_magic_meter_upgrade:
+li r3, 0xB2
 b convert_progressive_item_id_func_end
 
 convert_progressive_item_id_func_end:
@@ -840,7 +866,7 @@ stw r0, 0x14 (sp)
 
 lis r3, gameInfo_ptr@ha
 lwz r3, gameInfo_ptr@l(r3)
-addi r3,r3,0x76
+addi r3,r3,0x79
 lbz r4, 0 (r3) ; Bitfield of picto boxes you own
 cmpwi r4, 0
 beq get_normal_picto_box
@@ -892,6 +918,54 @@ lwz r0, 0x14 (sp)
 mtlr r0
 addi sp, sp, 0x10
 blr
+
+.global progressive_magic_meter_item_func
+progressive_magic_meter_item_func:
+; Function start stuff
+stwu sp, -0x10 (sp)
+mflr r0
+stw r0, 0x14 (sp)
+
+
+lis r3,gameInfo_ptr@ha
+lwz r3,gameInfo_ptr@l(r3)
+addi r3,r3, 0x33
+lbz r4, 0 (r3) ; Max magic meter
+cmpwi r4, 0
+beq progressive_magic_meter_item_func_get_normal_magic_meter
+cmpwi r4, 16
+beq progressive_magic_meter_item_func_get_magic_meter_upgrade
+b progressive_magic_meter_item_func_end
+
+progressive_magic_meter_item_func_get_normal_magic_meter:
+bl normal_magic_meter_item_func
+b progressive_magic_meter_item_func_end
+
+progressive_magic_meter_item_func_get_magic_meter_upgrade:
+bl item_func_max_mp_up1
+
+
+progressive_magic_meter_item_func_end:
+; Function end stuff
+lwz r0, 0x14 (sp)
+mtlr r0
+addi sp, sp, 0x10
+blr
+
+
+
+
+; Write our own base magic meter item get function because the vanilla one (item_func_magic_power__Fv) was just a placeholder.
+.global normal_magic_meter_item_func
+normal_magic_meter_item_func:
+bl FUN_025200d4
+li r0, 16
+sth r0, 0x5b60 (r4) ; MP to gradually add to the current meter
+sth r0, 0x5b64 (r4) ; MP to gradually add to the max meter
+blr
+
+
+
 
 .global hurricane_spin_item_func
 hurricane_spin_item_func:
