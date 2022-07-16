@@ -6,6 +6,8 @@
 
 #include "../utility/endian.hpp"
 #include "../utility/common.hpp"
+#include "../utility/file.hpp"
+#include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
 
@@ -129,13 +131,13 @@ namespace FileTypes{
 	}
 
 	SARCError SARCFile::loadFromBinary(std::istream& sarc) {
-		if (!sarc.read(header.magicSARC, 4)) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&header.dataOffset), sizeof(header.dataOffset))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&header.version_0x0100), sizeof(header.version_0x0100))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00))) return SARCError::REACHED_EOF;
+		if (!sarc.read(header.magicSARC, 4)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&header.dataOffset), sizeof(header.dataOffset))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&header.version_0x0100), sizeof(header.version_0x0100))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, header.headerSize_0x14);
 		Utility::Endian::toPlatform_inplace(eType::Big, header.byteOrderMarker);
@@ -143,32 +145,32 @@ namespace FileTypes{
 		Utility::Endian::toPlatform_inplace(eType::Big, header.dataOffset);
 		Utility::Endian::toPlatform_inplace(eType::Big, header.version_0x0100);
 
-		if (std::strncmp("SARC", header.magicSARC, 4) != 0) return SARCError::NOT_SARC;
-		if (header.headerSize_0x14 != 0x0014) return SARCError::UNEXPECTED_VALUE;
-		if (header.byteOrderMarker != 0xFEFF) return SARCError::UNEXPECTED_VALUE;
-		if (header.version_0x0100 != 0x0100) return SARCError::UNKNOWN_VERSION;
-		if (header.padding_0x00[0] != 0x00 || header.padding_0x00[1] != 0x00) return SARCError::UNEXPECTED_VALUE;
+		if (std::strncmp("SARC", header.magicSARC, 4) != 0) LOG_ERR_AND_RETURN(SARCError::NOT_SARC);
+		if (header.headerSize_0x14 != 0x0014) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
+		if (header.byteOrderMarker != 0xFEFF) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
+		if (header.version_0x0100 != 0x0100) LOG_ERR_AND_RETURN(SARCError::UNKNOWN_VERSION);
+		if (header.padding_0x00[0] != 0x00 || header.padding_0x00[1] != 0x00) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
 
 		fileTable.offset = sarc.tellg();
-		if (!sarc.read(fileTable.magicSFAT, 4)) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&fileTable.headerSize_0xC), sizeof(fileTable.headerSize_0xC))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&fileTable.numFiles), sizeof(fileTable.numFiles))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&fileTable.hashKey_0x65), sizeof(fileTable.hashKey_0x65))) return SARCError::REACHED_EOF;
+		if (!sarc.read(fileTable.magicSFAT, 4)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&fileTable.headerSize_0xC), sizeof(fileTable.headerSize_0xC))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&fileTable.numFiles), sizeof(fileTable.numFiles))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&fileTable.hashKey_0x65), sizeof(fileTable.hashKey_0x65))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, fileTable.headerSize_0xC);
 		Utility::Endian::toPlatform_inplace(eType::Big, fileTable.numFiles);
 		Utility::Endian::toPlatform_inplace(eType::Big, fileTable.hashKey_0x65);
 
-		if (std::strncmp("SFAT", fileTable.magicSFAT, 4)) return SARCError::UNEXPECTED_VALUE;
-		if (fileTable.headerSize_0xC != 0xC) return SARCError::UNEXPECTED_VALUE;
-		if (fileTable.hashKey_0x65 != 0x65) return SARCError::UNEXPECTED_VALUE;
+		if (std::strncmp("SFAT", fileTable.magicSFAT, 4)) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
+		if (fileTable.headerSize_0xC != 0xC) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
+		if (fileTable.hashKey_0x65 != 0x65) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
 
 		for (uint16_t i = 0; i < fileTable.numFiles; i++) {
 			SFATNode& node = fileTable.nodes.emplace_back();
-			if (!sarc.read(reinterpret_cast<char*>(&node.nameHash), sizeof(node.nameHash))) return SARCError::REACHED_EOF;
-			if (!sarc.read(reinterpret_cast<char*>(&node.attributes), sizeof(node.attributes))) return SARCError::REACHED_EOF;
-			if (!sarc.read(reinterpret_cast<char*>(&node.dataStart), sizeof(node.dataStart))) return SARCError::REACHED_EOF;
-			if (!sarc.read(reinterpret_cast<char*>(&node.dataEnd), sizeof(node.dataEnd))) return SARCError::REACHED_EOF;
+			if (!sarc.read(reinterpret_cast<char*>(&node.nameHash), sizeof(node.nameHash))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+			if (!sarc.read(reinterpret_cast<char*>(&node.attributes), sizeof(node.attributes))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+			if (!sarc.read(reinterpret_cast<char*>(&node.dataStart), sizeof(node.dataStart))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+			if (!sarc.read(reinterpret_cast<char*>(&node.dataEnd), sizeof(node.dataEnd))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 
 			Utility::Endian::toPlatform_inplace(eType::Big, node.nameHash);
 			Utility::Endian::toPlatform_inplace(eType::Big, node.attributes);
@@ -177,32 +179,32 @@ namespace FileTypes{
 		}
 
 		nameTable.offset = sarc.tellg();
-		if (!sarc.read(nameTable.magicSFNT, 4)) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&nameTable.headerSize_0x8), sizeof(nameTable.headerSize_0x8))) return SARCError::REACHED_EOF;
-		if (!sarc.read(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00))) return SARCError::REACHED_EOF;
+		if (!sarc.read(nameTable.magicSFNT, 4)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&nameTable.headerSize_0x8), sizeof(nameTable.headerSize_0x8))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+		if (!sarc.read(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, nameTable.headerSize_0x8);
 
-		if (std::strncmp("SFNT", nameTable.magicSFNT, 4)) return SARCError::UNEXPECTED_VALUE;
-		if (nameTable.headerSize_0x8 != 0x8) return SARCError::UNEXPECTED_VALUE;
-		if (nameTable.padding_0x00[0] != 0x00 || nameTable.padding_0x00[1] != 0x00) return SARCError::UNEXPECTED_VALUE;
+		if (std::strncmp("SFNT", nameTable.magicSFNT, 4)) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
+		if (nameTable.headerSize_0x8 != 0x8) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
+		if (nameTable.padding_0x00[0] != 0x00 || nameTable.padding_0x00[1] != 0x00) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
 
 		for (const SFATNode& node : fileTable.nodes) {
-			if ((node.attributes & 0xFF000000) >> 24 != 0x01) return SARCError::BAD_NODE_ATTR;
+			if ((node.attributes & 0xFF000000) >> 24 != 0x01) LOG_ERR_AND_RETURN(SARCError::BAD_NODE_ATTR);
 			uint32_t nameOffset = (node.attributes & 0x00FFFFFF) * 4;
 			const std::string name = readNullTerminatedStr(sarc, nameTable.offset + 0x8 + nameOffset);
-			if (name.empty()) return SARCError::REACHED_EOF;
+			if (name.empty()) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 			nameTable.filenames.push_back(name);
 
 			uint32_t hash = calculateHash(name, fileTable.hashKey_0x65);
-			if (hash != node.nameHash) return SARCError::FILENAME_HASH_MISMATCH;
+			if (hash != node.nameHash) LOG_ERR_AND_RETURN(SARCError::FILENAME_HASH_MISMATCH);
 
 			file& fileEntry = files.emplace_back();
 			file_index_by_name[name] = files.size() - 1;
 			fileEntry.name = name;
 			fileEntry.data.resize(node.dataEnd - node.dataStart);
 			sarc.seekg(header.dataOffset + node.dataStart, std::ios::beg);
-			if (!sarc.read(&fileEntry.data[0], fileEntry.data.size())) return SARCError::REACHED_EOF;
+			if (!sarc.read(&fileEntry.data[0], fileEntry.data.size())) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 		}
 
 		guessed_alignment = guessDefaultAlignment();
@@ -212,7 +214,7 @@ namespace FileTypes{
 	SARCError SARCFile::loadFromFile(const std::string& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
-			return SARCError::COULD_NOT_OPEN;
+			LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);
 		}
 		return loadFromBinary(file);
 	}
@@ -233,12 +235,12 @@ namespace FileTypes{
 			uint16_t version_BE = Utility::Endian::toPlatform(eType::Big, header.version_0x0100);
 
 			out.write(header.magicSARC, 4);
-			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
-			out.write(reinterpret_cast<char*>(&byteOrderMarker_BE), sizeof(byteOrderMarker_BE));
-			out.seekp(4, std::ios::cur); //skip over filesize for now
-			out.write(reinterpret_cast<char*>(&dataOffset_BE), sizeof(dataOffset_BE));
-			out.write(reinterpret_cast<char*>(&version_BE), sizeof(version_BE));
-			out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+			out.write(reinterpret_cast<const char*>(&headerSize_BE), sizeof(headerSize_BE));
+			out.write(reinterpret_cast<const char*>(&byteOrderMarker_BE), sizeof(byteOrderMarker_BE));
+			Utility::seek(out, 4, std::ios::cur); //skip over filesize for now
+			out.write(reinterpret_cast<const char*>(&dataOffset_BE), sizeof(dataOffset_BE));
+			out.write(reinterpret_cast<const char*>(&version_BE), sizeof(version_BE));
+			out.write(reinterpret_cast<const char*>(&header.padding_0x00), sizeof(header.padding_0x00));
 		}
 
 		{
@@ -247,9 +249,9 @@ namespace FileTypes{
 			uint32_t hashKey_BE = Utility::Endian::toPlatform(eType::Big, fileTable.hashKey_0x65);
 
 			out.write(fileTable.magicSFAT, 4);
-			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
-			out.write(reinterpret_cast<char*>(&numFiles_BE), sizeof(numFiles_BE));
-			out.write(reinterpret_cast<char*>(&hashKey_BE), sizeof(hashKey_BE));
+			out.write(reinterpret_cast<const char*>(&headerSize_BE), sizeof(headerSize_BE));
+			out.write(reinterpret_cast<const char*>(&numFiles_BE), sizeof(numFiles_BE));
+			out.write(reinterpret_cast<const char*>(&hashKey_BE), sizeof(hashKey_BE));
 
 			for (const SFATNode& node : fileTable.nodes) {
 				uint32_t nameHash_BE = Utility::Endian::toPlatform(eType::Big, node.nameHash);
@@ -257,10 +259,10 @@ namespace FileTypes{
 				uint32_t dataStart_BE = Utility::Endian::toPlatform(eType::Big, node.dataStart);
 				uint32_t dataEnd_BE = Utility::Endian::toPlatform(eType::Big, node.dataEnd);
 
-				out.write(reinterpret_cast<char*>(&nameHash_BE), sizeof(nameHash_BE));
-				out.write(reinterpret_cast<char*>(&attributes_BE), sizeof(attributes_BE));
-				out.write(reinterpret_cast<char*>(&dataStart_BE), sizeof(dataStart_BE));
-				out.write(reinterpret_cast<char*>(&dataEnd_BE), sizeof(dataEnd_BE));
+				out.write(reinterpret_cast<const char*>(&nameHash_BE), sizeof(nameHash_BE));
+				out.write(reinterpret_cast<const char*>(&attributes_BE), sizeof(attributes_BE));
+				out.write(reinterpret_cast<const char*>(&dataStart_BE), sizeof(dataStart_BE));
+				out.write(reinterpret_cast<const char*>(&dataEnd_BE), sizeof(dataEnd_BE));
 			}
 		}
 
@@ -268,8 +270,8 @@ namespace FileTypes{
 			uint16_t headerSize_BE = Utility::Endian::toPlatform(eType::Big, nameTable.headerSize_0x8);
 
 			out.write(nameTable.magicSFNT, 4);
-			out.write(reinterpret_cast<char*>(&headerSize_BE), sizeof(headerSize_BE));
-			out.write(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00));
+			out.write(reinterpret_cast<const char*>(&headerSize_BE), sizeof(headerSize_BE));
+			out.write(reinterpret_cast<const char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00));
 
 			for (const std::string& filename : nameTable.filenames) {
 				out.write(&filename[0], filename.length());
@@ -277,16 +279,16 @@ namespace FileTypes{
 			}
 		}
 
-		out.seekp(header.dataOffset, std::ios::beg);
+		Utility::seek(out, header.dataOffset, std::ios::beg);
 		for (unsigned int i = 0; i < files.size(); i++) {
-			out.seekp(header.dataOffset + fileTable.nodes[i].dataStart, std::ios::beg);
+			Utility::seek(out, header.dataOffset + fileTable.nodes[i].dataStart, std::ios::beg);
 			out.write(&files[i].data[0], files[i].data.size());
 		}
 
 		header.fileSize = out.tellp();
-		out.seekp(8, std::ios::beg);
+		Utility::seek(out, 8, std::ios::beg);
 		uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
-		out.write(reinterpret_cast<char*>(&fileSize_BE), sizeof(fileSize_BE));
+		out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE));
 
 		return SARCError::NONE;
 	}
@@ -294,7 +296,7 @@ namespace FileTypes{
 	SARCError SARCFile::writeToFile(const std::string& outFilePath) {
 		std::ofstream outFile(outFilePath, std::ios::binary);
 		if (!outFile.is_open()) {
-			return SARCError::COULD_NOT_OPEN;
+			LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);
 		}
 		return writeToStream(outFile);
 	}
@@ -303,11 +305,11 @@ namespace FileTypes{
 		for (const file& file : files)
 		{
 			std::filesystem::path path = dirPath + '/' + file.name;
-			std::filesystem::create_directories(path.parent_path()); //handle any folder structure stuff contained in the SARC
+			Utility::create_directories(path.parent_path()); //handle any folder structure stuff contained in the SARC
 			std::ofstream outFile(dirPath + '/' + file.name, std::ios::binary);
 			if (!outFile.is_open())
 			{
-				return SARCError::COULD_NOT_OPEN;
+				LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);
 			}
 			outFile.write(&file.data[0], file.data.size());
 		}
@@ -329,7 +331,9 @@ namespace FileTypes{
 			entry.data.resize(fileSize);
 
 			std::ifstream inFile(absPath.string(), std::ios::binary);
-			if (!inFile.read(&entry.data[0], fileSize)) return SARCError::REACHED_EOF;
+			if (!inFile.read(&entry.data[0], fileSize)) {
+				LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+			}
 
 			//silly alignment stuff
 			std::string filetype = filename.substr(filename.find(".") + 1);
@@ -385,7 +389,7 @@ namespace FileTypes{
 				curDataOffset += numPaddingBytes; //add name padding
 
 				std::ifstream inFile(absPath.string(), std::ios::binary);
-				if (!inFile.read(&entry.data[0], fileSize)) return SARCError::REACHED_EOF;
+				if (!inFile.read(&entry.data[0], fileSize)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 			}
 		}
 
@@ -433,6 +437,6 @@ namespace FileTypes{
 
 		header.fileSize = header.dataOffset + fileTable.nodes.back().dataEnd;
 
-		return SARCError::NONE;
+		LOG_ERR_AND_RETURN(SARCError::UNKNOWN); //Unfinished, return error
 	}
 }

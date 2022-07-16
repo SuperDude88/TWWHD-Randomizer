@@ -1,11 +1,17 @@
 #pragma once
 
+#include <string>
+#include <vector>
+#include <filesystem>
+#include <fstream>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdint>
+#include <cstring>
 
 #ifdef DEVKITPRO
 	#define PLATFORM_DKP
+	#include <dirent.h> //for file things
 #elif defined(_MSC_VER)
 	#define PLATFORM_MSVC
 	#define ZLIB_WINAPI 
@@ -25,6 +31,8 @@ namespace Utility
 {
 	void platformLog(const char* f, ...);
 
+	void platformLog(const std::string& str);
+
 	bool platformInit();
 
 	bool platformIsRunning();
@@ -37,4 +45,10 @@ namespace Utility
 	int32_t getMCPHandle();
 
 	int32_t getFSAHandle();
+
+	#ifdef PLATFORM_DKP
+		struct titleEntry;
+
+		const std::vector<Utility::titleEntry>* getLoadedTitles();
+	#endif
 }

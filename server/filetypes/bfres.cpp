@@ -7,81 +7,93 @@
 
 #include "../utility/endian.hpp"
 #include "../utility/common.hpp"
+#include "../command/Log.hpp"
 
-//This code should probably be optimized a bit, minimize loops etc, it runs quite often
+#include "../utility/platform.hpp"
+
 using eType = Utility::Endian::Type;
 
+#define SUBFILE_ERR_CHECK(func) { \
+    if(const auto error = func; error != decltype(error)::NONE) {\
+        ErrorLog::getInstance().log(std::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__); \
+        return FRESError::SUBFILE_ERROR;  \
+    } \
+}
+
+//This code should probably be optimized a bit, minimize loops etc, it runs quite often
 namespace {
-    std::variant<FRESError, std::string> readStringTableEntry(std::istream& bfres, unsigned int offset) {
+    FRESError readStringTableEntry(std::istream& bfres, const unsigned int offset, std::string& out) {
         bfres.seekg(offset - 4, std::ios::beg); //BFRES stores offsets to strings directly, but the 4 bytes preceding it store length which we want
+        out.clear(); //make sure string is empty before reading
+        
         uint32_t len;
         if (!bfres.read(reinterpret_cast<char*>(&len), sizeof(len))) {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         Utility::Endian::toPlatform_inplace(eType::Big, len);
 
-        if (std::string str = readNullTerminatedStr(bfres, offset); str.empty()) {
-    		return FRESError::REACHED_EOF; //empty string means it could not read a character from file
+        if (out = readNullTerminatedStr(bfres, offset); out.empty()) {
+    		LOG_ERR_AND_RETURN(FRESError::REACHED_EOF); //empty string means it could not read a character from file
     	}
         else {
-            str.pop_back(); //remove null terminator because it breaks length
-            if (len != str.length()) return FRESError::STRING_LEN_MISMATCH;
-    		return str;
+            out.pop_back(); //remove null terminator because it breaks length
+            if (len != out.length()) LOG_ERR_AND_RETURN(FRESError::STRING_LEN_MISMATCH);
+    		return FRESError::NONE;
     	}
     }
 
     FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
         // magicFRES
-        if (!bfres.read(hdr.magicFRES, 4)) return FRESError::REACHED_EOF;
+        if (!bfres.read(hdr.magicFRES, 4)) LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         if (std::strncmp(hdr.magicFRES, "FRES", 4) != 0)
         {
-            return FRESError::NOT_FRES;
+            LOG_ERR_AND_RETURN(FRESError::NOT_FRES);
         }
         // version number, doesn't affect much
         if (!bfres.read(reinterpret_cast<char*>(&hdr.version), sizeof(hdr.version)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // byteOrderMarker
         if (!bfres.read(reinterpret_cast<char*>(&hdr.byteOrderMarker), sizeof(hdr.byteOrderMarker)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // headerLength_0x10
         if (!bfres.read(reinterpret_cast<char*>(&hdr.headerLength_0x10), sizeof(hdr.headerLength_0x10)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // fileSize
         if (!bfres.read(reinterpret_cast<char*>(&hdr.fileSize), sizeof(hdr.fileSize)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // fileAlignment
         if (!bfres.read(reinterpret_cast<char*>(&hdr.fileAlignment), sizeof(hdr.fileAlignment)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // nameOffset
         if (!bfres.read(reinterpret_cast<char*>(&hdr.nameOffset), sizeof(hdr.nameOffset)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // stringTableSize
         if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableSize), sizeof(hdr.stringTableSize)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // stringTableOffset
         if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableOffset), sizeof(hdr.stringTableOffset)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         // Index group info
         for (int i = 0; i < 12; i++) {
             if (!bfres.read(reinterpret_cast<char*>(&hdr.groupOffsets[i]), sizeof(hdr.groupOffsets[i])))
             {
-                return FRESError::REACHED_EOF;
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
             }
             Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupOffsets[i]);
             //calculate global offset
@@ -89,14 +101,14 @@ namespace {
         for (int i = 0; i < 12; i++) {
             if (!bfres.read(reinterpret_cast<char*>(&hdr.groupCounts[i]), sizeof(hdr.groupCounts[i])))
             {
-                return FRESError::REACHED_EOF;
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
             }
             Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupCounts[i]);
         }
         // userPointer
         if (!bfres.read(reinterpret_cast<char*>(&hdr.userPointer), sizeof(hdr.userPointer)))
         {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         Utility::Endian::toPlatform_inplace(eType::Big, hdr.byteOrderMarker);
         Utility::Endian::toPlatform_inplace(eType::Big, hdr.headerLength_0x10);
@@ -106,54 +118,11 @@ namespace {
         Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableSize);
         Utility::Endian::toPlatform_inplace(eType::Big, hdr.stringTableOffset);
         Utility::Endian::toPlatform_inplace(eType::Big, hdr.userPointer);
+        
         return FRESError::NONE;
     }
 
-    //Not finished used because of partial implementation, they're not needed yet
-    /*
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFMDL(std::istream& bfres, FRESHeader& hdr) {
-        hdr.groupOffsets[0];
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFTEX(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFSKA(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUShader(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUColor(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHUTex(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFTXP(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFVISBone(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFVISMat(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFSHA(std::istream& bfres, FRESHeader& hdr) {
-
-    }
-
-    std::variant<FRESError, std::vector<FRESFileSpec>> readFSCN(std::istream& bfres, FRESHeader& hdr) {
-
-    }*/
+    //Partial implementation, only process embedded files for now
 
     std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bfres, FRESHeader& hdr) {
         if (hdr.groupCounts[11] != 0) {
@@ -161,33 +130,33 @@ namespace {
             bfres.seekg(0x20 + (11 * 0x4) + hdr.groupOffsets[11], std::ios::beg);
             GroupHeader group;
             if (!bfres.read(reinterpret_cast<char*>(&group.groupLength), sizeof(group.groupLength))) {
-                return FRESError::REACHED_EOF;
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
             }
             if (!bfres.read(reinterpret_cast<char*>(&group.entryCount), sizeof(group.entryCount))) {
-                return FRESError::REACHED_EOF;
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
             }
 
             Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
             Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
 
-            for (int entry_index = 0; entry_index < group.entryCount; entry_index++) {
+            for (int32_t entry_index = 0; entry_index < group.entryCount; entry_index++) {
                 GroupEntry entry;
                 bfres.seekg(0x20 + 11 * 0x4 + hdr.groupOffsets[11] + 0x8 + 0x10 * (1 + entry_index), std::ios::beg);
                 entry.location = bfres.tellg();
                 if (!bfres.read(reinterpret_cast<char*>(&entry.searchValue), sizeof(entry.searchValue))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
                 if (!bfres.read(reinterpret_cast<char*>(&entry.leftIndex), sizeof(entry.leftIndex))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
                 if (!bfres.read(reinterpret_cast<char*>(&entry.rightIndex), sizeof(entry.rightIndex))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
                 if (!bfres.read(reinterpret_cast<char*>(&entry.namePointer), sizeof(entry.namePointer))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
                 if (!bfres.read(reinterpret_cast<char*>(&entry.dataPointer), sizeof(entry.dataPointer))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
 
                 Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
@@ -198,20 +167,16 @@ namespace {
                 group.entries.push_back(entry);
 
                 FRESFileSpec file;
-                std::variant<FRESError, std::string> name = readStringTableEntry(bfres, entry.location + 0x8 + entry.namePointer);
-                if (name.index() == 0) {
-                    return std::get<FRESError>(name);
-                }
-                file.fileName = std::get<std::string>(name);
+                LOG_AND_RETURN_IF_ERR(readStringTableEntry(bfres, entry.location + 0x8 + entry.namePointer, file.fileName));
 
                 EmbeddedFileSpec fileInfo;
                 bfres.seekg(entry.location + 0xC + entry.dataPointer, std::ios::beg);
                 fileInfo.location = bfres.tellg();
                 if (!bfres.read(reinterpret_cast<char*>(&fileInfo.dataOffset), sizeof(fileInfo.dataOffset))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
                 if (!bfres.read(reinterpret_cast<char*>(&fileInfo.fileLength), sizeof(fileInfo.fileLength))) {
-                    return FRESError::REACHED_EOF;
+                    LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
                 }
                 Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.dataOffset);
                 Utility::Endian::toPlatform_inplace(eType::Big, fileInfo.fileLength);
@@ -225,6 +190,7 @@ namespace {
             }
             return fileList;
         }
+
         return FRESError::GROUP_IS_EMPTY; //Not sure the best way to handle this error, it isnt really an error but still useful info that doesnt fit elsewhere
     }
 
@@ -285,6 +251,8 @@ namespace FileTypes {
             return "STRING_LEN_MISMATCH";
         case FRESError::GROUP_IS_EMPTY:
             return "GROUP_IS_EMPTY";
+        case FRESError::SUBFILE_ERROR:
+            return "SUBFILE_ERROR";
         default:
             return "UNKNOWN";
         }
@@ -295,24 +263,12 @@ namespace FileTypes {
     }
 
     FRESError resFile::loadFromBinary(std::istream& bfres) {
-        FRESError err;
-
-        err = readFRESHeader(bfres, fresHeader);
-        if (err != FRESError::NONE) {
-            return err;
-        }
-        
-        /*Loop will be used for more complete implementation later
-        std::variant<FRESError, std::vector<FRESFileSpec>>(*fun_ptr_array[])(std::istream & bfres, FRESHeader & hdr) = {readFMDL, readFTEX, readFSKA, readFSHUShader, readFSHUColor, readFSHUTex, readFTXP, readFVISBone, readFVISMat, readFSHA, readFSCN, readEmbedded};
-        for (int index = 0; index < 12; index++) {
-            if (fresHeader.groupCounts[index] != 0) {
-            }
-        }*/
+        LOG_AND_RETURN_IF_ERR(readFRESHeader(bfres, fresHeader));
 
         std::variant<FRESError, std::vector<FRESFileSpec>> readFiles = readEmbedded(bfres, fresHeader);
         if (readFiles.index() == 0) {
             if (std::get<FRESError>(readFiles) != FRESError::GROUP_IS_EMPTY) { //ignore the group is empty error since we can still continue execution
-                return std::get<FRESError>(readFiles);
+                LOG_ERR_AND_RETURN(std::get<FRESError>(readFiles));
             }
         }
         files.insert(files.end(), std::get<std::vector<FRESFileSpec>>(readFiles).begin(), std::get<std::vector<FRESFileSpec>>(readFiles).end());
@@ -323,7 +279,53 @@ namespace FileTypes {
         bfres.seekg(0x6C, std::ios::beg);
         fileData.resize(fresHeader.fileSize - 0x6C); //Exclude header size since it doesn't get included in this data
         if (!bfres.read(&fileData[0], fresHeader.fileSize - 0x6C)) {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+        }
+
+        bfres.seekg(fresHeader.groupOffsets[1] + 0x24, std::ios::beg);
+        GroupHeader group;
+        if (!bfres.read(reinterpret_cast<char*>(&group.groupLength), sizeof(group.groupLength))) {
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+        }
+        if (!bfres.read(reinterpret_cast<char*>(&group.entryCount), sizeof(group.entryCount))) {
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+        }
+
+        Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
+        Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
+
+        bfres.seekg(0x10, std::ios::cur); //skip root entry
+
+        for (int32_t entry_index = 0; entry_index < group.entryCount; entry_index++) {
+            GroupEntry entry;
+            entry.location = bfres.tellg();
+            if (!bfres.read(reinterpret_cast<char*>(&entry.searchValue), sizeof(entry.searchValue))) {
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+            }
+            if (!bfres.read(reinterpret_cast<char*>(&entry.leftIndex), sizeof(entry.leftIndex))) {
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+            }
+            if (!bfres.read(reinterpret_cast<char*>(&entry.rightIndex), sizeof(entry.rightIndex))) {
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+            }
+            if (!bfres.read(reinterpret_cast<char*>(&entry.namePointer), sizeof(entry.namePointer))) {
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+            }
+            if (!bfres.read(reinterpret_cast<char*>(&entry.dataPointer), sizeof(entry.dataPointer))) {
+                LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
+            }
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.leftIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.rightIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.namePointer);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
+            group.entries.push_back(entry);
+        }
+
+        for(const GroupEntry& texEntry : group.entries) {
+            bfres.seekg(texEntry.location + texEntry.dataPointer + 0xC, std::ios::beg);
+            Subfiles::FTEXFile& tex = textures.emplace_back();
+            SUBFILE_ERR_CHECK(tex.loadFromBinary(bfres));
         }
 
         return FRESError::NONE;
@@ -332,24 +334,24 @@ namespace FileTypes {
     FRESError resFile::loadFromFile(const std::string& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
-            return FRESError::COULD_NOT_OPEN;
+            LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
         }
         return loadFromBinary(file);
     }
 
     FRESError resFile::replaceEmbeddedFile(const unsigned int fileIndex, const std::string& newFile) {
-        uint32_t originalLen = fresHeader.embeddedFiles[fileIndex].fileLength;
+        const uint32_t originalLen = fresHeader.embeddedFiles[fileIndex].fileLength;
 
         std::ifstream inFile(newFile, std::ios::binary);
         if (!inFile.is_open()) {
-            return FRESError::COULD_NOT_OPEN;
+            LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
         }
         std::string inData;
         inFile.seekg(0, std::ios::end);
         inData.resize(inFile.tellg());
         inFile.seekg(0, std::ios::beg);
         if (!inFile.read(&inData[0], inData.size())) {
-            return FRESError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
 
         fresHeader.embeddedFiles[fileIndex].fileLength = inData.size();
@@ -415,16 +417,13 @@ namespace FileTypes {
             nextSearchVal = group.entries[entryIndex].searchValue;
         }
 
-        auto err = replaceEmbeddedFile(entryIndex - 1, newFile); //Entry index includes the root entry, we don't need it
-        if (err != FRESError::NONE) {
-            return err;
-        }
+        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, newFile)); //Entry index includes the root entry, we don't need it
         return FRESError::NONE;
     }
 
     FRESError resFile::replaceFromDir(const std::string& dirPath) {
-        for (const auto& p : std::filesystem::directory_iterator(dirPath)) {
-            if(FRESError err = replaceEmbeddedFile(p.path().string().substr(dirPath.size()), p.path().string()); err != FRESError::NONE) return err;
+        for (const auto& file : files) {
+            LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(file.fileName, dirPath + file.fileName));
         }
         return FRESError::NONE;
     }
@@ -433,7 +432,7 @@ namespace FileTypes {
         for (const FRESFileSpec& file : files) {
             std::ofstream outFile(dirPath + '/' + file.fileName, std::ios::binary);
             if (!outFile.is_open()) {
-                return FRESError::COULD_NOT_OPEN;
+                LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
             }
             outFile.write(&fileData[file.fileOffset - 0x6C], file.fileLength); //Offsets are relative to file start but the data doesnt include the header
         }
@@ -441,23 +440,25 @@ namespace FileTypes {
     }
     
     FRESError resFile::writeToStream(std::ostream& out) {
-        FRESError err;
-        err = writeFRESHeader(out, fresHeader);
-        if (err != FRESError::NONE) {
-            return err;
-        }
-        out.write(&fileData[fresHeader.embeddedFiles.size() * 0x8], fileData.size() - fresHeader.embeddedFiles.size() * 0x8); //Skip over the embedded file info at the start of the file
+        LOG_AND_RETURN_IF_ERR(writeFRESHeader(out, fresHeader));
+        out.write(&fileData[fresHeader.embeddedFiles.size() * 0x8], fileData.size() - (fresHeader.embeddedFiles.size() * 0x8)); //Skip over the embedded file info at the start of the file
         uint32_t fileLen = out.tellp();
         out.seekp(0xC, std::ios::beg);
         Utility::Endian::toPlatform_inplace(eType::Big, fileLen);
         out.write(reinterpret_cast<const char*>(&fileLen), sizeof(fileLen));
+
+        for(Subfiles::FTEXFile& tex : textures) {
+            out.seekp(tex.offset);
+            SUBFILE_ERR_CHECK(tex.writeToStream(out));
+        }
+
         return FRESError::NONE;
     }
 
     FRESError resFile::writeToFile(const std::string& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if (!outFile.is_open()) {
-            return FRESError::COULD_NOT_OPEN;
+            LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
         }
         return writeToStream(outFile);
     }

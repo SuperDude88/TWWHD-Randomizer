@@ -1,3 +1,7 @@
+//Format is part of JParticle (a particle library for GameCube games)
+//JPC files store particles and their info in banks
+//Some changes were made to the format for WWHD, namely textures being moved into a BFRES archive
+
 #pragma once
 
 #include <vector>
@@ -155,7 +159,7 @@ namespace JParticle {
 
 	struct ColorAnimationKeyframe {
 		uint16_t time;
-		RGBA color;
+		RGBA8 color;
 	};
 
 	struct CurveKeyframe {
@@ -167,8 +171,6 @@ namespace JParticle {
 
 	class BEM1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint32_t flags;
@@ -210,14 +212,12 @@ namespace JParticle {
 
 
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class BSP1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint32_t flags;
@@ -267,8 +267,8 @@ namespace JParticle {
 		//Color animation settings
 		bool isGlblClrAnm;
 		JParticle::CalcIdxType colorCalcIdxType;
-		RGBA colorPrm;
-		RGBA colorEnv;
+		RGBA8 colorPrm;
+		RGBA8 colorEnv;
 		std::vector<ColorAnimationKeyframe> colorPrmAnimData; //somethign iwth durations?
 		std::vector<ColorAnimationKeyframe> colorEnvAnimData; //somethign iwth durations?
 		uint16_t colorAnimMaxFrm;
@@ -276,14 +276,12 @@ namespace JParticle {
 
 
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class ESP1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint32_t flags;
@@ -325,14 +323,12 @@ namespace JParticle {
 		float rotateSpeedRandom;
 		float rotateDirection;
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class ETX1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint32_t flags;
@@ -345,14 +341,12 @@ namespace JParticle {
 		uint8_t secondTextureIndex;
 		bool useSecondTex;
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class SSP1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint32_t flags;
@@ -385,18 +379,16 @@ namespace JParticle {
 		float inheritScale;
 		float inheritAlpha;
 		float inheritRGB;
-		RGBA colorPrm;
-		RGBA colorEnv;
+		RGBA8 colorPrm;
+		RGBA8 colorEnv;
 		uint8_t texIdx;
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class FLD1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint32_t flags;
@@ -432,14 +424,12 @@ namespace JParticle {
 
 
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class KFA1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 	public:
@@ -448,21 +438,19 @@ namespace JParticle {
 		bool isLoopEnable;
 		uint8_t unk1;
 
-		JPCError read(std::istream& jpc, const unsigned int offset);
+		JPCError read(std::istream& jpc);
 		JPCError save_changes(std::ostream& out);
 	};
 
 	class TDB1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		std::vector<uint16_t> texIDs;
 	public:
 		std::vector<std::string> texFilenames;
 
-		JPCError read(std::istream& jpc, const unsigned int offset, const uint8_t texCount);
+		JPCError read(std::istream& jpc, const uint8_t texCount);
 		JPCError populateFilenames(const std::vector<std::string>& texList);
 		JPCError save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures);
 	};
@@ -495,7 +483,7 @@ public:
 	std::vector<JParticle::KFA1> curves = {};
 	std::optional<JParticle::TDB1> texDatabase = std::nullopt;
 
-	JPCError read(std::istream& jpc, unsigned int particle_offset);
+	JPCError read(std::istream& jpc);
 	JPCError save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures);
 };
 
