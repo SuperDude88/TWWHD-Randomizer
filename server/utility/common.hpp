@@ -2,27 +2,28 @@
 
 #include <string>
 #include <fstream>
+#include <limits>
 
 #include "endian.hpp"
 
 
-
+template<typename T>
 struct RGBA {
-	uint8_t R = 0x00;
-	uint8_t G = 0x00;
-	uint8_t B = 0x00;
-	uint8_t A = 0xFF;
+	T R = 0;
+	T G = 0;
+	T B = 0;
+	T A = std::numeric_limits<T>::max();
 
 	RGBA() {}
 
-	RGBA(const uint8_t& val, const uint8_t alpha) :
+	RGBA(const T& val, const T& alpha) :
 		R(val),
 		G(val),
 		B(val),
 		A(alpha)
 	{}
 
-	RGBA(const uint8_t& r_, const uint8_t& g_, const uint8_t& b_ , const uint8_t a_) :
+	RGBA(const T& r_, const T& g_, const T& b_ , const T& a_) :
 		R(r_),
 		G(g_),
 		B(b_),
@@ -53,6 +54,22 @@ struct vec3 {
 		X(val),
 		Y(val),
 		Z(val)
+	{}
+};
+
+template<typename T>
+struct vec4 {
+	T A;
+	T B;
+	T C;
+	T D;
+
+	vec4() {}
+	vec4(const T& val) :
+		A(val),
+		B(val),
+		C(val),
+		D(val)
 	{}
 };
 
@@ -128,13 +145,96 @@ void writeVec3(std::ostream& out, const vec3<T>& vec) {
 }
 
 
-bool readRGBA8(std::istream& in, const std::streamoff& offset, RGBA& out);
+template<typename T>
+bool readVec4(std::istream& in, const std::streamoff offset, vec4<T>& out) {
+	in.seekg(offset, std::ios::beg);
 
-void writeRGBA8(std::ostream& out, const RGBA& color);
+	if (!in.read(reinterpret_cast<char*>(&out.A), sizeof(out.A))) return false;
+	if (!in.read(reinterpret_cast<char*>(&out.B), sizeof(out.B))) return false;
+	if (!in.read(reinterpret_cast<char*>(&out.C), sizeof(out.C))) return false;
+	if (!in.read(reinterpret_cast<char*>(&out.D), sizeof(out.D))) return false;
 
+	if constexpr (sizeof(T) > 1) {
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.A);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.B);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.C);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.D);
+	}
+
+	return true;
+}
+
+template<typename T>
+void writeVec4(std::ostream& out, const vec4<T>& vec) {
+	if constexpr (sizeof(T) > 1) {
+		T A_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.A);
+		T B_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.B);
+		T C_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.C);
+		T D_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, vec.D);
+
+		out.write(reinterpret_cast<const char*>(&A_BE), sizeof(A_BE));
+		out.write(reinterpret_cast<const char*>(&B_BE), sizeof(B_BE));
+		out.write(reinterpret_cast<const char*>(&C_BE), sizeof(C_BE));
+		out.write(reinterpret_cast<const char*>(&D_BE), sizeof(D_BE));
+		return;
+	}
+	else {
+		out.write(reinterpret_cast<const char*>(&vec.A), sizeof(vec.A));
+		out.write(reinterpret_cast<const char*>(&vec.B), sizeof(vec.B));
+		out.write(reinterpret_cast<const char*>(&vec.C), sizeof(vec.C));
+		out.write(reinterpret_cast<const char*>(&vec.D), sizeof(vec.D));
+		return;
+	}
+}
+
+
+template<typename T>
+bool readRGBA(std::istream& in, const std::streamoff& offset, RGBA<T>& out) {
+	in.seekg(offset, std::ios::beg);
+
+	if(!in.read(reinterpret_cast<char*>(&out.R), sizeof(out.R))) return false;
+	if(!in.read(reinterpret_cast<char*>(&out.G), sizeof(out.G))) return false;
+	if(!in.read(reinterpret_cast<char*>(&out.B), sizeof(out.B))) return false;
+	if(!in.read(reinterpret_cast<char*>(&out.A), sizeof(out.A))) return false;
+	
+	if constexpr (sizeof(T) > 1) {
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.R);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.G);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.B);
+		Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, out.A);
+	}
+
+	return true;
+}
+
+template<typename T>
+void writeRGBA(std::ostream& out, const RGBA<T>& color) {
+	if constexpr (sizeof(T) > 1) {
+		T R_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, color.R);
+		T G_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, color.G);
+		T B_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, color.B);
+		T A_BE = Utility::Endian::toPlatform(Utility::Endian::Type::Big, color.A);
+
+		out.write(reinterpret_cast<const char*>(&R_BE), sizeof(R_BE));
+		out.write(reinterpret_cast<const char*>(&G_BE), sizeof(G_BE));
+		out.write(reinterpret_cast<const char*>(&B_BE), sizeof(B_BE));
+		out.write(reinterpret_cast<const char*>(&A_BE), sizeof(A_BE));
+		return;
+	}
+	else {
+		out.write(reinterpret_cast<const char*>(&color.R), sizeof(color.R));
+		out.write(reinterpret_cast<const char*>(&color.G), sizeof(color.G));
+		out.write(reinterpret_cast<const char*>(&color.B), sizeof(color.B));
+		out.write(reinterpret_cast<const char*>(&color.A), sizeof(color.A));
+	}
+
+	return;	
+}
 
 std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset);
 
 std::u16string readNullTerminatedWStr(std::istream& in, const unsigned int offset);
 
 unsigned int padToLen(std::ostream& out, const unsigned int& len, const char pad = '\x00');
+
+typedef RGBA<uint8_t> RGBA8;

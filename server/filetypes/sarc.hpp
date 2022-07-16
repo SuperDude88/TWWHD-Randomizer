@@ -1,3 +1,6 @@
+//Format is part of sead (Nintendo's standard library)
+//SARC files are archives that store various types of data
+
 #pragma once
 
 #include <filesystem>

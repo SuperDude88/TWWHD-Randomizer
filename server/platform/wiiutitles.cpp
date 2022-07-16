@@ -1,5 +1,6 @@
 #include "wiiutitles.hpp"
 
+#include <filesystem>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <map>
@@ -10,6 +11,8 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include "../utility/platform.hpp"
+#include "../utility/file.hpp"
 
 bool fileExist(const char* path) {
     struct stat existStat;
@@ -46,7 +49,7 @@ std::string convertToPosixPath(const char* volPath) {
     return posixPath;
 }
 
-/* LARGELY COPIED WHOLESALE FROM https://github.com/emiyl/dumpling/blob/master/source/app/titles.cpp*/
+//LARGELY COPIED WHOLESALE FROM https://github.com/emiyl/dumpling/blob/master/source/app/titles.cpp
 namespace Utility {
     titleLocation deviceToLocation(char* device) {
         if (memcmp(device, "odd", 3) == 0) return titleLocation::Disc;
@@ -96,9 +99,7 @@ namespace Utility {
             }
         }
 
-        Utility::platformLog("Could only partially parse %lu information bits:\n");
         Utility::platformLog("shortname_en = %s\n", title.shortTitle.c_str());
-        Utility::platformLog("product_code = %s\n", title.productCode.c_str());
         return false;
     }
 
@@ -222,19 +223,6 @@ namespace Utility {
                     }
                 }
             }
-
-            // Check for save files  - don't care?
-            // if (title.hasBase || title.hasUpdate || title.hasDLC) {
-            //     // Check if path would support save file
-            //     std::ostringstream savePath;
-            //     savePath << "/usr/save/";
-            //     savePath << std::nouppercase << std::right << std::setw(8) << std::setfill('0') << std::hex << title.base.partHighID;
-            //     savePath << "/";
-            //     savePath << std::nouppercase << std::right << std::setw(8) << std::setfill('0') << std::hex << title.titleLowID;
-            //     savePath << "/user";
-            //     if (isExternalStorageInserted()) getSaves((std::string("storage_usb01:") + savePath.str()), title.saves, title.commonSave);
-            //     getSaves((std::string("storage_mlc01:") + savePath.str()), title.saves, title.commonSave);
-            // }
         }
 
         return true;
@@ -291,5 +279,20 @@ namespace Utility {
     int test(int arg)
     {
         return arg + 1;
+    }
+
+    inline dumpTypeFlags operator &(dumpTypeFlags a, dumpTypeFlags b) {
+        return static_cast<dumpTypeFlags>(static_cast<std::underlying_type_t<dumpTypeFlags>>(a) | static_cast<std::underlying_type_t<dumpTypeFlags>>(b));
+    }
+
+    bool dumpGame(const titleEntry& entry, const dumpingConfig& config, const std::string& outPath) {
+        Utility::platformLog("Dumping game, this may take a while...\n");
+        if ((config.dumpTypes & dumpTypeFlags::Game) == dumpTypeFlags::Game && entry.hasBase) {
+            Utility::create_directories(outPath);
+            Utility::platformLog("Created backup dir\n");
+            Utility::copy(entry.base.path, outPath);
+        }
+
+        return true;
     }
 }

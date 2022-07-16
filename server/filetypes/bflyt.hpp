@@ -1,3 +1,7 @@
+//Format is a part of NintendoWare::lyt (a UI library)
+//BFLYT files store a pane tree to create a 2D layout
+//They are used in conjunction with BFLAN and BFLIM files
+
 #pragma once
 
 #include <fstream>
@@ -185,14 +189,12 @@ namespace NintendoWare::Layout {
 	};
 
 	struct fontShadowParameter {
-		RGBA blackColor;
-		RGBA whiteColor;
+		RGBA8 blackColor;
+		RGBA8 whiteColor;
 	};
 
 	class lyt1 {
 	private:
-		unsigned int offset;
-
 		char magicLYT1[4];
 		uint32_t sectionSize;
 		uint8_t padding_0x00[3];
@@ -205,14 +207,12 @@ namespace NintendoWare::Layout {
 		float maxPartHeight;
 		std::string layoutName;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
 	};
 
 	class txl1 {
 	private:
-		unsigned int offset;
-
 		char magicTXL1[4];
 		uint32_t sectionSize;
 		uint16_t numTextures;
@@ -222,14 +222,12 @@ namespace NintendoWare::Layout {
 	public:
 		std::vector<std::string> texNames;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
 	};
 
 	class fnl1 {
 	private:
-		unsigned int offset;
-
 		char magicFNL1[4];
 		uint32_t sectionSize;
 		uint16_t numFonts;
@@ -239,7 +237,7 @@ namespace NintendoWare::Layout {
 	public:
 		std::vector<std::string> fontNames;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
 	};
 
@@ -250,8 +248,8 @@ namespace NintendoWare::Layout {
 	public:
 		std::string name;
 
-		RGBA blackColor;
-		RGBA whiteColor;
+		RGBA8 blackColor;
+		RGBA8 whiteColor;
 
 		std::vector<texRef> texRefs = {};
 		std::vector<texTransform> texTransforms = {};
@@ -266,7 +264,7 @@ namespace NintendoWare::Layout {
 		std::optional<fontShadowParameter> fontShadowParam = std::nullopt;
 		bool alphaInterpolation;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 
 		inline void setFlag(const uint32_t value, const uint32_t mask, const uint8_t pos) {
 			flags = (flags & ~mask) | ((value << pos) & mask);
@@ -278,8 +276,6 @@ namespace NintendoWare::Layout {
 
 	class mat1 {
 	private:
-		unsigned int offset;
-
 		char magicMAT1[4];
 		uint32_t sectionSize;
 		uint16_t numMats;
@@ -289,7 +285,7 @@ namespace NintendoWare::Layout {
 	public:
 		std::vector<material> materials; //fields don't really need editing, just need to read data (theyre also quite complex)
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
 	};
 
@@ -306,8 +302,6 @@ namespace NintendoWare::Layout {
 
 	class usd1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint16_t numEntries;
@@ -316,13 +310,12 @@ namespace NintendoWare::Layout {
 	public:
 		std::vector<userDataEntry> entries;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
 	};
 
 	class cnt1 {
 	private:
-		unsigned int offset;
 		unsigned int animNameTableOffset; //offset in section, not file
 
 		char magic[4];
@@ -338,14 +331,12 @@ namespace NintendoWare::Layout {
 		std::vector<std::string> paneNames;
 		std::vector<std::string> animNames;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
 	};
 
 	class grp1 {
 	private:
-		unsigned int offset;
-
 		char magic[4];
 		uint32_t sectionSize;
 		uint16_t numPanes;
@@ -357,15 +348,15 @@ namespace NintendoWare::Layout {
 
 		std::vector<grp1> children;
 
-		FLYTError read(std::istream& bflyt, const unsigned int offset);
+		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out, uint16_t& sectionNum);
 	};
 
 	class PaneBase {
 	protected:
-		unsigned int offset;
 		char magic[4];
 		uint32_t sectionSize;
+		
 	public:
 		uint8_t bitFlags;
 		uint8_t originFlags;
@@ -379,29 +370,29 @@ namespace NintendoWare::Layout {
 		float width;
 		float height;
 		virtual ~PaneBase();
-		virtual FLYTError read(std::istream& bflyt, const unsigned int offset);
+		virtual FLYTError read(std::istream& bflyt);
 		virtual std::unique_ptr<PaneBase> clonePane();
 		virtual FLYTError save_changes(std::ostream& out);
 	};
 	class pan1 : public PaneBase {
 	public:	
 		~pan1() override;
-		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
 	class bnd1 : public PaneBase {
 	public:	
 		~bnd1() override;
-		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
 	struct windowContent {
-		RGBA vertexColorTL;
-		RGBA vertexColorTR;
-		RGBA vertexColorBL;
-		RGBA vertexColorBR;
+		RGBA8 vertexColorTL;
+		RGBA8 vertexColorTR;
+		RGBA8 vertexColorBL;
+		RGBA8 vertexColorBR;
 		uint16_t matIndex;
 		uint8_t numCoords;
 		uint8_t padding_0x00;
@@ -432,7 +423,7 @@ namespace NintendoWare::Layout {
 		windowContent content;
 		std::vector<windowFrame> frames;
 		~wnd1() override;
-		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
@@ -465,8 +456,8 @@ namespace NintendoWare::Layout {
 		LineAlignment lineAlignment;
 		uint8_t bitflags;
 		float italicTilt;
-		RGBA fontColorTop;
-		RGBA fontColorBottom;
+		RGBA8 fontColorTop;
+		RGBA8 fontColorBottom;
 		float fontSizeX;
 		float fontSizeY;
 		float charSpace;
@@ -475,14 +466,14 @@ namespace NintendoWare::Layout {
 		float shadowPosY;
 		float shadowSizeX;
 		float shadowSizeY;
-		RGBA shadowColorTop;
-		RGBA shadowColorBottom;
+		RGBA8 shadowColorTop;
+		RGBA8 shadowColorBottom;
 		float shadowItalicTilt;
 		std::u16string text;
 		std::string textBoxName;
 		std::optional<perCharTransform> charTransform;
 		~txt1() override;
-		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
@@ -491,14 +482,14 @@ namespace NintendoWare::Layout {
 		uint8_t padding_0x00;
 		uint8_t numCoords;
 	public:
-		RGBA vertexColorTL;
-		RGBA vertexColorTR;
-		RGBA vertexColorBL;
-		RGBA vertexColorBR;
+		RGBA8 vertexColorTL;
+		RGBA8 vertexColorTR;
+		RGBA8 vertexColorBL;
+		RGBA8 vertexColorBR;
 		uint16_t matIndex;
 		std::vector<UVCoords> coords;
 		~pic1() override;
-		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
@@ -526,7 +517,7 @@ namespace NintendoWare::Layout {
 		std::vector<partProperty> properties;
 		std::string lytFilename;
 		~prt1() override;
-		FLYTError read(std::istream& bflyt, const unsigned int offset) override;
+		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
@@ -545,8 +536,6 @@ struct FLYTHeader {
 
 class Pane {
 private:
-	unsigned int offset;
-
 	char magic[4];
 
 public:
@@ -556,7 +545,7 @@ public:
 
 	Pane();
 
-	FLYTError read(std::istream& bflyt, const unsigned int offset);
+	FLYTError read(std::istream& bflyt);
 	Pane& duplicateChildPane(const unsigned int originalIndex);
 	FLYTError save_changes(std::ostream& out, uint16_t& sectionNum);
 };
