@@ -1,3 +1,5 @@
+;TODO: test these
+
 .org 0x0213ae90
 	rlwinm. r8,r10,0,15,15
 

@@ -18,7 +18,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
-  Utility::platformLog(std::string("Building World\n") + (worlds.size() > 1 ? "s" : ""));
+  Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s\n" : "\n"));
   int buildRetryCount = 10;
   EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
   while (buildRetryCount > 0)
@@ -65,7 +65,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   // Retry the main fill algorithm a couple times incase it completely fails.
   int totalFillAttempts = 5;
   FillError fillError = FillError::NONE;
-  Utility::platformLog(std::string("Filling World\n") + (worlds.size() > 1 ? "s" : ""));
+  Utility::platformLog(std::string("Filling World") + (worlds.size() > 1 ? "s\n" : "\n"));
   while (totalFillAttempts > 0)
   {
       totalFillAttempts--;

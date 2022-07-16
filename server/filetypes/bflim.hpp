@@ -1,3 +1,7 @@
+//Format is a part of NintendoWare::lyt (a UI library)
+//BFLIM files store textures used for 2D layouts
+//They are used in conjunction with BFLYT files
+
 #pragma once
 
 #include <vector>
@@ -42,13 +46,8 @@ struct ImageInfo {
     uint8_t tile_swizzle;
     uint32_t dataSize;
 
-    uint8_t swizzle;
+    uint32_t swizzle;
     GX2TileMode tileMode;
-};
-
-class Pixel {
-public:
-    std::variant<uint8_t, uint16_t, uint32_t> value;
 };
 
 
@@ -67,6 +66,7 @@ namespace FileTypes {
 		static FLIMFile createNew(const std::string& filename);
 		FLIMError loadFromBinary(std::istream& bflim);
 		FLIMError loadFromFile(const std::string& filePath);
+        FLIMError exportAsDDS(const std::string& outPath);
         FLIMError replaceWithDDS(const std::string& filename, GX2TileMode tileMode, uint8_t swizzle_, bool SRGB);
 		FLIMError writeToStream(std::ostream& out);
 		FLIMError writeToFile(const std::string& outFilePath);

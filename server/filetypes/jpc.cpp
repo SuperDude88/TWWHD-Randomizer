@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include "../utility/endian.hpp"
+#include "../utility/file.hpp"
+#include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
 
@@ -21,7 +23,7 @@ std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, 
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, keyframe.time);
 
-		if (!readRGBA8(in, in.tellg(), keyframe.color)) {
+		if (!readRGBA(in, in.tellg(), keyframe.color)) {
 			table.clear(); //return empty vector to signal error
 			return table;
 		}
@@ -34,8 +36,8 @@ void writeColorTable(std::ostream& out, const std::vector<JParticle::ColorAnimat
 	for (const JParticle::ColorAnimationKeyframe& keyframe : table) {
 		uint16_t time = Utility::Endian::toPlatform(eType::Big, keyframe.time);
 
-		out.write(reinterpret_cast<char*>(&time), sizeof(time));
-		writeRGBA8(out, keyframe.color);
+		out.write(reinterpret_cast<const char*>(&time), sizeof(time));
+		writeRGBA(out, keyframe.color);
 	}
 
 	return;
@@ -44,52 +46,49 @@ void writeColorTable(std::ostream& out, const std::vector<JParticle::ColorAnimat
 
 
 namespace JParticle {
-	JPCError BEM1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError BEM1::read(std::istream& jpc) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "BEM1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "BEM1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
 		emitFlags = static_cast<EmitFlags>(flags & 0xFF);
 		volumeType = static_cast<VolumeType>((flags >> 8) & 0x07);
 
-		if (!jpc.read(reinterpret_cast<char*>(&volumeSweep), sizeof(volumeSweep))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&volumeMinRad), sizeof(volumeMinRad))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&volumeSize), sizeof(volumeSize))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&divNumber), sizeof(divNumber))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rate), sizeof(rate))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rateRndm), sizeof(rateRndm))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rateStep), sizeof(rateStep))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&volumeSweep), sizeof(volumeSweep))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&volumeMinRad), sizeof(volumeMinRad))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&volumeSize), sizeof(volumeSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&divNumber), sizeof(divNumber))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rate), sizeof(rate))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rateRndm), sizeof(rateRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rateStep), sizeof(rateStep))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(1, std::ios::cur);
 
-		if (!jpc.read(reinterpret_cast<char*>(&maxFrame), sizeof(maxFrame))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&startFrame), sizeof(startFrame))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&lifeTime), sizeof(lifeTime))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&lifeTimeRndm), sizeof(lifeTimeRndm))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&maxFrame), sizeof(maxFrame))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&startFrame), sizeof(startFrame))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&lifeTime), sizeof(lifeTime))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&lifeTimeRndm), sizeof(lifeTimeRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&initialVelOmni), sizeof(initialVelOmni))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&initialVelAxis), sizeof(initialVelAxis))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&initialVelRndm), sizeof(initialVelRndm))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&initialVelDir), sizeof(initialVelDir))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&initialVelRatio), sizeof(initialVelRatio))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&initialVelOmni), sizeof(initialVelOmni))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&initialVelAxis), sizeof(initialVelAxis))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&initialVelRndm), sizeof(initialVelRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&initialVelDir), sizeof(initialVelDir))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&initialVelRatio), sizeof(initialVelRatio))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&spread), sizeof(spread))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&airResist), sizeof(airResist))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&airResistRndm), sizeof(airResistRndm))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&spread), sizeof(spread))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&airResist), sizeof(airResist))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&airResistRndm), sizeof(airResistRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&moment), sizeof(moment))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&momentRndm), sizeof(momentRndm))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&accel), sizeof(accel))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&accelRndm), sizeof(accelRndm))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&moment), sizeof(moment))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&momentRndm), sizeof(momentRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&accel), sizeof(accel))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&accelRndm), sizeof(accelRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, volumeSweep);
 		Utility::Endian::toPlatform_inplace(eType::Big, volumeMinRad);
@@ -114,28 +113,26 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, accel);
 		Utility::Endian::toPlatform_inplace(eType::Big, accelRndm);
 
-		if (!readVec3(jpc, jpc.tellg(), emitterScale)) return JPCError::REACHED_EOF;
-		if (!readVec3(jpc, jpc.tellg(), emitterTrans)) return JPCError::REACHED_EOF;
-		if (!readVec3(jpc, jpc.tellg(), emitterDir)) return JPCError::REACHED_EOF;
-		if (!readVec3(jpc, jpc.tellg(), emitterRot)) return JPCError::REACHED_EOF;
+		if (!readVec3(jpc, jpc.tellg(), emitterScale)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec3(jpc, jpc.tellg(), emitterTrans)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec3(jpc, jpc.tellg(), emitterDir)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec3(jpc, jpc.tellg(), emitterRot)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		return JPCError::NONE;
 	}
 
 	JPCError BEM1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldn't need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldn't need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		flags = (flags & 0xFFFFFF00) | (static_cast<uint8_t>(emitFlags) & 0x000000FF);
 		flags = (flags & 0xFFFF00FF) | ((static_cast<uint8_t>(volumeType) & 0x000000FF) << 8);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags));
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
 		Utility::Endian::toPlatform_inplace(eType::Big, volumeSweep);
 		Utility::Endian::toPlatform_inplace(eType::Big, volumeMinRad);
@@ -160,34 +157,34 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, accel);
 		Utility::Endian::toPlatform_inplace(eType::Big, accelRndm);
 
-		out.write(reinterpret_cast<char*>(&volumeSweep), sizeof(volumeSweep));
-		out.write(reinterpret_cast<char*>(&volumeMinRad), sizeof(volumeMinRad));
-		out.write(reinterpret_cast<char*>(&volumeSize), sizeof(volumeSize));
-		out.write(reinterpret_cast<char*>(&divNumber), sizeof(divNumber));
-		out.write(reinterpret_cast<char*>(&rate), sizeof(rate));
-		out.write(reinterpret_cast<char*>(&rateRndm), sizeof(rateRndm));
-		out.write(reinterpret_cast<char*>(&rateStep), sizeof(rateStep));
-		out.seekp(1, std::ios::cur); //what is this?
+		out.write(reinterpret_cast<const char*>(&volumeSweep), sizeof(volumeSweep));
+		out.write(reinterpret_cast<const char*>(&volumeMinRad), sizeof(volumeMinRad));
+		out.write(reinterpret_cast<const char*>(&volumeSize), sizeof(volumeSize));
+		out.write(reinterpret_cast<const char*>(&divNumber), sizeof(divNumber));
+		out.write(reinterpret_cast<const char*>(&rate), sizeof(rate));
+		out.write(reinterpret_cast<const char*>(&rateRndm), sizeof(rateRndm));
+		out.write(reinterpret_cast<const char*>(&rateStep), sizeof(rateStep));
+		Utility::seek(out, 1, std::ios::cur); //what is this?
 
-		out.write(reinterpret_cast<char*>(&maxFrame), sizeof(maxFrame));
-		out.write(reinterpret_cast<char*>(&startFrame), sizeof(startFrame));
-		out.write(reinterpret_cast<char*>(&lifeTime), sizeof(lifeTime));
-		out.write(reinterpret_cast<char*>(&lifeTimeRndm), sizeof(lifeTimeRndm));
+		out.write(reinterpret_cast<const char*>(&maxFrame), sizeof(maxFrame));
+		out.write(reinterpret_cast<const char*>(&startFrame), sizeof(startFrame));
+		out.write(reinterpret_cast<const char*>(&lifeTime), sizeof(lifeTime));
+		out.write(reinterpret_cast<const char*>(&lifeTimeRndm), sizeof(lifeTimeRndm));
 
-		out.write(reinterpret_cast<char*>(&initialVelOmni), sizeof(initialVelOmni));
-		out.write(reinterpret_cast<char*>(&initialVelAxis), sizeof(initialVelAxis));
-		out.write(reinterpret_cast<char*>(&initialVelRndm), sizeof(initialVelRndm));
-		out.write(reinterpret_cast<char*>(&initialVelDir), sizeof(initialVelDir));
-		out.write(reinterpret_cast<char*>(&initialVelRatio), sizeof(initialVelRatio));
+		out.write(reinterpret_cast<const char*>(&initialVelOmni), sizeof(initialVelOmni));
+		out.write(reinterpret_cast<const char*>(&initialVelAxis), sizeof(initialVelAxis));
+		out.write(reinterpret_cast<const char*>(&initialVelRndm), sizeof(initialVelRndm));
+		out.write(reinterpret_cast<const char*>(&initialVelDir), sizeof(initialVelDir));
+		out.write(reinterpret_cast<const char*>(&initialVelRatio), sizeof(initialVelRatio));
 
-		out.write(reinterpret_cast<char*>(&spread), sizeof(spread));
-		out.write(reinterpret_cast<char*>(&airResist), sizeof(airResist));
-		out.write(reinterpret_cast<char*>(&airResistRndm), sizeof(airResistRndm));
+		out.write(reinterpret_cast<const char*>(&spread), sizeof(spread));
+		out.write(reinterpret_cast<const char*>(&airResist), sizeof(airResist));
+		out.write(reinterpret_cast<const char*>(&airResistRndm), sizeof(airResistRndm));
 
-		out.write(reinterpret_cast<char*>(&moment), sizeof(moment));
-		out.write(reinterpret_cast<char*>(&momentRndm), sizeof(momentRndm));
-		out.write(reinterpret_cast<char*>(&accel), sizeof(accel));
-		out.write(reinterpret_cast<char*>(&accelRndm), sizeof(accelRndm));
+		out.write(reinterpret_cast<const char*>(&moment), sizeof(moment));
+		out.write(reinterpret_cast<const char*>(&momentRndm), sizeof(momentRndm));
+		out.write(reinterpret_cast<const char*>(&accel), sizeof(accel));
+		out.write(reinterpret_cast<const char*>(&accelRndm), sizeof(accelRndm));
 
 		writeVec3(out, emitterScale);
 		writeVec3(out, emitterTrans);
@@ -198,19 +195,18 @@ namespace JParticle {
 	}
 
 
-	JPCError BSP1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
+	JPCError BSP1::read(std::istream& jpc) {
+		const std::streamoff sectionStart = jpc.tellg();
 
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "BSP1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "BSP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
 		shapeType = static_cast<ShapeType>(flags & 0xF);
@@ -232,14 +228,14 @@ namespace JParticle {
 
 		uint16_t colorPrmAnimDataOff;
 		uint16_t colorEnvAnimDataOff;
-		if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnimDataOff), sizeof(colorPrmAnimDataOff))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnimDataOff), sizeof(colorEnvAnimDataOff))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnimDataOff), sizeof(colorPrmAnimDataOff))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnimDataOff), sizeof(colorEnvAnimDataOff))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnimDataOff);
 		Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnimDataOff);
 
-		if (!readVec2(jpc, jpc.tellg(), baseSize)) return JPCError::REACHED_EOF;
+		if (!readVec2(jpc, jpc.tellg(), baseSize)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&anmRndm), sizeof(anmRndm))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&anmRndm), sizeof(anmRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, anmRndm);
 
@@ -249,71 +245,69 @@ namespace JParticle {
 		uint8_t texIdxAnimCount;
 		uint8_t colorPrmAnimDataCount;
 		uint8_t colorEnvAnimDataCount;
-		if (!jpc.read(reinterpret_cast<char*>(&blendModeFlags), sizeof(blendModeFlags))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaCompareFlags), sizeof(alphaCompareFlags))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaRef0), sizeof(alphaRef0))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaRef1), sizeof(alphaRef1))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&zModeFlags), sizeof(zModeFlags))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&texFlags), sizeof(texFlags))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&texIdxAnimCount), sizeof(texIdxAnimCount))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&texIdx), sizeof(texIdx))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&colorFlags), sizeof(colorFlags))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnimDataCount), sizeof(colorPrmAnimDataCount))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnimDataCount), sizeof(colorEnvAnimDataCount))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&colorAnimMaxFrm), sizeof(colorAnimMaxFrm))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&blendModeFlags), sizeof(blendModeFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaCompareFlags), sizeof(alphaCompareFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaRef0), sizeof(alphaRef0))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaRef1), sizeof(alphaRef1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&zModeFlags), sizeof(zModeFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&texFlags), sizeof(texFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&texIdxAnimCount), sizeof(texIdxAnimCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&texIdx), sizeof(texIdx))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&colorFlags), sizeof(colorFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnimDataCount), sizeof(colorPrmAnimDataCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnimDataCount), sizeof(colorEnvAnimDataCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&colorAnimMaxFrm), sizeof(colorAnimMaxFrm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, blendModeFlags);
 		Utility::Endian::toPlatform_inplace(eType::Big, colorAnimMaxFrm);
 
-		if (!readRGBA8(jpc, jpc.tellg(), colorPrm)) return JPCError::REACHED_EOF;
-		if (!readRGBA8(jpc, jpc.tellg(), colorEnv)) return JPCError::REACHED_EOF;
+		if (!readRGBA(jpc, jpc.tellg(), colorPrm)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readRGBA(jpc, jpc.tellg(), colorEnv)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		colorCalcIdxType = static_cast<CalcIdxType>((colorFlags >> 4) & 0x07);
 
-		if (!jpc.read(reinterpret_cast<char*>(&tilingS), sizeof(tilingS))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&tilingT), sizeof(tilingT))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&tilingS), sizeof(tilingS))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&tilingT), sizeof(tilingT))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, tilingS);
 		Utility::Endian::toPlatform_inplace(eType::Big, tilingT);
 
 		texCalcIdxType = static_cast<CalcIdxType>((texFlags >> 2) & 0x07);
 
-		if (!readVec2(jpc, jpc.tellg(), texInitTrans)) return JPCError::REACHED_EOF;
-		if (!readVec2(jpc, jpc.tellg(), texInitScale)) return JPCError::REACHED_EOF;
-		if (!readVec2(jpc, jpc.tellg(), texIncTrans)) return JPCError::REACHED_EOF;
-		if (!readVec2(jpc, jpc.tellg(), texIncScale)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&texIncRot), sizeof(texIncRot))) return JPCError::REACHED_EOF;
+		if (!readVec2(jpc, jpc.tellg(), texInitTrans)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec2(jpc, jpc.tellg(), texInitScale)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec2(jpc, jpc.tellg(), texIncTrans)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec2(jpc, jpc.tellg(), texIncScale)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&texIncRot), sizeof(texIncRot))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, texIncRot);
 
 		if ((texFlags & 0x00000001) != 0) {
 			for (uint8_t i = 0; i < texIdxAnimCount; i++) {
 				uint8_t& val = texIdxAnimData.emplace_back();
-				if (!jpc.read(reinterpret_cast<char*>(&val), sizeof(val))) return JPCError::REACHED_EOF;
+				if (!jpc.read(reinterpret_cast<char*>(&val), sizeof(val))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 			}
 		}
 
 		isEnableTexture = (texFlags & 0x00000002) != 0;
 
 		if ((colorFlags & 0x02) != 0) {
-			if (colorPrmAnimData = readColorTable(jpc, this->offset + colorPrmAnimDataOff, colorPrmAnimDataCount); colorPrmAnimData.empty()) return JPCError::REACHED_EOF;
+			if (colorPrmAnimData = readColorTable(jpc, sectionStart + colorPrmAnimDataOff, colorPrmAnimDataCount); colorPrmAnimData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
 
 		if ((colorFlags & 0x08) != 0) {
-			if (colorEnvAnimData = readColorTable(jpc, this->offset + colorEnvAnimDataOff, colorEnvAnimDataCount); colorEnvAnimData.empty()) return JPCError::REACHED_EOF;
+			if (colorEnvAnimData = readColorTable(jpc, sectionStart + colorEnvAnimDataOff, colorEnvAnimDataCount); colorEnvAnimData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
 
 		return JPCError::NONE;
 	}
 
 	JPCError BSP1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		flags = (flags & ~0x00038000) | ((colorInSelect & 0x7) << 0xF);
 		flags = (flags & ~0x00040000) | ((alphaInSelect & 0x1) << 0x12);
@@ -333,7 +327,7 @@ namespace JParticle {
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags));
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
 		uint16_t colorPrmAnimDataOff = 0;
 		uint16_t colorEnvAnimDataOff = 0;
@@ -358,14 +352,14 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnimDataOff);
 		Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnimDataOff);
 
-		out.write(reinterpret_cast<char*>(&colorPrmAnimDataOff), sizeof(colorPrmAnimDataOff));
-		out.write(reinterpret_cast<char*>(&colorEnvAnimDataOff), sizeof(colorEnvAnimDataOff));
+		out.write(reinterpret_cast<const char*>(&colorPrmAnimDataOff), sizeof(colorPrmAnimDataOff));
+		out.write(reinterpret_cast<const char*>(&colorEnvAnimDataOff), sizeof(colorEnvAnimDataOff));
 
 		writeVec2(out, baseSize);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, anmRndm);
 
-		out.write(reinterpret_cast<char*>(&anmRndm), sizeof(anmRndm));
+		out.write(reinterpret_cast<const char*>(&anmRndm), sizeof(anmRndm));
 
 
 		uint8_t texIdxAnimCount = texIdxAnimData.size();
@@ -387,27 +381,27 @@ namespace JParticle {
 
 		texFlags = (texFlags & ~0x02) | ((isEnableTexture & 1) << 1);
 
-		out.write(reinterpret_cast<char*>(&blendModeFlags), sizeof(blendModeFlags));
-		out.write(reinterpret_cast<char*>(&alphaCompareFlags), sizeof(alphaCompareFlags));
-		out.write(reinterpret_cast<char*>(&alphaRef0), sizeof(alphaRef0));
-		out.write(reinterpret_cast<char*>(&alphaRef1), sizeof(alphaRef1));
-		out.write(reinterpret_cast<char*>(&zModeFlags), sizeof(zModeFlags));
-		out.write(reinterpret_cast<char*>(&texFlags), sizeof(texFlags));
-		out.write(reinterpret_cast<char*>(&texIdxAnimCount), sizeof(texIdxAnimCount));
-		out.write(reinterpret_cast<char*>(&texIdx), sizeof(texIdx));
-		out.write(reinterpret_cast<char*>(&colorFlags), sizeof(colorFlags));
-		out.write(reinterpret_cast<char*>(&colorPrmAnimDataCount), sizeof(colorPrmAnimDataCount));
-		out.write(reinterpret_cast<char*>(&colorEnvAnimDataCount), sizeof(colorEnvAnimDataCount));
-		out.write(reinterpret_cast<char*>(&colorAnimMaxFrm), sizeof(colorAnimMaxFrm));
+		out.write(reinterpret_cast<const char*>(&blendModeFlags), sizeof(blendModeFlags));
+		out.write(reinterpret_cast<const char*>(&alphaCompareFlags), sizeof(alphaCompareFlags));
+		out.write(reinterpret_cast<const char*>(&alphaRef0), sizeof(alphaRef0));
+		out.write(reinterpret_cast<const char*>(&alphaRef1), sizeof(alphaRef1));
+		out.write(reinterpret_cast<const char*>(&zModeFlags), sizeof(zModeFlags));
+		out.write(reinterpret_cast<const char*>(&texFlags), sizeof(texFlags));
+		out.write(reinterpret_cast<const char*>(&texIdxAnimCount), sizeof(texIdxAnimCount));
+		out.write(reinterpret_cast<const char*>(&texIdx), sizeof(texIdx));
+		out.write(reinterpret_cast<const char*>(&colorFlags), sizeof(colorFlags));
+		out.write(reinterpret_cast<const char*>(&colorPrmAnimDataCount), sizeof(colorPrmAnimDataCount));
+		out.write(reinterpret_cast<const char*>(&colorEnvAnimDataCount), sizeof(colorEnvAnimDataCount));
+		out.write(reinterpret_cast<const char*>(&colorAnimMaxFrm), sizeof(colorAnimMaxFrm));
 
-		writeRGBA8(out, colorPrm);
-		writeRGBA8(out, colorEnv);
+		writeRGBA(out, colorPrm);
+		writeRGBA(out, colorEnv);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, tilingS);
 		Utility::Endian::toPlatform_inplace(eType::Big, tilingT);
 
-		out.write(reinterpret_cast<char*>(&tilingS), sizeof(tilingS));
-		out.write(reinterpret_cast<char*>(&tilingT), sizeof(tilingT));
+		out.write(reinterpret_cast<const char*>(&tilingS), sizeof(tilingS));
+		out.write(reinterpret_cast<const char*>(&tilingT), sizeof(tilingT));
 
 		writeVec2(out, texInitTrans);
 		writeVec2(out, texInitScale);
@@ -416,7 +410,7 @@ namespace JParticle {
 
 		Utility::Endian::toPlatform_inplace(eType::Big, texIncRot);
 
-		out.write(reinterpret_cast<char*>(&texIncRot), sizeof(texIncRot));
+		out.write(reinterpret_cast<const char*>(&texIncRot), sizeof(texIncRot));
 
 		for (const uint8_t& val : texIdxAnimData) {
 			out.write(reinterpret_cast<const char*>(&val), sizeof(val));
@@ -436,19 +430,16 @@ namespace JParticle {
 	}
 
 
-	JPCError ESP1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError ESP1::read(std::istream& jpc) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "ESP1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "ESP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
 		isEnableScale = (flags & 0x00000100) != 0;
@@ -470,31 +461,31 @@ namespace JParticle {
 
 		jpc.seekg(4, std::ios::cur);
 
-		if (!jpc.read(reinterpret_cast<char*>(&alphaInTiming), sizeof(alphaInTiming))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaOutTiming), sizeof(alphaOutTiming))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaInValue), sizeof(alphaInValue))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaBaseValue), sizeof(alphaBaseValue))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaOutValue), sizeof(alphaOutValue))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&alphaInTiming), sizeof(alphaInTiming))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaOutTiming), sizeof(alphaOutTiming))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaInValue), sizeof(alphaInValue))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaBaseValue), sizeof(alphaBaseValue))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaOutValue), sizeof(alphaOutValue))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveParam1), sizeof(alphaWaveParam1))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveParam2), sizeof(alphaWaveParam2))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveParam3), sizeof(alphaWaveParam3))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveRandom), sizeof(alphaWaveRandom))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveParam1), sizeof(alphaWaveParam1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveParam2), sizeof(alphaWaveParam2))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveParam3), sizeof(alphaWaveParam3))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&alphaWaveRandom), sizeof(alphaWaveRandom))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&scaleInTiming), sizeof(scaleInTiming))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scaleOutTiming), sizeof(scaleOutTiming))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scaleInValueX), sizeof(scaleInValueX))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scaleOutValueX), sizeof(scaleOutValueX))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scaleInValueY), sizeof(scaleInValueY))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scaleOutValueY), sizeof(scaleOutValueY))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scaleOutRandom), sizeof(scaleOutRandom))) return JPCError::REACHED_EOF;
-		if (!readVec2(jpc, jpc.tellg(), scaleAnmMaxFrame)) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&scaleInTiming), sizeof(scaleInTiming))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scaleOutTiming), sizeof(scaleOutTiming))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scaleInValueX), sizeof(scaleInValueX))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scaleOutValueX), sizeof(scaleOutValueX))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scaleInValueY), sizeof(scaleInValueY))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scaleOutValueY), sizeof(scaleOutValueY))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scaleOutRandom), sizeof(scaleOutRandom))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readVec2(jpc, jpc.tellg(), scaleAnmMaxFrame)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&rotateAngle), sizeof(rotateAngle))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rotateAngleRandom), sizeof(rotateAngleRandom))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rotateSpeedRandom), sizeof(rotateSpeedRandom))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rotateDirection), sizeof(rotateDirection))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&rotateAngle), sizeof(rotateAngle))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rotateAngleRandom), sizeof(rotateAngleRandom))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rotateSpeedRandom), sizeof(rotateSpeedRandom))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rotateDirection), sizeof(rotateDirection))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, alphaInTiming);
 		Utility::Endian::toPlatform_inplace(eType::Big, alphaOutTiming);
@@ -525,13 +516,11 @@ namespace JParticle {
 	}
 
 	JPCError ESP1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		flags = (flags & ~0x00000100) | ((isEnableScale & 0x1) << 0x8);
 		flags = (flags & ~0x00000200) | ((isDiffXY & 0x1) << 0x9);
@@ -554,9 +543,9 @@ namespace JParticle {
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags));
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
-		out.seekp(4, std::ios::cur);
+		Utility::seek(out, 4, std::ios::cur);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, alphaInTiming);
 		Utility::Endian::toPlatform_inplace(eType::Big, alphaOutTiming);
@@ -583,58 +572,55 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, rotateSpeedRandom);
 		Utility::Endian::toPlatform_inplace(eType::Big, rotateDirection);
 
-		out.write(reinterpret_cast<char*>(&alphaInTiming), sizeof(alphaInTiming));
-		out.write(reinterpret_cast<char*>(&alphaOutTiming), sizeof(alphaOutTiming));
-		out.write(reinterpret_cast<char*>(&alphaInValue), sizeof(alphaInValue));
-		out.write(reinterpret_cast<char*>(&alphaBaseValue), sizeof(alphaBaseValue));
-		out.write(reinterpret_cast<char*>(&alphaOutValue), sizeof(alphaOutValue));
+		out.write(reinterpret_cast<const char*>(&alphaInTiming), sizeof(alphaInTiming));
+		out.write(reinterpret_cast<const char*>(&alphaOutTiming), sizeof(alphaOutTiming));
+		out.write(reinterpret_cast<const char*>(&alphaInValue), sizeof(alphaInValue));
+		out.write(reinterpret_cast<const char*>(&alphaBaseValue), sizeof(alphaBaseValue));
+		out.write(reinterpret_cast<const char*>(&alphaOutValue), sizeof(alphaOutValue));
 
-		out.write(reinterpret_cast<char*>(&alphaWaveParam1), sizeof(alphaWaveParam1));
-		out.write(reinterpret_cast<char*>(&alphaWaveParam2), sizeof(alphaWaveParam2));
-		out.write(reinterpret_cast<char*>(&alphaWaveParam3), sizeof(alphaWaveParam3));
-		out.write(reinterpret_cast<char*>(&alphaWaveRandom), sizeof(alphaWaveRandom));
+		out.write(reinterpret_cast<const char*>(&alphaWaveParam1), sizeof(alphaWaveParam1));
+		out.write(reinterpret_cast<const char*>(&alphaWaveParam2), sizeof(alphaWaveParam2));
+		out.write(reinterpret_cast<const char*>(&alphaWaveParam3), sizeof(alphaWaveParam3));
+		out.write(reinterpret_cast<const char*>(&alphaWaveRandom), sizeof(alphaWaveRandom));
 
-		out.write(reinterpret_cast<char*>(&scaleInTiming), sizeof(scaleInTiming));
-		out.write(reinterpret_cast<char*>(&scaleOutTiming), sizeof(scaleOutTiming));
-		out.write(reinterpret_cast<char*>(&scaleInValueX), sizeof(scaleInValueX));
-		out.write(reinterpret_cast<char*>(&scaleOutValueX), sizeof(scaleOutValueX));
-		out.write(reinterpret_cast<char*>(&scaleInValueY), sizeof(scaleInValueY));
-		out.write(reinterpret_cast<char*>(&scaleOutValueY), sizeof(scaleOutValueY));
-		out.write(reinterpret_cast<char*>(&scaleOutRandom), sizeof(scaleOutRandom));
+		out.write(reinterpret_cast<const char*>(&scaleInTiming), sizeof(scaleInTiming));
+		out.write(reinterpret_cast<const char*>(&scaleOutTiming), sizeof(scaleOutTiming));
+		out.write(reinterpret_cast<const char*>(&scaleInValueX), sizeof(scaleInValueX));
+		out.write(reinterpret_cast<const char*>(&scaleOutValueX), sizeof(scaleOutValueX));
+		out.write(reinterpret_cast<const char*>(&scaleInValueY), sizeof(scaleInValueY));
+		out.write(reinterpret_cast<const char*>(&scaleOutValueY), sizeof(scaleOutValueY));
+		out.write(reinterpret_cast<const char*>(&scaleOutRandom), sizeof(scaleOutRandom));
 		writeVec2(out, scaleAnmMaxFrame);
 
-		out.write(reinterpret_cast<char*>(&rotateAngle), sizeof(rotateAngle));
-		out.write(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed));
-		out.write(reinterpret_cast<char*>(&rotateAngleRandom), sizeof(rotateAngleRandom));
-		out.write(reinterpret_cast<char*>(&rotateSpeedRandom), sizeof(rotateSpeedRandom));
-		out.write(reinterpret_cast<char*>(&rotateDirection), sizeof(rotateDirection));
+		out.write(reinterpret_cast<const char*>(&rotateAngle), sizeof(rotateAngle));
+		out.write(reinterpret_cast<const char*>(&rotateSpeed), sizeof(rotateSpeed));
+		out.write(reinterpret_cast<const char*>(&rotateAngleRandom), sizeof(rotateAngleRandom));
+		out.write(reinterpret_cast<const char*>(&rotateSpeedRandom), sizeof(rotateSpeedRandom));
+		out.write(reinterpret_cast<const char*>(&rotateDirection), sizeof(rotateDirection));
 
 		return JPCError::NONE;
 	}
 
 
-	JPCError ETX1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError ETX1::read(std::istream& jpc) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "ETX1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "ETX1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-		if (!jpc.read(reinterpret_cast<char*>(&p00), sizeof(p00))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&p01), sizeof(p01))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&p02), sizeof(p02))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&p10), sizeof(p10))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&p11), sizeof(p11))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&p12), sizeof(p12))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&scale), sizeof(scale))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&p00), sizeof(p00))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&p01), sizeof(p01))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&p02), sizeof(p02))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&p10), sizeof(p10))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&p11), sizeof(p11))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&p12), sizeof(p12))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&scale), sizeof(scale))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, p00);
 		Utility::Endian::toPlatform_inplace(eType::Big, p01);
@@ -645,9 +631,9 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, scale);
 
 		indTextureMode = static_cast<IndTextureMode>(flags & 0x03);
-		if (!jpc.read(reinterpret_cast<char*>(&indTextureID), sizeof(indTextureID))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&subTextureID), sizeof(subTextureID))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&secondTextureIndex), sizeof(secondTextureIndex))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&indTextureID), sizeof(indTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&subTextureID), sizeof(subTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&secondTextureIndex), sizeof(secondTextureIndex))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		useSecondTex = (flags & 0x00000100) != 0;
 
@@ -655,20 +641,18 @@ namespace JParticle {
 	}
 
 	JPCError ETX1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		flags = (flags & ~0x00000003) | (static_cast<uint8_t>(indTextureMode) & 0x00000003);
 		flags = (flags & ~0x00000100) | ((useSecondTex & 0x1) << 8);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags));
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
 		Utility::Endian::toPlatform_inplace(eType::Big, p00);
 		Utility::Endian::toPlatform_inplace(eType::Big, p01);
@@ -678,36 +662,33 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, p12);
 		Utility::Endian::toPlatform_inplace(eType::Big, scale);
 
-		out.write(reinterpret_cast<char*>(&p00), sizeof(p00));
-		out.write(reinterpret_cast<char*>(&p01), sizeof(p01));
-		out.write(reinterpret_cast<char*>(&p02), sizeof(p02));
-		out.write(reinterpret_cast<char*>(&p10), sizeof(p10));
-		out.write(reinterpret_cast<char*>(&p11), sizeof(p11));
-		out.write(reinterpret_cast<char*>(&p12), sizeof(p12));
-		out.write(reinterpret_cast<char*>(&scale), sizeof(scale));
+		out.write(reinterpret_cast<const char*>(&p00), sizeof(p00));
+		out.write(reinterpret_cast<const char*>(&p01), sizeof(p01));
+		out.write(reinterpret_cast<const char*>(&p02), sizeof(p02));
+		out.write(reinterpret_cast<const char*>(&p10), sizeof(p10));
+		out.write(reinterpret_cast<const char*>(&p11), sizeof(p11));
+		out.write(reinterpret_cast<const char*>(&p12), sizeof(p12));
+		out.write(reinterpret_cast<const char*>(&scale), sizeof(scale));
 
-		out.write(reinterpret_cast<char*>(&indTextureID), sizeof(indTextureID));
-		out.write(reinterpret_cast<char*>(&subTextureID), sizeof(subTextureID));
+		out.write(reinterpret_cast<const char*>(&indTextureID), sizeof(indTextureID));
+		out.write(reinterpret_cast<const char*>(&subTextureID), sizeof(subTextureID));
 
-		out.write(reinterpret_cast<char*>(&secondTextureIndex), sizeof(secondTextureIndex));
+		out.write(reinterpret_cast<const char*>(&secondTextureIndex), sizeof(secondTextureIndex));
 
 		return JPCError::NONE;
 	}
 
 
-	JPCError SSP1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError SSP1::read(std::istream& jpc) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "SSP1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "SSP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
 		shapeType = static_cast<ShapeType>(flags & 0xF);
@@ -720,19 +701,19 @@ namespace JParticle {
 
 		isDrawParent = (flags & 0x00080000) != 0;
 
-		if (!jpc.read(reinterpret_cast<char*>(&posRndm), sizeof(posRndm))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&baseVel), sizeof(baseVel))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&baseVelRndm), sizeof(baseVelRndm))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&velInfRate), sizeof(velInfRate))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&gravity), sizeof(gravity))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&timing), sizeof(timing))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&life), sizeof(life))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&rate), sizeof(rate))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&step), sizeof(step))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&posRndm), sizeof(posRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&baseVel), sizeof(baseVel))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&baseVelRndm), sizeof(baseVelRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&velInfRate), sizeof(velInfRate))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&gravity), sizeof(gravity))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&timing), sizeof(timing))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&life), sizeof(life))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&rate), sizeof(rate))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&step), sizeof(step))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!readVec2(jpc, jpc.tellg(), globalScale2D)) return JPCError::REACHED_EOF;
+		if (!readVec2(jpc, jpc.tellg(), globalScale2D)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		isEnableRotate = (flags & 0x01000000) != 0;
 		isEnableAlphaOut = (flags & 0x00800000) != 0;
@@ -742,12 +723,12 @@ namespace JParticle {
 		isInheritedAlpha = (flags & 0x00020000) != 0;
 		isInheritedScale = (flags & 0x00010000) != 0;
 
-		if (!jpc.read(reinterpret_cast<char*>(&inheritScale), sizeof(inheritScale))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&inheritAlpha), sizeof(inheritAlpha))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&inheritRGB), sizeof(inheritRGB))) return JPCError::REACHED_EOF;
-		if (!readRGBA8(jpc, jpc.tellg(), colorPrm)) return JPCError::REACHED_EOF;
-		if (!readRGBA8(jpc, jpc.tellg(), colorEnv)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&texIdx), sizeof(texIdx))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&inheritScale), sizeof(inheritScale))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&inheritAlpha), sizeof(inheritAlpha))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&inheritRGB), sizeof(inheritRGB))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readRGBA(jpc, jpc.tellg(), colorPrm)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!readRGBA(jpc, jpc.tellg(), colorEnv)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&texIdx), sizeof(texIdx))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, posRndm);
 		Utility::Endian::toPlatform_inplace(eType::Big, baseVel);
@@ -767,13 +748,11 @@ namespace JParticle {
 	}
 
 	JPCError SSP1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		flags = (flags & ~0x01000000) | ((isEnableRotate & 0x1) << 0x18);
 		flags = (flags & ~0x00800000) | ((isEnableAlphaOut & 0x1) << 0x17);
@@ -792,7 +771,7 @@ namespace JParticle {
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags));
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
 		Utility::Endian::toPlatform_inplace(eType::Big, posRndm);
 		Utility::Endian::toPlatform_inplace(eType::Big, baseVel);
@@ -808,67 +787,64 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, inheritAlpha);
 		Utility::Endian::toPlatform_inplace(eType::Big, inheritRGB);
 
-		out.write(reinterpret_cast<char*>(&posRndm), sizeof(posRndm));
-		out.write(reinterpret_cast<char*>(&baseVel), sizeof(baseVel));
-		out.write(reinterpret_cast<char*>(&baseVelRndm), sizeof(baseVelRndm));
-		out.write(reinterpret_cast<char*>(&velInfRate), sizeof(velInfRate));
-		out.write(reinterpret_cast<char*>(&gravity), sizeof(gravity));
-		out.write(reinterpret_cast<char*>(&timing), sizeof(timing));
-		out.write(reinterpret_cast<char*>(&life), sizeof(life));
-		out.write(reinterpret_cast<char*>(&rate), sizeof(rate));
-		out.write(reinterpret_cast<char*>(&step), sizeof(step));
+		out.write(reinterpret_cast<const char*>(&posRndm), sizeof(posRndm));
+		out.write(reinterpret_cast<const char*>(&baseVel), sizeof(baseVel));
+		out.write(reinterpret_cast<const char*>(&baseVelRndm), sizeof(baseVelRndm));
+		out.write(reinterpret_cast<const char*>(&velInfRate), sizeof(velInfRate));
+		out.write(reinterpret_cast<const char*>(&gravity), sizeof(gravity));
+		out.write(reinterpret_cast<const char*>(&timing), sizeof(timing));
+		out.write(reinterpret_cast<const char*>(&life), sizeof(life));
+		out.write(reinterpret_cast<const char*>(&rate), sizeof(rate));
+		out.write(reinterpret_cast<const char*>(&step), sizeof(step));
 
 		writeVec2(out, globalScale2D);
 
-		out.write(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed));
+		out.write(reinterpret_cast<const char*>(&rotateSpeed), sizeof(rotateSpeed));
 
-		out.write(reinterpret_cast<char*>(&inheritScale), sizeof(inheritScale));
-		out.write(reinterpret_cast<char*>(&inheritAlpha), sizeof(inheritAlpha));
-		out.write(reinterpret_cast<char*>(&inheritRGB), sizeof(inheritRGB));
-		writeRGBA8(out, colorPrm);
-		writeRGBA8(out, colorEnv);
-		out.write(reinterpret_cast<char*>(&texIdx), sizeof(texIdx));
+		out.write(reinterpret_cast<const char*>(&inheritScale), sizeof(inheritScale));
+		out.write(reinterpret_cast<const char*>(&inheritAlpha), sizeof(inheritAlpha));
+		out.write(reinterpret_cast<const char*>(&inheritRGB), sizeof(inheritRGB));
+		writeRGBA(out, colorPrm);
+		writeRGBA(out, colorEnv);
+		out.write(reinterpret_cast<const char*>(&texIdx), sizeof(texIdx));
 
 		return JPCError::NONE;
 	}
 
 
-	JPCError FLD1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError FLD1::read(std::istream& jpc) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "FLD1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "FLD1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
 		statusFlag = static_cast<FieldStatusFlag>(flags >> 0x10);
 		type = static_cast<FieldType>(flags & 0xF);
 		addType = static_cast<FieldAddType>((flags >> 8) & 0x03);
 
-		if (!jpc.read(reinterpret_cast<char*>(&mag), sizeof(mag))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&magRndm), sizeof(magRndm))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&maxDist), sizeof(maxDist))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&mag), sizeof(mag))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&magRndm), sizeof(magRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&maxDist), sizeof(maxDist))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!readVec3(jpc, jpc.tellg(), pos)) return JPCError::REACHED_EOF;
+		if (!readVec3(jpc, jpc.tellg(), pos)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!readVec3(jpc, jpc.tellg(), dir)) return JPCError::REACHED_EOF;
+		if (!readVec3(jpc, jpc.tellg(), dir)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&param1), sizeof(param1))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&param2), sizeof(param2))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&param3), sizeof(param3))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&fadeIn), sizeof(fadeIn))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&fadeOut), sizeof(fadeOut))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&enTime), sizeof(enTime))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&disTime), sizeof(disTime))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&cycle), sizeof(cycle))) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&param1), sizeof(param1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&param2), sizeof(param2))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&param3), sizeof(param3))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&fadeIn), sizeof(fadeIn))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&fadeOut), sizeof(fadeOut))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&enTime), sizeof(enTime))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&disTime), sizeof(disTime))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&cycle), sizeof(cycle))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, mag);
 		Utility::Endian::toPlatform_inplace(eType::Big, magRndm);
@@ -906,13 +882,11 @@ namespace JParticle {
 	}
 
 	JPCError FLD1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		flags = (flags & ~0x00FF0000) | (static_cast<uint8_t>(statusFlag) << 0x10);
 		flags = (flags & ~0x00000300) | ((static_cast<uint8_t>(addType) & 0x3) << 0x8);
@@ -920,7 +894,7 @@ namespace JParticle {
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags));
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
 		Utility::Endian::toPlatform_inplace(eType::Big, mag);
 		Utility::Endian::toPlatform_inplace(eType::Big, magRndm);
@@ -933,56 +907,53 @@ namespace JParticle {
 		Utility::Endian::toPlatform_inplace(eType::Big, enTime);
 		Utility::Endian::toPlatform_inplace(eType::Big, disTime);
 
-		out.write(reinterpret_cast<char*>(&mag), sizeof(mag));
-		out.write(reinterpret_cast<char*>(&magRndm), sizeof(magRndm));
-		out.write(reinterpret_cast<char*>(&maxDist), sizeof(maxDist));
+		out.write(reinterpret_cast<const char*>(&mag), sizeof(mag));
+		out.write(reinterpret_cast<const char*>(&magRndm), sizeof(magRndm));
+		out.write(reinterpret_cast<const char*>(&maxDist), sizeof(maxDist));
 
 		writeVec3(out, pos);
 		writeVec3(out, dir);
 
-		out.write(reinterpret_cast<char*>(&param1), sizeof(param1));
-		out.write(reinterpret_cast<char*>(&param2), sizeof(param2));
-		out.write(reinterpret_cast<char*>(&param3), sizeof(param3));
-		out.write(reinterpret_cast<char*>(&fadeIn), sizeof(fadeIn));
-		out.write(reinterpret_cast<char*>(&fadeOut), sizeof(fadeOut));
-		out.write(reinterpret_cast<char*>(&enTime), sizeof(enTime));
-		out.write(reinterpret_cast<char*>(&disTime), sizeof(disTime));
-		out.write(reinterpret_cast<char*>(&cycle), sizeof(cycle));
-		out.write(reinterpret_cast<char*>(&unk1), sizeof(unk1));
+		out.write(reinterpret_cast<const char*>(&param1), sizeof(param1));
+		out.write(reinterpret_cast<const char*>(&param2), sizeof(param2));
+		out.write(reinterpret_cast<const char*>(&param3), sizeof(param3));
+		out.write(reinterpret_cast<const char*>(&fadeIn), sizeof(fadeIn));
+		out.write(reinterpret_cast<const char*>(&fadeOut), sizeof(fadeOut));
+		out.write(reinterpret_cast<const char*>(&enTime), sizeof(enTime));
+		out.write(reinterpret_cast<const char*>(&disTime), sizeof(disTime));
+		out.write(reinterpret_cast<const char*>(&cycle), sizeof(cycle));
+		out.write(reinterpret_cast<const char*>(&unk1), sizeof(unk1));
 
 		return JPCError::NONE;
 	}
 
 
-	JPCError KFA1::read(std::istream& jpc, const unsigned int offset) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError KFA1::read(std::istream& jpc) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "KFA1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "KFA1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
-		if (!jpc.read(reinterpret_cast<char*>(&keyType), sizeof(keyType))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&keyType), sizeof(keyType))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(3, std::ios::cur);
 		uint8_t keyCount;
-		if (!jpc.read(reinterpret_cast<char*>(&keyCount), sizeof(keyCount))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&keyCount), sizeof(keyCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-		if (!jpc.read(reinterpret_cast<char*>(&isLoopEnable), 1)) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&isLoopEnable), 1)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		isLoopEnable = isLoopEnable != 0;
 
-		if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) return JPCError::REACHED_EOF;
+		if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 		jpc.seekg(0xD, std::ios::cur);
 		for (uint8_t i = 0; i < keyCount; i++) {
 			CurveKeyframe& keyframe = keys.emplace_back();
-			if (!jpc.read(reinterpret_cast<char*>(&keyframe.time), sizeof(keyframe.time))) return JPCError::REACHED_EOF;
-			if (!jpc.read(reinterpret_cast<char*>(&keyframe.value), sizeof(keyframe.value))) return JPCError::REACHED_EOF;
-			if (!jpc.read(reinterpret_cast<char*>(&keyframe.tanIn), sizeof(keyframe.tanIn))) return JPCError::REACHED_EOF;
-			if (!jpc.read(reinterpret_cast<char*>(&keyframe.tanOut), sizeof(keyframe.tanOut))) return JPCError::REACHED_EOF;
+			if (!jpc.read(reinterpret_cast<char*>(&keyframe.time), sizeof(keyframe.time))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+			if (!jpc.read(reinterpret_cast<char*>(&keyframe.value), sizeof(keyframe.value))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+			if (!jpc.read(reinterpret_cast<char*>(&keyframe.tanIn), sizeof(keyframe.tanIn))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+			if (!jpc.read(reinterpret_cast<char*>(&keyframe.tanOut), sizeof(keyframe.tanOut))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
 			Utility::Endian::toPlatform_inplace(eType::Big, keyframe.time);
 			Utility::Endian::toPlatform_inplace(eType::Big, keyframe.value);
@@ -994,54 +965,49 @@ namespace JParticle {
 	}
 
 	JPCError KFA1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
-		out.write(reinterpret_cast<char*>(&keyType), sizeof(keyType));
-		out.seekp(3, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&keyType), sizeof(keyType));
+		Utility::seek(out, 3, std::ios::cur);
 		uint8_t keyCount = keys.size();
-		out.write(reinterpret_cast<char*>(&keyCount), sizeof(keyCount));
+		out.write(reinterpret_cast<const char*>(&keyCount), sizeof(keyCount));
 
-		out.write(reinterpret_cast<char*>(&isLoopEnable), 1);
-		out.write(reinterpret_cast<char*>(&unk1), sizeof(unk1));
+		out.write(reinterpret_cast<const char*>(&isLoopEnable), 1);
+		out.write(reinterpret_cast<const char*>(&unk1), sizeof(unk1));
 
-		out.seekp(0xD, std::ios::cur);
+		Utility::seek(out, 0xD, std::ios::cur);
 		for (CurveKeyframe& keyframe : keys) {
 			Utility::Endian::toPlatform_inplace(eType::Big, keyframe.time);
 			Utility::Endian::toPlatform_inplace(eType::Big, keyframe.value);
 			Utility::Endian::toPlatform_inplace(eType::Big, keyframe.tanIn);
 			Utility::Endian::toPlatform_inplace(eType::Big, keyframe.tanOut);
 
-			out.write(reinterpret_cast<char*>(&keyframe.time), sizeof(keyframe.time));
-			out.write(reinterpret_cast<char*>(&keyframe.value), sizeof(keyframe.value));
-			out.write(reinterpret_cast<char*>(&keyframe.tanIn), sizeof(keyframe.tanIn));
-			out.write(reinterpret_cast<char*>(&keyframe.tanOut), sizeof(keyframe.tanOut));
+			out.write(reinterpret_cast<const char*>(&keyframe.time), sizeof(keyframe.time));
+			out.write(reinterpret_cast<const char*>(&keyframe.value), sizeof(keyframe.value));
+			out.write(reinterpret_cast<const char*>(&keyframe.tanIn), sizeof(keyframe.tanIn));
+			out.write(reinterpret_cast<const char*>(&keyframe.tanOut), sizeof(keyframe.tanOut));
 		}
 
 		return JPCError::NONE;
 	}
 
 
-	JPCError TDB1::read(std::istream& jpc, const unsigned int offset, const uint8_t texCount) {
-		this->offset = offset;
-		jpc.seekg(offset, std::ios::beg);
-
-		if (!jpc.read(magic, 4)) return JPCError::REACHED_EOF;
-		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) return JPCError::REACHED_EOF;
+	JPCError TDB1::read(std::istream& jpc, const uint8_t texCount) {
+		if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+		if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		jpc.seekg(4, std::ios::cur);
 
-		if (std::strncmp(magic, "TDB1", 4) != 0) return JPCError::UNKNOWN_CHUNK;
+		if (std::strncmp(magic, "TDB1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		for (uint8_t i = 0; i < texCount; i++) {
 			uint16_t& index = texIDs.emplace_back();
-			if (!jpc.read(reinterpret_cast<char*>(&index), sizeof(index))) return JPCError::REACHED_EOF;
+			if (!jpc.read(reinterpret_cast<char*>(&index), sizeof(index))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 			Utility::Endian::toPlatform_inplace(eType::Big, index);
 		}
 
@@ -1050,7 +1016,7 @@ namespace JParticle {
 
 	JPCError TDB1::populateFilenames(const std::vector<std::string>& texList) {
 		for (const uint16_t& id : texIDs) {
-			if (id > texList.size() - 1) return JPCError::MISSING_TEXTURE;
+			if (id > texList.size() - 1) LOG_ERR_AND_RETURN(JPCError::MISSING_TEXTURE);
 
 			texFilenames.push_back(texList[id]);
 		}
@@ -1059,18 +1025,16 @@ namespace JParticle {
 	}
 
 	JPCError TDB1::save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
-		out.seekp(4, std::ios::cur);
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+		Utility::seek(out, 4, std::ios::cur);
 
 		texIDs.clear();
 		texIDs.reserve(texFilenames.size());
 		for (const std::string& filename : texFilenames) {
-			if (textures.count(filename) == 0) return JPCError::MISSING_TEXTURE;
+			if (textures.count(filename) == 0) LOG_ERR_AND_RETURN(JPCError::MISSING_TEXTURE);
 
 			texIDs.push_back(textures.at(filename));
 		}
@@ -1078,47 +1042,46 @@ namespace JParticle {
 		for (uint16_t& id : texIDs) {
 			Utility::Endian::toPlatform_inplace(eType::Big, id);
 
-			out.write(reinterpret_cast<char*>(&id), sizeof(id));
+			out.write(reinterpret_cast<const char*>(&id), sizeof(id));
 		}
 
 		return JPCError::NONE;
 	}
 }
 
-JPCError Particle::read(std::istream& jpc, unsigned int particle_offset) {
-	jpc.seekg(particle_offset, std::ios::beg);
+JPCError Particle::read(std::istream& jpc) {
 	if (!jpc.read(magicJEFF, 8)) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (std::strncmp(magicJEFF, "JEFFjpa1", 8) != 0) {
-		return JPCError::UNEXPECTED_VALUE;
+		LOG_ERR_AND_RETURN(JPCError::UNEXPECTED_VALUE);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&unknown_1), sizeof(unknown_1))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&num_chunks), sizeof(num_chunks))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&size), sizeof(size))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&num_kfa1_chunks), sizeof(num_kfa1_chunks))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&num_fld1_chunks), sizeof(num_fld1_chunks))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&num_textures), sizeof(num_textures))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&unknown_5), sizeof(unknown_5))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&particle_id), sizeof(particle_id))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 	if (!jpc.read(reinterpret_cast<char*>(&unknown_6), sizeof(unknown_6))) {
-		return JPCError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 	}
 
 	Utility::Endian::toPlatform_inplace(eType::Big, unknown_1);
@@ -1135,52 +1098,52 @@ JPCError Particle::read(std::istream& jpc, unsigned int particle_offset) {
 		jpc.seekg(numPaddingBytes, std::ios::cur);
 
 		if (!jpc.read(magic, 4)) {
-			return JPCError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
 		jpc.seekg(-4, std::ios::cur);
 
 		if (std::strncmp(magic, "BEM1", 4) == 0) {
-			if (emitter.has_value()) return JPCError::DUPLICATE_CHUNK;
-			if (JPCError err = emitter.emplace().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			if (emitter.has_value()) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+			LOG_AND_RETURN_IF_ERR(emitter.emplace().read(jpc));
 		}
 		else if (std::strncmp(magic, "BSP1", 4) == 0) {
-			if (baseShape.has_value()) return JPCError::DUPLICATE_CHUNK;
-			if (JPCError err = baseShape.emplace().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			if (baseShape.has_value()) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+			LOG_AND_RETURN_IF_ERR(baseShape.emplace().read(jpc));
 		}
 		else if (std::strncmp(magic, "ESP1", 4) == 0) {
-			if (extraShape.has_value()) return JPCError::DUPLICATE_CHUNK;
-			if (JPCError err = extraShape.emplace().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			if (extraShape.has_value()) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+			LOG_AND_RETURN_IF_ERR(extraShape.emplace().read(jpc));
 		}
 		else if (std::strncmp(magic, "ETX1", 4) == 0) {
-			if (extraTex.has_value()) return JPCError::DUPLICATE_CHUNK;
-			if (JPCError err = extraTex.emplace().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			if (extraTex.has_value()) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+			LOG_AND_RETURN_IF_ERR(extraTex.emplace().read(jpc))
 		}
 		else if (std::strncmp(magic, "SSP1", 4) == 0) {
-			if (childShape.has_value()) return JPCError::DUPLICATE_CHUNK;
-			if (JPCError err = childShape.emplace().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			if (childShape.has_value()) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+			LOG_AND_RETURN_IF_ERR(childShape.emplace().read(jpc));
 		}
 		else if (std::strncmp(magic, "FLD1", 4) == 0) {
-			if (JPCError err = fields.emplace_back().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			LOG_AND_RETURN_IF_ERR(fields.emplace_back().read(jpc));
 		}
 		else if (std::strncmp(magic, "KFA1", 4) == 0) {
-			if (JPCError err = curves.emplace_back().read(jpc, jpc.tellg()); err != JPCError::NONE) return err;
+			LOG_AND_RETURN_IF_ERR(curves.emplace_back().read(jpc));
 		}
 		else if (std::strncmp(magic, "TDB1", 4) == 0) {
-			if (texDatabase.has_value()) return JPCError::DUPLICATE_CHUNK;
-			if (JPCError err = texDatabase.emplace().read(jpc, jpc.tellg(), num_textures); err != JPCError::NONE) return err;
+			if (texDatabase.has_value()) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+			LOG_AND_RETURN_IF_ERR(texDatabase.emplace().read(jpc, num_textures));
 		}
 		else {
-			return JPCError::UNKNOWN_CHUNK;
+			LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 		}
 	}
 
-	if (!emitter.has_value()) return JPCError::MISSING_CHUNK;
-	if (!baseShape.has_value()) return JPCError::MISSING_CHUNK;
-	if (!texDatabase.has_value()) return JPCError::MISSING_CHUNK;
-	if (fields.size() > num_fld1_chunks) return JPCError::DUPLICATE_CHUNK;
-	if (fields.size() < num_fld1_chunks) return JPCError::MISSING_CHUNK;
-	if (curves.size() > num_kfa1_chunks) return JPCError::DUPLICATE_CHUNK;
-	if (curves.size() < num_kfa1_chunks) return JPCError::MISSING_CHUNK;
+	if (!emitter.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
+	if (!baseShape.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
+	if (!texDatabase.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
+	if (fields.size() > num_fld1_chunks) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+	if (fields.size() < num_fld1_chunks) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
+	if (curves.size() > num_kfa1_chunks) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_CHUNK);
+	if (curves.size() < num_kfa1_chunks) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 
 	return JPCError::NONE;
 }
@@ -1189,14 +1152,14 @@ JPCError Particle::save_changes(std::ostream& out, const std::unordered_map<std:
 	out.write(magicJEFF, 8);
 
 	num_chunks = 3;
-	if (!emitter.has_value()) return JPCError::MISSING_CHUNK;
-	if (!baseShape.has_value()) return JPCError::MISSING_CHUNK;
+	if (!emitter.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
+	if (!baseShape.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 	if (extraShape.has_value()) num_chunks += 1;
 	if (extraTex.has_value()) num_chunks += 1;
 	if (childShape.has_value()) num_chunks += 1;
 	num_chunks += fields.size();
 	num_chunks += curves.size();
-	if (!texDatabase.has_value()) return JPCError::MISSING_CHUNK;
+	if (!texDatabase.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 
 	num_kfa1_chunks = curves.size();
 	num_fld1_chunks = fields.size();
@@ -1208,50 +1171,50 @@ JPCError Particle::save_changes(std::ostream& out, const std::unordered_map<std:
 	Utility::Endian::toPlatform_inplace(eType::Big, size); //not always accurate, shouldnt need to update?
 	Utility::Endian::toPlatform_inplace(eType::Big, particle_id);
 
-	out.write(reinterpret_cast<char*>(&unknown_1), sizeof(unknown_1));
-	out.write(reinterpret_cast<char*>(&num_chunks), sizeof(num_chunks));
-	out.write(reinterpret_cast<char*>(&size), sizeof(size));
-	out.write(reinterpret_cast<char*>(&num_kfa1_chunks), sizeof(num_kfa1_chunks));
-	out.write(reinterpret_cast<char*>(&num_fld1_chunks), sizeof(num_fld1_chunks));
-	out.write(reinterpret_cast<char*>(&num_textures), sizeof(num_textures));
-	out.write(reinterpret_cast<char*>(&unknown_5), sizeof(unknown_5));
-	out.write(reinterpret_cast<char*>(&particle_id), sizeof(particle_id));
-	out.write(reinterpret_cast<char*>(&unknown_6), sizeof(unknown_6));
+	out.write(reinterpret_cast<const char*>(&unknown_1), sizeof(unknown_1));
+	out.write(reinterpret_cast<const char*>(&num_chunks), sizeof(num_chunks));
+	out.write(reinterpret_cast<const char*>(&size), sizeof(size));
+	out.write(reinterpret_cast<const char*>(&num_kfa1_chunks), sizeof(num_kfa1_chunks));
+	out.write(reinterpret_cast<const char*>(&num_fld1_chunks), sizeof(num_fld1_chunks));
+	out.write(reinterpret_cast<const char*>(&num_textures), sizeof(num_textures));
+	out.write(reinterpret_cast<const char*>(&unknown_5), sizeof(unknown_5));
+	out.write(reinterpret_cast<const char*>(&particle_id), sizeof(particle_id));
+	out.write(reinterpret_cast<const char*>(&unknown_6), sizeof(unknown_6));
 
 	//bem -> fld -> kfa -> bsp -> esp -> ssp -> etx -> tdb
 	if (emitter.has_value()) {
-		if (JPCError err = emitter.value().save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(emitter.value().save_changes(out));
 		padToLen(out, 0x20);
 	}
 
 	for (JParticle::FLD1& field : fields) {
-		if (JPCError err = field.save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(field.save_changes(out));
 		padToLen(out, 0x20);
 	}
 
 	for (JParticle::KFA1& curve : curves) {
-		if (JPCError err = curve.save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(curve.save_changes(out));
 		padToLen(out, 0x20);
 	}
 
 	if (baseShape.has_value()) {
-		if (JPCError err = baseShape.value().save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(baseShape.value().save_changes(out));
 		padToLen(out, 0x20);
 	}
 	if (extraShape.has_value()) {
-		if (JPCError err = extraShape.value().save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(extraShape.value().save_changes(out));
 		padToLen(out, 0x20);
 	}
 	if (childShape.has_value()) {
-		if (JPCError err = childShape.value().save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(childShape.value().save_changes(out));
 		padToLen(out, 0x20);
 	}
 	if (extraTex.has_value()) {
-		if (JPCError err = extraTex.value().save_changes(out); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(extraTex.value().save_changes(out));
 		padToLen(out, 0x20);
 	}
 	if (texDatabase.has_value()) {
-		if (JPCError err = texDatabase.value().save_changes(out, textures); err != JPCError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(texDatabase.value().save_changes(out, textures));
 		padToLen(out, 0x20);
 	}
 
@@ -1313,18 +1276,17 @@ namespace FileTypes {
 	}
 
 	JPCError JPC::loadFromBinary(std::istream& jpc) {
-		JPCError err = JPCError::NONE;
 		if (!jpc.read(magicJPAC, 8)) {
-			return JPCError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
 		if (std::strncmp(magicJPAC, "JPAC1-00", 8) != 0) {
-			return JPCError::NOT_JPC;
+			LOG_ERR_AND_RETURN(JPCError::NOT_JPC);
 		}
 		if (!jpc.read(reinterpret_cast<char*>(&num_particles), sizeof(num_particles))) {
-			return JPCError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
 		if (!jpc.read(reinterpret_cast<char*>(&num_textures), sizeof(num_textures))) {
-			return JPCError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
 		Utility::Endian::toPlatform_inplace(eType::Big, num_particles);
 		Utility::Endian::toPlatform_inplace(eType::Big, num_textures);
@@ -1333,8 +1295,7 @@ namespace FileTypes {
 
 		for (uint16_t i = 0; i < num_particles; i++) {
 			Particle& particle = particles.emplace_back();
-			if (err = particle.read(jpc, jpc.tellg()); err != JPCError::NONE) 
-				return err;
+			LOG_AND_RETURN_IF_ERR(particle.read(jpc));
 
 			particle_index_by_id[particle.particle_id] = i;
 
@@ -1349,16 +1310,16 @@ namespace FileTypes {
 		std::vector<std::string> texFilenames;
 		for (uint16_t i = 0; i < num_textures; i++) {
 			if (!jpc.read(magic, 4)) {
-				return JPCError::REACHED_EOF;
+				LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 			}
 			if (std::strncmp(magic, "TEX1", 4) != 0) {
-				return JPCError::UNKNOWN_CHUNK;
+				LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 			}
 
 			jpc.seekg(8, std::ios::cur); //ignore section size, its not accurate anyway, also skip 4 unused bytes
 			std::string filename(0x14, '\0');
 			if (!jpc.read(&filename[0], 0x14)) {
-				return JPCError::REACHED_EOF;
+				LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 			}
 
 			texFilenames.push_back(filename);
@@ -1366,9 +1327,9 @@ namespace FileTypes {
 		}
 
 		for (Particle& particle : particles) {
-			if(!particle.texDatabase.has_value()) return JPCError::MISSING_CHUNK;
+			if(!particle.texDatabase.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 
-			if (err = particle.texDatabase.value().populateFilenames(texFilenames); err != JPCError::NONE) return err;
+			LOG_AND_RETURN_IF_ERR(particle.texDatabase.value().populateFilenames(texFilenames));
 		}
 
 		return JPCError::NONE;
@@ -1377,13 +1338,13 @@ namespace FileTypes {
 	JPCError JPC::loadFromFile(const std::string& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
-			return JPCError::COULD_NOT_OPEN;
+			LOG_ERR_AND_RETURN(JPCError::COULD_NOT_OPEN);
 		}
 		return loadFromBinary(file);
 	}
 
 	JPCError JPC::addParticle(const Particle& particle) {
-		if (particle_index_by_id.count(particle.particle_id) > 0) return JPCError::DUPLICATE_PARTICLE_ID;
+		if (particle_index_by_id.count(particle.particle_id) > 0) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_PARTICLE_ID);
 
 		particle_index_by_id[particle.particle_id] = particles.size();
 		particles.push_back(particle);
@@ -1392,7 +1353,7 @@ namespace FileTypes {
 	}
 
 	JPCError JPC::replaceParticle(const Particle& particle) {
-		if (particle_index_by_id.count(particle.particle_id) == 0) return JPCError::MISSING_PARTICLE;
+		if (particle_index_by_id.count(particle.particle_id) == 0) LOG_ERR_AND_RETURN(JPCError::MISSING_PARTICLE);
 
 		particles[particle_index_by_id[particle.particle_id]] = particle;
 
@@ -1401,16 +1362,15 @@ namespace FileTypes {
 
 	JPCError JPC::addTexture(const std::string& filename) {
 		std::string filenamePad = filename;
-		filenamePad.resize(0x18, '\0');
-		if (textures.count(filenamePad) > 0) return JPCError::DUPLICATE_FILENAME;
+		filenamePad.resize(0x14, '\0');
+		if (textures.count(filenamePad) > 0) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_FILENAME);
 
-		size_t nextIndex = textures.size();
+		const size_t nextIndex = textures.size();
 		textures[filenamePad] = nextIndex;
 		return JPCError::NONE;
 	}
 
 	JPCError JPC::writeToStream(std::ostream& out) {
-		JPCError err = JPCError::NONE;
 		out.write(magicJPAC, 8);
 
 		num_particles = particles.size();
@@ -1419,19 +1379,19 @@ namespace FileTypes {
 		Utility::Endian::toPlatform_inplace(eType::Big, num_particles);
 		Utility::Endian::toPlatform_inplace(eType::Big, num_textures);
 
-		out.write(reinterpret_cast<char*>(&num_particles), sizeof(num_particles));
-		out.write(reinterpret_cast<char*>(&num_textures), sizeof(num_textures));
+		out.write(reinterpret_cast<const char*>(&num_particles), sizeof(num_particles));
+		out.write(reinterpret_cast<const char*>(&num_textures), sizeof(num_textures));
 
 		out.seekp(0x20, std::ios::beg);
 
 		for (Particle& particle : particles) {
-			if (err = particle.save_changes(out, textures); err != JPCError::NONE) return err;
+			LOG_AND_RETURN_IF_ERR(particle.save_changes(out, textures));
 			padToLen(out, 0x20);
 		}
 
 		std::streamoff texStart = out.tellp(); //some stuff to preserve original order
 		for (const auto& [filename, index] : textures) {
-			out.seekp(texStart + (index * 0x20), std::ios::beg); //some stuff to preserve original order
+			Utility::seek(out, texStart + (index * 0x20), std::ios::beg); //some stuff to preserve original order
 			out.write("TEX1", 4);
 
 			out.write("\x00\x00\x00\x20\x00\x00\x00\x00", 8);
@@ -1444,7 +1404,7 @@ namespace FileTypes {
 	JPCError JPC::writeToFile(const std::string& outFilePath) {
 		std::ofstream outFile(outFilePath, std::ios::binary);
 		if (!outFile.is_open()) {
-			return JPCError::COULD_NOT_OPEN;
+			LOG_ERR_AND_RETURN(JPCError::COULD_NOT_OPEN);
 		}
 		return writeToStream(outFile);
 	}

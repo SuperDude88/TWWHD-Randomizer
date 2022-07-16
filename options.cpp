@@ -2,7 +2,7 @@
 
 
 
-SwordMode nameToSwordMode(const std::string& name) {
+static SwordMode nameToSwordMode(const std::string& name) {
     static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
         {"StartWithSword", SwordMode::StartWithSword},
         {"RandomSword", SwordMode::RandomSword},
@@ -68,7 +68,8 @@ Option nameToSetting(const std::string& name) {
         {"StartingGear", Option::StartingGear},
         {"StartingHP", Option::StartingHP},
         {"StartingHC", Option::StartingHC},
-        {"RemoveMusic", Option::RemoveMusic}
+        {"RemoveMusic", Option::RemoveMusic},
+        {"Plandomizer", Option::Plandomizer},
     };
 
     if (optionNameMap.count(name) == 0)
@@ -236,7 +237,7 @@ int getSetting(const Settings& settings, const Option& option) {
     case Option::CasualClothes:
         return settings.player_in_casual_clothes;
     case Option::PigColor:
-        return static_cast<std::underlying_type_t<PigColor>>(settings.pigColor);
+        return static_cast<std::underlying_type_t<PigColor>>(settings.pig_color);
     case Option::StartingGear: //cant return this like everything else, just here as placeholder
         return 0;
     case Option::StartingHP:

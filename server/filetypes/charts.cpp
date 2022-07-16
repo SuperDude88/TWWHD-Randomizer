@@ -4,24 +4,74 @@
 #include <algorithm>
 
 #include "../utility/endian.hpp"
+#include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
 
-ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
-	this->offset = offset;
-	in.seekg(offset, std::ios::beg);
+static const std::array<GameItem, 49> island_num_to_item = {
+    GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
+    GameItem::TreasureChart7,  // Sector 2 Star Island
+    GameItem::TreasureChart24, // etc...
+    GameItem::TreasureChart42,
+    GameItem::TreasureChart11,
+    GameItem::TreasureChart45,
+    GameItem::TreasureChart13,
+    GameItem::TreasureChart41,
+    GameItem::TreasureChart29,
+    GameItem::TreasureChart22,
+    GameItem::TreasureChart18,
+    GameItem::TreasureChart30,
+    GameItem::TreasureChart39,
+    GameItem::TreasureChart19,
+    GameItem::TreasureChart8,
+    GameItem::TreasureChart2,
+    GameItem::TreasureChart10,
+    GameItem::TreasureChart26,
+    GameItem::TreasureChart3,
+    GameItem::TreasureChart37,
+    GameItem::TreasureChart27,
+    GameItem::TreasureChart38,
+    GameItem::TriforceChart1,
+    GameItem::TreasureChart21,
+    GameItem::TreasureChart6,
+    GameItem::TreasureChart14,
+    GameItem::TreasureChart34,
+    GameItem::TreasureChart5,
+    GameItem::TreasureChart28,
+    GameItem::TreasureChart35,
+    GameItem::TriforceChart2,
+    GameItem::TreasureChart44,
+    GameItem::TreasureChart1,
+    GameItem::TreasureChart20,
+    GameItem::TreasureChart36,
+    GameItem::TreasureChart23,
+    GameItem::TreasureChart12,
+    GameItem::TreasureChart16,
+    GameItem::TreasureChart4,
+    GameItem::TreasureChart17,
+    GameItem::TreasureChart31,
+    GameItem::TriforceChart3,
+    GameItem::TreasureChart9,
+    GameItem::TreasureChart43,
+    GameItem::TreasureChart40,
+    GameItem::TreasureChart46,
+    GameItem::TreasureChart15,
+    GameItem::TreasureChart32,
+    GameItem::TreasureChart33 // Sector 49 Five Star Isles
+};
 
+ChartError ChartPos::read(std::istream& in) {
 	if (!in.read(reinterpret_cast<char*>(&tex_x_offset), sizeof(tex_x_offset))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&tex_y_offset), sizeof(tex_y_offset))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&salvage_x_pos), sizeof(salvage_x_pos))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&salvage_y_pos), sizeof(salvage_y_pos))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 
 	Utility::Endian::toPlatform_inplace(eType::Big, tex_x_offset);
@@ -33,8 +83,6 @@ ChartError ChartPos::read(std::istream& in, const unsigned int offset) {
 }
 
 void ChartPos::save_changes(std::ostream& out) {
-	out.seekp(offset, std::ios::beg);
-
 	uint16_t tex_x = Utility::Endian::toPlatform(eType::Big, tex_x_offset);
 	uint16_t tex_y = Utility::Endian::toPlatform(eType::Big, tex_y_offset);
 	uint16_t salvage_x = Utility::Endian::toPlatform(eType::Big, salvage_x_pos);
@@ -50,56 +98,40 @@ void ChartPos::save_changes(std::ostream& out) {
 
 
 
-ChartError Chart::read(std::istream& in, const unsigned int offset) {
-	this->offset = offset;
-	in.seekg(offset, std::ios::beg);
-
+ChartError Chart::read(std::istream& in) {
 	if (!in.read(reinterpret_cast<char*>(&texture_id), sizeof(texture_id))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&owned_chart_index_plus_1), sizeof(owned_chart_index_plus_1))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&number), sizeof(number))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&type), sizeof(type))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&sector_x), sizeof(sector_x))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 	if (!in.read(reinterpret_cast<char*>(&sector_y), sizeof(sector_y))) {
-		return ChartError::REACHED_EOF;
+		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 	}
 
 	for (unsigned int i = 0; i < 4; i++) {
 		ChartPos pos;
-		ChartError err = pos.read(in, this->offset + 6 + (0x8 * i));
-		if (err != ChartError::NONE) {
-			return err;
-		}
+		LOG_AND_RETURN_IF_ERR(pos.read(in));
 		possible_positions[i] = pos;
 	}
 
 	island_number = sector_x + 3 + ((sector_y + 3) * 7) + 1;
 
-	if (number < 1 || number > 49) {
-		return ChartError::INVALID_NUMBER;
-	}
-	if (number <= 3) { //may be different on HD
-		item_name = "Triforce Chart " + std::to_string(number);
-	}
-	else {
-		item_name = "Treasure Chart " + std::to_string(number);
-	}
+	if(number >= 1 && number <= 49) item_name = island_num_to_item[island_number - 1];
 
 	return ChartError::NONE;
 }
 
 void Chart::save_changes(std::ostream& out) {
-	out.seekp(offset, std::ios::beg);
-
 	out.write(reinterpret_cast<const char*>(&texture_id), sizeof(texture_id));
 	out.write(reinterpret_cast<const char*>(&owned_chart_index_plus_1), sizeof(owned_chart_index_plus_1));
 	out.write(reinterpret_cast<const char*>(&number), sizeof(number));
@@ -119,7 +151,7 @@ uint8_t Chart::getIslandNumber() const {
 
 ChartError Chart::setIslandNumber(const uint8_t value) {
 	if (number < 1 || number > 49) {
-		return ChartError::INVALID_NUMBER;
+		LOG_ERR_AND_RETURN(ChartError::INVALID_NUMBER);
 	}
 
 	uint8_t island_index = value - 1;
@@ -131,24 +163,13 @@ ChartError Chart::setIslandNumber(const uint8_t value) {
 	return ChartError::NONE;
 }
 
-std::string Chart::getName() const {
+GameItem Chart::getItem() const {
+	if (number < 1 || number > 49) {
+		return GameItem::INVALID;
+	}
 	return item_name;
 }
 
-ChartError Chart::setName(const uint8_t value) {
-	if (number < 1 || number > 49) {
-		return ChartError::INVALID_NUMBER;
-	}
-
-	if (number <= 3) { //may be different on HD
-		item_name = "Triforce Chart " + std::to_string(value);
-	}
-	else {
-		item_name = "Treasure Chart " + std::to_string(value);
-	}
-
-	return ChartError::NONE;
-}
 
 
 namespace FileTypes {
@@ -170,17 +191,15 @@ namespace FileTypes {
 
 	ChartError ChartList::loadFromBinary(std::istream& in) {
 		if (!in.read(reinterpret_cast<char*>(&num_charts), sizeof(num_charts))) {
-			return ChartError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
 		}
 
 		Utility::Endian::toPlatform_inplace(eType::Big, num_charts);
 
-		unsigned int offset = 4;
-		for (unsigned int i = 0; i < num_charts; i++) {
+		for (uint32_t i = 0; i < num_charts; i++) {
 			Chart chart;
-			if (ChartError err = chart.read(in, offset); err != ChartError::NONE) return err;
+			LOG_AND_RETURN_IF_ERR(chart.read(in));
 			charts.push_back(chart);
-			offset += 0x26;
 		}
 
 		return ChartError::NONE;
@@ -189,9 +208,29 @@ namespace FileTypes {
 	ChartError ChartList::loadFromFile(const std::string& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
-			return ChartError::COULD_NOT_OPEN;
+			LOG_ERR_AND_RETURN(ChartError::COULD_NOT_OPEN);
 		}
 		return loadFromBinary(file);
+	}
+
+	ChartError ChartList::writeToStream(std::ostream& out) {
+		num_charts = charts.size();
+		Utility::Endian::toPlatform_inplace(eType::Big, num_charts);
+		out.write(reinterpret_cast<const char*>(&num_charts), sizeof(num_charts));
+
+		for (Chart& chart : charts) {
+			chart.save_changes(out);
+		}
+
+		return ChartError::NONE;
+	}
+
+	ChartError ChartList::writeToFile(const std::string& filePath) {
+		std::ofstream file(filePath, std::ios::binary);
+		if (!file.is_open()) {
+			LOG_ERR_AND_RETURN(ChartError::COULD_NOT_OPEN);
+		}
+		return writeToStream(file);
 	}
 
 	Chart& ChartList::find_chart_by_chart_number(const uint8_t chart_number) {
@@ -200,7 +239,7 @@ namespace FileTypes {
 	}
 
 	Chart& ChartList::find_chart_for_island_number(const uint8_t island_number) {
-		auto it = std::find_if(charts.begin(), charts.end(), [island_number](const Chart& chart) {return chart.number == island_number && (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 6); });
+		auto it = std::find_if(charts.begin(), charts.end(), [island_number](const Chart& chart) {return (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 6) && chart.getIslandNumber() == island_number; });
 		return *it;
 	}
 }

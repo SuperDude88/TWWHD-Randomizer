@@ -5,21 +5,23 @@
 #include <cmath>
 #include <algorithm>
 #include <type_traits>
+#include "../utility/common.hpp"
 #include "../utility/endian.hpp"
-#include "./bflim/formconv.hpp"
+#include "./texture/formconv.hpp"
+#include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
 using namespace std::literals::string_literals;
 
-const std::unordered_map<uint32_t, int> abgr8_masks = {{0xff, 0}, {0xff00, 1}, {0xff0000, 2}, {0xff000000, 3}, {0, 5}};
-const std::unordered_map<uint32_t, int> bgr8_masks = {{0xff, 0}, {0xff00, 1}, {0xff0000, 2}, {0, 5}};
-const std::unordered_map<uint32_t, int> a2rgb10_masks = {{0x3ff00000, 0}, {0xffc00, 1}, {0x3ff, 2}, {0xc0000000, 3}, {0, 5}};
-const std::unordered_map<uint32_t, int> bgr565_masks = {{0x1f, 0}, {0x7e0, 1}, {0xf800, 2}, {0, 5}};
-const std::unordered_map<uint32_t, int> a1bgr5_masks = {{0x1f, 0}, {0x3e0, 1}, {0x7c00, 2}, {0x8000, 3}, {0, 5}};
-const std::unordered_map<uint32_t, int> abgr4_masks = {{0xf, 0}, {0xf0, 1}, {0xf00, 2}, {0xf000, 3}, {0, 5}};
-const std::unordered_map<uint32_t, int> l8_masks = {{0xff, 0}, {0, 5}};
-const std::unordered_map<uint32_t, int> a8l8_masks = {{0xff, 0}, {0xff00, 1}, {0, 5}};
-const std::unordered_map<uint32_t, int> a4l4_masks = {{0xf, 0}, {0xf0, 1}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> abgr8_masks = {{0xff, 0}, {0xff00, 1}, {0xff0000, 2}, {0xff000000, 3}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> bgr8_masks = {{0xff, 0}, {0xff00, 1}, {0xff0000, 2}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> a2rgb10_masks = {{0x3ff00000, 0}, {0xffc00, 1}, {0x3ff, 2}, {0xc0000000, 3}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> bgr565_masks = {{0x1f, 0}, {0x7e0, 1}, {0xf800, 2}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> a1bgr5_masks = {{0x1f, 0}, {0x3e0, 1}, {0x7c00, 2}, {0x8000, 3}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> abgr4_masks = {{0xf, 0}, {0xf0, 1}, {0xf00, 2}, {0xf000, 3}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> l8_masks = {{0xff, 0}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> a8l8_masks = {{0xff, 0}, {0xff00, 1}, {0, 5}};
+static const std::unordered_map<uint32_t, uint8_t> a4l4_masks = {{0xf, 0}, {0xf0, 1}, {0, 5}};
 
 
 
@@ -84,73 +86,75 @@ namespace FileTypes {
 
     DDSError DDSFile::loadFromBinary(std::istream& dds, const bool SRGB) {
         if(!dds.read(reinterpret_cast<char*>(&header.magicDDS), sizeof(header.magicDDS))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(std::memcmp(header.magicDDS, "DDS ", 4) != 0) {
-			return DDSError::NOT_DDS;
+			LOG_ERR_AND_RETURN(DDSError::NOT_DDS);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.headerSize_0x7C), sizeof(header.headerSize_0x7C))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.flags), sizeof(header.flags))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.height), sizeof(header.height))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.width), sizeof(header.width))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.size), sizeof(header.size))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.depth), sizeof(header.depth))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.numMips), sizeof(header.numMips))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
-		if(!dds.read(reinterpret_cast<char*>(&header.reserved), sizeof(header.reserved))) {
-			return DDSError::REACHED_EOF;
-		}
+        for(uint32_t& item : header.reserved) {
+		    if(!dds.read(reinterpret_cast<char*>(&item), sizeof(item))) {
+		    	LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
+		    }
+        }
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.headerSize_0x20), sizeof(header.pixelFormat.headerSize_0x20))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.flags), sizeof(header.pixelFormat.flags))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.fourcc), sizeof(header.pixelFormat.fourcc))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.RGBBitCount), sizeof(header.pixelFormat.RGBBitCount))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.RBitMask), sizeof(header.pixelFormat.RBitMask))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.GBitMask), sizeof(header.pixelFormat.GBitMask))) {
-			return DDSError::REACHED_EOF;
-		}
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
+        }
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.BBitMask), sizeof(header.pixelFormat.BBitMask))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.pixelFormat.ABitMask), sizeof(header.pixelFormat.ABitMask))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.caps), sizeof(header.caps))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.caps2), sizeof(header.caps2))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.caps3), sizeof(header.caps3))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.caps4), sizeof(header.caps4))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 		if(!dds.read(reinterpret_cast<char*>(&header.reserved2), sizeof(header.reserved2))) {
-			return DDSError::REACHED_EOF;
+			LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 
         Utility::Endian::toPlatform_inplace(eType::Little, header.headerSize_0x7C);
@@ -173,9 +177,9 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Little, header.caps4);
         Utility::Endian::toPlatform_inplace(eType::Little, header.reserved2);
 
-        if(header.headerSize_0x7C != 0x7C) return DDSError::UNEXPECTED_VALUE;
-        if(header.pixelFormat.headerSize_0x20 != 0x20) return DDSError::UNEXPECTED_VALUE;
-        if(header.caps != DDSCaps::TEXTURE && header.caps != DDSCaps::ALL) return DDSError::INVALID_TEXTURE;
+        if(header.headerSize_0x7C != 0x7C) LOG_ERR_AND_RETURN(DDSError::UNEXPECTED_VALUE);
+        if(header.pixelFormat.headerSize_0x20 != 0x20) LOG_ERR_AND_RETURN(DDSError::UNEXPECTED_VALUE);
+        if(header.caps != DDSCaps::TEXTURE && header.caps != DDSCaps::ALL) LOG_ERR_AND_RETURN(DDSError::INVALID_TEXTURE);
 
         uint32_t bpp = header.pixelFormat.RGBBitCount >> 3;
         bool compressed = false;
@@ -190,7 +194,7 @@ namespace FileTypes {
         else if(pflags == PixelFormatFlags::RGB) rgb = true;
         else if(pflags == (PixelFormatFlags::RGB | PixelFormatFlags::ALPHAPIXELS)) rgb = has_alpha = true;
         else {
-            return DDSError::INVALID_TEXTURE;
+            LOG_ERR_AND_RETURN(DDSError::INVALID_TEXTURE);
         }
 
         format_ = 0;
@@ -199,7 +203,7 @@ namespace FileTypes {
         uint32_t headSize;
         if(std::strncmp(header.pixelFormat.fourcc, "DX10", 4) == 0) {
             if(!compressed) {
-                return DDSError::UNSUPPORTED_FORMAT;
+                LOG_ERR_AND_RETURN(DDSError::UNSUPPORTED_FORMAT);
             }
 
             headSize = 0x94;
@@ -250,7 +254,7 @@ namespace FileTypes {
                 std::string temp(20, '\0');
                 dds.seekg(128, std::ios::beg);
                 if(!dds.read(&temp[0], 20)) {
-			        return DDSError::REACHED_EOF;
+			        LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		        }
 
                 if(temp == "\x50\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00"s) {
@@ -348,15 +352,15 @@ namespace FileTypes {
 
         dds.seekg(0, std::ios::end);
         if(dds.tellg() < headSize + size + mipSize) {
-            return DDSError::REACHED_EOF;
+            LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
         }
 
-        if(format_ == 0) return DDSError::UNSUPPORTED_FORMAT;
+        if(format_ == 0) LOG_ERR_AND_RETURN(DDSError::UNSUPPORTED_FORMAT);
 
         data.resize(size + mipSize);
         dds.seekg(headSize, std::ios::beg);
         if(!dds.read(&data[0], size + mipSize)) {
-		    return DDSError::REACHED_EOF;
+		    LOG_ERR_AND_RETURN(DDSError::REACHED_EOF);
 		}
 
         if((format_ == 0x1A || format_ == 0x41A) && bpp == 3) {
@@ -371,16 +375,68 @@ namespace FileTypes {
     DDSError DDSFile::loadFromFile(const std::string& filePath, const bool SRGB) {
         std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
-			return DDSError::COULD_NOT_OPEN;
+			LOG_ERR_AND_RETURN(DDSError::COULD_NOT_OPEN);
 		}
 		return loadFromBinary(file, SRGB);
     }
     
 	DDSError DDSFile::writeToStream(std::ostream& out) {
-        return DDSError::UNKNOWN;
+        Utility::Endian::toPlatform_inplace(eType::Little, header.headerSize_0x7C);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.flags);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.height);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.width);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.size);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.depth);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.numMips);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.headerSize_0x20);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.flags);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.RGBBitCount);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.RBitMask);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.GBitMask);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.BBitMask);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.pixelFormat.ABitMask);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.caps);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.caps2);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.caps3);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.caps4);
+        Utility::Endian::toPlatform_inplace(eType::Little, header.reserved2);
+
+        out.write(header.magicDDS, 4);
+		out.write(reinterpret_cast<const char*>(&header.headerSize_0x7C), sizeof(header.headerSize_0x7C));
+		out.write(reinterpret_cast<const char*>(&header.flags), 4);
+		out.write(reinterpret_cast<const char*>(&header.height), sizeof(header.height));
+		out.write(reinterpret_cast<const char*>(&header.width), sizeof(header.width));
+		out.write(reinterpret_cast<const char*>(&header.size), sizeof(header.size));
+		out.write(reinterpret_cast<const char*>(&header.depth), sizeof(header.depth));
+		out.write(reinterpret_cast<const char*>(&header.numMips), sizeof(header.numMips));
+        for(const uint32_t& item : header.reserved) {
+		    out.write(reinterpret_cast<const char*>(&item), sizeof(item));
+        }
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.headerSize_0x20), sizeof(header.pixelFormat.headerSize_0x20));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.flags), sizeof(header.pixelFormat.flags));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.fourcc), sizeof(header.pixelFormat.fourcc));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.RGBBitCount), sizeof(header.pixelFormat.RGBBitCount));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.RBitMask), sizeof(header.pixelFormat.RBitMask));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.GBitMask), sizeof(header.pixelFormat.GBitMask));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.BBitMask), sizeof(header.pixelFormat.BBitMask));
+		out.write(reinterpret_cast<const char*>(&header.pixelFormat.ABitMask), sizeof(header.pixelFormat.ABitMask));
+		out.write(reinterpret_cast<const char*>(&header.caps), sizeof(header.caps));
+		out.write(reinterpret_cast<const char*>(&header.caps2), sizeof(header.caps2));
+		out.write(reinterpret_cast<const char*>(&header.caps3), sizeof(header.caps3));
+		out.write(reinterpret_cast<const char*>(&header.caps4), sizeof(header.caps4));
+		out.write(reinterpret_cast<const char*>(&header.reserved2), sizeof(header.reserved2));
+		padToLen(out, 0x10);
+
+        out.write(&data[0], data.size());
+
+        return DDSError::NONE;
     }
 
 	DDSError DDSFile::writeToFile(const std::string& outFilePath) {
-        return DDSError::UNKNOWN;
+        std::ofstream file(outFilePath, std::ios::binary);
+		if (!file.is_open()) {
+			LOG_ERR_AND_RETURN(DDSError::COULD_NOT_OPEN);
+		}
+		return writeToStream(file);
     }
 }

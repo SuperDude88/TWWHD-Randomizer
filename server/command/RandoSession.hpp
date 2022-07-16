@@ -3,18 +3,13 @@
 #include "WWHDStructs.hpp"
 
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <vector>
-#include <list>
-#include <unordered_set>
 #include <unordered_map>
+#include <atomic>
 
 
-
-class CacheEntry {
-public:
-    std::unordered_map<std::string, CacheEntry> children;
-};
 
 class RandoSession
 {
@@ -22,22 +17,33 @@ public:
     using fspath = std::filesystem::path;
     class CacheEntry {
     public:
-        std::unordered_map<std::string, std::unique_ptr<CacheEntry>> children; //can't use CacheEntry directly, unordered_map needs complete type per the standard
+        std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children; //can't use CacheEntry directly, unordered_map needs complete type per the standard
+        std::atomic<bool> isRepacked = false; //for this entry
     };
 
-    RandoSession(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& randoOutputDir);
+    enum class RepackResult {
+        FAIL = 0,
+        SUCCESS = 1,
+        DELAY = 2
+    };
 
-    void init();
+    RandoSession();
+
+    void init(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& randoOutputDir);
     [[nodiscard]] fspath openGameFile(const fspath& relPath);
     [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath);
+    [[nodiscard]] bool restoreGameFile(const fspath& relPath);
     [[nodiscard]] bool repackCache();
+    [[nodiscard]] bool repackCache_singleThread();
+
+    const fspath& getBaseDir() { return baseDir; }
+    const fspath& getWorkingDir() { return workingDir; }
+    const fspath& getOutputDir() { return outputDir; }
 private:
-    void clearWorkingDir();
+    void clearWorkingDir() const;
     fspath extractFile(const std::vector<std::string>& fileSpec);
-    bool repackFile(const std::string& element);
-    bool repackChildren(CacheEntry& entry);
-    
-    fspath relToGameAbsolute(const fspath& relPath);
+    RepackResult repackFile(const std::string& element, std::shared_ptr<CacheEntry> entry);
+    void queueChildren(std::shared_ptr<CacheEntry> entry);
 
     bool initialized = false;
     fspath baseDir;

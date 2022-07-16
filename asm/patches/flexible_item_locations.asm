@@ -49,6 +49,9 @@
 .org 0x02124580
 	li r8, 0x0
 
+.org 0x021031f0
+	li r6, 0x0
+
 
 ; The heart container item get function (item_func_utuwa_heart) usually handles setting the flag for having taken the current dungeon's boss item.
 ; But if the player got a heart container somewhere in a dungeon other than from the boss, this could cause the boss's actual item to disappear.
@@ -80,7 +83,6 @@
 .org 0x02550138
 	li r12, 32
 	sth r12, 0x5B60(r3)
-	nop
 
 
 ; When salvage points decide if they should show their ray of light, they originally only checked if you
@@ -88,9 +90,15 @@
 ; We don't want the ray of light to show until the chart is deciphered, so we change the salvage point code
 ; to check the chart index instead of the item ID when determining if it's a Triforce or not.
 .org 0x024675F4
-	subi r4, r31, 0x1
-	addi r3, r4, 0x61
-	nop
+	; In HD, removing some triforce charts meant their indexes were no longer in a continuous block
+	; We overwrite the calls to getItemNo and isTriforce to manually check each one
+	cmpwi r31, 0x1
+	beq 0x0246760C
+	cmpwi r31, 0x3
+	beq 0x0246760C
+	cmpwi r31, 0x5
+	bne 0x024676b4
+	addi r31, r31, 0x60 ; Add 0x60 to r31 to simulate the return value of getItemNo
 
 
 ; The first instance of Medli, who gives the letter for Komali, can disappear under certain circumstances.
@@ -106,7 +114,7 @@
 ; To do this we change it to check event bit 6901 (bit 01 of byte 803C5295) instead. This bit was originally unused.
 .org 0x02442248
 	li r4, 0x6901
-	; would include item func pointer but it only modifies a relocation
+	; item func pointer modifies a relocation
 
 
 ; Normally Beedle checks if you've bought the Bait Bag by actually checking if you own the Bait Bag item.
@@ -147,8 +155,8 @@ check_shop_item_in_bait_bag_slot_sold_out:
   stw r0, 0x14 (sp)
   
   ; Check event bit 6902 (bit 02 of byte 803C5295), which was originally unused but we use it to keep track of whether the item in the Bait Bag slot has been purchased or not.
-  lis r3,0x1020
-  lwz r3,-0x7b24(r3)
+  lis r3,gameInfo_ptr@ha
+  lwz r3,gameInfo_ptr@l(r3)
   addi r3,r3,0x644
   li r4, 0x6902 ; Unused event bit
   bl isEventBit
@@ -189,33 +197,29 @@ custom_createItem_return_check:
 	cmpwi r30, -1
 	beq createItem_not_success
 	mr r10, r30
-	lis r3, withered_tree_item_actor_id@ha
-	addi r3, r3, withered_tree_item_actor_id@l
-	stw r10, 0(r3) ; store created actor id
-	
-	lis r3, withered_tree_launched_flag@ha ; make sure launched flag is 0
-	addi r3, r3, withered_tree_launched_flag@l
-	li r10, 0
-	stb r10, 0x0(r3)
+	stw r10, 0x3a4(r31) ; store created actor id
+
 	b 0x02347c40
   createItem_not_success:
 	b 0x02347cd4
-
-.global withered_tree_item_actor_id
-withered_tree_item_actor_id:
-	.int -1
-
-.global withered_tree_launched_flag
-withered_tree_launched_flag:
-	.byte 0
-
-.align 4
 
 .org 0x02347c48
 	nop ; dont store parent ID to object, not created yet
 
 .org 0x02347cb4
 	nop ; dont set flags for object, not created yet
+
+; in _create
+.org 0x02346f28
+	b initialize_actor_id
+; initialize the item table index to -1 (repurposed as actor id)
+.org @NextFreeSpace
+.global initialize_actor_id
+initialize_actor_id:
+	li r3, -1
+	stw r3, 0x3a4(r30)
+	mr r3, r30
+	b 0x02346f2c
 
 ; in place_heart_part
 .org 0x02347abc
@@ -229,16 +233,13 @@ create_item_for_withered_trees_without_setting_speeds:
   
 	bl custom_createItem
 	
-	mr r5, r3
-	lis r3, withered_tree_item_actor_id@ha
-	addi r3, r3, withered_tree_item_actor_id@l
-	stw r5, 0(r3) ; store created actor id
+	; HD changed how the game checks if you collected the heart piece
+	; Manually store the created actor ID over the item table index (otherwise unused in the tree object)
+	stw r3, 0x3a4(r28) ; store created actor id
 
-	; We need to set our custom flag to 1 to prevent withered_tree_item_try_give_momentum from setting the speeds for this item actor.
-	lis r3, withered_tree_launched_flag@ha
-	addi r3, r3, withered_tree_launched_flag@l
+	; We need to set our custom flag to 1 to prevent withered_tree_item_try_give_momentum from setting the speeds for this item actor. (32e and 32f were originally padding)
 	li r5, 1
-	stb r5, 0x0(r3)
+	stb r5, 0x32e(r28)
   
 	lwz r0, 0x14 (sp)
 	mtlr r0
@@ -250,7 +251,7 @@ create_item_for_withered_trees_without_setting_speeds:
 .org 0x02347acc
 	nop
 
- ; We need to partially re-create a function from SD that checked if the heart was created
+ ; We need to partially recreate a function from SD that checked if the heart was created
  ; Since custom_createItem can't store a velocity to the item, we need to check each frame to see if it exists and store the velocity to it
 .org 0x02347d18
 	bl withered_tree_item_try_give_momentum
@@ -264,15 +265,14 @@ withered_tree_item_try_give_momentum:
 	stw r31, 0x1C(sp)
 
 	mr r30, r3
-	lis r3, withered_tree_item_actor_id@ha
-	addi r3, r3, withered_tree_item_actor_id@l
-	lwz r3, 0x0(r3)
-	cmplwi r3, -1
+	lwz r3, 0x3a4(r30)
+	addis r4, r3, 1
+	cmplwi r4, -1
 	beq withered_tree_item_try_give_momentum_end ; item not created yet
 	addi r4, sp, 0x8
 	bl fopAcM_SearchByID
 	cmpwi r3, 0
-	beq withered_tree_item_try_give_momentum_end ; Item actor has already been picked up
+	beq withered_tree_item_set_collected ; Item actor has already been picked up
 
 	lwz r4, 0x8(sp)
 	cmpwi r4, 0
@@ -284,9 +284,7 @@ withered_tree_item_try_give_momentum:
 
 	; Now that we have the item actor pointer in r4, we need to check if the actor was just created this frame or not.
 	; To do that we store a custom flag to an unused byte in the withered tree actor struct.
-	lis r3, withered_tree_launched_flag@ha
-	addi r3, r3, withered_tree_launched_flag@l
-	lbz r5, 0x0(r3)
+	lbz r5, 0x32e(r30)
 	cmpwi r5, 0
 	bne withered_tree_item_try_give_momentum_end ; Already set the flag, so this isn't the first frame it spawned on.
 
@@ -308,10 +306,19 @@ withered_tree_item_try_give_momentum:
 	stw r5, 0x2e0 (r4)
 
 	; Now store the custom flag meaning that we've already set the item actor's momentum so we don't do it again.
-	lis r3, withered_tree_launched_flag@ha
-	addi r3, r3, withered_tree_launched_flag@l
 	li r5, 1
-	stb r5, 0x0(r3)
+	stb r5, 0x32e(r30)
+
+	b withered_tree_item_try_give_momentum_end
+
+  withered_tree_item_set_collected:
+	lis r3, gameInfo_ptr@ha
+	lwz r3, gameInfo_ptr@l(r3)
+	addi r3, r3, 0x644
+	li r4, 0x2e20
+	bl onEventBit
+	li r0, -1
+	stw r0, 0x3a4(r30)
 
   withered_tree_item_try_give_momentum_end:
 	mr r3, r30
@@ -329,18 +336,6 @@ withered_tree_item_speeds:
 	.float 1.75 ; Initial forward velocity
 	.float 30 ; Initial Y velocity
 	.float -2.1 ; Gravity (Y acceleration)
-
-.org 0x023472a4
-	b unset_actor_id_when_tree_unloaded
-.org @NextFreeSpace
-.global unset_actor_id_when_tree_unloaded
-unset_actor_id_when_tree_unloaded:
-	lis r3, withered_tree_item_actor_id@ha
-	addi r3, r3, withered_tree_item_actor_id@l
-	li r4, -1
-	stw r4, 0(r3) ; store -1 to id
-	li r3, 1
-	b 0x023472a8
 
 
 ; Fix the Phantom Ganon from Ganon's Tower so he doesn't disappear from the maze when the player gets Light Arrows, but instead when they open the chest at the end of the maze which originally had Light Arrows.
@@ -375,6 +370,7 @@ check_phantom_ganons_sword_should_disappear:
   mflr r0
   stw r0, 0x14 (sp)
   
+  ; makes sword always disappear
   ; First replace the event flag check we overwrote to call this custom function.
   bl isEventBit
   
@@ -387,18 +383,21 @@ check_phantom_ganons_sword_should_disappear:
   addi r3, r3, 0x5133
   lis r4, phantom_ganon_maze_stage_name@ha
   addi r4, r4, phantom_ganon_maze_stage_name@l
+  subi r4, r4, 1
 strcmp_start:
     lbzu r5, 0x1(r3)
     lbzu r6, 0x1(r4)
     cmplw r5, r6
-    bne check_phantom_ganons_sword_should_disappear_end
+    bne strncmp_end
     cmplwi r5, 0
     bne strcmp_start
+
+strncmp_end:
+  	subf. r3, r5, r6
 
   ; If the stage is the maze, strcmp will return 0, so we return that to tell Phantom Ganon's sword that it should not disappear.
   ; If the stage is anything else, strcmp will not return 0, so Phantom Ganon's sword should disappear.
 check_phantom_ganons_sword_should_disappear_end:
-  subf. r3, r5, r6
   lwz r0, 0x14 (sp)
   mtlr r0
   addi sp, sp, 0x10
@@ -433,10 +432,10 @@ create_item_and_set_event_bit_for_townsperson:
   stw r0, 0x14 (sp)
   stw r31, 0xC (sp)
   mr r31, r4 ; Preserve argument r4, which has both the item ID and the event bit to set.
-  
+
   clrlwi r4,r4,24 ; Get the lowest byte (0x000000FF), which has the item ID
   bl fopAcM_createItemForPresentDemo
-  
+
   rlwinm. r4,r31,16,16,31 ; Get the upper halfword (0xFFFF0000), which has the event bit to set
   beq create_item_and_set_event_bit_for_townsperson_end ; If the event bit specified is 0000, skip to the end of the function instead
   mr r31, r3 ; Preserve the return value from createItemForPresentDemo so we can still return that
@@ -445,7 +444,7 @@ create_item_and_set_event_bit_for_townsperson:
   addi r3,r3,0x644
   bl onEventBit ; Otherwise, set that event bit
   mr r3, r31
-  
+
 create_item_and_set_event_bit_for_townsperson_end:
   lwz r31, 0xC (sp)
   lwz r0, 0x14 (sp)
@@ -483,7 +482,7 @@ create_item_and_set_event_bit_for_townsperson_end:
 	bl isEventBit_wrapper
 
 .org 0x022c6440 ; For Dampa
-	li r3, 0x6a04
+	li r3, 0x6a80
 .org 0x022c6448
 	bl isEventBit_wrapper
 
@@ -502,7 +501,7 @@ set_dampa_event_bit:
 	lis r3, gameInfo_ptr@ha
 	lwz r3, gameInfo_ptr@l(r3)
 	addi r3, r3, 0x644
-	li r4, 0x6a04
+	li r4, 0x6a80
 	bl onEventBit
 	li r12, 0xFD
 	b 0x022c6458
@@ -531,9 +530,6 @@ lenzo_set_deluxe_picto_box_event_bit:
   addi sp, sp, 0x10
   blr
 
-.org 0x022d07FC
-	li r3, 0x6920
-	bl isEventBit_wrapper
 .org 0x022D05B4
 	li r3, 0x6920
 	bl isEventBit_wrapper
@@ -623,7 +619,7 @@ salvage_corp_give_item_and_set_event_bit:
 
 .org 0x0227d244
 	li r3, 0x6A01
-.org 0x0227d24c
+	nop
 	bl isEventBit_wrapper
 .org 0x0227c2b8
 	bl maggie_give_item_and_set_event_bit
@@ -861,7 +857,8 @@ doc_bandam_blue_potion_slot_item_id:
 
 .org 0x02341b0c
 	li r4, 5
-	li r5, 0
+	; li r5, 0 (r5 is fortunately 0 already)
+	addi r3, r12, 0x20
 .org 0x02341b14
 	bl isSwitch
 .org 0x02341b1c
