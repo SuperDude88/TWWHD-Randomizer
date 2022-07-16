@@ -9,11 +9,12 @@ import traceback
 
 import sys
 import subprocess
+import tempfile
 
 from elf import *
 
-os.mkdir("./temp")
-temp_dir = "./temp"
+temp_dir = tempfile.mkdtemp()
+print(temp_dir)
 
 custom_symbols = OrderedDict()
 to_relocate = OrderedDict()
@@ -25,28 +26,27 @@ next_free_space_offset = free_space_start_offset
 def get_relocations_for_elf(o_path, start_addr, symbol_addresses):
     elf = ELF()
     elf.read_from_file(o_path)
-    symtab_symbols = elf.symbols[".symtab"]
-
     relocations = []
-    
-    if ".rela.text" in elf.relocations.keys():
-        for relocation in elf.relocations[".rela.text"]:
-            symbol = symtab_symbols[relocation.symbol_index]
-            if symbol.name in to_relocate.keys():
-                if to_relocate[symbol.name] == ".data":
-                    reloc = OrderedDict() #formatted like this for json dumping later
-                    reloc["r_offset"] = "0x%08X" % (start_addr + relocation.relocation_offset)
-                    reloc["r_info"] = "0x%08X" % (0x00000200 | relocation.type)
-                    addend = (int(symbol_addresses[symbol.name], base=16)) - 0x10000000
-                    reloc["r_addend"] = "0x%08X" % addend
-                    relocations.append(reloc)
-                if to_relocate[symbol.name] == ".text":
-                    reloc = OrderedDict() #formatted like this for json dumping later
-                    reloc["r_offset"] = "0x%08X" % (start_addr + relocation.relocation_offset)
-                    reloc["r_info"] = "0x%08X" % (0x00000100 | relocation.type)
-                    addend = (int(symbol_addresses[symbol.name], base=16)) - 0x02000000
-                    reloc["r_addend"] = "0x%08X" % addend
-                    relocations.append(reloc)
+
+
+    symtab_symbols = elf.symbols.get(".symtab", [])    
+    for relocation in elf.relocations.get(".rela.text", []):
+        symbol = symtab_symbols[relocation.symbol_index]
+        if symbol.name in to_relocate.keys():
+            if to_relocate[symbol.name] == ".data":
+                reloc = OrderedDict() #formatted like this for json dumping later
+                reloc["r_offset"] = "0x%08X" % (start_addr + relocation.relocation_offset)
+                reloc["r_info"] = "0x%08X" % (0x00000200 | relocation.type)
+                addend = (int(symbol_addresses[symbol.name], base=16)) - 0x10000000
+                reloc["r_addend"] = "0x%08X" % addend
+                relocations.append(reloc)
+            if to_relocate[symbol.name] == ".text":
+                reloc = OrderedDict() #formatted like this for json dumping later
+                reloc["r_offset"] = "0x%08X" % (start_addr + relocation.relocation_offset)
+                reloc["r_info"] = "0x%08X" % (0x00000100 | relocation.type)
+                addend = (int(symbol_addresses[symbol.name], base=16)) - 0x02000000
+                reloc["r_addend"] = "0x%08X" % addend
+                relocations.append(reloc)
 
     return relocations
 
@@ -67,8 +67,8 @@ try:
   
   # Don't need custom_data
   #all_asm_files.remove("custom_data.asm")
-  all_asm_files.remove("custom_funcs.asm")
   #all_asm_files = ["custom_data.asm", "custom_funcs.asm"] + all_asm_files
+  all_asm_files.remove("custom_funcs.asm")
   all_asm_files = ["custom_funcs.asm"] + all_asm_files
   
   code_chunks = OrderedDict()
@@ -287,7 +287,7 @@ try:
     f.write(json.dumps(custom_symbols, indent=2) + "\n")
     print("Dumped custom symbols")
 
-  shutil.rmtree("./temp")
+  shutil.rmtree(temp_dir)
   print("Finished generating diffs")
   input()
 

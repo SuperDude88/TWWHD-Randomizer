@@ -5,11 +5,14 @@
 
 #include "logic/GameItem.hpp"
 
+constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 70;
+
 enum struct PigColor : uint8_t {
     BLACK = 0,
     PINK,
     SPOTTED,
-    RANDOM
+    RANDOM,
+    INVALID
 };
 
 enum struct SwordMode {
@@ -129,7 +132,7 @@ struct Settings {
     bool chest_type_matches_contents = false;
 
     bool player_in_casual_clothes = false;
-    PigColor pigColor = PigColor::RANDOM;
+    PigColor pig_color = PigColor::RANDOM;
 
     std::vector<GameItem> starting_gear;
     uint16_t starting_pohs = 0;

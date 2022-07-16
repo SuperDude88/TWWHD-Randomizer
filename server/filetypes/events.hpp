@@ -1,3 +1,6 @@
+//Event lists store event information for in-game sequences
+//Larger cutscenes have their own model archives and use .stb files
+
 #pragma once
 
 #include <fstream>
@@ -30,16 +33,13 @@ enum struct [[nodiscard]] EventlistError
 	COUNT
 };
 
-//class Action;
-//class Actor;
-//class Event;
 namespace FileTypes {
 	class EventList; //forward declare
 }
 
 struct Prop {
 	std::string prop_name;
-	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> prop_value;
+	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int32_t>, std::string> prop_value;
 };
 
 class Property {
@@ -50,11 +50,9 @@ public:
 	std::shared_ptr<Property> next_property; //Pointer because of initialization stuff
 	std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> value;
 
-	EventlistError read(std::istream& in, const unsigned int offset);
+	EventlistError read(std::istream& in);
 	void save_changes(std::ostream& out);
 private:
-	unsigned int offset;
-
 	int32_t property_index;
 	uint32_t data_type;
 	uint32_t data_index;
@@ -78,13 +76,11 @@ public:
 	std::vector<std::shared_ptr<Property>> properties;
 	std::shared_ptr<Action> next_action; //Pointer because of initialization stuff
 
-	EventlistError read(std::istream& in, const unsigned int offset);
+	EventlistError read(std::istream& in);
 	void save_changes(std::ostream& out);
 	std::shared_ptr<Property> get_prop(const std::string& prop_name);
 	Property& add_property(const std::string& name);
 private:
-	unsigned int offset;
-	
 	uint32_t duplicate_id = 0;
 	int32_t action_index;
 	int32_t first_property_index;
@@ -95,10 +91,6 @@ private:
 	friend class Actor;
 	friend class Event;
 };
-
-namespace FileTypes {
-	class EventList;
-}
 
 class Actor {
 public:
@@ -111,12 +103,10 @@ public:
 	std::vector<std::shared_ptr<Action>> actions;
 	std::shared_ptr<Action> initial_action;
 
-	EventlistError read(std::istream& in, const unsigned int offset);
+	EventlistError read(std::istream& in);
 	EventlistError save_changes(std::ostream& out);
 	std::shared_ptr<Action> add_action(const FileTypes::EventList* const list, const std::string& name, const std::vector<Prop>& properties);
 private:
-	unsigned int offset;
-
 	int32_t actor_index;
 	int32_t initial_action_index;
 	char zero_initialized_runtime_data[0x1C] = { "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" };
@@ -138,12 +128,11 @@ public:
 	bool play_jingle = false;
 	std::vector<std::shared_ptr<Actor>> actors;
 
-	EventlistError read(std::istream& in, const unsigned int offset);
+	EventlistError read(std::istream& in);
 	void save_changes(std::ostream& out);
 	std::shared_ptr<Actor> get_actor(const std::string& name);
 	std::shared_ptr<Actor> add_actor(const FileTypes::EventList* const list, const std::string& name);
 private:
-	unsigned int offset;
 	int32_t event_index;
 	std::array<int32_t, 0x14> actor_indexes = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 	uint32_t num_actors = 0;

@@ -15,17 +15,17 @@ namespace elfUtil {
 
     ELFError addRelocation(FileTypes::ELF& elf, const uint16_t& shdrIdx, const Elf32_Rela& reloc);
 
-    void removeRelocation(FileTypes::ELF& elf, const offset_t& offset);
+    ELFError removeRelocation(FileTypes::ELF& elf, const offset_t& offset);
 
-    void write_u8(FileTypes::ELF& out, const offset_t& offset, const uint8_t& data);
+    ELFError write_u8(FileTypes::ELF& out, const offset_t& offset, const uint8_t& data);
 
-    void write_u16(FileTypes::ELF& out, const offset_t& offset, const uint16_t& data);
+    ELFError write_u16(FileTypes::ELF& out, const offset_t& offset, const uint16_t& data);
 
-    void write_u32(FileTypes::ELF& out, const offset_t& offset, const uint32_t& data);
+    ELFError write_u32(FileTypes::ELF& out, const offset_t& offset, const uint32_t& data);
 
-    void write_float(FileTypes::ELF& out, const offset_t& offset, const float& data);
+    ELFError write_float(FileTypes::ELF& out, const offset_t& offset, const float& data);
 
-    void write_bytes(FileTypes::ELF& out, const offset_t& offset, const std::vector<uint8_t>& Bytes);
+    ELFError write_bytes(FileTypes::ELF& out, const offset_t& offset, const std::vector<uint8_t>& Bytes);
 
     uint8_t read_u8(const FileTypes::ELF& in, const offset_t& offset);
 

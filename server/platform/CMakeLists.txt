@@ -1,10 +1,12 @@
+# devkitpro specific sources
+
 cmake_minimum_required(VERSION 3.7)
 if(CMAKE_VERSION VERSION_LESS "3.13")
 	if (POLICY CMP0076)
 		cmake_policy(SET CMP0076 OLD)
 	endif()
-	target_sources(wwhd_rando PRIVATE "server/filetypes/bflim/addrlib.cpp" "server/filetypes/bflim/formconv.cpp")
+	target_sources(wwhd_rando PRIVATE server/platform/wiiutitles.cpp)
 else()
 	cmake_policy(SET CMP0076 NEW)
-	target_sources(wwhd_rando PRIVATE addrlib.cpp formconv.cpp)
+	target_sources(wwhd_rando PRIVATE wiiutitles.cpp)
 endif()

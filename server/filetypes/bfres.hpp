@@ -1,8 +1,13 @@
+//Format is a part of NintendoWare::g3d (a model rendering library)
+//BFRES files contain several subfiles with model, texture, and animation data
+//They can also have embedded files of any type
+
 #pragma once
 
 #include <string>
 #include <vector>
 #include <fstream>
+#include "subfiles/bftex.hpp"
 
 
 
@@ -14,6 +19,7 @@ enum struct [[nodiscard]] FRESError
     REACHED_EOF,
     STRING_LEN_MISMATCH,
     GROUP_IS_EMPTY,
+    SUBFILE_ERROR,
     UNKNOWN,
     COUNT
 };
@@ -92,6 +98,7 @@ namespace FileTypes
     {
     public:
         FRESHeader fresHeader;
+        std::vector<Subfiles::FTEXFile> textures;
         std::vector<FRESFileSpec> files;
 
         resFile();

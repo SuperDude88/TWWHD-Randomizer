@@ -1,9 +1,8 @@
 ; This patch modifies the game's code to make certain items progressive, so even if you get them out of order, they will always be upgraded, never downgraded.
 ; (Note that most of the modifications for this are in the make_items_progressive function of tweaks.py, not here.)
 
-
 ; Swap out the item ID of progressive items for item get events as well as for field items so that their model and item get text change depending on what the next progressive tier of that item you should get is.
-.org 0x025d7db4
+.org 0x025d7dac
 	bl convert_progressive_item_id_for_createDemoItem
 .org @NextFreeSpace
 .global convert_progressive_item_id_for_createDemoItem
@@ -16,7 +15,7 @@ convert_progressive_item_id_for_createDemoItem:
   bl convert_progressive_item_id
   mr r31, r3
   
-  li r3,0x101
+  clrlwi r4, r31, 24
   
   lwz r0, 0x14 (sp)
   mtlr r0
@@ -50,6 +49,8 @@ convert_progressive_item_id_for_daItem_create:
 .org @NextFreeSpace
 .global convert_progressive_item_id_for_dProcGetItem_init_1
 convert_progressive_item_id_for_dProcGetItem_init_1:
+  mr r31, r0 ; save r0
+
   stwu sp, -0x10 (sp)
   mflr r0
   stw r0, 0x14 (sp)
@@ -57,6 +58,7 @@ convert_progressive_item_id_for_dProcGetItem_init_1:
   lwz r3,0x428(r30)
   bl convert_progressive_item_id
   
+  mr r0, r31 ; restore r0
   mr r31, r3
   
   lwz r3, 0x14 (sp)

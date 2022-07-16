@@ -1,3 +1,5 @@
+//ELF files are program binaries
+
 #pragma once
 
 #include <vector>
@@ -18,6 +20,7 @@ enum struct [[nodiscard]] ELFError
 	SECTION_DATA_NOT_LOADED,
 	NOBITS_SECTION_NOT_EMPTY,
 	USED_SECTION_IS_EMTPY,
+	INDEX_OUT_OF_RANGE,
 	UNKNOWN,
 	COUNT
 };

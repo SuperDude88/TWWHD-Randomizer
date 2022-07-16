@@ -5,6 +5,7 @@
 
 #include "../utility/endian.hpp"
 #include "../utility/stringUtil.hpp"
+#include "../utility/file.hpp"
 #include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
@@ -24,9 +25,8 @@ static const std::unordered_set<std::string> sections = {
 
 
 namespace NintendoWare::Layout { //"official" name was nw::lyt
-	FLYTError lyt1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
+	FLYTError lyt1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
 
 		if (!bflyt.read(magicLYT1, 4)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -73,13 +73,11 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, maxPartWidth);
 		Utility::Endian::toPlatform_inplace(eType::Big, maxPartHeight);
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 	FLYTError lyt1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		sectionSize = 0x1C + layoutName.size();
 		unsigned int padLen = 4 - ((static_cast<uint32_t>(out.tellp()) + sectionSize) % 4); //dont use padToLen function so we can calculate the length ahead of time (removes a seek later)
 		if (padLen == 4) padLen = 0;
@@ -92,13 +90,13 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, maxPartHeight);
 
 		out.write(magicLYT1, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize));
-		out.write(reinterpret_cast<char*>(&drawCentered), sizeof(drawCentered));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
-		out.write(reinterpret_cast<char*>(&width), sizeof(width));
-		out.write(reinterpret_cast<char*>(&height), sizeof(height));
-		out.write(reinterpret_cast<char*>(&maxPartWidth), sizeof(maxPartWidth));
-		out.write(reinterpret_cast<char*>(&maxPartHeight), sizeof(maxPartHeight));
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+		out.write(reinterpret_cast<const char*>(&drawCentered), sizeof(drawCentered));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&width), sizeof(width));
+		out.write(reinterpret_cast<const char*>(&height), sizeof(height));
+		out.write(reinterpret_cast<const char*>(&maxPartWidth), sizeof(maxPartWidth));
+		out.write(reinterpret_cast<const char*>(&maxPartHeight), sizeof(maxPartHeight));
 		out.write(&layoutName[0], layoutName.size());
 		padToLen(out, 4);
 
@@ -106,9 +104,8 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 
-	FLYTError txl1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
+	FLYTError txl1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
 
 		if (!bflyt.read(magicTXL1, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		if (std::strncmp(magicTXL1, "txl1", 4) != 0) {
@@ -140,7 +137,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		texNames.reserve(numTextures);
 		for (uint32_t strOffset : texStrOffsets) {
-			if (std::string name = readNullTerminatedStr(bflyt, this->offset + 0xC + strOffset); name.empty()) {
+			if (std::string name = readNullTerminatedStr(bflyt, sectionStart + 0xC + strOffset); name.empty()) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
 			}
 			else {
@@ -148,13 +145,13 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			}
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 	FLYTError txl1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
+		std::streamoff sectionStart = out.tellp();
+		
 		numTextures = texNames.size();
 		texStrOffsets.clear();
 		texStrOffsets.reserve(numTextures);
@@ -163,40 +160,39 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, numTextures);
 
 		out.write(magicTXL1, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
-		out.write(reinterpret_cast<char*>(&numTextures), sizeof(numTextures));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
+		out.write(reinterpret_cast<const char*>(&numTextures), sizeof(numTextures));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 
 		{
 			uint32_t strOffset = 0x4 * texNames.size();
-			out.seekp(this->offset + 0xC + strOffset, std::ios::beg);
+			Utility::seek(out, sectionStart + 0xC + strOffset, std::ios::beg);
 			for (const std::string& name : texNames) {
 				texStrOffsets.push_back(strOffset);
 				out.write(&name[0], name.size());
 				strOffset += name.size();
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after names
+			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after names
 		}
 
-		out.seekp(this->offset + 0xC);
+		out.seekp(sectionStart + 0xC);
 		for (uint32_t& strOffset : texStrOffsets) { //write updated offsets
 			Utility::Endian::toPlatform_inplace(eType::Big, strOffset);
 			out.write(reinterpret_cast<const char*>(&strOffset), sizeof(strOffset));
 		}
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.seekp(this->offset + 0x4, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.seekp(sectionStart + 0x4, std::ios::beg);
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 
-	FLYTError fnl1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
+	FLYTError fnl1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
 
 		if (!bflyt.read(magicFNL1, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		if (std::strncmp(magicFNL1, "fnl1", 4) != 0) {
@@ -228,7 +224,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		fontNames.reserve(numFonts);
 		for (uint32_t strOffset : fontStrOffsets) {
-			if (std::string name = readNullTerminatedStr(bflyt, this->offset + 0xC + strOffset); name.empty()) {
+			if (std::string name = readNullTerminatedStr(bflyt, sectionStart + 0xC + strOffset); name.empty()) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
 			}
 			else {
@@ -236,12 +232,12 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			}
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 	FLYTError fnl1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
+		std::streamoff sectionStart = out.tellp();
 
 		numFonts = fontNames.size();
 		fontStrOffsets.clear();
@@ -251,48 +247,46 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, numFonts);
 
 		out.write(magicFNL1, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
-		out.write(reinterpret_cast<char*>(&numFonts), sizeof(numFonts));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
+		out.write(reinterpret_cast<const char*>(&numFonts), sizeof(numFonts));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 
 		{
 			uint32_t strOffset = 0x4 * fontNames.size();
-			out.seekp(this->offset + 0xC + strOffset, std::ios::beg);
+			Utility::seek(out, sectionStart + 0xC + strOffset, std::ios::beg);
 			for (const std::string& name : fontNames) {
 				fontStrOffsets.push_back(strOffset);
 				out.write(&name[0], name.size());
 				strOffset += name.size();
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after names
+			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after names
 		}
 
-		out.seekp(this->offset + 0xC);
+		out.seekp(sectionStart + 0xC);
 		for (uint32_t& strOffset : fontStrOffsets) { //write updated offsets
 			Utility::Endian::toPlatform_inplace(eType::Big, strOffset);
 			out.write(reinterpret_cast<const char*>(&strOffset), sizeof(strOffset));
 		}
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.seekp(this->offset + 0x4, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.seekp(sectionStart + 0x4, std::ios::beg);
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 
-	FLYTError material::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-
+	FLYTError material::read(std::istream& bflyt) {
 		name.resize(0x1C);
 		if (!bflyt.read(&name[0], 0x1C)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), blackColor)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), blackColor)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), whiteColor)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), whiteColor)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
@@ -426,11 +420,11 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		if (fontShadowParams) {
 			fontShadowParameter& param = fontShadowParam.emplace();
 
-			if (!readRGBA8(bflyt, bflyt.tellg(), param.blackColor)) {
+			if (!readRGBA(bflyt, bflyt.tellg(), param.blackColor)) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 			}
 
-			if (!readRGBA8(bflyt, bflyt.tellg(), param.whiteColor)) {
+			if (!readRGBA(bflyt, bflyt.tellg(), param.whiteColor)) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 			}
 		}
@@ -442,10 +436,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		std::streamoff beg = out.tellp();
 		out.write(&name[0], 0x1C);
 
-		writeRGBA8(out, blackColor);
-		writeRGBA8(out, whiteColor);
+		writeRGBA(out, blackColor);
+		writeRGBA(out, whiteColor);
 
-		out.seekp(4, std::ios::cur); //skip over flags for now
+		Utility::seek(out, 4, std::ios::cur); //skip over flags for now
 
 		setFlag(texRefs.size(), 0x00000003, 0);
 		for (texRef& ref : texRefs) {
@@ -488,9 +482,9 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 			Utility::Endian::toPlatform_inplace(eType::Big, compare.value);
 
-			out.write(reinterpret_cast<char*>(&compare.compareMode), 1);
-			out.write(reinterpret_cast<char*>(&compare.unk), 3);
-			out.write(reinterpret_cast<char*>(&compare.value), sizeof(compare.value));
+			out.write(reinterpret_cast<const char*>(&compare.compareMode), 1);
+			out.write(reinterpret_cast<const char*>(&compare.unk), 3);
+			out.write(reinterpret_cast<const char*>(&compare.value), sizeof(compare.value));
 		}
 
 		setFlag(false, 0x00000400, 10);
@@ -526,9 +520,9 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, param.scaleX);
 			Utility::Endian::toPlatform_inplace(eType::Big, param.scaleY);
 
-			out.write(reinterpret_cast<char*>(&param.rotation), sizeof(param.rotation));
-			out.write(reinterpret_cast<char*>(&param.scaleX), sizeof(param.scaleX));
-			out.write(reinterpret_cast<char*>(&param.scaleY), sizeof(param.scaleY));
+			out.write(reinterpret_cast<const char*>(&param.rotation), sizeof(param.rotation));
+			out.write(reinterpret_cast<const char*>(&param.scaleX), sizeof(param.scaleX));
+			out.write(reinterpret_cast<const char*>(&param.scaleY), sizeof(param.scaleY));
 		}
 
 		setFlag(projectionMaps.size(), 0x00018000, 15);
@@ -538,19 +532,19 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, map.scaleX);
 			Utility::Endian::toPlatform_inplace(eType::Big, map.scaleY);
 
-			out.write(reinterpret_cast<char*>(&map.posX), sizeof(map.posX));
-			out.write(reinterpret_cast<char*>(&map.posY), sizeof(map.posY));
-			out.write(reinterpret_cast<char*>(&map.scaleX), sizeof(map.scaleX));
-			out.write(reinterpret_cast<char*>(&map.scaleY), sizeof(map.scaleY));
-			out.write(reinterpret_cast<char*>(&map.flags), sizeof(map.flags));
+			out.write(reinterpret_cast<const char*>(&map.posX), sizeof(map.posX));
+			out.write(reinterpret_cast<const char*>(&map.posY), sizeof(map.posY));
+			out.write(reinterpret_cast<const char*>(&map.scaleX), sizeof(map.scaleX));
+			out.write(reinterpret_cast<const char*>(&map.scaleY), sizeof(map.scaleY));
+			out.write(reinterpret_cast<const char*>(&map.flags), sizeof(map.flags));
 		}
 
 		setFlag(false, 0x00020000, 17);
 		if (fontShadowParam.has_value()) {
 			setFlag(true, 0x00020000, 17);
 
-			writeRGBA8(out, blackColor);
-			writeRGBA8(out, whiteColor);
+			writeRGBA(out, blackColor);
+			writeRGBA(out, whiteColor);
 		}
 
 		setFlag(alphaInterpolation, 0x00040000, 18);
@@ -559,16 +553,15 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		out.seekp(beg + 0x24, std::ios::beg);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, flags);
-		out.write(reinterpret_cast<char*>(&flags), sizeof(flags)); //write flags
+		out.write(reinterpret_cast<const char*>(&flags), sizeof(flags)); //write flags
 
 		out.seekp(end, std::ios::beg); //seek back to end of material so things are written sequentially
 		return FLYTError::NONE;
 	}
 
 
-	FLYTError mat1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
+	FLYTError mat1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
 
 		if (!bflyt.read(magicMAT1, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		if (std::strncmp(magicMAT1, "mat1", 4) != 0) {
@@ -598,21 +591,18 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			matOffsets.push_back(matOffset);
 		}
 
-		FLYTError err = FLYTError::NONE;
 		materials.reserve(numMats);
-		for (uint32_t matOffset : matOffsets) {
-			err = materials.emplace_back().read(bflyt, this->offset + matOffset);
-			if (err != FLYTError::NONE) {
-				return err;
-			}
+		for (const uint32_t& matOffset : matOffsets) {
+			bflyt.seekg(sectionStart + matOffset, std::ios::beg);
+			LOG_AND_RETURN_IF_ERR(materials.emplace_back().read(bflyt));
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 	FLYTError mat1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
+		std::streamoff sectionStart = out.tellp();
 
 		numMats = materials.size();
 		matOffsets.clear();
@@ -622,43 +612,40 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, numMats);
 
 		out.write(magicMAT1, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
-		out.write(reinterpret_cast<char*>(&numMats), sizeof(numMats));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //will be inaccurate
+		out.write(reinterpret_cast<const char*>(&numMats), sizeof(numMats));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 
 		{
 			uint32_t matOffset = 0xC + 0x4 * materials.size();
-			out.seekp(this->offset + matOffset, std::ios::beg);
+			Utility::seek(out, sectionStart + matOffset, std::ios::beg);
 			for (material& mat : materials) {
 				matOffsets.push_back(matOffset);
-				if (FLYTError err = mat.save_changes(out); err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(mat.save_changes(out));
 
-				matOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+				matOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after materials
+			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after materials
 		}
 
-		out.seekp(this->offset + 0xC);
+		out.seekp(sectionStart + 0xC);
 		for (uint32_t& matOffset : matOffsets) { //write updated offsets
 			Utility::Endian::toPlatform_inplace(eType::Big, matOffset);
 			out.write(reinterpret_cast<const char*>(&matOffset), sizeof(matOffset));
 		}
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.seekp(this->offset + 0x4, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.seekp(sectionStart + 0x4, std::ios::beg);
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 
-	FLYTError usd1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
+	FLYTError usd1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
 
 		if (!bflyt.read(magic, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		if (std::strncmp(magic, "usd1", 4) != 0) {
@@ -722,7 +709,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 						entry.data = data;
 					}
 					else {
-						if (std::string data = readNullTerminatedStr(bflyt, this->offset + entry.dataOffset); data.empty()) {
+						if (std::string data = readNullTerminatedStr(bflyt, sectionStart + entry.dataOffset); data.empty()) {
 							LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
 						}
 						else {
@@ -766,26 +753,26 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			entries.push_back(entry);
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 	FLYTError usd1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
+		std::streamoff sectionStart = out.tellp();
 
 		numEntries = entries.size();
 		Utility::Endian::toPlatform_inplace(eType::Big, numEntries);
 
 		out.write(magic, 4);
-		out.seekp(4, std::ios::cur); //skip section size for now
-		out.write(reinterpret_cast<char*>(&numEntries), sizeof(numEntries));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+		Utility::seek(out, 4, std::ios::cur); //skip section size for now
+		out.write(reinterpret_cast<const char*>(&numEntries), sizeof(numEntries));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 		for (userDataEntry& entry : entries) {
 			std::streamoff entryStart = out.tellp();
 			entry.dataType = static_cast<UserDataType>(entry.data.index());
-			out.seekp(0xA, std::ios::cur);
-			out.write(reinterpret_cast<char*>(&entry.dataType), 1);
-			out.write(reinterpret_cast<char*>(&entry.unk), sizeof(entry.unk));
+			Utility::seek(out, 0xA, std::ios::cur);
+			out.write(reinterpret_cast<const char*>(&entry.dataType), 1);
+			out.write(reinterpret_cast<const char*>(&entry.unk), sizeof(entry.unk));
 			entry.dataOffset = out.tellp() - entryStart;
 			switch (entry.dataType) {
 			case UserDataType::STRING:
@@ -797,14 +784,14 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				entry.dataLen = std::get<std::vector<int32_t>>(entry.data).size();
 				for (int32_t& value : std::get<std::vector<int32_t>>(entry.data)) {
 					Utility::Endian::toPlatform_inplace(eType::Big, value);
-					out.write(reinterpret_cast<char*>(&value), sizeof(value));
+					out.write(reinterpret_cast<const char*>(&value), sizeof(value));
 				}
 				break;
 			case UserDataType::FLOAT:
 				entry.dataLen = std::get<std::vector<float>>(entry.data).size();
 				for (float& value : std::get<std::vector<float>>(entry.data)) {
 					Utility::Endian::toPlatform_inplace(eType::Big, value);
-					out.write(reinterpret_cast<char*>(&value), sizeof(value));
+					out.write(reinterpret_cast<const char*>(&value), sizeof(value));
 				}
 				break;
 			case UserDataType::STRUCT:
@@ -820,25 +807,24 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, entry.dataOffset);
 			Utility::Endian::toPlatform_inplace(eType::Big, entry.dataLen);
 
-			out.write(reinterpret_cast<char*>(&entry.nameOffset), sizeof(entry.nameOffset));
-			out.write(reinterpret_cast<char*>(&entry.dataOffset), sizeof(entry.dataOffset));
-			out.write(reinterpret_cast<char*>(&entry.dataLen), sizeof(entry.dataLen));
+			out.write(reinterpret_cast<const char*>(&entry.nameOffset), sizeof(entry.nameOffset));
+			out.write(reinterpret_cast<const char*>(&entry.dataOffset), sizeof(entry.dataOffset));
+			out.write(reinterpret_cast<const char*>(&entry.dataLen), sizeof(entry.dataLen));
 			out.seekp(entryEnd, std::ios::beg);
 		}
 
-		sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset;
-		out.seekp(this->offset + 0x4, std::ios::beg);
+		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		out.seekp(sectionStart + 0x4, std::ios::beg);
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 
-	FLYTError cnt1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
+	FLYTError cnt1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
 
 		if (!bflyt.read(magic, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		if (std::strncmp(magic, "cnt1", 4) != 0) {
@@ -869,7 +855,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			this->name = name;
 		}
 
-		bflyt.seekg(this->offset + paneNamesOffset, std::ios::beg);
+		bflyt.seekg(sectionStart + paneNamesOffset, std::ios::beg);
 		paneNames.reserve(paneCount);
 		for (unsigned int i = 0; i < paneCount; i++) {
 			std::string paneName;
@@ -886,7 +872,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			numPaddingBytes = 0;
 		}
 		bflyt.seekg(numPaddingBytes, std::ios::cur);
-		animNameTableOffset = static_cast<uint32_t>(bflyt.tellg()) - this->offset;
+		animNameTableOffset = static_cast<uint32_t>(bflyt.tellg()) - sectionStart;
 
 		animNameOffsets.reserve(animCount);
 		for (unsigned int i = 0; i < animCount; i++) {
@@ -901,7 +887,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		animNames.reserve(animCount);
 		for (const uint32_t nameOffset : animNameOffsets) {
-			if (std::string name = readNullTerminatedStr(bflyt, this->offset + animNameTableOffset + nameOffset); name.empty()) {
+			if (std::string name = readNullTerminatedStr(bflyt, sectionStart + animNameTableOffset + nameOffset); name.empty()) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
 			}
 			else {
@@ -909,12 +895,12 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			}
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 	FLYTError cnt1::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
+		std::streamoff sectionStart = out.tellp();
 
 		paneCount = paneNames.size();
 		animCount = animNames.size();
@@ -924,20 +910,20 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, animCount);
 
 		out.write(magic, 4);
-		out.seekp(8, std::ios::cur); //skip section size and pane names offset
-		out.write(reinterpret_cast<char*>(&paneCount), sizeof(paneCount));
-		out.write(reinterpret_cast<char*>(&animCount), sizeof(animCount));
+		Utility::seek(out, 8, std::ios::cur); //skip section size and pane names offset
+		out.write(reinterpret_cast<const char*>(&paneCount), sizeof(paneCount));
+		out.write(reinterpret_cast<const char*>(&animCount), sizeof(animCount));
 		out.write(&name[0], name.size());
 		padToLen(out, 4);
 
-		paneNamesOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+		paneNamesOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 
 		for (const std::string& paneName : paneNames) {
 			out.write(&paneName[0], 0x18);
 		}
 
 		padToLen(out, 4);
-		animNameTableOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+		animNameTableOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 
 		animNameOffsets.clear();
 		animNameOffsets.reserve(animCount);
@@ -949,31 +935,28 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				nameOffset += animName.size();
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after materials
+			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after materials
 		}
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.seekp(this->offset + 0x4, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.seekp(sectionStart + 0x4, std::ios::beg);
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
 		Utility::Endian::toPlatform_inplace(eType::Big, paneNamesOffset);
-		out.write(reinterpret_cast<char*>(&paneNamesOffset), sizeof(paneNamesOffset));
+		out.write(reinterpret_cast<const char*>(&paneNamesOffset), sizeof(paneNamesOffset));
 
-		out.seekp(this->offset + animNameTableOffset, std::ios::beg);
+		out.seekp(sectionStart + animNameTableOffset, std::ios::beg);
 		for (uint32_t nameOffset : animNameOffsets) {
 			Utility::Endian::toPlatform_inplace(eType::Big, nameOffset);
-			out.write(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset));
+			out.write(reinterpret_cast<const char*>(&nameOffset), sizeof(nameOffset));
 		}
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
 
-	FLYTError grp1::read(std::istream& bflyt, const unsigned int offset) {
-		bflyt.seekg(offset, std::ios::beg);
-		this->offset = offset;
-
+	FLYTError grp1::read(std::istream& bflyt) {
 		if (!bflyt.read(magic, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		if (std::strncmp(magic, "grp1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
@@ -1029,14 +1012,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 				if (std::strncmp(nextSection, "grp1", 4) != 0) LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION) //should never happen
 
-				grp1 child;
-				FLYTError err = FLYTError::NONE;
-
-				err = child.read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
-				children.push_back(child);
+				LOG_AND_RETURN_IF_ERR(children.emplace_back().read(bflyt));
 
 				if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
 					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -1061,7 +1037,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	FLYTError grp1::save_changes(std::ostream& out, uint16_t& sectionNum) {
 		sectionNum += 1; //add each group to section count
-		this->offset = out.tellp();
 
 		numPanes = paneNames.size();
 		sectionSize = 0x24 + numPanes * 0x18;
@@ -1070,10 +1045,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize));
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
 		out.write(&groupName[0], 0x18);
-		out.write(reinterpret_cast<char*>(&numPanes), sizeof(numPanes));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&numPanes), sizeof(numPanes));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 
 		for (const std::string& paneName : paneNames) {
 			out.write(&paneName[0], 0x18);
@@ -1084,17 +1059,15 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, size);
 
 			out.write("grs1", 4);
-			out.write(reinterpret_cast<char*>(&size), sizeof(size));
+			out.write(reinterpret_cast<const char*>(&size), sizeof(size));
 			sectionNum += 1; //grs counts as section
 
 			for (grp1& group : children) {
-				if (FLYTError err = group.save_changes(out, sectionNum); err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(group.save_changes(out, sectionNum));
 			}
 
 			out.write("gre1", 4);
-			out.write(reinterpret_cast<char*>(&size), sizeof(size));
+			out.write(reinterpret_cast<const char*>(&size), sizeof(size));
 			sectionNum += 1; //gre counts as section
 		}
 
@@ -1105,78 +1078,73 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError PaneBase::read(std::istream& bflyt, const unsigned int offset) {
-				bflyt.seekg(offset, std::ios::beg);
-				this->offset = offset;
-			
-				if (!bflyt.read(magic, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				if (!bflyt.read(reinterpret_cast<char*>(&bitFlags), 1)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				if (!bflyt.read(reinterpret_cast<char*>(&originFlags), 1)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				if (!bflyt.read(reinterpret_cast<char*>(&alpha), 1)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				if (!bflyt.read(reinterpret_cast<char*>(&paneMagFlags), 1)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				name.resize(0x18);
-				userInfo.resize(0x8);
-				if (!bflyt.read(&name[0], 0x18)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				if (!bflyt.read(&userInfo[0], 0x8)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				
-				if (!readVec3(bflyt, bflyt.tellg(), translation)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-			
-				if (!readVec3(bflyt, bflyt.tellg(), rotation)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-			
-				if (!readVec2(bflyt, bflyt.tellg(), scale)) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-			
-				if (!bflyt.read(reinterpret_cast<char*>(&width), sizeof(width))) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-				if (!bflyt.read(reinterpret_cast<char*>(&height), sizeof(height))) {
-					LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
-				}
-			
-				Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-				Utility::Endian::toPlatform_inplace(eType::Big, width);
-				Utility::Endian::toPlatform_inplace(eType::Big, height);
-			
-				return FLYTError::NONE;
-			}
+	FLYTError PaneBase::read(std::istream& bflyt) {
+		if (!bflyt.read(magic, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		if (!bflyt.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		if (!bflyt.read(reinterpret_cast<char*>(&bitFlags), 1)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		if (!bflyt.read(reinterpret_cast<char*>(&originFlags), 1)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		if (!bflyt.read(reinterpret_cast<char*>(&alpha), 1)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		if (!bflyt.read(reinterpret_cast<char*>(&paneMagFlags), 1)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		name.resize(0x18);
+		userInfo.resize(0x8);
+		if (!bflyt.read(&name[0], 0x18)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		if (!bflyt.read(&userInfo[0], 0x8)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		
+		if (!readVec3(bflyt, bflyt.tellg(), translation)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+	
+		if (!readVec3(bflyt, bflyt.tellg(), rotation)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+	
+		if (!readVec2(bflyt, bflyt.tellg(), scale)) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+	
+		if (!bflyt.read(reinterpret_cast<char*>(&width), sizeof(width))) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+		if (!bflyt.read(reinterpret_cast<char*>(&height), sizeof(height))) {
+			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+		}
+	
+		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+		Utility::Endian::toPlatform_inplace(eType::Big, width);
+		Utility::Endian::toPlatform_inplace(eType::Big, height);
+	
+		return FLYTError::NONE;
+	}
 
 	std::unique_ptr<PaneBase> PaneBase::clonePane() {
 		return std::make_unique<PaneBase>(*this);
 	}
 
 	FLYTError PaneBase::save_changes(std::ostream& out) {
-		this->offset = out.tellp();
-
 		Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 		Utility::Endian::toPlatform_inplace(eType::Big, width);
 		Utility::Endian::toPlatform_inplace(eType::Big, height);
 
 		out.write(magic, 4);
-		out.write(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize));
-		out.write(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags));
-		out.write(reinterpret_cast<char*>(&originFlags), sizeof(originFlags));
-		out.write(reinterpret_cast<char*>(&alpha), sizeof(alpha));
-		out.write(reinterpret_cast<char*>(&paneMagFlags), sizeof(paneMagFlags));
+		out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+		out.write(reinterpret_cast<const char*>(&bitFlags), sizeof(bitFlags));
+		out.write(reinterpret_cast<const char*>(&originFlags), sizeof(originFlags));
+		out.write(reinterpret_cast<const char*>(&alpha), sizeof(alpha));
+		out.write(reinterpret_cast<const char*>(&paneMagFlags), sizeof(paneMagFlags));
 		out.write(&name[0], 0x18);
 		out.write(&userInfo[0], 0x8);
 
@@ -1184,8 +1152,8 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		writeVec3(out, rotation);
 		writeVec2(out, scale);
 
-		out.write(reinterpret_cast<char*>(&width), sizeof(width));
-		out.write(reinterpret_cast<char*>(&height), sizeof(height));
+		out.write(reinterpret_cast<const char*>(&width), sizeof(width));
+		out.write(reinterpret_cast<const char*>(&height), sizeof(height));
 
 		return FLYTError::NONE;
 	}
@@ -1195,10 +1163,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError pan1::read(std::istream& bflyt, const unsigned int offset) {
-		if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
-			return err;
-		}
+	FLYTError pan1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
+
+		LOG_AND_RETURN_IF_ERR(PaneBase::read(bflyt));
 		if (std::strncmp(magic, "pan1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 		}
@@ -1206,7 +1174,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			LOG_ERR_AND_RETURN(FLYTError::UNEXPECTED_VALUE)
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1215,7 +1183,8 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 	FLYTError pan1::save_changes(std::ostream& out) {
-		return PaneBase::save_changes(out);
+		LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
+		return FLYTError::NONE;
 	}
 
 
@@ -1223,10 +1192,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError bnd1::read(std::istream& bflyt, const unsigned int offset) {
-		if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
-			return err;
-		}
+	FLYTError bnd1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
+
+		LOG_AND_RETURN_IF_ERR(PaneBase::read(bflyt));
 		if (std::strncmp(magic, "bnd1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 		}
@@ -1234,7 +1203,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			LOG_ERR_AND_RETURN(FLYTError::UNEXPECTED_VALUE)
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1243,7 +1212,8 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 	FLYTError bnd1::save_changes(std::ostream& out) {
-		return PaneBase::save_changes(out);
+		LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
+		return FLYTError::NONE;
 	}
 
 
@@ -1251,10 +1221,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError wnd1::read(std::istream& bflyt, const unsigned int offset) {
-		if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
-			return err;
-		}
+	FLYTError wnd1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::read(bflyt));
 		if (std::strncmp(magic, "wnd1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 		}
@@ -1310,20 +1280,20 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, contentOffset);
 		Utility::Endian::toPlatform_inplace(eType::Big, frameTableOffset);
 
-		bflyt.seekg(this->offset + contentOffset, std::ios::beg);
-		if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorTL)) {
+		bflyt.seekg(sectionStart + contentOffset, std::ios::beg);
+		if (!readRGBA(bflyt, bflyt.tellg(), content.vertexColorTL)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorTR)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), content.vertexColorTR)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorBL)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), content.vertexColorBL)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), content.vertexColorBR)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), content.vertexColorBR)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
@@ -1360,7 +1330,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 
-		bflyt.seekg(this->offset + frameTableOffset);
+		bflyt.seekg(sectionStart + frameTableOffset);
 		frameTable.reserve(frameNum);
 		for (unsigned int i = 0; i < frameNum; i++) {
 			uint32_t frameOffset = 0;
@@ -1373,8 +1343,8 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 		frames.reserve(frameNum);
-		for (const uint32_t frameOffset : frameTable) {
-			bflyt.seekg(this->offset + frameOffset, std::ios::beg);
+		for (const uint32_t& frameOffset : frameTable) {
+			bflyt.seekg(sectionStart + frameOffset, std::ios::beg);
 
 			windowFrame frame;
 			if (!bflyt.read(reinterpret_cast<char*>(&frame.matIndex), sizeof(frame.matIndex))) {
@@ -1392,7 +1362,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			frames.push_back(frame);
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1401,9 +1371,9 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 	FLYTError wnd1::save_changes(std::ostream& out) {
-		if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
-			return err;
-		}
+		std::streamoff sectionStart = out.tellp();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
 
 		frameNum = frames.size();
 
@@ -1417,31 +1387,31 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, frameSizeBottom);
 		//update content and frame table offsets later
 
-		out.write(reinterpret_cast<char*>(&leftStretch), sizeof(leftStretch));
-		out.write(reinterpret_cast<char*>(&rightStretch), sizeof(rightStretch));
-		out.write(reinterpret_cast<char*>(&topStretch), sizeof(topStretch));
-		out.write(reinterpret_cast<char*>(&bottomStretch), sizeof(bottomStretch));
-		out.write(reinterpret_cast<char*>(&frameSizeLeft), sizeof(frameSizeLeft));
-		out.write(reinterpret_cast<char*>(&frameSizeRight), sizeof(frameSizeRight));
-		out.write(reinterpret_cast<char*>(&frameSizeTop), sizeof(frameSizeTop));
-		out.write(reinterpret_cast<char*>(&frameSizeBottom), sizeof(frameSizeBottom));
-		out.write(reinterpret_cast<char*>(&frameNum), sizeof(frameNum));
-		out.write(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
-		out.seekp(8, std::ios::cur); //skip content and frame table offsets
+		out.write(reinterpret_cast<const char*>(&leftStretch), sizeof(leftStretch));
+		out.write(reinterpret_cast<const char*>(&rightStretch), sizeof(rightStretch));
+		out.write(reinterpret_cast<const char*>(&topStretch), sizeof(topStretch));
+		out.write(reinterpret_cast<const char*>(&bottomStretch), sizeof(bottomStretch));
+		out.write(reinterpret_cast<const char*>(&frameSizeLeft), sizeof(frameSizeLeft));
+		out.write(reinterpret_cast<const char*>(&frameSizeRight), sizeof(frameSizeRight));
+		out.write(reinterpret_cast<const char*>(&frameSizeTop), sizeof(frameSizeTop));
+		out.write(reinterpret_cast<const char*>(&frameSizeBottom), sizeof(frameSizeBottom));
+		out.write(reinterpret_cast<const char*>(&frameNum), sizeof(frameNum));
+		out.write(reinterpret_cast<const char*>(&bitFlags), sizeof(bitFlags));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
+		Utility::seek(out, 8, std::ios::cur); //skip content and frame table offsets
 
-		contentOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
-		writeRGBA8(out, content.vertexColorTL);
-		writeRGBA8(out, content.vertexColorTR);
-		writeRGBA8(out, content.vertexColorBL);
-		writeRGBA8(out, content.vertexColorBR);
+		contentOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		writeRGBA(out, content.vertexColorTL);
+		writeRGBA(out, content.vertexColorTR);
+		writeRGBA(out, content.vertexColorBL);
+		writeRGBA(out, content.vertexColorBR);
 
 		content.numCoords = content.coords.size();
 		Utility::Endian::toPlatform_inplace(eType::Big, content.matIndex);
 
-		out.write(reinterpret_cast<char*>(&content.matIndex), sizeof(content.matIndex));
-		out.write(reinterpret_cast<char*>(&content.numCoords), sizeof(content.numCoords));
-		out.write(reinterpret_cast<char*>(&content.padding_0x00), sizeof(content.padding_0x00));
+		out.write(reinterpret_cast<const char*>(&content.matIndex), sizeof(content.matIndex));
+		out.write(reinterpret_cast<const char*>(&content.numCoords), sizeof(content.numCoords));
+		out.write(reinterpret_cast<const char*>(&content.padding_0x00), sizeof(content.padding_0x00));
 
 		for (UVCoords& coord : content.coords) {
 			writeVec2(out, coord.coordTL);
@@ -1451,47 +1421,47 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 
-		frameTableOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+		frameTableOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 		frameTable.clear();
 		frameTable.reserve(frameNum);
 
 		{
 			uint32_t frameOffset = frameTableOffset + (frameNum * 0x4);
-			out.seekp(this->offset + frameOffset, std::ios::beg);
+			Utility::seek(out, sectionStart + frameOffset, std::ios::beg);
 			for (windowFrame& frame : frames) {
 				frameTable.push_back(frameOffset);
 				Utility::Endian::toPlatform_inplace(eType::Big, frame.matIndex);
 
-				out.write(reinterpret_cast<char*>(&frame.matIndex), sizeof(frame.matIndex));
-				out.write(reinterpret_cast<char*>(&frame.texFlip), sizeof(frame.texFlip));
-				out.write(reinterpret_cast<char*>(&frame.padding_0x00), sizeof(frame.padding_0x00));
+				out.write(reinterpret_cast<const char*>(&frame.matIndex), sizeof(frame.matIndex));
+				out.write(reinterpret_cast<const char*>(&frame.texFlip), sizeof(frame.texFlip));
+				out.write(reinterpret_cast<const char*>(&frame.padding_0x00), sizeof(frame.padding_0x00));
 
-				frameOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+				frameOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after frames
+			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after frames
 		}
 
-		out.seekp(this->offset + 0x4, std::ios::beg);
+		out.seekp(sectionStart + 0x4, std::ios::beg);
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + 0x68, std::ios::beg);
+		out.seekp(sectionStart + 0x68, std::ios::beg);
 
 		Utility::Endian::toPlatform_inplace(eType::Big, contentOffset);
 		uint32_t frameTableOffset_BE = Utility::Endian::toPlatform(eType::Big, frameTableOffset);
 
-		out.write(reinterpret_cast<char*>(&contentOffset), sizeof(contentOffset));
-		out.write(reinterpret_cast<char*>(&frameTableOffset_BE), sizeof(frameTableOffset_BE));
+		out.write(reinterpret_cast<const char*>(&contentOffset), sizeof(contentOffset));
+		out.write(reinterpret_cast<const char*>(&frameTableOffset_BE), sizeof(frameTableOffset_BE));
 
-		out.seekp(this->offset + frameTableOffset, std::ios::beg);
+		out.seekp(sectionStart + frameTableOffset, std::ios::beg);
 
 		for (uint32_t& frameOffset : frameTable) {
 			Utility::Endian::toPlatform_inplace(eType::Big, frameOffset);
-			out.write(reinterpret_cast<char*>(&frameOffset), sizeof(frameOffset));
+			out.write(reinterpret_cast<const char*>(&frameOffset), sizeof(frameOffset));
 		}
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1500,10 +1470,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError txt1::read(std::istream& bflyt, const unsigned int offset) {
-		if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
-			return err;
-		}
+	FLYTError txt1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::read(bflyt));
 		if (std::strncmp(magic, "txt1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 		}
@@ -1539,11 +1509,11 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), fontColorTop)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), fontColorTop)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), fontColorBottom)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), fontColorBottom)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
@@ -1575,11 +1545,11 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), shadowColorTop)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), shadowColorTop)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), shadowColorBottom)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), shadowColorBottom)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
@@ -1605,7 +1575,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, shadowItalicTilt);
 
 		if (textOffset != 0) {
-			if (std::u16string name = readNullTerminatedWStr(bflyt, this->offset + textOffset); name.empty()) {
+			if (std::u16string name = readNullTerminatedWStr(bflyt, sectionStart + textOffset); name.empty()) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
 			}
 			else {
@@ -1618,7 +1588,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 		if (nameOffset != 0) {
-			if (std::string name = readNullTerminatedStr(bflyt, this->offset + nameOffset); name.empty()) {
+			if (std::string name = readNullTerminatedStr(bflyt, sectionStart + nameOffset); name.empty()) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
 			}
 			else {
@@ -1631,7 +1601,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		if ((bitflags >> 4) & 0x01) { //per char transform flag
 			uint32_t transformOffset = 0;
-			bflyt.seekg(this->offset + 0xA0, std::ios::beg);
+			bflyt.seekg(sectionStart + 0xA0, std::ios::beg);
 			if (!bflyt.read(reinterpret_cast<char*>(&transformOffset), sizeof(transformOffset))) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 			}
@@ -1639,7 +1609,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, transformOffset);
 			charTransformOffset = transformOffset;
 
-			bflyt.seekg(this->offset + transformOffset);
+			bflyt.seekg(sectionStart + transformOffset);
 			perCharTransform transform;
 			if (!bflyt.read(reinterpret_cast<char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset))) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -1670,7 +1640,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			charTransform = std::nullopt;
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1679,9 +1649,9 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 	FLYTError txt1::save_changes(std::ostream& out) {
-		if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
-			return err;
-		}
+		std::streamoff sectionStart = out.tellp();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
 
 		text = Utility::Str::assureNullTermination(text);
 		texLen = text.size() * 2; //need len in bytes, size returns num chars
@@ -1702,95 +1672,95 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, shadowSizeY);
 		Utility::Endian::toPlatform_inplace(eType::Big, shadowItalicTilt);
 
-		out.write(reinterpret_cast<char*>(&texLen), sizeof(texLen));
-		out.write(reinterpret_cast<char*>(&restrictedLen), sizeof(restrictedLen));
-		out.write(reinterpret_cast<char*>(&matIndex), sizeof(matIndex));
-		out.write(reinterpret_cast<char*>(&fontIndex), sizeof(fontIndex));
-		out.write(reinterpret_cast<char*>(&textAlignment), sizeof(textAlignment));
-		out.write(reinterpret_cast<char*>(&lineAlignment), 1);
-		out.write(reinterpret_cast<char*>(&bitflags), sizeof(bitflags));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
-		out.write(reinterpret_cast<char*>(&italicTilt), sizeof(italicTilt));
-		out.seekp(4, std::ios::cur); //skip text offset
+		out.write(reinterpret_cast<const char*>(&texLen), sizeof(texLen));
+		out.write(reinterpret_cast<const char*>(&restrictedLen), sizeof(restrictedLen));
+		out.write(reinterpret_cast<const char*>(&matIndex), sizeof(matIndex));
+		out.write(reinterpret_cast<const char*>(&fontIndex), sizeof(fontIndex));
+		out.write(reinterpret_cast<const char*>(&textAlignment), sizeof(textAlignment));
+		out.write(reinterpret_cast<const char*>(&lineAlignment), 1);
+		out.write(reinterpret_cast<const char*>(&bitflags), sizeof(bitflags));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&italicTilt), sizeof(italicTilt));
+		Utility::seek(out, 4, std::ios::cur); //skip text offset
 
-		writeRGBA8(out, fontColorTop);
-		writeRGBA8(out, fontColorBottom);
+		writeRGBA(out, fontColorTop);
+		writeRGBA(out, fontColorBottom);
 
-		out.write(reinterpret_cast<char*>(&fontSizeX), sizeof(fontSizeX));
-		out.write(reinterpret_cast<char*>(&fontSizeY), sizeof(fontSizeY));
-		out.write(reinterpret_cast<char*>(&charSpace), sizeof(charSpace));
-		out.write(reinterpret_cast<char*>(&lineSpace), sizeof(lineSpace));
-		out.seekp(4, std::ios::cur); //skip name offset
-		out.write(reinterpret_cast<char*>(&shadowPosX), sizeof(shadowPosX));
-		out.write(reinterpret_cast<char*>(&shadowPosY), sizeof(shadowPosY));
-		out.write(reinterpret_cast<char*>(&shadowSizeX), sizeof(shadowSizeX));
-		out.write(reinterpret_cast<char*>(&shadowSizeY), sizeof(shadowSizeY));
+		out.write(reinterpret_cast<const char*>(&fontSizeX), sizeof(fontSizeX));
+		out.write(reinterpret_cast<const char*>(&fontSizeY), sizeof(fontSizeY));
+		out.write(reinterpret_cast<const char*>(&charSpace), sizeof(charSpace));
+		out.write(reinterpret_cast<const char*>(&lineSpace), sizeof(lineSpace));
+		Utility::seek(out, 4, std::ios::cur); //skip name offset
+		out.write(reinterpret_cast<const char*>(&shadowPosX), sizeof(shadowPosX));
+		out.write(reinterpret_cast<const char*>(&shadowPosY), sizeof(shadowPosY));
+		out.write(reinterpret_cast<const char*>(&shadowSizeX), sizeof(shadowSizeX));
+		out.write(reinterpret_cast<const char*>(&shadowSizeY), sizeof(shadowSizeY));
 
-		writeRGBA8(out, shadowColorTop);
-		writeRGBA8(out, shadowColorBottom);
+		writeRGBA(out, shadowColorTop);
+		writeRGBA(out, shadowColorBottom);
 
-		out.write(reinterpret_cast<char*>(&shadowItalicTilt), sizeof(shadowItalicTilt));
+		out.write(reinterpret_cast<const char*>(&shadowItalicTilt), sizeof(shadowItalicTilt));
 		if (charTransform.has_value()) {
-			out.seekp(4, std::ios::cur); //skip char transform offset
+			Utility::seek(out, 4, std::ios::cur); //skip char transform offset
 		}
 
 		textOffset = 0;
 		if (!text.empty()) {
-			textOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+			textOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
             Utility::Endian::toPlatform_inplace(eType::Big, text);
-			out.write(reinterpret_cast<char*>(&text[0]), text.size() * 2);
+			out.write(reinterpret_cast<const char*>(&text[0]), text.size() * 2);
 			padToLen(out, 4);
 		}
 
 		nameOffset = 0;
 		if (!textBoxName.empty()) {
-			nameOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+			nameOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 			out.write(&textBoxName[0], textBoxName.size());
 			padToLen(out, 4);
 		}
 
 		charTransformOffset = std::nullopt;
 		if (charTransform.has_value()) {
-			charTransformOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+			charTransformOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 			perCharTransform& transform = charTransform.value();
 
 			Utility::Endian::toPlatform_inplace(eType::Big, transform.curveTimeOffset);
 			Utility::Endian::toPlatform_inplace(eType::Big, transform.animCurveWidth);
 
-			out.write(reinterpret_cast<char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset));
-			out.write(reinterpret_cast<char*>(&transform.animCurveWidth), sizeof(transform.animCurveWidth));
-			out.write(reinterpret_cast<char*>(&transform.loopType), sizeof(transform.loopType));
-			out.write(reinterpret_cast<char*>(&transform.verticalOrigin), sizeof(transform.verticalOrigin));
-			out.write(reinterpret_cast<char*>(&transform.hasAnimInfo), 1);
-			out.write(reinterpret_cast<char*>(&transform.padding_0x00), sizeof(transform.padding_0x00));
+			out.write(reinterpret_cast<const char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset));
+			out.write(reinterpret_cast<const char*>(&transform.animCurveWidth), sizeof(transform.animCurveWidth));
+			out.write(reinterpret_cast<const char*>(&transform.loopType), sizeof(transform.loopType));
+			out.write(reinterpret_cast<const char*>(&transform.verticalOrigin), sizeof(transform.verticalOrigin));
+			out.write(reinterpret_cast<const char*>(&transform.hasAnimInfo), 1);
+			out.write(reinterpret_cast<const char*>(&transform.padding_0x00), sizeof(transform.padding_0x00));
 		}
 
-		sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after text/transform
+		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after text/transform
 
-		out.seekp(this->offset + 0x4, std::ios::beg);
+		out.seekp(sectionStart + 0x4, std::ios::beg);
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
 		if (textOffset != 0) {
-			out.seekp(this->offset + 0x64, std::ios::beg);
+			out.seekp(sectionStart + 0x64, std::ios::beg);
 			Utility::Endian::toPlatform_inplace(eType::Big, textOffset);
-			out.write(reinterpret_cast<char*>(&textOffset), sizeof(textOffset)); //update value
+			out.write(reinterpret_cast<const char*>(&textOffset), sizeof(textOffset)); //update value
 		}
 
 		if (nameOffset != 0) {
-			out.seekp(this->offset + 0x80, std::ios::beg);
+			out.seekp(sectionStart + 0x80, std::ios::beg);
 			Utility::Endian::toPlatform_inplace(eType::Big, nameOffset);
-			out.write(reinterpret_cast<char*>(&nameOffset), sizeof(nameOffset)); //update value
+			out.write(reinterpret_cast<const char*>(&nameOffset), sizeof(nameOffset)); //update value
 		}
 
 		if (charTransformOffset.has_value()) {
 			uint32_t& transformOffset = charTransformOffset.value();
-			out.seekp(this->offset + 0xA0, std::ios::beg);
+			out.seekp(sectionStart + 0xA0, std::ios::beg);
 			Utility::Endian::toPlatform_inplace(eType::Big, transformOffset);
-			out.write(reinterpret_cast<char*>(&transformOffset), sizeof(transformOffset)); //update value
+			out.write(reinterpret_cast<const char*>(&transformOffset), sizeof(transformOffset)); //update value
 		}
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1799,27 +1769,27 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError pic1::read(std::istream& bflyt, const unsigned int offset) {
-		if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
-			return err;
-		}
+	FLYTError pic1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::read(bflyt));
 		if (std::strncmp(magic, "pic1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorTL)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), vertexColorTL)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorTR)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), vertexColorTR)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorBL)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), vertexColorBL)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
-		if (!readRGBA8(bflyt, bflyt.tellg(), vertexColorBR)) {
+		if (!readRGBA(bflyt, bflyt.tellg(), vertexColorBR)) {
 			LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //returns false if read fails
 		}
 
@@ -1855,7 +1825,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			}
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1864,21 +1834,21 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 	FLYTError pic1::save_changes(std::ostream& out) {
-		if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
-			return err;
-		}
+		std::streamoff sectionStart = out.tellp();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
 
-		writeRGBA8(out, vertexColorTL);
-		writeRGBA8(out, vertexColorTR);
-		writeRGBA8(out, vertexColorBL);
-		writeRGBA8(out, vertexColorBR);
+		writeRGBA(out, vertexColorTL);
+		writeRGBA(out, vertexColorTR);
+		writeRGBA(out, vertexColorBL);
+		writeRGBA(out, vertexColorBR);
 
 		numCoords = coords.size();
 		Utility::Endian::toPlatform_inplace(eType::Big, matIndex);
 
-		out.write(reinterpret_cast<char*>(&matIndex), sizeof(matIndex));
-		out.write(reinterpret_cast<char*>(&numCoords), sizeof(numCoords));
-		out.write(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00));
+		out.write(reinterpret_cast<const char*>(&matIndex), sizeof(matIndex));
+		out.write(reinterpret_cast<const char*>(&numCoords), sizeof(numCoords));
+		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 
 		for (UVCoords& coord : coords) {
 			writeVec2(out, coord.coordTL);
@@ -1888,13 +1858,13 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 		//doesnt need padding, length will always be a multiple of 4
-		sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset; //section ends after coords
+		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after coords
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.seekp(this->offset + 0x4, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.seekp(sectionStart + 0x4, std::ios::beg);
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -1924,10 +1894,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 	}
 
-	FLYTError prt1::read(std::istream& bflyt, const unsigned int offset) {
-		if (FLYTError err = PaneBase::read(bflyt, offset); err != FLYTError::NONE) {
-			return err;
-		}
+	FLYTError prt1::read(std::istream& bflyt) {
+		std::streamoff sectionStart = bflyt.tellg();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::read(bflyt));
 		if (std::strncmp(magic, "prt1", 4) != 0) {
 			LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 		}
@@ -1978,9 +1948,8 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, prop.userDataOffset);
 			Utility::Endian::toPlatform_inplace(eType::Big, prop.panelInfoOffset);
 
-			FLYTError err = FLYTError::NONE;
 			if (prop.propOffset != 0) {
-				bflyt.seekg(this->offset + prop.propOffset, std::ios::beg);
+				bflyt.seekg(sectionStart + prop.propOffset, std::ios::beg);
 
 				char propMagic[4];
 				if (!bflyt.read(reinterpret_cast<char*>(&propMagic), sizeof(propMagic))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -2004,17 +1973,14 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				else {
 					LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 				}
-				err = prop.prop.value()->read(bflyt, this->offset + prop.propOffset);
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(prop.prop.value()->read(bflyt));
 			}
 			else {
 				prop.prop = std::nullopt;
 			}
 
 			if (prop.userDataOffset != 0) {
-				err = prop.userData.emplace().read(bflyt, this->offset + prop.userDataOffset);
+				LOG_AND_RETURN_IF_ERR(prop.userData.emplace().read(bflyt));
 			}
 			else {
 				prop.prop = std::nullopt;
@@ -2038,7 +2004,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			lytFilename = name;
 		}
 
-		bflyt.seekg(this->offset + sectionSize, std::ios::beg);
+		bflyt.seekg(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 
@@ -2047,9 +2013,9 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 	}
 
 	FLYTError prt1::save_changes(std::ostream& out) {
-		if (FLYTError err = PaneBase::save_changes(out); err != FLYTError::NONE) {
-			return err;
-		}
+		std::streamoff sectionStart = out.tellp();
+		
+		LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
 
 		propCount = properties.size();
 
@@ -2057,38 +2023,34 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		Utility::Endian::toPlatform_inplace(eType::Big, magnifyX);
 		Utility::Endian::toPlatform_inplace(eType::Big, magnifyY);
 
-		out.write(reinterpret_cast<char*>(&propCount), sizeof(propCount));
-		out.write(reinterpret_cast<char*>(&magnifyX), sizeof(magnifyX));
-		out.write(reinterpret_cast<char*>(&magnifyY), sizeof(magnifyY));
+		out.write(reinterpret_cast<const char*>(&propCount), sizeof(propCount));
+		out.write(reinterpret_cast<const char*>(&magnifyX), sizeof(magnifyX));
+		out.write(reinterpret_cast<const char*>(&magnifyY), sizeof(magnifyY));
 
 		for (partProperty& prop : properties) {
 			std::streamoff propOffset = out.tellp();
-			out.write(reinterpret_cast<char*>(&prop.propName), 0x18);
-			out.write(reinterpret_cast<char*>(&prop.usageFlag), 1);
-			out.write(reinterpret_cast<char*>(&prop.basicUsageFlag), 1);
-			out.write(reinterpret_cast<char*>(&prop.matUsageFlag), 1);
-			out.write(reinterpret_cast<char*>(&prop.padding_0x00), 1);
-			out.seekp(0xC, std::ios::cur); //skip over offsets for now
+			out.write(reinterpret_cast<const char*>(&prop.propName), 0x18);
+			out.write(reinterpret_cast<const char*>(&prop.usageFlag), 1);
+			out.write(reinterpret_cast<const char*>(&prop.basicUsageFlag), 1);
+			out.write(reinterpret_cast<const char*>(&prop.matUsageFlag), 1);
+			out.write(reinterpret_cast<const char*>(&prop.padding_0x00), 1);
+			Utility::seek(out, 0xC, std::ios::cur); //skip over offsets for now
 
 			prop.propOffset = 0;
 			if (prop.prop.has_value()) {
-				prop.propOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
-				if (FLYTError err = prop.prop.value()->save_changes(out); err != FLYTError::NONE) {
-					return err;
-				}
+				prop.propOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				LOG_AND_RETURN_IF_ERR(prop.prop.value()->save_changes(out));
 			}
 
 			prop.userDataOffset = 0;
 			if (prop.userData.has_value()) {
-				prop.userDataOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
-				if (FLYTError err = prop.userData.value().save_changes(out); err != FLYTError::NONE) {
-					return err;
-				}
+				prop.userDataOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				LOG_AND_RETURN_IF_ERR(prop.userData.value().save_changes(out));
 			}
 
 			prop.panelInfoOffset = 0;
 			if (prop.paneInfo.has_value()) {
-				prop.panelInfoOffset = static_cast<uint32_t>(out.tellp()) - this->offset;
+				prop.panelInfoOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
 				out.write(&prop.paneInfo.value()[0], 0x34);
 			}
 
@@ -2099,22 +2061,22 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			Utility::Endian::toPlatform_inplace(eType::Big, prop.userDataOffset);
 			Utility::Endian::toPlatform_inplace(eType::Big, prop.panelInfoOffset);
 
-			out.write(reinterpret_cast<char*>(&prop.propOffset), sizeof(prop.propOffset));
-			out.write(reinterpret_cast<char*>(&prop.userDataOffset), sizeof(prop.userDataOffset));
-			out.write(reinterpret_cast<char*>(&prop.panelInfoOffset), sizeof(prop.panelInfoOffset));
+			out.write(reinterpret_cast<const char*>(&prop.propOffset), sizeof(prop.propOffset));
+			out.write(reinterpret_cast<const char*>(&prop.userDataOffset), sizeof(prop.userDataOffset));
+			out.write(reinterpret_cast<const char*>(&prop.panelInfoOffset), sizeof(prop.panelInfoOffset));
 
 			out.seekp(propEnd, std::ios::beg);
 		}
 
 		out.write(&lytFilename[0], lytFilename.size());
 		padToLen(out, 4);
-		sectionSize = static_cast<uint32_t>(out.tellp()) - this->offset;
+		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart;
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
-		out.seekp(this->offset + 0x4, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
+		out.seekp(sectionStart + 0x4, std::ios::beg);
+		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
 
-		out.seekp(this->offset + sectionSize, std::ios::beg);
+		out.seekp(sectionStart + sectionSize, std::ios::beg);
 		return FLYTError::NONE;
 	}
 }
@@ -2124,14 +2086,11 @@ Pane::Pane() {
 	
 }
 
-FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
-	bflyt.seekg(offset, std::ios::beg);
-	this->offset = offset;
+FLYTError Pane::read(std::istream& bflyt) {
 	userData = std::nullopt;
 
 	if (!bflyt.read(magic, 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 	
-	FLYTError err = FLYTError::NONE;
 	if (std::strncmp(magic, "pan1", 4) == 0) {
 		pane = std::make_unique<NintendoWare::Layout::pan1>();
 	}
@@ -2153,10 +2112,8 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 	else {
 		LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_SECTION)
 	}
-	err = pane->read(bflyt, this->offset);
-	if (err != FLYTError::NONE) {
-		return err;
-	}
+	bflyt.seekg(-4, std::ios::cur);
+	LOG_AND_RETURN_IF_ERR(pane->read(bflyt));
 
 	char nextSection[4];
 	if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
@@ -2179,12 +2136,7 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 		while (std::strncmp(nextSection, "pae1", 4) != 0) {
 			bflyt.seekg(-4, std::ios::cur);
 
-			Pane& child = children.emplace_back(); //do this because unique_ptr can't be copied
-
-			err = child.read(bflyt, bflyt.tellg());
-			if (err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(children.emplace_back().read(bflyt));
 			
 			if (!bflyt.read(reinterpret_cast<char*>(&nextSection), sizeof(nextSection))) {
 				LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -2203,11 +2155,8 @@ FLYTError Pane::read(std::istream& bflyt, const unsigned int offset) {
 	else if(std::strncmp(nextSection, "usd1", 4) == 0) {
 		bflyt.seekg(-4, std::ios::cur);
 
-		NintendoWare::Layout::usd1 & data = userData.emplace();
-		err = data.read(bflyt, bflyt.tellg());
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+		NintendoWare::Layout::usd1& data = userData.emplace();
+		LOG_AND_RETURN_IF_ERR(data.read(bflyt));
 	}
 	else {
 		bflyt.seekg(-4, std::ios::cur);
@@ -2225,18 +2174,13 @@ Pane& Pane::duplicateChildPane(const unsigned int originalIndex) {
 }
 
 FLYTError Pane::save_changes(std::ostream& out, uint16_t& sectionNum) {
-	sectionNum += 1; //add each pane to section num
-	this->offset = out.tellp();
+	sectionNum += 1; //add each pane to section num	
 
-	if (FLYTError err = pane->save_changes(out); err != FLYTError::NONE) {
-		return err;
-	}
+	LOG_AND_RETURN_IF_ERR(pane->save_changes(out));
 
 	if (userData.has_value()) {
 		sectionNum += 1;
-		if (FLYTError err = userData.value().save_changes(out); err != FLYTError::NONE) {
-			return err;
-		}
+		LOG_AND_RETURN_IF_ERR(userData.value().save_changes(out));
 	}
 
 	if (children.size() > 0) {
@@ -2244,17 +2188,15 @@ FLYTError Pane::save_changes(std::ostream& out, uint16_t& sectionNum) {
 		Utility::Endian::toPlatform_inplace(eType::Big, size);
 
 		out.write("pas1", 4);
-		out.write(reinterpret_cast<char*>(&size), sizeof(size));
+		out.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		sectionNum += 1; //pas counts as section
 
 		for (Pane& child : children) {
-			if (FLYTError err = child.save_changes(out, sectionNum); err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(child.save_changes(out, sectionNum));
 		}
 
 		out.write("pae1", 4);
-		out.write(reinterpret_cast<char*>(&size), sizeof(size));
+		out.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		sectionNum += 1; //pae counts as section
 	}
 
@@ -2356,41 +2298,28 @@ namespace FileTypes {
 		if (header.version_0x0202 != 0x02020000) LOG_ERR_AND_RETURN(FLYTError::UNKNOWN_VERSION)
 		if (header.padding_0x00[0] != 0x00 || header.padding_0x00[1] != 0x00) LOG_ERR_AND_RETURN(FLYTError::UNEXPECTED_VALUE)
 
-		FLYTError err = FLYTError::NONE;
-		err = LYT1.read(bflyt, 0x14); //should always come immediately after the header
-		if (err != FLYTError::NONE) {
-			return err;
-		}
+		LOG_AND_RETURN_IF_ERR(LYT1.read(bflyt)); //should always come immediately after the header
 
 		std::string magic(4, '\0');
 		if (!bflyt.read(reinterpret_cast<char*>(&magic[0]), 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 		bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
 
 		if (magic == "txl1") {
-			err = textures.emplace().read(bflyt, bflyt.tellg());
-			if (err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(textures.emplace().read(bflyt));
 
 			if (!bflyt.read(reinterpret_cast<char*>(&magic[0]), 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 			bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
 		}
 
 		if (magic == "fnl1") {
-			err = fonts.emplace().read(bflyt, bflyt.tellg());
-			if (err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(fonts.emplace().read(bflyt));
 
 			if (!bflyt.read(reinterpret_cast<char*>(&magic[0]), 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 			bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
 		}
 
 		if (magic == "mat1") {
-			err = materials.emplace().read(bflyt, bflyt.tellg());
-			if (err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(materials.emplace().read(bflyt));
 
 			if (!bflyt.read(reinterpret_cast<char*>(&magic[0]), 4)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 			bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
@@ -2398,28 +2327,16 @@ namespace FileTypes {
 
 		while (sections.count(magic) > 0) {
 			if (magic == "usd1") {
-				err = userData.emplace().read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(userData.emplace().read(bflyt));
 			}
 			else if (magic == "cnt1") {
-				err = container.emplace().read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(container.emplace().read(bflyt));
 			}
 			else if (magic == "grp1") {
-				err = rootGroup.read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(rootGroup.read(bflyt));
 			}
 			else {
-				err = rootPane.read(bflyt, bflyt.tellg());
-				if (err != FLYTError::NONE) {
-					return err;
-				}
+				LOG_AND_RETURN_IF_ERR(rootPane.read(bflyt));
 			}
 
 			if (bflyt.tellg() >= header.fileSize) break; //reached end of last section
@@ -2447,49 +2364,37 @@ namespace FileTypes {
 		Utility::Endian::toPlatform_inplace(eType::Big, header.headerSize_0x14);
 		Utility::Endian::toPlatform_inplace(eType::Big, header.version_0x0202);
 
-		out.write(reinterpret_cast<char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker));
-		out.write(reinterpret_cast<char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14));
-		out.write(reinterpret_cast<char*>(&header.version_0x0202), sizeof(header.version_0x0202));
-		out.seekp(6, std::ios::cur); //skip filesize and section count for now
-		out.write(reinterpret_cast<char*>(&header.padding_0x00), sizeof(header.padding_0x00));
+		out.write(reinterpret_cast<const char*>(&header.byteOrderMarker), sizeof(header.byteOrderMarker));
+		out.write(reinterpret_cast<const char*>(&header.headerSize_0x14), sizeof(header.headerSize_0x14));
+		out.write(reinterpret_cast<const char*>(&header.version_0x0202), sizeof(header.version_0x0202));
+		Utility::seek(out, 6, std::ios::cur); //skip filesize and section count for now
+		out.write(reinterpret_cast<const char*>(&header.padding_0x00), sizeof(header.padding_0x00));
 
 		header.numSections = 1;
 
-		if (FLYTError err = LYT1.save_changes(out); err != FLYTError::NONE) {
-			return err;
-		}
+		LOG_AND_RETURN_IF_ERR(LYT1.save_changes(out));
 		if (textures.has_value()) {
-			if (FLYTError err = textures.value().save_changes(out); err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(textures.value().save_changes(out));
 			header.numSections += 1;
 		}
 		if (fonts.has_value()) {
-			if (FLYTError err = fonts.value().save_changes(out); err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(fonts.value().save_changes(out));
 			header.numSections += 1;
 		}
 		if (materials.has_value()) {
-			if (FLYTError err = materials.value().save_changes(out); err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(materials.value().save_changes(out));
 			header.numSections += 1;
 		}
 
-		if (FLYTError err = rootPane.save_changes(out, header.numSections); err != FLYTError::NONE) return err;
-		if (FLYTError err = rootGroup.save_changes(out, header.numSections); err != FLYTError::NONE) return err;
+		LOG_AND_RETURN_IF_ERR(rootPane.save_changes(out, header.numSections));
+		LOG_AND_RETURN_IF_ERR(rootGroup.save_changes(out, header.numSections));
 
 		if (container.has_value()) {
-			if (FLYTError err = container.value().save_changes(out); err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(container.value().save_changes(out));
 			header.numSections += 1;
 		}
 		if (userData.has_value()) {
-			if (FLYTError err = userData.value().save_changes(out); err != FLYTError::NONE) {
-				return err;
-			}
+			LOG_AND_RETURN_IF_ERR(userData.value().save_changes(out));
 			header.numSections += 1;
 		}
 
@@ -2499,8 +2404,8 @@ namespace FileTypes {
 		Utility::Endian::toPlatform_inplace(eType::Big, header.numSections);
 
 		out.seekp(0xC, std::ios::beg);
-		out.write(reinterpret_cast<char*>(&header.fileSize), sizeof(header.fileSize));
-		out.write(reinterpret_cast<char*>(&header.numSections), sizeof(header.numSections));
+		out.write(reinterpret_cast<const char*>(&header.fileSize), sizeof(header.fileSize));
+		out.write(reinterpret_cast<const char*>(&header.numSections), sizeof(header.numSections));
 
 		return FLYTError::NONE;
 	}
