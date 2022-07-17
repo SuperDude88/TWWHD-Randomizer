@@ -50,7 +50,6 @@ add_subdirectory("seedgen")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")
-add_subdirectory("seedgen")
 add_subdirectory("logic")
 
 if(WIN32)
