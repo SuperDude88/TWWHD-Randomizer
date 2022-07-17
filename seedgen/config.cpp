@@ -5,29 +5,37 @@
 #include <filesystem>
 #include "../libs/Yaml.hpp"
 #include "../logic/GameItem.hpp"
+#include "../seedgen/random.hpp"
 #include "../server/utility/platform.hpp"
 #include "../server/command/Log.hpp"
 
 
 
-#define GET_FIELD(yaml, name, out) {                                \
-        if(yaml[#name].IsNone()) return ConfigError::MISSING_KEY;   \
-        out = yaml[#name].As<std::string>();                      \
+#define GET_FIELD(yaml, name, out) {                                        \
+        if(yaml[#name].IsNone()) {                                          \
+            Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
+            return ConfigError::MISSING_KEY;}                               \
+        out = yaml[#name].As<std::string>();                                \
     }
 
-#define SET_FIELD(yaml, config, name) {                                \
-        if(yaml[#name].IsNone()) return ConfigError::MISSING_KEY;   \
-        config.name = yaml[#name].As<std::string>();                      \
+#define SET_FIELD(yaml, config, name) {                                     \
+        if(yaml[#name].IsNone()) {                                          \
+            Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
+            return ConfigError::MISSING_KEY;}                               \
+        config.name = yaml[#name].As<std::string>();                        \
     }
 
 #define SET_BOOL_FIELD(yaml, config, name) {                                \
-        if(yaml[#name].IsNone()) return ConfigError::MISSING_KEY;   \
+        if(yaml[#name].IsNone()) {                                          \
+            Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
+            return ConfigError::MISSING_KEY;}                               \
         config.settings.name = yaml[#name].As<bool>();                      \
     }
-    
-#define SET_INT_FIELD(yaml, config, name) {                         \
-        if(yaml[#name].IsNone()) return ConfigError::MISSING_KEY;   \
-        config.settings.name = yaml[#name].As<int>(0);                       \
+
+#define SET_INT_FIELD(yaml, config, name) {                                 \
+        if(yaml[#name].IsNone()) {                                          \
+            Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
+            return ConfigError::MISSING_KEY;}                               \
     }
 
 namespace {

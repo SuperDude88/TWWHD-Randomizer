@@ -12,6 +12,11 @@ if(ENABLE_DEBUG)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
 endif()
 
+if(FILL_TESTING)
+  message("Configuring for Fill Testing")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFILL_TESTING")
+endif()
+
 # Some path related stuff for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
