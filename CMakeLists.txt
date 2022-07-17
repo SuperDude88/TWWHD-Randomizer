@@ -17,6 +17,11 @@ if(FILL_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFILL_TESTING")
 endif()
 
+if(MASS_TESTING)
+  message("Configuring for Mass Testing")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMASS_TESTING")
+endif()
+
 # Some path related stuff for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")

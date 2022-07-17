@@ -1,41 +1,36 @@
 
 #include "Generate.hpp"
 #include "../seedgen/random.hpp"
+#include "../seedgen/permalink.hpp"
 #include "../server/command/Log.hpp"
-#include "SpoilerLog.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <cstdio>
+#include <vector>
 
 static int testSettings(const Settings& settings, bool& settingToChange, const std::string& settingName)
 {
 
     settingToChange = true;
-    std::cout << "Now Testing setting " << settingName << std::endl;
+    std::cout << "Now Testing setting " << settingName;
 
-    int seed = Random(0, 10000000);
+    const std::string seed = std::to_string(Random(0, 10000000));
+    std::cout << " using seed \"" << seed << "\"" << std::endl;
 
-    std::cout << "Using seed " << std::to_string(seed) << std::endl;
+    auto permalink = create_permalink(settings, seed);
+    std::hash<std::string> strHash;
+    auto integer_seed = strHash(permalink);
 
-    #ifdef ENABLE_DEBUG
-        std::cout << "Debugging is ON" << std::endl;
-    #endif
+    Random_Init(integer_seed);
 
     int worldCount = 1;
-    World blankWorld;
-    WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector {settings};
+    WorldPool worlds (worldCount);
+    std::vector<Settings> settingsVector (1, settings);
 
-    int retVal = generateWorlds(worlds, settingsVector, seed);
+    int retVal = generateWorlds(worlds, settingsVector);
 
-    if (retVal == 0)
-    {
-        std::cout << "Generating Spoiler Log" << std::endl;
-        generateSpoilerLog(worlds);
-        generateNonSpoilerLog(worlds);
-    }
-    else
+    if (retVal != 0)
     {
         std::cout << "Generation after changing setting \"" << settingName << "\" failed." << std::endl;
         return 1;
@@ -46,24 +41,23 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 static int multiWorldTest(const Settings& settings)
 {
     std::cout << "Now testing multiworld generation" << std::endl;
-    int seed = Random(0, 10000000);
 
-    std::cout << "Using seed " << std::to_string(seed) << std::endl;
+    const std::string seed = std::to_string(Random(0, 10000000));
+    std::cout << " using seed \"" << seed << "\"" << std::endl;
+
+    auto permalink = create_permalink(settings, seed);
+    std::hash<std::string> strHash;
+    auto integer_seed = strHash(permalink);
+
+    Random_Init(integer_seed);
 
     int worldCount = 3;
-    World blankWorld;
-    WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector {settings, settings, settings};
+    WorldPool worlds (worldCount);
+    std::vector<Settings> settingsVector (worldCount, settings);
 
-    int retVal = generateWorlds(worlds, settingsVector, seed);
+    int retVal = generateWorlds(worlds, settingsVector);
 
-    if (retVal == 0)
-    {
-        std::cout << "Generating Spoiler Log" << std::endl;
-        generateSpoilerLog(worlds);
-        generateNonSpoilerLog(worlds);
-    }
-    else
+    if (retVal != 0)
     {
         std::cout << "Generation after multiworld test failed." << std::endl;
         return 1;
@@ -71,9 +65,9 @@ static int multiWorldTest(const Settings& settings)
     return 0;
 }
 
-#define TEST(settings, setting, name) if(testSettings(settings, setting, name)) return 1;
+#define TEST(settings, setting, name) if(testSettings(settings, setting, name)) return;
 
-int main()
+void massTest()
 {
     Settings settings1;
 
@@ -172,5 +166,4 @@ int main()
     multiWorldTest(settings1);
 
     std::cout << "All settings tests passed" << std::endl;
-    return 0;
 }
