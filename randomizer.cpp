@@ -6,6 +6,7 @@
 #include "seedgen/permalink.hpp"
 #include "logic/SpoilerLog.hpp"
 #include "logic/Generate.hpp"
+#include "logic/mass_test.hpp"
 #include "server/filetypes/dzx.hpp"
 #include "server/filetypes/charts.hpp"
 #include "server/command/WriteLocations.hpp"
@@ -457,6 +458,13 @@ public:
 	}
 
 	void randomize() {
+
+		// Go through the setting testing process if mass testing is turned on and ignore everything else
+		#ifdef MASS_TESTING
+			massTest();
+			return;
+		#endif
+
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
 
 		std::hash<std::string> strHash;

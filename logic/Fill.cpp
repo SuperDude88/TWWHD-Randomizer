@@ -174,7 +174,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
                 DebugLog::getInstance().log("No Accessible Locations to place " + item.getName() + ". Retrying " + std::to_string(retries) + " more times.");
                 for (auto location : rollbacks)
                 {
-                    DebugLog::getInstance().log("Rolling back " + locationIdToName(location->locationId) + ": " + item.getName());
+                    DebugLog::getInstance().log("Rolling back " + locationIdToName(location->locationId) + ": " + location->currentItem.getName());
                     itemsToPlace.push_back(location->currentItem);
                     location->currentItem = Item(GameItem::INVALID, -1);
                 }
