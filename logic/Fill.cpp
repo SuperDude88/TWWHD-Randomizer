@@ -174,6 +174,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
                 DebugLog::getInstance().log("No Accessible Locations to place " + item.getName() + ". Retrying " + std::to_string(retries) + " more times.");
                 for (auto location : rollbacks)
                 {
+                    DebugLog::getInstance().log("Rolling back " + locationIdToName(location->locationId) + ": " + item.getName());
                     itemsToPlace.push_back(location->currentItem);
                     location->currentItem = Item(GameItem::INVALID, -1);
                 }
@@ -203,7 +204,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             auto location = RandomElement(accessibleLocations);
             location->currentItem = std::move(item);
             rollbacks.push_back(location);
-            // DebugLog::getInstance().log("Placed " + item.getName() + "(" + std::to_string(static_cast<int>(item.getGameItemId())) + ") at " + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId + 1));
+            DebugLog::getInstance().log("Placed " + item.getName() + " at " + locationIdToName(location->locationId));
         }
 
     }

@@ -472,37 +472,42 @@ public:
 		Utility::platformLog("Initialized session\n");
 		
 		clearOldLogs();
-		
-		if(!checkBackupOrDump()) {
-			return;
-		}
-		
-		//Restore files that aren't always changed (chart list, entrances, etc) so they don't persist across seeds
-		//Copying the whole backup would be excessive and slow
-		Utility::platformLog("Restoring game files...\n");
-		if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
-			ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-			return;
-		}
-		if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
-			ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-			return;
-		}
-		if(!restoreEntrances()) {
-			ErrorLog::getInstance().log("Failed to restore entrances!");
-			return;
-		}
 
-		//IMPROVEMENT: custom model things
+		// Skip all game modification stuff if we're just doing fill algorithm testing
+		#ifndef FILL_TESTING
 
-
-		Utility::platformLog("Modifying game code...\n");
-		if (!dryRun) {
-			if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
-				ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
+			if(!checkBackupOrDump()) {
 				return;
 			}
-		}
+
+			//Restore files that aren't always changed (chart list, entrances, etc) so they don't persist across seeds
+			//Copying the whole backup would be excessive and slow
+			Utility::platformLog("Restoring game files...\n");
+			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
+				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
+				return;
+			}
+			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
+				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
+				return;
+			}
+			if(!restoreEntrances()) {
+				ErrorLog::getInstance().log("Failed to restore entrances!");
+				return;
+			}
+
+			//IMPROVEMENT: custom model things
+
+			Utility::platformLog("Modifying game code...\n");
+			if (!dryRun) {
+				if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
+					ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
+					return;
+				}
+			}
+		#else
+			dryRun = true;
+		#endif
 
 		// Create all necessary worlds (for any potential multiworld support in the future)
 		WorldPool worlds(numPlayers);
@@ -585,7 +590,10 @@ int main() {
 	#endif
 
 	Config load;
-	loadFromFile("./config.yaml", load);
+	if (ConfigError err = loadFromFile("./config.yaml", load); err != ConfigError::NONE)
+	{
+			Utility::platformLog("Could not load config data from file. Code: %d\n", err);
+	}
 
 	Randomizer rando(load);
 	// TODO: do a hundo seed to test everything
