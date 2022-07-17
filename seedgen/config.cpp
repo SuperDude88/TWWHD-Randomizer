@@ -185,6 +185,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     out.settings.pig_color = nameToPigColor(root["pig_color"].As<std::string>());
     if(out.settings.pig_color == PigColor::INVALID) return ConfigError::INVALID_VALUE;
 
+    if(out.settings.pig_color == PigColor::RANDOM) {
+      out.settings.pig_color = PigColor(Random(0, 3));
+    }
+
     if(root["starting_gear"].IsNone()) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) return ConfigError::INVALID_VALUE;
 

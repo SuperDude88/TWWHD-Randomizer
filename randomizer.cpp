@@ -495,9 +495,6 @@ public:
 
 		//IMPROVEMENT: custom model things
 
-		if(config.settings.pig_color == PigColor::RANDOM) {
-			config.settings.pig_color = PigColor(Random(0, 3));
-		}
 
 		Utility::platformLog("Modifying game code...\n");
 		if (!dryRun) {
