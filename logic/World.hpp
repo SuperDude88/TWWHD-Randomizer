@@ -99,6 +99,7 @@ public:
     LocationPool getLocations(bool onlyProgression = false);
     AreaEntry& getArea(const Area& area);
 
+    void resolveRandomSettings();
     void determineChartMappings();
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();

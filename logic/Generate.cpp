@@ -29,15 +29,14 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           worlds[i] = World();
           worlds[i].setWorldId(i);
           worlds[i].setSettings(settingsVector[i]);
+          worlds[i].resolveRandomSettings();
           if (worlds[i].loadWorld("./logic/data/world.yaml", "./logic/data/macros.yaml", "./logic/data/location_data.yaml"))
           {
               return 1;
           }
           worlds[i].determineChartMappings();
           worlds[i].determineProgressionLocations();
-          World::WorldLoadingError err = World::WorldLoadingError::NONE;
-          err = worlds[i].determineRaceModeDungeons();
-          if (err != World::WorldLoadingError::NONE)
+          if (worlds[i].determineRaceModeDungeons(); != World::WorldLoadingError::NONE)
           {
               return 1;
           }
