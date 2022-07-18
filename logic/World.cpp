@@ -49,6 +49,14 @@ const Settings& World::getSettings() const
     return settings;
 }
 
+void World::resolveRandomSettings()
+{
+    if (settings.pig_color == PigColor::RANDOM) {
+        settings.pig_color = PigColor(Random(0, 3));
+        DebugLog::getInstance().log("Random pig color chosen: " + PigColorToName(settings.pig_color));
+    }
+}
+
 void World::setWorldId(int newWorldId)
 {
     worldId = newWorldId;
