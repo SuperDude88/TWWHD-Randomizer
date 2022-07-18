@@ -36,7 +36,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           }
           worlds[i].determineChartMappings();
           worlds[i].determineProgressionLocations();
-          if (worlds[i].determineRaceModeDungeons(); != World::WorldLoadingError::NONE)
+          if (worlds[i].determineRaceModeDungeons() != World::WorldLoadingError::NONE)
           {
               return 1;
           }
