@@ -222,11 +222,14 @@ static void placeHardcodedItems(WorldPool& worlds)
 }
 
 // Determine which items are major items. A major item is any item required
-// for access to any progression location and/or game beatability
+// for access to any progression location and/or game beatability. This function
+// is called multiple times during the fill algorithm as the items required for
+// beatability may change depending on which items are placed in race mode locations
+// and/or plandomized
 void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
 {
     DebugLog::getInstance().log("Determining Major Items");
-    DebugLog::getInstance().log("Major Items: [");
+    DebugLog::getInstance().log("New Major Items: [");
     auto progressionLocations = filterFromPool(allLocations, [](const Location* location){return location->progression;});
     shufflePool(itemPool);
     for (auto& item : itemPool)
@@ -252,7 +255,6 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
             // have been determined
             else
             {
-
                 item.setDelayedItemId(gameItemId);
             }
         }
@@ -438,6 +440,10 @@ FillError fill(WorldPool& worlds)
     // we can place other items.
     placeRaceModeItems(worlds, itemPool, allLocations);
     handleDungeonItems(worlds, itemPool);
+
+    // Recalculate major items since new items may now be required depending on
+    // what items were placed at plandomizer and race mode locations
+    determineMajorItems(worlds, itemPool, allLocations);
 
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& i){return i.isMajorItem();});
     auto progressionLocations = filterFromPool(allLocations, [](const Location* loc){return loc->progression && loc->locationId != LocationId::DefeatGanondorf && loc->currentItem.getGameItemId() == GameItem::INVALID;});

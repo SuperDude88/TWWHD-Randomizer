@@ -53,7 +53,7 @@ void World::resolveRandomSettings()
 {
     if (settings.pig_color == PigColor::RANDOM) {
         settings.pig_color = PigColor(Random(0, 3));
-        DebugLog::getInstance().log("Random pig color chosen: " + PigColorToName(settings.pig_color));
+        DebugLog::getInstance().log("Random pig color chosen: " + std::to_string(static_cast<int>(settings.pig_color)));
     }
 }
 
