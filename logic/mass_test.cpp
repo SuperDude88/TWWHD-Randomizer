@@ -128,7 +128,7 @@ void massTest()
     TEST(settings2, settings2.randomize_door_entrances, "randomize door entrances");
     TEST(settings2, settings2.randomize_cave_entrances, "randomize cave entrances");
     TEST(settings2, settings2.randomize_dungeon_entrances, "randomize dungeon entrances");
-    TEST(settings2, settings2.randomize_starting_island, "random starting island");
+    TEST(settings2, settings2.randomize_starting_island, "randomize starting island");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
     TEST(settings2, settings2.keylunacy, "keylunacy");
     settings2.num_race_mode_dungeons = 3;

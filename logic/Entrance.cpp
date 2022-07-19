@@ -5,7 +5,7 @@
 
 Entrance::Entrance() {}
 
-Entrance::Entrance(const Area& parentArea_, const Area& connectedArea_, World* world_)
+Entrance::Entrance(const std::string& parentArea_, const std::string& connectedArea_, World* world_)
 {
     parentArea = parentArea_;
     connectedArea = connectedArea_;
@@ -15,22 +15,22 @@ Entrance::Entrance(const Area& parentArea_, const Area& connectedArea_, World* w
     setOriginalName();
 }
 
-Area Entrance::getParentArea() const
+std::string Entrance::getParentArea() const
 {
     return parentArea;
 }
 
-void Entrance::setParentArea(Area newParentArea)
+void Entrance::setParentArea(const std::string& newParentArea)
 {
     parentArea = newParentArea;
 }
 
-Area Entrance::getConnectedArea() const
+std::string Entrance::getConnectedArea() const
 {
     return connectedArea;
 }
 
-void Entrance::setConnectedArea(Area newConnectedArea)
+void Entrance::setConnectedArea(const std::string& newConnectedArea)
 {
     connectedArea = newConnectedArea;
 }
@@ -245,17 +245,17 @@ std::unordered_set<HintRegion> Entrance::getIslands()
     return world->getIslands(parentArea);
 }
 
-void Entrance::connect(const Area newConnectedArea)
+void Entrance::connect(const std::string& newConnectedArea)
 {
     connectedArea = newConnectedArea;
-    world->areaEntries[areaAsIndex(connectedArea)].entrances.push_back(this);
+    world->areaEntries[connectedArea].entrances.push_back(this);
 }
 
-Area Entrance::disconnect()
+std::string Entrance::disconnect()
 {
-    world->areaEntries[areaAsIndex(connectedArea)].entrances.remove(this);
-    Area previouslyConnected = connectedArea;
-    connectedArea = Area::INVALID;
+    world->areaEntries[connectedArea].entrances.remove(this);
+    std::string previouslyConnected = connectedArea;
+    connectedArea = "INVALID";
     return previouslyConnected;
 }
 
@@ -267,8 +267,8 @@ void Entrance::bindTwoWay(Entrance* otherEntrance)
 
 Entrance* Entrance::getNewTarget()
 {
-    auto& root = world->areaEntries[areaAsIndex(Area::Root)];
-    root.exits.emplace_back(Area::Root, connectedArea, world);
+    auto& root = world->areaEntries["Root"];
+    root.exits.emplace_back("Root", connectedArea, world);
     Entrance& targetEntrance = root.exits.back();
     targetEntrance.connect(connectedArea);
     targetEntrance.setReplaces(this);

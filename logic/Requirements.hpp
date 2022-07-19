@@ -35,7 +35,7 @@ struct Requirement;
 
 struct Requirement
 {
-    using Argument = std::variant<int, size_t, std::string, Requirement, GameItem, Area, Option, Item>;
+    using Argument = std::variant<int, size_t, std::string, Requirement, GameItem, Option, Item>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };

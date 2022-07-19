@@ -60,7 +60,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
     time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
     log << "Program opened " << std::ctime(&point); //time string ends with \n
-    
+
     log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     log << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
@@ -83,7 +83,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
         }
         log << std::endl;
     }
-    
+
     log << std::endl;
 }
 
@@ -105,7 +105,7 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         if (world.getSettings().randomize_starting_island)
         {
-            auto startingIsland = areaToPrettyName(world.getArea(Area::LinksSpawn).exits.front().getConnectedArea());
+            auto startingIsland = areaToPrettyName(world.getArea("LinksSpawn").exits.front().getConnectedArea());
             log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
         }
     }
@@ -220,7 +220,7 @@ void generateSpoilerLog(WorldPool& worlds)
         for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
         {
             auto chart = gameItemToPrettyName(world.chartMappings[islandRoom - 1]);
-            auto island = areaToPrettyName(roomIndexToIslandArea(islandRoom));
+            auto island = areaToPrettyName(roomIndexToIslandName(islandRoom));
             if (chart.find("Treasure") != std::string::npos)
             {
                 spoilerTreasureMappings[chart] = island;

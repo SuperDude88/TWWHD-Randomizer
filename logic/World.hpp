@@ -36,7 +36,7 @@ struct EventAccess
 
 struct AreaEntry
 {
-    Area area = Area::INVALID;
+    std::string name = "";
     HintRegion island = HintRegion::NONE;
     HintRegion dungeon = HintRegion::NONE;
     std::list<EventAccess> events;
@@ -97,23 +97,23 @@ public:
     ItemPool getItemPool() const;
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
-    AreaEntry& getArea(const Area& area);
+    AreaEntry& getArea(const std::string& area);
 
     void resolveRandomSettings();
     void determineChartMappings();
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
-    Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
+    Entrance& getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
-    std::unordered_set<HintRegion> getIslands(const Area& area);
+    std::unordered_set<HintRegion> getIslands(const std::string& area);
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
-    std::vector<AreaEntry> areaEntries = {};
+    std::unordered_map<std::string, AreaEntry> areaEntries = {};
     std::vector<Location> locationEntries = {};
     std::unordered_map<Location*, Item> plandomizerLocations = {};
     std::unordered_map<std::string, MacroIndex> macroNameMap;
@@ -133,12 +133,12 @@ private:
 
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
-    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea);
+    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea);
     WorldLoadingError loadLocation(Yaml::Node& locationObject, LocationId& loadedLocation);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);
-    WorldLoadingError loadArea(Yaml::Node& areaObject, Area& loadedArea);
+    WorldLoadingError loadArea(Yaml::Node& areaObject);
     WorldLoadingError loadPlandomizerLocations();
     int getFileContents(const std::string& filename, std::string& fileContents);
 
