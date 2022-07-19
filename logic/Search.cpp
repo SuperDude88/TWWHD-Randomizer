@@ -120,7 +120,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             if (evaluateRequirement(worlds[exit.getWorldId()], exit.getRequirement(), ownedItems, ownedEvents))
             {
                 connectedArea.isAccessible = true;
-                // std::cout << "Now Exploring " << connectedArea.name << std::endl;
+                // DebugLog("Now Exploring " + connectedArea.name);
                 explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
             }
             else
