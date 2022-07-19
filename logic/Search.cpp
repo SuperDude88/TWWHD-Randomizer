@@ -9,7 +9,7 @@
 using ItemMultiSet = std::unordered_multiset<Item>;
 using EventSet = std::unordered_set<EventId>;
 
-static bool evaluateRequirement(const World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
+static bool evaluateRequirement(World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
 {
     uint32_t expectedCount = 0;
     Item item;
@@ -58,7 +58,7 @@ static bool evaluateRequirement(const World& world, const Requirement& req, cons
         return ownedItems.count(item) >= expectedCount;
 
     case RequirementType::CAN_ACCESS:
-        return world.areaEntries[areaAsIndex(std::get<Area>(req.args[0]))].isAccessible;
+        return world.areaEntries[std::get<std::string>(req.args[0])].isAccessible;
 
     case RequirementType::SETTING:
         // Settings are resolved to a true/false value when building the world
@@ -112,7 +112,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             }
         }
 
-        auto& connectedArea = worlds[exit.getWorldId()].areaEntries[areaAsIndex(exit.getConnectedArea())];
+        auto& connectedArea = worlds[exit.getWorldId()].areaEntries[exit.getConnectedArea()];
         // If the connected area is already reachable, then the current exit
         // is ignored since it won't matter for logical access
         if (!connectedArea.isAccessible)
@@ -120,7 +120,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             if (evaluateRequirement(worlds[exit.getWorldId()], exit.getRequirement(), ownedItems, ownedEvents))
             {
                 connectedArea.isAccessible = true;
-                // std::cout << "Now Exploring " << areaToName(connectedArea.area) << std::endl;
+                // std::cout << "Now Exploring " << connectedArea.name << std::endl;
                 explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
             }
             else
@@ -168,13 +168,13 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     {
         if (worldToSearch == -1 || worldToSearch == world.getWorldId())
         {
-            for (auto& exit : world.areaEntries[areaAsIndex(Area::Root)].exits)
+            for (auto& exit : world.areaEntries["Root"].exits)
             {
                 exitsToTry.push_back(&exit);
             }
 
             // Reset search variables for all areas and exits
-            for (auto& areaEntry : world.areaEntries)
+            for (auto& [name, areaEntry] : world.areaEntries)
             {
                 areaEntry.isAccessible = false;
             }
@@ -242,7 +242,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                     worlds[0].entranceSpheres.back().push_back(exit);
                 }
                 // If this exit's connected region has not been explored yet, then explore it
-                auto& connectedArea = worlds[exit->getWorldId()].areaEntries[areaAsIndex(exit->getConnectedArea())];
+                auto& connectedArea = worlds[exit->getWorldId()].areaEntries[exit->getConnectedArea()];
                 if (!connectedArea.isAccessible)
                 {
                     newThingsFound = true;
@@ -383,7 +383,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
     }
 
     // Now do the same process for the entrances to pare down the entrance playthrough
-    std::unordered_map<Entrance*, Area> nonRequiredEntrances = {};
+    std::unordered_map<Entrance*, std::string> nonRequiredEntrances = {};
     for (auto entranceSphereItr = entranceSpheres.rbegin(); entranceSphereItr != entranceSpheres.rend(); entranceSphereItr++)
     {
         auto& entranceSphere = *entranceSphereItr;

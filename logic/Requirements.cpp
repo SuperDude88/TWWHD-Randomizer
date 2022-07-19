@@ -78,7 +78,7 @@ std::string printRequirement(Requirement& req, int nestingLevel /*= 0*/)
         returnStr += std::to_string(expectedCount) + " " + item.getName() + "\n";
         return returnStr;
     case RequirementType::CAN_ACCESS:
-        returnStr += "can_access: " + areaToName(std::get<Area>(req.args[0])) + "\n";
+        returnStr += "can_access: " + std::get<std::string>(req.args[0]) + "\n";
         return returnStr;
     case RequirementType::SETTING:
         // Settings are resolved to a true/false value when building the world

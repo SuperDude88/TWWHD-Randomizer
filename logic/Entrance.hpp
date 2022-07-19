@@ -33,12 +33,12 @@ class Entrance
 public:
 
     Entrance();
-    Entrance(const Area& parentArea_, const Area& connectedArea_, World* world_);
+    Entrance(const std::string& parentArea_, const std::string& connectedArea_, World* world_);
 
-    Area getParentArea() const;
-    void setParentArea(Area newParentArea);
-    Area getConnectedArea() const;
-    void setConnectedArea(Area newConnectedArea);
+    std::string getParentArea() const;
+    void setParentArea(const std::string& newParentArea);
+    std::string getConnectedArea() const;
+    void setConnectedArea(const std::string& newConnectedArea);
     Requirement& getRequirement();
     void setRequirement(const Requirement newRequirement);
     EntranceType getEntranceType() const;
@@ -81,8 +81,8 @@ public:
     void setWorld(World* newWorld);
     std::unordered_set<HintRegion> getIslands();
 
-    void connect(const Area newConnectedArea);
-    Area disconnect();
+    void connect(const std::string& newConnectedArea);
+    std::string disconnect();
     void bindTwoWay(Entrance* otherEntrance);
     Entrance* getNewTarget();
     Entrance* assumeReachable();
@@ -91,8 +91,8 @@ public:
 
 private:
 
-    Area parentArea = Area::INVALID;
-    Area connectedArea = Area::INVALID;
+    std::string parentArea = "INVALID";
+    std::string connectedArea = "INVALID";
     Requirement requirement;
     EntranceType type = EntranceType::NONE;
     bool primary = false;

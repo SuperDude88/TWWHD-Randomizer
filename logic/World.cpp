@@ -21,19 +21,17 @@
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
 #define EVENT_CHECK(eventName) if (eventMap.count(eventName) == 0) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
-#define AREA_VALID_CHECK(area, msg) VALID_CHECK(area, Area::INVALID, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
+#define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaEntries.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(loc, LocationId::INVALID, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
 #define OPTION_VALID_CHECK(opt, msg) VALID_CHECK(opt, Option::INVALID, msg, WorldLoadingError::OPTION_DOES_NOT_EXIST)
 
 World::World()
 {
-    areaEntries.resize(AREA_COUNT);
     locationEntries.resize(LOCATION_COUNT);
 }
 
 World::World(size_t numWorlds_)
 {
-    areaEntries.resize(AREA_COUNT);
     locationEntries.resize(LOCATION_COUNT);
     numWorlds = numWorlds_;
 }
@@ -117,9 +115,9 @@ LocationPool World::getLocations(bool onlyProgression /*= false*/)
     return locations;
 }
 
-AreaEntry& World::getArea(const Area& area)
+AreaEntry& World::getArea(const std::string& area)
 {
-    return areaEntries[areaAsIndex(area)];
+    return areaEntries[area];
 }
 
 void World::determineChartMappings()
@@ -457,9 +455,8 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         {
             req.type = RequirementType::CAN_ACCESS;
             std::string areaName (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
-            Area argArea = nameToArea(areaName);
-            AREA_VALID_CHECK(argArea, "Area " << areaName << " does not exist");
-            req.args.push_back(argArea);
+            AREA_VALID_CHECK(areaName, "Area \"" << areaName << "\" is not defined");
+            req.args.push_back(areaName);
             return WorldLoadingError::NONE;
         }
         // Then a setting...
@@ -763,14 +760,12 @@ World::WorldLoadingError World::loadLocationRequirement(const std::string& locat
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea)
+World::WorldLoadingError World::loadExit(const std::string& connectedArea, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    auto connectedArea = nameToArea(connectedAreaName);
-    AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedAreaName << "\" does not exist!");
-    MAPPING_CHECK(connectedAreaName, areaToName(nameToArea(connectedAreaName)));
+    AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedArea << "\" does not exist!");
     loadedExit.setParentArea(parentArea);
     loadedExit.setConnectedArea(connectedArea);
     loadedExit.setWorldId(worldId);
@@ -779,29 +774,26 @@ World::WorldLoadingError World::loadExit(const std::string& connectedAreaName, c
     // load exit requirements
     if((err = parseRequirementString(logicExpression, loadedExit.getRequirement())) != WorldLoadingError::NONE)
     {
-        lastError << "| Encountered parsing exit " << areaToName(parentArea) << " -> " << areaToName(connectedArea) << std::endl;
+        lastError << "| Encountered parsing exit \"" << parentArea << " -> " << connectedArea << "\"" << std::endl;
         return err;
     }
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadArea(Yaml::Node& areaObject, Area& loadedArea)
+World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    const std::string areaName = areaObject["Name"].As<std::string>();
-    // DebugLog::getInstance().log("Now Loading Area " + areaName);
-    loadedArea = nameToArea(areaName);
-    AREA_VALID_CHECK(loadedArea, "Area of name \"" << areaName << "\" does not exist!");
-    MAPPING_CHECK(areaName, areaToName(nameToArea(areaName)))
+    auto loadedArea = areaObject["Name"].As<std::string>();
+    // DebugLog::getInstance().log("Now Loading Area " + loadedArea);
+    AREA_VALID_CHECK(loadedArea, "Area of name \"" << loadedArea << "\" is not defined!");
 
     // Store the pretty name to use for later
     const std::string areaPrettyName = areaObject["PrettyName"].As<std::string>();
     storeNewAreaPrettyName(loadedArea, areaPrettyName);
 
-    AreaEntry& newEntry = areaEntries[areaAsIndex(loadedArea)];
-    newEntry.area = loadedArea;
+    AreaEntry& newEntry = areaEntries[loadedArea];
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
 
@@ -1024,6 +1016,18 @@ int World::getFileContents(const std::string& filename, std::string& fileContent
 // Load the world based on the given world graph file, macros file, and loation data file
 int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath)
 {
+    // load world graph
+    Yaml::Node worldDataTree;
+    Yaml::Parse(worldDataTree, worldFilePath.c_str());
+    // First pass to get area names
+    for (auto areaIt = worldDataTree.Begin(); areaIt != worldDataTree.End(); areaIt++)
+    {
+        Yaml::Node area = (*areaIt).second;
+        auto areaName = area["Name"].As<std::string>();
+        // Construct AreaEntry object (struct) with just the name for now
+        areaEntries[areaName] = {areaName};
+    }
+
     // Read and parse macros
     Yaml::Node macroListTree;
     Yaml::Parse(macroListTree, macrosFilePath.c_str());
@@ -1051,14 +1055,11 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         }
     }
 
-    // Read and load world graph
-    Yaml::Node worldDataTree;
-    Yaml::Parse(worldDataTree, worldFilePath.c_str());
+    // Second pass of world graph to load each area's data
     for (auto areaIt = worldDataTree.Begin(); areaIt != worldDataTree.End(); areaIt++)
     {
         Yaml::Node area = (*areaIt).second;
-        Area areaOut;
-        err = loadArea(area, areaOut);
+        err = loadArea(area);
         if (err != World::WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading area for world " + std::to_string(worldId) + ": " + World::errorToName(err));
@@ -1069,7 +1070,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
 
     // Once all areas have been loaded, create the entrance lists. This lets us
     // find assigned islands later
-    for (auto& areaEntry : areaEntries)
+    for (auto& [name, areaEntry] : areaEntries)
     {
         for (auto& exit : areaEntry.exits)
         {
@@ -1091,9 +1092,9 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     return 0;
 }
 
-Entrance& World::getEntrance(const Area& parentArea, const Area& connectedArea)
+Entrance& World::getEntrance(const std::string& parentArea, const std::string& connectedArea)
 {
-    auto& parentAreaEntry = areaEntries[areaAsIndex(parentArea)];
+    auto& parentAreaEntry = areaEntries[parentArea];
 
     for (auto& exit : parentAreaEntry.exits)
     {
@@ -1103,13 +1104,13 @@ Entrance& World::getEntrance(const Area& parentArea, const Area& connectedArea)
         }
     }
 
-    Utility::platformLog("WARNING: " + areaToName(parentArea) + " -> " + areaToName(connectedArea) + " is not a connection\n");
-    return areaEntries[areaAsIndex(Area::INVALID)].exits.front();
+    Utility::platformLog("WARNING: " + parentArea + " -> " + connectedArea + " is not a connection!\n");
+    return areaEntries[parentArea].exits.front();
 }
 
 void World::removeEntrance(Entrance* entranceToRemove)
 {
-    std::list<Entrance>& areaExits = areaEntries[areaAsIndex(entranceToRemove->getParentArea())].exits;
+    std::list<Entrance>& areaExits = areaEntries[entranceToRemove->getParentArea()].exits;
     areaExits.remove_if([entranceToRemove](Entrance& entrance)
     {
         return &entrance == entranceToRemove;
@@ -1120,7 +1121,7 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
 {
     std::vector<Entrance*> shufflableEntrances = {};
 
-    for (auto& areaEntry : areaEntries)
+    for (auto& [name, areaEntry] : areaEntries)
     {
         for (auto& exit : areaEntry.exits)
         {
@@ -1143,11 +1144,11 @@ EntrancePool World::getShuffledEntrances(const EntranceType& type, const bool& o
 // Peforms a breadth first search to find all the islands that lead to the given
 // area. In some cases of entrance randomizer, multiple islands can lead to the
 // same area
-std::unordered_set<HintRegion> World::getIslands(const Area& startArea)
+std::unordered_set<HintRegion> World::getIslands(const std::string& startArea)
 {
     std::unordered_set<HintRegion> islands = {};
-    std::unordered_set<Area> alreadyChecked = {};
-    std::vector<Area> areaQueue = {startArea};
+    std::unordered_set<std::string> alreadyChecked = {};
+    std::vector<std::string> areaQueue = {startArea};
 
     while (!areaQueue.empty())
     {
@@ -1155,7 +1156,7 @@ std::unordered_set<HintRegion> World::getIslands(const Area& startArea)
         alreadyChecked.insert(area);
         areaQueue.pop_back();
 
-        auto& areaEntry = areaEntries[areaAsIndex(area)];
+        auto& areaEntry = areaEntries[area];
 
         if (areaEntry.island != HintRegion::NONE)
         {
@@ -1263,15 +1264,15 @@ std::string World::getLastErrorDetails()
 void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits /*= false*/)
 {
     std::ofstream worldGraph;
-    std::string fullFilename = "dumps/" + filename + ".gv";
+    std::string fullFilename =  filename + ".gv";
     worldGraph.open (fullFilename);
     worldGraph << "digraph {\n\tcenter=true;\n";
 
-    for (const AreaEntry& areaEntry : areaEntries) {
+    for (auto& [name, areaEntry] : areaEntries) {
 
         std::string color = areaEntry.isAccessible ? "\"black\"" : "\"red\"";
 
-        std::string parentName = areaToName(areaEntry.area);
+        auto& parentName = areaEntry.name;
         worldGraph << "\t\"" << parentName << "\"[shape=\"plain\" fontcolor=" << color << "];" << std::endl;
 
         // Make edge connections defined by exits
@@ -1281,7 +1282,7 @@ void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits
             {
                 continue;
             }
-            std::string connectedName = areaToName(exit.getConnectedArea());
+            auto connectedName = exit.getConnectedArea();
             if (parentName != "INVALID" && connectedName != "INVALID"){
                 worldGraph << "\t\"" << parentName << "\" -> \"" << connectedName << "\"" << std::endl;
             }

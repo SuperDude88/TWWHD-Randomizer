@@ -21,100 +21,100 @@ using EntrancePair = std::pair<Entrance*, Entrance*>;
 //
 // https://github.com/TestRunnerSRL/OoT-Randomizer/blob/Dev/EntranceShuffle.py
 
-static std::list<EntranceInfoPair> entranceShuffleTable = {                                                     //----File path info------|---entrance info---//
-                            // Parent Area                            Connected Area                            stage,   room, scls index,  stage,  room, spawn, boss stage and out info (stage, room, spawn)
-    {EntranceType::DUNGEON, {Area::DragonRoostPondPastStatues,        Area::DRCFirstRoom,                       "Adanmae",  0,          2, "M_NewD2",  0,     0},
-    /*Dragon Roost Cavern*/ {Area::DRCFirstRoom,                      Area::DragonRoostPondPastStatues,         "M_NewD2",  0,          0, "Adanmae",  0,     2, "M_DragB", "sea",  13, 211}},
-    {EntranceType::DUNGEON, {Area::FWEntrancePlatform,                Area::FWFirstRoom,                        "sea",     41,          6, "kindan",   0,     0},
-    /*Forbidden Woods*/     {Area::FWFirstRoom,                       Area::FWEntrancePlatform,                 "kindan",   0,          0, "sea",     41,     6, "kinBOSS", "Omori", 0, 215}},
-    {EntranceType::DUNGEON, {Area::TotGSector,                        Area::TOTGEntranceRoom,                   "sea",     26,          0, "Siren",    0,     0},
-    /*Tower of the Gods*/   {Area::TOTGEntranceRoom,                  Area::TotGSector,                         "Siren",    0,          0, "sea",     26,     2, "SirenB",  "sea",  26,   1}},
-    {EntranceType::DUNGEON, {Area::HeadstoneIslandInterior,           Area::ETFirstRoom,                        "Edaichi",  0,          0, "M_Dai",  255,     0},
-    /*Earth Temple*/        {Area::ETFirstRoom,                       Area::HeadstoneIslandInterior,            "M_Dai",    0,          0, "Edaichi",  0,     1, "M_DaiB",  "sea",  45, 229}},
-    {EntranceType::DUNGEON, {Area::GaleIsleInterior,                  Area::WTFirstRoom,                        "Ekaze",    0,          0, "kaze",    15,    15},
-    /*Wind Temple*/         {Area::WTFirstRoom,                       Area::GaleIsleInterior,                   "kaze",    15,          0, "Ekaze",    0,     1, "kazeB",   "sea",   4, 232}},
+static std::list<EntranceInfoPair> entranceShuffleTable = {                                            //----File path info------|---entrance info-----|------boss stage info------//
+                            // Parent Area                        Connected Area                        stage,   room, scls index,  stage,  room, spawn, boss stage, stage, room, spawn
+    {EntranceType::DUNGEON, {"DragonRoostPondPastStatues",        "DRCFirstRoom",                       "Adanmae",  0,          2, "M_NewD2",  0,     0},
+    /*Dragon Roost Cavern*/ {"DRCFirstRoom",                      "DragonRoostPondPastStatues",         "M_NewD2",  0,          0, "Adanmae",  0,     2, "M_DragB", "sea",  13, 211}},
+    {EntranceType::DUNGEON, {"FWEntrancePlatform",                "FWFirstRoom",                        "sea",     41,          6, "kindan",   0,     0},
+    /*Forbidden Woods*/     {"FWFirstRoom",                       "FWEntrancePlatform",                 "kindan",   0,          0, "sea",     41,     6, "kinBOSS", "Omori", 0, 215}},
+    {EntranceType::DUNGEON, {"TotGSector",                        "TOTGEntranceRoom",                   "sea",     26,          0, "Siren",    0,     0},
+    /*Tower of the Gods*/   {"TOTGEntranceRoom",                  "TotGSector",                         "Siren",    0,          0, "sea",     26,     2, "SirenB",  "sea",  26,   1}},
+    {EntranceType::DUNGEON, {"HeadstoneIslandInterior",           "ETFirstRoom",                        "Edaichi",  0,          0, "M_Dai",  255,     0},
+    /*Earth Temple*/        {"ETFirstRoom",                       "HeadstoneIslandInterior",            "M_Dai",    0,          0, "Edaichi",  0,     1, "M_DaiB",  "sea",  45, 229}},
+    {EntranceType::DUNGEON, {"GaleIsleInterior",                  "WTFirstRoom",                        "Ekaze",    0,          0, "kaze",    15,    15},
+    /*Wind Temple*/         {"WTFirstRoom",                       "GaleIsleInterior",                   "kaze",    15,          0, "Ekaze",    0,     1, "kazeB",   "sea",   4, 232}},
 
-    {EntranceType::CAVE,    {Area::OutsetNearSavageHeadstone,         Area::OutsetSavageLabyrinth,              "sea",     44,          8, "Cave09",   0,     0},
-                            {Area::OutsetSavageLabyrinth,             Area::OutsetNearSavageHeadstone,          "Cave09",   0,          1, "sea",     44,    10}},
-    {EntranceType::CAVE,    {Area::DragonRoostIsland,                 Area::DragonRoostIslandCave,              "sea",     13,          2, "TF_06",    0,     0},
-                            {Area::DragonRoostIslandCave,             Area::DragonRoostIsland,                  "TF_06",    0,          0, "sea",     13,     5}},
-    {EntranceType::CAVE,    {Area::FireMountain,                      Area::FireMountainInterior,               "sea",     20,          0, "MiniKaz",  0,     0},
-                            {Area::FireMountainInterior,              Area::FireMountain,                       "MiniKaz",  0,          0, "sea",     20,     0}},
-    {EntranceType::CAVE,    {Area::IceRingIsle,                       Area::IceRingInterior,                    "sea",     40,          0, "MiniHyo",  0,     0},
-                            {Area::IceRingInterior,                   Area::IceRingIsle,                        "MiniHyo",  0,          0, "sea",     40,     0}},
-    {EntranceType::CAVE,    {Area::TheCabana,                         Area::CabanaLabyrinth,                    "Abesso",   0,          1, "TF_04",    0,     0},
-                            {Area::CabanaLabyrinth,                   Area::TheCabana,                          "TF_04",    0,          0, "Abesso",   0,     1}},
-    {EntranceType::CAVE,    {Area::NeedleRockIsle,                    Area::NeedleRockCave,                     "sea",     29,          0, "SubD42",   0,     0},
-                            {Area::NeedleRockCave,                    Area::NeedleRockIsle,                     "SubD42",   0,          0, "sea",     29,     5}},
-    {EntranceType::CAVE,    {Area::AngularIslesSmallIsle,             Area::AngularIslesCave,                   "sea",     47,          1, "SubD43",   0,     0},
-                            {Area::AngularIslesCave,                  Area::AngularIslesSmallIsle,              "SubD43",   0,          0, "sea",     47,     5}},
-    {EntranceType::CAVE,    {Area::BoatingCourseSmallIsle,            Area::BoatingCourseCave,                  "sea",     48,          0, "SubD71",   0,     0},
-                            {Area::BoatingCourseCave,                 Area::BoatingCourseSmallIsle,             "SubD71",   0,          0, "sea",     48,     5}},
-    {EntranceType::CAVE,    {Area::StoneWatcherIsland,                Area::StoneWatcherCave,                   "sea",     31,          0, "TF_01",    0,     0},
-                            {Area::StoneWatcherCave,                  Area::StoneWatcherIsland,                 "TF_01",    0,          0, "sea",     31,     1}},
-    {EntranceType::CAVE,    {Area::OverlookIslandUpperIsles,          Area::OverlookCave,                       "sea",      7,          0, "TF_02",    0,     0},
-                            {Area::OverlookCave,                      Area::OverlookIslandUpperIsles,           "TF_02",    0,          0, "sea",      7,     1}},
-    {EntranceType::CAVE,    {Area::BirdsPeakRockBehindBars,           Area::BirdsPeakRockCave,                  "sea",     35,          0, "TF_03",    0,     0},
-                            {Area::BirdsPeakRockCave,                 Area::BirdsPeakRockBehindBars,            "TF_03",    0,          0, "sea",     35,     1}},
-    {EntranceType::CAVE,    {Area::PawprintIsle,                      Area::PawprintChuChuCave,                 "sea",     12,          0, "TyuTyu",   0,     0},
-                            {Area::PawprintChuChuCave,                Area::PawprintIsle,                       "TyuTyu",   0,          0, "sea",     12,     1}},
-    {EntranceType::CAVE,    {Area::PawprintWizzrobeCaveIsle,          Area::PawprintWizzrobeCave,               "sea",     12,          1, "Cave07",   0,     0},
-                            {Area::PawprintWizzrobeCave,              Area::PawprintWizzrobeCaveIsle,           "Cave07",   0,          0, "sea",     12,     5}},
-    {EntranceType::CAVE,    {Area::DiamondSteppeUpperIsland,          Area::DiamondSteppeWarpMaze,              "sea",     36,          0, "WarpD",    0,     0},
-                            {Area::DiamondSteppeWarpMaze,             Area::DiamondSteppeUpperIsland,           "WarpD",    0,          0, "sea",     36,     1}},
-    {EntranceType::CAVE,    {Area::BombIsland,                        Area::BombIslandCave,                     "sea",     34,          0, "Cave01",   0,     0},
-                            {Area::BombIslandCave,                    Area::BombIsland,                         "Cave01",   0,          0, "sea",     34,     1}},
-    {EntranceType::CAVE,    {Area::RockSpireUpperLedges,              Area::RockSpireCave,                      "sea",     16,          0, "Cave04",   0,     0},
-                            {Area::RockSpireCave,                     Area::RockSpireUpperLedges,               "Cave04",   0,          0, "sea",     16,     1}},
-    {EntranceType::CAVE,    {Area::SharkIsland,                       Area::SharkIslandCave,                    "sea",     38,          0, "ITest63",  0,     0},
-                            {Area::SharkIslandCave,                   Area::SharkIsland,                        "ITest63",  0,          0, "sea",     38,     5}},
-    {EntranceType::CAVE,    {Area::CliffPlateauIsles,                 Area::CliffPlateauCave,                   "sea",     42,          0, "Cave03",   0,     0},
-                            {Area::CliffPlateauCave,                  Area::CliffPlateauIsles,                  "Cave03",   0,          0, "sea",     42,     2}},
-    {EntranceType::CAVE,    {Area::CliffPlateauHighestIsle,           Area::CliffPlateauCavePastWoodenBarrier,  "sea",     42,          1, "Cave03",   0,     1},
-                            {Area::CliffPlateauCavePastWoodenBarrier, Area::CliffPlateauHighestIsle,            "Cave03",   0,          1, "sea",     42,     1}},
-    {EntranceType::CAVE,    {Area::HorseshoeIslePastTentacles,        Area::HorseshoeCave,                      "sea",     43,          0, "Cave05",   0,     0},
-                            {Area::HorseshoeCave,                     Area::HorseshoeIslePastTentacles,         "Cave05",   0,          0, "sea",     43,     5}},
-    {EntranceType::CAVE,    {Area::StarIsland,                        Area::StarIslandCave,                     "sea",      2,          0, "Cave02",   0,     0},
-                            {Area::StarIslandCave,                    Area::StarIsland,                         "Cave02",   0,          0, "sea",      2,     1}},
+    {EntranceType::CAVE,    {"OutsetNearSavageHeadstone",         "OutsetSavageLabyrinth",              "sea",     44,          8, "Cave09",   0,     0},
+                            {"OutsetSavageLabyrinth",             "OutsetNearSavageHeadstone",          "Cave09",   0,          1, "sea",     44,    10}},
+    {EntranceType::CAVE,    {"DragonRoostIsland",                 "DragonRoostIslandCave",              "sea",     13,          2, "TF_06",    0,     0},
+                            {"DragonRoostIslandCave",             "DragonRoostIsland",                  "TF_06",    0,          0, "sea",     13,     5}},
+    {EntranceType::CAVE,    {"FireMountain",                      "FireMountainInterior",               "sea",     20,          0, "MiniKaz",  0,     0},
+                            {"FireMountainInterior",              "FireMountain",                       "MiniKaz",  0,          0, "sea",     20,     0}},
+    {EntranceType::CAVE,    {"IceRingIsle",                       "IceRingInterior",                    "sea",     40,          0, "MiniHyo",  0,     0},
+                            {"IceRingInterior",                   "IceRingIsle",                        "MiniHyo",  0,          0, "sea",     40,     0}},
+    {EntranceType::CAVE,    {"TheCabana",                         "CabanaLabyrinth",                    "Abesso",   0,          1, "TF_04",    0,     0},
+                            {"CabanaLabyrinth",                   "TheCabana",                          "TF_04",    0,          0, "Abesso",   0,     1}},
+    {EntranceType::CAVE,    {"NeedleRockIsle",                    "NeedleRockCave",                     "sea",     29,          0, "SubD42",   0,     0},
+                            {"NeedleRockCave",                    "NeedleRockIsle",                     "SubD42",   0,          0, "sea",     29,     5}},
+    {EntranceType::CAVE,    {"AngularIslesSmallIsle",             "AngularIslesCave",                   "sea",     47,          1, "SubD43",   0,     0},
+                            {"AngularIslesCave",                  "AngularIslesSmallIsle",              "SubD43",   0,          0, "sea",     47,     5}},
+    {EntranceType::CAVE,    {"BoatingCourseSmallIsle",            "BoatingCourseCave",                  "sea",     48,          0, "SubD71",   0,     0},
+                            {"BoatingCourseCave",                 "BoatingCourseSmallIsle",             "SubD71",   0,          0, "sea",     48,     5}},
+    {EntranceType::CAVE,    {"StoneWatcherIsland",                "StoneWatcherCave",                   "sea",     31,          0, "TF_01",    0,     0},
+                            {"StoneWatcherCave",                  "StoneWatcherIsland",                 "TF_01",    0,          0, "sea",     31,     1}},
+    {EntranceType::CAVE,    {"OverlookIslandUpperIsles",          "OverlookCave",                       "sea",      7,          0, "TF_02",    0,     0},
+                            {"OverlookCave",                      "OverlookIslandUpperIsles",           "TF_02",    0,          0, "sea",      7,     1}},
+    {EntranceType::CAVE,    {"BirdsPeakRockBehindBars",           "BirdsPeakRockCave",                  "sea",     35,          0, "TF_03",    0,     0},
+                            {"BirdsPeakRockCave",                 "BirdsPeakRockBehindBars",            "TF_03",    0,          0, "sea",     35,     1}},
+    {EntranceType::CAVE,    {"PawprintIsle",                      "PawprintChuChuCave",                 "sea",     12,          0, "TyuTyu",   0,     0},
+                            {"PawprintChuChuCave",                "PawprintIsle",                       "TyuTyu",   0,          0, "sea",     12,     1}},
+    {EntranceType::CAVE,    {"PawprintWizzrobeCaveIsle",          "PawprintWizzrobeCave",               "sea",     12,          1, "Cave07",   0,     0},
+                            {"PawprintWizzrobeCave",              "PawprintWizzrobeCaveIsle",           "Cave07",   0,          0, "sea",     12,     5}},
+    {EntranceType::CAVE,    {"DiamondSteppeUpperIsland",          "DiamondSteppeWarpMaze",              "sea",     36,          0, "WarpD",    0,     0},
+                            {"DiamondSteppeWarpMaze",             "DiamondSteppeUpperIsland",           "WarpD",    0,          0, "sea",     36,     1}},
+    {EntranceType::CAVE,    {"BombIsland",                        "BombIslandCave",                     "sea",     34,          0, "Cave01",   0,     0},
+                            {"BombIslandCave",                    "BombIsland",                         "Cave01",   0,          0, "sea",     34,     1}},
+    {EntranceType::CAVE,    {"RockSpireUpperLedges",              "RockSpireCave",                      "sea",     16,          0, "Cave04",   0,     0},
+                            {"RockSpireCave",                     "RockSpireUpperLedges",               "Cave04",   0,          0, "sea",     16,     1}},
+    {EntranceType::CAVE,    {"SharkIsland",                       "SharkIslandCave",                    "sea",     38,          0, "ITest63",  0,     0},
+                            {"SharkIslandCave",                   "SharkIsland",                        "ITest63",  0,          0, "sea",     38,     5}},
+    {EntranceType::CAVE,    {"CliffPlateauIsles",                 "CliffPlateauCave",                   "sea",     42,          0, "Cave03",   0,     0},
+                            {"CliffPlateauCave",                  "CliffPlateauIsles",                  "Cave03",   0,          0, "sea",     42,     2}},
+    {EntranceType::CAVE,    {"CliffPlateauHighestIsle",           "CliffPlateauCavePastWoodenBarrier",  "sea",     42,          1, "Cave03",   0,     1},
+                            {"CliffPlateauCavePastWoodenBarrier", "CliffPlateauHighestIsle",            "Cave03",   0,          1, "sea",     42,     1}},
+    {EntranceType::CAVE,    {"HorseshoeIslePastTentacles",        "HorseshoeCave",                      "sea",     43,          0, "Cave05",   0,     0},
+                            {"HorseshoeCave",                     "HorseshoeIslePastTentacles",         "Cave05",   0,          0, "sea",     43,     5}},
+    {EntranceType::CAVE,    {"StarIsland",                        "StarIslandCave",                     "sea",      2,          0, "Cave02",   0,     0},
+                            {"StarIslandCave",                    "StarIsland",                         "Cave02",   0,          0, "sea",      2,     1}},
 
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallJail,                       "sea",     11,          6, "Pnezumi",  0,     0},
-                            {Area::WindfallJail,                      Area::WindfallIsland,                     "Pnezumi",  0,          0, "sea",     11,    13}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallSchoolOfJoy,                "sea",     11,         12, "Nitiyou",  0,     0},
-                            {Area::WindfallSchoolOfJoy,               Area::WindfallIsland,                     "Nitiyou",  0,          0, "sea",     11,    12}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallLenzosHouseFromBottomEntry, "sea",     11,         10, "Ocmera",   0,     0},
-                            {Area::WindfallLenzosHouseLower,          Area::WindfallIsland,                     "Ocmera",   0,          0, "sea",     11,    10}},
-    {EntranceType::DOOR,    {Area::WindfallLenzosUpperLedge,          Area::WindfallLenzosHouseUpper,           "sea",     11,         11, "Ocmera",   0,     1},
-                            {Area::WindfallLenzosHouseUpper,          Area::WindfallLenzosUpperLedge,           "Ocmera",   0,          1, "sea",     11,    11}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallCafeBar,                    "sea",     11,          7, "Opub",     0,     0},
-                            {Area::WindfallCafeBar,                   Area::WindfallIsland,                     "Opub",     0,          0, "sea",     11,     6}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallBattleSquidInterior,        "sea",     11,          9, "Kaisen",   0,     0},
-                            {Area::WindfallBattleSquidInterior,       Area::WindfallIsland,                     "Kaisen",   0,          0, "sea",     11,     9}},
-    {EntranceType::DOOR,    {Area::WindfallBattleSquidUpperLedge,     Area::WindfallBattleSquidInterior,        "sea",     11,          8, "Kaisen",   0,     1},
-                            {Area::WindfallBattleSquidInterior,       Area::WindfallBattleSquidUpperLedge,      "Kaisen",   0,          1, "sea",     11,     8}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallHouseOfWealthLower,         "sea",     11,          3, "Orichh",   0,     0},
-                            {Area::WindfallHouseOfWealthLower,        Area::WindfallIsland,                     "Orichh",   0,          1, "sea",     11,     3}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallHouseOfWealthUpper,         "sea",     11,          4, "Orichh",   0,     1},
-                            {Area::WindfallHouseOfWealthUpper,        Area::WindfallIsland,                     "Orichh",   0,          2, "sea",     11,     4}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallPotionShop,                 "sea",     11,          5, "Pdrgsh",   0,     0},
-                            {Area::WindfallPotionShop,                Area::WindfallIsland,                     "Pdrgsh",   0,          0, "sea",     11,     7}},
-    {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallBombShop,                   "sea",     11,          1, "Obombh",   0,     0},
-                            {Area::WindfallBombShop,                  Area::WindfallIsland,                     "Obombh",   0,          1, "sea",     11,     1}},
-//  {EntranceType::DOOR,    {Area::WindfallIsland,                    Area::WindfallPirateShip,                 "",        -1,         -1, "",        -1,    -1},
-//                          {Area::WindfallPirateShip,                Area::WindfallIsland,                     "",        -1,         -1, "",        -1,    -1}},
-    {EntranceType::DOOR,    {Area::DragonRoostRitoAerie,              Area::DragonRoostKomalisRoom,             "Atorizk",  0,          4, "Comori",   0,     0},
-                            {Area::DragonRoostKomalisRoom,            Area::DragonRoostRitoAerie,               "Comori",   0,          0, "Atorizk",  0,     4}},
-    {EntranceType::DOOR,    {Area::PrivateOasis,                      Area::TheCabana,                          "sea",     33,          0, "Abesso",   0,     0},
-                            {Area::TheCabana,                         Area::PrivateOasis,                       "Abesso",   0,          0, "sea",     33,     1}},
-    {EntranceType::DOOR,    {Area::OutsetIsland,                      Area::OutsetLinksHouse,                   "sea",     44,          0, "LinkRM",   0,     1},
-                            {Area::OutsetLinksHouse,                  Area::OutsetIsland,                       "LinkRM",   0,          0, "sea",     44,     1}},
-    {EntranceType::DOOR,    {Area::OutsetIsland,                      Area::OutsetOrcasHouse,                   "sea",     44,          1, "Ojhous",   0,     0},
-                            {Area::OutsetOrcasHouse,                  Area::OutsetIsland,                       "Ojhous",   0,          0, "sea",     44,     3}},
-    {EntranceType::DOOR,    {Area::OutsetIsland,                      Area::OutsetSturgeonsHouse,               "sea",     44,          2, "Ojhous2",  1,     0},
-                            {Area::OutsetSturgeonsHouse,              Area::OutsetIsland,                       "Ojhous2",  1,          0, "sea",     44,     2}},
-    {EntranceType::DOOR,    {Area::OutsetIsland,                      Area::OutsetRosesHouse,                   "sea",     44,          4, "Onobuta",  0,     0},
-                            {Area::OutsetRosesHouse,                  Area::OutsetIsland,                       "Onobuta",  0,          0, "sea",     44,     4}},
-    {EntranceType::DOOR,    {Area::OutsetIsland,                      Area::OutsetMesasHouse,                   "sea",     44,          3, "Omasao",   0,     0},
-                            {Area::OutsetMesasHouse,                  Area::OutsetIsland,                       "Omasao",   0,          0, "sea",     44,     7}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallJail",                       "sea",     11,          6, "Pnezumi",  0,     0},
+                            {"WindfallJail",                      "WindfallIsland",                     "Pnezumi",  0,          0, "sea",     11,    13}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallSchoolOfJoy",                "sea",     11,         12, "Nitiyou",  0,     0},
+                            {"WindfallSchoolOfJoy",               "WindfallIsland",                     "Nitiyou",  0,          0, "sea",     11,    12}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallLenzosHouseFromBottomEntry", "sea",     11,         10, "Ocmera",   0,     0},
+                            {"WindfallLenzosHouseLower",          "WindfallIsland",                     "Ocmera",   0,          0, "sea",     11,    10}},
+    {EntranceType::DOOR,    {"WindfallLenzosUpperLedge",          "WindfallLenzosHouseUpper",           "sea",     11,         11, "Ocmera",   0,     1},
+                            {"WindfallLenzosHouseUpper",          "WindfallLenzosUpperLedge",           "Ocmera",   0,          1, "sea",     11,    11}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallCafeBar",                    "sea",     11,          7, "Opub",     0,     0},
+                            {"WindfallCafeBar",                   "WindfallIsland",                     "Opub",     0,          0, "sea",     11,     6}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallBattleSquidInterior",        "sea",     11,          9, "Kaisen",   0,     0},
+                            {"WindfallBattleSquidInterior",       "WindfallIsland",                     "Kaisen",   0,          0, "sea",     11,     9}},
+    {EntranceType::DOOR,    {"WindfallBattleSquidUpperLedge",     "WindfallBattleSquidInterior",        "sea",     11,          8, "Kaisen",   0,     1},
+                            {"WindfallBattleSquidInterior",       "WindfallBattleSquidUpperLedge",      "Kaisen",   0,          1, "sea",     11,     8}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallHouseOfWealthLower",         "sea",     11,          3, "Orichh",   0,     0},
+                            {"WindfallHouseOfWealthLower",        "WindfallIsland",                     "Orichh",   0,          1, "sea",     11,     3}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallHouseOfWealthUpper",         "sea",     11,          4, "Orichh",   0,     1},
+                            {"WindfallHouseOfWealthUpper",        "WindfallIsland",                     "Orichh",   0,          2, "sea",     11,     4}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallPotionShop",                 "sea",     11,          5, "Pdrgsh",   0,     0},
+                            {"WindfallPotionShop",                "WindfallIsland",                     "Pdrgsh",   0,          0, "sea",     11,     7}},
+    {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallBombShop",                   "sea",     11,          1, "Obombh",   0,     0},
+                            {"WindfallBombShop",                  "WindfallIsland",                     "Obombh",   0,          1, "sea",     11,     1}},
+//  {EntranceType::DOOR,    {"WindfallIsland",                    "WindfallPirateShip",                 "",        -1,         -1, "",        -1,    -1},
+//                          {"WindfallPirateShip",                "WindfallIsland",                     "",        -1,         -1, "",        -1,    -1}},
+    {EntranceType::DOOR,    {"DragonRoostRitoAerie",              "DragonRoostKomalisRoom",             "Atorizk",  0,          4, "Comori",   0,     0},
+                            {"DragonRoostKomalisRoom",            "DragonRoostRitoAerie",               "Comori",   0,          0, "Atorizk",  0,     4}},
+    {EntranceType::DOOR,    {"PrivateOasis",                      "TheCabana",                          "sea",     33,          0, "Abesso",   0,     0},
+                            {"TheCabana",                         "PrivateOasis",                       "Abesso",   0,          0, "sea",     33,     1}},
+    {EntranceType::DOOR,    {"OutsetIsland",                      "OutsetLinksHouse",                   "sea",     44,          0, "LinkRM",   0,     1},
+                            {"OutsetLinksHouse",                  "OutsetIsland",                       "LinkRM",   0,          0, "sea",     44,     1}},
+    {EntranceType::DOOR,    {"OutsetIsland",                      "OutsetOrcasHouse",                   "sea",     44,          1, "Ojhous",   0,     0},
+                            {"OutsetOrcasHouse",                  "OutsetIsland",                       "Ojhous",   0,          0, "sea",     44,     3}},
+    {EntranceType::DOOR,    {"OutsetIsland",                      "OutsetSturgeonsHouse",               "sea",     44,          2, "Ojhous2",  1,     0},
+                            {"OutsetSturgeonsHouse",              "OutsetIsland",                       "Ojhous2",  1,          0, "sea",     44,     2}},
+    {EntranceType::DOOR,    {"OutsetIsland",                      "OutsetRosesHouse",                   "sea",     44,          4, "Onobuta",  0,     0},
+                            {"OutsetRosesHouse",                  "OutsetIsland",                       "Onobuta",  0,          0, "sea",     44,     4}},
+    {EntranceType::DOOR,    {"OutsetIsland",                      "OutsetMesasHouse",                   "sea",     44,          3, "Omasao",   0,     0},
+                            {"OutsetMesasHouse",                  "OutsetIsland",                       "Omasao",   0,          0, "sea",     44,     7}},
 
     // MISC Entrances are those which don't fit into any of the above categories,
     // but which are still interesting for entrance randomizer. These are all
@@ -127,47 +127,47 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     //
     // MISC_CRAWLSPACE is separated for the time being until potential softlocks
     // with mixing crawlspace/non-crawlspace entrances can be resolved.
-    {EntranceType::MISC_RESTRICTIVE, {Area::GaleIsle,                          Area::GaleIsleInterior,                   "sea",      4, 0, "Ekaze",    0,     0},
-                                     {Area::GaleIsleInterior,                  Area::GaleIsle,                           "Ekaze",    0, 1, "sea",      4,     1}},
-    {EntranceType::MISC_CRAWLSPACE,  {Area::WindfallIsland,                    Area::WindfallBombShopUpperLedge,         "sea",     11, 2, "Obombh",   0,     1},
-                                     {Area::WindfallBombShopUpperLedge,        Area::WindfallIsland,                     "Obombh",   0, 2, "sea",     11,     2}},
-    {EntranceType::MISC,             {Area::DragonRoostIsland,                 Area::DragonRoostRitoAerie,               "sea",     13, 0, "Atorizk",  0,     0},
-                                     {Area::DragonRoostRitoAerie,              Area::DragonRoostIsland,                  "Atorizk",  0, 0, "sea",     13,     1}},
-    {EntranceType::MISC,             {Area::DragonRoostIslandFlightDeck,       Area::DragonRoostRitoAerie,               "sea",     13, 1, "Atorizk",  0,     1},
-                                     {Area::DragonRoostRitoAerie,              Area::DragonRoostIslandFlightDeck,        "Atorizk",  0, 1, "sea",     13,     2}},
-    {EntranceType::MISC,             {Area::DragonRoostPond,                   Area::DragonRoostRitoAerie,               "Adanmae",  0, 0, "Atorizk",  0,     2},
-                                     {Area::DragonRoostRitoAerie,              Area::DragonRoostPond,                    "Atorizk",  0, 2, "Adanmae",  0,     0}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::DragonRoostRitoAerie,              Area::DragonRoostPondUpperLedge,          "Atorizk",  0, 3, "Adanmae",  0,     1},
-                                     {Area::DragonRoostPondUpperLedge,         Area::DragonRoostRitoAerie,               "Adanmae",  0, 1, "Atorizk",  0,     3}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::IsletOfSteel,                      Area::IsletOfSteelInterior,               "sea",     30, 0, "ShipD",    0,     0},
-                                     {Area::IsletOfSteelInterior,              Area::IsletOfSteel,                       "ShipD",     0, 0, "sea",     30,     1}},
-    {EntranceType::MISC,             {Area::ForestHaven,                       Area::ForestHavenInterior,                "sea",     41, 5, "Omori",    0,     5},
-                                     {Area::ForestHavenInterior,               Area::ForestHaven,                        "Omori",    0, 5, "sea",     41,     5}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::ForestHaven,                       Area::ForestHavenWaterfallCave,           "sea",     41, 7, "Otkura",   0,     0},
-                                     {Area::ForestHavenWaterfallCave,          Area::ForestHaven,                        "Otkura",   0, 0, "sea",     41,     9}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::ForestHavenInterior,               Area::ForestPotionShop,                   "Omori",    0, 0, "Ocrogh",   0,     0},
-                                     {Area::ForestPotionShop,                  Area::ForestHavenInterior,                "Ocrogh",   0, 0, "Omori",    0,     0}},
-    {EntranceType::MISC,             {Area::ForestHavenExteriorNorthLedge,     Area::ForestHavenInteriorNorthLedge,      "sea",     41, 1, "Omori",    0,     1},
-                                     {Area::ForestHavenInteriorNorthLedge,     Area::ForestHavenExteriorNorthLedge,      "Omori",    0, 1, "sea",     41,     1}},
-    {EntranceType::MISC,             {Area::ForestHavenExteriorWestLowerLedge, Area::ForestHavenInteriorWestLowerLedge,  "sea",     41, 3, "Omori",    0,     3},
-                                     {Area::ForestHavenInteriorWestLowerLedge, Area::ForestHavenExteriorWestLowerLedge,  "Omori",    0, 3, "sea",     41,     3}},
-    {EntranceType::MISC,             {Area::ForestHavenExteriorWestUpperLedge, Area::ForestHavenInteriorWestUpperLedge,  "sea",     41, 2, "Omori",    0,     2},
-                                     {Area::ForestHavenInteriorWestUpperLedge, Area::ForestHavenExteriorWestUpperLedge,  "Omori",    0, 2, "sea",     41,     2}},
-    {EntranceType::MISC,             {Area::ForestHavenExteriorSouthLedge,     Area::ForestHavenInteriorSouthLedge,      "sea",     41, 4, "Omori",    0,     4},
-                                     {Area::ForestHavenInteriorSouthLedge,     Area::ForestHavenExteriorSouthLedge,      "Omori",    0, 4, "sea",     41,     4}},
-    {EntranceType::MISC_CRAWLSPACE,  {Area::OutsetIsland,                      Area::OutsetUnderLinksHouse,              "sea",     44, 9, "LinkUG",   0,     1},
-                                     {Area::OutsetUnderLinksHouse,             Area::OutsetIsland,                       "LinkUG",   0, 0, "sea",     44,    11}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::OutsetAcrossBridge,                Area::OutsetForestOfFairies,              "sea",     44, 6, "A_mori",   0,     0},
-                                     {Area::OutsetForestOfFairies,             Area::OutsetAcrossBridge,                 "A_mori",   0, 0, "sea",     44,     8}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::OutsetIsland,                      Area::OutsetJabunsCave,                   "sea",     44, 7, "Pjavdou",  0,     0},
-                                     {Area::OutsetJabunsCave,                  Area::OutsetIsland,                       "Pjavdou",  0, 0, "sea",     44,     9}},
-    {EntranceType::MISC_RESTRICTIVE, {Area::HeadstoneIsland,                   Area::HeadstoneIslandInterior,            "sea",     45, 0, "Edaichi",  0,     0},
-                                     {Area::HeadstoneIslandInterior,           Area::HeadstoneIsland,                    "Edaichi",  0, 1, "sea",     45,     1}},
+    {EntranceType::MISC_RESTRICTIVE, {"GaleIsle",                          "GaleIsleInterior",                   "sea",      4, 0, "Ekaze",    0,     0},
+                                     {"GaleIsleInterior",                  "GaleIsle",                           "Ekaze",    0, 1, "sea",      4,     1}},
+    {EntranceType::MISC_CRAWLSPACE,  {"WindfallIsland",                    "WindfallBombShopUpperLedge",         "sea",     11, 2, "Obombh",   0,     1},
+                                     {"WindfallBombShopUpperLedge",        "WindfallIsland",                     "Obombh",   0, 2, "sea",     11,     2}},
+    {EntranceType::MISC,             {"DragonRoostIsland",                 "DragonRoostRitoAerie",               "sea",     13, 0, "Atorizk",  0,     0},
+                                     {"DragonRoostRitoAerie",              "DragonRoostIsland",                  "Atorizk",  0, 0, "sea",     13,     1}},
+    {EntranceType::MISC,             {"DragonRoostIslandFlightDeck",       "DragonRoostRitoAerie",               "sea",     13, 1, "Atorizk",  0,     1},
+                                     {"DragonRoostRitoAerie",              "DragonRoostIslandFlightDeck",        "Atorizk",  0, 1, "sea",     13,     2}},
+    {EntranceType::MISC,             {"DragonRoostPond",                   "DragonRoostRitoAerie",               "Adanmae",  0, 0, "Atorizk",  0,     2},
+                                     {"DragonRoostRitoAerie",              "DragonRoostPond",                    "Atorizk",  0, 2, "Adanmae",  0,     0}},
+    {EntranceType::MISC_RESTRICTIVE, {"DragonRoostRitoAerie",              "DragonRoostPondUpperLedge",          "Atorizk",  0, 3, "Adanmae",  0,     1},
+                                     {"DragonRoostPondUpperLedge",         "DragonRoostRitoAerie",               "Adanmae",  0, 1, "Atorizk",  0,     3}},
+    {EntranceType::MISC_RESTRICTIVE, {"IsletOfSteel",                      "IsletOfSteelInterior",               "sea",     30, 0, "ShipD",    0,     0},
+                                     {"IsletOfSteelInterior",              "IsletOfSteel",                       "ShipD",     0, 0, "sea",     30,     1}},
+    {EntranceType::MISC,             {"ForestHaven",                       "ForestHavenInterior",                "sea",     41, 5, "Omori",    0,     5},
+                                     {"ForestHavenInterior",               "ForestHaven",                        "Omori",    0, 5, "sea",     41,     5}},
+    {EntranceType::MISC_RESTRICTIVE, {"ForestHaven",                       "ForestHavenWaterfallCave",           "sea",     41, 7, "Otkura",   0,     0},
+                                     {"ForestHavenWaterfallCave",          "ForestHaven",                        "Otkura",   0, 0, "sea",     41,     9}},
+    {EntranceType::MISC_RESTRICTIVE, {"ForestHavenInterior",               "ForestPotionShop",                   "Omori",    0, 0, "Ocrogh",   0,     0},
+                                     {"ForestPotionShop",                  "ForestHavenInterior",                "Ocrogh",   0, 0, "Omori",    0,     0}},
+    {EntranceType::MISC,             {"ForestHavenExteriorNorthLedge",     "ForestHavenInteriorNorthLedge",      "sea",     41, 1, "Omori",    0,     1},
+                                     {"ForestHavenInteriorNorthLedge",     "ForestHavenExteriorNorthLedge",      "Omori",    0, 1, "sea",     41,     1}},
+    {EntranceType::MISC,             {"ForestHavenExteriorWestLowerLedge", "ForestHavenInteriorWestLowerLedge",  "sea",     41, 3, "Omori",    0,     3},
+                                     {"ForestHavenInteriorWestLowerLedge", "ForestHavenExteriorWestLowerLedge",  "Omori",    0, 3, "sea",     41,     3}},
+    {EntranceType::MISC,             {"ForestHavenExteriorWestUpperLedge", "ForestHavenInteriorWestUpperLedge",  "sea",     41, 2, "Omori",    0,     2},
+                                     {"ForestHavenInteriorWestUpperLedge", "ForestHavenExteriorWestUpperLedge",  "Omori",    0, 2, "sea",     41,     2}},
+    {EntranceType::MISC,             {"ForestHavenExteriorSouthLedge",     "ForestHavenInteriorSouthLedge",      "sea",     41, 4, "Omori",    0,     4},
+                                     {"ForestHavenInteriorSouthLedge",     "ForestHavenExteriorSouthLedge",      "Omori",    0, 4, "sea",     41,     4}},
+    {EntranceType::MISC_CRAWLSPACE,  {"OutsetIsland",                      "OutsetUnderLinksHouse",              "sea",     44, 9, "LinkUG",   0,     1},
+                                     {"OutsetUnderLinksHouse",             "OutsetIsland",                       "LinkUG",   0, 0, "sea",     44,    11}},
+    {EntranceType::MISC_RESTRICTIVE, {"OutsetAcrossBridge",                "OutsetForestOfFairies",              "sea",     44, 6, "A_mori",   0,     0},
+                                     {"OutsetForestOfFairies",             "OutsetAcrossBridge",                 "A_mori",   0, 0, "sea",     44,     8}},
+    {EntranceType::MISC_RESTRICTIVE, {"OutsetIsland",                      "OutsetJabunsCave",                   "sea",     44, 7, "Pjavdou",  0,     0},
+                                     {"OutsetJabunsCave",                  "OutsetIsland",                       "Pjavdou",  0, 0, "sea",     44,     9}},
+    {EntranceType::MISC_RESTRICTIVE, {"HeadstoneIsland",                   "HeadstoneIslandInterior",            "sea",     45, 0, "Edaichi",  0,     0},
+                                     {"HeadstoneIslandInterior",           "HeadstoneIsland",                    "Edaichi",  0, 1, "sea",     45,     1}},
 };
 
 static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolName)
 {
-    DebugLog::getInstance().log(poolName + ":");
+    DebugLog::getInstance().log(poolName + ": [");
     for (auto entrance : entrancePool)
     {
         DebugLog::getInstance().log("\t" + entrance->getOriginalName());
@@ -178,7 +178,7 @@ static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolN
 static void logMissingLocations(WorldPool& worlds)
 {
     static int identifier = 0;
-    DebugLog::getInstance().log("Missing Locations:");
+    DebugLog::getInstance().log("Missing Locations: [");
     for (auto& world : worlds)
     {
         for (auto& location : world.locationEntries)
@@ -215,7 +215,7 @@ static void setAllEntrancesData(World& world)
         forwardEntrance.setBossOutSpawnId(forwardEntry.bossOutSpawnId);
         forwardEntrance.setEntranceType(type);
         forwardEntrance.setAsPrimary();
-        if (returnEntry.parentArea != Area::INVALID)
+        if (returnEntry.parentArea != "INVALID")
         {
             auto& returnEntrance = world.getEntrance(returnEntry.parentArea, returnEntry.connectedArea);
             returnEntrance.setFilepathStage(returnEntry.filepathStage);
@@ -292,11 +292,11 @@ static void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
 
 static void deleteTargetEntrance(Entrance* targetEntrance)
 {
-    if (targetEntrance->getConnectedArea() != Area::INVALID)
+    if (targetEntrance->getConnectedArea() != "INVALID")
     {
         targetEntrance->disconnect();
     }
-    if (targetEntrance->getParentArea() != Area::INVALID)
+    if (targetEntrance->getParentArea() != "INVALID")
     {
         targetEntrance->getWorld()->removeEntrance(targetEntrance);
     }
@@ -390,7 +390,7 @@ static EntranceShuffleError replaceEntrance(WorldPool& worlds, Entrance* entranc
     // the attempted connection and try again with a different target.
     if (err != EntranceShuffleError::NONE)
     {
-        if (entrance->getConnectedArea() != Area::INVALID)
+        if (entrance->getConnectedArea() != "INVALID")
         {
             restoreConnections(entrance, target);
         }
@@ -415,7 +415,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
     for (auto entrance : entrances)
     {
         EntranceShuffleError err = EntranceShuffleError::NONE;
-        if (entrance->getConnectedArea() != Area::INVALID)
+        if (entrance->getConnectedArea() != "INVALID")
         {
             continue;
         }
@@ -424,7 +424,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
         for (auto target : targetEntrances)
         {
             // If the target has already been disconnected, then don't use it again
-            if (target->getConnectedArea() == Area::INVALID)
+            if (target->getConnectedArea() == "INVALID")
             {
                 continue;
             }
@@ -435,7 +435,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
             }
         }
 
-        if (entrance->getConnectedArea() == Area::INVALID)
+        if (entrance->getConnectedArea() == "INVALID")
         {
             DebugLog::getInstance().log("Could not connect " + entrance->getOriginalName() + ". Error: " + errorToName(err));
             return EntranceShuffleError::NO_MORE_VALID_ENTRANCES;
@@ -445,7 +445,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
     // Verify that all targets were disconnected and that we didn't create any closed root loops
     for (auto target : targetEntrances)
     {
-        if (target->getConnectedArea() != Area::INVALID)
+        if (target->getConnectedArea() != "INVALID")
         {
             DebugLog::getInstance().log("Error: Target entrance " + target->getCurrentName() + " was never disconnected");
             return EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET;
@@ -479,8 +479,6 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
             }
             continue;
         }
-
-        // Validate world
 
         for (auto& [entrance, target] : rollbacks)
         {
@@ -534,13 +532,14 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         {
             // Rooms 2 - 49 include every island except Forsaken Fortress
             world.startingIslandRoomIndex = Random(2, 50);
-            auto startingIsland = roomIndexToIslandArea(world.startingIslandRoomIndex);
+            auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
+            startingIsland.erase(std::remove(startingIsland.begin(), startingIsland.end(), ' '), startingIsland.end());
 
             // Set the new starting island in the world graph
-            auto& linksSpawn = world.getEntrance(Area::LinksSpawn, Area::OutsetIsland);
+            auto& linksSpawn = world.getEntrance("LinksSpawn", "OutsetIsland");
             linksSpawn.setConnectedArea(startingIsland);
-            world.areaEntries[areaAsIndex(Area::OutsetIsland)].entrances.remove(&linksSpawn);
-            world.areaEntries[areaAsIndex(startingIsland)].entrances.push_back(&linksSpawn);
+            world.areaEntries["OutsetIsland"].entrances.remove(&linksSpawn);
+            world.areaEntries[startingIsland].entrances.push_back(&linksSpawn);
         }
 
         // Set entrance data for all entrances, even those we aren't shuffling
@@ -568,7 +567,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             // Don't randomize the cliff plateau upper isles grotto unless entrances are decoupled
             else
             {
-                filterFromPool(entrancePools[EntranceType::CAVE], [](Entrance* e){return e->getParentArea() == Area::CliffPlateauHighestIsle;});
+                filterAndEraseFromPool(entrancePools[EntranceType::CAVE], [](Entrance* e){return e->getParentArea() == "CliffPlateauHighestIsle";});
             }
         }
 

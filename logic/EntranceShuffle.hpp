@@ -19,8 +19,8 @@ enum struct EntranceShuffleError
 
 struct EntranceInfo
 {
-    Area parentArea = Area::INVALID;
-    Area connectedArea = Area::INVALID;
+    std::string parentArea = "INVALID";
+    std::string connectedArea = "INVALID";
     std::string filepathStage = "";
     uint8_t filepathRoom = 0xFF;
     uint8_t sclsExitIndex = 0xFF;

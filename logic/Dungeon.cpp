@@ -184,20 +184,20 @@ DungeonId nameToDungeonId(const std::string& name)
     return nameDungeonIdMap.at(name);
 }
 
-Area dungeonIdToFirstRoom(const DungeonId& dungeonId)
+std::string dungeonIdToFirstRoom(const DungeonId& dungeonId)
 {
-    static std::unordered_map<DungeonId, Area> dungeonIdAreaMap = {
-        {DungeonId::DragonRoostCavern, Area::DRCFirstRoom},
-        {DungeonId::ForbiddenWoods, Area::FWFirstRoom},
-        {DungeonId::TowerOfTheGods, Area::TOTGEntranceRoom},
-        {DungeonId::ForsakenFortress, Area::ForsakenFortressInnerCourtyard},
-        {DungeonId::EarthTemple, Area::ETFirstRoom},
-        {DungeonId::WindTemple, Area::WTFirstRoom},
+    static std::unordered_map<DungeonId, std::string> dungeonIdAreaMap = {
+        {DungeonId::DragonRoostCavern, "DRCFirstRoom"},
+        {DungeonId::ForbiddenWoods, "FWFirstRoom"},
+        {DungeonId::TowerOfTheGods, "TOTGEntranceRoom"},
+        {DungeonId::ForsakenFortress, "ForsakenFortressInnerCourtyard"},
+        {DungeonId::EarthTemple, "ETFirstRoom"},
+        {DungeonId::WindTemple, "WTFirstRoom"},
     };
 
     if (dungeonIdAreaMap.count(dungeonId) == 0)
     {
-        return Area::INVALID;
+        return "INVALID";
     }
 
     return dungeonIdAreaMap.at(dungeonId);

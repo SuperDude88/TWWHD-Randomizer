@@ -1969,8 +1969,8 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 	std::unordered_set<uint8_t> room_indexes;
 	for(const auto& dungeon : world.raceModeDungeons) {
 		const std::string islandName = hintRegionToName(dungeon.second);
-		
-		room_indexes.emplace(islandAreaToRoomIndex(nameToArea(islandName)));
+
+		room_indexes.emplace(islandNameToRoomIndex(islandName));
 	}
 
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");
@@ -2634,8 +2634,8 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	FILETYPE_ERROR_CHECK(gRPX.loadFromFile(rpxPath.string())); //reload to avoid conflicts written between pre- and post- randomization tweaks
 
 	const std::vector<Location>& itemLocations = world.locationEntries;
-	const uint8_t startIsland = islandAreaToRoomIndex(world.getArea(Area::LinksSpawn).exits.front().getConnectedArea());
-	
+	const uint8_t startIsland = islandNameToRoomIndex(world.getArea("LinksSpawn").exits.front().getConnectedArea());
+
 	TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
 	TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
 	if (randomizeItems) {
