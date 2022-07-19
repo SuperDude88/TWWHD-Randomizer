@@ -293,7 +293,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                         bool raceModeLocationIsAcceptable = plandomizerLocations.count(raceModeLocation) == 0 ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
                         if (!raceModeLocationIsAcceptable)
                         {
-                            std::cout << "Plandomizer Error: Junk item placed at race mode location in dungeon \"" << dungeonIdToName(dungeonId) << "\" with potentially major item" << std::endl;
+                            ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeonIdToName(dungeonId) + "\" with potentially major item");
                             return WorldLoadingError::PLANDOMIZER_ERROR;
                         }
                         #ifdef ENABLE_DEBUG
@@ -310,9 +310,9 @@ World::WorldLoadingError World::determineRaceModeDungeons()
         // If too many are set, return an error
         if (setRaceModeDungeons > settings.num_race_mode_dungeons)
         {
-            std::cout << "Plandomizer Error: Too many race mode locations set with potentially major items" << std::endl;
-            std::cout << "Set race mode locations: " << std::to_string(setRaceModeDungeons) << std::endl;
-            std::cout << "Set number of race mode dungeons: " << std::to_string(settings.num_race_mode_dungeons) << std::endl;
+            ErrorLog::getInstance().log("Plandomizer Error: Too many race mode locations set with potentially major items");
+            ErrorLog::getInstance().log("Set race mode locations: " + std::to_string(setRaceModeDungeons));
+            ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
             return WorldLoadingError::PLANDOMIZER_ERROR;
         }
 
@@ -359,9 +359,9 @@ World::WorldLoadingError World::determineRaceModeDungeons()
         }
         if (setRaceModeDungeons < settings.num_race_mode_dungeons)
         {
-            std::cout << "Plandomizer Error: Not enough race mode locations for set number of race mode dungeons" << std::endl;
-            std::cout << "Possible race mode locations: " << std::to_string(setRaceModeDungeons) << std::endl;
-            std::cout << "Set number of race mode dungeons: " << std::to_string(settings.num_race_mode_dungeons) << std::endl;
+            ErrorLog::getInstance().log("Plandomizer Error: Not enough race mode locations for set number of race mode dungeons");
+            ErrorLog::getInstance().log("Possible race mode locations: " + std::to_string(setRaceModeDungeons));
+            ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
             return WorldLoadingError::PLANDOMIZER_ERROR;
         }
     }
