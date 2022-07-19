@@ -40,7 +40,7 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
 static int multiWorldTest(const Settings& settings)
 {
-    std::cout << "Now testing multiworld generation" << std::endl;
+    std::cout << "Now testing multiworld generation";
 
     const std::string seed = std::to_string(Random(0, 10000000));
     std::cout << " using seed \"" << seed << "\"" << std::endl;

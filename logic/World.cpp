@@ -51,7 +51,9 @@ void World::resolveRandomSettings()
 {
     if (settings.pig_color == PigColor::RANDOM) {
         settings.pig_color = PigColor(Random(0, 3));
-        DebugLog::getInstance().log("Random pig color chosen: " + std::to_string(static_cast<int>(settings.pig_color)));
+        #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("Random pig color chosen: " + std::to_string(static_cast<int>(settings.pig_color)));
+        #endif
     }
 }
 
@@ -89,7 +91,9 @@ void World::setItemPools()
     {
         itemPool.emplace_back(gameItem, worldId);
     }
-    logItemPool("Items for world " + std::to_string(worldId), itemPool);
+    #ifdef ENABLE_DEBUG
+        logItemPool("Items for world " + std::to_string(worldId), itemPool);
+    #endif
 }
 
 ItemPool World::getItemPool() const
@@ -181,7 +185,9 @@ void World::determineChartMappings()
     {
         shufflePool(charts);
     }
-    DebugLog::getInstance().log("[");
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("[");
+    #endif
     for (size_t i = 0; i < charts.size(); i++)
     {
         auto chart = charts[i];
@@ -191,11 +197,13 @@ void World::determineChartMappings()
         // one argument which is the chart Item.
         size_t sector = i + 1;
         macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = Item(chart, worldId);
-
-
-        DebugLog::getInstance().log("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+        #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+        #endif
     }
-    DebugLog::getInstance().log("]");
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("]");
+    #endif
 }
 
 // Returns whether or not the sunken treasure location has a treasure/triforce chart leading to it
@@ -205,7 +213,9 @@ bool World::chartLeadsToSunkenTreasure(const Location& location, const std::stri
     // If this isn't a sunken treasure location, then a chart won't lead to it
     if (locationId < LocationId::ForsakenFortressSunkenTreasure || locationId > LocationId::FiveStarSunkenTreasure)
     {
-        DebugLog::getInstance().log("Non-sunken treasure location passed into sunken treasure check: " + locationName(&location));
+        #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("Non-sunken treasure location passed into sunken treasure check: " + locationName(&location));
+        #endif
         return false;
     }
 
@@ -286,7 +296,9 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                             std::cout << "Plandomizer Error: Junk item placed at race mode location in dungeon \"" << dungeonIdToName(dungeonId) << "\" with potentially major item" << std::endl;
                             return WorldLoadingError::PLANDOMIZER_ERROR;
                         }
-                        DebugLog::getInstance().log("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
+                        #ifdef ENABLE_DEBUG
+                            DebugLog::getInstance().log("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
+                        #endif
                         raceModeDungeons.insert({dungeonId, HintRegion::INVALID});
                         setRaceModeDungeons++;
                         break;
@@ -320,7 +332,9 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             bool raceModeLocationIsAcceptable = plandomizerLocations.count(dungeonLocation) == 0 ? false : plandomizerLocations[dungeonLocation].isJunkItem();
             if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
             {
-                DebugLog::getInstance().log("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
+                #ifdef ENABLE_DEBUG
+                    DebugLog::getInstance().log("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
+                #endif
                 raceModeDungeons.insert({dungeonId, HintRegion::INVALID});
                 setRaceModeDungeons++;
             }
@@ -786,7 +800,9 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     // maybe change to Optional later if thats determined to work
     // on wii u
     auto loadedArea = areaObject["Name"].As<std::string>();
-    // DebugLog::getInstance().log("Now Loading Area " + loadedArea);
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Now Loading Area " + loadedArea);
+    #endif
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << loadedArea << "\" is not defined!");
 
     // Store the pretty name to use for later
@@ -829,7 +845,9 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
                 ErrorLog::getInstance().log(std::string("Got error loading event: ") + World::errorToName(err));
                 return err;
             }
-            // DebugLog::getInstance().log("\tAdding location " + locationIdToName(locOut));
+            #ifdef ENABLE_DEBUG
+                DebugLog::getInstance().log("\tAdding event " + eventName);
+            #endif
             newEntry.events.push_back(eventOut);
         }
     }
@@ -848,7 +866,9 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
                 ErrorLog::getInstance().log(std::string("Got error loading location: ") + World::errorToName(err));
                 return err;
             }
-            // DebugLog::getInstance().log("\tAdding location " + locationIdToName(locOut));
+            #ifdef ENABLE_DEBUG
+                DebugLog::getInstance().log("\tAdding location " + locationName);
+            #endif
             newEntry.locations.push_back(locOut);
         }
     }
@@ -868,7 +888,9 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
                 ErrorLog::getInstance().log(std::string("Got error loading exit: ") + World::errorToName(err));
                 return err;
             }
-            // DebugLog::getInstance().log("\tAdding exit -> " + areaToName(exitOut.connectedArea));
+            #ifdef ENABLE_DEBUG
+                DebugLog::getInstance().log("\tAdding exit -> " + exitOut.getConnectedArea());
+            #endif
             newEntry.exits.push_back(exitOut);
         }
     }
@@ -918,7 +940,9 @@ World::WorldLoadingError World::loadPlandomizerLocations()
                 }
                 else
                 {
-                    DebugLog::getInstance().log("No plando locations found for world " + std::to_string(worldId + 1));
+                    #ifdef ENABLE_DEBUG
+                        DebugLog::getInstance().log("No plando locations found for world " + std::to_string(worldId + 1));
+                    #endif
                     return WorldLoadingError::NONE;
                 }
         }
@@ -986,7 +1010,9 @@ World::WorldLoadingError World::loadPlandomizerLocations()
         auto itemId = nameToGameItem(itemNameNoSpaces);
         ITEM_VALID_CHECK(itemId, "Plandomizer Error: Unknown item name \"" << itemName << "\" in plandomizer file");
 
-        DebugLog::getInstance().log("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationObject.first + ": " + itemName + "[W" + std::to_string(plandoWorldId) + "]");
+        #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationObject.first + ": " + itemName + "[W" + std::to_string(plandoWorldId) + "]");
+        #endif
         Location* location = &locationEntries[locationIdAsIndex(locationId)];
         Item item = {itemId, plandoWorldId};
         plandomizerLocations.insert({location, item});
@@ -1252,7 +1278,9 @@ std::string World::getLastErrorDetails()
     std::string out = lastError.str();
     lastError.str(std::string());
     lastError.clear();
-    DebugLog::getInstance().log(out);
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log(out);
+    #endif
     return out;
 }
 

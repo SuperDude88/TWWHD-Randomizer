@@ -13,19 +13,27 @@
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
+#include <chrono>
 
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
+  #ifdef ENABLE_TIMING
+      auto start = std::chrono::high_resolution_clock::now();
+  #endif
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
-  Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s\n" : "\n"));
+  #ifndef MASS_TESTING
+      Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s\n" : "\n"));
+  #endif
   int buildRetryCount = 10;
   EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
   while (buildRetryCount > 0)
   {
       for (size_t i = 0; i < worlds.size(); i++)
       {
-          DebugLog::getInstance().log("Building World " + std::to_string(i));
+          #ifdef ENABLE_DEBUG
+              DebugLog::getInstance().log("Building World " + std::to_string(i));
+          #endif
           worlds[i] = World();
           worlds[i].setWorldId(i);
           worlds[i].setSettings(settingsVector[i]);
@@ -44,11 +52,15 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       }
 
       // Randomize entrances before placing items
-      DebugLog::getInstance().log("Randomizing Entrances");
+      #ifdef ENABLE_DEBUG
+          DebugLog::getInstance().log("Randomizing Entrances");
+      #endif
       entranceErr = randomizeEntrances(worlds);
       if (entranceErr != EntranceShuffleError::NONE)
       {
-          DebugLog::getInstance().log("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
+          #ifdef ENABLE_DEBUG
+              DebugLog::getInstance().log("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
+          #endif
           buildRetryCount--;
           continue;
       }
@@ -64,7 +76,9 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   // Retry the main fill algorithm a couple times incase it completely fails.
   int totalFillAttempts = 5;
   FillError fillError = FillError::NONE;
-  Utility::platformLog(std::string("Filling World") + (worlds.size() > 1 ? "s\n" : "\n"));
+  #ifndef MASS_TESTING
+      Utility::platformLog(std::string("Filling World") + (worlds.size() > 1 ? "s\n" : "\n"));
+  #endif
   while (totalFillAttempts > 0)
   {
       totalFillAttempts--;
@@ -72,7 +86,9 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS || fillError == FillError::PLANDOMIZER_ERROR) {
           break;
       }
-      DebugLog::getInstance().log("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
+      #ifdef ENABLE_DEBUG
+          DebugLog::getInstance().log("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
+      #endif
       clearWorlds(worlds);
   }
 
@@ -83,7 +99,6 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           if (fillError == FillError::GAME_NOT_BEATABLE)
           {
               generatePlaythrough(worlds);
-              //generateSpoilerLog(worlds, seed);
           }
           for (World& world : worlds) {
               world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
@@ -92,8 +107,16 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       return 1;
   }
 
-  Utility::platformLog("Generating Playthrough\n");
+  #ifndef MASS_TESTING
+      Utility::platformLog("Generating Playthrough\n");
+  #endif
   generatePlaythrough(worlds);
 
+  #ifdef ENABLE_TIMING
+      auto stop = std::chrono::high_resolution_clock::now();
+      auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+      auto seconds = static_cast<double>(duration.count()) / 1000000.0;
+      Utility::platformLog(std::string("Generating and Filling worlds took ") + std::to_string(seconds) + " seconds\n");
+  #endif
   return 0;
 }

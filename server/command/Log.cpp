@@ -133,30 +133,32 @@ void ErrorLog::log(const std::string& msg) {
 
 
 DebugLog::DebugLog() {
-    output.open("./Debug Log.txt");
+    #ifdef ENABLE_DEBUG
+        output.open("./Debug Log.txt");
 
-    time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
-    output << "Program opened " << std::ctime(&point); //time string ends with \n
-    
-    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
+        output << "Program opened " << std::ctime(&point); //time string ends with \n
 
-    output << "Selected options:" << std::endl << "\t";
-    for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-    {
-        Option setting = static_cast<Option>(settingInt);
+        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
-        if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+        output << "Selected options:" << std::endl << "\t";
+        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
         {
-            output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
-        }
-        else
-        {
-            output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
-        }
-    }
+            Option setting = static_cast<Option>(settingInt);
 
-    output << std::endl << std::endl;
+            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+            {
+                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+            }
+            else
+            {
+                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+            }
+        }
+
+        output << std::endl << std::endl;
+    #endif
 }
 
 DebugLog::~DebugLog() {
@@ -169,5 +171,7 @@ DebugLog& DebugLog::getInstance() {
 }
 
 void DebugLog::log(const std::string& msg) {
-    output << "[" << formatTime(ProgramTime::getElapsedTime()) << "] " << msg << std::endl;
+    #ifdef ENABLE_DEBUG
+        output << "[" << formatTime(ProgramTime::getElapsedTime()) << "] " << msg << std::endl;
+    #endif
 }
