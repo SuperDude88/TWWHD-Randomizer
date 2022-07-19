@@ -588,6 +588,9 @@ public:
 
 int main() {
 	using namespace std::chrono_literals;
+	#ifdef ENABLE_TIMING
+			auto start = std::chrono::high_resolution_clock::now();
+	#endif
 
 	ProgramTime::getOpenedTime(); //create instance + set time
 
@@ -608,13 +611,13 @@ int main() {
 	// TODO: create default config if not found
 	rando.randomize();
 
-
-
 	//timing stuff
-	//auto start = std::chrono::high_resolution_clock::now();
-	//auto stop = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	//auto duration2 = duration.count();
+	#ifdef ENABLE_TIMING
+			auto stop = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+			auto seconds = static_cast<double>(duration.count()) / 1000000.0;
+			Utility::platformLog(std::string("Total process took ") + std::to_string(seconds) + " seconds\n");
+	#endif
 
 	return 0;
 }

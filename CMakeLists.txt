@@ -3,7 +3,7 @@ project(wwhd_rando CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ENABLE_DEBUG=0 -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ENABLE_DEBUG=1 -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -O1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -O1")
 add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
 add_compile_definitions(CONFIG_VERSION="1.0")
 
@@ -12,12 +12,15 @@ if(ENABLE_DEBUG)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
 endif()
 
+if(ENABLE_TIMING)
+  message("Some events will be timed")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_TIMING")
+endif()
+
 if(FILL_TESTING)
   message("Configuring for Fill Testing")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFILL_TESTING")
-endif()
-
-if(MASS_TESTING)
+elseif(MASS_TESTING)
   message("Configuring for Mass Testing")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMASS_TESTING")
 endif()

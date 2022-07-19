@@ -280,7 +280,9 @@ static void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 
 static void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
 {
-    DebugLog::getInstance().log("Restoring Connection for " + entrance->getOriginalName());
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Restoring Connection for " + entrance->getOriginalName());
+    #endif
     targetEntrance->connect(entrance->disconnect());
     entrance->setReplaces(nullptr);
     if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
@@ -313,12 +315,14 @@ static void confirmReplacement(Entrance* entrance, Entrance* targetEntrance)
 
 static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entrancePlaced, ItemPool& itemPool)
 {
-    DebugLog::getInstance().log("Validating World");
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Validating World");
+    #endif
     // Ensure that all item locations are still reachable within the given world
     if (!allLocationsReachable(worlds, itemPool))
     {
-        DebugLog::getInstance().log("Error: All locations not reachable");
         #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("Error: All locations not reachable");
             logMissingLocations(worlds);
         #endif
         return EntranceShuffleError::ALL_LOCATIONS_NOT_REACHABLE;
@@ -330,7 +334,9 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     GET_COMPLETE_PROGRESSION_LOCATION_POOL(progLocations, worlds);
     if (getAccessibleLocations(worlds, noItems, progLocations).size() < worlds.size())
     {
-        DebugLog::getInstance().log("Error: Not enough sphere zero locations to place items");
+        #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("Error: Not enough sphere zero locations to place items");
+        #endif
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
     }
     // Ensure that all race mode dungeons are assigned to a single island and that
@@ -351,7 +357,9 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 {
                     if (dungeonIslands.size() > 1)
                     {
-                        DebugLog::getInstance().log("Error: More than 1 island leading to race mode dungeon " + dungeonIdToName(dungeon));
+                        #ifdef ENABLE_DEBUG
+                            DebugLog::getInstance().log("Error: More than 1 island leading to race mode dungeon " + dungeonIdToName(dungeon));
+                        #endif
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
                     }
                 }
@@ -361,7 +369,9 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                     auto dungeonIsland = *dungeonIslands.begin();
                     if (raceModeIslands.count(dungeonIsland) > 0)
                     {
-                        DebugLog::getInstance().log("Error: Island " + hintRegionToName(dungeonIsland) + " has an ambiguous race mode dungeon");
+                        #ifdef ENABLE_DEBUG
+                            DebugLog::getInstance().log("Error: Island " + hintRegionToName(dungeonIsland) + " has an ambiguous race mode dungeon");
+                        #endif
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
@@ -380,7 +390,9 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
 // new world graph is valid for this world's settings
 static EntranceShuffleError replaceEntrance(WorldPool& worlds, Entrance* entrance, Entrance* target, std::vector<EntrancePair>& rollbacks, ItemPool& itemPool)
 {
-    DebugLog::getInstance().log("Attempting to Connect " + entrance->getOriginalName() + " To " + target->getReplaces()->getOriginalName());
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Attempting to Connect " + entrance->getOriginalName() + " To " + target->getReplaces()->getOriginalName());
+    #endif
     EntranceShuffleError err = EntranceShuffleError::NONE;
     err = checkEntrancesCompatibility(entrance, target, rollbacks);
     ENTRANCE_SHUFFLE_ERROR_CHECK(err);
@@ -437,7 +449,9 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
 
         if (entrance->getConnectedArea() == "INVALID")
         {
-            DebugLog::getInstance().log("Could not connect " + entrance->getOriginalName() + ". Error: " + errorToName(err));
+            #ifdef ENABLE_DEBUG
+                DebugLog::getInstance().log("Could not connect " + entrance->getOriginalName() + ". Error: " + errorToName(err));
+            #endif
             return EntranceShuffleError::NO_MORE_VALID_ENTRANCES;
         }
     }
@@ -447,7 +461,9 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
     {
         if (target->getConnectedArea() != "INVALID")
         {
-            DebugLog::getInstance().log("Error: Target entrance " + target->getCurrentName() + " was never disconnected");
+            #ifdef ENABLE_DEBUG
+                DebugLog::getInstance().log("Error: Target entrance " + target->getCurrentName() + " was never disconnected");
+            #endif
             return EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET;
         }
     }
@@ -471,8 +487,10 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
         err = shuffleEntrances(worlds, entrancePool, targetEntrances, rollbacks);
         if (err != EntranceShuffleError::NONE)
         {
-            DebugLog::getInstance().log("Failed to place all entrances in a pool for world " + std::to_string(world.getWorldId() + 1) + ". Will retry " + std::to_string(retryCount) + " more times.");
-            DebugLog::getInstance().log("Last Error: " + errorToName(err));
+            #ifdef ENABLE_DEBUG
+                DebugLog::getInstance().log("Failed to place all entrances in a pool for world " + std::to_string(world.getWorldId() + 1) + ". Will retry " + std::to_string(retryCount) + " more times.");
+                DebugLog::getInstance().log("Last Error: " + errorToName(err));
+            #endif
             for (auto& [entrance, target] : rollbacks)
             {
                 restoreConnections(entrance, target);
@@ -487,7 +505,9 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
         return EntranceShuffleError::NONE;
     }
 
-    DebugLog::getInstance().log("Entrance placement attempt count exceeded for world " + std::to_string(world.getWorldId() + 1));
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Entrance placement attempt count exceeded for world " + std::to_string(world.getWorldId() + 1));
+    #endif
     return EntranceShuffleError::RAN_OUT_OF_RETRIES;
 }
 
@@ -626,7 +646,9 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         for (auto& [type, entrancePool] : entrancePools)
         {
             targetEntrancePools[type] = assumeEntrancePool(entrancePool);
-            logEntrancePool(targetEntrancePools[type], "Targets for entrance type " + entranceTypeToName(type));
+            #ifdef ENABLE_DEBUG
+                logEntrancePool(targetEntrancePools[type], "Targets for entrance type " + entranceTypeToName(type));
+            #endif
         }
 
         // Shuffle the entrances

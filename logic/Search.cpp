@@ -438,7 +438,9 @@ void generatePlaythrough(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
     search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
-    DebugLog::getInstance().log("Pare Down");
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Pare Down");
+    #endif
     pareDownPlaythrough(worlds);
 }
 
