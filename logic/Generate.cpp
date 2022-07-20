@@ -44,11 +44,19 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           }
           worlds[i].determineChartMappings();
           worlds[i].determineProgressionLocations();
+          worlds[i].setItemPools();
+          if (worlds[i].getSettings().plandomizer)
+          {
+              if (worlds[i].loadPlandomizer() != World::WorldLoadingError::NONE)
+              {
+                  Utility::platformLog(worlds[i].getLastErrorDetails());
+                  return 1;
+              }
+          }
           if (worlds[i].determineRaceModeDungeons() != World::WorldLoadingError::NONE)
           {
               return 1;
           }
-          worlds[i].setItemPools();
       }
 
       // Randomize entrances before placing items
@@ -61,6 +69,11 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           #ifdef ENABLE_DEBUG
               DebugLog::getInstance().log("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
           #endif
+          if (entranceErr == EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY || entranceErr == EntranceShuffleError::BAD_LINKS_SPAWN || entranceErr == EntranceShuffleError::PLANDOMIZER_ERROR)
+          {
+              ErrorLog::getInstance().log("Error Code: " + errorToName(entranceErr));
+              return 1;
+          }
           buildRetryCount--;
           continue;
       }

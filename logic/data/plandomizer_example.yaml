@@ -4,6 +4,7 @@
 # same directory as this example file (which should be logic/data/plandomizer.yaml in
 # the project structure).
 
+# LOCATIONS
 # All plandomized locations are defined under a "locations" element and consist
 # of the location name followed by a colon(:) and the item name you want placed
 # at that location. The following example places Bombs at Windfall Island - Maggie Free Item

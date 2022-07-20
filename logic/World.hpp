@@ -104,11 +104,12 @@ public:
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
-    Entrance& getEntrance(const std::string& parentArea, const std::string& connectedArea);
+    Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     std::unordered_set<HintRegion> getIslands(const std::string& area);
+    WorldLoadingError loadPlandomizer();
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
@@ -116,6 +117,7 @@ public:
     std::unordered_map<std::string, AreaEntry> areaEntries = {};
     std::vector<Location> locationEntries = {};
     std::unordered_map<Location*, Item> plandomizerLocations = {};
+    std::unordered_map<Entrance*, Entrance*> plandomizerEntrances = {};
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
     std::list<std::list<Location*>> playthroughSpheres = {};
@@ -139,7 +141,6 @@ private:
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);
     WorldLoadingError loadArea(Yaml::Node& areaObject);
-    WorldLoadingError loadPlandomizerLocations();
     int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;

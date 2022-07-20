@@ -392,11 +392,12 @@ struct Location
     LocationId locationId;
     std::unordered_set<LocationCategory> categories;
     bool progression;
+    bool plandomized;
     Item originalItem;
     Item currentItem;
     std::unique_ptr<LocationModification> method;
     int worldId = -1;
-    
+
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
 

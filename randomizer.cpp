@@ -526,6 +526,7 @@ public:
 			if (generateWorlds(worlds, settingsVector) != 0) {
 				// generating worlds failed
 				ErrorLog::getInstance().log("Failed to generate worlds!");
+				Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
 				return;
 			}
 

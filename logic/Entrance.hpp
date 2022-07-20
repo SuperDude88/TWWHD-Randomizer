@@ -39,10 +39,11 @@ public:
     void setParentArea(const std::string& newParentArea);
     std::string getConnectedArea() const;
     void setConnectedArea(const std::string& newConnectedArea);
+    std::string getOriginalConnectedArea() const;
     Requirement& getRequirement();
     void setRequirement(const Requirement newRequirement);
     EntranceType getEntranceType() const;
-    void setEntranceType(EntranceType& newType);
+    void setEntranceType(EntranceType newType);
     bool isPrimary() const;
     void setAsPrimary();
     std::string getOriginalName() const;
@@ -93,11 +94,13 @@ private:
 
     std::string parentArea = "INVALID";
     std::string connectedArea = "INVALID";
+    std::string originalConnectedArea = "INVALID";
     Requirement requirement;
     EntranceType type = EntranceType::NONE;
     bool primary = false;
     std::string originalName = "";
     bool alreadySetOriginalName = false;
+    bool alreadySetOriginalConnectedArea = false;
     std::string filepathStage = "";
     uint8_t filepathRoom = 0xFF;
     uint8_t sclsExitIndex = 0xFF;
@@ -117,3 +120,4 @@ private:
 };
 
 std::string entranceTypeToName(const EntranceType& type);
+EntranceType entranceTypeToReverse(const EntranceType& type);

@@ -58,7 +58,8 @@ size_t elementCountInPool(T& element, const Container& container)
 template <typename T, typename Container>
 T removeElementFromPool( Container& container, T element, int numberToRemove = 1)
 {
-    T retElement;
+    // Return the same element if we don't find any in the container
+    T retElement = element;
     for (int i = 0; i < numberToRemove; i++)
     {
         auto itr = std::find(container.begin(), container.end(), element);
