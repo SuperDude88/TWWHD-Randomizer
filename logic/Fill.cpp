@@ -414,7 +414,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     return assumedFill(worlds, raceModeItems, itemPool, raceModeLocations);
 }
 
-static FillError placePlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
+static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
     #ifdef ENABLE_DEBUG
         DebugLog::getInstance().log("Placing Plandomizer Items");
@@ -426,13 +426,18 @@ static FillError placePlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
     }
     for (auto& [location, item] : allPlandoLocations)
     {
+        // Items in progression locations were placed earlier, so skip them now
+        if (location->progression)
+        {
+            continue;
+        }
         if (!item.isJunkItem())
         {
             item = removeElementFromPool(itemPool, item);
             // Don't accept trying to place major items in non-progress locations
-            if (item.isMajorItem() && !location->progression)
+            if (item.isMajorItem())
             {
-                ErrorLog::getInstance().log("Error: Attempted to plandomize major item " + item.getName() + " in non-progress location " + locationName(location));
+                ErrorLog::getInstance().log("Error: Attempted to plandomize major item " + item.getPrettyName() + " in non-progress location " + locationIdToPrettyName(location->locationId));
                 ErrorLog::getInstance().log("Plandomizing major items in non-progress locations is not allowed.");
                 return FillError::PLANDOMIZER_ERROR;
             }
@@ -462,7 +467,7 @@ FillError fill(WorldPool& worlds)
     }
 
     determineMajorItems(worlds, itemPool, allLocations);
-    err = placePlandomizerItems(worlds, itemPool);
+    err = placeNonProgressLocationPlandomizerItems(worlds, itemPool);
     FILL_ERROR_CHECK(err);
     // Handle dungeon items and race mode dungeons first if necessary. Generally
     // we need to place items that go into more restrictive location pools first before
@@ -536,7 +541,10 @@ void clearWorlds(WorldPool& worlds)
     {
         for (auto& location : world.locationEntries)
         {
-            location.currentItem = {GameItem::INVALID, -1};
+            if (!location.plandomized)
+            {
+                location.currentItem = {GameItem::INVALID, -1};
+            }
         }
     }
 }

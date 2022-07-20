@@ -9,6 +9,8 @@ Entrance::Entrance(const std::string& parentArea_, const std::string& connectedA
 {
     parentArea = parentArea_;
     connectedArea = connectedArea_;
+    originalConnectedArea = connectedArea_;
+    alreadySetOriginalConnectedArea = true;
     world = world_;
     worldId = world->getWorldId();
     requirement = {RequirementType::NOTHING, {}};
@@ -33,6 +35,15 @@ std::string Entrance::getConnectedArea() const
 void Entrance::setConnectedArea(const std::string& newConnectedArea)
 {
     connectedArea = newConnectedArea;
+    if (!alreadySetOriginalConnectedArea)
+    {
+        originalConnectedArea = newConnectedArea;
+    }
+}
+
+std::string Entrance::getOriginalConnectedArea() const
+{
+    return originalConnectedArea;
 }
 
 Requirement& Entrance::getRequirement()
@@ -50,7 +61,7 @@ EntranceType Entrance::getEntranceType() const
     return type;
 }
 
-void Entrance::setEntranceType(EntranceType& newType)
+void Entrance::setEntranceType(EntranceType newType)
 {
     type = newType;
 }
@@ -320,4 +331,31 @@ std::string entranceTypeToName(const EntranceType& type)
         return "INVALID ENTRANCE TYPE";
     }
     return typeNameMap.at(type);
+}
+
+EntranceType entranceTypeToReverse(const EntranceType& type)
+{
+    std::unordered_map<EntranceType, EntranceType> typeReverseMap = {
+        {EntranceType::NONE, EntranceType::NONE},
+        {EntranceType::DUNGEON, EntranceType::DUNGEON_REVERSE},
+        {EntranceType::DUNGEON_REVERSE, EntranceType::DUNGEON},
+        {EntranceType::CAVE, EntranceType::CAVE_REVERSE},
+        {EntranceType::CAVE_REVERSE, EntranceType::CAVE},
+        {EntranceType::DOOR, EntranceType::DOOR_REVERSE},
+        {EntranceType::DOOR_REVERSE, EntranceType::DOOR},
+        {EntranceType::MISC, EntranceType::MISC_REVERSE},
+        {EntranceType::MISC_REVERSE, EntranceType::MISC},
+        {EntranceType::MISC_RESTRICTIVE, EntranceType::MISC_RESTRICTIVE_REVERSE},
+        {EntranceType::MISC_RESTRICTIVE_REVERSE, EntranceType::MISC_RESTRICTIVE},
+        {EntranceType::MISC_CRAWLSPACE, EntranceType::MISC_CRAWLSPACE_REVERSE},
+        {EntranceType::MISC_CRAWLSPACE_REVERSE, EntranceType::MISC_CRAWLSPACE},
+        {EntranceType::MIXED, EntranceType::MIXED},
+        {EntranceType::ALL, EntranceType::ALL},
+    };
+
+    if (typeReverseMap.count(type) == 0)
+    {
+        return EntranceType::NONE;
+    }
+    return typeReverseMap.at(type);
 }

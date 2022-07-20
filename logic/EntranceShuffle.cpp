@@ -198,40 +198,49 @@ static void logMissingLocations(WorldPool& worlds)
     DebugLog::getInstance().log("]");
 }
 
-static void setAllEntrancesData(World& world)
+static EntranceShuffleError setAllEntrancesData(World& world)
 {
     for (auto& [type, forwardEntry, returnEntry] : entranceShuffleTable)
     {
-        auto& forwardEntrance = world.getEntrance(forwardEntry.parentArea, forwardEntry.connectedArea);
-        forwardEntrance.setFilepathStage(forwardEntry.filepathStage);
-        forwardEntrance.setFilepathRoomNum(forwardEntry.filepathRoom);
-        forwardEntrance.setSclsExitIndex(forwardEntry.sclsExitIndex);
-        forwardEntrance.setStageName(forwardEntry.stage);
-        forwardEntrance.setRoomNum(forwardEntry.room);
-        forwardEntrance.setSpawnId(forwardEntry.spawnId);
-        forwardEntrance.setBossFilepathStageName(forwardEntry.bossFilepathStage);
-        forwardEntrance.setBossOutStageName(forwardEntry.bossOutStage);
-        forwardEntrance.setBossOutRoomNum(forwardEntry.bossOutRoom);
-        forwardEntrance.setBossOutSpawnId(forwardEntry.bossOutSpawnId);
-        forwardEntrance.setEntranceType(type);
-        forwardEntrance.setAsPrimary();
+        auto forwardEntrance = world.getEntrance(forwardEntry.parentArea, forwardEntry.connectedArea);
+        if (forwardEntrance == nullptr)
+        {
+            return EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY;
+        }
+        forwardEntrance->setFilepathStage(forwardEntry.filepathStage);
+        forwardEntrance->setFilepathRoomNum(forwardEntry.filepathRoom);
+        forwardEntrance->setSclsExitIndex(forwardEntry.sclsExitIndex);
+        forwardEntrance->setStageName(forwardEntry.stage);
+        forwardEntrance->setRoomNum(forwardEntry.room);
+        forwardEntrance->setSpawnId(forwardEntry.spawnId);
+        forwardEntrance->setBossFilepathStageName(forwardEntry.bossFilepathStage);
+        forwardEntrance->setBossOutStageName(forwardEntry.bossOutStage);
+        forwardEntrance->setBossOutRoomNum(forwardEntry.bossOutRoom);
+        forwardEntrance->setBossOutSpawnId(forwardEntry.bossOutSpawnId);
+        forwardEntrance->setEntranceType(type);
+        forwardEntrance->setAsPrimary();
         if (returnEntry.parentArea != "INVALID")
         {
-            auto& returnEntrance = world.getEntrance(returnEntry.parentArea, returnEntry.connectedArea);
-            returnEntrance.setFilepathStage(returnEntry.filepathStage);
-            returnEntrance.setFilepathRoomNum(returnEntry.filepathRoom);
-            returnEntrance.setSclsExitIndex(returnEntry.sclsExitIndex);
-            returnEntrance.setStageName(returnEntry.stage);
-            returnEntrance.setRoomNum(returnEntry.room);
-            returnEntrance.setSpawnId(returnEntry.spawnId);
-            returnEntrance.setBossFilepathStageName(returnEntry.bossFilepathStage);
-            returnEntrance.setBossOutStageName(returnEntry.bossOutStage);
-            returnEntrance.setBossOutRoomNum(returnEntry.bossOutRoom);
-            returnEntrance.setBossOutSpawnId(returnEntry.bossOutSpawnId);
-            returnEntrance.setEntranceType(type);
-            forwardEntrance.bindTwoWay(&returnEntrance);
+            auto returnEntrance = world.getEntrance(returnEntry.parentArea, returnEntry.connectedArea);
+            if (returnEntrance == nullptr)
+            {
+                return EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY;
+            }
+            returnEntrance->setFilepathStage(returnEntry.filepathStage);
+            returnEntrance->setFilepathRoomNum(returnEntry.filepathRoom);
+            returnEntrance->setSclsExitIndex(returnEntry.sclsExitIndex);
+            returnEntrance->setStageName(returnEntry.stage);
+            returnEntrance->setRoomNum(returnEntry.room);
+            returnEntrance->setSpawnId(returnEntry.spawnId);
+            returnEntrance->setBossFilepathStageName(returnEntry.bossFilepathStage);
+            returnEntrance->setBossOutStageName(returnEntry.bossOutStage);
+            returnEntrance->setBossOutRoomNum(returnEntry.bossOutRoom);
+            returnEntrance->setBossOutSpawnId(returnEntry.bossOutSpawnId);
+            returnEntrance->setEntranceType(entranceTypeToReverse(type));
+            forwardEntrance->bindTwoWay(returnEntrance);
         }
     }
+    return EntranceShuffleError::NONE;
 }
 
 // Disconnect each entrance in the pool and create a corresponding target entrance
@@ -511,6 +520,99 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
     return EntranceShuffleError::RAN_OUT_OF_RETRIES;
 }
 
+static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& worlds, EntrancePools& entrancePools, EntrancePools& targetEntrancePools)
+{
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Now placing plandomized entrances");
+    #endif
+    ItemPool completeItemPool = {};
+    GET_COMPLETE_ITEM_POOL(completeItemPool, worlds)
+
+    for (auto& [entrance, target] : world.plandomizerEntrances)
+    {
+        std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + areaToPrettyName(target->getOriginalConnectedArea()) + " from " + areaToPrettyName(target->getParentArea()) + "\"";
+        #ifdef ENABLE_DEBUG
+            DebugLog::getInstance().log("Attempting to set plandomized entrance " + fullConnectionName);
+        #endif
+        Entrance* entranceToConnect = entrance;
+        Entrance* targetToConnect = target;
+
+        auto type = entrance->getEntranceType();
+        // If the entrance doesn't have a type, it's not shuffable
+        if (type == EntranceType::NONE)
+        {
+            ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\" cannot be shuffled.");
+            return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+
+        // Check to make sure this type of entrance is being shuffled
+        if (entrancePools.count(type) == 0)
+        {
+            // Check if its reverse is being shuffled if decoupled entrances are off
+            if (!world.getSettings().decouple_entrances && entrance->getReverse() != nullptr && entrancePools.count(entrance->getReverse()->getEntranceType()) > 0)
+            {
+                // If so, take the reverse of the entrance and target and attempt to connect them instead
+                entranceToConnect = entrance->getReverse();
+                targetToConnect = target->getReverse();
+                type = entranceToConnect->getEntranceType();
+                DebugLog::getInstance().log("Trying Reverse");
+            }
+            else
+            {
+                ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\"'s type is not being shuffled and thus can't be plandomized.");
+                return EntranceShuffleError::PLANDOMIZER_ERROR;
+            }
+        }
+
+        // Get the appropriate pools (depending on if mixed is on or off)
+        auto& entrancePool = entrancePools[world.getSettings().mix_entrance_pools ? EntranceType::MIXED : type];
+        auto& targetPool = targetEntrancePools[world.getSettings().mix_entrance_pools ? EntranceType::MIXED : type];
+
+        if (elementInPool(entranceToConnect, entrancePool))
+        {
+            bool validTargetFound = false;
+            for (auto targetEntrance : targetPool)
+            {
+                // Loop through until we find the *actual* target entrance with the valid
+                // replacement for the entrance the user wants to connect
+                if (targetToConnect == targetEntrance->getReplaces())
+                {
+                    std::vector<EntrancePair> dummyRollbacks = {};
+                    EntranceShuffleError err = replaceEntrance(worlds, entranceToConnect, targetEntrance, dummyRollbacks, completeItemPool);
+                    if (err != EntranceShuffleError::NONE)
+                    {
+                        ErrorLog::getInstance().log("Plandomizer Error when attempting to connect " + fullConnectionName + ": " + errorToName(err));
+                        return EntranceShuffleError::PLANDOMIZER_ERROR;
+                    }
+                    validTargetFound = true;
+                    // Remove the entrance and target from their pools when it's done
+                    removeElementFromPool(entrancePool, entranceToConnect);
+                    removeElementFromPool(targetPool, targetEntrance);
+                    #ifdef ENABLE_DEBUG
+                        DebugLog::getInstance().log("Success");
+                    #endif
+                    break;
+                }
+            }
+            if (!validTargetFound)
+            {
+                ErrorLog::getInstance().log("Entrance \"" + areaToPrettyName(target->getOriginalConnectedArea()) + " from " + areaToPrettyName(target->getParentArea()) + "\" is not a valid target for \"" + entrance->getOriginalName() + "\".");
+                return EntranceShuffleError::PLANDOMIZER_ERROR;
+            }
+        }
+        else
+        {
+            ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\" is not being shuffled and thus can't be plandomized.");
+            return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+
+    }
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("All plandomizer entrances have been placed.");
+    #endif
+    return EntranceShuffleError::NONE;
+}
+
 // Helper function for getting the reverse entrances from a given entrance pool
 static EntrancePool getReverseEntrances(EntrancePools& entrancePools, EntranceType type)
 {
@@ -556,14 +658,19 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             startingIsland.erase(std::remove(startingIsland.begin(), startingIsland.end(), ' '), startingIsland.end());
 
             // Set the new starting island in the world graph
-            auto& linksSpawn = world.getEntrance("LinksSpawn", "OutsetIsland");
-            linksSpawn.setConnectedArea(startingIsland);
-            world.areaEntries["OutsetIsland"].entrances.remove(&linksSpawn);
-            world.areaEntries[startingIsland].entrances.push_back(&linksSpawn);
+            auto linksSpawn = world.getEntrance("LinksSpawn", "OutsetIsland");
+            if (linksSpawn == nullptr)
+            {
+                return EntranceShuffleError::BAD_LINKS_SPAWN;
+            }
+            linksSpawn->setConnectedArea(startingIsland);
+            world.areaEntries["OutsetIsland"].entrances.remove(linksSpawn);
+            world.areaEntries[startingIsland].entrances.push_back(linksSpawn);
         }
 
         // Set entrance data for all entrances, even those we aren't shuffling
-        setAllEntrancesData(world);
+        err = setAllEntrancesData(world);
+        ENTRANCE_SHUFFLE_ERROR_CHECK(err);
 
         // Determine entrance pools based on settings, to be shuffled in the order we set them by
         EntrancePools entrancePools = {};
@@ -651,6 +758,14 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             #endif
         }
 
+        // Shuffle Plandomized entrances at this point
+        err = setPlandomizerEntrances(world, worlds, entrancePools, targetEntrancePools);
+        if (err != EntranceShuffleError::NONE)
+        {
+            DebugLog::getInstance().log("| Encountered when setting plandomizer entrances");
+            return err;
+        }
+
         // Shuffle the entrances
         for (auto& [type, entrancePool] : entrancePools)
         {
@@ -682,6 +797,10 @@ const std::string errorToName(EntranceShuffleError err)
     {
         case EntranceShuffleError::NONE:
             return "NONE";
+        case EntranceShuffleError::BAD_LINKS_SPAWN:
+            return "BAD_LINKS_SPAWN";
+        case EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY:
+            return "BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY";
         case EntranceShuffleError::RAN_OUT_OF_RETRIES:
             return "RAN_OUT_OF_RETRIES";
         case EntranceShuffleError::NO_MORE_VALID_ENTRANCES:
@@ -698,6 +817,8 @@ const std::string errorToName(EntranceShuffleError err)
             return "ATTEMPTED_SELF_CONNECTION";
         case EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET:
             return "FAILED_TO_DISCONNECT_TARGET";
+        case EntranceShuffleError::PLANDOMIZER_ERROR:
+            return "PLANDOMIZER_ERROR";
         default:
             return "UNKNOWN";
     }
