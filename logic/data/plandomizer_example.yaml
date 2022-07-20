@@ -54,11 +54,37 @@
 # boss heart container, you'll get a Plandomizer Error and the seed won't generate
 # if race mode is turned on
 
-# MULTIWORLD_PLANDOMIZER
-# If you'd like to plandomize a multiworld seed, then each list of locations must be under
-# a "World #" element, with the '#' being the world number the locations will be for.
-# For example, if we want place the Telescope at Outset Island - Under Link's House
-# in World 1 and the Bait Bag at Gale Isle - Sunken Treasure in World 2, then we'd type
+# ENTRANCES
+# All plandomized entrances are defined under an "entrances" element and consist
+# of the original entrance that you want to change followed by a colon(:) and the
+# replacement entrance you want the original connection to go to. The following example
+# switches the entrances between Link and Orca's houses on Outset Island. Note that
+# when plandomizing entrances, the entrance randomizer setting for the entrances you're attempting
+# to plandomize must be turned on. Note that the hyphen(-) in the example is important
+# for the YAML format and must always be on the *FIRST ELEMENT* in the plandomizer file
+- entrances:
+      Outset Island -> Outset Link's House: Outset Orca's House from Outset Island
+      Outset Island -> Outset Orca's House: Outset Link's House from Outset Island
+# The original entrance must be in the format "<first area> -> <second area>", and
+# the replacement entrance must be in the format "<second area> from <first area>".
+# The spaces around the arrow and the word "from" are important to include. These
+# formats are not interchangable. The same rule about using internal names or
+# the spoiler log names for areas still applies to entrances as well. So this:
+- entrances:
+      Outset Island -> Outset Link's House: Outset Orca's House from Outset Island
+# and this:
+- entrances:
+      OutsetIsland -> OutsetLinksHouse: OutsetOrcasHouse from OutsetIsland
+# are both valid and will be treated the same. If you attempt to randomize entrances
+# that don't exist or which aren't supported for shuffling at the current moment,
+# then you'll get a plandomizer error.
+
+# MULTIWORLD_PLANDOMIZER (Note: currently multiworld is not an option in the randomizer)
+# If you'd like to plandomize a multiworld seed, then each list of locations and/or
+# entrances must be under a "World #" element, with the '#' being the world number
+# the locations will be for. For example, if we want place the Telescope at
+# Outset Island - Under Link's House in World 1 and the Bait Bag at
+# Gale Isle - Sunken Treasure in World 2, then we'd type
 - World 1:
       locations:
           Outset Island - Under Link's House: Telescope
