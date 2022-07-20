@@ -36,6 +36,7 @@
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             return ConfigError::MISSING_KEY;}                               \
+        config.settings.name = yaml[#name].As<int>();                       \
     }
 
 namespace {
