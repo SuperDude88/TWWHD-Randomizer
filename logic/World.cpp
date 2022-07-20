@@ -900,6 +900,9 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
 
 World::WorldLoadingError World::loadPlandomizer()
 {
+    #ifdef ENABLE_DEBUG
+        DebugLog::getInstance().log("Loading plandomzier file");
+    #endif
     std::string plandoFilepath = "./logic/data/plandomizer.yaml";
 
     std::string plandoStr;
@@ -948,6 +951,7 @@ World::WorldLoadingError World::loadPlandomizer()
                     }
                 }
         }
+        break;
     }
 
     // Process Locations
