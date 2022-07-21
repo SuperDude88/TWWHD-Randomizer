@@ -481,6 +481,18 @@ public:
 		
 		clearOldLogs();
 
+		// Create all necessary worlds (for any potential multiworld support in the future)
+		WorldPool worlds(numPlayers);
+		std::vector<Settings> settingsVector (numPlayers, config.settings);
+		
+		Utility::platformLog("Randomizing...\n");
+		if (generateWorlds(worlds, settingsVector) != 0) {
+			// generating worlds failed
+			ErrorLog::getInstance().log("Failed to generate worlds!");
+			Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
+			return;
+		}
+
 		// Skip all game modification stuff if we're just doing fill algorithm testing
 		#ifndef FILL_TESTING
 
@@ -517,19 +529,7 @@ public:
 			dryRun = true;
 		#endif
 
-		// Create all necessary worlds (for any potential multiworld support in the future)
-		WorldPool worlds(numPlayers);
-		std::vector<Settings> settingsVector (numPlayers, config.settings);
-
-		Utility::platformLog("Randomizing...\n");
 		if (randomizeItems) {
-			if (generateWorlds(worlds, settingsVector) != 0) {
-				// generating worlds failed
-				ErrorLog::getInstance().log("Failed to generate worlds!");
-				Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
-				return;
-			}
-
 			if(!dryRun) {
 				if(config.settings.randomize_charts) {
 					if(!writeCharts(worlds)) {
