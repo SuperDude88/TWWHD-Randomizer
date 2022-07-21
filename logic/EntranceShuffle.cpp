@@ -368,6 +368,10 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                     {
                         #ifdef ENABLE_DEBUG
                             DebugLog::getInstance().log("Error: More than 1 island leading to race mode dungeon " + dungeonIdToName(dungeon));
+                            for (auto& island : dungeonIslands)
+                            {
+                                DebugLog::getInstance().log("\t" + hintRegionToName(island));
+                            }
                         #endif
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
                     }

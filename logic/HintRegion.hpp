@@ -7,7 +7,8 @@ enum struct HintRegion
 {
     NONE = 0,
     Mailbox,
-    ForsakenFortress,
+    TheGreatSea,
+    ForsakenFortressSector,
     StarIsland,
     NorthernFairyIsland,
     GaleIsle,
@@ -60,6 +61,7 @@ enum struct HintRegion
     DragonRoostCavern,
     ForbiddenWoods,
     TowerOfTheGods,
+    ForsakenFortress,
     EarthTemple,
     WindTemple,
     Hyrule,

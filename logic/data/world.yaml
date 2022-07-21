@@ -34,7 +34,7 @@
 
 - Name: MailboxChecks
   PrettyName: Mailbox Checks
-  Island: Mailbox
+  HintRegion: Mailbox
   Locations:
       MailboxHoskitGirlfriendLetter: CanFarmGoldenFeathers and CanPlaySoP and SpoilsBag and can_access(DragonRoostRitoAerie)
       MailboxBaitoMotherLetter: CanPlaySoP and NoteToMom and DeliveryBag
@@ -51,6 +51,7 @@
 
 - Name: TheGreatSea
   PrettyName: The Great Sea
+  HintRegion: TheGreatSea
   Locations:
       GreatSeaSalvageCorpGift: CanSailAway
       GreatSeaCyclos: CanSailAway and HerosBow
@@ -61,7 +62,7 @@
           and can_access(GreatfishIsle) and can_access(NeedleRockIsle) and can_access(PrivateOasis)
           and can_access(SharkIsland) and can_access(CliffPlateauHighestIsle)
   Exits:
-      ForsakenFortress: CanSailAway
+      ForsakenFortressSector: CanSailAway
       StarIsland: CanSailAway
       NorthernFairyIsland: CanSailAway
       GaleIsle: CanSailAway
@@ -113,9 +114,9 @@
       FiveStarIsles: CanSailAway
       GhostShipInterior: CanSailAway and CanPlayBoG and CanPlaySoP and GhostShipChart
 
-- Name: ForsakenFortress
-  PrettyName: Forsaken Fortress
-  Island: ForsakenFortress
+- Name: ForsakenFortressSector
+  PrettyName: Forsaken Fortress Sector
+  Island: ForsakenFortressSector
   Locations:
       ForsakenFortressSunkenTreasure: GrapplingHook and ChartForIsland1
   Exits:
@@ -124,14 +125,14 @@
 
 - Name: ForsakenFortressInnerCourtyard
   PrettyName: Forsaken Fortress Inner Courtyard
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Locations:
       ForsakenFortressPhantomGanon: CanDefeatPhantomGanon
   Exits:
       ForsakenFortressBarrelStorageRoomLower: CanDefeatPhantomGanon
       ForsakenFortressSleepingQuartersOutsideLedge: CanFlyWithDekuLeafOutdoors
       ForsakenFortressUpSwitchBackStairs: SkullHammer
-      ForsakenFortress: Bombs
+      ForsakenFortressSector: Bombs
       TheGreatSea: CanPlayBoG and CanSailAway
 
 - Name: ForsakenFortressBarrelStorageRoomLower
@@ -195,14 +196,14 @@
 
 - Name: ForsakenFortressSleepingQuartersOutsideLedge
   PrettyName: Forsaken Fortress Sleeping Quarters Outside Ledge
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressInnerCourtyard: Nothing
       ForsakenFortressSleepingQuarters: CanDefeatPhantomGanon
 
 - Name: ForsakenFortressSouthHallwayUpper
   PrettyName: Forsaken Fortress South Hallway Upper
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressUpSwitchBackStairs: Nothing
       ForsakenFortressSleepingQuartersOutsideLedge: Nothing
@@ -211,7 +212,7 @@
 
 - Name: ForsakenFortressUpSwitchBackStairs
   PrettyName: Forsaken Fortress Up Switch Back Stairs
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressJailCellUpper: Nothing
       ForsakenFortressSouthHallwayUpper: CanFlyWithDekuLeafIndoors
@@ -246,7 +247,7 @@
 
 - Name: ForsakenFortressNorthHallwayUpper
   PrettyName: Forsaken Fortress North Hallway Upper
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressBarrelStorageRoomUpperEast: Nothing
       ForsakenFortressInnerCourtyard: Nothing
@@ -268,7 +269,7 @@
 
 - Name: ForsakenFortressNorthwestHallwayUpper
   PrettyName: Forsaken Fortress Northwest Hallway Upper
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressBoatRoomUpper: Nothing
       ForsakenFortressInnerCourtyard: Nothing
@@ -297,7 +298,7 @@
 
 - Name: ForsakenFortressOutsidePathToBoss
   PrettyName: Forsaken Fortress Outside Path to Boss
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressOutsidePathToBossPastSidleGaps: CanFlyWithDekuLeafOutdoors or GrapplingHook
       ForsakenFortressInnerCourtyard: Nothing
@@ -305,7 +306,7 @@
 
 - Name: ForsakenFortressOutsidePathToBossPastSidleGaps
   PrettyName: Forsaken Fortress Outside Path to BOss Past Sidle Gaps
-  Island: ForsakenFortress
+  Dungeon: ForsakenFortress
   Exits:
       ForsakenFortressBossRoom: SkullHammer
       ForsakenFortressInnerCourtyard: Nothing

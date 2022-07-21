@@ -1275,6 +1275,12 @@ std::unordered_set<HintRegion> World::getIslands(const std::string& startArea)
 
         auto& areaEntry = areaEntries[area];
 
+        // Don't search through other dungeons
+        if (area != startArea && areaEntry.dungeon != HintRegion::NONE)
+        {
+            continue;
+        }
+
         if (areaEntry.island != HintRegion::NONE)
         {
             if (area == startArea)

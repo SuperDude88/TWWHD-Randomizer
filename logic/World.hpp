@@ -39,6 +39,7 @@ struct AreaEntry
     std::string name = "";
     HintRegion island = HintRegion::NONE;
     HintRegion dungeon = HintRegion::NONE;
+    HintRegion hintRegion = HintRegion::NONE;
     std::list<EventAccess> events;
     std::list<LocationAccess> locations;
     std::list<Entrance> exits;
