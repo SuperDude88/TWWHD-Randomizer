@@ -35,7 +35,7 @@ std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
     // Island room number corresponds with index in the below array
     const std::array<std::string, 50> startingIslandAreaArray = {
         "INVALID",
-        "ForsakenFortress",
+        "ForsakenFortressSector",
         "StarIsland",
         "NorthernFairyIsland",
         "GaleIsle",
@@ -92,7 +92,7 @@ std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
 uint8_t islandNameToRoomIndex(const std::string& islandName)
 {
     static std::unordered_map<std::string, uint8_t> islandAreaMap = {
-        {"ForsakenFortress", 1},
+        {"ForsakenFortressSector", 1},
         {"StarIsland", 2},
         {"NorthernFairyIsland", 3},
         {"GaleIsle", 4},
