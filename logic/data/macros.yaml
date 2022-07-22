@@ -59,9 +59,9 @@ CanFarmJoyPendants: GrapplingHook and SpoilsBag
 CanFarmSkullNecklaces: GrapplingHook and SpoilsBag
 CanFarmGoldenFeathers: GrapplingHook and SpoilsBag
 CanFarmGreenChuJelly: GrapplingHook and SpoilsBag
-CanObtain15BlueChuJelly: CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or CanFanWithDekuLeaf or can_access(BoatingCourseSmallIsle) or can_access(CliffPlateauHighestIsle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))
+CanObtain15BlueChuJelly: CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or CanFanWithDekuLeaf or can_access(Boating Course Small Isle) or can_access(Cliff Plateau Highest Isle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))
 CanFarmLotsOfRupees: Nothing
-CanTradeWithAllGorons: can_access(GreatfishIsle) and can_access(MotherAndChildIsles) and can_access(BombIsland)
+CanTradeWithAllGorons: can_access(Greatfish Isle) and can_access(Mother & Child Isles) and can_access(Bomb Island)
 CanDefeatBokoblins: HerosSword or HerosBow or SkullHammer or Bombs
 CanDefeatGreenBokoblins: CanDefeatBokoblins
 CanDefeatBlueBokoblins: CanDefeatBokoblins

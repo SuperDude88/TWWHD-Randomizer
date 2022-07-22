@@ -31,9 +31,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   {
       for (size_t i = 0; i < worlds.size(); i++)
       {
-          #ifdef ENABLE_DEBUG
-              DebugLog::getInstance().log("Building World " + std::to_string(i));
-          #endif
+          LOG_TO_DEBUG("Building World " + std::to_string(i));
           worlds[i] = World();
           worlds[i].setWorldId(i);
           worlds[i].setSettings(settingsVector[i]);
@@ -60,15 +58,11 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       }
 
       // Randomize entrances before placing items
-      #ifdef ENABLE_DEBUG
-          DebugLog::getInstance().log("Randomizing Entrances");
-      #endif
+      LOG_TO_DEBUG("Randomizing Entrances");
       entranceErr = randomizeEntrances(worlds);
       if (entranceErr != EntranceShuffleError::NONE)
       {
-          #ifdef ENABLE_DEBUG
-              DebugLog::getInstance().log("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
-          #endif
+          LOG_TO_DEBUG("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
           if (entranceErr == EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY || entranceErr == EntranceShuffleError::BAD_LINKS_SPAWN || entranceErr == EntranceShuffleError::PLANDOMIZER_ERROR)
           {
               ErrorLog::getInstance().log("Error Code: " + errorToName(entranceErr));
@@ -99,9 +93,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS || fillError == FillError::PLANDOMIZER_ERROR) {
           break;
       }
-      #ifdef ENABLE_DEBUG
-          DebugLog::getInstance().log("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
-      #endif
+      LOG_TO_DEBUG("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
       clearWorlds(worlds);
   }
 

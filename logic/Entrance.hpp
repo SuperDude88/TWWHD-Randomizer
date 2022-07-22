@@ -92,9 +92,9 @@ public:
 
 private:
 
-    std::string parentArea = "INVALID";
-    std::string connectedArea = "INVALID";
-    std::string originalConnectedArea = "INVALID";
+    std::string parentArea = "";
+    std::string connectedArea = "";
+    std::string originalConnectedArea = "";
     Requirement requirement;
     EntranceType type = EntranceType::NONE;
     bool primary = false;
