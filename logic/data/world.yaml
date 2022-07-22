@@ -23,17 +23,14 @@
 # - can_access(<area name>)
 
 - Name: Root
-  Pretty Name: Root
   Exits:
       Link's Spawn: Nothing
 
 - Name: Link's Spawn
-  Pretty Name: Link's Spawn
   Exits:
       Outset Island: Nothing
 
 - Name: Mailbox Checks
-  Pretty Name: Mailbox Checks
   HintRegion: Mailbox
   Locations:
       Mailbox - Letter from Hoskit's Girlfriend: CanFarmGoldenFeathers and CanPlaySoP and SpoilsBag and can_access(Dragon Roost Rito Aerie)
@@ -50,7 +47,6 @@
       Mailbox - Letter from Tingle: can_access(Forsaken Fortress Boss Room) and CanDefeatHelmarocKing and CanPlaySoP and 'RescuedTingle'
 
 - Name: The Great Sea
-  Pretty Name: The Great Sea
   HintRegion: The Great Sea
   Locations:
       Great Sea - Salvage Corp Gift: CanSailAway
@@ -115,7 +111,6 @@
       Ghost Ship Interior: CanSailAway and CanPlayBoG and CanPlaySoP and GhostShipChart
 
 - Name: Forsaken Fortress Sector
-  Pretty Name: Forsaken Fortress Sector
   Island: Forsaken Fortress Sector
   Locations:
       Forsaken Fortress Sector - Sunken Treasure: GrapplingHook and ChartForIsland1
@@ -124,7 +119,6 @@
       The Great Sea: Nothing
 
 - Name: Forsaken Fortress Inner Courtyard
-  Pretty Name: Forsaken Fortress Inner Courtyard
   Dungeon: Forsaken Fortress
   Locations:
       Forsaken Fortress - Phantom Ganon: CanDefeatPhantomGanon
@@ -136,56 +130,47 @@
       The Great Sea: CanPlayBoG and CanSailAway
 
 - Name: Forsaken Fortress Barrel Storage Room Lower
-  Pretty Name: Forsaken Fortress Barrel Storage Room Lower
   Exits:
       Forsaken Fortress North Hallway Lower: Nothing
       Forsaken Fortress Northwest Hallway Lower: SkullHammer
 
 - Name: Forsaken Fortress North Hallway Lower
-  Pretty Name: Forsaken Fortress North Hallway Lower
   Exits:
       Forsaken Fortress Mess Hall Lower: SkullHammer
       Forsaken Fortress Barrel Storage Room Lower: Nothing
 
 - Name: Forsaken Fortress Mess Hall Lower
-  Pretty Name: Forsaken Fortress Mess Hall Lower
   Exits:
       Forsaken Fortress East Hallway Lower: Nothing
       Forsaken Fortress North Hallway Lower: SkullHammer
 
 - Name: Forsaken Fortress East Hallway Lower
-  Pretty Name: Forsaken Fortress East Hallway Lower
   Exits:
       Forsaken Fortress Mess Hall Lower: Nothing
       Forsaken Fortress Jail Cell Lower: Nothing
 
 - Name: Forsaken Fortress Jail Cell Lower
-  Pretty Name: Forsaken Fortress Jail Cell Lower
   Locations:
       Forsaken Fortress - Chest Inside Lower Jail Cell: Nothing
   Exits:
       Forsaken Fortress East Hallway Lower: Nothing
 
 - Name: Forsaken Fortress Northwest Hallway Lower
-  Pretty Name: Forsaken Fortress Northwest Hallway Lower
   Exits:
       Forsaken Fortress Boat Room Lower: Nothing
       Forsaken Fortress Barrel Storage Room Lower: SkullHammer
 
 - Name: Forsaken Fortress Boat Room Lower
-  Pretty Name: Forsaken Fortress Boat Room Lower
   Exits:
       Forsaken Fortress Southwest Hallway Lower: Nothing
       Forsaken Fortress Northwest Hallway Lower: Nothing
 
 - Name: Forsaken Fortress Southwest Hallway Lower
-  Pretty Name: Forsaken Fortress Southwest Hallway Lower
   Exits:
       Forsaken Fortress Sleeping Quarters: Nothing
       Forsaken Fortress Boat Room Lower: Nothing
 
 - Name: Forsaken Fortress Sleeping Quarters
-  Pretty Name: Forsaken Fortress Sleeping Quarters
   Locations:
       Forsaken Fortress - Chest on Bed: Nothing
   Exits:
@@ -195,14 +180,12 @@
       Forsaken Fortress Southwest Hallway Lower: Nothing
 
 - Name: Forsaken Fortress Sleeping Quarters Outside Ledge
-  Pretty Name: Forsaken Fortress Sleeping Quarters Outside Ledge
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Sleeping Quarters: CanDefeatPhantomGanon
 
 - Name: Forsaken Fortress South Hallway Upper
-  Pretty Name: Forsaken Fortress South Hallway Upper
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Up Switch Back Stairs: Nothing
@@ -211,7 +194,6 @@
       Forsaken Fortress Sleeping Quarters: Nothing
 
 - Name: Forsaken Fortress Up Switch Back Stairs
-  Pretty Name: Forsaken Fortress Up Switch Back Stairs
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Jail Cell Upper: Nothing
@@ -221,7 +203,6 @@
       Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
 
 - Name: Forsaken Fortress Jail Cell Upper
-  Pretty Name: Forsaken Fortress Jail Cell Upper
   Locations:
       Forsaken Fortress - Chest Outside Upper Jail Cell: Hookshot or CanFlyWithDekuLeafIndoors
   Exits:
@@ -230,7 +211,6 @@
       Forsaken Fortress Up Switch Back Stairs: Nothing
 
 - Name: Forsaken Fortress Mess Hall Upper East
-  Pretty Name: Forsaken Fortress Mess Hall Upper East
   Locations:
       Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
   Exits:
@@ -239,14 +219,12 @@
       Forsaken Fortress Up Switch Back Stairs: Nothing
 
 - Name: Forsaken Fortress Mess Hall Upper West
-  Pretty Name: Forsaken Fortress Mess Hall Upper West
   Exits:
       Forsaken Fortress North Hallway Upper: Nothing
       Forsaken Fortress Mess Hall Lower: SkullHammer
       Forsaken Fortress Mess Hall Upper East: SkullHammer and (Hookshot or CanFlyWithDekuLeafIndoors)
 
 - Name: Forsaken Fortress North Hallway Upper
-  Pretty Name: Forsaken Fortress North Hallway Upper
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Barrel Storage Room Upper East: Nothing
@@ -254,21 +232,18 @@
       Forsaken Fortress Mess Hall Upper West: Nothing
 
 - Name: Forsaken Fortress Barrel Storage Room Upper East
-  Pretty Name: Forsaken Fortress Barrel Storage Room Upper East
   Exits:
       Forsaken Fortress Barrel Storage Room Upper West: Hookshot or CanFlyWithDekuLeafIndoors
       Forsaken Fortress Barrel Storage Room Lower: Nothing
       Forsaken Fortress North Hallway Upper: Nothing
 
 - Name: Forsaken Fortress Barrel Storage Room Upper West
-  Pretty Name: Forsaken Fortress Barrel Storage Room Upper West
   Exits:
       Forsaken Fortress Northwest Hallway Upper: Nothing
       Forsaken Fortress Barrel Storage Room Lower: Nothing
       Forsaken Fortress Barrel Storage Room Upper East: Hookshot or CanFlyWithDekuLeafIndoors
 
 - Name: Forsaken Fortress Northwest Hallway Upper
-  Pretty Name: Forsaken Fortress Northwest Hallway Upper
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Boat Room Upper: Nothing
@@ -276,7 +251,6 @@
       Forsaken Fortress Barrel Storage Room Upper West: Nothing
 
 - Name: Forsaken Fortress Boat Room Upper
-  Pretty Name: Forsaken Fortress Boat Room Upper
   Exits:
       Forsaken Fortress Southwest Hallway Upper: Nothing
       Forsaken Fortress Boat Room Lower: Nothing
@@ -284,20 +258,17 @@
       Forsaken Fortress Northwest Hallway Upper: Nothing
 
 - Name: Forsaken Fortress Southwest Hallway Upper
-  Pretty Name: Forsaken Fortress Southwest Hallway Upper
   Exits:
       Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
 - Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
-  Pretty Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
   Exits:
       Forsaken Fortress Sleeping Quarters: SkullHammer
       Forsaken Fortress Southwest Hallway Upper: Nothing
 
 - Name: Forsaken Fortress Outside Path to Boss
-  Pretty Name: Forsaken Fortress Outside Path to Boss
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Outside Path to Boss Past Sidle Gaps: CanFlyWithDekuLeafOutdoors or GrapplingHook
@@ -305,7 +276,6 @@
       Forsaken Fortress Boat Room Upper: Nothing
 
 - Name: Forsaken Fortress Outside Path to Boss Past Sidle Gaps
-  Pretty Name: Forsaken Fortress Outside Path to Boss Past Sidle Gaps
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Boss Room: SkullHammer
@@ -313,12 +283,10 @@
       Forsaken Fortress Outside Path to Boss: CanFlyWithDekuLeafOutdoors or GrapplingHook
 
 - Name: Forsaken Fortress Boss Room
-  Pretty Name: Forsaken Fortress Boss Room
   Locations:
       Forsaken Fortress - Helmaroc King Heart Container: CanDefeatHelmarocKing
 
 - Name: Star Island
-  Pretty Name: Star Island
   Island: Star Island
   Locations:
       Star Island - Sunken Treasure: ChartForIsland2 and GrapplingHook
@@ -328,7 +296,6 @@
       Star Island Lookout Platform: CanSailAway
 
 - Name: Star Island Lookout Platform
-  Pretty Name: Star Island Lookout Platform
   Island: Star Island
   Locations:
       Star Island - Lookout Platform Chest: Nothing
@@ -336,14 +303,12 @@
       Star Island: CanSailAway
 
 - Name: Star Island Cave
-  Pretty Name: Star Island Cave
   Locations:
       Star Island - Cave Chest: CanDefeatMagtails
   Exits:
       Star Island: Nothing
 
 - Name: Northern Fairy Island
-  Pretty Name: Northern Fairy Island
   Island: Northern Fairy Island
   Locations:
       Northern Fairy Island - Sunken Treasure: ChartForIsland3 and GrapplingHook
@@ -354,21 +319,18 @@
       The Great Sea: Nothing
 
 - Name: Northern Fairy Island Submarine Exterior
-  Pretty Name: Northern Fairy Island Submarine Exterior
   Island: Northern Fairy Island
   Exits:
       Northern Fairy Island Submarine Interior: Nothing
       Northern Fairy Island: CanSailAway
 
 - Name: Northern Fairy Island Submarine Interior
-  Pretty Name: Northern Fairy Island Submarine Interior
   Locations:
       Northern Fairy Island - Submarine Chest: Nothing
   Exits:
       Northern Fairy Island Submarine Exterior: Nothing
 
 - Name: Northern Fairy Island - Great FairyFountain
-  Pretty Name: Northern Fairy Island Great Fairy Fountain
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -377,7 +339,6 @@
       Northern Fairy Island: Nothing
 
 - Name: Gale Isle
-  Pretty Name: Gale Isle
   Island: Gale Isle
   Locations:
       Gale Isle - Sunken Treasure: ChartForIsland4 and GrapplingHook
@@ -386,13 +347,11 @@
       Gale Isle Interior: SkullHammer and IronBoots
 
 - Name: Gale Isle Interior
-  Pretty Name: Gale Isle Interior
   Exits:
       Gale Isle: Nothing
       WT First Room: Nothing
 
 - Name: Crescent Moon Island
-  Pretty Name: Crescent Moon Island
   Island: Crescent Moon Island
   Locations:
       Crescent Moon Island - Chest on Island: Nothing
@@ -402,21 +361,18 @@
       The Great Sea: Nothing
 
 - Name: Crescent Moon Submarine Exterior
-  Pretty Name: Crescent Moon Submarine Exterior
   Island: Crescent Moon Island
   Exits:
       Crescent Moon Submarine Interior: Nothing
       Crescent Moon Island: CanSailAway
 
 - Name: Crescent Moon Submarine Interior
-  Pretty Name: Crescent Moon Submarine Interior
   Locations:
       Crescent Moon Island - Submarine Chest: CanDefeatMiniblins
   Exits:
       Crescent Moon Submarine Exterior: Nothing
 
 - Name: Seven Star Isles
-  Pretty Name: Seven Star Isles
   Island: Seven Star Isles
   Locations:
       Seven Star Isles - Big Octo: CanDefeat12EyeBigOctos and GrapplingHook
@@ -426,7 +382,6 @@
       The Great Sea: Nothing
 
 - Name: Seven Star Lookout Platforms
-  Pretty Name: Seven Star Lookout Platforms
   Island: Seven Star Isles
   Locations:
       Seven Star Isles - Center Lookout Platform Chest: Nothing
@@ -436,7 +391,6 @@
       Seven Star Isles: CanSailAway
 
 - Name: Overlook Island
-  Pretty Name: Overlook Island
   Island: Overlook Island
   Locations:
       Overlook Isles - Sunken Treasure: ChartForIsland7 and GrapplingHook
@@ -445,14 +399,12 @@
       Overlook Island Upper Isles: Hookshot
 
 - Name: Overlook Island Upper Isles
-  Pretty Name: Overlook Island Upper Isles
   Island: Overlook Island
   Exits:
       Overlook Cave: Nothing
       Overlook Island: Nothing
 
 - Name: Overlook Cave
-  Pretty Name: Overlook Cave
   Locations:
       Overlook Isles - Cave Chest:
           CanDefeatStalfos and CanDefeatWizzrobes and CanDefeatRedChuChus
@@ -467,7 +419,6 @@
       Overlook Island Upper Isles: Nothing
 
 - Name: Four Eye Reef
-  Pretty Name: Four Eye Reef
   Island: Four Eye Reef
   Locations:
       Four Eye Reef - Destroy Cannons and Gunboats: CanFlyWithDekuLeafOutdoors and Bombs
@@ -476,7 +427,6 @@
       The Great Sea: Nothing
 
 - Name: Mother & Child Isles
-  Pretty Name: Mother & Child Isles
   Island: Mother & Child Isles
   Locations:
       Mother and Child Isles - Sunken Treasure: ChartForIsland9 and GrapplingHook
@@ -484,7 +434,6 @@
       The Great Sea: Nothing
 
 - Name: Mother & Child Inside Mother Isle
-  Pretty Name: Mother & Child Inside Mother Isle
   Island: Mother & Child Isles
   Events:
       CanGetFairies: Nothing
@@ -492,7 +441,6 @@
       Mother and Child Isles - Inside Mother Isle: Nothing
 
 - Name: Spectacle Island
-  Pretty Name: Spectacle Island
   Island: Spectacle Island
   Locations:
       Spectacle Island - Barrel Shooting First Prize: Nothing
@@ -504,7 +452,6 @@
       The Great Sea: Nothing
 
 - Name: Spectacle Beedle Shop
-  Pretty Name: Spectacle Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -514,7 +461,6 @@
       Spectacle Island: Nothing
 
 - Name: Windfall Island
-  Pretty Name: Windfall Island
   Island: Windfall Island
   Events:
       ActivateWindmill: CanPlayWR
@@ -554,7 +500,6 @@
       The Great Sea: Nothing
 
 - Name: Windfall Jail
-  Pretty Name: Windfall Jail
   Events:
       RescuedTingle: Nothing
   Locations:
@@ -565,7 +510,6 @@
       Windfall Island: Nothing
 
 - Name: Windfall School of Joy
-  Pretty Name: Windfall School of Joy
   Locations:
       Windfall Island - Mrs. Marie Catch Killer Bees: can_access(Windfall Island)
       Windfall Island - Mrs. Marie 1 Joy Pendant: SpoilsBag
@@ -577,14 +521,12 @@
 # This intermidiate area is necessary for making sure Link can access Lenzo's House
 # specifically from the bottom (and not from the top and dropping down)
 - Name: Windfall Lenzo's House from Bottom Entry
-  Pretty Name: Windfall Lenzo's House from Bottom Entry
   Events:
       CanStartLenzoQuest: PictoBox
   Exits:
       Windfall Lenzo's House Lower: Nothing
 
 - Name: Windfall Lenzo's House Lower
-  Pretty Name: Windfall Lenzo's House Lower
   Locations:
       Windfall Island - Lenzo Become Assistant: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'CanStartLenzoQuest'
       Windfall Island - Lenzo Bring Forest Firefly: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'CanStartLenzoQuest' and EmptyBottle and can_access(Forest Haven Interior)
@@ -592,7 +534,6 @@
       Windfall Island: Nothing
 
 - Name: Windfall Lenzo's House Upper
-  Pretty Name: Windfall Lenzo's House Upper
   Locations:
       Windfall Island - Lenzo House Left Chest: Nothing
       Windfall Island - Lenzo House Right Chest: Nothing
@@ -601,14 +542,12 @@
       Windfall Lenzo's House Upper Ledge: Nothing
 
 - Name: Windfall Lenzo's House Upper Ledge
-  Pretty Name: Windfall Lenzo's House Upper Ledge
   Island: Windfall Island
   Exits:
       Windfall Lenzo's House Upper: PictoBox and 'CanStartLenzoQuest'
       Windfall Island: Nothing
 
 - Name: Windfall Cafe Bar
-  Pretty Name: Windfall Cafe Bar
   Locations:
       Windfall Island - Cafe Postman Delivery: RescuedAryll and DeliveryBag and MaggiesLetter and can_access(Windfall House of Wealth Upper)
       Windfall Island - Linda and Anton: DeluxePictoBox and CanPlaySoP and can_access(Windfall Island) and can_access(Windfall Lenzo's House Lower)
@@ -616,7 +555,6 @@
       Windfall Island: Nothing
 
 - Name: Windfall Battle Squid Interior
-  Pretty Name: Windfall Battle Squid Interior
   Locations:
       Windfall Island - Battle Squid First Prize: Nothing
       Windfall Island - Battle Squid Second Prize: Nothing
@@ -626,7 +564,6 @@
       Windfall Battle Squid Upper Ledge: Nothing
 
 - Name: Windfall Battle Squid Upper Ledge
-  Pretty Name: Windfall Battle Squid Upper Ledge
   Island: Windfall Island
   Locations:
       Windfall Island - Kreeb Light the Lighthouse: FireArrows and 'ActivateWindmill'
@@ -635,7 +572,6 @@
       Windfall Battle Squid Interior: Nothing
 
 - Name: Windfall House of Wealth Lower
-  Pretty Name: Windfall House of Wealth Lower
   Locations:
       Windfall Island - Auction 5 Rupee: Nothing
       Windfall Island - Auction 40 Rupee: Nothing
@@ -646,7 +582,6 @@
       Windfall Island: Nothing
 
 - Name: Windfall House of Wealth Upper
-  Pretty Name: Windfall House of Wealth Upper
   Locations:
       Windfall Island - House of Wealth Chest: Nothing
       Windfall Island - Maggie's Father Give 20 Skull Necklaces: RescuedAryll and SpoilsBag and CanFarmSkullNecklaces
@@ -657,7 +592,6 @@
       Windfall Island: Nothing
 
 - Name: Windfall Potion Shop
-  Pretty Name: Windfall Potion Shop
   Locations:
       Windfall Island - Potion Shop 15 Green Chu: CanFarmGreenChuJelly
       Windfall Island - Potion Shop 15 Blue Chu: CanObtain15BlueChuJelly
@@ -665,25 +599,21 @@
       Windfall Island: Nothing
 
 - Name: Windfall Bomb Shop
-  Pretty Name: Windfall Bomb Shop
   Exits:
       Windfall Island: Nothing
 
 - Name: Windfall Bomb Shop Upper Ledge
-  Pretty Name: Windfall Bomb Shop Upper Ledge
   Exits:
       Windfall Bomb Shop: Nothing
       Windfall Island: Nothing
 
 - Name: Windfall Pirate Ship
-  Pretty Name: Windfall Pirate Ship
   Locations:
       Windfall Island - Pirate Ship Chest: Nothing
   Exits:
       Windfall Island: Nothing
 
 - Name: Windfall Beedle Shop
-  Pretty Name: Windfall Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -691,7 +621,6 @@
       Windfall Island: Nothing
 
 - Name: Pawprint Isle
-  Pretty Name: Pawprint Isle
   Island: Pawprint Isle
   Locations:
       Pawprint Isle - Sunken Treasure: ChartForIsland12 and GrapplingHook
@@ -704,7 +633,6 @@
       The Great Sea: Nothing
 
 - Name: Pawprint Chu Chu Cave
-  Pretty Name: Pawprint Chu Chu Cave
   Locations:
       Pawprint Isle - Chu Chu Cave Chest: Nothing
       Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder: CanMoveBoulders
@@ -714,14 +642,12 @@
       Pawprint Isle: Nothing
 
 - Name: Pawprint Wizzobe CaveIsle
-  Pretty Name: Pawprint Wizzrobe Cave Isle
   Island: Pawprint Isle
   Exits:
       Pawprint Wizzobe Cave: Nothing
       Pawprint Isle: Nothing
 
 - Name: Pawprint Wizzobe Cave
-  Pretty Name: Pawprint Wizzobe Cave
   Locations:
       Pawprint Isle - Wizzrobe Cave Chest:
           CanDefeatWizzrobesAtRange and CanDefeatFireKeese and
@@ -731,7 +657,6 @@
       Pawprint Wizzobe CaveIsle: Nothing
 
 - Name: Pawprint Lookout Platform
-  Pretty Name: Pawprint Lookout Platform
   Island: Pawprint Isle
   Locations:
       Pawprint Isle - Lookout Platform Defeat Enemies: Nothing
@@ -739,7 +664,6 @@
       Pawprint Isle: CanSailAway
 
 - Name: Pawprint Beedle Shop
-  Pretty Name: Pawprint Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -749,7 +673,6 @@
       Pawprint Isle: Nothing
 
 - Name: Dragon Roost Island
-  Pretty Name: Dragon Roost Island
   Island: Dragon Roost Island
   Locations:
       Dragon Roost Island - Wind Shrine: WindWaker
@@ -763,7 +686,6 @@
       The Great Sea: Nothing
 
 - Name: Dragon Roost Rito Aerie
-  Pretty Name: Dragon Roost Rito Aerie
   Locations:
       Dragon Roost Island - Hoskit Give 20 Golden Feathers: SpoilsBag and CanFarmGoldenFeathers
       Dragon Roost Island - Baito Mail Game: Nothing
@@ -775,24 +697,20 @@
       Dragon Roost Komali's Room: Nothing
 
 - Name: Dragon Roost Pond
-  Pretty Name: Dragon Roost Pond
   Exits:
       Dragon Roost Rito Aerie: Nothing
       Dragon Roost Pond Past Statues: Nothing
 
 - Name: Dragon Roost Pond Past Statues
-  Pretty Name: Dragon Roost Pond Past Statues
   Exits:
       Dragon Roost Pond: Bombs or CanFlyWithDekuLeafIndoors
       DRC First Room: Nothing
 
 - Name: Dragon Roost Pond Upper Ledge
-  Pretty Name: Dragon Roost Pond Upper Ledge
   Exits:
       Dragon Roost Rito Aerie: Nothing
 
 - Name: Dragon Roost Island Flight Deck
-  Pretty Name: Dragon Roost Island Flight Deck
   Island: Dragon Roost Island
   Locations:
       Dragon Roost Island - Fly Across Platforms Around Island: CanFlyWithDekuLeafOutdoors and (CanCutGrass or DoubleMagic)
@@ -801,19 +719,16 @@
       Dragon Roost Rito Aerie: Nothing
 
 - Name: Dragon Roost Komali's Room
-  Pretty Name: Dragon Roost Komali's Room
   Exits:
       Dragon Roost Rito Aerie: Nothing
 
 - Name: Dragon Roost Island Cave
-  Pretty Name: Dragon Roost Island Cave
   Locations:
       Dragon Roost Island - Cave Chest: CanDefeatKeese and CanDefeatRedChuChus
   Exits:
       Dragon Roost Island: Nothing
 
 - Name: Dragon Roost Beedle Shop
-  Pretty Name: Dragon Roost Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -823,7 +738,6 @@
       Dragon Roost Island: Nothing
 
 - Name: Flight Control Platform
-  Pretty Name: Flight Control Platform
   Island: Flight Control Platform
   Locations:
       Flight Control Platform - First Prize: CanFlyWithDekuLeafOutdoors and DoubleMagic
@@ -834,14 +748,12 @@
       The Great Sea: Nothing
 
 - Name: Flight Control Platform Submarine Exterior
-  Pretty Name: Flight Control Platform Submarine Exterior
   Island: Flight Control Platform
   Exits:
       Flight Control Platform Submarine Interior: Nothing
       Flight Control Platform: CanSailAway
 
 - Name: Flight Control Platform Submarine Interior
-  Pretty Name: Flight Control Platform Submarine Interior
   Locations:
       Flight Control Platform - Submarine Chest:
           CanDefeatWizzrobes and CanDefeatRedChuChus and CanDefeatGreenChuChus and
@@ -850,7 +762,6 @@
       Flight Control Platform Submarine Exterior: Nothing
 
 - Name: Western Fairy Island
-  Pretty Name: Western Fairy Island
   Island: Western Fairy Island
   Locations:
       Western Fairy Island - Sunken Treasure: ChartForIsland15 and GrapplingHook
@@ -861,13 +772,11 @@
       The Great Sea: Nothing
 
 - Name: Western Fairy Island Past Flames
-  Pretty Name: Western Fairy Island Past Flames
   Island: Western Fairy Island
   Exits:
       Western Fairy Island - Great FairyFountain: Nothing
 
 - Name: Western Fairy Island - Great FairyFountain
-  Pretty Name: Western Fairy Great Fairy Fountain
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -876,7 +785,6 @@
       Western Fairy Island Past Flames: Nothing
 
 - Name: Western Fairy Lookout Platform
-  Pretty Name: Western Fairy Lookout Platform
   Island: Western Fairy Island
   Locations:
       Western Fairy Island - Lookout Platform Chest: Nothing
@@ -884,7 +792,6 @@
       Western Fairy Island: Nothing
 
 - Name: Rock Spire Isle
-  Pretty Name: Rock Spire Isle
   Island: Rock Spire Isle
   Locations:
       Rock Spire Isle - Defeat Southeast Gunboat: Bombs and GrapplingHook
@@ -896,14 +803,12 @@
       The Great Sea: Nothing
 
 - Name: Rock Spire Upper Ledges
-  Pretty Name: Rock Spire Upper Ledges
   Island: Rock Spire Isle
   Exits:
       Rock Spire Cave: Nothing
       Rock Spire Isle: Nothing
 
 - Name: Rock Spire Beedle Shop
-  Pretty Name: Rock Spire Beedle Shop
   Locations:
       Rock Spire Isle - Beedle 500 Rupee Item: 'CanFarmLotsOfRupees'
       Rock Spire Isle - Beedle 950 Rupee Item: WalletUpgrade and 'CanFarmLotsOfRupees'
@@ -912,7 +817,6 @@
       Rock Spire Isle: Nothing
 
 - Name: Rock Spire Platforms
-  Pretty Name: Rock Spire Platforms
   Locations:
       Rock Spire Isle - Western Lookout Platform Destroy Cannons: CanDestroyCannons and CanFlyWithDekuLeafOutdoors
       Rock Spire Isle - Eastern Lookout Platform Destroy Cannons: CanDestroyCannons and CanFlyWithDekuLeafOutdoors
@@ -921,14 +825,12 @@
       Rock Spire Isle: CanSailAway
 
 - Name: Rock Spire Cave
-  Pretty Name: Rock Spire Cave
   Locations:
       Rock Spire Isle - Cave Chest: Nothing
   Exits:
       Rock Spire Upper Ledges: Nothing
 
 - Name: Tingle Island
-  Pretty Name: Tingle Island
   Island: Tingle Island
   Locations:
       Tingle Island - Ankle All Statues Reward: DragonTingleStatue and ForbiddenTingleStatue and GoddessTingleStatue and EarthTingleStatue and WindTingleStatue
@@ -939,7 +841,6 @@
       The Great Sea: Nothing
 
 - Name: Northern Triangle Island
-  Pretty Name: Northern Triangle Island
   Island: Northern Triangle Island
   Locations:
       Northern Triangle Island - Sunken Treasure: ChartForIsland18 and GrapplingHook
@@ -947,7 +848,6 @@
       The Great Sea: Nothing
 
 - Name: Eastern Fairy Island
-  Pretty Name: Eastern Fairy Island
   Island: Eastern Fairy Island
   Locations:
       Eastern Fairy Island - Sunken Treasure: ChartForIsland19 and GrapplingHook
@@ -958,14 +858,12 @@
       The Great Sea: Nothing
 
 - Name: Eastern Fairy Island Past Boulder
-  Pretty Name: Eastern Fairy Island Past Boulder
   Island: Eastern Fairy Island
   Exits:
       Eastern Fairy Island - Great FairyFountain: Nothing
       Eastern Fairy Island: CanMoveBoulders
 
 - Name: Eastern Fairy Island - Great FairyFountain
-  Pretty Name: Eastern Fairy Great Fairy Fountain
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -974,7 +872,6 @@
       Eastern Fairy Island Past Boulder: Nothing
 
 - Name: Eastern Fairy Lookout Platform
-  Pretty Name: Eastern Fairy Lookout Platform
   Island: Eastern Fairy Island
   Locations:
       Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies: CanDestroyCannons
@@ -982,7 +879,6 @@
       Eastern Fairy Island: CanSailAway
 
 - Name: Fire Mountain
-  Pretty Name: Fire Mountain
   Island: Fire Mountain
   Locations:
       Fire Mountain - Big Octo: CanDefeatBigOctos and GrapplingHook
@@ -993,14 +889,12 @@
       The Great Sea: Nothing
 
 - Name: Fire Mountain Interior
-  Pretty Name: Fire Mountain Interior
   Locations:
       Fire Mountain - Interior Chest: CanDefeatMagtails
   Exits:
       Fire Mountain: Nothing
 
 - Name: Fire Mountain Lookout Platform
-  Pretty Name: Fire Mountain Lookout Platform
   Island: Fire Mountain
   Locations:
       Fire Mountain - Lookout Platform Chest: Nothing
@@ -1009,7 +903,6 @@
       Fire Mountain: CanSailAway
 
 - Name: Star Belt Archipelago
-  Pretty Name: Star Belt Archipelago
   Island: Star Belt Archipelago
   Locations:
       Star Belt Archipelago - Sunken Treasure: ChartForIsland21 and GrapplingHook
@@ -1018,7 +911,6 @@
       The Great Sea: Nothing
 
 - Name: Star Belt Lookout Platform
-  Pretty Name: Star Belt Lookout Platform
   Island: Star Belt Archipelago
   Locations:
       Star Belt Archipelago - Lookout Platform Chest: Nothing
@@ -1026,7 +918,6 @@
       Star Belt Archipelago: CanSailAway
 
 - Name: Three Eye Reef
-  Pretty Name: Three Eye Reef
   Island: Three Eye Reef
   Locations:
       Three Eye Reef - Destroy Cannons and Gunboats: CanFlyWithDekuLeafOutdoors and Bombs
@@ -1035,7 +926,6 @@
       The Great Sea: Nothing
 
 - Name: Greatfish Isle
-  Pretty Name: Greatfish Isle
   Island: Greatfish Isle
   Locations:
       Greatfish Isle - Hidden Chest: CanFlyWithDekuLeafOutdoors
@@ -1045,12 +935,10 @@
       The Great Sea: Nothing
 
 - Name: Greatfish Beedle Shop
-  Pretty Name: Greatfish Beedle Shop
   Exits:
       Greatfish Isle: Nothing
 
 - Name: Cyclops Reef
-  Pretty Name: Cyclops Reef
   Island: Cyclops Reef
   Locations:
       Cyclops Reef - Destroy Cannons and Gunboats: CanFlyWithDekuLeafOutdoors and Bombs
@@ -1060,7 +948,6 @@
       The Great Sea: Nothing
 
 - Name: Cyclops Reef Lookout Platform
-  Pretty Name: Cyclops Reef Lookout Platform
   Island: Cyclops Reef
   Locations:
       Cyclops Reef - Lookout Platform Defeat Enemies: Nothing
@@ -1068,7 +955,6 @@
       Cyclops Reef: CanSailAway
 
 - Name: Six Eye Reef
-  Pretty Name: Six Eye Reef
   Island: Six Eye Reef
   Locations:
       Six Eye Reef - Destroy Cannons and Gunboats: CanFlyWithDekuLeafOutdoors and Bombs
@@ -1079,21 +965,18 @@
       The Great Sea: Nothing
 
 - Name: Six Eye Reef Submarine Exterior
-  Pretty Name: Six Eye Reef Submarine Exterior
   Island: Six Eye Reef
   Exits:
       Six Eye Reef Submarine Interior: Nothing
       Six Eye Reef: CanSailAway
 
 - Name: Six Eye Reef Submarine Interior
-  Pretty Name: Six Eye Reef Submarine Interior
   Locations:
       Six Eye Reef - Submarine Chest: Nothing
   Exits:
       Six Eye Reef Submarine Exterior: Nothing
 
 - Name: Six Eye Reef Lookout Platform
-  Pretty Name: Six Eye Reef Lookout Platform
   Island: Six Eye Reef
   Locations:
       Six Eye Reef - Lookout Platform Destroy Cannons: CanDestroyCannons
@@ -1101,7 +984,6 @@
       Six Eye Reef: CanSailAway
 
 - Name: Tower of the Gods Sector
-  Pretty Name: Tower of the Gods Sector
   Island: Tower of the Gods Sector
   Locations:
       Tower of the Gods Sector - Sunken Treasure: ChartForIsland26 and GrapplingHook
@@ -1112,12 +994,10 @@
       The Great Sea: Nothing
 
 - Name: Tower of the Gods Beedle Shop
-  Pretty Name: Tower of the Gods Beedle Shop
   Exits:
       Tower of the Gods Sector: Nothing
 
 - Name: Eastern Triangle Island
-  Pretty Name: Eastern Triangle Island
   Island: Eastern Triangle Island
   Locations:
       Eastern Triangle Island - Sunken Treasure: ChartForIsland27 and GrapplingHook
@@ -1126,7 +1006,6 @@
       The Great Sea: Nothing
 
 - Name: Eastern Triangle Beedle Shop
-  Pretty Name: Eastern Triangle Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -1136,7 +1015,6 @@
       Eastern Triangle Island: Nothing
 
 - Name: Thorned Fairy Island
-  Pretty Name: Thorned Fairy Island
   Island: Thorned Fairy Island
   Locations:
       Thorned Fairy Island - Sunken Treasure: ChartForIsland28 and GrapplingHook
@@ -1147,13 +1025,11 @@
       The Great Sea: Nothing
 
 - Name: Thorned Fairy Island Past Tentacles
-  Pretty Name: Thorned Fairy Island Past Tentacles
   Island: Thorned Fairy Island
   Exits:
       Thorned Fairy Island - Great FairyFountain: CanSailAway
 
 - Name: Thorned Fairy Island - Great FairyFountain
-  Pretty Name: Thorned Fairy Great Fairy Fountain
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -1162,7 +1038,6 @@
       Thorned Fairy Island Past Tentacles: Nothing
 
 - Name: Thorned Fairy Lookout Platforms
-  Pretty Name: Thorned Fairy Lookout Platforms
   Island: Thorned Fairy Island
   Locations:
       Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons: CanDestroyCannons
@@ -1171,7 +1046,6 @@
       Thorned Fairy Island: CanSailAway
 
 - Name: Needle Rock Isle
-  Pretty Name: Needle Rock Isle
   Island: Needle Rock Isle
   Locations:
       Needle Rock Isle - Chest: BaitBag and 'CanBuyHyoiPears'
@@ -1183,14 +1057,12 @@
       The Great Sea: Nothing
 
 - Name: Needle Rock Cave
-  Pretty Name: Needle Rock Cave
   Locations:
       Needle Rock Isle - Cave Chest: FireArrows
   Exits:
       Needle Rock Isle: Nothing
 
 - Name: Islet of Steel
-  Pretty Name: Islet of Steel
   Island: Islet of Steel
   Locations:
       Islet of Steel - Sunken Treasure: ChartForIsland30 and GrapplingHook
@@ -1200,7 +1072,6 @@
       The Great Sea: Nothing
 
 - Name: Islet of Steel Interior
-  Pretty Name: Islet of Steel Interior
   Locations:
       Islet of Steel - Interior Chest: CanPlayWR
   Events:
@@ -1209,7 +1080,6 @@
       Islet of Steel: Nothing
 
 - Name: Islet of Steel Lookout Platform
-  Pretty Name: Islet of Steel Lookout Platform
   Island: Islet of Steel
   Locations:
       Islet of Steel - Lookout PLatform Defeat Enemies: CanDefeatWizzrobesAtRange
@@ -1217,7 +1087,6 @@
       Islet of Steel: CanSailAway
 
 - Name: Stone Watcher Island
-  Pretty Name: Stone Watcher Island
   Island: Stone Watcher Island
   Locations:
       Stone Watcher Island - Sunken Treasure: ChartForIsland31 and GrapplingHook
@@ -1228,7 +1097,6 @@
       The Great Sea: Nothing
 
 - Name: Stone Watcher Cave
-  Pretty Name: Stone Watcher Cave
   Locations:
       Stone Watcher Island - Cave Chest: CanDefeatArmos and CanDefeatWizzrobes and CanDefeatDarknuts and CanPlayWR
   Events:
@@ -1238,7 +1106,6 @@
       Stone Watcher Island: Nothing
 
 - Name: Stone Watcher Lookout Platform
-  Pretty Name: Stone Watcher Lookout Platform
   Island: Stone Watcher Island
   Locations:
       Stone Watcher Island - Lookout Platform Chest: Nothing
@@ -1247,7 +1114,6 @@
       Stone Watcher Island: CanSailAway
 
 - Name: Southern Triangle Island
-  Pretty Name: Southern Triangle Island
   Island: Southern Triangle Island
   Locations:
       Southern Triangle Island - Sunken Treasure: ChartForIsland32 and GrapplingHook and CanDefeatSeahats
@@ -1256,7 +1122,6 @@
       The Great Sea: Nothing
 
 - Name: Southern Triangle Beedle Shop
-  Pretty Name: Southern Triangle Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -1266,7 +1131,6 @@
       Southern Triangle Island: Nothing
 
 - Name: Private Oasis
-  Pretty Name: Private Oasis
   Island: Private Oasis
   Locations:
       Private Oasis - Top of Waterfall Chest: CanFlyWithDekuLeafOutdoors or Hookshot
@@ -1278,13 +1142,11 @@
       The Great Sea: Nothing
 
 - Name: The Cabana
-  Pretty Name: The Cabana
   Exits:
       Cabana Labyrinth: GrapplingHook
       Private Oasis: DeliveryBag and CabanaDeed
 
 - Name: Cabana Labyrinth
-  Pretty Name: Cabana Labyrinth
   Locations:
       Private Oasis - Cabana Labyrinth Lower Floor Chest: SkullHammer
       Private Oasis - Cabana Labyrinth Upper Floor Chest: SkullHammer and CanPlayWR
@@ -1292,7 +1154,6 @@
       The Cabana: Nothing
 
 - Name: Bomb Island
-  Pretty Name: Bomb Island
   Island: Bomb Island
   Locations:
       Bomb Island - Sunken Treasure: ChartForIsland34 and GrapplingHook
@@ -1304,28 +1165,24 @@
       The Great Sea: Nothing
 
 - Name: Bomb Island Cave
-  Pretty Name: Bomb Island Cave
   Locations:
       Bomb Island - Cave Chest: CanStunMagtails
   Exits:
       Bomb Island: Nothing
 
 - Name: Bomb Island Submarine Exterior
-  Pretty Name: Bomb Island Submarine Exterior
   Island: Bomb Island
   Exits:
       Bomb Island Submarine Interior: Nothing
       Bomb Island: CanSailAway
 
 - Name: Bomb Island Submarine Interior
-  Pretty Name: Bomb Island Submarine Interior
   Locations:
       Bomb Island - Submarine Chest: Nothing
   Exits:
       Bomb Island Submarine Exterior: Nothing
 
 - Name: Bomb Island Lookout Platform
-  Pretty Name: Bomb Island Lookout Platform
   Island: Bomb Island
   Locations:
       Bomb Island - Lookout Platform Defeat Enemies: Nothing
@@ -1333,7 +1190,6 @@
       Bomb Island: CanSailAway
 
 - Name: Birds Peak Rock
-  Pretty Name: Birds Peak Rock
   Island: Birds Peak Rock
   Locations:
       Birds Peak Rock - Sunken Treasure: ChartForIsland35 and GrapplingHook
@@ -1343,13 +1199,11 @@
       The Great Sea: Nothing
 
 - Name: Birds Peak Rock Behind Bars
-  Pretty Name: Birds Peak Rock Behind Bars
   Island: Birds Peak Rock
   Exits:
       Birds Peak Rock Cave: Nothing
 
 - Name: Birds Peak Rock Cave
-  Pretty Name: Birds Peak Rock Cave
   Locations:
       Birds Peak Rock - Cave Chest: CanPlayWR
   Events:
@@ -1358,7 +1212,6 @@
       Birds Peak Rock Behind Bars: Nothing
 
 - Name: Diamond Steppe Island
-  Pretty Name: Diamond Steppe Island
   Island: Diamond Steppe Island
   Locations:
       Diamond Steppe Isle - Big Octo: CanDefeatBigOctos and GrapplingHook
@@ -1368,14 +1221,12 @@
       The Great Sea: Nothing
 
 - Name: Diamond Steppe Upper Island
-  Pretty Name: Diamond Steppe Upper Island
   Island: Diamond Steppe Island
   Exits:
       Diamond Steppe Warp Maze: Nothing
       Diamond Steppe Island: Nothing
 
 - Name: Diamond Steppe Warp Maze
-  Pretty Name: Diamond Steppe Warp Maze
   Locations:
       Diamond Steppe Isle - Maze First Chest: Nothing
       Diamond Steppe Isle - Maze Second Chest: Nothing
@@ -1383,7 +1234,6 @@
       Diamond Steppe Upper Island: Nothing
 
 - Name: Five Eye Reef
-  Pretty Name: Five Eye Reef
   Island: Five Eye Reef
   Locations:
       Five Eye Reef - Destroy Cannons and Gunboats: CanFlyWithDekuLeafOutdoors and Bombs
@@ -1393,7 +1243,6 @@
       The Great Sea: Nothing
 
 - Name: Five Eye Reef Lookout Platform
-  Pretty Name: Five Eye Reef Lookout Platform
   Island: Five Eye Reef
   Locations:
       Five Eye Reef - Lookout Platform Chest: Nothing
@@ -1401,7 +1250,6 @@
       Five Eye Reef: CanSailAway
 
 - Name: Shark Island
-  Pretty Name: Shark Island
   Island: Shark Island
   Locations:
       Shark Island - Sunken Treasure: ChartForIsland38 and GrapplingHook
@@ -1411,12 +1259,10 @@
       The Great Sea: Nothing
 
 - Name: Shark Island Beedle Shop
-  Pretty Name: Shark Island Beedle Shop
   Exits:
       Shark Island: Nothing
 
 - Name: Shark Island Cave
-  Pretty Name: Shark Island Cave
   Locations:
       Shark Island - Cave Chest: CanDefeatMiniblins
   Events:
@@ -1425,7 +1271,6 @@
       Shark Island: Nothing
 
 - Name: Southern Fairy Island
-  Pretty Name: Southern Fairy Island
   Island: Southern Fairy Island
   Locations:
       Southern Fairy Island - Sunken Treasure: ChartForIsland39 and GrapplingHook
@@ -1436,13 +1281,11 @@
       The Great Sea: Nothing
 
 - Name: Southern Fairy Island Behind Wooden Barrier
-  Pretty Name: Southern Fairy Island Behind Wooden Barrier
   Island: Southern Fairy Island
   Exits:
-      Southern Fairy Island - Great FairyFountain: Nothing
+      Southern Fairy Island - Great Fairy Fountain: Nothing
 
-- Name: Southern Fairy Island - Great FairyFountain
-  Pretty Name: Southern Fairy Great Fairy Fountain
+- Name: Southern Fairy Island - Great Fairy Fountain
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -1451,7 +1294,6 @@
       Southern Fairy Island Behind Wooden Barrier: Nothing
 
 - Name: Southern Fairy Lookout Platforms
-  Pretty Name: Southern Fairy Lookout Platforms
   Island: Southern Fairy Island
   Locations:
       Southern Fairy Island - Lookout Platform Destroy Northwest Cannons: CanDestroyCannons and CanFlyWithDekuLeafOutdoors
@@ -1460,7 +1302,6 @@
       Southern Fairy Island: CanSailAway
 
 - Name: Ice Ring Isle
-  Pretty Name: Ice Ring Isle
   Island: Ice Ring Isle
   Locations:
       Ice Ring Isle - Frozen Chest: FireArrows
@@ -1470,7 +1311,6 @@
       Ice Ring Interior: FireArrows
 
 - Name: Ice Ring Interior
-  Pretty Name: Ice Ring Interior
   Locations:
       Ice Ring Isle - Interior Chest: Nothing
   Exits:
@@ -1478,7 +1318,6 @@
       Ice Ring Inner Cave: IronBoots
 
 - Name: Ice Ring Inner Cave
-  Pretty Name: Ice Ring Inner Cave
   Locations:
       Ice Ring Isle - Inner Cave Chest: FireArrows
   Events:
@@ -1487,7 +1326,6 @@
       Ice Ring Interior: Nothing
 
 - Name: Forest Haven
-  Pretty Name: Forest Haven
   Island: Forest Haven
   Locations:
       Forset Haven - Sunken Treasure: ChartForIsland41 and GrapplingHook
@@ -1499,7 +1337,6 @@
       The Great Sea: Nothing
 
 - Name: Forest Haven Interior
-  Pretty Name: Forest Haven Interior
   Exits:
       Forest Haven: Nothing
       Forest Potion Shop: Nothing
@@ -1507,12 +1344,10 @@
       Forest Haven Interior West Lower Ledge: CanFlyWithDekuLeafIndoors
 
 - Name: Forest Potion Shop
-  Pretty Name: Forest Potion Shop
   Exits:
       Forest Haven Interior: Nothing
 
 - Name: Forest Haven Interior Upper Baba Buds
-  Pretty Name: Forest Haven Interior Upper Baba Buds
   Locations:
       Forset Haven - On Tree Branch: Nothing
   Exits:
@@ -1522,45 +1357,38 @@
       Forest Haven Interior: Nothing
 
 - Name: Forest Haven Interior North Ledge
-  Pretty Name: Forest Haven Interior North Ledge
   Exits:
       Forest Haven Exterior North Ledge: Nothing
       Forest Haven Interior Upper Baba Buds: Nothing
 
 - Name: Forest Haven Interior West Lower Ledge
-  Pretty Name: Forest Haven Interior West Lower Ledge
   Exits:
       Forest Haven Exterior West Lower Ledge: Nothing
       Forest Haven Interior: Nothing
 
 - Name: Forest Haven Interior West Upper Ledge
-  Pretty Name: Forest Haven Interior West Upper Ledge
   Exits:
       Forest Haven Exterior West Upper Ledge: Nothing
       Forest Haven Interior West Lower Ledge: Nothing
       Forest Haven Interior Upper Baba Buds: CanFlyWithDekuLeafIndoors
 
 - Name: Forest Haven Interior South Ledge
-  Pretty Name: Forest Haven Interior South Ledge
   Exits:
       Forest Haven Exterior South Ledge: Nothing
       Forest Haven Interior Upper Baba Buds: CanFlyWithDekuLeafIndoors
 
 - Name: Forest Haven Exterior North Ledge
-  Pretty Name: Forest Haven Exterior North Ledge
   Island: Forest Haven
   Exits:
       Forest Haven Exterior West Upper Ledge: CanFlyWithDekuLeafOutdoors
       Forest Haven Interior North Ledge: Nothing
 
 - Name: Forest Haven Exterior West Lower Ledge
-  Pretty Name: Forest Haven Exterior West Lower Ledge
   Island: Forest Haven
   Exits:
       Forest Haven Interior West Lower Ledge: Nothing
 
 - Name: Forest Haven Exterior West Upper Ledge
-  Pretty Name: Forest Haven Exterior West Upper Ledge
   Island: Forest Haven
   Exits:
       FW Entrance Platform: CanFlyWithDekuLeafOutdoors and CanCutGrass
@@ -1570,7 +1398,6 @@
       Forest Haven Interior West Upper Ledge: Nothing
 
 - Name: Forest Haven Exterior South Ledge
-  Pretty Name: Forest Haven Exterior South Ledge
   Island: Forest Haven
   Exits:
       Forest Haven South Isle: CanFlyWithDekuLeafOutdoors and CanCutGrass
@@ -1578,36 +1405,30 @@
       Forest Haven Interior South Ledge: Nothing
 
 - Name: Forest Haven South Isle
-  Pretty Name: Forest Haven South Isle
   Island: Forest Haven
   Locations:
       Forset Haven - Chest on Small Island: Nothing
 
 - Name: FW Entrance Platform
-  Pretty Name: FW Entrance Platform
   Island: Forest Haven
   Exits:
       FW First Room: Nothing
 
 - Name: Forest Haven Nintendo GalleryIsle
-  Pretty Name: Forest Haven Nintendo Gallery Isle
   Island: Forest Haven
   Exits:
       Forest Haven Nintendo Gallery: Nothing
       Forest Haven: Nothing
 
 - Name: Forest Haven Nintendo Gallery
-  Pretty Name: Forest Haven Nintendo Gallery
   Exits:
       Forest Haven Nintendo GalleryIsle: Nothing
 
 - Name: Forest Haven Waterfall Cave
-  Pretty Name: Forest Haven Waterfall Cave
   Exits:
       Forest Haven: Nothing
 
 - Name: Forest Haven Beedle Shop
-  Pretty Name: Forest Haven Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -1617,7 +1438,6 @@
       Forest Haven: Nothing
 
 - Name: Cliff Plateau Isles
-  Pretty Name: Cliff Plateau Isles
   Island: Cliff Plateau Isles
   Locations:
       Cliff Plateau Isles - Sunken Treasure: ChartForIsland42 and GrapplingHook
@@ -1628,7 +1448,6 @@
       The Great Sea: Nothing
 
 - Name: Cliff Plateau Cave
-  Pretty Name: Cliff Plateau Cave
   Locations:
       Cliff Plateau Isles - Cave Chest: CanDefeatBokoBabas
   Exits:
@@ -1636,13 +1455,11 @@
       Cliff Plateau Cave Past Wooden Barrier: CanDefeatBokoBabas and CanFlyWithDekuLeafIndoors
 
 - Name: Cliff Plateau Cave Past Wooden Barrier
-  Pretty Name: Cliff Plateau Cave Past Wooden Barrier
   Exits:
       Cliff Plateau Highest Isle: Nothing
       Cliff Plateau Cave: CanDestroyWoodenBarriers
 
 - Name: Cliff Plateau Highest Isle
-  Pretty Name: Cliff Plateau Highest Isle
   Island: Cliff Plateau Isles
   Locations:
       Cliff Plateau Isles - Highest Isle Chest: Nothing
@@ -1651,7 +1468,6 @@
       Cliff Plateau Isles: Nothing
 
 - Name: Cliff Plateau Lookout Platform
-  Pretty Name: Cliff Plateau Lookout Platform
   Island: Cliff Plateau Isles
   Locations:
       Cliff Plateau Isles - Lookout Platform Chest: Nothing
@@ -1659,7 +1475,6 @@
       Cliff Plateau Isles: CanSailAway
 
 - Name: Horseshoe Isle
-  Pretty Name: Horseshoe Isle
   Island: Horseshoe Isle
   Locations:
       Horseshoe Island - Sunken Treasure: ChartForIsland43 and GrapplingHook
@@ -1669,7 +1484,6 @@
       The Great Sea: Nothing
 
 - Name: Horseshoe Isle Past Tentacles
-  Pretty Name: Horseshoe Isle Past Tentacles
   Island: Horseshoe Isle
   Locations:
       Horseshoe Island - Play Golf: Hookshot or CanFlyWithDekuLeafOutdoors
@@ -1678,14 +1492,12 @@
       Horseshoe Cave: Nothing
 
 - Name: Horseshoe Cave
-  Pretty Name: Horseshoe Cave
   Locations:
       Horseshoe Island - Cave Chest: CanDefeatMothulas and CanDefeatWingedMothulas
   Exits:
       Horseshoe Isle Past Tentacles: Nothing
 
 - Name: Horseshoe Lookout Platforms
-  Pretty Name: Horseshoe Lookout Platforms
   Island: Horseshoe Isle
   Locations:
       Horseshoe Island - Northwestern Lookout Platform Chest: Nothing
@@ -1694,7 +1506,6 @@
       Horseshoe Isle: CanSailAway
 
 - Name: Outset Island
-  Pretty Name: Outset Island
   Island: Outset Island
   Locations:
       Outset Island - Dig up Black Soil: PowerBracelets and BaitBag and 'CanBuyBait'
@@ -1715,19 +1526,16 @@
       The Great Sea: Nothing
 
 - Name: Outset Link's House
-  Pretty Name: Outset Link's House
   Exits:
       Outset Island: Nothing
 
 - Name: Outset Under Link's House
-  Pretty Name: Outset Under Link's House
   Locations:
       Outset Island - Under Link's House: Nothing
   Exits:
       Outset Island: Nothing
 
 - Name: Outset Orca's House
-  Pretty Name: Outset Orca's House
   Locations:
       Outset Island - Orca Give 10 Knight's Crests: SpoilsBag and 'CanFarmKnightsCrests' and CanSwordFightWithOrca and Magic
       Outset Island - Orca Hit 500 Times: CanSwordFightWithOrca
@@ -1735,36 +1543,30 @@
       Outset Island: Nothing
 
 - Name: Outset Sturgeon's House
-  Pretty Name: Outset Sturgeon's House
   Exits:
       Outset Island: Nothing
 
 - Name: Outset Rose's House
-  Pretty Name: Outset Rose's House
   Exits:
       Outset Island: Nothing
 
 - Name: Outset Rose's Attic
-  Pretty Name: Outset Rose's Attic
   Exits:
       Outset Rose's House: Nothing
 
 - Name: Outset Mesa's House
-  Pretty Name: Outset Mesa's House
   Locations:
       Outset Island - Mesa's House Chest: Nothing
   Exits:
       Outset Island: Nothing
 
 - Name: Outset Near Bridge
-  Pretty Name: Outset Near Bridge
   Island: Outset Island
   Exits:
       Outset Island: Nothing
       Outset Across Bridge: CanFlyWithDekuLeafOutdoors
 
 - Name: Outset Across Bridge
-  Pretty Name: Outset Across Bridge
   Island: Outset Island
   Exits:
       Outset Island: Nothing
@@ -1772,20 +1574,17 @@
       Outset Near Savage Headstone: CanFlyWithDekuLeafOutdoors
 
 - Name: Outset Near Savage Headstone
-  Pretty Name: Outset Near Savage Headstone
   Island: Outset Island
   Exits:
       Outset Island: Nothing
       Outset Savage Labyrinth: PowerBracelets
 
 - Name: Outset Forest of Fairies
-  Pretty Name: Outset Forest of Fairies
   Exits:
       Outset Across Bridge: Nothing
       Outset Island - Great FairyFountain: CanMoveBoulders
 
 - Name: Outset Island - Great FairyFountain
-  Pretty Name: Outset Great Fairy Fountain
   Events:
       CanGetFairies: Nothing
   Locations:
@@ -1794,7 +1593,6 @@
       Outset Forest of Fairies: Nothing
 
 - Name: Outset Savage Labyrinth
-  Pretty Name: Outset Savage Labyrinth
   Events:
       CanGetFairies: Nothing
   Exits:
@@ -1826,7 +1624,6 @@
           (GrapplingHook or HerosSword or SkullHammer)
 
 - Name: Outset Savage Floor 30
-  Pretty Name: Outset Savage Floor 30
   Locations:
       Outset Island - Savage Labyrinth Floor 30: CanPlayWR
   Events:
@@ -1851,21 +1648,18 @@
           SkullHammer
 
 - Name: Outset Savage Floor 50
-  Pretty Name: Outset Savage Floor 50
   Locations:
       Outset Island - Savage Labyrinth Floor 50: Nothing
   Exits:
       Outset Near Savage Headstone: Nothing
 
 - Name: Outset Jabun's Cave
-  Pretty Name: Outset Jabun's Cave
   Locations:
       Outset Island - Jabun's Cave Chest: Nothing
   Exits:
       Outset Island: Nothing
 
 - Name: Outset Beedle Shop
-  Pretty Name: Outset Beedle Shop
   Events:
       CanBuyBait: Nothing
       CanBuyHyoiPears: Nothing
@@ -1875,7 +1669,6 @@
       Outset Island: Nothing
 
 - Name: Headstone Island
-  Pretty Name: Headstone Island
   Island: Headstone Island
   Locations:
       Headstone Island - Top of Island: BaitBag and 'CanBuyHyoiPears'
@@ -1886,27 +1679,23 @@
       The Great Sea: Nothing
 
 - Name: Headstone Island Interior
-  Pretty Name: Headstone Island Interior
   Exits:
       ET First Room: Nothing
       Headstone Island: Nothing
 
 - Name: Headstone Island Submarine Exterior
-  Pretty Name: Headstone Island Submarine Exterior
   Island: Headstone Island
   Exits:
       Headstone Island Submarine Interior: Nothing
       Headstone Island: CanSailAway
 
 - Name: Headstone Island Submarine Interior
-  Pretty Name: Headstone Island Submarine Interior
   Locations:
       Headstone Island - Submarine Chest: CanDefeatBombchus
   Exits:
       Headstone Island Submarine Exterior: CanDefeatBombchus
 
 - Name: Two Eye Reef
-  Pretty Name: Two Eye Reef
   Island: Two Eye Reef
   Locations:
       Two Eye Reef - Destroy Cannons and Gunboats: Bombs and CanFlyWithDekuLeafOutdoors
@@ -1917,7 +1706,6 @@
       The Great Sea: Nothing
 
 - Name: Two Eye Reef Lookout Platform
-  Pretty Name: Two Eye Reef Lookout Platform
   Island: Two Eye Reef
   Locations:
       Two Eye Reef - Lookout Platform Chest: Nothing
@@ -1925,7 +1713,6 @@
       Two Eye Reef: CanSailAway
 
 - Name: Angular Isles
-  Pretty Name: Angular Isles
   Island: Angular Isles
   Locations:
       Angular Isles - Peak Chest: Nothing
@@ -1935,21 +1722,18 @@
       The Great Sea: Nothing
 
 - Name: Angular Isles Small Isle
-  Pretty Name: Angular Isles Small Isle
   Island: Angular Isles
   Exits:
       Angular Isles Cave: Nothing
       Angular Isles: Nothing
 
 - Name: Angular Isles Cave
-  Pretty Name: Angular Isles Cave
   Locations:
       Angular Isles - Cave Chest: CanAimMirrorShield and (Hookshot or CanFlyWithDekuLeafIndoors)
   Exits:
       Angular Isles Small Isle: Nothing
 
 - Name: Boating Course
-  Pretty Name: Boating Course
   Island: Boating Course
   Locations:
       Boating Course - Raft Chest: Nothing
@@ -1959,21 +1743,18 @@
       The Great Sea: Nothing
 
 - Name: Boating Course Small Isle
-  Pretty Name: Boating Course Small Isle
   Island: Boating Course
   Exits:
       Boating Course Cave: Nothing
       Boating Course: Nothing
 
 - Name: Boating Course Cave
-  Pretty Name: Boating Course Cave
   Locations:
       Boating Course - Cave Chest: CanHitDiamondSwitchesAtRange and CanDefeatMiniblinsEasily
   Exits:
       Boating Course Small Isle: Nothing
 
 - Name: Five Star Isles
-  Pretty Name: Five Star Isles
   Island: Five Star Isles
   Locations:
       Five Star Isles - Sunken Treasure: ChartForIsland49 and GrapplingHook
@@ -1983,7 +1764,6 @@
       The Great Sea: Nothing
 
 - Name: Five Star Submarine Exterior
-  Pretty Name: Five Star Submarine Exterior
   Island: Five Star Isles
   Locations:
       Five Star Isles - Raft Chest: Nothing
@@ -1992,14 +1772,12 @@
       Five Star Isles: CanSailAway
 
 - Name: Five Star Submarine Interior
-  Pretty Name: Five Star Submarine Interior
   Locations:
       Five Star Isles - Submarine Chest: Nothing
   Exits:
       Five Star Submarine Exterior: Nothing
 
 - Name: Five Star Lookout Platform
-  Pretty Name: Five Star Lookout Platform
   Island: Five Star Isles
   Locations:
       Five Star Isles - Lookout Platform Destroy Cannons: CanDestroyCannons
@@ -2007,7 +1785,6 @@
       Five Star Isles: CanSailAway
 
 - Name: Ghost Ship Interior
-  Pretty Name: Ghost Ship Interior
   Locations:
       Great Sea - Ghost Ship Chest: CanDefeatWizzrobes and CanDefeatPoes and CanDefeatReDeads and CanDefeatStalfos
 
@@ -2018,7 +1795,6 @@
 # that's logically supported as well.
 
 - Name: DRC First Room
-  Pretty Name: DRC First Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - First Room Chest: Nothing
@@ -2027,7 +1803,6 @@
       Dragon Roost Pond Past Statues: Nothing
 
 - Name: DRC Hub Room Lower Area
-  Pretty Name: DRC Hub Room Lower Area
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Map Chest Room: Nothing
@@ -2038,14 +1813,12 @@
       DRC First Room: Nothing
 
 - Name: DRC Hub Room Lower Area Near Dim Room
-  Pretty Name: DRC Hub Room Lower Area Near Dim Room
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Hub Room Lower Area: Nothing
       DRC Lower Dim Room Chu Chu Area: Nothing
 
 - Name: DRC Map Chest Room
-  Pretty Name: DRC Map Chest Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Water Jug Alcove Chest: Nothing
@@ -2054,14 +1827,12 @@
       DRC Lower Dim Room Bokoblin Area: Nothing
 
 - Name: DRC Lower Dim Room Bokoblin Area
-  Pretty Name: DRC Lower Dim Room Bokoblin Area
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Map Chest Room: Nothing
       DRC Lower Dim Room Chu Chu Area: Nothing
 
 - Name: DRC Lower Dim Room Chu Chu Area
-  Pretty Name: DRC Lower Dim Room Chu Chu Area
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Boarded Up Chest: CanDestroyWoodenBarriers or can_access(DRC Lower Dim Room Bokoblin Area)
@@ -2070,7 +1841,6 @@
       DRC Lower Dim Room Bokoblin Area: CanDestroyWoodenBarriers
 
 - Name: DRC Switch Behind Wooden Barrier Room
-  Pretty Name: DRC Switch Behind Wooden Barrier Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Swing Across Lava Chest: GrapplingHook or CanFlyWithDekuLeafIndoors
@@ -2079,14 +1849,12 @@
       DRC Outside Lower Area: Nothing
 
 - Name: DRC Outside Lower Area
-  Pretty Name: DRC Outside Lower Area
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Switch Behind Wooden Barrier Room: Nothing
       DRC Rat Room: Nothing
 
 - Name: DRC Rat Room
-  Pretty Name: DRC Rat Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Rat Room Chest: Nothing
@@ -2096,7 +1864,6 @@
       DRC Outside Upper Area: count(3, DRCSmallKey)
 
 - Name: DRC Outside Upper Area
-  Pretty Name: DRC Outside Upper Area
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Bird's Nest: Nothing
@@ -2106,7 +1873,6 @@
       DRC Outside Lower Area: CanFlyWithDekuLeafOutdoors
 
 - Name: DRC Dark Room Chest Area
-  Pretty Name: DRC Dark Room Chest Area
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Dark Room Chest: Nothing
@@ -2115,14 +1881,12 @@
       DRC Outside Upper Area: Nothing
 
 - Name: DRC Dark Room Past Wooden Barrier
-  Pretty Name: DRC Dark Room Past Wooden Barrier
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Dark Room Chest Area: CanDestroyWoodenBarriers
       DRC Hub Room Upper Bridge: FireArrows or can_access(DRC Dark Room Chest Area)
 
 - Name: DRC Hub Room Upper Bridge
-  Pretty Name: DRC Hub Room Upper Bridge
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Hub Room Tingle Chest: Bombs
@@ -2133,7 +1897,6 @@
       DRC Hub Room Mouth Area: CanFlyWithDekuLeafIndoors
 
 - Name: DRC Triple Bokoblin Room
-  Pretty Name: DRC Triple Bokoblin Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Pot Room Chest: Nothing
@@ -2142,14 +1905,12 @@
       DRC Magtail Lava Geyser Room: Nothing
 
 - Name: DRC Magtail Lava Geyser Room
-  Pretty Name: DRC Magtail Lava Geyser Room
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Boss Door Room Before Lava: Nothing
       DRC Triple Bokoblin Room: Nothing
 
 - Name: DRC Boss Door Room Before Lava
-  Pretty Name: DRC Boss Door Room Before Lava
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Mini Boss Upper Area: Nothing
@@ -2157,7 +1918,6 @@
       DRC Magtail Lava Geyser Room: Nothing
 
 - Name: DRC Boss Door Room Across Lava
-  Pretty Name: DRC Boss Door Room Across Lava
   Dungeon: Dragon Roost Cavern
   Events:
       CanGetFairies: Nothing
@@ -2169,7 +1929,6 @@
       DRC Boss Room: DRCBigKey
 
 - Name: DRC Mini Boss Upper Area
-  Pretty Name: DRC Mini Boss Upper Area
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Mini Boss: Nothing
@@ -2178,14 +1937,12 @@
       DRC Mini Boss Lower Area: GrapplingHook or CanFlyWithDekuLeafOutdoors
 
 - Name: DRC Mini Boss Lower Area
-  Pretty Name: DRC Mini Boss Lower Area
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Rope Bridge Underpass Room: Nothing
       DRC Mini Boss Upper Area: GrapplingHook
 
 - Name: DRC Rope Bridge Underpass Room
-  Pretty Name: DRC Rope Bridge Underpass Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Under Rope Bridge Chest: Nothing
@@ -2194,7 +1951,6 @@
       DRC Mini Boss Lower Area: Nothing
 
 - Name: DRC Hub Room Highest Platform
-  Pretty Name: DRC Hub Room Highest Platform
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Rope Bridge Underpass Room: Nothing
@@ -2202,14 +1958,12 @@
       DRC Hub Room Lower Area: Nothing
 
 - Name: DRC Hub Room Mouth Area
-  Pretty Name: DRC Hub Room Mouth Area
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Hub Room Lower Area: GrapplingHook or CanFlyWithDekuLeafIndoors
       DRC Before Big Key Room Upper: GrapplingHook
 
 - Name: DRC Before Big Key Room Upper
-  Pretty Name: DRC Before Big Key Room Upper
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Tingle Statue Chest: Bombs and (GrapplingHook or CanFlyWithDekuLeafIndoors)
@@ -2218,14 +1972,12 @@
       DRC Before Big Key Room Lower: GrapplingHook or CanFlyWithDekuLeafIndoors
 
 - Name: DRC Before Big Key Room Lower
-  Pretty Name: DRC Before Big Key Room Lower
   Dungeon: Dragon Roost Cavern
   Exits:
       DRC Big Key Room: Nothing
       DRC Before Big Key Room Upper: GrapplingHook
 
 - Name: DRC Big Key Room
-  Pretty Name: DRC Big Key Room
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Big Key Chest: CanStunMagtails
@@ -2233,12 +1985,10 @@
       DRC Before Big Key Room Lower: Nothing
 
 - Name: DRC Boss Room
-  Pretty Name: DRC Boss Room
   Locations:
       Dragon Roost Cavern - Gohma Heart Container: GrapplingHook
 
 - Name: FW First Room
-  Pretty Name: FW First Room
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - First Room Chest: Nothing
@@ -2247,7 +1997,6 @@
       FW Entrance Platform: Nothing
 
 - Name: FW Second Room South Platform
-  Pretty Name: FW Second Room South Platform
   Dungeon: Forbidden Woods
   Exits:
       FW First Room: Nothing
@@ -2255,7 +2004,6 @@
       FW Second Room North Platform: CanFlyWithDekuLeafIndoors
 
 - Name: FW Second Room North Platform
-  Pretty Name: FW Second Room North Platform
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Boko Baba Climb Chest: CanFlyWithDekuLeafIndoors and CanDefeatDoorFlowers
@@ -2264,7 +2012,6 @@
       FW Second Room Ground Path: Nothing
 
 - Name: FW Second Room Ground Path
-  Pretty Name: FW Second Room Ground Path
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Inside Hollow Tree Chest: CanDefeatDoorFlowers or CanDefeatBokoBabas
@@ -2272,28 +2019,24 @@
       FW Second Room South Platform: CanFlyWithDekuLeafIndoors
 
 - Name: FW Short Cable Ride Room South Side
-  Pretty Name: FW Short Cable Ride Room South Side
   Dungeon: Forbidden Woods
   Exits:
       FW Short Cable Ride Room North Side: CanFlyWithDekuLeafIndoors
       FW Second Room North Platform: CanFlyWithDekuLeafIndoors
 
 - Name: FW Short Cable Ride Room North Side
-  Pretty Name: FW Short Cable Ride Room North Side
   Dungeon: Forbidden Woods
   Exits:
       FW Hole in Tree Room Near Lower Door: Nothing
       FW Short Cable Ride Room South Side: CanFlyWithDekuLeafIndoors
 
 - Name: FW Hole in Tree Room Near Lower Door
-  Pretty Name: FW Hole in Tree Room Near Lower Door
   Dungeon: Forbidden Woods
   Exits:
       FW Short Cable Ride Room North Side: Nothing
       FW Hole in Tree Room Near Upper Door: CanDefeatBokoBabas
 
 - Name: FW Hole in Tree Room Near Upper Door
-  Pretty Name: FW Hole in Tree Room Near Upper Door
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Hole In Tree Chest: CanFlyWithDekuLeafIndoors
@@ -2302,14 +2045,12 @@
       FW Hole in Tree Room Near Lower Door: Nothing
 
 - Name: FW Vine Circle Hallway
-  Pretty Name: FW Vine Circle Hallway
   Dungeon: Forbidden Woods
   Exits:
       FW Hole in Tree Room Near Upper Door: Nothing
       FW Hub Room Middle Area: CanFlyWithDekuLeafIndoors or CanDefeatDoorFlowers
 
 - Name: FW Hub Room Middle Area
-  Pretty Name: FW Hub Room Middle Area
   Dungeon: Forbidden Woods
   Exits:
       FW Hub Room Upper Area: GrapplingHook
@@ -2317,7 +2058,6 @@
       FW Vine Circle Hallway: Nothing
 
 - Name: FW Hub Room Upper Area
-  Pretty Name: FW Hub Room Upper Area
   Dungeon: Forbidden Woods
   Exits:
       FW Morth Pit Hallway: Nothing
@@ -2326,7 +2066,6 @@
       FW Hub Room Middle Area: Nothing
 
 - Name: FW Morth Pit Hallway
-  Pretty Name: FW Morth Pit Hallway
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Morth Pit Chest: Nothing
@@ -2335,7 +2074,6 @@
       FW Hub Room Middle Area: Nothing
 
 - Name: FW Vine Maze Room
-  Pretty Name: FW Vine Maze Room
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Vine Maze Left Chest: Nothing
@@ -2344,21 +2082,18 @@
       FW Morth Pit Hallway: Nothing
 
 - Name: FW Cable Ride Above Poison Water Room Lower West
-  Pretty Name: FW Cable Ride Above Poison Water Room Lower West
   Dungeon: Forbidden Woods
   Exits:
       FW Cable Ride Above Poison Water Room Lower East: CanFlyWithDekuLeafIndoors
       FW Hub Room Upper Area: Nothing
 
 - Name: FW Cable Ride Above Poison Water Room Lower East
-  Pretty Name: FW Cable Ride Above Poison Water Room Lower East
   Dungeon: Forbidden Woods
   Exits:
       FW Tall Room Before Mini Boss: Nothing
       FW Cable Ride Above Poison Water Room Lower West: Nothing
 
 - Name: FW Tall Room Before Mini Boss
-  Pretty Name: FW Tall Room Before Mini Boss
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Tall Room Chest: GrapplingHook
@@ -2368,7 +2103,6 @@
       FW Cable Ride Above Poison Water Room Lower East: Nothing
 
 - Name: FW Mini Boss Room
-  Pretty Name: FW Mini Boss Room
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Mothula Mini Boss Chest: CanDefeatWingedMothulas
@@ -2376,7 +2110,6 @@
       FW Tall Room Before Mini Boss: Boomerang
 
 - Name: FW Cable Ride Above Poison Water Room Upper East
-  Pretty Name: FW Cable Ride Above Poison Water Room Upper East
   Dungeon: Forbidden Woods
   Exits:
       FW Cable Ride Above Poison Water Room Upper West: CanDestroyHangingSeeds and (Hookshot or CanFlyWithDekuLeafIndoors)
@@ -2384,7 +2117,6 @@
       FW Tall Room Before Mini Boss: Nothing
 
 - Name: FW Cable Ride Above Poison Water Room Upper West
-  Pretty Name: FW Cable Ride Above Poison Water Room Upper West
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Past Seeds Hanging by Vines Chest: Nothing
@@ -2394,28 +2126,24 @@
       FW Hub Room Highest Platform: Nothing
 
 - Name: FW Hub Room Highest Platform
-  Pretty Name: FW Hub Room Highest Platform
   Dungeon: Forbidden Woods
   Exits:
       FW Cable Ride Above Poison Water Room Upper West: Nothing
       FW Hub Room Upper Area: Nothing
 
 - Name: FW Hub Room Lower Area
-  Pretty Name: FW Hub Room Lower Area
   Dungeon: Forbidden Woods
   Exits:
       FW Forked Hallway Lower: Nothing
       FW Hub Room Middle Area: CanFlyWithDekuLeafIndoors
 
 - Name: FW Forked Hallway Lower
-  Pretty Name: FW Forked Hallway Lower
   Dungeon: Forbidden Woods
   Exits:
       FW Poison River Room Before River: Nothing
       FW Hub Room Lower Area: Nothing
 
 - Name: FW Poison River Room Before River
-  Pretty Name: FW Poison River Room Before River
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Chest Across Hanging Flower: Nothing
@@ -2425,14 +2153,12 @@
       FW Forked Hallway Lower: Nothing
 
 - Name: FW Poison River Room After River
-  Pretty Name: FW Poison River Room After River
   Dungeon: Forbidden Woods
   Exits:
       FW Poison River Room Before River: Nothing
       FW Big Key Room: Nothing
 
 - Name: FW Tingle Chest Room
-  Pretty Name: FW Tingle Chest Room
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Tingle Statue Chest: Bombs
@@ -2441,7 +2167,6 @@
       FW Poison River Room Before River: Nothing
 
 - Name: FW Big Key Room
-  Pretty Name: FW Big Key Room
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Big Key Chest: Boomerang
@@ -2449,21 +2174,18 @@
       FW Big Key Room Higher Ledge: GrapplingHook
 
 - Name: FW Big Key Room Higher Ledge
-  Pretty Name: FW Big Key Room Higher Ledge
   Dungeon: Forbidden Woods
   Exits:
       FW Forked Hallway Higher Ledge: Boomerang and CanDefeatMoblins and can_access(FW Big Key Room)
       FW Big Key Room: Nothing
 
 - Name: FW Forked Hallway Higher Ledge
-  Pretty Name: FW Forked Hallway Higher Ledge
   Dungeon: Forbidden Woods
   Exits:
       FW Forked Hallway Lower: Nothing
       FW Big Key Room Higher Ledge: Nothing
 
 - Name: FW Mothula Hallway
-  Pretty Name: FW Mothula Hallway
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Double Mothula Room Chest: CanDefeatMothulas
@@ -2472,7 +2194,6 @@
       FW Hub Room Middle Area: CanDefeatMothulas
 
 - Name: FW Boss Door Room
-  Pretty Name: FW Boss Door Room
   Dungeon: Forbidden Woods
   Events:
       CanGetFairies: Nothing
@@ -2481,12 +2202,10 @@
       FW Mothula Hallway: Nothing
 
 - Name: FW Boss Room
-  Pretty Name: FW Boss Room
   Locations:
       Forbidden Woods - Kalle Demos Heart Container: CanDefeatKalleDemos
 
 - Name: TOTG Entrance Room
-  Pretty Name: TOTG Entrance Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG East Golden Statue Room: Nothing
@@ -2497,20 +2216,17 @@
       Tower of the Gods Sector: Nothing
 
 - Name: TOTG East Golden Statue Room
-  Pretty Name: TOTG East Golden Statue Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG Entrance Room: Nothing
 
 - Name: TOTG Entrance Room Past Gate
-  Pretty Name: TOTG Entrance Room Past Gate
   Dungeon: Tower of the Gods
   Exits:
       TOTG Hop Across Floating Boxes Room: Nothing
       TOTG Entrance Room: can_access(TOTG East Golden Statue Room)
 
 - Name: TOTG Hop Across Floating Boxes Room
-  Pretty Name: TOTG Hop Across Floating Boxes Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Hop Across Floating Boxes Chest: Nothing
@@ -2518,7 +2234,6 @@
       TOTG Entrance Room Past Gate: Nothing
 
 - Name: TOTG Map Chest Room
-  Pretty Name: TOTG Map Chest Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Chest Behind Bombable Wall: Bombs
@@ -2526,7 +2241,6 @@
       TOTG Entrance Room: Nothing
 
 - Name: TOTG Entrance Room past Bombable Walls
-  Pretty Name: TOTG Entrance Room past Bombable Walls
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Light Two Torches Chest: Nothing
@@ -2536,7 +2250,6 @@
       TOTG Entrance Room: Bombs
 
 - Name: TOTG Skulls Room
-  Pretty Name: TOTG Skulls Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Skull Room Chest: Nothing
@@ -2545,20 +2258,17 @@
       TOTG Entrance Room past Bombable Walls: Nothing
 
 - Name: TOTG West Golden Statue Room
-  Pretty Name: TOTG West Golden Statue Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG Entrance Room past Bombable Walls: Nothing
 
 - Name: TOTG Entrance Room Past Waterfall
-  Pretty Name: TOTG Entrance Room Past Waterfall
   Dungeon: Tower of the Gods
   Exits:
       TOTG Rising Platforms Room: Nothing
       TOTG Entrance Room: can_access(TOTG West Golden Statue Room)
 
 - Name: TOTG Rising Platforms Room
-  Pretty Name: TOTG Rising Platforms Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Tingle Statue Chest: Bombs
@@ -2567,7 +2277,6 @@
       TOTG Entrance Room Past Waterfall: Nothing
 
 - Name: TOTG Hub Room
-  Pretty Name: TOTG Hub Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Stone Tablet: can_access(TOTG First Statue Room)
@@ -2579,7 +2288,6 @@
       TOTG Rising Platforms Room: Nothing
 
 - Name: TOTG First Statue Corridor
-  Pretty Name: TOTG First Statue Corridor
   Dungeon: Tower of the Gods
   Exits:
       TOTG First Statue Room: Nothing
@@ -2587,13 +2295,11 @@
       TOTG Hub Room: Nothing
 
 - Name: TOTG First Statue Room
-  Pretty Name: TOTG First Statue Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG First Statue Corridor: Nothing
 
 - Name: TOTG First Statue Corridor Armos Knights Room
-  Pretty Name: TOTG First Statue Corridor Armos Knights Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - First Armos Knights Chest: Bombs
@@ -2601,7 +2307,6 @@
       TOTG First Statue Corridor: Nothing
 
 - Name: TOTG Second Statue Corridor Near Hub Room
-  Pretty Name: TOTG Second Statue Corridor Near Hub Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG Second Statue Corridor Near Second Statue Room: HerosBow or GrapplingHook
@@ -2609,7 +2314,6 @@
       TOTG Hub Room: Nothing
 
 - Name: TOTG Second Statue Corridor Near Second Statue Room
-  Pretty Name: TOTG Second Statue Corridor Near Second Statue Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG Second Statue Room Near Corridor: Nothing
@@ -2617,7 +2321,6 @@
       TOTG Second Statue Corridor Near Hub Room: HerosBow or GrapplingHook
 
 - Name: TOTG Second Statue Corridor Near Mini Boss Room
-  Pretty Name: TOTG Second Statue Corridor Near Mini Boss Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG Mini Boss Room:
@@ -2627,20 +2330,17 @@
       TOTG Second Statue Corridor Near Second Statue Room: GrapplingHook or CanFlyWithDekuLeafIndoors
 
 - Name: TOTG Second Statue Room Near Corridor
-  Pretty Name: TOTG Second Statue Room Near Corridor
   Dungeon: Tower of the Gods
   Exits:
       TOTG Second Statue Corridor Near Second Statue Room: Nothing
       TOTG Second Statue Room Near Statue: GrapplingHook or CanFlyWithDekuLeafIndoors
 
 - Name: TOTG Second Statue Room Near Statue
-  Pretty Name: TOTG Second Statue Room Near Statue
   Dungeon: Tower of the Gods
   Exits:
       TOTG Second Statue Room Near Corridor: CanPlayCM
 
 - Name: TOTG Mini Boss Room
-  Pretty Name: TOTG Mini Boss Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Darknut Mini Boss: CanDefeatDarknuts
@@ -2648,7 +2348,6 @@
       TOTG Second Statue Corridor Near Mini Boss Room: CanDefeatDarknuts
 
 - Name: TOTG Third Statue Corridor
-  Pretty Name: TOTG Third Statue Corridor
   Dungeon: Tower of the Gods
   Exits:
       TOTG Hub Room: Nothing
@@ -2657,7 +2356,6 @@
       TOTG Third Statue Corridor Past Bombable Wall: Bombs
 
 - Name: TOTG Many Moving Platforms Room
-  Pretty Name: TOTG Many Moving Platforms Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Floating Platforms Room Lower Chest: HerosBow or CanFlyWithDekuLeafIndoors
@@ -2666,14 +2364,12 @@
       TOTG Third Statue Corridor: Nothing
 
 - Name: TOTG Third Statue Corridor Past Bombable Wall
-  Pretty Name: TOTG Third Statue Corridor Past Bombable Wall
   Dungeon: Tower of the Gods
   Exits:
       TOTG Third Statue Corridor Armos Knights Room: Nothing
       TOTG Third Statue Corridor: Bombs
 
 - Name: TOTG Third Statue Corridor Armos Knights Room
-  Pretty Name: TOTG Third Statue Corridor Armos Knights Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Second Armos Knights Chest: CanPlayWR
@@ -2681,20 +2377,17 @@
       TOTG Third Statue Corridor Past Bombable Wall: Nothing
 
 - Name: TOTG Third Statue Room
-  Pretty Name: TOTG Third Statue Room
   Dungeon: Tower of the Gods
   Exits:
       TOTG Third Statue Room Past Lasers: CanFlyWithDekuLeafIndoors
       TOTG Third Statue Corridor: Nothing
 
 - Name: TOTG Third Statue Room Past Lasers
-  Pretty Name: TOTG Third Statue Room Past Lasers
   Dungeon: Tower of the Gods
   Exits:
       TOTG Third Statue Room: CanPlayCM
 
 - Name: TOTG Big Key Room
-  Pretty Name: TOTG Big Key Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Big Key Chest: Nothing
@@ -2703,7 +2396,6 @@
       TOTG Hub Room: Nothing
 
 - Name: TOTG Outside Area
-  Pretty Name: TOTG Outside Area
   Dungeon: Tower of the Gods
   Events:
       CanGetFairies: Nothing
@@ -2712,26 +2404,22 @@
       TOTG Boss Room: TotGBigKey
 
 - Name: TOTG Boss Room
-  Pretty Name: TOTG Boss Room
   Locations:
       Tower of the Gods - Gohdan Heart Container: CanDefeatGohdan
 
 - Name: ET First Room
-  Pretty Name: ET First Room
   Dungeon: Earth Temple
   Exits:
       ET Early Two Switches Room: Nothing
       Headstone Island Interior: Nothing
 
 - Name: ET Early Two Switches Room
-  Pretty Name: ET Early Two Switches Room
   Dungeon: Earth Temple
   Exits:
       ET Map Chest Room: CanPlayCM
       ET First Room: Nothing
 
 - Name: ET Map Chest Room
-  Pretty Name: ET Map Chest Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Warp Pot Room Chest: CanPlayCM and CanAimMirrorShield
@@ -2741,7 +2429,6 @@
       ET Early Two Switches Room: CanDefeatRedChuChus and CanDefeatGreenChuChus
 
 - Name: ET Giant Statue Room
-  Pretty Name: ET Giant Statue Room
   Dungeon: Earth Temple
   Exits:
       ET First Crypt: SkullHammer and CanPlayCM
@@ -2750,7 +2437,6 @@
       ET Map Chest Room: Nothing
 
 - Name: ET First Crypt
-  Pretty Name: ET First Crypt
   Dungeon: Earth Temple
   Locations:
       Earth Temple - First Crypt Chest: PowerBracelets and CanPlayCM
@@ -2759,7 +2445,6 @@
       ET Giant Statue Room: Nothing
 
 - Name: ET Small Room South of First Crypt
-  Pretty Name: ET Small Room South of First Crypt
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Chest Behind Destructable Wall: CanAimMirrorShield
@@ -2767,14 +2452,12 @@
       ET First Crypt: Nothing
 
 - Name: ET Chu Chus and Switches Room
-  Pretty Name: ET Chu Chus and Switches Room
   Dungeon: Earth Temple
   Exits:
       ET Block Push Corridor: PowerBracelets and FireArrows
       ET Giant Statue Room: Nothing
 
 - Name: ET Block Push Corridor
-  Pretty Name: ET Block Push Corridor
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Three Blocks Room Chest: CanDefeatFloormasters and (CanPlayCM or CanAimMirrorShield)
@@ -2783,7 +2466,6 @@
       ET Chu Chus and Switches Room: Nothing
 
 - Name: ET Two Moblins and Poes Room
-  Pretty Name: ET Two Moblins and Poes Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Behind Statues Chest: CanPlayCM or CanAimMirrorShield
@@ -2795,14 +2477,12 @@
       ET Block Push Corridor: Nothing
 
 - Name: ET Two Moblins and Poes Room Past Stairs
-  Pretty Name: ET Two Moblins and Poes Room Past Stairs
   Dungeon: Earth Temple
   Exits:
       ET Second Crypt: Nothing
       ET Mini Boss Room: count(3, ETSmallKey)
 
 - Name: ET Second Crypt
-  Pretty Name: ET Second Crypt
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Second Crypt Casket: CanDefeatReDeads
@@ -2810,14 +2490,12 @@
       ET Two Moblins and Poes Room Past Stairs: CanDefeatReDeads
 
 - Name: ET Mini Boss Room
-  Pretty Name: ET Mini Boss Room
   Dungeon: Earth Temple
   Exits:
       ET Mini Boss Room Upper Ledge: CanDefeatStalfos
       ET Two Moblins and Poes Room Past Stairs: CanAimMirrorShield and can_access(ET Mini Boss Room Upper Ledge)
 
 - Name: ET Mini Boss Room Upper Ledge
-  Pretty Name: ET Mini Boss Room Upper Ledge
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Stalfos Mini Boss: Nothing
@@ -2825,26 +2503,22 @@
       ET Mini Boss Room: Nothing
 
 - Name: ET Two Moblins and Poes Room Past Light Wall
-  Pretty Name: ET Two Moblins and Poes Room Past Light Wall
   Dungeon: Earth Temple
   Exits:
       ET Giant Statue Room Upper Ledge: Nothing
 
 - Name: ET Giant Statue Room Upper Ledge
-  Pretty Name: ET Giant Statue Room Upper Ledge
   Dungeon: Earth Temple
   Exits:
       ET Two Moblins and Poes Room Past Light Wall: Nothing
       ET Giant Statue Room: Nothing
 
 - Name: ET Giant Statue Room Under Statue
-  Pretty Name: ET Giant Statue Room Under Statue
   Dungeon: Earth Temple
   Exits:
       ET Hanging Bridge Room: Nothing
 
 - Name: ET Hanging Bridge Room
-  Pretty Name: ET Hanging Bridge Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Tingle Statue Chest: Bombs
@@ -2853,7 +2527,6 @@
       ET Giant Statue Room Under Statue: Nothing
 
 - Name: ET Basement Hub Room
-  Pretty Name: ET Basement Hub Room
   Dungeon: Earth Temple
   Exits:
       ET Foggy Floormasters Room: CanPlayCM or CanAimMirrorShield
@@ -2862,7 +2535,6 @@
       ET Hanging Bridge Room: Nothing
 
 - Name: ET Foggy Floormasters Room
-  Pretty Name: ET Foggy Floormasters Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Foggy Floormaster Room End Chest: Nothing
@@ -2871,7 +2543,6 @@
       ET Basement Hub Room: Nothing
 
 - Name: ET Poes and Bubbles RoomBehindGrating
-  Pretty Name: ET Poes and Bubbles Room Behind Grating
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Near Hammer Button Behind Curtain: FireArrows and (Hookshot or Boomerang)
@@ -2879,14 +2550,12 @@
       ET Basement Hub Room: Nothing
 
 - Name: ET Basement Hub Room Upper Ledge
-  Pretty Name: ET Basement Hub Room Upper Ledge
   Dungeon: Earth Temple
   Exits:
       ET Poes and Bubbles Room: count(3, ETSmallKey)
       ET Basement Hub Room: Nothing
 
 - Name: ET Poes and Bubbles Room
-  Pretty Name: ET Poes and Bubbles Room
   Dungeon: Earth Temple
   Exits:
       ET Basement Hub Room Upper Ledge: Nothing
@@ -2895,7 +2564,6 @@
           and can_access(ET Poes and Bubbles RoomBehindGrating)
 
 - Name: ET Third Crypt
-  Pretty Name: ET Third Crypt
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Third Crypt Chest: Nothing
@@ -2904,7 +2572,6 @@
       ET Boss Door Room: CanPlayEGL
 
 - Name: ET Boss Door Room
-  Pretty Name: ET Boss Door Room
   Dungeon: Earth Temple
   Events:
       CanGetFairies: Nothing
@@ -2914,7 +2581,6 @@
       ET Third Crypt: Nothing
 
 - Name: ET Many Mirrors Room
-  Pretty Name: ET Many Mirrors Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Many Mirrors Room Right Chest: CanPlayCM
@@ -2925,7 +2591,6 @@
       ET Boss Door Room: Nothing
 
 - Name: ET Big Key Chest Room
-  Pretty Name: ET Big Key Chest Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Big Key Chest: CanDefeatBlueBubbles and CanDefeatDarknuts
@@ -2935,13 +2600,11 @@
       ET Many Mirrors Room: Nothing
 
 - Name: ET Many Mirrors Room Past Light Wall
-  Pretty Name: ET Many Mirrors Room Past Light Wall
   Dungeon: Earth Temple
   Exits:
       ET Triple Stalfos Room: Nothing
 
 - Name: ET Triple Stalfos Room
-  Pretty Name: ET Triple Stalfos Room
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Stalfos Crypt Room Chest: CanAimMirrorShield and CanDefeatStalfos
@@ -2949,19 +2612,16 @@
       ET Many Mirrors Room Past Light Wall: Nothing
 
 - Name: ET Boss Room
-  Pretty Name: ET Boss Room
   Locations:
       Earth Temple - Jalhalla Heart Container: CanDefeatJalhalla
 
 - Name: WT First Room
-  Pretty Name: WT First Room
   Dungeon: Wind Temple
   Exits:
       WT First Warp Pot Room Front: Nothing
       Gale Isle Interior: Nothing
 
 - Name: WT First Warp Pot Room Front
-  Pretty Name: WT First Warp Pot Room Front
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Between Dirt Patches Chest: CanPlayCM
@@ -2970,28 +2630,24 @@
       WT First Room: Nothing
 
 - Name: WT First Warp Pot Room Back
-  Pretty Name: WT First Warp Pot Room Back
   Dungeon: Wind Temple
   Exits:
       WT First Warp Pot Room Front: IronBoots
       WT Early Turn Floor Room: Nothing
 
 - Name: WT Early Turn Floor Room
-  Pretty Name: WT Early Turn Floor Room
   Dungeon: Wind Temple
   Exits:
       WT First Warp Pot Room Back: Nothing
       WT Early Turn Floor Room Past Turn Floor: CanFlyWithDekuLeafIndoors
 
 - Name: WT Early Turn Floor Room Past Turn Floor
-  Pretty Name: WT Early Turn Floor Room Past Turn Floor
   Dungeon: Wind Temple
   Exits:
       WT Makar Capture Room: CanPlayCM
       WT Early Turn Floor Room: CanFlyWithDekuLeafIndoors
 
 - Name: WT Makar Capture Room
-  Pretty Name: WT Makar Capture Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Tingle Statue Chest: Bombs
@@ -3001,7 +2657,6 @@
       WT Early Turn Floor Room Past Turn Floor: Nothing
 
 - Name: WT Hub Room Middle West Platform
-  Pretty Name: WT Hub Room Middle West Platform
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Middle North platform: Hookshot or CanFlyWithDekuLeafIndoors
@@ -3009,7 +2664,6 @@
       WT Makar Capture Room: Nothing
 
 - Name: WT Hub Room Middle North platform
-  Pretty Name: WT Hub Room Middle North platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Behind Stone Head Chest: Hookshot and IronBoots
@@ -3019,7 +2673,6 @@
       WT Hub Room Middle West Platform: Hookshot or CanFlyWithDekuLeafIndoors
 
 - Name: WT Hub Room Middle East Platform
-  Pretty Name: WT Hub Room Middle East Platform
   Dungeon: Wind Temple
   Exits:
       WT Song Stone and Turn Platform Near Hub Room: Nothing
@@ -3027,14 +2680,12 @@
       WT Hub Room Lower Area: IronBoots and can_access(WT Hub Room Middle South Platform)
 
 - Name: WT Song Stone and Turn Platform Near Hub Room
-  Pretty Name: WT Song Stone and Turn Platform Near Hub Room
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Middle East Platform: Nothing
       WT Song Stone and Turn Platform Near Cyclones Room: IronBoots and CanFlyWithDekuLeafIndoors
 
 - Name: WT Song Stone and Turn Platform Near Cyclones Room
-  Pretty Name: WT Song Stone and Turn Platform Near Cyclones Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Left Alcove Chest: Nothing
@@ -3044,7 +2695,6 @@
       WT Song Stone and Turn Platform Near Hub Room: CanFlyWithDekuLeafIndoors
 
 - Name: WT Big Key Chest Room
-  Pretty Name: WT Big Key Chest Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Big Key Chest: CanDefeatDarknuts
@@ -3054,7 +2704,6 @@
       WT Song Stone and Turn Platform Near Cyclones Room: CanDefeatDarknuts
 
 - Name: WT Many Cyclones Room East Side
-  Pretty Name: WT Many Cyclones Room East Side
   Dungeon: Wind Temple
   Exits:
       WT Many Cyclones Room West Side: CanFlyWithDekuLeafIndoors and (CanCutGrass or DoubleMagic)
@@ -3062,7 +2711,6 @@
       WT Song Stone and Turn Platform Near Cyclones Room: Nothing
 
 - Name: WT Many Cyclones Room West Side
-  Pretty Name: WT Many Cyclones Room West Side
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Cyclones Room Chest: CanFlyWithDekuLeafIndoors and (CanCutGrass or DoubleMagic)
@@ -3072,7 +2720,6 @@
       WT Many Cyclones Room East Side: CanFlyWithDekuLeafIndoors
 
 - Name: WT Hub Room Middle South Platform
-  Pretty Name: WT Hub Room Middle South Platform
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Compass Chest Platform: IronBoots
@@ -3082,7 +2729,6 @@
       WT Hub Room Upper South Platform: CanFlyWithDekuLeafIndoors and CanPlayCM and can_access(WT Hub Room Lower Area)
 
 - Name: WT Hub Room Compass Chest Platform
-  Pretty Name: WT Hub Room Compass Chest Platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Hub Room Center Chest: Nothing
@@ -3091,7 +2737,6 @@
       WT Hub Room Middle West Platform: Hookshot and IronBoots
 
 - Name: WT Hub Room Lower Area
-  Pretty Name: WT Hub Room Lower Area
   Dungeon: Wind Temple
   Exits:
       WT Cracked Floors Room: Nothing
@@ -3101,7 +2746,6 @@
       WT Hub Room Below Fan: can_access(WT Hub Room Upper North Platform)
 
 - Name: WT Mini Boss Room
-  Pretty Name: WT Mini Boss Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Wizzrobe Mini Boss: CanDefeatDarknuts and CanDefeatWizzrobes and CanRemovePeahatArmor
@@ -3109,7 +2753,6 @@
       WT Hub Room Lower Area: Hookshot and SkullHammer and CanDefeatDarknuts and CanDefeatWizzrobes and CanRemovePeahatArmor
 
 - Name: WT Cracked Floors Room
-  Pretty Name: WT Cracked Floors Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Spike Wall Room First Chest: IronBoots
@@ -3118,28 +2761,24 @@
       WT Hub Room Lower Area: Nothing
 
 - Name: WT Makar Capture Room Upper Platform
-  Pretty Name: WT Makar Capture Room Upper Platform
   Dungeon: Wind Temple
   Exits:
       WT Makar Capture Room: Nothing
       WT Blue Bubbles Room: Nothing
 
 - Name: WT Blue Bubbles Room
-  Pretty Name: WT Blue Bubbles Room
   Dungeon: Wind Temple
   Exits:
       WT Blue Bubbles Room Upper Ledge: Hookshot and CanPlayCM and CanDefeatBlueBubbles
       WT Makar Capture Room Upper Platform: Nothing
 
 - Name: WT Blue Bubbles Room Upper Ledge
-  Pretty Name: WT Blue Bubbles Room Upper Ledge
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Upper North Platform: Nothing
       WT Blue Bubbles Room: Nothing
 
 - Name: WT Hub Room Upper North Platform
-  Pretty Name: WT Hub Room Upper North Platform
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Upper East Platform: CanFlyWithDekuLeafIndoors
@@ -3147,7 +2786,6 @@
       WT Blue Bubbles Room Upper Ledge: Nothing
 
 - Name: WT Hub Room Upper East Platform
-  Pretty Name: WT Hub Room Upper East Platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Hub Room Top Chest: Nothing
@@ -3155,7 +2793,6 @@
       WT Hub Room Middle East Platform: Nothing
 
 - Name: WT Hub Room Upper South Platform
-  Pretty Name: WT Hub Room Upper South Platform
   Dungeon: Wind Temple
   Exits:
       WT Seven Armos Room: Nothing
@@ -3163,7 +2800,6 @@
       WT Hub Room Middle South Platform: Nothing
 
 - Name: WT Seven Armos Room
-  Pretty Name: WT Seven Armos Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Behind Armos Chest: CanDefeatArmos
@@ -3171,14 +2807,12 @@
       WT Hub Room Upper South Platform: CanDefeatArmos
 
 - Name: WT Hub Room Below Fan
-  Pretty Name: WT Hub Room Below Fan
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Lower Area: Nothing
       WT Tall Basement Room: count(2, WTSmallKey)
 
 - Name: WT Tall Basement Room
-  Pretty Name: WT Tall Basement Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Kill All Basement Room Enemies:
@@ -3189,28 +2823,24 @@
       WT Long Narrow Room: Hookshot and IronBoots
 
 - Name: WT Long Narrow Room
-  Pretty Name: WT Long Narrow Room
   Dungeon: Wind Temple
   Exits:
       WT Long Narrow Room Past Gap: Hookshot and CanPlayCM
       WT Tall Basement Room: Nothing
 
 - Name: WT Long Narrow Room Past Gap
-  Pretty Name: WT Long Narrow Room Past Gap
   Dungeon: Wind Temple
   Exits:
       WT Long Narrow Room: CanFlyWithDekuLeafIndoors
       WT Three Big Fans Room: Nothing
 
 - Name: WT Three Big Fans Room
-  Pretty Name: WT Three Big Fans Room
   Dungeon: Wind Temple
   Exits:
       WT Three Big Fans Room Past Song Stone: IronBoots and CanPlayWGA
       WT Long Narrow Room Past Gap: Nothing
 
 - Name: WT Three Big Fans Room Past Song Stone
-  Pretty Name: WT Three Big Fans Room Past Song Stone
   Dungeon: Wind Temple
   Events:
       CanGetFairies: Nothing
@@ -3218,18 +2848,15 @@
       WT Boss Room: WTBigKey
 
 - Name: WT Boss Room
-  Pretty Name: WT Boss Room
   Locations:
       Wind Temple - Molgera Heart Container: CanDefeatMolgera
 
 - Name: Hyrule Castle Front
-  Pretty Name: Hyrule Castle Front
   Exits:
       Tower of the Gods Sector: Nothing
       Hyrule Castle Interior: Nothing
 
 - Name: Hyrule Castle Interior
-  Pretty Name: Hyrule Castle Interior
   Events:
       CanFarmKnightsCrests: GrapplingHook and SpoilsBag
   Exits:
@@ -3238,32 +2865,27 @@
       Hyrule Castle Front: Nothing
 
 - Name: Hyrule Castle Sword Chamber
-  Pretty Name: Hyrule Castle Sword Chamber
   Locations:
       Hyrule Castle - Sword Chamber Chest: CanDefeatMightyDarknuts
   Exits:
       Hyrule Castle Interior: Nothing
 
 - Name: Hyrule Castle Bridge
-  Pretty Name: Hyrule Castle Bridge
   Exits:
       Hyrule Field Path: CanGetPastHyruleBarrier
       Hyrule Castle Interior: Nothing
 
 - Name: Hyrule Field Path
-  Pretty Name: Hyrule Field Path
   Exits:
       Hyrule Field Path Past Broken Bridge: Hookshot or CanFlyWithDekuLeafIndoors
       Hyrule Castle Bridge: Nothing
 
 - Name: Hyrule Field Path Past Broken Bridge
-  Pretty Name: Hyrule Field Path Past Broken Bridge
   Exits:
       Ganon's Tower Trials Hub: Nothing
       Hyrule Field Path: Hookshot or CanFlyWithDekuLeafIndoors
 
 - Name: Ganon's Tower Trials Hub
-  Pretty Name: Ganon's Tower Trials Hub
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower DRC Trial: Nothing
@@ -3278,66 +2900,56 @@
       Hyrule Field Path Past Broken Bridge: Nothing
 
 - Name: Ganon's Tower DRC Trial
-  Pretty Name: Ganon's Tower DRC Trial
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Gohma Refight: GrapplingHook and CanFlyWithDekuLeafIndoors
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Gohma Refight
-  Pretty Name: Ganon's Tower Gohma Refight
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: CanDefeatGohma
 
 - Name: Ganon's Tower FW Trial
-  Pretty Name: Ganon's Tower FW Trial
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Kalle Demos Refight: CanFanWithDekuLeaf and CanFlyWithDekuLeafIndoors
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Kalle Demos Refight
-  Pretty Name: Ganon's Tower Kalle Demos Refight
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: CanDefeatKalleDemos
 
 - Name: Ganon's Tower ET Trial
-  Pretty Name: Ganon's Tower ET Trial
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Jalhalla Refight: CanAimMirrorShield
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Jalhalla Refight
-  Pretty Name: Ganon's Tower Jalhalla Refight
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: CanDefeatJalhalla
 
 - Name: Ganon's Tower WT Trial
-  Pretty Name: Ganon's Tower WT Trial
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Molgera Refight: Hookshot and CanFlyWithDekuLeafIndoors
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Molgera Refight
-  Pretty Name: Ganon's Tower Molgera Refight
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: CanDefeatMolgera
 
 - Name: Ganon's Tower First Staircase
-  Pretty Name: Ganon's Tower First Staircase
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Middle Hub Room: Nothing
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Middle Hub Room
-  Pretty Name: Ganon's Tower Middle Hub Room
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Phantom Ganon Maze: Nothing
@@ -3346,7 +2958,6 @@
       Ganon's Tower First Staircase: Nothing
 
 - Name: Ganon's Tower Phantom Ganon Maze
-  Pretty Name: Ganon's Tower Phantom Ganon Maze
   Dungeon: Ganon's Tower
   Locations:
       Ganon's Tower - Maze Chest: CanDefeatPhantomGanon
@@ -3356,20 +2967,17 @@
       Ganon's Tower Middle Hub Room: CanDefeatPhantomGanon
 
 - Name: Ganon's Tower Final Staircase
-  Pretty Name: Ganon's Tower Final Staircase
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Puppet Ganon Boss Room: CanDefeatMoblins and CanDefeatMightyDarknuts
       Ganon's Tower Middle Hub Room: Nothing
 
 - Name: Ganon's Tower Puppet Ganon Boss Room
-  Pretty Name: Ganon's Tower Puppet Ganon Boss Room
   Dungeon: Ganon's Tower
   Exits:
       Ganon's Tower Spire: LightArrows and Hookshot and GrapplingHook and Boomerang
 
 - Name: Ganon's Tower Spire
-  Pretty Name: Ganon's Tower Spire
   Dungeon: Ganon's Tower
   Locations:
       Ganon's Tower - Defeat Ganondorf: CanDefeatGanondorf

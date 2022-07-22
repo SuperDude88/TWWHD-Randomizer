@@ -85,14 +85,14 @@ void Entrance::setOriginalName()
 {
     if (!alreadySetOriginalName)
     {
-        originalName = areaToPrettyName(parentArea) + " -> " + areaToPrettyName(connectedArea);
+        originalName = parentArea + " -> " + connectedArea;
         alreadySetOriginalName = true;
     }
 }
 
 std::string Entrance::getCurrentName() const
 {
-    return areaToPrettyName(parentArea) + " -> " + areaToPrettyName(connectedArea);
+    return parentArea + " -> " + connectedArea;
 }
 
 std::string Entrance::getFilepathStage() const
@@ -259,12 +259,12 @@ std::unordered_set<HintRegion> Entrance::getIslands()
 void Entrance::connect(const std::string& newConnectedArea)
 {
     connectedArea = newConnectedArea;
-    world->areaEntries[connectedArea].entrances.push_back(this);
+    world->getArea(connectedArea).entrances.push_back(this);
 }
 
 std::string Entrance::disconnect()
 {
-    world->areaEntries[connectedArea].entrances.remove(this);
+    world->getArea(connectedArea).entrances.remove(this);
     std::string previouslyConnected = connectedArea;
     connectedArea = "";
     return previouslyConnected;
@@ -278,7 +278,7 @@ void Entrance::bindTwoWay(Entrance* otherEntrance)
 
 Entrance* Entrance::getNewTarget()
 {
-    auto& root = world->areaEntries["Root"];
+    auto& root = world->getArea("Root");
     root.exits.emplace_back("Root", connectedArea, world);
     Entrance& targetEntrance = root.exits.back();
     targetEntrance.connect(connectedArea);

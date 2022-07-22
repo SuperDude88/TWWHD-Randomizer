@@ -461,7 +461,7 @@ public:
 
 		// Go through the setting testing process if mass testing is turned on and ignore everything else
 		#ifdef MASS_TESTING
-			massTest();
+			massTest(config);
 			return;
 		#endif
 

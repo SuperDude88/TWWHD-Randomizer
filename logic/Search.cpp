@@ -58,7 +58,7 @@ static bool evaluateRequirement(World& world, const Requirement& req, const Item
         return ownedItems.count(item) >= expectedCount;
 
     case RequirementType::CAN_ACCESS:
-        return world.areaEntries[std::get<std::string>(req.args[0])].isAccessible;
+        return world.getArea(std::get<std::string>(req.args[0])).isAccessible;
 
     case RequirementType::SETTING:
         // Settings are resolved to a true/false value when building the world
@@ -86,6 +86,11 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
     }
     for (auto& exit : areaEntry.exits)
     {
+        // If the exit is disconnected, then ignore it
+        if (exit.getConnectedArea() == "")
+        {
+            continue;
+        }
         // If we're generating the playthrough, evaluate the entrance requirement
         // if it's shuffled to potentially add it to the entrance spheres
         if (searchMode == SearchMode::GeneratePlaythrough && exit.isShuffled())
@@ -112,7 +117,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             }
         }
 
-        auto& connectedArea = worlds[exit.getWorldId()].areaEntries[exit.getConnectedArea()];
+        auto& connectedArea = worlds[exit.getWorldId()].getArea(exit.getConnectedArea());
         // If the connected area is already reachable, then the current exit
         // is ignored since it won't matter for logical access
         if (!connectedArea.isAccessible)
@@ -168,7 +173,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
     {
         if (worldToSearch == -1 || worldToSearch == world.getWorldId())
         {
-            for (auto& exit : world.areaEntries["Root"].exits)
+            for (auto& exit : world.getArea("Root").exits)
             {
                 exitsToTry.push_back(&exit);
             }
@@ -236,13 +241,17 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
+                if (exit->getConnectedArea() == "")
+                {
+                    continue;
+                }
                 // If we're generating the playthrough, add it to the entranceSpheres if it's randomized
                 if (searchMode == SearchMode::GeneratePlaythrough && exit->isShuffled())
                 {
                     worlds[0].entranceSpheres.back().push_back(exit);
                 }
                 // If this exit's connected region has not been explored yet, then explore it
-                auto& connectedArea = worlds[exit->getWorldId()].areaEntries[exit->getConnectedArea()];
+                auto& connectedArea = worlds[exit->getWorldId()].getArea(exit->getConnectedArea());
                 if (!connectedArea.isAccessible)
                 {
                     newThingsFound = true;
@@ -315,7 +324,6 @@ LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, Location
 
 bool gameBeatable(WorldPool& worlds)
 {
-    LOG_TO_DEBUG("Testing if game is beatable");
     ItemPool emptyItems = {};
     auto accessibleLocations = search(SearchMode::GameBeatable, worlds, emptyItems);
     auto worldsBeatable = filterFromPool(accessibleLocations, [](Location* loc){return loc->currentItem.getGameItemId() == GameItem::GameBeatable;});
@@ -469,6 +477,5 @@ bool allLocationsReachable(WorldPool& worlds, ItemPool& items, int worldToSearch
         totalWorldsLocations += world.locationEntries.size();
     }
     auto accessibleLocations = search(SearchMode::AllLocationsReachable, worlds, items, worldToSearch);
-    LOG_TO_DEBUG("totalWorldsLocations: " + std::to_string(totalWorldsLocations) + " accessibleLocations: " + std::to_string(accessibleLocations.size()));
     return totalWorldsLocations == accessibleLocations.size();
 }
