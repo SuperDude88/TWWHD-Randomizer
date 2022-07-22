@@ -115,8 +115,8 @@ public:
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
-    std::unordered_map<std::string, AreaEntry> areaEntries = {};
-    std::vector<Location> locationEntries = {};
+    std::map<std::string, AreaEntry> areaEntries = {};
+    std::map<std::string, Location> locationEntries = {};
     std::unordered_map<Location*, Item> plandomizerLocations = {};
     std::unordered_map<Entrance*, Entrance*> plandomizerEntrances = {};
     std::unordered_map<std::string, MacroIndex> macroNameMap;
@@ -137,7 +137,7 @@ private:
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea);
-    WorldLoadingError loadLocation(Yaml::Node& locationObject, LocationId& loadedLocation);
+    WorldLoadingError loadLocation(Yaml::Node& locationObject);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);

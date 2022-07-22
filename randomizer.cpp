@@ -541,8 +541,7 @@ public:
 				//assume 1 world for now, modifying multiple copies needs work
 				Utility::platformLog("Saving items...\n");
 				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].raceModeDungeons);
-				for (const Location& location : worlds[0].locationEntries) {
-					if (location.locationId == LocationId::INVALID) continue; //shouldnt be here maybe?
+				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save items!");
 						return;

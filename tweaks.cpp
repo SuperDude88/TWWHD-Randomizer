@@ -2633,17 +2633,17 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	EXTRACT_ERR_CHECK(rpxPath);
 	FILETYPE_ERROR_CHECK(gRPX.loadFromFile(rpxPath.string())); //reload to avoid conflicts written between pre- and post- randomization tweaks
 
-	const std::vector<Location>& itemLocations = world.locationEntries;
-	const uint8_t startIsland = islandNameToRoomIndex(world.getArea("LinksSpawn").exits.front().getConnectedArea());
+	std::map<std::string, Location>& itemLocations = world.locationEntries;
+	const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
 
 	TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
 	TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
 	if (randomizeItems) {
-		TWEAK_ERR_CHECK(update_shop_item_descriptions(itemLocations[locationIdAsIndex(nameToLocationId("GreatSeaBeedleShop20Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle500RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle950RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle900RupeeItem"))]));
-		TWEAK_ERR_CHECK(update_auction_item_names(itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction5Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction40Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction60Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction80Rupee"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallAuction100Rupee"))]));
-		TWEAK_ERR_CHECK(update_battlesquid_item_names(itemLocations[locationIdAsIndex(nameToLocationId("WindfallBattleSquidFirstPrize"))], itemLocations[locationIdAsIndex(nameToLocationId("WindfallBattleSquidSecondPrize"))]));
-		TWEAK_ERR_CHECK(update_item_names_in_letter_advertising_rock_spire_shop(itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle500RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle950RupeeItem"))], itemLocations[locationIdAsIndex(nameToLocationId("RockSpireBeedle900RupeeItem"))]));
-		TWEAK_ERR_CHECK(update_savage_labyrinth_hint_tablet(itemLocations[locationIdAsIndex(nameToLocationId("OutsetSavageFloor30Chest"))], itemLocations[locationIdAsIndex(nameToLocationId("OutsetSavageFloor50Chest"))]));
+		TWEAK_ERR_CHECK(update_shop_item_descriptions(itemLocations["Great Sea - Beedle Shop 20 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 500 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 950 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 900 Rupee Item"]));
+		TWEAK_ERR_CHECK(update_auction_item_names(itemLocations["Windfall Island - Auction 5 Rupee"], itemLocations["Windfall Island - Auction 40 Rupee"], itemLocations["Windfall Island - Auction 60 Rupee"], itemLocations["Windfall Island - Auction 80 Rupee"], itemLocations["Windfall Island - Auction 100 Rupee"]));
+		TWEAK_ERR_CHECK(update_battlesquid_item_names(itemLocations["Windfall Island - Battle Squid First Prize"], itemLocations["Windfall Island - Battle Squid Second Prize"]));
+		TWEAK_ERR_CHECK(update_item_names_in_letter_advertising_rock_spire_shop(itemLocations["Rock Spire Isle - Beedle 500 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 950 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 900 Rupee Item"]));
+		TWEAK_ERR_CHECK(update_savage_labyrinth_hint_tablet(itemLocations["Outset Island - Savage Labyrinth Floor 30"], itemLocations["Outset Island - Savage Labyrinth Floor 50"]));
 	}
 	//Run some things after writing items to preserve offsets
 	TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());

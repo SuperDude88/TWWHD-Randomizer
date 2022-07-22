@@ -266,7 +266,7 @@ std::string Entrance::disconnect()
 {
     world->areaEntries[connectedArea].entrances.remove(this);
     std::string previouslyConnected = connectedArea;
-    connectedArea = "INVALID";
+    connectedArea = "";
     return previouslyConnected;
 }
 

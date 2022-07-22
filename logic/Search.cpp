@@ -179,7 +179,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 areaEntry.isAccessible = false;
             }
 
-            for (auto& location : world.locationEntries)
+            for (auto& [name, location] : world.locationEntries)
             {
                 location.hasBeenFound = false;
             }
@@ -257,7 +257,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         }
         // Note which locations are now accessible on this iteration
         LocationPool accessibleThisIteration = {};
-        // DebugLog::getInstance().log("New Locations Accessible:");
+        // LOG_TO_DEBUG("New Locations Accessible:");
         for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); )
         {
             auto locAccess = *locItr;
@@ -272,7 +272,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             }
             if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
             {
-                // DebugLog::getInstance().log("\t" + locationIdToName(location->locationId) + " in world " + std::to_string(location->worldId));
+                // LOG_TO_DEBUG("\t" + location->name + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;
                 location->hasBeenFound = true;
                 // Delete newly accessible locations from the list
@@ -315,6 +315,7 @@ LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, Location
 
 bool gameBeatable(WorldPool& worlds)
 {
+    LOG_TO_DEBUG("Testing if game is beatable");
     ItemPool emptyItems = {};
     auto accessibleLocations = search(SearchMode::GameBeatable, worlds, emptyItems);
     auto worldsBeatable = filterFromPool(accessibleLocations, [](Location* loc){return loc->currentItem.getGameItemId() == GameItem::GameBeatable;});
@@ -335,7 +336,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
     // Temporarily take these items away
     for (auto& world : worlds)
     {
-        for (auto& location : world.locationEntries)
+        for (auto& [name, location] : world.locationEntries)
         {
             if (!location.progression)
             {
@@ -438,9 +439,7 @@ void generatePlaythrough(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
     search(SearchMode::GeneratePlaythrough, worlds, emptyItems);
-    #ifdef ENABLE_DEBUG
-        DebugLog::getInstance().log("Pare Down");
-    #endif
+    LOG_TO_DEBUG("Pare Down");
     pareDownPlaythrough(worlds);
 }
 
@@ -449,12 +448,12 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
 {
     auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
     // Check if every location in locationsToCheck is in accessibleLocations
-    return std::all_of(locationsToCheck.begin(), locationsToCheck.end(), [accessibleLocations, items](const Location* loc){
+    return std::all_of(locationsToCheck.begin(), locationsToCheck.end(), [accessibleLocations](const Location* loc){
         bool inPool = elementInPool(loc, accessibleLocations);
         #ifdef ENABLE_DEBUG
             if (!inPool)
             {
-                DebugLog::getInstance().log("Missing location " + locationName(loc));
+                LOG_TO_DEBUG("Missing location " + loc->name);
             }
         #endif
         return inPool;
@@ -464,12 +463,12 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
 // Checks to see if ALL locations are accessible
 bool allLocationsReachable(WorldPool& worlds, ItemPool& items, int worldToSearch /*= -1*/)
 {
-    auto accessibleLocations = search(SearchMode::AllLocationsReachable, worlds, items, worldToSearch);
-    auto totalLocationsFound = accessibleLocations.size();
-    if (worldToSearch == -1)
+    size_t totalWorldsLocations = 0;
+    for (auto& world : worlds)
     {
-        return totalLocationsFound == worlds.size() * (LOCATION_COUNT - 1); // subtract 1 since LocationId::INVALID is never accessible
+        totalWorldsLocations += world.locationEntries.size();
     }
-
-    return totalLocationsFound == LOCATION_COUNT - 1;
+    auto accessibleLocations = search(SearchMode::AllLocationsReachable, worlds, items, worldToSearch);
+    LOG_TO_DEBUG("totalWorldsLocations: " + std::to_string(totalWorldsLocations) + " accessibleLocations: " + std::to_string(accessibleLocations.size()));
+    return totalWorldsLocations == accessibleLocations.size();
 }

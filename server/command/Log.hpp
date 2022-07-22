@@ -133,5 +133,9 @@ public:
     void log(const std::string& msg = "");
 };
 
+#ifdef ENABLE_DEBUG
 #define LOG_TO_DEBUG(message) \
-    DebugLog::getInstance().log(std::string("Message on line " TOSTRING(__LINE__) " of ") + __FILENAME__ + std::string(": \n    " + message));
+    DebugLog::getInstance().log(std::string("Message on line " TOSTRING(__LINE__) " of ") + __FILENAME__ + std::string(": " + std::string(message)));
+#else
+#define LOG_TO_DEBUG(message)
+#endif
