@@ -3,33 +3,6 @@
 #include <unordered_map>
 #include <array>
 
-static std::unordered_map<std::string, std::string> areaPrettyNameMap;
-static std::unordered_map<std::string, std::string> prettyNameAreaMap;
-
-void storeNewAreaPrettyName(const std::string& area, const std::string& prettyName)
-{
-    areaPrettyNameMap.emplace(area, prettyName);
-    prettyNameAreaMap.emplace(prettyName, area);
-}
-
-std::string areaToPrettyName(const std::string& area)
-{
-    if (areaPrettyNameMap.count(area) == 0)
-    {
-        return "INVALID AREA OR NO PRETTY NAME";
-    }
-    return areaPrettyNameMap.at(area);
-}
-
-std::string prettyNameToArea(const std::string& prettyName)
-{
-    if (prettyNameAreaMap.count(prettyName) == 0)
-    {
-        return "UNKNOWN PRETTY NAME";
-    }
-    return prettyNameAreaMap.at(prettyName);
-}
-
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
 {
     // Island room number corresponds with index in the below array

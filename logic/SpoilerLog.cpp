@@ -105,7 +105,7 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         if (world.getSettings().randomize_starting_island)
         {
-            auto startingIsland = areaToPrettyName(world.getArea("LinksSpawn").exits.front().getConnectedArea());
+            auto startingIsland = world.getArea("Link's Spawn").exits.front().getConnectedArea();
             log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
         }
     }
@@ -220,7 +220,7 @@ void generateSpoilerLog(WorldPool& worlds)
         for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
         {
             auto chart = gameItemToPrettyName(world.chartMappings[islandRoom - 1]);
-            auto island = areaToPrettyName(roomIndexToIslandName(islandRoom));
+            auto island = roomIndexToIslandName(islandRoom);
             if (chart.find("Treasure") != std::string::npos)
             {
                 spoilerTreasureMappings[chart] = island;

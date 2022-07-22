@@ -117,6 +117,12 @@ LocationPool World::getLocations(bool onlyProgression /*= false*/)
 
 AreaEntry& World::getArea(const std::string& area)
 {
+    if (areaEntries.count(area) == 0)
+    {
+        auto message = "ERROR: Area \"" + area + "\" is not defined!";
+        LOG_TO_DEBUG(message);
+        ErrorLog::getInstance().log(message);
+    }
     return areaEntries[area];
 }
 
@@ -783,11 +789,7 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     LOG_TO_DEBUG("Now Loading Area " + loadedArea);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << loadedArea << "\" is not defined!");
 
-    // Store the pretty name to use for later
-    const std::string areaPrettyName = areaObject["Pretty Name"].As<std::string>();
-    storeNewAreaPrettyName(loadedArea, areaPrettyName);
-
-    AreaEntry& newEntry = areaEntries[loadedArea];
+    AreaEntry& newEntry = getArea(loadedArea);
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
 
@@ -1158,7 +1160,7 @@ Entrance* World::getEntrance(const std::string& parentArea, const std::string& c
         return nullptr;
     }
 
-    auto& parentAreaEntry = areaEntries[parentArea];
+    auto& parentAreaEntry = getArea(parentArea);
 
     for (auto& exit : parentAreaEntry.exits)
     {
@@ -1220,7 +1222,7 @@ std::unordered_set<HintRegion> World::getIslands(const std::string& startArea)
         alreadyChecked.insert(area);
         areaQueue.pop_back();
 
-        auto& areaEntry = areaEntries[area];
+        auto& areaEntry = getArea(area);
 
         // Don't search through other dungeons
         if (area != startArea && areaEntry.dungeon != HintRegion::NONE)

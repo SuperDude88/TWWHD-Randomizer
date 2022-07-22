@@ -2,12 +2,15 @@
 #include "Generate.hpp"
 #include "../seedgen/random.hpp"
 #include "../seedgen/permalink.hpp"
+#include "../seedgen/config.hpp"
 #include "../server/command/Log.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <cstdio>
 #include <vector>
+
+Config config;
 
 static int testSettings(const Settings& settings, bool& settingToChange, const std::string& settingName)
 {
@@ -29,6 +32,10 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
     std::vector<Settings> settingsVector (1, settings);
 
     int retVal = generateWorlds(worlds, settingsVector);
+
+    config.settings = settings;
+    config.seed = seed;
+    ConfigError err = writeToFile("error_config.yaml", config);
 
     if (retVal != 0)
     {
@@ -67,8 +74,9 @@ static int multiWorldTest(const Settings& settings)
 
 #define TEST(settings, setting, name) if(testSettings(settings, setting, name)) return;
 
-void massTest()
+void massTest(Config& newConfig)
 {
+    config = std::move(newConfig);
     Settings settings1;
 
     // Set settings in code for now

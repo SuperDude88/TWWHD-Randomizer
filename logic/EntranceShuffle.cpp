@@ -513,7 +513,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
 
     for (auto& [entrance, target] : world.plandomizerEntrances)
     {
-        std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + areaToPrettyName(target->getOriginalConnectedArea()) + " from " + areaToPrettyName(target->getParentArea()) + "\"";
+        std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + target->getOriginalConnectedArea() + " from " + target->getParentArea() + "\"";
         LOG_TO_DEBUG("Attempting to set plandomized entrance " + fullConnectionName);
         Entrance* entranceToConnect = entrance;
         Entrance* targetToConnect = target;
@@ -575,7 +575,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             }
             if (!validTargetFound)
             {
-                ErrorLog::getInstance().log("Entrance \"" + areaToPrettyName(target->getOriginalConnectedArea()) + " from " + areaToPrettyName(target->getParentArea()) + "\" is not a valid target for \"" + entrance->getOriginalName() + "\".");
+                ErrorLog::getInstance().log("Entrance \"" + target->getOriginalConnectedArea() + " from " + target->getParentArea() + "\" is not a valid target for \"" + entrance->getOriginalName() + "\".");
                 return EntranceShuffleError::PLANDOMIZER_ERROR;
             }
         }
@@ -632,7 +632,6 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             // Rooms 2 - 49 include every island except Forsaken Fortress
             world.startingIslandRoomIndex = Random(2, 50);
             auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
-            startingIsland.erase(std::remove(startingIsland.begin(), startingIsland.end(), ' '), startingIsland.end());
 
             // Set the new starting island in the world graph
             auto linksSpawn = world.getEntrance("Link's Spawn", "Outset Island");
@@ -641,8 +640,8 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
                 return EntranceShuffleError::BAD_LINKS_SPAWN;
             }
             linksSpawn->setConnectedArea(startingIsland);
-            world.areaEntries["Outset Island"].entrances.remove(linksSpawn);
-            world.areaEntries[startingIsland].entrances.push_back(linksSpawn);
+            world.getArea("Outset Island").entrances.remove(linksSpawn);
+            world.getArea(startingIsland).entrances.push_back(linksSpawn);
         }
 
         // Set entrance data for all entrances, even those we aren't shuffling
