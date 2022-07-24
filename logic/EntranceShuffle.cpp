@@ -359,7 +359,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     {
         if (world.getSettings().race_mode)
         {
-            std::unordered_set<HintRegion> raceModeIslands = {};
+            std::unordered_set<std::string> raceModeIslands = {};
             for (auto& dungeon : getDungeonList())
             {
                 auto dungeonFirstRoom = dungeonIdToFirstRoom(dungeon);
@@ -373,7 +373,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                             LOG_TO_DEBUG("Error: More than 1 island leading to race mode dungeon " + dungeonIdToName(dungeon));
                             for (auto& island : dungeonIslands)
                             {
-                                LOG_TO_DEBUG("\t" + hintRegionToName(island));
+                                LOG_TO_DEBUG("\t" + island);
                             }
                         #endif
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
@@ -385,7 +385,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                     auto dungeonIsland = *dungeonIslands.begin();
                     if (raceModeIslands.count(dungeonIsland) > 0)
                     {
-                        LOG_TO_DEBUG("Error: Island " + hintRegionToName(dungeonIsland) + " has an ambiguous race mode dungeon");
+                        LOG_TO_DEBUG("Error: Island " + dungeonIsland + " has an ambiguous race mode dungeon");
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
