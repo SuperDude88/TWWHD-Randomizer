@@ -647,6 +647,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
     static int sortPriority = 0;
     newEntry.name = location;
     newEntry.worldId = worldId;
+    newEntry.plandomized = false;
     newEntry.sortPriority = sortPriority++;
     newEntry.categories.clear();
     for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)

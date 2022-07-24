@@ -626,7 +626,7 @@
       Pawprint Isle - Sunken Treasure: ChartForIsland12 and GrapplingHook
   Exits:
       Pawprint Chu Chu Cave: Nothing
-      Pawprint Wizzobe CaveIsle: Hookshot
+      Pawprint Wizzobe Cave Isle: Hookshot
       Pawprint Lookout Platform: CanSailAway
       Pawprint Beedle Shop: Nothing
       Mailbox Checks: Nothing
@@ -641,7 +641,7 @@
   Exits:
       Pawprint Isle: Nothing
 
-- Name: Pawprint Wizzobe CaveIsle
+- Name: Pawprint Wizzobe Cave Isle
   Island: Pawprint Isle
   Exits:
       Pawprint Wizzobe Cave: Nothing
@@ -654,7 +654,7 @@
           CanDefeatMagtails and CanDefeatRedChuChus and CanDefeatGreenChuChus and
           CanDefeatYellowChuChus and CanDefeatRedBubbles and CanRemovePeahatArmor
   Exits:
-      Pawprint Wizzobe CaveIsle: Nothing
+      Pawprint Wizzobe Cave Isle: Nothing
 
 - Name: Pawprint Lookout Platform
   Island: Pawprint Isle

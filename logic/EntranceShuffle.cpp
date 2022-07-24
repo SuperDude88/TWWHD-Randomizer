@@ -58,8 +58,8 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
                             {"Birds Peak Rock Cave",                   "Birds Peak Rock Behind Bars",              "TF_03",    0,          0, "sea",     35,     1}},
     {EntranceType::CAVE,    {"Pawprint Isle",                          "Pawprint Chu Chu Cave",                    "sea",     12,          0, "TyuTyu",   0,     0},
                             {"Pawprint Chu Chu Cave",                  "Pawprint Isle",                            "TyuTyu",   0,          0, "sea",     12,     1}},
-    {EntranceType::CAVE,    {"Pawprint Wizzobe CaveIsle",              "Pawprint Wizzobe Cave",                    "sea",     12,          1, "Cave07",   0,     0},
-                            {"Pawprint Wizzobe Cave",                  "Pawprint Wizzobe CaveIsle",                "Cave07",   0,          0, "sea",     12,     5}},
+    {EntranceType::CAVE,    {"Pawprint Wizzobe Cave Isle",             "Pawprint Wizzobe Cave",                    "sea",     12,          1, "Cave07",   0,     0},
+                            {"Pawprint Wizzobe Cave",                  "Pawprint Wizzobe Cave Isle",               "Cave07",   0,          0, "sea",     12,     5}},
     {EntranceType::CAVE,    {"Diamond Steppe Upper Island",            "Diamond Steppe Warp Maze",                 "sea",     36,          0, "WarpD",    0,     0},
                             {"Diamond Steppe Warp Maze",               "Diamond Steppe Upper Island",              "WarpD",    0,          0, "sea",     36,     1}},
     {EntranceType::CAVE,    {"Bomb Island",                            "Bomb Island Cave",                         "sea",     34,          0, "Cave01",   0,     0},
@@ -337,7 +337,16 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     ItemPool noItems = {};
     LocationPool progLocations = {};
     GET_COMPLETE_PROGRESSION_LOCATION_POOL(progLocations, worlds);
-    if (getAccessibleLocations(worlds, noItems, progLocations).size() < worlds.size())
+    auto locs = getAccessibleLocations(worlds, noItems, progLocations);
+    #ifdef ENABLE_DEBUG
+        LOG_TO_DEBUG("Sphere 0 locations: [");
+        for (auto location : locs)
+        {
+            LOG_TO_DEBUG(location->name);
+        }
+        LOG_TO_DEBUG("]");
+    #endif
+    if (locs.size() < worlds.size())
     {
         LOG_TO_DEBUG("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
@@ -756,7 +765,13 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         // Now set the islands the race mode dungeons are in
         for (auto& [dungeonId, hintRegion] : world.raceModeDungeons)
         {
-            hintRegion = *world.getIslands(dungeonIdToFirstRoom(dungeonId)).begin();
+            auto islands = world.getIslands(dungeonIdToFirstRoom(dungeonId));
+            if (islands.empty())
+            {
+                ErrorLog::getInstance().log("ERROR: No Island for dungeon " + dungeonIdToName(dungeonId));
+                LOG_ERR_AND_RETURN(EntranceShuffleError::NO_RACE_MODE_ISLAND);
+            }
+            hintRegion = *islands.begin();
         }
     }
 

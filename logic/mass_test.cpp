@@ -78,6 +78,7 @@ void massTest(Config& newConfig)
 {
     config = std::move(newConfig);
     Settings settings1;
+    settings1.starting_gear = {GameItem::SongOfPassing};
 
     // Set settings in code for now
     TEST(settings1, settings1.progression_dungeons, "progression dungeons");
@@ -129,6 +130,7 @@ void massTest(Config& newConfig)
     // Now set all settings in reverse (except dungeons since they have a lot of checks)
     std::cout << "REVERSING TEST DIRECTION" << std::endl;
     Settings settings2;
+    settings2.starting_gear = {GameItem::BalladOfGales};
 
     TEST(settings2, settings2.progression_dungeons, "progression dungeons");
     TEST(settings2, settings2.mix_entrance_pools, "mix entrance pools");
