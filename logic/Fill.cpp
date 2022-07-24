@@ -454,16 +454,16 @@ FillError fill(WorldPool& worlds)
     determineMajorItems(worlds, itemPool, allLocations);
 
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& i){return i.isMajorItem();});
-    auto progressionLocations = filterFromPool(allLocations, [](const Location* loc){return loc->progression && loc->name.find("Defeat Ganondorf") == std::string::npos && loc->currentItem.getGameItemId() == GameItem::INVALID;});
+    auto progressionLocations = filterFromPool(allLocations, [](const Location* loc){return loc->progression && loc->currentItem.getGameItemId() == GameItem::INVALID;});
 
     if (majorItems.size() > progressionLocations.size())
     {
-        Utility::platformLog(std::string("Major Items: ") + std::to_string(majorItems.size()));
-        Utility::platformLog(std::string("Available Progression Locations: ") + std::to_string(progressionLocations.size()));
-        Utility::platformLog("Please enable more spots for major items.");
+        Utility::platformLog(std::string("Major Items: ") + std::to_string(majorItems.size()) + "\n");
+        Utility::platformLog(std::string("Available Progression Locations: ") + std::to_string(progressionLocations.size()) + "\n");
+        Utility::platformLog("Please enable more spots for major items.\n");
 
         #ifdef ENABLE_DEBUG
-            logItemPool("Major Items:", majorItems);
+            logItemPool("Major Items", majorItems);
 
             LOG_TO_DEBUG("Progression Locations:");
             for (auto location : progressionLocations)
