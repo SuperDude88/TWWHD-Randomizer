@@ -196,7 +196,7 @@ void World::determineChartMappings()
         // "ChartForIsland<sector number>" macros are type "HAS_ITEM" and have
         // one argument which is the chart Item.
         size_t sector = i + 1;
-        macros[macroNameMap.at("ChartForIsland" + std::to_string(sector))].args[0] = Item(chart, worldId);
+        macros[macroNameMap.at("Chart For Island " + std::to_string(sector))].args[0] = Item(chart, worldId);
         LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
     }
     LOG_TO_DEBUG("]");
@@ -422,6 +422,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     {
 
         std::string argStr = splitLogicStr[0];
+        std::replace(argStr.begin(), argStr.end(), '_', ' ');
         // First, see if we have nothing
         if (argStr == "Nothing")
         {
@@ -457,7 +458,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             return WorldLoadingError::NONE;
         }
         // Then a can_access check...
-        else if (argStr.find("can_access") != std::string::npos)
+        else if (argStr.find("can access") != std::string::npos)
         {
             req.type = RequirementType::CAN_ACCESS;
             std::string areaName (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
@@ -482,15 +483,15 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             // Get rid of parenthesis
             std::string countArgs (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
             // Erase any spaces
-            countArgs.erase(std::remove(countArgs.begin(), countArgs.end(), ' '), countArgs.end());
+            // countArgs.erase(std::remove(countArgs.begin(), countArgs.end(), ' '), countArgs.end());
 
             // Split up the arguments
             pos = 0;
             splitLogicStr = {};
-            while ((pos = countArgs.find(",")) != std::string::npos)
+            while ((pos = countArgs.find(", ")) != std::string::npos)
             {
                 splitLogicStr.push_back(countArgs.substr(0, pos));
-                countArgs.erase(0, pos + 1);
+                countArgs.erase(0, pos + 2);
             }
             splitLogicStr.push_back(countArgs);
 
@@ -973,10 +974,8 @@ World::WorldLoadingError World::loadPlandomizer()
             std::string locationName = locationObject.first;
             LOCATION_VALID_CHECK(locationName, "Plandomizer Error: Unknown location name \"" << locationName << "\" in plandomizer file");
 
-            // Remove spaces from item name
-            auto itemNameNoSpaces = itemName;
-            itemNameNoSpaces.erase(std::remove_if(itemNameNoSpaces.begin(), itemNameNoSpaces.end(), [](char& c){return c == ' ';}), itemNameNoSpaces.end());
-            auto itemId = nameToGameItem(itemNameNoSpaces);
+            // Get item
+            auto itemId = nameToGameItem(itemName);
             ITEM_VALID_CHECK(itemId, "Plandomizer Error: Unknown item name \"" << itemName << "\" in plandomizer file");
 
             LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + " [W" + std::to_string(plandoWorldId) + "]");

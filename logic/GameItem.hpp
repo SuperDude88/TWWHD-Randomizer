@@ -254,8 +254,6 @@ GameItem nameToGameItem(const std::string& name);
 
 std::string gameItemToName(GameItem item);
 
-std::string gameItemToPrettyName(GameItem item);
-
 GameItem idToGameItem(uint8_t id);
 
 GameItem nameToGameItem(const std::string& name);
@@ -353,7 +351,6 @@ public:
     void setDelayedItemId(GameItem delayedItemId);
     void saveDelayedItemId();
     std::string getName() const;
-    std::string getPrettyName() const;
     void setAsMajorItem();
     bool isMajorItem() const;
     bool isChartForSunkenTreasure() const;

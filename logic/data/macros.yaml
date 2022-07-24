@@ -3,176 +3,172 @@
 # not need any code modifications to run. Simply add them here and they can be used
 # in world.yaml
 
-CanPlayWR: WindsRequiem and WindWaker
-CanPlayBoG: BalladOfGales and WindWaker
-CanPlayCM: CommandMelody and WindWaker
-CanPlayEGL: EarthGodsLyric and WindWaker
-CanPlayWGA: WindGodsAria and WindWaker
-CanPlaySoP: SongOfPassing and WindWaker
-CanSailAway: (CanPlayWR and BoatsSail) or SwiftSail
-CanFanWithDekuLeaf: DekuLeaf
-CanFlyWithDekuLeafIndoors: DekuLeaf and Magic
-CanFlyWithDekuLeafOutdoors: DekuLeaf and Magic and CanPlayWR
-CanUseMagicArmor: MagicArmor and Magic
-CanUseHurricaneSpin: HurricaneSpin and Magic
+Can Play WR: Winds_Requiem and Wind_Waker
+Can Play BoG: Ballad_Of_Gales and Wind_Waker
+Can Play CM: Command_Melody and Wind_Waker
+Can Play EGL: Earth_Gods_Lyric and Wind_Waker
+Can Play WGA: Wind_Gods_Aria and Wind_Waker
+Can Play SoP: Song_Of_Passing and Wind_Waker
+Can Sail Away: (Can_Play_WR and Boats_Sail) or Swift_Sail
+Can Fan With Deku Leaf: Deku_Leaf
+Can Fly With Deku Leaf Indoors: Deku_Leaf and Magic
+Can Fly With Deku Leaf Outdoors: Deku_Leaf and Magic and Can_Play_WR
+Can Use Magic Armor: Magic_Armor and Magic
+Can Use Hurricane Spin: Hurricane_Spin and Magic
 
 # You need to be holding an item in your hand in order to aim your shield around. Otherwise you can only aim it behind you at an angle or straight in front of you.
 # (Empty Bottle also works, but you would need to use the contents first so not in the logic.)
 # (Picto Box also works, but is not included as it would be a weirder and less intuitive thing to have to use to aim the shield as you normally wouldn't need to use picto box to solve dungeon puzzles.)
-CanAimMirrorShield: MirrorShield and (HerosSword or WindWaker or GrapplingHook or Boomerang or DekuLeaf or HerosBow or Hookshot)
+Can Aim Mirror Shield: Mirror_Shield and (Heros_Sword or Wind_Waker or Grappling_Hook or Boomerang or Deku_Leaf or Heros_Bow or Hookshot)
 
-CanMoveBoulders: Bombs or PowerBracelets
-CanDefeatDoorFlowers: HerosBow or Boomerang or Bombs or Hookshot
-CanHitDiamondSwitchesAtRange: HerosBow or Boomerang or Hookshot
-CanDestroyHangingSeeds: HerosBow or Boomerang or Bombs or Hookshot
-# CanBuyBait: This is now an event
-# CanBuyHyoiPears: This is now an event
-BoatsSail: count(1, ProgressiveSail)
-SwiftSail: count(2, ProgressiveSail)
-HerosSword: count(1, ProgressiveSword)
-MasterSword: count(2, ProgressiveSword)
-FullPowerMasterSword: count(4, ProgressiveSword)
-HerosShield: count(1, ProgressiveShield)
-MirrorShield: count(2, ProgressiveShield)
-HerosBow: count(1, ProgressiveBow)
-FireArrows: count(2, ProgressiveBow) and Magic
-IceArrows: count(2, ProgressiveBow) and Magic
-LightArrows: count(3, ProgressiveBow) and Magic
-WalletUpgrade: count(1, ProgressiveWallet)
-60BombBag: count(1, ProgressiveBombBag)
-99BombBag: count(2, ProgressiveBombBag)
-60Quiver: count(1, ProgressiveQuiver)
-99Quiver: count(2, ProgressiveQuiver)
-PictoBox: count(1, ProgressivePictoBox)
-DeluxePictoBox: count(2, ProgressivePictoBox)
-Magic: count(1, ProgressiveMagicMeter)
-DoubleMagic: count(2, ProgressiveMagicMeter)
-All8Shards: TriforceShard1 and TriforceShard2 and TriforceShard3 and TriforceShard4 and TriforceShard5 and TriforceShard6 and TriforceShard7 and TriforceShard8
-CanDefeatPhantomGanon: (OutsideSwordlessMode and MasterSword) or (InSwordlessMode and SkullHammer)
-CanGetPastHyruleBarrier: InSwordlessMode or FullPowerMasterSword
-CanDefeatGanondorf: HerosShield and (InSwordlessMode or HerosSword)
-RescuedAryll: Nothing
-# RescuedTingle: This is now an event
-# CanGetFairies: This is now an event
+Can Move Boulders: Bombs or Power_Bracelets
+Can Defeat Door Flowers: Heros_Bow or Boomerang or Bombs or Hookshot
+Can Hit Diamond Switches At Range: Heros_Bow or Boomerang or Hookshot
+Can Destroy Hanging Seeds: Heros_Bow or Boomerang or Bombs or Hookshot
+Boats Sail: count(1, Progressive_Sail)
+Swift Sail: count(2, Progressive_Sail)
+Heros Sword: count(1, Progressive_Sword)
+Master Sword: count(2, Progressive_Sword)
+Full Power Master Sword: count(4, Progressive_Sword)
+Heros Shield: count(1, Progressive_Shield)
+Mirror Shield: count(2, Progressive_Shield)
+Heros Bow: count(1, Progressive_Bow)
+Fire Arrows: count(2, Progressive_Bow) and Magic
+Ice Arrows: count(2, Progressive_Bow) and Magic
+Light Arrows: count(3, Progressive_Bow) and Magic
+Wallet Upgrade: count(1, Progressive_Wallet)
+60 Bomb Bag: count(1, Progressive_Bomb_Bag)
+99 Bomb Bag: count(2, Progressive_Bomb_Bag)
+60 Quiver: count(1, Progressive_Quiver)
+99 Quiver: count(2, Progressive_Quiver)
+Picto Box: count(1, Progressive_Picto_Box)
+Deluxe Picto Box: count(2, Progressive_Picto_Box)
+Magic: count(1, Progressive_Magic_Meter)
+Double Magic: count(2, Progressive_Magic_Meter)
+All 8 Shards: Triforce_Shard_1 and Triforce_Shard_2 and Triforce_Shard_3 and Triforce_Shard_4 and Triforce_Shard_5 and Triforce_Shard_6 and Triforce_Shard_7 and Triforce_Shard_8
+Can Defeat Phantom Ganon: (Outside_Swordless_Mode and Master_Sword) or (In_Swordless_Mode and Skull_Hammer)
+Can Get Past Hyrule Barrier: In_Swordless_Mode or Full_Power_Master_Sword
+Can Defeat Ganondorf: Heros_Shield and (In_Swordless_Mode or Heros_Sword)
+Rescued Aryll: Nothing
 # CanFarmKnightsCrests: This is now an event
-CanFarmJoyPendants: GrapplingHook and SpoilsBag
-CanFarmSkullNecklaces: GrapplingHook and SpoilsBag
-CanFarmGoldenFeathers: GrapplingHook and SpoilsBag
-CanFarmGreenChuJelly: GrapplingHook and SpoilsBag
-CanObtain15BlueChuJelly: CanGetBlueChuJellyFromBlueChuChus and SpoilsBag and (CanMoveBoulders or Hookshot or Bombs or GrapplingHook or CanFanWithDekuLeaf or can_access(Boating Course Small Isle) or can_access(Cliff Plateau Highest Isle) or (SkullHammer and IronBoots and CanFlyWithDekuLeafOutdoors))
-CanFarmLotsOfRupees: Nothing
-CanTradeWithAllGorons: can_access(Greatfish Isle) and can_access(Mother & Child Isles) and can_access(Bomb Island)
-CanDefeatBokoblins: HerosSword or HerosBow or SkullHammer or Bombs
-CanDefeatGreenBokoblins: CanDefeatBokoblins
-CanDefeatBlueBokoblins: CanDefeatBokoblins
-CanDefeatPinkBokoblins: CanDefeatBokoblins
-CanDefeatMoblins: HerosSword or HerosBow or SkullHammer or Bombs
-CanDefeatDarknuts: HerosSword or LightArrows or SkullHammer
-CanDefeatDarknutsEasily: HerosSword or LightArrows
-CanDefeatMightyDarknuts: CanDefeatDarknutsEasily
-CanDefeatMiniblins: HerosSword or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang
-CanDefeatMiniblinsEasily: HerosSword or HerosBow or SkullHammer or Bombs or Boomerang
-CanDefeatRedChuChus: HerosSword or HerosBow or SkullHammer or Bombs
-CanDefeatGreenChuChus: CanDefeatRedChuChus
-CanDefeatYellowChuChus: HerosBow or Bombs or SkullHammer or (HerosSword and (Boomerang or CanFanWithDekuLeaf))
-CanDefeatBlueChuChus: CanDefeatYellowChuChus
-CanGetBlueChuJellyFromBlueChuChus: GrapplingHook and CanDefeatBlueChuChus
-CanDefeatDarkChuChus: LightArrows
-CanDefeatDarkChuChusWithLightRay: CanAimMirrorShield or CanDefeatDarkChuChus
-CanDefeatKeese: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang
-CanDefeatFireKeese: CanDefeatKeese
-CanDefeatMagtails: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang
-CanStunMagtails: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or GrapplingHook or Boomerang
-CanDefeatKargarocs: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang
-CanDefeatPeahats: HerosBow or SkullHammer or Bombs or Boomerang or (HerosSword and (Hookshot or CanFanWithDekuLeaf))
-CanRemovePeahatArmor: HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or CanFanWithDekuLeaf
-CanDefeatBokoBabas: HerosSword or Hookshot or HerosBow or SkullHammer or Bombs or Boomerang or (GrapplingHook and CanFanWithDekuLeaf)
-CanDefeatMothulas: HerosSword or HerosBow or Bombs or SkullHammer
-CanDefeatWingedMothulas: HerosSword or HerosBow or Bombs or SkullHammer
-CanDefeatWizzrobes: HerosSword or HerosBow or Bombs or SkullHammer or Hookshot
-CanDefeatWizzrobesAtRange: HerosBow or Hookshot
-CanDefeatArmos: HerosSword or HerosBow or Bombs or SkullHammer or Hookshot
-CanDefeatArmosKnights: Bombs or LightArrows
-CanDefeatBigOctos: HerosBow or Bombs or Boomerang
-CanDefeat12EyeBigOctos: LightArrows or Bombs or Boomerang or (HerosBow and 60Quiver)
-CanDefeatRedBubbles: HerosSword or HerosBow or SkullHammer or Bombs or (GrapplingHook and (Hookshot or CanFanWithDekuLeaf))
-CanDefeatBlueBubbles: IceArrows or Bombs or ((HerosSword or HerosBow or GrapplingHook or SkullHammer) and (Hookshot or CanFanWithDekuLeaf))
-CanDefeatReDeads: HerosSword or LightArrows or Bombs or SkullHammer
-CanDefeatPoes: Nothing
-CanDefeatPoesWithoutLightRay: HerosSword or HerosBow or Hookshot or SkullHammer or Bombs or Boomerang or GrapplingHook
-CanDefeatJalhallaPoes: HerosSword or HerosBow or SkullHammer or Bombs
-CanDefeatStalfos: HerosSword or LightArrows or SkullHammer or Bombs
-CanDefeatFloormasters: HerosSword or HerosBow
-CanDefeatMorths: HerosSword or HerosBow or Boomerang or Hookshot
-CanDefeatRats: HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook
-CanDefeatBombchus: HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook
-CanCutDownDexivines: HerosSword or HerosBow or Bombs or Boomerang or SkullHammer or GrapplingHook or Hookshot
-CanDefeatFreshwaterOctoroks: HerosBow or Hookshot or Boomerang
-CanDefeatSaltwaterOctoroks: HerosBow or Hookshot or Boomerang
-CanDefeatBeamos: Nothing
-CanDefeatGyorgs: HerosBow or Hookshot or Boomerang
-CanDefeatSeahats: HerosBow or Hookshot or Bombs or Boomerang
-CanDefeatGohma: GrapplingHook
-CanDefeatKalleDemos: Boomerang
-CanDefeatGohdan: Bombs and (Hookshot or HerosBow)
-CanDefeatHelmarocKing: SkullHammer
-CanDefeatJalhalla: CanDefeatJalhallaPoes and PowerBracelets and (CanAimMirrorShield or LightArrows)
-CanDefeatMolgera: Hookshot and (HerosSword or HerosBow or Boomerang or GrapplingHook or SkullHammer or Bombs)
-CanDestroyWoodenBarriers: Bombs or FireArrows
-CanDestroyCannons: Bombs or Boomerang
-CanCutDownOutsetTrees: SkullHammer or Boomerang or HerosSword
-CanCutDownHangingDRCPlatform: HerosSword or HerosBow or SkullHammer or Bombs
-CanCutGrass: HerosSword or SkullHammer or Bombs or Boomerang
-CanSwordFightWithOrca: HerosSword or InSwordlessMode
-RematchBossesSkipped: SkipRefights
-InSwordlessMode: NoSword
-OutsideSwordlessMode: not NoSword
-ChartForIsland1: TreasureChart25
-ChartForIsland2: TreasureChart7
-ChartForIsland3: TreasureChart24
-ChartForIsland4: TreasureChart42
-ChartForIsland5: TreasureChart11
-ChartForIsland6: TreasureChart45
-ChartForIsland7: TreasureChart13
-ChartForIsland8: TreasureChart41
-ChartForIsland9: TreasureChart29
-ChartForIsland10: TreasureChart22
-ChartForIsland11: TreasureChart18
-ChartForIsland12: TreasureChart30
-ChartForIsland13: TreasureChart39
-ChartForIsland14: TreasureChart19
-ChartForIsland15: TreasureChart8
-ChartForIsland16: TreasureChart2
-ChartForIsland17: TreasureChart10
-ChartForIsland18: TreasureChart26
-ChartForIsland19: TreasureChart3
-ChartForIsland20: TreasureChart37
-ChartForIsland21: TreasureChart27
-ChartForIsland22: TreasureChart38
-ChartForIsland23: TriforceChart1
-ChartForIsland24: TreasureChart21
-ChartForIsland25: TreasureChart6
-ChartForIsland26: TreasureChart14
-ChartForIsland27: TreasureChart34
-ChartForIsland28: TreasureChart5
-ChartForIsland29: TreasureChart28
-ChartForIsland30: TreasureChart35
-ChartForIsland31: TriforceChart2
-ChartForIsland32: TreasureChart44
-ChartForIsland33: TreasureChart1
-ChartForIsland34: TreasureChart20
-ChartForIsland35: TreasureChart36
-ChartForIsland36: TreasureChart23
-ChartForIsland37: TreasureChart12
-ChartForIsland38: TreasureChart16
-ChartForIsland39: TreasureChart4
-ChartForIsland40: TreasureChart17
-ChartForIsland41: TreasureChart31
-ChartForIsland42: TriforceChart3
-ChartForIsland43: TreasureChart9
-ChartForIsland44: TreasureChart43
-ChartForIsland45: TreasureChart40
-ChartForIsland46: TreasureChart46
-ChartForIsland47: TreasureChart15
-ChartForIsland48: TreasureChart32
-ChartForIsland49: TreasureChart33
+Can Farm Joy Pendants: Grappling_Hook and Spoils_Bag
+Can Farm Skull Necklaces: Grappling_Hook and Spoils_Bag
+Can Farm Golden Feathers: Grappling_Hook and Spoils_Bag
+Can Farm Green Chu Jelly: Grappling_Hook and Spoils_Bag
+Can Obtain 15 Blue Chu Jelly: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus and Spoils_Bag and (Can_Move_Boulders or Hookshot or Bombs or Grappling_Hook or Can_Fan_With_Deku_Leaf or can_access(Boating Course Small Isle) or can_access(Cliff Plateau Highest Isle) or (Skull_Hammer and Iron_Boots and Can_Fly_With_Deku_Leaf_Outdoors))
+Can Farm Lots Of Rupees: Nothing
+Can Trade With All Gorons: can_access(Greatfish Isle) and can_access(Mother & Child Isles) and can_access(Bomb Island)
+Can Defeat Bokoblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
+Can Defeat Green Bokoblins: Can_Defeat_Bokoblins
+Can Defeat Blue Bokoblins: Can_Defeat_Bokoblins
+Can Defeat Pink Bokoblins: Can_Defeat_Bokoblins
+Can Defeat Moblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
+Can Defeat Darknuts: Heros_Sword or Light_Arrows or Skull_Hammer
+Can Defeat Darknuts Easily: Heros_Sword or Light_Arrows
+Can Defeat Mighty Darknuts: Can_Defeat_Darknuts_Easily
+Can Defeat Miniblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs or Grappling_Hook or Boomerang
+Can Defeat Miniblins Easily: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs or Boomerang
+Can Defeat Red Chu Chus: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
+Can Defeat Green Chu Chus: Can_Defeat_Red_Chu_Chus
+Can Defeat Yellow Chu Chus: Heros_Bow or Bombs or Skull_Hammer or (Heros_Sword and (Boomerang or Can_Fan_With_Deku_Leaf))
+Can Defeat Blue Chu Chus: Can_Defeat_Yellow_Chu_Chus
+Can Get Blue Chu Jelly From Blue Chu Chus: Grappling_Hook and Can_Defeat_Blue_Chu_Chus
+Can Defeat Dark Chu Chus: Light_Arrows
+Can Defeat Dark Chu Chus With Light Ray: Can_Aim_Mirror_Shield or Can_Defeat_Dark_Chu_Chus
+Can Defeat Keese: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bombs or Grappling_Hook or Boomerang
+Can Defeat Fire Keese: Can_Defeat_Keese
+Can Defeat Magtails: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bombs or Grappling_Hook or Boomerang
+Can Stun Magtails: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bombs or Grappling_Hook or Boomerang
+Can Defeat Kargarocs: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bombs or Boomerang
+Can Defeat Peahats: Heros_Bow or Skull_Hammer or Bombs or Boomerang or (Heros_Sword and (Hookshot or Can_Fan_With_Deku_Leaf))
+Can Remove Peahat Armor: Heros_Bow or Hookshot or Skull_Hammer or Bombs or Boomerang or Can_Fan_With_Deku_Leaf
+Can Defeat Boko Babas: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bombs or Boomerang or (Grappling_Hook and Can_Fan_With_Deku_Leaf)
+Can Defeat Mothulas: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer
+Can Defeat Winged Mothulas: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer
+Can Defeat Wizzrobes: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer or Hookshot
+Can Defeat Wizzrobes At Range: Heros_Bow or Hookshot
+Can Defeat Armos: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer or Hookshot
+Can Defeat Armos Knights: Bombs or Light_Arrows
+Can Defeat Big Octos: Heros_Bow or Bombs or Boomerang
+Can Defeat 12 Eye Big Octos: Light_Arrows or Bombs or Boomerang or (Heros_Bow and 60_Quiver)
+Can Defeat Red Bubbles: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs or (Grappling_Hook and (Hookshot or Can_Fan_With_Deku_Leaf))
+Can Defeat Blue Bubbles: Ice_Arrows or Bombs or ((Heros_Sword or Heros_Bow or Grappling_Hook or Skull_Hammer) and (Hookshot or Can_Fan_With_Deku_Leaf))
+Can Defeat ReDeads: Heros_Sword or Light_Arrows or Bombs or Skull_Hammer
+Can Defeat Poes: Nothing
+Can Defeat Poes Without Light Ray: Heros_Sword or Heros_Bow or Hookshot or Skull_Hammer or Bombs or Boomerang or Grappling_Hook
+Can Defeat Jalhalla Poes: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
+Can Defeat Stalfos: Heros_Sword or Light_Arrows or Skull_Hammer or Bombs
+Can Defeat Floormasters: Heros_Sword or Heros_Bow
+Can Defeat Morths: Heros_Sword or Heros_Bow or Boomerang or Hookshot
+Can Defeat Rats: Heros_Sword or Heros_Bow or Bombs or Boomerang or Skull_Hammer or Grappling_Hook
+Can Defeat Bombchus: Heros_Sword or Heros_Bow or Bombs or Boomerang or Skull_Hammer or Grappling_Hook
+Can Cut Down Dexivines: Heros_Sword or Heros_Bow or Bombs or Boomerang or Skull_Hammer or Grappling_Hook or Hookshot
+Can Defeat Freshwater Octoroks: Heros_Bow or Hookshot or Boomerang
+Can Defeat Saltwater Octoroks: Heros_Bow or Hookshot or Boomerang
+Can Defeat Beamos: Nothing
+Can Defeat Gyorgs: Heros_Bow or Hookshot or Boomerang
+Can Defeat Seahats: Heros_Bow or Hookshot or Bombs or Boomerang
+Can Defeat Gohma: Grappling_Hook
+Can Defeat Kalle Demos: Boomerang
+Can Defeat Gohdan: Bombs and (Hookshot or Heros_Bow)
+Can Defeat Helmaroc King: Skull_Hammer
+Can Defeat Jalhalla: Can_Defeat_Jalhalla_Poes and Power_Bracelets and (Can_Aim_Mirror_Shield or Light_Arrows)
+Can Defeat Molgera: Hookshot and (Heros_Sword or Heros_Bow or Boomerang or Grappling_Hook or Skull_Hammer or Bombs)
+Can Destroy Wooden Barriers: Bombs or Fire_Arrows
+Can Destroy Cannons: Bombs or Boomerang
+Can Cut Down Outset Trees: Skull_Hammer or Boomerang or Heros_Sword
+Can Cut Down Hanging DRC Platform: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
+Can Cut Grass: Heros_Sword or Skull_Hammer or Bombs or Boomerang
+Can Sword Fight With Orca: Heros_Sword or In_Swordless_Mode
+Rematch Bosses Skipped: SkipRefights
+In Swordless Mode: NoSword
+Outside Swordless Mode: not NoSword
+Chart For Island 1: Treasure_Chart_25
+Chart For Island 2: Treasure_Chart_7
+Chart For Island 3: Treasure_Chart_24
+Chart For Island 4: Treasure_Chart_42
+Chart For Island 5: Treasure_Chart_11
+Chart For Island 6: Treasure_Chart_45
+Chart For Island 7: Treasure_Chart_13
+Chart For Island 8: Treasure_Chart_41
+Chart For Island 9: Treasure_Chart_29
+Chart For Island 10: Treasure_Chart_22
+Chart For Island 11: Treasure_Chart_18
+Chart For Island 12: Treasure_Chart_30
+Chart For Island 13: Treasure_Chart_39
+Chart For Island 14: Treasure_Chart_19
+Chart For Island 15: Treasure_Chart_8
+Chart For Island 16: Treasure_Chart_2
+Chart For Island 17: Treasure_Chart_10
+Chart For Island 18: Treasure_Chart_26
+Chart For Island 19: Treasure_Chart_3
+Chart For Island 20: Treasure_Chart_37
+Chart For Island 21: Treasure_Chart_27
+Chart For Island 22: Treasure_Chart_38
+Chart For Island 23: Triforce_Chart_1
+Chart For Island 24: Treasure_Chart_21
+Chart For Island 25: Treasure_Chart_6
+Chart For Island 26: Treasure_Chart_14
+Chart For Island 27: Treasure_Chart_34
+Chart For Island 28: Treasure_Chart_5
+Chart For Island 29: Treasure_Chart_28
+Chart For Island 30: Treasure_Chart_35
+Chart For Island 31: Triforce_Chart_2
+Chart For Island 32: Treasure_Chart_44
+Chart For Island 33: Treasure_Chart_1
+Chart For Island 34: Treasure_Chart_20
+Chart For Island 35: Treasure_Chart_36
+Chart For Island 36: Treasure_Chart_23
+Chart For Island 37: Treasure_Chart_12
+Chart For Island 38: Treasure_Chart_16
+Chart For Island 39: Treasure_Chart_4
+Chart For Island 40: Treasure_Chart_17
+Chart For Island 41: Treasure_Chart_31
+Chart For Island 42: Triforce_Chart_3
+Chart For Island 43: Treasure_Chart_9
+Chart For Island 44: Treasure_Chart_43
+Chart For Island 45: Treasure_Chart_40
+Chart For Island 46: Treasure_Chart_46
+Chart For Island 47: Treasure_Chart_15
+Chart For Island 48: Treasure_Chart_32
+Chart For Island 49: Treasure_Chart_33

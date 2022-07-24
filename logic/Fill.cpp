@@ -411,7 +411,7 @@ static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, Ite
             // Don't accept trying to place major items in non-progress locations
             if (item.isMajorItem())
             {
-                ErrorLog::getInstance().log("Error: Attempted to plandomize major item " + item.getPrettyName() + " in non-progress location " + location->name);
+                ErrorLog::getInstance().log("Error: Attempted to plandomize major item " + item.getName() + " in non-progress location " + location->name);
                 ErrorLog::getInstance().log("Plandomizing major items in non-progress locations is not allowed.");
                 return FillError::PLANDOMIZER_ERROR;
             }
