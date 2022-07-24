@@ -125,7 +125,6 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             if (evaluateRequirement(worlds[exit.getWorldId()], exit.getRequirement(), ownedItems, ownedEvents))
             {
                 connectedArea.isAccessible = true;
-                // DebugLog("Now Exploring " + connectedArea.name);
                 explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
             }
             else
@@ -266,7 +265,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         }
         // Note which locations are now accessible on this iteration
         LocationPool accessibleThisIteration = {};
-        // LOG_TO_DEBUG("New Locations Accessible:");
         for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); )
         {
             auto locAccess = *locItr;
@@ -281,7 +279,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             }
             if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
             {
-                // LOG_TO_DEBUG("\t" + location->name + " in world " + std::to_string(location->worldId));
                 newThingsFound = true;
                 location->hasBeenFound = true;
                 // Delete newly accessible locations from the list

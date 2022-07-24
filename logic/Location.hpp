@@ -77,6 +77,7 @@ struct Location
         name(""),
         categories({LocationCategory::INVALID}),
         progression(false),
+        plandomized(false),
         originalItem(GameItem::INVALID, -1),
         currentItem(GameItem::INVALID, -1),
         worldId(-1),

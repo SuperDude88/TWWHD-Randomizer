@@ -2,7 +2,6 @@
 #pragma once
 
 #include "Requirements.hpp"
-#include "HintRegion.hpp"
 #include "Area.hpp"
 #include <unordered_set>
 
@@ -78,7 +77,7 @@ public:
     void setAsShuffled();
     World* getWorld();
     void setWorld(World* newWorld);
-    std::unordered_set<HintRegion> getIslands();
+    std::unordered_set<std::string> getIslands();
 
     void connect(const std::string& newConnectedArea);
     std::string disconnect();

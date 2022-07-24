@@ -1968,7 +1968,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
 	std::unordered_set<uint8_t> room_indexes;
 	for(const auto& dungeon : world.raceModeDungeons) {
-		const std::string islandName = hintRegionToName(dungeon.second);
+		const std::string& islandName = dungeon.second;
 
 		room_indexes.emplace(islandNameToRoomIndex(islandName));
 	}

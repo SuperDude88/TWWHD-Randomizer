@@ -293,7 +293,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                             return WorldLoadingError::PLANDOMIZER_ERROR;
                         }
                         LOG_TO_DEBUG("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
-                        raceModeDungeons.insert({dungeonId, HintRegion::INVALID});
+                        raceModeDungeons.insert({dungeonId, ""});
                         setRaceModeDungeons++;
                         break;
                     }
@@ -327,7 +327,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
             {
                 LOG_TO_DEBUG("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
-                raceModeDungeons.insert({dungeonId, HintRegion::INVALID});
+                raceModeDungeons.insert({dungeonId, ""});
                 setRaceModeDungeons++;
             }
             else
@@ -797,18 +797,14 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     // Check to see if this area is assigned to an island
     if (!areaObject["Island"].IsNone())
     {
-        const std::string islandName = areaObject["Island"].As<std::string>();
-        auto island = nameToHintRegion(islandName);
-        MAPPING_CHECK(islandName, hintRegionToName(nameToHintRegion(islandName)));
+        const std::string island = areaObject["Island"].As<std::string>();
         newEntry.island = island;
     }
 
     // Check to see if this area is assigned to a dungeon
     if (!areaObject["Dungeon"].IsNone())
     {
-        const std::string dungeonName = areaObject["Dungeon"].As<std::string>();
-        auto dungeon = nameToHintRegion(dungeonName);
-        MAPPING_CHECK(dungeonName, hintRegionToName(nameToHintRegion(dungeonName)));
+        const std::string dungeon = areaObject["Dungeon"].As<std::string>();
         newEntry.dungeon = dungeon;
     }
 
@@ -1211,9 +1207,9 @@ EntrancePool World::getShuffledEntrances(const EntranceType& type, const bool& o
 // Peforms a breadth first search to find all the islands that lead to the given
 // area. In some cases of entrance randomizer, multiple islands can lead to the
 // same area
-std::unordered_set<HintRegion> World::getIslands(const std::string& startArea)
+std::unordered_set<std::string> World::getIslands(const std::string& startArea)
 {
-    std::unordered_set<HintRegion> islands = {};
+    std::unordered_set<std::string> islands = {};
     std::unordered_set<std::string> alreadyChecked = {};
     std::vector<std::string> areaQueue = {startArea};
 
@@ -1226,12 +1222,12 @@ std::unordered_set<HintRegion> World::getIslands(const std::string& startArea)
         auto& areaEntry = getArea(area);
 
         // Don't search through other dungeons
-        if (area != startArea && areaEntry.dungeon != HintRegion::NONE)
+        if (area != startArea && areaEntry.dungeon != "")
         {
             continue;
         }
 
-        if (areaEntry.island != HintRegion::NONE)
+        if (areaEntry.island != "")
         {
             if (area == startArea)
             {

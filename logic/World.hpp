@@ -11,7 +11,6 @@
 #include "ItemPool.hpp"
 #include "Dungeon.hpp"
 #include "Entrance.hpp"
-#include "HintRegion.hpp"
 #include "../libs/Yaml.hpp"
 
 static std::stringstream lastError;
@@ -37,9 +36,9 @@ struct EventAccess
 struct AreaEntry
 {
     std::string name = "";
-    HintRegion island = HintRegion::NONE;
-    HintRegion dungeon = HintRegion::NONE;
-    HintRegion hintRegion = HintRegion::NONE;
+    std::string island = "";
+    std::string dungeon = "";
+    std::string hintRegion = "";
     std::list<EventAccess> events;
     std::list<LocationAccess> locations;
     std::list<Entrance> exits;
@@ -109,7 +108,7 @@ public:
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
-    std::unordered_set<HintRegion> getIslands(const std::string& area);
+    std::unordered_set<std::string> getIslands(const std::string& area);
     WorldLoadingError loadPlandomizer();
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
@@ -124,7 +123,7 @@ public:
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::array<GameItem, 49> chartMappings;
-    std::unordered_map<DungeonId, HintRegion> raceModeDungeons; // map of dungeonId to the island it's in
+    std::unordered_map<DungeonId, std::string> raceModeDungeons; // map of dungeonId to the island it's in
     uint8_t startingIslandRoomIndex = 44;
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
