@@ -40,7 +40,7 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
     std::string spaces (numSpaces, ' ');
 
     // Don't say which player the item is for if there's only 1 world
-    std::string itemName = worlds.size() > 1 ? location->currentItem.getPrettyName() : gameItemToPrettyName(location->currentItem.getGameItemId());
+    std::string itemName = worlds.size() > 1 ? location->currentItem.getName() : gameItemToName(location->currentItem.getGameItemId());
 
     return location->name + worldNumber + ":" + spaces + itemName;
 }
@@ -219,7 +219,7 @@ void generateSpoilerLog(WorldPool& worlds)
         std::map<std::string, std::string, chartComparator> spoilerTreasureMappings = {};
         for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
         {
-            auto chart = gameItemToPrettyName(world.chartMappings[islandRoom - 1]);
+            auto chart = gameItemToName(world.chartMappings[islandRoom - 1]);
             auto island = roomIndexToIslandName(islandRoom);
             if (chart.find("Treasure") != std::string::npos)
             {
