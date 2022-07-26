@@ -63,6 +63,7 @@ struct Location
     std::string name;
     std::unordered_set<LocationCategory> categories;
     bool progression;
+    bool isRaceModeLocation;
     bool plandomized;
     Item originalItem;
     Item currentItem;
@@ -77,6 +78,7 @@ struct Location
         name(""),
         categories({LocationCategory::INVALID}),
         progression(false),
+        isRaceModeLocation(false),
         plandomized(false),
         originalItem(GameItem::INVALID, -1),
         currentItem(GameItem::INVALID, -1),

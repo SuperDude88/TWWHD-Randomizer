@@ -1,7 +1,7 @@
 #include "ItemPool.hpp"
 #include "PoolFunctions.hpp"
+#include "World.hpp"
 #include "../seedgen/random.hpp"
-#include "Dungeon.hpp"
 #include "../server/command/Log.hpp"
 
 static const GameItemPool alwaysItems = {
@@ -285,24 +285,15 @@ GameItem getRandomJunk()
     return RandomElement(junkPool);
 }
 
-GameItemPool generateGameItemPool(const Settings& settings)
+GameItemPool generateGameItemPool(const Settings& settings, World* world)
 {
     // Add items which will always be in the item pool
     GameItemPool completeItemPool (alwaysItems);
 
     // Add dungeon items
-    const static std::array<std::string, 6> dungeonNames = {
-        "DragonRoostCavern",
-        "ForbiddenWoods",
-        "TowerOfTheGods",
-        "ForsakenFortress",
-        "EarthTemple",
-        "WindTemple",
-    };
-
-    for (auto& dungeonName : dungeonNames)
+    for (auto& [name, dungeon] : world->dungeons)
     {
-        const auto& dungeon = nameToDungeon(dungeonName);
+
         if (dungeon.smallKey != GameItem::INVALID)
         {
             addElementToPool(completeItemPool, dungeon.smallKey, dungeon.keyCount);
@@ -321,7 +312,7 @@ GameItemPool generateGameItemPool(const Settings& settings)
         addElementToPool(completeItemPool, GameItem::ProgressiveSword, 4);
     }
 
-    // Add apropriate numbers of heart containers and heart pieces
+    // Add appropriate numbers of heart containers and heart pieces
     int numContainers = 6 - settings.starting_hcs;
     int numPieces = 44 - settings.starting_pohs;
     addElementToPool(completeItemPool, GameItem::HeartContainer, numContainers);

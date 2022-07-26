@@ -354,23 +354,24 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     // Ensure that all race mode dungeons are assigned to a single island and that
     // there aren't any other dungeons on those islands. Since quest markers for
     // race mode dungeons indicate an entire island, we don't want the there to be
-    // multiple dungeons on an island
+    // multiple dungeons on an island, or multiple islands that lead to the same
+    // race mode dungeon
     for (auto& world : worlds)
     {
         if (world.getSettings().race_mode)
         {
             std::unordered_set<std::string> raceModeIslands = {};
-            for (auto& dungeon : getDungeonList())
+            for (auto& [name, dungeon] : world.dungeons)
             {
-                auto dungeonFirstRoom = dungeonIdToFirstRoom(dungeon);
-                auto dungeonIslands = world.getIslands(dungeonFirstRoom);
+                auto& dungeonEntranceRoom = dungeon.entranceRoom;
+                auto dungeonIslands = world.getIslands(dungeonEntranceRoom);
 
-                if (world.raceModeDungeons.count(dungeon) > 0) //contains() is c++20
+                if (dungeon.isRaceModeDungeon)
                 {
                     if (dungeonIslands.size() > 1)
                     {
                         #ifdef ENABLE_DEBUG
-                            LOG_TO_DEBUG("Error: More than 1 island leading to race mode dungeon " + dungeonIdToName(dungeon));
+                            LOG_TO_DEBUG("Error: More than 1 island leading to race mode dungeon " + name);
                             for (auto& island : dungeonIslands)
                             {
                                 LOG_TO_DEBUG("\t" + island);
@@ -389,7 +390,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
-                    if (world.raceModeDungeons.count(dungeon) > 0)
+                    if (dungeon.isRaceModeDungeon)
                     {
                         raceModeIslands.insert(dungeonIsland);
                     }
@@ -763,15 +764,15 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         }
 
         // Now set the islands the race mode dungeons are in
-        for (auto& [dungeonId, hintRegion] : world.raceModeDungeons)
+        for (auto& [name, dungeon] : world.dungeons)
         {
-            auto islands = world.getIslands(dungeonIdToFirstRoom(dungeonId));
+            auto islands = world.getIslands(dungeon.entranceRoom);
             if (islands.empty())
             {
-                ErrorLog::getInstance().log("ERROR: No Island for dungeon " + dungeonIdToName(dungeonId));
+                ErrorLog::getInstance().log("ERROR: No Island for dungeon " + name);
                 LOG_ERR_AND_RETURN(EntranceShuffleError::NO_RACE_MODE_ISLAND);
             }
-            hintRegion = *islands.begin();
+            dungeon.island = *islands.begin();
         }
     }
 

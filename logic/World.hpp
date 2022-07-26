@@ -72,7 +72,8 @@ public:
         LOCATION_MISSING_VAL,
         MACRO_MISSING_KEY,
         MACRO_MISSING_VAL,
-        REQUIREMENT_MISISNG_KEY,
+        ITEM_MISSING_KEY,
+        REQUIREMENT_MISSING_KEY,
         INVALID_LOCATION_CATEGORY,
         INVALID_MODIFICATION_TYPE,
         INVALID_OFFSET_VALUE,
@@ -82,6 +83,8 @@ public:
         SAME_NESTING_LEVEL,
         EXTRA_OR_MISSING_PARENTHESIS,
         PLANDOMIZER_ERROR,
+        DUNGEON_HAS_NO_RACE_MODE_LOCATION,
+        INVALID_DUNGEON_NAME,
         UNKNOWN,
         COUNT
     };
@@ -103,17 +106,19 @@ public:
     void determineChartMappings();
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
-    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
+    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     std::unordered_set<std::string> getIslands(const std::string& area);
+    Dungeon& getDungeon(const std::string& dungeonName);
     WorldLoadingError loadPlandomizer();
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
+    std::map<std::string, Item> itemEntries = {};
     std::map<std::string, AreaEntry> areaEntries = {};
     std::map<std::string, Location> locationEntries = {};
     std::unordered_map<Location*, Item> plandomizerLocations = {};
@@ -123,7 +128,7 @@ public:
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::array<GameItem, 49> chartMappings;
-    std::unordered_map<DungeonId, std::string> raceModeDungeons; // map of dungeonId to the island it's in
+    std::unordered_map<std::string, Dungeon> dungeons = {};
     uint8_t startingIslandRoomIndex = 44;
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
@@ -141,6 +146,7 @@ private:
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);
     WorldLoadingError loadArea(Yaml::Node& areaObject);
+    WorldLoadingError loadItem(Yaml::Node& itemObject);
     int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;
