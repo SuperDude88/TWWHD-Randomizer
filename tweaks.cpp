@@ -1656,8 +1656,8 @@ TweakError add_chart_number_to_item_get_messages() {
 	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
 	for (uint8_t item_id = 0xCC; item_id < 0xFF; item_id++) {
 		if (item_id == 0xDB || item_id == 0xDC) continue; //skip ghost ship chart and tingle's chart
-		
-		const std::u16string itemName = Utility::Str::toUTF16(gameItemToPrettyName(idToGameItem(item_id)));
+
+		const std::u16string itemName = Utility::Str::toUTF16(gameItemToName(idToGameItem(item_id)));
 		msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message.replace(12, 21, TEXT_COLOR_RED + itemName);
 	}
 	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
@@ -1967,10 +1967,12 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 	};
 
 	std::unordered_set<uint8_t> room_indexes;
-	for(const auto& dungeon : world.raceModeDungeons) {
-		const std::string& islandName = dungeon.second;
-
-		room_indexes.emplace(islandNameToRoomIndex(islandName));
+	for(const auto& [name, dungeon] : world.dungeons) {
+    if (dungeon.isRaceModeDungeon)
+    {
+        const std::string& islandName = dungeon.island;
+        room_indexes.emplace(islandNameToRoomIndex(islandName));
+    }
 	}
 
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");

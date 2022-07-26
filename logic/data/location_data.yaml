@@ -1,5 +1,5 @@
 - Name: Mailbox - Letter from Hoskit's Girlfriend
-  OriginalItem: Piece Of Heart 2
+  Original Item: Piece Of Heart 2
   Category:
     - Mail
     - SpoilsTrading
@@ -8,7 +8,7 @@
     - 0x10031584
 
 - Name: Mailbox - Letter from Baito's Mother
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Mail
   Type: RPX
@@ -17,7 +17,8 @@
     - 0x1003156C
 
 - Name: Mailbox - Letter from Baito
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
+  Dungeon Dependency: Earth Temple
   Category:
     - Mail
     - Dungeon
@@ -26,7 +27,7 @@
     - 0x10031590
 
 - Name: Mailbox - Letter from Komali's Father
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Mail
   Type: RPX
@@ -34,7 +35,7 @@
     - 0x10031518
 
 - Name: Mailbox - Letter Advertising Bombs
-  OriginalItem: Beedles Chart
+  Original Item: Beedles Chart
   Category:
     - Mail
   Type: RPX
@@ -42,7 +43,7 @@
     - 0x10031524
 
 - Name: Mailbox - Letter Advertising Rock Spire Shop Ship
-  OriginalItem: Green Rupee
+  Original Item: Green Rupee
   Category:
     - Mail
   Type: RPX
@@ -50,7 +51,7 @@
     - 0x10031548
 
 - Name: Mailbox - Beedle's Silver Membership Reward
-  OriginalItem: Complimentary ID
+  Original Item: Complimentary ID
   Category:
     - Junk
   Type: RPX
@@ -58,7 +59,7 @@
     - 0x10031578
 
 - Name: Mailbox - Beedle's Gold Membership Reward
-  OriginalItem: Fill Up Coupon
+  Original Item: Fill Up Coupon
   Category:
     - Junk
   Type: RPX
@@ -66,7 +67,8 @@
     - 0x1003159C
 
 - Name: Mailbox - Letter from Orca
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
+  Dungeon Dependency: Forbidden Woods
   Category:
     - Mail
     - Dungeon
@@ -75,7 +77,7 @@
     - 0x10031530
 
 - Name: Mailbox - Letter from Grandma
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Mail
   Type: RPX
@@ -83,7 +85,8 @@
     - 0x1003153C
 
 - Name: Mailbox - Letter from Aryll
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
+  Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
     - Dungeon
@@ -92,7 +95,8 @@
     - 0x10031560
 
 - Name: Mailbox - Letter from Tingle
-  OriginalItem: INcredible Chart
+  Original Item: INcredible Chart
+  Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
     - Dungeon
@@ -102,7 +106,7 @@
     - 0x10031554
 
 - Name: Great Sea - Beedle Shop 20 Rupee Item
-  OriginalItem: Bait Bag
+  Original Item: Bait Bag
   Category:
     - Misc
   Type: RPX
@@ -112,7 +116,7 @@
     - 0x02215443
 
 - Name: Great Sea - Salvage Corp Gift
-  OriginalItem: Treasure Chart 34
+  Original Item: Treasure Chart 34
   Category:
     - FreeGift
   Type: RPX
@@ -120,7 +124,7 @@
     - 0x101C63BF
 
 - Name: Great Sea - Cyclos
-  OriginalItem: Ballad Of Gales
+  Original Item: Ballad Of Gales
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -129,7 +133,7 @@
   NameOffset: 0x0005AE20
 
 - Name: Great Sea - Goron Trading Reward
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
     - ExpensivePurchase
@@ -138,7 +142,7 @@
     - 0x101C546F
 
 - Name: Great Sea - Withered Trees
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
   Type: RPX
@@ -147,7 +151,7 @@
     - 0x02347AAB
 
 - Name: Forsaken Fortress Sector - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
@@ -159,7 +163,7 @@
     - 0x00002448
 
 - Name: Forsaken Fortress - Phantom Ganon
-  OriginalItem: Skull Hammer
+  Original Item: Skull Hammer
   Category:
     - Dungeon
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
@@ -168,7 +172,7 @@
     - 0x00002838
 
 - Name: Forsaken Fortress - Chest Inside Lower Jail Cell
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -177,7 +181,7 @@
     - 0x00000A80
 
 - Name: Forsaken Fortress - Chest on Bed
-  OriginalItem: Yellow Rupee
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -186,7 +190,7 @@
     - 0x00000A40
 
 - Name: Forsaken Fortress - Chest Outside Upper Jail Cell
-  OriginalItem: Dungeon Map
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -195,7 +199,7 @@
     - 0x00000A20
 
 - Name: Forsaken Fortress - Chest Guarded by Bokoblin
-  OriginalItem: Compass
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -204,7 +208,8 @@
     - 0x00000A60
 
 - Name: Forsaken Fortress - Helmaroc King Heart Container
-  OriginalItem: Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
   Category:
     - Dungeon
   Paths:
@@ -220,7 +225,7 @@
     - 0x00003438
 
 - Name: Star Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
@@ -232,7 +237,7 @@
     - 0x00003070
 
 - Name: Star Island - Lookout Platform Chest
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
@@ -241,7 +246,7 @@
     - 0x000030DC
 
 - Name: Star Island - Cave Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -250,7 +255,7 @@
     - 0x00000210
 
 - Name: Northern Fairy Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
@@ -262,7 +267,7 @@
     - 0x00001428
 
 - Name: Northern Fairy Island - Submarine Chest
-  OriginalItem: Treasure Chart 22
+  Original Item: Treasure Chart 22
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
@@ -271,7 +276,7 @@
     - 0x000004B0
 
 - Name: Northern Fairy Island - Great Fairy
-  OriginalItem: Progressive Wallet
+  Original Item: Progressive Wallet
   Category:
     - GreatFairy
   Type: RPX
@@ -279,7 +284,7 @@
     - 0x02095B2F
 
 - Name: Gale Isle - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
@@ -291,7 +296,7 @@
     - 0x00001D40
 
 - Name: Crescent Moon Island - Chest on Island
-  OriginalItem: Treasure Chart 10
+  Original Item: Treasure Chart 10
   Category:
     - Misc
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
@@ -300,7 +305,7 @@
     - 0x00000980
 
 - Name: Crescent Moon Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
@@ -312,7 +317,7 @@
     - 0x00000914
 
 - Name: Crescent Moon Island - Submarine Chest
-  OriginalItem: Treasure Chart 9
+  Original Item: Treasure Chart 9
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
@@ -321,7 +326,7 @@
     - 0x00000664
 
 - Name: Seven Star Isles - Big Octo
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -330,7 +335,7 @@
     - 0x00001278
 
 - Name: Seven Star Isles - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -342,7 +347,7 @@
     - 0x00001404
 
 - Name: Seven Star Isles - Center Lookout Platform Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -351,7 +356,7 @@
     - 0x00001568
 
 - Name: Seven Star Isles - Northern Lookout Platform Chest
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -360,7 +365,7 @@
     - 0x00001548
 
 - Name: Seven Star Isles - Southern Lookout Platform Chest
-  OriginalItem: Treasure Chart 16
+  Original Item: Treasure Chart 16
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -369,7 +374,7 @@
     - 0x00001588
 
 - Name: Overlook Isles - Sunken Treasure
-  OriginalItem: Secret Cave Chart
+  Original Item: Secret Cave Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
@@ -381,7 +386,7 @@
     - 0x000015B4
 
 - Name: Overlook Isles - Cave Chest
-  OriginalItem: Triforce Shard 8
+  Original Item: Triforce Shard 8
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -390,7 +395,7 @@
     - 0x00000484
 
 - Name: Four Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: Treasure Chart 19
+  Original Item: Treasure Chart 19
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
@@ -399,7 +404,7 @@
     - 0x00001FD4
 
 - Name: Four Eye Reef - Sunken Treasure
-  OriginalItem: Great Fairy Chart
+  Original Item: Great Fairy Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
@@ -411,7 +416,7 @@
     - 0x00001F10
 
 - Name: Mother and Child Isles - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
@@ -423,7 +428,7 @@
     - 0x000019D4
 
 - Name: Mother and Child Isles - Inside Mother Isle
-  OriginalItem: Fire Ice Arrows
+  Original Item: Fire Ice Arrows
   Category:
     - Misc
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
@@ -432,7 +437,7 @@
     - 0x00001BB0
 
 - Name: Spectacle Island - Barrel Shooting First Prize
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Minigame
   Type: RPX
@@ -441,7 +446,7 @@
     - 0x1001C195
 
 - Name: Spectacle Island - Barrel Shooting Second Prize
-  OriginalItem: Treasure Chart 17
+  Original Item: Treasure Chart 17
   Category:
     - Minigame
   Type: RPX
@@ -449,7 +454,7 @@
     - 0x1001C196
 
 - Name: Spectacle Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
@@ -461,7 +466,7 @@
     - 0x00000C5C
 
 - Name: Windfall Island - Ivan Catch Killer Bees
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
   Type: RPX
@@ -469,7 +474,7 @@
     - 0x02298bfc
 
 - Name: Windfall Island - Transparent Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
@@ -480,7 +485,7 @@
     - 0x00003F40
 
 - Name: Windfall Island - Tott Teach Rhythm
-  OriginalItem: Song Of Passing
+  Original Item: Song Of Passing
   Category:
     - FreeGift
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -489,7 +494,7 @@
   NameOffset: 0x0005B910
 
 - Name: Windfall Island - Zunari Exotic Flower
-  OriginalItem: Magic Armor
+  Original Item: Magic Armor
   Category:
     - ShortSideQuest
   Type: Custom_Symbol
@@ -499,7 +504,7 @@
     - "@0x022da95b"
 
 - Name: Windfall Island - Sam Decorate Island
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
   Type: RPX
@@ -507,7 +512,7 @@
     - 0x101C399B
 
 - Name: Windfall Island - Kane Decorate Shop Guru
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - Obscure
   Type: RPX
@@ -515,7 +520,7 @@
     - 0x101C3873
 
 - Name: Windfall Island - Kane Decorate Postman Statue
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - Obscure
   Type: RPX
@@ -523,7 +528,7 @@
     - 0x101C3877
 
 - Name: Windfall Island - Kane Decorate Six Flags
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Obscure
   Type: RPX
@@ -531,7 +536,7 @@
     - 0x101C387B
 
 - Name: Windfall Island - Kane Decorate Six Idols
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Obscure
   Type: RPX
@@ -539,7 +544,7 @@
     - 0x101C387F
 
 - Name: Windfall Island - Mila Catch Thief
-  OriginalItem: Empty Bottle
+  Original Item: Empty Bottle
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -548,7 +553,7 @@
   NameOffset: 0x00038190
 
 - Name: Windfall Island - Dampa Pig Minigame
-  OriginalItem: Treasure Chart 42
+  Original Item: Treasure Chart 42
   Category:
     - Minigame
   Type: RPX
@@ -556,7 +561,7 @@
     - 0x028F9DD3
 
 - Name: Windfall Island - Pompie & Vera Secret Meeting Photo
-  OriginalItem: Treasure Chart 24
+  Original Item: Treasure Chart 24
   Category:
     - ShortSideQuest
   Type: RPX
@@ -564,7 +569,7 @@
     - 0x101C399F
 
 - Name: Windfall Island - Kamo Full Moon Picture
-  OriginalItem: Treasure Chart 31
+  Original Item: Treasure Chart 31
   Category:
     - LongSideQuest
   Type: RPX
@@ -572,7 +577,7 @@
     - 0x101C39AF
 
 - Name: Windfall Island - Mineco Miss Windfall Picture
-  OriginalItem: Treasure Chart 33
+  Original Item: Treasure Chart 33
   Category:
     - ShortSideQuest
   Type: RPX
@@ -580,7 +585,7 @@
     - 0x101C39A3
 
 - Name: Windfall Island - Sunken Treasure
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
@@ -592,7 +597,7 @@
     - 0x000031A4
 
 - Name: Windfall Island - Tingle First Gift
-  OriginalItem: Tingle Bottle
+  Original Item: Tingle Bottle
   Category:
     - FreeGift
   Type: RPX
@@ -600,7 +605,7 @@
     - 0x022E98EF
 
 - Name: Windfall Island - Tingle Second Gift
-  OriginalItem: Tingles Chart
+  Original Item: Tingles Chart
   Category:
     - FreeGift
   Type: RPX
@@ -608,7 +613,7 @@
     - 0x022E9923
 
 - Name: Windfall Island - Windfall Jail Maze Chest
-  OriginalItem: Progressive Picto Box
+  Original Item: Progressive Picto Box
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -617,7 +622,7 @@
     - 0x0000094C
 
 - Name: Windfall Island - Mrs. Marie Catch Killer Bees
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - ShortSideQuest
   Type: RPX
@@ -625,7 +630,7 @@
     - 0x0223FC7F
 
 - Name: Windfall Island - Mrs. Marie 1 Joy Pendant
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - SpoilsTrading
   Type: RPX
@@ -633,7 +638,7 @@
     - 0x0223FD93
 
 - Name: Windfall Island - Mrs. Marie 21 Joy Pendant
-  OriginalItem: Cabana Deed
+  Original Item: Cabana Deed
   Category:
     - SpoilsTrading
   Type: RPX
@@ -641,7 +646,7 @@
     - 0x0223FDC3
 
 - Name: Windfall Island - Mrs. Marie 40 Joy Pendant
-  OriginalItem: Treasure Chart 45
+  Original Item: Treasure Chart 45
   Category:
     - SpoilsTrading
   Type: RPX
@@ -649,7 +654,7 @@
     - 0x0223FEBB
 
 - Name: Windfall Island - Lenzo Become Assistant
-  OriginalItem: Progressive Picto Box
+  Original Item: Progressive Picto Box
   Category:
     - LongSideQuest
   Type: RPX
@@ -657,7 +662,7 @@
     - 0x022CFA77
 
 - Name: Windfall Island - Lenzo Bring Forest Firefly
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - LongSideQuest
   Type: RPX
@@ -665,7 +670,7 @@
     - 0x022CFAAB
 
 - Name: Windfall Island - Lenzo House Left Chest
-  OriginalItem: Treasure Chart 29
+  Original Item: Treasure Chart 29
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -674,7 +679,7 @@
     - 0x00000910
 
 - Name: Windfall Island - Lenzo House Right Chest
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -683,7 +688,7 @@
     - 0x00000930
 
 - Name: Windfall Island - Cafe Postman Delivery
-  OriginalItem: Moblins Letter
+  Original Item: Moblins Letter
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -692,7 +697,7 @@
   NameOffset: 0x0000B440
 
 - Name: Windfall Island - Linda and Anton
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
   Type: RPX
@@ -700,7 +705,7 @@
     - 0x101C39A7
 
 - Name: Windfall Island - Battle Squid First Prize
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - BattleSquid
   Type: RPX
@@ -708,7 +713,7 @@
     - 0x02267187
 
 - Name: Windfall Island - Battle Squid Second Prize
-  OriginalItem: Treasure Chart 7
+  Original Item: Treasure Chart 7
   Category:
     - BattleSquid
   Type: RPX
@@ -716,7 +721,7 @@
     - 0x02267197
 
 - Name: Windfall Island - Battle Squid Under 20 Prize
-  OriginalItem: Treasure Chart 23
+  Original Item: Treasure Chart 23
   Category:
     - BattleSquid
   Type: RPX
@@ -724,7 +729,7 @@
     - 0x02267367
 
 - Name: Windfall Island - Kreeb Light the Lighthouse
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
   Type: RPX
@@ -732,7 +737,7 @@
     - 0x101C39AB
 
 - Name: Windfall Island - Auction 5 Rupee
-  OriginalItem: Treasure Chart 18
+  Original Item: Treasure Chart 18
   Category:
     - ExpensivePurchase
     - Minigame
@@ -741,7 +746,7 @@
     - 0x10190175
 
 - Name: Windfall Island - Auction 40 Rupee
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - ExpensivePurchase
     - Minigame
@@ -750,7 +755,7 @@
     - 0x1019016D
 
 - Name: Windfall Island - Auction 60 Rupee
-  OriginalItem: Treasure Chart 38
+  Original Item: Treasure Chart 38
   Category:
     - ExpensivePurchase
     - Minigame
@@ -759,7 +764,7 @@
     - 0x1019017D
 
 - Name: Windfall Island - Auction 80 Rupee
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - ExpensivePurchase
     - Minigame
@@ -768,7 +773,7 @@
     - 0x10190185
 
 - Name: Windfall Island - Auction 100 Rupee
-  OriginalItem: Swift Sail
+  Original Item: Swift Sail
   Category:
     - ExpensivePurchase
     - Minigame
@@ -777,7 +782,7 @@
     - 0x1019018D
 
 - Name: Windfall Island - House of Wealth Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Misc
   Path: content/Common/Stage/Orichh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
@@ -786,7 +791,7 @@
     - 0x000008C0
 
 - Name: Windfall Island - Maggie's Father Give 20 Skull Necklaces
-  OriginalItem: Treasure Chart 2
+  Original Item: Treasure Chart 2
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -795,7 +800,7 @@
   NameOffset: 0x0001BBC0
 
 - Name: Windfall Island - Maggie Free Item
-  OriginalItem: Maggies Letter
+  Original Item: Maggies Letter
   Category:
     - FreeGift
   Type: RPX
@@ -803,7 +808,7 @@
     - 0x0227C2A3
 
 - Name: Windfall Island - Maggie Delivery Reward
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
   Type: RPX
@@ -811,7 +816,7 @@
     - 0x0227C2DF
 
 - Name: Windfall Island - Potion Shop 15 Green Chu
-  OriginalItem: Green Potion
+  Original Item: Green Potion
   Category:
     - SpoilsTrading
   Type: Custom_Symbol
@@ -819,7 +824,7 @@
     - doc_bandam_green_potion_slot_item_id
 
 - Name: Windfall Island - Potion Shop 15 Blue Chu
-  OriginalItem: Blue Potion
+  Original Item: Blue Potion
   Category:
     - SpoilsTrading
     - LongSideQuest
@@ -828,7 +833,7 @@
     - doc_bandam_blue_potion_slot_item_id
 
 - Name: Windfall Island - Pirate Ship Chest
-  OriginalItem: Bombs
+  Original Item: Bombs
   Category:
     - Minigame
   Path: content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -838,7 +843,7 @@
     - 0x00000774
 
 - Name: Pawprint Isle - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
@@ -850,7 +855,7 @@
     - 0x00002BAC
 
 - Name: Pawprint Isle - Chu Chu Cave Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -859,7 +864,7 @@
     - 0x00000210
 
 - Name: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -868,7 +873,7 @@
     - 0x000001D0
 
 - Name: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -877,7 +882,7 @@
     - 0x000001F0
 
 - Name: Pawprint Isle - Chu Chu Cave Chest Scale Wall
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -886,7 +891,7 @@
     - 0x000001B0
 
 - Name: Pawprint Isle - Wizzrobe Cave Chest
-  OriginalItem: Treasure Chart 46
+  Original Item: Treasure Chart 46
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave07_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -895,7 +900,7 @@
     - 0x00000210
 
 - Name: Pawprint Isle - Lookout Platform Defeat Enemies
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
@@ -904,7 +909,7 @@
     - 0x00002CF0
 
 - Name: Dragon Roost Island - Wind Shrine
-  OriginalItem: Winds Requiem
+  Original Item: Winds Requiem
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -913,7 +918,7 @@
   NameOffset: 0x00058F80
 
 - Name: Dragon Roost Island - Boulder Chest
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
@@ -922,7 +927,7 @@
     - 0x00002BAC
 
 - Name: Dragon Roost Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
@@ -934,7 +939,7 @@
     - 0x0000296C
 
 - Name: Dragon Roost Island - Hoskit Give 20 Golden Feathers
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -943,7 +948,7 @@
   NameOffset: 0x00008760
 
 - Name: Dragon Roost Island - Baito Mail Game
-  OriginalItem: Note To Mom
+  Original Item: Note To Mom
   Category:
     - Minigame
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -952,7 +957,7 @@
   NameOffset: 0x00008A80
 
 - Name: Dragon Roost Island - Fly Across Platforms Around Island
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
@@ -961,7 +966,7 @@
     - 0x00002BCC
 
 - Name: Dragon Roost Island - Cave Chest
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_06_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -970,7 +975,7 @@
     - 0x00000950
 
 - Name: Flight Control Platform - First Prize
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Minigame
   Type: RPX
@@ -978,7 +983,7 @@
     - 0x022065FB
 
 - Name: Flight Control Platform - Sunken Treasure
-  OriginalItem: Island Hearts Chart
+  Original Item: Island Hearts Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr
@@ -990,7 +995,7 @@
     - 0x0000118C
 
 - Name: Flight Control Platform - Submarine Chest
-  OriginalItem: Platform Chart
+  Original Item: Platform Chart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -999,7 +1004,7 @@
     - 0x000006C8
 
 - Name: Western Fairy Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
@@ -1011,7 +1016,7 @@
     - 0x000016EC
 
 - Name: Western Fairy Island - Great Fairy
-  OriginalItem: Progressive Quiver
+  Original Item: Progressive Quiver
   Category:
     - GreatFairy
   Type: RPX
@@ -1019,7 +1024,7 @@
     - 0x02095B7F
 
 - Name: Western Fairy Island - Lookout Platform Chest
-  OriginalItem: Skull Necklace
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
@@ -1028,7 +1033,7 @@
     - 0x00001758
 
 - Name: Rock Spire Isle - Defeat Southeast Gunboat
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1037,7 +1042,7 @@
     - 0x00001A84
 
 - Name: Rock Spire Isle - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1049,7 +1054,7 @@
     - 0x00001C10
 
 - Name: Rock Spire Isle - Beedle 500 Rupee Item
-  OriginalItem: Empty Bottle
+  Original Item: Empty Bottle
   Category:
     - ExpensivePurchase
   Type: RPX
@@ -1059,7 +1064,7 @@
     - 0x022155BB
 
 - Name: Rock Spire Isle - Beedle 950 Rupee Item
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - ExpensivePurchase
   Type: RPX
@@ -1069,7 +1074,7 @@
     - 0x022155AF
 
 - Name: Rock Spire Isle - Beedle 900 Rupee Item
-  OriginalItem: Treasure Chart 4
+  Original Item: Treasure Chart 4
   Category:
     - ExpensivePurchase
   Type: RPX
@@ -1079,7 +1084,7 @@
     - 0x022155C3
 
 - Name: Rock Spire Isle - Western Lookout Platform Destroy Cannons
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1088,7 +1093,7 @@
     - 0x00001CE8
 
 - Name: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1097,7 +1102,7 @@
     - 0x00001D08
 
 - Name: Rock Spire Isle - Center Lookout Platform Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1106,7 +1111,7 @@
     - 0x00001D28
 
 - Name: Rock Spire Isle - Cave Chest
-  OriginalItem: Treasure Chart 37
+  Original Item: Treasure Chart 37
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1115,7 +1120,7 @@
     - 0x00000240
 
 - Name: Tingle Island - Ankle All Statues Reward
-  OriginalItem: Rainbow Rupee
+  Original Item: Rainbow Rupee
   Category:
     - Misc
   Type: RPX
@@ -1123,7 +1128,7 @@
     - 0x022E9973
 
 - Name: Tingle Island - Big Octo
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - BigOcto
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
@@ -1132,7 +1137,7 @@
     - 0x00000BD0
 
 - Name: Tingle Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
@@ -1144,7 +1149,7 @@
     - 0x00000DA4
 
 - Name: Northern Triangle Island - Sunken Treasure
-  OriginalItem: Octo Chart
+  Original Item: Octo Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
@@ -1156,7 +1161,7 @@
     - 0x00000A2C
 
 - Name: Eastern Fairy Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
@@ -1168,7 +1173,7 @@
     - 0x000014E4
 
 - Name: Eastern Fairy Island - Great Fairy
-  OriginalItem: Progressive Bomb Bag
+  Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
   Type: RPX
@@ -1176,7 +1181,7 @@
     - 0x02095B57
 
 - Name: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
-  OriginalItem: Boko Baba Seed
+  Original Item: Boko Baba Seed
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
@@ -1185,7 +1190,7 @@
     - 0x00001574
 
 - Name: Fire Mountain - Big Octo
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -1194,7 +1199,7 @@
     - 0x00000EC8
 
 - Name: Fire Mountain - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -1206,7 +1211,7 @@
     - 0x0000109C
 
 - Name: Fire Mountain - Interior Chest
-  OriginalItem: Power Bracelets
+  Original Item: Power Bracelets
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1215,7 +1220,7 @@
     - 0x000001C8
 
 - Name: Fire Mountain - Lookout Platform Chest
-  OriginalItem: Yellow Rupee
+  Original Item: Yellow Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -1224,7 +1229,7 @@
     - 0x0000114C
 
 - Name: Fire Mountain - Lookout Platform Destroy Cannons
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -1233,7 +1238,7 @@
     - 0x0000112C
 
 - Name: Star Belt Archipelago - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
@@ -1245,7 +1250,7 @@
     - 0x00001354
 
 - Name: Star Belt Archipelago - Lookout Platform Chest
-  OriginalItem: Treasure Chart 44
+  Original Item: Treasure Chart 44
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
@@ -1254,7 +1259,7 @@
     - 0x000013C0
 
 - Name: Three Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: Treasure Chart 32
+  Original Item: Treasure Chart 32
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
@@ -1263,7 +1268,7 @@
     - 0x000022A4
 
 - Name: Three Eye Reef - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
@@ -1275,7 +1280,7 @@
     - 0x0000212C
 
 - Name: Greatfish Isle - Hidden Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
@@ -1284,7 +1289,7 @@
     - 0x00001D78
 
 - Name: Greatfish Isle - Sunken Treasure
-  OriginalItem: Triforce Shard 1
+  Original Item: Triforce Shard 1
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
@@ -1296,7 +1301,7 @@
     - 0x00001ACC
 
 - Name: Cyclops Reef - Destroy Cannons and Gunboats
-  OriginalItem: Treasure Chart 21
+  Original Item: Treasure Chart 21
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
@@ -1305,7 +1310,7 @@
     - 0x0000279C
 
 - Name: Cyclops Reef - Sunken Treasure
-  OriginalItem: Light Ring Chart
+  Original Item: Light Ring Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
@@ -1317,7 +1322,7 @@
     - 0x000026D8
 
 - Name: Cyclops Reef - Lookout Platform Defeat Enemies
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
@@ -1326,7 +1331,7 @@
     - 0x000027BC
 
 - Name: Six Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: Treasure Chart 26
+  Original Item: Treasure Chart 26
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
@@ -1335,7 +1340,7 @@
     - 0x00002C30
 
 - Name: Six Eye Reef - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
@@ -1347,7 +1352,7 @@
     - 0x00002AA8
 
 - Name: Six Eye Reef - Submarine Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
@@ -1356,7 +1361,7 @@
     - 0x0000053C
 
 - Name: Six Eye Reef - Lookout Platform Destroy Cannons
-  OriginalItem: Skull Necklace
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
@@ -1365,7 +1370,7 @@
     - 0x00002C50
 
 - Name: Tower of the Gods Sector - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr
@@ -1377,7 +1382,7 @@
     - 0x000006B4
 
 - Name: Eastern Triangle Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room27.szs@YAZ0@SARC@Room27.bfres@BFRES@room.dzr
@@ -1389,7 +1394,7 @@
     - 0x00000E58
 
 - Name: Thorned Fairy Island - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
@@ -1401,7 +1406,7 @@
     - 0x00001AF0
 
 - Name: Thorned Fairy Island - Great Fairy
-  OriginalItem: Progressive Quiver
+  Original Item: Progressive Quiver
   Category:
     - GreatFairy
   Type: RPX
@@ -1409,7 +1414,7 @@
     - 0x02095B77
 
 - Name: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
@@ -1418,7 +1423,7 @@
     - 0x00001B80
 
 - Name: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
-  OriginalItem: Boko Baba Seed
+  Original Item: Boko Baba Seed
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
@@ -1427,7 +1432,7 @@
     - 0x00001BA0
 
 - Name: Needle Rock Isle - Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
@@ -1436,7 +1441,7 @@
     - 0x00002224
 
 - Name: Needle Rock Isle - Golden Gunboat
-  OriginalItem: Triforce Chart 3
+  Original Item: Triforce Chart 3
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
@@ -1445,7 +1450,7 @@
     - 0x00002194
 
 - Name: Needle Rock Isle - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
@@ -1457,7 +1462,7 @@
     - 0x00002104
 
 - Name: Needle Rock Isle - Cave Chest
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/SubD42_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1466,7 +1471,7 @@
     - 0x0000020C
 
 - Name: Islet of Steel - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
@@ -1478,7 +1483,7 @@
     - 0x00000CDC
 
 - Name: Islet of Steel - Interior Chest
-  OriginalItem: Triforce Chart 1
+  Original Item: Triforce Chart 1
   Category:
     - Misc
   Path: content/Common/Stage/ShipD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1487,7 +1492,7 @@
     - 0x000001B8
 
 - Name: Islet of Steel - Lookout PLatform Defeat Enemies
-  OriginalItem: Skull Necklace
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
@@ -1496,7 +1501,7 @@
     - 0x00000DD8
 
 - Name: Stone Watcher Island - Sunken Treasure
-  OriginalItem: Triforce Shard 3
+  Original Item: Triforce Shard 3
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
@@ -1508,7 +1513,7 @@
     - 0x00002368
 
 - Name: Stone Watcher Island - Cave Chest
-  OriginalItem: Triforce Shard 7
+  Original Item: Triforce Shard 7
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1517,7 +1522,7 @@
     - 0x00000484
 
 - Name: Stone Watcher Island - Lookout Platform Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
@@ -1526,7 +1531,7 @@
     - 0x00002460
 
 - Name: Stone Watcher Island - Lookout Platform Destroy Cannons
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
@@ -1535,7 +1540,7 @@
     - 0x00002440
 
 - Name: Southern Triangle Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room32.szs@YAZ0@SARC@Room32.bfres@BFRES@room.dzr
@@ -1547,7 +1552,7 @@
     - 0x00000B2C
 
 - Name: Private Oasis - Top of Waterfall Chest
-  OriginalItem: Treasure Chart 27
+  Original Item: Treasure Chart 27
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
@@ -1556,7 +1561,7 @@
     - 0x00002628
 
 - Name: Private Oasis - Big Octo
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
@@ -1565,7 +1570,7 @@
     - 0x000025E0
 
 - Name: Private Oasis - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
@@ -1577,7 +1582,7 @@
     - 0x00002478
 
 - Name: Private Oasis - Cabana Labyrinth Lower Floor Chest
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1586,7 +1591,7 @@
     - 0x00000274
 
 - Name: Private Oasis - Cabana Labyrinth Upper Floor Chest
-  OriginalItem: Triforce Shard 2
+  Original Item: Triforce Shard 2
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1595,7 +1600,7 @@
     - 0x00000254
 
 - Name: Bomb Island - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
@@ -1607,7 +1612,7 @@
     - 0x00002038
 
 - Name: Bomb Island - Cave Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1616,7 +1621,7 @@
     - 0x00000278
 
 - Name: Bomb Island - Submarine Chest
-  OriginalItem: Empty Bottle
+  Original Item: Empty Bottle
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
@@ -1625,7 +1630,7 @@
     - 0x000004A4
 
 - Name: Bomb Island - Lookout Platform Defeat Enemies
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
@@ -1634,7 +1639,7 @@
     - 0x00002110
 
 - Name: Birds Peak Rock - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room35.szs@YAZ0@SARC@Room35.bfres@BFRES@room.dzr
@@ -1646,7 +1651,7 @@
     - 0x00001624
 
 - Name: Birds Peak Rock - Cave Chest
-  OriginalItem: Triforce Chart 3
+  Original Item: Triforce Chart 3
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1655,7 +1660,7 @@
     - 0x0000018C
 
 - Name: Diamond Steppe Isle - Big Octo
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
@@ -1664,7 +1669,7 @@
     - 0x0000166C
 
 - Name: Diamond Steppe Isle - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
@@ -1676,7 +1681,7 @@
     - 0x000017F8
 
 - Name: Diamond Steppe Isle - Maze First Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1685,7 +1690,7 @@
     - 0x000001E8
 
 - Name: Diamond Steppe Isle - Maze Second Chest
-  OriginalItem: Ghost Ship Chart
+  Original Item: Ghost Ship Chart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1694,7 +1699,7 @@
     - 0x000001C8
 
 - Name: Five Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: Treasure Chart 41
+  Original Item: Treasure Chart 41
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
@@ -1703,7 +1708,7 @@
     - 0x00002E00
 
 - Name: Five Eye Reef - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
@@ -1715,7 +1720,7 @@
     - 0x00002C40
 
 - Name: Five Eye Reef - Lookout Platform Chest
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
@@ -1724,7 +1729,7 @@
     - 0x00002E20
 
 - Name: Shark Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room38.szs@YAZ0@SARC@Room38.bfres@BFRES@room.dzr
@@ -1736,7 +1741,7 @@
     - 0x000015BC
 
 - Name: Shark Island - Cave Chest
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/ITest63_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1745,7 +1750,7 @@
     - 0x00000210
 
 - Name: Southern Fairy Island - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
@@ -1757,7 +1762,7 @@
     - 0x000020AC
 
 - Name: Southern Fairy Island - Great Fairy
-  OriginalItem: Progressive Bomb Bag
+  Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
   Type: RPX
@@ -1765,7 +1770,7 @@
     - 0x02095B4F
 
 - Name: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
-  OriginalItem: Treasure Chart 40
+  Original Item: Treasure Chart 40
   Category:
     - Platform
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
@@ -1774,7 +1779,7 @@
     - 0x0000213C
 
 - Name: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
-  OriginalItem: Skull Necklace
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
@@ -1783,7 +1788,7 @@
     - 0x0000215C
 
 - Name: Ice Ring Isle - Frozen Chest
-  OriginalItem: Treasure Chart 36
+  Original Item: Treasure Chart 36
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
@@ -1792,7 +1797,7 @@
     - 0x00001494
 
 - Name: Ice Ring Isle - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
@@ -1804,7 +1809,7 @@
     - 0x0000132C
 
 - Name: Ice Ring Isle - Interior Chest
-  OriginalItem: Iron Boots
+  Original Item: Iron Boots
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1813,7 +1818,7 @@
     - 0x0000020C
 
 - Name: Ice Ring Isle - Inner Cave Chest
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
     - CombatSecretCave
@@ -1823,7 +1828,7 @@
     - 0x00000210
 
 - Name: Forset Haven - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
@@ -1835,7 +1840,7 @@
     - 0x00003D94
 
 - Name: Forset Haven - On Tree Branch
-  OriginalItem: Deku Leaf
+  Original Item: Deku Leaf
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
@@ -1845,7 +1850,7 @@
     - 0x000020C4
 
 - Name: Forset Haven - Chest on Small Island
-  OriginalItem: Treasure Chart 3
+  Original Item: Treasure Chart 3
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
@@ -1854,7 +1859,7 @@
     - 0x00004088
 
 - Name: Cliff Plateau Isles - Sunken Treasure
-  OriginalItem: Triforce Shard 5
+  Original Item: Triforce Shard 5
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
@@ -1866,7 +1871,7 @@
     - 0x0000156C
 
 - Name: Cliff Plateau Isles - Cave Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1875,7 +1880,7 @@
     - 0x0000020C
 
 - Name: Cliff Plateau Isles - Highest Isle Chest
-  OriginalItem: Treasure Chart 25
+  Original Item: Treasure Chart 25
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
@@ -1884,7 +1889,7 @@
     - 0x0000183C
 
 - Name: Cliff Plateau Isles - Lookout Platform Chest
-  OriginalItem: Boko Baba Seed
+  Original Item: Boko Baba Seed
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
@@ -1893,7 +1898,7 @@
     - 0x0000185C
 
 - Name: Horseshoe Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
@@ -1905,7 +1910,7 @@
     - 0x00001D58
 
 - Name: Horseshoe Island - Play Golf
-  OriginalItem: Treasure Chart 28
+  Original Item: Treasure Chart 28
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
@@ -1914,7 +1919,7 @@
     - 0x00001F74
 
 - Name: Horseshoe Island - Cave Chest
-  OriginalItem: Treasure Chart 8
+  Original Item: Treasure Chart 8
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave05_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1923,7 +1928,7 @@
     - 0x000001B0
 
 - Name: Horseshoe Island - Northwestern Lookout Platform Chest
-  OriginalItem: Treasure Chart 43
+  Original Item: Treasure Chart 43
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
@@ -1932,7 +1937,7 @@
     - 0x00001F94
 
 - Name: Horseshoe Island - Southeastern Lookout Platform Chest
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
@@ -1941,7 +1946,7 @@
     - 0x00001FB4
 
 - Name: Outset Island - Dig up Black Soil
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
@@ -1950,7 +1955,7 @@
     - 0x00003AD4
 
 - Name: Outset Island - Sunken Treasure
-  OriginalItem: Triforce Shard 6
+  Original Item: Triforce Shard 6
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
@@ -1962,7 +1967,7 @@
     - 0x000035C4
 
 - Name: Outset Island - Under Link's House
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - Misc
   Path: content/Common/Stage/LinkUG_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1971,7 +1976,7 @@
     - 0x000008DC
 
 - Name: Outset Island - Orca Give 10 Knight's Crests
-  OriginalItem: Hurricane Spin
+  Original Item: Hurricane Spin
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -1980,7 +1985,7 @@
   NameOffset: 0x0000FA40
 
 - Name: Outset Island - Orca Hit 500 Times
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Junk
   Type: RPX
@@ -1988,7 +1993,7 @@
     - 0x02258737
 
 - Name: Outset Island - Mesa's House Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Misc
   Path: content/Common/Stage/Omasao_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1997,7 +2002,7 @@
     - 0x000008E8
 
 - Name: Outset Island - Great Fairy
-  OriginalItem: Progressive Wallet
+  Original Item: Progressive Wallet
   Category:
     - GreatFairy
   Type: RPX
@@ -2005,7 +2010,7 @@
     - 0x02095B27
 
 - Name: Outset Island - Savage Labyrinth Floor 30
-  OriginalItem: Triforce Shard 6
+  Original Item: Triforce Shard 6
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave09_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -2014,7 +2019,7 @@
     - 0x00000348
 
 - Name: Outset Island - Savage Labyrinth Floor 50
-  OriginalItem: Heros Charm
+  Original Item: Heros Charm
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -2023,7 +2028,7 @@
     - 0x00000178
 
 - Name: Outset Island - Jabun's Cave Chest
-  OriginalItem: Nayrus Pearl
+  Original Item: Nayrus Pearl
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
@@ -2032,7 +2037,7 @@
     - 0x000001C4
 
 - Name: Headstone Island - Top of Island
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
@@ -2041,7 +2046,7 @@
     - 0x00000D4C
 
 - Name: Headstone Island - Sunken Treasure
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
@@ -2053,7 +2058,7 @@
     - 0x000015D0
 
 - Name: Headstone Island - Submarine Chest
-  OriginalItem: Treasure Chart 14
+  Original Item: Treasure Chart 14
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
@@ -2062,7 +2067,7 @@
     - 0x000003F4
 
 - Name: Two Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: Treasure Chart 13
+  Original Item: Treasure Chart 13
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
@@ -2071,7 +2076,7 @@
     - 0x0000272C
 
 - Name: Two Eye Reef - Big Octo Great Fairy
-  OriginalItem: Progressive Magic Meter
+  Original Item: Progressive Magic Meter
   Category:
     - BigOcto
     - GreatFairy
@@ -2081,7 +2086,7 @@
   NameOffset: 0x00026170
 
 - Name: Two Eye Reef - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
@@ -2093,7 +2098,7 @@
     - 0x00002524
 
 - Name: Two Eye Reef - Lookout Platform Chest
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
@@ -2102,7 +2107,7 @@
     - 0x0000274C
 
 - Name: Angular Isles - Peak Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
@@ -2111,7 +2116,7 @@
     - 0x00000830
 
 - Name: Angular Isles - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
@@ -2123,7 +2128,7 @@
     - 0x000007A0
 
 - Name: Angular Isles - Cave Chest
-  OriginalItem: Silver Rupee
+  Original Item: Silver Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/SubD43_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2132,7 +2137,7 @@
     - 0x00000254
 
 - Name: Boating Course - Raft Chest
-  OriginalItem: Boko Baba Seed
+  Original Item: Boko Baba Seed
   Category:
     - Raft
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
@@ -2141,7 +2146,7 @@
     - 0x00000F94
 
 - Name: Boating Course - Sunken Treasure
-  OriginalItem: Sea Hearts Chart
+  Original Item: Sea Hearts Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
@@ -2153,7 +2158,7 @@
     - 0x00000F04
 
 - Name: Boating Course - Cave Chest
-  OriginalItem: Submarine Chart
+  Original Item: Submarine Chart
   Category:
     - PuzzleSecretCave
     - CombatSecretCave
@@ -2163,7 +2168,7 @@
     - 0x00000210
 
 - Name: Five Star Isles - Sunken Treasure
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
@@ -2175,7 +2180,7 @@
     - 0x000013A4
 
 - Name: Five Star Isles - Raft Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Raft
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
@@ -2184,7 +2189,7 @@
     - 0x0000147C
 
 - Name: Five Star Isles - Submarine Chest
-  OriginalItem: Piece Of Heart
+  Original Item: Piece Of Heart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
@@ -2193,7 +2198,7 @@
     - 0x000004C8
 
 - Name: Five Star Isles - Lookout Platform Destroy Cannons
-  OriginalItem: Golden Feather
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
@@ -2202,7 +2207,7 @@
     - 0x0000149C
 
 - Name: Great Sea - Ghost Ship Chest
-  OriginalItem: Triforce Shard 4
+  Original Item: Triforce Shard 4
   Category:
     - Misc
   Path: content/Common/Stage/PShip_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2211,7 +2216,7 @@
     - 0x00000DAC
 
 - Name: Dragon Roost Cavern - First Room Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2220,7 +2225,7 @@
     - 0x00001E40
 
 - Name: Dragon Roost Cavern - Water Jug Alcove Chest
-  OriginalItem: Dungeon Map
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2229,7 +2234,7 @@
     - 0x00001EA0
 
 - Name: Dragon Roost Cavern - Boarded Up Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2238,7 +2243,7 @@
     - 0x00001E60
 
 - Name: Dragon Roost Cavern - Swing Across Lava Chest
-  OriginalItem: Treasure Chart 11
+  Original Item: Treasure Chart 11
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2247,7 +2252,7 @@
     - 0x00001EE0
 
 - Name: Dragon Roost Cavern - Rat Room Chest
-  OriginalItem: Compass
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2256,7 +2261,7 @@
     - 0x00001E80
 
 - Name: Dragon Roost Cavern - Rat Room Boarded Up Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2265,7 +2270,7 @@
     - 0x00001F00
 
 - Name: Dragon Roost Cavern - Bird's Nest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
@@ -2274,7 +2279,7 @@
     - 0x00000BC8
 
 - Name: Dragon Roost Cavern - Dark Room Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2283,7 +2288,7 @@
     - 0x00001E20
 
 - Name: Dragon Roost Cavern - Hub Room Tingle Chest
-  OriginalItem: Yellow Rupee
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
     - TingleChest
@@ -2293,7 +2298,7 @@
     - 0x00001F40
 
 - Name: Dragon Roost Cavern - Pot Room Chest
-  OriginalItem: Treasure Chart 39
+  Original Item: Treasure Chart 39
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2302,7 +2307,7 @@
     - 0x00001E00
 
 - Name: Dragon Roost Cavern - Boss Stairs Right Chest
-  OriginalItem: Knights Crest
+  Original Item: Knights Crest
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2311,7 +2316,7 @@
     - 0x00001DC0
 
 - Name: Dragon Roost Cavern - Boss Stairs Left Chest
-  OriginalItem: Yellow Rupee
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2320,7 +2325,7 @@
     - 0x00001DE0
 
 - Name: Dragon Roost Cavern - Mini Boss
-  OriginalItem: Grappling Hook
+  Original Item: Grappling Hook
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2329,7 +2334,7 @@
     - 0x00000688
 
 - Name: Dragon Roost Cavern - Under Rope Bridge Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2338,7 +2343,7 @@
     - 0x00001EC0
 
 - Name: Dragon Roost Cavern - Tingle Statue Chest
-  OriginalItem: Dragon Tingle Statue
+  Original Item: Dragon Tingle Statue
   Category:
     - Dungeon
     - TingleChest
@@ -2348,7 +2353,7 @@
     - 0x00001F20
 
 - Name: Dragon Roost Cavern - Big Key Chest
-  OriginalItem:  Big Key
+  Original Item:  Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2357,7 +2362,8 @@
     - 0x00001DA0
 
 - Name: Dragon Roost Cavern - Gohma Heart Container
-  OriginalItem: Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
   Category:
     - Dungeon
   Paths:
@@ -2369,7 +2375,7 @@
     - 0x000006C0
 
 - Name: Forbidden Woods - First Room Chest
-  OriginalItem: Dungeon Map
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2378,7 +2384,7 @@
     - 0x00001934
 
 - Name: Forbidden Woods - Boko Baba Climb Chest
-  OriginalItem: Treasure Chart 1
+  Original Item: Treasure Chart 1
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2387,7 +2393,7 @@
     - 0x000018F4
 
 - Name: Forbidden Woods - Inside Hollow Tree Chest
-  OriginalItem: Knights Crest
+  Original Item: Knights Crest
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2396,7 +2402,7 @@
     - 0x00001914
 
 - Name: Forbidden Woods - Hole In Tree Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2405,7 +2411,7 @@
     - 0x00001974
 
 - Name: Forbidden Woods - Morth Pit Chest
-  OriginalItem: Yellow Rupee
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2414,7 +2420,7 @@
     - 0x00001A74
 
 - Name: Forbidden Woods - Vine Maze Left Chest
-  OriginalItem: Compass
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2423,7 +2429,7 @@
     - 0x000019B4
 
 - Name: Forbidden Woods - Vine Maze Right Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2432,7 +2438,7 @@
     - 0x00001954
 
 - Name: Forbidden Woods - Tall Room Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2441,7 +2447,7 @@
     - 0x00001A14
 
 - Name: Forbidden Woods - Mothula Mini Boss Chest
-  OriginalItem: Boomerang
+  Original Item: Boomerang
   Category:
     - Dungeon
   Path: content/Common/Stage/kinMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2450,7 +2456,7 @@
     - 0x000004AC
 
 - Name: Forbidden Woods - Past Seeds Hanging by Vines Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2459,7 +2465,7 @@
     - 0x00001A54
 
 - Name: Forbidden Woods - Chest Across Hanging Flower
-  OriginalItem: Yellow Rupee
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2468,7 +2474,7 @@
     - 0x00001A94
 
 - Name: Forbidden Woods - Tingle Statue Chest
-  OriginalItem: Forbidden Tingle Statue
+  Original Item: Forbidden Tingle Statue
   Category:
     - Dungeon
     - TingleChest
@@ -2478,7 +2484,7 @@
     - 0x00001AB4
 
 - Name: Forbidden Woods - Locked Tree Trunk Chest
-  OriginalItem: Treasure Chart 15
+  Original Item: Treasure Chart 15
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2487,7 +2493,7 @@
     - 0x000019D4
 
 - Name: Forbidden Woods - Big Key Chest
-  OriginalItem: FW Big Key
+  Original Item: FW Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2496,7 +2502,7 @@
     - 0x000019F4
 
 - Name: Forbidden Woods - Double Mothula Room Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2505,7 +2511,8 @@
     - 0x00001A34
 
 - Name: Forbidden Woods - Kalle Demos Heart Container
-  OriginalItem: Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
   Category:
     - Dungeon
   Paths:
@@ -2517,7 +2524,7 @@
     - 0x00000114
 
 - Name: Tower of the Gods - Hop Across Floating Boxes Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2526,7 +2533,7 @@
     - 0x00001924
 
 - Name: Tower of the Gods - Chest Behind Bombable Wall
-  OriginalItem: Dungeon Map
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2535,7 +2542,7 @@
     - 0x00001944
 
 - Name: Tower of the Gods - Light Two Torches Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2544,7 +2551,7 @@
     - 0x000019C4
 
 - Name: Tower of the Gods - Skull Room Chest
-  OriginalItem: Compass
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2553,7 +2560,7 @@
     - 0x00001964
 
 - Name: Tower of the Gods - Shoot Eye Above Skulls Chest
-  OriginalItem: Treasure Chart 6
+  Original Item: Treasure Chart 6
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2562,7 +2569,7 @@
     - 0x000019E4
 
 - Name: Tower of the Gods - Tingle Statue Chest
-  OriginalItem: Goddess Tingle Statue
+  Original Item: Goddess Tingle Statue
   Category:
     - Dungeon
     - TingleChest
@@ -2572,7 +2579,7 @@
     - 0x00001A64
 
 - Name: Tower of the Gods - Stone Tablet
-  OriginalItem: Command Melody
+  Original Item: Command Melody
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -2581,7 +2588,7 @@
   NameOffset: 0x0001E660
 
 - Name: Tower of the Gods - First Armos Knights Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2590,7 +2597,7 @@
     - 0x000019A4
 
 - Name: Tower of the Gods - Darknut Mini Boss
-  OriginalItem: Progressive Bow
+  Original Item: Progressive Bow
   Category:
     - Dungeon
   Path: content/Common/Stage/SirenMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2599,7 +2606,7 @@
     - 0x00000520
 
 - Name: Tower of the Gods - Floating Platforms Room Lower Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2608,7 +2615,7 @@
     - 0x00001A24
 
 - Name: Tower of the Gods - Floating Platforms Room Upper Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2617,7 +2624,7 @@
     - 0x00001A44
 
 - Name: Tower of the Gods - Second Armos Knights Chest
-  OriginalItem: Treasure Chart 30
+  Original Item: Treasure Chart 30
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2626,7 +2633,7 @@
     - 0x00001A04
 
 - Name: Tower of the Gods - Big Key Chest
-  OriginalItem: TotG Big Key
+  Original Item: TotG Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2635,7 +2642,8 @@
     - 0x00001A84
 
 - Name: Tower of the Gods - Gohdan Heart Container
-  OriginalItem: Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
   Category:
     - Dungeon
   Paths:
@@ -2647,7 +2655,7 @@
     - 0x000003C0
 
 - Name: Earth Temple - Warp Pot Room Chest
-  OriginalItem: Dungeon Map
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2656,7 +2664,7 @@
     - 0x00001988
 
 - Name: Earth Temple - Warp Pot Room Behind Curtain
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
     - Obscure
@@ -2666,7 +2674,7 @@
     - 0x00000414
 
 - Name: Earth Temple - First Crypt Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2675,7 +2683,7 @@
     - 0x000019A8
 
 - Name: Earth Temple - Chest Behind Destructable Wall
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2684,7 +2692,7 @@
     - 0x00001AC8
 
 - Name: Earth Temple - Three Blocks Room Chest
-  OriginalItem: Compass
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2693,7 +2701,7 @@
     - 0x000019C8
 
 - Name: Earth Temple - Behind Statues Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2702,7 +2710,7 @@
     - 0x000019E8
 
 - Name: Earth Temple - Second Crypt Casket
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
@@ -2711,7 +2719,7 @@
     - 0x00000234
 
 - Name: Earth Temple - Stalfos Mini Boss
-  OriginalItem: Mirror Shield
+  Original Item: Mirror Shield
   Category:
     - Dungeon
   Path: content/Common/Stage/M_DaiMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2720,7 +2728,7 @@
     - 0x0000063C
 
 - Name: Earth Temple - Tingle Statue Chest
-  OriginalItem: Earth Tingle Statue
+  Original Item: Earth Tingle Statue
   Category:
     - Dungeon
     - TingleChest
@@ -2730,7 +2738,7 @@
     - 0x00001B28
 
 - Name: Earth Temple - Foggy Floormaster Room End Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2739,7 +2747,7 @@
     - 0x00001A08
 
 - Name: Earth Temple - Kill All Floormasters Chest
-  OriginalItem: Treasure Chart 20
+  Original Item: Treasure Chart 20
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2748,7 +2756,7 @@
     - 0x00001AA8
 
 - Name: Earth Temple - Near Hammer Button Behind Curtain
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
     - Obscure
@@ -2758,7 +2766,7 @@
     - 0x00000490
 
 - Name: Earth Temple - Third Crypt Chest
-  OriginalItem: Red Rupee
+  Original Item: Red Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2767,7 +2775,7 @@
     - 0x00001A28
 
 - Name: Earth Temple - Many Mirrors Room Right Chest
-  OriginalItem: Purple Rupee
+  Original Item: Purple Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2776,7 +2784,7 @@
     - 0x00001A68
 
 - Name: Earth Temple - Many Mirrors Room Left Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2785,7 +2793,7 @@
     - 0x00001A88
 
 - Name: Earth Temple - Big Key Chest
-  OriginalItem: ET Big Key
+  Original Item: ET Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2794,7 +2802,7 @@
     - 0x00001A48
 
 - Name: Earth Temple - Stalfos Crypt Room Chest
-  OriginalItem: Treasure Chart 12
+  Original Item: Treasure Chart 12
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2803,7 +2811,8 @@
     - 0x00001AE8
 
 - Name: Earth Temple - Jalhalla Heart Container
-  OriginalItem: Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
   Category:
     - Dungeon
   Paths:
@@ -2815,7 +2824,7 @@
     - 0x000000C0
 
 - Name: Wind Temple - Between Dirt Patches Chest
-  OriginalItem: Orange Rupee
+  Original Item: Orange Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2824,7 +2833,7 @@
     - 0x00000F84
 
 - Name: Wind Temple - Tingle Statue Chest
-  OriginalItem: Wind Tingle Statue
+  Original Item: Wind Tingle Statue
   Category:
     - Dungeon
     - TingleChest
@@ -2834,7 +2843,7 @@
     - 0x00001064
 
 - Name: Wind Temple - Behind Stone Head Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2843,7 +2852,7 @@
     - 0x00000FA4
 
 - Name: Wind Temple - Left Alcove Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2852,7 +2861,7 @@
     - 0x00000F64
 
 - Name: Wind Temple - Big Key Chest
-  OriginalItem: WT Big Key
+  Original Item: WT Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2861,7 +2870,7 @@
     - 0x00000F24
 
 - Name: Wind Temple - Cyclones Room Chest
-  OriginalItem: Dungeon Map
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2870,7 +2879,7 @@
     - 0x00000FE4
 
 - Name: Wind Temple - Hub Room Center Chest
-  OriginalItem: Compass
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2879,7 +2888,7 @@
     - 0x00001024
 
 - Name: Wind Temple - Wizzrobe Mini Boss
-  OriginalItem: Hookshot
+  Original Item: Hookshot
   Category:
     - Dungeon
   Path: content/Common/Stage/kazeMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2888,7 +2897,7 @@
     - 0x000002D8
 
 - Name: Wind Temple - Spike Wall Room First Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2897,7 +2906,7 @@
     - 0x00000F44
 
 - Name: Wind Temple - Spike Wall Room Destroy Floors
-  OriginalItem: Treasure Chart 35
+  Original Item: Treasure Chart 35
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2906,7 +2915,7 @@
     - 0x00000FC4
 
 - Name: Wind Temple - Hub Room Top Chest
-  OriginalItem: Joy Pendant
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2915,7 +2924,7 @@
     - 0x00000EE4
 
 - Name: Wind Temple - Behind Armos Chest
-  OriginalItem: Small Key
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2924,7 +2933,7 @@
     - 0x00000F04
 
 - Name: Wind Temple - Kill All Basement Room Enemies
-  OriginalItem: Treasure Chart 5
+  Original Item: Treasure Chart 5
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2933,7 +2942,8 @@
     - 0x00001004
 
 - Name: Wind Temple - Molgera Heart Container
-  OriginalItem: Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
   Category:
     - Dungeon
   Paths:
@@ -2945,7 +2955,7 @@
     - 0x00000114
 
 - Name: Hyrule Castle - Sword Chamber Chest
-  OriginalItem: Master Sword Powerless
+  Original Item: Master Sword Powerless
   Category:
     - Dungeon
   Path: content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
@@ -2954,7 +2964,7 @@
     - 0x000013A8
 
 - Name: Ganon's Tower - Maze Chest
-  OriginalItem: Light Arrow
+  Original Item: Light Arrow
   Category:
     - Dungeon
   Path: content/Common/Stage/GanonJ_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2963,7 +2973,7 @@
     - 0x00000858
 
 - Name: Ganon's Tower - Defeat Ganondorf
-  OriginalItem: Game Beatable
+  Original Item: Game Beatable
   Category:
     - Other
     - AlwaysProgression

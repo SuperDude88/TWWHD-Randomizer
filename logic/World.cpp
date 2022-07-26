@@ -16,7 +16,7 @@
 #include <filesystem>
 
 // some error checking macros for brevity and since we can't use exceptions
-#define YAML_FIELD_CHECK(ref, key, err) if(!ref.has_child(key)) {lastError << "Unable to find key: \"" << key << '"'; return err;}
+#define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
 #define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
 #define EVENT_CHECK(eventName) if (eventMap.count(eventName) == 0) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
@@ -24,6 +24,7 @@
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaEntries.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(0, locationEntries.count(loc), msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
 #define OPTION_VALID_CHECK(opt, msg) VALID_CHECK(opt, Option::INVALID, msg, WorldLoadingError::OPTION_DOES_NOT_EXIST)
+#define VALID_DUNGEON_CHECK(dungeon) if (!isValidDungeon(dungeon)) {ErrorLog::getInstance().log("Unrecognized dungeon name: \"" + dungeon + "\""); LOG_ERR_AND_RETURN(WorldLoadingError::INVALID_DUNGEON_NAME)};
 
 World::World()
 {
@@ -69,7 +70,7 @@ void World::setItemPools()
 {
     itemPool.clear();
     startingItems.clear();
-    auto gameItemPool = generateGameItemPool(settings);
+    auto gameItemPool = generateGameItemPool(settings, this);
     auto startingGameItems = generateStartingGameItemPool(settings);
 
     // Set worldId for each item in each pool
@@ -128,6 +129,7 @@ AreaEntry& World::getArea(const std::string& area)
 
 void World::determineChartMappings()
 {
+    LOG_TO_DEBUG("Determining Chart Mappings");
     // The ordering of this array corresponds each treasure/triforce chart with
     // the island sector it's located in
     static std::array<GameItem, 49> charts = {
@@ -264,9 +266,21 @@ World::WorldLoadingError World::determineRaceModeDungeons()
 {
     if (settings.race_mode)
     {
-        auto dungeons = getDungeonList();
+        std::vector<Dungeon> dungeonPool = {};
+        for (auto& [name, dungeon] : dungeons)
+        {
+            // Set names now (should probably do this somewhere else, but fine for now)
+            dungeon.name = name;
+            // Verify that each dungeon has a race mode location
+            if (dungeon.raceModeLocation == "")
+            {
+                ErrorLog::getInstance().log("Dungeon \"" + dungeon.name + "\" has no set race mode location");
+                LOG_ERR_AND_RETURN(WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION);
+            }
+            dungeonPool.push_back(dungeon);
+        }
 
-        shufflePool(dungeons);
+        shufflePool(dungeonPool);
 
         int setRaceModeDungeons = 0;
         // Loop through all the dungeons and see if any of them have items plandomized
@@ -274,9 +288,8 @@ World::WorldLoadingError World::determineRaceModeDungeons()
         // as race mode dungeons
         if (settings.plandomizer)
         {
-            for (const auto& dungeonId : dungeons)
+            for (const auto& dungeon : dungeonPool)
             {
-                auto dungeon = dungeonIdToDungeon(dungeonId);
                 for (auto& location : dungeon.locations)
                 {
                     auto dungeonLocation = &locationEntries[location];
@@ -285,15 +298,15 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                     {
                         // However, if the dungeon's race mode location is junk then
                         // that's an error on the user's part.
-                        Location* raceModeLocation = &locationEntries[dungeon.locations.back()];
+                        Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
                         bool raceModeLocationIsAcceptable = plandomizerLocations.count(raceModeLocation) == 0 ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
                         if (!raceModeLocationIsAcceptable)
                         {
-                            ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeonIdToName(dungeonId) + "\" with potentially major item");
-                            return WorldLoadingError::PLANDOMIZER_ERROR;
+                            ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
+                            LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
                         }
-                        LOG_TO_DEBUG("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
-                        raceModeDungeons.insert({dungeonId, ""});
+                        LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
+                        dungeons[dungeon.name].isRaceModeDungeon = true;
                         setRaceModeDungeons++;
                         break;
                     }
@@ -312,22 +325,21 @@ World::WorldLoadingError World::determineRaceModeDungeons()
 
         // Now check again and fill in any more dungeons that may be necessary
         // Also set non-race mode dungeons locations as non-progress
-        for (const auto& dungeonId : dungeons)
+        for (const auto& dungeon : dungeonPool)
         {
             // If this dungeon was already selected, then skip it
-            if (raceModeDungeons.count(dungeonId) > 0)
+            if (dungeons[dungeon.name].isRaceModeDungeon)
             {
                 continue;
             }
-            auto dungeon = dungeonIdToDungeon(dungeonId);
             // If this dungeon has a junk item placed as its race mode
             // location, then skip it
-            auto dungeonLocation = &locationEntries[dungeon.locations.back()];
-            bool raceModeLocationIsAcceptable = plandomizerLocations.count(dungeonLocation) == 0 ? false : plandomizerLocations[dungeonLocation].isJunkItem();
+            auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
+            bool raceModeLocationIsAcceptable = plandomizerLocations.count(raceModeLocation) == 0 ? false : plandomizerLocations[raceModeLocation].isJunkItem();
             if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
             {
-                LOG_TO_DEBUG("Chose race mode dungeon : " + dungeonIdToName(dungeonId));
-                raceModeDungeons.insert({dungeonId, ""});
+                LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
+                dungeons[dungeon.name].isRaceModeDungeon = true;
                 setRaceModeDungeons++;
             }
             else
@@ -722,12 +734,27 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         }
     }
 
-    const std::string& itemName = locationObject["OriginalItem"].As<std::string>();
+    const std::string& itemName = locationObject["Original Item"].As<std::string>();
     newEntry.originalItem = {nameToGameItem(itemName), worldId};
     ITEM_VALID_CHECK(
         newEntry.originalItem.getGameItemId(),
         "Error processing location " << location << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
     )
+
+    // If this location is dependent on beating a dungeon, then add it to the dungeon's
+    // list of outside dependent locations
+    if (!locationObject["Dungeon Dependency"].IsNone())
+    {
+        const std::string dungeonName = locationObject["Dungeon Dependency"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeonName);
+        Dungeon& dungeon = dungeons[dungeonName];
+        dungeon.outsideDependentLocations.push_back(newEntry.name);
+    }
+
+    if (!locationObject["Race Mode Location"].IsNone())
+    {
+        newEntry.isRaceModeLocation = true;
+    }
 
     return WorldLoadingError::NONE;
 }
@@ -806,7 +833,24 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     if (!areaObject["Dungeon"].IsNone())
     {
         const std::string dungeon = areaObject["Dungeon"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeon)
         newEntry.dungeon = dungeon;
+    }
+
+    // Check to see if this area is the first one in a dungeon. This is important
+    // for later finding which island leads to this dungeon in race mode
+    if (!areaObject["Dungeon Entrance Room"].IsNone())
+    {
+        const std::string dungeon = areaObject["Dungeon Entrance Room"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeon)
+        dungeons[dungeon].entranceRoom = loadedArea;
+    }
+
+    // Check to see if this area is assigned to a hint region
+    if (!areaObject["Hint Region"].IsNone())
+    {
+        const std::string region = areaObject["Hint Region"].As<std::string>();
+        newEntry.hintRegion = region;
     }
 
     // load events and their requirements in this area if there are any
@@ -844,6 +888,17 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
             }
             LOG_TO_DEBUG("\tAdding location " + locationName);
             newEntry.locations.push_back(locOut);
+            // If this area is part of a dungeon, then add any locations to that dungeon
+            if (newEntry.dungeon != "")
+            {
+                dungeons[newEntry.dungeon].locations.push_back(locationName);
+                LOG_TO_DEBUG("\t\tAdding location to dungeon " + newEntry.dungeon);
+                // If it's a race mode location, set it as the dungeon's race mode location
+                if (locationEntries[locationName].isRaceModeLocation)
+                {
+                    dungeons[newEntry.dungeon].raceModeLocation = locationName;
+                }
+            }
         }
     }
 
@@ -865,6 +920,56 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
             LOG_TO_DEBUG("\tAdding exit -> " + exitOut.getConnectedArea());
             newEntry.exits.push_back(exitOut);
         }
+    }
+
+    return WorldLoadingError::NONE;
+}
+
+World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
+{
+    YAML_FIELD_CHECK(itemObject, "Name", WorldLoadingError::ITEM_MISSING_KEY);
+    YAML_FIELD_CHECK(itemObject, "Game Item Id", WorldLoadingError::ITEM_MISSING_KEY);
+
+    const std::string itemName = itemObject["Name"].As<std::string>();
+    const GameItem gameItemId = idToGameItem(std::stoul(itemObject["Game Item Id"].As<std::string>(), nullptr, 16));
+
+    LOG_TO_DEBUG("Loading item \"" + itemName + "\". Game Item ID to name: " + gameItemToName(gameItemId));
+
+    itemEntries[itemName] = Item(gameItemId, worldId);
+    auto& item = itemEntries[itemName];
+
+    if (!itemObject["Small Key Dungeon"].IsNone())
+    {
+        const std::string dungeon = itemObject["Small Key Dungeon"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeon);
+        LOG_TO_DEBUG(itemName + " is small key for " + dungeon);
+        dungeons[dungeon].smallKey = gameItemId;
+        // If this is a small key, it also should have a count
+        YAML_FIELD_CHECK(itemObject, "Small Key Count", WorldLoadingError::ITEM_MISSING_KEY);
+        dungeons[dungeon].keyCount = itemObject["Small Key Count"].As<int>();
+        LOG_TO_DEBUG("Key count: " + std::to_string(dungeons[dungeon].keyCount));
+    }
+
+    if (!itemObject["Big Key Dungeon"].IsNone())
+    {
+        const std::string dungeon = itemObject["Big Key Dungeon"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeon);
+        LOG_TO_DEBUG(itemName + " is big key for " + dungeon);
+        dungeons[dungeon].bigKey = gameItemId;
+    }
+
+    if (!itemObject["Map Dungeon"].IsNone())
+    {
+        const std::string dungeon = itemObject["Map Dungeon"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeon);
+        dungeons[dungeon].map = gameItemId;
+    }
+
+    if (!itemObject["Compass Dungeon"].IsNone())
+    {
+        const std::string dungeon = itemObject["Compass Dungeon"].As<std::string>();
+        VALID_DUNGEON_CHECK(dungeon);
+        dungeons[dungeon].compass = gameItemId;
     }
 
     return WorldLoadingError::NONE;
@@ -1075,8 +1180,24 @@ int World::getFileContents(const std::string& filename, std::string& fileContent
 }
 
 // Load the world based on the given world graph file, macros file, and loation data file
-int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath)
+int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath)
 {
+    LOG_TO_DEBUG("Loading world");
+    // load and parse items
+    Yaml::Node itemDataTree;
+    Yaml::Parse(itemDataTree, itemDataPath.c_str());
+    for (auto itemIt = itemDataTree.Begin(); itemIt != itemDataTree.End(); itemIt++)
+    {
+        Yaml::Node& item = (*itemIt).second;
+        auto err = loadItem(item);
+        if (err != World::WorldLoadingError::NONE)
+        {
+            ErrorLog::getInstance().log(std::string("Got error loading item: ") + World::errorToName(err));
+            ErrorLog::getInstance().log(getLastErrorDetails());
+            return 1;
+        }
+    }
+
     // load world graph
     Yaml::Node worldDataTree;
     Yaml::Parse(worldDataTree, worldFilePath.c_str());
@@ -1220,8 +1341,8 @@ std::unordered_set<std::string> World::getIslands(const std::string& startArea)
 
         auto& areaEntry = getArea(area);
 
-        // Don't search through other dungeons
-        if (area != startArea && areaEntry.dungeon != "")
+        // Don't search through other dungeons or hint areas
+        if (area != startArea && (areaEntry.dungeon != "" || areaEntry.hintRegion != ""))
         {
             continue;
         }
@@ -1252,6 +1373,15 @@ std::unordered_set<std::string> World::getIslands(const std::string& startArea)
     }
 
     return islands;
+}
+
+Dungeon& World::getDungeon(const std::string& dungeonName)
+{
+    if (dungeons.count(dungeonName) == 0)
+    {
+        ErrorLog::getInstance().log("ERROR: Unknown dungeon name " + dungeonName);
+    }
+    return dungeons[dungeonName];
 }
 
 const char* World::errorToName(WorldLoadingError err)
@@ -1290,8 +1420,10 @@ const char* World::errorToName(WorldLoadingError err)
         return "MACRO_MISSING_KEY";
     case WorldLoadingError::MACRO_MISSING_VAL:
         return "MACRO_MISSING_VAL";
-    case WorldLoadingError::REQUIREMENT_MISISNG_KEY:
-        return "REQUIREMENT_MISISNG_KEY";
+    case WorldLoadingError::ITEM_MISSING_KEY:
+        return "ITEM_MISSING_KEY";
+    case WorldLoadingError::REQUIREMENT_MISSING_KEY:
+        return "REQUIREMENT_MISSING_KEY";
     case WorldLoadingError::INVALID_LOCATION_CATEGORY:
         return "INVALID_LOCATION_CATEGORY";
     case WorldLoadingError::INVALID_MODIFICATION_TYPE:
@@ -1310,6 +1442,10 @@ const char* World::errorToName(WorldLoadingError err)
         return "EXTRA_OR_MISSING_PARENTHESIS";
     case WorldLoadingError::PLANDOMIZER_ERROR:
         return "PLANDOMIZER_ERROR";
+    case WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION:
+        return "DUNGEON_HAS_NO_RACE_MODE_LOCATION";
+    case WorldLoadingError::INVALID_DUNGEON_NAME:
+        return "INVALID_DUNGEON_NAME";
     default:
         return "UNKNOWN";
     }

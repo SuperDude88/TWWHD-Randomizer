@@ -2,20 +2,7 @@
 #pragma once
 
 #include "GameItem.hpp"
-#include "Location.hpp"
-#include "Area.hpp"
-#include <array>
-
-enum struct DungeonId : uint32_t
-{
-    DragonRoostCavern = 0,
-    ForbiddenWoods,
-    TowerOfTheGods,
-    ForsakenFortress,
-    EarthTemple,
-    WindTemple,
-    INVALID
-};
+#include <list>
 
 struct Dungeon {
     int keyCount = -1;
@@ -23,14 +10,13 @@ struct Dungeon {
     GameItem bigKey = GameItem::INVALID;
     GameItem map = GameItem::INVALID;
     GameItem compass = GameItem::INVALID;
-    std::vector<std::string> locations = {};
-    std::vector<std::string> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
+    std::list<std::string> locations = {};
+    std::list<std::string> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
+    std::string raceModeLocation = "";
+    std::string entranceRoom = "";
+    std::string island = "";
+    std::string name = "";
+    bool isRaceModeDungeon = false;
 };
 
-const std::array<DungeonId, 6> getDungeonList();
-const Dungeon nameToDungeon(const std::string& name);
-std::string dungeonIdToName(const DungeonId& dungeonId);
-DungeonId nameToDungeonId(const std::string& name);
-std::string dungeonIdToFirstRoom(const DungeonId& dungeonId);
-const Dungeon dungeonIdToDungeon(const DungeonId& dungeonId);
-DungeonId dungeonItemToDungeon(const GameItem& item);
+bool isValidDungeon(const std::string& dungeonName);

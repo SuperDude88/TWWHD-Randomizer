@@ -31,7 +31,7 @@
       Outset Island: Nothing
 
 - Name: Mailbox Checks
-  HintRegion: Mailbox
+  Hint Region: Mailbox
   Locations:
       Mailbox - Letter from Hoskit's Girlfriend: Can_Farm_Golden_Feathers and Can_Play_SoP and Spoils_Bag and can_access(Dragon Roost Rito Aerie)
       Mailbox - Letter from Baito's Mother: Can_Play_SoP and Note_To_Mom and Delivery_Bag
@@ -47,7 +47,7 @@
       Mailbox - Letter from Tingle: can_access(Forsaken Fortress Boss Room) and Can_Defeat_Helmaroc_King and Can_Play_SoP and 'RescuedTingle'
 
 - Name: The Great Sea
-  HintRegion: The Great Sea
+  Hint Region: The Great Sea
   Locations:
       Great Sea - Salvage Corp Gift: Can_Sail_Away
       Great Sea - Cyclos: Can_Sail_Away and Heros_Bow
@@ -120,6 +120,7 @@
 
 - Name: Forsaken Fortress Inner Courtyard
   Dungeon: Forsaken Fortress
+  Dungeon Entrance Room: Forsaken Fortress
   Locations:
       Forsaken Fortress - Phantom Ganon: Can_Defeat_Phantom_Ganon
   Exits:
@@ -283,6 +284,7 @@
       Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
 
 - Name: Forsaken Fortress Boss Room
+  Dungeon: Forsaken Fortress
   Locations:
       Forsaken Fortress - Helmaroc King Heart Container: Can_Defeat_Helmaroc_King
 
@@ -1796,6 +1798,7 @@
 
 - Name: DRC First Room
   Dungeon: Dragon Roost Cavern
+  Dungeon Entrance Room: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - First Room Chest: Nothing
   Exits:
@@ -1985,11 +1988,13 @@
       DRC Before Big Key Room Lower: Nothing
 
 - Name: DRC Boss Room
+  Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Gohma Heart Container: Grappling_Hook
 
 - Name: FW First Room
   Dungeon: Forbidden Woods
+  Dungeon Entrance Room: Forbidden Woods
   Locations:
       Forbidden Woods - First Room Chest: Nothing
   Exits:
@@ -2202,11 +2207,13 @@
       FW Mothula Hallway: Nothing
 
 - Name: FW Boss Room
+  Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Kalle Demos Heart Container: Can_Defeat_Kalle_Demos
 
 - Name: TOTG Entrance Room
   Dungeon: Tower of the Gods
+  Dungeon Entrance Room: Tower of the Gods
   Exits:
       TOTG East Golden Statue Room: Nothing
       TOTG Entrance Room Past Gate: can_access(TOTG East Golden Statue Room)
@@ -2404,11 +2411,13 @@
       TOTG Boss Room: TotG_Big_Key
 
 - Name: TOTG Boss Room
+  Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Gohdan Heart Container: Can_Defeat_Gohdan
 
 - Name: ET First Room
   Dungeon: Earth Temple
+  Dungeon Entrance Room: Earth Temple
   Exits:
       ET Early Two Switches Room: Nothing
       Headstone Island Interior: Nothing
@@ -2612,11 +2621,13 @@
       ET Many Mirrors Room Past Light Wall: Nothing
 
 - Name: ET Boss Room
+  Dungeon: Earth Temple
   Locations:
       Earth Temple - Jalhalla Heart Container: Can_Defeat_Jalhalla
 
 - Name: WT First Room
   Dungeon: Wind Temple
+  Dungeon Entrance Room: Wind Temple
   Exits:
       WT First Warp Pot Room Front: Nothing
       Gale Isle Interior: Nothing
@@ -2848,15 +2859,18 @@
       WT Boss Room: WT_Big_Key
 
 - Name: WT Boss Room
+  Dungeon: Wind Temple
   Locations:
       Wind Temple - Molgera Heart Container: Can_Defeat_Molgera
 
 - Name: Hyrule Castle Front
+  Hint Region: Hyrule
   Exits:
       Tower of the Gods Sector: Nothing
       Hyrule Castle Interior: Nothing
 
 - Name: Hyrule Castle Interior
+  Hint Region: Hyrule
   Events:
       Can Farm Knights Crests: Grappling_Hook and Spoils_Bag
   Exits:
@@ -2865,28 +2879,32 @@
       Hyrule Castle Front: Nothing
 
 - Name: Hyrule Castle Sword Chamber
+  Hint Region: Hyrule
   Locations:
       Hyrule Castle - Sword Chamber Chest: Can_Defeat_Mighty_Darknuts
   Exits:
       Hyrule Castle Interior: Nothing
 
 - Name: Hyrule Castle Bridge
+  Hint Region: Hyrule
   Exits:
       Hyrule Field Path: Can_Get_Past_Hyrule_Barrier
       Hyrule Castle Interior: Nothing
 
 - Name: Hyrule Field Path
+  Hint Region: Hyrule
   Exits:
       Hyrule Field Path Past Broken Bridge: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
       Hyrule Castle Bridge: Nothing
 
 - Name: Hyrule Field Path Past Broken Bridge
+  Hint Region: Hyrule
   Exits:
       Ganon's Tower Trials Hub: Nothing
       Hyrule Field Path: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: Ganon's Tower Trials Hub
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower DRC Trial: Nothing
       Ganon's Tower FW Trial: Nothing
@@ -2900,57 +2918,57 @@
       Hyrule Field Path Past Broken Bridge: Nothing
 
 - Name: Ganon's Tower DRC Trial
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Gohma Refight: Grappling_Hook and Can_Fly_With_Deku_Leaf_Indoors
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Gohma Refight
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: Can_Defeat_Gohma
 
 - Name: Ganon's Tower FW Trial
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Kalle Demos Refight: Can_Fan_With_Deku_Leaf and Can_Fly_With_Deku_Leaf_Indoors
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Kalle Demos Refight
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: Can_Defeat_Kalle_Demos
 
 - Name: Ganon's Tower ET Trial
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Jalhalla Refight: Can_Aim_Mirror_Shield
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Jalhalla Refight
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: Can_Defeat_Jalhalla
 
 - Name: Ganon's Tower WT Trial
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Molgera Refight: Hookshot and Can_Fly_With_Deku_Leaf_Indoors
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Molgera Refight
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Trials Hub: Can_Defeat_Molgera
 
 - Name: Ganon's Tower First Staircase
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Middle Hub Room: Nothing
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Middle Hub Room
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Phantom Ganon Maze: Nothing
       Forsaken Fortress Inner Courtyard: Boomerang
@@ -2958,7 +2976,7 @@
       Ganon's Tower First Staircase: Nothing
 
 - Name: Ganon's Tower Phantom Ganon Maze
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Locations:
       Ganon's Tower - Maze Chest: Can_Defeat_Phantom_Ganon
   Events:
@@ -2967,17 +2985,17 @@
       Ganon's Tower Middle Hub Room: Can_Defeat_Phantom_Ganon
 
 - Name: Ganon's Tower Final Staircase
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Puppet Ganon Boss Room: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
       Ganon's Tower Middle Hub Room: Nothing
 
 - Name: Ganon's Tower Puppet Ganon Boss Room
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Spire: Light_Arrows and Hookshot and Grappling_Hook and Boomerang
 
 - Name: Ganon's Tower Spire
-  Dungeon: Ganon's Tower
+  Hint Region: Ganon's Tower
   Locations:
       Ganon's Tower - Defeat Ganondorf: Can_Defeat_Ganondorf

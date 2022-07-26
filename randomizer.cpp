@@ -540,7 +540,7 @@ public:
 				//get world locations with "worlds[playerNum - 1].locationEntries"
 				//assume 1 world for now, modifying multiple copies needs work
 				Utility::platformLog("Saving items...\n");
-				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].raceModeDungeons);
+				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save items!");

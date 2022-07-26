@@ -279,10 +279,8 @@ static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
     {
         auto worldId = world.getWorldId();
 
-        for (auto& dungeonId : getDungeonList())
+        for (auto& [name, dungeon] : world.dungeons)
         {
-            auto dungeon = dungeonIdToDungeon(dungeonId);
-
             // If keylunacy is disabled, then add dungeon items to the world's
             // item pool
             if (!world.getSettings().keylunacy)
@@ -349,17 +347,18 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     ItemPool raceModeItems;
     for (auto& world : worlds)
     {
-        for (auto& [dungeonId, hintRegion] : world.raceModeDungeons)
+        for (auto& [name, dungeon] : world.dungeons)
         {
-            const auto& dungeon = dungeonIdToDungeon(dungeonId);
-            // The race mode location for each dungeon is the last one listed
-            Location* raceModeLocation = &world.locationEntries[dungeon.locations.back()];
-            // If this location already has an item placed at it, then skip it
-            if (raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
+            if (dungeon.isRaceModeDungeon)
             {
-                continue;
+                Location* raceModeLocation = &world.locationEntries[dungeon.raceModeLocation];
+                // If this location already has an item placed at it, then skip it
+                if (raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
+                {
+                    continue;
+                }
+                raceModeLocations.push_back(raceModeLocation);
             }
-            raceModeLocations.push_back(raceModeLocation);
         }
     }
 
