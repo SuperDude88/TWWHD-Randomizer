@@ -258,6 +258,8 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
     return true;
 }
 
+
+
 namespace FileTypes {
 
     const char* FLIMErrorGetName(FLIMError err) {
@@ -581,7 +583,7 @@ namespace FileTypes {
             dds.data = rgba4_to_argb4(dds.data);
         }
 
-        if(!static_cast<uint32_t>(tileMode)) {
+        if(tileMode == 0) {
             tileMode = getDefaultGX2TileMode(GX2SurfaceDim(1), dds.header.width, dds.header.height,
                     1, GX2SurfaceFormat(1), GX2AAMode(0), GX2SurfaceUse(1));
         }
@@ -593,7 +595,7 @@ namespace FileTypes {
         dds.data += std::string(padSize, '\0');
 
         uint32_t tilingDepth = surfOut.depth;
-        if (static_cast<uint32_t>(surfOut.tileMode) == 3) tilingDepth = std::floor(tilingDepth / 4);
+        if (surfOut.tileMode == 3) tilingDepth = std::floor(tilingDepth / 4);
 
         if (tilingDepth != 1) {
             ErrorLog::getInstance().log("Unsupported depth!");
@@ -603,8 +605,7 @@ namespace FileTypes {
         uint8_t swizzle_tileMode = computeSwizzleTileMode(swizzle_, tileMode);
 
         uint32_t s = swizzle_ << 8;
-        uint32_t tileModeTemp = static_cast<uint32_t>(tileMode);
-        if (tileModeTemp != 1 && tileModeTemp != 2 && tileModeTemp != 3 && tileModeTemp != 16) s |= 0xd0000;
+        if (tileMode != 1 && tileMode != 2 && tileMode != 3 && tileMode != 16) s |= 0xd0000;
 
         this->data = swizzleSurf(dds.header.width, dds.header.height, 1, GX2SurfaceFormat(dds.format_), GX2AAMode(0), GX2SurfaceUse(1), surfOut.tileMode, s, surfOut.pitch, surfOut.bpp, 0, 0, dds.data, true);
 
@@ -621,7 +622,7 @@ namespace FileTypes {
             else dds.format_ = 0xc;
         }
         else {
-            std::unordered_map<uint32_t, uint32_t> fmt = {
+            static const std::unordered_map<uint32_t, uint32_t> fmt = {
                 {2, 2},
                 {7, 3},
                 {8, 5},
@@ -638,7 +639,8 @@ namespace FileTypes {
                 {0x19, 0x18}
             };
 
-            dds.format_ = fmt[dds.format_];
+            if(fmt.count(dds.format_) == 0) LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
+            dds.format_ = fmt.at(dds.format_);
         }
 
         std::array<uint8_t, 4> temp;
@@ -769,13 +771,14 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, info.height);
         Utility::Endian::toPlatform_inplace(eType::Big, info.alignment);
         Utility::Endian::toPlatform_inplace(eType::Big, info.dataSize);
+        const uint8_t format = static_cast<uint8_t>(info.format); //narrow from uint32_t so endianness doesn't affect the byte written
 
         out.write(info.magicImag, 4);
         out.write(reinterpret_cast<const char*>(&info.size_0x10), sizeof(info.size_0x10));
         out.write(reinterpret_cast<const char*>(&info.width), sizeof(info.width));
         out.write(reinterpret_cast<const char*>(&info.height), sizeof(info.height));
         out.write(reinterpret_cast<const char*>(&info.alignment), sizeof(info.alignment));
-        out.write(reinterpret_cast<const char*>(&info.format), 1);
+        out.write(reinterpret_cast<const char*>(&format), 1);
         out.write(reinterpret_cast<const char*>(&info.tile_swizzle), sizeof(info.tile_swizzle));
         out.write(reinterpret_cast<const char*>(&info.dataSize), sizeof(info.dataSize));
 

@@ -400,4 +400,123 @@ custom_damage_multiplier:
   ; Remove branch taken when having less than 1 magic.
   nop
 
+
+ ; Allow the game to load uncompressed szs files
+ ; This is super hacky and probably a terrible idea but it saves a ton of time randomizing (compression is slow)
+ ; in sead::SZSDecompressor::decomp
+ .org 0x0275ed6c
+  b load_uncompressed_szs
+  lwz r29, 0xC(sp)
+  lwz r0, 0x1C(sp)
+  lwz r30, 0x10(sp)
+  mtlr r0
+  lwz r31, 0x14(sp)
+  addi sp, sp, 0x18
+  blr
+.org @NextFreeSpace
+.global load_uncompressed_szs
+load_uncompressed_szs:
+  lis r9,0x5341
+  addi r9,r9,0x5243
+  cmplw r3, r9 ; Check if file is SARC (should be)
+  bne return_err_1
+  lwz r5, 0x8(r30)
+  cmplw r29, r5 ; Check if output buffer is large enough
+  blt return_err_2
+  mr r3, r31
+  mr r4, r30
+  li r6, 0
+  .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
+  mr r3, r5 ; Return size
+  b 0x0275ed70 ; Branch back
+
+.global return_err_1
+return_err_1:
+  li r3, -0x1
+  b 0x0275ed88 ; Return -1 if it isn't SARC
+
+.global return_err_2
+return_err_2:
+  li r3, -0x2
+  b 0x0275edac ; Return -1 if it isn't SARC
+
+ ; in sead::SZSDecompressor::tryDecompFromDevice
+.org 0x0275eba8
+  b get_decompressed_szs_size
+.org @NextFreeSpace
+.global get_decompressed_szs_size
+get_decompressed_szs_size:
+  lwz r4, 0(r3)
+  lis r5, 0x5961
+  addi r5, r5, 0x7a30
+  cmplw r4, r5
+  beq read_yaz0_size
+  lis r5, 0x5341
+  addi r5, r5, 0x5243
+  cmplw r4, r5
+  beq read_sarc_size
+  li r3, -1
+  b 0x0275ebac
+  
+read_yaz0_size:
+  lwz r3, 0x4(r3)
+  b 0x0275ebac
+read_sarc_size:
+  lwz r3, 0x8(r3)
+  b 0x0275ebac
+
+.org 0x0275f180
+  b get_alignment
+.org @NextFreeSpace
+.global get_alignment
+get_alignment:
+  lwz r4, 0(r3)
+  lis r5, 0x5961
+  addi r5, r5, 0x7a30
+  cmplw r4, r5
+  beq read_yaz0_align
+  li r3, 0
+  b 0x0275ebac
+  
+read_yaz0_align:
+  lwz r3, 0x8(r3)
+  b 0x0275ebac
+
+ ; in sead::SZSDecompressor::readHeader_
+.org 0x0275edfc
+  b copy_sarc_to_output
+.org @NextFreeSpace
+.global copy_sarc_to_output
+copy_sarc_to_output:
+  lwz r11, 0(r4)
+  lis r7, 0x5341
+  addi r7, r7, 0x5243
+  cmplw r11, r7
+  bne not_sarc ; not SARC
+  lwz r3, 0x0(r12) ; load dst, src already in r4
+  lwz r5, 0x8(r4) ; load size
+  li r6, 0
+  mflr r0
+  .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
+  li r3, -0x2
+  mtlr r0
+  blr ; return back to streamDecomp
+not_sarc:
+  b 0x0275ee44
+
+ ; in sead::SZSDecompressor::tryDecompFromDevice
+.org 0x0275f508
+  b check_copied_dst
+.org @NextFreeSpace
+.global check_copied_dst
+check_copied_dst:
+  bge continue_normally
+  cmpwi r3, -0x2
+  beq copied_success
+  b 0x0275f484 ; return as error
+continue_normally:
+  b 0x0275f50c ; return as normal
+copied_success:
+  b 0x0275f528 ; return back as success
+
 .close

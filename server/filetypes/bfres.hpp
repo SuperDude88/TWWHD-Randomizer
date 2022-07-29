@@ -73,22 +73,6 @@ struct IndexGroup
     std::vector<GroupEntry> entries;
 };
 
-struct FRESFileSpec
-{
-    /// name of the file from the string table
-    std::string fileName;
-    /// offset relative to start of FRES file
-    uint32_t fileOffset;
-    /// length of file past offset
-    uint32_t fileLength;
-};
-
-struct FRESStringTableEntry
-{
-    uint32_t length;
-    std::string str;
-};
-
 namespace FileTypes
 {
     const char* FRESErrorGetName(FRESError err);
@@ -97,9 +81,25 @@ namespace FileTypes
     class resFile
     {
     public:
+        struct FileSpec
+        {
+            /// name of the file from the string table
+            std::string fileName;
+            /// offset relative to start of FRES file
+            uint32_t fileOffset;
+            /// length of file past offset
+            uint32_t fileLength;
+        };
+
+        struct StringTableEntry
+        {
+            uint32_t length;
+            std::string str;
+        };
+
         FRESHeader fresHeader;
         std::vector<Subfiles::FTEXFile> textures;
-        std::vector<FRESFileSpec> files;
+        std::vector<FileSpec> files;
 
         resFile();
         //static FRESFile createNew(const std::string& filename); //Needs more complete implementation to be usable

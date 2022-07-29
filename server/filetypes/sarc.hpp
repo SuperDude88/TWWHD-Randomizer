@@ -44,8 +44,6 @@ struct SFATNode {
 };
 
 struct SFAT {
-    unsigned int offset;
-
     char magicSFAT[4];
     uint16_t headerSize_0xC;
     uint16_t numFiles;
@@ -55,8 +53,6 @@ struct SFAT {
 };
 
 struct SFNT {
-    unsigned int offset;
-
     char magicSFNT[4];
     uint16_t headerSize_0x8;
     uint8_t padding_0x00[2];
@@ -64,36 +60,36 @@ struct SFNT {
     std::vector<std::string> filenames;
 };
 
-struct file {
-    std::string name;
-    std::string data; //SFAT node index
-};
-
 namespace FileTypes {
     const char* SARCErrorGetName(SARCError err);
 
     class SARCFile {
     public:
+        struct File {
+            std::string name;
+            std::string data;
+        };
+
         SARCFile();
         static SARCFile createNew(const std::string& filename);
         SARCError loadFromBinary(std::istream& sarc);
         SARCError loadFromFile(const std::string& filePath);
-        const file& getFile(const std::string& filename);
+        const File& getFile(const std::string& filename);
         SARCError writeToStream(std::ostream& out);
         SARCError writeToFile(const std::string& outFilePath);
         SARCError extractToDir(const std::string& dirPath);
+        SARCError replaceFile(const std::string& filename, const std::string& newFilePath);
         SARCError rebuildFromDir(const std::string& dirPath);
         SARCError buildFromDir(const std::string& dirPath); //partly untested, should work though
-
     private:
         SARCHeader header;
         SFAT fileTable;
         SFNT nameTable;
         std::unordered_map<std::string, size_t> file_index_by_name;
-        std::vector<file> files; //store as vector to keep insertion order
+        std::vector<File> files; //store as vector to keep insertion order
         uint32_t guessed_alignment;
 
         void initNew();
-        uint32_t guessDefaultAlignment();
+        void guessDefaultAlignment();
     };
 }

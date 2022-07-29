@@ -19,6 +19,7 @@ namespace Utility
 {
 	//std::filesystem is partially broken on Wii U, these are cross-platform replacements
 
+	//BUG: seek to std::ios::end doesn't seem to work on MLC, find workaround? (relevant uses are currently replaced)
     inline std::ostream& seek(std::ostream& stream, const std::streamoff& pos, const std::ios::seekdir& dir = std::ios::beg) {
         #ifdef DEVKITPRO
         switch(dir) {

@@ -19,26 +19,26 @@ enum struct [[nodiscard]] BDTError {
 	COUNT
 };
 
-struct FileSpec {
-    uint32_t offset;
-    uint32_t size;
-};
-
 namespace FileTypes {
 
 	const char* BDTErrorGetName(BDTError err);
 
 	class BDTFile {
-	private:
-		uint32_t numFiles;
-		std::vector<FileSpec> fileInfo;
 	public:
+		struct FileSpec {
+		    uint32_t offset;
+		    uint32_t size;
+		};
+		
         std::vector<std::string> files;
 
 		BDTError loadFromBinary(std::istream& in);
 		BDTError loadFromFile(const std::string& filePath);
 		BDTError writeToStream(std::ostream& out);
 		BDTError writeToFile(const std::string& filePath);
+	private:
+		uint32_t numFiles;
+		std::vector<FileSpec> fileInfo;
 	};
 }
 
