@@ -94,6 +94,83 @@ namespace {
     }
 }
 
+ConfigError createDefaultConfig(const std::string& filePath) {
+    Config conf;
+
+    conf.gameBaseDir = "";
+    conf.workingDir = "";
+    conf.outputDir = "";
+    conf.seed = "Link";
+
+    conf.settings.progression_dungeons = true;
+    conf.settings.progression_great_fairies = true;
+    conf.settings.progression_puzzle_secret_caves = true;
+    conf.settings.progression_combat_secret_caves = false;
+    conf.settings.progression_short_sidequests = false;
+    conf.settings.progression_long_sidequests = false;
+    conf.settings.progression_spoils_trading = false;
+    conf.settings.progression_minigames = false;
+    conf.settings.progression_free_gifts = true;
+    conf.settings.progression_mail = false;
+    conf.settings.progression_platforms_rafts = false;
+    conf.settings.progression_submarines = false;
+    conf.settings.progression_eye_reef_chests = false;
+    conf.settings.progression_big_octos_gunboats = false;
+    conf.settings.progression_triforce_charts = false;
+    conf.settings.progression_treasure_charts = false;
+    conf.settings.progression_expensive_purchases = true;
+    conf.settings.progression_misc = true;
+    conf.settings.progression_tingle_chests = false;
+    conf.settings.progression_battlesquid = false;
+    conf.settings.progression_savage_labyrinth = false;
+    conf.settings.progression_island_puzzles = false;
+    conf.settings.progression_obscure = false;
+
+    conf.settings.keylunacy = false;
+    conf.settings.randomize_charts = false;
+    conf.settings.randomize_starting_island = false;
+    conf.settings.randomize_dungeon_entrances = false;
+    conf.settings.randomize_cave_entrances = false;
+    conf.settings.randomize_door_entrances = false;
+    conf.settings.randomize_misc_entrances = false;
+    conf.settings.mix_entrance_pools = false;
+    conf.settings.decouple_entrances = false;
+
+    conf.settings.instant_text_boxes = true;
+    conf.settings.reveal_full_sea_chart = true;
+    conf.settings.num_starting_triforce_shards = 0;
+    conf.settings.add_shortcut_warps_between_dungeons = false;
+    conf.settings.do_not_generate_spoiler_log = false;
+    conf.settings.sword_mode = SwordMode::StartWithSword;
+    conf.settings.skip_rematch_bosses = true;
+    conf.settings.invert_sea_compass_x_axis = false;
+    conf.settings.race_mode = false;
+    conf.settings.num_race_mode_dungeons = 4;
+    conf.settings.damage_multiplier = 2.0f;
+    conf.settings.chest_type_matches_contents = false;
+
+    conf.settings.player_in_casual_clothes = false;
+    conf.settings.pig_color = PigColor::RANDOM;
+
+    conf.settings.starting_gear = {
+        GameItem::ProgressiveShield,
+        GameItem::BalladOfGales,
+        GameItem::SongOfPassing,
+        GameItem::ProgressiveMagicMeter,
+        GameItem::ProgressiveSail
+    };
+
+    conf.settings.starting_pohs = 0;
+    conf.settings.starting_hcs = 0;
+    conf.settings.remove_music = false;
+
+    conf.settings.plandomizer = false;
+
+    LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
+
+    return ConfigError::NONE;
+}
+
 ConfigError loadFromFile(const std::string& filePath, Config& out) {
     //Check if we can open the file before parsing because exceptions won't work on console
     std::ifstream file(filePath);
@@ -304,7 +381,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     }
 
 ConfigError writeToFile(const std::string& filePath, const Config& config) {
-//Check if we can open the file before parsing because exceptions won't work on console
+    //Check if we can open the file before parsing because exceptions won't work on console
     std::ofstream file(filePath);
     if(!file.is_open()) return ConfigError::COULD_NOT_OPEN;
 
@@ -387,4 +464,3 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     return ConfigError::NONE;
 }
-

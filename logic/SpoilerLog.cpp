@@ -58,8 +58,7 @@ struct chartComparator {
 
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
-    time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
-    log << "Program opened " << std::ctime(&point); //time string ends with \n
+    log << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
     
     log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     log << "Seed: " << LogInfo::getConfig().seed << std::endl;

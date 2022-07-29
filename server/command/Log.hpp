@@ -1,12 +1,15 @@
 #pragma once
 
-#include <ratio>
 #include <string>
 #include <fstream>
 #include <typeinfo>
 #include <chrono>
 #include <sstream>
 #include <iomanip>
+#include <array>
+#ifdef DEVKITPRO
+    #include <coreinit/time.h>
+#endif
 
 #include "../../seedgen/config.hpp"
 
@@ -16,47 +19,33 @@
 
 
 
-//make these thread safe?
-
+//TODO: are these thread safe?
 class ProgramTime {
-public: 
+private:
+#ifdef DEVKITPRO
+    const OSTick openTime;
+    static OSTick getOpenedTime();
+    static OSTick getElapsedTime();
+#else
     using TimePoint_t = std::chrono::time_point<std::chrono::system_clock>;
 
-    ProgramTime(const ProgramTime&) = delete;
-    ProgramTime& operator=(const ProgramTime&) = delete;
-private:
     const TimePoint_t openTime;
+    static TimePoint_t getOpenedTime();
+    static TimePoint_t::duration getElapsedTime();
+#endif
 
     ProgramTime();
     ~ProgramTime();
+public:
+    ProgramTime(const ProgramTime&) = delete;
+    ProgramTime& operator=(const ProgramTime&) = delete;
 
     static ProgramTime& getInstance();
-
-public:
-    static TimePoint_t::duration getElapsedTime() { return std::chrono::system_clock::now() - getOpenedTime(); }
-    static TimePoint_t getOpenedTime() { return getInstance().openTime; }
+    static std::string getTimeStr();
+    static std::string getDateStr();
 };
 
-inline std::string formatTime(const ProgramTime::TimePoint_t::duration& duration_) {
-    using namespace std::chrono;
-    ProgramTime::TimePoint_t::duration duration = duration_;
-    std::stringstream ret;
-    ret <<  std::setfill('0');
 
-    hours hr = duration_cast<hours>(duration);
-    ret << std::setw(2) << hr.count() << ":";
-    duration -= hr;
-    minutes min = duration_cast<minutes>(duration);
-    ret << std::setw(2) << min.count() << ":";
-    duration -= min;
-    seconds sec = duration_cast<seconds>(duration);
-    ret << std::setw(2) << sec.count() << ".";
-    duration -= sec;
-    milliseconds ms = duration_cast<milliseconds>(duration);
-    ret << std::setw(3) << ms.count();
-
-    return ret.str();
-}
 
 class LogInfo {
 private:

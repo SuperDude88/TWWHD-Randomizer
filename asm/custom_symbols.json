@@ -115,6 +115,13 @@
   "custom_warp_pot_env_color": "0x028FA630",
   "multiply_damage": "0x028FA634",
   "custom_damage_multiplier": "0x028FA644",
-  "check_hyrule_warp_unlocked": "0x028FA648",
-  "give_pearl_and_raise_totg_if_necessary": "0x028FA688"
+  "load_uncompressed_szs": "0x028FA648",
+  "return_err_1": "0x028FA67C",
+  "return_err_2": "0x028FA684",
+  "get_decompressed_szs_size": "0x028FA68C",
+  "get_alignment": "0x028FA6C8",
+  "copy_sarc_to_output": "0x028FA6EC",
+  "check_copied_dst": "0x028FA724",
+  "check_hyrule_warp_unlocked": "0x028FA73C",
+  "give_pearl_and_raise_totg_if_necessary": "0x028FA77C"
 }

@@ -16,6 +16,7 @@
 
 #include "../utility/endian.hpp"
 #include "../utility/file.hpp"
+#include "../utility/common.hpp"
 #include "../command/Log.hpp"
 
 using eType = Utility::Endian::Type;
@@ -133,11 +134,22 @@ namespace FileTypes {
         out.write(reinterpret_cast<const char*>(&e_shentsize), sizeof(e_shentsize));
         out.write(reinterpret_cast<const char*>(&e_shnum), sizeof(e_shnum));
         out.write(reinterpret_cast<const char*>(&e_shstrndx), sizeof(e_shstrndx));
+        
         uint32_t crc_data_offset = 0;
+        Utility::platformLog("shnum 0x%08X\n", ehdr.e_shnum);
         std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
         std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
-        while (static_cast<uint32_t>(out.tellp()) < shdr_data_elf_offset) out.put(0);
+
+	    Utility::platformLog("Padding 0x%08X\n", static_cast<uint32_t>(out.tellp()));
+
+        while (static_cast<uint32_t>(out.tellp()) < shdr_data_elf_offset) {
+            out.put(0);
+        }
+
+        Utility::platformLog("Seeking to 0x%08X\n", ehdr.e_shoff);
         if (!in.seekg(ehdr.e_shoff, std::ios::beg)) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+
+	    Utility::platformLog("Reading section headers\n");
         for (uint16_t i = 0; i < ehdr.e_shnum; i++)
         {
             shdr_table[i].first = i;
@@ -359,7 +371,6 @@ namespace FileTypes {
         uint32_t crc_data_offset = 0;
         std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
         std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
-        while(static_cast<uint32_t>(out.tellp()) < shdr_data_elf_offset) out.put(0);
         in.seekg(ehdr.e_shoff);
         for (uint32_t i = 0; i < ehdr.e_shnum; i++)
         {
@@ -377,7 +388,7 @@ namespace FileTypes {
             if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_entsize), sizeof(shdr_entry.sh_entsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
 
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_name);
-            shdr_entry.sh_type = static_cast<SectionType>(Utility::Endian::toPlatform(eType::Big, static_cast<std::underlying_type_t<SectionType>>(shdr_entry.sh_type)));
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_type);
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_flags);
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_addr);
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_offset);
@@ -388,6 +399,9 @@ namespace FileTypes {
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_entsize);
         }
 
+        while(out.tellp() < shdr_data_elf_offset) {
+            out.put('\0');
+        }
         std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.second.sh_offset < b.second.sh_offset; } );
         for(auto& [index, entry] : shdr_table)
         {
@@ -405,8 +419,9 @@ namespace FileTypes {
                 {
                     std::string data(CHUNK, '\0');
                     block_size = CHUNK;
-                    if(data_size<block_size)
+                    if(data_size<block_size) {
                         block_size = data_size;
+                    }
                     data_size -= block_size;
                     in.read(&data[0], block_size);
                     out.write(&data[0], block_size);
@@ -426,7 +441,7 @@ namespace FileTypes {
                 strm.opaque = Z_NULL;
                 strm.avail_in = 0;
                 strm.next_in = Z_NULL;
-                if(data_size<CHUNK)
+                if(data_size < CHUNK)
                 {
                     block_size = data_size;
                     deflateInit(&strm, LEVEL);
@@ -446,8 +461,9 @@ namespace FileTypes {
                         entry.sh_size = have + 4;
                         entry.sh_flags |= SHF_RPL_ZLIB;
                     }
-                    else
+                    else {
                         out.write(&buff_in[0], block_size);
+                    }
                     deflateEnd(&strm);
                 }
                 else
@@ -459,7 +475,7 @@ namespace FileTypes {
                     out.write(reinterpret_cast<const char*>(&data_size_BE), sizeof(data_size_BE));
 
                     deflateInit(&strm, LEVEL);
-                    while(data_size>0)
+                    while(data_size > 0)
                     {
                         block_size = CHUNK;
                         flush = Z_NO_FLUSH;
@@ -487,14 +503,15 @@ namespace FileTypes {
                     entry.sh_flags |= SHF_RPL_ZLIB;
                 }
             }
-            while(out.tellp() % 0x40 != 0) out.put(0);
+            padToLen(out, 0x40);
             if(entry.sh_type == SectionType::SHT_RPL_CRCS)
             {
                 crcs[index] = 0;
                 crc_data_offset = entry.sh_offset;
             }
         }
-        Utility::seek(out, ehdr.e_shoff);
+        
+        out.seekp(ehdr.e_shoff, std::ios::beg);
         std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.first < b.first; } );
         for (const auto& [index, entry] : shdr_table)
         {
@@ -521,10 +538,10 @@ namespace FileTypes {
             out.write(reinterpret_cast<const char*>(&sh_entsize), sizeof(sh_entsize));
         }
 
-        Utility::seek(out, crc_data_offset);
-        for (uint32_t i = 0; i < ehdr.e_shnum; i++) {
-            auto crc = Utility::Endian::toPlatform(eType::Big, crcs[i]);
-            out.write(reinterpret_cast<const char*>(&crc), sizeof(crc));
+        out.seekp(crc_data_offset, std::ios::beg);
+        for (const uint32_t& crc : crcs) {
+            const uint32_t crc_BE = Utility::Endian::toPlatform(eType::Big, crc);
+            out.write(reinterpret_cast<const char*>(&crc_BE), sizeof(crc_BE));
         }
 
         return RPXError::NONE;

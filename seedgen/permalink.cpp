@@ -4,7 +4,7 @@
 
 
 
-static const std::array<Option, 46> PERMALINK_OPTIONS {
+static const std::array<Option, 47> PERMALINK_OPTIONS {
     Option::ProgressDungeons,
     Option::ProgressGreatFairies,
     Option::ProgressPuzzleCaves,
@@ -50,7 +50,8 @@ static const std::array<Option, 46> PERMALINK_OPTIONS {
     Option::StartingGear,
     Option::StartingHP,
     Option::StartingHC,
-    Option::RemoveMusic
+    Option::RemoveMusic,
+    Option::Plandomizer,
 };
 
 std::string getSettingsStr(const Settings& settings) {

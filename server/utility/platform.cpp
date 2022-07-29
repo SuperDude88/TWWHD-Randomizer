@@ -8,9 +8,9 @@
 	#include <whb/log.h>
 	#include <whb/log_console.h>
 	#include <coreinit/mcp.h>
+	#include <coreinit/ios.h>
 	#include <coreinit/thread.h>
 	#include <iosuhax.h>
-	#include <iosuhax_cfw.h>
 	#include <iosuhax_devoptab.h>
 	#include "../platform/wiiutitles.hpp"
 	#define PRINTF_BUFFER_LENGTH 2048
@@ -193,26 +193,6 @@ void haxStartCallback(IOSError arg1, void *arg2) {
 bool initIOSUHax()
 {
 	Utility::platformLog("starting IOSUHax...\n");
-	auto family = IOSUHAX_CFW_GetFamily();
-	switch(family)
-	{
-	case IOSUHAX_CFW_MOCHA:
-		Utility::platformLog("detected MOCHA CFW\n");
-		break;
-	case IOSUHAX_CFW_HAXCHIFW:
-		Utility::platformLog("detected HAXCHI CFW\n");
-		break;
-	case IOSUHAX_CFW_NO_CFW:
-		Utility::platformLog("no CFW detected\n");
-	default:
-		Utility::platformLog("unable to detect CFW family\n");
-		break;
-	}
-	if(IOSUHAX_CFW_MCPAvailable() == 0)
-	{
-		Utility::platformLog("MCP inaccessible\n");
-		return false;
-	}
 
 	iosuhaxHandle = IOSUHAX_Open(nullptr);
 	if (iosuhaxHandle < 0) 

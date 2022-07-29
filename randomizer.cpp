@@ -46,12 +46,14 @@ private:
 	//int playerId = 1;
 
 	[[nodiscard]] bool checkBackupOrDump() {
-		using namespace std::filesystem;
 
+		using namespace std::filesystem;
 		Utility::platformLog("Verifying dump...\n");
+
 		const RandoSession::fspath& base = g_session.getBaseDir();
 		if(!is_directory(base / "code") || !is_directory(base / "content") || !is_directory(base / "meta")) {
 			Utility::platformLog("Could not find code/content/meta folders at base directory!\n");
+
 			#ifdef DEVKITPRO
 				Utility::platformLog("Attempting to dump game\n");
 				if(!SYSCheckTitleExists(0x0005000010143500)) {
@@ -77,7 +79,7 @@ private:
 			#endif
 		}
 		
-		//Check the meta.xml for other platforms (or as a sanity check on console)
+		//Check the meta.xml for other platforms (+ a sanity check on console)
 		tinyxml2::XMLDocument meta;
 		const std::string metaPath = g_session.openGameFile("meta/meta.xml").string();
 		if(metaPath.empty()) {
@@ -135,7 +137,7 @@ private:
 
 		Utility::platformLog("Saving randomized charts...\n");
 
-		RandoSession::fspath path = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
+		const RandoSession::fspath path = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
 		if(path.empty()) {
 			ErrorLog::getInstance().log("Failed to open cmapdat.bin");
 			return false;
@@ -364,15 +366,14 @@ private:
 	    for (const auto& [fileStage, roomNum] : vanillaEntrancePaths)
 	    {
 	        const std::string fileRoom = std::to_string(roomNum);
-	
-	        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+	        const std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
 	
 			if (fileStage == "sea") {
 				if (pack1.count(roomNum) > 0) {
-					filepath = "content/Common/Pack/szs_permanent1.pack";
+					continue; //pack files are edited elsewhere which restores them
 				}
 				else if (pack2.count(roomNum) > 0) {
-					filepath = "content/Common/Pack/szs_permanent2.pack";
+					continue; //pack files are edited elsewhere which restores them
 				}
 			}
 	
@@ -380,7 +381,11 @@ private:
 		}
 
 		for(const std::string& path : paths) {
-			if(!g_session.restoreGameFile(path)) return false;
+			if(g_session.isCached(path)) continue;
+			if(!g_session.restoreGameFile(path)) {
+				ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+				return false;
+			}
 		}
 
 		return true;
@@ -454,6 +459,8 @@ public:
 		config(config_),
 		permalink(create_permalink(config_.settings, config_.seed))
 	{
+		g_session.init(config.gameBaseDir, config.workingDir, config.outputDir);
+		Utility::platformLog("Initialized session\n");
 	}
 
 	void randomize() {
@@ -466,30 +473,10 @@ public:
 		
 		LogInfo::setConfig(config);
 		LogInfo::setSeedHash(generate_seed_hash());
-
-		Utility::platformLog("Initializing session\n");
-		g_session.init(config.gameBaseDir, config.workingDir, config.outputDir);
-		Utility::platformLog("Initialized session\n");
 		
 		clearOldLogs();
 		
 		if(!checkBackupOrDump()) {
-			return;
-		}
-		
-		//Restore files that aren't always changed (chart list, entrances, etc) so they don't persist across seeds
-		//Copying the whole backup would be excessive and slow
-		Utility::platformLog("Restoring game files...\n");
-		if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
-			ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-			return;
-		}
-		if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
-			ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-			return;
-		}
-		if(!restoreEntrances()) {
-			ErrorLog::getInstance().log("Failed to restore entrances!");
 			return;
 		}
 
@@ -556,6 +543,27 @@ public:
 				generateSpoilerLog(worlds);
 			}
 		}
+
+		//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
+		//Do this at the end to check if the files were cached
+		//Copying is slow so we skip all the ones we can
+		Utility::platformLog("Restoring outdated files...\n");
+		if(!g_session.isCached("content/Common/Misc/Misc.szs")) {
+			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
+				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
+				return;
+			}
+		}
+		if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
+			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
+				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
+				return;
+			}
+		}
+		if(!restoreEntrances()) {
+			ErrorLog::getInstance().log("Failed to restore entrances!");
+			return;
+		}
 		
 		Utility::platformLog("Preparing to repack files...\n");
 		if(!g_session.repackCache()) {
@@ -579,7 +587,7 @@ public:
 int main() {
 	using namespace std::chrono_literals;
 
-	ProgramTime::getOpenedTime(); //create instance + set time
+	ProgramTime::getInstance(); //create instance + set time
 
 	Utility::platformInit();
 
@@ -591,11 +599,15 @@ int main() {
 	loadFromFile("./config.yaml", load);
 
 	Randomizer rando(load);
+
 	// TODO: do a hundo seed to test everything
 	// TODO: create default config if not found
+	// TODO: text wrapping on drc dungeon map
 	rando.randomize();
 
-
+	std::this_thread::sleep_for(3s);
+	
+	Utility::platformShutdown();
 
 	//timing stuff
 	//auto start = std::chrono::high_resolution_clock::now();

@@ -33,23 +33,79 @@ namespace Utility {
 		#endif
 	}
 
+	#ifdef DEVKITPRO
+	void createPath(const char* path) {
+		//based on https://github.com/emiyl/dumpling/blob/42048cb966c04c5fa1c1a54b1f7013b5143f081a/source/app/filesystem.cpp#L236
+
+	    char tmp[PATH_MAX];
+	    char *p = NULL;
+	    size_t len;
+	    snprintf(tmp, sizeof(tmp), "%s", path);
+	    len = strlen(tmp);
+	    if (tmp[len-1] == '/') tmp[len-1] = 0;
+	    for(p = tmp+1; *p; p++) {
+	        if (*p == '/') {
+	            *p = 0;
+	            mkdir(tmp, ACCESSPERMS);
+	            *p = '/';
+	        }
+	    }
+	    mkdir(tmp, ACCESSPERMS);
+	}
+	#endif
+
 	bool copy(const std::filesystem::path& from, const std::filesystem::path& to) {
 		#ifdef DEVKITPRO
-			std::error_code err;
-			for(std::filesystem::directory_iterator p(from), end; p != end;) {
-				std::string srcPath = p->path().string();
-				std::string relPath = srcPath.substr(srcPath.find(from.string()) + from.string().size() + 1); //would use std::filesystem::relative but link fails for dkp
-				if(std::filesystem::is_directory(p->path())) {
-					if(!Utility::create_directories(to / relPath)) return false;
-					if(!Utility::copy(p->path(), to / relPath)) return false;
-				}
-				else if (std::filesystem::is_regular_file(p->path())) {
-					if(!Utility::copy_file(p->path(), to / relPath)) return false;
-				}
+			//based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
 
-				p.increment(err);
-			}
-			
+			std::string srcPath = from.string();
+			std::string destPath = to.string();
+
+			DIR* dirHandle;
+    		if ((dirHandle = opendir(srcPath.c_str())) == nullptr) {
+    		    Utility::platformLog("Couldn't open directory to copy files from:\n");
+    		    Utility::platformLog("%s\n", destPath.c_str());
+    		    return false;
+    		}
+
+    		// Append slash when last character isn't a slash
+    		createPath(destPath.c_str());
+
+    		// Loop over directory contents
+    		struct dirent* dirEntry;
+    		while ((dirEntry = readdir(dirHandle)) != nullptr) {
+    		    std::string entrySrcPath = srcPath + "/" + dirEntry->d_name;
+    		    std::string entryDstPath = destPath + "/" + dirEntry->d_name;
+    		    // Use lstat since readdir returns DT_REG for symlinks
+    		    struct stat fileStat;
+    		    if (lstat(entrySrcPath.c_str(), &fileStat) != 0) {
+    		    	Utility::platformLog("Couldn't check what type this file/folder was:\n");
+    		    	Utility::platformLog("%s\n", entrySrcPath.c_str());
+    		    }
+
+    		    if (S_ISLNK(fileStat.st_mode)) {
+    		        continue;
+    		    }
+    		    else if (S_ISREG(fileStat.st_mode)) {
+    		        // Copy file
+    		        if (!copy_file(entrySrcPath, entryDstPath)) {
+    		            closedir(dirHandle);
+    		            return false;
+    		        }
+    		    }
+    		    else if (S_ISDIR(fileStat.st_mode)) {
+    		        // Ignore root and parent folder entries
+    		        if (strcmp(dirEntry->d_name, ".") == 0 || strcmp(dirEntry->d_name, "..") == 0) continue;
+
+    		        // Copy all the files in this subdirectory
+    		        if (!copy(entrySrcPath, entryDstPath)) {
+    		            closedir(dirHandle);
+    		            return false;
+    		        }
+    		    }
+    		}
+
+    		closedir(dirHandle);
 		#else
 			std::filesystem::copy(from, to, std::filesystem::copy_options::recursive);
 		#endif

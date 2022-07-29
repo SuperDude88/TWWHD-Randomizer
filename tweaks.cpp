@@ -25,6 +25,8 @@
 #include "server/utility/stringUtil.hpp"
 #include "server/command/Log.hpp"
 
+#include "server/utility/platform.hpp"
+
 #define EXTRACT_ERR_CHECK(fspath) { \
     if(fspath.empty()) {\
         ErrorLog::getInstance().log(std::string("Failed to open file on line ") + std::to_string(__LINE__)); \
@@ -47,6 +49,7 @@
 }
 
 #define TWEAK_ERR_CHECK(func) { \
+	Utility::platformLog("Applying tweak %s\n", #func); \
     if(const TweakError error = func; error != TweakError::NONE) { \
         ErrorLog::getInstance().log(std::string("Encountered error in tweak ") + #func); \
         return error;  \
@@ -2542,6 +2545,17 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json"));
 	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json"));
 	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json"));
+
+	Elf32_Rela blockMoveReloc;
+	blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
+	blockMoveReloc.r_info = 0x00015b0a;
+	blockMoveReloc.r_addend = 0;
+	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
+	
+	blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x24;
+	blockMoveReloc.r_info = 0x00015b0a;
+	blockMoveReloc.r_addend = 0;
+	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
 
 	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x001c0ae8})); //would mess with save init
 	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x00160224})); //would mess with salvage point patch
