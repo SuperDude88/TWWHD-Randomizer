@@ -5,19 +5,19 @@
 
 #ifdef DEVKITPRO
     ProgramTime::ProgramTime() :
-        openTime(OSGetTick())
+        openTime(OSGetTime())
     {}
     
-    OSTick ProgramTime::getOpenedTime() {
+    OSTime ProgramTime::getOpenedTime() {
         return getInstance().openTime;
     }
 
-    OSTick ProgramTime::getElapsedTime() {
-        return OSGetTick() - getOpenedTime();
+    OSTime ProgramTime::getElapsedTime() {
+        return OSGetTime() - getOpenedTime();
     }
 
     std::string ProgramTime::getDateStr() {
-        //BUG: this is very broken
+        //IMPROVEMENT: maybe convert 24 hour time to 12AM/PM?
         static const std::array<std::string, 12> MonthStrings {
             "Jan",
             "Feb",
@@ -49,7 +49,7 @@
         ret << DayStrings[time.tm_wday] << " ";
         ret << MonthStrings[time.tm_mon] << " ";
         ret << time.tm_mday << " ";
-        ret << std::setw(2) << time.tm_hour << ":";
+        ret << std::setfill('0') << std::setw(2) << time.tm_hour << ":";
         ret << std::setw(2) << time.tm_min << ":";
         ret << std::setw(2) << time.tm_sec << " ";
         ret << time.tm_year << "\n";
@@ -58,7 +58,7 @@
     }
     
     std::string ProgramTime::getTimeStr() {
-        OSTick duration = getElapsedTime();
+        const OSTime duration = getElapsedTime();
         OSCalendarTime time;
         OSTicksToCalendarTime(duration, &time);
         std::stringstream ret;
@@ -221,7 +221,11 @@ ErrorLog& ErrorLog::getInstance() {
     return s_Instance;
 }
 
+#include "../utility/platform.hpp"
+
 void ErrorLog::log(const std::string& msg) {
+    //TODO: remove print after testing
+    Utility::platformLog(msg + '\n');
     output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
 }
 

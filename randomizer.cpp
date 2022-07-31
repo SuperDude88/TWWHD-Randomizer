@@ -17,6 +17,7 @@
 #include <cstring>
 #include <fstream>
 #include <filesystem>
+#include <string>
 #include <vector>
 
 #ifdef DEVKITPRO
@@ -577,10 +578,10 @@ public:
 		return;
 	}
 
-	void restoreFromBackup() {
-		Utility::copy(g_session.getBaseDir(), g_session.getOutputDir());
-		
-		return;
+	bool restoreFromBackup() {
+		Utility::platformLog("Restoring backup\n");
+
+		return Utility::copy(g_session.getBaseDir(), g_session.getOutputDir());
 	}
 };
 
@@ -592,28 +593,52 @@ int main() {
 	Utility::platformInit();
 
 	#ifdef DEVKITPRO
+		if(!std::filesystem::is_directory("fs:/vol/external01/wiiu/apps/rando")) {
+			ErrorLog::getInstance().log("Could not find randomizer path! This means the randomizer's folder is named incorrectly. Check that the .rpx is inside a folder named \"rando\"");
+			Utility::platformLog("Could not find randomizer path!\n");
+			Utility::platformLog("This means the randomizer's folder is named incorrectly.\n");
+			Utility::platformLog("Check that the .rpx is inside a folder named \"rando\".\n");
+
+			std::this_thread::sleep_for(3s);
+			Utility::platformShutdown();
+			return 1;
+		}
 		chdir("fs:/vol/external01/wiiu/apps/rando");
 	#endif
 
 	Config load;
-	loadFromFile("./config.yaml", load);
+	std::ifstream conf("./config.yaml");
+	if(!conf.is_open()) {
+		Utility::platformLog("Creating default config\n");
+		ConfigError err = createDefaultConfig("./config.yaml");
+		if(err != ConfigError::NONE) {
+			ErrorLog::getInstance().log("Failed to create config, code " + std::to_string(static_cast<uint32_t>(err)));
+
+			std::this_thread::sleep_for(3s);
+			Utility::platformShutdown();
+			return 1;
+		}
+	}
+	conf.close();
+	
+	Utility::platformLog("Reading config\n");
+	ConfigError err = loadFromFile("./config.yaml", load);
+	if(err != ConfigError::NONE) {
+		ErrorLog::getInstance().log("Failed to read config, code " + std::to_string(static_cast<uint32_t>(err)));
+
+		std::this_thread::sleep_for(3s);
+		Utility::platformShutdown();
+		return 1;
+	}
 
 	Randomizer rando(load);
 
 	// TODO: do a hundo seed to test everything
-	// TODO: create default config if not found
 	// TODO: text wrapping on drc dungeon map
+	// TODO: bpr crashes when uncompressed for some reason
 	rando.randomize();
 
 	std::this_thread::sleep_for(3s);
-	
 	Utility::platformShutdown();
-
-	//timing stuff
-	//auto start = std::chrono::high_resolution_clock::now();
-	//auto stop = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	//auto duration2 = duration.count();
-
 	return 0;
 }

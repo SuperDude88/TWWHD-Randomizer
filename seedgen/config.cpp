@@ -175,6 +175,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     //Check if we can open the file before parsing because exceptions won't work on console
     std::ifstream file(filePath);
     if(!file.is_open()) LOG_ERR_AND_RETURN(ConfigError::COULD_NOT_OPEN);
+    file.close();
 
     Yaml::Node root;
     Yaml::Parse(root, filePath.c_str());
@@ -384,6 +385,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     //Check if we can open the file before parsing because exceptions won't work on console
     std::ofstream file(filePath);
     if(!file.is_open()) return ConfigError::COULD_NOT_OPEN;
+    file.close();
 
     Yaml::Node root;
 

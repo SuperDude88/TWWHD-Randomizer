@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <app version="1">
   <name>TWWHDR</name>
-  <coder>SuperDude88, Gymnast86, Csunday95</coder>
+  <coder>SuperDude88 & more</coder>
   <version>1.0a</version>
   <release_date></release_date> <!--YYYYMMDDHHmmSS-->
   <short_description>Wind Waker HD Randomizer</short_description> 
   <long_description>A randomizer for The Legend of Zelda: The Wind Waker HD.
 
 Currently allows randomization of most item locations and entrances.
-In the future, it should support further customization and more randomization options.</long_description> 
+In the future, it should support further customization and more randomization options.
+
+Huge thanks to csunday95 and gymnast86!
+Source code at https://github.com/SuperDude88/TWWHD-Randomizer
+</long_description> 
   <url>https://github.com/SuperDude88/TWWHD-Randomizer</url>
   <category>tool</category>
-
 </app>

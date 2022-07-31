@@ -1,62 +1,73 @@
 #pragma once
 
 #include <string>
-#include <vector>
-#include <filesystem>
 #include <fstream>
-#include <cstdarg>
-#include <cstdio>
-#include <cstdint>
-#include <cstring>
-
-#include "platform.hpp"
+#include <filesystem>
+#include "../command/Log.hpp"
 
 #ifdef DEVKITPRO
 #include <sys/stat.h>
+#include <dirent.h>
 #endif
 
 namespace Utility
 {
 	//std::filesystem is partially broken on Wii U, these are cross-platform replacements
 
-	//BUG: seek to std::ios::end doesn't seem to work on MLC, find workaround? (relevant uses are currently replaced)
-    inline std::ostream& seek(std::ostream& stream, const std::streamoff& pos, const std::ios::seekdir& dir = std::ios::beg) {
+    inline std::ostream& seek(std::ostream& stream, const std::streamoff& off, const std::ios::seekdir& way = std::ios::beg) {
         #ifdef DEVKITPRO
-        switch(dir) {
+		//Wii U crashes if you seek past eof, most other platforms extend the file
+		//Handle writing the extra padding manually
+
+        switch(way) {
             case std::ios::cur:
             {
-                const std::streamoff cur = stream.tellp();
-                if(pos > 0) {
+                const std::streamoff& cur = stream.tellp();
+                if(off > 0) {
                     stream.seekp(0, std::ios::end);
-                    if(stream.tellp() < (cur + pos)) {
-                        const std::string buffer((cur + pos) - stream.tellp(), '\0');
+                    if(stream.tellp() < (cur + off)) {
+                        const std::string buffer((cur + off) - stream.tellp(), '\0');
                         stream.write(&buffer[0], buffer.size());
                     }
                 }
-                return stream.seekp(cur + pos, std::ios::beg);
+				else if ((cur + off) < 0) {
+					//can't seek before start of file, seek to beginning as failsafe
+                    return stream.seekp(0, std::ios::beg);
+				}
+                return stream.seekp(cur + off, std::ios::beg);
             }
             case std::ios::end:
+			//BUG: seek to std::ios::end doesn't seem to work on MLC, find workaround? (relevant uses are currently replaced)
             {
-                if(pos > 0) {
-                    const std::string buffer(pos, '\0');
+				stream.seekp(0, std::ios::end);
+                if(off > 0) {
+                    const std::string buffer(off, '\0');
                     stream.write(&buffer[0], buffer.size());
                 }
-                return stream.seekp(pos, std::ios::end);
+				else if((-off) > stream.tellp()) {
+					//Can't seek before start of file, seek to beginning as failsafe
+					return stream.seekp(0, std::ios::beg);
+				}
+                return stream.seekp(off, std::ios::end);
             }
 			case std::ios::beg:
                 [[fallthrough]];
 			default:
             {
+				if(off < 0) {
+					//can't seek before start of file, seek to beginning as failsafe
+					stream.seekp(0, std::ios::beg);
+				}
                 stream.seekp(0, std::ios::end);
-                if(stream.tellp() < pos) {
-                    const std::string buffer(pos - stream.tellp(), '\0');
+                if(stream.tellp() < off) {
+                    const std::string buffer(off - stream.tellp(), '\0');
                     stream.write(&buffer[0], buffer.size());
                 }
-                return stream.seekp(pos, std::ios::beg);
+                return stream.seekp(off, std::ios::beg);
             }
         }
         #else
-            return stream.seekp(pos, dir);
+            return stream.seekp(off, way);
         #endif
     }
 
@@ -71,23 +82,14 @@ namespace Utility
 
 	inline bool create_directories(const std::filesystem::path& fsPath) {
 		#ifdef DEVKITPRO
-			const char* path = fsPath.string().c_str();
-
-			//borrowed from https://github.com/emiyl/dumpling/blob/master/source/app/filesystem.cpp#L236
-			char tmp[PATH_MAX];
-    		char *p = NULL;
-    		size_t len;
-    		std::snprintf(tmp, sizeof(tmp), "%s", path);
-    		len = std::strlen(tmp);
-    		if (tmp[len-1] == '/') tmp[len-1] = 0;
-    		for(p = tmp+1; *p; p++) {
-    		    if (*p == '/') {
-    		        *p = 0;
-    		        mkdir(tmp, ACCESSPERMS);
-    		        *p = '/';
-    		    }
-    		}
-    		mkdir(tmp, ACCESSPERMS);
+			std::string temp = fsPath.string();
+			if(temp.back() == '/') temp.pop_back();
+			for(size_t i = 0; i < temp.size(); i++) {
+				if(temp[i] == '/') {
+    		    	mkdir(temp.substr(0, i).c_str(), ACCESSPERMS);
+				}
+			}
+			mkdir(temp.c_str(), ACCESSPERMS);
 		#else
 			std::filesystem::create_directories(fsPath);
 		#endif

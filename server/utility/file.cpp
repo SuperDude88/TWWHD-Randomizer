@@ -1,5 +1,10 @@
 #include "file.hpp"
+
 #include <mutex>
+#include <cstring>
+#include "platform.hpp"
+
+
 
 namespace Utility {
 	//IMPROVEMENT: better way to make these thread-safe?
@@ -14,11 +19,11 @@ namespace Utility {
 			std::ifstream src(from, std::ios::binary);
         	std::ofstream dst(to, std::ios::binary);
 			if(!src.is_open()) {
-				Utility::platformLog(from.string() + " not opened\n");
+				ErrorLog::getInstance().log("Failed to open " + from.string());
 				return false;
 			}
 			if(!dst.is_open()) {
-				Utility::platformLog(to.string() + " not opened\n");
+				ErrorLog::getInstance().log("Failed to open " + to.string());
 				return false;
 			}
 
@@ -33,54 +38,29 @@ namespace Utility {
 		#endif
 	}
 
-	#ifdef DEVKITPRO
-	void createPath(const char* path) {
-		//based on https://github.com/emiyl/dumpling/blob/42048cb966c04c5fa1c1a54b1f7013b5143f081a/source/app/filesystem.cpp#L236
-
-	    char tmp[PATH_MAX];
-	    char *p = NULL;
-	    size_t len;
-	    snprintf(tmp, sizeof(tmp), "%s", path);
-	    len = strlen(tmp);
-	    if (tmp[len-1] == '/') tmp[len-1] = 0;
-	    for(p = tmp+1; *p; p++) {
-	        if (*p == '/') {
-	            *p = 0;
-	            mkdir(tmp, ACCESSPERMS);
-	            *p = '/';
-	        }
-	    }
-	    mkdir(tmp, ACCESSPERMS);
-	}
-	#endif
-
 	bool copy(const std::filesystem::path& from, const std::filesystem::path& to) {
 		#ifdef DEVKITPRO
 			//based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
 
-			std::string srcPath = from.string();
-			std::string destPath = to.string();
-
 			DIR* dirHandle;
-    		if ((dirHandle = opendir(srcPath.c_str())) == nullptr) {
-    		    Utility::platformLog("Couldn't open directory to copy files from:\n");
-    		    Utility::platformLog("%s\n", destPath.c_str());
+    		if ((dirHandle = opendir(from.string().c_str())) == nullptr) {
+    		    ErrorLog::getInstance().log("Couldn't open directory to copy files from: " + to.string());
     		    return false;
     		}
 
-    		// Append slash when last character isn't a slash
-    		createPath(destPath.c_str());
+    		Utility::create_directories(to);
 
     		// Loop over directory contents
     		struct dirent* dirEntry;
     		while ((dirEntry = readdir(dirHandle)) != nullptr) {
-    		    std::string entrySrcPath = srcPath + "/" + dirEntry->d_name;
-    		    std::string entryDstPath = destPath + "/" + dirEntry->d_name;
+    		    const std::string entrySrcPath = from / dirEntry->d_name;
+    		    const std::string entryDstPath = to / dirEntry->d_name;
+
     		    // Use lstat since readdir returns DT_REG for symlinks
     		    struct stat fileStat;
     		    if (lstat(entrySrcPath.c_str(), &fileStat) != 0) {
-    		    	Utility::platformLog("Couldn't check what type this file/folder was:\n");
-    		    	Utility::platformLog("%s\n", entrySrcPath.c_str());
+    		    	ErrorLog::getInstance().log("Couldn't check what type this file/folder was: " + entrySrcPath);
+					return false;
     		    }
 
     		    if (S_ISLNK(fileStat.st_mode)) {
@@ -89,16 +69,18 @@ namespace Utility {
     		    else if (S_ISREG(fileStat.st_mode)) {
     		        // Copy file
     		        if (!copy_file(entrySrcPath, entryDstPath)) {
+    		    		ErrorLog::getInstance().log("Failed to copy file: " + entrySrcPath);
     		            closedir(dirHandle);
     		            return false;
     		        }
     		    }
     		    else if (S_ISDIR(fileStat.st_mode)) {
     		        // Ignore root and parent folder entries
-    		        if (strcmp(dirEntry->d_name, ".") == 0 || strcmp(dirEntry->d_name, "..") == 0) continue;
+    		        if (std::strncmp(dirEntry->d_name, ".", 1) == 0 || std::strncmp(dirEntry->d_name, "..", 2) == 0) continue;
 
     		        // Copy all the files in this subdirectory
     		        if (!copy(entrySrcPath, entryDstPath)) {
+    		    		ErrorLog::getInstance().log("Failed to copy dir: " + entrySrcPath);
     		            closedir(dirHandle);
     		            return false;
     		        }

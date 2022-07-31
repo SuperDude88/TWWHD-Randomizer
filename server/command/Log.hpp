@@ -23,9 +23,9 @@
 class ProgramTime {
 private:
 #ifdef DEVKITPRO
-    const OSTick openTime;
-    static OSTick getOpenedTime();
-    static OSTick getElapsedTime();
+    const OSTime openTime;
+    static OSTime getOpenedTime();
+    static OSTime getElapsedTime();
 #else
     using TimePoint_t = std::chrono::time_point<std::chrono::system_clock>;
 

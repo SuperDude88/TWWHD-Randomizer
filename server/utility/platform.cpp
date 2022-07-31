@@ -8,16 +8,14 @@
 	#include <whb/log.h>
 	#include <whb/log_console.h>
 	#include <coreinit/mcp.h>
-	#include <coreinit/ios.h>
 	#include <coreinit/thread.h>
-	#include <iosuhax.h>
-	#include <iosuhax_devoptab.h>
-	#include "../platform/wiiutitles.hpp"
+
+	#include <mocha/mocha.h>
+	#include <romfs-wiiu.h>
+
 	#define PRINTF_BUFFER_LENGTH 2048
-	static int32_t mcpHookHandle = -1;
-	static int32_t fsaHandle = -1;
-	static int32_t iosuhaxHandle = -1;
-	static bool iosuhaxOpen = false;
+
+	static bool mochaOpen = false;
 	static bool systemMLCMounted = false;
 	static std::vector<Utility::titleEntry> wiiuTitlesList{};
 #endif 
@@ -40,8 +38,8 @@ static void sigHandler(int signal)
 }
 
 #ifdef PLATFORM_DKP
-static bool initIOSUHax();
-static void closeIosuhax();
+static bool initMocha();
+static void closeMocha();
 #endif
 
 namespace Utility
@@ -88,29 +86,29 @@ namespace Utility
 		std::vector<MCPTitleListType> rawTitles{};
 		if(!getRawTitles(rawTitles))
 		{
-			Utility::platformLog("unable to get raw titles\n");
+			Utility::platformLog("Failed to get raw titles\n");
 			platformShutdown();
 			return false;
 		}
 
-		if(!initIOSUHax())
-		{
-			Utility::platformLog("unable to init IOSUHAX\n");
+		const int res = romfsInit();
+		if (res) {
+			Utility::platformLog("Failed to init romfs\n");
 			platformShutdown();
 			return false;
 		}
-		iosuhaxOpen = true;
-		if(mount_fs("storage_mlc01", getFSAHandle(), NULL, "/vol/storage_mlc01") != 0)
+
+		if(!initMocha())
 		{
-			Utility::platformLog("unable to mount MLC\n");
+			Utility::platformLog("Failed to init libmocha\n");
 			platformShutdown();
 			return false;
 		}
-		systemMLCMounted = true;
+		mochaOpen = true;
 
 		if(!loadDetailedTitles(rawTitles, wiiuTitlesList))
 		{
-			Utility::platformLog("unable to load detailed titles\n");
+			Utility::platformLog("Failed to load detailed titles\n");
 			platformShutdown();
 			return false;
 		}
@@ -145,35 +143,17 @@ namespace Utility
 	void platformShutdown()
 	{
 #ifdef PLATFORM_DKP
-		if (systemMLCMounted)
+		if (mochaOpen)
 		{
-			unmount_fs("storage_mlc01");
+			closeMocha();
 		}
-		if (iosuhaxOpen)
-		{
-			closeIosuhax();
-		}
+
+		romfsExit();
+
+		mochaOpen = false;
 		wiiuTitlesList.clear();
 		WHBLogConsoleFree();
 		WHBProcShutdown();
-#endif
-	}
-
-	int32_t getFSAHandle()
-	{
-#ifdef PLATFORM_DKP
-		return fsaHandle;
-#else 
-		return -1;
-#endif
-	}
-
-	int32_t getMCPHandle()
-	{
-#ifdef PLATFORM_DKP
-		return mcpHookHandle;
-#else 
-		return -1;
 #endif
 	}
 
@@ -185,64 +165,44 @@ namespace Utility
 }
 
 #ifdef PLATFORM_DKP
-void haxStartCallback(IOSError arg1, void *arg2) {
-	Utility::platformLog("hasStartCallback arg1 = %d, arg2 = %p\n", (int)arg1, (int)arg2);
-}
 
 
-bool initIOSUHax()
+bool initMocha()
 {
-	Utility::platformLog("starting IOSUHax...\n");
-
-	iosuhaxHandle = IOSUHAX_Open(nullptr);
-	if (iosuhaxHandle < 0) 
-	{
-		Utility::platformLog("Couldn't immediately open IOSUHAX, attempting to start\n");
-		mcpHookHandle = MCP_Open();
-		if (mcpHookHandle < 0)
-		{
-			Utility::platformLog("Unable to acquire mcp Hook handle\n");
-			return false;
-		}
-		IOS_IoctlAsync(mcpHookHandle, 0x62, nullptr, 0, nullptr, 0, haxStartCallback, (void*)0);
-		OSSleepTicks(OSSecondsToTicks(1));
-		if(IOSUHAX_Open("/dev/mcp") < 0)
-		{
-			MCP_Close(mcpHookHandle);
-			mcpHookHandle = -1;
-			Utility::platformLog("Unable to open iosuhax /dev/mcp\n");
-			return false;
-		}
-		OSSleepTicks(OSSecondsToTicks(5));
+	Utility::platformLog("Starting libmocha...\n");
+	
+	if(MochaUtilsStatus status = Mocha_InitLibrary(); status != MOCHA_RESULT_SUCCESS) {
+		Utility::platformLog("Mocha_InitLibrary() failed\n");
+		Utility::platformShutdown();
+		return false;
 	}
 
-	fsaHandle = IOSUHAX_FSA_Open();
-    if (fsaHandle < 0) {
-		closeIosuhax();
-        Utility::platformLog("Couldn't open iosuhax FSA!\n");
-        return false;
-    }
-
 	Utility::platformLog("attempting to mount mlc\n");
-	if(mount_fs("storage_mlc01", fsaHandle, NULL, "/vol/storage_mlc01") < 0)
+	if(MochaUtilsStatus status = Mocha_MountFS("storage_mlc01", nullptr, "/vol/storage_mlc01"); status != MOCHA_RESULT_SUCCESS)
 	{
-		Utility::platformLog("failed to mount mlc: %d\n", errno);
+		Utility::platformLog("Failed to mount mlc: %s\n", Mocha_GetStatusStr(status));
 		OSSleepTicks(OSSecondsToTicks(1));
 		return false;
 	}
 
-	Utility::platformLog("IOSUHAX initialized, MLC mounted\n");
+	systemMLCMounted = true;
+
+	Utility::platformLog("Mocha initialized, MLC mounted\n");
 	return true;
 }
 
-void closeIosuhax() {
-	if (fsaHandle >= 0) IOSUHAX_FSA_Close(fsaHandle);
-	if (iosuhaxHandle >= 0) IOSUHAX_Close();
-    if (mcpHookHandle >= 0) MCP_Close(mcpHookHandle);
-    mcpHookHandle = -1;
-    fsaHandle = -1;
-    iosuhaxHandle = -1;
-	iosuhaxOpen = false;
+void closeMocha() {
+	if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
+		Utility::platformLog("Error unmounting mlc: %s\n", Mocha_GetStatusStr(status));
+	}
+	systemMLCMounted = false;
+
+	//if(MochaUtilsStatus status = Mocha_DeinitLibrary(); status != MOCHA_RESULT_SUCCESS) {
+	//	Utility::platformLog("Mocha_DeinitLibrary() failed\n");
+	//	platformShutdown();
+	//}
+
+	return;
 }
 
 #endif

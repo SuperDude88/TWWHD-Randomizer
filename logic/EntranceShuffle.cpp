@@ -345,7 +345,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 auto dungeonFirstRoom = dungeonIdToFirstRoom(dungeon);
                 auto dungeonIslands = world.getIslands(dungeonFirstRoom);
 
-                if (world.raceModeDungeons.count(dungeon) > 0) //contains() is c++20
+                if (world.raceModeDungeons.contains(dungeon))
                 {
                     if (dungeonIslands.size() > 1)
                     {
@@ -357,13 +357,13 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 if (dungeonIslands.size() == 1)
                 {
                     auto dungeonIsland = *dungeonIslands.begin();
-                    if (raceModeIslands.count(dungeonIsland) > 0)
+                    if (raceModeIslands.contains(dungeonIsland))
                     {
                         DebugLog::getInstance().log("Error: Island " + hintRegionToName(dungeonIsland) + " has an ambiguous race mode dungeon");
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
-                    if (world.raceModeDungeons.count(dungeon) > 0)
+                    if (world.raceModeDungeons.contains(dungeon))
                     {
                         raceModeIslands.insert(dungeonIsland);
                     }

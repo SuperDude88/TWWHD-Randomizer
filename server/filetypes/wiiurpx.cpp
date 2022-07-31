@@ -136,20 +136,15 @@ namespace FileTypes {
         out.write(reinterpret_cast<const char*>(&e_shstrndx), sizeof(e_shstrndx));
         
         uint32_t crc_data_offset = 0;
-        Utility::platformLog("shnum 0x%08X\n", ehdr.e_shnum);
         std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
         std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
-
-	    Utility::platformLog("Padding 0x%08X\n", static_cast<uint32_t>(out.tellp()));
 
         while (static_cast<uint32_t>(out.tellp()) < shdr_data_elf_offset) {
             out.put(0);
         }
 
-        Utility::platformLog("Seeking to 0x%08X\n", ehdr.e_shoff);
         if (!in.seekg(ehdr.e_shoff, std::ios::beg)) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
 
-	    Utility::platformLog("Reading section headers\n");
         for (uint16_t i = 0; i < ehdr.e_shnum; i++)
         {
             shdr_table[i].first = i;

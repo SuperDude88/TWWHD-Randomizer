@@ -196,6 +196,7 @@ exec_curr_num_keys_text_command_after_appending_big_key_text:
   addi sp, sp, 0x10
   blr
 
+.global key_text_command_has_big_key_text
 key_text_command_has_big_key_text:
   .string "\0 \0+\0B\0i\0g"
 

@@ -305,9 +305,9 @@ namespace FileTypes{
 	SARCError SARCFile::extractToDir(const std::string& dirPath) {
 		for (const File& file : files)
 		{
-			std::filesystem::path path = dirPath + '/' + file.name;
+			const std::filesystem::path path = dirPath + '/' + file.name;
 			Utility::create_directories(path.parent_path()); //handle any folder structure stuff contained in the SARC
-			std::ofstream outFile(dirPath + '/' + file.name, std::ios::binary);
+			std::ofstream outFile(path, std::ios::binary);
 			if (!outFile.is_open())
 			{
 				LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);

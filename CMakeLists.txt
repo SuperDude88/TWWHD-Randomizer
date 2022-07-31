@@ -1,16 +1,18 @@
 cmake_minimum_required(VERSION 3.7)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(wwhd_rando CXX)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG=1")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
 add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0)
 
 if(DEFINED DEVKITPRO)
-  add_definitions(-DDEVKITPRO)
+  add_compile_definitions(DEVKITPRO)
+  add_compile_options(-O3 -flto)
+  add_link_options(-flto -fno-fat-lto-objects)
 endif()
 
+add_compile_definitions(ENABLE_DEBUG=1) # TODO: Take this out after testing?
 if(ENABLE_DEBUG)
   message("Debugging is ON")
   add_compile_definitions(ENABLE_DEBUG)
@@ -22,7 +24,7 @@ add_compile_definitions(CONFIG_VERSION="1.0")
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
-add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
+add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
 
 # zlib for RPX (de)compression
 if(WIN32)
@@ -52,35 +54,31 @@ else()
   target_link_libraries(wwhd_rando ${ZLIB_LDFLAGS})
   target_compile_options(wwhd_rando PRIVATE ${ZLIB_CFLAGS})
 endif()
+  
+# Put data files together for easier manipulation
+file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
+file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
+file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                           # Images and other assets used in patching
+file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
 
 if(DEFINED DEVKITPRO)
   # Some code specific to Wii U
   add_subdirectory("server/platform")
-  
-  find_library(LIBIOSUHAX iosuhax REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
-  target_link_libraries(wwhd_rando "${LIBIOSUHAX}")
 
-  # TODO: Use libmocha for filesystem access
-  # find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
-  # target_link_libraries(wwhd_rando "${LIBMOCHA}")
+  # Use libmocha for filesystem access
+  find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
+  target_link_libraries(wwhd_rando "${LIBMOCHA}")
+  
+  # Bundle data files in romfs
+  include("${DEVKITPRO}/portlibs/wiiu/share/romfs-wiiu.cmake" REQUIRED)
+  romfs_add(wwhd_rando "build/data")
+  add_compile_definitions(DATA_PATH="romfs:/")
   
   # Copy some files for the homebrew launcher
-  file(COPY "server/platform/meta.xml" DESTINATION "${CMAKE_BINARY_DIR}/rando")
-  file(COPY "server/platform/icon.png" DESTINATION "${CMAKE_BINARY_DIR}/rando")
-  
-  # Put data files together so they can be easily copied to the SD card
-  file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/rando/asm")                # Custom symbols to get addresses of some inserted code
-  file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/rando/asm")                        # Diffs for precompiled ASM patches
-  file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/rando")                                       # Images or other assets used in patching
-  file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/rando/logic")                           # World, macros, and location info
-  configure_file("seedgen/default_config.yaml" "${CMAKE_BINARY_DIR}/rando/config.yaml" COPYONLY)  # Config for settings and seed
+  file(COPY "server/platform/meta.xml" DESTINATION "${CMAKE_BINARY_DIR}")
+  file(COPY "server/platform/icon.png" DESTINATION "${CMAKE_BINARY_DIR}")
 
   wut_create_rpx(wwhd_rando)
 else()
-  # Copy data files to build directory (need to be in the same folder as the executable)
-  file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/asm")                # Custom symbols to get addresses of some inserted code
-  file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/asm")                        # Diffs for precompiled ASM patches
-  file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}")                                       # Images or other assets used in patching
-  file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/logic")                           # World, macros, and location info
-  configure_file("seedgen/default_config.yaml" "${CMAKE_BINARY_DIR}/config.yaml" COPYONLY)  # Config for settings and seed
+  add_compile_definitions(DATA_PATH="./data/")
 endif()
