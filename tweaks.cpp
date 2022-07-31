@@ -25,6 +25,8 @@
 #include "server/utility/stringUtil.hpp"
 #include "server/command/Log.hpp"
 
+#include "server/utility/platform.hpp"
+
 #define EXTRACT_ERR_CHECK(fspath) { \
     if(fspath.empty()) {\
         ErrorLog::getInstance().log(std::string("Failed to open file on line ") + std::to_string(__LINE__)); \
@@ -563,7 +565,7 @@ TweakError allow_all_items_to_be_field_items() {
 		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, address), 0x60000000));
 	}
 
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/field_items_diff.json")); //some special stuff because HD silly
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.json")); //some special stuff because HD silly
 
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0007a2d0, 7), 0x00011ed8)); //Update the Y offset that is being read (.rela.text edit)
 
@@ -626,7 +628,7 @@ TweakError remove_ff2_cutscenes() {
 }
 
 TweakError make_items_progressive() {
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/make_items_progressive_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_items_progressive_diff.json"));
 
 	const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
@@ -855,21 +857,21 @@ TweakError modify_title_screen() {
 	EXTRACT_ERR_CHECK(path);
 	
 	FILETYPE_ERROR_CHECK(title.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(title.replaceWithDDS("./assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+	FILETYPE_ERROR_CHECK(title.replaceWithDDS(DATA_PATH "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(title.writeToFile(path.string()));
 	
 	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim");
 	EXTRACT_ERR_CHECK(path);
 	
 	FILETYPE_ERROR_CHECK(subtitle.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS("./assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+	FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(DATA_PATH "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(subtitle.writeToFile(path.string()));
 	
 	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
 	EXTRACT_ERR_CHECK(path);
 	
 	FILETYPE_ERROR_CHECK(mask.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(mask.replaceWithDDS("./assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
+	FILETYPE_ERROR_CHECK(mask.replaceWithDDS(DATA_PATH "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 	FILETYPE_ERROR_CHECK(mask.writeToFile(path.string()));
 
 	//update sparkle size/position
@@ -881,7 +883,7 @@ TweakError modify_title_screen() {
 }
 
 TweakError update_name_and_icon() {
-	if(!g_session.copyToGameFile("./assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
+	if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
 	tinyxml2::XMLDocument meta;
 	const RandoSession::fspath metaPath = g_session.openGameFile("meta/meta.xml").string();
@@ -1953,7 +1955,7 @@ TweakError implement_key_bag() {
 	EXTRACT_ERR_CHECK(path);
 	FileTypes::FLIMFile pirates_charm;
 	FILETYPE_ERROR_CHECK(pirates_charm.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS("./assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+	FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(pirates_charm.writeToFile(path.string()));
 
 	return TweakError::NONE;
@@ -2386,7 +2388,7 @@ TweakError show_tingle_statues_on_quest_screen() {
 
 	FileTypes::FLIMFile tingle;
 	FILETYPE_ERROR_CHECK(tingle.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(tingle.replaceWithDDS("./assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+	FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(tingle.writeToFile(path.string()));
 	
 	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
@@ -2394,7 +2396,7 @@ TweakError show_tingle_statues_on_quest_screen() {
 
 	FileTypes::FLIMFile shadow;
 	FILETYPE_ERROR_CHECK(shadow.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(shadow.replaceWithDDS("./assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
+	FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 	FILETYPE_ERROR_CHECK(shadow.writeToFile(path.string()));
 
 	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
@@ -2490,7 +2492,7 @@ TweakError replace_ctmc_chest_texture() {
 
 	FileTypes::resFile bfres;
 	FILETYPE_ERROR_CHECK(bfres.loadFromFile(path.string()));
-	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData("./assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true, true));
+	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true, true));
 	FILETYPE_ERROR_CHECK(bfres.writeToFile(path.string()));
 
 	return TweakError::NONE;
@@ -2518,9 +2520,9 @@ TweakError updateCodeSize() {
 }
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
-	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols("./asm/custom_symbols.json"));
+	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json"));
 
-	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
+	const RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
 	EXTRACT_ERR_CHECK(rpxPath);
 	FILETYPE_ERROR_CHECK(gRPX.loadFromFile(rpxPath.string()));
 
@@ -2529,19 +2531,30 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	
 	TWEAK_ERR_CHECK(updateCodeSize());
 
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/make_game_nonlinear_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/remove_cutscenes_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/flexible_item_locations_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/fix_vanilla_bugs_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/misc_rando_features_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.json"));
 
-	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/custom_funcs_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/make_game_nonlinear_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/remove_cutscenes_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/flexible_item_locations_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/fix_vanilla_bugs_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/misc_rando_features_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/remove_cutscenes_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.json"));
+
+	Elf32_Rela blockMoveReloc;
+	blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
+	blockMoveReloc.r_info = 0x00015b0a;
+	blockMoveReloc.r_addend = 0;
+	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
+	
+	blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x24;
+	blockMoveReloc.r_info = 0x00015b0a;
+	blockMoveReloc.r_addend = 0;
+	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
 
 	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x001c0ae8})); //would mess with save init
 	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x00160224})); //would mess with salvage point patch
@@ -2552,24 +2565,24 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0001DA54 + (0xAA * 0xC) + 8, 9), custom_symbols.at("hurricane_spin_item_func") - 0x02000000));
 
 	if (settings.instant_text_boxes) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/b_button_skips_text_diff.json"));
-		LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/b_button_skips_text_reloc.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/b_button_skips_text_reloc.json"));
 		TWEAK_ERR_CHECK(make_all_text_instant());
 	}
 	if (settings.reveal_full_sea_chart) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/reveal_sea_chart_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.json"));
 	}
 	if (settings.invert_sea_compass_x_axis) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/invert_sea_compass_x_axis_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/invert_sea_compass_x_axis_diff.json"));
 	}
 	if (settings.sword_mode == SwordMode::NoSword) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/swordless_diff.json"));
-		LOG_AND_RETURN_IF_ERR(Add_Relocations("./asm/patch_diffs/swordless_reloc.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/swordless_reloc.json"));
 		RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x001C1ED4})); //would overwrite branch to custom code
 		TWEAK_ERR_CHECK(update_swordless_text());
 	}
 	if (settings.remove_music) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/remove_music_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_music_diff.json"));
 	}
 	if(settings.chest_type_matches_contents) {
 		TWEAK_ERR_CHECK(replace_ctmc_chest_texture());
@@ -2629,7 +2642,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
 TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& randomizeItems) {
 	gRPX = FileTypes::ELF();
-	RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
+	const RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
 	EXTRACT_ERR_CHECK(rpxPath);
 	FILETYPE_ERROR_CHECK(gRPX.loadFromFile(rpxPath.string())); //reload to avoid conflicts written between pre- and post- randomization tweaks
 
