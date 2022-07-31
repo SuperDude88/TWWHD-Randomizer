@@ -115,7 +115,7 @@ private:
     }
 
     #ifdef DEVKITPRO
-    static constexpr uint32_t num_threads = 3;
+    static constexpr uint32_t num_threads = 4;
     #else
     static constexpr uint32_t num_threads = 12;
     #endif
@@ -245,7 +245,6 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
                 ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return "";
             }
-	        Utility::platformLog("Decompressed RPX\n");
         }
         else if (element.compare("YAZ0") == 0)
         {

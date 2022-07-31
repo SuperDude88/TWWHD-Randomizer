@@ -106,6 +106,7 @@
   "rainbow_rupee_keyframe": "0x028FA3E8",
   "check_run_new_text_commands": "0x028FA3F8",
   "exec_curr_num_keys_text_command": "0x028FA440",
+  "key_text_command_has_big_key_text": "0x028FA4F8",
   "check_player_in_casual_clothes": "0x028FA504",
   "check_outset_bgm": "0x028FA540",
   "get_num_owned_tingle_statues": "0x028FA568",
