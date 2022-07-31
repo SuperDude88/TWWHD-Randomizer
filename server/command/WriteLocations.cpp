@@ -320,7 +320,7 @@ ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
     if (rpxOpen == false) loadRPX();
-    if (custom_symbols.size() == 0) Load_Custom_Symbols("./asm/custom_symbols.json");
+    if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json");
     
     for(const auto& symbol : symbolNames) {
         uint32_t address;

@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <atomic>
+#include <shared_mutex>
 
 
 
@@ -19,6 +20,8 @@ public:
     public:
         std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children; //can't use CacheEntry directly, unordered_map needs complete type per the standard
         std::atomic<bool> isRepacked = false; //for this entry
+        bool fullCompress = true; //whether to recompress the yaz0 or not, .pack files need to be recompressed currently because they crash otherwise
+        bool toOutput = false; //whether to save to output, allows it to save without checking a file exists
     };
 
     enum class RepackResult {
@@ -31,6 +34,7 @@ public:
 
     void init(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& randoOutputDir);
     [[nodiscard]] fspath openGameFile(const fspath& relPath);
+    [[nodiscard]] bool isCached(const fspath& relPath);
     [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath);
     [[nodiscard]] bool restoreGameFile(const fspath& relPath);
     [[nodiscard]] bool repackCache();

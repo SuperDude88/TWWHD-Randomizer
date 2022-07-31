@@ -25,5 +25,6 @@
 	"withered_tree_item_actor_id": ".text",
 	"withered_tree_item_speeds": ".text",
 	"withered_tree_launched_flag": ".text",
-	"zunari_magic_armor_slot_item_id": ".text"
+	"zunari_magic_armor_slot_item_id": ".text",
+	"key_text_command_has_big_key_text": ".text"
 }

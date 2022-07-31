@@ -1,34 +1,34 @@
 cmake_minimum_required(VERSION 3.7)
-project(wwhd_rando CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ENABLE_DEBUG=0 -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ENABLE_DEBUG=1 -DJSON_NOEXCEPTION=1 -DJSON_USE_IMPLICIT_CONVERSIONS=0 -O1")
+
+project(wwhd_rando CXX)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
+add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0)
+
+if(DEFINED DEVKITPRO)
+  add_compile_definitions(DEVKITPRO)
+  add_compile_options(-O3 -flto)
+  add_link_options(-flto -fno-fat-lto-objects)
+endif()
+
+add_compile_definitions(ENABLE_DEBUG=1) # TODO: Take this out after testing?
+if(ENABLE_DEBUG)
+  message("Debugging is ON")
+  add_compile_definitions(ENABLE_DEBUG)
+endif()
+
+# Version strings for RNG and compatibility checks
 add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
 add_compile_definitions(CONFIG_VERSION="1.0")
 
-if(ENABLE_DEBUG)
-  message("Debugging is ON")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_DEBUG")
-endif()
-
-# Some path related stuff for logging
+# Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
-add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
+add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
 
-if(DEFINED DEVKITPRO)
-  include("${DEVKITPRO}/wut/share/wut.cmake" REQUIRED)
-  add_definitions(-DDEVKITPRO)
-else()
-  find_package(Threads REQUIRED)
-endif()
-
-# Some path related stuff for logging
-string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
-add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
-
+# zlib for RPX (de)compression
 if(WIN32)
-  # in windows case, we bundle a zlib static library
+  # Bundle a zlib static library for Windows
   set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/libs/zlib_win/zlibstat.lib")
   set(ZLIB_INCLUDE_DIR "libs/zlib_win")
   add_library(zlib STATIC IMPORTED)
@@ -38,15 +38,9 @@ else()
   pkg_check_modules(ZLIB zlib REQUIRED)
 endif()
 
-if(CMAKE_USE_PTHREADS_INIT)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Werror")
-  set(THREADS_PREFER_PTHREAD_FLAG ON)
-endif()
-
 add_executable(wwhd_rando randomizer.cpp)
 target_sources(wwhd_rando PRIVATE "options.cpp" "tweaks.cpp")
 add_subdirectory("libs")
-add_subdirectory("seedgen")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")
@@ -60,20 +54,31 @@ else()
   target_link_libraries(wwhd_rando ${ZLIB_LDFLAGS})
   target_compile_options(wwhd_rando PRIVATE ${ZLIB_CFLAGS})
 endif()
+  
+# Put data files together for easier manipulation
+file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
+file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
+file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                           # Images and other assets used in patching
+file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
+
 if(DEFINED DEVKITPRO)
+  # Some code specific to Wii U
   add_subdirectory("server/platform")
-  target_link_libraries(wwhd_rando iosuhax)
-endif()
-if(CMAKE_USE_PTHREADS_INIT)
-  target_link_libraries(wwhd_rando Threads::Threads)
-endif()
 
-if(DEFINED DEVKITPRO)
+  # Use libmocha for filesystem access
+  find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
+  target_link_libraries(wwhd_rando "${LIBMOCHA}")
+  
+  # Bundle data files in romfs
+  include("${DEVKITPRO}/portlibs/wiiu/share/romfs-wiiu.cmake" REQUIRED)
+  romfs_add(wwhd_rando "build/data")
+  add_compile_definitions(DATA_PATH="romfs:/")
+  
+  # Copy some files for the homebrew launcher
+  file(COPY "server/platform/meta.xml" DESTINATION "${CMAKE_BINARY_DIR}")
+  file(COPY "server/platform/icon.png" DESTINATION "${CMAKE_BINARY_DIR}")
+
   wut_create_rpx(wwhd_rando)
+else()
+  add_compile_definitions(DATA_PATH="./data/")
 endif()
-
-file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/asm")
-file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/asm")
-file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/logic")
-configure_file("seedgen/testing_config.yaml" "${CMAKE_BINARY_DIR}/config.yaml" COPYONLY)

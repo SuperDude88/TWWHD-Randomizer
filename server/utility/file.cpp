@@ -1,5 +1,10 @@
 #include "file.hpp"
+
 #include <mutex>
+#include <cstring>
+#include "platform.hpp"
+
+
 
 namespace Utility {
 	//IMPROVEMENT: better way to make these thread-safe?
@@ -14,11 +19,11 @@ namespace Utility {
 			std::ifstream src(from, std::ios::binary);
         	std::ofstream dst(to, std::ios::binary);
 			if(!src.is_open()) {
-				Utility::platformLog(from.string() + " not opened\n");
+				ErrorLog::getInstance().log("Failed to open " + from.string());
 				return false;
 			}
 			if(!dst.is_open()) {
-				Utility::platformLog(to.string() + " not opened\n");
+				ErrorLog::getInstance().log("Failed to open " + to.string());
 				return false;
 			}
 
@@ -35,21 +40,54 @@ namespace Utility {
 
 	bool copy(const std::filesystem::path& from, const std::filesystem::path& to) {
 		#ifdef DEVKITPRO
-			std::error_code err;
-			for(std::filesystem::directory_iterator p(from), end; p != end;) {
-				std::string srcPath = p->path().string();
-				std::string relPath = srcPath.substr(srcPath.find(from.string()) + from.string().size() + 1); //would use std::filesystem::relative but link fails for dkp
-				if(std::filesystem::is_directory(p->path())) {
-					if(!Utility::create_directories(to / relPath)) return false;
-					if(!Utility::copy(p->path(), to / relPath)) return false;
-				}
-				else if (std::filesystem::is_regular_file(p->path())) {
-					if(!Utility::copy_file(p->path(), to / relPath)) return false;
-				}
+			//based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
 
-				p.increment(err);
-			}
-			
+			DIR* dirHandle;
+    		if ((dirHandle = opendir(from.string().c_str())) == nullptr) {
+    		    ErrorLog::getInstance().log("Couldn't open directory to copy files from: " + to.string());
+    		    return false;
+    		}
+
+    		Utility::create_directories(to);
+
+    		// Loop over directory contents
+    		struct dirent* dirEntry;
+    		while ((dirEntry = readdir(dirHandle)) != nullptr) {
+    		    const std::string entrySrcPath = from / dirEntry->d_name;
+    		    const std::string entryDstPath = to / dirEntry->d_name;
+
+    		    // Use lstat since readdir returns DT_REG for symlinks
+    		    struct stat fileStat;
+    		    if (lstat(entrySrcPath.c_str(), &fileStat) != 0) {
+    		    	ErrorLog::getInstance().log("Couldn't check what type this file/folder was: " + entrySrcPath);
+					return false;
+    		    }
+
+    		    if (S_ISLNK(fileStat.st_mode)) {
+    		        continue;
+    		    }
+    		    else if (S_ISREG(fileStat.st_mode)) {
+    		        // Copy file
+    		        if (!copy_file(entrySrcPath, entryDstPath)) {
+    		    		ErrorLog::getInstance().log("Failed to copy file: " + entrySrcPath);
+    		            closedir(dirHandle);
+    		            return false;
+    		        }
+    		    }
+    		    else if (S_ISDIR(fileStat.st_mode)) {
+    		        // Ignore root and parent folder entries
+    		        if (std::strncmp(dirEntry->d_name, ".", 1) == 0 || std::strncmp(dirEntry->d_name, "..", 2) == 0) continue;
+
+    		        // Copy all the files in this subdirectory
+    		        if (!copy(entrySrcPath, entryDstPath)) {
+    		    		ErrorLog::getInstance().log("Failed to copy dir: " + entrySrcPath);
+    		            closedir(dirHandle);
+    		            return false;
+    		        }
+    		    }
+    		}
+
+    		closedir(dirHandle);
 		#else
 			std::filesystem::copy(from, to, std::filesystem::copy_options::recursive);
 		#endif

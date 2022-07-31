@@ -294,8 +294,8 @@ namespace FileTypes {
 
         // write magic
         out.write("Yaz0", 4);
-        uint32_t dataSize = inData.size();
-        uint32_t outDataSize = Utility::Endian::toPlatform(Utility::Endian::Type::Big, dataSize);
+        const uint32_t dataSize = inData.size();
+        const uint32_t outDataSize = Utility::Endian::toPlatform(Utility::Endian::Type::Big, dataSize);
         out.write(reinterpret_cast<const char*>(&outDataSize), 4);
         out.write(dummyData, 8);
 
@@ -326,15 +326,13 @@ namespace FileTypes {
         }
         inData.append(readChunkBuf, in.gcount());
 
-        char* outData = new char[header.uncompressedSize];
-        if (const YAZ0Error error = yaz0DataDecode(inData.data(), outData, header.uncompressedSize); error != YAZ0Error::NONE) {
+        std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+        if (const YAZ0Error error = yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
             ErrorLog ::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            delete[] outData;
             return error;
         }
-        out.write(outData, header.uncompressedSize);
+        out.write(&outData[0], header.uncompressedSize);
 
-        delete[] outData;
         return YAZ0Error::NONE;
     }
 }
