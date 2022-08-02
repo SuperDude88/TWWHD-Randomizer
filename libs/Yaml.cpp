@@ -27,6 +27,7 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 #include <vector>
 #include <list>
 #include <cstdio>
@@ -2222,15 +2223,12 @@ namespace Yaml
             return;
         }
 
-        f.seekg(0, f.end);
-        size_t fileSize = static_cast<size_t>(f.tellg());
-        f.seekg(0, f.beg);
-
-        std::unique_ptr<char[]> data(new char[fileSize]);
-        f.read(data.get(), fileSize);
+        //Seek to eof may not always go to eof (Wii U is strange)
+        //Just read the whole buffer into a string instead
+	    std::string str(std::istreambuf_iterator<char>{f}, {});
         f.close();
 
-        Parse(root, data.get(), fileSize);
+        Parse(root, str);
     }
 
     void Parse(Node & root, std::iostream & stream)
@@ -2401,7 +2399,7 @@ namespace Yaml
                 // Empty scalar
                 if(value.size() == 0)
                 {
-                    stream << "\n";
+                    stream << "\"\"\n";
                     break;
                 }
 

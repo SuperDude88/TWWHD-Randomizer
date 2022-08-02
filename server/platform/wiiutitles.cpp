@@ -99,16 +99,16 @@ namespace Utility {
             }
         }
 
-        Utility::platformLog("shortname_en = %s\n", title.shortTitle.c_str());
+        //Utility::platformLog("shortname_en = %s\n", title.shortTitle.c_str());
         return false;
     }
 
     bool getRawTitles(std::vector<MCPTitleListType>& rawTitlesOut) {
-        Utility::platformLog("Loading titles...\n");
+        //Utility::platformLog("Loading titles...\n");
 
         rawTitlesOut.clear();
 
-        Utility::platformLog("getting MCPHandle\n");
+        //Utility::platformLog("getting MCPHandle\n");
         // acquire MCP tunnel
         int32_t mcpHandle = MCP_Open();
         if (mcpHandle < 0) {
@@ -116,27 +116,27 @@ namespace Utility {
             return false;
         }
 
-        Utility::platformLog("got MCPHandle: %d\n", mcpHandle);
+        //Utility::platformLog("got MCPHandle: %d\n", mcpHandle);
         // Get titles from MCP
-        Utility::platformLog("getting title count\n");
+        //Utility::platformLog("getting title count\n");
         int32_t titleCount = MCP_TitleCount(mcpHandle);
         if(titleCount < 0)
         {
             Utility::platformLog("Failed to retrieve title count\n");
             return false;
         }
-        Utility::platformLog("title count: %d\n", titleCount);
+        //Utility::platformLog("title count: %d\n", titleCount);
         uint32_t titleByteSize = titleCount * sizeof(struct MCPTitleListType);
         rawTitlesOut.resize(titleCount);
 
         uint32_t titlesListed = 0;
-        Utility::platformLog("getting title list, titleByteSize=%u\n", titleByteSize);
+        //Utility::platformLog("getting title list, titleByteSize=%u\n", titleByteSize);
         MCP_TitleList(mcpHandle, &titlesListed, rawTitlesOut.data(), titleByteSize);
 
-        Utility::platformLog("title list acquired, count: %u\n", titlesListed);
+        //Utility::platformLog("title list acquired, count: %u\n", titlesListed);
         if(titlesListed != titleCount)
         {
-            Utility::platformLog("Warning: Got %d titles when %d were expected\n", titlesListed, titleCount);
+            //Utility::platformLog("Warning: Got %d titles when %d were expected\n", titlesListed, titleCount);
         }
 
         MCP_Close(mcpHandle);
@@ -146,7 +146,7 @@ namespace Utility {
     }
 
     bool loadDetailedTitles(std::vector<MCPTitleListType>& rawTitles, std::vector<titleEntry>& titlesOut) {
-        Utility::platformLog("Searching for games...\n");
+        //Utility::platformLog("Searching for games...\n");
 
         // Queue and group parts of each title
         std::map<uint32_t, std::vector<std::reference_wrapper<MCPTitleListType>>> sortedQueue;
@@ -192,7 +192,7 @@ namespace Utility {
 
                     if (readInfoFromXML(title, title.base)) title.hasBase = true;
                     else {
-                        Utility::platformLog("Failed to read meta from game!\n");
+                        //Utility::platformLog("Failed to read meta from game!\n");
                         std::this_thread::sleep_for(std::chrono::seconds(1));
                     }
                 }
@@ -288,9 +288,14 @@ namespace Utility {
     bool dumpGame(const titleEntry& entry, const dumpingConfig& config, const std::string& outPath) {
         Utility::platformLog("Dumping game, this may take a while...\n");
         if ((config.dumpTypes & dumpTypeFlags::Game) == dumpTypeFlags::Game && entry.hasBase) {
-            Utility::create_directories(outPath);
-            Utility::platformLog("Created backup dir\n");
-            Utility::copy(entry.base.path, outPath);
+            if(!Utility::create_directories(outPath)) {
+                Utility::platformLog("Failed to create output dir %s\n", outPath.c_str());
+                return false;
+            }
+            if(!Utility::copy(entry.base.path, outPath)) {
+                Utility::platformLog("Failed to copy game files %s\n", outPath.c_str());
+                return false;
+            }
         }
 
         return true;

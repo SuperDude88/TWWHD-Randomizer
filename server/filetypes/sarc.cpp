@@ -31,8 +31,8 @@ namespace {
 		return hash;
 	}
 	
-	uint32_t getAlignment(const std::string& fileExt, const file& file) {
-		if (alignments.find(fileExt) != alignments.end()) {
+	uint32_t getAlignment(const std::string& fileExt, const FileTypes::SARCFile::File& file) {
+		if (alignments.count(fileExt) > 0) {
 			return alignments.at(fileExt);
 		}
 		else if (fileExt == "bflim" && file.data.substr(file.data.size() - 0x28, 4) == "FLIM") {
@@ -89,14 +89,12 @@ namespace FileTypes{
 		header.padding_0x00[0] = 0x00;
 		header.padding_0x00[1] = 0x00;
 
-		fileTable.offset = 0;
 		memcpy(&fileTable.magicSFAT, "SFAT", 4);
 		fileTable.headerSize_0xC = 0xC;
 		fileTable.numFiles = 0;
 		fileTable.hashKey_0x65 = 0x00000065;
 		fileTable.nodes = {};
 
-		nameTable.offset = 0;
 		memcpy(&nameTable.magicSFNT, "SFNT", 4);
 		nameTable.headerSize_0x8 = 0x8;
 		nameTable.padding_0x00[0] = 0x00;
@@ -113,9 +111,10 @@ namespace FileTypes{
 		return newSARC;
 	}
 
-	uint32_t SARCFile::guessDefaultAlignment() { //most taken from https://github.com/zeldamods/sarc/blob/master/sarc/sarc.py#L98
+	void SARCFile::guessDefaultAlignment() { //most taken from https://github.com/zeldamods/sarc/blob/master/sarc/sarc.py#L98
 		if(files.size() <= 2) {
-			return 4;
+			guessed_alignment = 4;
+			return;
 		}
 
 		uint32_t gcd = header.dataOffset;
@@ -124,10 +123,12 @@ namespace FileTypes{
 		}
 
 		if(gcd == 0 || (gcd & (gcd - 1)) != 0) {
-			return 4;
+			guessed_alignment = 4;
+			return;
 		}
 
-		return gcd;
+		guessed_alignment = gcd;
+		return;
 	}
 
 	SARCError SARCFile::loadFromBinary(std::istream& sarc) {
@@ -151,7 +152,6 @@ namespace FileTypes{
 		if (header.version_0x0100 != 0x0100) LOG_ERR_AND_RETURN(SARCError::UNKNOWN_VERSION);
 		if (header.padding_0x00[0] != 0x00 || header.padding_0x00[1] != 0x00) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
 
-		fileTable.offset = sarc.tellg();
 		if (!sarc.read(fileTable.magicSFAT, 4)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 		if (!sarc.read(reinterpret_cast<char*>(&fileTable.headerSize_0xC), sizeof(fileTable.headerSize_0xC))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 		if (!sarc.read(reinterpret_cast<char*>(&fileTable.numFiles), sizeof(fileTable.numFiles))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
@@ -178,7 +178,7 @@ namespace FileTypes{
 			Utility::Endian::toPlatform_inplace(eType::Big, node.dataEnd);
 		}
 
-		nameTable.offset = sarc.tellg();
+		const std::streamoff SFNTOffset = sarc.tellg();
 		if (!sarc.read(nameTable.magicSFNT, 4)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 		if (!sarc.read(reinterpret_cast<char*>(&nameTable.headerSize_0x8), sizeof(nameTable.headerSize_0x8))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 		if (!sarc.read(reinterpret_cast<char*>(&nameTable.padding_0x00), sizeof(nameTable.padding_0x00))) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
@@ -189,25 +189,26 @@ namespace FileTypes{
 		if (nameTable.headerSize_0x8 != 0x8) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
 		if (nameTable.padding_0x00[0] != 0x00 || nameTable.padding_0x00[1] != 0x00) LOG_ERR_AND_RETURN(SARCError::UNEXPECTED_VALUE);
 
+		std::string fileData(header.fileSize - header.dataOffset, '\0');
+		sarc.seekg(header.dataOffset, std::ios::beg);
+		if (!sarc.read(&fileData[0], header.fileSize - header.dataOffset)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+
 		for (const SFATNode& node : fileTable.nodes) {
 			if ((node.attributes & 0xFF000000) >> 24 != 0x01) LOG_ERR_AND_RETURN(SARCError::BAD_NODE_ATTR);
-			uint32_t nameOffset = (node.attributes & 0x00FFFFFF) * 4;
-			const std::string name = readNullTerminatedStr(sarc, nameTable.offset + 0x8 + nameOffset);
+			const uint32_t nameOffset = (node.attributes & 0x00FFFFFF) * 4;
+			const std::string& name = nameTable.filenames.emplace_back(readNullTerminatedStr(sarc, SFNTOffset + 0x8 + nameOffset));
 			if (name.empty()) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
-			nameTable.filenames.push_back(name);
 
-			uint32_t hash = calculateHash(name, fileTable.hashKey_0x65);
+			const uint32_t hash = calculateHash(name, fileTable.hashKey_0x65);
 			if (hash != node.nameHash) LOG_ERR_AND_RETURN(SARCError::FILENAME_HASH_MISMATCH);
 
-			file& fileEntry = files.emplace_back();
+			File& fileEntry = files.emplace_back();
 			file_index_by_name[name] = files.size() - 1;
 			fileEntry.name = name;
-			fileEntry.data.resize(node.dataEnd - node.dataStart);
-			sarc.seekg(header.dataOffset + node.dataStart, std::ios::beg);
-			if (!sarc.read(&fileEntry.data[0], fileEntry.data.size())) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+			fileEntry.data = fileData.substr(node.dataStart, node.dataEnd - node.dataStart);
 		}
 
-		guessed_alignment = guessDefaultAlignment();
+		guessDefaultAlignment();
 		return SARCError::NONE;
 	}
 
@@ -219,9 +220,9 @@ namespace FileTypes{
 		return loadFromBinary(file);
 	}
 
-	const file& SARCFile::getFile(const std::string& filename) {
+	const SARCFile::File& SARCFile::getFile(const std::string& filename) {
 		if (file_index_by_name.count(filename) == 0) {
-			file blankFile;
+			File blankFile;
 			return blankFile;
 		}
 		return files[file_index_by_name.at(filename)];
@@ -237,7 +238,7 @@ namespace FileTypes{
 			out.write(header.magicSARC, 4);
 			out.write(reinterpret_cast<const char*>(&headerSize_BE), sizeof(headerSize_BE));
 			out.write(reinterpret_cast<const char*>(&byteOrderMarker_BE), sizeof(byteOrderMarker_BE));
-			Utility::seek(out, 4, std::ios::cur); //skip over filesize for now
+			out.write("\0\0\0\0", 4); //pad for filesize
 			out.write(reinterpret_cast<const char*>(&dataOffset_BE), sizeof(dataOffset_BE));
 			out.write(reinterpret_cast<const char*>(&version_BE), sizeof(version_BE));
 			out.write(reinterpret_cast<const char*>(&header.padding_0x00), sizeof(header.padding_0x00));
@@ -279,14 +280,14 @@ namespace FileTypes{
 			}
 		}
 
-		Utility::seek(out, header.dataOffset, std::ios::beg);
 		for (unsigned int i = 0; i < files.size(); i++) {
-			Utility::seek(out, header.dataOffset + fileTable.nodes[i].dataStart, std::ios::beg);
+			const std::string fill((header.dataOffset + fileTable.nodes[i].dataStart) - out.tellp(), '\0');
+			out.write(&fill[0], fill.size());
 			out.write(&files[i].data[0], files[i].data.size());
 		}
 
 		header.fileSize = out.tellp();
-		Utility::seek(out, 8, std::ios::beg);
+		out.seekp(8, std::ios::beg);
 		uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
 		out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE));
 
@@ -302,17 +303,62 @@ namespace FileTypes{
 	}
 
 	SARCError SARCFile::extractToDir(const std::string& dirPath) {
-		for (const file& file : files)
+		for (const File& file : files)
 		{
-			std::filesystem::path path = dirPath + '/' + file.name;
+			const std::filesystem::path path = dirPath + '/' + file.name;
 			Utility::create_directories(path.parent_path()); //handle any folder structure stuff contained in the SARC
-			std::ofstream outFile(dirPath + '/' + file.name, std::ios::binary);
+			std::ofstream outFile(path, std::ios::binary);
 			if (!outFile.is_open())
 			{
 				LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);
 			}
 			outFile.write(&file.data[0], file.data.size());
 		}
+		return SARCError::NONE;
+	}
+
+	SARCError SARCFile::replaceFile(const std::string& filename, const std::string& newFilePath) {
+		const size_t& fileIndex = file_index_by_name.at(filename);
+		uint32_t curDataOffset = 0;
+		{
+			if(file_index_by_name.count(filename) == 0) LOG_ERR_AND_RETURN(SARCError::STRING_NOT_FOUND);
+			SFATNode& node = fileTable.nodes[fileIndex];
+			File& entry = files[fileIndex];
+
+			const uint32_t fileSize = std::filesystem::file_size(newFilePath);
+			curDataOffset = node.dataStart;
+
+			entry.data.resize(fileSize);
+			std::ifstream inFile(newFilePath, std::ios::binary);
+			if (!inFile.read(&entry.data[0], fileSize)) {
+				LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
+			}
+
+			node.dataEnd = node.dataStart + entry.data.size();
+			curDataOffset = node.dataEnd;
+		}
+
+		//update offsets of later files
+		for(size_t i = fileIndex + 1; i < files.size(); i++) {
+			SFATNode& node = fileTable.nodes[i];
+			const File& entry = files[i];
+			
+			std::string filetype = entry.name.substr(entry.name.find(".") + 1);
+			filetype.pop_back();
+			const uint32_t alignment = std::max(guessed_alignment, getAlignment(filetype, entry));
+			if (alignment != 0) {
+				unsigned int padLen = alignment - (curDataOffset % alignment);
+				if (padLen == alignment) padLen = 0;
+				node.dataStart = curDataOffset + padLen;
+			}
+			else {
+				node.dataStart = curDataOffset;
+			}
+
+			node.dataEnd = node.dataStart + entry.data.size();
+			curDataOffset = node.dataEnd;
+		}
+
 		return SARCError::NONE;
 	}
 
@@ -326,7 +372,7 @@ namespace FileTypes{
 			uint32_t fileSize = std::filesystem::file_size(absPath);
 			SFATNode& node = fileTable.nodes[i];
 
-			file& entry = files[i];
+			File& entry = files[i];
 			entry.name = filename;
 			entry.data.resize(fileSize);
 
@@ -379,7 +425,7 @@ namespace FileTypes{
 				SFATNode& node = fileTable.nodes.emplace_back();
 				node.nameHash = calculateHash(filename, fileTable.hashKey_0x65);
 
-				file& entry = files.emplace_back();
+				File& entry = files.emplace_back();
 				entry.name = filename;
 				entry.data.resize(fileSize);
 
@@ -399,14 +445,14 @@ namespace FileTypes{
 
 		header.dataOffset = curDataOffset;
 
-		std::sort(files.begin(), files.end(), [&](const file& a, const file& b) {return calculateHash(a.name, fileTable.hashKey_0x65) < calculateHash(b.name, fileTable.hashKey_0x65); });
+		std::sort(files.begin(), files.end(), [&](const File& a, const File& b) {return calculateHash(a.name, fileTable.hashKey_0x65) < calculateHash(b.name, fileTable.hashKey_0x65); });
 		std::sort(fileTable.nodes.begin(), fileTable.nodes.end(), [&](const SFATNode& a, const SFATNode& b) {return a.nameHash < b.nameHash; });
 		fileTable.numFiles = files.size();
 
 		curDataOffset = 0;
 
 		for (unsigned int i = 0; i < files.size(); i++) {
-			const file& entry = files[i];
+			const File& entry = files[i];
 			SFATNode& node = fileTable.nodes[i];
 
 			//silly alignment stuff

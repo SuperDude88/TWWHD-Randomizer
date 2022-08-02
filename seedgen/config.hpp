@@ -34,6 +34,8 @@ struct Config {
     {}
 };
 
+ConfigError createDefaultConfig(const std::string& filePath);
+
 ConfigError loadFromFile(const std::string& filePath, Config& out);
 
 ConfigError writeToFile(const std::string& filePath, const Config& config);

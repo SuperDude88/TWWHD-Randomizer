@@ -115,7 +115,7 @@ private:
     }
 
     #ifdef DEVKITPRO
-    static constexpr uint32_t num_threads = 3;
+    static constexpr uint32_t num_threads = 4;
     #else
     static constexpr uint32_t num_threads = 12;
     #endif
@@ -144,7 +144,7 @@ void RandoSession::init(const fspath& gameBaseDir, const fspath& randoWorkingDir
     workingDir = randoWorkingDir;
     outputDir = randoOutputDir;
 
-    clearWorkingDir();
+    //clearWorkingDir();
     initialized = true;
     return;
 }
@@ -167,9 +167,20 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
     std::string cacheKey{""};
     std::string resultKey{""};
     CacheEntry* curEntry = &fileCache;
+    bool fullRecompress = true;
     bool fromBaseDir = false; //determines whether to unpack from the working directory or directly from the base directory
-    for (const auto& element : fileSpec)
+    bool toOutput = false;
+    for (size_t i = 0; i < fileSpec.size(); i++)
     {
+        const std::string& element = fileSpec[i];
+        
+        if(i == 1) {
+            toOutput = true; //last level that would be repacked
+        }
+        else {
+            toOutput = false;
+        }
+        
         if (element.empty()) continue;
 
         if (element.compare("RPX") == 0)
@@ -237,6 +248,11 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
         }
         else if (element.compare("YAZ0") == 0)
         {
+            if(i == 1) { //szs files in stage directory don't need to be recompressed
+                fullRecompress = false;
+                toOutput = false; //sarc will go to output instead
+            }
+
             std::ifstream inputFile;
             if(fromBaseDir) {
                 inputFile.open(baseDir / cacheKey, std::ios::binary);
@@ -272,6 +288,10 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
         }
         else if(element.compare("SARC") == 0)
         {
+            if(curEntry->fullCompress == false && curEntry->toOutput == false) { //if yaz0 doesn't save to output, sarc does instead
+                toOutput = true;
+            }
+
             FileTypes::SARCFile sarc;
             SARCError err = SARCError::NONE;
             if(fromBaseDir) {
@@ -335,12 +355,11 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
         {
             //If there is something to unpack, don't copy, just unpack to working dir
             //Otherwise copy to working dir
-            if(element == fileSpec.front() && fileSpec.size() > 1) {
-                fromBaseDir = true;
-            }
-            else {
-                if (!std::filesystem::is_regular_file(workingDir / resultKey))
-                {
+            if(i == 0) {
+                if(fileSpec.size() > 1) {
+                    fromBaseDir = true;
+                }
+                else {
                     // attempt to copy from game directory
                     const fspath gameFilePath = baseDir / resultKey;
                     if (!std::filesystem::is_regular_file(gameFilePath))
@@ -363,12 +382,17 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
                         ErrorLog::getInstance().log("Failed copying file " + gameFilePath.string() + " to working directory");
                         return "";
                     }
+
+                    toOutput = true;
                 }
             }
         }
         cacheKey = resultKey;
         curEntry->children[cacheKey] = std::make_shared<CacheEntry>();
         curEntry = curEntry->children[cacheKey].get();
+        curEntry->fullCompress = fullRecompress;
+        curEntry->toOutput = toOutput;
+        fullRecompress = true;
     }
 
     return workingDir / resultKey;
@@ -378,6 +402,41 @@ RandoSession::fspath RandoSession::openGameFile(const RandoSession::fspath& relP
 {
     CHECK_INITIALIZED("");
     return extractFile(Utility::Str::split(relPath.string(), '@')); //some cases only need the path, not stream
+}
+
+bool RandoSession::isCached(const RandoSession::fspath& relPath)
+{
+    CHECK_INITIALIZED(false);
+    const auto& splitPath = Utility::Str::split(relPath.string(), '@');
+    const CacheEntry* curEntry = &fileCache;
+    std::string key;
+    for(const std::string& element : splitPath) {
+        if (element.compare("RPX") == 0)
+        {
+            key += ".elf";
+        }
+        else if (element.compare("YAZ0") == 0)
+        {
+            key += ".dec";
+        }
+        else if(element.compare("SARC") == 0)
+        {
+            key += ".unpack/";
+        }
+        else if (element.compare("BFRES") == 0)
+        {
+            key += ".res/";
+        }
+        else
+        {
+            key += element;
+        }
+
+        if(curEntry->children.count(key) == 0) return false;
+        curEntry = curEntry->children.at(key).get();
+    }
+
+    return true;
 }
 
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
@@ -405,13 +464,13 @@ bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file fr
 }
 
 RandoSession::RepackResult RandoSession::repackFile(const std::string& element, std::shared_ptr<CacheEntry> entry) {
-    const bool hadChildren = (entry->children.size() > 0) ? true : false;
     if(std::any_of(entry->children.begin(), entry->children.end(), [](const std::pair<std::string, std::shared_ptr<CacheEntry>>& child) { return child.second->isRepacked == false; })) {
         return RepackResult::DELAY;
     }
 
     //Repack file in the working directory
     //Write directly to output if it is the last step
+    Utility::platformLog("Repacking %s\n", element.c_str());
     std::string resultKey;
     if (Utility::Str::endsWith(element, ".elf"))
     {
@@ -425,7 +484,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
 
         //Repack to output directory if file exists, otherwise stay in working dir
         std::ofstream outputFile;
-        if(Utility::exists((outputDir / resultKey))) {
+        if(entry->toOutput) {
             outputFile.open(outputDir / resultKey, std::ios::binary);
         }
         else {
@@ -451,40 +510,41 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
     }
     else if (Utility::Str::endsWith(element, ".dec"))
     {
-        resultKey = element.substr(0, element.size() - 4);
+        if(entry->fullCompress) {
+            resultKey = element.substr(0, element.size() - 4);
 
-        std::ifstream inputFile((workingDir / element), std::ios::binary);
-        if (!inputFile.is_open()) {
-            ErrorLog::getInstance().log("Failed to open input file " + (workingDir / element).string());
-            return RepackResult::FAIL;
-        }
-
-        //Repack to output directory if file exists, otherwise stay in working dir
-        std::ofstream outputFile;
-        if(Utility::exists((outputDir / resultKey))) {
-            outputFile.open(outputDir / resultKey, std::ios::binary);
-        }
-        else {
-            if (Utility::exists((workingDir / resultKey)) == false) {
-                if(!Utility::create_directories((workingDir / resultKey).parent_path())) {
-                    ErrorLog::getInstance().log("Failed to create directories for path " + (workingDir / resultKey).string());
-                    return RepackResult::FAIL;
-                }
+            std::ifstream inputFile((workingDir / element), std::ios::binary);
+            if (!inputFile.is_open()) {
+                ErrorLog::getInstance().log("Failed to open input file " + (workingDir / element).string());
+                return RepackResult::FAIL;
             }
 
-            outputFile.open(workingDir / resultKey, std::ios::binary);
-        }
-        if (!outputFile.is_open()) {
-            ErrorLog::getInstance().log("Failed to open output file " + (workingDir / resultKey).string());
-            return RepackResult::FAIL;
-        }
+            //Repack to output directory if file exists, otherwise stay in working dir
+            std::ofstream outputFile;
+            if(entry->toOutput) {
+                outputFile.open(outputDir / resultKey, std::ios::binary);
+            }
+            else {
+                if (Utility::exists((workingDir / resultKey)) == false) {
+                    if(!Utility::create_directories((workingDir / resultKey).parent_path())) {
+                        ErrorLog::getInstance().log("Failed to create directories for path " + (workingDir / resultKey).string());
+                        return RepackResult::FAIL;
+                    }
+                }
 
-        //TODO: find optimal compression level, 7 confirmed work, maybe 5
-        //Might not be stable or work on console, need to test
-        if (YAZ0Error err = FileTypes::yaz0Encode(inputFile, outputFile, 5); err != YAZ0Error::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
+                outputFile.open(workingDir / resultKey, std::ios::binary);
+            }
+            if (!outputFile.is_open()) {
+                ErrorLog::getInstance().log("Failed to open output file " + (workingDir / resultKey).string());
+                return RepackResult::FAIL;
+            }
+
+            Utility::platformLog("Recompressing %s\n", element.c_str());
+            if (YAZ0Error err = FileTypes::yaz0Encode(inputFile, outputFile, 9); err != YAZ0Error::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return RepackResult::FAIL;
+            }
         }
     }
     else if (Utility::Str::endsWith(element, ".unpack/"))
@@ -495,8 +555,8 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
         SARCError err = SARCError::NONE;
         //The randomizer skips copying the original file if it can be unpacked from the base directory (is slightly faster than copying)
         //If that was the case, we must also read the original SARC from the base directory
-        if(Utility::exists((outputDir / resultKey))) {
-            err = sarc.loadFromFile((outputDir / resultKey).string());
+        if(Utility::exists((baseDir / resultKey))) {
+            err = sarc.loadFromFile((baseDir / resultKey).string());
         }
         else {
             err = sarc.loadFromFile((workingDir / resultKey).string());
@@ -507,15 +567,21 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
             return RepackResult::FAIL;
         }
 
-        err = sarc.rebuildFromDir((workingDir / element).string());
-        if (err != SARCError::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
+        //only rebuild the changed files, saves time
+        for(const auto& child : entry->children) {
+            err = sarc.replaceFile(child.first.substr(element.size()) + '\0', (workingDir / child.first).string());
+            if (err != SARCError::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return RepackResult::FAIL;
+            }
         }
 
         //Repack to output directory if file exists, otherwise stay in working dir
-        if(Utility::exists((outputDir / resultKey))) {
+        if(entry->toOutput) {
+            if(Utility::Str::endsWith(resultKey, ".dec")) { //remove extra extension if skipping compression
+                resultKey = resultKey.substr(0, resultKey.size() - 4);
+            }
             err = sarc.writeToFile((outputDir / resultKey).string());
         }
         else {
@@ -541,8 +607,8 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
 
         FileTypes::resFile fres;
         FRESError err = FRESError::NONE;
-        if(Utility::exists((outputDir / resultKey))) {
-            err = fres.loadFromFile((outputDir / resultKey).string());
+        if(Utility::exists((baseDir / resultKey))) {
+            err = fres.loadFromFile((baseDir / resultKey).string());
         }
         else {
             err = fres.loadFromFile((workingDir / resultKey).string());
@@ -553,15 +619,18 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
             return RepackResult::FAIL;
         }
 
-        err = fres.replaceFromDir((workingDir / element).string()); //Update embedded files
-        if (err != FRESError::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
+        //only rebuild the changed files, saves time
+        for(const auto& child : entry->children) {
+            err = fres.replaceEmbeddedFile(child.first.substr(element.size()), (workingDir / child.first).string());
+            if (err != FRESError::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return RepackResult::FAIL;
+            }
         }
         
         //Repack to output directory if file exists, otherwise stay in working dir
-        if(Utility::exists((outputDir / resultKey))) {
+        if(entry->toOutput) {
             err = fres.writeToFile((outputDir / resultKey).string());
         }
         else {
@@ -574,7 +643,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
 
             err = fres.writeToFile((workingDir / resultKey).string());
         }
-
+        
         if (err != FRESError::NONE)
         {
             ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
@@ -585,7 +654,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
     {
         //Copy to output if the file didn't need any extraction
         //Skip copying for files that get repacked, they get repacked directly to the output
-        if (!hadChildren && Utility::exists(outputDir / element)) {
+        if (entry->toOutput) {
             if(!Utility::copy_file(workingDir / element, outputDir / element)) {
                 ErrorLog::getInstance().log("Failed copying file " + (workingDir / element).string() + " to output directory");
                 return RepackResult::FAIL;

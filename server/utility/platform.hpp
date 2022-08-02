@@ -11,7 +11,7 @@
 
 #ifdef DEVKITPRO
 	#define PLATFORM_DKP
-	#include <dirent.h> //for file things
+	#include "../platform/wiiutitles.hpp"
 #elif defined(_MSC_VER)
 	#define PLATFORM_MSVC
 	#define ZLIB_WINAPI 
@@ -22,10 +22,6 @@
 #else 
     #error UNKNOWN PLATFORM 
 #endif
-
-
-// if this gets sufficiently extensive, we'll want to break out into different
-// target files/directories and use cmake to subtitute pre-makefile
 
 namespace Utility
 {
@@ -41,14 +37,7 @@ namespace Utility
 
 	void platformShutdown();
 
-	// these functions are always -1 in a non-homebrew context
-	int32_t getMCPHandle();
-
-	int32_t getFSAHandle();
-
 	#ifdef PLATFORM_DKP
-		struct titleEntry;
-
 		const std::vector<Utility::titleEntry>* getLoadedTitles();
 	#endif
 }
