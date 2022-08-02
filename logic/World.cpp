@@ -1035,7 +1035,7 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
 World::WorldLoadingError World::loadPlandomizer()
 {
     LOG_TO_DEBUG("Loading plandomzier file");
-    std::string plandoFilepath = "./logic/data/plandomizer.yaml";
+    const std::string plandoFilepath = "./plandomizer.yaml"; //can't bundle in the romfs, put it in the executable directory instead
 
     std::string plandoStr;
     if (getFileContents(plandoFilepath, plandoStr) != 0)
@@ -1351,7 +1351,7 @@ Entrance* World::getEntrance(const std::string& parentArea, const std::string& c
 void World::removeEntrance(Entrance* entranceToRemove)
 {
     std::list<Entrance>& areaExits = areaEntries[entranceToRemove->getParentArea()].exits;
-    areaExits.remove_if([entranceToRemove](Entrance& entrance)
+    std::erase_if(areaExits, [entranceToRemove](Entrance& entrance)
     {
         return &entrance == entranceToRemove;
     });

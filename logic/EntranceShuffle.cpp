@@ -384,7 +384,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 if (dungeonIslands.size() == 1)
                 {
                     auto dungeonIsland = *dungeonIslands.begin();
-                    if (raceModeIslands.count(dungeonIsland) > 0)
+                    if (raceModeIslands.contains(dungeonIsland))
                     {
                         LOG_TO_DEBUG("Error: Island " + dungeonIsland + " has an ambiguous race mode dungeon");
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;

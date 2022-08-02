@@ -12,6 +12,8 @@
 #include "../utility/platform.hpp"
 
 using eType = Utility::Endian::Type;
+using FileSpec = FileTypes::resFile::FileSpec;
+using StringTableEntry = FileTypes::resFile::StringTableEntry;
 
 #define SUBFILE_ERR_CHECK(func) { \
     if(const auto error = func; error != decltype(error)::NONE) {\
@@ -124,9 +126,9 @@ namespace {
 
     //Partial implementation, only process embedded files for now
 
-    std::variant<FRESError, std::vector<FRESFileSpec>> readEmbedded(std::istream& bfres, FRESHeader& hdr) {
+    std::variant<FRESError, std::vector<FileSpec>> readEmbedded(std::istream& bfres, FRESHeader& hdr) {
         if (hdr.groupCounts[11] != 0) {
-            std::vector<FRESFileSpec> fileList;
+            std::vector<FileSpec> fileList;
             bfres.seekg(0x20 + (11 * 0x4) + hdr.groupOffsets[11], std::ios::beg);
             GroupHeader group;
             if (!bfres.read(reinterpret_cast<char*>(&group.groupLength), sizeof(group.groupLength))) {
@@ -166,7 +168,7 @@ namespace {
                 Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
                 group.entries.push_back(entry);
 
-                FRESFileSpec file;
+                FileSpec file;
                 LOG_AND_RETURN_IF_ERR(readStringTableEntry(bfres, entry.location + 0x8 + entry.namePointer, file.fileName));
 
                 EmbeddedFileSpec fileInfo;
@@ -265,16 +267,16 @@ namespace FileTypes {
     FRESError resFile::loadFromBinary(std::istream& bfres) {
         LOG_AND_RETURN_IF_ERR(readFRESHeader(bfres, fresHeader));
 
-        std::variant<FRESError, std::vector<FRESFileSpec>> readFiles = readEmbedded(bfres, fresHeader);
+        std::variant<FRESError, std::vector<FileSpec>> readFiles = readEmbedded(bfres, fresHeader);
         if (readFiles.index() == 0) {
             if (std::get<FRESError>(readFiles) != FRESError::GROUP_IS_EMPTY) { //ignore the group is empty error since we can still continue execution
                 LOG_ERR_AND_RETURN(std::get<FRESError>(readFiles));
             }
         }
-        files.insert(files.end(), std::get<std::vector<FRESFileSpec>>(readFiles).begin(), std::get<std::vector<FRESFileSpec>>(readFiles).end());
+        files.insert(files.end(), std::get<std::vector<FileSpec>>(readFiles).begin(), std::get<std::vector<FileSpec>>(readFiles).end());
 
         // sort file specs by offset (may already be sorted by nintendo, but they don't HAVE to be in theory)
-        std::sort(files.begin(), files.end(), [](const FRESFileSpec& a, const FRESFileSpec& b) {return a.fileOffset < b.fileOffset; });
+        std::sort(files.begin(), files.end(), [](const FileSpec& a, const FileSpec& b) {return a.fileOffset < b.fileOffset; });
 
         bfres.seekg(0x6C, std::ios::beg);
         fileData.resize(fresHeader.fileSize - 0x6C); //Exclude header size since it doesn't get included in this data
@@ -429,7 +431,7 @@ namespace FileTypes {
     }
 
     FRESError resFile::extractToDir(const std::string& dirPath) {
-        for (const FRESFileSpec& file : files) {
+        for (const FileSpec& file : files) {
             std::ofstream outFile(dirPath + '/' + file.fileName, std::ios::binary);
             if (!outFile.is_open()) {
                 LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
