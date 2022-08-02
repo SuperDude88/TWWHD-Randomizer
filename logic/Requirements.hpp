@@ -15,6 +15,8 @@
 enum struct RequirementType
 {
     NONE = 0,
+    NOTHING,
+    IMPOSSIBLE,
     OR,
     AND,
     NOT,
@@ -28,11 +30,12 @@ enum struct RequirementType
 };
 
 using MacroIndex = size_t;
+using EventId = size_t;
 struct Requirement;
 
 struct Requirement
 {
-    using Argument = std::variant<int, std::string, Requirement, GameItem, Area, Option, MacroIndex>;
+    using Argument = std::variant<int, size_t, std::string, Requirement, GameItem, Option, Item>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
 };

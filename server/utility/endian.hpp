@@ -15,7 +15,7 @@ namespace Utility::Endian
 
 #ifdef DEVKITPRO
     constexpr Type target = Type::Big;
-#elif defined(_WIN32)
+#elif defined(_WIN32) || defined(__linux__)
     constexpr Type target = Type::Little;
 #endif
 

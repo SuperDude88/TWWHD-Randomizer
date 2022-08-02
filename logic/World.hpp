@@ -11,7 +11,6 @@
 #include "ItemPool.hpp"
 #include "Dungeon.hpp"
 #include "Entrance.hpp"
-#include "HintRegion.hpp"
 #include "../libs/Yaml.hpp"
 
 static std::stringstream lastError;
@@ -29,16 +28,17 @@ struct LocationAccess
 
 struct EventAccess
 {
-    std::string event;
+    EventId event;
     Requirement requirement;
     int worldId = -1;
 };
 
 struct AreaEntry
 {
-    Area area = Area::INVALID;
-    HintRegion island = HintRegion::NONE;
-    HintRegion dungeon = HintRegion::NONE;
+    std::string name = "";
+    std::string island = "";
+    std::string dungeon = "";
+    std::string hintRegion = "";
     std::list<EventAccess> events;
     std::list<LocationAccess> locations;
     std::list<Entrance> exits;
@@ -72,7 +72,8 @@ public:
         LOCATION_MISSING_VAL,
         MACRO_MISSING_KEY,
         MACRO_MISSING_VAL,
-        REQUIREMENT_MISISNG_KEY,
+        ITEM_MISSING_KEY,
+        REQUIREMENT_MISSING_KEY,
         INVALID_LOCATION_CATEGORY,
         INVALID_MODIFICATION_TYPE,
         INVALID_OFFSET_VALUE,
@@ -82,6 +83,8 @@ public:
         SAME_NESTING_LEVEL,
         EXTRA_OR_MISSING_PARENTHESIS,
         PLANDOMIZER_ERROR,
+        DUNGEON_HAS_NO_RACE_MODE_LOCATION,
+        INVALID_DUNGEON_NAME,
         UNKNOWN,
         COUNT
     };
@@ -93,35 +96,48 @@ public:
     const Settings& getSettings() const;
     void setWorldId(int newWorldId);
     int getWorldId() const;
-    void setItemPools();
+    WorldLoadingError setItemPools();
     ItemPool getItemPool() const;
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
-    AreaEntry& getArea(const Area& area);
+    AreaEntry& getArea(const std::string& area);
 
+    void resolveRandomSettings();
     void determineChartMappings();
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
-    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath);
-    Entrance& getEntrance(const Area& parentArea, const Area& connectedArea);
+    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath);
+    Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
-    std::unordered_set<HintRegion> getIslands(const Area& area);
+    std::unordered_set<std::string> getIslands(const std::string& area);
+    Dungeon& getDungeon(const std::string& dungeonName);
+    WorldLoadingError loadPlandomizer();
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
-    std::vector<AreaEntry> areaEntries = {};
-    std::vector<Location> locationEntries = {};
-    std::unordered_map<Location*, Item> plandomizerLocations = {};
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
+    std::map<std::string, Item> itemEntries = {};
+    std::map<std::string, AreaEntry> areaEntries = {};
+    std::map<std::string, Location> locationEntries = {};
+    std::unordered_map<std::string, EventId> eventMap = {};
+    std::unordered_map<EventId, std::string> reverseEventMap = {};
+    std::unordered_map<Location*, Item> plandomizerLocations = {};
+    std::unordered_map<Entrance*, Entrance*> plandomizerEntrances = {};
+    std::unordered_map<std::string, Dungeon> dungeons = {};
+    std::unordered_map<Location*, std::vector<Location*>> pathLocations = {};
+    std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
+    std::list<Location*> korlHints = {};
+    std::unordered_map<Location*, std::unordered_set<Location*>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::array<GameItem, 49> chartMappings;
-    std::unordered_map<DungeonId, HintRegion> raceModeDungeons; // map of dungeonId to the island it's in
+
     uint8_t startingIslandRoomIndex = 44;
+
 
 private:
 
@@ -130,13 +146,13 @@ private:
 
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
-    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, Area& parentArea);
-    WorldLoadingError loadLocation(Yaml::Node& locationObject, LocationId& loadedLocation);
+    WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea);
+    WorldLoadingError loadLocation(Yaml::Node& locationObject);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);
-    WorldLoadingError loadArea(Yaml::Node& areaObject, Area& loadedArea);
-    WorldLoadingError loadPlandomizerLocations();
+    WorldLoadingError loadArea(Yaml::Node& areaObject);
+    WorldLoadingError loadItem(Yaml::Node& itemObject);
     int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;

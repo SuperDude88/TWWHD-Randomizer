@@ -5,34 +5,45 @@
 
 Entrance::Entrance() {}
 
-Entrance::Entrance(const Area& parentArea_, const Area& connectedArea_, World* world_)
+Entrance::Entrance(const std::string& parentArea_, const std::string& connectedArea_, World* world_)
 {
     parentArea = parentArea_;
     connectedArea = connectedArea_;
+    originalConnectedArea = connectedArea_;
+    alreadySetOriginalConnectedArea = true;
     world = world_;
     worldId = world->getWorldId();
-    requirement = {RequirementType::HAS_ITEM, {GameItem::NOTHING}};
+    requirement = {RequirementType::NOTHING, {}};
     setOriginalName();
 }
 
-Area Entrance::getParentArea() const
+std::string Entrance::getParentArea() const
 {
     return parentArea;
 }
 
-void Entrance::setParentArea(Area newParentArea)
+void Entrance::setParentArea(const std::string& newParentArea)
 {
     parentArea = newParentArea;
 }
 
-Area Entrance::getConnectedArea() const
+std::string Entrance::getConnectedArea() const
 {
     return connectedArea;
 }
 
-void Entrance::setConnectedArea(Area newConnectedArea)
+void Entrance::setConnectedArea(const std::string& newConnectedArea)
 {
     connectedArea = newConnectedArea;
+    if (!alreadySetOriginalConnectedArea)
+    {
+        originalConnectedArea = newConnectedArea;
+    }
+}
+
+std::string Entrance::getOriginalConnectedArea() const
+{
+    return originalConnectedArea;
 }
 
 Requirement& Entrance::getRequirement()
@@ -50,7 +61,7 @@ EntranceType Entrance::getEntranceType() const
     return type;
 }
 
-void Entrance::setEntranceType(EntranceType& newType)
+void Entrance::setEntranceType(EntranceType newType)
 {
     type = newType;
 }
@@ -74,14 +85,14 @@ void Entrance::setOriginalName()
 {
     if (!alreadySetOriginalName)
     {
-        originalName = areaToPrettyName(parentArea) + " -> " + areaToPrettyName(connectedArea);
+        originalName = parentArea + " -> " + connectedArea;
         alreadySetOriginalName = true;
     }
 }
 
 std::string Entrance::getCurrentName() const
 {
-    return areaToPrettyName(parentArea) + " -> " + areaToPrettyName(connectedArea);
+    return parentArea + " -> " + connectedArea;
 }
 
 std::string Entrance::getFilepathStage() const
@@ -240,22 +251,22 @@ void Entrance::setWorld(World* newWorld)
     world = newWorld;
 }
 
-std::unordered_set<HintRegion> Entrance::getIslands()
+std::unordered_set<std::string> Entrance::getIslands()
 {
     return world->getIslands(parentArea);
 }
 
-void Entrance::connect(const Area newConnectedArea)
+void Entrance::connect(const std::string& newConnectedArea)
 {
     connectedArea = newConnectedArea;
-    world->areaEntries[areaAsIndex(connectedArea)].entrances.push_back(this);
+    world->getArea(connectedArea).entrances.push_back(this);
 }
 
-Area Entrance::disconnect()
+std::string Entrance::disconnect()
 {
-    world->areaEntries[areaAsIndex(connectedArea)].entrances.remove(this);
-    Area previouslyConnected = connectedArea;
-    connectedArea = Area::INVALID;
+    world->getArea(connectedArea).entrances.remove(this);
+    std::string previouslyConnected = connectedArea;
+    connectedArea = "";
     return previouslyConnected;
 }
 
@@ -267,8 +278,8 @@ void Entrance::bindTwoWay(Entrance* otherEntrance)
 
 Entrance* Entrance::getNewTarget()
 {
-    auto& root = world->areaEntries[areaAsIndex(Area::Root)];
-    root.exits.emplace_back(Area::Root, connectedArea, world);
+    auto& root = world->getArea("Root");
+    root.exits.emplace_back("Root", connectedArea, world);
     Entrance& targetEntrance = root.exits.back();
     targetEntrance.connect(connectedArea);
     targetEntrance.setReplaces(this);
@@ -306,18 +317,41 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::DOOR, "DOOR"},
         {EntranceType::DOOR_REVERSE, "DOOR_REVERSE"},
         {EntranceType::MISC, "MISC"},
-        {EntranceType::MISC_REVERSE, "MISC_REVERSE"},
         {EntranceType::MISC_RESTRICTIVE, "MISC_RESTRICTIVE"},
-        {EntranceType::MISC_RESTRICTIVE_REVERSE, "MISC_RESTRICTIVE_REVERSE"},
         {EntranceType::MISC_CRAWLSPACE, "MISC_CRAWLSPACE"},
         {EntranceType::MISC_CRAWLSPACE_REVERSE, "MISC_CRAWLSPACE_REVERSE"},
         {EntranceType::MIXED, "MIXED"},
         {EntranceType::ALL, "ALL"},
     };
 
-    if (typeNameMap.count(type) == 0)
+    if (!typeNameMap.contains(type))
     {
         return "INVALID ENTRANCE TYPE";
     }
     return typeNameMap.at(type);
+}
+
+EntranceType entranceTypeToReverse(const EntranceType& type)
+{
+    std::unordered_map<EntranceType, EntranceType> typeReverseMap = {
+        {EntranceType::NONE, EntranceType::NONE},
+        {EntranceType::DUNGEON, EntranceType::DUNGEON_REVERSE},
+        {EntranceType::DUNGEON_REVERSE, EntranceType::DUNGEON},
+        {EntranceType::CAVE, EntranceType::CAVE_REVERSE},
+        {EntranceType::CAVE_REVERSE, EntranceType::CAVE},
+        {EntranceType::DOOR, EntranceType::DOOR_REVERSE},
+        {EntranceType::DOOR_REVERSE, EntranceType::DOOR},
+        {EntranceType::MISC, EntranceType::MISC},
+        {EntranceType::MISC_RESTRICTIVE, EntranceType::MISC_RESTRICTIVE},
+        {EntranceType::MISC_CRAWLSPACE, EntranceType::MISC_CRAWLSPACE_REVERSE},
+        {EntranceType::MISC_CRAWLSPACE_REVERSE, EntranceType::MISC_CRAWLSPACE},
+        {EntranceType::MIXED, EntranceType::MIXED},
+        {EntranceType::ALL, EntranceType::ALL},
+    };
+
+    if (!typeReverseMap.contains(type))
+    {
+        return EntranceType::NONE;
+    }
+    return typeReverseMap.at(type);
 }

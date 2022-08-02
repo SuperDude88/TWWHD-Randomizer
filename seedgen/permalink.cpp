@@ -4,7 +4,7 @@
 
 
 
-static const std::array<Option, 47> PERMALINK_OPTIONS {
+static const std::array<Option, 55> PERMALINK_OPTIONS {
     Option::ProgressDungeons,
     Option::ProgressGreatFairies,
     Option::ProgressPuzzleCaves,
@@ -37,6 +37,14 @@ static const std::array<Option, 47> PERMALINK_OPTIONS {
     Option::RandomizeMiscEntrances,
     Option::MixEntrancePools,
     Option::DecoupleEntrances,
+    Option::HoHoHints,
+    Option::KorlHints,
+    Option::PathHints,
+    Option::BarrenHints,
+    Option::ItemHints,
+    Option::LocationHints,
+    Option::UseAlwaysHints,
+    Option::ClearerHints,
     Option::InstantText,
     Option::RevealSeaChart,
     Option::NumShards,

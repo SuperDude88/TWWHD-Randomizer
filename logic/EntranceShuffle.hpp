@@ -7,20 +7,24 @@
 enum struct EntranceShuffleError
 {
     NONE = 0,
+    BAD_LINKS_SPAWN,
+    BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY,
     RAN_OUT_OF_RETRIES,
     NO_MORE_VALID_ENTRANCES,
     ALL_LOCATIONS_NOT_REACHABLE,
     AMBIGUOUS_RACE_MODE_ISLAND,
     AMBIGUOUS_RACE_MODE_DUNGEON,
+    NO_RACE_MODE_ISLAND,
     NOT_ENOUGH_SPHERE_ZERO_LOCATIONS,
     ATTEMPTED_SELF_CONNECTION,
     FAILED_TO_DISCONNECT_TARGET,
+    PLANDOMIZER_ERROR,
 };
 
 struct EntranceInfo
 {
-    Area parentArea = Area::INVALID;
-    Area connectedArea = Area::INVALID;
+    std::string parentArea = "INVALID";
+    std::string connectedArea = "INVALID";
     std::string filepathStage = "";
     uint8_t filepathRoom = 0xFF;
     uint8_t sclsExitIndex = 0xFF;

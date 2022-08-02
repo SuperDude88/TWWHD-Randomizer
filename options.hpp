@@ -58,6 +58,15 @@ enum struct Option {
     MixEntrancePools,
     DecoupleEntrances,
 
+    HoHoHints,
+    KorlHints,
+    ClearerHints,
+    UseAlwaysHints,
+    PathHints,
+    BarrenHints,
+    ItemHints,
+    LocationHints,
+
     InstantText,
     RevealSeaChart,
     NumShards,
@@ -117,6 +126,15 @@ struct Settings {
     bool randomize_misc_entrances = false;
     bool mix_entrance_pools = false;
     bool decouple_entrances = false;
+
+    bool ho_ho_hints = false;
+    bool korl_hints = false;
+    bool clearer_hints = false;
+    bool use_always_hints = false;
+    uint8_t path_hints = 0;
+    uint8_t barren_hints = 0;
+    uint8_t item_hints = 0;
+    uint8_t location_hints = 0;
 
     bool instant_text_boxes = false;
     bool reveal_full_sea_chart = false;

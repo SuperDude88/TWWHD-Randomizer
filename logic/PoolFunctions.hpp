@@ -28,8 +28,8 @@ std::vector<T> filterAndEraseFromPool(std::vector<T>& vector, Predicate pred) {
 }
 
 // Helper function for combining two item pools
-template <typename T, typename FromPool>
-void addElementsToPool(std::vector<T>& toPool, const FromPool& fromPool)
+template <typename FromPool, typename Container>
+void addElementsToPool(Container& toPool, const FromPool& fromPool)
 {
     toPool.insert(toPool.end(), fromPool.begin(), fromPool.end());
 }
@@ -58,7 +58,8 @@ size_t elementCountInPool(T& element, const Container& container)
 template <typename T, typename Container>
 T removeElementFromPool( Container& container, T element, int numberToRemove = 1)
 {
-    T retElement;
+    // Return the same element if we don't find any in the container
+    T retElement = element;
     for (int i = 0; i < numberToRemove; i++)
     {
         auto itr = std::find(container.begin(), container.end(), element);

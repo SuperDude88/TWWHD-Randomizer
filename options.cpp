@@ -51,6 +51,14 @@ Option nameToSetting(const std::string& name) {
         {"RandomizeMiscEntrances", Option::RandomizeMiscEntrances},
         {"MixEntrancePools", Option::MixEntrancePools},
         {"DecoupleEntrances", Option::DecoupleEntrances},
+        {"HoHoHints", Option::HoHoHints},
+        {"KorlHints", Option::KorlHints},
+        {"ClearerHints", Option::ClearerHints},
+        {"UseAlwaysHints", Option::UseAlwaysHints},
+        {"PathHints", Option::PathHints},
+        {"BarrenHints", Option::BarrenHints},
+        {"ItemHints", Option::ItemHints},
+        {"LocationHints", Option::LocationHints},
         {"InstantText", Option::InstantText},
         {"RevealSeaChart", Option::RevealSeaChart},
         {"NumShards", Option::NumShards},
@@ -114,6 +122,14 @@ std::string settingToName(const Option& setting) {
         {Option::RandomizeMiscEntrances, "RandomizeMiscEntrances"},
         {Option::MixEntrancePools, "MixEntrancePools"},
         {Option::DecoupleEntrances, "DecoupleEntrances"},
+        {Option::HoHoHints, "HoHoHints"},
+        {Option::KorlHints, "KorlHints"},
+        {Option::ClearerHints, "ClearerHints"},
+        {Option::UseAlwaysHints, "UseAlwaysHints"},
+        {Option::PathHints, "PathHints"},
+        {Option::BarrenHints, "BarrenHints"},
+        {Option::ItemHints, "ItemHints"},
+        {Option::LocationHints, "LocationHints"},
         {Option::InstantText, "InstantText"},
         {Option::RevealSeaChart, "RevealSeaChart"},
         {Option::NumShards, "NumShards"},
@@ -210,6 +226,22 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.mix_entrance_pools;
     case Option::DecoupleEntrances:
         return settings.decouple_entrances;
+    case Option::HoHoHints:
+        return settings.ho_ho_hints;
+    case Option::KorlHints:
+        return settings.korl_hints;
+    case Option::ClearerHints:
+        return settings.clearer_hints;
+    case Option::UseAlwaysHints:
+        return settings.use_always_hints;
+    case Option::PathHints:
+        return settings.path_hints;
+    case Option::BarrenHints:
+        return settings.barren_hints;
+    case Option::ItemHints:
+        return settings.item_hints;
+    case Option::LocationHints:
+        return settings.location_hints;
     case Option::InstantText:
         return settings.instant_text_boxes;
     case Option::RevealSeaChart:

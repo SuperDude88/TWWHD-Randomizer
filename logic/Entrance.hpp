@@ -2,7 +2,6 @@
 #pragma once
 
 #include "Requirements.hpp"
-#include "HintRegion.hpp"
 #include "Area.hpp"
 #include <unordered_set>
 
@@ -16,9 +15,7 @@ enum struct EntranceType
     DOOR,
     DOOR_REVERSE,
     MISC,
-    MISC_REVERSE,
     MISC_RESTRICTIVE,
-    MISC_RESTRICTIVE_REVERSE,
     MISC_CRAWLSPACE,
     MISC_CRAWLSPACE_REVERSE,
     MIXED,
@@ -33,16 +30,17 @@ class Entrance
 public:
 
     Entrance();
-    Entrance(const Area& parentArea_, const Area& connectedArea_, World* world_);
+    Entrance(const std::string& parentArea_, const std::string& connectedArea_, World* world_);
 
-    Area getParentArea() const;
-    void setParentArea(Area newParentArea);
-    Area getConnectedArea() const;
-    void setConnectedArea(Area newConnectedArea);
+    std::string getParentArea() const;
+    void setParentArea(const std::string& newParentArea);
+    std::string getConnectedArea() const;
+    void setConnectedArea(const std::string& newConnectedArea);
+    std::string getOriginalConnectedArea() const;
     Requirement& getRequirement();
     void setRequirement(const Requirement newRequirement);
     EntranceType getEntranceType() const;
-    void setEntranceType(EntranceType& newType);
+    void setEntranceType(EntranceType newType);
     bool isPrimary() const;
     void setAsPrimary();
     std::string getOriginalName() const;
@@ -79,10 +77,10 @@ public:
     void setAsShuffled();
     World* getWorld();
     void setWorld(World* newWorld);
-    std::unordered_set<HintRegion> getIslands();
+    std::unordered_set<std::string> getIslands();
 
-    void connect(const Area newConnectedArea);
-    Area disconnect();
+    void connect(const std::string& newConnectedArea);
+    std::string disconnect();
     void bindTwoWay(Entrance* otherEntrance);
     Entrance* getNewTarget();
     Entrance* assumeReachable();
@@ -91,13 +89,15 @@ public:
 
 private:
 
-    Area parentArea = Area::INVALID;
-    Area connectedArea = Area::INVALID;
+    std::string parentArea = "";
+    std::string connectedArea = "";
+    std::string originalConnectedArea = "";
     Requirement requirement;
     EntranceType type = EntranceType::NONE;
     bool primary = false;
     std::string originalName = "";
     bool alreadySetOriginalName = false;
+    bool alreadySetOriginalConnectedArea = false;
     std::string filepathStage = "";
     uint8_t filepathRoom = 0xFF;
     uint8_t sclsExitIndex = 0xFF;
@@ -117,3 +117,4 @@ private:
 };
 
 std::string entranceTypeToName(const EntranceType& type);
+EntranceType entranceTypeToReverse(const EntranceType& type);

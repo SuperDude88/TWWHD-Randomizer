@@ -1,174 +1,178 @@
-- Name: MailboxHoskitGirlfriendLetter
-  PrettyName: Mailbox - Letter from Hoskit's Girlfriend
-  OriginalItem: PieceOfHeart2
+- Name: Mailbox - Letter from Hoskit's Girlfriend
+  Original Item: Piece Of Heart 2
   Category:
     - Mail
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031584
 
-- Name: MailboxBaitoMotherLetter
-  PrettyName: Mailbox - Letter from Baito's Mother
-  OriginalItem: PieceOfHeart
+- Name: Mailbox - Letter from Baito's Mother
+  Original Item: Piece Of Heart
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1003150C
     - 0x1003156C
 
-- Name: MailboxBaitoLetter
-  PrettyName: Mailbox - Letter from Baito
-  OriginalItem: RedRupee
+- Name: Mailbox - Letter from Baito
+  Original Item: Red Rupee
+  Dungeon Dependency: Earth Temple
   Category:
     - Mail
     - Dungeon
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031590
 
-- Name: MailboxKomaliFatherLetter
-  PrettyName: Mailbox - Letter from Komali's Father
-  OriginalItem: PieceOfHeart
+- Name: Mailbox - Letter from Komali's Father
+  Original Item: Piece Of Heart
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031518
 
-- Name: MailboxBeedleBombAdLetter
-  PrettyName: Mailbox - Letter Advertising Bombs
-  OriginalItem: BeedlesChart
+- Name: Mailbox - Letter Advertising Bombs
+  Original Item: Beedles Chart
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031524
 
-- Name: MailboxRockSpireShopAdLetter
-  PrettyName: Mailbox - Letter Advertising Rock Spire Shop Ship
-  OriginalItem: GreenRupee
+- Name: Mailbox - Letter Advertising Rock Spire Shop Ship
+  Original Item: Green Rupee
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031548
 
-- Name: MailboxSilverMembershipRewardLetter
-  PrettyName: Mailbox - Beedle's Silver Membership Reward
-  OriginalItem: ComplimentaryID
+- Name: Mailbox - Beedle's Silver Membership Reward
+  Original Item: Complimentary ID
   Category:
     - Junk
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031578
 
-- Name: MailboxGoldMembershipRewardLetter
-  PrettyName: Mailbox - Beedle's Gold Membership Reward
-  OriginalItem: FillUpCoupon
+- Name: Mailbox - Beedle's Gold Membership Reward
+  Original Item: Fill Up Coupon
   Category:
     - Junk
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1003159C
 
-- Name: MailboxOrcaLetter
-  PrettyName: Mailbox - Letter from Orca
-  OriginalItem: RedRupee
+- Name: Mailbox - Letter from Orca
+  Original Item: Red Rupee
+  Dungeon Dependency: Forbidden Woods
   Category:
     - Mail
     - Dungeon
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031530
 
-- Name: MailboxGrandmaLetter
-  PrettyName: Mailbox - Letter from Grandma
-  OriginalItem: RedRupee
+- Name: Mailbox - Letter from Grandma
+  Original Item: Red Rupee
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1003153C
 
-- Name: MailboxAryllLetter
-  PrettyName: Mailbox - Letter from Aryll
-  OriginalItem: RedRupee
+- Name: Mailbox - Letter from Aryll
+  Original Item: Red Rupee
+  Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
     - Dungeon
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031560
 
-- Name: MailboxTingleLetter
-  PrettyName: Mailbox - Letter from Tingle
-  OriginalItem: INcredibleChart
+- Name: Mailbox - Letter from Tingle
+  Original Item: INcredible Chart
+  Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
     - Dungeon
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031554
 
-- Name: GreatSeaBeedleShop20Rupee
-  PrettyName: Great Sea - Beedle Shop 20 Rupee Item
-  OriginalItem: BaitBag
+- Name: Great Sea - Beedle Shop 20 Rupee Item
+  Original Item: Bait Bag
   Category:
     - Misc
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAEA7
     - 0x02212C67
     - 0x02215443
 
-- Name: GreatSeaSalvageCorpGift
-  PrettyName: Great Sea - Salvage Corp Gift
-  OriginalItem: TreasureChart34
+- Name: Great Sea - Salvage Corp Gift
+  Original Item: Treasure Chart 34
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C63BF
 
-- Name: GreatSeaCyclos
-  PrettyName: Great Sea - Cyclos
-  OriginalItem: BalladOfGales
+- Name: Great Sea - Cyclos
+  Original Item: Ballad Of Gales
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A82F3
   NameOffset: 0x0005AE20
 
-- Name: GreatSeaGoronTradingReward
-  PrettyName: Great Sea - Goron Trading Reward
-  OriginalItem: PieceOfHeart
+- Name: Great Sea - Goron Trading Reward
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
     - ExpensivePurchase
+  Hint Priority: Always
   Type: RPX
   Offsets:
     - 0x101C546F
 
-- Name: GreatSeaWitheredTrees
-  PrettyName: Great Sea - Withered Trees
-  OriginalItem: PieceOfHeart
+- Name: Great Sea - Withered Trees
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
+  Hint Priority: Always
   Type: RPX
   Offsets:
     - 0x02347C2B
     - 0x02347AAB
 
-- Name: ForsakenFortressSunkenTreasure
-  PrettyName: Forsaken Fortress - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Forsaken Fortress Sector - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002298
@@ -176,59 +180,60 @@
     - 0x00002424
     - 0x00002448
 
-- Name: ForsakenFortressPhantomGanon
-  PrettyName: Forsaken Fortress - Phantom Ganon
-  OriginalItem: SkullHammer
+- Name: Forsaken Fortress - Phantom Ganon
+  Original Item: Skull Hammer
   Category:
     - Dungeon
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002838
 
-- Name: ForsakenFortressChestInsideLowerJailCell
-  PrettyName: Forsaken Fortress - Chest Inside Lower Jail Cell
-  OriginalItem: PieceOfHeart
+- Name: Forsaken Fortress - Chest Inside Lower Jail Cell
+  Original Item: Piece Of Heart
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A80
 
-- Name: ForsakenFortressChestOnBed
-  PrettyName: Forsaken Fortress - Chest on Bed
-  OriginalItem: YellowRupee
+- Name: Forsaken Fortress - Chest on Bed
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A40
 
-- Name: ForsakenFortressChestOutsideUpperJailCell
-  PrettyName: Forsaken Fortress - Chest Outside Upper Jail Cell
-  OriginalItem: DungeonMap
+- Name: Forsaken Fortress - Chest Outside Upper Jail Cell
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A20
 
-- Name: ForsakenFortressBokoblinGuardedChest
-  PrettyName: Forsaken Fortress - Chest Guarded by Bokoblin
-  OriginalItem: Compass
+- Name: Forsaken Fortress - Chest Guarded by Bokoblin
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A60
 
-- Name: ForsakenFortressHelmarocKingHeartContainer
-  PrettyName: Forsaken Fortress - Helmaroc King Heart Container
-  OriginalItem: HeartContainer
+- Name: Forsaken Fortress - Helmaroc King Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Name: Helmaroc King
   Category:
     - Dungeon
   Paths:
@@ -236,6 +241,7 @@
     - "content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr"
     - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
     - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x0206C096
@@ -243,12 +249,12 @@
     - 0x000032F4
     - 0x00003438
 
-- Name: StarIslandSunkenTreasure
-  PrettyName: Star Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Star Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003004
@@ -256,32 +262,32 @@
     - 0x0000304C
     - 0x00003070
 
-- Name: StarIslandLookoutPlatformChest
-  PrettyName: Star Island - Lookout Platform Chest
-  OriginalItem: GoldenFeather
+- Name: Star Island - Lookout Platform Chest
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000030DC
 
-- Name: StarIslandCaveChest
-  PrettyName: Star Island - Cave Chest
-  OriginalItem: PieceOfHeart
+- Name: Star Island - Cave Chest
+  Original Item: Piece Of Heart
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: NorthernFairySunkenTreasure
-  PrettyName: Northern Fairy Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Northern Fairy Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000013BC
@@ -289,31 +295,31 @@
     - 0x00001404
     - 0x00001428
 
-- Name: NorthernFairyIslandSubmarineChest
-  PrettyName: Northern Fairy Island - Submarine Chest
-  OriginalItem: TreasureChart22
+- Name: Northern Fairy Island - Submarine Chest
+  Original Item: Treasure Chart 22
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004B0
 
-- Name: NorthernFairyIslandGreatFairy
-  PrettyName: Northern Fairy Island - Great Fairy
-  OriginalItem: ProgressiveWallet
+- Name: Northern Fairy Island - Great Fairy
+  Original Item: Progressive Wallet
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B2F
 
-- Name: GaleIsleSunkenTreasure
-  PrettyName: Gale Isle - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Gale Isle - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001CD4
@@ -321,22 +327,22 @@
     - 0x00001D1C
     - 0x00001D40
 
-- Name: CrescentMoonChest
-  PrettyName: Crescent Moon Island - Chest on Island
-  OriginalItem: TreasureChart10
+- Name: Crescent Moon Island - Chest on Island
+  Original Item: Treasure Chart 10
   Category:
     - Misc
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000980
 
-- Name: CrescentMoonSunkenTreasure
-  PrettyName: Crescent Moon Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Crescent Moon Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000008A8
@@ -344,32 +350,32 @@
     - 0x000008F0
     - 0x00000914
 
-- Name: CrescentMoonSubmarineChest
-  PrettyName: Crescent Moon Island - Submarine Chest
-  OriginalItem: TreasureChart9
+- Name: Crescent Moon Island - Submarine Chest
+  Original Item: Treasure Chart 9
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000664
 
-- Name: SevenStarBigOcto
-  PrettyName: Seven Star Isles - Big Octo
-  OriginalItem: PieceOfHeart
+- Name: Seven Star Isles - Big Octo
+  Original Item: Piece Of Heart
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001278
 
-- Name: SevenStarSunkenTreasure
-  PrettyName: Seven Star Isles - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Seven Star Isles - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001398
@@ -377,42 +383,42 @@
     - 0x000013E0
     - 0x00001404
 
-- Name: SevenStarCenterLookoutPlatformChest
-  PrettyName: Seven Star Isles - Center Lookout Platform Chest
-  OriginalItem: RedRupee
+- Name: Seven Star Isles - Center Lookout Platform Chest
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001568
 
-- Name: SevenStarNorthernLookoutPlatformChest
-  PrettyName: Seven Star Isles - Northern Lookout Platform Chest
-  OriginalItem: GoldenFeather
+- Name: Seven Star Isles - Northern Lookout Platform Chest
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001548
 
-- Name: SevenStarSouthernLookoutPlatformDefeatWizzrobes
-  PrettyName: Seven Star Isles - Southern Lookout Platform Chest
-  OriginalItem: TreasureChart16
+- Name: Seven Star Isles - Southern Lookout Platform Chest
+  Original Item: Treasure Chart 16
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001588
 
-- Name: OverlookSunkenTreasure
-  PrettyName: Overlook Isles - Sunken Treasure
-  OriginalItem: SecretCaveChart
+- Name: Overlook Island - Sunken Treasure
+  Original Item: Secret Cave Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001548
@@ -420,32 +426,32 @@
     - 0x00001590
     - 0x000015B4
 
-- Name: OverlookCaveChest
-  PrettyName: Overlook Isles - Cave Chest
-  OriginalItem: TriforceShard8
+- Name: Overlook Island - Cave Chest
+  Original Item: Triforce Shard 8
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000484
 
-- Name: FourEyeReefDestroyCannonsAndGunboats
-  PrettyName: Four Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: TreasureChart19
+- Name: Four Eye Reef - Destroy Cannons and Gunboats
+  Original Item: Treasure Chart 19
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001FD4
 
-- Name: FourEyeReefSunkenTreasure
-  PrettyName: Four Eye Reef - Sunken Treasure
-  OriginalItem: GreatFairyChart
+- Name: Four Eye Reef - Sunken Treasure
+  Original Item: Great Fairy Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001EA4
@@ -453,12 +459,12 @@
     - 0x00001EEC
     - 0x00001F10
 
-- Name: MotherAndChildSunkenTreasure
-  PrettyName: Mother and Child Isles - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Mother & Child Isles - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001968
@@ -466,41 +472,41 @@
     - 0x000019B0
     - 0x000019D4
 
-- Name: MotherAndChildInsideMotherIsleChest
-  PrettyName: Mother and Child Isles - Inside Mother Isle
-  OriginalItem: FireIceArrows
+- Name: Mother & Child Isles - Inside Mother Isle
+  Original Item: Fire Ice Arrows
   Category:
     - Misc
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001BB0
 
-- Name: SpectacleBarrelShootingFirstPrize
-  PrettyName: Spectacle Island - Barrel Shooting First Prize
-  OriginalItem: PieceOfHeart
+- Name: Spectacle Island - Barrel Shooting First Prize
+  Original Item: Piece Of Heart
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1001C194
     - 0x1001C195
 
-- Name: SpectacleBarrelShootingSecondPrize
-  PrettyName: Spectacle Island - Barrel Shooting Second Prize
-  OriginalItem: TreasureChart17
+- Name: Spectacle Island - Barrel Shooting Second Prize
+  Original Item: Treasure Chart 17
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1001C196
 
-- Name: SpectacleSunkenTreasure
-  PrettyName: Spectacle Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Spectacle Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000BF0
@@ -508,145 +514,145 @@
     - 0x00000C38
     - 0x00000C5C
 
-- Name: WindfallIvanCatchKillerBees
-  PrettyName: Windfall Island - Ivan Catch Killer Bees
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Ivan Catch Killer Bees
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02298bfc
 
-- Name: WindfallTransparentChest
-  PrettyName: Windfall Island - Transparent Chest
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Transparent Chest
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000038AC
     - 0x000039F4
     - 0x00003F40
 
-- Name: WindfallTottTeachRhythm
-  PrettyName: Windfall Island - Tott Teach Rhythm
-  OriginalItem: SongOfPassing
+- Name: Windfall Island - Tott Teach Rhythm
+  Original Item: Song Of Passing
   Category:
     - FreeGift
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A835F
   NameOffset: 0x0005B910
 
-- Name: WindfallZunariExoticFlower
-  PrettyName: Windfall Island - Zunari Exotic Flower
-  OriginalItem: MagicArmor
+- Name: Windfall Island - Zunari Exotic Flower
+  Original Item: Magic Armor
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: Custom_Symbol
   SymbolNames:
     - zunari_magic_armor_slot_item_id
     - "@0x022da5a7"
     - "@0x022da95b"
 
-- Name: WindfallSamDecorateFlower
-  PrettyName: Windfall Island - Sam Decorate Island
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Sam Decorate Island
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C399B
 
-- Name: WindfallKaneDecorateShopGuru
-  PrettyName: Windfall Island - Kane Decorate Shop Guru
-  OriginalItem: PurpleRupee
+- Name: Windfall Island - Kane Decorate Shop Guru
+  Original Item: Purple Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C3873
 
-- Name: WindfallKaneDecoratePostmanStatue
-  PrettyName: Windfall Island - Kane Decorate Postman Statue
-  OriginalItem: PurpleRupee
+- Name: Windfall Island - Kane Decorate Postman Statue
+  Original Item: Purple Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C3877
 
-- Name: WindfallKaneDecorateSixFlags
-  PrettyName: Windfall Island - Kane Decorate Six Flags
-  OriginalItem: RedRupee
+- Name: Windfall Island - Kane Decorate Six Flags
+  Original Item: Red Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C387B
 
-- Name: WindfallKaneDecorateSixIdols
-  PrettyName: Windfall Island - Kane Decorate Six Idols
-  OriginalItem: RedRupee
+- Name: Windfall Island - Kane Decorate Six Idols
+  Original Item: Red Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C387F
 
-- Name: WindfallMilaCatchThief
-  PrettyName: Windfall Island - Mila Catch Thief
-  OriginalItem: EmptyBottle
+- Name: Windfall Island - Mila Catch Thief
+  Original Item: Empty Bottle
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A72AF
   NameOffset: 0x00038190
 
-- Name: WindfallDampaPigMinigame
-  PrettyName: Windfall Island - Dampa Pig Minigame
-  OriginalItem: TreasureChart42
+- Name: Windfall Island - Dampa Pig Minigame
+  Original Item: Treasure Chart 42
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x028F9DD3
 
-- Name: WindfallPompieVeraPictoSecretMeeting
-  PrettyName: Windfall Island - Pompie & Vera Secret Meeting Photo
-  OriginalItem: TreasureChart24
+- Name: Windfall Island - Pompie & Vera Secret Meeting Photo
+  Original Item: Treasure Chart 24
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C399F
 
-- Name: WindfallKamoPictoFullMoon
-  PrettyName: Windfall Island - Kamo Full Moon Picture
-  OriginalItem: TreasureChart31
+- Name: Windfall Island - Kamo Full Moon Picture
+  Original Item: Treasure Chart 31
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39AF
 
-- Name: WindfallMinecoPictoMissWindfall
-  PrettyName: Windfall Island - Mineco Miss Windfall Picture
-  OriginalItem: TreasureChart33
+- Name: Windfall Island - Mineco Miss Windfall Picture
+  Original Item: Treasure Chart 33
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39A3
 
-- Name: WindfallSunkenTreasure
-  PrettyName: Windfall Island - Sunken Treasure
-  OriginalItem: PurpleRupee
+- Name: Windfall Island - Sunken Treasure
+  Original Item: Purple Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003138
@@ -654,287 +660,287 @@
     - 0x00003180
     - 0x000031A4
 
-- Name: WindfallTingleFirstGift
-  PrettyName: Windfall Island - Tingle First Gift
-  OriginalItem: TingleBottle
+- Name: Windfall Island - Tingle First Gift
+  Original Item: Tingle Bottle
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022E98EF
 
-- Name: WindfallTingleSecondGift
-  PrettyName: Windfall Island - Tingle Second Gift
-  OriginalItem: TinglesChart
+- Name: Windfall Island - Tingle Second Gift
+  Original Item: Tingles Chart
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022E9923
 
-- Name: WindfallJailMazeChest
-  PrettyName: Windfall Island - Windfall Jail Maze Chest
-  OriginalItem: ProgressivePictoBox
+- Name: Windfall Island - Windfall Jail Maze Chest
+  Original Item: Progressive Picto Box
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000094C
 
-- Name: WindfallMrsMarieCatchKillerBees
-  PrettyName: Windfall Island - Mrs. Marie Catch Killer Bees
-  OriginalItem: PurpleRupee
+- Name: Windfall Island - Mrs. Marie Catch Killer Bees
+  Original Item: Purple Rupee
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FC7F
 
-- Name: WindfallMrsMarie1JoyPendant
-  PrettyName: Windfall Island - Mrs. Marie 1 Joy Pendant
-  OriginalItem: RedRupee
+- Name: Windfall Island - Mrs. Marie 1 Joy Pendant
+  Original Item: Red Rupee
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FD93
 
-- Name: WindfallMrsMarie21JoyPendant
-  PrettyName: Windfall Island - Mrs. Marie 21 Joy Pendant
-  OriginalItem: CabanaDeed
+- Name: Windfall Island - Mrs. Marie 21 Joy Pendant
+  Original Item: Cabana Deed
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FDC3
 
-- Name: WindfallMrsMarie40JoyPendant
-  PrettyName: Windfall Island - Mrs. Marie 40 Joy Pendant
-  OriginalItem: TreasureChart45
+- Name: Windfall Island - Mrs. Marie 40 Joy Pendant
+  Original Item: Treasure Chart 45
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FEBB
 
-- Name: WindfallLenzoBecomeAssistant
-  PrettyName: Windfall Island - Lenzo Become Assistant
-  OriginalItem: ProgressivePictoBox
+- Name: Windfall Island - Lenzo Become Assistant
+  Original Item: Progressive Picto Box
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022CFA77
 
-- Name: WindfallLenzoBringFirefly
-  PrettyName: Windfall Island - Lenzo Bring Forest Firefly
-  OriginalItem: JoyPendant
+- Name: Windfall Island - Lenzo Bring Forest Firefly
+  Original Item: Joy Pendant
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022CFAAB
 
-- Name: WindfallLenzoHouseLeftChest
-  PrettyName: Windfall Island - Lenzo House Left Chest
-  OriginalItem: TreasureChart29
+- Name: Windfall Island - Lenzo House Left Chest
+  Original Item: Treasure Chart 29
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000910
 
-- Name: WindfallLenzoHouseRightChest
-  PrettyName: Windfall Island - Lenzo House Right Chest
-  OriginalItem: PurpleRupee
+- Name: Windfall Island - Lenzo House Right Chest
+  Original Item: Purple Rupee
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000930
 
-- Name: WindfallCafePostmanDelivery
-  PrettyName: Windfall Island - Cafe Postman Delivery
-  OriginalItem: MoblinsLetter
+- Name: Windfall Island - Cafe Postman Delivery
+  Original Item: Moblins Letter
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x00022443
   NameOffset: 0x0000B440
 
-- Name: WindfallAntonPictoLinda
-  PrettyName: Windfall Island - Linda and Anton
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Linda and Anton
+  Original Item: Piece Of Heart
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39A7
 
-- Name: WindfallBattleSquidFirstPrize
-  PrettyName: Windfall Island - Battle Squid First Prize
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Battle Squid First Prize
+  Original Item: Piece Of Heart
   Category:
     - BattleSquid
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02267187
 
-- Name: WindfallBattleSquidSecondPrize
-  PrettyName: Windfall Island - Battle Squid Second Prize
-  OriginalItem: TreasureChart7
+- Name: Windfall Island - Battle Squid Second Prize
+  Original Item: Treasure Chart 7
   Category:
     - BattleSquid
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02267197
 
-- Name: WindfallBattleSquidUnder20Prize
-  PrettyName: Windfall Island - Battle Squid Under 20 Prize
-  OriginalItem: TreasureChart23
+- Name: Windfall Island - Battle Squid Under 20 Prize
+  Original Item: Treasure Chart 23
   Category:
     - BattleSquid
+  Hint Priority: Always
   Type: RPX
   Offsets:
     - 0x02267367
 
-- Name: WindfallKreebLightLighthouse
-  PrettyName: Windfall Island - Kreeb Light the Lighthouse
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Kreeb Light the Lighthouse
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39AB
 
-- Name: WindfallAuction5Rupee
-  PrettyName: Windfall Island - Auction 5 Rupee
-  OriginalItem: TreasureChart18
+- Name: Windfall Island - Auction 5 Rupee
+  Original Item: Treasure Chart 18
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10190175
 
-- Name: WindfallAuction40Rupee
-  PrettyName: Windfall Island - Auction 40 Rupee
-  OriginalItem: JoyPendant
+- Name: Windfall Island - Auction 40 Rupee
+  Original Item: Joy Pendant
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1019016D
 
-- Name: WindfallAuction60Rupee
-  PrettyName: Windfall Island - Auction 60 Rupee
-  OriginalItem: TreasureChart38
+- Name: Windfall Island - Auction 60 Rupee
+  Original Item: Treasure Chart 38
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1019017D
 
-- Name: WindfallAuction80Rupee
-  PrettyName: Windfall Island - Auction 80 Rupee
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Auction 80 Rupee
+  Original Item: Piece Of Heart
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10190185
 
-- Name: WindfallAuction100Rupee
-  PrettyName: Windfall Island - Auction 100 Rupee
-  OriginalItem: SwiftSail
+- Name: Windfall Island - Auction 100 Rupee
+  Original Item: Swift Sail
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1019018D
 
-- Name: WindfallHouseOfWealthChest
-  PrettyName: Windfall Island - House of Wealth Chest
-  OriginalItem: RedRupee
+- Name: Windfall Island - House of Wealth Chest
+  Original Item: Red Rupee
   Category:
     - Misc
   Path: content/Common/Stage/Orichh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000008C0
 
-- Name: WindfallMaggiesFatherGive20SkullNecklace
-  PrettyName: Windfall Island - Maggie's Father Give 20 Skull Necklaces
-  OriginalItem: TreasureChart2
+- Name: Windfall Island - Maggie's Father Give 20 Skull Necklaces
+  Original Item: Treasure Chart 2
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0002C99F
   NameOffset: 0x0001BBC0
 
-- Name: WindfallMaggieFreeItem
-  PrettyName: Windfall Island - Maggie Free Item
-  OriginalItem: MaggiesLetter
+- Name: Windfall Island - Maggie Free Item
+  Original Item: Maggies Letter
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0227C2A3
 
-- Name: WindfallMaggieDeliveryReward
-  PrettyName: Windfall Island - Maggie Delivery Reward
-  OriginalItem: PieceOfHeart
+- Name: Windfall Island - Maggie Delivery Reward
+  Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0227C2DF
 
-- Name: WindfallPotionShop15Green
-  PrettyName: Windfall Island - Potion Shop 15 Green Chu
-  OriginalItem: GreenPotion
+- Name: Windfall Island - Potion Shop 15 Green Chu
+  Original Item: Green Potion
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: Custom_Symbol
   SymbolNames:
     - doc_bandam_green_potion_slot_item_id
 
-- Name: WindfallPotionShop15Blue
-  PrettyName: Windfall Island - Potion Shop 15 Blue Chu
-  OriginalItem: BluePotion
+- Name: Windfall Island - Potion Shop 15 Blue Chu
+  Original Item: Blue Potion
   Category:
     - SpoilsTrading
     - LongSideQuest
+  Hint Priority: Always
   Type: Custom_Symbol
   SymbolNames:
     - doc_bandam_blue_potion_slot_item_id
 
-- Name: WindfallPirateShipChest
-  PrettyName: Windfall Island - Pirate Ship Chest
-  OriginalItem: Bombs
+- Name: Windfall Island - Pirate Ship Chest
+  Original Item: Bombs
   Category:
     - Minigame
   Path: content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000754
     - 0x00000774
 
-- Name: PawprintSunkenTreasure
-  PrettyName: Pawprint Isle - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Pawprint Isle - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002B40
@@ -942,92 +948,92 @@
     - 0x00002B88
     - 0x00002BAC
 
-- Name: PawprintChuchuCaveChest
-  PrettyName: Pawprint Isle - Chu Chu Cave Chest
-  OriginalItem: PieceOfHeart
+- Name: Pawprint Isle - Chu Chu Cave Chest
+  Original Item: Piece Of Heart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: PawprintChuchuCaveBehindLeftBoulder
-  PrettyName: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
-  OriginalItem: PurpleRupee
+- Name: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
+  Original Item: Purple Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001D0
 
-- Name: PawprintChuchuCaveBehindRightBoulder
-  PrettyName: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
-  OriginalItem: JoyPendant
+- Name: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
+  Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001F0
 
-- Name: PawprintChuchuCaveScaleWall
-  PrettyName: Pawprint Isle - Chu Chu Cave Chest Scale Wall
-  OriginalItem: RedRupee
+- Name: Pawprint Isle - Chu Chu Cave Chest Scale Wall
+  Original Item: Red Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001B0
 
-- Name: PawprintWizzrobeCaveChest
-  PrettyName: Pawprint Isle - Wizzrobe Cave Chest
-  OriginalItem: TreasureChart46
+- Name: Pawprint Isle - Wizzrobe Cave Chest
+  Original Item: Treasure Chart 46
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave07_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: PawprintLookoutPlatformDefeatEnemies
-  PrettyName: Pawprint Isle - Lookout Platform Defeat Enemies
-  OriginalItem: RedRupee
+- Name: Pawprint Isle - Lookout Platform Defeat Enemies
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002CF0
 
-- Name: DragonRoostIslandWindShrine
-  PrettyName: Dragon Roost Island - Wind Shrine
-  OriginalItem: WindsRequiem
+- Name: Dragon Roost Island - Wind Shrine
+  Original Item: Winds Requiem
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A8163
   NameOffset: 0x00058F80
 
-- Name: DragonRoostIslandBoulderChest
-  PrettyName: Dragon Roost Island - Boulder Chest
-  OriginalItem: SilverRupee
+- Name: Dragon Roost Island - Boulder Chest
+  Original Item: Silver Rupee
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002BAC
 
-- Name: DragonRoostIslandSunkenTreasure
-  PrettyName: Dragon Roost Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Dragon Roost Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002900
@@ -1035,61 +1041,61 @@
     - 0x00002948
     - 0x0000296C
 
-- Name: DragonRoostIslandHoskit20GoldenFeathers
-  PrettyName: Dragon Roost Island - Hoskit Give 20 Golden Feathers
-  OriginalItem: OrangeRupee
+- Name: Dragon Roost Island - Hoskit Give 20 Golden Feathers
+  Original Item: Orange Rupee
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0001FC3B
   NameOffset: 0x00008760
 
-- Name: DragonRoostIslandBaitoMailgame
-  PrettyName: Dragon Roost Island - Baito Mail Game
-  OriginalItem: NoteToMom
+- Name: Dragon Roost Island - Baito Mail Game
+  Original Item: Note To Mom
   Category:
     - Minigame
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0001FC4B
   NameOffset: 0x00008A80
 
-- Name: DragonRoostIslandLeafPlatforms
-  PrettyName: Dragon Roost Island - Fly Across Platforms Around Island
-  OriginalItem: OrangeRupee
+- Name: Dragon Roost Island - Fly Across Platforms Around Island
+  Original Item: Orange Rupee
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002BCC
 
-- Name: DragonRoostIslandCaveChest
-  PrettyName: Dragon Roost Island - Cave Chest
-  OriginalItem: PurpleRupee
+- Name: Dragon Roost Island - Cave Chest
+  Original Item: Purple Rupee
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_06_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000950
 
-- Name: FlightControlBirdManFirstPrize
-  PrettyName: Flight Control Platform - First Prize
-  OriginalItem: PieceOfHeart
+- Name: Flight Control Platform - First Prize
+  Original Item: Piece Of Heart
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022065FB
 
-- Name: FlightControlSunkenTreasure
-  PrettyName: Flight Control Platform - Sunken Treasure
-  OriginalItem: IslandHeartsChart
+- Name: Flight Control Platform - Sunken Treasure
+  Original Item: Island Hearts Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001120
@@ -1097,22 +1103,22 @@
     - 0x00001168
     - 0x0000118C
 
-- Name: FlightControlSubmarineChest
-  PrettyName: Flight Control Platform - Submarine Chest
-  OriginalItem: PlatformChart
+- Name: Flight Control Platform - Submarine Chest
+  Original Item: Platform Chart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000006C8
 
-- Name: WesternFairySunkenTreasure
-  PrettyName: Western Fairy Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Western Fairy Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001680
@@ -1120,41 +1126,41 @@
     - 0x000016C8
     - 0x000016EC
 
-- Name: WesternFairyGreatFairy
-  PrettyName: Western Fairy Island - Great Fairy
-  OriginalItem: ProgressiveQuiver
+- Name: Western Fairy Island - Great Fairy
+  Original Item: Progressive Quiver
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B7F
 
-- Name: WesternFairyLookoutPlatformChest
-  PrettyName: Western Fairy Island - Lookout Platform Chest
-  OriginalItem: SkullNecklace
+- Name: Western Fairy Island - Lookout Platform Chest
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001758
 
-- Name: RockSpireSoutheastGunboat
-  PrettyName: Rock Spire Isle - Defeat Southeast Gunboat
-  OriginalItem: PieceOfHeart
+- Name: Rock Spire Isle - Defeat Southeast Gunboat
+  Original Item: Piece Of Heart
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001A84
 
-- Name: RockSpireSunkenTreasure
-  PrettyName: Rock Spire Isle - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Rock Spire Isle - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001BA4
@@ -1162,104 +1168,104 @@
     - 0x00001BEC
     - 0x00001C10
 
-- Name: RockSpireBeedle500RupeeItem
-  PrettyName: Rock Spire Isle - Beedle 500 Rupee Item
-  OriginalItem: EmptyBottle
+- Name: Rock Spire Isle - Beedle 500 Rupee Item
+  Original Item: Empty Bottle
   Category:
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAF57
     - 0x0221557F
     - 0x022155BB
 
-- Name: RockSpireBeedle950RupeeItem
-  PrettyName: Rock Spire Isle - Beedle 950 Rupee Item
-  OriginalItem: PieceOfHeart
+- Name: Rock Spire Isle - Beedle 950 Rupee Item
+  Original Item: Piece Of Heart
   Category:
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAF67
     - 0x02215587
     - 0x022155AF
 
-- Name: RockSpireBeedle900RupeeItem
-  PrettyName: Rock Spire Isle - Beedle 900 Rupee Item
-  OriginalItem: TreasureChart4
+- Name: Rock Spire Isle - Beedle 900 Rupee Item
+  Original Item: Treasure Chart 4
   Category:
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAF77
     - 0x0221558F
     - 0x022155C3
 
-- Name: RockSpireWesternLookoutPlatformDestroyCannons
-  PrettyName: Rock Spire Isle - Western Lookout Platform Destroy Cannons
-  OriginalItem: OrangeRupee
+- Name: Rock Spire Isle - Western Lookout Platform Destroy Cannons
+  Original Item: Orange Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001CE8
 
-- Name: RockSpireEasternLookoutPlatformDestroyCannons
-  PrettyName: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
-  OriginalItem: GoldenFeather
+- Name: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001D08
 
-- Name: RockSpireCenterLookoutPlatformChest
-  PrettyName: Rock Spire Isle - Center Lookout Platform Chest
-  OriginalItem: RedRupee
+- Name: Rock Spire Isle - Center Lookout Platform Chest
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001D28
 
-- Name: RockSpireCaveChest
-  PrettyName: Rock Spire Isle - Cave Chest
-  OriginalItem: TreasureChart37
+- Name: Rock Spire Isle - Cave Chest
+  Original Item: Treasure Chart 37
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000240
 
-- Name: TingleIslandAnkleAllStatuesReward
-  PrettyName: Tingle Island - Ankle All Statues Reward
-  OriginalItem: RainbowRupee
+- Name: Tingle Island - Ankle All Statues Reward
+  Original Item: Rainbow Rupee
   Category:
     - Misc
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022E9973
 
-- Name: TingleIslandBigOcto
-  PrettyName: Tingle Island - Big Octo
-  OriginalItem: PieceOfHeart
+- Name: Tingle Island - Big Octo
+  Original Item: Piece Of Heart
   Category:
     - BigOcto
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000BD0
 
-- Name: TingleIslandSunkenTreasure
-  PrettyName: Tingle Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Tingle Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000D38
@@ -1267,12 +1273,12 @@
     - 0x00000D80
     - 0x00000DA4
 
-- Name: NorthernTriangleSunkenTreasure
-  PrettyName: Northern Triangle Island - Sunken Treasure
-  OriginalItem: OctoChart
+- Name: Northern Triangle Island - Sunken Treasure
+  Original Item: Octo Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000009C0
@@ -1280,12 +1286,12 @@
     - 0x00000A08
     - 0x00000A2C
 
-- Name: EasternFairySunkenTreasure
-  PrettyName: Eastern Fairy Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Eastern Fairy Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001478
@@ -1293,41 +1299,41 @@
     - 0x000014C0
     - 0x000014E4
 
-- Name: EasternFairyGreatFairy
-  PrettyName: Eastern Fairy Island - Great Fairy
-  OriginalItem: ProgressiveBombBag
+- Name: Eastern Fairy Island - Great Fairy
+  Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B57
 
-- Name: EasternFairyLookoutPlatformDefeatCannonsAndEnemies
-  PrettyName: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
-  OriginalItem: BokoBabaSeed
+- Name: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
+  Original Item: Boko Baba Seed
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001574
 
-- Name: FireMountainBigOcto
-  PrettyName: Fire Mountain - Big Octo
-  OriginalItem: OrangeRupee
+- Name: Fire Mountain - Big Octo
+  Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000EC8
 
-- Name: FireMountainSunkenTreasure
-  PrettyName: Fire Mountain - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Fire Mountain - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001030
@@ -1335,42 +1341,42 @@
     - 0x00001078
     - 0x0000109C
 
-- Name: FireMountainInteriorChest
-  PrettyName: Fire Mountain - Interior Chest
-  OriginalItem: PowerBracelets
+- Name: Fire Mountain - Interior Chest
+  Original Item: Power Bracelets
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001C8
 
-- Name: FireMountainLookoutPlatformChest
-  PrettyName: Fire Mountain - Lookout Platform Chest
-  OriginalItem: YellowRupee
+- Name: Fire Mountain - Lookout Platform Chest
+  Original Item: Yellow Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000114C
 
-- Name: FireMountainLookoutPlatformDestroyCannons
-  PrettyName: Fire Mountain - Lookout Platform Destroy Cannons
-  OriginalItem: GoldenFeather
+- Name: Fire Mountain - Lookout Platform Destroy Cannons
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000112C
 
-- Name: StarBeltSunkenTreasure
-  PrettyName: Star Belt Archipelago - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Star Belt Archipelago - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000012E8
@@ -1378,32 +1384,32 @@
     - 0x00001330
     - 0x00001354
 
-- Name: StarBeltLookoutPlatformChest
-  PrettyName: Star Belt Archipelago - Lookout Platform Chest
-  OriginalItem: TreasureChart44
+- Name: Star Belt Archipelago - Lookout Platform Chest
+  Original Item: Treasure Chart 44
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000013C0
 
-- Name: ThreeEyeReefDestroyCannonsAndGunboats
-  PrettyName: Three Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: TreasureChart32
+- Name: Three Eye Reef - Destroy Cannons and Gunboats
+  Original Item: Treasure Chart 32
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000022A4
 
-- Name: ThreeEyeReefSunkenTreasure
-  PrettyName: Three Eye Reef - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Three Eye Reef - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000020C0
@@ -1411,22 +1417,22 @@
     - 0x00002108
     - 0x0000212C
 
-- Name: GreatfishHiddenChest
-  PrettyName: Greatfish Isle - Hidden Chest
-  OriginalItem: PieceOfHeart
+- Name: Greatfish Isle - Hidden Chest
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001D78
 
-- Name: GreatfishSunkenTreasure
-  PrettyName: Greatfish Isle - Sunken Treasure
-  OriginalItem: TriforceShard1
+- Name: Greatfish Isle - Sunken Treasure
+  Original Item: Triforce Shard 1
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001A60
@@ -1434,22 +1440,22 @@
     - 0x00001AA8
     - 0x00001ACC
 
-- Name: CyclopsReefDestroyCannonsAndGunboats
-  PrettyName: Cyclops Reef - Destroy Cannons and Gunboats
-  OriginalItem: TreasureChart21
+- Name: Cyclops Reef - Destroy Cannons and Gunboats
+  Original Item: Treasure Chart 21
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000279C
 
-- Name: CyclopsReefSunkenTreasure
-  PrettyName: Cyclops Reef - Sunken Treasure
-  OriginalItem: LightRingChart
+- Name: Cyclops Reef - Sunken Treasure
+  Original Item: Light Ring Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000266C
@@ -1457,32 +1463,32 @@
     - 0x000026B4
     - 0x000026D8
 
-- Name: CyclopsReefLookoutPlatformDefeatEnemies
-  PrettyName: Cyclops Reef - Lookout Platform Defeat Enemies
-  OriginalItem: GoldenFeather
+- Name: Cyclops Reef - Lookout Platform Defeat Enemies
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000027BC
 
-- Name: SixEyeReefDestroyCannonsAndGunboats
-  PrettyName: Six Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: TreasureChart26
+- Name: Six Eye Reef - Destroy Cannons and Gunboats
+  Original Item: Treasure Chart 26
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002C30
 
-- Name: SixEyeReefSunkenTreasure
-  PrettyName: Six Eye Reef - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Six Eye Reef - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002A3C
@@ -1490,32 +1496,32 @@
     - 0x00002A84
     - 0x00002AA8
 
-- Name: SixEyeReefSubmarineChest
-  PrettyName: Six Eye Reef - Submarine Chest
-  OriginalItem: PieceOfHeart
+- Name: Six Eye Reef - Submarine Chest
+  Original Item: Piece Of Heart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000053C
 
-- Name: SixEyeReefLookoutPlatformDestroyCannons
-  PrettyName: Six Eye Reef - Lookout Platform Destroy Cannons
-  OriginalItem: SkullNecklace
+- Name: Six Eye Reef - Lookout Platform Destroy Cannons
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002C50
 
-- Name: TOTGSunkenTreasure
-  PrettyName: Tower of the Gods - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Tower of the Gods Sector - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000648
@@ -1523,12 +1529,12 @@
     - 0x00000690
     - 0x000006B4
 
-- Name: EasternTriangleSunkenTreasure
-  PrettyName: Eastern Triangle Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Eastern Triangle Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room27.szs@YAZ0@SARC@Room27.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000DEC
@@ -1536,12 +1542,12 @@
     - 0x00000E34
     - 0x00000E58
 
-- Name: ThornedFairySunkenTreasure
-  PrettyName: Thorned Fairy Island - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Thorned Fairy Island - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001A84
@@ -1549,61 +1555,61 @@
     - 0x00001ACC
     - 0x00001AF0
 
-- Name: ThornedFairyGreatFairy
-  PrettyName: Thorned Fairy Island - Great Fairy
-  OriginalItem: ProgressiveQuiver
+- Name: Thorned Fairy Island - Great Fairy
+  Original Item: Progressive Quiver
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B77
 
-- Name: ThornedFairyNortheasternLookoutPlatformDestroyCannons
-  PrettyName: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
-  OriginalItem: GoldenFeather
+- Name: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001B80
 
-- Name: ThornedFairySouthwesternLookoutPlatformDefeatEnemies
-  PrettyName: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
-  OriginalItem: BokoBabaSeed
+- Name: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
+  Original Item: Boko Baba Seed
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001BA0
 
-- Name: NeedleRockChest
-  PrettyName: Needle Rock Isle - Chest
-  OriginalItem: PieceOfHeart
+- Name: Needle Rock Isle - Chest
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002224
 
-- Name: NeedleRockGoldenGunboat
-  PrettyName: Needle Rock Isle - Golden Gunboat
-  OriginalItem: TriforceChart3
+- Name: Needle Rock Isle - Golden Gunboat
+  Original Item: Triforce Chart 3
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002194
 
-- Name: NeedleRockSunkenTreasure
-  PrettyName: Needle Rock Isle - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Needle Rock Isle - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002098
@@ -1611,22 +1617,22 @@
     - 0x000020E0
     - 0x00002104
 
-- Name: NeedleRockCaveChest
-  PrettyName: Needle Rock Isle - Cave Chest
-  OriginalItem: OrangeRupee
+- Name: Needle Rock Isle - Cave Chest
+  Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/SubD42_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000020C
 
-- Name: IsletOfSteelSunkenTreasure
-  PrettyName: Islet of Steel - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Islet of Steel - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000C70
@@ -1634,32 +1640,32 @@
     - 0x00000CB8
     - 0x00000CDC
 
-- Name: IsletOfSteelInteriorChest
-  PrettyName: Islet of Steel - Interior Chest
-  OriginalItem: TriforceChart1
+- Name: Islet of Steel - Interior Chest
+  Original Item: Triforce Chart 1
   Category:
     - Misc
   Path: content/Common/Stage/ShipD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001B8
 
-- Name: IsletOfSteelLookoutPlatformDefeatEnemies
-  PrettyName: Islet of Steel - Lookout PLatform Defeat Enemies
-  OriginalItem: SkullNecklace
+- Name: Islet of Steel - Lookout Platform Defeat Enemies
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000DD8
 
-- Name: StoneWatcherSunkenTreasure
-  PrettyName: Stone Watcher Island - Sunken Treasure
-  OriginalItem: TriforceShard3
+- Name: Stone Watcher Island - Sunken Treasure
+  Original Item: Triforce Shard 3
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000022FC
@@ -1667,42 +1673,42 @@
     - 0x00002344
     - 0x00002368
 
-- Name: StoneWatcherCaveChest
-  PrettyName: Stone Watcher Island - Cave Chest
-  OriginalItem: TriforceShard7
+- Name: Stone Watcher Island - Cave Chest
+  Original Item: Triforce Shard 7
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000484
 
-- Name: StoneWatcherLookoutPlatformChest
-  PrettyName: Stone Watcher Island - Lookout Platform Chest
-  OriginalItem: RedRupee
+- Name: Stone Watcher Island - Lookout Platform Chest
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002460
 
-- Name: StoneWatcherLookoutPlatformDestroyCannons
-  PrettyName: Stone Watcher Island - Lookout Platform Destroy Cannons
-  OriginalItem: PieceOfHeart
+- Name: Stone Watcher Island - Lookout Platform Destroy Cannons
+  Original Item: Piece Of Heart
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002440
 
-- Name: SouthernTriangleSunkenTreasure
-  PrettyName: Stone Watcher Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Southern Triangle Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room32.szs@YAZ0@SARC@Room32.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000AC0
@@ -1710,32 +1716,32 @@
     - 0x00000B08
     - 0x00000B2C
 
-- Name: PrivateOasisTopOfWaterfallChest
-  PrettyName: Private Oasis - Top of Waterfall Chest
-  OriginalItem: TreasureChart27
+- Name: Private Oasis - Top of Waterfall Chest
+  Original Item: Treasure Chart 27
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002628
 
-- Name: PrivateOasisBigOcto
-  PrettyName: Private Oasis - Big Octo
-  OriginalItem: OrangeRupee
+- Name: Private Oasis - Big Octo
+  Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000025E0
 
-- Name: PrivateOasisSunkenTreasure
-  PrettyName: Private Oasis - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Private Oasis - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000240C
@@ -1743,32 +1749,32 @@
     - 0x00002454
     - 0x00002478
 
-- Name: PrivateOasisCabanaLabyrinthLowerFloorChest
-  PrettyName: Private Oasis - Cabana Labyrinth Lower Floor Chest
-  OriginalItem: OrangeRupee
+- Name: Private Oasis - Cabana Labyrinth Lower Floor Chest
+  Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000274
 
-- Name: PrivateOasisCabanaLabyrinthUpperFloorChest
-  PrettyName: Private Oasis - Cabana Labyrinth Upper Floor Chest
-  OriginalItem: TriforceShard2
+- Name: Private Oasis - Cabana Labyrinth Upper Floor Chest
+  Original Item: Triforce Shard 2
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000254
 
-- Name: BombIslandSunkenTreasure
-  PrettyName: Bomb Island - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Bomb Island - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001FCC
@@ -1776,42 +1782,42 @@
     - 0x00002014
     - 0x00002038
 
-- Name: BombIslandCaveChest
-  PrettyName: Bomb Island - Cave Chest
-  OriginalItem: PieceOfHeart
+- Name: Bomb Island - Cave Chest
+  Original Item: Piece Of Heart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000278
 
-- Name: BombIslandSubmarineChest
-  PrettyName: Bomb Island - Submarine Chest
-  OriginalItem: EmptyBottle
+- Name: Bomb Island - Submarine Chest
+  Original Item: Empty Bottle
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004A4
 
-- Name: BombIslandLookoutPlatformDefeatEnemies
-  PrettyName: Bomb Island - Lookout Platform Defeat Enemies
-  OriginalItem: RedRupee
+- Name: Bomb Island - Lookout Platform Defeat Enemies
+  Original Item: Red Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002110
 
-- Name: BirdsPeakSunkenTreasure
-  PrettyName: Birds Peak Rock - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Birds Peak Rock - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room35.szs@YAZ0@SARC@Room35.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000015B8
@@ -1819,32 +1825,32 @@
     - 0x00001600
     - 0x00001624
 
-- Name: BirdsPeakRockCaveChest
-  PrettyName: Birds Peak Rock - Cave Chest
-  OriginalItem: TriforceChart3
+- Name: Birds Peak Rock - Cave Chest
+  Original Item: Triforce Chart 3
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000018C
 
-- Name: DiamondSteppeBigOcto
-  PrettyName: Diamond Steppe Isle - Big Octo
-  OriginalItem: OrangeRupee
+- Name: Diamond Steppe Island - Big Octo
+  Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000166C
 
-- Name: DiamondSteppeSunkenTreasure
-  PrettyName: Diamond Steppe Isle - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Diamond Steppe Island - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000178C
@@ -1852,42 +1858,42 @@
     - 0x000017D4
     - 0x000017F8
 
-- Name: DiamondSteppeWarpMazeFirstChest
-  PrettyName: Diamond Steppe Isle - Maze First Chest
-  OriginalItem: JoyPendant
+- Name: Diamond Steppe Island - Maze First Chest
+  Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001E8
 
-- Name: DiamondSteppeWarpMazeSecondChest
-  PrettyName: Diamond Steppe Isle - Maze Second Chest
-  OriginalItem: GhostShipChart
+- Name: Diamond Steppe Island - Maze Second Chest
+  Original Item: Ghost Ship Chart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001C8
 
-- Name: FiveEyeReefDestroyCannonsAndGunboats
-  PrettyName: Five Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: TreasureChart41
+- Name: Five Eye Reef - Destroy Cannons and Gunboats
+  Original Item: Treasure Chart 41
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002E00
 
-- Name: FiveEyeReefSunkenTreasure
-  PrettyName: Five Eye Reef - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Five Eye Reef - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002BD4
@@ -1895,22 +1901,22 @@
     - 0x00002C1C
     - 0x00002C40
 
-- Name: FiveEyeReefLookoutPlatformChest
-  PrettyName: Five Eye Reef - Lookout Platform Chest
-  OriginalItem: GoldenFeather
+- Name: Five Eye Reef - Lookout Platform Chest
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002E20
 
-- Name: SharkIslandSunkenTreasure
-  PrettyName: Shark Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Shark Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room38.szs@YAZ0@SARC@Room38.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001550
@@ -1918,22 +1924,22 @@
     - 0x00001598
     - 0x000015BC
 
-- Name: SharkIslandCaveChest
-  PrettyName: Shark Island - Cave Chest
-  OriginalItem: SilverRupee
+- Name: Shark Island - Cave Chest
+  Original Item: Silver Rupee
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/ITest63_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Always
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: SouthernFairySunkenTreasure
-  PrettyName: Southern Fairy Island - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Southern Fairy Island - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002040
@@ -1941,51 +1947,51 @@
     - 0x00002088
     - 0x000020AC
 
-- Name: SouthernFairyGreatFairy
-  PrettyName: Southern Fairy Island - Great Fairy
-  OriginalItem: ProgressiveBombBag
+- Name: Southern Fairy Island - Great Fairy
+  Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B4F
 
-- Name: SouthernFairyLookoutPlatformDestroyNorthwestCannons
-  PrettyName: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
-  OriginalItem: TreasureChart40
+- Name: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
+  Original Item: Treasure Chart 40
   Category:
     - Platform
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000213C
 
-- Name: SouthernFairyLookoutPlatformDestroySoutheastCannons
-  PrettyName: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
-  OriginalItem: SkullNecklace
+- Name: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
+  Original Item: Skull Necklace
   Category:
     - Platform
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000215C
 
-- Name: IceRingFrozenChest
-  PrettyName: Ice Ring Isle - Frozen Chest
-  OriginalItem: TreasureChart36
+- Name: Ice Ring Isle - Frozen Chest
+  Original Item: Treasure Chart 36
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001494
 
-- Name: IceRingSunkenTreasure
-  PrettyName: Ice Ring Isle - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Ice Ring Isle - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000012C0
@@ -1993,33 +1999,33 @@
     - 0x00001308
     - 0x0000132C
 
-- Name: IceRingInteriorChest
-  PrettyName: Ice Ring Isle - Interior Chest
-  OriginalItem: IronBoots
+- Name: Ice Ring Isle - Interior Chest
+  Original Item: Iron Boots
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000020C
 
-- Name: IceRingInnerCaveChest
-  PrettyName: Ice Ring Isle - Inner Cave Chest
-  OriginalItem: OrangeRupee
+- Name: Ice Ring Isle - Inner Cave Chest
+  Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
     - CombatSecretCave
   Path: content/Common/Stage/ITest62_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: ForestHavenSunkenTreasure
-  PrettyName: Forset Haven - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Forest Haven - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003D28
@@ -2027,33 +2033,33 @@
     - 0x00003D70
     - 0x00003D94
 
-- Name: ForestHavenOnTreeBranch
-  PrettyName: Forset Haven - On Tree Branch
-  OriginalItem: DekuLeaf
+- Name: Forest Haven - On Tree Branch
+  Original Item: Deku Leaf
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00001E04
     - 0x000020C4
 
-- Name: ForestHavenSmallIslandChest
-  PrettyName: Forset Haven - Chest on Small Island
-  OriginalItem: TreasureChart3
+- Name: Forest Haven - Chest on Small Island
+  Original Item: Treasure Chart 3
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00004088
 
-- Name: CliffPlateauSunkenTreasure
-  PrettyName: Cliff Plateau Isles - Sunken Treasure
-  OriginalItem: TriforceShard5
+- Name: Cliff Plateau Isles - Sunken Treasure
+  Original Item: Triforce Shard 5
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001500
@@ -2061,42 +2067,42 @@
     - 0x00001548
     - 0x0000156C
 
-- Name: CliffPlateauCaveChest
-  PrettyName: Cliff Plateau Isles - Cave Chest
-  OriginalItem: JoyPendant
+- Name: Cliff Plateau Isles - Cave Chest
+  Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000020C
 
-- Name: CliffPlateauHighestIsleChest
-  PrettyName: Cliff Plateau Isles - Highest Isle Chest
-  OriginalItem: TreasureChart25
+- Name: Cliff Plateau Isles - Highest Isle Chest
+  Original Item: Treasure Chart 25
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000183C
 
-- Name: CliffPlateauLookoutPlatformChest
-  PrettyName: Cliff Plateau Isles - Sunken Treasure
-  OriginalItem: BokoBabaSeed
+- Name: Cliff Plateau Isles - Lookout Platform Chest
+  Original Item: Boko Baba Seed
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000185C
 
-- Name: HorseshoeSunkenTreasure
-  PrettyName: Horseshoe Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Horseshoe Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001CEC
@@ -2104,62 +2110,62 @@
     - 0x00001D34
     - 0x00001D58
 
-- Name: HorseshoePlayGolf
-  PrettyName: Horseshoe Island - Play Golf
-  OriginalItem: TreasureChart28
+- Name: Horseshoe Island - Play Golf
+  Original Item: Treasure Chart 28
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F74
 
-- Name: HorseshoeCaveChest
-  PrettyName: Horseshoe Island - Cave Chest
-  OriginalItem: TreasureChart8
+- Name: Horseshoe Island - Cave Chest
+  Original Item: Treasure Chart 8
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave05_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001B0
 
-- Name: HorseshoeNorthwesternLookoutPlatformChest
-  PrettyName: Horseshoe Island - Northwestern Lookout Platform Chest
-  OriginalItem: TreasureChart43
+- Name: Horseshoe Island - Northwestern Lookout Platform Chest
+  Original Item: Treasure Chart 43
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F94
 
-- Name: HorseshoeSoutheasternLookoutPlatformChest
-  PrettyName: Horseshoe Island - Southeastern Lookout Platform Chest
-  OriginalItem: GoldenFeather
+- Name: Horseshoe Island - Southeastern Lookout Platform Chest
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001FB4
 
-- Name: OutsetDigBlackSoil
-  PrettyName: Outset Island - Dig up Black Soil
-  OriginalItem: PieceOfHeart
+- Name: Outset Island - Dig up Black Soil
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003AD4
 
-- Name: OutsetSunkenTreasure
-  PrettyName: Outset Island - Sunken Treasure
-  OriginalItem: TriforceShard6
+- Name: Outset Island - Sunken Treasure
+  Original Item: Triforce Shard 6
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003558
@@ -2167,100 +2173,100 @@
     - 0x000035A0
     - 0x000035C4
 
-- Name: OutsetUnderLinksHouseChest
-  PrettyName: Outset Island - Under Link's House
-  OriginalItem: OrangeRupee
+- Name: Outset Island - Under Link's House
+  Original Item: Orange Rupee
   Category:
     - Misc
   Path: content/Common/Stage/LinkUG_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000008DC
 
-- Name: OutsetOrca10KnightsCrest
-  PrettyName: Outset Island - Orca Give 10 Knight's Crests
-  OriginalItem: HurricaneSpin
+- Name: Outset Island - Orca Give 10 Knight's Crests
+  Original Item: Hurricane Spin
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0002D61B
   NameOffset: 0x0000FA40
 
-- Name: OutsetOrca500Hits
-  PrettyName: Outset Island - Orca Hit 500 Times
-  OriginalItem: PieceOfHeart
+- Name: Outset Island - Orca Hit 500 Times
+  Original Item: Piece Of Heart
   Category:
     - Junk
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02258737
 
-- Name: OutsetMesasHouseChest
-  PrettyName: Outset Island - Mesa's House Chest
-  OriginalItem: RedRupee
+- Name: Outset Island - Mesa's House Chest
+  Original Item: Red Rupee
   Category:
     - Misc
   Path: content/Common/Stage/Omasao_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000008E8
 
-- Name: OutsetGreatFairy
-  PrettyName: Outset Island - Great Fairy
-  OriginalItem: ProgressiveWallet
+- Name: Outset Island - Great Fairy
+  Original Item: Progressive Wallet
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B27
 
-- Name: OutsetSavageFloor30Chest
-  PrettyName: Outset Island - Savage Labyrinth Floor 30
-  OriginalItem: TriforceShard6
+- Name: Outset Island - Savage Labyrinth Floor 30
+  Original Item: Triforce Shard 6
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave09_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000348
 
-- Name: OutsetSavageFloor50Chest
-  PrettyName: Outset Island - Savage Labyrinth Floor 50
-  OriginalItem: HerosCharm
+- Name: Outset Island - Savage Labyrinth Floor 50
+  Original Item: Heros Charm
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000178
 
-- Name: OutsetJabunsCaveChest
-  PrettyName: Outset Island - Jabun's Cave Chest
-  OriginalItem: NayrusPearl
+- Name: Outset Island - Jabun's Cave Chest
+  Original Item: Nayrus Pearl
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001C4
 
-- Name: HeadstoneTopOfIsland
-  PrettyName: Headstone Island - Top of Island
-  OriginalItem: PieceOfHeart
+- Name: Headstone Island - Top of Island
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000D4C
 
-- Name: HeadstoneSunkenTreasure
-  PrettyName: Headstone Island - Sunken Treasure
-  OriginalItem: SilverRupee
+- Name: Headstone Island - Sunken Treasure
+  Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001564
@@ -2268,43 +2274,43 @@
     - 0x000015AC
     - 0x000015D0
 
-- Name: HeadstoneIslandSubmarineChest
-  PrettyName: Headstone Island - Submarine Chest
-  OriginalItem: TreasureChart14
+- Name: Headstone Island - Submarine Chest
+  Original Item: Treasure Chart 14
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000003F4
 
-- Name: TwoEyeReefDestroyCannonsAndGunboats
-  PrettyName: Two Eye Reef - Destroy Cannons and Gunboats
-  OriginalItem: TreasureChart13
+- Name: Two Eye Reef - Destroy Cannons and Gunboats
+  Original Item: Treasure Chart 13
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000272C
 
-- Name: TwoEyeReefBigOctoGreatFairy
-  PrettyName: Two Eye Reef - Big Octo Great Fairy
-  OriginalItem: ProgressiveMagicMeter
+- Name: Two Eye Reef - Big Octo Great Fairy
+  Original Item: Progressive Magic Meter
   Category:
     - BigOcto
     - GreatFairy
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A6B9F
   NameOffset: 0x00026170
 
-- Name: TwoEyeReefSunkenTreasure
-  PrettyName: Two Eye Reef - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Two Eye Reef - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000024B8
@@ -2312,32 +2318,32 @@
     - 0x00002500
     - 0x00002524
 
-- Name: TwoEyeReefLookoutPlatformChest
-  PrettyName: Two Eye Reef - Lookout Platform Chest
-  OriginalItem: PurpleRupee
+- Name: Two Eye Reef - Lookout Platform Chest
+  Original Item: Purple Rupee
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000274C
 
-- Name: AngularIslesPeak
-  PrettyName: Angular Isles - Peak Chest
-  OriginalItem: PieceOfHeart
+- Name: Angular Isles - Peak Chest
+  Original Item: Piece Of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000830
 
-- Name: AngularSunkenTreasure
-  PrettyName: Angular Isles - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Angular Isles - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000734
@@ -2345,32 +2351,32 @@
     - 0x0000077C
     - 0x000007A0
 
-- Name: AngularIslesCaveChest
-  PrettyName: Angular Isles - Cave Chest
-  OriginalItem: SilverRupee
+- Name: Angular Isles - Cave Chest
+  Original Item: Silver Rupee
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/SubD43_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000254
 
-- Name: BoatingCourseRaftChest
-  PrettyName: Boating Course - Raft Chest
-  OriginalItem: BokoBabaSeed
+- Name: Boating Course - Raft Chest
+  Original Item: Boko Baba Seed
   Category:
     - Raft
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F94
 
-- Name: BoatingCourseSunkenTreasure
-  PrettyName: Boating Course - Sunken Treasure
-  OriginalItem: SeaHeartsChart
+- Name: Boating Course - Sunken Treasure
+  Original Item: Sea Hearts Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000E98
@@ -2378,23 +2384,23 @@
     - 0x00000EE0
     - 0x00000F04
 
-- Name: BoatingCourseCaveChest
-  PrettyName: Boating Course - Cave Chest
-  OriginalItem: SubmarineChart
+- Name: Boating Course - Cave Chest
+  Original Item: Submarine Chart
   Category:
     - PuzzleSecretCave
     - CombatSecretCave
   Path: content/Common/Stage/SubD71_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: FiveStarSunkenTreasure
-  PrettyName: Five Star Isles - Sunken Treasure
-  OriginalItem: PieceOfHeart
+- Name: Five Star Isles - Sunken Treasure
+  Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001338
@@ -2402,882 +2408,974 @@
     - 0x00001380
     - 0x000013A4
 
-- Name: FiveStarRaftChest
-  PrettyName: Five Star Isles - Raft Chest
-  OriginalItem: RedRupee
+- Name: Five Star Isles - Raft Chest
+  Original Item: Red Rupee
   Category:
     - Raft
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000147C
 
-- Name: FiveStarSubmarineChest
-  PrettyName: Five Star Isles - Submarine Chest
-  OriginalItem: PieceOfHeart
+- Name: Five Star Isles - Submarine Chest
+  Original Item: Piece Of Heart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004C8
 
-- Name: FiveStarLookoutPlatformDestroyCannons
-  PrettyName: Five Star Isles - Lookout Platform Destroy Cannons
-  OriginalItem: GoldenFeather
+- Name: Five Star Isles - Lookout Platform Destroy Cannons
+  Original Item: Golden Feather
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000149C
 
-- Name: GhostShipChest
-  PrettyName: Great Sea - Ghost Ship Chest
-  OriginalItem: TriforceShard4
+- Name: Great Sea - Ghost Ship Chest
+  Original Item: Triforce Shard 4
   Category:
     - Misc
   Path: content/Common/Stage/PShip_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000DAC
 
-- Name: DragonRoostCavernFirstRoomChest
-  PrettyName: Dragon Roost Cavern - First Room Chest
-  OriginalItem: SmallKey
+- Name: Dragon Roost Cavern - First Room Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E40
 
-- Name: DragonRoostCavernWaterJugAlcove
-  PrettyName: Dragon Roost Cavern - Water Jug Alcove Chest
-  OriginalItem: DungeonMap
+- Name: Dragon Roost Cavern - Water Jug Alcove Chest
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001EA0
 
-- Name: DragonRoostCavernBoardedUpChest
-  PrettyName: Dragon Roost Cavern - Boarded Up Chest
-  OriginalItem: SmallKey
+- Name: Dragon Roost Cavern - Boarded Up Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E60
 
-- Name: DragonRoostCavernSwingAcrossLavaChest
-  PrettyName: Dragon Roost Cavern - Swing Across Lava Chest
-  OriginalItem: TreasureChart11
+- Name: Dragon Roost Cavern - Swing Across Lava Chest
+  Original Item: Treasure Chart 11
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001EE0
 
-- Name: DragonRoostCavernRatRoomChest
-  PrettyName: Dragon Roost Cavern - Rat Room Chest
-  OriginalItem: Compass
+- Name: Dragon Roost Cavern - Rat Room Chest
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E80
 
-- Name: DragonRoostCavernRatRoomBoardedUpChest
-  PrettyName: Dragon Roost Cavern - Rat Room Boarded Up Chest
-  OriginalItem: SmallKey
+- Name: Dragon Roost Cavern - Rat Room Boarded Up Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F00
 
-- Name: DragonRoostCavernBirdsNest
-  PrettyName: Dragon Roost Cavern - Bird's Nest
-  OriginalItem: SmallKey
+- Name: Dragon Roost Cavern - Bird's Nest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000BC8
 
-- Name: DragonRoostCavernDarkRoomChest
-  PrettyName: Dragon Roost Cavern - Dark Room Chest
-  OriginalItem: JoyPendant
+- Name: Dragon Roost Cavern - Dark Room Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E20
 
-- Name: DragonRoostCavernHubRoomTingleChest
-  PrettyName: Dragon Roost Cavern - Hub Room Tingle Chest
-  OriginalItem: YellowRupee
+- Name: Dragon Roost Cavern - Hub Room Tingle Chest
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F40
 
-- Name: DragonRoostCavernPotRoomChest
-  PrettyName: Dragon Roost Cavern - Pot Room Chest
-  OriginalItem: TreasureChart39
+- Name: Dragon Roost Cavern - Pot Room Chest
+  Original Item: Treasure Chart 39
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E00
 
-- Name: DragonRoostCavernBossStairsRightChest
-  PrettyName: Dragon Roost Cavern - Boss Stairs Right Chest
-  OriginalItem: KnightsCrest
+- Name: Dragon Roost Cavern - Boss Stairs Right Chest
+  Original Item: Knights Crest
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001DC0
 
-- Name: DragonRoostCavernBossStairsLeftChest
-  PrettyName: Dragon Roost Cavern - Boss Stairs Left Chest
-  OriginalItem: YellowRupee
+- Name: Dragon Roost Cavern - Boss Stairs Left Chest
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001DE0
 
-- Name: DragonRoostCavernMiniBoss
-  PrettyName: Dragon Roost Cavern - Mini Boss
-  OriginalItem: GrapplingHook
+- Name: Dragon Roost Cavern - Mini Boss
+  Original Item: Grappling Hook
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000688
 
-- Name: DragonRoostCavernUnderRopeBridge
-  PrettyName: Dragon Roost Cavern - Under Rope Bridge Chest
-  OriginalItem: JoyPendant
+- Name: Dragon Roost Cavern - Under Rope Bridge Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001EC0
 
-- Name: DragonRoostCavernTingleStatueChest
-  PrettyName: Dragon Roost Cavern - Tingle Statue Chest
-  OriginalItem: DragonTingleStatue
+- Name: Dragon Roost Cavern - Tingle Statue Chest
+  Original Item: Dragon Tingle Statue
   Category:
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F20
 
-- Name: DragonRoostCavernBigKeyChest
-  PrettyName: Dragon Roost Cavern - Big Key Chest
-  OriginalItem: BigKey
+- Name: Dragon Roost Cavern - Big Key Chest
+  Original Item:  Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001DA0
 
-- Name: DragonRoostCavernGohmaHeartContainer
-  PrettyName: Dragon Roost Cavern - Gohma Heart Container
-  OriginalItem: HeartContainer
+- Name: Dragon Roost Cavern - Gohma Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Name: Gohma
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020F5ED6
     - 0x000006C0
 
-- Name: ForbiddenWoodsFirstRoomChest
-  PrettyName: Forbidden Woods - First Room Chest
-  OriginalItem: DungeonMap
+- Name: Forbidden Woods - First Room Chest
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001934
 
-- Name: ForbiddenWoodsBokoBabaClimb
-  PrettyName: Forbidden Woods - Boko Baba Climb Chest
-  OriginalItem: TreasureChart1
+- Name: Forbidden Woods - Boko Baba Climb Chest
+  Original Item: Treasure Chart 1
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000018F4
 
-- Name: ForbiddenWoodsInsideHollowTree
-  PrettyName: Forbidden Woods - Inside Hollow Tree Chest
-  OriginalItem: KnightsCrest
+- Name: Forbidden Woods - Inside Hollow Tree Chest
+  Original Item: Knights Crest
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001914
 
-- Name: ForbiddenWoodsHoleInTreeChest
-  PrettyName: Forbidden Woods - Hole In Tree Chest
-  OriginalItem: RedRupee
+- Name: Forbidden Woods - Hole In Tree Chest
+  Original Item: Red Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001974
 
-- Name: ForbiddenWoodsMorthPit
-  PrettyName: Forbidden Woods - Morth Pit Chest
-  OriginalItem: YellowRupee
+- Name: Forbidden Woods - Morth Pit Chest
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A74
 
-- Name: ForbiddenWoodsVineMazeLeftChest
-  PrettyName: Forbidden Woods - Vine Maze Left Chest
-  OriginalItem: Compass
+- Name: Forbidden Woods - Vine Maze Left Chest
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019B4
 
-- Name: ForbiddenWoodsVineMazeRightChest
-  PrettyName: Forbidden Woods - Vine Maze Right Chest
-  OriginalItem: SmallKey
+- Name: Forbidden Woods - Vine Maze Right Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001954
 
-- Name: ForbiddenWoodsTallRoomChest
-  PrettyName: Forbidden Woods - Tall Room Chest
-  OriginalItem: JoyPendant
+- Name: Forbidden Woods - Tall Room Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A14
 
-- Name: ForbiddenWoodsMothulaMiniBoss
-  PrettyName: Forbidden Woods - Mothula Mini Boss Chest
-  OriginalItem: Boomerang
+- Name: Forbidden Woods - Mothula Mini Boss Chest
+  Original Item: Boomerang
   Category:
     - Dungeon
   Path: content/Common/Stage/kinMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004AC
 
-- Name: ForbiddenWoodsByHangingSeedsChest
-  PrettyName: Forbidden Woods - Past Seeds Hanging by Vines Chest
-  OriginalItem: JoyPendant
+- Name: Forbidden Woods - Past Seeds Hanging by Vines Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A54
 
-- Name: ForbiddenWoodsChestAcrossHangingFlower
-  PrettyName: Forbidden Woods - Chest Across Hanging Flower
-  OriginalItem: YellowRupee
+- Name: Forbidden Woods - Chest Across Hanging Flower
+  Original Item: Yellow Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A94
 
-- Name: ForbiddenWoodsTingleStatueChest
-  PrettyName: Forbidden Woods - Tingle Statue Chest
-  OriginalItem: ForbiddenTingleStatue
+- Name: Forbidden Woods - Tingle Statue Chest
+  Original Item: Forbidden Tingle Statue
   Category:
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AB4
 
-- Name: ForbiddenWoodsLockedTreeTrunkChest
-  PrettyName: Forbidden Woods - Locked Tree Trunk Chest
-  OriginalItem: TreasureChart15
+- Name: Forbidden Woods - Locked Tree Trunk Chest
+  Original Item: Treasure Chart 15
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019D4
 
-- Name: ForbiddenWoodsBigKeyChest
-  PrettyName: Forbidden Woods - Big Key Chest
-  OriginalItem: FWBigKey
+- Name: Forbidden Woods - Big Key Chest
+  Original Item: FW Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019F4
 
-- Name: ForbiddenWoodsDoubleMothulaRoomChest
-  PrettyName: Forbidden Woods - Double Mothula Room Chest
-  OriginalItem: JoyPendant
+- Name: Forbidden Woods - Double Mothula Room Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A34
 
-- Name: ForbiddenWoodsKalleDemosHeartContainer
-  PrettyName: Forbidden Woods - Kalle Demos Heart Container
-  OriginalItem: HeartContainer
+- Name: Forbidden Woods - Kalle Demos Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Name: Kalle Demos
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020AF916
     - 0x00000114
 
-- Name: TOTGHopAcrossFloatingBoxesChest
-  PrettyName: Tower of the Gods - Hop Across Floating Boxes Chest
-  OriginalItem: SmallKey
+- Name: Tower of the Gods - Hop Across Floating Boxes Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001924
 
-- Name: TOTGChestBehindBombableWall
-  PrettyName: Tower of the Gods - Chest Behind Bombable Wall
-  OriginalItem: DungeonMap
+- Name: Tower of the Gods - Chest Behind Bombable Wall
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001944
 
-- Name: TOTGLightTwoTorches
-  PrettyName: Tower of the Gods - Light Two Torches Chest
-  OriginalItem: JoyPendant
+- Name: Tower of the Gods - Light Two Torches Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019C4
 
-- Name: TOTGSkullRoomChest
-  PrettyName: Tower of the Gods - Skull Room Chest
-  OriginalItem: Compass
+- Name: Tower of the Gods - Skull Room Chest
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001964
 
-- Name: TOTGShootEyeAboveSkulls
-  PrettyName: Tower of the Gods - Shoot Eye Above Skulls Chest
-  OriginalItem: TreasureChart6
+- Name: Tower of the Gods - Shoot Eye Above Skulls Chest
+  Original Item: Treasure Chart 6
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019E4
 
-- Name: TOTGTingleStatueChest
-  PrettyName: Tower of the Gods - Tingle Statue Chest
-  OriginalItem: GoddessTingleStatue
+- Name: Tower of the Gods - Tingle Statue Chest
+  Original Item: Goddess Tingle Statue
   Category:
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A64
 
-- Name: TOTGStoneTablet
-  PrettyName: Tower of the Gods - Stone Tablet
-  OriginalItem: CommandMelody
+- Name: Tower of the Gods - Stone Tablet
+  Original Item: Command Melody
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x00030E17
   NameOffset: 0x0001E660
 
-- Name: TOTGFirstArmosKnightsChest
-  PrettyName: Tower of the Gods - First Armos Knight Chest
-  OriginalItem: JoyPendant
+- Name: Tower of the Gods - First Armos Knights Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019A4
 
-- Name: TOTGDarknutMiniBoss
-  PrettyName: Tower of the Gods - Darknut Mini Boss
-  OriginalItem: ProgressiveBow
+- Name: Tower of the Gods - Darknut Mini Boss
+  Original Item: Progressive Bow
   Category:
     - Dungeon
   Path: content/Common/Stage/SirenMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000520
 
-- Name: TOTGFloatingPlatformsRoomLowerChest
-  PrettyName: Tower of the Gods - Floating Platforms Room Lower Chest
-  OriginalItem: SmallKey
+- Name: Tower of the Gods - Floating Platforms Room Lower Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A24
 
-- Name: TOTGFloatingPlatformsRoomUpperChest
-  PrettyName: Tower of the Gods - Floating Platforms Room Upper Chest
-  OriginalItem: JoyPendant
+- Name: Tower of the Gods - Floating Platforms Room Upper Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A44
 
-- Name: TOTGSecondArmostKnightsChest
-  PrettyName: Tower of the Gods - Second Armos Knights Chest
-  OriginalItem: TreasureChart30
+- Name: Tower of the Gods - Second Armos Knights Chest
+  Original Item: Treasure Chart 30
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A04
 
-- Name: TOTGBigKeyChest
-  PrettyName: Tower of the Gods - Big Key Chest
-  OriginalItem: TotGBigKey
+- Name: Tower of the Gods - Big Key Chest
+  Original Item: TotG Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A84
 
-- Name: TOTGGohdanHeartContainer
-  PrettyName: Tower of the Gods - Gohdan Heart Container
-  OriginalItem: HeartContainer
+- Name: Tower of the Gods - Gohdan Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Name: Gohdan
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020EFE1B
     - 0x000003C0
 
-- Name: EarthTempleWarpPotRoomChest
-  PrettyName: Earth Temple - Warp Pot Room Chest
-  OriginalItem: DungeonMap
+- Name: Earth Temple - Warp Pot Room Chest
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001988
 
-- Name: EarthTempleWarpPotRoomBehindCurtain
-  PrettyName: Earth Temple - Warp Pot Room Behind Curtain
-  OriginalItem: JoyPendant
+- Name: Earth Temple - Warp Pot Room Behind Curtain
+  Original Item: Joy Pendant
   Category:
     - Dungeon
     - Obscure
   Path: content/Common/Stage/M_Dai_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000414
 
-- Name: EarthTempleFirstCryptChest
-  PrettyName: Earth Temple - First Crypt Chest
-  OriginalItem: SmallKey
+- Name: Earth Temple - First Crypt Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019A8
 
-- Name: EarthTempleBehindDestructableWall
-  PrettyName: Earth Temple - Chest Behind Detructable Wall
-  OriginalItem: JoyPendant
+- Name: Earth Temple - Chest Behind Destructable Wall
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AC8
 
-- Name: EarthTempleThreeBlocksRoomChest
-  PrettyName: Earth Temple - Three Blocks Room Chest
-  OriginalItem: Compass
+- Name: Earth Temple - Three Blocks Room Chest
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019C8
 
-- Name: EarthTempleBehindStatuesChest
-  PrettyName: Earth Temple - Behind Statues Chest
-  OriginalItem: JoyPendant
+- Name: Earth Temple - Behind Statues Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019E8
 
-- Name: EarthTempleSecondCryptCasket
-  PrettyName: Earth Temple - Second Crypt Casket
-  OriginalItem: SmallKey
+- Name: Earth Temple - Second Crypt Casket
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000234
 
-- Name: EarthTempleStalfosMiniBoss
-  PrettyName: Earth Temple - Stalfos Mini Boss
-  OriginalItem: MirrorShield
+- Name: Earth Temple - Stalfos Mini Boss
+  Original Item: Mirror Shield
   Category:
     - Dungeon
   Path: content/Common/Stage/M_DaiMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000063C
 
-- Name: EarthTempleTingleStatueChest
-  PrettyName: Earth Temple - Tingle Statue Chest
-  OriginalItem: EarthTingleStatue
+- Name: Earth Temple - Tingle Statue Chest
+  Original Item: Earth Tingle Statue
   Category:
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001B28
 
-- Name: EarthTempleFoggyFloormasterRoomEndChest
-  PrettyName: Earth Temple - Foggy Floormaster Room End Chest
-  OriginalItem: SmallKey
+- Name: Earth Temple - Foggy Floormaster Room End Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A08
 
-- Name: EarthTempleKillAllFloormastersChest
-  PrettyName: Earth Temple - Kill All Floormasters Chest
-  OriginalItem: TreasureChart20
+- Name: Earth Temple - Kill All Floormasters Chest
+  Original Item: Treasure Chart 20
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AA8
 
-- Name: EarthTempleNearHammerButtonBehindCurtain
-  PrettyName: Earth Temple - Near Hammer Button Behind Curtain
-  OriginalItem: JoyPendant
+- Name: Earth Temple - Near Hammer Button Behind Curtain
+  Original Item: Joy Pendant
   Category:
     - Dungeon
     - Obscure
   Path: content/Common/Stage/M_Dai_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000490
 
-- Name: EarthTempleThirdCryptChest
-  PrettyName: Earth Temple - Third Crypt Chest
-  OriginalItem: RedRupee
+- Name: Earth Temple - Third Crypt Chest
+  Original Item: Red Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A28
 
-- Name: EarthTempleManyMirrorsRoomRightChest
-  PrettyName: Earth Temple - Many Mirrors Room Right Chest
-  OriginalItem: PurpleRupee
+- Name: Earth Temple - Many Mirrors Room Right Chest
+  Original Item: Purple Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A68
 
-- Name: EarthTempleManyMirrorsRoomLeftChest
-  PrettyName: Earth Temple - Many Mirrors Room Left Chest
-  OriginalItem: JoyPendant
+- Name: Earth Temple - Many Mirrors Room Left Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A88
 
-- Name: EarthTempleBigKeyChest
-  PrettyName: Earth Temple - Big Key Chest
-  OriginalItem: ETBigKey
+- Name: Earth Temple - Big Key Chest
+  Original Item: ET Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A48
 
-- Name: EarthTempleStalfosCryptRoomChest
-  PrettyName: Earth Temple - Stalfos Crypt Room Chest
-  OriginalItem: TreasureChart12
+- Name: Earth Temple - Stalfos Crypt Room Chest
+  Original Item: Treasure Chart 12
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AE8
 
-- Name: EarthTempleJalhallaHeartContainer
-  PrettyName: Earth Temple - Jalhalla Heart Container
-  OriginalItem: HeartContainer
+- Name: Earth Temple - Jalhalla Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Name: Jalhalla
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020DADDE
     - 0x000000C0
 
-- Name: WindTempleBetweenDirtPatchesChest
-  PrettyName: Wind Temple - Between Dirt Patches Chest
-  OriginalItem: OrangeRupee
+- Name: Wind Temple - Between Dirt Patches Chest
+  Original Item: Orange Rupee
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F84
 
-- Name: WindTempleTingleStatueChest
-  PrettyName: Wind Temple - Tingle Statue Chest
-  OriginalItem: WindTingleStatue
+- Name: Wind Temple - Tingle Statue Chest
+  Original Item: Wind Tingle Statue
   Category:
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001064
 
-- Name: WindTempleBehindStoneHeadChest
-  PrettyName: Wind Temple - Behind Stone Head Chest
-  OriginalItem: JoyPendant
+- Name: Wind Temple - Behind Stone Head Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000FA4
 
-- Name: WindTempleLeftAlcoveChest
-  PrettyName: Wind Temple - Left Alcove Chest
-  OriginalItem: JoyPendant
+- Name: Wind Temple - Left Alcove Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F64
 
-- Name: WindTempleBigKeyChest
-  PrettyName: Wind Temple - Big Key Chest
-  OriginalItem: WTBigKey
+- Name: Wind Temple - Big Key Chest
+  Original Item: WT Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F24
 
-- Name: WindTempleManyCyclonesRoomChest
-  PrettyName: Wind Temple - Cyclones Room Chest
-  OriginalItem: DungeonMap
+- Name: Wind Temple - Cyclones Room Chest
+  Original Item: Dungeon Map
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000FE4
 
-- Name: WindTempleHubRoomCenterChest
-  PrettyName: Wind Temple - Hub Room Center Chest
-  OriginalItem: Compass
+- Name: Wind Temple - Hub Room Center Chest
+  Original Item: Compass
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001024
 
-- Name: WindTempleWizzrobeMiniBoss
-  PrettyName: Wind Temple - Wizzrobe Mini Boss
-  OriginalItem: Hookshot
+- Name: Wind Temple - Wizzrobe Mini Boss
+  Original Item: Hookshot
   Category:
     - Dungeon
   Path: content/Common/Stage/kazeMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000002D8
 
-- Name: WindTempleSpikeWallRoomFirstChest
-  PrettyName: Wind Temple - Spike Wall Room First Chest
-  OriginalItem: SmallKey
+- Name: Wind Temple - Spike Wall Room First Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F44
 
-- Name: WindTempleSpikeWallRoomDestroyFloors
-  PrettyName: Wind Temple - Spike Wall Room Destroy Floors
-  OriginalItem: TreasureChart35
+- Name: Wind Temple - Spike Wall Room Destroy Floors
+  Original Item: Treasure Chart 35
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000FC4
 
-- Name: WindTempleHubRoomTopChest
-  PrettyName: Wind Temple - Hub Room Top Chest
-  OriginalItem: JoyPendant
+- Name: Wind Temple - Hub Room Top Chest
+  Original Item: Joy Pendant
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000EE4
 
-- Name: WindTempleBehindArmosChest
-  PrettyName: Wind Temple - Behind Armos Chest
-  OriginalItem: SmallKey
+- Name: Wind Temple - Behind Armos Chest
+  Original Item: Small Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F04
 
-- Name: WindTempleKillAllBasmentRoomEnemies
-  PrettyName: Wind Temple - Kill All Basement Room Enemies
-  OriginalItem: TreasureChart5
+- Name: Wind Temple - Kill All Basement Room Enemies
+  Original Item: Treasure Chart 5
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001004
 
-- Name: WindTempleMolgeraHeartContainer
-  PrettyName: Wind Temple - Molgera Heart Container
-  OriginalItem: HeartContainer
+- Name: Wind Temple - Molgera Heart Container
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Name: Molgera
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x021031E7
     - 0x00000114
 
-- Name: HyruleCastleSwordChamberChest
-  PrettyName: Hyrule Castle - Sword Chamber Chest
-  OriginalItem: MasterSwordPowerless
+- Name: Hyrule Castle - Sword Chamber Chest
+  Original Item: Master Sword Powerless
   Category:
     - Dungeon
   Path: content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000013A8
 
-- Name: GanonsTowerMazeChest
-  PrettyName: Ganon's Tower - Maze Chest
-  OriginalItem: LightArrow
+- Name: Ganon's Tower - Maze Chest
+  Original Item: Light Arrow
   Category:
     - Dungeon
   Path: content/Common/Stage/GanonJ_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Always
   Type: Chest
   Offsets:
     - 0x00000858
 
-- Name: DefeatGanondorf
-  PrettyName: Ganon's Tower - Defeat Ganondorf
-  OriginalItem: GameBeatable
+- Name: Ganon's Tower - Defeat Ganondorf
+  Original Item: Game Beatable
+  Goal Name: Ganondorf
   Category:
     - Other
+    - AlwaysProgression
+  Hint Priority: Sometimes
   Type: DoNothing
+
+- Name: Forsaken Fortress Sector - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14004
+
+- Name: Northern Fairy Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14007
+
+- Name: Crescent Moon Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14005
+
+- Name: Flight Control Platform - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14002
+
+- Name: Stone Watcher Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14009
+
+- Name: Private Oasis - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14006
+
+- Name: Bomb Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14001
+
+- Name: Horseshoe Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14008
+
+- Name: Outset Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14003
+
+- Name: Two Eye Reef - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14010

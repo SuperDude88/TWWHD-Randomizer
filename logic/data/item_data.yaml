@@ -1,0 +1,732 @@
+- Name: Heart Drop
+  Game Item Id: 0x00
+
+- Name: Green Rupee
+  Game Item Id: 0x01
+
+- Name: Blue Rupee
+  Game Item Id: 0x02
+
+- Name: Yellow Rupee
+  Game Item Id: 0x03
+
+- Name: Red Rupee
+  Game Item Id: 0x04
+
+- Name: Purple Rupee
+  Game Item Id: 0x05
+
+- Name: Orange Rupee
+  Game Item Id: 0x06
+
+- Name: Piece Of Heart
+  Game Item Id: 0x07
+
+- Name: Heart Container
+  Game Item Id: 0x08
+
+- Name: Small Magic Drop
+  Game Item Id: 0x09
+
+- Name: Large Magic Drop
+  Game Item Id: 0x0A
+
+- Name: Five Bombs
+  Game Item Id: 0x0B
+
+- Name: Ten Bombs
+  Game Item Id: 0x0C
+
+- Name: Twenty Bombs
+  Game Item Id: 0x0D
+
+- Name: Thirty Bombs
+  Game Item Id: 0x0E
+
+- Name: Silver Rupee
+  Game Item Id: 0x0F
+
+- Name: Ten Arrows
+  Game Item Id: 0x10
+
+- Name: Twenty Arrows
+  Game Item Id: 0x11
+
+- Name: Thirty Arrows
+  Game Item Id: 0x12
+
+- Name: DRC Small Key
+  Game Item Id: 0x13
+  Small Key Dungeon: Dragon Roost Cavern
+  Small Key Count: 4
+
+- Name: DRC Big Key
+  Game Item Id: 0x14
+  Big Key Dungeon: Dragon Roost Cavern
+
+- Name: Small Key
+  Game Item Id: 0x15
+
+- Name: Fairy
+  Game Item Id: 0x16
+
+- Name: Game Beatable # Dummy item to check for game beatability
+  Game Item Id: 0x18
+
+- Name: Yellow Rupee 2 # joke message
+  Game Item Id: 0x1A
+
+- Name: DRC Dungeon Map
+  Game Item Id: 0x1B
+  Map Dungeon: Dragon Roost Cavern
+
+- Name: DRC Compass
+  Game Item Id: 0x1C
+  Compass Dungeon: Dragon Roost Cavern
+
+- Name: FW Small Key
+  Game Item Id: 0x1D
+  Small Key Dungeon: Forbidden Woods
+  Small Key Count: 1
+
+- Name: Three Hearts
+  Game Item Id: 0x1E
+
+- Name: Joy Pendant
+  Game Item Id: 0x1F
+
+- Name: Telescope
+  Game Item Id: 0x20
+
+- Name: Tingle Bottle
+  Game Item Id: 0x21
+
+- Name: Wind Waker
+  Game Item Id: 0x22
+
+- Name: Progressive Picto Box
+  Game Item Id: 0x23
+
+- Name: Spoils Bag
+  Game Item Id: 0x24
+
+- Name: Grappling Hook
+  Game Item Id: 0x25
+
+- Name: Deluxe Picto Box
+  Game Item Id: 0x26
+
+- Name: Progressive Bow
+  Game Item Id: 0x27
+
+- Name: Power Bracelets
+  Game Item Id: 0x28
+
+- Name: Iron Boots
+  Game Item Id: 0x29
+
+- Name: Magic Armor
+  Game Item Id: 0x2A
+
+- Name: Bait Bag
+  Game Item Id: 0x2C
+
+- Name: Boomerang
+  Game Item Id: 0x2D
+
+- Name: Hookshot
+  Game Item Id: 0x2F
+
+- Name: Delivery Bag
+  Game Item Id: 0x30
+
+- Name: Bombs
+  Game Item Id: 0x31
+
+- Name: Heros Clothes
+  Game Item Id: 0x32
+
+- Name: Skull Hammer
+  Game Item Id: 0x33
+
+- Name: Deku Leaf
+  Game Item Id: 0x34
+
+- Name: Fire Ice Arrows
+  Game Item Id: 0x35
+
+- Name: Light Arrow
+  Game Item Id: 0x36
+
+- Name: Heros New Clothes
+  Game Item Id: 0x37
+
+- Name: Progressive Sword
+  Game Item Id: 0x38
+
+- Name: Master Sword Powerless
+  Game Item Id: 0x39
+
+- Name: Master Sword Half
+  Game Item Id: 0x3A
+
+- Name: Progressive Shield
+  Game Item Id: 0x3B
+
+- Name: Mirror Shield
+  Game Item Id: 0x3C
+
+- Name: Recovered Heros Sword
+  Game Item Id: 0x3D
+
+- Name: Master Sword Full
+  Game Item Id: 0x3E
+
+- Name: Piece Of Heart 2 # alternate message
+  Game Item Id: 0x3F
+
+- Name: FW Big Key
+  Game Item Id: 0x40
+  Big Key Dungeon: Forbidden Woods
+
+- Name: FW Dungeon Map
+  Game Item Id: 0x41
+  Map Dungeon: Forbidden Woods
+
+- Name: Pirates Charm
+  Game Item Id: 0x42
+
+- Name: Heros Charm
+  Game Item Id: 0x43
+
+- Name: Skull Necklace
+  Game Item Id: 0x45
+
+- Name: Boko Baba Seed
+  Game Item Id: 0x46
+
+- Name: Golden Feather
+  Game Item Id: 0x47
+
+- Name: Knights Crest
+  Game Item Id: 0x48
+
+- Name: Red Chu Jelly
+  Game Item Id: 0x49
+
+- Name: Green Chu Jelly
+  Game Item Id: 0x4A
+
+- Name: Blue Chu Jelly
+  Game Item Id: 0x4B
+
+- Name: Dungeon Map
+  Game Item Id: 0x4C
+
+- Name: Compass
+  Game Item Id: 0x4D
+
+- Name: Big Key
+  Game Item Id: 0x4E
+
+- Name: Empty Bottle
+  Game Item Id: 0x50
+
+- Name: Red Potion
+  Game Item Id: 0x51
+
+- Name: Green Potion
+  Game Item Id: 0x52
+
+- Name: Blue Potion
+  Game Item Id: 0x53
+
+- Name: Elixir Soup Half
+  Game Item Id: 0x54
+
+- Name: Elixir Soup
+  Game Item Id: 0x55
+
+- Name: Bottled Water
+  Game Item Id: 0x56
+
+- Name: Fairy In Bottle
+  Game Item Id: 0x57
+
+- Name: Forest Firefly
+  Game Item Id: 0x58
+
+- Name: Forest Water
+  Game Item Id: 0x59
+
+- Name: FW Compass
+  Game Item Id: 0x5A
+  Compass Dungeon: Forbidden Woods
+
+- Name: TotG Small Key
+  Game Item Id: 0x5B
+  Small Key Dungeon: Tower of the Gods
+  Small Key Count: 2
+
+- Name: TotG Big Key
+  Game Item Id: 0x5C
+  Big Key Dungeon: Tower of the Gods
+
+- Name: TotG Dungeon Map
+  Game Item Id: 0x5D
+  Map Dungeon: Tower of the Gods
+
+- Name: TotG Compass
+  Game Item Id: 0x5E
+  Compass Dungeon: Tower of the Gods
+
+- Name: FF Dungeon Map
+  Game Item Id: 0x5F
+  Map Dungeon: Forsaken Fortress
+
+- Name: FF Compass
+  Game Item Id: 0x60
+  Compass Dungeon: Forsaken Fortress
+
+- Name: Triforce Shard 1
+  Game Item Id: 0x61
+
+- Name: Triforce Shard 2
+  Game Item Id: 0x62
+
+- Name: Triforce Shard 3
+  Game Item Id: 0x63
+
+- Name: Triforce Shard 4
+  Game Item Id: 0x64
+
+- Name: Triforce Shard 5
+  Game Item Id: 0x65
+
+- Name: Triforce Shard 6
+  Game Item Id: 0x66
+
+- Name: Triforce Shard 7
+  Game Item Id: 0x67
+
+- Name: Triforce Shard 8
+  Game Item Id: 0x68
+
+- Name: Nayrus Pearl
+  Game Item Id: 0x69
+
+- Name: Dins Pearl
+  Game Item Id: 0x6A
+
+- Name: Farores Pearl
+  Game Item Id: 0x6B
+
+- Name: Winds Requiem
+  Game Item Id: 0x6D
+
+- Name: Ballad Of Gales
+  Game Item Id: 0x6E
+
+- Name: Command Melody
+  Game Item Id: 0x6F
+
+- Name: Earth Gods Lyric
+  Game Item Id: 0x70
+
+- Name: Wind Gods Aria
+  Game Item Id: 0x71
+
+- Name: Song Of Passing
+  Game Item Id: 0x72
+
+- Name: ET Small Key
+  Game Item Id: 0x73
+  Small Key Dungeon: Earth Temple
+  Small Key Count: 3
+
+- Name: ET Big Key
+  Game Item Id: 0x74
+  Big Key Dungeon: Earth Temple
+
+- Name: ET Dungeon Map
+  Game Item Id: 0x75
+  Map Dungeon: Earth Temple
+
+- Name: ET Compass
+  Game Item Id: 0x76
+  Compass Dungeon: Earth Temple
+
+- Name: Swift Sail
+  Game Item Id: 0x77
+
+- Name: Progressive Sail
+  Game Item Id: 0x78
+
+- Name: Triforce Chart 1 Deciphered
+  Game Item Id: 0x79
+
+- Name: Triforce Chart 2 Deciphered
+  Game Item Id: 0x7A
+
+- Name: Triforce Chart 3 Deciphered
+  Game Item Id: 0x7B
+
+- Name: Triforce Chart 4 Deciphered
+  Game Item Id: 0x7C
+
+- Name: Triforce Chart 5 Deciphered
+  Game Item Id: 0x7D
+
+- Name: Triforce Chart 6 Deciphered
+  Game Item Id: 0x7E
+
+- Name: Triforce Chart 7 Deciphered
+  Game Item Id: 0x7F
+
+- Name: Triforce Chart 8 Deciphered
+  Game Item Id: 0x80
+
+- Name: WT Small Key
+  Game Item Id: 0x81
+  Small Key Dungeon: Wind Temple
+  Small Key Count: 2
+
+- Name: All Purpose Bait
+  Game Item Id: 0x82
+
+- Name: Hyoi Pear
+  Game Item Id: 0x83
+
+- Name: WT Big Key
+  Game Item Id: 0x84
+  Big Key Dungeon: Wind Temple
+
+- Name: WT Dungeon Map
+  Game Item Id: 0x85
+  Map Dungeon: Wind Temple
+
+- Name: WT Compass
+  Game Item Id: 0x86
+  Compass Dungeon: Wind Temple
+
+- Name: Town Flower
+  Game Item Id: 0x8C
+
+- Name: Sea Flower
+  Game Item Id: 0x8D
+
+- Name: Exotic Flower
+  Game Item Id: 0x8E
+
+- Name: Heros Flag
+  Game Item Id: 0x8F
+
+- Name: Big Catch Flag
+  Game Item Id: 0x90
+
+- Name: Big Sale Flag
+  Game Item Id: 0x91
+
+- Name: Pinwheel
+  Game Item Id: 0x92
+
+- Name: Sickle Moon Flag
+  Game Item Id: 0x93
+
+- Name: Skull Tower Idol
+  Game Item Id: 0x94
+
+- Name: Fountain Idol
+  Game Item Id: 0x95
+
+- Name: Postman Statue
+  Game Item Id: 0x96
+
+- Name: Shop Guru Statue
+  Game Item Id: 0x97
+
+- Name: Fathers Letter
+  Game Item Id: 0x98
+
+- Name: Note To Mom
+  Game Item Id: 0x99
+
+- Name: Maggies Letter
+  Game Item Id: 0x9A
+  Chain Locations:
+    - Windfall Island - Cafe Postman Delivery
+
+- Name: Moblins Letter
+  Game Item Id: 0x9B
+  Chain Locations:
+    - Windfall Island - Maggie Delivery Reward
+
+- Name: Cabana Deed
+  Game Item Id: 0x9C
+
+- Name: Complimentary ID
+  Game Item Id: 0x9D
+
+- Name: Fill Up Coupon
+  Game Item Id: 0x9E
+
+- Name: Legendary Pictograph
+  Game Item Id: 0x9F
+
+- Name: Dragon Tingle Statue
+  Game Item Id: 0xA3
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
+
+- Name: Forbidden Tingle Statue
+  Game Item Id: 0xA4
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
+
+- Name: Goddess Tingle Statue
+  Game Item Id: 0xA5
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
+
+- Name: Earth Tingle Statue
+  Game Item Id: 0xA6
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
+
+- Name: Wind Tingle Statue
+  Game Item Id: 0xA7
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
+
+- Name: Hurricane Spin
+  Game Item Id: 0xAA
+
+- Name: Progressive Wallet
+  Game Item Id: 0xAB
+
+- Name: Five Thousand Wallet
+  Game Item Id: 0xAC
+
+- Name: Progressive Bomb Bag
+  Game Item Id: 0xAD
+
+- Name: Ninety Nine Bomb Bag
+  Game Item Id: 0xAE
+
+- Name: Progressive Quiver
+  Game Item Id: 0xAF
+  Chain Locations: # Quiver is potentially progression for 12 eye octos
+    - Seven Star Isles - Big Octo
+    - Tingle Island - Big Octo
+
+- Name: Ninety Nine Quiver
+  Game Item Id: 0xB0
+
+- Name: Magic Meter # Added by rando
+  Game Item Id: 0xB1
+
+- Name: Progressive Magic Meter  # Replaces magic upgrade
+  Game Item Id: 0xB2
+
+- Name: Fifty Rupees
+  Game Item Id: 0xB3
+
+- Name: Hundred Rupees
+  Game Item Id: 0xB4
+
+- Name: Hundred Fifty Rupees
+  Game Item Id: 0xB5
+
+- Name: Two Hundred Rupees
+  Game Item Id: 0xB6
+
+- Name: Two Hundred Fifty Rupees
+  Game Item Id: 0xB7
+
+- Name: Rainbow Rupee
+  Game Item Id: 0xB8
+
+- Name: Submarine Chart
+  Game Item Id: 0xC2
+
+- Name: Beedles Chart
+  Game Item Id: 0xC3
+
+- Name: Platform Chart
+  Game Item Id: 0xC4
+
+- Name: Light Ring Chart
+  Game Item Id: 0xC5
+
+- Name: Secret Cave Chart
+  Game Item Id: 0xC6
+
+- Name: Sea Hearts Chart
+  Game Item Id: 0xC7
+
+- Name: Island Hearts Chart
+  Game Item Id: 0xC8
+
+- Name: Great Fairy Chart
+  Game Item Id: 0xC9
+
+- Name: Octo Chart
+  Game Item Id: 0xCA
+
+- Name: INcredible Chart
+  Game Item Id: 0xCB
+
+- Name: Treasure Chart 7
+  Game Item Id: 0xCC
+
+- Name: Treasure Chart 27
+  Game Item Id: 0xCD
+
+- Name: Treasure Chart 21
+  Game Item Id: 0xCE
+
+- Name: Treasure Chart 13
+  Game Item Id: 0xCF
+
+- Name: Treasure Chart 32
+  Game Item Id: 0xD0
+
+- Name: Treasure Chart 19
+  Game Item Id: 0xD1
+
+- Name: Treasure Chart 41
+  Game Item Id: 0xD2
+
+- Name: Treasure Chart 26
+  Game Item Id: 0xD3
+
+- Name: Treasure Chart 8
+  Game Item Id: 0xD4
+
+- Name: Treasure Chart 37
+  Game Item Id: 0xD5
+
+- Name: Treasure Chart 25
+  Game Item Id: 0xD6
+
+- Name: Treasure Chart 17
+  Game Item Id: 0xD7
+
+- Name: Treasure Chart 36
+  Game Item Id: 0xD8
+
+- Name: Treasure Chart 22
+  Game Item Id: 0xD9
+
+- Name: Treasure Chart 9
+  Game Item Id: 0xDA
+
+- Name: Ghost Ship Chart
+  Game Item Id: 0xDB
+  Chain Locations:
+    - Great Sea - Ghost Ship Chest
+
+- Name: Tingles Chart
+  Game Item Id: 0xDC
+
+- Name: Treasure Chart 14
+  Game Item Id: 0xDD
+
+- Name: Treasure Chart 10
+  Game Item Id: 0xDE
+
+- Name: Treasure Chart 40
+  Game Item Id: 0xDF
+
+- Name: Treasure Chart 3
+  Game Item Id: 0xE0
+
+- Name: Treasure Chart 4
+  Game Item Id: 0xE1
+
+- Name: Treasure Chart 28
+  Game Item Id: 0xE2
+
+- Name: Treasure Chart 16
+  Game Item Id: 0xE3
+
+- Name: Treasure Chart 18
+  Game Item Id: 0xE4
+
+- Name: Treasure Chart 34
+  Game Item Id: 0xE5
+
+- Name: Treasure Chart 29
+  Game Item Id: 0xE6
+
+- Name: Treasure Chart 1
+  Game Item Id: 0xE7
+
+- Name: Treasure Chart 35
+  Game Item Id: 0xE8
+
+- Name: Treasure Chart 12
+  Game Item Id: 0xE9
+
+- Name: Treasure Chart 6
+  Game Item Id: 0xEA
+
+- Name: Treasure Chart 24
+  Game Item Id: 0xEB
+
+- Name: Treasure Chart 39
+  Game Item Id: 0xEC
+
+- Name: Treasure Chart 38
+  Game Item Id: 0xED
+
+- Name: Treasure Chart 2
+  Game Item Id: 0xEE
+
+- Name: Treasure Chart 33
+  Game Item Id: 0xEF
+
+- Name: Treasure Chart 31
+  Game Item Id: 0xF0
+
+- Name: Treasure Chart 23
+  Game Item Id: 0xF1
+
+- Name: Treasure Chart 5
+  Game Item Id: 0xF2
+
+- Name: Treasure Chart 20
+  Game Item Id: 0xF3
+
+- Name: Treasure Chart 30
+  Game Item Id: 0xF4
+
+- Name: Treasure Chart 15
+  Game Item Id: 0xF5
+
+- Name: Treasure Chart 11
+  Game Item Id: 0xF6
+
+- Name: Treasure Chart 46
+  Game Item Id: 0xF7
+
+- Name: Treasure Chart 45
+  Game Item Id: 0xF8
+
+- Name: Treasure Chart 44
+  Game Item Id: 0xF9
+
+- Name: Triforce Chart 3
+  Game Item Id: 0xFA
+
+- Name: Treasure Chart 43
+  Game Item Id: 0xFB
+
+- Name: Triforce Chart 2
+  Game Item Id: 0xFC
+
+- Name: Treasure Chart 42
+  Game Item Id: 0xFD
+
+- Name: Triforce Chart 1
+  Game Item Id: 0xFE
