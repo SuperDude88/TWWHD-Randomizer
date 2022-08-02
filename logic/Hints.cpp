@@ -186,7 +186,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 {
                     world.barrenRegions.erase(hintRegion);
                 }
-                else if (world.barrenRegions.count(hintRegion) > 0)
+                else if (world.barrenRegions.contains(hintRegion))
                 {
                     world.barrenRegions[hintRegion].insert(&location);
                 }
@@ -198,7 +198,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         for (auto& [dungeonName, dungeon] : world.dungeons)
         {
             auto& outsideLocations = dungeon.outsideDependentLocations;
-            if (world.barrenRegions.count(dungeonName) > 0 &&
+            if (world.barrenRegions.contains(dungeonName) &&
                 std::any_of(outsideLocations.begin(), outsideLocations.end(), [&world](std::string& locationName){return !world.locationEntries[locationName].currentItem.isJunkItem();}))
             {
                 world.barrenRegions.erase(dungeonName);
@@ -354,7 +354,7 @@ static HintError generateItemHintMessage(World& world, Location* location)
     for (auto hintRegion : location->hintRegions)
     {
         // If this is an item in a dungeon, use the dungeon's island for the hint instead
-        if (world.dungeons.count(hintRegion) > 0)
+        if (world.dungeons.contains(hintRegion))
         {
             hintRegion = world.dungeons[hintRegion].island;
         }
@@ -393,12 +393,12 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     {
         if (location.progression              &&  // if the location is a progression location...
            !location.hasBeenHinted            &&  // and has not been hinted at yet...
-                                                  // and in't part of an invalid hint region
-           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.count(hintRegion) > 0;}) &&
+                                                  // and isn't part of an invalid hint region...
+           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);}) &&
            !location.currentItem.isJunkItem() &&  // and it does not have a junk item...
           (!location.currentItem.isDungeonItem() || world.getSettings().keylunacy) && // and this isn't a dungeon item when keylunacy is off...
-           !location.isRaceModeLocation &&        // and this isn't a race mode location
-            location.hintPriority != "Always")    // and the hint priority is not always (this will be handled in the location hints)
+           !location.isRaceModeLocation &&        // and this isn't a race mode location...
+            location.hintPriority != "Always")    // and the hint priority is not always (this will be handled in the location hints)...
            {
               // Then the item is a possible item hint location
               possibleItemHintLocations.push_back(&location);
@@ -490,7 +490,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
     size_t hintsPerHoHo = locations.size() / 10;
 
     auto hohoLocations = world.getLocations();
-    filterAndEraseFromPool(hohoLocations, [](Location* location){return location->categories.count(LocationCategory::HoHoHint) == 0;});
+    filterAndEraseFromPool(hohoLocations, [](Location* location){return !location->categories.contains(LocationCategory::HoHoHint);});
 
     // Keep retrying until Hoh Ho hints are successfully placed, or until we run out
     // of retries
@@ -511,7 +511,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
             ItemPool noItems = {};
             auto accessibleHoHoLocations = getAccessibleLocations(worlds, noItems, hohoLocations);
             // Erase Ho Ho locations which already have the desired number of hints
-            filterAndEraseFromPool(accessibleHoHoLocations, [&](Location* hoho){return world.hohoHints[hoho].size() >= hintsPerHoHo || world.hohoHints[hoho].count(location) > 0;});
+            filterAndEraseFromPool(accessibleHoHoLocations, [&](Location* hoho){return world.hohoHints[hoho].size() >= hintsPerHoHo || world.hohoHints[hoho].contains(location);});
 
             if (accessibleHoHoLocations.empty())
             {

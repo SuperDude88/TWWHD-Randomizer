@@ -19,7 +19,7 @@
 #define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
 #define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
-#define EVENT_CHECK(eventName) if (eventMap.count(eventName) == 0) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
+#define EVENT_CHECK(eventName) if (!eventMap.contains(eventName)) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaEntries.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(0, locationEntries.count(loc), msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
@@ -121,7 +121,7 @@ LocationPool World::getLocations(bool onlyProgression /*= false*/)
 
 AreaEntry& World::getArea(const std::string& area)
 {
-    if (areaEntries.count(area) == 0)
+    if (!areaEntries.contains(area))
     {
         auto message = "ERROR: Area \"" + area + "\" is not defined!";
         LOG_TO_DEBUG(message);
@@ -203,11 +203,11 @@ void World::determineChartMappings()
         // Set the sunken treasure location as the chain location for each treasure/triforce chart in the itemEntries
         auto locationName = roomIndexToIslandName(sector) + " - Sunken Treasure";
         auto chartName = gameItemToName(chart);
-        if (locationEntries.count(locationName) == 0)
+        if (!locationEntries.contains(locationName))
         {
             ErrorLog::getInstance().log("\"" + locationName + "\" is not a known sunken treasure location");
         }
-        if (itemEntries.count(chartName) == 0)
+        if (!itemEntries.contains(chartName))
         {
             ErrorLog::getInstance().log("\"" + chartName + "\" is not a known treasure chart item");
         }
@@ -271,7 +271,7 @@ void World::determineProgressionLocations()
                    ( category == LocationCategory::Obscure           && this->settings.progression_obscure)             ||
                    ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && settings.progression_platforms_rafts) ||
                    ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && settings.progression_big_octos_gunboats);
-        }) || location.categories.count(LocationCategory::AlwaysProgression) > 0)
+        }) || location.categories.contains(LocationCategory::AlwaysProgression))
         {
             LOG_TO_DEBUG("\t" + name);
             location.progression = true;
@@ -313,13 +313,13 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                 for (auto& location : allDungeonLocations)
                 {
                     auto dungeonLocation = &locationEntries[location];
-                    bool dungeonLocationForcesRaceMode = plandomizerLocations.count(dungeonLocation) == 0 ? false : !plandomizerLocations[dungeonLocation].isJunkItem();
+                    bool dungeonLocationForcesRaceMode = !plandomizerLocations.contains(dungeonLocation) ? false : !plandomizerLocations[dungeonLocation].isJunkItem();
                     if (dungeonLocationForcesRaceMode)
                     {
                         // However, if the dungeon's race mode location is junk then
                         // that's an error on the user's part.
                         Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-                        bool raceModeLocationIsAcceptable = plandomizerLocations.count(raceModeLocation) == 0 ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
+                        bool raceModeLocationIsAcceptable = !plandomizerLocations.contains(raceModeLocation) ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
                         if (!raceModeLocationIsAcceptable)
                         {
                             ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
@@ -355,7 +355,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             // If this dungeon has a junk item placed as its race mode
             // location, then skip it
             auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-            bool raceModeLocationIsAcceptable = plandomizerLocations.count(raceModeLocation) == 0 ? false : plandomizerLocations[raceModeLocation].isJunkItem();
+            bool raceModeLocationIsAcceptable = !plandomizerLocations.contains(raceModeLocation) ? false : plandomizerLocations[raceModeLocation].isJunkItem();
             if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
             {
                 LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
@@ -476,7 +476,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         }
 
         // Then a macro...
-        if (macroNameMap.count(argStr) > 0)
+        if (macroNameMap.contains(argStr))
         {
             req.type = RequirementType::MACRO;
             req.args.push_back(macroNameMap.at(argStr));
@@ -1323,12 +1323,12 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
 Entrance* World::getEntrance(const std::string& parentArea, const std::string& connectedArea)
 {
     // sanity check that the areas exist
-    if (areaEntries.count(parentArea) == 0)
+    if (!areaEntries.contains(parentArea))
     {
         ErrorLog::getInstance().log("ERROR: \"" + parentArea + "\" is not a defined area!");
         return nullptr;
     }
-    if (areaEntries.count(connectedArea) == 0)
+    if (!areaEntries.contains(connectedArea))
     {
         ErrorLog::getInstance().log("ERROR: \"" + connectedArea + "\" is not a defined area!");
         return nullptr;
@@ -1422,7 +1422,7 @@ std::unordered_set<std::string> World::getIslands(const std::string& startArea)
         // as they haven't been checked yet
         for (auto entrance : areaEntry.entrances)
         {
-            if (alreadyChecked.count(entrance->getParentArea()) == 0)
+            if (!alreadyChecked.contains(entrance->getParentArea()))
             {
                 areaQueue.push_back(entrance->getParentArea());
             }
@@ -1434,7 +1434,7 @@ std::unordered_set<std::string> World::getIslands(const std::string& startArea)
 
 Dungeon& World::getDungeon(const std::string& dungeonName)
 {
-    if (dungeons.count(dungeonName) == 0)
+    if (!dungeons.contains(dungeonName))
     {
         ErrorLog::getInstance().log("ERROR: Unknown dungeon name " + dungeonName);
     }

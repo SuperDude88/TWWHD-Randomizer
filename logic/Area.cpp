@@ -116,7 +116,7 @@ uint8_t islandNameToRoomIndex(const std::string& islandName)
         {"Five Star Isles", 49},
     };
 
-    if (islandAreaMap.count(islandName) == 0)
+    if (!islandAreaMap.contains(islandName))
     {
         return 0;
     }

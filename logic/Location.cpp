@@ -37,7 +37,7 @@ LocationCategory nameToLocationCategory(const std::string& name)
         {"HoHoHint", LocationCategory::HoHoHint},
     };
 
-    if (categoryNameMap.count(name) == 0)
+    if (!categoryNameMap.contains(name))
     {
         return LocationCategory::INVALID;
     }
@@ -78,7 +78,7 @@ std::string locationCategoryToName(LocationCategory category)
         {LocationCategory::HoHoHint, "HoHoHint"},
     };
 
-    if (nameCategoryMap.count(category) == 0)
+    if (!nameCategoryMap.contains(category))
     {
         return "INVALID";
     }
@@ -99,7 +99,7 @@ LocationModificationType nameToModificationType(const std::string& name)
         {"DoNothing", LocationModificationType::DoNothing}
     };
 
-    if (methodNameMap.count(name) == 0)
+    if (!methodNameMap.contains(name))
     {
         return LocationModificationType::INVALID;
     }

@@ -537,10 +537,10 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
         }
 
         // Check to make sure this type of entrance is being shuffled
-        if (entrancePools.count(type) == 0)
+        if (!entrancePools.contains(type))
         {
             // Check if its reverse is being shuffled if decoupled entrances are off
-            if (!world.getSettings().decouple_entrances && entrance->getReverse() != nullptr && entrancePools.count(entrance->getReverse()->getEntranceType()) > 0)
+            if (!world.getSettings().decouple_entrances && entrance->getReverse() != nullptr && entrancePools.contains(entrance->getReverse()->getEntranceType()))
             {
                 // If so, take the reverse of the entrance and target and attempt to connect them instead
                 entranceToConnect = entrance->getReverse();
