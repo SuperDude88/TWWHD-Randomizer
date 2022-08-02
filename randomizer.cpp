@@ -504,8 +504,9 @@ public:
 				return;
 			}
 
-			//Restore files that aren't always changed (chart list, entrances, etc) so they don't persist across seeds
-			//Copying the whole backup would be excessive and slow
+			//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
+			//Do this at the end to check if the files were cached
+			//Copying is slow so we skip all the ones we can
 			Utility::platformLog("Restoring game files...\n");
 			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
 				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
@@ -571,34 +572,11 @@ public:
 			}
 		}
 
-		//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
-		//Do this at the end to check if the files were cached
-		//Copying is slow so we skip all the ones we can
-		Utility::platformLog("Restoring outdated files...\n");
-		if(!g_session.isCached("content/Common/Misc/Misc.szs")) {
-			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
-				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-				return;
-			}
-		}
-		if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
-			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
-				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-				return;
-			}
-		}
-		if(!restoreEntrances()) {
-			ErrorLog::getInstance().log("Failed to restore entrances!");
-			return;
-		}
-
 		Utility::platformLog("Preparing to repack files...\n");
 		if(!g_session.repackCache()) {
 			ErrorLog::getInstance().log("Failed to repack file cache!");
 			return;
 		}
-
-		generateNonSpoilerLog(worlds);
 
 		//done!
 		return;
