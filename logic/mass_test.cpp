@@ -80,7 +80,7 @@ void massTest(Config& newConfig)
     Settings settings1;
     settings1.starting_gear = {GameItem::SongOfPassing};
 
-    // Set settings in code for now
+    // Test settings 1 by 1
     TEST(settings1, settings1.progression_dungeons, "progression dungeons");
     TEST(settings1, settings1.progression_great_fairies, "progression great faires");
     TEST(settings1, settings1.progression_puzzle_secret_caves, "progression puzzle secret caves");
@@ -117,6 +117,14 @@ void massTest(Config& newConfig)
     settings1.num_race_mode_dungeons = 6;
     TEST(settings1, settings1.race_mode, "race mode 6 dungeon");
     TEST(settings1, settings1.keylunacy, "keylunacy");
+    settings1.path_hints = 5;
+    TEST(settings1, settings1.korl_hints, "5 path hints");
+    settings1.barren_hints = 5;
+    TEST(settings1, settings1.korl_hints, "5 barren hints");
+    settings1.item_hints = 5;
+    TEST(settings1, settings1.ho_ho_hints, "5 item hints");
+    settings1.location_hints = 5;
+    TEST(settings1, settings1.ho_ho_hints, "5 loaction hints");
     TEST(settings1, settings1.randomize_charts, "randomize charts");
     TEST(settings1, settings1.randomize_starting_island, "random starting island");
     TEST(settings1, settings1.randomize_dungeon_entrances, "randomize dungeon entrances");
@@ -140,6 +148,14 @@ void massTest(Config& newConfig)
     TEST(settings2, settings2.randomize_dungeon_entrances, "randomize dungeon entrances");
     TEST(settings2, settings2.randomize_starting_island, "randomize starting island");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
+    settings2.path_hints = 5;
+    TEST(settings2, settings2.korl_hints, "5 path hints");
+    settings2.barren_hints = 5;
+    TEST(settings2, settings2.korl_hints, "5 barren hints");
+    settings2.item_hints = 5;
+    TEST(settings2, settings2.ho_ho_hints, "5 item hints");
+    settings2.location_hints = 5;
+    TEST(settings2, settings2.ho_ho_hints, "5 loaction hints");
     TEST(settings2, settings2.keylunacy, "keylunacy");
     settings2.num_race_mode_dungeons = 3;
     TEST(settings2, settings2.race_mode, "race mode 3 dungeon");
