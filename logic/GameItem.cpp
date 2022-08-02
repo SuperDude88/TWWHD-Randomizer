@@ -513,9 +513,24 @@ Item::Item(GameItem gameItemId_, int worldId_)
 		}
 }
 
-Item::Item(std::string itemName, int worldId_)
+Item::Item(std::string itemName_, int worldId_)
 {
-		Item(nameToGameItem(itemName), worldId_);
+		gameItemId = nameToGameItem(itemName_);
+		worldId = worldId_;
+
+		if (junkItems.count(gameItemId) > 0)
+		{
+				junkItem = true;
+		}
+		else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
+						 gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
+		{
+				chartForSunkenTreasure = true;
+		}
+		else if (dungeonItems.count(gameItemId) > 0)
+		{
+				dungeonItem = true;
+		}
 }
 
 void Item::setWorldId(int newWorldId)

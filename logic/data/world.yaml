@@ -1114,7 +1114,7 @@
 - Name: Islet of Steel Lookout Platform
   Island: Islet of Steel
   Locations:
-      Islet of Steel - Lookout PLatform Defeat Enemies: Can_Defeat_Wizzrobes_At_Range
+      Islet of Steel - Lookout Platform Defeat Enemies: Can_Defeat_Wizzrobes_At_Range
   Exits:
       Islet of Steel: Can_Sail_Away
 
