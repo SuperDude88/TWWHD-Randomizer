@@ -767,7 +767,7 @@ namespace Yaml
         return *this;
     }
 
-    bool Iterator::operator == (const Iterator & it)
+    bool Iterator::operator == (const Iterator & it) const
     {
         if(m_Type != it.m_Type)
         {
@@ -789,7 +789,7 @@ namespace Yaml
         return false;
     }
 
-    bool Iterator::operator != (const Iterator & it)
+    bool Iterator::operator != (const Iterator & it) const
     {
         return !(*this == it);
     }
@@ -920,7 +920,7 @@ namespace Yaml
         return *this;
     }
 
-    bool ConstIterator::operator == (const ConstIterator & it)
+    bool ConstIterator::operator == (const ConstIterator & it) const
     {
         if(m_Type != it.m_Type)
         {
@@ -942,7 +942,7 @@ namespace Yaml
         return false;
     }
 
-    bool ConstIterator::operator != (const ConstIterator & it)
+    bool ConstIterator::operator != (const ConstIterator & it) const
     {
         return !(*this == it);
     }
