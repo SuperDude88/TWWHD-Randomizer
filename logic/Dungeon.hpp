@@ -6,10 +6,10 @@
 
 struct Dungeon {
     int keyCount = -1;
-    GameItem smallKey = GameItem::INVALID;
-    GameItem bigKey = GameItem::INVALID;
-    GameItem map = GameItem::INVALID;
-    GameItem compass = GameItem::INVALID;
+    std::string smallKey = "";
+    std::string bigKey = "";
+    std::string map = "";
+    std::string compass = "";
     std::list<std::string> locations = {};
     std::list<std::string> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
     std::string raceModeLocation = "";

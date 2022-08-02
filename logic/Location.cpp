@@ -34,6 +34,7 @@ LocationCategory nameToLocationCategory(const std::string& name)
         {"Junk", LocationCategory::Junk},
         {"Other", LocationCategory::Other},
         {"AlwaysProgression", LocationCategory::AlwaysProgression},
+        {"HoHoHint", LocationCategory::HoHoHint},
     };
 
     if (categoryNameMap.count(name) == 0)
@@ -74,6 +75,7 @@ std::string locationCategoryToName(LocationCategory category)
         {LocationCategory::Junk, "Junk"},
         {LocationCategory::Other, "Other"},
         {LocationCategory::AlwaysProgression, "AlwaysProgression"},
+        {LocationCategory::HoHoHint, "HoHoHint"},
     };
 
     if (nameCategoryMap.count(category) == 0)

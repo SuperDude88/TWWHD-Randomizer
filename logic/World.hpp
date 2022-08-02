@@ -96,7 +96,7 @@ public:
     const Settings& getSettings() const;
     void setWorldId(int newWorldId);
     int getWorldId() const;
-    void setItemPools();
+    WorldLoadingError setItemPools();
     ItemPool getItemPool() const;
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
@@ -118,20 +118,26 @@ public:
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
+    std::unordered_map<std::string, MacroIndex> macroNameMap;
+    std::vector<Requirement> macros;
     std::map<std::string, Item> itemEntries = {};
     std::map<std::string, AreaEntry> areaEntries = {};
     std::map<std::string, Location> locationEntries = {};
+    std::unordered_map<std::string, EventId> eventMap = {};
+    std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::unordered_map<Location*, Item> plandomizerLocations = {};
     std::unordered_map<Entrance*, Entrance*> plandomizerEntrances = {};
-    std::unordered_map<std::string, MacroIndex> macroNameMap;
-    std::vector<Requirement> macros;
+    std::unordered_map<std::string, Dungeon> dungeons = {};
+    std::unordered_map<Location*, std::vector<Location*>> pathLocations = {};
+    std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
+    std::list<Location*> korlHints = {};
+    std::unordered_map<Location*, std::unordered_set<Location*>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::array<GameItem, 49> chartMappings;
-    std::unordered_map<std::string, Dungeon> dungeons = {};
+
     uint8_t startingIslandRoomIndex = 44;
-    std::unordered_map<std::string, EventId> eventMap = {};
-    std::unordered_map<EventId, std::string> reverseEventMap = {};
+
 
 private:
 

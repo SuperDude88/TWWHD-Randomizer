@@ -21,6 +21,12 @@
 # - not
 # - count(<number>, <item>)
 # - can_access(<area name>)
+#
+# Each dungeon in the world graph is at least defined on a room by room basis
+# (although in many cases rooms are split up into multiple parts). This is to
+# help simplify glitched logic should anybody ever want to write it, and if
+# anybody ever wants to go to the effort of splicing dungeon rooms together,
+# that's logically supported as well.
 
 - Name: Root
   Exits:
@@ -101,7 +107,7 @@
       Ice Ring Isle: Can_Sail_Away
       Forest Haven: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 5s
       Cliff Plateau Isles: Can_Sail_Away
-      Horseshoe Isle: Can_Sail_Away
+      Horseshoe Island: Can_Sail_Away
       Outset Island: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 40s
       Headstone Island: Can_Sail_Away
       Two Eye Reef: Can_Sail_Away
@@ -114,6 +120,7 @@
   Island: Forsaken Fortress Sector
   Locations:
       Forsaken Fortress Sector - Sunken Treasure: Grappling_Hook and Chart_For_Island_1
+      Forsaken Fortress Sector - Old Man Ho Ho: Nothing
   Exits:
       Forsaken Fortress Inner Courtyard: Bombs
       The Great Sea: Nothing
@@ -131,47 +138,56 @@
       The Great Sea: Can_Play_BoG and Can_Sail_Away
 
 - Name: Forsaken Fortress Barrel Storage Room Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress North Hallway Lower: Nothing
       Forsaken Fortress Northwest Hallway Lower: Skull_Hammer
 
 - Name: Forsaken Fortress North Hallway Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Mess Hall Lower: Skull_Hammer
       Forsaken Fortress Barrel Storage Room Lower: Nothing
 
 - Name: Forsaken Fortress Mess Hall Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress East Hallway Lower: Nothing
       Forsaken Fortress North Hallway Lower: Skull_Hammer
 
 - Name: Forsaken Fortress East Hallway Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Mess Hall Lower: Nothing
       Forsaken Fortress Jail Cell Lower: Nothing
 
 - Name: Forsaken Fortress Jail Cell Lower
+  Dungeon: Forsaken Fortress
   Locations:
       Forsaken Fortress - Chest Inside Lower Jail Cell: Nothing
   Exits:
       Forsaken Fortress East Hallway Lower: Nothing
 
 - Name: Forsaken Fortress Northwest Hallway Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Boat Room Lower: Nothing
       Forsaken Fortress Barrel Storage Room Lower: Skull_Hammer
 
 - Name: Forsaken Fortress Boat Room Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Southwest Hallway Lower: Nothing
       Forsaken Fortress Northwest Hallway Lower: Nothing
 
 - Name: Forsaken Fortress Southwest Hallway Lower
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Sleeping Quarters: Nothing
       Forsaken Fortress Boat Room Lower: Nothing
 
 - Name: Forsaken Fortress Sleeping Quarters
+  Dungeon: Forsaken Fortress
   Locations:
       Forsaken Fortress - Chest on Bed: Nothing
   Exits:
@@ -181,6 +197,7 @@
       Forsaken Fortress Southwest Hallway Lower: Nothing
 
 - Name: Forsaken Fortress Sleeping Quarters Outside Ledge
+  Dungeon: Forsaken Fortress
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Inner Courtyard: Nothing
@@ -204,6 +221,7 @@
       Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
 
 - Name: Forsaken Fortress Jail Cell Upper
+  Dungeon: Forsaken Fortress
   Locations:
       Forsaken Fortress - Chest Outside Upper Jail Cell: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
   Exits:
@@ -212,6 +230,7 @@
       Forsaken Fortress Up Switch Back Stairs: Nothing
 
 - Name: Forsaken Fortress Mess Hall Upper East
+  Dungeon: Forsaken Fortress
   Locations:
       Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
   Exits:
@@ -220,6 +239,7 @@
       Forsaken Fortress Up Switch Back Stairs: Nothing
 
 - Name: Forsaken Fortress Mess Hall Upper West
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress North Hallway Upper: Nothing
       Forsaken Fortress Mess Hall Lower: Skull_Hammer
@@ -227,18 +247,21 @@
 
 - Name: Forsaken Fortress North Hallway Upper
   Dungeon: Forsaken Fortress
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Barrel Storage Room Upper East: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Mess Hall Upper West: Nothing
 
 - Name: Forsaken Fortress Barrel Storage Room Upper East
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Barrel Storage Room Upper West: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
       Forsaken Fortress Barrel Storage Room Lower: Nothing
       Forsaken Fortress North Hallway Upper: Nothing
 
 - Name: Forsaken Fortress Barrel Storage Room Upper West
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Northwest Hallway Upper: Nothing
       Forsaken Fortress Barrel Storage Room Lower: Nothing
@@ -246,12 +269,14 @@
 
 - Name: Forsaken Fortress Northwest Hallway Upper
   Dungeon: Forsaken Fortress
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Boat Room Upper: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Barrel Storage Room Upper West: Nothing
 
 - Name: Forsaken Fortress Boat Room Upper
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Southwest Hallway Upper: Nothing
       Forsaken Fortress Boat Room Lower: Nothing
@@ -259,12 +284,14 @@
       Forsaken Fortress Northwest Hallway Upper: Nothing
 
 - Name: Forsaken Fortress Southwest Hallway Upper
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
 - Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
+  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Sleeping Quarters: Skull_Hammer
       Forsaken Fortress Southwest Hallway Upper: Nothing
@@ -291,7 +318,7 @@
 - Name: Star Island
   Island: Star Island
   Locations:
-      Star Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Star Island - Sunken Treasure: Chart_For_Island_2 and Grappling_Hook
   Exits:
       Star Island Cave: Can_Move_Boulders
       The Great Sea: Nothing
@@ -313,7 +340,8 @@
 - Name: Northern Fairy Island
   Island: Northern Fairy Island
   Locations:
-      Northern Fairy Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Northern Fairy Island - Sunken Treasure: Chart_For_Island_3 and Grappling_Hook
+      Northern Fairy Island - Old Man Ho Ho: Nothing
   Exits:
       Northern Fairy Island - Great FairyFountain: Nothing
       Northern Fairy Island Submarine Exterior: Can_Sail_Away
@@ -343,7 +371,7 @@
 - Name: Gale Isle
   Island: Gale Isle
   Locations:
-      Gale Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Gale Isle - Sunken Treasure: Chart_For_Island_4 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
       Gale Isle Interior: Skull_Hammer and Iron_Boots
@@ -357,7 +385,8 @@
   Island: Crescent Moon Island
   Locations:
       Crescent Moon Island - Chest on Island: Nothing
-      Crescent Moon Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Crescent Moon Island - Sunken Treasure: Chart_For_Island_5 and Grappling_Hook
+      Crescent Moon Island - Old Man Ho Ho: Nothing
   Exits:
       Crescent Moon Submarine Exterior: Can_Sail_Away
       The Great Sea: Nothing
@@ -378,7 +407,7 @@
   Island: Seven Star Isles
   Locations:
       Seven Star Isles - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
-      Seven Star Isles - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Bombs
+      Seven Star Isles - Sunken Treasure: Chart_For_Island_6 and Grappling_Hook and Bombs
   Exits:
       Seven Star Lookout Platforms: Can_Sail_Away
       The Great Sea: Nothing
@@ -395,7 +424,7 @@
 - Name: Overlook Island
   Island: Overlook Island
   Locations:
-      Overlook Isles - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Overlook Island - Sunken Treasure: Chart_For_Island_7 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
       Overlook Island Upper Isles: Hookshot
@@ -408,7 +437,7 @@
 
 - Name: Overlook Cave
   Locations:
-      Overlook Isles - Cave Chest:
+      Overlook Island - Cave Chest:
           Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Red_Chu_Chus
           and Can_Defeat_Green_Chu_Chus and Can_Defeat_Keese and Can_Defeat_Fire_Keese and Can_Defeat_Morths
           and Can_Defeat_Kargarocs and Can_Defeat_Darknuts and Can_Play_WR
@@ -424,14 +453,14 @@
   Island: Four Eye Reef
   Locations:
       Four Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Four Eye Reef - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Bombs
+      Four Eye Reef - Sunken Treasure: Chart_For_Island_8 and Grappling_Hook and Bombs
   Exits:
       The Great Sea: Nothing
 
 - Name: Mother & Child Isles
   Island: Mother & Child Isles
   Locations:
-      Mother and Child Isles - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Mother & Child Isles - Sunken Treasure: Chart_For_Island_9 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
 
@@ -440,14 +469,14 @@
   Events:
       Can Get Fairies: Nothing
   Locations:
-      Mother and Child Isles - Inside Mother Isle: Nothing
+      Mother & Child Isles - Inside Mother Isle: Nothing
 
 - Name: Spectacle Island
   Island: Spectacle Island
   Locations:
       Spectacle Island - Barrel Shooting First Prize: Nothing
       Spectacle Island - Barrel Shooting Second Prize: Nothing
-      Spectacle Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Spectacle Island - Sunken Treasure: Chart_For_Island_10 and Grappling_Hook
   Exits:
       Spectacle Beedle Shop: Nothing
       Mailbox Checks: Nothing
@@ -482,7 +511,7 @@
       Windfall Island - Pompie & Vera Secret Meeting Photo: can_access(Windfall Lenzo's House Upper) and 'Can_Start_Lenzo_Quest'
       Windfall Island - Kamo Full Moon Picture: Deluxe_Picto_Box and Can_Play_SoP
       Windfall Island - Mineco Miss Windfall Picture: Deluxe_Picto_Box
-      Windfall Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Windfall Island - Sunken Treasure: Chart_For_Island_11 and Grappling_Hook
   Exits:
       Windfall Jail: Nothing
       Windfall School of Joy: Nothing
@@ -625,7 +654,7 @@
 - Name: Pawprint Isle
   Island: Pawprint Isle
   Locations:
-      Pawprint Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Pawprint Isle - Sunken Treasure: Chart_For_Island_12 and Grappling_Hook
   Exits:
       Pawprint Chu Chu Cave: Nothing
       Pawprint Wizzobe Cave Isle: Hookshot
@@ -679,7 +708,7 @@
   Locations:
       Dragon Roost Island - Wind Shrine: Wind_Waker
       Dragon Roost Island - Boulder Chest: Heros_Bow or Bombs or Boomerang or (Bait_Bag and 'Can_Buy_Hyoi_Pears')
-      Dragon Roost Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Dragon Roost Island - Sunken Treasure: Chart_For_Island_13 and Grappling_Hook
   Exits:
       Dragon Roost Rito Aerie: Nothing
       Dragon Roost Island Cave: Can_Move_Boulders
@@ -743,7 +772,8 @@
   Island: Flight Control Platform
   Locations:
       Flight Control Platform - First Prize: Can_Fly_With_Deku_Leaf_Outdoors and Double_Magic
-      Flight Control Platform - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Flight Control Platform - Sunken Treasure: Chart_For_Island_14 and Grappling_Hook
+      Flight Control Platform - Old Man Ho Ho: Nothing
   Exits:
       Flight Control Platform Submarine Exterior: Can_Sail_Away
       Mailbox Checks: Nothing
@@ -766,7 +796,7 @@
 - Name: Western Fairy Island
   Island: Western Fairy Island
   Locations:
-      Western Fairy Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Western Fairy Island - Sunken Treasure: Chart_For_Island_15 and Grappling_Hook
   Exits:
       Western Fairy Island Past Flames: Skull_Hammer
       Western Fairy Lookout Platform: Can_Sail_Away
@@ -797,7 +827,7 @@
   Island: Rock Spire Isle
   Locations:
       Rock Spire Isle - Defeat Southeast Gunboat: Bombs and Grappling_Hook
-      Rock Spire Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Rock Spire Isle - Sunken Treasure: Chart_For_Island_16 and Grappling_Hook
   Exits:
       Rock Spire Beedle Shop: Nothing
       Rock Spire Upper Ledges: Bombs
@@ -837,7 +867,7 @@
   Locations:
       Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue
       Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
-      Tingle Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Tingle Island - Sunken Treasure: Chart_For_Island_17 and Grappling_Hook
   Exits:
       Mailbox Checks: Nothing
       The Great Sea: Nothing
@@ -845,14 +875,14 @@
 - Name: Northern Triangle Island
   Island: Northern Triangle Island
   Locations:
-      Northern Triangle Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Northern Triangle Island - Sunken Treasure: Chart_For_Island_18 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
 
 - Name: Eastern Fairy Island
   Island: Eastern Fairy Island
   Locations:
-      Eastern Fairy Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Eastern Fairy Island - Sunken Treasure: Chart_For_Island_19 and Grappling_Hook
   Exits:
       Eastern Fairy Island Past Boulder: Can_Move_Boulders
       Eastern Fairy Lookout Platform: Can_Sail_Away
@@ -884,7 +914,7 @@
   Island: Fire Mountain
   Locations:
       Fire Mountain - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
-      Fire Mountain - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Fire Mountain - Sunken Treasure: Chart_For_Island_20 and Grappling_Hook
   Exits:
       Fire Mountain Interior: Ice_Arrows
       Fire Mountain Lookout Platform: Can_Sail_Away
@@ -907,7 +937,7 @@
 - Name: Star Belt Archipelago
   Island: Star Belt Archipelago
   Locations:
-      Star Belt Archipelago - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Star Belt Archipelago - Sunken Treasure: Chart_For_Island_21 and Grappling_Hook
   Exits:
       Star Belt Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -923,7 +953,7 @@
   Island: Three Eye Reef
   Locations:
       Three Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Three Eye Reef - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Three Eye Reef - Sunken Treasure: Chart_For_Island_22 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
 
@@ -931,7 +961,7 @@
   Island: Greatfish Isle
   Locations:
       Greatfish Isle - Hidden Chest: Can_Fly_With_Deku_Leaf_Outdoors
-      Greatfish Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Greatfish Isle - Sunken Treasure: Chart_For_Island_23 and Grappling_Hook
   Exits:
       Greatfish Beedle Shop: Nothing
       The Great Sea: Nothing
@@ -944,7 +974,7 @@
   Island: Cyclops Reef
   Locations:
       Cyclops Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Cyclops Reef - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Bombs
+      Cyclops Reef - Sunken Treasure: Chart_For_Island_24 and Grappling_Hook and Bombs
   Exits:
       Cyclops Reef Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -960,7 +990,7 @@
   Island: Six Eye Reef
   Locations:
       Six Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Six Eye Reef - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Bombs
+      Six Eye Reef - Sunken Treasure: Chart_For_Island_25 and Grappling_Hook and Bombs
   Exits:
       Six Eye Reef Submarine Exterior: Can_Sail_Away
       Six Eye Reef Lookout Platform: Can_Sail_Away
@@ -988,7 +1018,7 @@
 - Name: Tower of the Gods Sector
   Island: Tower of the Gods Sector
   Locations:
-      Tower of the Gods Sector - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Tower of the Gods Sector - Sunken Treasure: Chart_For_Island_26 and Grappling_Hook
   Exits:
       TOTG Entrance Room: Dins_Pearl and Farores_Pearl and Nayrus_Pearl
       Hyrule Castle Front: All_8_Shards
@@ -1002,7 +1032,7 @@
 - Name: Eastern Triangle Island
   Island: Eastern Triangle Island
   Locations:
-      Eastern Triangle Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Eastern Triangle Island - Sunken Treasure: Chart_For_Island_27 and Grappling_Hook
   Exits:
       Eastern Triangle Beedle Shop: Nothing
       The Great Sea: Nothing
@@ -1019,7 +1049,7 @@
 - Name: Thorned Fairy Island
   Island: Thorned Fairy Island
   Locations:
-      Thorned Fairy Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Thorned Fairy Island - Sunken Treasure: Chart_For_Island_28 and Grappling_Hook
   Exits:
       Thorned Fairy Island Past Tentacles: Skull_Hammer
       Thorned Fairy Lookout Platforms: Can_Sail_Away
@@ -1052,7 +1082,7 @@
   Locations:
       Needle Rock Isle - Chest: Bait_Bag and 'Can_Buy_Hyoi_Pears'
       Needle Rock Isle - Golden Gunboat: Bombs and Grappling_Hook
-      Needle Rock Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Needle Rock Isle - Sunken Treasure: Chart_For_Island_29 and Grappling_Hook
   Exits:
       Needle Rock Cave: Fire_Arrows
       Mailbox Checks: Nothing
@@ -1067,7 +1097,7 @@
 - Name: Islet of Steel
   Island: Islet of Steel
   Locations:
-      Islet of Steel - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Islet of Steel - Sunken Treasure: Chart_For_Island_30 and Grappling_Hook
   Exits:
       Islet of Steel Interior: Bombs
       Islet of Steel Lookout Platform: Can_Sail_Away
@@ -1091,7 +1121,8 @@
 - Name: Stone Watcher Island
   Island: Stone Watcher Island
   Locations:
-      Stone Watcher Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Stone Watcher Island - Sunken Treasure: Chart_For_Island_31 and Grappling_Hook
+      Stone Watcher Island - Old Man Ho Ho: Nothing
   Exits:
       Stone Watcher Cave: Power_Bracelets
       Stone Watcher Lookout Platform: Can_Sail_Away
@@ -1118,7 +1149,7 @@
 - Name: Southern Triangle Island
   Island: Southern Triangle Island
   Locations:
-      Southern Triangle Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Can_Defeat_Seahats
+      Southern Triangle Island - Sunken Treasure: Chart_For_Island_32 and Grappling_Hook and Can_Defeat_Seahats
   Exits:
       Southern Triangle Beedle Shop: Nothing
       The Great Sea: Nothing
@@ -1137,7 +1168,8 @@
   Locations:
       Private Oasis - Top of Waterfall Chest: Can_Fly_With_Deku_Leaf_Outdoors or Hookshot
       Private Oasis - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
-      Private Oasis - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Private Oasis - Sunken Treasure: Chart_For_Island_33 and Grappling_Hook
+      Private Oasis - Old Man Ho Ho: Nothing
   Exits:
       The Cabana: Delivery_Bag and Cabana_Deed
       Mailbox Checks: Nothing
@@ -1158,7 +1190,8 @@
 - Name: Bomb Island
   Island: Bomb Island
   Locations:
-      Bomb Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Bomb Island - Sunken Treasure: Chart_For_Island_34 and Grappling_Hook
+      Bomb Island - Old Man Ho Ho: Nothing
   Exits:
       Bomb Island Cave: Can_Move_Boulders
       Bomb Island Submarine Exterior: Can_Sail_Away
@@ -1194,7 +1227,7 @@
 - Name: Birds Peak Rock
   Island: Birds Peak Rock
   Locations:
-      Birds Peak Rock - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Birds Peak Rock - Sunken Treasure: Chart_For_Island_35 and Grappling_Hook
   Exits:
       Birds Peak Rock Behind Bars: Bait_Bag and 'Can_Buy_Hyoi_Pears'
       Mailbox Checks: Nothing
@@ -1216,8 +1249,8 @@
 - Name: Diamond Steppe Island
   Island: Diamond Steppe Island
   Locations:
-      Diamond Steppe Isle - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
-      Diamond Steppe Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Diamond Steppe Island - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
+      Diamond Steppe Island - Sunken Treasure: Chart_For_Island_36 and Grappling_Hook
   Exits:
       Diamond Steppe Upper Island: Hookshot
       The Great Sea: Nothing
@@ -1230,8 +1263,8 @@
 
 - Name: Diamond Steppe Warp Maze
   Locations:
-      Diamond Steppe Isle - Maze First Chest: Nothing
-      Diamond Steppe Isle - Maze Second Chest: Nothing
+      Diamond Steppe Island - Maze First Chest: Nothing
+      Diamond Steppe Island - Maze Second Chest: Nothing
   Exits:
       Diamond Steppe Upper Island: Nothing
 
@@ -1239,7 +1272,7 @@
   Island: Five Eye Reef
   Locations:
       Five Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Five Eye Reef - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Can_Destroy_Cannons
+      Five Eye Reef - Sunken Treasure: Chart_For_Island_37 and Grappling_Hook and Can_Destroy_Cannons
   Exits:
       Five Eye Reef Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -1254,7 +1287,7 @@
 - Name: Shark Island
   Island: Shark Island
   Locations:
-      Shark Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Shark Island - Sunken Treasure: Chart_For_Island_38 and Grappling_Hook
   Exits:
       Shark Island Cave: Skull_Hammer and Iron_Boots
       Shark Island Beedle Shop: Nothing
@@ -1275,7 +1308,7 @@
 - Name: Southern Fairy Island
   Island: Southern Fairy Island
   Locations:
-      Southern Fairy Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Southern Fairy Island - Sunken Treasure: Chart_For_Island_39 and Grappling_Hook
   Exits:
       Southern Fairy Island Behind Wooden Barrier: Can_Destroy_Wooden_Barriers
       Southern Fairy Lookout Platforms: Can_Sail_Away
@@ -1307,7 +1340,7 @@
   Island: Ice Ring Isle
   Locations:
       Ice Ring Isle - Frozen Chest: Fire_Arrows
-      Ice Ring Isle - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Ice Ring Isle - Sunken Treasure: Chart_For_Island_40 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
       Ice Ring Interior: Fire_Arrows
@@ -1330,7 +1363,7 @@
 - Name: Forest Haven
   Island: Forest Haven
   Locations:
-      Forset Haven - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Forest Haven - Sunken Treasure: Chart_For_Island_41 and Grappling_Hook
   Exits:
       Forest Haven Interior: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
       Forest Haven Waterfall Cave: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
@@ -1351,7 +1384,7 @@
 
 - Name: Forest Haven Interior Upper Baba Buds
   Locations:
-      Forset Haven - On Tree Branch: Nothing
+      Forest Haven - On Tree Branch: Nothing
   Exits:
       Forest Haven Interior North Ledge: Can_Fly_With_Deku_Leaf_Indoors
       Forest Haven Interior West Upper Ledge: Can_Fly_With_Deku_Leaf_Indoors
@@ -1409,7 +1442,7 @@
 - Name: Forest Haven South Isle
   Island: Forest Haven
   Locations:
-      Forset Haven - Chest on Small Island: Nothing
+      Forest Haven - Chest on Small Island: Nothing
 
 - Name: FW Entrance Platform
   Island: Forest Haven
@@ -1442,7 +1475,7 @@
 - Name: Cliff Plateau Isles
   Island: Cliff Plateau Isles
   Locations:
-      Cliff Plateau Isles - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Cliff Plateau Isles - Sunken Treasure: Chart_For_Island_42 and Grappling_Hook
   Exits:
       Cliff Plateau Cave: Nothing
       Cliff Plateau Lookout Platform: Can_Sail_Away
@@ -1476,42 +1509,43 @@
   Exits:
       Cliff Plateau Isles: Can_Sail_Away
 
-- Name: Horseshoe Isle
-  Island: Horseshoe Isle
+- Name: Horseshoe Island
+  Island: Horseshoe Island
   Locations:
-      Horseshoe Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Horseshoe Island - Sunken Treasure: Chart_For_Island_43 and Grappling_Hook
   Exits:
-      Horseshoe Isle Past Tentacles: Can_Fan_With_Deku_Leaf
+      Horseshoe Island Past Tentacles: Can_Fan_With_Deku_Leaf
       Horseshoe Lookout Platforms: Can_Sail_Away
       The Great Sea: Nothing
 
-- Name: Horseshoe Isle Past Tentacles
-  Island: Horseshoe Isle
+- Name: Horseshoe Island Past Tentacles
+  Island: Horseshoe Island
   Locations:
       Horseshoe Island - Play Golf: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      Horseshoe Island - Old Man Ho Ho: Nothing
   Exits:
-      Horseshoe Isle: Nothing
+      Horseshoe Island: Nothing
       Horseshoe Cave: Nothing
 
 - Name: Horseshoe Cave
   Locations:
       Horseshoe Island - Cave Chest: Can_Defeat_Mothulas and Can_Defeat_Winged_Mothulas
   Exits:
-      Horseshoe Isle Past Tentacles: Nothing
+      Horseshoe Island Past Tentacles: Nothing
 
 - Name: Horseshoe Lookout Platforms
-  Island: Horseshoe Isle
+  Island: Horseshoe Island
   Locations:
       Horseshoe Island - Northwestern Lookout Platform Chest: Nothing
       Horseshoe Island - Southeastern Lookout Platform Chest: Nothing
   Exits:
-      Horseshoe Isle: Can_Sail_Away
+      Horseshoe Island: Can_Sail_Away
 
 - Name: Outset Island
   Island: Outset Island
   Locations:
       Outset Island - Dig up Black Soil: Power_Bracelets and Bait_Bag and 'Can_Buy_Bait'
-      Outset Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Outset Island - Sunken Treasure: Chart_For_Island_44 and Grappling_Hook
   Exits:
       Outset Link's House: Nothing
       Outset Under Link's House: Nothing
@@ -1564,6 +1598,8 @@
 
 - Name: Outset Near Bridge
   Island: Outset Island
+  Locations:
+      Outset Island - Old Man Ho Ho: Nothing
   Exits:
       Outset Island: Nothing
       Outset Across Bridge: Can_Fly_With_Deku_Leaf_Outdoors
@@ -1674,7 +1710,7 @@
   Island: Headstone Island
   Locations:
       Headstone Island - Top of Island: Bait_Bag and 'Can_Buy_Hyoi_Pears'
-      Headstone Island - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Headstone Island - Sunken Treasure: Chart_For_Island_45 and Grappling_Hook
   Exits:
       Headstone Island Interior: Power_Bracelets
       Headstone Island Submarine Exterior: Can_Sail_Away
@@ -1702,7 +1738,8 @@
   Locations:
       Two Eye Reef - Destroy Cannons and Gunboats: Bombs and Can_Fly_With_Deku_Leaf_Outdoors
       Two Eye Reef - Big Octo Great Fairy: Can_Defeat_Big_Octos
-      Two Eye Reef - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook and Bombs
+      Two Eye Reef - Sunken Treasure: Chart_For_Island_46 and Grappling_Hook and Bombs
+      Two Eye Reef - Old Man Ho Ho: Nothing
   Exits:
       Two Eye Reef Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -1718,7 +1755,7 @@
   Island: Angular Isles
   Locations:
       Angular Isles - Peak Chest: Nothing
-      Angular Isles - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Angular Isles - Sunken Treasure: Chart_For_Island_47 and Grappling_Hook
   Exits:
       Angular Isles Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
       The Great Sea: Nothing
@@ -1739,7 +1776,7 @@
   Island: Boating Course
   Locations:
       Boating Course - Raft Chest: Nothing
-      Boating Course - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Boating Course - Sunken Treasure: Chart_For_Island_48 and Grappling_Hook
   Exits:
       Boating Course Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
       The Great Sea: Nothing
@@ -1759,7 +1796,7 @@
 - Name: Five Star Isles
   Island: Five Star Isles
   Locations:
-      Five Star Isles - Sunken Treasure: Chart_For_Island_1 and Grappling_Hook
+      Five Star Isles - Sunken Treasure: Chart_For_Island_49 and Grappling_Hook
   Exits:
       Five Star Submarine Exterior: Can_Sail_Away
       Five Star Lookout Platform: Can_Sail_Away
@@ -1787,14 +1824,9 @@
       Five Star Isles: Can_Sail_Away
 
 - Name: Ghost Ship Interior
+  Hint Region: The Great Sea # This will have to be changed if we ever randomize the ghost ship entrance
   Locations:
       Great Sea - Ghost Ship Chest: Can_Defeat_Wizzrobes and Can_Defeat_Poes and Can_Defeat_ReDeads and Can_Defeat_Stalfos
-
-# Each dungeon in the world graph is at least defined on a room by room basis
-# (although in many cases rooms are split up into multiple parts). This is to
-# help simplify glitched logic should anybody ever want to write it, and if
-# anybody ever wants to go to the effort of splicing dungeon rooms together,
-# that's logically supported as well.
 
 - Name: DRC First Room
   Dungeon: Dragon Roost Cavern

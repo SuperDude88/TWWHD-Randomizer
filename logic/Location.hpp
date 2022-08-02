@@ -40,6 +40,7 @@ enum struct LocationCategory
     Junk,
     Other,
     AlwaysProgression,
+    HoHoHint,
 };
 
 enum struct LocationModificationType
@@ -65,14 +66,26 @@ struct Location
     bool progression;
     bool isRaceModeLocation;
     bool plandomized;
+    bool hasBeenHinted;
     Item originalItem;
     Item currentItem;
     int sortPriority = -1;
+    std::unordered_set<std::string> hintRegions;
+    std::string hintPriority = "";
     std::unique_ptr<LocationModification> method;
     int worldId = -1;
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
+
+    // Message Label if this is a hint location
+    std::string messageLabel;
+
+    // hint message for this location
+    std::u16string hintText = u"";
+
+    // goal name if this is a race mode location
+    std::string goalName = "";
 
     Location() :
         name(""),
@@ -80,10 +93,16 @@ struct Location
         progression(false),
         isRaceModeLocation(false),
         plandomized(false),
+        hasBeenHinted(false),
         originalItem(GameItem::INVALID, -1),
         currentItem(GameItem::INVALID, -1),
+        hintRegions({}),
+        hintPriority(""),
         worldId(-1),
-        hasBeenFound(false)
+        hasBeenFound(false),
+        messageLabel(""),
+        hintText(u""),
+        goalName("")
     {
         method = std::make_unique<LocationModification>();
     }

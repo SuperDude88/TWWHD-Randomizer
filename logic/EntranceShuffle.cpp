@@ -72,8 +72,8 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
                             {"Cliff Plateau Cave",                     "Cliff Plateau Isles",                      "Cave03",   0,          0, "sea",     42,     2}},
     {EntranceType::CAVE,    {"Cliff Plateau Highest Isle",             "Cliff Plateau Cave Past Wooden Barrier",   "sea",     42,          1, "Cave03",   0,     1},
                             {"Cliff Plateau Cave Past Wooden Barrier", "Cliff Plateau Highest Isle",               "Cave03",   0,          1, "sea",     42,     1}},
-    {EntranceType::CAVE,    {"Horseshoe Isle Past Tentacles",          "Horseshoe Cave",                           "sea",     43,          0, "Cave05",   0,     0},
-                            {"Horseshoe Cave",                         "Horseshoe Isle Past Tentacles",            "Cave05",   0,          0, "sea",     43,     5}},
+    {EntranceType::CAVE,    {"Horseshoe Island Past Tentacles",        "Horseshoe Cave",                           "sea",     43,          0, "Cave05",   0,     0},
+                            {"Horseshoe Cave",                         "Horseshoe Island Past Tentacles",          "Cave05",   0,          0, "sea",     43,     5}},
     {EntranceType::CAVE,    {"Star Island",                            "Star Island Cave",                         "sea",      2,          0, "Cave02",   0,     0},
                             {"Star Island Cave",                       "Star Island",                              "Cave02",   0,          0, "sea",      2,     1}},
 

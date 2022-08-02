@@ -164,6 +164,15 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_BOOL_FIELD(root, out, mix_entrance_pools)
     SET_BOOL_FIELD(root, out, decouple_entrances)
 
+    SET_BOOL_FIELD(root, out, ho_ho_hints)
+    SET_BOOL_FIELD(root, out, korl_hints)
+    SET_BOOL_FIELD(root, out, clearer_hints)
+    SET_BOOL_FIELD(root, out, use_always_hints)
+    SET_INT_FIELD(root, out, path_hints)
+    SET_INT_FIELD(root, out, barren_hints)
+    SET_INT_FIELD(root, out, item_hints)
+    SET_INT_FIELD(root, out, location_hints)
+
     SET_BOOL_FIELD(root, out, instant_text_boxes)
     SET_BOOL_FIELD(root, out, reveal_full_sea_chart)
     SET_INT_FIELD(root, out, num_starting_triforce_shards)
@@ -175,7 +184,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_INT_FIELD(root, out, num_race_mode_dungeons)
     SET_INT_FIELD(root, out, damage_multiplier)
     SET_BOOL_FIELD(root, out, chest_type_matches_contents)
-    
+
     SET_BOOL_FIELD(root, out, player_in_casual_clothes)
     //SET_FIELD(root, out, settings.pig_color)
 
@@ -203,7 +212,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
         GameItem::DRCBigKey,
         GameItem::DRCCompass,
         GameItem::DRCDungeonMap,
-        
+
         GameItem::FWSmallKey,
         GameItem::FWBigKey,
         GameItem::FWCompass,
@@ -223,7 +232,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
         GameItem::WTBigKey,
         GameItem::WTCompass,
         GameItem::WTDungeonMap,
-        
+
         GameItem::FFCompass,
         GameItem::FFDungeonMap,
         */
@@ -361,6 +370,15 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_BOOL_FIELD(root, config, mix_entrance_pools)
     WRITE_BOOL_FIELD(root, config, decouple_entrances)
 
+    WRITE_BOOL_FIELD(root, config, ho_ho_hints)
+    WRITE_BOOL_FIELD(root, config, korl_hints)
+    WRITE_BOOL_FIELD(root, config, clearer_hints)
+    WRITE_BOOL_FIELD(root, config, use_always_hints)
+    WRITE_NUM_FIELD(root, config, path_hints)
+    WRITE_NUM_FIELD(root, config, barren_hints)
+    WRITE_NUM_FIELD(root, config, item_hints)
+    WRITE_NUM_FIELD(root, config, location_hints)
+
     WRITE_BOOL_FIELD(root, config, instant_text_boxes)
     WRITE_BOOL_FIELD(root, config, reveal_full_sea_chart)
     WRITE_NUM_FIELD(root, config, num_starting_triforce_shards)
@@ -372,7 +390,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_NUM_FIELD(root, config, num_race_mode_dungeons)
     WRITE_NUM_FIELD(root, config, damage_multiplier)
     WRITE_BOOL_FIELD(root, config, chest_type_matches_contents)
-    
+
     WRITE_BOOL_FIELD(root, config, player_in_casual_clothes)
     //WRITE_FIELD(root, config, pig_color)
 
@@ -396,4 +414,3 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     return ConfigError::NONE;
 }
-

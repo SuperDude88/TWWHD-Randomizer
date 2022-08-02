@@ -28,8 +28,8 @@ std::vector<T> filterAndEraseFromPool(std::vector<T>& vector, Predicate pred) {
 }
 
 // Helper function for combining two item pools
-template <typename T, typename FromPool>
-void addElementsToPool(std::vector<T>& toPool, const FromPool& fromPool)
+template <typename FromPool, typename Container>
+void addElementsToPool(Container& toPool, const FromPool& fromPool)
 {
     toPool.insert(toPool.end(), fromPool.begin(), fromPool.end());
 }

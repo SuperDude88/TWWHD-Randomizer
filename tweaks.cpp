@@ -23,6 +23,7 @@
 #include "server/filetypes/msbt.hpp"
 #include "server/filetypes/util/msbtMacros.hpp"
 #include "server/utility/stringUtil.hpp"
+#include "server/utility/platform.hpp"
 #include "server/command/Log.hpp"
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -92,59 +93,59 @@ namespace {
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
 	static const std::unordered_map<std::string, std::string> progress_hints {
-		{"WindWaker", "the wand of the wind conductor"},
-		{"SpoilsBag", "a storage for collectibles"},
-		{"GrapplingHook", "an item to swing across platforms"},
-		{"PowerBracelets", "the strength to lift heavy rocks"},
-		{"IronBoots", "a very heavy item"},
-		{"BaitBag", "a storage for food"},
+		{"Wind Waker", "the wand of the wind conductor"},
+		{"Spoils Bag", "a storage for collectibles"},
+		{"Grappling Hook", "an item to swing across platforms"},
+		{"Power Bracelets", "the strength to lift heavy rocks"},
+		{"Iron Boots", "a very heavy item"},
+		{"Bait Bag", "a storage for food"},
 		{"Boomerang", "an item that always comes back to you"},
 		{"Hookshot", "an item that reels"},
-		{"DeliveryBag", "a storage for letters"},
+		{"Delivery Bag", "a storage for letters"},
 		{"Bombs", "an explosive item"},
-		{"SkullHammer", "the hammer of the dead"},
-		{"DekuLeaf", "a magic leaf"},
-		{"ProgressiveShield", "a defensive item"},
-		{"TriforceShard1", "a piece of the power of the gods"},
-		{"TriforceShard2", "a piece of the power of the gods"},
-		{"TriforceShard3", "a piece of the power of the gods"},
-		{"TriforceShard4", "a piece of the power of the gods"},
-		{"TriforceShard5", "a piece of the power of the gods"},
-		{"TriforceShard6", "a piece of the power of the gods"},
-		{"TriforceShard7", "a piece of the power of the gods"},
-		{"TriforceShard8", "a piece of the power of the gods"},
-		{"NayrusPearl", "a blue jewel"},
-		{"DinsPearl", "a red jewel"},
-		{"FaroresPearl", "a green jewel"},
-		{"WindsRequiem", "the song of wind"},
-		{"BalladOfGales", "the song of gales"},
-		{"CommandMelody", "the song of command"},
-		{"EarthGodsLyric", "the song of earths god"},
-		{"WindGodsAria", "the song of winds god"},
-		{"SongOfPassing", "the song of time"},
-		{"BoatsSail", "the wind follower"},
-		{"NoteToMom", "the writings of a letter sorter"},
-		{"MaggiesLetter", "the writings of a woman"},
-		{"MoblinsLetter", "the writings of a creature"},
-		{"CabanaDeed", "a pass for a private residence"},
-		{"ProgressiveMagicMeter", "an upgrade for your magic"},
-		{"GhostShipChart", "the chart of fears"},
-		{"ProgressiveSword", "an upgrade for your blade"},
-		{"ProgressiveBow", "an upgrade for your bow"},
-		{"ProgressiveWallet", "an upgrade for your Rupee bag"},
-		{"ProgressivePicto Box", "an upgrade for your camera"},
-		{"EmptyBottle", "a glass container"},
-		{"SmallKey", "a key"},
-		{"BigKey", "an ominous key"},
-		{"TreasureChart", "a blue map"},
-		{"TriforceChart", "a purple map"},
-		{"DragonTingleStatue", "a statue of a fairy"},
-		{"ForbiddenTingleStatue", "a statue of a fairy"},
-		{"GoddessTingleStatue", "a statue of a fairy"},
-		{"EarthTingleStatue", "a statue of a fairy"},
-		{"WindTingleStatue", "a statue of a fairy"},
-		{"ProgressiveBombBag", "an upgrade for your bomb bag"},
-		{"ProgressiveQuiver", "an upgrade for your quiver"}
+		{"Skull Hammer", "the hammer of the dead"},
+		{"Deku Leaf", "a magic leaf"},
+		{"Progressive Shield", "a defensive item"},
+		{"Triforce Shard 1", "a piece of the power of the gods"},
+		{"Triforce Shard 2", "a piece of the power of the gods"},
+		{"Triforce Shard 3", "a piece of the power of the gods"},
+		{"Triforce Shard 4", "a piece of the power of the gods"},
+		{"Triforce Shard 5", "a piece of the power of the gods"},
+		{"Triforce Shard 6", "a piece of the power of the gods"},
+		{"Triforce Shard 7", "a piece of the power of the gods"},
+		{"Triforce Shard 8", "a piece of the power of the gods"},
+		{"Nayrus Pearl", "a blue jewel"},
+		{"Dins Pearl", "a red jewel"},
+		{"Farores Pearl", "a green jewel"},
+		{"Winds Requiem", "the song of wind"},
+		{"Ballad Of Gales", "the song of gales"},
+		{"Command Melody", "the song of command"},
+		{"Earth Gods Lyric", "the song of earths god"},
+		{"Wind Gods Aria", "the song of winds god"},
+		{"Song Of Passing", "the song of time"},
+		{"Boats Sail", "the wind follower"},
+		{"Note To Mom", "the writings of a letter sorter"},
+		{"Maggies Letter", "the writings of a woman"},
+		{"Moblins Letter", "the writings of a creature"},
+		{"Cabana Deed", "a pass for a private residence"},
+		{"Progressive Magic Meter", "an upgrade for your magic"},
+		{"Ghost Ship Chart", "the chart of fears"},
+		{"Progressive Sword", "an upgrade for your blade"},
+		{"Progressive Bow", "an upgrade for your bow"},
+		{"Progressive Wallet", "an upgrade for your Rupee bag"},
+		{"Progressive Picto Box", "an upgrade for your camera"},
+		{"Empty Bottle", "a glass container"},
+		{"Small Key", "a key"},
+		{"Big Key", "an ominous key"},
+		{"Treasure Chart", "a blue map"},
+		{"Triforce Chart", "a purple map"},
+		{"Dragon Tingle Statue", "a statue of a fairy"},
+		{"Forbidden Tingle Statue", "a statue of a fairy"},
+		{"Goddess Tingle Statue", "a statue of a fairy"},
+		{"Earth Tingle Statue", "a statue of a fairy"},
+		{"Wind Tingle Statue", "a statue of a fairy"},
+		{"Progressive Bomb Bag", "an upgrade for your bomb bag"},
+		{"Progressive Quiver", "an upgrade for your quiver"}
 	};
 
 	TweakError Load_Custom_Symbols(const std::string& file_path) {
@@ -160,17 +161,17 @@ namespace {
 		return TweakError::NONE;
 	}
 
-	
+
 	std::u16string word_wrap_string(const std::u16string& string, const size_t& max_line_len) {
 		size_t index_in_str = 0;
 		std::u16string wordwrapped_str;
 		std::u16string current_word;
 		size_t curr_word_len = 0;
 		size_t len_curr_line = 0;
-	
+
 		while (index_in_str < string.length()) { //length is weird because its utf-16
 			char16_t character = string[index_in_str];
-	
+
 			if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
 				std::u16string substr;
 				size_t code_len = 0;
@@ -193,7 +194,10 @@ namespace {
 				else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
 					code_len = 4;
 				}
-	
+        else if (string[index_in_str + 1] == u'\x04') { //all implemented commands in this group have length 4. Only used for Ho Ho sound
+          code_len = 4;
+        }
+
 				substr = string.substr(index_in_str, code_len);
 				current_word += substr;
 				index_in_str += code_len;
@@ -218,11 +222,11 @@ namespace {
 				current_word += character;
 				curr_word_len += 1;
 				index_in_str += 1;
-	
+
 				if (len_curr_line + curr_word_len > max_line_len) {
 					wordwrapped_str += u'\n';
 					len_curr_line = 0;
-	
+
 					if (curr_word_len > max_line_len) {
 						wordwrapped_str += current_word + u'\n';
 						current_word = u"";
@@ -231,10 +235,10 @@ namespace {
 			}
 		}
 		wordwrapped_str += current_word;
-	
+
 		return wordwrapped_str;
 	}
-	
+
 	std::string get_indefinite_article(const std::string& string) {
 		char first_letter = std::tolower(string[0]);
 		if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
@@ -244,7 +248,7 @@ namespace {
 			return "a";
 		}
 	}
-	
+
 	std::u16string get_indefinite_article(const std::u16string& string) {
 		const char16_t first_letter = std::tolower(string[0]);
 		if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
@@ -254,41 +258,41 @@ namespace {
 			return u"a";
 		}
 	}
-	
+
 	std::string pad_str_4_lines(const std::string& string) {
 		std::vector<std::string> lines = Utility::Str::split(string, '\n');
-	
+
 		unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
 		for (unsigned int i = 0; i < padding_lines_needed; i++) {
 			lines.push_back("");
 		}
-	
+
 		return Utility::Str::merge(lines, '\n');
 	}
-	
+
 	std::u16string pad_str_4_lines(const std::u16string& string) {
 		std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
-	
+
 		unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
 		for (unsigned int i = 0; i < padding_lines_needed; i++) {
 			lines.push_back(u"");
 		}
-	
+
 		return Utility::Str::merge(lines, u'\n');
 	}
 
 	std::string get_hint_item_name(const std::string& item_name) {
-		if (item_name.find("TriforceChart") != std::string::npos) {
-			return "TriforceChart";
+		if (item_name.find("Triforce Chart") != std::string::npos) {
+			return "Triforce Chart";
 		}
-		if (item_name.find("TreasureChart") != std::string::npos) {
-			return "TreasureChart";
+		if (item_name.find("Treasure Chart") != std::string::npos) {
+			return "Treasure Chart";
 		}
-		if (item_name.find("SmallKey") != std::string::npos) {
-			return "SmallKey";
+		if (item_name.find("Small Key") != std::string::npos) {
+			return "Small Key";
 		}
-		if(item_name.find("BigKey") != std::string::npos) {
-			return "BigKey";
+		if(item_name.find("Big Key") != std::string::npos) {
+			return "Big Key";
 		}
 
 		return item_name;
@@ -354,7 +358,7 @@ TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t 
 	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B50CB), room_index));
 	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B5093), spawn_id));
 	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B50CF), spawn_id));
-	
+
 	return TweakError::NONE;
 }
 
@@ -754,7 +758,7 @@ TweakError add_more_magic_jars() {
 		}
 
 		if(skulls.size() < 6) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
-		
+
 		skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
 		skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
 		FILETYPE_ERROR_CHECK(drc_hub.writeToFile(path.string()));
@@ -776,7 +780,7 @@ TweakError add_more_magic_jars() {
 
 		skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
 		skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-		
+
 		FILETYPE_ERROR_CHECK(drc_before_boss.writeToFile(path.string()));
 	}
 
@@ -853,21 +857,21 @@ TweakError modify_title_screen() {
 
 	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim");
 	EXTRACT_ERR_CHECK(path);
-	
+
 	FILETYPE_ERROR_CHECK(title.loadFromFile(path.string()));
 	FILETYPE_ERROR_CHECK(title.replaceWithDDS("./assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(title.writeToFile(path.string()));
-	
+
 	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim");
 	EXTRACT_ERR_CHECK(path);
-	
+
 	FILETYPE_ERROR_CHECK(subtitle.loadFromFile(path.string()));
 	FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS("./assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(subtitle.writeToFile(path.string()));
-	
+
 	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
 	EXTRACT_ERR_CHECK(path);
-	
+
 	FILETYPE_ERROR_CHECK(mask.loadFromFile(path.string()));
 	FILETYPE_ERROR_CHECK(mask.replaceWithDDS("./assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 	FILETYPE_ERROR_CHECK(mask.writeToFile(path.string()));
@@ -876,7 +880,7 @@ TweakError modify_title_screen() {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7048), 0x3fb33333)); //scale
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7044), 0x40100000)); //possibly particle size, JP changes it for its larger title text
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x10108280), 0xc2180000)); //vertical position
-	
+
 	return TweakError::NONE;
 }
 
@@ -899,7 +903,7 @@ TweakError update_name_and_icon() {
 	root->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
 	meta.SaveFile(metaPath.string().c_str());
-	
+
 	return TweakError::NONE;
 }
 
@@ -995,13 +999,13 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 		const std::u16string dungeon_name = dungeon_names.at(item_data.short_name);
 
 		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_pointer + (0xC * item_data.item_id) + 0x8, 9), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000)); //write to the relocation entries
-		
+
 		const uint32_t message_id = 101 + item_data.item_id;
 		const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
 		std::u16string message = DRAW_INSTANT + u"You got ";
 		if (item_data.base_item_name == u"Small Key") {
 			message += get_indefinite_article(dungeon_name) + u" " + TEXT_COLOR_RED + dungeon_name + u" small key" + TEXT_COLOR_DEFAULT + u"!\0"s;
-		} 
+		}
 		else if (item_data.base_item_name == u"Big Key") {
 			message +=u"the " + TEXT_COLOR_RED + dungeon_name + u" Big Key" + TEXT_COLOR_DEFAULT + u"!\0"s;
 		}
@@ -1011,7 +1015,7 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 		else if (item_data.base_item_name == u"Compass") {
 			message +=u"the " + TEXT_COLOR_RED + dungeon_name + u" Compass" + TEXT_COLOR_DEFAULT + u"!\0"s;
 		}
-		
+
 		word_wrap_string(message, 34);
 		msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 
@@ -1043,23 +1047,23 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 		const std::vector<uint8_t> data1 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 8), 0xD);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 8), data1));
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 4), data1));
-		
+
 		const std::vector<uint8_t> data2 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x1C), 4);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x1C), data2));
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x14), data2));
 
 		const std::vector<uint8_t> data3 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x15), 0x7);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x15), data3));
-		
+
 		const std::vector<uint8_t> data4 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x20), 0x4);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x20), data4));
 
 		const std::vector<uint8_t> data5 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x11), 0x3);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x11), data5));
-		
+
 		const std::vector<uint8_t> data6 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x18), 0x4);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x18), data6));
-		
+
 	}
 	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
 
@@ -1147,7 +1151,7 @@ TweakError update_shop_item_descriptions(const Location& beedle20, const Locatio
 	msbt2.messages_by_label["12111"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u" is just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
 
 	FILETYPE_ERROR_CHECK(msbt2.writeToFile(path.string()));
-	
+
 	return TweakError::NONE;
 }
 
@@ -1175,7 +1179,7 @@ TweakError update_auction_item_names(const Location& auction5_, const Location& 
 	//also add a hint to the flyer explaining what items the auction holds
 	RandoSession::fspath path2 = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
 	EXTRACT_ERR_CHECK(path2);
-	
+
 	FileTypes::MSBTFile msbt2;
 	FILETYPE_ERROR_CHECK(msbt2.loadFromFile(path2.string()));
 
@@ -1315,7 +1319,7 @@ TweakError update_savage_labyrinth_hint_tablet(const Location& floor30_, const L
 	else {
 		hint = u"a challenge awaits.";
 	}
-	
+
 	const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
 
 	FileTypes::MSBTFile msbt;
@@ -1326,8 +1330,6 @@ TweakError update_savage_labyrinth_hint_tablet(const Location& floor30_, const L
 
 	return TweakError::NONE;
 }
-
-//hints
 
 TweakError shorten_zephos_event() {
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
@@ -1367,24 +1369,84 @@ TweakError shorten_zephos_event() {
 	return TweakError::NONE;
 }
 
-TweakError update_korl_dialog() {
+//hints
+TweakError update_korl_dialog(World& world) {
 	const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
 	EXTRACT_ERR_CHECK(path);
 
 	FileTypes::MSBTFile msbt;
 	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
-	msbt.messages_by_label["03443"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you. Remember\nthat your quest is to defeat Ganondorf.\0"s;
+
+  if (!world.korlHints.empty()) {
+    std::u16string hintLines = u"";
+    size_t i = 0; // counter to know when to add null terminator
+    for (auto location : world.korlHints) {
+      i++;
+      std::u16string hint = location->hintText;
+      hint = word_wrap_string(hint, 43);
+      if (i == world.korlHints.size()) {
+        hint += u'\0'; // add null terminator on last hint before padding
+      }
+      hint = pad_str_4_lines(hint);
+      hintLines += hint;
+    }
+
+    for (auto label : {"03443", "03444", "03445", "03446", "03447", "03448"}) {
+      msbt.messages_by_label[label].text.message = hintLines;
+    }
+  } else {
+    msbt.messages_by_label["03443"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you. Remember\nthat your quest is to defeat Ganondorf.\0"s;
+  }
+
 	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
 
 	return TweakError::NONE;
 }
 
+TweakError update_ho_ho_dialog(World& world) {
+
+  // If no hint, don't do anything
+  if (world.hohoHints.empty()) {
+      return TweakError::NONE;
+  }
+
+  const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
+  EXTRACT_ERR_CHECK(path);
+
+  FileTypes::MSBTFile msbt;
+  FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+
+  for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+    std::u16string hintLines = u"";
+    size_t i = 0; // counter to know when to add null terminator
+    for (auto location : hintLocations) {
+      std::u16string hint = u"";
+      if (i == 0) {
+        hint += SOUND(0x0103) u"Ho ho! "s;
+      }
+      i++;
+      hint += location->hintText;
+      hint = word_wrap_string(hint, 43);
+      if (i == hintLocations.size()) {
+        hint += u'\0'; // add null terminator on last hint before padding
+      }
+      hint = pad_str_4_lines(hint);
+      hintLines += hint;
+    }
+    msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
+  }
+
+  FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+
+  return TweakError::NONE;
+}
+
 TweakError set_num_starting_triforce_shards(const uint8_t numShards) {
 	if(custom_symbols.count("num_triforce_shards_to_start_with") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-	
+
 	const uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
 	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, num_shards_address), numShards));
-	
+
 	return TweakError::NONE;
 }
 
@@ -1606,7 +1668,7 @@ TweakError add_cross_dungeon_warps() {
 			}
 		}
 	}
-	
+
 	FILETYPE_ERROR_CHECK(totg.writeToFile(totgPath.string()));
 	FILETYPE_ERROR_CHECK(ff.writeToFile(ffPath.string()));
 
@@ -1644,7 +1706,7 @@ TweakError increase_crawl_speed() {
 	//Redirect both instances to load 6.0 from elsewhere
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014EC04, 7), 0x000355C4)); //update .rela.text entry
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014EC4C, 7), 0x000355C4)); //update .rela.text entry
-	
+
 	return TweakError::NONE;
 }
 
@@ -1670,7 +1732,7 @@ TweakError increase_grapple_animation_speed() {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00075170, 7), 0x00010FFC)); //update .rela.text entry
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x100110C8), 0x41C80000));
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x021711D4), 0x390B0006));
-	
+
 	return TweakError::NONE;
 }
 
@@ -1697,7 +1759,7 @@ TweakError increase_misc_animations() {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014e2d4, 7), 0x00035530));
 
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02508b50), 0x3880000A));
-	
+
 	return TweakError::NONE;
 }
 
@@ -1711,7 +1773,7 @@ TweakError set_casual_clothes() {
 
 TweakError hide_ship_sail() {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02162B04), 0x4E800020));
-	
+
 	return TweakError::NONE;
 }
 
@@ -1948,7 +2010,7 @@ TweakError implement_key_bag() {
   	msbt.messages_by_label["00603"].text.message += u"ET: \x000E\x0007\x004E\x0000           "s;
   	msbt.messages_by_label["00603"].text.message += u"WT: \x000E\x0007\x004F\x0000     \0"s;
 	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
-	
+
 	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
 	EXTRACT_ERR_CHECK(path);
 	FileTypes::FLIMFile pirates_charm;
@@ -1980,7 +2042,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
 	FileTypes::FLYTFile map;
 	FILETYPE_ERROR_CHECK(map.loadFromFile(path.string()));
-	
+
 	for(const uint8_t& index : room_indexes) {
 		const uint32_t column = (index - 1) % 7;
 		const uint32_t row = std::floor((index - 1) / 7);
@@ -2291,7 +2353,7 @@ TweakError fix_ff_door() {
 				if (((*(uint16_t*)&door->data[0x18]) & 0x003F) != spawn_info.room_num) {
 					y_rot = (y_rot + 0x8000) % 0x10000;
 				}
-				
+
 				int y_rot_degrees = y_rot * (90.0 / 0x4000);
 				float x_offset = sin((y_rot_degrees * M_PI) / 180.0) * spawn_dist_from_door;
 				float z_offset = cos((y_rot_degrees * M_PI) / 180.0) * spawn_dist_from_door;
@@ -2390,7 +2452,7 @@ TweakError show_tingle_statues_on_quest_screen() {
 	FILETYPE_ERROR_CHECK(tingle.loadFromFile(path.string()));
 	FILETYPE_ERROR_CHECK(tingle.replaceWithDDS("./assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(tingle.writeToFile(path.string()));
-	
+
 	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
 	EXTRACT_ERR_CHECK(path);
 
@@ -2433,13 +2495,13 @@ TweakError update_entrance_events() {
 
 	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
 	EXTRACT_ERR_CHECK(path);
-	
+
 	FileTypes::DZXFile dzr;
 	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
 
 	path = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
 	EXTRACT_ERR_CHECK(path);
-	
+
 	FileTypes::EventList event_list;
 	FILETYPE_ERROR_CHECK(event_list.loadFromFile(path.string()));
 
@@ -2465,10 +2527,10 @@ TweakError update_entrance_events() {
 	//This avoids a case where you can only access the lower entrances of FH, but they both dead end, and you need to savewarp to escape
 	path = g_session.openGameFile("content/Common/Stage/kinBOSS_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
 	EXTRACT_ERR_CHECK(path);
-	
+
 	FileTypes::EventList event_list_2;
 	FILETYPE_ERROR_CHECK(event_list_2.loadFromFile(path.string()));
-	
+
 	if(event_list_2.Events_By_Name.count("WARP_WIND") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
 	std::shared_ptr<Action> exit = event_list_2.Events_By_Name.at("WARP_WIND")->get_actor("DIRECTOR")->actions[2];
 	std::get<std::vector<int32_t>>(exit->properties[0]->value)[0] = 0;
@@ -2480,7 +2542,7 @@ TweakError update_entrance_events() {
 	std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = 0;
 	exit2->properties[1]->value = "sea\0"s;
 	std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = 41;
-	
+
 	FILETYPE_ERROR_CHECK(event_list_2.writeToFile(path.string()));
 
 	return TweakError::NONE;
@@ -2505,17 +2567,17 @@ TweakError updateCodeSize() {
 	tinyxml2::XMLDocument cos;
 	const RandoSession::fspath cosPath = g_session.openGameFile("code/cos.xml").string();
 	EXTRACT_ERR_CHECK(cosPath);
-	
+
 	cos.LoadFile(cosPath.string().c_str());
 	tinyxml2::XMLElement* root = cos.RootElement();
 	root->FirstChildElement("max_codesize")->SetText("03000000");
 	cos.SaveFile(cosPath.string().c_str());
 
-	//Also update the RPL info section of the RPX 
+	//Also update the RPL info section of the RPX
 	//Change the textSize and loadSize to be large enough for the new code/relocations
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00000004, 32), 0x00908B80));
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0000001C, 32), 0x00379000));
-	
+
 	return TweakError::NONE;
 }
 
@@ -2528,7 +2590,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
 	const std::string seedHash = LogInfo::getSeedHash();
 	const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
-	
+
 	TWEAK_ERR_CHECK(updateCodeSize());
 
 	LOG_AND_RETURN_IF_ERR(Apply_Patch("./asm/patch_diffs/custom_funcs_diff.json"));
@@ -2588,7 +2650,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	TWEAK_ERR_CHECK(update_name_and_icon());
 	TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere());
 	TWEAK_ERR_CHECK(fix_shop_item_y_offsets());
-	TWEAK_ERR_CHECK(update_korl_dialog());
 	TWEAK_ERR_CHECK(set_num_starting_triforce_shards(settings.num_starting_triforce_shards));
 	TWEAK_ERR_CHECK(set_starting_health(settings.starting_pohs, settings.starting_hcs));
 	TWEAK_ERR_CHECK(set_damage_multiplier(settings.damage_multiplier));
@@ -2625,7 +2686,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	TWEAK_ERR_CHECK(set_pig_color(settings.pig_color));
 
 	RPX_ERROR_CHECK(gRPX.writeToFile(rpxPath.string()));
-	
+
 	return TweakError::NONE;
 }
 
@@ -2646,6 +2707,8 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 		TWEAK_ERR_CHECK(update_battlesquid_item_names(itemLocations["Windfall Island - Battle Squid First Prize"], itemLocations["Windfall Island - Battle Squid Second Prize"]));
 		TWEAK_ERR_CHECK(update_item_names_in_letter_advertising_rock_spire_shop(itemLocations["Rock Spire Isle - Beedle 500 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 950 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 900 Rupee Item"]));
 		TWEAK_ERR_CHECK(update_savage_labyrinth_hint_tablet(itemLocations["Outset Island - Savage Labyrinth Floor 30"], itemLocations["Outset Island - Savage Labyrinth Floor 50"]));
+    TWEAK_ERR_CHECK(update_korl_dialog(world));
+    TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
 	}
 	//Run some things after writing items to preserve offsets
 	TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
@@ -2665,7 +2728,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());
 	}
-	
+
 	RPX_ERROR_CHECK(gRPX.writeToFile(rpxPath.string()));
 
 	return TweakError::NONE;

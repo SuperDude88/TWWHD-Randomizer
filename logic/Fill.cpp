@@ -18,6 +18,7 @@ static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
     {
         LOG_TO_DEBUG("\t" + item.getName());
     }
+    LOG_TO_DEBUG("Location:");
     for (auto location : locations)
     {
         LOG_TO_DEBUG("\t" + location->name + " in world " + std::to_string(location->worldId));
@@ -273,16 +274,14 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
 
 static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    // For each world, either add the dungeon items to the main item pool
-    // or place them within their dungeon if the world has keylunacy disabled
+    // For each world, if keylunacy is disabled, place dungeon items (keys, map, compass)
+    // within the dungeon they're meant for for.
     for (auto& world : worlds)
     {
         auto worldId = world.getWorldId();
 
         for (auto& [name, dungeon] : world.dungeons)
         {
-            // If keylunacy is disabled, then add dungeon items to the world's
-            // item pool
             if (!world.getSettings().keylunacy)
             {
                 // Filter to only the dungeons locations
@@ -302,7 +301,7 @@ static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
                 // Place small keys and the big key using only items and locations
                 // from this world
                 ItemPool dungeonPool;
-                if (dungeon.smallKey != GameItem::INVALID && dungeon.bigKey != GameItem::INVALID)
+                if (dungeon.smallKey != "" && dungeon.bigKey != "")
                 {
                     // Remove the boss key and small keys from the itemPool
                     removeElementFromPool(itemPool, Item(dungeon.smallKey, worldId), dungeon.keyCount);
@@ -439,6 +438,9 @@ FillError fill(WorldPool& worlds)
         addElementsToPool(allLocations, world.getLocations());
     }
 
+    // Filter out hint locations from allLocations
+    filterAndEraseFromPool(allLocations, [](Location* loc){return loc->categories.count(LocationCategory::HoHoHint) > 0;});
+
     determineMajorItems(worlds, itemPool, allLocations);
     err = placeNonProgressLocationPlandomizerItems(worlds, itemPool);
     FILL_ERROR_CHECK(err);
@@ -446,10 +448,12 @@ FillError fill(WorldPool& worlds)
     // we need to place items that go into more restrictive location pools first before
     // we can place other items.
     placeRaceModeItems(worlds, itemPool, allLocations);
-    handleDungeonItems(worlds, itemPool);
-
     // Recalculate major items since new items may now be required depending on
-    // what items were placed at plandomizer and race mode locations
+    // what items were placed at race mode locations
+    determineMajorItems(worlds, itemPool, allLocations);
+    handleDungeonItems(worlds, itemPool);
+    // Recalculate major items AGAIN since new items may now be required depending on
+    // what items were placed when handling dungeon items
     determineMajorItems(worlds, itemPool, allLocations);
 
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& i){return i.isMajorItem();});

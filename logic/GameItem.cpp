@@ -1,5 +1,6 @@
 
 #include "GameItem.hpp"
+#include "../server/command/Log.hpp"
 #include <unordered_map>
 #include <array>
 
@@ -283,7 +284,7 @@ std::string gameItemToName(GameItem item)
 		{GameItem::ProgressivePictoBox, "Progressive Picto Box"},
 		{GameItem::SpoilsBag, "Spoils Bag"},
 		{GameItem::GrapplingHook, "Grappling Hook"},
-		{GameItem::DeluxePicto, "Deluxe PictoBox"},
+		{GameItem::DeluxePicto, "Deluxe Picto Box"},
 		{GameItem::ProgressiveBow, "Progressive Bow"},
 		{GameItem::PowerBracelets, "Power Bracelets"},
 		{GameItem::IronBoots, "Iron Boots"},
@@ -506,6 +507,15 @@ Item::Item(GameItem gameItemId_, int worldId_)
 		{
 				chartForSunkenTreasure = true;
 		}
+		else if (dungeonItems.count(gameItemId) > 0)
+		{
+				dungeonItem = true;
+		}
+}
+
+Item::Item(std::string itemName, int worldId_)
+{
+		Item(nameToGameItem(itemName), worldId_);
 }
 
 void Item::setWorldId(int newWorldId)
@@ -546,6 +556,7 @@ std::string Item::getName() const
 
 void Item::setAsMajorItem()
 {
+		junkItem = false;
 		majorItem = true;
 }
 
@@ -559,9 +570,31 @@ bool Item::isChartForSunkenTreasure() const
 		return chartForSunkenTreasure;
 }
 
+void Item::addChainLocation(Location* location)
+{
+		LOG_TO_DEBUG("Yes, we made it");
+		chainLocations.push_back(location);
+}
+
+std::list<Location*>& Item::getChainLocations()
+{
+		return chainLocations;
+}
+
+void Item::setAsJunkItem()
+{
+		majorItem = false;
+		junkItem = true;
+}
+
 bool Item::isJunkItem() const
 {
 		return junkItem;
+}
+
+bool Item::isDungeonItem() const
+{
+		return dungeonItem;
 }
 
 bool Item::operator==(const Item& rhs) const

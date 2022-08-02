@@ -104,7 +104,7 @@
 - Name: Wind Waker
   Game Item Id: 0x22
 
-- Name: Progressive PictoBox
+- Name: Progressive Picto Box
   Game Item Id: 0x23
 
 - Name: Spoils Bag
@@ -113,7 +113,7 @@
 - Name: Grappling Hook
   Game Item Id: 0x25
 
-- Name: Deluxe Picto
+- Name: Deluxe Picto Box
   Game Item Id: 0x26
 
 - Name: Progressive Bow
@@ -173,7 +173,7 @@
 - Name: Progressive Shield
   Game Item Id: 0x3B
 
-- Name: Mirror_Shield
+- Name: Mirror Shield
   Game Item Id: 0x3C
 
 - Name: Recovered Heros Sword
@@ -453,9 +453,13 @@
 
 - Name: Maggies Letter
   Game Item Id: 0x9A
+  Chain Locations:
+    - Windfall Island - Cafe Postman Delivery
 
 - Name: Moblins Letter
   Game Item Id: 0x9B
+  Chain Locations:
+    - Windfall Island - Maggie Delivery Reward
 
 - Name: Cabana Deed
   Game Item Id: 0x9C
@@ -471,18 +475,28 @@
 
 - Name: Dragon Tingle Statue
   Game Item Id: 0xA3
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
 
 - Name: Forbidden Tingle Statue
   Game Item Id: 0xA4
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
 
 - Name: Goddess Tingle Statue
   Game Item Id: 0xA5
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
 
 - Name: Earth Tingle Statue
   Game Item Id: 0xA6
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
 
 - Name: Wind Tingle Statue
   Game Item Id: 0xA7
+  Chain Locations:
+    - Tingle Island - Ankle All Statues Reward
 
 - Name: Hurricane Spin
   Game Item Id: 0xAA
@@ -501,6 +515,9 @@
 
 - Name: Progressive Quiver
   Game Item Id: 0xAF
+  Chain Locations: # Quiver is potentially progression for 12 eye octos
+    - Seven Star Isles - Big Octo
+    - Tingle Island - Big Octo
 
 - Name: Ninety Nine Quiver
   Game Item Id: 0xB0
@@ -606,6 +623,8 @@
 
 - Name: Ghost Ship Chart
   Game Item Id: 0xDB
+  Chain Locations:
+    - Great Sea - Ghost Ship Chest
 
 - Name: Tingles Chart
   Game Item Id: 0xDC
