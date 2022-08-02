@@ -3,6 +3,8 @@
 #include "../options.hpp"
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
+#include "../server/filetypes/util/msbtMacros.hpp"
+#include "../server/utility/stringUtil.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -45,6 +47,21 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
     return location->name + worldNumber + ":" + spaces + itemName;
 }
 
+static std::string getSpoilerFormatHint(Location* location)
+{
+    // Get rid of commands in the hint text and then convert to UTF-8
+    std::u16string hintText = location->hintText;
+    for (auto eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
+    {
+        auto pos = std::string::npos;
+        while ((pos = hintText.find(eraseText)) != std::string::npos)
+        {
+            hintText.erase(pos, eraseText.length());
+        }
+    }
+    return Utility::Str::toUTF8(hintText);
+}
+
 // Compatator for sorting the chart mappings
 struct chartComparator {
     bool operator()(const std::string& a, const std::string& b) const {
@@ -59,7 +76,7 @@ struct chartComparator {
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
     log << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
-    
+
     log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     log << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
@@ -206,6 +223,33 @@ void generateSpoilerLog(WorldPool& worlds)
         for (auto location : world.getLocations())
         {
             log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+        }
+    }
+    log << std::endl;
+
+    LOG_TO_DEBUG("Hints");
+    for (auto& world : worlds)
+    {
+        log << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
+        if (!world.hohoHints.empty())
+        {
+            for (auto& [hohoLocation, hintLocations] : world.hohoHints)
+            {
+                log << "\t" << hohoLocation->name << ":" << std::endl;
+                for (auto location : hintLocations)
+                {
+                    log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
+                }
+            }
+        }
+
+        if (!world.korlHints.empty())
+        {
+            log << "\tKoRL Hints:" << std::endl;
+            for (auto location : world.korlHints)
+            {
+                log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
+            }
         }
     }
     log << std::endl;

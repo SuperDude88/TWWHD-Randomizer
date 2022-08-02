@@ -322,6 +322,11 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
 
     for (uint8_t i = 0; i < world.getSettings().barren_hints; i++)
     {
+        if (barrenPool.empty())
+        {
+            LOG_TO_DEBUG("No more barren regions to hint at.");
+            break;
+        }
         auto regionIndex = barrenDistribution(GetGenerator());
         auto& barrenRegion = barrenPool[regionIndex];
         // Set all locations in the selected barren region as hinted at
@@ -336,11 +341,6 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
         // Reform the distribution without the region we just chose
         barrenDistributions.erase(barrenDistributions.begin() + regionIndex);
         barrenPool.erase(barrenPool.begin() + regionIndex);
-        if (barrenPool.empty())
-        {
-            LOG_TO_DEBUG("No more barren regions to hint at.");
-            break;
-        }
         barrenDistribution = std::discrete_distribution<size_t>(barrenDistributions.begin(), barrenDistributions.end());
     }
 
