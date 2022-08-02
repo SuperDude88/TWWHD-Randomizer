@@ -66,32 +66,35 @@ int World::getWorldId() const
 }
 
 // Generate the pools of starting items and items to place for this world
-void World::setItemPools()
+World::WorldLoadingError World::setItemPools()
 {
     itemPool.clear();
     startingItems.clear();
     auto gameItemPool = generateGameItemPool(settings, this);
-    auto startingGameItems = generateStartingGameItemPool(settings);
+    auto startingGameItemPool = generateStartingGameItemPool(settings);
 
     // Set worldId for each item in each pool
-    for (auto gameItem : startingGameItems)
+    for (const auto& item : startingGameItemPool)
     {
-        startingItems.emplace_back(gameItem, worldId);
+        ITEM_VALID_CHECK(nameToGameItem(item), item + " is not defined");
+        startingItems.push_back(itemEntries[item]);
         // If a starting item is in the main item pool, replace it with some junk
-        auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), gameItem);
+        auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), item);
         if (itemPoolItr != gameItemPool.end())
         {
             *itemPoolItr = getRandomJunk();
         }
     }
 
-    for (auto gameItem : gameItemPool)
+    for (const auto& item : gameItemPool)
     {
-        itemPool.emplace_back(gameItem, worldId);
+        ITEM_VALID_CHECK(nameToGameItem(item), item + " is not defined");
+        itemPool.push_back(itemEntries[item]);
     }
     #ifdef ENABLE_DEBUG
         logItemPool("Items for world " + std::to_string(worldId), itemPool);
     #endif
+    return WorldLoadingError::NONE;
 }
 
 ItemPool World::getItemPool() const
@@ -131,7 +134,8 @@ void World::determineChartMappings()
 {
     LOG_TO_DEBUG("Determining Chart Mappings");
     // The ordering of this array corresponds each treasure/triforce chart with
-    // the island sector it's located in
+    // the island sector it's located in and the name of the sunken treasure location
+    // in that room
     static std::array<GameItem, 49> charts = {
         GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
         GameItem::TreasureChart7,  // Sector 2 Star Island
@@ -194,12 +198,26 @@ void World::determineChartMappings()
     {
         auto chart = charts[i];
         chartMappings[i] = chart;
-        // Change the macro for this island's chart to the one at this index in the array.
-        // "ChartForIsland<sector number>" macros are type "HAS_ITEM" and have
-        // one argument which is the chart Item.
         size_t sector = i + 1;
-        macros[macroNameMap.at("Chart For Island " + std::to_string(sector))].args[0] = Item(chart, worldId);
-        LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart) + " for world " + std::to_string(worldId));
+
+        // Set the sunken treasure location as the chain location for each treasure/triforce chart in the itemEntries
+        auto locationName = roomIndexToIslandName(sector) + " - Sunken Treasure";
+        auto chartName = gameItemToName(chart);
+        if (locationEntries.count(locationName) == 0)
+        {
+            ErrorLog::getInstance().log("\"" + locationName + "\" is not a known sunken treasure location");
+        }
+        if (itemEntries.count(chartName) == 0)
+        {
+            ErrorLog::getInstance().log("\"" + chartName + "\" is not a known treasure chart item");
+        }
+        auto location = &locationEntries[locationName];
+        itemEntries[chartName].addChainLocation(location);
+        // Change the macro for this island's chart to the one at this index in the array.
+        // "Chart For Island <sector number>" macros are type "HAS_ITEM" and have
+        // one argument which is the chart Item.
+        LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart));
+        macros[macroNameMap.at("Chart For Island " + std::to_string(sector))].args[0] = itemEntries[chartName];
     }
     LOG_TO_DEBUG("]");
 }
@@ -242,8 +260,8 @@ void World::determineProgressionLocations()
                    ( category == LocationCategory::Mail              && this->settings.progression_mail)                ||
                    ( category == LocationCategory::Submarine         && this->settings.progression_submarines)          ||
                    ( category == LocationCategory::EyeReefChests     && this->settings.progression_eye_reef_chests)     ||
-                   ( category == LocationCategory::SunkenTreasure    && this->settings.progression_triforce_charts && chartLeadsToSunkenTreasure(location, "TriforceChart")) ||
-                   ( category == LocationCategory::SunkenTreasure    && this->settings.progression_treasure_charts && chartLeadsToSunkenTreasure(location, "TreasureChart")) ||
+                   ( category == LocationCategory::SunkenTreasure    && this->settings.progression_triforce_charts && chartLeadsToSunkenTreasure(location, "Triforce Chart")) ||
+                   ( category == LocationCategory::SunkenTreasure    && this->settings.progression_treasure_charts && chartLeadsToSunkenTreasure(location, "Treasure Chart")) ||
                    ( category == LocationCategory::ExpensivePurchase && this->settings.progression_expensive_purchases) ||
                    ( category == LocationCategory::Misc              && this->settings.progression_misc)                ||
                    ( category == LocationCategory::TingleChest       && this->settings.progression_tingle_chests)       ||
@@ -284,13 +302,15 @@ World::WorldLoadingError World::determineRaceModeDungeons()
 
         int setRaceModeDungeons = 0;
         // Loop through all the dungeons and see if any of them have items plandomized
-        // within them. If they have major items plandomized, then select those dungeons
-        // as race mode dungeons
+        // within them (or within their dependent locations). If they have major items
+        // plandomized, then select those dungeons as race mode dungeons
         if (settings.plandomizer)
         {
             for (const auto& dungeon : dungeonPool)
             {
-                for (auto& location : dungeon.locations)
+                auto allDungeonLocations = dungeon.locations;
+                addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
+                for (auto& location : allDungeonLocations)
                 {
                     auto dungeonLocation = &locationEntries[location];
                     bool dungeonLocationForcesRaceMode = plandomizerLocations.count(dungeonLocation) == 0 ? false : !plandomizerLocations[dungeonLocation].isJunkItem();
@@ -513,7 +533,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             auto argItem = nameToGameItem(itemName);
             ITEM_VALID_CHECK(argItem, "Game Item of name \"" << itemName << " Does Not Exist");
             req.args.push_back(count);
-            req.args.push_back(Item(argItem, worldId));
+            req.args.push_back(itemEntries[itemName]);
             return WorldLoadingError::NONE;
         }
 
@@ -741,6 +761,9 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         "Error processing location " << location << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
     )
 
+    const std::string& hintPriority = locationObject["Hint Priority"].As<std::string>();
+    newEntry.hintPriority = hintPriority;
+
     // If this location is dependent on beating a dungeon, then add it to the dungeon's
     // list of outside dependent locations
     if (!locationObject["Dungeon Dependency"].IsNone())
@@ -754,6 +777,17 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
     if (!locationObject["Race Mode Location"].IsNone())
     {
         newEntry.isRaceModeLocation = true;
+    }
+
+    if (!locationObject["Goal Name"].IsNone())
+    {
+        newEntry.goalName = locationObject["Goal Name"].As<std::string>();
+    }
+
+    // Get the message label for hint locations
+    if (!locationObject["Message Label"].IsNone())
+    {
+        newEntry.messageLabel = locationObject["Message Label"].As<std::string>();
     }
 
     return WorldLoadingError::NONE;
@@ -879,6 +913,7 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
             auto location = *locationIt;
             LocationAccess locOut;
             const std::string locationName = location.first;
+            LOCATION_VALID_CHECK(locationName, "Unknown location name \"" + locationName + "\" when parsing area \"" + loadedArea + "\"");
             const std::string logicExpression = location.second.As<std::string>();
             err = loadLocationRequirement(locationName, logicExpression, locOut);
             if (err != World::WorldLoadingError::NONE)
@@ -898,6 +933,17 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
                 {
                     dungeons[newEntry.dungeon].raceModeLocation = locationName;
                 }
+                // Also set the location's hint region if the area has any defined
+                // dungeon, island, or general hint region
+                locationEntries[locationName].hintRegions = {newEntry.dungeon};
+            }
+            else if (newEntry.island != "")
+            {
+                locationEntries[locationName].hintRegions = {newEntry.island};
+            }
+            else if (newEntry.hintRegion != "")
+            {
+                locationEntries[locationName].hintRegions = {newEntry.hintRegion};
             }
         }
     }
@@ -938,12 +984,23 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
     itemEntries[itemName] = Item(gameItemId, worldId);
     auto& item = itemEntries[itemName];
 
+    if (itemObject["Chain Locations"].IsSequence())
+    {
+        for (auto it = itemObject["Chain Locations"].Begin(); it != itemObject["Chain Locations"].End(); it++)
+        {
+            const Yaml::Node& locationNode = (*it).second;
+            const std::string locationName = locationNode.As<std::string>();
+            item.addChainLocation(&locationEntries[locationName]);
+            LOG_TO_DEBUG("\"" + locationName + "\" added as chain location for \"" + itemName + "\"");
+        }
+    }
+
     if (!itemObject["Small Key Dungeon"].IsNone())
     {
         const std::string dungeon = itemObject["Small Key Dungeon"].As<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         LOG_TO_DEBUG(itemName + " is small key for " + dungeon);
-        dungeons[dungeon].smallKey = gameItemId;
+        dungeons[dungeon].smallKey = itemName;
         // If this is a small key, it also should have a count
         YAML_FIELD_CHECK(itemObject, "Small Key Count", WorldLoadingError::ITEM_MISSING_KEY);
         dungeons[dungeon].keyCount = itemObject["Small Key Count"].As<int>();
@@ -955,21 +1012,21 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
         const std::string dungeon = itemObject["Big Key Dungeon"].As<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         LOG_TO_DEBUG(itemName + " is big key for " + dungeon);
-        dungeons[dungeon].bigKey = gameItemId;
+        dungeons[dungeon].bigKey = itemName;
     }
 
     if (!itemObject["Map Dungeon"].IsNone())
     {
         const std::string dungeon = itemObject["Map Dungeon"].As<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
-        dungeons[dungeon].map = gameItemId;
+        dungeons[dungeon].map = itemName;
     }
 
     if (!itemObject["Compass Dungeon"].IsNone())
     {
         const std::string dungeon = itemObject["Compass Dungeon"].As<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
-        dungeons[dungeon].compass = gameItemId;
+        dungeons[dungeon].compass = itemName;
     }
 
     return WorldLoadingError::NONE;

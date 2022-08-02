@@ -3,6 +3,7 @@
   Category:
     - Mail
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031584
@@ -11,6 +12,7 @@
   Original Item: Piece Of Heart
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1003150C
@@ -22,6 +24,7 @@
   Category:
     - Mail
     - Dungeon
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031590
@@ -30,6 +33,7 @@
   Original Item: Piece Of Heart
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031518
@@ -38,6 +42,7 @@
   Original Item: Beedles Chart
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031524
@@ -46,6 +51,7 @@
   Original Item: Green Rupee
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031548
@@ -54,6 +60,7 @@
   Original Item: Complimentary ID
   Category:
     - Junk
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031578
@@ -62,6 +69,7 @@
   Original Item: Fill Up Coupon
   Category:
     - Junk
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1003159C
@@ -72,6 +80,7 @@
   Category:
     - Mail
     - Dungeon
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031530
@@ -80,6 +89,7 @@
   Original Item: Red Rupee
   Category:
     - Mail
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1003153C
@@ -90,6 +100,7 @@
   Category:
     - Mail
     - Dungeon
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031560
@@ -101,6 +112,7 @@
     - Mail
     - Dungeon
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10031554
@@ -109,6 +121,7 @@
   Original Item: Bait Bag
   Category:
     - Misc
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAEA7
@@ -119,6 +132,7 @@
   Original Item: Treasure Chart 34
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C63BF
@@ -128,6 +142,7 @@
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A82F3
   NameOffset: 0x0005AE20
@@ -137,6 +152,7 @@
   Category:
     - LongSideQuest
     - ExpensivePurchase
+  Hint Priority: Always
   Type: RPX
   Offsets:
     - 0x101C546F
@@ -145,6 +161,7 @@
   Original Item: Piece Of Heart
   Category:
     - LongSideQuest
+  Hint Priority: Always
   Type: RPX
   Offsets:
     - 0x02347C2B
@@ -155,6 +172,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002298
@@ -167,6 +185,7 @@
   Category:
     - Dungeon
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002838
@@ -176,6 +195,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A80
@@ -185,6 +205,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A40
@@ -194,6 +215,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A20
@@ -203,6 +225,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000A60
@@ -210,6 +233,7 @@
 - Name: Forsaken Fortress - Helmaroc King Heart Container
   Original Item: Heart Container
   Race Mode Location: true
+  Goal Name: Helmaroc King
   Category:
     - Dungeon
   Paths:
@@ -217,6 +241,7 @@
     - "content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr"
     - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
     - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x0206C096
@@ -229,6 +254,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003004
@@ -241,6 +267,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000030DC
@@ -250,6 +277,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
@@ -259,6 +287,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000013BC
@@ -271,6 +300,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004B0
@@ -279,6 +309,7 @@
   Original Item: Progressive Wallet
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B2F
@@ -288,6 +319,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001CD4
@@ -300,6 +332,7 @@
   Category:
     - Misc
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000980
@@ -309,6 +342,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000008A8
@@ -321,6 +355,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000664
@@ -330,6 +365,7 @@
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001278
@@ -339,6 +375,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001398
@@ -351,6 +388,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001568
@@ -360,6 +398,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001548
@@ -369,15 +408,17 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001588
 
-- Name: Overlook Isles - Sunken Treasure
+- Name: Overlook Island - Sunken Treasure
   Original Item: Secret Cave Chart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001548
@@ -385,11 +426,12 @@
     - 0x00001590
     - 0x000015B4
 
-- Name: Overlook Isles - Cave Chest
+- Name: Overlook Island - Cave Chest
   Original Item: Triforce Shard 8
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000484
@@ -399,6 +441,7 @@
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001FD4
@@ -408,6 +451,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001EA4
@@ -415,11 +459,12 @@
     - 0x00001EEC
     - 0x00001F10
 
-- Name: Mother and Child Isles - Sunken Treasure
+- Name: Mother & Child Isles - Sunken Treasure
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001968
@@ -427,11 +472,12 @@
     - 0x000019B0
     - 0x000019D4
 
-- Name: Mother and Child Isles - Inside Mother Isle
+- Name: Mother & Child Isles - Inside Mother Isle
   Original Item: Fire Ice Arrows
   Category:
     - Misc
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001BB0
@@ -440,6 +486,7 @@
   Original Item: Piece Of Heart
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1001C194
@@ -449,6 +496,7 @@
   Original Item: Treasure Chart 17
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1001C196
@@ -458,6 +506,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000BF0
@@ -469,6 +518,7 @@
   Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02298bfc
@@ -478,6 +528,7 @@
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000038AC
@@ -489,6 +540,7 @@
   Category:
     - FreeGift
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A835F
   NameOffset: 0x0005B910
@@ -497,6 +549,7 @@
   Original Item: Magic Armor
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: Custom_Symbol
   SymbolNames:
     - zunari_magic_armor_slot_item_id
@@ -507,6 +560,7 @@
   Original Item: Piece Of Heart
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C399B
@@ -515,6 +569,7 @@
   Original Item: Purple Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C3873
@@ -523,6 +578,7 @@
   Original Item: Purple Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C3877
@@ -531,6 +587,7 @@
   Original Item: Red Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C387B
@@ -539,6 +596,7 @@
   Original Item: Red Rupee
   Category:
     - Obscure
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C387F
@@ -548,6 +606,7 @@
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A72AF
   NameOffset: 0x00038190
@@ -556,6 +615,7 @@
   Original Item: Treasure Chart 42
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x028F9DD3
@@ -564,6 +624,7 @@
   Original Item: Treasure Chart 24
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C399F
@@ -572,6 +633,7 @@
   Original Item: Treasure Chart 31
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39AF
@@ -580,6 +642,7 @@
   Original Item: Treasure Chart 33
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39A3
@@ -589,6 +652,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003138
@@ -600,6 +664,7 @@
   Original Item: Tingle Bottle
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022E98EF
@@ -608,6 +673,7 @@
   Original Item: Tingles Chart
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022E9923
@@ -617,6 +683,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000094C
@@ -625,6 +692,7 @@
   Original Item: Purple Rupee
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FC7F
@@ -633,6 +701,7 @@
   Original Item: Red Rupee
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FD93
@@ -641,6 +710,7 @@
   Original Item: Cabana Deed
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FDC3
@@ -649,6 +719,7 @@
   Original Item: Treasure Chart 45
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FEBB
@@ -657,6 +728,7 @@
   Original Item: Progressive Picto Box
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022CFA77
@@ -665,6 +737,7 @@
   Original Item: Joy Pendant
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022CFAAB
@@ -674,6 +747,7 @@
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000910
@@ -683,6 +757,7 @@
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000930
@@ -692,6 +767,7 @@
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x00022443
   NameOffset: 0x0000B440
@@ -700,6 +776,7 @@
   Original Item: Piece Of Heart
   Category:
     - LongSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39A7
@@ -708,6 +785,7 @@
   Original Item: Piece Of Heart
   Category:
     - BattleSquid
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02267187
@@ -716,6 +794,7 @@
   Original Item: Treasure Chart 7
   Category:
     - BattleSquid
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02267197
@@ -724,6 +803,7 @@
   Original Item: Treasure Chart 23
   Category:
     - BattleSquid
+  Hint Priority: Always
   Type: RPX
   Offsets:
     - 0x02267367
@@ -732,6 +812,7 @@
   Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101C39AB
@@ -741,6 +822,7 @@
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10190175
@@ -750,6 +832,7 @@
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1019016D
@@ -759,6 +842,7 @@
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1019017D
@@ -768,6 +852,7 @@
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x10190185
@@ -777,6 +862,7 @@
   Category:
     - ExpensivePurchase
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x1019018D
@@ -786,6 +872,7 @@
   Category:
     - Misc
   Path: content/Common/Stage/Orichh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000008C0
@@ -795,6 +882,7 @@
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0002C99F
   NameOffset: 0x0001BBC0
@@ -803,6 +891,7 @@
   Original Item: Maggies Letter
   Category:
     - FreeGift
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0227C2A3
@@ -811,6 +900,7 @@
   Original Item: Piece Of Heart
   Category:
     - ShortSideQuest
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0227C2DF
@@ -819,6 +909,7 @@
   Original Item: Green Potion
   Category:
     - SpoilsTrading
+  Hint Priority: Sometimes
   Type: Custom_Symbol
   SymbolNames:
     - doc_bandam_green_potion_slot_item_id
@@ -828,6 +919,7 @@
   Category:
     - SpoilsTrading
     - LongSideQuest
+  Hint Priority: Always
   Type: Custom_Symbol
   SymbolNames:
     - doc_bandam_blue_potion_slot_item_id
@@ -837,6 +929,7 @@
   Category:
     - Minigame
   Path: content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000754
@@ -847,6 +940,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002B40
@@ -859,6 +953,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
@@ -868,6 +963,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001D0
@@ -877,6 +973,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001F0
@@ -886,6 +983,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001B0
@@ -895,6 +993,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave07_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
@@ -904,6 +1003,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002CF0
@@ -913,6 +1013,7 @@
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A8163
   NameOffset: 0x00058F80
@@ -922,6 +1023,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002BAC
@@ -931,6 +1033,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002900
@@ -943,6 +1046,7 @@
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0001FC3B
   NameOffset: 0x00008760
@@ -952,6 +1056,7 @@
   Category:
     - Minigame
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0001FC4B
   NameOffset: 0x00008A80
@@ -961,6 +1066,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002BCC
@@ -970,6 +1076,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_06_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000950
@@ -978,6 +1085,7 @@
   Original Item: Piece Of Heart
   Category:
     - Minigame
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022065FB
@@ -987,6 +1095,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001120
@@ -999,6 +1108,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000006C8
@@ -1008,6 +1118,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001680
@@ -1019,6 +1130,7 @@
   Original Item: Progressive Quiver
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B7F
@@ -1028,6 +1140,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001758
@@ -1037,6 +1150,7 @@
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001A84
@@ -1046,6 +1160,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001BA4
@@ -1057,6 +1172,7 @@
   Original Item: Empty Bottle
   Category:
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAF57
@@ -1067,6 +1183,7 @@
   Original Item: Piece Of Heart
   Category:
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAF67
@@ -1077,6 +1194,7 @@
   Original Item: Treasure Chart 4
   Category:
     - ExpensivePurchase
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x101EAF77
@@ -1088,6 +1206,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001CE8
@@ -1097,6 +1216,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001D08
@@ -1106,6 +1226,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001D28
@@ -1115,6 +1236,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000240
@@ -1123,6 +1245,7 @@
   Original Item: Rainbow Rupee
   Category:
     - Misc
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x022E9973
@@ -1132,6 +1255,7 @@
   Category:
     - BigOcto
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000BD0
@@ -1141,6 +1265,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000D38
@@ -1153,6 +1278,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000009C0
@@ -1165,6 +1291,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001478
@@ -1176,6 +1303,7 @@
   Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B57
@@ -1185,6 +1313,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001574
@@ -1194,6 +1323,7 @@
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000EC8
@@ -1203,6 +1333,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001030
@@ -1215,6 +1346,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001C8
@@ -1224,6 +1356,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000114C
@@ -1233,6 +1366,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000112C
@@ -1242,6 +1376,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000012E8
@@ -1254,6 +1389,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000013C0
@@ -1263,6 +1399,7 @@
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000022A4
@@ -1272,6 +1409,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000020C0
@@ -1284,6 +1422,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001D78
@@ -1293,6 +1432,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001A60
@@ -1305,6 +1445,7 @@
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000279C
@@ -1314,6 +1455,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000266C
@@ -1326,6 +1468,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000027BC
@@ -1335,6 +1478,7 @@
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002C30
@@ -1344,6 +1488,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002A3C
@@ -1356,6 +1501,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000053C
@@ -1365,6 +1511,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002C50
@@ -1374,6 +1521,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000648
@@ -1386,6 +1534,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room27.szs@YAZ0@SARC@Room27.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000DEC
@@ -1398,6 +1547,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001A84
@@ -1409,6 +1559,7 @@
   Original Item: Progressive Quiver
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B77
@@ -1418,6 +1569,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001B80
@@ -1427,6 +1579,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001BA0
@@ -1436,6 +1589,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002224
@@ -1445,6 +1599,7 @@
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002194
@@ -1454,6 +1609,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002098
@@ -1466,6 +1622,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/SubD42_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000020C
@@ -1475,6 +1632,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000C70
@@ -1487,6 +1645,7 @@
   Category:
     - Misc
   Path: content/Common/Stage/ShipD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001B8
@@ -1496,6 +1655,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000DD8
@@ -1505,6 +1665,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000022FC
@@ -1517,6 +1678,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/TF_01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000484
@@ -1526,6 +1688,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002460
@@ -1535,6 +1698,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002440
@@ -1544,6 +1708,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room32.szs@YAZ0@SARC@Room32.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000AC0
@@ -1556,6 +1721,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002628
@@ -1565,6 +1731,7 @@
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000025E0
@@ -1574,6 +1741,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000240C
@@ -1586,6 +1754,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000274
@@ -1595,6 +1764,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000254
@@ -1604,6 +1774,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001FCC
@@ -1616,6 +1787,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000278
@@ -1625,6 +1797,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004A4
@@ -1634,6 +1807,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002110
@@ -1643,6 +1817,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room35.szs@YAZ0@SARC@Room35.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000015B8
@@ -1655,24 +1830,27 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TF_03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000018C
 
-- Name: Diamond Steppe Isle - Big Octo
+- Name: Diamond Steppe Island - Big Octo
   Original Item: Orange Rupee
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000166C
 
-- Name: Diamond Steppe Isle - Sunken Treasure
+- Name: Diamond Steppe Island - Sunken Treasure
   Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x0000178C
@@ -1680,20 +1858,22 @@
     - 0x000017D4
     - 0x000017F8
 
-- Name: Diamond Steppe Isle - Maze First Chest
+- Name: Diamond Steppe Island - Maze First Chest
   Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001E8
 
-- Name: Diamond Steppe Isle - Maze Second Chest
+- Name: Diamond Steppe Island - Maze Second Chest
   Original Item: Ghost Ship Chart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001C8
@@ -1703,6 +1883,7 @@
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002E00
@@ -1712,6 +1893,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002BD4
@@ -1724,6 +1906,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00002E20
@@ -1733,6 +1916,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room38.szs@YAZ0@SARC@Room38.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001550
@@ -1745,6 +1929,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/ITest63_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Always
   Type: Chest
   Offsets:
     - 0x00000210
@@ -1754,6 +1939,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00002040
@@ -1765,6 +1951,7 @@
   Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B4F
@@ -1774,6 +1961,7 @@
   Category:
     - Platform
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000213C
@@ -1783,6 +1971,7 @@
   Category:
     - Platform
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000215C
@@ -1792,6 +1981,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001494
@@ -1801,6 +1991,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000012C0
@@ -1813,6 +2004,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000020C
@@ -1823,15 +2015,17 @@
     - PuzzleSecretCave
     - CombatSecretCave
   Path: content/Common/Stage/ITest62_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
 
-- Name: Forset Haven - Sunken Treasure
+- Name: Forest Haven - Sunken Treasure
   Original Item: Piece Of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003D28
@@ -1839,21 +2033,23 @@
     - 0x00003D70
     - 0x00003D94
 
-- Name: Forset Haven - On Tree Branch
+- Name: Forest Haven - On Tree Branch
   Original Item: Deku Leaf
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00001E04
     - 0x000020C4
 
-- Name: Forset Haven - Chest on Small Island
+- Name: Forest Haven - Chest on Small Island
   Original Item: Treasure Chart 3
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00004088
@@ -1863,6 +2059,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001500
@@ -1875,6 +2072,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000020C
@@ -1884,6 +2082,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000183C
@@ -1893,6 +2092,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000185C
@@ -1902,6 +2102,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001CEC
@@ -1914,6 +2115,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F74
@@ -1923,6 +2125,7 @@
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave05_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001B0
@@ -1932,6 +2135,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F94
@@ -1941,6 +2145,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001FB4
@@ -1950,6 +2155,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003AD4
@@ -1959,6 +2165,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00003558
@@ -1971,6 +2178,7 @@
   Category:
     - Misc
   Path: content/Common/Stage/LinkUG_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000008DC
@@ -1980,6 +2188,7 @@
   Category:
     - SpoilsTrading
   Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x0002D61B
   NameOffset: 0x0000FA40
@@ -1988,6 +2197,7 @@
   Original Item: Piece Of Heart
   Category:
     - Junk
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02258737
@@ -1997,6 +2207,7 @@
   Category:
     - Misc
   Path: content/Common/Stage/Omasao_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000008E8
@@ -2005,6 +2216,7 @@
   Original Item: Progressive Wallet
   Category:
     - GreatFairy
+  Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x02095B27
@@ -2014,6 +2226,7 @@
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave09_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000348
@@ -2023,6 +2236,7 @@
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000178
@@ -2032,6 +2246,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000001C4
@@ -2041,6 +2256,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000D4C
@@ -2050,6 +2266,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001564
@@ -2062,6 +2279,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000003F4
@@ -2071,6 +2289,7 @@
   Category:
     - EyeReefChests
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000272C
@@ -2081,6 +2300,7 @@
     - BigOcto
     - GreatFairy
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x000A6B9F
   NameOffset: 0x00026170
@@ -2090,6 +2310,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x000024B8
@@ -2102,6 +2323,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000274C
@@ -2111,6 +2333,7 @@
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000830
@@ -2120,6 +2343,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000734
@@ -2132,6 +2356,7 @@
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/SubD43_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000254
@@ -2141,6 +2366,7 @@
   Category:
     - Raft
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F94
@@ -2150,6 +2376,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00000E98
@@ -2163,6 +2390,7 @@
     - PuzzleSecretCave
     - CombatSecretCave
   Path: content/Common/Stage/SubD71_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000210
@@ -2172,6 +2400,7 @@
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: SCOB
   Offsets:
     - 0x00001338
@@ -2184,6 +2413,7 @@
   Category:
     - Raft
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000147C
@@ -2193,6 +2423,7 @@
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004C8
@@ -2202,6 +2433,7 @@
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000149C
@@ -2211,6 +2443,7 @@
   Category:
     - Misc
   Path: content/Common/Stage/PShip_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000DAC
@@ -2220,6 +2453,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E40
@@ -2229,6 +2463,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001EA0
@@ -2238,6 +2473,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E60
@@ -2247,6 +2483,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001EE0
@@ -2256,6 +2493,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E80
@@ -2265,6 +2503,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F00
@@ -2274,6 +2513,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000BC8
@@ -2283,6 +2523,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E20
@@ -2293,6 +2534,7 @@
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F40
@@ -2302,6 +2544,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001E00
@@ -2311,6 +2554,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001DC0
@@ -2320,6 +2564,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001DE0
@@ -2329,6 +2574,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000688
@@ -2338,6 +2584,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001EC0
@@ -2348,6 +2595,7 @@
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001F20
@@ -2357,6 +2605,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001DA0
@@ -2364,11 +2613,13 @@
 - Name: Dragon Roost Cavern - Gohma Heart Container
   Original Item: Heart Container
   Race Mode Location: true
+  Goal Name: Gohma
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020F5ED6
@@ -2379,6 +2630,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001934
@@ -2388,6 +2640,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000018F4
@@ -2397,6 +2650,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001914
@@ -2406,6 +2660,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001974
@@ -2415,6 +2670,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A74
@@ -2424,6 +2680,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019B4
@@ -2433,6 +2690,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001954
@@ -2442,6 +2700,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A14
@@ -2451,6 +2710,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kinMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000004AC
@@ -2460,6 +2720,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A54
@@ -2469,6 +2730,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A94
@@ -2479,6 +2741,7 @@
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AB4
@@ -2488,6 +2751,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019D4
@@ -2497,6 +2761,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019F4
@@ -2506,6 +2771,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A34
@@ -2513,11 +2779,13 @@
 - Name: Forbidden Woods - Kalle Demos Heart Container
   Original Item: Heart Container
   Race Mode Location: true
+  Goal Name: Kalle Demos
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020AF916
@@ -2528,6 +2796,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001924
@@ -2537,6 +2806,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001944
@@ -2546,6 +2816,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019C4
@@ -2555,6 +2826,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001964
@@ -2564,6 +2836,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019E4
@@ -2574,6 +2847,7 @@
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A64
@@ -2583,6 +2857,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
   Type: Event
   Offset: 0x00030E17
   NameOffset: 0x0001E660
@@ -2592,6 +2867,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019A4
@@ -2601,6 +2877,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/SirenMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000520
@@ -2610,6 +2887,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A24
@@ -2619,6 +2897,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A44
@@ -2628,6 +2907,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A04
@@ -2637,6 +2917,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A84
@@ -2644,11 +2925,13 @@
 - Name: Tower of the Gods - Gohdan Heart Container
   Original Item: Heart Container
   Race Mode Location: true
+  Goal Name: Gohdan
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020EFE1B
@@ -2659,6 +2942,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001988
@@ -2669,6 +2953,7 @@
     - Dungeon
     - Obscure
   Path: content/Common/Stage/M_Dai_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000414
@@ -2678,6 +2963,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019A8
@@ -2687,6 +2973,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AC8
@@ -2696,6 +2983,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019C8
@@ -2705,6 +2993,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000019E8
@@ -2714,6 +3003,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000234
@@ -2723,6 +3013,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_DaiMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x0000063C
@@ -2733,6 +3024,7 @@
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001B28
@@ -2742,6 +3034,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A08
@@ -2751,6 +3044,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AA8
@@ -2761,6 +3055,7 @@
     - Dungeon
     - Obscure
   Path: content/Common/Stage/M_Dai_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Actor
   Offsets:
     - 0x00000490
@@ -2770,6 +3065,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A28
@@ -2779,6 +3075,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A68
@@ -2788,6 +3085,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A88
@@ -2797,6 +3095,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001A48
@@ -2806,6 +3105,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001AE8
@@ -2813,11 +3113,13 @@
 - Name: Earth Temple - Jalhalla Heart Container
   Original Item: Heart Container
   Race Mode Location: true
+  Goal Name: Jalhalla
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x020DADDE
@@ -2828,6 +3130,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F84
@@ -2838,6 +3141,7 @@
     - Dungeon
     - TingleChest
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001064
@@ -2847,6 +3151,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000FA4
@@ -2856,6 +3161,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F64
@@ -2865,6 +3171,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F24
@@ -2874,6 +3181,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000FE4
@@ -2883,6 +3191,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001024
@@ -2892,6 +3201,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kazeMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000002D8
@@ -2901,6 +3211,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F44
@@ -2910,6 +3221,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000FC4
@@ -2919,6 +3231,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000EE4
@@ -2928,6 +3241,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00000F04
@@ -2937,6 +3251,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x00001004
@@ -2944,11 +3259,13 @@
 - Name: Wind Temple - Molgera Heart Container
   Original Item: Heart Container
   Race Mode Location: true
+  Goal Name: Molgera
   Category:
     - Dungeon
   Paths:
     - code/cking.rpx@RPX
     - content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Boss
   Offsets:
     - 0x021031E7
@@ -2959,6 +3276,7 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
   Type: Chest
   Offsets:
     - 0x000013A8
@@ -2968,13 +3286,96 @@
   Category:
     - Dungeon
   Path: content/Common/Stage/GanonJ_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Always
   Type: Chest
   Offsets:
     - 0x00000858
 
 - Name: Ganon's Tower - Defeat Ganondorf
   Original Item: Game Beatable
+  Goal Name: Ganondorf
   Category:
     - Other
     - AlwaysProgression
+  Hint Priority: Sometimes
   Type: DoNothing
+
+- Name: Forsaken Fortress Sector - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14004
+
+- Name: Northern Fairy Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14007
+
+- Name: Crescent Moon Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14005
+
+- Name: Flight Control Platform - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14002
+
+- Name: Stone Watcher Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14009
+
+- Name: Private Oasis - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14006
+
+- Name: Bomb Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14001
+
+- Name: Horseshoe Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14008
+
+- Name: Outset Island - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14003
+
+- Name: Two Eye Reef - Old Man Ho Ho
+  Original Item: Nothing
+  Category:
+    - HoHoHint
+  Hint Priority: Never
+  Type: DoNothing
+  Message Label: 14010

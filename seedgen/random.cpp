@@ -1,7 +1,5 @@
 #include "random.hpp"
 
-#include <random>
-
 static bool init = false;
 static std::mt19937_64 generator;
 
@@ -30,4 +28,9 @@ double RandomDouble()
 {
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
     return distribution(generator);
+}
+
+std::mt19937_64& GetGenerator()
+{
+    return generator;
 }

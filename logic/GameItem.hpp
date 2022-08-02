@@ -2,6 +2,7 @@
 
 #include <string>
 #include <set>
+#include <list>
 
 enum struct GameItem : uint8_t
 {
@@ -31,6 +32,7 @@ enum struct GameItem : uint8_t
 
     NOTHING, //not an item, uses a free space to represent no item (but not invalid)
     GameBeatable, // Dummy item to check for game beatability
+    HINT, // Dummy item to represent placing a hint at a hint location
 
     YellowRupee2 = 0x1A, //joke message
     DRCDungeonMap,
@@ -338,11 +340,38 @@ static const std::set<GameItem> junkItems = {
     GameItem::TinglesChart
 };
 
+static const std::set<GameItem> dungeonItems = {
+    GameItem::DRCSmallKey,
+    GameItem::DRCBigKey,
+    GameItem::DRCDungeonMap,
+    GameItem::DRCCompass,
+    GameItem::FWSmallKey,
+    GameItem::FWBigKey,
+    GameItem::FWDungeonMap,
+    GameItem::FWCompass,
+    GameItem::TotGSmallKey,
+    GameItem::TotGBigKey,
+    GameItem::TotGDungeonMap,
+    GameItem::TotGCompass,
+    GameItem::FFDungeonMap,
+    GameItem::FFCompass,
+    GameItem::ETSmallKey,
+    GameItem::ETBigKey,
+    GameItem::ETDungeonMap,
+    GameItem::ETCompass,
+    GameItem::WTSmallKey,
+    GameItem::WTBigKey,
+    GameItem::WTDungeonMap,
+    GameItem::WTCompass,
+};
+
+class Location;
 class Item
 {
 public:
     Item() = default;
     Item(GameItem gameItemId_, int worldId_);
+    Item(std::string itemName, int worldId_);
 
     void setWorldId(int newWorldId);
     int getWorldId() const;
@@ -354,7 +383,11 @@ public:
     void setAsMajorItem();
     bool isMajorItem() const;
     bool isChartForSunkenTreasure() const;
+    void addChainLocation(Location* location);
+    std::list<Location*>& getChainLocations();
+    void setAsJunkItem();
     bool isJunkItem() const;
+    bool isDungeonItem() const;
     bool operator==(const Item& rhs) const;
     bool operator<(const Item& rhs) const;
 
@@ -363,6 +396,8 @@ private:
     GameItem delayedGameItemId = GameItem::INVALID;
     bool majorItem = false;
     bool chartForSunkenTreasure = false;
+    std::list<Location*> chainLocations = {};
+    bool dungeonItem = false;
     bool junkItem = false;
     int worldId = -1; // The world that this item is *FOR*
 };

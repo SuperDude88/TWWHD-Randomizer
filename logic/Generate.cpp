@@ -4,6 +4,7 @@
 #include "ItemPool.hpp"
 #include "Fill.hpp"
 #include "SpoilerLog.hpp"
+#include "Hints.hpp"
 #include "../seedgen/random.hpp"
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
@@ -42,7 +43,11 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           }
           worlds[i].determineChartMappings();
           worlds[i].determineProgressionLocations();
-          worlds[i].setItemPools();
+          if (worlds[i].setItemPools() != World::WorldLoadingError::NONE)
+          {
+              ErrorLog::getInstance().log(worlds[i].getLastErrorDetails());
+              return 1;
+          }
           if (worlds[i].getSettings().plandomizer)
           {
               if (worlds[i].loadPlandomizer() != World::WorldLoadingError::NONE)
@@ -117,11 +122,20 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   #endif
   generatePlaythrough(worlds);
 
+  #ifndef MASS_TESTING
+      Utility::platformLog("Generating Hints\n");
+  #endif
+  auto hintError = generateHints(worlds);
+  if (hintError != HintError::NONE)
+  {
+      return 1;
+  }
+
   #ifdef ENABLE_TIMING
       auto stop = std::chrono::high_resolution_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
       auto seconds = static_cast<double>(duration.count()) / 1000000.0;
-      Utility::platformLog(std::string("Generating and Filling worlds took ") + std::to_string(seconds) + " seconds\n");
+      Utility::platformLog(std::string("Building and Filling took ") + std::to_string(seconds) + " seconds\n");
   #endif
   return 0;
 }

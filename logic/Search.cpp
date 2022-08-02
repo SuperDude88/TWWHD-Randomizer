@@ -319,6 +319,12 @@ LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, Location
     return filterFromPool(accessibleLocations, [allowedLocations](Location* loc){return elementInPool(loc, allowedLocations) && loc->currentItem.getGameItemId() == GameItem::INVALID;});
 }
 
+void runGeneralSearch(WorldPool& worlds, int worldToSearch /*= -1*/)
+{
+    ItemPool emptyItems = {};
+    search(SearchMode::AccessibleLocations, worlds, emptyItems, worldToSearch);
+}
+
 bool gameBeatable(WorldPool& worlds)
 {
     ItemPool emptyItems = {};
@@ -351,9 +357,8 @@ static void pareDownPlaythrough(WorldPool& worlds)
         }
     }
 
-    for (auto sphereItr = playthroughSpheres.rbegin(); sphereItr != playthroughSpheres.rend(); sphereItr++)
+    for (auto& sphere : playthroughSpheres)
     {
-        auto& sphere = *sphereItr;
         for (auto loc = sphere.begin(); loc != sphere.end(); )
         {
             // Remove the item at the current location and check if the game is still beatable
@@ -362,7 +367,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
             location->currentItem = {GameItem::INVALID, location->worldId};
             if (gameBeatable(worlds))
             {
-                // If the game is still beatable, then this item is not required
+                // If the game is still beatable, then this location is not required
                 // and we can erase it from the playthrough
                 loc = sphere.erase(loc);
                 nonRequiredLocations.insert({location, itemAtLocation});

@@ -47,7 +47,7 @@ namespace {
 
 		return;
 	}
-    
+
     void loadRPX() {
         RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
         gRPX.loadFromFile(filePath.string());
@@ -138,7 +138,7 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
         // In race mode, only put the dungeon keys for required dungeons in dark wood chests.
         // The other keys go into light wood chests.
         if(raceMode) {
-            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRaceModeDungeon && (dungeon.second.smallKey == item.getGameItemId() || dungeon.second.bigKey == item.getGameItemId());})){
+            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRaceModeDungeon && (dungeon.second.smallKey == item.getName() || dungeon.second.bigKey == item.getName());})){
                 LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
                 return ModificationError::NONE;
             }
@@ -147,7 +147,7 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
                 return ModificationError::NONE;
             }
         }
-        
+
         LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
         return ModificationError::NONE;
     }
@@ -245,7 +245,7 @@ ModificationError ModifyEvent::parseArgs(Yaml::Node& locationObject) {
         LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
     }
     this->offset = offsetValue;
-    
+
     offsetStr = locationObject["NameOffset"].As<std::string>();
     offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
     if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
@@ -322,7 +322,7 @@ ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
 ModificationError ModifySymbol::writeLocation(const Item& item) {
     if (rpxOpen == false) loadRPX();
     if (custom_symbols.size() == 0) Load_Custom_Symbols("./asm/custom_symbols.json");
-    
+
     for(const auto& symbol : symbolNames) {
         uint32_t address;
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
@@ -353,7 +353,7 @@ ModificationError ModifyBoss::parseArgs(Yaml::Node& locationObject) {
 
     offsetsWithPath.reserve(locationObject["Paths"].Size());
 
-    for (size_t i = 0; i < locationObject["Paths"].Size(); i++) 
+    for (size_t i = 0; i < locationObject["Paths"].Size(); i++)
     {
         std::pair<std::string, uint32_t> offset_with_path;
 
