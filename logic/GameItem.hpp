@@ -371,7 +371,7 @@ class Item
 public:
     Item() = default;
     Item(GameItem gameItemId_, int worldId_);
-    Item(std::string itemName, int worldId_);
+    Item(std::string itemName_, int worldId_);
 
     void setWorldId(int newWorldId);
     int getWorldId() const;

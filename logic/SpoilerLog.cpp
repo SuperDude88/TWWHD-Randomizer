@@ -214,7 +214,10 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            longestNameLength = std::max(longestNameLength, location->name.length());
+            if (!location->categories.contains(LocationCategory::HoHoHint))
+            {
+                longestNameLength = std::max(longestNameLength, location->name.length());
+            }
         }
     }
 
@@ -222,7 +225,10 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+            if (!location->categories.contains(LocationCategory::HoHoHint))
+            {
+                log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+            }
         }
     }
     log << std::endl;
