@@ -5,10 +5,12 @@
 #include <utility>
 #include <vector>
 #include <array>
+#include <random>
 
 void Random_Init(size_t seed);
 uint32_t Random(int min, int max);
 double RandomDouble();
+std::mt19937_64& GetGenerator();
 
 template <typename T>
 T popRandomElement(std::vector<T>& vector)

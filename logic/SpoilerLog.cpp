@@ -3,6 +3,8 @@
 #include "../options.hpp"
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
+#include "../server/filetypes/util/msbtMacros.hpp"
+#include "../server/utility/stringUtil.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -36,13 +38,28 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
     std::string worldNumber = " [W";
     worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->worldId + 1) + "]" : "";
                                                                  // Don't add an extra space if the world id is two digits long
-    size_t numSpaces = (longestNameLength - locationIdToPrettyName(location->locationId).length()) + ((location->worldId >= 9) ? 0 : 1);
+    size_t numSpaces = (longestNameLength - location->name.length()) + ((location->worldId >= 9) ? 0 : 1);
     std::string spaces (numSpaces, ' ');
 
     // Don't say which player the item is for if there's only 1 world
-    std::string itemName = worlds.size() > 1 ? location->currentItem.getPrettyName() : gameItemToPrettyName(location->currentItem.getGameItemId());
+    std::string itemName = worlds.size() > 1 ? location->currentItem.getName() : gameItemToName(location->currentItem.getGameItemId());
 
-    return locationIdToPrettyName(location->locationId) + worldNumber + ":" + spaces + itemName;
+    return location->name + worldNumber + ":" + spaces + itemName;
+}
+
+static std::string getSpoilerFormatHint(Location* location)
+{
+    // Get rid of commands in the hint text and then convert to UTF-8
+    std::u16string hintText = location->hintText;
+    for (auto eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
+    {
+        auto pos = std::string::npos;
+        while ((pos = hintText.find(eraseText)) != std::string::npos)
+        {
+            hintText.erase(pos, eraseText.length());
+        }
+    }
+    return Utility::Str::toUTF8(hintText);
 }
 
 // Compatator for sorting the chart mappings
@@ -59,7 +76,7 @@ struct chartComparator {
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
     log << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
-    
+
     log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     log << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
@@ -82,7 +99,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
         }
         log << std::endl;
     }
-    
+
     log << std::endl;
 }
 
@@ -90,7 +107,7 @@ void generateSpoilerLog(WorldPool& worlds)
 {
     std::ofstream log("./Spoiler Log.txt");
 
-	Utility::platformLog("Generating spoiler log...\n");
+	  Utility::platformLog("Generating spoiler log...\n");
     printBasicInfo(log, worlds);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
@@ -98,13 +115,13 @@ void generateSpoilerLog(WorldPool& worlds)
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
 
-    DebugLog::getInstance().log("Starting Island");
+    LOG_TO_DEBUG("Starting Island");
     // Print the random starting island if there is one
     for (auto& world : worlds)
     {
         if (world.getSettings().randomize_starting_island)
         {
-            auto startingIsland = areaToPrettyName(world.getArea(Area::LinksSpawn).exits.front().getConnectedArea());
+            auto startingIsland = world.getArea("Link's Spawn").exits.front().getConnectedArea();
             log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
         }
     }
@@ -113,12 +130,12 @@ void generateSpoilerLog(WorldPool& worlds)
     // Find the longest location/entrances names for formatting the file
     size_t longestNameLength = 0;
     size_t longestEntranceLength = 0;
-    DebugLog::getInstance().log("Getting Name Lengths");
+    LOG_TO_DEBUG("Getting Name Lengths");
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
     {
         for (auto location : *sphereItr)
         {
-            longestNameLength = std::max(longestNameLength, locationIdToPrettyName(location->locationId).length());
+            longestNameLength = std::max(longestNameLength, location->name.length());
         }
     }
     for (auto& world : worlds)
@@ -131,7 +148,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
 
     // Print the playthrough
-    DebugLog::getInstance().log("Print Playthrough");
+    LOG_TO_DEBUG("Print Playthrough");
     log << "Playthrough:" << std::endl;
     int sphere = 0;
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
@@ -148,7 +165,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     // Print the randomized entrances/playthrough
-    DebugLog::getInstance().log("Print Entrance Playthrough");
+    LOG_TO_DEBUG("Print Entrance Playthrough");
     if (longestEntranceLength != 0)
     {
         log << "Entrance Playthrough:" << std::endl;
@@ -171,7 +188,7 @@ void generateSpoilerLog(WorldPool& worlds)
     }
     log << std::endl;
 
-    DebugLog::getInstance().log("Entrance Listing");
+    LOG_TO_DEBUG("Entrance Listing");
     for (auto& world : worlds)
     {
         auto entrances = world.getShuffledEntrances(EntranceType::ALL, !world.getSettings().decouple_entrances);
@@ -191,13 +208,16 @@ void generateSpoilerLog(WorldPool& worlds)
 
 
     log << std::endl << "All Locations:" << std::endl;
-    DebugLog::getInstance().log("All Locations");
+    LOG_TO_DEBUG("All Locations");
     // Update the longest location name considering all locations
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
-            longestNameLength = std::max(longestNameLength, locationIdToPrettyName(location->locationId).length());
+            if (!location->categories.contains(LocationCategory::HoHoHint))
+            {
+                longestNameLength = std::max(longestNameLength, location->name.length());
+            }
         }
     }
 
@@ -205,12 +225,42 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+            if (!location->categories.contains(LocationCategory::HoHoHint))
+            {
+                log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+            }
         }
     }
     log << std::endl;
 
-    DebugLog::getInstance().log("Chart Mappings");
+    LOG_TO_DEBUG("Hints");
+    for (auto& world : worlds)
+    {
+        log << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
+        if (!world.hohoHints.empty())
+        {
+            for (auto& [hohoLocation, hintLocations] : world.hohoHints)
+            {
+                log << "\t" << hohoLocation->name << ":" << std::endl;
+                for (auto location : hintLocations)
+                {
+                    log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
+                }
+            }
+        }
+
+        if (!world.korlHints.empty())
+        {
+            log << "\tKoRL Hints:" << std::endl;
+            for (auto location : world.korlHints)
+            {
+                log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
+            }
+        }
+    }
+    log << std::endl;
+
+    LOG_TO_DEBUG("Chart Mappings");
     for (auto& world : worlds)
     {
         log << "Charts for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
@@ -218,8 +268,8 @@ void generateSpoilerLog(WorldPool& worlds)
         std::map<std::string, std::string, chartComparator> spoilerTreasureMappings = {};
         for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
         {
-            auto chart = gameItemToPrettyName(world.chartMappings[islandRoom - 1]);
-            auto island = areaToPrettyName(roomIndexToIslandArea(islandRoom));
+            auto chart = gameItemToName(world.chartMappings[islandRoom - 1]);
+            auto island = roomIndexToIslandName(islandRoom);
             if (chart.find("Treasure") != std::string::npos)
             {
                 spoilerTreasureMappings[chart] = island;
@@ -252,7 +302,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
         {
             if (location->progression)
             {
-                BasicLog::getInstance().log("\t" + locationIdToPrettyName(location->locationId));
+                BasicLog::getInstance().log("\t" + location->name);
             }
         }
     }
@@ -264,7 +314,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
         {
             if (!location->progression)
             {
-                BasicLog::getInstance().log("\t" + locationIdToPrettyName(location->locationId));
+                BasicLog::getInstance().log("\t" + location->name);
             }
         }
     }

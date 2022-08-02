@@ -6,6 +6,7 @@
 #include "seedgen/permalink.hpp"
 #include "logic/SpoilerLog.hpp"
 #include "logic/Generate.hpp"
+#include "logic/mass_test.hpp"
 #include "server/filetypes/dzx.hpp"
 #include "server/filetypes/charts.hpp"
 #include "server/command/WriteLocations.hpp"
@@ -64,7 +65,7 @@ private:
 				}
 
 				const std::vector<Utility::titleEntry> titles = *Utility::getLoadedTitles();
-				auto game = std::find_if(titles.begin(), titles.end(), 
+				auto game = std::find_if(titles.begin(), titles.end(),
 					[](const Utility::titleEntry& entry) {return entry.titleLowID == 0x10143500; }
 				);
 				if(game == titles.end()) {
@@ -79,7 +80,7 @@ private:
 				return false;
 			#endif
 		}
-		
+
 		//Check the meta.xml for other platforms (+ a sanity check on console)
 		tinyxml2::XMLDocument meta;
 		const std::string metaPath = g_session.openGameFile("meta/meta.xml").string();
@@ -98,7 +99,7 @@ private:
 
 		const std::string titleId = root->FirstChildElement("title_id")->GetText();
 		const std::string nameEn = root->FirstChildElement("longname_en")->GetText();
-		if(titleId != "0005000010143500" || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {	
+		if(titleId != "0005000010143500" || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {
 			Utility::platformLog("meta.xml does not match base game - dump is not valid\n");
 			Utility::platformLog("ID %s\n", titleId.c_str());
 			Utility::platformLog("Name %s\n", nameEn.c_str());
@@ -225,7 +226,7 @@ private:
 			ErrorLog::getInstance().log("Failed to save chart list");
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -363,12 +364,12 @@ private:
 		const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
 		const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
 		std::unordered_set<std::string> paths;
-	
+
 	    for (const auto& [fileStage, roomNum] : vanillaEntrancePaths)
 	    {
 	        const std::string fileRoom = std::to_string(roomNum);
 	        const std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
-	
+
 			if (fileStage == "sea") {
 				if (pack1.count(roomNum) > 0) {
 					continue; //pack files are edited elsewhere which restores them
@@ -377,7 +378,7 @@ private:
 					continue; //pack files are edited elsewhere which restores them
 				}
 			}
-	
+
 			paths.emplace(filepath);
 		}
 
@@ -398,7 +399,7 @@ private:
 		const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
 		const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
 		std::unordered_map<std::string, FileTypes::DZXFile> dzr_by_path;
-	
+
 		const EntrancePool entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
 	    for (const auto entrance : entrances)
 	    {
@@ -408,9 +409,9 @@ private:
 	        std::string replacementStage = entrance->getReplaces()->getStageName();
 	        const uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
 	        const uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
-	
+
 	        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
-	
+
 			if (fileStage == "sea") {
 				if (pack1.count(entrance->getFilepathRoomNum()) > 0) {
 					filepath = "content/Common/Pack/szs_permanent1.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
@@ -419,7 +420,7 @@ private:
 					filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
 				}
 			}
-	
+
 			const RandoSession::fspath roomPath = g_session.openGameFile(filepath);
 			if(roomPath.empty()) {
 				ErrorLog::getInstance().log("Failed to open file " + roomPath.string());
@@ -444,7 +445,7 @@ private:
 			exit->data[8] = replacementSpawn;
 			exit->data[9] = replacementRoom;
 		}
-	
+
 		for (auto& [path, dzr] : dzr_by_path) {
 			if(DZXError err = dzr.writeToFile(path); err != DZXError::NONE) {
 				ErrorLog::getInstance().log("Failed to save dzr with path " + path);
@@ -465,48 +466,75 @@ public:
 	}
 
 	void randomize() {
+
+		// Go through the setting testing process if mass testing is turned on and ignore everything else
+		#ifdef MASS_TESTING
+			massTest(config);
+			return;
+		#endif
+
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
 
 		std::hash<std::string> strHash;
 		integer_seed = strHash(permalink);
-		
+
 		Random_Init(integer_seed);
-		
+
 		LogInfo::setConfig(config);
 		LogInfo::setSeedHash(generate_seed_hash());
-		
+
 		clearOldLogs();
-		
-		if(!checkBackupOrDump()) {
-			return;
-		}
-
-		//IMPROVEMENT: custom model things
-
-		if(config.settings.pig_color == PigColor::RANDOM) {
-			config.settings.pig_color = PigColor(Random(0, 3));
-		}
-
-		Utility::platformLog("Modifying game code...\n");
-		if (!dryRun) {
-			if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
-				ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
-				return;
-			}
-		}
 
 		// Create all necessary worlds (for any potential multiworld support in the future)
 		WorldPool worlds(numPlayers);
 		std::vector<Settings> settingsVector (numPlayers, config.settings);
 
 		Utility::platformLog("Randomizing...\n");
-		if (randomizeItems) {
-			if (generateWorlds(worlds, settingsVector) != 0) {
-				// generating worlds failed
-				ErrorLog::getInstance().log("Failed to generate worlds!");
+		if (generateWorlds(worlds, settingsVector) != 0) {
+			// generating worlds failed
+			ErrorLog::getInstance().log("Failed to generate worlds!");
+			Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
+			return;
+		}
+
+		// Skip all game modification stuff if we're just doing fill algorithm testing
+		#ifndef FILL_TESTING
+
+			if(!checkBackupOrDump()) {
 				return;
 			}
 
+			//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
+			//Do this at the end to check if the files were cached
+			//Copying is slow so we skip all the ones we can
+			Utility::platformLog("Restoring game files...\n");
+			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
+				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
+				return;
+			}
+			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
+				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
+				return;
+			}
+			if(!restoreEntrances()) {
+				ErrorLog::getInstance().log("Failed to restore entrances!");
+				return;
+			}
+
+			//IMPROVEMENT: custom model things
+
+			Utility::platformLog("Modifying game code...\n");
+			if (!dryRun) {
+				if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
+					ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
+					return;
+				}
+			}
+		#else
+			dryRun = true;
+		#endif
+
+		if (randomizeItems) {
 			if(!dryRun) {
 				if(config.settings.randomize_charts) {
 					if(!writeCharts(worlds)) {
@@ -517,9 +545,8 @@ public:
 				//get world locations with "worlds[playerNum - 1].locationEntries"
 				//assume 1 world for now, modifying multiple copies needs work
 				Utility::platformLog("Saving items...\n");
-				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].raceModeDungeons);
-				for (const Location& location : worlds[0].locationEntries) {
-					if (location.locationId == LocationId::INVALID) continue; //shouldnt be here maybe?
+				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
+				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save items!");
 						return;
@@ -532,7 +559,7 @@ public:
 						ErrorLog::getInstance().log("Failed to save entrances!");
 					}
 				}
-				
+
 				Utility::platformLog("Applying final patches...\n");
 				if(TweakError err = apply_necessary_post_randomization_tweaks(worlds[0], randomizeItems); err != TweakError::NONE) {
 					ErrorLog::getInstance().log("Encountered error in post-randomization tweaks!");
@@ -545,34 +572,11 @@ public:
 			}
 		}
 
-		//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
-		//Do this at the end to check if the files were cached
-		//Copying is slow so we skip all the ones we can
-		Utility::platformLog("Restoring outdated files...\n");
-		if(!g_session.isCached("content/Common/Misc/Misc.szs")) {
-			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
-				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-				return;
-			}
-		}
-		if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
-			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
-				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-				return;
-			}
-		}
-		if(!restoreEntrances()) {
-			ErrorLog::getInstance().log("Failed to restore entrances!");
-			return;
-		}
-		
 		Utility::platformLog("Preparing to repack files...\n");
 		if(!g_session.repackCache()) {
 			ErrorLog::getInstance().log("Failed to repack file cache!");
 			return;
 		}
-
-		generateNonSpoilerLog(worlds);
 
 		//done!
 		return;
@@ -587,6 +591,9 @@ public:
 
 int main() {
 	using namespace std::chrono_literals;
+	#ifdef ENABLE_TIMING
+			auto start = std::chrono::high_resolution_clock::now();
+	#endif
 
 	ProgramTime::getInstance(); //create instance + set time
 
@@ -620,7 +627,7 @@ int main() {
 		}
 	}
 	conf.close();
-	
+
 	Utility::platformLog("Reading config\n");
 	ConfigError err = loadFromFile("./config.yaml", load);
 	if(err != ConfigError::NONE) {
@@ -637,6 +644,13 @@ int main() {
 	// TODO: text wrapping on drc dungeon map
 	// TODO: bpr crashes when uncompressed for some reason
 	rando.randomize();
+
+	#ifdef ENABLE_TIMING
+			auto stop = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+			auto seconds = static_cast<double>(duration.count()) / 1000000.0;
+			Utility::platformLog(std::string("Total process took ") + std::to_string(seconds) + " seconds\n");
+	#endif
 
 	std::this_thread::sleep_for(3s);
 	Utility::platformShutdown();

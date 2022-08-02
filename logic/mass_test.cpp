@@ -1,41 +1,43 @@
 
 #include "Generate.hpp"
 #include "../seedgen/random.hpp"
+#include "../seedgen/permalink.hpp"
+#include "../seedgen/config.hpp"
 #include "../server/command/Log.hpp"
-#include "SpoilerLog.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <cstdio>
+#include <vector>
+
+Config config;
 
 static int testSettings(const Settings& settings, bool& settingToChange, const std::string& settingName)
 {
 
     settingToChange = true;
-    std::cout << "Now Testing setting " << settingName << std::endl;
+    std::cout << "Now Testing setting " << settingName;
 
-    int seed = Random(0, 10000000);
+    const std::string seed = std::to_string(Random(0, 10000000));
+    std::cout << " using seed \"" << seed << "\"" << std::endl;
 
-    std::cout << "Using seed " << std::to_string(seed) << std::endl;
+    auto permalink = create_permalink(settings, seed);
+    std::hash<std::string> strHash;
+    auto integer_seed = strHash(permalink);
 
-    #ifdef ENABLE_DEBUG
-        std::cout << "Debugging is ON" << std::endl;
-    #endif
+    Random_Init(integer_seed);
 
     int worldCount = 1;
-    World blankWorld;
-    WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector {settings};
+    WorldPool worlds (worldCount);
+    std::vector<Settings> settingsVector (1, settings);
 
-    int retVal = generateWorlds(worlds, settingsVector, seed);
+    int retVal = generateWorlds(worlds, settingsVector);
 
-    if (retVal == 0)
-    {
-        std::cout << "Generating Spoiler Log" << std::endl;
-        generateSpoilerLog(worlds);
-        generateNonSpoilerLog(worlds);
-    }
-    else
+    config.settings = settings;
+    config.seed = seed;
+    ConfigError err = writeToFile("error_config.yaml", config);
+
+    if (retVal != 0)
     {
         std::cout << "Generation after changing setting \"" << settingName << "\" failed." << std::endl;
         return 1;
@@ -45,25 +47,24 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
 static int multiWorldTest(const Settings& settings)
 {
-    std::cout << "Now testing multiworld generation" << std::endl;
-    int seed = Random(0, 10000000);
+    std::cout << "Now testing multiworld generation";
 
-    std::cout << "Using seed " << std::to_string(seed) << std::endl;
+    const std::string seed = std::to_string(Random(0, 10000000));
+    std::cout << " using seed \"" << seed << "\"" << std::endl;
+
+    auto permalink = create_permalink(settings, seed);
+    std::hash<std::string> strHash;
+    auto integer_seed = strHash(permalink);
+
+    Random_Init(integer_seed);
 
     int worldCount = 3;
-    World blankWorld;
-    WorldPool worlds (worldCount, blankWorld);
-    std::vector<Settings> settingsVector {settings, settings, settings};
+    WorldPool worlds (worldCount);
+    std::vector<Settings> settingsVector (worldCount, settings);
 
-    int retVal = generateWorlds(worlds, settingsVector, seed);
+    int retVal = generateWorlds(worlds, settingsVector);
 
-    if (retVal == 0)
-    {
-        std::cout << "Generating Spoiler Log" << std::endl;
-        generateSpoilerLog(worlds);
-        generateNonSpoilerLog(worlds);
-    }
-    else
+    if (retVal != 0)
     {
         std::cout << "Generation after multiworld test failed." << std::endl;
         return 1;
@@ -71,13 +72,15 @@ static int multiWorldTest(const Settings& settings)
     return 0;
 }
 
-#define TEST(settings, setting, name) if(testSettings(settings, setting, name)) return 1;
+#define TEST(settings, setting, name) if(testSettings(settings, setting, name)) return;
 
-int main()
+void massTest(Config& newConfig)
 {
+    config = std::move(newConfig);
     Settings settings1;
+    settings1.starting_gear = {GameItem::SongOfPassing};
 
-    // Set settings in code for now
+    // Test settings 1 by 1
     TEST(settings1, settings1.progression_dungeons, "progression dungeons");
     TEST(settings1, settings1.progression_great_fairies, "progression great faires");
     TEST(settings1, settings1.progression_puzzle_secret_caves, "progression puzzle secret caves");
@@ -114,6 +117,14 @@ int main()
     settings1.num_race_mode_dungeons = 6;
     TEST(settings1, settings1.race_mode, "race mode 6 dungeon");
     TEST(settings1, settings1.keylunacy, "keylunacy");
+    settings1.path_hints = 5;
+    TEST(settings1, settings1.korl_hints, "5 path hints");
+    settings1.barren_hints = 5;
+    TEST(settings1, settings1.korl_hints, "5 barren hints");
+    settings1.item_hints = 5;
+    TEST(settings1, settings1.ho_ho_hints, "5 item hints");
+    settings1.location_hints = 5;
+    TEST(settings1, settings1.ho_ho_hints, "5 loaction hints");
     TEST(settings1, settings1.randomize_charts, "randomize charts");
     TEST(settings1, settings1.randomize_starting_island, "random starting island");
     TEST(settings1, settings1.randomize_dungeon_entrances, "randomize dungeon entrances");
@@ -122,10 +133,12 @@ int main()
     TEST(settings1, settings1.randomize_misc_entrances, "randomize misc entrances");
     TEST(settings1, settings1.decouple_entrances, "decouple entrances");
     TEST(settings1, settings1.mix_entrance_pools, "mix entrance pools");
+    TEST(settings1, settings1.plandomizer, "plandomizer");
 
     // Now set all settings in reverse (except dungeons since they have a lot of checks)
     std::cout << "REVERSING TEST DIRECTION" << std::endl;
     Settings settings2;
+    settings2.starting_gear = {GameItem::BalladOfGales};
 
     TEST(settings2, settings2.progression_dungeons, "progression dungeons");
     TEST(settings2, settings2.mix_entrance_pools, "mix entrance pools");
@@ -133,8 +146,16 @@ int main()
     TEST(settings2, settings2.randomize_door_entrances, "randomize door entrances");
     TEST(settings2, settings2.randomize_cave_entrances, "randomize cave entrances");
     TEST(settings2, settings2.randomize_dungeon_entrances, "randomize dungeon entrances");
-    TEST(settings2, settings2.randomize_starting_island, "random starting island");
+    TEST(settings2, settings2.randomize_starting_island, "randomize starting island");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
+    settings2.path_hints = 5;
+    TEST(settings2, settings2.korl_hints, "5 path hints");
+    settings2.barren_hints = 5;
+    TEST(settings2, settings2.korl_hints, "5 barren hints");
+    settings2.item_hints = 5;
+    TEST(settings2, settings2.ho_ho_hints, "5 item hints");
+    settings2.location_hints = 5;
+    TEST(settings2, settings2.ho_ho_hints, "5 loaction hints");
     TEST(settings2, settings2.keylunacy, "keylunacy");
     settings2.num_race_mode_dungeons = 3;
     TEST(settings2, settings2.race_mode, "race mode 3 dungeon");
@@ -166,9 +187,9 @@ int main()
     TEST(settings2, settings2.progression_combat_secret_caves, "progression combat secret caves");
     TEST(settings2, settings2.progression_puzzle_secret_caves, "progression puzzle secret caves");
     TEST(settings2, settings2.progression_great_fairies, "progression great faires");
+    TEST(settings2, settings2.plandomizer, "plandomizer");
 
     multiWorldTest(settings1);
 
     std::cout << "All settings tests passed" << std::endl;
-    return 0;
 }

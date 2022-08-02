@@ -7,7 +7,7 @@
     ProgramTime::ProgramTime() :
         openTime(OSGetTime())
     {}
-    
+
     OSTime ProgramTime::getOpenedTime() {
         return getInstance().openTime;
     }
@@ -56,7 +56,7 @@
 
         return ret.str();
     }
-    
+
     std::string ProgramTime::getTimeStr() {
         const OSTime duration = getElapsedTime();
         OSCalendarTime time;
@@ -75,7 +75,7 @@
     ProgramTime::ProgramTime() :
         openTime(std::chrono::system_clock::now())
     {}
-    
+
     ProgramTime::TimePoint_t ProgramTime::getOpenedTime() {
         return getInstance().openTime;
     }
@@ -83,12 +83,12 @@
     ProgramTime::TimePoint_t::duration ProgramTime::getElapsedTime() {
         return std::chrono::system_clock::now() - getOpenedTime();
     }
-    
+
     std::string ProgramTime::getDateStr() {
         const time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
         return std::ctime(&point); //time string ends with \n
     }
-    
+
     std::string ProgramTime::getTimeStr() {
         using namespace std::chrono;
 
@@ -167,7 +167,7 @@ BasicLog::BasicLog() {
             output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
         }
     }
-    
+
     output << std::endl << std::endl;
 }
 
@@ -190,7 +190,7 @@ ErrorLog::ErrorLog() {
     output.open("./Error Log.txt");
 
     output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
-    
+
     output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     output << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
@@ -213,7 +213,7 @@ ErrorLog::ErrorLog() {
 }
 
 ErrorLog::~ErrorLog() {
-    
+
 }
 
 ErrorLog& ErrorLog::getInstance() {
@@ -232,29 +232,34 @@ void ErrorLog::log(const std::string& msg) {
 
 
 DebugLog::DebugLog() {
-    output.open("./Debug Log.txt");
+    #ifdef ENABLE_DEBUG
+        output.open("./Debug Log.txt");
 
-    output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
-    
-    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
-    output << "Selected options:" << std::endl << "\t";
-    for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-    {
-        Option setting = static_cast<Option>(settingInt);
+        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
-        if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+
+        output << "Selected options:" << std::endl << "\t";
+        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
         {
-            output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
-        }
-        else
-        {
-            output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
-        }
-    }
+            Option setting = static_cast<Option>(settingInt);
 
-    output << std::endl << std::endl;
+            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+            {
+                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+            }
+            else
+            {
+                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+            }
+        }
+
+        output << std::endl << std::endl;
+    #endif
 }
 
 DebugLog::~DebugLog() {
@@ -267,5 +272,7 @@ DebugLog& DebugLog::getInstance() {
 }
 
 void DebugLog::log(const std::string& msg) {
-    output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
+    #ifdef ENABLE_DEBUG
+        output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
+    #endif
 }

@@ -8,12 +8,10 @@
 
 #include "./RandoSession.hpp"
 #include "../../logic/GameItem.hpp"
-#include "../../logic/HintRegion.hpp"
 #include "../../libs/Yaml.hpp"
+#include "../../logic/Dungeon.hpp"
 
 extern RandoSession g_session;
-
-enum struct DungeonId : uint32_t; //forward declared because of circular include issues
 
 enum struct [[nodiscard]] ModificationError {
     NONE = 0,
@@ -49,7 +47,7 @@ class ModifyChest : public LocationModification {
 private:
     inline static bool isCTMC = false;
     inline static bool raceMode = false;
-    inline static std::unordered_map<DungeonId, HintRegion> raceModeDungeons;
+    inline static std::unordered_map<std::string, Dungeon> dungeons = {};
 
     std::string filePath;
     std::vector<uint32_t> offsets;
@@ -67,7 +65,7 @@ public:
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
     ModificationError parseArgs(Yaml::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
-    static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::unordered_map<DungeonId, HintRegion>& dungeons_) { isCTMC = isCTMC_; raceMode = raceMode_; raceModeDungeons = dungeons_; }
+    static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::unordered_map<std::string, Dungeon>& dungeons_) { isCTMC = isCTMC_; raceMode = raceMode_; dungeons = dungeons_; }
 };
 
 class ModifyActor : public LocationModification {

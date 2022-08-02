@@ -10,12 +10,27 @@ if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
   add_compile_options(-O3 -flto)
   add_link_options(-flto -fno-fat-lto-objects)
+elseif(GET_THREADS)
+  find_package(Threads REQUIRED)
 endif()
 
 add_compile_definitions(ENABLE_DEBUG=1) # TODO: Take this out after testing?
 if(ENABLE_DEBUG)
   message("Debugging is ON")
   add_compile_definitions(ENABLE_DEBUG)
+endif()
+
+if(ENABLE_TIMING)
+  message("Some events will be timed")
+  add_compile_definitions(ENABLE_TIMING)
+endif()
+
+if(FILL_TESTING)
+  message("Configuring for Fill Testing")
+  add_compile_definitions(FILL_TESTING)
+elseif(MASS_TESTING)
+  message("Configuring for Mass Testing")
+  add_compile_definitions(MASS_TESTING)
 endif()
 
 # Version strings for RNG and compatibility checks
@@ -54,12 +69,16 @@ else()
   target_link_libraries(wwhd_rando ${ZLIB_LDFLAGS})
   target_compile_options(wwhd_rando PRIVATE ${ZLIB_CFLAGS})
 endif()
-  
+
 # Put data files together for easier manipulation
 file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
 file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                           # Images and other assets used in patching
 file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
+
+if(CMAKE_USE_PTHREADS_INIT AND GET_THREADS)
+  target_link_libraries(wwhd_rando Threads::Threads)
+endif()
 
 if(DEFINED DEVKITPRO)
   # Some code specific to Wii U
@@ -68,12 +87,12 @@ if(DEFINED DEVKITPRO)
   # Use libmocha for filesystem access
   find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
   target_link_libraries(wwhd_rando "${LIBMOCHA}")
-  
+
   # Bundle data files in romfs
   include("${DEVKITPRO}/portlibs/wiiu/share/romfs-wiiu.cmake" REQUIRED)
   romfs_add(wwhd_rando "build/data")
   add_compile_definitions(DATA_PATH="romfs:/")
-  
+
   # Copy some files for the homebrew launcher
   file(COPY "server/platform/meta.xml" DESTINATION "${CMAKE_BINARY_DIR}")
   file(COPY "server/platform/icon.png" DESTINATION "${CMAKE_BINARY_DIR}")
