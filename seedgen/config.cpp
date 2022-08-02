@@ -145,6 +145,15 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.mix_entrance_pools = false;
     conf.settings.decouple_entrances = false;
 
+    conf.settings.korl_hints = false;
+    conf.settings.ho_ho_hints = false;
+    conf.settings.path_hints = false;
+    conf.settings.barren_hints = false;
+    conf.settings.item_hints = false;
+    conf.settings.location_hints = false;
+    conf.settings.use_always_hints = false;
+    conf.settings.clearer_hints = false;
+
     conf.settings.instant_text_boxes = true;
     conf.settings.reveal_full_sea_chart = true;
     conf.settings.num_starting_triforce_shards = 0;

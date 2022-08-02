@@ -286,7 +286,7 @@ static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
             {
                 // Filter to only the dungeons locations
                 auto worldLocations = world.getLocations();
-                auto dungeonLocations = filterFromPool(worldLocations, [dungeon](const Location* loc){return elementInPool(loc->name, dungeon.locations);});
+                auto dungeonLocations = filterFromPool(worldLocations, [dungeon = dungeon](const Location* loc){return elementInPool(loc->name, dungeon.locations);});
                 // Filter out tingle chests if they're not progression locations
                 if (!world.getSettings().progression_tingle_chests)
                 {
