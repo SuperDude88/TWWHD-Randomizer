@@ -46,11 +46,11 @@ static bool evaluateRequirement(World& world, const Requirement& req, const Item
 
     case RequirementType::HAS_ITEM:
         item = std::get<Item>(req.args[0]);
-        return ownedItems.count(item) > 0;
+        return ownedItems.contains(item);
 
     case RequirementType::EVENT:
         event = std::get<EventId>(req.args[0]);
-        return ownedEvents.count(event) > 0;
+        return ownedEvents.contains(event);
 
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
@@ -212,7 +212,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto eventItr = eventsToTry.begin(); eventItr != eventsToTry.end(); )
         {
             auto eventAccess = *eventItr;
-            if (ownedEvents.count(eventAccess->event) > 0)
+            if (ownedEvents.contains(eventAccess->event))
             {
                 eventItr = eventsToTry.erase(eventItr);
                 continue;

@@ -194,7 +194,7 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             // are all that are accessible.
             if (item.isChartForSunkenTreasure())
             {
-                auto sunkenTreasureLocations = filterAndEraseFromPool(accessibleLocations, [](const Location* loc){return loc->categories.count(LocationCategory::SunkenTreasure) > 0;});
+                auto sunkenTreasureLocations = filterAndEraseFromPool(accessibleLocations, [](const Location* loc){return loc->categories.contains(LocationCategory::SunkenTreasure);});
                 if (accessibleLocations.empty())
                 {
                     accessibleLocations = std::move(sunkenTreasureLocations);
@@ -439,7 +439,7 @@ FillError fill(WorldPool& worlds)
     }
 
     // Filter out hint locations from allLocations
-    filterAndEraseFromPool(allLocations, [](Location* loc){return loc->categories.count(LocationCategory::HoHoHint) > 0;});
+    filterAndEraseFromPool(allLocations, [](Location* loc){return loc->categories.contains(LocationCategory::HoHoHint);});
 
     determineMajorItems(worlds, itemPool, allLocations);
     err = placeNonProgressLocationPlandomizerItems(worlds, itemPool);

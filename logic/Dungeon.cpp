@@ -14,5 +14,5 @@ bool isValidDungeon(const std::string& dungeonName)
         "Wind Temple"
     };
 
-    return dungeonNames.count(dungeonName) > 0;
+    return dungeonNames.contains(dungeonName);
 }

@@ -324,7 +324,7 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::ALL, "ALL"},
     };
 
-    if (typeNameMap.count(type) == 0)
+    if (!typeNameMap.contains(type))
     {
         return "INVALID ENTRANCE TYPE";
     }
@@ -349,7 +349,7 @@ EntranceType entranceTypeToReverse(const EntranceType& type)
         {EntranceType::ALL, EntranceType::ALL},
     };
 
-    if (typeReverseMap.count(type) == 0)
+    if (!typeReverseMap.contains(type))
     {
         return EntranceType::NONE;
     }

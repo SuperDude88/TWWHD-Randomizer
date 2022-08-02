@@ -239,7 +239,7 @@ GameItem nameToGameItem(const std::string& name)
 		{"Nothing", GameItem::NOTHING}
 	};
 
-	if (nameItemMap.count(name) == 0)
+	if (!nameItemMap.contains(name))
 	{
 		return GameItem::INVALID;
 	}
@@ -481,7 +481,7 @@ std::string gameItemToName(GameItem item)
 		{GameItem::NOTHING, "Nothing"}
 	};
 
-	if (itemNameMap.count(item) == 0)
+	if (!itemNameMap.contains(item))
 	{
 		return "INVALID";
 	}
@@ -498,7 +498,7 @@ Item::Item(GameItem gameItemId_, int worldId_)
 		gameItemId = gameItemId_;
 		worldId = worldId_;
 
-		if (junkItems.count(gameItemId) > 0)
+		if (junkItems.contains(gameItemId))
 		{
 				junkItem = true;
 		}
@@ -507,7 +507,7 @@ Item::Item(GameItem gameItemId_, int worldId_)
 		{
 				chartForSunkenTreasure = true;
 		}
-		else if (dungeonItems.count(gameItemId) > 0)
+		else if (dungeonItems.contains(gameItemId))
 		{
 				dungeonItem = true;
 		}
@@ -518,7 +518,7 @@ Item::Item(std::string itemName_, int worldId_)
 		gameItemId = nameToGameItem(itemName_);
 		worldId = worldId_;
 
-		if (junkItems.count(gameItemId) > 0)
+		if (junkItems.contains(gameItemId))
 		{
 				junkItem = true;
 		}
@@ -527,7 +527,7 @@ Item::Item(std::string itemName_, int worldId_)
 		{
 				chartForSunkenTreasure = true;
 		}
-		else if (dungeonItems.count(gameItemId) > 0)
+		else if (dungeonItems.contains(gameItemId))
 		{
 				dungeonItem = true;
 		}
