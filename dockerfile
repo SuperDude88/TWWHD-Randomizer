@@ -1,8 +1,12 @@
 FROM wiiuenv/devkitppc:20220806
 
 ENV PATH=$DEVKITPPC/bin:$PATH
+ENV BUILD_TYPE=randomizer
 
 WORKDIR /
+
+# Install python for ASM patches
+RUN apt-get update && apt-get install python3 -y
 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
@@ -38,8 +42,29 @@ RUN mv /opt/devkitpro/wut/usr/include/* /opt/devkitpro/wut/include/
 VOLUME /src
 WORKDIR /src
 
-CMD mkdir -p build && \
-    cd build && \
-    rm -rf * && \
-    $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
-    make
+CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
+        mkdir -p build && \
+        cd build && \
+        rm -rf * && \
+        $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+        make; \
+    else \
+        if [ "$BUILD_TYPE" = "asm" ]; then \
+            cd asm && \
+            python3 ./assemble.py; \
+        else \
+            if [ "$BUILD_TYPE" = "full" ]; then \
+                cd asm && \
+                python3 ./assemble.py && \
+                cd ../ && \
+                \
+                mkdir -p build && \
+                cd build && \
+                rm -rf * && \
+                $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+                make; \
+            else \
+                echo "Invalid build type"; \
+            fi; \
+        fi; \
+    fi
