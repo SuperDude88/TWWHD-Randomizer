@@ -495,7 +495,6 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
     // Keep retrying until Hoh Ho hints are successfully placed, or until we run out
     // of retries
     bool successfullyPlacedHoHoHints = true;
-    int retries = 5;
     do
     {
         successfullyPlacedHoHoHints = true;

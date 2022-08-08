@@ -1,4 +1,4 @@
-FROM wiiuenv/devkitppc:20220728
+FROM wiiuenv/devkitppc:20220806
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 
@@ -7,7 +7,7 @@ WORKDIR /
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout a902da1ce7f45c35121f2a9a294c94e23b9d3fe7 && \
+    git checkout a8ae667989c496f832c7945fd76efa7e5f50771c && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
