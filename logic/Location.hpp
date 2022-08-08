@@ -96,15 +96,16 @@ struct Location
         hasBeenHinted(false),
         originalItem(GameItem::INVALID, -1),
         currentItem(GameItem::INVALID, -1),
+        sortPriority(-1),
         hintRegions({}),
         hintPriority(""),
+        method(std::make_unique<LocationModification>()),
         worldId(-1),
         hasBeenFound(false),
         messageLabel(""),
         hintText(u""),
         goalName("")
     {
-        method = std::make_unique<LocationModification>();
     }
     ~Location() = default;
     Location(const Location& loc) = delete;

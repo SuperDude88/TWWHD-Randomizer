@@ -258,8 +258,6 @@ std::string gameItemToName(GameItem item);
 
 GameItem idToGameItem(uint8_t id);
 
-GameItem nameToGameItem(const std::string& name);
-
 uint32_t maxItemCount(GameItem item);
 
 static const std::set<GameItem> junkItems = {
@@ -365,7 +363,7 @@ static const std::set<GameItem> dungeonItems = {
     GameItem::WTCompass,
 };
 
-class Location;
+struct Location;
 class Item
 {
 public:

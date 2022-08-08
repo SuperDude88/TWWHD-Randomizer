@@ -36,6 +36,7 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
     config.settings = settings;
     config.seed = seed;
     ConfigError err = writeToFile("error_config.yaml", config);
+    //TODO: check ConfigError?
 
     if (retVal != 0)
     {

@@ -1,5 +1,6 @@
 #include "Log.hpp"
 #include <chrono>
+#include <mutex>
 
 
 
@@ -35,9 +36,9 @@
         static const std::array<std::string, 7> DayStrings {
             "Sun",
             "Mon",
-            "Tues",
+            "Tue",
             "Wed",
-            "Thurs",
+            "Thu",
             "Fri",
             "Sat"
         };
@@ -85,7 +86,14 @@
     }
 
     std::string ProgramTime::getDateStr() {
+        //IMPROVEMENT: use once c++20 is better supported (gcc/clang)
+        //also maybe replace %T with something more specific
+        //return std::format("{:%a %b %d %T %Y %n}\n", ProgramTime::getOpenedTime()); 
+
         const time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
+
+        static std::mutex localtimeMut; //std::ctime is not thread safe
+        std::unique_lock<std::mutex> lock(localtimeMut);
         return std::ctime(&point); //time string ends with \n
     }
 
