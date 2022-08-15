@@ -111,11 +111,11 @@ LMSError HashTable::read(std::istream& in) {
 
     Utility::Endian::toPlatform_inplace(eType::Big, entryCount);
 
-    slots.reserve(entryCount);
+    tableSlots.reserve(entryCount);
     for (uint32_t i = 0; i < entryCount; i++) {
         in.seekg(tableStart + 0x4 + i * 0x8, std::ios::beg);
 
-        HashTableSlot& slot = slots.emplace_back();
+        HashTableSlot& slot = tableSlots.emplace_back();
         if (!in.read(reinterpret_cast<char*>(&slot.labelCount), sizeof(slot.labelCount)))
         {
             LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
@@ -162,7 +162,7 @@ void HashTable::write(std::ostream& out) {
     Utility::Endian::toPlatform_inplace(eType::Big, entryCount);
     uint32_t i = 0;
     uint32_t curOffset = 0x8 * entryCount + 0x4;
-    for (HashTableSlot& entry : slots) {
+    for (HashTableSlot& entry : tableSlots) {
         Utility::seek(out, tableStart + 0x4 + 0x8 * i, std::ios::beg);
 
         entry.labelCount = entry.labels.size();

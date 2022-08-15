@@ -409,8 +409,8 @@ static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, Ite
             // Don't accept trying to place major items in non-progress locations
             if (item.isMajorItem())
             {
-                ErrorLog::getInstance().log("Error: Attempted to plandomize major item " + item.getName() + " in non-progress location " + location->name);
-                ErrorLog::getInstance().log("Plandomizing major items in non-progress locations is not allowed.");
+                ErrorLog::getInstance().log("Attempted to plandomize major item \"" + gameItemToName(item.getGameItemId()) + "\" in non-progress location \"" + location->name + "\"");
+                ErrorLog::getInstance().log("\nPlandomizing major items in non-progress locations is not allowed.");
                 return FillError::PLANDOMIZER_ERROR;
             }
         }
@@ -461,9 +461,9 @@ FillError fill(WorldPool& worlds)
 
     if (majorItems.size() > progressionLocations.size())
     {
-        Utility::platformLog(std::string("Major Items: ") + std::to_string(majorItems.size()) + "\n");
-        Utility::platformLog(std::string("Available Progression Locations: ") + std::to_string(progressionLocations.size()) + "\n");
-        Utility::platformLog("Please enable more spots for major items.\n");
+        ErrorLog::getInstance().log(std::string("Major Items: ") + std::to_string(majorItems.size()));
+        ErrorLog::getInstance().log(std::string("Available Progression Locations: ") + std::to_string(progressionLocations.size()));
+        ErrorLog::getInstance().log("Please enable more spots for major items.");
 
         #ifdef ENABLE_DEBUG
             logItemPool("Major Items", majorItems);
@@ -474,7 +474,7 @@ FillError fill(WorldPool& worlds)
                 LOG_TO_DEBUG("\t" + location->name);
             }
         #endif
-        return FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS;
+        LOG_ERR_AND_RETURN(FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS);
     }
 
     // Place all major items in the Item Pool using assumed fill.
@@ -498,7 +498,7 @@ FillError fill(WorldPool& worlds)
 
     if (!gameBeatable(worlds))
     {
-        return FillError::GAME_NOT_BEATABLE;
+        LOG_ERR_AND_RETURN(FillError::GAME_NOT_BEATABLE);
     }
 
     // Calculate time difference

@@ -14,6 +14,7 @@
 #include <condition_variable>
 #include <mutex>
 
+#include "../../gui/update_dialog_header.hpp"
 #include "../filetypes/wiiurpx.hpp"
 #include "../filetypes/yaz0.hpp"
 #include "../filetypes/sarc.hpp"
@@ -26,8 +27,6 @@
 using namespace std::literals::chrono_literals;
 
 #define CHECK_INITIALIZED(ret) if(!initialized) { ErrorLog::getInstance().log("Session is not initialized (encountered on line " TOSTRING(__LINE__) ")"); return ret; }
-
-
 
 //partially based on https://github.com/bshoshany/thread-pool/blob/master/BS_thread_pool.hpp
 class ThreadPool {
@@ -60,9 +59,15 @@ public:
     }
 
     void waitForAll() {
+        UPDATE_DIALOG_LABEL("Repacking Files...");
         waiting = true;
+        auto max_tasks = getTotalTasks();
         std::unique_lock<std::mutex> tasks_lock(tasks_mutex); //Don't really need this, just using it for the condition_variable
-        task_finished.wait(tasks_lock, [this] { return tasks_total == 0; });
+        task_finished.wait(tasks_lock, [this, max_tasks] {
+            int dialogValue = int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f));
+            UPDATE_DIALOG_VALUE(dialogValue)
+            return tasks_total == 0;
+        });
         waiting = false;
     }
 private:
@@ -144,7 +149,8 @@ void RandoSession::init(const fspath& gameBaseDir, const fspath& randoWorkingDir
     workingDir = randoWorkingDir;
     outputDir = randoOutputDir;
 
-    //clearWorkingDir();
+    clearWorkingDir();
+    clearCache();
     initialized = true;
     return;
 }
@@ -701,6 +707,13 @@ bool RandoSession::repackCache()
     return true;
 }
 
+void RandoSession::clearCache()
+{
+    fileCache.children.clear();
+    fileCache.isRepacked = false;
+    fileCache.fullCompress = true;
+    fileCache.toOutput = false;
+}
 
 
 std::vector<std::pair<std::string, std::shared_ptr<RandoSession::CacheEntry>>> generateList(RandoSession::CacheEntry& entry) {

@@ -15,6 +15,7 @@
 #include "server/utility/platform.hpp"
 #include "server/utility/file.hpp"
 #include "server/utility/endian.hpp"
+#include "gui/update_dialog_header.hpp"
 #include <cstring>
 #include <fstream>
 #include <filesystem>
@@ -51,10 +52,13 @@ private:
 
 		using namespace std::filesystem;
 		Utility::platformLog("Verifying dump...\n");
+		UPDATE_DIALOG_LABEL("Verifying dump...");
+		UPDATE_DIALOG_VALUE(25);
 
 		const RandoSession::fspath& base = g_session.getBaseDir();
 		if(!is_directory(base / "code") || !is_directory(base / "content") || !is_directory(base / "meta")) {
-			Utility::platformLog("Could not find code/content/meta folders at base directory!\n");
+			// Utility::platformLog("Could not find code/content/meta folders at base directory!\n");
+			ErrorLog::getInstance().log("Could not find code/content/meta folders at base directory!");
 
 			#ifdef DEVKITPRO
 				Utility::platformLog("Attempting to dump game\n");
@@ -76,7 +80,8 @@ private:
 
 				if(!Utility::dumpGame(*game, {.dumpTypes = Utility::dumpTypeFlags::Game}, base)) return false;
 			#else
-				Utility::platformLog("Invalid path: you must specify the path to a decrypted dump of The Wind Waker HD (NTSC-U / US version).\n");
+				// Utility::platformLog("Invalid path: you must specify the path to a decrypted dump of The Wind Waker HD (NTSC-U / US version).\n");
+				ErrorLog::getInstance().log("Invalid base game path: you must specify the path to a\ndecrypted dump of The Wind Waker HD (NTSC-U / US version).");
 				return false;
 			#endif
 		}
@@ -85,13 +90,15 @@ private:
 		tinyxml2::XMLDocument meta;
 		const std::string metaPath = g_session.openGameFile("meta/meta.xml").string();
 		if(metaPath.empty()) {
-			Utility::platformLog("Failed extracting meta.xml\n");
+			// Utility::platformLog("Failed extracting meta.xml\n");
+			ErrorLog::getInstance().log("Failed extracting meta.xml");
 			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
 
 		if(tinyxml2::XMLError err = meta.LoadFile(metaPath.c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
-			Utility::platformLog("Could not parse meta.xml, got error %d\n", err);
+			// Utility::platformLog("Could not parse meta.xml, got error %d\n", err);
+			ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
 			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
@@ -100,16 +107,20 @@ private:
 		const std::string titleId = root->FirstChildElement("title_id")->GetText();
 		const std::string nameEn = root->FirstChildElement("longname_en")->GetText();
 		if(titleId != "0005000010143500" || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {
-			Utility::platformLog("meta.xml does not match base game - dump is not valid\n");
-			Utility::platformLog("ID %s\n", titleId.c_str());
-			Utility::platformLog("Name %s\n", nameEn.c_str());
+			// Utility::platformLog("meta.xml does not match base game - dump is not valid\n");
+			// Utility::platformLog("ID %s\n", titleId.c_str());
+			// Utility::platformLog("Name %s\n", nameEn.c_str());
+			ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
+			ErrorLog::getInstance().log("ID " + titleId);
+			ErrorLog::getInstance().log("Name " + nameEn);
 			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
 
 		const std::string region = root->FirstChildElement("region")->GetText();
 		if(region != "00000002") {
-			Utility::platformLog("Incorrect region - game must be a NTSC-U / US copy\n");
+			// Utility::platformLog("Incorrect region - game must be a NTSC-U / US copy\n");
+			ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
 			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
@@ -134,10 +145,11 @@ private:
 		return;
 	}
 
-	[[nodiscard]] bool writeCharts(const WorldPool& worlds) {
+	[[nodiscard]] bool writeCharts(WorldPool& worlds) {
 		using namespace std::literals::string_literals;
 
 		Utility::platformLog("Saving randomized charts...\n");
+		UPDATE_DIALOG_LABEL("Saving randomized charts...");
 
 		const RandoSession::fspath path = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
 		if(path.empty()) {
@@ -395,6 +407,8 @@ private:
 
 	[[nodiscard]] bool writeEntrances(WorldPool& worlds) {
 		Utility::platformLog("Saving entrances...\n");
+		UPDATE_DIALOG_VALUE(45);
+		UPDATE_DIALOG_LABEL("Saving entrances...");
 
 		const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
 		const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
@@ -465,13 +479,15 @@ public:
 		Utility::platformLog("Initialized session\n");
 	}
 
-	void randomize() {
+	int randomize() {
 
 		// Go through the setting testing process if mass testing is turned on and ignore everything else
 		#ifdef MASS_TESTING
 			massTest(config);
-			return;
+			return 0;
 		#endif
+
+		LOG_TO_DEBUG(permalink);
 
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
 
@@ -483,25 +499,26 @@ public:
 		LogInfo::setConfig(config);
 		LogInfo::setSeedHash(generate_seed_hash());
 
-		clearOldLogs();
+		// clearOldLogs();
 
 		// Create all necessary worlds (for any potential multiworld support in the future)
 		WorldPool worlds(numPlayers);
 		std::vector<Settings> settingsVector (numPlayers, config.settings);
 
 		Utility::platformLog("Randomizing...\n");
+		UPDATE_DIALOG_VALUE(5);
 		if (generateWorlds(worlds, settingsVector) != 0) {
 			// generating worlds failed
-			ErrorLog::getInstance().log("Failed to generate worlds!");
-			Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
-			return;
+			// Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
+			return 1;
 		}
+
 
 		// Skip all game modification stuff if we're just doing fill algorithm testing
 		#ifndef FILL_TESTING
 
 			if(!checkBackupOrDump()) {
-				return;
+				return 1;
 			}
 
 			//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
@@ -510,24 +527,26 @@ public:
 			Utility::platformLog("Restoring game files...\n");
 			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
 				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-				return;
+				return 1;
 			}
 			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
 				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-				return;
+				return 1;
 			}
 			if(!restoreEntrances()) {
 				ErrorLog::getInstance().log("Failed to restore entrances!");
-				return;
+				return 1;
 			}
 
 			//IMPROVEMENT: custom model things
 
 			Utility::platformLog("Modifying game code...\n");
+			UPDATE_DIALOG_VALUE(30);
+			UPDATE_DIALOG_LABEL("Modifying game code...");
 			if (!dryRun) {
 				if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
 					ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
-					return;
+					return 1;
 				}
 			}
 		#else
@@ -539,17 +558,21 @@ public:
 				if(config.settings.randomize_charts) {
 					if(!writeCharts(worlds)) {
 						ErrorLog::getInstance().log("Failed to save charts!");
+						return 1;
 					}
 				}
 
 				//get world locations with "worlds[playerNum - 1].locationEntries"
 				//assume 1 world for now, modifying multiple copies needs work
 				Utility::platformLog("Saving items...\n");
+				UPDATE_DIALOG_VALUE(40);
+				UPDATE_DIALOG_LABEL("Saving items...");
+				resetRPX();
 				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save items!");
-						return;
+						return 1;
 					}
 				}
 				saveRPX();
@@ -557,13 +580,16 @@ public:
 				if (config.settings.randomize_cave_entrances || config.settings.randomize_door_entrances || config.settings.randomize_dungeon_entrances || config.settings.randomize_misc_entrances) {
 					if(!writeEntrances(worlds)) {
 						ErrorLog::getInstance().log("Failed to save entrances!");
+						return 1;
 					}
 				}
 
 				Utility::platformLog("Applying final patches...\n");
+				UPDATE_DIALOG_VALUE(50);
+				UPDATE_DIALOG_LABEL("Applying final patches...");
 				if(TweakError err = apply_necessary_post_randomization_tweaks(worlds[0], randomizeItems); err != TweakError::NONE) {
 					ErrorLog::getInstance().log("Encountered error in post-randomization tweaks!");
-					return;
+					return 1;
 				}
 			}
 
@@ -575,11 +601,11 @@ public:
 		Utility::platformLog("Preparing to repack files...\n");
 		if(!g_session.repackCache()) {
 			ErrorLog::getInstance().log("Failed to repack file cache!");
-			return;
+			return 1;
 		}
 
 		//done!
-		return;
+		return 0;
 	}
 
 	bool restoreFromBackup() {
@@ -589,7 +615,7 @@ public:
 	}
 };
 
-int main() {
+int mainRandomize() {
 	using namespace std::chrono_literals;
 	#ifdef ENABLE_TIMING
 			auto start = std::chrono::high_resolution_clock::now();
@@ -598,6 +624,8 @@ int main() {
 	ProgramTime::getInstance(); //create instance + set time
 
 	Utility::platformInit();
+
+	ErrorLog::getInstance().clearLastErrors();
 
 	#ifdef DEVKITPRO
 		if(!std::filesystem::is_directory("fs:/vol/external01/wiiu/apps/rando")) {
@@ -643,7 +671,7 @@ int main() {
 	// TODO: do a hundo seed to test everything
 	// TODO: text wrapping on drc dungeon map
 	// TODO: bpr crashes when uncompressed for some reason
-	rando.randomize();
+	int retVal = rando.randomize();
 
 	#ifdef ENABLE_TIMING
 			auto stop = std::chrono::high_resolution_clock::now();
@@ -652,7 +680,12 @@ int main() {
 			Utility::platformLog(std::string("Total process took ") + std::to_string(seconds) + " seconds\n");
 	#endif
 
+	// Close logs
+	ErrorLog::getInstance().close();
+	DebugLog::getInstance().close();
+	BasicLog::getInstance().close();
+
 	std::this_thread::sleep_for(3s);
 	Utility::platformShutdown();
-	return 0;
+	return retVal;
 }
