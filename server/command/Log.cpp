@@ -184,6 +184,11 @@ void BasicLog::log(const std::string& msg) {
     output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
 }
 
+void BasicLog::close()
+{
+    output.close();
+}
+
 
 
 ErrorLog::ErrorLog() {
@@ -225,8 +230,33 @@ ErrorLog& ErrorLog::getInstance() {
 
 void ErrorLog::log(const std::string& msg) {
     //TODO: remove print after testing
-    Utility::platformLog(msg + '\n');
+    // Utility::platformLog(msg + '\n');
     output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
+    lastErrors.push_back(msg);
+    if (lastErrors.size() > 5)
+    {
+        lastErrors.pop_front();
+    }
+}
+
+std::string ErrorLog::getLastErrors() const
+{
+    std::string retStr = "";
+    for (auto& error : lastErrors)
+    {
+        retStr += error + "\n";
+    }
+    return retStr;
+}
+
+void ErrorLog::clearLastErrors()
+{
+    lastErrors.clear();
+}
+
+void ErrorLog::close()
+{
+    output.close();
 }
 
 
@@ -275,4 +305,9 @@ void DebugLog::log(const std::string& msg) {
     #ifdef ENABLE_DEBUG
         output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
     #endif
+}
+
+void DebugLog::close()
+{
+    output.close();
 }

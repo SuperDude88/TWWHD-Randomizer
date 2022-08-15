@@ -57,6 +57,11 @@ namespace {
     }
 }
 
+void resetRPX()
+{
+    gRPX = FileTypes::ELF();
+}
+
 
 void saveRPX() {
     RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
