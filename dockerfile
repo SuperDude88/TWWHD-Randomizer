@@ -9,9 +9,9 @@ WORKDIR /
 RUN apt-get update && apt-get install python3 -y
 
 # Install wut
-RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
+RUN git clone https://github.com/Maschell/wut wut -b fix_memoryleak --single-branch && \
     cd wut && \
-    git checkout a8ae667989c496f832c7945fd76efa7e5f50771c && \
+    git checkout 23b286feeb9c5e42b9619466c43566fe7fea383b && \
     make -j$(nproc) && \
     make install && \
     cd .. && \

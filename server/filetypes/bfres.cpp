@@ -341,18 +341,14 @@ namespace FileTypes {
         return loadFromBinary(file);
     }
 
-    FRESError resFile::replaceEmbeddedFile(const unsigned int fileIndex, const std::string& newFile) {
+    FRESError resFile::replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile) {
         const uint32_t originalLen = fresHeader.embeddedFiles[fileIndex].fileLength;
 
-        std::ifstream inFile(newFile, std::ios::binary);
-        if (!inFile.is_open()) {
-            LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
-        }
         std::string inData;
-        inFile.seekg(0, std::ios::end);
-        inData.resize(inFile.tellg());
-        inFile.seekg(0, std::ios::beg);
-        if (!inFile.read(&inData[0], inData.size())) {
+        newFile.seekg(0, std::ios::end);
+        inData.resize(newFile.tellg());
+        newFile.seekg(0, std::ios::beg);
+        if (!newFile.read(&inData[0], inData.size())) {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
 
@@ -419,7 +415,67 @@ namespace FileTypes {
             nextSearchVal = group.entries[entryIndex].searchValue;
         }
 
-        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, newFile)); //Entry index includes the root entry, we don't need it
+        std::ifstream inFile(newFile, std::ios::binary);
+        if (!inFile.is_open()) {
+            LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
+        }
+
+        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, inFile)); //Entry index includes the root entry, we don't need it
+        return FRESError::NONE;
+    }
+
+    FRESError resFile::replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData) {
+        GroupHeader group;
+        group.groupLength = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C]);
+        group.entryCount = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C] + 4);
+
+        Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
+        Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
+
+        int offset = 0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C + 8;
+        for (int entry_index = 0; entry_index <= group.entryCount; entry_index++) {
+            GroupEntry entry;
+            entry.searchValue = *reinterpret_cast<uint32_t*>(&fileData[offset]);
+            entry.leftIndex = *reinterpret_cast<uint16_t*>(&fileData[offset + 4]);
+            entry.rightIndex = *reinterpret_cast<uint16_t*>(&fileData[offset + 6]);
+            entry.namePointer = *reinterpret_cast<int32_t*>(&fileData[offset + 8]);
+            entry.dataPointer = *reinterpret_cast<int32_t*>(&fileData[offset + 12]);
+
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.searchValue);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.leftIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.rightIndex);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.namePointer);
+            Utility::Endian::toPlatform_inplace(eType::Big, entry.dataPointer);
+            group.entries.push_back(entry);
+            offset += 0x10;
+        }
+
+        uint32_t searchVal = group.entries[0].searchValue;
+        uint32_t nextSearchVal = group.entries[group.entries[0].leftIndex].searchValue;
+        uint16_t entryIndex = group.entries[0].leftIndex;
+
+        while (searchVal > nextSearchVal) {
+            searchVal = nextSearchVal;
+            uint32_t charpos = searchVal >> 3;
+            uint32_t bitpos = searchVal & 0b111;
+            uint32_t direction;
+
+            if (charpos >= fileName.size()) {
+                direction = 0;
+            } else {
+                direction = (fileName[charpos] >> bitpos) & 1U; //unsigned to resolve a compiler warning, makes no functional difference
+            }
+
+            if (direction == 0) {
+                entryIndex = group.entries[entryIndex].leftIndex;
+            }
+            else {
+                entryIndex = group.entries[entryIndex].rightIndex;
+            }
+            nextSearchVal = group.entries[entryIndex].searchValue;
+        }
+
+        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, newData)); //Entry index includes the root entry, we don't need it
         return FRESError::NONE;
     }
 

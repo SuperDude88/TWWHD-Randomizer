@@ -49,8 +49,10 @@ From the source directory, this would be:
 
 ```
 docker build -t <image-tag> .
-docker run -v "$(pwd):/src" <image-tag>
+docker run -i -e BUILD_TYPE=randomizer -v "$(pwd):/src" <image-tag>
 ```
+
+You can also change the build type to "asm" to rebuild the assembly patches, or "full" to build the assembly and the randomizer.
 
 The randomizer program (RPX) will be placed in the build folder.
 

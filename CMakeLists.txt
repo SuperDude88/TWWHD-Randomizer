@@ -8,10 +8,10 @@ add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0)
 
 if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
-  add_compile_options(-O3 -flto)
+  add_compile_options(-O3 -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
 else()
-  add_compile_options(-O3)
+  add_compile_options(-O3 -Wall)
 endif()
 
 if(GET_THREADS)

@@ -100,6 +100,7 @@ namespace FileTypes
         FRESHeader fresHeader;
         std::vector<Subfiles::FTEXFile> textures;
         std::vector<FileSpec> files;
+        std::string fileData;
 
         resFile();
         //static FRESFile createNew(const std::string& filename); //Needs more complete implementation to be usable
@@ -109,8 +110,8 @@ namespace FileTypes
         FRESError patchFile(const FRESFileSpec& file, const std::string& patch, uint32_t offset);
         FRESError insertIntoFile(const FRESFileSpec& file, const std::string& data, uint32_t offset);
         FRESError appendToFile(const FRESFileSpec& file, const std::string& data);*/ //Not sure these are needed, will implement if a use comes up
-        FRESError replaceEmbeddedFile(const unsigned int fileIndex, const std::string& newFile);
         FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFile);
+        FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);
         FRESError replaceFromDir(const std::string& dirPath);
         FRESError extractToDir(const std::string& dirPath); //Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
@@ -118,8 +119,8 @@ namespace FileTypes
         //FRESError addFile(const std::string& fileName, std::istream& fileData); //Shifts too many offsets and data pieces for the (current) partial implementation
         //FRESError removeFile(const std::string& fileName); //Shifts too many offsets and data pieces for the (current) partial implementation
     private:
+        FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile);
         //void initNew(); //Needs a more complete implementation to work
         //uint32_t insertIntoStringList(std::string str); //Needs a more complete implementation to work
-        std::string fileData;
     };
 }

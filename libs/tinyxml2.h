@@ -41,6 +41,7 @@ distribution.
 #   include <cstring>
 #endif
 #include <stdint.h>
+#include <sstream>
 
 /*
    TODO: intern strings instead of allocation.
@@ -1768,6 +1769,13 @@ public:
     	an errorID.
     */
     XMLError LoadFile( FILE* );
+
+    /**
+    	Load an XML file from a stringstream.
+    	Returns XML_SUCCESS (0) on success, or
+    	an errorID.
+    */
+    XMLError LoadFile( std::stringstream& data );
 
     /**
     	Save the XML file to disk.

@@ -29,7 +29,7 @@
 #include "server/utility/platform.hpp"
 
 #define EXTRACT_ERR_CHECK(fspath) { \
-    if(fspath.empty()) {\
+    if(fspath == nullptr) {\
         ErrorLog::getInstance().log(std::string("Failed to open file on line ") + std::to_string(__LINE__)); \
         return TweakError::FILE_OPEN_FAILED;  \
     } \
@@ -196,9 +196,9 @@ namespace {
 				else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
 					code_len = 4;
 				}
-        else if (string[index_in_str + 1] == u'\x04') { //all implemented commands in this group have length 4. Only used for Ho Ho sound
-          code_len = 4;
-        }
+				else if (string[index_in_str + 1] == u'\x04') { //all implemented commands in this group have length 4. Only used for Ho Ho sound
+        		  code_len = 4;
+        		}
 
 				substr = string.substr(index_in_str, code_len);
 				current_word += substr;
@@ -375,11 +375,11 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 	else {
 		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
 	}
-	RandoSession::fspath inPath = g_session.openGameFile(path);
-	EXTRACT_ERR_CHECK(inPath);
+	std::stringstream* stream = g_session.openGameFile(path);
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile room_dzr;
-	FILETYPE_ERROR_CHECK(room_dzr.loadFromFile(inPath.string()));
+	FILETYPE_ERROR_CHECK(room_dzr.loadFromBinary(*stream));
 	std::vector<ChunkEntry*> ship_spawns = room_dzr.entries_by_type("SHIP");
 	ChunkEntry* ship_spawn_0 = nullptr;
 	for (ChunkEntry* spawn : ship_spawns) { //Find spawn with ID 0
@@ -388,9 +388,9 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 	if(ship_spawn_0 == nullptr) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
 
 	FileTypes::DZXFile stage_dzs;
-	RandoSession::fspath stagePath = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
-	EXTRACT_ERR_CHECK(stagePath);
-	FILETYPE_ERROR_CHECK(stage_dzs.loadFromFile(stagePath.string()));
+	std::stringstream* stageStream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+	EXTRACT_ERR_CHECK(stageStream);
+	FILETYPE_ERROR_CHECK(stage_dzs.loadFromBinary(*stageStream));
 	std::vector<ChunkEntry*> actors = stage_dzs.entries_by_type("ACTR");
 	for (ChunkEntry* actor : actors) {
 		if (std::strncmp(&actor->data[0], "SHIP", 4) == 0) {
@@ -399,8 +399,8 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 			actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
 		}
 	}
-	FILETYPE_ERROR_CHECK(room_dzr.writeToFile(inPath.string()));
-	FILETYPE_ERROR_CHECK(stage_dzs.writeToFile(stagePath.string()));
+	FILETYPE_ERROR_CHECK(room_dzr.writeToStream(*stream));
+	FILETYPE_ERROR_CHECK(stage_dzs.writeToStream(*stageStream));
 
 	return TweakError::NONE;
 }
@@ -414,10 +414,10 @@ TweakError make_all_text_instant() {
 	};
 
 	for (const auto& path : paths) {
-		RandoSession::fspath inPath = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(inPath);
+		std::stringstream* inStream = g_session.openGameFile(path);
+		EXTRACT_ERR_CHECK(inStream);
 		FileTypes::MSBTFile msbt;
-		FILETYPE_ERROR_CHECK(msbt.loadFromFile(inPath.string()));
+		FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*inStream));
 
 		for (auto& [label, message] : msbt.messages_by_label) {
 			std::u16string& String = message.text.message;
@@ -444,24 +444,24 @@ TweakError make_all_text_instant() {
 			}
 		}
 
-		FILETYPE_ERROR_CHECK(msbt.writeToFile(inPath.string()));
+		FILETYPE_ERROR_CHECK(msbt.writeToStream(*inStream));
 	}
 
 	return TweakError::NONE;
 }
 
 TweakError fix_deku_leaf_model() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path)
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream)
 	const std::string data = "item\x00\x00\x00\x00\x01\xFF\x02\x34\xc4\x08\x7d\x81\x45\x9d\x59\xec\xc3\xf5\x8e\xd9\x00\x00\x00\x00\x00\xff\xff\xff"s;
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 	for (ChunkEntry* actor : actors) {
 		if (std::strncmp(&actor->data[0], "itemDek\x00", 8) == 0) actor->data = data;
 	}
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -605,11 +605,11 @@ TweakError remove_shop_item_forced_uniqueness_bit() {
 }
 
 TweakError remove_ff2_cutscenes() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 
 	std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
 	for (ChunkEntry* spawn : spawns) {
@@ -626,7 +626,7 @@ TweakError remove_ff2_cutscenes() {
 			break;
 		}
 	}
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -687,72 +687,74 @@ TweakError make_items_progressive() {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e97c), 0x60000000));
 
 	// Add an item get message for the normal magic meter since it didn't have one in vanilla
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path)
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream)
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
 	const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + 0xB2)];
 	const std::u16string message = DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s;
 	msbt.addMessage("00" + std::to_string(101 + 0xB1), to_copy.attributes, to_copy.style, message);
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
 TweakError add_ganons_tower_warp_to_ff2() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	ChunkEntry& warp = dzr.add_entity("ACTR", 1);
 	warp.data = "Warpmj\x00\x00\x00\x00\x00\x11\xc8\x93\x0f\xd9\x00\x00\x00\x00\xc8\x91\xf7\xfa\x00\x00\x00\x00\x00\x00\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_medli_gift() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+	std::stringstream* stageStream = g_session.openGameFile("content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+	EXTRACT_ERR_CHECK(stageStream)
 
 	FileTypes::DZXFile dzs;
-	FILETYPE_ERROR_CHECK(dzs.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzs.loadFromBinary(*stageStream));
 	ChunkEntry& chest = dzs.add_entity("TRES");
 	chest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzs.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzs.writeToStream(*stageStream));
 
-	RandoSession::fspath path2 = g_session.openGameFile("content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+	std::stringstream* drcStage = g_session.openGameFile("content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+	EXTRACT_ERR_CHECK(drcStage)
 
 	FileTypes::DZXFile dzs2;
-	FILETYPE_ERROR_CHECK(dzs2.loadFromFile(path2.string()));
+	FILETYPE_ERROR_CHECK(dzs2.loadFromBinary(*drcStage));
 	ChunkEntry& dummyChest = dzs2.add_entity("TRES");
 	dummyChest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzs2.writeToFile(path2.string()));
+	FILETYPE_ERROR_CHECK(dzs2.writeToStream(*drcStage));
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_queen_fairy_cutscene() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	ChunkEntry& chest = dzr.add_entity("TRES");
 	chest.data = "takara3\x00\xFF\x20\x0e\x00\xc8\x2f\xcf\xc0\x44\x34\xc0\x00\xc8\x43\x4e\xc0\x00\x09\x10\x00\xa5\xff\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError add_more_magic_jars() {
 	{
-		RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(path);
+		std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
+		EXTRACT_ERR_CHECK(stream);
 
 		FileTypes::DZXFile drc_hub;
-		FILETYPE_ERROR_CHECK(drc_hub.loadFromFile(path.string()));
+		FILETYPE_ERROR_CHECK(drc_hub.loadFromBinary(*stream));
 		std::vector<ChunkEntry*> actors = drc_hub.entries_by_type("ACTR");
 		std::vector<ChunkEntry*> skulls;
 		for (ChunkEntry* actor : actors) {
@@ -763,15 +765,15 @@ TweakError add_more_magic_jars() {
 
 		skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
 		skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-		FILETYPE_ERROR_CHECK(drc_hub.writeToFile(path.string()));
+		FILETYPE_ERROR_CHECK(drc_hub.writeToStream(*stream));
 	}
 
 	{
-		RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(path)
+		std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr");
+		EXTRACT_ERR_CHECK(stream)
 
 		FileTypes::DZXFile drc_before_boss;
-		FILETYPE_ERROR_CHECK(drc_before_boss.loadFromFile(path.string()));
+		FILETYPE_ERROR_CHECK(drc_before_boss.loadFromBinary(*stream));
 		std::vector<ChunkEntry*> actors = drc_before_boss.entries_by_type("ACTR");
 		std::vector<ChunkEntry*> skulls;
 		for (ChunkEntry* actor : actors) {
@@ -782,29 +784,29 @@ TweakError add_more_magic_jars() {
 
 		skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
 		skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-
-		FILETYPE_ERROR_CHECK(drc_before_boss.writeToFile(path.string()));
+		
+		FILETYPE_ERROR_CHECK(drc_before_boss.writeToStream(*stream));
 	}
 
 	{
-		RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(path);
+		std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr");
+		EXTRACT_ERR_CHECK(stream);
 
 		FileTypes::DZXFile dri;
-		FILETYPE_ERROR_CHECK(dri.loadFromFile(path.string()));
+		FILETYPE_ERROR_CHECK(dri.loadFromBinary(*stream));
 		ChunkEntry& grass1 = dri.add_entity("ACTR");
 		grass1.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
 		ChunkEntry& grass2 = dri.add_entity("ACTR");
 		grass2.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
-		FILETYPE_ERROR_CHECK(dri.writeToFile(path.string()));
+		FILETYPE_ERROR_CHECK(dri.writeToStream(*stream));
 	}
 
 	{
-		RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(path);
+		std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
+		EXTRACT_ERR_CHECK(stream);
 
 		FileTypes::DZXFile totg;
-		FILETYPE_ERROR_CHECK(totg.loadFromFile(path.string()));
+		FILETYPE_ERROR_CHECK(totg.loadFromBinary(*stream));
 		std::vector<ChunkEntry*> actors = totg.entries_by_type("ACTR");
 		std::vector<ChunkEntry*> pots;
 		for (ChunkEntry* actor : actors) {
@@ -814,7 +816,7 @@ TweakError add_more_magic_jars() {
 		if(pots.size() < 2) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
 
 		pots[1]->data = "\x6B\x6F\x74\x75\x62\x6F\x00\x00\x70\x7F\xFF\x0A\xC5\x6E\x20\x00\x43\x66\x00\x05\xC5\xDF\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF"s;
-		FILETYPE_ERROR_CHECK(totg.writeToFile(path.string()));
+		FILETYPE_ERROR_CHECK(totg.writeToStream(*stream));
 	}
 
 	return TweakError::NONE;
@@ -823,11 +825,11 @@ TweakError add_more_magic_jars() {
 TweakError modify_title_screen() {
 	using namespace NintendoWare::Layout;
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt");
-	EXTRACT_ERR_CHECK(path)
+	std::stringstream* stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt");
+	EXTRACT_ERR_CHECK(stream)
 
 	FileTypes::FLYTFile layout;
-	FILETYPE_ERROR_CHECK(layout.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(layout.loadFromBinary(*stream));
 
 	//add version number
 	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
@@ -850,33 +852,33 @@ TweakError modify_title_screen() {
 	layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->translation.Y = -30.0f;
 	layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->height = 120.0f;
 
-	FILETYPE_ERROR_CHECK(layout.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(layout.writeToStream(*stream));
 
 	//update textures
 	FileTypes::FLIMFile title;
 	FileTypes::FLIMFile subtitle;
 	FileTypes::FLIMFile mask;
 
-	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim");
-	EXTRACT_ERR_CHECK(path);
-
-	FILETYPE_ERROR_CHECK(title.loadFromFile(path.string()));
+	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim");
+	EXTRACT_ERR_CHECK(stream);
+	
+	FILETYPE_ERROR_CHECK(title.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(title.replaceWithDDS(DATA_PATH "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(title.writeToFile(path.string()));
-
-	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim");
-	EXTRACT_ERR_CHECK(path);
-
-	FILETYPE_ERROR_CHECK(subtitle.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(title.writeToStream(*stream));
+	
+	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim");
+	EXTRACT_ERR_CHECK(stream);
+	
+	FILETYPE_ERROR_CHECK(subtitle.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(DATA_PATH "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(subtitle.writeToFile(path.string()));
-
-	path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
-	EXTRACT_ERR_CHECK(path);
-
-	FILETYPE_ERROR_CHECK(mask.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(subtitle.writeToStream(*stream));
+	
+	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
+	EXTRACT_ERR_CHECK(stream);
+	
+	FILETYPE_ERROR_CHECK(mask.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(mask.replaceWithDDS(DATA_PATH "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
-	FILETYPE_ERROR_CHECK(mask.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(mask.writeToStream(*stream));
 
 	//update sparkle size/position
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7048), 0x3fb33333)); //scale
@@ -890,9 +892,9 @@ TweakError update_name_and_icon() {
 	if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
 	tinyxml2::XMLDocument meta;
-	const RandoSession::fspath metaPath = g_session.openGameFile("meta/meta.xml").string();
-	EXTRACT_ERR_CHECK(metaPath);
-	meta.LoadFile(metaPath.string().c_str());
+	std::stringstream* metaStream = g_session.openGameFile("meta/meta.xml");
+	EXTRACT_ERR_CHECK(metaStream);
+	meta.LoadFile(*metaStream);
 	tinyxml2::XMLElement* root = meta.RootElement();
 	root->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
 	root->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
@@ -904,8 +906,11 @@ TweakError update_name_and_icon() {
 	root->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
 	root->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-	meta.SaveFile(metaPath.string().c_str());
-
+	tinyxml2::XMLPrinter printer;
+	meta.Print(&printer);
+	metaStream->str(std::string());
+	*metaStream << printer.CStr();
+	
 	return TweakError::NONE;
 }
 
@@ -990,11 +995,11 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 	//remove a store that would overwrite a change to the DRC boss key model (nintendo added some item at this ID, seems unused?)
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02551E30), 0x60000000));
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path)
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream)
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	for (const dungeon_item_info& item_data : dungeon_items) {
 		const std::u16string item_name = item_data.short_name + u" " + item_data.base_item_name;
 		const uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
@@ -1067,7 +1072,7 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x18), data6));
 
 	}
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1084,18 +1089,18 @@ TweakError remove_bog_warp_in_cs() {
 		else {
 			path = "content/Common/Stage/sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr";
 		}
-		RandoSession::fspath filePath = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(filePath);
+		std::stringstream* stream = g_session.openGameFile(path);
+		EXTRACT_ERR_CHECK(stream);
 
 		FileTypes::DZXFile room_dzr;
-		FILETYPE_ERROR_CHECK(room_dzr.loadFromFile(filePath.string()));
+		FILETYPE_ERROR_CHECK(room_dzr.loadFromBinary(*stream));
 		for (ChunkEntry* spawn : room_dzr.entries_by_type("PLYR")) {
 			uint8_t spawn_type = ((*reinterpret_cast<uint8_t*>(&spawn->data[0xB]) & 0xF0) >> 4);
 			if (spawn_type == 0x09) {
 				spawn->data[0xB] = (spawn->data[0xB] & 0x0F) | 0x20;
 			}
 		}
-		FILETYPE_ERROR_CHECK(room_dzr.writeToFile(filePath.string()));
+		FILETYPE_ERROR_CHECK(room_dzr.writeToStream(*stream));
 	}
 
 	return TweakError::NONE;
@@ -1126,22 +1131,22 @@ TweakError update_shop_item_descriptions(const Location& beedle20, const Locatio
 	const GameItem beedle900Item = beedle900.currentItem.getGameItemId();
 	const GameItem beedle950Item = beedle950.currentItem.getGameItemId();
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
 	msbt.messages_by_label["03906"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle20Item)) + u"  20 Rupees" + TEXT_COLOR_DEFAULT + u'\0';
 	msbt.messages_by_label["03909"].text.message = Utility::Str::toUTF16(gameItemToName(beedle20Item)) + u"  20 Rupees\nWill you buy it?\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
-	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
-	EXTRACT_ERR_CHECK(path);
+	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt2;
-	FILETYPE_ERROR_CHECK(msbt2.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt2.loadFromBinary(*stream));
 
 	msbt2.messages_by_label["12106"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + u"  500 Rupees\n" + TEXT_COLOR_DEFAULT + u"This is my last one.";
 	msbt2.messages_by_label["12109"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + TEXT_COLOR_DEFAULT + u" is a mere " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
@@ -1152,8 +1157,8 @@ TweakError update_shop_item_descriptions(const Location& beedle20, const Locatio
 	msbt2.messages_by_label["12108"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + u"  900 Rupees\n" + TEXT_COLOR_DEFAULT + u"The price may be high, but it'll pay\noff handsomely in the end!";
 	msbt2.messages_by_label["12111"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u" is just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
 
-	FILETYPE_ERROR_CHECK(msbt2.writeToFile(path.string()));
-
+	FILETYPE_ERROR_CHECK(msbt2.writeToStream(*stream));
+	
 	return TweakError::NONE;
 }
 
@@ -1164,11 +1169,11 @@ TweakError update_auction_item_names(const Location& auction5_, const Location& 
 	const std::u16string auction80 = Utility::Str::toUTF16(gameItemToName(auction80_.currentItem.getGameItemId()));
 	const std::u16string auction100 = Utility::Str::toUTF16(gameItemToName(auction100_.currentItem.getGameItemId()));
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
 	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + auction40 + TEXT_COLOR_DEFAULT + u'\0';
 	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + auction5 + TEXT_COLOR_DEFAULT + u'\0';
@@ -1176,14 +1181,14 @@ TweakError update_auction_item_names(const Location& auction5_, const Location& 
 	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + auction80 + TEXT_COLOR_DEFAULT + u'\0';
 	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + auction100 + TEXT_COLOR_DEFAULT + u'\0';
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	//also add a hint to the flyer explaining what items the auction holds
-	RandoSession::fspath path2 = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path2);
-
+	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream);
+	
 	FileTypes::MSBTFile msbt2;
-	FILETYPE_ERROR_CHECK(msbt2.loadFromFile(path2.string()));
+	FILETYPE_ERROR_CHECK(msbt2.loadFromBinary(*stream));
 
 	msbt2.messages_by_label["00804"].text.message.pop_back(); //remove null terminator, we want to add things before it
 
@@ -1240,7 +1245,7 @@ TweakError update_auction_item_names(const Location& auction5_, const Location& 
 
 	msbt2.messages_by_label["00804"].text.message += word_wrap_string(str, 43);
 	msbt2.messages_by_label["00804"].text.message += u'\0'; //add null terminator
-	FILETYPE_ERROR_CHECK(msbt2.writeToFile(path2.string()));
+	FILETYPE_ERROR_CHECK(msbt2.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1249,16 +1254,16 @@ TweakError update_battlesquid_item_names(const Location& firstPrize_, const Loca
 	const GameItem firstPrize = firstPrize_.currentItem.getGameItemId();
 	const GameItem secondPrize = secondPrize_.currentItem.getGameItemId();
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
 	msbt.messages_by_label["07520"].text.message = SOUND(0x8E) + u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you, Mr. Sailor!\n\n\n" + word_wrap_string(u"Please take this " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(firstPrize)) + TEXT_COLOR_DEFAULT + u" as a sign of our gratitude.You are soooooo GREAT!\0"s, 43);
 	msbt.messages_by_label["07521"].text.message = SOUND(0x8E) + u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you so much, Mr. Sailor!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here..." + TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"Please accept this " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(secondPrize)) + TEXT_COLOR_DEFAULT + u"!\0"s, 43);
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1268,11 +1273,11 @@ TweakError update_item_names_in_letter_advertising_rock_spire_shop(const Locatio
 	const std::u16string beedle900Item = Utility::Str::toUTF16(gameItemToName(beedle900.currentItem.getGameItemId()));
 	const std::u16string beedle950Item = Utility::Str::toUTF16(gameItemToName(beedle950.currentItem.getGameItemId()));
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
 	const std::u16string stringBefore = msbt.messages_by_label["03325"].text.message.substr(0, 194);
 	const std::u16string stringAfter = msbt.messages_by_label["03325"].text.message.substr(396, 323);
@@ -1292,7 +1297,7 @@ TweakError update_item_names_in_letter_advertising_rock_spire_shop(const Locatio
 	msbt.messages_by_label["03325"].text.message += hintString;
 	msbt.messages_by_label["03325"].text.message += stringAfter;
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
@@ -1321,24 +1326,25 @@ TweakError update_savage_labyrinth_hint_tablet(const Location& floor30_, const L
 	else {
 		hint = u"a challenge awaits.";
 	}
-
-	const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream)
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	msbt.messages_by_label["00837"].text.message = u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"The Savage Labyrinth" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n";
 	msbt.messages_by_label["00837"].text.message += word_wrap_string(u"Deep in the never-ending darkness, " + hint, 42) + u'\0';
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError shorten_zephos_event() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
 	if(event_list.Events_By_Name.count("TACT_HT") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
 	std::shared_ptr<Event> wind_shrine_event = event_list.Events_By_Name.at("TACT_HT");
 
@@ -1366,18 +1372,18 @@ TweakError shorten_zephos_event() {
 		camera->actions.back()->flag_id_to_set,
 	};
 
-	FILETYPE_ERROR_CHECK(event_list.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 //hints
 TweakError update_korl_dialog(World& world) {
-	const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
   if (!world.korlHints.empty()) {
     std::u16string hintLines = u"";
@@ -1400,7 +1406,7 @@ TweakError update_korl_dialog(World& world) {
     msbt.messages_by_label["03443"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you. Remember\nthat your quest is to defeat Ganondorf.\0"s;
   }
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1412,11 +1418,11 @@ TweakError update_ho_ho_dialog(World& world) {
       return TweakError::NONE;
   }
 
-  const RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
-  EXTRACT_ERR_CHECK(path);
+  std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
+  EXTRACT_ERR_CHECK(stream);
 
   FileTypes::MSBTFile msbt;
-  FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+  FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
   for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
     std::u16string hintLines = u"";
@@ -1454,7 +1460,7 @@ TweakError update_ho_ho_dialog(World& world) {
     msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
   }
 
-  FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+  FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
   return TweakError::NONE;
 }
@@ -1485,7 +1491,7 @@ TweakError set_starting_magic(const uint8_t& startingMagic) {
 	return TweakError::NONE;
 }
 
-TweakError set_damage_multiplier(const float multiplier) {
+TweakError set_damage_multiplier(const float& multiplier) {
 	if(custom_symbols.count("custom_damage_multiplier") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t damage_multiplier_address = custom_symbols.at("custom_damage_multiplier");
 	RPX_ERROR_CHECK(elfUtil::write_float(gRPX, elfUtil::AddressToOffset(gRPX, damage_multiplier_address), multiplier));
@@ -1500,16 +1506,16 @@ TweakError set_pig_color(const PigColor& color) {
 }
 
 TweakError add_pirate_ship_to_windfall() {
-	RandoSession::fspath windfallPath = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr");
-	RandoSession::fspath shipRoomPath = g_session.openGameFile("content/Common/Stage/Asoko_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(windfallPath);
-	EXTRACT_ERR_CHECK(shipRoomPath);
+	std::stringstream* windfallStream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr");
+	std::stringstream* shipRoomStream = g_session.openGameFile("content/Common/Stage/Asoko_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(windfallStream);
+	EXTRACT_ERR_CHECK(shipRoomStream);
 
 	FileTypes::DZXFile windfallDzr;
 	FileTypes::DZXFile shipDzr;
 
-	FILETYPE_ERROR_CHECK(windfallDzr.loadFromFile(windfallPath.string()));
-	FILETYPE_ERROR_CHECK(shipDzr.loadFromFile(shipRoomPath.string()));
+	FILETYPE_ERROR_CHECK(windfallDzr.loadFromBinary(*windfallStream));
+	FILETYPE_ERROR_CHECK(shipDzr.loadFromBinary(*shipRoomStream));
 
 	std::vector<ChunkEntry*> wf_layer_2_actors = windfallDzr.entries_by_type_and_layer("ACTR", 2);
 	std::string layer_2_ship_data; //copy actor data, add_entity reallocates vector and invalidates pointer
@@ -1522,7 +1528,7 @@ TweakError add_pirate_ship_to_windfall() {
 	default_layer_ship.data = layer_2_ship_data;
 	default_layer_ship.data[0xA] = '\x00';
 
-	FILETYPE_ERROR_CHECK(windfallDzr.writeToFile(windfallPath.string()));
+	FILETYPE_ERROR_CHECK(windfallDzr.writeToStream(*windfallStream));
 
 	for (const int layer_num : {2, 3}) {
 		std::vector<ChunkEntry*> actors = shipDzr.entries_by_type_and_layer("ACTR", layer_num);
@@ -1534,11 +1540,11 @@ TweakError add_pirate_ship_to_windfall() {
 	ChunkEntry& aryll = shipDzr.add_entity("ACTR");
 	aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
 
-	RandoSession::fspath msbtPath = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(msbtPath);
+	std::stringstream* msbtStream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(msbtStream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(msbtPath.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*msbtStream));
 
 	msbt.messages_by_label["03008"].attributes.soundEffect = 106;
 	msbt.messages_by_label["03008"].text.message = u"'Hoy! Big Brother!\n";
@@ -1546,7 +1552,7 @@ TweakError add_pirate_ship_to_windfall() {
 	msbt.messages_by_label["03008"].text.message = pad_str_4_lines(msbt.messages_by_label["03008"].text.message);
 	msbt.messages_by_label["03008"].text.message += word_wrap_string(u"Just " + TEXT_COLOR_RED + u"step on this button" + TEXT_COLOR_DEFAULT + u", and try to swing across the ropes to reach that door over there before time's up!\0"s, 44);
 
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(msbtPath.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*msbtStream));
 
 	const uint32_t stage_bgm_info_list_start = 0x1018E428;
 	const uint32_t second_dynamic_scene_waves_list_start = 0x1018E2EC;
@@ -1559,7 +1565,7 @@ TweakError add_pirate_ship_to_windfall() {
 	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
 	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, new_second_scene_wave_ptr), isle_link_0_aw_index));
 
-	FILETYPE_ERROR_CHECK(shipDzr.writeToFile(shipRoomPath.string()));
+	FILETYPE_ERROR_CHECK(shipDzr.writeToStream(*shipRoomStream));
 	return TweakError::NONE;
 }
 
@@ -1580,15 +1586,15 @@ TweakError add_cross_dungeon_warps() {
 	for(auto& loop : loops) {
 		uint8_t warp_index = 0;
 		for (CyclicWarpPotData& warp : loop) {
-			RandoSession::fspath stagePath = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
-			RandoSession::fspath roomPath = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Room" + std::to_string(warp.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(warp.room_num) + ".bfres@BFRES@room.dzr");
-			EXTRACT_ERR_CHECK(stagePath);
-			EXTRACT_ERR_CHECK(roomPath);
+			std::stringstream* stageStream = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+			std::stringstream* roomStream = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Room" + std::to_string(warp.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(warp.room_num) + ".bfres@BFRES@room.dzr");
+			EXTRACT_ERR_CHECK(stageStream);
+			EXTRACT_ERR_CHECK(roomStream);
 
 			FileTypes::DZXFile stage;
 			FileTypes::DZXFile room;
-			FILETYPE_ERROR_CHECK(stage.loadFromFile(stagePath.string()));
-			FILETYPE_ERROR_CHECK(room.loadFromFile(roomPath.string()));
+			FILETYPE_ERROR_CHECK(stage.loadFromBinary(*stageStream));
+			FILETYPE_ERROR_CHECK(room.loadFromBinary(*roomStream));
 
 			FileTypes::DZXFile* dzx_for_spawn;
 			dzx_for_spawn = &room;
@@ -1651,24 +1657,24 @@ TweakError add_cross_dungeon_warps() {
 			warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
 			warp_pot.data.replace(0x1C, 4, "\xFF\xFF\xFF\xFF", 4);
 
-			FILETYPE_ERROR_CHECK(room.writeToFile(roomPath.string()));
-			FILETYPE_ERROR_CHECK(stage.writeToFile(stagePath.string()));
+			FILETYPE_ERROR_CHECK(room.writeToStream(*roomStream));
+			FILETYPE_ERROR_CHECK(stage.writeToStream(*stageStream));
 
 			warp_index++;
 		}
 	}
 
 	FileTypes::JPC drc, totg, ff;
-	RandoSession::fspath drcPath = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
-	RandoSession::fspath totgPath = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene050.jpc");
-	RandoSession::fspath ffPath = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene043.jpc");
-	EXTRACT_ERR_CHECK(drcPath);
-	EXTRACT_ERR_CHECK(totgPath);
-	EXTRACT_ERR_CHECK(ffPath);
+	std::stringstream* drcStream = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
+	std::stringstream* totgStream = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene050.jpc");
+	std::stringstream* ffStream = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene043.jpc");
+	EXTRACT_ERR_CHECK(drcStream);
+	EXTRACT_ERR_CHECK(totgStream);
+	EXTRACT_ERR_CHECK(ffStream);
 
-	FILETYPE_ERROR_CHECK(drc.loadFromFile(drcPath.string()));
-	FILETYPE_ERROR_CHECK(totg.loadFromFile(totgPath.string()));
-	FILETYPE_ERROR_CHECK(ff.loadFromFile(ffPath.string()));
+	FILETYPE_ERROR_CHECK(drc.loadFromBinary(*drcStream));
+	FILETYPE_ERROR_CHECK(totg.loadFromBinary(*totgStream));
+	FILETYPE_ERROR_CHECK(ff.loadFromBinary(*ffStream));
 
 	for (const uint16_t particle_id : {0x8161, 0x8162, 0x8165, 0x8166, 0x8112}) {
 		const Particle& particle = drc.particles[drc.particle_index_by_id[particle_id]];
@@ -1686,19 +1692,19 @@ TweakError add_cross_dungeon_warps() {
 			}
 		}
 	}
-
-	FILETYPE_ERROR_CHECK(totg.writeToFile(totgPath.string()));
-	FILETYPE_ERROR_CHECK(ff.writeToFile(ffPath.string()));
+	
+	FILETYPE_ERROR_CHECK(totg.writeToStream(*totgStream));
+	FILETYPE_ERROR_CHECK(ff.writeToStream(*ffStream));
 
 	return TweakError::NONE;
 }
 
 TweakError remove_makar_kidnapping() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/kaze_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/kaze_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
 	ChunkEntry* switch_actor = nullptr; //initialization is just to make compiler happy
@@ -1714,7 +1720,7 @@ TweakError remove_makar_kidnapping() {
 		}
 	}
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1729,18 +1735,18 @@ TweakError increase_crawl_speed() {
 }
 
 TweakError add_chart_number_to_item_get_messages() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	for (uint8_t item_id = 0xCC; item_id < 0xFF; item_id++) {
 		if (item_id == 0xDB || item_id == 0xDC) continue; //skip ghost ship chart and tingle's chart
 
 		const std::u16string itemName = Utility::Str::toUTF16(gameItemToName(idToGameItem(item_id)));
 		msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message.replace(12, 21, TEXT_COLOR_RED + itemName);
 	}
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1796,11 +1802,11 @@ TweakError hide_ship_sail() {
 }
 
 TweakError shorten_auction_intro_event() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
 	if(event_list.Events_By_Name.count("AUCTION_START") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
 	std::shared_ptr<Event> auction_start_event = event_list.Events_By_Name.at("AUCTION_START");
 	std::shared_ptr<Actor> camera = auction_start_event->get_actor("CAMERA");
@@ -1810,16 +1816,16 @@ TweakError shorten_auction_intro_event() {
 
 	camera->actions.erase(camera->actions.begin() + 3, camera->actions.begin() + 5); //last iterator not inclusive, only erase actions 3-4
 
-	FILETYPE_ERROR_CHECK(event_list.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
 TweakError disable_invisible_walls() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
 
 	for (ChunkEntry* scob : scobs) {
@@ -1828,7 +1834,7 @@ TweakError disable_invisible_walls() {
 		}
 	}
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
@@ -1890,24 +1896,24 @@ TweakError update_starting_gear(const std::vector<GameItem>& startingItems) {
 }
 
 TweakError update_swordless_text() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	msbt.messages_by_label["01128"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\nEven as his ball of fell magic bears down\non you, you can " + TEXT_COLOR_RED + u"knock it back\nwith an empty bottle" + TEXT_COLOR_DEFAULT + u"!\n\n...I am sure you will have a shot at victory!\0"s;
 	msbt.messages_by_label["01590"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!\0"s;
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError add_hint_signs() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	const std::string new_message_label = "00847";
 	Attributes attributes;
 	attributes.character = 0xF; //sign
@@ -1919,13 +1925,13 @@ TweakError add_hint_signs() {
 	tsy.styleIndex = 0x12B;
 	const std::u16string message = IMAGE(ImageTags::R_ARROW) + u"\0"s;
 	msbt.addMessage(new_message_label, attributes, tsy, message);
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
-	path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
 	std::vector<ChunkEntry*> bomb_flowers;
@@ -1934,30 +1940,31 @@ TweakError add_hint_signs() {
 	}
 	bomb_flowers[1]->data = "Kanban\x00\x00\x00\x00\x03\x4F\x44\x34\x96\xEB\x42\x47\xFF\xFF\xC2\x40\xB0\x3A\x00\x00\x20\x00\x00\x00\xFF\xFF"s;
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError prevent_door_boulder_softlocks() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile room13;
-	FILETYPE_ERROR_CHECK(room13.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(room13.loadFromBinary(*stream));
 
 	ChunkEntry& swc00_13 = room13.add_entity("SCOB");
 	swc00_13.data = "SW_C00\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
-	FILETYPE_ERROR_CHECK(room13.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(room13.writeToStream(*stream));
 
-	path = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
+	stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream)
 
 	FileTypes::DZXFile room14;
-	FILETYPE_ERROR_CHECK(room14.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(room14.loadFromBinary(*stream));
 
 	ChunkEntry& swc00_14 = room14.add_entity("SCOB");
 	swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
-	FILETYPE_ERROR_CHECK(room14.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(room14.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1989,11 +1996,11 @@ TweakError make_tingle_statue_reward_rupee_rainbow_colored() {
 TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { //make sure hash is null terminated
 	using namespace NintendoWare::Layout;
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::FLYTFile layout;
-	FILETYPE_ERROR_CHECK(layout.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(layout.loadFromBinary(*stream));
 
 	//add hash
 	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //hidden version number text
@@ -2009,16 +2016,16 @@ TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { //make s
 	textPane.width = 205.0f;
 	textPane.height = 100.0f;
 
-	FILETYPE_ERROR_CHECK(layout.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(layout.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
 TweakError implement_key_bag() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	msbt.messages_by_label["00403"].text.message = u"Key Bag\0"s;
 	msbt.messages_by_label["00603"].text.message = u"A handy bag for holding your keys!\n"s;
   	msbt.messages_by_label["00603"].text.message += u"Here's how many you've got with you:\n";
@@ -2027,14 +2034,15 @@ TweakError implement_key_bag() {
   	msbt.messages_by_label["00603"].text.message += u"TotG: \x000E\x0007\x004D\x0000     \n"s;
   	msbt.messages_by_label["00603"].text.message += u"ET: \x000E\x0007\x004E\x0000           "s;
   	msbt.messages_by_label["00603"].text.message += u"WT: \x000E\x0007\x004F\x0000     \0"s;
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+	
+	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
+	EXTRACT_ERR_CHECK(stream);
 
-	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
-	EXTRACT_ERR_CHECK(path);
 	FileTypes::FLIMFile pirates_charm;
-	FILETYPE_ERROR_CHECK(pirates_charm.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(pirates_charm.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(pirates_charm.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(pirates_charm.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -2055,12 +2063,12 @@ TweakError show_dungeon_markers_on_chart(World& world) {
     }
 	}
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::FLYTFile map;
-	FILETYPE_ERROR_CHECK(map.loadFromFile(path.string()));
-
+	FILETYPE_ERROR_CHECK(map.loadFromBinary(*stream));
+	
 	for(const uint8_t& index : room_indexes) {
 		const uint32_t column = (index - 1) % 7;
 		const uint32_t row = std::floor((index - 1) / 7);
@@ -2078,32 +2086,32 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 		marker->alpha = 0;
 	}
 
-	FILETYPE_ERROR_CHECK(map.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(map.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_jabun_cutscene() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	ChunkEntry& raft = dzr.add_entity("ACTR");
 	ChunkEntry& chest = dzr.add_entity("TRES");
 	raft.data = "Ikada\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\xFF\xFF"s;
 	chest.data = "takara3\x00\xFF\x2F\xF3\x05\x00\x00\x00\x00\x43\x96\x00\x00\xC3\x48\x00\x00\x00\x00\x80\x00\x05\xFF\xFF\xFF"s;
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError add_jabun_obstacles_to_default_layer() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 
 	std::vector<ChunkEntry*> layer_5_actors = dzr.entries_by_type_and_layer("ACTR", 5);
 	const std::string layer_5_door_data = layer_5_actors[0]->data;
@@ -2117,17 +2125,17 @@ TweakError add_jabun_obstacles_to_default_layer() {
 	newDoor.data = layer_5_door_data;
 	newWhirlpool.data = layer_5_whirlpool_data;
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError remove_jabun_stone_door_event() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
 	if(event_list.Events_By_Name.count("ajav_uzu") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
 	std::shared_ptr<Event> unlock_cave_event = event_list.Events_By_Name.at("ajav_uzu");
 	std::shared_ptr<Actor> director = unlock_cave_event->get_actor("DIRECTOR");
@@ -2152,16 +2160,16 @@ TweakError remove_jabun_stone_door_event() {
 		-1
 	};
 
-	FILETYPE_ERROR_CHECK(event_list.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_master_sword() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 
 	const std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER);
 	dzr.remove_entity(default_layer_actors[5]);
@@ -2188,38 +2196,38 @@ TweakError add_chest_in_place_master_sword() {
 		}
 	}
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError update_spoil_sell_text() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	std::vector<std::u16string> lines = Utility::Str::split(msbt.messages_by_label["03957"].text.message, u'\n');
 	if (lines.size() != 5) LOG_ERR_AND_RETURN(TweakError::UNEXPECTED_VALUE); //incorrect number of lines
 	lines[2] = u"And no Blue Chu Jelly, either!";
 	msbt.messages_by_label["03957"].text.message = Utility::Str::merge(lines, u'\n');
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError fix_totg_warp_spawn() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 
 	const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
 	ChunkEntry* spawn = spawns[9];
 	spawn->data = "\x4C\x69\x6E\x6B\x00\x00\x00\x00\x32\xFF\x20\x1A\x47\xC3\x4F\x5F\x00\x00\x00\x00\xBF\xBE\xBF\x90\x00\x00\x00\x00\x01\x01\xFF\xFF"s;
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -2228,11 +2236,11 @@ TweakError remove_phantom_ganon_req_for_reefs() {
 	std::string path;
 	for (const uint8_t room_index : {24, 46, 22, 8, 37, 25}) {
 		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
-		RandoSession::fspath filePath = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(filePath);
+		std::stringstream* stream = g_session.openGameFile(path);
+		EXTRACT_ERR_CHECK(stream);
 
 		FileTypes::DZXFile room_dzr;
-		FILETYPE_ERROR_CHECK(room_dzr.loadFromFile(filePath.string()));
+		FILETYPE_ERROR_CHECK(room_dzr.loadFromBinary(*stream));
 		const std::vector<ChunkEntry*> actors = room_dzr.entries_by_type("ACTR");
 		for (ChunkEntry* actor : actors) {
 			if (std::strncmp(&actor->data[0], "Ocanon\x00\x00", 8) == 0) {
@@ -2246,7 +2254,7 @@ TweakError remove_phantom_ganon_req_for_reefs() {
 				}
 			}
 		}
-		FILETYPE_ERROR_CHECK(room_dzr.writeToFile(filePath.string()));
+		FILETYPE_ERROR_CHECK(room_dzr.writeToStream(*stream));
 	}
 
 	return TweakError::NONE;
@@ -2256,17 +2264,16 @@ TweakError fix_ff_door() {
 	const int32_t face_index = 0x1493;
 	const uint16_t new_prop_index = 0x0011;
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzb");
-	EXTRACT_ERR_CHECK(path);
-	std::fstream fptr(path, std::ios::binary);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzb");
+	EXTRACT_ERR_CHECK(stream);
 
-	fptr.seekg(0xC, std::ios::beg);
+	stream->seekg(0xC, std::ios::beg);
 	uint32_t face_list_offset;
-	fptr.read(reinterpret_cast<char*>(&face_list_offset), 4);
+	stream->read(reinterpret_cast<char*>(&face_list_offset), 4);
 	Utility::Endian::toPlatform_inplace(eType::Big, face_list_offset);
 
-	fptr.seekp((face_list_offset + face_index * 0xA) + 6, std::ios::beg);
-	fptr.write(reinterpret_cast<const char*>(&new_prop_index), 2);
+	stream->seekp((face_list_offset + face_index * 0xA) + 6, std::ios::beg);
+	stream->write(reinterpret_cast<const char*>(&new_prop_index), 2);
 
 	return TweakError::NONE;
 }
@@ -2337,7 +2344,7 @@ TweakError fix_ff_door() {
 		std::string path = "content/Common/Stage/" + spawn_info.stage_name + "_Room" + std::to_string(spawn_info.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(spawn_info.room_num) + ".bfres@BFRES@room.dzr";
 		RandoSession::fspath filePath = g_session.openGameFile(path);
 		FileTypes::DZXFile room_dzr;
-		room_dzr.loadFromFile(filePath.string());
+		room_dzr.loadFromBinary(filePath.string());
 
 		std::vector<ChunkEntry*> spawns = room_dzr.entries_by_type("PLYR");
 
@@ -2349,14 +2356,14 @@ TweakError fix_ff_door() {
 			}
 		}
 
-		room_dzr.writeToFile(filePath.string());
+		room_dzr.writeToStream(filePath.string());
 	}
 
 	for (const spawn_data& spawn_info : spawns_to_create) {
 		std::string path = "content/Common/Stage/" + spawn_info.stage_name + "_Room" + std::to_string(spawn_info.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(spawn_info.room_num) + ".bfres@BFRES@room.dzr";
 		RandoSession::fspath filePath = g_session.openGameFile(path);
 		FileTypes::DZXFile room_dzr;
-		room_dzr.loadFromFile(filePath.string());
+		room_dzr.loadFromBinary(filePath.string());
 
 		std::vector<ChunkEntry*> doors = room_dzr.entries_by_type("TGDR");
 
@@ -2423,11 +2430,11 @@ TweakError remove_minor_pan_cs() {
 			}
 		}
 
-		RandoSession::fspath filePath = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(filePath);
+		std::stringstream* stream = g_session.openGameFile(path);
+		EXTRACT_ERR_CHECK(stream);
 
 		FileTypes::DZXFile dzx;
-		FILETYPE_ERROR_CHECK(dzx.loadFromFile(filePath.string()));
+		FILETYPE_ERROR_CHECK(dzx.loadFromBinary(*stream));
 		std::vector<ChunkEntry*> scobs = dzx.entries_by_type("SCOB");
 		for (ChunkEntry* scob : scobs) {
 			if (std::strncmp(&scob->data[0], "TagEv\x00\x00\x00", 8) == 0) {
@@ -2444,7 +2451,7 @@ TweakError remove_minor_pan_cs() {
 			}
 		}
 
-		FILETYPE_ERROR_CHECK(dzx.writeToFile(filePath.string()));
+		FILETYPE_ERROR_CHECK(dzx.writeToStream(*stream));
 	}
 
 	return TweakError::NONE;
@@ -2463,47 +2470,47 @@ TweakError fix_stone_head_bugs() {
 }
 
 TweakError show_tingle_statues_on_quest_screen() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::FLIMFile tingle;
-	FILETYPE_ERROR_CHECK(tingle.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(tingle.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(tingle.writeToFile(path.string()));
-
-	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
-	EXTRACT_ERR_CHECK(path);
+	FILETYPE_ERROR_CHECK(tingle.writeToStream(*stream));
+	
+	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::FLIMFile shadow;
-	FILETYPE_ERROR_CHECK(shadow.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(shadow.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
-	FILETYPE_ERROR_CHECK(shadow.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(shadow.writeToStream(*stream));
 
-	path = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(path);
+	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	msbt.messages_by_label["00503"].text.message = u"Tingle Statues\0"s;
 	msbt.messages_by_label["00703"].text.message = u"Golden statues of a mysterious dashing\n figure. They can be traded to " + TEXT_COLOR_RED + u"Ankle" + TEXT_COLOR_DEFAULT + u" on\n" + TEXT_COLOR_RED + u"Tingle Island" + TEXT_COLOR_DEFAULT + u" for a reward!\0"s;
-	FILETYPE_ERROR_CHECK(msbt.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError add_shortcut_warps_into_dungeons() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 	ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
 	sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
 
 	ChunkEntry& warp = dzr.add_entity("SCOB");
 	warp.data = "Ysdls00\x00\x10\xFF\x06\x7F\x48\x54\x16\x86\x42\x0B\xFF\xF8\x48\x3E\xD3\xED\x00\x00\x00\x00\x00\x00\xFF\xFF\x0A\x0A\x0A\xFF"s;
 
-	FILETYPE_ERROR_CHECK(dzr.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
@@ -2511,17 +2518,17 @@ TweakError update_entrance_events() {
 	//Some entrances have event triggers with hardcoded stages rather than a load zone with a SCLS entry
 	//Update those edge cases based on the SCLS entries in their respective dzr
 
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(path);
-
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
+	EXTRACT_ERR_CHECK(stream);
+	
 	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 
-	path = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(path);
-
+	stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+	EXTRACT_ERR_CHECK(stream);
+	
 	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
 
 	const ChunkEntry* waterfall = dzr.entries_by_type("SCLS")[7];
 
@@ -2539,16 +2546,16 @@ TweakError update_entrance_events() {
 	//std::get<std::string>(next2->properties[0]->value) += '\0';
 	//std::get<std::vector<int32_t>>(next2->properties[1]->value)[0] = gallery->data[9];
 
-	FILETYPE_ERROR_CHECK(event_list.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
 
 	//Also change the Forbidden Woods warp to put you on the sea instead of inside Forest Haven
 	//This avoids a case where you can only access the lower entrances of FH, but they both dead end, and you need to savewarp to escape
-	path = g_session.openGameFile("content/Common/Stage/kinBOSS_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(path);
-
+	stream = g_session.openGameFile("content/Common/Stage/kinBOSS_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+	EXTRACT_ERR_CHECK(stream);
+	
 	FileTypes::EventList event_list_2;
-	FILETYPE_ERROR_CHECK(event_list_2.loadFromFile(path.string()));
-
+	FILETYPE_ERROR_CHECK(event_list_2.loadFromBinary(*stream));
+	
 	if(event_list_2.Events_By_Name.count("WARP_WIND") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
 	std::shared_ptr<Action> exit = event_list_2.Events_By_Name.at("WARP_WIND")->get_actor("DIRECTOR")->actions[2];
 	std::get<std::vector<int32_t>>(exit->properties[0]->value)[0] = 0;
@@ -2560,20 +2567,20 @@ TweakError update_entrance_events() {
 	std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = 0;
 	exit2->properties[1]->value = "sea\0"s;
 	std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = 41;
-
-	FILETYPE_ERROR_CHECK(event_list_2.writeToFile(path.string()));
+	
+	FILETYPE_ERROR_CHECK(event_list_2.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
 TweakError replace_ctmc_chest_texture() {
-	RandoSession::fspath path = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Dalways.szs@YAZ0@SARC@Dalways.bfres");
-	EXTRACT_ERR_CHECK(path);
+	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Dalways.szs@YAZ0@SARC@Dalways.bfres");
+	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::resFile bfres;
-	FILETYPE_ERROR_CHECK(bfres.loadFromFile(path.string()));
+	FILETYPE_ERROR_CHECK(bfres.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true, true));
-	FILETYPE_ERROR_CHECK(bfres.writeToFile(path.string()));
+	FILETYPE_ERROR_CHECK(bfres.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -2583,13 +2590,16 @@ TweakError replace_ctmc_chest_texture() {
 TweakError updateCodeSize() {
 	//Increase the max codesize in cos.xml to load all our code
 	tinyxml2::XMLDocument cos;
-	const RandoSession::fspath cosPath = g_session.openGameFile("code/cos.xml").string();
-	EXTRACT_ERR_CHECK(cosPath);
-
-	cos.LoadFile(cosPath.string().c_str());
+	std::stringstream* cosStream = g_session.openGameFile("code/cos.xml");
+	EXTRACT_ERR_CHECK(cosStream);
+	
+	cos.LoadFile(*cosStream);
 	tinyxml2::XMLElement* root = cos.RootElement();
 	root->FirstChildElement("max_codesize")->SetText("03000000");
-	cos.SaveFile(cosPath.string().c_str());
+	tinyxml2::XMLPrinter printer;
+	cos.Print(&printer);
+	cosStream->str(std::string());
+	*cosStream << printer.CStr();
 
 	//Also update the RPL info section of the RPX
 	//Change the textSize and loadSize to be large enough for the new code/relocations
@@ -2603,9 +2613,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
   gRPX = FileTypes::ELF();
 	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json"));
 
-	const RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
-	EXTRACT_ERR_CHECK(rpxPath);
-	FILETYPE_ERROR_CHECK(gRPX.loadFromFile(rpxPath.string()));
+	std::stringstream* rpxStream = g_session.openGameFile("code/cking.rpx@RPX");
+	EXTRACT_ERR_CHECK(rpxStream);
+	FILETYPE_ERROR_CHECK(gRPX.loadFromBinary(*rpxStream));
 
 	const std::string seedHash = LogInfo::getSeedHash();
 	const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
@@ -2715,30 +2725,31 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	}
 	TWEAK_ERR_CHECK(set_pig_color(settings.pig_color));
 
-	RPX_ERROR_CHECK(gRPX.writeToFile(rpxPath.string()));
-
+	RPX_ERROR_CHECK(gRPX.writeToStream(*rpxStream));
+	gRPX = FileTypes::ELF();
+	
 	return TweakError::NONE;
 }
 
 TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& randomizeItems) {
 	gRPX = FileTypes::ELF();
-	const RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");
-	EXTRACT_ERR_CHECK(rpxPath);
-	FILETYPE_ERROR_CHECK(gRPX.loadFromFile(rpxPath.string())); //reload to avoid conflicts written between pre- and post- randomization tweaks
+	std::stringstream* rpxStream = g_session.openGameFile("code/cking.rpx@RPX");
+	EXTRACT_ERR_CHECK(rpxStream);
+	FILETYPE_ERROR_CHECK(gRPX.loadFromBinary(*rpxStream)); //reload to avoid conflicts written between pre- and post- randomization tweaks
 
-	std::map<std::string, Location>& itemLocations = world.locationEntries;
+	const std::map<std::string, Location>& itemLocations = world.locationEntries;
 	const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
 
 	TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
 	TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
 	if (randomizeItems) {
-		TWEAK_ERR_CHECK(update_shop_item_descriptions(itemLocations["Great Sea - Beedle Shop 20 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 500 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 950 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 900 Rupee Item"]));
-		TWEAK_ERR_CHECK(update_auction_item_names(itemLocations["Windfall Island - Auction 5 Rupee"], itemLocations["Windfall Island - Auction 40 Rupee"], itemLocations["Windfall Island - Auction 60 Rupee"], itemLocations["Windfall Island - Auction 80 Rupee"], itemLocations["Windfall Island - Auction 100 Rupee"]));
-		TWEAK_ERR_CHECK(update_battlesquid_item_names(itemLocations["Windfall Island - Battle Squid First Prize"], itemLocations["Windfall Island - Battle Squid Second Prize"]));
-		TWEAK_ERR_CHECK(update_item_names_in_letter_advertising_rock_spire_shop(itemLocations["Rock Spire Isle - Beedle 500 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 950 Rupee Item"], itemLocations["Rock Spire Isle - Beedle 900 Rupee Item"]));
-		TWEAK_ERR_CHECK(update_savage_labyrinth_hint_tablet(itemLocations["Outset Island - Savage Labyrinth Floor 30"], itemLocations["Outset Island - Savage Labyrinth Floor 50"]));
-    TWEAK_ERR_CHECK(update_korl_dialog(world));
-    TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+		TWEAK_ERR_CHECK(update_shop_item_descriptions(itemLocations.at("Great Sea - Beedle Shop 20 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 500 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 950 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 900 Rupee Item")));
+		TWEAK_ERR_CHECK(update_auction_item_names(itemLocations.at("Windfall Island - Auction 5 Rupee"), itemLocations.at("Windfall Island - Auction 40 Rupee"), itemLocations.at("Windfall Island - Auction 60 Rupee"), itemLocations.at("Windfall Island - Auction 80 Rupee"), itemLocations.at("Windfall Island - Auction 100 Rupee")));
+		TWEAK_ERR_CHECK(update_battlesquid_item_names(itemLocations.at("Windfall Island - Battle Squid First Prize"), itemLocations.at("Windfall Island - Battle Squid Second Prize")));
+		TWEAK_ERR_CHECK(update_item_names_in_letter_advertising_rock_spire_shop(itemLocations.at("Rock Spire Isle - Beedle 500 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 950 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 900 Rupee Item")));
+		TWEAK_ERR_CHECK(update_savage_labyrinth_hint_tablet(itemLocations.at("Outset Island - Savage Labyrinth Floor 30"), itemLocations.at("Outset Island - Savage Labyrinth Floor 50")));
+    	TWEAK_ERR_CHECK(update_korl_dialog(world));
+    	TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
 	}
 	//Run some things after writing items to preserve offsets
 	TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
@@ -2758,8 +2769,9 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());
 	}
-
-	RPX_ERROR_CHECK(gRPX.writeToFile(rpxPath.string()));
+	
+	RPX_ERROR_CHECK(gRPX.writeToStream(*rpxStream));
+	gRPX = FileTypes::ELF();
 
 	return TweakError::NONE;
 }

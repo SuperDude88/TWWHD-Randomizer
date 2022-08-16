@@ -127,7 +127,6 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     Config conf;
 
     conf.gameBaseDir = "";
-    conf.workingDir = "";
     conf.outputDir = "";
     conf.seed = "";
 
@@ -229,12 +228,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     //hardcode paths for console, otherwise use config
     #ifdef DEVKITPRO
         out.gameBaseDir = "./backup";
-        out.workingDir = "./working";
         out.outputDir = "storage_mlc01:/usr/title/00050000/10143500";
         out.settings.plandomizerFile = "./plandomizer.yaml"
     #else
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, gameBaseDir)
-        out.workingDir = "./working";
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, outputDir)
         SET_STR_FIELD_EMPTY_STR_IF_FAIL(root, out, plandomizerFile)
     #endif
@@ -450,7 +447,6 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     root["file_version"] = CONFIG_VERSION; //Keep track of file version so it can avoid incompatible ones
 
     WRITE_FIELD(root, config, gameBaseDir)
-    WRITE_FIELD(root, config, workingDir)
     WRITE_FIELD(root, config, outputDir)
     WRITE_FIELD(root, config, seed)
 

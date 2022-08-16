@@ -220,7 +220,7 @@ namespace FileTypes{
 		return loadFromBinary(file);
 	}
 
-	const SARCFile::File& SARCFile::getFile(const std::string& filename) {
+	SARCFile::File& SARCFile::getFile(const std::string& filename) {
 		if (file_index_by_name.count(filename) == 0) {
 			File blankFile;
 			return blankFile;
@@ -229,6 +229,28 @@ namespace FileTypes{
 	}
 
 	SARCError SARCFile::writeToStream(std::ostream& out) {
+		//update offsets of files
+		uint32_t curDataOffset = 0;
+		for(size_t i = 0; i < files.size(); i++) {
+			SFATNode& node = fileTable.nodes[i];
+			const File& entry = files[i];
+			
+			std::string filetype = entry.name.substr(entry.name.find(".") + 1);
+			filetype.pop_back();
+			const uint32_t alignment = std::max(guessed_alignment, getAlignment(filetype, entry));
+			if (alignment != 0) {
+				unsigned int padLen = alignment - (curDataOffset % alignment);
+				if (padLen == alignment) padLen = 0;
+				node.dataStart = curDataOffset + padLen;
+			}
+			else {
+				node.dataStart = curDataOffset;
+			}
+
+			node.dataEnd = node.dataStart + entry.data.size();
+			curDataOffset = node.dataEnd;
+		}
+
 		{
 			uint16_t headerSize_BE = Utility::Endian::toPlatform(eType::Big, header.headerSize_0x14);
 			uint16_t byteOrderMarker_BE = Utility::Endian::toPlatform(eType::Big, header.byteOrderMarker);
@@ -314,6 +336,16 @@ namespace FileTypes{
 			}
 			outFile.write(&file.data[0], file.data.size());
 		}
+		return SARCError::NONE;
+	}
+
+	SARCError SARCFile::replaceFile(const std::string& filename, std::stringstream& newData) {
+		if(file_index_by_name.count(filename) == 0) LOG_ERR_AND_RETURN(SARCError::STRING_NOT_FOUND);
+		const size_t& fileIndex = file_index_by_name.at(filename);
+		File& entry = files[fileIndex];
+
+		entry.data = newData.str();
+
 		return SARCError::NONE;
 	}
 
