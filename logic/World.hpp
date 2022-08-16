@@ -134,7 +134,7 @@ public:
     std::unordered_map<Location*, std::unordered_set<Location*>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
-    std::array<GameItem, 49> chartMappings;
+    std::unordered_map<uint8_t, GameItem> chartMappings = {};
 
     uint8_t startingIslandRoomIndex = 44;
 

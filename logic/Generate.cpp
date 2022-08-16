@@ -8,6 +8,7 @@
 #include "../seedgen/random.hpp"
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
+#include "../gui/update_dialog_header.hpp"
 #include "EntranceShuffle.hpp"
 #include <string>
 #include <unordered_set>
@@ -25,6 +26,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   // per player
   #ifndef MASS_TESTING
       Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s\n" : "\n"));
+      UPDATE_DIALOG_LABEL("Building World");
   #endif
   int buildRetryCount = 10;
   EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
@@ -52,7 +54,9 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           {
               if (worlds[i].loadPlandomizer() != World::WorldLoadingError::NONE)
               {
-                  Utility::platformLog(worlds[i].getLastErrorDetails());
+                  auto lastError = worlds[i].getLastErrorDetails();
+                  Utility::platformLog(lastError);
+                  ErrorLog::getInstance().log(lastError);
                   return 1;
               }
           }
@@ -90,6 +94,8 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   FillError fillError = FillError::NONE;
   #ifndef MASS_TESTING
       Utility::platformLog(std::string("Filling World") + (worlds.size() > 1 ? "s\n" : "\n"));
+      UPDATE_DIALOG_VALUE(10);
+      UPDATE_DIALOG_LABEL("Filling World");
   #endif
   while (totalFillAttempts > 0)
   {
@@ -104,7 +110,6 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 
   if (fillError != FillError::NONE)
   {
-      ErrorLog::getInstance().log(std::string("Fill Unsuccessful. Error Code: ") + errorToName(fillError));
       #ifdef ENABLE_DEBUG
           if (fillError == FillError::GAME_NOT_BEATABLE)
           {
@@ -119,11 +124,15 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 
   #ifndef MASS_TESTING
       Utility::platformLog("Generating Playthrough\n");
+      UPDATE_DIALOG_VALUE(15);
+      UPDATE_DIALOG_LABEL("Generating Playthrough");
   #endif
   generatePlaythrough(worlds);
 
   #ifndef MASS_TESTING
       Utility::platformLog("Generating Hints\n");
+      UPDATE_DIALOG_VALUE(20);
+      UPDATE_DIALOG_LABEL("Generating Hints");
   #endif
   auto hintError = generateHints(worlds);
   if (hintError != HintError::NONE)
