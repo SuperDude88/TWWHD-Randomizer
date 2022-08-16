@@ -48,6 +48,7 @@ private:
     fspath extractFile(const std::vector<std::string>& fileSpec);
     RepackResult repackFile(const std::string& element, std::shared_ptr<CacheEntry> entry);
     void queueChildren(std::shared_ptr<CacheEntry> entry);
+    void clearCache();
 
     bool initialized = false;
     fspath baseDir;

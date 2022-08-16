@@ -24,6 +24,7 @@ enum struct SwordMode {
 
 enum struct Option {
     INVALID = 0,
+    // Progression
     ProgressDungeons,
     ProgressGreatFairies,
     ProgressPuzzleCaves,
@@ -48,16 +49,34 @@ enum struct Option {
     ProgressIslandPuzzles,
     ProgressObscure,
 
+    // Additional Randomization Options
+    SwordMode,
     Keylunacy,
+    RaceMode,
+    NumRaceModeDungeons,
+    NumShards,
     RandomCharts,
-    RandomStartIsland,
-    RandomizeDungeonEntrances,
-    RandomizeCaveEntrances,
-    RandomizeDoorEntrances,
-    RandomizeMiscEntrances,
-    MixEntrancePools,
-    DecoupleEntrances,
+    CTMC,
 
+    // Convenince Tweaks
+    InvertCompass,
+    InstantText,
+    RevealSeaChart,
+    SkipRefights,
+    AddShortcutWarps,
+    RemoveMusic,
+
+    // Starting Gear
+    StartingGear,
+    StartingHP,
+    StartingHC,
+
+    // Advanced Options
+    NoSpoilerLog,
+    Plandomizer,
+    PlandomizerFile,
+
+    // Hints
     HoHoHints,
     KorlHints,
     ClearerHints,
@@ -67,28 +86,32 @@ enum struct Option {
     ItemHints,
     LocationHints,
 
-    InstantText,
-    RevealSeaChart,
-    NumShards,
-    AddShortcutWarps,
-    NoSpoilerLog,
-    SwordMode,
-    SkipRefights,
-    InvertCompass,
-    RaceMode,
-    NumRaceModeDungeons,
-    DamageMultiplier,
-    CTMC,
+    // Entrance Randomizer
+    RandomizeDungeonEntrances,
+    RandomizeCaveEntrances,
+    RandomizeDoorEntrances,
+    RandomizeMiscEntrances,
+    MixEntrancePools,
+    DecoupleEntrances,
+    RandomStartIsland,
 
+    // Cosmetics
     CasualClothes,
     PigColor,
 
-    StartingGear,
-    StartingHP,
-    StartingHC,
-    RemoveMusic,
 
-    Plandomizer,
+    DamageMultiplier,
+
+
+    // Dummy options to satisfy tracker permalink
+    RandomizeEntrances,
+    SwiftSail,
+    DisableTingleChestsWithTingleBombs,
+    RandomizeEnemyPalettes,
+    RandomizeEnemies,
+    RandomizeMusic,
+    InvertCameraXAxis,
+    WindWakerHD,
     COUNT
 };
 
@@ -158,12 +181,15 @@ struct Settings {
     bool remove_music = false;
 
     bool plandomizer = false;
+    std::string plandomizerFile = "";
 };
 
 Option nameToSetting(const std::string& name);
 
 std::string settingToName(const Option& setting);
 
-int getSetting(const Settings& settings, const Option& option);
+uint8_t getSetting(const Settings& settings, const Option& option);
+
+void setSetting(Settings& settings, const Option& option, const size_t& value);
 
 int evaluateOption(const Settings& settings, const std::string& optionStr);

@@ -17,8 +17,8 @@
 
 // some error checking macros for brevity and since we can't use exceptions
 #define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
-#define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; return WorldLoadingError::MAPPING_MISMATCH;}
-#define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << "\t" << msg; return err;}
+#define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; LOG_ERR_AND_RETURN(WorldLoadingError::MAPPING_MISMATCH);}
+#define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << msg; LOG_ERR_AND_RETURN(err);}
 #define EVENT_CHECK(eventName) if (!eventMap.contains(eventName)) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaEntries.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
@@ -340,7 +340,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             ErrorLog::getInstance().log("Plandomizer Error: Too many race mode locations set with potentially major items");
             ErrorLog::getInstance().log("Set race mode locations: " + std::to_string(setRaceModeDungeons));
             ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
-            return WorldLoadingError::PLANDOMIZER_ERROR;
+            LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
         }
 
         // Now check again and fill in any more dungeons that may be necessary
@@ -386,7 +386,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             ErrorLog::getInstance().log("Plandomizer Error: Not enough race mode locations for set number of race mode dungeons");
             ErrorLog::getInstance().log("Possible race mode locations: " + std::to_string(setRaceModeDungeons));
             ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
-            return WorldLoadingError::PLANDOMIZER_ERROR;
+            LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
         }
     }
     return WorldLoadingError::NONE;
@@ -1035,7 +1035,11 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
 World::WorldLoadingError World::loadPlandomizer()
 {
     LOG_TO_DEBUG("Loading plandomzier file");
-    const std::string plandoFilepath = "./plandomizer.yaml"; //can't bundle in the romfs, put it in the executable directory instead
+    #ifdef DEVKITPRO
+        const std::string plandoFilepath = "./plandomizer.yaml"; //can't bundle in the romfs, put it in the executable directory instead
+    #else
+        const std::string plandoFilepath = settings.plandomizerFile;
+    #endif
 
     std::string plandoStr;
     if (getFileContents(plandoFilepath, plandoStr) != 0)
@@ -1094,7 +1098,7 @@ World::WorldLoadingError World::loadPlandomizer()
             auto locationObject = *locationIt;
             if (locationObject.first.empty())
             {
-                Utility::platformLog("Plandomizer Error: One of the plando items is missing a location\n");
+                ErrorLog::getInstance().log("Plandomizer Error: One of the plando items is missing a location");
                 return WorldLoadingError::PLANDOMIZER_ERROR;
             }
             // If the location object has children instead of a value, then parse
@@ -1110,7 +1114,7 @@ World::WorldLoadingError World::loadPlandomizer()
                 }
                 else
                 {
-                    Utility::platformLog("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first + "\"");
+                    ErrorLog::getInstance().log("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first + "\"");
                     return WorldLoadingError::PLANDOMIZER_ERROR;
                 }
                 if (!locationObject.second["world"].IsNone())
@@ -1118,9 +1122,9 @@ World::WorldLoadingError World::loadPlandomizer()
                     plandoWorldId = std::stoi(locationObject.second["world"].As<std::string>());
                     if (static_cast<size_t>(plandoWorldId) > numWorlds || plandoWorldId < 1)
                     {
-                        Utility::platformLog("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"\n");
-                        Utility::platformLog("Only " + std::to_string(numWorlds) + " worlds are being generated\n");
-                        Utility::platformLog("Valid World IDs: 1-" + std::to_string(numWorlds) + "\n");
+                        ErrorLog::getInstance().log("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"");
+                        ErrorLog::getInstance().log("Only " + std::to_string(numWorlds) + " worlds are being generated");
+                        ErrorLog::getInstance().log("Valid World IDs: 1-" + std::to_string(numWorlds));
                         return WorldLoadingError::PLANDOMIZER_ERROR;
                     }
                     plandoWorldId--;
@@ -1130,11 +1134,16 @@ World::WorldLoadingError World::loadPlandomizer()
             else
             {
                 itemName = locationObject.second.As<std::string>();
+                if (itemName == "\n" || itemName == "")
+                {
+                    ErrorLog::getInstance().log("Plandomizer Error: Location \"" + locationObject.first + "\" has no plandomized item.");
+                    return WorldLoadingError::PLANDOMIZER_ERROR;
+                }
             }
 
             // Get location name
             std::string locationName = locationObject.first;
-            LOCATION_VALID_CHECK(locationName, "Plandomizer Error: Unknown location name \"" << locationName << "\" in plandomizer file");
+            LOCATION_VALID_CHECK(locationName, "Plandomizer Error: Unknown location name \"" << locationName << "\" in plandomizer file.");
 
             // Get item
             auto itemId = nameToGameItem(itemName);
@@ -1165,7 +1174,7 @@ World::WorldLoadingError World::loadPlandomizer()
             auto entranceObject = *entranceIt;
             if (entranceObject.first.empty())
             {
-                Utility::platformLog("Plandomizer Error: One of the plando entrances is missing a parent entrance\n");
+                ErrorLog::getInstance().log("Plandomizer Error: One of the plando entrances is missing a parent entrance");
                 return WorldLoadingError::PLANDOMIZER_ERROR;
             }
             // Process strings of each plando's entrance into their respective entrance
@@ -1180,13 +1189,13 @@ World::WorldLoadingError World::loadPlandomizer()
             auto arrowPos = originalEntranceStr.find(originalTok);
             if (arrowPos == std::string::npos)
             {
-                Utility::platformLog("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is not properly formatted.\n");
+                ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is not properly formatted.");
                 return WorldLoadingError::PLANDOMIZER_ERROR;
             }
             auto fromPos = replacementEntranceStr.find(replacementTok);
             if (fromPos == std::string::npos)
             {
-                Utility::platformLog("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is not properly formatted.\n");
+                ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is not properly formatted.");
                 return WorldLoadingError::PLANDOMIZER_ERROR;
             }
 

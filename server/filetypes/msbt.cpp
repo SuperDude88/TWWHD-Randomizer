@@ -334,7 +334,7 @@ namespace FileTypes {
         memset(&header.padding_0x00, '\0', 10);
         memcpy(labels.magic, "LBL1", 4);
         labels.sectionSize = 0;
-        labels.slots = {};
+        labels.tableSlots = {};
         memcpy(&attributes.magic, "ATR1", 4);
         attributes.sectionSize = 0;
         attributes.entries = {};
@@ -361,7 +361,7 @@ namespace FileTypes {
         LOG_AND_RETURN_IF_ERR(styles.read(msbt));
         LOG_AND_RETURN_IF_ERR(text.read(msbt));
 
-        for (const HashTableSlot& slot : labels.slots) {
+        for (const HashTableSlot& slot : labels.tableSlots) {
             for (const Label& label : slot.labels) { //Populate map of messages
                 Message& msg = messages_by_label[label.string];
                 msg.label = label;
@@ -399,14 +399,14 @@ namespace FileTypes {
 
     LMSError MSBTFile::writeToStream(std::ostream& out) {
         //Go through and update all the sections based on the messages by ID
-        labels.slots.clear();
-        labels.slots.resize(101); //hash table always has 101 slots in MSBT files
+        labels.tableSlots.clear();
+        labels.tableSlots.resize(101); //hash table always has 101 tableSlots in MSBT files
         attributes.entries.resize(messages_by_label.size()); //Make sure these are full size, the file relies on indexes a bunch so we need to replace the right indexes in the list (labels store indexes, they're different)
         styles.entries.resize(messages_by_label.size());
         text.entries.resize(messages_by_label.size());
 
         for (const auto& [label, message] : messages_by_label) {
-            labels.slots[message.label.tableIdx].labels.push_back(message.label);
+            labels.tableSlots[message.label.tableIdx].labels.push_back(message.label);
             attributes.entries[message.label.itemIndex] = message.attributes;
             styles.entries[message.label.itemIndex] = message.style;
             text.entries[message.label.itemIndex] = message.text;
@@ -414,7 +414,7 @@ namespace FileTypes {
 
         labels.sectionSize = labels.entryCount * 0x8 + 0x4;
         uint32_t nextGroupOffset = labels.sectionSize; //First entry starts after the table
-        for (HashTableSlot& entry : labels.slots) {
+        for (HashTableSlot& entry : labels.tableSlots) {
             entry.labelCount = entry.labels.size();
             entry.labelOffset = nextGroupOffset;
             for (Label& label : entry.labels) {

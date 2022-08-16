@@ -26,6 +26,7 @@ enum struct [[nodiscard]] ModificationError {
     COUNT
 };
 
+void resetRPX();
 void saveRPX();
 
 class LocationModification
