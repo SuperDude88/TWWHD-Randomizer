@@ -68,8 +68,8 @@ struct HashTableSlot {
 class HashTable {
 public:
 	uint32_t entryCount = 0;
-	std::vector<HashTableSlot> slots = {};
-    
+	std::vector<HashTableSlot> tableSlots = {}; // slots variable name conflicts with Qt slots keyword
+
     virtual ~HashTable() = default;
     virtual LMSError read(std::istream& in);
     virtual void write(std::ostream& out);

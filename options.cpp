@@ -78,6 +78,7 @@ Option nameToSetting(const std::string& name) {
         {"StartingHC", Option::StartingHC},
         {"RemoveMusic", Option::RemoveMusic},
         {"Plandomizer", Option::Plandomizer},
+        {"PlandomizerFile", Option::PlandomizerFile},
     };
 
     if (optionNameMap.count(name) == 0)
@@ -149,6 +150,7 @@ std::string settingToName(const Option& setting) {
         {Option::StartingHC, "StartingHC"},
         {Option::RemoveMusic, "RemoveMusic"},
         {Option::Plandomizer, "Plandomizer"},
+        {Option::PlandomizerFile, "PlandomizerFile"},
     };
 
     if (optionNameMap.count(setting) == 0)
@@ -159,7 +161,7 @@ std::string settingToName(const Option& setting) {
     return optionNameMap.at(setting);
 }
 
-int getSetting(const Settings& settings, const Option& option) {
+uint8_t getSetting(const Settings& settings, const Option& option) {
 
 	switch (option) {
     case Option::ProgressDungeons:
@@ -280,10 +282,140 @@ int getSetting(const Settings& settings, const Option& option) {
         return settings.remove_music;
     case Option::Plandomizer:
         return settings.plandomizer;
+    case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
+        return 0;
     default:
         return 0;
 	}
 
+}
+
+void setSetting(Settings& settings, const Option& option, const size_t& value)
+{
+  switch (option) {
+    case Option::ProgressDungeons:
+        settings.progression_dungeons = value; return;
+    case Option::ProgressGreatFairies:
+        settings.progression_great_fairies = value; return;
+    case Option::ProgressPuzzleCaves:
+        settings.progression_puzzle_secret_caves = value; return;
+    case Option::ProgressCombatCaves:
+        settings.progression_combat_secret_caves = value; return;
+    case Option::ProgressShortSidequests:
+        settings.progression_short_sidequests = value; return;
+    case Option::ProgressLongSidequests:
+        settings.progression_long_sidequests = value; return;
+    case Option::ProgressSpoilsTrading:
+        settings.progression_spoils_trading = value; return;
+    case Option::ProgressMinigames:
+        settings.progression_minigames = value; return;
+    case Option::ProgressFreeGifts:
+        settings.progression_free_gifts = value; return;
+    case Option::ProgressMail:
+        settings.progression_mail = value; return;
+    case Option::ProgressPlatformsRafts:
+        settings.progression_platforms_rafts = value; return;
+    case Option::ProgressSubmarines:
+        settings.progression_submarines = value; return;
+    case Option::ProgressEyeReefs:
+        settings.progression_eye_reef_chests = value; return;
+    case Option::ProgressOctosGunboats:
+        settings.progression_big_octos_gunboats = value; return;
+    case Option::ProgressTriforceCharts:
+        settings.progression_triforce_charts = value; return;
+    case Option::ProgressTreasureCharts:
+        settings.progression_treasure_charts = value; return;
+    case Option::ProgressExpPurchases:
+        settings.progression_expensive_purchases = value; return;
+    case Option::ProgressMisc:
+        settings.progression_misc = value; return;
+    case Option::ProgressTingleChests:
+        settings.progression_tingle_chests = value; return;
+    case Option::ProgressBattlesquid:
+        settings.progression_battlesquid = value; return;
+    case Option::ProgressSavageLabyrinth:
+        settings.progression_savage_labyrinth = value; return;
+    case Option::ProgressIslandPuzzles:
+        settings.progression_island_puzzles = value; return;
+    case Option::ProgressObscure:
+        settings.progression_obscure = value; return;
+    case Option::Keylunacy:
+        settings.keylunacy = value; return;
+    case Option::RandomCharts:
+        settings.randomize_charts = value; return;
+    case Option::RandomStartIsland:
+        settings.randomize_starting_island = value; return;
+    case Option::RandomizeDungeonEntrances:
+        settings.randomize_dungeon_entrances = value; return;
+    case Option::RandomizeCaveEntrances:
+        settings.randomize_cave_entrances = value; return;
+    case Option::RandomizeDoorEntrances:
+        settings.randomize_door_entrances = value; return;
+    case Option::RandomizeMiscEntrances:
+        settings.randomize_misc_entrances = value; return;
+    case Option::MixEntrancePools:
+        settings.mix_entrance_pools = value; return;
+    case Option::DecoupleEntrances:
+        settings.decouple_entrances = value; return;
+    case Option::HoHoHints:
+        settings.ho_ho_hints = value; return;
+    case Option::KorlHints:
+        settings.korl_hints = value; return;
+    case Option::ClearerHints:
+        settings.clearer_hints = value; return;
+    case Option::UseAlwaysHints:
+        settings.use_always_hints = value; return;
+    case Option::PathHints:
+        settings.path_hints = value; return;
+    case Option::BarrenHints:
+        settings.barren_hints = value; return;
+    case Option::ItemHints:
+        settings.item_hints = value; return;
+    case Option::LocationHints:
+        settings.location_hints = value; return;
+    case Option::InstantText:
+        settings.instant_text_boxes = value; return;
+    case Option::RevealSeaChart:
+        settings.reveal_full_sea_chart = value; return;
+    case Option::NumShards:
+        settings.num_starting_triforce_shards = value; return;
+    case Option::AddShortcutWarps:
+        settings.add_shortcut_warps_between_dungeons = value; return;
+    case Option::NoSpoilerLog:
+        settings.do_not_generate_spoiler_log = value; return;
+    case Option::SwordMode:
+        settings.sword_mode = static_cast<SwordMode>(value); return;
+    case Option::SkipRefights:
+        settings.skip_rematch_bosses = value; return;
+    case Option::InvertCompass:
+        settings.invert_sea_compass_x_axis = value; return;
+    case Option::RaceMode:
+        settings.race_mode = value; return;
+    case Option::NumRaceModeDungeons:
+        settings.num_race_mode_dungeons = value; return;
+    case Option::DamageMultiplier:
+        settings.damage_multiplier = value; return;
+    case Option::CTMC:
+        settings.chest_type_matches_contents = value; return;
+    case Option::CasualClothes:
+        settings.player_in_casual_clothes = value; return;
+    case Option::PigColor:
+        settings.pig_color = static_cast<PigColor>(value); return;
+    case Option::StartingGear: //cant set this like everything else, just here as placeholder
+        return;
+    case Option::StartingHP:
+        settings.starting_pohs = value; return;
+    case Option::StartingHC:
+        settings.starting_hcs = value; return;
+    case Option::RemoveMusic:
+        settings.remove_music = value; return;
+    case Option::Plandomizer:
+        settings.plandomizer = value; return;
+    case Option::PlandomizerFile: //cant set this like everything else, just here as placeholder
+        return;
+    default:
+        return;
+  }
 }
 
 int evaluateOption(const Settings& settings, const std::string& optionStr) {

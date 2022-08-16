@@ -34,6 +34,12 @@ namespace Utility {
 			}
 			return true;
 		#else
+			// GNU on windows currently has a bug where you can't copy over a file that already exists
+			// even if you pass std::filesystem::copy_options::overwrite_existing. So delete the copy location
+			// file in this case
+			#if defined(WIN32) && defined(__GNUG__)
+				std::filesystem::remove(to);
+			#endif
 			return std::filesystem::copy_file(from, to, std::filesystem::copy_options::overwrite_existing);
 		#endif
 	}

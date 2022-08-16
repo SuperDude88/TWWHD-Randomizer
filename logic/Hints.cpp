@@ -333,7 +333,7 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
         for (auto location : world.barrenRegions[barrenRegion])
         {
             location->hasBeenHinted = true;
-            location->hintText = HINT_PREFIX u"visiting " + TEXT_COLOR_BLUE + Utility::Str::toUTF16(barrenRegion) + TEXT_COLOR_DEFAULT + u" is a foolish choice.";
+            location->hintText = HINT_PREFIX u"visiting " + TEXT_COLOR_BLUE + Utility::Str::toUTF16(barrenRegion) + TEXT_COLOR_DEFAULT + u" is a foolish choice."s;
         }
         barrenHintLocations.push_back(*world.barrenRegions[barrenRegion].begin());
         LOG_TO_DEBUG("Chose \"" + barrenRegion + "\" as a hinted barren region");
@@ -421,6 +421,11 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     return HintError::NONE;
 }
 
+static HintError generateLocationHintMessage(Location* hintLocation)
+{
+    hintLocation->hintText = HINT_PREFIX + TEXT_COLOR_RED + Utility::Str::toUTF16(hintLocation->name) + TEXT_COLOR_DEFAULT + u" rewards " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(hintLocation->currentItem.getGameItemId())) + TEXT_COLOR_DEFAULT + u"."s;
+}
+
 static HintError generateLocationHintLocations(World& world, std::vector<Location*>& locationHintLocations, uint8_t numLocationHints)
 {
 
@@ -452,9 +457,10 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
 
     for (uint8_t i = 0; i < numLocationHints; i++)
     {
+        Location* hintLocation = nullptr;
         if (i < alwaysLocations.size())
         {
-            locationHintLocations.push_back(alwaysLocations[i]);
+            hintLocation = alwaysLocations[i];
         }
         else
         {
@@ -463,11 +469,11 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
                 LOG_TO_DEBUG("No more possible location hints.");
                 break;
             }
-            auto hintLocation = popRandomElement(sometimesLocations);
-            locationHintLocations.push_back(hintLocation);
-            hintLocation->hintText = HINT_PREFIX + TEXT_COLOR_RED + Utility::Str::toUTF16(hintLocation->name) + TEXT_COLOR_DEFAULT + u" rewards " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(hintLocation->currentItem.getGameItemId())) + TEXT_COLOR_DEFAULT + u".";
-            LOG_TO_DEBUG("Chose \"" + hintLocation->name + "\" as location hint location");
+            hintLocation = popRandomElement(sometimesLocations);
         }
+        locationHintLocations.push_back(hintLocation);
+        hintLocation->hintText = HINT_PREFIX + TEXT_COLOR_RED + Utility::Str::toUTF16(hintLocation->name) + TEXT_COLOR_DEFAULT + u" rewards " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(hintLocation->currentItem.getGameItemId())) + TEXT_COLOR_DEFAULT + u"."s;
+        LOG_TO_DEBUG("Chose \"" + hintLocation->name + "\" as location hint location");
     }
 
     return HintError::NONE;

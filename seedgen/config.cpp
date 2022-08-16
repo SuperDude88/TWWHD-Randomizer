@@ -25,6 +25,12 @@
         config.name = yaml[#name].As<std::string>();                        \
     }
 
+#define SET_FIELD_EMPTY_STR_IF_FAIL(yaml, config, name) {                   \
+        if(yaml[#name].IsNone())                                            \
+            config.name = "";                                               \
+        config.name = yaml[#name].As<std::string>();                        \
+    }
+
 #define SET_BOOL_FIELD(yaml, config, name) {                                \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
@@ -39,21 +45,35 @@
         config.settings.name = yaml[#name].As<int>();                       \
     }
 
-namespace {
-    SwordMode nameToSwordMode(const std::string& name) {
-        static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
-            {"StartWithSword", SwordMode::StartWithSword},
-            {"RandomSword", SwordMode::RandomSword},
-            {"NoSword", SwordMode::NoSword}
-        };
-
-        if (nameSwordModeMap.count(name) == 0)
-        {
-            return SwordMode::INVALID;
-        }
-
-        return nameSwordModeMap.at(name);
+#define SET_STR_FIELD(yaml, config, name) {                                 \
+        if(yaml[#name].IsNone()) {                                          \
+            Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
+            return ConfigError::MISSING_KEY;}                               \
+        config.settings.name = yaml[#name].As<std::string>();               \
     }
+
+#define SET_STR_FIELD_EMPTY_STR_IF_FAIL(yaml, config, name) {               \
+        if(yaml[#name].IsNone())                                            \
+            config.settings.name = "";                                      \
+        config.settings.name = yaml[#name].As<std::string>();               \
+    }
+
+SwordMode nameToSwordMode(const std::string& name) {
+    static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
+        {"StartWithSword", SwordMode::StartWithSword},
+        {"RandomSword", SwordMode::RandomSword},
+        {"NoSword", SwordMode::NoSword}
+    };
+
+    if (nameSwordModeMap.count(name) == 0)
+    {
+        return SwordMode::INVALID;
+    }
+
+    return nameSwordModeMap.at(name);
+}
+
+namespace {
 
     std::string SwordModeToName(const SwordMode& mode) {
         static std::unordered_map<SwordMode, std::string> swordModeNameMap = {
@@ -109,7 +129,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.gameBaseDir = "";
     conf.workingDir = "";
     conf.outputDir = "";
-    conf.seed = "Link";
+    conf.seed = "";
 
     conf.settings.progression_dungeons = true;
     conf.settings.progression_great_fairies = true;
@@ -182,7 +202,9 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.starting_hcs = 0;
     conf.settings.remove_music = false;
 
+    conf.settings.do_not_generate_spoiler_log = false;
     conf.settings.plandomizer = false;
+    conf.settings.plandomizerFile = "";
 
     LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
 
@@ -209,13 +231,15 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
         out.gameBaseDir = "./backup";
         out.workingDir = "./working";
         out.outputDir = "storage_mlc01:/usr/title/00050000/10143500";
+        out.settings.plandomizerFile = "./plandomizer.yaml"
     #else
-        SET_FIELD(root, out, gameBaseDir)
-        SET_FIELD(root, out, workingDir)
-        SET_FIELD(root, out, outputDir)
+        SET_FIELD_EMPTY_STR_IF_FAIL(root, out, gameBaseDir)
+        out.workingDir = "./working";
+        SET_FIELD_EMPTY_STR_IF_FAIL(root, out, outputDir)
+        SET_STR_FIELD_EMPTY_STR_IF_FAIL(root, out, plandomizerFile)
     #endif
 
-    SET_FIELD(root, out, seed)
+    SET_FIELD_EMPTY_STR_IF_FAIL(root, out, seed)
 
     SET_BOOL_FIELD(root, out, progression_dungeons)
     SET_BOOL_FIELD(root, out, progression_great_fairies)
@@ -280,6 +304,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_INT_FIELD(root, out, starting_hcs)
     SET_BOOL_FIELD(root, out, remove_music)
 
+    SET_BOOL_FIELD(root, out, do_not_generate_spoiler_log)
     SET_BOOL_FIELD(root, out, plandomizer)
 
     if(root["sword_mode"].IsNone()) return ConfigError::MISSING_KEY;
@@ -293,7 +318,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     if(root["starting_gear"].IsNone()) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) return ConfigError::INVALID_VALUE;
 
-    static std::unordered_multiset<GameItem> valid_items = {
+    std::unordered_multiset<GameItem> valid_items = {
         /* not currently supported, may be later
         GameItem::DRCSmallKey,
         GameItem::DRCBigKey,
@@ -378,6 +403,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     };
 
     if(out.settings.sword_mode == SwordMode::NoSword) valid_items.erase(GameItem::ProgressiveSword);
+    out.settings.starting_gear.clear();
     for (auto it = root["starting_gear"].Begin(); it != root["starting_gear"].End(); it++) {
             const Yaml::Node& itemNode = (*it).second;
             const std::string itemName = itemNode.As<std::string>();
@@ -406,6 +432,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
 
 #define WRITE_NUM_FIELD(yaml, config, name) {          \
         yaml[#name] = std::to_string(config.settings.name);   \
+    }
+
+#define WRITE_STR_FIELD(yaml, config, name) {          \
+        yaml[#name] = config.settings.name;   \
     }
 
 ConfigError writeToFile(const std::string& filePath, const Config& config) {
@@ -487,7 +517,9 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_NUM_FIELD(root, config, starting_hcs)
     WRITE_BOOL_FIELD(root, config, remove_music)
 
+    WRITE_BOOL_FIELD(root, config, do_not_generate_spoiler_log)
     WRITE_BOOL_FIELD(root, config, plandomizer)
+    WRITE_STR_FIELD(root, config, plandomizerFile)
 
     root["sword_mode"] = SwordModeToName(config.settings.sword_mode);
     root["pig_color"] = PigColorToName(config.settings.pig_color);

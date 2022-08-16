@@ -1435,6 +1435,22 @@ TweakError update_ho_ho_dialog(World& world) {
       hint = pad_str_4_lines(hint);
       hintLines += hint;
     }
+    hintLines = u"";
+    i = 0; // counter to know when to add null terminator
+    while (i < 20) {
+      std::u16string hint = u"";
+      if (i == 0) {
+        hint += SOUND(0x0103) u"Ho ho! "s;
+      }
+      i++;
+      hint += Utility::Str::toUTF16(std::to_string(i));
+      hint = word_wrap_string(hint, 43);
+      if (i == 19) {
+        hint += u'\0'; // add null terminator on last hint before padding
+      }
+      hint = pad_str_4_lines(hint);
+      hintLines += hint;
+    }
     msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
   }
 
@@ -2026,7 +2042,7 @@ TweakError implement_key_bag() {
 TweakError show_dungeon_markers_on_chart(World& world) {
 	using namespace NintendoWare::Layout;
 
-	static std::vector<size_t> quest_marker_indexes = {
+	std::vector<size_t> quest_marker_indexes = {
 		144, 145, 146, 147, 148, 149, 150, 151
 	};
 
@@ -2584,6 +2600,7 @@ TweakError updateCodeSize() {
 }
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
+  gRPX = FileTypes::ELF();
 	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json"));
 
 	const RandoSession::fspath rpxPath = g_session.openGameFile("code/cking.rpx@RPX");

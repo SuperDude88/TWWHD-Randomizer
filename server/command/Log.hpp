@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iomanip>
 #include <array>
+#include <list>
 #ifdef DEVKITPRO
     #include <coreinit/time.h>
 #endif
@@ -16,8 +17,6 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 #define __FILENAME__ (&__FILE__[SOURCE_PATH_SIZE])
-
-
 
 //TODO: are these thread safe?
 class ProgramTime {
@@ -57,7 +56,7 @@ private:
 public:
     LogInfo(const LogInfo&) = delete;
     LogInfo& operator=(const LogInfo&) = delete;
-    
+
     static void setConfig(const Config& config_) { getInstance().config = config_; }
     static void setSeedHash(const std::string& seedHash_) { getInstance().seedHash = seedHash_; }
     static const Config& getConfig();
@@ -78,11 +77,13 @@ public:
 
     static BasicLog& getInstance();
     void log(const std::string& msg = "");
+    void close();
 };
 
 class ErrorLog {
 private:
     std::ofstream output;
+    std::list<std::string> lastErrors;
 
     ErrorLog();
     ~ErrorLog();
@@ -92,6 +93,9 @@ public:
 
     static ErrorLog& getInstance();
     void log(const std::string& msg = "");
+    std::string getLastErrors() const;
+    void clearLastErrors();
+    void close();
 };
 
 #define LOG_ERR_AND_RETURN(error) { \
@@ -118,6 +122,7 @@ public:
 
     static DebugLog& getInstance();
     void log(const std::string& msg = "");
+    void close();
 };
 
 #ifdef ENABLE_DEBUG
