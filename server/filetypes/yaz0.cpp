@@ -303,9 +303,13 @@ namespace FileTypes {
         return YAZ0Error::NONE;
     }
 
+    //TODO: not thread-safe, unpacking is currently single threaded (can't use thread_local on Wii U)
+    //larger buffer is faster, but too large for stack
+    constexpr uint32_t STATIC_READ_CHUNK_SIZE = 1024 * 1024 * 2;
+    static char readChunkBuf[STATIC_READ_CHUNK_SIZE];
+
     YAZ0Error yaz0Decode(std::istream& in, std::ostream& out)
     {
-        char readChunkBuf[READ_CHUNK_SIZE];
         std::string inData{};
 
         Yaz0Header header;
@@ -320,7 +324,7 @@ namespace FileTypes {
         // memory efficient
 
         // read rest of file into memory
-        while(in.read(readChunkBuf, READ_CHUNK_SIZE))
+        while(in.read(readChunkBuf, STATIC_READ_CHUNK_SIZE))
         {
             inData.append(readChunkBuf, in.gcount());
         }

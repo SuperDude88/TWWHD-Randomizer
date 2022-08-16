@@ -2,6 +2,8 @@
 #include "packed_bits.hpp"
 #include "../libs/base64pp.hpp"
 
+#include <array>
+
 // The ordering of these arrays is meant to match that of the wind waker randomizer
 // tracker mantained by wooferzfg. This includes some dummy options that Wind Waker
 // HD Randomizer doesn't have for cpmpatibility
