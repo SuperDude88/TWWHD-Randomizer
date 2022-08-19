@@ -432,7 +432,7 @@ static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, Ite
     std::unordered_map<Location*, Item> allPlandoLocations = {};
     for (auto& world : worlds)
     {
-        allPlandoLocations.insert(world.plandomizerLocations.begin(), world.plandomizerLocations.end());
+        allPlandoLocations.insert(world.plandomizer.locations.begin(), world.plandomizer.locations.end());
     }
     for (auto& [location, item] : allPlandoLocations)
     {

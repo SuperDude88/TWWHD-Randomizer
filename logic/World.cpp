@@ -313,13 +313,13 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                 for (auto& location : allDungeonLocations)
                 {
                     auto dungeonLocation = &locationEntries[location];
-                    bool dungeonLocationForcesRaceMode = !plandomizerLocations.contains(dungeonLocation) ? false : !plandomizerLocations[dungeonLocation].isJunkItem();
+                    bool dungeonLocationForcesRaceMode = !plandomizer.locations.contains(dungeonLocation) ? false : !plandomizer.locations[dungeonLocation].isJunkItem();
                     if (dungeonLocationForcesRaceMode)
                     {
                         // However, if the dungeon's race mode location is junk then
                         // that's an error on the user's part.
                         Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-                        bool raceModeLocationIsAcceptable = !plandomizerLocations.contains(raceModeLocation) ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
+                        bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
                         if (!raceModeLocationIsAcceptable)
                         {
                             ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
@@ -355,7 +355,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             // If this dungeon has a junk item placed as its race mode
             // location, then skip it
             auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-            bool raceModeLocationIsAcceptable = !plandomizerLocations.contains(raceModeLocation) ? false : plandomizerLocations[raceModeLocation].isJunkItem();
+            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem();
             if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
             {
                 LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
@@ -1062,6 +1062,7 @@ World::WorldLoadingError World::loadPlandomizer()
     std::string worldName = "World " + std::to_string(worldId + 1);
     Yaml::Node plandoLocations;
     Yaml::Node plandoEntrances;
+    std::string plandoStartingIsland;
     // Grab the YAML object which holds the locations for this world.
     // If there's only one world, then allow the plandomizer file to not
     // have the world specification
@@ -1070,7 +1071,7 @@ World::WorldLoadingError World::loadPlandomizer()
         Yaml::Node& ref = (*refIt).second;
         switch (numWorlds)
         {
-            // If only 1 world, just look for "locations"
+            // If only 1 world, just look for "locations", "entrances", etc.
             case 1:
                 if (ref["locations"].IsMap())
                 {
@@ -1079,6 +1080,10 @@ World::WorldLoadingError World::loadPlandomizer()
                 if (ref["entrances"].IsMap())
                 {
                     plandoEntrances =  ref["entrances"];
+                }
+                if (ref["starting island"].IsScalar())
+                {
+                    plandoStartingIsland = ref["starting island"].As<std::string>();
                 }
                 [[fallthrough]];
             // If more than one world, look for "World 1", "World 2", etc.
@@ -1094,9 +1099,21 @@ World::WorldLoadingError World::loadPlandomizer()
                     {
                         plandoEntrances = ref[worldName]["entrances"];
                     }
+                    if (ref[worldName]["starting island"].IsScalar())
+                    {
+                        plandoStartingIsland = ref[worldName]["starting island"].As<std::string>();
+                    }
                 }
         }
         break;
+    }
+
+    // Process starting island
+    plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
+    if (plandomizer.startingIslandRoomIndex == 0)
+    {
+        ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
+        return WorldLoadingError::PLANDOMIZER_ERROR;
     }
 
     // Process Locations
@@ -1162,10 +1179,12 @@ World::WorldLoadingError World::loadPlandomizer()
             Location* location = &locationEntries[locationName];
             location->plandomized = true;
             Item item = {itemId, plandoWorldId};
-            plandomizerLocations.insert({location, item});
+            plandomizer.locations.insert({location, item});
             // Place progression locations' items now to make sure that if entrance
             // randomizer is on, it creates a suitable world graph for the pre-decided
-            // major item layout
+            // major item layout. Place non-progress plandomized locations later
+            // so that the entrance randomizer doesn't consider potential out
+            // of logic items such as extra bottles.
             if (location->progression)
             {
                 location->currentItem = item;
@@ -1228,7 +1247,7 @@ World::WorldLoadingError World::loadPlandomizer()
                 return WorldLoadingError::PLANDOMIZER_ERROR;
             }
 
-            plandomizerEntrances.insert({originalEntrance, replacementEntrance});
+            plandomizer.entrances.insert({originalEntrance, replacementEntrance});
             LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + entranceObject.first + ": " + replacementEntranceStr);
         }
     }
