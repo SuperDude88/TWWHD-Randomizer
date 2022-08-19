@@ -510,26 +510,28 @@ public:
 
 
 		// Skip all game modification stuff if we're just doing fill algorithm testing
-		#ifndef FILL_TESTING
+		#ifdef FILL_TESTING
+			if (!config.settings.do_not_generate_spoiler_log) {
+				generateSpoilerLog(worlds);
+			}
+			return 0;
+		#endif
 
-			if(!checkBackupOrDump()) {
+		if(!checkBackupOrDump()) {
+			return 1;
+		}
+
+		//IMPROVEMENT: custom model things
+
+		Utility::platformLog("Modifying game code...\n");
+		UPDATE_DIALOG_VALUE(30);
+		UPDATE_DIALOG_LABEL("Modifying game code...");
+		if (!dryRun) {
+			if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
+				ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
 				return 1;
 			}
-			
-			//IMPROVEMENT: custom model things
-
-			Utility::platformLog("Modifying game code...\n");
-			UPDATE_DIALOG_VALUE(30);
-			UPDATE_DIALOG_LABEL("Modifying game code...");
-			if (!dryRun) {
-				if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
-					ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
-					return 1;
-				}
-			}
-		#else
-			dryRun = true;
-		#endif
+		}
 
 		if (randomizeItems) {
 			if(!dryRun) {

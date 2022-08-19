@@ -379,7 +379,10 @@ static HintError generateItemHintMessage(World& world, Location* location)
         totalRegions++;
     }
 
-    location->hintText = HINT_PREFIX + TEXT_COLOR_CYAN + Utility::Str::toUTF16(gameItemToName(location->currentItem.getGameItemId())) + TEXT_COLOR_DEFAULT + u" is located in "s + regionText + u"."s;
+    // Determine if the item's direct name or the cryptic text should be used
+    std::u16string hintedItem = Utility::Str::toUTF16((world.getSettings().clearer_hints ? gameItemToName(location->currentItem.getGameItemId()) : location->currentItem.getCrypticText()));
+
+    location->hintText = HINT_PREFIX + TEXT_COLOR_CYAN + hintedItem + TEXT_COLOR_DEFAULT + u" is located in "s + regionText + u"."s;
     return HintError::NONE;
 }
 
@@ -395,10 +398,10 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
            !location.hasBeenHinted            &&  // and has not been hinted at yet...
                                                   // and isn't part of an invalid hint region...
            !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);}) &&
-           !location.currentItem.isJunkItem() &&  // and it does not have a junk item...
-          (!location.currentItem.isDungeonItem() || world.getSettings().keylunacy) && // and this isn't a dungeon item when keylunacy is off...
-           !location.isRaceModeLocation &&        // and this isn't a race mode location...
-            location.hintPriority != "Always")    // and the hint priority is not always (this will be handled in the location hints)...
+           !location.currentItem.isJunkItem() &&  // and does not have a junk item...
+          (!location.currentItem.isDungeonItem() || world.getSettings().keylunacy) &&    // and isn't a dungeon item when keylunacy is off...
+          (!location.isRaceModeLocation || !world.getSettings().race_mode) &&            // and isn't a race mode location when race mode is enabled...
+          ( location.hintPriority != "Always" || !world.getSettings().use_always_hints)) // and the hint priority is not always when we're using always hints...
            {
               // Then the item is a possible item hint location
               possibleItemHintLocations.push_back(&location);
@@ -411,6 +414,7 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
         if (possibleItemHintLocations.empty())
         {
             LOG_TO_DEBUG("No more possible item hint locations.")
+            break;
         }
         auto hintLocation = popRandomElement(possibleItemHintLocations);
         itemHintLocations.push_back(hintLocation);
@@ -432,7 +436,7 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
     std::vector<Location*> alwaysLocations = {};
     std::vector<Location*> sometimesLocations = {};
 
-    // Put locations into the always or never categories depending on what their hint priority is
+    // Put locations into the always or sometimes categories depending on what their hint priority is
     for (auto& [name, location] : world.locationEntries)
     {
         if (location.progression && !location.hasBeenHinted && !location.isRaceModeLocation)
@@ -498,7 +502,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
     auto hohoLocations = world.getLocations();
     filterAndEraseFromPool(hohoLocations, [](Location* location){return !location->categories.contains(LocationCategory::HoHoHint);});
 
-    // Keep retrying until Hoh Ho hints are successfully placed, or until we run out
+    // Keep retrying until Ho Ho hints are successfully placed, or until we run out
     // of retries
     bool successfullyPlacedHoHoHints = true;
     do

@@ -995,6 +995,15 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
         }
     }
 
+    if (!itemObject["Cryptic Text"].IsNone())
+    {
+        item.setCrypticText(itemObject["Cryptic Text"].As<std::string>());
+    }
+    else
+    {
+        item.setCrypticText(itemName);
+    }
+
     if (!itemObject["Small Key Dungeon"].IsNone())
     {
         const std::string dungeon = itemObject["Small Key Dungeon"].As<std::string>();
