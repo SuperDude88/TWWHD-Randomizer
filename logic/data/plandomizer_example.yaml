@@ -40,7 +40,7 @@
 #
 # In the event that you place a progress item in the dungeon AND a junk item on the
 # boss heart container, you'll get a Plandomizer Error and the seed won't generate
-# if race mode is turned on
+# if race mode is turned on.
 
 # ENTRANCES
 # All plandomized entrances are defined under an "entrances" element and consist
@@ -60,7 +60,15 @@
 # that don't exist or which aren't supported for shuffling at the current moment,
 # then you'll get a plandomizer error.
 
-# MULTIWORLD_PLANDOMIZER (Note: currently multiworld is not an option in the randomizer)
+# STARTING ISLAND
+# You can also set the starting island if you want to. For this to apply, you must
+# turn on random starting island in the settings. For a list of island names, see
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L68
+- starting island: Five Eye Reef
+
+# MULTIWORLD_PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
+# and is not actively being developed, but the filling algorithm was made to support
+# multiworld incase it ever happens in the future.)
 # If you'd like to plandomize a multiworld seed, then each list of locations and/or
 # entrances must be under a "World #" element, with the '#' being the world number
 # the locations will be for. For example, if we want place the Telescope at

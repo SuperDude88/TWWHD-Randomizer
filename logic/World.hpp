@@ -49,6 +49,13 @@ struct AreaEntry
     bool isAccessible = false;
 };
 
+struct Plandomizer
+{
+    std::unordered_map<Location*, Item> locations = {};
+    std::unordered_map<Entrance*, Entrance*> entrances = {};
+    uint8_t startingIslandRoomIndex = -1;
+};
+
 class World
 {
 public:
@@ -125,8 +132,6 @@ public:
     std::map<std::string, Location> locationEntries = {};
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
-    std::unordered_map<Location*, Item> plandomizerLocations = {};
-    std::unordered_map<Entrance*, Entrance*> plandomizerEntrances = {};
     std::unordered_map<std::string, Dungeon> dungeons = {};
     std::unordered_map<Location*, std::vector<Location*>> pathLocations = {};
     std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
@@ -137,6 +142,7 @@ public:
     std::unordered_map<uint8_t, GameItem> chartMappings = {};
 
     uint8_t startingIslandRoomIndex = 44;
+    Plandomizer plandomizer;
 
 
 private:
