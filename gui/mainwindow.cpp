@@ -123,7 +123,7 @@ void MainWindow::setup_gear_menus()
     startingGearModel = new QStringListModel(this);
 
     QStringList randomizedList;
-    randomizedList << "Ballad Of Gales"
+    randomizedList << "Ballad of Gales"
                    << "Bait Bag"
                    << "Bombs"
                    << "Boomerang"
@@ -131,21 +131,21 @@ void MainWindow::setup_gear_menus()
                    << "Command Melody"
                    << "Deku Leaf"
                    << "Delivery Bag"
-                   << "Dins Pearl"
-                   << "Earth Gods Lyric"
+                   << "Din's Pearl"
+                   << "Earth God's Lyric"
                    << "Empty Bottle"
-                   << "Farores Pearl"
+                   << "Farore's Pearl"
                    << "Ghost Ship Chart"
                    << "Grappling Hook"
-                   << "Heros Charm"
+                   << "Hero's Charm"
                    << "Hookshot"
                    << "Hurricane Spin"
                    << "Iron Boots"
-                   << "Maggies Letter"
+                   << "Maggie's Letter"
                    << "Magic Armor"
-                   << "Moblins Letter"
-                   << "Nayrus Pearl"
-                   << "Note To Mom"
+                   << "Moblin's Letter"
+                   << "Nayru's Pearl"
+                   << "Note to Mom"
                    << "Power Bracelets"
                    << "Progressive Bomb Bag"
                    << "Progressive Bomb Bag"
@@ -167,11 +167,11 @@ void MainWindow::setup_gear_menus()
                    << "Progressive Wallet"
                    << "Progressive Wallet"
                    << "Skull Hammer"
-                   << "Song Of Passing"
+                   << "Song of Passing"
                    << "Spoils Bag"
                    << "Telescope"
                    << "Tingle Bottle"
-                   << "Wind Gods Aria";
+                   << "Wind God's Aria";
 
     randomizedGearModel->setStringList(randomizedList);
     ui->randomized_gear->setModel(randomizedGearModel);

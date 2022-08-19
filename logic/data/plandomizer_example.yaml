@@ -76,12 +76,12 @@
 # location is currently under. If we want to specify the item for a different
 # world we can use the "item" and "world" elements to do so. For example, if we want
 # to place Bombs for World 1 at World 2's Hyrule Castle - Sword Chamber Chest
-# and the Heros Charm for World 1 at World 2's Ganon's Tower - Maze Chest we would type:
+# and the Hero's Charm for World 1 at World 2's Ganon's Tower - Maze Chest we would type:
 - World 2:
       locations:
           Hyrule Castle - Sword Chamber Chest:
               item: Bombs
               world: 1
           Ganon's Tower - Maze Chest:
-              item: Heros Charm
+              item: Hero's Charm
               world: 1
