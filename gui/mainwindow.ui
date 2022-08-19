@@ -1164,6 +1164,13 @@
                  </item>
                 </layout>
                </item>
+               <item row="1" column="3">
+                <widget class="QCheckBox" name="clearer_hints">
+                 <property name="text">
+                  <string>Clearer Hints</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
