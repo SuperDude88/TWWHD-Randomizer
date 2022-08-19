@@ -297,6 +297,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, ho_ho_hints);
     APPLY_CHECKBOX_SETTING(config, ui, korl_hints);
     APPLY_CHECKBOX_SETTING(config, ui, use_always_hints);
+    APPLY_CHECKBOX_SETTING(config, ui, clearer_hints);
     APPLY_SPINBOX_SETTING(config, ui, path_hints, uint8_t(0), uint8_t(7));
     APPLY_SPINBOX_SETTING(config, ui, barren_hints, uint8_t(0), uint8_t(7));
     APPLY_SPINBOX_SETTING(config, ui, location_hints, uint8_t(0), uint8_t(7));
@@ -625,6 +626,7 @@ DEFINE_STATE_CHANGE_FUNCTION(player_in_casual_clothes)
 DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
 DEFINE_STATE_CHANGE_FUNCTION(korl_hints)
 DEFINE_STATE_CHANGE_FUNCTION(use_always_hints)
+DEFINE_STATE_CHANGE_FUNCTION(clearer_hints)
 void MainWindow::on_path_hints_valueChanged(int path_hints)
 {
     config.settings.path_hints = path_hints;
