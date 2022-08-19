@@ -592,13 +592,13 @@ void MainWindow::on_remove_gear_clicked()
 
 void MainWindow::update_starting_health_text()
 {
-    int health = config.settings.starting_hcs * 4;
+    int health = 12 + (config.settings.starting_hcs * 4);
     health += config.settings.starting_pohs;
 
     int containers =  health / 4;
     int pieces = health % 4;
 
-    std::string containersStr = std::to_string(containers) + (containers == 1 ? " Container" : " Containers");
+    std::string containersStr = std::to_string(containers) + " Hearts";
     std::string piecesStr = std::to_string(pieces) + (pieces == 1 ? " Piece" : " Pieces");
 
     std::string message = "Current Starting Health: " + containersStr + " and " + piecesStr;
