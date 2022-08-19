@@ -81,40 +81,78 @@ static FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& item
         return FillError::NO_REACHABLE_LOCATIONS;
     }
 
-    while (accessibleLocations.size() < openLocations * worlds.size())
+    bool successfullyPlacedItems = false;
+    while (accessibleLocations.size() < openLocations * worlds.size() || !successfullyPlacedItems)
     {
-        LOG_TO_DEBUG("Not enough locations available. Need: " + std::to_string(openLocations * worlds.size()) + " Have: " + std::to_string(accessibleLocations.size()));
+        successfullyPlacedItems = false;
+        LOG_TO_DEBUG("Number of open locations: " + std::to_string(accessibleLocations.size()));
         // Filter out already accessible locations
         filterAndEraseFromPool(allowedLocations, [accessibleLocations](const Location* loc){return elementInPool(loc, accessibleLocations);});
         shufflePool(itemsToPlace);
 
         auto sizeBefore = forwardPlacedItems.size();
-        for (auto& item : itemsToPlace)
+
+        // The idea here is to try every combination of 1..n items where n is the number of available
+        // places to place items. First try all items individually, then every set of 2, then 3, etc.
+        // until we find a combination of items that opens up more space
+        for (size_t itemsInSet = 1; itemsInSet <= accessibleLocations.size(); itemsInSet++)
         {
+            std::vector<size_t> indices (itemsInSet, 0);
+            std::iota(indices.begin(), indices.end(), 0);
 
-            forwardPlacedItems.push_back(item);
-
-            if (getAccessibleLocations(worlds, forwardPlacedItems, allowedLocations).size() > 0)
+            do
             {
+                // increment the indices, starting with an attempt at the last one
+                // and moving back to increment previous indices if necessary.
+                for (size_t i = indices.size() - 1; i >= 0; i--)
+                {
+                    size_t max = itemsToPlace.size() - (indices.size() - i);
 
-                auto location = RandomElement(accessibleLocations);
-                LOG_TO_DEBUG("Item " + item.getName() + " opened up more space");
-                LOG_TO_DEBUG("Placing item at " + location->name);
-                location->currentItem = item;
+                    if (indices[i] < max)
+                    {
+                        size_t counter = 1;
+                        for (; i < indices.size(); i++)
+                        {
+                            indices[i] += counter++;
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        indices[i] = indices[i-1];
+                    }
+                }
+
+                ItemPool newForwardItems = {};
+                for (auto& index : indices)
+                {
+                    newForwardItems.push_back(itemsToPlace[index]);
+                }
+
+
+                if (getAccessibleLocations(worlds, newForwardItems, allowedLocations).size() > 0)
+                {
+                    addElementsToPool(forwardPlacedItems, newForwardItems);
+                    fastFill(newForwardItems, accessibleLocations);
+                    successfullyPlacedItems = true;
+                    break;
+                }
+
+            } while (indices[0] < itemsToPlace.size() - itemsInSet);
+
+            if (successfullyPlacedItems)
+            {
                 break;
             }
-            else
-            {
-                forwardPlacedItems.pop_back();
-            }
         }
+
         // If no new items were placed, then we can't progress
         if (forwardPlacedItems.size() == sizeBefore)
         {
-            LOG_TO_DEBUG("No items opened up progression during forward fill attempt");
+            LOG_TO_DEBUG("No item combinations opened up progression during forward fill attempt");
             return FillError::RAN_OUT_OF_RETRIES;
         }
-
+        sizeBefore = forwardPlacedItems.size();
         accessibleLocations = getAccessibleLocations(worlds, forwardPlacedItems, allowedLocations);
     }
 
