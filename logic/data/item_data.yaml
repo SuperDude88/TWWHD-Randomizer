@@ -59,13 +59,16 @@
   Game Item Id: 0x13
   Small Key Dungeon: Dragon Roost Cavern
   Small Key Count: 4
+  Cryptic Text: a key
 
 - Name: DRC Big Key
   Game Item Id: 0x14
   Big Key Dungeon: Dragon Roost Cavern
+  Cryptic Text: an ominous key
 
 - Name: Small Key
   Game Item Id: 0x15
+  Cryptic Text: a key
 
 - Name: Fairy
   Game Item Id: 0x16
@@ -88,6 +91,7 @@
   Game Item Id: 0x1D
   Small Key Dungeon: Forbidden Woods
   Small Key Count: 1
+  Cryptic Text: a key
 
 - Name: Three Hearts
   Game Item Id: 0x1E
@@ -100,57 +104,73 @@
 
 - Name: Tingle Bottle
   Game Item Id: 0x21
+  Cryptic Text: a device that hasn't worked in 5 years
 
 - Name: Wind Waker
   Game Item Id: 0x22
+  Cryptic Text: the wand of the wind conductor
 
 - Name: Progressive Picto Box
   Game Item Id: 0x23
+  Cryptic Text: an upgrade for your camera
 
 - Name: Spoils Bag
   Game Item Id: 0x24
+  Cryptic Text: a storage for collectibles
 
 - Name: Grappling Hook
   Game Item Id: 0x25
+  Cryptic Text: an item to swing across platforms
 
 - Name: Deluxe Picto Box
   Game Item Id: 0x26
 
 - Name: Progressive Bow
   Game Item Id: 0x27
+  Cryptic Text: an upgrade for your bow
 
 - Name: Power Bracelets
   Game Item Id: 0x28
+  Cryptic Text: the strength to lift heavy rocks
 
 - Name: Iron Boots
   Game Item Id: 0x29
+  Cryptic Text: a very heavy item
 
 - Name: Magic Armor
   Game Item Id: 0x2A
+  Cryptic Text: purple protection
 
 - Name: Bait Bag
   Game Item Id: 0x2C
+  Cryptic Text: a storage for food
 
 - Name: Boomerang
   Game Item Id: 0x2D
+  Cryptic Text: an item that always comes back to you
 
 - Name: Hookshot
   Game Item Id: 0x2F
+  Cryptic Text: an item that reels
 
 - Name: Delivery Bag
   Game Item Id: 0x30
+  Cryptic Text: a storage for letters
 
 - Name: Bombs
   Game Item Id: 0x31
+  Cryptic Text: an explosive item
 
 - Name: Heros Clothes
   Game Item Id: 0x32
 
 - Name: Skull Hammer
   Game Item Id: 0x33
+  Cryptic Text: the hammer of the dead
 
 - Name: Deku Leaf
   Game Item Id: 0x34
+  Cryptic Text: a magic leaf
 
 - Name: Fire Ice Arrows
   Game Item Id: 0x35
@@ -163,6 +183,7 @@
 
 - Name: Progressive Sword
   Game Item Id: 0x38
+  Cryptic Text: an upgrade for your blade
 
 - Name: Master Sword Powerless
   Game Item Id: 0x39
@@ -172,6 +193,7 @@
 
 - Name: Progressive Shield
   Game Item Id: 0x3B
+  Cryptic Text: a defensive item
 
 - Name: Mirror Shield
   Game Item Id: 0x3C
@@ -188,6 +210,7 @@
 - Name: FW Big Key
   Game Item Id: 0x40
   Big Key Dungeon: Forbidden Woods
+  Cryptic Text: an ominous key
 
 - Name: FW Dungeon Map
   Game Item Id: 0x41
@@ -228,9 +251,11 @@
 
 - Name: Big Key
   Game Item Id: 0x4E
+  Cryptic Text: an ominous key
 
 - Name: Empty Bottle
   Game Item Id: 0x50
+  Cryptic Text: a glass container
 
 - Name: Red Potion
   Game Item Id: 0x51
@@ -267,10 +292,12 @@
   Game Item Id: 0x5B
   Small Key Dungeon: Tower of the Gods
   Small Key Count: 2
+  Cryptic Text: a key
 
 - Name: TotG Big Key
   Game Item Id: 0x5C
   Big Key Dungeon: Tower of the Gods
+  Cryptic Text: an ominous key
 
 - Name: TotG Dungeon Map
   Game Item Id: 0x5D
@@ -290,63 +317,82 @@
 
 - Name: Triforce Shard 1
   Game Item Id: 0x61
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 2
   Game Item Id: 0x62
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 3
   Game Item Id: 0x63
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 4
   Game Item Id: 0x64
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 5
   Game Item Id: 0x65
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 6
   Game Item Id: 0x66
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 7
   Game Item Id: 0x67
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Triforce Shard 8
   Game Item Id: 0x68
+  Cryptic Text: a piece of the power of the gods
 
 - Name: Nayrus Pearl
   Game Item Id: 0x69
+  Cryptic Text: a blue jewel
 
 - Name: Dins Pearl
   Game Item Id: 0x6A
+  Cryptic Text: a red jewel
 
 - Name: Farores Pearl
   Game Item Id: 0x6B
+  Cryptic Text: a green jewel
 
 - Name: Winds Requiem
   Game Item Id: 0x6D
+  Cryptic Text: the song of wind
 
 - Name: Ballad Of Gales
   Game Item Id: 0x6E
+  Cryptic Text: the song of gales
 
 - Name: Command Melody
   Game Item Id: 0x6F
+  Cryptic Text: the song of command
 
 - Name: Earth Gods Lyric
   Game Item Id: 0x70
+  Cryptic Text: the song of the earth's god
 
 - Name: Wind Gods Aria
   Game Item Id: 0x71
+  Cryptic Text: the song of the wind's god
 
 - Name: Song Of Passing
   Game Item Id: 0x72
+  Cryptic Text: the song of time
 
 - Name: ET Small Key
   Game Item Id: 0x73
   Small Key Dungeon: Earth Temple
   Small Key Count: 3
+  Cryptic Text: a key
 
 - Name: ET Big Key
   Game Item Id: 0x74
   Big Key Dungeon: Earth Temple
+  Cryptic Text: an ominous key
 
 - Name: ET Dungeon Map
   Game Item Id: 0x75
@@ -361,6 +407,7 @@
 
 - Name: Progressive Sail
   Game Item Id: 0x78
+  Cryptic Text: a wind follower
 
 - Name: Triforce Chart 1 Deciphered
   Game Item Id: 0x79
@@ -390,6 +437,7 @@
   Game Item Id: 0x81
   Small Key Dungeon: Wind Temple
   Small Key Count: 2
+  Cryptic Text: a key
 
 - Name: All Purpose Bait
   Game Item Id: 0x82
@@ -400,6 +448,7 @@
 - Name: WT Big Key
   Game Item Id: 0x84
   Big Key Dungeon: Wind Temple
+  Cryptic Text: an ominous key
 
 - Name: WT Dungeon Map
   Game Item Id: 0x85
@@ -450,19 +499,23 @@
 
 - Name: Note To Mom
   Game Item Id: 0x99
+  Cryptic Text: the writings of a letter sorter
 
 - Name: Maggies Letter
   Game Item Id: 0x9A
   Chain Locations:
     - Windfall Island - Cafe Postman Delivery
+  Cryptic Text: the writings of a woman
 
 - Name: Moblins Letter
   Game Item Id: 0x9B
   Chain Locations:
     - Windfall Island - Maggie Delivery Reward
+  Cryptic Text: the writings of a creature
 
 - Name: Cabana Deed
   Game Item Id: 0x9C
+  Cryptic Text: a pass for a private residence
 
 - Name: Complimentary ID
   Game Item Id: 0x9D
@@ -477,38 +530,45 @@
   Game Item Id: 0xA3
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
+  Cryptic Text: a statue of a fairy
 
 - Name: Forbidden Tingle Statue
   Game Item Id: 0xA4
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
+  Cryptic Text: a statue of a fairy
 
 - Name: Goddess Tingle Statue
   Game Item Id: 0xA5
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
+  Cryptic Text: a statue of a fairy
 
 - Name: Earth Tingle Statue
   Game Item Id: 0xA6
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
+  Cryptic Text: a statue of a fairy
 
 - Name: Wind Tingle Statue
   Game Item Id: 0xA7
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
+  Cryptic Text: a statue of a fairy
 
 - Name: Hurricane Spin
   Game Item Id: 0xAA
 
 - Name: Progressive Wallet
   Game Item Id: 0xAB
+  Cryptic Text: an upgrade for your Rupee bag
 
 - Name: Five Thousand Wallet
   Game Item Id: 0xAC
 
 - Name: Progressive Bomb Bag
   Game Item Id: 0xAD
+  Cryptic Text: an upgrade for your bomb bag
 
 - Name: Ninety Nine Bomb Bag
   Game Item Id: 0xAE
@@ -518,6 +578,7 @@
   Chain Locations: # Quiver is potentially progression for 12 eye octos
     - Seven Star Isles - Big Octo
     - Tingle Island - Big Octo
+  Cryptic Text: an upgrade for your quiver
 
 - Name: Ninety Nine Quiver
   Game Item Id: 0xB0
@@ -527,6 +588,7 @@
 
 - Name: Progressive Magic Meter  # Replaces magic upgrade
   Game Item Id: 0xB2
+  Cryptic Text: an upgrade for your magic meter
 
 - Name: Fifty Rupees
   Game Item Id: 0xB3
@@ -578,155 +640,205 @@
 
 - Name: Treasure Chart 7
   Game Item Id: 0xCC
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 27
   Game Item Id: 0xCD
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 21
   Game Item Id: 0xCE
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 13
   Game Item Id: 0xCF
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 32
   Game Item Id: 0xD0
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 19
   Game Item Id: 0xD1
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 41
   Game Item Id: 0xD2
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 26
   Game Item Id: 0xD3
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 8
   Game Item Id: 0xD4
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 37
   Game Item Id: 0xD5
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 25
   Game Item Id: 0xD6
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 17
   Game Item Id: 0xD7
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 36
   Game Item Id: 0xD8
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 22
   Game Item Id: 0xD9
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 9
   Game Item Id: 0xDA
+  Cryptic Text: a blue map
 
 - Name: Ghost Ship Chart
   Game Item Id: 0xDB
   Chain Locations:
     - Great Sea - Ghost Ship Chest
+  Cryptic Text: a map of fear
 
 - Name: Tingles Chart
   Game Item Id: 0xDC
 
 - Name: Treasure Chart 14
   Game Item Id: 0xDD
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 10
   Game Item Id: 0xDE
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 40
   Game Item Id: 0xDF
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 3
   Game Item Id: 0xE0
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 4
   Game Item Id: 0xE1
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 28
   Game Item Id: 0xE2
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 16
   Game Item Id: 0xE3
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 18
   Game Item Id: 0xE4
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 34
   Game Item Id: 0xE5
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 29
   Game Item Id: 0xE6
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 1
   Game Item Id: 0xE7
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 35
   Game Item Id: 0xE8
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 12
   Game Item Id: 0xE9
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 6
   Game Item Id: 0xEA
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 24
   Game Item Id: 0xEB
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 39
   Game Item Id: 0xEC
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 38
   Game Item Id: 0xED
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 2
   Game Item Id: 0xEE
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 33
   Game Item Id: 0xEF
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 31
   Game Item Id: 0xF0
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 23
   Game Item Id: 0xF1
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 5
   Game Item Id: 0xF2
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 20
   Game Item Id: 0xF3
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 30
   Game Item Id: 0xF4
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 15
   Game Item Id: 0xF5
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 11
   Game Item Id: 0xF6
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 46
   Game Item Id: 0xF7
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 45
   Game Item Id: 0xF8
+  Cryptic Text: a blue map
 
 - Name: Treasure Chart 44
   Game Item Id: 0xF9
+  Cryptic Text: a blue map
 
 - Name: Triforce Chart 3
   Game Item Id: 0xFA
+  Cryptic Text: a purple map
 
 - Name: Treasure Chart 43
   Game Item Id: 0xFB
+  Cryptic Text: a blue map
 
 - Name: Triforce Chart 2
   Game Item Id: 0xFC
+  Cryptic Text: a purple map
 
 - Name: Treasure Chart 42
   Game Item Id: 0xFD
+  Cryptic Text: a blue map
 
 - Name: Triforce Chart 1
   Game Item Id: 0xFE
+  Cryptic Text: a purple map

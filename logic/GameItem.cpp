@@ -587,13 +587,22 @@ bool Item::isChartForSunkenTreasure() const
 
 void Item::addChainLocation(Location* location)
 {
-		LOG_TO_DEBUG("Yes, we made it");
 		chainLocations.push_back(location);
 }
 
 std::list<Location*>& Item::getChainLocations()
 {
 		return chainLocations;
+}
+
+std::string Item::getCrypticText() const
+{
+		return crypticText;
+}
+
+void Item::setCrypticText(const std::string& crypticText_)
+{
+		crypticText = crypticText_;
 }
 
 void Item::setAsJunkItem()

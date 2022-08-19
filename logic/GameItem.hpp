@@ -383,6 +383,8 @@ public:
     bool isChartForSunkenTreasure() const;
     void addChainLocation(Location* location);
     std::list<Location*>& getChainLocations();
+    void setCrypticText(const std::string& crypticText_);
+    std::string getCrypticText() const;
     void setAsJunkItem();
     bool isJunkItem() const;
     bool isDungeonItem() const;
@@ -395,6 +397,7 @@ private:
     bool majorItem = false;
     bool chartForSunkenTreasure = false;
     std::list<Location*> chainLocations = {};
+    std::string crypticText = "";
     bool dungeonItem = false;
     bool junkItem = false;
     int worldId = -1; // The world that this item is *FOR*

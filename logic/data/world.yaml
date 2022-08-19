@@ -8,12 +8,12 @@
 # logic statements you wish. No modifications to the code are necessary.
 #
 # Locations are places which can contain randomized items. Adding new locations
-# will require adding them in the code as well.
+# here will require adding them location_data.yaml as well.
 #
 # Exits define how the areas of the world graph connect to each other. Each exit
 # is a one way connection, so when making new areas remember to define the exit
-# connections both ways if applicable. Adding new areas to the logic will require
-# defining them in the code as well.
+# connections both ways if applicable. New areas can be defined without having to
+# modify the code
 #
 # The following logical operators/functions are available for logic statements:
 # - and

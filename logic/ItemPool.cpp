@@ -247,7 +247,7 @@ ItemNamePool generateStartingGameItemPool(const Settings& settings)
         "Progressive Sail"
     };
 
-    // Add more items depending on settings
+    // Add in a sword, if the sword mode starts with one
     if (settings.sword_mode == SwordMode::StartWithSword)
     {
         startingItems.push_back("Progressive Sword");
