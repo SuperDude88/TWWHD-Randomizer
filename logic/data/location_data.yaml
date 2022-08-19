@@ -1,5 +1,5 @@
 - Name: Mailbox - Letter from Hoskit's Girlfriend
-  Original Item: Piece Of Heart 2
+  Original Item: Piece of Heart 2
   Category:
     - Mail
     - SpoilsTrading
@@ -9,7 +9,7 @@
     - 0x10031584
 
 - Name: Mailbox - Letter from Baito's Mother
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Mail
   Hint Priority: Sometimes
@@ -30,7 +30,7 @@
     - 0x10031590
 
 - Name: Mailbox - Letter from Komali's Father
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Mail
   Hint Priority: Sometimes
@@ -138,7 +138,7 @@
     - 0x101C63BF
 
 - Name: Great Sea - Cyclos
-  Original Item: Ballad Of Gales
+  Original Item: Ballad of Gales
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -148,7 +148,7 @@
   NameOffset: 0x0005AE20
 
 - Name: Great Sea - Goron Trading Reward
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - LongSideQuest
     - ExpensivePurchase
@@ -158,7 +158,7 @@
     - 0x101C546F
 
 - Name: Great Sea - Withered Trees
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - LongSideQuest
   Hint Priority: Always
@@ -191,7 +191,7 @@
     - 0x00002838
 
 - Name: Forsaken Fortress - Chest Inside Lower Jail Cell
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Dungeon
   Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -273,7 +273,7 @@
     - 0x000030DC
 
 - Name: Star Island - Cave Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - CombatSecretCave
   Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -361,7 +361,7 @@
     - 0x00000664
 
 - Name: Seven Star Isles - Big Octo
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - BigOcto
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
@@ -483,7 +483,7 @@
     - 0x00001BB0
 
 - Name: Spectacle Island - Barrel Shooting First Prize
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Minigame
   Hint Priority: Sometimes
@@ -515,7 +515,7 @@
     - 0x00000C5C
 
 - Name: Windfall Island - Ivan Catch Killer Bees
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - ShortSideQuest
   Hint Priority: Sometimes
@@ -524,7 +524,7 @@
     - 0x02298bfc
 
 - Name: Windfall Island - Transparent Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - ShortSideQuest
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
@@ -536,7 +536,7 @@
     - 0x00003F40
 
 - Name: Windfall Island - Tott Teach Rhythm
-  Original Item: Song Of Passing
+  Original Item: Song of Passing
   Category:
     - FreeGift
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -557,7 +557,7 @@
     - "@0x022da95b"
 
 - Name: Windfall Island - Sam Decorate Island
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - LongSideQuest
   Hint Priority: Sometimes
@@ -670,7 +670,7 @@
     - 0x022E98EF
 
 - Name: Windfall Island - Tingle Second Gift
-  Original Item: Tingles Chart
+  Original Item: Tingle's Chart
   Category:
     - FreeGift
   Hint Priority: Sometimes
@@ -763,7 +763,7 @@
     - 0x00000930
 
 - Name: Windfall Island - Cafe Postman Delivery
-  Original Item: Moblins Letter
+  Original Item: Moblin's Letter
   Category:
     - ShortSideQuest
   Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -773,7 +773,7 @@
   NameOffset: 0x0000B440
 
 - Name: Windfall Island - Linda and Anton
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - LongSideQuest
   Hint Priority: Sometimes
@@ -782,7 +782,7 @@
     - 0x101C39A7
 
 - Name: Windfall Island - Battle Squid First Prize
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - BattleSquid
   Hint Priority: Sometimes
@@ -809,7 +809,7 @@
     - 0x02267367
 
 - Name: Windfall Island - Kreeb Light the Lighthouse
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - ShortSideQuest
   Hint Priority: Sometimes
@@ -848,7 +848,7 @@
     - 0x1019017D
 
 - Name: Windfall Island - Auction 80 Rupee
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - ExpensivePurchase
     - Minigame
@@ -888,7 +888,7 @@
   NameOffset: 0x0001BBC0
 
 - Name: Windfall Island - Maggie Free Item
-  Original Item: Maggies Letter
+  Original Item: Maggie's Letter
   Category:
     - FreeGift
   Hint Priority: Sometimes
@@ -897,7 +897,7 @@
     - 0x0227C2A3
 
 - Name: Windfall Island - Maggie Delivery Reward
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - ShortSideQuest
   Hint Priority: Sometimes
@@ -936,7 +936,7 @@
     - 0x00000774
 
 - Name: Pawprint Isle - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
@@ -949,7 +949,7 @@
     - 0x00002BAC
 
 - Name: Pawprint Isle - Chu Chu Cave Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1009,7 +1009,7 @@
     - 0x00002CF0
 
 - Name: Dragon Roost Island - Wind Shrine
-  Original Item: Winds Requiem
+  Original Item: Wind's Requiem
   Category:
     - Misc
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -1052,7 +1052,7 @@
   NameOffset: 0x00008760
 
 - Name: Dragon Roost Island - Baito Mail Game
-  Original Item: Note To Mom
+  Original Item: Note to Mom
   Category:
     - Minigame
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
@@ -1082,7 +1082,7 @@
     - 0x00000950
 
 - Name: Flight Control Platform - First Prize
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Minigame
   Hint Priority: Sometimes
@@ -1146,7 +1146,7 @@
     - 0x00001758
 
 - Name: Rock Spire Isle - Defeat Southeast Gunboat
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Gunboat
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1156,7 +1156,7 @@
     - 0x00001A84
 
 - Name: Rock Spire Isle - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
@@ -1180,7 +1180,7 @@
     - 0x022155BB
 
 - Name: Rock Spire Isle - Beedle 950 Rupee Item
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - ExpensivePurchase
   Hint Priority: Sometimes
@@ -1251,7 +1251,7 @@
     - 0x022E9973
 
 - Name: Tingle Island - Big Octo
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - BigOcto
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
@@ -1405,7 +1405,7 @@
     - 0x000022A4
 
 - Name: Three Eye Reef - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
@@ -1418,7 +1418,7 @@
     - 0x0000212C
 
 - Name: Greatfish Isle - Hidden Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
@@ -1497,7 +1497,7 @@
     - 0x00002AA8
 
 - Name: Six Eye Reef - Submarine Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
@@ -1543,7 +1543,7 @@
     - 0x00000E58
 
 - Name: Thorned Fairy Island - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
@@ -1585,7 +1585,7 @@
     - 0x00001BA0
 
 - Name: Needle Rock Isle - Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
@@ -1694,7 +1694,7 @@
     - 0x00002460
 
 - Name: Stone Watcher Island - Lookout Platform Destroy Cannons
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Platform
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
@@ -1770,7 +1770,7 @@
     - 0x00000254
 
 - Name: Bomb Island - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
@@ -1783,7 +1783,7 @@
     - 0x00002038
 
 - Name: Bomb Island - Cave Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - PuzzleSecretCave
   Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -1846,7 +1846,7 @@
     - 0x0000166C
 
 - Name: Diamond Steppe Island - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
@@ -1935,7 +1935,7 @@
     - 0x00000210
 
 - Name: Southern Fairy Island - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
@@ -2021,7 +2021,7 @@
     - 0x00000210
 
 - Name: Forest Haven - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
@@ -2151,7 +2151,7 @@
     - 0x00001FB4
 
 - Name: Outset Island - Dig up Black Soil
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
@@ -2194,7 +2194,7 @@
   NameOffset: 0x0000FA40
 
 - Name: Outset Island - Orca Hit 500 Times
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Junk
   Hint Priority: Sometimes
@@ -2232,7 +2232,7 @@
     - 0x00000348
 
 - Name: Outset Island - Savage Labyrinth Floor 50
-  Original Item: Heros Charm
+  Original Item: Hero's Charm
   Category:
     - SavageLabyrinth
   Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
@@ -2242,7 +2242,7 @@
     - 0x00000178
 
 - Name: Outset Island - Jabun's Cave Chest
-  Original Item: Nayrus Pearl
+  Original Item: Nayru's Pearl
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
@@ -2252,7 +2252,7 @@
     - 0x000001C4
 
 - Name: Headstone Island - Top of Island
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
@@ -2306,7 +2306,7 @@
   NameOffset: 0x00026170
 
 - Name: Two Eye Reef - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
@@ -2329,7 +2329,7 @@
     - 0x0000274C
 
 - Name: Angular Isles - Peak Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - IslandPuzzle
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
@@ -2339,7 +2339,7 @@
     - 0x00000830
 
 - Name: Angular Isles - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
@@ -2396,7 +2396,7 @@
     - 0x00000210
 
 - Name: Five Star Isles - Sunken Treasure
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - SunkenTreasure
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
@@ -2419,7 +2419,7 @@
     - 0x0000147C
 
 - Name: Five Star Isles - Submarine Chest
-  Original Item: Piece Of Heart
+  Original Item: Piece of Heart
   Category:
     - Submarine
   Path: content/Common/Stage/Abship_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr

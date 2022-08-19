@@ -116,19 +116,19 @@ namespace {
 		{"Triforce Shard 6", "a piece of the power of the gods"},
 		{"Triforce Shard 7", "a piece of the power of the gods"},
 		{"Triforce Shard 8", "a piece of the power of the gods"},
-		{"Nayrus Pearl", "a blue jewel"},
-		{"Dins Pearl", "a red jewel"},
-		{"Farores Pearl", "a green jewel"},
-		{"Winds Requiem", "the song of wind"},
-		{"Ballad Of Gales", "the song of gales"},
+		{"Nayru's Pearl", "a blue jewel"},
+		{"Din's Pearl", "a red jewel"},
+		{"Farore's Pearl", "a green jewel"},
+		{"Wind's Requiem", "the song of wind"},
+		{"Ballad of Gales", "the song of gales"},
 		{"Command Melody", "the song of command"},
-		{"Earth Gods Lyric", "the song of earths god"},
-		{"Wind Gods Aria", "the song of winds god"},
-		{"Song Of Passing", "the song of time"},
+		{"Earth God's Lyric", "the song of earths god"},
+		{"Wind God's Aria", "the song of winds god"},
+		{"Song of Passing", "the song of time"},
 		{"Boats Sail", "the wind follower"},
-		{"Note To Mom", "the writings of a letter sorter"},
-		{"Maggies Letter", "the writings of a woman"},
-		{"Moblins Letter", "the writings of a creature"},
+		{"Note to Mom", "the writings of a letter sorter"},
+		{"Maggie's Letter", "the writings of a woman"},
+		{"Moblin's Letter", "the writings of a creature"},
 		{"Cabana Deed", "a pass for a private residence"},
 		{"Progressive Magic Meter", "an upgrade for your magic"},
 		{"Ghost Ship Chart", "the chart of fears"},
@@ -784,7 +784,7 @@ TweakError add_more_magic_jars() {
 
 		skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
 		skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-		
+
 		FILETYPE_ERROR_CHECK(drc_before_boss.writeToStream(*stream));
 	}
 
@@ -861,21 +861,21 @@ TweakError modify_title_screen() {
 
 	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FILETYPE_ERROR_CHECK(title.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(title.replaceWithDDS(DATA_PATH "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(title.writeToStream(*stream));
-	
+
 	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FILETYPE_ERROR_CHECK(subtitle.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(DATA_PATH "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(subtitle.writeToStream(*stream));
-	
+
 	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FILETYPE_ERROR_CHECK(mask.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(mask.replaceWithDDS(DATA_PATH "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 	FILETYPE_ERROR_CHECK(mask.writeToStream(*stream));
@@ -910,7 +910,7 @@ TweakError update_name_and_icon() {
 	meta.Print(&printer);
 	metaStream->str(std::string());
 	*metaStream << printer.CStr();
-	
+
 	return TweakError::NONE;
 }
 
@@ -1158,7 +1158,7 @@ TweakError update_shop_item_descriptions(const Location& beedle20, const Locatio
 	msbt2.messages_by_label["12111"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u" is just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
 
 	FILETYPE_ERROR_CHECK(msbt2.writeToStream(*stream));
-	
+
 	return TweakError::NONE;
 }
 
@@ -1186,7 +1186,7 @@ TweakError update_auction_item_names(const Location& auction5_, const Location& 
 	//also add a hint to the flyer explaining what items the auction holds
 	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FileTypes::MSBTFile msbt2;
 	FILETYPE_ERROR_CHECK(msbt2.loadFromBinary(*stream));
 
@@ -1326,7 +1326,7 @@ TweakError update_savage_labyrinth_hint_tablet(const Location& floor30_, const L
 	else {
 		hint = u"a challenge awaits.";
 	}
-	
+
 	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
 	EXTRACT_ERR_CHECK(stream)
 
@@ -1692,7 +1692,7 @@ TweakError add_cross_dungeon_warps() {
 			}
 		}
 	}
-	
+
 	FILETYPE_ERROR_CHECK(totg.writeToStream(*totgStream));
 	FILETYPE_ERROR_CHECK(ff.writeToStream(*ffStream));
 
@@ -2035,7 +2035,7 @@ TweakError implement_key_bag() {
   	msbt.messages_by_label["00603"].text.message += u"ET: \x000E\x0007\x004E\x0000           "s;
   	msbt.messages_by_label["00603"].text.message += u"WT: \x000E\x0007\x004F\x0000     \0"s;
 	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-	
+
 	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
 	EXTRACT_ERR_CHECK(stream);
 
@@ -2068,7 +2068,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
 	FileTypes::FLYTFile map;
 	FILETYPE_ERROR_CHECK(map.loadFromBinary(*stream));
-	
+
 	for(const uint8_t& index : room_indexes) {
 		const uint32_t column = (index - 1) % 7;
 		const uint32_t row = std::floor((index - 1) / 7);
@@ -2477,7 +2477,7 @@ TweakError show_tingle_statues_on_quest_screen() {
 	FILETYPE_ERROR_CHECK(tingle.loadFromBinary(*stream));
 	FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 	FILETYPE_ERROR_CHECK(tingle.writeToStream(*stream));
-	
+
 	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
 	EXTRACT_ERR_CHECK(stream);
 
@@ -2520,13 +2520,13 @@ TweakError update_entrance_events() {
 
 	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FileTypes::DZXFile dzr;
 	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
 
 	stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FileTypes::EventList event_list;
 	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
 
@@ -2552,10 +2552,10 @@ TweakError update_entrance_events() {
 	//This avoids a case where you can only access the lower entrances of FH, but they both dead end, and you need to savewarp to escape
 	stream = g_session.openGameFile("content/Common/Stage/kinBOSS_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
 	EXTRACT_ERR_CHECK(stream);
-	
+
 	FileTypes::EventList event_list_2;
 	FILETYPE_ERROR_CHECK(event_list_2.loadFromBinary(*stream));
-	
+
 	if(event_list_2.Events_By_Name.count("WARP_WIND") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
 	std::shared_ptr<Action> exit = event_list_2.Events_By_Name.at("WARP_WIND")->get_actor("DIRECTOR")->actions[2];
 	std::get<std::vector<int32_t>>(exit->properties[0]->value)[0] = 0;
@@ -2567,7 +2567,7 @@ TweakError update_entrance_events() {
 	std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = 0;
 	exit2->properties[1]->value = "sea\0"s;
 	std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = 41;
-	
+
 	FILETYPE_ERROR_CHECK(event_list_2.writeToStream(*stream));
 
 	return TweakError::NONE;
@@ -2592,7 +2592,7 @@ TweakError updateCodeSize() {
 	tinyxml2::XMLDocument cos;
 	std::stringstream* cosStream = g_session.openGameFile("code/cos.xml");
 	EXTRACT_ERR_CHECK(cosStream);
-	
+
 	cos.LoadFile(*cosStream);
 	tinyxml2::XMLElement* root = cos.RootElement();
 	root->FirstChildElement("max_codesize")->SetText("03000000");
@@ -2641,7 +2641,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	blockMoveReloc.r_info = 0x00015b0a;
 	blockMoveReloc.r_addend = 0;
 	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
-	
+
 	blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x24;
 	blockMoveReloc.r_info = 0x00015b0a;
 	blockMoveReloc.r_addend = 0;
@@ -2727,7 +2727,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
 	RPX_ERROR_CHECK(gRPX.writeToStream(*rpxStream));
 	gRPX = FileTypes::ELF();
-	
+
 	return TweakError::NONE;
 }
 
@@ -2769,7 +2769,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());
 	}
-	
+
 	RPX_ERROR_CHECK(gRPX.writeToStream(*rpxStream));
 	gRPX = FileTypes::ELF();
 

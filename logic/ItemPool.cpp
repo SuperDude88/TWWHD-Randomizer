@@ -28,20 +28,20 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     {"Triforce Shard 7", 1},
     {"Triforce Shard 8", 1},
 
-    {"Nayrus Pearl", 1},
-    {"Dins Pearl", 1},
-    {"Farores Pearl", 1},
+    {"Nayru's Pearl", 1},
+    {"Din's Pearl", 1},
+    {"Farore's Pearl", 1},
 
-    {"Winds Requiem", 1},
-    {"Song Of Passing", 1},
-    {"Ballad Of Gales", 1},
+    {"Wind's Requiem", 1},
+    {"Song of Passing", 1},
+    {"Ballad of Gales", 1},
     {"Command Melody", 1},
-    {"Earth Gods Lyric", 1},
-    {"Wind Gods Aria", 1},
+    {"Earth God's Lyric", 1},
+    {"Wind God's Aria", 1},
 
-    {"Note To Mom", 1},
-    {"Maggies Letter", 1},
-    {"Moblins Letter", 1},
+    {"Note to Mom", 1},
+    {"Maggie's Letter", 1},
+    {"Moblin's Letter", 1},
     {"Cabana Deed", 1},
 
     {"Dragon Tingle Statue", 1},
@@ -117,7 +117,7 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     // Non-consumable junk items
     {"Telescope", 1},
     {"Magic Armor", 1},
-    {"Heros Charm", 1},
+    {"Hero's Charm", 1},
     {"Fill Up Coupon", 1},
 
     {"Hurricane Spin", 1},
@@ -129,7 +129,7 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     {"Secret Cave Chart", 1},
     {"Great Fairy Chart", 1},
     {"Octo Chart", 1},
-    {"Tingles Chart", 1},
+    {"Tingle's Chart", 1},
 
     // Consumable junk items
     {"Green Rupee", 1},
@@ -233,7 +233,7 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
     int numContainers = 6 - settings.starting_hcs;
     int numPieces = 44 - settings.starting_pohs;
     addElementToPool(completeItemPool, std::string("Heart Container"), numContainers);
-    addElementToPool(completeItemPool, std::string("Piece Of Heart"), numPieces);
+    addElementToPool(completeItemPool, std::string("Piece of Heart"), numPieces);
 
     return completeItemPool;
 }
@@ -243,7 +243,7 @@ ItemNamePool generateStartingGameItemPool(const Settings& settings)
     //Should be able to randomize wind waker/sail but it would require some logic changes/fixes which aren't in yet
     ItemNamePool startingItems = {
         "Wind Waker",
-        "Winds Requiem",
+        "Wind's Requiem",
         "Progressive Sail"
     };
 
