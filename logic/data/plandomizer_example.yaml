@@ -1,8 +1,8 @@
-# Example Plandomizer file. Please read all the insutrctions here so you know
-# how to properly create a plandomizer file. To use a plandomizer file for local
-# development, put your plandomized locations in the file "plandomizer.yaml" in the
-# same directory as this example file (which should be logic/data/plandomizer.yaml in
-# the project structure).
+# Example Plandomizer file.
+
+# Plandomizer files allow you to control certain aspects when generating a new
+# randomizer seed. You can place items in specific locations, and connect
+# specific entrances if entrance randomizer is enabled.
 
 # LOCATIONS
 # All plandomized locations are defined under a "locations" element and consist
@@ -15,9 +15,9 @@
       Wind Temple - Wizzrobe Mini Boss: Power Bracelets
 
 # NAMES
-# As a general rule, capitalize the first letter of all item names.
-# "Power Bracelets" is okay. "power bracelets" will be unrecognized. For a full
-# list of location names, please check out:
+# As a general rule, capitalize the first letter of all item names except for
+# the words "to" and "of". "Power Bracelets" is okay. "power bracelets" will be
+# unrecognized. For a full list of location names, please check out:
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/location_data.yaml
 
 # PROGRESS_LOCATIONS
