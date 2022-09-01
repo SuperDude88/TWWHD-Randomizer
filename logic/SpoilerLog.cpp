@@ -36,21 +36,21 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
 {
     // Print the world number if more than 1 world
     std::string worldNumber = " [W";
-    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->worldId + 1) + "]" : "";
+    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->world->getWorldId() + 1) + "]" : "";
                                                                  // Don't add an extra space if the world id is two digits long
-    size_t numSpaces = (longestNameLength - location->name.length()) + ((location->worldId >= 9) ? 0 : 1);
+    size_t numSpaces = (longestNameLength - location->getName().length()) + ((location->world->getWorldId() >= 9) ? 0 : 1);
     std::string spaces (numSpaces, ' ');
 
     // Don't say which player the item is for if there's only 1 world
     std::string itemName = worlds.size() > 1 ? location->currentItem.getName() : gameItemToName(location->currentItem.getGameItemId());
 
-    return location->name + worldNumber + ":" + spaces + itemName;
+    return location->getName() + worldNumber + ":" + spaces + itemName;
 }
 
 static std::string getSpoilerFormatHint(Location* location)
 {
     // Get rid of commands in the hint text and then convert to UTF-8
-    std::u16string hintText = location->hintText;
+    std::u16string hintText = location->hintText["English"];
     for (auto eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
     {
         auto pos = std::string::npos;
@@ -135,7 +135,7 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         for (auto location : *sphereItr)
         {
-            longestNameLength = std::max(longestNameLength, location->name.length());
+            longestNameLength = std::max(longestNameLength, location->getName().length());
         }
     }
     for (auto& world : worlds)
@@ -216,7 +216,7 @@ void generateSpoilerLog(WorldPool& worlds)
         {
             if (!location->categories.contains(LocationCategory::HoHoHint))
             {
-                longestNameLength = std::max(longestNameLength, location->name.length());
+                longestNameLength = std::max(longestNameLength, location->getName().length());
             }
         }
     }
@@ -241,7 +241,7 @@ void generateSpoilerLog(WorldPool& worlds)
         {
             for (auto& [hohoLocation, hintLocations] : world.hohoHints)
             {
-                log << "\t" << hohoLocation->name << ":" << std::endl;
+                log << "\t" << hohoLocation->getName() << ":" << std::endl;
                 for (auto location : hintLocations)
                 {
                     log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
@@ -302,7 +302,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
         {
             if (location->progression)
             {
-                BasicLog::getInstance().log("\t" + location->name);
+                BasicLog::getInstance().log("\t" + location->getName());
             }
         }
     }
@@ -314,7 +314,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
         {
             if (!location->progression)
             {
-                BasicLog::getInstance().log("\t" + location->name);
+                BasicLog::getInstance().log("\t" + location->getName());
             }
         }
     }

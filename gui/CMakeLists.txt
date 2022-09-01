@@ -67,6 +67,7 @@ set(PROJECT_SOURCES
         ../randomizer.cpp
         ../tweaks.cpp
         ../options.cpp
+        ../text_replacements.cpp
 )
 
 # Put data files together for easier manipulation

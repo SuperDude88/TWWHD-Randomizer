@@ -2,8 +2,9 @@
 
 #include "World.hpp"
 
-#define HINT_PREFIX u"They say that "
-#define HINT_SUFFIX u"."
+#define HINT_PREFIX_ENGLISH u"They say that "
+#define HINT_PREFIX_SPANISH u"Dicen que "
+#define HINT_PREFIX_FRENCH  u"J'ai entendu dire que "
 
 enum struct HintError
 {

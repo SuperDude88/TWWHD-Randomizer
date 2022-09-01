@@ -123,7 +123,7 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     {"Hurricane Spin", 1},
 
     {"Submarine Chart", 1},
-    {"Beedles Chart", 1},
+    {"Beedle's Chart", 1},
     {"Platform Chart", 1},
     {"Light Ring Chart", 1},
     {"Secret Cave Chart", 1},
@@ -265,6 +265,7 @@ void logItemPool(const std::string& poolName, const ItemPool& itemPool)
 {
     LOG_TO_DEBUG(poolName + ":");
     for (auto& item : itemPool) {
+        LOG_TO_DEBUG("\t" + gameItemToName(item.getGameItemId()));
         LOG_TO_DEBUG("\t" + item.getName());
     }
     LOG_TO_DEBUG("]");

@@ -551,7 +551,7 @@ public:
 				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
-						ErrorLog::getInstance().log("Failed to save location " + location.name);
+						ErrorLog::getInstance().log("Failed to save location " + location.getName());
 						return 1;
 					}
 				}

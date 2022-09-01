@@ -1,0 +1,826 @@
+# Translations for the names of each area that is currently a hint region
+
+- Names:
+    English: Mailbox
+    Spanish: Buzón
+    French: Boîte aux Lettres
+  Pretty Names:
+    English: the |Mailbox|
+    Spanish: el |Buzón|
+    French: la |Boîte aux Lettres|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: The Great Sea
+    Spanish: Gran Mar
+    French: Océan
+  Pretty Names:
+    English: the |Great Sea|
+    Spanish: el |Gran Mar|
+    French: l'|Océan|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Forsaken Fortress Sector
+    Spanish: Sector de la Isla del Diablo
+    French: Secteur de la Forteresse Maudite
+  Pretty Names:
+    English: the |Forsaken Fortress Sector|
+    Spanish: el |Sector de la Isla del Diablo|
+    French: le |Secteur de la Forteresse Maudite|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Star Island
+    Spanish: Isla Estrella
+    French: Ile Etoilée
+  Pretty Names:
+    English: |Star Island|
+    Spanish: la |Isla Estrella|
+    French: l'|Ile Etoilée|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Northern Fairy Island
+    Spanish: Isla del Hada del Norte
+    French: Ilot Septentrional des Fées
+  Pretty Names:
+    English: |Northern Fairy Island|
+    Spanish: la |Isla del Hada del Norte|
+    French: l'|Ilot Septentrional des Fées|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Gale Isle
+    Spanish: Isla del Viento
+    French: Ile du Vent
+  Pretty Names:
+    English: |Gale Isle|
+    Spanish: la |Isla del Viento|
+    French: l'|Ile du Vent|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Crescent Moon Island
+    Spanish: Isla de la Luna
+    French: Ile du Croissant
+  Pretty Names:
+    English: |Crescent Moon Island|
+    Spanish: la |Isla de la Luna|
+    French: l'|Ile du Croissant|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Seven Star Isles
+    Spanish: Isla Osa Mayor
+    French: Archipel Ursa Major
+  Pretty Names:
+    English: |Seven Star Isles|
+    Spanish: la |Isla Osa Mayor|
+    French: l'|Archipel Ursa Major|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Overlook Island
+    Spanish: Isla de las Torres
+    French: Ile aux Trois Tours
+  Pretty Names:
+    English: |Overlook Island|
+    Spanish: la |Isla de las Torres|
+    French: l'|Ile aux Trois Tours|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Four Eye Reef
+    Spanish: Islas del Cuatro
+    French: Ile de la Face Quatre
+  Pretty Names:
+    English: |Four Eye Reef|
+    Spanish: las |Islas del Cuatro|
+    French: l'|Ile de la Face Quatre|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Mother & Child Isles
+    Spanish: Islas Madre e Hija
+    French: Ile Géminée
+  Pretty Names:
+    English: |Mother & Child Isles|
+    Spanish: las |Islas Madre e Hija|
+    French: l'|Ile Géminée|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Spectacle Island
+    Spanish: Isla Calabaza
+    French: Ile des Binocles
+  Pretty Names:
+    English: |Spectacle Island|
+    Spanish: la |Isla Calabaza|
+    French: l'|Iles des Binocles|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Windfall Island
+    Spanish: Isla Taura
+    French: Mercantîle
+  Pretty Names:
+    English: |Windfall Island|
+    Spanish: la |Isla Taura|
+    French: |Mercantîle|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Pawprint Isle
+    Spanish: Isla de la Huella
+    French: Pas de Chat
+  Pretty Names:
+    English: |Pawprint Isle|
+    Spanish: la |Isla de la Huella|
+    French: |Pas de Chat|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Dragon Roost Island
+    Spanish: Isla del Dragón
+    French: Ile du Dragon
+  Pretty Names:
+    English: |Dragon Roost Island|
+    Spanish: la |Isla del Dragón|
+    French: l'|Ile du Dragon|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Flight Control Platform
+    Spanish: Andamio de vuelo
+    French: Tour de l'Envol
+  Pretty Names:
+    English: the |Flight Control Platform|
+    Spanish: el |Andamio de vuelo|
+    French: la |Tour de l'Envol|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Western Fairy Island
+    Spanish: Isla del Hada del Oeste
+    French: Ilot Occidental des Fées
+  Pretty Names:
+    English: |Western Fairy Island|
+    Spanish: la |Isla del Hada del Oeste|
+    French: l'|Ilot Occidental des Fées|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Rock Spire Isle
+    Spanish: Isla de los Pilares
+    French: Ile de la Rocaille
+  Pretty Names:
+    English: |Rock Spire Isle|
+    Spanish: la |Isla de los Pilares|
+    French: l'|Ile de la Rocaille|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Tingle Island
+    Spanish: Isla de Tingle
+    French: Ile de Tingle
+  Pretty Names:
+    English: |Tingle Island|
+    Spanish: la |Isla de Tingle|
+    French: l'|Ile de Tingle|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Northern Triangle Island
+    Spanish: Isla Triángulo del Norte
+    French: Ile Triangulaire du Nord
+  Pretty Names:
+    English: |Northern Triangle Island|
+    Spanish: la |Isla Triángulo del Norte|
+    French: l'|Ile Triangulaire du Nord|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Eastern Fairy Island
+    Spanish: Isla del Hada del Este
+    French: Ilot Oriental des Fées
+  Pretty Names:
+    English: |Eastern Fairy Island|
+    Spanish: la |Isla del Hada del Este|
+    French: l'|Ilot Oriental des Fées|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Fire Mountain
+    Spanish: Isla del Volcán
+    French: Montagne de Feu
+  Pretty Names:
+    English: |Fire Mountain|
+    Spanish: la |Isla del Volcán|
+    French: la |Montagne de Feu|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Star Belt Archipelago
+    Spanish: Isla Orión
+    French: Archipel d'Orion
+  Pretty Names:
+    English: the |Star Belt Archipelago|
+    Spanish: la |Isla Orión|
+    French: l'|Archipel d'Orion|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Three Eye Reef
+    Spanish: Islas del Tres
+    French: Ile de la Face Trois
+  Pretty Names:
+    English: |Three Eye Reef|
+    Spanish: las |Islas del Tres|
+    French: l'|Ile de la Face Trois|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Greatfish Isle
+    Spanish: Islas Pez Volador
+    French: Ile du Poisson
+  Pretty Names:
+    English: |Greatfish Isle|
+    Spanish: las |Islas Pez Volador|
+    French: l'|Ile du Poisson|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Cyclops Reef
+    Spanish: Islas del Uno
+    French: Ile de la Face Une
+  Pretty Names:
+    English: |Cyclops Reef|
+    Spanish: las |Islas del Uno|
+    French: l'|Ile de la Face Une|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Six Eye Reef
+    Spanish: Islas del Seis
+    French: Ile de la Face Six
+  Pretty Names:
+    English: |Six Eye Reef|
+    Spanish: las |Islas del Seis|
+    French: l'|Ile de la Face Six|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Tower of the Gods Sector
+    Spanish: Sector de la Torre de los Dioses
+    French: Secteur de la Tour des Dieux
+  Pretty Names:
+    English: the |Tower of the Gods Sector|
+    Spanish: el |Sector de la Torre de los Dioses|
+    French: le |Secteur de la Tour des Dieux|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Eastern Triangle Island
+    Spanish: Isla Triángulo del Este
+    French: Ile Triangulaire de l'Est
+  Pretty Names:
+    English: |Eastern Triangle Island|
+    Spanish: la |Isla Triángulo del Este|
+    French: l'|Ile Triangulaire de l'Est|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Thorned Fairy Island
+    Spanish: Isla del Hada Custodiada
+    French: Ilot Epineux des Fées
+  Pretty Names:
+    English: |Thorned Fairy Island|
+    Spanish: la |Isla del Hada Custodiada|
+    French: l'|Ilot Epineux des Fées|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Needle Rock Isle
+    Spanish: Isla de la Aguja
+    French: Serrure de Pierre
+  Pretty Names:
+    English: |Needle Rock Isle|
+    Spanish: la |Isla de la Aguja|
+    French: la |Serrure de Pierre|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Islet of Steel
+    Spanish: Isla de Hierro
+    French: Canonnière
+  Pretty Names:
+    English: the |Islet of Steel|
+    Spanish: la |Isla de Hierro|
+    French: la |Canonnière|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Stone Watcher Island
+    Spanish: Isla Cabeza de Piedra
+    French: Ile de la Tête de Pierre
+  Pretty Names:
+    English: |Stone Watcher Island|
+    Spanish: la |Isla Cabeza de Piedra|
+    French: l'|Ile de la Tête de Pierre|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Southern Triangle Island
+    Spanish: Isla Triángulo del Sur
+    French: Ile Triangulaire du Sud
+  Pretty Names:
+    English: |Southern Triangle Island|
+    Spanish: la |Isla Triángulo del Sur|
+    French: l'|Ile Triangulaire du Sud|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Private Oasis
+    Spanish: Isla de Quién
+    French: Ile de Qui-ça
+  Pretty Names:
+    English: the |Private Oasis|
+    Spanish: la |Isla de Quién|
+    French: l'|Ile de Qui-ça|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Bomb Island
+    Spanish: Isla Bomba
+    French: Ile de la Bombe
+  Pretty Names:
+    English: |Bomb Island|
+    Spanish: la |Isla Bomba|
+    French: l'|Ile de la Bombe|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Birds Peak Rock
+    Spanish: Isla de los Nidos
+    French: Ile aux Nichoirs
+  Pretty Names:
+    English: |Birds Peak Rock|
+    Spanish: la |Isla de los Nidos|
+    French: l'|Ile aux Nichoirs|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Diamond Steppe Island
+    Spanish: Isla Rombo
+    French: Ile du Losange
+  Pretty Names:
+    English: |Diamond Steppe Island|
+    Spanish: la |Isla Rombo|
+    French: l'|Ile du Losange|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Five Eye Reef
+    Spanish: Islas del Cinco
+    French: Ile de la Face Cinq
+  Pretty Names:
+    English: |Five Eye Reef|
+    Spanish: las |Islas del Cinco|
+    French: l'|Ile de la Face Cinq|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Shark Island
+    Spanish: Islas Tiburón
+    French: Ile du Requin
+  Pretty Names:
+    English: |Shark Island|
+    Spanish: las |Islas Tiburón|
+    French: l'|Ile du Requin|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Southern Fairy Island
+    Spanish: Isla del Hada del Sur
+    French: Ilot Méridional des Fées
+  Pretty Names:
+    English: |Southern Fairy Island|
+    Spanish: la |Isla del Hada del Sur|
+    French: l'|Ilot Méridional des Fées|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Ice Ring Isle
+    Spanish: Isla del Hielo
+    French: Ile Gelée
+  Pretty Names:
+    English: |Ice Ring Isle|
+    Spanish: la |Isla del Hielo|
+    French: l'|Ile Gelée|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Forest Haven
+    Spanish: Isla del Bosque
+    French: Ile aux Forêts
+  Pretty Names:
+    English: |Forest Haven|
+    Spanish: la |Isla del Bosque|
+    French: l'|Ile aux Forêts|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Cliff Plateau Isles
+    Spanish: Islas Conectadas
+    French: Saut de Roc
+  Pretty Names:
+    English: |Cliff Plateau Isles|
+    Spanish: las |Islas Conectadas|
+    French: |Saut de Roc|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Horseshoe Island
+    Spanish: Isla Herradura
+    French: Ile du Fer à Cheval
+  Pretty Names:
+    English: |Horseshoe Island|
+    Spanish: la |Isla Herradura|
+    French: l'|Ile du Fer à Cheval|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Outset Island
+    Spanish: Isla Initia
+    French: Ile de l'Aurore
+  Pretty Names:
+    English: |Outset Island|
+    Spanish: la |Isla Initia|
+    French: l'|Ile de l'Aurore|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Headstone Island
+    Spanish: Isla de la Tierra
+    French: Ile de la Terre
+  Pretty Names:
+    English: |Headstone Island|
+    Spanish: la |Isla de la Tierra|
+    French: l'|Ile de la Terre|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Two Eye Reef
+    Spanish: Islas del Dos
+    French: Ile de la Face Deux
+  Pretty Names:
+    English: |Two Eye Reef|
+    Spanish: las |Islas del Dos|
+    French: l'|Ile de la Face Deux|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Angular Isles
+    Spanish: Islas Cuadri
+    French: Ilots Kif Kif
+  Pretty Names:
+    English: |Angular Isles|
+    Spanish: las |Islas Cuadri|
+    French: les |Ilots Kif Kif|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Boating Course
+    Spanish: Zona de regata
+    French: Batodrome
+  Pretty Names:
+    English: the |Boating Course|
+    Spanish: la |Zona de regata|
+    French: le |Batodrome|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Five Star Isles
+    Spanish: Isla Casiopeia
+    French: Archipel de Cassiopée
+  Pretty Names:
+    English: |Five Star Isles|
+    Spanish: la |Isla Casiopeia|
+    French: l'|Archipel de Cassiopée|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Forsaken Fortress
+    Spanish: Isla del Diablo
+    French: Forteresse Maudite
+  Pretty Names:
+    English: |Forsaken Fortress|
+    Spanish: la |Isla del Diablo|
+    French: la |Forteresse Maudite|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Dragon Roost Cavern
+    Spanish: Cueva del Dragón
+    French: Caverne du Dragon
+  Pretty Names:
+    English: |Dragon Roost Cavern|
+    Spanish: la |Cueva del Dragón|
+    French: la |Caverne du Dragon|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Forbidden Woods
+    Spanish: Bosque Prohibido
+    French: Bois Défendus
+  Pretty Names:
+    English: |Forbidden Woods|
+    Spanish: el |Bosque Prohibido|
+    French: les |Bois Défendus|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Tower of the Gods
+    Spanish: Torre de los Dioses
+    French: Tour des Dieux
+  Pretty Names:
+    English: the |Tower of the Gods|
+    Spanish: la |Torre de los Dioses|
+    French: la |Tour des Dieux|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Earth Temple
+    Spanish: Templo de la Tierra
+    French: Temple de la Terre
+  Pretty Names:
+    English: the |Earth Temple|
+    Spanish: el |Templo de la Tierra|
+    French: le |Temple de la Terre|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Wind Temple
+    Spanish: Templo del Viento
+    French: Temple du Vent
+  Pretty Names:
+    English: the |Wind Temple|
+    Spanish: el |Templo del Viento|
+    French: le |Temple du Vent|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Hyrule
+    Spanish: Hyrule
+    French: Hyrule
+  Pretty Names:
+    English: |Hyrule|
+    Spanish: |Hyrule|
+    French: |Hyrule|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:
+
+
+- Names:
+    English: Ganon's Tower
+    Spanish: Castillo de Ganon
+    French: Château de Ganon
+  Pretty Names:
+    English: |Ganon's Tower|
+    Spanish: el |Castillo de Ganon|
+    French: le |Château de Ganon|
+  Cryptic Names:
+    English:
+    Spanish:
+    French:

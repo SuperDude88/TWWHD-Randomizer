@@ -185,7 +185,7 @@ static void logMissingLocations(WorldPool& worlds)
         {
             if (!location.hasBeenFound)
             {
-                LOG_TO_DEBUG("\t" + location.name);
+                LOG_TO_DEBUG("\t" + location.getName());
                 if (identifier++ < 10)
                 {
                     // world.dumpWorldGraph(std::to_string(identifier));
@@ -342,7 +342,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         LOG_TO_DEBUG("Sphere 0 locations: [");
         for (auto location : locs)
         {
-            LOG_TO_DEBUG(location->name);
+            LOG_TO_DEBUG(location->getName());
         }
         LOG_TO_DEBUG("]");
     #endif
