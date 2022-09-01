@@ -9,6 +9,7 @@
 #include <codecvt>
 #include <filesystem>
 
+#include "text_replacements.hpp"
 #include "libs/tinyxml2.h"
 #include "libs/json.hpp"
 #include "seedgen/seed.hpp"
@@ -59,8 +60,8 @@
 using eType = Utility::Endian::Type;
 
 struct dungeon_item_info {
-	std::u16string short_name;
-	std::u16string base_item_name;
+	std::string short_name;
+	std::string base_item_name;
 	uint8_t item_id;
 };
 
@@ -94,62 +95,6 @@ namespace {
 	FileTypes::ELF gRPX;
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
-	static const std::unordered_map<std::string, std::string> progress_hints {
-		{"Wind Waker", "the wand of the wind conductor"},
-		{"Spoils Bag", "a storage for collectibles"},
-		{"Grappling Hook", "an item to swing across platforms"},
-		{"Power Bracelets", "the strength to lift heavy rocks"},
-		{"Iron Boots", "a very heavy item"},
-		{"Bait Bag", "a storage for food"},
-		{"Boomerang", "an item that always comes back to you"},
-		{"Hookshot", "an item that reels"},
-		{"Delivery Bag", "a storage for letters"},
-		{"Bombs", "an explosive item"},
-		{"Skull Hammer", "the hammer of the dead"},
-		{"Deku Leaf", "a magic leaf"},
-		{"Progressive Shield", "a defensive item"},
-		{"Triforce Shard 1", "a piece of the power of the gods"},
-		{"Triforce Shard 2", "a piece of the power of the gods"},
-		{"Triforce Shard 3", "a piece of the power of the gods"},
-		{"Triforce Shard 4", "a piece of the power of the gods"},
-		{"Triforce Shard 5", "a piece of the power of the gods"},
-		{"Triforce Shard 6", "a piece of the power of the gods"},
-		{"Triforce Shard 7", "a piece of the power of the gods"},
-		{"Triforce Shard 8", "a piece of the power of the gods"},
-		{"Nayru's Pearl", "a blue jewel"},
-		{"Din's Pearl", "a red jewel"},
-		{"Farore's Pearl", "a green jewel"},
-		{"Wind's Requiem", "the song of wind"},
-		{"Ballad of Gales", "the song of gales"},
-		{"Command Melody", "the song of command"},
-		{"Earth God's Lyric", "the song of earths god"},
-		{"Wind God's Aria", "the song of winds god"},
-		{"Song of Passing", "the song of time"},
-		{"Boats Sail", "the wind follower"},
-		{"Note to Mom", "the writings of a letter sorter"},
-		{"Maggie's Letter", "the writings of a woman"},
-		{"Moblin's Letter", "the writings of a creature"},
-		{"Cabana Deed", "a pass for a private residence"},
-		{"Progressive Magic Meter", "an upgrade for your magic"},
-		{"Ghost Ship Chart", "the chart of fears"},
-		{"Progressive Sword", "an upgrade for your blade"},
-		{"Progressive Bow", "an upgrade for your bow"},
-		{"Progressive Wallet", "an upgrade for your Rupee bag"},
-		{"Progressive Picto Box", "an upgrade for your camera"},
-		{"Empty Bottle", "a glass container"},
-		{"Small Key", "a key"},
-		{"Big Key", "an ominous key"},
-		{"Treasure Chart", "a blue map"},
-		{"Triforce Chart", "a purple map"},
-		{"Dragon Tingle Statue", "a statue of a fairy"},
-		{"Forbidden Tingle Statue", "a statue of a fairy"},
-		{"Goddess Tingle Statue", "a statue of a fairy"},
-		{"Earth Tingle Statue", "a statue of a fairy"},
-		{"Wind Tingle Statue", "a statue of a fairy"},
-		{"Progressive Bomb Bag", "an upgrade for your bomb bag"},
-		{"Progressive Quiver", "an upgrade for your quiver"}
-	};
-
 	TweakError Load_Custom_Symbols(const std::string& file_path) {
 		std::ifstream fptr(file_path, std::ios::in);
 		if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
@@ -163,142 +108,42 @@ namespace {
 		return TweakError::NONE;
 	}
 
-
-	std::u16string word_wrap_string(const std::u16string& string, const size_t& max_line_len) {
-		size_t index_in_str = 0;
-		std::u16string wordwrapped_str;
-		std::u16string current_word;
-		size_t curr_word_len = 0;
-		size_t len_curr_line = 0;
-
-		while (index_in_str < string.length()) { //length is weird because its utf-16
-			char16_t character = string[index_in_str];
-
-			if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
-				std::u16string substr;
-				size_t code_len = 0;
-				if (string[index_in_str + 1] == u'\x00') {
-					if (string[index_in_str + 2] == u'\x03') { //color command
-						if (string[index_in_str + 4] == u'\xFFFF') { //text color white, weird length
-							code_len = 10;
-						}
-						else {
-							code_len = 5;
-						}
-					}
-				}
-				else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
-					code_len = 4;
-				}
-				else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
-					code_len = 4;
-				}
-				else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
-					code_len = 4;
-				}
-				else if (string[index_in_str + 1] == u'\x04') { //all implemented commands in this group have length 4. Only used for Ho Ho sound
-        		  code_len = 4;
-        		}
-
-				substr = string.substr(index_in_str, code_len);
-				current_word += substr;
-				index_in_str += code_len;
-			}
-			else if (character == u'\n') {
-				wordwrapped_str += current_word;
-				wordwrapped_str += character;
-				len_curr_line = 0;
-				current_word = u"";
-				curr_word_len = 0;
-				index_in_str += 1;
-			}
-			else if (character == u' ') {
-				wordwrapped_str += current_word;
-				wordwrapped_str += character;
-				len_curr_line += curr_word_len + 1;
-				current_word = u"";
-				curr_word_len = 0;
-				index_in_str += 1;
-			}
-			else {
-				current_word += character;
-				curr_word_len += 1;
-				index_in_str += 1;
-
-				if (len_curr_line + curr_word_len > max_line_len) {
-					wordwrapped_str += u'\n';
-					len_curr_line = 0;
-
-					if (curr_word_len > max_line_len) {
-						wordwrapped_str += current_word + u'\n';
-						current_word = u"";
-					}
-				}
-			}
-		}
-		wordwrapped_str += current_word;
-
-		return wordwrapped_str;
-	}
-
-	std::string get_indefinite_article(const std::string& string) {
-		char first_letter = std::tolower(string[0]);
-		if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
-			return "an";
-		}
-		else {
-			return "a";
-		}
-	}
-
-	std::u16string get_indefinite_article(const std::u16string& string) {
-		const char16_t first_letter = std::tolower(string[0]);
-		if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
-			return u"an";
-		}
-		else {
-			return u"a";
-		}
-	}
-
-	std::string pad_str_4_lines(const std::string& string) {
-		std::vector<std::string> lines = Utility::Str::split(string, '\n');
-
-		unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-		for (unsigned int i = 0; i < padding_lines_needed; i++) {
-			lines.push_back("");
-		}
-
-		return Utility::Str::merge(lines, '\n');
-	}
-
-	std::u16string pad_str_4_lines(const std::u16string& string) {
-		std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
-
-		unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-		for (unsigned int i = 0; i < padding_lines_needed; i++) {
-			lines.push_back(u"");
-		}
-
-		return Utility::Str::merge(lines, u'\n');
-	}
-
-	std::string get_hint_item_name(const std::string& item_name) {
-		if (item_name.find("Triforce Chart") != std::string::npos) {
-			return "Triforce Chart";
-		}
-		if (item_name.find("Treasure Chart") != std::string::npos) {
-			return "Treasure Chart";
-		}
-		if (item_name.find("Small Key") != std::string::npos) {
-			return "Small Key";
-		}
-		if(item_name.find("Big Key") != std::string::npos) {
-			return "Big Key";
-		}
-
-		return item_name;
-	}
+	// std::string get_indefinite_article(const std::string& string) {
+	// 	char first_letter = std::tolower(string[0]);
+	// 	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
+	// 		return "an";
+	// 	}
+	// 	else {
+	// 		return "a";
+	// 	}
+	// }
+  //
+	// std::u16string get_indefinite_article(const std::u16string& string) {
+	// 	const char16_t first_letter = std::tolower(string[0]);
+	// 	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
+	// 		return u"an";
+	// 	}
+	// 	else {
+	// 		return u"a";
+	// 	}
+	// }
+  //
+	// std::string get_hint_item_name(const std::string& item_name) {
+	// 	if (item_name.find("Triforce Chart") != std::string::npos) {
+	// 		return "Triforce Chart";
+	// 	}
+	// 	if (item_name.find("Treasure Chart") != std::string::npos) {
+	// 		return "Treasure Chart";
+	// 	}
+	// 	if (item_name.find("Small Key") != std::string::npos) {
+	// 		return "Small Key";
+	// 	}
+	// 	if(item_name.find("Big Key") != std::string::npos) {
+	// 		return "Big Key";
+	// 	}
+  //
+	// 	return item_name;
+	// }
 }
 
 TweakError Apply_Patch(const std::string& file_path) {
@@ -406,46 +251,48 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 }
 
 TweakError make_all_text_instant() {
-	const RandoSession::fspath paths[4] = {
-		"content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt",
-		"content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt",
-		"content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt",
-		"content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt"
-	};
+  for (const auto& language : Text::supported_languages) {
+    const RandoSession::fspath paths[4] = {
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt",
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt",
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt",
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt"
+    };
 
-	for (const auto& path : paths) {
-		std::stringstream* inStream = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(inStream);
-		FileTypes::MSBTFile msbt;
-		FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*inStream));
+    for (const auto& path : paths) {
+      std::stringstream* inStream = g_session.openGameFile(path);
+      EXTRACT_ERR_CHECK(inStream);
+      FileTypes::MSBTFile msbt;
+      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*inStream));
 
-		for (auto& [label, message] : msbt.messages_by_label) {
-			std::u16string& String = message.text.message;
+      for (auto& [label, message] : msbt.messages_by_label) {
+        std::u16string& String = message.text.message;
 
-			message.attributes.drawType = 1; //draw instant
+        message.attributes.drawType = 1; //draw instant
 
-			std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); //dont use macro because duration shouldnt matter
-			while (wait != std::u16string::npos) {
-				String.erase(wait, 5);
-				wait = String.find(u"\x0e\x01\x06\x02"s);
-			}
+        std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); //dont use macro because duration shouldnt matter
+        while (wait != std::u16string::npos) {
+          String.erase(wait, 5);
+          wait = String.find(u"\x0e\x01\x06\x02"s);
+        }
 
-			std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
-			if (label == "07726" || label == "02488") wait_dismiss = std::u16string::npos; //exclude messages that are broken by removing the command
-			while (wait_dismiss != std::u16string::npos) {
-				String.erase(wait_dismiss, 5);
-				wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
-			}
+        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
+        if (label == "07726" || label == "02488") wait_dismiss = std::u16string::npos; //exclude messages that are broken by removing the command
+        while (wait_dismiss != std::u16string::npos) {
+          String.erase(wait_dismiss, 5);
+          wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
+        }
 
-			std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
-			while (wait_dismiss_prompt != std::u16string::npos) {
-				String.erase(wait_dismiss_prompt, 5);
-				wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
-			}
-		}
+        std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
+        while (wait_dismiss_prompt != std::u16string::npos) {
+          String.erase(wait_dismiss_prompt, 5);
+          wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
+        }
+      }
 
-		FILETYPE_ERROR_CHECK(msbt.writeToStream(*inStream));
-	}
+      FILETYPE_ERROR_CHECK(msbt.writeToStream(*inStream));
+    }
+  }
 
 	return TweakError::NONE;
 }
@@ -687,17 +534,25 @@ TweakError make_items_progressive() {
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e97c), 0x60000000));
 
 	// Add an item get message for the normal magic meter since it didn't have one in vanilla
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream)
+  std::unordered_map<std::string, std::u16string> messages = {
+    {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
+    {"Spanish", DRAW_INSTANT + u"Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\nAhora podrás utilizar objetos mágicos!\0"s},
+    {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\nVous pouvez maintenant utiliser les objets magiques!\0"s},
+  };
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+    EXTRACT_ERR_CHECK(stream)
 
-	const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + 0xB2)];
-	const std::u16string message = DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s;
-	msbt.addMessage("00" + std::to_string(101 + 0xB1), to_copy.attributes, to_copy.style, message);
+    FileTypes::MSBTFile msbt;
+    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+    const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + 0xB2)];
+    const std::u16string message = messages[language];
+    msbt.addMessage("00" + std::to_string(101 + 0xB1), to_copy.attributes, to_copy.style, message);
+
+    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+  }
 	return TweakError::NONE;
 }
 
@@ -914,50 +769,50 @@ TweakError update_name_and_icon() {
 	return TweakError::NONE;
 }
 
-TweakError allow_dungeon_items_to_appear_anywhere() {
+TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 	const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 	const uint32_t item_resources_list_start = 0x101E4674;
 	const uint32_t field_item_resources_list_start = 0x101E6A74;
 
-	const std::unordered_map<std::u16string, std::u16string> dungeon_names = {
-		{u"DRC", u"Dragon Roost Cavern"},
-		{u"FW", u"Forbidden Woods"},
-		{u"TotG", u"Tower of the Gods"},
-		{u"FF", u"Forsaken Fortress"},
-		{u"ET", u"Earth Temple"},
-		{u"WT", u"Wind Temple"}
+	const std::unordered_map<std::string, std::string> dungeon_names = {
+		{"DRC", "Dragon Roost Cavern"},
+		{"FW", "Forbidden Woods"},
+		{"TotG", "Tower of the Gods"},
+		{"FF", "Forsaken Fortress"},
+		{"ET", "Earth Temple"},
+		{"WT", "Wind Temple"}
 	};
 
-	const std::unordered_map<std::u16string, uint8_t> item_name_to_id{ {
-		{u"Small Key", 0x15},
-		{u"Dungeon Map", 0x4C},
-		{u"Compass", 0x4D},
-		{u"Big Key", 0x4E}
+	const std::unordered_map<std::string, uint8_t> item_name_to_id{ {
+		{"Small Key", 0x15},
+		{"Dungeon Map", 0x4C},
+		{"Compass", 0x4D},
+		{"Big Key", 0x4E}
 	} };
 
 	const std::array<dungeon_item_info, 22> dungeon_items{ {
-		{u"DRC", u"Small Key", 0x13},
-		{u"DRC", u"Big Key", 0x14},
-		{u"DRC", u"Dungeon Map", 0x1B},
-		{u"DRC", u"Compass", 0x1C},
-		{u"FW", u"Small Key", 0x1D},
-		{u"FW", u"Big Key", 0x40},
-		{u"FW", u"Dungeon Map", 0x41},
-		{u"FW", u"Compass", 0x5A},
-		{u"TotG", u"Small Key", 0x5B},
-		{u"TotG", u"Big Key", 0x5C},
-		{u"TotG", u"Dungeon Map", 0x5D},
-		{u"TotG", u"Compass", 0x5E},
-		{u"FF", u"Dungeon Map", 0x5F},
-		{u"FF", u"Compass", 0x60},
-		{u"ET", u"Small Key", 0x73},
-		{u"ET", u"Big Key", 0x74},
-		{u"ET", u"Dungeon Map", 0x75},
-		{u"ET", u"Compass", 0x76},
-		{u"WT", u"Small Key", 0x81}, //0x77 is taken by swift sail in HD
-		{u"WT", u"Big Key", 0x84},
-		{u"WT", u"Dungeon Map", 0x85},
-		{u"WT", u"Compass", 0x86}
+		{"DRC", "Small Key", 0x13},
+		{"DRC", "Big Key", 0x14},
+		{"DRC", "Dungeon Map", 0x1B},
+		{"DRC", "Compass", 0x1C},
+		{"FW", "Small Key", 0x1D},
+		{"FW", "Big Key", 0x40},
+		{"FW", "Dungeon Map", 0x41},
+		{"FW", "Compass", 0x5A},
+		{"TotG", "Small Key", 0x5B},
+		{"TotG", "Big Key", 0x5C},
+		{"TotG", "Dungeon Map", 0x5D},
+		{"TotG", "Compass", 0x5E},
+		{"FF", "Dungeon Map", 0x5F},
+		{"FF", "Compass", 0x60},
+		{"ET", "Small Key", 0x73},
+		{"ET", "Big Key", 0x74},
+		{"ET", "Dungeon Map", 0x75},
+		{"ET", "Compass", 0x76},
+		{"WT", "Small Key", 0x81}, //0x77 is taken by swift sail in HD
+		{"WT", "Big Key", 0x84},
+		{"WT", "Dungeon Map", 0x85},
+		{"WT", "Compass", 0x86}
 	} };
 
 	const std::unordered_map<uint8_t, std::string> idToFunc = {
@@ -995,36 +850,35 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 	//remove a store that would overwrite a change to the DRC boss key model (nintendo added some item at this ID, seems unused?)
 	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02551E30), 0x60000000));
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream)
+  std::unordered_map<std::string, std::u16string> messageBegin = {
+    {"English", u"You got "},
+    {"Spanish", u"Has obtenido un "},
+    {"French", u"Vous obtenez "},
+  };
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 	for (const dungeon_item_info& item_data : dungeon_items) {
-		const std::u16string item_name = item_data.short_name + u" " + item_data.base_item_name;
+		const std::string item_name = item_data.short_name + " " + item_data.base_item_name;
 		const uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
-		const std::u16string dungeon_name = dungeon_names.at(item_data.short_name);
+		const std::string dungeon_name = dungeon_names.at(item_data.short_name);
 
 		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_pointer + (0xC * item_data.item_id) + 0x8, 9), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000)); //write to the relocation entries
 
-		const uint32_t message_id = 101 + item_data.item_id;
-		const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
-		std::u16string message = DRAW_INSTANT + u"You got ";
-		if (item_data.base_item_name == u"Small Key") {
-			message += get_indefinite_article(dungeon_name) + u" " + TEXT_COLOR_RED + dungeon_name + u" small key" + TEXT_COLOR_DEFAULT + u"!\0"s;
-		}
-		else if (item_data.base_item_name == u"Big Key") {
-			message +=u"the " + TEXT_COLOR_RED + dungeon_name + u" Big Key" + TEXT_COLOR_DEFAULT + u"!\0"s;
-		}
-		else if (item_data.base_item_name == u"Dungeon Map") {
-			message +=u"the " + TEXT_COLOR_RED + dungeon_name + u" Dungeon Map" + TEXT_COLOR_DEFAULT + u"!\0"s;
-		}
-		else if (item_data.base_item_name == u"Compass") {
-			message +=u"the " + TEXT_COLOR_RED + dungeon_name + u" Compass" + TEXT_COLOR_DEFAULT + u"!\0"s;
-		}
+    for (const auto& language : Text::supported_languages) {
+      std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+      EXTRACT_ERR_CHECK(stream)
 
-		word_wrap_string(message, 34);
-		msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
+      FileTypes::MSBTFile msbt;
+      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+
+      const uint32_t message_id = 101 + item_data.item_id;
+      const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
+      std::u16string message = messageBegin[language] + world.itemEntries[dungeon_name + " " + item_data.base_item_name].getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
+
+      message = Text::word_wrap_string(message, 39);
+      msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
+
+      FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+    }
 
 		const uint32_t item_resources_addr_to_copy_from = item_resources_list_start + base_item_id * 0x24;
 		const uint32_t field_item_resources_addr_to_copy_from = field_item_resources_list_start + base_item_id * 0x24;
@@ -1072,7 +926,6 @@ TweakError allow_dungeon_items_to_appear_anywhere() {
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x18), data6));
 
 	}
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
@@ -1125,218 +978,40 @@ TweakError fix_shop_item_y_offsets() {
 	return TweakError::NONE;
 }
 
-TweakError update_shop_item_descriptions(const Location& beedle20, const Location& beedle500, const Location& beedle950, const Location& beedle900) {
-	const GameItem beedle20Item = beedle20.currentItem.getGameItemId();
-	const GameItem beedle500Item = beedle500.currentItem.getGameItemId();
-	const GameItem beedle900Item = beedle900.currentItem.getGameItemId();
-	const GameItem beedle950Item = beedle950.currentItem.getGameItemId();
+TweakError update_text_replacements(World& world) {
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(stream);
+  auto textReplacements = generate_text_replacements(world);
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+  for (auto& [messageLabel, languages] : textReplacements) {
+    for (const auto& language : Text::supported_languages) {
+      // Don't do anything if there's no text yet
+      if (languages[language].empty()) continue;
 
-	msbt.messages_by_label["03906"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle20Item)) + u"  20 Rupees" + TEXT_COLOR_DEFAULT + u'\0';
-	msbt.messages_by_label["03909"].text.message = Utility::Str::toUTF16(gameItemToName(beedle20Item)) + u"  20 Rupees\nWill you buy it?\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
+      // Calculate which msbt we need to open
+      auto labelIdx = std::stoi(messageLabel);
+      std::string messageNum = ""; // default is message_msbt
+      if (labelIdx > 3235 && labelIdx < 6566) { // message2_msbt
+        messageNum = "2";
+      } else if (labelIdx >= 6566 && labelIdx <= 10761) { // message3_msbt
+        messageNum = "3";
+      } else if (labelIdx > 10761) { // message4_msbt
+        messageNum = "4";
+      }
 
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+      std::string filePath = std::string("content/Common/Pack/permanent_2d_Us") + language + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt";
+      std::stringstream* stream = g_session.openGameFile(filePath);
+      EXTRACT_ERR_CHECK(stream);
 
-	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
-	EXTRACT_ERR_CHECK(stream);
+      FileTypes::MSBTFile msbt;
+      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
-	FileTypes::MSBTFile msbt2;
-	FILETYPE_ERROR_CHECK(msbt2.loadFromBinary(*stream));
+      msbt.messages_by_label[messageLabel].text.message = languages[language];
 
-	msbt2.messages_by_label["12106"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + u"  500 Rupees\n" + TEXT_COLOR_DEFAULT + u"This is my last one.";
-	msbt2.messages_by_label["12109"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle500Item)) + TEXT_COLOR_DEFAULT + u" is a mere " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
+      FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+    }
+  }
 
-	msbt2.messages_by_label["12107"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle950Item)) + u"  950 Rupees\n" + TEXT_COLOR_DEFAULT + u"This is my last one of these, too.";
-	msbt2.messages_by_label["12110"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle950Item)) + TEXT_COLOR_DEFAULT + u" is only " + TEXT_COLOR_RED + u"950 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
-
-	msbt2.messages_by_label["12108"].text.message = TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + u"  900 Rupees\n" + TEXT_COLOR_DEFAULT + u"The price may be high, but it'll pay\noff handsomely in the end!";
-	msbt2.messages_by_label["12111"].text.message = u"This " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(beedle900Item)) + TEXT_COLOR_DEFAULT + u" is just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT + u"!\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks\0"s;
-
-	FILETYPE_ERROR_CHECK(msbt2.writeToStream(*stream));
-
-	return TweakError::NONE;
-}
-
-TweakError update_auction_item_names(const Location& auction5_, const Location& auction40_, const Location& auction60_, const Location& auction80_, const Location& auction100_) {
-	const std::u16string auction5 = Utility::Str::toUTF16(gameItemToName(auction5_.currentItem.getGameItemId()));
-	const std::u16string auction40 = Utility::Str::toUTF16(gameItemToName(auction40_.currentItem.getGameItemId()));
-	const std::u16string auction60 = Utility::Str::toUTF16(gameItemToName(auction60_.currentItem.getGameItemId()));
-	const std::u16string auction80 = Utility::Str::toUTF16(gameItemToName(auction80_.currentItem.getGameItemId()));
-	const std::u16string auction100 = Utility::Str::toUTF16(gameItemToName(auction100_.currentItem.getGameItemId()));
-
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-
-	msbt.messages_by_label["07440"].text.message = TEXT_COLOR_RED + auction40 + TEXT_COLOR_DEFAULT + u'\0';
-	msbt.messages_by_label["07441"].text.message = TEXT_COLOR_RED + auction5 + TEXT_COLOR_DEFAULT + u'\0';
-	msbt.messages_by_label["07442"].text.message = TEXT_COLOR_RED + auction60 + TEXT_COLOR_DEFAULT + u'\0';
-	msbt.messages_by_label["07443"].text.message = TEXT_COLOR_RED + auction80 + TEXT_COLOR_DEFAULT + u'\0';
-	msbt.messages_by_label["07444"].text.message = TEXT_COLOR_RED + auction100 + TEXT_COLOR_DEFAULT + u'\0';
-
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-
-	//also add a hint to the flyer explaining what items the auction holds
-	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt2;
-	FILETYPE_ERROR_CHECK(msbt2.loadFromBinary(*stream));
-
-	msbt2.messages_by_label["00804"].text.message.pop_back(); //remove null terminator, we want to add things before it
-
-	std::u16string str = u"\n\n\nParticipate for the chance to win ";
-	if (auction5.find(u"Treasure Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else if (auction5.find(u"Triforce Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else {
-		str += get_indefinite_article(auction5) + u' ' + TEXT_COLOR_RED + auction5 + TEXT_COLOR_DEFAULT + u", ";
-	}
-
-	if (auction40.find(u"Treasure Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else if (auction40.find(u"Triforce Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else {
-		str += get_indefinite_article(auction40) + u' ' + TEXT_COLOR_RED + auction40 + TEXT_COLOR_DEFAULT + u", ";
-	}
-
-	if (auction60.find(u"Treasure Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else if (auction60.find(u"Triforce Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else {
-		str += get_indefinite_article(auction60) + u' ' + TEXT_COLOR_RED + auction60 + TEXT_COLOR_DEFAULT + u", ";
-	}
-
-	if (auction80.find(u"Treasure Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else if (auction80.find(u"Triforce Chart") != std::string::npos) {
-		str += u"a " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u", ";
-	}
-	else {
-		str += get_indefinite_article(auction80) + u' ' + TEXT_COLOR_RED + auction80 + TEXT_COLOR_DEFAULT + u", ";
-	}
-
-	if (auction100.find(u"Treasure Chart") != std::string::npos) {
-		str += u"or a " + TEXT_COLOR_RED + u"Treasure Chart" + TEXT_COLOR_DEFAULT + u"!";
-	}
-	else if (auction100.find(u"Triforce Chart") != std::string::npos) {
-		str += u"or a " + TEXT_COLOR_RED + u"Triforce Chart" + TEXT_COLOR_DEFAULT + u"!";
-	}
-	else {
-		str += u"or " + get_indefinite_article(auction100) + u' ' + TEXT_COLOR_RED + auction100 + TEXT_COLOR_DEFAULT + u"!";
-	}
-
-	msbt2.messages_by_label["00804"].text.message += word_wrap_string(str, 43);
-	msbt2.messages_by_label["00804"].text.message += u'\0'; //add null terminator
-	FILETYPE_ERROR_CHECK(msbt2.writeToStream(*stream));
-
-	return TweakError::NONE;
-}
-
-TweakError update_battlesquid_item_names(const Location& firstPrize_, const Location& secondPrize_) {
-	const GameItem firstPrize = firstPrize_.currentItem.getGameItemId();
-	const GameItem secondPrize = secondPrize_.currentItem.getGameItemId();
-
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-
-	msbt.messages_by_label["07520"].text.message = SOUND(0x8E) + u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you, Mr. Sailor!\n\n\n" + word_wrap_string(u"Please take this " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(firstPrize)) + TEXT_COLOR_DEFAULT + u" as a sign of our gratitude.You are soooooo GREAT!\0"s, 43);
-	msbt.messages_by_label["07521"].text.message = SOUND(0x8E) + u"Hoorayyy! Yayyy! Yayyy!\nOh, thank you so much, Mr. Sailor!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here..." + TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"Please accept this " + TEXT_COLOR_RED + Utility::Str::toUTF16(gameItemToName(secondPrize)) + TEXT_COLOR_DEFAULT + u"!\0"s, 43);
-
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-
-	return TweakError::NONE;
-}
-
-TweakError update_item_names_in_letter_advertising_rock_spire_shop(const Location& beedle500, const Location& beedle950, const Location& beedle900) {
-	const std::u16string beedle500Item = Utility::Str::toUTF16(gameItemToName(beedle500.currentItem.getGameItemId()));
-	const std::u16string beedle900Item = Utility::Str::toUTF16(gameItemToName(beedle900.currentItem.getGameItemId()));
-	const std::u16string beedle950Item = Utility::Str::toUTF16(gameItemToName(beedle950.currentItem.getGameItemId()));
-
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-
-	const std::u16string stringBefore = msbt.messages_by_label["03325"].text.message.substr(0, 194);
-	const std::u16string stringAfter = msbt.messages_by_label["03325"].text.message.substr(396, 323);
-	std::u16string hintString = u"Do you have need of " + get_indefinite_article(beedle500Item) + u" " + TEXT_COLOR_RED + beedle500Item + TEXT_COLOR_DEFAULT + u", " + get_indefinite_article(beedle950Item) + u" " + TEXT_COLOR_RED + beedle950Item + TEXT_COLOR_DEFAULT + u", or " + get_indefinite_article(beedle900Item) + u" " + TEXT_COLOR_RED + beedle900Item + TEXT_COLOR_DEFAULT + u"? We have them at special bargain prices.";
-	hintString = word_wrap_string(hintString, 39);
-	hintString = pad_str_4_lines(hintString);
-	std::vector<std::u16string> hintLines = Utility::Str::split(hintString, u'\n');
-
-	msbt.messages_by_label["03325"].text.message = stringBefore;
-	for (std::u16string& line : hintLines) {
-		if (line != u"") {
-			line = u"  " + line; //might be UB?
-		}
-	}
-
-	hintString = Utility::Str::merge(hintLines, u'\n');
-	msbt.messages_by_label["03325"].text.message += hintString;
-	msbt.messages_by_label["03325"].text.message += stringAfter;
-
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-	return TweakError::NONE;
-}
-
-//TODO: test formatting with progress hints
-TweakError update_savage_labyrinth_hint_tablet(const Location& floor30_, const Location& floor50_) {
-	const bool floor30Progress = floor30_.currentItem.isMajorItem();
-	const bool floor50Progress = floor50_.currentItem.isMajorItem();
-
-	const std::string floor30item = get_hint_item_name(gameItemToName(floor30_.currentItem.getGameItemId()));
-	const std::string floor50item = get_hint_item_name(gameItemToName(floor50_.currentItem.getGameItemId()));
-
-	std::u16string hint;
-	if(floor30Progress && floor50Progress) {
-		const std::u16string floor30Hint = Utility::Str::toUTF16(progress_hints.at(floor30item));
-		const std::u16string floor50Hint = Utility::Str::toUTF16(progress_hints.at(floor50item));
-		hint = u"the way to " + TEXT_COLOR_RED + floor30Hint + TEXT_COLOR_DEFAULT + u" and " + TEXT_COLOR_RED + floor50Hint + TEXT_COLOR_DEFAULT + u" await.";
-	}
-	else if(floor30Progress) {
-		const std::u16string floor30Hint = Utility::Str::toUTF16(progress_hints.at(floor30item));
-		hint = u"the way to " + TEXT_COLOR_RED + floor30Hint + TEXT_COLOR_DEFAULT + u" and a challenge await.";
-	}
-	else if(floor50Progress) {
-		const std::u16string floor50Hint = Utility::Str::toUTF16(progress_hints.at(floor50item));
-		hint = u"a challenge and " + TEXT_COLOR_RED + floor50Hint + TEXT_COLOR_DEFAULT + u" await.";
-	}
-	else {
-		hint = u"a challenge awaits.";
-	}
-
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream)
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	msbt.messages_by_label["00837"].text.message = u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"The Savage Labyrinth" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n";
-	msbt.messages_by_label["00837"].text.message += word_wrap_string(u"Deep in the never-ending darkness, " + hint, 42) + u'\0';
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-
-	return TweakError::NONE;
+  return TweakError::NONE;
 }
 
 TweakError shorten_zephos_event() {
@@ -1377,40 +1052,42 @@ TweakError shorten_zephos_event() {
 	return TweakError::NONE;
 }
 
-//hints
+// Korl Hints
 TweakError update_korl_dialog(World& world) {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
   if (!world.korlHints.empty()) {
-    std::u16string hintLines = u"";
-    size_t i = 0; // counter to know when to add null terminator
-    for (auto location : world.korlHints) {
-      i++;
-      std::u16string hint = location->hintText;
-      hint = word_wrap_string(hint, 43);
-      if (i == world.korlHints.size()) {
-        hint += u'\0'; // add null terminator on last hint before padding
+    for (const auto& language: Text::supported_languages) {
+      std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
+      EXTRACT_ERR_CHECK(stream);
+
+      FileTypes::MSBTFile msbt;
+      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+
+      std::u16string hintLines = u"";
+      size_t i = 0; // counter to know when to add null terminator
+      for (auto location : world.korlHints) {
+        i++;
+        std::u16string hint = location->hintText[language];
+        hint = Text::word_wrap_string(hint, 43);
+        if (i == world.korlHints.size()) {
+          hint += u'\0'; // add null terminator on last hint before padding
+        }
+        hint = Text::pad_str_4_lines(hint);
+        hintLines += hint;
       }
-      hint = pad_str_4_lines(hint);
-      hintLines += hint;
-    }
 
-    for (auto label : {"03443", "03444", "03445", "03446", "03447", "03448"}) {
-      msbt.messages_by_label[label].text.message = hintLines;
+      for (auto label : {"03443", "03444", "03445", "03446", "03447", "03448"}) {
+        msbt.messages_by_label[label].text.message = hintLines;
+      }
+
+      FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
     }
-  } else {
-    msbt.messages_by_label["03443"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure you explore every corner\nin search of items to help you. Remember\nthat your quest is to defeat Ganondorf.\0"s;
   }
-
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
 	return TweakError::NONE;
 }
 
+// Ho Ho Hints
 TweakError update_ho_ho_dialog(World& world) {
 
   // If no hint, don't do anything
@@ -1418,49 +1095,51 @@ TweakError update_ho_ho_dialog(World& world) {
       return TweakError::NONE;
   }
 
-  std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
-  EXTRACT_ERR_CHECK(stream);
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
+    EXTRACT_ERR_CHECK(stream);
 
-  FileTypes::MSBTFile msbt;
-  FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+    FileTypes::MSBTFile msbt;
+    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
 
-  for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
-    std::u16string hintLines = u"";
-    size_t i = 0; // counter to know when to add null terminator
-    for (auto location : hintLocations) {
-      std::u16string hint = u"";
-      if (i == 0) {
-        hint += SOUND(0x0103) u"Ho ho! "s;
+    for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+      std::u16string hintLines = u"";
+      size_t i = 0; // counter to know when to add null terminator
+      for (auto location : hintLocations) {
+        std::u16string hint = u"";
+        if (i == 0) {
+          hint += SOUND(0x0103) u"Ho ho! "s;
+        }
+        i++;
+        hint += location->hintText[language];
+        hint = Text::word_wrap_string(hint, 43);
+        if (i == hintLocations.size()) {
+          hint += u'\0'; // add null terminator on last hint before padding
+        }
+        hint = Text::pad_str_4_lines(hint);
+        hintLines += hint;
       }
-      i++;
-      hint += location->hintText;
-      hint = word_wrap_string(hint, 43);
-      if (i == hintLocations.size()) {
-        hint += u'\0'; // add null terminator on last hint before padding
+      hintLines = u"";
+      i = 0; // counter to know when to add null terminator
+      while (i < 20) {
+        std::u16string hint = u"";
+        if (i == 0) {
+          hint += SOUND(0x0103) u"Ho ho! "s;
+        }
+        i++;
+        hint += Utility::Str::toUTF16(std::to_string(i));
+        hint = Text::word_wrap_string(hint, 43);
+        if (i == 19) {
+          hint += u'\0'; // add null terminator on last hint before padding
+        }
+        hint = Text::pad_str_4_lines(hint);
+        hintLines += hint;
       }
-      hint = pad_str_4_lines(hint);
-      hintLines += hint;
+      msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
     }
-    hintLines = u"";
-    i = 0; // counter to know when to add null terminator
-    while (i < 20) {
-      std::u16string hint = u"";
-      if (i == 0) {
-        hint += SOUND(0x0103) u"Ho ho! "s;
-      }
-      i++;
-      hint += Utility::Str::toUTF16(std::to_string(i));
-      hint = word_wrap_string(hint, 43);
-      if (i == 19) {
-        hint += u'\0'; // add null terminator on last hint before padding
-      }
-      hint = pad_str_4_lines(hint);
-      hintLines += hint;
-    }
-    msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
+
+    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
   }
-
-  FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
 
   return TweakError::NONE;
 }
@@ -1540,19 +1219,16 @@ TweakError add_pirate_ship_to_windfall() {
 	ChunkEntry& aryll = shipDzr.add_entity("ACTR");
 	aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
 
-	std::stringstream* msbtStream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(msbtStream);
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* msbtStream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+    EXTRACT_ERR_CHECK(msbtStream);
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*msbtStream));
+    FileTypes::MSBTFile msbt;
+    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*msbtStream));
 
-	msbt.messages_by_label["03008"].attributes.soundEffect = 106;
-	msbt.messages_by_label["03008"].text.message = u"'Hoy! Big Brother!\n";
-	msbt.messages_by_label["03008"].text.message += u"Wanna play a game? It's fun, trust me!";
-	msbt.messages_by_label["03008"].text.message = pad_str_4_lines(msbt.messages_by_label["03008"].text.message);
-	msbt.messages_by_label["03008"].text.message += word_wrap_string(u"Just " + TEXT_COLOR_RED + u"step on this button" + TEXT_COLOR_DEFAULT + u", and try to swing across the ropes to reach that door over there before time's up!\0"s, 44);
-
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*msbtStream));
+    msbt.messages_by_label["03008"].attributes.soundEffect = 106;
+    FILETYPE_ERROR_CHECK(msbt.writeToStream(*msbtStream));
+  }
 
 	const uint32_t stage_bgm_info_list_start = 0x1018E428;
 	const uint32_t second_dynamic_scene_waves_list_start = 0x1018E2EC;
@@ -1734,19 +1410,38 @@ TweakError increase_crawl_speed() {
 	return TweakError::NONE;
 }
 
-TweakError add_chart_number_to_item_get_messages() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream);
+TweakError add_chart_number_to_item_get_messages(World& world) {
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	for (uint8_t item_id = 0xCC; item_id < 0xFF; item_id++) {
-		if (item_id == 0xDB || item_id == 0xDC) continue; //skip ghost ship chart and tingle's chart
+  std::unordered_map<std::string, size_t> replacementData = {
+    {"English", 12},
+    {"Spanish", 18},
+    {"French", 17},
+  };
 
-		const std::u16string itemName = Utility::Str::toUTF16(gameItemToName(idToGameItem(item_id)));
-		msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message.replace(12, 21, TEXT_COLOR_RED + itemName);
-	}
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+    EXTRACT_ERR_CHECK(stream);
+
+    FileTypes::MSBTFile msbt;
+    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+
+    auto replacementIndex = replacementData[language];
+
+    for (uint8_t item_id = 0xCC; item_id < 0xFF; item_id++) {
+      if (item_id == 0xDB || item_id == 0xDC) continue; //skip ghost ship chart and tingle's chart
+
+      // Get the properly formated item name
+      auto itemName = gameItemToName(idToGameItem(item_id));
+      const std::u16string u16itemName = world.itemEntries[itemName].getUTF16Name(language, Text::Type::PRETTY);
+
+      // The message between the "You obtained " and the next '!' will be replaced
+      auto& message = msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message;
+      auto replacementLength = message.find('!') - replacementIndex;
+
+      message.replace(replacementIndex, replacementLength, u16itemName);
+    }
+    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+  }
 
 	return TweakError::NONE;
 }
@@ -1895,39 +1590,28 @@ TweakError update_starting_gear(const std::vector<GameItem>& startingItems) {
 	return TweakError::NONE;
 }
 
-TweakError update_swordless_text() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	msbt.messages_by_label["01128"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\nEven as his ball of fell magic bears down\non you, you can " + TEXT_COLOR_RED + u"knock it back\nwith an empty bottle" + TEXT_COLOR_DEFAULT + u"!\n\n...I am sure you will have a shot at victory!\0"s;
-	msbt.messages_by_label["01590"].text.message = CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!\0"s;
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-
-	return TweakError::NONE;
-}
-
 TweakError add_hint_signs() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream);
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
+    EXTRACT_ERR_CHECK(stream);
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	const std::string new_message_label = "00847";
-	Attributes attributes;
-	attributes.character = 0xF; //sign
-	attributes.boxStyle = 0x2;
-	attributes.drawType = 0x1;
-	attributes.screenPos = 0x2;
-	attributes.lineAlignment = 3;
-	TSY1Entry tsy;
-	tsy.styleIndex = 0x12B;
-	const std::u16string message = IMAGE(ImageTags::R_ARROW) + u"\0"s;
-	msbt.addMessage(new_message_label, attributes, tsy, message);
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+    FileTypes::MSBTFile msbt;
+    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+    const std::string new_message_label = "00847";
+    Attributes attributes;
+    attributes.character = 0xF; //sign
+    attributes.boxStyle = 0x2;
+    attributes.drawType = 0x1;
+    attributes.screenPos = 0x2;
+    attributes.lineAlignment = 3;
+    TSY1Entry tsy;
+    tsy.styleIndex = 0x12B;
+    const std::u16string message = IMAGE(ImageTags::R_ARROW) + u"\0"s;
+    msbt.addMessage(new_message_label, attributes, tsy, message);
+    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+  }
 
-	stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
+	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
 	EXTRACT_ERR_CHECK(stream);
 
 	FileTypes::DZXFile dzr;
@@ -2021,38 +1705,21 @@ TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { //make s
 }
 
 TweakError implement_key_bag() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream);
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
+    EXTRACT_ERR_CHECK(stream);
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	msbt.messages_by_label["00403"].text.message = u"Key Bag\0"s;
-	msbt.messages_by_label["00603"].text.message = u"A handy bag for holding your keys!\n"s;
-  	msbt.messages_by_label["00603"].text.message += u"Here's how many you've got with you:\n";
-  	msbt.messages_by_label["00603"].text.message += u"DRC: \x000E\x0007\x004B\x0000         "s;
-  	msbt.messages_by_label["00603"].text.message += u"FW: \x000E\x0007\x004C\x0000         "s;
-  	msbt.messages_by_label["00603"].text.message += u"TotG: \x000E\x0007\x004D\x0000     \n"s;
-  	msbt.messages_by_label["00603"].text.message += u"ET: \x000E\x0007\x004E\x0000           "s;
-  	msbt.messages_by_label["00603"].text.message += u"WT: \x000E\x0007\x004F\x0000     \0"s;
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-
-	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::FLIMFile pirates_charm;
-	FILETYPE_ERROR_CHECK(pirates_charm.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(pirates_charm.writeToStream(*stream));
+    FileTypes::FLIMFile pirates_charm;
+    FILETYPE_ERROR_CHECK(pirates_charm.loadFromBinary(*stream));
+    FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+    FILETYPE_ERROR_CHECK(pirates_charm.writeToStream(*stream));
+  }
 
 	return TweakError::NONE;
 }
 
 TweakError show_dungeon_markers_on_chart(World& world) {
 	using namespace NintendoWare::Layout;
-
-	std::vector<size_t> quest_marker_indexes = {
-		144, 145, 146, 147, 148, 149, 150, 151
-	};
 
 	std::unordered_set<uint8_t> room_indexes;
 	for(const auto& [name, dungeon] : world.dungeons) {
@@ -2063,30 +1730,36 @@ TweakError show_dungeon_markers_on_chart(World& world) {
     }
 	}
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");
-	EXTRACT_ERR_CHECK(stream);
+  for (const auto& language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");
+    EXTRACT_ERR_CHECK(stream);
 
-	FileTypes::FLYTFile map;
-	FILETYPE_ERROR_CHECK(map.loadFromBinary(*stream));
+    FileTypes::FLYTFile map;
+    FILETYPE_ERROR_CHECK(map.loadFromBinary(*stream));
 
-	for(const uint8_t& index : room_indexes) {
-		const uint32_t column = (index - 1) % 7;
-		const uint32_t row = std::floor((index - 1) / 7);
-		const float x_pos = (column * 73.0f) - 148.0f;
-		const float y_pos = 175.0f - (row * 73.0f);
+    std::vector<size_t> quest_marker_indexes = {
+      144, 145, 146, 147, 148, 149, 150, 151
+    };
 
-		pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[quest_marker_indexes.back()].pane.get());
-		quest_marker_indexes.pop_back();
-		marker->translation.X = x_pos;
-		marker->translation.Y = y_pos;
-	}
+    for(const uint8_t& index : room_indexes) {
+      const uint32_t column = (index - 1) % 7;
+      const uint32_t row = std::floor((index - 1) / 7);
+      const float x_pos = (column * 73.0f) - 148.0f;
+      const float y_pos = 175.0f - (row * 73.0f);
 
-	for(const auto& index : quest_marker_indexes) { //hide any remaining markers
-		pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[index].pane.get());
-		marker->alpha = 0;
-	}
+      pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[quest_marker_indexes.back()].pane.get());
+      quest_marker_indexes.pop_back();
+      marker->translation.X = x_pos;
+      marker->translation.Y = y_pos;
+    }
 
-	FILETYPE_ERROR_CHECK(map.writeToStream(*stream));
+    for(const auto& index : quest_marker_indexes) { //hide any remaining markers
+      pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[index].pane.get());
+      marker->alpha = 0;
+    }
+
+    FILETYPE_ERROR_CHECK(map.writeToStream(*stream));
+  }
 
 	return TweakError::NONE;
 }
@@ -2470,31 +2143,23 @@ TweakError fix_stone_head_bugs() {
 }
 
 TweakError show_tingle_statues_on_quest_screen() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim");
-	EXTRACT_ERR_CHECK(stream);
+  for (std::string language : Text::supported_languages) {
+    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim");
+    EXTRACT_ERR_CHECK(stream);
 
-	FileTypes::FLIMFile tingle;
-	FILETYPE_ERROR_CHECK(tingle.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(tingle.writeToStream(*stream));
+    FileTypes::FLIMFile tingle;
+    FILETYPE_ERROR_CHECK(tingle.loadFromBinary(*stream));
+    FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+    FILETYPE_ERROR_CHECK(tingle.writeToStream(*stream));
 
-	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
-	EXTRACT_ERR_CHECK(stream);
+    stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
+    EXTRACT_ERR_CHECK(stream);
 
-	FileTypes::FLIMFile shadow;
-	FILETYPE_ERROR_CHECK(shadow.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
-	FILETYPE_ERROR_CHECK(shadow.writeToStream(*stream));
-
-	stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	msbt.messages_by_label["00503"].text.message = u"Tingle Statues\0"s;
-	msbt.messages_by_label["00703"].text.message = u"Golden statues of a mysterious dashing\n figure. They can be traded to " + TEXT_COLOR_RED + u"Ankle" + TEXT_COLOR_DEFAULT + u" on\n" + TEXT_COLOR_RED + u"Tingle Island" + TEXT_COLOR_DEFAULT + u" for a reward!\0"s;
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-
+    FileTypes::FLIMFile shadow;
+    FILETYPE_ERROR_CHECK(shadow.loadFromBinary(*stream));
+    FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
+    FILETYPE_ERROR_CHECK(shadow.writeToStream(*stream));
+  }
 	return TweakError::NONE;
 }
 
@@ -2670,7 +2335,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.json"));
 		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/swordless_reloc.json"));
 		RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x001C1ED4})); //would overwrite branch to custom code
-		TWEAK_ERR_CHECK(update_swordless_text());
 	}
 	if (settings.remove_music) {
 		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_music_diff.json"));
@@ -2688,14 +2352,12 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	TWEAK_ERR_CHECK(add_chest_in_place_queen_fairy_cutscene());
 	TWEAK_ERR_CHECK(modify_title_screen());
 	TWEAK_ERR_CHECK(update_name_and_icon());
-	TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere());
 	TWEAK_ERR_CHECK(fix_shop_item_y_offsets());
 	TWEAK_ERR_CHECK(set_num_starting_triforce_shards(settings.num_starting_triforce_shards));
 	TWEAK_ERR_CHECK(set_starting_health(settings.starting_pohs, settings.starting_hcs));
 	TWEAK_ERR_CHECK(set_damage_multiplier(settings.damage_multiplier));
 	TWEAK_ERR_CHECK(remove_makar_kidnapping());
 	TWEAK_ERR_CHECK(increase_crawl_speed());
-	TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages());
 	TWEAK_ERR_CHECK(increase_grapple_animation_speed());
 	TWEAK_ERR_CHECK(increase_block_move_animation());
 	TWEAK_ERR_CHECK(increase_misc_animations());
@@ -2737,19 +2399,15 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	EXTRACT_ERR_CHECK(rpxStream);
 	FILETYPE_ERROR_CHECK(gRPX.loadFromBinary(*rpxStream)); //reload to avoid conflicts written between pre- and post- randomization tweaks
 
-	const std::map<std::string, Location>& itemLocations = world.locationEntries;
 	const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
 
 	TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
 	TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
 	if (randomizeItems) {
-		TWEAK_ERR_CHECK(update_shop_item_descriptions(itemLocations.at("Great Sea - Beedle Shop 20 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 500 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 950 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 900 Rupee Item")));
-		TWEAK_ERR_CHECK(update_auction_item_names(itemLocations.at("Windfall Island - Auction 5 Rupee"), itemLocations.at("Windfall Island - Auction 40 Rupee"), itemLocations.at("Windfall Island - Auction 60 Rupee"), itemLocations.at("Windfall Island - Auction 80 Rupee"), itemLocations.at("Windfall Island - Auction 100 Rupee")));
-		TWEAK_ERR_CHECK(update_battlesquid_item_names(itemLocations.at("Windfall Island - Battle Squid First Prize"), itemLocations.at("Windfall Island - Battle Squid Second Prize")));
-		TWEAK_ERR_CHECK(update_item_names_in_letter_advertising_rock_spire_shop(itemLocations.at("Rock Spire Isle - Beedle 500 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 950 Rupee Item"), itemLocations.at("Rock Spire Isle - Beedle 900 Rupee Item")));
-		TWEAK_ERR_CHECK(update_savage_labyrinth_hint_tablet(itemLocations.at("Outset Island - Savage Labyrinth Floor 30"), itemLocations.at("Outset Island - Savage Labyrinth Floor 50")));
-    	TWEAK_ERR_CHECK(update_korl_dialog(world));
-    	TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+    TWEAK_ERR_CHECK(update_text_replacements(world));
+    TWEAK_ERR_CHECK(update_korl_dialog(world));
+    TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+    TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
 	}
 	//Run some things after writing items to preserve offsets
 	TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
@@ -2765,6 +2423,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	TWEAK_ERR_CHECK(remove_minor_pan_cs());
 	TWEAK_ERR_CHECK(show_dungeon_markers_on_chart(world));
 	TWEAK_ERR_CHECK(update_entrance_events());
+  TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere(world));
 
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());

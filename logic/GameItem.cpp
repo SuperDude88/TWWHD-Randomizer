@@ -1,6 +1,9 @@
 
 #include "GameItem.hpp"
+#include "World.hpp"
 #include "../server/command/Log.hpp"
+#include "../server/utility/stringUtil.hpp"
+#include "../server/filetypes/util/msbtMacros.hpp"
 #include <unordered_map>
 #include <array>
 
@@ -26,14 +29,14 @@ GameItem nameToGameItem(const std::string& name)
 		{"Ten Arrows", GameItem::TenArrows},
 		{"Twenty Arrows", GameItem::TwentyArrows},
 		{"Thirty Arrows", GameItem::ThirtyArrows},
-		{"DRC Small Key", GameItem::DRCSmallKey},
-		{"DRC Big Key", GameItem::DRCBigKey},
+		{"Dragon Roost Cavern Small Key", GameItem::DRCSmallKey},
+		{"Dragon Roost Cavern Big Key", GameItem::DRCBigKey},
 		{"Small Key", GameItem::SmallKey},
 		{"Fairy", GameItem::Fairy},
 		{"Yellow Rupee 2", GameItem::YellowRupee2},
-		{"DRC Dungeon Map", GameItem::DRCDungeonMap},
-		{"DRC Compass", GameItem::DRCCompass},
-		{"FW Small Key", GameItem::FWSmallKey},
+		{"Dragon Roost Cavern Dungeon Map", GameItem::DRCDungeonMap},
+		{"Dragon Roost Cavern Compass", GameItem::DRCCompass},
+		{"Forbidden Woods Small Key", GameItem::FWSmallKey},
 		{"Three Hearts", GameItem::ThreeHearts},
 		{"Joy Pendant", GameItem::JoyPendant},
 		{"Telescope", GameItem::Telescope},
@@ -66,8 +69,8 @@ GameItem nameToGameItem(const std::string& name)
 		{"Recovered Heros Sword", GameItem::RecoveredHerosSword},
 		{"Master Sword Full", GameItem::MasterSwordFull},
 		{"Piece of Heart 2", GameItem::PieceOfHeart2},
-		{"FW Big Key", GameItem::FWBigKey},
-		{"FW Dungeon Map", GameItem::FWDungeonMap},
+		{"Forbidden Woods Big Key", GameItem::FWBigKey},
+		{"Forbidden Woods Dungeon Map", GameItem::FWDungeonMap},
 		{"Pirates Charm", GameItem::PiratesCharm},
 		{"Hero's Charm", GameItem::HerosCharm},
 		{"Skull Necklace", GameItem::SkullNecklace},
@@ -90,13 +93,13 @@ GameItem nameToGameItem(const std::string& name)
 		{"Fairy In Bottle", GameItem::FairyInBottle},
 		{"Forest Firefly", GameItem::ForestFirefly},
 		{"Forest Water", GameItem::ForestWater},
-		{"FW Compass", GameItem::FWCompass},
-		{"TotG Small Key", GameItem::TotGSmallKey},
-		{"TotG Big Key", GameItem::TotGBigKey},
-		{"TotG Dungeon Map", GameItem::TotGDungeonMap},
-		{"TotG Compass", GameItem::TotGCompass},
-		{"FF Dungeon Map", GameItem::FFDungeonMap},
-		{"FF Compass", GameItem::FFCompass},
+		{"Forbidden Woods Compass", GameItem::FWCompass},
+		{"Tower of the Gods Small Key", GameItem::TotGSmallKey},
+		{"Tower of the Gods Big Key", GameItem::TotGBigKey},
+		{"Tower of the Gods Dungeon Map", GameItem::TotGDungeonMap},
+		{"Tower of the Gods Compass", GameItem::TotGCompass},
+		{"Forsaken Fortress Dungeon Map", GameItem::FFDungeonMap},
+		{"Forsaken Fortress Compass", GameItem::FFCompass},
 		{"Triforce Shard 1", GameItem::TriforceShard1},
 		{"Triforce Shard 2", GameItem::TriforceShard2},
 		{"Triforce Shard 3", GameItem::TriforceShard3},
@@ -114,10 +117,10 @@ GameItem nameToGameItem(const std::string& name)
 		{"Earth God's Lyric", GameItem::EarthGodsLyric},
 		{"Wind God's Aria", GameItem::WindGodsAria},
 		{"Song of Passing", GameItem::SongOfPassing},
-		{"ET Small Key", GameItem::ETSmallKey},
-		{"ET Big Key", GameItem::ETBigKey},
-		{"ET Dungeon Map", GameItem::ETDungeonMap},
-		{"ET Compass", GameItem::ETCompass},
+		{"Earth Temple Small Key", GameItem::ETSmallKey},
+		{"Earth Temple Big Key", GameItem::ETBigKey},
+		{"Earth Temple Dungeon Map", GameItem::ETDungeonMap},
+		{"Earth Temple Compass", GameItem::ETCompass},
 		{"Swift Sail", GameItem::SwiftSail},
 		{"Progressive Sail", GameItem::ProgressiveSail},
 		{"Triforce Chart 1 Deciphered", GameItem::TriforceChart1Deciphered},
@@ -128,12 +131,12 @@ GameItem nameToGameItem(const std::string& name)
 		{"Triforce Chart 6 Deciphered", GameItem::TriforceChart6Deciphered},
 		{"Triforce Chart 7 Deciphered", GameItem::TriforceChart7Deciphered},
 		{"Triforce Chart 8 Deciphered", GameItem::TriforceChart8Deciphered},
-		{"WT Small Key", GameItem::WTSmallKey},
+		{"Wind Temple Small Key", GameItem::WTSmallKey},
 		{"All Purpose Bait", GameItem::AllPurposeBait},
 		{"Hyoi Pear", GameItem::HyoiPear},
-		{"WT Big Key", GameItem::WTBigKey},
-		{"WT Dungeon Map", GameItem::WTDungeonMap},
-		{"WT Compass", GameItem::WTCompass},
+		{"Wind Temple Big Key", GameItem::WTBigKey},
+		{"Wind Temple Dungeon Map", GameItem::WTDungeonMap},
+		{"Wind Temple Compass", GameItem::WTCompass},
 		{"Town Flower", GameItem::TownFlower},
 		{"Sea Flower", GameItem::SeaFlower},
 		{"Exotic Flower", GameItem::ExoticFlower},
@@ -175,7 +178,7 @@ GameItem nameToGameItem(const std::string& name)
 		{"Two Hundred Fifty Rupees", GameItem::TwoHundredFiftyRupees},
 		{"Rainbow Rupee", GameItem::RainbowRupee},
 		{"Submarine Chart", GameItem::SubmarineChart},
-		{"Beedles Chart", GameItem::BeedlesChart},
+		{"Beedle's Chart", GameItem::BeedlesChart},
 		{"Platform Chart", GameItem::PlatformChart},
 		{"Light Ring Chart", GameItem::LightRingChart},
 		{"Secret Cave Chart", GameItem::SecretCaveChart},
@@ -279,14 +282,14 @@ std::string gameItemToName(GameItem item)
 		{GameItem::TenArrows, "Ten Arrows"},
 		{GameItem::TwentyArrows, "Twenty Arrows"},
 		{GameItem::ThirtyArrows, "Thirty Arrows"},
-		{GameItem::DRCSmallKey, "DRC Small Key"},
-		{GameItem::DRCBigKey, "DRC Big Key"},
+		{GameItem::DRCSmallKey, "Dragon Roost Cavern Small Key"},
+		{GameItem::DRCBigKey, "Dragon Roost Cavern Big Key"},
 		{GameItem::SmallKey, "Small Key"},
 		{GameItem::Fairy, "Fairy"},
 		{GameItem::YellowRupee2, "Yellow Rupee 2"},
-		{GameItem::DRCDungeonMap, "DRC Dungeon Map"},
-		{GameItem::DRCCompass, "DRC Compass"},
-		{GameItem::FWSmallKey, "FW Small Key"},
+		{GameItem::DRCDungeonMap, "Dragon Roost Cavern Dungeon Map"},
+		{GameItem::DRCCompass, "Dragon Roost Cavern Compass"},
+		{GameItem::FWSmallKey, "Forbidden Woods Small Key"},
 		{GameItem::ThreeHearts, "Three Hearts"},
 		{GameItem::JoyPendant, "Joy Pendant"},
 		{GameItem::Telescope, "Telescope"},
@@ -319,8 +322,8 @@ std::string gameItemToName(GameItem item)
 		{GameItem::RecoveredHerosSword, "Recovered Heros Sword"},
 		{GameItem::MasterSwordFull, "Master Sword Full"},
 		{GameItem::PieceOfHeart2, "Piece of Heart 2"},
-		{GameItem::FWBigKey, "FW Big Key"},
-		{GameItem::FWDungeonMap, "FW Dungeon Map"},
+		{GameItem::FWBigKey, "Forbidden Woods Big Key"},
+		{GameItem::FWDungeonMap, "Forbidden Woods Dungeon Map"},
 		{GameItem::PiratesCharm, "Pirates Charm"},
 		{GameItem::HerosCharm, "Hero's Charm"},
 		{GameItem::SkullNecklace, "Skull Necklace"},
@@ -343,13 +346,13 @@ std::string gameItemToName(GameItem item)
 		{GameItem::FairyInBottle, "Fairy In Bottle"},
 		{GameItem::ForestFirefly, "Forest Firefly"},
 		{GameItem::ForestWater, "Forest Water"},
-		{GameItem::FWCompass, "FW Compass"},
-		{GameItem::TotGSmallKey, "TotG Small Key"},
-		{GameItem::TotGBigKey, "TotG Big Key"},
-		{GameItem::TotGDungeonMap, "TotG Dungeon Map"},
-		{GameItem::TotGCompass, "TotG Compass"},
-		{GameItem::FFDungeonMap, "FF Dungeon Map"},
-		{GameItem::FFCompass, "FF Compass"},
+		{GameItem::FWCompass, "Forbidden Woods Compass"},
+		{GameItem::TotGSmallKey, "Tower of the Gods Small Key"},
+		{GameItem::TotGBigKey, "Tower of the Gods Big Key"},
+		{GameItem::TotGDungeonMap, "Tower of the Gods Dungeon Map"},
+		{GameItem::TotGCompass, "Tower of the Gods Compass"},
+		{GameItem::FFDungeonMap, "Forsaken Fortress Dungeon Map"},
+		{GameItem::FFCompass, "Forsaken Fortress Compass"},
 		{GameItem::TriforceShard1, "Triforce Shard 1"},
 		{GameItem::TriforceShard2, "Triforce Shard 2"},
 		{GameItem::TriforceShard3, "Triforce Shard 3"},
@@ -367,10 +370,10 @@ std::string gameItemToName(GameItem item)
 		{GameItem::EarthGodsLyric, "Earth God's Lyric"},
 		{GameItem::WindGodsAria, "Wind God's Aria"},
 		{GameItem::SongOfPassing, "Song of Passing"},
-		{GameItem::ETSmallKey, "ET Small Key"},
-		{GameItem::ETBigKey, "ET Big Key"},
-		{GameItem::ETDungeonMap, "ET Dungeon Map"},
-		{GameItem::ETCompass, "ET Compass"},
+		{GameItem::ETSmallKey, "Earth Temple Small Key"},
+		{GameItem::ETBigKey, "Earth Temple Big Key"},
+		{GameItem::ETDungeonMap, "Earth Temple Dungeon Map"},
+		{GameItem::ETCompass, "Earth Temple Compass"},
 		{GameItem::SwiftSail, "Swift Sail"},
 		{GameItem::ProgressiveSail, "Progressive Sail"},
 		{GameItem::TriforceChart1Deciphered, "Triforce Chart 1 Deciphered"},
@@ -381,12 +384,12 @@ std::string gameItemToName(GameItem item)
 		{GameItem::TriforceChart6Deciphered, "Triforce Chart 6 Deciphered"},
 		{GameItem::TriforceChart7Deciphered, "Triforce Chart 7 Deciphered"},
 		{GameItem::TriforceChart8Deciphered, "Triforce Chart 8 Deciphered"},
-		{GameItem::WTSmallKey, "WT Small Key"},
+		{GameItem::WTSmallKey, "Wind Temple Small Key"},
 		{GameItem::AllPurposeBait, "All Purpose Bait"},
 		{GameItem::HyoiPear, "Hyoi Pear"},
-		{GameItem::WTBigKey, "WT Big Key"},
-		{GameItem::WTDungeonMap, "WT Dungeon Map"},
-		{GameItem::WTCompass, "WT Compass"},
+		{GameItem::WTBigKey, "Wind Temple Big Key"},
+		{GameItem::WTDungeonMap, "Wind Temple Dungeon Map"},
+		{GameItem::WTCompass, "Wind Temple Compass"},
 		{GameItem::TownFlower, "Town Flower"},
 		{GameItem::SeaFlower, "Sea Flower"},
 		{GameItem::ExoticFlower, "Exotic Flower"},
@@ -428,7 +431,7 @@ std::string gameItemToName(GameItem item)
 		{GameItem::TwoHundredFiftyRupees, "Two Hundred Fifty Rupees"},
 		{GameItem::RainbowRupee, "Rainbow Rupee"},
 		{GameItem::SubmarineChart, "Submarine Chart"},
-		{GameItem::BeedlesChart, "Beedles Chart"},
+		{GameItem::BeedlesChart, "Beedle's Chart"},
 		{GameItem::PlatformChart, "Platform Chart"},
 		{GameItem::LightRingChart, "Light Ring Chart"},
 		{GameItem::SecretCaveChart, "Secret Cave Chart"},
@@ -504,10 +507,10 @@ GameItem idToGameItem(uint8_t id)
 	return static_cast<GameItem>(id);
 }
 
-Item::Item(GameItem gameItemId_, int worldId_)
+Item::Item(GameItem gameItemId_, World* world_)
 {
 		gameItemId = gameItemId_;
-		worldId = worldId_;
+		world = world_;
 
 		if (junkItems.contains(gameItemId))
 		{
@@ -524,10 +527,10 @@ Item::Item(GameItem gameItemId_, int worldId_)
 		}
 }
 
-Item::Item(std::string itemName_, int worldId_)
+Item::Item(std::string itemName_, World* world_)
 {
 		gameItemId = nameToGameItem(itemName_);
-		worldId = worldId_;
+		world = world_;
 
 		if (junkItems.contains(gameItemId))
 		{
@@ -544,14 +547,14 @@ Item::Item(std::string itemName_, int worldId_)
 		}
 }
 
-void Item::setWorldId(int newWorldId)
+World* Item::getWorld()
 {
-		worldId = newWorldId;
+		return world;
 }
 
 int Item::getWorldId() const
 {
-		return worldId;
+		return world->getWorldId();
 }
 
 void Item::setGameItemId(GameItem newGameItemId)
@@ -577,7 +580,28 @@ void Item::saveDelayedItemId()
 
 std::string Item::getName() const
 {
-		return gameItemToName(gameItemId) + " for Player " + std::to_string(worldId + 1);
+		return world->names[gameItemId]["English"][Text::Type::STANDARD];
+}
+
+std::string Item::getUTF8Name(const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RAW*/, const bool& showWorld /*= false*/) const
+{
+		return Utility::Str::toUTF8(getUTF16Name(language, type, color, showWorld));
+}
+
+std::u16string Item::getUTF16Name(const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RED*/, const bool& showWorld /*= false*/) const
+{
+		std::u16string str = Utility::Str::toUTF16(world->names[gameItemId][language][type]);
+		str = Text::apply_name_color(str, color);
+		if (showWorld)
+		{
+				str += u" for Player " + Utility::Str::toUTF16(std::to_string(world->getWorldId() + 1));
+		}
+		return Utility::Str::RemoveUnicodeReplacements(str);
+}
+
+void Item::setName(const std::string& language, const Text::Type& type, const std::string& name_)
+{
+		world->names[gameItemId][language][type] = name_;
 }
 
 void Item::setAsMajorItem()
@@ -606,16 +630,6 @@ std::list<Location*>& Item::getChainLocations()
 		return chainLocations;
 }
 
-std::string Item::getCrypticText() const
-{
-		return crypticText;
-}
-
-void Item::setCrypticText(const std::string& crypticText_)
-{
-		crypticText = crypticText_;
-}
-
 void Item::setAsJunkItem()
 {
 		majorItem = false;
@@ -634,10 +648,10 @@ bool Item::isDungeonItem() const
 
 bool Item::operator==(const Item& rhs) const
 {
-		return gameItemId == rhs.gameItemId && worldId == rhs.worldId;
+		return gameItemId == rhs.gameItemId && world->getWorldId() == rhs.world->getWorldId();
 }
 
 bool Item::operator<(const Item& rhs) const
 {
-		return (worldId == rhs.worldId) ? gameItemId < rhs.gameItemId : worldId < rhs.worldId;
+		return (world->getWorldId() == rhs.world->getWorldId()) ? gameItemId < rhs.gameItemId : world->getWorldId() < rhs.world->getWorldId();
 }

@@ -3,6 +3,8 @@
 #include <string>
 #include <set>
 #include <list>
+#include <unordered_map>
+#include "../server/utility/text.hpp"
 
 enum struct GameItem : uint8_t
 {
@@ -364,27 +366,29 @@ static const std::set<GameItem> dungeonItems = {
 };
 
 struct Location;
+class World;
 class Item
 {
 public:
     Item() = default;
-    Item(GameItem gameItemId_, int worldId_);
-    Item(std::string itemName_, int worldId_);
+    Item(GameItem gameItemId_, World* world_);
+    Item(std::string itemName_, World* world_);
 
-    void setWorldId(int newWorldId);
+    World* getWorld();
     int getWorldId() const;
     void setGameItemId(GameItem newGameItemId);
     GameItem getGameItemId() const;
     void setDelayedItemId(GameItem delayedItemId);
     void saveDelayedItemId();
-    std::string getName() const;
     void setAsMajorItem();
     bool isMajorItem() const;
     bool isChartForSunkenTreasure() const;
     void addChainLocation(Location* location);
     std::list<Location*>& getChainLocations();
-    void setCrypticText(const std::string& crypticText_);
-    std::string getCrypticText() const;
+    std::string getName() const;
+    std::string getUTF8Name(const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW, const bool& showWorld = false) const;
+    std::u16string getUTF16Name(const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RED, const bool& showWorld = false) const;
+    void setName(const std::string& language, const Text::Type& type, const std::string& name_);
     void setAsJunkItem();
     bool isJunkItem() const;
     bool isDungeonItem() const;
@@ -397,10 +401,9 @@ private:
     bool majorItem = false;
     bool chartForSunkenTreasure = false;
     std::list<Location*> chainLocations = {};
-    std::string crypticText = "";
     bool dungeonItem = false;
     bool junkItem = false;
-    int worldId = -1; // The world that this item is *FOR*
+    World* world = nullptr; // The world that this item is *FOR*
 };
 
 // Hash function for Item class, copied from

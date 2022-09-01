@@ -58,7 +58,7 @@ else()
 endif()
 
 add_executable(wwhd_rando main.cpp)
-target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp")
+target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
 add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")

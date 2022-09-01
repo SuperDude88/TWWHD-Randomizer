@@ -12,6 +12,7 @@
 #include "Dungeon.hpp"
 #include "Entrance.hpp"
 #include "../libs/Yaml.hpp"
+#include "../server/utility/text.hpp"
 
 static std::stringstream lastError;
 
@@ -113,7 +114,7 @@ public:
     void determineChartMappings();
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
-    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath);
+    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
@@ -121,6 +122,10 @@ public:
     std::unordered_set<std::string> getIslands(const std::string& area);
     Dungeon& getDungeon(const std::string& dungeonName);
     WorldLoadingError loadPlandomizer();
+    std::string getUTF8HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW) const;
+    std::u16string getUTF16HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RED) const;
+
+    // Stuff to help with debugging
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
@@ -130,6 +135,8 @@ public:
     std::map<std::string, Item> itemEntries = {};
     std::map<std::string, AreaEntry> areaEntries = {};
     std::map<std::string, Location> locationEntries = {};
+    std::map<GameItem, std::map<std::string, std::map<Text::Type, std::string>>> names; // game item names for all languages, keyed by GameItemId, language, and type
+    std::map<std::string, std::map<std::string, std::map<Text::Type, std::string>>> hintRegions; // hint region names for all languages, key'd by name, language, and type
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::unordered_map<std::string, Dungeon> dungeons = {};
@@ -159,6 +166,7 @@ private:
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);
     WorldLoadingError loadArea(Yaml::Node& areaObject);
     WorldLoadingError loadItem(Yaml::Node& itemObject);
+    WorldLoadingError loadAreaTranslations(Yaml::Node& areaObject);
     int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;

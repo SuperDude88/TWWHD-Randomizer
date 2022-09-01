@@ -1,4 +1,7 @@
-- Name: Mailbox - Letter from Hoskit's Girlfriend
+- Names:
+    English: Mailbox - Letter from Hoskit's Girlfriend
+    Spanish: Buzón de correo - Carta de la novia de Hoskit
+    French: Boîte aux Lettres - Lattre de la copine d'Odelf
   Original Item: Piece of Heart 2
   Category:
     - Mail
@@ -8,7 +11,10 @@
   Offsets:
     - 0x10031584
 
-- Name: Mailbox - Letter from Baito's Mother
+- Names:
+    English: Mailbox - Letter from Baito's Mother
+    Spanish: Buzón de correo - Carta de la madre de Novi
+    French: Boîte aux Lettres - Lettre de la maman du Commis de la Poste
   Original Item: Piece of Heart
   Category:
     - Mail
@@ -18,7 +24,10 @@
     - 0x1003150C
     - 0x1003156C
 
-- Name: Mailbox - Letter from Baito
+- Names:
+    English: Mailbox - Letter from Baito
+    Spanish: Buzón de correo - Carta de Novi
+    French: Boîte aux Lettres - Lettre du Commis de la Poste
   Original Item: Red Rupee
   Dungeon Dependency: Earth Temple
   Category:
@@ -29,7 +38,10 @@
   Offsets:
     - 0x10031590
 
-- Name: Mailbox - Letter from Komali's Father
+- Names:
+    English: Mailbox - Letter from Komali's Father
+    Spanish: Buzón de correo - Carta del padre de Komali
+    French: Boîte aux Lettres - Lettre du père de Scaff
   Original Item: Piece of Heart
   Category:
     - Mail
@@ -38,8 +50,11 @@
   Offsets:
     - 0x10031518
 
-- Name: Mailbox - Letter Advertising Bombs
-  Original Item: Beedles Chart
+- Names:
+    English: Mailbox - Letter Advertising Bombs
+    Spanish: Buzón de correo - Carta promocional de Bombas
+    French: Boîte aux Lettres - Lettre promotionnelle des Bombes
+  Original Item: Beedle's Chart
   Category:
     - Mail
   Hint Priority: Sometimes
@@ -47,7 +62,10 @@
   Offsets:
     - 0x10031524
 
-- Name: Mailbox - Letter Advertising Rock Spire Shop Ship
+- Names:
+    English: Mailbox - Letter Advertising Rock Spire Shop Ship
+    Spanish: Buzón de correo - Anuncio de la tienda en la Isla de los Pilares
+    French: Boîte aux Lettres - Lettre promotionnelle de la Boutique Terry de l'Ile de la Rocaille
   Original Item: Green Rupee
   Category:
     - Mail
@@ -56,7 +74,10 @@
   Offsets:
     - 0x10031548
 
-- Name: Mailbox - Beedle's Silver Membership Reward
+- Names:
+    English: Mailbox - Beedle's Silver Membership Reward
+    Spanish: Buzón de correo - Membresía de Plata de Terry
+    French: Boîte aux Lettres - Membre d'Argent de la Boutique de Terry
   Original Item: Complimentary ID
   Category:
     - Junk
@@ -65,7 +86,10 @@
   Offsets:
     - 0x10031578
 
-- Name: Mailbox - Beedle's Gold Membership Reward
+- Names:
+    English: Mailbox - Beedle's Gold Membership Reward
+    Spanish: Buzón de correo - Membresía de Oro de Terry
+    French: Boîte aux Lettres - Membre d'Honneur de la Boutique de Terry
   Original Item: Fill Up Coupon
   Category:
     - Junk
@@ -74,7 +98,10 @@
   Offsets:
     - 0x1003159C
 
-- Name: Mailbox - Letter from Orca
+- Names:
+    English: Mailbox - Letter from Orca
+    Spanish: Buzón de correo - Carta de Orca
+    French: Boîte aux Lettres - Lettre d'Orco
   Original Item: Red Rupee
   Dungeon Dependency: Forbidden Woods
   Category:
@@ -85,7 +112,10 @@
   Offsets:
     - 0x10031530
 
-- Name: Mailbox - Letter from Grandma
+- Names:
+    English: Mailbox - Letter from Grandma
+    Spanish: Buzón de correo - Carta del la Abuela
+    French: Boîte aux Lettres - Lettre de Mémé
   Original Item: Red Rupee
   Category:
     - Mail
@@ -94,7 +124,10 @@
   Offsets:
     - 0x1003153C
 
-- Name: Mailbox - Letter from Aryll
+- Names:
+    English: Mailbox - Letter from Aryll
+    Spanish: Buzón de correo - Carta de Abril
+    French: Boîte aux Lettres - Lettre d'Arielle
   Original Item: Red Rupee
   Dungeon Dependency: Forsaken Fortress
   Category:
@@ -105,7 +138,10 @@
   Offsets:
     - 0x10031560
 
-- Name: Mailbox - Letter from Tingle
+- Names:
+    English: Mailbox - Letter from Tingle
+    Spanish: Buzón de correo - Carta de Tingle
+    French: Boîte aux Lettres - Lettre de Tingle
   Original Item: INcredible Chart
   Dungeon Dependency: Forsaken Fortress
   Category:
@@ -117,7 +153,10 @@
   Offsets:
     - 0x10031554
 
-- Name: Great Sea - Beedle Shop 20 Rupee Item
+- Names:
+    English: Great Sea - Beedle Shop 20 Rupee Item
+    Spanish: Gran mar - Objeto de 20 rupias en la tienda de Terry
+    French: Océan - Objet à 20 rubis de la Boutique de Terry
   Original Item: Bait Bag
   Category:
     - Misc
@@ -128,7 +167,10 @@
     - 0x02212C67
     - 0x02215443
 
-- Name: Great Sea - Salvage Corp Gift
+- Names:
+    English: Great Sea - Salvage Corp Gift
+    Spanish: Gran mar - Obsequio del Equipo Nautilus
+    French: Océan - Cadeau de l'Equipage Nautilus
   Original Item: Treasure Chart 34
   Category:
     - FreeGift
@@ -137,7 +179,10 @@
   Offsets:
     - 0x101C63BF
 
-- Name: Great Sea - Cyclos
+- Names:
+    English: Great Sea - Cyclos
+    Spanish: Gran mar - Cyclos
+    French: Océan - Cyclos
   Original Item: Ballad of Gales
   Category:
     - Misc
@@ -147,7 +192,10 @@
   Offset: 0x000A82F3
   NameOffset: 0x0005AE20
 
-- Name: Great Sea - Goron Trading Reward
+- Names:
+    English: Great Sea - Goron Trading Reward
+    Spanish: Gran mar - Recompensa de intercambio con Gorons
+    French: Océan - Récompense des Echanges Commerciaux des Gorons
   Original Item: Piece of Heart
   Category:
     - LongSideQuest
@@ -157,7 +205,10 @@
   Offsets:
     - 0x101C546F
 
-- Name: Great Sea - Withered Trees
+- Names:
+    English: Great Sea - Withered Trees
+    Spanish: Gran mar - Árboles secos
+    French: Océan - Arbres desséchés
   Original Item: Piece of Heart
   Category:
     - LongSideQuest
@@ -167,7 +218,10 @@
     - 0x02347C2B
     - 0x02347AAB
 
-- Name: Forsaken Fortress Sector - Sunken Treasure
+- Names:
+    English: Forsaken Fortress Sector - Sunken Treasure
+    Spanish: Sector de la Isla del Diablo - Tesoro Hundido
+    French: Secteur de la Forteresse Maudite - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -180,7 +234,10 @@
     - 0x00002424
     - 0x00002448
 
-- Name: Forsaken Fortress - Phantom Ganon
+- Names:
+    English: Forsaken Fortress - Phantom Ganon
+    Spanish: Isla del Diablo - Ganon Fantasma
+    French: Forteresse Maudite - Fantôme de Ganon
   Original Item: Skull Hammer
   Category:
     - Dungeon
@@ -190,7 +247,10 @@
   Offsets:
     - 0x00002838
 
-- Name: Forsaken Fortress - Chest Inside Lower Jail Cell
+- Names:
+    English: Forsaken Fortress - Chest Inside Lower Jail Cell
+    Spanish: Isla del Diablo - Cofre en la Celda Inferior
+    French: Forteresse Maudite - Coffre dans la cellule du RDC
   Original Item: Piece of Heart
   Category:
     - Dungeon
@@ -200,7 +260,10 @@
   Offsets:
     - 0x00000A80
 
-- Name: Forsaken Fortress - Chest on Bed
+- Names:
+    English: Forsaken Fortress - Chest on Bed
+    Spanish: Isla del Diablo - Cofre en la cama
+    French: Forteresse Maudite - Coffre sur le lit
   Original Item: Yellow Rupee
   Category:
     - Dungeon
@@ -210,7 +273,10 @@
   Offsets:
     - 0x00000A40
 
-- Name: Forsaken Fortress - Chest Outside Upper Jail Cell
+- Names:
+    English: Forsaken Fortress - Chest Outside Upper Jail Cell
+    Spanish: Isla del Diablo - Cofre fuera de la Celda Superior
+    French: Forteresse Maudite - Coffre à l'extérieur de la cellule du 1e étage
   Original Item: Dungeon Map
   Category:
     - Dungeon
@@ -220,7 +286,10 @@
   Offsets:
     - 0x00000A20
 
-- Name: Forsaken Fortress - Chest Guarded by Bokoblin
+- Names:
+    English: Forsaken Fortress - Chest Guarded by Bokoblin
+    Spanish: Isla del Diablo - Cofre protegido por un Bokoblin
+    French: Forteresse Maudite - Coffre gardé par un Bokoblin
   Original Item: Compass
   Category:
     - Dungeon
@@ -230,10 +299,16 @@
   Offsets:
     - 0x00000A60
 
-- Name: Forsaken Fortress - Helmaroc King Heart Container
+- Names:
+    English: Forsaken Fortress - Helmaroc King Heart Container
+    Spanish: Isla del Diablo - Contenedor de corazón de Kranos
+    French: Forteresse Maudite - Réceptacle de Cœur du Roi Cuirasse
   Original Item: Heart Container
   Race Mode Location: true
-  Goal Name: Helmaroc King
+  Goal Names:
+    English: Helmaroc King
+    Spanish: Kranos
+    French: Roi Cuirasse
   Category:
     - Dungeon
   Paths:
@@ -249,7 +324,10 @@
     - 0x000032F4
     - 0x00003438
 
-- Name: Star Island - Sunken Treasure
+- Names:
+    English: Star Island - Sunken Treasure
+    Spanish: Isla Estrella - Tesoro Sumergido
+    French: Ile Etoilée - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -262,7 +340,10 @@
     - 0x0000304C
     - 0x00003070
 
-- Name: Star Island - Lookout Platform Chest
+- Names:
+    English: Star Island - Lookout Platform Chest
+    Spanish: Isla Estrella - Cofre en la Atalaya
+    French: Ile Etoilée - Coffre de la tour de guet
   Original Item: Golden Feather
   Category:
     - Platform
@@ -272,7 +353,10 @@
   Offsets:
     - 0x000030DC
 
-- Name: Star Island - Cave Chest
+- Names:
+    English: Star Island - Cave Chest
+    Spanish: Isla Estrella - Cofre en la Cueva
+    French: Ile Etoilée - Coffre de la grotte
   Original Item: Piece of Heart
   Category:
     - CombatSecretCave
@@ -282,7 +366,10 @@
   Offsets:
     - 0x00000210
 
-- Name: Northern Fairy Island - Sunken Treasure
+- Names:
+    English: Northern Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Norte - Tesoro Sumergido
+    French: Ilot Septentrional des Fées - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -295,7 +382,10 @@
     - 0x00001404
     - 0x00001428
 
-- Name: Northern Fairy Island - Submarine Chest
+- Names:
+    English: Northern Fairy Island - Submarine Chest
+    Spanish: Isla del Hada del Norte - Cofre del Submarino
+    French: Ilot Septentrional des Fées - Coffre du sous-marin
   Original Item: Treasure Chart 22
   Category:
     - Submarine
@@ -305,7 +395,10 @@
   Offsets:
     - 0x000004B0
 
-- Name: Northern Fairy Island - Great Fairy
+- Names:
+    English: Northern Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Norte - Gran Hada
+    French: Ilot Septentrional des Fées - Grande Fée
   Original Item: Progressive Wallet
   Category:
     - GreatFairy
@@ -314,7 +407,10 @@
   Offsets:
     - 0x02095B2F
 
-- Name: Gale Isle - Sunken Treasure
+- Names:
+    English: Gale Isle - Sunken Treasure
+    Spanish: Isla del Viento - Tesoro Sumergido
+    French: Ile du Vent - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -327,7 +423,10 @@
     - 0x00001D1C
     - 0x00001D40
 
-- Name: Crescent Moon Island - Chest on Island
+- Names:
+    English: Crescent Moon Island - Chest on Island
+    Spanish: Isla de la Luna - Cofre sobre la Isla
+    French: Ile du Croissant - Coffre sur l'île
   Original Item: Treasure Chart 10
   Category:
     - Misc
@@ -337,7 +436,10 @@
   Offsets:
     - 0x00000980
 
-- Name: Crescent Moon Island - Sunken Treasure
+- Names:
+    English: Crescent Moon Island - Sunken Treasure
+    Spanish: Isla de la Luna - Tesoro Sumergido
+    French: Ile du Croissant - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -350,7 +452,10 @@
     - 0x000008F0
     - 0x00000914
 
-- Name: Crescent Moon Island - Submarine Chest
+- Names:
+    English: Crescent Moon Island - Submarine Chest
+    Spanish: Isla de la Luna - Cofre del Submarino
+    French: Ile du Croissant - Coffre du sous-marin
   Original Item: Treasure Chart 9
   Category:
     - Submarine
@@ -360,7 +465,10 @@
   Offsets:
     - 0x00000664
 
-- Name: Seven Star Isles - Big Octo
+- Names:
+    English: Seven Star Isles - Big Octo
+    Spanish: Isla Osa Mayor - Bigocto
+    French: Archipel Ursa Major - Kalamar
   Original Item: Piece of Heart
   Category:
     - BigOcto
@@ -370,7 +478,10 @@
   Offsets:
     - 0x00001278
 
-- Name: Seven Star Isles - Sunken Treasure
+- Names:
+    English: Seven Star Isles - Sunken Treasure
+    Spanish: Isla Osa Mayor - Tesoro Sumergido
+    French: Archipel Ursa Major - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -383,7 +494,10 @@
     - 0x000013E0
     - 0x00001404
 
-- Name: Seven Star Isles - Center Lookout Platform Chest
+- Names:
+    English: Seven Star Isles - Center Lookout Platform Chest
+    Spanish: Isla Osa Mayor - Cofre en Atalaya Central
+    French: Archipel Ursa Major - Coffre de la tour de guet centrale
   Original Item: Red Rupee
   Category:
     - Platform
@@ -393,7 +507,10 @@
   Offsets:
     - 0x00001568
 
-- Name: Seven Star Isles - Northern Lookout Platform Chest
+- Names:
+    English: Seven Star Isles - Northern Lookout Platform Chest
+    Spanish: Isla Osa Mayor - Cofre en Atalaya Norte
+    French: Archipel Ursa Major - Coffre de la tour de guet du Nord
   Original Item: Golden Feather
   Category:
     - Platform
@@ -403,7 +520,10 @@
   Offsets:
     - 0x00001548
 
-- Name: Seven Star Isles - Southern Lookout Platform Chest
+- Names:
+    English: Seven Star Isles - Southern Lookout Platform Chest
+    Spanish: Isla Osa Mayor - Cofre en Atalaya Sur
+    French: Archipel Ursa Major - Coffre de la tour de guet du Sud
   Original Item: Treasure Chart 16
   Category:
     - Platform
@@ -413,7 +533,10 @@
   Offsets:
     - 0x00001588
 
-- Name: Overlook Island - Sunken Treasure
+- Names:
+    English: Overlook Island - Sunken Treasure
+    Spanish: Isla de las Torres - Tesoro Sumergido
+    French: Ile aux Trois Tours - Trésor englouti
   Original Item: Secret Cave Chart
   Category:
     - SunkenTreasure
@@ -426,7 +549,10 @@
     - 0x00001590
     - 0x000015B4
 
-- Name: Overlook Island - Cave Chest
+- Names:
+    English: Overlook Island - Cave Chest
+    Spanish: Isla de las Torres - Cofre en la Cueva
+    French: Ile aux Trois Tours - Coffre de la grotte
   Original Item: Triforce Shard 8
   Category:
     - CombatSecretCave
@@ -436,7 +562,10 @@
   Offsets:
     - 0x00000484
 
-- Name: Four Eye Reef - Destroy Cannons and Gunboats
+- Names:
+    English: Four Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Dos - Tesoro Sumergido
+    French: Ile de la Face Quatre - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 19
   Category:
     - EyeReefChests
@@ -446,7 +575,10 @@
   Offsets:
     - 0x00001FD4
 
-- Name: Four Eye Reef - Sunken Treasure
+- Names:
+    English: Four Eye Reef - Sunken Treasure
+    Spanish: Islas del Cuatro - Tesoro Sumergido
+    French: Ile de la Face Quatre - Trésor englouti
   Original Item: Great Fairy Chart
   Category:
     - SunkenTreasure
@@ -459,7 +591,10 @@
     - 0x00001EEC
     - 0x00001F10
 
-- Name: Mother & Child Isles - Sunken Treasure
+- Names:
+    English: Mother & Child Isles - Sunken Treasure
+    Spanish: Islas Madre e Hija - Tesoro Sumergido
+    French: Ile Geminée - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -472,7 +607,10 @@
     - 0x000019B0
     - 0x000019D4
 
-- Name: Mother & Child Isles - Inside Mother Isle
+- Names:
+    English: Mother & Child Isles - Inside Mother Isle
+    Spanish: Islas Madre e Hija - Dentro de la Isla Madre
+    French: Ile Geminée - A l'intérieur de la grande île
   Original Item: Fire Ice Arrows
   Category:
     - Misc
@@ -482,7 +620,10 @@
   Offsets:
     - 0x00001BB0
 
-- Name: Spectacle Island - Barrel Shooting First Prize
+- Names:
+    English: Spectacle Island - Barrel Shooting First Prize
+    Spanish: Isla Calabaza - Primer Premio en Tiro al Barril
+    French: Ile des Binocles - Première Récompense du Stand de Tir
   Original Item: Piece of Heart
   Category:
     - Minigame
@@ -492,7 +633,10 @@
     - 0x1001C194
     - 0x1001C195
 
-- Name: Spectacle Island - Barrel Shooting Second Prize
+- Names:
+    English: Spectacle Island - Barrel Shooting Second Prize
+    Spanish: Isla Calabaza - Segundo Premio en Tiro al Barril
+    French: Ile des Binocles - Deuxième Récompense du Stand de Tir
   Original Item: Treasure Chart 17
   Category:
     - Minigame
@@ -501,7 +645,10 @@
   Offsets:
     - 0x1001C196
 
-- Name: Spectacle Island - Sunken Treasure
+- Names:
+    English: Spectacle Island - Sunken Treasure
+    Spanish: Isla Calabaza - Tesoro Sumergido
+    French: Ile des Binocles - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -514,7 +661,10 @@
     - 0x00000C38
     - 0x00000C5C
 
-- Name: Windfall Island - Ivan Catch Killer Bees
+- Names:
+    English: Windfall Island - Ivan Catch Killer Bees
+    Spanish: Isla Taura - Atrapar Abejas Asesinas (Iván)
+    French: Mercantîle - Cache-cache des Abeilles Tueuses (Ivan)
   Original Item: Piece of Heart
   Category:
     - ShortSideQuest
@@ -523,7 +673,10 @@
   Offsets:
     - 0x02298bfc
 
-- Name: Windfall Island - Transparent Chest
+- Names:
+    English: Windfall Island - Transparent Chest
+    Spanish: Isla Taura - Cofre Trasparente
+    French: Mercantîle - Coffre transparant
   Original Item: Piece of Heart
   Category:
     - ShortSideQuest
@@ -535,7 +688,10 @@
     - 0x000039F4
     - 0x00003F40
 
-- Name: Windfall Island - Tott Teach Rhythm
+- Names:
+    English: Windfall Island - Tott Teach Rhythm
+    Spanish: Isla Taura - Baile de Rafael
+    French: Mercantîle - Danse de Johnny
   Original Item: Song of Passing
   Category:
     - FreeGift
@@ -545,7 +701,10 @@
   Offset: 0x000A835F
   NameOffset: 0x0005B910
 
-- Name: Windfall Island - Zunari Exotic Flower
+- Names:
+    English: Windfall Island - Zunari Exotic Flower
+    Spanish: Isla Taura - Flor del Sur a Zunari
+    French: Mercantîle - Fleur du Sud à Naglagla
   Original Item: Magic Armor
   Category:
     - ShortSideQuest
@@ -556,7 +715,10 @@
     - "@0x022da5a7"
     - "@0x022da95b"
 
-- Name: Windfall Island - Sam Decorate Island
+- Names:
+    English: Windfall Island - Sam Decorate Island
+    Spanish: Isla Taura - Decorar la Isla (Sam)
+    French: Mercantîle - Décorer l'île pour Pat
   Original Item: Piece of Heart
   Category:
     - LongSideQuest
@@ -565,7 +727,10 @@
   Offsets:
     - 0x101C399B
 
-- Name: Windfall Island - Kane Decorate Shop Guru
+- Names:
+    English: Windfall Island - Kane Decorate Shop Guru
+    Spanish: Isla Taura - Decorar con El Gran Mercader (Quejo)
+    French: Mercantîle - Statue du Marchand pour Joe
   Original Item: Purple Rupee
   Category:
     - Obscure
@@ -574,7 +739,10 @@
   Offsets:
     - 0x101C3873
 
-- Name: Windfall Island - Kane Decorate Postman Statue
+- Names:
+    English: Windfall Island - Kane Decorate Postman Statue
+    Spanish: Isla Taura - Decorar con Efigie del Cartero (Quejo)
+    French: Mercantîle - Statue du Facteur pour Joe
   Original Item: Purple Rupee
   Category:
     - Obscure
@@ -583,7 +751,10 @@
   Offsets:
     - 0x101C3877
 
-- Name: Windfall Island - Kane Decorate Six Flags
+- Names:
+    English: Windfall Island - Kane Decorate Six Flags
+    Spanish: Isla Taura - Decorar con Seis Banderas (Quejo)
+    French: Mercantîle - Six Drapeaux pour Joe
   Original Item: Red Rupee
   Category:
     - Obscure
@@ -592,7 +763,10 @@
   Offsets:
     - 0x101C387B
 
-- Name: Windfall Island - Kane Decorate Six Idols
+- Names:
+    English: Windfall Island - Kane Decorate Six Idols
+    Spanish: Isla Taura - Decorar con Seis Efigies de la Doncella (Quejo)
+    French: Mercantîle - Six Statues pour Joe
   Original Item: Red Rupee
   Category:
     - Obscure
@@ -601,7 +775,10 @@
   Offsets:
     - 0x101C387F
 
-- Name: Windfall Island - Mila Catch Thief
+- Names:
+    English: Windfall Island - Mila Catch Thief
+    Spanish: Isla Taura - Atrapar Mila Ladrona
+    French: Mercantîle - Mina la voleuse
   Original Item: Empty Bottle
   Category:
     - ShortSideQuest
@@ -611,7 +788,10 @@
   Offset: 0x000A72AF
   NameOffset: 0x00038190
 
-- Name: Windfall Island - Dampa Pig Minigame
+- Names:
+    English: Windfall Island - Dampa Pig Minigame
+    Spanish: Isla Taura - Minijuego Cerdos Bellota
+    French: Mercantîle - Mini-jeu des cochons de Tchen
   Original Item: Treasure Chart 42
   Category:
     - Minigame
@@ -620,7 +800,10 @@
   Offsets:
     - 0x028F9DD3
 
-- Name: Windfall Island - Pompie & Vera Secret Meeting Photo
+- Names:
+    English: Windfall Island - Pompie & Vera Secret Meeting Photo
+    Spanish: Isla Taura - Foto Secreta Majura y Clotilde
+    French: Mercantîle - Image de la rencontre secrète pour Olga et Vera
   Original Item: Treasure Chart 24
   Category:
     - ShortSideQuest
@@ -629,7 +812,10 @@
   Offsets:
     - 0x101C399F
 
-- Name: Windfall Island - Kamo Full Moon Picture
+- Names:
+    English: Windfall Island - Kamo Full Moon Picture
+    Spanish: Isla Taura - Foto Luna llena Cameo
+    French: Mercantîle - Image de la Pleine Lune pour Camille
   Original Item: Treasure Chart 31
   Category:
     - LongSideQuest
@@ -638,7 +824,10 @@
   Offsets:
     - 0x101C39AF
 
-- Name: Windfall Island - Mineco Miss Windfall Picture
+- Names:
+    English: Windfall Island - Mineco Miss Windfall Picture
+    Spanish: Isla Taura - Foto Señorita Isla Taura Vanessa
+    French: Mercantîle - Image de Miss Mercantîle Geneviève
   Original Item: Treasure Chart 33
   Category:
     - ShortSideQuest
@@ -647,7 +836,10 @@
   Offsets:
     - 0x101C39A3
 
-- Name: Windfall Island - Sunken Treasure
+- Names:
+    English: Windfall Island - Sunken Treasure
+    Spanish: Isla Taura - Tesoro Sumergido
+    French: Mercantîle - Trésor englouti
   Original Item: Purple Rupee
   Category:
     - SunkenTreasure
@@ -660,7 +852,10 @@
     - 0x00003180
     - 0x000031A4
 
-- Name: Windfall Island - Tingle First Gift
+- Names:
+    English: Windfall Island - Tingle First Gift
+    Spanish: Isla Taura - Primer Regalo de Tingle
+    French: Mercantîle - Premier Cadeau de Tingle
   Original Item: Tingle Bottle
   Category:
     - FreeGift
@@ -669,7 +864,10 @@
   Offsets:
     - 0x022E98EF
 
-- Name: Windfall Island - Tingle Second Gift
+- Names:
+    English: Windfall Island - Tingle Second Gift
+    Spanish: Isla Taura - Segundo Regalo de Tingle
+    French: Mercantîle - Deuxième Cadeau de Tingle
   Original Item: Tingle's Chart
   Category:
     - FreeGift
@@ -678,7 +876,10 @@
   Offsets:
     - 0x022E9923
 
-- Name: Windfall Island - Windfall Jail Maze Chest
+- Names:
+    English: Windfall Island - Windfall Jail Maze Chest
+    Spanish: Isla Taura - Cofre del Laberinto en la Cárcel
+    French: Mercantîle - Coffre du labyrinthe de la prison
   Original Item: Progressive Picto Box
   Category:
     - IslandPuzzle
@@ -688,7 +889,10 @@
   Offsets:
     - 0x0000094C
 
-- Name: Windfall Island - Mrs. Marie Catch Killer Bees
+- Names:
+    English: Windfall Island - Mrs. Marie Catch Killer Bees
+    Spanish: Isla Taura - Atrapar Abejas Asesinas (Señorita María)
+    French: Mercantîle - Cache-cache des Abeilles Tueuses (Mrs Mary)
   Original Item: Purple Rupee
   Category:
     - ShortSideQuest
@@ -697,7 +901,10 @@
   Offsets:
     - 0x0223FC7F
 
-- Name: Windfall Island - Mrs. Marie 1 Joy Pendant
+- Names:
+    English: Windfall Island - Mrs. Marie 1 Joy Pendant
+    Spanish: Isla Taura - Señorita María 1 Collar de la Felicidad
+    French: Mercantîle - 1 Pendentif du Bonheur pour Mrs Mary
   Original Item: Red Rupee
   Category:
     - SpoilsTrading
@@ -706,7 +913,10 @@
   Offsets:
     - 0x0223FD93
 
-- Name: Windfall Island - Mrs. Marie 21 Joy Pendant
+- Names:
+    English: Windfall Island - Mrs. Marie 21 Joy Pendant
+    Spanish: Isla Taura - Señorita María 21 Collares de la Felicidad
+    French: Mercantîle - 21 Pendentifs du Bonheur pour Mrs Mary
   Original Item: Cabana Deed
   Category:
     - SpoilsTrading
@@ -715,7 +925,10 @@
   Offsets:
     - 0x0223FDC3
 
-- Name: Windfall Island - Mrs. Marie 40 Joy Pendant
+- Names:
+    English: Windfall Island - Mrs. Marie 40 Joy Pendant
+    Spanish: Isla Taura - Señorita María 40 Collares de la Felicidad
+    French: Mercantîle - 40 Pendentifs du Bonheur pour Mrs Mary
   Original Item: Treasure Chart 45
   Category:
     - SpoilsTrading
@@ -724,7 +937,10 @@
   Offsets:
     - 0x0223FEBB
 
-- Name: Windfall Island - Lenzo Become Assistant
+- Names:
+    English: Windfall Island - Lenzo Become Assistant
+    Spanish: Isla Taura - Convertirse en el Asistente de Don Obturo
+    French: Mercantîle - Devenir l'Assistant d'Autofocus
   Original Item: Progressive Picto Box
   Category:
     - LongSideQuest
@@ -733,7 +949,10 @@
   Offsets:
     - 0x022CFA77
 
-- Name: Windfall Island - Lenzo Bring Forest Firefly
+- Names:
+    English: Windfall Island - Lenzo Bring Forest Firefly
+    Spanish: Isla Taura - Llevar Luciérnaga del Bosque a Don Obturo
+    French: Mercantîle - Apporter une Luciole de la Forêt à Autofocus
   Original Item: Joy Pendant
   Category:
     - LongSideQuest
@@ -742,7 +961,10 @@
   Offsets:
     - 0x022CFAAB
 
-- Name: Windfall Island - Lenzo House Left Chest
+- Names:
+    English: Windfall Island - Lenzo House Left Chest
+    Spanish: Isla Taura - Casa de Don Obturo Cofre Izquierdo
+    French: Mercantîle - Coffre de gauche de la maison d'Autofocus
   Original Item: Treasure Chart 29
   Category:
     - ShortSideQuest
@@ -752,7 +974,10 @@
   Offsets:
     - 0x00000910
 
-- Name: Windfall Island - Lenzo House Right Chest
+- Names:
+    English: Windfall Island - Lenzo House Right Chest
+    Spanish: Isla Taura - Casa de Don Obturo Cofre Derecho
+    French: Mercantîle - Coffre de droite de la maison d'Autofocus
   Original Item: Purple Rupee
   Category:
     - ShortSideQuest
@@ -762,7 +987,10 @@
   Offsets:
     - 0x00000930
 
-- Name: Windfall Island - Cafe Postman Delivery
+- Names:
+    English: Windfall Island - Cafe Postman Delivery
+    Spanish: Isla Taura - Café Bar Entrega del Cartero
+    French: Mercantîle - Courrier délivré au Café-Bar
   Original Item: Moblin's Letter
   Category:
     - ShortSideQuest
@@ -772,7 +1000,10 @@
   Offset: 0x00022443
   NameOffset: 0x0000B440
 
-- Name: Windfall Island - Linda and Anton
+- Names:
+    English: Windfall Island - Linda and Anton
+    Spanish: Isla Taura - Foto Linda y Antón
+    French: Mercantîle - Linda et Anton
   Original Item: Piece of Heart
   Category:
     - LongSideQuest
@@ -781,7 +1012,10 @@
   Offsets:
     - 0x101C39A7
 
-- Name: Windfall Island - Battle Squid First Prize
+- Names:
+    English: Windfall Island - Battle Squid First Prize
+    Spanish: Isla Taura - Primer Premio en Hunde la Flota
+    French: Mercantîle - Premier Prix de la Bataille Navale
   Original Item: Piece of Heart
   Category:
     - BattleSquid
@@ -790,7 +1024,10 @@
   Offsets:
     - 0x02267187
 
-- Name: Windfall Island - Battle Squid Second Prize
+- Names:
+    English: Windfall Island - Battle Squid Second Prize
+    Spanish: Isla Taura - Segundo Premio en Hunde la Flota
+    French: Mercantîle - Deuxième Prix de la Bataille Navale
   Original Item: Treasure Chart 7
   Category:
     - BattleSquid
@@ -799,7 +1036,10 @@
   Offsets:
     - 0x02267197
 
-- Name: Windfall Island - Battle Squid Under 20 Prize
+- Names:
+    English: Windfall Island - Battle Squid Under 20 Prize
+    Spanish: Isla Taura - Hunde la Flota en menos de 20 tiros
+    French: Mercantîle - Moins de 20 tirs à la Bataille Navale
   Original Item: Treasure Chart 23
   Category:
     - BattleSquid
@@ -808,7 +1048,10 @@
   Offsets:
     - 0x02267367
 
-- Name: Windfall Island - Kreeb Light the Lighthouse
+- Names:
+    English: Windfall Island - Kreeb Light the Lighthouse
+    Spanish: Isla Taura - Prender el Faro (Chapó)
+    French: Mercantîle - Rallumer le phare pour Vince
   Original Item: Piece of Heart
   Category:
     - ShortSideQuest
@@ -817,7 +1060,10 @@
   Offsets:
     - 0x101C39AB
 
-- Name: Windfall Island - Auction 5 Rupee
+- Names:
+    English: Windfall Island - Auction 5 Rupee
+    Spanish: Isla Taura - Subasta 5 Rupias
+    French: Mercantîle - Enchère à 5 Rubis
   Original Item: Treasure Chart 18
   Category:
     - ExpensivePurchase
@@ -827,7 +1073,10 @@
   Offsets:
     - 0x10190175
 
-- Name: Windfall Island - Auction 40 Rupee
+- Names:
+    English: Windfall Island - Auction 40 Rupee
+    Spanish: Isla Taura - Subasta 40 Rupias
+    French: Mercantîle - Enchère à 40 Rubis
   Original Item: Joy Pendant
   Category:
     - ExpensivePurchase
@@ -837,7 +1086,10 @@
   Offsets:
     - 0x1019016D
 
-- Name: Windfall Island - Auction 60 Rupee
+- Names:
+    English: Windfall Island - Auction 60 Rupee
+    Spanish: Isla Taura - Subasta 60 Rupias
+    French: Mercantîle - Enchère à 60 Rubis
   Original Item: Treasure Chart 38
   Category:
     - ExpensivePurchase
@@ -847,7 +1099,10 @@
   Offsets:
     - 0x1019017D
 
-- Name: Windfall Island - Auction 80 Rupee
+- Names:
+    English: Windfall Island - Auction 80 Rupee
+    Spanish: Isla Taura - Subasta 80 Rupias
+    French: Mercantîle - Enchère à 80 Rubis
   Original Item: Piece of Heart
   Category:
     - ExpensivePurchase
@@ -857,7 +1112,10 @@
   Offsets:
     - 0x10190185
 
-- Name: Windfall Island - Auction 100 Rupee
+- Names:
+    English: Windfall Island - Auction 100 Rupee
+    Spanish: Isla Taura - Subasta 100 Rupias
+    French: Mercantîle - Enchère à 100 Rubis
   Original Item: Swift Sail
   Category:
     - ExpensivePurchase
@@ -867,7 +1125,10 @@
   Offsets:
     - 0x1019018D
 
-- Name: Windfall Island - House of Wealth Chest
+- Names:
+    English: Windfall Island - House of Wealth Chest
+    Spanish: Isla Taura - Cofre Casa de la Riqueza
+    French: Mercantîle - Coffre de la Maison de la Richesse
   Original Item: Red Rupee
   Category:
     - Misc
@@ -877,7 +1138,10 @@
   Offsets:
     - 0x000008C0
 
-- Name: Windfall Island - Maggie's Father Give 20 Skull Necklaces
+- Names:
+    English: Windfall Island - Maggie's Father Give 20 Skull Necklaces
+    Spanish: Isla Taura - Padre de Dolores 20 Colgantes Macabros
+    French: Mercantîle - 20 Colliers Macabres pour le père de Maggy
   Original Item: Treasure Chart 2
   Category:
     - SpoilsTrading
@@ -887,7 +1151,10 @@
   Offset: 0x0002C99F
   NameOffset: 0x0001BBC0
 
-- Name: Windfall Island - Maggie Free Item
+- Names:
+    English: Windfall Island - Maggie Free Item
+    Spanish: Isla Taura - Objeto de Dolores
+    French: Mercantîle - Objet donné par Maggy
   Original Item: Maggie's Letter
   Category:
     - FreeGift
@@ -896,7 +1163,10 @@
   Offsets:
     - 0x0227C2A3
 
-- Name: Windfall Island - Maggie Delivery Reward
+- Names:
+    English: Windfall Island - Maggie Delivery Reward
+    Spanish: Isla Taura - Entregar carta a Dolores
+    French: Mercantîle - Délivrer la lettre à Maggy
   Original Item: Piece of Heart
   Category:
     - ShortSideQuest
@@ -905,7 +1175,10 @@
   Offsets:
     - 0x0227C2DF
 
-- Name: Windfall Island - Potion Shop 15 Green Chu
+- Names:
+    English: Windfall Island - Potion Shop 15 Green Chu
+    Spanish: Isla Taura - Farmacia ChuChu 15 Jugos de Chuchu Verde
+    French: Mercantîle - 15 Gelées Chuchu Vertes au Magasin de Potion
   Original Item: Green Potion
   Category:
     - SpoilsTrading
@@ -914,7 +1187,10 @@
   SymbolNames:
     - doc_bandam_green_potion_slot_item_id
 
-- Name: Windfall Island - Potion Shop 15 Blue Chu
+- Names:
+    English: Windfall Island - Potion Shop 15 Blue Chu
+    Spanish: Isla Taura - Farmacia ChuChu 15 Jugos de Chuchu Azul
+    French: Mercantîle - 15 Gelées Chuchu Bleues au Magasin de Potion
   Original Item: Blue Potion
   Category:
     - SpoilsTrading
@@ -924,7 +1200,10 @@
   SymbolNames:
     - doc_bandam_blue_potion_slot_item_id
 
-- Name: Windfall Island - Pirate Ship Chest
+- Names:
+    English: Windfall Island - Pirate Ship Chest
+    Spanish: Isla Taura - Cofre del Barco Pirata
+    French: Mercantîle - Coffre du Bateau Pirate
   Original Item: Bombs
   Category:
     - Minigame
@@ -935,7 +1214,10 @@
     - 0x00000754
     - 0x00000774
 
-- Name: Pawprint Isle - Sunken Treasure
+- Names:
+    English: Pawprint Isle - Sunken Treasure
+    Spanish: Isla de la Huella - Tesoro Sumergido
+    French: Pas de Chat - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -948,7 +1230,10 @@
     - 0x00002B88
     - 0x00002BAC
 
-- Name: Pawprint Isle - Chu Chu Cave Chest
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus
+    French: Pas de Chat - Coffre de la Grotte des Blobs
   Original Item: Piece of Heart
   Category:
     - PuzzleSecretCave
@@ -958,7 +1243,10 @@
   Offsets:
     - 0x00000210
 
-- Name: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus detrás de la Roca Izquierda
+    French: Pas de Chat - Coffre derrière la rocher de gauche de la Grotte des Blobs
   Original Item: Purple Rupee
   Category:
     - PuzzleSecretCave
@@ -968,7 +1256,10 @@
   Offsets:
     - 0x000001D0
 
-- Name: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus detrás de la Roca Derecha
+    French: Pas de Chat - Coffre derrière le rocher de droite de la Grotte des Blobs
   Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
@@ -978,7 +1269,10 @@
   Offsets:
     - 0x000001F0
 
-- Name: Pawprint Isle - Chu Chu Cave Chest Scale Wall
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest Scale Wall
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus subiendo la Pared
+    French: Pas de Chat - Coffre en haut du mur de la Grotte des Blobs
   Original Item: Red Rupee
   Category:
     - PuzzleSecretCave
@@ -988,7 +1282,10 @@
   Offsets:
     - 0x000001B0
 
-- Name: Pawprint Isle - Wizzrobe Cave Chest
+- Names:
+    English: Pawprint Isle - Wizzrobe Cave Chest
+    Spanish: Isla de la Huella - Cofre en la Cueva de los Invocantis
+    French: Pas de Chat - Coffre de la Grotte des Sorciers
   Original Item: Treasure Chart 46
   Category:
     - CombatSecretCave
@@ -998,7 +1295,10 @@
   Offsets:
     - 0x00000210
 
-- Name: Pawprint Isle - Lookout Platform Defeat Enemies
+- Names:
+    English: Pawprint Isle - Lookout Platform Defeat Enemies
+    Spanish: Isla de la Huella - Derrotar enemigos en la Atalaya
+    French: Pas de Chat - Vaincre les ennemis de la tour de guet
   Original Item: Red Rupee
   Category:
     - Platform
@@ -1008,7 +1308,10 @@
   Offsets:
     - 0x00002CF0
 
-- Name: Dragon Roost Island - Wind Shrine
+- Names:
+    English: Dragon Roost Island - Wind Shrine
+    Spanish: Isla del Dragón - Altar del Viento
+    French: Ile du Dragon - Stèle du Vent
   Original Item: Wind's Requiem
   Category:
     - Misc
@@ -1018,7 +1321,10 @@
   Offset: 0x000A8163
   NameOffset: 0x00058F80
 
-- Name: Dragon Roost Island - Boulder Chest
+- Names:
+    English: Dragon Roost Island - Boulder Chest
+    Spanish: Isla del Dragón - Cofre en la Roca al Suroeste
+    French: Ile du Dragon - Coffre sur le rocher
   Original Item: Silver Rupee
   Category:
     - IslandPuzzle
@@ -1028,7 +1334,10 @@
   Offsets:
     - 0x00002BAC
 
-- Name: Dragon Roost Island - Sunken Treasure
+- Names:
+    English: Dragon Roost Island - Sunken Treasure
+    Spanish: Isla del Dragón - Tesoro Sumergido
+    French: Ile du Dragon - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1041,7 +1350,10 @@
     - 0x00002948
     - 0x0000296C
 
-- Name: Dragon Roost Island - Hoskit Give 20 Golden Feathers
+- Names:
+    English: Dragon Roost Island - Hoskit Give 20 Golden Feathers
+    Spanish: Isla del Dragón - Joskitt 20 Plumas Doradas
+    French: Ile du Dragon - 20 Plumes d'Or pour Odelf
   Original Item: Orange Rupee
   Category:
     - SpoilsTrading
@@ -1051,7 +1363,10 @@
   Offset: 0x0001FC3B
   NameOffset: 0x00008760
 
-- Name: Dragon Roost Island - Baito Mail Game
+- Names:
+    English: Dragon Roost Island - Baito Mail Game
+    Spanish: Isla del Dragón - Novi Minijuego del Correo
+    French: Ile du Dragon - Mini-jeu du tri du Commis de la Poste
   Original Item: Note to Mom
   Category:
     - Minigame
@@ -1061,7 +1376,10 @@
   Offset: 0x0001FC4B
   NameOffset: 0x00008A80
 
-- Name: Dragon Roost Island - Fly Across Platforms Around Island
+- Names:
+    English: Dragon Roost Island - Fly Across Platforms Around Island
+    Spanish: Isla del Dragón - Volar a las Plataformas al rededor de la Isla
+    French: Ile du Dragon - Planer autour de l'île
   Original Item: Orange Rupee
   Category:
     - IslandPuzzle
@@ -1071,7 +1389,10 @@
   Offsets:
     - 0x00002BCC
 
-- Name: Dragon Roost Island - Cave Chest
+- Names:
+    English: Dragon Roost Island - Cave Chest
+    Spanish: Isla del Dragón - Cofre en la Cueva
+    French: Ile du Dragon - Coffre de la grotte
   Original Item: Purple Rupee
   Category:
     - CombatSecretCave
@@ -1081,7 +1402,10 @@
   Offsets:
     - 0x00000950
 
-- Name: Flight Control Platform - First Prize
+- Names:
+    English: Flight Control Platform - First Prize
+    Spanish: Andamio de vuelo - Primer Premio
+    French: Tour de l'Envol - Récompense du concours
   Original Item: Piece of Heart
   Category:
     - Minigame
@@ -1090,7 +1414,10 @@
   Offsets:
     - 0x022065FB
 
-- Name: Flight Control Platform - Sunken Treasure
+- Names:
+    English: Flight Control Platform - Sunken Treasure
+    Spanish: Andamio de vuelo - Tesoro Sumergido
+    French: Tour de l'Envol - Trésor englouti
   Original Item: Island Hearts Chart
   Category:
     - SunkenTreasure
@@ -1103,7 +1430,10 @@
     - 0x00001168
     - 0x0000118C
 
-- Name: Flight Control Platform - Submarine Chest
+- Names:
+    English: Flight Control Platform - Submarine Chest
+    Spanish: Andamio de vuelo - Cofre del Submarino
+    French: Tour de l'Envol - Coffre du sous-marin
   Original Item: Platform Chart
   Category:
     - Submarine
@@ -1113,7 +1443,10 @@
   Offsets:
     - 0x000006C8
 
-- Name: Western Fairy Island - Sunken Treasure
+- Names:
+    English: Western Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Oeste - Tesoro Sumergido
+    French: Ilot Occidental des Fées - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1126,7 +1459,10 @@
     - 0x000016C8
     - 0x000016EC
 
-- Name: Western Fairy Island - Great Fairy
+- Names:
+    English: Western Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Oeste - Gran Hada
+    French: Ilot Occidental des Fées - Grande Fée
   Original Item: Progressive Quiver
   Category:
     - GreatFairy
@@ -1135,7 +1471,10 @@
   Offsets:
     - 0x02095B7F
 
-- Name: Western Fairy Island - Lookout Platform Chest
+- Names:
+    English: Western Fairy Island - Lookout Platform Chest
+    Spanish: Isla del Hada del Oeste - Cofre en la Atalaya
+    French: Ilot Occidental des Fées - Coffre de la tour de guet
   Original Item: Skull Necklace
   Category:
     - Platform
@@ -1145,7 +1484,10 @@
   Offsets:
     - 0x00001758
 
-- Name: Rock Spire Isle - Defeat Southeast Gunboat
+- Names:
+    English: Rock Spire Isle - Defeat Southeast Gunboat
+    Spanish: Isla de los Pilares - Derrotar Buque de Guerra al Suroeste
+    French: Ile de la Rocaille - Vaincre le navire de guerre au Sud
   Original Item: Piece of Heart
   Category:
     - Gunboat
@@ -1155,7 +1497,10 @@
   Offsets:
     - 0x00001A84
 
-- Name: Rock Spire Isle - Sunken Treasure
+- Names:
+    English: Rock Spire Isle - Sunken Treasure
+    Spanish: Isla de los Pilares - Tesoro Sumergido
+    French: Ile de la Rocaille - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -1168,7 +1513,10 @@
     - 0x00001BEC
     - 0x00001C10
 
-- Name: Rock Spire Isle - Beedle 500 Rupee Item
+- Names:
+    English: Rock Spire Isle - Beedle 500 Rupee Item
+    Spanish: Isla de los Pilares - Objeto por 500 Rupias en la Tienda de Terry
+    French: Ile de la Rocaille - Objet à 500 Rubis de la Boutique de Terry
   Original Item: Empty Bottle
   Category:
     - ExpensivePurchase
@@ -1179,7 +1527,10 @@
     - 0x0221557F
     - 0x022155BB
 
-- Name: Rock Spire Isle - Beedle 950 Rupee Item
+- Names:
+    English: Rock Spire Isle - Beedle 950 Rupee Item
+    Spanish: Isla de los Pilares - Objeto por 950 Rupias en la Tienda de Terry
+    French: Ile de la Rocaille - Objet à 950 Rubis de la Boutique de Terry
   Original Item: Piece of Heart
   Category:
     - ExpensivePurchase
@@ -1190,7 +1541,10 @@
     - 0x02215587
     - 0x022155AF
 
-- Name: Rock Spire Isle - Beedle 900 Rupee Item
+- Names:
+    English: Rock Spire Isle - Beedle 900 Rupee Item
+    Spanish: Isla de los Pilares - Objeto por 900 Rupias en la Tienda de Terry
+    French: Ile de la Rocaille - Objet à 900 Rubis de la Boutique de Terry
   Original Item: Treasure Chart 4
   Category:
     - ExpensivePurchase
@@ -1201,7 +1555,10 @@
     - 0x0221558F
     - 0x022155C3
 
-- Name: Rock Spire Isle - Western Lookout Platform Destroy Cannons
+- Names:
+    English: Rock Spire Isle - Western Lookout Platform Destroy Cannons
+    Spanish: Isla de los Pilares - Destruir Cañones en Atalaya Oeste
+    French: Ile de la Rocaille - Détruire les canons de la tour de guet de l'Ouest
   Original Item: Orange Rupee
   Category:
     - Platform
@@ -1211,7 +1568,10 @@
   Offsets:
     - 0x00001CE8
 
-- Name: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
+- Names:
+    English: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
+    Spanish: Isla de los Pilares - Destruir Cañones en Atalaya Este
+    French: Ile de la Rocaille - Détruire les canons de la tour de guet de l'Est
   Original Item: Golden Feather
   Category:
     - Platform
@@ -1221,7 +1581,10 @@
   Offsets:
     - 0x00001D08
 
-- Name: Rock Spire Isle - Center Lookout Platform Chest
+- Names:
+    English: Rock Spire Isle - Center Lookout Platform Chest
+    Spanish: Isla de los Pilares - Cofre en Atalaya Central
+    French: Ile de la Rocaille - Coffre de la tour de guet centrale
   Original Item: Red Rupee
   Category:
     - Platform
@@ -1231,7 +1594,10 @@
   Offsets:
     - 0x00001D28
 
-- Name: Rock Spire Isle - Cave Chest
+- Names:
+    English: Rock Spire Isle - Cave Chest
+    Spanish: Isla de los Pilares - Cofre en la Cueva
+    French: Ile de la Rocaille - Coffre de la grotte
   Original Item: Treasure Chart 37
   Category:
     - CombatSecretCave
@@ -1241,7 +1607,10 @@
   Offsets:
     - 0x00000240
 
-- Name: Tingle Island - Ankle All Statues Reward
+- Names:
+    English: Tingle Island - Ankle All Statues Reward
+    Spanish: Isla de Tingle - Recompenza por todas las Estatua de Tingle (Angle)
+    French: Ile de Tingle - Récompense des 5 Statues Tingle par Dingle
   Original Item: Rainbow Rupee
   Category:
     - Misc
@@ -1250,7 +1619,10 @@
   Offsets:
     - 0x022E9973
 
-- Name: Tingle Island - Big Octo
+- Names:
+    English: Tingle Island - Big Octo
+    Spanish: Isla de Tingle - Bigocto
+    French: Ile de Tingle - Kalamar
   Original Item: Piece of Heart
   Category:
     - BigOcto
@@ -1260,7 +1632,10 @@
   Offsets:
     - 0x00000BD0
 
-- Name: Tingle Island - Sunken Treasure
+- Names:
+    English: Tingle Island - Sunken Treasure
+    Spanish: Isla de Tingle - Tesoro Sumergido
+    French: Ile de Tingle - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1273,7 +1648,10 @@
     - 0x00000D80
     - 0x00000DA4
 
-- Name: Northern Triangle Island - Sunken Treasure
+- Names:
+    English: Northern Triangle Island - Sunken Treasure
+    Spanish: Isla Triángulo del Norte - Tesoro Sumergido
+    French: Ile Triangulaire du Nord - Trésor englouti
   Original Item: Octo Chart
   Category:
     - SunkenTreasure
@@ -1286,7 +1664,10 @@
     - 0x00000A08
     - 0x00000A2C
 
-- Name: Eastern Fairy Island - Sunken Treasure
+- Names:
+    English: Eastern Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Este - Tesoro Sumergido
+    French: Ilot Oriental des Fées - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1299,7 +1680,10 @@
     - 0x000014C0
     - 0x000014E4
 
-- Name: Eastern Fairy Island - Great Fairy
+- Names:
+    English: Eastern Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Este - Gran Hada
+    French: Ilot Oriental des Fées - Grande Fée
   Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
@@ -1308,7 +1692,10 @@
   Offsets:
     - 0x02095B57
 
-- Name: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
+- Names:
+    English: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
+    Spanish: Isla del Hada del Este - Derrotar enemigos y cañones en la Atalaya
+    French: Ilot Oriental des Fées - Vaincre les ennemis et les canons de la tour de guet
   Original Item: Boko Baba Seed
   Category:
     - Platform
@@ -1318,7 +1705,10 @@
   Offsets:
     - 0x00001574
 
-- Name: Fire Mountain - Big Octo
+- Names:
+    English: Fire Mountain - Big Octo
+    Spanish: Isla del Volcán - Bigocto
+    French: Montagne de Feu - Kalamar
   Original Item: Orange Rupee
   Category:
     - BigOcto
@@ -1328,7 +1718,10 @@
   Offsets:
     - 0x00000EC8
 
-- Name: Fire Mountain - Sunken Treasure
+- Names:
+    English: Fire Mountain - Sunken Treasure
+    Spanish: Isla del Volcán - Tesoro Sumergido
+    French: Montagne de Feu - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1341,7 +1734,10 @@
     - 0x00001078
     - 0x0000109C
 
-- Name: Fire Mountain - Interior Chest
+- Names:
+    English: Fire Mountain - Interior Chest
+    Spanish: Isla del Volcán - Cofre interior
+    French: Montagne de Feu - Coffre intérieur
   Original Item: Power Bracelets
   Category:
     - PuzzleSecretCave
@@ -1351,7 +1747,10 @@
   Offsets:
     - 0x000001C8
 
-- Name: Fire Mountain - Lookout Platform Chest
+- Names:
+    English: Fire Mountain - Lookout Platform Chest
+    Spanish: Isla del Volcán - Cofre en la Atalaya
+    French: Montagne de Feu - Coffre de la tour de guet
   Original Item: Yellow Rupee
   Category:
     - Platform
@@ -1361,7 +1760,10 @@
   Offsets:
     - 0x0000114C
 
-- Name: Fire Mountain - Lookout Platform Destroy Cannons
+- Names:
+    English: Fire Mountain - Lookout Platform Destroy Cannons
+    Spanish: Isla del Volcán - Destruir Cañones en la Atalaya
+    French: Montagne de Feu - Détruire les canons de la tour de guet
   Original Item: Golden Feather
   Category:
     - Platform
@@ -1371,7 +1773,10 @@
   Offsets:
     - 0x0000112C
 
-- Name: Star Belt Archipelago - Sunken Treasure
+- Names:
+    English: Star Belt Archipelago - Sunken Treasure
+    Spanish: Isla Orión - Tesoro Sumergido
+    French: Archipel d'Orion - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1384,7 +1789,10 @@
     - 0x00001330
     - 0x00001354
 
-- Name: Star Belt Archipelago - Lookout Platform Chest
+- Names:
+    English: Star Belt Archipelago - Lookout Platform Chest
+    Spanish: Isla Orión - Cofre en la Atalaya
+    French: Archipel d'Orion - Coffre de la tour de guet
   Original Item: Treasure Chart 44
   Category:
     - Platform
@@ -1394,7 +1802,10 @@
   Offsets:
     - 0x000013C0
 
-- Name: Three Eye Reef - Destroy Cannons and Gunboats
+- Names:
+    English: Three Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Tres - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Trois - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 32
   Category:
     - EyeReefChests
@@ -1404,7 +1815,10 @@
   Offsets:
     - 0x000022A4
 
-- Name: Three Eye Reef - Sunken Treasure
+- Names:
+    English: Three Eye Reef - Sunken Treasure
+    Spanish: Islas del Tres - Tesoro Sumergido
+    French: Ile de la Face Trois - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -1417,7 +1831,10 @@
     - 0x00002108
     - 0x0000212C
 
-- Name: Greatfish Isle - Hidden Chest
+- Names:
+    English: Greatfish Isle - Hidden Chest
+    Spanish: Islas Pez Volador - Cofre Escondido
+    French: Ile du Poisson - Coffre caché
   Original Item: Piece of Heart
   Category:
     - IslandPuzzle
@@ -1427,7 +1844,10 @@
   Offsets:
     - 0x00001D78
 
-- Name: Greatfish Isle - Sunken Treasure
+- Names:
+    English: Greatfish Isle - Sunken Treasure
+    Spanish: Islas Pez Volador - Tesoro Sumergido
+    French: Ile du Poisson - Trésor englouti
   Original Item: Triforce Shard 1
   Category:
     - SunkenTreasure
@@ -1440,7 +1860,10 @@
     - 0x00001AA8
     - 0x00001ACC
 
-- Name: Cyclops Reef - Destroy Cannons and Gunboats
+- Names:
+    English: Cyclops Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Uno - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Une - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 21
   Category:
     - EyeReefChests
@@ -1450,7 +1873,10 @@
   Offsets:
     - 0x0000279C
 
-- Name: Cyclops Reef - Sunken Treasure
+- Names:
+    English: Cyclops Reef - Sunken Treasure
+    Spanish: Islas del Uno - Tesoro Sumergido
+    French: Ile de la Face Une - Trésor englouti
   Original Item: Light Ring Chart
   Category:
     - SunkenTreasure
@@ -1463,7 +1889,10 @@
     - 0x000026B4
     - 0x000026D8
 
-- Name: Cyclops Reef - Lookout Platform Defeat Enemies
+- Names:
+    English: Cyclops Reef - Lookout Platform Defeat Enemies
+    Spanish: Islas del Uno - Derrotar Enemigos y Cañones en la Atalaya
+    French: Ile de la Face Une - Vaincre les ennemis de la tour de guet
   Original Item: Golden Feather
   Category:
     - Platform
@@ -1473,7 +1902,10 @@
   Offsets:
     - 0x000027BC
 
-- Name: Six Eye Reef - Destroy Cannons and Gunboats
+- Names:
+    English: Six Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Seis - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Six - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 26
   Category:
     - EyeReefChests
@@ -1483,7 +1915,10 @@
   Offsets:
     - 0x00002C30
 
-- Name: Six Eye Reef - Sunken Treasure
+- Names:
+    English: Six Eye Reef - Sunken Treasure
+    Spanish: Islas del Seis - Tesoro Sumergido
+    French: Ile de la Face Six - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1496,7 +1931,10 @@
     - 0x00002A84
     - 0x00002AA8
 
-- Name: Six Eye Reef - Submarine Chest
+- Names:
+    English: Six Eye Reef - Submarine Chest
+    Spanish: Islas del Seis - Cofre del Submarino
+    French: Ile de la Face Six - Coffre du sous-marin
   Original Item: Piece of Heart
   Category:
     - Submarine
@@ -1506,7 +1944,10 @@
   Offsets:
     - 0x0000053C
 
-- Name: Six Eye Reef - Lookout Platform Destroy Cannons
+- Names:
+    English: Six Eye Reef - Lookout Platform Destroy Cannons
+    Spanish: Islas del Seis - Destruir Cañones en la Atalaya
+    French: Ile de la Face Six - Détruire les canons de la tour de guet
   Original Item: Skull Necklace
   Category:
     - Platform
@@ -1516,7 +1957,10 @@
   Offsets:
     - 0x00002C50
 
-- Name: Tower of the Gods Sector - Sunken Treasure
+- Names:
+    English: Tower of the Gods Sector - Sunken Treasure
+    Spanish: Sector de la Torre de los Dioses - Tesoro Sumergido
+    French: Secteur de la Tour des Dieux - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1529,7 +1973,10 @@
     - 0x00000690
     - 0x000006B4
 
-- Name: Eastern Triangle Island - Sunken Treasure
+- Names:
+    English: Eastern Triangle Island - Sunken Treasure
+    Spanish: Isla Triángulo del Este - Tesoro Sumergido
+    French: Ile Triangulaire de l'Est - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1542,7 +1989,10 @@
     - 0x00000E34
     - 0x00000E58
 
-- Name: Thorned Fairy Island - Sunken Treasure
+- Names:
+    English: Thorned Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada Custodiada - Tesoro Sumergido
+    French: Ilot Epineux des Fées - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -1555,7 +2005,10 @@
     - 0x00001ACC
     - 0x00001AF0
 
-- Name: Thorned Fairy Island - Great Fairy
+- Names:
+    English: Thorned Fairy Island - Great Fairy
+    Spanish: Isla del Hada Custodiada - Gran Hada
+    French: Ilot Epineux des Fées - Grande Fée
   Original Item: Progressive Quiver
   Category:
     - GreatFairy
@@ -1564,7 +2017,10 @@
   Offsets:
     - 0x02095B77
 
-- Name: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
+- Names:
+    English: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
+    Spanish: Isla del Hada Custodiada - Destruir Cañones en Atalaya Noreste
+    French: Ilot Epineux des Fées - Détruire les canons de la tour de guet du Nord-Est
   Original Item: Golden Feather
   Category:
     - Platform
@@ -1574,7 +2030,10 @@
   Offsets:
     - 0x00001B80
 
-- Name: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
+- Names:
+    English: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
+    Spanish: Isla del Hada Custodiada - Derrotar Enemigos en Atalaya Suroeste
+    French: Ilot Epineux des Fées - Vaincre les ennemis de la tour de guet du Sud-Ouest
   Original Item: Boko Baba Seed
   Category:
     - Platform
@@ -1584,7 +2043,10 @@
   Offsets:
     - 0x00001BA0
 
-- Name: Needle Rock Isle - Chest
+- Names:
+    English: Needle Rock Isle - Chest
+    Spanish: Isla de la Aguja - Cofre en la Isla
+    French: Serrure de Pierre - Coffre de l'île
   Original Item: Piece of Heart
   Category:
     - IslandPuzzle
@@ -1594,7 +2056,10 @@
   Offsets:
     - 0x00002224
 
-- Name: Needle Rock Isle - Golden Gunboat
+- Names:
+    English: Needle Rock Isle - Golden Gunboat
+    Spanish: Isla de la Aguja - Buque de Guerra Dorado
+    French: Serrure de Pierre - Navire de guerre doré
   Original Item: Triforce Chart 3
   Category:
     - Gunboat
@@ -1604,7 +2069,10 @@
   Offsets:
     - 0x00002194
 
-- Name: Needle Rock Isle - Sunken Treasure
+- Names:
+    English: Needle Rock Isle - Sunken Treasure
+    Spanish: Isla de la Aguja - Tesoro Sumergido
+    French: Serrure de Pierre - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1617,7 +2085,10 @@
     - 0x000020E0
     - 0x00002104
 
-- Name: Needle Rock Isle - Cave Chest
+- Names:
+    English: Needle Rock Isle - Cave Chest
+    Spanish: Isla de la Aguja - Cofre en la Cueva
+    French: Serrure de Pierre - Coffre de la grotte
   Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
@@ -1627,7 +2098,10 @@
   Offsets:
     - 0x0000020C
 
-- Name: Islet of Steel - Sunken Treasure
+- Names:
+    English: Islet of Steel - Sunken Treasure
+    Spanish: Isla de Hierro - Tesoro Sumergido
+    French: Canonnière - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1640,7 +2114,10 @@
     - 0x00000CB8
     - 0x00000CDC
 
-- Name: Islet of Steel - Interior Chest
+- Names:
+    English: Islet of Steel - Interior Chest
+    Spanish: Isla de Hierro - Cofre interior
+    French: Canonnière - Coffre intérieur
   Original Item: Triforce Chart 1
   Category:
     - Misc
@@ -1650,7 +2127,10 @@
   Offsets:
     - 0x000001B8
 
-- Name: Islet of Steel - Lookout Platform Defeat Enemies
+- Names:
+    English: Islet of Steel - Lookout Platform Defeat Enemies
+    Spanish: Isla de Hierro - Derrotar Enemigos en la Atalaya
+    French: Canonnière - Vaincre les ennemis de la tour de guet
   Original Item: Skull Necklace
   Category:
     - Platform
@@ -1660,7 +2140,10 @@
   Offsets:
     - 0x00000DD8
 
-- Name: Stone Watcher Island - Sunken Treasure
+- Names:
+    English: Stone Watcher Island - Sunken Treasure
+    Spanish: Isla Cabeza de Piedra - Tesoro Sumergido
+    French: Ile de la Tête de Pierre - Trésor englouti
   Original Item: Triforce Shard 3
   Category:
     - SunkenTreasure
@@ -1673,7 +2156,10 @@
     - 0x00002344
     - 0x00002368
 
-- Name: Stone Watcher Island - Cave Chest
+- Names:
+    English: Stone Watcher Island - Cave Chest
+    Spanish: Isla Cabeza de Piedra - Cofre en la Cueva
+    French: Ile de la Tête de Pierre - Coffre de la grotte
   Original Item: Triforce Shard 7
   Category:
     - CombatSecretCave
@@ -1683,7 +2169,10 @@
   Offsets:
     - 0x00000484
 
-- Name: Stone Watcher Island - Lookout Platform Chest
+- Names:
+    English: Stone Watcher Island - Lookout Platform Chest
+    Spanish: Isla Cabeza de Piedra - Cofre en la Atalaya
+    French: Ile de la Tête de Pierre - Coffre de la tour de guet
   Original Item: Red Rupee
   Category:
     - Platform
@@ -1693,7 +2182,10 @@
   Offsets:
     - 0x00002460
 
-- Name: Stone Watcher Island - Lookout Platform Destroy Cannons
+- Names:
+    English: Stone Watcher Island - Lookout Platform Destroy Cannons
+    Spanish: Isla Cabeza de Piedra - Destruir Cañones en la Atalaya
+    French: Ile de la Tête de Pierre - Détruire les canons de la tour de guet
   Original Item: Piece of Heart
   Category:
     - Platform
@@ -1703,7 +2195,10 @@
   Offsets:
     - 0x00002440
 
-- Name: Southern Triangle Island - Sunken Treasure
+- Names:
+    English: Southern Triangle Island - Sunken Treasure
+    Spanish: Isla Triángulo del Sur - Tesoro Sumergido
+    French: Ile Triangulaire du Sud - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1716,7 +2211,10 @@
     - 0x00000B08
     - 0x00000B2C
 
-- Name: Private Oasis - Top of Waterfall Chest
+- Names:
+    English: Private Oasis - Top of Waterfall Chest
+    Spanish: Isla de Quién - Cofre en la cumbre de la cascada
+    French: Ile de Qui-ça - Coffre au sommet de la cascade
   Original Item: Treasure Chart 27
   Category:
     - IslandPuzzle
@@ -1726,7 +2224,10 @@
   Offsets:
     - 0x00002628
 
-- Name: Private Oasis - Big Octo
+- Names:
+    English: Private Oasis - Big Octo
+    Spanish: Isla de Quién - Bigocto
+    French: Ile de Qui-ça - Kalamar
   Original Item: Orange Rupee
   Category:
     - BigOcto
@@ -1736,7 +2237,10 @@
   Offsets:
     - 0x000025E0
 
-- Name: Private Oasis - Sunken Treasure
+- Names:
+    English: Private Oasis - Sunken Treasure
+    Spanish: Isla de Quién - Tesoro Sumergido
+    French: Ile de Qui-ça - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1749,7 +2253,10 @@
     - 0x00002454
     - 0x00002478
 
-- Name: Private Oasis - Cabana Labyrinth Lower Floor Chest
+- Names:
+    English: Private Oasis - Cabana Labyrinth Lower Floor Chest
+    Spanish: Isla de Quién - Cofre del Laberinto Piso Inferior
+    French: Ile de Qui-ça - Coffre au sous-sol du labyrinthe
   Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
@@ -1759,7 +2266,10 @@
   Offsets:
     - 0x00000274
 
-- Name: Private Oasis - Cabana Labyrinth Upper Floor Chest
+- Names:
+    English: Private Oasis - Cabana Labyrinth Upper Floor Chest
+    Spanish: Isla de Quién - Cofre del Laberinto Piso Superior
+    French: Ile de Qui-ça - Coffre au RDC du labyrinthe
   Original Item: Triforce Shard 2
   Category:
     - PuzzleSecretCave
@@ -1769,7 +2279,10 @@
   Offsets:
     - 0x00000254
 
-- Name: Bomb Island - Sunken Treasure
+- Names:
+    English: Bomb Island - Sunken Treasure
+    Spanish: Isla Bomba - Tesoro Sumergido
+    French: Ile de la Bombe - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -1782,7 +2295,10 @@
     - 0x00002014
     - 0x00002038
 
-- Name: Bomb Island - Cave Chest
+- Names:
+    English: Bomb Island - Cave Chest
+    Spanish: Isla Bomba - Cofre en la Cueva
+    French: Ile de la Bombe - Coffre de la grotte
   Original Item: Piece of Heart
   Category:
     - PuzzleSecretCave
@@ -1792,7 +2308,10 @@
   Offsets:
     - 0x00000278
 
-- Name: Bomb Island - Submarine Chest
+- Names:
+    English: Bomb Island - Submarine Chest
+    Spanish: Isla Bomba - Cofre del Submarino
+    French: Ile de la Bombe - Coffre du sous-marin
   Original Item: Empty Bottle
   Category:
     - Submarine
@@ -1802,7 +2321,10 @@
   Offsets:
     - 0x000004A4
 
-- Name: Bomb Island - Lookout Platform Defeat Enemies
+- Names:
+    English: Bomb Island - Lookout Platform Defeat Enemies
+    Spanish: Isla Bomba - Derrotar Enemigos en la Atalaya
+    French: Ile de la Bombe - Vaincre les ennemis de la tour de guet
   Original Item: Red Rupee
   Category:
     - Platform
@@ -1812,7 +2334,10 @@
   Offsets:
     - 0x00002110
 
-- Name: Birds Peak Rock - Sunken Treasure
+- Names:
+    English: Birds Peak Rock - Sunken Treasure
+    Spanish: Isla de los Nidos - Tesoro Sumergido
+    French: Ile aux Nichoirs - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1825,7 +2350,10 @@
     - 0x00001600
     - 0x00001624
 
-- Name: Birds Peak Rock - Cave Chest
+- Names:
+    English: Birds Peak Rock - Cave Chest
+    Spanish: Isla de los Nidos - Cofre en la Cueva
+    French: Ile aux Nichoirs - Coffre intérieur
   Original Item: Triforce Chart 3
   Category:
     - PuzzleSecretCave
@@ -1835,7 +2363,10 @@
   Offsets:
     - 0x0000018C
 
-- Name: Diamond Steppe Island - Big Octo
+- Names:
+    English: Diamond Steppe Island - Big Octo
+    Spanish: Isla Rombo - Bigocto
+    French: Ile du Losange - Kalamar
   Original Item: Orange Rupee
   Category:
     - BigOcto
@@ -1845,7 +2376,10 @@
   Offsets:
     - 0x0000166C
 
-- Name: Diamond Steppe Island - Sunken Treasure
+- Names:
+    English: Diamond Steppe Island - Sunken Treasure
+    Spanish: Isla Rombo - Tesoro Sumergido
+    French: Ile du Losange - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -1858,7 +2392,10 @@
     - 0x000017D4
     - 0x000017F8
 
-- Name: Diamond Steppe Island - Maze First Chest
+- Names:
+    English: Diamond Steppe Island - Maze First Chest
+    Spanish: Isla Rombo - Primer Cofre del Laberinto
+    French: Ile du Losange - Premier Coffre du labyrinthe
   Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
@@ -1868,7 +2405,10 @@
   Offsets:
     - 0x000001E8
 
-- Name: Diamond Steppe Island - Maze Second Chest
+- Names:
+    English: Diamond Steppe Island - Maze Second Chest
+    Spanish: Isla Rombo - Segundo Cofre del Laberinto
+    French: Ile du Losange - Deuxième Coffre du labyrinthe
   Original Item: Ghost Ship Chart
   Category:
     - PuzzleSecretCave
@@ -1878,7 +2418,10 @@
   Offsets:
     - 0x000001C8
 
-- Name: Five Eye Reef - Destroy Cannons and Gunboats
+- Names:
+    English: Five Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Cinco - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Cinq - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 41
   Category:
     - EyeReefChests
@@ -1888,7 +2431,10 @@
   Offsets:
     - 0x00002E00
 
-- Name: Five Eye Reef - Sunken Treasure
+- Names:
+    English: Five Eye Reef - Sunken Treasure
+    Spanish: Islas del Cinco - Tesoro Sumergido
+    French: Ile de la Face Cinq - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1901,7 +2447,10 @@
     - 0x00002C1C
     - 0x00002C40
 
-- Name: Five Eye Reef - Lookout Platform Chest
+- Names:
+    English: Five Eye Reef - Lookout Platform Chest
+    Spanish: Islas del Cinco - Cofre en la Atalaya
+    French: Ile de la Face Cinq - Coffre de la tour de guet
   Original Item: Golden Feather
   Category:
     - Platform
@@ -1911,7 +2460,10 @@
   Offsets:
     - 0x00002E20
 
-- Name: Shark Island - Sunken Treasure
+- Names:
+    English: Shark Island - Sunken Treasure
+    Spanish: Isla Tiburón - Tesoro Sumergido
+    French: Ile du Requin - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1924,7 +2476,10 @@
     - 0x00001598
     - 0x000015BC
 
-- Name: Shark Island - Cave Chest
+- Names:
+    English: Shark Island - Cave Chest
+    Spanish: Isla Tiburón - Cofre en la Cueva
+    French: Ile du Requin - Coffre de la grotte
   Original Item: Silver Rupee
   Category:
     - CombatSecretCave
@@ -1934,7 +2489,10 @@
   Offsets:
     - 0x00000210
 
-- Name: Southern Fairy Island - Sunken Treasure
+- Names:
+    English: Southern Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Sur - Tesoro Sumergido
+    French: Ilot Méridional des Fées - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -1947,7 +2505,10 @@
     - 0x00002088
     - 0x000020AC
 
-- Name: Southern Fairy Island - Great Fairy
+- Names:
+    English: Southern Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Sur - Gran Hada
+    French: Ilot Méridional des Fées - Grande Fée
   Original Item: Progressive Bomb Bag
   Category:
     - GreatFairy
@@ -1956,7 +2517,10 @@
   Offsets:
     - 0x02095B4F
 
-- Name: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
+- Names:
+    English: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
+    Spanish: Isla del Hada del Sur - Destruir Cañones de Atalaya Noroeste
+    French: Ilot Méridional des Fées - Détruire les canons de la tour de guet du Nord-Ouest
   Original Item: Treasure Chart 40
   Category:
     - Platform
@@ -1966,7 +2530,10 @@
   Offsets:
     - 0x0000213C
 
-- Name: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
+- Names:
+    English: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
+    Spanish: Isla del Hada del Sur - Destruir Cañones de Atalaya Sureste
+    French: Ilot Méridional des Fées - Détruire les canons de la tour de guet du Sud-Est
   Original Item: Skull Necklace
   Category:
     - Platform
@@ -1976,7 +2543,10 @@
   Offsets:
     - 0x0000215C
 
-- Name: Ice Ring Isle - Frozen Chest
+- Names:
+    English: Ice Ring Isle - Frozen Chest
+    Spanish: Isla del Hielo - Cofre Congelado
+    French: Ile Gelée - Coffre gelé
   Original Item: Treasure Chart 36
   Category:
     - IslandPuzzle
@@ -1986,7 +2556,10 @@
   Offsets:
     - 0x00001494
 
-- Name: Ice Ring Isle - Sunken Treasure
+- Names:
+    English: Ice Ring Isle - Sunken Treasure
+    Spanish: Isla del Hielo - Tesoro Sumergido
+    French: Ile Gelée - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -1999,7 +2572,10 @@
     - 0x00001308
     - 0x0000132C
 
-- Name: Ice Ring Isle - Interior Chest
+- Names:
+    English: Ice Ring Isle - Interior Chest
+    Spanish: Isla del Hielo - Cofre interior
+    French: Ile Gelée - Coffre intérieur
   Original Item: Iron Boots
   Category:
     - PuzzleSecretCave
@@ -2009,7 +2585,10 @@
   Offsets:
     - 0x0000020C
 
-- Name: Ice Ring Isle - Inner Cave Chest
+- Names:
+    English: Ice Ring Isle - Inner Cave Chest
+    Spanish: Isla del Hielo - Cofre en la Cueva Interior
+    French: Ile Gelée - Coffre de la grotte intérieure
   Original Item: Orange Rupee
   Category:
     - PuzzleSecretCave
@@ -2020,7 +2599,10 @@
   Offsets:
     - 0x00000210
 
-- Name: Forest Haven - Sunken Treasure
+- Names:
+    English: Forest Haven - Sunken Treasure
+    Spanish: Isla del Bosque - Tesoro Sumergido
+    French: Ile aux Forêts - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -2033,7 +2615,10 @@
     - 0x00003D70
     - 0x00003D94
 
-- Name: Forest Haven - On Tree Branch
+- Names:
+    English: Forest Haven - On Tree Branch
+    Spanish: Isla del Bosque - En la rama del Árbol Deku
+    French: Ile aux Forêts - Sur la branche d'arbre
   Original Item: Deku Leaf
   Category:
     - IslandPuzzle
@@ -2044,7 +2629,10 @@
     - 0x00001E04
     - 0x000020C4
 
-- Name: Forest Haven - Chest on Small Island
+- Names:
+    English: Forest Haven - Chest on Small Island
+    Spanish: Isla del Bosque - Cofre en la Isla Pequeña
+    French: Ile aux Forêts - Coffre de la Petite Ile
   Original Item: Treasure Chart 3
   Category:
     - IslandPuzzle
@@ -2054,7 +2642,10 @@
   Offsets:
     - 0x00004088
 
-- Name: Cliff Plateau Isles - Sunken Treasure
+- Names:
+    English: Cliff Plateau Isles - Sunken Treasure
+    Spanish: Islas Conectadas - Tesoro Sumergido
+    French: Saut de Roc - Trésor englouti
   Original Item: Triforce Shard 5
   Category:
     - SunkenTreasure
@@ -2067,7 +2658,10 @@
     - 0x00001548
     - 0x0000156C
 
-- Name: Cliff Plateau Isles - Cave Chest
+- Names:
+    English: Cliff Plateau Isles - Cave Chest
+    Spanish: Islas Conectadas - Cofre en la Cueva
+    French: Saut de Roc - Coffre de la grotte
   Original Item: Joy Pendant
   Category:
     - PuzzleSecretCave
@@ -2077,7 +2671,10 @@
   Offsets:
     - 0x0000020C
 
-- Name: Cliff Plateau Isles - Highest Isle Chest
+- Names:
+    English: Cliff Plateau Isles - Highest Isle Chest
+    Spanish: Islas Conectadas - Cofre en la Isla más alta
+    French: Saut de Roc - Coffre sur la Haute Ile
   Original Item: Treasure Chart 25
   Category:
     - PuzzleSecretCave
@@ -2087,7 +2684,10 @@
   Offsets:
     - 0x0000183C
 
-- Name: Cliff Plateau Isles - Lookout Platform Chest
+- Names:
+    English: Cliff Plateau Isles - Lookout Platform Chest
+    Spanish: Islas Conectadas - Cofre en la Atalaya
+    French: Saut de Roc - Coffre de la tour de guet
   Original Item: Boko Baba Seed
   Category:
     - Platform
@@ -2097,7 +2697,10 @@
   Offsets:
     - 0x0000185C
 
-- Name: Horseshoe Island - Sunken Treasure
+- Names:
+    English: Horseshoe Island - Sunken Treasure
+    Spanish: Isla Herradura - Tesoro Sumergido
+    French: Ile du Fer à Cheval - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -2110,7 +2713,10 @@
     - 0x00001D34
     - 0x00001D58
 
-- Name: Horseshoe Island - Play Golf
+- Names:
+    English: Horseshoe Island - Play Golf
+    Spanish: Isla Herradura - Jugar Golf
+    French: Ile du Fer à Cheval - Jouer au Golf
   Original Item: Treasure Chart 28
   Category:
     - IslandPuzzle
@@ -2120,7 +2726,10 @@
   Offsets:
     - 0x00001F74
 
-- Name: Horseshoe Island - Cave Chest
+- Names:
+    English: Horseshoe Island - Cave Chest
+    Spanish: Isla Herradura - Cofre en la Cueva
+    French: Ile du Fer à Cheval - Coffre de la grotte
   Original Item: Treasure Chart 8
   Category:
     - CombatSecretCave
@@ -2130,7 +2739,10 @@
   Offsets:
     - 0x000001B0
 
-- Name: Horseshoe Island - Northwestern Lookout Platform Chest
+- Names:
+    English: Horseshoe Island - Northwestern Lookout Platform Chest
+    Spanish: Isla Herradura - Cofre en Atalaya Noroeste
+    French: Ile du Fer à Cheval - Coffre de la tour de guet du Nord-Ouest
   Original Item: Treasure Chart 43
   Category:
     - Platform
@@ -2140,7 +2752,10 @@
   Offsets:
     - 0x00001F94
 
-- Name: Horseshoe Island - Southeastern Lookout Platform Chest
+- Names:
+    English: Horseshoe Island - Southeastern Lookout Platform Chest
+    Spanish: Isla Herradura - Cofre en Atalaya Sureste
+    French: Ile du Fer à Cheval - Coffre de la tour de guet du Sud-Est
   Original Item: Golden Feather
   Category:
     - Platform
@@ -2150,7 +2765,10 @@
   Offsets:
     - 0x00001FB4
 
-- Name: Outset Island - Dig up Black Soil
+- Names:
+    English: Outset Island - Dig up Black Soil
+    Spanish: Isla Initia - Cavar suelo negro
+    French: Ile de l'Aurore - Creuser avec Link le Cochon
   Original Item: Piece of Heart
   Category:
     - IslandPuzzle
@@ -2160,7 +2778,10 @@
   Offsets:
     - 0x00003AD4
 
-- Name: Outset Island - Sunken Treasure
+- Names:
+    English: Outset Island - Sunken Treasure
+    Spanish: Isla Initia - Tesoro Sumergido
+    French: Ile de l'Aurore - Trésor englouti
   Original Item: Triforce Shard 6
   Category:
     - SunkenTreasure
@@ -2173,7 +2794,10 @@
     - 0x000035A0
     - 0x000035C4
 
-- Name: Outset Island - Under Link's House
+- Names:
+    English: Outset Island - Under Link's House
+    Spanish: Isla Initia - Bajo la casa de la Abuela
+    French: Ile de l'Aurore - Sous la Maison de Mémé
   Original Item: Orange Rupee
   Category:
     - Misc
@@ -2183,7 +2807,10 @@
   Offsets:
     - 0x000008DC
 
-- Name: Outset Island - Orca Give 10 Knight's Crests
+- Names:
+    English: Outset Island - Orca Give 10 Knight's Crests
+    Spanish: Isla Initia - Orca 10 Blasones de Guerrero
+    French: Ile de l'Aurore - 10 Blasons d'Epeiste pour Orco
   Original Item: Hurricane Spin
   Category:
     - SpoilsTrading
@@ -2193,7 +2820,10 @@
   Offset: 0x0002D61B
   NameOffset: 0x0000FA40
 
-- Name: Outset Island - Orca Hit 500 Times
+- Names:
+    English: Outset Island - Orca Hit 500 Times
+    Spanish: Isla Initia - Entrenamiento de Orca 500 Golpes
+    French: Ile de l'Aurore - Frapper Orco 500 fois
   Original Item: Piece of Heart
   Category:
     - Junk
@@ -2202,7 +2832,10 @@
   Offsets:
     - 0x02258737
 
-- Name: Outset Island - Mesa's House Chest
+- Names:
+    English: Outset Island - Mesa's House Chest
+    Spanish: Isla Initia - Cofre en la Casa de Pablo
+    French: Ile de l'Aurore - Coffre de la Maison d'André
   Original Item: Red Rupee
   Category:
     - Misc
@@ -2212,7 +2845,10 @@
   Offsets:
     - 0x000008E8
 
-- Name: Outset Island - Great Fairy
+- Names:
+    English: Outset Island - Great Fairy
+    Spanish: Isla Initia - Gran Hada
+    French: Ile de l'Aurore - Grande Fée
   Original Item: Progressive Wallet
   Category:
     - GreatFairy
@@ -2221,7 +2857,10 @@
   Offsets:
     - 0x02095B27
 
-- Name: Outset Island - Savage Labyrinth Floor 30
+- Names:
+    English: Outset Island - Savage Labyrinth Floor 30
+    Spanish: Isla Initia - Cripta de los Mounstros Piso 30
+    French: Ile de l'Aurore - 30e étage de la Crypte Magique
   Original Item: Triforce Shard 6
   Category:
     - SavageLabyrinth
@@ -2231,7 +2870,10 @@
   Offsets:
     - 0x00000348
 
-- Name: Outset Island - Savage Labyrinth Floor 50
+- Names:
+    English: Outset Island - Savage Labyrinth Floor 50
+    Spanish: Isla Initia - Cripta de los Mounstros Piso 50
+    French: Ile de l'Aurore - 50e étage de la Crypte Magique
   Original Item: Hero's Charm
   Category:
     - SavageLabyrinth
@@ -2241,7 +2883,10 @@
   Offsets:
     - 0x00000178
 
-- Name: Outset Island - Jabun's Cave Chest
+- Names:
+    English: Outset Island - Jabun's Cave Chest
+    Spanish: Isla Initia - Cofre en la Cueva de Yabú
+    French: Ile de l'Aurore - Coffre de la caverne de Jabu
   Original Item: Nayru's Pearl
   Category:
     - IslandPuzzle
@@ -2251,7 +2896,10 @@
   Offsets:
     - 0x000001C4
 
-- Name: Headstone Island - Top of Island
+- Names:
+    English: Headstone Island - Top of Island
+    Spanish: Isla de la Tierra - Cumbre de la Isla
+    French: Ile de la Terre - Sommet de l'Ile
   Original Item: Piece of Heart
   Category:
     - IslandPuzzle
@@ -2261,7 +2909,10 @@
   Offsets:
     - 0x00000D4C
 
-- Name: Headstone Island - Sunken Treasure
+- Names:
+    English: Headstone Island - Sunken Treasure
+    Spanish: Isla de la Tierra - Tesoro Sumergido
+    French: Ile de la Terre - Trésor englouti
   Original Item: Silver Rupee
   Category:
     - SunkenTreasure
@@ -2274,7 +2925,10 @@
     - 0x000015AC
     - 0x000015D0
 
-- Name: Headstone Island - Submarine Chest
+- Names:
+    English: Headstone Island - Submarine Chest
+    Spanish: Isla de la Tierra - Cofre del Submarino
+    French: Ile de la Terre - Coffre du sous-marin
   Original Item: Treasure Chart 14
   Category:
     - Submarine
@@ -2284,7 +2938,10 @@
   Offsets:
     - 0x000003F4
 
-- Name: Two Eye Reef - Destroy Cannons and Gunboats
+- Names:
+    English: Two Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Dos - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Deux - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 13
   Category:
     - EyeReefChests
@@ -2294,7 +2951,10 @@
   Offsets:
     - 0x0000272C
 
-- Name: Two Eye Reef - Big Octo Great Fairy
+- Names:
+    English: Two Eye Reef - Big Octo Great Fairy
+    Spanish: Islas del Dos - Gran Hada del Bigocto
+    French: Ile de la Face Deux - Grande Fée du Kalamar
   Original Item: Progressive Magic Meter
   Category:
     - BigOcto
@@ -2305,7 +2965,10 @@
   Offset: 0x000A6B9F
   NameOffset: 0x00026170
 
-- Name: Two Eye Reef - Sunken Treasure
+- Names:
+    English: Two Eye Reef - Sunken Treasure
+    Spanish: Islas del Dos - Tesoro Sumergido
+    French: Ile de la Face Deux - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -2318,7 +2981,10 @@
     - 0x00002500
     - 0x00002524
 
-- Name: Two Eye Reef - Lookout Platform Chest
+- Names:
+    English: Two Eye Reef - Lookout Platform Chest
+    Spanish: Islas del Dos - Cofre en la Atalaya
+    French: Ile de la Face Deux - Coffre de la tour de guet
   Original Item: Purple Rupee
   Category:
     - Platform
@@ -2328,7 +2994,10 @@
   Offsets:
     - 0x0000274C
 
-- Name: Angular Isles - Peak Chest
+- Names:
+    English: Angular Isles - Peak Chest
+    Spanish: Islas Cuadri - Cofre en la Cumbre
+    French: Ilots Kif Kif - Coffre au sommet
   Original Item: Piece of Heart
   Category:
     - IslandPuzzle
@@ -2338,7 +3007,10 @@
   Offsets:
     - 0x00000830
 
-- Name: Angular Isles - Sunken Treasure
+- Names:
+    English: Angular Isles - Sunken Treasure
+    Spanish: Islas Cuadri - Tesoro Sumergido
+    French: Ilots Kif Kif - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -2351,7 +3023,10 @@
     - 0x0000077C
     - 0x000007A0
 
-- Name: Angular Isles - Cave Chest
+- Names:
+    English: Angular Isles - Cave Chest
+    Spanish: Islas Cuadri - Cofre en la Cueva
+    French: Ilots Kif Kif - Coffre de la grotte
   Original Item: Silver Rupee
   Category:
     - PuzzleSecretCave
@@ -2361,7 +3036,10 @@
   Offsets:
     - 0x00000254
 
-- Name: Boating Course - Raft Chest
+- Names:
+    English: Boating Course - Raft Chest
+    Spanish: Zona de regata - Cofre en la Balsa
+    French: Batodrome - Coffre du radeau
   Original Item: Boko Baba Seed
   Category:
     - Raft
@@ -2371,7 +3049,10 @@
   Offsets:
     - 0x00000F94
 
-- Name: Boating Course - Sunken Treasure
+- Names:
+    English: Boating Course - Sunken Treasure
+    Spanish: Zona de regata - Tesoro Sumergido
+    French: Batodrome - Trésor englouti
   Original Item: Sea Hearts Chart
   Category:
     - SunkenTreasure
@@ -2384,7 +3065,10 @@
     - 0x00000EE0
     - 0x00000F04
 
-- Name: Boating Course - Cave Chest
+- Names:
+    English: Boating Course - Cave Chest
+    Spanish: Zona de regata - Cofre en la Cueva
+    French: Batodrome -Coffre de la grotte
   Original Item: Submarine Chart
   Category:
     - PuzzleSecretCave
@@ -2395,7 +3079,10 @@
   Offsets:
     - 0x00000210
 
-- Name: Five Star Isles - Sunken Treasure
+- Names:
+    English: Five Star Isles - Sunken Treasure
+    Spanish: Isla Casiopea - Tesoro Sumergido
+    French: Archipel de Cassiopée - Trésor englouti
   Original Item: Piece of Heart
   Category:
     - SunkenTreasure
@@ -2408,7 +3095,10 @@
     - 0x00001380
     - 0x000013A4
 
-- Name: Five Star Isles - Raft Chest
+- Names:
+    English: Five Star Isles - Raft Chest
+    Spanish: Isla Casiopea - Cofre en la Balsa
+    French: Archipel de Cassiopée - Coffre du radeau
   Original Item: Red Rupee
   Category:
     - Raft
@@ -2418,7 +3108,10 @@
   Offsets:
     - 0x0000147C
 
-- Name: Five Star Isles - Submarine Chest
+- Names:
+    English: Five Star Isles - Submarine Chest
+    Spanish: Isla Casiopea - Cofre del Submarino
+    French: Archipel de Cassiopée - Coffre du sous-marin
   Original Item: Piece of Heart
   Category:
     - Submarine
@@ -2428,7 +3121,10 @@
   Offsets:
     - 0x000004C8
 
-- Name: Five Star Isles - Lookout Platform Destroy Cannons
+- Names:
+    English: Five Star Isles - Lookout Platform Destroy Cannons
+    Spanish: Isla Casiopea - Destruir Cañones en la Atalaya
+    French: Archipel de Cassiopée - Détruire les canons de la tour de guet
   Original Item: Golden Feather
   Category:
     - Platform
@@ -2438,7 +3134,10 @@
   Offsets:
     - 0x0000149C
 
-- Name: Great Sea - Ghost Ship Chest
+- Names:
+    English: Great Sea - Ghost Ship Chest
+    Spanish: Gran Mar - Cofre del Barco Fantasma
+    French: Océan - Coffre du Vaisseau Fantôme
   Original Item: Triforce Shard 4
   Category:
     - Misc
@@ -2448,7 +3147,10 @@
   Offsets:
     - 0x00000DAC
 
-- Name: Dragon Roost Cavern - First Room Chest
+- Names:
+    English: Dragon Roost Cavern - First Room Chest
+    Spanish: Cueva del Dragón - Cofre en el primer cuarto
+    French: Caverne du Dragon - Coffre de l'entrée
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2458,7 +3160,10 @@
   Offsets:
     - 0x00001E40
 
-- Name: Dragon Roost Cavern - Water Jug Alcove Chest
+- Names:
+    English: Dragon Roost Cavern - Water Jug Alcove Chest
+    Spanish: Cueva del Dragón - Cofre en alcova de jarrones de agua
+    French: Caverne du Dragon - Coffre de l'alcôve des pots d'eau
   Original Item: Dungeon Map
   Category:
     - Dungeon
@@ -2468,7 +3173,10 @@
   Offsets:
     - 0x00001EA0
 
-- Name: Dragon Roost Cavern - Boarded Up Chest
+- Names:
+    English: Dragon Roost Cavern - Boarded Up Chest
+    Spanish: Cueva del Dragón - Cofre tras la barricada
+    French: Caverne du Dragon - Coffre barricadé
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2478,7 +3186,10 @@
   Offsets:
     - 0x00001E60
 
-- Name: Dragon Roost Cavern - Swing Across Lava Chest
+- Names:
+    English: Dragon Roost Cavern - Swing Across Lava Chest
+    Spanish: Cueva del Dragón - Cofre através de la lava
+    French: Caverne du Dragon - Coffre de l'autre côté de la lave
   Original Item: Treasure Chart 11
   Category:
     - Dungeon
@@ -2488,7 +3199,10 @@
   Offsets:
     - 0x00001EE0
 
-- Name: Dragon Roost Cavern - Rat Room Chest
+- Names:
+    English: Dragon Roost Cavern - Rat Room Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto de las ratas
+    French: Caverne du Dragon - Coffre de la Salle des Rats
   Original Item: Compass
   Category:
     - Dungeon
@@ -2498,7 +3212,10 @@
   Offsets:
     - 0x00001E80
 
-- Name: Dragon Roost Cavern - Rat Room Boarded Up Chest
+- Names:
+    English: Dragon Roost Cavern - Rat Room Boarded Up Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto de las ratas tras la barricada
+    French: Caverne du Dragon - Coffre barricadé de la Salle des Rats
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2508,7 +3225,10 @@
   Offsets:
     - 0x00001F00
 
-- Name: Dragon Roost Cavern - Bird's Nest
+- Names:
+    English: Dragon Roost Cavern - Bird's Nest
+    Spanish: Cueva del Dragón - Nido de pájaro
+    French: Caverne du Dragon - Nid du Condor
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2518,7 +3238,10 @@
   Offsets:
     - 0x00000BC8
 
-- Name: Dragon Roost Cavern - Dark Room Chest
+- Names:
+    English: Dragon Roost Cavern - Dark Room Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto oscuro
+    French: Caverne du Dragon - Coffre de la salle sombre
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2528,7 +3251,10 @@
   Offsets:
     - 0x00001E20
 
-- Name: Dragon Roost Cavern - Hub Room Tingle Chest
+- Names:
+    English: Dragon Roost Cavern - Hub Room Tingle Chest
+    Spanish: Cueva del Dragón - Cofre en la sala principal
+    French: Caverne du Dragon - Coffre de Tingle de la salle principale
   Original Item: Yellow Rupee
   Category:
     - Dungeon
@@ -2539,7 +3265,10 @@
   Offsets:
     - 0x00001F40
 
-- Name: Dragon Roost Cavern - Pot Room Chest
+- Names:
+    English: Dragon Roost Cavern - Pot Room Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto de los jarrones
+    French: Caverne du Dragon - Coffre de la salle des pots
   Original Item: Treasure Chart 39
   Category:
     - Dungeon
@@ -2549,7 +3278,10 @@
   Offsets:
     - 0x00001E00
 
-- Name: Dragon Roost Cavern - Boss Stairs Right Chest
+- Names:
+    English: Dragon Roost Cavern - Boss Stairs Right Chest
+    Spanish: Cueva del Dragón - Cofre Derecho de las gradas del Jefe
+    French: Caverne du Dragon - Coffre de droite des escaliers du Boss
   Original Item: Knights Crest
   Category:
     - Dungeon
@@ -2559,7 +3291,10 @@
   Offsets:
     - 0x00001DC0
 
-- Name: Dragon Roost Cavern - Boss Stairs Left Chest
+- Names:
+    English: Dragon Roost Cavern - Boss Stairs Left Chest
+    Spanish: Cueva del Dragón - Cofre Izquierdo de las gradas del Jefe
+    French: Caverne du Dragon - Coffre de gauche des escaliers du Boss
   Original Item: Yellow Rupee
   Category:
     - Dungeon
@@ -2569,7 +3304,10 @@
   Offsets:
     - 0x00001DE0
 
-- Name: Dragon Roost Cavern - Mini Boss
+- Names:
+    English: Dragon Roost Cavern - Mini Boss
+    Spanish: Cueva del Dragón - Minijefe
+    French: Caverne du Dragon - Mini-Boss
   Original Item: Grappling Hook
   Category:
     - Dungeon
@@ -2579,7 +3317,10 @@
   Offsets:
     - 0x00000688
 
-- Name: Dragon Roost Cavern - Under Rope Bridge Chest
+- Names:
+    English: Dragon Roost Cavern - Under Rope Bridge Chest
+    Spanish: Cueva del Dragón - Cofre bajo el puente de cuerdas
+    French: Caverne du Dragon - Coffre sous le pont de corde
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2589,7 +3330,10 @@
   Offsets:
     - 0x00001EC0
 
-- Name: Dragon Roost Cavern - Tingle Statue Chest
+- Names:
+    English: Dragon Roost Cavern - Tingle Statue Chest
+    Spanish: Cueva del Dragón - Cofre de la Estatua de Tingle
+    French: Caverne du Dragon - Coffre de la Statue Tingle
   Original Item: Dragon Tingle Statue
   Category:
     - Dungeon
@@ -2600,7 +3344,10 @@
   Offsets:
     - 0x00001F20
 
-- Name: Dragon Roost Cavern - Big Key Chest
+- Names:
+    English: Dragon Roost Cavern - Big Key Chest
+    Spanish: Cueva del Dragón - Cofre de la Gran Llave
+    French: Caverne du Dragon - Coffre de la Grande Clé
   Original Item:  Big Key
   Category:
     - Dungeon
@@ -2610,10 +3357,16 @@
   Offsets:
     - 0x00001DA0
 
-- Name: Dragon Roost Cavern - Gohma Heart Container
+- Names:
+    English: Dragon Roost Cavern - Gohma Heart Container
+    Spanish: Cueva del Dragón - Contenedor de Corazón de Gohma
+    French: Caverne du Dragon - Réceptacle de Cœur de Gohma
   Original Item: Heart Container
   Race Mode Location: true
-  Goal Name: Gohma
+  Goal Names:
+    English: Gohma
+    Spanish: Gohma
+    French: Gohma
   Category:
     - Dungeon
   Paths:
@@ -2625,7 +3378,10 @@
     - 0x020F5ED6
     - 0x000006C0
 
-- Name: Forbidden Woods - First Room Chest
+- Names:
+    English: Forbidden Woods - First Room Chest
+    Spanish: Bosque Prohibido - Cofre en el primer cuarto
+    French: Bois Défendus - Coffre de l'entrée
   Original Item: Dungeon Map
   Category:
     - Dungeon
@@ -2635,7 +3391,10 @@
   Offsets:
     - 0x00001934
 
-- Name: Forbidden Woods - Boko Baba Climb Chest
+- Names:
+    English: Forbidden Woods - Boko Baba Climb Chest
+    Spanish: Bosque Prohibido - Cofre subiendo las Boko Babas
+    French: Bois Défendus - Coffre de la montée par Bud Baba
   Original Item: Treasure Chart 1
   Category:
     - Dungeon
@@ -2645,7 +3404,10 @@
   Offsets:
     - 0x000018F4
 
-- Name: Forbidden Woods - Inside Hollow Tree Chest
+- Names:
+    English: Forbidden Woods - Inside Hollow Tree Chest
+    Spanish: Bosque Prohibido - Cofre dentro del árbol hueco
+    French: Bois Défendus - Coffre à l'intérieur de l'arbre creux
   Original Item: Knights Crest
   Category:
     - Dungeon
@@ -2655,7 +3417,10 @@
   Offsets:
     - 0x00001914
 
-- Name: Forbidden Woods - Hole In Tree Chest
+- Names:
+    English: Forbidden Woods - Hole In Tree Chest
+    Spanish: Bosque Prohibido - Cofre en el hueco del árbol
+    French: Bois Défendus - Coffre du trou de l'arbre
   Original Item: Red Rupee
   Category:
     - Dungeon
@@ -2665,7 +3430,10 @@
   Offsets:
     - 0x00001974
 
-- Name: Forbidden Woods - Morth Pit Chest
+- Names:
+    English: Forbidden Woods - Morth Pit Chest
+    Spanish: Bosque Prohibido - Cofre en la fosa de Abrojos
+    French: Bois Défendus - Coffre de la fosse aux Chardons
   Original Item: Yellow Rupee
   Category:
     - Dungeon
@@ -2675,7 +3443,10 @@
   Offsets:
     - 0x00001A74
 
-- Name: Forbidden Woods - Vine Maze Left Chest
+- Names:
+    English: Forbidden Woods - Vine Maze Left Chest
+    Spanish: Bosque Prohibido - Cofre Izquierdo en el laberinto de plantas espinosas
+    French: Bois Défendus - Coffre de gauche du labyrinthe des plantes grimpantes
   Original Item: Compass
   Category:
     - Dungeon
@@ -2685,7 +3456,10 @@
   Offsets:
     - 0x000019B4
 
-- Name: Forbidden Woods - Vine Maze Right Chest
+- Names:
+    English: Forbidden Woods - Vine Maze Right Chest
+    Spanish: Bosque Prohibido - Cofre Derecho en el laberinto de plantas espinosas
+    French: Bois Défendus - Coffre de droite du labyrinthe des plantes grimpantes
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2695,7 +3469,10 @@
   Offsets:
     - 0x00001954
 
-- Name: Forbidden Woods - Tall Room Chest
+- Names:
+    English: Forbidden Woods - Tall Room Chest
+    Spanish: Bosque Prohibido - Cofre en el cuarto alto
+    French: Bois Défendus - Coffre de la haute pièce
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2705,7 +3482,10 @@
   Offsets:
     - 0x00001A14
 
-- Name: Forbidden Woods - Mothula Mini Boss Chest
+- Names:
+    English: Forbidden Woods - Mothula Mini Boss Chest
+    Spanish: Bosque Prohibido - Minijefe Polillántula Grande
+    French: Bois Défendus - Mini-Boss Mite
   Original Item: Boomerang
   Category:
     - Dungeon
@@ -2715,7 +3495,10 @@
   Offsets:
     - 0x000004AC
 
-- Name: Forbidden Woods - Past Seeds Hanging by Vines Chest
+- Names:
+    English: Forbidden Woods - Past Seeds Hanging by Vines Chest
+    Spanish: Bosque Prohibido - Cofre detrás de las nueces colgadas
+    French: Bois Défendus - Coffre derrière les noix pendus
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2725,7 +3508,10 @@
   Offsets:
     - 0x00001A54
 
-- Name: Forbidden Woods - Chest Across Hanging Flower
+- Names:
+    English: Forbidden Woods - Chest Across Hanging Flower
+    Spanish: Bosque Prohibido - Cofre através de la flor colgante
+    French: Bois Défendus - Coffre derrière la fleur pendue
   Original Item: Yellow Rupee
   Category:
     - Dungeon
@@ -2735,7 +3521,10 @@
   Offsets:
     - 0x00001A94
 
-- Name: Forbidden Woods - Tingle Statue Chest
+- Names:
+    English: Forbidden Woods - Tingle Statue Chest
+    Spanish: Bosque Prohibido - Cofre de la Estatua de Tingle
+    French: Bois Défendus - Coffre de la Statue Tingle
   Original Item: Forbidden Tingle Statue
   Category:
     - Dungeon
@@ -2746,7 +3535,10 @@
   Offsets:
     - 0x00001AB4
 
-- Name: Forbidden Woods - Locked Tree Trunk Chest
+- Names:
+    English: Forbidden Woods - Locked Tree Trunk Chest
+    Spanish: Bosque Prohibido - Cofre en el tronco cerrado
+    French: Bois Défendus - Coffre du tronc d'arbre verrouillé
   Original Item: Treasure Chart 15
   Category:
     - Dungeon
@@ -2756,8 +3548,11 @@
   Offsets:
     - 0x000019D4
 
-- Name: Forbidden Woods - Big Key Chest
-  Original Item: FW Big Key
+- Names:
+    English: Forbidden Woods - Big Key Chest
+    Spanish: Bosque Prohibido - Cofre de la Gran Llave
+    French: Bois Défendus - Coffre de la Grande Clé
+  Original Item: Forbidden Woods Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2766,7 +3561,10 @@
   Offsets:
     - 0x000019F4
 
-- Name: Forbidden Woods - Double Mothula Room Chest
+- Names:
+    English: Forbidden Woods - Double Mothula Room Chest
+    Spanish: Bosque Prohibido - Cofre de las dos Polillántulas
+    French: Bois Défendus - Coffre de la Salle aux deux Mites
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2776,10 +3574,16 @@
   Offsets:
     - 0x00001A34
 
-- Name: Forbidden Woods - Kalle Demos Heart Container
+- Names:
+    English: Forbidden Woods - Kalle Demos Heart Container
+    Spanish: Bosque Prohibido - Contenedor de Corazón de Vilipendulia
+    French: Bois Défendus - Réceptacle de Cœur de Karle Demos
   Original Item: Heart Container
   Race Mode Location: true
-  Goal Name: Kalle Demos
+  Goal Names:
+    English: Kalle Demos
+    Spanish: Vilipendulia
+    French: Karle Demos
   Category:
     - Dungeon
   Paths:
@@ -2791,7 +3595,10 @@
     - 0x020AF916
     - 0x00000114
 
-- Name: Tower of the Gods - Hop Across Floating Boxes Chest
+- Names:
+    English: Tower of the Gods - Hop Across Floating Boxes Chest
+    Spanish: Torre de los Dioses - Cofre pasando las cajas flotantes
+    French: Tour des Dieux - Coffre de la traversée par caisses flottantes
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2801,7 +3608,10 @@
   Offsets:
     - 0x00001924
 
-- Name: Tower of the Gods - Chest Behind Bombable Wall
+- Names:
+    English: Tower of the Gods - Chest Behind Bombable Wall
+    Spanish: Torre de los Dioses - Cofre tras la pared agrietada
+    French: Tour des Dieux - Coffre derrière le Mur Fissuré
   Original Item: Dungeon Map
   Category:
     - Dungeon
@@ -2811,7 +3621,10 @@
   Offsets:
     - 0x00001944
 
-- Name: Tower of the Gods - Light Two Torches Chest
+- Names:
+    English: Tower of the Gods - Light Two Torches Chest
+    Spanish: Torre de los Dioses - Cofre de las dos antorchas
+    French: Tour des Dieux - Coffre des deux torches
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2821,7 +3634,10 @@
   Offsets:
     - 0x000019C4
 
-- Name: Tower of the Gods - Skull Room Chest
+- Names:
+    English: Tower of the Gods - Skull Room Chest
+    Spanish: Torre de los Dioses - Cofre en el cuarto de los Bubbles
+    French: Tour des Dieux - Coffre de la Salle du Tetdoss
   Original Item: Compass
   Category:
     - Dungeon
@@ -2831,7 +3647,10 @@
   Offsets:
     - 0x00001964
 
-- Name: Tower of the Gods - Shoot Eye Above Skulls Chest
+- Names:
+    English: Tower of the Gods - Shoot Eye Above Skulls Chest
+    Spanish: Torre de los Dioses - Cofre al disparar ojo en el cuarto de los Bubbles
+    French: Tour des Dieux - Coffre de l'interrupteur œil de la Salle du Tetdoss
   Original Item: Treasure Chart 6
   Category:
     - Dungeon
@@ -2841,7 +3660,10 @@
   Offsets:
     - 0x000019E4
 
-- Name: Tower of the Gods - Tingle Statue Chest
+- Names:
+    English: Tower of the Gods - Tingle Statue Chest
+    Spanish: Torre de los Dioses - Cofre de la Estatua de Tingle
+    French: Tour des Dieux - Coffre de la Statue Tingle
   Original Item: Goddess Tingle Statue
   Category:
     - Dungeon
@@ -2852,7 +3674,10 @@
   Offsets:
     - 0x00001A64
 
-- Name: Tower of the Gods - Stone Tablet
+- Names:
+    English: Tower of the Gods - Stone Tablet
+    Spanish: Torre de los Dioses - Lápida
+    French: Tour des Dieux - Stèle de Pierre
   Original Item: Command Melody
   Category:
     - Dungeon
@@ -2862,7 +3687,10 @@
   Offset: 0x00030E17
   NameOffset: 0x0001E660
 
-- Name: Tower of the Gods - First Armos Knights Chest
+- Names:
+    English: Tower of the Gods - First Armos Knights Chest
+    Spanish: Torre de los Dioses - Cofre de los primeros Caballeros Armos
+    French: Tour des Dieux - Premier Coffre des Grands Armos
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2872,7 +3700,10 @@
   Offsets:
     - 0x000019A4
 
-- Name: Tower of the Gods - Darknut Mini Boss
+- Names:
+    English: Tower of the Gods - Darknut Mini Boss
+    Spanish: Torre de los Dioses - Minijefe Ferrus
+    French: Tour des Dieux - Mini-Boss Darknut
   Original Item: Progressive Bow
   Category:
     - Dungeon
@@ -2882,7 +3713,10 @@
   Offsets:
     - 0x00000520
 
-- Name: Tower of the Gods - Floating Platforms Room Lower Chest
+- Names:
+    English: Tower of the Gods - Floating Platforms Room Lower Chest
+    Spanish: Torre de los Dioses - Plataformas flotantes Cofre Superior
+    French: Tour des Dieux - Coffre inférieur de la Salle aux Platefomes
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2892,7 +3726,10 @@
   Offsets:
     - 0x00001A24
 
-- Name: Tower of the Gods - Floating Platforms Room Upper Chest
+- Names:
+    English: Tower of the Gods - Floating Platforms Room Upper Chest
+    Spanish: Torre de los Dioses - Plataformas flotantes Cofre Inferior
+    French: Tour des Dieux - Coffre supérieur de la Salle aux Plateformes
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2902,7 +3739,10 @@
   Offsets:
     - 0x00001A44
 
-- Name: Tower of the Gods - Second Armos Knights Chest
+- Names:
+    English: Tower of the Gods - Second Armos Knights Chest
+    Spanish: Torre de los Dioses - Cofre de los segundos Caballeros Armos
+    French: Tour des Dieux - Deuxième Coffre des Grands Armos
   Original Item: Treasure Chart 30
   Category:
     - Dungeon
@@ -2912,8 +3752,11 @@
   Offsets:
     - 0x00001A04
 
-- Name: Tower of the Gods - Big Key Chest
-  Original Item: TotG Big Key
+- Names:
+    English: Tower of the Gods - Big Key Chest
+    Spanish: Torre de los Dioses - Cofre de la Gran Llave
+    French: Tour des Dieux - Coffre de la Grande Clé
+  Original Item: Tower of the Gods Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -2922,10 +3765,16 @@
   Offsets:
     - 0x00001A84
 
-- Name: Tower of the Gods - Gohdan Heart Container
+- Names:
+    English: Tower of the Gods - Gohdan Heart Container
+    Spanish: Torre de los Dioses - Contenedor de Corazón de Deus Probatur
+    French: Tour des Dieux - Réceptacle de Cœur de Gordon
   Original Item: Heart Container
   Race Mode Location: true
-  Goal Name: Gohdan
+  Goal Names:
+    English: Gohdan
+    Spanish: Deus Probatur
+    French: Gordon
   Category:
     - Dungeon
   Paths:
@@ -2937,7 +3786,10 @@
     - 0x020EFE1B
     - 0x000003C0
 
-- Name: Earth Temple - Warp Pot Room Chest
+- Names:
+    English: Earth Temple - Warp Pot Room Chest
+    Spanish: Templo de la Tierra - Cofre del cuarto con la vasija trasportadora
+    French: Temple de la Terre - Coffre de la Salle des Blobs
   Original Item: Dungeon Map
   Category:
     - Dungeon
@@ -2947,7 +3799,10 @@
   Offsets:
     - 0x00001988
 
-- Name: Earth Temple - Warp Pot Room Behind Curtain
+- Names:
+    English: Earth Temple - Warp Pot Room Behind Curtain
+    Spanish: Templo de la Tierra - Detrás de la cortina en la sala de los Chuchus
+    French: Temple de la Terre - Derrière le Rideau de la Salle des Blobs
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2958,7 +3813,10 @@
   Offsets:
     - 0x00000414
 
-- Name: Earth Temple - First Crypt Chest
+- Names:
+    English: Earth Temple - First Crypt Chest
+    Spanish: Templo de la Tierra - Cofre de la primera cripta
+    French: Temple de la Terre - Coffre de la première crypte
   Original Item: Small Key
   Category:
     - Dungeon
@@ -2968,7 +3826,10 @@
   Offsets:
     - 0x000019A8
 
-- Name: Earth Temple - Chest Behind Destructable Wall
+- Names:
+    English: Earth Temple - Chest Behind Destructable Wall
+    Spanish: Templo de la Tierra - Cofre tras la pared agrietada
+    French: Temple de la Terre - Coffre derrière le Mur Fissuré
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2978,7 +3839,10 @@
   Offsets:
     - 0x00001AC8
 
-- Name: Earth Temple - Three Blocks Room Chest
+- Names:
+    English: Earth Temple - Three Blocks Room Chest
+    Spanish: Templo de la Tierra - Cofre en el cuarto de los 3 bloques
+    French: Temple de la Terre - Coffre de la Salle aux Trois Blocs
   Original Item: Compass
   Category:
     - Dungeon
@@ -2988,7 +3852,10 @@
   Offsets:
     - 0x000019C8
 
-- Name: Earth Temple - Behind Statues Chest
+- Names:
+    English: Earth Temple - Behind Statues Chest
+    Spanish: Templo de la Tierra - Cofre detrás de las estatuas
+    French: Temple de la Terre - Coffre derrière les statues
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -2998,7 +3865,10 @@
   Offsets:
     - 0x000019E8
 
-- Name: Earth Temple - Second Crypt Casket
+- Names:
+    English: Earth Temple - Second Crypt Casket
+    Spanish: Templo de la Tierra - Ataúd en la segunda cripta
+    French: Temple de la Terre - Sarcophage de la deuxième crypte
   Original Item: Small Key
   Category:
     - Dungeon
@@ -3008,7 +3878,10 @@
   Offsets:
     - 0x00000234
 
-- Name: Earth Temple - Stalfos Mini Boss
+- Names:
+    English: Earth Temple - Stalfos Mini Boss
+    Spanish: Templo de la Tierra - Minijefe Stalfos
+    French: Temple de la Terre - Mini-Boss Stalfos
   Original Item: Mirror Shield
   Category:
     - Dungeon
@@ -3018,7 +3891,10 @@
   Offsets:
     - 0x0000063C
 
-- Name: Earth Temple - Tingle Statue Chest
+- Names:
+    English: Earth Temple - Tingle Statue Chest
+    Spanish: Templo de la Tierra - Cofre de la Estatua de Tingle
+    French: Temple de la Terre - Coffre de la Statue Tingle
   Original Item: Earth Tingle Statue
   Category:
     - Dungeon
@@ -3029,7 +3905,10 @@
   Offsets:
     - 0x00001B28
 
-- Name: Earth Temple - Foggy Floormaster Room End Chest
+- Names:
+    English: Earth Temple - Foggy Floormaster Room End Chest
+    Spanish: Templo de la Tierra - Cofre al fondo del cuarto nublado del Floormaster
+    French: Temple de la Terre - Coffre de la Salle brumeuse des Mains
   Original Item: Small Key
   Category:
     - Dungeon
@@ -3039,7 +3918,10 @@
   Offsets:
     - 0x00001A08
 
-- Name: Earth Temple - Kill All Floormasters Chest
+- Names:
+    English: Earth Temple - Kill All Floormasters Chest
+    Spanish: Templo de la Tierra - Derrotar a todos los Floormasters
+    French: Temple de la Terre - Vaincre toutes les Mains
   Original Item: Treasure Chart 20
   Category:
     - Dungeon
@@ -3049,7 +3931,10 @@
   Offsets:
     - 0x00001AA8
 
-- Name: Earth Temple - Near Hammer Button Behind Curtain
+- Names:
+    English: Earth Temple - Near Hammer Button Behind Curtain
+    Spanish: Templo de la Tierra - Detrás de la cortina cerca del botón del Martillo
+    French: Temple de la Terre - Derrière le Rideau près du bouton de la Masse
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -3060,7 +3945,10 @@
   Offsets:
     - 0x00000490
 
-- Name: Earth Temple - Third Crypt Chest
+- Names:
+    English: Earth Temple - Third Crypt Chest
+    Spanish: Templo de la Tierra - Cofre en la tercera cripta
+    French: Temple de la Terre - Coffre de la troisième crypte
   Original Item: Red Rupee
   Category:
     - Dungeon
@@ -3070,7 +3958,10 @@
   Offsets:
     - 0x00001A28
 
-- Name: Earth Temple - Many Mirrors Room Right Chest
+- Names:
+    English: Earth Temple - Many Mirrors Room Right Chest
+    Spanish: Templo de la Tierra - Cofre derecho en la sala de los espejos
+    French: Temple de la Terre - Coffre de droite de la Salle des Miroirs
   Original Item: Purple Rupee
   Category:
     - Dungeon
@@ -3080,7 +3971,10 @@
   Offsets:
     - 0x00001A68
 
-- Name: Earth Temple - Many Mirrors Room Left Chest
+- Names:
+    English: Earth Temple - Many Mirrors Room Left Chest
+    Spanish: Templo de la Tierra - Cofre izquierdo en la sala de los espejos
+    French: Temple de la Terre - Coffre de gauche de la Salle des Miroirs
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -3090,8 +3984,11 @@
   Offsets:
     - 0x00001A88
 
-- Name: Earth Temple - Big Key Chest
-  Original Item: ET Big Key
+- Names:
+    English: Earth Temple - Big Key Chest
+    Spanish: Templo de la Tierra - Cofre de la Gran Llave
+    French: Temple de la Terre - Coffre de la Grande Clé
+  Original Item: Earth Temple Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -3100,7 +3997,10 @@
   Offsets:
     - 0x00001A48
 
-- Name: Earth Temple - Stalfos Crypt Room Chest
+- Names:
+    English: Earth Temple - Stalfos Crypt Room Chest
+    Spanish: Templo de la Tierra - Cofre en la Cripta del Stalfos
+    French: Temple de la Terre - Coffre de la crypte des Stalfos
   Original Item: Treasure Chart 12
   Category:
     - Dungeon
@@ -3110,10 +4010,16 @@
   Offsets:
     - 0x00001AE8
 
-- Name: Earth Temple - Jalhalla Heart Container
+- Names:
+    English: Earth Temple - Jalhalla Heart Container
+    Spanish: Templo de la Tierra - Contenedor de Corazón de Fati Triputis
+    French: Temple de la Terre - Réceptacle de Cœur de Jay Harla
   Original Item: Heart Container
   Race Mode Location: true
-  Goal Name: Jalhalla
+  Goal Names:
+    English: Jalhalla
+    Spanish: Fati Triputis
+    French: Jay Harla
   Category:
     - Dungeon
   Paths:
@@ -3125,7 +4031,10 @@
     - 0x020DADDE
     - 0x000000C0
 
-- Name: Wind Temple - Between Dirt Patches Chest
+- Names:
+    English: Wind Temple - Between Dirt Patches Chest
+    Spanish: Templo del Viento - Cofre entre los parches de tierra
+    French: Temple du Vent - Coffre entre les deux arbres
   Original Item: Orange Rupee
   Category:
     - Dungeon
@@ -3135,7 +4044,10 @@
   Offsets:
     - 0x00000F84
 
-- Name: Wind Temple - Tingle Statue Chest
+- Names:
+    English: Wind Temple - Tingle Statue Chest
+    Spanish: Templo del Viento - Cofre de la Estatua de Tingle
+    French: Temple du Vent - Coffre de la Statue Tingle
   Original Item: Wind Tingle Statue
   Category:
     - Dungeon
@@ -3146,7 +4058,10 @@
   Offsets:
     - 0x00001064
 
-- Name: Wind Temple - Behind Stone Head Chest
+- Names:
+    English: Wind Temple - Behind Stone Head Chest
+    Spanish: Templo del Viento - Cofre tras la cabeza de piedra
+    French: Temple du Vent - Coffre derrière la Tête de Pierre
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -3156,7 +4071,10 @@
   Offsets:
     - 0x00000FA4
 
-- Name: Wind Temple - Left Alcove Chest
+- Names:
+    English: Wind Temple - Left Alcove Chest
+    Spanish: Templo del Viento - Cofre de la alcova izquierda
+    French: Temple du Vent - Coffre de l'alcôve de gauche
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -3166,8 +4084,11 @@
   Offsets:
     - 0x00000F64
 
-- Name: Wind Temple - Big Key Chest
-  Original Item: WT Big Key
+- Names:
+    English: Wind Temple - Big Key Chest
+    Spanish: Templo del Viento - Cofre de la Gran Llave
+    French: Temple du Vent - Coffre de la Grande Clé
+  Original Item: Wind Temple Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -3176,7 +4097,10 @@
   Offsets:
     - 0x00000F24
 
-- Name: Wind Temple - Cyclones Room Chest
+- Names:
+    English: Wind Temple - Cyclones Room Chest
+    Spanish: Templo del Viento - Cofre en la sala de los ciclones
+    French: Temple du Vent - Coffre de la Salle des Cyclones
   Original Item: Dungeon Map
   Category:
     - Dungeon
@@ -3186,7 +4110,10 @@
   Offsets:
     - 0x00000FE4
 
-- Name: Wind Temple - Hub Room Center Chest
+- Names:
+    English: Wind Temple - Hub Room Center Chest
+    Spanish: Templo del Viento - Cofre en el centro de la sala principal
+    French: Temple du Vent - Coffre de la Salle Centrale
   Original Item: Compass
   Category:
     - Dungeon
@@ -3196,7 +4123,10 @@
   Offsets:
     - 0x00001024
 
-- Name: Wind Temple - Wizzrobe Mini Boss
+- Names:
+    English: Wind Temple - Wizzrobe Mini Boss
+    Spanish: Templo del Viento - Minifeje Invocantis Maestro
+    French: Temple du Vent - Mini-Boss Sorcier
   Original Item: Hookshot
   Category:
     - Dungeon
@@ -3206,7 +4136,10 @@
   Offsets:
     - 0x000002D8
 
-- Name: Wind Temple - Spike Wall Room First Chest
+- Names:
+    English: Wind Temple - Spike Wall Room First Chest
+    Spanish: Templo del Viento - Primer Cofre en el cuarto de los picos
+    French: Temple du Vent - Premier Coffre de la Salle des Pointes
   Original Item: Small Key
   Category:
     - Dungeon
@@ -3216,7 +4149,10 @@
   Offsets:
     - 0x00000F44
 
-- Name: Wind Temple - Spike Wall Room Destroy Floors
+- Names:
+    English: Wind Temple - Spike Wall Room Destroy Floors
+    Spanish: Templo del Viento - Destruir el suelo agrietado en el cuarto de los picos
+    French: Temple du Vent - Détruire les plaques au sol de la Salle des Pointes
   Original Item: Treasure Chart 35
   Category:
     - Dungeon
@@ -3226,7 +4162,10 @@
   Offsets:
     - 0x00000FC4
 
-- Name: Wind Temple - Hub Room Top Chest
+- Names:
+    English: Wind Temple - Hub Room Top Chest
+    Spanish: Templo del Viento - Cofre Superior en la sala principal
+    French: Temple du Vent - Coffre au sommet de la Salle Centrale
   Original Item: Joy Pendant
   Category:
     - Dungeon
@@ -3236,7 +4175,10 @@
   Offsets:
     - 0x00000EE4
 
-- Name: Wind Temple - Behind Armos Chest
+- Names:
+    English: Wind Temple - Behind Armos Chest
+    Spanish: Templo del Viento - Cofre detrás de los Armos
+    French: Temple du Vent - Coffre des Armos
   Original Item: Small Key
   Category:
     - Dungeon
@@ -3246,7 +4188,10 @@
   Offsets:
     - 0x00000F04
 
-- Name: Wind Temple - Kill All Basement Room Enemies
+- Names:
+    English: Wind Temple - Kill All Basement Room Enemies
+    Spanish: Templo del Viento - Derrotar todos los enemigos del sótano
+    French: Temple du Vent - Vaincre les ennemis du Sous-Sol
   Original Item: Treasure Chart 5
   Category:
     - Dungeon
@@ -3256,10 +4201,16 @@
   Offsets:
     - 0x00001004
 
-- Name: Wind Temple - Molgera Heart Container
+- Names:
+    English: Wind Temple - Molgera Heart Container
+    Spanish: Templo del Viento - Contenedor de Corazón de Verminus
+    French: Temple du Vent - Réceptacle de Cœur de Gayla
   Original Item: Heart Container
   Race Mode Location: true
-  Goal Name: Molgera
+  Goal Names:
+    English: Molgera
+    Spanish: Verminus
+    French: Gayla
   Category:
     - Dungeon
   Paths:
@@ -3271,7 +4222,10 @@
     - 0x021031E7
     - 0x00000114
 
-- Name: Hyrule Castle - Sword Chamber Chest
+- Names:
+    English: Hyrule Castle - Sword Chamber Chest
+    Spanish: Castillo de Hyrule - Cofre en la cámara de la Espada Maestra
+    French: Château d'Hyrule - Coffre de la Chambre d'Excalibur
   Original Item: Master Sword Powerless
   Category:
     - Dungeon
@@ -3281,7 +4235,10 @@
   Offsets:
     - 0x000013A8
 
-- Name: Ganon's Tower - Maze Chest
+- Names:
+    English: Ganon's Tower - Maze Chest
+    Spanish: Torre de Ganon - Cofre del Laberinto
+    French: Château de Ganon - Coffre du labyrinthe
   Original Item: Light Arrow
   Category:
     - Dungeon
@@ -3291,16 +4248,25 @@
   Offsets:
     - 0x00000858
 
-- Name: Ganon's Tower - Defeat Ganondorf
+- Names:
+    English: Ganon's Tower - Defeat Ganondorf
+    Spanish: Torre de Ganon - Derrotar a Ganondorf
+    French: Château de Ganon - Vaincre Ganondorf
   Original Item: Game Beatable
-  Goal Name: Ganondorf
+  Goal Names:
+    English: Ganondorf
+    Spanish: Ganondorf
+    French: Ganondorf
   Category:
     - Other
     - AlwaysProgression
-  Hint Priority: Sometimes
+  Hint Priority: Never
   Type: DoNothing
 
-- Name: Forsaken Fortress Sector - Old Man Ho Ho
+- Names:
+    English: Forsaken Fortress Sector - Old Man Ho Ho
+    Spanish: Sector de la Isla del Diablo - Don Avisto
+    French: Secteur de la Forteresse Maudite - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3308,7 +4274,10 @@
   Type: DoNothing
   Message Label: 14004
 
-- Name: Northern Fairy Island - Old Man Ho Ho
+- Names:
+    English: Northern Fairy Island - Old Man Ho Ho
+    Spanish: Isla del Hada del Norte - Don Avisto
+    French: Ilot Septentrional des Fées - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3316,7 +4285,10 @@
   Type: DoNothing
   Message Label: 14007
 
-- Name: Crescent Moon Island - Old Man Ho Ho
+- Names:
+    English: Crescent Moon Island - Old Man Ho Ho
+    Spanish: Isla Luna Creciente - Don Avisto
+    French: Ile du Croissant - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3324,7 +4296,10 @@
   Type: DoNothing
   Message Label: 14005
 
-- Name: Flight Control Platform - Old Man Ho Ho
+- Names:
+    English: Flight Control Platform - Old Man Ho Ho
+    Spanish: Andamio de Vuelo - Don Avisto
+    French: Tour de l'Envol - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3332,7 +4307,10 @@
   Type: DoNothing
   Message Label: 14002
 
-- Name: Stone Watcher Island - Old Man Ho Ho
+- Names:
+    English: Stone Watcher Island - Old Man Ho Ho
+    Spanish: Isla Cabeza de Piedra - Don Avisto
+    French: Ile de la Tête de Pierre - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3340,7 +4318,10 @@
   Type: DoNothing
   Message Label: 14009
 
-- Name: Private Oasis - Old Man Ho Ho
+- Names:
+    English: Private Oasis - Old Man Ho Ho
+    Spanish: Isla de Quién - Don Avisto
+    French: Ile de Qui-ça - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3348,7 +4329,10 @@
   Type: DoNothing
   Message Label: 14006
 
-- Name: Bomb Island - Old Man Ho Ho
+- Names:
+    English: Bomb Island - Old Man Ho Ho
+    Spanish: Isla Bomba - Don Avisto
+    French: Ile de la Bombe - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3356,7 +4340,10 @@
   Type: DoNothing
   Message Label: 14001
 
-- Name: Horseshoe Island - Old Man Ho Ho
+- Names:
+    English: Horseshoe Island - Old Man Ho Ho
+    Spanish: Isla Herradura - Don Avisto
+    French: Ile du Fer à Cheval - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3364,7 +4351,10 @@
   Type: DoNothing
   Message Label: 14008
 
-- Name: Outset Island - Old Man Ho Ho
+- Names:
+    English: Outset Island - Old Man Ho Ho
+    Spanish: Isla Initia - Don Avisto
+    French: Ile de l'Aurore - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint
@@ -3372,7 +4362,10 @@
   Type: DoNothing
   Message Label: 14003
 
-- Name: Two Eye Reef - Old Man Ho Ho
+- Names:
+    English: Two Eye Reef - Old Man Ho Ho
+    Spanish: Islas del dos - Don Avisto
+    French: Ile de la Face Deux - Biggle
   Original Item: Nothing
   Category:
     - HoHoHint

@@ -8,12 +8,18 @@
 # logic statements you wish. No modifications to the code are necessary.
 #
 # Locations are places which can contain randomized items. Adding new locations
-# here will require adding them location_data.yaml as well.
+# here will require adding them in location_data.yaml as well.
 #
 # Exits define how the areas of the world graph connect to each other. Each exit
 # is a one way connection, so when making new areas remember to define the exit
 # connections both ways if applicable. New areas can be defined without having to
-# modify the code
+# modify the code.
+#
+# Each dungeon in the world graph is at least defined on a room by room basis
+# (although in many cases rooms are split up into multiple parts). This is to
+# help simplify glitched logic should anybody ever want to write it, and if
+# anybody ever wants to go to the effort of splicing dungeon rooms together,
+# that's logically supported as well.
 #
 # The following logical operators/functions are available for logic statements:
 # - and
@@ -21,12 +27,6 @@
 # - not
 # - count(<number>, <item>)
 # - can_access(<area name>)
-#
-# Each dungeon in the world graph is at least defined on a room by room basis
-# (although in many cases rooms are split up into multiple parts). This is to
-# help simplify glitched logic should anybody ever want to write it, and if
-# anybody ever wants to go to the effort of splicing dungeon rooms together,
-# that's logically supported as well.
 
 - Name: Root
   Exits:
@@ -1834,7 +1834,7 @@
   Locations:
       Dragon Roost Cavern - First Room Chest: Nothing
   Exits:
-      DRC Hub Room Lower Area: count(1, DRC_Small_Key)
+      DRC Hub Room Lower Area: count(1, Dragon_Roost_Cavern_Small_Key)
       Dragon Roost Pond Past Statues: Nothing
 
 - Name: DRC Hub Room Lower Area
@@ -1842,7 +1842,7 @@
   Exits:
       DRC Map Chest Room: Nothing
       DRC Hub Room Lower Area Near Dim Room: Can_Fly_With_Deku_Leaf_Indoors or Can_Move_Boulders
-      DRC Switch Behind Wooden Barrier Room: count(2, DRC_Small_Key)
+      DRC Switch Behind Wooden Barrier Room: count(2, Dragon_Roost_Cavern_Small_Key)
       DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows or
           (can_access(DRC Hub Room Highest Platform) and Can_Cut_Down_Hanging_DRC_Platform)
       DRC First Room: Nothing
@@ -1896,14 +1896,14 @@
       Dragon Roost Cavern - Rat Room Boarded Up Chest: Nothing
   Exits:
       DRC Outside Lower Area: Nothing
-      DRC Outside Upper Area: count(3, DRC_Small_Key)
+      DRC Outside Upper Area: count(3, Dragon_Roost_Cavern_Small_Key)
 
 - Name: DRC Outside Upper Area
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Bird's Nest: Nothing
   Exits:
-      DRC Dark Room Chest Area: count(4, DRC_Small_Key)
+      DRC Dark Room Chest Area: count(4, Dragon_Roost_Cavern_Small_Key)
       DRC Rat Room: Nothing
       DRC Outside Lower Area: Can_Fly_With_Deku_Leaf_Outdoors
 
@@ -1961,7 +1961,7 @@
       Dragon Roost Cavern - Boss Stairs Left Chest: Nothing
   Exits:
       DRC Boss Door Room Before Lava: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
-      DRC Boss Room: DRC_Big_Key
+      DRC Boss Room: Dragon_Roost_Cavern_Big_Key
 
 - Name: DRC Mini Boss Upper Area
   Dungeon: Dragon Roost Cavern
@@ -2098,7 +2098,7 @@
   Dungeon: Forbidden Woods
   Exits:
       FW Morth Pit Hallway: Nothing
-      FW Cable Ride Above Poison Water Room Lower West: count(1, FW_Small_Key)
+      FW Cable Ride Above Poison Water Room Lower West: count(1, Forbidden_Woods_Small_Key)
       FW Hub Room Lower Area: Boomerang
       FW Hub Room Middle Area: Nothing
 
@@ -2235,7 +2235,7 @@
   Events:
       Can Get Fairies: Nothing
   Exits:
-      FW Boss Room: FW_Big_Key
+      FW Boss Room: Forbidden_Woods_Big_Key
       FW Mothula Hallway: Nothing
 
 - Name: FW Boss Room
@@ -2285,7 +2285,7 @@
       Tower of the Gods - Light Two Torches Chest: Nothing
   Exits:
       TOTG Skulls Room: Nothing
-      TOTG West Golden Statue Room: count(1, TotG_Small_Key)
+      TOTG West Golden Statue Room: count(1, Tower_of_the_Gods_Small_Key)
       TOTG Entrance Room: Bombs
 
 - Name: TOTG Skulls Room
@@ -2391,7 +2391,7 @@
   Exits:
       TOTG Hub Room: Nothing
       TOTG Many Moving Platforms Room: Nothing
-      TOTG Third Statue Room: count(2, TotG_Small_Key)
+      TOTG Third Statue Room: count(2, Tower_of_the_Gods_Small_Key)
       TOTG Third Statue Corridor Past Bombable Wall: Bombs
 
 - Name: TOTG Many Moving Platforms Room
@@ -2440,7 +2440,7 @@
       Can Get Fairies: Nothing
   Exits:
       TOTG Big Key Room: Nothing
-      TOTG Boss Room: TotG_Big_Key
+      TOTG Boss Room: Tower_of_the_Gods_Big_Key
 
 - Name: TOTG Boss Room
   Dungeon: Tower of the Gods
@@ -2473,7 +2473,7 @@
   Dungeon: Earth Temple
   Exits:
       ET First Crypt: Skull_Hammer and Can_Play_CM
-      ET Chu Chus and Switches Room: count(2, ET_Small_Key)
+      ET Chu Chus and Switches Room: count(2, Earth_Temple_Small_Key)
       ET Giant Statue Room Under Statue: Can_Play_CM and Can_Aim_Mirror_Shield
       ET Map Chest Room: Nothing
 
@@ -2521,7 +2521,7 @@
   Dungeon: Earth Temple
   Exits:
       ET Second Crypt: Nothing
-      ET Mini Boss Room: count(3, ET_Small_Key)
+      ET Mini Boss Room: count(3, Earth_Temple_Small_Key)
 
 - Name: ET Second Crypt
   Dungeon: Earth Temple
@@ -2593,7 +2593,7 @@
 - Name: ET Basement Hub Room Upper Ledge
   Dungeon: Earth Temple
   Exits:
-      ET Poes and Bubbles Room: count(3, ET_Small_Key)
+      ET Poes and Bubbles Room: count(3, Earth_Temple_Small_Key)
       ET Basement Hub Room: Nothing
 
 - Name: ET Poes and Bubbles Room
@@ -2618,7 +2618,7 @@
       Can Get Fairies: Nothing
   Exits:
       ET Many Mirrors Room: Nothing
-      ET Boss Room: ET_Big_Key
+      ET Boss Room: Earth_Temple_Big_Key
       ET Third Crypt: Nothing
 
 - Name: ET Many Mirrors Room
@@ -2783,7 +2783,7 @@
   Dungeon: Wind Temple
   Exits:
       WT Cracked Floors Room: Nothing
-      WT Mini Boss Room: count(2, WT_Small_Key)
+      WT Mini Boss Room: count(2, Wind_Temple_Small_Key)
       WT Hub Room Compass Chest Platform: Hookshot and Can_Fly_With_Deku_Leaf_Indoors
       WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
       WT Hub Room Below Fan: can_access(WT Hub Room Upper North Platform)
@@ -2853,7 +2853,7 @@
   Dungeon: Wind Temple
   Exits:
       WT Hub Room Lower Area: Nothing
-      WT Tall Basement Room: count(2, WT_Small_Key)
+      WT Tall Basement Room: count(2, Wind_Temple_Small_Key)
 
 - Name: WT Tall Basement Room
   Dungeon: Wind Temple
@@ -2888,7 +2888,7 @@
   Events:
       Can Get Fairies: Nothing
   Exits:
-      WT Boss Room: WT_Big_Key
+      WT Boss Room: Wind_Temple_Big_Key
 
 - Name: WT Boss Room
   Dungeon: Wind Temple
