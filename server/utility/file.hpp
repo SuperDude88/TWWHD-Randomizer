@@ -120,4 +120,6 @@ namespace Utility
 	bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to);
 
 	bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
+
+  int getFileContents(const std::string& filename, std::string& fileContents);
 }

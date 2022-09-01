@@ -6,6 +6,7 @@
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
 #include "../server/utility/stringUtil.hpp"
+#include "../server/utility/file.hpp"
 #include "../seedgen/random.hpp"
 #include "../options.hpp"
 #include <memory>
@@ -13,8 +14,6 @@
 #include <cstdlib>
 #include <vector>
 #include <random>
-#include <fstream>
-#include <filesystem>
 
 // some error checking macros for brevity and since we can't use exceptions
 #define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
@@ -1117,7 +1116,7 @@ World::WorldLoadingError World::loadPlandomizer()
     #endif
 
     std::string plandoStr;
-    if (getFileContents(plandoFilepath, plandoStr) != 0)
+    if (Utility::getFileContents(plandoFilepath, plandoStr) != 0)
     {
         Utility::platformLog("Will skip using plando file\n");
         return WorldLoadingError::NONE;
@@ -1321,24 +1320,6 @@ World::WorldLoadingError World::loadPlandomizer()
     return WorldLoadingError::NONE;
 }
 
-// Short function for getting the string data from a file
-int World::getFileContents(const std::string& filename, std::string& fileContents)
-{
-    std::ifstream file(filename);
-    if (!file.is_open())
-    {
-        ErrorLog::getInstance().log("unable to open file \"" + filename + "\" for world " + std::to_string(worldId));
-        return 1;
-    }
-
-    // Read and load file contents
-    auto ss = std::ostringstream{};
-    ss << file.rdbuf();
-    fileContents = ss.str();
-
-    return 0;
-}
-
 // Load the world based on the given world graph file, macros file, and loation data file
 int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath)
 {
@@ -1346,7 +1327,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     // load and parse items
     Yaml::Node itemDataTree;
     std::string itemData;
-    getFileContents(itemDataPath, itemData);
+    Utility::getFileContents(itemDataPath, itemData);
     itemData = Utility::Str::InsertUnicodeReplacements(itemData);
     Yaml::Parse(itemDataTree, itemData);
     for (auto itemIt = itemDataTree.Begin(); itemIt != itemDataTree.End(); itemIt++)
@@ -1387,7 +1368,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     // Read and parse location data
     Yaml::Node locationDataTree;
     std::string locationData;
-    getFileContents(locationDataPath, locationData);
+    Utility::getFileContents(locationDataPath, locationData);
     locationData = Utility::Str::InsertUnicodeReplacements(locationData);
     Yaml::Parse(locationDataTree, locationData);
     for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
@@ -1418,7 +1399,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     // Read and parse area translations for hints/spoiler logs in other languages
     Yaml::Node areaDataTree;
     std::string areaData;
-    getFileContents(areaDataPath, areaData);
+    Utility::getFileContents(areaDataPath, areaData);
     areaData = Utility::Str::InsertUnicodeReplacements(areaData);
     Yaml::Parse(areaDataTree, areaData);
     for (auto areaObjectIt = areaDataTree.Begin(); areaObjectIt != areaDataTree.End(); areaObjectIt++)

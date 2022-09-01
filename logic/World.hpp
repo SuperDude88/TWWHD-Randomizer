@@ -167,7 +167,6 @@ private:
     WorldLoadingError loadArea(Yaml::Node& areaObject);
     WorldLoadingError loadItem(Yaml::Node& itemObject);
     WorldLoadingError loadAreaTranslations(Yaml::Node& areaObject);
-    int getFileContents(const std::string& filename, std::string& fileContents);
 
     Settings settings;
     ItemPool itemPool;
