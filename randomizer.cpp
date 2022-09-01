@@ -482,9 +482,19 @@ public:
 			return 0;
 		#endif
 
-		LOG_TO_DEBUG(permalink);
+		LOG_TO_DEBUG("Permalink: " + permalink);
 
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
+
+		// Add the plandomizer file contents to the permalink when plandomzier is enabled
+		if (config.settings.plandomizer) {
+			std::string plandoContents;
+			if (Utility::getFileContents(config.settings.plandomizerFile, plandoContents) != 0) {
+				ErrorLog::getInstance().log("Could not find plandomizer file at\n" + config.settings.plandomizerFile);
+				return 1;
+			}
+			permalink += plandoContents;
+		}
 
 		std::hash<std::string> strHash;
 		integer_seed = strHash(permalink);
