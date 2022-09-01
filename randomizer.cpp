@@ -518,6 +518,7 @@ public:
 			return 1;
 		}
 
+		generateNonSpoilerLog(worlds);
 
 		// Skip all game modification stuff if we're just doing fill algorithm testing
 		#ifdef FILL_TESTING

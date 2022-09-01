@@ -18,7 +18,6 @@ if(GET_THREADS)
   find_package(Threads REQUIRED)
 endif()
 
-add_compile_definitions(ENABLE_DEBUG=1) # TODO: Take this out after testing?
 if(ENABLE_DEBUG)
   message("Debugging is ON")
   add_compile_definitions(ENABLE_DEBUG)
