@@ -175,7 +175,7 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", !swordless ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", puede que no\ntengas la espada maestra, pero no tengas miedo!\n\n\nEl martillo es todo lo que necesitas\npara aplastar a tus enemigos...\n\n\n" +
                   u"Incluso cuando su bola de magia desciende hacia ti,\n¡puedes " + TEXT_COLOR_RED + u"devolverla con una botella vacía" + TEXT_COLOR_DEFAULT + u"!\n\n...tengo la seguridad de que puedes ganar!" + TEXT_END)},
       {"French",  !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", tu ne détiens peut-être\npas Excalibur, mais n'ait pas peur!\n\n\nLe marteau de la mort est tout ce dont\ntu as besoin afin de vaincre ton ennemi...\n\n\n" +
-                  u"EMême lorsque son orbe de magie noire\ns'abat sur toi, tu peux " + TEXT_COLOR_RED + u"la renvoyer\navec un flacon" + TEXT_COLOR_DEFAULT + u"!\n\n... Je suis sûr que tu as une chance de victoire!" + TEXT_END)}}},
+                  u"Même lorsque son orbe de magie noire\ns'abat sur toi, tu peux " + TEXT_COLOR_RED + u"la renvoyer\navec un flacon" + TEXT_COLOR_DEFAULT + u"!\n\n... Je suis sûr que tu as une chance de victoire!" + TEXT_END)}}},
      {"01590",
      {{"English", !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!" + TEXT_END)},
       {"Spanish", !swordless ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"¡No huyas! ¡Confía en el\npoder del Martillo!" + TEXT_END)},
