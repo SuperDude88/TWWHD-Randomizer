@@ -643,7 +643,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         {
 
             // Set plandomizer island if there is one
-            if (world.plandomizer.startingIslandRoomIndex > 0)
+            if (world.plandomizer.startingIslandRoomIndex > 0 && world.plandomizer.startingIslandRoomIndex < 50)
             {
                 world.startingIslandRoomIndex = world.plandomizer.startingIslandRoomIndex;
             }
@@ -654,6 +654,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             }
 
             auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
+            LOG_TO_DEBUG("starting island: \"" + startingIsland + "\" index: " + std::to_string(world.startingIslandRoomIndex));
 
             // Set the new starting island in the world graph
             auto linksSpawn = world.getEntrance("Link's Spawn", "Outset Island");
