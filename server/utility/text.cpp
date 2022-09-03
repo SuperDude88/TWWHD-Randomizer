@@ -129,25 +129,50 @@ namespace Text {
     return wordwrapped_str;
   }
 
-  std::string pad_str_4_lines(const std::string& string) {
-    std::vector<std::string> lines = Utility::Str::split(string, '\n');
+  std::string pad_str_4_lines(const std::string& string)
+  {
+      std::vector<std::string> lines = Utility::Str::split(string, '\n');
 
-    unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-    for (unsigned int i = 0; i < padding_lines_needed; i++) {
-      lines.push_back("");
-    }
+      unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
+      for (unsigned int i = 0; i < padding_lines_needed; i++)
+      {
+          lines.push_back("");
+      }
 
-    return Utility::Str::merge(lines, '\n');
+      return Utility::Str::merge(lines, '\n');
   }
 
-  std::u16string pad_str_4_lines(const std::u16string& string) {
-    std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
+  std::u16string pad_str_4_lines(const std::u16string& string)
+  {
+      std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
 
-    unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-    for (unsigned int i = 0; i < padding_lines_needed; i++) {
-      lines.push_back(u"");
-    }
+      unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
+      for (unsigned int i = 0; i < padding_lines_needed; i++)
+      {
+        lines.push_back(u"");
+      }
 
-    return Utility::Str::merge(lines, u'\n');
+      return Utility::Str::merge(lines, u'\n');
+  }
+
+  Gender string_to_gender(const std::string& str)
+  {
+      std::unordered_map<std::string, Gender> strToGender = {
+          {"Male", Gender::MALE},
+          {"Female", Gender::FEMALE}
+      };
+
+      if (strToGender.contains(str))
+      {
+          return strToGender.at(str);
+      }
+
+      return Gender::NONE;
+  }
+
+  Plurality string_to_plurality(const std::string& str)
+  {
+      if (str == "Plural") return Plurality::PLURAL;
+      return Plurality::SINGULAR;
   }
 }; // namespace Text

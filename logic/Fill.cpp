@@ -420,7 +420,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
 
 static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    LOG_TO_DEBUG("Placing Plandomizer Items");
+    LOG_TO_DEBUG("Placing Non-Progress Items");
     std::unordered_map<Location*, Item> allPlandoLocations = {};
     for (auto& world : worlds)
     {
@@ -445,6 +445,7 @@ static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, Ite
             }
         }
         location->currentItem = item;
+        LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->getName());
     }
     return FillError::NONE;
 }
