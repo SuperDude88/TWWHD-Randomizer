@@ -336,7 +336,11 @@ ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
-    if (rpxOpen == false) loadRPX();
+    if (rpxOpen == false) {
+        if (loadRPX() != ELFError::NONE) {
+            return ModificationError::RPX_ERROR;
+        }
+    }
     if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json");
 
     for(const auto& symbol : symbolNames) {
@@ -389,7 +393,11 @@ ModificationError ModifyBoss::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyBoss::writeLocation(const Item& item) {
-    if (rpxOpen == false) loadRPX();
+    if (rpxOpen == false) {
+        if (loadRPX() != ELFError::NONE) {
+            return ModificationError::RPX_ERROR;
+        }
+    }
 
     for (const auto& [path, offset] : offsetsWithPath) {
         std::stringstream* stream = g_session.openGameFile(path);

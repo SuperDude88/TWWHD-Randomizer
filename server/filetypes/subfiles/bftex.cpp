@@ -314,7 +314,7 @@ namespace FileTypes::Subfiles {
         auto surfInfo = getSurfaceInfo(GX2SurfaceFormat(dds.format_), dds.header.width, dds.header.height, GX2SurfaceDim(1), GX2SurfaceDim(1), tileMode, GX2AAMode(0), 0);
 
         if(surfInfo.depth != 1) LOG_ERR_AND_RETURN(FTEXError::UNSUPPORTED_DEPTH);
-        if(surfInfo.surfSize > data.size()) LOG_ERR_AND_RETURN(FTEXError::REPLACEMENT_IMAGE_TOO_LARGE);
+        if((uint64_t)surfInfo.surfSize > data.size()) LOG_ERR_AND_RETURN(FTEXError::REPLACEMENT_IMAGE_TOO_LARGE);
 
         uint32_t s = 0xd0000 | swizzle_ << 8;
         if(tileMode == 1 || tileMode == 2 || tileMode == 3 || tileMode == 16) {

@@ -113,7 +113,7 @@ std::string base64pp::encode(std::span<std::uint8_t const> const input)
     std::string output;
     output.reserve((full_tripples + 2) * 4);
 
-    for (auto i = 0; i < full_tripples; ++i)
+    for (uint64_t i = 0; i < full_tripples; ++i)
     {
         auto const tripplet = input.subspan(i * 3, 3);
         auto const base64_chars =
@@ -167,7 +167,7 @@ std::optional<std::vector<std::uint8_t>> base64pp::decode(
     std::vector<std::uint8_t> decoded_bytes;
     decoded_bytes.reserve(((full_quadruples + 2) * 3) / 4);
 
-    for (auto i = 0; i < full_quadruples; ++i)
+    for (uint64_t i = 0; i < full_quadruples; ++i)
     {
         auto const quad  = encoded_str.substr(i * 4, 4);
         auto const bytes = decode_quad(quad[0], quad[1], quad[2], quad[3]);
