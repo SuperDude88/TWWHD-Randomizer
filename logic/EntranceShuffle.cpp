@@ -165,6 +165,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
                                      {"Headstone Island Interior",              "Headstone Island",                        "Edaichi",  0, 1, "sea",     45,     1}},
 };
 
+#ifdef ENABLE_DEBUG
 static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolName)
 {
     LOG_TO_DEBUG(poolName + ": [");
@@ -197,6 +198,7 @@ static void logMissingLocations(WorldPool& worlds)
     }
     LOG_TO_DEBUG("]");
 }
+#endif
 
 static EntranceShuffleError setAllEntrancesData(World& world)
 {

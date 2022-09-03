@@ -536,7 +536,7 @@ TweakError make_items_progressive() {
 	// Add an item get message for the normal magic meter since it didn't have one in vanilla
   std::unordered_map<std::string, std::u16string> messages = {
     {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
-    {"Spanish", DRAW_INSTANT + u"Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\nAhora podrás utilizar objetos mágicos!\0"s},
+    {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
     {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\nVous pouvez maintenant utiliser les objets magiques!\0"s},
   };
 
@@ -852,7 +852,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
   std::unordered_map<std::string, std::u16string> messageBegin = {
     {"English", u"You got "},
-    {"Spanish", u"Has obtenido un "},
+    {"Spanish", u"¡Has conseguido "},
     {"French", u"Vous obtenez "},
   };
 

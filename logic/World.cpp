@@ -140,7 +140,7 @@ void World::determineChartMappings()
     // The ordering of this array corresponds each treasure/triforce chart with
     // the island sector it's located in and the name of the sunken treasure location
     // in that room
-    static std::array<GameItem, 49> charts = {
+    std::array<GameItem, 49> charts = {
         GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
         GameItem::TreasureChart7,  // Sector 2 Star Island
         GameItem::TreasureChart24, // etc...
@@ -1022,6 +1022,16 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
         {
             item.setName(language, Text::Type::CRYPTIC, item.getUTF8Name(language, Text::Type::PRETTY));
         }
+
+        if (!itemObject["Gender"].IsNone())
+        {
+            itemTranslations[gameItemId][language].gender = Text::string_to_gender(itemObject["Gender"][language].As<std::string>());
+        }
+
+        if (!itemObject["Plurality"].IsNone())
+        {
+            itemTranslations[gameItemId][language].plurality = Text::string_to_plurality(itemObject["Plurality"][language].As<std::string>());
+        }
     }
 
     if (itemObject["Chain Locations"].IsSequence())
@@ -1082,24 +1092,24 @@ World::WorldLoadingError World::loadAreaTranslations(Yaml::Node& areaObject)
     // Load area names for all languages
     for (const auto& language : Text::supported_languages)
     {
-        hintRegions[areaName][language][Text::Type::STANDARD] = areaObject["Names"][language].As<std::string>();
+        hintRegions[areaName][language].types[Text::Type::STANDARD] = areaObject["Names"][language].As<std::string>();
 
         if (!areaObject["Pretty Names"].IsNone())
         {
-            hintRegions[areaName][language][Text::Type::PRETTY] = areaObject["Pretty Names"][language].As<std::string>();
+            hintRegions[areaName][language].types[Text::Type::PRETTY] = areaObject["Pretty Names"][language].As<std::string>();
         }
         else
         {
-            hintRegions[areaName][language][Text::Type::PRETTY] = hintRegions[areaName][language][Text::Type::STANDARD];
+            hintRegions[areaName][language].types[Text::Type::PRETTY] = hintRegions[areaName][language].types[Text::Type::STANDARD];
         }
 
         if (!areaObject["Cryptic Names"].IsNone())
         {
-            hintRegions[areaName][language][Text::Type::CRYPTIC] = areaObject["Cryptic Names"][language].As<std::string>();
+            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = areaObject["Cryptic Names"][language].As<std::string>();
         }
         else
         {
-            hintRegions[areaName][language][Text::Type::CRYPTIC] = hintRegions[areaName][language][Text::Type::PRETTY];
+            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = hintRegions[areaName][language].types[Text::Type::PRETTY];
         }
     }
 
@@ -1555,7 +1565,7 @@ std::string World::getUTF8HintRegion(const std::string& hintRegion, const std::s
 }
 std::u16string World::getUTF16HintRegion(const std::string& hintRegion, const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RED*/) const
 {
-    std::u16string str = Utility::Str::toUTF16(hintRegions.at(hintRegion).at(language).at(type));
+    std::u16string str = Utility::Str::toUTF16(hintRegions.at(hintRegion).at(language).types.at(type));
     str = Text::apply_name_color(str, color);
     return Utility::Str::RemoveUnicodeReplacements(str);
 }

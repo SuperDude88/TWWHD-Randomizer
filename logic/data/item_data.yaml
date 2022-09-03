@@ -6,6 +6,14 @@
     English: a |Heart Drop|
     Spanish: un |Corazón|
     French: un |Cœur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x00
 
 - Names:
@@ -16,6 +24,14 @@
     English: a |Green Rupee|
     Spanish: una |Rupia Verde|
     French: un |Rubis Vert|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x01
 
 - Names:
@@ -26,6 +42,14 @@
     English: a |Blue Rupee|
     Spanish: una |Rupia Azul|
     French: un |Rubis Bleu|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x02
 
 - Names:
@@ -36,6 +60,14 @@
     English: a |Yellow Rupee|
     Spanish: una |Rupia Amarilla|
     French: un |Rubis Jaune|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x03
 
 - Names:
@@ -46,6 +78,14 @@
     English: a |Red Rupee|
     Spanish: una |Rupia Roja|
     French: un |Rubis Rouge|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x04
 
 - Names:
@@ -56,6 +96,14 @@
     English: a |Purple Rupee|
     Spanish: una |Rupia Púrpura|
     French: un |Rubis Violet|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x05
 
 - Names:
@@ -66,6 +114,14 @@
     English: an |Orange Rupee|
     Spanish: una |Rupia Naranja|
     French: un |Rubis Orange|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x06
 
 - Names:
@@ -76,6 +132,14 @@
     English: a |Piece of Heart|
     Spanish: una |Pieza de Corazón|
     French: un |Quart de Cœur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x07
 
 - Names:
@@ -86,25 +150,49 @@
     English: a |Heart Container|
     Spanish: un |Contenedor de Corazón|
     French: un |Réceptacle de Cœur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x08
 
 - Names:
     English: Small Magic Drop
     Spanish: Jarra Mágica Pequeña
-    French:
+    French: Petite Jarre Magique
   Pretty Names:
     English: a |Small Magic Drop|
     Spanish: una |Jarra Mágica Pequeña|
+    French: une |Petite Jarre Magique|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x09
 
 - Names:
     English: Large Magic Drop
     Spanish: Jarra Mágica Grande
-    French:
+    French: Grande Jarre Magique
   Pretty Names:
     English: a |Large Magic Drop|
     Spanish: una |Jarra Mágica Grande|
+    French: une |Grande Jarre Magique|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x0A
 
@@ -116,6 +204,14 @@
     English: |Five Bombs|
     Spanish: |Cinco Bombas|
     French: |Cinq Bombes|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x0B
 
 - Names:
@@ -126,6 +222,14 @@
     English: |Ten Bombs|
     Spanish: |Diez Bombas|
     French: |Dix Bombes|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x0C
 
 - Names:
@@ -136,6 +240,14 @@
     English: |Twenty Bombs|
     Spanish: |Veinte Bombas|
     French: |Vingt Bombes|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x0D
 
 - Names:
@@ -146,6 +258,14 @@
     English: |Thirty Bombs|
     Spanish: |Treinta Bombas|
     French: |Trente Bombes|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x0E
 
 - Names:
@@ -156,6 +276,14 @@
     English: a |Silver Rupee|
     Spanish: una |Rupia Plateada|
     French: un |Rubis Argenté|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x0F
 
 - Names:
@@ -166,6 +294,14 @@
     English: |Ten Arrows|
     Spanish: |Diez Flechas|
     French: |Dix Flèches|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x10
 
 - Names:
@@ -176,6 +312,14 @@
     English: |Twenty Arrows|
     Spanish: |Veinte Flechas|
     French: |Vingt Flèches|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x11
 
 - Names:
@@ -186,6 +330,14 @@
     English: |Thirty Arrows|
     Spanish: |Treinta Flechas|
     French: |Trente Flèches|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x12
 
 - Names:
@@ -200,6 +352,14 @@
     English: a |key|
     Spanish: una |llave|
     French: une |clé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x13
   Small Key Dungeon: Dragon Roost Cavern
   Small Key Count: 4
@@ -217,6 +377,14 @@
     English: an |ominous key|
     Spanish: una |llave siniestra|
     French: une |clé menaçante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x14
   Big Key Dungeon: Dragon Roost Cavern
 
@@ -233,6 +401,14 @@
     English: a |key|
     Spanish: una |llave|
     French: une |clé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x15
 
 
@@ -244,6 +420,14 @@
     English: a |Fairy|
     Spanish: un |Hada|
     French: une |Fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x16
 
 # Dummy item to check for game beatability
@@ -253,6 +437,14 @@
     French:
   Pretty Names:
     English: Game Beatable
+    Spanish:
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
     Spanish:
     French:
   Game Item Id: 0x18
@@ -266,6 +458,14 @@
     English: a |Yellow Rupee|
     Spanish: una |Rupia Amarilla|
     French: un |Rubis Jaune|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x1A
 
 - Names:
@@ -276,6 +476,14 @@
     English: the |Dragon Roost Cavern Dungeon Map|
     Spanish: el |Mapa de la Mazmorra de la Cueva del Dragón|
     French: la |Carte du Donjon de la Caverne du Dragon|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x1B
   Map Dungeon: Dragon Roost Cavern
 
@@ -287,6 +495,14 @@
     English: the |Dragon Roost Cavern Compass|
     Spanish: la |Brújula de la Cueva del Dragón|
     French: la |Boussole de la Caverne du Dragon|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x1C
   Compass Dungeon: Dragon Roost Cavern
 
@@ -302,6 +518,14 @@
     English: a |key|
     Spanish: una |llave|
     French: une |clé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x1D
   Small Key Dungeon: Forbidden Woods
   Small Key Count: 1
@@ -315,6 +539,14 @@
     English: |Three Hearts|
     Spanish: |Tres Corazones|
     French: |Trois Cœurs|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x1E
 
 - Names:
@@ -325,6 +557,14 @@
     English: a |Joy Pendant|
     Spanish: un |Collar de la Felicidad|
     French: un |Pendentif du Bonheur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x1F
 
 - Names:
@@ -335,6 +575,14 @@
     English: a |Telescope|
     Spanish: un |Catalejo|
     French: une |Longue-Vue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x20
 
 - Names:
@@ -345,10 +593,18 @@
     English: a |Tingle Bottle|
     Spanish: una |Botella Tingle|
     French: une |Bouteille de Tingle|
-  Cryptic Text:
+  Cryptic Names:
     English: a |device that hasn't worked in 5 years|
     Spanish: un |dispositivo que no ha funcionado por 5 años|
     French: un |appareil qui ne fonctionne plus depuis 5 ans|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x21
 
 
@@ -364,6 +620,14 @@
     English: the |wand of the wind conductor|
     Spanish: la |batuta que conduce el viento|
     French: le |bâton conducteur du vent|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x22
 
 
@@ -379,6 +643,14 @@
     English: an |upgrade for your camera|
     Spanish: una |mejora para tu cámara|
     French: une |amélioration pour votre appareil photo|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x23
 
 
@@ -394,6 +666,14 @@
     English: a |storage for collectibles|
     Spanish: un |saco para guardar tu coleción|
     French: une |sacoche pour vos récompenses|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x24
 
 
@@ -409,6 +689,14 @@
     English: an |item to swing across platforms|
     Spanish: un |objeto para columpiarse entre plataformas|
     French: un |objet pour se balancer de plateforme en plateforme|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x25
 
 
@@ -420,6 +708,14 @@
     English: a |Deluxe Picto Box|
     Spanish: una |Caja Cromográfica|
     French: une |Boîte à Image DX|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x26
 
 - Names:
@@ -433,7 +729,15 @@
   Cryptic Names:
     English: an |upgrade for your bow|
     Spanish: una |mejora para tu arco|
-    French: une |améiloration pour votre arc|
+    French: une |amélioration pour votre arc|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x27
 
 
@@ -449,6 +753,14 @@
     English: the |strength to lift heavy rocks|
     Spanish: la |fuerza para levantar rockas pesadas|
     French: la |force de soulever de lourds rochers|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x28
 
 
@@ -464,6 +776,14 @@
     English: a |very heavy item|
     Spanish: un |objeto muy pesado|
     French: un |objet très lourd]
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x29
 
 
@@ -479,6 +799,14 @@
     English: |purple protection|
     Spanish: una |protección púrpura|
     French: une |protection violette|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x2A
 
 
@@ -494,6 +822,14 @@
     English: a |storage for food|
     Spanish: un |saco para guardar alimentos|
     French: une |sacoche à nourriture|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x2C
 
 
@@ -509,6 +845,14 @@
     English: an |item that always comes back to you|
     Spanish: un |objeto que siempre vuelve a tí|
     French: un |objet qui revient toujours|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x2D
 
 
@@ -524,6 +868,14 @@
     English: an |item that reels|
     Spanish: un |objeto que se estira y enrolla|
     French: un |objet qui s'allonge et se rétracte|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x2F
 
 
@@ -539,6 +891,14 @@
     English: a |storage for letters|
     Spanish: un |saco para guardar cartas|
     French: une |sacoche pour vos lettres|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x30
 
 
@@ -554,6 +914,14 @@
     English: an |explosive item|
     Spanish: un |objeto explosivo|
     French: un |objet explosif|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x31
 
 
@@ -564,6 +932,14 @@
   Pretty Names:
     English: |Heros Clothes|
     Spanish: las |Ropas del Héroe|
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
     French:
   Game Item Id: 0x32
 
@@ -579,6 +955,14 @@
     English: the |hammer of the dead|
     Spanish: el |martillo de los muertos|
     French: le |marteau de la mort|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x33
 
 
@@ -594,6 +978,14 @@
     English: a |magic leaf|
     Spanish: una |hoja mágica|
     French: une |feuille magique|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x34
 
 
@@ -605,6 +997,14 @@
     English: |Fire Ice Arrows|
     Spanish: las |Flechas de Fuego y Hielo|
     French: les |Flèches de Glace et de Feu|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0x35
 
 - Names:
@@ -615,6 +1015,14 @@
     English: a |Light Arrow|
     Spanish: las |Flechas de Luz|
     French: la |Flèche de Lumière|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x36
 
 - Names:
@@ -624,6 +1032,14 @@
   Pretty Names:
     English: |Heros New Clothes|
     Spanish: las |Ropas que solo ven los honestos|
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x37
 
@@ -639,26 +1055,50 @@
     English: an |upgrade for your blade|
     Spanish: una |mejora a tu cuchilla|
     French: une |amélioration pour votre épée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x38
 
 
 - Names:
     English: Master Sword Powerless
     Spanish: Espada Maestra sin restaurar
-    French: Excalibur ...
+    French: Excalibur Affaibli
   Pretty Names:
     English: the |Master Sword Powerless|
     Spanish: la |Espada Maestra sin restaurar|
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x39
 
 - Names:
     English: Master Sword Half
     Spanish: Espada Maestra semi-restaurada
-    French: Excalibur ...
+    French: Excalibur Mi-Réanimé
   Pretty Names:
     English: the |Master Sword Half|
     Spanish: la |Espada Maestra semi-restaurada|
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x3A
 
@@ -674,6 +1114,14 @@
     English: a |defensive item|
     Spanish: un |objeto de defensa|
     French: un |objet de défense|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x3B
 
 - Names:
@@ -684,6 +1132,14 @@
     English: the |Mirror Shield|
     Spanish: el |Escudo Espejo|
     French: le |Bouclier Miroir|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x3C
 
 - Names:
@@ -693,6 +1149,14 @@
   Pretty Names:
     English: a |Recovered Heros Sword|
     Spanish: una |Espada del Héroe Recuperada|
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x3D
 
@@ -704,6 +1168,14 @@
     English: a |Master Sword Full|
     Spanish: la |Espada Maestra Restaurada|
     French: |Excalibur Réanimé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x3E
 
 # alternate message
@@ -715,6 +1187,14 @@
     English: a |Piece of Heart|
     Spanish: una |Pieza de Corazón|
     French: un |Quart de Cœur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x3F
 
 - Names:
@@ -725,12 +1205,21 @@
     English: the |Forbidden Woods Big Key|
     Spanish: la |Gran Llave del Bosque Prohibido|
     French: la |Grande Clé des Bois Défendus|
-  Game Item Id: 0x40
-  Big Key Dungeon: Forbidden Woods
   Cryptic Names:
     English: an |ominous key|
     Spanish: una |llave siniestra|
     French: une |clé menaçante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
+  Game Item Id: 0x40
+  Big Key Dungeon: Forbidden Woods
+
 
 - Names:
     English: Forbidden Woods Dungeon Map
@@ -740,6 +1229,14 @@
     English: the |Forbidden Woods Dungeon Map|
     Spanish: el |Mapa de la Mazmorra del Bosque Prohibido|
     French: la |Carte du Donjon des Bois Défendus|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x41
   Map Dungeon: Forbidden Woods
 
@@ -751,6 +1248,14 @@
     English: a |Pirates Charm|
     Spanish: un |Amuleto Pirata|
     French: une |Amulette Pirate|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x42
 
 - Names:
@@ -761,6 +1266,14 @@
     English: the |Hero's Charm|
     Spanish: el |Amuleto del Héroe|
     French: une |Amulette du Héros|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x43
 
 - Names:
@@ -771,6 +1284,14 @@
     English: a |Skull Necklace|
     Spanish: un |Colgante Macabro|
     French: un |Collier Macabre|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x45
 
 - Names:
@@ -781,6 +1302,14 @@
     English: a |Boko Baba Seed|
     Spanish: una |Semilla de Boko Baba|
     French: une |Graine de Bokobaba|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x46
 
 - Names:
@@ -791,6 +1320,14 @@
     English: a |Golden Feather|
     Spanish: una |Pluma Dorada|
     French: une |Plume d'Or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x47
 
 - Names:
@@ -801,6 +1338,14 @@
     English: a |Knights Crest|
     Spanish: un |Blasón de Guerrero|
     French: un |Blason d'Epéiste|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x48
 
 - Names:
@@ -811,6 +1356,14 @@
     English: a |Red Chu Jelly|
     Spanish: un |Jugo de Chuchu Rojo|
     French: une |Gelée Chuchu Rouge|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x49
 
 - Names:
@@ -821,6 +1374,14 @@
     English: a |Green Chu Jelly|
     Spanish: un |Jugo de Chuchu Verde|
     French: une |Gelée Chuchu Verte|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x4A
 
 - Names:
@@ -831,6 +1392,14 @@
     English: a |Blue Chu Jelly|
     Spanish: un |Jugo de Chuchu Azul|
     French: une |Gelée Chuchu Bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x4B
 
 - Names:
@@ -841,6 +1410,14 @@
     English: a |Dungeon Map|
     Spanish: un |Mapa de la Mazmorra|
     French: une |Carte du Donjon|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x4C
 
 - Names:
@@ -851,6 +1428,14 @@
     English: a |Compass|
     Spanish: una |Brújula|
     French: une |Boussole|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x4D
 
 - Names:
@@ -865,6 +1450,14 @@
     English: an |ominous key|
     Spanish: una |llave siniestra|
     French: une |clé menaçante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x4E
 
 - Names:
@@ -879,6 +1472,14 @@
     English: a |glass container|
     Spanish: un |envase de vidrio|
     French: un |contenant en verre|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x50
 
 - Names:
@@ -889,6 +1490,14 @@
     English: a |Red Potion|
     Spanish: una |Poción Roja|
     French: une |Potion Rouge|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x51
 
 - Names:
@@ -899,6 +1508,14 @@
     English: a |Green Potion|
     Spanish: una |Poción Verde|
     French: une |Potion Verte|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x52
 
 - Names:
@@ -909,6 +1526,14 @@
     English: a |Blue Potion|
     Spanish: una |Poción Azul|
     French: une |Potion Bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x53
 
 - Names:
@@ -919,6 +1544,14 @@
     English: |Elixir Soup Half|
     Spanish: |Sopa de la Abuela (1/2)|
     French: la |Soupe de Mémé (1/2)|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x54
 
 - Names:
@@ -929,6 +1562,14 @@
     English: |Elixir Soup|
     Spanish: |Sopa de la Abuela|
     French: la |Soupe de Mémé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x55
 
 - Names:
@@ -939,15 +1580,31 @@
     English: |Bottled Water|
     Spanish: |Agua|
     French: de l'|Eau|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x56
 
 - Names:
     English: Fairy In Bottle
     Spanish: Hada
-    French:
+    French: Fée
   Pretty Names:
     English: a |Fairy In Bottle|
     Spanish: un |Hada|
+    French: une |Fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
     French:
   Game Item Id: 0x57
 
@@ -959,6 +1616,14 @@
     English: a |Forest Firefly|
     Spanish: una |Luciérnaga del bosque|
     French: une |Luciole de la Forêt|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x58
 
 - Names:
@@ -969,6 +1634,14 @@
     English: |Forest Water|
     Spanish: |Agua del bosque|
     French: de l'|Eau de la Forêt|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x59
 
 - Names:
@@ -979,6 +1652,14 @@
     English: a |Forbidden Woods Compass|
     Spanish: la |Brújula del Bosque Prohibido|
     French: la |Boussole des Bois Défendus|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x5A
   Compass Dungeon: Forbidden Woods
 
@@ -994,6 +1675,14 @@
     English: a |key|
     Spanish: una |llave|
     French: une |clé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x5B
   Small Key Dungeon: Tower of the Gods
   Small Key Count: 2
@@ -1011,6 +1700,14 @@
     English: an |ominous key|
     Spanish: una |llave siniestra|
     French: une |clé menaçante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x5C
   Big Key Dungeon: Tower of the Gods
 
@@ -1023,6 +1720,14 @@
     English: the |Tower of the Gods Dungeon Map|
     Spanish: la |Mapa de la Mazmorra de la Torre de los Dioses|
     French: la |Carte du Donjon de la Tour des Dieux|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x5D
   Map Dungeon: Tower of the Gods
 
@@ -1034,6 +1739,14 @@
     English: the |Tower of the Gods Compass|
     Spanish: la |Brújula de la Torre de los Dioses|
     French: la |Boussole de la Tour des Dieux|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x5E
   Compass Dungeon: Tower of the Gods
 
@@ -1045,6 +1758,14 @@
     English: the |Forsaken Fortress Dungeon Map|
     Spanish: el |Mapa de la Mazmorra de la Isla del Diablo|
     French: la |Carte du Donjon de la Forteresse Maudite|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x5F
   Map Dungeon: Forsaken Fortress
 
@@ -1056,6 +1777,14 @@
     English: the |Forsaken Fortress Compass|
     Spanish: la |Brújula de la Isla del Diablo|
     French: la |Boussole de la Forteresse Maudite|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x60
   Compass Dungeon: Forsaken Fortress
 
@@ -1071,6 +1800,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x61
 
 - Names:
@@ -1085,6 +1822,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x62
 
 - Names:
@@ -1099,6 +1844,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x63
 
 - Names:
@@ -1113,6 +1866,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x64
 
 - Names:
@@ -1127,6 +1888,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x65
 
 - Names:
@@ -1141,6 +1910,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x66
 
 - Names:
@@ -1155,6 +1932,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x67
 
 - Names:
@@ -1169,6 +1954,14 @@
     English: a |piece of the power of the gods|
     Spanish: una |pieza del poder de los dioses|
     French: un |fragment d'or|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x68
 
 - Names:
@@ -1183,6 +1976,14 @@
     English: a |blue jewel|
     Spanish: una |perla azul|
     French: un |joyau bleu|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x69
 
 - Names:
@@ -1197,6 +1998,14 @@
     English: a |red jewel|
     Spanish: una |perla roja|
     French: un |joyau rouge|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x6A
 
 - Names:
@@ -1211,6 +2020,14 @@
     English: a |green jewel|
     Spanish: una |perla verde|
     French: un |joyau vert|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x6B
 
 - Names:
@@ -1225,6 +2042,14 @@
     English: the |song of wind|
     Spanish: la |canción del viento|
     French: le |thème du vent|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x6D
 
 - Names:
@@ -1239,6 +2064,14 @@
     English: the |song of gales|
     Spanish: la |canción del tornado|
     French: le |thème de la tornade|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x6E
 
 - Names:
@@ -1253,6 +2086,14 @@
     English: the |song of command|
     Spanish: la |canción del control|
     French: le |thème du marionnettiste|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x6F
 
 - Names:
@@ -1267,6 +2108,14 @@
     English: the |song of the earth's god|
     Spanish: la |canción del sabio de la tierra|
     French: le |thème du dieu de la terre|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x70
 
 - Names:
@@ -1281,6 +2130,14 @@
     English: the |song of the wind's god|
     Spanish: la |canción del sabio del viento|
     French: le |thème du dieu du vent|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x71
 
 - Names:
@@ -1295,6 +2152,14 @@
     English: the |song of time|
     Spanish: la |canción del Sol|
     French: le |thème du soleil|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x72
 
 - Names:
@@ -1309,6 +2174,14 @@
     English: a |key|
     Spanish: una |llave|
     French: une |clé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x73
   Small Key Dungeon: Earth Temple
   Small Key Count: 3
@@ -1326,6 +2199,14 @@
     English: an |ominous key|
     Spanish: una |llave siniestra|
     French: une |clé menaçante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x74
   Big Key Dungeon: Earth Temple
 
@@ -1338,6 +2219,14 @@
     English: the |Earth Temple Dungeon Map|
     Spanish: el |Mapa de la Mazmorra del Templo de la Tierra|
     French: la |Carte du Donjon du Temple de la Terre|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x75
   Map Dungeon: Earth Temple
 
@@ -1349,6 +2238,14 @@
     English: the |Earth Temple Compass|
     Spanish: la |Brújula del Templo de la Tierra|
     French: la |Boussole du Temple de la Terre|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x76
   Compass Dungeon: Earth Temple
 
@@ -1360,6 +2257,14 @@
     English: a |Swift Sail|
     Spanish: una |Vela Veloz|
     French: une |Voile Rapide|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x77
 
 - Names:
@@ -1374,6 +2279,14 @@
     English: a |wind follower|
     Spanish: |aquello que sigue el viento|
     French: une |toile portante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x78
 
 - Names:
@@ -1384,6 +2297,14 @@
     English: |Triforce Chart 1 Deciphered|
     Spanish: el |Mapa de la Trifuerza 1 Decifrado|
     French: la |Carte de la Triforce 1 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x79
 
 - Names:
@@ -1394,6 +2315,14 @@
     English: |Triforce Chart 2 Deciphered|
     Spanish: el |Mapa de la Trifuerza 2 Decifrado|
     French: la |Carte de la Triforce 2 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x7A
 
 - Names:
@@ -1404,6 +2333,14 @@
     English: |Triforce Chart 3 Deciphered|
     Spanish: el |Mapa de la Trifuerza 3 Decifrado|
     French: la |Carte de la Triforce 3 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x7B
 
 - Names:
@@ -1414,6 +2351,14 @@
     English: |Triforce Chart 4 Deciphered|
     Spanish: el |Mapa de la Trifuerza 4 Decifrado|
     French: la |Carte de la Triforce 4 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x7C
 
 - Names:
@@ -1424,6 +2369,14 @@
     English: |Triforce Chart 5 Deciphered|
     Spanish: el |Mapa de la Trifuerza 5 Decifrado|
     French: la |Carte de la Triforce 5 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x7D
 
 - Names:
@@ -1434,6 +2387,14 @@
     English: |Triforce Chart 6 Deciphered|
     Spanish: el |Mapa de la Trifuerza 6 Decifrado|
     French: la |Carte de la Triforce 6 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x7E
 
 - Names:
@@ -1444,6 +2405,14 @@
     English: |Triforce Chart 7 Deciphered|
     Spanish: el |Mapa de la Trifuerza 7 Decifrado|
     French: la |Carte de la Triforce 7 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x7F
 
 - Names:
@@ -1454,6 +2423,14 @@
     English: |Triforce Chart 8 Deciphered|
     Spanish: el |Mapa de la Trifuerza 8 Decifrado|
     French: la |Carte de la Triforce 8 Décryptée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x80
 
 - Names:
@@ -1468,6 +2445,14 @@
     English: a |key|
     Spanish: una |llave|
     French: une |clé|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x81
   Small Key Dungeon: Wind Temple
   Small Key Count: 2
@@ -1480,6 +2465,14 @@
     English: |All Purpose Bait|
     Spanish: un |Cebo Multiuso|
     French: un |Appât Universel|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x82
 
 - Names:
@@ -1490,6 +2483,14 @@
     English: a |Hyoi Pear|
     Spanish: un |Fruto de ajinjín|
     French: un |Fruit Miam Miam|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x83
 
 - Names:
@@ -1504,6 +2505,14 @@
     English: an |ominous key|
     Spanish: una |llave siniestra|
     French: une |clé menaçante|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x84
   Big Key Dungeon: Wind Temple
 
@@ -1516,6 +2525,14 @@
     English: the |Wind Temple Dungeon Map|
     Spanish: el |Mapa de la Mazmorra del Templo del Viento|
     French: la |Carte du Donjon du Temple du Vent|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x85
   Map Dungeon: Wind Temple
 
@@ -1527,6 +2544,14 @@
     English: the |Wind Temple Compass|
     Spanish: la |Brújula del Templo del Viento|
     French: la |Boussole du Temple du Vent|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x86
   Compass Dungeon: Wind Temple
 
@@ -1538,6 +2563,14 @@
     English: a |Town Flower|
     Spanish: una |Flor de Pueblo|
     French: une |Fleur de la Ville|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x8C
 
 - Names:
@@ -1548,6 +2581,14 @@
     English: a |Sea Flower|
     Spanish: unas |Flores de Mar|
     French: une |Fleur Marine|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x8D
 
 - Names:
@@ -1558,6 +2599,14 @@
     English: an |Exotic Flower|
     Spanish: una |Flor del Sur|
     French: une |Fleur du Sud|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x8E
 
 - Names:
@@ -1568,6 +2617,14 @@
     English: a |Heros Flag|
     Spanish: un |Banderín del Héroe|
     French: un |Drapeau du Héros|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x8F
 
 - Names:
@@ -1578,6 +2635,14 @@
     English: a |Big Catch Flag|
     Spanish: un |Banderín del Pescador|
     French: un |Drapeau de la Pêche Miraculeuse|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x90
 
 - Names:
@@ -1588,6 +2653,14 @@
     English: a |Big Sale Flag|
     Spanish: un |Banderín de Saldo|
     French: un |Drapeau des Soldes|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x91
 
 - Names:
@@ -1598,6 +2671,14 @@
     English: a |Pinwheel|
     Spanish: un |Molinete|
     French: un |Moulin à Vent|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x92
 
 - Names:
@@ -1608,6 +2689,14 @@
     English: a |Sickle Moon Flag|
     Spanish: un |Banderín de la Luna|
     French: un |Drapeau du Croissant|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x93
 
 - Names:
@@ -1618,6 +2707,14 @@
     English: a |Skull Tower Idol|
     Spanish: unas |Cabezas Fósiles|
     French: une |Statue Ricrâne|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x94
 
 - Names:
@@ -1628,6 +2725,14 @@
     English: a |Fountain Idol|
     Spanish: una |Fuente de la Doncella|
     French: une |Statue Naïade|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x95
 
 - Names:
@@ -1638,6 +2743,14 @@
     English: a |Postman Statue|
     Spanish: una |Efigie del Cartero|
     French: une |Statue du Facteur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x96
 
 - Names:
@@ -1648,6 +2761,14 @@
     English: a |Shop Guru Statue|
     Spanish: el |Gran Mercader|
     French: une |Statue du Marchand|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x97
 
 - Names:
@@ -1658,6 +2779,14 @@
     English: |Fathers Letter|
     Spanish: la |Carta del padre|
     French: la |Lettre de Père|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x98
 
 - Names:
@@ -1672,6 +2801,14 @@
     English: the |writings of a letter sorter|
     Spanish: la |escritura de un repartidor de cartas|
     French: les |écrits d'un trieur de lettres|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x99
 
 - Names:
@@ -1686,6 +2823,14 @@
     English: the |writings of a woman|
     Spanish: la |escritura de una jovencita|
     French: les |écrits d'une jeune femme|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x9A
   Chain Locations:
     - Windfall Island - Cafe Postman Delivery
@@ -1703,6 +2848,14 @@
     English: the |writings of a creature|
     Spanish: la |escritura de una creatura|
     French: les |écrits d'une créature|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x9B
   Chain Locations:
     - Windfall Island - Maggie Delivery Reward
@@ -1720,6 +2873,14 @@
     English: a |pass for a private residence|
     Spanish: un |pase a una propiedad privada|
     French: un |laissez-passer d'une résidence privée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x9C
 
 - Names:
@@ -1730,6 +2891,14 @@
     English: a |Complimentary ID|
     Spanish: un |Cupón de elogios|
     French: un |Ticket Flatteur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x9D
 
 - Names:
@@ -1740,6 +2909,14 @@
     English: a |Fill Up Coupon|
     Spanish: un |Cupón de relleno|
     French: un |Ticket de Plein|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x9E
 
 - Names:
@@ -1750,6 +2927,14 @@
     English: a |Legendary Pictograph|
     Spanish: una |Luminografía Legendaria|
     French: une |Photo de Légende|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0x9F
 
 - Names:
@@ -1764,6 +2949,14 @@
     English: a |statue of a fairy|
     Spanish: una |estatua de un hada|
     French: une |statue d'une fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xA3
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
@@ -1781,6 +2974,14 @@
     English: a |statue of a fairy|
     Spanish: una |estatua de un hada|
     French: une |statue d'une fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xA4
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
@@ -1798,6 +2999,14 @@
     English: a |statue of a fairy|
     Spanish: una |estatua de un hada|
     French: une |statue d'une fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xA5
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
@@ -1815,6 +3024,14 @@
     English: a |statue of a fairy|
     Spanish: una |estatua de un hada|
     French: une |statue d'une fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xA6
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
@@ -1832,6 +3049,14 @@
     English: a |statue of a fairy|
     Spanish: una |estatua de un hada|
     French: une |statue d'une fée|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xA7
   Chain Locations:
     - Tingle Island - Ankle All Statues Reward
@@ -1845,6 +3070,14 @@
     English: the |Hurricane Spin|
     Spanish: el |Ataque Huracán|
     French: l'|Attaque Tourbillon|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xAA
 
 - Names:
@@ -1859,6 +3092,14 @@
     English: an |upgrade for your Rupee bag|
     Spanish: una |mejora para tu saco de rupias|
     French: une |amélioration pour votre bourse|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xAB
 
 - Names:
@@ -1869,6 +3110,14 @@
     English: the |Five Thousand Wallet|
     Spanish: el |Zurrón Gigante (5000)|
     French: la |Bourse (5000)|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xAC
 
 - Names:
@@ -1883,6 +3132,14 @@
     English: an |upgrade for your bomb bag|
     Spanish: una |mejora para tu saco de bombas|
     French: une |amélioration pour votre sac de bombes|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xAD
 
 - Names:
@@ -1893,6 +3150,14 @@
     English: a |Ninety Nine Bomb Bag|
     Spanish: un |Saco Gigante de Bombas (99)|
     French: le |Sac de Bombes (99)|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xAE
 
 - Names:
@@ -1907,6 +3172,14 @@
     English: an |upgrade for your quiver|
     Spanish: una |mejora para tu estuche de flechas|
     French: une |amélioration pour votre carquois|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xAF
   Chain Locations: # Quiver is potentially progression for 12 eye octos
     - Seven Star Isles - Big Octo
@@ -1921,6 +3194,14 @@
     English: the |Ninety Nine Quiver|
     Spanish: un |Carcaj Gigante (99)|
     French: le |Carquois (99)|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xB0
 
 # Added by rando
@@ -1932,6 +3213,14 @@
     English: a |Magic Meter|
     Spanish: una |Barra de Magia|
     French: de l'|Energie Magique|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xB1
 
 # Replaces magic upgrade
@@ -1946,7 +3235,15 @@
   Cryptic Names:
     English: an |upgrade for your magic meter|
     Spanish: una |mejora a tu poder mágico|
-    French: une |améiloration de votre énergie magique|
+    French: une |amélioration de votre énergie magique|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xB2
 
 - Names:
@@ -1957,6 +3254,14 @@
     English: a |Fifty Rupees|
     Spanish: |Cincuenta Rupias|
     French: |Cinquante Rubis|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0xB3
 
 - Names:
@@ -1967,6 +3272,14 @@
     English: a |Hundred Rupees|
     Spanish: |Cien Rupias|
     French: |Cent Rubis|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0xB4
 
 - Names:
@@ -1977,6 +3290,14 @@
     English: a |Hundred Fifty Rupees|
     Spanish: |Ciento cincuenta Rupias|
     French: |Cent-Cinquante Rubis|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0xB5
 
 - Names:
@@ -1987,6 +3308,14 @@
     English: a |Two Hundred Rupees|
     Spanish: |Doscientas Rupias|
     French: |Deux-Cents Rubis|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0xB6
 
 - Names:
@@ -1997,6 +3326,14 @@
     English: a |Two Hundred Fifty Rupees|
     Spanish: |Doscientas cincuenta Rupias|
     French: |Deux-Cent-Cinquante Rubis|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Plural
+    Spanish:
+    French:
   Game Item Id: 0xB7
 
 - Names:
@@ -2007,6 +3344,14 @@
     English: a |Rainbow Rupee|
     Spanish: una |Rupia Arcoíris|
     French: un |Rubis Arc-en-Ciel|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xB8
 
 - Names:
@@ -2017,6 +3362,14 @@
     English: a |Submarine Chart|
     Spanish: un |Mapa de Submarinos|
     French: une |Carte des Sous-marins|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC2
 
 - Names:
@@ -2027,6 +3380,14 @@
     English: |Beedle's Chart|
     Spanish: un |Mapa de Terry|
     French: une |Carte de Terry|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC3
 
 - Names:
@@ -2037,6 +3398,14 @@
     English: a |Platform Chart|
     Spanish: un |Mapa de Atalayas|
     French: une |Carte des Tours de Guet|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC4
 
 - Names:
@@ -2047,6 +3416,14 @@
     English: a |Light Ring Chart|
     Spanish: un |Mapa de círculos de Luz|
     French: une |Carte des Cercles de Lumière|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC5
 
 - Names:
@@ -2057,6 +3434,14 @@
     English: a |Secret Cave Chart|
     Spanish: un |Mapa de Cuevas Secretas|
     French: une |Carte Secrète|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC6
 
 - Names:
@@ -2067,6 +3452,14 @@
     English: a |Sea Hearts Chart|
     Spanish: un |Mapa Marino de Corazones|
     French: une |Carte Marine des Cœurs|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC7
 
 - Names:
@@ -2077,6 +3470,14 @@
     English: an |Island Hearts Chart|
     Spanish: un |Mapa Isleño de Corazones|
     French: une |Carte Insulaire des Cœurs|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC8
 
 - Names:
@@ -2087,6 +3488,14 @@
     English: a |Great Fairy Chart|
     Spanish: un |Mapa de las Grandes Hadas|
     French: une |Carte des Grandes Fées|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xC9
 
 - Names:
@@ -2097,6 +3506,14 @@
     English: an |Octo Chart|
     Spanish: un |Mapa de Calamares|
     French: une |Carte des Kalamars|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xCA
 
 - Names:
@@ -2107,6 +3524,14 @@
     English: an |INcredible Chart|
     Spanish: un |Mapa A-lu-ci-nante|
     French: une |Super Carte|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xCB
 
 - Names:
@@ -2121,6 +3546,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xCC
 
 - Names:
@@ -2135,6 +3568,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xCD
 
 - Names:
@@ -2149,6 +3590,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xCE
 
 - Names:
@@ -2163,6 +3612,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xCF
 
 - Names:
@@ -2177,6 +3634,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD0
 
 - Names:
@@ -2191,6 +3656,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD1
 
 - Names:
@@ -2205,6 +3678,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD2
 
 - Names:
@@ -2219,6 +3700,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD3
 
 - Names:
@@ -2233,6 +3722,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD4
 
 - Names:
@@ -2247,6 +3744,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD5
 
 - Names:
@@ -2261,6 +3766,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD6
 
 - Names:
@@ -2275,6 +3788,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD7
 
 - Names:
@@ -2289,6 +3810,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD8
 
 - Names:
@@ -2303,6 +3832,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xD9
 
 - Names:
@@ -2317,6 +3854,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xDA
 
 - Names:
@@ -2331,6 +3876,14 @@
     English: a |map of fear|
     Spanish: un |mapa terrorífico|
     French: une |carte de la peur|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xDB
   Chain Locations:
     - Great Sea - Ghost Ship Chest
@@ -2344,6 +3897,14 @@
     English: |Tingle's Chart|
     Spanish: el |Mapa de Tingle|
     French: la |Carte de Tingle|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xDC
 
 - Names:
@@ -2358,6 +3919,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xDD
 
 - Names:
@@ -2372,6 +3941,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xDE
 
 - Names:
@@ -2386,6 +3963,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xDF
 
 - Names:
@@ -2400,6 +3985,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE0
 
 - Names:
@@ -2414,6 +4007,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE1
 
 - Names:
@@ -2428,6 +4029,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE2
 
 - Names:
@@ -2442,6 +4051,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE3
 
 - Names:
@@ -2456,6 +4073,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE4
 
 - Names:
@@ -2470,6 +4095,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE5
 
 - Names:
@@ -2484,6 +4117,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE6
 
 - Names:
@@ -2498,6 +4139,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE7
 
 - Names:
@@ -2512,6 +4161,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE8
 
 - Names:
@@ -2526,6 +4183,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xE9
 
 - Names:
@@ -2540,6 +4205,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xEA
 
 - Names:
@@ -2554,6 +4227,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xEB
 
 - Names:
@@ -2568,6 +4249,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xEC
 
 - Names:
@@ -2582,6 +4271,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xED
 
 - Names:
@@ -2596,6 +4293,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xEE
 
 - Names:
@@ -2610,6 +4315,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xEF
 
 - Names:
@@ -2624,6 +4337,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF0
 
 - Names:
@@ -2638,6 +4359,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF1
 
 - Names:
@@ -2652,6 +4381,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF2
 
 - Names:
@@ -2666,6 +4403,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF3
 
 - Names:
@@ -2680,6 +4425,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF4
 
 - Names:
@@ -2694,6 +4447,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF5
 
 - Names:
@@ -2708,6 +4469,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF6
 
 - Names:
@@ -2722,6 +4491,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF7
 
 - Names:
@@ -2736,6 +4513,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF8
 
 - Names:
@@ -2750,6 +4535,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xF9
 
 - Names:
@@ -2764,6 +4557,14 @@
     English: a |purple map|
     Spanish: un |mapa púrpura|
     French: une |carte violette|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xFA
 
 - Names:
@@ -2778,6 +4579,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xFB
 
 - Names:
@@ -2792,6 +4601,14 @@
     English: a |purple map|
     Spanish: un |mapa púrpura|
     French: une |carte violette|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xFC
 
 - Names:
@@ -2806,6 +4623,14 @@
     English: a |blue map|
     Spanish: un |mapa azul|
     French: une |carte bleue|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xFD
 
 - Names:
@@ -2820,4 +4645,12 @@
     English: a |purple map|
     Spanish: un |mapa púrpura|
     French: une |carte violette|
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
   Game Item Id: 0xFE

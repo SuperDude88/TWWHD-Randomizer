@@ -135,8 +135,8 @@ public:
     std::map<std::string, Item> itemEntries = {};
     std::map<std::string, AreaEntry> areaEntries = {};
     std::map<std::string, Location> locationEntries = {};
-    std::map<GameItem, std::map<std::string, std::map<Text::Type, std::string>>> names; // game item names for all languages, keyed by GameItemId, language, and type
-    std::map<std::string, std::map<std::string, std::map<Text::Type, std::string>>> hintRegions; // hint region names for all languages, key'd by name, language, and type
+    std::map<GameItem, std::map<std::string, Text::Translation>> itemTranslations; // game item names for all languages, keyed by GameItemId, language, and type
+    std::map<std::string, std::map<std::string, Text::Translation>> hintRegions; // hint region names for all languages, key'd by name, language, and type
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::unordered_map<std::string, Dungeon> dungeons = {};

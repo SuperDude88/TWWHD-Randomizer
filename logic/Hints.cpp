@@ -434,7 +434,7 @@ static HintError generateItemHintMessage(Location* location)
     // Angular Isles and Forbidden Woods should use the plural tense in French even if they're a single area being referred to
     std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" détiendrait "s : u" détiendraient "s;
 
-    location->hintText["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + u" is located in "s + englishRegionText + u"."s;
+    location->hintText["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + u" can be found at "s + englishRegionText + u"."s;
     location->hintText["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + u" se encuentra en "s + spanishRegionText + u"."s;
     location->hintText["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + u"."s;
     return HintError::NONE;

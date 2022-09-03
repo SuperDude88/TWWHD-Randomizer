@@ -5,6 +5,8 @@
 #include "../seedgen/seed.hpp"
 #include "../seedgen/permalink.hpp"
 #include "../seedgen/tracker_permalink.hpp"
+#include "../server/utility/stringUtil.hpp"
+#include "../server/utility/file.hpp"
 #include "../libs/Yaml.hpp"
 
 #include <QMessageBox>
@@ -823,12 +825,15 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 void MainWindow::load_locations()
 {
     auto locationDataPath = DATA_PATH "logic/data/location_data.yaml";
+    std::string locationDataStr;
+    Utility::getFileContents(locationDataPath, locationDataStr);
+    locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
-    Yaml::Parse(locationDataTree, locationDataPath);
+    Yaml::Parse(locationDataTree, locationDataStr);
     for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
     {
         Yaml::Node& locationObject = (*locationObjectIt).second;
-        std::string name = locationObject["Name"].As<std::string>();
+        std::string name = Utility::Str::RemoveUnicodeReplacements(locationObject["Names"]["English"].As<std::string>());
         locationCategories.push_back({});
         for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)
         {

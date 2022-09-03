@@ -580,7 +580,11 @@ void Item::saveDelayedItemId()
 
 std::string Item::getName() const
 {
-		return world->names[gameItemId]["English"][Text::Type::STANDARD];
+		if (world != nullptr)
+		{
+				return world->itemTranslations.at(gameItemId).at("English").types.at(Text::Type::STANDARD);
+		}
+		return gameItemToName(gameItemId);
 }
 
 std::string Item::getUTF8Name(const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RAW*/, const bool& showWorld /*= false*/) const
@@ -590,7 +594,7 @@ std::string Item::getUTF8Name(const std::string& language /*= "English"*/, const
 
 std::u16string Item::getUTF16Name(const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RED*/, const bool& showWorld /*= false*/) const
 {
-		std::u16string str = Utility::Str::toUTF16(world->names[gameItemId][language][type]);
+		std::u16string str = Utility::Str::toUTF16(world->itemTranslations[gameItemId][language].types[type]);
 		str = Text::apply_name_color(str, color);
 		if (showWorld)
 		{
@@ -601,7 +605,7 @@ std::u16string Item::getUTF16Name(const std::string& language /*= "English"*/, c
 
 void Item::setName(const std::string& language, const Text::Type& type, const std::string& name_)
 {
-		world->names[gameItemId][language][type] = name_;
+		world->itemTranslations[gameItemId][language].types[type] = name_;
 }
 
 void Item::setAsMajorItem()

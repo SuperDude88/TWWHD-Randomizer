@@ -27,16 +27,20 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     Random_Init(integer_seed);
 
+    config.settings = settings;
+    config.seed = seed;
+    ConfigError err = writeToFile("error_config.yaml", config);
+    if (err != ConfigError::NONE)
+    {
+        std::cout << "Could not write error_config to file" << std::endl;
+        return 1;
+    }
+
     int worldCount = 1;
     WorldPool worlds (worldCount);
     std::vector<Settings> settingsVector (1, settings);
 
     int retVal = generateWorlds(worlds, settingsVector);
-
-    config.settings = settings;
-    config.seed = seed;
-    ConfigError err = writeToFile("error_config.yaml", config);
-    //TODO: check ConfigError?
 
     if (retVal != 0)
     {
