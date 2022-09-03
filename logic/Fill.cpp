@@ -12,17 +12,19 @@
 
 static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
 {
-    LOG_TO_DEBUG("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
-    LOG_TO_DEBUG("Items:");
-    for (auto& item : items)
-    {
-        LOG_TO_DEBUG("\t" + item.getName());
-    }
-    LOG_TO_DEBUG("Location:");
-    for (auto location : locations)
-    {
-        LOG_TO_DEBUG("\t" + location->getName() + " in world " + std::to_string(location->world->getWorldId()));
-    }
+    #ifdef ENABLE_DEBUG
+        LOG_TO_DEBUG("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
+        LOG_TO_DEBUG("Items:");
+        for (auto& item : items)
+        {
+            LOG_TO_DEBUG("\t" + item.getName());
+        }
+        LOG_TO_DEBUG("Location:");
+        for (auto location : locations)
+        {
+            LOG_TO_DEBUG("\t" + location->getName() + " in world " + std::to_string(location->world->getWorldId()));
+        }
+    #endif
 }
 
 #define ENOUGH_SPACE_CHECK(items, locations) if (items.size() > locations.size()) {logItemsAndLocations(items, locations);return FillError::MORE_ITEMS_THAN_LOCATIONS;}

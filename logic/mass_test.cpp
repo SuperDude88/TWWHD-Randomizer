@@ -44,7 +44,7 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     if (retVal != 0)
     {
-        std::cout << "Generation after changing setting \"" << settingName << "\" failed." << std::endl;
+        std::cout << "Generation after changing setting \"" << settingName << "\" failed.\nSettings saved to \"error_config.yaml\"" << std::endl;
         return 1;
     }
     return 0;
@@ -201,4 +201,7 @@ void massTest(Config& newConfig)
     multiWorldTest(settings1);
 
     std::cout << "All settings tests passed" << std::endl;
+
+    // Delete error_config if everything passes
+    std::filesystem::remove("./error_config.yaml");
 }

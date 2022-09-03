@@ -235,8 +235,7 @@ bool World::chartLeadsToSunkenTreasure(const Location& location, const std::stri
         LOG_TO_DEBUG("Non-sunken treasure location passed into sunken treasure check: " + location.getName());
         return false;
     }
-
-    auto islandName = std::string(location.getName().begin(), location.getName().begin() + location.getName().find(" - Sunken Treasure"));
+    auto islandName = location.getName().substr(0, location.getName().find(" - Sunken Treasure"));
     size_t islandNumber = islandNameToRoomIndex(islandName);
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
