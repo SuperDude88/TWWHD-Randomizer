@@ -441,7 +441,7 @@ TweakError allow_all_items_to_be_field_items() {
 TweakError remove_shop_item_forced_uniqueness_bit() {
 	const uint32_t shop_item_data_list_start = 0x101eaea4;
 
-	for (const uint8_t& shop_item_index : { 0x0, 0xB, 0xC, 0xD }) {
+	for (const uint8_t shop_item_index : { 0x0, 0xB, 0xC, 0xD }) {
 		const uint32_t shop_item_data_addr = shop_item_data_list_start + shop_item_index * 0x10;
 		uint8_t buy_requirements_bitfield = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, shop_item_data_addr + 0xC));
 		buy_requirements_bitfield = (buy_requirements_bitfield & (~0x2));

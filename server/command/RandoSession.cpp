@@ -63,8 +63,7 @@ public:
         auto max_tasks = getTotalTasks();
         std::unique_lock<std::mutex> tasks_lock(tasks_mutex); //Don't really need this, just using it for the condition_variable
         task_finished.wait(tasks_lock, [this, max_tasks] {
-            int dialogValue = int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f));
-            UPDATE_DIALOG_VALUE(dialogValue)
+            UPDATE_DIALOG_VALUE(int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f)))
             return tasks_total == 0;
         });
         waiting = false;

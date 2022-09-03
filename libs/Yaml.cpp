@@ -1735,7 +1735,7 @@ namespace Yaml
                 return;
             }
             Node::eType type = (*it)->Type;
-            ReaderLine * pLine = *it;
+            // ReaderLine * pLine = *it; comment out line for this project
 
             // Handle next line.
             switch(type)
@@ -1875,7 +1875,7 @@ namespace Yaml
         void ParseScalar(Node & node, std::list<ReaderLine *>::iterator & it)
         {
             std::string data = "";
-            ReaderLine * pFirstLine = *it;
+            // ReaderLine * pFirstLine = *it;
             ReaderLine * pLine = *it;
 
             // Check if current line is a block scalar.
