@@ -94,10 +94,6 @@ TextReplacements generate_text_replacements(World& world)
   auto savageFloor50Spanish = savageFloor50.getUTF16Name("Spanish", Type::CRYPTIC, Color::NONE);
   std::u16string spanishSavageConjunction = savageFloor50Spanish[0] == u'i' || savageFloor50Spanish[0] == u'I' ? u" e " : u" y ";
 
-  // For the or conjunction use 'u' instead of 'o' when the last item starts with an 'o'
-  auto beedle900Spanish = beedle900.getUTF16Name("Spanish", Type::STANDARD, Color::NONE);
-  std::u16string spanishBeedleShopLetterConjunction = beedle900Spanish[0] == u'o' || beedle900Spanish[0] == u'O' ? u", u " : u", o ";
-
   // Spanish conjugations for sploosh and beedle items
   std::u16string splooshFirstSpanishConjugation = get_spanish_conjugation(splooshFirstPrize);
   std::u16string splooshSecondSpanishConjugation = get_spanish_conjugation(splooshSecondPrize);
@@ -105,8 +101,8 @@ TextReplacements generate_text_replacements(World& world)
   std::u16string beedle950SpanishConjugation = get_spanish_conjugation(beedle950);
   std::u16string beedle900SpanishConjugation = get_spanish_conjugation(beedle900);
 
-  std::u16string beedle950SpanishPlurality = IS_SINGULAR(beedle950, "Spanish") ? u"cuesta " : u"cuestan ";
-  std::u16string beedle900SpanishPlurality = IS_SINGULAR(beedle900, "Spanish") ? u"cuesta " : u"cuestan ";
+  std::u16string beedle950SpanishPlurality = IS_SINGULAR(beedle950, "Spanish") ? u" cuesta " : u" cuestan ";
+  std::u16string beedle900SpanishPlurality = IS_SINGULAR(beedle900, "Spanish") ? u" cuesta " : u" cuestan ";
 
   // Format for text replacements:
   // Message Label,
@@ -159,8 +155,8 @@ TextReplacements generate_text_replacements(World& world)
                   word_wrap_string(u"Participate for the chance to win " + auction5.getUTF16Name("English", Text::Type::PRETTY) + u", " +
                   auction40.getUTF16Name("English", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("English", Text::Type::PRETTY) + u", " +
                   auction80.getUTF16Name("English", Text::Type::PRETTY) + u", and " + auction100.getUTF16Name("English", Text::Type::PRETTY) + u'!', 43) + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + u"¡Aviso! Gran subasta de Taura" + TEXT_COLOR_DEFAULT + u"\nHorario: Tras la puesta del sol\n¡Esperamos su visita!\n\n\n" +
-                  word_wrap_string(u"¡Participa por una oportunidad de ganar " + auction5.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " +
+      {"Spanish", TEXT_COLOR_RED + u"¡Aviso! Gran subasta de Taura" + TEXT_COLOR_DEFAULT + u"\nHorario: Tras la puesta del sol\n¡Esperamos su visita!" + TEXT_COLOR_DEFAULT + u"\n\n" +
+                  u"¡Participa por una oportunidad de ganar\n" + word_wrap_string(auction5.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " +
                   auction40.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " +
                   auction80.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + spanishAuctionFlyerConjunction + auction100.getUTF16Name("Spanish", Text::Type::PRETTY) + u'!', 43) + u'\0'},
       {"French",  TEXT_COLOR_DEFAULT + u"Avis: Enchères de Mercantîle." + TEXT_COLOR_DEFAULT + u"\nLes enchères débuteront à la nuit tombée." + TEXT_COLOR_DEFAULT + u"\nVous y êtes cordialement invités." + TEXT_COLOR_DEFAULT + u"\n\n" +
@@ -202,10 +198,10 @@ TextReplacements generate_text_replacements(World& world)
                     pad_str_4_lines(word_wrap_string(u"Do you have need of " + beedle500.getUTF16Name("English", Text::Type::PRETTY) + u", " + beedle950.getUTF16Name("English", Text::Type::PRETTY) + u", or " +
                     beedle900.getUTF16Name("English", Text::Type::PRETTY) + u"? We have them at special bargain prices.", 39)) + u"\n  BUT WE HAVE ONLY ONE OF EACH!\n\n\n\n  If you're interested, go to the Shop Ship\n  near " + TEXT_COLOR_RED +
                   u"Rock Spire Island" + TEXT_COLOR_DEFAULT + u". First come,\n  first served! I can't wait to serve you!\n\n  To those who took the time to read this\n  letter...please accept my humble thanks.\n     Asst. Manager, Rock Spire Shop Ship" + TEXT_END},
-      {"Spanish", u"  Estimado Cliente, discúlpenos por esta\n  carta inesperada. Si la siguiente no\n  le interesa, no dude en desecharla.\n\n\n  ¡¡¡PERO ESTA ES SU GRAN OPORTUNIDAD!!!\n\n\n" +
-                     pad_str_4_lines(word_wrap_string(u"¿Necesita " + beedle500.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + beedle950.getUTF16Name("Spanish", Text::Type::PRETTY) + spanishBeedleShopLetterConjunction +
-                     beedle900.getUTF16Name("Spanish", Text::Type::PRETTY) + u"? Están a un precio increíble!", 39)) + u"\n  ¡PERO SOLO TENEMOS UNO DE CADA UNO!\n\n\n\n  ¡Si le interesa, no espere y diríjase\n  a la Tienda cerca de la " + TEXT_COLOR_RED +
-                   u"Isla de los\nPilares" + TEXT_COLOR_DEFAULT + u". El primero que venga,\n  se lo lleva! Lo esperamos con ansias!\n  Para aquellos que se hayan tomado el\n  tiempo de leer esta carta...por favor\n  acepten mi humilde agradecimiento.\n\n   Tienda de Terry en la Isla de los Pilares." + TEXT_END},
+      {"Spanish", u"  Le pedimos disculpas si esta\n  comunicación no es de su interés.\n  Si es así, por favor, ignore esta carta.\n\n\n¡Gran oferta exclusiva!\n\n\n  - " +
+                    beedle500.getUTF16Name("Spanish") + u"\n  - " + beedle950.getUTF16Name("Spanish") + u"\n  - " + beedle900.getUTF16Name("Spanish") +
+                  u"\n\n  Tres artículos de gran valor, a precios\n  de promoción.\n\n\n  * Solo disponemos de uno de cada tipo.\n\n\n\n  Lo esperamos en las proximidades\n  de la " + TEXT_COLOR_RED +
+                  u"Isla de los Pilares" + TEXT_COLOR_DEFAULT + u".\n  ¡No deje escapar esta oportunidad!\n\n  Le agradecemos que se haya tomado\n  el tiempo de leer esta carta.\n     Jefe suplente\n     Sucursal Isla de los Pilares" + TEXT_END},
       {"French",  u"  Cher Client,\n  Excusez-nous pour ce courrier\n  inattendu. N'hésitez pas à le\n  détruire s'il vous importune.\n\n  Voici une chance unique, pour vous seul!\n\n\n" +
                     pad_str_4_lines(word_wrap_string(u"Besoin " + beedle500FrenchArticle + beedle500.getUTF16Name("French", Text::Type::PRETTY) + u", " + beedle950FrenchArticle + beedle950.getUTF16Name("French", Text::Type::PRETTY) + u", " +
                     beedle900FrenchArticle + beedle900.getUTF16Name("French", Text::Type::PRETTY) + u"? Nous vous en proposons à des prix exceptionnels!", 39)) + u"\n  Mais attention : nous n'avons qu'un\n  seul article de chaque sorte!\n\n" +
@@ -284,7 +280,7 @@ TextReplacements generate_text_replacements(World& world)
       {"French",  word_wrap_string(TEXT_COLOR_RED + beedle500.getUTF16Name("French")  + u".  500 Rubis." + TEXT_COLOR_DEFAULT, 43) + u"\nIl ne me reste que celui-ci!" + TEXT_END}}},
      {"12109",
      {{"English", word_wrap_string(beedle500EnglishPronoun + beedle500.getUTF16Name("English") + beedle500EnglishPlurality + u"a mere " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
-      {"Spanish", word_wrap_string(CAPITAL + beedle500SpanishConjugation + beedle500.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u"- Solo " + TEXT_COLOR_RED + u"500 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\n¡Cómprala sin pensarlo dos veces!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
+      {"Spanish", word_wrap_string(CAPITAL + beedle500SpanishConjugation + beedle500.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u" - Solo " + TEXT_COLOR_RED + u"500 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\n¡Cómprala sin pensarlo dos veces!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
       {"French",  word_wrap_string(beedle500.getUTF16Name("French") + u" seulement " + TEXT_COLOR_RED + u"500 Rubis" + TEXT_COLOR_DEFAULT, 43) + u".\nAcheter!\n" + TWO_CHOICES + u"Oui\nSans façon" + TEXT_END}}},
 
      // Rock Spire Shop 950 Rupee Item
