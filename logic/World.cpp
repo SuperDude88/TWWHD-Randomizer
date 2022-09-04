@@ -1136,7 +1136,7 @@ World::WorldLoadingError World::loadPlandomizer()
     std::string worldName = "World " + std::to_string(worldId + 1);
     Yaml::Node plandoLocations;
     Yaml::Node plandoEntrances;
-    std::string plandoStartingIsland;
+    std::string plandoStartingIsland = "";
     // Grab the YAML object which holds the locations for this world.
     // If there's only one world, then allow the plandomizer file to not
     // have the world specification
@@ -1183,11 +1183,20 @@ World::WorldLoadingError World::loadPlandomizer()
     }
 
     // Process starting island
-    plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
-    if (plandomizer.startingIslandRoomIndex == 0)
+    if (plandoStartingIsland != "")
     {
-        ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
-        return WorldLoadingError::PLANDOMIZER_ERROR;
+        plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
+        if (plandomizer.startingIslandRoomIndex == 0)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
+        else
+        {
+            // Automatically turn on random starting island if one is specified in
+            // the plandomizer file
+            settings.randomize_starting_island = true;
+        }
     }
 
     // Process Locations
