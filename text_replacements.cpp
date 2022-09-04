@@ -33,6 +33,18 @@ static std::u16string get_spanish_conjugation(Item& item)
   return u"";
 }
 
+static std::u16string get_english_pronoun(Item& item)
+{
+    auto& world = *item.getWorld();
+    return IS_PLURAL(item, "English") ? u"These " : u"This ";
+}
+
+static std::u16string get_english_plurality(Item& item)
+{
+    auto& world = *item.getWorld();
+    return IS_PLURAL(item, "English") ? u" are " : u" is ";
+}
+
 TextReplacements generate_text_replacements(World& world)
 {
   // Get all relevant items
@@ -80,12 +92,12 @@ TextReplacements generate_text_replacements(World& world)
   std::u16string beedle900FrenchArticle = vowels.contains(beedle900.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
 
   // If the beedle item is a plural in English, it should say "These <item> are" instead of "This <item> is"
-  std::u16string beedle500EnglishPronoun   = IS_PLURAL(beedle500, "English") ? u"These " : u"This ";
-  std::u16string beedle500EnglishPlurality = IS_PLURAL(beedle500, "English") ? u" are " : u" is ";
-  std::u16string beedle950EnglishPronoun   = IS_PLURAL(beedle950, "English") ? u"These " : u"This ";
-  std::u16string beedle950EnglishPlurality = IS_PLURAL(beedle950, "English") ? u" are " : u" is ";
-  std::u16string beedle900EnglishPronoun   = IS_PLURAL(beedle900, "English") ? u"These " : u"This ";
-  std::u16string beedle900EnglishPlurality = IS_PLURAL(beedle900, "English") ? u" are " : u" is ";
+  std::u16string beedle500EnglishPronoun   = get_english_pronoun(beedle500);
+  std::u16string beedle500EnglishPlurality = get_english_plurality(beedle500);
+  std::u16string beedle950EnglishPronoun   = get_english_pronoun(beedle950);
+  std::u16string beedle950EnglishPlurality = get_english_plurality(beedle950);
+  std::u16string beedle900EnglishPronoun   = get_english_pronoun(beedle900);
+  std::u16string beedle900EnglishPlurality = get_english_plurality(beedle900);
 
   // If the last item in a list in spanish with an 'i' change the and conjunction to 'e' instead of 'y'
   auto auction100Spanish = auction60.getUTF16Name("Spanish", Type::PRETTY, Color::NONE);
@@ -152,7 +164,7 @@ TextReplacements generate_text_replacements(World& world)
      // Flyer telling players which items the auction has
      {"00804",
      {{"English", TEXT_COLOR_DEFAULT + u"Notice: Windfall Auction Tonight!" + TEXT_COLOR_DEFAULT + u"\nBidding starts at dusk. All comers welcome!" + TEXT_COLOR_DEFAULT + u"\n\n\n" +
-                  word_wrap_string(u"Participate for the chance to win " + auction5.getUTF16Name("English", Text::Type::PRETTY) + u", " +
+                  u"Participate for the chance to win\n" + word_wrap_string(auction5.getUTF16Name("English", Text::Type::PRETTY) + u", " +
                   auction40.getUTF16Name("English", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("English", Text::Type::PRETTY) + u", " +
                   auction80.getUTF16Name("English", Text::Type::PRETTY) + u", and " + auction100.getUTF16Name("English", Text::Type::PRETTY) + u'!', 43) + u'\0'},
       {"Spanish", TEXT_COLOR_RED + u"¡Aviso! Gran subasta de Taura" + TEXT_COLOR_DEFAULT + u"\nHorario: Tras la puesta del sol\n¡Esperamos su visita!" + TEXT_COLOR_DEFAULT + u"\n\n" +
@@ -160,7 +172,7 @@ TextReplacements generate_text_replacements(World& world)
                   auction40.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " +
                   auction80.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + spanishAuctionFlyerConjunction + auction100.getUTF16Name("Spanish", Text::Type::PRETTY) + u'!', 43) + u'\0'},
       {"French",  TEXT_COLOR_DEFAULT + u"Avis: Enchères de Mercantîle." + TEXT_COLOR_DEFAULT + u"\nLes enchères débuteront à la nuit tombée." + TEXT_COLOR_DEFAULT + u"\nVous y êtes cordialement invités." + TEXT_COLOR_DEFAULT + u"\n\n" +
-                  word_wrap_string(u"Participez pour une chance de gagner " + auction5.getUTF16Name("French", Text::Type::PRETTY) + u", " +
+                  u"Participez pour une chance de gagner\n" + word_wrap_string(auction5.getUTF16Name("French", Text::Type::PRETTY) + u", " +
                   auction40.getUTF16Name("French", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("French", Text::Type::PRETTY) + u", " +
                   auction80.getUTF16Name("French", Text::Type::PRETTY) + u", et " + auction100.getUTF16Name("French", Text::Type::PRETTY) + u'!', 43) + u'\0'}}},
 
@@ -182,7 +194,7 @@ TextReplacements generate_text_replacements(World& world)
      {{"English", u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"The Savage Labyrinth" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
                   word_wrap_string(u"Deep in the never-ending darkness, the way to " + savageFloor30.getUTF16Name("English", Text::Type::CRYPTIC) + u" and " + savageFloor50.getUTF16Name("English", Text::Type::CRYPTIC) + u" await.", 39) + TEXT_END},
       {"Spanish", u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"Cripta de los Mounstros" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
-                  word_wrap_string(u"En las profundidades de la interminable oscuridad, el camino hacia " + savageFloor30.getUTF16Name("Spanish", Text::Type::CRYPTIC) + spanishSavageConjunction + savageFloor50.getUTF16Name("Spanish", Text::Type::CRYPTIC) + u" await.", 39) + TEXT_END},
+                  word_wrap_string(u"En las profundidades de la interminable oscuridad, el camino hacia " + savageFloor30.getUTF16Name("Spanish", Text::Type::CRYPTIC) + spanishSavageConjunction + savageFloor50.getUTF16Name("Spanish", Text::Type::CRYPTIC) + u" esperan.", 39) + TEXT_END},
       {"French",  u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"La Crypte Magique" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
                   word_wrap_string(u"Au plus profond des ténèbres sans fin, le chemin vers " + savageFloor30.getUTF16Name("French", Text::Type::CRYPTIC) + u" et " + savageFloor50.getUTF16Name("French", Text::Type::CRYPTIC) + u" attendent.", 39) + TEXT_END}}},
 
@@ -224,35 +236,41 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", beedle20.getUTF16Name("Spanish") + u"  20 Rupias\n¿Te lo llevas?\n" + TWO_CHOICES + u"Sí\nNo\0"s},
       {"French",  beedle20.getUTF16Name("French")  + u"  20 Rubis\nAcheter?\n" + TWO_CHOICES + u"Oui\nSans façon\0"s}}},
 
+     // Auction Transition Text
+     {"07412",
+     {{"English", REPLACE(ReplaceTags::AUCTION_ITEM_NAME) + u"!!!" + WAIT(0x1E) + SOUND(0x46) + TEXT_END},
+      {"Spanish", u"¡¡" + REPLACE(ReplaceTags::AUCTION_ITEM_NAME) + u"!!" + WAIT(0x1E) + SOUND(0x46) + TEXT_END},
+      {"French",  REPLACE(ReplaceTags::AUCTION_ITEM_NAME) + u"!!!" + WAIT(0x1E) + SOUND(0x46) + TEXT_END}}},
+
      // Auction 40 Rupee Item
      {"07440",
-     {{"English", TEXT_COLOR_RED + auction40.getUTF16Name("English") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + auction40.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"French",  TEXT_COLOR_RED + auction40.getUTF16Name("French") + TEXT_COLOR_DEFAULT + u'\0'}}},
+     {{"English", CAPITAL + auction40.getUTF16Name("English", Type::PRETTY) + u'\0'},
+      {"Spanish", auction40.getUTF16Name("Spanish", Type::PRETTY) + u'\0'},
+      {"French",  CAPITAL + auction40.getUTF16Name("French", Type::PRETTY) + u'\0'}}},
 
      // Auction 5 Rupee Item
      {"07441",
-     {{"English", TEXT_COLOR_RED + auction5.getUTF16Name("English") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + auction5.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"French",  TEXT_COLOR_RED + auction5.getUTF16Name("French") + TEXT_COLOR_DEFAULT + u'\0'}}},
+     {{"English", CAPITAL + auction5.getUTF16Name("English", Type::PRETTY) + u'\0'},
+      {"Spanish", auction5.getUTF16Name("Spanish", Type::PRETTY) + u'\0'},
+      {"French",  CAPITAL + auction5.getUTF16Name("French", Type::PRETTY) + u'\0'}}},
 
      // Auction 60 Rupee Item
      {"07442",
-     {{"English", TEXT_COLOR_RED + auction60.getUTF16Name("English") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + auction60.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"French",  TEXT_COLOR_RED + auction60.getUTF16Name("French") + TEXT_COLOR_DEFAULT + u'\0'}}},
+     {{"English", CAPITAL + auction60.getUTF16Name("English", Type::PRETTY) + u'\0'},
+      {"Spanish", auction60.getUTF16Name("Spanish", Type::PRETTY) + u'\0'},
+      {"French",  CAPITAL + auction60.getUTF16Name("French", Type::PRETTY) + u'\0'}}},
 
      // Auction 80 Rupee Item
      {"07443",
-     {{"English", TEXT_COLOR_RED + auction80.getUTF16Name("English") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + auction80.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"French",  TEXT_COLOR_RED + auction80.getUTF16Name("French") + TEXT_COLOR_DEFAULT + u'\0'}}},
+     {{"English", CAPITAL + auction80.getUTF16Name("English", Type::PRETTY) + u'\0'},
+      {"Spanish", auction80.getUTF16Name("Spanish", Type::PRETTY) + u'\0'},
+      {"French",  CAPITAL + auction80.getUTF16Name("French", Type::PRETTY) + u'\0'}}},
 
      // Auction 100 Rupee Item
      {"07444",
-     {{"English", TEXT_COLOR_RED + auction100.getUTF16Name("English") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + auction100.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u'\0'},
-      {"French",  TEXT_COLOR_RED + auction100.getUTF16Name("French") + TEXT_COLOR_DEFAULT + u'\0'}}},
+     {{"English", CAPITAL + auction100.getUTF16Name("English", Type::PRETTY) + u'\0'},
+      {"Spanish", auction100.getUTF16Name("Spanish", Type::PRETTY) + u'\0'},
+      {"French",  CAPITAL + auction100.getUTF16Name("French", Type::PRETTY) + u'\0'}}},
 
      // Battlesquid First Prize
      {"07520",
@@ -264,7 +282,6 @@ TextReplacements generate_text_replacements(World& world)
                                 splooshFirstPrize.getUTF16Name("French", Text::Type::PRETTY) + u", prends-le!", 43) + u'\0'}}},
 
      // Battlesquid Second Prize
-     // TODO : SPANISH CONJUGATIONS
      {"07521",
      {{"English", SOUND(0x8E) + u"Hoorayyy! Yayyy!\nOh, thank you so much, Mr. Sailer!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here... " +
                                 TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"Please accept this " + splooshSecondPrize.getUTF16Name("English") + u'!', 43) + u'\0'},
