@@ -537,7 +537,7 @@ TweakError make_items_progressive() {
   std::unordered_map<std::string, std::u16string> messages = {
     {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
     {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
-    {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\nVous pouvez maintenant utiliser les objets magiques!\0"s},
+    {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
   };
 
   for (const auto& language : Text::supported_languages) {
