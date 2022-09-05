@@ -958,10 +958,19 @@ blr
 ; Write our own base magic meter item get function because the vanilla one (item_func_magic_power__Fv) was just a placeholder.
 .global normal_magic_meter_item_func
 normal_magic_meter_item_func:
+; Function start stuff
+stwu sp, -0x10 (sp)
+mflr r0
+stw r0, 0x14 (sp)
+
 bl FUN_025200d4
-li r0, 16
-sth r0, 0x5b60 (r4) ; MP to gradually add to the current meter
-sth r0, 0x5b64 (r4) ; MP to gradually add to the max meter
+li r4, 16
+sth r4, 0x5b60 (r3) ; MP to gradually add to the current meter
+sth r4, 0x5b64 (r3) ; MP to gradually add to the max meter
+
+lwz r0, 0x14 (sp)
+mtlr r0
+addi sp, sp, 0x10
 blr
 
 
