@@ -9,18 +9,18 @@ WORKDIR /
 RUN apt-get update && apt-get install python3 -y
 
 # Install wut
-RUN git clone https://github.com/Maschell/wut wut -b fix_memoryleak --single-branch && \
+RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 23b286feeb9c5e42b9619466c43566fe7fea383b && \
+    git checkout 0edd2e9c5c24d128714a6ef892c4b77bb5e20fce && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
     rm -rf wut
 
 # Install libmocha
-RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha -b devoptab --single-branch  && \
+RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch  && \
     cd libmocha && \
-    git checkout 509527f110f53518d4280b5d70e359796f7c1b1f && \
+    git checkout 75f31e0a3e2415a3619f732eab95e65f73d8d99b && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
