@@ -16,6 +16,8 @@ using namespace std::literals::string_literals; //spooky namespace in header, no
 #define TEXT_COLOR_GRAY             u"\x0E\x00\x03\x02\x07"s
 #define TEXT_COLOR_ORANGE           u"\x0E\x00\x03\x02\x08"s
 
+// For some reason the rock spire shop messages only function correctly when they end with this
+#define TEXT_END                    u"\x0E\x00\x03\x02\xFFFF\x00"s
 
 //commands from "ControlTags" group (01)
 #define DRAW_INSTANT                u"\x0E\x01\x00\x00"s

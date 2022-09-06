@@ -10,7 +10,7 @@
 #include "server/filetypes/dzx.hpp"
 #include "server/filetypes/charts.hpp"
 #include "server/command/WriteLocations.hpp"
-#include "server/command/WriteLocations.hpp"
+#include "server/command/RandoSession.hpp"
 #include "server/command/Log.hpp"
 #include "server/utility/platform.hpp"
 #include "server/utility/file.hpp"
@@ -87,22 +87,18 @@ private:
 		}
 
 		//Check the meta.xml for other platforms (+ a sanity check on console)
-		tinyxml2::XMLDocument meta;
-		const std::string metaPath = g_session.openGameFile("meta/meta.xml").string();
-		if(metaPath.empty()) {
-			// Utility::platformLog("Failed extracting meta.xml\n");
+		tinyxml2::XMLDocument metaXml;
+		std::stringstream* meta = g_session.openGameFile("meta/meta.xml");
+		if(meta == nullptr) {
 			ErrorLog::getInstance().log("Failed extracting meta.xml");
-			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
 
-		if(tinyxml2::XMLError err = meta.LoadFile(metaPath.c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
-			// Utility::platformLog("Could not parse meta.xml, got error %d\n", err);
+		if(tinyxml2::XMLError err = metaXml.LoadFile(*meta); err != tinyxml2::XMLError::XML_SUCCESS) {
 			ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
-			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
-		const tinyxml2::XMLElement* root = meta.RootElement();
+		const tinyxml2::XMLElement* root = metaXml.RootElement();
 
 		const std::string titleId = root->FirstChildElement("title_id")->GetText();
 		const std::string nameEn = root->FirstChildElement("longname_en")->GetText();
@@ -151,13 +147,13 @@ private:
 		Utility::platformLog("Saving randomized charts...\n");
 		UPDATE_DIALOG_LABEL("Saving randomized charts...");
 
-		const RandoSession::fspath path = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
-		if(path.empty()) {
+		std::stringstream* chartStream = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
+		if(chartStream == nullptr) {
 			ErrorLog::getInstance().log("Failed to open cmapdat.bin");
 			return false;
 		}
 		FileTypes::ChartList charts;
-		if(ChartError err = charts.loadFromFile(path.string()); err != ChartError::NONE) {
+		if(ChartError err = charts.loadFromBinary(*chartStream); err != ChartError::NONE) {
 			ErrorLog::getInstance().log("Failed to load chart list");
 			return false;
 		}
@@ -205,13 +201,13 @@ private:
 			else {
 				dzrPath = "content/Common/Stage/sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr";
 			}
-			RandoSession::fspath inPath = g_session.openGameFile(dzrPath);
-			if(inPath.empty()) {
+			std::stringstream* dzrStream = g_session.openGameFile(dzrPath);
+			if(dzrStream == nullptr) {
 				ErrorLog::getInstance().log("Failed to open file " + dzrPath);
 				return false;
 			}
 			FileTypes::DZXFile dzr;
-			if(DZXError err = dzr.loadFromFile(inPath.string()); err != DZXError::NONE) {
+			if(DZXError err = dzr.loadFromBinary(*dzrStream); err != DZXError::NONE) {
 				ErrorLog::getInstance().log("Failed to load dzr with path " + dzrPath);
 				return false;
 			}
@@ -228,13 +224,13 @@ private:
 				}
 			}
 
-			if(DZXError err = dzr.writeToFile(inPath.string()); err != DZXError::NONE) {
+			if(DZXError err = dzr.writeToStream(*dzrStream); err != DZXError::NONE) {
 				ErrorLog::getInstance().log("Failed to save dzr with path " + dzrPath);
 				return false;
 			}
 		}
 
-		if(ChartError err = charts.writeToFile(path.string()); err != ChartError::NONE) {
+		if(ChartError err = charts.writeToStream(*chartStream); err != ChartError::NONE) {
 			ErrorLog::getInstance().log("Failed to save chart list");
 			return false;
 		}
@@ -412,8 +408,8 @@ private:
 
 		const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
 		const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-		std::unordered_map<std::string, FileTypes::DZXFile> dzr_by_path;
-
+		std::unordered_map<std::stringstream*, FileTypes::DZXFile> dzr_by_path;
+	
 		const EntrancePool entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
 	    for (const auto entrance : entrances)
 	    {
@@ -434,20 +430,20 @@ private:
 					filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
 				}
 			}
-
-			const RandoSession::fspath roomPath = g_session.openGameFile(filepath);
-			if(roomPath.empty()) {
-				ErrorLog::getInstance().log("Failed to open file " + roomPath.string());
+	
+			std::stringstream* dzrStream = g_session.openGameFile(filepath);
+			if(dzrStream == nullptr) {
+				ErrorLog::getInstance().log("Failed to open file " + filepath);
 				return false;
 			}
 
-			if(dzr_by_path.count(roomPath.string()) == 0)
+			if(dzr_by_path.count(dzrStream) == 0)
 			{
-				if(DZXError err = dzr_by_path[roomPath.string()].loadFromFile(roomPath.string()); err != DZXError::NONE) {
-					ErrorLog::getInstance().log("Failed to load dzr with path " + roomPath.string());
+				if(DZXError err = dzr_by_path[dzrStream].loadFromBinary(*dzrStream); err != DZXError::NONE) {
+					ErrorLog::getInstance().log("Failed to load dzr with path " + filepath);
 				}
 			}
-			const std::vector<ChunkEntry*> scls_entries = dzr_by_path[roomPath.string()].entries_by_type("SCLS");
+			const std::vector<ChunkEntry*> scls_entries = dzr_by_path[dzrStream].entries_by_type("SCLS");
 			if(sclsExitIndex > (scls_entries.size() - 1)) {
 				ErrorLog::getInstance().log("SCLS entry index outside of list!");
 				return false;
@@ -459,23 +455,22 @@ private:
 			exit->data[8] = replacementSpawn;
 			exit->data[9] = replacementRoom;
 		}
-
-		for (auto& [path, dzr] : dzr_by_path) {
-			if(DZXError err = dzr.writeToFile(path); err != DZXError::NONE) {
-				ErrorLog::getInstance().log("Failed to save dzr with path " + path);
+	
+		for (auto& [stream, dzr] : dzr_by_path) {
+			if(DZXError err = dzr.writeToStream(*stream); err != DZXError::NONE) {
+				ErrorLog::getInstance().log("Failed to save entrance dzr");
 				return false;
 			}
 		}
 
 		return true;
 	}
-
 public:
 	Randomizer(const Config& config_) :
 		config(config_),
 		permalink(create_permalink(config_.settings, config_.seed))
 	{
-		g_session.init(config.gameBaseDir, config.workingDir, config.outputDir);
+		g_session.init(config.gameBaseDir, config.outputDir);
 		Utility::platformLog("Initialized session\n");
 	}
 
@@ -487,9 +482,19 @@ public:
 			return 0;
 		#endif
 
-		LOG_TO_DEBUG(permalink);
+		LOG_TO_DEBUG("Permalink: " + permalink);
 
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
+
+		// Add the plandomizer file contents to the permalink when plandomzier is enabled
+		if (config.settings.plandomizer) {
+			std::string plandoContents;
+			if (Utility::getFileContents(config.settings.plandomizerFile, plandoContents) != 0) {
+				ErrorLog::getInstance().log("Could not find plandomizer file at\n" + config.settings.plandomizerFile);
+				return 1;
+			}
+			permalink += plandoContents;
+		}
 
 		std::hash<std::string> strHash;
 		integer_seed = strHash(permalink);
@@ -513,45 +518,31 @@ public:
 			return 1;
 		}
 
+		generateNonSpoilerLog(worlds);
 
 		// Skip all game modification stuff if we're just doing fill algorithm testing
-		#ifndef FILL_TESTING
-
-			if(!checkBackupOrDump()) {
-				return 1;
+		#ifdef FILL_TESTING
+			if (!config.settings.do_not_generate_spoiler_log) {
+				generateSpoilerLog(worlds);
 			}
-
-			//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
-			//Do this at the end to check if the files were cached
-			//Copying is slow so we skip all the ones we can
-			Utility::platformLog("Restoring game files...\n");
-			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
-				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-				return 1;
-			}
-			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
-				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-				return 1;
-			}
-			if(!restoreEntrances()) {
-				ErrorLog::getInstance().log("Failed to restore entrances!");
-				return 1;
-			}
-
-			//IMPROVEMENT: custom model things
-
-			Utility::platformLog("Modifying game code...\n");
-			UPDATE_DIALOG_VALUE(30);
-			UPDATE_DIALOG_LABEL("Modifying game code...");
-			if (!dryRun) {
-				if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
-					ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
-					return 1;
-				}
-			}
-		#else
-			dryRun = true;
+			return 0;
 		#endif
+
+		if(!checkBackupOrDump()) {
+			return 1;
+		}
+
+		//IMPROVEMENT: custom model things
+
+		Utility::platformLog("Modifying game code...\n");
+		UPDATE_DIALOG_VALUE(30);
+		UPDATE_DIALOG_LABEL("Modifying game code...");
+		if (!dryRun) {
+			if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
+				ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
+				return 1;
+			}
+		}
 
 		if (randomizeItems) {
 			if(!dryRun) {
@@ -571,11 +562,14 @@ public:
 				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
-						ErrorLog::getInstance().log("Failed to save items!");
+						ErrorLog::getInstance().log("Failed to save location " + location.getName());
 						return 1;
 					}
 				}
-				saveRPX();
+				if(const ELFError& err = saveRPX(); err != ELFError::NONE) {
+					ErrorLog::getInstance().log("Failed to save modified ELF!");
+					return 1;
+				}
 
 				if (config.settings.randomize_cave_entrances || config.settings.randomize_door_entrances || config.settings.randomize_dungeon_entrances || config.settings.randomize_misc_entrances) {
 					if(!writeEntrances(worlds)) {
@@ -596,6 +590,27 @@ public:
 			if (!config.settings.do_not_generate_spoiler_log) {
 				generateSpoilerLog(worlds);
 			}
+		}
+
+		//Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
+		//Do this at the end to check if the files were cached
+		//Copying is slow so we skip all the ones we can
+		Utility::platformLog("Restoring outdated files...\n");
+		if(!g_session.isCached("content/Common/Misc/Misc.szs")) {
+			if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
+				ErrorLog::getInstance().log("Failed to restore Misc.szs!");
+				return 1;
+			}
+		}
+		if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
+			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
+				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
+				return 1;
+			}
+		}
+		if(!restoreEntrances()) {
+			ErrorLog::getInstance().log("Failed to restore entrances!");
+			return 1;
 		}
 
 		Utility::platformLog("Preparing to repack files...\n");
@@ -670,7 +685,9 @@ int mainRandomize() {
 
 	// TODO: do a hundo seed to test everything
 	// TODO: text wrapping on drc dungeon map
-	// TODO: bpr crashes when uncompressed for some reason
+	// TODO: fix uncompressed things
+	// TODO: jpc saving is broken
+	// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
 	int retVal = rando.randomize();
 
 	#ifdef ENABLE_TIMING

@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-
-
+#include <sstream>
+#include <iomanip>
 
 namespace Utility::Str {
     bool endsWith(const std::string& a, const std::string& b);
@@ -43,5 +43,17 @@ namespace Utility::Str {
     	if(string.back() == typename T::value_type(0)) return string;
 
 		return string + typename T::value_type(0);
+    }
+
+    std::string InsertUnicodeReplacements(std::string text);
+    std::string RemoveUnicodeReplacements(std::string text);
+    std::u16string RemoveUnicodeReplacements(std::u16string text);
+
+    template< typename T >
+    std::string intToHex( T i )
+    {
+      std::stringstream stream;
+      stream << "0x" << std::hex << (int)i;
+      return stream.str();
     }
 }

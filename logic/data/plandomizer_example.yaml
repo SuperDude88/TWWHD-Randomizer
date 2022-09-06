@@ -1,8 +1,8 @@
-# Example Plandomizer file. Please read all the insutrctions here so you know
-# how to properly create a plandomizer file. To use a plandomizer file for local
-# development, put your plandomized locations in the file "plandomizer.yaml" in the
-# same directory as this example file (which should be logic/data/plandomizer.yaml in
-# the project structure).
+# Example Plandomizer file.
+
+# Plandomizer files allow you to control certain aspects when generating a new
+# randomizer seed. You can place items in specific locations, and connect
+# specific entrances if entrance randomizer is enabled.
 
 # LOCATIONS
 # All plandomized locations are defined under a "locations" element and consist
@@ -15,9 +15,9 @@
       Wind Temple - Wizzrobe Mini Boss: Power Bracelets
 
 # NAMES
-# As a general rule, capitalize the first letter of all item names.
-# "Power Bracelets" is okay. "power bracelets" will be unrecognized. For a full
-# list of location names, please check out:
+# As a general rule, capitalize the first letter of all item names except for
+# the words "to" and "of". "Power Bracelets" is okay. "power bracelets" will be
+# unrecognized. For a full list of location names, please check out:
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/location_data.yaml
 
 # PROGRESS_LOCATIONS
@@ -40,7 +40,7 @@
 #
 # In the event that you place a progress item in the dungeon AND a junk item on the
 # boss heart container, you'll get a Plandomizer Error and the seed won't generate
-# if race mode is turned on
+# if race mode is turned on.
 
 # ENTRANCES
 # All plandomized entrances are defined under an "entrances" element and consist
@@ -60,7 +60,15 @@
 # that don't exist or which aren't supported for shuffling at the current moment,
 # then you'll get a plandomizer error.
 
-# MULTIWORLD_PLANDOMIZER (Note: currently multiworld is not an option in the randomizer)
+# STARTING ISLAND
+# You can also set the starting island if you want to. For this to apply, you must
+# turn on random starting island in the settings. For a list of island names, see
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L68
+- starting island: Five Eye Reef
+
+# MULTIWORLD_PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
+# and is not actively being developed, but the filling algorithm was made to support
+# multiworld incase it ever happens in the future.)
 # If you'd like to plandomize a multiworld seed, then each list of locations and/or
 # entrances must be under a "World #" element, with the '#' being the world number
 # the locations will be for. For example, if we want place the Telescope at
@@ -76,12 +84,12 @@
 # location is currently under. If we want to specify the item for a different
 # world we can use the "item" and "world" elements to do so. For example, if we want
 # to place Bombs for World 1 at World 2's Hyrule Castle - Sword Chamber Chest
-# and the Heros Charm for World 1 at World 2's Ganon's Tower - Maze Chest we would type:
+# and the Hero's Charm for World 1 at World 2's Ganon's Tower - Maze Chest we would type:
 - World 2:
       locations:
           Hyrule Castle - Sword Chamber Chest:
               item: Bombs
               world: 1
           Ganon's Tower - Maze Chest:
-              item: Heros Charm
+              item: Hero's Charm
               world: 1

@@ -1,22 +1,26 @@
-FROM wiiuenv/devkitppc:20220728
+FROM wiiuenv/devkitppc:20220806
 
 ENV PATH=$DEVKITPPC/bin:$PATH
+ENV BUILD_TYPE=randomizer
 
 WORKDIR /
+
+# Install python for ASM patches
+RUN apt-get update && apt-get install python3 -y
 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout a902da1ce7f45c35121f2a9a294c94e23b9d3fe7 && \
+    git checkout 0edd2e9c5c24d128714a6ef892c4b77bb5e20fce && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
     rm -rf wut
 
 # Install libmocha
-RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha -b devoptab --single-branch  && \
+RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch  && \
     cd libmocha && \
-    git checkout 509527f110f53518d4280b5d70e359796f7c1b1f && \
+    git checkout 75f31e0a3e2415a3619f732eab95e65f73d8d99b && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -38,8 +42,29 @@ RUN mv /opt/devkitpro/wut/usr/include/* /opt/devkitpro/wut/include/
 VOLUME /src
 WORKDIR /src
 
-CMD mkdir -p build && \
-    cd build && \
-    rm -rf * && \
-    $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
-    make
+CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
+        mkdir -p build && \
+        cd build && \
+        rm -rf * && \
+        $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+        make; \
+    else \
+        if [ "$BUILD_TYPE" = "asm" ]; then \
+            cd asm && \
+            python3 ./assemble.py; \
+        else \
+            if [ "$BUILD_TYPE" = "full" ]; then \
+                cd asm && \
+                python3 ./assemble.py && \
+                cd ../ && \
+                \
+                mkdir -p build && \
+                cd build && \
+                rm -rf * && \
+                $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+                make; \
+            else \
+                echo "Invalid build type"; \
+            fi; \
+        fi; \
+    fi

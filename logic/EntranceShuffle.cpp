@@ -165,6 +165,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
                                      {"Headstone Island Interior",              "Headstone Island",                        "Edaichi",  0, 1, "sea",     45,     1}},
 };
 
+#ifdef ENABLE_DEBUG
 static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolName)
 {
     LOG_TO_DEBUG(poolName + ": [");
@@ -185,7 +186,7 @@ static void logMissingLocations(WorldPool& worlds)
         {
             if (!location.hasBeenFound)
             {
-                LOG_TO_DEBUG("\t" + location.name);
+                LOG_TO_DEBUG("\t" + location.getName());
                 if (identifier++ < 10)
                 {
                     // world.dumpWorldGraph(std::to_string(identifier));
@@ -197,6 +198,7 @@ static void logMissingLocations(WorldPool& worlds)
     }
     LOG_TO_DEBUG("]");
 }
+#endif
 
 static EntranceShuffleError setAllEntrancesData(World& world)
 {
@@ -342,7 +344,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         LOG_TO_DEBUG("Sphere 0 locations: [");
         for (auto location : locs)
         {
-            LOG_TO_DEBUG(location->name);
+            LOG_TO_DEBUG(location->getName());
         }
         LOG_TO_DEBUG("]");
     #endif
@@ -521,7 +523,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
     ItemPool completeItemPool = {};
     GET_COMPLETE_ITEM_POOL(completeItemPool, worlds)
 
-    for (auto& [entrance, target] : world.plandomizerEntrances)
+    for (auto& [entrance, target] : world.plandomizer.entrances)
     {
         std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + target->getOriginalConnectedArea() + " from " + target->getParentArea() + "\"";
         LOG_TO_DEBUG("Attempting to set plandomized entrance " + fullConnectionName);
@@ -639,9 +641,20 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         // Set random starting island
         if (world.getSettings().randomize_starting_island)
         {
-            // Rooms 2 - 49 include every island except Forsaken Fortress
-            world.startingIslandRoomIndex = Random(2, 50);
+
+            // Set plandomizer island if there is one
+            if (world.plandomizer.startingIslandRoomIndex > 0 && world.plandomizer.startingIslandRoomIndex < 50)
+            {
+                world.startingIslandRoomIndex = world.plandomizer.startingIslandRoomIndex;
+            }
+            else
+            {
+                // Rooms 2 - 49 include every island except Forsaken Fortress
+                world.startingIslandRoomIndex = Random(2, 50);
+            }
+
             auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
+            LOG_TO_DEBUG("starting island: \"" + startingIsland + "\" index: " + std::to_string(world.startingIslandRoomIndex));
 
             // Set the new starting island in the world graph
             auto linksSpawn = world.getEntrance("Link's Spawn", "Outset Island");

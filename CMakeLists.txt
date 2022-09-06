@@ -8,17 +8,16 @@ add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0)
 
 if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
-  add_compile_options(-O3 -flto)
+  add_compile_options(-O3 -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
 else()
-  add_compile_options(-O3)
+  add_compile_options(-O3 -Wall)
 endif()
 
 if(GET_THREADS)
   find_package(Threads REQUIRED)
 endif()
 
-add_compile_definitions(ENABLE_DEBUG=1) # TODO: Take this out after testing?
 if(ENABLE_DEBUG)
   message("Debugging is ON")
   add_compile_definitions(ENABLE_DEBUG)
@@ -58,7 +57,7 @@ else()
 endif()
 
 add_executable(wwhd_rando main.cpp)
-target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp")
+target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
 add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")

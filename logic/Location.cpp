@@ -1,6 +1,8 @@
 
 #include "Location.hpp"
 #include "GameItem.hpp"
+#include "World.hpp"
+#include "../server/utility/stringUtil.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -109,10 +111,15 @@ LocationModificationType nameToModificationType(const std::string& name)
 
 bool Location::operator<(const Location& rhs) const
 {
-  if (this->worldId != rhs.worldId)
+  if (this->world->getWorldId() != rhs.world->getWorldId())
   {
-      return this->worldId < rhs.worldId;
+      return this->world->getWorldId() < rhs.world->getWorldId();
   }
 
   return this->sortPriority < rhs.sortPriority;
+}
+
+std::string Location::getName() const
+{
+  return names.at("English");
 }

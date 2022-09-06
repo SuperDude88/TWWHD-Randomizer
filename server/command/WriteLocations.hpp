@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "./RandoSession.hpp"
+#include "../filetypes/elf.hpp"
 #include "../../logic/GameItem.hpp"
 #include "../../libs/Yaml.hpp"
 #include "../../logic/Dungeon.hpp"
@@ -27,7 +28,7 @@ enum struct [[nodiscard]] ModificationError {
 };
 
 void resetRPX();
-void saveRPX();
+ELFError saveRPX();
 
 class LocationModification
 {

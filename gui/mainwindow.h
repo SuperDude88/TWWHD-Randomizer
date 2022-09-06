@@ -141,5 +141,6 @@ private slots:
     void on_permalink_textEdited(const QString &arg1);
     void on_reset_settings_to_default_clicked();
     void on_randomize_button_clicked();
+    void on_clearer_hints_stateChanged(int arg1);
 };
 #endif // MAINWINDOW_H

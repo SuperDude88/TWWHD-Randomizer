@@ -12,17 +12,19 @@
 
 static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
 {
-    LOG_TO_DEBUG("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
-    LOG_TO_DEBUG("Items:");
-    for (auto& item : items)
-    {
-        LOG_TO_DEBUG("\t" + item.getName());
-    }
-    LOG_TO_DEBUG("Location:");
-    for (auto location : locations)
-    {
-        LOG_TO_DEBUG("\t" + location->name + " in world " + std::to_string(location->worldId));
-    }
+    #ifdef ENABLE_DEBUG
+        LOG_TO_DEBUG("num items: " + std::to_string(items.size()) + " num locations: " + std::to_string(locations.size()));
+        LOG_TO_DEBUG("Items:");
+        for (auto& item : items)
+        {
+            LOG_TO_DEBUG("\t" + item.getName());
+        }
+        LOG_TO_DEBUG("Location:");
+        for (auto location : locations)
+        {
+            LOG_TO_DEBUG("\t" + location->getName() + " in world " + std::to_string(location->world->getWorldId()));
+        }
+    #endif
 }
 
 #define ENOUGH_SPACE_CHECK(items, locations) if (items.size() > locations.size()) {logItemsAndLocations(items, locations);return FillError::MORE_ITEMS_THAN_LOCATIONS;}
@@ -40,13 +42,13 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
         auto item = popRandomElement(items);
         auto location = popRandomElement(locations);
         location->currentItem = item;
-        LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->name + " in world " + std::to_string(location->worldId + 1));
+        LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
     }
 
     return FillError::NONE;
 }
 
-static FillError fillTheRest(ItemPool& items, LocationPool& locations)
+static FillError fillTheRest(WorldPool& worlds, ItemPool& items, LocationPool& locations)
 {
     FillError err;
     // First place the junk already in the pool
@@ -58,7 +60,9 @@ static FillError fillTheRest(ItemPool& items, LocationPool& locations)
     {
         if (location->currentItem.getGameItemId() == GameItem::INVALID)
         {
-            location->currentItem = Item(getRandomJunk(), location->worldId);
+            auto item = getRandomJunk();
+            location->currentItem = worlds[location->world->getWorldId()].itemEntries[item];
+            LOG_TO_DEBUG("Placed " + item + " at " + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
         }
     }
     return FillError::NONE;
@@ -81,40 +85,78 @@ static FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& item
         return FillError::NO_REACHABLE_LOCATIONS;
     }
 
-    while (accessibleLocations.size() < openLocations * worlds.size())
+    bool successfullyPlacedItems = false;
+    while (accessibleLocations.size() < openLocations * worlds.size() || !successfullyPlacedItems)
     {
-        LOG_TO_DEBUG("Not enough locations available. Need: " + std::to_string(openLocations * worlds.size()) + " Have: " + std::to_string(accessibleLocations.size()));
+        successfullyPlacedItems = false;
+        LOG_TO_DEBUG("Number of open locations: " + std::to_string(accessibleLocations.size()));
         // Filter out already accessible locations
         filterAndEraseFromPool(allowedLocations, [accessibleLocations](const Location* loc){return elementInPool(loc, accessibleLocations);});
         shufflePool(itemsToPlace);
 
         auto sizeBefore = forwardPlacedItems.size();
-        for (auto& item : itemsToPlace)
+
+        // The idea here is to try every combination of 1..n items where n is the number of available
+        // places to place items. First try all items individually, then every set of 2, then 3, etc.
+        // until we find a combination of items that opens up more space
+        for (size_t itemsInSet = 1; itemsInSet <= accessibleLocations.size(); itemsInSet++)
         {
+            std::vector<size_t> indices (itemsInSet, 0);
+            std::iota(indices.begin(), indices.end(), 0);
 
-            forwardPlacedItems.push_back(item);
-
-            if (getAccessibleLocations(worlds, forwardPlacedItems, allowedLocations).size() > 0)
+            do
             {
+                // increment the indices, starting with an attempt at the last one
+                // and moving back to increment previous indices if necessary.
+                for (size_t i = indices.size() - 1; i >= 0; i--)
+                {
+                    size_t max = itemsToPlace.size() - (indices.size() - i);
 
-                auto location = RandomElement(accessibleLocations);
-                LOG_TO_DEBUG("Item " + item.getName() + " opened up more space");
-                LOG_TO_DEBUG("Placing item at " + location->name);
-                location->currentItem = item;
+                    if (indices[i] < max)
+                    {
+                        size_t counter = 1;
+                        for (; i < indices.size(); i++)
+                        {
+                            indices[i] += counter++;
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        indices[i] = indices[i-1];
+                    }
+                }
+
+                ItemPool newForwardItems = {};
+                for (auto& index : indices)
+                {
+                    newForwardItems.push_back(itemsToPlace[index]);
+                }
+
+
+                if (getAccessibleLocations(worlds, newForwardItems, allowedLocations).size() > 0)
+                {
+                    addElementsToPool(forwardPlacedItems, newForwardItems);
+                    fastFill(newForwardItems, accessibleLocations);
+                    successfullyPlacedItems = true;
+                    break;
+                }
+
+            } while (indices[0] < itemsToPlace.size() - itemsInSet);
+
+            if (successfullyPlacedItems)
+            {
                 break;
             }
-            else
-            {
-                forwardPlacedItems.pop_back();
-            }
         }
+
         // If no new items were placed, then we can't progress
         if (forwardPlacedItems.size() == sizeBefore)
         {
-            LOG_TO_DEBUG("No items opened up progression during forward fill attempt");
+            LOG_TO_DEBUG("No item combinations opened up progression during forward fill attempt");
             return FillError::RAN_OUT_OF_RETRIES;
         }
-
+        sizeBefore = forwardPlacedItems.size();
         accessibleLocations = getAccessibleLocations(worlds, forwardPlacedItems, allowedLocations);
     }
 
@@ -176,9 +218,9 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
                 LOG_TO_DEBUG("No Accessible Locations to place " + item.getName() + ". Retrying " + std::to_string(retries) + " more times.");
                 for (auto location : rollbacks)
                 {
-                    LOG_TO_DEBUG("Rolling back " + location->name + ": " + location->currentItem.getName());
+                    LOG_TO_DEBUG("Rolling back " + location->getName() + ": " + location->currentItem.getName());
                     itemsToPlace.push_back(location->currentItem);
-                    location->currentItem = Item(GameItem::INVALID, -1);
+                    location->currentItem = Item(GameItem::INVALID, nullptr);
                 }
                 // Also add back the randomly selected item
                 itemsToPlace.push_back(item);
@@ -204,9 +246,9 @@ static FillError assumedFill(WorldPool& worlds, ItemPool& itemsToPlace, const It
             // Place the item within one of the allowed locations and add the
             // location to the list of rollbacks
             auto location = RandomElement(accessibleLocations);
-            location->currentItem = std::move(item);
+            location->currentItem = item;
             rollbacks.push_back(location);
-            LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->name);
+            LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->getName());
         }
 
     }
@@ -219,7 +261,7 @@ static void placeHardcodedItems(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Place the game beatable item at Ganondorf
-        world.locationEntries["Ganon's Tower - Defeat Ganondorf"].currentItem = {GameItem::GameBeatable, world.getWorldId()};
+        world.locationEntries["Ganon's Tower - Defeat Ganondorf"].currentItem = world.itemEntries["Game Beatable"];
     }
 }
 
@@ -243,7 +285,7 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
             auto gameItemId = item.getGameItemId();
             item.setGameItemId(GameItem::NOTHING);
 
-            auto thisWorldsProgressionLocations = filterFromPool(progressionLocations, [item](const Location* location){return location->worldId == item.getWorldId();});
+            auto thisWorldsProgressionLocations = filterFromPool(progressionLocations, [item](const Location* location){return location->world->getWorldId() == item.getWorldId();});
 
             // If all progress locations in the item's world are not reachable,
             // set it as a major item and give back it's gameitemId
@@ -286,17 +328,7 @@ static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
             {
                 // Filter to only the dungeons locations
                 auto worldLocations = world.getLocations();
-                auto dungeonLocations = filterFromPool(worldLocations, [dungeon = dungeon](const Location* loc){return elementInPool(loc->name, dungeon.locations);});
-                // Filter out tingle chests if they're not progression locations
-                if (!world.getSettings().progression_tingle_chests)
-                {
-                    filterAndEraseFromPool(dungeonLocations, [](const Location* loc){return elementInPool(LocationCategory::TingleChest, loc->categories);});
-                }
-                // Filter out obscure locations if they're not progression locations
-                if (!world.getSettings().progression_obscure)
-                {
-                    filterAndEraseFromPool(dungeonLocations, [](const Location* loc){return elementInPool(LocationCategory::Obscure, loc->categories);});
-                }
+                auto dungeonLocations = filterFromPool(worldLocations, [dungeon = dungeon](const Location* loc){return elementInPool(loc->getName(), dungeon.locations) && loc->progression;});
 
                 // Place small keys and the big key using only items and locations
                 // from this world
@@ -304,24 +336,24 @@ static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
                 if (dungeon.smallKey != "" && dungeon.bigKey != "")
                 {
                     // Remove the boss key and small keys from the itemPool
-                    removeElementFromPool(itemPool, Item(dungeon.smallKey, worldId), dungeon.keyCount);
-                    removeElementFromPool(itemPool, Item(dungeon.bigKey, worldId));
+                    removeElementFromPool(itemPool, Item(dungeon.smallKey, &world), dungeon.keyCount);
+                    removeElementFromPool(itemPool, Item(dungeon.bigKey, &world));
 
                     for (int i = 0; i < dungeon.keyCount; i++)
                     {
-                        dungeonPool.emplace_back(dungeon.smallKey, worldId);
+                        dungeonPool.emplace_back(world.itemEntries[dungeon.smallKey]);
                     }
-                    dungeonPool.emplace_back(dungeon.bigKey, worldId);
+                    dungeonPool.emplace_back(world.itemEntries[dungeon.bigKey]);
                     assumedFill(worlds, dungeonPool, itemPool, dungeonLocations, worldId);
                 }
 
                 // Place maps and compasses after since they aren't progressive items
                 dungeonPool.clear();
-                dungeonPool.emplace_back(dungeon.map, worldId);
-                dungeonPool.emplace_back(dungeon.compass, worldId);
+                dungeonPool.emplace_back(world.itemEntries[dungeon.compass]);
+                dungeonPool.emplace_back(world.itemEntries[dungeon.map]);
                 fastFill(dungeonPool, dungeonLocations);
-                removeElementFromPool(itemPool, Item(dungeon.map, worldId));
-                removeElementFromPool(itemPool, Item(dungeon.compass, worldId));
+                removeElementFromPool(itemPool, Item(dungeon.map, &world));
+                removeElementFromPool(itemPool, Item(dungeon.compass, &world));
             }
         }
     }
@@ -390,11 +422,11 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
 
 static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    LOG_TO_DEBUG("Placing Plandomizer Items");
+    LOG_TO_DEBUG("Placing Non-Progress Items");
     std::unordered_map<Location*, Item> allPlandoLocations = {};
     for (auto& world : worlds)
     {
-        allPlandoLocations.insert(world.plandomizerLocations.begin(), world.plandomizerLocations.end());
+        allPlandoLocations.insert(world.plandomizer.locations.begin(), world.plandomizer.locations.end());
     }
     for (auto& [location, item] : allPlandoLocations)
     {
@@ -409,12 +441,13 @@ static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, Ite
             // Don't accept trying to place major items in non-progress locations
             if (item.isMajorItem())
             {
-                ErrorLog::getInstance().log("Attempted to plandomize major item \"" + gameItemToName(item.getGameItemId()) + "\" in non-progress location \"" + location->name + "\"");
+                ErrorLog::getInstance().log("Attempted to plandomize major item \"" + gameItemToName(item.getGameItemId()) + "\" in non-progress location \"" + location->getName() + "\"");
                 ErrorLog::getInstance().log("\nPlandomizing major items in non-progress locations is not allowed.");
                 return FillError::PLANDOMIZER_ERROR;
             }
         }
         location->currentItem = item;
+        LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->getName());
     }
     return FillError::NONE;
 }
@@ -471,7 +504,7 @@ FillError fill(WorldPool& worlds)
             LOG_TO_DEBUG("Progression Locations:");
             for (auto location : progressionLocations)
             {
-                LOG_TO_DEBUG("\t" + location->name);
+                LOG_TO_DEBUG("\t" + location->getName());
             }
         #endif
         LOG_ERR_AND_RETURN(FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS);
@@ -493,7 +526,7 @@ FillError fill(WorldPool& worlds)
     FILL_ERROR_CHECK(err);
 
     // Fill the remaining locations with junk
-    err = fillTheRest(itemPool, allLocations);
+    err = fillTheRest(worlds, itemPool, allLocations);
     FILL_ERROR_CHECK(err);
 
     if (!gameBeatable(worlds))
@@ -520,7 +553,7 @@ void clearWorlds(WorldPool& worlds)
         {
             if (!location.plandomized)
             {
-                location.currentItem = {GameItem::INVALID, -1};
+                location.currentItem = {GameItem::INVALID, nullptr};
             }
         }
     }

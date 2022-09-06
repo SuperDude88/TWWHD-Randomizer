@@ -169,13 +169,13 @@ struct Settings {
     bool invert_sea_compass_x_axis = false;
     bool race_mode = false;
     uint8_t num_race_mode_dungeons = 3;
-    float damage_multiplier = 1.0f;
+    float damage_multiplier = 2.0f;
     bool chest_type_matches_contents = false;
 
     bool player_in_casual_clothes = false;
     PigColor pig_color = PigColor::RANDOM;
 
-    std::vector<GameItem> starting_gear;
+    std::vector<GameItem> starting_gear = {};
     uint16_t starting_pohs = 0;
     uint16_t starting_hcs = 0;
     bool remove_music = false;
