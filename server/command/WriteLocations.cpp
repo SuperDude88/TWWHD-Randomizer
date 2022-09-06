@@ -8,7 +8,6 @@
 #include "../../logic/Dungeon.hpp"
 #include "WWHDStructs.hpp"
 #include "Log.hpp"
-#include "../filetypes/elf.hpp"
 #include "../filetypes/util/elfUtil.hpp"
 #include "../../libs/json.hpp"
 #include "../utility/stringUtil.hpp"
@@ -48,12 +47,15 @@ namespace {
 		return;
 	}
 
-    void loadRPX() {
-        RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
-        gRPX.loadFromFile(filePath.string());
+    ELFError loadRPX() {
+        std::stringstream* stream = g_session.openGameFile("code/cking.rpx@RPX");
+        ELFError err = gRPX.loadFromBinary(*stream);
+        if(err != ELFError::NONE) {
+            return err;
+        }
         rpxOpen = true;
 
-        return;
+        return ELFError::NONE;
     }
 }
 
@@ -63,12 +65,13 @@ void resetRPX()
 }
 
 
-void saveRPX() {
-    RandoSession::fspath filePath = g_session.openGameFile("code/cking.rpx@RPX");
-    gRPX.writeToFile(filePath.string());
+ELFError saveRPX() {
+    std::stringstream* stream = g_session.openGameFile("code/cking.rpx@RPX");
+    const ELFError& err = gRPX.writeToStream(*stream);
+    gRPX = FileTypes::ELF(); //clear elf so it's not storing a bunch of data in ram
     rpxOpen = false;
 
-    return;
+    return err;
 }
 
 
@@ -115,19 +118,20 @@ ModificationError ModifyChest::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyChest::writeLocation(const Item& item) {
-    std::fstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
+    std::stringstream* stream = g_session.openGameFile(filePath);
+    if(stream == nullptr) return ModificationError::UNKNOWN;
 
     for (const uint32_t& offset : offsets) {
-        file.seekg(offset, std::ios::beg);
-        ACTR chest = WWHDStructs::readACTR(file);
+        stream->seekg(offset, std::ios::beg);
+        ACTR chest = WWHDStructs::readACTR(*stream);
 
         if(isCTMC) LOG_AND_RETURN_IF_ERR(setCTMCType(chest, item))
 
         chest.aux_params_2 &= 0x00FF;
         chest.aux_params_2 |= static_cast<uint16_t>(item.getGameItemId()) << 8;
 
-        file.seekp(offset, std::ios::beg);
-        WWHDStructs::writeACTR(file, chest);
+        stream->seekp(offset, std::ios::beg);
+        WWHDStructs::writeACTR(*stream, chest);
     }
 
     return ModificationError::NONE;
@@ -181,19 +185,20 @@ ModificationError ModifyActor::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyActor::writeLocation(const Item& item) {
-    std::fstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
+    std::stringstream* stream = g_session.openGameFile(filePath);
+    if(stream == nullptr) return ModificationError::UNKNOWN;
 
     for (const uint32_t& offset : offsets) {
-        file.seekg(offset, std::ios::beg);
-        ACTR actor = WWHDStructs::readACTR(file);
+        stream->seekg(offset, std::ios::beg);
+        ACTR actor = WWHDStructs::readACTR(*stream);
 
         if (item_id_mask_by_actor_name.count(actor.name) == 0) {
             LOG_ERR_AND_RETURN(ModificationError::UNKNOWN_ACTOR_NAME)
         }
         LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 
-        file.seekp(offset, std::ios::beg);
-        WWHDStructs::writeACTR(file, actor);
+        stream->seekp(offset, std::ios::beg);
+        WWHDStructs::writeACTR(*stream, actor);
     }
 
     return ModificationError::NONE;
@@ -220,19 +225,20 @@ ModificationError ModifySCOB::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifySCOB::writeLocation(const Item& item) {
-    std::fstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
+    std::stringstream* stream = g_session.openGameFile(filePath);
+    if(stream == nullptr) return ModificationError::UNKNOWN;
 
     for (const uint32_t& offset : offsets) {
-        file.seekg(offset, std::ios::beg);
-        SCOB scob = WWHDStructs::readSCOB(file);
+        stream->seekg(offset, std::ios::beg);
+        SCOB scob = WWHDStructs::readSCOB(*stream);
 
         if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
             LOG_ERR_AND_RETURN(ModificationError::UNKNOWN_ACTOR_NAME)
         }
         LOG_AND_RETURN_IF_ERR(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
 
-        file.seekp(offset, std::ios::beg);
-        WWHDStructs::writeSCOB(file, scob);
+        stream->seekp(offset, std::ios::beg);
+        WWHDStructs::writeSCOB(*stream, scob);
     }
 
     return ModificationError::NONE;
@@ -263,7 +269,8 @@ ModificationError ModifyEvent::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyEvent::writeLocation(const Item& item) {
-    std::ofstream file(g_session.openGameFile(filePath), std::ios::in | std::ios::out | std::ios::binary);
+    std::stringstream* stream = g_session.openGameFile(filePath);
+    if(stream == nullptr) return ModificationError::UNKNOWN;
 
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
@@ -274,11 +281,11 @@ ModificationError ModifyEvent::writeLocation(const Item& item) {
     }
     name.resize(0x20);
 
-    file.seekp(nameOffset, std::ios::beg);
-    file.write(&name[0], 0x20);
+    stream->seekp(nameOffset, std::ios::beg);
+    stream->write(&name[0], 0x20);
 
-    file.seekp(offset, std::ios::beg);
-    file.write(reinterpret_cast<const char*>(&itemID), 1);
+    stream->seekp(offset, std::ios::beg);
+    stream->write(reinterpret_cast<const char*>(&itemID), 1);
 
     return ModificationError::NONE;
 }
@@ -301,7 +308,11 @@ ModificationError ModifyRPX::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyRPX::writeLocation(const Item& item) {
-    if (rpxOpen == false) loadRPX();
+    if (rpxOpen == false) {
+        if(ELFError err = loadRPX(); err != ELFError::NONE) {
+            LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
+        }
+    }
 
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
     for (const uint32_t& address : offsets) {
@@ -325,7 +336,11 @@ ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
-    if (rpxOpen == false) loadRPX();
+    if (rpxOpen == false) {
+        if (loadRPX() != ELFError::NONE) {
+            return ModificationError::RPX_ERROR;
+        }
+    }
     if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json");
 
     for(const auto& symbol : symbolNames) {
@@ -378,11 +393,15 @@ ModificationError ModifyBoss::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyBoss::writeLocation(const Item& item) {
-    if (rpxOpen == false) loadRPX();
+    if (rpxOpen == false) {
+        if (loadRPX() != ELFError::NONE) {
+            return ModificationError::RPX_ERROR;
+        }
+    }
 
     for (const auto& [path, offset] : offsetsWithPath) {
-        RandoSession::fspath filePath = g_session.openGameFile(path);
-        std::fstream file(filePath, std::ios::in | std::ios::out | std::ios::binary);
+        std::stringstream* stream = g_session.openGameFile(path);
+        if(stream == nullptr) return ModificationError::UNKNOWN;
 
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
@@ -393,13 +412,13 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
             continue;
         }
 
-        file.seekg(offset, std::ios::beg);
-        ACTR actor = WWHDStructs::readACTR(file);
+        stream->seekg(offset, std::ios::beg);
+        ACTR actor = WWHDStructs::readACTR(*stream);
 
         LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
 
-        file.seekp(offset, std::ios::beg);
-        WWHDStructs::writeACTR(file, actor);
+        stream->seekp(offset, std::ios::beg);
+        WWHDStructs::writeACTR(*stream, actor);
     }
 
     return ModificationError::NONE;

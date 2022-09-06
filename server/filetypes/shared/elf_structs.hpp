@@ -80,8 +80,8 @@ struct Elf32_Rela {
 };
 
 struct offset_t {
-	uint16_t shdrIdx;
-	uint32_t offset;
+	uint16_t shdrIdx = 0;
+	uint32_t offset = 0;
 
 	explicit operator bool() const {
 		if(shdrIdx == 0 && offset == 0) return false;
@@ -89,4 +89,4 @@ struct offset_t {
 	}
 };
 
-typedef std::pair<uint16_t, Elf32_Shdr> shdr_index_t;
+using shdr_index_t = std::pair<uint16_t, Elf32_Shdr>;

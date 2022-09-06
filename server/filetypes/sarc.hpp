@@ -74,10 +74,11 @@ namespace FileTypes {
         static SARCFile createNew(const std::string& filename);
         SARCError loadFromBinary(std::istream& sarc);
         SARCError loadFromFile(const std::string& filePath);
-        const File& getFile(const std::string& filename);
+        File& getFile(const std::string& filename);
         SARCError writeToStream(std::ostream& out);
         SARCError writeToFile(const std::string& outFilePath);
         SARCError extractToDir(const std::string& dirPath);
+        SARCError replaceFile(const std::string& filename, std::stringstream& newData);
         SARCError replaceFile(const std::string& filename, const std::string& newFilePath);
         SARCError rebuildFromDir(const std::string& dirPath);
         SARCError buildFromDir(const std::string& dirPath); //partly untested, should work though

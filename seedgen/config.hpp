@@ -20,18 +20,11 @@ enum struct [[nodiscard]] ConfigError {
 
 struct Config {
     std::string gameBaseDir;
-    std::string workingDir;
     std::string outputDir;
 
     std::string seed;
 
     Settings settings;
-
-    Config() = default;
-    Config(const std::string& seed_, const Settings& settings_) :
-        seed(seed_),
-        settings(settings_)
-    {}
 };
 
 SwordMode nameToSwordMode(const std::string& name);

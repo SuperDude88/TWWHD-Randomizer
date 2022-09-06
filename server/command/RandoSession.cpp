@@ -6,6 +6,7 @@
 #include <fstream>
 #include <functional>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <type_traits>
 #include <queue>
@@ -17,8 +18,6 @@
 #include "../../gui/update_dialog_header.hpp"
 #include "../filetypes/wiiurpx.hpp"
 #include "../filetypes/yaz0.hpp"
-#include "../filetypes/sarc.hpp"
-#include "../filetypes/bfres.hpp"
 #include "../utility/stringUtil.hpp"
 #include "../utility/platform.hpp"
 #include "../utility/file.hpp"
@@ -64,8 +63,7 @@ public:
         auto max_tasks = getTotalTasks();
         std::unique_lock<std::mutex> tasks_lock(tasks_mutex); //Don't really need this, just using it for the condition_variable
         task_finished.wait(tasks_lock, [this, max_tasks] {
-            int dialogValue = int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f));
-            UPDATE_DIALOG_VALUE(dialogValue)
+            UPDATE_DIALOG_VALUE(int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f)))
             return tasks_total == 0;
         });
         waiting = false;
@@ -144,48 +142,29 @@ RandoSession::RandoSession()
 
 }
 
-void RandoSession::init(const fspath& gameBaseDir, const fspath& randoWorkingDir, const fspath& randoOutputDir) { //might have more init stuff later
+void RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir) { //might have more init stuff later
     baseDir = gameBaseDir;
-    workingDir = randoWorkingDir;
     outputDir = randoOutputDir;
 
-    clearWorkingDir();
     clearCache();
     initialized = true;
     return;
 }
 
-void RandoSession::clearWorkingDir() const {
-    if (std::filesystem::is_directory(workingDir)) {
-        Utility::remove_all(workingDir);
-    }
-    Utility::create_directories(workingDir);
-
-    return;
-}
-
-
-
-RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& fileSpec)
+std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fileSpec)
 {
     // ["content/Common/Stage/example.szs", "YAZ0", "SARC", "data.bfres"]
     // first part is an extant game file
     std::string cacheKey{""};
     std::string resultKey{""};
-    CacheEntry* curEntry = &fileCache;
-    bool fullRecompress = true;
-    bool fromBaseDir = false; //determines whether to unpack from the working directory or directly from the base directory
-    bool toOutput = false;
+    std::shared_ptr<CacheEntry> parentEntry = fileCache;
+    std::shared_ptr<CacheEntry> nextEntry = nullptr;
+
+    bool fromBaseDir = false; //whether to unpack from the cache or directly from the base directory
+    
     for (size_t i = 0; i < fileSpec.size(); i++)
     {
         const std::string& element = fileSpec[i];
-        
-        if(i == 1) {
-            toOutput = true; //last level that would be repacked
-        }
-        else {
-            toOutput = false;
-        }
         
         if (element.empty()) continue;
 
@@ -210,211 +189,175 @@ RandoSession::fspath RandoSession::extractFile(const std::vector<std::string>& f
             resultKey = cacheKey + element;
         }
         // if we've already cached this
-        if (curEntry->children.count(resultKey) > 0)
+        if (parentEntry->children.count(resultKey) > 0)
         {
             cacheKey = resultKey;
-            curEntry = curEntry->children.at(cacheKey).get();
+            parentEntry = parentEntry->children.at(cacheKey);
             continue;
+        }
+
+        parentEntry->children[resultKey] = std::make_shared<CacheEntry>();
+        nextEntry = parentEntry->children[resultKey];
+        nextEntry->parent = parentEntry;
+
+        if(i == 1) {
+            nextEntry->toOutput = true; //last level that would be repacked
+        }
+        else {
+            nextEntry->toOutput = false;
         }
         
         if (element.compare("RPX") == 0)
         {
-            std::ifstream inputFile;
             if(fromBaseDir) {
-                inputFile.open(baseDir / cacheKey, std::ios::binary);
+                std::ifstream inputFile(baseDir / cacheKey, std::ios::binary);
+                if (!inputFile.is_open()) {
+                    ErrorLog::getInstance().log("Failed to open input file " + (baseDir / cacheKey).string());
+                    return nullptr;
+                }
                 fromBaseDir = false;
-            }
-            else {
-                inputFile.open(workingDir / cacheKey, std::ios::binary);
-            }
-            if (!inputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open input file " + (workingDir / cacheKey).string());
-                return "";
-            }
 
-            const fspath outputPath = workingDir / resultKey;
-            if (!std::filesystem::is_directory(outputPath.parent_path()))
-            {
-                if(!Utility::create_directories(outputPath.parent_path())) {
-                    ErrorLog::getInstance().log("Failed to create directories for path " + outputPath.string());
-                    return "";
+                if (RPXError err = FileTypes::rpx_decompress(inputFile, nextEntry->data.emplace<std::stringstream>()); err != RPXError::NONE)
+                {
+                    ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                    return nullptr;
                 }
             }
-            std::ofstream outputFile(outputPath, std::ios::binary);
-            if (!outputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open output file " + outputPath.string());
-                return "";
-            }
-
-            if (RPXError err = FileTypes::rpx_decompress(inputFile, outputFile); err != RPXError::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return "";
+            else {
+                if (RPXError err = FileTypes::rpx_decompress(std::get<std::stringstream>(parentEntry->data), nextEntry->data.emplace<std::stringstream>()); err != RPXError::NONE)
+                {
+                    ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                    return nullptr;
+                }
+                parentEntry->data = std::monostate{}; //don't need to keep data around
             }
         }
         else if (element.compare("YAZ0") == 0)
         {
-            if(i == 1) { //szs files in stage directory don't need to be recompressed
-                fullRecompress = false;
-                toOutput = false; //sarc will go to output instead
-            }
+            //if(i == 1) { //szs files in stage directory don't need to be recompressed
+            //    nextEntry->fullCompress = false;
+            //    nextEntry->toOutput = false; //sarc will go to output instead
+            //}
 
-            std::ifstream inputFile;
             if(fromBaseDir) {
-                inputFile.open(baseDir / cacheKey, std::ios::binary);
-                fromBaseDir = false;
-            }
-            else {
-                inputFile.open(workingDir / cacheKey, std::ios::binary);
-            }
-            if (!inputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open input file " + (workingDir / cacheKey).string());
-                return "";
-            }
+                std::ifstream inputFile(baseDir / cacheKey, std::ios::binary);
+                if (!inputFile.is_open()) {
+                    ErrorLog::getInstance().log("Failed to open input file " + (baseDir / cacheKey).string());
+                    return nullptr;
+                }
 
-            const fspath outputPath = workingDir / resultKey;
-            if (!std::filesystem::is_directory(outputPath.parent_path()))
-            {
-                if(!Utility::create_directories(outputPath.parent_path())) {
-                    ErrorLog::getInstance().log("Failed to create directories for path " + outputPath.string());
-                    return "";
+                fromBaseDir = false;
+
+                if(YAZ0Error err = FileTypes::yaz0Decode(inputFile, nextEntry->data.emplace<std::stringstream>()); err != YAZ0Error::NONE)
+                {
+                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                    return nullptr;
                 }
             }
-            std::ofstream outputFile(outputPath, std::ios::binary);
-            if (!outputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open output file " + outputPath.string());
-                return "";
-            }
-
-            if(YAZ0Error err = FileTypes::yaz0Decode(inputFile, outputFile); err != YAZ0Error::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return "";
+            else {
+                if(YAZ0Error err = FileTypes::yaz0Decode(std::get<std::stringstream>(parentEntry->data), nextEntry->data.emplace<std::stringstream>()); err != YAZ0Error::NONE)
+                {
+                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                    return nullptr;
+                }
+                parentEntry->data = std::monostate{}; //don't need to keep data around
             }
         }
         else if(element.compare("SARC") == 0)
         {
-            if(curEntry->fullCompress == false && curEntry->toOutput == false) { //if yaz0 doesn't save to output, sarc does instead
-                toOutput = true;
-            }
+            //if(parentEntry->fullCompress == false && parentEntry->toOutput == false) { //if yaz0 doesn't save to output, sarc does instead
+            //    nextEntry->toOutput = true;
+            //}
 
-            FileTypes::SARCFile sarc;
+            FileTypes::SARCFile& sarc = nextEntry->data.emplace<FileTypes::SARCFile>();
             SARCError err = SARCError::NONE;
             if(fromBaseDir) {
                 err = sarc.loadFromFile((baseDir / cacheKey).string());
                 fromBaseDir = false;
             }
             else {
-                err = sarc.loadFromFile((workingDir / cacheKey).string());
+                err = sarc.loadFromBinary(std::get<std::stringstream>(parentEntry->data));
+                parentEntry->data = std::monostate{}; //don't need to keep data around
             }
             if (err != SARCError::NONE) {
                 ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return "";
-            }
-
-            const fspath extractTo = workingDir / resultKey;
-            if (!std::filesystem::is_directory(extractTo))
-            {
-                if(!Utility::create_directories(extractTo)) {
-                    ErrorLog::getInstance().log("Failed to create directories " + extractTo.string());
-                    return "";
-                }
-            }
-
-            if((err = sarc.extractToDir(extractTo.string())) != SARCError::NONE) {
-                ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return "";
+                return nullptr;
             }
         }
         else if (element.compare("BFRES") == 0)
         {
-            FileTypes::resFile fres;
+            FileTypes::resFile& fres = nextEntry->data.emplace<FileTypes::resFile>();
             FRESError err = FRESError::NONE;
             if(fromBaseDir) {
                 err = fres.loadFromFile((baseDir / cacheKey).string());
                 fromBaseDir = false;
             }
             else {
-                err = fres.loadFromFile((workingDir / cacheKey).string());
+                err = fres.loadFromBinary(std::get<std::stringstream>(parentEntry->data));
+                parentEntry->data = std::monostate{}; //don't need to keep data around
             }
             if (err != FRESError::NONE) {
                 ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return "";
-            }
-
-            const fspath extractTo = workingDir / resultKey;
-            if (!std::filesystem::is_directory(extractTo))
-            {
-                if(!Utility::create_directories(extractTo)) {
-                    ErrorLog::getInstance().log("Failed to create directories " + extractTo.string());
-                    return "";
-                }
-            }
-
-            err = fres.extractToDir(extractTo.string());
-            if (err != FRESError::NONE) {
-                ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return "";
+                return nullptr;
             }
         }
         else
         {
-            //If there is something to unpack, don't copy, just unpack to working dir
-            //Otherwise copy to working dir
             if(i == 0) {
                 if(fileSpec.size() > 1) {
                     fromBaseDir = true;
                 }
                 else {
-                    // attempt to copy from game directory
+                    // file has no unpacking, just load
                     const fspath gameFilePath = baseDir / resultKey;
-                    if (!std::filesystem::is_regular_file(gameFilePath))
-                    {
-                        ErrorLog::getInstance().log("Missing game file with path " + gameFilePath.string());
-                        return "";
+                    std::ifstream inFile(gameFilePath, std::ios::binary);
+                    if (!inFile.is_open()) {
+                        ErrorLog::getInstance().log("Failed to open input file " + (baseDir / cacheKey).string());
+                        return nullptr;
                     }
 
-                    const fspath outputPath = workingDir / resultKey;
-                    if (!std::filesystem::is_directory(outputPath.parent_path()))
-                    {
-                        if(!Utility::create_directories(outputPath.parent_path())) {
-                            ErrorLog::getInstance().log("Failed to create directories for path " + outputPath.string());
-                            return "";
-                        }
-                    }
+                    nextEntry->data.emplace<std::stringstream>() << inFile.rdbuf();
+                    nextEntry->toOutput = true;
+                }
+            }
+            else {
+                if(fileSpec[i - 1] == "SARC") {
+                    FileTypes::SARCFile::File& file = std::get<FileTypes::SARCFile>(parentEntry->data).getFile(element + '\0');
+                    nextEntry->data.emplace<std::stringstream>(std::move(file.data));
+                }
+                
+                if(fileSpec[i - 1] == "BFRES") {
+                    const auto& files = std::get<FileTypes::resFile>(parentEntry->data).files;
+                    auto it = std::find_if(files.begin(), files.end(), [&](const FileTypes::resFile::FileSpec& spec) { return spec.fileName == element; });
 
-                    if (!Utility::copy_file(gameFilePath, outputPath))
-                    {
-                        ErrorLog::getInstance().log("Failed copying file " + gameFilePath.string() + " to working directory");
-                        return "";
-                    }
-
-                    toOutput = true;
+                    nextEntry->data.emplace<std::stringstream>(std::get<FileTypes::resFile>(parentEntry->data).fileData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
                 }
             }
         }
+
         cacheKey = resultKey;
-        curEntry->children[cacheKey] = std::make_shared<CacheEntry>();
-        curEntry = curEntry->children[cacheKey].get();
-        curEntry->fullCompress = fullRecompress;
-        curEntry->toOutput = toOutput;
-        fullRecompress = true;
+        parentEntry = nextEntry;
     }
 
-    return workingDir / resultKey;
+    //reset cursors
+    std::stringstream* ptr = &std::get<std::stringstream>(parentEntry->data);
+    ptr->seekg(0, std::ios::beg);
+    ptr->seekp(0, std::ios::beg);
+    return ptr;
 }
 
-RandoSession::fspath RandoSession::openGameFile(const RandoSession::fspath& relPath)
+std::stringstream* RandoSession::openGameFile(const RandoSession::fspath& relPath)
 {
-    CHECK_INITIALIZED("");
-    return extractFile(Utility::Str::split(relPath.string(), '@')); //some cases only need the path, not stream
+    CHECK_INITIALIZED(nullptr);
+    return extractFile(Utility::Str::split(relPath.string(), '@'));
 }
 
 bool RandoSession::isCached(const RandoSession::fspath& relPath)
 {
     CHECK_INITIALIZED(false);
     const auto& splitPath = Utility::Str::split(relPath.string(), '@');
-    const CacheEntry* curEntry = &fileCache;
+    std::shared_ptr<CacheEntry> curEntry = fileCache;
+
     std::string key;
     for(const std::string& element : splitPath) {
         if (element.compare("RPX") == 0)
@@ -439,7 +382,7 @@ bool RandoSession::isCached(const RandoSession::fspath& relPath)
         }
 
         if(curEntry->children.count(key) == 0) return false;
-        curEntry = curEntry->children.at(key).get();
+        curEntry = curEntry->children.at(key);
     }
 
     return true;
@@ -448,13 +391,21 @@ bool RandoSession::isCached(const RandoSession::fspath& relPath)
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
     CHECK_INITIALIZED(false);
 
-    const fspath destPath = extractFile(Utility::Str::split(relPath.string(), '@'));
-    if(destPath.empty()) {
+    std::stringstream* data = extractFile(Utility::Str::split(relPath.string(), '@'));
+
+    if(data == nullptr) {
         ErrorLog::getInstance().log("Failed to extract file " + relPath.string());
         return false;
     }
+    
+    std::ifstream src(source, std::ios::binary);
+	if(!src.is_open()) {
+		ErrorLog::getInstance().log("Failed to open " + source.string());
+		return false;
+	}
 
-    return Utility::copy_file(source, destPath);
+    *data << src.rdbuf();
+    return true;
 }
 
 bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file from the base directory (without extracting any data)
@@ -474,7 +425,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
         return RepackResult::DELAY;
     }
 
-    //Repack file in the working directory
+    //Repack file in the cache directory
     //Write directly to output if it is the last step
     Utility::platformLog("Repacking %s\n", element.c_str());
     std::string resultKey;
@@ -482,123 +433,106 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
     {
         resultKey = element.substr(0, element.size() - 4);
 
-        std::ifstream inputFile((workingDir / element), std::ios::binary);
-        if (!inputFile.is_open()) {
-            ErrorLog::getInstance().log("Failed to open input file " + (workingDir / element).string());
-            return RepackResult::FAIL;
-        }
-
-        //Repack to output directory if file exists, otherwise stay in working dir
-        std::ofstream outputFile;
+        //Repack to output directory if file exists, otherwise stay in cache
         if(entry->toOutput) {
+            std::ofstream outputFile;
             outputFile.open(outputDir / resultKey, std::ios::binary);
+            if (!outputFile.is_open()) {
+                ErrorLog::getInstance().log("Failed to open output file " + (outputDir / resultKey).string());
+                return RepackResult::FAIL;
+            }
+
+            auto& strm = std::get<std::stringstream>(entry->data);
+            strm.seekg(0, std::ios::beg);
+            strm.seekp(0, std::ios::beg);
+            if (RPXError err = FileTypes::rpx_compress(strm, outputFile); err != RPXError::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return RepackResult::FAIL;
+            }
+            entry->data = std::monostate{};
         }
         else {
-            if (Utility::exists((workingDir / resultKey)) == false) {
-                if(!Utility::create_directories((workingDir / resultKey).parent_path())) {
-                    ErrorLog::getInstance().log("Failed to create directories for path " + (workingDir / resultKey).string());
-                    return RepackResult::FAIL;
-                }
-            }
-            
-            outputFile.open(workingDir / resultKey, std::ios::binary);
-        }
-        if (!outputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open output file " + (workingDir / resultKey).string());
+            auto& strm = std::get<std::stringstream>(entry->data);
+            strm.seekg(0, std::ios::beg);
+            strm.seekp(0, std::ios::beg);
+            if (RPXError err = FileTypes::rpx_compress(strm, entry->parent->data.emplace<std::stringstream>()); err != RPXError::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return RepackResult::FAIL;
-        }
-
-        if (RPXError err = FileTypes::rpx_compress(inputFile, outputFile); err != RPXError::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
+            }
+            entry->data = std::monostate{};
         }
     }
     else if (Utility::Str::endsWith(element, ".dec"))
     {
-        if(entry->fullCompress) {
+        uint32_t compressLevel = 9;
+        //if(entry->fullCompress) {
             resultKey = element.substr(0, element.size() - 4);
 
-            std::ifstream inputFile((workingDir / element), std::ios::binary);
-            if (!inputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open input file " + (workingDir / element).string());
-                return RepackResult::FAIL;
-            }
-
             //Repack to output directory if file exists, otherwise stay in working dir
-            std::ofstream outputFile;
             if(entry->toOutput) {
+                std::ofstream outputFile;
                 outputFile.open(outputDir / resultKey, std::ios::binary);
-            }
-            else {
-                if (Utility::exists((workingDir / resultKey)) == false) {
-                    if(!Utility::create_directories((workingDir / resultKey).parent_path())) {
-                        ErrorLog::getInstance().log("Failed to create directories for path " + (workingDir / resultKey).string());
-                        return RepackResult::FAIL;
-                    }
+                if (!outputFile.is_open()) {
+                    ErrorLog::getInstance().log("Failed to open output file " + (outputDir / resultKey).string());
+                    return RepackResult::FAIL;
                 }
 
-                outputFile.open(workingDir / resultKey, std::ios::binary);
+                Utility::platformLog("Recompressing %s\n", element.c_str());
+                auto& strm = std::get<std::stringstream>(entry->data);
+                strm.seekg(0, std::ios::beg);
+                strm.seekp(0, std::ios::beg);
+                if (YAZ0Error err = FileTypes::yaz0Encode(strm, outputFile, compressLevel); err != YAZ0Error::NONE)
+                {
+                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                    return RepackResult::FAIL;
+                }
+                entry->data = std::monostate{};
             }
-            if (!outputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open output file " + (workingDir / resultKey).string());
-                return RepackResult::FAIL;
+            else {
+                Utility::platformLog("Recompressing %s\n", element.c_str());
+                auto& strm = std::get<std::stringstream>(entry->data);
+                strm.seekg(0, std::ios::beg);
+                strm.seekp(0, std::ios::beg);
+                if (YAZ0Error err = FileTypes::yaz0Encode(strm, entry->parent->data.emplace<std::stringstream>(), compressLevel); err != YAZ0Error::NONE)
+                {
+                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                    return RepackResult::FAIL;
+                }
+                entry->data = std::monostate{};
             }
-
-            Utility::platformLog("Recompressing %s\n", element.c_str());
-            if (YAZ0Error err = FileTypes::yaz0Encode(inputFile, outputFile, 9); err != YAZ0Error::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return RepackResult::FAIL;
-            }
-        }
+        //}
     }
     else if (Utility::Str::endsWith(element, ".unpack/"))
     {
         resultKey = element.substr(0, element.size() - 8);
 
-        FileTypes::SARCFile sarc;
+        FileTypes::SARCFile& sarc = std::get<FileTypes::SARCFile>(entry->data);
         SARCError err = SARCError::NONE;
-        //The randomizer skips copying the original file if it can be unpacked from the base directory (is slightly faster than copying)
-        //If that was the case, we must also read the original SARC from the base directory
-        if(Utility::exists((baseDir / resultKey))) {
-            err = sarc.loadFromFile((baseDir / resultKey).string());
-        }
-        else {
-            err = sarc.loadFromFile((workingDir / resultKey).string());
-        }
-        if (err != SARCError::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
-        }
 
-        //only rebuild the changed files, saves time
+        //update the changed files
         for(const auto& child : entry->children) {
-            err = sarc.replaceFile(child.first.substr(element.size()) + '\0', (workingDir / child.first).string());
+            err = sarc.replaceFile(child.first.substr(element.size()) + '\0', std::get<std::stringstream>(child.second->data));
             if (err != SARCError::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return RepackResult::FAIL;
             }
+            child.second->data = std::monostate{};
         }
 
-        //Repack to output directory if file exists, otherwise stay in working dir
+        //Repack to output directory if file exists, otherwise stay in cache
         if(entry->toOutput) {
             if(Utility::Str::endsWith(resultKey, ".dec")) { //remove extra extension if skipping compression
                 resultKey = resultKey.substr(0, resultKey.size() - 4);
             }
             err = sarc.writeToFile((outputDir / resultKey).string());
+            entry->data = std::monostate{};
         }
         else {
-            if (Utility::exists((workingDir / resultKey)) == false) {
-                if(!Utility::create_directories((workingDir / resultKey).parent_path())) {
-                    ErrorLog::getInstance().log("Failed to create directories for path " + (workingDir / resultKey).string());
-                    return RepackResult::FAIL;
-                }
-            }
-
-            err = sarc.writeToFile((workingDir / resultKey).string());
+            err = sarc.writeToStream(entry->parent->data.emplace<std::stringstream>());
+            entry->data = std::monostate{};
         }
 
         if (err != SARCError::NONE) 
@@ -611,43 +545,28 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
     {
         resultKey = element.substr(0, element.size() - 5);
 
-        FileTypes::resFile fres;
+        FileTypes::resFile& fres = std::get<FileTypes::resFile>(entry->data);
         FRESError err = FRESError::NONE;
-        if(Utility::exists((baseDir / resultKey))) {
-            err = fres.loadFromFile((baseDir / resultKey).string());
-        }
-        else {
-            err = fres.loadFromFile((workingDir / resultKey).string());
-        }
-        if (err != FRESError::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
-        }
 
-        //only rebuild the changed files, saves time
+        //rebuild the changed files
         for(const auto& child : entry->children) {
-            err = fres.replaceEmbeddedFile(child.first.substr(element.size()), (workingDir / child.first).string());
+            err = fres.replaceEmbeddedFile(child.first.substr(element.size()), std::get<std::stringstream>(child.second->data));
             if (err != FRESError::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return RepackResult::FAIL;
             }
+            child.second->data = std::monostate{};
         }
         
         //Repack to output directory if file exists, otherwise stay in working dir
         if(entry->toOutput) {
             err = fres.writeToFile((outputDir / resultKey).string());
+            entry->data = std::monostate{};
         }
         else {
-            if (Utility::exists((workingDir / resultKey)) == false) {
-                if(!Utility::create_directories((workingDir / resultKey).parent_path())) {
-                    ErrorLog::getInstance().log("Failed to create directories for path " + (workingDir / resultKey).string());
-                    return RepackResult::FAIL;
-                }
-            }
-
-            err = fres.writeToFile((workingDir / resultKey).string());
+            err = fres.writeToStream(entry->parent->data.emplace<std::stringstream>());
+            entry->data = std::monostate{};
         }
         
         if (err != FRESError::NONE)
@@ -661,10 +580,15 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
         //Copy to output if the file didn't need any extraction
         //Skip copying for files that get repacked, they get repacked directly to the output
         if (entry->toOutput) {
-            if(!Utility::copy_file(workingDir / element, outputDir / element)) {
-                ErrorLog::getInstance().log("Failed copying file " + (workingDir / element).string() + " to output directory");
-                return RepackResult::FAIL;
-            }
+        	std::ofstream dst(outputDir / element, std::ios::binary);
+			if(!dst.is_open()) {
+				ErrorLog::getInstance().log("Failed to open " + (outputDir / element).string());
+				return RepackResult::FAIL;
+			}
+
+            const std::string& dataStr = std::get<std::stringstream>(entry->data).str();
+			dst.write(&dataStr[0], dataStr.size());
+            entry->data = std::monostate{};
         }
     }
 
@@ -691,14 +615,7 @@ bool RandoSession::repackCache()
 {
     CHECK_INITIALIZED(false);
 
-    //fileCache is stored as an entry, not a pointer to an entry, can't just use the queue function
-    for(auto& child : fileCache.children) { //go down the tree
-        queueChildren(child.second);
-    }
-    //queue this level's children
-    for(const auto& child : fileCache.children) {
-        workerThreads.push_task(std::bind(&RandoSession::repackFile, this, child.first, child.second));
-    }
+    queueChildren(fileCache);
 
     workerThreads.waitForAll();
     Utility::platformLog("Finished repacking files\n");
@@ -709,49 +626,8 @@ bool RandoSession::repackCache()
 
 void RandoSession::clearCache()
 {
-    fileCache.children.clear();
-    fileCache.isRepacked = false;
-    fileCache.fullCompress = true;
-    fileCache.toOutput = false;
-}
-
-
-std::vector<std::pair<std::string, std::shared_ptr<RandoSession::CacheEntry>>> generateList(RandoSession::CacheEntry& entry) {
-    static std::vector<std::pair<std::string, std::shared_ptr<RandoSession::CacheEntry>>> items;
-
-    //go down the tree and wait for lower parts to queue
-    for(auto& child : entry.children) { //go down the tree
-        generateList(*child.second.get());
-    }
-
-    //queue this level's children
-    for(const auto& child : entry.children) {
-        std::pair<std::string, std::shared_ptr<RandoSession::CacheEntry>> temp = std::make_pair(child.first, child.second);
-        items.push_back(temp);
-    }
-
-    return items;
-}
-
-//single threaded things for debugging fun Wii U heap corruption
-void printLoop() {
-    size_t i = 0;
-    while(true) {
-        if(i > 10) break;
-        Utility::platformLog("Didn't crash!%d\n", i);
-        i++;
-        std::this_thread::sleep_for(std::chrono::seconds(20));
-    }
-}
-
-bool RandoSession::repackCache_singleThread() {
-    const auto& items = generateList(fileCache);
-    std::thread print(printLoop);
-    for(auto& item : items) {
-        Utility::platformLog("Repacking %s\n", item.first.c_str());
-        repackFile(item.first, item.second);
-    }
-    Utility::platformLog("Finished repacking files\n");
-    BasicLog::getInstance().log("Finished repacking files\n");
-    return true;
+    fileCache->children.clear();
+    fileCache->isRepacked = false;
+    fileCache->fullCompress = true;
+    fileCache->toOutput = false;
 }

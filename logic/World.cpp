@@ -2,9 +2,11 @@
 #include "World.hpp"
 #include "Requirements.hpp"
 #include "PoolFunctions.hpp"
+#include "Search.hpp"
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
-#include "Search.hpp"
+#include "../server/utility/stringUtil.hpp"
+#include "../server/utility/file.hpp"
 #include "../seedgen/random.hpp"
 #include "../options.hpp"
 #include <memory>
@@ -12,8 +14,6 @@
 #include <cstdlib>
 #include <vector>
 #include <random>
-#include <fstream>
-#include <filesystem>
 
 // some error checking macros for brevity and since we can't use exceptions
 #define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
@@ -22,9 +22,12 @@
 #define EVENT_CHECK(eventName) if (!eventMap.contains(eventName)) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaEntries.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
+#define REGION_VALID_CHECK(region, msg) VALID_CHECK(0, hintRegions.count(region), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(0, locationEntries.count(loc), msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
 #define OPTION_VALID_CHECK(opt, msg) VALID_CHECK(opt, Option::INVALID, msg, WorldLoadingError::OPTION_DOES_NOT_EXIST)
 #define VALID_DUNGEON_CHECK(dungeon) if (!isValidDungeon(dungeon)) {ErrorLog::getInstance().log("Unrecognized dungeon name: \"" + dungeon + "\""); LOG_ERR_AND_RETURN(WorldLoadingError::INVALID_DUNGEON_NAME)};
+
+
 
 World::World()
 {
@@ -73,7 +76,6 @@ World::WorldLoadingError World::setItemPools()
     auto gameItemPool = generateGameItemPool(settings, this);
     auto startingGameItemPool = generateStartingGameItemPool(settings);
 
-    // Set worldId for each item in each pool
     for (const auto& item : startingGameItemPool)
     {
         ITEM_VALID_CHECK(nameToGameItem(item), item + " is not defined");
@@ -82,7 +84,9 @@ World::WorldLoadingError World::setItemPools()
         auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), item);
         if (itemPoolItr != gameItemPool.end())
         {
-            *itemPoolItr = getRandomJunk();
+            auto junk = getRandomJunk();
+            ITEM_VALID_CHECK(nameToGameItem(junk), junk + " is not defined");
+            *itemPoolItr = junk;
         }
     }
 
@@ -136,7 +140,7 @@ void World::determineChartMappings()
     // The ordering of this array corresponds each treasure/triforce chart with
     // the island sector it's located in and the name of the sunken treasure location
     // in that room
-    static std::array<GameItem, 49> charts = {
+    std::array<GameItem, 49> charts = {
         GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
         GameItem::TreasureChart7,  // Sector 2 Star Island
         GameItem::TreasureChart24, // etc...
@@ -226,13 +230,12 @@ void World::determineChartMappings()
 bool World::chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix)
 {
     // If this isn't a sunken treasure location, then a chart won't lead to it
-    if (location.name.find("Sunken Treasure") == std::string::npos)
+    if (location.getName().find("Sunken Treasure") == std::string::npos)
     {
-        LOG_TO_DEBUG("Non-sunken treasure location passed into sunken treasure check: " + location.name);
+        LOG_TO_DEBUG("Non-sunken treasure location passed into sunken treasure check: " + location.getName());
         return false;
     }
-
-    auto islandName = std::string(location.name.begin(), location.name.begin() + location.name.find(" - Sunken Treasure"));
+    auto islandName = location.getName().substr(0, location.getName().find(" - Sunken Treasure"));
     size_t islandNumber = islandNameToRoomIndex(islandName);
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
@@ -313,13 +316,13 @@ World::WorldLoadingError World::determineRaceModeDungeons()
                 for (auto& location : allDungeonLocations)
                 {
                     auto dungeonLocation = &locationEntries[location];
-                    bool dungeonLocationForcesRaceMode = !plandomizerLocations.contains(dungeonLocation) ? false : !plandomizerLocations[dungeonLocation].isJunkItem();
+                    bool dungeonLocationForcesRaceMode = !plandomizer.locations.contains(dungeonLocation) ? false : !plandomizer.locations[dungeonLocation].isJunkItem();
                     if (dungeonLocationForcesRaceMode)
                     {
                         // However, if the dungeon's race mode location is junk then
                         // that's an error on the user's part.
                         Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-                        bool raceModeLocationIsAcceptable = !plandomizerLocations.contains(raceModeLocation) ? true : !plandomizerLocations[dungeonLocation].isJunkItem();
+                        bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
                         if (!raceModeLocationIsAcceptable)
                         {
                             ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
@@ -355,7 +358,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             // If this dungeon has a junk item placed as its race mode
             // location, then skip it
             auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-            bool raceModeLocationIsAcceptable = !plandomizerLocations.contains(raceModeLocation) ? false : plandomizerLocations[raceModeLocation].isJunkItem();
+            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem();
             if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
             {
                 LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
@@ -486,7 +489,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
         else if (nameToGameItem(argStr) != GameItem::INVALID)
         {
             req.type = RequirementType::HAS_ITEM;
-            req.args.push_back(Item(nameToGameItem(argStr), worldId));
+            req.args.push_back(Item(nameToGameItem(argStr), this));
             return WorldLoadingError::NONE;
         }
         // Then a can_access check...
@@ -670,19 +673,24 @@ World::WorldLoadingError World::loadMacros(Yaml::Node& macroListTree)
 
 World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
 {
+    YAML_FIELD_CHECK(locationObject, "Names", WorldLoadingError::ITEM_MISSING_KEY);
+    std::string location = locationObject["Names"]["English"].As<std::string>();
+
+    Location& newEntry = locationEntries[location];
+    // Sort locations by order of processing
+    static int sortPriority = 0;
+    newEntry.sortPriority = sortPriority++;
+    newEntry.world = this;
+    newEntry.plandomized = false;
+    newEntry.categories.clear();
+    for (const auto& language : Text::supported_languages)
+    {
+        newEntry.names[language] = Utility::Str::RemoveUnicodeReplacements(locationObject["Names"][language].As<std::string>());
+    }
+
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    std::string location = locationObject["Name"].As<std::string>();
-
-    Location& newEntry = locationEntries[location];
-    // Read in the sort order of locations by order of processing
-    static int sortPriority = 0;
-    newEntry.name = location;
-    newEntry.worldId = worldId;
-    newEntry.plandomized = false;
-    newEntry.sortPriority = sortPriority++;
-    newEntry.categories.clear();
     for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)
     {
         Yaml::Node category = (*categoryIt).second;
@@ -755,7 +763,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
     }
 
     const std::string& itemName = locationObject["Original Item"].As<std::string>();
-    newEntry.originalItem = {nameToGameItem(itemName), worldId};
+    newEntry.originalItem = {nameToGameItem(itemName), this};
     ITEM_VALID_CHECK(
         newEntry.originalItem.getGameItemId(),
         "Error processing location " << location << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
@@ -771,7 +779,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         const std::string dungeonName = locationObject["Dungeon Dependency"].As<std::string>();
         VALID_DUNGEON_CHECK(dungeonName);
         Dungeon& dungeon = dungeons[dungeonName];
-        dungeon.outsideDependentLocations.push_back(newEntry.name);
+        dungeon.outsideDependentLocations.push_back(newEntry.getName());
     }
 
     if (!locationObject["Race Mode Location"].IsNone())
@@ -779,9 +787,12 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         newEntry.isRaceModeLocation = true;
     }
 
-    if (!locationObject["Goal Name"].IsNone())
+    if (!locationObject["Goal Names"].IsNone())
     {
-        newEntry.goalName = locationObject["Goal Name"].As<std::string>();
+        for (const auto& language : Text::supported_languages)
+        {
+            newEntry.goalNames[language] = Utility::Str::RemoveUnicodeReplacements(locationObject["Goal Names"][language].As<std::string>());
+        }
     }
 
     // Get the message label for hint locations
@@ -861,6 +872,7 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     {
         const std::string island = areaObject["Island"].As<std::string>();
         newEntry.island = island;
+        hintRegions[island] = {};
     }
 
     // Check to see if this area is assigned to a dungeon
@@ -869,6 +881,7 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
         const std::string dungeon = areaObject["Dungeon"].As<std::string>();
         VALID_DUNGEON_CHECK(dungeon)
         newEntry.dungeon = dungeon;
+        hintRegions[dungeon] = {};
     }
 
     // Check to see if this area is the first one in a dungeon. This is important
@@ -885,6 +898,7 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     {
         const std::string region = areaObject["Hint Region"].As<std::string>();
         newEntry.hintRegion = region;
+        hintRegions[region] = {};
     }
 
     // load events and their requirements in this area if there are any
@@ -973,16 +987,51 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
 
 World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
 {
-    YAML_FIELD_CHECK(itemObject, "Name", WorldLoadingError::ITEM_MISSING_KEY);
+    YAML_FIELD_CHECK(itemObject, "Names", WorldLoadingError::ITEM_MISSING_KEY);
     YAML_FIELD_CHECK(itemObject, "Game Item Id", WorldLoadingError::ITEM_MISSING_KEY);
 
-    const std::string itemName = itemObject["Name"].As<std::string>();
+    auto names = itemObject["Names"];
+    const std::string itemName = names["English"].As<std::string>();
     const GameItem gameItemId = idToGameItem(std::stoul(itemObject["Game Item Id"].As<std::string>(), nullptr, 16));
 
     LOG_TO_DEBUG("Loading item \"" + itemName + "\". Game Item ID to name: " + gameItemToName(gameItemId));
 
-    itemEntries[itemName] = Item(gameItemId, worldId);
+    itemEntries[itemName] = Item(gameItemId, this);
     auto& item = itemEntries[itemName];
+
+    // Load item names for all languages
+    for (const auto& language : Text::supported_languages)
+    {
+        item.setName(language, Text::Type::STANDARD, itemObject["Names"][language].As<std::string>());
+
+        if (!itemObject["Pretty Names"].IsNone())
+        {
+            item.setName(language, Text::Type::PRETTY, itemObject["Pretty Names"][language].As<std::string>());
+        }
+        else
+        {
+            item.setName(language, Text::Type::PRETTY, item.getUTF8Name(language, Text::Type::STANDARD));
+        }
+
+        if (!itemObject["Cryptic Names"].IsNone())
+        {
+            item.setName(language, Text::Type::CRYPTIC, itemObject["Cryptic Names"][language].As<std::string>());
+        }
+        else
+        {
+            item.setName(language, Text::Type::CRYPTIC, item.getUTF8Name(language, Text::Type::PRETTY));
+        }
+
+        if (!itemObject["Gender"].IsNone())
+        {
+            itemTranslations[gameItemId][language].gender = Text::string_to_gender(itemObject["Gender"][language].As<std::string>());
+        }
+
+        if (!itemObject["Plurality"].IsNone())
+        {
+            itemTranslations[gameItemId][language].plurality = Text::string_to_plurality(itemObject["Plurality"][language].As<std::string>());
+        }
+    }
 
     if (itemObject["Chain Locations"].IsSequence())
     {
@@ -1032,6 +1081,40 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
     return WorldLoadingError::NONE;
 }
 
+World::WorldLoadingError World::loadAreaTranslations(Yaml::Node& areaObject)
+{
+    YAML_FIELD_CHECK(areaObject, "Names", WorldLoadingError::AREA_MISSING_KEY);
+
+    auto areaName = areaObject["Names"]["English"].As<std::string>();
+    REGION_VALID_CHECK(areaName, "Area \"" << areaName << "\" is not a defined hint region");
+
+    // Load area names for all languages
+    for (const auto& language : Text::supported_languages)
+    {
+        hintRegions[areaName][language].types[Text::Type::STANDARD] = areaObject["Names"][language].As<std::string>();
+
+        if (!areaObject["Pretty Names"].IsNone())
+        {
+            hintRegions[areaName][language].types[Text::Type::PRETTY] = areaObject["Pretty Names"][language].As<std::string>();
+        }
+        else
+        {
+            hintRegions[areaName][language].types[Text::Type::PRETTY] = hintRegions[areaName][language].types[Text::Type::STANDARD];
+        }
+
+        if (!areaObject["Cryptic Names"].IsNone())
+        {
+            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = areaObject["Cryptic Names"][language].As<std::string>();
+        }
+        else
+        {
+            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = hintRegions[areaName][language].types[Text::Type::PRETTY];
+        }
+    }
+
+    return WorldLoadingError::NONE;
+}
+
 World::WorldLoadingError World::loadPlandomizer()
 {
     LOG_TO_DEBUG("Loading plandomzier file");
@@ -1042,7 +1125,7 @@ World::WorldLoadingError World::loadPlandomizer()
     #endif
 
     std::string plandoStr;
-    if (getFileContents(plandoFilepath, plandoStr) != 0)
+    if (Utility::getFileContents(plandoFilepath, plandoStr) != 0)
     {
         Utility::platformLog("Will skip using plando file\n");
         return WorldLoadingError::NONE;
@@ -1053,6 +1136,7 @@ World::WorldLoadingError World::loadPlandomizer()
     std::string worldName = "World " + std::to_string(worldId + 1);
     Yaml::Node plandoLocations;
     Yaml::Node plandoEntrances;
+    std::string plandoStartingIsland = "";
     // Grab the YAML object which holds the locations for this world.
     // If there's only one world, then allow the plandomizer file to not
     // have the world specification
@@ -1061,7 +1145,7 @@ World::WorldLoadingError World::loadPlandomizer()
         Yaml::Node& ref = (*refIt).second;
         switch (numWorlds)
         {
-            // If only 1 world, just look for "locations"
+            // If only 1 world, just look for "locations", "entrances", etc.
             case 1:
                 if (ref["locations"].IsMap())
                 {
@@ -1070,6 +1154,10 @@ World::WorldLoadingError World::loadPlandomizer()
                 if (ref["entrances"].IsMap())
                 {
                     plandoEntrances =  ref["entrances"];
+                }
+                if (ref["starting island"].IsScalar())
+                {
+                    plandoStartingIsland = ref["starting island"].As<std::string>();
                 }
                 [[fallthrough]];
             // If more than one world, look for "World 1", "World 2", etc.
@@ -1085,9 +1173,30 @@ World::WorldLoadingError World::loadPlandomizer()
                     {
                         plandoEntrances = ref[worldName]["entrances"];
                     }
+                    if (ref[worldName]["starting island"].IsScalar())
+                    {
+                        plandoStartingIsland = ref[worldName]["starting island"].As<std::string>();
+                    }
                 }
         }
         break;
+    }
+
+    // Process starting island
+    if (plandoStartingIsland != "")
+    {
+        plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
+        if (plandomizer.startingIslandRoomIndex == 0)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
+        else
+        {
+            // Automatically turn on random starting island if one is specified in
+            // the plandomizer file
+            settings.randomize_starting_island = true;
+        }
     }
 
     // Process Locations
@@ -1152,11 +1261,13 @@ World::WorldLoadingError World::loadPlandomizer()
             LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + " [W" + std::to_string(plandoWorldId) + "]");
             Location* location = &locationEntries[locationName];
             location->plandomized = true;
-            Item item = {itemId, plandoWorldId};
-            plandomizerLocations.insert({location, item});
+            Item item = itemEntries[itemName];
+            plandomizer.locations.insert({location, item});
             // Place progression locations' items now to make sure that if entrance
             // randomizer is on, it creates a suitable world graph for the pre-decided
-            // major item layout
+            // major item layout. Place non-progress plandomized locations later
+            // so that the entrance randomizer doesn't consider potential out
+            // of logic items such as extra bottles.
             if (location->progression)
             {
                 location->currentItem = item;
@@ -1219,7 +1330,7 @@ World::WorldLoadingError World::loadPlandomizer()
                 return WorldLoadingError::PLANDOMIZER_ERROR;
             }
 
-            plandomizerEntrances.insert({originalEntrance, replacementEntrance});
+            plandomizer.entrances.insert({originalEntrance, replacementEntrance});
             LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + entranceObject.first + ": " + replacementEntranceStr);
         }
     }
@@ -1227,31 +1338,16 @@ World::WorldLoadingError World::loadPlandomizer()
     return WorldLoadingError::NONE;
 }
 
-// Short function for getting the string data from a file
-int World::getFileContents(const std::string& filename, std::string& fileContents)
-{
-    std::ifstream file(filename);
-    if (!file.is_open())
-    {
-        ErrorLog::getInstance().log("unable to open file \"" + filename + "\" for world " + std::to_string(worldId));
-        return 1;
-    }
-
-    // Read and load file contents
-    auto ss = std::ostringstream{};
-    ss << file.rdbuf();
-    fileContents = ss.str();
-
-    return 0;
-}
-
 // Load the world based on the given world graph file, macros file, and loation data file
-int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath)
+int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath)
 {
     LOG_TO_DEBUG("Loading world");
     // load and parse items
     Yaml::Node itemDataTree;
-    Yaml::Parse(itemDataTree, itemDataPath.c_str());
+    std::string itemData;
+    Utility::getFileContents(itemDataPath, itemData);
+    itemData = Utility::Str::InsertUnicodeReplacements(itemData);
+    Yaml::Parse(itemDataTree, itemData);
     for (auto itemIt = itemDataTree.Begin(); itemIt != itemDataTree.End(); itemIt++)
     {
         Yaml::Node& item = (*itemIt).second;
@@ -1289,7 +1385,10 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
 
     // Read and parse location data
     Yaml::Node locationDataTree;
-    Yaml::Parse(locationDataTree, locationDataPath.c_str());
+    std::string locationData;
+    Utility::getFileContents(locationDataPath, locationData);
+    locationData = Utility::Str::InsertUnicodeReplacements(locationData);
+    Yaml::Parse(locationDataTree, locationData);
     for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
     {
         Yaml::Node& locationObject = (*locationObjectIt).second;
@@ -1310,6 +1409,24 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
         if (err != World::WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading area for world " + std::to_string(worldId) + ": " + World::errorToName(err));
+            ErrorLog::getInstance().log(getLastErrorDetails());
+            return 1;
+        }
+    }
+
+    // Read and parse area translations for hints/spoiler logs in other languages
+    Yaml::Node areaDataTree;
+    std::string areaData;
+    Utility::getFileContents(areaDataPath, areaData);
+    areaData = Utility::Str::InsertUnicodeReplacements(areaData);
+    Yaml::Parse(areaDataTree, areaData);
+    for (auto areaObjectIt = areaDataTree.Begin(); areaObjectIt != areaDataTree.End(); areaObjectIt++)
+    {
+        Yaml::Node& areaObject = (*areaObjectIt).second;
+        err = loadAreaTranslations(areaObject);
+        if (err != World::WorldLoadingError::NONE)
+        {
+            ErrorLog::getInstance().log(std::string("Got error loading area translations: ") + World::errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
             return 1;
         }
@@ -1450,6 +1567,17 @@ Dungeon& World::getDungeon(const std::string& dungeonName)
     return dungeons[dungeonName];
 }
 
+std::string World::getUTF8HintRegion(const std::string& hintRegion, const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RAW*/) const
+{
+    return Utility::Str::toUTF8(getUTF16HintRegion(hintRegion, language, type, color));
+}
+std::u16string World::getUTF16HintRegion(const std::string& hintRegion, const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RED*/) const
+{
+    std::u16string str = Utility::Str::toUTF16(hintRegions.at(hintRegion).at(language).types.at(type));
+    str = Text::apply_name_color(str, color);
+    return Utility::Str::RemoveUnicodeReplacements(str);
+}
+
 const char* World::errorToName(WorldLoadingError err)
 {
     switch(err)
@@ -1560,7 +1688,7 @@ void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits
 
         // Make edge connections between areas and their locations
         for (const auto& locAccess : areaEntry.locations) {
-            std::string& connectedLocation = locAccess.location->name;
+            std::string connectedLocation = locAccess.location->getName();
             std::replace(connectedLocation.begin(), connectedLocation.end(), '&', 'A');
             std::string itemAtLocation = locAccess.location->currentItem.getName();
             color = locAccess.location->hasBeenFound ? "\"black\"" : "\"red\"";

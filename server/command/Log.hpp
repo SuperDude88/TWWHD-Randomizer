@@ -44,8 +44,6 @@ public:
     static std::string getDateStr();
 };
 
-
-
 class LogInfo {
 private:
     Config config;
@@ -64,6 +62,8 @@ public:
     static const Config& getConfig();
     static const std::string& getSeedHash();
 };
+
+
 
 class BasicLog {
 private:
@@ -109,8 +109,6 @@ public:
         return error;  \
     } \
 }
-
-
 
 class DebugLog {
 private:

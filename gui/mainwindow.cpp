@@ -5,6 +5,8 @@
 #include "../seedgen/seed.hpp"
 #include "../seedgen/permalink.hpp"
 #include "../seedgen/tracker_permalink.hpp"
+#include "../server/utility/stringUtil.hpp"
+#include "../server/utility/file.hpp"
 #include "../libs/Yaml.hpp"
 
 #include <QMessageBox>
@@ -123,7 +125,7 @@ void MainWindow::setup_gear_menus()
     startingGearModel = new QStringListModel(this);
 
     QStringList randomizedList;
-    randomizedList << "Ballad Of Gales"
+    randomizedList << "Ballad of Gales"
                    << "Bait Bag"
                    << "Bombs"
                    << "Boomerang"
@@ -131,21 +133,21 @@ void MainWindow::setup_gear_menus()
                    << "Command Melody"
                    << "Deku Leaf"
                    << "Delivery Bag"
-                   << "Dins Pearl"
-                   << "Earth Gods Lyric"
+                   << "Din's Pearl"
+                   << "Earth God's Lyric"
                    << "Empty Bottle"
-                   << "Farores Pearl"
+                   << "Farore's Pearl"
                    << "Ghost Ship Chart"
                    << "Grappling Hook"
-                   << "Heros Charm"
+                   << "Hero's Charm"
                    << "Hookshot"
                    << "Hurricane Spin"
                    << "Iron Boots"
-                   << "Maggies Letter"
+                   << "Maggie's Letter"
                    << "Magic Armor"
-                   << "Moblins Letter"
-                   << "Nayrus Pearl"
-                   << "Note To Mom"
+                   << "Moblin's Letter"
+                   << "Nayru's Pearl"
+                   << "Note to Mom"
                    << "Power Bracelets"
                    << "Progressive Bomb Bag"
                    << "Progressive Bomb Bag"
@@ -167,11 +169,11 @@ void MainWindow::setup_gear_menus()
                    << "Progressive Wallet"
                    << "Progressive Wallet"
                    << "Skull Hammer"
-                   << "Song Of Passing"
+                   << "Song of Passing"
                    << "Spoils Bag"
                    << "Telescope"
                    << "Tingle Bottle"
-                   << "Wind Gods Aria";
+                   << "Wind God's Aria";
 
     randomizedGearModel->setStringList(randomizedList);
     ui->randomized_gear->setModel(randomizedGearModel);
@@ -297,6 +299,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, ho_ho_hints);
     APPLY_CHECKBOX_SETTING(config, ui, korl_hints);
     APPLY_CHECKBOX_SETTING(config, ui, use_always_hints);
+    APPLY_CHECKBOX_SETTING(config, ui, clearer_hints);
     APPLY_SPINBOX_SETTING(config, ui, path_hints, uint8_t(0), uint8_t(7));
     APPLY_SPINBOX_SETTING(config, ui, barren_hints, uint8_t(0), uint8_t(7));
     APPLY_SPINBOX_SETTING(config, ui, location_hints, uint8_t(0), uint8_t(7));
@@ -591,13 +594,13 @@ void MainWindow::on_remove_gear_clicked()
 
 void MainWindow::update_starting_health_text()
 {
-    int health = config.settings.starting_hcs * 4;
+    int health = 12 + (config.settings.starting_hcs * 4);
     health += config.settings.starting_pohs;
 
     int containers =  health / 4;
     int pieces = health % 4;
 
-    std::string containersStr = std::to_string(containers) + (containers == 1 ? " Container" : " Containers");
+    std::string containersStr = std::to_string(containers) + " Hearts";
     std::string piecesStr = std::to_string(pieces) + (pieces == 1 ? " Piece" : " Pieces");
 
     std::string message = "Current Starting Health: " + containersStr + " and " + piecesStr;
@@ -625,6 +628,7 @@ DEFINE_STATE_CHANGE_FUNCTION(player_in_casual_clothes)
 DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
 DEFINE_STATE_CHANGE_FUNCTION(korl_hints)
 DEFINE_STATE_CHANGE_FUNCTION(use_always_hints)
+DEFINE_STATE_CHANGE_FUNCTION(clearer_hints)
 void MainWindow::on_path_hints_valueChanged(int path_hints)
 {
     config.settings.path_hints = path_hints;
@@ -821,12 +825,15 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 void MainWindow::load_locations()
 {
     auto locationDataPath = DATA_PATH "logic/data/location_data.yaml";
+    std::string locationDataStr;
+    Utility::getFileContents(locationDataPath, locationDataStr);
+    locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
-    Yaml::Parse(locationDataTree, locationDataPath);
+    Yaml::Parse(locationDataTree, locationDataStr);
     for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
     {
         Yaml::Node& locationObject = (*locationObjectIt).second;
-        std::string name = locationObject["Name"].As<std::string>();
+        std::string name = Utility::Str::RemoveUnicodeReplacements(locationObject["Names"]["English"].As<std::string>());
         locationCategories.push_back({});
         for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)
         {

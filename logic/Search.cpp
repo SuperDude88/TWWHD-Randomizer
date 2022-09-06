@@ -236,7 +236,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
         {
             auto exit = *exitItr;
-            if (evaluateRequirement(worlds[exit->getWorldId()], exit->getRequirement(), ownedItems, ownedEvents)) {
+            if (evaluateRequirement(*exit->getWorld(), exit->getRequirement(), ownedItems, ownedEvents)) {
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
@@ -250,7 +250,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                     worlds[0].entranceSpheres.back().push_back(exit);
                 }
                 // If this exit's connected region has not been explored yet, then explore it
-                auto& connectedArea = worlds[exit->getWorldId()].getArea(exit->getConnectedArea());
+                auto& connectedArea = exit->getWorld()->getArea(exit->getConnectedArea());
                 if (!connectedArea.isAccessible)
                 {
                     newThingsFound = true;
@@ -277,7 +277,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 locItr = locationsToTry.erase(locItr);
                 continue;
             }
-            if (evaluateRequirement(worlds[location->worldId], locAccess->requirement, ownedItems, ownedEvents))
+            if (evaluateRequirement(*location->world, locAccess->requirement, ownedItems, ownedEvents))
             {
                 newThingsFound = true;
                 location->hasBeenFound = true;
@@ -298,7 +298,7 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             accessibleLocations.push_back(location);
             if (location->currentItem.getGameItemId() != GameItem::INVALID && !location->currentItem.isJunkItem())
             {
-                ownedItems.emplace(location->currentItem.getGameItemId(), location->currentItem.getWorldId());
+                ownedItems.emplace(location->currentItem.getGameItemId(), location->currentItem.getWorld());
                 if (searchMode == SearchMode::GeneratePlaythrough && location->progression)
                 {
                     worlds[0].playthroughSpheres.back().push_back(location);
@@ -352,7 +352,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
             if (!location.progression)
             {
                 nonRequiredLocations.insert({&location, location.currentItem});
-                location.currentItem = {GameItem::INVALID, location.worldId};
+                location.currentItem = {GameItem::INVALID, location.world};
             }
         }
     }
@@ -364,7 +364,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
             // Remove the item at the current location and check if the game is still beatable
             auto location = *loc;
             auto itemAtLocation = location->currentItem;
-            location->currentItem = {GameItem::INVALID, location->worldId};
+            location->currentItem = {GameItem::INVALID, location->world};
             if (gameBeatable(worlds))
             {
                 // If the game is still beatable, then this location is not required
@@ -463,7 +463,7 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
         #ifdef ENABLE_DEBUG
             if (!inPool)
             {
-                LOG_TO_DEBUG("Missing location " + loc->name);
+                LOG_TO_DEBUG("Missing location " + loc->getName());
             }
         #endif
         return inPool;

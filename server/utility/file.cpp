@@ -8,8 +8,10 @@
 
 namespace Utility {
 	//IMPROVEMENT: better way to make these thread-safe?
-	static constexpr int FILE_BUF_SIZE = 4*1024*1024;
-	static char buf[FILE_BUF_SIZE];
+	#ifdef DEVKITPRO
+		static constexpr int FILE_BUF_SIZE = 4*1024*1024;
+		static char buf[FILE_BUF_SIZE];
+	#endif
 	static std::mutex bufMutex;
 	bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
 		Utility::platformLog("Copying %s\n", to.string().c_str());
@@ -97,7 +99,25 @@ namespace Utility {
 		#else
 			std::filesystem::copy(from, to, std::filesystem::copy_options::recursive);
 		#endif
-		
+
 		return true;
+	}
+
+	// Short function for getting the string data from a file
+	int getFileContents(const std::string& filename, std::string& fileContents)
+	{
+	    std::ifstream file(filename);
+	    if (!file.is_open())
+	    {
+	        ErrorLog::getInstance().log("unable to open file \"" + filename + "\"");
+	        return 1;
+	    }
+
+	    // Read and load file contents
+	    auto ss = std::ostringstream{};
+	    ss << file.rdbuf();
+	    fileContents = ss.str();
+
+	    return 0;
 	}
 }

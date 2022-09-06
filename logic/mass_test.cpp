@@ -27,19 +27,24 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     Random_Init(integer_seed);
 
+    config.settings = settings;
+    config.seed = seed;
+    ConfigError err = writeToFile("error_config.yaml", config);
+    if (err != ConfigError::NONE)
+    {
+        std::cout << "Could not write error_config to file" << std::endl;
+        return 1;
+    }
+
     int worldCount = 1;
     WorldPool worlds (worldCount);
     std::vector<Settings> settingsVector (1, settings);
 
     int retVal = generateWorlds(worlds, settingsVector);
 
-    config.settings = settings;
-    config.seed = seed;
-    ConfigError err = writeToFile("error_config.yaml", config);
-
     if (retVal != 0)
     {
-        std::cout << "Generation after changing setting \"" << settingName << "\" failed." << std::endl;
+        std::cout << "Generation after changing setting \"" << settingName << "\" failed.\nSettings saved to \"error_config.yaml\"" << std::endl;
         return 1;
     }
     return 0;
@@ -125,6 +130,8 @@ void massTest(Config& newConfig)
     TEST(settings1, settings1.ho_ho_hints, "5 item hints");
     settings1.location_hints = 5;
     TEST(settings1, settings1.ho_ho_hints, "5 loaction hints");
+    TEST(settings1, settings1.use_always_hints, "use always hints");
+    TEST(settings1, settings1.clearer_hints, "clearer hints");
     TEST(settings1, settings1.randomize_charts, "randomize charts");
     TEST(settings1, settings1.randomize_starting_island, "random starting island");
     TEST(settings1, settings1.randomize_dungeon_entrances, "randomize dungeon entrances");
@@ -148,6 +155,8 @@ void massTest(Config& newConfig)
     TEST(settings2, settings2.randomize_dungeon_entrances, "randomize dungeon entrances");
     TEST(settings2, settings2.randomize_starting_island, "randomize starting island");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
+    TEST(settings2, settings2.clearer_hints, "clearer hints");
+    TEST(settings2, settings2.use_always_hints, "use always hints");
     settings2.path_hints = 5;
     TEST(settings2, settings2.korl_hints, "5 path hints");
     settings2.barren_hints = 5;
@@ -192,4 +201,7 @@ void massTest(Config& newConfig)
     multiWorldTest(settings1);
 
     std::cout << "All settings tests passed" << std::endl;
+
+    // Delete error_config if everything passes
+    std::filesystem::remove("./error_config.yaml");
 }

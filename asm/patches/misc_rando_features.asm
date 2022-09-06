@@ -392,6 +392,24 @@ custom_damage_multiplier:
 
 
 
+; Stop Old man Ho-Ho from disappearing under some conditions.
+; When HoHo is created
+.org 0x021e5560 ; Don't check if Cabana Octo is defeated
+  li r3, 0
+.org 0x021e5524 ; Don't check if the stone head above Savage Labyrinth is destroyed
+  li r3, 0
+.org 0x021e558c ; Don't check if the Two-Eye Reef Octo is defeated
+  li r3, 0
+
+; When HoHo is executing
+.org 0x021e6924 ; Don't check if Cabana Octo is defeated
+  li r3, 0
+.org 0x021e6900 ; Don't check if the stone head above Savage Labyrinth is destroyed
+  li r3, 0
+.org 0x021e6950 ; Don't check if the Two-Eye Reef Octo is defeated
+  li r3, 0
+
+
 
 ; Change the Deku Leaf so that you can still fan it to create a gust of air when you have zero magic.
 ; In vanilla, you needed at least one magic to fan it, but it didn't consume any magic.
@@ -402,8 +420,9 @@ custom_damage_multiplier:
   nop
 
 
+
  ; Allow the game to load uncompressed szs files
- ; This is super hacky and probably a terrible idea but it saves a ton of time randomizing (compression is slow)
+ ; This is super hacky and a terrible idea but saves a ton of time when randomizing (compression is slow)
  ; in sead::SZSDecompressor::decomp
  .org 0x0275ed6c
   b load_uncompressed_szs

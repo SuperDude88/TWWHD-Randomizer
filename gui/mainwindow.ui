@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>905</width>
+    <width>950</width>
     <height>726</height>
    </rect>
   </property>
@@ -28,7 +28,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>884</width>
+         <width>918</width>
          <height>581</height>
         </rect>
        </property>
@@ -57,7 +57,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1163,6 +1163,13 @@
                   <widget class="QWidget" name="widget_7" native="true"/>
                  </item>
                 </layout>
+               </item>
+               <item row="1" column="3">
+                <widget class="QCheckBox" name="clearer_hints">
+                 <property name="text">
+                  <string>Clearer Hints</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>

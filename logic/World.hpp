@@ -12,6 +12,7 @@
 #include "Dungeon.hpp"
 #include "Entrance.hpp"
 #include "../libs/Yaml.hpp"
+#include "../server/utility/text.hpp"
 
 static std::stringstream lastError;
 
@@ -47,6 +48,13 @@ struct AreaEntry
 
     // variables used for the searching algorithm
     bool isAccessible = false;
+};
+
+struct Plandomizer
+{
+    std::unordered_map<Location*, Item> locations = {};
+    std::unordered_map<Entrance*, Entrance*> entrances = {};
+    uint8_t startingIslandRoomIndex = -1;
 };
 
 class World
@@ -106,7 +114,7 @@ public:
     void determineChartMappings();
     void determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
-    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath);
+    int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
@@ -114,6 +122,10 @@ public:
     std::unordered_set<std::string> getIslands(const std::string& area);
     Dungeon& getDungeon(const std::string& dungeonName);
     WorldLoadingError loadPlandomizer();
+    std::string getUTF8HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW) const;
+    std::u16string getUTF16HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RED) const;
+
+    // Stuff to help with debugging
     static const char* errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
@@ -123,10 +135,10 @@ public:
     std::map<std::string, Item> itemEntries = {};
     std::map<std::string, AreaEntry> areaEntries = {};
     std::map<std::string, Location> locationEntries = {};
+    std::map<GameItem, std::map<std::string, Text::Translation>> itemTranslations; // game item names for all languages, keyed by GameItemId, language, and type
+    std::map<std::string, std::map<std::string, Text::Translation>> hintRegions; // hint region names for all languages, key'd by name, language, and type
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
-    std::unordered_map<Location*, Item> plandomizerLocations = {};
-    std::unordered_map<Entrance*, Entrance*> plandomizerEntrances = {};
     std::unordered_map<std::string, Dungeon> dungeons = {};
     std::unordered_map<Location*, std::vector<Location*>> pathLocations = {};
     std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
@@ -137,6 +149,7 @@ public:
     std::unordered_map<uint8_t, GameItem> chartMappings = {};
 
     uint8_t startingIslandRoomIndex = 44;
+    Plandomizer plandomizer;
 
 
 private:
@@ -153,7 +166,7 @@ private:
     WorldLoadingError loadMacros(Yaml::Node& macroListTree);
     WorldLoadingError loadArea(Yaml::Node& areaObject);
     WorldLoadingError loadItem(Yaml::Node& itemObject);
-    int getFileContents(const std::string& filename, std::string& fileContents);
+    WorldLoadingError loadAreaTranslations(Yaml::Node& areaObject);
 
     Settings settings;
     ItemPool itemPool;

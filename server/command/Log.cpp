@@ -1,5 +1,6 @@
 #include "Log.hpp"
 #include <chrono>
+#include <mutex>
 
 
 
@@ -35,9 +36,9 @@
         static const std::array<std::string, 7> DayStrings {
             "Sun",
             "Mon",
-            "Tues",
+            "Tue",
             "Wed",
-            "Thurs",
+            "Thu",
             "Fri",
             "Sat"
         };
@@ -85,7 +86,14 @@
     }
 
     std::string ProgramTime::getDateStr() {
+        //IMPROVEMENT: use once c++20 is better supported (gcc/clang)
+        //also maybe replace %T with something more specific
+        //return std::format("{:%a %b %d %T %Y %n}\n", ProgramTime::getOpenedTime()); 
+
         const time_t point = std::chrono::system_clock::to_time_t(ProgramTime::getOpenedTime());
+
+        static std::mutex localtimeMut; //std::ctime is not thread safe
+        std::unique_lock<std::mutex> lock(localtimeMut);
         return std::ctime(&point); //time string ends with \n
     }
 
@@ -181,7 +189,7 @@ BasicLog& BasicLog::getInstance() {
 }
 
 void BasicLog::log(const std::string& msg) {
-    output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
+    output << msg << std::endl;
 }
 
 void BasicLog::close()
@@ -192,29 +200,31 @@ void BasicLog::close()
 
 
 ErrorLog::ErrorLog() {
-    output.open("./Error Log.txt");
+    #ifdef ENABLE_DEBUG
+        output.open("./Error Log.txt");
 
-    output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
+        output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
-    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
 
-    output << "Selected options:" << std::endl << "\t";
-    for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-    {
-        Option setting = static_cast<Option>(settingInt);
-
-        if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+        output << "Selected options:" << std::endl << "\t";
+        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
         {
-            output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
-        }
-        else
-        {
-            output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
-        }
-    }
+            Option setting = static_cast<Option>(settingInt);
 
-    output << std::endl << std::endl;
+            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+            {
+                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+            }
+            else
+            {
+                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+            }
+        }
+
+        output << std::endl << std::endl;
+    #endif
 }
 
 ErrorLog::~ErrorLog() {
@@ -229,8 +239,6 @@ ErrorLog& ErrorLog::getInstance() {
 #include "../utility/platform.hpp"
 
 void ErrorLog::log(const std::string& msg) {
-    //TODO: remove print after testing
-    // Utility::platformLog(msg + '\n');
     output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
     lastErrors.push_back(msg);
     if (lastErrors.size() > 5)

@@ -2382,6 +2382,37 @@ XMLError XMLDocument::LoadFile( FILE* fp )
     return _errorID;
 }
 
+XMLError XMLDocument::LoadFile( std::stringstream& data )
+{
+    Clear();
+
+    unsigned long long filelength = data.str().size();
+
+    const size_t maxSizeT = static_cast<size_t>(-1);
+    // We'll do the comparison as an unsigned long long, because that's guaranteed to be at
+    // least 8 bytes, even on a 32-bit platform.
+    if ( filelength >= static_cast<unsigned long long>(maxSizeT) ) {
+        // Cannot handle files which won't fit in buffer together with null terminator
+        SetError( XML_ERROR_FILE_READ_ERROR, 0, 0 );
+        return _errorID;
+    }
+
+    if ( filelength == 0 ) {
+        SetError( XML_ERROR_EMPTY_DOCUMENT, 0, 0 );
+        return _errorID;
+    }
+
+    const size_t size = static_cast<size_t>(filelength);
+    TIXMLASSERT( _charBuffer == 0 );
+    _charBuffer = new char[size+1];
+    std::memcpy(_charBuffer, data.str().c_str(), filelength);
+
+    _charBuffer[size] = 0;
+
+    Parse();
+    return _errorID;
+}
+
 
 XMLError XMLDocument::SaveFile( const char* filename, bool compact )
 {
@@ -2411,6 +2442,7 @@ XMLError XMLDocument::SaveFile( FILE* fp, bool compact )
     Print( &stream );
     return _errorID;
 }
+
 
 
 XMLError XMLDocument::Parse( const char* p, size_t len )

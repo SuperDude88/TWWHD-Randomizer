@@ -161,7 +161,7 @@ uint32_t computePipeFromCoordWoRotation(uint32_t x, uint32_t y) {
 }
 
 uint32_t computeBankFromCoordWoRotation(uint32_t x, uint32_t y) {
-    return ((y >> 5) ^ (x >> 3)) & 1 | 2 * (((y >> 4) ^ (x >> 4)) & 1);
+    return (((y >> 5) ^ (x >> 3)) & 1) | (2 * (((y >> 4) ^ (x >> 4)) & 1));
 }
 
 uint8_t computeSurfaceRotationFromTileMode(GX2TileMode tileMode) {
@@ -338,7 +338,7 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
     }
 
     uint64_t totalOffset = elemOffset + ((macroTileOffset + sliceOffset) >> 3);
-    return bank << 9 | pipe << 8 | totalOffset & 255 | (totalOffset & -256) << 3;
+    return (bank << 9) | (pipe << 8) | (totalOffset & 255) | ((totalOffset & -256) << 3);
 }
 
 std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use, GX2TileMode tileMode, uint32_t swizzle_, uint32_t pitch, uint32_t bitsPerPixel, uint32_t slice, uint32_t sample, std::string& data, bool swizzle) {
@@ -1326,7 +1326,7 @@ surfaceOut getSurfaceInfo(GX2SurfaceFormat surfaceFormat, uint32_t surfaceWidth,
             aSurfIn.flags |= 0x20;
         }
         if(level == 0) {
-            aSurfIn.flags = (1 << 12) | aSurfIn.flags & 0xFFFFEFFF;
+            aSurfIn.flags = (1 << 12) | (aSurfIn.flags & 0xFFFFEFFF);
         }
         else {
             aSurfIn.flags = aSurfIn.flags & 0xFFFFEFFF;
