@@ -129,9 +129,14 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
             }
         }
         // ComboBox Options
-        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards)
+        else if (option == Option::SwordMode || option == Option::NumShards)
         {
             bitsWriter.write(getSetting(settings, option), 8);
+        }
+        // Special case for race mode dungeons
+        else if (option == Option::NumRaceModeDungeons)
+        {
+            bitsWriter.write(getSetting(settings, option) - 1, 8);
         }
         // 3-bit SpinBox options
         else if (option == Option::PathHints || option == Option::BarrenHints || option == Option::LocationHints || option == Option::ItemHints || option == Option::StartingHC)
