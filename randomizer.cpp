@@ -9,6 +9,7 @@
 #include "logic/mass_test.hpp"
 #include "server/filetypes/dzx.hpp"
 #include "server/filetypes/charts.hpp"
+#include "server/filetypes/events.hpp"
 #include "server/command/WriteLocations.hpp"
 #include "server/command/RandoSession.hpp"
 #include "server/command/Log.hpp"
@@ -35,7 +36,12 @@ static std::vector<Utility::titleEntry> wiiuTitlesList{};
 
 RandoSession g_session; //declared outside of class for extern stuff
 
-
+#define FILETYPE_ERROR_CHECK(func) {  \
+    if(const auto error = func; error != decltype(error)::NONE) {\
+        ErrorLog::getInstance().log(std::string("Encountered ") + &(typeid(error).name()[5]) + " on line " TOSTRING(__LINE__)); \
+        return false;  \
+    } \
+}
 
 class Randomizer {
 private:
@@ -411,16 +417,16 @@ private:
 		std::unordered_map<std::stringstream*, FileTypes::DZXFile> dzr_by_path;
 	
 		const EntrancePool entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
-	    for (const auto entrance : entrances)
-	    {
-	        const std::string fileStage = entrance->getFilepathStage();
-	        const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
-	        const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
-	        std::string replacementStage = entrance->getReplaces()->getStageName();
-	        const uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
-	        const uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
+    for (const auto entrance : entrances)
+    {
+      const std::string fileStage = entrance->getFilepathStage();
+      const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
+      const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+      std::string replacementStage = entrance->getReplaces()->getStageName();
+      const uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
+      const uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
 
-	        std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
+      std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
 
 			if (fileStage == "sea") {
 				if (pack1.count(entrance->getFilepathRoomNum()) > 0) {
@@ -454,6 +460,45 @@ private:
 			exit->data.replace(0, 8, replacementStage.c_str(), 8);
 			exit->data[8] = replacementSpawn;
 			exit->data[9] = replacementRoom;
+
+			// Update boss room exits appropriately
+			if (entrance->getBossFilepathStageName() != "") {
+				const std::string bossStage = entrance->getBossFilepathStageName();
+				auto& settings = entrance->getWorld()->getSettings();
+				std::stringstream* stream = g_session.openGameFile("content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+				if(stream == nullptr) {
+					ErrorLog::getInstance().log("Failed to open file " + filepath);
+					return false;
+				}
+
+				FileTypes::EventList event_list_2;
+				FILETYPE_ERROR_CHECK(event_list_2.loadFromBinary(*stream));
+				if(event_list_2.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
+					ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
+					return false;
+				}
+				std::shared_ptr<Action> exit2 = event_list_2.Events_By_Name.at("WARP_WIND_AFTER")->get_actor("DIRECTOR")->actions[2];
+
+				std::string bossOutStage = entrance->getReplaces()->getBossOutStageName();
+				uint8_t bossOutRoom = entrance->getReplaces()->getBossOutRoomNum();
+				uint8_t bossOutSpawn = entrance->getReplaces()->getBossOutSpawnId();
+
+				// If dungeons are shuffled in a decoupled setting, or if dungeons are mixed with another pool
+        // that doesn't have boss out stages, then just use the same exit as the one for exiting
+        // the beginning of the dungeon
+				if (settings.decouple_entrances || bossOutStage == "")
+				{
+					bossOutStage = replacementStage;
+					bossOutRoom = replacementRoom;
+					bossOutSpawn = replacementSpawn;
+				}
+
+				std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = bossOutSpawn;
+				exit2->properties[1]->value = bossOutStage + "\0";
+				std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = bossOutRoom;
+
+				FILETYPE_ERROR_CHECK(event_list_2.writeToStream(*stream));
+			}
 		}
 	
 		for (auto& [stream, dzr] : dzr_by_path) {
