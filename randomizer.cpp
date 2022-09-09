@@ -461,8 +461,8 @@ private:
 			exit->data[8] = replacementSpawn;
 			exit->data[9] = replacementRoom;
 
-      // Change the DRC -> Dragon Roost Pond entrance to have spawn type 1 instead of 5
-      // This prevents a crash that would happen if the pond leads to TOTG in entrance randomier 
+      // Change the DRC -> Dragon Roost Pond exit to have spawn type 1 instead of 5
+      // This prevents a crash that would happen if exiting TOTG on KoRL led to the Dragon Roost Pond
       const std::vector<ChunkEntry*> entrance_spawns = dzr_by_path[dzrStream].entries_by_type("PLYR");
       for (auto entrance_spawn : entrance_spawns) {
         uint8_t spawn_id = entrance_spawn->data.data()[29];
