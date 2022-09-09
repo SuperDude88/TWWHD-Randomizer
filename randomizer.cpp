@@ -461,11 +461,25 @@ private:
 			exit->data[8] = replacementSpawn;
 			exit->data[9] = replacementRoom;
 
+      // Change the DRC -> Dragon Roost Pond entrance to have spawn type 1 instead of 5
+      // This prevents a crash that would happen if the pond leads to TOTG in entrance randomier 
+      const std::vector<ChunkEntry*> entrance_spawns = dzr_by_path[dzrStream].entries_by_type("PLYR");
+      for (auto entrance_spawn : entrance_spawns) {
+        uint8_t spawn_id = entrance_spawn->data.data()[29];
+        uint8_t spawn_type = (entrance_spawn->data.data()[10] & 0xF0) >> 4;
+        if (entrance->getReverse() != nullptr && spawn_id == entrance->getReverse()->getSpawnId() && spawn_type == 5) {
+          entrance_spawn->data[10] &= 0x0F;
+          entrance_spawn->data[10] |= 1 << 4;
+          break;
+        }
+      }
+
 			// Update boss room exits appropriately
 			if (entrance->getBossFilepathStageName() != "") {
 				const std::string bossStage = entrance->getBossFilepathStageName();
 				auto& settings = entrance->getWorld()->getSettings();
-				std::stringstream* stream = g_session.openGameFile("content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
+        filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat";
+				std::stringstream* stream = g_session.openGameFile(filepath);
 				if(stream == nullptr) {
 					ErrorLog::getInstance().log("Failed to open file " + filepath);
 					return false;
