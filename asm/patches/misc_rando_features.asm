@@ -59,25 +59,27 @@ check_animate_rainbow_rupee_color:
   animate_rainbow_rupee_color:
   
   ; If it is the rainbow rupee, we need to increment the current keyframe (a float) by certain value every frame.
-  ; (Note: The way this is coded would increase it by this value multiplied by the number of rainbow rupees being drawn. This is fine since there's only one rainbow rupee but would cause issues if we placed multiple of them. Would need to find a different place to increment the keyframe in that case, somewhere only called once per frame.)
+  ; The keyframe is stored to the rupee actor +0x3A0, overwriting a couple fields that appear to be unused by rupees
   xoris r0, r0, 0x8000
-  lis r8, rainbow_rupee_keyframe@ha
-  addi r8, r8, rainbow_rupee_keyframe@l
-  lfs f0, 0 (r8) ; Read current keyframe
-  lfs f13, 4 (r8) ; Read amount to add to keyframe per frame
+  lfs f0, 0x3A0(r3) ; Read current keyframe
+
+
+  lis r9, rainbow_rupee_data@ha
+  addi r9, r9, rainbow_rupee_data@l
+  lfs f13, 0(r9) ; Read amount to add to keyframe per frame
   fadds f0, f0, f13 ; Increase the keyframe value
   
-  lfs f13, 8 (r8) ; Read the maximum keyframe value
+  lfs f13, 4(r9) ; Read the maximum keyframe value
   fcmpo cr0,f0,f13
   ; If we're less than the max we don't need to reset the value
   blt store_rainbow_rupee_keyframe_value
   
   ; If we're greater than the max, reset the current keyframe to the minimum.
   ; The minimum is actually the maximum negated. This is to signify that we're playing the animation backwards.
-  lfs f0, 0xC (r8)
+  lfs f0, 8(r9)
   
   store_rainbow_rupee_keyframe_value:
-  stfs f0, 0 (r8) ; Store the new keyframe value back
+  stfs f0, 0x3A0(r3) ; Store the keyframe back
   
   ; Take the absolute value of the keyframe. So instead of going from -6 to +6, the value we pass as the actual keyframe goes from 6 to 0 to 6.
   ; Also do an HD thing and round to single-precision
@@ -86,9 +88,8 @@ check_animate_rainbow_rupee_color:
   
   b 0x021836f4
 
-.global rainbow_rupee_keyframe
-rainbow_rupee_keyframe:
-  .float 0.0 ; Current keyframe, acts as a global variable modified every frame
+.global rainbow_rupee_data
+rainbow_rupee_data:
   .float 0.15 ; Amount to increment keyframe by every frame a rainbow rupee is being drawn
   .float 6.0 ; Max keyframe, when it should loop
   .float -6.0 ; Minimum keyframe
