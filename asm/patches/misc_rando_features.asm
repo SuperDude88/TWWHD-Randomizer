@@ -59,9 +59,9 @@ check_animate_rainbow_rupee_color:
   animate_rainbow_rupee_color:
   
   ; If it is the rainbow rupee, we need to increment the current keyframe (a float) by certain value every frame.
-  ; The keyframe is stored to the rupee actor +0x3A0, overwriting a couple fields that appear to be unused by rupees
+  ; The keyframe is stored to the rupee actor +0x3A0, repurposes a couple fields the rupee doesn't use
   xoris r0, r0, 0x8000
-  lfs f0, 0x3A0(r3) ; Read current keyframe
+  lfs f0, 0x3A0(r31) ; Read current keyframe
 
 
   lis r9, rainbow_rupee_data@ha
@@ -79,7 +79,7 @@ check_animate_rainbow_rupee_color:
   lfs f0, 8(r9)
   
   store_rainbow_rupee_keyframe_value:
-  stfs f0, 0x3A0(r3) ; Store the keyframe back
+  stfs f0, 0x3A0(r31) ; Store the keyframe back
   
   ; Take the absolute value of the keyframe. So instead of going from -6 to +6, the value we pass as the actual keyframe goes from 6 to 0 to 6.
   ; Also do an HD thing and round to single-precision
