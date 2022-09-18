@@ -11,22 +11,22 @@ RUN apt-get update && apt-get install python3 -y
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 0edd2e9c5c24d128714a6ef892c4b77bb5e20fce && \
+    git checkout 2c331d22ce5fc82856e9431dad8c872c08430db3 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
     rm -rf wut
 
 # Install libmocha
-RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch  && \
+RUN git clone --recursive https://github.com/Crementif/libmocha libmocha -b race_fix --single-branch  && \
     cd libmocha && \
-    git checkout 75f31e0a3e2415a3619f732eab95e65f73d8d99b && \
+    git checkout 523c191c1d41be2e7db17e355ecad3c168811d1f && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
     rm -rf libmocha
 
-# # Install libromfs
+# Install libromfs
 RUN git clone --recursive https://github.com/SuperDude88/libromfs-wiiu libromfs --single-branch && \
     cd libromfs && \
     git checkout c9d4c12a45dc92a4ddca4e1507b4d07ac9e7ff03 && \
