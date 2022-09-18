@@ -670,10 +670,11 @@ int mainRandomize() {
 
 	Randomizer rando(load);
 
+	// IMPROVEMENT: issue with seekp, find better solution than manual padding?
+
 	// TODO: do a hundo seed to test everything
 	// TODO: text wrapping on drc dungeon map
 	// TODO: fix uncompressed things
-	// TODO: jpc saving is broken
 	// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
 	int retVal = rando.randomize();
 
