@@ -94,6 +94,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "progression_island_puzzles",
       "This controls whether various island puzzles can contain progress items (e.g. chests hidden in unusual places).<br><u>If this is not checked, they will still be randomized</u>, but will only contain optional items you don't need to beat the game."
     },
+    {
+      "progression_obscure",
+      "This controls whether obscure checks can contain progression items (e.g. Kane Windfall gate decorations and Earth Temple freestanding spoils).<br><u>If this is not checked, they will still be randomized</u>, but will only contain optional items you don't need to beat the game."
+    },
 
     // Additional Randomization Options
     {
