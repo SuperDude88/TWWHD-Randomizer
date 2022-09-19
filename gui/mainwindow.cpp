@@ -228,7 +228,7 @@ void MainWindow::apply_config_settings()
         auto index = randomizedGear.indexOf(itemName.c_str());
         if (index != -1)
         {
-             randomizedGear.remove(index);
+             randomizedGear.removeAt(index);
         }
         // Also add the item to the starting gear list
         startingGear << itemName.c_str();

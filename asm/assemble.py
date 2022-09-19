@@ -137,8 +137,8 @@ def main():
           elif line == ".close":
             most_recent_org_offset = None
             continue
-          elif line.find(".global") != -1 and most_recent_org_offset.find("@FreeSpace") == -1:
-            raise Exception("Declared new symbol %s inside original code space at %s" % (line, most_recent_org_offset));
+          elif line.find(".global") != -1 and (not isinstance(most_recent_org_offset, str) or most_recent_org_offset.find("@FreeSpace") == -1):
+            raise Exception("Declared new symbol %s inside original code space at %s" % (line, most_recent_org_offset))
           elif not line:
             # Blank line
             continue
@@ -155,7 +155,7 @@ def main():
           raise Exception("No code found")
   
         if most_recent_org_offset is not None:
-          raise Exception("File %s was not closed before the end of the file" % most_recent_file_path)
+          raise Exception("File was not closed before the end of the file")
     
     temp_linker_script = linker_script + "\n" + temp_linker_script
   
