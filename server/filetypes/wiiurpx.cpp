@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cstring>
 
+#include "../filetypes/shared/elf_structs.hpp"
 #include "../utility/endian.hpp"
 #include "../utility/file.hpp"
 #include "../utility/common.hpp"
