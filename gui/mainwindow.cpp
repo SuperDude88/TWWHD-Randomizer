@@ -762,6 +762,7 @@ void MainWindow::on_randomize_button_clicked()
     QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, 100, this);
     progressDialog->setWindowTitle("Randomizing");
     progressDialog->setWindowModality(Qt::WindowModal);
+    progressDialog->setWindowFlag(Qt::WindowCloseButtonHint, false);
     progressDialog->setCancelButton(0);
     progressDialog->setValue(0);
     progressDialog->setVisible(true);

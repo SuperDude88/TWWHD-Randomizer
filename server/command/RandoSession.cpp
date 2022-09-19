@@ -66,6 +66,8 @@ public:
             UPDATE_DIALOG_VALUE(int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f)))
             return tasks_total == 0;
         });
+        // Update the label one last time so that it doesn't potentially get stuck at 99%
+        UPDATE_DIALOG_VALUE(100);
         waiting = false;
     }
 private:
