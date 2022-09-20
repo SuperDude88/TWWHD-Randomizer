@@ -140,7 +140,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     {EntranceType::MISC_RESTRICTIVE, {"Dragon Roost Rito Aerie",                "Dragon Roost Pond Upper Ledge",           "Atorizk",  0, 3, "Adanmae",  0,     1},
                                      {"Dragon Roost Pond Upper Ledge",          "Dragon Roost Rito Aerie",                 "Adanmae",  0, 1, "Atorizk",  0,     3}},
     {EntranceType::MISC_RESTRICTIVE, {"Islet of Steel",                         "Islet of Steel Interior",                 "sea",     30, 0, "ShipD",    0,     0},
-                                     {"Islet of Steel Interior",                "Islet of Steel",                          "ShipD",     0, 0, "sea",     30,     1}},
+                                     {"Islet of Steel Interior",                "Islet of Steel",                          "ShipD",    0, 0, "sea",     30,     1}},
     {EntranceType::MISC,             {"Forest Haven",                           "Forest Haven Interior",                   "sea",     41, 5, "Omori",    0,     5},
                                      {"Forest Haven Interior",                  "Forest Haven",                            "Omori",    0, 5, "sea",     41,     5}},
     {EntranceType::MISC_RESTRICTIVE, {"Forest Haven",                           "Forest Haven Waterfall Cave",             "sea",     41, 7, "Otkura",   0,     0},
