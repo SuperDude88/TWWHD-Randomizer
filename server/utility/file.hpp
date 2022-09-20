@@ -6,8 +6,9 @@
 #include "../command/Log.hpp"
 
 #ifdef DEVKITPRO
-#include <sys/stat.h>
-#include <dirent.h>
+	#include <sys/stat.h>
+	#include <dirent.h>
+	#include <coreinit/filesystem_fsa.h>
 #endif
 
 namespace Utility
@@ -15,7 +16,7 @@ namespace Utility
 	//std::filesystem is partially broken on Wii U, these are cross-platform replacements
 
     inline std::ostream& seek(std::ostream& stream, const std::streamoff& off, const std::ios::seekdir& way = std::ios::beg) {
-        #ifdef DEVKITPRO
+        //#ifdef DEVKITPRO
 		//Wii U crashes if you seek past eof, most other platforms extend the file
 		//Handle writing the extra padding manually
 
@@ -66,9 +67,9 @@ namespace Utility
                 return stream.seekp(off, std::ios::beg);
             }
         }
-        #else
-            return stream.seekp(off, way);
-        #endif
+        //#else
+        //    return stream.seekp(off, way);
+        //#endif
     }
 
 	inline bool exists(const std::filesystem::path& fsPath) {
@@ -86,7 +87,8 @@ namespace Utility
 			if(temp.back() == '/') temp.pop_back();
 			for(size_t i = 0; i < temp.size(); i++) {
 				if(temp[i] == '/') {
-    		    	mkdir(temp.substr(0, i).c_str(), ACCESSPERMS);
+					const std::string& sub = temp.substr(0, i);
+                	if (!std::filesystem::is_directory(sub)) mkdir(sub.c_str(), ACCESSPERMS);
 				}
 			}
 			mkdir(temp.c_str(), ACCESSPERMS);
@@ -121,5 +123,26 @@ namespace Utility
 
 	bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
 
-  int getFileContents(const std::string& filename, std::string& fileContents);
+	int getFileContents(const std::string& filename, std::string& fileContents);
+
+	#ifdef DEVKITPRO
+    inline bool flush_mlc() {
+        const int fsaHandle = FSAAddClient(NULL);
+        if(fsaHandle < 0) {
+            return false;
+        }
+
+        FSError ret = FSAFlushVolume(fsaHandle, "/vol/storage_mlc01");
+        if(ret != FS_ERROR_OK) {
+            return false;
+        }
+
+        ret = FSADelClient(fsaHandle);
+        if(ret != FS_ERROR_OK) {
+            return false;
+        }
+
+        return true;
+    }
+	#endif
 }

@@ -1,11 +1,11 @@
 //RPX files are game executables that run on the Wii U
 //They are very similar to ELF binaries, but only use section headers (program headers are ignored)
-//There are some sections with RPX metadata, and all sections are compressed with ZLIB
+//There are some sections with RPX metadata, and most sections are compressed with ZLIB
 
 #pragma once
 
-#include "../filetypes/shared/elf_structs.hpp"
-
+#include <cstdint>
+#include <fstream>
 
 #define SHF_RPL_ZLIB	    0x08000000
 

@@ -12,9 +12,11 @@
 
 	#include <mocha/mocha.h>
 	#include <romfs-wiiu.h>
+	static bool romfsOpen = false;
 
 	#define PRINTF_BUFFER_LENGTH 2048
 
+	static bool whbInit = false;
 	static bool mochaOpen = false;
 	static bool systemMLCMounted = false;
 	static std::vector<Utility::titleEntry> wiiuTitlesList{};
@@ -38,8 +40,43 @@ static void sigHandler(int signal)
 }
 
 #ifdef PLATFORM_DKP
-static bool initMocha();
-static void closeMocha();
+bool initMocha()
+{
+	Utility::platformLog("Starting libmocha...\n");
+	
+	if(MochaUtilsStatus status = Mocha_InitLibrary(); status != MOCHA_RESULT_SUCCESS) {
+		Utility::platformLog("Mocha_InitLibrary() failed\n");
+		Utility::platformShutdown();
+		return false;
+	}
+
+	Utility::platformLog("attempting to mount mlc\n");
+	if(MochaUtilsStatus status = Mocha_MountFS("storage_mlc01", nullptr, "/vol/storage_mlc01"); status != MOCHA_RESULT_SUCCESS)
+	{
+		Utility::platformLog("Failed to mount mlc: %s\n", Mocha_GetStatusStr(status));
+		OSSleepTicks(OSSecondsToTicks(1));
+		return false;
+	}
+
+	systemMLCMounted = true;
+
+	Utility::platformLog("Mocha initialized, MLC mounted\n");
+	return true;
+}
+
+void closeMocha() {
+	if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
+		Utility::platformLog("Error unmounting mlc: %s\n", Mocha_GetStatusStr(status));
+	}
+	systemMLCMounted = false;
+
+	if(MochaUtilsStatus status = Mocha_DeInitLibrary(); status != MOCHA_RESULT_SUCCESS) {
+		Utility::platformLog("Mocha_DeinitLibrary() failed\n");
+		Utility::platformShutdown();
+	}
+
+	return;
+}
 #endif
 
 namespace Utility
@@ -81,6 +118,7 @@ namespace Utility
 #ifdef PLATFORM_DKP
 		WHBProcInit();
 		WHBLogConsoleInit();
+		whbInit = true;
 
 		// retrieve WiiU title information
 		std::vector<MCPTitleListType> rawTitles{};
@@ -97,6 +135,7 @@ namespace Utility
 			platformShutdown();
 			return false;
 		}
+		romfsOpen = true;
 
 		if(!initMocha())
 		{
@@ -146,63 +185,26 @@ namespace Utility
 		if (mochaOpen)
 		{
 			closeMocha();
+			mochaOpen = false;
 		}
 
-		romfsExit();
+		if(romfsOpen) {
+			romfsExit();
+			romfsOpen = false;
+		}
 
-		mochaOpen = false;
 		wiiuTitlesList.clear();
-		WHBLogConsoleFree();
-		WHBProcShutdown();
+
+		if(whbInit) {
+			WHBLogConsoleFree();
+			WHBProcShutdown();
+		}
 #endif
 	}
-
-	#ifdef PLATFORM_DKP
-		const std::vector<Utility::titleEntry>* getLoadedTitles() {
-			return &wiiuTitlesList;
-		}
-	#endif
-}
 
 #ifdef PLATFORM_DKP
-
-
-bool initMocha()
-{
-	Utility::platformLog("Starting libmocha...\n");
-	
-	if(MochaUtilsStatus status = Mocha_InitLibrary(); status != MOCHA_RESULT_SUCCESS) {
-		Utility::platformLog("Mocha_InitLibrary() failed\n");
-		Utility::platformShutdown();
-		return false;
+	const std::vector<Utility::titleEntry>* getLoadedTitles() {
+		return &wiiuTitlesList;
 	}
-
-	Utility::platformLog("attempting to mount mlc\n");
-	if(MochaUtilsStatus status = Mocha_MountFS("storage_mlc01", nullptr, "/vol/storage_mlc01"); status != MOCHA_RESULT_SUCCESS)
-	{
-		Utility::platformLog("Failed to mount mlc: %s\n", Mocha_GetStatusStr(status));
-		OSSleepTicks(OSSecondsToTicks(1));
-		return false;
-	}
-
-	systemMLCMounted = true;
-
-	Utility::platformLog("Mocha initialized, MLC mounted\n");
-	return true;
-}
-
-void closeMocha() {
-	if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
-		Utility::platformLog("Error unmounting mlc: %s\n", Mocha_GetStatusStr(status));
-	}
-	systemMLCMounted = false;
-
-	//if(MochaUtilsStatus status = Mocha_DeinitLibrary(); status != MOCHA_RESULT_SUCCESS) {
-	//	Utility::platformLog("Mocha_DeinitLibrary() failed\n");
-	//	platformShutdown();
-	//}
-
-	return;
-}
-
 #endif
+}

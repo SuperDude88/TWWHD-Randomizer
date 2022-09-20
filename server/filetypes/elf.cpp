@@ -165,7 +165,7 @@ namespace FileTypes {
 			}
 
 			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_name);
-			shdr.sh_type = static_cast<SectionType>(Utility::Endian::toPlatform(eType::Big, static_cast<uint32_t>(shdr.sh_type))); //weird enum casting stuff
+			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_type);
 			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_flags);
 			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addr);
 			Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_offset);
@@ -304,7 +304,7 @@ namespace FileTypes {
 		Utility::seek(out, ehdr.e_shoff, std::ios::beg);
 		for (auto& [index, section] : shdr_table) {
 			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_name);
-			section.sh_type = static_cast<SectionType>(Utility::Endian::toPlatform(eType::Big, static_cast<uint32_t>(section.sh_type))); //weird enum casting stuff
+			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_type);
 			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_flags);
 			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_addr);
 			Utility::Endian::toPlatform_inplace(eType::Big, section.sh_offset);
