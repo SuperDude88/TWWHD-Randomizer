@@ -455,6 +455,55 @@ private:
 				return false;
 			}
 
+      // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
+      // "MiniKaz" is the Fire Mountain stage name
+      // "MiniHyo" is the Ice Ring stage name
+      if (replacementStage == "MiniKaz" || replacementStage == "MiniHyo") {
+        std::string exitFilepath = "content/Common/Stage/" + replacementStage + "_Room" + std::to_string(replacementRoom) + ".szs@YAZ0@SARC@Room" + std::to_string(replacementRoom) + ".bfres@BFRES@room.dzr";
+        std::stringstream* exitDzrStream = g_session.openGameFile(exitFilepath);
+        if(exitDzrStream == nullptr) {
+          ErrorLog::getInstance().log("Failed to open file " + exitFilepath);
+          return false;
+        }
+
+        if(dzr_by_path.count(exitDzrStream) == 0)
+        {
+          if(DZXError err = dzr_by_path[exitDzrStream].loadFromBinary(*exitDzrStream); err != DZXError::NONE) {
+            ErrorLog::getInstance().log("Failed to load dzr with path " + filepath);
+          }
+        }
+
+        // Get the "VolTag" actor (otherwise known as the kill trigger)
+        const std::vector<ChunkEntry*> actors = dzr_by_path[exitDzrStream].entries_by_type("ACTR");
+        for (auto actor : actors) {
+          if (actor->data.substr(0, 6) == "VolTag") {
+
+            // If Fire Mountain/Ice Ring entrances lead to themselves, then don't change anything
+            if (entrance->getReplaces() == entrance) {
+
+            // If Fire Mountain leads to Ice Ring then change the kill trigger type to act like the one
+            // inside Fire Mountain
+            } else if (entrance->getStageName() == "MiniKaz" && replacementStage == "MiniHyo") {
+              actor->data[11] &= 0x3F;
+              actor->data[11] |= 1 << 6;
+
+            // If Ice Ring leads to Fire Mountain then change the kill trigger type to act like the one
+            // inside Ice Ring
+            } else if (entrance->getStageName() == "MiniHyo" && replacementStage == "MiniKaz") {
+              actor->data[11] &= 0x3F;
+              actor->data[11] |= 2 << 6;
+
+            // Otherwise, destroy the kill trigger so that players don't get thrown out immediately upon entering
+            } else {
+              dzr_by_path[exitDzrStream].remove_entity(actor);
+            }
+
+            break;
+          }
+        }
+      }
+
+      // Update the SCLS entry so that the player gets taken to the new entrance
 			ChunkEntry* exit = scls_entries[sclsExitIndex];
 			replacementStage.resize(8, '\0');
 			exit->data.replace(0, 8, replacementStage.c_str(), 8);
