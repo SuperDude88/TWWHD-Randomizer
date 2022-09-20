@@ -7,8 +7,6 @@
 #include "../utility/common.hpp"
 #include "../command/Log.hpp"
 
-#include "../utility/platform.hpp"
-
 using eType = Utility::Endian::Type;
 
 LMSError MSBTHeader::read(std::istream& in) {

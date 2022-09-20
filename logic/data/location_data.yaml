@@ -5,7 +5,7 @@
   Original Item: Piece of Heart 2
   Category:
     - Mail
-    - SpoilsTrading
+    - Spoils Trading
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -147,7 +147,7 @@
   Category:
     - Mail
     - Dungeon
-    - ExpensivePurchase
+    - Expensive Purchase
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -173,7 +173,7 @@
     French: Océan - Cadeau de l'Equipage Nautilus
   Original Item: Treasure Chart 34
   Category:
-    - FreeGift
+    - Free Gift
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -198,8 +198,8 @@
     French: Océan - Récompense des Echanges Commerciaux des Gorons
   Original Item: Piece of Heart
   Category:
-    - LongSideQuest
-    - ExpensivePurchase
+    - Long Side Quest
+    - Expensive Purchase
   Hint Priority: Always
   Type: RPX
   Offsets:
@@ -211,7 +211,7 @@
     French: Océan - Arbres desséchés
   Original Item: Piece of Heart
   Category:
-    - LongSideQuest
+    - Long Side Quest
   Hint Priority: Always
   Type: RPX
   Offsets:
@@ -224,7 +224,7 @@
     French: Secteur de la Forteresse Maudite - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -330,7 +330,7 @@
     French: Ile Etoilée - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -359,7 +359,7 @@
     French: Ile Etoilée - Coffre de la grotte
   Original Item: Piece of Heart
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -372,7 +372,7 @@
     French: Ilot Septentrional des Fées - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -401,7 +401,7 @@
     French: Ilot Septentrional des Fées - Grande Fée
   Original Item: Progressive Wallet
   Category:
-    - GreatFairy
+    - Great Fairy
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -413,7 +413,7 @@
     French: Ile du Vent - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -442,7 +442,7 @@
     French: Ile du Croissant - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -471,7 +471,7 @@
     French: Archipel Ursa Major - Kalamar
   Original Item: Piece of Heart
   Category:
-    - BigOcto
+    - Big Octo
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -484,7 +484,7 @@
     French: Archipel Ursa Major - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -539,7 +539,7 @@
     French: Ile aux Trois Tours - Trésor englouti
   Original Item: Secret Cave Chart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -555,7 +555,7 @@
     French: Ile aux Trois Tours - Coffre de la grotte
   Original Item: Triforce Shard 8
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/TF_02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -568,7 +568,7 @@
     French: Ile de la Face Quatre - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 19
   Category:
-    - EyeReefChests
+    - Eye Reef Chests
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -581,7 +581,7 @@
     French: Ile de la Face Quatre - Trésor englouti
   Original Item: Great Fairy Chart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -597,7 +597,7 @@
     French: Ile Geminée - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -651,7 +651,7 @@
     French: Ile des Binocles - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -667,7 +667,7 @@
     French: Mercantîle - Cache-cache des Abeilles Tueuses (Ivan)
   Original Item: Piece of Heart
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -679,7 +679,7 @@
     French: Mercantîle - Coffre transparant
   Original Item: Piece of Heart
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -694,7 +694,7 @@
     French: Mercantîle - Danse de Johnny
   Original Item: Song of Passing
   Category:
-    - FreeGift
+    - Free Gift
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -707,7 +707,7 @@
     French: Mercantîle - Fleur du Sud à Naglagla
   Original Item: Magic Armor
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: Custom_Symbol
   SymbolNames:
@@ -721,7 +721,7 @@
     French: Mercantîle - Décorer l'île pour Pat
   Original Item: Piece of Heart
   Category:
-    - LongSideQuest
+    - Long Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -781,7 +781,7 @@
     French: Mercantîle - Mina la voleuse
   Original Item: Empty Bottle
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -806,7 +806,7 @@
     French: Mercantîle - Image de la rencontre secrète pour Olga et Vera
   Original Item: Treasure Chart 24
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -818,7 +818,7 @@
     French: Mercantîle - Image de la Pleine Lune pour Camille
   Original Item: Treasure Chart 31
   Category:
-    - LongSideQuest
+    - Long Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -830,7 +830,7 @@
     French: Mercantîle - Image de Miss Mercantîle Geneviève
   Original Item: Treasure Chart 33
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -842,7 +842,7 @@
     French: Mercantîle - Trésor englouti
   Original Item: Purple Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -858,7 +858,7 @@
     French: Mercantîle - Premier Cadeau de Tingle
   Original Item: Tingle Bottle
   Category:
-    - FreeGift
+    - Free Gift
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -870,7 +870,7 @@
     French: Mercantîle - Deuxième Cadeau de Tingle
   Original Item: Tingle's Chart
   Category:
-    - FreeGift
+    - Free Gift
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -882,7 +882,7 @@
     French: Mercantîle - Coffre du labyrinthe de la prison
   Original Item: Progressive Picto Box
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -895,7 +895,7 @@
     French: Mercantîle - Cache-cache des Abeilles Tueuses (Mrs Mary)
   Original Item: Purple Rupee
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -907,7 +907,7 @@
     French: Mercantîle - 1 Pendentif du Bonheur pour Mrs Mary
   Original Item: Red Rupee
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -919,7 +919,7 @@
     French: Mercantîle - 21 Pendentifs du Bonheur pour Mrs Mary
   Original Item: Cabana Deed
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -931,7 +931,7 @@
     French: Mercantîle - 40 Pendentifs du Bonheur pour Mrs Mary
   Original Item: Treasure Chart 45
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -943,7 +943,7 @@
     French: Mercantîle - Devenir l'Assistant d'Autofocus
   Original Item: Progressive Picto Box
   Category:
-    - LongSideQuest
+    - Long Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -955,7 +955,7 @@
     French: Mercantîle - Apporter une Luciole de la Forêt à Autofocus
   Original Item: Joy Pendant
   Category:
-    - LongSideQuest
+    - Long Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -967,7 +967,7 @@
     French: Mercantîle - Coffre de gauche de la maison d'Autofocus
   Original Item: Treasure Chart 29
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -980,7 +980,7 @@
     French: Mercantîle - Coffre de droite de la maison d'Autofocus
   Original Item: Purple Rupee
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -993,7 +993,7 @@
     French: Mercantîle - Courrier délivré au Café-Bar
   Original Item: Moblin's Letter
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -1006,7 +1006,7 @@
     French: Mercantîle - Linda et Anton
   Original Item: Piece of Heart
   Category:
-    - LongSideQuest
+    - Long Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1018,7 +1018,7 @@
     French: Mercantîle - Premier Prix de la Bataille Navale
   Original Item: Piece of Heart
   Category:
-    - BattleSquid
+    - Battle Squid
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1030,7 +1030,7 @@
     French: Mercantîle - Deuxième Prix de la Bataille Navale
   Original Item: Treasure Chart 7
   Category:
-    - BattleSquid
+    - Battle Squid
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1042,7 +1042,7 @@
     French: Mercantîle - Moins de 20 tirs à la Bataille Navale
   Original Item: Treasure Chart 23
   Category:
-    - BattleSquid
+    - Battle Squid
   Hint Priority: Always
   Type: RPX
   Offsets:
@@ -1054,7 +1054,7 @@
     French: Mercantîle - Rallumer le phare pour Vince
   Original Item: Piece of Heart
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1066,7 +1066,7 @@
     French: Mercantîle - Enchère à 5 Rubis
   Original Item: Treasure Chart 18
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
     - Minigame
   Hint Priority: Sometimes
   Type: RPX
@@ -1079,7 +1079,7 @@
     French: Mercantîle - Enchère à 40 Rubis
   Original Item: Joy Pendant
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
     - Minigame
   Hint Priority: Sometimes
   Type: RPX
@@ -1092,7 +1092,7 @@
     French: Mercantîle - Enchère à 60 Rubis
   Original Item: Treasure Chart 38
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
     - Minigame
   Hint Priority: Sometimes
   Type: RPX
@@ -1105,7 +1105,7 @@
     French: Mercantîle - Enchère à 80 Rubis
   Original Item: Piece of Heart
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
     - Minigame
   Hint Priority: Sometimes
   Type: RPX
@@ -1118,7 +1118,7 @@
     French: Mercantîle - Enchère à 100 Rubis
   Original Item: Swift Sail
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
     - Minigame
   Hint Priority: Sometimes
   Type: RPX
@@ -1144,7 +1144,7 @@
     French: Mercantîle - 20 Colliers Macabres pour le père de Maggy
   Original Item: Treasure Chart 2
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Path: content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -1157,7 +1157,7 @@
     French: Mercantîle - Objet donné par Maggy
   Original Item: Maggie's Letter
   Category:
-    - FreeGift
+    - Free Gift
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1169,7 +1169,7 @@
     French: Mercantîle - Délivrer la lettre à Maggy
   Original Item: Piece of Heart
   Category:
-    - ShortSideQuest
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1181,7 +1181,7 @@
     French: Mercantîle - 15 Gelées Chuchu Vertes au Magasin de Potion
   Original Item: Green Potion
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Hint Priority: Sometimes
   Type: Custom_Symbol
   SymbolNames:
@@ -1193,8 +1193,8 @@
     French: Mercantîle - 15 Gelées Chuchu Bleues au Magasin de Potion
   Original Item: Blue Potion
   Category:
-    - SpoilsTrading
-    - LongSideQuest
+    - Spoils Trading
+    - Long Side Quest
   Hint Priority: Always
   Type: Custom_Symbol
   SymbolNames:
@@ -1220,7 +1220,7 @@
     French: Pas de Chat - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1236,7 +1236,7 @@
     French: Pas de Chat - Coffre de la Grotte des Blobs
   Original Item: Piece of Heart
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1249,7 +1249,7 @@
     French: Pas de Chat - Coffre derrière la rocher de gauche de la Grotte des Blobs
   Original Item: Purple Rupee
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1262,7 +1262,7 @@
     French: Pas de Chat - Coffre derrière le rocher de droite de la Grotte des Blobs
   Original Item: Joy Pendant
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1275,7 +1275,7 @@
     French: Pas de Chat - Coffre en haut du mur de la Grotte des Blobs
   Original Item: Red Rupee
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1288,7 +1288,7 @@
     French: Pas de Chat - Coffre de la Grotte des Sorciers
   Original Item: Treasure Chart 46
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/Cave07_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1327,7 +1327,7 @@
     French: Ile du Dragon - Coffre sur le rocher
   Original Item: Silver Rupee
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -1340,7 +1340,7 @@
     French: Ile du Dragon - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1356,7 +1356,7 @@
     French: Ile du Dragon - 20 Plumes d'Or pour Odelf
   Original Item: Orange Rupee
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -1382,7 +1382,7 @@
     French: Ile du Dragon - Planer autour de l'île
   Original Item: Orange Rupee
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -1395,7 +1395,7 @@
     French: Ile du Dragon - Coffre de la grotte
   Original Item: Purple Rupee
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/TF_06_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1420,7 +1420,7 @@
     French: Tour de l'Envol - Trésor englouti
   Original Item: Island Hearts Chart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1449,7 +1449,7 @@
     French: Ilot Occidental des Fées - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1465,7 +1465,7 @@
     French: Ilot Occidental des Fées - Grande Fée
   Original Item: Progressive Quiver
   Category:
-    - GreatFairy
+    - Great Fairy
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1503,7 +1503,7 @@
     French: Ile de la Rocaille - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1519,7 +1519,7 @@
     French: Ile de la Rocaille - Objet à 500 Rubis de la Boutique de Terry
   Original Item: Empty Bottle
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1533,7 +1533,7 @@
     French: Ile de la Rocaille - Objet à 950 Rubis de la Boutique de Terry
   Original Item: Piece of Heart
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1547,7 +1547,7 @@
     French: Ile de la Rocaille - Objet à 900 Rubis de la Boutique de Terry
   Original Item: Treasure Chart 4
   Category:
-    - ExpensivePurchase
+    - Expensive Purchase
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1600,7 +1600,7 @@
     French: Ile de la Rocaille - Coffre de la grotte
   Original Item: Treasure Chart 37
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/Cave04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1625,7 +1625,7 @@
     French: Ile de Tingle - Kalamar
   Original Item: Piece of Heart
   Category:
-    - BigOcto
+    - Big Octo
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1638,7 +1638,7 @@
     French: Ile de Tingle - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1654,7 +1654,7 @@
     French: Ile Triangulaire du Nord - Trésor englouti
   Original Item: Octo Chart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1670,7 +1670,7 @@
     French: Ilot Oriental des Fées - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1686,7 +1686,7 @@
     French: Ilot Oriental des Fées - Grande Fée
   Original Item: Progressive Bomb Bag
   Category:
-    - GreatFairy
+    - Great Fairy
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -1711,7 +1711,7 @@
     French: Montagne de Feu - Kalamar
   Original Item: Orange Rupee
   Category:
-    - BigOcto
+    - Big Octo
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1724,7 +1724,7 @@
     French: Montagne de Feu - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1740,7 +1740,7 @@
     French: Montagne de Feu - Coffre intérieur
   Original Item: Power Bracelets
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -1779,7 +1779,7 @@
     French: Archipel d'Orion - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1808,7 +1808,7 @@
     French: Ile de la Face Trois - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 32
   Category:
-    - EyeReefChests
+    - Eye Reef Chests
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -1821,7 +1821,7 @@
     French: Ile de la Face Trois - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1837,7 +1837,7 @@
     French: Ile du Poisson - Coffre caché
   Original Item: Piece of Heart
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -1850,7 +1850,7 @@
     French: Ile du Poisson - Trésor englouti
   Original Item: Triforce Shard 1
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1866,7 +1866,7 @@
     French: Ile de la Face Une - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 21
   Category:
-    - EyeReefChests
+    - Eye Reef Chests
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -1879,7 +1879,7 @@
     French: Ile de la Face Une - Trésor englouti
   Original Item: Light Ring Chart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1908,7 +1908,7 @@
     French: Ile de la Face Six - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 26
   Category:
-    - EyeReefChests
+    - Eye Reef Chests
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -1921,7 +1921,7 @@
     French: Ile de la Face Six - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1963,7 +1963,7 @@
     French: Secteur de la Tour des Dieux - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1979,7 +1979,7 @@
     French: Ile Triangulaire de l'Est - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room27.szs@YAZ0@SARC@Room27.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -1995,7 +1995,7 @@
     French: Ilot Epineux des Fées - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2011,7 +2011,7 @@
     French: Ilot Epineux des Fées - Grande Fée
   Original Item: Progressive Quiver
   Category:
-    - GreatFairy
+    - Great Fairy
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -2049,7 +2049,7 @@
     French: Serrure de Pierre - Coffre de l'île
   Original Item: Piece of Heart
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2075,7 +2075,7 @@
     French: Serrure de Pierre - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2091,7 +2091,7 @@
     French: Serrure de Pierre - Coffre de la grotte
   Original Item: Orange Rupee
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/SubD42_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2104,7 +2104,7 @@
     French: Canonnière - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2146,7 +2146,7 @@
     French: Ile de la Tête de Pierre - Trésor englouti
   Original Item: Triforce Shard 3
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2162,7 +2162,7 @@
     French: Ile de la Tête de Pierre - Coffre de la grotte
   Original Item: Triforce Shard 7
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/TF_01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2201,7 +2201,7 @@
     French: Ile Triangulaire du Sud - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room32.szs@YAZ0@SARC@Room32.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2217,7 +2217,7 @@
     French: Ile de Qui-ça - Coffre au sommet de la cascade
   Original Item: Treasure Chart 27
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2230,7 +2230,7 @@
     French: Ile de Qui-ça - Kalamar
   Original Item: Orange Rupee
   Category:
-    - BigOcto
+    - Big Octo
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2243,7 +2243,7 @@
     French: Ile de Qui-ça - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2259,7 +2259,7 @@
     French: Ile de Qui-ça - Coffre au sous-sol du labyrinthe
   Original Item: Orange Rupee
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2272,7 +2272,7 @@
     French: Ile de Qui-ça - Coffre au RDC du labyrinthe
   Original Item: Triforce Shard 2
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2285,7 +2285,7 @@
     French: Ile de la Bombe - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2301,7 +2301,7 @@
     French: Ile de la Bombe - Coffre de la grotte
   Original Item: Piece of Heart
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2340,7 +2340,7 @@
     French: Ile aux Nichoirs - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room35.szs@YAZ0@SARC@Room35.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2356,7 +2356,7 @@
     French: Ile aux Nichoirs - Coffre intérieur
   Original Item: Triforce Chart 3
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/TF_03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2369,7 +2369,7 @@
     French: Ile du Losange - Kalamar
   Original Item: Orange Rupee
   Category:
-    - BigOcto
+    - Big Octo
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2382,7 +2382,7 @@
     French: Ile du Losange - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2398,7 +2398,7 @@
     French: Ile du Losange - Premier Coffre du labyrinthe
   Original Item: Joy Pendant
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2411,7 +2411,7 @@
     French: Ile du Losange - Deuxième Coffre du labyrinthe
   Original Item: Ghost Ship Chart
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2424,7 +2424,7 @@
     French: Ile de la Face Cinq - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 41
   Category:
-    - EyeReefChests
+    - Eye Reef Chests
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2437,7 +2437,7 @@
     French: Ile de la Face Cinq - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2466,7 +2466,7 @@
     French: Ile du Requin - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room38.szs@YAZ0@SARC@Room38.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2482,7 +2482,7 @@
     French: Ile du Requin - Coffre de la grotte
   Original Item: Silver Rupee
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/ITest63_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Always
   Type: Chest
@@ -2495,7 +2495,7 @@
     French: Ilot Méridional des Fées - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2511,7 +2511,7 @@
     French: Ilot Méridional des Fées - Grande Fée
   Original Item: Progressive Bomb Bag
   Category:
-    - GreatFairy
+    - Great Fairy
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -2549,7 +2549,7 @@
     French: Ile Gelée - Coffre gelé
   Original Item: Treasure Chart 36
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2562,7 +2562,7 @@
     French: Ile Gelée - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2578,7 +2578,7 @@
     French: Ile Gelée - Coffre intérieur
   Original Item: Iron Boots
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2591,8 +2591,8 @@
     French: Ile Gelée - Coffre de la grotte intérieure
   Original Item: Orange Rupee
   Category:
-    - PuzzleSecretCave
-    - CombatSecretCave
+    - Puzzle Secret Cave
+    - Combat Secret Cave
   Path: content/Common/Stage/ITest62_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2605,7 +2605,7 @@
     French: Ile aux Forêts - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2621,7 +2621,7 @@
     French: Ile aux Forêts - Sur la branche d'arbre
   Original Item: Deku Leaf
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Actor
@@ -2635,7 +2635,7 @@
     French: Ile aux Forêts - Coffre de la Petite Ile
   Original Item: Treasure Chart 3
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2648,7 +2648,7 @@
     French: Saut de Roc - Trésor englouti
   Original Item: Triforce Shard 5
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2664,7 +2664,7 @@
     French: Saut de Roc - Coffre de la grotte
   Original Item: Joy Pendant
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/Cave03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2677,7 +2677,7 @@
     French: Saut de Roc - Coffre sur la Haute Ile
   Original Item: Treasure Chart 25
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2703,7 +2703,7 @@
     French: Ile du Fer à Cheval - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2719,7 +2719,7 @@
     French: Ile du Fer à Cheval - Jouer au Golf
   Original Item: Treasure Chart 28
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2732,7 +2732,7 @@
     French: Ile du Fer à Cheval - Coffre de la grotte
   Original Item: Treasure Chart 8
   Category:
-    - CombatSecretCave
+    - Combat Secret Cave
   Path: content/Common/Stage/Cave05_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -2771,7 +2771,7 @@
     French: Ile de l'Aurore - Creuser avec Link le Cochon
   Original Item: Piece of Heart
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2784,7 +2784,7 @@
     French: Ile de l'Aurore - Trésor englouti
   Original Item: Triforce Shard 6
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2813,7 +2813,7 @@
     French: Ile de l'Aurore - 10 Blasons d'Epeiste pour Orco
   Original Item: Hurricane Spin
   Category:
-    - SpoilsTrading
+    - Spoils Trading
   Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -2851,7 +2851,7 @@
     French: Ile de l'Aurore - Grande Fée
   Original Item: Progressive Wallet
   Category:
-    - GreatFairy
+    - Great Fairy
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -2863,7 +2863,7 @@
     French: Ile de l'Aurore - 30e étage de la Crypte Magique
   Original Item: Triforce Shard 6
   Category:
-    - SavageLabyrinth
+    - Savage Labyrinth
   Path: content/Common/Stage/Cave09_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2876,7 +2876,7 @@
     French: Ile de l'Aurore - 50e étage de la Crypte Magique
   Original Item: Hero's Charm
   Category:
-    - SavageLabyrinth
+    - Savage Labyrinth
   Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2889,7 +2889,7 @@
     French: Ile de l'Aurore - Coffre de la caverne de Jabu
   Original Item: Nayru's Pearl
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2902,7 +2902,7 @@
     French: Ile de la Terre - Sommet de l'Ile
   Original Item: Piece of Heart
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Actor
@@ -2915,7 +2915,7 @@
     French: Ile de la Terre - Trésor englouti
   Original Item: Silver Rupee
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -2944,7 +2944,7 @@
     French: Ile de la Face Deux - Vaincre les navires de guerre et les canons
   Original Item: Treasure Chart 13
   Category:
-    - EyeReefChests
+    - Eye Reef Chests
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -2957,8 +2957,8 @@
     French: Ile de la Face Deux - Grande Fée du Kalamar
   Original Item: Progressive Magic Meter
   Category:
-    - BigOcto
-    - GreatFairy
+    - Big Octo
+    - Great Fairy
   Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -2971,7 +2971,7 @@
     French: Ile de la Face Deux - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -3000,7 +3000,7 @@
     French: Ilots Kif Kif - Coffre au sommet
   Original Item: Piece of Heart
   Category:
-    - IslandPuzzle
+    - Island Puzzle
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Chest
@@ -3013,7 +3013,7 @@
     French: Ilots Kif Kif - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -3029,7 +3029,7 @@
     French: Ilots Kif Kif - Coffre de la grotte
   Original Item: Silver Rupee
   Category:
-    - PuzzleSecretCave
+    - Puzzle Secret Cave
   Path: content/Common/Stage/SubD43_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -3055,7 +3055,7 @@
     French: Batodrome - Trésor englouti
   Original Item: Sea Hearts Chart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -3071,8 +3071,8 @@
     French: Batodrome -Coffre de la grotte
   Original Item: Submarine Chart
   Category:
-    - PuzzleSecretCave
-    - CombatSecretCave
+    - Puzzle Secret Cave
+    - Combat Secret Cave
   Path: content/Common/Stage/SubD71_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -3085,7 +3085,7 @@
     French: Archipel de Cassiopée - Trésor englouti
   Original Item: Piece of Heart
   Category:
-    - SunkenTreasure
+    - Sunken Treasure
   Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: SCOB
@@ -3258,7 +3258,7 @@
   Original Item: Yellow Rupee
   Category:
     - Dungeon
-    - TingleChest
+    - Tingle Chest
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -3337,7 +3337,7 @@
   Original Item: Dragon Tingle Statue
   Category:
     - Dungeon
-    - TingleChest
+    - Tingle Chest
   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -3528,7 +3528,7 @@
   Original Item: Forbidden Tingle Statue
   Category:
     - Dungeon
-    - TingleChest
+    - Tingle Chest
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -3667,7 +3667,7 @@
   Original Item: Goddess Tingle Statue
   Category:
     - Dungeon
-    - TingleChest
+    - Tingle Chest
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -3898,7 +3898,7 @@
   Original Item: Earth Tingle Statue
   Category:
     - Dungeon
-    - TingleChest
+    - Tingle Chest
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -4051,7 +4051,7 @@
   Original Item: Wind Tingle Statue
   Category:
     - Dungeon
-    - TingleChest
+    - Tingle Chest
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
   Hint Priority: Sometimes
   Type: Chest
@@ -4259,9 +4259,9 @@
     French: Ganondorf
   Category:
     - Other
-    - AlwaysProgression
+    - Always Progression
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
 
 - Names:
     English: Forsaken Fortress Sector - Old Man Ho Ho
@@ -4269,9 +4269,9 @@
     French: Secteur de la Forteresse Maudite - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14004
 
 - Names:
@@ -4280,9 +4280,9 @@
     French: Ilot Septentrional des Fées - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14007
 
 - Names:
@@ -4291,9 +4291,9 @@
     French: Ile du Croissant - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14005
 
 - Names:
@@ -4302,9 +4302,9 @@
     French: Tour de l'Envol - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14002
 
 - Names:
@@ -4313,9 +4313,9 @@
     French: Ile de la Tête de Pierre - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14009
 
 - Names:
@@ -4324,9 +4324,9 @@
     French: Ile de Qui-ça - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14006
 
 - Names:
@@ -4335,9 +4335,9 @@
     French: Ile de la Bombe - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14001
 
 - Names:
@@ -4346,9 +4346,9 @@
     French: Ile du Fer à Cheval - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14008
 
 - Names:
@@ -4357,9 +4357,9 @@
     French: Ile de l'Aurore - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14003
 
 - Names:
@@ -4368,7 +4368,7 @@
     French: Ile de la Face Deux - Biggle
   Original Item: Nothing
   Category:
-    - HoHoHint
+    - Ho Ho Hint
   Hint Priority: Never
-  Type: DoNothing
+  Type: Do Nothing
   Message Label: 14010

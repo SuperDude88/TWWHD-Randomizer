@@ -229,7 +229,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     #ifdef DEVKITPRO
         out.gameBaseDir = "./backup";
         out.outputDir = "storage_mlc01:/usr/title/00050000/10143500";
-        out.settings.plandomizerFile = "./plandomizer.yaml"
+        out.settings.plandomizerFile = "./plandomizer.yaml";
     #else
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, gameBaseDir)
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, outputDir)
