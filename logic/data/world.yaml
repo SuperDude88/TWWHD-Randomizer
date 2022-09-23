@@ -198,7 +198,6 @@
 
 - Name: Forsaken Fortress Sleeping Quarters Outside Ledge
   Dungeon: Forsaken Fortress
-  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Sleeping Quarters: Can_Defeat_Phantom_Ganon
@@ -247,7 +246,6 @@
 
 - Name: Forsaken Fortress North Hallway Upper
   Dungeon: Forsaken Fortress
-  Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Barrel Storage Room Upper East: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
@@ -268,7 +266,6 @@
       Forsaken Fortress Barrel Storage Room Upper East: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: Forsaken Fortress Northwest Hallway Upper
-  Dungeon: Forsaken Fortress
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Boat Room Upper: Nothing
