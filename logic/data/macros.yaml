@@ -121,8 +121,8 @@ Can Cut Down Hanging DRC Platform: Heros_Sword or Heros_Bow or Skull_Hammer or B
 Can Cut Grass: Heros_Sword or Skull_Hammer or Bombs or Boomerang
 Can Sword Fight With Orca: Heros_Sword or In_Swordless_Mode
 Rematch Bosses Skipped: Skip_Refights
-In Swordless Mode: No_Sword
-Outside Swordless Mode: not No_Sword
+In Swordless Mode: Sword_Mode == No_Sword
+Outside Swordless Mode: Sword_Mode != No_Sword
 Chart For Island 1: Treasure_Chart_25
 Chart For Island 2: Treasure_Chart_7
 Chart For Island 3: Treasure_Chart_24

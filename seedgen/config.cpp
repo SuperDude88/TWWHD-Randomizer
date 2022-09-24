@@ -60,9 +60,9 @@
 
 SwordMode nameToSwordMode(const std::string& name) {
     static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
-        {"StartWithSword", SwordMode::StartWithSword},
-        {"RandomSword", SwordMode::RandomSword},
-        {"NoSword", SwordMode::NoSword}
+        {"Start With Sword", SwordMode::StartWithSword},
+        {"Random Sword", SwordMode::RandomSword},
+        {"No Sword", SwordMode::NoSword}
     };
 
     if (nameSwordModeMap.count(name) == 0)
@@ -77,9 +77,9 @@ namespace {
 
     std::string SwordModeToName(const SwordMode& mode) {
         static std::unordered_map<SwordMode, std::string> swordModeNameMap = {
-            {SwordMode::StartWithSword, "StartWithSword"},
-            {SwordMode::RandomSword, "RandomSword"},
-            {SwordMode::NoSword, "NoSword"}
+            {SwordMode::StartWithSword, "Start With Sword"},
+            {SwordMode::RandomSword, "Random Sword"},
+            {SwordMode::NoSword, "No Sword"}
         };
 
         if (swordModeNameMap.count(mode) == 0)
