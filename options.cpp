@@ -1,13 +1,32 @@
 #include "options.hpp"
 
+static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
+    {"Start With Sword", SwordMode::StartWithSword},
+    {"Random Sword", SwordMode::RandomSword},
+    {"No Sword", SwordMode::NoSword},
+};
 
+static std::unordered_map<SwordMode, std::string> swordModeNameMap = {
+    {SwordMode::StartWithSword, "Start With Sword"},
+    {SwordMode::RandomSword, "Random Sword"},
+    {SwordMode::NoSword, "No Sword"}
+};
 
-static SwordMode nameToSwordMode(const std::string& name) {
-    static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
-        {"Start With Sword", SwordMode::StartWithSword},
-        {"Random Sword", SwordMode::RandomSword},
-        {"No Sword", SwordMode::NoSword},
-    };
+static std::unordered_map<std::string, PigColor> namePigColorMap = {
+    {"BLACK", PigColor::BLACK},
+    {"PINK", PigColor::PINK},
+    {"SPOTTED", PigColor::SPOTTED},
+    {"RANDOM", PigColor::RANDOM}
+};
+
+static std::unordered_map<PigColor, std::string> pigColorNameMap = {
+    {PigColor::BLACK, "BLACK"},
+    {PigColor::PINK, "PINK"},
+    {PigColor::SPOTTED, "SPOTTED"},
+    {PigColor::RANDOM, "RANDOM"}
+};
+
+SwordMode nameToSwordMode(const std::string& name) {
 
     if (nameSwordModeMap.count(name) == 0)
     {
@@ -15,6 +34,49 @@ static SwordMode nameToSwordMode(const std::string& name) {
     }
 
     return nameSwordModeMap.at(name);
+}
+
+std::string SwordModeToName(const SwordMode& mode) {
+
+    if (swordModeNameMap.count(mode) == 0)
+    {
+        return "INVALID";
+    }
+
+    return swordModeNameMap.at(mode);
+}
+
+PigColor nameToPigColor(const std::string& name) {
+
+    if (namePigColorMap.count(name) == 0)
+    {
+        return PigColor::INVALID;
+    }
+
+    return namePigColorMap.at(name);
+}
+
+std::string PigColorToName(const PigColor& name) {
+
+    if (pigColorNameMap.count(name) == 0)
+    {
+        return "INVALID";
+    }
+
+    return pigColorNameMap.at(name);
+}
+
+// Make sure there aren't any naming conflicts when adding future settings
+int nameToSettingInt(const std::string& name) {
+    if (nameSwordModeMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<SwordMode>>(nameSwordModeMap.at(name));
+    }
+    if (namePigColorMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<PigColor>>(namePigColorMap.at(name));
+    }
+    return 0;
 }
 
 Option nameToSetting(const std::string& name) {
