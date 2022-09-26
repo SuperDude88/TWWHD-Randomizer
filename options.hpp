@@ -184,6 +184,16 @@ struct Settings {
     std::string plandomizerFile = "";
 };
 
+SwordMode nameToSwordMode(const std::string& name);
+
+std::string SwordModeToName(const SwordMode& mode);
+
+PigColor nameToPigColor(const std::string& name);
+
+std::string PigColorToName(const PigColor& name);
+
+int nameToSettingInt(const std::string& name);
+
 Option nameToSetting(const std::string& name);
 
 std::string settingToName(const Option& setting);

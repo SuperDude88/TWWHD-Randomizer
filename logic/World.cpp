@@ -519,7 +519,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             req.args.push_back(evaluateOption(settings, argStr));
             return WorldLoadingError::NONE;
         }
-        // Then a setting that has more than just an on/off option
+        // Then a setting that has more than just an on/off option...
         else if (argStr.find("!=") != std::string::npos || argStr.find("==") != std::string::npos)
         {
             req.type = RequirementType::SETTING;
@@ -530,7 +530,7 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             std::string comparedOptionStr (argStr.begin() + (compPos + 1), argStr.end());
             std::string settingName (argStr.begin(), argStr.begin() + (compPos - 1));
 
-            int comparedOption = (int) nameToSwordMode(comparedOptionStr); // TODO: Generalize so that we can check more than sword mode
+            int comparedOption = nameToSettingInt(comparedOptionStr);
             Option setting = nameToSetting(settingName);
             int actualOption = getSetting(settings, setting);
 
