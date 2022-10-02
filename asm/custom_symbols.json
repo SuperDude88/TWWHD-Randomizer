@@ -118,11 +118,11 @@
   "return_err_2": "0x028FA5C8",
   "get_decompressed_szs_size": "0x028FA5D0",
   "get_alignment": "0x028FA60C",
-  "copy_sarc_to_output": "0x028FA630",
-  "check_copied_dst": "0x028FA668",
-  "check_hyrule_warp_unlocked": "0x028FA680",
-  "give_pearl_and_raise_totg_if_necessary": "0x028FA6C0",
-  "give_temporary_sword_during_ganondorf_fight_in_swordless": "0x028FA75C",
-  "give_temporary_sword_in_orcas_house_in_swordless": "0x028FA7B0",
-  "remove_temporary_sword_when_loading_stage_in_swordless": "0x028FA810"
+  "check_sarc_magic": "0x028FA630",
+  "copy_sarc_to_output": "0x028FA660",
+  "check_hyrule_warp_unlocked": "0x028FA69C",
+  "give_pearl_and_raise_totg_if_necessary": "0x028FA6DC",
+  "give_temporary_sword_during_ganondorf_fight_in_swordless": "0x028FA778",
+  "give_temporary_sword_in_orcas_house_in_swordless": "0x028FA7CC",
+  "remove_temporary_sword_when_loading_stage_in_swordless": "0x028FA82C"
 }
