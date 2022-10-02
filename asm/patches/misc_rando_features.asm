@@ -558,7 +558,7 @@ continue_decomp:
 .org 0x0203f1c8
   addis r31, r31, 0x1AAA ; Increase ModelRes heap size by 0x3EA0000
 .org 0x0203f1f8
-  addis r3, r3, 0x112A ; Increase PermanentResource heap size by 0x40A0000
+  addis r3, r3, 0x112A ; Increase PermanentResource heap size by 0x3EA0000
 
  ; in main()
 .org 0x02005f14
