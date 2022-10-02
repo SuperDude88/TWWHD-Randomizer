@@ -119,7 +119,7 @@ private:
     }
 
     #ifdef DEVKITPRO
-    static constexpr uint32_t num_threads = 4;
+    static constexpr uint32_t num_threads = 1;
     #else
     static constexpr uint32_t num_threads = 12;
     #endif
@@ -235,10 +235,8 @@ std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fil
         }
         else if (element.compare("YAZ0") == 0)
         {
-            //if(i == 1) { //szs files in stage directory don't need to be recompressed
-            //    nextEntry->fullCompress = false;
-            //    nextEntry->toOutput = false; //sarc will go to output instead
-            //}
+            nextEntry->fullCompress = false;
+            //nextEntry->toOutput = false; //sarc will go to output instead
 
             if(fromBaseDir) {
                 std::ifstream inputFile(baseDir / cacheKey, std::ios::binary);
@@ -266,9 +264,10 @@ std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fil
         }
         else if(element.compare("SARC") == 0)
         {
-            //if(parentEntry->fullCompress == false && parentEntry->toOutput == false) { //if yaz0 doesn't save to output, sarc does instead
-            //    nextEntry->toOutput = true;
-            //}
+            if(parentEntry->fullCompress == false && parentEntry->toOutput == true) { //if yaz0 doesn't save to output, sarc does instead
+                parentEntry->toOutput = false;
+                nextEntry->toOutput = true;
+            }
 
             FileTypes::SARCFile& sarc = nextEntry->data.emplace<FileTypes::SARCFile>();
             SARCError err = SARCError::NONE;
@@ -467,8 +466,8 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
     }
     else if (Utility::Str::endsWith(element, ".dec"))
     {
-        uint32_t compressLevel = 9;
-        //if(entry->fullCompress) {
+        if(entry->fullCompress) {
+            uint32_t compressLevel = 9;
             resultKey = element.substr(0, element.size() - 4);
 
             //Repack to output directory if file exists, otherwise stay in working dir
@@ -503,7 +502,12 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
                 }
                 entry->data = std::monostate{};
             }
-        //}
+        }
+        else {
+            if(entry->data.index() == 2){
+                entry->parent->data.emplace<std::stringstream>().swap(std::get<std::stringstream>(entry->data));
+            }
+        }
     }
     else if (Utility::Str::endsWith(element, ".unpack/"))
     {
