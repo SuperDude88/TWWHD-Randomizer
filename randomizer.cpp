@@ -770,7 +770,7 @@ int mainRandomize() {
 		Utility::platformLog("Creating default config\n");
 		ConfigError err = createDefaultConfig("./config.yaml");
 		if(err != ConfigError::NONE) {
-			ErrorLog::getInstance().log("Failed to create config, code " + std::to_string(static_cast<uint32_t>(err)));
+			ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
 
 			std::this_thread::sleep_for(3s);
 			Utility::platformShutdown();
@@ -782,7 +782,7 @@ int mainRandomize() {
 	Utility::platformLog("Reading config\n");
 	ConfigError err = loadFromFile("./config.yaml", load);
 	if(err != ConfigError::NONE) {
-		ErrorLog::getInstance().log("Failed to read config, code " + std::to_string(static_cast<uint32_t>(err)));
+		ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
 
 		std::this_thread::sleep_for(3s);
 		Utility::platformShutdown();

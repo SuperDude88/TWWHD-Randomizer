@@ -466,3 +466,25 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     return ConfigError::NONE;
 }
+
+std::string errorToName(ConfigError err) {
+    switch (err)
+    {
+        case ConfigError::NONE:
+            return "NONE";
+        case ConfigError::COULD_NOT_OPEN:
+            return "COULD_NOT_OPEN";
+        case ConfigError::MISSING_KEY:
+            return "MISSING_KEY";
+        case ConfigError::DIFFERENT_FILE_VERSION:
+            return "DIFFERENT_FILE_VERSION";
+        case ConfigError::DIFFERENT_RANDO_VERSION:
+            return "DIFFERENT_RANDO_VERSION";
+        case ConfigError::INVALID_VALUE:
+            return "INVALID_VALUE";
+        case ConfigError::TOO_MANY_OF_ITEM:
+            return "TOO_MANY_OF_ITEM";
+        default:
+            return "UNKNOWN";
+    }
+}
