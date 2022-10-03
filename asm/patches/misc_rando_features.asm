@@ -461,7 +461,7 @@ return_err_2:
   li r3, -0x2
   b 0x0275edac ; Return -1 if it isn't SARC
 
- ; in sead::SZSDecompressor::tryDecompFromDevice
+ ; in sead::SZSDecompressor::getDecompSize
 .org 0x0275eba8
   b get_decompressed_szs_size
 .org @NextFreeSpace
@@ -486,6 +486,7 @@ read_sarc_size:
   lwz r3, 0x8(r3)
   b 0x0275ebac
 
+ ; in sead::SZSDecompressor::getDecompAlignment
 .org 0x0275f180
   b get_alignment
 .org @NextFreeSpace
@@ -503,41 +504,65 @@ read_yaz0_align:
   lwz r3, 0x8(r3)
   b 0x0275ebac
 
+
  ; in sead::SZSDecompressor::readHeader_
 .org 0x0275edfc
-  b copy_sarc_to_output
+  b check_sarc_magic ; not YAZ0
 .org @NextFreeSpace
-.global copy_sarc_to_output
-copy_sarc_to_output:
+.global check_sarc_magic
+check_sarc_magic:
   lwz r11, 0(r4)
   lis r7, 0x5341
   addi r7, r7, 0x5243
   cmplw r11, r7
-  bne not_sarc ; not SARC
-  lwz r3, 0x0(r12) ; load dst, src already in r4
-  lwz r5, 0x8(r4) ; load size
+  bne not_sarc_magic ; not SARC
+  li r7, 1
+  stb r7, 0xF(r12)
+  li r7, 0
+  stb r7, 0x16(r12)
+  li r3, 0x0 ; Return no error
+  blr ; return back to streamDecomp
+not_sarc_magic:
+  b 0x0275ee44
+
+.org 0x275ef18
+  b copy_sarc_to_output
+.org @NextFreeSpace
+.global copy_sarc_to_output
+copy_sarc_to_output:
+  lbz r3, 0xF(r30)
+  cmpwi r3, 0x1
+  bne continue_decomp
+  lwz r3, 0x0(r30) ; load dst, src already in r4
+  mr r5, r31 ; move source length
   li r6, 0
   mflr r0
   .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
-  li r3, -0x2
-  mtlr r0
-  blr ; return back to streamDecomp
-not_sarc:
-  b 0x0275ee44
+  lwz r3, 0x0(r30)
+  add r3, r3, r5
+  stw r3, 0x0(r30)
+  mr r3, r5
+  b 0x0275f150 ; return from streamDecomp
+continue_decomp:
+  lwz r3, 0x4(r30)
+  b 0x0275ef18
 
- ; in sead::SZSDecompressor::tryDecompFromDevice
-.org 0x0275f508
-  b check_copied_dst
-.org @NextFreeSpace
-.global check_copied_dst
-check_copied_dst:
-  bge continue_normally
-  cmpwi r3, -0x2
-  beq copied_success
-  b 0x0275f484 ; return as error
-continue_normally:
-  b 0x0275f50c ; return as normal
-copied_success:
-  b 0x0275f528 ; return back as success
+ ; In some function that loads .pack files
+.org 0x026118b4
+  lis r3, 0x520 ; Increase heap size
+
+
+ ; 3D-related heaps
+.org 0x0203e630
+  lis r11, 0x230A ; Increase 3DRootHeap size by 0x3EA00000
+.org 0x0203f1c8
+  addis r31, r31, 0x1AAA ; Increase ModelRes heap size by 0x3EA0000
+.org 0x0203f1f8
+  addis r3, r3, 0x112A ; Increase PermanentResource heap size by 0x3EA0000
+
+ ; in main()
+.org 0x02005f14
+  lis r0, 0x3CB0 ; Up the root heap size
+  ori r0, r0, 0x0000
 
 .close
