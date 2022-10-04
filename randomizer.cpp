@@ -770,7 +770,7 @@ int mainRandomize() {
 		Utility::platformLog("Creating default config\n");
 		ConfigError err = createDefaultConfig("./config.yaml");
 		if(err != ConfigError::NONE) {
-			ErrorLog::getInstance().log("Failed to create config, code " + std::to_string(static_cast<uint32_t>(err)));
+			ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
 
 			std::this_thread::sleep_for(3s);
 			Utility::platformShutdown();
@@ -782,7 +782,7 @@ int mainRandomize() {
 	Utility::platformLog("Reading config\n");
 	ConfigError err = loadFromFile("./config.yaml", load);
 	if(err != ConfigError::NONE) {
-		ErrorLog::getInstance().log("Failed to read config, code " + std::to_string(static_cast<uint32_t>(err)));
+		ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
 
 		std::this_thread::sleep_for(3s);
 		Utility::platformShutdown();
@@ -792,11 +792,12 @@ int mainRandomize() {
 	Randomizer rando(load);
 
 	// IMPROVEMENT: issue with seekp, find better solution than manual padding?
-
+	// TODO: test uncompressed things
 	// TODO: do a hundo seed to test everything
+
 	// TODO: text wrapping on drc dungeon map
-	// TODO: fix uncompressed things
 	// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
+		//Also some other things just die even single-threaded
 	int retVal = rando.randomize();
 
 	#ifdef ENABLE_TIMING

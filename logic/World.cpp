@@ -397,7 +397,7 @@ World::WorldLoadingError World::determineRaceModeDungeons()
 
 // Takes a logic expression string and stores it as a requirement within the passed in Requirement
 // object. This means we only have to parse the string once and then evaluating it many times
-// later is a lot faster. An example of a logic expression string is: "GrapplingHook and (DekuLeaf or Hookshot)"
+// later is a lot faster. An example of a logic expression string is: "Grappling_Hook and (Deku_Leaf or Hookshot)"
 World::WorldLoadingError World::parseRequirementString(const std::string& str, Requirement& req)
 {
     WorldLoadingError err;
@@ -443,8 +443,19 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
     std::vector<std::string> splitLogicStr = {};
     while ((pos = logicStr.find(delimeter)) != std::string::npos)
     {
-        splitLogicStr.push_back(logicStr.substr(0, pos));
-        logicStr.erase(0, pos + 1);
+        // When parsing setting checks, take the entire expression
+        // and the three components individually
+        auto& chBefore = logicStr[pos-1];
+        auto& chAfter = logicStr[pos+1];
+        if (chBefore != '!' && chAfter != '!' && chBefore != '=' && chAfter != '=')
+        {
+            splitLogicStr.push_back(logicStr.substr(0, pos));
+            logicStr.erase(0, pos + 1);
+        }
+        else
+        {
+            logicStr.erase(logicStr.begin() + pos);
+        }
     }
     splitLogicStr.push_back(logicStr);
 
@@ -501,11 +512,37 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             req.args.push_back(areaName);
             return WorldLoadingError::NONE;
         }
-        // Then a setting...
+        // Then a boolean setting...
         else if (evaluateOption(settings, argStr) != -1)
         {
             req.type = RequirementType::SETTING;
             req.args.push_back(evaluateOption(settings, argStr));
+            return WorldLoadingError::NONE;
+        }
+        // Then a setting that has more than just an on/off option...
+        else if (argStr.find("!=") != std::string::npos || argStr.find("==") != std::string::npos)
+        {
+            req.type = RequirementType::SETTING;
+            bool equalComparison = argStr.find("==") != std::string::npos;
+
+            // Split up the comparison using the second comparison character (which will always be '=')
+            auto compPos = argStr.rfind('=');
+            std::string comparedOptionStr (argStr.begin() + (compPos + 1), argStr.end());
+            std::string settingName (argStr.begin(), argStr.begin() + (compPos - 1));
+
+            int comparedOption = nameToSettingInt(comparedOptionStr);
+            Option setting = nameToSetting(settingName);
+            int actualOption = getSetting(settings, setting);
+
+            // If the comparison is true
+            if ((equalComparison && actualOption == comparedOption) || (!equalComparison && actualOption != comparedOption))
+            {
+                req.args.push_back(true);
+            }
+            else
+            {
+                req.args.push_back(false);
+            }
             return WorldLoadingError::NONE;
         }
         // And finally a count...

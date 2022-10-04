@@ -121,8 +121,8 @@
   "return_err_2": "0x028FA698",
   "get_decompressed_szs_size": "0x028FA6A0",
   "get_alignment": "0x028FA6DC",
-  "copy_sarc_to_output": "0x028FA700",
-  "check_copied_dst": "0x028FA738",
-  "check_hyrule_warp_unlocked": "0x028FA750",
-  "give_pearl_and_raise_totg_if_necessary": "0x028FA790"
+  "check_sarc_magic": "0x028FA700",
+  "copy_sarc_to_output": "0x028FA730",
+  "check_hyrule_warp_unlocked": "0x028FA76C",
+  "give_pearl_and_raise_totg_if_necessary": "0x028FA7AC"
 }

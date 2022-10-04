@@ -1,13 +1,32 @@
 #include "options.hpp"
 
+static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
+    {"Start With Sword", SwordMode::StartWithSword},
+    {"Random Sword", SwordMode::RandomSword},
+    {"No Sword", SwordMode::NoSword},
+};
 
+static std::unordered_map<SwordMode, std::string> swordModeNameMap = {
+    {SwordMode::StartWithSword, "Start With Sword"},
+    {SwordMode::RandomSword, "Random Sword"},
+    {SwordMode::NoSword, "No Sword"}
+};
 
-static SwordMode nameToSwordMode(const std::string& name) {
-    static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
-        {"StartWithSword", SwordMode::StartWithSword},
-        {"RandomSword", SwordMode::RandomSword},
-        {"NoSword", SwordMode::NoSword},
-    };
+static std::unordered_map<std::string, PigColor> namePigColorMap = {
+    {"BLACK", PigColor::BLACK},
+    {"PINK", PigColor::PINK},
+    {"SPOTTED", PigColor::SPOTTED},
+    {"RANDOM", PigColor::RANDOM}
+};
+
+static std::unordered_map<PigColor, std::string> pigColorNameMap = {
+    {PigColor::BLACK, "BLACK"},
+    {PigColor::PINK, "PINK"},
+    {PigColor::SPOTTED, "SPOTTED"},
+    {PigColor::RANDOM, "RANDOM"}
+};
+
+SwordMode nameToSwordMode(const std::string& name) {
 
     if (nameSwordModeMap.count(name) == 0)
     {
@@ -17,68 +36,111 @@ static SwordMode nameToSwordMode(const std::string& name) {
     return nameSwordModeMap.at(name);
 }
 
+std::string SwordModeToName(const SwordMode& mode) {
+
+    if (swordModeNameMap.count(mode) == 0)
+    {
+        return "INVALID";
+    }
+
+    return swordModeNameMap.at(mode);
+}
+
+PigColor nameToPigColor(const std::string& name) {
+
+    if (namePigColorMap.count(name) == 0)
+    {
+        return PigColor::INVALID;
+    }
+
+    return namePigColorMap.at(name);
+}
+
+std::string PigColorToName(const PigColor& name) {
+
+    if (pigColorNameMap.count(name) == 0)
+    {
+        return "INVALID";
+    }
+
+    return pigColorNameMap.at(name);
+}
+
+// Make sure there aren't any naming conflicts when adding future settings
+int nameToSettingInt(const std::string& name) {
+    if (nameSwordModeMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<SwordMode>>(nameSwordModeMap.at(name));
+    }
+    if (namePigColorMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<PigColor>>(namePigColorMap.at(name));
+    }
+    return 0;
+}
+
 Option nameToSetting(const std::string& name) {
     static std::unordered_map<std::string, Option> optionNameMap = {
-        {"ProgressDungeons", Option::ProgressDungeons},
-        {"ProgressGreatFairies", Option::ProgressGreatFairies},
-        {"ProgressPuzzleCaves", Option::ProgressPuzzleCaves},
-        {"ProgressCombatCaves", Option::ProgressCombatCaves},
-        {"ProgressShortSidequests", Option::ProgressShortSidequests},
-        {"ProgressLongSidequests", Option::ProgressLongSidequests},
-        {"ProgressSpoilsTrading", Option::ProgressSpoilsTrading},
-        {"ProgressMinigames", Option::ProgressMinigames},
-        {"ProgressFreeGifts", Option::ProgressFreeGifts},
-        {"ProgressMail", Option::ProgressMail},
-        {"ProgressPlatformsRafts", Option::ProgressPlatformsRafts},
-        {"ProgressSubmarines", Option::ProgressSubmarines},
-        {"ProgressEyeReefs", Option::ProgressEyeReefs},
-        {"ProgressOctosGunboats", Option::ProgressOctosGunboats},
-        {"ProgressTriforceCharts", Option::ProgressTriforceCharts},
-        {"ProgressTreasureCharts", Option::ProgressTreasureCharts},
-        {"ProgressExpPurchases", Option::ProgressExpPurchases},
-        {"ProgressMisc", Option::ProgressMisc},
-        {"ProgressTingleChests", Option::ProgressTingleChests},
-        {"ProgressBattlesquid", Option::ProgressBattlesquid},
-        {"ProgressSavageLabyrinth", Option::ProgressSavageLabyrinth},
-        {"ProgressIslandPuzzles", Option::ProgressIslandPuzzles},
-        {"ProgressObscure", Option::ProgressObscure},
+        {"Progress Dungeons", Option::ProgressDungeons},
+        {"Progress Great Fairies", Option::ProgressGreatFairies},
+        {"Progress Puzzle Caves", Option::ProgressPuzzleCaves},
+        {"Progress Combat Caves", Option::ProgressCombatCaves},
+        {"Progress Short Sidequests", Option::ProgressShortSidequests},
+        {"Progress Long Sidequests", Option::ProgressLongSidequests},
+        {"Progress Spoils Trading", Option::ProgressSpoilsTrading},
+        {"Progress Minigames", Option::ProgressMinigames},
+        {"Progress Free Gifts", Option::ProgressFreeGifts},
+        {"Progress Mail", Option::ProgressMail},
+        {"Progress Platforms Rafts", Option::ProgressPlatformsRafts},
+        {"Progress Submarines", Option::ProgressSubmarines},
+        {"Progress Eye Reefs", Option::ProgressEyeReefs},
+        {"Progress Octos Gunboats", Option::ProgressOctosGunboats},
+        {"Progress Triforce Charts", Option::ProgressTriforceCharts},
+        {"Progress Treasure Charts", Option::ProgressTreasureCharts},
+        {"Progress Exp Purchases", Option::ProgressExpPurchases},
+        {"Progress Misc", Option::ProgressMisc},
+        {"Progress Tingle Chests", Option::ProgressTingleChests},
+        {"Progress Battlesquid", Option::ProgressBattlesquid},
+        {"Progress Savage Labyrinth", Option::ProgressSavageLabyrinth},
+        {"Progress Island Puzzles", Option::ProgressIslandPuzzles},
+        {"Progress Obscure", Option::ProgressObscure},
         {"Keylunacy", Option::Keylunacy},
         {"RandomCharts", Option::RandomCharts},
-        {"RandomStartIsland", Option::RandomStartIsland},
-        {"RandomizeDungeonEntrances", Option::RandomizeDungeonEntrances},
-        {"RandomizeCaveEntrances", Option::RandomizeCaveEntrances},
-        {"RandomizeDoorEntrances", Option::RandomizeDoorEntrances},
-        {"RandomizeMiscEntrances", Option::RandomizeMiscEntrances},
-        {"MixEntrancePools", Option::MixEntrancePools},
-        {"DecoupleEntrances", Option::DecoupleEntrances},
-        {"HoHoHints", Option::HoHoHints},
-        {"KorlHints", Option::KorlHints},
-        {"ClearerHints", Option::ClearerHints},
-        {"UseAlwaysHints", Option::UseAlwaysHints},
-        {"PathHints", Option::PathHints},
-        {"BarrenHints", Option::BarrenHints},
-        {"ItemHints", Option::ItemHints},
-        {"LocationHints", Option::LocationHints},
-        {"InstantText", Option::InstantText},
-        {"RevealSeaChart", Option::RevealSeaChart},
-        {"NumShards", Option::NumShards},
-        {"AddShortcutWarps", Option::AddShortcutWarps},
-        {"NoSpoilerLog", Option::NoSpoilerLog},
-        {"SwordMode", Option::SwordMode},
-        {"SkipRefights", Option::SkipRefights},
-        {"InvertCompass", Option::InvertCompass},
-        {"RaceMode", Option::RaceMode},
-        {"NumRaceModeDungeons", Option::NumRaceModeDungeons},
-        {"DamageMultiplier", Option::DamageMultiplier},
+        {"Random Start Island", Option::RandomStartIsland},
+        {"Randomize Dungeon Entrances", Option::RandomizeDungeonEntrances},
+        {"Randomize Cave Entrances", Option::RandomizeCaveEntrances},
+        {"Randomize Door Entrances", Option::RandomizeDoorEntrances},
+        {"Randomize Misc Entrances", Option::RandomizeMiscEntrances},
+        {"Mix Entrance Pools", Option::MixEntrancePools},
+        {"Decouple Entrances", Option::DecoupleEntrances},
+        {"Ho Ho Hints", Option::HoHoHints},
+        {"Korl Hints", Option::KorlHints},
+        {"Clearer Hints", Option::ClearerHints},
+        {"Use Always Hints", Option::UseAlwaysHints},
+        {"Path ints", Option::PathHints},
+        {"Barren Hints", Option::BarrenHints},
+        {"Item Hints", Option::ItemHints},
+        {"Location Hints", Option::LocationHints},
+        {"Instant Text", Option::InstantText},
+        {"Reveal Sea Chart", Option::RevealSeaChart},
+        {"Num Shards", Option::NumShards},
+        {"Add Shortcut Warps", Option::AddShortcutWarps},
+        {"No Spoiler Log", Option::NoSpoilerLog},
+        {"Sword Mode", Option::SwordMode},
+        {"Skip Refights", Option::SkipRefights},
+        {"Invert Compass", Option::InvertCompass},
+        {"Race Mode", Option::RaceMode},
+        {"Num Race Mode Dungeons", Option::NumRaceModeDungeons},
+        {"Damage Multiplier", Option::DamageMultiplier},
         {"CTMC", Option::CTMC},
-        {"CasualClothes", Option::CasualClothes},
-        {"PigColor", Option::PigColor},
-        {"StartingGear", Option::StartingGear},
-        {"StartingHP", Option::StartingHP},
-        {"StartingHC", Option::StartingHC},
-        {"RemoveMusic", Option::RemoveMusic},
+        {"Casual Clothes", Option::CasualClothes},
+        {"Pig Color", Option::PigColor},
+        {"Starting Gear", Option::StartingGear},
+        {"Starting HP", Option::StartingHP},
+        {"Starting HC", Option::StartingHC},
+        {"Remove Music", Option::RemoveMusic},
         {"Plandomizer", Option::Plandomizer},
-        {"PlandomizerFile", Option::PlandomizerFile},
+        {"Plandomizer File", Option::PlandomizerFile},
     };
 
     if (optionNameMap.count(name) == 0)
@@ -91,66 +153,66 @@ Option nameToSetting(const std::string& name) {
 
 std::string settingToName(const Option& setting) {
     static std::unordered_map<Option, std::string> optionNameMap = {
-        {Option::ProgressDungeons, "ProgressDungeons"},
-        {Option::ProgressGreatFairies, "ProgressGreatFairies"},
-        {Option::ProgressPuzzleCaves, "ProgressPuzzleCaves"},
-        {Option::ProgressCombatCaves, "ProgressCombatCaves"},
-        {Option::ProgressShortSidequests, "ProgressShortSidequests"},
-        {Option::ProgressLongSidequests, "ProgressLongSidequests"},
-        {Option::ProgressSpoilsTrading, "ProgressSpoilsTrading"},
-        {Option::ProgressMinigames, "ProgressMinigames"},
-        {Option::ProgressFreeGifts, "ProgressFreeGifts"},
-        {Option::ProgressMail, "ProgressMail"},
-        {Option::ProgressPlatformsRafts, "ProgressPlatformsRafts"},
-        {Option::ProgressSubmarines, "ProgressSubmarines"},
-        {Option::ProgressEyeReefs, "ProgressEyeReefs"},
-        {Option::ProgressOctosGunboats, "ProgressOctosGunboats"},
-        {Option::ProgressTriforceCharts, "ProgressTriforceCharts"},
-        {Option::ProgressTreasureCharts, "ProgressTreasureCharts"},
-        {Option::ProgressExpPurchases, "ProgressExpPurchases"},
-        {Option::ProgressMisc, "ProgressMisc"},
-        {Option::ProgressTingleChests, "ProgressTingleChests"},
-        {Option::ProgressBattlesquid, "ProgressBattlesquid"},
-        {Option::ProgressSavageLabyrinth, "ProgressSavageLabyrinth"},
-        {Option::ProgressIslandPuzzles, "ProgressIslandPuzzles"},
-        {Option::ProgressObscure, "ProgressObscure"},
+        {Option::ProgressDungeons, "Progress Dungeons"},
+        {Option::ProgressGreatFairies, "Progress Great Fairies"},
+        {Option::ProgressPuzzleCaves, "Progress Puzzle Caves"},
+        {Option::ProgressCombatCaves, "Progress Combat Caves"},
+        {Option::ProgressShortSidequests, "Progress Short Sidequests"},
+        {Option::ProgressLongSidequests, "Progress Long Sidequests"},
+        {Option::ProgressSpoilsTrading, "Progress Spoils Trading"},
+        {Option::ProgressMinigames, "Progress Minigames"},
+        {Option::ProgressFreeGifts, "Progress Free Gifts"},
+        {Option::ProgressMail, "Progress Mail"},
+        {Option::ProgressPlatformsRafts, "Progress Platforms Rafts"},
+        {Option::ProgressSubmarines, "Progress Submarines"},
+        {Option::ProgressEyeReefs, "Progress Eye Reefs"},
+        {Option::ProgressOctosGunboats, "Progress Octos Gunboats"},
+        {Option::ProgressTriforceCharts, "Progress Triforce Charts"},
+        {Option::ProgressTreasureCharts, "Progress Treasure Charts"},
+        {Option::ProgressExpPurchases, "Progress Exp Purchases"},
+        {Option::ProgressMisc, "Progress Misc"},
+        {Option::ProgressTingleChests, "Progress Tingle Chests"},
+        {Option::ProgressBattlesquid, "Progress Battlesquid"},
+        {Option::ProgressSavageLabyrinth, "Progress Savage Labyrinth"},
+        {Option::ProgressIslandPuzzles, "Progress Island Puzzles"},
+        {Option::ProgressObscure, "Progress Obscure"},
         {Option::Keylunacy, "Keylunacy"},
-        {Option::RandomCharts, "RandomCharts"},
-        {Option::RandomStartIsland, "RandomStartIsland"},
-        {Option::RandomizeDungeonEntrances, "RandomizeDungeonEntrances"},
-        {Option::RandomizeCaveEntrances, "RandomizeCaveEntrances"},
-        {Option::RandomizeDoorEntrances, "RandomizeDoorEntrances"},
-        {Option::RandomizeMiscEntrances, "RandomizeMiscEntrances"},
-        {Option::MixEntrancePools, "MixEntrancePools"},
-        {Option::DecoupleEntrances, "DecoupleEntrances"},
-        {Option::HoHoHints, "HoHoHints"},
-        {Option::KorlHints, "KorlHints"},
-        {Option::ClearerHints, "ClearerHints"},
-        {Option::UseAlwaysHints, "UseAlwaysHints"},
-        {Option::PathHints, "PathHints"},
-        {Option::BarrenHints, "BarrenHints"},
-        {Option::ItemHints, "ItemHints"},
-        {Option::LocationHints, "LocationHints"},
-        {Option::InstantText, "InstantText"},
-        {Option::RevealSeaChart, "RevealSeaChart"},
-        {Option::NumShards, "NumShards"},
-        {Option::AddShortcutWarps, "AddShortcutWarps"},
-        {Option::NoSpoilerLog, "NoSpoilerLog"},
-        {Option::SwordMode, "SwordMode"},
-        {Option::SkipRefights, "SkipRefights"},
-        {Option::InvertCompass, "InvertCompass"},
-        {Option::RaceMode, "RaceMode"},
-        {Option::NumRaceModeDungeons, "NumRaceModeDungeons"},
-        {Option::DamageMultiplier, "DamageMultiplier"},
+        {Option::RandomCharts, "Random Charts"},
+        {Option::RandomStartIsland, "Random Start Island"},
+        {Option::RandomizeDungeonEntrances, "Randomize Dungeon Entrances"},
+        {Option::RandomizeCaveEntrances, "Randomize Cave Entrances"},
+        {Option::RandomizeDoorEntrances, "Randomize Door Entrances"},
+        {Option::RandomizeMiscEntrances, "Randomize Misc Entrances"},
+        {Option::MixEntrancePools, "Mix Entrance Pools"},
+        {Option::DecoupleEntrances, "Decouple Entrances"},
+        {Option::HoHoHints, "Ho Ho Hints"},
+        {Option::KorlHints, "Korl Hints"},
+        {Option::ClearerHints, "Clearer Hints"},
+        {Option::UseAlwaysHints, "Use Always Hints"},
+        {Option::PathHints, "Path Hints"},
+        {Option::BarrenHints, "Barren Hints"},
+        {Option::ItemHints, "Item Hints"},
+        {Option::LocationHints, "Location Hints"},
+        {Option::InstantText, "Instant Text"},
+        {Option::RevealSeaChart, "Reveal Sea Chart"},
+        {Option::NumShards, "Num Shards"},
+        {Option::AddShortcutWarps, "Add Shortcut Warps"},
+        {Option::NoSpoilerLog, "No Spoiler Log"},
+        {Option::SwordMode, "Sword Mode"},
+        {Option::SkipRefights, "Skip Refights"},
+        {Option::InvertCompass, "Invert Compass"},
+        {Option::RaceMode, "Race Mode"},
+        {Option::NumRaceModeDungeons, "Num Race Mode Dungeons"},
+        {Option::DamageMultiplier, "Damage Multiplier"},
         {Option::CTMC, "CTMC"},
-        {Option::CasualClothes, "CasualClothes"},
+        {Option::CasualClothes, "Casual Clothes"},
         {Option::PigColor, "PigColor"},
-        {Option::StartingGear, "StartingGear"},
-        {Option::StartingHP, "StartingHP"},
-        {Option::StartingHC, "StartingHC"},
-        {Option::RemoveMusic, "RemoveMusic"},
+        {Option::StartingGear, "Starting Gear"},
+        {Option::StartingHP, "Starting HP"},
+        {Option::StartingHC, "Starting HC"},
+        {Option::RemoveMusic, "Remove Music"},
         {Option::Plandomizer, "Plandomizer"},
-        {Option::PlandomizerFile, "PlandomizerFile"},
+        {Option::PlandomizerFile, "Plandomizer File"},
     };
 
     if (optionNameMap.count(setting) == 0)
