@@ -447,8 +447,7 @@ void MainWindow::on_sword_mode_currentIndexChanged(int index)
     // If the player set the option to Start with Hero's Sword
     else if (config.settings.sword_mode == SwordMode::StartWithSword)
     {
-        // If there are 4 swords in the gear menus, prioritize taking
-        // Otherwise continually add swords to the randomized gear until there are 3
+        // Add swords to the randomized gear until there are 3
         while (numSwordsInGearMenus < 3)
         {
             randomizedGear.append("Progressive Sword");

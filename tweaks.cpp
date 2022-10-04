@@ -2260,7 +2260,7 @@ TweakError updateCodeSize() {
 
 	cos.LoadFile(*cosStream);
 	tinyxml2::XMLElement* root = cos.RootElement();
-	root->FirstChildElement("max_codesize")->SetText("03000000");
+	root->FirstChildElement("max_codesize")->SetText("02080000");
 	tinyxml2::XMLPrinter printer;
 	cos.Print(&printer);
 	cosStream->str(std::string());
@@ -2307,7 +2307,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	blockMoveReloc.r_addend = 0;
 	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
 
-	blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x24;
+	blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x1C;
 	blockMoveReloc.r_info = 0x00015b0a;
 	blockMoveReloc.r_addend = 0;
 	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));

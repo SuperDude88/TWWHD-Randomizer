@@ -3,6 +3,7 @@
 #include <fstream>
 #include <unordered_set>
 #include <filesystem>
+#include "../options.hpp"
 #include "../libs/Yaml.hpp"
 #include "../logic/GameItem.hpp"
 #include "../seedgen/random.hpp"
@@ -57,71 +58,6 @@
             config.settings.name = "";                                      \
         config.settings.name = yaml[#name].As<std::string>();               \
     }
-
-SwordMode nameToSwordMode(const std::string& name) {
-    static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
-        {"StartWithSword", SwordMode::StartWithSword},
-        {"RandomSword", SwordMode::RandomSword},
-        {"NoSword", SwordMode::NoSword}
-    };
-
-    if (nameSwordModeMap.count(name) == 0)
-    {
-        return SwordMode::INVALID;
-    }
-
-    return nameSwordModeMap.at(name);
-}
-
-namespace {
-
-    std::string SwordModeToName(const SwordMode& mode) {
-        static std::unordered_map<SwordMode, std::string> swordModeNameMap = {
-            {SwordMode::StartWithSword, "StartWithSword"},
-            {SwordMode::RandomSword, "RandomSword"},
-            {SwordMode::NoSword, "NoSword"}
-        };
-
-        if (swordModeNameMap.count(mode) == 0)
-        {
-            return "INVALID";
-        }
-
-        return swordModeNameMap.at(mode);
-    }
-
-    PigColor nameToPigColor(const std::string& name) {
-        static std::unordered_map<std::string, PigColor> nameColorMap = {
-            {"BLACK", PigColor::BLACK},
-            {"PINK", PigColor::PINK},
-            {"SPOTTED", PigColor::SPOTTED},
-            {"RANDOM", PigColor::RANDOM}
-        };
-
-        if (nameColorMap.count(name) == 0)
-        {
-            return PigColor::INVALID;
-        }
-
-        return nameColorMap.at(name);
-    }
-
-    std::string PigColorToName(const PigColor& name) {
-        static std::unordered_map<PigColor, std::string> colorNameMap = {
-            {PigColor::BLACK, "BLACK"},
-            {PigColor::PINK, "PINK"},
-            {PigColor::SPOTTED, "SPOTTED"},
-            {PigColor::RANDOM, "RANDOM"}
-        };
-
-        if (colorNameMap.count(name) == 0)
-        {
-            return "INVALID";
-        }
-
-        return colorNameMap.at(name);
-    }
-}
 
 ConfigError createDefaultConfig(const std::string& filePath) {
     Config conf;
@@ -529,4 +465,26 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     Yaml::Serialize(root, filePath.c_str());
 
     return ConfigError::NONE;
+}
+
+std::string errorToName(ConfigError err) {
+    switch (err)
+    {
+        case ConfigError::NONE:
+            return "NONE";
+        case ConfigError::COULD_NOT_OPEN:
+            return "COULD_NOT_OPEN";
+        case ConfigError::MISSING_KEY:
+            return "MISSING_KEY";
+        case ConfigError::DIFFERENT_FILE_VERSION:
+            return "DIFFERENT_FILE_VERSION";
+        case ConfigError::DIFFERENT_RANDO_VERSION:
+            return "DIFFERENT_RANDO_VERSION";
+        case ConfigError::INVALID_VALUE:
+            return "INVALID_VALUE";
+        case ConfigError::TOO_MANY_OF_ITEM:
+            return "TOO_MANY_OF_ITEM";
+        default:
+            return "UNKNOWN";
+    }
 }
