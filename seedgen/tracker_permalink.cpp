@@ -31,6 +31,7 @@ static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     Option::ProgressBattlesquid,
     Option::ProgressSavageLabyrinth,
     Option::ProgressIslandPuzzles,
+    Option::ProgressObscure,
 
     Option::Keylunacy,
     Option::RandomizeEntrances,
@@ -56,7 +57,6 @@ static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     Option::StartingHC,
     Option::RemoveMusic,
     Option::RandomizeEnemies,
-    Option::WindWakerHD,
 };
 
 static const std::array<GameItem, 29> TRACKER_REGULAR_ITEMS = {
