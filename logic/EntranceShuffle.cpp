@@ -539,6 +539,11 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\" cannot be shuffled.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
+        // Change misc restrictive to misc since restrictive entrances are still in the misc pool
+        else if (type == EntranceType::MISC_RESTRICTIVE)
+        {
+            type = EntranceType::MISC;
+        }
 
         // Check to make sure this type of entrance is being shuffled
         if (!entrancePools.contains(type))
