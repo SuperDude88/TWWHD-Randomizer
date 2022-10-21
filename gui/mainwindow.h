@@ -8,6 +8,7 @@
 #include <QString>
 #include <QStringListModel>
 #include <QStringList>
+#include <QStandardItemModel>
 
 #include <filesystem>
 
@@ -39,6 +40,18 @@ private:
     Config config;
     QStringListModel* randomizedGearModel;
     QStringListModel* startingGearModel;
+
+    // Variables for setting the mixed pools
+    // combobox as we want
+    QList<QStandardItem*> poolCheckBoxes;
+    QStringList poolNames;
+    QStandardItemModel poolModel;
+    QListView eventsByName;
+    QStandardItem mix_dungeons;
+    QStandardItem mix_caves;
+    QStandardItem mix_doors;
+    QStandardItem mix_misc;
+
     std::string defaultWindowTitle;
     QString currentPermalink;
     bool encounteredError;
@@ -47,6 +60,7 @@ private:
     void closeEvent(QCloseEvent *event) override;
     void load_config_into_ui();
     void setup_gear_menus();
+    void setup_mixed_pools_combobox();
     void apply_config_settings();
     void update_progress_locations_text();
     void swap_selected_gear(QListView* gearFrom, QStringListModel* gearTo);
@@ -58,7 +72,9 @@ private:
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");
-
+    void update_mixed_pools_combobox_text(const QString& text);
+    void update_mixed_pools_combobox_option(const QString& text = "");
+    void update_mixed_pools_on_text_click(const QModelIndex&);
     void on_base_game_path_browse_button_clicked();
     void on_output_folder_browse_button_clicked();
     void on_generate_seed_button_clicked();
@@ -133,7 +149,6 @@ private slots:
     void on_randomize_cave_entrances_stateChanged(int arg1);
     void on_randomize_door_entrances_stateChanged(int arg1);
     void on_randomize_misc_entrances_stateChanged(int arg1);
-    void on_mix_entrance_pools_stateChanged(int arg1);
     void on_decouple_entrances_stateChanged(int arg1);
     void on_randomize_starting_island_stateChanged(int arg1);
 
