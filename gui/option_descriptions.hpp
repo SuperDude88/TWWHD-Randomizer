@@ -268,8 +268,8 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Shuffles around which misc entrances take you into which msic areas. Misc entrances are entrances which do not fall into any of the other categories and include entrances such as those that go in and out of Forest Haven and Dragon Roost Island. Hyrule is not included in this category."
     },
     {
-      "mix_entrance_pools",
-      "Shuffle all randomized entrances within the same pool. For example, if you randomize dungeon entrances and doors, then entering a dungeon may take you into a house, while opening a door to a house may take you to a dungeon."
+      "mix_pools_combobox",
+      "Shuffle the selected entrances into a mixed pool instead of separate ones. For example, randomizing dungeons, caves, and doors, and selecting dungeons and caves here will allow a dungeon to be inside a cave or vice versa, while doors are shuffled in their own separate pool."
     },
     {
       "decouple_entrances",

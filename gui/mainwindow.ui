@@ -1223,16 +1223,23 @@
                 </widget>
                </item>
                <item row="1" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_18">
-                 <item>
-                  <widget class="QLabel" name="mix_pools_combobox_label">
+                <layout class="QGridLayout" name="gridLayout_9">
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="mix_pools_combobox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_for_mix_pools_combobox">
                    <property name="text">
                     <string>Mix Entrance Pools</string>
                    </property>
                   </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="mix_pools_combobox"/>
                  </item>
                 </layout>
                </item>
@@ -1241,6 +1248,12 @@
             </item>
             <item>
              <widget class="QWidget" name="widget_8" native="true">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
