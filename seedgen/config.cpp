@@ -97,7 +97,10 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.randomize_cave_entrances = false;
     conf.settings.randomize_door_entrances = false;
     conf.settings.randomize_misc_entrances = false;
-    conf.settings.mix_entrance_pools = false;
+    conf.settings.mix_dungeons = false;
+    conf.settings.mix_caves = false;
+    conf.settings.mix_doors = false;
+    conf.settings.mix_misc = false;
     conf.settings.decouple_entrances = false;
 
     conf.settings.korl_hints = false;
@@ -205,7 +208,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_BOOL_FIELD(root, out, randomize_cave_entrances)
     SET_BOOL_FIELD(root, out, randomize_door_entrances)
     SET_BOOL_FIELD(root, out, randomize_misc_entrances)
-    SET_BOOL_FIELD(root, out, mix_entrance_pools)
+    SET_BOOL_FIELD(root, out, mix_dungeons)
+    SET_BOOL_FIELD(root, out, mix_caves)
+    SET_BOOL_FIELD(root, out, mix_doors)
+    SET_BOOL_FIELD(root, out, mix_misc)
     SET_BOOL_FIELD(root, out, decouple_entrances)
 
     SET_BOOL_FIELD(root, out, ho_ho_hints)
@@ -417,7 +423,10 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_BOOL_FIELD(root, config, randomize_cave_entrances)
     WRITE_BOOL_FIELD(root, config, randomize_door_entrances)
     WRITE_BOOL_FIELD(root, config, randomize_misc_entrances)
-    WRITE_BOOL_FIELD(root, config, mix_entrance_pools)
+    WRITE_BOOL_FIELD(root, config, mix_dungeons)
+    WRITE_BOOL_FIELD(root, config, mix_caves)
+    WRITE_BOOL_FIELD(root, config, mix_doors)
+    WRITE_BOOL_FIELD(root, config, mix_misc)
     WRITE_BOOL_FIELD(root, config, decouple_entrances)
 
     WRITE_BOOL_FIELD(root, config, ho_ho_hints)

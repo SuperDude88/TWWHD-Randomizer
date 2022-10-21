@@ -57,7 +57,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1208,13 +1208,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="mix_entrance_pools">
-                 <property name="text">
-                  <string>Mix Entrance Pools</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="1">
                 <widget class="QCheckBox" name="decouple_entrances">
                  <property name="text">
@@ -1228,6 +1221,20 @@
                   <string>Randomize Starting Island</string>
                  </property>
                 </widget>
+               </item>
+               <item row="1" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_18">
+                 <item>
+                  <widget class="QLabel" name="mix_pools_combobox_label">
+                   <property name="text">
+                    <string>Mix Entrance Pools</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="mix_pools_combobox"/>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>

@@ -16,6 +16,7 @@
 #include <iostream>
 
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
+#define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 
 #define APPLY_SPINBOX_SETTING(config, ui, name, min, max) \
@@ -23,6 +24,9 @@
     name = std::clamp(name, min, max);                    \
     ui->name->setValue(name);
 
+#define APPLY_MIXED_POOLS_SETTING(config, ui, name)                         \
+    name.setCheckState(config.settings.name ? Qt::Checked : Qt::Unchecked); \
+    update_mixed_pools_combobox_option();
 
 #define DEFINE_STATE_CHANGE_FUNCTION(name)                \
     void MainWindow::on_##name##_stateChanged(int arg1) { \
@@ -47,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setup_mixed_pools_combobox();
     load_locations();
     load_config_into_ui();
     encounteredError = false;
@@ -117,6 +122,104 @@ void MainWindow::show_info_dialog(const std::string& msg, const std::string& tit
     messageBox->setText(msg.c_str());
     messageBox->setIcon(QMessageBox::NoIcon);
     messageBox->exec();
+}
+
+void MainWindow::setup_mixed_pools_combobox()
+{
+    eventsByName.setModel(&poolModel);
+    poolNames << "Dungeons" << "Caves" << "Doors" << "Misc";
+    poolCheckBoxes << &mix_dungeons << &mix_caves << &mix_doors << &mix_misc;
+    for (size_t i = 0; i < poolNames.size(); i++)
+    {
+        poolCheckBoxes[i]->setText(poolNames[i]);
+        poolModel.setItem(i, 0, poolCheckBoxes[i]);
+        poolCheckBoxes[i]->setFlags(Qt::ItemIsEnabled);
+        poolCheckBoxes[i]->setData(Qt::Unchecked, Qt::CheckStateRole);
+    }
+
+    // Dummy row to allow changing the mix_pools_combobox text without
+    // making it editable. The dummy row text will be changed to reflect
+    // what we want the combobox text to be.
+    poolCheckBoxes << new QStandardItem();
+    poolCheckBoxes.back()->setText("None");
+    poolCheckBoxes.back()->setFlags(Qt::NoItemFlags);
+    poolCheckBoxes.back()->setData(Qt::Unchecked, Qt::CheckStateRole);
+    poolModel.setItem(poolNames.size(), 0, poolCheckBoxes[poolNames.size()]);
+    eventsByName.setRowHidden(poolNames.size(), true);
+
+    ui->mix_pools_combobox->setModel(&poolModel);
+    ui->mix_pools_combobox->setView(&eventsByName);
+    ui->mix_pools_combobox->setCurrentText("None");
+
+    connect(&eventsByName, &QListView::clicked, this, &MainWindow::update_mixed_pools_on_text_click);
+}
+
+void MainWindow::update_mixed_pools_combobox_text(const QString& text)
+{
+    poolCheckBoxes.back()->setText(text);
+    ui->mix_pools_combobox->setCurrentText(text);
+}
+
+void MainWindow::update_mixed_pools_on_text_click(const QModelIndex& index)
+{
+    QString clickedOption = index.data(0).toString();
+    update_mixed_pools_combobox_option(clickedOption);
+}
+
+void MainWindow::update_mixed_pools_combobox_option(const QString& pool /*= ""*/)
+{
+    QStringList enabledPools;
+
+    for (size_t i = 0; i < poolCheckBoxes.size() - 1; i++)
+    {
+        auto& poolOption = poolCheckBoxes[i];
+        if (pool != "" && poolOption->text() == pool)
+        {
+            poolOption->setCheckState(poolOption->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        }
+
+        if (poolOption->checkState() == Qt::Checked)
+        {
+            enabledPools << poolOption->text();
+        }
+    }
+
+    if (enabledPools.size() == poolCheckBoxes.size() - 1)
+    {
+        update_mixed_pools_combobox_text("All");
+    }
+    else if (enabledPools.empty())
+    {
+        update_mixed_pools_combobox_text("None");
+    }
+    else if (enabledPools.size() <= 2)
+    {
+        QString text = "";
+        for (size_t i = 0; i < enabledPools.size(); i++)
+        {
+            text += enabledPools[i];
+            if (i != enabledPools.size() - 1)
+            {
+                text += ", ";
+            }
+        }
+        update_mixed_pools_combobox_text(text);
+    }
+    else
+    {
+        std::string text = std::to_string(enabledPools.size()) + " Selected";
+        update_mixed_pools_combobox_text(text.c_str());
+    }
+
+    // Only update the config if the user manually selected an option
+    if (pool != "")
+    {
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_dungeons);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_caves);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_doors);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_misc);
+    }
+
 }
 
 void MainWindow::setup_gear_menus()
@@ -310,7 +413,10 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, randomize_cave_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_door_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_misc_entrances);
-    APPLY_CHECKBOX_SETTING(config, ui, mix_entrance_pools);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_dungeons);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_caves);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_doors);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_misc);
     APPLY_CHECKBOX_SETTING(config, ui, decouple_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_starting_island);
 
@@ -656,7 +762,7 @@ DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_door_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
-DEFINE_STATE_CHANGE_FUNCTION(mix_entrance_pools)
+// Mixed pools options' states are handled in update_mixed_pools_combobox_option()
 DEFINE_STATE_CHANGE_FUNCTION(decouple_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_starting_island)
 
