@@ -5,6 +5,7 @@
 
 #include "../../utility/endian.hpp"
 #include "../../utility/common.hpp"
+#include "../../utility/math.hpp"
 #include "../texture/addrlib.hpp"
 #include "../../command/Log.hpp"
 #include "../dds.hpp"
@@ -34,11 +35,6 @@ static const std::unordered_map<uint32_t, std::string> supportedFormats {
 };
 
 static const std::unordered_set<uint32_t> BCn_formats = {0x31, 0x431, 0x32, 0x432, 0x33, 0x433, 0x34, 0x234, 0x35, 0x235};
-
-template<typename T>
-T roundUp(T x, T y) {
-    return ((x - 1) | (y - 1)) + 1;
-}
 
 std::pair<uint32_t, uint32_t> getCurrentMipOffset_Size(uint32_t width, uint32_t height, uint32_t blkWidth, uint32_t blkHeight, uint32_t bpp, uint32_t currLevel) {
     uint32_t offset = 0;

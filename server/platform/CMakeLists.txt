@@ -10,3 +10,5 @@ else()
 	cmake_policy(SET CMP0076 NEW)
 	target_sources(wwhd_rando PRIVATE wiiutitles.cpp)
 endif()
+
+add_subdirectory("nuspack")
