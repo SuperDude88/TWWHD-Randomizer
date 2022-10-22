@@ -1,10 +1,12 @@
 
 #include "Requirements.hpp"
-#include "GameItem.hpp"
-#include "PoolFunctions.hpp"
+
 #include <unordered_map>
 #include <algorithm>
 #include <functional>
+
+#include <logic/GameItem.hpp>
+#include <logic/PoolFunctions.hpp>
 
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"or", RequirementType::OR},

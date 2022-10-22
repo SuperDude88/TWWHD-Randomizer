@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "Entrance.hpp"
-#include "World.hpp"
+#include <logic/Entrance.hpp>
+#include <logic/World.hpp>
 
 enum struct EntranceShuffleError
 {

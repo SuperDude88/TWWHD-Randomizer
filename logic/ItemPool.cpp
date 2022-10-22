@@ -1,8 +1,9 @@
 #include "ItemPool.hpp"
-#include "PoolFunctions.hpp"
-#include "World.hpp"
-#include "../seedgen/random.hpp"
-#include "../server/command/Log.hpp"
+
+#include <logic/PoolFunctions.hpp>
+#include <logic/World.hpp>
+#include <seedgen/random.hpp>
+#include <command/Log.hpp>
 
 static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     // Potentially progress items

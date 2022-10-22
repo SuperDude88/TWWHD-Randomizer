@@ -1,8 +1,8 @@
 #include "text_replacements.hpp"
-#include "server/command/Log.hpp"
-#include "server/filetypes/util/msbtMacros.hpp"
-#include "server/utility/stringUtil.hpp"
-#include "server/utility/text.hpp"
+#include <command/Log.hpp>
+#include <filetypes/util/msbtMacros.hpp>
+#include <utility/stringUtil.hpp>
+#include <utility/text.hpp>
 
 #define IS_PLURAL(item, language) world.itemTranslations[item.getGameItemId()][language].plurality == Plurality::PLURAL
 #define IS_SINGULAR(item, language) world.itemTranslations[item.getGameItemId()][language].plurality == Plurality::SINGULAR

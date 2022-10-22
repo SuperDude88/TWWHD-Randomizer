@@ -1,19 +1,21 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
-#include "randomizer_thread.hpp"
-#include "option_descriptions.hpp"
-#include "../seedgen/seed.hpp"
-#include "../seedgen/permalink.hpp"
-#include "../seedgen/tracker_permalink.hpp"
-#include "../server/utility/stringUtil.hpp"
-#include "../server/utility/file.hpp"
-#include "../libs/Yaml.hpp"
+
+#include <algorithm>
+#include <iostream>
 
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include <algorithm>
-#include <iostream>
+#include <ui_mainwindow.h>
+#include <randomizer_thread.hpp>
+#include <option_descriptions.hpp>
+
+#include <libs/Yaml.hpp>
+#include <seedgen/seed.hpp>
+#include <seedgen/permalink.hpp>
+#include <seedgen/tracker_permalink.hpp>
+#include <utility/stringUtil.hpp>
+#include <utility/file.hpp>
 
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}

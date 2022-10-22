@@ -2,7 +2,8 @@
 
 #include <cctype>
 #include <vector>
-#include "random.hpp"
+
+#include <seedgen/random.hpp>
 
 static std::vector<std::string> adjectives = {
     "able",
