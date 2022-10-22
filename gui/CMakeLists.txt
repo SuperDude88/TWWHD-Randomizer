@@ -116,9 +116,9 @@ install(TARGETS wwhd_rando
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 add_subdirectory("../libs" "libs")
-add_subdirectory("../server/utility" "server/utility")
-add_subdirectory("../server/command" "server/command")
-add_subdirectory("../server/filetypes" "server/filetypes")
+add_subdirectory("../utility" "utility")
+add_subdirectory("../command" "command")
+add_subdirectory("../filetypes" "filetypes")
 add_subdirectory("../seedgen" "seedgen")
 add_subdirectory("../logic" "logic")
 

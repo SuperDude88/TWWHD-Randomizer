@@ -11,8 +11,8 @@
 
 #include <filesystem>
 
-#include "../seedgen/config.hpp"
-#include "../logic/Location.hpp"
+#include <seedgen/config.hpp>
+#include <logic/Location.hpp>
 
 void delete_and_create_default_config();
 

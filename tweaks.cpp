@@ -1,4 +1,5 @@
 #include "tweaks.hpp"
+#include <initializer_list>
 
 #define _USE_MATH_DEFINES
 
@@ -9,25 +10,21 @@
 #include <codecvt>
 #include <filesystem>
 
-#include "text_replacements.hpp"
-#include "libs/tinyxml2.h"
-#include "libs/json.hpp"
-#include "seedgen/seed.hpp"
-#include "server/filetypes/bflim.hpp"
-#include "server/filetypes/bflyt.hpp"
-#include "server/filetypes/bfres.hpp"
-#include "server/filetypes/dzx.hpp"
-#include "server/filetypes/elf.hpp"
-#include "server/filetypes/util/elfUtil.hpp"
-#include "server/filetypes/events.hpp"
-#include "server/filetypes/jpc.hpp"
-#include "server/filetypes/msbt.hpp"
-#include "server/filetypes/util/msbtMacros.hpp"
-#include "server/utility/stringUtil.hpp"
-#include "server/utility/platform.hpp"
-#include "server/command/Log.hpp"
-
-#include "server/utility/platform.hpp"
+#include <text_replacements.hpp>
+#include <libs/tinyxml2.h>
+#include <libs/json.hpp>
+#include <filetypes/bflim.hpp>
+#include <filetypes/bflyt.hpp>
+#include <filetypes/bfres.hpp>
+#include <filetypes/dzx.hpp>
+#include <filetypes/elf.hpp>
+#include <filetypes/util/elfUtil.hpp>
+#include <filetypes/events.hpp>
+#include <filetypes/jpc.hpp>
+#include <filetypes/msbt.hpp>
+#include <filetypes/util/msbtMacros.hpp>
+#include <utility/stringUtil.hpp>
+#include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
     if(fspath == nullptr) {\

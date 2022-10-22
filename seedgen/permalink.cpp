@@ -1,10 +1,11 @@
 #include "permalink.hpp"
-#include "packed_bits.hpp"
-#include "../libs/base64pp.hpp"
 
 #include <array>
 #include <set>
 #include <iostream>
+
+#include <libs/base64pp.hpp>
+#include <seedgen/packed_bits.hpp>
 
 #define BYTES_EXIST_CHECK(value) if (value == 0xFFFFFFFF) return PermalinkError::BAD_PERMALINK;
 

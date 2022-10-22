@@ -5,14 +5,15 @@
 #include <sstream>
 #include <unordered_set>
 #include <list>
-#include "Requirements.hpp"
-#include "Area.hpp"
-#include "Location.hpp"
-#include "ItemPool.hpp"
-#include "Dungeon.hpp"
-#include "Entrance.hpp"
-#include "../libs/Yaml.hpp"
-#include "../server/utility/text.hpp"
+
+#include <libs/Yaml.hpp>
+#include <logic/Requirements.hpp>
+#include <logic/Area.hpp>
+#include <logic/Location.hpp>
+#include <logic/ItemPool.hpp>
+#include <logic/Dungeon.hpp>
+#include <logic/Entrance.hpp>
+#include <utility/text.hpp>
 
 static std::stringstream lastError;
 

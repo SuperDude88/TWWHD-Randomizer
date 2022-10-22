@@ -1,6 +1,7 @@
 #include "tracker_permalink.hpp"
-#include "packed_bits.hpp"
-#include "../libs/base64pp.hpp"
+
+#include <seedgen/packed_bits.hpp>
+#include <libs/base64pp.hpp>
 
 #include <array>
 

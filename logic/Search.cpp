@@ -1,10 +1,12 @@
 
 #include "Search.hpp"
-#include "PoolFunctions.hpp"
-#include "../server/command/Log.hpp"
+
 #include <list>
 #include <unordered_set>
 #include <algorithm>
+
+#include <logic/PoolFunctions.hpp>
+#include <command/Log.hpp>
 
 using ItemMultiSet = std::unordered_multiset<Item>;
 using EventSet = std::unordered_set<EventId>;

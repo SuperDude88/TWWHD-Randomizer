@@ -6,9 +6,10 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
-#include "GameItem.hpp"
-#include "Requirements.hpp"
-#include "../server/command/WriteLocations.hpp"
+
+#include <logic/GameItem.hpp>
+#include <logic/Requirements.hpp>
+#include <command/WriteLocations.hpp>
 
 // move this and mod type into location entry or own file?
 enum struct LocationCategory
