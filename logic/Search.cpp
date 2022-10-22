@@ -194,7 +194,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
 
     // Variables for general searching
     bool newThingsFound = false;
-    int sphere = 0;
 
     do
     {
