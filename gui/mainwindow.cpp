@@ -66,6 +66,11 @@ MainWindow::MainWindow(QWidget *parent)
     {
         child->installEventFilter(this);
     }
+
+    // Hide options which won't exist for a while
+    ui->randomize_enemies->setVisible(false);
+    ui->randomize_enemy_palettes->setVisible(false);
+    ui->randomize_music->setVisible(false);
 }
 
 MainWindow::~MainWindow()
