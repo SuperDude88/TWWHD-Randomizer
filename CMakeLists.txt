@@ -59,11 +59,13 @@ endif()
 add_executable(wwhd_rando main.cpp)
 target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
 add_subdirectory("libs")
-add_subdirectory("server/utility")
-add_subdirectory("server/command")
-add_subdirectory("server/filetypes")
+add_subdirectory("utility")
+add_subdirectory("command")
+add_subdirectory("filetypes")
 add_subdirectory("seedgen")
 add_subdirectory("logic")
+
+target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
 
 if(WIN32)
   target_link_libraries(wwhd_rando zlib)
@@ -85,22 +87,25 @@ endif()
 
 if(DEFINED DEVKITPRO)
   # Some code specific to Wii U
-  add_subdirectory("server/platform")
+  add_subdirectory("platform")
 
   # Use libmocha for filesystem access
   find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
   target_link_libraries(wwhd_rando "${LIBMOCHA}")
-
-  # Bundle data files in romfs
-  include("${DEVKITPRO}/portlibs/wiiu/share/romfs-wiiu.cmake" REQUIRED)
-  romfs_add(wwhd_rando "build/data")
-  add_compile_definitions(DATA_PATH="romfs:/")
-
-  # Copy some files for the homebrew launcher
-  file(COPY "server/platform/meta.xml" DESTINATION "${CMAKE_BINARY_DIR}")
-  file(COPY "server/platform/icon.png" DESTINATION "${CMAKE_BINARY_DIR}")
+  
+  add_compile_definitions(DATA_PATH="/vol/content/" APP_SAVE_PATH="/vol/save/" TEMP_DIR="/vol/save/temp/")
 
   wut_create_rpx(wwhd_rando)
+  #wut_create_wuhb(wwhd_rando
+  #  NAME       "The Legend of Zelda: The Wind Waker HD Randomizer"
+
+  #  CONTENT    "${CMAKE_BINARY_DIR}/data"
+  #  SHORTNAME  "TWWHD Randomizer"
+  #  AUTHOR     "SuperDude88, csunday95, gymnast86"
+  #  ICON       "${CMAKE_SOURCE_DIR}/platform/icon.png"
+  #  TVSPLASH   "${CMAKE_SOURCE_DIR}/platform/TVSplash.png"
+  #  DRCSPLASH  "${CMAKE_SOURCE_DIR}/platform/TVSplash.png"
+  #)
 else()
-  add_compile_definitions(DATA_PATH="./data/")
+  add_compile_definitions(DATA_PATH="./data/" APP_SAVE_PATH="./" TEMP_DIR="./temp/")
 endif()
