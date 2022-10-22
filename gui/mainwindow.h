@@ -65,6 +65,7 @@ private:
     void update_progress_locations_text();
     void swap_selected_gear(QListView* gearFrom, QStringListModel* gearTo);
     void update_starting_gear();
+    void update_plandomizer_widget_visbility();
     void update_starting_health_text();
     void update_option_description_text(const std::string& descrption = "");
     void update_permalink();

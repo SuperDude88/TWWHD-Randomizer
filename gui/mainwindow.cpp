@@ -290,6 +290,23 @@ void MainWindow::setup_gear_menus()
     ui->starting_gear->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
+void MainWindow::update_plandomizer_widget_visbility()
+{
+    // Hide plandomizer input widgets when plandomizer isn't check
+    if (ui->plandomizer->isChecked())
+    {
+        ui->plandomizer_path->setVisible(true);
+        ui->plandomizer_path_browse_button->setVisible(true);
+        ui->plandomizer_label->setVisible(true);
+    }
+    else
+    {
+        ui->plandomizer_path->setVisible(false);
+        ui->plandomizer_path_browse_button->setVisible(false);
+        ui->plandomizer_label->setVisible(false);
+    }
+}
+
 void MainWindow::apply_config_settings()
 {
     // Directories and Seed
@@ -401,6 +418,7 @@ void MainWindow::apply_config_settings()
     // Advanced Options
     APPLY_CHECKBOX_SETTING(config, ui, do_not_generate_spoiler_log);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
+    update_plandomizer_widget_visbility();
     ui->plandomizer_path->setText(config.settings.plandomizerFile.c_str());
 
     // Hints
@@ -634,16 +652,7 @@ void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
     UPDATE_CONFIG_STATE(config, ui, plandomizer);
     update_permalink();
-//    Couldn't get resizing to work correctly putting the plandomizer file
-//    selection layout into a widget. Might come back and try later
-//    if (ui->plandomizer->isChecked())
-//    {
-//        ui->plandomizer_file_path_widget->setVisible(true);
-//    }
-//    else
-//    {
-//        ui->plandomizer_file_path_widget->setVisible(false);
-//    }
+    update_plandomizer_widget_visbility();
 }
 
 void MainWindow::on_plandomizer_path_browse_button_clicked()
