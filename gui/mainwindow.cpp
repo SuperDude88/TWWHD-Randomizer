@@ -22,7 +22,7 @@
 #define APPLY_SPINBOX_SETTING(config, ui, name, min, max) \
     auto& name = config.settings.name;                    \
     name = std::clamp(name, min, max);                    \
-    ui->name->setValue(name);
+    ui->name->setValue(static_cast<int>(name));
 
 #define APPLY_MIXED_POOLS_SETTING(config, ui, name)                         \
     name.setCheckState(config.settings.name ? Qt::Checked : Qt::Unchecked); \
@@ -358,7 +358,7 @@ void MainWindow::apply_config_settings()
         on_sword_mode_currentIndexChanged(index);
     }
 
-
+    APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(80.0f));
     APPLY_CHECKBOX_SETTING(config, ui, keylunacy);
     APPLY_CHECKBOX_SETTING(config, ui, race_mode);
     // Call the slot for the race_mode state change incase it didn't change
@@ -578,6 +578,14 @@ void MainWindow::on_sword_mode_currentIndexChanged(int index)
     update_permalink();
 }
 
+DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
+DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
+
+void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
+{
+    config.settings.damage_multiplier = static_cast<float>(multiplier);
+}
+
 DEFINE_STATE_CHANGE_FUNCTION(keylunacy)
 
 void MainWindow::on_race_mode_stateChanged(int arg1) {
@@ -606,9 +614,6 @@ void MainWindow::on_num_race_mode_dungeons_currentIndexChanged(int index)
     config.settings.num_race_mode_dungeons = ui->num_race_mode_dungeons->currentIndex() + 1;
     update_permalink();
 }
-
-DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
-DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
 
 // Convenience Tweaks
 DEFINE_STATE_CHANGE_FUNCTION(invert_sea_compass_x_axis)

@@ -128,6 +128,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "chest_type_matches_contents",
       "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key chests. Keys for non-required dungeons in race mode will be in wooden chests."
     },
+    {
+      "damage_multiplier",
+      "Change the damage multiplier used when Hero Mode is enabled. By default Hero Mode applies a 2x damage multiplier. This will not affect damage taken in Normal Mode."
+    },
 
     // Convenience Tweaks
     {

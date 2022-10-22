@@ -106,12 +106,13 @@ private slots:
 
     // Additional Randomization Options
     void on_sword_mode_currentIndexChanged(int index);
+    void on_randomize_charts_stateChanged(int arg1);
+    void on_chest_type_matches_contents_stateChanged(int arg1);
+    void on_damage_multiplier_valueChanged(int multiplier);
     void on_keylunacy_stateChanged(int arg1);
     void on_race_mode_stateChanged(int arg1);
     void on_num_race_mode_dungeons_currentIndexChanged(int index);
     void on_num_starting_triforce_shards_currentIndexChanged(int index);
-    void on_randomize_charts_stateChanged(int arg1);
-    void on_chest_type_matches_contents_stateChanged(int arg1);
 
     // Convenience Tweaks
     void on_invert_sea_compass_x_axis_stateChanged(int arg1);
