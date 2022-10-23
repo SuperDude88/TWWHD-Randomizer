@@ -1,5 +1,11 @@
 #include "endian.hpp"
 
+#ifdef __cpp_lib_endian
+    #pragma message("Using C++20 endianness")
+#else
+    #pragma message("Using runtime endian check")
+#endif
+
 namespace Utility::Endian
 {
         uint64_t byteswap(const uint64_t& value)
@@ -20,6 +26,13 @@ namespace Utility::Endian
                 ((value & 0x00FF0000) >> 8) |
                 ((value & 0x0000FF00) << 8) |
                 ((value & 0x000000FF) << 24);
+        }
+
+        uint32_t byteswap24(const uint32_t& value)
+        {
+            return ((value & 0x00FF0000) >> 16) |
+                ((value & 0x0000FF00)) |
+                ((value & 0x000000FF) << 16);
         }
 
         uint16_t byteswap(const uint16_t& value)

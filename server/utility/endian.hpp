@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 #include <type_traits>
+#include <bit>
+#include <version>
 
 
 
@@ -13,15 +15,35 @@ namespace Utility::Endian
         Little = 1
     };
 
-#ifdef DEVKITPRO
-    constexpr Type target = Type::Big;
-#elif defined(_WIN32) || defined(__linux__)
-    constexpr Type target = Type::Little;
+#ifdef __cpp_lib_endian
+    //use the c++20 api if possible
+    constexpr Type target = std::endian::native == std::endian::big ? Type::Big : Type::Little;
+#else
+    //do a runtime check otherwise
+    inline Type getEndian() {
+        static const uint16_t TestVal = 0x0001;
+        static const uint8_t tester = *reinterpret_cast<const uint8_t*>(&TestVal);
+
+        if(tester == 0x00) {
+            return Type::Big;
+        }
+        else if (tester == 0x01) {
+            return Type::Little;
+        }
+        else {
+            //TODO: error somehow?
+        }
+    }
+    const Type target = getEndian();
 #endif
+
+    constexpr inline bool isBE() { return target == Type::Big; }
 
     uint64_t byteswap(const uint64_t& value);
 
     uint32_t byteswap(const uint32_t& value);
+
+    uint32_t byteswap24(const uint32_t& value); //used in FST files
 
     uint16_t byteswap(const uint16_t& value);
 
