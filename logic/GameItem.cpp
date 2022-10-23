@@ -6,7 +6,7 @@
 
 #include <logic/World.hpp>
 #include <command/Log.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <filetypes/util/msbtMacros.hpp>
 
 GameItem nameToGameItem(const std::string& name)

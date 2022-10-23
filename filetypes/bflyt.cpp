@@ -4,7 +4,7 @@
 #include <unordered_set>
 
 #include <utility/endian.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 

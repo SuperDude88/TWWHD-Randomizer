@@ -4,13 +4,11 @@
 
 #pragma once
 
-#include <vector>
-#include <unordered_map>
+#include <fstream>
 #include <string>
 
 #include <nuspack/fst/FSTEntries.hpp>
 #include <nuspack/contents/contents.hpp>
-#include <utility/stringUtil.hpp>
 
 
 
@@ -39,32 +37,20 @@ namespace FileTypes {
 
 	class FSTFile {
 	public:
-		Contents contents;
+		Contents& contents;
 		FSTEntries entries;
-		FSTEntry* root;
+		FSTEntry& root;
 
-		FSTFile() :
-			root(&entries.GetRootEntry())
+		FSTFile(Contents& contents_) :
+			contents(contents_),
+			root(entries.GetRootEntry())
 		{}
 		
 		void Update();
 		FSTError writeToStream(std::ostream& out);
 		FSTError writeToFile(const std::string& filePath);
 
-        inline static uint32_t AddString(const std::string& filename)
-        {
-			static uint32_t stringPos = 0;
-
-            const std::string& name_ = Utility::Str::assureNullTermination(filename);
-            strings[stringPos] = name_;
-			const uint32_t pos = stringPos;
-
-			stringPos += name_.size();
-			return pos;
-        }
 	private:
         FSTHeader header;
-		inline static std::unordered_map<uint32_t, std::string> strings = {};
-		//TODO: make these things not static somehow?
 	};
 }

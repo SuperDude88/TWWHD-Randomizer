@@ -9,6 +9,8 @@
 
 template<typename T>
 struct RGBA {
+	static_assert(std::is_arithmetic_v<T>, "RGBA<T> must have arithmetic type!");
+
 	T R = 0;
 	T G = 0;
 	T B = 0;
@@ -33,6 +35,8 @@ struct RGBA {
 
 template<typename T>
 struct vec2 {
+	static_assert(std::is_arithmetic_v<T>, "vec2<T> must have arithmetic type!");
+
 	T X;
 	T Y;
 
@@ -45,6 +49,8 @@ struct vec2 {
 
 template<typename T>
 struct vec3 {
+	static_assert(std::is_arithmetic_v<T>, "vec3<T> must have arithmetic type!");
+
 	T X;
 	T Y;
 	T Z;
@@ -59,6 +65,8 @@ struct vec3 {
 
 template<typename T>
 struct vec4 {
+	static_assert(std::is_arithmetic_v<T>, "vec4<T> must have arithmetic type!");
+
 	T A;
 	T B;
 	T C;

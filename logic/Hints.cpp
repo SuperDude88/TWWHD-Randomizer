@@ -7,7 +7,7 @@
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 #include <filetypes/util/msbtMacros.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 
 template<typename Container>
 static Location* getHintableLocation(Container& locations)

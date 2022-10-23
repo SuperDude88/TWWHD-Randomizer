@@ -78,8 +78,8 @@ std::vector<FSTEntry*> FSTEntry::GetFileChildren() {
     return ret;
 }
 
-void FSTEntry::Update(uint64_t& curEntryOffset) {
-    nameOffset = FileTypes::FSTFile::AddString(name);
+void FSTEntry::Update(uint64_t& curEntryOffset, StringTable& strings) {
+    nameOffset = strings.addString(name);
     entryOffset = curEntryOffset;
     curEntryOffset++;
 
@@ -95,7 +95,7 @@ void FSTEntry::Update(uint64_t& curEntryOffset) {
 
     for (FSTEntry& entry : children)
     {
-        entry.Update(curEntryOffset);
+        entry.Update(curEntryOffset, strings);
     }
 }
 
@@ -192,7 +192,7 @@ void FSTEntry::writeToStream(std::ostream& out) {
 void FSTEntries::Update() {
     for(FSTEntry& entry : entries)
     {
-        entry.Update(curEntryOffset);
+        entry.Update(curEntryOffset, strings);
     }
     UpdateDirRefs();
 }

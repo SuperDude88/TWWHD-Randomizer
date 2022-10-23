@@ -33,17 +33,15 @@ namespace FileTypes {
 		}
 	}
 
-	void TMDFile::update(const AppInfo& info, const FSTFile& fst, const Ticket& ticket) {
+	void TMDFile::update(const AppInfo& info) {
 		header.groupID = info.groupID;
 		header.systemVersion = info.OSVersion;
 		header.appType = info.appType;
 		header.titleVersion = info.titleVer;
-		header.contentCount = contents->GetContentCount();
+		header.contentCount = contents.GetContentCount();
 	
 		ContentInfo firstContentInfo(header.contentCount);
         contentInfo = firstContentInfo;
-
-		this->ticket = ticket;
 	}
 
 	TMDError TMDFile::writeToStream(std::ostream& out) {
@@ -82,7 +80,7 @@ namespace FileTypes {
 		contentInfo.writeToStream(out);
 		Utility::seek(out, (0x40 * sizeof(contentInfo)) - sizeof(contentInfo), std::ios::cur);
 
-		contents->writeToStream(out);
+		contents.writeToStream(out);
 
 		return TMDError::NONE;
 	}

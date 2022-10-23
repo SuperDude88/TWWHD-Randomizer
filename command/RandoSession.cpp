@@ -18,7 +18,7 @@
 #include <gui/update_dialog_header.hpp>
 #include <filetypes/wiiurpx.hpp>
 #include <filetypes/yaz0.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>

@@ -7,9 +7,11 @@
 #include <limits>
 #include <utility/endian.hpp>
 
-template<typename T, typename = std::enable_if<std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed>>
+template<typename T>
 class RelOffset {
 public:
+    static_assert(std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed, "RelOffset<T> must be signed integer type!");
+
     T offset;
 
     operator T() { return offset; }

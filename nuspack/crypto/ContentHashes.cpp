@@ -48,7 +48,7 @@ void ContentHashes::CalculateOtherHashes(const uint32_t& hashLevel, const Hashes
 }
 
 void ContentHashes::CalculateH0Hashes(std::istream& file) {
-    static constexpr int bufferSize = 0xFC00;
+    static constexpr uint32_t bufferSize = 0xFC00;
 
     blockCount = 0;
     std::string buffer(bufferSize, '\0');

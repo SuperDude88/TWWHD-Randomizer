@@ -1,6 +1,8 @@
 #pragma once
 
+#include <ios>
 #include <string>
+#include <type_traits>
 #include <vector>
 #include <sstream>
 #include <iomanip>
@@ -49,11 +51,23 @@ namespace Utility::Str {
     std::string RemoveUnicodeReplacements(std::string text);
     std::u16string RemoveUnicodeReplacements(std::u16string text);
 
-    template< typename T >
-    std::string intToHex( T i )
+    template<typename T>
+    std::string intToHex(const T& i, const bool& base = true)
     {
+      static_assert(std::is_integral_v<T>, "intToHex<T> must be integral type!");
+
       std::stringstream stream;
-      stream << "0x" << std::hex << (int)i;
+      stream << std::hex << (base ? std::showbase : std::noshowbase) << i;
+      return stream.str();
+    }
+
+    template<typename T>
+    std::string intToHex(const T& i, const size_t& width, const bool& base = true)
+    {
+      static_assert(std::is_integral_v<T>, "intToHex<T> must be integral type!");
+
+      std::stringstream stream;
+      stream << std::hex << (base ? std::showbase : std::noshowbase) << std::setfill('0') << std::setw(width) << i;
       return stream.str();
     }
 }

@@ -43,13 +43,12 @@ NUSPackage NUSPackage::createNew(const PackageConfig& config) {
     FileTypes::FSTFile& fst = package.fst;
     FileTypes::TMDFile& tmd = package.tmd;
 
-    fst.root->setContent(&fst.contents.GetFSTContent());
-    readFiles(config.dir, *fst.root, false);
-    applyRules(*fst.root, fst.contents, config.rules);
+    fst.root.setContent(&package.contents.GetFSTContent());
+    readFiles(config.dir, fst.root, false);
+    applyRules(fst.root, package.contents, config.rules);
 
     fst.Update();
-    tmd.contents = &fst.contents;
-    tmd.update(config.info, fst, package.ticket);
+    tmd.update(config.info);
 
     return package;
 }

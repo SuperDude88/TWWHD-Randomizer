@@ -23,7 +23,7 @@
 #include <filetypes/jpc.hpp>
 #include <filetypes/msbt.hpp>
 #include <filetypes/util/msbtMacros.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \

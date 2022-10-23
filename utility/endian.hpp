@@ -61,7 +61,7 @@ namespace Utility::Endian
 
     std::u16string byteswap(const std::u16string& value);
 
-    template<typename T, class = typename std::enable_if<std::is_enum<T>::value == false>::type>
+    template<typename T, class = typename std::enable_if_t<std::is_enum_v<T> == false>>
     T toPlatform(const Type& src, const T& value) {
         static_assert(sizeof(T) > 1, "Cannot byteswap a single-byte value");
         if (src != target) return byteswap(value);
@@ -69,7 +69,7 @@ namespace Utility::Endian
     }
 
     //for enums
-    template<typename T, class = typename std::enable_if<std::is_enum<T>::value>::type, typename TBase = std::underlying_type_t<T>>
+    template<typename T, class = typename std::enable_if_t<std::is_enum_v<T>>, typename TBase = std::underlying_type_t<T>>
     T toPlatform(const Type& src, const T& value) {
         static_assert(sizeof(T) > 1, "Cannot byteswap a single-byte value");
         if (src != target) return static_cast<T>(byteswap(static_cast<TBase>(value)));
@@ -77,14 +77,14 @@ namespace Utility::Endian
     }
 
     //doesn't work for enums
-    template<typename T, class = typename std::enable_if<std::is_enum<T>::value == false>::type>
+    template<typename T, class = typename std::enable_if_t<std::is_enum_v<T> == false>>
     void toPlatform_inplace(const Type& src, T& value) {
         static_assert(sizeof(T) > 1, "Cannot byteswap a single-byte value");
         if (src != target) value = byteswap(value);
     }
 
     //for enums
-    template<typename T, class = typename std::enable_if<std::is_enum<T>::value>::type, typename TBase = std::underlying_type_t<T>>
+    template<typename T, class = typename std::enable_if_t<std::is_enum_v<T>>, typename TBase = std::underlying_type_t<T>>
     void toPlatform_inplace(const Type& src, T& value) {
         static_assert(sizeof(T) > 1, "Cannot byteswap a single-byte value");
         if (src != target) value = static_cast<T>(byteswap(static_cast<TBase>(value)));

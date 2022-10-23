@@ -12,7 +12,7 @@
 #include <logic/Search.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <utility/file.hpp>
 #include <seedgen/random.hpp>
 #include <options.hpp>
