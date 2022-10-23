@@ -807,11 +807,6 @@ int mainRandomize() {
 			Utility::platformLog(std::string("Total process took ") + std::to_string(seconds) + " seconds\n");
 	#endif
 
-	// Close logs
-	ErrorLog::getInstance().close();
-	DebugLog::getInstance().close();
-	BasicLog::getInstance().close();
-
 	std::this_thread::sleep_for(3s);
 	Utility::platformShutdown();
 	return retVal;
