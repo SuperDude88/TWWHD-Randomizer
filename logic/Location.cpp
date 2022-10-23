@@ -37,6 +37,7 @@ LocationCategory nameToLocationCategory(const std::string& name)
         {"Other", LocationCategory::Other},
         {"Always Progression", LocationCategory::AlwaysProgression},
         {"Ho Ho Hint", LocationCategory::HoHoHint},
+        {"Plandomizer Progression", LocationCategory::PlandomizerProgression},
     };
 
     if (!categoryNameMap.contains(name))
@@ -78,6 +79,7 @@ std::string locationCategoryToName(LocationCategory category)
         {LocationCategory::Other, "Other"},
         {LocationCategory::AlwaysProgression, "Always Progression"},
         {LocationCategory::HoHoHint, "Ho Ho Hint"},
+        {LocationCategory::PlandomizerProgression, "Plandomizer Progression"},
     };
 
     if (!nameCategoryMap.contains(category))

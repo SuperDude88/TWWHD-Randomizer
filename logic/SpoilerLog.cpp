@@ -300,7 +300,11 @@ void generateNonSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            if (location->progression)
+            if (location->categories.contains(LocationCategory::PlandomizerProgression))
+            {
+                BasicLog::getInstance().log("\t" + location->getName() + " (Added by Plandomizer)");
+            }
+            else if (location->progression)
             {
                 BasicLog::getInstance().log("\t" + location->getName());
             }
