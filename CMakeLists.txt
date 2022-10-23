@@ -64,6 +64,7 @@ add_subdirectory("command")
 add_subdirectory("filetypes")
 add_subdirectory("seedgen")
 add_subdirectory("logic")
+add_subdirectory("nuspack")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
 

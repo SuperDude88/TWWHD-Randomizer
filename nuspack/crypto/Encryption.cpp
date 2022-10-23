@@ -14,7 +14,6 @@ void Encryption::EncryptFileWithPadding(std::istream& input, const uint32_t& con
     EncryptSingleFile(input, output, input.seekg(0, std::ios::end).tellg(), iv, blockSize);
 }
 
-//TODO: fix mismatch in here
 void Encryption::EncryptSingleFile(std::istream& input, std::ostream& output, const uint64_t& inputLength, const IV& iv_, const uint32_t& blockSize) {
     iv = iv_;
     uint64_t targetSize = roundUp<uint64_t>(inputLength, blockSize);
@@ -37,23 +36,22 @@ void Encryption::EncryptSingleFile(std::istream& input, std::ostream& output, co
 void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, const uint64_t& len, Content& content, ContentHashes& hashes) {
     constexpr uint32_t hashBlockSize = 0xFC00;
 
-    uint32_t read = 0;
     uint32_t block = 0;
     std::string buffer(hashBlockSize, '\0');
     do
     {
-        read = input.read(&buffer[0], hashBlockSize).gcount();
+        input.read(&buffer[0], hashBlockSize);
 
-        const std::string& encrypted = EncryptChunkHashed(buffer, block, hashes, content).str();
-        output.write(&encrypted[0], encrypted.size());
+        const std::stringstream& encrypted = EncryptChunkHashed(buffer, block, hashes, content);
+        output << encrypted.rdbuf();
 
         block++;
-    } while (read == hashBlockSize);
+    } while (input);
     content.size = output.tellp();
 }
 
 std::stringstream Encryption::EncryptChunkHashed(const std::string& buffer, const uint32_t &block, ContentHashes &hashes, const Content &content) {
-    const uint16_t write = Utility::Endian::toPlatform(eType::Big, static_cast<const uint16_t>(content.id));
+    const uint16_t& write = Utility::Endian::toPlatform(eType::Big, static_cast<const uint16_t>(content.id));
     iv = IV{0};
     std::memcpy(&iv[0], &write, sizeof(uint16_t));
 
@@ -61,15 +59,13 @@ std::stringstream Encryption::EncryptChunkHashed(const std::string& buffer, cons
 
     decryptedHashes[1] ^= static_cast<uint8_t>(content.id);
 
-    std::stringstream encryptedhashes = Encrypt(decryptedHashes);
+    std::stringstream outputStream(Encrypt(decryptedHashes));
     decryptedHashes[1] ^= static_cast<uint8_t>(content.id);
     const uint32_t iv_start = (block % 16) * 20;
 
     std::copy(decryptedHashes.begin() + iv_start, decryptedHashes.begin() + iv_start + 16, iv.begin());
 
-    std::stringstream encryptedContent = Encrypt(buffer);
-    std::stringstream outputStream;
-    outputStream << encryptedhashes.str() << encryptedContent.str();
+    outputStream << Encrypt(buffer).str();
 
     return outputStream;
 }
@@ -78,5 +74,8 @@ std::stringstream Encryption::Encrypt(const std::string& input, const uint32_t& 
     const uint32_t inputSize = ((size != 0) ? size : input.size());
 
     const uint8_t* data = aes.EncryptCBC(reinterpret_cast<const uint8_t*>(&input[0]), inputSize, key.data(), iv.data());
-    return std::stringstream(std::string(reinterpret_cast<const char*>(data), inputSize));
+    std::stringstream ret;
+    ret.write(reinterpret_cast<const char*>(data), inputSize);
+    delete[] data;
+    return ret;
 }
