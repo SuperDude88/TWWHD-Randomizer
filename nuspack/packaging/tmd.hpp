@@ -6,11 +6,11 @@
 #include <array>
 #include <string>
 
-#include <nuspack/packaging/fst.hpp>
 #include <nuspack/packaging/ticket.hpp>
 #include <nuspack/appinfo.hpp>
 #include <nuspack/crypto/Encryption.hpp>
 #include <nuspack/contents/contentInfo.hpp>
+#include <nuspack/contents/contents.hpp>
 
 enum struct [[nodiscard]] TMDError {
 	NONE = 0,
@@ -50,7 +50,7 @@ struct TMDHeader {
 	uint16_t contentCount = 0;
 	uint16_t bootIndex = 0;
 	std::array<uint8_t, 2> padding2_0x00 = {0};
-	SHA256_t SHA2;
+	SHA256_t SHA2 = {0};
 };
 
 namespace FileTypes {
@@ -59,18 +59,23 @@ namespace FileTypes {
 
 	class TMDFile {
 	public:
+		TMDFile(Ticket& ticket_, Contents& contents_) : 
+			ticket(ticket_),
+			contents(contents_)
+		{}
+
 		TMDError loadFromBinary(std::istream& in);
 		TMDError loadFromFile(const std::string& filePath);
-		void update(const AppInfo& info, const FSTFile& fst, const Ticket& ticket);
+		void update(const AppInfo& info);
 		TMDError writeToStream(std::ostream& out);
 		TMDError writeToFile(const std::string& filePath);
 		Encryption getEncryption();
 		void UpdateContentInfoHash();
 		
 		ContentInfo contentInfo;
-		Contents* contents;
 	private:
         TMDHeader header;
-		Ticket ticket;
+		Ticket& ticket;
+		Contents& contents;
 	};
 }

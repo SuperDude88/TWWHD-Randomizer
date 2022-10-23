@@ -1,7 +1,7 @@
 #include "text_replacements.hpp"
 #include <command/Log.hpp>
 #include <filetypes/util/msbtMacros.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <utility/text.hpp>
 
 #define IS_PLURAL(item, language) world.itemTranslations[item.getGameItemId()][language].plurality == Plurality::PLURAL

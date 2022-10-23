@@ -306,7 +306,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 }
             }
         }
-        sphere++;
     }
     while (newThingsFound);
 

@@ -6,7 +6,7 @@
 
 #include <logic/GameItem.hpp>
 #include <logic/World.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 
 LocationCategory nameToLocationCategory(const std::string& name)
 {

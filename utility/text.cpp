@@ -1,6 +1,6 @@
 #include "text.hpp"
 
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <filetypes/util/msbtMacros.hpp>
 #include <command/Log.hpp>
 

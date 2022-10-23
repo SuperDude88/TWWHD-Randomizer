@@ -7,8 +7,6 @@
 
 class ContentInfo {
 public:
-    static constexpr uint32_t SIZE = 0x24;
-
     uint16_t indexOffset = 0;
     uint16_t contentCount = 0x0B;
     SHA256_t hash{0};

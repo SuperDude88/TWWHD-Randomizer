@@ -4,9 +4,31 @@
 #include <list>
 #include <vector>
 #include <variant>
+#include <unordered_map>
 #include <filesystem>
 
+#include <utility/string.hpp>
+
 class Content; //forward declare, circular include issue
+
+class StringTable {
+private:
+	std::unordered_map<uint32_t, std::string> strings = {};
+	uint32_t curPos = 0;
+
+public:
+	inline uint32_t addString(const std::string& filename)
+    {
+        const std::string& name_ = Utility::Str::assureNullTermination(filename);
+        strings[curPos] = name_;
+		const uint32_t oldPos = curPos;
+
+		curPos += name_.size();
+		return oldPos;
+    }
+
+	inline const std::unordered_map<uint32_t, std::string>& getStrings() const { return strings; }
+};
 
 class FSTEntry {
 public:
@@ -62,7 +84,7 @@ public:
 	uint32_t GetEntryCount() const;
 	std::vector<FSTEntry*> GetDirChildren();
 	std::vector<FSTEntry*> GetFileChildren();
-	void Update(uint64_t& curEntryOffset);
+	void Update(uint64_t& curEntryOffset, StringTable& strings);
 	FSTEntry* UpdateDirRefs();
 	void writeToStream(std::ostream& out);
 
@@ -74,6 +96,7 @@ class FSTEntries {
 public:
     std::list<FSTEntry> entries;
 	uint64_t curEntryOffset = 0;
+	StringTable strings;
 
 	FSTEntries() :
 		entries(1, FSTEntry(1)) //add root

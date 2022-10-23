@@ -4,7 +4,7 @@ if(CMAKE_VERSION VERSION_LESS "3.13")
 		cmake_policy(SET CMP0076 OLD)
 	endif()
 	
-    target_sources(wwhd_rando PRIVATE platform/nuspack/fst/FSTEntries.cpp)
+    target_sources(wwhd_rando PRIVATE nuspack/fst/FSTEntries.cpp)
 else()
 	cmake_policy(SET CMP0076 NEW)
 

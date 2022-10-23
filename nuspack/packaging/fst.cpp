@@ -1,8 +1,5 @@
 #include "fst.hpp"
 
-#include <array>
-#include <algorithm>
-
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
@@ -55,7 +52,7 @@ namespace FileTypes {
 		entries.writeToStream(out);
 
 		const std::streamoff& strStart = out.tellp();
-		for(const auto& [offset, string] : strings) {
+		for(const auto& [offset, string] : entries.strings.getStrings()) {
 			Utility::seek(out, strStart + offset, std::ios::beg);
 			out.write(&string[0], string.size());
 		}

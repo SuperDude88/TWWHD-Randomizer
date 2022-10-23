@@ -11,7 +11,7 @@
 #include <command/WWHDStructs.hpp>
 #include <command/Log.hpp>
 #include <filetypes/util/elfUtil.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 
 using namespace std::literals::string_literals;
 

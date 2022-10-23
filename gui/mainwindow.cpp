@@ -14,7 +14,7 @@
 #include <seedgen/seed.hpp>
 #include <seedgen/permalink.hpp>
 #include <seedgen/tracker_permalink.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 #include <utility/file.hpp>
 
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();

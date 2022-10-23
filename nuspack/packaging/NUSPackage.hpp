@@ -16,15 +16,27 @@ enum class [[nodiscard]] NUSError {
 class NUSPackage {
 public:
     Ticket ticket;
-    FileTypes::TMDFile tmd;
+    Contents contents;
+
     FileTypes::FSTFile fst;
+    FileTypes::TMDFile tmd;
     std::string outputDir;
 
     static NUSPackage createNew(const PackageConfig& config);
 
-    NUSPackage() = default;
+    NUSPackage() :
+        ticket(),
+        contents(),
+        fst(contents),
+        tmd(ticket, contents),
+        outputDir()
+    {}
     NUSPackage(const Ticket& ticket_) :
-        ticket(ticket_)
+        ticket(ticket_),
+        contents(),
+        fst(contents),
+        tmd(ticket, contents),
+        outputDir()
     {}
 
     void PackContents(const std::filesystem::path& out);

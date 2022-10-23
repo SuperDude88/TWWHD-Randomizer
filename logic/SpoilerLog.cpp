@@ -8,7 +8,7 @@
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
 #include <filetypes/util/msbtMacros.hpp>
-#include <utility/stringUtil.hpp>
+#include <utility/string.hpp>
 
 static std::string getSpoilerFormatEntrance(Entrance* entrance, const size_t& longestEntranceLength, const WorldPool& worlds)
 {
