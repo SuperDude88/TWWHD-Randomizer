@@ -19,6 +19,7 @@
 # the words "to" and "of". "Power Bracelets" is okay. "power bracelets" will be
 # unrecognized. For a full list of location names, please check out:
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/location_data.yaml
+# or refer to a spoiler log.
 
 # PROGRESS_LOCATIONS
 # Attempting to place a major item in a non-progression location will give you a
@@ -56,21 +57,31 @@
 # The original entrance must be in the format "<first area> -> <second area>", and
 # the replacement entrance must be in the format "<second area> from <first area>".
 # The spaces around the arrow and the word "from" are important to include. These
-# formats are not interchangable.  If you attempt to randomize entrances
+# formats are not interchangable. If you attempt to randomize entrances
 # that don't exist or which aren't supported for shuffling at the current moment,
-# then you'll get a plandomizer error.
+# then you'll get a plandomizer error. For a full list of randomizable entrances please see:
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/EntranceShuffle.cpp#L24
 
 # STARTING ISLAND
-# You can also set the starting island if you want to. For this to apply, you must
-# turn on random starting island in the settings. For a list of island names, see
+# You can also set the starting island if you want to. For a list of island names, see
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L68
 - starting island: Five Eye Reef
 
-# MULTIWORLD_PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
+# EXTRA PROGRESSION LOCATIONS
+# For more fine-tuned control over which locations are in logic, you can specify extra
+# locations whose categories are not selected by listing them under an "extra progression locations"
+# element. For example, if we don't have spoils trading or long sidequests enabled
+# but we still want to have the Windfall potion sellers checks as potential
+# progression locations, we can type:
+- extra progression locations:
+    - Windfall Island - Potion Shop 15 Blue Chu
+    - Windfall Island - Potion Shop 15 Green Chu
+
+# MULTIWORLD PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
 # and is not actively being developed, but the filling algorithm was made to support
 # multiworld incase it ever happens in the future.)
-# If you'd like to plandomize a multiworld seed, then each list of locations and/or
-# entrances must be under a "World #" element, with the '#' being the world number
+# If you'd like to plandomize a multiworld seed, then each element
+# must be under a "World #" element, with the '#' being the world number
 # the locations will be for. For example, if we want place the Telescope at
 # Outset Island - Under Link's House in World 1 and the Bait Bag at
 # Gale Isle - Sunken Treasure in World 2, then we'd type
