@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <vector>
+#include <variant>
+#include <sstream>
 #include <list>
 #include <cstdint>
 
@@ -20,7 +22,6 @@ public:
         CONTENT = 0x2000
     };
 
-    static constexpr uint32_t SIZE = 0x30;
     static constexpr uint32_t ALIGNMENT_IN_CONTENT = 0x20;
     static constexpr uint32_t PAD_LEN = 0x8000;
 
@@ -72,7 +73,7 @@ public:
     void writeToStream(std::ostream& out);
 
 private:
-    std::string PackDecrypted();
+    std::variant<std::stringstream, std::ifstream> PackDecrypted();
     uint64_t PackEncrypted(std::istream& input, std::ostream& output, ContentHashes& hashes, Encryption& encryption);
 };
 

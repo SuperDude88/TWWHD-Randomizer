@@ -1,7 +1,9 @@
 #include "contents.hpp"
+#include "utility/string.hpp"
 
 #include <cstdio>
 
+#include <fstream>
 #include <nuspack/fst/FSTEntries.hpp>
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
@@ -24,31 +26,47 @@ void Content::Update(const std::vector<FSTEntry*>& entries) {
     }
 }
 
-std::string Content::PackDecrypted()
+static constexpr size_t MAX_SSTREAM_SIZE = 1024 * 1024 * 500;
+static constexpr size_t READ_BUFFER_SIZE = 1024 * 1024 * 8;
+static char readBuffer[READ_BUFFER_SIZE];
+
+std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 {
-    std::string tmpPath(TEMP_DIR "00000000.dec");
-    tmpPath += '\0';
-    std::snprintf(&tmpPath[0], tmpPath.size(), TEMP_DIR "%08X.dec", id);
-    std::ofstream output(tmpPath, std::ios::binary);
+    const std::filesystem::path& tmpPath = std::filesystem::path(TEMP_DIR) / (Utility::Str::intToHex(id, 8, false) + ".dec");
+    std::stringstream output;
+    std::ofstream outFile;
     
     for (FSTEntry* pEntry : entries)
     {
         if (pEntry->isFile())
         {
             const FSTEntry::FileEntry& entry = std::get<FSTEntry::FileEntry>(pEntry->entry);
-            if (output.tellp() != entry.fileOffset)
-            {
-                //Console.WriteLine("FAILED");
-            }
+            //if (output.tellp() != entry.fileOffset)
+            //{
+            //    //Console.WriteLine("FAILED");
+            //}
 
             std::ifstream input(pEntry->path, std::ios::binary);
-            output << input.rdbuf();
+            while(input) {
+				input.read(readBuffer, READ_BUFFER_SIZE);
+				output.write(readBuffer, input.gcount());
+			}
 
             uint64_t alignedFileSize = roundUp(entry.fileSize, ALIGNMENT_IN_CONTENT);
-            //cur_offset += alignedFileSize;
 
             uint64_t padding = alignedFileSize - entry.fileSize;
             Utility::seek(output, padding, std::ios::cur);
+            
+            //dump stringstream into a file if its above 500MB, limit ram usage a bit
+            if(output.tellp() >= MAX_SSTREAM_SIZE) {
+                if(!outFile.is_open()) {
+                    outFile.open(tmpPath, std::ios::binary);
+                }
+
+                const std::string& strm = output.str();
+                outFile.write(&strm[0], strm.size());
+                output.str(std::string()); //reset stringstream
+            }
         }
         else
         {
@@ -56,33 +74,38 @@ std::string Content::PackDecrypted()
         }
     }
 
-    return tmpPath;
+    if(outFile.is_open()) {
+        const std::string& remaining = output.str();
+        outFile.write(&remaining[0], remaining.size()); //write whatever is left at the end
+
+        outFile.close();
+        return std::ifstream(tmpPath, std::ios::binary);
+    }
+    else {
+        return output;
+    }
 }
 
 void Content::PackContentToFile(const std::filesystem::path& outputDir, Encryption& encryption) {
     //At first we need to create the decrypted file.
-    const std::string& decryptedFile = PackDecrypted();
+    auto decryptedStream = PackDecrypted();
+
+    std::istream& file = decryptedStream.index() == 0 ? std::get<0>(decryptedStream) : static_cast<std::istream&>(std::get<1>(decryptedStream));
 
     //Calculates the hashes for the decrypted content. If the content is not hashed,
     //only the hash of the decrypted file will be calculated
-    std::ifstream file(decryptedFile, std::ios::binary);
     ContentHashes contentHashes(file, isHashed());
 
     if (contentHashes.h3Hashes.size() > 0)
     {
-        std::string h3Path((outputDir / "00000000.h3").string());
-        h3Path += '\0';
-        std::snprintf(&h3Path[outputDir.string().size() + 1], h3Path.size() - outputDir.string().size() - 1, "%08X.h3", id);
-
+        const std::filesystem::path h3Path = outputDir / (Utility::Str::intToHex(id, 8, false) + ".h3");
+    
         std::ofstream hashOut(h3Path, std::ios::binary);
         contentHashes.SaveH3ToFile(hashOut);
     }
     hash = contentHashes.TMDHash;
     
-    std::string outputFilePath((outputDir / "00000000.app").string());
-    outputFilePath += '\0';
-    std::snprintf(&outputFilePath[outputDir.string().size() + 1], outputFilePath.size() - outputDir.string().size() - 1, "%08X.app", id);
-
+    const std::filesystem::path outputFilePath = outputDir / (Utility::Str::intToHex(id, 8, false) + ".app");
     std::ofstream output(outputFilePath, std::ios::binary);
     file.clear();
     size = PackEncrypted(file, output, contentHashes, encryption);
