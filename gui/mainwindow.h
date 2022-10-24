@@ -69,6 +69,7 @@ private:
     void update_starting_health_text();
     void update_option_description_text(const std::string& descrption = "");
     void update_permalink();
+    void update_encryption_files();
     void load_locations();
 
 private slots:
@@ -159,5 +160,7 @@ private slots:
     void on_reset_settings_to_default_clicked();
     void on_randomize_button_clicked();
     void on_clearer_hints_stateChanged(int arg1);
+    void on_repack_for_console_stateChanged(int arg1);
+    void on_console_output_browse_button_clicked();
 };
 #endif // MAINWINDOW_H
