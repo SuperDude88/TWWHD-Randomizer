@@ -590,6 +590,38 @@ public:
 			return 0;
 		#endif
 
+    std::hash<std::string> strHash;
+
+    // Delcare encryption strings out here to use later
+    std::string encryptionKeyStr;
+    std::string commonKeyStr;
+
+    if (config.repack_for_console)
+    {
+        // Make sure encryption keys are correct if repacking for console
+        auto encryptionKeyPath = "./encryption.txt";
+        if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+        {
+            auto encryptionHash = strHash(encryptionKeyStr);
+            if (encryptionHash != 2592340161231091973)
+            {
+                ErrorLog::getInstance().log("The Wind Waker HD ROM Key is incorrect. Please double-check to make sure you're using the one for [USA, NUS].");
+                return 1;
+            }
+        }
+
+        auto commonKeyPath = "./common.txt";
+        if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+        {
+            auto commonKeyHash = strHash(commonKeyStr);
+            if (commonKeyHash != 5364393651139702829)
+            {
+                ErrorLog::getInstance().log("The Wii U Common Key is incorrect. Please double-check to make sure it's correct.");
+                return 1;
+            }
+        }
+    }
+
 		LOG_TO_DEBUG("Permalink: " + permalink);
 
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
@@ -604,7 +636,7 @@ public:
 			permalink += plandoContents;
 		}
 
-		std::hash<std::string> strHash;
+    // Seed RNG
 		integer_seed = strHash(permalink);
 
 		Random_Init(integer_seed);
@@ -726,6 +758,35 @@ public:
 			ErrorLog::getInstance().log("Failed to repack file cache!");
 			return 1;
 		}
+
+    // Repack for console if necessary
+    if (config.repack_for_console)
+    {
+        UPDATE_DIALOG_LABEL("Repacking for console...");
+        Utility::platformLog("Repacking for console...\n");
+        const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
+        const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
+
+        // Create encryption keys
+        // Key twwhdKey;
+        // Key commonKey;
+        //
+        // for (size_t i = 0; i < twwhdKey.size(); i++)
+        // {
+        //     twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+        //     commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+        // }
+        //
+        // // Delete any previous repacked files
+        //
+        // // Now repack the files
+        // if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE)
+        // {
+        //
+        // }
+
+        UPDATE_DIALOG_VALUE(150);
+    }
 
 		//done!
 		return 0;

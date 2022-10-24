@@ -19,11 +19,18 @@
         out = yaml[#name].As<std::string>();                                \
     }
 
-#define SET_FIELD(yaml, config, name) {                                     \
+#define SET_CONFIG_FIELD(yaml, config, name) {                              \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             return ConfigError::MISSING_KEY;}                               \
         config.name = yaml[#name].As<std::string>();                        \
+    }
+
+#define SET_CONFIG_BOOL_FIELD(yaml, config, name) {                         \
+        if(yaml[#name].IsNone()) {                                          \
+            Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
+            return ConfigError::MISSING_KEY;}                               \
+        config.name = yaml[#name].As<bool>();                               \
     }
 
 #define SET_FIELD_EMPTY_STR_IF_FAIL(yaml, config, name) {                   \
@@ -65,6 +72,8 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.gameBaseDir = "";
     conf.outputDir = "";
     conf.seed = "";
+    conf.repack_for_console = false;
+    conf.consoleOutputDir = "";
 
     conf.settings.progression_dungeons = true;
     conf.settings.progression_great_fairies = true;
@@ -172,6 +181,8 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     #else
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, gameBaseDir)
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, outputDir)
+        SET_CONFIG_BOOL_FIELD(root, out, repack_for_console)
+        SET_FIELD_EMPTY_STR_IF_FAIL(root, out, consoleOutputDir)
         SET_STR_FIELD_EMPTY_STR_IF_FAIL(root, out, plandomizerFile)
     #endif
 
@@ -227,7 +238,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_BOOL_FIELD(root, out, reveal_full_sea_chart)
     SET_INT_FIELD(root, out, num_starting_triforce_shards)
     SET_BOOL_FIELD(root, out, add_shortcut_warps_between_dungeons)
-    //SET_FIELD(root, out, settings.sword_mode)
+    //SET_CONFIG_FIELD(root, out, settings.sword_mode)
     SET_BOOL_FIELD(root, out, skip_rematch_bosses)
     SET_BOOL_FIELD(root, out, invert_sea_compass_x_axis)
     SET_BOOL_FIELD(root, out, race_mode)
@@ -236,9 +247,9 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_BOOL_FIELD(root, out, chest_type_matches_contents)
 
     SET_BOOL_FIELD(root, out, player_in_casual_clothes)
-    //SET_FIELD(root, out, settings.pig_color)
+    //SET_CONFIG_FIELD(root, out, settings.pig_color)
 
-    //SET_FIELD(root, out, settings.starting_gear)
+    //SET_CONFIG_FIELD(root, out, settings.starting_gear)
     SET_INT_FIELD(root, out, starting_pohs)
     SET_INT_FIELD(root, out, starting_hcs)
     SET_BOOL_FIELD(root, out, remove_music)
@@ -361,20 +372,26 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
 
 
 
-#define WRITE_FIELD(yaml, config, name) {   \
-        yaml[#name] = config.name;          \
+#define WRITE_CONFIG_FIELD(yaml, config, name) {   \
+        yaml[#name] = config.name;                 \
     }
 
-#define WRITE_BOOL_FIELD(yaml, config, name) {          \
+#define WRITE_CONFIG_BOOL_FIELD(yaml, config, name) {   \
+        yaml[#name] = config.name ? "true" : "false";   \
+    }
+
+
+#define WRITE_SETTING_BOOL_FIELD(yaml, config, name) {           \
         yaml[#name] = config.settings.name ? "true" : "false";   \
     }
 
-#define WRITE_NUM_FIELD(yaml, config, name) {          \
+
+#define WRITE_NUM_FIELD(yaml, config, name) {                 \
         yaml[#name] = std::to_string(config.settings.name);   \
     }
 
 #define WRITE_STR_FIELD(yaml, config, name) {          \
-        yaml[#name] = config.settings.name;   \
+        yaml[#name] = config.settings.name;            \
     }
 
 ConfigError writeToFile(const std::string& filePath, const Config& config) {
@@ -388,78 +405,80 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     root["program_version"] = RANDOMIZER_VERSION; //Keep track of rando version to give warning (different versions will have different item placements)
     root["file_version"] = CONFIG_VERSION; //Keep track of file version so it can avoid incompatible ones
 
-    WRITE_FIELD(root, config, gameBaseDir)
-    WRITE_FIELD(root, config, outputDir)
-    WRITE_FIELD(root, config, seed)
+    WRITE_CONFIG_FIELD(root, config, gameBaseDir)
+    WRITE_CONFIG_FIELD(root, config, outputDir)
+    WRITE_CONFIG_FIELD(root, config, seed)
+    WRITE_CONFIG_BOOL_FIELD(root, config, repack_for_console)
+    WRITE_CONFIG_FIELD(root, config, consoleOutputDir)
 
-    WRITE_BOOL_FIELD(root, config, progression_dungeons)
-    WRITE_BOOL_FIELD(root, config, progression_great_fairies)
-    WRITE_BOOL_FIELD(root, config, progression_puzzle_secret_caves)
-    WRITE_BOOL_FIELD(root, config, progression_combat_secret_caves)
-    WRITE_BOOL_FIELD(root, config, progression_short_sidequests)
-    WRITE_BOOL_FIELD(root, config, progression_long_sidequests)
-    WRITE_BOOL_FIELD(root, config, progression_spoils_trading)
-    WRITE_BOOL_FIELD(root, config, progression_minigames)
-    WRITE_BOOL_FIELD(root, config, progression_free_gifts)
-    WRITE_BOOL_FIELD(root, config, progression_mail)
-    WRITE_BOOL_FIELD(root, config, progression_platforms_rafts)
-    WRITE_BOOL_FIELD(root, config, progression_submarines)
-    WRITE_BOOL_FIELD(root, config, progression_eye_reef_chests)
-    WRITE_BOOL_FIELD(root, config, progression_big_octos_gunboats)
-    WRITE_BOOL_FIELD(root, config, progression_triforce_charts)
-    WRITE_BOOL_FIELD(root, config, progression_treasure_charts)
-    WRITE_BOOL_FIELD(root, config, progression_expensive_purchases)
-    WRITE_BOOL_FIELD(root, config, progression_misc)
-    WRITE_BOOL_FIELD(root, config, progression_tingle_chests)
-    WRITE_BOOL_FIELD(root, config, progression_battlesquid)
-    WRITE_BOOL_FIELD(root, config, progression_savage_labyrinth)
-    WRITE_BOOL_FIELD(root, config, progression_island_puzzles)
-    WRITE_BOOL_FIELD(root, config, progression_obscure)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_dungeons)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_great_fairies)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_puzzle_secret_caves)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_combat_secret_caves)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_short_sidequests)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_long_sidequests)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_spoils_trading)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_minigames)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_free_gifts)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_mail)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_platforms_rafts)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_submarines)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_eye_reef_chests)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_big_octos_gunboats)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_triforce_charts)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_treasure_charts)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_expensive_purchases)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_misc)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_tingle_chests)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_battlesquid)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_savage_labyrinth)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_island_puzzles)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_obscure)
 
-    WRITE_BOOL_FIELD(root, config, keylunacy)
-    WRITE_BOOL_FIELD(root, config, randomize_charts)
-    WRITE_BOOL_FIELD(root, config, randomize_starting_island)
-    WRITE_BOOL_FIELD(root, config, randomize_dungeon_entrances)
-    WRITE_BOOL_FIELD(root, config, randomize_cave_entrances)
-    WRITE_BOOL_FIELD(root, config, randomize_door_entrances)
-    WRITE_BOOL_FIELD(root, config, randomize_misc_entrances)
-    WRITE_BOOL_FIELD(root, config, mix_dungeons)
-    WRITE_BOOL_FIELD(root, config, mix_caves)
-    WRITE_BOOL_FIELD(root, config, mix_doors)
-    WRITE_BOOL_FIELD(root, config, mix_misc)
-    WRITE_BOOL_FIELD(root, config, decouple_entrances)
+    WRITE_SETTING_BOOL_FIELD(root, config, keylunacy)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_charts)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_starting_island)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_dungeon_entrances)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_cave_entrances)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_door_entrances)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_misc_entrances)
+    WRITE_SETTING_BOOL_FIELD(root, config, mix_dungeons)
+    WRITE_SETTING_BOOL_FIELD(root, config, mix_caves)
+    WRITE_SETTING_BOOL_FIELD(root, config, mix_doors)
+    WRITE_SETTING_BOOL_FIELD(root, config, mix_misc)
+    WRITE_SETTING_BOOL_FIELD(root, config, decouple_entrances)
 
-    WRITE_BOOL_FIELD(root, config, ho_ho_hints)
-    WRITE_BOOL_FIELD(root, config, korl_hints)
-    WRITE_BOOL_FIELD(root, config, clearer_hints)
-    WRITE_BOOL_FIELD(root, config, use_always_hints)
+    WRITE_SETTING_BOOL_FIELD(root, config, ho_ho_hints)
+    WRITE_SETTING_BOOL_FIELD(root, config, korl_hints)
+    WRITE_SETTING_BOOL_FIELD(root, config, clearer_hints)
+    WRITE_SETTING_BOOL_FIELD(root, config, use_always_hints)
     WRITE_NUM_FIELD(root, config, path_hints)
     WRITE_NUM_FIELD(root, config, barren_hints)
     WRITE_NUM_FIELD(root, config, item_hints)
     WRITE_NUM_FIELD(root, config, location_hints)
 
-    WRITE_BOOL_FIELD(root, config, instant_text_boxes)
-    WRITE_BOOL_FIELD(root, config, reveal_full_sea_chart)
+    WRITE_SETTING_BOOL_FIELD(root, config, instant_text_boxes)
+    WRITE_SETTING_BOOL_FIELD(root, config, reveal_full_sea_chart)
     WRITE_NUM_FIELD(root, config, num_starting_triforce_shards)
-    WRITE_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
-    //WRITE_BOOL_FIELD(root, config, sword_mode)
-    WRITE_BOOL_FIELD(root, config, skip_rematch_bosses)
-    WRITE_BOOL_FIELD(root, config, invert_sea_compass_x_axis)
-    WRITE_BOOL_FIELD(root, config, race_mode)
+    WRITE_SETTING_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
+    //WRITE_SETTING_BOOL_FIELD(root, config, sword_mode)
+    WRITE_SETTING_BOOL_FIELD(root, config, skip_rematch_bosses)
+    WRITE_SETTING_BOOL_FIELD(root, config, invert_sea_compass_x_axis)
+    WRITE_SETTING_BOOL_FIELD(root, config, race_mode)
     WRITE_NUM_FIELD(root, config, num_race_mode_dungeons)
     WRITE_NUM_FIELD(root, config, damage_multiplier)
-    WRITE_BOOL_FIELD(root, config, chest_type_matches_contents)
+    WRITE_SETTING_BOOL_FIELD(root, config, chest_type_matches_contents)
 
-    WRITE_BOOL_FIELD(root, config, player_in_casual_clothes)
-    //WRITE_FIELD(root, config, pig_color)
+    WRITE_SETTING_BOOL_FIELD(root, config, player_in_casual_clothes)
+    //WRITE_CONFIG_FIELD(root, config, pig_color)
 
-    //WRITE_FIELD(root, config, starting_gear)
+    //WRITE_CONFIG_FIELD(root, config, starting_gear)
     WRITE_NUM_FIELD(root, config, starting_pohs)
     WRITE_NUM_FIELD(root, config, starting_hcs)
-    WRITE_BOOL_FIELD(root, config, remove_music)
+    WRITE_SETTING_BOOL_FIELD(root, config, remove_music)
 
-    WRITE_BOOL_FIELD(root, config, do_not_generate_spoiler_log)
-    WRITE_BOOL_FIELD(root, config, plandomizer)
+    WRITE_SETTING_BOOL_FIELD(root, config, do_not_generate_spoiler_log)
+    WRITE_SETTING_BOOL_FIELD(root, config, plandomizer)
     WRITE_STR_FIELD(root, config, plandomizerFile)
 
     root["sword_mode"] = SwordModeToName(config.settings.sword_mode);

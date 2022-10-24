@@ -18,6 +18,7 @@
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
 #define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
+#define APPLY_CONFIG_CHECKBOX_SETTING(config, ui, name) if(config.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 
 #define APPLY_SPINBOX_SETTING(config, ui, name, min, max) \
     auto& name = config.settings.name;                    \
@@ -84,8 +85,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     ConfigError err = writeToFile("./config.yaml", config);
     if (err != ConfigError:: NONE)
     {
-        show_error_dialog("Settings could not be saved\nCode: " + std::to_string(static_cast<uint32_t>(err)));
+        show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
     }
+
+    update_encryption_files();
 }
 
 void MainWindow::load_config_into_ui()
@@ -93,11 +96,26 @@ void MainWindow::load_config_into_ui()
     ConfigError err = loadFromFile("./config.yaml", config);
     if(err != ConfigError::NONE)
     {
-        show_error_dialog("Failed to load settings file\ncode " + std::to_string(static_cast<uint32_t>(err)));
+        show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
     }
     else
     {
         apply_config_settings();
+    }
+
+    // Load encryption keys if the files exists
+    auto encryptionKeyPath = "./encryption.txt";
+    std::string encryptionKeyStr;
+    if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+    {
+        ui->encryption_key->setText(encryptionKeyStr.c_str());
+    }
+
+    auto commonKeyPath = "./common.txt";
+    std::string commonKeyStr;
+    if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+    {
+        ui->wii_u_common_key->setText(commonKeyStr.c_str());
     }
 }
 
@@ -312,6 +330,9 @@ void MainWindow::apply_config_settings()
     // Directories and Seed
     ui->base_game_path->setText(config.gameBaseDir.c_str());
     ui->output_folder->setText(config.outputDir.c_str());
+    APPLY_CONFIG_CHECKBOX_SETTING(config, ui, repack_for_console);
+    on_repack_for_console_stateChanged(0); // hide console repacking elements if necessary
+    ui->console_output->setText(config.consoleOutputDir.c_str());
     ui->seed->setText(config.seed.c_str());
 
     // Progression settings
@@ -457,7 +478,6 @@ void MainWindow::on_base_game_path_browse_button_clicked()
     }
 }
 
-
 void MainWindow::on_output_folder_browse_button_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -468,6 +488,41 @@ void MainWindow::on_output_folder_browse_button_clicked()
     }
 }
 
+void MainWindow::on_repack_for_console_stateChanged(int arg1)
+{
+    if (ui->repack_for_console->isChecked())
+    {
+        ui->label_for_console_output->setVisible(true);
+        ui->console_output_browse_button->setVisible(true);
+        ui->console_output->setVisible(true);
+        ui->wii_u_common_key->setVisible(true);
+        ui->label_for_wii_u_common_key->setVisible(true);
+        ui->encryption_key->setVisible(true);
+        ui->label_for_encryption_key->setVisible(true);
+        config.repack_for_console = true;
+    }
+    else
+    {
+        ui->label_for_console_output->setVisible(false);
+        ui->console_output_browse_button->setVisible(false);
+        ui->console_output->setVisible(false);
+        ui->wii_u_common_key->setVisible(false);
+        ui->label_for_wii_u_common_key->setVisible(false);
+        ui->encryption_key->setVisible(false);
+        ui->label_for_encryption_key->setVisible(false);
+        config.repack_for_console = false;
+    }
+}
+
+void MainWindow::on_console_output_browse_button_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty() && !dir.isNull())
+    {
+        ui->console_output->setText(dir);
+        config.consoleOutputDir = dir.toStdString();
+    }
+}
 
 void MainWindow::on_generate_seed_button_clicked()
 {
@@ -852,6 +907,30 @@ void MainWindow::on_reset_settings_to_default_clicked()
     apply_config_settings();
 }
 
+void MainWindow::update_encryption_files()
+{
+    // Write encryption and common keys to separate files so users can share config files without sharing the keys
+    if (ui->encryption_key->text() != "")
+    {
+        std::ofstream file("./encryption.txt");
+        if (file.is_open())
+        {
+            file << ui->encryption_key->text().toStdString();
+            file.close();
+        }
+    }
+
+    if (ui->wii_u_common_key->text() != "")
+    {
+        std::ofstream file("./common.txt");
+        if (file.is_open())
+        {
+            file << ui->wii_u_common_key->text().toStdString();
+            file.close();
+        }
+    }
+}
+
 void MainWindow::on_randomize_button_clicked()
 {
     // Check to make sure the base game and output are directories
@@ -873,17 +952,27 @@ void MainWindow::on_randomize_button_clicked()
         return;
     }
 
+    if (config.repack_for_console)
+    {
+        if (!std::filesystem::is_directory(config.consoleOutputDir))
+        {
+            show_warning_dialog("Must specify a valid output folder for the repacked console files.", "No console output folder specified");
+            return;
+        }
+        update_encryption_files();
+    }
+
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    // TODO: change code number to string
     ConfigError err = writeToFile("./config.yaml", config);
     if(err != ConfigError::NONE) {
-        show_error_dialog("Failed to write config.yaml\ncode " + std::to_string(static_cast<uint32_t>(err)));
+        show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
         return;
     }
 
     // Setup the progress dialog for the randomization algorithm
-    QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, 100, this);
+    int progressTotal = config.repack_for_console ? 150 : 100;
+    QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, progressTotal, this);
     progressDialog->setWindowTitle("Randomizing");
     progressDialog->setWindowModality(Qt::WindowModal);
     progressDialog->setWindowFlag(Qt::WindowCloseButtonHint, false);

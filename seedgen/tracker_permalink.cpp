@@ -6,7 +6,7 @@
 
 // The ordering of these arrays is meant to match that of the wind waker randomizer
 // tracker mantained by wooferzfg. This includes some dummy options that Wind Waker
-// HD Randomizer doesn't have for cpmpatibility
+// HD Randomizer doesn't have for compatibility
 static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     // Progression
     Option::ProgressDungeons,
