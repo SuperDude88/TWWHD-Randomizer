@@ -13,6 +13,7 @@
 #include "server/command/WriteLocations.hpp"
 #include "server/command/RandoSession.hpp"
 #include "server/command/Log.hpp"
+#include "server/platform/nuspack/packer.hpp"
 #include "server/utility/platform.hpp"
 #include "server/utility/file.hpp"
 #include "server/utility/endian.hpp"
@@ -590,6 +591,31 @@ public:
 			return 0;
 		#endif
 
+    std::hash<std::string> strHash;
+
+    // Delcare encryption strings out here to use later
+    std::string encryptionKeyStr;
+    std::string commonKeyStr;
+
+    #ifndef DEVKITPRO
+      if (config.repack_for_console)
+      {
+          auto encryptionKeyPath = "./encryption.txt";
+          if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) == 1)
+          {
+              ErrorLog::getInstance().log("Could not load twwhd rom key");
+              return 1;
+          }
+
+          auto commonKeyPath = "./common.txt";
+          if (Utility::getFileContents(commonKeyPath, commonKeyStr) == 1)
+          {
+              ErrorLog::getInstance().log("Could not load wii u common key");
+              return 1;
+          }
+      }
+    #endif
+
 		LOG_TO_DEBUG("Permalink: " + permalink);
 
 		if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
@@ -604,7 +630,7 @@ public:
 			permalink += plandoContents;
 		}
 
-		std::hash<std::string> strHash;
+    // Seed RNG
 		integer_seed = strHash(permalink);
 
 		Random_Init(integer_seed);
@@ -727,6 +753,41 @@ public:
 			return 1;
 		}
 
+    // Repack for console if necessary
+    #ifndef DEVKITPRO
+      if (config.repack_for_console)
+      {
+          UPDATE_DIALOG_LABEL("Repacking for console...");
+          Utility::platformLog("Repacking for console...\n");
+          const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
+          const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
+
+          Key twwhdKey;
+          Key commonKey;
+
+          // Fill encryption keys from strings
+          for (size_t i = 0; i < twwhdKey.size(); i++)
+          {
+              twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+              commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+          }
+
+          // Delete any previous repacked files
+          for (const auto& entry : std::filesystem::directory_iterator(outPath)) {
+              std::filesystem::remove_all(entry.path());
+          }
+
+          // Now repack the files
+          if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE)
+          {
+              ErrorLog::getInstance().log("Failed to create console package");
+              return 1;
+          }
+
+          UPDATE_DIALOG_VALUE(200);
+      }
+    #endif
+
 		//done!
 		return 0;
 	}
@@ -783,7 +844,7 @@ int mainRandomize() {
 	ConfigError err = loadFromFile("./config.yaml", load);
 	if(err != ConfigError::NONE) {
 		ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
-
+    Utility::platformLog("Failed to read config, ERROR: " + errorToName(err));
 		std::this_thread::sleep_for(3s);
 		Utility::platformShutdown();
 		return 1;
@@ -806,11 +867,6 @@ int mainRandomize() {
 			auto seconds = static_cast<double>(duration.count()) / 1000000.0;
 			Utility::platformLog(std::string("Total process took ") + std::to_string(seconds) + " seconds\n");
 	#endif
-
-	// Close logs
-	ErrorLog::getInstance().close();
-	DebugLog::getInstance().close();
-	BasicLog::getInstance().close();
 
 	std::this_thread::sleep_for(3s);
 	Utility::platformShutdown();

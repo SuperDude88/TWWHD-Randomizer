@@ -14,5 +14,10 @@ int main()
         Utility::platformLog(message.c_str());
     }
 
+    // Close logs
+    ErrorLog::getInstance().close();
+    DebugLog::getInstance().close();
+    BasicLog::getInstance().close();
+    
     return 0;
 }

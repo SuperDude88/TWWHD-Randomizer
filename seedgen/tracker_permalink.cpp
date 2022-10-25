@@ -6,7 +6,7 @@
 
 // The ordering of these arrays is meant to match that of the wind waker randomizer
 // tracker mantained by wooferzfg. This includes some dummy options that Wind Waker
-// HD Randomizer doesn't have for cpmpatibility
+// HD Randomizer doesn't have for compatibility
 static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     // Progression
     Option::ProgressDungeons,
@@ -31,6 +31,7 @@ static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     Option::ProgressBattlesquid,
     Option::ProgressSavageLabyrinth,
     Option::ProgressIslandPuzzles,
+    Option::ProgressObscure,
 
     Option::Keylunacy,
     Option::RandomizeEntrances,
@@ -56,7 +57,6 @@ static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     Option::StartingHC,
     Option::RemoveMusic,
     Option::RandomizeEnemies,
-    Option::WindWakerHD,
 };
 
 static const std::array<GameItem, 29> TRACKER_REGULAR_ITEMS = {
@@ -156,19 +156,19 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
         else if (option == Option::RandomizeEntrances)
         {
             size_t value = 0;
-            if (settings.randomize_dungeon_entrances && !settings.randomize_cave_entrances && !settings.mix_entrance_pools)
+            if (settings.randomize_dungeon_entrances && !settings.randomize_cave_entrances && !(settings.mix_dungeons && settings.mix_caves))
             {
                 value = 1;
             }
-            else if (!settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && !settings.mix_entrance_pools)
+            else if (!settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && !(settings.mix_dungeons && settings.mix_caves))
             {
                 value = 2;
             }
-            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && !settings.mix_entrance_pools)
+            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && !(settings.mix_dungeons && settings.mix_caves))
             {
                 value = 3;
             }
-            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && settings.mix_entrance_pools)
+            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && settings.mix_dungeons && settings.mix_caves)
             {
                 value = 4;
             }

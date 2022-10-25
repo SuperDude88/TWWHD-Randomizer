@@ -10,6 +10,7 @@
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
 #define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getLocations(true));}
+#define CHECK_MIXED_POOL(name, type) if (settings.name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
 
 using EntrancePools = std::map<EntranceType, EntrancePool>;
 using EntrancePair = std::pair<Entrance*, Entrance*>;
@@ -341,11 +342,12 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     GET_COMPLETE_PROGRESSION_LOCATION_POOL(progLocations, worlds);
     auto locs = getAccessibleLocations(worlds, noItems, progLocations);
     #ifdef ENABLE_DEBUG
-        LOG_TO_DEBUG("Sphere 0 locations: [");
-        for (auto location : locs)
-        {
-            LOG_TO_DEBUG(location->getName());
-        }
+        LOG_TO_DEBUG(std::to_string(locs.size()) + " Sphere 0 locations: [");
+        // uncomment to see all sphere zero locations
+        // for (auto location : locs)
+        // {
+        //     LOG_TO_DEBUG(location->getName());
+        // }
         LOG_TO_DEBUG("]");
     #endif
     if (locs.size() < worlds.size())
@@ -517,7 +519,7 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
     return EntranceShuffleError::RAN_OUT_OF_RETRIES;
 }
 
-static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& worlds, EntrancePools& entrancePools, EntrancePools& targetEntrancePools)
+static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& worlds, EntrancePools& entrancePools, EntrancePools& targetEntrancePools, std::set<EntranceType>& poolsToMix)
 {
     LOG_TO_DEBUG("Now placing plandomized entrances");
     ItemPool completeItemPool = {};
@@ -536,6 +538,11 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
         {
             ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\" cannot be shuffled.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+        // Change misc restrictive to misc since restrictive entrances are still in the misc pool
+        else if (type == EntranceType::MISC_RESTRICTIVE)
+        {
+            type = EntranceType::MISC;
         }
 
         // Check to make sure this type of entrance is being shuffled
@@ -557,9 +564,9 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             }
         }
 
-        // Get the appropriate pools (depending on if mixed is on or off)
-        auto& entrancePool = entrancePools[world.getSettings().mix_entrance_pools ? EntranceType::MIXED : type];
-        auto& targetPool = targetEntrancePools[world.getSettings().mix_entrance_pools ? EntranceType::MIXED : type];
+        // Get the appropriate pools (depending on if the pool is being mixed)
+        auto& entrancePool = entrancePools[poolsToMix.contains(type) ? EntranceType::MIXED : type];
+        auto& targetPool = targetEntrancePools[poolsToMix.contains(type) ? EntranceType::MIXED : type];
 
         if (elementInPool(entranceToConnect, entrancePool))
         {
@@ -638,8 +645,9 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
     // Shuffle all entrances within their own world
     for (auto& world : worlds)
     {
+        auto& settings = world.getSettings();
         // Set random starting island
-        if (world.getSettings().randomize_starting_island)
+        if (settings.randomize_starting_island)
         {
 
             // Set plandomizer island if there is one
@@ -671,22 +679,25 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         err = setAllEntrancesData(world);
         ENTRANCE_SHUFFLE_ERROR_CHECK(err);
 
+        // Determine how many mixed pools there will be
+        int totalMixedPools = (settings.mix_dungeons ? 1 : 0) + (settings.mix_caves ? 1 : 0) + (settings.mix_doors ? 1 : 0) + (settings.mix_misc ? 1 : 0);
+
         // Determine entrance pools based on settings, to be shuffled in the order we set them by
         EntrancePools entrancePools = {};
         EntrancePools targetEntrancePools = {};
-        if (world.getSettings().randomize_dungeon_entrances)
+        if (settings.randomize_dungeon_entrances)
         {
             entrancePools[EntranceType::DUNGEON] = world.getShuffleableEntrances(EntranceType::DUNGEON, true);
-            if (world.getSettings().decouple_entrances)
+            if (settings.decouple_entrances)
             {
                 entrancePools[EntranceType::DUNGEON_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DUNGEON);
             }
         }
 
-        if (world.getSettings().randomize_cave_entrances)
+        if (settings.randomize_cave_entrances)
         {
             entrancePools[EntranceType::CAVE] = world.getShuffleableEntrances(EntranceType::CAVE, true);
-            if (world.getSettings().decouple_entrances)
+            if (settings.decouple_entrances)
             {
                 entrancePools[EntranceType::CAVE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::CAVE);
             }
@@ -697,27 +708,27 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             }
         }
 
-        if (world.getSettings().randomize_door_entrances)
+        if (settings.randomize_door_entrances)
         {
             entrancePools[EntranceType::DOOR] = world.getShuffleableEntrances(EntranceType::DOOR, true);
-            if (world.getSettings().decouple_entrances)
+            if (settings.decouple_entrances)
             {
                 entrancePools[EntranceType::DOOR_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DOOR);
             }
         }
 
-        if (world.getSettings().randomize_misc_entrances)
+        if (settings.randomize_misc_entrances)
         {
             // Allow both primary and non-primary entrances in the MISC pool unless
             // we're mixing the entrance pools and aren't decoupling entrances
-            entrancePools[EntranceType::MISC] = world.getShuffleableEntrances(EntranceType::MISC, world.getSettings().mix_entrance_pools && !world.getSettings().decouple_entrances);
-            auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, !world.getSettings().decouple_entrances);
+            entrancePools[EntranceType::MISC] = world.getShuffleableEntrances(EntranceType::MISC, settings.mix_misc && totalMixedPools > 1 && !settings.decouple_entrances);
+            auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, !settings.decouple_entrances);
             addElementsToPool(entrancePools[EntranceType::MISC], miscRestrictiveEntrances);
 
             // Keep crawlspaces separate for the time-being since spawning in a crawlspace
             // entrance while standing up can potentially softlock
             entrancePools[EntranceType::MISC_CRAWLSPACE] = world.getShuffleableEntrances(EntranceType::MISC_CRAWLSPACE, true);
-            if (world.getSettings().decouple_entrances)
+            if (settings.decouple_entrances)
             {
                 entrancePools[EntranceType::MISC_CRAWLSPACE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MISC_CRAWLSPACE);
             }
@@ -725,15 +736,23 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 
         SetShuffledEntrances(entrancePools);
 
-        // Combine all entrance pools into one when mixing pools
-        if (world.getSettings().mix_entrance_pools)
+        // Combine entrance pools if mixing pools. Only continue if more than one pool is selected
+        std::set<EntranceType> poolsToMix;
+        if (totalMixedPools > 1)
         {
+            CHECK_MIXED_POOL(mix_dungeons, EntranceType::DUNGEON);
+            CHECK_MIXED_POOL(mix_doors, EntranceType::DOOR);
+            CHECK_MIXED_POOL(mix_caves, EntranceType::CAVE);
+            if (settings.mix_misc)
+            {
+                poolsToMix.insert(EntranceType::MISC);
+            }
             entrancePools[EntranceType::MIXED] = {};
             // For each entrance type, add the entrance to the mixed pool instead
             for (auto& [type, entrancePool] : entrancePools)
             {
                 // Don't re-add the mixed pool to itself and don't mix crawlspaces
-                if (type != EntranceType::MIXED && type != EntranceType::MISC_CRAWLSPACE && type != EntranceType::MISC_CRAWLSPACE_REVERSE)
+                if (poolsToMix.contains(type) && type != EntranceType::MIXED && type != EntranceType::MISC_CRAWLSPACE && type != EntranceType::MISC_CRAWLSPACE_REVERSE)
                 {
                     addElementsToPool(entrancePools[EntranceType::MIXED], entrancePool);
                     entrancePools[type].clear();
@@ -758,7 +777,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         }
 
         // Shuffle Plandomized entrances at this point
-        err = setPlandomizerEntrances(world, worlds, entrancePools, targetEntrancePools);
+        err = setPlandomizerEntrances(world, worlds, entrancePools, targetEntrancePools, poolsToMix);
         if (err != EntranceShuffleError::NONE)
         {
             LOG_TO_DEBUG("| Encountered when setting plandomizer entrances");

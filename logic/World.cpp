@@ -279,6 +279,11 @@ void World::determineProgressionLocations()
             LOG_TO_DEBUG("\t" + name);
             location.progression = true;
         }
+        else if (location.categories.contains(LocationCategory::PlandomizerProgression))
+        {
+            LOG_TO_DEBUG("\t" + name + " (Added by Plandomizer)");
+            location.progression = true;
+        }
     }
     LOG_TO_DEBUG("]");
 }
@@ -1173,6 +1178,7 @@ World::WorldLoadingError World::loadPlandomizer()
     std::string worldName = "World " + std::to_string(worldId + 1);
     Yaml::Node plandoLocations;
     Yaml::Node plandoEntrances;
+    Yaml::Node extraProgressionLocations;
     std::string plandoStartingIsland = "";
     // Grab the YAML object which holds the locations for this world.
     // If there's only one world, then allow the plandomizer file to not
@@ -1196,6 +1202,10 @@ World::WorldLoadingError World::loadPlandomizer()
                 {
                     plandoStartingIsland = ref["starting island"].As<std::string>();
                 }
+                if (ref["extra progression locations"].IsSequence())
+                {
+                    extraProgressionLocations = ref["extra progression locations"];
+                }
                 [[fallthrough]];
             // If more than one world, look for "World 1", "World 2", etc.
             default:
@@ -1213,6 +1223,10 @@ World::WorldLoadingError World::loadPlandomizer()
                     if (ref[worldName]["starting island"].IsScalar())
                     {
                         plandoStartingIsland = ref[worldName]["starting island"].As<std::string>();
+                    }
+                    if (ref["extra progression locations"].IsSequence())
+                    {
+                        extraProgressionLocations = ref["extra progression locations"];
                     }
                 }
         }
@@ -1233,6 +1247,23 @@ World::WorldLoadingError World::loadPlandomizer()
             // Automatically turn on random starting island if one is specified in
             // the plandomizer file
             settings.randomize_starting_island = true;
+        }
+    }
+
+    // Process extra progression locations first
+    if (!extraProgressionLocations.IsNone())
+    {
+        for (auto locationIt = extraProgressionLocations.Begin(); locationIt != extraProgressionLocations.End(); locationIt++)
+        {
+            const Yaml::Node& locationNode = (*locationIt).second;
+            const std::string locationName = locationNode.As<std::string>();
+            if (!locationEntries.contains(locationName))
+            {
+                ErrorLog::getInstance().log("Plandomizer Error: Extra progress location \"" + locationName + "\" is not recognized");
+                return WorldLoadingError::PLANDOMIZER_ERROR;
+            }
+            // Add the plandomizer progression category to this location
+            locationEntries[locationName].categories.insert(LocationCategory::PlandomizerProgression);
         }
     }
 

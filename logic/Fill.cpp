@@ -7,6 +7,7 @@
 #include "../server/command/Log.hpp"
 #include "../server/utility/platform.hpp"
 #include <chrono>
+#include <numeric>
 
 #define FILL_ERROR_CHECK(err) if (err != FillError::NONE) {return err;}
 

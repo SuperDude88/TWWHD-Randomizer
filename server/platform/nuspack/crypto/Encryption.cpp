@@ -3,6 +3,7 @@
 #include "../../../utility/endian.hpp"
 #include "../../../utility/math.hpp"
 #include "../contents/contents.hpp"
+#include "../../../../gui/update_dialog_header.hpp"
 
 using eType = Utility::Endian::Type;
 
@@ -48,6 +49,11 @@ void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, co
         output.write(&encrypted[0], encrypted.size());
 
         block++;
+        // Update progress dialogue
+        if (block > 1000)
+        {
+            UPDATE_DIALOG_VALUE(150 + (int)(((float) (read * block) / (float) len) * 50.0f))
+        }
     } while (read == hashBlockSize);
     content.size = output.tellp();
 }

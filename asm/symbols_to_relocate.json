@@ -4,7 +4,8 @@
 	"GTower_str": ".data",
 	"Ojhous_str": ".data",
 	"y_diff_float": ".data",
-	
+	"some_gfx_ptr": ".data",
+
 	"custom_damage_multiplier": ".text",
 	"custom_warp_pot_env_color": ".text",
 	"custom_warp_pot_prm_color": ".text",

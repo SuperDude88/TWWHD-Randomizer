@@ -16,13 +16,18 @@
 #include <iostream>
 
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
+#define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
+#define APPLY_CONFIG_CHECKBOX_SETTING(config, ui, name) if(config.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 
 #define APPLY_SPINBOX_SETTING(config, ui, name, min, max) \
     auto& name = config.settings.name;                    \
     name = std::clamp(name, min, max);                    \
-    ui->name->setValue(name);
+    ui->name->setValue(static_cast<int>(name));
 
+#define APPLY_MIXED_POOLS_SETTING(config, ui, name)                         \
+    name.setCheckState(config.settings.name ? Qt::Checked : Qt::Unchecked); \
+    update_mixed_pools_combobox_option();
 
 #define DEFINE_STATE_CHANGE_FUNCTION(name)                \
     void MainWindow::on_##name##_stateChanged(int arg1) { \
@@ -47,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setup_mixed_pools_combobox();
     load_locations();
     load_config_into_ui();
     encounteredError = false;
@@ -61,6 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
     {
         child->installEventFilter(this);
     }
+
+    // Hide options which won't exist for a while
+    ui->randomize_enemies->setVisible(false);
+    ui->randomize_enemy_palettes->setVisible(false);
+    ui->randomize_music->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -74,8 +85,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     ConfigError err = writeToFile("./config.yaml", config);
     if (err != ConfigError:: NONE)
     {
-        show_error_dialog("Settings could not be saved\nCode: " + std::to_string(static_cast<uint32_t>(err)));
+        show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
     }
+
+    update_encryption_files();
 }
 
 void MainWindow::load_config_into_ui()
@@ -83,11 +96,26 @@ void MainWindow::load_config_into_ui()
     ConfigError err = loadFromFile("./config.yaml", config);
     if(err != ConfigError::NONE)
     {
-        show_error_dialog("Failed to load settings file\ncode " + std::to_string(static_cast<uint32_t>(err)));
+        show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
     }
     else
     {
         apply_config_settings();
+    }
+
+    // Load encryption keys if the files exists
+    auto encryptionKeyPath = "./encryption.txt";
+    std::string encryptionKeyStr;
+    if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+    {
+        ui->encryption_key->setText(encryptionKeyStr.c_str());
+    }
+
+    auto commonKeyPath = "./common.txt";
+    std::string commonKeyStr;
+    if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+    {
+        ui->wii_u_common_key->setText(commonKeyStr.c_str());
     }
 }
 
@@ -117,6 +145,104 @@ void MainWindow::show_info_dialog(const std::string& msg, const std::string& tit
     messageBox->setText(msg.c_str());
     messageBox->setIcon(QMessageBox::NoIcon);
     messageBox->exec();
+}
+
+void MainWindow::setup_mixed_pools_combobox()
+{
+    eventsByName.setModel(&poolModel);
+    poolNames << "Dungeons" << "Caves" << "Doors" << "Misc";
+    poolCheckBoxes << &mix_dungeons << &mix_caves << &mix_doors << &mix_misc;
+    for (size_t i = 0; i < poolNames.size(); i++)
+    {
+        poolCheckBoxes[i]->setText(poolNames[i]);
+        poolModel.setItem(i, 0, poolCheckBoxes[i]);
+        poolCheckBoxes[i]->setFlags(Qt::ItemIsEnabled);
+        poolCheckBoxes[i]->setData(Qt::Unchecked, Qt::CheckStateRole);
+    }
+
+    // Dummy row to allow changing the mix_pools_combobox text without
+    // making it editable. The dummy row text will be changed to reflect
+    // what we want the combobox text to be.
+    poolCheckBoxes << new QStandardItem();
+    poolCheckBoxes.back()->setText("None");
+    poolCheckBoxes.back()->setFlags(Qt::NoItemFlags);
+    poolCheckBoxes.back()->setData(Qt::Unchecked, Qt::CheckStateRole);
+    poolModel.setItem(poolNames.size(), 0, poolCheckBoxes[poolNames.size()]);
+    eventsByName.setRowHidden(poolNames.size(), true);
+
+    ui->mix_pools_combobox->setModel(&poolModel);
+    ui->mix_pools_combobox->setView(&eventsByName);
+    ui->mix_pools_combobox->setCurrentText("None");
+
+    connect(&eventsByName, &QListView::clicked, this, &MainWindow::update_mixed_pools_on_text_click);
+}
+
+void MainWindow::update_mixed_pools_combobox_text(const QString& text)
+{
+    poolCheckBoxes.back()->setText(text);
+    ui->mix_pools_combobox->setCurrentText(text);
+}
+
+void MainWindow::update_mixed_pools_on_text_click(const QModelIndex& index)
+{
+    QString clickedOption = index.data(0).toString();
+    update_mixed_pools_combobox_option(clickedOption);
+}
+
+void MainWindow::update_mixed_pools_combobox_option(const QString& pool /*= ""*/)
+{
+    QStringList enabledPools;
+
+    for (size_t i = 0; i < poolCheckBoxes.size() - 1; i++)
+    {
+        auto& poolOption = poolCheckBoxes[i];
+        if (pool != "" && poolOption->text() == pool)
+        {
+            poolOption->setCheckState(poolOption->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        }
+
+        if (poolOption->checkState() == Qt::Checked)
+        {
+            enabledPools << poolOption->text();
+        }
+    }
+
+    if (enabledPools.size() == poolCheckBoxes.size() - 1)
+    {
+        update_mixed_pools_combobox_text("All");
+    }
+    else if (enabledPools.empty())
+    {
+        update_mixed_pools_combobox_text("None");
+    }
+    else if (enabledPools.size() <= 2)
+    {
+        QString text = "";
+        for (size_t i = 0; i < enabledPools.size(); i++)
+        {
+            text += enabledPools[i];
+            if (i != enabledPools.size() - 1)
+            {
+                text += ", ";
+            }
+        }
+        update_mixed_pools_combobox_text(text);
+    }
+    else
+    {
+        std::string text = std::to_string(enabledPools.size()) + " Selected";
+        update_mixed_pools_combobox_text(text.c_str());
+    }
+
+    // Only update the config if the user manually selected an option
+    if (pool != "")
+    {
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_dungeons);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_caves);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_doors);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_misc);
+    }
+
 }
 
 void MainWindow::setup_gear_menus()
@@ -182,11 +308,31 @@ void MainWindow::setup_gear_menus()
     ui->starting_gear->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
+void MainWindow::update_plandomizer_widget_visbility()
+{
+    // Hide plandomizer input widgets when plandomizer isn't check
+    if (ui->plandomizer->isChecked())
+    {
+        ui->plandomizer_path->setVisible(true);
+        ui->plandomizer_path_browse_button->setVisible(true);
+        ui->plandomizer_label->setVisible(true);
+    }
+    else
+    {
+        ui->plandomizer_path->setVisible(false);
+        ui->plandomizer_path_browse_button->setVisible(false);
+        ui->plandomizer_label->setVisible(false);
+    }
+}
+
 void MainWindow::apply_config_settings()
 {
     // Directories and Seed
     ui->base_game_path->setText(config.gameBaseDir.c_str());
     ui->output_folder->setText(config.outputDir.c_str());
+    APPLY_CONFIG_CHECKBOX_SETTING(config, ui, repack_for_console);
+    on_repack_for_console_stateChanged(0); // hide console repacking elements if necessary
+    ui->console_output->setText(config.consoleOutputDir.c_str());
     ui->seed->setText(config.seed.c_str());
 
     // Progression settings
@@ -255,7 +401,7 @@ void MainWindow::apply_config_settings()
         on_sword_mode_currentIndexChanged(index);
     }
 
-
+    APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(80.0f));
     APPLY_CHECKBOX_SETTING(config, ui, keylunacy);
     APPLY_CHECKBOX_SETTING(config, ui, race_mode);
     // Call the slot for the race_mode state change incase it didn't change
@@ -293,6 +439,7 @@ void MainWindow::apply_config_settings()
     // Advanced Options
     APPLY_CHECKBOX_SETTING(config, ui, do_not_generate_spoiler_log);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
+    update_plandomizer_widget_visbility();
     ui->plandomizer_path->setText(config.settings.plandomizerFile.c_str());
 
     // Hints
@@ -310,7 +457,10 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, randomize_cave_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_door_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_misc_entrances);
-    APPLY_CHECKBOX_SETTING(config, ui, mix_entrance_pools);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_dungeons);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_caves);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_doors);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_misc);
     APPLY_CHECKBOX_SETTING(config, ui, decouple_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_starting_island);
 
@@ -328,7 +478,6 @@ void MainWindow::on_base_game_path_browse_button_clicked()
     }
 }
 
-
 void MainWindow::on_output_folder_browse_button_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -339,6 +488,41 @@ void MainWindow::on_output_folder_browse_button_clicked()
     }
 }
 
+void MainWindow::on_repack_for_console_stateChanged(int arg1)
+{
+    if (ui->repack_for_console->isChecked())
+    {
+        ui->label_for_console_output->setVisible(true);
+        ui->console_output_browse_button->setVisible(true);
+        ui->console_output->setVisible(true);
+        ui->wii_u_common_key->setVisible(true);
+        ui->label_for_wii_u_common_key->setVisible(true);
+        ui->encryption_key->setVisible(true);
+        ui->label_for_encryption_key->setVisible(true);
+        config.repack_for_console = true;
+    }
+    else
+    {
+        ui->label_for_console_output->setVisible(false);
+        ui->console_output_browse_button->setVisible(false);
+        ui->console_output->setVisible(false);
+        ui->wii_u_common_key->setVisible(false);
+        ui->label_for_wii_u_common_key->setVisible(false);
+        ui->encryption_key->setVisible(false);
+        ui->label_for_encryption_key->setVisible(false);
+        config.repack_for_console = false;
+    }
+}
+
+void MainWindow::on_console_output_browse_button_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty() && !dir.isNull())
+    {
+        ui->console_output->setText(dir);
+        config.consoleOutputDir = dir.toStdString();
+    }
+}
 
 void MainWindow::on_generate_seed_button_clicked()
 {
@@ -472,6 +656,14 @@ void MainWindow::on_sword_mode_currentIndexChanged(int index)
     update_permalink();
 }
 
+DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
+DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
+
+void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
+{
+    config.settings.damage_multiplier = static_cast<float>(multiplier);
+}
+
 DEFINE_STATE_CHANGE_FUNCTION(keylunacy)
 
 void MainWindow::on_race_mode_stateChanged(int arg1) {
@@ -501,9 +693,6 @@ void MainWindow::on_num_race_mode_dungeons_currentIndexChanged(int index)
     update_permalink();
 }
 
-DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
-DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
-
 // Convenience Tweaks
 DEFINE_STATE_CHANGE_FUNCTION(invert_sea_compass_x_axis)
 DEFINE_STATE_CHANGE_FUNCTION(instant_text_boxes)
@@ -518,16 +707,7 @@ void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
     UPDATE_CONFIG_STATE(config, ui, plandomizer);
     update_permalink();
-//    Couldn't get resizing to work correctly putting the plandomizer file
-//    selection layout into a widget. Might come back and try later
-//    if (ui->plandomizer->isChecked())
-//    {
-//        ui->plandomizer_file_path_widget->setVisible(true);
-//    }
-//    else
-//    {
-//        ui->plandomizer_file_path_widget->setVisible(false);
-//    }
+    update_plandomizer_widget_visbility();
 }
 
 void MainWindow::on_plandomizer_path_browse_button_clicked()
@@ -656,7 +836,7 @@ DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_door_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
-DEFINE_STATE_CHANGE_FUNCTION(mix_entrance_pools)
+// Mixed pools options' states are handled in update_mixed_pools_combobox_option()
 DEFINE_STATE_CHANGE_FUNCTION(decouple_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_starting_island)
 
@@ -727,6 +907,30 @@ void MainWindow::on_reset_settings_to_default_clicked()
     apply_config_settings();
 }
 
+void MainWindow::update_encryption_files()
+{
+    // Write encryption and common keys to separate files so users can share config files without sharing the keys
+    if (ui->encryption_key->text() != "")
+    {
+        std::ofstream file("./encryption.txt");
+        if (file.is_open())
+        {
+            file << ui->encryption_key->text().toStdString();
+            file.close();
+        }
+    }
+
+    if (ui->wii_u_common_key->text() != "")
+    {
+        std::ofstream file("./common.txt");
+        if (file.is_open())
+        {
+            file << ui->wii_u_common_key->text().toStdString();
+            file.close();
+        }
+    }
+}
+
 void MainWindow::on_randomize_button_clicked()
 {
     // Check to make sure the base game and output are directories
@@ -748,17 +952,27 @@ void MainWindow::on_randomize_button_clicked()
         return;
     }
 
+    if (config.repack_for_console)
+    {
+        if (!std::filesystem::is_directory(config.consoleOutputDir))
+        {
+            show_warning_dialog("Must specify a valid output folder for the repacked console files.", "No console output folder specified");
+            return;
+        }
+        update_encryption_files();
+    }
+
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    // TODO: change code number to string
     ConfigError err = writeToFile("./config.yaml", config);
     if(err != ConfigError::NONE) {
-        show_error_dialog("Failed to write config.yaml\ncode " + std::to_string(static_cast<uint32_t>(err)));
+        show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
         return;
     }
 
     // Setup the progress dialog for the randomization algorithm
-    QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, 100, this);
+    int progressTotal = config.repack_for_console ? 200 : 100;
+    QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, progressTotal, this);
     progressDialog->setWindowTitle("Randomizing");
     progressDialog->setWindowModality(Qt::WindowModal);
     progressDialog->setWindowFlag(Qt::WindowCloseButtonHint, false);

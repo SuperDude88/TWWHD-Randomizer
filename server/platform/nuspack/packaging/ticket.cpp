@@ -1,6 +1,7 @@
 #include "ticket.hpp"
 
 #include <random>
+#include <algorithm>
 
 #include "../crypto/IV.hpp"
 #include "../crypto/Encryption.hpp"
