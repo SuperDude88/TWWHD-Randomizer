@@ -6,6 +6,7 @@
 #include "../../../utility/endian.hpp"
 #include "../../../utility/file.hpp"
 #include "../../../utility/math.hpp"
+#include "../../../../gui/update_dialog_header.hpp"
 
 using eType = Utility::Endian::Type;
 
@@ -24,15 +25,20 @@ void Content::Update(const std::vector<FSTEntry*>& entries) {
     }
 }
 
+#define TEMP_DIR "./temp/"
+
 std::string Content::PackDecrypted()
 {
     std::string tmpPath(TEMP_DIR "00000000.dec");
     tmpPath += '\0';
     std::snprintf(&tmpPath[0], tmpPath.size(), TEMP_DIR "%08X.dec", id);
     std::ofstream output(tmpPath, std::ios::binary);
-    
+
+    size_t count = 0;
+
     for (FSTEntry* pEntry : entries)
     {
+        count++;
         if (pEntry->isFile())
         {
             const FSTEntry::FileEntry& entry = std::get<FSTEntry::FileEntry>(pEntry->entry);
@@ -49,6 +55,12 @@ std::string Content::PackDecrypted()
 
             uint64_t padding = alignedFileSize - entry.fileSize;
             Utility::seek(output, padding, std::ios::cur);
+
+            // Update progress dialog
+            if (entries.size() > 1000)
+            {
+                UPDATE_DIALOG_VALUE(100 + (int)(((float) count / (float) entries.size()) * 50.0f))
+            }
         }
         else
         {

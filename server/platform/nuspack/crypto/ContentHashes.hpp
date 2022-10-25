@@ -2,6 +2,9 @@
 
 #include <unordered_map>
 #include "../types.hpp"
+#include <string>
+#include <vector>
+#include <ostream>
 
 class ContentHashes {
 public:

@@ -62,6 +62,7 @@ add_subdirectory("libs")
 add_subdirectory("server/utility")
 add_subdirectory("server/command")
 add_subdirectory("server/filetypes")
+add_subdirectory("server/platform/nuspack")
 add_subdirectory("seedgen")
 add_subdirectory("logic")
 

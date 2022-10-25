@@ -971,7 +971,7 @@ void MainWindow::on_randomize_button_clicked()
     }
 
     // Setup the progress dialog for the randomization algorithm
-    int progressTotal = config.repack_for_console ? 150 : 100;
+    int progressTotal = config.repack_for_console ? 200 : 100;
     QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, progressTotal, this);
     progressDialog->setWindowTitle("Randomizing");
     progressDialog->setWindowModality(Qt::WindowModal);
