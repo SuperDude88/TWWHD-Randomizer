@@ -111,7 +111,10 @@ Option nameToSetting(const std::string& name) {
         {"Randomize Cave Entrances", Option::RandomizeCaveEntrances},
         {"Randomize Door Entrances", Option::RandomizeDoorEntrances},
         {"Randomize Misc Entrances", Option::RandomizeMiscEntrances},
-        {"Mix Entrance Pools", Option::MixEntrancePools},
+        {"Mix Dungeons", Option::MixDungeons},
+        {"Mix Caves", Option::MixCaves},
+        {"Mix Doors", Option::MixDoors},
+        {"Mix Misc", Option::MixMisc},
         {"Decouple Entrances", Option::DecoupleEntrances},
         {"Ho Ho Hints", Option::HoHoHints},
         {"Korl Hints", Option::KorlHints},
@@ -183,7 +186,10 @@ std::string settingToName(const Option& setting) {
         {Option::RandomizeCaveEntrances, "Randomize Cave Entrances"},
         {Option::RandomizeDoorEntrances, "Randomize Door Entrances"},
         {Option::RandomizeMiscEntrances, "Randomize Misc Entrances"},
-        {Option::MixEntrancePools, "Mix Entrance Pools"},
+        {Option::MixDungeons, "Mix Dungeons"},
+        {Option::MixCaves, "Mix Caves"},
+        {Option::MixDoors, "Mix Doors"},
+        {Option::MixMisc, "Mix Misc"},
         {Option::DecoupleEntrances, "Decouple Entrances"},
         {Option::HoHoHints, "Ho Ho Hints"},
         {Option::KorlHints, "Korl Hints"},
@@ -286,8 +292,14 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.randomize_door_entrances;
     case Option::RandomizeMiscEntrances:
         return settings.randomize_misc_entrances;
-    case Option::MixEntrancePools:
-        return settings.mix_entrance_pools;
+    case Option::MixDungeons:
+        return settings.mix_dungeons;
+    case Option::MixCaves:
+        return settings.mix_caves;
+    case Option::MixDoors:
+        return settings.mix_doors;
+    case Option::MixMisc:
+        return settings.mix_misc;
     case Option::DecoupleEntrances:
         return settings.decouple_entrances;
     case Option::HoHoHints:
@@ -415,8 +427,14 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.randomize_door_entrances = value; return;
     case Option::RandomizeMiscEntrances:
         settings.randomize_misc_entrances = value; return;
-    case Option::MixEntrancePools:
-        settings.mix_entrance_pools = value; return;
+    case Option::MixDungeons:
+        settings.mix_dungeons = value; return;
+    case Option::MixCaves:
+        settings.mix_caves = value; return;
+    case Option::MixDoors:
+        settings.mix_doors = value; return;
+    case Option::MixMisc:
+        settings.mix_misc = value; return;
     case Option::DecoupleEntrances:
         settings.decouple_entrances = value; return;
     case Option::HoHoHints:

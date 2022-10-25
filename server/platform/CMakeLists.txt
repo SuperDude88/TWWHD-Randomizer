@@ -11,4 +11,4 @@ else()
 	target_sources(wwhd_rando PRIVATE wiiutitles.cpp)
 endif()
 
-add_subdirectory("nuspack")
+#add_subdirectory("nuspack")

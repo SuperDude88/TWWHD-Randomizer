@@ -128,6 +128,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "chest_type_matches_contents",
       "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key chests. Keys for non-required dungeons in race mode will be in wooden chests."
     },
+    {
+      "damage_multiplier",
+      "Change the damage multiplier used when Hero Mode is enabled. By default Hero Mode applies a 2x damage multiplier. This will not affect damage taken in Normal Mode."
+    },
 
     // Convenience Tweaks
     {
@@ -268,8 +272,8 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Shuffles around which misc entrances take you into which msic areas. Misc entrances are entrances which do not fall into any of the other categories and include entrances such as those that go in and out of Forest Haven and Dragon Roost Island. Hyrule is not included in this category."
     },
     {
-      "mix_entrance_pools",
-      "Shuffle all randomized entrances within the same pool. For example, if you randomize dungeon entrances and doors, then entering a dungeon may take you into a house, while opening a door to a house may take you to a dungeon."
+      "mix_pools_combobox",
+      "Shuffle the selected entrances into a mixed pool instead of separate ones. For example, randomizing dungeons, caves, and doors, and selecting dungeons and caves here will allow a dungeon to be inside a cave or vice versa, while doors are shuffled in their own separate pool."
     },
     {
       "decouple_entrances",

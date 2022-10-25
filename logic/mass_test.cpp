@@ -139,7 +139,10 @@ void massTest(Config& newConfig)
     TEST(settings1, settings1.randomize_door_entrances, "randomize door entrances");
     TEST(settings1, settings1.randomize_misc_entrances, "randomize misc entrances");
     TEST(settings1, settings1.decouple_entrances, "decouple entrances");
-    TEST(settings1, settings1.mix_entrance_pools, "mix entrance pools");
+    TEST(settings1, settings1.mix_dungeons, "mix dungeons");
+    TEST(settings1, settings1.mix_caves, "mix caves");
+    TEST(settings1, settings1.mix_doors, "mix doors");
+    TEST(settings1, settings1.mix_misc, "mix misc");
     TEST(settings1, settings1.plandomizer, "plandomizer");
 
     // Now set all settings in reverse (except dungeons since they have a lot of checks)
@@ -148,7 +151,10 @@ void massTest(Config& newConfig)
     settings2.starting_gear = {GameItem::BalladOfGales};
 
     TEST(settings2, settings2.progression_dungeons, "progression dungeons");
-    TEST(settings2, settings2.mix_entrance_pools, "mix entrance pools");
+    TEST(settings2, settings2.mix_misc, "mix misc");
+    TEST(settings2, settings2.mix_doors, "mix doors");
+    TEST(settings2, settings2.mix_caves, "mix caves");
+    TEST(settings2, settings2.mix_dungeons, "mix dungeons");
     TEST(settings2, settings2.randomize_misc_entrances, "randomize misc entrances");
     TEST(settings2, settings2.randomize_door_entrances, "randomize door entrances");
     TEST(settings2, settings2.randomize_cave_entrances, "randomize cave entrances");

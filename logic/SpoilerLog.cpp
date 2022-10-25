@@ -282,11 +282,11 @@ void generateSpoilerLog(WorldPool& worlds)
         }
         for (auto& [chart, island] : spoilerTriforceMappings)
         {
-            log << "\t" << chart << ":\t" << island << std::endl;
+            log << "    " << chart << ":\t" << island << std::endl;
         }
         for (auto& [chart, island] : spoilerTreasureMappings)
         {
-            log << "\t" << chart << ":\t" << island << std::endl;
+            log << "    " << chart << ":\t" << island << std::endl;
         }
     }
 
@@ -300,21 +300,25 @@ void generateNonSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            if (location->progression)
+            if (location->categories.contains(LocationCategory::PlandomizerProgression))
             {
-                BasicLog::getInstance().log("\t" + location->getName());
+                BasicLog::getInstance().log("    " + location->getName() + " (Added by Plandomizer)");
+            }
+            else if (location->progression)
+            {
+                BasicLog::getInstance().log("    " + location->getName());
             }
         }
     }
 
-    BasicLog::getInstance().log("### Locations that cannot have progress items in them on this run:");
+    BasicLog::getInstance().log("\n### Locations that cannot have progress items in them on this run:");
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (!location->progression)
             {
-                BasicLog::getInstance().log("\t" + location->getName());
+                BasicLog::getInstance().log("    " + location->getName());
             }
         }
     }

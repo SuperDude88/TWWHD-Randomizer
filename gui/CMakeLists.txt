@@ -119,6 +119,7 @@ add_subdirectory("../libs" "libs")
 add_subdirectory("../server/utility" "server/utility")
 add_subdirectory("../server/command" "server/command")
 add_subdirectory("../server/filetypes" "server/filetypes")
+add_subdirectory("../server/platform/nuspack" "server/platform/nuspack")
 add_subdirectory("../seedgen" "seedgen")
 add_subdirectory("../logic" "logic")
 

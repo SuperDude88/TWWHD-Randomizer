@@ -123,6 +123,7 @@
   "get_alignment": "0x028FA6DC",
   "check_sarc_magic": "0x028FA700",
   "copy_sarc_to_output": "0x028FA730",
-  "check_hyrule_warp_unlocked": "0x028FA76C",
-  "give_pearl_and_raise_totg_if_necessary": "0x028FA7AC"
+  "set_return_place_as_last_visited_ocean_sector": "0x028FA76C",
+  "check_hyrule_warp_unlocked": "0x028FA784",
+  "give_pearl_and_raise_totg_if_necessary": "0x028FA7C4"
 }
