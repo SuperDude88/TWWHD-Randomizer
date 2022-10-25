@@ -13,6 +13,7 @@
 #include "server/command/WriteLocations.hpp"
 #include "server/command/RandoSession.hpp"
 #include "server/command/Log.hpp"
+#include "server/platform/nuspack/packer.hpp"
 #include "server/utility/platform.hpp"
 #include "server/utility/file.hpp"
 #include "server/utility/endian.hpp"
@@ -596,31 +597,24 @@ public:
     std::string encryptionKeyStr;
     std::string commonKeyStr;
 
-    if (config.repack_for_console)
-    {
-        // Make sure encryption keys are correct if repacking for console
-        auto encryptionKeyPath = "./encryption.txt";
-        if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
-        {
-            auto encryptionHash = strHash(encryptionKeyStr);
-            if (encryptionHash != 2592340161231091973)
-            {
-                ErrorLog::getInstance().log("The Wind Waker HD ROM Key is incorrect. Please double-check to make sure you're using the one for [USA, NUS].");
-                return 1;
-            }
-        }
+    #ifndef DEVKITPRO
+      if (config.repack_for_console)
+      {
+          auto encryptionKeyPath = "./encryption.txt";
+          if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) == 1)
+          {
+              ErrorLog::getInstance().log("Could not load twwhd rom key");
+              return 1;
+          }
 
-        auto commonKeyPath = "./common.txt";
-        if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
-        {
-            auto commonKeyHash = strHash(commonKeyStr);
-            if (commonKeyHash != 5364393651139702829)
-            {
-                ErrorLog::getInstance().log("The Wii U Common Key is incorrect. Please double-check to make sure it's correct.");
-                return 1;
-            }
-        }
-    }
+          auto commonKeyPath = "./common.txt";
+          if (Utility::getFileContents(commonKeyPath, commonKeyStr) == 1)
+          {
+              ErrorLog::getInstance().log("Could not load wii u common key");
+              return 1;
+          }
+      }
+    #endif
 
 		LOG_TO_DEBUG("Permalink: " + permalink);
 
@@ -760,33 +754,39 @@ public:
 		}
 
     // Repack for console if necessary
-    if (config.repack_for_console)
-    {
-        UPDATE_DIALOG_LABEL("Repacking for console...");
-        Utility::platformLog("Repacking for console...\n");
-        const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
-        const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
+    #ifndef DEVKITPRO
+      if (config.repack_for_console)
+      {
+          UPDATE_DIALOG_LABEL("Repacking for console...");
+          Utility::platformLog("Repacking for console...\n");
+          const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
+          const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
 
-        // Create encryption keys
-        // Key twwhdKey;
-        // Key commonKey;
-        //
-        // for (size_t i = 0; i < twwhdKey.size(); i++)
-        // {
-        //     twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
-        //     commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
-        // }
-        //
-        // // Delete any previous repacked files
-        //
-        // // Now repack the files
-        // if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE)
-        // {
-        //
-        // }
+          Key twwhdKey;
+          Key commonKey;
 
-        UPDATE_DIALOG_VALUE(150);
-    }
+          // Fill encryption keys from strings
+          for (size_t i = 0; i < twwhdKey.size(); i++)
+          {
+              twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+              commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+          }
+
+          // Delete any previous repacked files
+          for (const auto& entry : std::filesystem::directory_iterator(outPath)) {
+              std::filesystem::remove_all(entry.path());
+          }
+
+          // Now repack the files
+          if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE)
+          {
+              ErrorLog::getInstance().log("Failed to create console package");
+              return 1;
+          }
+
+          UPDATE_DIALOG_VALUE(200);
+      }
+    #endif
 
 		//done!
 		return 0;
@@ -844,7 +844,7 @@ int mainRandomize() {
 	ConfigError err = loadFromFile("./config.yaml", load);
 	if(err != ConfigError::NONE) {
 		ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
-
+    Utility::platformLog("Failed to read config, ERROR: " + errorToName(err));
 		std::this_thread::sleep_for(3s);
 		Utility::platformShutdown();
 		return 1;

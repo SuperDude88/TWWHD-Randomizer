@@ -1,5 +1,7 @@
 #include "ContentRules.hpp"
 
+#include <algorithm>
+
 enum FSTFlags : uint16_t {
     NOT_HASHED = 0x0000,
     BYTE_OFFSET = 0x0004, //offset in bytes instead of sectors

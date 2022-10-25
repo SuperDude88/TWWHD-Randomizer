@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <cstdint>
+#include <filesystem>
 
 #include "../crypto/Encryption.hpp"
 #include "../packaging/ContentDetails.hpp"
