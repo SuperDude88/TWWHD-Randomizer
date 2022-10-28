@@ -19,7 +19,7 @@ set_starting_health:
   sth r11, 0 (r3) ; Store maximum HP (including unfinished heart pieces)
   rlwinm r11,r11,0,0,29
   sth r11, 2 (r3) ; Store current HP (not including unfinished heart pieces)
-  
+
   b 0x025b4dd8
 
 
@@ -34,7 +34,7 @@ fully_refill_magic_meter_on_load_save:
   addi r3, r3, 0x33
   lbz r4, 0 (r3) ; Load max magic meter
   stb r4, 1 (r3) ; Store to current magic meter
-  
+
   li r28, 0 ; Replace the line we overwrote to branch here
   b 0x025ba944 ; Return
 
@@ -51,13 +51,13 @@ check_animate_rainbow_rupee_color:
   ; Check if the color for this rupee specified in the item resources is 7 (originally unused, we use it as a marker to separate the rainbow rupee from other color rupees).
   cmpwi r0, 7
   beq animate_rainbow_rupee_color
-  
+
   ; If it's not the rainbow rupee, replace the line of code we overwrote to jump here, and then return to the regular code for normal rupees.
   xoris r0, r0, 0x8000
   b 0x021836d8
-  
+
   animate_rainbow_rupee_color:
-  
+
   ; If it is the rainbow rupee, we need to increment the current keyframe (a float) by certain value every frame.
   ; The keyframe is stored to the rupee actor +0x3A0, repurposes a couple fields the rupee doesn't use
   xoris r0, r0, 0x8000
@@ -68,24 +68,24 @@ check_animate_rainbow_rupee_color:
   addi r9, r9, rainbow_rupee_data@l
   lfs f13, 0(r9) ; Read amount to add to keyframe per frame
   fadds f0, f0, f13 ; Increase the keyframe value
-  
+
   lfs f13, 4(r9) ; Read the maximum keyframe value
   fcmpo cr0,f0,f13
   ; If we're less than the max we don't need to reset the value
   blt store_rainbow_rupee_keyframe_value
-  
+
   ; If we're greater than the max, reset the current keyframe to the minimum.
   ; The minimum is actually the maximum negated. This is to signify that we're playing the animation backwards.
   lfs f0, 8(r9)
-  
+
   store_rainbow_rupee_keyframe_value:
   stfs f0, 0x3A0(r31) ; Store the keyframe back
-  
+
   ; Take the absolute value of the keyframe. So instead of going from -6 to +6, the value we pass as the actual keyframe goes from 6 to 0 to 6.
   ; Also do an HD thing and round to single-precision
   fabs f0, f0
   frsp f1, f0
-  
+
   b 0x021836f4
 
 .global rainbow_rupee_data
@@ -137,14 +137,14 @@ exec_curr_num_keys_text_command:
   ; The the dungeon stage IDs for those same 5 dungeons range from 3-7.
   ; So just subtract 0x48 to get the right stage ID.
   addi r6, r30, -0x48
-  
+
   lis r9, gameInfo_ptr@ha
   lwz r9, gameInfo_ptr@l(r9)
   addi r9,r9,0x7bc ; stage ID of the current stage
   lbz r10, 0 (r9)
   cmpw r10, r6 ; Check if we're currently in the right dungeon for this key
   beq exec_curr_num_keys_text_command_in_correct_dungeon
-  
+
 exec_curr_num_keys_text_command_not_in_correct_dungeon:
   ; Read the current number of small keys from that dungeon's stage info.
   lis r9, gameInfo_ptr@ha
@@ -155,7 +155,7 @@ exec_curr_num_keys_text_command_not_in_correct_dungeon:
   lbz r6, 0x20 (r9) ; Current number of keys for the correct dungeon
   mr r30, r9 ; Remember the correct stage info pointer for later when we check the big key
   b exec_curr_num_keys_text_command_after_reading_num_keys
-  
+
 exec_curr_num_keys_text_command_in_correct_dungeon:
   ; Read the current number of small keys from the currently loaded dungeon info.
   lis r9, gameInfo_ptr@ha
@@ -163,17 +163,17 @@ exec_curr_num_keys_text_command_in_correct_dungeon:
   addi r9,r9,0x798
   lbz r6, 0x20 (r9) ; Current number of keys for the current dungeon
   mr r30, r9 ; Remember the correct stage info pointer for later when we check the big key
-  
+
 exec_curr_num_keys_text_command_after_reading_num_keys:
   li r7, 0
   li r8, 1
   bl FUN_025fcb90
-  
+
   ; Check whether the player has the big key or not.
   lbz r6, 0x21 (r30) ; Bitfield of dungeon-specific flags in the appropriate stage info
   rlwinm. r6, r6, 0, 29, 29 ; Extract the has big key bit
   beq exec_curr_num_keys_text_command_after_appending_big_key_text
-  
+
 ; Do a silly hack to overwrite extra space we add to the message (appending properly is much more complex)
 exec_curr_num_keys_text_command_has_big_key:
   lis r7, key_text_command_has_big_key_text@ha
@@ -190,7 +190,7 @@ exec_curr_num_keys_text_command_has_big_key:
     cmpwi r8, 0
     ble exec_curr_num_keys_text_command_after_appending_big_key_text
     b copy_char_begin
-  
+
 exec_curr_num_keys_text_command_after_appending_big_key_text:
   lwz r0, 0x14 (sp)
   mtlr r0
@@ -222,20 +222,20 @@ check_player_in_casual_clothes:
   stwu sp, -0x10 (sp)
   mflr r0
   stw r0, 0x14 (sp)
-  
+
   lis r3, should_start_with_heros_clothes@ha
   addi r3, r3, should_start_with_heros_clothes@l
   lbz r3, 0 (r3) ; Load bool of whether player should start with Hero's clothes
   cmpwi r3, 1
   beq check_player_in_casual_clothes_hero
-  
+
   check_player_in_casual_clothes_casual:
   li r3, 1
   b check_player_in_casual_clothes_end
-  
+
   check_player_in_casual_clothes_hero:
   li r3, 0
-  
+
   check_player_in_casual_clothes_end:
   lwz r0, 0x14 (sp)
   mtlr r0
@@ -253,13 +253,13 @@ check_player_in_casual_clothes:
 ; Change the condition for Outset switching to its alternate BGM theme from checking event bit 0E20 (PIRATES_ON_OUTSET, for Aryll being kidnapped) to instead check if the Pirate Ship chest has been opened (since Aryll is in the Pirate Ship in the randomizer).
 .org 0x02025200
 	bl check_outset_bgm
-	
+
 .org 0x020238cc
 	bl check_outset_bgm
 
 .org 0x020268c0
 	bl check_outset_bgm
-	
+
 .org 0x020268d0
 	bl check_outset_bgm
 .org @NextFreeSpace
@@ -290,36 +290,36 @@ get_num_owned_tingle_statues:
   stwu sp, -0x10 (sp)
   mflr r0
   stw r0, 0x14 (sp)
-  
+
   li r6, 0
-  
+
   li r3, 3 ; Dragon Tingle Statue
   li r4, 0xF
   bl check_tingle_statue_owned
   add r6, r6, r3
-  
+
   li r3, 4 ; Forbidden Tingle Statue
   li r4, 0xF
   bl check_tingle_statue_owned
   add r6, r6, r3
-  
+
   li r3, 5 ; Goddess Tingle Statue
   li r4, 0xF
   bl check_tingle_statue_owned
   add r6, r6, r3
-  
+
   li r3, 6 ; Earth Tingle Statue
   li r4, 0xF
   bl check_tingle_statue_owned
   add r6, r6, r3
-  
+
   li r3, 7 ; Wind Tingle Statue
   li r4, 0xF
   bl check_tingle_statue_owned
   add r6, r6, r3
-  
+
   mr r3, r6
-  
+
   lwz r0, 0x14 (sp)
   mtlr r0
   addi sp, sp, 0x10
@@ -335,36 +335,36 @@ get_num_owned_tingle_statues:
 .global set_prm_color_for_warp_pot_particles
 set_prm_color_for_warp_pot_particles:
   add r12, r12, r0 ; Replace line overwrote to jump here
-  
+
   lwz r10, 0x3D4 (r31) ; Event register index. 2 and 5 are for inter-dungeon warp pots.
   cmpwi r10, 2
   beq set_prm_color_for_warp_pot_particles_is_inter_dungeon
   cmpwi r10, 5
   bne set_prm_color_for_warp_pot_particles_is_not_inter_dungeon
-  
+
   set_prm_color_for_warp_pot_particles_is_inter_dungeon:
   lis r12, custom_warp_pot_prm_color@ha
   addi r12, r12, custom_warp_pot_prm_color@l
   b 0x023ba518 ; Return
-  
+
   set_prm_color_for_warp_pot_particles_is_not_inter_dungeon:
   b 0x023ba518 ; Return
 
 .global set_env_color_for_warp_pot_particles
 set_env_color_for_warp_pot_particles:
   add r10, r10, r0 ; Replace line overwrote to jump here
-  
+
   lwz r11, 0x3D4 (r31) ; Event register index. 2 and 5 are for inter-dungeon warp pots.
   cmpwi r11, 2
   beq set_env_color_for_warp_pot_particles_is_inter_dungeon
   cmpwi r11, 5
   bne set_env_color_for_warp_pot_particles_is_not_inter_dungeon
-  
+
   set_env_color_for_warp_pot_particles_is_inter_dungeon:
   lis r10, custom_warp_pot_env_color@ha
   addi r10, r10, custom_warp_pot_env_color@l
   b 0x023ba538 ; Return
-  
+
   set_env_color_for_warp_pot_particles_is_not_inter_dungeon:
   b 0x023ba538 ; Return
 
@@ -386,7 +386,7 @@ multiply_damage:
 	lfs f0, custom_damage_multiplier@l(r11)
 	fmuls f31, f31, f0
 	b 0x023f521c
-	
+
 .global custom_damage_multiplier
 custom_damage_multiplier:
 	.float 2.0
@@ -478,7 +478,7 @@ get_decompressed_szs_size:
   beq read_sarc_size
   li r3, -1
   b 0x0275ebac
-  
+
 read_yaz0_size:
   lwz r3, 0x4(r3)
   b 0x0275ebac
@@ -499,7 +499,7 @@ get_alignment:
   beq read_yaz0_align
   li r3, 0
   b 0x0275ebac
-  
+
 read_yaz0_align:
   lwz r3, 0x8(r3)
   b 0x0275ebac
@@ -564,5 +564,21 @@ continue_decomp:
 .org 0x02005f14
   lis r0, 0x3CB0 ; Up the root heap size
   ori r0, r0, 0x0000
+
+; Alter savewarping so that players respawn at their last visited ocean sector
+; instead of whatever sector the cave/interior/area normally tries to savewarp
+; them to. This is specifically for entrance randomizer so players don't
+; end up savewarping to an island they weren't on.
+.org 0x025220C4
+	bl set_return_place_as_last_visited_ocean_sector
+.org @NextFreeSpace
+.global set_return_place_as_last_visited_ocean_sector
+set_return_place_as_last_visited_ocean_sector:
+  lis r5, some_gfx_ptr@ha
+	lwz r5, some_gfx_ptr@l(r5)
+	lwz r5, 0x218 (r5)
+	lbz r5, 0x3E (r5)
+	addi r5, r5, 1
+  b 0x025B50DC ; dSv_player_return_place_c::set
 
 .close

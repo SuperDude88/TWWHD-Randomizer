@@ -43,6 +43,7 @@ enum struct LocationCategory
     Other,
     AlwaysProgression,
     HoHoHint,
+    PlandomizerProgression,
 };
 
 enum struct LocationModificationType

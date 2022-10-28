@@ -13,4 +13,4 @@ enum class [[nodiscard]] PackError {
 
 const char* packErrorGetName(PackError err);
 
-PackError createPackage(const std::filesystem::path& dirPath, const std::filesystem::path& out, const Key& encryptKeyWith = defaultEncryptWithKey);
+PackError createPackage(const std::filesystem::path& dirPath, const std::filesystem::path& out, const Key& encryptionKey = defaultEncryptWithKey, const Key& encryptKeyWith = defaultEncryptWithKey);

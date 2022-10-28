@@ -6,6 +6,7 @@
 #include <sstream>
 #include <list>
 #include <cstdint>
+#include <filesystem>
 
 #include <nuspack/crypto/Encryption.hpp>
 #include <nuspack/packaging/ContentDetails.hpp>

@@ -4,6 +4,8 @@
 #include <utility/math.hpp>
 #include <nuspack/contents/contents.hpp>
 
+#include <gui/update_dialog_header.hpp>
+
 using eType = Utility::Endian::Type;
 
 void Encryption::EncryptFileWithPadding(std::istream& input, const uint32_t& contentID, std::ostream& output, const uint32_t& blockSize) {
@@ -46,6 +48,11 @@ void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, co
         output << encrypted.rdbuf();
 
         block++;
+        // Update progress dialogue
+        if (block > 1000)
+        {
+            UPDATE_DIALOG_VALUE(150 + (int)(((float) (input.gcount() * block) / (float) len) * 50.0f))
+        }
     } while (input);
     content.size = output.tellp();
 }

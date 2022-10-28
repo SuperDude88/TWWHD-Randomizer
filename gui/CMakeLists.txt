@@ -121,6 +121,7 @@ add_subdirectory("../command" "command")
 add_subdirectory("../filetypes" "filetypes")
 add_subdirectory("../seedgen" "seedgen")
 add_subdirectory("../logic" "logic")
+add_subdirectory("../nuspack" "nuspack")
 
 if(WIN32)
   target_link_libraries(wwhd_rando PRIVATE zlib)

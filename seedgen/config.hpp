@@ -24,6 +24,9 @@ struct Config {
 
     std::string seed;
 
+    bool repack_for_console;
+    std::string consoleOutputDir;
+
     Settings settings;
 };
 
