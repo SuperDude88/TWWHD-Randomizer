@@ -1,9 +1,8 @@
 #include "contents.hpp"
 #include "utility/string.hpp"
 
-#include <cstdio>
+#include <filesystem>
 
-#include <fstream>
 #include <nuspack/fst/FSTEntries.hpp>
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
@@ -109,6 +108,12 @@ void Content::PackContentToFile(const std::filesystem::path& outputDir, Encrypti
     std::ofstream output(outputFilePath, std::ios::binary);
     file.clear();
     size = PackEncrypted(file, output, contentHashes, encryption);
+    
+    //delete derypted file, we're done with it
+    if(decryptedStream.index() == 1) {
+        std::get<1>(decryptedStream).close();
+        std::filesystem::remove(std::filesystem::path(TEMP_DIR) / (Utility::Str::intToHex(id, 8, false) + ".dec"));
+    }
 }
 
 uint64_t Content::PackEncrypted(std::istream& input, std::ostream& output, ContentHashes& hashes, Encryption& encryption) {

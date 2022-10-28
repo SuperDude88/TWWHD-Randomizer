@@ -54,6 +54,7 @@ NUSPackage NUSPackage::createNew(const PackageConfig& config) {
 }
 
 void NUSPackage::PackContents(const std::filesystem::path& out) {
+    Utility::create_directories(TEMP_DIR);
     Utility::create_directories(out);
 
     Encryption encryption = tmd.getEncryption();
