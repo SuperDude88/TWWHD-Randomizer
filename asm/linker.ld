@@ -75,4 +75,5 @@ something_button_related = 0x101F5088;
 GTower_str = 0x1005336c;
 Ojhous_str = 0x10003d28;
 y_diff_float = 0x1000efe8;
+some_gfx_ptr = 0x101F8344;
 FUN_025fcb90 = 0x025fcb90;

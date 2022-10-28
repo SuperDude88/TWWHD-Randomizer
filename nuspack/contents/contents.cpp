@@ -8,6 +8,8 @@
 #include <utility/file.hpp>
 #include <utility/math.hpp>
 
+#include <gui/update_dialog_header.hpp>
+
 using eType = Utility::Endian::Type;
 
 
@@ -34,16 +36,15 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
     const std::filesystem::path& tmpPath = std::filesystem::path(TEMP_DIR) / (Utility::Str::intToHex(id, 8, false) + ".dec");
     std::stringstream output;
     std::ofstream outFile;
+
+    size_t count = 0;
     
     for (FSTEntry* pEntry : entries)
     {
+        count++;
         if (pEntry->isFile())
         {
             const FSTEntry::FileEntry& entry = std::get<FSTEntry::FileEntry>(pEntry->entry);
-            //if (output.tellp() != entry.fileOffset)
-            //{
-            //    //Console.WriteLine("FAILED");
-            //}
 
             std::ifstream input(pEntry->path, std::ios::binary);
             while(input) {
@@ -65,6 +66,12 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
                 const std::string& strm = output.str();
                 outFile.write(&strm[0], strm.size());
                 output.str(std::string()); //reset stringstream
+            }
+            
+            // Update progress dialog
+            if (entries.size() > 1000)
+            {
+                UPDATE_DIALOG_VALUE(100 + (int)(((float) count / (float) entries.size()) * 50.0f))
             }
         }
         else

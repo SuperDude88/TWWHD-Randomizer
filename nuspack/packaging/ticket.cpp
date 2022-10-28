@@ -1,6 +1,7 @@
 #include "ticket.hpp"
 
 #include <random>
+#include <algorithm>
 
 #include <nuspack/crypto/IV.hpp>
 #include <nuspack/crypto/Encryption.hpp>
