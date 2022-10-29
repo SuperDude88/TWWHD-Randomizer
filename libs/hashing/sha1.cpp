@@ -6,10 +6,8 @@
 
 #include "sha1.h"
 
-// big endian architectures need #define __BYTE_ORDER __BIG_ENDIAN
-#ifndef _MSC_VER
-#include <endian.h>
-#endif
+//plug in our own endian code
+#include <utility/endian.hpp>
 
 
 /// same as reset()
@@ -56,21 +54,6 @@ namespace
   {
     return (a << c) | (a >> (32 - c));
   }
-
-  inline uint32_t swap(uint32_t x)
-  {
-#if defined(__GNUC__) || defined(__clang__)
-    return __builtin_bswap32(x);
-#endif
-#ifdef MSC_VER
-    return _byteswap_ulong(x);
-#endif
-
-    return (x >> 24) |
-          ((x >>  8) & 0x0000FF00) |
-          ((x <<  8) & 0x00FF0000) |
-           (x << 24);
-  }
 }
 
 
@@ -88,12 +71,10 @@ void SHA1::processBlock(const void* data)
   const uint32_t* input = (uint32_t*) data;
   // convert to big endian
   uint32_t words[80];
-  for (int i = 0; i < 16; i++)
-#if defined(__BYTE_ORDER) && (__BYTE_ORDER != 0) && (__BYTE_ORDER == __BIG_ENDIAN)
-    words[i] = input[i];
-#else
-    words[i] = swap(input[i]);
-#endif
+  for (int i = 0; i < 16; i++) {
+    using namespace Utility::Endian;
+    words[i] = toPlatform(Type::Big, input[i]);
+  }
 
   // extend to 80 words
   for (int i = 16; i < 80; i++)
