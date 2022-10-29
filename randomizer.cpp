@@ -24,6 +24,7 @@
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
 #include <utility/endian.hpp>
+#include <nuspack/packer.hpp>
 
 #include <gui/update_dialog_header.hpp>
 
