@@ -148,8 +148,8 @@ TweakError Add_Relocations(const std::string file_path) {
 		}
 
 		Elf32_Rela reloc;
-		reloc.r_offset = std::stoi(relocation.at("r_offset").get<std::string>(), nullptr, 16);
-		reloc.r_info = std::stoi(relocation.at("r_info").get<std::string>(), nullptr, 16);
+		reloc.r_offset = std::stoul(relocation.at("r_offset").get<std::string>(), nullptr, 16);
+		reloc.r_info = std::stoul(relocation.at("r_info").get<std::string>(), nullptr, 16);
 		reloc.r_addend = std::stoi(relocation.at("r_addend").get<std::string>(), nullptr, 16);
 
 		RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, reloc));

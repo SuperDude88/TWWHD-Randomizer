@@ -519,7 +519,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
             }
         }
     }
-    else if (element.ends_with(element, ".unpack/"))
+    else if (element.ends_with(".unpack/"))
     {
         resultKey = element.substr(0, element.size() - 8);
 

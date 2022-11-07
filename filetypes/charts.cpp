@@ -1,6 +1,5 @@
 #include "charts.hpp"
 
-#include <cmath>
 #include <algorithm>
 
 #include <utility/endian.hpp>

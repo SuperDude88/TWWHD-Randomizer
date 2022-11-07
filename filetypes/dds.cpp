@@ -2,7 +2,6 @@
 
 #include <unordered_map>
 #include <cstring>
-#include <cmath>
 #include <algorithm>
 #include <type_traits>
 #include <utility/common.hpp>
