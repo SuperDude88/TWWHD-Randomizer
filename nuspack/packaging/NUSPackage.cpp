@@ -20,7 +20,12 @@ void readFiles(const std::filesystem::path& dir, FSTEntry& parent, const bool& n
     for(auto item : std::filesystem::directory_iterator(dir)) {
         if(std::filesystem::is_regular_file(item)) {
             FSTEntry& child = parent.children.emplace_back();
-            child.entry.emplace<FSTEntry::FileEntry>().fileSize = std::filesystem::file_size(item); // BUG: GCC complains if there's no arguments to the emplace for some reason, Clang errors with arguments
+            
+        #if (defined(__GNUC__) || defined(__GNUG__)) && !defined(__clang__)
+            child.entry.emplace<FSTEntry::FileEntry>(0, 0).fileSize = std::filesystem::file_size(item); // BUG: GCC complains if there's no arguments to the emplace for some reason
+        #else
+            child.entry.emplace<FSTEntry::FileEntry>().fileSize = std::filesystem::file_size(item); //clang errors with arguments
+        #endif
             child.path = item.path();
             child.parent = &parent;
             child.name = child.path.filename().string();

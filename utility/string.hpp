@@ -8,8 +8,6 @@
 #include <iomanip>
 
 namespace Utility::Str {
-    bool endsWith(const std::string& a, const std::string& b);
-
     std::string toUTF8(const std::u16string& str);
 
     std::u16string toUTF16(const std::string& str);
@@ -62,7 +60,7 @@ namespace Utility::Str {
     }
 
     template<typename T>
-    std::string intToHex(const T& i, const size_t& width, const bool& base = true)
+    std::string intToHex(const T& i, const std::streamsize& width, const bool& base = true)
     {
       static_assert(std::is_integral_v<T>, "intToHex<T> must be integral type!");
 

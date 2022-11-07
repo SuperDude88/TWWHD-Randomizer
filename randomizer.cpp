@@ -229,7 +229,7 @@ private:
 					const uint32_t mask = 0x0FF00000;
 					const uint8_t shiftAmount = 20;
 
-    				params = (params & (~mask)) | ((new_chart->owned_chart_index_plus_1 << shiftAmount) & mask);
+    				params = (params & (~mask)) | (uint32_t(new_chart->owned_chart_index_plus_1 << shiftAmount) & mask);
 					Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, params);
 				}
 			}

@@ -98,49 +98,12 @@ namespace {
 
 		nlohmann::json symbols = nlohmann::json::parse(fptr);
 		for (const auto& symbol : symbols.items()) {
-			const uint32_t address = std::stoi(symbol.value().get<std::string>(), nullptr, 16);
+			const uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
 		}
 
 		return TweakError::NONE;
 	}
-
-	// std::string get_indefinite_article(const std::string& string) {
-	// 	char first_letter = std::tolower(string[0]);
-	// 	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
-	// 		return "an";
-	// 	}
-	// 	else {
-	// 		return "a";
-	// 	}
-	// }
-  //
-	// std::u16string get_indefinite_article(const std::u16string& string) {
-	// 	const char16_t first_letter = std::tolower(string[0]);
-	// 	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
-	// 		return u"an";
-	// 	}
-	// 	else {
-	// 		return u"a";
-	// 	}
-	// }
-  //
-	// std::string get_hint_item_name(const std::string& item_name) {
-	// 	if (item_name.find("Triforce Chart") != std::string::npos) {
-	// 		return "Triforce Chart";
-	// 	}
-	// 	if (item_name.find("Treasure Chart") != std::string::npos) {
-	// 		return "Treasure Chart";
-	// 	}
-	// 	if (item_name.find("Small Key") != std::string::npos) {
-	// 		return "Small Key";
-	// 	}
-	// 	if(item_name.find("Big Key") != std::string::npos) {
-	// 		return "Big Key";
-	// 	}
-  //
-	// 	return item_name;
-	// }
 }
 
 TweakError Apply_Patch(const std::string& file_path) {
@@ -150,7 +113,7 @@ TweakError Apply_Patch(const std::string& file_path) {
 	const nlohmann::json patches = nlohmann::json::parse(fptr);
 
 	for (const auto& patch : patches.items()) {
-		const uint32_t offset = std::stoi(patch.key(), nullptr, 16);
+		const uint32_t offset = std::stoul(patch.key(), nullptr, 16);
 		offset_t sectionOffset = elfUtil::AddressToOffset(gRPX, offset);
 		if (!sectionOffset) { //address not in section
 			std::string data;
@@ -1740,7 +1703,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
     for(const uint8_t& index : room_indexes) {
       const uint32_t column = (index - 1) % 7;
-      const uint32_t row = std::floor((index - 1) / 7);
+      const uint32_t row = (index - 1) / 7;
       const float x_pos = (column * 73.0f) - 148.0f;
       const float y_pos = 175.0f - (row * 73.0f);
 
