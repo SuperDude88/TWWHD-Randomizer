@@ -1,6 +1,5 @@
 #include "bflim.hpp"
 
-#include <cmath>
 #include <cstring>
 #include <algorithm>
 #include <string>
