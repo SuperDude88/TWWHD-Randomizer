@@ -486,7 +486,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::extractToDir(const std::string& dirPath) {
+    FRESError resFile::extractToDir(const std::string& dirPath) const {
         for (const FileSpec& file : files) {
             std::ofstream outFile(dirPath + '/' + file.fileName, std::ios::binary);
             if (!outFile.is_open()) {

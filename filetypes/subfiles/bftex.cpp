@@ -93,7 +93,7 @@ namespace FileTypes::Subfiles {
         
     }
 
-    FTEXFile FTEXFile::createNew(const std::string& filename) {
+    FTEXFile FTEXFile::createNew() {
 		FTEXFile newFTEX{};
 		newFTEX.initNew();
 		return newFTEX;
@@ -306,7 +306,7 @@ namespace FileTypes::Subfiles {
             dds.header.numMips = 1;
         }
 
-        uint32_t bpp = std::floor(surfaceGetBitsPerPixel(dds.format_) / 8);
+        uint32_t bpp = surfaceGetBitsPerPixel(dds.format_) / 8;
         auto surfInfo = getSurfaceInfo(GX2SurfaceFormat(dds.format_), dds.header.width, dds.header.height, GX2SurfaceDim(1), GX2SurfaceDim(1), tileMode, GX2AAMode(0), 0);
 
         if(surfInfo.depth != 1) LOG_ERR_AND_RETURN(FTEXError::UNSUPPORTED_DEPTH);

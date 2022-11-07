@@ -435,7 +435,7 @@ namespace FileTypes
 		unused_flag_ids = {};
 	}
 
-	EventList EventList::createNew(const std::string& filename) {
+	EventList EventList::createNew() {
 		EventList newEventList{};
 		newEventList.initNew();
 		return newEventList;

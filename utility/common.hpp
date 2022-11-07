@@ -4,6 +4,7 @@
 #include <fstream>
 #include <limits>
 
+#include <type_traits>
 #include <utility/endian.hpp>
 
 
@@ -243,6 +244,26 @@ std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset);
 
 std::u16string readNullTerminatedWStr(std::istream& in, const unsigned int offset);
 
-unsigned int padToLen(std::ostream& out, const unsigned int& len, const char pad = '\x00');
+template<typename error_enum>
+error_enum readPadding(std::istream& in, const unsigned int& len, const char* val = nullptr) {
+	static_assert(std::is_enum_v<error_enum>, "error_enum must be enum type");
+
+	if (in.tellg() % len != 0) {
+	    const size_t& padding_size = len - (static_cast<size_t>(in.tellg()) % len);
+
+	    std::string padding(padding_size, '\0');
+	    if (!in.read(&padding[0], static_cast<std::streamoff>(padding_size))) return error_enum::REACHED_EOF;
+
+		if(val != nullptr) {
+	    	for (const char& character : padding) {
+	    	    if (character != *val) return error_enum::UNEXPECTED_VALUE;
+	    	}
+		}
+	}
+
+	return error_enum::NONE;
+}
+
+size_t padToLen(std::ostream& out, const unsigned int& len, const char pad = '\x00');
 
 typedef RGBA<uint8_t> RGBA8;

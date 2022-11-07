@@ -1269,7 +1269,7 @@ namespace FileTypes {
 		textures = {};
 	}
 
-	JPC JPC::createNew(const std::string& filename) {
+	JPC JPC::createNew() {
 		JPC newJPC{};
 		newJPC.initNew();
 		return newJPC;
@@ -1299,11 +1299,7 @@ namespace FileTypes {
 
 			particle_index_by_id[particle.particle_id] = i;
 
-			unsigned int numPaddingBytes = 0x20 - (jpc.tellg() % 0x20);
-			if (numPaddingBytes == 0x20) {
-				numPaddingBytes = 0;
-			}
-			jpc.seekg(numPaddingBytes, std::ios::cur);
+			LOG_AND_RETURN_IF_ERR(readPadding<JPCError>(jpc, 0x20));
 		}
 
 		char magic[4];

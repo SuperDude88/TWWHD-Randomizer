@@ -323,13 +323,22 @@ std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fil
             }
             else {
                 if(fileSpec[i - 1] == "SARC") {
-                    FileTypes::SARCFile::File& file = std::get<FileTypes::SARCFile>(parentEntry->data).getFile(element + '\0');
-                    nextEntry->data.emplace<std::stringstream>(std::move(file.data));
+                    FileTypes::SARCFile::File* file = std::get<FileTypes::SARCFile>(parentEntry->data).getFile(element + '\0');
+                    if(file == nullptr) {
+                        ErrorLog::getInstance().log("Could not find " + element + " in SARC");
+                        return nullptr;
+                    }
+                    
+                    nextEntry->data.emplace<std::stringstream>(std::move(file->data));
                 }
                 
                 if(fileSpec[i - 1] == "BFRES") {
                     const auto& files = std::get<FileTypes::resFile>(parentEntry->data).files;
                     auto it = std::find_if(files.begin(), files.end(), [&](const FileTypes::resFile::FileSpec& spec) { return spec.fileName == element; });
+                    if(it == files.end()) {
+                        ErrorLog::getInstance().log("Could not find " + element + " in BFRES");
+                        return nullptr;
+                    }
 
                     nextEntry->data.emplace<std::stringstream>(std::get<FileTypes::resFile>(parentEntry->data).fileData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
                 }
@@ -430,7 +439,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
     //Write directly to output if it is the last step
     Utility::platformLog("Repacking %s\n", element.c_str());
     std::string resultKey;
-    if (Utility::Str::endsWith(element, ".elf"))
+    if (element.ends_with(".elf"))
     {
         resultKey = element.substr(0, element.size() - 4);
 
@@ -465,7 +474,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
             entry->data = std::monostate{};
         }
     }
-    else if (Utility::Str::endsWith(element, ".dec"))
+    else if (element.ends_with(".dec"))
     {
         if(entry->fullCompress) {
             uint32_t compressLevel = 9;
@@ -510,7 +519,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
             }
         }
     }
-    else if (Utility::Str::endsWith(element, ".unpack/"))
+    else if (element.ends_with(element, ".unpack/"))
     {
         resultKey = element.substr(0, element.size() - 8);
 
@@ -530,7 +539,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
 
         //Repack to output directory if file exists, otherwise stay in cache
         if(entry->toOutput) {
-            if(Utility::Str::endsWith(resultKey, ".dec")) { //remove extra extension if skipping compression
+            if(resultKey.ends_with(".dec")) { //remove extra extension if skipping compression
                 resultKey = resultKey.substr(0, resultKey.size() - 4);
             }
             err = sarc.writeToFile((outputDir / resultKey).string());
@@ -547,7 +556,7 @@ RandoSession::RepackResult RandoSession::repackFile(const std::string& element, 
             return RepackResult::FAIL;
         }
     }
-    else if (Utility::Str::endsWith(element, ".res/"))
+    else if (element.ends_with(".res/"))
     {
         resultKey = element.substr(0, element.size() - 5);
 

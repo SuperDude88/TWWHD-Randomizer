@@ -78,7 +78,7 @@ namespace FileTypes {
 
 	}
 
-	DDSFile DDSFile::createNew(const std::string& filename) {
+	DDSFile DDSFile::createNew() {
 		DDSFile newDDS{};
 		newDDS.initNew();
 		return newDDS;
