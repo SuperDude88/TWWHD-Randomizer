@@ -55,7 +55,7 @@ void computeSwizzleTileMode(const uint8_t& in, uint32_t& swizzle, GX2TileMode& t
 }
 
 uint8_t computeSwizzleTileMode(uint8_t swizzle, GX2TileMode tileMode) {
-    return (swizzle << 5) | static_cast<uint8_t>(tileMode);
+    return uint8_t(swizzle << 5) | static_cast<uint8_t>(tileMode);
 }
 
 bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint32_t& width, const uint32_t& height, const std::variant<std::string, uint32_t>& format_, const std::array<uint8_t, 4>& compSel, const uint32_t& size_, const bool& compressed) {
@@ -295,7 +295,7 @@ namespace FileTypes {
         
 	}
 
-    FLIMFile FLIMFile::createNew(const std::string& filename) {
+    FLIMFile FLIMFile::createNew() {
 		FLIMFile newFLIM{};
 		newFLIM.initNew();
 		return newFLIM;
@@ -491,7 +491,7 @@ namespace FileTypes {
     
         uint32_t tilingDepth = surfOut.depth;
         if(surfOut.tileMode == 3) {
-            tilingDepth = std::floor(tilingDepth / 4);
+            tilingDepth = tilingDepth / 4;
         }
 
         if(tilingDepth != 1) {
@@ -595,7 +595,7 @@ namespace FileTypes {
         dds.data += std::string(padSize, '\0');
 
         uint32_t tilingDepth = surfOut.depth;
-        if (surfOut.tileMode == 3) tilingDepth = std::floor(tilingDepth / 4);
+        if (surfOut.tileMode == 3) tilingDepth = tilingDepth / 4;
 
         if (tilingDepth != 1) {
             ErrorLog::getInstance().log("Unsupported depth!");

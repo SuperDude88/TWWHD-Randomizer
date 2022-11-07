@@ -103,7 +103,7 @@ namespace FileTypes
         std::string fileData;
 
         resFile();
-        //static FRESFile createNew(const std::string& filename); //Needs more complete implementation to be usable
+        //static FRESFile createNew(); //Needs more complete implementation to be usable
         FRESError loadFromBinary(std::istream& bfres); //Only does embedded files for now
         FRESError loadFromFile(const std::string& filePath);
         /*FRESError readFile(const FRESFileSpec& file, std::string& dataOut, uint32_t offset = 0, uint32_t bytes = 0);
@@ -113,7 +113,7 @@ namespace FileTypes
         FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFile);
         FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);
         FRESError replaceFromDir(const std::string& dirPath);
-        FRESError extractToDir(const std::string& dirPath); //Only does embedded files for now
+        FRESError extractToDir(const std::string& dirPath) const; //Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
         FRESError writeToFile(const std::string& outFilePath);
         //FRESError addFile(const std::string& fileName, std::istream& fileData); //Shifts too many offsets and data pieces for the (current) partial implementation

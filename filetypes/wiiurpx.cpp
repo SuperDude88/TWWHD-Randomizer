@@ -368,7 +368,7 @@ namespace FileTypes {
         std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
         std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
         in.seekg(ehdr.e_shoff);
-        for (uint32_t i = 0; i < ehdr.e_shnum; i++)
+        for (uint16_t i = 0; i < ehdr.e_shnum; i++)
         {
             shdr_table[i].first = i;
             Elf32_Shdr& shdr_entry = shdr_table[i].second;

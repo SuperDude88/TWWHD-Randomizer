@@ -2257,7 +2257,7 @@ namespace FileTypes {
 		return;
 	}
 
-	FLYTFile FLYTFile::createNew(const std::string& filename) {
+	FLYTFile FLYTFile::createNew() {
 		FLYTFile newFLYT{};
 		newFLYT.initNew();
 		return newFLYT;

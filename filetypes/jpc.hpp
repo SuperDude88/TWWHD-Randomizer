@@ -503,7 +503,7 @@ namespace FileTypes {
 		std::unordered_map<std::string, size_t> textures; //store index to preserve original order
 
 		JPC();
-		static JPC createNew(const std::string& filename);
+		static JPC createNew();
 		JPCError loadFromBinary(std::istream& jpc);
 		JPCError loadFromFile(const std::string& filePath);
 		JPCError addParticle(const Particle& particle);
