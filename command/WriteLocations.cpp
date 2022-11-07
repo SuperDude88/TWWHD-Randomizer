@@ -41,7 +41,7 @@ namespace {
 
 		nlohmann::json symbols = nlohmann::json::parse(fptr);
 		for (const auto& symbol : symbols.items()) {
-			uint32_t address = std::stoi(symbol.value().get<std::string>(), nullptr, 16);
+			uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
 		}
 
@@ -76,7 +76,7 @@ ELFError saveRPX() {
 }
 
 
-uint8_t getLowestSetBit(uint32_t mask) {
+constexpr uint8_t getLowestSetBit(uint32_t mask) {
     uint8_t lowestSetIndex = 0xFF;
     for (uint8_t bitIndex = 0; bitIndex < 32; bitIndex++) {
         if (mask & (1 << bitIndex)) {
@@ -90,10 +90,10 @@ uint8_t getLowestSetBit(uint32_t mask) {
 
 template<typename T>
 ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
-    uint8_t shiftAmount = getLowestSetBit(mask);
+    const uint8_t shiftAmount = getLowestSetBit(mask);
     if (shiftAmount == 0xFF) LOG_ERR_AND_RETURN(ModificationError::INVALID_MASK)
 
-    actor.params = (actor.params & (~mask)) | ((value << shiftAmount) & mask);
+    actor.params = (actor.params & (~mask)) | (static_cast<uint32_t>(value << shiftAmount) & mask);
     return ModificationError::NONE;
 }
 
@@ -144,7 +144,7 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
         return ModificationError::NONE;
     }
 
-    if(Utility::Str::endsWith(gameItemToName(item.getGameItemId()), "Key")) {
+    if(gameItemToName(item.getGameItemId()).ends_with("Key")) {
         // In race mode, only put the dungeon keys for required dungeons in dark wood chests.
         // The other keys go into light wood chests.
         if(raceMode) {

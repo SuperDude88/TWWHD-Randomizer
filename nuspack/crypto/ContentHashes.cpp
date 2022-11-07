@@ -31,13 +31,13 @@ ContentHashes::ContentHashes(std::istream& file, const bool& hashed) {
 }
 
 void ContentHashes::CalculateOtherHashes(const uint32_t& hashLevel, const Hashes_t& inHashes, Hashes_t& outHashes) {
-    int hash_level_pow = 1 << (4 * hashLevel);
+    uint32_t hash_level_pow = 1 << (4 * hashLevel);
 
-    int hashesCount = (blockCount / hash_level_pow) + 1;
-    for (int new_block = 0; new_block < hashesCount; new_block++)
+    uint32_t hashesCount = (blockCount / hash_level_pow) + 1;
+    for (uint32_t new_block = 0; new_block < hashesCount; new_block++)
     {
         std::array<SHA1_t, 16> cur_hashes = {{{0}}}; //why do Clang warnings want so many braces?
-        for (int i = new_block * 16; i < (new_block * 16) + 16; i++)
+        for (uint32_t i = new_block * 16; i < (new_block * 16) + 16; i++)
         {
             if (inHashes.contains(i)) cur_hashes[(i % 16)] = inHashes.at(i);
         }
@@ -119,7 +119,7 @@ std::string ContentHashes::GetHashForBlock(uint32_t block) {
 std::vector<SHA1_t> ContentHashes::GetH3Hashes() {
     std::vector<SHA1_t> ret;
 
-    for (int i = 0; i < h3Hashes.size(); i++)
+    for (size_t i = 0; i < h3Hashes.size(); i++)
     {
         ret.push_back(h3Hashes[i]);
     }
