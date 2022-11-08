@@ -1,8 +1,6 @@
 #include "randomizer.hpp"
-#include "server/command/Log.hpp"
-#include "server/utility/platform.hpp"
-
-#include <iostream>
+#include <command/Log.hpp>
+#include <utility/platform.hpp>
 
 int main()
 {

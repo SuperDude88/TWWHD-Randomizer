@@ -1,38 +1,41 @@
-#include "tweaks.hpp"
-#include "libs/tinyxml2.h"
-#include "seedgen/config.hpp"
-#include "seedgen/random.hpp"
-#include "seedgen/seed.hpp"
-#include "seedgen/permalink.hpp"
-#include "logic/SpoilerLog.hpp"
-#include "logic/Generate.hpp"
-#include "logic/mass_test.hpp"
-#include "server/filetypes/dzx.hpp"
-#include "server/filetypes/charts.hpp"
-#include "server/filetypes/events.hpp"
-#include "server/command/WriteLocations.hpp"
-#include "server/command/RandoSession.hpp"
-#include "server/command/Log.hpp"
-#include "server/platform/nuspack/packer.hpp"
-#include "server/utility/platform.hpp"
-#include "server/utility/file.hpp"
-#include "server/utility/endian.hpp"
-#include "gui/update_dialog_header.hpp"
+#include <tweaks.hpp>
+
 #include <cstring>
 #include <fstream>
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <thread>
+
+#include <libs/tinyxml2.h>
+#include <seedgen/config.hpp>
+#include <seedgen/random.hpp>
+#include <seedgen/seed.hpp>
+#include <seedgen/permalink.hpp>
+#include <logic/SpoilerLog.hpp>
+#include <logic/Generate.hpp>
+#include <logic/mass_test.hpp>
+#include <filetypes/dzx.hpp>
+#include <filetypes/charts.hpp>
+#include <filetypes/events.hpp>
+#include <command/WriteLocations.hpp>
+#include <command/RandoSession.hpp>
+#include <command/Log.hpp>
+#include <utility/platform.hpp>
+#include <utility/file.hpp>
+#include <utility/endian.hpp>
+#include <nuspack/packer.hpp>
+
+#include <gui/update_dialog_header.hpp>
 
 #ifdef DEVKITPRO
 #include <unistd.h> //for chdir
 #include <sysapp/title.h>
-#include "server/platform/wiiutitles.hpp"
+#include <platform/wiiutitles.hpp>
 
 static std::vector<Utility::titleEntry> wiiuTitlesList{};
 #endif
 
-#include <thread>
 #define SEED_KEY "SEED KEY TEST"
 
 RandoSession g_session; //declared outside of class for extern stuff
@@ -64,8 +67,8 @@ private:
 
 		const RandoSession::fspath& base = g_session.getBaseDir();
 		if(!is_directory(base / "code") || !is_directory(base / "content") || !is_directory(base / "meta")) {
-			// Utility::platformLog("Could not find code/content/meta folders at base directory!\n");
-			ErrorLog::getInstance().log("Could not find code/content/meta folders at base directory!");
+			Utility::platformLog("Could not find code/content/meta folders at base directory!\n");
+			//ErrorLog::getInstance().log("Could not find code/content/meta folders at base directory!");
 
 			#ifdef DEVKITPRO
 				Utility::platformLog("Attempting to dump game\n");
@@ -132,17 +135,17 @@ private:
 	}
 
 	void clearOldLogs() {
-		if(std::filesystem::is_regular_file("./Debug Log.txt")) {
-			std::filesystem::remove("./Debug Log.txt");
+		if(std::filesystem::is_regular_file(APP_SAVE_PATH "Debug Log.txt")) {
+			std::filesystem::remove(APP_SAVE_PATH "Debug Log.txt");
 		}
-		if(std::filesystem::is_regular_file("./Error Log.txt")) {
-			std::filesystem::remove("./Error Log.txt");
+		if(std::filesystem::is_regular_file(APP_SAVE_PATH "Error Log.txt")) {
+			std::filesystem::remove(APP_SAVE_PATH "Error Log.txt");
 		}
-		if(std::filesystem::is_regular_file("./Non-Spoiler Log.txt")) {
-			std::filesystem::remove("./Non-Spoiler Log.txt");
+		if(std::filesystem::is_regular_file(APP_SAVE_PATH "Non-Spoiler Log.txt")) {
+			std::filesystem::remove(APP_SAVE_PATH "Non-Spoiler Log.txt");
 		}
-		if(std::filesystem::is_regular_file("./Spoiler Log.txt")) {
-			std::filesystem::remove("./Spoiler Log.txt");
+		if(std::filesystem::is_regular_file(APP_SAVE_PATH "Spoiler Log.txt")) {
+			std::filesystem::remove(APP_SAVE_PATH "Spoiler Log.txt");
 		}
 
 		return;
@@ -811,25 +814,11 @@ int mainRandomize() {
 
 	ErrorLog::getInstance().clearLastErrors();
 
-	#ifdef DEVKITPRO
-		if(!std::filesystem::is_directory("fs:/vol/external01/wiiu/apps/rando")) {
-			ErrorLog::getInstance().log("Could not find randomizer path! This means the randomizer's folder is named incorrectly. Check that the .rpx is inside a folder named \"rando\"");
-			Utility::platformLog("Could not find randomizer path!\n");
-			Utility::platformLog("This means the randomizer's folder is named incorrectly.\n");
-			Utility::platformLog("Check that the .rpx is inside a folder named \"rando\".\n");
-
-			std::this_thread::sleep_for(3s);
-			Utility::platformShutdown();
-			return 1;
-		}
-		chdir("fs:/vol/external01/wiiu/apps/rando");
-	#endif
-
 	Config load;
-	std::ifstream conf("./config.yaml");
+	std::ifstream conf(APP_SAVE_PATH "config.yaml");
 	if(!conf.is_open()) {
 		Utility::platformLog("Creating default config\n");
-		ConfigError err = createDefaultConfig("./config.yaml");
+		ConfigError err = createDefaultConfig(APP_SAVE_PATH "config.yaml");
 		if(err != ConfigError::NONE) {
 			ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
 
@@ -841,7 +830,7 @@ int mainRandomize() {
 	conf.close();
 
 	Utility::platformLog("Reading config\n");
-	ConfigError err = loadFromFile("./config.yaml", load);
+	ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
 	if(err != ConfigError::NONE) {
 		ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
     Utility::platformLog("Failed to read config, ERROR: " + errorToName(err));

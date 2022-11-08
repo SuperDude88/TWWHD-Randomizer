@@ -1,14 +1,14 @@
-
-#include "Generate.hpp"
-#include "../seedgen/random.hpp"
-#include "../seedgen/permalink.hpp"
-#include "../seedgen/config.hpp"
-#include "../server/command/Log.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <cstdio>
 #include <vector>
+
+#include <logic/Generate.hpp>
+#include <seedgen/random.hpp>
+#include <seedgen/permalink.hpp>
+#include <seedgen/config.hpp>
+#include <command/Log.hpp>
 
 Config config;
 
@@ -209,5 +209,5 @@ void massTest(Config& newConfig)
     std::cout << "All settings tests passed" << std::endl;
 
     // Delete error_config if everything passes
-    std::filesystem::remove("./error_config.yaml");
+    std::filesystem::remove(APP_SAVE_PATH "error_config.yaml");
 }

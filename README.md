@@ -41,7 +41,7 @@ To play the randomized game, you must have a CFW active. This should always be t
 The first time it runs, the randomizer will create a backup of the game on your SD card. This can take some time, but only happens once. **Once this folder is created, do not touch it. Deleting or modifying it will force you to reinstall the game from the eShop or disc to play the unmodified version.**
 
 ### On Emulator
-This randomizer does not currently have a binary for Windows, Mac, or Linux. The code is cross-platform, but requires you to set the correct paths in the config. The base game must be an unmodified, decrypted USA copy, and the output directory must be another copy of the game that will be overwritten. For faster randomization, you can change the number of threads in [RandoSession.cpp](server/command/RandoSession.cpp#L120) to match the thread count of your system.
+This randomizer does not currently have a binary for Windows, Mac, or Linux. The code is cross-platform, but requires you to set the correct paths in the config. The base game must be an unmodified, decrypted USA copy, and the output directory must be another copy of the game that will be overwritten. For faster randomization, you can change the number of threads in [RandoSession.cpp](command/RandoSession.cpp#L120) to match the thread count of your system.
 
 ### Building
 To build for Wii U, use the dockerfile and run the image.

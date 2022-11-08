@@ -1,10 +1,12 @@
 
 #include "Search.hpp"
-#include "PoolFunctions.hpp"
-#include "../server/command/Log.hpp"
+
 #include <list>
 #include <unordered_set>
 #include <algorithm>
+
+#include <logic/PoolFunctions.hpp>
+#include <command/Log.hpp>
 
 using ItemMultiSet = std::unordered_multiset<Item>;
 using EventSet = std::unordered_set<EventId>;
@@ -192,7 +194,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
 
     // Variables for general searching
     bool newThingsFound = false;
-    int sphere = 0;
 
     do
     {
@@ -305,7 +306,6 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
                 }
             }
         }
-        sphere++;
     }
     while (newThingsFound);
 

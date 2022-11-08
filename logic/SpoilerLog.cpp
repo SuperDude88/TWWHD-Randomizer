@@ -1,14 +1,14 @@
-
 #include "SpoilerLog.hpp"
-#include "../options.hpp"
-#include "../server/command/Log.hpp"
-#include "../server/utility/platform.hpp"
-#include "../server/filetypes/util/msbtMacros.hpp"
-#include "../server/utility/stringUtil.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+
+#include <options.hpp>
+#include <command/Log.hpp>
+#include <utility/platform.hpp>
+#include <filetypes/util/msbtMacros.hpp>
+#include <utility/string.hpp>
 
 static std::string getSpoilerFormatEntrance(Entrance* entrance, const size_t& longestEntranceLength, const WorldPool& worlds)
 {
@@ -105,7 +105,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 
 void generateSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log("./Spoiler Log.txt");
+    std::ofstream log(APP_SAVE_PATH "Spoiler Log.txt");
 
 	  Utility::platformLog("Generating spoiler log...\n");
     printBasicInfo(log, worlds);

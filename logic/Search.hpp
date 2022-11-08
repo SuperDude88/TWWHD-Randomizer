@@ -1,9 +1,10 @@
 
 #pragma once
 
-#include "World.hpp"
 #include <string>
 #include <vector>
+
+#include <logic/World.hpp>
 
 enum struct SearchMode
 {

@@ -1,12 +1,13 @@
-
 #include "Hints.hpp"
-#include "Search.hpp"
-#include "PoolFunctions.hpp"
-#include "../seedgen/random.hpp"
-#include "../server/command/Log.hpp"
-#include "../server/filetypes/util/msbtMacros.hpp"
-#include "../server/utility/stringUtil.hpp"
+
 #include <cmath>
+
+#include <logic/Search.hpp>
+#include <logic/PoolFunctions.hpp>
+#include <seedgen/random.hpp>
+#include <command/Log.hpp>
+#include <filetypes/util/msbtMacros.hpp>
+#include <utility/string.hpp>
 
 template<typename Container>
 static Location* getHintableLocation(Container& locations)

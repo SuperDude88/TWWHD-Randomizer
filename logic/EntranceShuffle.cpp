@@ -1,11 +1,13 @@
 
 #include "EntranceShuffle.hpp"
-#include "../seedgen/random.hpp"
-#include "PoolFunctions.hpp"
-#include "../server/command/Log.hpp"
-#include "Search.hpp"
+
 #include <map>
 #include <utility>
+
+#include <logic/PoolFunctions.hpp>
+#include <logic/Search.hpp>
+#include <seedgen/random.hpp>
+#include <command/Log.hpp>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}

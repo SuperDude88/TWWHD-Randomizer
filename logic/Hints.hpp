@@ -1,6 +1,6 @@
 #pragma once
 
-#include "World.hpp"
+#include <logic/World.hpp>
 
 #define HINT_PREFIX_ENGLISH u"They say that "
 #define HINT_PREFIX_SPANISH u"Dicen que "

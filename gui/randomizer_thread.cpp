@@ -1,8 +1,9 @@
 #include "randomizer_thread.hpp"
-#include "../randomizer.hpp"
-#include "../server/command/Log.hpp"
 
 #include <iostream>
+
+#include <randomizer.hpp>
+#include <command/Log.hpp>
 
 RandomizerThread::RandomizerThread()
 {

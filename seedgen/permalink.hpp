@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../options.hpp"
+#include <options.hpp>
 
 enum struct PermalinkError {
     NONE = 0,

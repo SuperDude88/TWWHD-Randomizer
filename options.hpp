@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "logic/GameItem.hpp"
+#include <logic/GameItem.hpp>
 
 constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 70;
 

@@ -4,7 +4,7 @@
 #include <set>
 #include <list>
 #include <unordered_map>
-#include "../server/utility/text.hpp"
+#include <utility/text.hpp>
 
 enum struct GameItem : uint8_t
 {

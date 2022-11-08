@@ -1,9 +1,10 @@
 
 #pragma once
 
-#include "Requirements.hpp"
-#include "Area.hpp"
 #include <unordered_set>
+
+#include <logic/Requirements.hpp>
+#include <logic/Area.hpp>
 
 enum struct EntranceType
 {
