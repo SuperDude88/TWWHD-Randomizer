@@ -6,10 +6,8 @@
 
 #include "sha256.h"
 
-// big endian architectures need #define __BYTE_ORDER __BIG_ENDIAN
-#ifndef _MSC_VER
-#include <endian.h>
-#endif
+//plug in our own endian code
+#include <utility/endian.hpp>
 
 
 /// same as reset()
@@ -42,21 +40,6 @@ namespace
   inline uint32_t rotate(uint32_t a, uint32_t c)
   {
     return (a >> c) | (a << (32 - c));
-  }
-
-  inline uint32_t swap(uint32_t x)
-  {
-#if defined(__GNUC__) || defined(__clang__)
-    return __builtin_bswap32(x);
-#endif
-#ifdef MSC_VER
-    return _byteswap_ulong(x);
-#endif
-
-    return (x >> 24) |
-          ((x >>  8) & 0x0000FF00) |
-          ((x <<  8) & 0x00FF0000) |
-           (x << 24);
   }
 
   // mix functions for processBlock()
@@ -94,12 +77,10 @@ void SHA256::processBlock(const void* data)
   // convert to big endian
   uint32_t words[64];
   int i;
-  for (i = 0; i < 16; i++)
-#if defined(__BYTE_ORDER) && (__BYTE_ORDER != 0) && (__BYTE_ORDER == __BIG_ENDIAN)
-    words[i] =      input[i];
-#else
-    words[i] = swap(input[i]);
-#endif
+  for (i = 0; i < 16; i++) {
+    using namespace Utility::Endian;
+    words[i] = toPlatform(Type::Big, input[i]);
+  }
 
   uint32_t x,y; // temporaries
 

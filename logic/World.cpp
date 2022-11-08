@@ -1,19 +1,21 @@
 
 #include "World.hpp"
-#include "Requirements.hpp"
-#include "PoolFunctions.hpp"
-#include "Search.hpp"
-#include "../server/command/Log.hpp"
-#include "../server/utility/platform.hpp"
-#include "../server/utility/stringUtil.hpp"
-#include "../server/utility/file.hpp"
-#include "../seedgen/random.hpp"
-#include "../options.hpp"
+
 #include <memory>
 #include <algorithm>
 #include <cstdlib>
 #include <vector>
 #include <random>
+
+#include <logic/Requirements.hpp>
+#include <logic/PoolFunctions.hpp>
+#include <logic/Search.hpp>
+#include <command/Log.hpp>
+#include <utility/platform.hpp>
+#include <utility/string.hpp>
+#include <utility/file.hpp>
+#include <seedgen/random.hpp>
+#include <options.hpp>
 
 // some error checking macros for brevity and since we can't use exceptions
 #define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
@@ -1161,7 +1163,7 @@ World::WorldLoadingError World::loadPlandomizer()
 {
     LOG_TO_DEBUG("Loading plandomzier file");
     #ifdef DEVKITPRO
-        const std::string plandoFilepath = "./plandomizer.yaml"; //can't bundle in the romfs, put it in the executable directory instead
+        const std::string plandoFilepath = APP_SAVE_PATH "plandomizer.yaml"; //can't bundle in the romfs, put it in the save directory instead
     #else
         const std::string plandoFilepath = settings.plandomizerFile;
     #endif

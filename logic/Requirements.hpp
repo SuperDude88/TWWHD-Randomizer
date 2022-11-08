@@ -6,10 +6,10 @@
 #include <variant>
 #include <unordered_set>
 #include <unordered_map>
-#include "../options.hpp"
-#include "GameItem.hpp"
-#include "Area.hpp"
-#include "../options.hpp"
+
+#include <options.hpp>
+#include <logic/GameItem.hpp>
+#include <logic/Area.hpp>
 
 
 enum struct RequirementType

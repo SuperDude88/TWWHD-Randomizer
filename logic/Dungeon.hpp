@@ -1,8 +1,9 @@
 
 #pragma once
 
-#include "GameItem.hpp"
 #include <list>
+
+#include <logic/GameItem.hpp>
 
 struct Dungeon {
     int keyCount = -1;

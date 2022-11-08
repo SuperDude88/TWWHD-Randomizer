@@ -1,19 +1,21 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
-#include "randomizer_thread.hpp"
-#include "option_descriptions.hpp"
-#include "../seedgen/seed.hpp"
-#include "../seedgen/permalink.hpp"
-#include "../seedgen/tracker_permalink.hpp"
-#include "../server/utility/stringUtil.hpp"
-#include "../server/utility/file.hpp"
-#include "../libs/Yaml.hpp"
+
+#include <algorithm>
+#include <iostream>
 
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include <algorithm>
-#include <iostream>
+#include <ui_mainwindow.h>
+#include <randomizer_thread.hpp>
+#include <option_descriptions.hpp>
+
+#include <libs/Yaml.hpp>
+#include <seedgen/seed.hpp>
+#include <seedgen/permalink.hpp>
+#include <seedgen/tracker_permalink.hpp>
+#include <utility/string.hpp>
+#include <utility/file.hpp>
 
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
 #define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
@@ -36,9 +38,9 @@
 
 void delete_and_create_default_config()
 {
-    std::filesystem::remove("./config.yaml");
+    std::filesystem::remove(APP_SAVE_PATH "config.yaml");
 
-    ConfigError err = createDefaultConfig("./config.yaml");
+    ConfigError err = createDefaultConfig(APP_SAVE_PATH "config.yaml");
     if(err != ConfigError::NONE) {
         QPointer<QMessageBox> messageBox = new QMessageBox();
         auto message = "Failed to create default configuration file\ncode " + std::to_string(static_cast<uint32_t>(err));
@@ -82,7 +84,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // Write settings to file when user closes the program
-    ConfigError err = writeToFile("./config.yaml", config);
+    ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", config);
     if (err != ConfigError:: NONE)
     {
         show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
@@ -93,7 +95,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::load_config_into_ui()
 {
-    ConfigError err = loadFromFile("./config.yaml", config);
+    ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", config);
     if(err != ConfigError::NONE)
     {
         show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
@@ -964,7 +966,8 @@ void MainWindow::on_randomize_button_clicked()
 
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    ConfigError err = writeToFile("./config.yaml", config);
+    // TODO: change code number to string
+    ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", config);
     if(err != ConfigError::NONE) {
         show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
         return;

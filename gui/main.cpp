@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     // Check for config file
-    std::ifstream conf("./config.yaml");
+    std::ifstream conf(APP_SAVE_PATH "config.yaml");
     if (!conf.is_open())
     {
         // No config file, create default

@@ -116,12 +116,12 @@ install(TARGETS wwhd_rando
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 add_subdirectory("../libs" "libs")
-add_subdirectory("../server/utility" "server/utility")
-add_subdirectory("../server/command" "server/command")
-add_subdirectory("../server/filetypes" "server/filetypes")
-add_subdirectory("../server/platform/nuspack" "server/platform/nuspack")
+add_subdirectory("../utility" "utility")
+add_subdirectory("../command" "command")
+add_subdirectory("../filetypes" "filetypes")
 add_subdirectory("../seedgen" "seedgen")
 add_subdirectory("../logic" "logic")
+add_subdirectory("../nuspack" "nuspack")
 
 if(WIN32)
   target_link_libraries(wwhd_rando PRIVATE zlib)

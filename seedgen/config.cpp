@@ -3,12 +3,12 @@
 #include <fstream>
 #include <unordered_set>
 #include <filesystem>
-#include "../options.hpp"
-#include "../libs/Yaml.hpp"
-#include "../logic/GameItem.hpp"
-#include "../seedgen/random.hpp"
-#include "../server/utility/platform.hpp"
-#include "../server/command/Log.hpp"
+
+#include <libs/Yaml.hpp>
+#include <logic/GameItem.hpp>
+#include <seedgen/random.hpp>
+#include <utility/platform.hpp>
+#include <command/Log.hpp>
 
 
 
@@ -175,9 +175,9 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
 
     //hardcode paths for console, otherwise use config
     #ifdef DEVKITPRO
-        out.gameBaseDir = "./backup";
+        out.gameBaseDir = APP_SAVE_PATH "backup";
         out.outputDir = "storage_mlc01:/usr/title/00050000/10143500";
-        out.settings.plandomizerFile = "./plandomizer.yaml";
+        out.settings.plandomizerFile = APP_SAVE_PATH "plandomizer.yaml";
     #else
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, gameBaseDir)
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, outputDir)

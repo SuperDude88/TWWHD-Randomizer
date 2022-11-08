@@ -1,13 +1,15 @@
 
 #include "Fill.hpp"
-#include "Search.hpp"
-#include "PoolFunctions.hpp"
-#include "Dungeon.hpp"
-#include "../seedgen/random.hpp"
-#include "../server/command/Log.hpp"
-#include "../server/utility/platform.hpp"
+
 #include <chrono>
 #include <numeric>
+
+#include <logic/Search.hpp>
+#include <logic/PoolFunctions.hpp>
+#include <logic/Dungeon.hpp>
+#include <seedgen/random.hpp>
+#include <command/Log.hpp>
+#include <utility/platform.hpp>
 
 #define FILL_ERROR_CHECK(err) if (err != FillError::NONE) {return err;}
 

@@ -1,21 +1,24 @@
 
 #include "Generate.hpp"
-#include "World.hpp"
-#include "ItemPool.hpp"
-#include "Fill.hpp"
-#include "SpoilerLog.hpp"
-#include "Hints.hpp"
-#include "../seedgen/random.hpp"
-#include "../server/command/Log.hpp"
-#include "../server/utility/platform.hpp"
-#include "../gui/update_dialog_header.hpp"
-#include "EntranceShuffle.hpp"
+
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
 #include <chrono>
+
+#include <logic/World.hpp>
+#include <logic/ItemPool.hpp>
+#include <logic/Fill.hpp>
+#include <logic/SpoilerLog.hpp>
+#include <logic/Hints.hpp>
+#include <logic/EntranceShuffle.hpp>
+#include <seedgen/random.hpp>
+#include <command/Log.hpp>
+#include <utility/platform.hpp>
+
+#include <gui/update_dialog_header.hpp>
 
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {

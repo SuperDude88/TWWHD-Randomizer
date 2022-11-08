@@ -1,9 +1,10 @@
 
 #pragma once
 
-#include "GameItem.hpp"
-#include "../options.hpp"
 #include <vector>
+
+#include <options.hpp>
+#include <logic/GameItem.hpp>
 
 using GameItemPool = std::vector<GameItem>;
 using ItemNamePool = std::vector<std::string>;

@@ -1,11 +1,13 @@
 
 #include "GameItem.hpp"
-#include "World.hpp"
-#include "../server/command/Log.hpp"
-#include "../server/utility/stringUtil.hpp"
-#include "../server/filetypes/util/msbtMacros.hpp"
+
 #include <unordered_map>
 #include <array>
+
+#include <logic/World.hpp>
+#include <command/Log.hpp>
+#include <utility/string.hpp>
+#include <filetypes/util/msbtMacros.hpp>
 
 GameItem nameToGameItem(const std::string& name)
 {

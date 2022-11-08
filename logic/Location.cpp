@@ -1,10 +1,12 @@
 
 #include "Location.hpp"
-#include "GameItem.hpp"
-#include "World.hpp"
-#include "../server/utility/stringUtil.hpp"
-#include <string>
+
 #include <unordered_map>
+#include <string>
+
+#include <logic/GameItem.hpp>
+#include <logic/World.hpp>
+#include <utility/string.hpp>
 
 LocationCategory nameToLocationCategory(const std::string& name)
 {
