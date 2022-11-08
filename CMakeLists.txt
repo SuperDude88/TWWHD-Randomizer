@@ -5,6 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(wwhd_rando CXX)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
 add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0)
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
