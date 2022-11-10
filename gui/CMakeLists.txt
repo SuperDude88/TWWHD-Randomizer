@@ -76,7 +76,7 @@ file(COPY "../asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")      
 file(COPY  ../assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                          # Images and other assets used in patching
 file(COPY "../logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
 
-add_compile_definitions(DATA_PATH="./data/")
+add_compile_definitions(DATA_PATH="./data/" APP_SAVE_PATH="./" TEMP_DIR="./temp/")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(wwhd_rando
@@ -122,6 +122,8 @@ add_subdirectory("../filetypes" "filetypes")
 add_subdirectory("../seedgen" "seedgen")
 add_subdirectory("../logic" "logic")
 add_subdirectory("../nuspack" "nuspack")
+
+target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR}/..)
 
 if(WIN32)
   target_link_libraries(wwhd_rando PRIVATE zlib)
