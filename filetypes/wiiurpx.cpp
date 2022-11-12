@@ -162,7 +162,7 @@ namespace FileTypes {
             if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_entsize), sizeof(shdr_entry.sh_entsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
 
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_name);
-            shdr_entry.sh_type = static_cast<SectionType>(Utility::Endian::toPlatform(eType::Big, static_cast<std::underlying_type_t<SectionType>>(shdr_entry.sh_type)));
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_type);
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_flags);
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_addr);
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_offset);
@@ -261,7 +261,7 @@ namespace FileTypes {
         for (const auto& [index, entry] : shdr_table)
         {
             auto sh_name = Utility::Endian::toPlatform(eType::Big, entry.sh_name);
-            auto sh_type = Utility::Endian::toPlatform(eType::Big, static_cast<std::underlying_type_t<SectionType>>(entry.sh_type));
+            auto sh_type = static_cast<uint32_t>(Utility::Endian::toPlatform(eType::Big, entry.sh_type));
             auto sh_flags = Utility::Endian::toPlatform(eType::Big, entry.sh_flags);
             auto sh_addr = Utility::Endian::toPlatform(eType::Big, entry.sh_addr);
             auto sh_offset = Utility::Endian::toPlatform(eType::Big, entry.sh_offset);
