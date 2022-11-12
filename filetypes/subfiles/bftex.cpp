@@ -328,12 +328,11 @@ namespace FileTypes::Subfiles {
         }
 
         uint32_t mipSize = 0;
-        uint32_t numMips = 1;
         std::vector<uint32_t> mipOffsets_ = {};
 
         std::vector<std::string> result;
-        unsigned int mipLevel = 0;
-        for(; mipLevel < numMips; mipLevel++) {
+        uint32_t mipLevel = 0;
+        for(; mipLevel < dds.header.numMips; mipLevel++) {
             auto offset_size = getCurrentMipOffset_Size(width, height, blkWidth, blkHeight, bpp, mipLevel);
             std::string data_ = dds.data.substr(offset_size.first, offset_size.second);
 
