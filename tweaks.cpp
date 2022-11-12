@@ -2204,7 +2204,7 @@ TweakError replace_ctmc_chest_texture() {
 
 	FileTypes::resFile bfres;
 	FILETYPE_ERROR_CHECK(bfres.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true, true));
+	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_TILED_2D_THIN1, 0, true, true));
 	FILETYPE_ERROR_CHECK(bfres.writeToStream(*stream));
 
 	return TweakError::NONE;
