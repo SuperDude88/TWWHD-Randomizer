@@ -173,7 +173,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				strOffset += name.size();
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after names
+			sectionSize = out.tellp() - sectionStart; //section ends after names
 		}
 
 		out.seekp(sectionStart + 0xC);
@@ -260,7 +260,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				strOffset += name.size();
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after names
+			sectionSize = out.tellp() - sectionStart; //section ends after names
 		}
 
 		out.seekp(sectionStart + 0xC);
@@ -623,10 +623,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				matOffsets.push_back(matOffset);
 				LOG_AND_RETURN_IF_ERR(mat.save_changes(out));
 
-				matOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				matOffset = out.tellp() - sectionStart;
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after materials
+			sectionSize = out.tellp() - sectionStart; //section ends after materials
 		}
 
 		out.seekp(sectionStart + 0xC);
@@ -813,7 +813,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			out.seekp(entryEnd, std::ios::beg);
 		}
 
-		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		sectionSize = out.tellp() - sectionStart;
 		out.seekp(sectionStart + 0x4, std::ios::beg);
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
 		out.write(reinterpret_cast<const char*>(&sectionSize_BE), sizeof(sectionSize_BE)); //update value
@@ -872,7 +872,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			numPaddingBytes = 0;
 		}
 		bflyt.seekg(numPaddingBytes, std::ios::cur);
-		animNameTableOffset = static_cast<uint32_t>(bflyt.tellg()) - sectionStart;
+		animNameTableOffset = bflyt.tellg() - sectionStart;
 
 		animNameOffsets.reserve(animCount);
 		for (unsigned int i = 0; i < animCount; i++) {
@@ -916,14 +916,14 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		out.write(&name[0], name.size());
 		padToLen(out, 4);
 
-		paneNamesOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		paneNamesOffset = out.tellp() - sectionStart;
 
 		for (const std::string& paneName : paneNames) {
 			out.write(&paneName[0], 0x18);
 		}
 
 		padToLen(out, 4);
-		animNameTableOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		animNameTableOffset = out.tellp() - sectionStart;
 
 		animNameOffsets.clear();
 		animNameOffsets.reserve(animCount);
@@ -935,7 +935,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				nameOffset += animName.size();
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after materials
+			sectionSize = out.tellp() - sectionStart; //section ends after materials
 		}
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
@@ -1400,7 +1400,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
 		Utility::seek(out, 8, std::ios::cur); //skip content and frame table offsets
 
-		contentOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		contentOffset = out.tellp() - sectionStart;
 		writeRGBA(out, content.vertexColorTL);
 		writeRGBA(out, content.vertexColorTR);
 		writeRGBA(out, content.vertexColorBL);
@@ -1421,7 +1421,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 
-		frameTableOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		frameTableOffset = out.tellp() - sectionStart;
 		frameTable.clear();
 		frameTable.reserve(frameNum);
 
@@ -1436,10 +1436,10 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 				out.write(reinterpret_cast<const char*>(&frame.texFlip), sizeof(frame.texFlip));
 				out.write(reinterpret_cast<const char*>(&frame.padding_0x00), sizeof(frame.padding_0x00));
 
-				frameOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				frameOffset = out.tellp() - sectionStart;
 			}
 			padToLen(out, 4);
-			sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after frames
+			sectionSize = out.tellp() - sectionStart; //section ends after frames
 		}
 
 		out.seekp(sectionStart + 0x4, std::ios::beg);
@@ -1706,7 +1706,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		textOffset = 0;
 		if (!text.empty()) {
-			textOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+			textOffset = out.tellp() - sectionStart;
             Utility::Endian::toPlatform_inplace(eType::Big, text);
 			out.write(reinterpret_cast<const char*>(&text[0]), text.size() * 2);
 			padToLen(out, 4);
@@ -1714,14 +1714,14 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		nameOffset = 0;
 		if (!textBoxName.empty()) {
-			nameOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+			nameOffset = out.tellp() - sectionStart;
 			out.write(&textBoxName[0], textBoxName.size());
 			padToLen(out, 4);
 		}
 
 		charTransformOffset = std::nullopt;
 		if (charTransform.has_value()) {
-			charTransformOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+			charTransformOffset = out.tellp() - sectionStart;
 			perCharTransform& transform = charTransform.value();
 
 			Utility::Endian::toPlatform_inplace(eType::Big, transform.curveTimeOffset);
@@ -1735,7 +1735,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 			out.write(reinterpret_cast<const char*>(&transform.padding_0x00), sizeof(transform.padding_0x00));
 		}
 
-		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after text/transform
+		sectionSize = out.tellp() - sectionStart; //section ends after text/transform
 
 		out.seekp(sectionStart + 0x4, std::ios::beg);
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
@@ -1858,7 +1858,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 		}
 
 		//doesnt need padding, length will always be a multiple of 4
-		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart; //section ends after coords
+		sectionSize = out.tellp() - sectionStart; //section ends after coords
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
 		out.seekp(sectionStart + 0x4, std::ios::beg);
@@ -2038,19 +2038,19 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 			prop.propOffset = 0;
 			if (prop.prop.has_value()) {
-				prop.propOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				prop.propOffset = out.tellp() - sectionStart;
 				LOG_AND_RETURN_IF_ERR(prop.prop.value()->save_changes(out));
 			}
 
 			prop.userDataOffset = 0;
 			if (prop.userData.has_value()) {
-				prop.userDataOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				prop.userDataOffset = out.tellp() - sectionStart;
 				LOG_AND_RETURN_IF_ERR(prop.userData.value().save_changes(out));
 			}
 
 			prop.panelInfoOffset = 0;
 			if (prop.paneInfo.has_value()) {
-				prop.panelInfoOffset = static_cast<uint32_t>(out.tellp()) - sectionStart;
+				prop.panelInfoOffset = out.tellp() - sectionStart;
 				out.write(&prop.paneInfo.value()[0], 0x34);
 			}
 
@@ -2070,7 +2070,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
 		out.write(&lytFilename[0], lytFilename.size());
 		padToLen(out, 4);
-		sectionSize = static_cast<uint32_t>(out.tellp()) - sectionStart;
+		sectionSize = out.tellp() - sectionStart;
 
 		uint32_t sectionSize_BE = Utility::Endian::toPlatform(eType::Big, sectionSize);
 		out.seekp(sectionStart + 0x4, std::ios::beg);
