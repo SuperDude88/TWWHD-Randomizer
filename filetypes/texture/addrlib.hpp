@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <unordered_set>
 #include <string>
-#include <cmath>
 
 #include <filetypes/shared/gx2.hpp>
 

@@ -105,7 +105,7 @@ namespace FileTypes{
 		files = {};
 	}
 
-	SARCFile SARCFile::createNew(const std::string& filename) {
+	SARCFile SARCFile::createNew() {
 		SARCFile newSARC{};
 		newSARC.initNew();
 		return newSARC;
@@ -220,12 +220,11 @@ namespace FileTypes{
 		return loadFromBinary(file);
 	}
 
-	SARCFile::File& SARCFile::getFile(const std::string& filename) {
+	SARCFile::File* SARCFile::getFile(const std::string& filename) {
 		if (file_index_by_name.count(filename) == 0) {
-			File blankFile;
-			return blankFile;
+			return nullptr;
 		}
-		return files[file_index_by_name.at(filename)];
+		return &files[file_index_by_name.at(filename)];
 	}
 
 	SARCError SARCFile::writeToStream(std::ostream& out) {
@@ -324,7 +323,7 @@ namespace FileTypes{
 		return writeToStream(outFile);
 	}
 
-	SARCError SARCFile::extractToDir(const std::string& dirPath) {
+	SARCError SARCFile::extractToDir(const std::string& dirPath) const {
 		for (const File& file : files)
 		{
 			const std::filesystem::path path = dirPath + '/' + file.name;

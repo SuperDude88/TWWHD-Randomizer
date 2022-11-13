@@ -7,7 +7,7 @@
 
 PackError createPackage(const std::filesystem::path& dirPath, const std::filesystem::path& out, const Key& encryptionKey, const Key& encryptKeyWith) {
     AppInfo info;
-    LOG_AND_RETURN_IF_ERR(info.parseFromXML(dirPath / "code/app.xml"));
+    if(!info.parseFromXML(dirPath / "code/app.xml")) LOG_ERR_AND_RETURN(PackError::XML_ERROR);
 
     const uint64_t parentID = info.titleID & ~0x0000000F00000000;
 

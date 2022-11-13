@@ -98,49 +98,12 @@ namespace {
 
 		nlohmann::json symbols = nlohmann::json::parse(fptr);
 		for (const auto& symbol : symbols.items()) {
-			const uint32_t address = std::stoi(symbol.value().get<std::string>(), nullptr, 16);
+			const uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
 		}
 
 		return TweakError::NONE;
 	}
-
-	// std::string get_indefinite_article(const std::string& string) {
-	// 	char first_letter = std::tolower(string[0]);
-	// 	if (first_letter == 'a' || first_letter == 'e' || first_letter == 'i' || first_letter == 'o' || first_letter == 'u') {
-	// 		return "an";
-	// 	}
-	// 	else {
-	// 		return "a";
-	// 	}
-	// }
-  //
-	// std::u16string get_indefinite_article(const std::u16string& string) {
-	// 	const char16_t first_letter = std::tolower(string[0]);
-	// 	if (first_letter == u'a' || first_letter == u'e' || first_letter == u'i' || first_letter == u'o' || first_letter == u'u') {
-	// 		return u"an";
-	// 	}
-	// 	else {
-	// 		return u"a";
-	// 	}
-	// }
-  //
-	// std::string get_hint_item_name(const std::string& item_name) {
-	// 	if (item_name.find("Triforce Chart") != std::string::npos) {
-	// 		return "Triforce Chart";
-	// 	}
-	// 	if (item_name.find("Treasure Chart") != std::string::npos) {
-	// 		return "Treasure Chart";
-	// 	}
-	// 	if (item_name.find("Small Key") != std::string::npos) {
-	// 		return "Small Key";
-	// 	}
-	// 	if(item_name.find("Big Key") != std::string::npos) {
-	// 		return "Big Key";
-	// 	}
-  //
-	// 	return item_name;
-	// }
 }
 
 TweakError Apply_Patch(const std::string& file_path) {
@@ -150,7 +113,7 @@ TweakError Apply_Patch(const std::string& file_path) {
 	const nlohmann::json patches = nlohmann::json::parse(fptr);
 
 	for (const auto& patch : patches.items()) {
-		const uint32_t offset = std::stoi(patch.key(), nullptr, 16);
+		const uint32_t offset = std::stoul(patch.key(), nullptr, 16);
 		offset_t sectionOffset = elfUtil::AddressToOffset(gRPX, offset);
 		if (!sectionOffset) { //address not in section
 			std::string data;
@@ -185,8 +148,8 @@ TweakError Add_Relocations(const std::string file_path) {
 		}
 
 		Elf32_Rela reloc;
-		reloc.r_offset = std::stoi(relocation.at("r_offset").get<std::string>(), nullptr, 16);
-		reloc.r_info = std::stoi(relocation.at("r_info").get<std::string>(), nullptr, 16);
+		reloc.r_offset = std::stoul(relocation.at("r_offset").get<std::string>(), nullptr, 16);
+		reloc.r_info = std::stoul(relocation.at("r_info").get<std::string>(), nullptr, 16);
 		reloc.r_addend = std::stoi(relocation.at("r_addend").get<std::string>(), nullptr, 16);
 
 		RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, reloc));
@@ -743,25 +706,38 @@ TweakError modify_title_screen() {
 TweakError update_name_and_icon() {
 	if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
-	tinyxml2::XMLDocument meta;
+	tinyxml2::XMLDocument meta, app;
 	std::stringstream* metaStream = g_session.openGameFile("meta/meta.xml");
 	EXTRACT_ERR_CHECK(metaStream);
 	meta.LoadFile(*metaStream);
-	tinyxml2::XMLElement* root = meta.RootElement();
-	root->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	root->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	root->FirstChildElement("longname_es")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	root->FirstChildElement("longname_pt")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	std::stringstream* appStream = g_session.openGameFile("code/app.xml");
+	EXTRACT_ERR_CHECK(appStream);
+	app.LoadFile(*appStream);
 
-	root->FirstChildElement("shortname_en")->SetText("The Wind Waker HD Randomizer");
-	root->FirstChildElement("shortname_fr")->SetText("The Wind Waker HD Randomizer");
-	root->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
-	root->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
+	tinyxml2::XMLElement* metaRoot = meta.RootElement();
+	metaRoot->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("longname_es")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("longname_pt")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+
+	metaRoot->FirstChildElement("shortname_en")->SetText("The Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("shortname_fr")->SetText("The Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
+
+	//change the title ID so it gets its own channel when repacked
+	metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+	tinyxml2::XMLElement* appRoot = app.RootElement();
+	appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
 
 	tinyxml2::XMLPrinter printer;
 	meta.Print(&printer);
 	metaStream->str(std::string());
 	*metaStream << printer.CStr();
+	printer.ClearBuffer();
+	app.Print(&printer);
+	appStream->str(std::string());
+	*appStream << printer.CStr();
 
 	return TweakError::NONE;
 }
@@ -1740,7 +1716,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
     for(const uint8_t& index : room_indexes) {
       const uint32_t column = (index - 1) % 7;
-      const uint32_t row = std::floor((index - 1) / 7);
+      const uint32_t row = (index - 1) / 7;
       const float x_pos = (column * 73.0f) - 148.0f;
       const float y_pos = 175.0f - (row * 73.0f);
 
@@ -2241,7 +2217,7 @@ TweakError replace_ctmc_chest_texture() {
 
 	FileTypes::resFile bfres;
 	FILETYPE_ERROR_CHECK(bfres.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true, true));
+	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_TILED_2D_THIN1, 0, true, true));
 	FILETYPE_ERROR_CHECK(bfres.writeToStream(*stream));
 
 	return TweakError::NONE;

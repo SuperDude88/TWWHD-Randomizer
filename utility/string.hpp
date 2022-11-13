@@ -8,8 +8,6 @@
 #include <iomanip>
 
 namespace Utility::Str {
-    bool endsWith(const std::string& a, const std::string& b);
-
     std::string toUTF8(const std::u16string& str);
 
     std::u16string toUTF16(const std::string& str);
@@ -62,7 +60,7 @@ namespace Utility::Str {
     }
 
     template<typename T>
-    std::string intToHex(const T& i, const size_t& width, const bool& base = true)
+    std::string intToHex(const T& i, const std::streamsize& width, const bool& base = true)
     {
       static_assert(std::is_integral_v<T>, "intToHex<T> must be integral type!");
 
@@ -70,4 +68,18 @@ namespace Utility::Str {
       stream << std::hex << (base ? std::showbase : std::noshowbase) << std::setfill('0') << std::setw(width) << i;
       return stream.str();
     }
+
+    //wrapper for a constexpr string, for use in other templates
+    template<size_t N>
+    struct StringLiteral {
+      constexpr StringLiteral(const char (&str)[N]) {
+        std::copy_n(str, N, value);
+      }
+
+      constexpr operator std::string_view() const {
+        return std::string_view(value, N - 1); //leave out null terminator
+      }
+
+      char value[N];
+    };
 }

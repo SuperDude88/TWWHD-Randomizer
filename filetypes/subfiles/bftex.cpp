@@ -42,14 +42,14 @@ std::pair<uint32_t, uint32_t> getCurrentMipOffset_Size(uint32_t width, uint32_t 
     uint32_t height_ = 0;
 
     for (unsigned int mipLevel = 0; mipLevel < currLevel; mipLevel++) {
-        width_ = std::ceil(std::max<uint32_t>(1, width >> mipLevel) / blkWidth);
-        height_ = std::ceil(std::max<uint32_t>(1, height >> mipLevel) / blkHeight);
+        width_ = std::max<uint32_t>(1, width >> mipLevel) / blkWidth; //TODO: make division ceil instead of floor
+        height_ = std::max<uint32_t>(1, height >> mipLevel) / blkHeight; //TODO: make division ceil instead of floor
 
         offset += width_ * height_ * bpp;
     }
 
-    width_ = std::ceil(std::max<uint32_t>(1, width >> currLevel) / blkWidth);
-    height_ = std::ceil(std::max<uint32_t>(1, height >> currLevel) / blkHeight);
+    width_ = std::max<uint32_t>(1, width >> currLevel) / blkWidth; //TODO: make division ceil instead of floor
+    height_ = std::max<uint32_t>(1, height >> currLevel) / blkHeight; //TODO: make division ceil instead of floor
 
     uint32_t size = width_ * height_ * bpp;
 
@@ -93,7 +93,7 @@ namespace FileTypes::Subfiles {
         
     }
 
-    FTEXFile FTEXFile::createNew(const std::string& filename) {
+    FTEXFile FTEXFile::createNew() {
 		FTEXFile newFTEX{};
 		newFTEX.initNew();
 		return newFTEX;
@@ -306,7 +306,7 @@ namespace FileTypes::Subfiles {
             dds.header.numMips = 1;
         }
 
-        uint32_t bpp = std::floor(surfaceGetBitsPerPixel(dds.format_) / 8);
+        uint32_t bpp = surfaceGetBitsPerPixel(dds.format_) / 8;
         auto surfInfo = getSurfaceInfo(GX2SurfaceFormat(dds.format_), dds.header.width, dds.header.height, GX2SurfaceDim(1), GX2SurfaceDim(1), tileMode, GX2AAMode(0), 0);
 
         if(surfInfo.depth != 1) LOG_ERR_AND_RETURN(FTEXError::UNSUPPORTED_DEPTH);
@@ -328,12 +328,11 @@ namespace FileTypes::Subfiles {
         }
 
         uint32_t mipSize = 0;
-        uint32_t numMips = 1;
         std::vector<uint32_t> mipOffsets_ = {};
 
         std::vector<std::string> result;
-        unsigned int mipLevel = 0;
-        for(; mipLevel < numMips; mipLevel++) {
+        uint32_t mipLevel = 0;
+        for(; mipLevel < dds.header.numMips; mipLevel++) {
             auto offset_size = getCurrentMipOffset_Size(width, height, blkWidth, blkHeight, bpp, mipLevel);
             std::string data_ = dds.data.substr(offset_size.first, offset_size.second);
 

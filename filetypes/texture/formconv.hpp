@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <cmath>
 
 std::string rgb8torgbx8(const std::string& data);
 

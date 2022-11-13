@@ -196,8 +196,8 @@ uint32_t computeSurfaceBankSwappedWidth(GX2TileMode tileMode, uint32_t bpp, uint
     uint32_t slicesPerTile;
 
     if(bytesPerSample != 0) {
-        samplesPerTile = std::floor(2048 / bytesPerSample);
-        slicesPerTile = std::max<uint32_t>(1, std::floor(numSamples / samplesPerTile));
+        samplesPerTile = 2048 / bytesPerSample;
+        slicesPerTile = std::max<uint32_t>(1, numSamples / samplesPerTile);
     }
     else {
         slicesPerTile = 1;
@@ -207,15 +207,15 @@ uint32_t computeSurfaceBankSwappedWidth(GX2TileMode tileMode, uint32_t bpp, uint
         numSamples = 4;
     }
 
-    uint32_t bytesPerTileSlice = std::floor(numSamples * bytesPerSample / slicesPerTile);
+    uint32_t bytesPerTileSlice = numSamples * bytesPerSample / slicesPerTile;
 
     uint8_t factor = computeMacroTileAspectRatio(tileMode);
-    uint32_t swapTiles = std::max<uint32_t>(1, std::floor(128 / bpp));
+    uint32_t swapTiles = std::max<uint32_t>(1, 128 / bpp);
 
     uint32_t swapWidth = swapTiles * 32;
-    uint32_t heightBytes = std::floor(numSamples * factor * bpp * 2 / slicesPerTile);
-    uint32_t swapMax = std::floor(0x4000 / heightBytes);
-    uint32_t swapMin = std::floor(256 / bytesPerTileSlice);
+    uint32_t heightBytes = numSamples * factor * bpp * 2 / slicesPerTile;
+    uint32_t swapMax = 0x4000 / heightBytes;
+    uint32_t swapMin = 256 / bytesPerTileSlice;
     uint32_t bankSwapWidth = std::min(swapMax, std::max(swapMin, swapWidth));
     while(bankSwapWidth >= 2 * pitch) {
         bankSwapWidth >>= 1;
@@ -233,14 +233,14 @@ uint64_t computeSurfaceAddrFromCoordMicroTiled(uint32_t x, uint32_t y, uint32_t 
     uint64_t microTileThickness = 1;
     if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_1D_THICK) microTileThickness = 4;
 
-    uint64_t microTileBytes = std::floor((64 * microTileThickness * bpp + 7) / 8);
+    uint64_t microTileBytes = (64 * microTileThickness * bpp + 7) / 8;
     uint64_t microTilesPerRow = pitch >> 3;
     uint64_t microTileIndexX = x >> 3;
     uint64_t microTileIndexY = y >> 3;
-    uint64_t microTileIndexZ = std::floor(slice / microTileThickness);
+    uint64_t microTileIndexZ = slice / microTileThickness;
 
     uint64_t microTileOffset = microTileBytes * (microTileIndexX + microTileIndexY * microTilesPerRow);
-    uint64_t sliceBytes = std::floor((pitch * height * microTileThickness * bpp + 7) / 8);
+    uint64_t sliceBytes = (pitch * height * microTileThickness * bpp + 7) / 8;
     uint64_t sliceOffset = microTileIndexZ * sliceBytes;
 
     uint64_t pixelIndex = computePixelIndexWithinMicroTile(x, y, slice, bpp, tileMode, isDepth);
@@ -253,10 +253,10 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
     uint32_t microTileThickness = computeSurfaceThickness(tileMode);
 
     uint64_t microTileBits = numSamples * bpp * (microTileThickness * 64);
-    uint64_t microTileBytes = std::floor((microTileBits + 7) / 8);
+    uint64_t microTileBytes = (microTileBits + 7) / 8;
 
     uint64_t pixelIndex = computePixelIndexWithinMicroTile(x, y, slice, bpp, tileMode, isDepth);
-    uint64_t bytesPerSample = std::floor(microTileBytes / numSamples);
+    uint64_t bytesPerSample = microTileBytes / numSamples;
 
     uint64_t sampleOffset = 0;
     uint64_t pixelOffset = 0;
@@ -265,7 +265,7 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
         pixelOffset = numSamples * bpp * pixelIndex;
     }
     else {
-        sampleOffset = sample * std::floor(microTileBits / numSamples);
+        sampleOffset = sample * (microTileBits / numSamples);
         pixelOffset = bpp * pixelIndex;
     }
 
@@ -282,16 +282,16 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
         sampleSlice = 0;
     }
     else {
-        samplesPerSlice = std::floor(2048 / bytesPerSample);
-        numSampleSplits = std::floor(numSamples / samplesPerSlice);
+        samplesPerSlice = 2048 / bytesPerSample;
+        numSampleSplits = numSamples / samplesPerSlice;
         numSamples = samplesPerSlice;
 
-        tileSliceBits = std::floor(microTileBits / numSampleSplits);
-        sampleSlice = std::floor(elemOffset / tileSliceBits);
+        tileSliceBits = microTileBits / numSampleSplits;
+        sampleSlice = elemOffset / tileSliceBits;
         elemOffset %= tileSliceBits;
     }
 
-    elemOffset = std::floor((elemOffset + 7) / 8);
+    elemOffset = (elemOffset + 7) / 8;
 
     uint64_t pipe = computePipeFromCoordWoRotation(x, y);
     uint64_t bank = computeBankFromCoordWoRotation(x, y);
@@ -308,10 +308,10 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
     bankPipe ^= 2 * sampleSlice * 3 ^ (swizzle_ + sliceIn * rotation);
     bankPipe %= 8;
     pipe = bankPipe % 2;
-    bank = std::floor(bankPipe / 2);
+    bank = bankPipe / 2;
 
-    uint64_t sliceBytes = std::floor((height * pitch * microTileThickness * bpp * numSamples + 7) / 8);
-    uint64_t sliceOffset = std::floor(sliceBytes * ((sampleSlice + numSampleSplits * slice) / microTileThickness));
+    uint64_t sliceBytes = (height * pitch * microTileThickness * bpp * numSamples + 7) / 8;
+    uint64_t sliceOffset = sliceBytes * ((sampleSlice + numSampleSplits * slice) / microTileThickness);
 
     uint64_t macroTilePitch = 32;
     uint64_t macroTileHeight = 16;
@@ -325,15 +325,15 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
         macroTileHeight = 64;
     }
 
-    uint64_t macroTilesPerRow = std::floor(pitch / macroTilePitch);
-    uint64_t macroTileBytes = std::floor((numSamples * microTileThickness * bpp * macroTileHeight * macroTilePitch + 7) / 8);
-    uint64_t macroTileIndexX = std::floor(x / macroTilePitch);
-    uint64_t macroTileIndexY = std::floor(y / macroTileHeight);
+    uint64_t macroTilesPerRow = pitch / macroTilePitch;
+    uint64_t macroTileBytes = (numSamples * microTileThickness * bpp * macroTileHeight * macroTilePitch + 7) / 8;
+    uint64_t macroTileIndexX = x / macroTilePitch;
+    uint64_t macroTileIndexY = y / macroTileHeight;
     uint64_t macroTileOffset = (macroTileIndexX + macroTilesPerRow * macroTileIndexY) * macroTileBytes;
 
     if(isBankSwappedTileMode(tileMode)) {
         uint32_t bankSwapWidth = computeSurfaceBankSwappedWidth(tileMode, bpp, numSamples, pitch);
-        uint32_t swaindex = std::floor(macroTilePitch * macroTileIndexX / bankSwapWidth);
+        uint32_t swaindex = macroTilePitch * macroTileIndexX / bankSwapWidth;
         bank ^= bankSwapOrder[swaindex & 3];
     }
 
@@ -342,13 +342,13 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
 }
 
 std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use, GX2TileMode tileMode, uint32_t swizzle_, uint32_t pitch, uint32_t bitsPerPixel, uint32_t slice, uint32_t sample, std::string& data, bool swizzle) {
-    uint32_t bytesPerPixel = std::floor(bitsPerPixel / 8);
+    uint32_t bytesPerPixel = bitsPerPixel / 8;
 
     std::string result(data.size(), '\0');
 
     if(BCn_formats.count(format_) > 0) {
-        width = std::floor((width + 3) / 4);
-        height = std::floor((height + 3) / 4);
+        width = (width + 3) / 4;
+        height = (height + 3) / 4;
     }
 
     uint32_t pipeSwizzle = (swizzle_ >> 8) & 1;
@@ -425,12 +425,12 @@ uint32_t adjustSurfaceInfo(surfaceIn& in, uint8_t elemMode, uint8_t expandX, uin
                 heighta = expandY * height;
             }
             else if (bBCnFormat) {
-                widtha = std::floor(width / expandX);
-                heighta = std::floor(height / expandY);
+                widtha = width / expandX;
+                heighta = height / expandY;
             }
             else {
-                widtha = std::floor((width + expandX - 1) / expandX);
-                heighta = std::floor((height + expandY - 1) / expandY);
+                widtha = (width + expandX - 1) / expandX;
+                heighta = (height + expandY - 1) / expandY;
             }
             in.width = std::max<uint32_t>(1, widtha);
             in.height = std::max<uint32_t>(1, heighta);
@@ -438,7 +438,7 @@ uint32_t adjustSurfaceInfo(surfaceIn& in, uint8_t elemMode, uint8_t expandX, uin
     }
     if (bpp) {
         if (elemMode == 4) {
-            in.bpp = std::floor(std::floor(bpp / expandX) / expandY);
+            in.bpp = bpp / expandX / expandY;
         }
         else if (elemMode == 5 || elemMode == 6) {
             in.bpp = expandY * expandX * bpp;
@@ -561,9 +561,9 @@ uint32_t computeSurfaceTileSlices(GX2TileMode tileMode, uint32_t bpp, uint32_t n
     }
 
     if(bytePerSample) {
-        uint32_t samplePerTile = std::floor(2048 / bytePerSample);
+        uint32_t samplePerTile = 2048 / bytePerSample;
         if(samplePerTile) {
-            tileSlices = std::max<uint32_t>(1, std::floor(numSamples / samplePerTile));
+            tileSlices = std::max<uint32_t>(1, numSamples / samplePerTile);
         }
     }
 
@@ -609,7 +609,7 @@ uint32_t computeSurfaceMipLevelTileMode(GX2TileMode baseTileMode, uint32_t bpp, 
     }
 
     if(bpp == 24 || bpp == 48 || bpp == 96) {
-        bpp = std::floor(bpp / 3);
+        bpp = bpp / 3;
     }
 
     uint32_t widtha = nextPow2(width);
@@ -621,7 +621,7 @@ uint32_t computeSurfaceMipLevelTileMode(GX2TileMode baseTileMode, uint32_t bpp, 
     uint32_t microTileBytes = (numSamples * bpp * (thickness << 6) + 7) >> 3;
 
     if (microTileBytes < 256) {
-        widthAlignFactor = std::max<uint32_t>(1, std::floor(256 / microTileBytes));
+        widthAlignFactor = std::max<uint32_t>(1, 256 / microTileBytes);
     }
     if (expTileMode == 4 || expTileMode == 12) {
         if ((widtha < widthAlignFactor * macroTileWidth) || heighta < macroTileHeight) {
@@ -684,7 +684,7 @@ void padDimensions(GX2TileMode tileMode, uint32_t padDims, bool isCube, uint32_t
     }
     else {
         expPitch += pitchAlign - 1;
-        expPitch = std::floor(expPitch / pitchAlign);
+        expPitch = expPitch / pitchAlign;
         expPitch *= pitchAlign;
     }
     if (padDims > 1) {
@@ -719,7 +719,7 @@ void computeSurfaceAlignmentsLinear(GX2TileMode tileMode, uint32_t bpp, uint32_t
         heightAlign = 1;
     }
     else if (tileMode == 1) {
-        uint32_t pixelsPerPipeInterleave = std::floor(2048 / bpp);
+        uint32_t pixelsPerPipeInterleave = 2048 / bpp;
         baseAlign = 256;
         pitchAlign = std::max<uint32_t>(0x40, pixelsPerPipeInterleave);
         heightAlign = 1;
@@ -746,7 +746,7 @@ uint32_t computeSurfaceInfoLinear(surfaceOut& pOut, GX2TileMode tileMode, uint32
     computeSurfaceAlignmentsLinear(tileMode, bpp, flags, baseAlign, pitchAlign, heightAlign);
 
     if (((flags >> 9) & 1) && !mipLevel) {
-        expPitch = std::floor(expPitch / 3);
+        expPitch = expPitch / 3;
         expPitch = nextPow2(expPitch);
     }
     if (mipLevel) {
@@ -778,11 +778,11 @@ uint32_t computeSurfaceInfoLinear(surfaceOut& pOut, GX2TileMode tileMode, uint32
         expPitch *= 3;
     }
 
-    uint32_t slices = std::floor(expNumSlices * numSamples / microTileThickness);
+    uint32_t slices = expNumSlices * numSamples / microTileThickness;
     pOut.pitch = expPitch;
     pOut.height = expHeight;
     pOut.depth = expNumSlices;
-    pOut.surfSize = std::floor((expHeight * expPitch * slices * bpp * numSamples + 7) / 8);
+    pOut.surfSize = (expHeight * expPitch * slices * bpp * numSamples + 7) / 8;
     pOut.baseAlign = baseAlign;
     pOut.pitchAlign = pitchAlign;
     pOut.heightAlign = heightAlign;
@@ -793,11 +793,11 @@ uint32_t computeSurfaceInfoLinear(surfaceOut& pOut, GX2TileMode tileMode, uint32
 
 void computeSurfaceAlignmentsMicroTiled(GX2TileMode tileMode, uint32_t bpp, uint32_t flags, uint32_t numSamples, uint32_t& baseAlign, uint32_t& pitchAlign, uint32_t& heightAlign) {
     if (bpp == 24 || bpp == 48 || bpp == 96) {
-        bpp = std::floor(bpp / 3);
+        bpp = bpp / 3;
     }
     uint32_t thickness = computeSurfaceThickness(tileMode);
     baseAlign = 256;
-    pitchAlign = std::max<uint32_t>(8, std::floor(std::floor(std::floor(256 / bpp) / numSamples) / thickness));
+    pitchAlign = std::max<uint32_t>(8, 256 / bpp / numSamples / thickness);
     heightAlign = 8;
 
     pitchAlign = adjustPitchAlignment(flags, pitchAlign);
@@ -855,7 +855,7 @@ uint32_t computeSurfaceInfoMicroTiled(surfaceOut& pOut, GX2TileMode tileMode, ui
     pOut.pitch = expPitch;
     pOut.height = expHeight;
     pOut.depth = expNumSlices;
-    pOut.surfSize = std::floor((expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8);
+    pOut.surfSize = (expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8;
     pOut.tileMode = GX2TileMode(expTileMode);
     pOut.baseAlign = baseAlign;
     pOut.pitchAlign = pitchAlign;
@@ -870,15 +870,15 @@ void computeSurfaceAlignmentsMacroTiled(GX2TileMode tileMode, uint32_t bpp, uint
     uint32_t thickness = computeSurfaceThickness(tileMode);
 
     if (bpp == 24 || bpp == 48 || bpp == 96) {
-        bpp = std::floor(bpp / 3);
+        bpp = bpp / 3;
     }
     if (bpp == 3) {
         bpp = 1;
     }
-    macroTileWidth = std::floor(32 / aspectRatio);
+    macroTileWidth = 32 / aspectRatio;
     macroTileHeight = aspectRatio * 16;
 
-    pitchAlign = std::max<uint32_t>(macroTileWidth, macroTileWidth * std::floor(std::floor(std::floor(256 / bpp) / (8 * thickness)) / numSamples));
+    pitchAlign = std::max<uint32_t>(macroTileWidth, macroTileWidth * (256 / bpp / (8 * thickness) / numSamples));
     pitchAlign = adjustPitchAlignment(flags, pitchAlign);
 
     heightAlign = macroTileHeight;
@@ -896,9 +896,9 @@ void computeSurfaceAlignmentsMacroTiled(GX2TileMode tileMode, uint32_t bpp, uint
         numSlicesPerMicroTile = 1;
     }
     else {
-        numSlicesPerMicroTile = std::floor(microTileBytes / 2048);
+        numSlicesPerMicroTile = microTileBytes / 2048;
     }
-    baseAlign = std::floor(baseAlign / numSlicesPerMicroTile);
+    baseAlign = baseAlign / numSlicesPerMicroTile;
 
     return;
 }
@@ -954,7 +954,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
         pOut.pitch = expPitch;
         pOut.height = expHeight;
         pOut.depth = expNumSlices;
-        pOut.surfSize = std::floor((expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8);
+        pOut.surfSize = (expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8;
         pOut.tileMode = GX2TileMode(expTileMode);
         pOut.baseAlign = baseAlign;
         pOut.pitchAlign = pitchAlign;
@@ -971,7 +971,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
             flags,
             numSamples, baseAlign, pitchAlign, heightAlign, macroWidth, macroHeight);
 
-        uint32_t pitchAlignFactor = std::max<uint32_t>(1, std::floor(32 / bpp));
+        uint32_t pitchAlignFactor = std::max<uint32_t>(1, 32 / bpp);
 
         if (expPitch < pitchAlign * pitchAlignFactor || expHeight < heightAlign) {
             expTileMode = 2;
@@ -1012,7 +1012,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
             pOut.pitch = expPitch;
             pOut.height = expHeight;
             pOut.depth = expNumSlices;
-            pOut.surfSize = std::floor((expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8);
+            pOut.surfSize = (expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8;
             pOut.tileMode = GX2TileMode(expTileMode);
             pOut.baseAlign = baseAlign;
             pOut.pitchAlign = pitchAlign;
@@ -1117,8 +1117,8 @@ uint32_t restoreSurfaceInfo(surfaceOut& pOut, uint32_t elemMode, uint32_t expand
 
         if (expandX > 1 || expandY > 1) {
             if (elemMode == 4) {
-                width = std::floor(width / expandX);
-                height = std::floor(height / expandY);
+                width = width / expandX;
+                height = height / expandY;
             }
             else {
                 width *= expandX;
@@ -1133,7 +1133,7 @@ uint32_t restoreSurfaceInfo(surfaceOut& pOut, uint32_t elemMode, uint32_t expand
             return expandY * expandX * bpp;
         }
         else if (elemMode == 5 || elemMode == 6) {
-            return std::floor(std::floor(bpp / expandX) / expandY);
+            return bpp / expandX / expandY;
         }
         else if (elemMode == 9 || elemMode == 12) {
             return 64;
@@ -1196,7 +1196,7 @@ void computeSurfaceInfo(surfaceIn& aSurfIn, surfaceOut& pSurfOut) {
             if ((aSurfIn.flags >> 5) & 1) pSurfOut.sliceSize = pSurfOut.surfSize;
 
             else {
-                pSurfOut.sliceSize = std::floor(pSurfOut.surfSize / pSurfOut.depth);
+                pSurfOut.sliceSize = pSurfOut.surfSize / pSurfOut.depth;
 
                 if (aSurfIn.slice == (aSurfIn.numSlices - 1) && aSurfIn.numSlices > 1) {
                     pSurfOut.sliceSize += pSurfOut.sliceSize * (pSurfOut.depth - aSurfIn.numSlices);
@@ -1234,7 +1234,7 @@ surfaceOut getSurfaceInfo(GX2SurfaceFormat surfaceFormat, uint32_t surfaceWidth,
 
         pSurfOut.bpp = formatHwInfo[hwFormat * 4];
         pSurfOut.size = 96;
-        pSurfOut.pitch = std::floor(width / blockSize);
+        pSurfOut.pitch = width / blockSize;
         pSurfOut.pixelBits = formatHwInfo[hwFormat * 4];
         pSurfOut.baseAlign = 1;
         pSurfOut.pitchAlign = 1;
@@ -1269,14 +1269,14 @@ surfaceOut getSurfaceInfo(GX2SurfaceFormat surfaceFormat, uint32_t surfaceWidth,
 
         pSurfOut.pixelPitch = width;
         pSurfOut.pixelHeight = ~(blockSize - 1) & (pSurfOut.height + blockSize - 1);
-        pSurfOut.height = std::floor(pSurfOut.pixelHeight / blockSize);
+        pSurfOut.height = pSurfOut.pixelHeight / blockSize;
         pSurfOut.surfSize = pSurfOut.bpp * numSamples * pSurfOut.depth * pSurfOut.height * pSurfOut.pitch >> 3;
 
         if(surfaceDim == 2) {
             pSurfOut.sliceSize = pSurfOut.surfSize;
         }
         else {
-            pSurfOut.sliceSize = std::floor(pSurfOut.surfSize / pSurfOut.depth);
+            pSurfOut.sliceSize = pSurfOut.surfSize / pSurfOut.depth;
         }
 
         pSurfOut.pitchTileMax = (pSurfOut.pitch >> 3) - 1;

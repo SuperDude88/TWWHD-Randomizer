@@ -1,10 +1,8 @@
-;TODO: test these
-
+; Make Phantom Ganon take damage from the Skull Hammer instead of the Master Sword.
 .org 0x0213ae90
-	rlwinm. r8,r10,0,15,15
-
+	rlwinm. r8,r10,0,15,15 ; Change damage type check from bit 00000002 (sword damage) to bit 00010000 (hammer damage)
 .org 0x0213aea8
-	b 0x0213aebc
+	b 0x0213aebc ; Skip checking if a master sword is equipped
 
 .org 0x025b2030
 	b give_temporary_sword_during_ganondorf_fight_in_swordless
@@ -14,7 +12,7 @@
 give_temporary_sword_during_ganondorf_fight_in_swordless:
   
   bl FUN_025200d4
-  addi r3, r3, 0x5133
+  addi r3, r3, 0x5134
   lis r4, GTower_str@ha
   addi r4, r4, GTower_str@l
 strcmp_2_start:
@@ -50,7 +48,7 @@ give_temporary_sword_during_ganondorf_fight_in_swordless_end:
 .global give_temporary_sword_in_orcas_house_in_swordless
 give_temporary_sword_in_orcas_house_in_swordless:
   bl FUN_025200d4
-  addi r3, r3, 0x5133
+  addi r3, r3, 0x5134
   lis r4, Ojhous_str@ha ; Pointer to the string "Ojhous", the stage for Orca's house
   addi r4, r4, Ojhous_str@l
  strcmp_3_start:

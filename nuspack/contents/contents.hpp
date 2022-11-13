@@ -87,7 +87,7 @@ public:
     }
 
     inline Content& GetFSTContent() { return contents.front(); }
-    inline uint16_t GetContentCount() { return contents.size(); }
+    inline uint16_t GetContentCount() { return static_cast<uint16_t>(contents.size()); }
     std::list<Content>::iterator GetNewContent(const ContentDetails& details, const bool& isFSTContent = false);
     void DeleteContent(const size_t& idx);
     void ResetFileOffsets();
