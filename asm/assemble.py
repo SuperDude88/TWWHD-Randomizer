@@ -76,7 +76,7 @@ def main():
       to_relocate = json.loads(f.read(), object_pairs_hook=OrderedDict)
     
     all_asm_file_paths = glob.glob('./patches/*.asm')
-    all_asm_files = [os.path.basename(asm_path) for asm_path in all_asm_file_paths]
+    all_asm_files = [os.path.basename(asm_path).lower() for asm_path in all_asm_file_paths] #lowercase names to make sort more consistent
     all_asm_files.sort()
     
     # Don't need custom_data

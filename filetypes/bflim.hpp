@@ -63,7 +63,7 @@ namespace FileTypes {
         std::string data;
 
         FLIMFile();
-		static FLIMFile createNew(const std::string& filename);
+		static FLIMFile createNew();
 		FLIMError loadFromBinary(std::istream& bflim);
 		FLIMError loadFromFile(const std::string& filePath);
         FLIMError exportAsDDS(const std::string& outPath);

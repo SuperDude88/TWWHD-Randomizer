@@ -31,7 +31,7 @@ public:
         location = out.tellp();
         relOffset = offset - location;
         Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, relOffset);
-        out.write(static_cast<const char*>(&relOffset), sizeof(relOffset));
+        out.write(reinterpret_cast<const char*>(&relOffset), sizeof(relOffset));
     }
     
     void write(std::ostream& out, const T& absOffset) {
@@ -39,7 +39,7 @@ public:
         location = out.tellp();
         relOffset = offset - location;
         Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, relOffset);
-        out.write(static_cast<const char*>(&relOffset), sizeof(relOffset));
+        out.write(reinterpret_cast<const char*>(&relOffset), sizeof(relOffset));
     }
 
 private:

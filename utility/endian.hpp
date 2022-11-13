@@ -18,26 +18,13 @@ namespace Utility::Endian
 #ifdef __cpp_lib_endian
     //use the c++20 api if possible
     constexpr Type target = std::endian::native == std::endian::big ? Type::Big : Type::Little;
+    constexpr inline bool isBE() { return target == Type::Big; }
 #else
     //do a runtime check otherwise
-    inline Type getEndian() {
-        static const uint16_t TestVal = 0x0001;
-        static const uint8_t tester = *reinterpret_cast<const uint8_t*>(&TestVal);
-
-        if(tester == 0x00) {
-            return Type::Big;
-        }
-        else if (tester == 0x01) {
-            return Type::Little;
-        }
-        else {
-            //TODO: error somehow?
-        }
-    }
+    Type getEndian();
     const Type target = getEndian();
+    inline bool isBE() { return target == Type::Big; }
 #endif
-
-    constexpr inline bool isBE() { return target == Type::Big; }
 
     uint64_t byteswap(const uint64_t& value);
 

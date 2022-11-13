@@ -31,14 +31,7 @@ LMSError LBL1::read(std::istream &in) {
     }
     LOG_AND_RETURN_IF_ERR(HashTable::read(in));
 
-    if (in.tellg() % 16 != 0) {
-        const unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -141,14 +134,7 @@ LMSError ATR1::read(std::istream &in) {
     }
 
     in.seekg(sectionStart + 0x10 + sectionSize, std::ios::beg);
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -208,14 +194,7 @@ LMSError TSY1::read(std::istream &in) {
         Utility::Endian::toPlatform_inplace(eType::Big, entry.styleIndex);
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -281,14 +260,7 @@ LMSError TXT2::read(std::istream &in) {
         Utility::Endian::toPlatform_inplace(eType::Big, entry.message);
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -345,7 +317,7 @@ namespace FileTypes {
         messages_by_label = {};
     }
 
-    MSBTFile MSBTFile::createNew(const std::string& filename) {
+    MSBTFile MSBTFile::createNew() {
         MSBTFile newMSBT{};
         newMSBT.initNew();
         return newMSBT;
