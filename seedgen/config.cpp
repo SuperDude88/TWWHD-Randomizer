@@ -15,21 +15,21 @@
 #define GET_FIELD(yaml, name, out) {                                        \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
-            return ConfigError::MISSING_KEY;}                               \
+            if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
         out = yaml[#name].As<std::string>();                                \
     }
 
 #define SET_CONFIG_FIELD(yaml, config, name) {                              \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
-            return ConfigError::MISSING_KEY;}                               \
+            if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
         config.name = yaml[#name].As<std::string>();                        \
     }
 
 #define SET_CONFIG_BOOL_FIELD(yaml, config, name) {                         \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
-            return ConfigError::MISSING_KEY;}                               \
+            if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
         config.name = yaml[#name].As<bool>();                               \
     }
 
@@ -42,21 +42,21 @@
 #define SET_BOOL_FIELD(yaml, config, name) {                                \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
-            return ConfigError::MISSING_KEY;}                               \
+            if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
         config.settings.name = yaml[#name].As<bool>();                      \
     }
 
 #define SET_INT_FIELD(yaml, config, name) {                                 \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
-            return ConfigError::MISSING_KEY;}                               \
+            if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
         config.settings.name = yaml[#name].As<int>();                       \
     }
 
 #define SET_STR_FIELD(yaml, config, name) {                                 \
         if(yaml[#name].IsNone()) {                                          \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
-            return ConfigError::MISSING_KEY;}                               \
+            if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
         config.settings.name = yaml[#name].As<std::string>();               \
     }
 
@@ -158,7 +158,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     return ConfigError::NONE;
 }
 
-ConfigError loadFromFile(const std::string& filePath, Config& out) {
+ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreErrors /*= false*/) {
     //Check if we can open the file before parsing because exceptions won't work on console
     std::ifstream file(filePath);
     if(!file.is_open()) LOG_ERR_AND_RETURN(ConfigError::COULD_NOT_OPEN);
@@ -171,7 +171,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     GET_FIELD(root, program_version, rando_version)
     GET_FIELD(root, file_version, file_version)
 
-    if(std::string(CONFIG_VERSION) != file_version) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_FILE_VERSION);
+    if(std::string(CONFIG_VERSION) != file_version && !ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_FILE_VERSION);
 
     //hardcode paths for console, otherwise use config
     #ifdef DEVKITPRO
@@ -257,116 +257,128 @@ ConfigError loadFromFile(const std::string& filePath, Config& out) {
     SET_BOOL_FIELD(root, out, do_not_generate_spoiler_log)
     SET_BOOL_FIELD(root, out, plandomizer)
 
-    if(root["sword_mode"].IsNone()) return ConfigError::MISSING_KEY;
-    out.settings.sword_mode = nameToSwordMode(root["sword_mode"].As<std::string>());
-    if(out.settings.sword_mode == SwordMode::INVALID) return ConfigError::INVALID_VALUE;
-
-    if(root["pig_color"].IsNone()) return ConfigError::MISSING_KEY;
-    out.settings.pig_color = nameToPigColor(root["pig_color"].As<std::string>());
-    if(out.settings.pig_color == PigColor::INVALID) return ConfigError::INVALID_VALUE;
-
-    if(root["starting_gear"].IsNone()) return ConfigError::MISSING_KEY;
-    if(!root["starting_gear"].IsSequence()) return ConfigError::INVALID_VALUE;
-
-    std::unordered_multiset<GameItem> valid_items = {
-        /* not currently supported, may be later
-        GameItem::DRCSmallKey,
-        GameItem::DRCBigKey,
-        GameItem::DRCCompass,
-        GameItem::DRCDungeonMap,
-
-        GameItem::FWSmallKey,
-        GameItem::FWBigKey,
-        GameItem::FWCompass,
-        GameItem::FWDungeonMap,
-
-        GameItem::TotGSmallKey,
-        GameItem::TotGBigKey,
-        GameItem::TotGCompass,
-        GameItem::TotGDungeonMap,
-
-        GameItem::ETSmallKey,
-        GameItem::ETBigKey,
-        GameItem::ETCompass,
-        GameItem::ETDungeonMap,
-
-        GameItem::WTSmallKey,
-        GameItem::WTBigKey,
-        GameItem::WTCompass,
-        GameItem::WTDungeonMap,
-
-        GameItem::FFCompass,
-        GameItem::FFDungeonMap,
-        */
-        GameItem::Telescope,
-        GameItem::MagicArmor,
-        GameItem::HerosCharm,
-        GameItem::TingleBottle,
-        GameItem::WindWaker,
-        GameItem::GrapplingHook,
-        GameItem::PowerBracelets,
-        GameItem::IronBoots,
-        GameItem::Boomerang,
-        GameItem::Hookshot,
-        GameItem::Bombs,
-        GameItem::SkullHammer,
-        GameItem::DekuLeaf,
-        GameItem::HurricaneSpin,
-        GameItem::DinsPearl,
-        GameItem::FaroresPearl,
-        GameItem::NayrusPearl,
-        GameItem::WindsRequiem,
-        GameItem::SongOfPassing,
-        GameItem::BalladOfGales,
-        GameItem::CommandMelody,
-        GameItem::EarthGodsLyric,
-        GameItem::WindGodsAria,
-        GameItem::SpoilsBag,
-        GameItem::BaitBag,
-        GameItem::DeliveryBag,
-        GameItem::NoteToMom,
-        GameItem::MaggiesLetter,
-        GameItem::MoblinsLetter,
-        GameItem::CabanaDeed,
-        GameItem::GhostShipChart,
-        GameItem::EmptyBottle,
-        GameItem::ProgressiveMagicMeter,
-        GameItem::ProgressiveMagicMeter,
-        GameItem::ProgressiveBombBag,
-        GameItem::ProgressiveBombBag,
-        GameItem::ProgressiveBow,
-        GameItem::ProgressiveBow,
-        GameItem::ProgressiveBow,
-        GameItem::ProgressiveQuiver,
-        GameItem::ProgressiveQuiver,
-        GameItem::ProgressiveWallet,
-        GameItem::ProgressiveWallet,
-        GameItem::ProgressivePictoBox,
-        GameItem::ProgressivePictoBox,
-        GameItem::ProgressiveSword,
-        GameItem::ProgressiveSword,
-        GameItem::ProgressiveSword,
-        GameItem::ProgressiveShield,
-        GameItem::ProgressiveShield,
-        GameItem::ProgressiveSail,
-        GameItem::ProgressiveSail
-    };
-
-    if(out.settings.sword_mode == SwordMode::NoSword) valid_items.erase(GameItem::ProgressiveSword);
-    out.settings.starting_gear.clear();
-    for (auto it = root["starting_gear"].Begin(); it != root["starting_gear"].End(); it++) {
-            const Yaml::Node& itemNode = (*it).second;
-            const std::string itemName = itemNode.As<std::string>();
-            const GameItem item = nameToGameItem(itemName);
-
-            if(valid_items.count(item) == 0) return ConfigError::INVALID_VALUE;
-            out.settings.starting_gear.push_back(item);
-            valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
+    if(root["sword_mode"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.sword_mode = nameToSwordMode(root["sword_mode"].As<std::string>());
+      if(out.settings.sword_mode == SwordMode::INVALID && !ignoreErrors) return ConfigError::INVALID_VALUE;
+      else out.settings.sword_mode = SwordMode::StartWithSword;
     }
+
+    if(root["pig_color"].IsNone())  {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.pig_color = nameToPigColor(root["pig_color"].As<std::string>());
+      if(out.settings.pig_color == PigColor::INVALID && !ignoreErrors) return ConfigError::INVALID_VALUE;
+      else out.settings.pig_color = PigColor::RANDOM;
+    }
+
+
+    if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
+    if(!root["starting_gear"].IsSequence()) {
+      if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+    } else {
+      std::unordered_multiset<GameItem> valid_items = {
+          /* not currently supported, may be later
+          GameItem::DRCSmallKey,
+          GameItem::DRCBigKey,
+          GameItem::DRCCompass,
+          GameItem::DRCDungeonMap,
+
+          GameItem::FWSmallKey,
+          GameItem::FWBigKey,
+          GameItem::FWCompass,
+          GameItem::FWDungeonMap,
+
+          GameItem::TotGSmallKey,
+          GameItem::TotGBigKey,
+          GameItem::TotGCompass,
+          GameItem::TotGDungeonMap,
+
+          GameItem::ETSmallKey,
+          GameItem::ETBigKey,
+          GameItem::ETCompass,
+          GameItem::ETDungeonMap,
+
+          GameItem::WTSmallKey,
+          GameItem::WTBigKey,
+          GameItem::WTCompass,
+          GameItem::WTDungeonMap,
+
+          GameItem::FFCompass,
+          GameItem::FFDungeonMap,
+          */
+          GameItem::Telescope,
+          GameItem::MagicArmor,
+          GameItem::HerosCharm,
+          GameItem::TingleBottle,
+          GameItem::WindWaker,
+          GameItem::GrapplingHook,
+          GameItem::PowerBracelets,
+          GameItem::IronBoots,
+          GameItem::Boomerang,
+          GameItem::Hookshot,
+          GameItem::Bombs,
+          GameItem::SkullHammer,
+          GameItem::DekuLeaf,
+          GameItem::HurricaneSpin,
+          GameItem::DinsPearl,
+          GameItem::FaroresPearl,
+          GameItem::NayrusPearl,
+          GameItem::WindsRequiem,
+          GameItem::SongOfPassing,
+          GameItem::BalladOfGales,
+          GameItem::CommandMelody,
+          GameItem::EarthGodsLyric,
+          GameItem::WindGodsAria,
+          GameItem::SpoilsBag,
+          GameItem::BaitBag,
+          GameItem::DeliveryBag,
+          GameItem::NoteToMom,
+          GameItem::MaggiesLetter,
+          GameItem::MoblinsLetter,
+          GameItem::CabanaDeed,
+          GameItem::GhostShipChart,
+          GameItem::EmptyBottle,
+          GameItem::ProgressiveMagicMeter,
+          GameItem::ProgressiveMagicMeter,
+          GameItem::ProgressiveBombBag,
+          GameItem::ProgressiveBombBag,
+          GameItem::ProgressiveBow,
+          GameItem::ProgressiveBow,
+          GameItem::ProgressiveBow,
+          GameItem::ProgressiveQuiver,
+          GameItem::ProgressiveQuiver,
+          GameItem::ProgressiveWallet,
+          GameItem::ProgressiveWallet,
+          GameItem::ProgressivePictoBox,
+          GameItem::ProgressivePictoBox,
+          GameItem::ProgressiveSword,
+          GameItem::ProgressiveSword,
+          GameItem::ProgressiveSword,
+          GameItem::ProgressiveShield,
+          GameItem::ProgressiveShield,
+          GameItem::ProgressiveSail,
+          GameItem::ProgressiveSail
+      };
+
+      if(out.settings.sword_mode == SwordMode::NoSword) valid_items.erase(GameItem::ProgressiveSword);
+      out.settings.starting_gear.clear();
+      for (auto it = root["starting_gear"].Begin(); it != root["starting_gear"].End(); it++) {
+              const Yaml::Node& itemNode = (*it).second;
+              const std::string itemName = itemNode.As<std::string>();
+              const GameItem item = nameToGameItem(itemName);
+
+              if(valid_items.count(item) == 0) return ConfigError::INVALID_VALUE;
+              out.settings.starting_gear.push_back(item);
+              valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
+      }
+    }
+
 
     //can still parse file with different rando versions, but will give different item placements
     //return error after parsing so it can warn the user
-    if(std::string(RANDOMIZER_VERSION) != rando_version) return ConfigError::DIFFERENT_RANDO_VERSION;
+    if(std::string(RANDOMIZER_VERSION) != rando_version && !ignoreErrors) return ConfigError::DIFFERENT_RANDO_VERSION;
     return ConfigError::NONE;
 }
 

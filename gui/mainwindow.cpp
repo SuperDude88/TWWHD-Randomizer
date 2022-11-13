@@ -95,8 +95,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::load_config_into_ui()
 {
-    ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", config);
-    if(err != ConfigError::NONE)
+    // Ignore errors and just load in whatever we can. The gui will write a proper config file
+    // when the user begins randomization
+    ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", config, true);
+    if (err != ConfigError::NONE)
     {
         show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
     }
