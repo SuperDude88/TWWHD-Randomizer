@@ -45,7 +45,6 @@ public:
     }
 };
 
-//TODO: are these thread safe?
 class ProgramTime {
 private:
 #ifdef DEVKITPRO
