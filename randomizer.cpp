@@ -804,58 +804,53 @@ public:
 
 int mainRandomize() {
 	using namespace std::chrono_literals;
-	#ifdef ENABLE_TIMING
-			auto start = std::chrono::high_resolution_clock::now();
-	#endif
 
-	ProgramTime::getInstance(); //create instance + set time
+	int retVal = 0;
+	{ //timer scope
+		#ifdef ENABLE_TIMING
+			ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
+		#endif
 
-	Utility::platformInit();
+		Utility::platformInit();
 
-	ErrorLog::getInstance().clearLastErrors();
+		ErrorLog::getInstance().clearLastErrors();
 
-	Config load;
-	std::ifstream conf(APP_SAVE_PATH "config.yaml");
-	if(!conf.is_open()) {
-		Utility::platformLog("Creating default config\n");
-		ConfigError err = createDefaultConfig(APP_SAVE_PATH "config.yaml");
+		Config load;
+		std::ifstream conf(APP_SAVE_PATH "config.yaml");
+		if(!conf.is_open()) {
+			Utility::platformLog("Creating default config\n");
+			ConfigError err = createDefaultConfig(APP_SAVE_PATH "config.yaml");
+			if(err != ConfigError::NONE) {
+				ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
+
+				std::this_thread::sleep_for(3s);
+				Utility::platformShutdown();
+				return 1;
+			}
+		}
+		conf.close();
+
+		Utility::platformLog("Reading config\n");
+		ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
 		if(err != ConfigError::NONE) {
-			ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
-
+			ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
+    		Utility::platformLog("Failed to read config, ERROR: " + errorToName(err));
 			std::this_thread::sleep_for(3s);
 			Utility::platformShutdown();
 			return 1;
 		}
-	}
-	conf.close();
 
-	Utility::platformLog("Reading config\n");
-	ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
-	if(err != ConfigError::NONE) {
-		ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
-    Utility::platformLog("Failed to read config, ERROR: " + errorToName(err));
-		std::this_thread::sleep_for(3s);
-		Utility::platformShutdown();
-		return 1;
-	}
+		Randomizer rando(load);
 
-	Randomizer rando(load);
+		// IMPROVEMENT: issue with seekp, find better solution than manual padding?
+		// TODO: test uncompressed things
+		// TODO: do a hundo seed to test everything
 
-	// IMPROVEMENT: issue with seekp, find better solution than manual padding?
-	// TODO: test uncompressed things
-	// TODO: do a hundo seed to test everything
-
-	// TODO: text wrapping on drc dungeon map
-	// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
-		//Also some other things just die even single-threaded
-	int retVal = rando.randomize();
-
-	#ifdef ENABLE_TIMING
-			auto stop = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-			auto seconds = static_cast<double>(duration.count()) / 1000000.0;
-			Utility::platformLog(std::string("Total process took ") + std::to_string(seconds) + " seconds\n");
-	#endif
+		// TODO: text wrapping on drc dungeon map
+		// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
+			//Also some other things just die even single-threaded
+		retVal = rando.randomize();
+	} //end timer scope
 
 	std::this_thread::sleep_for(3s);
 	Utility::platformShutdown();

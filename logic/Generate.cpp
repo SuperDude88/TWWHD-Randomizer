@@ -23,7 +23,7 @@
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
   #ifdef ENABLE_TIMING
-      auto start = std::chrono::high_resolution_clock::now();
+      ScopedTimer<std::chrono::high_resolution_clock, "Building and Filling took "> timer;
   #endif
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
@@ -143,11 +143,5 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       return 1;
   }
 
-  #ifdef ENABLE_TIMING
-      auto stop = std::chrono::high_resolution_clock::now();
-      auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-      auto seconds = static_cast<double>(duration.count()) / 1000000.0;
-      Utility::platformLog(std::string("Building and Filling took ") + std::to_string(seconds) + " seconds\n");
-  #endif
   return 0;
 }
