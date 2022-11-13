@@ -706,25 +706,38 @@ TweakError modify_title_screen() {
 TweakError update_name_and_icon() {
 	if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
-	tinyxml2::XMLDocument meta;
+	tinyxml2::XMLDocument meta, app;
 	std::stringstream* metaStream = g_session.openGameFile("meta/meta.xml");
 	EXTRACT_ERR_CHECK(metaStream);
 	meta.LoadFile(*metaStream);
-	tinyxml2::XMLElement* root = meta.RootElement();
-	root->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	root->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	root->FirstChildElement("longname_es")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	root->FirstChildElement("longname_pt")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	std::stringstream* appStream = g_session.openGameFile("code/app.xml");
+	EXTRACT_ERR_CHECK(appStream);
+	app.LoadFile(*appStream);
 
-	root->FirstChildElement("shortname_en")->SetText("The Wind Waker HD Randomizer");
-	root->FirstChildElement("shortname_fr")->SetText("The Wind Waker HD Randomizer");
-	root->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
-	root->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
+	tinyxml2::XMLElement* metaRoot = meta.RootElement();
+	metaRoot->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("longname_es")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("longname_pt")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+
+	metaRoot->FirstChildElement("shortname_en")->SetText("The Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("shortname_fr")->SetText("The Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
+	metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
+
+	//change the title ID so it gets its own channel when repacked
+	metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+	tinyxml2::XMLElement* appRoot = app.RootElement();
+	appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
 
 	tinyxml2::XMLPrinter printer;
 	meta.Print(&printer);
 	metaStream->str(std::string());
 	*metaStream << printer.CStr();
+	printer.ClearBuffer();
+	app.Print(&printer);
+	appStream->str(std::string());
+	*appStream << printer.CStr();
 
 	return TweakError::NONE;
 }
