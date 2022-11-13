@@ -6,11 +6,6 @@
 #include <iostream>
 
 namespace Utility::Str {
-    bool endsWith(const std::string& str, const std::string& substr) {
-        if (substr.size() > str.size()) return false;
-        return std::equal(str.end() - substr.size(), str.end(), substr.begin());
-    }
-
     //can't use codecvt on Wii U, deprecated in c++17 and g++ hates it
     //Borrowed from https://docs.microsoft.com/en-us/cpp/standard-library/codecvt-class?view=msvc-170#out
     std::string toUTF8(const std::u16string& str) {

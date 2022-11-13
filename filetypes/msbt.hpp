@@ -41,6 +41,7 @@ struct Attributes {
 	uint8_t animation = 0; //internally "Animation"
 	uint32_t commentE_1 = 0; //internally "Comment(E-1)", doesnt seem to align as an offset?
 	uint32_t commentE_2 = 0; //internally "Comment(E-2)", doesnt seem to align as an offset?
+	
 	uint8_t checkOriginal = 0; //internally "CheckOriginal", unknown purpose, seemingly cut off by attribute entry length
 	uint8_t checkRev = 0; //internally "MCT Check Rev", unknown purpose, seemingly cut off by attribute entry length
 	uint8_t mctTester = 0; //internally "MCT Tester", unknown purpose, seemingly cut off by attribute entry length
@@ -103,7 +104,7 @@ namespace FileTypes {
 		std::unordered_map<std::string, Message> messages_by_label;
 
 		MSBTFile();
-		static MSBTFile createNew(const std::string& filename);
+		static MSBTFile createNew();
 		LMSError loadFromBinary(std::istream& msbt);
 		LMSError loadFromFile(const std::string& filePath);
 		Message& addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message);

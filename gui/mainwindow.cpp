@@ -966,7 +966,6 @@ void MainWindow::on_randomize_button_clicked()
 
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    // TODO: change code number to string
     ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", config);
     if(err != ConfigError::NONE) {
         show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));

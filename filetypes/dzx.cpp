@@ -172,7 +172,7 @@ namespace FileTypes {
 		chunks = {};
 	}
 
-	DZXFile DZXFile::createNew(const std::string& filename) {
+	DZXFile DZXFile::createNew() {
 		DZXFile newDZX{};
 		newDZX.initNew();
 		return newDZX;

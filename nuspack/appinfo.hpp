@@ -4,8 +4,6 @@
 #include <array>
 #include <filesystem>
 
-enum class PackError;
-
 //from https://github.com/devkitPro/wut/blob/78300f2693405b86b3482520b95b4a3f826d4e72/include/coreinit/mcp.h#L24
 enum class AppType : uint32_t {
 	GAME_UPDATE            = 0x0800001B,
@@ -58,5 +56,5 @@ public:
     std::array<uint8_t, 32> osMask{0};
     uint64_t common_id = 0;
 
-    PackError parseFromXML(const std::filesystem::path& xmlPath);
+    bool parseFromXML(const std::filesystem::path& xmlPath);
 };

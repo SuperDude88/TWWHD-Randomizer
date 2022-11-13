@@ -207,7 +207,7 @@ namespace FileTypes {
         CTI1 sources;
 
 		MSBPFile();
-		static MSBPFile createNew(const std::string& filename);
+		static MSBPFile createNew();
 		LMSError loadFromBinary(std::istream& msbp);
 		LMSError loadFromFile(const std::string& filePath);
 		LMSError writeToStream(std::ostream& out);

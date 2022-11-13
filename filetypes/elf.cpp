@@ -62,7 +62,7 @@ namespace FileTypes {
 		return;
 	}
 
-	ELF ELF::createNew(const std::string& filename) {
+	ELF ELF::createNew() {
 		ELF newELF{};
 		newELF.initNew();
 		return newELF;

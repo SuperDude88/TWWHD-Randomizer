@@ -1,7 +1,6 @@
 #include "msbp.hpp"
 
 #include <cstring>
-#include <ios>
 
 #include <utility/endian.hpp>
 #include <command/Log.hpp>
@@ -28,14 +27,7 @@ LMSError CLB1::read(std::istream &in) {
     }
     LOG_AND_RETURN_IF_ERR(HashTable::read(in));
 
-    if (in.tellg() % 16 != 0) {
-        const unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -67,14 +59,7 @@ LMSError CLR1::read(std::istream &in) {
         readRGBA(in, in.tellg(), color);
     }
 
-    if (in.tellg() % 16 != 0) {
-        const unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -103,14 +88,7 @@ LMSError ALB1::read(std::istream &in) {
     }
     LOG_AND_RETURN_IF_ERR(HashTable::read(in));
 
-    if (in.tellg() % 16 != 0) {
-        const unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -162,14 +140,7 @@ LMSError ATI2::read(std::istream &in) {
         if(attr.padding_0x00 != 0x00) LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
     }
 
-    if (in.tellg() % 16 != 0) {
-        const unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -246,24 +217,10 @@ LMSError ALI2::read(std::istream &in) {
             if(name.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         }
         
-        if (in.tellg() % 4 != 0) {
-            unsigned int padding_size = 4 - (in.tellg() % 4);
-            std::string padding(padding_size, '\0');
-            if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-            for (const char& character : padding) {
-                if (character != '\0') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-            }
-        }
+        LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -356,24 +313,10 @@ LMSError TGG2::read(std::istream &in) {
         group.groupName = readNullTerminatedStr(in, in.tellg());
         if(group.groupName.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         
-        if (in.tellg() % 4 != 0) {
-            unsigned int padding_size = 4 - (in.tellg() % 4);
-            std::string padding(padding_size, '\0');
-            if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-            for (const char& character : padding) {
-                if (character != '\0') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-            }
-        }
+        LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -466,24 +409,10 @@ LMSError TAG2::read(std::istream &in) {
         tag.tagName = readNullTerminatedStr(in, in.tellg());
         if(tag.tagName.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         
-        if (in.tellg() % 4 != 0) {
-            unsigned int padding_size = 4 - (in.tellg() % 4);
-            std::string padding(padding_size, '\0');
-            if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-            for (const char& character : padding) {
-                if (character != '\0') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-            }
-        }
+        LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -589,24 +518,10 @@ LMSError TGP2::read(std::istream &in) {
         param.paramName = readNullTerminatedStr(in, in.tellg());
         if(param.paramName.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         
-        if (in.tellg() % 4 != 0) {
-            unsigned int padding_size = 4 - (in.tellg() % 4);
-            std::string padding(padding_size, '\0');
-            if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-            for (const char& character : padding) {
-                if (character != '\0') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-            }
-        }
+        LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -689,14 +604,7 @@ LMSError TGL2::read(std::istream &in) {
         if(name.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -732,14 +640,7 @@ LMSError SLB1::read(std::istream &in) {
     }
     LOG_AND_RETURN_IF_ERR(HashTable::read(in));
 
-    if (in.tellg() % 16 != 0) {
-        const unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -791,14 +692,7 @@ LMSError SYL3::read(std::istream &in) {
         Utility::Endian::toPlatform_inplace(eType::Big, style.baseColorIdx);
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -858,14 +752,7 @@ LMSError CTI1::read(std::istream &in) {
         if(name.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
     }
 
-    if (in.tellg() % 16 != 0) {
-        unsigned int padding_size = 16 - (in.tellg() % 16);
-        std::string padding(padding_size, '\0');
-        if (!in.read(&padding[0], padding_size)) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
-        for (const char& character : padding) {
-            if (character != '\xab') LOG_ERR_AND_RETURN(LMSError::UNEXPECTED_VALUE);
-        }
-    }
+    LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 16, "\xab"));
 
     return LMSError::NONE;
 }
@@ -908,7 +795,7 @@ namespace FileTypes {
         memset(&header.padding_0x00, '\0', 10);
     }
 
-    MSBPFile MSBPFile::createNew(const std::string& filename) {
+    MSBPFile MSBPFile::createNew() {
         MSBPFile newMSBP{};
         newMSBP.initNew();
         return newMSBP;

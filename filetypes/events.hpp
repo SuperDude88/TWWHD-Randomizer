@@ -155,7 +155,7 @@ namespace FileTypes
 		std::unordered_map<std::string, std::shared_ptr<Event>> Events_By_Name;
 
 		EventList();
-		static EventList createNew(const std::string& filename);
+		static EventList createNew();
 		EventlistError loadFromBinary(std::istream& in);
 		EventlistError loadFromFile(const std::string& filePath);
 		EventlistError writeToStream(std::ostream& out);

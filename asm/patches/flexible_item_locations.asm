@@ -652,14 +652,15 @@ maggie_give_item_and_set_event_bit:
 
 .org 0x021fccd4
 	li r3, 0x6A02
+  nop
 .org 0x021fcce0
 	bl isEventBit_wrapper
 .org 0x022022f0
 	li r3, 0x6A02
-.org 0x022022f8
+  nop
 	bl isEventBit_wrapper
 .org 0x02200d54
-	bl rito_cafe_postman_start_event_and_set_event_bit
+	b rito_cafe_postman_start_event_and_set_event_bit ; branch instead of branch + link because of call-return thing
 .org @NextFreeSpace
 .global rito_cafe_postman_start_event_and_set_event_bit
 rito_cafe_postman_start_event_and_set_event_bit:
