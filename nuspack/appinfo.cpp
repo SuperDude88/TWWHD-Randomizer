@@ -6,12 +6,12 @@
 
 
 
-PackError AppInfo::parseFromXML(const std::filesystem::path& xmlPath) {
+bool AppInfo::parseFromXML(const std::filesystem::path& xmlPath) {
     using namespace tinyxml2;
 
     XMLDocument app;
     if(XMLError err = app.LoadFile(xmlPath.string().c_str()); err != XMLError::XML_SUCCESS) {
-        LOG_ERR_AND_RETURN(PackError::XML_ERROR);
+        return false;
     }
 
     const XMLElement* root = app.RootElement();
@@ -26,7 +26,7 @@ PackError AppInfo::parseFromXML(const std::filesystem::path& xmlPath) {
     const std::string mask = root->FirstChildElement("os_mask")->GetText();
     for(size_t i = 0; i < osMask.size(); i++) {
         const std::string character(1, mask[i]);
-        osMask[i] = std::stoi(character, nullptr, 16);
+        osMask[i] = std::stoul(character, nullptr, 16);
     }
 
     if(root->FirstChildElement("common_id") != nullptr) {
@@ -36,5 +36,5 @@ PackError AppInfo::parseFromXML(const std::filesystem::path& xmlPath) {
         common_id = 0;
     }
 
-    return PackError::NONE;
+    return true;
 }

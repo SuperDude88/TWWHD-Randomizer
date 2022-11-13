@@ -1,6 +1,5 @@
 #include "charts.hpp"
 
-#include <cmath>
 #include <algorithm>
 
 #include <utility/endian.hpp>
@@ -156,7 +155,7 @@ ChartError Chart::setIslandNumber(const uint8_t value) {
 
 	uint8_t island_index = value - 1;
 	sector_x = (island_index % 7) - 3;
-	sector_y = std::floor(island_index / 7) - 3;
+	sector_y = (island_index / 7) - 3;
 
 	island_number = sector_x + 3 + (sector_y + 3) * 7 + 1;
 

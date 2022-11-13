@@ -21,7 +21,7 @@ namespace elfUtil {
 	}
 
 	offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address) { //calculates offset into section, returns first value as section index and second as offset
-		for (uint16_t index : {2, 3, 4}) { //only check a few sections that might be written to
+		for (const uint16_t index : {2, 3, 4}) { //only check a few sections that might be written to
 			if (containsAddress(address, elf.shdr_table[index].second.sh_addr, elf.shdr_table[index].second.sh_size)) {
 				return {index, address - elf.shdr_table[index].second.sh_addr};
 			}
@@ -39,7 +39,7 @@ namespace elfUtil {
     ELFError addRelocation(FileTypes::ELF& elf, const uint16_t& shdrIdx, const Elf32_Rela& reloc) {
 		uint32_t offset_BE = Utility::Endian::toPlatform(eType::Big, reloc.r_offset);
 		uint32_t info_BE = Utility::Endian::toPlatform(eType::Big, reloc.r_info);
-		uint32_t addend_BE = Utility::Endian::toPlatform(eType::Big, reloc.r_addend);
+		int32_t addend_BE = Utility::Endian::toPlatform(eType::Big, reloc.r_addend);
 
 		std::string entry(12, '\0');
 		entry.replace(0, 4, reinterpret_cast<const char*>(&offset_BE), 4);

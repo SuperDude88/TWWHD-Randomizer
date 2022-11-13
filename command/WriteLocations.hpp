@@ -41,8 +41,8 @@ public:
     LocationModification& operator=(LocationModification&& other) = default;
 
     virtual std::unique_ptr<LocationModification> duplicate() const { return std::make_unique<LocationModification>(*this); }
-    virtual ModificationError parseArgs(Yaml::Node& locationObject) { return ModificationError::NONE; }
-    virtual ModificationError writeLocation(const Item& item) { return ModificationError::NONE; }
+    virtual ModificationError parseArgs(Yaml::Node& /* locationObject */) { return ModificationError::NONE; }
+    virtual ModificationError writeLocation(const Item& /* item */) { return ModificationError::NONE; }
 };
 
 class ModifyChest : public LocationModification {

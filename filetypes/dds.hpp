@@ -105,7 +105,7 @@ namespace FileTypes {
         std::array<uint8_t, 4> compSel;
 
         DDSFile();
-		static DDSFile createNew(const std::string& filename);
+		static DDSFile createNew();
 		DDSError loadFromBinary(std::istream& dds, const bool SRGB);
 		DDSError loadFromFile(const std::string& filePath, const bool SRGB = false);
 		DDSError writeToStream(std::ostream& out);

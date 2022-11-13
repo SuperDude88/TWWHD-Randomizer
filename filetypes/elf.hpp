@@ -35,7 +35,7 @@ namespace FileTypes {
 		std::vector<shdr_index_t> shdr_table;
 
 		ELF();
-		static ELF createNew(const std::string& filename);
+		static ELF createNew();
 		ELFError loadFromBinary(std::istream& elf);
 		ELFError loadFromFile(const std::string& filePath);
 		ELFError extend_section(const uint16_t index, const std::string& newData);

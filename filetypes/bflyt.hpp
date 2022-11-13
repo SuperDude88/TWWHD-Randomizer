@@ -569,7 +569,7 @@ namespace FileTypes {
 
 		FLYTFile();
 
-		static FLYTFile createNew(const std::string& filename);
+		static FLYTFile createNew();
 		FLYTError loadFromBinary(std::istream& bflyt);
 		FLYTError loadFromFile(const std::string& filePath);
 		FLYTError writeToStream(std::ostream& out);

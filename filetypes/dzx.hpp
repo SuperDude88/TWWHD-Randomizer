@@ -57,7 +57,7 @@ namespace FileTypes {
 		std::vector<Chunk> chunks;
 
 		DZXFile();
-		static DZXFile createNew(const std::string& filename);
+		static DZXFile createNew();
 		DZXError loadFromBinary(std::istream& dzx);
 		DZXError loadFromFile(const std::string& filePath);
 		std::vector<ChunkEntry*> entries_by_type(const std::string& chunk_type); //return vector of pointers so we can edit the chunk data
