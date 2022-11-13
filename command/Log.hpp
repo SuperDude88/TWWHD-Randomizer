@@ -2,47 +2,14 @@
 
 #include <string>
 #include <fstream>
-#include <typeinfo>
-#include <chrono>
-#include <sstream>
-#include <iomanip>
-#include <array>
 #include <list>
-#ifdef DEVKITPRO
-    #include <coreinit/time.h>
-#endif
 
 #include <seedgen/config.hpp>
+#include <utility/time.hpp>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 #define __FILENAME__ (&__FILE__[SOURCE_PATH_SIZE])
-
-//TODO: are these thread safe?
-class ProgramTime {
-private:
-#ifdef DEVKITPRO
-    const OSTime openTime;
-    static OSTime getOpenedTime();
-    static OSTime getElapsedTime();
-#else
-    using TimePoint_t = std::chrono::time_point<std::chrono::system_clock>;
-
-    const TimePoint_t openTime;
-    static TimePoint_t getOpenedTime();
-    static TimePoint_t::duration getElapsedTime();
-#endif
-
-    ProgramTime();
-    ~ProgramTime();
-public:
-    ProgramTime(const ProgramTime&) = delete;
-    ProgramTime& operator=(const ProgramTime&) = delete;
-
-    static ProgramTime& getInstance();
-    static std::string getTimeStr();
-    static std::string getDateStr();
-};
 
 class LogInfo {
 private:

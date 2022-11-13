@@ -459,7 +459,7 @@ FillError fill(WorldPool& worlds)
 {
     // Time how long the fill takes
     #ifdef ENABLE_TIMING
-        auto start = std::chrono::high_resolution_clock::now();
+        ScopedTimer<std::chrono::high_resolution_clock, "Fill took "> timer;
     #endif
     FillError err;
     ItemPool itemPool;
@@ -536,14 +536,6 @@ FillError fill(WorldPool& worlds)
     {
         LOG_ERR_AND_RETURN(FillError::GAME_NOT_BEATABLE);
     }
-
-    // Calculate time difference
-    #ifdef ENABLE_TIMING
-        auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        auto seconds = static_cast<double>(duration.count()) / 1000000.0;
-        Utility::platformLog(std::string("Fill took ") + std::to_string(seconds) + " seconds\n");
-    #endif
 
     return FillError::NONE;
 }

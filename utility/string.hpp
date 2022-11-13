@@ -68,4 +68,18 @@ namespace Utility::Str {
       stream << std::hex << (base ? std::showbase : std::noshowbase) << std::setfill('0') << std::setw(width) << i;
       return stream.str();
     }
+
+    //wrapper for a constexpr string, for use in other templates
+    template<size_t N>
+    struct StringLiteral {
+      constexpr StringLiteral(const char (&str)[N]) {
+        std::copy_n(str, N, value);
+      }
+
+      constexpr operator std::string_view() const {
+        return std::string_view(value, N - 1); //leave out null terminator
+      }
+
+      char value[N];
+    };
 }
