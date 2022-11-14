@@ -1328,6 +1328,9 @@ World::WorldLoadingError World::loadPlandomizer()
             auto itemId = nameToGameItem(itemName);
             ITEM_VALID_CHECK(itemId, "Plandomizer Error: Unknown item name \"" << itemName << "\" in plandomizer file");
 
+            // Sanitize item name incase the user missed an apostraphe
+            itemName = gameItemToName(nameToGameItem(itemName));
+
             LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + " [W" + std::to_string(plandoWorldId) + "]");
             Location* location = &locationEntries[locationName];
             location->plandomized = true;
@@ -1341,6 +1344,7 @@ World::WorldLoadingError World::loadPlandomizer()
             if (location->progression)
             {
                 location->currentItem = item;
+                LOG_TO_DEBUG("Plandomized " + itemName + " at " + locationName);
                 // Remove placed items from the world's item pool
                 removeElementFromPool(itemPool, item);
             }
