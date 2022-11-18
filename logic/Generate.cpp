@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <chrono>
 
+#include <logic/Plandomizer.hpp>
 #include <logic/World.hpp>
 #include <logic/ItemPool.hpp>
 #include <logic/Fill.hpp>
@@ -19,6 +20,8 @@
 #include <utility/platform.hpp>
 
 #include <gui/update_dialog_header.hpp>
+
+#define WORLD_LOADING_ERROR_CHECK(err) if (err != World::WorldLoadingError::NONE) {ErrorLog::getInstance().log(worlds[i].getLastErrorDetails()); return 1;}
 
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
@@ -41,32 +44,58 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           worlds[i] = World();
           worlds[i].setWorldId(i);
           worlds[i].setSettings(settingsVector[i]);
+      }
+
+      // Load plando data if any worlds have plandomizer enabled
+      // Choose the filepath from the first world which has it enabled
+      std::string plandoFilepath = "";
+      bool usePlando = false;
+      for (auto& world : worlds)
+      {
+          if (world.getSettings().plandomizer)
+          {
+             usePlando = true;
+             #ifdef DEVKITPRO
+                 plandoFilepath = APP_SAVE_PATH "plandomizer.yaml"; //can't bundle in the romfs, put it in the save directory instead
+             #else
+                 plandoFilepath = world.getSettings().plandomizerFile;
+             #endif
+             break;
+          }
+      }
+
+      if (usePlando)
+      {
+          std::vector<Plandomizer> plandos(worlds.size());
+          PlandomizerError err = loadPlandomizer(plandoFilepath, plandos, worlds.size());
+          if (err != PlandomizerError::NONE)
+          {
+              return 1;
+          }
+          for (size_t i = 0; i < worlds.size(); i++)
+          {
+              worlds[i].plandomizer = plandos[i];
+          }
+      }
+
+      // Once plandomizer data has been loaded, continue with building each world
+      for (size_t i = 0; i < worlds.size(); i++)
+      {
           worlds[i].resolveRandomSettings();
           if (worlds[i].loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
           {
               return 1;
           }
           worlds[i].determineChartMappings();
-          worlds[i].determineProgressionLocations();
-          if (worlds[i].setItemPools() != World::WorldLoadingError::NONE)
-          {
-              ErrorLog::getInstance().log(worlds[i].getLastErrorDetails());
-              return 1;
-          }
-          if (worlds[i].getSettings().plandomizer)
-          {
-              if (worlds[i].loadPlandomizer() != World::WorldLoadingError::NONE)
-              {
-                  auto lastError = worlds[i].getLastErrorDetails();
-                  Utility::platformLog(lastError);
-                  ErrorLog::getInstance().log(lastError);
-                  return 1;
-              }
-          }
-          if (worlds[i].determineRaceModeDungeons() != World::WorldLoadingError::NONE)
-          {
-              return 1;
-          }
+          WORLD_LOADING_ERROR_CHECK(worlds[i].determineProgressionLocations());
+          WORLD_LOADING_ERROR_CHECK(worlds[i].setItemPools());
+          WORLD_LOADING_ERROR_CHECK(worlds[i].determineRaceModeDungeons());
+      }
+
+      // Process Plandomized locations now after building each world
+      for (size_t i = 0; i < worlds.size(); i++)
+      {
+          WORLD_LOADING_ERROR_CHECK(worlds[i].processPlandomizerLocations(worlds));
       }
 
       // Randomize entrances before placing items
