@@ -54,9 +54,38 @@ const Settings& World::getSettings() const
 
 void World::resolveRandomSettings()
 {
-    if (settings.pig_color == PigColor::RANDOM) {
+    if (settings.pig_color == PigColor::RANDOM)
+    {
         settings.pig_color = PigColor(Random(0, 3));
         LOG_TO_DEBUG("Random pig color chosen: " + std::to_string(static_cast<int>(settings.pig_color)));
+    }
+
+    if (settings.start_with_random_item)
+    {
+        // Default random starting item pool
+        std::vector<GameItem> randomStartingItemPool = {
+            GameItem::BaitBag,
+            GameItem::Bombs,
+            GameItem::Boomerang,
+            GameItem::ProgressiveBow,
+            GameItem::DekuLeaf,
+            GameItem::DeliveryBag,
+            GameItem::GrapplingHook,
+            GameItem::Hookshot,
+            GameItem::ProgressivePictoBox,
+            GameItem::PowerBracelets,
+            GameItem::SkullHammer,
+        };
+
+        // If the user wants a custom pool with plandomizer, load that instead
+        if (!plandomizer.randomStartingItemPool.empty())
+        {
+            randomStartingItemPool = plandomizer.randomStartingItemPool;
+        }
+
+        GameItem startingItem = RandomElement(randomStartingItemPool);
+        LOG_TO_DEBUG("Random starting item chose: " + gameItemToName(startingItem));
+        settings.starting_gear.push_back(startingItem);
     }
 }
 

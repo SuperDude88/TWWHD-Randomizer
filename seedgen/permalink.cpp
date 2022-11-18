@@ -54,7 +54,7 @@ static const std::array<GameItem, 9> PROGRESSIVE_ITEMS = {
     GameItem::ProgressiveWallet,
 };
 // These are options that should affect seed generation even with the same seed
-static const std::array<Option, 59> PERMALINK_OPTIONS {
+static const std::array<Option, 60> PERMALINK_OPTIONS {
     // Progression
     Option::ProgressDungeons,
     Option::ProgressGreatFairies,
@@ -103,6 +103,7 @@ static const std::array<Option, 59> PERMALINK_OPTIONS {
 
     // Advanced Options
     Option::NoSpoilerLog,
+    Option::StartWithRandomItem,
     Option::Plandomizer,
 
     // Hints
