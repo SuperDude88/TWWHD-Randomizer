@@ -36,16 +36,16 @@ static std::string getSpoilerFormatEntrance(Entrance* entrance, const size_t& lo
 static std::string getSpoilerFormatLocation(Location* location, const size_t& longestNameLength, const WorldPool& worlds)
 {
     // Print the world number if more than 1 world
-    std::string worldNumber = " [W";
-    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(location->world->getWorldId() + 1) + "]" : "";
+    std::string locWorldNumber = worlds.size() > 1 ? " [W" + std::to_string(location->world->getWorldId() + 1) + "]" : "";
                                                                  // Don't add an extra space if the world id is two digits long
     size_t numSpaces = (longestNameLength - location->getName().length()) + ((location->world->getWorldId() >= 9) ? 0 : 1);
     std::string spaces (numSpaces, ' ');
 
     // Don't say which player the item is for if there's only 1 world
-    std::string itemName = worlds.size() > 1 ? location->currentItem.getName() : gameItemToName(location->currentItem.getGameItemId());
+    std::string itemWorldNumber = worlds.size() > 1 ? " [W" + std::to_string(location->currentItem.getWorld()->getWorldId() + 1) + "]" : "";
+    std::string itemName = location->currentItem.getName() + (worlds.size() > 1 ? itemWorldNumber : "");
 
-    return location->getName() + worldNumber + ":" + spaces + itemName;
+    return location->getName() + locWorldNumber + ":" + spaces + itemName;
 }
 
 static std::string getSpoilerFormatHint(Location* location)
@@ -63,7 +63,7 @@ static std::string getSpoilerFormatHint(Location* location)
     return Utility::Str::toUTF8(hintText);
 }
 
-// Compatator for sorting the chart mappings
+// Comparator for sorting the chart mappings
 struct chartComparator {
     bool operator()(const std::string& a, const std::string& b) const {
         if (a.length() != b.length())
@@ -127,6 +127,21 @@ void generateSpoilerLog(WorldPool& worlds)
         }
     }
     log << std::endl;
+
+    LOG_TO_DEBUG("Starting Inventory");
+    // Print starting inventory items
+    for (auto& world : worlds)
+    {
+        if (!world.getSettings().starting_gear.empty())
+        {
+            log << "Starting Inventory" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ":" << std::endl;
+            for (auto& gameItem : world.getSettings().starting_gear)
+            {
+                log << "\t" << gameItemToName(gameItem) << std::endl;
+            }
+            log << std::endl;
+        }
+    }
 
     // Find the longest location/entrances names for formatting the file
     size_t longestNameLength = 0;

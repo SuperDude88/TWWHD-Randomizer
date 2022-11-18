@@ -13,6 +13,7 @@
 #include <logic/ItemPool.hpp>
 #include <logic/Dungeon.hpp>
 #include <logic/Entrance.hpp>
+#include <logic/Plandomizer.hpp>
 #include <utility/text.hpp>
 
 static std::stringstream lastError;
@@ -51,12 +52,6 @@ struct AreaEntry
     bool isAccessible = false;
 };
 
-struct Plandomizer
-{
-    std::unordered_map<Location*, Item> locations = {};
-    std::unordered_map<Entrance*, Entrance*> entrances = {};
-    uint8_t startingIslandRoomIndex = -1;
-};
 
 class World
 {
@@ -107,13 +102,14 @@ public:
     int getWorldId() const;
     WorldLoadingError setItemPools();
     ItemPool getItemPool() const;
+    ItemPool& getItemPoolReference();
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
     AreaEntry& getArea(const std::string& area);
 
     void resolveRandomSettings();
     void determineChartMappings();
-    void determineProgressionLocations();
+    WorldLoadingError determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons();
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
@@ -122,12 +118,12 @@ public:
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     std::unordered_set<std::string> getIslands(const std::string& area);
     Dungeon& getDungeon(const std::string& dungeonName);
-    WorldLoadingError loadPlandomizer();
+    WorldLoadingError processPlandomizerLocations(WorldPool& worlds);
     std::string getUTF8HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW) const;
     std::u16string getUTF16HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RED) const;
 
     // Stuff to help with debugging
-    static const char* errorToName(WorldLoadingError err);
+    std::string errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
     void dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits = false);
 
