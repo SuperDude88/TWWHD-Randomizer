@@ -216,6 +216,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Prevents the randomizer from generating a text file listing out the location of every single item for this seed. (This also changes where items are placed in this seed.)<br><u>Generating a spoiler log is highly recommended even if you don't intend to use it</u>, just in case you get completely stuck."
     },
     {
+      "start_with_random_item",
+      "Randomly start with one extra item, selected uniformly at random from the item pool below.<br>Item Pool: Bait Bag, Bombs, Boomerang, Bow, Deku Leaf, Delivery Bag, Grappling Hook, Hookshot, Picto Box, Power Bracelets, and Skull Hammer."
+    },
+    {
       "plandomizer",
       "Allows you to select a file which can be used to manually place items in locations, or link specific entrances together in entrance randomizer."
     },
