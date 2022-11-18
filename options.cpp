@@ -142,6 +142,7 @@ Option nameToSetting(const std::string& name) {
         {"Starting HP", Option::StartingHP},
         {"Starting HC", Option::StartingHC},
         {"Remove Music", Option::RemoveMusic},
+        {"Start With Random Item", Option::StartWithRandomItem},
         {"Plandomizer", Option::Plandomizer},
         {"Plandomizer File", Option::PlandomizerFile},
     };
@@ -217,6 +218,7 @@ std::string settingToName(const Option& setting) {
         {Option::StartingHP, "Starting HP"},
         {Option::StartingHC, "Starting HC"},
         {Option::RemoveMusic, "Remove Music"},
+        {Option::StartWithRandomItem, "Start With Random Item"},
         {Option::Plandomizer, "Plandomizer"},
         {Option::PlandomizerFile, "Plandomizer File"},
     };
@@ -354,6 +356,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.starting_hcs;
     case Option::RemoveMusic:
         return settings.remove_music;
+    case Option::StartWithRandomItem:
+        return settings.start_with_random_item;
     case Option::Plandomizer:
         return settings.plandomizer;
     case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
@@ -489,6 +493,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.starting_hcs = value; return;
     case Option::RemoveMusic:
         settings.remove_music = value; return;
+    case Option::StartWithRandomItem:
+        settings.start_with_random_item = value; return;
     case Option::Plandomizer:
         settings.plandomizer = value; return;
     case Option::PlandomizerFile: //cant set this like everything else, just here as placeholder

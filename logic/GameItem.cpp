@@ -509,6 +509,93 @@ GameItem idToGameItem(uint8_t id)
 	return static_cast<GameItem>(id);
 }
 
+std::unordered_multiset<GameItem> getSupportedStartingItems()
+{
+		return std::unordered_multiset<GameItem>{
+		    /* not currently supported, may be later
+		    GameItem::DRCSmallKey,
+		    GameItem::DRCBigKey,
+		    GameItem::DRCCompass,
+		    GameItem::DRCDungeonMap,
+
+		    GameItem::FWSmallKey,
+		    GameItem::FWBigKey,
+		    GameItem::FWCompass,
+		    GameItem::FWDungeonMap,
+
+		    GameItem::TotGSmallKey,
+		    GameItem::TotGBigKey,
+		    GameItem::TotGCompass,
+		    GameItem::TotGDungeonMap,
+
+		    GameItem::ETSmallKey,
+		    GameItem::ETBigKey,
+		    GameItem::ETCompass,
+		    GameItem::ETDungeonMap,
+
+		    GameItem::WTSmallKey,
+		    GameItem::WTBigKey,
+		    GameItem::WTCompass,
+		    GameItem::WTDungeonMap,
+
+		    GameItem::FFCompass,
+		    GameItem::FFDungeonMap,
+		    */
+		    GameItem::Telescope,
+		    GameItem::MagicArmor,
+		    GameItem::HerosCharm,
+		    GameItem::TingleBottle,
+		    GameItem::WindWaker,
+		    GameItem::GrapplingHook,
+		    GameItem::PowerBracelets,
+		    GameItem::IronBoots,
+		    GameItem::Boomerang,
+		    GameItem::Hookshot,
+		    GameItem::Bombs,
+		    GameItem::SkullHammer,
+		    GameItem::DekuLeaf,
+		    GameItem::HurricaneSpin,
+		    GameItem::DinsPearl,
+		    GameItem::FaroresPearl,
+		    GameItem::NayrusPearl,
+		    GameItem::WindsRequiem,
+		    GameItem::SongOfPassing,
+		    GameItem::BalladOfGales,
+		    GameItem::CommandMelody,
+		    GameItem::EarthGodsLyric,
+		    GameItem::WindGodsAria,
+		    GameItem::SpoilsBag,
+		    GameItem::BaitBag,
+		    GameItem::DeliveryBag,
+		    GameItem::NoteToMom,
+		    GameItem::MaggiesLetter,
+		    GameItem::MoblinsLetter,
+		    GameItem::CabanaDeed,
+		    GameItem::GhostShipChart,
+		    GameItem::EmptyBottle,
+		    GameItem::ProgressiveMagicMeter,
+		    GameItem::ProgressiveMagicMeter,
+		    GameItem::ProgressiveBombBag,
+		    GameItem::ProgressiveBombBag,
+		    GameItem::ProgressiveBow,
+		    GameItem::ProgressiveBow,
+		    GameItem::ProgressiveBow,
+		    GameItem::ProgressiveQuiver,
+		    GameItem::ProgressiveQuiver,
+		    GameItem::ProgressiveWallet,
+		    GameItem::ProgressiveWallet,
+		    GameItem::ProgressivePictoBox,
+		    GameItem::ProgressivePictoBox,
+		    GameItem::ProgressiveSword,
+		    GameItem::ProgressiveSword,
+		    GameItem::ProgressiveSword,
+		    GameItem::ProgressiveShield,
+		    GameItem::ProgressiveShield,
+		    GameItem::ProgressiveSail,
+		    GameItem::ProgressiveSail
+		};
+}
+
 Item::Item(GameItem gameItemId_, World* world_)
 {
 		gameItemId = gameItemId_;

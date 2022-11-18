@@ -2,6 +2,7 @@
 
 #include <string>
 #include <set>
+#include <unordered_set>
 #include <list>
 #include <unordered_map>
 #include <utility/text.hpp>
@@ -261,6 +262,8 @@ std::string gameItemToName(GameItem item);
 GameItem idToGameItem(uint8_t id);
 
 uint32_t maxItemCount(GameItem item);
+
+std::unordered_multiset<GameItem> getSupportedStartingItems();
 
 static const std::set<GameItem> junkItems = {
     GameItem::HeartDrop,

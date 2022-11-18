@@ -150,6 +150,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.remove_music = false;
 
     conf.settings.do_not_generate_spoiler_log = false;
+    conf.settings.start_with_random_item = false;
     conf.settings.plandomizer = false;
     conf.settings.plandomizerFile = "";
 
@@ -255,6 +256,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, remove_music)
 
     SET_BOOL_FIELD(root, out, do_not_generate_spoiler_log)
+    SET_BOOL_FIELD(root, out, start_with_random_item)
     SET_BOOL_FIELD(root, out, plandomizer)
 
     if(root["sword_mode"].IsNone()) {
@@ -278,89 +280,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     if(!root["starting_gear"].IsSequence()) {
       if (!ignoreErrors) return ConfigError::INVALID_VALUE;
     } else {
-      std::unordered_multiset<GameItem> valid_items = {
-          /* not currently supported, may be later
-          GameItem::DRCSmallKey,
-          GameItem::DRCBigKey,
-          GameItem::DRCCompass,
-          GameItem::DRCDungeonMap,
-
-          GameItem::FWSmallKey,
-          GameItem::FWBigKey,
-          GameItem::FWCompass,
-          GameItem::FWDungeonMap,
-
-          GameItem::TotGSmallKey,
-          GameItem::TotGBigKey,
-          GameItem::TotGCompass,
-          GameItem::TotGDungeonMap,
-
-          GameItem::ETSmallKey,
-          GameItem::ETBigKey,
-          GameItem::ETCompass,
-          GameItem::ETDungeonMap,
-
-          GameItem::WTSmallKey,
-          GameItem::WTBigKey,
-          GameItem::WTCompass,
-          GameItem::WTDungeonMap,
-
-          GameItem::FFCompass,
-          GameItem::FFDungeonMap,
-          */
-          GameItem::Telescope,
-          GameItem::MagicArmor,
-          GameItem::HerosCharm,
-          GameItem::TingleBottle,
-          GameItem::WindWaker,
-          GameItem::GrapplingHook,
-          GameItem::PowerBracelets,
-          GameItem::IronBoots,
-          GameItem::Boomerang,
-          GameItem::Hookshot,
-          GameItem::Bombs,
-          GameItem::SkullHammer,
-          GameItem::DekuLeaf,
-          GameItem::HurricaneSpin,
-          GameItem::DinsPearl,
-          GameItem::FaroresPearl,
-          GameItem::NayrusPearl,
-          GameItem::WindsRequiem,
-          GameItem::SongOfPassing,
-          GameItem::BalladOfGales,
-          GameItem::CommandMelody,
-          GameItem::EarthGodsLyric,
-          GameItem::WindGodsAria,
-          GameItem::SpoilsBag,
-          GameItem::BaitBag,
-          GameItem::DeliveryBag,
-          GameItem::NoteToMom,
-          GameItem::MaggiesLetter,
-          GameItem::MoblinsLetter,
-          GameItem::CabanaDeed,
-          GameItem::GhostShipChart,
-          GameItem::EmptyBottle,
-          GameItem::ProgressiveMagicMeter,
-          GameItem::ProgressiveMagicMeter,
-          GameItem::ProgressiveBombBag,
-          GameItem::ProgressiveBombBag,
-          GameItem::ProgressiveBow,
-          GameItem::ProgressiveBow,
-          GameItem::ProgressiveBow,
-          GameItem::ProgressiveQuiver,
-          GameItem::ProgressiveQuiver,
-          GameItem::ProgressiveWallet,
-          GameItem::ProgressiveWallet,
-          GameItem::ProgressivePictoBox,
-          GameItem::ProgressivePictoBox,
-          GameItem::ProgressiveSword,
-          GameItem::ProgressiveSword,
-          GameItem::ProgressiveSword,
-          GameItem::ProgressiveShield,
-          GameItem::ProgressiveShield,
-          GameItem::ProgressiveSail,
-          GameItem::ProgressiveSail
-      };
+      std::unordered_multiset<GameItem> valid_items = getSupportedStartingItems();
 
       if(out.settings.sword_mode == SwordMode::NoSword) valid_items.erase(GameItem::ProgressiveSword);
       out.settings.starting_gear.clear();
@@ -490,6 +410,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, remove_music)
 
     WRITE_SETTING_BOOL_FIELD(root, config, do_not_generate_spoiler_log)
+    WRITE_SETTING_BOOL_FIELD(root, config, start_with_random_item)
     WRITE_SETTING_BOOL_FIELD(root, config, plandomizer)
     WRITE_STR_FIELD(root, config, plandomizerFile)
 
