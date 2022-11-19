@@ -60,7 +60,7 @@
            <enum>Qt::DefaultContextMenu</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -765,7 +765,7 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_10">
               <item>
-               <widget class="QLabel" name="label_6">
+               <widget class="QLabel" name="label_for_starting_hcs">
                 <property name="text">
                  <string>Heart Containers</string>
                 </property>
@@ -788,7 +788,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_5">
+               <widget class="QLabel" name="label_for_starting_pohs">
                 <property name="text">
                  <string>Heart Pieces</string>
                 </property>

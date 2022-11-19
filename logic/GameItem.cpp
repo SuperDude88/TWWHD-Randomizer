@@ -512,35 +512,41 @@ GameItem idToGameItem(uint8_t id)
 std::unordered_multiset<GameItem> getSupportedStartingItems()
 {
 		return std::unordered_multiset<GameItem>{
-		    /* not currently supported, may be later
 		    GameItem::DRCSmallKey,
+				GameItem::DRCSmallKey,
+				GameItem::DRCSmallKey,
+				GameItem::DRCSmallKey,
 		    GameItem::DRCBigKey,
 		    GameItem::DRCCompass,
 		    GameItem::DRCDungeonMap,
-
+				
 		    GameItem::FWSmallKey,
 		    GameItem::FWBigKey,
 		    GameItem::FWCompass,
 		    GameItem::FWDungeonMap,
 
 		    GameItem::TotGSmallKey,
+				GameItem::TotGSmallKey,
 		    GameItem::TotGBigKey,
 		    GameItem::TotGCompass,
 		    GameItem::TotGDungeonMap,
 
 		    GameItem::ETSmallKey,
+				GameItem::ETSmallKey,
+				GameItem::ETSmallKey,
 		    GameItem::ETBigKey,
 		    GameItem::ETCompass,
 		    GameItem::ETDungeonMap,
 
 		    GameItem::WTSmallKey,
+				GameItem::WTSmallKey,
 		    GameItem::WTBigKey,
 		    GameItem::WTCompass,
 		    GameItem::WTDungeonMap,
 
 		    GameItem::FFCompass,
 		    GameItem::FFDungeonMap,
-		    */
+
 		    GameItem::Telescope,
 		    GameItem::MagicArmor,
 		    GameItem::HerosCharm,

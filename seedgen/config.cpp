@@ -289,7 +289,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
               const std::string itemName = itemNode.As<std::string>();
               const GameItem item = nameToGameItem(itemName);
 
-              if(valid_items.count(item) == 0) return ConfigError::INVALID_VALUE;
+              if (valid_items.count(item) == 0) {
+                  ErrorLog::getInstance().log(itemName + " cannot be added to starting inventory");
+                  return ConfigError::INVALID_VALUE;
+              }
               out.settings.starting_gear.push_back(item);
               valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
       }
