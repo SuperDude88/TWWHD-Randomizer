@@ -834,7 +834,7 @@ int mainRandomize() {
 		ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
 		if(err != ConfigError::NONE) {
 			ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
-    		Utility::platformLog("Failed to read config, ERROR: " + errorToName(err));
+    		Utility::platformLog("Failed to read config, ERROR: " + errorToName(err) + '\n');
 			std::this_thread::sleep_for(3s);
 			Utility::platformShutdown();
 			return 1;
