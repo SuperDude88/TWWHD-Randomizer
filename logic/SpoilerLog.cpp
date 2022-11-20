@@ -106,7 +106,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 
 void generateSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log(APP_SAVE_PATH "Spoiler Log.txt");
+    std::ofstream log(APP_SAVE_PATH + LogInfo::getSeedHash() + " Spoiler Log.txt");
 
 	  Utility::platformLog("Generating spoiler log...\n");
     printBasicInfo(log, worlds);
