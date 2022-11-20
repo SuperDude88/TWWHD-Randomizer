@@ -153,6 +153,7 @@ private:
 
 	[[nodiscard]] bool writeCharts(WorldPool& worlds) {
 		using namespace std::literals::string_literals;
+		using eType = Utility::Endian::Type;
 
 		Utility::platformLog("Saving randomized charts...\n");
 		UPDATE_DIALOG_LABEL("Saving randomized charts...");
@@ -225,12 +226,12 @@ private:
 			for(ChunkEntry* scob : dzr.entries_by_type("SCOB")) {
 				if(salvage_object_names.count(scob->data.substr(0, 8)) > 0 && ((scob->data[8] & 0xF0) >> 4) == 0) {
 					uint32_t& params = *reinterpret_cast<uint32_t*>(&scob->data[8]);
-					Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, params);
+					Utility::Endian::toPlatform_inplace(eType::Big, params);
 					const uint32_t mask = 0x0FF00000;
 					const uint8_t shiftAmount = 20;
 
     				params = (params & (~mask)) | (uint32_t(new_chart->owned_chart_index_plus_1 << shiftAmount) & mask);
-					Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, params);
+					Utility::Endian::toPlatform_inplace(eType::Big, params);
 				}
 			}
 
@@ -683,13 +684,6 @@ public:
 
 		if (randomizeItems) {
 			if(!dryRun) {
-				if(config.settings.randomize_charts) {
-					if(!writeCharts(worlds)) {
-						ErrorLog::getInstance().log("Failed to save charts!");
-						return 1;
-					}
-				}
-
 				//get world locations with "worlds[playerNum - 1].locationEntries"
 				//assume 1 world for now, modifying multiple copies needs work
 				Utility::platformLog("Saving items...\n");
@@ -706,6 +700,15 @@ public:
 				if(const ELFError& err = saveRPX(); err != ELFError::NONE) {
 					ErrorLog::getInstance().log("Failed to save modified ELF!");
 					return 1;
+				}
+				
+				//write charts after saving our items so the hardcoded offsets don't change
+				//charts + entrances look through the actor list so offsets don't matter for these
+				if(config.settings.randomize_charts) {
+					if(!writeCharts(worlds)) {
+						ErrorLog::getInstance().log("Failed to save charts!");
+						return 1;
+					}
 				}
 
 				if (config.settings.randomize_cave_entrances || config.settings.randomize_door_entrances || config.settings.randomize_dungeon_entrances || config.settings.randomize_misc_entrances) {
