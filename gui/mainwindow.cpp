@@ -5,6 +5,9 @@
 
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QResource>
+#include <QDirIterator>
+#include <QFile>
 
 #include <ui_mainwindow.h>
 #include <randomizer_thread.hpp>
@@ -1039,8 +1042,9 @@ void MainWindow::on_randomize_button_clicked()
     // Only show the finish confirmation if there was no error
     if (!encounteredError)
     {
-        show_info_dialog("Randomization complete.\n\nIf you get stuck, check the progression spoiler log in the output folder.", "Randomization complete");
+        show_info_dialog("Randomization complete.\n\nIf you get stuck, check the progression spoiler log in the folder where this program is.", "Randomization complete");
     }
+
 }
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event)
@@ -1080,10 +1084,10 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 }
 
 void MainWindow::load_locations()
-{
-    auto locationDataPath = DATA_PATH "logic/data/location_data.yaml";
-    std::string locationDataStr;
-    Utility::getFileContents(locationDataPath, locationDataStr);
+{   
+    QResource file(":/logic/data/location_data.yaml");
+    std::string locationDataStr = file.uncompressedData().toStdString();
+
     locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
     Yaml::Parse(locationDataTree, locationDataStr);
