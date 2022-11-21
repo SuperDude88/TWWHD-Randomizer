@@ -117,6 +117,7 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
 
     // Non-consumable junk items
     {"Telescope", 1},
+    {"Tingle Bottle", 1},
     {"Magic Armor", 1},
     {"Hero's Charm", 1},
     {"Fill Up Coupon", 1},

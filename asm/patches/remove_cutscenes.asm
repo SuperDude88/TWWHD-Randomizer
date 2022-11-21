@@ -199,4 +199,9 @@ give_pearl_and_raise_totg_if_necessary:
 .org 0x02240688
 	li r4, 0x1F80
 
+
+; Skip the Tingle Bottle menu + text that normally appears after freeing Tingle
+.org 0x022ecc1c
+  nop
+
 .close
