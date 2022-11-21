@@ -1239,7 +1239,7 @@ World::WorldLoadingError World::processPlandomizerLocations(WorldPool& worlds)
     return WorldLoadingError::NONE;
 }
 
-// Load the world based on the given world graph file, macros file, and loation data file
+// Load the world based on the given world graph file, macros file, loation data file, item data file, and area data file
 int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath)
 {
     LOG_TO_DEBUG("Loading world");

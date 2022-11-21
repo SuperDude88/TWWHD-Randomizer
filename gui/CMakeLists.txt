@@ -57,6 +57,25 @@ endif()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+add_compile_definitions(DATA_PATH="./data/" APP_SAVE_PATH="./" TEMP_DIR="./temp/" RESOURCE_PATH=":/")
+
+# This flag should only be used when generating static executables for release
+if(EMBED_DATA)
+  message("Data will be embeded")
+  add_compile_definitions(EMBED_DATA)
+  find_package(PythonInterp REQUIRED)
+  execute_process(COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/generate_qrc_file.py" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE QRC_GENERATE_RESULT)
+  if(NOT QRC_GENERATE_RESULT EQUAL "0")
+    message("Failed to generate data.qrc")
+  endif()
+else()
+  # Put data files together for easier manipulation
+  file(COPY "../asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
+  file(COPY "../asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
+  file(COPY  ../assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                          # Images and other assets used in patching
+  file(COPY "../logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
+endif()
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
@@ -67,15 +86,9 @@ set(PROJECT_SOURCES
         ../tweaks.cpp
         ../options.cpp
         ../text_replacements.cpp
+        data.qrc
 )
 
-# Put data files together for easier manipulation
-file(COPY "../asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
-file(COPY "../asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
-file(COPY  ../assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                          # Images and other assets used in patching
-file(COPY "../logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
-
-add_compile_definitions(DATA_PATH="./data/" APP_SAVE_PATH="./" TEMP_DIR="./temp/")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(wwhd_rando
