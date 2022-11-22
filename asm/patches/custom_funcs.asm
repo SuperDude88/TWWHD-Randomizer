@@ -339,7 +339,7 @@ lbz r3, 0 (r31)
 b init_starting_gear_check_continue_loop
 
 init_starting_gear_begin_loop:
-b starting_gear_check_dungeon_item
+b starting_gear_check_custom_item
 init_starting_gear_regular_items:
 bl convert_progressive_item_id
 bl execItemGet
@@ -356,8 +356,8 @@ mtlr r0
 addi sp, sp, 0x10
 blr
 
-.global starting_gear_check_dungeon_item
-starting_gear_check_dungeon_item:
+.global starting_gear_check_custom_item
+starting_gear_check_custom_item:
 cmpwi r3, 0x13
 beq starting_gear_add_drc_small_key
 cmpwi r3, 0x14
@@ -402,6 +402,16 @@ cmpwi r3, 0x85
 beq starting_gear_add_wt_dungeon_map
 cmpwi r3, 0x86
 beq starting_gear_add_wt_compass
+cmpwi r3, 0xA3
+beq starting_gear_add_dragon_tingle_statue
+cmpwi r3, 0xA4
+beq starting_gear_add_forbidden_tingle_statue
+cmpwi r3, 0xA5
+beq starting_gear_add_goddess_tingle_statue
+cmpwi r3, 0xA6
+beq starting_gear_add_earth_tingle_statue
+cmpwi r3, 0xA7
+beq starting_gear_add_wind_tingle_statue
 b init_starting_gear_regular_items
 
 .global starting_gear_add_drc_small_key
@@ -512,6 +522,31 @@ b init_starting_gear_next_item
 .global starting_gear_add_wt_compass
 starting_gear_add_wt_compass:
 bl wt_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_dragon_tingle_statue
+starting_gear_add_dragon_tingle_statue:
+bl dragon_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_forbidden_tingle_statue
+starting_gear_add_forbidden_tingle_statue:
+bl forbidden_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_goddess_tingle_statue
+starting_gear_add_goddess_tingle_statue:
+bl goddess_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_earth_tingle_statue
+starting_gear_add_earth_tingle_statue:
+bl earth_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_wind_tingle_statue
+starting_gear_add_wind_tingle_statue:
+bl wind_tingle_statue_item_get_func
 b init_starting_gear_next_item
 
 .global num_triforce_shards_to_start_with

@@ -547,6 +547,12 @@ std::unordered_multiset<GameItem> getSupportedStartingItems()
 		    GameItem::FFCompass,
 		    GameItem::FFDungeonMap,
 
+				GameItem::DragonTingleStatue,
+				GameItem::ForbiddenTingleStatue,
+				GameItem::GoddessTingleStatue,
+				GameItem::EarthTingleStatue,
+				GameItem::WindTingleStatue,
+
 		    GameItem::Telescope,
 		    GameItem::MagicArmor,
 		    GameItem::HerosCharm,

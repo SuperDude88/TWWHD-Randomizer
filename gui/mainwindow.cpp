@@ -274,6 +274,7 @@ void MainWindow::setup_gear_menus()
                    << "Dragon Roost Cavern Small Key"
                    << "Dragon Roost Cavern Small Key"
                    << "Dragon Roost Cavern Small Key"
+                   << "Dragon Tingle Statue"
                    << "Earth God's Lyric"
                    << "Earth Temple Big Key"
                    << "Earth Temple Compass"
@@ -281,8 +282,10 @@ void MainWindow::setup_gear_menus()
                    << "Earth Temple Small Key"
                    << "Earth Temple Small Key"
                    << "Earth Temple Small Key"
+                   << "Earth Tingle Statue"
                    << "Empty Bottle"
                    << "Farore's Pearl"
+                   << "Forbidden Tingle Statue"
                    << "Forbidden Woods Big Key"
                    << "Forbidden Woods Compass"
                    << "Forbidden Woods Dungeon Map"
@@ -290,6 +293,7 @@ void MainWindow::setup_gear_menus()
                    << "Forsaken Fortress Compass"
                    << "Forsaken Fortress Dungeon Map"
                    << "Ghost Ship Chart"
+                   << "Goddess Tingle Statue"
                    << "Grappling Hook"
                    << "Hero's Charm"
                    << "Hookshot"
@@ -335,7 +339,8 @@ void MainWindow::setup_gear_menus()
                    << "Wind Temple Compass"
                    << "Wind Temple Dungeon Map"
                    << "Wind Temple Small Key"
-                   << "Wind Temple Small Key";
+                   << "Wind Temple Small Key"
+                   << "Wind Tingle Statue";
 
     randomizedGearModel->setStringList(randomizedList);
     ui->randomized_gear->setModel(randomizedGearModel);

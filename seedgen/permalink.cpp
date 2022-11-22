@@ -9,7 +9,7 @@
 
 #define BYTES_EXIST_CHECK(value) if (value == 0xFFFFFFFF) return PermalinkError::BAD_PERMALINK;
 
-static const std::array<GameItem, 47> REGULAR_ITEMS = {
+static const std::array<GameItem, 52> REGULAR_ITEMS = {
     GameItem::BaitBag,
     GameItem::BalladOfGales,
     GameItem::Bombs,
@@ -57,6 +57,11 @@ static const std::array<GameItem, 47> REGULAR_ITEMS = {
     GameItem::WTDungeonMap,
     GameItem::FFCompass,
     GameItem::FFDungeonMap,
+    GameItem::DragonTingleStatue,
+    GameItem::ForbiddenTingleStatue,
+    GameItem::GoddessTingleStatue,
+    GameItem::EarthTingleStatue,
+    GameItem::WindTingleStatue,
 };
 
 static const std::array<GameItem, 14> PROGRESSIVE_ITEMS = {
