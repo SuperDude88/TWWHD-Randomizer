@@ -34,7 +34,7 @@ SwordMode nameToSwordMode(const std::string& name);
 
 ConfigError createDefaultConfig(const std::string& filePath);
 
-ConfigError loadFromFile(const std::string& filePath, Config& out);
+ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreErrors = false);
 
 ConfigError writeToFile(const std::string& filePath, const Config& config);
 

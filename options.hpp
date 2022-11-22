@@ -73,6 +73,7 @@ enum struct Option {
 
     // Advanced Options
     NoSpoilerLog,
+    StartWithRandomItem,
     Plandomizer,
     PlandomizerFile,
 
@@ -186,6 +187,7 @@ struct Settings {
     uint16_t starting_hcs = 0;
     bool remove_music = false;
 
+    bool start_with_random_item = false;
     bool plandomizer = false;
     std::string plandomizerFile = "";
 };
