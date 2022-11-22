@@ -675,7 +675,8 @@ public:
 		UPDATE_DIALOG_VALUE(30);
 		UPDATE_DIALOG_LABEL("Modifying game code...");
 		if (!dryRun) {
-			if(TweakError err = apply_necessary_tweaks(config.settings); err != TweakError::NONE) {
+      // TODO: update worlds indexing for multiworld eventually
+			if(TweakError err = apply_necessary_tweaks(worlds[0].getSettings()); err != TweakError::NONE) {
 				ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
 				return 1;
 			}

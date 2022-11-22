@@ -27,7 +27,7 @@ const std::string& LogInfo::getSeedHash() {
 
 
 BasicLog::BasicLog() {
-    output.open(APP_SAVE_PATH "Non-Spoiler Log.txt");
+    output.open(APP_SAVE_PATH + LogInfo::getSeedHash() + " Non-Spoiler Log.txt");
 
     output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
@@ -73,29 +73,31 @@ void BasicLog::close()
 
 
 ErrorLog::ErrorLog() {
-    output.open(APP_SAVE_PATH "Error Log.txt");
+    #ifdef ENABLE_DEBUG
+        output.open(APP_SAVE_PATH "Error Log.txt");
 
-    output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
+        output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
-    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+        // output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        //
+        // output << "Selected options:" << std::endl << "\t";
+        // for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
+        // {
+        //     Option setting = static_cast<Option>(settingInt);
+        //
+        //     if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+        //     {
+        //         output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+        //     }
+        //     else
+        //     {
+        //         output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+        //     }
+        // }
 
-    output << "Selected options:" << std::endl << "\t";
-    for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-    {
-        Option setting = static_cast<Option>(settingInt);
-
-        if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
-        {
-            output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
-        }
-        else
-        {
-            output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
-        }
-    }
-
-    output << std::endl << std::endl;
+        output << std::endl << std::endl;
+    #endif
 }
 
 ErrorLog::~ErrorLog() {
@@ -145,25 +147,22 @@ DebugLog::DebugLog() {
         output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
         output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
-
-        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
-
-        output << "Selected options:" << std::endl << "\t";
-        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-        {
-            Option setting = static_cast<Option>(settingInt);
-
-            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
-            {
-                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
-            }
-            else
-            {
-                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
-            }
-        }
+        // output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        //
+        // output << "Selected options:" << std::endl << "\t";
+        // for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
+        // {
+        //     Option setting = static_cast<Option>(settingInt);
+        //
+        //     if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+        //     {
+        //         output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+        //     }
+        //     else
+        //     {
+        //         output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+        //     }
+        // }
 
         output << std::endl << std::endl;
     #endif

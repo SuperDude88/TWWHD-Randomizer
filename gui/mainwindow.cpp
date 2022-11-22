@@ -5,6 +5,9 @@
 
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QResource>
+#include <QDirIterator>
+#include <QFile>
 
 #include <ui_mainwindow.h>
 #include <randomizer_thread.hpp>
@@ -95,8 +98,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::load_config_into_ui()
 {
-    ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", config);
-    if(err != ConfigError::NONE)
+    // Ignore errors and just load in whatever we can. The gui will write a proper config file
+    // when the user begins randomization
+    ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", config, true);
+    if (err != ConfigError::NONE)
     {
         show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
     }
@@ -262,10 +267,33 @@ void MainWindow::setup_gear_menus()
                    << "Deku Leaf"
                    << "Delivery Bag"
                    << "Din's Pearl"
+                   << "Dragon Roost Cavern Big Key"
+                   << "Dragon Roost Cavern Compass"
+                   << "Dragon Roost Cavern Dungeon Map"
+                   << "Dragon Roost Cavern Small Key"
+                   << "Dragon Roost Cavern Small Key"
+                   << "Dragon Roost Cavern Small Key"
+                   << "Dragon Roost Cavern Small Key"
+                   << "Dragon Tingle Statue"
                    << "Earth God's Lyric"
+                   << "Earth Temple Big Key"
+                   << "Earth Temple Compass"
+                   << "Earth Temple Dungeon Map"
+                   << "Earth Temple Small Key"
+                   << "Earth Temple Small Key"
+                   << "Earth Temple Small Key"
+                   << "Earth Tingle Statue"
                    << "Empty Bottle"
                    << "Farore's Pearl"
+                   << "Forbidden Tingle Statue"
+                   << "Forbidden Woods Big Key"
+                   << "Forbidden Woods Compass"
+                   << "Forbidden Woods Dungeon Map"
+                   << "Forbidden Woods Small Key"
+                   << "Forsaken Fortress Compass"
+                   << "Forsaken Fortress Dungeon Map"
                    << "Ghost Ship Chart"
+                   << "Goddess Tingle Statue"
                    << "Grappling Hook"
                    << "Hero's Charm"
                    << "Hookshot"
@@ -301,7 +329,18 @@ void MainWindow::setup_gear_menus()
                    << "Spoils Bag"
                    << "Telescope"
                    << "Tingle Bottle"
-                   << "Wind God's Aria";
+                   << "Tower of the Gods Big Key"
+                   << "Tower of the Gods Compass"
+                   << "Tower of the Gods Dungeon Map"
+                   << "Tower of the Gods Small Key"
+                   << "Tower of the Gods Small Key"
+                   << "Wind God's Aria"
+                   << "Wind Temple Big Key"
+                   << "Wind Temple Compass"
+                   << "Wind Temple Dungeon Map"
+                   << "Wind Temple Small Key"
+                   << "Wind Temple Small Key"
+                   << "Wind Tingle Statue";
 
     randomizedGearModel->setStringList(randomizedList);
     ui->randomized_gear->setModel(randomizedGearModel);
@@ -440,6 +479,7 @@ void MainWindow::apply_config_settings()
 
     // Advanced Options
     APPLY_CHECKBOX_SETTING(config, ui, do_not_generate_spoiler_log);
+    APPLY_CHECKBOX_SETTING(config, ui, start_with_random_item);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
     update_plandomizer_widget_visbility();
     ui->plandomizer_path->setText(config.settings.plandomizerFile.c_str());
@@ -664,6 +704,7 @@ DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
 void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
 {
     config.settings.damage_multiplier = static_cast<float>(multiplier);
+    update_permalink();
 }
 
 DEFINE_STATE_CHANGE_FUNCTION(keylunacy)
@@ -705,6 +746,7 @@ DEFINE_STATE_CHANGE_FUNCTION(remove_music)
 
 //Advanced Options
 DEFINE_STATE_CHANGE_FUNCTION(do_not_generate_spoiler_log)
+DEFINE_STATE_CHANGE_FUNCTION(start_with_random_item)
 void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
     UPDATE_CONFIG_STATE(config, ui, plandomizer);
@@ -935,6 +977,14 @@ void MainWindow::update_encryption_files()
 
 void MainWindow::on_randomize_button_clicked()
 {
+    // TODO: remove when korl text is fixed
+    int totalNumHints = config.settings.item_hints + config.settings.barren_hints + config.settings.location_hints + config.settings.path_hints;
+    if (config.settings.korl_hints && !config.settings.ho_ho_hints && totalNumHints > 10)
+    {
+        show_warning_dialog("Currently there is a bug where the King of Red Lions will softlock you if he has more than 10 hints. Please reduce the number of hints to 10 or less, or enable Ho-Ho hints as well", "Hint Warning");
+        return;
+    }
+
     // Check to make sure the base game and output are directories
     if (!std::filesystem::is_directory(config.gameBaseDir))
     {
@@ -998,8 +1048,9 @@ void MainWindow::on_randomize_button_clicked()
     // Only show the finish confirmation if there was no error
     if (!encounteredError)
     {
-        show_info_dialog("Randomization complete.\n\nIf you get stuck, check the progression spoiler log in the output folder.", "Randomization complete");
+        show_info_dialog("Randomization complete.\n\nIf you get stuck, check the progression spoiler log in the folder where this program is.", "Randomization complete");
     }
+
 }
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event)
@@ -1039,10 +1090,10 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 }
 
 void MainWindow::load_locations()
-{
-    auto locationDataPath = DATA_PATH "logic/data/location_data.yaml";
-    std::string locationDataStr;
-    Utility::getFileContents(locationDataPath, locationDataStr);
+{   
+    QResource file(":/logic/data/location_data.yaml");
+    std::string locationDataStr = file.uncompressedData().toStdString();
+
     locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
     Yaml::Parse(locationDataTree, locationDataStr);

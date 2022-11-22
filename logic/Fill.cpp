@@ -338,25 +338,37 @@ static void handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
                 ItemPool dungeonPool;
                 if (dungeon.smallKey != "" && dungeon.bigKey != "")
                 {
-                    // Remove the boss key and small keys from the itemPool
-                    removeElementFromPool(itemPool, Item(dungeon.smallKey, &world), dungeon.keyCount);
-                    removeElementFromPool(itemPool, Item(dungeon.bigKey, &world));
-
-                    for (int i = 0; i < dungeon.keyCount; i++)
+                    auto& smallKey = world.itemEntries[dungeon.smallKey];
+                    auto& bigKey = world.itemEntries[dungeon.bigKey];
+                    for (size_t i = 0; i < elementCountInPool(smallKey, itemPool); i++)
                     {
-                        dungeonPool.emplace_back(world.itemEntries[dungeon.smallKey]);
+                        dungeonPool.emplace_back(smallKey);
                     }
-                    dungeonPool.emplace_back(world.itemEntries[dungeon.bigKey]);
+                    for (size_t i = 0; i < elementCountInPool(bigKey, itemPool); i++)
+                    {
+                        dungeonPool.emplace_back(bigKey);
+                    }
+                    // Remove the boss key and small keys from the itemPool
+                    removeElementFromPool(itemPool, smallKey, dungeon.keyCount);
+                    removeElementFromPool(itemPool, bigKey);
                     assumedFill(worlds, dungeonPool, itemPool, dungeonLocations, worldId);
                 }
 
                 // Place maps and compasses after since they aren't progressive items
                 dungeonPool.clear();
-                dungeonPool.emplace_back(world.itemEntries[dungeon.compass]);
-                dungeonPool.emplace_back(world.itemEntries[dungeon.map]);
+                auto& map = world.itemEntries[dungeon.map];
+                auto& compass = world.itemEntries[dungeon.compass];
+                for (size_t i = 0; i < elementCountInPool(map, itemPool); i++)
+                {
+                    dungeonPool.emplace_back(map);
+                }
+                for (size_t i = 0; i < elementCountInPool(compass, itemPool); i++)
+                {
+                    dungeonPool.emplace_back(compass);
+                }
+                removeElementFromPool(itemPool, map);
+                removeElementFromPool(itemPool, compass);
                 fastFill(dungeonPool, dungeonLocations);
-                removeElementFromPool(itemPool, Item(dungeon.map, &world));
-                removeElementFromPool(itemPool, Item(dungeon.compass, &world));
             }
         }
     }
@@ -425,7 +437,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
 
 static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    LOG_TO_DEBUG("Placing Non-Progress Items");
+    LOG_TO_DEBUG("Placing Non-Progress Plandomizer Items");
     std::unordered_map<Location*, Item> allPlandoLocations = {};
     for (auto& world : worlds)
     {

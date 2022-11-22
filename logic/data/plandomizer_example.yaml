@@ -4,15 +4,20 @@
 # randomizer seed. You can place items in specific locations, and connect
 # specific entrances if entrance randomizer is enabled.
 
+# All plandomized elements must be under a "World 1" element at the start of the
+# plandomizer file like this
+- World 1:
+      # ...everything else...
+
 # LOCATIONS
 # All plandomized locations are defined under a "locations" element and consist
 # of the location name followed by a colon(:) and the item name you want placed
 # at that location. The following example places Bombs at Windfall Island - Maggie Free Item
-# and Power Bracelets at Wind Temple - Wizzrobe Mini Boss. Note that the hyphen(-)
-# is important for the YAML format and must always be on the *FIRST ELEMENT* in the plandomizer file
-- locations:
-      Windfall Island - Maggie Free Item: Bombs
-      Wind Temple - Wizzrobe Mini Boss: Power Bracelets
+# and Power Bracelets at Wind Temple - Wizzrobe Mini Boss.
+- World 1:
+      locations:
+          Windfall Island - Maggie Free Item: Bombs
+          Wind Temple - Wizzrobe Mini Boss: Power Bracelets
 
 # NAMES
 # As a general rule, capitalize the first letter of all item names except for
@@ -48,12 +53,12 @@
 # of the original entrance that you want to change followed by a colon(:) and the
 # replacement entrance you want the original connection to go to. The following example
 # switches the entrances between Link and Orca's houses on Outset Island. Note that
-# when plandomizing entrances, the entrance randomizer setting for the entrances you're attempting
-# to plandomize must be turned on. Note that the hyphen(-) in the example is important
-# for the YAML format and must always be on the *FIRST ELEMENT* in the plandomizer file
-- entrances:
-      Outset Island -> Outset Link's House: Outset Orca's House from Outset Island
-      Outset Island -> Outset Orca's House: Outset Link's House from Outset Island
+# when plandomizing entrances, the entrance randomizer setting for the entrances you're
+# attempting to plandomize must be turned on.
+- World 1:
+      entrances:
+          Outset Island -> Outset Link's House: Outset Orca's House from Outset Island
+          Outset Island -> Outset Orca's House: Outset Link's House from Outset Island
 # The original entrance must be in the format "<first area> -> <second area>", and
 # the replacement entrance must be in the format "<second area> from <first area>".
 # The spaces around the arrow and the word "from" are important to include. These
@@ -65,7 +70,8 @@
 # STARTING ISLAND
 # You can also set the starting island if you want to. For a list of island names, see
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L68
-- starting island: Five Eye Reef
+- World 1:
+      starting island: Five Eye Reef
 
 # EXTRA PROGRESSION LOCATIONS
 # For more fine-tuned control over which locations are in logic, you can specify extra
@@ -73,9 +79,10 @@
 # element. For example, if we don't have spoils trading or long sidequests enabled
 # but we still want to have the Windfall potion sellers checks as potential
 # progression locations, we can type:
-- extra progression locations:
-    - Windfall Island - Potion Shop 15 Blue Chu
-    - Windfall Island - Potion Shop 15 Green Chu
+- World 1:
+      extra progression locations:
+        - Windfall Island - Potion Shop 15 Blue Chu
+        - Windfall Island - Potion Shop 15 Green Chu
 
 # MULTIWORLD PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
 # and is not actively being developed, but the filling algorithm was made to support
