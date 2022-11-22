@@ -519,7 +519,7 @@ std::unordered_multiset<GameItem> getSupportedStartingItems()
 		    GameItem::DRCBigKey,
 		    GameItem::DRCCompass,
 		    GameItem::DRCDungeonMap,
-				
+
 		    GameItem::FWSmallKey,
 		    GameItem::FWBigKey,
 		    GameItem::FWCompass,
@@ -595,6 +595,7 @@ std::unordered_multiset<GameItem> getSupportedStartingItems()
 		    GameItem::ProgressiveSword,
 		    GameItem::ProgressiveSword,
 		    GameItem::ProgressiveSword,
+				GameItem::ProgressiveSword,
 		    GameItem::ProgressiveShield,
 		    GameItem::ProgressiveShield,
 		    GameItem::ProgressiveSail,

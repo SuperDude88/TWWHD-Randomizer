@@ -263,16 +263,20 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
       out.settings.sword_mode = nameToSwordMode(root["sword_mode"].As<std::string>());
-      if(out.settings.sword_mode == SwordMode::INVALID && !ignoreErrors) return ConfigError::INVALID_VALUE;
-      else out.settings.sword_mode = SwordMode::StartWithSword;
+      if (out.settings.sword_mode == SwordMode::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.sword_mode = SwordMode::StartWithSword;
+      }
     }
 
     if(root["pig_color"].IsNone())  {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
       out.settings.pig_color = nameToPigColor(root["pig_color"].As<std::string>());
-      if(out.settings.pig_color == PigColor::INVALID && !ignoreErrors) return ConfigError::INVALID_VALUE;
-      else out.settings.pig_color = PigColor::RANDOM;
+      if(out.settings.pig_color == PigColor::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.pig_color = PigColor::RANDOM;
+      }
     }
 
 
@@ -282,7 +286,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     } else {
       std::unordered_multiset<GameItem> valid_items = getSupportedStartingItems();
 
+      // Erase swords if Swordless mode is on, or remove one sword if we're starting with one
       if(out.settings.sword_mode == SwordMode::NoSword) valid_items.erase(GameItem::ProgressiveSword);
+      else if (out.settings.sword_mode == SwordMode::StartWithSword) valid_items.erase(valid_items.find(GameItem::ProgressiveSword));
+
       out.settings.starting_gear.clear();
       for (auto it = root["starting_gear"].Begin(); it != root["starting_gear"].End(); it++) {
               const Yaml::Node& itemNode = (*it).second;
