@@ -862,7 +862,7 @@
 - Name: Tingle Island
   Island: Tingle Island
   Locations:
-      Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue
+      Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue and 'RescuedTingle'
       Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
       Tingle Island - Sunken Treasure: Chart_For_Island_17 and Grappling_Hook
   Exits:
