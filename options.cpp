@@ -341,7 +341,7 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
     case Option::NumRaceModeDungeons:
         return settings.num_race_mode_dungeons;
     case Option::DamageMultiplier:
-        return settings.damage_multiplier;
+        return static_cast<uint8_t>(settings.damage_multiplier);
     case Option::CTMC:
         return settings.chest_type_matches_contents;
     case Option::CasualClothes:
