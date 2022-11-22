@@ -704,6 +704,7 @@ DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
 void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
 {
     config.settings.damage_multiplier = static_cast<float>(multiplier);
+    update_permalink();
 }
 
 DEFINE_STATE_CHANGE_FUNCTION(keylunacy)

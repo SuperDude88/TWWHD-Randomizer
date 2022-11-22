@@ -115,6 +115,7 @@ static const std::array<Option, 60> PERMALINK_OPTIONS {
     Option::NumShards,
     Option::RandomCharts,
     Option::CTMC,
+    Option::DamageMultiplier,
 
     // Convenience Tweaks
     Option::InstantText,
@@ -155,7 +156,6 @@ static const std::array<Option, 60> PERMALINK_OPTIONS {
     Option::DecoupleEntrances,
     Option::RandomStartIsland,
 
-    Option::DamageMultiplier,
 };
 
 std::string create_permalink(const Settings& settings, const std::string& seed) {
@@ -183,8 +183,8 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
                 bitsWriter.write(startingGear.count(item), 3);
             }
         }
-        // ComboBox Options
-        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards)
+        // ComboBox Options (and 8-bit spinbox options)
+        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards || option == Option::DamageMultiplier)
         {
             bitsWriter.write(getSetting(settings, option), 8);
         }
