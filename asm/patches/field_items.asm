@@ -15,6 +15,12 @@
 	blt 0x02182dd8
 .org 0x02182db8
 	bl itemActionForArrow
+.org 0x02182d40
+	nop
+.org 0x02180f08
+	nop
+.org 0x101e8ac6
+	.short 0x8466
 
 .org 0x02182e58
 	b check_rupee_mode_wait

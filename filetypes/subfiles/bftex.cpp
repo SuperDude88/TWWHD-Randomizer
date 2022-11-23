@@ -42,14 +42,14 @@ std::pair<uint32_t, uint32_t> getCurrentMipOffset_Size(uint32_t width, uint32_t 
     uint32_t height_ = 0;
 
     for (unsigned int mipLevel = 0; mipLevel < currLevel; mipLevel++) {
-        width_ = std::max<uint32_t>(1, width >> mipLevel) / blkWidth; //TODO: make division ceil instead of floor
-        height_ = std::max<uint32_t>(1, height >> mipLevel) / blkHeight; //TODO: make division ceil instead of floor
+        width_ = (std::max<uint32_t>(1, width >> mipLevel) + (blkWidth - 1)) / blkWidth; // (x + (y - 1)) / y for quick int ceiling division
+        height_ = (std::max<uint32_t>(1, height >> mipLevel) + (blkHeight - 1)) / blkHeight;
 
         offset += width_ * height_ * bpp;
     }
 
-    width_ = std::max<uint32_t>(1, width >> currLevel) / blkWidth; //TODO: make division ceil instead of floor
-    height_ = std::max<uint32_t>(1, height >> currLevel) / blkHeight; //TODO: make division ceil instead of floor
+    width_ = (std::max<uint32_t>(1, width >> currLevel) + (blkWidth - 1)) / blkWidth;
+    height_ = (std::max<uint32_t>(1, height >> currLevel) + (blkHeight - 1)) / blkHeight;
 
     uint32_t size = width_ * height_ * bpp;
 
