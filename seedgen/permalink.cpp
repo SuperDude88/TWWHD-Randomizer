@@ -9,7 +9,7 @@
 
 #define BYTES_EXIST_CHECK(value) if (value == 0xFFFFFFFF) return PermalinkError::BAD_PERMALINK;
 
-static const std::array<GameItem, 30> REGULAR_ITEMS = {
+static const std::array<GameItem, 52> REGULAR_ITEMS = {
     GameItem::BaitBag,
     GameItem::BalladOfGales,
     GameItem::Bombs,
@@ -40,9 +40,31 @@ static const std::array<GameItem, 30> REGULAR_ITEMS = {
     GameItem::Telescope,
     GameItem::TingleBottle,
     GameItem::WindGodsAria,
+    GameItem::DRCBigKey,
+    GameItem::DRCCompass,
+    GameItem::DRCDungeonMap,
+    GameItem::FWBigKey,
+    GameItem::FWCompass,
+    GameItem::FWDungeonMap,
+    GameItem::TotGBigKey,
+    GameItem::TotGCompass,
+    GameItem::TotGDungeonMap,
+    GameItem::ETBigKey,
+    GameItem::ETCompass,
+    GameItem::ETDungeonMap,
+    GameItem::WTBigKey,
+    GameItem::WTCompass,
+    GameItem::WTDungeonMap,
+    GameItem::FFCompass,
+    GameItem::FFDungeonMap,
+    GameItem::DragonTingleStatue,
+    GameItem::ForbiddenTingleStatue,
+    GameItem::GoddessTingleStatue,
+    GameItem::EarthTingleStatue,
+    GameItem::WindTingleStatue,
 };
 
-static const std::array<GameItem, 9> PROGRESSIVE_ITEMS = {
+static const std::array<GameItem, 14> PROGRESSIVE_ITEMS = {
     GameItem::ProgressiveBombBag,
     GameItem::ProgressiveBow,
     GameItem::ProgressiveMagicMeter,
@@ -52,9 +74,14 @@ static const std::array<GameItem, 9> PROGRESSIVE_ITEMS = {
     GameItem::ProgressiveSword,
     GameItem::ProgressiveSail,
     GameItem::ProgressiveWallet,
+    GameItem::DRCSmallKey,
+    GameItem::FWSmallKey,
+    GameItem::TotGSmallKey,
+    GameItem::ETSmallKey,
+    GameItem::WTSmallKey,
 };
 // These are options that should affect seed generation even with the same seed
-static const std::array<Option, 59> PERMALINK_OPTIONS {
+static const std::array<Option, 60> PERMALINK_OPTIONS {
     // Progression
     Option::ProgressDungeons,
     Option::ProgressGreatFairies,
@@ -88,6 +115,7 @@ static const std::array<Option, 59> PERMALINK_OPTIONS {
     Option::NumShards,
     Option::RandomCharts,
     Option::CTMC,
+    Option::DamageMultiplier,
 
     // Convenience Tweaks
     Option::InstantText,
@@ -103,6 +131,7 @@ static const std::array<Option, 59> PERMALINK_OPTIONS {
 
     // Advanced Options
     Option::NoSpoilerLog,
+    Option::StartWithRandomItem,
     Option::Plandomizer,
 
     // Hints
@@ -127,7 +156,6 @@ static const std::array<Option, 59> PERMALINK_OPTIONS {
     Option::DecoupleEntrances,
     Option::RandomStartIsland,
 
-    Option::DamageMultiplier,
 };
 
 std::string create_permalink(const Settings& settings, const std::string& seed) {
@@ -152,11 +180,11 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
             }
             for (auto& item : PROGRESSIVE_ITEMS)
             {
-                bitsWriter.write(startingGear.count(item), 2);
+                bitsWriter.write(startingGear.count(item), 3);
             }
         }
-        // ComboBox Options
-        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards)
+        // ComboBox Options (and 8-bit spinbox options)
+        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards || option == Option::DamageMultiplier)
         {
             bitsWriter.write(getSetting(settings, option), 8);
         }
@@ -261,7 +289,7 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
             }
             for (auto& item : PROGRESSIVE_ITEMS)
             {
-                value = bitsReader.read(2);
+                value = bitsReader.read(3);
                 BYTES_EXIST_CHECK(value);
                 for (size_t i = 0; i < value; i++)
                 {
