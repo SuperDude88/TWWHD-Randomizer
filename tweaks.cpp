@@ -820,8 +820,10 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 		{0x4E, 0x1004E698}
 	};
 
-	//remove a store that would overwrite a change to the DRC boss key model (nintendo added some item at this ID, seems unused?)
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02551E30), 0x60000000));
+	//nop some code that would overwrite models (Nintendo added some data to these IDs, maybe related to Tingle bottle?)
+	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x025527DC), 0x60000000)); // DRC small key field model
+	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x25527e0), 0x60000000)); // DRC big key field model
+	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02551E30), 0x60000000)); // DRC big key item resource
 
   std::unordered_map<std::string, std::u16string> messageBegin = {
     {"English", u"You got "},
@@ -854,7 +856,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
     }
 
 		const uint32_t item_resources_addr_to_copy_from = item_resources_list_start + base_item_id * 0x24;
-		const uint32_t field_item_resources_addr_to_copy_from = field_item_resources_list_start + base_item_id * 0x24;
+		const uint32_t field_item_resources_addr_to_copy_from = field_item_resources_list_start + base_item_id * 0x1C;
 
 		const uint32_t item_resources_addr = item_resources_list_start + item_data.item_id * 0x24;
 		const uint32_t field_item_resources_addr = field_item_resources_list_start + item_data.item_id * 0x1C;
@@ -897,7 +899,6 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
 		const std::vector<uint8_t> data6 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x18), 0x4);
 		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x18), data6));
-
 	}
 
 	return TweakError::NONE;
