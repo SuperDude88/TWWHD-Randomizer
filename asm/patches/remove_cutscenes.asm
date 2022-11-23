@@ -85,7 +85,12 @@ check_hyrule_warp_unlocked:
 	nop
 
 
-; Skipping song replays is very broken, not as big of a deal on HD since you only see the anim once after each savewarp (for each song)
+; Remove song replays, where Link plays a fancy animation to conduct the song after the player plays it.
+; HD already has code to do this after the first use of a song, so we borrow that
+.org 0x02439de4
+  b 0x02439e08 ; skip showing the textbox
+.org 0x0243ad3c
+  nop ; skip the cutscene
 
 
 ; Change Tott to only dance once to teach you the Song of Passing, instead of twice.
