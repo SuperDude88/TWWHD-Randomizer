@@ -60,15 +60,21 @@ check_hyrule_warp_unlocked:
 
 ; Change the conditions that cause certain letters to be sent to Link so they don't depend on seeing cutscenes.
 .org 0x023a421c
+  ; Change Orca's letter to be sent after beating Kalle Demos
 	li r3, 4
 	bl isStageBossEnemy
 .org 0x025542e0
+  ; Change Aryll's letter to be sent after beating Helmaroc King
 	li r3, 2
 	bl isStageBossEnemy
 .org 0x02554308
+  ; Change Tingle's letter to be sent after beating Helmaroc King and rescuing Tingle
 	li r3, 2
 	bl isStageBossEnemy
-
+.org 0x024d4f28
+  ; The Hyrule warp force-sends Tingle's letter in HD after you leave Hyrule 2
+  ; Remove that code so it only uses our conditions
+  nop
 
 ; Modify the code for warping with the Ballad of Gales to get rid of the cutscene that accompanies it.
 .org 0x02482764
@@ -79,7 +85,12 @@ check_hyrule_warp_unlocked:
 	nop
 
 
-; Skipping song replays is very broken, not as big of a deal on HD since you only see the anim once after each savewarp (for each song)
+; Remove song replays, where Link plays a fancy animation to conduct the song after the player plays it.
+; HD already has code to do this after the first use of a song, so we borrow that
+.org 0x02439de4
+  b 0x02439e08 ; skip showing the textbox
+.org 0x0243ad3c
+  nop ; skip the cutscene
 
 
 ; Change Tott to only dance once to teach you the Song of Passing, instead of twice.
@@ -192,5 +203,10 @@ give_pearl_and_raise_totg_if_necessary:
 	li r4, 0x1F80
 .org 0x02240688
 	li r4, 0x1F80
+
+
+; Skip the Tingle Bottle menu + text that normally appears after freeing Tingle
+.org 0x022ecc1c
+  nop
 
 .close
