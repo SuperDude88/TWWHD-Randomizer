@@ -53,7 +53,7 @@ stb r4, 7 (r3) ; Max bombs
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x33
-lis r4, starting_magic@ha 
+lis r4, starting_magic@ha
 addi r4, r4, starting_magic@l
 lbz r4, 0 (r4) ; Load starting magic address into r4, then load byte at address into r4
 stb r4, 0 (r3) ; Max magic meter
@@ -339,8 +339,11 @@ lbz r3, 0 (r31)
 b init_starting_gear_check_continue_loop
 
 init_starting_gear_begin_loop:
+b starting_gear_check_custom_item
+init_starting_gear_regular_items:
 bl convert_progressive_item_id
 bl execItemGet
+init_starting_gear_next_item:
 lbzu r3, 1(r31)
 init_starting_gear_check_continue_loop:
 cmplwi r3, 255
@@ -353,7 +356,198 @@ mtlr r0
 addi sp, sp, 0x10
 blr
 
+.global starting_gear_check_custom_item
+starting_gear_check_custom_item:
+cmpwi r3, 0x13
+beq starting_gear_add_drc_small_key
+cmpwi r3, 0x14
+beq starting_gear_add_drc_big_key
+cmpwi r3, 0x1B
+beq starting_gear_add_drc_dungeon_map
+cmpwi r3, 0x1C
+beq starting_gear_add_drc_compass
+cmpwi r3, 0x1D
+beq starting_gear_add_fw_small_key
+cmpwi r3, 0x40
+beq starting_gear_add_fw_big_key
+cmpwi r3, 0x41
+beq starting_gear_add_fw_dungeon_map
+cmpwi r3, 0x5A
+beq starting_gear_add_fw_compass
+cmpwi r3, 0x5B
+beq starting_gear_add_totg_small_key
+cmpwi r3, 0x5C
+beq starting_gear_add_totg_big_key
+cmpwi r3, 0x5D
+beq starting_gear_add_totg_dungeon_map
+cmpwi r3, 0x5E
+beq starting_gear_add_totg_compass
+cmpwi r3, 0x5F
+beq starting_gear_add_ff_dungeon_map
+cmpwi r3, 0x60
+beq starting_gear_add_ff_compass
+cmpwi r3, 0x73
+beq starting_gear_add_et_small_key
+cmpwi r3, 0x74
+beq starting_gear_add_et_big_key
+cmpwi r3, 0x75
+beq starting_gear_add_et_dungeon_map
+cmpwi r3, 0x76
+beq starting_gear_add_et_compass
+cmpwi r3, 0x81
+beq starting_gear_add_wt_small_key
+cmpwi r3, 0x84
+beq starting_gear_add_wt_big_key
+cmpwi r3, 0x85
+beq starting_gear_add_wt_dungeon_map
+cmpwi r3, 0x86
+beq starting_gear_add_wt_compass
+cmpwi r3, 0xA3
+beq starting_gear_add_dragon_tingle_statue
+cmpwi r3, 0xA4
+beq starting_gear_add_forbidden_tingle_statue
+cmpwi r3, 0xA5
+beq starting_gear_add_goddess_tingle_statue
+cmpwi r3, 0xA6
+beq starting_gear_add_earth_tingle_statue
+cmpwi r3, 0xA7
+beq starting_gear_add_wind_tingle_statue
+b init_starting_gear_regular_items
 
+.global starting_gear_add_drc_small_key
+starting_gear_add_drc_small_key:
+bl drc_small_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_drc_big_key
+starting_gear_add_drc_big_key:
+bl drc_big_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_drc_dungeon_map
+starting_gear_add_drc_dungeon_map:
+bl drc_dungeon_map_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_drc_compass
+starting_gear_add_drc_compass:
+bl drc_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_fw_small_key
+starting_gear_add_fw_small_key:
+bl fw_small_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_fw_big_key
+starting_gear_add_fw_big_key:
+bl fw_big_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_fw_dungeon_map
+starting_gear_add_fw_dungeon_map:
+bl fw_dungeon_map_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_fw_compass
+starting_gear_add_fw_compass:
+bl fw_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_totg_small_key
+starting_gear_add_totg_small_key:
+bl totg_small_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_totg_big_key
+starting_gear_add_totg_big_key:
+bl totg_big_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_totg_dungeon_map
+starting_gear_add_totg_dungeon_map:
+bl totg_dungeon_map_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_totg_compass
+starting_gear_add_totg_compass:
+bl totg_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_ff_dungeon_map
+starting_gear_add_ff_dungeon_map:
+bl ff_dungeon_map_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_ff_compass
+starting_gear_add_ff_compass:
+bl ff_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_et_small_key
+starting_gear_add_et_small_key:
+bl et_small_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_et_big_key
+starting_gear_add_et_big_key:
+bl et_big_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_et_dungeon_map
+starting_gear_add_et_dungeon_map:
+bl et_dungeon_map_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_et_compass
+starting_gear_add_et_compass:
+bl et_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_wt_small_key
+starting_gear_add_wt_small_key:
+bl wt_small_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_wt_big_key
+starting_gear_add_wt_big_key:
+bl wt_big_key_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_wt_dungeon_map
+starting_gear_add_wt_dungeon_map:
+bl wt_dungeon_map_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_wt_compass
+starting_gear_add_wt_compass:
+bl wt_compass_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_dragon_tingle_statue
+starting_gear_add_dragon_tingle_statue:
+bl dragon_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_forbidden_tingle_statue
+starting_gear_add_forbidden_tingle_statue:
+bl forbidden_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_goddess_tingle_statue
+starting_gear_add_goddess_tingle_statue:
+bl goddess_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_earth_tingle_statue
+starting_gear_add_earth_tingle_statue:
+bl earth_tingle_statue_item_get_func
+b init_starting_gear_next_item
+
+.global starting_gear_add_wind_tingle_statue
+starting_gear_add_wind_tingle_statue:
+bl wind_tingle_statue_item_get_func
+b init_starting_gear_next_item
 
 .global num_triforce_shards_to_start_with
 num_triforce_shards_to_start_with:

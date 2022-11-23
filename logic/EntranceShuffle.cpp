@@ -521,12 +521,62 @@ static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds,
     return EntranceShuffleError::RAN_OUT_OF_RETRIES;
 }
 
+static EntranceShuffleError processPlandomizerEntrances(World& world)
+{
+    // Sanity check that the entrances put in for plandomizer are good
+    for (auto& [originalEntranceStr, replacementEntranceStr] : world.plandomizer.entrancesStr)
+    {
+        const std::string originalTok = " -> ";
+        const std::string replacementTok = " from ";
+
+        // Verify that the format of each one is correct
+        auto arrowPos = originalEntranceStr.find(originalTok);
+        if (arrowPos == std::string::npos)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is not properly formatted.");
+            return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+        auto fromPos = replacementEntranceStr.find(replacementTok);
+        if (fromPos == std::string::npos)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is not properly formatted.");
+            return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+
+        // Separate out all the area names
+        std::string originalEntranceParent = originalEntranceStr.substr(0, arrowPos);
+        std::string originalEntranceConnection = originalEntranceStr.substr(arrowPos + originalTok.size());
+        std::string replacementEntranceParent = replacementEntranceStr.substr(fromPos + replacementTok.size());
+        std::string replacementEntranceConnection = replacementEntranceStr.substr(0, fromPos);
+
+        Entrance* originalEntrance = world.getEntrance(originalEntranceParent, originalEntranceConnection);
+        Entrance* replacementEntrance = world.getEntrance(replacementEntranceParent, replacementEntranceConnection);
+        // Sanity check the entrance pointers
+        if (originalEntrance == nullptr)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is incorrect.");
+            return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+        if (replacementEntrance == nullptr)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is incorrect.");
+            return EntranceShuffleError::PLANDOMIZER_ERROR;
+        }
+
+        world.plandomizer.entrances.insert({originalEntrance, replacementEntrance});
+        LOG_TO_DEBUG("Plandomizer Entrance for world " + std::to_string(world.getWorldId() + 1) + " - " + originalEntranceStr + ": " + replacementEntranceStr);
+    }
+
+    return EntranceShuffleError::NONE;
+}
+
 static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& worlds, EntrancePools& entrancePools, EntrancePools& targetEntrancePools, std::set<EntranceType>& poolsToMix)
 {
     LOG_TO_DEBUG("Now placing plandomized entrances");
     ItemPool completeItemPool = {};
     GET_COMPLETE_ITEM_POOL(completeItemPool, worlds)
 
+    // Now attempt to connect plandomized entrances
     for (auto& [entrance, target] : world.plandomizer.entrances)
     {
         std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + target->getOriginalConnectedArea() + " from " + target->getParentArea() + "\"";
@@ -648,8 +698,8 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
     for (auto& world : worlds)
     {
         auto& settings = world.getSettings();
-        // Set random starting island
-        if (settings.randomize_starting_island)
+        // Set random starting island (either if the settings is set, or one is plandomized)
+        if (settings.randomize_starting_island || world.plandomizer.startingIslandRoomIndex > 0)
         {
 
             // Set plandomizer island if there is one
@@ -679,6 +729,10 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 
         // Set entrance data for all entrances, even those we aren't shuffling
         err = setAllEntrancesData(world);
+        ENTRANCE_SHUFFLE_ERROR_CHECK(err);
+
+        // Process plandomizer entrance data
+        err = processPlandomizerEntrances(world);
         ENTRANCE_SHUFFLE_ERROR_CHECK(err);
 
         // Determine how many mixed pools there will be

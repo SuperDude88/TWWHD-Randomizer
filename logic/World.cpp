@@ -54,9 +54,38 @@ const Settings& World::getSettings() const
 
 void World::resolveRandomSettings()
 {
-    if (settings.pig_color == PigColor::RANDOM) {
+    if (settings.pig_color == PigColor::RANDOM)
+    {
         settings.pig_color = PigColor(Random(0, 3));
         LOG_TO_DEBUG("Random pig color chosen: " + std::to_string(static_cast<int>(settings.pig_color)));
+    }
+
+    if (settings.start_with_random_item)
+    {
+        // Default random starting item pool
+        std::vector<GameItem> randomStartingItemPool = {
+            GameItem::BaitBag,
+            GameItem::Bombs,
+            GameItem::Boomerang,
+            GameItem::ProgressiveBow,
+            GameItem::DekuLeaf,
+            GameItem::DeliveryBag,
+            GameItem::GrapplingHook,
+            GameItem::Hookshot,
+            GameItem::ProgressivePictoBox,
+            GameItem::PowerBracelets,
+            GameItem::SkullHammer,
+        };
+
+        // If the user wants a custom pool with plandomizer, load that instead
+        if (!plandomizer.randomStartingItemPool.empty())
+        {
+            randomStartingItemPool = plandomizer.randomStartingItemPool;
+        }
+
+        GameItem startingItem = RandomElement(randomStartingItemPool);
+        LOG_TO_DEBUG("Random starting item chose: " + gameItemToName(startingItem));
+        settings.starting_gear.push_back(startingItem);
     }
 }
 
@@ -104,6 +133,11 @@ World::WorldLoadingError World::setItemPools()
 }
 
 ItemPool World::getItemPool() const
+{
+    return itemPool;
+}
+
+ItemPool& World::getItemPoolReference()
 {
     return itemPool;
 }
@@ -242,8 +276,20 @@ bool World::chartLeadsToSunkenTreasure(const Location& location, const std::stri
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
 
-void World::determineProgressionLocations()
+World::WorldLoadingError World::determineProgressionLocations()
 {
+    // Process extra plandomizer progression locations
+    for (auto& locationName : plandomizer.extraProgressionLocations)
+    {
+        if (!locationEntries.contains(locationName))
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Extra progress location \"" + locationName + "\" is not recognized");
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
+        // Add the plandomizer progression category to this location
+        locationEntries[locationName].categories.insert(LocationCategory::PlandomizerProgression);
+    }
+
     LOG_TO_DEBUG("Progression Locations: [");
     for (auto& [name, location] : locationEntries)
     {
@@ -288,6 +334,7 @@ void World::determineProgressionLocations()
         }
     }
     LOG_TO_DEBUG("]");
+    return WorldLoadingError::NONE;
 }
 
 World::WorldLoadingError World::determineRaceModeDungeons()
@@ -1159,256 +1206,40 @@ World::WorldLoadingError World::loadAreaTranslations(Yaml::Node& areaObject)
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadPlandomizer()
+World::WorldLoadingError World::processPlandomizerLocations(WorldPool& worlds)
 {
-    LOG_TO_DEBUG("Loading plandomzier file");
-    #ifdef DEVKITPRO
-        const std::string plandoFilepath = APP_SAVE_PATH "plandomizer.yaml"; //can't bundle in the romfs, put it in the save directory instead
-    #else
-        const std::string plandoFilepath = settings.plandomizerFile;
-    #endif
-
-    std::string plandoStr;
-    if (Utility::getFileContents(plandoFilepath, plandoStr) != 0)
-    {
-        Utility::platformLog("Will skip using plando file\n");
-        return WorldLoadingError::NONE;
-    }
-
-    Yaml::Node plandoTree;
-    Yaml::Parse(plandoTree, plandoStr);
-    std::string worldName = "World " + std::to_string(worldId + 1);
-    Yaml::Node plandoLocations;
-    Yaml::Node plandoEntrances;
-    Yaml::Node extraProgressionLocations;
-    std::string plandoStartingIsland = "";
-    // Grab the YAML object which holds the locations for this world.
-    // If there's only one world, then allow the plandomizer file to not
-    // have the world specification
-    for (auto refIt = plandoTree.Begin(); refIt != plandoTree.End(); refIt++)
-    {
-        Yaml::Node& ref = (*refIt).second;
-        switch (numWorlds)
-        {
-            // If only 1 world, just look for "locations", "entrances", etc.
-            case 1:
-                if (ref["locations"].IsMap())
-                {
-                    plandoLocations = ref["locations"];
-                }
-                if (ref["entrances"].IsMap())
-                {
-                    plandoEntrances =  ref["entrances"];
-                }
-                if (ref["starting island"].IsScalar())
-                {
-                    plandoStartingIsland = ref["starting island"].As<std::string>();
-                }
-                if (ref["extra progression locations"].IsSequence())
-                {
-                    extraProgressionLocations = ref["extra progression locations"];
-                }
-                [[fallthrough]];
-            // If more than one world, look for "World 1", "World 2", etc.
-            default:
-                if (ref[worldName].IsMap())
-                {
-                    if (ref[worldName]["locations"].IsMap())
-                    {
-                        plandoLocations = ref[worldName]["locations"];
-                    }
-
-                    if (ref[worldName]["entrances"].IsMap())
-                    {
-                        plandoEntrances = ref[worldName]["entrances"];
-                    }
-                    if (ref[worldName]["starting island"].IsScalar())
-                    {
-                        plandoStartingIsland = ref[worldName]["starting island"].As<std::string>();
-                    }
-                    if (ref["extra progression locations"].IsSequence())
-                    {
-                        extraProgressionLocations = ref["extra progression locations"];
-                    }
-                }
-        }
-        break;
-    }
-
-    // Process starting island
-    if (plandoStartingIsland != "")
-    {
-        plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
-        if (plandomizer.startingIslandRoomIndex == 0)
-        {
-            ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
-            return WorldLoadingError::PLANDOMIZER_ERROR;
-        }
-        else
-        {
-            // Automatically turn on random starting island if one is specified in
-            // the plandomizer file
-            settings.randomize_starting_island = true;
-        }
-    }
-
-    // Process extra progression locations first
-    if (!extraProgressionLocations.IsNone())
-    {
-        for (auto locationIt = extraProgressionLocations.Begin(); locationIt != extraProgressionLocations.End(); locationIt++)
-        {
-            const Yaml::Node& locationNode = (*locationIt).second;
-            const std::string locationName = locationNode.As<std::string>();
-            if (!locationEntries.contains(locationName))
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Extra progress location \"" + locationName + "\" is not recognized");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-            // Add the plandomizer progression category to this location
-            locationEntries[locationName].categories.insert(LocationCategory::PlandomizerProgression);
-        }
-    }
-
     // Process Locations
-    if (!plandoLocations.IsNone())
+    for (auto& [locationName, plandoItem] : plandomizer.locationsStr)
     {
-        for (auto locationIt = plandoLocations.Begin(); locationIt != plandoLocations.End(); locationIt++)
+        LOCATION_VALID_CHECK(locationName, "Plandomizer Error: Unknown location name \"" << locationName << "\" in plandomizer file.");
+
+        auto itemName = gameItemToName(plandoItem.gameItem);
+        auto& plandoWorldId = plandoItem.world;
+        World& itemsWorld = worlds[plandoWorldId];
+
+        LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + " [W" + std::to_string(plandoWorldId + 1) + "]");
+        Location* location = &locationEntries[locationName];
+        location->plandomized = true;
+        Item item = itemsWorld.itemEntries[itemName];
+        plandomizer.locations.insert({location, item});
+        // Place progression locations' items now to make sure that if entrance
+        // randomizer is on, it creates a suitable world graph for the pre-decided
+        // major item layout. Place non-progress plandomized locations later
+        // so that the entrance randomizer doesn't consider potential out
+        // of logic items such as extra bottles.
+        if (location->progression)
         {
-            auto locationObject = *locationIt;
-            if (locationObject.first.empty())
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: One of the plando items is missing a location");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-            // If the location object has children instead of a value, then parse
-            // the item name and potential world id from those children.
-            // If no world id is given, then the current world's id will be used.
-            int plandoWorldId = worldId;
-            std::string itemName;
-            if (locationObject.second.IsMap())
-            {
-                if (!locationObject.second["item"].IsNone())
-                {
-                    itemName = locationObject.second["item"].As<std::string>();
-                }
-                else
-                {
-                    ErrorLog::getInstance().log("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first + "\"");
-                    return WorldLoadingError::PLANDOMIZER_ERROR;
-                }
-                if (!locationObject.second["world"].IsNone())
-                {
-                    plandoWorldId = std::stoi(locationObject.second["world"].As<std::string>());
-                    if (static_cast<size_t>(plandoWorldId) > numWorlds || plandoWorldId < 1)
-                    {
-                        ErrorLog::getInstance().log("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"");
-                        ErrorLog::getInstance().log("Only " + std::to_string(numWorlds) + " worlds are being generated");
-                        ErrorLog::getInstance().log("Valid World IDs: 1-" + std::to_string(numWorlds));
-                        return WorldLoadingError::PLANDOMIZER_ERROR;
-                    }
-                    plandoWorldId--;
-                }
-            }
-            // Otherwise treat the value as an item for the same world as the location
-            else
-            {
-                itemName = locationObject.second.As<std::string>();
-                if (itemName == "\n" || itemName == "")
-                {
-                    ErrorLog::getInstance().log("Plandomizer Error: Location \"" + locationObject.first + "\" has no plandomized item.");
-                    return WorldLoadingError::PLANDOMIZER_ERROR;
-                }
-            }
-
-            // Get location name
-            std::string locationName = locationObject.first;
-            LOCATION_VALID_CHECK(locationName, "Plandomizer Error: Unknown location name \"" << locationName << "\" in plandomizer file.");
-
-            // Get item
-            auto itemId = nameToGameItem(itemName);
-            ITEM_VALID_CHECK(itemId, "Plandomizer Error: Unknown item name \"" << itemName << "\" in plandomizer file");
-
-            LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + " [W" + std::to_string(plandoWorldId) + "]");
-            Location* location = &locationEntries[locationName];
-            location->plandomized = true;
-            Item item = itemEntries[itemName];
-            plandomizer.locations.insert({location, item});
-            // Place progression locations' items now to make sure that if entrance
-            // randomizer is on, it creates a suitable world graph for the pre-decided
-            // major item layout. Place non-progress plandomized locations later
-            // so that the entrance randomizer doesn't consider potential out
-            // of logic items such as extra bottles.
-            if (location->progression)
-            {
-                location->currentItem = item;
-                // Remove placed items from the world's item pool
-                removeElementFromPool(itemPool, item);
-            }
-        }
-    }
-
-    // Process Entrances
-    if (!plandoEntrances.IsNone())
-    {
-        for (auto entranceIt = plandoEntrances.Begin(); entranceIt != plandoEntrances.End(); entranceIt++)
-        {
-            auto entranceObject = *entranceIt;
-            if (entranceObject.first.empty())
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: One of the plando entrances is missing a parent entrance");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-            // Process strings of each plando's entrance into their respective entrance
-            // pointers
-            const std::string originalEntranceStr = entranceObject.first;
-            const std::string replacementEntranceStr = entranceObject.second.As<std::string>();
-
-            const std::string originalTok = " -> ";
-            const std::string replacementTok = " from ";
-
-            // Verify that the format of each one is correct
-            auto arrowPos = originalEntranceStr.find(originalTok);
-            if (arrowPos == std::string::npos)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is not properly formatted.");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-            auto fromPos = replacementEntranceStr.find(replacementTok);
-            if (fromPos == std::string::npos)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is not properly formatted.");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-
-            // Separate out all the area names
-            std::string originalEntranceParent = originalEntranceStr.substr(0, arrowPos);
-            std::string originalEntranceConnection = originalEntranceStr.substr(arrowPos + originalTok.size());
-            std::string replacementEntranceParent = replacementEntranceStr.substr(fromPos + replacementTok.size());
-            std::string replacementEntranceConnection = replacementEntranceStr.substr(0, fromPos);
-
-            Entrance* originalEntrance = getEntrance(originalEntranceParent, originalEntranceConnection);
-            Entrance* replacementEntrance = getEntrance(replacementEntranceParent, replacementEntranceConnection);
-            // Sanity check the entrance pointers
-            if (originalEntrance == nullptr)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is incorrect.");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-            if (replacementEntrance == nullptr)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is incorrect.");
-                return WorldLoadingError::PLANDOMIZER_ERROR;
-            }
-
-            plandomizer.entrances.insert({originalEntrance, replacementEntrance});
-            LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + entranceObject.first + ": " + replacementEntranceStr);
+            location->currentItem = item;
+            LOG_TO_DEBUG("Plandomized " + itemName + " at " + locationName);
+            // Remove placed items from the item's world's item pool
+            removeElementFromPool(itemsWorld.getItemPoolReference(), item);
         }
     }
 
     return WorldLoadingError::NONE;
 }
 
-// Load the world based on the given world graph file, macros file, and loation data file
+// Load the world based on the given world graph file, macros file, loation data file, item data file, and area data file
 int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath)
 {
     LOG_TO_DEBUG("Loading world");
@@ -1648,7 +1479,7 @@ std::u16string World::getUTF16HintRegion(const std::string& hintRegion, const st
     return Utility::Str::RemoveUnicodeReplacements(str);
 }
 
-const char* World::errorToName(WorldLoadingError err)
+std::string World::errorToName(WorldLoadingError err)
 {
     switch(err)
     {

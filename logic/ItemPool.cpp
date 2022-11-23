@@ -121,8 +121,7 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     {"Magic Armor", 1},
     {"Hero's Charm", 1},
     {"Fill Up Coupon", 1},
-
-    {"Hurricane Spin", 1},
+    {"Tingle Bottle", 1},
 
     {"Submarine Chart", 1},
     {"Beedle's Chart", 1},
@@ -225,10 +224,11 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
         addElementToPool(completeItemPool, dungeon.compass);
     }
 
-    // Add swords to the pool if we aren't playing in swordless mode
+    // Add swords and hurricane spin to the pool if we aren't playing in swordless mode
     if (settings.sword_mode != SwordMode::NoSword)
     {
         addElementToPool(completeItemPool, std::string("Progressive Sword"), 4);
+        addElementToPool(completeItemPool, std::string("Hurricane Spin"));
     }
 
     // Add appropriate numbers of heart containers and heart pieces
