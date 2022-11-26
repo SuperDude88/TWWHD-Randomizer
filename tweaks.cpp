@@ -1,4 +1,7 @@
 #include "tweaks.hpp"
+#include "command/RandoSession.hpp"
+#include "command/WriteLocations.hpp"
+#include "filetypes/baseFiletype.hpp"
 #include <initializer_list>
 
 #define _USE_MATH_DEFINES
@@ -36,14 +39,14 @@
 #define FILETYPE_ERROR_CHECK(func) {  \
     if(const auto error = func; error != decltype(error)::NONE) {\
         ErrorLog::getInstance().log(std::string("Encountered ") + &(typeid(error).name()[5]) + " on line " TOSTRING(__LINE__)); \
-        return TweakError::FILETYPE_ERROR;  \
+        return (int)TweakError::FILETYPE_ERROR;  \
     } \
 }
 
 #define RPX_ERROR_CHECK(func) { \
     if(const ELFError error = func; error != ELFError::NONE) {\
         ErrorLog::getInstance().log(std::string("Failed rpx operation on line ") + std::to_string(__LINE__)); \
-        return TweakError::RPX_OPERATION_FAILED;  \
+        return (int)TweakError::RPX_OPERATION_FAILED;  \
     } \
 }
 
@@ -56,40 +59,8 @@
 
 using eType = Utility::Endian::Type;
 
-struct dungeon_item_info {
-	std::string short_name;
-	std::string base_item_name;
-	uint8_t item_id;
-};
-
-struct CyclicWarpPotData {
-	std::string stage_name;
-	uint8_t room_num;
-	float x, y, z;
-	uint16_t y_rot;
-	uint8_t event_reg_index;
-};
-
-struct spawn_data {
-	std::string stage_name;
-	uint8_t room_num = 0;
-};
-
-struct spawn_data_to_copy {
-	std::string stage_name;
-	uint8_t room_num = 0;
-	uint8_t spawn_id_to_copy = 0;
-};
-
-struct pan_cs_info {
-	std::string stage_name;
-	std::string szs_suffix;
-	uint8_t evnt_index;
-};
-
 
 namespace {
-	FileTypes::ELF gRPX;
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
 	TweakError Load_Custom_Symbols(const std::string& file_path) {
@@ -111,26 +82,33 @@ TweakError Apply_Patch(const std::string& file_path) {
 	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 
 	const nlohmann::json patches = nlohmann::json::parse(fptr);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
-	for (const auto& patch : patches.items()) {
-		const uint32_t offset = std::stoul(patch.key(), nullptr, 16);
-		offset_t sectionOffset = elfUtil::AddressToOffset(gRPX, offset);
-		if (!sectionOffset) { //address not in section
-			std::string data;
-			for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
-				const char val = std::stoi(byte, nullptr, 16);
-				data += val;
+	entry.addAction([patches](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		for (const auto& patch : patches.items()) {
+			const uint32_t offset = std::stoul(patch.key(), nullptr, 16);
+			offset_t sectionOffset = elfUtil::AddressToOffset(elf, offset);
+			if (!sectionOffset) { //address not in section
+				std::string data;
+				for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
+					const char val = std::stoi(byte, nullptr, 16);
+					data += val;
+				}
+				RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); //add data at the specified offset
 			}
-			RPX_ERROR_CHECK(gRPX.extend_section(2, offset, data)); //add data at the specified offset
-		}
-		else {
-			for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
-				const uint8_t toWrite = std::stoi(byte, nullptr, 16);
-				RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, sectionOffset, toWrite));
-				sectionOffset.offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+			else {
+				for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
+					const uint8_t toWrite = std::stoi(byte, nullptr, 16);
+
+					RPX_ERROR_CHECK(elfUtil::write_u8(elf, sectionOffset, toWrite));
+					sectionOffset.offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+				}
 			}
 		}
-	}
+		
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -152,7 +130,14 @@ TweakError Add_Relocations(const std::string file_path) {
 		reloc.r_info = std::stoul(relocation.at("r_info").get<std::string>(), nullptr, 16);
 		reloc.r_addend = std::stoi(relocation.at("r_addend").get<std::string>(), nullptr, 16);
 
-		RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, reloc));
+		RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+		entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			
+			RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc));
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -161,51 +146,61 @@ TweakError Add_Relocations(const std::string file_path) {
 
 
 TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t room_index) {
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B508F), room_index));
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B50CB), room_index));
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B5093), spawn_id));
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, 0x025B50CF), spawn_id));
+	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	entry.addAction([spawn_id, room_index](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, 0x025B508F), room_index));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, 0x025B50CB), room_index));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, 0x025B5093), spawn_id));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, 0x025B50CF), spawn_id));
 
+		return true;
+	});
 	return TweakError::NONE;
 }
 
 TweakError change_ship_starting_island(const uint8_t room_index) {
 	std::string path;
 	if (room_index == 1 || room_index == 11 || room_index == 13 || room_index == 17 || room_index == 23) {
-		path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
+		path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
 	}
 	else if (room_index == 9 || room_index == 39 || room_index == 41 || room_index == 44) {
-		path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
+		path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
 	}
 	else {
-		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
+		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
 	}
-	std::stringstream* stream = g_session.openGameFile(path);
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::DZXFile room_dzr;
-	FILETYPE_ERROR_CHECK(room_dzr.loadFromBinary(*stream));
-	std::vector<ChunkEntry*> ship_spawns = room_dzr.entries_by_type("SHIP");
-	ChunkEntry* ship_spawn_0 = nullptr;
-	for (ChunkEntry* spawn : ship_spawns) { //Find spawn with ID 0
-		if (*reinterpret_cast<uint8_t*>(&spawn->data[0xE]) == 0) ship_spawn_0 = spawn;
-	}
-	if(ship_spawn_0 == nullptr) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
-
-	FileTypes::DZXFile stage_dzs;
-	std::stringstream* stageStream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
-	EXTRACT_ERR_CHECK(stageStream);
-	FILETYPE_ERROR_CHECK(stage_dzs.loadFromBinary(*stageStream));
-	std::vector<ChunkEntry*> actors = stage_dzs.entries_by_type("ACTR");
-	for (ChunkEntry* actor : actors) {
-		if (std::strncmp(&actor->data[0], "SHIP", 4) == 0) {
-			actor->data.replace(0xC, 0xC, ship_spawn_0->data, 0x0, 0xC);
-			actor->data.replace(0x1A, 0x2, ship_spawn_0->data, 0xC, 0x2);
-			actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
+	RandoSession::CacheEntry& room = g_session.openGameFile(path);
+	RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+	room.addAction([&stage](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(room_dzr, FileTypes::DZXFile, data)
+		
+		std::vector<ChunkEntry*> ship_spawns = room_dzr.entries_by_type("SHIP");
+		ChunkEntry* ship_spawn_0 = nullptr;
+		for (ChunkEntry* spawn : ship_spawns) { //Find spawn with ID 0
+			if (*reinterpret_cast<uint8_t*>(&spawn->data[0xE]) == 0) ship_spawn_0 = spawn;
 		}
-	}
-	FILETYPE_ERROR_CHECK(room_dzr.writeToStream(*stream));
-	FILETYPE_ERROR_CHECK(stage_dzs.writeToStream(*stageStream));
+		if(ship_spawn_0 == nullptr) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
+
+		stage.addAction([ship_spawn_0 = *ship_spawn_0](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(stage_dzs, FileTypes::DZXFile, data)
+
+			std::vector<ChunkEntry*> actors = stage_dzs.entries_by_type("ACTR");
+			for (ChunkEntry* actor : actors) {
+				if (std::strncmp(&actor->data[0], "SHIP", 4) == 0) {
+					actor->data.replace(0xC, 0xC, ship_spawn_0.data, 0x0, 0xC);
+					actor->data.replace(0x1A, 0x2, ship_spawn_0.data, 0xC, 0x2);
+					actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
+				}
+			}
+			
+			return true;
+		});
+
+		return true;
+	});
+	stage.delayUntil(path);
 
 	return TweakError::NONE;
 }
@@ -213,44 +208,45 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 TweakError make_all_text_instant() {
   for (const auto& language : Text::supported_languages) {
     const RandoSession::fspath paths[4] = {
-      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt",
-      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt",
-      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt",
-      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt"
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT",
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT",
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt@MSBT",
+      "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT"
     };
 
     for (const auto& path : paths) {
-      std::stringstream* inStream = g_session.openGameFile(path);
-      EXTRACT_ERR_CHECK(inStream);
-      FileTypes::MSBTFile msbt;
-      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*inStream));
+      RandoSession::CacheEntry& entry = g_session.openGameFile(path);
+	  entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data);
 
-      for (auto& [label, message] : msbt.messages_by_label) {
-        std::u16string& String = message.text.message;
+      	for (auto& [label, message] : msbt.messages_by_label) {
+        	std::u16string& String = message.text.message;
 
-        message.attributes.drawType = 1; //draw instant
+        	message.attributes.drawType = 1; //draw instant
 
-        std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); //dont use macro because duration shouldnt matter
-        while (wait != std::u16string::npos) {
-          String.erase(wait, 5);
-          wait = String.find(u"\x0e\x01\x06\x02"s);
-        }
+        	std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); //dont use macro because duration shouldnt matter
+        	while (wait != std::u16string::npos) {
+        	  String.erase(wait, 5);
+        	  wait = String.find(u"\x0e\x01\x06\x02"s);
+        	}
 
-        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
-        if (label == "07726" || label == "02488") wait_dismiss = std::u16string::npos; //exclude messages that are broken by removing the command
-        while (wait_dismiss != std::u16string::npos) {
-          String.erase(wait_dismiss, 5);
-          wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
-        }
+        	std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
+        	if (label == "07726" || label == "02488") wait_dismiss = std::u16string::npos; //exclude messages that are broken by removing the command
+        	while (wait_dismiss != std::u16string::npos) {
+        	  String.erase(wait_dismiss, 5);
+        	  wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
+        	}
 
-        std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
-        while (wait_dismiss_prompt != std::u16string::npos) {
-          String.erase(wait_dismiss_prompt, 5);
-          wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
-        }
-      }
-
-      FILETYPE_ERROR_CHECK(msbt.writeToStream(*inStream));
+      	  std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
+      	  while (wait_dismiss_prompt != std::u16string::npos) {
+      	    String.erase(wait_dismiss_prompt, 5);
+      	    wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
+      	  }
+		  
+      	}
+		
+		return 1;
+	  });
     }
   }
 
@@ -258,17 +254,17 @@ TweakError make_all_text_instant() {
 }
 
 TweakError fix_deku_leaf_model() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream)
-	const std::string data = "item\x00\x00\x00\x00\x01\xFF\x02\x34\xc4\x08\x7d\x81\x45\x9d\x59\xec\xc3\xf5\x8e\xd9\x00\x00\x00\x00\x00\xff\xff\xff"s;
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int 
+	{
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+		const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+		for (ChunkEntry* actor : actors) {
+			if (std::strncmp(&actor->data[0], "itemDek\x00", 8) == 0) actor->data = "item\x00\x00\x00\x00\x01\xFF\x02\x34\xc4\x08\x7d\x81\x45\x9d\x59\xec\xc3\xf5\x8e\xd9\x00\x00\x00\x00\x00\xff\xff\xff"s;
+		}
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
-	for (ChunkEntry* actor : actors) {
-		if (std::strncmp(&actor->data[0], "itemDek\x00", 8) == 0) actor->data = data;
-	}
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -297,6 +293,8 @@ TweakError allow_all_items_to_be_field_items() {
 		{0xe4, 0x1004e640}, {0xe5, 0x1004e640}, {0xe6, 0x1004e640}, {0xe7, 0x1004e640}, {0xe8, 0x1004e640}, {0xe9, 0x1004e640}, {0xea, 0x1004e640}, {0xeb, 0x1004e640}, {0xec, 0x1004e640}, {0xed, 0x1004e648}, {0xee, 0x1004e648}, {0xef, 0x1004e648}, {0xf0, 0x1004e648}, {0xf1, 0x1004e648}, {0xf2, 0x1004e648}, {0xf3, 0x1004e648}, {0xf4, 0x1004e648}, {0xf5, 0x1004e648}, {0xf6, 0x1004e648}, {0xf7, 0x1004e648},
 		{0xf8, 0x1004e648}, {0xf9, 0x1004e648}, {0xfa, 0x1004e638}, {0xfb, 0x1004e648}, {0xfc, 0x1004e638}, {0xfd, 0x1004e648}, {0xfe, 0x1004e638}
 	};
+
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	for (const uint8_t& item_id : Item_Ids_Without_Field_Model) {
 		uint32_t item_resources_addr_to_fix = 0x0;
@@ -335,9 +333,19 @@ TweakError allow_all_items_to_be_field_items() {
 			szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
 		}
 
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr), szs_name_pointer));
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr), szs_name_pointer));
+		
+			return true;
+		});
 		if (item_resources_addr_to_fix) {
-			RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_fix), szs_name_pointer));
+			rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+				RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_fix), szs_name_pointer));
+			
+				return true;
+			});
 		}
 
 		//need relocation entries so pointers work on console
@@ -351,7 +359,12 @@ TweakError allow_all_items_to_be_field_items() {
 		}
 		relocation.r_addend = szs_name_pointer - section_start; //needs offset into the .rodata section (.text for vscroll), subtract start address from data location
 
-		RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 9, relocation));
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, relocation));
+
+			return true;
+		});
 
 		if (item_resources_addr_to_fix) {
 			Elf32_Rela relocation2;
@@ -359,38 +372,68 @@ TweakError allow_all_items_to_be_field_items() {
 			relocation2.r_info = relocation.r_info; //same as first entry
 			relocation2.r_addend = relocation.r_addend; //same as first entry
 
-			RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 9, relocation2));
+			rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+				RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, relocation2));
+
+				return true;
+			});
 		}
 
-		const std::vector<uint8_t> data1 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 8), 0xD);
-		const std::vector<uint8_t> data2 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x1C), 4);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 4), data1));
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x14), data2));
-		if (item_resources_addr_to_fix) {
-			RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_fix + 8), data1));
-			RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_fix + 0x1C) , data2));
-		}
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			
+			const std::vector<uint8_t> data1 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_copy_from + 8), 0xD);
+			const std::vector<uint8_t> data2 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_copy_from + 0x1C), 4);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 4), data1));
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 0x14), data2));
+			if (item_resources_addr_to_fix) {
+				RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_fix + 8), data1));
+				RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_fix + 0x1C) , data2));
+			}
+		
+			return true;
+		});
 	}
 
-	for (const uint32_t& address : { 0x0255220CU, 0x02552214U, 0x0255221CU, 0x02552224U, 0x0255222CU, 0x02552234U, 0x02552450U }) { //unsigned to make compiler happy
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, address), 0x60000000));
-	}
+	rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			
+		for (const uint32_t& address : { 0x0255220CU, 0x02552214U, 0x0255221CU, 0x02552224U, 0x0255222CU, 0x02552234U, 0x02552450U }) { //unsigned to make compiler happy
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, address), 0x60000000));
+		}
+
+		return true;
+	});
 
 	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.json")); //some special stuff because HD silly
 
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0007a2d0, 7), 0x00011ed8)); //Update the Y offset that is being read (.rela.text edit)
+	rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0007a2d0, 7), 0x00011ed8)); //Update the Y offset that is being read (.rela.text edit)
 
+		return true;
+	});
+	
 	const uint32_t extra_item_data_list_start = 0x101E8674;
 	for (unsigned int item_id = 0x00; item_id < 0xFF + 1; item_id++) {
 		const uint32_t item_extra_data_entry_addr = extra_item_data_list_start + 4 * item_id;
-		const uint8_t original_y_offset = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 1));
-		if (original_y_offset == 0) {
-			RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 1), 0x28));
-		}
-		uint8_t original_radius = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 2));
-		if (original_radius == 0) {
-			RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, item_extra_data_entry_addr + 2), 0x28));
-		}
+
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+			const uint8_t original_y_offset = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 1));
+			if (original_y_offset == 0) {
+				RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 1), 0x28));
+			}
+			uint8_t original_radius = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 2));
+			if (original_radius == 0) {
+				RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 2), 0x28));
+			}
+
+			return true;
+		});
 	}
 	//IMPROVEMENT: make vscroll not crash + add it to code
 	//WWHD changes make this much more complex ^
@@ -400,40 +443,49 @@ TweakError allow_all_items_to_be_field_items() {
 
 TweakError remove_shop_item_forced_uniqueness_bit() {
 	const uint32_t shop_item_data_list_start = 0x101eaea4;
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	for (const uint8_t shop_item_index : { 0x0, 0xB, 0xC, 0xD }) {
 		const uint32_t shop_item_data_addr = shop_item_data_list_start + shop_item_index * 0x10;
-		uint8_t buy_requirements_bitfield = elfUtil::read_u8(gRPX, elfUtil::AddressToOffset(gRPX, shop_item_data_addr + 0xC));
-		buy_requirements_bitfield = (buy_requirements_bitfield & (~0x2));
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, shop_item_data_addr + 0xC), buy_requirements_bitfield));
+		
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+			uint8_t buy_requirements_bitfield = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, shop_item_data_addr + 0xC));
+			buy_requirements_bitfield = (buy_requirements_bitfield & (~0x2));
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, shop_item_data_addr + 0xC), buy_requirements_bitfield));
+		
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
 }
 
 TweakError remove_ff2_cutscenes() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZR");
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-
-	std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
-	for (ChunkEntry* spawn : spawns) {
-		if (spawn->data[29] == '\x10') {
-			spawn->data[8] = '\xFF';
-			break;
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+		
+		std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+		for (ChunkEntry* spawn : spawns) {
+			if (spawn->data[29] == '\x10') {
+				spawn->data[8] = '\xFF';
+				break;
+			}
 		}
-	}
 
-	std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
-	for (ChunkEntry* exit : exits) {
-		if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) {
-			exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
-			break;
+		std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
+		for (ChunkEntry* exit : exits) {
+			if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) {
+				exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
+				break;
+			}
 		}
-	}
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -443,195 +495,223 @@ TweakError make_items_progressive() {
 
 	const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
-	for (const uint8_t sword_id : {0x38, 0x39, 0x3A, 0x3D, 0x3E}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (sword_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_sword_item_func") - 0x02000000));
-	}
-	for (const uint8_t shield_id : {0x3B, 0x3C}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_shield_item_func") - 0x02000000));
-	}
-	for (const uint8_t bow_id : {0x27, 0x35, 0x36}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (bow_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_bow_item_func") - 0x02000000));
-	}
-	for (const uint8_t wallet_id : {0xAB, 0xAC}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (wallet_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_wallet_item_func") - 0x02000000));
-	}
-	for (const uint8_t bomb_bag_id : {0xAD, 0xAE}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (bomb_bag_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_bomb_bag_item_func") - 0x02000000));
-	}
-	for (const uint8_t quiver_id : {0xAF, 0xB0}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (quiver_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_quiver_item_func") - 0x02000000));
-	}
-	for (const uint8_t picto_id : {0x23, 0x26}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (picto_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_picto_box_item_func") - 0x02000000));
-	}
-	for (const uint8_t sail_id : {0x77, 0x78}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (sail_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_sail_item_func") - 0x02000000));
-	}
-	for (const uint8_t magic_id : {0xB1, 0xB2}) {
-		const uint32_t item_get_func_addr = item_get_func_pointer + (magic_id * 0xC) + 8;
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_addr, 9), custom_symbols.at("progressive_magic_meter_item_func") - 0x02000000));
-	}
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	rpx.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
 
-	//nop some code that sets max bombs and arrows to 30
-	//This avoids downgrading bomb bags or quivers
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e8c4), 0x60000000));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e8cc), 0x60000000));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e66c), 0x60000000));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e674), 0x60000000));
+		for (const uint8_t sword_id : {0x38, 0x39, 0x3A, 0x3D, 0x3E}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (sword_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_sword_item_func") - 0x02000000));
+		}
+		for (const uint8_t shield_id : {0x3B, 0x3C}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (shield_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_shield_item_func") - 0x02000000));
+		}
+		for (const uint8_t bow_id : {0x27, 0x35, 0x36}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (bow_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_bow_item_func") - 0x02000000));
+		}
+		for (const uint8_t wallet_id : {0xAB, 0xAC}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (wallet_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_wallet_item_func") - 0x02000000));
+		}
+		for (const uint8_t bomb_bag_id : {0xAD, 0xAE}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (bomb_bag_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_bomb_bag_item_func") - 0x02000000));
+		}
+		for (const uint8_t quiver_id : {0xAF, 0xB0}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (quiver_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_quiver_item_func") - 0x02000000));
+		}
+		for (const uint8_t picto_id : {0x23, 0x26}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (picto_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_picto_box_item_func") - 0x02000000));
+		}
+		for (const uint8_t sail_id : {0x77, 0x78}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (sail_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_sail_item_func") - 0x02000000));
+		}
+		for (const uint8_t magic_id : {0xB1, 0xB2}) {
+			const uint32_t item_get_func_addr = item_get_func_pointer + (magic_id * 0xC) + 8;
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_magic_meter_item_func") - 0x02000000));
+		}
 
-	//Modify the deku leaf to skip giving you magic
-	//Instead we make magic its own item that the player starts with by default
-	//Allows other items to use magic before getting leaf
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e96c), 0x60000000));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0254e97c), 0x60000000));
+		//nop some code that sets max bombs and arrows to 30
+		//This avoids downgrading bomb bags or quivers
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e8c4), 0x60000000));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e8cc), 0x60000000));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e66c), 0x60000000));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e674), 0x60000000));
 
+		//Modify the deku leaf to skip giving you magic
+		//Instead we make magic its own item that the player starts with by default
+		//Allows other items to use magic before getting leaf
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e96c), 0x60000000));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e97c), 0x60000000));
+
+		return true;
+	});
+	
 	// Add an item get message for the normal magic meter since it didn't have one in vanilla
-  std::unordered_map<std::string, std::u16string> messages = {
-    {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
-    {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
-    {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
-  };
+  	std::unordered_map<std::string, std::u16string> messages = {
+  		{"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
+  		{"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
+  		{"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
+  	};
 
-  for (const auto& language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-    EXTRACT_ERR_CHECK(stream)
+	for (const auto& language : Text::supported_languages) {
+    	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+	
+    	entry.addAction([messages, language](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-    FileTypes::MSBTFile msbt;
-    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+			const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + 0xB2)];
+    		const std::u16string message = messages.at(language);
+    		msbt.addMessage("00" + std::to_string(101 + 0xB1), to_copy.attributes, to_copy.style, message);
 
-    const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + 0xB2)];
-    const std::u16string message = messages[language];
-    msbt.addMessage("00" + std::to_string(101 + 0xB1), to_copy.attributes, to_copy.style, message);
+			return true;
+		});
+	
+    }
 
-    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-  }
 	return TweakError::NONE;
 }
 
 TweakError add_ganons_tower_warp_to_ff2() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr@DZX");
+	
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	ChunkEntry& warp = dzr.add_entity("ACTR", 1);
-	warp.data = "Warpmj\x00\x00\x00\x00\x00\x11\xc8\x93\x0f\xd9\x00\x00\x00\x00\xc8\x91\xf7\xfa\x00\x00\x00\x00\x00\x00\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		ChunkEntry& warp = dzr.add_entity("ACTR", 1);
+		warp.data = "Warpmj\x00\x00\x00\x00\x00\x11\xc8\x93\x0f\xd9\x00\x00\x00\x00\xc8\x91\xf7\xfa\x00\x00\x00\x00\x00\x00\xff\xff"s;
+		
+		return 1;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_medli_gift() {
-	std::stringstream* stageStream = g_session.openGameFile("content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
-	EXTRACT_ERR_CHECK(stageStream)
+	RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
+	stage.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
-	FileTypes::DZXFile dzs;
-	FILETYPE_ERROR_CHECK(dzs.loadFromBinary(*stageStream));
-	ChunkEntry& chest = dzs.add_entity("TRES");
-	chest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzs.writeToStream(*stageStream));
+		FileTypes::DZXFile dzs;
+		dzs.loadFromBinary(generic.data);
 
-	std::stringstream* drcStage = g_session.openGameFile("content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
-	EXTRACT_ERR_CHECK(drcStage)
+		ChunkEntry& chest = dzs.add_entity("TRES");
+		chest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
 
-	FileTypes::DZXFile dzs2;
-	FILETYPE_ERROR_CHECK(dzs2.loadFromBinary(*drcStage));
-	ChunkEntry& dummyChest = dzs2.add_entity("TRES");
-	dummyChest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzs2.writeToStream(*drcStage));
+		dzs.writeToStream(generic.data);
+	
+		return true;
+	});
+
+	RandoSession::CacheEntry& dungeon = g_session.openGameFile("content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+	dungeon.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzs, FileTypes::DZXFile, data)
+
+		ChunkEntry& dummyChest = dzs.add_entity("TRES");
+		dummyChest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
+
+		return true;
+	});
+
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_queen_fairy_cutscene() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr");
+	room.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	ChunkEntry& chest = dzr.add_entity("TRES");
-	chest.data = "takara3\x00\xFF\x20\x0e\x00\xc8\x2f\xcf\xc0\x44\x34\xc0\x00\xc8\x43\x4e\xc0\x00\x09\x10\x00\xa5\xff\xff\xff"s;
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		FileTypes::DZXFile dzr;
+		dzr.loadFromBinary(generic.data);
+
+		ChunkEntry& chest = dzr.add_entity("TRES");
+		chest.data = "takara3\x00\xFF\x20\x0e\x00\xc8\x2f\xcf\xc0\x44\x34\xc0\x00\xc8\x43\x4e\xc0\x00\x09\x10\x00\xa5\xff\xff\xff"s;
+
+		dzr.writeToStream(generic.data);
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError add_more_magic_jars() {
 	{
-		std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(stream);
+		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(drc_hub, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile drc_hub;
-		FILETYPE_ERROR_CHECK(drc_hub.loadFromBinary(*stream));
-		std::vector<ChunkEntry*> actors = drc_hub.entries_by_type("ACTR");
-		std::vector<ChunkEntry*> skulls;
-		for (ChunkEntry* actor : actors) {
-			if (std::strncmp(&actor->data[0], "Odokuro\x00", 8) == 0) skulls.push_back(actor);
-		}
+			std::vector<ChunkEntry*> actors = drc_hub.entries_by_type("ACTR");
+			std::vector<ChunkEntry*> skulls;
+			for (ChunkEntry* actor : actors) {
+				if (std::strncmp(&actor->data[0], "Odokuro\x00", 8) == 0) skulls.push_back(actor);
+			}
 
-		if(skulls.size() < 6) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
+			if(skulls.size() < 6) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-		skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
-		skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-		FILETYPE_ERROR_CHECK(drc_hub.writeToStream(*stream));
+			skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
+			skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+
+			return true;
+		});
 	}
 
 	{
-		std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(stream)
+		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr@DZX");
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(drc_before_boss, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile drc_before_boss;
-		FILETYPE_ERROR_CHECK(drc_before_boss.loadFromBinary(*stream));
-		std::vector<ChunkEntry*> actors = drc_before_boss.entries_by_type("ACTR");
-		std::vector<ChunkEntry*> skulls;
-		for (ChunkEntry* actor : actors) {
-			if (std::strncmp(&actor->data[0], "Odokuro\x00", 8) == 0) skulls.push_back(actor);
-		}
+			std::vector<ChunkEntry*> actors = drc_before_boss.entries_by_type("ACTR");
+			std::vector<ChunkEntry*> skulls;
+			for (ChunkEntry* actor : actors) {
+				if (std::strncmp(&actor->data[0], "Odokuro\x00", 8) == 0) skulls.push_back(actor);
+			}
 
-		if(skulls.size() < 11) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
+			if(skulls.size() < 11) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-		skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-		skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+			skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+			skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
 
-		FILETYPE_ERROR_CHECK(drc_before_boss.writeToStream(*stream));
+			return true;
+		});
 	}
 
 	{
-		std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(stream);
+		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(dri, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile dri;
-		FILETYPE_ERROR_CHECK(dri.loadFromBinary(*stream));
-		ChunkEntry& grass1 = dri.add_entity("ACTR");
-		grass1.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
-		ChunkEntry& grass2 = dri.add_entity("ACTR");
-		grass2.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
-		FILETYPE_ERROR_CHECK(dri.writeToStream(*stream));
+			ChunkEntry& grass1 = dri.add_entity("ACTR");
+			grass1.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+			ChunkEntry& grass2 = dri.add_entity("ACTR");
+			grass2.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+
+			return true;
+		});
 	}
 
 	{
-		std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
-		EXTRACT_ERR_CHECK(stream);
+		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(totg, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile totg;
-		FILETYPE_ERROR_CHECK(totg.loadFromBinary(*stream));
-		std::vector<ChunkEntry*> actors = totg.entries_by_type("ACTR");
-		std::vector<ChunkEntry*> pots;
-		for (ChunkEntry* actor : actors) {
-			if (std::strncmp(&actor->data[0], "kotubo\x00\x00", 8) == 0) pots.push_back(actor);
-		}
+			std::vector<ChunkEntry*> actors = totg.entries_by_type("ACTR");
+			std::vector<ChunkEntry*> pots;
+			for (ChunkEntry* actor : actors) {
+				if (std::strncmp(&actor->data[0], "kotubo\x00\x00", 8) == 0) pots.push_back(actor);
+			}
 
-		if(pots.size() < 2) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
+			if(pots.size() < 2) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-		pots[1]->data = "\x6B\x6F\x74\x75\x62\x6F\x00\x00\x70\x7F\xFF\x0A\xC5\x6E\x20\x00\x43\x66\x00\x05\xC5\xDF\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF"s;
-		FILETYPE_ERROR_CHECK(totg.writeToStream(*stream));
+			pots[1]->data = "\x6B\x6F\x74\x75\x62\x6F\x00\x00\x70\x7F\xFF\x0A\xC5\x6E\x20\x00\x43\x66\x00\x05\xC5\xDF\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF"s;
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -640,65 +720,75 @@ TweakError add_more_magic_jars() {
 TweakError modify_title_screen() {
 	using namespace NintendoWare::Layout;
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt");
-	EXTRACT_ERR_CHECK(stream)
+	RandoSession::CacheEntry& lytEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt@BFLYT");
+	lytEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
+		
+		//add version number
+		Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
+		newPane.pane->name = "T_Version";
+		newPane.pane->name.resize(0x18);
+		dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0';
+		dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
+		dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
+		dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
 
-	FileTypes::FLYTFile layout;
-	FILETYPE_ERROR_CHECK(layout.loadFromBinary(*stream));
+		//update "HD" image position
+		layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.X = -165.0f;
+		layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.Y = 12.0f;
 
-	//add version number
-	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
-	newPane.pane->name = "T_Version";
-	newPane.pane->name.resize(0x18);
-	dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0';
-	dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
-	dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
-	dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
+		//update subtitle size/position
+		layout.rootPane.children[0].children[1].children[1].children[1].children[0].pane->translation.Y = -30.0f;
+		layout.rootPane.children[0].children[1].children[1].children[1].children[0].pane->height = 120.0f;
 
-	//update "HD" image position
-	layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.X = -165.0f;
-	layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.Y = 12.0f;
+		//update subtitle mask size/position
+		layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->translation.Y = -30.0f;
+		layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->height = 120.0f;
 
-	//update subtitle size/position
-	layout.rootPane.children[0].children[1].children[1].children[1].children[0].pane->translation.Y = -30.0f;
-	layout.rootPane.children[0].children[1].children[1].children[1].children[0].pane->height = 120.0f;
+		return true;
+	});
 
-	//update subtitle mask size/position
-	layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->translation.Y = -30.0f;
-	layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->height = 120.0f;
+	//update "The Legend of Zelda" texture
+	RandoSession::CacheEntry& tEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim@BFLIM");
+	tEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(title, FileTypes::FLIMFile, data)
+		
+		FILETYPE_ERROR_CHECK(title.replaceWithDDS(DATA_PATH "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
-	FILETYPE_ERROR_CHECK(layout.writeToStream(*stream));
+		return true;
+	});
 
-	//update textures
-	FileTypes::FLIMFile title;
-	FileTypes::FLIMFile subtitle;
-	FileTypes::FLIMFile mask;
+	//update "The Wind Waker" texture
+	RandoSession::CacheEntry& sEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim@BFLIM");
+	sEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(subtitle, FileTypes::FLIMFile, data)
+		
+		FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(DATA_PATH "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
-	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim");
-	EXTRACT_ERR_CHECK(stream);
+		return true;
+	});
 
-	FILETYPE_ERROR_CHECK(title.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(title.replaceWithDDS(DATA_PATH "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(title.writeToStream(*stream));
+	//update mask for "The Wind Waker" texture
+	RandoSession::CacheEntry& mEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim@BFLIM");
+	mEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(mask, FileTypes::FLIMFile, data)
+		
+		FILETYPE_ERROR_CHECK(mask.replaceWithDDS(DATA_PATH "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 
-	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim");
-	EXTRACT_ERR_CHECK(stream);
-
-	FILETYPE_ERROR_CHECK(subtitle.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(DATA_PATH "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-	FILETYPE_ERROR_CHECK(subtitle.writeToStream(*stream));
-
-	stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim");
-	EXTRACT_ERR_CHECK(stream);
-
-	FILETYPE_ERROR_CHECK(mask.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(mask.replaceWithDDS(DATA_PATH "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
-	FILETYPE_ERROR_CHECK(mask.writeToStream(*stream));
+		return true;
+	});
 
 	//update sparkle size/position
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7048), 0x3fb33333)); //scale
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101f7044), 0x40100000)); //possibly particle size, JP changes it for its larger title text
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x10108280), 0xc2180000)); //vertical position
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	rpx.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101f7048), 0x3fb33333)); //scale
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101f7044), 0x40100000)); //possibly particle size, JP changes it for its larger title text
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x10108280), 0xc2180000)); //vertical position
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -706,43 +796,63 @@ TweakError modify_title_screen() {
 TweakError update_name_and_icon() {
 	if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
-	tinyxml2::XMLDocument meta, app;
-	std::stringstream* metaStream = g_session.openGameFile("meta/meta.xml");
-	EXTRACT_ERR_CHECK(metaStream);
-	meta.LoadFile(*metaStream);
-	std::stringstream* appStream = g_session.openGameFile("code/app.xml");
-	EXTRACT_ERR_CHECK(appStream);
-	app.LoadFile(*appStream);
+	RandoSession::CacheEntry& metaEntry = g_session.openGameFile("meta/meta.xml");
+	metaEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
+		std::stringstream& metaStream = generic.data;
 
-	tinyxml2::XMLElement* metaRoot = meta.RootElement();
-	metaRoot->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	metaRoot->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	metaRoot->FirstChildElement("longname_es")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
-	metaRoot->FirstChildElement("longname_pt")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+		tinyxml2::XMLDocument meta;
+		meta.LoadFile(metaStream);
 
-	metaRoot->FirstChildElement("shortname_en")->SetText("The Wind Waker HD Randomizer");
-	metaRoot->FirstChildElement("shortname_fr")->SetText("The Wind Waker HD Randomizer");
-	metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
-	metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
+		tinyxml2::XMLElement* metaRoot = meta.RootElement();
+		metaRoot->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+		metaRoot->FirstChildElement("longname_fr")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+		metaRoot->FirstChildElement("longname_es")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
+		metaRoot->FirstChildElement("longname_pt")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
 
-	//change the title ID so it gets its own channel when repacked
-	metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
-	tinyxml2::XMLElement* appRoot = app.RootElement();
-	appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+		metaRoot->FirstChildElement("shortname_en")->SetText("The Wind Waker HD Randomizer");
+		metaRoot->FirstChildElement("shortname_fr")->SetText("The Wind Waker HD Randomizer");
+		metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
+		metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-	tinyxml2::XMLPrinter printer;
-	meta.Print(&printer);
-	metaStream->str(std::string());
-	*metaStream << printer.CStr();
-	printer.ClearBuffer();
-	app.Print(&printer);
-	appStream->str(std::string());
-	*appStream << printer.CStr();
+		//change the title ID so it gets its own channel when repacked
+		metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+		
+		tinyxml2::XMLPrinter printer;
+		meta.Print(&printer);
+		metaStream.str(std::string());
+		metaStream << printer.CStr();
+
+		return true;
+	});
+	RandoSession::CacheEntry& appEntry = g_session.openGameFile("code/app.xml");
+	appEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
+		std::stringstream& appStream = generic.data;
+
+		tinyxml2::XMLDocument app;
+		app.LoadFile(appStream);
+		tinyxml2::XMLElement* appRoot = app.RootElement();
+		appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+		
+		tinyxml2::XMLPrinter printer;
+		app.Print(&printer);
+		appStream.str(std::string());
+		appStream << printer.CStr();
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
+	struct dungeon_item_info {
+		std::string short_name;
+		std::string base_item_name;
+		uint8_t item_id;
+	};
+
 	const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 	const uint32_t item_resources_list_start = 0x101E4674;
 	const uint32_t field_item_resources_list_start = 0x101E6A74;
@@ -820,40 +930,53 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 		{0x4E, 0x1004E698}
 	};
 
-	//nop some code that would overwrite models (Nintendo added some data to these IDs, maybe related to Tingle bottle?)
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x025527DC), 0x60000000)); // DRC small key field model
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x25527e0), 0x60000000)); // DRC big key field model
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02551E30), 0x60000000)); // DRC big key item resource
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
-  std::unordered_map<std::string, std::u16string> messageBegin = {
-    {"English", u"You got "},
-    {"Spanish", u"¡Has conseguido "},
-    {"French", u"Vous obtenez "},
-  };
+	//nop some code that would overwrite models (Nintendo added some data to these IDs, maybe related to Tingle bottle?)
+	rpx.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x025527DC), 0x60000000)); // DRC small key field model
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x25527e0), 0x60000000)); // DRC big key field model
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02551E30), 0x60000000)); // DRC big key item resource
+
+		return true;
+	});
+
+  	static std::unordered_map<std::string, std::u16string> messageBegin = {
+  	  {"English", u"You got "},
+  	  {"Spanish", u"¡Has conseguido "},
+  	  {"French", u"Vous obtenez "},
+  	};
 
 	for (const dungeon_item_info& item_data : dungeon_items) {
 		const std::string item_name = item_data.short_name + " " + item_data.base_item_name;
 		const uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
 		const std::string dungeon_name = dungeon_names.at(item_data.short_name);
 
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_get_func_pointer + (0xC * item_data.item_id) + 0x8, 9), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000)); //write to the relocation entries
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-    for (const auto& language : Text::supported_languages) {
-      std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-      EXTRACT_ERR_CHECK(stream)
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_pointer + (0xC * item_data.item_id) + 0x8, 9), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000)); //write to the relocation entries
 
-      FileTypes::MSBTFile msbt;
-      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+			return true;
+		});
+		
+    	for (const auto& language : Text::supported_languages) {
+    		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+    		entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-      const uint32_t message_id = 101 + item_data.item_id;
-      const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
-      std::u16string message = messageBegin[language] + world.itemEntries[dungeon_name + " " + item_data.base_item_name].getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
+				const uint32_t message_id = 101 + item_data.item_id;
+    			const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
+    			std::u16string message = messageBegin[language] + world.itemEntries[dungeon_name + " " + item_data.base_item_name].getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
 
-      message = Text::word_wrap_string(message, 39);
-      msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
+    			message = Text::word_wrap_string(message, 39);
+    			msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
 
-      FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-    }
+				return true;
+			});
+    	}
 
 		const uint32_t item_resources_addr_to_copy_from = item_resources_list_start + base_item_id * 0x24;
 		const uint32_t field_item_resources_addr_to_copy_from = field_item_resources_list_start + base_item_id * 0x1C;
@@ -863,8 +986,14 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
 		const uint32_t szs_name_pointer = szs_name_pointers.at(base_item_id);
 
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr), szs_name_pointer));
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr), szs_name_pointer));
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr), szs_name_pointer));
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_resources_addr), szs_name_pointer));
+
+			return true;
+		});
 
 		//need relocation entries so pointers work on console
 		Elf32_Rela relocation;
@@ -877,28 +1006,34 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 		relocation2.r_info = relocation.r_info; //same as first entry
 		relocation2.r_addend = relocation.r_addend; //same as first entry
 
-		RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 9, relocation));
-		RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 9, relocation2));
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-		const std::vector<uint8_t> data1 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 8), 0xD);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 8), data1));
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 4), data1));
+			RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, relocation));
+			RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, relocation2));
 
-		const std::vector<uint8_t> data2 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x1C), 4);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x1C), data2));
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x14), data2));
+			const std::vector<uint8_t> data1 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_copy_from + 8), 0xD);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr + 8), data1));
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 4), data1));
 
-		const std::vector<uint8_t> data3 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x15), 0x7);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x15), data3));
+			const std::vector<uint8_t> data2 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_copy_from + 0x1C), 4);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr + 0x1C), data2));
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 0x14), data2));
 
-		const std::vector<uint8_t> data4 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr_to_copy_from + 0x20), 0x4);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, item_resources_addr + 0x20), data4));
+			const std::vector<uint8_t> data3 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_copy_from + 0x15), 0x7);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr + 0x15), data3));
 
-		const std::vector<uint8_t> data5 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x11), 0x3);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x11), data5));
+			const std::vector<uint8_t> data4 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr_to_copy_from + 0x20), 0x4);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, item_resources_addr + 0x20), data4));
 
-		const std::vector<uint8_t> data6 = elfUtil::read_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr_to_copy_from + 0x18), 0x4);
-		RPX_ERROR_CHECK(elfUtil::write_bytes(gRPX, elfUtil::AddressToOffset(gRPX, field_item_resources_addr + 0x18), data6));
+			const std::vector<uint8_t> data5 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr_to_copy_from + 0x11), 0x3);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 0x11), data5));
+
+			const std::vector<uint8_t> data6 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr_to_copy_from + 0x18), 0x4);
+			RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 0x18), data6));
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -908,26 +1043,27 @@ TweakError remove_bog_warp_in_cs() {
 	for (uint8_t i = 1; i < 50; i++) {
 		std::string path;
 		if (i == 1 || i == 11 || i == 13 || i == 17 || i == 23) {
-			path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr";
+			path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
 		}
 		else if (i == 9 || i == 39 || i == 41 || i == 44) {
-			path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr";
+			path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
 		}
 		else {
-			path = "content/Common/Stage/sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr";
+			path = "content/Common/Stage/sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
 		}
-		std::stringstream* stream = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(stream);
+		RandoSession::CacheEntry& entry = g_session.openGameFile(path);
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(room_dzr, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile room_dzr;
-		FILETYPE_ERROR_CHECK(room_dzr.loadFromBinary(*stream));
-		for (ChunkEntry* spawn : room_dzr.entries_by_type("PLYR")) {
-			uint8_t spawn_type = ((*reinterpret_cast<uint8_t*>(&spawn->data[0xB]) & 0xF0) >> 4);
-			if (spawn_type == 0x09) {
-				spawn->data[0xB] = (spawn->data[0xB] & 0x0F) | 0x20;
+			for (ChunkEntry* spawn : room_dzr.entries_by_type("PLYR")) {
+				uint8_t spawn_type = ((*reinterpret_cast<uint8_t*>(&spawn->data[0xB]) & 0xF0) >> 4);
+				if (spawn_type == 0x09) {
+					spawn->data[0xB] = (spawn->data[0xB] & 0x0F) | 0x20;
+				}
 			}
-		}
-		FILETYPE_ERROR_CHECK(room_dzr.writeToStream(*stream));
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -936,17 +1072,23 @@ TweakError remove_bog_warp_in_cs() {
 TweakError fix_shop_item_y_offsets() {
 	const uint32_t shop_item_display_data_list_start = 0x1003A930;
 	const std::unordered_set<uint8_t> ArrowID = { 0x10, 0x11, 0x12 };
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	for (unsigned int id = 0; id < 0xFF + 1; id++) {
 		const uint32_t display_data_addr = shop_item_display_data_list_start + id * 0x20;
-		const float y_offset = elfUtil::read_float(gRPX, elfUtil::AddressToOffset(gRPX, display_data_addr + 0x10));
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+			const float y_offset = elfUtil::read_float(elf, elfUtil::AddressToOffset(elf, display_data_addr + 0x10));
 
-		if (y_offset == 0.0f && ArrowID.count(id) == 0) {
-			//If the item didn't originally have a Y offset we need to give it one so it's not sunken into the pedestal.
-			// Only exception are for items 10 11 and 12 - arrow refill pickups.Those have no Y offset but look fine already.
-			static const float new_y_offset = 20.0f;
-			RPX_ERROR_CHECK(elfUtil::write_float(gRPX, elfUtil::AddressToOffset(gRPX, display_data_addr + 0x10), new_y_offset));
-		}
+			if (y_offset == 0.0f && ArrowID.count(id) == 0) {
+				//If the item didn't originally have a Y offset we need to give it one so it's not sunken into the pedestal.
+				// Only exception are for items 10 11 and 12 - arrow refill pickups.Those have no Y offset but look fine already.
+				static const float new_y_offset = 20.0f;
+				RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, display_data_addr + 0x10), new_y_offset));
+			}
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -954,74 +1096,74 @@ TweakError fix_shop_item_y_offsets() {
 
 TweakError update_text_replacements(World& world) {
 
-  auto textReplacements = generate_text_replacements(world);
+	auto textReplacements = generate_text_replacements(world);
 
-  for (auto& [messageLabel, languages] : textReplacements) {
-    for (const auto& language : Text::supported_languages) {
-      // Don't do anything if there's no text yet
-      if (languages[language].empty()) continue;
+	for (auto& [messageLabel, languages] : textReplacements) {
+		for (const auto& language : Text::supported_languages) {
+			// Don't do anything if there's no text yet
+			if (languages[language].empty()) continue;
 
-      // Calculate which msbt we need to open
-      auto labelIdx = std::stoi(messageLabel);
-      std::string messageNum = ""; // default is message_msbt
-      if (labelIdx > 3235 && labelIdx < 6566) { // message2_msbt
-        messageNum = "2";
-      } else if (labelIdx >= 6566 && labelIdx <= 10761) { // message3_msbt
-        messageNum = "3";
-      } else if (labelIdx > 10761) { // message4_msbt
-        messageNum = "4";
-      }
+			// Calculate which msbt we need to open
+			auto labelIdx = std::stoi(messageLabel);
+			std::string messageNum = ""; // default is message_msbt
+			if (labelIdx > 3235 && labelIdx < 6566) { // message2_msbt
+				messageNum = "2";
+			} else if (labelIdx >= 6566 && labelIdx <= 10761) { // message3_msbt
+				messageNum = "3";
+			} else if (labelIdx > 10761) { // message4_msbt
+				messageNum = "4";
+			}
 
-      std::string filePath = std::string("content/Common/Pack/permanent_2d_Us") + language + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt";
-      std::stringstream* stream = g_session.openGameFile(filePath);
-      EXTRACT_ERR_CHECK(stream);
+			std::string filePath = std::string("content/Common/Pack/permanent_2d_Us") + language + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt@MSBT";
+			RandoSession::CacheEntry& entry = g_session.openGameFile(filePath);
+			entry.addAction([language, messageLabel = messageLabel, languages = languages](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-      FileTypes::MSBTFile msbt;
-      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+				msbt.messages_by_label[messageLabel].text.message = languages.at(language);
 
-      msbt.messages_by_label[messageLabel].text.message = languages[language];
-
-      FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-    }
-  }
+				return true;
+			});
+		}
+	}
 
   return TweakError::NONE;
 }
 
 TweakError shorten_zephos_event() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& list = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
 
-	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
-	if(event_list.Events_By_Name.count("TACT_HT") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	std::shared_ptr<Event> wind_shrine_event = event_list.Events_By_Name.at("TACT_HT");
+	list.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
+		
+		if(event_list.Events_By_Name.count("TACT_HT") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		std::shared_ptr<Event> wind_shrine_event = event_list.Events_By_Name.at("TACT_HT");
 
-	std::shared_ptr<Actor> zephos = wind_shrine_event->get_actor("Hr");
-	if (zephos == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
+		std::shared_ptr<Actor> zephos = wind_shrine_event->get_actor("Hr");
+		if (zephos == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
 
-	std::shared_ptr<Actor> link = wind_shrine_event->get_actor("Link");
-	if (link == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
+		std::shared_ptr<Actor> link = wind_shrine_event->get_actor("Link");
+		if (link == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
 
-	std::shared_ptr<Actor> camera = wind_shrine_event->get_actor("CAMERA");
-	if (camera == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
+		std::shared_ptr<Actor> camera = wind_shrine_event->get_actor("CAMERA");
+		if (camera == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
 
-	zephos->actions.erase(zephos->actions.begin() + 7, zephos->actions.end());
-	link->actions.erase(link->actions.begin() + 7, link->actions.end());
-	camera->actions.erase(camera->actions.begin() + 5, camera->actions.end());
-	wind_shrine_event->ending_flags = {
-		zephos->actions.back()->flag_id_to_set,
-		link->actions.back()->flag_id_to_set,
-		camera->actions.back()->flag_id_to_set,
-	};
+		zephos->actions.erase(zephos->actions.begin() + 7, zephos->actions.end());
+		link->actions.erase(link->actions.begin() + 7, link->actions.end());
+		camera->actions.erase(camera->actions.begin() + 5, camera->actions.end());
+		wind_shrine_event->ending_flags = {
+			zephos->actions.back()->flag_id_to_set,
+			link->actions.back()->flag_id_to_set,
+			camera->actions.back()->flag_id_to_set,
+		};
 
-	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1031,11 +1173,7 @@ TweakError update_korl_dialog(World& world) {
 
   if (!world.korlHints.empty()) {
     for (const auto& language: Text::supported_languages) {
-      std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-      EXTRACT_ERR_CHECK(stream);
-
-      FileTypes::MSBTFile msbt;
-      FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+      RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
 
       std::u16string hintLines = u"";
       size_t i = 0; // counter to know when to add null terminator
@@ -1051,10 +1189,14 @@ TweakError update_korl_dialog(World& world) {
       }
 
       for (auto label : {"03443", "03444", "03445", "03446", "03447", "03448"}) {
-        msbt.messages_by_label[label].text.message = hintLines;
-      }
+		entry.addAction([label, hintLines](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-      FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+			msbt.messages_by_label[label].text.message = hintLines;
+
+			return true;
+		});
+      }
     }
   }
 
@@ -1070,12 +1212,9 @@ TweakError update_ho_ho_dialog(World& world) {
   }
 
   for (const auto& language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt");
-    EXTRACT_ERR_CHECK(stream);
-
-    FileTypes::MSBTFile msbt;
-    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-
+    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
+    
+	entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
     for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
       std::u16string hintLines = u"";
       size_t i = 0; // counter to know when to add null terminator
@@ -1109,10 +1248,13 @@ TweakError update_ho_ho_dialog(World& world) {
         hint = Text::pad_str_4_lines(hint);
         hintLines += hint;
       }
-      msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
-    }
+		CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+		msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
+      }
+
+	  return true;
+	});
   }
 
   return TweakError::NONE;
@@ -1122,7 +1264,13 @@ TweakError set_num_starting_triforce_shards(const uint8_t numShards) {
 	if(custom_symbols.count("num_triforce_shards_to_start_with") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 
 	const uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, num_shards_address), numShards));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_shards_address, numShards](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_shards_address), numShards));
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1132,77 +1280,103 @@ TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartC
 	const uint16_t base_health = 12;
 	const uint16_t starting_health = base_health + (heartContainers * 4) + heartPieces;
 	const uint32_t starting_quarter_hearts_address = custom_symbols.at("starting_quarter_hearts");
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([starting_quarter_hearts_address, starting_health](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-	RPX_ERROR_CHECK(elfUtil::write_u16(gRPX, elfUtil::AddressToOffset(gRPX, starting_quarter_hearts_address), starting_health));
+		RPX_ERROR_CHECK(elfUtil::write_u16(elf, elfUtil::AddressToOffset(elf, starting_quarter_hearts_address), starting_health));
+
+		return true;
+	});
+
 	return TweakError::NONE;
 }
 
 TweakError set_starting_magic(const uint8_t& startingMagic) {
 	if(custom_symbols.count("starting_magic") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t starting_magic_address = custom_symbols.at("starting_magic");
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_magic_address), startingMagic));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([starting_magic_address, startingMagic](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, starting_magic_address), startingMagic));
+
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError set_damage_multiplier(const float& multiplier) {
 	if(custom_symbols.count("custom_damage_multiplier") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t damage_multiplier_address = custom_symbols.at("custom_damage_multiplier");
-	RPX_ERROR_CHECK(elfUtil::write_float(gRPX, elfUtil::AddressToOffset(gRPX, damage_multiplier_address), multiplier));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([damage_multiplier_address, multiplier](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, damage_multiplier_address), multiplier));
+		
+		return true;
+	});
 	return TweakError::NONE;
 }
 
 TweakError set_pig_color(const PigColor& color) {
 	if(custom_symbols.count("outset_pig_color") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t pig_color_address = custom_symbols.at("outset_pig_color");
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, pig_color_address), static_cast<uint8_t>(color)));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([pig_color_address, color](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, pig_color_address), static_cast<uint8_t>(color)));
+
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError add_pirate_ship_to_windfall() {
-	std::stringstream* windfallStream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr");
-	std::stringstream* shipRoomStream = g_session.openGameFile("content/Common/Stage/Asoko_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(windfallStream);
-	EXTRACT_ERR_CHECK(shipRoomStream);
+	RandoSession::CacheEntry& windfall = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr@DZX");
+	windfall.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(windfallDzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile windfallDzr;
-	FileTypes::DZXFile shipDzr;
-
-	FILETYPE_ERROR_CHECK(windfallDzr.loadFromBinary(*windfallStream));
-	FILETYPE_ERROR_CHECK(shipDzr.loadFromBinary(*shipRoomStream));
-
-	std::vector<ChunkEntry*> wf_layer_2_actors = windfallDzr.entries_by_type_and_layer("ACTR", 2);
-	std::string layer_2_ship_data; //copy actor data, add_entity reallocates vector and invalidates pointer
-	for (ChunkEntry* actor : wf_layer_2_actors) {
-		if (std::strncmp(&actor->data[0], "Pirates\x00", 8) == 0) layer_2_ship_data = actor->data;
-	}
-	if(layer_2_ship_data.empty()) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
-
-	ChunkEntry& default_layer_ship = windfallDzr.add_entity("ACTR");
-	default_layer_ship.data = layer_2_ship_data;
-	default_layer_ship.data[0xA] = '\x00';
-
-	FILETYPE_ERROR_CHECK(windfallDzr.writeToStream(*windfallStream));
-
-	for (const int layer_num : {2, 3}) {
-		std::vector<ChunkEntry*> actors = shipDzr.entries_by_type_and_layer("ACTR", layer_num);
-		for (ChunkEntry* actor : actors) {
-			if (std::strncmp(&actor->data[0], "P2b\x00\x00\x00\x00\x00", 8) == 0) shipDzr.remove_entity(actor);
+		std::vector<ChunkEntry*> wf_layer_2_actors = windfallDzr.entries_by_type_and_layer("ACTR", 2);
+		std::string layer_2_ship_data; //copy actor data, add_entity reallocates vector and invalidates pointer
+		for (ChunkEntry* actor : wf_layer_2_actors) {
+			if (std::strncmp(&actor->data[0], "Pirates\x00", 8) == 0) layer_2_ship_data = actor->data;
 		}
-	}
+		if(layer_2_ship_data.empty()) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-	ChunkEntry& aryll = shipDzr.add_entity("ACTR");
-	aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
+		ChunkEntry& default_layer_ship = windfallDzr.add_entity("ACTR");
+		default_layer_ship.data = layer_2_ship_data;
+		default_layer_ship.data[0xA] = '\x00';
 
-  for (const auto& language : Text::supported_languages) {
-    std::stringstream* msbtStream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-    EXTRACT_ERR_CHECK(msbtStream);
+		return true;
+	});
 
-    FileTypes::MSBTFile msbt;
-    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*msbtStream));
+	RandoSession::CacheEntry& shipRoom = g_session.openGameFile("content/Common/Stage/Asoko_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+	shipRoom.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(shipDzr, FileTypes::DZXFile, data)
 
-    msbt.messages_by_label["03008"].attributes.soundEffect = 106;
-    FILETYPE_ERROR_CHECK(msbt.writeToStream(*msbtStream));
-  }
+		for (const int layer_num : {2, 3}) {
+			std::vector<ChunkEntry*> actors = shipDzr.entries_by_type_and_layer("ACTR", layer_num);
+			for (ChunkEntry* actor : actors) {
+				if (std::strncmp(&actor->data[0], "P2b\x00\x00\x00\x00\x00", 8) == 0) shipDzr.remove_entity(actor);
+			}
+		}
+
+		ChunkEntry& aryll = shipDzr.add_entity("ACTR");
+		aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
+
+		return true;
+	});
+	
+  	for (const auto& language : Text::supported_languages) {
+  		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+			msbt.messages_by_label["03008"].attributes.soundEffect = 106;
+
+			return true;
+		});
+  	}
 
 	const uint32_t stage_bgm_info_list_start = 0x1018E428;
 	const uint32_t second_dynamic_scene_waves_list_start = 0x1018E2EC;
@@ -1212,14 +1386,27 @@ TweakError add_pirate_ship_to_windfall() {
 
 	const uint32_t asoko_bgm_info_ptr = stage_bgm_info_list_start + asoko_spot_id * 0x4;
 	const uint32_t new_second_scene_wave_ptr = second_dynamic_scene_waves_list_start + new_second_scene_wave_index * 2;
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, new_second_scene_wave_ptr), isle_link_0_aw_index));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, new_second_scene_wave_ptr), isle_link_0_aw_index));
 
-	FILETYPE_ERROR_CHECK(shipDzr.writeToStream(*shipRoomStream));
+		return true;
+	});
+
 	return TweakError::NONE;
 }
 
 TweakError add_cross_dungeon_warps() {
+	struct CyclicWarpPotData {
+		std::string stage_name;
+		uint8_t room_num;
+		float x, y, z;
+		uint16_t y_rot;
+		uint8_t event_reg_index;
+	};
+
 	std::array<std::array<CyclicWarpPotData, 3>, 2> loops = { {
 		{ {
 			{"M_NewD2", 2, 2185.0f, 0.0f, 590.0f, 0xA000, 2},
@@ -1236,17 +1423,10 @@ TweakError add_cross_dungeon_warps() {
 	for(auto& loop : loops) {
 		uint8_t warp_index = 0;
 		for (CyclicWarpPotData& warp : loop) {
-			std::stringstream* stageStream = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
-			std::stringstream* roomStream = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Room" + std::to_string(warp.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(warp.room_num) + ".bfres@BFRES@room.dzr");
-			EXTRACT_ERR_CHECK(stageStream);
-			EXTRACT_ERR_CHECK(roomStream);
+			RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+			RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Room" + std::to_string(warp.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(warp.room_num) + ".bfres@BFRES@room.dzr@DZX");
 
-			FileTypes::DZXFile stage;
-			FileTypes::DZXFile room;
-			FILETYPE_ERROR_CHECK(stage.loadFromBinary(*stageStream));
-			FILETYPE_ERROR_CHECK(room.loadFromBinary(*roomStream));
-
-			FileTypes::DZXFile* dzx_for_spawn;
+			RandoSession::CacheEntry* dzx_for_spawn;
 			dzx_for_spawn = &room;
 			if(warp.stage_name == "M_Dai" || warp.stage_name == "kaze") {
 				dzx_for_spawn = &stage;
@@ -1257,120 +1437,151 @@ TweakError add_cross_dungeon_warps() {
 			Utility::Endian::toPlatform_inplace(eType::Big, warp.z);
 			Utility::Endian::toPlatform_inplace(eType::Big, warp.y_rot);
 
-			ChunkEntry& spawn = dzx_for_spawn->add_entity("PLYR");
-			spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x70"s;
-			spawn.data.resize(0x20);
-			spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
-			spawn.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
-			spawn.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
-			spawn.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
-			spawn.data.replace(0x18, 2, "\x00\x00", 2);
-			spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
-			spawn.data.replace(0x1C, 4, "\xFF\x45\xFF\xFF", 4);
+			dzx_for_spawn->addAction([warp](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(dzx, FileTypes::DZXFile, data)
 
-			std::vector<ChunkEntry*> spawns = dzx_for_spawn->entries_by_type("PLYR");
-			std::vector<ChunkEntry*> spawn_id_69;
-			for (ChunkEntry* spawn_to_check : spawns) {
-				if (std::strncmp(&spawn_to_check->data[0x1D], "\x45", 1) == 0) spawn_id_69.push_back(spawn_to_check);
-			}
-			if (spawn_id_69.size() != 1) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY); //technically too many and not missing, but its close enough with line number
+				ChunkEntry& spawn = dzx.add_entity("PLYR");
+				spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x70"s;
+				spawn.data.resize(0x20);
+				spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
+				spawn.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
+				spawn.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
+				spawn.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
+				spawn.data.replace(0x18, 2, "\x00\x00", 2);
+				spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
+				spawn.data.replace(0x1C, 4, "\xFF\x45\xFF\xFF", 4);
 
-			std::vector<uint8_t> pot_index_to_exit;
-			for (const CyclicWarpPotData& other_warp : loop) {
-				ChunkEntry& scls_exit = room.add_entity("SCLS");
-				std::string dest_stage = other_warp.stage_name;
-				dest_stage.resize(8, '\0');
-				scls_exit.data.resize(0xC);
-				scls_exit.data.replace(0, 8, dest_stage);
-				scls_exit.data.replace(8, 1, "\x45", 1);
-				scls_exit.data.replace(0x9, 1, reinterpret_cast<const char*>(&other_warp.room_num), 1);
-				scls_exit.data.replace(0xA, 2, "\x04\xFF", 2);
-				pot_index_to_exit.push_back(room.entries_by_type("SCLS").size() - 1);
-			}
+				std::vector<ChunkEntry*> spawns = dzx.entries_by_type("PLYR");
+				std::vector<ChunkEntry*> spawn_id_69;
+				for (ChunkEntry* spawn_to_check : spawns) {
+					if (std::strncmp(&spawn_to_check->data[0x1D], "\x45", 1) == 0) spawn_id_69.push_back(spawn_to_check);
+				}
+				if (spawn_id_69.size() != 1) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY); //technically too many and not missing, but its close enough with line number
 
-			uint32_t params = 0x00000000;
-			params = (params & ~0xFF000000) | ((pot_index_to_exit[2] << 24) & 0xFF000000);
-			params = (params & ~0x00FF0000) | ((pot_index_to_exit[1] << 16) & 0x00FF0000);
-			params = (params & ~0x0000FF00) | ((pot_index_to_exit[0] << 8) & 0x0000FF00);
-			params = (params & ~0x000000F0) | ((warp.event_reg_index << 4) & 0x000000F0);
-			params = (params & ~0x0000000F) | ((warp_index + 2) & 0x0000000F);
-			Utility::Endian::toPlatform_inplace(eType::Big, params);
+				return true;
+			});
 
-			ChunkEntry& warp_pot = room.add_entity("ACTR");
-			warp_pot.data = "Warpts" + std::to_string(warp_index + 1);
-			warp_pot.data.resize(0x20);
-			warp_pot.data.replace(0x8, 4, reinterpret_cast<const char*>(&params), 4);
-			warp_pot.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
-			warp_pot.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
-			warp_pot.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
-			warp_pot.data.replace(0x18, 2, "\xFF\xFF", 2);
-			warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
-			warp_pot.data.replace(0x1C, 4, "\xFF\xFF\xFF\xFF", 4);
+			room.addAction([loop, warp, warp_index](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(room, FileTypes::DZXFile, data)
 
-			FILETYPE_ERROR_CHECK(room.writeToStream(*roomStream));
-			FILETYPE_ERROR_CHECK(stage.writeToStream(*stageStream));
+				std::vector<uint8_t> pot_index_to_exit;
+				for (const CyclicWarpPotData& other_warp : loop) {
+					ChunkEntry& scls_exit = room.add_entity("SCLS");
+					std::string dest_stage = other_warp.stage_name;
+					dest_stage.resize(8, '\0');
+					scls_exit.data.resize(0xC);
+					scls_exit.data.replace(0, 8, dest_stage);
+					scls_exit.data.replace(8, 1, "\x45", 1);
+					scls_exit.data.replace(0x9, 1, reinterpret_cast<const char*>(&other_warp.room_num), 1);
+					scls_exit.data.replace(0xA, 2, "\x04\xFF", 2);
+					pot_index_to_exit.push_back(room.entries_by_type("SCLS").size() - 1);
+				}
+
+				uint32_t params = 0x00000000;
+				params = (params & ~0xFF000000) | ((pot_index_to_exit[2] << 24) & 0xFF000000);
+				params = (params & ~0x00FF0000) | ((pot_index_to_exit[1] << 16) & 0x00FF0000);
+				params = (params & ~0x0000FF00) | ((pot_index_to_exit[0] << 8) & 0x0000FF00);
+				params = (params & ~0x000000F0) | ((warp.event_reg_index << 4) & 0x000000F0);
+				params = (params & ~0x0000000F) | ((warp_index + 2) & 0x0000000F);
+				Utility::Endian::toPlatform_inplace(eType::Big, params);
+
+				ChunkEntry& warp_pot = room.add_entity("ACTR");
+				warp_pot.data = "Warpts" + std::to_string(warp_index + 1);
+				warp_pot.data.resize(0x20);
+				warp_pot.data.replace(0x8, 4, reinterpret_cast<const char*>(&params), 4);
+				warp_pot.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
+				warp_pot.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
+				warp_pot.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
+				warp_pot.data.replace(0x18, 2, "\xFF\xFF", 2);
+				warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
+				warp_pot.data.replace(0x1C, 4, "\xFF\xFF\xFF\xFF", 4);
+
+				return true;
+			});
 
 			warp_index++;
 		}
 	}
 
-	FileTypes::JPC drc, totg, ff;
-	std::stringstream* drcStream = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
-	std::stringstream* totgStream = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene050.jpc");
-	std::stringstream* ffStream = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene043.jpc");
-	EXTRACT_ERR_CHECK(drcStream);
-	EXTRACT_ERR_CHECK(totgStream);
-	EXTRACT_ERR_CHECK(ffStream);
+	RandoSession::CacheEntry& drc = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc@JPC");
+	RandoSession::CacheEntry& totg = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene050.jpc@JPC");
+	RandoSession::CacheEntry& ff = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene043.jpc@JPC");
 
-	FILETYPE_ERROR_CHECK(drc.loadFromBinary(*drcStream));
-	FILETYPE_ERROR_CHECK(totg.loadFromBinary(*totgStream));
-	FILETYPE_ERROR_CHECK(ff.loadFromBinary(*ffStream));
+	drc.addAction([&totg, &ff](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(drc, FileTypes::JPC, data)
 
-	for (const uint16_t particle_id : {0x8161, 0x8162, 0x8165, 0x8166, 0x8112}) {
-		const Particle& particle = drc.particles[drc.particle_index_by_id[particle_id]];
+		for (const uint16_t particle_id : {0x8161, 0x8162, 0x8165, 0x8166, 0x8112}) {
+			const Particle& particle = drc.particles[drc.particle_index_by_id[particle_id]];
 
-		FILETYPE_ERROR_CHECK(totg.addParticle(particle));
-		FILETYPE_ERROR_CHECK(ff.addParticle(particle));
+			totg.addAction([particle](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(totg, FileTypes::JPC, data)
 
-		for (const std::string& textureFilename : particle.texDatabase.value().texFilenames) {
-			if (totg.textures.find(textureFilename) == totg.textures.end()) {
-				FILETYPE_ERROR_CHECK(totg.addTexture(textureFilename));
-			}
+				FILETYPE_ERROR_CHECK(totg.addParticle(particle));
 
-			if (ff.textures.find(textureFilename) == ff.textures.end()) {
-				FILETYPE_ERROR_CHECK(ff.addTexture(textureFilename));
+				return true;
+			});
+			ff.addAction([particle](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(ff, FileTypes::JPC, data)
+
+				FILETYPE_ERROR_CHECK(ff.addParticle(particle));
+
+				return true;
+			});
+
+			for (const std::string& textureFilename : particle.texDatabase.value().texFilenames) {
+				totg.addAction([textureFilename](RandoSession* session, FileType* data) -> int {
+					CAST_ENTRY_TO_FILETYPE(totg, FileTypes::JPC, data)
+
+					if (totg.textures.find(textureFilename) == totg.textures.end()) {
+						FILETYPE_ERROR_CHECK(totg.addTexture(textureFilename));
+					}
+
+					return true;
+				});
+			
+				ff.addAction([textureFilename](RandoSession* session, FileType* data) -> int {
+					CAST_ENTRY_TO_FILETYPE(ff, FileTypes::JPC, data)
+
+					if (ff.textures.find(textureFilename) == ff.textures.end()) {
+						FILETYPE_ERROR_CHECK(ff.addTexture(textureFilename));
+					}
+
+					return true;
+				});
 			}
 		}
-	}
 
-	FILETYPE_ERROR_CHECK(totg.writeToStream(*totgStream));
-	FILETYPE_ERROR_CHECK(ff.writeToStream(*ffStream));
+		return true;
+	});
+	
+	totg.delayUntil("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
+	ff.delayUntil("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
 
 	return TweakError::NONE;
 }
 
 TweakError remove_makar_kidnapping() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/kaze_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/kaze_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+		std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
-	ChunkEntry* switch_actor = nullptr; //initialization is just to make compiler happy
-	for (ChunkEntry* actor : actors) {
-		if (std::strncmp(&actor->data[0], "AND_SW2\x00", 8) == 0) switch_actor = actor;
-	}
-	if(switch_actor == nullptr) LOG_ERR_AND_RETURN(TweakError::MISSING_ENTITY);
-	dzr.remove_entity(switch_actor);
-
-	for (ChunkEntry* actor : actors) {
-		if (std::strncmp(&actor->data[0], "wiz_r\x00\x00\x00", 8) == 0) {
-			actor->data.replace(0xA, 1, "\xFF", 1);
+		ChunkEntry* switch_actor = nullptr; //initialization is just to make compiler happy
+		for (ChunkEntry* actor : actors) {
+			if (std::strncmp(&actor->data[0], "AND_SW2\x00", 8) == 0) switch_actor = actor;
 		}
-	}
+		if(switch_actor == nullptr) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
+		dzr.remove_entity(switch_actor);
 
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		for (ChunkEntry* actor : actors) {
+			if (std::strncmp(&actor->data[0], "wiz_r\x00\x00\x00", 8) == 0) {
+				actor->data.replace(0xA, 1, "\xFF", 1);
+			}
+		}
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1378,9 +1589,15 @@ TweakError remove_makar_kidnapping() {
 TweakError increase_crawl_speed() {
 	//The 3.0 float crawling uses is shared with other things in HD, can't change it directly
 	//Redirect both instances to load 6.0 from elsewhere
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014EC04, 7), 0x000355C4)); //update .rela.text entry
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014EC4C, 7), 0x000355C4)); //update .rela.text entry
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC04, 7), 0x000355C4)); //update .rela.text entry
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC4C, 7), 0x000355C4)); //update .rela.text entry
 
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
@@ -1393,11 +1610,7 @@ TweakError add_chart_number_to_item_get_messages(World& world) {
   };
 
   for (const auto& language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-    EXTRACT_ERR_CHECK(stream);
-
-    FileTypes::MSBTFile msbt;
-    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
+    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
 
     auto replacementIndex = replacementData[language];
 
@@ -1409,113 +1622,157 @@ TweakError add_chart_number_to_item_get_messages(World& world) {
       const std::u16string u16itemName = world.itemEntries[itemName].getUTF16Name(language, Text::Type::PRETTY);
 
       // The message between the "You obtained " and the next '!' will be replaced
-      auto& message = msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message;
-      auto replacementLength = message.find('!') - replacementIndex;
+	  entry.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+		
+		auto& message = msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message;
+      	auto replacementLength = message.find('!') - replacementIndex;
 
-      message.replace(replacementIndex, replacementLength, u16itemName);
+      	message.replace(replacementIndex, replacementLength, u16itemName);
+
+		return true;
+	  });
     }
-    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
   }
 
 	return TweakError::NONE;
 }
 
 TweakError increase_grapple_animation_speed() {
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02170250), 0x394B000A));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00075170, 7), 0x00010FFC)); //update .rela.text entry
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x100110C8), 0x41C80000));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x021711D4), 0x390B0006));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02170250), 0x394B000A));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00075170, 7), 0x00010FFC)); //update .rela.text entry
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x100110C8), 0x41C80000));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x021711D4), 0x390B0006));
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError increase_block_move_animation() {
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00153b00, 7), 0x00035AAC)); //update .rela.text entries
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00153b48, 7), 0x00035AAC));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b00, 7), 0x00035AAC)); //update .rela.text entries
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b48, 7), 0x00035AAC));
 
-	uint32_t offset = 0x101CB424;
-	for (unsigned int i = 0; i < 13; i++) { //13 types of blocks total
-		RPX_ERROR_CHECK(elfUtil::write_u16(gRPX, elfUtil::AddressToOffset(gRPX, offset + 0x04), 0x000C)); // Reduce number frames for pushing to last from 20 to 12
-		RPX_ERROR_CHECK(elfUtil::write_u16(gRPX, elfUtil::AddressToOffset(gRPX, offset + 0x0A), 0x000C)); // Reduce number frames for pulling to last from 20 to 12
-		offset += 0x9C;
-	}
+		uint32_t offset = 0x101CB424;
+		for (unsigned int i = 0; i < 13; i++) { //13 types of blocks total
+			RPX_ERROR_CHECK(elfUtil::write_u16(elf, elfUtil::AddressToOffset(elf, offset + 0x04), 0x000C)); // Reduce number frames for pushing to last from 20 to 12
+			RPX_ERROR_CHECK(elfUtil::write_u16(elf, elfUtil::AddressToOffset(elf, offset + 0x0A), 0x000C)); // Reduce number frames for pulling to last from 20 to 12
+			offset += 0x9C;
+		}
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError increase_misc_animations() {
 	//Float is shared, redirect it to read another float with the right value
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00148820, 7), 0x000358D8));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x001482a4, 7), 0x00035124));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00148430, 7), 0x000358D8));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00148310, 7), 0x00035AAC));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0014e2d4, 7), 0x00035530));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148820, 7), 0x000358D8));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x001482a4, 7), 0x00035124));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148430, 7), 0x000358D8));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148310, 7), 0x00035AAC));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014e2d4, 7), 0x00035530));
 
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02508b50), 0x3880000A));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02508b50), 0x3880000A));
 
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError set_casual_clothes() {
 	if(custom_symbols.count("should_start_with_heros_clothes") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t starting_clothes_addr = custom_symbols.at("should_start_with_heros_clothes");
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_clothes_addr), 0));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, starting_clothes_addr), 0));
+	
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError hide_ship_sail() {
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x02162B04), 0x4E800020));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02162B04), 0x4E800020));
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError shorten_auction_intro_event() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
-	if(event_list.Events_By_Name.count("AUCTION_START") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	std::shared_ptr<Event> auction_start_event = event_list.Events_By_Name.at("AUCTION_START");
-	std::shared_ptr<Actor> camera = auction_start_event->get_actor("CAMERA");
-	if (camera == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
+		if(event_list.Events_By_Name.count("AUCTION_START") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		std::shared_ptr<Event> auction_start_event = event_list.Events_By_Name.at("AUCTION_START");
+		std::shared_ptr<Actor> camera = auction_start_event->get_actor("CAMERA");
+		if (camera == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
 
-	camera->actions.erase(camera->actions.begin() + 3, camera->actions.begin() + 5); //last iterator not inclusive, only erase actions 3-4
+		camera->actions.erase(camera->actions.begin() + 3, camera->actions.begin() + 5); //last iterator not inclusive, only erase actions 3-4
 
-	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
+		return true;
+	});
+
 	return TweakError::NONE;
 }
 
 TweakError disable_invisible_walls() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+		std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
-
-	for (ChunkEntry* scob : scobs) {
-		if (std::strncmp(&scob->data[0], "Akabe\x00\x00\x00", 8) == 0) {
-			scob->data[0xB] = '\xFF';
+		for (ChunkEntry* scob : scobs) {
+			if (std::strncmp(&scob->data[0], "Akabe\x00\x00\x00", 8) == 0) {
+				scob->data[0xB] = '\xFF';
+			}
 		}
-	}
 
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		return true;
+	});
+
 	return TweakError::NONE;
 }
 
 TweakError update_skip_rematch_bosses_game_variable(const bool& skipRefights) {
 	if(custom_symbols.count("skip_rematch_bosses") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t skip_rematch_bosses_addr = custom_symbols.at("skip_rematch_bosses");
-	if (skipRefights) {
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, skip_rematch_bosses_addr), 0x01));
-	}
-	else {
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, skip_rematch_bosses_addr), 0x00));
-	}
+
+	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	entry.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		if (skipRefights) {
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, skip_rematch_bosses_addr), 0x01));
+		}
+		else {
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, skip_rematch_bosses_addr), 0x00));
+		}
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1524,15 +1781,22 @@ TweakError update_sword_mode_game_variable(const SwordMode swordMode) {
 	if(custom_symbols.count("sword_mode") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t sword_mode_addr = custom_symbols.at("sword_mode");
 
-	if (swordMode == SwordMode::StartWithSword) {
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, sword_mode_addr), 0x00));
-	}
-	else if (swordMode == SwordMode::RandomSword) {
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, sword_mode_addr), 0x01));
-	}
-	else if (swordMode == SwordMode::NoSword) {
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, sword_mode_addr), 0x02));
-	}
+	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	entry.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		if (swordMode == SwordMode::StartWithSword) {
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x00));
+		}
+		else if (swordMode == SwordMode::RandomSword) {
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x01));
+		}
+		else if (swordMode == SwordMode::NoSword) {
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x02));
+		}
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1554,75 +1818,86 @@ TweakError update_starting_gear(const std::vector<GameItem>& startingItems) {
 
 	if(custom_symbols.count("starting_gear") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 	const uint32_t starting_gear_array_addr = custom_symbols.at("starting_gear");
-	for (size_t i = 0; i < startingGear.size(); i++) {
-		const uint8_t item_id = static_cast<std::underlying_type_t<GameItem>>(startingGear[i]);
-		RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_gear_array_addr + i), item_id));
-	}
 
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, starting_gear_array_addr + startingGear.size()), 0xFF));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
+		for (size_t i = 0; i < startingGear.size(); i++) {
+			const uint8_t item_id = static_cast<std::underlying_type_t<GameItem>>(startingGear[i]);
+			RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, starting_gear_array_addr + i), item_id));
+		}
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, starting_gear_array_addr + startingGear.size()), 0xFF));
+
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError add_hint_signs() {
-  for (const auto& language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt");
-    EXTRACT_ERR_CHECK(stream);
+	for (const auto& language : Text::supported_languages) {
+	  	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+	
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-    FileTypes::MSBTFile msbt;
-    FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-    const std::string new_message_label = "00847";
-    Attributes attributes;
-    attributes.character = 0xF; //sign
-    attributes.boxStyle = 0x2;
-    attributes.drawType = 0x1;
-    attributes.screenPos = 0x2;
-    attributes.lineAlignment = 3;
-    TSY1Entry tsy;
-    tsy.styleIndex = 0x12B;
-    const std::u16string message = IMAGE(ImageTags::R_ARROW) + u"\0"s;
-    msbt.addMessage(new_message_label, attributes, tsy, message);
-    FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
-  }
+	  		const std::string new_message_label = "00847";
+	  		Attributes attributes;
+	  		attributes.character = 0xF; //sign
+	  		attributes.boxStyle = 0x2;
+	  		attributes.drawType = 0x1;
+	  		attributes.screenPos = 0x2;
+	  		attributes.lineAlignment = 3;
+	  		TSY1Entry tsy;
+	  		tsy.styleIndex = 0x12B;
+	  		const std::u16string message = IMAGE(ImageTags::R_ARROW) + u"\0"s;
+	  		msbt.addMessage(new_message_label, attributes, tsy, message);
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
-
-	std::vector<ChunkEntry*> bomb_flowers;
-	for (ChunkEntry* actor : actors) {
-		if (std::strncmp(&actor->data[0], "BFlower\0", 8) == 0) bomb_flowers.push_back(actor);
+			return true;
+		});
 	}
-	bomb_flowers[1]->data = "Kanban\x00\x00\x00\x00\x03\x4F\x44\x34\x96\xEB\x42\x47\xFF\xFF\xC2\x40\xB0\x3A\x00\x00\x20\x00\x00\x00\xFF\xFF"s;
 
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+	RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
+	room.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+		std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+
+		std::vector<ChunkEntry*> bomb_flowers;
+		for (ChunkEntry* actor : actors) {
+			if (std::strncmp(&actor->data[0], "BFlower\0", 8) == 0) bomb_flowers.push_back(actor);
+		}
+		bomb_flowers[1]->data = "Kanban\x00\x00\x00\x00\x03\x4F\x44\x34\x96\xEB\x42\x47\xFF\xFF\xC2\x40\xB0\x3A\x00\x00\x20\x00\x00\x00\xFF\xFF"s;
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError prevent_door_boulder_softlocks() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& room13 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
 
-	FileTypes::DZXFile room13;
-	FILETYPE_ERROR_CHECK(room13.loadFromBinary(*stream));
+	room13.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(room13, FileTypes::DZXFile, data)
 
-	ChunkEntry& swc00_13 = room13.add_entity("SCOB");
-	swc00_13.data = "SW_C00\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
-	FILETYPE_ERROR_CHECK(room13.writeToStream(*stream));
+		ChunkEntry& swc00_13 = room13.add_entity("SCOB");
+		swc00_13.data = "SW_C00\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
 
-	stream = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream)
+		return true;
+	});
 
-	FileTypes::DZXFile room14;
-	FILETYPE_ERROR_CHECK(room14.loadFromBinary(*stream));
+	RandoSession::CacheEntry& room14 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+	
+	room14.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(room14, FileTypes::DZXFile, data)
 
-	ChunkEntry& swc00_14 = room14.add_entity("SCOB");
-	swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
-	FILETYPE_ERROR_CHECK(room14.writeToStream(*stream));
+		ChunkEntry& swc00_14 = room14.add_entity("SCOB");
+		swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1630,13 +1905,21 @@ TweakError prevent_door_boulder_softlocks() {
 TweakError update_tingle_statue_item_get_funcs() {
 	const uint32_t item_get_func_ptr = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 	const std::unordered_map<int, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
+	RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	for (const uint8_t statue_id : {0xA3, 0xA4, 0xA5, 0xA6, 0xA7}) {
 		if(custom_symbols.count(symbol_name_by_item_id.at(statue_id)) == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 
 		const uint32_t item_func_addr = item_get_func_ptr + (statue_id * 0xC) + 8;
 		const uint32_t item_func_ptr = custom_symbols.at(symbol_name_by_item_id.at(statue_id));
-		RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, item_func_addr, 9), item_func_ptr - 0x02000000));
+		
+		rpx.addAction([=](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+			RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_func_addr, 9), item_func_ptr - 0x02000000));
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -1646,7 +1929,13 @@ TweakError make_tingle_statue_reward_rupee_rainbow_colored() {
 	const uint32_t item_resources_list_start = 0x101e4674;
 	const uint32_t rainbow_rupee_item_resource_addr = item_resources_list_start + 0xB8 * 0x24;
 
-	RPX_ERROR_CHECK(elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, rainbow_rupee_item_resource_addr + 0x14), 0x07));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, rainbow_rupee_item_resource_addr + 0x14), 0x07));
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1654,39 +1943,42 @@ TweakError make_tingle_statue_reward_rupee_rainbow_colored() {
 TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { //make sure hash is null terminated
 	using namespace NintendoWare::Layout;
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::FLYTFile layout;
-	FILETYPE_ERROR_CHECK(layout.loadFromBinary(*stream));
-
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt@BFLYT");
+	
 	//add hash
-	Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //hidden version number text
-	txt1& textPane = *dynamic_cast<txt1*>(newPane.pane.get());
-	textPane.name = "T_Hash";
-	textPane.name.resize(0x18);
-	textPane.text = u"Seed Hash:\n" + hash;
-	textPane.fontIndex = 0;
-	textPane.restrictedLen = (12 + hash.length()) * 2;
-	textPane.lineAlignment = txt1::LineAlignment::CENTER;
-	textPane.translation.X = -491.0f;
-	textPane.translation.Y = -113.0f;
-	textPane.width = 205.0f;
-	textPane.height = 100.0f;
+	entry.addAction([hash](RandoSession* sessio, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
 
-	FILETYPE_ERROR_CHECK(layout.writeToStream(*stream));
+		Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //hidden version number text
+		txt1& textPane = *dynamic_cast<txt1*>(newPane.pane.get());
+		textPane.name = "T_Hash";
+		textPane.name.resize(0x18);
+		textPane.text = u"Seed Hash:\n" + hash;
+		textPane.fontIndex = 0;
+		textPane.restrictedLen = (12 + hash.length()) * 2;
+		textPane.lineAlignment = txt1::LineAlignment::CENTER;
+		textPane.translation.X = -491.0f;
+		textPane.translation.Y = -113.0f;
+		textPane.width = 205.0f;
+		textPane.height = 100.0f;
+
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError implement_key_bag() {
   for (const auto& language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim");
-    EXTRACT_ERR_CHECK(stream);
+    RandoSession::CacheEntry& charm = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim@BFLIM");
+	
+	charm.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(pirates_charm, FileTypes::FLIMFile, data)
 
-    FileTypes::FLIMFile pirates_charm;
-    FILETYPE_ERROR_CHECK(pirates_charm.loadFromBinary(*stream));
-    FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-    FILETYPE_ERROR_CHECK(pirates_charm.writeToStream(*stream));
+		FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+
+		return true;
+	});
   }
 
 	return TweakError::NONE;
@@ -1705,176 +1997,186 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 	}
 
   for (const auto& language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt");
-    EXTRACT_ERR_CHECK(stream);
+    RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt@BFLYT");
 
-    FileTypes::FLYTFile map;
-    FILETYPE_ERROR_CHECK(map.loadFromBinary(*stream));
+	map.addAction([room_indexes](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(map, FileTypes::FLYTFile, data)
 
-    std::vector<size_t> quest_marker_indexes = {
-      144, 145, 146, 147, 148, 149, 150, 151
-    };
+    	std::vector<size_t> quest_marker_indexes = {
+    	  144, 145, 146, 147, 148, 149, 150, 151
+    	};
 
-    for(const uint8_t& index : room_indexes) {
-      const uint32_t column = (index - 1) % 7;
-      const uint32_t row = (index - 1) / 7;
-      const float x_pos = (column * 73.0f) - 148.0f;
-      const float y_pos = 175.0f - (row * 73.0f);
+		for(const uint8_t& index : room_indexes) {
+    	  const uint32_t column = (index - 1) % 7;
+    	  const uint32_t row = (index - 1) / 7;
+    	  const float x_pos = (column * 73.0f) - 148.0f;
+    	  const float y_pos = 175.0f - (row * 73.0f);
 
-      pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[quest_marker_indexes.back()].pane.get());
-      quest_marker_indexes.pop_back();
-      marker->translation.X = x_pos;
-      marker->translation.Y = y_pos;
-    }
+    	  pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[quest_marker_indexes.back()].pane.get());
+    	  quest_marker_indexes.pop_back();
+    	  marker->translation.X = x_pos;
+    	  marker->translation.Y = y_pos;
+    	}
 
-    for(const auto& index : quest_marker_indexes) { //hide any remaining markers
-      pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[index].pane.get());
-      marker->alpha = 0;
-    }
+    	for(const auto& index : quest_marker_indexes) { //hide any remaining markers
+    	  pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[index].pane.get());
+    	  marker->alpha = 0;
+    	}
 
-    FILETYPE_ERROR_CHECK(map.writeToStream(*stream));
+		return true;
+	});
   }
 
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_jabun_cutscene() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	ChunkEntry& raft = dzr.add_entity("ACTR");
-	ChunkEntry& chest = dzr.add_entity("TRES");
-	raft.data = "Ikada\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\xFF\xFF"s;
-	chest.data = "takara3\x00\xFF\x2F\xF3\x05\x00\x00\x00\x00\x43\x96\x00\x00\xC3\x48\x00\x00\x00\x00\x80\x00\x05\xFF\xFF\xFF"s;
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		FileTypes::DZXFile dzr;
+		dzr.loadFromBinary(generic.data);
+
+		ChunkEntry& raft = dzr.add_entity("ACTR");
+		ChunkEntry& chest = dzr.add_entity("TRES");
+		raft.data = "Ikada\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\xFF\xFF"s;
+		chest.data = "takara3\x00\xFF\x2F\xF3\x05\x00\x00\x00\x00\x43\x96\x00\x00\xC3\x48\x00\x00\x00\x00\x80\x00\x05\xFF\xFF\xFF"s;
+
+		dzr.writeToStream(generic.data);
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError add_jabun_obstacles_to_default_layer() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
+		std::vector<ChunkEntry*> layer_5_actors = dzr.entries_by_type_and_layer("ACTR", 5);
+		const std::string layer_5_door_data = layer_5_actors[0]->data;
+		const std::string layer_5_whirlpool_data = layer_5_actors[1]->data;
 
-	std::vector<ChunkEntry*> layer_5_actors = dzr.entries_by_type_and_layer("ACTR", 5);
-	const std::string layer_5_door_data = layer_5_actors[0]->data;
-	const std::string layer_5_whirlpool_data = layer_5_actors[1]->data;
+		dzr.remove_entity(layer_5_actors[0]);
+		dzr.remove_entity(layer_5_actors[1]);
 
-	dzr.remove_entity(layer_5_actors[0]);
-	dzr.remove_entity(layer_5_actors[1]);
+		ChunkEntry& newDoor = dzr.add_entity("ACTR");
+		ChunkEntry& newWhirlpool = dzr.add_entity("ACTR");
+		newDoor.data = layer_5_door_data;
+		newWhirlpool.data = layer_5_whirlpool_data;
 
-	ChunkEntry& newDoor = dzr.add_entity("ACTR");
-	ChunkEntry& newWhirlpool = dzr.add_entity("ACTR");
-	newDoor.data = layer_5_door_data;
-	newWhirlpool.data = layer_5_whirlpool_data;
-
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError remove_jabun_stone_door_event() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
+		
+		if(event_list.Events_By_Name.count("ajav_uzu") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		std::shared_ptr<Event> unlock_cave_event = event_list.Events_By_Name.at("ajav_uzu");
+		std::shared_ptr<Actor> director = unlock_cave_event->get_actor("DIRECTOR");
+		if (director == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
+		std::shared_ptr<Actor> camera = unlock_cave_event->get_actor("CAMERA");
+		if (camera == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
+		std::shared_ptr<Actor> ship = unlock_cave_event->get_actor("Ship");
+		if (ship == nullptr) {
+			LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+		}
 
-	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
-	if(event_list.Events_By_Name.count("ajav_uzu") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	std::shared_ptr<Event> unlock_cave_event = event_list.Events_By_Name.at("ajav_uzu");
-	std::shared_ptr<Actor> director = unlock_cave_event->get_actor("DIRECTOR");
-	if (director == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
-	std::shared_ptr<Actor> camera = unlock_cave_event->get_actor("CAMERA");
-	if (camera == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
-	std::shared_ptr<Actor> ship = unlock_cave_event->get_actor("Ship");
-	if (ship == nullptr) {
-		LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	}
+		director->actions.erase(director->actions.begin() + 1, director->actions.end());
+		camera->actions.erase(camera->actions.begin() + 2, camera->actions.end());
+		ship->actions.erase(ship->actions.begin() + 2, ship->actions.end());
+		unlock_cave_event->ending_flags = {
+			director->actions.back()->flag_id_to_set,
+			camera->actions.back()->flag_id_to_set,
+			-1
+		};
 
-	director->actions.erase(director->actions.begin() + 1, director->actions.end());
-	camera->actions.erase(camera->actions.begin() + 2, camera->actions.end());
-	ship->actions.erase(ship->actions.begin() + 2, ship->actions.end());
-	unlock_cave_event->ending_flags = {
-		director->actions.back()->flag_id_to_set,
-		camera->actions.back()->flag_id_to_set,
-		-1
-	};
+		return true;
+	});
 
-	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
 	return TweakError::NONE;
 }
 
 TweakError add_chest_in_place_master_sword() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
+		FileTypes::DZXFile dzr;
+		dzr.loadFromBinary(generic.data);
 
-	const std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER);
-	dzr.remove_entity(default_layer_actors[5]);
-	dzr.remove_entity(default_layer_actors[6]);
+		const std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER);
+		dzr.remove_entity(default_layer_actors[5]);
+		dzr.remove_entity(default_layer_actors[6]);
 
-	const std::vector<ChunkEntry*> layer_5_actors = dzr.entries_by_type_and_layer("ACTR", 5);
-	const std::array<ChunkEntry*, 4> layer_5_to_copy = { layer_5_actors[0], layer_5_actors[2], layer_5_actors[3], layer_5_actors[4] };
+		const std::vector<ChunkEntry*> layer_5_actors = dzr.entries_by_type_and_layer("ACTR", 5);
+		const std::array<ChunkEntry*, 4> layer_5_to_copy = { layer_5_actors[0], layer_5_actors[2], layer_5_actors[3], layer_5_actors[4] };
 
-	for (ChunkEntry* orig_actor : layer_5_to_copy) {
-		ChunkEntry& new_actor = dzr.add_entity("ACTR");
-		new_actor.data = orig_actor->data;
-		dzr.remove_entity(orig_actor);
-	}
-
-	ChunkEntry& chest = dzr.add_entity("TRES");
-	chest.data = "takara3\x00\xFF\x20\x50\x04\xc2\xf6\xfd\x71\xc5\x49\x40\x00\xc5\xf4\xe9\x0a\x00\x00\x00\x00\x6a\xff\xff\xff"s;
-
-	const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
-	for (ChunkEntry* spawn : spawns) {
-		if (spawn->data[29] == '\x0A') {
-			spawn->data.replace(0x14, 4, "\xC5\x84\x85\x9A", 4);
-			spawn->data.replace(0x10, 4, "\xC5\x38\x56\x3D", 4);
-			break;
+		for (ChunkEntry* orig_actor : layer_5_to_copy) {
+			ChunkEntry& new_actor = dzr.add_entity("ACTR");
+			new_actor.data = orig_actor->data;
+			dzr.remove_entity(orig_actor);
 		}
-	}
 
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		ChunkEntry& chest = dzr.add_entity("TRES");
+		chest.data = "takara3\x00\xFF\x20\x50\x04\xc2\xf6\xfd\x71\xc5\x49\x40\x00\xc5\xf4\xe9\x0a\x00\x00\x00\x00\x6a\xff\xff\xff"s;
+
+		const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+		for (ChunkEntry* spawn : spawns) {
+			if (spawn->data[29] == '\x0A') {
+				spawn->data.replace(0x14, 4, "\xC5\x84\x85\x9A", 4);
+				spawn->data.replace(0x10, 4, "\xC5\x38\x56\x3D", 4);
+				break;
+			}
+		}
+
+		dzr.writeToStream(generic.data);
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError update_spoil_sell_text() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-	FileTypes::MSBTFile msbt;
-	FILETYPE_ERROR_CHECK(msbt.loadFromBinary(*stream));
-	std::vector<std::u16string> lines = Utility::Str::split(msbt.messages_by_label["03957"].text.message, u'\n');
-	if (lines.size() != 5) LOG_ERR_AND_RETURN(TweakError::UNEXPECTED_VALUE); //incorrect number of lines
-	lines[2] = u"And no Blue Chu Jelly, either!";
-	msbt.messages_by_label["03957"].text.message = Utility::Str::merge(lines, u'\n');
-	FILETYPE_ERROR_CHECK(msbt.writeToStream(*stream));
+		std::vector<std::u16string> lines = Utility::Str::split(msbt.messages_by_label["03957"].text.message, u'\n');
+		if (lines.size() != 5) LOG_ERR_AND_RETURN_BOOL(TweakError::UNEXPECTED_VALUE); //incorrect number of lines
+		lines[2] = u"And no Blue Chu Jelly, either!";
+		msbt.messages_by_label["03957"].text.message = Utility::Str::merge(lines, u'\n');
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
 
 TweakError fix_totg_warp_spawn() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
+		const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+		ChunkEntry* spawn = spawns[9];
+		spawn->data = "\x4C\x69\x6E\x6B\x00\x00\x00\x00\x32\xFF\x20\x1A\x47\xC3\x4F\x5F\x00\x00\x00\x00\xBF\xBE\xBF\x90\x00\x00\x00\x00\x01\x01\xFF\xFF"s;
 
-	const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
-	ChunkEntry* spawn = spawns[9];
-	spawn->data = "\x4C\x69\x6E\x6B\x00\x00\x00\x00\x32\xFF\x20\x1A\x47\xC3\x4F\x5F\x00\x00\x00\x00\xBF\xBE\xBF\x90\x00\x00\x00\x00\x01\x01\xFF\xFF"s;
-
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1882,45 +2184,53 @@ TweakError fix_totg_warp_spawn() {
 TweakError remove_phantom_ganon_req_for_reefs() {
 	std::string path;
 	for (const uint8_t room_index : {24, 46, 22, 8, 37, 25}) {
-		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr";
-		std::stringstream* stream = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(stream);
+		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
+		RandoSession::CacheEntry& entry = g_session.openGameFile(path);
+		
+		entry.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(room_dzr, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile room_dzr;
-		FILETYPE_ERROR_CHECK(room_dzr.loadFromBinary(*stream));
-		const std::vector<ChunkEntry*> actors = room_dzr.entries_by_type("ACTR");
-		for (ChunkEntry* actor : actors) {
-			if (std::strncmp(&actor->data[0], "Ocanon\x00\x00", 8) == 0) {
-				if (std::strncmp(&actor->data[0xA], "\x2A", 1) == 0) {
-					actor->data[0xA] = '\xFF';
+			const std::vector<ChunkEntry*> actors = room_dzr.entries_by_type("ACTR");
+			for (ChunkEntry* actor : actors) {
+				if (std::strncmp(&actor->data[0], "Ocanon\x00\x00", 8) == 0) {
+					if (std::strncmp(&actor->data[0xA], "\x2A", 1) == 0) {
+						actor->data[0xA] = '\xFF';
+					}
+				}
+				else if (std::strncmp(&actor->data[0], "Oship\x00\x00\x00", 8) == 0) {
+					if (std::strncmp(&actor->data[0x19], "\x2A", 1) == 0) {
+						actor->data[0x19] = '\xFF';
+					}
 				}
 			}
-			else if (std::strncmp(&actor->data[0], "Oship\x00\x00\x00", 8) == 0) {
-				if (std::strncmp(&actor->data[0x19], "\x2A", 1) == 0) {
-					actor->data[0x19] = '\xFF';
-				}
-			}
-		}
-		FILETYPE_ERROR_CHECK(room_dzr.writeToStream(*stream));
+
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
 }
 
 TweakError fix_ff_door() {
-	const int32_t face_index = 0x1493;
-	const uint16_t new_prop_index = 0x0011;
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzb");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		static constexpr int32_t face_index = 0x1493;
+		static constexpr uint16_t new_prop_index = 0x0011;
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzb");
-	EXTRACT_ERR_CHECK(stream);
+		CAST_ENTRY_TO_FILETYPE(file, GenericFile, data)
+		std::stringstream& stream = file.data;
 
-	stream->seekg(0xC, std::ios::beg);
-	uint32_t face_list_offset;
-	stream->read(reinterpret_cast<char*>(&face_list_offset), 4);
-	Utility::Endian::toPlatform_inplace(eType::Big, face_list_offset);
+		stream.seekg(0xC, std::ios::beg);
+		
+		uint32_t face_list_offset;
+		stream.read(reinterpret_cast<char*>(&face_list_offset), 4);
+		Utility::Endian::toPlatform_inplace(eType::Big, face_list_offset);
 
-	stream->seekp((face_list_offset + face_index * 0xA) + 6, std::ios::beg);
-	stream->write(reinterpret_cast<const char*>(&new_prop_index), 2);
+		stream.seekp((face_list_offset + face_index * 0xA) + 6, std::ios::beg);
+		stream.write(reinterpret_cast<const char*>(&new_prop_index), 2);
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -1931,6 +2241,17 @@ TweakError fix_ff_door() {
 
 //not needed until enemy rando is a thing
 /*TweakError add_failsafe_id_0_spawns() {
+	struct spawn_data {
+		std::string stage_name;
+		uint8_t room_num = 0;
+	};
+	
+	struct spawn_data_to_copy {
+		std::string stage_name;
+		uint8_t room_num = 0;
+		uint8_t spawn_id_to_copy = 0;
+	};
+
 	const std::array<spawn_data_to_copy, 32> spawns_to_copy{
 	{
 		{"Asoko", 0, 255},
@@ -2050,6 +2371,12 @@ TweakError fix_ff_door() {
 }*/
 
 TweakError remove_minor_pan_cs() {
+	struct pan_cs_info {
+		std::string stage_name;
+		std::string szs_suffix;
+		uint8_t evnt_index;
+	};
+
 	const std::array<pan_cs_info, 7> panning_cs{
 		{
 			{"M_NewD2", "Room2", 4},
@@ -2065,40 +2392,40 @@ TweakError remove_minor_pan_cs() {
 	std::string path;
 	for (const pan_cs_info& cs_info : panning_cs) {
 		if (cs_info.stage_name == "sea") {
-			path = "content/Common/Pack/szs_permanent2.pack@SARC@" + cs_info.stage_name + "_" + cs_info.szs_suffix + ".szs@YAZ0@SARC" + "@" + cs_info.szs_suffix + ".bfres@BFRES@room.dzr"; //hardcoding permanent2 because that's all this patch needs and coding more would be annoying
+			path = "content/Common/Pack/szs_permanent2.pack@SARC@" + cs_info.stage_name + "_" + cs_info.szs_suffix + ".szs@YAZ0@SARC" + "@" + cs_info.szs_suffix + ".bfres@BFRES@room.dzr@DZX"; //hardcoding permanent2 because that's all this patch needs and coding more would be annoying
 		}
 		else {
 			path = "content/Common/Stage/" + cs_info.stage_name + "_" + cs_info.szs_suffix + ".szs@YAZ0@SARC";
 			if (cs_info.szs_suffix == "Stage") {
-				path = path + "@Stage.bfres@BFRES@stage.dzs";
+				path = path + "@Stage.bfres@BFRES@stage.dzs@DZX";
 			}
 			else {
-				path = path + "@" + cs_info.szs_suffix + ".bfres@BFRES@room.dzr";
+				path = path + "@" + cs_info.szs_suffix + ".bfres@BFRES@room.dzr@DZX";
 			}
 		}
 
-		std::stringstream* stream = g_session.openGameFile(path);
-		EXTRACT_ERR_CHECK(stream);
+		RandoSession::CacheEntry& entry = g_session.openGameFile(path);
+		entry.addAction([cs_info](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(dzx, FileTypes::DZXFile, data)
 
-		FileTypes::DZXFile dzx;
-		FILETYPE_ERROR_CHECK(dzx.loadFromBinary(*stream));
-		std::vector<ChunkEntry*> scobs = dzx.entries_by_type("SCOB");
-		for (ChunkEntry* scob : scobs) {
-			if (std::strncmp(&scob->data[0], "TagEv\x00\x00\x00", 8) == 0) {
-				if (scob->data[0x8] == cs_info.evnt_index) {
-					dzx.remove_entity(scob);
+			std::vector<ChunkEntry*> scobs = dzx.entries_by_type("SCOB");
+			for (ChunkEntry* scob : scobs) {
+				if (std::strncmp(&scob->data[0], "TagEv\x00\x00\x00", 8) == 0) {
+					if (scob->data[0x8] == cs_info.evnt_index) {
+						dzx.remove_entity(scob);
+					}
 				}
 			}
-		}
 
-		std::vector<ChunkEntry*> spawns = dzx.entries_by_type("PLYR");
-		for (ChunkEntry* spawn : spawns) {
-			if (spawn->data[8] == cs_info.evnt_index) {
-				spawn->data[8] = '\xFF';
+			std::vector<ChunkEntry*> spawns = dzx.entries_by_type("PLYR");
+			for (ChunkEntry* spawn : spawns) {
+				if (spawn->data[8] == cs_info.evnt_index) {
+					spawn->data[8] = '\xFF';
+				}
 			}
-		}
 
-		FILETYPE_ERROR_CHECK(dzx.writeToStream(*stream));
+			return true;
+		});
 	}
 
 	return TweakError::NONE;
@@ -2107,49 +2434,57 @@ TweakError remove_minor_pan_cs() {
 //custom actors?
 
 TweakError fix_stone_head_bugs() {
-	uint32_t status_bits = elfUtil::read_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101ca100));
-	Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
-	status_bits &= ~0x00000080;
-	Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x101ca100), status_bits));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
+		uint32_t status_bits = elfUtil::read_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100));
+		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
+		status_bits &= ~0x00000080;
+		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits));
+
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError show_tingle_statues_on_quest_screen() {
-  for (std::string language : Text::supported_languages) {
-    std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim");
-    EXTRACT_ERR_CHECK(stream);
+	for (std::string language : Text::supported_languages) {
+		RandoSession::CacheEntry& icon = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim@BFLIM");
+		icon.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(tingle, FileTypes::FLIMFile, data)
+			FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
-    FileTypes::FLIMFile tingle;
-    FILETYPE_ERROR_CHECK(tingle.loadFromBinary(*stream));
-    FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
-    FILETYPE_ERROR_CHECK(tingle.writeToStream(*stream));
+			return true;
+		});
 
-    stream = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim");
-    EXTRACT_ERR_CHECK(stream);
+		RandoSession::CacheEntry& shadow = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim@BFLIM");
+		shadow.addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(shadow, FileTypes::FLIMFile, data)
+			FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 
-    FileTypes::FLIMFile shadow;
-    FILETYPE_ERROR_CHECK(shadow.loadFromBinary(*stream));
-    FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
-    FILETYPE_ERROR_CHECK(shadow.writeToStream(*stream));
-  }
+			return true;
+		});
+	}
+
 	return TweakError::NONE;
 }
 
 TweakError add_shortcut_warps_into_dungeons() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
-	ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
-	sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
+		ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
+		sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
 
-	ChunkEntry& warp = dzr.add_entity("SCOB");
-	warp.data = "Ysdls00\x00\x10\xFF\x06\x7F\x48\x54\x16\x86\x42\x0B\xFF\xF8\x48\x3E\xD3\xED\x00\x00\x00\x00\x00\x00\xFF\xFF\x0A\x0A\x0A\xFF"s;
+		ChunkEntry& warp = dzr.add_entity("SCOB");
+		warp.data = "Ysdls00\x00\x10\xFF\x06\x7F\x48\x54\x16\x86\x42\x0B\xFF\xF8\x48\x3E\xD3\xED\x00\x00\x00\x00\x00\x00\xFF\xFF\x0A\x0A\x0A\xFF"s;
 
-	FILETYPE_ERROR_CHECK(dzr.writeToStream(*stream));
+		return true;
+	});
+
 	return TweakError::NONE;
 }
 
@@ -2157,26 +2492,31 @@ TweakError update_entrance_events() {
 	//Some entrances have event triggers with hardcoded stages rather than a load zone with a SCLS entry
 	//Update those edge cases based on the SCLS entries in their respective dzr
 
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& dzr = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr@DZX");
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
+	
+	dzr.addAction([&entry](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-	FileTypes::DZXFile dzr;
-	FILETYPE_ERROR_CHECK(dzr.loadFromBinary(*stream));
+		const ChunkEntry* waterfall = dzr.entries_by_type("SCLS")[7];
 
-	stream = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(stream);
+		entry.addAction([waterfall = *waterfall](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-	FileTypes::EventList event_list;
-	FILETYPE_ERROR_CHECK(event_list.loadFromBinary(*stream));
+			if(event_list.Events_By_Name.count("fall") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+			std::shared_ptr<Action> loadRoom = event_list.Events_By_Name.at("fall")->get_actor("DIRECTOR")->actions[1];
+			if(loadRoom == nullptr) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+			loadRoom->properties[0]->value = waterfall.data.substr(0, 8).c_str();
+			std::get<std::string>(loadRoom->properties[0]->value) += '\0';
+			std::get<std::vector<int32_t>>(loadRoom->properties[1]->value)[0] = waterfall.data[9];
 
-	const ChunkEntry* waterfall = dzr.entries_by_type("SCLS")[7];
+			return true;
+		});
 
-	if(event_list.Events_By_Name.count("fall") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	std::shared_ptr<Action> loadRoom = event_list.Events_By_Name.at("fall")->get_actor("DIRECTOR")->actions[1];
-	if(loadRoom == nullptr) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	loadRoom->properties[0]->value = waterfall->data.substr(0, 8).c_str();
-	std::get<std::string>(loadRoom->properties[0]->value) += '\0';
-	std::get<std::vector<int32_t>>(loadRoom->properties[1]->value)[0] = waterfall->data[9];
+		return true;
+	});
+
+	entry.delayUntil("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
 
 	//This entrance isn't randomized yet, code can be used to patch it if it is ever shuffled
 	//ChunkEntry* gallery = dzr.entries_by_type("SCLS")[8];
@@ -2185,41 +2525,18 @@ TweakError update_entrance_events() {
 	//std::get<std::string>(next2->properties[0]->value) += '\0';
 	//std::get<std::vector<int32_t>>(next2->properties[1]->value)[0] = gallery->data[9];
 
-	FILETYPE_ERROR_CHECK(event_list.writeToStream(*stream));
-
-	//Also change the Forbidden Woods warp to put you on the sea instead of inside Forest Haven
-	//This avoids a case where you can only access the lower entrances of FH, but they both dead end, and you need to savewarp to escape
-	stream = g_session.openGameFile("content/Common/Stage/kinBOSS_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat");
-	EXTRACT_ERR_CHECK(stream);
-
-	FileTypes::EventList event_list_2;
-	FILETYPE_ERROR_CHECK(event_list_2.loadFromBinary(*stream));
-
-	if(event_list_2.Events_By_Name.count("WARP_WIND") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	std::shared_ptr<Action> exit = event_list_2.Events_By_Name.at("WARP_WIND")->get_actor("DIRECTOR")->actions[2];
-	std::get<std::vector<int32_t>>(exit->properties[0]->value)[0] = 0;
-	exit->properties[1]->value = "sea\0"s;
-	std::get<std::vector<int32_t>>(exit->properties[2]->value)[0] = 41;
-
-	if(event_list_2.Events_By_Name.count("WARP_WIND_AFTER") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_EVENT);
-	std::shared_ptr<Action> exit2 = event_list_2.Events_By_Name.at("WARP_WIND_AFTER")->get_actor("DIRECTOR")->actions[2];
-	std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = 0;
-	exit2->properties[1]->value = "sea\0"s;
-	std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = 41;
-
-	FILETYPE_ERROR_CHECK(event_list_2.writeToStream(*stream));
-
 	return TweakError::NONE;
 }
 
 TweakError replace_ctmc_chest_texture() {
-	std::stringstream* stream = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Dalways.szs@YAZ0@SARC@Dalways.bfres");
-	EXTRACT_ERR_CHECK(stream);
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Dalways.szs@YAZ0@SARC@Dalways.bfres@BFRES");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
 
-	FileTypes::resFile bfres;
-	FILETYPE_ERROR_CHECK(bfres.loadFromBinary(*stream));
-	FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_TILED_2D_THIN1, 0, true, true));
-	FILETYPE_ERROR_CHECK(bfres.writeToStream(*stream));
+		FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_TILED_2D_THIN1, 0, true, true));
+
+		return true;
+	});
 
 	return TweakError::NONE;
 }
@@ -2228,40 +2545,48 @@ TweakError replace_ctmc_chest_texture() {
 
 TweakError updateCodeSize() {
 	//Increase the max codesize in cos.xml to load all our code
-	tinyxml2::XMLDocument cos;
-	std::stringstream* cosStream = g_session.openGameFile("code/cos.xml");
-	EXTRACT_ERR_CHECK(cosStream);
+	RandoSession::CacheEntry& cosEntry = g_session.openGameFile("code/cos.xml");
+	cosEntry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
+		std::stringstream& cosStream = generic.data;
 
-	cos.LoadFile(*cosStream);
-	tinyxml2::XMLElement* root = cos.RootElement();
-	root->FirstChildElement("max_codesize")->SetText("02080000");
-	tinyxml2::XMLPrinter printer;
-	cos.Print(&printer);
-	cosStream->str(std::string());
-	*cosStream << printer.CStr();
+		tinyxml2::XMLDocument cos;
+		cos.LoadFile(cosStream);
+		tinyxml2::XMLElement* root = cos.RootElement();
+		root->FirstChildElement("max_codesize")->SetText("02080000");
+		tinyxml2::XMLPrinter printer;
+		cos.Print(&printer);
+		cosStream << printer.CStr();
+
+		return true;
+	});
 
 	//Also update the RPL info section of the RPX
 	//Change the textSize and loadSize to be large enough for the new code/relocations
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x00000004, 32), 0x00908B80));
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0000001C, 32), 0x00379000));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00000004, 32), 0x00908B80));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0000001C, 32), 0x00379000));
 
+		return true;
+	});
+	
 	return TweakError::NONE;
 }
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
-  gRPX = FileTypes::ELF();
 	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json"));
-
-	std::stringstream* rpxStream = g_session.openGameFile("code/cking.rpx@RPX");
-	EXTRACT_ERR_CHECK(rpxStream);
-	FILETYPE_ERROR_CHECK(gRPX.loadFromBinary(*rpxStream));
 
 	const std::string seedHash = LogInfo::getSeedHash();
 	const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
 
-	TWEAK_ERR_CHECK(updateCodeSize());
+    if (const TweakError error = updateCodeSize(); error != TweakError::NONE) {
+      ErrorLog::getInstance().log(std::string("Encountered error in tweak ") + "updateCodeSize()");
+      return error;
+    }
 
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.json"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.json"));
 	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.json"));
 	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.json"));
 	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.json"));
@@ -2275,24 +2600,35 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.json"));
 	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.json"));
 
-	Elf32_Rela blockMoveReloc;
-	blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
-	blockMoveReloc.r_info = 0x00015b0a;
-	blockMoveReloc.r_addend = 0;
-	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		Elf32_Rela blockMoveReloc;
+		blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
+		blockMoveReloc.r_info = 0x00015b0a;
+		blockMoveReloc.r_addend = 0;
+		RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
 
-	blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x1C;
-	blockMoveReloc.r_info = 0x00015b0a;
-	blockMoveReloc.r_addend = 0;
-	RPX_ERROR_CHECK(elfUtil::addRelocation(gRPX, 7, blockMoveReloc));
+		blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x1C;
+		blockMoveReloc.r_info = 0x00015b0a;
+		blockMoveReloc.r_addend = 0;
+		RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
 
-	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x001c0ae8})); //would mess with save init
-	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x00160224})); //would mess with salvage point patch
-	RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x00199854})); //would overwrite getLayerNo patch
+		RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); //would mess with save init
+		RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); //would mess with salvage point patch
+		RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00199854})); //would overwrite getLayerNo patch
+
+		return true;
+	});
 
 	//Update hurricane spin item func, not done through asm because of relocation things
 	if(custom_symbols.count("hurricane_spin_item_func") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-	RPX_ERROR_CHECK(elfUtil::write_u32(gRPX, elfUtil::AddressToOffset(gRPX, 0x0001DA54 + (0xAA * 0xC) + 8, 9), custom_symbols.at("hurricane_spin_item_func") - 0x02000000));
+	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+		
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0001DA54 + (0xAA * 0xC) + 8, 9), custom_symbols.at("hurricane_spin_item_func") - 0x02000000));
+		return true;
+	});
 
 	if (settings.instant_text_boxes) {
 		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.json"));
@@ -2308,7 +2644,12 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	if (settings.sword_mode == SwordMode::NoSword) {
 		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.json"));
 		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/swordless_reloc.json"));
-		RPX_ERROR_CHECK(elfUtil::removeRelocation(gRPX, {7, 0x001C1ED4})); //would overwrite branch to custom code
+		g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
+			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+			RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001C1ED4})); //would overwrite branch to custom code
+			return true;
+		});
 	}
 	if (settings.remove_music) {
 		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_music_diff.json"));
@@ -2361,18 +2702,10 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	}
 	TWEAK_ERR_CHECK(set_pig_color(settings.pig_color));
 
-	RPX_ERROR_CHECK(gRPX.writeToStream(*rpxStream));
-	gRPX = FileTypes::ELF();
-
 	return TweakError::NONE;
 }
 
 TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& randomizeItems) {
-	gRPX = FileTypes::ELF();
-	std::stringstream* rpxStream = g_session.openGameFile("code/cking.rpx@RPX");
-	EXTRACT_ERR_CHECK(rpxStream);
-	FILETYPE_ERROR_CHECK(gRPX.loadFromBinary(*rpxStream)); //reload to avoid conflicts written between pre- and post- randomization tweaks
-
 	const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
 
 	TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
@@ -2397,14 +2730,11 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	TWEAK_ERR_CHECK(remove_minor_pan_cs());
 	TWEAK_ERR_CHECK(show_dungeon_markers_on_chart(world));
 	TWEAK_ERR_CHECK(update_entrance_events());
-  TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere(world));
+  	TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere(world));
 
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());
 	}
-
-	RPX_ERROR_CHECK(gRPX.writeToStream(*rpxStream));
-	gRPX = FileTypes::ELF();
 
 	return TweakError::NONE;
 }

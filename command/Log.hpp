@@ -79,6 +79,18 @@ public:
     } \
 }
 
+#define LOG_ERR_AND_RETURN_BOOL(error) { \
+    ErrorLog::getInstance().log(std::string("Encountered " #error " on line " TOSTRING(__LINE__) " of ") + __FILENAME__); \
+    return false; \
+}
+
+#define LOG_AND_RETURN_BOOL_IF_ERR(func) { \
+    if(const auto error = func; error != decltype(error)::NONE) {\
+        ErrorLog::getInstance().log(std::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__); \
+        return false;  \
+    } \
+}
+
 class DebugLog {
 private:
     std::ofstream output;

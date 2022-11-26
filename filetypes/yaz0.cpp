@@ -339,4 +339,36 @@ namespace FileTypes {
 
         return YAZ0Error::NONE;
     }
+
+    YAZ0Error yaz0Encode(std::stringstream& in, std::ostream& out, uint32_t compressionLevel)
+    {
+        const std::string& inData = in.str();
+        char dummyData[8] = {0};
+
+        // write magic
+        out.write("Yaz0", 4);
+        const uint32_t dataSize = inData.size();
+        const uint32_t outDataSize = Utility::Endian::toPlatform(Utility::Endian::Type::Big, dataSize);
+        out.write(reinterpret_cast<const char*>(&outDataSize), 4);
+        out.write(dummyData, 8);
+
+        if (yaz0DataEncode(reinterpret_cast<const uint8_t*>(inData.data()), dataSize, out, compressionLevel) == 0) LOG_ERR_AND_RETURN(YAZ0Error::DATA_SIZE_0);
+        return YAZ0Error::NONE;
+    }
+
+    YAZ0Error yaz0Decode(std::stringstream& in, std::ostream& out)
+    {
+        Yaz0Header header;
+
+        LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
+
+        std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+        if (const YAZ0Error error = yaz0DataDecode(&in.str()[0x10], &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
+            ErrorLog ::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+            return error;
+        }
+        out.write(&outData[0], header.uncompressedSize);
+
+        return YAZ0Error::NONE;
+    }
 }
