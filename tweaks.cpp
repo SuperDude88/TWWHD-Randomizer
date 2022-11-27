@@ -820,8 +820,7 @@ TweakError update_name_and_icon() {
 		
 		tinyxml2::XMLPrinter printer;
 		meta.Print(&printer);
-		metaStream.str(std::string());
-		metaStream << printer.CStr();
+		metaStream.str(printer.CStr());
 
 		return true;
 	});
@@ -837,8 +836,7 @@ TweakError update_name_and_icon() {
 		
 		tinyxml2::XMLPrinter printer;
 		app.Print(&printer);
-		appStream.str(std::string());
-		appStream << printer.CStr();
+		appStream.str(printer.CStr());
 
 		return true;
 	});
@@ -2556,7 +2554,7 @@ TweakError updateCodeSize() {
 		root->FirstChildElement("max_codesize")->SetText("02080000");
 		tinyxml2::XMLPrinter printer;
 		cos.Print(&printer);
-		cosStream << printer.CStr();
+		cosStream.str(printer.CStr());
 
 		return true;
 	});

@@ -200,7 +200,7 @@ void FSTEntries::Update() {
 void FSTEntries::UpdateDirRefs() {
     if (entries.size() == 0) return;
 
-    FSTEntry::DirEntry root = entries.front().entry.emplace<FSTEntry::DirEntry>();
+    FSTEntry::DirEntry& root = entries.front().entry.emplace<FSTEntry::DirEntry>();
     root.parentOffset = 0;
     root.nextOffset = curEntryOffset;
     FSTEntry* lastdir = entries.front().UpdateDirRefs();

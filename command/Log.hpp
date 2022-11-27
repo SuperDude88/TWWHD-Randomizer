@@ -43,7 +43,7 @@ public:
     BasicLog& operator=(const BasicLog&) = delete;
 
     static BasicLog& getInstance();
-    void log(const std::string& msg = "");
+    void log(const std::string& msg, const bool& timestamp = true);
     void close();
 };
 
@@ -61,7 +61,7 @@ public:
     ErrorLog& operator=(const ErrorLog&) = delete;
 
     static ErrorLog& getInstance();
-    void log(const std::string& msg = "");
+    void log(const std::string& msg, const bool& timestamp = true);
     std::string getLastErrors() const;
     void clearLastErrors();
     void close();
@@ -102,7 +102,7 @@ public:
     DebugLog& operator=(const DebugLog&) = delete;
 
     static DebugLog& getInstance();
-    void log(const std::string& msg = "");
+    void log(const std::string& msg, const bool& timestamp = true);
     void close();
 };
 

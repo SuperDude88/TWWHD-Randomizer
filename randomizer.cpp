@@ -780,8 +780,6 @@ int mainRandomize() {
 			ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
 		#endif
 
-		Utility::platformInit();
-
 		ErrorLog::getInstance().clearLastErrors();
 
 		Config load;
@@ -821,7 +819,5 @@ int mainRandomize() {
 		retVal = rando.randomize();
 	} //end timer scope
 
-	std::this_thread::sleep_for(3s);
-	Utility::platformShutdown();
 	return retVal;
 }
