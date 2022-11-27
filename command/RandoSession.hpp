@@ -48,7 +48,9 @@ public:
             storedFormat(format_)
         {}
 
-        void addAction(std::function<int(RandoSession*, FileType*)> action);
+        using Action_t = std::function<int(RandoSession*, FileType*)>;
+
+        void addAction(Action_t action);
         void delayUntil(const fspath& req); //wait for prereq that adds mods, prevent repack-mod-repack
 
     private:
@@ -59,7 +61,7 @@ public:
         const fspath element;
         const Format storedFormat;
         std::unique_ptr<FileType> data;
-        std::vector<std::function<int(RandoSession*, FileType*)>> actions; //store actions as lambdas to execute in order
+        std::vector<Action_t> actions; //store actions as lambdas to execute in order
     
         friend class RandoSession;
     };
@@ -73,15 +75,14 @@ public:
     [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath);
     [[nodiscard]] bool restoreGameFile(const fspath& relPath);
     [[nodiscard]] bool modFiles();
-    [[nodiscard]] bool modFiles_singleThread();
 
     const fspath& getBaseDir() { return baseDir; }
     const fspath& getOutputDir() { return outputDir; }
 private:
     CacheEntry& getEntry(const std::vector<std::string>& fileSpec);
-    bool extractFile(CacheEntry& current);
-    bool repackFile(CacheEntry& current);
-    bool handleChildren(CacheEntry& current);
+    bool extractFile(std::shared_ptr<CacheEntry> current);
+    bool repackFile(std::shared_ptr<CacheEntry> current);
+    bool handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current);
     void clearCache();
 
     bool initialized = false;

@@ -364,7 +364,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceEmbeddedFile(const std::string& fileName, const std::string& newFile) {
+    FRESError resFile::replaceEmbeddedFile(const std::string& fileName, const std::string& newFilename) {
         GroupHeader group;
         group.groupLength = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C]);
         group.entryCount = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C] + 4);
@@ -415,7 +415,7 @@ namespace FileTypes {
             nextSearchVal = group.entries[entryIndex].searchValue;
         }
 
-        std::ifstream inFile(newFile, std::ios::binary);
+        std::ifstream inFile(newFilename, std::ios::binary);
         if (!inFile.is_open()) {
             LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
         }
