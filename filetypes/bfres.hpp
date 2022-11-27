@@ -106,7 +106,7 @@ namespace FileTypes
         //static FRESFile createNew(); //Needs more complete implementation to be usable
         FRESError loadFromBinary(std::istream& bfres); //Only does embedded files for now
         FRESError loadFromFile(const std::string& filePath);
-        FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFile);
+        FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFilename);
         FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);
         FRESError replaceFromDir(const std::string& dirPath);
         FRESError extractToDir(const std::string& dirPath) const; //Only does embedded files for now

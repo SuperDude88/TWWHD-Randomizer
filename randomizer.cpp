@@ -720,7 +720,7 @@ public:
 		}
 
 		Utility::platformLog("Preparing to edit files...\n");
-		if(!g_session.modFiles_singleThread()) {
+		if(!g_session.modFiles()) {
 			ErrorLog::getInstance().log("Failed to edit file cache!");
 			return 1;
 		}
