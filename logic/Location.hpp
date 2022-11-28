@@ -71,6 +71,7 @@ struct Location
     bool isRaceModeLocation;
     bool plandomized;
     bool hasBeenHinted;
+    bool hasKnownVanillaItem;
     Item originalItem;
     Item currentItem;
     int sortPriority = -1;
@@ -98,6 +99,7 @@ struct Location
         isRaceModeLocation(false),
         plandomized(false),
         hasBeenHinted(false),
+        hasKnownVanillaItem(false),
         originalItem(GameItem::INVALID, nullptr),
         currentItem(GameItem::INVALID, nullptr),
         sortPriority(-1),

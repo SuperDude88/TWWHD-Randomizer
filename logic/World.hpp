@@ -14,7 +14,11 @@
 #include <logic/Dungeon.hpp>
 #include <logic/Entrance.hpp>
 #include <logic/Plandomizer.hpp>
+#include <logic/PoolFunctions.hpp>
 #include <utility/text.hpp>
+
+#define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
+#define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getLocations(true));}
 
 static std::stringstream lastError;
 
@@ -105,6 +109,7 @@ public:
     ItemPool& getItemPoolReference();
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
+    LocationPool getProgressionLocations();
     AreaEntry& getArea(const std::string& area);
 
     void resolveRandomSettings();

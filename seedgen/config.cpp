@@ -100,6 +100,9 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.progression_obscure = false;
 
     conf.settings.keylunacy = false;
+    conf.settings.dungeon_small_keys = PlacementOption::Vanilla;
+    conf.settings.dungeon_big_keys = PlacementOption::Vanilla;
+    conf.settings.dungeon_maps_compasses = PlacementOption::Vanilla;
     conf.settings.randomize_charts = false;
     conf.settings.randomize_starting_island = false;
     conf.settings.randomize_dungeon_entrances = false;
@@ -239,7 +242,6 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, reveal_full_sea_chart)
     SET_INT_FIELD(root, out, num_starting_triforce_shards)
     SET_BOOL_FIELD(root, out, add_shortcut_warps_between_dungeons)
-    //SET_CONFIG_FIELD(root, out, settings.sword_mode)
     SET_BOOL_FIELD(root, out, skip_rematch_bosses)
     SET_BOOL_FIELD(root, out, invert_sea_compass_x_axis)
     SET_BOOL_FIELD(root, out, race_mode)
@@ -248,9 +250,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, chest_type_matches_contents)
 
     SET_BOOL_FIELD(root, out, player_in_casual_clothes)
-    //SET_CONFIG_FIELD(root, out, settings.pig_color)
 
-    //SET_CONFIG_FIELD(root, out, settings.starting_gear)
     SET_INT_FIELD(root, out, starting_pohs)
     SET_INT_FIELD(root, out, starting_hcs)
     SET_BOOL_FIELD(root, out, remove_music)
@@ -279,6 +279,35 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       }
     }
 
+    if(root["dungeon_small_keys"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].As<std::string>());
+      if (out.settings.dungeon_small_keys == PlacementOption::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.dungeon_small_keys = PlacementOption::Vanilla;
+      }
+    }
+
+    if(root["dungeon_big_keys"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].As<std::string>());
+      if (out.settings.dungeon_big_keys == PlacementOption::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.dungeon_big_keys = PlacementOption::Vanilla;
+      }
+    }
+
+    if(root["dungeon_maps_compasses"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].As<std::string>());
+      if (out.settings.dungeon_maps_compasses == PlacementOption::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.dungeon_maps_compasses = PlacementOption::Vanilla;
+      }
+    }
 
     if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) {
@@ -403,7 +432,6 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, reveal_full_sea_chart)
     WRITE_NUM_FIELD(root, config, num_starting_triforce_shards)
     WRITE_SETTING_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
-    //WRITE_SETTING_BOOL_FIELD(root, config, sword_mode)
     WRITE_SETTING_BOOL_FIELD(root, config, skip_rematch_bosses)
     WRITE_SETTING_BOOL_FIELD(root, config, invert_sea_compass_x_axis)
     WRITE_SETTING_BOOL_FIELD(root, config, race_mode)
@@ -412,9 +440,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, chest_type_matches_contents)
 
     WRITE_SETTING_BOOL_FIELD(root, config, player_in_casual_clothes)
-    //WRITE_CONFIG_FIELD(root, config, pig_color)
 
-    //WRITE_CONFIG_FIELD(root, config, starting_gear)
     WRITE_NUM_FIELD(root, config, starting_pohs)
     WRITE_NUM_FIELD(root, config, starting_hcs)
     WRITE_SETTING_BOOL_FIELD(root, config, remove_music)
@@ -426,6 +452,9 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     root["sword_mode"] = SwordModeToName(config.settings.sword_mode);
     root["pig_color"] = PigColorToName(config.settings.pig_color);
+    root["dungeon_small_keys"] = PlacementOptionToName(config.settings.dungeon_small_keys);
+    root["dungeon_big_keys"] = PlacementOptionToName(config.settings.dungeon_big_keys);
+    root["dungeon_maps_compasses"] = PlacementOptionToName(config.settings.dungeon_maps_compasses);
 
     root["starting_gear"] = {};
     for (const auto& item : config.settings.starting_gear) {

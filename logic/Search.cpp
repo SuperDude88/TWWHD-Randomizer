@@ -150,6 +150,13 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
 // will be searched.
 static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch = -1)
 {
+    // If for some reason we're generating a playthrough again, clear the playthrough spheres
+    if (searchMode == SearchMode::GeneratePlaythrough)
+    {
+        worlds[0].playthroughSpheres.clear();
+        worlds[0].entranceSpheres.clear();
+    }
+
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)
     {
@@ -178,17 +185,17 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             {
                 exitsToTry.push_back(&exit);
             }
+        }
 
-            // Reset search variables for all areas and exits
-            for (auto& [name, areaEntry] : world.areaEntries)
-            {
-                areaEntry.isAccessible = false;
-            }
+        // Reset search variables for all areas and exits
+        for (auto& [name, areaEntry] : world.areaEntries)
+        {
+            areaEntry.isAccessible = false;
+        }
 
-            for (auto& [name, location] : world.locationEntries)
-            {
-                location.hasBeenFound = false;
-            }
+        for (auto& [name, location] : world.locationEntries)
+        {
+            location.hasBeenFound = false;
         }
     }
 
@@ -300,7 +307,8 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
             if (location->currentItem.getGameItemId() != GameItem::INVALID && !location->currentItem.isJunkItem())
             {
                 ownedItems.emplace(location->currentItem.getGameItemId(), location->currentItem.getWorld());
-                if (searchMode == SearchMode::GeneratePlaythrough && location->progression)
+                // Only add progression locations to the playthrough if they don't have known vanilla items
+                if (searchMode == SearchMode::GeneratePlaythrough && location->progression && (!location->hasKnownVanillaItem || location->currentItem.getGameItemId() == GameItem::GameBeatable))
                 {
                     worlds[0].playthroughSpheres.back().push_back(location);
                 }
@@ -458,14 +466,12 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
 {
     auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
     // Check if every location in locationsToCheck is in accessibleLocations
-    return std::all_of(locationsToCheck.begin(), locationsToCheck.end(), [accessibleLocations](const Location* loc){
+    return std::all_of(locationsToCheck.begin(), locationsToCheck.end(), [&](const Location* loc){
         bool inPool = elementInPool(loc, accessibleLocations);
-        #ifdef ENABLE_DEBUG
-            if (!inPool)
-            {
-                LOG_TO_DEBUG("Missing location " + loc->getName());
-            }
-        #endif
+        if (!inPool)
+        {
+            LOG_TO_DEBUG("Missing location " + loc->getName());
+        }
         return inPool;
     });
 }

@@ -36,6 +36,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   #endif
   int buildRetryCount = 10;
   EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
+  int fillAttemptCount = 0;
   while (buildRetryCount > 0)
   {
       for (size_t i = 0; i < worlds.size(); i++)
@@ -92,6 +93,10 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           WORLD_LOADING_ERROR_CHECK(worlds[i].determineRaceModeDungeons());
       }
 
+      // Vanilla items must be placed before plandomizer items so that players
+      // don't plandomize a different item into a known vanilla location
+      placeVanillaItems(worlds);
+
       // Process Plandomized locations now after building each world
       for (size_t i = 0; i < worlds.size(); i++)
       {
@@ -112,46 +117,59 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           buildRetryCount--;
           continue;
       }
-      break;
-  }
 
-  if (buildRetryCount == 0)
-  {
-      ErrorLog::getInstance().log("Build retry count exceeded. Error: " + errorToName(entranceErr));
-      return 1;
-  }
-
-  // Retry the main fill algorithm a couple times incase it completely fails.
-  int totalFillAttempts = 5;
-  FillError fillError = FillError::NONE;
-  #ifndef MASS_TESTING
-      Utility::platformLog(std::string("Filling World") + (worlds.size() > 1 ? "s\n" : "\n"));
-      UPDATE_DIALOG_VALUE(10);
-      UPDATE_DIALOG_LABEL("Filling World");
-  #endif
-  while (totalFillAttempts > 0)
-  {
-      totalFillAttempts--;
-      fillError = fill(worlds);
-      if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS || fillError == FillError::PLANDOMIZER_ERROR) {
-          break;
+      if (buildRetryCount == 0 && entranceErr != EntranceShuffleError::NONE)
+      {
+          ErrorLog::getInstance().log("Build retry count exceeded. Error: " + errorToName(entranceErr));
+          return 1;
       }
-      LOG_TO_DEBUG("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
-      clearWorlds(worlds);
-  }
 
-  if (fillError != FillError::NONE)
-  {
-      #ifdef ENABLE_DEBUG
-          if (fillError == FillError::GAME_NOT_BEATABLE)
-          {
-              generatePlaythrough(worlds);
-          }
-          for (World& world : worlds) {
-              world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
-          }
+      // Retry the main fill algorithm a couple times incase it completely fails.
+      int totalFillAttempts = 5;
+      FillError fillError = FillError::NONE;
+      #ifndef MASS_TESTING
+          std::string message = std::string("Filling World") + (worlds.size() > 1 ? "s" : "") + (fillAttemptCount++ > 0 ? " (Attempt " + std::to_string(fillAttemptCount) + ")" : "");
+          Utility::platformLog(message + "\n");
+          UPDATE_DIALOG_VALUE(10);
+          UPDATE_DIALOG_LABEL(message.c_str());
       #endif
-      return 1;
+      while (totalFillAttempts > 0)
+      {
+          totalFillAttempts--;
+          fillError = fill(worlds);
+          if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS || fillError == FillError::PLANDOMIZER_ERROR) {
+              break;
+          }
+          LOG_TO_DEBUG("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
+          clearWorlds(worlds);
+          if (totalFillAttempts == 0)
+          {
+              ErrorLog::getInstance().log("Ran out of retries on fill algorithm");
+          }
+      }
+
+      // If we don't have enough locations available, but one of the worlds has race mode enabled,
+      // then try rebuilding the world with different dungeons to increase the number of locations
+      if (fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS && std::any_of(worlds.begin(), worlds.end(), [](World& world){return world.getSettings().race_mode && world.getSettings().progression_dungeons;}))
+      {
+          continue;
+      }
+
+      if (fillError != FillError::NONE)
+      {
+          #ifdef ENABLE_DEBUG
+              if (fillError == FillError::GAME_NOT_BEATABLE)
+              {
+                  generatePlaythrough(worlds);
+              }
+              for (World& world : worlds) {
+                  world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
+              }
+          #endif
+          return 1;
+      }
+
+      break;
   }
 
   #ifndef MASS_TESTING

@@ -6,12 +6,11 @@
 
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>
+#include <logic/Fill.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
-#define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
-#define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getLocations(true));}
 #define CHECK_MIXED_POOL(name, type) if (settings.name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
 
 using EntrancePools = std::map<EntranceType, EntrancePool>;
@@ -356,6 +355,25 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     {
         LOG_TO_DEBUG("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
+    }
+
+    if (entrancePlaced == nullptr)
+    {
+        // Check to make sure there's enough sphere 0 locations for the items that
+        // are necessary to place at the beginning
+        ItemPool itemPool2;
+        LocationPool progressionLocations;
+        GET_COMPLETE_ITEM_POOL(itemPool2, worlds);
+        GET_COMPLETE_PROGRESSION_LOCATION_POOL(progressionLocations, worlds);
+        determineMajorItems(worlds, itemPool2, progressionLocations);
+        filterAndEraseFromPool(itemPool2, [&](const Item& item){return !item.isMajorItem();});
+        auto err = forwardFillUntilMoreFreeSpace(worlds, itemPool2, progressionLocations, 2);
+        clearWorlds(worlds);
+        if (err != FillError::NONE)
+        {
+            ErrorLog::getInstance().log("Not enough sphere 0 locations to place necessary items. Please enable more locations, or start with more items");
+            return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
+        }
     }
     // Ensure that all race mode dungeons are assigned to a single island and that
     // there aren't any other dungeons on those islands. Since quest markers for
