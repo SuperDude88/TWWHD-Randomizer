@@ -159,6 +159,11 @@ LocationPool World::getLocations(bool onlyProgression /*= false*/)
     return locations;
 }
 
+LocationPool World::getProgressionLocations()
+{
+    return getLocations(true);
+}
+
 AreaEntry& World::getArea(const std::string& area)
 {
     if (!areaEntries.contains(area))
@@ -854,7 +859,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
     }
 
     const std::string& itemName = locationObject["Original Item"].As<std::string>();
-    newEntry.originalItem = {nameToGameItem(itemName), this};
+    newEntry.originalItem = itemEntries[itemName];
     ITEM_VALID_CHECK(
         newEntry.originalItem.getGameItemId(),
         "Error processing location " << location << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
@@ -1219,6 +1224,13 @@ World::WorldLoadingError World::processPlandomizerLocations(WorldPool& worlds)
 
         LOG_TO_DEBUG("Plandomizer Location for world " + std::to_string(worldId + 1) + " - " + locationName + ": " + itemName + " [W" + std::to_string(plandoWorldId + 1) + "]");
         Location* location = &locationEntries[locationName];
+
+        if (location->hasKnownVanillaItem)
+        {
+            ErrorLog::getInstance().log("Plandomizer Error: Attempted to plandomize item \"" + itemName + "\" at a location \"" + locationName + "\" which already has vanilla item \"" + location->currentItem.getName() + "\"");
+            return WorldLoadingError::PLANDOMIZER_ERROR;
+        }
+
         location->plandomized = true;
         Item item = itemsWorld.itemEntries[itemName];
         plandomizer.locations.insert({location, item});

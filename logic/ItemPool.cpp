@@ -265,7 +265,7 @@ ItemNamePool generateStartingGameItemPool(const Settings& settings)
 void logItemPool(const std::string& poolName, const ItemPool& itemPool)
 {
     #ifdef ENABLE_DEBUG
-        LOG_TO_DEBUG(poolName + ":");
+        LOG_TO_DEBUG(poolName + ": [");
         for (auto& item : itemPool) {
             LOG_TO_DEBUG("\t" + item.getName());
         }

@@ -26,6 +26,22 @@ static std::unordered_map<PigColor, std::string> pigColorNameMap = {
     {PigColor::RANDOM, "RANDOM"}
 };
 
+static std::unordered_map<PlacementOption, std::string> PlacementOptionNameMap = {
+    {PlacementOption::Vanilla, "Vanilla"},
+    {PlacementOption::OwnDungeon, "Own Dungeon"},
+    {PlacementOption::AnyDungeon, "Any Dungeon"},
+    {PlacementOption::Overworld, "Overworld"},
+    {PlacementOption::Keysanity, "Keysanity"},
+};
+
+static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap = {
+    {"Vanilla", PlacementOption::Vanilla},
+    {"Own Dungeon", PlacementOption::OwnDungeon},
+    {"Any Dungeon", PlacementOption::AnyDungeon},
+    {"Overworld", PlacementOption::Overworld},
+    {"Keysanity", PlacementOption::Keysanity},
+};
+
 SwordMode nameToSwordMode(const std::string& name) {
 
     if (nameSwordModeMap.count(name) == 0)
@@ -64,6 +80,24 @@ std::string PigColorToName(const PigColor& name) {
     }
 
     return pigColorNameMap.at(name);
+}
+
+PlacementOption nameToPlacementOption(const std::string& name) {
+    if (namePlacementOptionMap.count(name) == 0)
+    {
+        return PlacementOption::INVALID;
+    }
+
+    return namePlacementOptionMap.at(name);
+}
+
+std::string PlacementOptionToName(const PlacementOption& option) {
+    if (PlacementOptionNameMap.count(option) == 0)
+    {
+        return "INVALID";
+    }
+
+    return PlacementOptionNameMap.at(option);
 }
 
 // Make sure there aren't any naming conflicts when adding future settings
@@ -105,6 +139,9 @@ Option nameToSetting(const std::string& name) {
         {"Progress Island Puzzles", Option::ProgressIslandPuzzles},
         {"Progress Obscure", Option::ProgressObscure},
         {"Keylunacy", Option::Keylunacy},
+        {"Dungeon Small Keys", Option::DungeonSmallKeys},
+        {"Dungeon Big Keys", Option::DungeonBigKeys},
+        {"Dungeon Maps And Compasses", Option::DungeonMapsAndCompasses},
         {"RandomCharts", Option::RandomCharts},
         {"Random Start Island", Option::RandomStartIsland},
         {"Randomize Dungeon Entrances", Option::RandomizeDungeonEntrances},
@@ -181,6 +218,9 @@ std::string settingToName(const Option& setting) {
         {Option::ProgressIslandPuzzles, "Progress Island Puzzles"},
         {Option::ProgressObscure, "Progress Obscure"},
         {Option::Keylunacy, "Keylunacy"},
+        {Option::DungeonSmallKeys, "Dungeon Small Keys"},
+        {Option::DungeonBigKeys, "Dungeon Big Keys"},
+        {Option::DungeonMapsAndCompasses, "Dungeon Maps And Compasses"},
         {Option::RandomCharts, "Random Charts"},
         {Option::RandomStartIsland, "Random Start Island"},
         {Option::RandomizeDungeonEntrances, "Randomize Dungeon Entrances"},
@@ -282,6 +322,12 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.progression_obscure;
     case Option::Keylunacy:
         return settings.keylunacy;
+    case Option::DungeonSmallKeys:
+        return static_cast<std::underlying_type_t<PlacementOption>>(settings.dungeon_small_keys);
+    case Option::DungeonBigKeys:
+        return static_cast<std::underlying_type_t<PlacementOption>>(settings.dungeon_big_keys);
+    case Option::DungeonMapsAndCompasses:
+        return static_cast<std::underlying_type_t<PlacementOption>>(settings.dungeon_maps_compasses);
     case Option::RandomCharts:
         return settings.randomize_charts;
     case Option::RandomStartIsland:
@@ -419,6 +465,12 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.progression_obscure = value; return;
     case Option::Keylunacy:
         settings.keylunacy = value; return;
+    case Option::DungeonSmallKeys:
+        settings.dungeon_small_keys = static_cast<PlacementOption>(value); return;
+    case Option::DungeonBigKeys:
+        settings.dungeon_big_keys = static_cast<PlacementOption>(value); return;
+    case Option::DungeonMapsAndCompasses:
+        settings.dungeon_maps_compasses = static_cast<PlacementOption>(value); return;
     case Option::RandomCharts:
         settings.randomize_charts = value; return;
     case Option::RandomStartIsland:

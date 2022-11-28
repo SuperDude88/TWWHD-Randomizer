@@ -32,7 +32,6 @@
   Dungeon Dependency: Earth Temple
   Category:
     - Mail
-    - Dungeon
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -106,7 +105,6 @@
   Dungeon Dependency: Forbidden Woods
   Category:
     - Mail
-    - Dungeon
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -132,7 +130,6 @@
   Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
-    - Dungeon
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -146,7 +143,6 @@
   Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
-    - Dungeon
     - Expensive Purchase
   Hint Priority: Sometimes
   Type: RPX
@@ -3552,7 +3548,7 @@
     English: Forbidden Woods - Big Key Chest
     Spanish: Bosque Prohibido - Cofre de la Gran Llave
     French: Bois Défendus - Coffre de la Grande Clé
-  Original Item: Forbidden Woods Big Key
+  Original Item: Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -3756,7 +3752,7 @@
     English: Tower of the Gods - Big Key Chest
     Spanish: Torre de los Dioses - Cofre de la Gran Llave
     French: Tour des Dieux - Coffre de la Grande Clé
-  Original Item: Tower of the Gods Big Key
+  Original Item: Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -3988,7 +3984,7 @@
     English: Earth Temple - Big Key Chest
     Spanish: Templo de la Tierra - Cofre de la Gran Llave
     French: Temple de la Terre - Coffre de la Grande Clé
-  Original Item: Earth Temple Big Key
+  Original Item: Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
@@ -4088,7 +4084,7 @@
     English: Wind Temple - Big Key Chest
     Spanish: Templo del Viento - Cofre de la Gran Llave
     French: Temple du Vent - Coffre de la Grande Clé
-  Original Item: Wind Temple Big Key
+  Original Item: Big Key
   Category:
     - Dungeon
   Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs

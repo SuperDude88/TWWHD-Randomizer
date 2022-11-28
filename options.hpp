@@ -22,6 +22,15 @@ enum struct SwordMode {
     INVALID
 };
 
+enum struct PlacementOption {
+    Vanilla,
+    OwnDungeon,
+    AnyDungeon,
+    Overworld,
+    Keysanity,
+    INVALID
+};
+
 enum struct Option {
     INVALID = 0,
     // Progression
@@ -57,6 +66,11 @@ enum struct Option {
     NumShards,
     RandomCharts,
     CTMC,
+
+    // Dungeon Randomization Options
+    DungeonSmallKeys,
+    DungeonBigKeys,
+    DungeonMapsAndCompasses,
 
     // Convenince Tweaks
     InvertCompass,
@@ -145,6 +159,9 @@ struct Settings {
     bool progression_obscure = false;
 
     bool keylunacy = false;
+    PlacementOption dungeon_small_keys = PlacementOption::Vanilla;
+    PlacementOption dungeon_big_keys = PlacementOption::Vanilla;
+    PlacementOption dungeon_maps_compasses = PlacementOption::Vanilla;
     bool randomize_charts = false;
     bool randomize_starting_island = false;
     bool randomize_dungeon_entrances = false;
@@ -199,6 +216,10 @@ std::string SwordModeToName(const SwordMode& mode);
 PigColor nameToPigColor(const std::string& name);
 
 std::string PigColorToName(const PigColor& name);
+
+PlacementOption nameToPlacementOption(const std::string& name);
+
+std::string PlacementOptionToName(const PlacementOption& option);
 
 int nameToSettingInt(const std::string& name);
 
