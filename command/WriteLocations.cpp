@@ -305,7 +305,7 @@ ModificationError ModifyRPX::parseArgs(Yaml::Node& locationObject) {
 ModificationError ModifyRPX::writeLocation(const Item& item) {
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
-    RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX");
+    RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX@ELF");
     file.addAction([this, itemID](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
         
@@ -352,7 +352,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
             address = custom_symbols.at(symbol);
         }
 
-        RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX");
+        RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX@ELF");
         file.addAction([address, itemID](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
 
@@ -395,8 +395,8 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
     for (const auto& [path, offset] : offsetsWithPath) {
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
-        if (path == "code/cking.rpx@RPX") {
-            RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX");
+        if (path == "code/cking.rpx@RPX@ELF") {
+            RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
             rpx.addAction([offset = offset, itemID](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 

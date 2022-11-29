@@ -83,11 +83,11 @@ namespace FileTypes
     public:
         struct FileSpec
         {
-            /// name of the file from the string table
+            // name of the file from the string table
             std::string fileName;
-            /// offset relative to start of FRES file
+            // offset relative to start of FRES file
             uint32_t fileOffset;
-            /// length of file past offset
+            // length of file past offset
             uint32_t fileLength;
         };
 

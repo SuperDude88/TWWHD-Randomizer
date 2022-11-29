@@ -99,77 +99,77 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
             current->data = std::make_unique<FileTypes::BDTFile>();
             dynamic_cast<FileTypes::BDTFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::BFLIM:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::FLIMFile>();
             dynamic_cast<FileTypes::FLIMFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::BFLYT:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::FLYTFile>();
             dynamic_cast<FileTypes::FLYTFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::BFRES:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::resFile>();
             dynamic_cast<FileTypes::resFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::CHARTS:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::ChartList>();
             dynamic_cast<FileTypes::ChartList*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::DZX:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::DZXFile>();
             dynamic_cast<FileTypes::DZXFile*>(current->data.get())->loadFromBinary(parentData->data.seekg(0, std::ios::beg));
         }
-        return true;
+        break;
         case Fmt::ELF:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::ELF>();
             dynamic_cast<FileTypes::ELF*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::EVENTS:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::EventList>();
             dynamic_cast<FileTypes::EventList*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::JPC:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::JPC>();
             dynamic_cast<FileTypes::JPC*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::MSBP:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::MSBPFile>();
             dynamic_cast<FileTypes::MSBPFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::MSBT:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::MSBTFile>();
             dynamic_cast<FileTypes::MSBTFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::RPX:
         {
             if(parentData == nullptr) return false;
@@ -180,14 +180,14 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
                 return false;
             }
         }
-        return true;
+        break;
         case Fmt::SARC:
         {
             if(parentData == nullptr) return false;
             current->data = std::make_unique<FileTypes::SARCFile>();
             dynamic_cast<FileTypes::SARCFile*>(current->data.get())->loadFromBinary(parentData->data);
         }
-        return true;
+        break;
         case Fmt::YAZ0:
         {
             if(parentData == nullptr) return false;
@@ -198,7 +198,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
                 return false;
             }
         }
-        return true;
+        break;
         case Fmt::STREAM:
         {
             if (current->parent->storedFormat == Fmt::SARC) {
@@ -218,13 +218,14 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
                     return false;
                 }
 
-                current->data = std::make_unique<GenericFile>(dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->fileData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
+                const std::string& resData = dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->fileData;
+                current->data = std::make_unique<GenericFile>(resData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
             }
             else {
                 return false; //what
             }
         }
-        return true;
+        break;
         case Fmt::ROOT:
         {
             std::ifstream input(baseDir / current->element, std::ios::binary);
@@ -232,12 +233,15 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
             current->data = std::make_unique<GenericFile>();
             dynamic_cast<GenericFile*>(current->data.get())->data << input.rdbuf();
         }
-        return true;
+        break;
         case Fmt::EMPTY:
             [[fallthrough]];
         default:
             return false;
     }
+
+    if(parentData != nullptr) parentData->data.str(std::string()); //clear parent sstream, don't need it
+    return true;
 }
 
 bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
@@ -508,6 +512,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
+        dst->data.str(std::string()); //clear data so we overwrite it
         dst->data << src.rdbuf();
 		
         return true;
@@ -529,6 +534,9 @@ bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file fr
 }
 
 bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current) {
+    if(current->parent->parent == nullptr) { //only print start of chain to avoid spam
+        Utility::platformLog(std::string("Working on ") + filename.string() + "\n");
+    }
     //extract this level, move down tree
     if(!extractFile(current)) return false;
 
@@ -569,7 +577,7 @@ bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
     
-    BS::multi_future<bool> futures;
+    //BS::multi_future<bool> futures;
     for(auto& [filename, child] : fileCache->children) {
         bool reqsDone = true;
 
@@ -583,7 +591,8 @@ bool RandoSession::modFiles()
             continue;
         }
 
-        futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
+        workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
+        //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
     }
 
     while(fileCache->children.size() != 0) {
@@ -602,12 +611,13 @@ bool RandoSession::modFiles()
                 continue;
             }
 
-            futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
+            workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
+            //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
         }
     }
 
     Utility::platformLog("Finished repacking files\n");
-    BasicLog::getInstance().log("Finished repacking files\n");
+    BasicLog::getInstance().log("Finished repacking files");
     
     return true;
 }
