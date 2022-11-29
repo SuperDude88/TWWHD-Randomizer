@@ -725,8 +725,12 @@ public:
 			return 1;
 		}
 
-    // Repack for console if necessary
-    #ifndef DEVKITPRO
+    
+    #ifdef DEVKITPRO
+	  // Flush MLC to save changes to disk
+	  Utility::flush_mlc();
+	#else
+	  // Repack for console if necessary
       if (config.repack_for_console)
       {
           UPDATE_DIALOG_LABEL("Repacking for console...");
@@ -814,8 +818,6 @@ int mainRandomize() {
 		// TODO: do a hundo seed to test everything
 
 		// TODO: text wrapping on drc dungeon map
-		// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
-			//Also some other things just die even single-threaded
 		retVal = rando.randomize();
 	} //end timer scope
 

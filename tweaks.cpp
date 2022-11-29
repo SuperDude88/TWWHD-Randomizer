@@ -188,10 +188,11 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 
 			std::vector<ChunkEntry*> actors = stage_dzs.entries_by_type("ACTR");
 			for (ChunkEntry* actor : actors) {
-				if (std::strncmp(&actor->data[0], "SHIP", 4) == 0) {
+				if (std::strncmp(&actor->data[0], "Ship", 4) == 0) {
 					actor->data.replace(0xC, 0xC, ship_spawn_0.data, 0x0, 0xC);
 					actor->data.replace(0x1A, 0x2, ship_spawn_0.data, 0xC, 0x2);
 					actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
+					break;
 				}
 			}
 			
@@ -254,14 +255,20 @@ TweakError make_all_text_instant() {
 }
 
 TweakError fix_deku_leaf_model() {
-	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
 	entry.addAction([](RandoSession* session, FileType* data) -> int 
 	{
-		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
+
+		FileTypes::DZXFile dzr;
+		dzr.loadFromBinary(generic.data);
+
 		const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 		for (ChunkEntry* actor : actors) {
 			if (std::strncmp(&actor->data[0], "itemDek\x00", 8) == 0) actor->data = "item\x00\x00\x00\x00\x01\xFF\x02\x34\xc4\x08\x7d\x81\x45\x9d\x59\xec\xc3\xf5\x8e\xd9\x00\x00\x00\x00\x00\xff\xff\xff"s;
 		}
+
+		dzr.writeToStream(generic.data);
 
 		return true;
 	});
@@ -815,8 +822,10 @@ TweakError update_name_and_icon() {
 		metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
 		metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-		//change the title ID so it gets its own channel when repacked
-		metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+		#ifndef DEVKITPRO //skip title ID change on console for now, doesnt work without custom channel
+			//change the title ID so it gets its own channel when repacked
+			metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+		#endif
 		
 		tinyxml2::XMLPrinter printer;
 		meta.Print(&printer);
@@ -824,6 +833,9 @@ TweakError update_name_and_icon() {
 
 		return true;
 	});
+	#ifdef DEVKITPRO
+		return TweakError::NONE; //skip title ID change on wii u for now, doesnt work when its using the original channel
+	#endif
 	RandoSession::CacheEntry& appEntry = g_session.openGameFile("code/app.xml");
 	appEntry.addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
@@ -2600,7 +2612,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
 	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-		
+
 		Elf32_Rela blockMoveReloc;
 		blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
 		blockMoveReloc.r_info = 0x00015b0a;
