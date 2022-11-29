@@ -2613,16 +2613,16 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-		Elf32_Rela blockMoveReloc;
-		blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
-		blockMoveReloc.r_info = 0x00015b0a;
-		blockMoveReloc.r_addend = 0;
-		RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
+		//Elf32_Rela blockMoveReloc;
+		//blockMoveReloc.r_offset = custom_symbols.at("load_uncompressed_szs") + 0x28;
+		//blockMoveReloc.r_info = 0x00015b0a;
+		//blockMoveReloc.r_addend = 0;
+		//RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
 
-		blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x1C;
-		blockMoveReloc.r_info = 0x00015b0a;
-		blockMoveReloc.r_addend = 0;
-		RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
+		//blockMoveReloc.r_offset = custom_symbols.at("copy_sarc_to_output") + 0x1C;
+		//blockMoveReloc.r_info = 0x00015b0a;
+		//blockMoveReloc.r_addend = 0;
+		//RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
 
 		RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); //would mess with save init
 		RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); //would mess with salvage point patch
