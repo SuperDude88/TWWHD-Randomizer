@@ -425,145 +425,145 @@ custom_damage_multiplier:
  ; Allow the game to load uncompressed szs files
  ; This is super hacky and a terrible idea but saves a ton of time when randomizing (compression is slow)
  ; in sead::SZSDecompressor::decomp
- .org 0x0275ed6c
-  b load_uncompressed_szs
-  lwz r29, 0xC(sp)
-  lwz r0, 0x1C(sp)
-  lwz r30, 0x10(sp)
-  mtlr r0
-  lwz r31, 0x14(sp)
-  addi sp, sp, 0x18
-  blr
-.org @NextFreeSpace
-.global load_uncompressed_szs
-load_uncompressed_szs:
-  lis r9,0x5341
-  addi r9,r9,0x5243
-  cmplw r3, r9 ; Check if file is SARC (should be)
-  bne return_err_1
-  lwz r5, 0x8(r30)
-  cmplw r29, r5 ; Check if output buffer is large enough
-  blt return_err_2
-  mr r3, r31
-  mr r4, r30
-  li r6, 0
-  .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
-  mr r3, r5 ; Return size
-  b 0x0275ed70 ; Branch back
-
-.global return_err_1
-return_err_1:
-  li r3, -0x1
-  b 0x0275ed88 ; Return -1 if it isn't SARC
-
-.global return_err_2
-return_err_2:
-  li r3, -0x2
-  b 0x0275edac ; Return -1 if it isn't SARC
-
- ; in sead::SZSDecompressor::getDecompSize
-.org 0x0275eba8
-  b get_decompressed_szs_size
-.org @NextFreeSpace
-.global get_decompressed_szs_size
-get_decompressed_szs_size:
-  lwz r4, 0(r3)
-  lis r5, 0x5961
-  addi r5, r5, 0x7a30
-  cmplw r4, r5
-  beq read_yaz0_size
-  lis r5, 0x5341
-  addi r5, r5, 0x5243
-  cmplw r4, r5
-  beq read_sarc_size
-  li r3, -1
-  b 0x0275ebac
-
-read_yaz0_size:
-  lwz r3, 0x4(r3)
-  b 0x0275ebac
-read_sarc_size:
-  lwz r3, 0x8(r3)
-  b 0x0275ebac
-
- ; in sead::SZSDecompressor::getDecompAlignment
-.org 0x0275f180
-  b get_alignment
-.org @NextFreeSpace
-.global get_alignment
-get_alignment:
-  lwz r4, 0(r3)
-  lis r5, 0x5961
-  addi r5, r5, 0x7a30
-  cmplw r4, r5
-  beq read_yaz0_align
-  li r3, 0
-  b 0x0275ebac
-
-read_yaz0_align:
-  lwz r3, 0x8(r3)
-  b 0x0275ebac
-
-
- ; in sead::SZSDecompressor::readHeader_
-.org 0x0275edfc
-  b check_sarc_magic ; not YAZ0
-.org @NextFreeSpace
-.global check_sarc_magic
-check_sarc_magic:
-  lwz r11, 0(r4)
-  lis r7, 0x5341
-  addi r7, r7, 0x5243
-  cmplw r11, r7
-  bne not_sarc_magic ; not SARC
-  li r7, 1
-  stb r7, 0xF(r12)
-  li r7, 0
-  stb r7, 0x16(r12)
-  li r3, 0x0 ; Return no error
-  blr ; return back to streamDecomp
-not_sarc_magic:
-  b 0x0275ee44
-
-.org 0x275ef18
-  b copy_sarc_to_output
-.org @NextFreeSpace
-.global copy_sarc_to_output
-copy_sarc_to_output:
-  lbz r3, 0xF(r30)
-  cmpwi r3, 0x1
-  bne continue_decomp
-  lwz r3, 0x0(r30) ; load dst, src already in r4
-  mr r5, r31 ; move source length
-  li r6, 0
-  mflr r0
-  .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
-  lwz r3, 0x0(r30)
-  add r3, r3, r5
-  stw r3, 0x0(r30)
-  mr r3, r5
-  b 0x0275f150 ; return from streamDecomp
-continue_decomp:
-  lwz r3, 0x4(r30)
-  b 0x0275ef18
-
- ; In some function that loads .pack files
-.org 0x026118b4
-  lis r3, 0x520 ; Increase heap size
-
-
- ; 3D-related heaps
-.org 0x0203e630
-  lis r11, 0x230A ; Increase 3DRootHeap size by 0x3EA00000
-.org 0x0203f1c8
-  addis r31, r31, 0x1AAA ; Increase ModelRes heap size by 0x3EA0000
-.org 0x0203f1f8
-  addis r3, r3, 0x112A ; Increase PermanentResource heap size by 0x3EA0000
-
- ; in main()
-.org 0x02005f14
-  lis r0, 0x3CB0 ; Up the root heap size
-  ori r0, r0, 0x0000
+;  .org 0x0275ed6c
+;   b load_uncompressed_szs
+;   lwz r29, 0xC(sp)
+;   lwz r0, 0x1C(sp)
+;   lwz r30, 0x10(sp)
+;   mtlr r0
+;   lwz r31, 0x14(sp)
+;   addi sp, sp, 0x18
+;   blr
+; .org @NextFreeSpace
+; .global load_uncompressed_szs
+; load_uncompressed_szs:
+;   lis r9,0x5341
+;   addi r9,r9,0x5243
+;   cmplw r3, r9 ; Check if file is SARC (should be)
+;   bne return_err_1
+;   lwz r5, 0x8(r30)
+;   cmplw r29, r5 ; Check if output buffer is large enough
+;   blt return_err_2
+;   mr r3, r31
+;   mr r4, r30
+;   li r6, 0
+;   .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
+;   mr r3, r5 ; Return size
+;   b 0x0275ed70 ; Branch back
+; 
+; .global return_err_1
+; return_err_1:
+;   li r3, -0x1
+;   b 0x0275ed88 ; Return -1 if it isn't SARC
+; 
+; .global return_err_2
+; return_err_2:
+;   li r3, -0x2
+;   b 0x0275edac ; Return -1 if it isn't SARC
+; 
+;  ; in sead::SZSDecompressor::getDecompSize
+; .org 0x0275eba8
+;   b get_decompressed_szs_size
+; .org @NextFreeSpace
+; .global get_decompressed_szs_size
+; get_decompressed_szs_size:
+;   lwz r4, 0(r3)
+;   lis r5, 0x5961
+;   addi r5, r5, 0x7a30
+;   cmplw r4, r5
+;   beq read_yaz0_size
+;   lis r5, 0x5341
+;   addi r5, r5, 0x5243
+;   cmplw r4, r5
+;   beq read_sarc_size
+;   li r3, -1
+;   b 0x0275ebac
+; 
+; read_yaz0_size:
+;   lwz r3, 0x4(r3)
+;   b 0x0275ebac
+; read_sarc_size:
+;   lwz r3, 0x8(r3)
+;   b 0x0275ebac
+; 
+;  ; in sead::SZSDecompressor::getDecompAlignment
+; .org 0x0275f180
+;   b get_alignment
+; .org @NextFreeSpace
+; .global get_alignment
+; get_alignment:
+;   lwz r4, 0(r3)
+;   lis r5, 0x5961
+;   addi r5, r5, 0x7a30
+;   cmplw r4, r5
+;   beq read_yaz0_align
+;   li r3, 0
+;   b 0x0275ebac
+; 
+; read_yaz0_align:
+;   lwz r3, 0x8(r3)
+;   b 0x0275ebac
+; 
+; 
+;  ; in sead::SZSDecompressor::readHeader_
+; .org 0x0275edfc
+;   b check_sarc_magic ; not YAZ0
+; .org @NextFreeSpace
+; .global check_sarc_magic
+; check_sarc_magic:
+;   lwz r11, 0(r4)
+;   lis r7, 0x5341
+;   addi r7, r7, 0x5243
+;   cmplw r11, r7
+;   bne not_sarc_magic ; not SARC
+;   li r7, 1
+;   stb r7, 0xF(r12)
+;   li r7, 0
+;   stb r7, 0x16(r12)
+;   li r3, 0x0 ; Return no error
+;   blr ; return back to streamDecomp
+; not_sarc_magic:
+;   b 0x0275ee44
+; 
+; .org 0x275ef18
+;   b copy_sarc_to_output
+; .org @NextFreeSpace
+; .global copy_sarc_to_output
+; copy_sarc_to_output:
+;   lbz r3, 0xF(r30)
+;   cmpwi r3, 0x1
+;   bne continue_decomp
+;   lwz r3, 0x0(r30) ; load dst, src already in r4
+;   mr r5, r31 ; move source length
+;   li r6, 0
+;   mflr r0
+;   .byte 0x49, 0x8C, 0xAE, 0x09 ; OSBlockMove, not sure the proper way to do the rpl call, manually done with a relocation (these bytes are a random absolute branch so Cemu loads it properly)
+;   lwz r3, 0x0(r30)
+;   add r3, r3, r5
+;   stw r3, 0x0(r30)
+;   mr r3, r5
+;   b 0x0275f150 ; return from streamDecomp
+; continue_decomp:
+;   lwz r3, 0x4(r30)
+;   b 0x0275ef18
+; 
+;  ; In some function that loads .pack files
+; .org 0x026118b4
+;   lis r3, 0x520 ; Increase heap size
+; 
+; 
+;  ; 3D-related heaps
+; .org 0x0203e630
+;   lis r11, 0x230A ; Increase 3DRootHeap size by 0x3EA00000
+; .org 0x0203f1c8
+;   addis r31, r31, 0x1AAA ; Increase ModelRes heap size by 0x3EA0000
+; .org 0x0203f1f8
+;   addis r3, r3, 0x112A ; Increase PermanentResource heap size by 0x3EA0000
+; 
+;  ; in main()
+; .org 0x02005f14
+;   lis r0, 0x3CB0 ; Up the root heap size
+;   ori r0, r0, 0x0000
 
 ; Alter savewarping so that players respawn at their last visited ocean sector
 ; instead of whatever sector the cave/interior/area normally tries to savewarp
