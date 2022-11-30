@@ -166,5 +166,6 @@ private slots:
     void on_dungeon_small_keys_currentTextChanged(const QString &arg1);
     void on_dungeon_big_keys_currentTextChanged(const QString &arg1);
     void on_dungeon_maps_compasses_currentTextChanged(const QString &arg1);
+    void on_seed_textChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H
