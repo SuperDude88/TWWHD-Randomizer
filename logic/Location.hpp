@@ -72,6 +72,7 @@ struct Location
     bool plandomized;
     bool hasBeenHinted;
     bool hasKnownVanillaItem;
+    bool hasDungeonDependency;
     Item originalItem;
     Item currentItem;
     int sortPriority = -1;
@@ -100,6 +101,7 @@ struct Location
         plandomized(false),
         hasBeenHinted(false),
         hasKnownVanillaItem(false),
+        hasDungeonDependency(false),
         originalItem(GameItem::INVALID, nullptr),
         currentItem(GameItem::INVALID, nullptr),
         sortPriority(-1),

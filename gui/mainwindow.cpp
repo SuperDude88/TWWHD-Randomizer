@@ -1018,8 +1018,6 @@ void MainWindow::on_randomize_button_clicked()
         return;
     }
 
-    auto totalOverworldProgressLocations = calculate_total_progress_locations() - (config.settings.progression_dungeons ? : 0);
-
 
     // Check to make sure the base game and output are directories
     if (!std::filesystem::is_directory(config.gameBaseDir))
@@ -1152,6 +1150,10 @@ void MainWindow::load_locations()
                 show_warning_dialog("Location \"" + name + "\" has an invalid category name \"" + categoryNameStr + "\"");
             }
             locationCategories.back().insert(cat);
+        }
+        if (!locationObject["Dungeon Dependency"].IsNone())
+        {
+            locationCategories.back().insert(LocationCategory::Dungeon);
         }
     }
 }
