@@ -591,8 +591,12 @@ public:
 
 		// Go through the setting testing process if mass testing is turned on and ignore everything else
 		#ifdef MASS_TESTING
-			massTest(config);
-			return 0;
+        #if TEST_COUNT
+			      testSettings(config, TEST_COUNT);
+        #else
+            massTest(config);
+        #endif
+        return 0;
 		#endif
 
     std::hash<std::string> strHash;

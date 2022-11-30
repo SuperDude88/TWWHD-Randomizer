@@ -164,6 +164,11 @@ LocationPool World::getProgressionLocations()
     return getLocations(true);
 }
 
+size_t World::getNumOverworldProgressionLocations()
+{
+    return std::count_if(locationEntries.begin(), locationEntries.end(), [](auto& pair){return pair.second.progression && !pair.second.categories.contains(LocationCategory::Dungeon);});
+}
+
 AreaEntry& World::getArea(const std::string& area)
 {
     if (!areaEntries.contains(area))
@@ -342,7 +347,7 @@ World::WorldLoadingError World::determineProgressionLocations()
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::determineRaceModeDungeons()
+World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 {
     if (settings.race_mode)
     {
@@ -360,96 +365,134 @@ World::WorldLoadingError World::determineRaceModeDungeons()
             dungeonPool.push_back(dungeon);
         }
 
-        shufflePool(dungeonPool);
-
-        int setRaceModeDungeons = 0;
-        // Loop through all the dungeons and see if any of them have items plandomized
-        // within them (or within their dependent locations). If they have major items
-        // plandomized, then select those dungeons as race mode dungeons
-        if (settings.plandomizer)
+        LocationPool nonProgressRollbacks = {};
+        bool successfullyChoseRaceModeDungeons = false;
+        // If the user only selects dungeons as their progression category, then
+        // we might need to reselect race mode dungeons a few times until we select
+        // a combination that has sphere 0 locations open.
+        do
         {
-            for (const auto& dungeon : dungeonPool)
+            shufflePool(dungeonPool);
+
+            int setRaceModeDungeons = 0;
+            // Loop through all the dungeons and see if any of them have items plandomized
+            // within them (or within their dependent locations). If they have major items
+            // plandomized, then select those dungeons as race mode dungeons
+            if (settings.plandomizer)
             {
-                auto allDungeonLocations = dungeon.locations;
-                addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
-                for (auto& location : allDungeonLocations)
+                for (const auto& dungeon : dungeonPool)
                 {
-                    auto dungeonLocation = &locationEntries[location];
-                    bool dungeonLocationForcesRaceMode = !plandomizer.locations.contains(dungeonLocation) ? false : !plandomizer.locations[dungeonLocation].isJunkItem();
-                    if (dungeonLocationForcesRaceMode)
+                    auto allDungeonLocations = dungeon.locations;
+                    addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
+                    for (auto& location : allDungeonLocations)
                     {
-                        // However, if the dungeon's race mode location is junk then
-                        // that's an error on the user's part.
-                        Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-                        bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
-                        if (!raceModeLocationIsAcceptable)
+                        auto dungeonLocation = &locationEntries[location];
+                        bool dungeonLocationForcesRaceMode = !plandomizer.locations.contains(dungeonLocation) ? false : !plandomizer.locations[dungeonLocation].isJunkItem();
+                        if (dungeonLocationForcesRaceMode)
                         {
-                            ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
-                            LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
+                            // However, if the dungeon's race mode location is junk then
+                            // that's an error on the user's part.
+                            Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
+                            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
+                            if (!raceModeLocationIsAcceptable)
+                            {
+                                ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
+                                LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
+                            }
+                            LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
+                            dungeons[dungeon.name].isRaceModeDungeon = true;
+                            setRaceModeDungeons++;
+                            break;
                         }
-                        LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
-                        dungeons[dungeon.name].isRaceModeDungeon = true;
-                        setRaceModeDungeons++;
-                        break;
                     }
                 }
             }
-        }
 
-        // If too many are set, return an error
-        if (setRaceModeDungeons > settings.num_race_mode_dungeons)
-        {
-            ErrorLog::getInstance().log("Plandomizer Error: Too many race mode locations set with potentially major items");
-            ErrorLog::getInstance().log("Set race mode locations: " + std::to_string(setRaceModeDungeons));
-            ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
-            LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
-        }
+            // If too many are set, return an error
+            if (setRaceModeDungeons > settings.num_race_mode_dungeons)
+            {
+                ErrorLog::getInstance().log("Plandomizer Error: Too many race mode locations set with potentially major items");
+                ErrorLog::getInstance().log("Set race mode locations: " + std::to_string(setRaceModeDungeons));
+                ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
+                LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
+            }
 
-        // Now check again and fill in any more dungeons that may be necessary
-        // Also set non-race mode dungeons locations as non-progress
-        for (const auto& dungeon : dungeonPool)
-        {
-            // If this dungeon was already selected, then skip it
-            if (dungeons[dungeon.name].isRaceModeDungeon)
+            // Now check again and fill in any more dungeons that may be necessary
+            // Also set non-race mode dungeons locations as non-progress
+            for (const auto& dungeon : dungeonPool)
             {
-                continue;
+                // If this dungeon was already selected, then skip it
+                if (dungeons[dungeon.name].isRaceModeDungeon)
+                {
+                    continue;
+                }
+                // If this dungeon has a junk item placed as its race mode
+                // location, then skip it
+                auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
+                bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem();
+                if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
+                {
+                    LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
+                    dungeons[dungeon.name].isRaceModeDungeon = true;
+                    setRaceModeDungeons++;
+                }
+                else
+                {
+                    // If we've already chosen our race mode dungeons, then set all
+                    // the other dungeons' locations as non-progression. If dungeons
+                    // are set as progression locations, we already set them all as
+                    // progression previously, so here we unset those which aren't
+                    // progression dungeons.
+                    for (auto& location : dungeon.locations)
+                    {
+                        locationEntries[location].progression = false;
+                        nonProgressRollbacks.push_back(&locationEntries[location]);
+                    }
+                    // Also set any progress locations outside the dungeon which
+                    // are dependent on beating it as non-progression locations
+                    for (auto& location : dungeon.outsideDependentLocations)
+                    {
+                        if (locationEntries[location].progression)
+                        {
+                            locationEntries[location].progression = false;
+                            nonProgressRollbacks.push_back(&locationEntries[location]);
+                        }
+                    }
+                }
             }
-            // If this dungeon has a junk item placed as its race mode
-            // location, then skip it
-            auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem();
-            if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_race_mode_dungeons)
+
+            ItemPool noItems;
+            LocationPool allowedLocations;
+            GET_COMPLETE_PROGRESSION_LOCATION_POOL(allowedLocations, worlds);
+            // If we have locations available, flag a successful choosing
+            if (!getAccessibleLocations(worlds, noItems, allowedLocations).empty())
             {
-                LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
-                dungeons[dungeon.name].isRaceModeDungeon = true;
-                setRaceModeDungeons++;
+                successfullyChoseRaceModeDungeons = true;
+
+                if (setRaceModeDungeons < settings.num_race_mode_dungeons)
+                {
+                    ErrorLog::getInstance().log("Plandomizer Error: Not enough race mode locations for set number of race mode dungeons");
+                    ErrorLog::getInstance().log("Possible race mode locations: " + std::to_string(setRaceModeDungeons));
+                    ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
+                    LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
+                }
             }
+            // Otherwise, set all dungeon locations as progression and try again
             else
             {
-                // If we've already chosen our race mode dungeons, then set all
-                // the other dungeons' locations as non-progression. If dungeons
-                // are set as progression locations, we already set them all as
-                // progression previously, so here we unset those which aren't
-                // progression dungeons.
-                for (auto& location : dungeon.locations)
+                LOG_TO_DEBUG("No sphere 0 progression locations with chosen race mode dungeon set");
+                for (auto location : nonProgressRollbacks)
                 {
-                    locationEntries[location].progression = false;
+                    location->progression = true;
                 }
-                // Also set any locations outside the dungeon which are dependent
-                // on beating it as non-progression locations
-                for (auto& location : dungeon.outsideDependentLocations)
+                for (auto& [name, dungeon] : dungeons)
                 {
-                    locationEntries[location].progression = false;
+                    dungeon.isRaceModeDungeon = false;
                 }
+
+                nonProgressRollbacks.clear();
             }
-        }
-        if (setRaceModeDungeons < settings.num_race_mode_dungeons)
-        {
-            ErrorLog::getInstance().log("Plandomizer Error: Not enough race mode locations for set number of race mode dungeons");
-            ErrorLog::getInstance().log("Possible race mode locations: " + std::to_string(setRaceModeDungeons));
-            ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_race_mode_dungeons));
-            LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
-        }
+        } while (!successfullyChoseRaceModeDungeons);
     }
     return WorldLoadingError::NONE;
 }

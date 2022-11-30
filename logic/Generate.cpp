@@ -21,7 +21,7 @@
 
 #include <gui/update_dialog_header.hpp>
 
-#define WORLD_LOADING_ERROR_CHECK(err) if (err != World::WorldLoadingError::NONE) {ErrorLog::getInstance().log(worlds[i].getLastErrorDetails()); return 1;}
+#define WORLD_LOADING_ERROR_CHECK(err) if (err != World::WorldLoadingError::NONE) {ErrorLog::getInstance().log(world.getLastErrorDetails()); return 1;}
 
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
@@ -37,6 +37,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   int buildRetryCount = 10;
   EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
   int fillAttemptCount = 0;
+  bool successfulFill = false;
   while (buildRetryCount > 0)
   {
       for (size_t i = 0; i < worlds.size(); i++)
@@ -80,17 +81,16 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       }
 
       // Once plandomizer data has been loaded, continue with building each world
-      for (size_t i = 0; i < worlds.size(); i++)
+      for (auto& world : worlds)
       {
-          worlds[i].resolveRandomSettings();
-          if (worlds[i].loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
+          world.resolveRandomSettings();
+          if (world.loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
           {
               return 1;
           }
-          worlds[i].determineChartMappings();
-          WORLD_LOADING_ERROR_CHECK(worlds[i].determineProgressionLocations());
-          WORLD_LOADING_ERROR_CHECK(worlds[i].setItemPools());
-          WORLD_LOADING_ERROR_CHECK(worlds[i].determineRaceModeDungeons());
+          world.determineChartMappings();
+          WORLD_LOADING_ERROR_CHECK(world.determineProgressionLocations());
+          WORLD_LOADING_ERROR_CHECK(world.setItemPools());
       }
 
       // Vanilla items must be placed before plandomizer items so that players
@@ -98,9 +98,47 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       placeVanillaItems(worlds);
 
       // Process Plandomized locations now after building each world
-      for (size_t i = 0; i < worlds.size(); i++)
+      for (auto& world : worlds)
       {
-          WORLD_LOADING_ERROR_CHECK(worlds[i].processPlandomizerLocations(worlds));
+          WORLD_LOADING_ERROR_CHECK(world.processPlandomizerLocations(worlds));
+      }
+
+      // If race mode is not enabled in any world, then the number of progression
+      // locations is already fixed and we can check if we have enough locations now
+      if (!ANY_WORLD_HAS_RACE_MODE(worlds))
+      {
+          if (validateEnoughLocations(worlds) == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS)
+          {
+              return 1;
+          }
+      }
+
+      // If the user(s) selected "Overworld" as the placement option for small/big keys
+      // but didn't enable enough overworld locations, then don't continue
+      for (auto& world : worlds)
+      {
+          auto& settings = world.getSettings();
+          if (settings.progression_dungeons)
+          {
+              size_t neededOverworldLocations = 0;
+              size_t numOverworldLocations = world.getNumOverworldProgressionLocations();
+              if (settings.dungeon_small_keys == PlacementOption::Overworld)
+              {
+                  neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){return Utility::Str::contains(item.getName(), "Small Key");}).size();
+              }
+              if (settings.dungeon_big_keys == PlacementOption::Overworld)
+              {
+                  neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){return Utility::Str::contains(item.getName(), "Big Key");}).size();
+              }
+
+              if (numOverworldLocations < neededOverworldLocations)
+              {
+                  ErrorLog::getInstance().log("Total Overworld Progression Locations: " + std::to_string(numOverworldLocations));
+                  ErrorLog::getInstance().log("Number of Overworld Progress Items: " + std::to_string(neededOverworldLocations));
+                  ErrorLog::getInstance().log("Please select more locations for overworld small/big keys to appear.");
+                  return 1;
+              }
+          }
       }
 
       // Randomize entrances before placing items
@@ -109,23 +147,36 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       if (entranceErr != EntranceShuffleError::NONE)
       {
           LOG_TO_DEBUG("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
+          // Return early for errors which can't be resolved by re-shuffling
           if (entranceErr == EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY || entranceErr == EntranceShuffleError::BAD_LINKS_SPAWN || entranceErr == EntranceShuffleError::PLANDOMIZER_ERROR)
           {
               ErrorLog::getInstance().log("Error Code: " + errorToName(entranceErr));
               return 1;
           }
+
           buildRetryCount--;
+          if (buildRetryCount == 0 && entranceErr != EntranceShuffleError::NONE)
+          {
+              ErrorLog::getInstance().log("Build retry count exceeded. Error: " + errorToName(entranceErr));
+              if (entranceErr == EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS)
+              {
+                  ErrorLog::getInstance().log("Please enable more sphere 0 locations or start with more items");
+              }
+              return 1;
+          }
+
           continue;
       }
 
-      if (buildRetryCount == 0 && entranceErr != EntranceShuffleError::NONE)
+      // Determine race mode dungeons after entrance randomizer to ensure we pick
+      // dungeons which can be properly reached depending on any entrance rando settings
+      for (auto& world : worlds)
       {
-          ErrorLog::getInstance().log("Build retry count exceeded. Error: " + errorToName(entranceErr));
-          return 1;
+          WORLD_LOADING_ERROR_CHECK(world.determineRaceModeDungeons(worlds));
       }
 
       // Retry the main fill algorithm a couple times incase it completely fails.
-      int totalFillAttempts = 5;
+      int totalFillAttempts = 10;
       FillError fillError = FillError::NONE;
       #ifndef MASS_TESTING
           std::string message = std::string("Filling World") + (worlds.size() > 1 ? "s" : "") + (fillAttemptCount++ > 0 ? " (Attempt " + std::to_string(fillAttemptCount) + ")" : "");
@@ -142,7 +193,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           }
           LOG_TO_DEBUG("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
           clearWorlds(worlds);
-          if (totalFillAttempts == 0)
+          if (totalFillAttempts == 0 && buildRetryCount == 0)
           {
               ErrorLog::getInstance().log("Ran out of retries on fill algorithm");
           }
@@ -150,8 +201,9 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 
       // If we don't have enough locations available, but one of the worlds has race mode enabled,
       // then try rebuilding the world with different dungeons to increase the number of locations
-      if (fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS && std::any_of(worlds.begin(), worlds.end(), [](World& world){return world.getSettings().race_mode && world.getSettings().progression_dungeons;}))
+      if (fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS && ANY_WORLD_HAS_RACE_MODE(worlds))
       {
+          buildRetryCount--;
           continue;
       }
 
@@ -166,10 +218,20 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
                   world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
               }
           #endif
-          return 1;
+          buildRetryCount--;
+          if (buildRetryCount == 0)
+          {
+              return 1;
+          }
+          continue;
       }
-
+      successfulFill = true;
       break;
+  }
+
+  if (!successfulFill)
+  {
+      return 1;
   }
 
   #ifndef MASS_TESTING

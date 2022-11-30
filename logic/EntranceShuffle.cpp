@@ -351,7 +351,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         // }
         LOG_TO_DEBUG("]");
     #endif
-    if (locs.size() < worlds.size())
+    if (locs.size() == 0)
     {
         LOG_TO_DEBUG("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
@@ -367,11 +367,10 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         GET_COMPLETE_PROGRESSION_LOCATION_POOL(progressionLocations, worlds);
         determineMajorItems(worlds, itemPool2, progressionLocations);
         filterAndEraseFromPool(itemPool2, [&](const Item& item){return !item.isMajorItem();});
-        auto err = forwardFillUntilMoreFreeSpace(worlds, itemPool2, progressionLocations, 2);
+        auto err = forwardFillUntilMoreFreeSpace(worlds, itemPool2, progressionLocations);
         clearWorlds(worlds);
         if (err != FillError::NONE)
         {
-            ErrorLog::getInstance().log("Not enough sphere 0 locations to place necessary items. Please enable more locations, or start with more items");
             return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
         }
     }
@@ -704,6 +703,38 @@ static void SetShuffledEntrances(EntrancePools& entrancePools) {
         }
     }
 }
+
+// static EntranceShuffleError resetToVanillaEntrances(World& world)
+// {
+//     LOG_TO_DEBUG("Resetting entrance connections");
+//     // Reset random starting island
+//     auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
+//
+//     // Set original starting island in the world graph
+//     auto linksSpawn = world.getEntrance("Link's Spawn", startingIsland);
+//     if (linksSpawn == nullptr)
+//     {
+//         return EntranceShuffleError::BAD_LINKS_SPAWN;
+//     }
+//     linksSpawn->setConnectedArea("Outset Island");
+//     world.getArea(startingIsland).entrances.remove(linksSpawn);
+//     world.getArea("Outset Island").entrances.push_back(linksSpawn);
+//     world.startingIslandRoomIndex = 44;
+//
+//     // Reset all entrances that were shuffled
+//     auto shuffledEntrances = world.getShuffledEntrances(EntranceType::ALL);
+//     for (auto entrance : shuffledEntrances)
+//     {
+//         auto entranceOriginalName = entrance->getOriginalName();
+//         auto originalConnection = entranceOriginalName.substr(entranceOriginalName.rfind("-> ") + 3, std::string::npos);
+//         entrance->disconnect();
+//         entrance->connect(originalConnection);
+//         entrance->setReplaces(nullptr);
+//         entrance->setAsUnshuffled();
+//     }
+//
+//     return EntranceShuffleError::NONE;
+// }
 
 EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 {

@@ -18,7 +18,8 @@
 #include <utility/text.hpp>
 
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
-#define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getLocations(true));}
+#define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getProgressionLocations());}
+#define ANY_WORLD_HAS_RACE_MODE(worlds) std::any_of(worlds.begin(), worlds.end(), [](World& world){return world.getSettings().race_mode && world.getSettings().progression_dungeons;})
 
 static std::stringstream lastError;
 
@@ -110,12 +111,13 @@ public:
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
     LocationPool getProgressionLocations();
+    size_t getNumOverworldProgressionLocations();
     AreaEntry& getArea(const std::string& area);
 
     void resolveRandomSettings();
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
-    WorldLoadingError determineRaceModeDungeons();
+    WorldLoadingError determineRaceModeDungeons(WorldPool& worlds);
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);

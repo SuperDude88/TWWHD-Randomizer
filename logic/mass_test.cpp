@@ -9,8 +9,10 @@
 #include <seedgen/permalink.hpp>
 #include <seedgen/config.hpp>
 #include <command/Log.hpp>
+#include <utility/file.hpp>
 
 Config config;
+#define ERROR_CONFIG_PATH "./error_configs"
 
 static int testSettings(const Settings& settings, bool& settingToChange, const std::string& settingName)
 {
@@ -29,12 +31,6 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     config.settings = settings;
     config.seed = seed;
-    ConfigError err = writeToFile("error_config.yaml", config);
-    if (err != ConfigError::NONE)
-    {
-        std::cout << "Could not write error_config to file" << std::endl;
-        return 1;
-    }
 
     int worldCount = 1;
     WorldPool worlds (worldCount);
@@ -44,7 +40,14 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     if (retVal != 0)
     {
-        std::cout << "Generation after changing setting \"" << settingName << "\" failed.\nSettings saved to \"error_config.yaml\"" << std::endl;
+        std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
+        std::cout << "Generation after changing setting \"" << settingName << "\" failed.\nSettings saved to \"" << errorConfigFilename << "\"" << std::endl;
+        ConfigError err = writeToFile(errorConfigFilename, config);
+        if (err != ConfigError::NONE)
+        {
+            std::cout << "Could not write error_config to file" << std::endl;
+            return 1;
+        }
         return 1;
     }
     return 0;
@@ -77,10 +80,13 @@ static int multiWorldTest(const Settings& settings)
     return 0;
 }
 
-#define TEST(settings, setting, name) if(testSettings(settings, setting, name)) return;
+#define TEST(settings, setting, name) if(testSettings(settings, setting, name)) allPassed = false;
 
 void massTest(Config& newConfig)
 {
+    Utility::create_directories(ERROR_CONFIG_PATH);
+
+    bool allPassed = true;
     config = std::move(newConfig);
     Settings settings1;
     settings1.starting_gear = {GameItem::SongOfPassing};
@@ -195,6 +201,8 @@ void massTest(Config& newConfig)
     TEST(settings2, settings2.ho_ho_hints, "5 item hints");
     settings2.location_hints = 5;
     TEST(settings2, settings2.ho_ho_hints, "5 location hints");
+    settings2.num_race_mode_dungeons = 2;
+    TEST(settings2, settings2.race_mode, "race mode 2 dungeon");
     settings2.num_race_mode_dungeons = 3;
     TEST(settings2, settings2.race_mode, "race mode 3 dungeon");
     settings2.num_race_mode_dungeons = 4;
@@ -254,8 +262,48 @@ void massTest(Config& newConfig)
 
     multiWorldTest(settings1);
 
-    std::cout << "All settings tests passed" << std::endl;
+    if (allPassed)
+    {
+        std::cout << "All settings tests passed" << std::endl;
+    }
+}
 
-    // Delete error_config if everything passes
-    std::filesystem::remove(APP_SAVE_PATH "error_config.yaml");
+// Tests how often a settings configuration succeeds
+void testSettings(Config& newConfig, int testCount /*= 1*/)
+{
+    config = std::move(newConfig);
+    int successfulTests = 0;
+    for (int i = 0; i < testCount; i++)
+    {
+        const std::string seed = std::to_string(Random(0, 10000000));
+        auto permalink = create_permalink(config.settings, seed);
+        std::hash<std::string> strHash;
+        auto integer_seed = strHash(permalink);
+
+        std::cout << "Testing with seed \"" << seed << "\"..." << std::flush;
+
+        Random_Init(integer_seed);
+
+        config.seed = seed;
+
+        int worldCount = 1;
+        WorldPool worlds (worldCount);
+        std::vector<Settings> settingsVector (1, config.settings);
+
+        int retVal = generateWorlds(worlds, settingsVector);
+
+        if (retVal == 0)
+        {
+            successfulTests++;
+            std::cout << "Passed" << std::endl;
+        }
+        else
+        {
+            std::cout << "Failed" << std::endl;
+        }
+    }
+
+    int successRate = ((float) successfulTests / (float) testCount) * 100.0f;
+
+    std::cout << "Passed " << std::to_string(successfulTests) << "/" << std::to_string(testCount) << " tests. Success Rate: " << std::to_string(successRate) << "%" << std::endl;
 }
