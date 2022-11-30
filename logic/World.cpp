@@ -309,6 +309,7 @@ World::WorldLoadingError World::determineProgressionLocations()
         {
 
             if (category == LocationCategory::Junk) return false;
+            if (category == LocationCategory::AlwaysProgression) return true;
             return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons)            ||
                    ( category == LocationCategory::GreatFairy        && this->settings.progression_great_fairies)       ||
                    ( category == LocationCategory::PuzzleSecretCave  && this->settings.progression_puzzle_secret_caves) ||
@@ -332,7 +333,7 @@ World::WorldLoadingError World::determineProgressionLocations()
                    ( category == LocationCategory::Obscure           && this->settings.progression_obscure)             ||
                    ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && settings.progression_platforms_rafts) ||
                    ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && settings.progression_big_octos_gunboats);
-        }) || location.categories.contains(LocationCategory::AlwaysProgression))
+        }) && (!location.hasDungeonDependency || settings.progression_dungeons))
         {
             LOG_TO_DEBUG("\t" + name);
             location.progression = true;
@@ -919,6 +920,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         VALID_DUNGEON_CHECK(dungeonName);
         Dungeon& dungeon = dungeons[dungeonName];
         dungeon.outsideDependentLocations.push_back(newEntry.getName());
+        newEntry.hasDungeonDependency = true;
     }
 
     if (!locationObject["Race Mode Location"].IsNone())
