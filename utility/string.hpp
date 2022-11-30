@@ -69,6 +69,8 @@ namespace Utility::Str {
       return stream.str();
     }
 
+    bool contains(const std::string& str, const std::string& substr);
+
     //wrapper for a constexpr string, for use in other templates
     template<size_t N>
     struct StringLiteral {

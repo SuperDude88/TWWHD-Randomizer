@@ -109,6 +109,18 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Allows dungeon keys (as well as maps and compasses) to appear anywhere in the game, not just in the dungeon they're for."
     },
     {
+      "dungeon_small_keys",
+      "<b>Vanilla</b>: Small Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Small Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Small Keys can only appear in any dungeon locations. <b>Overworld</b>: Small Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Small Keys can appear anywhere."
+    },
+    {
+      "dungeon_big_keys",
+      "<b>Vanilla</b>: Big Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Big Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Big Keys can only appear in any dungeon locations. <b>Overworld</b>: Big Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Big Keys can appear anywhere."
+    },
+    {
+      "dungeon_maps_compasses",
+      "<b>Vanilla</b>: Maps/Compasses will appear in their vanilla locations. <b>Own Dungeon</b>: Maps/Compasses can only appear in their respective dungeon. <b>Any Dungeon</b>: Maps/Compasses can only appear in any dungeon locations. <b>Overworld</b>: Maps/Compasses can only appear in non-dungeon locations. <b>Keysanity</b>: Maps/Compasses can appear anywhere."
+    },
+    {
       "race_mode",
       "In Race Mode, certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). Nothing in the other dungeons will ever be required.\nYou can see which islands have the required dungeons on them by opening the sea chart and checking which islands have blue quest markers.",
     },

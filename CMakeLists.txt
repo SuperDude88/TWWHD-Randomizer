@@ -35,6 +35,10 @@ if(FILL_TESTING)
 elseif(MASS_TESTING)
   message("Configuring for Mass Testing")
   add_compile_definitions(MASS_TESTING)
+  if(TEST_COUNT)
+    message("Test Count: " ${TEST_COUNT})
+    add_compile_definitions(TEST_COUNT=${TEST_COUNT})
+  endif()
 endif()
 
 # Version strings for RNG and compatibility checks

@@ -24,6 +24,7 @@
 #define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 #define APPLY_CONFIG_CHECKBOX_SETTING(config, ui, name) if(config.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
+#define APPLY_COMBOBOX_SETTING(config, ui, name) ui->name->setCurrentIndex(static_cast<int>(config.settings.name));
 
 #define APPLY_SPINBOX_SETTING(config, ui, name, min, max) \
     auto& name = config.settings.name;                    \
@@ -351,7 +352,7 @@ void MainWindow::setup_gear_menus()
 
 void MainWindow::update_plandomizer_widget_visbility()
 {
-    // Hide plandomizer input widgets when plandomizer isn't check
+    // Hide plandomizer input widgets when plandomizer isn't checked
     if (ui->plandomizer->isChecked())
     {
         ui->plandomizer_path->setVisible(true);
@@ -442,8 +443,11 @@ void MainWindow::apply_config_settings()
         on_sword_mode_currentIndexChanged(index);
     }
 
+    APPLY_COMBOBOX_SETTING(config, ui, dungeon_small_keys);
+    APPLY_COMBOBOX_SETTING(config, ui, dungeon_big_keys);
+    APPLY_COMBOBOX_SETTING(config, ui, dungeon_maps_compasses);
+
     APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(80.0f));
-    APPLY_CHECKBOX_SETTING(config, ui, keylunacy);
     APPLY_CHECKBOX_SETTING(config, ui, race_mode);
     // Call the slot for the race_mode state change incase it didn't change
     // to potentially grey out the num_race_mode_dungeons combobox
@@ -574,7 +578,7 @@ void MainWindow::on_generate_seed_button_clicked()
     update_permalink();
 }
 
-void MainWindow::update_progress_locations_text()
+int MainWindow::calculate_total_progress_locations()
 {
     int totalProgressionLocations = 0;
     for (auto& categorySet : locationCategories)
@@ -622,6 +626,12 @@ void MainWindow::update_progress_locations_text()
         totalProgressionLocations -= 3;
     }
 
+    return totalProgressionLocations;
+}
+
+void MainWindow::update_progress_locations_text()
+{
+    auto totalProgressionLocations = calculate_total_progress_locations();
     ui->groupBox->setTitle(std::string("Where Should Progress Items Appear? (Selected: " + std::to_string(totalProgressionLocations) + " Possible Progression Locations)").c_str());
 }
 
@@ -707,7 +717,25 @@ void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
     update_permalink();
 }
 
-DEFINE_STATE_CHANGE_FUNCTION(keylunacy)
+void MainWindow::on_dungeon_small_keys_currentTextChanged(const QString &arg1)
+{
+    config.settings.dungeon_small_keys = nameToPlacementOption(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_dungeon_big_keys_currentTextChanged(const QString &arg1)
+{
+    config.settings.dungeon_big_keys = nameToPlacementOption(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_dungeon_maps_compasses_currentTextChanged(const QString &arg1)
+{
+    config.settings.dungeon_maps_compasses = nameToPlacementOption(arg1.toStdString());
+    update_permalink();
+}
 
 void MainWindow::on_race_mode_stateChanged(int arg1) {
     UPDATE_CONFIG_STATE(config, ui, race_mode);
@@ -984,6 +1012,9 @@ void MainWindow::on_randomize_button_clicked()
         show_warning_dialog("Currently there is a bug where the King of Red Lions will softlock you if he has more than 10 hints. Please reduce the number of hints to 10 or less, or enable Ho-Ho hints as well", "Hint Warning");
         return;
     }
+
+    auto totalOverworldProgressLocations = calculate_total_progress_locations() - (config.settings.progression_dungeons ? : 0);
+
 
     // Check to make sure the base game and output are directories
     if (!std::filesystem::is_directory(config.gameBaseDir))

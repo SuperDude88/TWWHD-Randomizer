@@ -62,6 +62,7 @@ private:
     void setup_gear_menus();
     void setup_mixed_pools_combobox();
     void apply_config_settings();
+    int  calculate_total_progress_locations();
     void update_progress_locations_text();
     void swap_selected_gear(QListView* gearFrom, QStringListModel* gearTo);
     void update_starting_gear();
@@ -111,7 +112,6 @@ private slots:
     void on_randomize_charts_stateChanged(int arg1);
     void on_chest_type_matches_contents_stateChanged(int arg1);
     void on_damage_multiplier_valueChanged(int multiplier);
-    void on_keylunacy_stateChanged(int arg1);
     void on_race_mode_stateChanged(int arg1);
     void on_num_race_mode_dungeons_currentIndexChanged(int index);
     void on_num_starting_triforce_shards_currentIndexChanged(int index);
@@ -163,5 +163,8 @@ private slots:
     void on_clearer_hints_stateChanged(int arg1);
     void on_repack_for_console_stateChanged(int arg1);
     void on_console_output_browse_button_clicked();
+    void on_dungeon_small_keys_currentTextChanged(const QString &arg1);
+    void on_dungeon_big_keys_currentTextChanged(const QString &arg1);
+    void on_dungeon_maps_compasses_currentTextChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H

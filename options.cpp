@@ -26,7 +26,7 @@ static std::unordered_map<PigColor, std::string> pigColorNameMap = {
     {PigColor::RANDOM, "RANDOM"}
 };
 
-static std::unordered_map<PlacementOption, std::string> PlacementOptionNameMap = {
+static std::unordered_map<PlacementOption, std::string> placementOptionNameMap = {
     {PlacementOption::Vanilla, "Vanilla"},
     {PlacementOption::OwnDungeon, "Own Dungeon"},
     {PlacementOption::AnyDungeon, "Any Dungeon"},
@@ -92,12 +92,12 @@ PlacementOption nameToPlacementOption(const std::string& name) {
 }
 
 std::string PlacementOptionToName(const PlacementOption& option) {
-    if (PlacementOptionNameMap.count(option) == 0)
+    if (placementOptionNameMap.count(option) == 0)
     {
         return "INVALID";
     }
 
-    return PlacementOptionNameMap.at(option);
+    return placementOptionNameMap.at(option);
 }
 
 // Make sure there aren't any naming conflicts when adding future settings
