@@ -575,6 +575,11 @@ void MainWindow::on_generate_seed_button_clicked()
     std::string seed = generate_seed();
     config.seed = seed;
     ui->seed->setText(seed.c_str());
+}
+
+void MainWindow::on_seed_textChanged(const QString &arg1)
+{
+    config.seed = arg1.toStdString();
     update_permalink();
 }
 
@@ -1150,3 +1155,4 @@ void MainWindow::load_locations()
         }
     }
 }
+
