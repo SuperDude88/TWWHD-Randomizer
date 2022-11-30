@@ -105,10 +105,6 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Controls whether you start with the Hero's Sword, the Hero's Sword is randomized, or if there are no swords in the entire game.\nSwordless and No Starting Sword are challenge modes, not recommended for your first run. Also, FF's Phantom Ganon is vulnerable to Skull Hammer in Swordless mode only."
     },
     {
-      "keylunacy",
-      "Allows dungeon keys (as well as maps and compasses) to appear anywhere in the game, not just in the dungeon they're for."
-    },
-    {
       "dungeon_small_keys",
       "<b>Vanilla</b>: Small Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Small Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Small Keys can only appear in any dungeon locations. <b>Overworld</b>: Small Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Small Keys can appear anywhere."
     },

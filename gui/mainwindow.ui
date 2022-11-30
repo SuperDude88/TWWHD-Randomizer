@@ -763,16 +763,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="2">
-                <widget class="QCheckBox" name="keylunacy">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Key-Lunacy</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </widget>
             </item>
