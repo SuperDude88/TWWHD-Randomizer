@@ -99,7 +99,6 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.progression_island_puzzles = false;
     conf.settings.progression_obscure = false;
 
-    conf.settings.keylunacy = false;
     conf.settings.dungeon_small_keys = PlacementOption::Vanilla;
     conf.settings.dungeon_big_keys = PlacementOption::Vanilla;
     conf.settings.dungeon_maps_compasses = PlacementOption::Vanilla;
@@ -216,7 +215,6 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, progression_island_puzzles)
     SET_BOOL_FIELD(root, out, progression_obscure)
 
-    SET_BOOL_FIELD(root, out, keylunacy)
     SET_BOOL_FIELD(root, out, randomize_charts)
     SET_BOOL_FIELD(root, out, randomize_starting_island)
     SET_BOOL_FIELD(root, out, randomize_dungeon_entrances)
@@ -406,7 +404,6 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, progression_island_puzzles)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_obscure)
 
-    WRITE_SETTING_BOOL_FIELD(root, config, keylunacy)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_charts)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_starting_island)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_dungeon_entrances)

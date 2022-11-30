@@ -127,7 +127,6 @@ void massTest(Config& newConfig)
     TEST(settings1, settings1.race_mode, "race mode 5 dungeon");
     settings1.num_race_mode_dungeons = 6;
     TEST(settings1, settings1.race_mode, "race mode 6 dungeon");
-    TEST(settings1, settings1.keylunacy, "keylunacy");
     settings1.dungeon_small_keys = PlacementOption::OwnDungeon;
     TEST(settings1, settings1.race_mode, "dungeon small keys Own Dungeon");
     settings1.dungeon_small_keys = PlacementOption::AnyDungeon;
@@ -235,7 +234,6 @@ void massTest(Config& newConfig)
     TEST(settings2, settings2.race_mode, "dungeon small keys Any Dungeon");
     settings1.dungeon_small_keys = PlacementOption::OwnDungeon;
     TEST(settings2, settings2.race_mode, "dungeon small keys Own Dungeon");
-    TEST(settings2, settings2.keylunacy, "keylunacy");
     TEST(settings2, settings2.progression_obscure, "progression obscure");
     TEST(settings2, settings2.progression_island_puzzles, "progression island puzzles");
     TEST(settings2, settings2.progression_savage_labyrinth, "progression savage labyrinth");

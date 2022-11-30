@@ -158,7 +158,6 @@ struct Settings {
     bool progression_island_puzzles = false;
     bool progression_obscure = false;
 
-    bool keylunacy = false;
     PlacementOption dungeon_small_keys = PlacementOption::Vanilla;
     PlacementOption dungeon_big_keys = PlacementOption::Vanilla;
     PlacementOption dungeon_maps_compasses = PlacementOption::Vanilla;
