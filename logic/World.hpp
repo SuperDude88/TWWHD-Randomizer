@@ -19,7 +19,7 @@
 
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
 #define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getProgressionLocations());}
-#define ANY_WORLD_HAS_RACE_MODE(worlds) std::any_of(worlds.begin(), worlds.end(), [](World& world){return world.getSettings().race_mode && world.getSettings().progression_dungeons;})
+#define ANY_WORLD_HAS_RACE_MODE(worlds) std::any_of(worlds.begin(), worlds.end(), [](World& world){return world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode;})
 
 static std::stringstream lastError;
 

@@ -112,7 +112,6 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::DungeonSmallKeys,
     Option::DungeonBigKeys,
     Option::DungeonMapsAndCompasses,
-    Option::RaceMode,
     Option::NumRaceModeDungeons,
     Option::NumShards,
     Option::RandomCharts,
@@ -197,10 +196,11 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
             bitsWriter.write(getSetting(settings, option), 8);
         }
         // 3-bit SpinBox options
-        else if (option == Option::PathHints     ||
-                 option == Option::BarrenHints   ||
-                 option == Option::LocationHints ||
-                 option == Option::ItemHints     ||
+        else if (option == Option::ProgressDungeons ||
+                 option == Option::PathHints        ||
+                 option == Option::BarrenHints      ||
+                 option == Option::LocationHints    ||
+                 option == Option::ItemHints        ||
                  option == Option::StartingHC)
         {
             bitsWriter.write(getSetting(settings, option), 3);

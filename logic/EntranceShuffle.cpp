@@ -367,6 +367,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         GET_COMPLETE_PROGRESSION_LOCATION_POOL(progressionLocations, worlds);
         determineMajorItems(worlds, itemPool2, progressionLocations);
         filterAndEraseFromPool(itemPool2, [&](const Item& item){return !item.isMajorItem();});
+        // Run a dummy forward fill attempt until enough spots are open, then clear the worlds
         auto err = forwardFillUntilMoreFreeSpace(worlds, itemPool2, progressionLocations);
         clearWorlds(worlds);
         if (err != FillError::NONE)
@@ -381,7 +382,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     // race mode dungeon
     for (auto& world : worlds)
     {
-        if (world.getSettings().race_mode)
+        if (world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode || world.getSettings().progression_dungeons == ProgressionDungeons::RequireBosses)
         {
             std::unordered_set<std::string> raceModeIslands = {};
             for (auto& [name, dungeon] : world.dungeons)

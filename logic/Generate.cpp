@@ -118,7 +118,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       for (auto& world : worlds)
       {
           auto& settings = world.getSettings();
-          if (settings.progression_dungeons)
+          if (settings.progression_dungeons != ProgressionDungeons::Disabled)
           {
               size_t neededOverworldLocations = 0;
               size_t numOverworldLocations = world.getNumOverworldProgressionLocations();
@@ -191,7 +191,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           if (fillError == FillError::NONE || fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS || fillError == FillError::PLANDOMIZER_ERROR) {
               break;
           }
-          LOG_TO_DEBUG("Fill attempt failed completely. Will retry " + std::to_string(totalFillAttempts) + " more times");
+          LOG_TO_DEBUG("Fill attempt failed completely. Error: " + errorToName(fillError) + ". Will retry " + std::to_string(totalFillAttempts) + " more times");
           clearWorlds(worlds);
           if (totalFillAttempts == 0 && buildRetryCount == 0)
           {

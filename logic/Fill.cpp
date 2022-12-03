@@ -73,7 +73,7 @@ static FillError fillTheRest(WorldPool& worlds, ItemPool& items, LocationPool& l
 // In this case we'll switch to forward fill for some time until there are more free places to
 // place items. The 3rd parameter allowedLocations is a copy of the passed in LocationPool since
 // we want to locally modify it in this function, but not outside of it
-FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlace, LocationPool allowedLocations, int openLocations /*= 2*/)
+FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlace, LocationPool allowedLocations, size_t openLocations /*= 3*/)
 {
     ItemPool forwardPlacedItems;
     ItemPool noItems;
@@ -83,6 +83,11 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
     {
         LOG_TO_DEBUG("No reachable locations during forward fill attempt");
         return FillError::NO_REACHABLE_LOCATIONS;
+    }
+
+    if (accessibleLocations.size() >= openLocations)
+    {
+        return FillError::NONE;
     }
 
     bool successfullyPlacedItems = false;
@@ -364,7 +369,10 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
             // and this isn't a race mode dungeon, then take all locations in
             // the dungeon since none of them are progression anyway
             auto worldLocations = world.getLocations();
-            auto dungeonLocations = filterFromPool(worldLocations, [&](const Location* loc){return elementInPool(loc->getName(), dungeon.locations) && (loc->progression || !settings.progression_dungeons || (settings.race_mode && !dungeon.isRaceModeDungeon));});
+            auto dungeonLocations = filterFromPool(worldLocations, [&](const Location* loc){
+                return elementInPool(loc->getName(), dungeon.locations) &&
+                          (loc->progression || settings.progression_dungeons == ProgressionDungeons::Disabled ||
+                          (settings.progression_dungeons == ProgressionDungeons::RaceMode && !dungeon.isRaceModeDungeon));});
 
             // Place small keys and the big key using only items and locations
             // from this world (even in multiworld)
@@ -464,7 +472,9 @@ static FillError randomizeRestrictedDungeonItems(WorldPool& worlds, ItemPool& it
             auto bigKeys       = filterFromPool(itemPool, [&](const Item& item){return item == bigKey;});
             auto mapsCompasses = filterFromPool(itemPool, [&](const Item& item){return item == map || item == compass;});
 
-            bool addItemsToProgressionPool = settings.progression_dungeons && (!settings.race_mode || (settings.race_mode && dungeon.isRaceModeDungeon));
+            bool addItemsToProgressionPool = settings.progression_dungeons == ProgressionDungeons::Standard ||
+                                             settings.progression_dungeons == ProgressionDungeons::RequireBosses ||
+                                            (settings.progression_dungeons == ProgressionDungeons::RaceMode && dungeon.isRaceModeDungeon);
 
             if (settings.dungeon_small_keys == PlacementOption::AnyDungeon)
             {
@@ -586,7 +596,12 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     }
 
     // Then place the items in the race mode locations
-    return assumedFill(worlds, raceModeItems, itemPool, raceModeLocations);
+    FillError err;
+    FILL_ERROR_CHECK(assumedFill(worlds, raceModeItems, itemPool, raceModeLocations));
+    // Recalculate major items since new items may now be required depending on
+    // what items were placed at race mode locations
+    determineMajorItems(worlds, itemPool, allLocations);
+    return FillError::NONE;
 }
 
 static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
@@ -678,11 +693,9 @@ FillError fill(WorldPool& worlds)
     // we need to place items that go into more restrictive location pools first before
     // we can place other items.
     FILL_ERROR_CHECK(placeRaceModeItems(worlds, itemPool, allLocations));
-    // Recalculate major items since new items may now be required depending on
-    // what items were placed at race mode locations
-    determineMajorItems(worlds, itemPool, allLocations);
     FILL_ERROR_CHECK(handleDungeonItems(worlds, itemPool));
-    // Recalculate major items AGAIN since new items may now be required depending on
+
+    // Recalculate major items again since new items may now be required depending on
     // what items were placed when handling dungeon items
     determineMajorItems(worlds, itemPool, allLocations);
 
@@ -729,7 +742,7 @@ void clearWorlds(WorldPool& worlds)
     }
 }
 
-const char* errorToName(FillError err)
+std::string errorToName(FillError err)
 {
     switch(err)
     {

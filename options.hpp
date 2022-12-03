@@ -23,11 +23,19 @@ enum struct SwordMode {
 };
 
 enum struct PlacementOption {
-    Vanilla,
+    Vanilla = 0,
     OwnDungeon,
     AnyDungeon,
     Overworld,
     Keysanity,
+    INVALID
+};
+
+enum struct ProgressionDungeons {
+    Disabled = 0,
+    Standard,
+    RequireBosses,
+    RaceMode,
     INVALID
 };
 
@@ -134,7 +142,8 @@ enum struct Option {
 };
 
 struct Settings {
-    bool progression_dungeons = false;
+    // bool progression_dungeons = false;
+    ProgressionDungeons progression_dungeons = ProgressionDungeons::Standard;
     bool progression_great_fairies = false;
     bool progression_puzzle_secret_caves = false;
     bool progression_combat_secret_caves = false;
@@ -190,7 +199,6 @@ struct Settings {
     SwordMode sword_mode = SwordMode::StartWithSword;
     bool skip_rematch_bosses = false;
     bool invert_sea_compass_x_axis = false;
-    bool race_mode = false;
     uint8_t num_race_mode_dungeons = 3;
     float damage_multiplier = 2.0f;
     bool chest_type_matches_contents = false;
@@ -219,6 +227,10 @@ std::string PigColorToName(const PigColor& name);
 PlacementOption nameToPlacementOption(const std::string& name);
 
 std::string PlacementOptionToName(const PlacementOption& option);
+
+ProgressionDungeons nameToProgressionDungeons(const std::string& name);
+
+std::string ProgressionDungeonsToName(const ProgressionDungeons& option);
 
 int nameToSettingInt(const std::string& name);
 
