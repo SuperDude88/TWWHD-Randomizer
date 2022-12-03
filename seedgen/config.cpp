@@ -75,7 +75,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.repack_for_console = false;
     conf.consoleOutputDir = "";
 
-    conf.settings.progression_dungeons = true;
+    conf.settings.progression_dungeons = ProgressionDungeons::Standard;
     conf.settings.progression_great_fairies = true;
     conf.settings.progression_puzzle_secret_caves = true;
     conf.settings.progression_combat_secret_caves = false;
@@ -131,7 +131,6 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.sword_mode = SwordMode::StartWithSword;
     conf.settings.skip_rematch_bosses = true;
     conf.settings.invert_sea_compass_x_axis = false;
-    conf.settings.race_mode = false;
     conf.settings.num_race_mode_dungeons = 4;
     conf.settings.damage_multiplier = 2.0f;
     conf.settings.chest_type_matches_contents = false;
@@ -191,7 +190,15 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     SET_FIELD_EMPTY_STR_IF_FAIL(root, out, seed)
 
-    SET_BOOL_FIELD(root, out, progression_dungeons)
+    if(root["progression_dungeons"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].As<std::string>());
+      if (out.settings.progression_dungeons == ProgressionDungeons::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.progression_dungeons = ProgressionDungeons::Standard;
+      }
+    }
     SET_BOOL_FIELD(root, out, progression_great_fairies)
     SET_BOOL_FIELD(root, out, progression_puzzle_secret_caves)
     SET_BOOL_FIELD(root, out, progression_combat_secret_caves)
@@ -242,7 +249,6 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, add_shortcut_warps_between_dungeons)
     SET_BOOL_FIELD(root, out, skip_rematch_bosses)
     SET_BOOL_FIELD(root, out, invert_sea_compass_x_axis)
-    SET_BOOL_FIELD(root, out, race_mode)
     SET_INT_FIELD(root, out, num_race_mode_dungeons)
     SET_INT_FIELD(root, out, damage_multiplier)
     SET_BOOL_FIELD(root, out, chest_type_matches_contents)
@@ -380,7 +386,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_CONFIG_BOOL_FIELD(root, config, repack_for_console)
     WRITE_CONFIG_FIELD(root, config, consoleOutputDir)
 
-    WRITE_SETTING_BOOL_FIELD(root, config, progression_dungeons)
+    root["progression_dungeons"] = ProgressionDungeonsToName(config.settings.progression_dungeons);
     WRITE_SETTING_BOOL_FIELD(root, config, progression_great_fairies)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_puzzle_secret_caves)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_combat_secret_caves)
@@ -431,7 +437,6 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
     WRITE_SETTING_BOOL_FIELD(root, config, skip_rematch_bosses)
     WRITE_SETTING_BOOL_FIELD(root, config, invert_sea_compass_x_axis)
-    WRITE_SETTING_BOOL_FIELD(root, config, race_mode)
     WRITE_NUM_FIELD(root, config, num_race_mode_dungeons)
     WRITE_NUM_FIELD(root, config, damage_multiplier)
     WRITE_SETTING_BOOL_FIELD(root, config, chest_type_matches_contents)

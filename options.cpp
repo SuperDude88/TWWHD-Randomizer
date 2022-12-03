@@ -42,6 +42,20 @@ static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap =
     {"Keysanity", PlacementOption::Keysanity},
 };
 
+static std::unordered_map<ProgressionDungeons, std::string> progressionDungeonsNameMap = {
+    {ProgressionDungeons::Disabled, "Disabled"},
+    {ProgressionDungeons::Standard, "Standard"},
+    {ProgressionDungeons::RequireBosses, "Require Bosses"},
+    {ProgressionDungeons::RaceMode, "Race Mode"},
+};
+
+static std::unordered_map<std::string, ProgressionDungeons> nameProgressionDungeonsMap = {
+    {"Disabled", ProgressionDungeons::Disabled},
+    {"Standard", ProgressionDungeons::Standard},
+    {"Require Bosses", ProgressionDungeons::RequireBosses},
+    {"Race Mode", ProgressionDungeons::RaceMode},
+};
+
 SwordMode nameToSwordMode(const std::string& name) {
 
     if (nameSwordModeMap.count(name) == 0)
@@ -98,6 +112,24 @@ std::string PlacementOptionToName(const PlacementOption& option) {
     }
 
     return placementOptionNameMap.at(option);
+}
+
+ProgressionDungeons nameToProgressionDungeons(const std::string& name) {
+    if (nameProgressionDungeonsMap.count(name) == 0)
+    {
+        return ProgressionDungeons::INVALID;
+    }
+
+    return nameProgressionDungeonsMap.at(name);
+}
+
+std::string ProgressionDungeonsToName(const ProgressionDungeons& option) {
+    if (progressionDungeonsNameMap.count(option) == 0)
+    {
+        return "INVALID";
+    }
+
+    return progressionDungeonsNameMap.at(option);
 }
 
 // Make sure there aren't any naming conflicts when adding future settings
@@ -273,7 +305,7 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
 
 	switch (option) {
     case Option::ProgressDungeons:
-        return settings.progression_dungeons;
+        return static_cast<std::underlying_type_t<ProgressionDungeons>>(settings.progression_dungeons);
     case Option::ProgressGreatFairies:
         return settings.progression_great_fairies;
     case Option::ProgressPuzzleCaves:
@@ -378,8 +410,6 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.skip_rematch_bosses;
     case Option::InvertCompass:
         return settings.invert_sea_compass_x_axis;
-    case Option::RaceMode:
-        return settings.race_mode;
     case Option::NumRaceModeDungeons:
         return settings.num_race_mode_dungeons;
     case Option::DamageMultiplier:
@@ -414,7 +444,7 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
 {
   switch (option) {
     case Option::ProgressDungeons:
-        settings.progression_dungeons = value; return;
+        settings.progression_dungeons = static_cast<ProgressionDungeons>(value); return;
     case Option::ProgressGreatFairies:
         settings.progression_great_fairies = value; return;
     case Option::ProgressPuzzleCaves:
@@ -519,8 +549,6 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.skip_rematch_bosses = value; return;
     case Option::InvertCompass:
         settings.invert_sea_compass_x_axis = value; return;
-    case Option::RaceMode:
-        settings.race_mode = value; return;
     case Option::NumRaceModeDungeons:
         settings.num_race_mode_dungeons = value; return;
     case Option::DamageMultiplier:

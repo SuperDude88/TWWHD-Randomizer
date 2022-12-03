@@ -36,7 +36,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Race mode locations are also goal locations
-            if (dungeon.isRaceModeDungeon && world.getSettings().race_mode)
+            if (dungeon.isRaceModeDungeon && (world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode || world.getSettings().progression_dungeons == ProgressionDungeons::RequireBosses))
             {
                 Location* goalLocation = &world.locationEntries[dungeon.raceModeLocation];
                 world.pathLocations[goalLocation] = {};
@@ -69,7 +69,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 if (location->hasKnownVanillaItem ||
                    (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys != PlacementOption::OwnDungeon) ||
                    (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   != PlacementOption::OwnDungeon) ||
-                   (location->isRaceModeLocation && settings.race_mode))
+                   (location->isRaceModeLocation && (settings.progression_dungeons == ProgressionDungeons::RequireBosses || settings.progression_dungeons == ProgressionDungeons::RaceMode)))
                 {
                     continue;
                 }
@@ -455,14 +455,14 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     for (auto& [name, location] : world.locationEntries)
     {
         if (location.progression              &&  // if the location is a progression location...
+           !location.currentItem.isJunkItem() &&  // and does not have a junk item...
            !location.hasKnownVanillaItem      &&  // and does not have a known vanilla item...
            !location.hasBeenHinted            &&  // and has not been hinted at yet...
-           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);}) && // and isn't part of an invalid hint region...
-           !location.currentItem.isJunkItem() &&  // and does not have a junk item...
           (!location.currentItem.isSmallKey() || settings.dungeon_small_keys != PlacementOption::OwnDungeon) && // and isn't a small key when small keys are in their own dungeon
           (!location.currentItem.isBigKey()   || settings.dungeon_big_keys   != PlacementOption::OwnDungeon) && // and isn't a big key when big keys are in their own dungeon
-          (!location.isRaceModeLocation || !world.getSettings().race_mode) &&            // and isn't a race mode location when race mode is enabled...
-          ( location.hintPriority != "Always" || !world.getSettings().use_always_hints)) // and the hint priority is not "Always" when we're using always hints...
+          (!location.isRaceModeLocation || settings.progression_dungeons == ProgressionDungeons::Standard)   && // and isn't a race mode location when race mode/require bosses is enabled...
+          ( location.hintPriority != "Always" || !world.getSettings().use_always_hints)                      && // and the hint priority is not "Always" when we're using always hints...
+           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);})) // and isn't part of an invalid hint region...
            {
               // Then the item is a possible item hint location
               possibleItemHintLocations.push_back(&location);

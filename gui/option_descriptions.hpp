@@ -8,7 +8,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     // Progression Locations
     {
       "progression_dungeons",
-      "This controls whether dungeons can contain progress items.<br><u>If this is not checked, dungeons will still be randomized</u>, but will only contain optional items you don't need to beat the game."
+      "<b>Disabled</b>: Dungeons will not contain any items necessary to beat the game. <b>Standard</b>: Dungeons may contain items necessary to beat the game. <b>Require Bosses</b>: Certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). <b>Race Mode</b>: Same as Require Bosses, except dungeons without a required boss will not contain progress items. You can set the number of required bosses/dungeons in Additional Randmozation Settings."
     },
     {
       "progression_great_fairies",
@@ -106,15 +106,15 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "dungeon_small_keys",
-      "<b>Vanilla</b>: Small Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Small Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Small Keys can only appear in any dungeon locations. <b>Overworld</b>: Small Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Small Keys can appear anywhere."
+      "<b>Vanilla</b>: Small Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Small Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Small Keys can only appear in dungeon locations. <b>Overworld</b>: Small Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Small Keys can appear anywhere."
     },
     {
       "dungeon_big_keys",
-      "<b>Vanilla</b>: Big Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Big Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Big Keys can only appear in any dungeon locations. <b>Overworld</b>: Big Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Big Keys can appear anywhere."
+      "<b>Vanilla</b>: Big Keys will appear in their vanilla locations. <b>Own Dungeon</b>: Big Keys can only appear in their respective dungeon. <b>Any Dungeon</b>: Big Keys can only appear in dungeon locations. <b>Overworld</b>: Big Keys can only appear in non-dungeon locations. <b>Keysanity</b>: Big Keys can appear anywhere."
     },
     {
       "dungeon_maps_compasses",
-      "<b>Vanilla</b>: Maps/Compasses will appear in their vanilla locations. <b>Own Dungeon</b>: Maps/Compasses can only appear in their respective dungeon. <b>Any Dungeon</b>: Maps/Compasses can only appear in any dungeon locations. <b>Overworld</b>: Maps/Compasses can only appear in non-dungeon locations. <b>Keysanity</b>: Maps/Compasses can appear anywhere."
+      "<b>Vanilla</b>: Maps/Compasses will appear in their vanilla locations. <b>Own Dungeon</b>: Maps/Compasses can only appear in their respective dungeon. <b>Any Dungeon</b>: Maps/Compasses can only appear in dungeon locations. <b>Overworld</b>: Maps/Compasses can only appear in non-dungeon locations. <b>Keysanity</b>: Maps/Compasses can appear anywhere."
     },
     {
       "race_mode",
@@ -122,7 +122,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "num_race_mode_dungeons",
-      "Select the number of dungeons that are required in Race Mode.\nRequired dungeon bosses will drop required items (e.g. Triforce Shards). Nothing in the other dungeons will ever be required.",
+      "Select the number of requried bosses/dungeons that are required in Race Mode.\nRequired dungeon bosses will drop required items (e.g. Triforce Shards).",
     },
     {
       "num_starting_triforce_shards",

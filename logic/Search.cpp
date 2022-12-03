@@ -150,13 +150,6 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
 // will be searched.
 static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch = -1)
 {
-    // If for some reason we're generating a playthrough again, clear the playthrough spheres
-    if (searchMode == SearchMode::GeneratePlaythrough)
-    {
-        worlds[0].playthroughSpheres.clear();
-        worlds[0].entranceSpheres.clear();
-    }
-
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)
     {

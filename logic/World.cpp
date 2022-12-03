@@ -310,30 +310,30 @@ World::WorldLoadingError World::determineProgressionLocations()
 
             if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
-            return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons)            ||
-                   ( category == LocationCategory::GreatFairy        && this->settings.progression_great_fairies)       ||
-                   ( category == LocationCategory::PuzzleSecretCave  && this->settings.progression_puzzle_secret_caves) ||
-                   ( category == LocationCategory::CombatSecretCave  && this->settings.progression_combat_secret_caves) ||
-                   ( category == LocationCategory::ShortSideQuest    && this->settings.progression_short_sidequests)    ||
-                   ( category == LocationCategory::LongSideQuest     && this->settings.progression_long_sidequests)     ||
-                   ( category == LocationCategory::SpoilsTrading     && this->settings.progression_spoils_trading)      ||
-                   ( category == LocationCategory::Minigame          && this->settings.progression_minigames)           ||
-                   ( category == LocationCategory::FreeGift          && this->settings.progression_free_gifts)          ||
-                   ( category == LocationCategory::Mail              && this->settings.progression_mail)                ||
-                   ( category == LocationCategory::Submarine         && this->settings.progression_submarines)          ||
-                   ( category == LocationCategory::EyeReefChests     && this->settings.progression_eye_reef_chests)     ||
+            return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons != ProgressionDungeons::Disabled)  ||
+                   ( category == LocationCategory::GreatFairy        && this->settings.progression_great_fairies)                              ||
+                   ( category == LocationCategory::PuzzleSecretCave  && this->settings.progression_puzzle_secret_caves)                        ||
+                   ( category == LocationCategory::CombatSecretCave  && this->settings.progression_combat_secret_caves)                        ||
+                   ( category == LocationCategory::ShortSideQuest    && this->settings.progression_short_sidequests)                           ||
+                   ( category == LocationCategory::LongSideQuest     && this->settings.progression_long_sidequests)                            ||
+                   ( category == LocationCategory::SpoilsTrading     && this->settings.progression_spoils_trading)                             ||
+                   ( category == LocationCategory::Minigame          && this->settings.progression_minigames)                                  ||
+                   ( category == LocationCategory::FreeGift          && this->settings.progression_free_gifts)                                 ||
+                   ( category == LocationCategory::Mail              && this->settings.progression_mail)                                       ||
+                   ( category == LocationCategory::Submarine         && this->settings.progression_submarines)                                 ||
+                   ( category == LocationCategory::EyeReefChests     && this->settings.progression_eye_reef_chests)                            ||
                    ( category == LocationCategory::SunkenTreasure    && this->settings.progression_triforce_charts && chartLeadsToSunkenTreasure(location, "Triforce Chart")) ||
                    ( category == LocationCategory::SunkenTreasure    && this->settings.progression_treasure_charts && chartLeadsToSunkenTreasure(location, "Treasure Chart")) ||
-                   ( category == LocationCategory::ExpensivePurchase && this->settings.progression_expensive_purchases) ||
-                   ( category == LocationCategory::Misc              && this->settings.progression_misc)                ||
-                   ( category == LocationCategory::TingleChest       && this->settings.progression_tingle_chests)       ||
-                   ( category == LocationCategory::BattleSquid       && this->settings.progression_battlesquid)         ||
-                   ( category == LocationCategory::SavageLabyrinth   && this->settings.progression_savage_labyrinth)    ||
-                   ( category == LocationCategory::IslandPuzzle      && this->settings.progression_island_puzzles)      ||
-                   ( category == LocationCategory::Obscure           && this->settings.progression_obscure)             ||
+                   ( category == LocationCategory::ExpensivePurchase && this->settings.progression_expensive_purchases)                        ||
+                   ( category == LocationCategory::Misc              && this->settings.progression_misc)                                       ||
+                   ( category == LocationCategory::TingleChest       && this->settings.progression_tingle_chests)                              ||
+                   ( category == LocationCategory::BattleSquid       && this->settings.progression_battlesquid)                                ||
+                   ( category == LocationCategory::SavageLabyrinth   && this->settings.progression_savage_labyrinth)                           ||
+                   ( category == LocationCategory::IslandPuzzle      && this->settings.progression_island_puzzles)                             ||
+                   ( category == LocationCategory::Obscure           && this->settings.progression_obscure)                                    ||
                    ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && settings.progression_platforms_rafts) ||
                    ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && settings.progression_big_octos_gunboats);
-        }) && (!location.hasDungeonDependency || settings.progression_dungeons))
+        }) && (!location.hasDungeonDependency || settings.progression_dungeons != ProgressionDungeons::Disabled))
         {
             LOG_TO_DEBUG("\t" + name);
             location.progression = true;
@@ -350,7 +350,7 @@ World::WorldLoadingError World::determineProgressionLocations()
 
 World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 {
-    if (settings.race_mode)
+    if (settings.progression_dungeons == ProgressionDungeons::RequireBosses || settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
         std::vector<Dungeon> dungeonPool = {};
         for (auto& [name, dungeon] : dungeons)
@@ -379,7 +379,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
             // Loop through all the dungeons and see if any of them have items plandomized
             // within them (or within their dependent locations). If they have major items
             // plandomized, then select those dungeons as race mode dungeons
-            if (settings.plandomizer)
+            if (settings.plandomizer && settings.progression_dungeons == ProgressionDungeons::RaceMode)
             {
                 for (const auto& dungeon : dungeonPool)
                 {
@@ -437,7 +437,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     dungeons[dungeon.name].isRaceModeDungeon = true;
                     setRaceModeDungeons++;
                 }
-                else
+                else if (settings.progression_dungeons == ProgressionDungeons::RaceMode)
                 {
                     // If we've already chosen our race mode dungeons, then set all
                     // the other dungeons' locations as non-progression. If dungeons

@@ -695,7 +695,7 @@ public:
 				UPDATE_DIALOG_VALUE(40);
 				UPDATE_DIALOG_LABEL("Saving items...");
 				resetRPX();
-				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
+				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save location " + location.getName());

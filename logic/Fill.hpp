@@ -15,9 +15,9 @@ enum struct FillError
 };
 
 void placeVanillaItems(WorldPool& worlds);
-FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlace, LocationPool allowedLocations, int openLocations = 3);
+FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlace, LocationPool allowedLocations, size_t openLocations = 3);
 FillError validateEnoughLocations(WorldPool& worlds);
 void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations);
 FillError fill(std::vector<World>& worlds);
 void clearWorlds(WorldPool& worlds);
-const char* errorToName(FillError err);
+std::string errorToName(FillError err);
