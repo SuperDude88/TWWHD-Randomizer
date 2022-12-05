@@ -96,6 +96,18 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 location->currentItem = itemAtLocation;
             }
         }
+
+        #ifdef ENABLE_DEBUG
+            for (auto& [goalLocation, pathLocations] : world.pathLocations)
+            {
+                LOG_TO_DEBUG("Path locations for " + goalLocation->getName() + " [");
+                for (auto location : pathLocations)
+                {
+                    LOG_TO_DEBUG("  " + location->getName());
+                }
+                LOG_TO_DEBUG("]");
+            }
+        #endif
     }
 
     // Give back nonprogress location items
@@ -291,12 +303,6 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
 
     for (uint8_t i = 0; i < world.getSettings().path_hints; i++)
     {
-        if (goalLocations.empty())
-        {
-            LOG_TO_DEBUG("No more possible path hints");
-            break;
-        }
-
         // Try to get at least one hint for each race mode dungeon first
         Location* goalLocation = nullptr;
         if (i < goalLocations.size())
@@ -313,6 +319,13 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             }
             goalLocation = RandomElement(goalLocations);
         }
+
+        if (goalLocations.empty())
+        {
+            LOG_TO_DEBUG("No more possible path hints");
+            break;
+        }
+
         auto hintLocation = getHintableLocation(world.pathLocations[goalLocation]);
         if (hintLocation == nullptr)
         {
