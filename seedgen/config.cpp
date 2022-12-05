@@ -99,9 +99,9 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.progression_island_puzzles = false;
     conf.settings.progression_obscure = false;
 
-    conf.settings.dungeon_small_keys = PlacementOption::Vanilla;
-    conf.settings.dungeon_big_keys = PlacementOption::Vanilla;
-    conf.settings.dungeon_maps_compasses = PlacementOption::Vanilla;
+    conf.settings.dungeon_small_keys = PlacementOption::OwnDungeon;
+    conf.settings.dungeon_big_keys = PlacementOption::OwnDungeon;
+    conf.settings.dungeon_maps_compasses = PlacementOption::OwnDungeon;
     conf.settings.randomize_charts = false;
     conf.settings.randomize_starting_island = false;
     conf.settings.randomize_dungeon_entrances = false;
