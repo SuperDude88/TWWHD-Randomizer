@@ -6,6 +6,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 namespace Utility::Str {
     std::string toUTF8(const std::u16string& str);

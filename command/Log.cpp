@@ -61,7 +61,8 @@ BasicLog& BasicLog::getInstance() {
     return s_Instance;
 }
 
-void BasicLog::log(const std::string& msg) {
+void BasicLog::log(const std::string& msg, const bool& timestamp) {
+    if(timestamp) output << "[" << ProgramTime::getTimeStr() << "] ";
     output << msg << std::endl;
 }
 
@@ -109,8 +110,9 @@ ErrorLog& ErrorLog::getInstance() {
     return s_Instance;
 }
 
-void ErrorLog::log(const std::string& msg) {
-    output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
+void ErrorLog::log(const std::string& msg, const bool& timestamp) {
+    if(timestamp) output << "[" << ProgramTime::getTimeStr() << "] ";
+    output << msg << std::endl;
     lastErrors.push_back(msg);
     if (lastErrors.size() > MAX_ERRORS)
     {
@@ -177,9 +179,10 @@ DebugLog& DebugLog::getInstance() {
     return s_Instance;
 }
 
-void DebugLog::log(const std::string& msg) {
+void DebugLog::log(const std::string& msg, const bool& timestamp) {
     #ifdef ENABLE_DEBUG
-        output << "[" << ProgramTime::getTimeStr() << "] " << msg << std::endl;
+        if(timestamp) output << "[" << ProgramTime::getTimeStr() << "] ";
+        output << msg << std::endl;
     #endif
 }
 

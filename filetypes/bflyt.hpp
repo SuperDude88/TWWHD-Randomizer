@@ -12,6 +12,7 @@
 #include <memory>
 
 #include <utility/common.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -554,7 +555,7 @@ namespace FileTypes {
 
 	const char* FLYTErrorGetName(FLYTError err);
 
-	class FLYTFile {
+	class FLYTFile : public FileType {
 	public:
 		FLYTHeader header;
 		NintendoWare::Layout::lyt1 LYT1;
@@ -575,6 +576,6 @@ namespace FileTypes {
 		FLYTError writeToStream(std::ostream& out);
 		FLYTError writeToFile(const std::string& outFilePath);
 	private:
-		void initNew();
+		void initNew() override;
 	};
 }

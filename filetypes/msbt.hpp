@@ -9,6 +9,7 @@
 #include <fstream>
 
 #include <filetypes/shared/lms.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -99,7 +100,7 @@ struct Message {
 
 namespace FileTypes {
 	
-	class MSBTFile {
+	class MSBTFile : public FileType {
 	public:
 		std::unordered_map<std::string, Message> messages_by_label;
 
@@ -118,6 +119,6 @@ namespace FileTypes {
 		TSY1 styles;
 		TXT2 text;
 
-		void initNew();
+		void initNew() override;
 	};
 }
