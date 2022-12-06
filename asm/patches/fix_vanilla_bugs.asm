@@ -279,5 +279,30 @@ stop_sub_bgm_when_unloading_stage:
   bl FUN_025200d4 ; replace the line we overwrote to jump here
 
   b 0x025b0aa4 ; return
+  
+
+; Zero out the arrow actor's on-hit callback function when it enters the stopped state.
+; This is to fix a vanilla crash that could happen if the arrow hit two different actors at the same time.
+; The arrow actor keeps track of both the proc ID of the actor it hit and which joint index within that actor it hit.
+; The joint index variable is only updating while the arrow is moving, while the proc ID is updated by the callback function.
+; If the arrow hit something with more joints first (e.g. Big Octo) and then something with fewer joints (e.g. Big Octo eye), the joint index could wind up higher than the size of the joints array for the second actor.
+; So when the actor tries to stop on that joint, it would wind up copying invalid joint data as matrix data.
+; Invalid data can sometimes be NaN floats, and storing those as the arrow actor's position would cause an assertion error as positions are supposed to be valid numbers.
+; Zeroing out the on-hit callback fixes the crash as the proc ID will no longer be desynced from the joint index.
+.org 0x02054658
+  b zero_out_arrow_on_hit_callback
+.org @NextFreeSpace
+.global zero_out_arrow_on_hit_callback
+zero_out_arrow_on_hit_callback:
+  ; Store 0 to the arrow actor's on-hit callback (atHit_CB).
+  ; Specifically this is the dCcD_GObjAt.mpCallback field of the arrow's hitbox.
+  li r0, 0
+  stw r0, 0x510 (r30)
+  
+  ; Replace the line we overwrote to jump here (preparing to to update the arrow's state to 2, stopped).
+  li r0, 2
+  
+  ; Return
+  b 0x0205465C
 
 .close

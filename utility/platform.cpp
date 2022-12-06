@@ -107,6 +107,7 @@ namespace Utility
 		WHBLogConsoleDraw();
 #else
 		printf("%s", str.c_str());
+		fflush(stdout); //vscode debug console works better with this
 #endif
 		lock.unlock();
 	}

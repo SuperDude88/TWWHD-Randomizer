@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <filetypes/baseFiletype.hpp>
 
 
 #define DEFAULT_LAYER 255 //Helps check for default layer (layer 0/NULL is a valid layer, 255 is not)
@@ -51,7 +52,7 @@ namespace FileTypes {
 
 	const char* DZXErrorGetName(DZXError err);
 
-	class DZXFile {
+	class DZXFile : public FileType {
 	public:
 		uint32_t num_chunks;
 		std::vector<Chunk> chunks;

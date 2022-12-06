@@ -308,10 +308,10 @@
   Category:
     - Dungeon
   Paths:
-    - "code/cking.rpx@RPX"
-    - "content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr"
-    - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
-    - "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr"
+    - code/cking.rpx@RPX@ELF
+    - content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+    - content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+    - content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Boss
   Offsets:
@@ -3366,7 +3366,7 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX
+    - code/cking.rpx@RPX@ELF
     - content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Boss
@@ -3583,7 +3583,7 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX
+    - code/cking.rpx@RPX@ELF
     - content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Boss
@@ -3774,7 +3774,7 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX
+    - code/cking.rpx@RPX@ELF
     - content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Boss
@@ -4019,7 +4019,7 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX
+    - code/cking.rpx@RPX@ELF
     - content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Boss
@@ -4210,7 +4210,7 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX
+    - code/cking.rpx@RPX@ELF
     - content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Boss
