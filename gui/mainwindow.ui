@@ -353,72 +353,55 @@
                <string>Additional Randomization Options</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
-               <item row="0" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_19">
+               <item row="4" column="3">
+                <widget class="QCheckBox" name="randomize_enemy_palettes">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Randomize Enemy Palettes</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
                  <item>
-                  <widget class="QLabel" name="label_for_dungeon_small_keys">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
+                  <widget class="QLabel" name="label_for_sword_mode">
                    <property name="text">
-                    <string>Small Keys</string>
+                    <string>Sword Mode</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="dungeon_small_keys">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>110</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>110</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="currentIndex">
-                    <number>1</number>
-                   </property>
+                  <widget class="QComboBox" name="sword_mode">
                    <item>
                     <property name="text">
-                     <string>Vanilla</string>
+                     <string>Start with Hero's Sword</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>Own Dungeon</string>
+                     <string>No Starting Sword</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>Any Dungeon</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Overworld</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Keysanity</string>
+                     <string>Swordless</string>
                     </property>
                    </item>
                   </widget>
                  </item>
                 </layout>
+               </item>
+               <item row="4" column="2">
+                <widget class="QCheckBox" name="randomize_enemies">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Randomize Enemy Locations</string>
+                 </property>
+                </widget>
                </item>
                <item row="1" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_20">
@@ -437,61 +420,6 @@
                  </item>
                  <item>
                   <widget class="QComboBox" name="dungeon_big_keys">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>110</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="currentIndex">
-                    <number>1</number>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Vanilla</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Own Dungeon</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Any Dungeon</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Overworld</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Keysanity</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="4" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_21">
-                 <item>
-                  <widget class="QLabel" name="label_for_dungeon_maps_compasses">
-                   <property name="text">
-                    <string>Maps/Compasses</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="dungeon_maps_compasses">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -599,7 +527,186 @@
                  </item>
                 </layout>
                </item>
+               <item row="4" column="1">
+                <widget class="QCheckBox" name="randomize_music">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Randomize Music</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_21">
+                 <item>
+                  <widget class="QLabel" name="label_for_dungeon_maps_compasses">
+                   <property name="text">
+                    <string>Maps/Compasses</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="dungeon_maps_compasses">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>110</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="currentIndex">
+                    <number>1</number>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Vanilla</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Own Dungeon</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Any Dungeon</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Overworld</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Keysanity</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
                <item row="0" column="3">
+                <widget class="QCheckBox" name="randomize_charts">
+                 <property name="text">
+                  <string>Randomize Charts</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_19">
+                 <item>
+                  <widget class="QLabel" name="label_for_dungeon_small_keys">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Small Keys</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="dungeon_small_keys">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>110</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>110</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="currentIndex">
+                    <number>1</number>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Vanilla</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Own Dungeon</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Any Dungeon</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Overworld</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Keysanity</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_18">
+                 <item>
+                  <widget class="QLabel" name="label_for_damage_multiplier">
+                   <property name="text">
+                    <string>Hero Mode Damage Multiplier</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="damage_multiplier">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="buttonSymbols">
+                    <enum>QAbstractSpinBox::UpDownArrows</enum>
+                   </property>
+                   <property name="suffix">
+                    <string>x</string>
+                   </property>
+                   <property name="minimum">
+                    <number>2</number>
+                   </property>
+                   <property name="maximum">
+                    <number>80</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="3">
+                <widget class="QCheckBox" name="chest_type_matches_contents">
+                 <property name="text">
+                  <string>Chest Type Matches Contents</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <item>
                   <widget class="QLabel" name="label_for_num_starting_triforce_shards">
@@ -673,113 +780,6 @@
                   <widget class="QWidget" name="widget" native="true"/>
                  </item>
                 </layout>
-               </item>
-               <item row="0" column="2">
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                 <item>
-                  <widget class="QLabel" name="label_for_sword_mode">
-                   <property name="text">
-                    <string>Sword Mode</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="sword_mode">
-                   <item>
-                    <property name="text">
-                     <string>Start with Hero's Sword</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>No Starting Sword</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Swordless</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="chest_type_matches_contents">
-                 <property name="text">
-                  <string>Chest Type Matches Contents</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QCheckBox" name="randomize_charts">
-                 <property name="text">
-                  <string>Randomize Charts</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <layout class="QHBoxLayout" name="horizontalLayout_18">
-                 <item>
-                  <widget class="QLabel" name="label_for_damage_multiplier">
-                   <property name="text">
-                    <string>Hero Mode Damage Multiplier</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="damage_multiplier">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::UpDownArrows</enum>
-                   </property>
-                   <property name="suffix">
-                    <string>x</string>
-                   </property>
-                   <property name="minimum">
-                    <number>2</number>
-                   </property>
-                   <property name="maximum">
-                    <number>80</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="4" column="1">
-                <widget class="QCheckBox" name="randomize_music">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Randomize Music</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="2">
-                <widget class="QCheckBox" name="randomize_enemies">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Randomize Enemy Locations</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="3">
-                <widget class="QCheckBox" name="randomize_enemy_palettes">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Randomize Enemy Palettes</string>
-                 </property>
-                </widget>
                </item>
               </layout>
              </widget>
