@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -23,7 +24,7 @@ namespace FileTypes {
 
 	const char* BDTErrorGetName(BDTError err);
 
-	class BDTFile {
+	class BDTFile : public FileType {
 	public:
 		struct FileSpec {
 		    uint32_t offset;
@@ -39,6 +40,8 @@ namespace FileTypes {
 	private:
 		uint32_t numFiles;
 		std::vector<FileSpec> fileInfo;
+
+		void initNew() override;
 	};
 }
 

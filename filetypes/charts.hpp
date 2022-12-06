@@ -8,6 +8,7 @@
 #include <array>
 
 #include <logic/GameItem.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -60,10 +61,11 @@ namespace FileTypes {
 
 	const char* ChartErrorGetName(ChartError err);
 
-	class ChartList {
+	class ChartList : public FileType {
 	private:
 		uint32_t num_charts = 0;
 
+		void initNew() override {};
 	public:
 
 		std::vector<Chart> charts;

@@ -749,11 +749,11 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
     {
         auto& settings = world.getSettings();
         // Set random starting island (either if the settings is set, or one is plandomized)
-        if (settings.randomize_starting_island || world.plandomizer.startingIslandRoomIndex > 0)
+        if (settings.randomize_starting_island || world.plandomizer.startingIslandRoomIndex != 0)
         {
 
             // Set plandomizer island if there is one
-            if (world.plandomizer.startingIslandRoomIndex > 0 && world.plandomizer.startingIslandRoomIndex < 50)
+            if (world.plandomizer.startingIslandRoomIndex != 0 && world.plandomizer.startingIslandRoomIndex < 50)
             {
                 world.startingIslandRoomIndex = world.plandomizer.startingIslandRoomIndex;
             }

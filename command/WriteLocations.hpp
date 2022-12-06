@@ -2,15 +2,15 @@
 
 #include <string>
 #include <vector>
-#include <unordered_set>
 #include <memory>
-#include <utility>
+#include <unordered_map>
+
+#include <libs/Yaml.hpp>
 
 #include <command/RandoSession.hpp>
-#include <filetypes/elf.hpp>
+#include <command/WWHDStructs.hpp>
 #include <logic/GameItem.hpp>
 #include <logic/Dungeon.hpp>
-#include <libs/Yaml.hpp>
 
 extern RandoSession g_session;
 
@@ -26,9 +26,6 @@ enum struct [[nodiscard]] ModificationError {
     UNKNOWN,
     COUNT
 };
-
-void resetRPX();
-ELFError saveRPX();
 
 class LocationModification
 {

@@ -3,64 +3,91 @@
 #include <filesystem>
 #include <memory>
 #include <string>
-#include <sstream>
 #include <vector>
-#include <variant>
 #include <unordered_map>
-#include <atomic>
+#include <functional>
 
-#include <filetypes/sarc.hpp>
-#include <filetypes/bfres.hpp>
-#include <utility/platform.hpp>
-#include <command/WWHDStructs.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
+
+#define CAST_ENTRY_TO_FILETYPE(var, type, data)   \
+    {const auto temp = dynamic_cast<type*>(data); if(temp == nullptr) return 0;}  \
+    type& var = *dynamic_cast<type*>(data);
 
 class RandoSession
 {
 public:
     using fspath = std::filesystem::path;
+
     class CacheEntry {
     public:
-        //sarc, and fres can be optimized by storing their filetype instead of a sstream
-        //other files just use a stream
-        std::variant<FileTypes::SARCFile, FileTypes::resFile, std::stringstream, std::monostate> data = std::monostate{};
+        enum class Format {
+            BDT = 0,
+            BFLIM,
+            BFLYT,
+            BFRES,
+            CHARTS,
+            DZX,
+            ELF,
+            EVENTS,
+            JPC,
+            MSBP,
+            MSBT,
+            RPX,
+            SARC,
+            YAZ0,
+            STREAM,
+            ROOT, //root of chain, open file from disk
+            EMPTY, //fileCache, no data
+        };
+        
+        CacheEntry(std::shared_ptr<CacheEntry> parent_, const fspath& elem_, const Format& format_) :
+            parent(parent_),
+            element(elem_),
+            storedFormat(format_)
+        {}
 
-        std::shared_ptr<CacheEntry> parent;
+        using Action_t = std::function<int(RandoSession*, FileType*)>;
+
+        void addAction(Action_t action);
+        void delayUntil(const fspath& req); //wait for prereq that adds mods, prevent repack-mod-repack
+
+    private:
+        const std::shared_ptr<CacheEntry> parent;
         std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children; //can't use CacheEntry directly, unordered_map needs complete type per the standard
+        std::vector<fspath> prereqs;
 
-        std::atomic<bool> isRepacked = false; //for this entry
-        bool fullCompress = true; //whether to recompress the yaz0 or not, .pack files need to be recompressed currently because they crash otherwise
-        bool toOutput = false; //whether to save to output, allows it to save without checking a file exists
-    };
-
-    enum class RepackResult {
-        FAIL = 0,
-        SUCCESS = 1,
-        DELAY = 2
+        const fspath element;
+        const Format storedFormat;
+        std::unique_ptr<FileType> data;
+        std::vector<Action_t> actions; //store actions as lambdas to execute in order
+    
+        friend class RandoSession;
     };
 
     RandoSession();
 
     void init(const fspath& gameBaseDir, const fspath& randoOutputDir);
-    [[nodiscard]] std::stringstream* openGameFile(const fspath& relPath);
+    [[nodiscard]] CacheEntry& openGameFile(const fspath& relPath);
+    [[nodiscard]] std::ifstream openBaseFile(const fspath& relPath);
     [[nodiscard]] bool isCached(const fspath& relPath);
     [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath);
     [[nodiscard]] bool restoreGameFile(const fspath& relPath);
-    [[nodiscard]] bool repackCache();
-    [[nodiscard]] bool repackCache_singleThread();
+    [[nodiscard]] bool modFiles();
 
     const fspath& getBaseDir() { return baseDir; }
     const fspath& getOutputDir() { return outputDir; }
 private:
-    std::stringstream* extractFile(const std::vector<std::string>& fileSpec);
-    RepackResult repackFile(const std::string& element, std::shared_ptr<CacheEntry> entry);
-    void queueChildren(std::shared_ptr<CacheEntry> entry);
+    CacheEntry& getEntry(const std::vector<std::string>& fileSpec);
+    bool extractFile(std::shared_ptr<CacheEntry> current);
+    bool repackFile(std::shared_ptr<CacheEntry> current);
+    bool handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current);
     void clearCache();
 
     bool initialized = false;
     fspath baseDir;
     fspath outputDir;
     
-    std::shared_ptr<CacheEntry> fileCache = std::make_shared<CacheEntry>();
+    std::shared_ptr<CacheEntry> fileCache = std::make_shared<CacheEntry>(nullptr, "", CacheEntry::Format::EMPTY);
 };

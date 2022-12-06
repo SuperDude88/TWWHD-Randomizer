@@ -8,6 +8,7 @@
 #include <vector>
 #include <fstream>
 #include <filetypes/subfiles/bftex.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -78,16 +79,15 @@ namespace FileTypes
     const char* FRESErrorGetName(FRESError err);
 
 
-    class resFile
-    {
+    class resFile : public FileType {
     public:
         struct FileSpec
         {
-            /// name of the file from the string table
+            // name of the file from the string table
             std::string fileName;
-            /// offset relative to start of FRES file
+            // offset relative to start of FRES file
             uint32_t fileOffset;
-            /// length of file past offset
+            // length of file past offset
             uint32_t fileLength;
         };
 
@@ -106,21 +106,14 @@ namespace FileTypes
         //static FRESFile createNew(); //Needs more complete implementation to be usable
         FRESError loadFromBinary(std::istream& bfres); //Only does embedded files for now
         FRESError loadFromFile(const std::string& filePath);
-        /*FRESError readFile(const FRESFileSpec& file, std::string& dataOut, uint32_t offset = 0, uint32_t bytes = 0);
-        FRESError patchFile(const FRESFileSpec& file, const std::string& patch, uint32_t offset);
-        FRESError insertIntoFile(const FRESFileSpec& file, const std::string& data, uint32_t offset);
-        FRESError appendToFile(const FRESFileSpec& file, const std::string& data);*/ //Not sure these are needed, will implement if a use comes up
-        FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFile);
+        FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFilename);
         FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);
         FRESError replaceFromDir(const std::string& dirPath);
         FRESError extractToDir(const std::string& dirPath) const; //Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
         FRESError writeToFile(const std::string& outFilePath);
-        //FRESError addFile(const std::string& fileName, std::istream& fileData); //Shifts too many offsets and data pieces for the (current) partial implementation
-        //FRESError removeFile(const std::string& fileName); //Shifts too many offsets and data pieces for the (current) partial implementation
     private:
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile);
-        //void initNew(); //Needs a more complete implementation to work
-        //uint32_t insertIntoStringList(std::string str); //Needs a more complete implementation to work
+        void initNew() override {}; //Needs a more complete implementation to work
     };
 }
