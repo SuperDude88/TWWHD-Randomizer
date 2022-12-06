@@ -9,6 +9,7 @@
 #include <string>
 #include <fstream>
 #include <filetypes/shared/gx2.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -56,7 +57,7 @@ namespace FileTypes {
 
     const char* FLIMErrorGetName(FLIMError err);
 
-    class FLIMFile {
+    class FLIMFile : public FileType {
     public:
         FLIMHeader header;
         ImageInfo info;

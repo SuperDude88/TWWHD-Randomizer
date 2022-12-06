@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <tweaks.hpp>
 
 #include <cstring>
@@ -98,13 +99,13 @@ private:
 
 		//Check the meta.xml for other platforms (+ a sanity check on console)
 		tinyxml2::XMLDocument metaXml;
-		std::stringstream* meta = g_session.openGameFile("meta/meta.xml");
-		if(meta == nullptr) {
+		std::ifstream meta = g_session.openBaseFile("meta/meta.xml");
+		if(!meta.is_open()) {
 			ErrorLog::getInstance().log("Failed extracting meta.xml");
 			return false;
 		}
 
-		if(tinyxml2::XMLError err = metaXml.LoadFile(*meta); err != tinyxml2::XMLError::XML_SUCCESS) {
+		if(tinyxml2::XMLError err = metaXml.LoadFile(meta); err != tinyxml2::XMLError::XML_SUCCESS) {
 			ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
 			return false;
 		}
@@ -113,9 +114,6 @@ private:
 		const std::string titleId = root->FirstChildElement("title_id")->GetText();
 		const std::string nameEn = root->FirstChildElement("longname_en")->GetText();
 		if(titleId != "0005000010143500" || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {
-			// Utility::platformLog("meta.xml does not match base game - dump is not valid\n");
-			// Utility::platformLog("ID %s\n", titleId.c_str());
-			// Utility::platformLog("Name %s\n", nameEn.c_str());
 			ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
 			ErrorLog::getInstance().log("ID " + titleId);
 			ErrorLog::getInstance().log("Name " + nameEn);
@@ -158,17 +156,7 @@ private:
 		Utility::platformLog("Saving randomized charts...\n");
 		UPDATE_DIALOG_LABEL("Saving randomized charts...");
 
-		std::stringstream* chartStream = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
-		if(chartStream == nullptr) {
-			ErrorLog::getInstance().log("Failed to open cmapdat.bin");
-			return false;
-		}
-		FileTypes::ChartList charts;
-		if(ChartError err = charts.loadFromBinary(*chartStream); err != ChartError::NONE) {
-			ErrorLog::getInstance().log("Failed to load chart list");
-			return false;
-		}
-		const std::vector<Chart> original_charts = charts.charts;
+		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin@CHARTS");
 
 		static const std::unordered_set<std::string> salvage_object_names = {
 			"Salvage\0"s,
@@ -182,68 +170,67 @@ private:
 		for (uint8_t i = 0; i < 49; i++) {
 			const uint8_t islandNumber = i + 1;
 
-			const Chart& original_chart = *std::find_if(original_charts.begin(), original_charts.end(), [islandNumber](const Chart& chart) {return (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 5 || chart.type == 6 || chart.type == 8) && chart.getIslandNumber() == islandNumber; });
-			const GameItem new_chart_item = worlds[0].chartMappings[i];
-			auto new_chart = std::find_if(charts.charts.begin(), charts.charts.end(), [&](const Chart& chart) {return chart.getItem() == new_chart_item;});
-			if(new_chart == charts.charts.end()) return false;
-
-			new_chart->texture_id = original_chart.texture_id;
-			new_chart->sector_x = original_chart.sector_x;
-			new_chart->sector_y = original_chart.sector_y;
-
-			//Probably not needed on HD since they removed chart sets, but update anyway
-			for(uint8_t pos_index = 0; pos_index < 4; pos_index++) {
-				ChartPos& new_pos = new_chart->possible_positions[pos_index];
-				const ChartPos& original_pos = original_chart.possible_positions[pos_index];
-
-				new_pos.tex_x_offset = original_pos.tex_x_offset;
-				new_pos.tex_y_offset = original_pos.tex_y_offset;
-				new_pos.salvage_x_pos = original_pos.salvage_x_pos;
-				new_pos.salvage_y_pos = original_pos.salvage_y_pos;
-			}
-
 			std::string dzrPath;
 			if (islandNumber == 1 || islandNumber == 11 || islandNumber == 13 || islandNumber == 17 || islandNumber == 23) {
-				dzrPath = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr";
+				dzrPath = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr@DZX";
 			}
 			else if (islandNumber == 9 || islandNumber == 39 || islandNumber == 41 || islandNumber == 44) {
-				dzrPath = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr";
+				dzrPath = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr@DZX";
 			}
 			else {
-				dzrPath = "content/Common/Stage/sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr";
-			}
-			std::stringstream* dzrStream = g_session.openGameFile(dzrPath);
-			if(dzrStream == nullptr) {
-				ErrorLog::getInstance().log("Failed to open file " + dzrPath);
-				return false;
-			}
-			FileTypes::DZXFile dzr;
-			if(DZXError err = dzr.loadFromBinary(*dzrStream); err != DZXError::NONE) {
-				ErrorLog::getInstance().log("Failed to load dzr with path " + dzrPath);
-				return false;
+				dzrPath = "content/Common/Stage/sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr@DZX";
 			}
 
-			for(ChunkEntry* scob : dzr.entries_by_type("SCOB")) {
-				if(salvage_object_names.count(scob->data.substr(0, 8)) > 0 && ((scob->data[8] & 0xF0) >> 4) == 0) {
-					uint32_t& params = *reinterpret_cast<uint32_t*>(&scob->data[8]);
-					Utility::Endian::toPlatform_inplace(eType::Big, params);
-					const uint32_t mask = 0x0FF00000;
-					const uint8_t shiftAmount = 20;
+			RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(dzrPath);
 
-    				params = (params & (~mask)) | (uint32_t(new_chart->owned_chart_index_plus_1 << shiftAmount) & mask);
-					Utility::Endian::toPlatform_inplace(eType::Big, params);
+			entry.addAction([&worlds, &dzrEntry, i, islandNumber](RandoSession* session, FileType* data) -> int
+			{
+				CAST_ENTRY_TO_FILETYPE(charts, FileTypes::ChartList, data)
+				static const auto original_charts = charts.charts;
+
+				const Chart& original_chart = *std::find_if(original_charts.begin(), original_charts.end(), [islandNumber](const Chart& chart) {return (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 5 || chart.type == 6 || chart.type == 8) && chart.getIslandNumber() == islandNumber; });
+				const GameItem new_chart_item = worlds[0].chartMappings[i];
+				const auto new_chart = std::find_if(charts.charts.begin(), charts.charts.end(), [&](const Chart& chart) {return chart.getItem() == new_chart_item;});
+				if(new_chart == charts.charts.end()) return false;
+
+				new_chart->texture_id = original_chart.texture_id;
+				new_chart->sector_x = original_chart.sector_x;
+				new_chart->sector_y = original_chart.sector_y;
+
+				//Probably not needed on HD since they removed chart sets, but update anyway
+				for(uint8_t pos_index = 0; pos_index < 4; pos_index++) {
+					ChartPos& new_pos = new_chart->possible_positions[pos_index];
+					const ChartPos& original_pos = original_chart.possible_positions[pos_index];
+
+					new_pos.tex_x_offset = original_pos.tex_x_offset;
+					new_pos.tex_y_offset = original_pos.tex_y_offset;
+					new_pos.salvage_x_pos = original_pos.salvage_x_pos;
+					new_pos.salvage_y_pos = original_pos.salvage_y_pos;
 				}
-			}
 
-			if(DZXError err = dzr.writeToStream(*dzrStream); err != DZXError::NONE) {
-				ErrorLog::getInstance().log("Failed to save dzr with path " + dzrPath);
-				return false;
-			}
-		}
+				dzrEntry.addAction([new_chart = *new_chart](RandoSession* session, FileType* data) -> int
+				{
+					CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-		if(ChartError err = charts.writeToStream(*chartStream); err != ChartError::NONE) {
-			ErrorLog::getInstance().log("Failed to save chart list");
-			return false;
+					for(ChunkEntry* scob : dzr.entries_by_type("SCOB")) {
+						if(salvage_object_names.count(scob->data.substr(0, 8)) > 0 && ((scob->data[8] & 0xF0) >> 4) == 0) {
+							uint32_t& params = *reinterpret_cast<uint32_t*>(&scob->data[8]);
+							Utility::Endian::toPlatform_inplace(eType::Big, params);
+							const uint32_t mask = 0x0FF00000;
+							const uint8_t shiftAmount = 20;
+
+    						params = (params & (~mask)) | (uint32_t(new_chart.owned_chart_index_plus_1 << shiftAmount) & mask);
+							Utility::Endian::toPlatform_inplace(eType::Big, params);
+						}
+					}
+
+					return true;
+				});
+
+				return true;
+			});
+
+			dzrEntry.delayUntil("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
 		}
 
 		return true;
@@ -253,7 +240,7 @@ private:
 		//Needs to restore data before anything is modified, worlds are generated after pre-randomization tweaks are applied
 		//Get around this with a list of the entrance paths
 		//Skip anything rando does edit to save time, they get restored during extraction
-		static const std::list<std::pair<std::string, uint8_t>> vanillaEntrancePaths = {                                                     //----File path info------|---entrance info---//
+		static const std::list<std::pair<std::string, uint8_t>> vanillaEntrancePaths = {
 		    {"Adanmae",  0},
 		    {"M_NewD2",  0},
 		    //{"sea",     41},
@@ -419,160 +406,143 @@ private:
 
 		const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
 		const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-		std::unordered_map<std::stringstream*, FileTypes::DZXFile> dzr_by_path;
 	
 		const EntrancePool entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
-    for (const auto entrance : entrances)
-    {
-      const std::string fileStage = entrance->getFilepathStage();
-      const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
-      const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
-      std::string replacementStage = entrance->getReplaces()->getStageName();
-      const uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
-      const uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
+    	for (const auto entrance : entrances)
+    	{
+    		const std::string fileStage = entrance->getFilepathStage();
+    		const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
+    		const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+    		std::string replacementStage = entrance->getReplaces()->getStageName();
+    		const uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
+    		const uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
 
-      std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
+    		std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
 
 			if (fileStage == "sea") {
 				if (pack1.count(entrance->getFilepathRoomNum()) > 0) {
-					filepath = "content/Common/Pack/szs_permanent1.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
+					filepath = "content/Common/Pack/szs_permanent1.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
 				}
 				else if (pack2.count(entrance->getFilepathRoomNum()) > 0) {
-					filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr";
+					filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
 				}
 			}
-	
-			std::stringstream* dzrStream = g_session.openGameFile(filepath);
-			if(dzrStream == nullptr) {
-				ErrorLog::getInstance().log("Failed to open file " + filepath);
-				return false;
-			}
 
-			if(dzr_by_path.count(dzrStream) == 0)
+			RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
+
+    	  	// Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
+    	  	// "MiniKaz" is the Fire Mountain stage name
+    	  	// "MiniHyo" is the Ice Ring stage name
+    	  	if (replacementStage == "MiniKaz" || replacementStage == "MiniHyo") {
+    	  		std::string exitFilepath = "content/Common/Stage/" + replacementStage + "_Room" + std::to_string(replacementRoom) + ".szs@YAZ0@SARC@Room" + std::to_string(replacementRoom) + ".bfres@BFRES@room.dzr@DZX";
+    	  		RandoSession::CacheEntry& exitDzrEntry = g_session.openGameFile(exitFilepath);
+    	  		exitDzrEntry.addAction([entrance, replacementStage](RandoSession* session, FileType* data) -> int 
+				{
+					CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+					// Get the "VolTag" actor (otherwise known as the kill trigger)
+    	  			const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+    	  			for (auto actor : actors) {
+    	  				if (actor->data.substr(0, 6) == "VolTag") {
+						
+    	  			    	// If Fire Mountain/Ice Ring entrances lead to themselves, then don't change anything
+    	  			    	if (entrance->getReplaces() == entrance) {
+							
+    	  			    	// If Fire Mountain leads to Ice Ring then change the kill trigger type to act like the one
+    	  			    	// inside Fire Mountain
+    	  			    	} else if (entrance->getStageName() == "MiniKaz" && replacementStage == "MiniHyo") {
+    	  			    	  actor->data[11] &= 0x3F;
+    	  			    	  actor->data[11] |= 1 << 6;
+
+    	  			    	// If Ice Ring leads to Fire Mountain then change the kill trigger type to act like the one
+    	  			    	// inside Ice Ring
+    	  			    	} else if (entrance->getStageName() == "MiniHyo" && replacementStage == "MiniKaz") {
+    	  			    	  actor->data[11] &= 0x3F;
+    	  			    	  actor->data[11] |= 2 << 6;
+
+    	  			    	// Otherwise, destroy the kill trigger so that players don't get thrown out immediately upon entering
+    	  			    	} else {
+    	  			    	  dzr.remove_entity(actor);
+    	  			    	}
+
+    	  			    	break;
+    	  			  	}
+    	  			}
+
+            		return true;
+				});
+    	  	}
+			
+			dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
 			{
-				if(DZXError err = dzr_by_path[dzrStream].loadFromBinary(*dzrStream); err != DZXError::NONE) {
-					ErrorLog::getInstance().log("Failed to load dzr with path " + filepath);
+				CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+				const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
+				if(sclsExitIndex > (scls_entries.size() - 1)) {
+					ErrorLog::getInstance().log("SCLS entry index outside of list!");
+					return false;
 				}
-			}
-			const std::vector<ChunkEntry*> scls_entries = dzr_by_path[dzrStream].entries_by_type("SCLS");
-			if(sclsExitIndex > (scls_entries.size() - 1)) {
-				ErrorLog::getInstance().log("SCLS entry index outside of list!");
-				return false;
-			}
 
-      // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
-      // "MiniKaz" is the Fire Mountain stage name
-      // "MiniHyo" is the Ice Ring stage name
-      if (replacementStage == "MiniKaz" || replacementStage == "MiniHyo") {
-        std::string exitFilepath = "content/Common/Stage/" + replacementStage + "_Room" + std::to_string(replacementRoom) + ".szs@YAZ0@SARC@Room" + std::to_string(replacementRoom) + ".bfres@BFRES@room.dzr";
-        std::stringstream* exitDzrStream = g_session.openGameFile(exitFilepath);
-        if(exitDzrStream == nullptr) {
-          ErrorLog::getInstance().log("Failed to open file " + exitFilepath);
-          return false;
-        }
+    	  		// Update the SCLS entry so that the player gets taken to the new entrance
+				ChunkEntry* exit = scls_entries[sclsExitIndex];
+				replacementStage.resize(8, '\0');
+				exit->data.replace(0, 8, replacementStage.c_str(), 8);
+				exit->data[8] = replacementSpawn;
+				exit->data[9] = replacementRoom;
 
-        if(dzr_by_path.count(exitDzrStream) == 0)
-        {
-          if(DZXError err = dzr_by_path[exitDzrStream].loadFromBinary(*exitDzrStream); err != DZXError::NONE) {
-            ErrorLog::getInstance().log("Failed to load dzr with path " + filepath);
-          }
-        }
+    	  		// Change the DRC -> Dragon Roost Pond exit to have spawn type 1 instead of 5
+    	  		// This prevents a crash that would happen if exiting TOTG on KoRL led to the Dragon Roost Pond
+    	  		const std::vector<ChunkEntry*> entrance_spawns = dzr.entries_by_type("PLYR");
+    	  		for (auto entrance_spawn : entrance_spawns) {
+    	  			uint8_t spawn_id = entrance_spawn->data.data()[29];
+    	  			uint8_t spawn_type = (entrance_spawn->data.data()[10] & 0xF0) >> 4;
+    	  			if (entrance->getReverse() != nullptr && spawn_id == entrance->getReverse()->getSpawnId() && spawn_type == 5) {
+    	  				entrance_spawn->data[10] &= 0x0F;
+    	  				entrance_spawn->data[10] |= 1 << 4;
+    	  				break;
+    	  			}
+    	  		}
 
-        // Get the "VolTag" actor (otherwise known as the kill trigger)
-        const std::vector<ChunkEntry*> actors = dzr_by_path[exitDzrStream].entries_by_type("ACTR");
-        for (auto actor : actors) {
-          if (actor->data.substr(0, 6) == "VolTag") {
-
-            // If Fire Mountain/Ice Ring entrances lead to themselves, then don't change anything
-            if (entrance->getReplaces() == entrance) {
-
-            // If Fire Mountain leads to Ice Ring then change the kill trigger type to act like the one
-            // inside Fire Mountain
-            } else if (entrance->getStageName() == "MiniKaz" && replacementStage == "MiniHyo") {
-              actor->data[11] &= 0x3F;
-              actor->data[11] |= 1 << 6;
-
-            // If Ice Ring leads to Fire Mountain then change the kill trigger type to act like the one
-            // inside Ice Ring
-            } else if (entrance->getStageName() == "MiniHyo" && replacementStage == "MiniKaz") {
-              actor->data[11] &= 0x3F;
-              actor->data[11] |= 2 << 6;
-
-            // Otherwise, destroy the kill trigger so that players don't get thrown out immediately upon entering
-            } else {
-              dzr_by_path[exitDzrStream].remove_entity(actor);
-            }
-
-            break;
-          }
-        }
-      }
-
-      // Update the SCLS entry so that the player gets taken to the new entrance
-			ChunkEntry* exit = scls_entries[sclsExitIndex];
-			replacementStage.resize(8, '\0');
-			exit->data.replace(0, 8, replacementStage.c_str(), 8);
-			exit->data[8] = replacementSpawn;
-			exit->data[9] = replacementRoom;
-
-      // Change the DRC -> Dragon Roost Pond exit to have spawn type 1 instead of 5
-      // This prevents a crash that would happen if exiting TOTG on KoRL led to the Dragon Roost Pond
-      const std::vector<ChunkEntry*> entrance_spawns = dzr_by_path[dzrStream].entries_by_type("PLYR");
-      for (auto entrance_spawn : entrance_spawns) {
-        uint8_t spawn_id = entrance_spawn->data.data()[29];
-        uint8_t spawn_type = (entrance_spawn->data.data()[10] & 0xF0) >> 4;
-        if (entrance->getReverse() != nullptr && spawn_id == entrance->getReverse()->getSpawnId() && spawn_type == 5) {
-          entrance_spawn->data[10] &= 0x0F;
-          entrance_spawn->data[10] |= 1 << 4;
-          break;
-        }
-      }
+            	return true;
+			});
 
 			// Update boss room exits appropriately
 			if (entrance->getBossFilepathStageName() != "") {
 				const std::string bossStage = entrance->getBossFilepathStageName();
-				auto& settings = entrance->getWorld()->getSettings();
-        filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat";
-				std::stringstream* stream = g_session.openGameFile(filepath);
-				if(stream == nullptr) {
-					ErrorLog::getInstance().log("Failed to open file " + filepath);
-					return false;
-				}
-
-				FileTypes::EventList event_list_2;
-				FILETYPE_ERROR_CHECK(event_list_2.loadFromBinary(*stream));
-				if(event_list_2.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
-					ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
-					return false;
-				}
-				std::shared_ptr<Action> exit2 = event_list_2.Events_By_Name.at("WARP_WIND_AFTER")->get_actor("DIRECTOR")->actions[2];
-
-				std::string bossOutStage = entrance->getReplaces()->getBossOutStageName();
-				uint8_t bossOutRoom = entrance->getReplaces()->getBossOutRoomNum();
-				uint8_t bossOutSpawn = entrance->getReplaces()->getBossOutSpawnId();
-
-				// If dungeons are shuffled in a decoupled setting, or if dungeons are mixed with another pool
-        // that doesn't have boss out stages, then just use the same exit as the one for exiting
-        // the beginning of the dungeon
-				if (settings.decouple_entrances || bossOutStage == "")
+    	    	filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
+				
+				RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
+				list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int
 				{
-					bossOutStage = replacementStage;
-					bossOutRoom = replacementRoom;
-					bossOutSpawn = replacementSpawn;
-				}
+					CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-				std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = bossOutSpawn;
-				exit2->properties[1]->value = bossOutStage + "\0";
-				std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = bossOutRoom;
+					auto& settings = entrance->getWorld()->getSettings();
+					if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
+						ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
+						return false;
+					}
+					std::shared_ptr<Action> exit2 = event_list.Events_By_Name.at("WARP_WIND_AFTER")->get_actor("DIRECTOR")->actions[2];
 
-				FILETYPE_ERROR_CHECK(event_list_2.writeToStream(*stream));
-			}
-		}
-	
-		for (auto& [stream, dzr] : dzr_by_path) {
-			if(DZXError err = dzr.writeToStream(*stream); err != DZXError::NONE) {
-				ErrorLog::getInstance().log("Failed to save entrance dzr");
-				return false;
+					std::string bossOutStage = entrance->getReplaces()->getBossOutStageName();
+					uint8_t bossOutRoom = entrance->getReplaces()->getBossOutRoomNum();
+					uint8_t bossOutSpawn = entrance->getReplaces()->getBossOutSpawnId();
+
+					// If dungeons are shuffled in a decoupled setting, or if dungeons are mixed with another pool
+    	    		// that doesn't have boss out stages, then just use the same exit as the one for exiting
+    	    		// the beginning of the dungeon
+					if (settings.decouple_entrances || bossOutStage == "")
+					{
+						bossOutStage = replacementStage;
+						bossOutRoom = replacementRoom;
+						bossOutSpawn = replacementSpawn;
+					}
+
+					std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = bossOutSpawn;
+					exit2->properties[1]->value = bossOutStage + "\0";
+					std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = bossOutRoom;
+				
+					return true;
+				});
 			}
 		}
 
@@ -690,17 +660,12 @@ public:
 				Utility::platformLog("Saving items...\n");
 				UPDATE_DIALOG_VALUE(40);
 				UPDATE_DIALOG_LABEL("Saving items...");
-				resetRPX();
 				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save location " + location.getName());
 						return 1;
 					}
-				}
-				if(const ELFError& err = saveRPX(); err != ELFError::NONE) {
-					ErrorLog::getInstance().log("Failed to save modified ELF!");
-					return 1;
 				}
 				
 				//write charts after saving our items so the hardcoded offsets don't change
@@ -754,14 +719,18 @@ public:
 			return 1;
 		}
 
-		Utility::platformLog("Preparing to repack files...\n");
-		if(!g_session.repackCache()) {
-			ErrorLog::getInstance().log("Failed to repack file cache!");
+		Utility::platformLog("Preparing to edit files...\n");
+		if(!g_session.modFiles()) {
+			ErrorLog::getInstance().log("Failed to edit file cache!");
 			return 1;
 		}
 
-    // Repack for console if necessary
-    #ifndef DEVKITPRO
+    
+    #ifdef DEVKITPRO
+	  // Flush MLC to save changes to disk
+	  Utility::flush_mlc();
+	#else
+	  // Repack for console if necessary
       if (config.repack_for_console)
       {
           UPDATE_DIALOG_LABEL("Repacking for console...");
@@ -815,8 +784,6 @@ int mainRandomize() {
 			ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
 		#endif
 
-		Utility::platformInit();
-
 		ErrorLog::getInstance().clearLastErrors();
 
 		Config load;
@@ -851,12 +818,8 @@ int mainRandomize() {
 		// TODO: do a hundo seed to test everything
 
 		// TODO: text wrapping on drc dungeon map
-		// TODO: somehow broke multithreading on Wii U (doesn't crash, just softlock + black screen), appears fine on PC
-			//Also some other things just die even single-threaded
 		retVal = rando.randomize();
 	} //end timer scope
 
-	std::this_thread::sleep_for(3s);
-	Utility::platformShutdown();
 	return retVal;
 }

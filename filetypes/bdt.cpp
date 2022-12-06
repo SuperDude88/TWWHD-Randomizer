@@ -29,6 +29,10 @@ namespace FileTypes {
 		}
 	}
 
+	void BDTFile::initNew() {
+		
+	}
+
 	BDTError BDTFile::loadFromBinary(std::istream& in) {
 		if (!in.read(reinterpret_cast<char*>(&numFiles), sizeof(numFiles))) {
 			LOG_ERR_AND_RETURN(BDTError::REACHED_EOF);

@@ -2413,6 +2413,14 @@ XMLError XMLDocument::LoadFile( std::stringstream& data )
     return _errorID;
 }
 
+XMLError XMLDocument::LoadFile( std::ifstream& data )
+{
+    std::stringstream temp;
+    temp << data.rdbuf();
+
+    return LoadFile(temp);
+}
+
 
 XMLError XMLDocument::SaveFile( const char* filename, bool compact )
 {

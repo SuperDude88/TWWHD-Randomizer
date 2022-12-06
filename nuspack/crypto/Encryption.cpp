@@ -32,7 +32,7 @@ void Encryption::EncryptSingleFile(std::istream& input, std::ostream& output, co
 
         cur_position += blockSize;
         output.write(&blockBuffer[0], blockBuffer.size());
-    } while (cur_position < targetSize && input.gcount() == blockSize);
+    } while (cur_position < targetSize && input/* .gcount() == blockSize */);
 }
 
 void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, const uint64_t& len, Content& content, ContentHashes& hashes) {

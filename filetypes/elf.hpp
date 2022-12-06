@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include <filetypes/shared/elf_structs.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -29,7 +30,7 @@ namespace FileTypes {
 
 	const char* ELFErrorGetName(ELFError err);
 
-	class ELF {
+	class ELF : public FileType {
 	public:
 		Elf32_Ehdr ehdr;
 		std::vector<shdr_index_t> shdr_table;

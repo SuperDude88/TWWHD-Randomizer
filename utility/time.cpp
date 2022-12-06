@@ -3,6 +3,7 @@
 #include <utility/platform.hpp>
 #include <sstream>
 #include <mutex>
+#include <array>
 
 using namespace std::chrono_literals;
 

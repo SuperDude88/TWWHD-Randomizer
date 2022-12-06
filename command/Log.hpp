@@ -43,7 +43,7 @@ public:
     BasicLog& operator=(const BasicLog&) = delete;
 
     static BasicLog& getInstance();
-    void log(const std::string& msg = "");
+    void log(const std::string& msg, const bool& timestamp = true);
     void close();
 };
 
@@ -61,7 +61,7 @@ public:
     ErrorLog& operator=(const ErrorLog&) = delete;
 
     static ErrorLog& getInstance();
-    void log(const std::string& msg = "");
+    void log(const std::string& msg, const bool& timestamp = true);
     std::string getLastErrors() const;
     void clearLastErrors();
     void close();
@@ -79,6 +79,18 @@ public:
     } \
 }
 
+#define LOG_ERR_AND_RETURN_BOOL(error) { \
+    ErrorLog::getInstance().log(std::string("Encountered " #error " on line " TOSTRING(__LINE__) " of ") + __FILENAME__); \
+    return false; \
+}
+
+#define LOG_AND_RETURN_BOOL_IF_ERR(func) { \
+    if(const auto error = func; error != decltype(error)::NONE) {\
+        ErrorLog::getInstance().log(std::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__); \
+        return false;  \
+    } \
+}
+
 class DebugLog {
 private:
     std::ofstream output;
@@ -90,7 +102,7 @@ public:
     DebugLog& operator=(const DebugLog&) = delete;
 
     static DebugLog& getInstance();
-    void log(const std::string& msg = "");
+    void log(const std::string& msg, const bool& timestamp = true);
     void close();
 };
 
