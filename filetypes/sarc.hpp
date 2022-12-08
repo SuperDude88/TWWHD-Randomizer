@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -63,7 +64,7 @@ struct SFNT {
 namespace FileTypes {
     const char* SARCErrorGetName(SARCError err);
 
-    class SARCFile {
+    class SARCFile : public FileType {
     public:
         struct File {
             std::string name;

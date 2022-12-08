@@ -38,7 +38,7 @@ struct Plandomizer
     std::unordered_map<Location*, Item> locations = {};
     std::unordered_map<Entrance*, Entrance*> entrances = {};
     std::vector<GameItem> randomStartingItemPool = {};
-    uint8_t startingIslandRoomIndex = -1;
+    uint8_t startingIslandRoomIndex = 0;
 };
 
 PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plandomizer>& plandos, size_t numWorlds);
