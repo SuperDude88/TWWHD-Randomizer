@@ -1,143 +1,77 @@
 #include "RandoSession.hpp"
 
-#include <algorithm>
-#include <chrono>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <type_traits>
-#include <queue>
 
-#include <thread>
-#include <condition_variable>
-#include <mutex>
+#include <algorithm>
+#include <functional>
+#include <filesystem>
+#include <memory>
+#include <unordered_map>
+#include <fstream>
+#include <string>
+
+#include <libs/BS_thread_pool.hpp>
 
 #include <gui/update_dialog_header.hpp>
-#include <filetypes/wiiurpx.hpp>
-#include <filetypes/yaz0.hpp>
 #include <utility/string.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
-using namespace std::literals::chrono_literals;
+#include <filetypes/baseFiletype.hpp>
+#include <filetypes/bdt.hpp>
+#include <filetypes/bflim.hpp>
+#include <filetypes/bflyt.hpp>
+#include <filetypes/bfres.hpp>
+#include <filetypes/charts.hpp>
+#include <filetypes/dzx.hpp>
+#include <filetypes/elf.hpp>
+#include <filetypes/events.hpp>
+#include <filetypes/jpc.hpp>
+#include <filetypes/msbp.hpp>
+#include <filetypes/msbt.hpp>
+#include <filetypes/sarc.hpp>
+#include <filetypes/wiiurpx.hpp>
+#include <filetypes/yaz0.hpp>
 
 #define CHECK_INITIALIZED(ret) if(!initialized) { ErrorLog::getInstance().log("Session is not initialized (encountered on line " TOSTRING(__LINE__) ")"); return ret; }
 
-//partially based on https://github.com/bshoshany/thread-pool/blob/master/BS_thread_pool.hpp
-class ThreadPool {
-public:
-    explicit ThreadPool() { 
-        startThreads(); 
-    }
+#ifdef DEVKITPRO
+static BS::thread_pool workerThreads(3);
+#else
+static BS::thread_pool workerThreads(12);
+#endif
 
-    ~ThreadPool() {
-        waitForAll();
-        stopThreads();
-    }
-
-    template <typename F, typename... A>
-    void push_task(const F& task, const A&... args)
-    {
-        {
-            const std::scoped_lock<std::mutex> tasks_lock(tasks_mutex);
-            if constexpr (sizeof...(args) == 0)
-                tasks.push(std::function<RandoSession::RepackResult()>(task));
-            else
-                tasks.push(std::function<RandoSession::RepackResult()>([task, args...] { task(args...); }));
-        }
-        tasks_total++;
-        new_tasks.notify_one();
-    }
-
-    size_t getTotalTasks() {
-        return tasks_total;
-    }
-
-    void waitForAll() {
-        UPDATE_DIALOG_LABEL("Repacking Files...");
-        waiting = true;
-        auto max_tasks = getTotalTasks();
-        std::unique_lock<std::mutex> tasks_lock(tasks_mutex); //Don't really need this, just using it for the condition_variable
-        task_finished.wait(tasks_lock, [this, max_tasks] {
-            UPDATE_DIALOG_VALUE(int(100.0f - ((float(tasks_total)/float(max_tasks)) * 50.0f)))
-            return tasks_total == 0;
-        });
-        // Update the label one last time so that it doesn't potentially get stuck at 99%
-        UPDATE_DIALOG_VALUE(100);
-        waiting = false;
-    }
-private:
-    void startThreads() {
-        running = true;
-        threads.resize(num_threads);
-        for(uint32_t i = 0; i < num_threads; i++) {
-            threads.at(i) = std::thread(&ThreadPool::doWork, this);
-        }
-    }
-    
-    void stopThreads() {
-        running = false;
-        new_tasks.notify_all();
-        for(std::thread& thread : threads) {
-            thread.join();
-        }
-    }
-
-    void doWork() {
-        while(running) {
-            std::function<RandoSession::RepackResult()> task;
-            std::unique_lock<std::mutex> tasks_lock(tasks_mutex);
-            new_tasks.wait(tasks_lock, [&] { return !tasks.empty() || !running; });
-            if(running) {
-                task = tasks.front();
-                tasks.pop();
-                tasks_lock.unlock();
-                RandoSession::RepackResult result = task();
-                if(result == RandoSession::RepackResult::DELAY) {
-                    tasks_lock.lock();
-                    tasks.push(task);
-                    tasks_lock.unlock();
-                }
-                else if(result == RandoSession::RepackResult::SUCCESS) {
-                    --tasks_total;
-                    if(waiting) {
-                        task_finished.notify_one();
-                        if((tasks_total % 50) == 0) {
-                            Utility::platformLog("Repacking file cache: %u entries remaining...\n", tasks_total.load());
-                            BasicLog::getInstance().log("Repacking file cache: " + std::to_string(tasks_total) + " entries remaining...");
-                        }
-                    }
-                }
-                else {
-                    ErrorLog::getInstance().log("Repack operation returned fail\n");
-                }
-            }
-        }
-    }
-
-    #ifdef DEVKITPRO
-    static constexpr uint32_t num_threads = 1;
-    #else
-    static constexpr uint32_t num_threads = 12;
-    #endif
-
-    std::atomic<bool> running = false;
-    std::atomic<bool> waiting = false;
-    std::condition_variable new_tasks;
-    std::condition_variable task_finished;
-    std::queue<std::function<RandoSession::RepackResult()>> tasks;
-    std::mutex tasks_mutex;
-    std::atomic<size_t> tasks_total = 0;
-    std::vector<std::thread> threads;
+static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> str_to_format {
+    {"BDT",    RandoSession::CacheEntry::Format::BDT},
+    {"BFLIM",  RandoSession::CacheEntry::Format::BFLIM},
+    {"BFLYT",  RandoSession::CacheEntry::Format::BFLYT},
+    {"BFRES",  RandoSession::CacheEntry::Format::BFRES},
+    {"CHARTS", RandoSession::CacheEntry::Format::CHARTS},
+    {"DZX",    RandoSession::CacheEntry::Format::DZX},
+    {"ELF",    RandoSession::CacheEntry::Format::ELF},
+    {"EVENTS", RandoSession::CacheEntry::Format::EVENTS},
+    {"JPC",    RandoSession::CacheEntry::Format::JPC}, 
+    {"MSBP",   RandoSession::CacheEntry::Format::MSBP},
+    {"MSBT",   RandoSession::CacheEntry::Format::MSBT},
+    {"RPX",    RandoSession::CacheEntry::Format::RPX},
+    {"SARC",   RandoSession::CacheEntry::Format::SARC},
+    {"YAZ0",   RandoSession::CacheEntry::Format::YAZ0},
+    {"STREAM", RandoSession::CacheEntry::Format::STREAM},
 };
 
-static ThreadPool workerThreads;
+void RandoSession::CacheEntry::addAction(std::function<int(RandoSession*, FileType*)> action) {
+    actions.push_back(action);
+}
 
+void RandoSession::CacheEntry::delayUntil(const RandoSession::fspath& req) {
+    //find highest entry in chain, add prereqs there
+    RandoSession::CacheEntry* top = this;
+    while(top->parent->parent != nullptr) { //if parent is fileCache, parent->parent is null
+        top = top->parent.get();
+    } 
 
+    top->prereqs.push_back(req);
+}
 
 RandoSession::RandoSession()
 {
@@ -153,8 +87,297 @@ void RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     return;
 }
 
-std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fileSpec)
+bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
 {
+    GenericFile* parentData = dynamic_cast<GenericFile*>(current->parent->data.get());
+
+    using Fmt = CacheEntry::Format;
+    switch(current->storedFormat) {
+        case Fmt::BDT:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::BDTFile>();
+            dynamic_cast<FileTypes::BDTFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::BFLIM:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::FLIMFile>();
+            dynamic_cast<FileTypes::FLIMFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::BFLYT:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::FLYTFile>();
+            dynamic_cast<FileTypes::FLYTFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::BFRES:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::resFile>();
+            dynamic_cast<FileTypes::resFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::CHARTS:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::ChartList>();
+            dynamic_cast<FileTypes::ChartList*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::DZX:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::DZXFile>();
+            dynamic_cast<FileTypes::DZXFile*>(current->data.get())->loadFromBinary(parentData->data.seekg(0, std::ios::beg));
+        }
+        break;
+        case Fmt::ELF:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::ELF>();
+            dynamic_cast<FileTypes::ELF*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::EVENTS:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::EventList>();
+            dynamic_cast<FileTypes::EventList*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::JPC:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::JPC>();
+            dynamic_cast<FileTypes::JPC*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::MSBP:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::MSBPFile>();
+            dynamic_cast<FileTypes::MSBPFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::MSBT:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::MSBTFile>();
+            dynamic_cast<FileTypes::MSBTFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::RPX:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<GenericFile>();
+            if (RPXError err = FileTypes::rpx_decompress(parentData->data, dynamic_cast<GenericFile*>(current->data.get())->data); err != RPXError::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return false;
+            }
+        }
+        break;
+        case Fmt::SARC:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<FileTypes::SARCFile>();
+            dynamic_cast<FileTypes::SARCFile*>(current->data.get())->loadFromBinary(parentData->data);
+        }
+        break;
+        case Fmt::YAZ0:
+        {
+            if(parentData == nullptr) return false;
+            current->data = std::make_unique<GenericFile>();
+            if (YAZ0Error err = FileTypes::yaz0Decode(parentData->data, dynamic_cast<GenericFile*>(current->data.get())->data); err != YAZ0Error::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return false;
+            }
+        }
+        break;
+        case Fmt::STREAM:
+        {
+            if (current->parent->storedFormat == Fmt::SARC) {
+                FileTypes::SARCFile::File* file = dynamic_cast<FileTypes::SARCFile*>(current->parent->data.get())->getFile(current->element.string() + '\0');
+                if(file == nullptr) {
+                    ErrorLog::getInstance().log("Could not find " + current->element.string() + " in SARC");
+                    return false;
+                }
+
+                current->data = std::make_unique<GenericFile>(file->data);
+            }
+            else if (current->parent->storedFormat == Fmt::BFRES) {
+                const auto& files = dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->files;
+                auto it = std::find_if(files.begin(), files.end(), [&](const FileTypes::resFile::FileSpec& spec) { return spec.fileName == current->element; });
+                if(it == files.end()) {
+                    ErrorLog::getInstance().log("Could not find " + current->element.string() + " in BFRES");
+                    return false;
+                }
+
+                const std::string& resData = dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->fileData;
+                current->data = std::make_unique<GenericFile>(resData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
+            }
+            else {
+                return false; //what
+            }
+        }
+        break;
+        case Fmt::ROOT:
+        {
+            std::ifstream input(baseDir / current->element, std::ios::binary);
+            if(!input.is_open()) return false;
+            current->data = std::make_unique<GenericFile>();
+            dynamic_cast<GenericFile*>(current->data.get())->data << input.rdbuf();
+        }
+        break;
+        case Fmt::EMPTY:
+            [[fallthrough]];
+        default:
+            return false;
+    }
+
+    if(parentData != nullptr) parentData->data.str(std::string()); //clear parent sstream, don't need it
+    return true;
+}
+
+bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
+{
+    GenericFile* parentData = dynamic_cast<GenericFile*>(current->parent->data.get());
+    
+    using Fmt = CacheEntry::Format;
+    switch(current->storedFormat) {
+        case Fmt::BDT:
+        {
+            return false; //TODO: how should file accesses be named here?
+        }
+        case Fmt::BFLIM:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::FLIMFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::BFLYT:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::FLYTFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::BFRES:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::resFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::CHARTS:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::ChartList*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::DZX:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::DZXFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::ELF:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::ELF*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::EVENTS:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::EventList*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::JPC:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::JPC*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::MSBP:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::MSBPFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::MSBT:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::MSBTFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::RPX:
+        {
+            if(parentData == nullptr) return false;
+            if (RPXError err = FileTypes::rpx_compress(dynamic_cast<GenericFile*>(current->data.get())->data.seekg(0, std::ios::beg), parentData->data.seekp(0, std::ios::beg)); err != RPXError::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return false;
+            }
+        }
+        return true;
+        case Fmt::SARC:
+        {
+            if(parentData == nullptr) return false;
+            dynamic_cast<FileTypes::SARCFile*>(current->data.get())->writeToStream(parentData->data.seekp(0, std::ios::beg));
+        }
+        return true;
+        case Fmt::YAZ0:
+        {
+            if(parentData == nullptr) return false;
+            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg)); err != YAZ0Error::NONE)
+            {
+                ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+                return false;
+            }
+        }
+        return true;
+        case Fmt::STREAM:
+        {
+            if (current->parent->storedFormat == Fmt::SARC) {
+                FileTypes::SARCFile* file = dynamic_cast<FileTypes::SARCFile*>(current->parent->data.get());
+                if(file == nullptr) {
+                    ErrorLog::getInstance().log("Could not get parent SARC of " + current->element.string());
+                    return false;
+                }
+
+                file->replaceFile(current->element.string() + '\0', dynamic_cast<GenericFile*>(current->data.get())->data);
+            }
+            else if (current->parent->storedFormat == Fmt::BFRES) {
+                FileTypes::resFile* file = dynamic_cast<FileTypes::resFile*>(current->parent->data.get());
+                if(file == nullptr) {
+                    ErrorLog::getInstance().log("Could not get parent BFRES of" + current->element.string());
+                    return false;
+                }
+
+                file->replaceEmbeddedFile(current->element.string(), dynamic_cast<GenericFile*>(current->data.get())->data);
+            }
+        }
+        return true;
+        case Fmt::ROOT:
+        {
+            std::ofstream output(outputDir / current->element, std::ios::binary);
+            if(!output.is_open()) return false;
+            const std::string& data = dynamic_cast<GenericFile*>(current->data.get())->data.str();
+            output.write(&data[0], data.size());
+        }
+        return true;
+        case Fmt::EMPTY:
+            [[fallthrough]];
+        default:
+            return false;
+    }
+}
+
+RandoSession::CacheEntry& RandoSession::getEntry(const std::vector<std::string>& fileSpec) {
     // ["content/Common/Stage/example.szs", "YAZ0", "SARC", "data.bfres"]
     // first part is an extant game file
     std::string cacheKey{""};
@@ -162,8 +385,6 @@ std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fil
     std::shared_ptr<CacheEntry> parentEntry = fileCache;
     std::shared_ptr<CacheEntry> nextEntry = nullptr;
 
-    bool fromBaseDir = false; //whether to unpack from the cache or directly from the base directory
-    
     for (size_t i = 0; i < fileSpec.size(); i++)
     {
         const std::string& element = fileSpec[i];
@@ -198,168 +419,48 @@ std::stringstream* RandoSession::extractFile(const std::vector<std::string>& fil
             continue;
         }
 
-        parentEntry->children[resultKey] = std::make_shared<CacheEntry>();
-        nextEntry = parentEntry->children[resultKey];
-        nextEntry->parent = parentEntry;
-
-        if(i == 1) {
-            nextEntry->toOutput = true; //last level that would be repacked
+        CacheEntry::Format fmt = CacheEntry::Format::EMPTY;
+        if(str_to_format.contains(element)) {
+            fmt = str_to_format.at(element);
         }
         else {
-            nextEntry->toOutput = false;
-        }
-        
-        if (element.compare("RPX") == 0)
-        {
-            if(fromBaseDir) {
-                std::ifstream inputFile(baseDir / cacheKey, std::ios::binary);
-                if (!inputFile.is_open()) {
-                    ErrorLog::getInstance().log("Failed to open input file " + (baseDir / cacheKey).string());
-                    return nullptr;
-                }
-                fromBaseDir = false;
-
-                if (RPXError err = FileTypes::rpx_decompress(inputFile, nextEntry->data.emplace<std::stringstream>()); err != RPXError::NONE)
-                {
-                    ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                    return nullptr;
-                }
-            }
-            else {
-                if (RPXError err = FileTypes::rpx_decompress(std::get<std::stringstream>(parentEntry->data), nextEntry->data.emplace<std::stringstream>()); err != RPXError::NONE)
-                {
-                    ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                    return nullptr;
-                }
-                parentEntry->data = std::monostate{}; //don't need to keep data around
-            }
-        }
-        else if (element.compare("YAZ0") == 0)
-        {
-            nextEntry->fullCompress = false;
-            //nextEntry->toOutput = false; //sarc will go to output instead
-
-            if(fromBaseDir) {
-                std::ifstream inputFile(baseDir / cacheKey, std::ios::binary);
-                if (!inputFile.is_open()) {
-                    ErrorLog::getInstance().log("Failed to open input file " + (baseDir / cacheKey).string());
-                    return nullptr;
-                }
-
-                fromBaseDir = false;
-
-                if(YAZ0Error err = FileTypes::yaz0Decode(inputFile, nextEntry->data.emplace<std::stringstream>()); err != YAZ0Error::NONE)
-                {
-                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                    return nullptr;
-                }
-            }
-            else {
-                if(YAZ0Error err = FileTypes::yaz0Decode(std::get<std::stringstream>(parentEntry->data), nextEntry->data.emplace<std::stringstream>()); err != YAZ0Error::NONE)
-                {
-                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                    return nullptr;
-                }
-                parentEntry->data = std::monostate{}; //don't need to keep data around
-            }
-        }
-        else if(element.compare("SARC") == 0)
-        {
-            if(parentEntry->fullCompress == false && parentEntry->toOutput == true) { //if yaz0 doesn't save to output, sarc does instead
-                parentEntry->toOutput = false;
-                nextEntry->toOutput = true;
-            }
-
-            FileTypes::SARCFile& sarc = nextEntry->data.emplace<FileTypes::SARCFile>();
-            SARCError err = SARCError::NONE;
-            if(fromBaseDir) {
-                err = sarc.loadFromFile((baseDir / cacheKey).string());
-                fromBaseDir = false;
-            }
-            else {
-                err = sarc.loadFromBinary(std::get<std::stringstream>(parentEntry->data));
-                parentEntry->data = std::monostate{}; //don't need to keep data around
-            }
-            if (err != SARCError::NONE) {
-                ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return nullptr;
-            }
-        }
-        else if (element.compare("BFRES") == 0)
-        {
-            FileTypes::resFile& fres = nextEntry->data.emplace<FileTypes::resFile>();
-            FRESError err = FRESError::NONE;
-            if(fromBaseDir) {
-                err = fres.loadFromFile((baseDir / cacheKey).string());
-                fromBaseDir = false;
-            }
-            else {
-                err = fres.loadFromBinary(std::get<std::stringstream>(parentEntry->data));
-                parentEntry->data = std::monostate{}; //don't need to keep data around
-            }
-            if (err != FRESError::NONE) {
-                ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return nullptr;
-            }
-        }
-        else
-        {
             if(i == 0) {
-                if(fileSpec.size() > 1) {
-                    fromBaseDir = true;
-                }
-                else {
-                    // file has no unpacking, just load
-                    const fspath gameFilePath = baseDir / resultKey;
-                    std::ifstream inFile(gameFilePath, std::ios::binary);
-                    if (!inFile.is_open()) {
-                        ErrorLog::getInstance().log("Failed to open input file " + (baseDir / cacheKey).string());
-                        return nullptr;
-                    }
-
-                    nextEntry->data.emplace<std::stringstream>() << inFile.rdbuf();
-                    nextEntry->toOutput = true;
-                }
+                fmt = CacheEntry::Format::ROOT;
             }
             else {
-                if(fileSpec[i - 1] == "SARC") {
-                    FileTypes::SARCFile::File* file = std::get<FileTypes::SARCFile>(parentEntry->data).getFile(element + '\0');
-                    if(file == nullptr) {
-                        ErrorLog::getInstance().log("Could not find " + element + " in SARC");
-                        return nullptr;
-                    }
-                    
-                    nextEntry->data.emplace<std::stringstream>(std::move(file->data));
-                }
-                
-                if(fileSpec[i - 1] == "BFRES") {
-                    const auto& files = std::get<FileTypes::resFile>(parentEntry->data).files;
-                    auto it = std::find_if(files.begin(), files.end(), [&](const FileTypes::resFile::FileSpec& spec) { return spec.fileName == element; });
-                    if(it == files.end()) {
-                        ErrorLog::getInstance().log("Could not find " + element + " in BFRES");
-                        return nullptr;
-                    }
-
-                    nextEntry->data.emplace<std::stringstream>(std::get<FileTypes::resFile>(parentEntry->data).fileData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
-                }
+                fmt = CacheEntry::Format::STREAM;
             }
         }
 
+        parentEntry->children[resultKey] = std::make_shared<CacheEntry>(parentEntry, element, fmt);
+        nextEntry = parentEntry->children[resultKey];
         cacheKey = resultKey;
         parentEntry = nextEntry;
     }
 
-    //reset cursors
-    std::stringstream* ptr = &std::get<std::stringstream>(parentEntry->data);
-    ptr->seekg(0, std::ios::beg);
-    ptr->seekp(0, std::ios::beg);
-    return ptr;
+    return *parentEntry;
 }
 
-std::stringstream* RandoSession::openGameFile(const RandoSession::fspath& relPath)
+RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath& relPath)
 {
-    CHECK_INITIALIZED(nullptr);
-    return extractFile(Utility::Str::split(relPath.string(), '@'));
+    //CHECK_INITIALIZED(nullptr);
+    return getEntry(Utility::Str::split(relPath.string(), '@'));
+}
+
+std::ifstream RandoSession::openBaseFile(const fspath &relPath) {
+    CHECK_INITIALIZED(std::ifstream());
+    
+    const fspath file = outputDir / relPath;
+    if(!Utility::copy_file(baseDir / relPath, file)) {
+        ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
+        return std::ifstream();
+    }
+    if(!std::filesystem::is_regular_file(file)) {
+        ErrorLog::getInstance().log("Could not open " + relPath.string() + " after copy");
+        return std::ifstream();
+    }
+
+    return std::ifstream(file, std::ios::binary);
 }
 
 bool RandoSession::isCached(const RandoSession::fspath& relPath)
@@ -401,20 +502,22 @@ bool RandoSession::isCached(const RandoSession::fspath& relPath)
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
     CHECK_INITIALIZED(false);
 
-    std::stringstream* data = extractFile(Utility::Str::split(relPath.string(), '@'));
+    RandoSession::CacheEntry& entry = openGameFile(relPath);
+    entry.addAction([source](RandoSession* session, FileType* data) -> int {
+        std::ifstream src(source, std::ios::binary);
+	    if(!src.is_open()) {
+	    	ErrorLog::getInstance().log("Failed to open " + source.string());
+	    	return false;
+	    }
 
-    if(data == nullptr) {
-        ErrorLog::getInstance().log("Failed to extract file " + relPath.string());
-        return false;
-    }
-    
-    std::ifstream src(source, std::ios::binary);
-	if(!src.is_open()) {
-		ErrorLog::getInstance().log("Failed to open " + source.string());
-		return false;
-	}
+        GenericFile* dst = dynamic_cast<GenericFile*>(data);
+        if(dst == nullptr) return false;
+        dst->data.str(std::string()); //clear data so we overwrite it
+        dst->data << src.rdbuf();
+		
+        return true;
+    });
 
-    *data << src.rdbuf();
     return true;
 }
 
@@ -430,211 +533,91 @@ bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file fr
     return Utility::copy_file(src, dst);
 }
 
-RandoSession::RepackResult RandoSession::repackFile(const std::string& element, std::shared_ptr<CacheEntry> entry) {
-    if(std::any_of(entry->children.begin(), entry->children.end(), [](const std::pair<std::string, std::shared_ptr<CacheEntry>>& child) { return child.second->isRepacked == false; })) {
-        return RepackResult::DELAY;
+bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current) {
+    if(current->parent->parent == nullptr) { //only print start of chain to avoid spam
+        Utility::platformLog(std::string("Working on ") + filename.string() + "\n");
     }
+    //extract this level, move down tree
+    if(!extractFile(current)) return false;
 
-    //Repack file in the cache directory
-    //Write directly to output if it is the last step
-    Utility::platformLog("Repacking %s\n", element.c_str());
-    std::string resultKey;
-    if (element.ends_with(".elf"))
-    {
-        resultKey = element.substr(0, element.size() - 4);
-
-        //Repack to output directory if file exists, otherwise stay in cache
-        if(entry->toOutput) {
-            std::ofstream outputFile;
-            outputFile.open(outputDir / resultKey, std::ios::binary);
-            if (!outputFile.is_open()) {
-                ErrorLog::getInstance().log("Failed to open output file " + (outputDir / resultKey).string());
-                return RepackResult::FAIL;
-            }
-
-            auto& strm = std::get<std::stringstream>(entry->data);
-            strm.seekg(0, std::ios::beg);
-            strm.seekp(0, std::ios::beg);
-            if (RPXError err = FileTypes::rpx_compress(strm, outputFile); err != RPXError::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return RepackResult::FAIL;
-            }
-            entry->data = std::monostate{};
-        }
-        else {
-            auto& strm = std::get<std::stringstream>(entry->data);
-            strm.seekg(0, std::ios::beg);
-            strm.seekp(0, std::ios::beg);
-            if (RPXError err = FileTypes::rpx_compress(strm, entry->parent->data.emplace<std::stringstream>()); err != RPXError::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return RepackResult::FAIL;
-            }
-            entry->data = std::monostate{};
-        }
-    }
-    else if (element.ends_with(".dec"))
-    {
-        if(entry->fullCompress) {
-            uint32_t compressLevel = 9;
-            resultKey = element.substr(0, element.size() - 4);
-
-            //Repack to output directory if file exists, otherwise stay in working dir
-            if(entry->toOutput) {
-                std::ofstream outputFile;
-                outputFile.open(outputDir / resultKey, std::ios::binary);
-                if (!outputFile.is_open()) {
-                    ErrorLog::getInstance().log("Failed to open output file " + (outputDir / resultKey).string());
-                    return RepackResult::FAIL;
-                }
-
-                Utility::platformLog("Recompressing %s\n", element.c_str());
-                auto& strm = std::get<std::stringstream>(entry->data);
-                strm.seekg(0, std::ios::beg);
-                strm.seekp(0, std::ios::beg);
-                if (YAZ0Error err = FileTypes::yaz0Encode(strm, outputFile, compressLevel); err != YAZ0Error::NONE)
-                {
-                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                    return RepackResult::FAIL;
-                }
-                entry->data = std::monostate{};
-            }
-            else {
-                Utility::platformLog("Recompressing %s\n", element.c_str());
-                auto& strm = std::get<std::stringstream>(entry->data);
-                strm.seekg(0, std::ios::beg);
-                strm.seekp(0, std::ios::beg);
-                if (YAZ0Error err = FileTypes::yaz0Encode(strm, entry->parent->data.emplace<std::stringstream>(), compressLevel); err != YAZ0Error::NONE)
-                {
-                    ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                    return RepackResult::FAIL;
-                }
-                entry->data = std::monostate{};
-            }
-        }
-        else {
-            if(entry->data.index() == 2){
-                entry->parent->data.emplace<std::stringstream>().swap(std::get<std::stringstream>(entry->data));
-            }
-        }
-    }
-    else if (element.ends_with(".unpack/"))
-    {
-        resultKey = element.substr(0, element.size() - 8);
-
-        FileTypes::SARCFile& sarc = std::get<FileTypes::SARCFile>(entry->data);
-        SARCError err = SARCError::NONE;
-
-        //update the changed files
-        for(const auto& child : entry->children) {
-            err = sarc.replaceFile(child.first.substr(element.size()) + '\0', std::get<std::stringstream>(child.second->data));
-            if (err != SARCError::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return RepackResult::FAIL;
-            }
-            child.second->data = std::monostate{};
-        }
-
-        //Repack to output directory if file exists, otherwise stay in cache
-        if(entry->toOutput) {
-            if(resultKey.ends_with(".dec")) { //remove extra extension if skipping compression
-                resultKey = resultKey.substr(0, resultKey.size() - 4);
-            }
-            err = sarc.writeToFile((outputDir / resultKey).string());
-            entry->data = std::monostate{};
-        }
-        else {
-            err = sarc.writeToStream(entry->parent->data.emplace<std::stringstream>());
-            entry->data = std::monostate{};
-        }
-
-        if (err != SARCError::NONE) 
-        {
-            ErrorLog::getInstance().log(std::string("Encountered SARCError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
-        }
-    }
-    else if (element.ends_with(".res/"))
-    {
-        resultKey = element.substr(0, element.size() - 5);
-
-        FileTypes::resFile& fres = std::get<FileTypes::resFile>(entry->data);
-        FRESError err = FRESError::NONE;
-
-        //rebuild the changed files
-        for(const auto& child : entry->children) {
-            err = fres.replaceEmbeddedFile(child.first.substr(element.size()), std::get<std::stringstream>(child.second->data));
-            if (err != FRESError::NONE)
-            {
-                ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-                return RepackResult::FAIL;
-            }
-            child.second->data = std::monostate{};
-        }
-        
-        //Repack to output directory if file exists, otherwise stay in working dir
-        if(entry->toOutput) {
-            err = fres.writeToFile((outputDir / resultKey).string());
-            entry->data = std::monostate{};
-        }
-        else {
-            err = fres.writeToStream(entry->parent->data.emplace<std::stringstream>());
-            entry->data = std::monostate{};
-        }
-        
-        if (err != FRESError::NONE)
-        {
-            ErrorLog::getInstance().log(std::string("Encountered FRESError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-            return RepackResult::FAIL;
-        }
-    }
-    else
-    {
-        //Copy to output if the file didn't need any extraction
-        //Skip copying for files that get repacked, they get repacked directly to the output
-        if (entry->toOutput) {
-        	std::ofstream dst(outputDir / element, std::ios::binary);
-			if(!dst.is_open()) {
-				ErrorLog::getInstance().log("Failed to open " + (outputDir / element).string());
-				return RepackResult::FAIL;
-			}
-
-            const std::string& dataStr = std::get<std::stringstream>(entry->data).str();
-			dst.write(&dataStr[0], dataStr.size());
-            entry->data = std::monostate{};
+    //has mods to stream (item location edits), handle these before filetype stuff
+    if(current->children.size() == 1 && current->actions.size() != 0 && dynamic_cast<GenericFile*>(current->data.get()) != nullptr) {
+        for(auto& action : current->actions) {
+            action(this, current->data.get());
         }
     }
 
-    entry->isRepacked = true;
-    entry->children.clear(); // children no longer cached or needed
-    return RepackResult::SUCCESS;
+    //bottom of branch, run mods
+    if(current->children.size() == 0) {
+        for(auto& action : current->actions) {
+            action(this, current->data.get());
+        }
+    }
+    else { //modify, repack children
+        for(auto& [filename, child] : current->children) {
+            RandoSession::handleChildren(filename, child);
+        }
+    }
+
+    //repack this level
+    repackFile(current);
+
+    //clear children once done
+    current->children.clear();
+
+    //delete ourselves if we are the chain root, fileCache won't
+    if(current->storedFormat == CacheEntry::Format::ROOT) {
+        current->parent->children.erase(filename.string());
+    }
+
+    return true;
 }
 
-void RandoSession::queueChildren(std::shared_ptr<CacheEntry> entry) {
-    //go down the tree and wait for lower parts to queue
-    for(auto& child : entry->children) { //go down the tree
-        queueChildren(child.second);
-    }
-
-    //queue this level's children
-    for(const auto& child : entry->children) {
-        workerThreads.push_task(std::bind(&RandoSession::repackFile, this, child.first, child.second));
-    }
-
-    return;
-}
-
-bool RandoSession::repackCache()
+bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
+    
+    //BS::multi_future<bool> futures;
+    for(auto& [filename, child] : fileCache->children) {
+        bool reqsDone = true;
 
-    queueChildren(fileCache);
+        for(const auto& req : child->prereqs) {
+            if(isCached(req)) {
+                reqsDone = false;
+                break;
+            }
+        }
+        if(!reqsDone) {
+            continue;
+        }
 
-    workerThreads.waitForAll();
+        workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
+        //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
+    }
+
+    while(fileCache->children.size() != 0) {
+        workerThreads.wait_for_tasks();
+        for(auto& [filename, child] : fileCache->children) {
+            if(child->prereqs.size() == 0) continue;
+            bool reqsDone = true;
+
+            for(const auto& req : child->prereqs) {
+                if(isCached(req)) {
+                    reqsDone = false;
+                    break;
+                }
+            }
+            if(!reqsDone) {
+                continue;
+            }
+
+            workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
+            //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
+        }
+    }
+
     Utility::platformLog("Finished repacking files\n");
-    BasicLog::getInstance().log("Finished repacking files\n");
+    BasicLog::getInstance().log("Finished repacking files");
     
     return true;
 }
@@ -642,7 +625,7 @@ bool RandoSession::repackCache()
 void RandoSession::clearCache()
 {
     fileCache->children.clear();
-    fileCache->isRepacked = false;
-    fileCache->fullCompress = true;
-    fileCache->toOutput = false;
+    fileCache->prereqs.clear();
+    fileCache->data = nullptr;
+    fileCache->actions.clear();
 }

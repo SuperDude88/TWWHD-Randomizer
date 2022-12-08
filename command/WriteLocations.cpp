@@ -6,12 +6,13 @@
 #include <filesystem>
 #include <algorithm>
 
-#include <logic/Dungeon.hpp>
 #include <libs/json.hpp>
+
+#include <logic/Dungeon.hpp>
+#include <command/RandoSession.hpp>
 #include <command/WWHDStructs.hpp>
 #include <command/Log.hpp>
 #include <filetypes/util/elfUtil.hpp>
-#include <utility/string.hpp>
 
 using namespace std::literals::string_literals;
 
@@ -32,8 +33,6 @@ static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_nam
 
 
 namespace {
-    bool rpxOpen = false;
-    FileTypes::ELF gRPX;
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
     void Load_Custom_Symbols(const std::string& file_path) {
@@ -47,32 +46,6 @@ namespace {
 
 		return;
 	}
-
-    ELFError loadRPX() {
-        std::stringstream* stream = g_session.openGameFile("code/cking.rpx@RPX");
-        ELFError err = gRPX.loadFromBinary(*stream);
-        if(err != ELFError::NONE) {
-            return err;
-        }
-        rpxOpen = true;
-
-        return ELFError::NONE;
-    }
-}
-
-void resetRPX()
-{
-    gRPX = FileTypes::ELF();
-}
-
-
-ELFError saveRPX() {
-    std::stringstream* stream = g_session.openGameFile("code/cking.rpx@RPX");
-    const ELFError& err = gRPX.writeToStream(*stream);
-    gRPX = FileTypes::ELF(); //clear elf so it's not storing a bunch of data in ram
-    rpxOpen = false;
-
-    return err;
 }
 
 
@@ -119,21 +92,27 @@ ModificationError ModifyChest::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyChest::writeLocation(const Item& item) {
-    std::stringstream* stream = g_session.openGameFile(filePath);
-    if(stream == nullptr) return ModificationError::UNKNOWN;
+    RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
+    file.addAction([this, item](RandoSession* session, FileType* data) -> int {
+        for (const uint32_t& offset : this->offsets) {
+            CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+            std::stringstream& stream = generic.data;
 
-    for (const uint32_t& offset : offsets) {
-        stream->seekg(offset, std::ios::beg);
-        ACTR chest = WWHDStructs::readACTR(*stream);
+            stream.seekg(offset, std::ios::beg);
+            ACTR chest = WWHDStructs::readACTR(stream);
 
-        if(isCTMC) LOG_AND_RETURN_IF_ERR(setCTMCType(chest, item))
+            if(isCTMC) LOG_AND_RETURN_BOOL_IF_ERR(setCTMCType(chest, item))
 
-        chest.aux_params_2 &= 0x00FF;
-        chest.aux_params_2 |= static_cast<uint16_t>(item.getGameItemId()) << 8;
+            chest.aux_params_2 &= 0x00FF;
+            chest.aux_params_2 |= static_cast<uint16_t>(item.getGameItemId()) << 8;
 
-        stream->seekp(offset, std::ios::beg);
-        WWHDStructs::writeACTR(*stream, chest);
-    }
+            stream.seekp(offset, std::ios::beg);
+            WWHDStructs::writeACTR(stream, chest);
+        }
+
+        return true;
+    });
+    
 
     return ModificationError::NONE;
 }
@@ -186,21 +165,26 @@ ModificationError ModifyActor::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyActor::writeLocation(const Item& item) {
-    std::stringstream* stream = g_session.openGameFile(filePath);
-    if(stream == nullptr) return ModificationError::UNKNOWN;
+    RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
+    file.addAction([this, item](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+        std::stringstream& stream = generic.data;
 
-    for (const uint32_t& offset : offsets) {
-        stream->seekg(offset, std::ios::beg);
-        ACTR actor = WWHDStructs::readACTR(*stream);
+        for (const uint32_t& offset : this->offsets) {
+            stream.seekg(offset, std::ios::beg);
+            ACTR actor = WWHDStructs::readACTR(stream);
 
-        if (item_id_mask_by_actor_name.count(actor.name) == 0) {
-            LOG_ERR_AND_RETURN(ModificationError::UNKNOWN_ACTOR_NAME)
+            if (item_id_mask_by_actor_name.count(actor.name) == 0) {
+                LOG_ERR_AND_RETURN_BOOL(ModificationError::UNKNOWN_ACTOR_NAME)
+            }
+            LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
+
+            stream.seekp(offset, std::ios::beg);
+            WWHDStructs::writeACTR(stream, actor);
         }
-        LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 
-        stream->seekp(offset, std::ios::beg);
-        WWHDStructs::writeACTR(*stream, actor);
-    }
+        return true;
+    });
 
     return ModificationError::NONE;
 }
@@ -226,21 +210,26 @@ ModificationError ModifySCOB::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifySCOB::writeLocation(const Item& item) {
-    std::stringstream* stream = g_session.openGameFile(filePath);
-    if(stream == nullptr) return ModificationError::UNKNOWN;
+    RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
+    file.addAction([this, item](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+        std::stringstream& stream = generic.data;
 
-    for (const uint32_t& offset : offsets) {
-        stream->seekg(offset, std::ios::beg);
-        SCOB scob = WWHDStructs::readSCOB(*stream);
+        for (const uint32_t& offset : this->offsets) {
+            stream.seekg(offset, std::ios::beg);
+            SCOB scob = WWHDStructs::readSCOB(stream);
 
-        if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
-            LOG_ERR_AND_RETURN(ModificationError::UNKNOWN_ACTOR_NAME)
+            if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
+                LOG_ERR_AND_RETURN_BOOL(ModificationError::UNKNOWN_ACTOR_NAME)
+            }
+            LOG_AND_RETURN_BOOL_IF_ERR(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
+
+            stream.seekp(offset, std::ios::beg);
+            WWHDStructs::writeSCOB(stream, scob);
         }
-        LOG_AND_RETURN_IF_ERR(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
 
-        stream->seekp(offset, std::ios::beg);
-        WWHDStructs::writeSCOB(*stream, scob);
-    }
+        return true;
+    });
 
     return ModificationError::NONE;
 }
@@ -270,23 +259,28 @@ ModificationError ModifyEvent::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyEvent::writeLocation(const Item& item) {
-    std::stringstream* stream = g_session.openGameFile(filePath);
-    if(stream == nullptr) return ModificationError::UNKNOWN;
+    RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
+    file.addAction([this, item](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+        std::stringstream& stream = generic.data;
+        
+        uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
+    
+        std::string name = "011get_item";
+        if (0x6D <= itemID && itemID <= 0x72) {
+            name = "059get_dance";
+            itemID -= 0x6D;
+        }
+        name.resize(0x20);
 
-    uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
+        stream.seekp(nameOffset, std::ios::beg);
+        stream.write(&name[0], 0x20);
 
-    std::string name = "011get_item";
-    if (0x6D <= itemID && itemID <= 0x72) {
-        name = "059get_dance";
-        itemID -= 0x6D;
-    }
-    name.resize(0x20);
+        stream.seekp(offset, std::ios::beg);
+        stream.write(reinterpret_cast<const char*>(&itemID), 1);
 
-    stream->seekp(nameOffset, std::ios::beg);
-    stream->write(&name[0], 0x20);
-
-    stream->seekp(offset, std::ios::beg);
-    stream->write(reinterpret_cast<const char*>(&itemID), 1);
+        return true;
+    });
 
     return ModificationError::NONE;
 }
@@ -309,18 +303,20 @@ ModificationError ModifyRPX::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyRPX::writeLocation(const Item& item) {
-    if (rpxOpen == false) {
-        if(ELFError err = loadRPX(); err != ELFError::NONE) {
-            LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
-        }
-    }
-
     uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
-    for (const uint32_t& address : offsets) {
-        if(const auto& err = elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, address), itemID); err != ELFError::NONE) {
-            LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
+
+    RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+    file.addAction([this, itemID](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
+        
+        for (const uint32_t& address : this->offsets) {
+            if(const auto& err = elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, address), itemID); err != ELFError::NONE) {
+                LOG_ERR_AND_RETURN_BOOL(ModificationError::RPX_ERROR);
+            }
         }
-    }
+
+        return true;
+    });
 
     return ModificationError::NONE;
 }
@@ -337,11 +333,6 @@ ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
-    if (rpxOpen == false) {
-        if (loadRPX() != ELFError::NONE) {
-            return ModificationError::RPX_ERROR;
-        }
-    }
     if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json");
 
     for(const auto& symbol : symbolNames) {
@@ -361,9 +352,16 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
             address = custom_symbols.at(symbol);
         }
 
-        if(const auto& err = elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, address), itemID); err != ELFError::NONE) {
-            LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
-        }
+        RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+        file.addAction([address, itemID](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
+
+            if(const auto& err = elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, address), itemID); err != ELFError::NONE) {
+                LOG_ERR_AND_RETURN_BOOL(ModificationError::RPX_ERROR);
+            }
+
+            return true;
+        });
     }
     return ModificationError::NONE;
 }
@@ -394,32 +392,40 @@ ModificationError ModifyBoss::parseArgs(Yaml::Node& locationObject) {
 }
 
 ModificationError ModifyBoss::writeLocation(const Item& item) {
-    if (rpxOpen == false) {
-        if (loadRPX() != ELFError::NONE) {
-            return ModificationError::RPX_ERROR;
-        }
-    }
-
     for (const auto& [path, offset] : offsetsWithPath) {
-        std::stringstream* stream = g_session.openGameFile(path);
-        if(stream == nullptr) return ModificationError::UNKNOWN;
-
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
-        if (path == "code/cking.rpx@RPX") {
-            if(const auto& err = elfUtil::write_u8(gRPX, elfUtil::AddressToOffset(gRPX, offset), itemID); err != ELFError::NONE) {
-                LOG_ERR_AND_RETURN(ModificationError::RPX_ERROR);
-            }
+        if (path == "code/cking.rpx@RPX@ELF") {
+            RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+            rpx.addAction([offset = offset, itemID](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+                if(const auto& err = elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, offset), itemID); err != ELFError::NONE) {
+                    LOG_ERR_AND_RETURN_BOOL(ModificationError::RPX_ERROR);
+                }
+
+                return true;
+            });
+
             continue;
         }
+        else {
+            RandoSession::CacheEntry& file = g_session.openGameFile(path);
+            file.addAction([offset = offset, itemID](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+                std::stringstream& stream = generic.data;
+                
+                stream.seekg(offset, std::ios::beg);
+                ACTR actor = WWHDStructs::readACTR(stream);
 
-        stream->seekg(offset, std::ios::beg);
-        ACTR actor = WWHDStructs::readACTR(*stream);
+                LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
 
-        LOG_AND_RETURN_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
+                stream.seekp(offset, std::ios::beg);
+                WWHDStructs::writeACTR(stream, actor);
 
-        stream->seekp(offset, std::ios::beg);
-        WWHDStructs::writeACTR(*stream, actor);
+                return true;
+            });
+        }
     }
 
     return ModificationError::NONE;

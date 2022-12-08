@@ -311,30 +311,30 @@ void generateSpoilerLog(WorldPool& worlds)
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    BasicLog::getInstance().log("### Locations that may or may not have progress items in them on this run:");
+    BasicLog::getInstance().log("### Locations that may or may not have progress items in them on this run:", false);
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (location->categories.contains(LocationCategory::PlandomizerProgression))
             {
-                BasicLog::getInstance().log("    " + location->getName() + " (Added by Plandomizer)");
+                BasicLog::getInstance().log("    " + location->getName() + " (Added by Plandomizer)", false);
             }
             else if (location->progression)
             {
-                BasicLog::getInstance().log("    " + location->getName());
+                BasicLog::getInstance().log("    " + location->getName(), false);
             }
         }
     }
 
-    BasicLog::getInstance().log("\n### Locations that cannot have progress items in them on this run:");
+    BasicLog::getInstance().log("\n### Locations that cannot have progress items in them on this run:", false);
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (!location->progression)
             {
-                BasicLog::getInstance().log("    " + location->getName());
+                BasicLog::getInstance().log("    " + location->getName(), false);
             }
         }
     }

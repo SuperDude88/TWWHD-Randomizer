@@ -6,6 +6,7 @@
 
 #include <filetypes/shared/lms.hpp>
 #include <utility/common.hpp>
+#include <filetypes/baseFiletype.hpp>
 
 
 
@@ -191,7 +192,7 @@ private:
 
 namespace FileTypes {
 
-    class MSBPFile {
+    class MSBPFile : public FileType {
 	public:
 		CLB1 colorLabels;
         CLR1 colors;
@@ -216,6 +217,6 @@ namespace FileTypes {
 	private:
 		FileHeader header;
 
-		void initNew();
+		void initNew() override;
 	};
 }
