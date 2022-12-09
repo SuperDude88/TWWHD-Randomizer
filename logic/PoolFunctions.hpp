@@ -71,3 +71,12 @@ T removeElementFromPool( Container& container, T element, int numberToRemove = 1
     }
     return retElement;
 }
+
+template <typename Container>
+void removeElementsFromPool( Container& container, Container& elementsToRemove)
+{
+    for (auto element : elementsToRemove)
+    {
+        removeElementFromPool(container, element);
+    }
+}
