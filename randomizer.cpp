@@ -406,7 +406,7 @@ private:
 
 		const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
 		const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-	
+
 		const EntrancePool entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
     	for (const auto entrance : entrances)
     	{
@@ -436,7 +436,7 @@ private:
     	  	if (replacementStage == "MiniKaz" || replacementStage == "MiniHyo") {
     	  		std::string exitFilepath = "content/Common/Stage/" + replacementStage + "_Room" + std::to_string(replacementRoom) + ".szs@YAZ0@SARC@Room" + std::to_string(replacementRoom) + ".bfres@BFRES@room.dzr@DZX";
     	  		RandoSession::CacheEntry& exitDzrEntry = g_session.openGameFile(exitFilepath);
-    	  		exitDzrEntry.addAction([entrance, replacementStage](RandoSession* session, FileType* data) -> int 
+    	  		exitDzrEntry.addAction([entrance, replacementStage](RandoSession* session, FileType* data) -> int
 				{
 					CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
@@ -444,10 +444,10 @@ private:
     	  			const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
     	  			for (auto actor : actors) {
     	  				if (actor->data.substr(0, 6) == "VolTag") {
-						
+
     	  			    	// If Fire Mountain/Ice Ring entrances lead to themselves, then don't change anything
     	  			    	if (entrance->getReplaces() == entrance) {
-							
+
     	  			    	// If Fire Mountain leads to Ice Ring then change the kill trigger type to act like the one
     	  			    	// inside Fire Mountain
     	  			    	} else if (entrance->getStageName() == "MiniKaz" && replacementStage == "MiniHyo") {
@@ -472,7 +472,7 @@ private:
             		return true;
 				});
     	  	}
-			
+
 			dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
 			{
 				CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -510,7 +510,7 @@ private:
 			if (entrance->getBossFilepathStageName() != "") {
 				const std::string bossStage = entrance->getBossFilepathStageName();
     	    	filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
-				
+
 				RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
 				list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int
 				{
@@ -540,7 +540,7 @@ private:
 					std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = bossOutSpawn;
 					exit2->properties[1]->value = bossOutStage + "\0";
 					std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = bossOutRoom;
-				
+
 					return true;
 				});
 			}
@@ -561,8 +561,12 @@ public:
 
 		// Go through the setting testing process if mass testing is turned on and ignore everything else
 		#ifdef MASS_TESTING
-			massTest(config);
-			return 0;
+        #if TEST_COUNT
+			      testSettings(config, TEST_COUNT);
+        #else
+            massTest(config);
+        #endif
+        return 0;
 		#endif
 
     std::hash<std::string> strHash;
@@ -660,14 +664,14 @@ public:
 				Utility::platformLog("Saving items...\n");
 				UPDATE_DIALOG_VALUE(40);
 				UPDATE_DIALOG_LABEL("Saving items...");
-				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.race_mode, worlds[0].dungeons);
+				ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons);
 				for (auto& [name, location] : worlds[0].locationEntries) {
 					if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
 						ErrorLog::getInstance().log("Failed to save location " + location.getName());
 						return 1;
 					}
 				}
-				
+
 				//write charts after saving our items so the hardcoded offsets don't change
 				//charts + entrances look through the actor list so offsets don't matter for these
 				if(config.settings.randomize_charts) {
@@ -725,43 +729,42 @@ public:
 			return 1;
 		}
 
-    
+
     #ifdef DEVKITPRO
 	  // Flush MLC to save changes to disk
 	  Utility::flush_mlc();
-	#else
-	  // Repack for console if necessary
-      if (config.repack_for_console)
-      {
-          UPDATE_DIALOG_LABEL("Repacking for console...");
-          Utility::platformLog("Repacking for console...\n");
-          const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
-          const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
+	  #else
+    // Repack for console if necessary
+    if (config.repack_for_console)
+    {
+        UPDATE_DIALOG_LABEL("Repacking for console...");
+        Utility::platformLog("Repacking for console...\n");
+        const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
+        const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
 
-          Key twwhdKey;
-          Key commonKey;
+        Key twwhdKey;
+        Key commonKey;
 
-          // Fill encryption keys from strings
-          for (size_t i = 0; i < twwhdKey.size(); i++)
-          {
-              twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
-              commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
-          }
+        // Fill encryption keys from strings
+        for (size_t i = 0; i < twwhdKey.size(); i++)
+        {
+            twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+            commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+        }
 
-          // Delete any previous repacked files
-          for (const auto& entry : std::filesystem::directory_iterator(outPath)) {
-              std::filesystem::remove_all(entry.path());
-          }
+        // Delete any previous repacked files
+        for (const auto& entry : std::filesystem::directory_iterator(outPath)) {
+            std::filesystem::remove_all(entry.path());
+        }
 
-          // Now repack the files
-          if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE)
-          {
-              ErrorLog::getInstance().log("Failed to create console package");
-              return 1;
-          }
-
-          UPDATE_DIALOG_VALUE(200);
-      }
+        // Now repack the files
+        if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE)
+        {
+            ErrorLog::getInstance().log("Failed to create console package");
+            return 1;
+        }
+    }
+    UPDATE_DIALOG_VALUE(200);
     #endif
 
 		//done!

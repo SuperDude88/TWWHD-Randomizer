@@ -609,6 +609,40 @@ std::unordered_multiset<GameItem> getSupportedStartingItems()
 		};
 }
 
+static std::set<GameItem> dungeonMaps = {
+		GameItem::DRCDungeonMap,
+		GameItem::FWDungeonMap,
+		GameItem::TotGDungeonMap,
+		GameItem::FFDungeonMap,
+		GameItem::ETDungeonMap,
+		GameItem::WTDungeonMap,
+};
+
+static std::set<GameItem> compasses = {
+		GameItem::DRCCompass,
+		GameItem::FWCompass,
+		GameItem::TotGCompass,
+		GameItem::FFCompass,
+		GameItem::ETCompass,
+		GameItem::WTCompass,
+};
+
+static std::set<GameItem> smallKeys = {
+		GameItem::DRCSmallKey,
+		GameItem::FWSmallKey,
+		GameItem::TotGSmallKey,
+		GameItem::ETSmallKey,
+		GameItem::WTSmallKey,
+};
+
+static std::set<GameItem> bigKeys = {
+		GameItem::DRCBigKey,
+		GameItem::FWBigKey,
+		GameItem::TotGBigKey,
+		GameItem::ETBigKey,
+		GameItem::WTBigKey,
+};
+
 Item::Item(GameItem gameItemId_, World* world_)
 {
 		gameItemId = gameItemId_;
@@ -750,6 +784,26 @@ bool Item::isJunkItem() const
 bool Item::isDungeonItem() const
 {
 		return dungeonItem;
+}
+
+bool Item::isMap() const
+{
+		return dungeonMaps.contains(gameItemId);
+}
+
+bool Item::isCompass() const
+{
+		return compasses.contains(gameItemId);
+}
+
+bool Item::isSmallKey() const
+{
+		return smallKeys.contains(gameItemId);
+}
+
+bool Item::isBigKey() const
+{
+		return bigKeys.contains(gameItemId);
 }
 
 bool Item::operator==(const Item& rhs) const

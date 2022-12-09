@@ -133,4 +133,9 @@ namespace Utility::Str {
 
         return text;
     }
+
+    bool contains(const std::string& str, const std::string& substr)
+    {
+        return str.find(substr) != std::string::npos;
+    }
 }

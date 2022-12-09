@@ -1,6 +1,6 @@
 #include "permalink.hpp"
 
-#include <array>
+#include <vector>
 #include <set>
 #include <iostream>
 
@@ -9,7 +9,7 @@
 
 #define BYTES_EXIST_CHECK(value) if (value == 0xFFFFFFFF) return PermalinkError::BAD_PERMALINK;
 
-static const std::array<GameItem, 52> REGULAR_ITEMS = {
+static const std::vector<GameItem> REGULAR_ITEMS = {
     GameItem::BaitBag,
     GameItem::BalladOfGales,
     GameItem::Bombs,
@@ -64,7 +64,7 @@ static const std::array<GameItem, 52> REGULAR_ITEMS = {
     GameItem::WindTingleStatue,
 };
 
-static const std::array<GameItem, 14> PROGRESSIVE_ITEMS = {
+static const std::vector<GameItem> PROGRESSIVE_ITEMS = {
     GameItem::ProgressiveBombBag,
     GameItem::ProgressiveBow,
     GameItem::ProgressiveMagicMeter,
@@ -81,7 +81,7 @@ static const std::array<GameItem, 14> PROGRESSIVE_ITEMS = {
     GameItem::WTSmallKey,
 };
 // These are options that should affect seed generation even with the same seed
-static const std::array<Option, 60> PERMALINK_OPTIONS {
+static const std::vector<Option> PERMALINK_OPTIONS {
     // Progression
     Option::ProgressDungeons,
     Option::ProgressGreatFairies,
@@ -109,8 +109,9 @@ static const std::array<Option, 60> PERMALINK_OPTIONS {
 
     // Additional Randomization Options
     Option::SwordMode,
-    Option::Keylunacy,
-    Option::RaceMode,
+    Option::DungeonSmallKeys,
+    Option::DungeonBigKeys,
+    Option::DungeonMapsAndCompasses,
     Option::NumRaceModeDungeons,
     Option::NumShards,
     Option::RandomCharts,
@@ -184,12 +185,23 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
             }
         }
         // ComboBox Options (and 8-bit spinbox options)
-        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards || option == Option::DamageMultiplier)
+        else if (option == Option::SwordMode               ||
+                 option == Option::DungeonSmallKeys        ||
+                 option == Option::DungeonBigKeys          ||
+                 option == Option::DungeonMapsAndCompasses ||
+                 option == Option::NumRaceModeDungeons     ||
+                 option == Option::NumShards               ||
+                 option == Option::DamageMultiplier)
         {
             bitsWriter.write(getSetting(settings, option), 8);
         }
         // 3-bit SpinBox options
-        else if (option == Option::PathHints || option == Option::BarrenHints || option == Option::LocationHints || option == Option::ItemHints || option == Option::StartingHC)
+        else if (option == Option::ProgressDungeons ||
+                 option == Option::PathHints        ||
+                 option == Option::BarrenHints      ||
+                 option == Option::LocationHints    ||
+                 option == Option::ItemHints        ||
+                 option == Option::StartingHC)
         {
             bitsWriter.write(getSetting(settings, option), 3);
         }
@@ -297,15 +309,25 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
                 }
             }
         }
-        // ComboBox Options
-        else if (option == Option::SwordMode || option == Option::NumRaceModeDungeons || option == Option::NumShards)
+        // ComboBox Options (and 8-bit spinbox options)
+        else if (option == Option::SwordMode               ||
+                 option == Option::DungeonSmallKeys        ||
+                 option == Option::DungeonBigKeys          ||
+                 option == Option::DungeonMapsAndCompasses ||
+                 option == Option::NumRaceModeDungeons     ||
+                 option == Option::NumShards               ||
+                 option == Option::DamageMultiplier)
         {
             value = bitsReader.read(8);
             BYTES_EXIST_CHECK(value);
             setSetting(settings, option, value);
         }
         // 3-bit SpinBox options
-        else if (option == Option::PathHints || option == Option::BarrenHints || option == Option::LocationHints || option == Option::ItemHints || option == Option::StartingHC)
+        else if (option == Option::PathHints     ||
+                 option == Option::BarrenHints   ||
+                 option == Option::LocationHints ||
+                 option == Option::ItemHints     ||
+                 option == Option::StartingHC)
         {
             value = bitsReader.read(3);
             BYTES_EXIST_CHECK(value);

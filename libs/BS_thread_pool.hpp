@@ -27,6 +27,9 @@
 #include <utility>            // std::forward, std::move, std::swap
 #include <vector>             // std::vector
 
+#include <gui/update_dialog_header.hpp>
+#include <utility/platform.hpp>
+
 namespace BS
 {
 /**
@@ -509,7 +512,7 @@ public:
     {
         waiting = true;
         std::unique_lock<std::mutex> tasks_lock(tasks_mutex);
-        task_done_cv.wait(tasks_lock, [this] { return (tasks_total == (paused ? tasks.size() : 0)); });
+        task_done_cv.wait(tasks_lock, [this] { total_tasks_completed++; UPDATE_DIALOG_VALUE(int(100.0f - ((float((total_task_size - total_tasks_completed)/float(total_task_size))) * 50.0f))); return (tasks_total == (paused ? tasks.size() : 0)); });
         waiting = false;
     }
 
@@ -639,6 +642,10 @@ private:
      * @brief An atomic variable indicating that wait_for_tasks() is active and expects to be notified whenever a task is done.
      */
     std::atomic<bool> waiting = false;
+
+public:
+    std::atomic<size_t> total_task_size = 0;
+    std::atomic<size_t> total_tasks_completed = 0;
 };
 
 //                                     End class thread_pool                                     //

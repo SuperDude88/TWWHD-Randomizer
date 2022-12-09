@@ -180,6 +180,22 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
             size_t value = 0;
             bitsWriter.write(value, 1);
         }
+        else if (option == Option::Keylunacy)
+        {
+            size_t value = (settings.dungeon_small_keys == PlacementOption::OwnDungeon || settings.dungeon_small_keys == PlacementOption::Vanilla) &&
+                           (settings.dungeon_big_keys   == PlacementOption::OwnDungeon || settings.dungeon_big_keys   == PlacementOption::Vanilla);
+            bitsWriter.write(value, 1);
+        }
+        else if (option == Option::RaceMode)
+        {
+            size_t value = settings.progression_dungeons == ProgressionDungeons::RaceMode || settings.progression_dungeons == ProgressionDungeons::RequireBosses;
+            bitsWriter.write(value, 1);
+        }
+        else if (option == Option::ProgressDungeons)
+        {
+            size_t value = settings.progression_dungeons != ProgressionDungeons::Disabled;
+            bitsWriter.write(value, 1);
+        }
         // 1-bit Checkbox options
         else
         {

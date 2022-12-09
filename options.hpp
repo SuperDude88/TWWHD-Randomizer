@@ -22,6 +22,23 @@ enum struct SwordMode {
     INVALID
 };
 
+enum struct PlacementOption {
+    Vanilla = 0,
+    OwnDungeon,
+    AnyDungeon,
+    Overworld,
+    Keysanity,
+    INVALID
+};
+
+enum struct ProgressionDungeons {
+    Disabled = 0,
+    Standard,
+    RequireBosses,
+    RaceMode,
+    INVALID
+};
+
 enum struct Option {
     INVALID = 0,
     // Progression
@@ -57,6 +74,11 @@ enum struct Option {
     NumShards,
     RandomCharts,
     CTMC,
+
+    // Dungeon Randomization Options
+    DungeonSmallKeys,
+    DungeonBigKeys,
+    DungeonMapsAndCompasses,
 
     // Convenince Tweaks
     InvertCompass,
@@ -120,7 +142,8 @@ enum struct Option {
 };
 
 struct Settings {
-    bool progression_dungeons = false;
+    // bool progression_dungeons = false;
+    ProgressionDungeons progression_dungeons = ProgressionDungeons::Standard;
     bool progression_great_fairies = false;
     bool progression_puzzle_secret_caves = false;
     bool progression_combat_secret_caves = false;
@@ -144,7 +167,9 @@ struct Settings {
     bool progression_island_puzzles = false;
     bool progression_obscure = false;
 
-    bool keylunacy = false;
+    PlacementOption dungeon_small_keys = PlacementOption::Vanilla;
+    PlacementOption dungeon_big_keys = PlacementOption::Vanilla;
+    PlacementOption dungeon_maps_compasses = PlacementOption::Vanilla;
     bool randomize_charts = false;
     bool randomize_starting_island = false;
     bool randomize_dungeon_entrances = false;
@@ -174,7 +199,6 @@ struct Settings {
     SwordMode sword_mode = SwordMode::StartWithSword;
     bool skip_rematch_bosses = false;
     bool invert_sea_compass_x_axis = false;
-    bool race_mode = false;
     uint8_t num_race_mode_dungeons = 3;
     float damage_multiplier = 2.0f;
     bool chest_type_matches_contents = false;
@@ -199,6 +223,14 @@ std::string SwordModeToName(const SwordMode& mode);
 PigColor nameToPigColor(const std::string& name);
 
 std::string PigColorToName(const PigColor& name);
+
+PlacementOption nameToPlacementOption(const std::string& name);
+
+std::string PlacementOptionToName(const PlacementOption& option);
+
+ProgressionDungeons nameToProgressionDungeons(const std::string& name);
+
+std::string ProgressionDungeonsToName(const ProgressionDungeons& option);
 
 int nameToSettingInt(const std::string& name);
 
