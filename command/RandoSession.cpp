@@ -596,7 +596,7 @@ bool RandoSession::modFiles()
         //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
     }
 
-    UPDATE_DIALOG_LABEL("Repacking Files...");
+    UPDATE_DIALOG_LABEL("Repacking Files...\n(This will take a while)");
     workerThreads.total_tasks_completed = 0;
 
     while(fileCache->children.size() != 0) {

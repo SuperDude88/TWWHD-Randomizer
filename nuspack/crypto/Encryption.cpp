@@ -51,7 +51,7 @@ void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, co
         // Update progress dialogue
         if (block > 1000)
         {
-            UPDATE_DIALOG_VALUE(150 + (int)(((float) (input.gcount() * block) / (float) len) * 50.0f))
+            UPDATE_DIALOG_VALUE(149 + (int)(((float) (input.gcount() * block) / (float) len) * 50.0f))
         }
     } while (input);
     content.size = output.tellp();
