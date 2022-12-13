@@ -647,7 +647,7 @@ void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
 {
     config.settings.progression_dungeons = nameToProgressionDungeons(arg1.toStdString());
     update_permalink();
-    // Grey out the race mode dungeons combobox if race mode/require bosses is not selected
+    // Grey out the race mode dungeons combobox if race mode/standard is not selected
     if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
         ui->num_race_mode_dungeons->setEnabled(true);
