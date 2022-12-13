@@ -473,7 +473,6 @@ static FillError randomizeRestrictedDungeonItems(WorldPool& worlds, ItemPool& it
             auto mapsCompasses = filterFromPool(itemPool, [&](const Item& item){return item == map || item == compass;});
 
             bool addItemsToProgressionPool = settings.progression_dungeons == ProgressionDungeons::Standard ||
-                                             settings.progression_dungeons == ProgressionDungeons::RequireBosses ||
                                             (settings.progression_dungeons == ProgressionDungeons::RaceMode && dungeon.isRaceModeDungeon);
 
             if (settings.dungeon_small_keys == PlacementOption::AnyDungeon)

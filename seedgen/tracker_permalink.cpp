@@ -188,7 +188,7 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
         }
         else if (option == Option::RaceMode)
         {
-            size_t value = settings.progression_dungeons == ProgressionDungeons::RaceMode || settings.progression_dungeons == ProgressionDungeons::RequireBosses;
+            size_t value = settings.progression_dungeons == ProgressionDungeons::RaceMode;
             bitsWriter.write(value, 1);
         }
         else if (option == Option::ProgressDungeons)

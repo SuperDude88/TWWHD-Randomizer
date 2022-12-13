@@ -8,7 +8,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     // Progression Locations
     {
       "progression_dungeons",
-      "<b>Disabled</b>: Dungeons will not contain any items necessary to beat the game. <b>Standard</b>: Dungeons may contain items necessary to beat the game. <b>Require Bosses</b>: Certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). <b>Race Mode</b>: Same as Require Bosses, except dungeons without a required boss will not contain progress items. You can set the number of required bosses/dungeons in Additional Randmozation Settings."
+      "<b>Disabled</b>: Dungeons will not contain any items necessary to beat the game. <b>Standard</b>: Dungeons may contain items necessary to beat the game. You can set the number of required bosses/dungeons in Additional Randmozation Settings. With this setting certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). <b>Race Mode</b>: Dungeons without a required boss will not contain progress items."
     },
     {
       "progression_great_fairies",
@@ -122,7 +122,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "num_race_mode_dungeons",
-      "Select the number of requried bosses/dungeons that are required in Race Mode.\nRequired dungeon bosses will drop required items (e.g. Triforce Shards).",
+      "Select the number of requried bosses/dungeons.\nRequired dungeon bosses will drop required items (e.g. Triforce Shards).",
     },
     {
       "num_starting_triforce_shards",

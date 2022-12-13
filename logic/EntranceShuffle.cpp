@@ -382,7 +382,8 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     // race mode dungeon
     for (auto& world : worlds)
     {
-        if (world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode || world.getSettings().progression_dungeons == ProgressionDungeons::RequireBosses)
+        auto& settings = world.getSettings();
+        if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_race_mode_dungeons > 0)
         {
             std::unordered_set<std::string> raceModeIslands = {};
             for (auto& [name, dungeon] : world.dungeons)

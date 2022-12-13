@@ -45,14 +45,12 @@ static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap =
 static std::unordered_map<ProgressionDungeons, std::string> progressionDungeonsNameMap = {
     {ProgressionDungeons::Disabled, "Disabled"},
     {ProgressionDungeons::Standard, "Standard"},
-    {ProgressionDungeons::RequireBosses, "Require Bosses"},
     {ProgressionDungeons::RaceMode, "Race Mode"},
 };
 
 static std::unordered_map<std::string, ProgressionDungeons> nameProgressionDungeonsMap = {
     {"Disabled", ProgressionDungeons::Disabled},
     {"Standard", ProgressionDungeons::Standard},
-    {"Require Bosses", ProgressionDungeons::RequireBosses},
     {"Race Mode", ProgressionDungeons::RaceMode},
 };
 
