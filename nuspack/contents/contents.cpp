@@ -71,7 +71,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
             // Update progress dialog
             if (entries.size() > 1000)
             {
-                UPDATE_DIALOG_VALUE(100 + (int)(((float) count / (float) entries.size()) * 50.0f))
+                UPDATE_DIALOG_VALUE(99 + (int)(((float) count / (float) entries.size()) * 50.0f))
             }
         }
         else

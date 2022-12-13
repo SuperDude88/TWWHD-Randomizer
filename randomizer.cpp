@@ -737,7 +737,7 @@ public:
     // Repack for console if necessary
     if (config.repack_for_console)
     {
-        UPDATE_DIALOG_LABEL("Repacking for console...");
+        UPDATE_DIALOG_LABEL("Repacking for console...\n(This will also take a while)");
         Utility::platformLog("Repacking for console...\n");
         const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
         const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
