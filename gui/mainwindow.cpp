@@ -654,7 +654,7 @@ void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
         ui->label_for_num_race_mode_dungeons->setEnabled(true);
         ui->label_for_num_race_mode_dungeons->setText("Number of Race Mode Dungeons");
     }
-    else if (config.settings.progression_dungeons == ProgressionDungeons::RequireBosses)
+    else if (config.settings.progression_dungeons == ProgressionDungeons::Standard)
     {
         ui->num_race_mode_dungeons->setEnabled(true);
         ui->label_for_num_race_mode_dungeons->setEnabled(true);

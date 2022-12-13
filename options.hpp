@@ -34,7 +34,6 @@ enum struct PlacementOption {
 enum struct ProgressionDungeons {
     Disabled = 0,
     Standard,
-    RequireBosses,
     RaceMode,
     INVALID
 };
