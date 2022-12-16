@@ -76,6 +76,7 @@ public:
     Entrance* getAssumed();
     bool isShuffled() const;
     void setAsShuffled();
+    void setAsUnshuffled();
     World* getWorld();
     void setWorld(World* newWorld);
     std::unordered_set<std::string> getIslands();

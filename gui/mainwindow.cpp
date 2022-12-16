@@ -24,6 +24,7 @@
 #define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 #define APPLY_CONFIG_CHECKBOX_SETTING(config, ui, name) if(config.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
+#define APPLY_COMBOBOX_SETTING(config, ui, name) ui->name->setCurrentIndex(static_cast<int>(config.settings.name));
 
 #define APPLY_SPINBOX_SETTING(config, ui, name, min, max) \
     auto& name = config.settings.name;                    \
@@ -351,7 +352,7 @@ void MainWindow::setup_gear_menus()
 
 void MainWindow::update_plandomizer_widget_visbility()
 {
-    // Hide plandomizer input widgets when plandomizer isn't check
+    // Hide plandomizer input widgets when plandomizer isn't checked
     if (ui->plandomizer->isChecked())
     {
         ui->plandomizer_path->setVisible(true);
@@ -380,7 +381,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, progression_battlesquid);
     APPLY_CHECKBOX_SETTING(config, ui, progression_big_octos_gunboats);
     APPLY_CHECKBOX_SETTING(config, ui, progression_combat_secret_caves);
-    APPLY_CHECKBOX_SETTING(config, ui, progression_dungeons);
+    APPLY_COMBOBOX_SETTING(config, ui, progression_dungeons);
     APPLY_CHECKBOX_SETTING(config, ui, progression_expensive_purchases);
     APPLY_CHECKBOX_SETTING(config, ui, progression_eye_reef_chests);
     APPLY_CHECKBOX_SETTING(config, ui, progression_free_gifts);
@@ -442,12 +443,11 @@ void MainWindow::apply_config_settings()
         on_sword_mode_currentIndexChanged(index);
     }
 
+    APPLY_COMBOBOX_SETTING(config, ui, dungeon_small_keys);
+    APPLY_COMBOBOX_SETTING(config, ui, dungeon_big_keys);
+    APPLY_COMBOBOX_SETTING(config, ui, dungeon_maps_compasses);
+
     APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(80.0f));
-    APPLY_CHECKBOX_SETTING(config, ui, keylunacy);
-    APPLY_CHECKBOX_SETTING(config, ui, race_mode);
-    // Call the slot for the race_mode state change incase it didn't change
-    // to potentially grey out the num_race_mode_dungeons combobox
-    on_race_mode_stateChanged(0);
 
     auto& num_race_mode_dungeons = config.settings.num_race_mode_dungeons;
     // Race mode dungeons must be between 1 and 6
@@ -571,10 +571,15 @@ void MainWindow::on_generate_seed_button_clicked()
     std::string seed = generate_seed();
     config.seed = seed;
     ui->seed->setText(seed.c_str());
+}
+
+void MainWindow::on_seed_textChanged(const QString &arg1)
+{
+    config.seed = arg1.toStdString();
     update_permalink();
 }
 
-void MainWindow::update_progress_locations_text()
+int MainWindow::calculate_total_progress_locations()
 {
     int totalProgressionLocations = 0;
     for (auto& categorySet : locationCategories)
@@ -583,27 +588,27 @@ void MainWindow::update_progress_locations_text()
         {
             if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
-            return ( category == LocationCategory::Dungeon           && config.settings.progression_dungeons)            ||
-                   ( category == LocationCategory::GreatFairy        && config.settings.progression_great_fairies)       ||
-                   ( category == LocationCategory::PuzzleSecretCave  && config.settings.progression_puzzle_secret_caves) ||
-                   ( category == LocationCategory::CombatSecretCave  && config.settings.progression_combat_secret_caves) ||
-                   ( category == LocationCategory::ShortSideQuest    && config.settings.progression_short_sidequests)    ||
-                   ( category == LocationCategory::LongSideQuest     && config.settings.progression_long_sidequests)     ||
-                   ( category == LocationCategory::SpoilsTrading     && config.settings.progression_spoils_trading)      ||
-                   ( category == LocationCategory::Minigame          && config.settings.progression_minigames)           ||
-                   ( category == LocationCategory::FreeGift          && config.settings.progression_free_gifts)          ||
-                   ( category == LocationCategory::Mail              && config.settings.progression_mail)                ||
-                   ( category == LocationCategory::Submarine         && config.settings.progression_submarines)          ||
-                   ( category == LocationCategory::EyeReefChests     && config.settings.progression_eye_reef_chests)     ||
-                   ( category == LocationCategory::SunkenTreasure    && config.settings.progression_triforce_charts)     ||
-                   ( category == LocationCategory::SunkenTreasure    && config.settings.progression_treasure_charts)     ||
-                   ( category == LocationCategory::ExpensivePurchase && config.settings.progression_expensive_purchases) ||
-                   ( category == LocationCategory::Misc              && config.settings.progression_misc)                ||
-                   ( category == LocationCategory::TingleChest       && config.settings.progression_tingle_chests)       ||
-                   ( category == LocationCategory::BattleSquid       && config.settings.progression_battlesquid)         ||
-                   ( category == LocationCategory::SavageLabyrinth   && config.settings.progression_savage_labyrinth)    ||
-                   ( category == LocationCategory::IslandPuzzle      && config.settings.progression_island_puzzles)      ||
-                   ( category == LocationCategory::Obscure           && config.settings.progression_obscure)             ||
+            return ( category == LocationCategory::Dungeon           && config.settings.progression_dungeons != ProgressionDungeons::Disabled)        ||
+                   ( category == LocationCategory::GreatFairy        && config.settings.progression_great_fairies)                                    ||
+                   ( category == LocationCategory::PuzzleSecretCave  && config.settings.progression_puzzle_secret_caves)                              ||
+                   ( category == LocationCategory::CombatSecretCave  && config.settings.progression_combat_secret_caves)                              ||
+                   ( category == LocationCategory::ShortSideQuest    && config.settings.progression_short_sidequests)                                 ||
+                   ( category == LocationCategory::LongSideQuest     && config.settings.progression_long_sidequests)                                  ||
+                   ( category == LocationCategory::SpoilsTrading     && config.settings.progression_spoils_trading)                                   ||
+                   ( category == LocationCategory::Minigame          && config.settings.progression_minigames)                                        ||
+                   ( category == LocationCategory::FreeGift          && config.settings.progression_free_gifts)                                       ||
+                   ( category == LocationCategory::Mail              && config.settings.progression_mail)                                             ||
+                   ( category == LocationCategory::Submarine         && config.settings.progression_submarines)                                       ||
+                   ( category == LocationCategory::EyeReefChests     && config.settings.progression_eye_reef_chests)                                  ||
+                   ( category == LocationCategory::SunkenTreasure    && config.settings.progression_triforce_charts)                                  ||
+                   ( category == LocationCategory::SunkenTreasure    && config.settings.progression_treasure_charts)                                  ||
+                   ( category == LocationCategory::ExpensivePurchase && config.settings.progression_expensive_purchases)                              ||
+                   ( category == LocationCategory::Misc              && config.settings.progression_misc)                                             ||
+                   ( category == LocationCategory::TingleChest       && config.settings.progression_tingle_chests)                                    ||
+                   ( category == LocationCategory::BattleSquid       && config.settings.progression_battlesquid)                                      ||
+                   ( category == LocationCategory::SavageLabyrinth   && config.settings.progression_savage_labyrinth)                                 ||
+                   ( category == LocationCategory::IslandPuzzle      && config.settings.progression_island_puzzles)                                   ||
+                   ( category == LocationCategory::Obscure           && config.settings.progression_obscure)                                          ||
                    ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && config.settings.progression_platforms_rafts) ||
                    ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && config.settings.progression_big_octos_gunboats);
         }))
@@ -622,6 +627,12 @@ void MainWindow::update_progress_locations_text()
         totalProgressionLocations -= 3;
     }
 
+    return totalProgressionLocations;
+}
+
+void MainWindow::update_progress_locations_text()
+{
+    auto totalProgressionLocations = calculate_total_progress_locations();
     ui->groupBox->setTitle(std::string("Where Should Progress Items Appear? (Selected: " + std::to_string(totalProgressionLocations) + " Possible Progression Locations)").c_str());
 }
 
@@ -631,7 +642,31 @@ void MainWindow::update_progress_locations_text()
 DEFINE_STATE_CHANGE_FUNCTION(progression_battlesquid)
 DEFINE_STATE_CHANGE_FUNCTION(progression_big_octos_gunboats)
 DEFINE_STATE_CHANGE_FUNCTION(progression_combat_secret_caves)
-DEFINE_STATE_CHANGE_FUNCTION(progression_dungeons)
+
+void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
+{
+    config.settings.progression_dungeons = nameToProgressionDungeons(arg1.toStdString());
+    update_permalink();
+    // Grey out the race mode dungeons combobox if race mode/require bosses is not selected
+    if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
+    {
+        ui->num_race_mode_dungeons->setEnabled(true);
+        ui->label_for_num_race_mode_dungeons->setEnabled(true);
+        ui->label_for_num_race_mode_dungeons->setText("Number of Race Mode Dungeons");
+    }
+    else if (config.settings.progression_dungeons == ProgressionDungeons::RequireBosses)
+    {
+        ui->num_race_mode_dungeons->setEnabled(true);
+        ui->label_for_num_race_mode_dungeons->setEnabled(true);
+        ui->label_for_num_race_mode_dungeons->setText("Number of Required Bosses");
+    }
+    else
+    {
+        ui->num_race_mode_dungeons->setEnabled(false);
+        ui->label_for_num_race_mode_dungeons->setEnabled(false);
+    }
+}
+
 DEFINE_STATE_CHANGE_FUNCTION(progression_expensive_purchases)
 DEFINE_STATE_CHANGE_FUNCTION(progression_eye_reef_chests)
 DEFINE_STATE_CHANGE_FUNCTION(progression_free_gifts)
@@ -707,21 +742,24 @@ void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
     update_permalink();
 }
 
-DEFINE_STATE_CHANGE_FUNCTION(keylunacy)
+void MainWindow::on_dungeon_small_keys_currentTextChanged(const QString &arg1)
+{
+    config.settings.dungeon_small_keys = nameToPlacementOption(arg1.toStdString());
+    update_permalink();
+}
 
-void MainWindow::on_race_mode_stateChanged(int arg1) {
-    UPDATE_CONFIG_STATE(config, ui, race_mode);
-    // Grey out the race mode dungeons combobox if race mode is off
-    if (config.settings.race_mode)
-    {
-        ui->num_race_mode_dungeons->setEnabled(true);
-        ui->label_for_num_race_mode_dungeons->setEnabled(true);
-    }
-    else
-    {
-        ui->num_race_mode_dungeons->setEnabled(false);
-        ui->label_for_num_race_mode_dungeons->setEnabled(false);
-    }
+
+void MainWindow::on_dungeon_big_keys_currentTextChanged(const QString &arg1)
+{
+    config.settings.dungeon_big_keys = nameToPlacementOption(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_dungeon_maps_compasses_currentTextChanged(const QString &arg1)
+{
+    config.settings.dungeon_maps_compasses = nameToPlacementOption(arg1.toStdString());
+    update_permalink();
 }
 
 void MainWindow::on_num_starting_triforce_shards_currentIndexChanged(int index)
@@ -985,6 +1023,7 @@ void MainWindow::on_randomize_button_clicked()
         return;
     }
 
+
     // Check to make sure the base game and output are directories
     if (!std::filesystem::is_directory(config.gameBaseDir))
     {
@@ -1091,9 +1130,13 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 
 void MainWindow::load_locations()
 {   
+#ifdef EMBED_DATA
     QResource file(":/logic/data/location_data.yaml");
     std::string locationDataStr = file.uncompressedData().toStdString();
-
+#else
+    std::string locationDataStr;
+    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr);
+#endif
     locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
     Yaml::Parse(locationDataTree, locationDataStr);
@@ -1113,5 +1156,10 @@ void MainWindow::load_locations()
             }
             locationCategories.back().insert(cat);
         }
+        if (!locationObject["Dungeon Dependency"].IsNone())
+        {
+            locationCategories.back().insert(LocationCategory::Dungeon);
+        }
     }
 }
+

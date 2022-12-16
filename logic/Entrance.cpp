@@ -242,6 +242,11 @@ void Entrance::setAsShuffled()
     shuffled = true;
 }
 
+void Entrance::setAsUnshuffled()
+{
+    shuffled = false;
+}
+
 World* Entrance::getWorld()
 {
     return world;

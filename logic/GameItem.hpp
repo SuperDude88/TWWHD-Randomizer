@@ -395,6 +395,10 @@ public:
     void setAsJunkItem();
     bool isJunkItem() const;
     bool isDungeonItem() const;
+    bool isMap() const;
+    bool isCompass() const;
+    bool isSmallKey() const;
+    bool isBigKey() const;
     bool operator==(const Item& rhs) const;
     bool operator<(const Item& rhs) const;
 

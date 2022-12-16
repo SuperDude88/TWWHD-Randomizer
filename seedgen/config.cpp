@@ -75,7 +75,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.repack_for_console = false;
     conf.consoleOutputDir = "";
 
-    conf.settings.progression_dungeons = true;
+    conf.settings.progression_dungeons = ProgressionDungeons::Standard;
     conf.settings.progression_great_fairies = true;
     conf.settings.progression_puzzle_secret_caves = true;
     conf.settings.progression_combat_secret_caves = false;
@@ -99,7 +99,9 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.progression_island_puzzles = false;
     conf.settings.progression_obscure = false;
 
-    conf.settings.keylunacy = false;
+    conf.settings.dungeon_small_keys = PlacementOption::OwnDungeon;
+    conf.settings.dungeon_big_keys = PlacementOption::OwnDungeon;
+    conf.settings.dungeon_maps_compasses = PlacementOption::OwnDungeon;
     conf.settings.randomize_charts = false;
     conf.settings.randomize_starting_island = false;
     conf.settings.randomize_dungeon_entrances = false;
@@ -129,7 +131,6 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.sword_mode = SwordMode::StartWithSword;
     conf.settings.skip_rematch_bosses = true;
     conf.settings.invert_sea_compass_x_axis = false;
-    conf.settings.race_mode = false;
     conf.settings.num_race_mode_dungeons = 4;
     conf.settings.damage_multiplier = 2.0f;
     conf.settings.chest_type_matches_contents = false;
@@ -189,7 +190,15 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     SET_FIELD_EMPTY_STR_IF_FAIL(root, out, seed)
 
-    SET_BOOL_FIELD(root, out, progression_dungeons)
+    if(root["progression_dungeons"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].As<std::string>());
+      if (out.settings.progression_dungeons == ProgressionDungeons::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.progression_dungeons = ProgressionDungeons::Standard;
+      }
+    }
     SET_BOOL_FIELD(root, out, progression_great_fairies)
     SET_BOOL_FIELD(root, out, progression_puzzle_secret_caves)
     SET_BOOL_FIELD(root, out, progression_combat_secret_caves)
@@ -213,7 +222,6 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, progression_island_puzzles)
     SET_BOOL_FIELD(root, out, progression_obscure)
 
-    SET_BOOL_FIELD(root, out, keylunacy)
     SET_BOOL_FIELD(root, out, randomize_charts)
     SET_BOOL_FIELD(root, out, randomize_starting_island)
     SET_BOOL_FIELD(root, out, randomize_dungeon_entrances)
@@ -239,18 +247,14 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, reveal_full_sea_chart)
     SET_INT_FIELD(root, out, num_starting_triforce_shards)
     SET_BOOL_FIELD(root, out, add_shortcut_warps_between_dungeons)
-    //SET_CONFIG_FIELD(root, out, settings.sword_mode)
     SET_BOOL_FIELD(root, out, skip_rematch_bosses)
     SET_BOOL_FIELD(root, out, invert_sea_compass_x_axis)
-    SET_BOOL_FIELD(root, out, race_mode)
     SET_INT_FIELD(root, out, num_race_mode_dungeons)
     SET_INT_FIELD(root, out, damage_multiplier)
     SET_BOOL_FIELD(root, out, chest_type_matches_contents)
 
     SET_BOOL_FIELD(root, out, player_in_casual_clothes)
-    //SET_CONFIG_FIELD(root, out, settings.pig_color)
 
-    //SET_CONFIG_FIELD(root, out, settings.starting_gear)
     SET_INT_FIELD(root, out, starting_pohs)
     SET_INT_FIELD(root, out, starting_hcs)
     SET_BOOL_FIELD(root, out, remove_music)
@@ -279,6 +283,35 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       }
     }
 
+    if(root["dungeon_small_keys"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].As<std::string>());
+      if (out.settings.dungeon_small_keys == PlacementOption::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.dungeon_small_keys = PlacementOption::Vanilla;
+      }
+    }
+
+    if(root["dungeon_big_keys"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].As<std::string>());
+      if (out.settings.dungeon_big_keys == PlacementOption::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.dungeon_big_keys = PlacementOption::Vanilla;
+      }
+    }
+
+    if(root["dungeon_maps_compasses"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].As<std::string>());
+      if (out.settings.dungeon_maps_compasses == PlacementOption::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.dungeon_maps_compasses = PlacementOption::Vanilla;
+      }
+    }
 
     if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) {
@@ -353,7 +386,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_CONFIG_BOOL_FIELD(root, config, repack_for_console)
     WRITE_CONFIG_FIELD(root, config, consoleOutputDir)
 
-    WRITE_SETTING_BOOL_FIELD(root, config, progression_dungeons)
+    root["progression_dungeons"] = ProgressionDungeonsToName(config.settings.progression_dungeons);
     WRITE_SETTING_BOOL_FIELD(root, config, progression_great_fairies)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_puzzle_secret_caves)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_combat_secret_caves)
@@ -377,7 +410,6 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, progression_island_puzzles)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_obscure)
 
-    WRITE_SETTING_BOOL_FIELD(root, config, keylunacy)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_charts)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_starting_island)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_dungeon_entrances)
@@ -403,18 +435,14 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, reveal_full_sea_chart)
     WRITE_NUM_FIELD(root, config, num_starting_triforce_shards)
     WRITE_SETTING_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
-    //WRITE_SETTING_BOOL_FIELD(root, config, sword_mode)
     WRITE_SETTING_BOOL_FIELD(root, config, skip_rematch_bosses)
     WRITE_SETTING_BOOL_FIELD(root, config, invert_sea_compass_x_axis)
-    WRITE_SETTING_BOOL_FIELD(root, config, race_mode)
     WRITE_NUM_FIELD(root, config, num_race_mode_dungeons)
     WRITE_NUM_FIELD(root, config, damage_multiplier)
     WRITE_SETTING_BOOL_FIELD(root, config, chest_type_matches_contents)
 
     WRITE_SETTING_BOOL_FIELD(root, config, player_in_casual_clothes)
-    //WRITE_CONFIG_FIELD(root, config, pig_color)
 
-    //WRITE_CONFIG_FIELD(root, config, starting_gear)
     WRITE_NUM_FIELD(root, config, starting_pohs)
     WRITE_NUM_FIELD(root, config, starting_hcs)
     WRITE_SETTING_BOOL_FIELD(root, config, remove_music)
@@ -426,6 +454,9 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     root["sword_mode"] = SwordModeToName(config.settings.sword_mode);
     root["pig_color"] = PigColorToName(config.settings.pig_color);
+    root["dungeon_small_keys"] = PlacementOptionToName(config.settings.dungeon_small_keys);
+    root["dungeon_big_keys"] = PlacementOptionToName(config.settings.dungeon_big_keys);
+    root["dungeon_maps_compasses"] = PlacementOptionToName(config.settings.dungeon_maps_compasses);
 
     root["starting_gear"] = {};
     for (const auto& item : config.settings.starting_gear) {
