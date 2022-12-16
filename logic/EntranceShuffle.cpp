@@ -6,12 +6,11 @@
 
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>
+#include <logic/Fill.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
-#define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
-#define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getLocations(true));}
 #define CHECK_MIXED_POOL(name, type) if (settings.name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
 
 using EntrancePools = std::map<EntranceType, EntrancePool>;
@@ -352,10 +351,29 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         // }
         LOG_TO_DEBUG("]");
     #endif
-    if (locs.size() < worlds.size())
+    if (locs.size() == 0)
     {
         LOG_TO_DEBUG("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
+    }
+
+    if (entrancePlaced == nullptr)
+    {
+        // Check to make sure there's enough sphere 0 locations for the items that
+        // are necessary to place at the beginning
+        ItemPool itemPool2;
+        LocationPool progressionLocations;
+        GET_COMPLETE_ITEM_POOL(itemPool2, worlds);
+        GET_COMPLETE_PROGRESSION_LOCATION_POOL(progressionLocations, worlds);
+        determineMajorItems(worlds, itemPool2, progressionLocations);
+        filterAndEraseFromPool(itemPool2, [&](const Item& item){return !item.isMajorItem();});
+        // Run a dummy forward fill attempt until enough spots are open, then clear the worlds
+        auto err = forwardFillUntilMoreFreeSpace(worlds, itemPool2, progressionLocations);
+        clearWorlds(worlds);
+        if (err != FillError::NONE)
+        {
+            return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
+        }
     }
     // Ensure that all race mode dungeons are assigned to a single island and that
     // there aren't any other dungeons on those islands. Since quest markers for
@@ -364,7 +382,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     // race mode dungeon
     for (auto& world : worlds)
     {
-        if (world.getSettings().race_mode)
+        if (world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode || world.getSettings().progression_dungeons == ProgressionDungeons::RequireBosses)
         {
             std::unordered_set<std::string> raceModeIslands = {};
             for (auto& [name, dungeon] : world.dungeons)
@@ -686,6 +704,38 @@ static void SetShuffledEntrances(EntrancePools& entrancePools) {
         }
     }
 }
+
+// static EntranceShuffleError resetToVanillaEntrances(World& world)
+// {
+//     LOG_TO_DEBUG("Resetting entrance connections");
+//     // Reset random starting island
+//     auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
+//
+//     // Set original starting island in the world graph
+//     auto linksSpawn = world.getEntrance("Link's Spawn", startingIsland);
+//     if (linksSpawn == nullptr)
+//     {
+//         return EntranceShuffleError::BAD_LINKS_SPAWN;
+//     }
+//     linksSpawn->setConnectedArea("Outset Island");
+//     world.getArea(startingIsland).entrances.remove(linksSpawn);
+//     world.getArea("Outset Island").entrances.push_back(linksSpawn);
+//     world.startingIslandRoomIndex = 44;
+//
+//     // Reset all entrances that were shuffled
+//     auto shuffledEntrances = world.getShuffledEntrances(EntranceType::ALL);
+//     for (auto entrance : shuffledEntrances)
+//     {
+//         auto entranceOriginalName = entrance->getOriginalName();
+//         auto originalConnection = entranceOriginalName.substr(entranceOriginalName.rfind("-> ") + 3, std::string::npos);
+//         entrance->disconnect();
+//         entrance->connect(originalConnection);
+//         entrance->setReplaces(nullptr);
+//         entrance->setAsUnshuffled();
+//     }
+//
+//     return EntranceShuffleError::NONE;
+// }
 
 EntranceShuffleError randomizeEntrances(WorldPool& worlds)
 {

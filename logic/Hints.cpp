@@ -36,7 +36,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Race mode locations are also goal locations
-            if (dungeon.isRaceModeDungeon && world.getSettings().race_mode)
+            if (dungeon.isRaceModeDungeon && (world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode || world.getSettings().progression_dungeons == ProgressionDungeons::RequireBosses))
             {
                 Location* goalLocation = &world.locationEntries[dungeon.raceModeLocation];
                 world.pathLocations[goalLocation] = {};
@@ -57,15 +57,19 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     // and seeing if taking away the item at each location can still access the goal locations
     for (auto& world : worlds)
     {
+        auto& settings = world.getSettings();
         for (auto& sphere : world.playthroughSpheres)
         {
             for (auto location : sphere)
             {
                 auto itemAtLocation = location->currentItem;
-                // If this location has a small or big key and keylunacy isn't on, then ignore it
-                // because the player already knows where those items are. Also ignore race mode
-                // locations at the end of dungeons because players know those locations are required
-                if ((itemAtLocation.isDungeonItem() && !world.getSettings().keylunacy) || (location->isRaceModeLocation && world.getSettings().race_mode))
+                // If this location has a small or big key and the key is known to be within the dungeon,
+                // then ignore it because the player already knows where those items are. Also ignore race
+                // mode locations at the end of dungeons because players know those locations are required.
+                if (location->hasKnownVanillaItem ||
+                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys != PlacementOption::OwnDungeon) ||
+                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   != PlacementOption::OwnDungeon) ||
+                   (location->isRaceModeLocation && (settings.progression_dungeons == ProgressionDungeons::RequireBosses || settings.progression_dungeons == ProgressionDungeons::RaceMode)))
                 {
                     continue;
                 }
@@ -92,6 +96,18 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 location->currentItem = itemAtLocation;
             }
         }
+
+        #ifdef ENABLE_DEBUG
+            for (auto& [goalLocation, pathLocations] : world.pathLocations)
+            {
+                LOG_TO_DEBUG("Path locations for " + goalLocation->getName() + " [");
+                for (auto location : pathLocations)
+                {
+                    LOG_TO_DEBUG("  " + location->getName());
+                }
+                LOG_TO_DEBUG("]");
+            }
+        #endif
     }
 
     // Give back nonprogress location items
@@ -287,12 +303,6 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
 
     for (uint8_t i = 0; i < world.getSettings().path_hints; i++)
     {
-        if (goalLocations.empty())
-        {
-            LOG_TO_DEBUG("No more possible path hints");
-            break;
-        }
-
         // Try to get at least one hint for each race mode dungeon first
         Location* goalLocation = nullptr;
         if (i < goalLocations.size())
@@ -309,6 +319,13 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             }
             goalLocation = RandomElement(goalLocations);
         }
+
+        if (goalLocations.empty())
+        {
+            LOG_TO_DEBUG("No more possible path hints");
+            break;
+        }
+
         auto hintLocation = getHintableLocation(world.pathLocations[goalLocation]);
         if (hintLocation == nullptr)
         {
@@ -443,6 +460,7 @@ static HintError generateItemHintMessage(Location* location)
 
 static HintError generateItemHintLocations(World& world, std::vector<Location*>& itemHintLocations)
 {
+    auto& settings = world.getSettings();
     // Since item hints must name a specific island, locations in the below regions can't be item hints
     std::unordered_set<std::string> invalidItemHintRegions = {"Mailbox", "Great Sea", "Hyrule"};
     // First, make a vector of possible item hint locations
@@ -450,12 +468,14 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     for (auto& [name, location] : world.locationEntries)
     {
         if (location.progression              &&  // if the location is a progression location...
-           !location.hasBeenHinted            &&  // and has not been hinted at yet...
-           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);}) && // and isn't part of an invalid hint region...
            !location.currentItem.isJunkItem() &&  // and does not have a junk item...
-          (!location.currentItem.isDungeonItem() || world.getSettings().keylunacy) &&    // and isn't a dungeon item when keylunacy is off...
-          (!location.isRaceModeLocation || !world.getSettings().race_mode) &&            // and isn't a race mode location when race mode is enabled...
-          ( location.hintPriority != "Always" || !world.getSettings().use_always_hints)) // and the hint priority is not "Always" when we're using always hints...
+           !location.hasKnownVanillaItem      &&  // and does not have a known vanilla item...
+           !location.hasBeenHinted            &&  // and has not been hinted at yet...
+          (!location.currentItem.isSmallKey() || settings.dungeon_small_keys != PlacementOption::OwnDungeon) && // and isn't a small key when small keys are in their own dungeon
+          (!location.currentItem.isBigKey()   || settings.dungeon_big_keys   != PlacementOption::OwnDungeon) && // and isn't a big key when big keys are in their own dungeon
+          (!location.isRaceModeLocation || settings.progression_dungeons == ProgressionDungeons::Standard)   && // and isn't a race mode location when race mode/require bosses is enabled...
+          ( location.hintPriority != "Always" || !world.getSettings().use_always_hints)                      && // and the hint priority is not "Always" when we're using always hints...
+           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);})) // and isn't part of an invalid hint region...
            {
               // Then the item is a possible item hint location
               possibleItemHintLocations.push_back(&location);

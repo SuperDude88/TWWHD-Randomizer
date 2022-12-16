@@ -430,6 +430,25 @@
     French: Singular
   Game Item Id: 0x16
 
+# Dummy item to represent nothing
+- Names:
+    English: Nothing
+    Spanish:
+    French:
+  Pretty Names:
+    English: Nothing
+    Spanish:
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
+  Game Item Id: 0x17
+
 # Dummy item to check for game beatability
 - Names:
     English: Game Beatable

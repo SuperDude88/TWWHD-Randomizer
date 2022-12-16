@@ -26,6 +26,36 @@ static std::unordered_map<PigColor, std::string> pigColorNameMap = {
     {PigColor::RANDOM, "RANDOM"}
 };
 
+static std::unordered_map<PlacementOption, std::string> placementOptionNameMap = {
+    {PlacementOption::Vanilla, "Vanilla"},
+    {PlacementOption::OwnDungeon, "Own Dungeon"},
+    {PlacementOption::AnyDungeon, "Any Dungeon"},
+    {PlacementOption::Overworld, "Overworld"},
+    {PlacementOption::Keysanity, "Keysanity"},
+};
+
+static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap = {
+    {"Vanilla", PlacementOption::Vanilla},
+    {"Own Dungeon", PlacementOption::OwnDungeon},
+    {"Any Dungeon", PlacementOption::AnyDungeon},
+    {"Overworld", PlacementOption::Overworld},
+    {"Keysanity", PlacementOption::Keysanity},
+};
+
+static std::unordered_map<ProgressionDungeons, std::string> progressionDungeonsNameMap = {
+    {ProgressionDungeons::Disabled, "Disabled"},
+    {ProgressionDungeons::Standard, "Standard"},
+    {ProgressionDungeons::RequireBosses, "Require Bosses"},
+    {ProgressionDungeons::RaceMode, "Race Mode"},
+};
+
+static std::unordered_map<std::string, ProgressionDungeons> nameProgressionDungeonsMap = {
+    {"Disabled", ProgressionDungeons::Disabled},
+    {"Standard", ProgressionDungeons::Standard},
+    {"Require Bosses", ProgressionDungeons::RequireBosses},
+    {"Race Mode", ProgressionDungeons::RaceMode},
+};
+
 SwordMode nameToSwordMode(const std::string& name) {
 
     if (nameSwordModeMap.count(name) == 0)
@@ -66,6 +96,42 @@ std::string PigColorToName(const PigColor& name) {
     return pigColorNameMap.at(name);
 }
 
+PlacementOption nameToPlacementOption(const std::string& name) {
+    if (namePlacementOptionMap.count(name) == 0)
+    {
+        return PlacementOption::INVALID;
+    }
+
+    return namePlacementOptionMap.at(name);
+}
+
+std::string PlacementOptionToName(const PlacementOption& option) {
+    if (placementOptionNameMap.count(option) == 0)
+    {
+        return "INVALID";
+    }
+
+    return placementOptionNameMap.at(option);
+}
+
+ProgressionDungeons nameToProgressionDungeons(const std::string& name) {
+    if (nameProgressionDungeonsMap.count(name) == 0)
+    {
+        return ProgressionDungeons::INVALID;
+    }
+
+    return nameProgressionDungeonsMap.at(name);
+}
+
+std::string ProgressionDungeonsToName(const ProgressionDungeons& option) {
+    if (progressionDungeonsNameMap.count(option) == 0)
+    {
+        return "INVALID";
+    }
+
+    return progressionDungeonsNameMap.at(option);
+}
+
 // Make sure there aren't any naming conflicts when adding future settings
 int nameToSettingInt(const std::string& name) {
     if (nameSwordModeMap.count(name) > 0)
@@ -104,7 +170,9 @@ Option nameToSetting(const std::string& name) {
         {"Progress Savage Labyrinth", Option::ProgressSavageLabyrinth},
         {"Progress Island Puzzles", Option::ProgressIslandPuzzles},
         {"Progress Obscure", Option::ProgressObscure},
-        {"Keylunacy", Option::Keylunacy},
+        {"Dungeon Small Keys", Option::DungeonSmallKeys},
+        {"Dungeon Big Keys", Option::DungeonBigKeys},
+        {"Dungeon Maps And Compasses", Option::DungeonMapsAndCompasses},
         {"RandomCharts", Option::RandomCharts},
         {"Random Start Island", Option::RandomStartIsland},
         {"Randomize Dungeon Entrances", Option::RandomizeDungeonEntrances},
@@ -180,7 +248,9 @@ std::string settingToName(const Option& setting) {
         {Option::ProgressSavageLabyrinth, "Progress Savage Labyrinth"},
         {Option::ProgressIslandPuzzles, "Progress Island Puzzles"},
         {Option::ProgressObscure, "Progress Obscure"},
-        {Option::Keylunacy, "Keylunacy"},
+        {Option::DungeonSmallKeys, "Dungeon Small Keys"},
+        {Option::DungeonBigKeys, "Dungeon Big Keys"},
+        {Option::DungeonMapsAndCompasses, "Dungeon Maps And Compasses"},
         {Option::RandomCharts, "Random Charts"},
         {Option::RandomStartIsland, "Random Start Island"},
         {Option::RandomizeDungeonEntrances, "Randomize Dungeon Entrances"},
@@ -235,7 +305,7 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
 
 	switch (option) {
     case Option::ProgressDungeons:
-        return settings.progression_dungeons;
+        return static_cast<std::underlying_type_t<ProgressionDungeons>>(settings.progression_dungeons);
     case Option::ProgressGreatFairies:
         return settings.progression_great_fairies;
     case Option::ProgressPuzzleCaves:
@@ -280,8 +350,12 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.progression_island_puzzles;
     case Option::ProgressObscure:
         return settings.progression_obscure;
-    case Option::Keylunacy:
-        return settings.keylunacy;
+    case Option::DungeonSmallKeys:
+        return static_cast<std::underlying_type_t<PlacementOption>>(settings.dungeon_small_keys);
+    case Option::DungeonBigKeys:
+        return static_cast<std::underlying_type_t<PlacementOption>>(settings.dungeon_big_keys);
+    case Option::DungeonMapsAndCompasses:
+        return static_cast<std::underlying_type_t<PlacementOption>>(settings.dungeon_maps_compasses);
     case Option::RandomCharts:
         return settings.randomize_charts;
     case Option::RandomStartIsland:
@@ -336,8 +410,6 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.skip_rematch_bosses;
     case Option::InvertCompass:
         return settings.invert_sea_compass_x_axis;
-    case Option::RaceMode:
-        return settings.race_mode;
     case Option::NumRaceModeDungeons:
         return settings.num_race_mode_dungeons;
     case Option::DamageMultiplier:
@@ -372,7 +444,7 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
 {
   switch (option) {
     case Option::ProgressDungeons:
-        settings.progression_dungeons = value; return;
+        settings.progression_dungeons = static_cast<ProgressionDungeons>(value); return;
     case Option::ProgressGreatFairies:
         settings.progression_great_fairies = value; return;
     case Option::ProgressPuzzleCaves:
@@ -417,8 +489,12 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.progression_island_puzzles = value; return;
     case Option::ProgressObscure:
         settings.progression_obscure = value; return;
-    case Option::Keylunacy:
-        settings.keylunacy = value; return;
+    case Option::DungeonSmallKeys:
+        settings.dungeon_small_keys = static_cast<PlacementOption>(value); return;
+    case Option::DungeonBigKeys:
+        settings.dungeon_big_keys = static_cast<PlacementOption>(value); return;
+    case Option::DungeonMapsAndCompasses:
+        settings.dungeon_maps_compasses = static_cast<PlacementOption>(value); return;
     case Option::RandomCharts:
         settings.randomize_charts = value; return;
     case Option::RandomStartIsland:
@@ -473,8 +549,6 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.skip_rematch_bosses = value; return;
     case Option::InvertCompass:
         settings.invert_sea_compass_x_axis = value; return;
-    case Option::RaceMode:
-        settings.race_mode = value; return;
     case Option::NumRaceModeDungeons:
         settings.num_race_mode_dungeons = value; return;
     case Option::DamageMultiplier:
