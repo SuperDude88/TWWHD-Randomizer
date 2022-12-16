@@ -230,7 +230,7 @@ private:
 				return true;
 			});
 
-			dzrEntry.delayUntil("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
+			entry.addDependent(dzrEntry.getRoot());
 		}
 
 		return true;
