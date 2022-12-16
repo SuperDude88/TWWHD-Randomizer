@@ -42,10 +42,17 @@ public:
 	struct FileEntry {
 		uint32_t fileOffset = 0;
 		uint32_t fileSize = 0;
+
+		FileEntry() {}
+		FileEntry(const uint32_t& size_) :
+			fileSize(size_)
+		{}
 	};
 	struct DirEntry {
 		uint32_t parentOffset = 0;
 		uint32_t nextOffset = 0;
+
+		DirEntry() {}
 	};
 
 	std::string name;
