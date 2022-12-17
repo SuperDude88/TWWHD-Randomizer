@@ -1,7 +1,7 @@
 #include "formconv.hpp"
 
 std::string rgb8torgbx8(const std::string& data) {
-    size_t numPixels = data.size() / 3;
+    const size_t numPixels = data.size() / 3;
     std::string newData(numPixels * 4, '\0');
 
     for(size_t i = 0; i < numPixels; i++) {
@@ -50,11 +50,11 @@ uint16_t _swapRB_argb4(uint16_t pixel) {
 }
 
 std::string swapRB_16bpp(const std::string& data, const std::string& format_) {
-    uint32_t numPixels = data.size() / 2;
+    const size_t numPixels = data.size() / 2;
 
     std::string new_data(numPixels * 2, '\0');
 
-    for (uint32_t i = 0; i < numPixels; i++) {
+    for (size_t i = 0; i < numPixels; i++) {
         uint16_t pixel = (data[2 * i + 1] << 8) | data[2 * i + 0];
 
         uint16_t new_pixel;
@@ -79,12 +79,12 @@ std::string swapRB_16bpp(const std::string& data, const std::string& format_) {
 }
 
 std::string rgba4_to_argb4(const std::string& data) {
-    uint32_t numPixels = data.size() / 2;
+    const size_t numPixels = data.size() / 2;
 
     std::string new_data;
     new_data.resize(numPixels * 2);
 
-    for (uint32_t i = 0; i < numPixels; i++) {
+    for (size_t i = 0; i < numPixels; i++) {
         uint16_t pixel = ((data[2 * i + 1] << 8) | data[2 * i + 0]);
 
         uint16_t rgb = (pixel & 0xFFF);
@@ -118,11 +118,11 @@ uint32_t _swapRB_rgba8(uint32_t pixel) {
 }
 
 std::string swapRB_32bpp(const std::string& data, const std::string& format_) {
-    uint32_t numPixels = data.size() / 4;
+    const size_t numPixels = data.size() / 4;
 
     std::string new_data(numPixels * 4, '\0');
 
-    for (uint32_t i = 0; i < numPixels; i++) {
+    for (size_t i = 0; i < numPixels; i++) {
         uint32_t pixel = (data[4 * i + 3] << 24) | (data[4 * i + 2] << 16) | (data[4 * i + 1] << 8) | data[4 * i + 0];
         uint32_t new_pixel;
 
