@@ -102,16 +102,16 @@ if(DEFINED DEVKITPRO)
   add_compile_definitions(DATA_PATH="/vol/content/" APP_SAVE_PATH="/vol/save/" TEMP_DIR="/vol/save/temp/")
 
   wut_create_rpx(wwhd_rando)
-  #wut_create_wuhb(wwhd_rando
-  #  NAME       "The Legend of Zelda: The Wind Waker HD Randomizer"
+  wut_create_wuhb(wwhd_rando
+    NAME       "The Legend of Zelda: The Wind Waker HD Randomizer"
 
-  #  CONTENT    "${CMAKE_BINARY_DIR}/data"
-  #  SHORTNAME  "TWWHD Randomizer"
-  #  AUTHOR     "SuperDude88, csunday95, gymnast86"
-  #  ICON       "${CMAKE_SOURCE_DIR}/platform/icon.png"
-  #  TVSPLASH   "${CMAKE_SOURCE_DIR}/platform/TVSplash.png"
-  #  DRCSPLASH  "${CMAKE_SOURCE_DIR}/platform/TVSplash.png"
-  #)
+    CONTENT    "${CMAKE_BINARY_DIR}/data"
+    SHORTNAME  "TWWHD Randomizer"
+    AUTHOR     "SuperDude88, csunday95, gymnast86"
+    #ICON       "${CMAKE_SOURCE_DIR}/platform/Icon.png"
+    #TVSPLASH   "${CMAKE_SOURCE_DIR}/platform/Splash.png"
+    #DRCSPLASH  "${CMAKE_SOURCE_DIR}/platform/Splash.png"
+  )
 else()
   add_compile_definitions(DATA_PATH="./data/" APP_SAVE_PATH="./" TEMP_DIR="./temp/")
 endif()
