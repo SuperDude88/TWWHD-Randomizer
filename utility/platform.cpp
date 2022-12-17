@@ -94,6 +94,7 @@ namespace Utility
 		WHBLogConsoleDraw();
 #else
 		vprintf(f, args);
+		fflush(stdout); //vscode debug console works better with this
 #endif
 		lock.unlock();
 		va_end(args);
@@ -101,15 +102,7 @@ namespace Utility
 
 	void platformLog(const std::string& str)
 	{
-		std::unique_lock<std::mutex> lock(printMut);
-#ifdef PLATFORM_DKP
-		WHBLogWrite(str.c_str());
-		WHBLogConsoleDraw();
-#else
-		printf("%s", str.c_str());
-		fflush(stdout); //vscode debug console works better with this
-#endif
-		lock.unlock();
+		platformLog(str.c_str());
 	}
 
 	bool platformInit()

@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <atomic>
 
 #include <filetypes/baseFiletype.hpp>
 
@@ -51,17 +52,24 @@ public:
         using Action_t = std::function<int(RandoSession*, FileType*)>;
 
         void addAction(Action_t action);
-        void delayUntil(const fspath& req); //wait for prereq that adds mods, prevent repack-mod-repack
+        void addDependent(std::shared_ptr<CacheEntry> depends); //add entry to tree after this one is completed, prevent repack-mod-repack
+
+        inline size_t incrementPrereq() { return ++numPrereqs; }
+        inline size_t decrementPrereq() { return --numPrereqs; }
+        inline size_t getNumPrereqs() const { return numPrereqs; }
+        inline const std::shared_ptr<CacheEntry> getParent() const { return parent; };
+        const std::shared_ptr<CacheEntry> getRoot() const;
 
     private:
-        const std::shared_ptr<CacheEntry> parent;
-        std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children; //can't use CacheEntry directly, unordered_map needs complete type per the standard
-        std::vector<fspath> prereqs;
+        const std::shared_ptr<CacheEntry> parent = nullptr;
+        std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children = {}; //can't use CacheEntry directly, unordered_map needs complete type per the standard
+        std::vector<std::shared_ptr<CacheEntry>> dependents = {};
 
-        const fspath element;
-        const Format storedFormat;
-        std::unique_ptr<FileType> data;
-        std::vector<Action_t> actions; //store actions as lambdas to execute in order
+        const fspath element = "";
+        const Format storedFormat = Format::EMPTY;
+        std::unique_ptr<FileType> data = nullptr;
+        std::vector<Action_t> actions = {}; //store actions as lambdas to execute in order
+        std::atomic<size_t> numPrereqs = 0;
     
         friend class RandoSession;
     };
@@ -79,7 +87,7 @@ public:
     const fspath& getBaseDir() { return baseDir; }
     const fspath& getOutputDir() { return outputDir; }
 private:
-    CacheEntry& getEntry(const std::vector<std::string>& fileSpec);
+    std::shared_ptr<CacheEntry> getEntry(const std::vector<std::string>& fileSpec);
     bool extractFile(std::shared_ptr<CacheEntry> current);
     bool repackFile(std::shared_ptr<CacheEntry> current);
     bool handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current);

@@ -582,10 +582,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x00001EA4
-    - 0x00001EC8
-    - 0x00001EEC
-    - 0x00001F10
+    - 0x00001EFC
+    - 0x00001F20
+    - 0x00001F44
+    - 0x00001F68
 
 - Names:
     English: Mother & Child Isles - Sunken Treasure
@@ -1822,10 +1822,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x000020C0
-    - 0x000020E4
-    - 0x00002108
-    - 0x0000212C
+    - 0x00002118
+    - 0x0000213C
+    - 0x00002160
+    - 0x00002184
 
 - Names:
     English: Greatfish Isle - Hidden Chest
@@ -1880,10 +1880,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x0000266C
-    - 0x00002690
-    - 0x000026B4
-    - 0x000026D8
+    - 0x000026C4
+    - 0x000026E8
+    - 0x0000270C
+    - 0x00002730
 
 - Names:
     English: Cyclops Reef - Lookout Platform Defeat Enemies
@@ -1922,10 +1922,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x00002A3C
-    - 0x00002A60
-    - 0x00002A84
-    - 0x00002AA8
+    - 0x00002AA4
+    - 0x00002AC8
+    - 0x00002AEC
+    - 0x00002B10
 
 - Names:
     English: Six Eye Reef - Submarine Chest
@@ -1964,10 +1964,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x00000648
-    - 0x0000066C
-    - 0x00000690
-    - 0x000006B4
+    - 0x000006A4
+    - 0x000006C8
+    - 0x000006EC
+    - 0x00000710
 
 - Names:
     English: Eastern Triangle Island - Sunken Treasure
@@ -2438,10 +2438,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x00002BD4
-    - 0x00002BF8
-    - 0x00002C1C
-    - 0x00002C40
+    - 0x00002C2C
+    - 0x00002C50
+    - 0x00002C74
+    - 0x00002C98
 
 - Names:
     English: Five Eye Reef - Lookout Platform Chest
@@ -2972,10 +2972,10 @@
   Hint Priority: Sometimes
   Type: SCOB
   Offsets:
-    - 0x000024B8
-    - 0x000024DC
-    - 0x00002500
-    - 0x00002524
+    - 0x00002510
+    - 0x00002534
+    - 0x00002558
+    - 0x0000257C
 
 - Names:
     English: Two Eye Reef - Lookout Platform Chest

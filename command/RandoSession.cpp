@@ -50,7 +50,7 @@ static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> s
     {"DZX",    RandoSession::CacheEntry::Format::DZX},
     {"ELF",    RandoSession::CacheEntry::Format::ELF},
     {"EVENTS", RandoSession::CacheEntry::Format::EVENTS},
-    {"JPC",    RandoSession::CacheEntry::Format::JPC}, 
+    {"JPC",    RandoSession::CacheEntry::Format::JPC},
     {"MSBP",   RandoSession::CacheEntry::Format::MSBP},
     {"MSBT",   RandoSession::CacheEntry::Format::MSBT},
     {"RPX",    RandoSession::CacheEntry::Format::RPX},
@@ -59,18 +59,26 @@ static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> s
     {"STREAM", RandoSession::CacheEntry::Format::STREAM},
 };
 
-void RandoSession::CacheEntry::addAction(std::function<int(RandoSession*, FileType*)> action) {
+void RandoSession::CacheEntry::addAction(Action_t action) {
     actions.push_back(action);
 }
 
-void RandoSession::CacheEntry::delayUntil(const RandoSession::fspath& req) {
-    //find highest entry in chain, add prereqs there
-    RandoSession::CacheEntry* top = this;
-    while(top->parent->parent != nullptr) { //if parent is fileCache, parent->parent is null
-        top = top->parent.get();
-    } 
+void RandoSession::CacheEntry::addDependent(std::shared_ptr<CacheEntry> depends) {
+    dependents.push_back(depends);
+    depends->incrementPrereq();
+}
 
-    top->prereqs.push_back(req);
+const std::shared_ptr<RandoSession::CacheEntry> RandoSession::CacheEntry::getRoot() const {
+    if(storedFormat == Format::ROOT) {
+        return parent->children.at(element.string());
+    }
+
+    std::shared_ptr<CacheEntry> top = this->parent;
+    while(top->storedFormat != Format::ROOT) {
+        top = top->parent;
+    }
+
+    return top;
 }
 
 RandoSession::RandoSession()
@@ -247,7 +255,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
 bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
 {
     GenericFile* parentData = dynamic_cast<GenericFile*>(current->parent->data.get());
-    
+
     using Fmt = CacheEntry::Format;
     switch(current->storedFormat) {
         case Fmt::BDT:
@@ -377,7 +385,7 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
     }
 }
 
-RandoSession::CacheEntry& RandoSession::getEntry(const std::vector<std::string>& fileSpec) {
+std::shared_ptr<RandoSession::CacheEntry> RandoSession::getEntry(const std::vector<std::string>& fileSpec) {
     // ["content/Common/Stage/example.szs", "YAZ0", "SARC", "data.bfres"]
     // first part is an extant game file
     std::string cacheKey{""};
@@ -388,7 +396,7 @@ RandoSession::CacheEntry& RandoSession::getEntry(const std::vector<std::string>&
     for (size_t i = 0; i < fileSpec.size(); i++)
     {
         const std::string& element = fileSpec[i];
-        
+
         if (element.empty()) continue;
 
         if (element.compare("RPX") == 0)
@@ -438,18 +446,18 @@ RandoSession::CacheEntry& RandoSession::getEntry(const std::vector<std::string>&
         parentEntry = nextEntry;
     }
 
-    return *parentEntry;
+    return parentEntry;
 }
 
 RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath& relPath)
 {
     //CHECK_INITIALIZED(nullptr);
-    return getEntry(Utility::Str::split(relPath.string(), '@'));
+    return *getEntry(Utility::Str::split(relPath.string(), '@'));
 }
 
 std::ifstream RandoSession::openBaseFile(const fspath &relPath) {
     CHECK_INITIALIZED(std::ifstream());
-    
+
     const fspath file = outputDir / relPath;
     if(!Utility::copy_file(baseDir / relPath, file)) {
         ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
@@ -514,7 +522,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
         dst->data << src.rdbuf();
-		
+
         return true;
     });
 
@@ -523,7 +531,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
 bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file from the base directory (without extracting any data)
     CHECK_INITIALIZED(false);
-    
+
     const fspath src = baseDir / relPath;
     const fspath dst = outputDir / relPath;
     if(!std::filesystem::is_regular_file(src)) {
@@ -555,12 +563,27 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     }
     else { //modify, repack children
         for(auto& [filename, child] : current->children) {
+            if(child->getNumPrereqs() > 0) continue; //has prereqs to finish first
             RandoSession::handleChildren(filename, child);
         }
     }
 
     //repack this level
     repackFile(current);
+
+    //handle dependents
+    for(auto& dependent : current->dependents) {
+        //check if this is the last dependency
+        if(dependent->decrementPrereq() > 0) continue; //decrement returns new value
+
+        //handle the data
+        if(dependent->getRoot() == current->getRoot()) { //IMPROVEMENT: more precise sibling checks, filename stuff
+            RandoSession::handleChildren(filename / dependent->element, dependent);
+        }
+        else { //IMPROVEMENT: check entry is root, handle other edge cases
+            workerThreads.push_task(&RandoSession::handleChildren, this, dependent->element, dependent); //add root of this other chain
+        }
+    }
 
     //clear children once done
     current->children.clear();
@@ -576,60 +599,33 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
 bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
-    
-    //BS::multi_future<bool> futures;
-    for(auto& [filename, child] : fileCache->children) {
-        bool reqsDone = true;
 
-        for(const auto& req : child->prereqs) {
-            if(isCached(req)) {
-                reqsDone = false;
-                break;
-            }
-        }
-        if(!reqsDone) {
+    for(auto& [filename, child] : fileCache->children) {
+        //has dependency, it will add it when necessary
+        if(child->getNumPrereqs() > 0) {
             continue;
         }
 
         workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
         workerThreads.total_task_size++;
-        //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
     }
 
     UPDATE_DIALOG_LABEL("Repacking Files...\n(This will take a while)");
     workerThreads.total_tasks_completed = 0;
 
-    while(fileCache->children.size() != 0) {
-        workerThreads.wait_for_tasks();
-        for(auto& [filename, child] : fileCache->children) {
-            if(child->prereqs.size() == 0) continue;
-            bool reqsDone = true;
-
-            for(const auto& req : child->prereqs) {
-                if(isCached(req)) {
-                    reqsDone = false;
-                    break;
-                }
-            }
-            if(!reqsDone) {
-                continue;
-            }
-
-            workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
-            //futures.push_back(workerThreads.submit(&RandoSession::handleChildren, this, filename, child));
-        }
-    }
+    workerThreads.wait_for_tasks();
 
     Utility::platformLog("Finished repacking files\n");
     BasicLog::getInstance().log("Finished repacking files");
-    
+
     return true;
 }
 
 void RandoSession::clearCache()
 {
     fileCache->children.clear();
-    fileCache->prereqs.clear();
+    fileCache->dependents.clear();
     fileCache->data = nullptr;
     fileCache->actions.clear();
+    fileCache->numPrereqs = 0;
 }
