@@ -21,7 +21,7 @@ public:
     }
 
     void read(std::istream& in) {
-        location = in.tellg();
+        location = static_cast<T>(in.tellg());
         in.read(reinterpret_cast<char*>(&relOffset), sizeof(relOffset));
         Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, relOffset);
         offset = location + relOffset;
