@@ -201,7 +201,7 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 
 		return true;
 	});
-	stage.delayUntil(path);
+	room.addDependent(stage.getRoot());
 
 	return TweakError::NONE;
 }
@@ -1564,8 +1564,8 @@ TweakError add_cross_dungeon_warps() {
 		return true;
 	});
 	
-	totg.delayUntil("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
-	ff.delayUntil("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
+	drc.addDependent(totg.getParent()); //Want the file above the JPC entry
+	drc.addDependent(ff.getParent()); //Want the file above the JPC entry
 
 	return TweakError::NONE;
 }
@@ -2526,7 +2526,7 @@ TweakError update_entrance_events() {
 		return true;
 	});
 
-	entry.delayUntil("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
+	dzr.addDependent(entry.getRoot());
 
 	//This entrance isn't randomized yet, code can be used to patch it if it is ever shuffled
 	//ChunkEntry* gallery = dzr.entries_by_type("SCLS")[8];

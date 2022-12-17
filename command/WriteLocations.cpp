@@ -342,7 +342,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
         if (symbol[0] == '@') { //support hardcoding addresses for checks like zunari (where a symbol and address are needed)
             const std::string offsetStr = symbol.substr(1);
             address = std::strtoul(offsetStr.c_str(), nullptr, 0);
-            if (address == 0 || address == std::numeric_limits<unsigned long>::max())
+            if (address == 0 || address == std::numeric_limits<decltype(address)>::max())
             {
                 LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
             }
