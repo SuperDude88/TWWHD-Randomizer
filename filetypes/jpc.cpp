@@ -9,7 +9,7 @@
 
 using eType = Utility::Endian::Type;
 
-std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, unsigned int offset, uint8_t dataCount) {
+std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, const std::streamoff offset, const uint8_t dataCount) {
 	in.seekg(offset, std::ios::beg);
 
 	std::vector<JParticle::ColorAnimationKeyframe> table;
