@@ -1,8 +1,4 @@
 #include "tweaks.hpp"
-#include "command/RandoSession.hpp"
-#include "command/WriteLocations.hpp"
-#include "filetypes/baseFiletype.hpp"
-#include <initializer_list>
 
 #define _USE_MATH_DEFINES
 

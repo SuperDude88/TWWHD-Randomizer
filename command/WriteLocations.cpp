@@ -1,6 +1,7 @@
 #include "WriteLocations.hpp"
 
 #include <limits>
+#include <type_traits>
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
@@ -61,7 +62,7 @@ constexpr uint8_t getLowestSetBit(uint32_t mask) {
     return lowestSetIndex;
 }
 
-template<typename T>
+template<typename T> requires std::is_arithmetic_v<T>
 ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
     const uint8_t shiftAmount = getLowestSetBit(mask);
     if (shiftAmount == 0xFF) LOG_ERR_AND_RETURN(ModificationError::INVALID_MASK)

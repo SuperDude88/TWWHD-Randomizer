@@ -1,5 +1,4 @@
 #include "contents.hpp"
-#include "utility/string.hpp"
 
 #include <filesystem>
 
@@ -7,6 +6,7 @@
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
 #include <utility/math.hpp>
+#include <utility/string.hpp>
 
 #include <gui/update_dialog_header.hpp>
 
