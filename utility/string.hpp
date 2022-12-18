@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <ios>
 #include <string>
 #include <type_traits>
@@ -13,7 +14,10 @@ namespace Utility::Str {
 
     std::u16string toUTF16(const std::string& str);
 
-    template<typename T>
+    template<typename T> 
+    concept StringType = std::derived_from<T, std::basic_string<typename T::value_type>>;
+
+    template<typename T> requires StringType<T>
     std::vector<T> split(const T& string, const typename T::value_type delim) {
     	std::vector<T> ret;
     	T tail = string;
@@ -29,7 +33,7 @@ namespace Utility::Str {
     	return ret;
     }
 
-    template<typename T>
+    template<typename T> requires StringType<T>
     T merge(const std::vector<T>& lines, const typename T::value_type separator) {
     	T ret;
     	for (const T& segment : lines) {
@@ -39,7 +43,7 @@ namespace Utility::Str {
     	return ret;
     }
 
-	  template<typename T>
+	  template<typename T> requires StringType<T>
     T assureNullTermination(const T& string) {
     	if(!string.empty() && string.back() == typename T::value_type(0)) return string;
 
@@ -50,21 +54,17 @@ namespace Utility::Str {
     std::string RemoveUnicodeReplacements(std::string text);
     std::u16string RemoveUnicodeReplacements(std::u16string text);
 
-    template<typename T>
+    template<typename T> requires std::integral<T>
     std::string intToHex(const T& i, const bool& base = true)
     {
-      static_assert(std::is_integral_v<T>, "intToHex<T> must be integral type!");
-
       std::stringstream stream;
       stream << std::hex << (base ? std::showbase : std::noshowbase) << i;
       return stream.str();
     }
 
-    template<typename T>
+    template<typename T> requires std::integral<T>
     std::string intToHex(const T& i, const std::streamsize& width, const bool& base = true)
     {
-      static_assert(std::is_integral_v<T>, "intToHex<T> must be integral type!");
-
       std::stringstream stream;
       stream << std::hex << (base ? std::showbase : std::noshowbase) << std::setfill('0') << std::setw(width) << i;
       return stream.str();

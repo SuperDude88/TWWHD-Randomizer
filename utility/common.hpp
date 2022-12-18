@@ -3,15 +3,13 @@
 #include <string>
 #include <fstream>
 #include <limits>
-
 #include <type_traits>
+
 #include <utility/endian.hpp>
 
 
-template<typename T>
+template<typename T> requires std::is_arithmetic_v<T>
 struct RGBA {
-	static_assert(std::is_arithmetic_v<T>, "RGBA<T> must have arithmetic type!");
-
 	T R = 0;
 	T G = 0;
 	T B = 0;
@@ -34,10 +32,8 @@ struct RGBA {
 	{}
 };
 
-template<typename T>
+template<typename T> requires std::is_arithmetic_v<T>
 struct vec2 {
-	static_assert(std::is_arithmetic_v<T>, "vec2<T> must have arithmetic type!");
-
 	T X;
 	T Y;
 
@@ -48,10 +44,8 @@ struct vec2 {
 	{}
 };
 
-template<typename T>
+template<typename T> requires std::is_arithmetic_v<T>
 struct vec3 {
-	static_assert(std::is_arithmetic_v<T>, "vec3<T> must have arithmetic type!");
-
 	T X;
 	T Y;
 	T Z;
@@ -64,10 +58,8 @@ struct vec3 {
 	{}
 };
 
-template<typename T>
+template<typename T> requires std::is_arithmetic_v<T>
 struct vec4 {
-	static_assert(std::is_arithmetic_v<T>, "vec4<T> must have arithmetic type!");
-
 	T A;
 	T B;
 	T C;
@@ -244,10 +236,13 @@ std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset);
 
 std::u16string readNullTerminatedWStr(std::istream& in, const unsigned int offset);
 
-template<typename error_enum>
+template<typename error_enum> requires requires {
+	requires std::is_enum_v<error_enum>;
+	error_enum::NONE;
+	error_enum::REACHED_EOF;
+	error_enum::UNEXPECTED_VALUE;
+}
 error_enum readPadding(std::istream& in, const unsigned int& len, const char* val = nullptr) {
-	static_assert(std::is_enum_v<error_enum>, "error_enum must be enum type");
-
 	if (in.tellg() % len != 0) {
 	    const size_t& padding_size = len - (static_cast<size_t>(in.tellg()) % len);
 
