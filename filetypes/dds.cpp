@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <type_traits>
+
 #include <utility/common.hpp>
 #include <utility/endian.hpp>
 #include <filetypes/texture/formconv.hpp>
@@ -25,9 +26,8 @@ static const std::unordered_map<uint32_t, uint8_t> a4l4_masks = {{0xf, 0}, {0xf0
 
 
 //This might be super unsafe, no idea
-template<typename T>
+template<typename T> requires std::is_enum_v<T>
 inline T operator |(T a, T b) {
-    static_assert(std::is_enum<T>::value, "operator| for enums passed non-enum type");
     return static_cast<T>(static_cast<std::underlying_type_t<T>>(a) | static_cast<std::underlying_type_t<T>>(b));
 }
 
