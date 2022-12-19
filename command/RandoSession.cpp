@@ -602,12 +602,12 @@ bool RandoSession::modFiles()
 
     for(auto& [filename, child] : fileCache->children) {
         //has dependency, it will add it when necessary
+        workerThreads.total_task_size++;
         if(child->getNumPrereqs() > 0) {
             continue;
         }
 
-        workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
-        workerThreads.total_task_size++;
+        workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);  
     }
 
     UPDATE_DIALOG_LABEL("Repacking Files...\n(This will take a while)");
