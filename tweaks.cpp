@@ -1,8 +1,4 @@
 #include "tweaks.hpp"
-#include "command/RandoSession.hpp"
-#include "command/WriteLocations.hpp"
-#include "filetypes/baseFiletype.hpp"
-#include <initializer_list>
 
 #define _USE_MATH_DEFINES
 
@@ -191,7 +187,7 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 				if (std::strncmp(&actor->data[0], "Ship", 4) == 0) {
 					actor->data.replace(0xC, 0xC, ship_spawn_0.data, 0x0, 0xC);
 					actor->data.replace(0x1A, 0x2, ship_spawn_0.data, 0xC, 0x2);
-					actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
+					actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00"s, 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
 					break;
 				}
 			}
