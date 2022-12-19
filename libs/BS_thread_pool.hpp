@@ -643,6 +643,7 @@ private:
      */
     std::atomic<bool> waiting = false;
 
+// Variables from our own project to help see how close to completion we are
 public:
     std::atomic<size_t> total_task_size = 0;
     std::atomic<size_t> total_tasks_completed = 0;
