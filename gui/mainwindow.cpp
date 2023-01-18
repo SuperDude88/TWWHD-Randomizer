@@ -452,7 +452,7 @@ void MainWindow::apply_config_settings()
     auto& num_race_mode_dungeons = config.settings.num_race_mode_dungeons;
     // Race mode dungeons must be between 1 and 6
     num_race_mode_dungeons = std::clamp(num_race_mode_dungeons, uint8_t(1), uint8_t(6));
-    ui->num_race_mode_dungeons->setCurrentIndex(num_race_mode_dungeons - 1);
+    ui->num_race_mode_dungeons->setCurrentIndex(num_race_mode_dungeons);
 
     auto& num_starting_triforce_shards = config.settings.num_starting_triforce_shards;
     // Number of starting triforce shards must be between 0 and 8
@@ -770,7 +770,7 @@ void MainWindow::on_num_starting_triforce_shards_currentIndexChanged(int index)
 
 void MainWindow::on_num_race_mode_dungeons_currentIndexChanged(int index)
 {
-    config.settings.num_race_mode_dungeons = ui->num_race_mode_dungeons->currentIndex() + 1;
+    config.settings.num_race_mode_dungeons = ui->num_race_mode_dungeons->currentIndex();
     update_permalink();
 }
 
