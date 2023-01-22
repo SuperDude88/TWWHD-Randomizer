@@ -14,7 +14,7 @@ PackError createPackage(const std::filesystem::path& dirPath, const std::filesys
     const ContentRules rules = getCommonRules(info.groupID, parentID);
 
     PackageConfig config(dirPath, info, encryptionKey, encryptKeyWith, rules);
-    NUSPackage package = NUSPackage::createNew(config);
+    NUSPackage package(config);
     package.PackContents(out);
 
     return PackError::NONE;
