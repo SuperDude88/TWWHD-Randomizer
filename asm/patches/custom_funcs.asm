@@ -1,3 +1,5 @@
+#include "asm_constants.hpp"
+
 .org @NextFreeSpace
 
 .global init_save_with_tweaks
@@ -564,7 +566,7 @@ skip_rematch_bosses:
 
 .global starting_gear
 starting_gear:
-.space 70, 0xFF ; Allocate space for up to 70 additional items (when changing this also update the constant in tweaks.py)
+.space MAXIMUM_ADDITIONAL_STARTING_ITEMS, 0xFF ; Allocate space for items
 .byte 0xFF
 .align 1 ; Align to the next 2 bytes
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include <command/RandoSession.hpp>
 #include <logic/World.hpp>
 
