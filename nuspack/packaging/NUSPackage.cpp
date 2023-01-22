@@ -40,19 +40,19 @@ void readFiles(const std::filesystem::path& dir, FSTEntry& parent, const bool& n
     }
 }
 
-NUSPackage NUSPackage::createNew(const PackageConfig& config) {
-    NUSPackage package(Ticket(config.info.titleID, config.encryptionKey, config.encryptKeyWith));
-    FileTypes::FSTFile& fst = package.fst;
-    FileTypes::TMDFile& tmd = package.tmd;
-
-    fst.root.setContent(&package.contents.GetFSTContent());
+NUSPackage::NUSPackage(const PackageConfig& config) :
+    ticket(config.info.titleID, config.encryptionKey, config.encryptKeyWith),
+    contents(),
+    fst(contents),
+    tmd(ticket, contents),
+    outputDir()
+{
+    fst.root.setContent(&contents.GetFSTContent());
     readFiles(config.dir, fst.root, false);
-    applyRules(fst.root, package.contents, config.rules);
+    applyRules(fst.root, contents, config.rules);
 
     fst.Update();
     tmd.update(config.info);
-
-    return package;
 }
 
 void NUSPackage::PackContents(const std::filesystem::path& out) {
