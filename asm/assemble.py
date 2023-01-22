@@ -91,7 +91,20 @@ def main():
     
     for patch_filename in all_asm_files:
         patch_path = os.path.join(".", "patches", patch_filename)
-        with open(patch_path) as f:
+        preprocess_path = os.path.join(temp_dir, "preprocess_" + patch_filename)
+
+        command = [
+          devkitbasepath + "/powerpc-eabi-gcc",
+          "-E",
+          "-xassembler-with-cpp",
+          patch_path,
+          "-o", preprocess_path
+        ]
+        result = subprocess.call(command)
+        if result != 0:
+          raise Exception("Preprocessor call failed")
+
+        with open(preprocess_path) as f:
           asm = f.read()
     
         patch_name = os.path.splitext(patch_filename)[0]
@@ -144,7 +157,7 @@ def main():
             continue
           
           if most_recent_org_offset is None:
-            if line[0] == ";":
+            if line[0] == ";" or line[0] == "#":
               # Comment
               continue
             raise Exception("Found code before any .org directive")

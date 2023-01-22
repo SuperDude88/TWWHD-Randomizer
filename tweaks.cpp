@@ -12,6 +12,7 @@
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
 #include <libs/json.hpp>
+#include <asm/patches/asm_constants.hpp>
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>
 #include <filetypes/bfres.hpp>
@@ -818,10 +819,8 @@ TweakError update_name_and_icon() {
 		metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
 		metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-		#ifndef DEVKITPRO //skip title ID change on console for now, doesnt work without custom channel
-			//change the title ID so it gets its own channel when repacked
-			metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
-		#endif
+		//change the title ID so it gets its own channel when repacked
+		metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
 		
 		tinyxml2::XMLPrinter printer;
 		meta.Print(&printer);
@@ -829,9 +828,7 @@ TweakError update_name_and_icon() {
 
 		return true;
 	});
-	#ifdef DEVKITPRO
-		return TweakError::NONE; //skip title ID change on wii u for now, doesnt work when its using the original channel
-	#endif
+	
 	RandoSession::CacheEntry& appEntry = g_session.openGameFile("code/app.xml");
 	appEntry.addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
