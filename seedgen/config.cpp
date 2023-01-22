@@ -177,8 +177,8 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     //hardcode paths for console, otherwise use config
     #ifdef DEVKITPRO
-        out.gameBaseDir = APP_SAVE_PATH "backup";
-        out.outputDir = "storage_mlc01:/usr/title/00050000/10143500";
+        out.gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500";
+        out.outputDir = "storage_mlc01:/usr/title/00050000/10143599";
         out.settings.plandomizerFile = APP_SAVE_PATH "plandomizer.yaml";
     #else
         SET_FIELD_EMPTY_STR_IF_FAIL(root, out, gameBaseDir)
