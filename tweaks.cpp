@@ -2443,8 +2443,7 @@ TweakError fix_stone_head_bugs() {
 		uint32_t status_bits = elfUtil::read_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100));
 		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
 		status_bits &= ~0x00000080;
-		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
-		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits)); //write function handles byteswap back
 
 		return true;
 	});
