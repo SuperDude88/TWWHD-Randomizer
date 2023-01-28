@@ -792,9 +792,9 @@
   Category:
     - Minigame
   Hint Priority: Sometimes
-  Type: RPX
-  Offsets:
-    - 0x022C6457
+  Type: Custom_Symbol
+  SymbolNames:
+    - dampa_minigame_item_id
 
 - Names:
     English: Windfall Island - Pompie & Vera Secret Meeting Photo
