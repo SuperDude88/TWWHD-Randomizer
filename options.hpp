@@ -5,7 +5,17 @@
 
 #include <logic/GameItem.hpp>
 
-constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 70;
+constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 256;
+constexpr unsigned int MAXIMUM_STARTING_HC = 6;
+constexpr unsigned int MAXIMUM_STARTING_HP = 44;
+constexpr unsigned int MAXIMUM_STARTING_JOY_PENDANTS = 40;
+constexpr unsigned int MAXIMUM_STARTING_SKULL_NECKLACES = 23;
+constexpr unsigned int MAXIMUM_STARTING_BOKO_BABA_SEEDS = 10;
+constexpr unsigned int MAXIMUM_STARTING_GOLDEN_FEATHERS = 20;
+constexpr unsigned int MAXIMUM_STARTING_KNIGHTS_CRESTS = 10;
+constexpr unsigned int MAXIMUM_STARTING_RED_CHU_JELLYS = 15;
+constexpr unsigned int MAXIMUM_STARTING_GREEN_CHU_JELLYS = 15;
+constexpr unsigned int MAXIMUM_STARTING_BLUE_CHU_JELLYS = 15;
 
 enum struct PigColor : uint8_t {
     BLACK = 0,
@@ -91,6 +101,14 @@ enum struct Option {
     StartingGear,
     StartingHP,
     StartingHC,
+    StartingJoyPendants,
+    StartingSkullNecklaces,
+    StartingBokoBabaSeeds,
+    StartingGoldenFeathers,
+    StartingKnightsCrests,
+    StartingRedChuJellys,
+    StartingGreenChuJellys,
+    StartingBlueChuJellys,
 
     // Advanced Options
     NoSpoilerLog,
@@ -208,6 +226,14 @@ struct Settings {
     std::vector<GameItem> starting_gear = {};
     uint16_t starting_pohs = 0;
     uint16_t starting_hcs = 0;
+    uint16_t starting_joy_pendants = 0;
+    uint16_t starting_skull_necklaces = 0;
+    uint16_t starting_boko_baba_seeds = 0;
+    uint16_t starting_golden_feathers = 0;
+    uint16_t starting_knights_crests = 0;
+    uint16_t starting_red_chu_jellys = 0;
+    uint16_t starting_green_chu_jellys = 0;
+    uint16_t starting_blue_chu_jellys = 0;
     bool remove_music = false;
 
     bool start_with_random_item = false;

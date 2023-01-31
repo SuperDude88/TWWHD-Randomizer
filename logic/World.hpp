@@ -115,6 +115,7 @@ public:
     AreaEntry& getArea(const std::string& area);
 
     void resolveRandomSettings();
+    void addSpoilsToStartingGear();
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
     WorldLoadingError determineRaceModeDungeons(WorldPool& worlds);

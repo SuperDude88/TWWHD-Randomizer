@@ -27,7 +27,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-16</y>
          <width>936</width>
          <height>590</height>
         </rect>
@@ -1004,7 +1004,7 @@
               <item>
                <widget class="QLabel" name="current_health">
                 <property name="text">
-                 <string>Current Starting Health: 3 hearts</string>
+                 <string>Starting Health: 3 Hearts</string>
                 </property>
                </widget>
               </item>
@@ -1020,6 +1020,135 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_red_chu_jellys">
+                <property name="text">
+                 <string>Red Chu Jellys</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_red_chu_jellys">
+                <property name="maximum">
+                 <number>15</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_green_chu_jellys">
+                <property name="text">
+                 <string>Green Chu Jellys</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_green_chu_jellys">
+                <property name="maximum">
+                 <number>15</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_blue_chu_jellys">
+                <property name="text">
+                 <string>Blue Chu Jellys</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_blue_chu_jellys">
+                <property name="maximum">
+                 <number>15</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_23">
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_joy_pendants">
+                <property name="text">
+                 <string>Joy Pendants</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_joy_pendants">
+                <property name="maximum">
+                 <number>40</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_golden_feathers">
+                <property name="text">
+                 <string>Golden Feathers</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_golden_feathers">
+                <property name="maximum">
+                 <number>20</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_skull_necklaces">
+                <property name="text">
+                 <string>Skull Necklaces</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_skull_necklaces">
+                <property name="maximum">
+                 <number>23</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_boko_baba_seeds">
+                <property name="text">
+                 <string>Boko Baba Seeds</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_boko_baba_seeds">
+                <property name="maximum">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_for_starting_knights_crests">
+                <property name="text">
+                 <string>Knights Crests</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="starting_knights_crests">
+                <property name="maximum">
+                 <number>10</number>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

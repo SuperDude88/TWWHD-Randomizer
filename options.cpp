@@ -207,6 +207,14 @@ Option nameToSetting(const std::string& name) {
         {"Starting Gear", Option::StartingGear},
         {"Starting HP", Option::StartingHP},
         {"Starting HC", Option::StartingHC},
+        {"Starting Joy Pendants", Option::StartingJoyPendants},
+        {"Starting Skull Necklaces", Option::StartingSkullNecklaces},
+        {"Starting Boko Baba Seeds", Option::StartingBokoBabaSeeds},
+        {"Starting Golden Feathers", Option::StartingGoldenFeathers},
+        {"Starting Knights Crests", Option::StartingKnightsCrests},
+        {"Starting Red Chu Jellys", Option::StartingRedChuJellys},
+        {"Starting Green Chu Jellys", Option::StartingGreenChuJellys},
+        {"Starting Blue Chu Jellys", Option::StartingBlueChuJellys},
         {"Remove Music", Option::RemoveMusic},
         {"Start With Random Item", Option::StartWithRandomItem},
         {"Plandomizer", Option::Plandomizer},
@@ -285,6 +293,14 @@ std::string settingToName(const Option& setting) {
         {Option::StartingGear, "Starting Gear"},
         {Option::StartingHP, "Starting HP"},
         {Option::StartingHC, "Starting HC"},
+        {Option::StartingJoyPendants, "Starting Joy Pendants"},
+        {Option::StartingSkullNecklaces, "Starting Skull Necklaces"},
+        {Option::StartingBokoBabaSeeds, "Starting Boko Baba Seeds"},
+        {Option::StartingGoldenFeathers, "Starting Golden Feathers"},
+        {Option::StartingKnightsCrests, "Starting Knights Crests"},
+        {Option::StartingRedChuJellys, "Starting Red Chu Jellys"},
+        {Option::StartingGreenChuJellys, "Starting Green Chu Jellys"},
+        {Option::StartingBlueChuJellys, "Starting Blue Chu Jellys"},
         {Option::RemoveMusic, "Remove Music"},
         {Option::StartWithRandomItem, "Start With Random Item"},
         {Option::Plandomizer, "Plandomizer"},
@@ -424,6 +440,22 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.starting_pohs;
     case Option::StartingHC:
         return settings.starting_hcs;
+    case Option::StartingJoyPendants:
+        return settings.starting_joy_pendants;
+    case Option::StartingSkullNecklaces:
+        return settings.starting_skull_necklaces;
+    case Option::StartingBokoBabaSeeds:
+        return settings.starting_boko_baba_seeds;
+    case Option::StartingGoldenFeathers:
+        return settings.starting_golden_feathers;
+    case Option::StartingKnightsCrests:
+        return settings.starting_knights_crests;
+    case Option::StartingRedChuJellys:
+        return settings.starting_red_chu_jellys;
+    case Option::StartingGreenChuJellys:
+        return settings.starting_green_chu_jellys;
+    case Option::StartingBlueChuJellys:
+        return settings.starting_blue_chu_jellys;
     case Option::RemoveMusic:
         return settings.remove_music;
     case Option::StartWithRandomItem:
@@ -563,6 +595,22 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.starting_pohs = value; return;
     case Option::StartingHC:
         settings.starting_hcs = value; return;
+    case Option::StartingJoyPendants:
+        settings.starting_joy_pendants = value; return;
+    case Option::StartingSkullNecklaces:
+        settings.starting_skull_necklaces = value; return;
+    case Option::StartingBokoBabaSeeds:
+        settings.starting_boko_baba_seeds = value; return;
+    case Option::StartingGoldenFeathers:
+        settings.starting_golden_feathers = value; return;
+    case Option::StartingKnightsCrests:
+        settings.starting_knights_crests = value; return;
+    case Option::StartingRedChuJellys:
+        settings.starting_red_chu_jellys = value; return;
+    case Option::StartingGreenChuJellys:
+        settings.starting_green_chu_jellys = value; return;
+    case Option::StartingBlueChuJellys:
+        settings.starting_blue_chu_jellys = value; return;
     case Option::RemoveMusic:
         settings.remove_music = value; return;
     case Option::StartWithRandomItem:

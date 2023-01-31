@@ -40,6 +40,12 @@
         UPDATE_CONFIG_STATE(config, ui, name);            \
     }
 
+#define DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(name)        \
+    void MainWindow::on_##name##_valueChanged(int arg1) { \
+        config.settings.name = arg1;                      \
+        update_permalink();                               \
+    }
+
 void delete_and_create_default_config()
 {
     std::filesystem::remove(APP_SAVE_PATH "config.yaml");
@@ -471,8 +477,16 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, remove_music);
 
     // Starting Health
-    APPLY_SPINBOX_SETTING(config, ui, starting_hcs, uint16_t(0), uint16_t(6));
-    APPLY_SPINBOX_SETTING(config, ui, starting_pohs, uint16_t(0), uint16_t(44));
+    APPLY_SPINBOX_SETTING(config, ui, starting_hcs, uint16_t(0), uint16_t(MAXIMUM_STARTING_HC));
+    APPLY_SPINBOX_SETTING(config, ui, starting_pohs, uint16_t(0), uint16_t(MAXIMUM_STARTING_HP));
+    APPLY_SPINBOX_SETTING(config, ui, starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
+    APPLY_SPINBOX_SETTING(config, ui, starting_boko_baba_seeds, uint16_t(0), uint16_t(MAXIMUM_STARTING_BOKO_BABA_SEEDS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_golden_feathers, uint16_t(0), uint16_t(MAXIMUM_STARTING_GOLDEN_FEATHERS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_knights_crests, uint16_t(0), uint16_t(MAXIMUM_STARTING_KNIGHTS_CRESTS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_red_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_RED_CHU_JELLYS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_green_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_GREEN_CHU_JELLYS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     // Player Customization
     APPLY_CHECKBOX_SETTING(config, ui, player_in_casual_clothes);
@@ -864,7 +878,7 @@ void MainWindow::update_starting_health_text()
     std::string containersStr = std::to_string(containers) + " Hearts";
     std::string piecesStr = std::to_string(pieces) + (pieces == 1 ? " Piece" : " Pieces");
 
-    std::string message = "Current Starting Health: " + containersStr + " and " + piecesStr;
+    std::string message = "Starting Health: " + containersStr + (pieces != 0 ? (" and " + piecesStr) : "");
     ui->current_health->setText(message.c_str());
 
     update_permalink();
@@ -882,6 +896,15 @@ void MainWindow::on_starting_pohs_valueChanged(int starting_pohs)
     update_starting_health_text();
 }
 
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_blue_chu_jellys)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_green_chu_jellys)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_red_chu_jellys)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_knights_crests)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_golden_feathers)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_boko_baba_seeds)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_skull_necklaces)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_joy_pendants)
+
 // Player Customization
 DEFINE_STATE_CHANGE_FUNCTION(player_in_casual_clothes)
 
@@ -890,29 +913,10 @@ DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
 DEFINE_STATE_CHANGE_FUNCTION(korl_hints)
 DEFINE_STATE_CHANGE_FUNCTION(use_always_hints)
 DEFINE_STATE_CHANGE_FUNCTION(clearer_hints)
-void MainWindow::on_path_hints_valueChanged(int path_hints)
-{
-    config.settings.path_hints = path_hints;
-    update_permalink();
-}
-
-void MainWindow::on_barren_hints_valueChanged(int barren_hints)
-{
-    config.settings.barren_hints = barren_hints;
-    update_permalink();
-}
-
-void MainWindow::on_location_hints_valueChanged(int location_hints)
-{
-    config.settings.location_hints = location_hints;
-    update_permalink();
-}
-
-void MainWindow::on_item_hints_valueChanged(int item_hints)
-{
-    config.settings.item_hints = item_hints;
-    update_permalink();
-}
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(path_hints)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(barren_hints)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(location_hints)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(item_hints)
 
 DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)

@@ -368,10 +368,26 @@ cmpwi r3, 0x1C
 beq starting_gear_add_drc_compass
 cmpwi r3, 0x1D
 beq starting_gear_add_fw_small_key
+cmpwi r3, 0x1F
+beq starting_gear_add_joy_pendant
 cmpwi r3, 0x40
 beq starting_gear_add_fw_big_key
 cmpwi r3, 0x41
 beq starting_gear_add_fw_dungeon_map
+cmpwi r3, 0x45
+beq starting_gear_add_skull_necklace
+cmpwi r3, 0x46
+beq starting_gear_add_boko_baba_seed
+cmpwi r3, 0x47
+beq starting_gear_add_golden_feather
+cmpwi r3, 0x48
+beq starting_gear_add_knights_crest
+cmpwi r3, 0x49
+beq starting_gear_add_red_chu_jelly
+cmpwi r3, 0x4A
+beq starting_gear_add_green_chu_jelly
+cmpwi r3, 0x4B
+beq starting_gear_add_blue_chu_jelly
 cmpwi r3, 0x5A
 beq starting_gear_add_fw_compass
 cmpwi r3, 0x5B
@@ -549,6 +565,46 @@ starting_gear_add_wind_tingle_statue:
 bl wind_tingle_statue_item_get_func
 b init_starting_gear_next_item
 
+.global starting_gear_add_joy_pendant ; Max amount of 40
+starting_gear_add_joy_pendant:
+bl item_func_joy_pendant
+b init_starting_gear_next_item
+
+.global starting_gear_add_skull_necklace ; Max amount of 23
+starting_gear_add_skull_necklace:
+bl item_func_skull_necklace
+b init_starting_gear_next_item
+
+.global starting_gear_add_boko_baba_seed ; Max amount of 10
+starting_gear_add_boko_baba_seed:
+bl item_func_boko_baba_seed
+b init_starting_gear_next_item
+
+.global starting_gear_add_golden_feather ; Max amount of 20
+starting_gear_add_golden_feather:
+bl item_func_golden_feather
+b init_starting_gear_next_item
+
+.global starting_gear_add_knights_crest ; Max amount of 10
+starting_gear_add_knights_crest:
+bl item_func_knights_crest
+b init_starting_gear_next_item
+
+.global starting_gear_add_red_chu_jelly ; Max amount of 15
+starting_gear_add_red_chu_jelly:
+bl item_func_red_chu_jelly
+b init_starting_gear_next_item
+
+.global starting_gear_add_green_chu_jelly ; Max amount of 15
+starting_gear_add_green_chu_jelly:
+bl item_func_green_chu_jelly
+b init_starting_gear_next_item
+
+.global starting_gear_add_blue_chu_jelly ; Max amount of 15
+starting_gear_add_blue_chu_jelly:
+bl item_func_blue_chu_jelly
+b init_starting_gear_next_item
+
 .global num_triforce_shards_to_start_with
 num_triforce_shards_to_start_with:
 .byte 0 ; By default start with no Triforce Shards
@@ -564,7 +620,7 @@ skip_rematch_bosses:
 
 .global starting_gear
 starting_gear:
-.space 70, 0xFF ; Allocate space for up to 70 additional items (when changing this also update the constant in tweaks.py)
+.space 256, 0xFF ; Allocate space for up to 256 additional items. This is enough space for the max allowed spoil counts and regular starting items (when changing this also update the constant in options.hpp)
 .byte 0xFF
 .align 1 ; Align to the next 2 bytes
 

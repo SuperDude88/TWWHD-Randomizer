@@ -163,6 +163,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "invert_sea_compass_x_axis",
       "Inverts the east-west direction of the compass that shows while at sea.",
     },
+    {
+      "remove_music",
+      "Mutes all ingame music."
+    },
 
     // {
     //   "randomize_music",
@@ -214,8 +218,36 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Amount of extra heart containers that you start with."
     },
     {
-      "remove_music",
-      "Mutes all ingame music."
+      "starting_joy_pendants",
+      "Amount of extra joy pendants that you start with."
+    },
+    {
+      "starting_skull_necklaces",
+      "Amount of extra skull necklaces that you start with."
+    },
+    {
+      "starting_boko_baba_seeds",
+      "Amount of extra boko baba seeds that you start with."
+    },
+    {
+      "starting_golden_feathers",
+      "Amount of extra golden feathers that you start with."
+    },
+    {
+      "starting_knights_crests",
+      "Amount of extra knights crests that you start with."
+    },
+    {
+      "starting_red_chu_jellys",
+      "Amount of extra red chu jellys that you start with."
+    },
+    {
+      "starting_green_chu_jellys",
+      "Amount of extra green chu jellys that you start with."
+    },
+    {
+      "starting_blue_chu_jellys",
+      "Amount of extra blue chu jellys that you start with."
     },
 
     // Advanced Options
