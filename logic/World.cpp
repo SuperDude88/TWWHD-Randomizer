@@ -45,6 +45,7 @@ World::World(size_t numWorlds_)
 void World::setSettings(const Settings& settings_)
 {
     settings = std::move(settings_);
+    addSpoilsToStartingGear();
 }
 
 const Settings& World::getSettings() const
@@ -84,9 +85,29 @@ void World::resolveRandomSettings()
         }
 
         GameItem startingItem = RandomElement(randomStartingItemPool);
-        LOG_TO_DEBUG("Random starting item chose: " + gameItemToName(startingItem));
+        LOG_TO_DEBUG("Random starting item chosen: " + gameItemToName(startingItem));
         settings.starting_gear.push_back(startingItem);
     }
+}
+
+void World::addSpoilsToStartingGear()
+{
+    // Short helper function for adding the spoils to the starting_gear
+    auto addSpoils = [&](uint16_t& setting, const GameItem& gameItem){
+        for (uint16_t i = 0; i < setting; i++)
+        {
+            settings.starting_gear.push_back(gameItem);
+        }
+    };
+
+    addSpoils(settings.starting_joy_pendants, GameItem::JoyPendant);
+    addSpoils(settings.starting_skull_necklaces, GameItem::SkullNecklace);
+    addSpoils(settings.starting_boko_baba_seeds, GameItem::BokoBabaSeed);
+    addSpoils(settings.starting_golden_feathers, GameItem::GoldenFeather);
+    addSpoils(settings.starting_knights_crests, GameItem::KnightsCrest);
+    addSpoils(settings.starting_red_chu_jellys, GameItem::RedChuJelly);
+    addSpoils(settings.starting_green_chu_jellys, GameItem::GreenChuJelly);
+    addSpoils(settings.starting_blue_chu_jellys, GameItem::BlueChuJelly);
 }
 
 void World::setWorldId(int newWorldId)

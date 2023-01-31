@@ -148,6 +148,14 @@ ConfigError createDefaultConfig(const std::string& filePath) {
 
     conf.settings.starting_pohs = 0;
     conf.settings.starting_hcs = 0;
+    conf.settings.starting_joy_pendants = 0;
+    conf.settings.starting_skull_necklaces = 0;
+    conf.settings.starting_boko_baba_seeds = 0;
+    conf.settings.starting_golden_feathers = 0;
+    conf.settings.starting_knights_crests = 0;
+    conf.settings.starting_red_chu_jellys = 0;
+    conf.settings.starting_green_chu_jellys = 0;
+    conf.settings.starting_blue_chu_jellys = 0;
     conf.settings.remove_music = false;
 
     conf.settings.do_not_generate_spoiler_log = false;
@@ -257,6 +265,14 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     SET_INT_FIELD(root, out, starting_pohs)
     SET_INT_FIELD(root, out, starting_hcs)
+    SET_INT_FIELD(root, out, starting_joy_pendants)
+    SET_INT_FIELD(root, out, starting_skull_necklaces)
+    SET_INT_FIELD(root, out, starting_boko_baba_seeds)
+    SET_INT_FIELD(root, out, starting_golden_feathers)
+    SET_INT_FIELD(root, out, starting_knights_crests)
+    SET_INT_FIELD(root, out, starting_red_chu_jellys)
+    SET_INT_FIELD(root, out, starting_green_chu_jellys)
+    SET_INT_FIELD(root, out, starting_blue_chu_jellys)
     SET_BOOL_FIELD(root, out, remove_music)
 
     SET_BOOL_FIELD(root, out, do_not_generate_spoiler_log)
@@ -338,6 +354,15 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       }
     }
 
+    // Clamp starting spoils
+    std::clamp(out.settings.starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
+    std::clamp(out.settings.starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
+    std::clamp(out.settings.starting_boko_baba_seeds, uint16_t(0), uint16_t(MAXIMUM_STARTING_BOKO_BABA_SEEDS));
+    std::clamp(out.settings.starting_golden_feathers, uint16_t(0), uint16_t(MAXIMUM_STARTING_GOLDEN_FEATHERS));
+    std::clamp(out.settings.starting_knights_crests, uint16_t(0), uint16_t(MAXIMUM_STARTING_KNIGHTS_CRESTS));
+    std::clamp(out.settings.starting_red_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_RED_CHU_JELLYS));
+    std::clamp(out.settings.starting_green_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_GREEN_CHU_JELLYS));
+    std::clamp(out.settings.starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     //can still parse file with different rando versions, but will give different item placements
     //return error after parsing so it can warn the user
@@ -445,6 +470,14 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     WRITE_NUM_FIELD(root, config, starting_pohs)
     WRITE_NUM_FIELD(root, config, starting_hcs)
+    WRITE_NUM_FIELD(root, config, starting_joy_pendants)
+    WRITE_NUM_FIELD(root, config, starting_skull_necklaces)
+    WRITE_NUM_FIELD(root, config, starting_boko_baba_seeds)
+    WRITE_NUM_FIELD(root, config, starting_golden_feathers)
+    WRITE_NUM_FIELD(root, config, starting_knights_crests)
+    WRITE_NUM_FIELD(root, config, starting_red_chu_jellys)
+    WRITE_NUM_FIELD(root, config, starting_green_chu_jellys)
+    WRITE_NUM_FIELD(root, config, starting_blue_chu_jellys)
     WRITE_SETTING_BOOL_FIELD(root, config, remove_music)
 
     WRITE_SETTING_BOOL_FIELD(root, config, do_not_generate_spoiler_log)
