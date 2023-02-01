@@ -236,6 +236,10 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
     addElementToPool(completeItemPool, std::string("Heart Container"), numContainers);
     addElementToPool(completeItemPool, std::string("Piece of Heart"), numPieces);
 
+    // Add appropriate number of blue chu jellys
+    int numBlueChuJellys = 23 - settings.starting_blue_chu_jellys;
+    addElementToPool(completeItemPool, std::string("Blue Chu Jelly"), numBlueChuJellys);
+
     return completeItemPool;
 }
 

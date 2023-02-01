@@ -315,6 +315,7 @@
 - Name: Star Island
   Island: Star Island
   Locations:
+      Star Island - Blue Chu Chu: Can_Move_Boulders and Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Star Island - Sunken Treasure: Chart_For_Island_2 and Grappling_Hook
   Exits:
       Star Island Cave: Can_Move_Boulders
@@ -337,10 +338,11 @@
 - Name: Northern Fairy Island
   Island: Northern Fairy Island
   Locations:
+      Northern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Northern Fairy Island - Sunken Treasure: Chart_For_Island_3 and Grappling_Hook
       Northern Fairy Island - Old Man Ho Ho: Nothing
   Exits:
-      Northern Fairy Island - Great FairyFountain: Nothing
+      Northern Fairy Island - Great Fairy Fountain: Nothing
       Northern Fairy Island Submarine Exterior: Can_Sail_Away
       Mailbox Checks: Nothing
       The Great Sea: Nothing
@@ -357,7 +359,7 @@
   Exits:
       Northern Fairy Island Submarine Exterior: Nothing
 
-- Name: Northern Fairy Island - Great FairyFountain
+- Name: Northern Fairy Island - Great Fairy Fountain
   Events:
       Can Get Fairies: Nothing
   Locations:
@@ -382,6 +384,8 @@
   Island: Crescent Moon Island
   Locations:
       Crescent Moon Island - Chest on Island: Nothing
+      Crescent Moon Island - Blue Chu Chu North: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Crescent Moon Island - Blue Chu Chu South: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Crescent Moon Island - Sunken Treasure: Chart_For_Island_5 and Grappling_Hook
       Crescent Moon Island - Old Man Ho Ho: Nothing
   Exits:
@@ -430,6 +434,14 @@
   Island: Overlook Island
   Exits:
       Overlook Cave: Nothing
+      Overlook Island Upper Isles Chu Platform: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      Overlook Island: Nothing
+
+- Name: Overlook Island Upper Isles Chu Platform
+  Island : Overlook Island
+  Locations:
+      Overlook Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+  Exits:
       Overlook Island: Nothing
 
 - Name: Overlook Cave
@@ -457,6 +469,7 @@
 - Name: Mother & Child Isles
   Island: Mother & Child Isles
   Locations:
+      Mother & Child Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Mother & Child Isles - Sunken Treasure: Chart_For_Island_9 and Grappling_Hook
   Exits:
       The Great Sea: Nothing
@@ -473,6 +486,7 @@
   Locations:
       Spectacle Island - Barrel Shooting First Prize: Nothing
       Spectacle Island - Barrel Shooting Second Prize: Nothing
+      Spectacle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Spectacle Island - Sunken Treasure: Chart_For_Island_10 and Grappling_Hook
   Exits:
       Spectacle Beedle Shop: Nothing
@@ -622,7 +636,7 @@
 - Name: Windfall Potion Shop
   Locations:
       Windfall Island - Potion Shop 15 Green Chu: Can_Farm_Green_Chu_Jelly
-      Windfall Island - Potion Shop 15 Blue Chu: Can_Obtain_15_Blue_Chu_Jelly
+      Windfall Island - Potion Shop 15 Blue Chu:  Spoils_Bag and count(15, Blue_Chu_Jelly)
   Exits:
       Windfall Island: Nothing
 
@@ -651,6 +665,7 @@
 - Name: Pawprint Isle
   Island: Pawprint Isle
   Locations:
+      Pawprint Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Pawprint Isle - Sunken Treasure: Chart_For_Island_12 and Grappling_Hook
   Exits:
       Pawprint Chu Chu Cave: Nothing
@@ -793,6 +808,7 @@
 - Name: Western Fairy Island
   Island: Western Fairy Island
   Locations:
+      Western Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Western Fairy Island - Sunken Treasure: Chart_For_Island_15 and Grappling_Hook
   Exits:
       Western Fairy Island Past Flames: Skull_Hammer
@@ -803,9 +819,9 @@
 - Name: Western Fairy Island Past Flames
   Island: Western Fairy Island
   Exits:
-      Western Fairy Island - Great FairyFountain: Nothing
+      Western Fairy Island - Great Fairy Fountain: Nothing
 
-- Name: Western Fairy Island - Great FairyFountain
+- Name: Western Fairy Island - Great Fairy Fountain
   Events:
       Can Get Fairies: Nothing
   Locations:
@@ -833,6 +849,8 @@
 
 - Name: Rock Spire Upper Ledges
   Island: Rock Spire Isle
+  Locations:
+      Rock Spire Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
   Exits:
       Rock Spire Cave: Nothing
       Rock Spire Isle: Nothing
@@ -863,6 +881,7 @@
   Island: Tingle Island
   Locations:
       Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue and 'RescuedTingle'
+      Tingle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
       Tingle Island - Sunken Treasure: Chart_For_Island_17 and Grappling_Hook
   Exits:
@@ -879,6 +898,7 @@
 - Name: Eastern Fairy Island
   Island: Eastern Fairy Island
   Locations:
+      Eastern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Eastern Fairy Island - Sunken Treasure: Chart_For_Island_19 and Grappling_Hook
   Exits:
       Eastern Fairy Island Past Boulder: Can_Move_Boulders
@@ -889,10 +909,10 @@
 - Name: Eastern Fairy Island Past Boulder
   Island: Eastern Fairy Island
   Exits:
-      Eastern Fairy Island - Great FairyFountain: Nothing
+      Eastern Fairy Island - Great Fairy Fountain: Nothing
       Eastern Fairy Island: Can_Move_Boulders
 
-- Name: Eastern Fairy Island - Great FairyFountain
+- Name: Eastern Fairy Island - Great Fairy Fountain
   Events:
       Can Get Fairies: Nothing
   Locations:
@@ -1046,6 +1066,7 @@
 - Name: Thorned Fairy Island
   Island: Thorned Fairy Island
   Locations:
+      Thorned Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Thorned Fairy Island - Sunken Treasure: Chart_For_Island_28 and Grappling_Hook
   Exits:
       Thorned Fairy Island Past Tentacles: Skull_Hammer
@@ -1056,9 +1077,9 @@
 - Name: Thorned Fairy Island Past Tentacles
   Island: Thorned Fairy Island
   Exits:
-      Thorned Fairy Island - Great FairyFountain: Can_Sail_Away
+      Thorned Fairy Island - Great Fairy Fountain: Can_Sail_Away
 
-- Name: Thorned Fairy Island - Great FairyFountain
+- Name: Thorned Fairy Island - Great Fairy Fountain
   Events:
       Can Get Fairies: Nothing
   Locations:
@@ -1078,6 +1099,7 @@
   Island: Needle Rock Isle
   Locations:
       Needle Rock Isle - Chest: Bait_Bag and 'Can_Buy_Hyoi_Pears'
+      Needle Rock Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Needle Rock Isle - Golden Gunboat: Bombs and Grappling_Hook
       Needle Rock Isle - Sunken Treasure: Chart_For_Island_29 and Grappling_Hook
   Exits:
@@ -1118,6 +1140,7 @@
 - Name: Stone Watcher Island
   Island: Stone Watcher Island
   Locations:
+      Stone Watcher Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Stone Watcher Island - Sunken Treasure: Chart_For_Island_31 and Grappling_Hook
       Stone Watcher Island - Old Man Ho Ho: Nothing
   Exits:
@@ -1227,8 +1250,14 @@
       Birds Peak Rock - Sunken Treasure: Chart_For_Island_35 and Grappling_Hook
   Exits:
       Birds Peak Rock Behind Bars: Bait_Bag and 'Can_Buy_Hyoi_Pears'
+      Birds Peak Rock Upper Isle: Grappling_Hook
       Mailbox Checks: Nothing
       The Great Sea: Nothing
+
+- Name: Birds Peak Rock Upper Isle
+  Island: Birds Peak Rock
+  Locations:
+      Birds Peak Rock - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
 
 - Name: Birds Peak Rock Behind Bars
   Island: Birds Peak Rock
@@ -1254,6 +1283,8 @@
 
 - Name: Diamond Steppe Upper Island
   Island: Diamond Steppe Island
+  Locations:
+      Diamond Steppe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
   Exits:
       Diamond Steppe Warp Maze: Nothing
       Diamond Steppe Island: Nothing
@@ -1287,8 +1318,14 @@
       Shark Island - Sunken Treasure: Chart_For_Island_38 and Grappling_Hook
   Exits:
       Shark Island Cave: Skull_Hammer and Iron_Boots
+      Shark Island Upper Isle: Skull_Hammer and Iron_Boots and Can_Fly_With_Deku_Leaf_Outdoors
       Shark Island Beedle Shop: Nothing
       The Great Sea: Nothing
+
+- Name: Shark Island Upper Isle
+  Island: Shark Island
+  Locations:
+      Shark Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
 
 - Name: Shark Island Beedle Shop
   Exits:
@@ -1305,6 +1342,7 @@
 - Name: Southern Fairy Island
   Island: Southern Fairy Island
   Locations:
+      Southern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Southern Fairy Island - Sunken Treasure: Chart_For_Island_39 and Grappling_Hook
   Exits:
       Southern Fairy Island Behind Wooden Barrier: Can_Destroy_Wooden_Barriers
@@ -1495,6 +1533,7 @@
   Island: Cliff Plateau Isles
   Locations:
       Cliff Plateau Isles - Highest Isle Chest: Nothing
+      Cliff Plateau Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
   Exits:
       Cliff Plateau Cave Past Wooden Barrier: Nothing
       Cliff Plateau Isles: Nothing
@@ -1519,6 +1558,7 @@
   Island: Horseshoe Island
   Locations:
       Horseshoe Island - Play Golf: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      Horseshoe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Horseshoe Island - Old Man Ho Ho: Nothing
   Exits:
       Horseshoe Island: Nothing
@@ -1617,9 +1657,9 @@
 - Name: Outset Forest of Fairies
   Exits:
       Outset Across Bridge: Nothing
-      Outset Island - Great FairyFountain: Can_Move_Boulders
+      Outset Island - Great Fairy Fountain: Can_Move_Boulders
 
-- Name: Outset Island - Great FairyFountain
+- Name: Outset Island - Great Fairy Fountain
   Events:
       Can Get Fairies: Nothing
   Locations:
@@ -1752,6 +1792,7 @@
   Island: Angular Isles
   Locations:
       Angular Isles - Peak Chest: Nothing
+      Angular Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Angular Isles - Sunken Treasure: Chart_For_Island_47 and Grappling_Hook
   Exits:
       Angular Isles Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
@@ -1780,6 +1821,8 @@
 
 - Name: Boating Course Small Isle
   Island: Boating Course
+  Locations:
+      Boating Course - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
   Exits:
       Boating Course Cave: Nothing
       Boating Course: Nothing
