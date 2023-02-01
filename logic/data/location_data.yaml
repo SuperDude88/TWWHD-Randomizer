@@ -321,6 +321,17 @@
     - 0x00003438
 
 - Names:
+    English: Star Island - Blue Chu Chu
+    Spanish: Isla Estrella - 
+    French: Ile Etoilée - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Star Island - Sunken Treasure
     Spanish: Isla Estrella - Tesoro Sumergido
     French: Ile Etoilée - Trésor englouti
@@ -361,6 +372,17 @@
   Type: Chest
   Offsets:
     - 0x00000210
+
+- Names:
+    English: Northern Fairy Island - Blue Chu Chu
+    Spanish: Isla del Hada del Norte - 
+    French: Ilot Septentrional des Fées - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Northern Fairy Island - Sunken Treasure
@@ -431,6 +453,28 @@
   Type: Chest
   Offsets:
     - 0x00000980
+
+- Names:
+    English: Crescent Moon Island - Blue Chu Chu North
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Crescent Moon Island - Blue Chu Chu South
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Crescent Moon Island - Sunken Treasure
@@ -530,6 +574,17 @@
     - 0x00001588
 
 - Names:
+    English: Overlook Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Overlook Island - Sunken Treasure
     Spanish: Isla de las Torres - Tesoro Sumergido
     French: Ile aux Trois Tours - Trésor englouti
@@ -588,6 +643,17 @@
     - 0x00001F68
 
 - Names:
+    English: Mother & Child Isles - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Mother & Child Isles - Sunken Treasure
     Spanish: Islas Madre e Hija - Tesoro Sumergido
     French: Ile Geminée - Trésor englouti
@@ -640,6 +706,17 @@
   Type: RPX
   Offsets:
     - 0x1001C196
+
+- Names:
+    English: Spectacle Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Spectacle Island - Sunken Treasure
@@ -1211,6 +1288,17 @@
     - 0x00000774
 
 - Names:
+    English: Pawprint Isle - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Pawprint Isle - Sunken Treasure
     Spanish: Isla de la Huella - Tesoro Sumergido
     French: Pas de Chat - Trésor englouti
@@ -1440,6 +1528,17 @@
     - 0x000006C8
 
 - Names:
+    English: Western Fairy Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Western Fairy Island - Sunken Treasure
     Spanish: Isla del Hada del Oeste - Tesoro Sumergido
     French: Ilot Occidental des Fées - Trésor englouti
@@ -1479,6 +1578,17 @@
   Type: Chest
   Offsets:
     - 0x00001758
+
+- Names:
+    English: Rock Spire Isle - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Rock Spire Isle - Defeat Southeast Gunboat
@@ -1616,6 +1726,17 @@
     - 0x022E9973
 
 - Names:
+    English: Tingle Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Tingle Island - Big Octo
     Spanish: Isla de Tingle - Bigocto
     French: Ile de Tingle - Kalamar
@@ -1659,6 +1780,17 @@
     - 0x000009E4
     - 0x00000A08
     - 0x00000A2C
+
+- Names:
+    English: Eastern Fairy Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Eastern Fairy Island - Sunken Treasure
@@ -1986,6 +2118,17 @@
     - 0x00000E58
 
 - Names:
+    English: Thorned Fairy Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Thorned Fairy Island - Sunken Treasure
     Spanish: Isla del Hada Custodiada - Tesoro Sumergido
     French: Ilot Epineux des Fées - Trésor englouti
@@ -2051,6 +2194,17 @@
   Type: Chest
   Offsets:
     - 0x00002224
+
+- Names:
+    English: Needle Rock Isle - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Needle Rock Isle - Golden Gunboat
@@ -2135,6 +2289,17 @@
   Type: Chest
   Offsets:
     - 0x00000DD8
+
+- Names:
+    English: Stone Watcher Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Stone Watcher Island - Sunken Treasure
@@ -2331,6 +2496,17 @@
     - 0x00002110
 
 - Names:
+    English: Birds Peak Rock - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Birds Peak Rock - Sunken Treasure
     Spanish: Isla de los Nidos - Tesoro Sumergido
     French: Ile aux Nichoirs - Trésor englouti
@@ -2358,6 +2534,17 @@
   Type: Chest
   Offsets:
     - 0x0000018C
+
+- Names:
+    English: Diamond Steppe Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Diamond Steppe Island - Big Octo
@@ -2457,6 +2644,17 @@
     - 0x00002E20
 
 - Names:
+    English: Shark Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Shark Island - Sunken Treasure
     Spanish: Isla Tiburón - Tesoro Sumergido
     French: Ile du Requin - Trésor englouti
@@ -2484,6 +2682,17 @@
   Type: Chest
   Offsets:
     - 0x00000210
+
+- Names:
+    English: Southern Fairy Island - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Southern Fairy Island - Sunken Treasure
@@ -2681,6 +2890,17 @@
     - 0x0000183C
 
 - Names:
+    English: Cliff Plateau Isles - Blue Chu Chu
+    Spanish: S - 
+    French: F - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Cliff Plateau Isles - Lookout Platform Chest
     Spanish: Islas Conectadas - Cofre en la Atalaya
     French: Saut de Roc - Coffre de la tour de guet
@@ -2692,6 +2912,17 @@
   Type: Chest
   Offsets:
     - 0x0000185C
+
+- Names:
+    English: Horseshoe Island - Blue Chu Chu
+    Spanish: Isla Herradura - 
+    French: Ile du Fer à Cheval - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Horseshoe Island - Sunken Treasure
@@ -3004,6 +3235,17 @@
     - 0x00000830
 
 - Names:
+    English: Angular Isles - Blue Chu Chu
+    Spanish: Islas Cuadri - 
+    French: Ilots Kif Kif - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
     English: Angular Isles - Sunken Treasure
     Spanish: Islas Cuadri - Tesoro Sumergido
     French: Ilots Kif Kif - Trésor englouti
@@ -3031,6 +3273,17 @@
   Type: Chest
   Offsets:
     - 0x00000254
+
+- Names:
+    English: Boating Course - Blue Chu Chu
+    Spanish: Zona de regata - 
+    French: Batodrome - 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
 
 - Names:
     English: Boating Course - Raft Chest
