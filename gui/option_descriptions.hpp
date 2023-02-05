@@ -327,5 +327,27 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "randomize_starting_island",
       "Randomizes which island you start the game on."
     },
+
+    // In-Game Preferences
+    {
+      "target_type",
+      "Set your in-game preference for the Target Type. This way you don't have to lose time changing it game during a race."
+    },
+    {
+      "camera",
+      "Set your in-game preference for the Camera. This way you don't have to lose time changing it game during a race."
+    },
+    {
+      "first_person_camera",
+      "Set your in-game preference for the First-Person Camera. This way you don't have to lose time changing it game during a race."
+    },
+    {
+      "gyroscope",
+      "Set your in-game preference for the Gyroscope. This way you don't have to lose time changing it game during a race."
+    },
+    {
+      "ui_display",
+      "Set your in-game preference for the UI Display. This way you don't have to lose time changing it game during a race."
+    },
 };
 #endif // OPTION_DESCRIPTIONS_HPP

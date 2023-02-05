@@ -163,6 +163,12 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.plandomizer = false;
     conf.settings.plandomizerFile = "";
 
+    conf.settings.target_type = TargetTypePreference::Hold;
+    conf.settings.camera = CameraPreference::Standard;
+    conf.settings.first_person_camera = FirstPersonCameraPreference::Standard;
+    conf.settings.gyroscope = GyroscopePreference::On;
+    conf.settings.ui_display = UIDisplayPreference::On;
+
     LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
 
     return ConfigError::NONE;
@@ -329,6 +335,56 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       }
     }
 
+    if(root["target_type"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.target_type = nameToTargetTypePreference(root["target_type"].As<std::string>());
+      if (out.settings.target_type == TargetTypePreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.target_type = TargetTypePreference::Hold;
+      }
+    }
+
+    if(root["camera"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.camera = nameToCameraPreference(root["camera"].As<std::string>());
+      if (out.settings.camera == CameraPreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.camera = CameraPreference::Standard;
+      }
+    }
+
+    if(root["first_person_camera"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].As<std::string>());
+      if (out.settings.first_person_camera == FirstPersonCameraPreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.first_person_camera = FirstPersonCameraPreference::Standard;
+      }
+    }
+
+    if(root["gyroscope"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].As<std::string>());
+      if (out.settings.gyroscope == GyroscopePreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.gyroscope = GyroscopePreference::On;
+      }
+    }
+
+    if(root["ui_display"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.ui_display = nameToUIDisplayPreference(root["ui_display"].As<std::string>());
+      if (out.settings.ui_display == UIDisplayPreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.ui_display = UIDisplayPreference::On;
+      }
+    }
+
     if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) {
       if (!ignoreErrors) return ConfigError::INVALID_VALUE;
@@ -490,6 +546,11 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     root["dungeon_small_keys"] = PlacementOptionToName(config.settings.dungeon_small_keys);
     root["dungeon_big_keys"] = PlacementOptionToName(config.settings.dungeon_big_keys);
     root["dungeon_maps_compasses"] = PlacementOptionToName(config.settings.dungeon_maps_compasses);
+    root["target_type"] = TargetTypePreferenceToName(config.settings.target_type);
+    root["camera"] = CameraPreferenceToName(config.settings.camera);
+    root["first_person_camera"] = FirstPersonCameraPreferenceToName(config.settings.first_person_camera);
+    root["gyroscope"] = GyroscopePreferenceToName(config.settings.gyroscope);
+    root["ui_display"] = UIDisplayPreferenceToName(config.settings.ui_display);
 
     root["starting_gear"] = {};
     for (const auto& item : config.settings.starting_gear) {

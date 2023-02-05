@@ -30,8 +30,6 @@ struct Config {
     Settings settings;
 };
 
-SwordMode nameToSwordMode(const std::string& name);
-
 ConfigError createDefaultConfig(const std::string& filePath);
 
 ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreErrors = false);

@@ -520,6 +520,13 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, decouple_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_starting_island);
 
+    // In-Game Preferences
+    APPLY_COMBOBOX_SETTING(config, ui, target_type);
+    APPLY_COMBOBOX_SETTING(config, ui, camera);
+    APPLY_COMBOBOX_SETTING(config, ui, first_person_camera);
+    APPLY_COMBOBOX_SETTING(config, ui, gyroscope);
+    APPLY_COMBOBOX_SETTING(config, ui, ui_display);
+
     // Permalink
     ui->permalink->setText(create_permalink(config.settings, config.seed).c_str());
 }
@@ -926,6 +933,40 @@ DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(decouple_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_starting_island)
 
+void MainWindow::on_target_type_currentTextChanged(const QString &arg1)
+{
+    config.settings.target_type = nameToTargetTypePreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_camera_currentTextChanged(const QString &arg1)
+{
+    config.settings.camera = nameToCameraPreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_first_person_camera_currentTextChanged(const QString &arg1)
+{
+    config.settings.first_person_camera = nameToFirstPersonCameraPreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_gyroscope_currentTextChanged(const QString &arg1)
+{
+    config.settings.gyroscope = nameToGyroscopePreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_ui_display_currentTextChanged(const QString &arg1)
+{
+    config.settings.ui_display = nameToUIDisplayPreference(arg1.toStdString());
+    update_permalink();
+}
+
 void MainWindow::update_option_description_text(const std::string& description /*= ""*/)
 {
     if (description == "")
@@ -1166,4 +1207,3 @@ void MainWindow::load_locations()
         }
     }
 }
-
