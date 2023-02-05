@@ -174,5 +174,10 @@ private slots:
     void on_repack_for_console_stateChanged(int arg1);
     void on_console_output_browse_button_clicked();
     void on_seed_textChanged(const QString &arg1);
+    void on_target_type_currentTextChanged(const QString &arg1);
+    void on_camera_currentTextChanged(const QString &arg1);
+    void on_first_person_camera_currentTextChanged(const QString &arg1);
+    void on_gyroscope_currentTextChanged(const QString &arg1);
+    void on_ui_display_currentTextChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H

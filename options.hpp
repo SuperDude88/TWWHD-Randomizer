@@ -48,6 +48,36 @@ enum struct ProgressionDungeons {
     INVALID
 };
 
+enum struct TargetTypePreference {
+    Hold = 0,
+    Switch,
+    INVALID,
+};
+
+enum struct CameraPreference {
+    Standard = 0,
+    ReverseLeftRight,
+    INVALID,
+};
+
+enum struct FirstPersonCameraPreference {
+    Standard = 0,
+    ReverseUpDown,
+    INVALID,
+};
+
+enum struct GyroscopePreference {
+    Off = 0,
+    On,
+    INVALID,
+};
+
+enum struct UIDisplayPreference {
+    On = 0,
+    Off,
+    INVALID,
+};
+
 enum struct Option {
     INVALID = 0,
     // Progression
@@ -145,6 +175,12 @@ enum struct Option {
 
     DamageMultiplier,
 
+    // In game preference
+    TargetType,
+    Camera,
+    FirstPersonCamera,
+    Gyroscope,
+    UIDisplay,
 
     // Dummy options to satisfy tracker permalink
     RandomizeEntrances,
@@ -159,7 +195,6 @@ enum struct Option {
 };
 
 struct Settings {
-    // bool progression_dungeons = false;
     ProgressionDungeons progression_dungeons = ProgressionDungeons::Standard;
     bool progression_great_fairies = false;
     bool progression_puzzle_secret_caves = false;
@@ -239,6 +274,12 @@ struct Settings {
     bool start_with_random_item = false;
     bool plandomizer = false;
     std::string plandomizerFile = "";
+
+    TargetTypePreference target_type = TargetTypePreference::Hold;
+    CameraPreference camera = CameraPreference::Standard;
+    FirstPersonCameraPreference first_person_camera = FirstPersonCameraPreference::Standard;
+    GyroscopePreference gyroscope = GyroscopePreference::On;
+    UIDisplayPreference ui_display = UIDisplayPreference::On;
 };
 
 SwordMode nameToSwordMode(const std::string& name);
@@ -256,6 +297,26 @@ std::string PlacementOptionToName(const PlacementOption& option);
 ProgressionDungeons nameToProgressionDungeons(const std::string& name);
 
 std::string ProgressionDungeonsToName(const ProgressionDungeons& option);
+
+TargetTypePreference nameToTargetTypePreference(const std::string& name);
+
+std::string TargetTypePreferenceToName(const TargetTypePreference& preference);
+
+CameraPreference nameToCameraPreference(const std::string& name);
+
+std::string CameraPreferenceToName(const CameraPreference& preference);
+
+FirstPersonCameraPreference nameToFirstPersonCameraPreference(const std::string& name);
+
+std::string FirstPersonCameraPreferenceToName(const FirstPersonCameraPreference& preference);
+
+GyroscopePreference nameToGyroscopePreference(const std::string& name);
+
+std::string GyroscopePreferenceToName(const GyroscopePreference& preference);
+
+UIDisplayPreference nameToUIDisplayPreference(const std::string& name);
+
+std::string UIDisplayPreferenceToName(const UIDisplayPreference& preference);
 
 int nameToSettingInt(const std::string& name);
 

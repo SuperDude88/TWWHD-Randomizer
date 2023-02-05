@@ -2547,7 +2547,34 @@ TweakError replace_ctmc_chest_texture() {
 	return TweakError::NONE;
 }
 
+TweakError apply_ingame_preferences(const Settings& settings) {
+	if(custom_symbols.count("target_type_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("camera_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("first_person_camera_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("gyroscope_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("ui_display_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 
+	const uint32_t target_type_preference_addr = custom_symbols.at("target_type_preference");
+	const uint32_t camera_preference_addr = custom_symbols.at("camera_preference");
+	const uint32_t first_person_camera_preference_addr = custom_symbols.at("first_person_camera_preference");
+	const uint32_t gyroscope_preference_addr = custom_symbols.at("gyroscope_preference");
+	const uint32_t ui_display_preference_addr = custom_symbols.at("ui_display_preference");
+
+	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	entry.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, target_type_preference_addr), static_cast<std::underlying_type_t<TargetTypePreference>>(settings.target_type)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, camera_preference_addr), static_cast<std::underlying_type_t<CameraPreference>>(settings.camera)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, first_person_camera_preference_addr), static_cast<std::underlying_type_t<FirstPersonCameraPreference>>(settings.first_person_camera)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, gyroscope_preference_addr), static_cast<std::underlying_type_t<GyroscopePreference>>(settings.gyroscope)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, ui_display_preference_addr), static_cast<std::underlying_type_t<UIDisplayPreference>>(settings.ui_display)));
+
+		return true;
+	});
+
+	return TweakError::NONE;
+}
 
 TweakError updateCodeSize() {
 	//Increase the max codesize in cos.xml to load all our code
@@ -2695,6 +2722,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	TWEAK_ERR_CHECK(fix_ff_door());
 	TWEAK_ERR_CHECK(fix_stone_head_bugs());
 	TWEAK_ERR_CHECK(show_tingle_statues_on_quest_screen());
+	TWEAK_ERR_CHECK(apply_ingame_preferences(settings));
 	//key bag
 	//bog warp
 	//rat hole visibility

@@ -316,6 +316,27 @@ li r4, 0x3A80 ; Recollection Molgera defeated
 bl onEventBit
 after_skipping_rematch_bosses:
 
+; Set option preferences
+lis r4, gameInfo_ptr@ha
+lwz r4, gameInfo_ptr@l(r4)
+addi r4, r4, 0x12F0 ; offset for preferences
+lis r5, target_type_preference@ha
+lbz r5, target_type_preference@l(r5)
+stb r5, 0 (r4) ; 0x0 offset is target type
+lis r5, camera_preference@ha
+lbz r5, camera_preference@l(r5)
+stb r5, 1 (r4) ; 0x1 offset is camera preference
+lis r5, first_person_camera_preference@ha
+lbz r5, first_person_camera_preference@l(r5)
+stb r5, 2 (r4) ; 0x2 offset is first-person camera preference
+lis r5, gyroscope_preference@ha
+lbz r5, gyroscope_preference@l(r5)
+stb r5, 5 (r4) ; 0x5 offset is gyroscope preference
+lis r5, ui_display_preference@ha
+lbz r5, ui_display_preference@l(r5)
+stb r5, 7 (r4) ; 0x7 offset is ui display preference
+
+
 lis r12, gameInfo_ptr@ha ; replace the line we overwrote to jump here
 
 ; Function end stuff
@@ -620,7 +641,7 @@ skip_rematch_bosses:
 
 .global starting_gear
 starting_gear:
-.space 256, 0xFF ; Allocate space for up to 256 additional items. This is enough space for the max allowed spoil counts and regular starting items (when changing this also update the constant in options.hpp)
+.space 256, 0xFF ; Allocate space for up to 256 starting items. This is enough space for the max allowed spoil counts and regular starting items (when changing this also update the constant in options.hpp)
 .byte 0xFF
 .align 1 ; Align to the next 2 bytes
 
@@ -635,6 +656,26 @@ starting_magic:
 .global outset_pig_color
 outset_pig_color:
 .byte 0
+
+.global target_type_preference
+target_type_preference:
+.byte 0 ; By default start as Hold
+
+.global camera_preference
+camera_preference:
+.byte 0 ; By default start as Standard
+
+.global first_person_camera_preference
+first_person_camera_preference:
+.byte 0 ; By default start as Normal
+
+.global gyroscope_preference
+gyroscope_preference:
+.byte 1 ; By default start as On
+
+.global ui_display_preference
+ui_display_preference:
+.byte 0 ; By default start as On
 
 .align 2 ; Align to the next 4 bytes
 
