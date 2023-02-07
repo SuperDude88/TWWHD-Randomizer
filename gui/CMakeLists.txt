@@ -87,6 +87,7 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        tracker.cpp
         randomizer_thread.cpp
         ../randomizer.cpp
         ../tweaks.cpp
