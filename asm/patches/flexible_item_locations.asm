@@ -503,8 +503,15 @@ set_dampa_event_bit:
 	addi r3, r3, 0x644
 	li r4, 0x6a80
 	bl onEventBit
-	li r12, 0xFD
+	lis r12, dampa_minigame_item_id@ha
+	addi r12, r12, dampa_minigame_item_id@l
+	lbz r12, 0 (r12) ; Load item ID
 	b 0x022c6458
+
+.global dampa_minigame_item_id
+dampa_minigame_item_id:
+  .byte 0xFD
+  .align 2 ; Align to the next 4 bytes
 
 .org 0x022CFA80
 	bl lenzo_set_deluxe_picto_box_event_bit

@@ -22,22 +22,15 @@ public:
     FileTypes::TMDFile tmd;
     std::string outputDir;
 
-    static NUSPackage createNew(const PackageConfig& config);
+    NUSPackage() = delete;
+    NUSPackage(const PackageConfig& config); //do all the things in a constructor to force no copy/move
+    ~NUSPackage() = default;
 
-    NUSPackage() :
-        ticket(),
-        contents(),
-        fst(contents),
-        tmd(ticket, contents),
-        outputDir()
-    {}
-    NUSPackage(const Ticket& ticket_) :
-        ticket(ticket_),
-        contents(),
-        fst(contents),
-        tmd(ticket, contents),
-        outputDir()
-    {}
+    //don't copy or move, references/pointers break
+    NUSPackage(const NUSPackage&) = delete;
+    NUSPackage(NUSPackage&&) = delete;
+    NUSPackage& operator=(const NUSPackage& other) = delete;
+    NUSPackage& operator=(NUSPackage&& other) = delete;
 
     void PackContents(const std::filesystem::path& out);
 };

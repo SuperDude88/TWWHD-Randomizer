@@ -341,7 +341,8 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         case Fmt::YAZ0:
         {
             if(parentData == nullptr) return false;
-            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg)); err != YAZ0Error::NONE)
+            const uint32_t compressLevel = current->parent->storedFormat == Fmt::ROOT ? 1 : 9;
+            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), compressLevel); err != YAZ0Error::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;
@@ -457,14 +458,19 @@ RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath&
 
 std::ifstream RandoSession::openBaseFile(const fspath &relPath) {
     CHECK_INITIALIZED(std::ifstream());
-
-    const fspath file = outputDir / relPath;
-    if(!Utility::copy_file(baseDir / relPath, file)) {
-        ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
-        return std::ifstream();
-    }
+    
+    //const fspath file = outputDir / relPath;
+    //if(!Utility::copy_file(baseDir / relPath, file)) {
+    //    ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
+    //    return std::ifstream();
+    //}
+    //if(!std::filesystem::is_regular_file(file)) {
+    //    ErrorLog::getInstance().log("Could not open " + relPath.string() + " after copy");
+    //    return std::ifstream();
+    //}
+    const fspath file = baseDir / relPath;
     if(!std::filesystem::is_regular_file(file)) {
-        ErrorLog::getInstance().log("Could not open " + relPath.string() + " after copy");
+        ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
         return std::ifstream();
     }
 
@@ -512,11 +518,12 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
     RandoSession::CacheEntry& entry = openGameFile(relPath);
     entry.addAction([source](RandoSession* session, FileType* data) -> int {
-        std::ifstream src(source, std::ios::binary);
-	    if(!src.is_open()) {
-	    	ErrorLog::getInstance().log("Failed to open " + source.string());
+        std::string fileData;
+        if (Utility::getFileContents(source.string(), fileData, true)) {
+            ErrorLog::getInstance().log("Failed to open " + source.string());
 	    	return false;
-	    }
+        }
+        std::istringstream src(fileData, std::ios::binary);
 
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
@@ -599,6 +606,7 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
 bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
+    workerThreads.total_task_size = 0;
 
     for(auto& [filename, child] : fileCache->children) {
         //has dependency, it will add it when necessary
