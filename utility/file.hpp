@@ -123,7 +123,7 @@ namespace Utility
 
 	bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
 
-	int getFileContents(const std::string& filename, std::string& fileContents);
+	int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile = false);
 
 	#ifdef DEVKITPRO
     inline bool flush_mlc() {

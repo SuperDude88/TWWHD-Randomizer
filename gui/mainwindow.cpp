@@ -1175,13 +1175,8 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 
 void MainWindow::load_locations()
 {   
-#ifdef EMBED_DATA
-    QResource file(":/logic/data/location_data.yaml");
-    std::string locationDataStr = file.uncompressedData().toStdString();
-#else
     std::string locationDataStr;
-    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr);
-#endif
+    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr, true);
     locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
     Yaml::Parse(locationDataTree, locationDataStr);
