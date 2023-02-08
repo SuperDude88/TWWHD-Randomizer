@@ -1,6 +1,7 @@
 #include "file.hpp"
 
 #include <mutex>
+#include <regex>
 #include <cstring>
 #include <utility/platform.hpp>
 
@@ -11,6 +12,18 @@
 #endif
 
 namespace Utility {
+	bool isRoot(const std::filesystem::path& fsPath) {
+		static const std::regex rootFilesystem(R"(^fs:\/vol\/[^\/:]+\/?$)");
+
+		const std::string path = fsPath.string();
+
+		if (path.size() >= 2 && path.ends_with(":")) return true;
+    	if (path.size() >= 3 && path.ends_with(":/")) return true;
+		if (std::regex_match(path, rootFilesystem)) return true;
+
+    	return false;
+	};
+	
 	//IMPROVEMENT: better way to make these thread-safe?
 	#ifdef DEVKITPRO
 		static constexpr int FILE_BUF_SIZE = 4*1024*1024;

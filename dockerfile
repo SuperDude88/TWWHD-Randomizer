@@ -1,4 +1,4 @@
-FROM wiiuenv/devkitppc:20220917
+FROM wiiuenv/devkitppc:20221228
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install python3 -y
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 7d9fa9e416bffbcd747f1a8e5701fd6342f9bc3d && \
+    git checkout 7530dd581887e8330a587601ef9fbf9e60cce9bf && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
