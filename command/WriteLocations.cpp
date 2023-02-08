@@ -14,6 +14,7 @@
 #include <command/WWHDStructs.hpp>
 #include <command/Log.hpp>
 #include <filetypes/util/elfUtil.hpp>
+#include <utility/file.hpp>
 
 using namespace std::literals::string_literals;
 
@@ -37,9 +38,14 @@ namespace {
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
     void Load_Custom_Symbols(const std::string& file_path) {
-		std::ifstream fptr(file_path, std::ios::in);
+		std::string file_data;
+        if (Utility::getFileContents(file_path, file_data, true))
+        {
+            ErrorLog::getInstance().log("ERROR: Failed to load custom symbols when saving items");
+            return;
+        }
 
-		nlohmann::json symbols = nlohmann::json::parse(fptr);
+		nlohmann::json symbols = nlohmann::json::parse(file_data);
 		for (const auto& symbol : symbols.items()) {
 			uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;

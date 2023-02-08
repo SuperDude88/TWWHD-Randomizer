@@ -7,6 +7,7 @@
 
 #include <utility/common.hpp>
 #include <utility/endian.hpp>
+#include <utility/file.hpp>
 #include <filetypes/texture/formconv.hpp>
 #include <command/Log.hpp>
 
@@ -372,10 +373,10 @@ namespace FileTypes {
     }
 
     DDSError DDSFile::loadFromFile(const std::string& filePath, const bool SRGB) {
-        std::ifstream file(filePath, std::ios::binary);
-		if (!file.is_open()) {
-			LOG_ERR_AND_RETURN(DDSError::COULD_NOT_OPEN);
-		}
+        std::string fileData;
+        if (Utility::getFileContents(filePath, fileData, true)) LOG_ERR_AND_RETURN(DDSError::COULD_NOT_OPEN);
+
+        std::istringstream file(fileData, std::ios::binary);
 		return loadFromBinary(file, SRGB);
     }
     

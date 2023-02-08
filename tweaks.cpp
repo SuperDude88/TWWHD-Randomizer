@@ -23,6 +23,7 @@
 #include <filetypes/msbt.hpp>
 #include <filetypes/util/msbtMacros.hpp>
 #include <utility/string.hpp>
+#include <utility/file.hpp>
 #include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -60,10 +61,11 @@ namespace {
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
 	TweakError Load_Custom_Symbols(const std::string& file_path) {
-		std::ifstream fptr(file_path, std::ios::in);
-		if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+		std::string file_data;
+		if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+		// std::ifstream fptr(file_path, std::ios::in);
 
-		nlohmann::json symbols = nlohmann::json::parse(fptr);
+		nlohmann::json symbols = nlohmann::json::parse(file_data);
 		for (const auto& symbol : symbols.items()) {
 			const uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
@@ -74,10 +76,11 @@ namespace {
 }
 
 TweakError Apply_Patch(const std::string& file_path) {
-	std::ifstream fptr(file_path, std::ios::in);
-	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	std::string file_data;
+	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	// std::ifstream fptr(file_path, std::ios::in);
 
-	const nlohmann::json patches = nlohmann::json::parse(fptr);
+	const nlohmann::json patches = nlohmann::json::parse(file_data);
 	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	entry.addAction([patches](RandoSession* session, FileType* data) -> int {
@@ -111,10 +114,11 @@ TweakError Apply_Patch(const std::string& file_path) {
 
 //only applies relocations for .rela.text
 TweakError Add_Relocations(const std::string file_path) {
-	std::ifstream fptr(file_path, std::ios::in);
-	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	std::string file_data;
+	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	// std::ifstream fptr(file_path, std::ios::in);
 
-	nlohmann::json relocations = nlohmann::json::parse(fptr);
+	nlohmann::json relocations = nlohmann::json::parse(file_data);
 
 	for (const auto& relocation : relocations) {
 		if(!relocation.contains("r_offset") || !relocation.contains("r_info") || !relocation.contains("r_addend")) {

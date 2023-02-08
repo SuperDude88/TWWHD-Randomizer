@@ -512,11 +512,12 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
     RandoSession::CacheEntry& entry = openGameFile(relPath);
     entry.addAction([source](RandoSession* session, FileType* data) -> int {
-        std::ifstream src(source, std::ios::binary);
-	    if(!src.is_open()) {
-	    	ErrorLog::getInstance().log("Failed to open " + source.string());
+        std::string fileData;
+        if (Utility::getFileContents(source.string(), fileData, true)) {
+            ErrorLog::getInstance().log("Failed to open " + source.string());
 	    	return false;
-	    }
+        }
+        std::istringstream src(fileData, std::ios::binary);
 
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
@@ -599,6 +600,7 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
 bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
+    workerThreads.total_task_size = 0;
 
     for(auto& [filename, child] : fileCache->children) {
         //has dependency, it will add it when necessary
