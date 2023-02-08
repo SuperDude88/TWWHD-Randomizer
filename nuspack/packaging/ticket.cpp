@@ -37,7 +37,7 @@ void Ticket::writeToStream(std::ostream& out) {
     out.write("\x00\x01\x00\x04", 4);
     out.write(reinterpret_cast<const char*>(randomData.data()), randomData.size());
     Utility::seek(out, 0x3C, std::ios::cur);
-    out.write("\x52\x6F\x6F\x74\x2D\x43\x41\x30\x30\x30\x30\x30\x30\x30\x33\x2D\x58\x53\x30\x30\x30\x30\x30\x30\x30\x63\x00\x00\x00\x00\x00\x00", 0x20);
+    out.write("Root-CA00000003-XS0000000c\x00\x00\x00\x00\x00\x00", 0x20);
     Utility::seek(out, 0x5C, std::ios::cur);
     out.write("\x01\x00\x00", 3);
     const auto key = GetEncryptedKey();

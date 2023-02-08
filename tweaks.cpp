@@ -12,6 +12,7 @@
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
 #include <libs/json.hpp>
+#include <asm/patches/asm_constants.hpp>
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>
 #include <filetypes/bfres.hpp>
@@ -23,6 +24,7 @@
 #include <filetypes/msbt.hpp>
 #include <filetypes/util/msbtMacros.hpp>
 #include <utility/string.hpp>
+#include <utility/file.hpp>
 #include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -60,10 +62,11 @@ namespace {
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
 	TweakError Load_Custom_Symbols(const std::string& file_path) {
-		std::ifstream fptr(file_path, std::ios::in);
-		if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+		std::string file_data;
+		if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+		// std::ifstream fptr(file_path, std::ios::in);
 
-		nlohmann::json symbols = nlohmann::json::parse(fptr);
+		nlohmann::json symbols = nlohmann::json::parse(file_data);
 		for (const auto& symbol : symbols.items()) {
 			const uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
@@ -74,10 +77,11 @@ namespace {
 }
 
 TweakError Apply_Patch(const std::string& file_path) {
-	std::ifstream fptr(file_path, std::ios::in);
-	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	std::string file_data;
+	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	// std::ifstream fptr(file_path, std::ios::in);
 
-	const nlohmann::json patches = nlohmann::json::parse(fptr);
+	const nlohmann::json patches = nlohmann::json::parse(file_data);
 	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	entry.addAction([patches](RandoSession* session, FileType* data) -> int {
@@ -111,10 +115,11 @@ TweakError Apply_Patch(const std::string& file_path) {
 
 //only applies relocations for .rela.text
 TweakError Add_Relocations(const std::string file_path) {
-	std::ifstream fptr(file_path, std::ios::in);
-	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	std::string file_data;
+	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	// std::ifstream fptr(file_path, std::ios::in);
 
-	nlohmann::json relocations = nlohmann::json::parse(fptr);
+	nlohmann::json relocations = nlohmann::json::parse(file_data);
 
 	for (const auto& relocation : relocations) {
 		if(!relocation.contains("r_offset") || !relocation.contains("r_info") || !relocation.contains("r_addend")) {
@@ -818,10 +823,8 @@ TweakError update_name_and_icon() {
 		metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
 		metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-		#ifndef DEVKITPRO //skip title ID change on console for now, doesnt work without custom channel
-			//change the title ID so it gets its own channel when repacked
-			metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
-		#endif
+		//change the title ID so it gets its own channel when repacked
+		metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
 		
 		tinyxml2::XMLPrinter printer;
 		meta.Print(&printer);
@@ -829,9 +832,7 @@ TweakError update_name_and_icon() {
 
 		return true;
 	});
-	#ifdef DEVKITPRO
-		return TweakError::NONE; //skip title ID change on wii u for now, doesnt work when its using the original channel
-	#endif
+	
 	RandoSession::CacheEntry& appEntry = g_session.openGameFile("code/app.xml");
 	appEntry.addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
@@ -2446,8 +2447,7 @@ TweakError fix_stone_head_bugs() {
 		uint32_t status_bits = elfUtil::read_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100));
 		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
 		status_bits &= ~0x00000080;
-		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
-		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits)); //write function handles byteswap back
 
 		return true;
 	});
