@@ -59,6 +59,9 @@
           <property name="contextMenuPolicy">
            <enum>Qt::DefaultContextMenu</enum>
           </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="currentIndex">
            <number>5</number>
           </property>
@@ -1867,34 +1870,18 @@
             </property>
            </widget>
           </widget>
-          <widget class="QWidget" name="tab_6">
+          <widget class="QWidget" name="tracker_tab">
            <property name="styleSheet">
-            <string notr="true">background: black</string>
+            <string notr="true">background: white</string>
            </property>
            <attribute name="title">
             <string>Tracker</string>
            </attribute>
-           <widget class="QLabel" name="label_5">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>51</width>
-              <height>51</height>
-             </rect>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/assets/tracker/item11_a.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
            <widget class="QPushButton" name="start_tracker_button">
             <property name="geometry">
              <rect>
-              <x>310</x>
-              <y>240</y>
+              <x>430</x>
+              <y>520</y>
               <width>80</width>
               <height>24</height>
              </rect>
@@ -1905,6 +1892,113 @@
             <property name="text">
              <string>Start Tracker</string>
             </property>
+           </widget>
+           <widget class="QWidget" name="inventory_widget" native="true">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>441</width>
+              <height>346</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_13">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_14">
+               <property name="spacing">
+                <number>2</number>
+               </property>
+               <item>
+                <layout class="QGridLayout" name="inventory_layout_top">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                </layout>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="inventory_layout_middle">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="inventory_layout_bottom">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_30">
+                   <property name="spacing">
+                    <number>2</number>
+                   </property>
+                   <item>
+                    <widget class="QWidget" name="inventory_widget_pearls" native="true">
+                     <layout class="QVBoxLayout" name="inventory_layout_pearls">
+                      <property name="spacing">
+                       <number>0</number>
+                      </property>
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <layout class="QGridLayout" name="inventory_layout_nayrus_pearl">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QGridLayout" name="inventory_layout_dins_farores_pearl">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QGridLayout" name="inventory_layout_triforce">
+                     <property name="spacing">
+                      <number>2</number>
+                     </property>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QGridLayout" name="inventory_layout_bottom_right">
+                   <property name="spacing">
+                    <number>2</number>
+                   </property>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="location_list_widget" native="true">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>10</y>
+              <width>364</width>
+              <height>346</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="location_list_layout"/>
            </widget>
           </widget>
          </widget>

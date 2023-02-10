@@ -80,3 +80,15 @@ void removeElementsFromPool( Container& container, Container& elementsToRemove)
         removeElementFromPool(container, element);
     }
 }
+
+template <typename First, typename... T>
+bool isAnyOf(First&& first, T&&... t)
+{
+    return ((first == t) || ...);
+}
+
+template <typename First, typename... T>
+bool isNoneOf(First&& first, T&&... t)
+{
+    return !((first == t) || ...);
+}
