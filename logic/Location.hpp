@@ -94,6 +94,9 @@ struct Location
     // goal names if this is a race mode location (one for each language)
     std::unordered_map<std::string, std::string> goalNames = {};
 
+    // Tracker properties
+    bool marked;
+
     Location() :
         names({}),
         categories({LocationCategory::INVALID}),
@@ -113,7 +116,8 @@ struct Location
         hasBeenFound(false),
         messageLabel(""),
         hintText({}),
-        goalNames({})
+        goalNames({}),
+        marked(false)
     {
     }
     ~Location() = default;
