@@ -20,15 +20,6 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     {"Skull Hammer", 1},
     {"Deku Leaf", 1},
 
-    {"Triforce Shard 1", 1},
-    {"Triforce Shard 2", 1},
-    {"Triforce Shard 3", 1},
-    {"Triforce Shard 4", 1},
-    {"Triforce Shard 5", 1},
-    {"Triforce Shard 6", 1},
-    {"Triforce Shard 7", 1},
-    {"Triforce Shard 8", 1},
-
     {"Nayru's Pearl", 1},
     {"Din's Pearl", 1},
     {"Farore's Pearl", 1},
@@ -151,6 +142,17 @@ static const std::unordered_map<std::string, uint8_t> alwaysItems = {
     {"Hyoi Pear", 4},
 };
 
+static const std::list<std::string> triforceShards = {
+    "Triforce Shard 1",
+    "Triforce Shard 2",
+    "Triforce Shard 3",
+    "Triforce Shard 4",
+    "Triforce Shard 5",
+    "Triforce Shard 6",
+    "Triforce Shard 7",
+    "Triforce Shard 8",
+};
+
 // The distribution of elements in this pool is to give some items
 // a higher chance of being randomly selected than others
 static const GameItemPool junkPool = {
@@ -230,6 +232,14 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
         addElementToPool(completeItemPool, std::string("Hurricane Spin"));
     }
 
+    // Add appropriate triforce shards based on num_starting_triforce_shards
+    auto triforceShardsCopy = triforceShards;
+    for (uint8_t i = 8; i > settings.num_starting_triforce_shards; i--)
+    {
+        addElementToPool(completeItemPool, triforceShardsCopy.back());
+        triforceShardsCopy.pop_back();
+    }
+
     // Add appropriate numbers of heart containers and heart pieces
     int numContainers = 6 - settings.starting_hcs;
     int numPieces = 44 - settings.starting_pohs;
@@ -256,6 +266,14 @@ ItemNamePool generateStartingGameItemPool(const Settings& settings)
     if (settings.sword_mode == SwordMode::StartWithSword)
     {
         startingItems.push_back("Progressive Sword");
+    }
+
+    // Add starting triforce shards
+    auto triforceShardsCopy = triforceShards;
+    for (uint8_t i = 0; i < settings.num_starting_triforce_shards; i++)
+    {
+        addElementToPool(startingItems, triforceShardsCopy.front());
+        triforceShardsCopy.pop_front();
     }
 
     for (auto& item : settings.starting_gear)
