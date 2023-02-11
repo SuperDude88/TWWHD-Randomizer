@@ -569,13 +569,16 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     }
     else { //modify, repack children
         for(auto& [filename, child] : current->children) {
-            if(child->getNumPrereqs() > 0) continue; //has prereqs to finish first
+            if(child->getNumPrereqs() > 0 || child->isFinished() == true) continue; //skip this child, prereq did/will do it
+
             RandoSession::handleChildren(filename, child);
         }
     }
 
     //repack this level
     repackFile(current);
+
+    current->setFinished();
 
     //handle dependents
     for(auto& dependent : current->dependents) {
