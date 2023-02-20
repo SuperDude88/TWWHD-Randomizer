@@ -131,6 +131,14 @@ private slots:
     void on_remove_gear_clicked();
     void on_starting_hcs_valueChanged(int arg1);
     void on_starting_pohs_valueChanged(int arg1);
+    void on_starting_blue_chu_jellys_valueChanged(int arg1);
+    void on_starting_green_chu_jellys_valueChanged(int arg1);
+    void on_starting_red_chu_jellys_valueChanged(int arg1);
+    void on_starting_knights_crests_valueChanged(int arg1);
+    void on_starting_golden_feathers_valueChanged(int arg1);
+    void on_starting_boko_baba_seeds_valueChanged(int arg1);
+    void on_starting_skull_necklaces_valueChanged(int arg1);
+    void on_starting_joy_pendants_valueChanged(int arg1);
 
     // Player Customization
     void on_player_in_casual_clothes_stateChanged(int arg1);
@@ -166,5 +174,10 @@ private slots:
     void on_repack_for_console_stateChanged(int arg1);
     void on_console_output_browse_button_clicked();
     void on_seed_textChanged(const QString &arg1);
+    void on_target_type_currentTextChanged(const QString &arg1);
+    void on_camera_currentTextChanged(const QString &arg1);
+    void on_first_person_camera_currentTextChanged(const QString &arg1);
+    void on_gyroscope_currentTextChanged(const QString &arg1);
+    void on_ui_display_currentTextChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H

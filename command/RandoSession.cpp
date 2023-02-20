@@ -50,7 +50,7 @@ static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> s
     {"DZX",    RandoSession::CacheEntry::Format::DZX},
     {"ELF",    RandoSession::CacheEntry::Format::ELF},
     {"EVENTS", RandoSession::CacheEntry::Format::EVENTS},
-    {"JPC",    RandoSession::CacheEntry::Format::JPC}, 
+    {"JPC",    RandoSession::CacheEntry::Format::JPC},
     {"MSBP",   RandoSession::CacheEntry::Format::MSBP},
     {"MSBT",   RandoSession::CacheEntry::Format::MSBT},
     {"RPX",    RandoSession::CacheEntry::Format::RPX},
@@ -255,7 +255,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
 bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
 {
     GenericFile* parentData = dynamic_cast<GenericFile*>(current->parent->data.get());
-    
+
     using Fmt = CacheEntry::Format;
     switch(current->storedFormat) {
         case Fmt::BDT:
@@ -397,7 +397,7 @@ std::shared_ptr<RandoSession::CacheEntry> RandoSession::getEntry(const std::vect
     for (size_t i = 0; i < fileSpec.size(); i++)
     {
         const std::string& element = fileSpec[i];
-        
+
         if (element.empty()) continue;
 
         if (element.compare("RPX") == 0)
@@ -518,17 +518,18 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
     RandoSession::CacheEntry& entry = openGameFile(relPath);
     entry.addAction([source](RandoSession* session, FileType* data) -> int {
-        std::ifstream src(source, std::ios::binary);
-	    if(!src.is_open()) {
-	    	ErrorLog::getInstance().log("Failed to open " + source.string());
+        std::string fileData;
+        if (Utility::getFileContents(source.string(), fileData, true)) {
+            ErrorLog::getInstance().log("Failed to open " + source.string());
 	    	return false;
-	    }
+        }
+        std::istringstream src(fileData, std::ios::binary);
 
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
         dst->data << src.rdbuf();
-		
+
         return true;
     });
 
@@ -537,7 +538,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
 bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file from the base directory (without extracting any data)
     CHECK_INITIALIZED(false);
-    
+
     const fspath src = baseDir / relPath;
     const fspath dst = outputDir / relPath;
     if(!std::filesystem::is_regular_file(src)) {
@@ -584,7 +585,7 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     for(auto& dependent : current->dependents) {
         //check if this is the last dependency
         if(dependent->decrementPrereq() > 0) continue; //decrement returns new value
-        
+
         //handle the data
         if(dependent->getRoot() == current->getRoot()) { //IMPROVEMENT: more precise sibling checks, filename stuff
             RandoSession::handleChildren(filename / dependent->element, dependent);
@@ -608,25 +609,26 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
 bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
-    
+    workerThreads.total_task_size = 0;
+
     for(auto& [filename, child] : fileCache->children) {
         //has dependency, it will add it when necessary
+        workerThreads.total_task_size++;
         if(child->getNumPrereqs() > 0) {
             continue;
         }
 
-        workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);
-        workerThreads.total_task_size++;
+        workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);  
     }
-    
-    UPDATE_DIALOG_LABEL("Repacking Files...");
+
+    UPDATE_DIALOG_LABEL("Repacking Files...\n(This will take a while)");
     workerThreads.total_tasks_completed = 0;
 
     workerThreads.wait_for_tasks();
 
     Utility::platformLog("Finished repacking files\n");
     BasicLog::getInstance().log("Finished repacking files");
-    
+
     return true;
 }
 

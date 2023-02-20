@@ -47,7 +47,7 @@ namespace Utility::Str {
 
     // This map is for characters that the YAML parsing library seems to not like.
     // These characters will be translated into the literal string of their unicode
-    // mapping and then tranalated back after YAML parsing.
+    // mapping and then translated back after YAML parsing.
     std::map<std::string, std::string> unicodeMappings = {
         {"Á", "\\u00C1"},
         {"à", "\\u00E0"},

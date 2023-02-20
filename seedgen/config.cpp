@@ -148,12 +148,26 @@ ConfigError createDefaultConfig(const std::string& filePath) {
 
     conf.settings.starting_pohs = 0;
     conf.settings.starting_hcs = 0;
+    conf.settings.starting_joy_pendants = 0;
+    conf.settings.starting_skull_necklaces = 0;
+    conf.settings.starting_boko_baba_seeds = 0;
+    conf.settings.starting_golden_feathers = 0;
+    conf.settings.starting_knights_crests = 0;
+    conf.settings.starting_red_chu_jellys = 0;
+    conf.settings.starting_green_chu_jellys = 0;
+    conf.settings.starting_blue_chu_jellys = 0;
     conf.settings.remove_music = false;
 
     conf.settings.do_not_generate_spoiler_log = false;
     conf.settings.start_with_random_item = false;
     conf.settings.plandomizer = false;
     conf.settings.plandomizerFile = "";
+
+    conf.settings.target_type = TargetTypePreference::Hold;
+    conf.settings.camera = CameraPreference::Standard;
+    conf.settings.first_person_camera = FirstPersonCameraPreference::Standard;
+    conf.settings.gyroscope = GyroscopePreference::On;
+    conf.settings.ui_display = UIDisplayPreference::On;
 
     LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
 
@@ -257,6 +271,14 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     SET_INT_FIELD(root, out, starting_pohs)
     SET_INT_FIELD(root, out, starting_hcs)
+    SET_INT_FIELD(root, out, starting_joy_pendants)
+    SET_INT_FIELD(root, out, starting_skull_necklaces)
+    SET_INT_FIELD(root, out, starting_boko_baba_seeds)
+    SET_INT_FIELD(root, out, starting_golden_feathers)
+    SET_INT_FIELD(root, out, starting_knights_crests)
+    SET_INT_FIELD(root, out, starting_red_chu_jellys)
+    SET_INT_FIELD(root, out, starting_green_chu_jellys)
+    SET_INT_FIELD(root, out, starting_blue_chu_jellys)
     SET_BOOL_FIELD(root, out, remove_music)
 
     SET_BOOL_FIELD(root, out, do_not_generate_spoiler_log)
@@ -313,6 +335,56 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       }
     }
 
+    if(root["target_type"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.target_type = nameToTargetTypePreference(root["target_type"].As<std::string>());
+      if (out.settings.target_type == TargetTypePreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.target_type = TargetTypePreference::Hold;
+      }
+    }
+
+    if(root["camera"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.camera = nameToCameraPreference(root["camera"].As<std::string>());
+      if (out.settings.camera == CameraPreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.camera = CameraPreference::Standard;
+      }
+    }
+
+    if(root["first_person_camera"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].As<std::string>());
+      if (out.settings.first_person_camera == FirstPersonCameraPreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.first_person_camera = FirstPersonCameraPreference::Standard;
+      }
+    }
+
+    if(root["gyroscope"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].As<std::string>());
+      if (out.settings.gyroscope == GyroscopePreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.gyroscope = GyroscopePreference::On;
+      }
+    }
+
+    if(root["ui_display"].IsNone()) {
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    } else {
+      out.settings.ui_display = nameToUIDisplayPreference(root["ui_display"].As<std::string>());
+      if (out.settings.ui_display == UIDisplayPreference::INVALID) {
+        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+        else out.settings.ui_display = UIDisplayPreference::On;
+      }
+    }
+
     if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) {
       if (!ignoreErrors) return ConfigError::INVALID_VALUE;
@@ -338,6 +410,15 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       }
     }
 
+    // Clamp starting spoils
+    std::clamp(out.settings.starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
+    std::clamp(out.settings.starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
+    std::clamp(out.settings.starting_boko_baba_seeds, uint16_t(0), uint16_t(MAXIMUM_STARTING_BOKO_BABA_SEEDS));
+    std::clamp(out.settings.starting_golden_feathers, uint16_t(0), uint16_t(MAXIMUM_STARTING_GOLDEN_FEATHERS));
+    std::clamp(out.settings.starting_knights_crests, uint16_t(0), uint16_t(MAXIMUM_STARTING_KNIGHTS_CRESTS));
+    std::clamp(out.settings.starting_red_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_RED_CHU_JELLYS));
+    std::clamp(out.settings.starting_green_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_GREEN_CHU_JELLYS));
+    std::clamp(out.settings.starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     //can still parse file with different rando versions, but will give different item placements
     //return error after parsing so it can warn the user
@@ -445,6 +526,14 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     WRITE_NUM_FIELD(root, config, starting_pohs)
     WRITE_NUM_FIELD(root, config, starting_hcs)
+    WRITE_NUM_FIELD(root, config, starting_joy_pendants)
+    WRITE_NUM_FIELD(root, config, starting_skull_necklaces)
+    WRITE_NUM_FIELD(root, config, starting_boko_baba_seeds)
+    WRITE_NUM_FIELD(root, config, starting_golden_feathers)
+    WRITE_NUM_FIELD(root, config, starting_knights_crests)
+    WRITE_NUM_FIELD(root, config, starting_red_chu_jellys)
+    WRITE_NUM_FIELD(root, config, starting_green_chu_jellys)
+    WRITE_NUM_FIELD(root, config, starting_blue_chu_jellys)
     WRITE_SETTING_BOOL_FIELD(root, config, remove_music)
 
     WRITE_SETTING_BOOL_FIELD(root, config, do_not_generate_spoiler_log)
@@ -457,6 +546,11 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     root["dungeon_small_keys"] = PlacementOptionToName(config.settings.dungeon_small_keys);
     root["dungeon_big_keys"] = PlacementOptionToName(config.settings.dungeon_big_keys);
     root["dungeon_maps_compasses"] = PlacementOptionToName(config.settings.dungeon_maps_compasses);
+    root["target_type"] = TargetTypePreferenceToName(config.settings.target_type);
+    root["camera"] = CameraPreferenceToName(config.settings.camera);
+    root["first_person_camera"] = FirstPersonCameraPreferenceToName(config.settings.first_person_camera);
+    root["gyroscope"] = GyroscopePreferenceToName(config.settings.gyroscope);
+    root["ui_display"] = UIDisplayPreferenceToName(config.settings.ui_display);
 
     root["starting_gear"] = {};
     for (const auto& item : config.settings.starting_gear) {

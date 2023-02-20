@@ -6,6 +6,10 @@
 #include <utility/platform.hpp>
 
 
+#if defined(QT_GUI) && defined(EMBED_DATA)
+	#include <QResource>
+	#include <QFile>
+#endif
 
 namespace Utility {
 	bool isRoot(const std::filesystem::path& fsPath) {
@@ -117,20 +121,31 @@ namespace Utility {
 	}
 
 	// Short function for getting the string data from a file
-	int getFileContents(const std::string& filename, std::string& fileContents)
+	int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile /*= false*/)
 	{
-	    std::ifstream file(filename);
-	    if (!file.is_open())
-	    {
-	        ErrorLog::getInstance().log("unable to open file \"" + filename + "\"");
-	        return 1;
-	    }
+		if (resourceFile)
+		{
+			// If this is a resource file and the data has been embedded, then
+			// chop off the data path and put ":/" in front to access the embedded resource file
+			#if defined(QT_GUI) && defined(EMBED_DATA)
+				auto newFilename = ":/" + filename.substr(strlen(DATA_PATH));
+				QResource file(newFilename.c_str());
+				fileContents = file.uncompressedData().toStdString();
+				return 0;
+			#endif
+		} 
 
-	    // Read and load file contents
-	    auto ss = std::ostringstream{};
-	    ss << file.rdbuf();
-	    fileContents = ss.str();
+		std::ifstream file(filename);
+		if (!file.is_open())
+		{
+			ErrorLog::getInstance().log("unable to open file \"" + filename + "\"");
+			return 1;
+		}
 
+		// Read and load file contents
+		auto ss = std::ostringstream{};
+		ss << file.rdbuf();
+		fileContents = ss.str();
 	    return 0;
 	}
 }

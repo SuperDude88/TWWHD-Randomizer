@@ -38,6 +38,7 @@ enum struct LocationCategory
     ShortSideQuest,
     ExpensivePurchase,
     SunkenTreasure,
+    BlueChuChu,
     Obscure, // <-- the good stuff :)
     Junk,
     Other,

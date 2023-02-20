@@ -318,6 +318,27 @@ li r4, 0x3A80 ; Recollection Molgera defeated
 bl onEventBit
 after_skipping_rematch_bosses:
 
+; Set option preferences
+lis r4, gameInfo_ptr@ha
+lwz r4, gameInfo_ptr@l(r4)
+addi r4, r4, 0x12F0 ; offset for preferences
+lis r5, target_type_preference@ha
+lbz r5, target_type_preference@l(r5)
+stb r5, 0 (r4) ; 0x0 offset is target type
+lis r5, camera_preference@ha
+lbz r5, camera_preference@l(r5)
+stb r5, 1 (r4) ; 0x1 offset is camera preference
+lis r5, first_person_camera_preference@ha
+lbz r5, first_person_camera_preference@l(r5)
+stb r5, 2 (r4) ; 0x2 offset is first-person camera preference
+lis r5, gyroscope_preference@ha
+lbz r5, gyroscope_preference@l(r5)
+stb r5, 5 (r4) ; 0x5 offset is gyroscope preference
+lis r5, ui_display_preference@ha
+lbz r5, ui_display_preference@l(r5)
+stb r5, 7 (r4) ; 0x7 offset is ui display preference
+
+
 lis r12, gameInfo_ptr@ha ; replace the line we overwrote to jump here
 
 ; Function end stuff
@@ -370,10 +391,26 @@ cmpwi r3, 0x1C
 beq starting_gear_add_drc_compass
 cmpwi r3, 0x1D
 beq starting_gear_add_fw_small_key
+cmpwi r3, 0x1F
+beq starting_gear_add_joy_pendant
 cmpwi r3, 0x40
 beq starting_gear_add_fw_big_key
 cmpwi r3, 0x41
 beq starting_gear_add_fw_dungeon_map
+cmpwi r3, 0x45
+beq starting_gear_add_skull_necklace
+cmpwi r3, 0x46
+beq starting_gear_add_boko_baba_seed
+cmpwi r3, 0x47
+beq starting_gear_add_golden_feather
+cmpwi r3, 0x48
+beq starting_gear_add_knights_crest
+cmpwi r3, 0x49
+beq starting_gear_add_red_chu_jelly
+cmpwi r3, 0x4A
+beq starting_gear_add_green_chu_jelly
+cmpwi r3, 0x4B
+beq starting_gear_add_blue_chu_jelly
 cmpwi r3, 0x5A
 beq starting_gear_add_fw_compass
 cmpwi r3, 0x5B
@@ -551,6 +588,46 @@ starting_gear_add_wind_tingle_statue:
 bl wind_tingle_statue_item_get_func
 b init_starting_gear_next_item
 
+.global starting_gear_add_joy_pendant ; Max amount of 40
+starting_gear_add_joy_pendant:
+bl item_func_joy_pendant
+b init_starting_gear_next_item
+
+.global starting_gear_add_skull_necklace ; Max amount of 23
+starting_gear_add_skull_necklace:
+bl item_func_skull_necklace
+b init_starting_gear_next_item
+
+.global starting_gear_add_boko_baba_seed ; Max amount of 10
+starting_gear_add_boko_baba_seed:
+bl item_func_boko_baba_seed
+b init_starting_gear_next_item
+
+.global starting_gear_add_golden_feather ; Max amount of 20
+starting_gear_add_golden_feather:
+bl item_func_golden_feather
+b init_starting_gear_next_item
+
+.global starting_gear_add_knights_crest ; Max amount of 10
+starting_gear_add_knights_crest:
+bl item_func_knights_crest
+b init_starting_gear_next_item
+
+.global starting_gear_add_red_chu_jelly ; Max amount of 15
+starting_gear_add_red_chu_jelly:
+bl item_func_red_chu_jelly
+b init_starting_gear_next_item
+
+.global starting_gear_add_green_chu_jelly ; Max amount of 15
+starting_gear_add_green_chu_jelly:
+bl item_func_green_chu_jelly
+b init_starting_gear_next_item
+
+.global starting_gear_add_blue_chu_jelly ; Max amount of 15
+starting_gear_add_blue_chu_jelly:
+bl item_func_blue_chu_jelly
+b init_starting_gear_next_item
+
 .global num_triforce_shards_to_start_with
 num_triforce_shards_to_start_with:
 .byte 0 ; By default start with no Triforce Shards
@@ -581,6 +658,26 @@ starting_magic:
 .global outset_pig_color
 outset_pig_color:
 .byte 0
+
+.global target_type_preference
+target_type_preference:
+.byte 0 ; By default start as Hold
+
+.global camera_preference
+camera_preference:
+.byte 0 ; By default start as Standard
+
+.global first_person_camera_preference
+first_person_camera_preference:
+.byte 0 ; By default start as Normal
+
+.global gyroscope_preference
+gyroscope_preference:
+.byte 1 ; By default start as On
+
+.global ui_display_preference
+ui_display_preference:
+.byte 0 ; By default start as On
 
 .align 2 ; Align to the next 4 bytes
 
