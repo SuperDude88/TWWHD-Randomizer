@@ -554,9 +554,9 @@
 - Name: Windfall School of Joy
   Locations:
       Windfall Island - Mrs. Marie Catch Killer Bees: can_access(Windfall Island)
-      Windfall Island - Mrs. Marie 1 Joy Pendant: Spoils_Bag
-      Windfall Island - Mrs. Marie 21 Joy Pendant: Spoils_Bag and Can_Farm_Joy_Pendants
-      Windfall Island - Mrs. Marie 40 Joy Pendant: Spoils_Bag and Can_Farm_Joy_Pendants
+      Windfall Island - Mrs. Marie 1 Joy Pendant: Spoils_Bag and can_access(Windfall Island)
+      Windfall Island - Mrs. Marie 21 Joy Pendant: Spoils_Bag and Can_Farm_Joy_Pendants and can_access(Windfall Island)
+      Windfall Island - Mrs. Marie 40 Joy Pendant: Spoils_Bag and Can_Farm_Joy_Pendants and can_access(Windfall Island)
   Exits:
       Windfall Island: Nothing
 
