@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     setup_mixed_pools_combobox();
     load_locations();
     load_config_into_ui();
@@ -84,6 +85,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->randomize_enemies->setVisible(false);
     ui->randomize_enemy_palettes->setVisible(false);
     ui->randomize_music->setVisible(false);
+
+    // Setup Tracker
+    initialize_tracker();
 }
 
 MainWindow::~MainWindow()

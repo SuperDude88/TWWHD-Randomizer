@@ -5,67 +5,100 @@
 TrackerInventoryButton::TrackerInventoryButton() {}
 
 TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent) :
-    QPushButton("", parent),
+    QLabel("", parent),
     itemStates(itemStates_)
 {
     state = 0;
-    setIconSize(QSize(INVENTORY_BUTTON_SIZE, INVENTORY_BUTTON_SIZE));
     updateIcon();
 }
 
 void TrackerInventoryButton::updateIcon()
 {
-    setIcon(QIcon(std::string(DATA_PATH "assets/tracker/" + itemStates[state].filename).c_str()));
+    setStyleSheet((std::string("background-image: url(" DATA_PATH "assets/tracker/" + itemStates[state].filename + ");"
+                               "background-repeat: none;"
+                               "background-position: center;").c_str()));
 }
 
 void TrackerInventoryButton::removeCurrentItem()
 {
-    removeElementFromPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
+    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1))
+    {
+        removeElementFromPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
+    }
 }
 
 void TrackerInventoryButton::addCurrentItem()
 {
-    addElementToPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
+    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1))
+    {
+        addElementToPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
+    }
 }
 
 void TrackerInventoryButton::removeAllItems()
 {
-    for (auto& [gameItem, filename] : itemStates)
+    for (size_t i = 0; i < itemStates.size(); i++)
     {
+        if (forbiddenStates.contains(i-1))
+        {
+            continue;
+        }
+
+        auto& [gameItem, filename] = itemStates[i];
         removeElementFromPool(*trackerInventory, Item(gameItem, trackerWorld));
     }
 }
 
 void TrackerInventoryButton::addAllItems()
 {
-    for (auto& [gameItem, filename] : itemStates)
+    for (size_t i = 0; i < itemStates.size(); i++)
     {
+        if (forbiddenStates.contains(i-1))
+        {
+            continue;
+        }
+
+        auto& [gameItem, filename] = itemStates[i];
         addElementToPool(*trackerInventory, Item(gameItem, trackerWorld));
     }
+}
+
+void TrackerInventoryButton::addForbiddenState(int state)
+{
+    forbiddenStates.insert(state);
 }
 
 void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton)
     {
-        state++;
-        if (state >= itemStates.size())
+        do
         {
-            state = 0;
-            removeAllItems();
+            state++;
+            if (state >= itemStates.size())
+            {
+                state = 0;
+                removeAllItems();
+            }
+            addCurrentItem();
         }
-        addCurrentItem();
+        while (forbiddenStates.contains(state));
     }
     else if (e->button() == Qt::RightButton)
     {
-        removeCurrentItem();
-        state--;
-        if (state < 0)
+        do
         {
-            state = itemStates.size() - 1;
-            addAllItems();
+            removeCurrentItem();
+            state--;
+            if (state < 0)
+            {
+                state = itemStates.size() - 1;
+                addAllItems();
+            }
         }
+        while (forbiddenStates.contains(state));
     }
     updateIcon();
+    emit inventory_button_pressed();
 }
 

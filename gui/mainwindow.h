@@ -19,6 +19,7 @@
 
 #include <tracker_inventory_button.h>
 #include <tracker_location_label.h>
+#include <tracker_area_widget.h>
 
 void delete_and_create_default_config();
 
@@ -78,7 +79,11 @@ private:
     void update_encryption_files();
     void load_locations();
 
-    void initialize_tracker_buttons();
+    void initialize_tracker();
+public:
+    void switch_location_tracker_widgets();
+    void set_current_tracker_area(const std::string& areaPrefix);
+    void update_tracker();
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");
@@ -190,16 +195,21 @@ private slots:
 
     // Tracker
     void on_start_tracker_button_clicked();
-    void update_tracker();
+    void on_location_list_close_button_released();
+    void update_tracker_areas();
+    void tracker_show_specific_area(std::string areaPrefix);
 
 private:
     // More Tracker Stuff
-    WorldPool trackerWorlds;
-    ItemPool trackerInventory;
-    LocationPool trackerLocations;
-    std::list<TrackerLocationLabel*> currentlyDisplayedLocations;
+    WorldPool trackerWorlds = {};
+    ItemPool trackerInventory = {};
+    LocationPool trackerLocations = {};
+    std::string currentTrackerArea = "";
+    std::list<TrackerLocationLabel*> currentlyDisplayedLocations = {};
 
     using TIB = TrackerInventoryButton;
+    using TAW = TrackerAreaWidget;
+    using TLL = TrackerLocationLabel;
 
     // Tracker Buttons
     TIB trackerTelescope             = TIB({{GameItem::NOTHING,               "telescope_gray.png"},
@@ -216,7 +226,7 @@ private:
     TIB trackerBoomerang             = TIB({{GameItem::NOTHING,               "boomerang_gray.png"},
                                             {GameItem::Boomerang,             "boomerang_color.png"}});
     TIB trackerDekuLeaf              = TIB({{GameItem::NOTHING,               "deku_leaf_gray.png"},
-                                            {GameItem::Telescope,             "deku_leaf_color.png"}});
+                                            {GameItem::DekuLeaf,              "deku_leaf_color.png"}});
     TIB trackerProgressiveSword      = TIB({{GameItem::NOTHING,               "sword_hero_gray.png"},
                                             {GameItem::ProgressiveSword,      "sword_hero_color.png"},
                                             {GameItem::ProgressiveSword,      "sword_master_unpowered_color.png"},
@@ -313,6 +323,223 @@ private:
                                             {GameItem::ProgressiveWallet,     "biggest_wallet_color.png"}});
     TIB trackerProgressiveMagicMeter = TIB({{GameItem::NOTHING,               "magic_bottle_gray.png"},
                                             {GameItem::ProgressiveMagicMeter, "magic_bottle_color.png"},
-                                            {GameItem::ProgressiveMagicMeter, "magic_bottle_color.png"}});
+                                            {GameItem::ProgressiveMagicMeter, "magic_double_bottle_color.png"}});
+
+    // Treasure and Triforce Charts
+    TIB trackerTreasureChart1        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart1,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart2        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart2,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart3        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart3,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart4        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart4,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart5        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart5,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart6        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart6,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart7        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart7,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart8        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart8,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart9        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart9,        "treasure_chart_open.png"}});
+    TIB trackerTreasureChart10       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart10,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart11       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart11,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart12       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart12,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart13       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart13,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart14       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart14,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart15       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart15,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart16       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart16,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart17       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart17,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart18       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart18,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart19       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart19,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart20       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart20,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart21       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart21,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart22       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart22,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart23       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart23,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart24       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart24,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart25       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart25,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart26       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart26,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart27       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart27,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart28       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart28,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart29       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart29,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart30       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart30,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart31       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart31,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart32       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart32,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart33       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart33,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart34       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart34,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart35       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart35,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart36       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart36,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart37       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart37,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart38       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart38,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart39       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart39,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart40       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart40,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart41       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart41,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart42       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart42,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart43       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart43,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart44       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart44,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart45       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart45,       "treasure_chart_open.png"}});
+    TIB trackerTreasureChart46       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
+                                            {GameItem::TreasureChart46,       "treasure_chart_open.png"}});
+    TIB trackerTriforceChart1        = TIB({{GameItem::NOTHING,               "triforce_chart_closed.png"},
+                                            {GameItem::TriforceChart1,        "triforce_chart_open.png"}});
+    TIB trackerTriforceChart2        = TIB({{GameItem::NOTHING,               "triforce_chart_closed.png"},
+                                            {GameItem::TriforceChart2,        "triforce_chart_open.png"}});
+    TIB trackerTriforceChart3        = TIB({{GameItem::NOTHING,               "triforce_chart_closed.png"},
+                                            {GameItem::TriforceChart3,        "triforce_chart_open.png"}});
+
+    // Dungeon Item Inventory Buttons
+    TIB trackerWTSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
+                                            {GameItem::WTSmallKey,            "small_key_1_color.png"},
+                                            {GameItem::WTSmallKey,            "small_key_2_color.png"}});
+    TIB trackerWTBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
+                                            {GameItem::WTBigKey,              "big_key_color.png"}});
+    TIB trackerWTDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
+                                            {GameItem::WTDungeonMap,          "map_color.png"}});
+    TIB trackerWTCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
+                                            {GameItem::WTCompass,             "compass_color.png"}});
+    TIB trackerETSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
+                                            {GameItem::ETSmallKey,            "small_key_1_color.png"},
+                                            {GameItem::ETSmallKey,            "small_key_2_color.png"},
+                                            {GameItem::ETSmallKey,            "small_key_3_color.png"}});
+    TIB trackerETBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
+                                            {GameItem::ETBigKey,              "big_key_color.png"}});
+    TIB trackerETDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
+                                            {GameItem::ETDungeonMap,          "map_color.png"}});
+    TIB trackerETCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
+                                            {GameItem::ETCompass,             "compass_color.png"}});
+    TIB trackerFFDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
+                                            {GameItem::FFDungeonMap,          "map_color.png"}});
+    TIB trackerFFCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
+                                            {GameItem::FFCompass,             "compass_color.png"}});
+    TIB trackerTOTGSmallKeys         = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
+                                            {GameItem::TotGSmallKey,          "small_key_1_color.png"},
+                                            {GameItem::TotGSmallKey,          "small_key_2_color.png"}});
+    TIB trackerTOTGBigKey            = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
+                                            {GameItem::TotGBigKey,            "big_key_color.png"}});
+    TIB trackerTOTGDungeonMap        = TIB({{GameItem::NOTHING,               "map_gray.png"},
+                                            {GameItem::TotGDungeonMap,        "map_color.png"}});
+    TIB trackerTOTGCompass           = TIB({{GameItem::NOTHING,               "compass_gray.png"},
+                                            {GameItem::TotGCompass,           "compass_color.png"}});
+    TIB trackerFWSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
+                                            {GameItem::FWSmallKey,            "small_key_1_color.png"}});
+    TIB trackerFWBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
+                                            {GameItem::FWBigKey,              "big_key_color.png"}});
+    TIB trackerFWDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
+                                            {GameItem::FWDungeonMap,          "map_color.png"}});
+    TIB trackerFWCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
+                                            {GameItem::FWCompass,             "compass_color.png"}});
+    TIB trackerDRCSmallKeys          = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
+                                            {GameItem::DRCSmallKey,           "small_key_1_color.png"},
+                                            {GameItem::DRCSmallKey,           "small_key_2_color.png"},
+                                            {GameItem::DRCSmallKey,           "small_key_3_color.png"},
+                                            {GameItem::DRCSmallKey,           "small_key_4_color.png"}});
+    TIB trackerDRCBigKey             = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
+                                            {GameItem::DRCBigKey,             "big_key_color.png"}});
+    TIB trackerDRCDungeonMap         = TIB({{GameItem::NOTHING,               "map_gray.png"},
+                                            {GameItem::DRCDungeonMap,         "map_color.png"}});
+    TIB trackerDRCCompass            = TIB({{GameItem::NOTHING,               "compass_gray.png"},
+                                            {GameItem::DRCCompass,            "compass_color.png"}});
+
+    // Island widgets
+    TAW ForsakenFortressSectorWidget = TAW("Forsaken Fortress Sector", &trackerTreasureChart25);
+    TAW StarIslandWidget             = TAW("Star Island",              &trackerTreasureChart7);
+    TAW NorthernFairyIslandWidget    = TAW("Northern Fairy Island",    &trackerTreasureChart24);
+    TAW GaleIsleWidget               = TAW("Gale Isle",                &trackerTreasureChart42);
+    TAW CrescentMoonIslandWidget     = TAW("Crescent Moon Island",     &trackerTreasureChart11);
+    TAW SevenStarIslesWidget         = TAW("Seven Star Isles",         &trackerTreasureChart45);
+    TAW OverlookIslandWidget         = TAW("Overlook Island",          &trackerTreasureChart13);
+    TAW FourEyeReefWidget            = TAW("Four Eye Reef",            &trackerTreasureChart41);
+    TAW MotherAndChildIslesWidget    = TAW("Mother & Child Isles",     &trackerTreasureChart29);
+    TAW SpectacleIslandWidget        = TAW("Spectacle Island",         &trackerTreasureChart22);
+    TAW WindfallIslandWidget         = TAW("Windfall Island",          &trackerTreasureChart18);
+    TAW PawprintIsleWidget           = TAW("Pawprint Isle",            &trackerTreasureChart30);
+    TAW DragonRoostIslandWidget      = TAW("Dragon Roost Island",      &trackerTreasureChart39);
+    TAW FlightControlPlatformWidget  = TAW("Flight Control Platform",  &trackerTreasureChart19);
+    TAW WesternFairyIslandWidget     = TAW("Western Fairy Island",     &trackerTreasureChart8);
+    TAW RockSpireIsleWidget          = TAW("Rock Spire Isle",          &trackerTreasureChart2);
+    TAW TingleIslandWidget           = TAW("Tingle Island",            &trackerTreasureChart10);
+    TAW NorthernTriangleIslandWidget = TAW("Northern Triangle Island", &trackerTreasureChart26);
+    TAW EasternFairyIslandWidget     = TAW("Eastern Fairy Island",     &trackerTreasureChart3);
+    TAW FireMountainWidget           = TAW("Fire Mountain",            &trackerTreasureChart37);
+    TAW StarBeltArchipelagoWidget    = TAW("Star Belt Archipelago",    &trackerTreasureChart27);
+    TAW ThreeEyeReefWidget           = TAW("Three Eye Reef",           &trackerTreasureChart38);
+    TAW GreatfishIsleWidget          = TAW("Greatfish Isle",           &trackerTriforceChart1);
+    TAW CyclopsReefWidget            = TAW("Cyclops Reef",             &trackerTreasureChart21);
+    TAW SixEyeReefWidget             = TAW("Six Eye Reef",             &trackerTreasureChart6);
+    TAW TowerOfTheGodsSectorWidget   = TAW("Tower of the Gods Sector", &trackerTreasureChart14);
+    TAW EasternTriangleIslandWidget  = TAW("Eastern Triangle Island",  &trackerTreasureChart34);
+    TAW ThornedFairyIslandWidget     = TAW("Thorned Fairy Island",     &trackerTreasureChart5);
+    TAW NeedleRockIsleWidget         = TAW("Needle Rock Isle",         &trackerTreasureChart28);
+    TAW IsletofSteelWidget           = TAW("Islet of Steel",           &trackerTreasureChart35);
+    TAW StoneWatcherIslandWidget     = TAW("Stone Watcher Island",     &trackerTriforceChart2);
+    TAW SouthernTriangleIslandWidget = TAW("Southern Triangle Island", &trackerTreasureChart44);
+    TAW PrivateOasisWidget           = TAW("Private Oasis",            &trackerTreasureChart1);
+    TAW BombIslandWidget             = TAW("Bomb Island",              &trackerTreasureChart20);
+    TAW BirdsPeakRockWidget          = TAW("Birds Peak Rock",          &trackerTreasureChart36);
+    TAW DiamondSteppeIslandWidget    = TAW("Diamond Steppe Island",    &trackerTreasureChart23);
+    TAW FiveEyeReefWidget            = TAW("Five Eye Reef",            &trackerTreasureChart12);
+    TAW SharkIslandWidget            = TAW("Shark Island",             &trackerTreasureChart16);
+    TAW SouthernFairyIslandWidget    = TAW("Southern Fairy Island",    &trackerTreasureChart4);
+    TAW IceRingIsleWidget            = TAW("Ice Ring Isle",            &trackerTreasureChart17);
+    TAW ForestHavenWidget            = TAW("Forest Haven",             &trackerTreasureChart31);
+    TAW CliffPlateauIslesWidget      = TAW("Cliff Plateau Isles",      &trackerTriforceChart3);
+    TAW HorseshoeIslandWidget        = TAW("Horseshoe Island",         &trackerTreasureChart9);
+    TAW OutsetIslandWidget           = TAW("Outset Island",            &trackerTreasureChart43);
+    TAW HeadstoneIslandWidget        = TAW("Headstone Island",         &trackerTreasureChart40);
+    TAW TwoEyeReefWidget             = TAW("Two Eye Reef",             &trackerTreasureChart46);
+    TAW AngularIslesWidget           = TAW("Angular Isles",            &trackerTreasureChart15);
+    TAW BoatingCourseWidget          = TAW("Boating Course",           &trackerTreasureChart32);
+    TAW FiveStarIslesWidget          = TAW("Five Star Isles",          &trackerTreasureChart33);
+
+    // Other area widgets
+    TAW DRCWidget  = TAW("Dragon Roost Cavern", "gohma.png",         &trackerDRCSmallKeys,  &trackerDRCBigKey,  &trackerDRCDungeonMap,  &trackerDRCCompass);
+    TAW FWWidget   = TAW("Forbidden Woods",     "kalle_demos.png",   &trackerFWSmallKeys,   &trackerFWBigKey,   &trackerFWDungeonMap,   &trackerFWCompass);
+    TAW TOTGWidget = TAW("Tower of the Gods",   "gohdan.png",        &trackerTOTGSmallKeys, &trackerTOTGBigKey, &trackerTOTGDungeonMap, &trackerTOTGCompass);
+    TAW FFWidget   = TAW("Forsaken Fortress",   "helmaroc_king.png", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass);
+    TAW ETWidget   = TAW("Earth Temple",        "jalhalla.png",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass);
+    TAW WTWidget   = TAW("Wind Temple",         "molgera.png",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass);
+
+    TAW GreatSeaWidget    = TAW("Great Sea", "great_sea.png", nullptr, nullptr, nullptr, nullptr);
+    TAW MailboxWidget     = TAW("Mailbox",   "mailbox.png",   nullptr, nullptr, nullptr, nullptr);
+    TAW HyruleWidget      = TAW("Hyrule Castle", "hyrule.png",    nullptr, nullptr, nullptr, nullptr);
+    TAW GanonsTowerWidget = TAW("Ganon's Tower", "ganondorf.png", nullptr, nullptr, nullptr, nullptr);
 };
 #endif // MAINWINDOW_H
