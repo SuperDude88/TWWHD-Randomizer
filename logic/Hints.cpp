@@ -36,7 +36,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Race mode locations are also goal locations
-            if (dungeon.isRaceModeDungeon && (world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode || world.getSettings().progression_dungeons == ProgressionDungeons::RequireBosses))
+            if (dungeon.isRaceModeDungeon)
             {
                 Location* goalLocation = &world.locationEntries[dungeon.raceModeLocation];
                 world.pathLocations[goalLocation] = {};
@@ -69,7 +69,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 if (location->hasKnownVanillaItem ||
                    (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys != PlacementOption::OwnDungeon) ||
                    (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   != PlacementOption::OwnDungeon) ||
-                   (location->isRaceModeLocation && (settings.progression_dungeons == ProgressionDungeons::RequireBosses || settings.progression_dungeons == ProgressionDungeons::RaceMode)))
+                   (location->isRaceModeLocation))
                 {
                     continue;
                 }
@@ -301,6 +301,7 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
         }
     }
 
+    bool addedGanonPathLocation = false;
     for (uint8_t i = 0; i < world.getSettings().path_hints; i++)
     {
         // Try to get at least one hint for each race mode dungeon first
@@ -313,17 +314,19 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
         {
             // Once we've pulled from all race mode dungeons, then add Ganondorf to the list
             // and choose randomly
-            if (i == goalLocations.size())
+            if (i == goalLocations.size() && !addedGanonPathLocation)
             {
                 goalLocations.push_back(&world.locationEntries["Ganon's Tower - Defeat Ganondorf"]);
+                addedGanonPathLocation = true;
             }
-            goalLocation = RandomElement(goalLocations);
-        }
 
-        if (goalLocations.empty())
-        {
-            LOG_TO_DEBUG("No more possible path hints");
-            break;
+            if (goalLocations.empty())
+            {
+                LOG_TO_DEBUG("No more possible path hints");
+                break;
+            }
+
+            goalLocation = RandomElement(goalLocations);
         }
 
         auto hintLocation = getHintableLocation(world.pathLocations[goalLocation]);

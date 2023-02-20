@@ -129,6 +129,14 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::StartingGear,
     Option::StartingHC,
     Option::StartingHP,
+    Option::StartingJoyPendants,
+    Option::StartingSkullNecklaces,
+    Option::StartingBokoBabaSeeds,
+    Option::StartingGoldenFeathers,
+    Option::StartingKnightsCrests,
+    Option::StartingRedChuJellys,
+    Option::StartingGreenChuJellys,
+    Option::StartingBlueChuJellys,
 
     // Advanced Options
     Option::NoSpoilerLog,
@@ -184,7 +192,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
                 bitsWriter.write(startingGear.count(item), 3);
             }
         }
-        // ComboBox Options (and 8-bit spinbox options)
+        // ComboBox Options (and 8-bit SpinBox options)
         else if (option == Option::SwordMode               ||
                  option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
@@ -206,7 +214,15 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
             bitsWriter.write(getSetting(settings, option), 3);
         }
         // 6-bit SpinBox options
-        else if (option == Option::StartingHP)
+        else if (option == Option::StartingHP             ||
+                 option == Option::StartingJoyPendants    ||
+                 option == Option::StartingSkullNecklaces ||
+                 option == Option::StartingBokoBabaSeeds  ||
+                 option == Option::StartingGoldenFeathers ||
+                 option == Option::StartingKnightsCrests  ||
+                 option == Option::StartingRedChuJellys   ||
+                 option == Option::StartingGreenChuJellys ||
+                 option == Option::StartingBlueChuJellys)
         {
             bitsWriter.write(getSetting(settings, option), 6);
         }
@@ -334,7 +350,15 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
             setSetting(settings, option, value);
         }
         // 6-bit SpinBox options
-        else if (option == Option::StartingHP)
+        else if (option == Option::StartingHP             ||
+                 option == Option::StartingJoyPendants    ||
+                 option == Option::StartingSkullNecklaces ||
+                 option == Option::StartingBokoBabaSeeds  ||
+                 option == Option::StartingGoldenFeathers ||
+                 option == Option::StartingKnightsCrests  ||
+                 option == Option::StartingRedChuJellys   ||
+                 option == Option::StartingGreenChuJellys ||
+                 option == Option::StartingBlueChuJellys)
         {
             value = bitsReader.read(6);
             BYTES_EXIST_CHECK(value);

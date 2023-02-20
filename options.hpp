@@ -5,6 +5,18 @@
 
 #include <logic/GameItem.hpp>
 
+constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 256;
+constexpr unsigned int MAXIMUM_STARTING_HC = 6;
+constexpr unsigned int MAXIMUM_STARTING_HP = 44;
+constexpr unsigned int MAXIMUM_STARTING_JOY_PENDANTS = 40;
+constexpr unsigned int MAXIMUM_STARTING_SKULL_NECKLACES = 23;
+constexpr unsigned int MAXIMUM_STARTING_BOKO_BABA_SEEDS = 10;
+constexpr unsigned int MAXIMUM_STARTING_GOLDEN_FEATHERS = 20;
+constexpr unsigned int MAXIMUM_STARTING_KNIGHTS_CRESTS = 10;
+constexpr unsigned int MAXIMUM_STARTING_RED_CHU_JELLYS = 15;
+constexpr unsigned int MAXIMUM_STARTING_GREEN_CHU_JELLYS = 15;
+constexpr unsigned int MAXIMUM_STARTING_BLUE_CHU_JELLYS = 15;
+
 enum struct PigColor : uint8_t {
     BLACK = 0,
     PINK,
@@ -32,9 +44,38 @@ enum struct PlacementOption {
 enum struct ProgressionDungeons {
     Disabled = 0,
     Standard,
-    RequireBosses,
     RaceMode,
     INVALID
+};
+
+enum struct TargetTypePreference {
+    Hold = 0,
+    Switch,
+    INVALID,
+};
+
+enum struct CameraPreference {
+    Standard = 0,
+    ReverseLeftRight,
+    INVALID,
+};
+
+enum struct FirstPersonCameraPreference {
+    Standard = 0,
+    ReverseUpDown,
+    INVALID,
+};
+
+enum struct GyroscopePreference {
+    Off = 0,
+    On,
+    INVALID,
+};
+
+enum struct UIDisplayPreference {
+    On = 0,
+    Off,
+    INVALID,
 };
 
 enum struct Option {
@@ -90,6 +131,14 @@ enum struct Option {
     StartingGear,
     StartingHP,
     StartingHC,
+    StartingJoyPendants,
+    StartingSkullNecklaces,
+    StartingBokoBabaSeeds,
+    StartingGoldenFeathers,
+    StartingKnightsCrests,
+    StartingRedChuJellys,
+    StartingGreenChuJellys,
+    StartingBlueChuJellys,
 
     // Advanced Options
     NoSpoilerLog,
@@ -126,6 +175,12 @@ enum struct Option {
 
     DamageMultiplier,
 
+    // In game preference
+    TargetType,
+    Camera,
+    FirstPersonCamera,
+    Gyroscope,
+    UIDisplay,
 
     // Dummy options to satisfy tracker permalink
     RandomizeEntrances,
@@ -140,7 +195,6 @@ enum struct Option {
 };
 
 struct Settings {
-    // bool progression_dungeons = false;
     ProgressionDungeons progression_dungeons = ProgressionDungeons::Standard;
     bool progression_great_fairies = false;
     bool progression_puzzle_secret_caves = false;
@@ -207,11 +261,25 @@ struct Settings {
     std::vector<GameItem> starting_gear = {};
     uint16_t starting_pohs = 0;
     uint16_t starting_hcs = 0;
+    uint16_t starting_joy_pendants = 0;
+    uint16_t starting_skull_necklaces = 0;
+    uint16_t starting_boko_baba_seeds = 0;
+    uint16_t starting_golden_feathers = 0;
+    uint16_t starting_knights_crests = 0;
+    uint16_t starting_red_chu_jellys = 0;
+    uint16_t starting_green_chu_jellys = 0;
+    uint16_t starting_blue_chu_jellys = 0;
     bool remove_music = false;
 
     bool start_with_random_item = false;
     bool plandomizer = false;
     std::string plandomizerFile = "";
+
+    TargetTypePreference target_type = TargetTypePreference::Hold;
+    CameraPreference camera = CameraPreference::Standard;
+    FirstPersonCameraPreference first_person_camera = FirstPersonCameraPreference::Standard;
+    GyroscopePreference gyroscope = GyroscopePreference::On;
+    UIDisplayPreference ui_display = UIDisplayPreference::On;
 };
 
 SwordMode nameToSwordMode(const std::string& name);
@@ -229,6 +297,26 @@ std::string PlacementOptionToName(const PlacementOption& option);
 ProgressionDungeons nameToProgressionDungeons(const std::string& name);
 
 std::string ProgressionDungeonsToName(const ProgressionDungeons& option);
+
+TargetTypePreference nameToTargetTypePreference(const std::string& name);
+
+std::string TargetTypePreferenceToName(const TargetTypePreference& preference);
+
+CameraPreference nameToCameraPreference(const std::string& name);
+
+std::string CameraPreferenceToName(const CameraPreference& preference);
+
+FirstPersonCameraPreference nameToFirstPersonCameraPreference(const std::string& name);
+
+std::string FirstPersonCameraPreferenceToName(const FirstPersonCameraPreference& preference);
+
+GyroscopePreference nameToGyroscopePreference(const std::string& name);
+
+std::string GyroscopePreferenceToName(const GyroscopePreference& preference);
+
+UIDisplayPreference nameToUIDisplayPreference(const std::string& name);
+
+std::string UIDisplayPreferenceToName(const UIDisplayPreference& preference);
 
 int nameToSettingInt(const std::string& name);
 

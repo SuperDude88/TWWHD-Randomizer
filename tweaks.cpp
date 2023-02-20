@@ -24,6 +24,7 @@
 #include <filetypes/msbt.hpp>
 #include <filetypes/util/msbtMacros.hpp>
 #include <utility/string.hpp>
+#include <utility/file.hpp>
 #include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -61,10 +62,11 @@ namespace {
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
 	TweakError Load_Custom_Symbols(const std::string& file_path) {
-		std::ifstream fptr(file_path, std::ios::in);
-		if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+		std::string file_data;
+		if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+		// std::ifstream fptr(file_path, std::ios::in);
 
-		nlohmann::json symbols = nlohmann::json::parse(fptr);
+		nlohmann::json symbols = nlohmann::json::parse(file_data);
 		for (const auto& symbol : symbols.items()) {
 			const uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
 			custom_symbols[symbol.key()] = address;
@@ -75,10 +77,11 @@ namespace {
 }
 
 TweakError Apply_Patch(const std::string& file_path) {
-	std::ifstream fptr(file_path, std::ios::in);
-	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	std::string file_data;
+	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	// std::ifstream fptr(file_path, std::ios::in);
 
-	const nlohmann::json patches = nlohmann::json::parse(fptr);
+	const nlohmann::json patches = nlohmann::json::parse(file_data);
 	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	entry.addAction([patches](RandoSession* session, FileType* data) -> int {
@@ -112,10 +115,11 @@ TweakError Apply_Patch(const std::string& file_path) {
 
 //only applies relocations for .rela.text
 TweakError Add_Relocations(const std::string file_path) {
-	std::ifstream fptr(file_path, std::ios::in);
-	if(!fptr.is_open()) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	std::string file_data;
+	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+	// std::ifstream fptr(file_path, std::ios::in);
 
-	nlohmann::json relocations = nlohmann::json::parse(fptr);
+	nlohmann::json relocations = nlohmann::json::parse(file_data);
 
 	for (const auto& relocation : relocations) {
 		if(!relocation.contains("r_offset") || !relocation.contains("r_info") || !relocation.contains("r_addend")) {
@@ -2543,7 +2547,34 @@ TweakError replace_ctmc_chest_texture() {
 	return TweakError::NONE;
 }
 
+TweakError apply_ingame_preferences(const Settings& settings) {
+	if(custom_symbols.count("target_type_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("camera_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("first_person_camera_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("gyroscope_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	if(custom_symbols.count("ui_display_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 
+	const uint32_t target_type_preference_addr = custom_symbols.at("target_type_preference");
+	const uint32_t camera_preference_addr = custom_symbols.at("camera_preference");
+	const uint32_t first_person_camera_preference_addr = custom_symbols.at("first_person_camera_preference");
+	const uint32_t gyroscope_preference_addr = custom_symbols.at("gyroscope_preference");
+	const uint32_t ui_display_preference_addr = custom_symbols.at("ui_display_preference");
+
+	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+	entry.addAction([=](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data);
+
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, target_type_preference_addr), static_cast<std::underlying_type_t<TargetTypePreference>>(settings.target_type)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, camera_preference_addr), static_cast<std::underlying_type_t<CameraPreference>>(settings.camera)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, first_person_camera_preference_addr), static_cast<std::underlying_type_t<FirstPersonCameraPreference>>(settings.first_person_camera)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, gyroscope_preference_addr), static_cast<std::underlying_type_t<GyroscopePreference>>(settings.gyroscope)));
+		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, ui_display_preference_addr), static_cast<std::underlying_type_t<UIDisplayPreference>>(settings.ui_display)));
+
+		return true;
+	});
+
+	return TweakError::NONE;
+}
 
 TweakError updateCodeSize() {
 	//Increase the max codesize in cos.xml to load all our code
@@ -2691,6 +2722,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	TWEAK_ERR_CHECK(fix_ff_door());
 	TWEAK_ERR_CHECK(fix_stone_head_bugs());
 	TWEAK_ERR_CHECK(show_tingle_statues_on_quest_screen());
+	TWEAK_ERR_CHECK(apply_ingame_preferences(settings));
 	//key bag
 	//bog warp
 	//rat hole visibility

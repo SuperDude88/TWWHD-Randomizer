@@ -278,7 +278,7 @@ void placeVanillaItems(WorldPool& worlds)
         world.locationEntries["Ganon's Tower - Defeat Ganondorf"].currentItem = world.itemEntries["Game Beatable"];
         world.locationEntries["Ganon's Tower - Defeat Ganondorf"].hasKnownVanillaItem = true;
 
-        // Place vanilla items depending on settings
+        // Place vanilla items depending on settings and remove placed vanilla items from the item pool
         for (auto location : world.getLocations())
         {
             auto vanillaItem = location->originalItem.getName();
@@ -294,6 +294,14 @@ void placeVanillaItems(WorldPool& worlds)
                     removeElementFromPool(world.getItemPoolReference(), location->currentItem);
                     LOG_TO_DEBUG("Placed item " + dungeonItemName + " at vanilla location " + locationName);
                 }
+
+            if (vanillaItem == "Blue Chu Jelly" /*&& settings.progression_blue_chus*/)
+            {
+                location->currentItem = world.itemEntries[vanillaItem];
+                location->hasKnownVanillaItem = true;
+                removeElementFromPool(world.getItemPoolReference(), location->currentItem);
+                LOG_TO_DEBUG("Placed item " + vanillaItem + " at vanilla location " + locationName);
+            }
         }
     }
 }
@@ -474,7 +482,6 @@ static FillError randomizeRestrictedDungeonItems(WorldPool& worlds, ItemPool& it
             auto mapsCompasses = filterFromPool(itemPool, [&](const Item& item){return item == map || item == compass;});
 
             bool addItemsToProgressionPool = settings.progression_dungeons == ProgressionDungeons::Standard ||
-                                             settings.progression_dungeons == ProgressionDungeons::RequireBosses ||
                                             (settings.progression_dungeons == ProgressionDungeons::RaceMode && dungeon.isRaceModeDungeon);
 
             if (settings.dungeon_small_keys == PlacementOption::AnyDungeon)

@@ -40,6 +40,12 @@
         UPDATE_CONFIG_STATE(config, ui, name);            \
     }
 
+#define DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(name)        \
+    void MainWindow::on_##name##_valueChanged(int arg1) { \
+        config.settings.name = arg1;                      \
+        update_permalink();                               \
+    }
+
 void delete_and_create_default_config()
 {
     std::filesystem::remove(APP_SAVE_PATH "config.yaml");
@@ -452,7 +458,7 @@ void MainWindow::apply_config_settings()
     auto& num_race_mode_dungeons = config.settings.num_race_mode_dungeons;
     // Race mode dungeons must be between 1 and 6
     num_race_mode_dungeons = std::clamp(num_race_mode_dungeons, uint8_t(1), uint8_t(6));
-    ui->num_race_mode_dungeons->setCurrentIndex(num_race_mode_dungeons - 1);
+    ui->num_race_mode_dungeons->setCurrentIndex(num_race_mode_dungeons);
 
     auto& num_starting_triforce_shards = config.settings.num_starting_triforce_shards;
     // Number of starting triforce shards must be between 0 and 8
@@ -471,8 +477,16 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, remove_music);
 
     // Starting Health
-    APPLY_SPINBOX_SETTING(config, ui, starting_hcs, uint16_t(0), uint16_t(6));
-    APPLY_SPINBOX_SETTING(config, ui, starting_pohs, uint16_t(0), uint16_t(44));
+    APPLY_SPINBOX_SETTING(config, ui, starting_hcs, uint16_t(0), uint16_t(MAXIMUM_STARTING_HC));
+    APPLY_SPINBOX_SETTING(config, ui, starting_pohs, uint16_t(0), uint16_t(MAXIMUM_STARTING_HP));
+    APPLY_SPINBOX_SETTING(config, ui, starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
+    APPLY_SPINBOX_SETTING(config, ui, starting_boko_baba_seeds, uint16_t(0), uint16_t(MAXIMUM_STARTING_BOKO_BABA_SEEDS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_golden_feathers, uint16_t(0), uint16_t(MAXIMUM_STARTING_GOLDEN_FEATHERS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_knights_crests, uint16_t(0), uint16_t(MAXIMUM_STARTING_KNIGHTS_CRESTS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_red_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_RED_CHU_JELLYS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_green_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_GREEN_CHU_JELLYS));
+    APPLY_SPINBOX_SETTING(config, ui, starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     // Player Customization
     APPLY_CHECKBOX_SETTING(config, ui, player_in_casual_clothes);
@@ -505,6 +519,13 @@ void MainWindow::apply_config_settings()
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_misc);
     APPLY_CHECKBOX_SETTING(config, ui, decouple_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_starting_island);
+
+    // In-Game Preferences
+    APPLY_COMBOBOX_SETTING(config, ui, target_type);
+    APPLY_COMBOBOX_SETTING(config, ui, camera);
+    APPLY_COMBOBOX_SETTING(config, ui, first_person_camera);
+    APPLY_COMBOBOX_SETTING(config, ui, gyroscope);
+    APPLY_COMBOBOX_SETTING(config, ui, ui_display);
 
     // Permalink
     ui->permalink->setText(create_permalink(config.settings, config.seed).c_str());
@@ -647,14 +668,14 @@ void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
 {
     config.settings.progression_dungeons = nameToProgressionDungeons(arg1.toStdString());
     update_permalink();
-    // Grey out the race mode dungeons combobox if race mode/require bosses is not selected
+    // Grey out the race mode dungeons combobox if race mode/standard is not selected
     if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
         ui->num_race_mode_dungeons->setEnabled(true);
         ui->label_for_num_race_mode_dungeons->setEnabled(true);
         ui->label_for_num_race_mode_dungeons->setText("Number of Race Mode Dungeons");
     }
-    else if (config.settings.progression_dungeons == ProgressionDungeons::RequireBosses)
+    else if (config.settings.progression_dungeons == ProgressionDungeons::Standard)
     {
         ui->num_race_mode_dungeons->setEnabled(true);
         ui->label_for_num_race_mode_dungeons->setEnabled(true);
@@ -770,7 +791,7 @@ void MainWindow::on_num_starting_triforce_shards_currentIndexChanged(int index)
 
 void MainWindow::on_num_race_mode_dungeons_currentIndexChanged(int index)
 {
-    config.settings.num_race_mode_dungeons = ui->num_race_mode_dungeons->currentIndex() + 1;
+    config.settings.num_race_mode_dungeons = ui->num_race_mode_dungeons->currentIndex();
     update_permalink();
 }
 
@@ -864,7 +885,7 @@ void MainWindow::update_starting_health_text()
     std::string containersStr = std::to_string(containers) + " Hearts";
     std::string piecesStr = std::to_string(pieces) + (pieces == 1 ? " Piece" : " Pieces");
 
-    std::string message = "Current Starting Health: " + containersStr + " and " + piecesStr;
+    std::string message = "Starting Health: " + containersStr + (pieces != 0 ? (" and " + piecesStr) : "");
     ui->current_health->setText(message.c_str());
 
     update_permalink();
@@ -882,6 +903,15 @@ void MainWindow::on_starting_pohs_valueChanged(int starting_pohs)
     update_starting_health_text();
 }
 
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_blue_chu_jellys)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_green_chu_jellys)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_red_chu_jellys)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_knights_crests)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_golden_feathers)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_boko_baba_seeds)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_skull_necklaces)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_joy_pendants)
+
 // Player Customization
 DEFINE_STATE_CHANGE_FUNCTION(player_in_casual_clothes)
 
@@ -890,29 +920,10 @@ DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
 DEFINE_STATE_CHANGE_FUNCTION(korl_hints)
 DEFINE_STATE_CHANGE_FUNCTION(use_always_hints)
 DEFINE_STATE_CHANGE_FUNCTION(clearer_hints)
-void MainWindow::on_path_hints_valueChanged(int path_hints)
-{
-    config.settings.path_hints = path_hints;
-    update_permalink();
-}
-
-void MainWindow::on_barren_hints_valueChanged(int barren_hints)
-{
-    config.settings.barren_hints = barren_hints;
-    update_permalink();
-}
-
-void MainWindow::on_location_hints_valueChanged(int location_hints)
-{
-    config.settings.location_hints = location_hints;
-    update_permalink();
-}
-
-void MainWindow::on_item_hints_valueChanged(int item_hints)
-{
-    config.settings.item_hints = item_hints;
-    update_permalink();
-}
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(path_hints)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(barren_hints)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(location_hints)
+DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(item_hints)
 
 DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)
@@ -921,6 +932,40 @@ DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
 // Mixed pools options' states are handled in update_mixed_pools_combobox_option()
 DEFINE_STATE_CHANGE_FUNCTION(decouple_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_starting_island)
+
+void MainWindow::on_target_type_currentTextChanged(const QString &arg1)
+{
+    config.settings.target_type = nameToTargetTypePreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_camera_currentTextChanged(const QString &arg1)
+{
+    config.settings.camera = nameToCameraPreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_first_person_camera_currentTextChanged(const QString &arg1)
+{
+    config.settings.first_person_camera = nameToFirstPersonCameraPreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_gyroscope_currentTextChanged(const QString &arg1)
+{
+    config.settings.gyroscope = nameToGyroscopePreference(arg1.toStdString());
+    update_permalink();
+}
+
+
+void MainWindow::on_ui_display_currentTextChanged(const QString &arg1)
+{
+    config.settings.ui_display = nameToUIDisplayPreference(arg1.toStdString());
+    update_permalink();
+}
 
 void MainWindow::update_option_description_text(const std::string& description /*= ""*/)
 {
@@ -1130,13 +1175,8 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 
 void MainWindow::load_locations()
 {   
-#ifdef EMBED_DATA
-    QResource file(":/logic/data/location_data.yaml");
-    std::string locationDataStr = file.uncompressedData().toStdString();
-#else
     std::string locationDataStr;
-    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr);
-#endif
+    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr, true);
     locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
     Yaml::Node locationDataTree;
     Yaml::Parse(locationDataTree, locationDataStr);
@@ -1162,4 +1202,3 @@ void MainWindow::load_locations()
         }
     }
 }
-

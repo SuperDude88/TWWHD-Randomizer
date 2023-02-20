@@ -306,7 +306,7 @@ static const std::set<GameItem> junkItems = {
     GameItem::KnightsCrest,
     GameItem::RedChuJelly,
     GameItem::GreenChuJelly,
-    GameItem::BlueChuJelly,
+    // GameItem::BlueChuJelly,
     GameItem::DungeonMap,
     GameItem::Compass,
     GameItem::FWCompass,

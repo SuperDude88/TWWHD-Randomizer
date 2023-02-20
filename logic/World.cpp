@@ -45,6 +45,7 @@ World::World(size_t numWorlds_)
 void World::setSettings(const Settings& settings_)
 {
     settings = std::move(settings_);
+    addSpoilsToStartingGear();
 }
 
 const Settings& World::getSettings() const
@@ -84,9 +85,29 @@ void World::resolveRandomSettings()
         }
 
         GameItem startingItem = RandomElement(randomStartingItemPool);
-        LOG_TO_DEBUG("Random starting item chose: " + gameItemToName(startingItem));
+        LOG_TO_DEBUG("Random starting item chosen: " + gameItemToName(startingItem));
         settings.starting_gear.push_back(startingItem);
     }
+}
+
+void World::addSpoilsToStartingGear()
+{
+    // Short helper function for adding the spoils to the starting_gear
+    auto addSpoils = [&](uint16_t& setting, const GameItem& gameItem){
+        for (uint16_t i = 0; i < setting; i++)
+        {
+            settings.starting_gear.push_back(gameItem);
+        }
+    };
+
+    addSpoils(settings.starting_joy_pendants, GameItem::JoyPendant);
+    addSpoils(settings.starting_skull_necklaces, GameItem::SkullNecklace);
+    addSpoils(settings.starting_boko_baba_seeds, GameItem::BokoBabaSeed);
+    addSpoils(settings.starting_golden_feathers, GameItem::GoldenFeather);
+    addSpoils(settings.starting_knights_crests, GameItem::KnightsCrest);
+    addSpoils(settings.starting_red_chu_jellys, GameItem::RedChuJelly);
+    addSpoils(settings.starting_green_chu_jellys, GameItem::GreenChuJelly);
+    addSpoils(settings.starting_blue_chu_jellys, GameItem::BlueChuJelly);
 }
 
 void World::setWorldId(int newWorldId)
@@ -350,7 +371,7 @@ World::WorldLoadingError World::determineProgressionLocations()
 
 World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 {
-    if (settings.progression_dungeons == ProgressionDungeons::RequireBosses || settings.progression_dungeons == ProgressionDungeons::RaceMode)
+    if (settings.progression_dungeons != ProgressionDungeons::Disabled || settings.num_race_mode_dungeons > 0)
     {
         std::vector<Dungeon> dungeonPool = {};
         for (auto& [name, dungeon] : dungeons)
@@ -1303,7 +1324,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     // load and parse items
     Yaml::Node itemDataTree;
     std::string itemData;
-    Utility::getFileContents(itemDataPath, itemData);
+    Utility::getFileContents(itemDataPath, itemData, true);
     itemData = Utility::Str::InsertUnicodeReplacements(itemData);
     Yaml::Parse(itemDataTree, itemData);
     for (auto itemIt = itemDataTree.Begin(); itemIt != itemDataTree.End(); itemIt++)
@@ -1320,7 +1341,9 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
 
     // load world graph
     Yaml::Node worldDataTree;
-    Yaml::Parse(worldDataTree, worldFilePath.c_str());
+    std::string worldData;
+    Utility::getFileContents(worldFilePath, worldData, true);
+    Yaml::Parse(worldDataTree, worldData);
     // First pass to get area names
     for (auto areaIt = worldDataTree.Begin(); areaIt != worldDataTree.End(); areaIt++)
     {
@@ -1332,7 +1355,9 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
 
     // Read and parse macros
     Yaml::Node macroListTree;
-    Yaml::Parse(macroListTree, macrosFilePath.c_str());
+    std::string macroListData;
+    Utility::getFileContents(macrosFilePath, macroListData, true);
+    Yaml::Parse(macroListTree, macroListData);
     auto err = loadMacros(macroListTree);
     if (err != World::WorldLoadingError::NONE)
     {
@@ -1344,7 +1369,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     // Read and parse location data
     Yaml::Node locationDataTree;
     std::string locationData;
-    Utility::getFileContents(locationDataPath, locationData);
+    Utility::getFileContents(locationDataPath, locationData, true);
     locationData = Utility::Str::InsertUnicodeReplacements(locationData);
     Yaml::Parse(locationDataTree, locationData);
     for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
@@ -1375,7 +1400,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     // Read and parse area translations for hints/spoiler logs in other languages
     Yaml::Node areaDataTree;
     std::string areaData;
-    Utility::getFileContents(areaDataPath, areaData);
+    Utility::getFileContents(areaDataPath, areaData, true);
     areaData = Utility::Str::InsertUnicodeReplacements(areaData);
     Yaml::Parse(areaDataTree, areaData);
     for (auto areaObjectIt = areaDataTree.Begin(); areaObjectIt != areaDataTree.End(); areaObjectIt++)

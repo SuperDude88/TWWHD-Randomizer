@@ -45,16 +45,65 @@ static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap =
 static std::unordered_map<ProgressionDungeons, std::string> progressionDungeonsNameMap = {
     {ProgressionDungeons::Disabled, "Disabled"},
     {ProgressionDungeons::Standard, "Standard"},
-    {ProgressionDungeons::RequireBosses, "Require Bosses"},
     {ProgressionDungeons::RaceMode, "Race Mode"},
 };
 
 static std::unordered_map<std::string, ProgressionDungeons> nameProgressionDungeonsMap = {
     {"Disabled", ProgressionDungeons::Disabled},
     {"Standard", ProgressionDungeons::Standard},
-    {"Require Bosses", ProgressionDungeons::RequireBosses},
     {"Race Mode", ProgressionDungeons::RaceMode},
 };
+
+static std::unordered_map<TargetTypePreference, std::string> targetTypePreferenceNameMap = {
+    {TargetTypePreference::Hold, "Hold"},
+    {TargetTypePreference::Switch, "Switch"},  
+};
+
+static std::unordered_map<std::string, TargetTypePreference> nameTargetTypePreferenceMap = {
+    {"Hold", TargetTypePreference::Hold},
+    {"Switch", TargetTypePreference::Switch},
+};
+
+static std::unordered_map<CameraPreference, std::string> cameraPreferenceNameMap = {
+    {CameraPreference::Standard, "Standard"},
+    {CameraPreference::ReverseLeftRight, "Reverse Left/Right"},  
+};
+
+static std::unordered_map<std::string, CameraPreference> nameCameraPreferenceMap = {
+    {"Standard", CameraPreference::Standard},
+    {"Reverse Left/Right", CameraPreference::ReverseLeftRight},
+};
+
+static std::unordered_map<FirstPersonCameraPreference, std::string> firstPersonCameraPreferenceNameMap = {
+    {FirstPersonCameraPreference::Standard, "Standard"},
+    {FirstPersonCameraPreference::ReverseUpDown, "Reverse Up/Down"},  
+};
+
+static std::unordered_map<std::string, FirstPersonCameraPreference> nameFirstPersonCameraPreferenceMap = {
+    {"Standard", FirstPersonCameraPreference::Standard},
+    {"Reverse Up/Down", FirstPersonCameraPreference::ReverseUpDown},
+};
+
+static std::unordered_map<GyroscopePreference, std::string> gyroscopePreferenceNameMap = {
+    {GyroscopePreference::Off, "Off"},
+    {GyroscopePreference::On, "On"},  
+};
+
+static std::unordered_map<std::string, GyroscopePreference> nameGyroscopePreferenceMap = {
+    {"Off", GyroscopePreference::Off},
+    {"On", GyroscopePreference::On},
+};
+
+static std::unordered_map<UIDisplayPreference, std::string> uiDisplayPreferenceNameMap = {
+    {UIDisplayPreference::On, "On"},
+    {UIDisplayPreference::Off, "Off"},  
+};
+
+static std::unordered_map<std::string, UIDisplayPreference> nameUIDisplayPreferenceMap = {
+    {"On", UIDisplayPreference::On},
+    {"Off", UIDisplayPreference::Off},
+};
+
 
 SwordMode nameToSwordMode(const std::string& name) {
 
@@ -132,6 +181,106 @@ std::string ProgressionDungeonsToName(const ProgressionDungeons& option) {
     return progressionDungeonsNameMap.at(option);
 }
 
+TargetTypePreference nameToTargetTypePreference(const std::string& name)
+{
+    if (nameTargetTypePreferenceMap.count(name) == 0)
+    {
+        return TargetTypePreference::INVALID;
+    }
+
+    return nameTargetTypePreferenceMap.at(name);
+}
+
+std::string TargetTypePreferenceToName(const TargetTypePreference& preference)
+{
+    if (targetTypePreferenceNameMap.count(preference) == 0)
+    {
+        return "INVALID";
+    }
+
+    return targetTypePreferenceNameMap.at(preference);
+}
+
+CameraPreference nameToCameraPreference(const std::string& name)
+{
+    if (nameCameraPreferenceMap.count(name) == 0)
+    {
+        return CameraPreference::INVALID;
+    }
+
+    return nameCameraPreferenceMap.at(name);
+}
+
+std::string CameraPreferenceToName(const CameraPreference& preference)
+{
+    if (cameraPreferenceNameMap.count(preference) == 0)
+    {
+        return "INVALID";
+    }
+
+    return cameraPreferenceNameMap.at(preference);
+}
+
+FirstPersonCameraPreference nameToFirstPersonCameraPreference(const std::string& name)
+{
+    if (nameFirstPersonCameraPreferenceMap.count(name) == 0)
+    {
+        return FirstPersonCameraPreference::INVALID;
+    }
+
+    return nameFirstPersonCameraPreferenceMap.at(name);
+}
+
+std::string FirstPersonCameraPreferenceToName(const FirstPersonCameraPreference& preference)
+{
+    if (firstPersonCameraPreferenceNameMap.count(preference) == 0)
+    {
+        return "INVALID";
+    }
+
+    return firstPersonCameraPreferenceNameMap.at(preference);
+}
+
+GyroscopePreference nameToGyroscopePreference(const std::string& name)
+{
+    if (nameGyroscopePreferenceMap.count(name) == 0)
+    {
+        return GyroscopePreference::INVALID;
+    }
+
+    return nameGyroscopePreferenceMap.at(name);
+}
+
+std::string GyroscopePreferenceToName(const GyroscopePreference& preference)
+{
+    if (gyroscopePreferenceNameMap.count(preference) == 0)
+    {
+        return "INVALID";
+    }
+
+    return gyroscopePreferenceNameMap.at(preference);
+}
+
+UIDisplayPreference nameToUIDisplayPreference(const std::string& name)
+{
+    if (nameUIDisplayPreferenceMap.count(name) == 0)
+    {
+        return UIDisplayPreference::INVALID;
+    }
+
+    return nameUIDisplayPreferenceMap.at(name);
+}
+
+std::string UIDisplayPreferenceToName(const UIDisplayPreference& preference)
+{
+    if (uiDisplayPreferenceNameMap.count(preference) == 0)
+    {
+        return "INVALID";
+    }
+
+    return uiDisplayPreferenceNameMap.at(preference);
+}
+
 // Make sure there aren't any naming conflicts when adding future settings
 int nameToSettingInt(const std::string& name) {
     if (nameSwordModeMap.count(name) > 0)
@@ -141,6 +290,26 @@ int nameToSettingInt(const std::string& name) {
     if (namePigColorMap.count(name) > 0)
     {
         return static_cast<std::underlying_type_t<PigColor>>(namePigColorMap.at(name));
+    }
+    if (nameTargetTypePreferenceMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<TargetTypePreference>>(nameTargetTypePreferenceMap.at(name));
+    }
+    if (nameCameraPreferenceMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<CameraPreference>>(nameCameraPreferenceMap.at(name));
+    }
+    if (nameFirstPersonCameraPreferenceMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<FirstPersonCameraPreference>>(nameFirstPersonCameraPreferenceMap.at(name));
+    }
+    if (nameGyroscopePreferenceMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<GyroscopePreference>>(nameGyroscopePreferenceMap.at(name));
+    }
+    if (nameUIDisplayPreferenceMap.count(name) > 0)
+    {
+        return static_cast<std::underlying_type_t<UIDisplayPreference>>(nameUIDisplayPreferenceMap.at(name));
     }
     return 0;
 }
@@ -209,10 +378,23 @@ Option nameToSetting(const std::string& name) {
         {"Starting Gear", Option::StartingGear},
         {"Starting HP", Option::StartingHP},
         {"Starting HC", Option::StartingHC},
+        {"Starting Joy Pendants", Option::StartingJoyPendants},
+        {"Starting Skull Necklaces", Option::StartingSkullNecklaces},
+        {"Starting Boko Baba Seeds", Option::StartingBokoBabaSeeds},
+        {"Starting Golden Feathers", Option::StartingGoldenFeathers},
+        {"Starting Knights Crests", Option::StartingKnightsCrests},
+        {"Starting Red Chu Jellys", Option::StartingRedChuJellys},
+        {"Starting Green Chu Jellys", Option::StartingGreenChuJellys},
+        {"Starting Blue Chu Jellys", Option::StartingBlueChuJellys},
         {"Remove Music", Option::RemoveMusic},
         {"Start With Random Item", Option::StartWithRandomItem},
         {"Plandomizer", Option::Plandomizer},
         {"Plandomizer File", Option::PlandomizerFile},
+        {"Target Type", Option::TargetType},
+        {"Camera", Option::Camera},
+        {"First-Person Camera", Option::FirstPersonCamera},
+        {"Gyroscope", Option::Gyroscope},
+        {"UI Display", Option::UIDisplay},
     };
 
     if (optionNameMap.count(name) == 0)
@@ -287,10 +469,23 @@ std::string settingToName(const Option& setting) {
         {Option::StartingGear, "Starting Gear"},
         {Option::StartingHP, "Starting HP"},
         {Option::StartingHC, "Starting HC"},
+        {Option::StartingJoyPendants, "Starting Joy Pendants"},
+        {Option::StartingSkullNecklaces, "Starting Skull Necklaces"},
+        {Option::StartingBokoBabaSeeds, "Starting Boko Baba Seeds"},
+        {Option::StartingGoldenFeathers, "Starting Golden Feathers"},
+        {Option::StartingKnightsCrests, "Starting Knights Crests"},
+        {Option::StartingRedChuJellys, "Starting Red Chu Jellys"},
+        {Option::StartingGreenChuJellys, "Starting Green Chu Jellys"},
+        {Option::StartingBlueChuJellys, "Starting Blue Chu Jellys"},
         {Option::RemoveMusic, "Remove Music"},
         {Option::StartWithRandomItem, "Start With Random Item"},
         {Option::Plandomizer, "Plandomizer"},
         {Option::PlandomizerFile, "Plandomizer File"},
+        {Option::TargetType, "Target Type"},
+        {Option::Camera, "Camera"},
+        {Option::FirstPersonCamera, "First-Person Camera"},
+        {Option::Gyroscope, "Gyroscope"},
+        {Option::UIDisplay, "UI Display"},
     };
 
     if (optionNameMap.count(setting) == 0)
@@ -426,6 +621,22 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.starting_pohs;
     case Option::StartingHC:
         return settings.starting_hcs;
+    case Option::StartingJoyPendants:
+        return settings.starting_joy_pendants;
+    case Option::StartingSkullNecklaces:
+        return settings.starting_skull_necklaces;
+    case Option::StartingBokoBabaSeeds:
+        return settings.starting_boko_baba_seeds;
+    case Option::StartingGoldenFeathers:
+        return settings.starting_golden_feathers;
+    case Option::StartingKnightsCrests:
+        return settings.starting_knights_crests;
+    case Option::StartingRedChuJellys:
+        return settings.starting_red_chu_jellys;
+    case Option::StartingGreenChuJellys:
+        return settings.starting_green_chu_jellys;
+    case Option::StartingBlueChuJellys:
+        return settings.starting_blue_chu_jellys;
     case Option::RemoveMusic:
         return settings.remove_music;
     case Option::StartWithRandomItem:
@@ -434,6 +645,16 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
         return settings.plandomizer;
     case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
         return 0;
+    case Option::TargetType:
+        return static_cast<std::underlying_type_t<TargetTypePreference>>(settings.target_type);   
+    case Option::Camera:
+        return static_cast<std::underlying_type_t<CameraPreference>>(settings.camera);
+    case Option::FirstPersonCamera:
+        return static_cast<std::underlying_type_t<FirstPersonCameraPreference>>(settings.first_person_camera);
+    case Option::Gyroscope:
+        return static_cast<std::underlying_type_t<GyroscopePreference>>(settings.gyroscope);
+    case Option::UIDisplay:
+        return static_cast<std::underlying_type_t<UIDisplayPreference>>(settings.ui_display);
     default:
         return 0;
 	}
@@ -565,6 +786,22 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.starting_pohs = value; return;
     case Option::StartingHC:
         settings.starting_hcs = value; return;
+    case Option::StartingJoyPendants:
+        settings.starting_joy_pendants = value; return;
+    case Option::StartingSkullNecklaces:
+        settings.starting_skull_necklaces = value; return;
+    case Option::StartingBokoBabaSeeds:
+        settings.starting_boko_baba_seeds = value; return;
+    case Option::StartingGoldenFeathers:
+        settings.starting_golden_feathers = value; return;
+    case Option::StartingKnightsCrests:
+        settings.starting_knights_crests = value; return;
+    case Option::StartingRedChuJellys:
+        settings.starting_red_chu_jellys = value; return;
+    case Option::StartingGreenChuJellys:
+        settings.starting_green_chu_jellys = value; return;
+    case Option::StartingBlueChuJellys:
+        settings.starting_blue_chu_jellys = value; return;
     case Option::RemoveMusic:
         settings.remove_music = value; return;
     case Option::StartWithRandomItem:
@@ -573,6 +810,16 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
         settings.plandomizer = value; return;
     case Option::PlandomizerFile: //cant set this like everything else, just here as placeholder
         return;
+    case Option::TargetType:
+        settings.target_type = static_cast<TargetTypePreference>(value); return;
+    case Option::Camera:
+        settings.camera = static_cast<CameraPreference>(value); return;
+    case Option::FirstPersonCamera:
+        settings.first_person_camera = static_cast<FirstPersonCameraPreference>(value); return;
+    case Option::Gyroscope:
+        settings.gyroscope = static_cast<GyroscopePreference>(value); return;
+    case Option::UIDisplay:
+        settings.ui_display = static_cast<UIDisplayPreference>(value); return;
     default:
         return;
   }

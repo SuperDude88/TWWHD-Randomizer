@@ -19,6 +19,7 @@ add_compile_definitions(QT_GUI=1)
 if(ENABLE_DEBUG)
   message("Debugging is ON")
   add_compile_definitions(ENABLE_DEBUG)
+  add_compile_options(-g)
 endif()
 
 if(ENABLE_TIMING)
