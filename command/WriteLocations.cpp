@@ -1,6 +1,7 @@
 #include "WriteLocations.hpp"
 
 #include <limits>
+#include <type_traits>
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
@@ -61,7 +62,7 @@ constexpr uint8_t getLowestSetBit(uint32_t mask) {
     return lowestSetIndex;
 }
 
-template<typename T>
+template<typename T> requires std::is_arithmetic_v<T>
 ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
     const uint8_t shiftAmount = getLowestSetBit(mask);
     if (shiftAmount == 0xFF) LOG_ERR_AND_RETURN(ModificationError::INVALID_MASK)
@@ -342,7 +343,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
         if (symbol[0] == '@') { //support hardcoding addresses for checks like zunari (where a symbol and address are needed)
             const std::string offsetStr = symbol.substr(1);
             address = std::strtoul(offsetStr.c_str(), nullptr, 0);
-            if (address == 0 || address == std::numeric_limits<unsigned long>::max())
+            if (address == 0 || address == std::numeric_limits<decltype(address)>::max())
             {
                 LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
             }

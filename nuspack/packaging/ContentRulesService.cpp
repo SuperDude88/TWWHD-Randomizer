@@ -17,7 +17,7 @@ Content* setNewContentRecursiveRule(std::string path, const std::string& pattern
     if(cur_entry.children.size() == 0){
         std::string filePath = path;
         if(std::regex_match(filePath, p)) {
-            result = &*targetContents.GetNewContent(rule.details);
+            result = targetContents.GetNewContent(rule.details);
         }
     }
     for(FSTEntry& child : cur_entry.children){
@@ -27,7 +27,7 @@ Content* setNewContentRecursiveRule(std::string path, const std::string& pattern
         else {
             std::string filePath = path + child.name;
             if(std::regex_match(filePath, p)){    
-                result = &*targetContents.GetNewContent(rule.details);
+                result = targetContents.GetNewContent(rule.details);
                 child.setContent(result);
             }
         }           
@@ -44,33 +44,33 @@ bool setContentRecursiveRule(std::string path, const std::string& pattern, FSTEn
     path += cur_entry.name + "/";
     std::regex p(pattern);
     bool result = false;
-    if(cur_entry.children.size() == 0){
+    if(cur_entry.children.size() == 0) {
         std::string filePath = path;
-        if(std::regex_match(filePath, p)){
+        if(std::regex_match(filePath, p)) {
             if(cur_entry.children.empty()) {
                 cur_entry.setContent(cur_content);
             }
            
             return true;
         }
-        else{
+        else {
             return false;
         }
     }
     for(FSTEntry& child : cur_entry.children){
         if(child.isDir()) {
             bool child_result = setContentRecursiveRule(path,pattern,child,targetContents,contentDetails);
-            if(child_result){
+            if(child_result) {
                 cur_entry.setContent(cur_content_first);
                 result = true;
             }
         }
-        else{
+        else {
             std::string filePath = path + child.name;
-            if(std::regex_match(filePath, p)){
+            if(std::regex_match(filePath, p)) {
                 const auto& entry = std::get<FSTEntry::FileEntry>(child.entry);
-                if(cur_content_size > 0 && (cur_content_size + entry.fileSize) > MAX_CONTENT_LENGTH){
-                    cur_content = &*targetContents.GetNewContent(contentDetails);
+                if(cur_content_size > 0 && (cur_content_size + entry.fileSize) > MAX_CONTENT_LENGTH) {
+                    cur_content = targetContents.GetNewContent(contentDetails);
                     cur_content_size = 0;
                 }
                 cur_content_size += entry.fileSize;
@@ -81,7 +81,7 @@ bool setContentRecursiveRule(std::string path, const std::string& pattern, FSTEn
         }           
     }
 
-    if(result){
+    if(result) {
         cur_entry.setContent(cur_content_first);
     }
     
@@ -94,7 +94,7 @@ void applyRules(FSTEntry& root, Contents& targetContents, const ContentRules& ru
             setNewContentRecursiveRule("", rule.pattern, root, targetContents, rule);
         }
         else {
-            cur_content = &*targetContents.GetNewContent(rule.details);
+            cur_content = targetContents.GetNewContent(rule.details);
             cur_content_first = cur_content;
             cur_content_size = 0L;
 

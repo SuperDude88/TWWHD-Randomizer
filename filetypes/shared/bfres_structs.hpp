@@ -3,15 +3,14 @@
 #include <vector>
 #include <variant>
 #include <fstream>
-#include <type_traits>
+#include <concepts>
 #include <limits>
+
 #include <utility/endian.hpp>
 
-template<typename T>
+template<typename T> requires std::signed_integral<T>
 class RelOffset {
 public:
-    static_assert(std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed, "RelOffset<T> must be signed integer type!");
-
     T offset;
 
     operator T() { return offset; }
@@ -21,7 +20,7 @@ public:
     }
 
     void read(std::istream& in) {
-        location = in.tellg();
+        location = static_cast<T>(in.tellg());
         in.read(reinterpret_cast<char*>(&relOffset), sizeof(relOffset));
         Utility::Endian::toPlatform_inplace(Utility::Endian::Type::Big, relOffset);
         offset = location + relOffset;

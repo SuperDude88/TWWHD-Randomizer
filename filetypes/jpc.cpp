@@ -9,7 +9,7 @@
 
 using eType = Utility::Endian::Type;
 
-std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, unsigned int offset, uint8_t dataCount) {
+std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, const std::streamoff offset, const uint8_t dataCount) {
 	in.seekg(offset, std::ios::beg);
 
 	std::vector<JParticle::ColorAnimationKeyframe> table;
@@ -1378,7 +1378,7 @@ namespace FileTypes {
 		out.write(reinterpret_cast<const char*>(&num_particles), sizeof(num_particles));
 		out.write(reinterpret_cast<const char*>(&num_textures), sizeof(num_textures));
 
-		out.seekp(0x20, std::ios::beg);
+		Utility::seek(out, 0x20, std::ios::beg);
 
 		for (Particle& particle : particles) {
 			LOG_AND_RETURN_IF_ERR(particle.save_changes(out, textures));

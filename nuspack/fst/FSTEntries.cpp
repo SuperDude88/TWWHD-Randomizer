@@ -22,16 +22,17 @@ std::vector<FSTEntry*> FSTEntry::GetFSTEntriesByContent(const Content& content_)
     std::vector<FSTEntry*> entries;
     if (this->content == nullptr)
     {
+        //TODO: better error handling
         if (isDir())
         {
-            //Console.Error.WriteLine($"The folder \"{filename}\" is empty. Please add a dummy file to it.");
+            ErrorLog::getInstance().log("The folder " + name + " is empty. Please add a dummy file to it.");
         }
         else
         {
-            //Console.Error.WriteLine($"The file \"{filename}\" is not assigned to any content (.app).");
-            //Console.Error.WriteLine("Please delete it or write a corresponding content rule.");
+            ErrorLog::getInstance().log("The file " + name + " is not assigned to any content (.app). Please delete it or write a corresponding content rule.");
         }
-        //Environment.Exit(0);
+        
+        return entries;
     }
     else if (this->content == content_)
     {
@@ -135,6 +136,12 @@ FSTEntry* FSTEntry::UpdateDirRefs() {
 }
 
 void FSTEntry::writeToStream(std::ostream& out) {
+    //TODO: better error handling
+    if(content == nullptr) {
+        //error
+        return;
+    }
+    
     if (isRoot)
     {
         out.write("\x01", 1);

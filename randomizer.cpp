@@ -33,6 +33,7 @@
 #include <unistd.h> //for chdir
 #include <sysapp/title.h>
 #include <platform/wiiutitles.hpp>
+#include <platform/channel.hpp>
 
 static std::vector<Utility::titleEntry> wiiuTitlesList{};
 #endif
@@ -59,9 +60,9 @@ private:
 	unsigned int numPlayers = 1;
 	//int playerId = 1;
 
-	[[nodiscard]] bool checkBackupOrDump() {
-
+	[[nodiscard]] bool checkBase() {
 		using namespace std::filesystem;
+
 		Utility::platformLog("Verifying dump...\n");
 		UPDATE_DIALOG_LABEL("Verifying dump...");
 		UPDATE_DIALOG_VALUE(25);
@@ -72,24 +73,17 @@ private:
 			//ErrorLog::getInstance().log("Could not find code/content/meta folders at base directory!");
 
 			#ifdef DEVKITPRO
-				Utility::platformLog("Attempting to dump game\n");
+				//Utility::platformLog("Attempting to dump game\n");
 				if(!SYSCheckTitleExists(0x0005000010143500)) {
 					Utility::platformLog("Could not find game! You must have a digital install of The Wind Waker HD (NTSC-U / US version).\n");
 					std::this_thread::sleep_for(std::chrono::seconds(3));
 					return false;
 				}
-
-				const std::vector<Utility::titleEntry> titles = *Utility::getLoadedTitles();
-				auto game = std::find_if(titles.begin(), titles.end(),
-					[](const Utility::titleEntry& entry) {return entry.titleLowID == 0x10143500; }
-				);
-				if(game == titles.end()) {
-					Utility::platformLog("Title not loaded\n");
+				else {
+					Utility::platformLog("Invalid game path! Game is installed but the path is different (this should not be possible).\n");
 					std::this_thread::sleep_for(std::chrono::seconds(3));
 					return false;
 				}
-
-				if(!Utility::dumpGame(*game, {.dumpTypes = Utility::dumpTypeFlags::Game}, base)) return false;
 			#else
 				// Utility::platformLog("Invalid path: you must specify the path to a decrypted dump of The Wind Waker HD (NTSC-U / US version).\n");
 				ErrorLog::getInstance().log("Invalid base game path: you must specify the path to a\ndecrypted dump of The Wind Waker HD (NTSC-U / US version).");
@@ -131,6 +125,60 @@ private:
 
 		return true;
 	}
+
+	#ifdef DEVKITPRO
+	[[nodiscard]] bool checkOutput() {
+		Utility::platformLog("Checking output channel...\n");
+
+		//Utility::platformLog("Attempting to dump game\n");
+		if(!SYSCheckTitleExists(0x0005000010143599)) {
+			Utility::platformLog("Creating output channel...\n");
+			
+			if(!packFreeChannel()) return false;
+			
+			Utility::platformLog("Installing output channel...\n");
+			if(!installFreeChannel()) return false;
+			
+			Utility::platformLog("Installed channel, copying game data...\n");
+			std::filesystem::remove(g_session.getOutputDir() / "content/filler.txt");
+			if(!Utility::copy(g_session.getBaseDir() / "content", g_session.getOutputDir() / "content")) return false;
+		}
+
+		Utility::platformLog("Verifying output channel...\n");
+
+		//Double check the meta.xml
+		tinyxml2::XMLDocument metaXml;
+		std::ifstream meta = g_session.getOutputDir() / "meta/meta.xml";
+		if(!meta.is_open()) {
+			ErrorLog::getInstance().log("Failed extracting meta.xml");
+			return false;
+		}
+
+		if(tinyxml2::XMLError err = metaXml.LoadFile(meta); err != tinyxml2::XMLError::XML_SUCCESS) {
+			ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
+			return false;
+		}
+		const tinyxml2::XMLElement* root = metaXml.RootElement();
+
+		const std::string titleId = root->FirstChildElement("title_id")->GetText();
+		if(titleId != "0005000010143599")  {
+			ErrorLog::getInstance().log("meta.xml does not match - custom channel is not valid");
+			ErrorLog::getInstance().log("ID " + titleId);
+			std::this_thread::sleep_for(std::chrono::seconds(3));
+			return false;
+		}
+
+		const std::string region = root->FirstChildElement("region")->GetText();
+		if(region != "00000002") {
+			// Utility::platformLog("Incorrect region - game must be a NTSC-U / US copy\n");
+			ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
+			std::this_thread::sleep_for(std::chrono::seconds(3));
+			return false;
+		}
+
+		return true;
+	}
+	#endif
 
 	void clearOldLogs() {
 		if(std::filesystem::is_regular_file(APP_SAVE_PATH "Debug Log.txt")) {
@@ -230,7 +278,7 @@ private:
 				return true;
 			});
 
-			dzrEntry.delayUntil("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin");
+			entry.addDependent(dzrEntry.getRoot());
 		}
 
 		return true;
@@ -561,12 +609,12 @@ public:
 
 		// Go through the setting testing process if mass testing is turned on and ignore everything else
 		#ifdef MASS_TESTING
-        #if TEST_COUNT
-			      testSettings(config, TEST_COUNT);
-        #else
-            massTest(config);
-        #endif
-        return 0;
+    		#if TEST_COUNT
+				testSettings(config, TEST_COUNT);
+    		#else
+    		    massTest(config);
+    		#endif
+    		return 0;
 		#endif
 
     std::hash<std::string> strHash;
@@ -640,9 +688,15 @@ public:
 			return 0;
 		#endif
 
-		if(!checkBackupOrDump()) {
+		if(!checkBase()) {
 			return 1;
 		}
+
+		#ifdef DEVKITPRO
+			if(!checkOutput()) {
+				return 1;
+			}
+		#endif
 
 		//IMPROVEMENT: custom model things
 
@@ -712,6 +766,12 @@ public:
 				return 1;
 			}
 		}
+		if(!g_session.isCached("content/Common/Particle/Particle.szs")) {
+			if(!g_session.restoreGameFile("content/Common/Particle/Particle.szs")) {
+				ErrorLog::getInstance().log("Failed to restore Particle.szs!");
+				return 1;
+			}
+		}
 		if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
 			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
 				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
@@ -771,11 +831,11 @@ public:
 		return 0;
 	}
 
-	bool restoreFromBackup() {
-		Utility::platformLog("Restoring backup\n");
+	//bool restoreFromBackup() {
+	//	Utility::platformLog("Restoring backup\n");
 
-		return Utility::copy(g_session.getBaseDir(), g_session.getOutputDir());
-	}
+	//	return Utility::copy(g_session.getBaseDir(), g_session.getOutputDir());
+	//}
 };
 
 int mainRandomize() {
@@ -817,7 +877,7 @@ int mainRandomize() {
 		Randomizer rando(load);
 
 		// IMPROVEMENT: issue with seekp, find better solution than manual padding?
-		// TODO: test uncompressed things
+		// TODO: make things zoom
 		// TODO: do a hundo seed to test everything
 
 		// TODO: text wrapping on drc dungeon map
