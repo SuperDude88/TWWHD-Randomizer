@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>968</width>
+    <width>1072</width>
     <height>764</height>
    </rect>
   </property>
@@ -28,7 +28,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>950</width>
+         <width>1054</width>
          <height>574</height>
         </rect>
        </property>
@@ -1872,7 +1872,7 @@
           </widget>
           <widget class="QWidget" name="tracker_tab">
            <property name="styleSheet">
-            <string notr="true">background: white</string>
+            <string notr="true">background: white;</string>
            </property>
            <attribute name="title">
             <string>Tracker</string>
@@ -1880,8 +1880,8 @@
            <widget class="QPushButton" name="start_tracker_button">
             <property name="geometry">
              <rect>
-              <x>430</x>
-              <y>520</y>
+              <x>900</x>
+              <y>10</y>
               <width>80</width>
               <height>24</height>
              </rect>
@@ -1948,7 +1948,7 @@
                        <number>0</number>
                       </property>
                       <property name="bottomMargin">
-                       <number>0</number>
+                       <number>5</number>
                       </property>
                       <item>
                        <layout class="QGridLayout" name="inventory_layout_nayrus_pearl">
@@ -1989,7 +1989,7 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="location_list_widget" native="true">
+           <widget class="QStackedWidget" name="tracker_locations_widget">
             <property name="geometry">
              <rect>
               <x>460</x>
@@ -1998,7 +1998,156 @@
               <height>346</height>
              </rect>
             </property>
-            <layout class="QGridLayout" name="location_list_layout"/>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="page_3">
+             <property name="cursor">
+              <cursorShape>ArrowCursor</cursorShape>
+             </property>
+             <widget class="QWidget" name="overworld_map_widget" native="true">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>364</width>
+                <height>346</height>
+               </rect>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <layout class="QGridLayout" name="overworld_map_layout_2">
+               <property name="leftMargin">
+                <number>7</number>
+               </property>
+               <property name="topMargin">
+                <number>11</number>
+               </property>
+               <property name="rightMargin">
+                <number>5</number>
+               </property>
+               <property name="bottomMargin">
+                <number>3</number>
+               </property>
+               <property name="spacing">
+                <number>2</number>
+               </property>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="page_4">
+             <widget class="QWidget" name="location_list_widget" native="true">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>364</width>
+                <height>346</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="cursor">
+               <cursorShape>ArrowCursor</cursorShape>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <layout class="QGridLayout" name="location_list_layout">
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>1</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
+               <property name="horizontalSpacing">
+                <number>1</number>
+               </property>
+               <property name="verticalSpacing">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="location_list_close_button">
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">text-align: left;
+color: black;
+font-size: 15px;</string>
+                 </property>
+                 <property name="text">
+                  <string>X Close</string>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <layout class="QGridLayout" name="specific_locations_layout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetFixedSize</enum>
+                 </property>
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                </layout>
+               </item>
+               <item row="2" column="0">
+                <spacer name="verticalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="other_areas_widget" native="true">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>365</y>
+              <width>1036</width>
+              <height>181</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <layout class="QGridLayout" name="other_areas_layout">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="spacing">
+              <number>3</number>
+             </property>
+            </layout>
            </widget>
           </widget>
          </widget>

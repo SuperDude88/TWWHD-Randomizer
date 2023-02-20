@@ -268,8 +268,8 @@ void World::determineChartMappings()
     for (size_t i = 0; i < charts.size(); i++)
     {
         auto chart = charts[i];
-        chartMappings[i] = chart;
         size_t sector = i + 1;
+        chartMappings[i] = chart;
 
         // Set the sunken treasure location as the chain location for each treasure/triforce chart in the itemEntries
         auto locationName = roomIndexToIslandName(sector) + " - Sunken Treasure";
@@ -303,7 +303,7 @@ bool World::chartLeadsToSunkenTreasure(const Location& location, const std::stri
         return false;
     }
     auto islandName = location.getName().substr(0, location.getName().find(" - Sunken Treasure"));
-    size_t islandNumber = islandNameToRoomIndex(islandName);
+    size_t islandNumber = islandNameToRoomIndex(islandName) - 1;
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
 
@@ -324,11 +324,10 @@ World::WorldLoadingError World::determineProgressionLocations()
     LOG_TO_DEBUG("Progression Locations: [");
     for (auto& [name, location] : locationEntries)
     {
-        // If all of the location categories are set as progression, then this is a location which
+        // If all of the location categories for a location are set as progression, then this is a location which
         // is allowed to contain progression items (but it won't necessarily get one)
         if (std::all_of(location.categories.begin(), location.categories.end(), [this, &location = location](LocationCategory category)
         {
-
             if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
             return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons != ProgressionDungeons::Disabled)  ||
@@ -358,6 +357,7 @@ World::WorldLoadingError World::determineProgressionLocations()
         {
             LOG_TO_DEBUG("\t" + name);
             location.progression = true;
+            
         }
         else if (location.categories.contains(LocationCategory::PlandomizerProgression))
         {

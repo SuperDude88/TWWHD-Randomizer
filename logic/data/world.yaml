@@ -1963,8 +1963,8 @@
 
 - Name: DRC Hub Room Upper Bridge
   Dungeon: Dragon Roost Cavern
-  Locations:
-      Dragon Roost Cavern - Hub Room Tingle Chest: Bombs
+#   Locations:
+#       Dragon Roost Cavern - Hub Room Tingle Chest: Bombs
   Exits:
       DRC Dark Room Past Wooden Barrier: Nothing
       DRC Triple Bokoblin Room: Nothing

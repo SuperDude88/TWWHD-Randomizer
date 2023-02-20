@@ -94,6 +94,10 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         tracker.cpp
+        tracker_area_label.h
+        tracker_area_label.cpp
+        tracker_area_widget.h
+        tracker_area_widget.cpp
         tracker_location_label.h
         tracker_location_label.cpp
         tracker_inventory_button.cpp
