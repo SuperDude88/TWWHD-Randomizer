@@ -57,6 +57,8 @@ public:
         inline size_t incrementPrereq() { return ++numPrereqs; }
         inline size_t decrementPrereq() { return --numPrereqs; }
         inline size_t getNumPrereqs() const { return numPrereqs; }
+        inline void setFinished() { finished = true; }
+        inline bool isFinished() const { return finished; }
         inline const std::shared_ptr<CacheEntry> getParent() const { return parent; };
         const std::shared_ptr<CacheEntry> getRoot() const;
 
@@ -70,6 +72,7 @@ public:
         std::unique_ptr<FileType> data = nullptr;
         std::vector<Action_t> actions = {}; //store actions as lambdas to execute in order
         std::atomic<size_t> numPrereqs = 0;
+        std::atomic<bool> finished = false;
     
         friend class RandoSession;
     };

@@ -766,6 +766,12 @@ public:
 				return 1;
 			}
 		}
+		if(!g_session.isCached("content/Common/Particle/Particle.szs")) {
+			if(!g_session.restoreGameFile("content/Common/Particle/Particle.szs")) {
+				ErrorLog::getInstance().log("Failed to restore Particle.szs!");
+				return 1;
+			}
+		}
 		if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
 			if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
 				ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
