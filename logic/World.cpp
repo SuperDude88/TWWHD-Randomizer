@@ -1325,7 +1325,6 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     Yaml::Node itemDataTree;
     std::string itemData;
     Utility::getFileContents(itemDataPath, itemData, true);
-    std::cout << "here" << std::endl;
     itemData = Utility::Str::InsertUnicodeReplacements(itemData);
     Yaml::Parse(itemDataTree, itemData);
     for (auto itemIt = itemDataTree.Begin(); itemIt != itemDataTree.End(); itemIt++)
@@ -1339,7 +1338,6 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
             return 1;
         }
     }
-    std::cout << "done" << std::endl;
 
     // load world graph
     Yaml::Node worldDataTree;
