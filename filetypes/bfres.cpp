@@ -344,9 +344,8 @@ namespace FileTypes {
     FRESError resFile::replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile) {
         const uint32_t originalLen = fresHeader.embeddedFiles[fileIndex].fileLength;
 
-        std::string inData;
         newFile.seekg(0, std::ios::end);
-        inData.resize(newFile.tellg());
+        std::string inData(newFile.tellg(), '\0');
         newFile.seekg(0, std::ios::beg);
         if (!newFile.read(&inData[0], inData.size())) {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
@@ -359,6 +358,25 @@ namespace FileTypes {
             for (unsigned int i = fileIndex + 1; i < fresHeader.embeddedFiles.size(); i++) {
                 fresHeader.embeddedFiles[i].dataOffset = fresHeader.embeddedFiles[i].dataOffset + (inData.size() - originalLen); //Change offset based on how much the previous file shifted it
                 files[i].fileOffset = files[i].fileOffset + (inData.size() - originalLen);
+            }
+        }
+
+        fileData.replace(fresHeader.embeddedFiles[fileIndex].dataOffset + fresHeader.embeddedFiles[fileIndex].location - 0x6C, originalLen, inData); //Offset is relative to the location it's stored in the file, location is relative to file start so we take away the header size
+        return FRESError::NONE;
+    }
+
+    FRESError resFile::replaceEmbeddedFile(const unsigned int fileIndex, std::stringstream& newFile) {
+        const uint32_t originalLen = fresHeader.embeddedFiles[fileIndex].fileLength;
+
+        const std::string& inData = newFile.str();
+        fresHeader.embeddedFiles[fileIndex].fileLength = inData.size();
+        const int64_t sizeDiff = inData.size() - originalLen;
+
+        //TODO: change the way the file list/embedded file list is handled so it doesn't completely suck
+        if (fileIndex != fresHeader.embeddedFiles.size() - 1) { //Check if it is the last embedded file
+            for (unsigned int i = fileIndex + 1; i < fresHeader.embeddedFiles.size(); i++) {
+                fresHeader.embeddedFiles[i].dataOffset += sizeDiff; //Change offset based on how much the previous file shifted it
+                files[i].fileOffset += sizeDiff;
             }
         }
 
