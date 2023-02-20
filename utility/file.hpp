@@ -81,6 +81,21 @@ namespace Utility
 		#endif
 	}
 
+	//from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
+	bool isRoot(const std::filesystem::path& fsPath);
+
+	//from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L193
+	inline bool dirExists(const std::filesystem::path& fsPath) {
+		#ifdef DEVKITPRO
+			static struct stat existStat;
+			if (isRoot(fsPath)) return true;
+    		if (lstat(fsPath.string().c_str(), &existStat) == 0 && S_ISDIR(existStat.st_mode)) return true;
+    		return false;
+		#else
+			return std::filesystem::is_directory(fsPath);
+		#endif
+	}
+
 	inline bool create_directories(const std::filesystem::path& fsPath) {
 		#ifdef DEVKITPRO
 			std::string temp = fsPath.string();
@@ -88,7 +103,9 @@ namespace Utility
 			for(size_t i = 0; i < temp.size(); i++) {
 				if(temp[i] == '/') {
 					const std::string& sub = temp.substr(0, i);
-                	if (!std::filesystem::is_directory(sub)) mkdir(sub.c_str(), ACCESSPERMS);
+                	if (!dirExists(sub)) {
+						mkdir(sub.c_str(), ACCESSPERMS);
+					}
 				}
 			}
 			mkdir(temp.c_str(), ACCESSPERMS);

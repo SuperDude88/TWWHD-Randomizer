@@ -1,8 +1,4 @@
 #include "tweaks.hpp"
-#include "command/RandoSession.hpp"
-#include "command/WriteLocations.hpp"
-#include "filetypes/baseFiletype.hpp"
-#include <initializer_list>
 
 #define _USE_MATH_DEFINES
 
@@ -16,6 +12,7 @@
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
 #include <libs/json.hpp>
+#include <asm/patches/asm_constants.hpp>
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>
 #include <filetypes/bfres.hpp>
@@ -191,7 +188,7 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 				if (std::strncmp(&actor->data[0], "Ship", 4) == 0) {
 					actor->data.replace(0xC, 0xC, ship_spawn_0.data, 0x0, 0xC);
 					actor->data.replace(0x1A, 0x2, ship_spawn_0.data, 0xC, 0x2);
-					actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00", 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
+					actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00"s, 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
 					break;
 				}
 			}
@@ -201,7 +198,7 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 
 		return true;
 	});
-	stage.delayUntil(path);
+	room.addDependent(stage.getRoot());
 
 	return TweakError::NONE;
 }
@@ -822,10 +819,8 @@ TweakError update_name_and_icon() {
 		metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
 		metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-		#ifndef DEVKITPRO //skip title ID change on console for now, doesnt work without custom channel
-			//change the title ID so it gets its own channel when repacked
-			metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
-		#endif
+		//change the title ID so it gets its own channel when repacked
+		metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
 		
 		tinyxml2::XMLPrinter printer;
 		meta.Print(&printer);
@@ -833,9 +828,7 @@ TweakError update_name_and_icon() {
 
 		return true;
 	});
-	#ifdef DEVKITPRO
-		return TweakError::NONE; //skip title ID change on wii u for now, doesnt work when its using the original channel
-	#endif
+	
 	RandoSession::CacheEntry& appEntry = g_session.openGameFile("code/app.xml");
 	appEntry.addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
@@ -1564,8 +1557,8 @@ TweakError add_cross_dungeon_warps() {
 		return true;
 	});
 	
-	totg.delayUntil("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
-	ff.delayUntil("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene035.jpc");
+	drc.addDependent(totg.getParent()); //Want the file above the JPC entry
+	drc.addDependent(ff.getParent()); //Want the file above the JPC entry
 
 	return TweakError::NONE;
 }
@@ -2450,8 +2443,7 @@ TweakError fix_stone_head_bugs() {
 		uint32_t status_bits = elfUtil::read_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100));
 		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
 		status_bits &= ~0x00000080;
-		Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
-		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits));
+		RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits)); //write function handles byteswap back
 
 		return true;
 	});
@@ -2526,7 +2518,7 @@ TweakError update_entrance_events() {
 		return true;
 	});
 
-	entry.delayUntil("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr");
+	dzr.addDependent(entry.getRoot());
 
 	//This entrance isn't randomized yet, code can be used to patch it if it is ever shuffled
 	//ChunkEntry* gallery = dzr.entries_by_type("SCLS")[8];

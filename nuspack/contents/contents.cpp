@@ -1,5 +1,4 @@
 #include "contents.hpp"
-#include "utility/string.hpp"
 
 #include <filesystem>
 
@@ -7,6 +6,7 @@
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
 #include <utility/math.hpp>
+#include <utility/string.hpp>
 
 #include <gui/update_dialog_header.hpp>
 
@@ -199,12 +199,9 @@ void Content::writeToStream(std::ostream& out) {
 
 
 
-std::list<Content>::iterator Contents::GetNewContent(const ContentDetails& details, const bool& isFSTContent) {
-    contents.emplace_back(contents.size(), contents.size(), details.entriesFlag, details.groupID, details.parentID, details.isHashed, isFSTContent);
-
-    std::list<Content>::iterator it = contents.begin();
-    std::advance(it, contents.size() - 1);
-    return it;
+Content* Contents::GetNewContent(const ContentDetails& details, const bool& isFSTContent) {
+    Content& newContent = contents.emplace_back(contents.size(), contents.size(), details.entriesFlag, details.groupID, details.parentID, details.isHashed, isFSTContent);
+    return &newContent;
 }
 
 void Contents::DeleteContent(const size_t& idx) {

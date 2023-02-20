@@ -5,8 +5,6 @@
 
 #include <logic/GameItem.hpp>
 
-constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 70;
-
 enum struct PigColor : uint8_t {
     BLACK = 0,
     PINK,

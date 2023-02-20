@@ -20,12 +20,8 @@ void readFiles(const std::filesystem::path& dir, FSTEntry& parent, const bool& n
     for(auto item : std::filesystem::directory_iterator(dir)) {
         if(std::filesystem::is_regular_file(item)) {
             FSTEntry& child = parent.children.emplace_back();
-            
-        #if defined(__GNUG__) && !defined(__clang__)
-            child.entry.emplace<FSTEntry::FileEntry>(0, 0).fileSize = std::filesystem::file_size(item); // BUG: GCC complains if there's no arguments to the emplace for some reason
-        #else
-            child.entry.emplace<FSTEntry::FileEntry>().fileSize = std::filesystem::file_size(item); //clang errors with arguments
-        #endif
+            child.entry.emplace<FSTEntry::FileEntry>(std::filesystem::file_size(item));
+
             child.path = item.path();
             child.parent = &parent;
             child.name = child.path.filename().string();
@@ -35,6 +31,7 @@ void readFiles(const std::filesystem::path& dir, FSTEntry& parent, const bool& n
         if(std::filesystem::is_directory(item)) {
             FSTEntry& child = parent.children.emplace_back();
             child.entry.emplace<FSTEntry::DirEntry>();
+            
             readFiles(item, parent.children.back(), notInNUS);
             child.path = item.path();
             child.parent = &parent;
@@ -43,19 +40,19 @@ void readFiles(const std::filesystem::path& dir, FSTEntry& parent, const bool& n
     }
 }
 
-NUSPackage NUSPackage::createNew(const PackageConfig& config) {
-    NUSPackage package(Ticket(config.info.titleID, config.encryptionKey, config.encryptKeyWith));
-    FileTypes::FSTFile& fst = package.fst;
-    FileTypes::TMDFile& tmd = package.tmd;
-
-    fst.root.setContent(&package.contents.GetFSTContent());
+NUSPackage::NUSPackage(const PackageConfig& config) :
+    ticket(config.info.titleID, config.encryptionKey, config.encryptKeyWith),
+    contents(),
+    fst(contents),
+    tmd(ticket, contents),
+    outputDir()
+{
+    fst.root.setContent(&contents.GetFSTContent());
     readFiles(config.dir, fst.root, false);
-    applyRules(fst.root, package.contents, config.rules);
+    applyRules(fst.root, contents, config.rules);
 
     fst.Update();
     tmd.update(config.info);
-
-    return package;
 }
 
 void NUSPackage::PackContents(const std::filesystem::path& out) {
