@@ -1396,7 +1396,7 @@ TweakError add_pirate_ship_to_windfall() {
 	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 		
-		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
+		// RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
 		RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, new_second_scene_wave_ptr), isle_link_0_aw_index));
 
 		return true;
