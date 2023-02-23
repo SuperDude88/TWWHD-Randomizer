@@ -88,6 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Setup Tracker
     initialize_tracker();
+    load_tracker_autosave();
 }
 
 MainWindow::~MainWindow()
