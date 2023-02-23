@@ -11,6 +11,7 @@
 	"custom_warp_pot_prm_color": ".text",
 	"doc_bandam_green_potion_slot_item_id": ".text",
 	"doc_bandam_blue_potion_slot_item_id": ".text",
+	"dampa_minigame_item_id": ".text",
 	"makar_possible_wt_spawn_positions": ".text",
 	"medli_possible_et_spawn_positions": ".text",
 	"num_triforce_shards_to_start_with": ".text",
