@@ -16,10 +16,14 @@
 #define LOCATION_TRACKER_OVERWORLD 0
 #define LOCATION_TRACKER_SPECIFIC_AREA 1
 
+static std::unordered_map<Item, std::vector<LocationPool>> ownDungeonKeyLocations;
+
 void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool& markedItems, const std::vector<std::string>& markedLocations)
 {
     // Build the world used for the tracker
     auto& trackerWorld = trackerWorlds[0];
+    trackerLocations.clear();
+    trackerInventory.clear();
 
     trackerWorld = World();
     trackerWorld.setWorldId(0);
@@ -59,6 +63,8 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
             trackerWorld.locationEntries[locName].marked = true;
         }
     }
+
+    calculate_own_dungeon_key_locations();
 
     std::sort(trackerLocations.begin(), trackerLocations.end(), [](Location* loc1, Location* loc2){return loc1->sortPriority < loc2->sortPriority;});
     auto startingInventory = trackerWorld.getStartingItems();
@@ -152,6 +158,10 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
         else if (areaName == "Wind Temple - ")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Wind Temple - Molgera Heart Container"]);
+        }
+        else if (areaName == "Ganon's Tower - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Ganon's Tower - Defeat Ganondorf"]);
         }
     }
 }
@@ -440,6 +450,41 @@ void MainWindow::initialize_tracker()
 void MainWindow::update_tracker()
 {
     getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations);
+
+    // Apply any own dungeon items after we get the accessible locations
+    auto trackerInventoryExtras = trackerInventory;
+    bool addedItems = false;
+    do
+    {
+        addedItems = false;
+        for (auto& [item, locationPools] : ownDungeonKeyLocations)
+        {
+            auto itemCount = elementCountInPool(item, trackerInventoryExtras);
+
+            for (auto i = itemCount; i < locationPools.size(); i++)
+            {
+                // If all the locations in the pool are either marked or accessible
+                // then add the key to the inventory calculation
+                auto& locPool = locationPools[i];
+                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){return loc->marked || loc->hasBeenFound;}))
+                {
+                    addElementToPool(trackerInventoryExtras, item);
+                    addedItems = true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (addedItems)
+        {
+            getAccessibleLocations(trackerWorlds, trackerInventoryExtras, trackerLocations);
+        }
+    }
+    while (addedItems);
+
     update_tracker_areas_and_autosave();
 
     // No reason to update labels if we're displaying the overworld
@@ -473,7 +518,7 @@ void MainWindow::update_tracker()
             auto newLabel = new TrackerLocationLabel(currentPointSize);
             newLabel->set_location(loc);
             location_list_layout->addWidget(newLabel, row, col);
-            connect(newLabel, &TrackerLocationLabel::location_label_clicked, this, &MainWindow::update_tracker_areas_and_autosave);
+            connect(newLabel, &TrackerLocationLabel::location_label_clicked, this, &MainWindow::update_tracker);
             currentlyDisplayedLocations.push_back(newLabel);
             row++;
 
@@ -534,4 +579,56 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
     set_current_tracker_area(areaPrefix);
     switch_location_tracker_widgets();
     update_tracker();
+}
+
+// Calculates the potential locations for each dungeon key if the
+// key ahs to be inside the dungeon. This helps users know how much
+// of a dungeon they can actually do even if they haven't collected
+// the keys yet
+void MainWindow::calculate_own_dungeon_key_locations()
+{
+    ownDungeonKeyLocations.clear();
+    auto& trackerWorld = trackerWorlds[0];
+
+    bool smallKeys = trackerWorld.getSettings().dungeon_big_keys == PlacementOption::OwnDungeon;
+    bool bigKeys = trackerWorld.getSettings().dungeon_small_keys == PlacementOption::OwnDungeon;
+
+    auto itemPool = trackerWorld.getItemPool();
+    auto keys = filterAndEraseFromPool(itemPool, [&](Item& item){return (item.isSmallKey() && smallKeys) || (item.isBigKey() && bigKeys);});
+
+    for (auto& key : keys)
+    {
+        // Get the dungeon this key is for
+        std::string dungeonName = "";
+        for (auto& [name, dungeon] : trackerWorld.dungeons)
+        {
+            if (isAnyOf(key.getName(), dungeon.smallKey, dungeon.bigKey))
+            {
+                dungeonName = name + " - ";
+                break;
+            }
+        }
+
+        // Find all possible locations for this key in the dungeon
+        auto accessibleLocations = getAccessibleLocations(trackerWorlds, itemPool, trackerLocations);
+        auto potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){return loc->getName().starts_with(dungeonName);});
+
+        ownDungeonKeyLocations[key].push_back(potentialKeyLocations);
+
+        addElementToPool(itemPool, key);
+    }
+
+//    for (auto& [item, locationPools] : ownDungeonKeyLocations)
+//    {
+//        std::cout << item.getName() << ":" << std::endl;
+//        for (auto& pool : locationPools)
+//        {
+//            std::cout << "  [" << std::endl;
+//            for (auto loc : pool)
+//            {
+//                std::cout << "    " << loc->getName() << std::endl;
+//            }
+//            std::cout << "  ]" << std::endl;
+//        }
+//    }
 }

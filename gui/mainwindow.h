@@ -83,6 +83,7 @@ private:
     void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {});
     void autosave_current_tracker();
     void load_tracker_autosave();
+    void calculate_own_dungeon_key_locations();
 
 public:
     void switch_location_tracker_widgets();
