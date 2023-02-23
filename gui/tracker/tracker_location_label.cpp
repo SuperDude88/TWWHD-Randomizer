@@ -1,6 +1,6 @@
 #include "tracker_location_label.h"
 
-#include <set_font.h>
+#include <tracker/set_font.h>
 
 TrackerLocationLabel::TrackerLocationLabel()
 {
