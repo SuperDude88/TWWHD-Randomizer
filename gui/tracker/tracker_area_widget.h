@@ -33,11 +33,15 @@ public:
     QWidget dungeonItemWidget = QWidget();
     QWidget bossImageWidget = QWidget();
     QHBoxLayout dungeonItemLayout = QHBoxLayout(&dungeonItemWidget);
+    std::string iconFileName = "";
+    Location* boss = nullptr;
 
-    std::string getPrefix();
-    void updateArea();
+    std::string getPrefix() const;
+    void setBossLocation(Location* bossLoc);
     void setLocations(LocationPool& locations);
     void setChart(TrackerInventoryButton* chart);
+    void updateArea();
+    void updateBossImageWidget();
 
     std::string areaPrefix = "";
     LocationPool locations = {};
