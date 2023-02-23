@@ -208,8 +208,6 @@ private:
     std::list<TrackerLocationLabel*> currentlyDisplayedLocations = {};
 
     using TIB = TrackerInventoryButton;
-    using TAW = TrackerAreaWidget;
-    using TLL = TrackerLocationLabel;
 
     // Tracker Buttons
     TIB trackerTelescope             = TIB({{GameItem::NOTHING,               "telescope_gray.png"},
@@ -477,69 +475,5 @@ private:
                                             {GameItem::DRCDungeonMap,         "map_color.png"}});
     TIB trackerDRCCompass            = TIB({{GameItem::NOTHING,               "compass_gray.png"},
                                             {GameItem::DRCCompass,            "compass_color.png"}});
-
-    // Island widgets
-    TAW ForsakenFortressSectorWidget = TAW("Forsaken Fortress Sector", &trackerTreasureChart25);
-    TAW StarIslandWidget             = TAW("Star Island",              &trackerTreasureChart7);
-    TAW NorthernFairyIslandWidget    = TAW("Northern Fairy Island",    &trackerTreasureChart24);
-    TAW GaleIsleWidget               = TAW("Gale Isle",                &trackerTreasureChart42);
-    TAW CrescentMoonIslandWidget     = TAW("Crescent Moon Island",     &trackerTreasureChart11);
-    TAW SevenStarIslesWidget         = TAW("Seven Star Isles",         &trackerTreasureChart45);
-    TAW OverlookIslandWidget         = TAW("Overlook Island",          &trackerTreasureChart13);
-    TAW FourEyeReefWidget            = TAW("Four Eye Reef",            &trackerTreasureChart41);
-    TAW MotherAndChildIslesWidget    = TAW("Mother & Child Isles",     &trackerTreasureChart29);
-    TAW SpectacleIslandWidget        = TAW("Spectacle Island",         &trackerTreasureChart22);
-    TAW WindfallIslandWidget         = TAW("Windfall Island",          &trackerTreasureChart18);
-    TAW PawprintIsleWidget           = TAW("Pawprint Isle",            &trackerTreasureChart30);
-    TAW DragonRoostIslandWidget      = TAW("Dragon Roost Island",      &trackerTreasureChart39);
-    TAW FlightControlPlatformWidget  = TAW("Flight Control Platform",  &trackerTreasureChart19);
-    TAW WesternFairyIslandWidget     = TAW("Western Fairy Island",     &trackerTreasureChart8);
-    TAW RockSpireIsleWidget          = TAW("Rock Spire Isle",          &trackerTreasureChart2);
-    TAW TingleIslandWidget           = TAW("Tingle Island",            &trackerTreasureChart10);
-    TAW NorthernTriangleIslandWidget = TAW("Northern Triangle Island", &trackerTreasureChart26);
-    TAW EasternFairyIslandWidget     = TAW("Eastern Fairy Island",     &trackerTreasureChart3);
-    TAW FireMountainWidget           = TAW("Fire Mountain",            &trackerTreasureChart37);
-    TAW StarBeltArchipelagoWidget    = TAW("Star Belt Archipelago",    &trackerTreasureChart27);
-    TAW ThreeEyeReefWidget           = TAW("Three Eye Reef",           &trackerTreasureChart38);
-    TAW GreatfishIsleWidget          = TAW("Greatfish Isle",           &trackerTriforceChart1);
-    TAW CyclopsReefWidget            = TAW("Cyclops Reef",             &trackerTreasureChart21);
-    TAW SixEyeReefWidget             = TAW("Six Eye Reef",             &trackerTreasureChart6);
-    TAW TowerOfTheGodsSectorWidget   = TAW("Tower of the Gods Sector", &trackerTreasureChart14);
-    TAW EasternTriangleIslandWidget  = TAW("Eastern Triangle Island",  &trackerTreasureChart34);
-    TAW ThornedFairyIslandWidget     = TAW("Thorned Fairy Island",     &trackerTreasureChart5);
-    TAW NeedleRockIsleWidget         = TAW("Needle Rock Isle",         &trackerTreasureChart28);
-    TAW IsletofSteelWidget           = TAW("Islet of Steel",           &trackerTreasureChart35);
-    TAW StoneWatcherIslandWidget     = TAW("Stone Watcher Island",     &trackerTriforceChart2);
-    TAW SouthernTriangleIslandWidget = TAW("Southern Triangle Island", &trackerTreasureChart44);
-    TAW PrivateOasisWidget           = TAW("Private Oasis",            &trackerTreasureChart1);
-    TAW BombIslandWidget             = TAW("Bomb Island",              &trackerTreasureChart20);
-    TAW BirdsPeakRockWidget          = TAW("Birds Peak Rock",          &trackerTreasureChart36);
-    TAW DiamondSteppeIslandWidget    = TAW("Diamond Steppe Island",    &trackerTreasureChart23);
-    TAW FiveEyeReefWidget            = TAW("Five Eye Reef",            &trackerTreasureChart12);
-    TAW SharkIslandWidget            = TAW("Shark Island",             &trackerTreasureChart16);
-    TAW SouthernFairyIslandWidget    = TAW("Southern Fairy Island",    &trackerTreasureChart4);
-    TAW IceRingIsleWidget            = TAW("Ice Ring Isle",            &trackerTreasureChart17);
-    TAW ForestHavenWidget            = TAW("Forest Haven",             &trackerTreasureChart31);
-    TAW CliffPlateauIslesWidget      = TAW("Cliff Plateau Isles",      &trackerTriforceChart3);
-    TAW HorseshoeIslandWidget        = TAW("Horseshoe Island",         &trackerTreasureChart9);
-    TAW OutsetIslandWidget           = TAW("Outset Island",            &trackerTreasureChart43);
-    TAW HeadstoneIslandWidget        = TAW("Headstone Island",         &trackerTreasureChart40);
-    TAW TwoEyeReefWidget             = TAW("Two Eye Reef",             &trackerTreasureChart46);
-    TAW AngularIslesWidget           = TAW("Angular Isles",            &trackerTreasureChart15);
-    TAW BoatingCourseWidget          = TAW("Boating Course",           &trackerTreasureChart32);
-    TAW FiveStarIslesWidget          = TAW("Five Star Isles",          &trackerTreasureChart33);
-
-    // Other area widgets
-    TAW DRCWidget  = TAW("Dragon Roost Cavern", "gohma.png",         &trackerDRCSmallKeys,  &trackerDRCBigKey,  &trackerDRCDungeonMap,  &trackerDRCCompass);
-    TAW FWWidget   = TAW("Forbidden Woods",     "kalle_demos.png",   &trackerFWSmallKeys,   &trackerFWBigKey,   &trackerFWDungeonMap,   &trackerFWCompass);
-    TAW TOTGWidget = TAW("Tower of the Gods",   "gohdan.png",        &trackerTOTGSmallKeys, &trackerTOTGBigKey, &trackerTOTGDungeonMap, &trackerTOTGCompass);
-    TAW FFWidget   = TAW("Forsaken Fortress",   "helmaroc_king.png", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass);
-    TAW ETWidget   = TAW("Earth Temple",        "jalhalla.png",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass);
-    TAW WTWidget   = TAW("Wind Temple",         "molgera.png",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass);
-
-    TAW GreatSeaWidget    = TAW("Great Sea", "great_sea.png", nullptr, nullptr, nullptr, nullptr);
-    TAW MailboxWidget     = TAW("Mailbox",   "mailbox.png",   nullptr, nullptr, nullptr, nullptr);
-    TAW HyruleWidget      = TAW("Hyrule Castle", "hyrule.png",    nullptr, nullptr, nullptr, nullptr);
-    TAW GanonsTowerWidget = TAW("Ganon's Tower", "ganondorf.png", nullptr, nullptr, nullptr, nullptr);
 };
 #endif // MAINWINDOW_H

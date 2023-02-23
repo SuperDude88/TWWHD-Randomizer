@@ -89,6 +89,7 @@ file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc" "IDI_ICON1 ICON DISCARDABLE \"a
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
 
 set(PROJECT_SOURCES
+        set_font.h
         main.cpp
         mainwindow.cpp
         mainwindow.h

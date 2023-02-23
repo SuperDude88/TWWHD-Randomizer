@@ -1,6 +1,6 @@
 #include "tracker_location_label.h"
 
-#include <QFontDatabase>
+#include <set_font.h>
 
 TrackerLocationLabel::TrackerLocationLabel()
 {
@@ -10,11 +10,13 @@ TrackerLocationLabel::TrackerLocationLabel()
 TrackerLocationLabel::TrackerLocationLabel(int pointSize)
 {
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
-    int firaSansFontId = QFontDatabase::addApplicationFont(DATA_PATH "assets/tracker/fira_sans.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(firaSansFontId).at(0);
-    QFont firaSans(family);
-    firaSans.setPointSize(pointSize);
-    setFont(firaSans);
+
+    SET_FONT(this, "fira_sans", 14);
+    // Have to reset pointSize since we can't pass into a macro
+    auto f = font();
+    f.setPointSize(pointSize);
+    setFont(f);
+
     setWordWrap(true);
     setCursor(Qt::PointingHandCursor);
 }
