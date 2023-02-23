@@ -3,6 +3,7 @@
 #include <ui_mainwindow.h>
 #include <tracker_inventory_button.h>
 #include <tracker_area_widget.h>
+#include <set_font.h>
 
 #include <logic/Fill.hpp>
 #include <logic/Search.hpp>
@@ -11,6 +12,9 @@
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QFontDatabase>
+
+#define LOCATION_TRACKER_OVERWORLD 0
+#define LOCATION_TRACKER_SPECIFIC_AREA 1
 
 void MainWindow::on_start_tracker_button_clicked()
 {
@@ -94,26 +98,13 @@ void MainWindow::on_start_tracker_button_clicked()
     update_tracker();
 }
 
-#define INITIALIZE_MAIN_TRACKER_BUTTON(trackerItem, layout, row, col) \
-    ui->layout->addWidget(&trackerItem, row, col);                    \
-    trackerItem.trackerInventory = &trackerInventory;                 \
-    trackerItem.trackerWorld = &trackerWorlds[0];                     \
-    trackerItem.show();                                               \
-
-#define INITIALIZE_OTHER_TRACKER_BUTTON(trackerItem)                  \
-    trackerItem.trackerInventory = &trackerInventory;                 \
-    trackerItem.trackerWorld = &trackerWorlds[0];                     \
-    trackerItem.show();                                               \
+#define SET_BUTTON_TO_LAYOUT(trackerItem, layout, row, col) ui->layout->addWidget(&trackerItem, row, col);
 
 void MainWindow::initialize_tracker()
 {
 
     // Setup Fira Sans font for close button
-    int firaSansFontId = QFontDatabase::addApplicationFont(DATA_PATH "assets/tracker/fira_sans.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(firaSansFontId).at(0);
-    QFont fira(family);
-    fira.setPointSize(14);
-    ui->location_list_close_button->setFont(fira);
+    SET_FONT(ui->location_list_close_button, "fira_sans", 14);
 
     if (trackerWorlds.empty())
     {
@@ -122,124 +113,49 @@ void MainWindow::initialize_tracker()
     trackerWorlds[0].setWorldId(0);
 
     // Setup inventory buttons
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerTelescope,             inventory_layout_top, 0, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveSail,       inventory_layout_top, 0, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerWindWaker,             inventory_layout_top, 0, 2);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerGrapplingHook,         inventory_layout_top, 0, 3);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerSpoilsBag,             inventory_layout_top, 0, 4);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerBoomerang,             inventory_layout_top, 0, 5);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerDekuLeaf,              inventory_layout_top, 0, 6);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveSword,      inventory_layout_top, 0, 7);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerTingleBottle,          inventory_layout_top, 1, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressivePictoBox,   inventory_layout_top, 1, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerIronBoots,             inventory_layout_top, 1, 2);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerMagicArmor,            inventory_layout_top, 1, 3);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerBaitBag,               inventory_layout_top, 1, 4);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveBow,        inventory_layout_top, 1, 5);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerBombs,                 inventory_layout_top, 1, 6);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveShield,     inventory_layout_top, 1, 7);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerCabanaDeed,            inventory_layout_middle, 0, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerMaggiesLetter,         inventory_layout_middle, 0, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerMoblinsLetter,         inventory_layout_middle, 0, 2);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerNoteToMom,             inventory_layout_middle, 0, 3);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerDeliveryBag,           inventory_layout_middle, 0, 4);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerHookshot,              inventory_layout_middle, 0, 5);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerSkullHammer,           inventory_layout_middle, 0, 6);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerPowerBracelets,        inventory_layout_middle, 0, 7);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerEmptyBottle,           inventory_layout_middle, 1, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerWindsRequiem,          inventory_layout_middle, 1, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerBalladOfGales,         inventory_layout_middle, 1, 2);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerCommandMelody,         inventory_layout_middle, 1, 3);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerEarthGodsLyric,        inventory_layout_middle, 1, 4);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerWindGodsAria,          inventory_layout_middle, 1, 5);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerSongOfPassing,         inventory_layout_middle, 1, 6);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerHerosCharm,            inventory_layout_middle, 1, 7);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerDinsPearl,             inventory_layout_dins_farores_pearl, 0, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerFaroresPearl,          inventory_layout_dins_farores_pearl, 0, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerNayrusPearl,           inventory_layout_nayrus_pearl, 0, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerTriforceShards,        inventory_layout_triforce, 0, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerTingleStatues,         inventory_layout_bottom_right, 0, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerGhostShipChart,        inventory_layout_bottom_right, 0, 2);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerHurricaneSpin,         inventory_layout_bottom_right, 0, 3);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveBombBag,    inventory_layout_bottom_right, 1, 0);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveQuiver,     inventory_layout_bottom_right, 1, 1);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveWallet,     inventory_layout_bottom_right, 1, 2);
-    INITIALIZE_MAIN_TRACKER_BUTTON(trackerProgressiveMagicMeter, inventory_layout_bottom_right, 1, 3);
-
-    // Chart buttons
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart1);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart2);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart3);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart4);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart5);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart6);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart7);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart8);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart9);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart10);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart11);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart12);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart13);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart14);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart15);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart16);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart17);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart18);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart19);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart20);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart21);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart22);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart23);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart24);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart25);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart26);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart27);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart28);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart29);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart30);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart31);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart32);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart33);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart34);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart35);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart36);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart37);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart38);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart39);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart40);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart41);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart42);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart43);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart44);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart45);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTreasureChart46);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTriforceChart1);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTriforceChart2);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTriforceChart3);
-
-    // Dungeon Items
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerWTSmallKeys);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerWTBigKey);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerWTDungeonMap);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerWTCompass);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerETSmallKeys);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerETBigKey);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerETDungeonMap);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerETCompass);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerFFDungeonMap);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerFFCompass);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTOTGSmallKeys);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTOTGBigKey);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTOTGDungeonMap);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerTOTGCompass);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerFWSmallKeys);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerFWBigKey);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerFWDungeonMap);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerFWCompass);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerDRCSmallKeys);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerDRCBigKey);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerDRCDungeonMap);
-    INITIALIZE_OTHER_TRACKER_BUTTON(trackerDRCCompass);
+    SET_BUTTON_TO_LAYOUT(trackerTelescope,             inventory_layout_top, 0, 0);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveSail,       inventory_layout_top, 0, 1);
+    SET_BUTTON_TO_LAYOUT(trackerWindWaker,             inventory_layout_top, 0, 2);
+    SET_BUTTON_TO_LAYOUT(trackerGrapplingHook,         inventory_layout_top, 0, 3);
+    SET_BUTTON_TO_LAYOUT(trackerSpoilsBag,             inventory_layout_top, 0, 4);
+    SET_BUTTON_TO_LAYOUT(trackerBoomerang,             inventory_layout_top, 0, 5);
+    SET_BUTTON_TO_LAYOUT(trackerDekuLeaf,              inventory_layout_top, 0, 6);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveSword,      inventory_layout_top, 0, 7);
+    SET_BUTTON_TO_LAYOUT(trackerTingleBottle,          inventory_layout_top, 1, 0);
+    SET_BUTTON_TO_LAYOUT(trackerProgressivePictoBox,   inventory_layout_top, 1, 1);
+    SET_BUTTON_TO_LAYOUT(trackerIronBoots,             inventory_layout_top, 1, 2);
+    SET_BUTTON_TO_LAYOUT(trackerMagicArmor,            inventory_layout_top, 1, 3);
+    SET_BUTTON_TO_LAYOUT(trackerBaitBag,               inventory_layout_top, 1, 4);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveBow,        inventory_layout_top, 1, 5);
+    SET_BUTTON_TO_LAYOUT(trackerBombs,                 inventory_layout_top, 1, 6);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveShield,     inventory_layout_top, 1, 7);
+    SET_BUTTON_TO_LAYOUT(trackerCabanaDeed,            inventory_layout_middle, 0, 0);
+    SET_BUTTON_TO_LAYOUT(trackerMaggiesLetter,         inventory_layout_middle, 0, 1);
+    SET_BUTTON_TO_LAYOUT(trackerMoblinsLetter,         inventory_layout_middle, 0, 2);
+    SET_BUTTON_TO_LAYOUT(trackerNoteToMom,             inventory_layout_middle, 0, 3);
+    SET_BUTTON_TO_LAYOUT(trackerDeliveryBag,           inventory_layout_middle, 0, 4);
+    SET_BUTTON_TO_LAYOUT(trackerHookshot,              inventory_layout_middle, 0, 5);
+    SET_BUTTON_TO_LAYOUT(trackerSkullHammer,           inventory_layout_middle, 0, 6);
+    SET_BUTTON_TO_LAYOUT(trackerPowerBracelets,        inventory_layout_middle, 0, 7);
+    SET_BUTTON_TO_LAYOUT(trackerEmptyBottle,           inventory_layout_middle, 1, 0);
+    SET_BUTTON_TO_LAYOUT(trackerWindsRequiem,          inventory_layout_middle, 1, 1);
+    SET_BUTTON_TO_LAYOUT(trackerBalladOfGales,         inventory_layout_middle, 1, 2);
+    SET_BUTTON_TO_LAYOUT(trackerCommandMelody,         inventory_layout_middle, 1, 3);
+    SET_BUTTON_TO_LAYOUT(trackerEarthGodsLyric,        inventory_layout_middle, 1, 4);
+    SET_BUTTON_TO_LAYOUT(trackerWindGodsAria,          inventory_layout_middle, 1, 5);
+    SET_BUTTON_TO_LAYOUT(trackerSongOfPassing,         inventory_layout_middle, 1, 6);
+    SET_BUTTON_TO_LAYOUT(trackerHerosCharm,            inventory_layout_middle, 1, 7);
+    SET_BUTTON_TO_LAYOUT(trackerDinsPearl,             inventory_layout_dins_farores_pearl, 0, 0);
+    SET_BUTTON_TO_LAYOUT(trackerFaroresPearl,          inventory_layout_dins_farores_pearl, 0, 1);
+    SET_BUTTON_TO_LAYOUT(trackerNayrusPearl,           inventory_layout_nayrus_pearl, 0, 0);
+    SET_BUTTON_TO_LAYOUT(trackerTriforceShards,        inventory_layout_triforce, 0, 0);
+    SET_BUTTON_TO_LAYOUT(trackerTingleStatues,         inventory_layout_bottom_right, 0, 1);
+    SET_BUTTON_TO_LAYOUT(trackerGhostShipChart,        inventory_layout_bottom_right, 0, 2);
+    SET_BUTTON_TO_LAYOUT(trackerHurricaneSpin,         inventory_layout_bottom_right, 0, 3);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveBombBag,    inventory_layout_bottom_right, 1, 0);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveQuiver,     inventory_layout_bottom_right, 1, 1);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveWallet,     inventory_layout_bottom_right, 1, 2);
+    SET_BUTTON_TO_LAYOUT(trackerProgressiveMagicMeter, inventory_layout_bottom_right, 1, 3);
 
     // Add Background Images
     ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "assets/tracker/background.png);}");
@@ -253,71 +169,74 @@ void MainWindow::initialize_tracker()
     ui->location_list_widget->setStyleSheet("QWidget#location_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png) 0 0 0 0 stretch stretch;}");
     ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: gray;}");
 
+    // Add area widgets to the overworld
+    using TAW = TrackerAreaWidget;
+    ui->overworld_map_layout_2->addWidget(new TAW("Forsaken Fortress Sector", &trackerTreasureChart25), 0, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Star Island",              &trackerTreasureChart7),  0, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Northern Fairy Island",    &trackerTreasureChart24), 0, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Gale Isle",                &trackerTreasureChart42), 0, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Crescent Moon Island",     &trackerTreasureChart11), 0, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Seven Star Isles",         &trackerTreasureChart45), 0, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Overlook Island",          &trackerTreasureChart13), 0, 6);
+    ui->overworld_map_layout_2->addWidget(new TAW("Four Eye Reef",            &trackerTreasureChart41), 1, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Mother & Child Isles",     &trackerTreasureChart29), 1, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Spectacle Island",         &trackerTreasureChart22), 1, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Windfall Island",          &trackerTreasureChart18), 1, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Pawprint Isle",            &trackerTreasureChart30), 1, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Dragon Roost Island",      &trackerTreasureChart39), 1, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Flight Control Platform",  &trackerTreasureChart19), 1, 6);
+    ui->overworld_map_layout_2->addWidget(new TAW("Western Fairy Island",     &trackerTreasureChart8),  2, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Rock Spire Isle",          &trackerTreasureChart2),  2, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Tingle Island",            &trackerTreasureChart10), 2, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Northern Triangle Island", &trackerTreasureChart26), 2, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Eastern Fairy Island",     &trackerTreasureChart3),  2, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Fire Mountain",            &trackerTreasureChart37), 2, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Star Belt Archipelago",    &trackerTreasureChart27), 2, 6);
+    ui->overworld_map_layout_2->addWidget(new TAW("Three Eye Reef",           &trackerTreasureChart38), 3, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Greatfish Isle",           &trackerTriforceChart1),  3, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Cyclops Reef",             &trackerTreasureChart21), 3, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Six Eye Reef",             &trackerTreasureChart6),  3, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Tower of the Gods Sector", &trackerTreasureChart14), 3, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Eastern Triangle Island",  &trackerTreasureChart34), 3, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Thorned Fairy Island",     &trackerTreasureChart5),  3, 6);
+    ui->overworld_map_layout_2->addWidget(new TAW("Needle Rock Isle",         &trackerTreasureChart28), 4, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Islet of Steel",           &trackerTreasureChart35), 4, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Stone Watcher Island",     &trackerTriforceChart2),  4, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Southern Triangle Island", &trackerTreasureChart44), 4, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Private Oasis",            &trackerTreasureChart1),  4, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Bomb Island",              &trackerTreasureChart20), 4, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Birds Peak Rock",          &trackerTreasureChart36), 4, 6);
+    ui->overworld_map_layout_2->addWidget(new TAW("Diamond Steppe Island",    &trackerTreasureChart23), 5, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Five Eye Reef",            &trackerTreasureChart12), 5, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Shark Island",             &trackerTreasureChart16), 5, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Southern Fairy Island",    &trackerTreasureChart4),  5, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Ice Ring Isle",            &trackerTreasureChart17), 5, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Forest Haven",             &trackerTreasureChart31), 5, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Cliff Plateau Isles",      &trackerTriforceChart3),  5, 6);
+    ui->overworld_map_layout_2->addWidget(new TAW("Horseshoe Island",         &trackerTreasureChart9),  6, 0);
+    ui->overworld_map_layout_2->addWidget(new TAW("Outset Island",            &trackerTreasureChart43), 6, 1);
+    ui->overworld_map_layout_2->addWidget(new TAW("Headstone Island",         &trackerTreasureChart40), 6, 2);
+    ui->overworld_map_layout_2->addWidget(new TAW("Two Eye Reef",             &trackerTreasureChart46), 6, 3);
+    ui->overworld_map_layout_2->addWidget(new TAW("Angular Isles",            &trackerTreasureChart15), 6, 4);
+    ui->overworld_map_layout_2->addWidget(new TAW("Boating Course",           &trackerTreasureChart32), 6, 5);
+    ui->overworld_map_layout_2->addWidget(new TAW("Five Star Isles",          &trackerTreasureChart33), 6, 6);
 
-    ui->overworld_map_layout_2->addWidget(&ForsakenFortressSectorWidget, 0, 0);
-    ui->overworld_map_layout_2->addWidget(&StarIslandWidget,             0, 1);
-    ui->overworld_map_layout_2->addWidget(&NorthernFairyIslandWidget,    0, 2);
-    ui->overworld_map_layout_2->addWidget(&GaleIsleWidget,               0, 3);
-    ui->overworld_map_layout_2->addWidget(&CrescentMoonIslandWidget,     0, 4);
-    ui->overworld_map_layout_2->addWidget(&SevenStarIslesWidget,         0, 5);
-    ui->overworld_map_layout_2->addWidget(&OverlookIslandWidget,         0, 6);
-    ui->overworld_map_layout_2->addWidget(&FourEyeReefWidget,            1, 0);
-    ui->overworld_map_layout_2->addWidget(&MotherAndChildIslesWidget,    1, 1);
-    ui->overworld_map_layout_2->addWidget(&SpectacleIslandWidget,        1, 2);
-    ui->overworld_map_layout_2->addWidget(&WindfallIslandWidget,         1, 3);
-    ui->overworld_map_layout_2->addWidget(&PawprintIsleWidget,           1, 4);
-    ui->overworld_map_layout_2->addWidget(&DragonRoostIslandWidget,      1, 5);
-    ui->overworld_map_layout_2->addWidget(&FlightControlPlatformWidget,  1, 6);
-    ui->overworld_map_layout_2->addWidget(&WesternFairyIslandWidget,     2, 0);
-    ui->overworld_map_layout_2->addWidget(&RockSpireIsleWidget,          2, 1);
-    ui->overworld_map_layout_2->addWidget(&TingleIslandWidget,           2, 2);
-    ui->overworld_map_layout_2->addWidget(&NorthernTriangleIslandWidget, 2, 3);
-    ui->overworld_map_layout_2->addWidget(&EasternFairyIslandWidget,     2, 4);
-    ui->overworld_map_layout_2->addWidget(&FireMountainWidget,           2, 5);
-    ui->overworld_map_layout_2->addWidget(&StarBeltArchipelagoWidget,    2, 6);
-    ui->overworld_map_layout_2->addWidget(&ThreeEyeReefWidget,           3, 0);
-    ui->overworld_map_layout_2->addWidget(&GreatfishIsleWidget,          3, 1);
-    ui->overworld_map_layout_2->addWidget(&CyclopsReefWidget,            3, 2);
-    ui->overworld_map_layout_2->addWidget(&SixEyeReefWidget,             3, 3);
-    ui->overworld_map_layout_2->addWidget(&TowerOfTheGodsSectorWidget,   3, 4);
-    ui->overworld_map_layout_2->addWidget(&EasternTriangleIslandWidget,  3, 5);
-    ui->overworld_map_layout_2->addWidget(&ThornedFairyIslandWidget,     3, 6);
-    ui->overworld_map_layout_2->addWidget(&NeedleRockIsleWidget,         4, 0);
-    ui->overworld_map_layout_2->addWidget(&IsletofSteelWidget,           4, 1);
-    ui->overworld_map_layout_2->addWidget(&StoneWatcherIslandWidget,     4, 2);
-    ui->overworld_map_layout_2->addWidget(&SouthernTriangleIslandWidget, 4, 3);
-    ui->overworld_map_layout_2->addWidget(&PrivateOasisWidget,           4, 4);
-    ui->overworld_map_layout_2->addWidget(&BombIslandWidget,             4, 5);
-    ui->overworld_map_layout_2->addWidget(&BirdsPeakRockWidget,          4, 6);
-    ui->overworld_map_layout_2->addWidget(&DiamondSteppeIslandWidget,    5, 0);
-    ui->overworld_map_layout_2->addWidget(&FiveEyeReefWidget,            5, 1);
-    ui->overworld_map_layout_2->addWidget(&SharkIslandWidget,            5, 2);
-    ui->overworld_map_layout_2->addWidget(&SouthernFairyIslandWidget,    5, 3);
-    ui->overworld_map_layout_2->addWidget(&IceRingIsleWidget,            5, 4);
-    ui->overworld_map_layout_2->addWidget(&ForestHavenWidget,            5, 5);
-    ui->overworld_map_layout_2->addWidget(&CliffPlateauIslesWidget,      5, 6);
-    ui->overworld_map_layout_2->addWidget(&HorseshoeIslandWidget,        6, 0);
-    ui->overworld_map_layout_2->addWidget(&OutsetIslandWidget,           6, 1);
-    ui->overworld_map_layout_2->addWidget(&HeadstoneIslandWidget,        6, 2);
-    ui->overworld_map_layout_2->addWidget(&TwoEyeReefWidget,             6, 3);
-    ui->overworld_map_layout_2->addWidget(&AngularIslesWidget,           6, 4);
-    ui->overworld_map_layout_2->addWidget(&BoatingCourseWidget,          6, 5);
-    ui->overworld_map_layout_2->addWidget(&FiveStarIslesWidget,          6, 6);
+    ui->other_areas_layout->addWidget(new TAW("Dragon Roost Cavern", "gohma.png",         &trackerDRCSmallKeys,  &trackerDRCBigKey,  &trackerDRCDungeonMap,  &trackerDRCCompass),  0, 0);
+    ui->other_areas_layout->addWidget(new TAW("Forbidden Woods",     "kalle_demos.png",   &trackerFWSmallKeys,   &trackerFWBigKey,   &trackerFWDungeonMap,   &trackerFWCompass),   0, 1);
+    ui->other_areas_layout->addWidget(new TAW("Tower of the Gods",   "gohdan.png",        &trackerTOTGSmallKeys, &trackerTOTGBigKey, &trackerTOTGDungeonMap, &trackerTOTGCompass), 0, 2);
+    ui->other_areas_layout->addWidget(new TAW("Forsaken Fortress",   "helmaroc_king.png", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass),   0, 3);
+    ui->other_areas_layout->addWidget(new TAW("Earth Temple",        "jalhalla.png",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass),   0, 4);
+    ui->other_areas_layout->addWidget(new TAW("Wind Temple",         "molgera.png",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass),   0, 5);
+    ui->other_areas_layout->addWidget(new TAW("Great Sea",           "great_sea.png",     nullptr,               nullptr,            nullptr,                nullptr),             0, 6);
+    ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox.png",       nullptr,               nullptr,            nullptr,                nullptr),             0, 7);
+    ui->other_areas_layout->addWidget(new TAW("Hyrule Castle",       "hyrule.png",        nullptr,               nullptr,            nullptr,                nullptr),             0, 8);
+    ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf.png",     nullptr,               nullptr,            nullptr,                nullptr),             0, 9);
 
-    ui->other_areas_layout->addWidget(&DRCWidget, 0, 0);
-    ui->other_areas_layout->addWidget(&FWWidget, 0, 1);
-    ui->other_areas_layout->addWidget(&TOTGWidget, 0, 2);
-    ui->other_areas_layout->addWidget(&ETWidget, 0, 3);
-    ui->other_areas_layout->addWidget(&WTWidget, 0, 4);
-    ui->other_areas_layout->addWidget(&FFWidget, 0, 5);
-    ui->other_areas_layout->addWidget(&GreatSeaWidget, 0, 6);
-    ui->other_areas_layout->addWidget(&MailboxWidget, 0, 7);
-    ui->other_areas_layout->addWidget(&HyruleWidget, 0, 8);
-    ui->other_areas_layout->addWidget(&GanonsTowerWidget, 0, 9);
-
-    // Connect inventory button clicks to updating the tracker
+    // Set world and inventory and connect inventory button clicks to updating the tracker
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
     {
+        inventoryButton->trackerInventory = &trackerInventory;
+        inventoryButton->trackerWorld = &trackerWorlds[0];
         connect(inventoryButton, &TrackerInventoryButton::inventory_button_pressed, this, &MainWindow::update_tracker);
     }
 
@@ -335,7 +254,8 @@ void MainWindow::update_tracker()
 
     update_tracker_areas();
 
-    if (ui->tracker_locations_widget->currentIndex() == 0)
+    // No reason to update labels if we're displaying the overworld
+    if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
     {
         return;
     }
@@ -399,13 +319,13 @@ void MainWindow::update_tracker_areas()
 
 void MainWindow::switch_location_tracker_widgets()
 {
-    if (ui->tracker_locations_widget->currentIndex() == 0)
+    if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
     {
-        ui->tracker_locations_widget->setCurrentIndex(1);
+        ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA);
     }
     else
     {
-        ui->tracker_locations_widget->setCurrentIndex(0);
+        ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_OVERWORLD);
     }
 }
 
