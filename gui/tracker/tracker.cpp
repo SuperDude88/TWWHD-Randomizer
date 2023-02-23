@@ -11,12 +11,12 @@
 
 #include <QAbstractButton>
 #include <QMouseEvent>
-#include <QFontDatabase>
+#include <QMessageBox>
 
 #define LOCATION_TRACKER_OVERWORLD 0
 #define LOCATION_TRACKER_SPECIFIC_AREA 1
 
-void MainWindow::on_start_tracker_button_clicked()
+void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool& markedItems, const std::vector<std::string>& markedLocations)
 {
     // Build the world used for the tracker
     auto& trackerWorld = trackerWorlds[0];
@@ -24,9 +24,12 @@ void MainWindow::on_start_tracker_button_clicked()
     trackerWorld = World();
     trackerWorld.setWorldId(0);
 
-    // Copy settings to potentially modify them
-    auto settingsCopy = config.settings;
+    // Copy settings to modify them
+    auto settingsCopy = settings;
 
+    // Don't randomize charts in tracker world
+    // since we don't know what they'll be if they're
+    // randomized
     settingsCopy.randomize_charts = false;
 
     trackerWorld.setSettings(settingsCopy);
@@ -43,6 +46,20 @@ void MainWindow::on_start_tracker_button_clicked()
     // TODO: Handle entrance randomizer stuff here
 
     trackerLocations = trackerWorld.getLocations(true);
+
+    for (auto& gameItemId : markedItems)
+    {
+        trackerInventory.emplace_back(gameItemId, &trackerWorld);
+    }
+
+    for (auto& locName : markedLocations)
+    {
+        if (trackerWorld.locationEntries.contains(locName))
+        {
+            trackerWorld.locationEntries[locName].marked = true;
+        }
+    }
+
     std::sort(trackerLocations.begin(), trackerLocations.end(), [](Location* loc1, Location* loc2){return loc1->sortPriority < loc2->sortPriority;});
     auto startingInventory = trackerWorld.getStartingItems();
 
@@ -67,24 +84,42 @@ void MainWindow::on_start_tracker_button_clicked()
         addElementToPool(startingInventory, tingleStatues[i]);
     }
 
-    auto trackerInventoryCopy = startingInventory;
+    auto startingInventoryCopy = startingInventory;
+    auto trackerInventoryCopy = trackerInventory;
 
+    // Update buttons with starting inventory items
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
     {
         inventoryButton->state = 0;
         inventoryButton->forbiddenStates.clear();
+
+        // Update button with starting items first to set forbidden states
+        for (auto& itemState : inventoryButton->itemStates)
+        {
+            auto item = Item(itemState.gameItem, &trackerWorld);
+            if (itemState.gameItem != GameItem::NOTHING && elementInPool(item, startingInventoryCopy))
+            {
+                inventoryButton->addForbiddenState(inventoryButton->state);
+                inventoryButton->state++;
+                removeElementFromPool(startingInventoryCopy, item);
+            }
+        }
+
+        // Then update buttons with the current inventory
         for (auto& itemState : inventoryButton->itemStates)
         {
             auto item = Item(itemState.gameItem, &trackerWorld);
             if (itemState.gameItem != GameItem::NOTHING && elementInPool(item, trackerInventoryCopy))
             {
-                inventoryButton->addForbiddenState(inventoryButton->state);
                 inventoryButton->state++;
                 removeElementFromPool(trackerInventoryCopy, item);
             }
         }
+
+        // Then update the icon
         inventoryButton->updateIcon();
     }
+
 
     // Set locations for each area
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
@@ -93,8 +128,136 @@ void MainWindow::on_start_tracker_button_clicked()
         auto areaLocations = filterFromPool(trackerLocations, [&](Location* loc){return loc->getName().starts_with(areaName);});
         area->setLocations(areaLocations);
     }
+}
+
+void MainWindow::on_start_tracker_button_clicked()
+{
+    // Make sure the user wants to start a new tracker session
+    QMessageBox confirmDialog;
+    confirmDialog.setText("Reset the tracker with your current settings?");
+    confirmDialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    if (confirmDialog.exec() == QMessageBox::No)
+    {
+        return;
+    }
+
+    initialize_tracker_world(config.settings);
 
     // Get the first search iteration
+    update_tracker();
+}
+
+void MainWindow::autosave_current_tracker()
+{
+    auto& trackerWorld = trackerWorlds[0];
+
+    Config trackerConfig;
+    trackerConfig.settings = trackerWorld.originalSettings;
+    // Save current config
+    auto configErr = writeToFile(APP_SAVE_PATH "tracker_autosave.yaml", trackerConfig);
+    if (configErr != ConfigError::NONE)
+    {
+        show_error_dialog("Could not save tracker config to file\n Error: " + errorToName(configErr));
+        return;
+    }
+
+    // Read it back and add extra tracker data
+    Yaml::Node root;
+    Yaml::Parse(root, APP_SAVE_PATH "tracker_autosave.yaml");
+
+    // Save which locations have been marked
+    root["marked_locations"] = {};
+    for (auto loc : trackerWorld.getLocations(true))
+    {
+        if (loc->marked)
+        {
+            Yaml::Node& node = root["marked_locations"].PushBack();
+            node = loc->getName();
+        }
+    }
+
+    if (root["marked_locations"].Size() == 0)
+    {
+        root["marked_locations"] = "None";
+    }
+
+    // Save which items have been marked
+    root["marked_items"] = {};
+    for (auto& item : trackerInventory)
+    {
+        Yaml::Node& node = root["marked_items"].PushBack();
+        node = gameItemToName(item.getGameItemId());
+    }
+
+    if (root["marked_items"].Size() == 0)
+    {
+        root["marked_items"] = "None";
+    }
+
+    Yaml::Serialize(root, APP_SAVE_PATH "tracker_autosave.yaml");
+}
+
+void MainWindow::load_tracker_autosave()
+{
+    if (!std::filesystem::exists(APP_SAVE_PATH "tracker_autosave.yaml"))
+    {
+        // No autosave file, don't try to do anything
+        return;
+    }
+
+    Config trackerConfig;
+    auto configErr = loadFromFile(APP_SAVE_PATH "tracker_autosave.yaml", trackerConfig, true);
+    if (configErr != ConfigError::NONE)
+    {
+        show_warning_dialog("Could not load tracker autosave config\nError: " + errorToName(configErr));
+        return;
+    }
+
+    Yaml::Node root;
+    Yaml::Parse(root, APP_SAVE_PATH "tracker_autosave.yaml");
+
+    // Load marked locations
+    std::vector<std::string> markedLocations = {};
+    if (root["marked_locations"].IsSequence())
+    {
+        for (auto it = root["marked_locations"].Begin(); it != root["marked_locations"].End(); it++)
+        {
+            const Yaml::Node& locNode = (*it).second;
+            const std::string locName = locNode.As<std::string>();
+            markedLocations.push_back(locName);
+        }
+    }
+    else if (!root["marked_locations"].IsNone() && root["marked_locations"].As<std::string>() != "None")
+    {
+        show_warning_dialog("Unable to load marked locations from tracker autosave");
+    }
+
+
+    // Load marked items
+    GameItemPool markedItems = {};
+    if (root["marked_items"].IsSequence())
+    {
+        for (auto it = root["marked_items"].Begin(); it != root["marked_items"].End(); it++)
+        {
+            const Yaml::Node& itemNode = (*it).second;
+            const std::string itemName = itemNode.As<std::string>();
+            if (nameToGameItem(itemName) != GameItem::INVALID)
+            {
+                markedItems.push_back(nameToGameItem(itemName));
+            }
+            else
+            {
+                show_warning_dialog("Unknown item \"" + itemName + "\" in tracker autosave file");
+            }
+        }
+    }
+    else if (!root["marked_items"].IsNone() && root["marked_items"].As<std::string>() != "None")
+    {
+        show_warning_dialog("Unable to load marked items from tracker autosave");
+    }
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations);
+
     update_tracker();
 }
 
@@ -251,8 +414,7 @@ void MainWindow::initialize_tracker()
 void MainWindow::update_tracker()
 {
     getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations);
-
-    update_tracker_areas();
+    update_tracker_areas_and_autosave();
 
     // No reason to update labels if we're displaying the overworld
     if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
@@ -285,7 +447,7 @@ void MainWindow::update_tracker()
             auto newLabel = new TrackerLocationLabel(currentPointSize);
             newLabel->set_location(loc);
             location_list_layout->addWidget(newLabel, row, col);
-            connect(newLabel, &TrackerLocationLabel::location_label_clicked, this, &MainWindow::update_tracker_areas);
+            connect(newLabel, &TrackerLocationLabel::location_label_clicked, this, &MainWindow::update_tracker_areas_and_autosave);
             currentlyDisplayedLocations.push_back(newLabel);
             row++;
 
@@ -308,13 +470,15 @@ void MainWindow::update_tracker()
     }
 }
 
-void MainWindow::update_tracker_areas()
+void MainWindow::update_tracker_areas_and_autosave()
 {
     // Update each areas information
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
     {
         area->updateArea();
     }
+
+    autosave_current_tracker();
 }
 
 void MainWindow::switch_location_tracker_widgets()

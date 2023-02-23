@@ -45,6 +45,7 @@ World::World(size_t numWorlds_)
 void World::setSettings(const Settings& settings_)
 {
     settings = std::move(settings_);
+    originalSettings = settings;
     addSpoilsToStartingGear();
 }
 

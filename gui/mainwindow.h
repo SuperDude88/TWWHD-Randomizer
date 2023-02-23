@@ -80,6 +80,10 @@ private:
     void load_locations();
 
     void initialize_tracker();
+    void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {});
+    void autosave_current_tracker();
+    void load_tracker_autosave();
+
 public:
     void switch_location_tracker_widgets();
     void set_current_tracker_area(const std::string& areaPrefix);
@@ -196,7 +200,7 @@ private slots:
     // Tracker
     void on_start_tracker_button_clicked();
     void on_location_list_close_button_released();
-    void update_tracker_areas();
+    void update_tracker_areas_and_autosave();
     void tracker_show_specific_area(std::string areaPrefix);
 
 private:
