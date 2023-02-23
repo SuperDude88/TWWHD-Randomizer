@@ -89,21 +89,21 @@ file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc" "IDI_ICON1 ICON DISCARDABLE \"a
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
 
 set(PROJECT_SOURCES
-        set_font.h
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        tracker.cpp
-        tracker_area_label.h
-        tracker_area_label.cpp
-        tracker_area_widget.h
-        tracker_area_widget.cpp
-        tracker_location_label.h
-        tracker_location_label.cpp
-        tracker_inventory_button.cpp
-        tracker_inventory_button.h
         randomizer_thread.cpp
+        tracker/set_font.h
+        tracker/tracker_area_label.h
+        tracker/tracker_area_label.cpp
+        tracker/tracker_area_widget.h
+        tracker/tracker_area_widget.cpp
+        tracker/tracker_inventory_button.h
+        tracker/tracker_inventory_button.cpp
+        tracker/tracker_location_label.h
+        tracker/tracker_location_label.cpp
+        tracker/tracker.cpp
         ../randomizer.cpp
         ../tweaks.cpp
         ../options.cpp
@@ -111,7 +111,6 @@ set(PROJECT_SOURCES
         ${app_icon_resource_windows}
         ${PROJECT_SOURCES}
 )
-
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(wwhd_rando
