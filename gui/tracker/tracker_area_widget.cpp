@@ -19,12 +19,13 @@ TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_, TrackerInve
 }
 
 TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_,
-                                     const std::string& iconFileName,
+                                     const std::string& iconFileName_,
                                      TrackerInventoryButton* smallKeys,
                                      TrackerInventoryButton* bigKey,
                                      TrackerInventoryButton* map,
                                      TrackerInventoryButton* compass):
-                                     areaPrefix(areaPrefix_)
+    areaPrefix(areaPrefix_),
+    iconFileName(iconFileName_)
 {
     QWidget();
 
@@ -53,10 +54,6 @@ TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_,
         }
     }
 
-    bossImageWidget.setStyleSheet(std::string("background-image: url(" DATA_PATH "assets/tracker/" + iconFileName + ");"
-                              "background-repeat: none;"
-                              "background-position: center;").c_str());
-
     stackedLayout.setStackingMode(QStackedLayout::StackAll);
     stackedLayout.addWidget(&dungeonItemWidget);
     stackedLayout.addWidget(&locationsRemaining);
@@ -64,9 +61,14 @@ TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_,
     setCursor(Qt::PointingHandCursor);
 }
 
-std::string TrackerAreaWidget::getPrefix()
+std::string TrackerAreaWidget::getPrefix() const
 {
     return areaPrefix;
+}
+
+void TrackerAreaWidget::setBossLocation(Location* bossLoc)
+{
+    boss = bossLoc;
 }
 
 void TrackerAreaWidget::setLocations(LocationPool& locations_)
@@ -106,4 +108,20 @@ void TrackerAreaWidget::updateArea()
 
     std::string locationsRemainingText = std::to_string(accessibleLocations) + "/" + std::to_string(totalLocations);
     locationsRemaining.setText(locationsRemainingText.c_str());
+
+    updateBossImageWidget();
+}
+
+void TrackerAreaWidget::updateBossImageWidget()
+{
+    if (iconFileName.empty())
+    {
+        return;
+    }
+    std::string filename = (boss != nullptr && boss->marked) ? iconFileName + "_dead" : iconFileName;
+
+    bossImageWidget.setStyleSheet(std::string(
+                              "background-image: url(" DATA_PATH "assets/tracker/" + filename + ".png);"
+                              "background-repeat: none;"
+                              "background-position: center;").c_str());
 }

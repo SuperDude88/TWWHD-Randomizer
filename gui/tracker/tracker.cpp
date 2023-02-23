@@ -127,6 +127,32 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
         std::string areaName = area->getPrefix() + " - ";
         auto areaLocations = filterFromPool(trackerLocations, [&](Location* loc){return loc->getName().starts_with(areaName);});
         area->setLocations(areaLocations);
+
+        // TODO: figure out some better way to do this than just if/else
+        if (areaName == "Dragon Roost Cavern - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Dragon Roost Cavern - Gohma Heart Container"]);
+        }
+        else if (areaName == "Forbidden Woods - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Forbidden Woods - Kalle Demos Heart Container"]);
+        }
+        else if (areaName == "Tower of the Gods - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Tower of the Gods - Gohdan Heart Container"]);
+        }
+        else if (areaName == "Forsaken Fortress - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Forsaken Fortress - Helmaroc King Heart Container"]);
+        }
+        else if (areaName == "Earth Temple - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Earth Temple - Jalhalla Heart Container"]);
+        }
+        else if (areaName == "Wind Temple - ")
+        {
+            area->setBossLocation(&trackerWorld.locationEntries["Wind Temple - Molgera Heart Container"]);
+        }
     }
 }
 
@@ -384,16 +410,16 @@ void MainWindow::initialize_tracker()
     ui->overworld_map_layout_2->addWidget(new TAW("Boating Course",           &trackerTreasureChart32), 6, 5);
     ui->overworld_map_layout_2->addWidget(new TAW("Five Star Isles",          &trackerTreasureChart33), 6, 6);
 
-    ui->other_areas_layout->addWidget(new TAW("Dragon Roost Cavern", "gohma.png",         &trackerDRCSmallKeys,  &trackerDRCBigKey,  &trackerDRCDungeonMap,  &trackerDRCCompass),  0, 0);
-    ui->other_areas_layout->addWidget(new TAW("Forbidden Woods",     "kalle_demos.png",   &trackerFWSmallKeys,   &trackerFWBigKey,   &trackerFWDungeonMap,   &trackerFWCompass),   0, 1);
-    ui->other_areas_layout->addWidget(new TAW("Tower of the Gods",   "gohdan.png",        &trackerTOTGSmallKeys, &trackerTOTGBigKey, &trackerTOTGDungeonMap, &trackerTOTGCompass), 0, 2);
-    ui->other_areas_layout->addWidget(new TAW("Forsaken Fortress",   "helmaroc_king.png", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass),   0, 3);
-    ui->other_areas_layout->addWidget(new TAW("Earth Temple",        "jalhalla.png",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass),   0, 4);
-    ui->other_areas_layout->addWidget(new TAW("Wind Temple",         "molgera.png",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass),   0, 5);
-    ui->other_areas_layout->addWidget(new TAW("Great Sea",           "great_sea.png",     nullptr,               nullptr,            nullptr,                nullptr),             0, 6);
-    ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox.png",       nullptr,               nullptr,            nullptr,                nullptr),             0, 7);
-    ui->other_areas_layout->addWidget(new TAW("Hyrule Castle",       "hyrule.png",        nullptr,               nullptr,            nullptr,                nullptr),             0, 8);
-    ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf.png",     nullptr,               nullptr,            nullptr,                nullptr),             0, 9);
+    ui->other_areas_layout->addWidget(new TAW("Dragon Roost Cavern", "gohma",         &trackerDRCSmallKeys,  &trackerDRCBigKey,  &trackerDRCDungeonMap,  &trackerDRCCompass),  0, 0);
+    ui->other_areas_layout->addWidget(new TAW("Forbidden Woods",     "kalle_demos",   &trackerFWSmallKeys,   &trackerFWBigKey,   &trackerFWDungeonMap,   &trackerFWCompass),   0, 1);
+    ui->other_areas_layout->addWidget(new TAW("Tower of the Gods",   "gohdan",        &trackerTOTGSmallKeys, &trackerTOTGBigKey, &trackerTOTGDungeonMap, &trackerTOTGCompass), 0, 2);
+    ui->other_areas_layout->addWidget(new TAW("Forsaken Fortress",   "helmaroc_king", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass),   0, 3);
+    ui->other_areas_layout->addWidget(new TAW("Earth Temple",        "jalhalla",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass),   0, 4);
+    ui->other_areas_layout->addWidget(new TAW("Wind Temple",         "molgera",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass),   0, 5);
+    ui->other_areas_layout->addWidget(new TAW("Great Sea",           "great_sea",     nullptr,               nullptr,            nullptr,                nullptr),             0, 6);
+    ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox",       nullptr,               nullptr,            nullptr,                nullptr),             0, 7);
+    ui->other_areas_layout->addWidget(new TAW("Hyrule Castle",       "hyrule",        nullptr,               nullptr,            nullptr,                nullptr),             0, 8);
+    ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf",     nullptr,               nullptr,            nullptr,                nullptr),             0, 9);
 
     // Set world and inventory and connect inventory button clicks to updating the tracker
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
@@ -452,7 +478,7 @@ void MainWindow::update_tracker()
             row++;
 
             // Maximum of 13 labels per coloumn
-            if (row == 13)
+            if (row > 13)
             {
                 col++;
                 row = 0;
