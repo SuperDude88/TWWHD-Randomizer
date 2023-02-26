@@ -86,7 +86,8 @@ private:
     void calculate_own_dungeon_key_locations();
 
 public:
-    void switch_location_tracker_widgets();
+    void switch_to_overworld_tracker();
+    void switch_to_area_tracker();
     void set_current_tracker_area(const std::string& areaPrefix);
     void update_tracker();
 
@@ -201,8 +202,13 @@ private slots:
     // Tracker
     void on_start_tracker_button_clicked();
     void on_location_list_close_button_released();
+    void on_clear_all_button_released();
     void update_tracker_areas_and_autosave();
     void tracker_show_specific_area(std::string areaPrefix);
+    void tracker_display_current_item_text(const std::string& currentItem);
+    void tracker_clear_current_item_text();
+    void tracker_display_current_area_text(TrackerAreaWidget* currentArea);
+    void tracker_clear_current_area_text();
 
 private:
     // More Tracker Stuff
@@ -218,8 +224,8 @@ private:
     TIB trackerTelescope             = TIB({{GameItem::NOTHING,               "telescope_gray.png"},
                                             {GameItem::Telescope,             "telescope_color.png"}});
     TIB trackerProgressiveSail       = TIB({{GameItem::NOTHING,               "sail_gray.png"},
-                                            {GameItem::ProgressiveSail,       "sail_color.png"},
-                                            {GameItem::ProgressiveSail,       "sail_swift_color.png"}});
+                                            {GameItem::ProgressiveSail,       "sail_color.png",                      "Normal Sail"},
+                                            {GameItem::ProgressiveSail,       "sail_swift_color.png",                "Swift Sail"}});
     TIB trackerWindWaker             = TIB({{GameItem::NOTHING,               "wind_waker_gray.png"},
                                             {GameItem::WindWaker,             "wind_waker_color.png"}});
     TIB trackerGrapplingHook         = TIB({{GameItem::NOTHING,               "grappling_hook_gray.png"},
@@ -231,15 +237,15 @@ private:
     TIB trackerDekuLeaf              = TIB({{GameItem::NOTHING,               "deku_leaf_gray.png"},
                                             {GameItem::DekuLeaf,              "deku_leaf_color.png"}});
     TIB trackerProgressiveSword      = TIB({{GameItem::NOTHING,               "sword_hero_gray.png"},
-                                            {GameItem::ProgressiveSword,      "sword_hero_color.png"},
-                                            {GameItem::ProgressiveSword,      "sword_master_unpowered_color.png"},
-                                            {GameItem::ProgressiveSword,      "sword_master_half_powered_color.png"},
-                                            {GameItem::ProgressiveSword,      "sword_master_full_powered_color.png"}});
+                                            {GameItem::ProgressiveSword,      "sword_hero_color.png",                "Hero's Sword"},
+                                            {GameItem::ProgressiveSword,      "sword_master_unpowered_color.png",    "Master Sword"},
+                                            {GameItem::ProgressiveSword,      "sword_master_half_powered_color.png", "Master Sword\n(Half Power)"},
+                                            {GameItem::ProgressiveSword,      "sword_master_full_powered_color.png", "Master Sword\n(Full Power)"}});
     TIB trackerTingleBottle          = TIB({{GameItem::NOTHING,               "tingle_bottle_gray.png"},
                                             {GameItem::TingleBottle,          "tingle_bottle_color.png"}});
     TIB trackerProgressivePictoBox   = TIB({{GameItem::NOTHING,               "picto_box_gray.png"},
-                                            {GameItem::ProgressivePictoBox,   "picto_box_color.png"},
-                                            {GameItem::ProgressivePictoBox,   "picto_box_deluxe_color.png"}});
+                                            {GameItem::ProgressivePictoBox,   "picto_box_color.png",                 "Picto Box"},
+                                            {GameItem::ProgressivePictoBox,   "picto_box_deluxe_color.png",          "Deluxe Picto Box"}});
     TIB trackerIronBoots             = TIB({{GameItem::NOTHING,               "iron_boots_gray.png"},
                                             {GameItem::IronBoots,             "iron_boots_color.png"}});
     TIB trackerMagicArmor            = TIB({{GameItem::NOTHING,               "magic_armor_gray.png"},
@@ -247,14 +253,14 @@ private:
     TIB trackerBaitBag               = TIB({{GameItem::NOTHING,               "bait_bag_gray.png"},
                                             {GameItem::BaitBag,               "bait_bag_color.png"}});
     TIB trackerProgressiveBow        = TIB({{GameItem::NOTHING,               "bow_gray.png"},
-                                            {GameItem::ProgressiveBow,        "bow_color.png"},
-                                            {GameItem::ProgressiveBow,        "bow_fire_ice_color.png"},
-                                            {GameItem::ProgressiveBow,        "bow_light_color.png"}});
+                                            {GameItem::ProgressiveBow,        "bow_color.png",                       "Hero's Bow"},
+                                            {GameItem::ProgressiveBow,        "bow_fire_ice_color.png",              "Hero's Bow\n(Fire & Ice Arrows)"},
+                                            {GameItem::ProgressiveBow,        "bow_light_color.png",                 "Hero's Bow\n(All Arrows)"}});
     TIB trackerBombs                 = TIB({{GameItem::NOTHING,               "bombs_gray.png"},
                                             {GameItem::Bombs,                 "bombs_color.png"}});
     TIB trackerProgressiveShield     = TIB({{GameItem::NOTHING,               "shield_gray.png"},
-                                            {GameItem::ProgressiveShield,     "shield_color.png"},
-                                            {GameItem::ProgressiveShield,     "shield_mirror_color.png"}});
+                                            {GameItem::ProgressiveShield,     "shield_color.png",                    "Hero's Shield"},
+                                            {GameItem::ProgressiveShield,     "shield_mirror_color.png",             "Mirror Shield"}});
     TIB trackerCabanaDeed            = TIB({{GameItem::NOTHING,               "cabana_deed_gray.png"},
                                             {GameItem::CabanaDeed,            "cabana_deed_color.png"}});
     TIB trackerMaggiesLetter         = TIB({{GameItem::NOTHING,               "maggies_letter_gray.png"},
@@ -271,11 +277,11 @@ private:
                                             {GameItem::SkullHammer,           "skull_hammer_color.png"}});
     TIB trackerPowerBracelets        = TIB({{GameItem::NOTHING,               "power_bracelets_gray.png"},
                                             {GameItem::PowerBracelets,        "power_bracelets_color.png"}});
-    TIB trackerEmptyBottle           = TIB({{GameItem::NOTHING,               "bottle_gray.png"},
-                                            {GameItem::EmptyBottle,           "bottle_color.png"},
-                                            {GameItem::EmptyBottle,           "bottle_2_color.png"},
-                                            {GameItem::EmptyBottle,           "bottle_3_color.png"},
-                                            {GameItem::EmptyBottle,           "bottle_4_color.png"}});
+    TIB trackerEmptyBottle           = TIB({{GameItem::NOTHING,               "bottle_gray.png",                     "Empty Bottle (0/4)"},
+                                            {GameItem::EmptyBottle,           "bottle_color.png",                    "Empty Bottle (1/4)"},
+                                            {GameItem::EmptyBottle,           "bottle_2_color.png",                  "Empty Bottle (2/4)"},
+                                            {GameItem::EmptyBottle,           "bottle_3_color.png",                  "Empty Bottle (3/4)"},
+                                            {GameItem::EmptyBottle,           "bottle_4_color.png",                  "Empty Bottle (4/4)"}});
     TIB trackerWindsRequiem          = TIB({{GameItem::NOTHING,               "winds_requiem_gray.png"},
                                             {GameItem::WindsRequiem,          "winds_requiem_color.png"}});
     TIB trackerBalladOfGales         = TIB({{GameItem::NOTHING,               "ballad_of_gales_gray.png"},
@@ -296,37 +302,37 @@ private:
                                             {GameItem::FaroresPearl,          "pearl_farores_color.png"}});
     TIB trackerNayrusPearl           = TIB({{GameItem::NOTHING,               "pearl_nayrus_gray.png"},
                                             {GameItem::NayrusPearl,           "pearl_nayrus_color.png"}});
-    TIB trackerTriforceShards        = TIB({{GameItem::NOTHING,               "triforce0.png"},
-                                            {GameItem::TriforceShard1,        "triforce1.png"},
-                                            {GameItem::TriforceShard2,        "triforce2.png"},
-                                            {GameItem::TriforceShard3,        "triforce3.png"},
-                                            {GameItem::TriforceShard4,        "triforce4.png"},
-                                            {GameItem::TriforceShard5,        "triforce5.png"},
-                                            {GameItem::TriforceShard6,        "triforce6.png"},
-                                            {GameItem::TriforceShard7,        "triforce7.png"},
-                                            {GameItem::TriforceShard8,        "triforce8.png"}});
-    TIB trackerTingleStatues         = TIB({{GameItem::NOTHING,               "tingle_statue_gray.png"},
-                                            {GameItem::DragonTingleStatue,    "tingle_statue_1_color.png"},
-                                            {GameItem::ForbiddenTingleStatue, "tingle_statue_2_color.png"},
-                                            {GameItem::GoddessTingleStatue,   "tingle_statue_3_color.png"},
-                                            {GameItem::EarthTingleStatue,     "tingle_statue_4_color.png"},
-                                            {GameItem::WindTingleStatue,      "tingle_statue_5_color.png"}});
+    TIB trackerTriforceShards        = TIB({{GameItem::NOTHING,               "triforce0.png",                       "Triforce Shard (0/8)"},
+                                            {GameItem::TriforceShard1,        "triforce1.png",                       "Triforce Shard (1/8)"},
+                                            {GameItem::TriforceShard2,        "triforce2.png",                       "Triforce Shard (2/8)"},
+                                            {GameItem::TriforceShard3,        "triforce3.png",                       "Triforce Shard (3/8)"},
+                                            {GameItem::TriforceShard4,        "triforce4.png",                       "Triforce Shard (4/8)"},
+                                            {GameItem::TriforceShard5,        "triforce5.png",                       "Triforce Shard (5/8)"},
+                                            {GameItem::TriforceShard6,        "triforce6.png",                       "Triforce Shard (6/8)"},
+                                            {GameItem::TriforceShard7,        "triforce7.png",                       "Triforce Shard (7/8)"},
+                                            {GameItem::TriforceShard8,        "triforce8.png",                       "Triforce of Courage"}});
+    TIB trackerTingleStatues         = TIB({{GameItem::NOTHING,               "tingle_statue_gray.png",              "Tingle Statue (0/5)"},
+                                            {GameItem::DragonTingleStatue,    "tingle_statue_1_color.png",           "Tingle Statue (1/5)"},
+                                            {GameItem::ForbiddenTingleStatue, "tingle_statue_2_color.png",           "Tingle Statue (2/5)"},
+                                            {GameItem::GoddessTingleStatue,   "tingle_statue_3_color.png",           "Tingle Statue (3/5)"},
+                                            {GameItem::EarthTingleStatue,     "tingle_statue_4_color.png",           "Tingle Statue (4/5)"},
+                                            {GameItem::WindTingleStatue,      "tingle_statue_5_color.png",           "Tingle Statue (5/5)"}});
     TIB trackerGhostShipChart        = TIB({{GameItem::NOTHING,               "ghost_ship_chart_gray.png"},
                                             {GameItem::GhostShipChart,        "ghost_ship_chart_color.png"}});
     TIB trackerHurricaneSpin         = TIB({{GameItem::NOTHING,               "hurricane_spin_gray.png"},
                                             {GameItem::HurricaneSpin,         "hurricane_spin_color.png"}});
-    TIB trackerProgressiveBombBag    = TIB({{GameItem::NOTHING,               "bigger_bomb_bag_gray.png"},
-                                            {GameItem::ProgressiveBombBag,    "bigger_bomb_bag_color.png"},
-                                            {GameItem::ProgressiveBombBag,    "biggest_bomb_bag_color.png"}});
-    TIB trackerProgressiveQuiver     = TIB({{GameItem::NOTHING,               "bigger_quiver_gray.png"},
-                                            {GameItem::ProgressiveQuiver,     "bigger_quiver_color.png"},
-                                            {GameItem::ProgressiveQuiver,     "biggest_quiver_color.png"}});
-    TIB trackerProgressiveWallet     = TIB({{GameItem::NOTHING,               "bigger_wallet_gray.png"},
-                                            {GameItem::ProgressiveWallet,     "bigger_wallet_color.png"},
-                                            {GameItem::ProgressiveWallet,     "biggest_wallet_color.png"}});
-    TIB trackerProgressiveMagicMeter = TIB({{GameItem::NOTHING,               "magic_bottle_gray.png"},
-                                            {GameItem::ProgressiveMagicMeter, "magic_bottle_color.png"},
-                                            {GameItem::ProgressiveMagicMeter, "magic_double_bottle_color.png"}});
+    TIB trackerProgressiveBombBag    = TIB({{GameItem::NOTHING,               "bigger_bomb_bag_gray.png",            "Bomb Bag (60 Bombs)"},
+                                            {GameItem::ProgressiveBombBag,    "bigger_bomb_bag_color.png",           "Bomb Bag (60 Bombs)"},
+                                            {GameItem::ProgressiveBombBag,    "biggest_bomb_bag_color.png",          "Bomb Bag (99 Bombs)"}});
+    TIB trackerProgressiveQuiver     = TIB({{GameItem::NOTHING,               "bigger_quiver_gray.png",              "Quiver (60 Arrows)"},
+                                            {GameItem::ProgressiveQuiver,     "bigger_quiver_color.png",             "Quiver (60 Arrows)"},
+                                            {GameItem::ProgressiveQuiver,     "biggest_quiver_color.png",            "Quiver (99 Arrows)"}});
+    TIB trackerProgressiveWallet     = TIB({{GameItem::NOTHING,               "bigger_wallet_gray.png",              "Wallet (1000 Rupees)"},
+                                            {GameItem::ProgressiveWallet,     "bigger_wallet_color.png",             "Wallet (1000 Rupees)"},
+                                            {GameItem::ProgressiveWallet,     "biggest_wallet_color.png",            "Wallet (5000 Rupees)"}});
+    TIB trackerProgressiveMagicMeter = TIB({{GameItem::NOTHING,               "magic_bottle_gray.png",               "Magic Meter"},
+                                            {GameItem::ProgressiveMagicMeter, "magic_bottle_color.png",              "Magic Meter"},
+                                            {GameItem::ProgressiveMagicMeter, "magic_double_bottle_color.png",       "Magic Meter Upgrade"}});
 
     // Treasure and Triforce Charts
     TIB trackerTreasureChart1        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
@@ -429,19 +435,19 @@ private:
                                             {GameItem::TriforceChart3,        "triforce_chart_open.png"}});
 
     // Dungeon Item Inventory Buttons
-    TIB trackerWTSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
-                                            {GameItem::WTSmallKey,            "small_key_1_color.png"},
-                                            {GameItem::WTSmallKey,            "small_key_2_color.png"}});
+    TIB trackerWTSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "WT Small Key (0/2)"},
+                                            {GameItem::WTSmallKey,            "small_key_1_color.png",     "WT Small Key (1/2)"},
+                                            {GameItem::WTSmallKey,            "small_key_2_color.png",     "WT Small Key (2/2)"}});
     TIB trackerWTBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
                                             {GameItem::WTBigKey,              "big_key_color.png"}});
     TIB trackerWTDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
                                             {GameItem::WTDungeonMap,          "map_color.png"}});
     TIB trackerWTCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
                                             {GameItem::WTCompass,             "compass_color.png"}});
-    TIB trackerETSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
-                                            {GameItem::ETSmallKey,            "small_key_1_color.png"},
-                                            {GameItem::ETSmallKey,            "small_key_2_color.png"},
-                                            {GameItem::ETSmallKey,            "small_key_3_color.png"}});
+    TIB trackerETSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "ET Small Key (0/3)"},
+                                            {GameItem::ETSmallKey,            "small_key_1_color.png",     "ET Small Key (1/3)"},
+                                            {GameItem::ETSmallKey,            "small_key_2_color.png",     "ET Small Key (2/3)"},
+                                            {GameItem::ETSmallKey,            "small_key_3_color.png",     "ET Small Key (3/3)"}});
     TIB trackerETBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
                                             {GameItem::ETBigKey,              "big_key_color.png"}});
     TIB trackerETDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
@@ -452,9 +458,9 @@ private:
                                             {GameItem::FFDungeonMap,          "map_color.png"}});
     TIB trackerFFCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
                                             {GameItem::FFCompass,             "compass_color.png"}});
-    TIB trackerTOTGSmallKeys         = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
-                                            {GameItem::TotGSmallKey,          "small_key_1_color.png"},
-                                            {GameItem::TotGSmallKey,          "small_key_2_color.png"}});
+    TIB trackerTOTGSmallKeys         = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "TotG Small Key (0/2)"},
+                                            {GameItem::TotGSmallKey,          "small_key_1_color.png",     "TotG Small Key (1/2)"},
+                                            {GameItem::TotGSmallKey,          "small_key_2_color.png",     "TotG Small Key (2/2)"}});
     TIB trackerTOTGBigKey            = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
                                             {GameItem::TotGBigKey,            "big_key_color.png"}});
     TIB trackerTOTGDungeonMap        = TIB({{GameItem::NOTHING,               "map_gray.png"},
@@ -469,11 +475,11 @@ private:
                                             {GameItem::FWDungeonMap,          "map_color.png"}});
     TIB trackerFWCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
                                             {GameItem::FWCompass,             "compass_color.png"}});
-    TIB trackerDRCSmallKeys          = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
-                                            {GameItem::DRCSmallKey,           "small_key_1_color.png"},
-                                            {GameItem::DRCSmallKey,           "small_key_2_color.png"},
-                                            {GameItem::DRCSmallKey,           "small_key_3_color.png"},
-                                            {GameItem::DRCSmallKey,           "small_key_4_color.png"}});
+    TIB trackerDRCSmallKeys          = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "DRC Small Key (0/4)"},
+                                            {GameItem::DRCSmallKey,           "small_key_1_color.png",     "DRC Small Key (1/4)"},
+                                            {GameItem::DRCSmallKey,           "small_key_2_color.png",     "DRC Small Key (2/4)"},
+                                            {GameItem::DRCSmallKey,           "small_key_3_color.png",     "DRC Small Key (3/4)"},
+                                            {GameItem::DRCSmallKey,           "small_key_4_color.png",     "DRC Small Key (4/4)"}});
     TIB trackerDRCBigKey             = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
                                             {GameItem::DRCBigKey,             "big_key_color.png"}});
     TIB trackerDRCDungeonMap         = TIB({{GameItem::NOTHING,               "map_gray.png"},

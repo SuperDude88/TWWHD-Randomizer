@@ -12,7 +12,9 @@ public:
     TrackerLocationLabel(int pointSize);
 
     void set_location(Location* loc);
+    Location* get_location() const;
     void update_colors();
+    void mark_location();
 
 signals:
     void location_label_clicked();

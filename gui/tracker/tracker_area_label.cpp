@@ -4,7 +4,7 @@
 
 TrackerAreaLabel::TrackerAreaLabel()
 {
-    SET_FONT(this, "fira_sans", 10);
+    set_font(this, "fira_sans", 10);
     setText("0/0");
 }
 

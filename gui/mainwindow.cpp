@@ -1207,3 +1207,4 @@ void MainWindow::load_locations()
         }
     }
 }
+

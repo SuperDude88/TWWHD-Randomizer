@@ -1880,9 +1880,9 @@
            <widget class="QPushButton" name="start_tracker_button">
             <property name="geometry">
              <rect>
-              <x>900</x>
+              <x>890</x>
               <y>10</y>
-              <width>80</width>
+              <width>101</width>
               <height>24</height>
              </rect>
             </property>
@@ -1890,7 +1890,7 @@
              <string notr="true">background: white</string>
             </property>
             <property name="text">
-             <string>Start Tracker</string>
+             <string>Start New Tracker</string>
             </property>
            </widget>
            <widget class="QWidget" name="inventory_widget" native="true">
@@ -2081,34 +2081,51 @@
                 <number>0</number>
                </property>
                <item row="0" column="0">
-                <widget class="QPushButton" name="location_list_close_button">
-                 <property name="cursor">
-                  <cursorShape>PointingHandCursor</cursorShape>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">text-align: left;
+                <layout class="QHBoxLayout" name="top_button_layout">
+                 <item>
+                  <widget class="QPushButton" name="location_list_close_button">
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: left;
 color: black;
 font-size: 15px;</string>
-                 </property>
-                 <property name="text">
-                  <string>X Close</string>
-                 </property>
-                 <property name="flat">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <layout class="QGridLayout" name="specific_locations_layout">
-                 <property name="sizeConstraint">
-                  <enum>QLayout::SetFixedSize</enum>
-                 </property>
-                 <property name="spacing">
-                  <number>2</number>
-                 </property>
+                   </property>
+                   <property name="text">
+                    <string>X Close</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="clear_all_button">
+                   <property name="font">
+                    <font>
+                     <pointsize>-1</pointsize>
+                    </font>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: right;
+color: black;
+font-size: 15px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Clear All</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
-               <item row="2" column="0">
+               <item row="4" column="0">
                 <spacer name="verticalSpacer_5">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -2121,6 +2138,16 @@ font-size: 15px;</string>
                  </property>
                 </spacer>
                </item>
+               <item row="3" column="0">
+                <layout class="QGridLayout" name="specific_locations_layout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetFixedSize</enum>
+                 </property>
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                </layout>
+               </item>
               </layout>
              </widget>
             </widget>
@@ -2130,7 +2157,7 @@ font-size: 15px;</string>
              <rect>
               <x>10</x>
               <y>365</y>
-              <width>1036</width>
+              <width>1028</width>
               <height>181</height>
              </rect>
             </property>
@@ -2142,12 +2169,240 @@ font-size: 15px;</string>
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>0</number>
+              <number>5</number>
              </property>
              <property name="spacing">
               <number>3</number>
              </property>
             </layout>
+           </widget>
+           <widget class="QWidget" name="stat_box" native="true">
+            <property name="geometry">
+             <rect>
+              <x>833</x>
+              <y>255</y>
+              <width>205</width>
+              <height>101</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_12">
+             <property name="leftMargin">
+              <number>5</number>
+             </property>
+             <property name="rightMargin">
+              <number>5</number>
+             </property>
+             <item row="1" column="0">
+              <widget class="QLabel" name="locations_accessible_number">
+               <property name="styleSheet">
+                <string notr="true">color: white;
+font-weight: bold;</string>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="locations_remaining_number">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>35</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="baseSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: white;
+font-weight: bold;</string>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="locations_checked_number">
+               <property name="styleSheet">
+                <string notr="true">color: white;
+font-weight: bold;</string>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="locations_checked_label">
+               <property name="styleSheet">
+                <string notr="true">color: lightgray;</string>
+               </property>
+               <property name="text">
+                <string>Locations Checked</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="locations_accessible_label">
+               <property name="styleSheet">
+                <string notr="true">color: lightgray;</string>
+               </property>
+               <property name="text">
+                <string>Locations Accessible</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="locations_remaining_label">
+               <property name="styleSheet">
+                <string notr="true">color: lightgray;</string>
+               </property>
+               <property name="text">
+                <string>Locations Remaining</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QLabel" name="current_area_name_label">
+            <property name="geometry">
+             <rect>
+              <x>830</x>
+              <y>100</y>
+              <width>211</width>
+              <height>51</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="current_area_accessible_label">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>870</x>
+              <y>160</y>
+              <width>61</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;</string>
+            </property>
+            <property name="text">
+             <string>Accessible,</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="current_area_remaining_label">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>960</x>
+              <y>160</y>
+              <width>81</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;</string>
+            </property>
+            <property name="text">
+             <string>Remaining</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="current_area_accessible_number">
+            <property name="geometry">
+             <rect>
+              <x>840</x>
+              <y>160</y>
+              <width>21</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+           <widget class="QLabel" name="current_area_remaining_number">
+            <property name="geometry">
+             <rect>
+              <x>935</x>
+              <y>160</y>
+              <width>21</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+           <widget class="QLabel" name="current_item_label">
+            <property name="geometry">
+             <rect>
+              <x>830</x>
+              <y>185</y>
+              <width>211</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignHCenter|Qt::AlignTop</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </widget>
          </widget>
@@ -2191,7 +2446,7 @@ font-size: 15px;</string>
       <item>
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tracker Legacy Permalink (copy into &lt;a href=&quot;https://gymnast86.github.io/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;tracker&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tracker Legacy Permalink (copy into &lt;a href=&quot;https://gymnast86.github.io/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;web tracker&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="textFormat">
          <enum>Qt::RichText</enum>

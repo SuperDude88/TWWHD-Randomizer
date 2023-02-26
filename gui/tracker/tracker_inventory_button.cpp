@@ -9,7 +9,25 @@ TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventor
     itemStates(itemStates_)
 {
     state = 0;
+    setCursor(Qt::PointingHandCursor);
     updateIcon();
+
+    // Set appropriate tracker label state names
+    for (size_t i = itemStates.size(); i > 0; i--)
+    {
+        auto& itemState = itemStates[i - 1];
+        if (itemState.trackerLabelStr == "")
+        {
+            if (itemState.gameItem == GameItem::NOTHING)
+            {
+                itemState.trackerLabelStr = itemStates[i].trackerLabelStr;
+            }
+            else
+            {
+                itemState.trackerLabelStr = gameItemToName(itemState.gameItem);
+            }
+        }
+    }
 }
 
 void TrackerInventoryButton::updateIcon()
@@ -44,7 +62,7 @@ void TrackerInventoryButton::removeAllItems()
             continue;
         }
 
-        auto& [gameItem, filename] = itemStates[i];
+        auto& [gameItem, filename, trackerLabelStr] = itemStates[i];
         removeElementFromPool(*trackerInventory, Item(gameItem, trackerWorld));
     }
 }
@@ -58,7 +76,7 @@ void TrackerInventoryButton::addAllItems()
             continue;
         }
 
-        auto& [gameItem, filename] = itemStates[i];
+        auto& [gameItem, filename, trackerLabelStr] = itemStates[i];
         addElementToPool(*trackerInventory, Item(gameItem, trackerWorld));
     }
 }
@@ -100,5 +118,16 @@ void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
     }
     updateIcon();
     emit inventory_button_pressed();
+    emit mouse_over_item(itemStates[state].trackerLabelStr);
+}
+
+void TrackerInventoryButton::enterEvent(QEnterEvent* e)
+{
+    emit mouse_over_item(itemStates[state].trackerLabelStr);
+}
+
+void TrackerInventoryButton::leaveEvent(QEvent* e)
+{
+    emit mouse_over_item("");
 }
 

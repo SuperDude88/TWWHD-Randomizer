@@ -21,10 +21,10 @@ public:
     // Other Areas constructor
     TrackerAreaWidget(const std::string& areaPrefix_,
                       const std::string& iconFileName,
-                      TrackerInventoryButton* smallKeys,
-                      TrackerInventoryButton* bigKey,
-                      TrackerInventoryButton* map,
-                      TrackerInventoryButton* compass);
+                      TrackerInventoryButton* smallKeys = nullptr,
+                      TrackerInventoryButton* bigKey = nullptr,
+                      TrackerInventoryButton* map = nullptr,
+                      TrackerInventoryButton* compass = nullptr);
 
     QStackedLayout stackedLayout = QStackedLayout(this);
     TrackerAreaLabel locationsRemaining = TrackerAreaLabel();
@@ -45,9 +45,16 @@ public:
 
     std::string areaPrefix = "";
     LocationPool locations = {};
+    int totalRemainingLocations = 0;
+    int totalAccessibleLocations = 0;
+
+signals:
+    void mouse_over_area(TrackerAreaWidget* areaPrefix);
+    void mouse_left_area();
 
 protected:
     void enterEvent(QEnterEvent* e) override;
+    void leaveEvent(QEvent* e) override;
 
 };
 
