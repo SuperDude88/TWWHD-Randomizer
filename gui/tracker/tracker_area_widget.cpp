@@ -83,21 +83,16 @@ void TrackerAreaWidget::setChart(TrackerInventoryButton* chart)
     stackedLayout.insertWidget(0, chart);
 }
 
-void TrackerAreaWidget::enterEvent(QEnterEvent* e)
-{
-    // Update label
-}
-
 void TrackerAreaWidget::updateArea()
 {
-    size_t totalLocations = std::count_if(locations.begin(), locations.end(), [](Location* loc){return !loc->marked;});
-    size_t accessibleLocations = std::count_if(locations.begin(), locations.end(), [](Location* loc){return loc->hasBeenFound && !loc->marked;});
+    totalRemainingLocations = std::count_if(locations.begin(), locations.end(), [](Location* loc){return !loc->marked;});
+    totalAccessibleLocations = std::count_if(locations.begin(), locations.end(), [](Location* loc){return loc->hasBeenFound && !loc->marked;});
 
-    if (totalLocations == 0 && accessibleLocations == 0)
+    if (totalRemainingLocations == 0 && totalAccessibleLocations == 0)
     {
         locationsRemaining.setStyleSheet("color: black;");
     }
-    else if (accessibleLocations == 0)
+    else if (totalAccessibleLocations == 0)
     {
         locationsRemaining.setStyleSheet("color: red;");
     }
@@ -106,7 +101,7 @@ void TrackerAreaWidget::updateArea()
         locationsRemaining.setStyleSheet("color: blue;");
     }
 
-    std::string locationsRemainingText = std::to_string(accessibleLocations) + "/" + std::to_string(totalLocations);
+    std::string locationsRemainingText = std::to_string(totalAccessibleLocations) + "/" + std::to_string(totalRemainingLocations);
     locationsRemaining.setText(locationsRemainingText.c_str());
 
     updateBossImageWidget();
@@ -125,3 +120,14 @@ void TrackerAreaWidget::updateBossImageWidget()
                               "background-repeat: none;"
                               "background-position: center;").c_str());
 }
+
+void TrackerAreaWidget::enterEvent(QEnterEvent* e)
+{
+    emit mouse_over_area(this);
+}
+
+void TrackerAreaWidget::leaveEvent(QEvent* e)
+{
+    emit mouse_left_area();
+}
+

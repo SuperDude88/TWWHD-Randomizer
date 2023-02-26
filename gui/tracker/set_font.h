@@ -3,12 +3,13 @@
 
 #include <QFontDatabase>
 
-// Putting this in a macro because having to do it everytime is annoying
-#define SET_FONT(widget, font_filename, point_size)                                                   \
-    int fontId = QFontDatabase::addApplicationFont(DATA_PATH "assets/tracker/" font_filename ".ttf"); \
-    QString family = QFontDatabase::applicationFontFamilies(fontId).at(0);                            \
-    QFont new_font(family);                                                                           \
-    new_font.setPointSize(point_size);                                                                \
-    widget->setFont(new_font);                                                                        \
-
+template<typename W>
+void set_font(W* widget, const std::string& font_filename, int point_size)
+{
+    int fontId = QFontDatabase::addApplicationFont(std::string(DATA_PATH "assets/tracker/" + font_filename + ".ttf").c_str());
+    QString family = QFontDatabase::applicationFontFamilies(fontId).at(0);
+    QFont new_font(family);
+    new_font.setPointSize(point_size);
+    widget->setFont(new_font);
+}
 #endif // SET_FONT_H

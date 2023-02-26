@@ -10,13 +10,7 @@ TrackerLocationLabel::TrackerLocationLabel()
 TrackerLocationLabel::TrackerLocationLabel(int pointSize)
 {
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
-
-    SET_FONT(this, "fira_sans", 14);
-    // Have to reset pointSize since we can't pass into a macro
-    auto f = font();
-    f.setPointSize(pointSize);
-    setFont(f);
-
+    set_font(this, "fira_sans", pointSize);
     setWordWrap(true);
     setCursor(Qt::PointingHandCursor);
 }
@@ -29,11 +23,21 @@ void TrackerLocationLabel::set_location(Location* loc)
     update_colors();
 }
 
-void TrackerLocationLabel::mouseReleaseEvent(QMouseEvent* e)
+Location* TrackerLocationLabel::get_location() const
+{
+    return location;
+}
+
+void TrackerLocationLabel::mark_location()
 {
     location->marked = !location->marked;
     update_colors();
     emit location_label_clicked();
+}
+
+void TrackerLocationLabel::mouseReleaseEvent(QMouseEvent* e)
+{
+    mark_location();
 }
 
 void TrackerLocationLabel::update_colors()

@@ -302,8 +302,25 @@ void MainWindow::load_tracker_autosave()
 void MainWindow::initialize_tracker()
 {
 
-    // Setup Fira Sans font for close button
-    SET_FONT(ui->location_list_close_button, "fira_sans", 14);
+    // Setup Fira Sans font for tracker UI elements
+    set_font(ui->location_list_close_button,     "fira_sans", 14);
+    set_font(ui->clear_all_button,               "fira_sans", 14);
+    set_font(ui->current_area_name_label,        "fira_sans", 15);
+    set_font(ui->current_area_accessible_number, "fira_sans", 11);
+    set_font(ui->current_area_accessible_label,  "fira_sans", 9);
+    set_font(ui->current_area_remaining_number,  "fira_sans", 11);
+    set_font(ui->current_area_remaining_label,   "fira_sans", 9);
+    set_font(ui->current_item_label,             "fira_sans", 14);
+    set_font(ui->locations_accessible_label,     "fira_sans", 12);
+    set_font(ui->locations_accessible_number,    "fira_sans", 12);
+    set_font(ui->locations_checked_label,        "fira_sans", 12);
+    set_font(ui->locations_checked_number,       "fira_sans", 12);
+    set_font(ui->locations_remaining_label,      "fira_sans", 12);
+    set_font(ui->locations_remaining_number,     "fira_sans", 12);
+
+    // Hide certain elements
+    ui->current_area_accessible_label->setVisible(false);
+    ui->current_area_remaining_label->setVisible(false);
 
     if (trackerWorlds.empty())
     {
@@ -356,7 +373,8 @@ void MainWindow::initialize_tracker()
     SET_BUTTON_TO_LAYOUT(trackerProgressiveWallet,     inventory_layout_bottom_right, 1, 2);
     SET_BUTTON_TO_LAYOUT(trackerProgressiveMagicMeter, inventory_layout_bottom_right, 1, 3);
 
-    // Add Background Images
+    // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
+    // depending on if we compile statically or not)
     ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "assets/tracker/background.png);}");
     ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "assets/tracker/trackerbg.png);}");
     ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
@@ -366,7 +384,8 @@ void MainWindow::initialize_tracker()
                                                "}");
     ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "assets/tracker/sea_chart.png);}");
     ui->location_list_widget->setStyleSheet("QWidget#location_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png) 0 0 0 0 stretch stretch;}");
-    ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: gray;}");
+    ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
+    ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
 
     // Add area widgets to the overworld
     using TAW = TrackerAreaWidget;
@@ -426,17 +445,18 @@ void MainWindow::initialize_tracker()
     ui->other_areas_layout->addWidget(new TAW("Forsaken Fortress",   "helmaroc_king", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass),   0, 3);
     ui->other_areas_layout->addWidget(new TAW("Earth Temple",        "jalhalla",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass),   0, 4);
     ui->other_areas_layout->addWidget(new TAW("Wind Temple",         "molgera",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass),   0, 5);
-    ui->other_areas_layout->addWidget(new TAW("Great Sea",           "great_sea",     nullptr,               nullptr,            nullptr,                nullptr),             0, 6);
-    ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox",       nullptr,               nullptr,            nullptr,                nullptr),             0, 7);
-    ui->other_areas_layout->addWidget(new TAW("Hyrule Castle",       "hyrule",        nullptr,               nullptr,            nullptr,                nullptr),             0, 8);
-    ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf",     nullptr,               nullptr,            nullptr,                nullptr),             0, 9);
+    ui->other_areas_layout->addWidget(new TAW("Great Sea",           "great_sea"),    0, 6);
+    ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox"),      0, 7);
+    ui->other_areas_layout->addWidget(new TAW("Hyrule Castle",       "hyrule" ),      0, 8);
+    ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf"),    0, 9);
 
-    // Set world and inventory and connect inventory button clicks to updating the tracker
+    // Set world and inventory and connect inventory button actions to updating the tracker
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
     {
         inventoryButton->trackerInventory = &trackerInventory;
         inventoryButton->trackerWorld = &trackerWorlds[0];
         connect(inventoryButton, &TrackerInventoryButton::inventory_button_pressed, this, &MainWindow::update_tracker);
+        connect(inventoryButton, &TrackerInventoryButton::mouse_over_item, this, &MainWindow::tracker_display_current_item_text);
     }
 
     // Connect clicking area widgets to showing the checks in that area
@@ -444,47 +464,18 @@ void MainWindow::initialize_tracker()
     {
         connect(area, &TrackerAreaLabel::area_label_clicked, this, &MainWindow::tracker_show_specific_area);
     }
+
+    // Connect hovering over an area widget to showing the areas info in the side label
+    for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
+    {
+        connect(area, &TrackerAreaWidget::mouse_over_area, this, &MainWindow::tracker_display_current_area_text);
+        connect(area, &TrackerAreaWidget::mouse_left_area, this, &MainWindow::tracker_clear_current_area_text);
+    }
 }
 
 
 void MainWindow::update_tracker()
 {
-    getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations);
-
-    // Apply any own dungeon items after we get the accessible locations
-    auto trackerInventoryExtras = trackerInventory;
-    bool addedItems = false;
-    do
-    {
-        addedItems = false;
-        for (auto& [item, locationPools] : ownDungeonKeyLocations)
-        {
-            auto itemCount = elementCountInPool(item, trackerInventoryExtras);
-
-            for (auto i = itemCount; i < locationPools.size(); i++)
-            {
-                // If all the locations in the pool are either marked or accessible
-                // then add the key to the inventory calculation
-                auto& locPool = locationPools[i];
-                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){return loc->marked || loc->hasBeenFound;}))
-                {
-                    addElementToPool(trackerInventoryExtras, item);
-                    addedItems = true;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        if (addedItems)
-        {
-            getAccessibleLocations(trackerWorlds, trackerInventoryExtras, trackerLocations);
-        }
-    }
-    while (addedItems);
-
     update_tracker_areas_and_autosave();
 
     // No reason to update labels if we're displaying the overworld
@@ -543,30 +534,99 @@ void MainWindow::update_tracker()
 
 void MainWindow::update_tracker_areas_and_autosave()
 {
+    getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations);
+
+    // Apply any own dungeon items after we get the accessible locations
+    auto trackerInventoryExtras = trackerInventory;
+    bool addedItems = false;
+    do
+    {
+        addedItems = false;
+        for (auto& [item, locationPools] : ownDungeonKeyLocations)
+        {
+            auto itemCount = elementCountInPool(item, trackerInventoryExtras);
+
+            for (auto i = itemCount; i < locationPools.size(); i++)
+            {
+                // If all the locations in the pool are either marked or accessible
+                // then add the key to the inventory calculation
+                auto& locPool = locationPools[i];
+                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){return loc->marked || loc->hasBeenFound;}))
+                {
+                    addElementToPool(trackerInventoryExtras, item);
+                    addedItems = true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (addedItems)
+        {
+            getAccessibleLocations(trackerWorlds, trackerInventoryExtras, trackerLocations);
+        }
+    }
+    while (addedItems);
+
     // Update each areas information
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
     {
         area->updateArea();
     }
 
+    // Update stat box labels
+    int checkedLocations = 0;
+    int accessibleLocations = 0;
+    int remainingLocations = 0;
+    for (auto loc : trackerLocations)
+    {
+        if (loc->marked)
+        {
+            checkedLocations++;
+        }
+        else if (loc->hasBeenFound)
+        {
+            accessibleLocations++;
+            remainingLocations++;
+        }
+        else
+        {
+            remainingLocations++;
+        }
+    }
+
+    ui->locations_checked_number->setText(std::to_string(checkedLocations).c_str());
+    ui->locations_accessible_number->setText(std::to_string(accessibleLocations).c_str());
+    ui->locations_remaining_number->setText(std::to_string(remainingLocations).c_str());
+
     autosave_current_tracker();
 }
 
-void MainWindow::switch_location_tracker_widgets()
+void MainWindow::switch_to_overworld_tracker()
 {
-    if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
-    {
-        ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA);
-    }
-    else
-    {
-        ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_OVERWORLD);
-    }
+    ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_OVERWORLD);
+}
+
+void MainWindow::switch_to_area_tracker()
+{
+    ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA);
 }
 
 void MainWindow::on_location_list_close_button_released()
 {
-    switch_location_tracker_widgets();
+    switch_to_overworld_tracker();
+}
+
+void MainWindow::on_clear_all_button_released()
+{
+    for (auto locLabel : currentlyDisplayedLocations)
+    {
+        locLabel->get_location()->marked = true;
+        locLabel->update_colors();
+    }
+    update_tracker();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
@@ -577,12 +637,43 @@ void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
 void MainWindow::tracker_show_specific_area(std::string areaPrefix)
 {
     set_current_tracker_area(areaPrefix);
-    switch_location_tracker_widgets();
+    switch_to_area_tracker();
     update_tracker();
+
+    // Only show the Clear All option if this is a dungeon
+    ui->clear_all_button->setVisible(trackerWorlds[0].dungeons.contains(areaPrefix));
+}
+
+void MainWindow::tracker_display_current_item_text(const std::string& currentItem)
+{
+    ui->current_item_label->setText(currentItem.c_str());
+}
+
+void MainWindow::tracker_clear_current_item_text()
+{
+    ui->current_item_label->setText("");
+}
+
+void MainWindow::tracker_display_current_area_text(TrackerAreaWidget* currentArea)
+{
+    ui->current_area_name_label->setText(currentArea->getPrefix().c_str());
+    ui->current_area_accessible_number->setText(std::to_string(currentArea->totalAccessibleLocations).c_str());
+    ui->current_area_remaining_number->setText(std::to_string(currentArea->totalRemainingLocations).c_str());
+    ui->current_area_accessible_label->setVisible(true);
+    ui->current_area_remaining_label->setVisible(true);
+}
+
+void MainWindow::tracker_clear_current_area_text()
+{
+    ui->current_area_name_label->setText("");
+    ui->current_area_accessible_number->setText("");
+    ui->current_area_remaining_number->setText("");
+    ui->current_area_accessible_label->setVisible(false);
+    ui->current_area_remaining_label->setVisible(false);
 }
 
 // Calculates the potential locations for each dungeon key if the
-// key ahs to be inside the dungeon. This helps users know how much
+// key has to be inside the dungeon. This helps users know how much
 // of a dungeon they can actually do even if they haven't collected
 // the keys yet
 void MainWindow::calculate_own_dungeon_key_locations()
@@ -613,22 +704,10 @@ void MainWindow::calculate_own_dungeon_key_locations()
         auto accessibleLocations = getAccessibleLocations(trackerWorlds, itemPool, trackerLocations);
         auto potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){return loc->getName().starts_with(dungeonName);});
 
+        // Save the possible locations for this key
         ownDungeonKeyLocations[key].push_back(potentialKeyLocations);
 
+        // Add the key back to the pool to get ready for the next one
         addElementToPool(itemPool, key);
     }
-
-//    for (auto& [item, locationPools] : ownDungeonKeyLocations)
-//    {
-//        std::cout << item.getName() << ":" << std::endl;
-//        for (auto& pool : locationPools)
-//        {
-//            std::cout << "  [" << std::endl;
-//            for (auto loc : pool)
-//            {
-//                std::cout << "    " << loc->getName() << std::endl;
-//            }
-//            std::cout << "  ]" << std::endl;
-//        }
-//    }
 }
