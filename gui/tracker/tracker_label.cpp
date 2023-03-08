@@ -1,4 +1,4 @@
-#include "tracker_location_label.h"
+#include "tracker_label.h"
 
 #include <tracker/set_font.h>
 
