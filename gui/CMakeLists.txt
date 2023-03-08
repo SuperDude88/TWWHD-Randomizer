@@ -101,8 +101,8 @@ set(PROJECT_SOURCES
         tracker/tracker_area_widget.cpp
         tracker/tracker_inventory_button.h
         tracker/tracker_inventory_button.cpp
-        tracker/tracker_location_label.h
-        tracker/tracker_location_label.cpp
+        tracker/tracker_label.h
+        tracker/tracker_label.cpp
         tracker/tracker.cpp
         ../randomizer.cpp
         ../tweaks.cpp

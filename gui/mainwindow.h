@@ -20,7 +20,7 @@
 #include <logic/PoolFunctions.hpp>
 
 #include <tracker/tracker_inventory_button.h>
-#include <tracker/tracker_location_label.h>
+#include <tracker/tracker_label.h>
 #include <tracker/tracker_area_widget.h>
 
 void delete_and_create_default_config();
