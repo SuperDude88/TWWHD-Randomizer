@@ -81,6 +81,9 @@ MainWindow::MainWindow(QWidget *parent)
         child->installEventFilter(this);
     }
 
+    // Switch to first tab
+    ui->tabWidget->setCurrentIndex(0);
+
     // Hide options which won't exist for a while
     ui->randomize_enemies->setVisible(false);
     ui->randomize_enemy_palettes->setVisible(false);

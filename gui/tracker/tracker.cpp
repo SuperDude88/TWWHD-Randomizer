@@ -8,18 +8,19 @@
 #include <logic/Fill.hpp>
 #include <logic/Search.hpp>
 #include <logic/PoolFunctions.hpp>
+#include <logic/EntranceShuffle.hpp>
 
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
 
-#define LOCATION_TRACKER_OVERWORLD 0
-#define LOCATION_TRACKER_SPECIFIC_AREA 1
-
-static std::unordered_map<Item, std::vector<LocationPool>> ownDungeonKeyLocations;
-
-void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool& markedItems, const std::vector<std::string>& markedLocations)
+void MainWindow::initialize_tracker_world(Settings& settings,
+                                          const GameItemPool& markedItems,
+                                          const std::vector<std::string>& markedLocations,
+                                          const std::unordered_map<std::string, std::string>& connectedEntrances)
 {
+    trackerStarted = true;
+
     // Build the world used for the tracker
     auto& trackerWorld = trackerWorlds[0];
     trackerLocations.clear();
@@ -29,14 +30,37 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
     trackerWorld.setWorldId(0);
 
     // Copy settings to modify them
-    auto settingsCopy = settings;
+    trackerSettings = settings;
 
-    // Don't randomize charts in tracker world
-    // since we don't know what they'll be if they're
-    // randomized
-    settingsCopy.randomize_charts = false;
+    // Turn off randomize charts when creating the world
+    // and also set chart imaages for sectors which normally
+    // have sunken treasure from triforce charts
+    if (settings.randomize_charts)
+    {
+        trackerSettings.randomize_charts = false;
+        if (trackerSettings.progression_treasure_charts || trackerSettings.progression_triforce_charts)
+        {
+            trackerSettings.progression_treasure_charts = true;
+            trackerSettings.progression_triforce_charts = true;
+        }
 
-    trackerWorld.setSettings(settingsCopy);
+        for (auto trackerTriforceChart : {&trackerTriforceChart1, &trackerTriforceChart2, &trackerTriforceChart3})
+        {
+            trackerTriforceChart->itemStates[0].filename = "treasure_chart_closed.png";
+            trackerTriforceChart->itemStates[1].filename = "treasure_chart_open.png";
+        }
+    }
+    else
+    {
+        for (auto trackerTriforceChart : {&trackerTriforceChart1, &trackerTriforceChart2, &trackerTriforceChart3})
+        {
+            trackerTriforceChart->itemStates[0].filename = "triforce_chart_closed.png";
+            trackerTriforceChart->itemStates[1].filename = "triforce_chart_open.png";
+        }
+    }
+
+
+    trackerWorld.setSettings(trackerSettings);
     if (trackerWorld.loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
     {
         show_error_dialog("Could not build world for app tracker");
@@ -47,9 +71,33 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
     trackerWorld.setItemPools();
     placeVanillaItems(trackerWorlds);
 
-    // TODO: Handle entrance randomizer stuff here
+    // Reset trackerSettings.randomize_charts so we can check it later
+    trackerSettings.randomize_charts = settings.randomize_charts;
+
+    setup_tracker_entrances();
+
+    // Connect autosaved entrances
+    auto shuffledEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances);
+    for (auto entrance : shuffledEntrances)
+    {
+        auto entranceStr = entrance->getOriginalName();
+        if (connectedEntrances.contains(entrance->getOriginalName()))
+        {
+            for (auto target : targetEntrancePools[entrance->getEntranceType()])
+            {
+                auto targetStr = target->getReplaces()->getOriginalName();
+                if (targetStr == connectedEntrances.at(entranceStr))
+                {
+                    changeConnections(entrance, target);
+                    connectedTargets[target] = entrance;
+                }
+            }
+        }
+    }
 
     trackerLocations = trackerWorld.getLocations(true);
+
+    set_areas_locations();
 
     for (auto& gameItemId : markedItems)
     {
@@ -66,7 +114,6 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
 
     calculate_own_dungeon_key_locations();
 
-    std::sort(trackerLocations.begin(), trackerLocations.end(), [](Location* loc1, Location* loc2){return loc1->sortPriority < loc2->sortPriority;});
     auto startingInventory = trackerWorld.getStartingItems();
 
     // Update inventory gui to have starting items
@@ -85,7 +132,7 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
             return elementInPool(item, tingleStatues);
     });
     removeElementsFromPool(startingInventory, tingleStatues);
-    for (size_t i = 0; i < startingTingleStatues; i++)
+    for (int i = 0; i < startingTingleStatues; i++)
     {
         addElementToPool(startingInventory, tingleStatues[i]);
     }
@@ -130,36 +177,35 @@ void MainWindow::initialize_tracker_world(Settings& settings, const GameItemPool
     // Set locations for each area
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
     {
-        std::string areaName = area->getPrefix() + " - ";
-        auto areaLocations = filterFromPool(trackerLocations, [&](Location* loc){return loc->getName().starts_with(areaName);});
-        area->setLocations(areaLocations);
+        area->setLocations(&areaLocations);
 
+        std::string areaName = area->getPrefix();
         // TODO: figure out some better way to do this than just if/else
-        if (areaName == "Dragon Roost Cavern - ")
+        if (areaName == "Dragon Roost Cavern")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Dragon Roost Cavern - Gohma Heart Container"]);
         }
-        else if (areaName == "Forbidden Woods - ")
+        else if (areaName == "Forbidden Woods")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Forbidden Woods - Kalle Demos Heart Container"]);
         }
-        else if (areaName == "Tower of the Gods - ")
+        else if (areaName == "Tower of the Gods")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Tower of the Gods - Gohdan Heart Container"]);
         }
-        else if (areaName == "Forsaken Fortress - ")
+        else if (areaName == "Forsaken Fortress")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Forsaken Fortress - Helmaroc King Heart Container"]);
         }
-        else if (areaName == "Earth Temple - ")
+        else if (areaName == "Earth Temple")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Earth Temple - Jalhalla Heart Container"]);
         }
-        else if (areaName == "Wind Temple - ")
+        else if (areaName == "Wind Temple")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Wind Temple - Molgera Heart Container"]);
         }
-        else if (areaName == "Ganon's Tower - ")
+        else if (areaName == "Ganon's Tower")
         {
             area->setBossLocation(&trackerWorld.locationEntries["Ganon's Tower - Defeat Ganondorf"]);
         }
@@ -181,6 +227,8 @@ void MainWindow::on_start_tracker_button_clicked()
 
     // Get the first search iteration
     update_tracker();
+
+    switch_to_overworld_tracker();
 }
 
 void MainWindow::autosave_current_tracker()
@@ -188,7 +236,7 @@ void MainWindow::autosave_current_tracker()
     auto& trackerWorld = trackerWorlds[0];
 
     Config trackerConfig;
-    trackerConfig.settings = trackerWorld.originalSettings;
+    trackerConfig.settings = trackerSettings;
     // Save current config
     auto configErr = writeToFile(APP_SAVE_PATH "tracker_autosave.yaml", trackerConfig);
     if (configErr != ConfigError::NONE)
@@ -228,6 +276,12 @@ void MainWindow::autosave_current_tracker()
     if (root["marked_items"].Size() == 0)
     {
         root["marked_items"] = "None";
+    }
+
+    // Save which entrances have been connected
+    for (auto& [target, entrance] : connectedTargets)
+    {
+        root["connected_entrances"][entrance->getOriginalName()] = target->getReplaces()->getOriginalName();
     }
 
     Yaml::Serialize(root, APP_SAVE_PATH "tracker_autosave.yaml");
@@ -292,7 +346,18 @@ void MainWindow::load_tracker_autosave()
         show_warning_dialog("Unable to load marked items from tracker autosave");
     }
 
-    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations);
+    std::unordered_map<std::string, std::string> entranceConnections = {};
+    auto& connectedEntrances = root["connected_entrances"];
+    if (!connectedEntrances.IsNone())
+    {
+        for (auto entranceItr = connectedEntrances.Begin(); entranceItr != connectedEntrances.End(); entranceItr++)
+        {
+            auto entranceConnection = *entranceItr;
+            entranceConnections[entranceConnection.first] = entranceConnection.second.As<std::string>();
+        }
+    }
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections);
 
     update_tracker();
 }
@@ -305,6 +370,10 @@ void MainWindow::initialize_tracker()
     // Setup Fira Sans font for tracker UI elements
     set_font(ui->location_list_close_button,     "fira_sans", 14);
     set_font(ui->clear_all_button,               "fira_sans", 14);
+    set_font(ui->entrance_list_close_button,     "fira_sans", 14);
+    set_font(ui->entrance_list_locations_button, "fira_sans", 14);
+    set_font(ui->entrance_destination_back_button, "fira_sans", 14);
+    set_font(ui->where_did_lead_to_label,        "fira_sans", 14);
     set_font(ui->current_area_name_label,        "fira_sans", 15);
     set_font(ui->current_area_accessible_number, "fira_sans", 11);
     set_font(ui->current_area_accessible_label,  "fira_sans", 9);
@@ -374,7 +443,7 @@ void MainWindow::initialize_tracker()
     SET_BUTTON_TO_LAYOUT(trackerProgressiveMagicMeter, inventory_layout_bottom_right, 1, 3);
 
     // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
-    // depending on if we compile statically or not)
+    // depending on if we embed data or not)
     ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "assets/tracker/background.png);}");
     ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "assets/tracker/trackerbg.png);}");
     ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
@@ -383,7 +452,9 @@ void MainWindow::initialize_tracker()
                                                    "background-position: center;"
                                                "}");
     ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "assets/tracker/sea_chart.png);}");
-    ui->location_list_widget->setStyleSheet("QWidget#location_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png) 0 0 0 0 stretch stretch;}");
+    set_location_list_widget_background("empty");
+    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png);}");
+    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png);}");
     ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
 
@@ -445,9 +516,9 @@ void MainWindow::initialize_tracker()
     ui->other_areas_layout->addWidget(new TAW("Forsaken Fortress",   "helmaroc_king", nullptr,               nullptr,            &trackerFFDungeonMap,   &trackerFFCompass),   0, 3);
     ui->other_areas_layout->addWidget(new TAW("Earth Temple",        "jalhalla",      &trackerETSmallKeys,   &trackerETBigKey,   &trackerETDungeonMap,   &trackerETCompass),   0, 4);
     ui->other_areas_layout->addWidget(new TAW("Wind Temple",         "molgera",       &trackerWTSmallKeys,   &trackerWTBigKey,   &trackerWTDungeonMap,   &trackerWTCompass),   0, 5);
-    ui->other_areas_layout->addWidget(new TAW("Great Sea",           "great_sea"),    0, 6);
+    ui->other_areas_layout->addWidget(new TAW("The Great Sea",       "great_sea"),    0, 6);
     ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox"),      0, 7);
-    ui->other_areas_layout->addWidget(new TAW("Hyrule Castle",       "hyrule" ),      0, 8);
+    ui->other_areas_layout->addWidget(new TAW("Hyrule",              "hyrule" ),      0, 8);
     ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf"),    0, 9);
 
     // Set world and inventory and connect inventory button actions to updating the tracker
@@ -471,65 +542,74 @@ void MainWindow::initialize_tracker()
         connect(area, &TrackerAreaWidget::mouse_over_area, this, &MainWindow::tracker_display_current_area_text);
         connect(area, &TrackerAreaWidget::mouse_left_area, this, &MainWindow::tracker_clear_current_area_text);
     }
-}
 
+    switch_to_overworld_tracker();
+}
 
 void MainWindow::update_tracker()
 {
+    // Don't allow any interaction with the tracker unless it's been started
+    if (!trackerStarted)
+    {
+        return;
+    }
+
     update_tracker_areas_and_autosave();
 
-    // No reason to update labels if we're displaying the overworld
+    // Only update the widget we're displaying
     if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
     {
         return;
     }
 
-    // Clear previous labels from the widget
+    // Clear previous labels from the locations widget
     auto location_list_layout = ui->specific_locations_layout;
-    while (location_list_layout->count() != 0)
-    {
-        auto label = location_list_layout->itemAt(0);
-        location_list_layout->removeItem(label);
-    }
-
-    for (auto label : currentlyDisplayedLocations)
-    {
-        delete label;
-    }
-
-    currentlyDisplayedLocations.clear();
+    clear_tracker_labels(location_list_layout);
 
     int row = 0;
     int col = 0;
     int currentPointSize = 12;
-    for (auto& loc : trackerLocations)
+    for (auto& loc : areaLocations[currentTrackerArea])
     {
-        if (loc->getName().starts_with(currentTrackerArea + " - "))
+        auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, loc);
+        // newLabel->set_location(loc);
+        location_list_layout->addWidget(newLabel, row, col);
+        connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
+        row++;
+
+        // Maximum of 13 labels per coloumn
+        if (row > 13)
         {
-            auto newLabel = new TrackerLocationLabel(currentPointSize);
-            newLabel->set_location(loc);
-            location_list_layout->addWidget(newLabel, row, col);
-            connect(newLabel, &TrackerLocationLabel::location_label_clicked, this, &MainWindow::update_tracker);
-            currentlyDisplayedLocations.push_back(newLabel);
-            row++;
+            col++;
+            row = 0;
 
-            // Maximum of 13 labels per coloumn
-            if (row > 13)
+            // When a new column is created subtract 2 from the font point size
+            for (auto label : ui->location_list_widget->findChildren<TrackerLabel*>())
             {
-                col++;
-                row = 0;
-
-                // When a new column is created subtract 2 from the font point size
-                for (auto label : currentlyDisplayedLocations)
-                {
-                    auto labelFont = label->font();
-                    labelFont.setPointSize(labelFont.pointSize() - 2);
-                    label->setFont(labelFont);
-                }
-                currentPointSize -= 2;
+                auto labelFont = label->font();
+                labelFont.setPointSize(labelFont.pointSize() - 2);
+                label->setFont(labelFont);
             }
+            currentPointSize -= 2;
         }
     }
+
+    // Clear previous labels from the entrances widget
+    clear_tracker_labels(ui->entrance_scroll_layout);
+
+    currentPointSize = 12;
+    for (auto& entrance : islandEntrances[currentTrackerArea])
+    {
+        auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, nullptr, entrance);
+        ui->entrance_scroll_layout->addWidget(newLabel);
+        connect(newLabel, &TrackerLabel::entrance_source_label_clicked, this, &MainWindow::tracker_show_available_target_entrances);
+        connect(newLabel, &TrackerLabel::entrance_source_label_disconnect, this, &MainWindow::tracker_disconnect_entrance);
+        connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
+        connect(newLabel, &TrackerLabel::mouse_left_entrance_label, this, &MainWindow::tracker_clear_current_area_text);
+    }
+
+    // Add vertical spacer to push labels up
+    ui->entrance_scroll_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }
 
 void MainWindow::update_tracker_areas_and_autosave()
@@ -614,14 +694,45 @@ void MainWindow::switch_to_area_tracker()
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA);
 }
 
+void MainWindow::switch_to_entrances_tracker()
+{
+    ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA_ENTRANCES);
+}
+
+void MainWindow::switch_to_entrance_destinations_tracker()
+{
+    ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_ENTRANCE_DESTINATIONS);
+}
+
+void MainWindow::on_location_list_entrances_button_released()
+{
+    switch_to_entrances_tracker();
+}
+
 void MainWindow::on_location_list_close_button_released()
 {
     switch_to_overworld_tracker();
 }
 
+void MainWindow::on_entrance_list_close_button_released()
+{
+    switch_to_overworld_tracker();
+}
+
+void MainWindow::on_entrance_list_locations_button_released()
+{
+    switch_to_area_tracker();
+}
+
+void MainWindow::on_entrance_destination_back_button_released()
+{
+    switch_to_entrances_tracker();
+    selectedEntrance = nullptr;
+}
+
 void MainWindow::on_clear_all_button_released()
 {
-    for (auto locLabel : currentlyDisplayedLocations)
+    for (auto locLabel : ui->location_list_widget->findChildren<TrackerLabel*>())
     {
         locLabel->get_location()->marked = true;
         locLabel->update_colors();
@@ -642,11 +753,34 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
 
     // Only show the Clear All option if this is a dungeon
     ui->clear_all_button->setVisible(trackerWorlds[0].dungeons.contains(areaPrefix));
+
+    // Only show the Entrances button if the island has randomized entrances
+    ui->location_list_entrances_button->setVisible(!islandEntrances[areaPrefix].empty());
+
+    // Update the image used for the background of the area location labels
+    // Currently this lags the tracker a little bit, so maybe revisit later
+    // std::replace(areaPrefix.begin(), areaPrefix.end(), ' ', '_');
+    // std::transform(areaPrefix.begin(), areaPrefix.end(), areaPrefix.begin(), [](char& c){return std::tolower(c);});
+    // std::erase(areaPrefix, '\'');
+    // set_location_list_widget_background(areaPrefix);
+}
+
+void MainWindow::set_location_list_widget_background(const std::string& area)
+{
+    ui->location_list_widget->setStyleSheet(std::string("QWidget#location_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_" + area + ".png);}").c_str());
 }
 
 void MainWindow::tracker_display_current_item_text(const std::string& currentItem)
 {
-    ui->current_item_label->setText(currentItem.c_str());
+    if (trackerSettings.randomize_charts && (currentItem.starts_with("Treasure Chart") || currentItem.starts_with("Triforce Chart")))
+    {
+        ui->current_item_label->setText(std::string("Chart for " + ui->current_area_name_label->text().toStdString()).c_str());;
+    }
+    else
+    {
+        ui->current_item_label->setText(currentItem.c_str());
+    }
+
 }
 
 void MainWindow::tracker_clear_current_item_text()
@@ -670,6 +804,83 @@ void MainWindow::tracker_clear_current_area_text()
     ui->current_area_remaining_number->setText("");
     ui->current_area_accessible_label->setVisible(false);
     ui->current_area_remaining_label->setVisible(false);
+}
+
+void MainWindow::tracker_display_current_entrance(Entrance* entrance)
+{
+    auto entranceName = entrance->getOriginalName();
+    if (entranceName.starts_with("Root"))
+    {
+        entranceName = entrance->getReplaces()->getOriginalName();
+    }
+
+    // Re-use the are name label for entrance names also
+    ui->current_area_name_label->setText(entranceName.c_str());
+}
+
+void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
+{
+    selectedEntrance = entrance;
+
+    ui->where_did_lead_to_label->setText(std::string("Where did " + entrance->getOriginalConnectedArea() + " lead to?").c_str());
+
+    auto entrance_destination_list_layout = ui->entrance_destination_list_layout;
+    clear_tracker_labels(entrance_destination_list_layout);
+    clear_tracker_labels(ui->entrance_targets_scroll_layout);
+
+    int currentPointSize = 12;
+    for (auto target : targetEntrancePools[entrance->getEntranceType()])
+    {
+        // Don't list targets that have already been connected somewhere else
+        if (target->getConnectedArea() == "")
+        {
+            continue;
+        }
+        auto newLabel = new TrackerLabel(TrackerLabelType::EntranceDestination, currentPointSize, nullptr, target);
+        ui->entrance_targets_scroll_layout->addWidget(newLabel);
+        connect(newLabel, &TrackerLabel::entrance_destination_label_clicked, this, &MainWindow::tracker_change_entrance_connections);
+        connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
+        connect(newLabel, &TrackerLabel::mouse_left_entrance_label, this, &MainWindow::tracker_clear_current_area_text);
+    }
+    switch_to_entrance_destinations_tracker();
+}
+
+void MainWindow::tracker_change_entrance_connections(Entrance* target)
+{
+    // If this target is currently connected somewhere else
+    // disconnect it before connecting it to the new entrance
+    if (connectedTargets.contains(target))
+    {
+        auto entrance = connectedTargets[target];
+        restoreConnections(entrance, target);
+        connectedTargets.erase(target);
+    }
+
+    changeConnections(selectedEntrance, target);
+    connectedTargets[target] = selectedEntrance;
+
+    set_areas_locations();
+    set_areas_entrances();
+    update_tracker_areas_and_autosave();
+
+    selectedEntrance = nullptr;
+    switch_to_entrances_tracker();
+    update_tracker();
+}
+
+void MainWindow::tracker_disconnect_entrance(Entrance* connectedEntrance)
+{
+    for (auto& [target, entrance] : connectedTargets)
+    {
+        if (entrance == connectedEntrance)
+        {
+            restoreConnections(entrance, target);
+            connectedTargets.erase(target);
+            set_areas_entrances();
+            update_tracker();
+            break;
+        }
+    }
 }
 
 // Calculates the potential locations for each dungeon key if the
@@ -709,5 +920,100 @@ void MainWindow::calculate_own_dungeon_key_locations()
 
         // Add the key back to the pool to get ready for the next one
         addElementToPool(itemPool, key);
+    }
+}
+
+void MainWindow::setup_tracker_entrances()
+{
+    islandEntrances.clear();
+    connectedTargets.clear();
+
+    auto& trackerWorld = trackerWorlds[0];
+
+    auto err = setAllEntrancesData(trackerWorld);
+    if (err != EntranceShuffleError::NONE)
+    {
+        show_error_dialog("ERROR: Could not set entrance data for tracker world\nReason: " + errorToName(err));
+        return;
+    }
+
+    std::set<EntranceType> poolsToMix;
+    auto entrancePools = createEntrancePools(trackerWorld, poolsToMix);
+    targetEntrancePools = createTargetEntrances(entrancePools);
+
+    // Prevent access to target entrances so that some locations don't show
+    // up as reachable
+    for (auto& [type, targetPool] : targetEntrancePools)
+    {
+        for (auto target : targetPool)
+        {
+            target->setRequirement({RequirementType::IMPOSSIBLE, {}});
+        }
+    }
+
+    set_areas_entrances();
+}
+
+void MainWindow::set_areas_locations()
+{
+    auto& trackerWorld = trackerWorlds[0];
+    areaLocations.clear();
+
+    // Setup each islands locations
+    for (auto& [name, area] : trackerWorld.areaEntries)
+    {
+        for (auto& locAccess : area.locations)
+        {
+            if (locAccess.location->progression)
+            {
+                if (area.dungeon != "")
+                {
+                    areaLocations[area.dungeon].insert(locAccess.location);
+                }
+                else if (area.hintRegion != "")
+                {
+                    areaLocations[area.hintRegion].insert(locAccess.location);
+                }
+                else
+                {
+                    auto islands = trackerWorld.getIslands(name);
+                    for (auto& island : islands)
+                    {
+                        areaLocations[island].insert(locAccess.location);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::set_areas_entrances()
+{
+    auto& trackerWorld = trackerWorlds[0];
+    islandEntrances.clear();
+
+    // Separate entrances into which islands they belong to
+    // Only list non-primary entrances if entrances are decoupled
+    for (auto& entrance : trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances))
+    {
+        if (entrance->getEntranceType() == EntranceType::MISC_RESTRICTIVE)
+        {
+            entrance->setEntranceType(EntranceType::MISC);
+        }
+        auto entranceIslands = trackerWorld.getIslands(entrance->getParentArea());
+        for (auto& island : entranceIslands)
+        {
+            islandEntrances[island].push_back(entrance);
+        }
+    }
+}
+
+void MainWindow::clear_tracker_labels(QLayout* layout)
+{
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            widget->deleteLater();
+        delete item;
     }
 }

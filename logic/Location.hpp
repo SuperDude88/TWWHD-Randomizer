@@ -9,6 +9,7 @@
 
 #include <logic/GameItem.hpp>
 #include <logic/Requirements.hpp>
+#include <logic/PoolFunctions.hpp>
 #include <command/WriteLocations.hpp>
 
 // move this and mod type into location entry or own file?
@@ -129,3 +130,5 @@ struct Location
 
     std::string getName() const;
 };
+
+using LocationSet = std::set<Location*, PointerLess<Location>>;

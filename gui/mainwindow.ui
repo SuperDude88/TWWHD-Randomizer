@@ -1999,9 +1999,9 @@
              </rect>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>3</number>
             </property>
-            <widget class="QWidget" name="page_3">
+            <widget class="QWidget" name="overworld_page">
              <property name="cursor">
               <cursorShape>ArrowCursor</cursorShape>
              </property>
@@ -2039,7 +2039,7 @@
               </layout>
              </widget>
             </widget>
-            <widget class="QWidget" name="page_4">
+            <widget class="QWidget" name="location_list_page">
              <widget class="QWidget" name="location_list_widget" native="true">
               <property name="geometry">
                <rect>
@@ -2101,6 +2101,24 @@ font-size: 15px;</string>
                   </widget>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="location_list_entrances_button">
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: right;
+color: black;
+font-size: 15px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Entrances</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="clear_all_button">
                    <property name="font">
                     <font>
@@ -2126,7 +2144,7 @@ font-size: 15px;</string>
                 </layout>
                </item>
                <item row="4" column="0">
-                <spacer name="verticalSpacer_5">
+                <spacer name="location_list_spacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
@@ -2147,6 +2165,257 @@ font-size: 15px;</string>
                   <number>2</number>
                  </property>
                 </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="entrance_list_page">
+             <widget class="QWidget" name="entrance_list_widget" native="true">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>364</width>
+                <height>346</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_13">
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>2</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="entrance_list_top_buttons_layout">
+                 <item>
+                  <widget class="QPushButton" name="entrance_list_close_button">
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: left;
+color: black;
+font-size: 15px;</string>
+                   </property>
+                   <property name="text">
+                    <string>X Close</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="entrance_list_locations_button">
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: right;
+color: black;
+font-size: 15px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Locations</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <widget class="QScrollArea" name="entrance_scroll_area">
+                 <property name="minimumSize">
+                  <size>
+                   <width>360</width>
+                   <height>290</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background: transparent;</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="entrance_scroll_widget">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>360</width>
+                    <height>311</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="entrance_scroll_layout">
+                   <property name="spacing">
+                    <number>2</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                  </layout>
+                 </widget>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="entrance_destination_page">
+             <widget class="QWidget" name="entrance_destination_widget" native="true">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>364</width>
+                <height>346</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="entrance_destination_layout" rowstretch="0,0,0,0,0,0,0,0">
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>1</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
+               <property name="horizontalSpacing">
+                <number>1</number>
+               </property>
+               <property name="verticalSpacing">
+                <number>0</number>
+               </property>
+               <item row="5" column="0" alignment="Qt::AlignHCenter">
+                <widget class="QLabel" name="where_did_lead_to_label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">text-align: left;
+color: black;
+font-size: 15px;</string>
+                 </property>
+                 <property name="text">
+                  <string>Where did lead to?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="entrance_destination_list_top_buttons">
+                 <property name="spacing">
+                  <number>6</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMaximumSize</enum>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="entrance_destination_back_button">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: left;
+color: black;
+font-size: 15px;</string>
+                   </property>
+                   <property name="text">
+                    <string>X Back</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="6" column="0">
+                <layout class="QVBoxLayout" name="entrance_destination_list_layout"/>
+               </item>
+               <item row="7" column="0">
+                <widget class="QScrollArea" name="entrance_targets_scroll_area">
+                 <property name="minimumSize">
+                  <size>
+                   <width>360</width>
+                   <height>291</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background: transparent;</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="entrance_targets_scroll_widget">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>360</width>
+                    <height>291</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="entrance_targets_scroll_layout">
+                   <property name="spacing">
+                    <number>2</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                  </layout>
+                 </widget>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -2288,9 +2557,9 @@ font-weight: bold;</string>
             <property name="geometry">
              <rect>
               <x>830</x>
-              <y>100</y>
+              <y>50</y>
               <width>211</width>
-              <height>51</height>
+              <height>101</height>
              </rect>
             </property>
             <property name="styleSheet">
