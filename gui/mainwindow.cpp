@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     setup_mixed_pools_combobox();
     load_locations();
     load_config_into_ui();
@@ -80,10 +81,17 @@ MainWindow::MainWindow(QWidget *parent)
         child->installEventFilter(this);
     }
 
+    // Switch to first tab
+    ui->tabWidget->setCurrentIndex(0);
+
     // Hide options which won't exist for a while
     ui->randomize_enemies->setVisible(false);
     ui->randomize_enemy_palettes->setVisible(false);
     ui->randomize_music->setVisible(false);
+
+    // Setup Tracker
+    initialize_tracker();
+    load_tracker_autosave();
 }
 
 MainWindow::~MainWindow()
@@ -1202,3 +1210,4 @@ void MainWindow::load_locations()
         }
     }
 }
+

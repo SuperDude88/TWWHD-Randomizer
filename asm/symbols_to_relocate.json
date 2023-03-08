@@ -11,6 +11,7 @@
 	"custom_warp_pot_prm_color": ".text",
 	"doc_bandam_green_potion_slot_item_id": ".text",
 	"doc_bandam_blue_potion_slot_item_id": ".text",
+	"dampa_minigame_item_id": ".text",
 	"makar_possible_wt_spawn_positions": ".text",
 	"medli_possible_et_spawn_positions": ".text",
 	"num_triforce_shards_to_start_with": ".text",
@@ -27,5 +28,10 @@
 	"withered_tree_item_speeds": ".text",
 	"withered_tree_launched_flag": ".text",
 	"zunari_magic_armor_slot_item_id": ".text",
-	"key_text_command_has_big_key_text": ".text"
+	"key_text_command_has_big_key_text": ".text",
+	"target_type_preference": ".text",
+	"camera_preference": ".text",
+	"first_person_camera_preference": ".text",
+	"gyroscope_preference": ".text",
+	"ui_display_preference": ".text"
 }

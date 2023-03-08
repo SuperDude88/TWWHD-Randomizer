@@ -58,7 +58,13 @@ endif()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-add_compile_definitions(DATA_PATH="./data/" APP_SAVE_PATH="./" TEMP_DIR="./temp/" RESOURCE_PATH=":/")
+add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/")
+
+if (EMBED_DATA)
+    add_compile_definitions(DATA_PATH=":/")
+else()
+    add_compile_definitions(DATA_PATH="./data/")
+endif()
 
 # This flag should only be used when generating static executables for release
 if(EMBED_DATA)
@@ -88,6 +94,16 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         randomizer_thread.cpp
+        tracker/set_font.h
+        tracker/tracker_area_label.h
+        tracker/tracker_area_label.cpp
+        tracker/tracker_area_widget.h
+        tracker/tracker_area_widget.cpp
+        tracker/tracker_inventory_button.h
+        tracker/tracker_inventory_button.cpp
+        tracker/tracker_location_label.h
+        tracker/tracker_location_label.cpp
+        tracker/tracker.cpp
         ../randomizer.cpp
         ../tweaks.cpp
         ../options.cpp
@@ -95,7 +111,6 @@ set(PROJECT_SOURCES
         ${app_icon_resource_windows}
         ${PROJECT_SOURCES}
 )
-
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(wwhd_rando

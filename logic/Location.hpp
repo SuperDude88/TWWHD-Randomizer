@@ -9,6 +9,7 @@
 
 #include <logic/GameItem.hpp>
 #include <logic/Requirements.hpp>
+#include <logic/PoolFunctions.hpp>
 #include <command/WriteLocations.hpp>
 
 // move this and mod type into location entry or own file?
@@ -94,6 +95,9 @@ struct Location
     // goal names if this is a race mode location (one for each language)
     std::unordered_map<std::string, std::string> goalNames = {};
 
+    // Tracker properties
+    bool marked;
+
     Location() :
         names({}),
         categories({LocationCategory::INVALID}),
@@ -113,7 +117,8 @@ struct Location
         hasBeenFound(false),
         messageLabel(""),
         hintText({}),
-        goalNames({})
+        goalNames({}),
+        marked(false)
     {
     }
     ~Location() = default;
@@ -125,3 +130,5 @@ struct Location
 
     std::string getName() const;
 };
+
+using LocationSet = std::set<Location*, PointerLess<Location>>;

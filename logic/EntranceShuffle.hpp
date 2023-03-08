@@ -44,5 +44,13 @@ struct EntranceInfoPair
     EntranceInfo returnEntry;
 };
 
+using EntrancePools = std::map<EntranceType, EntrancePool>;
+using EntrancePair = std::pair<Entrance*, Entrance*>;
+
+void changeConnections(Entrance* entrance, Entrance* targetEntrance);
+void restoreConnections(Entrance* entrance, Entrance* targetEntrance);
+EntranceShuffleError setAllEntrancesData(World& world);
+EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToMix);
+EntrancePools createTargetEntrances(EntrancePools& entrancePools);
 EntranceShuffleError randomizeEntrances(WorldPool& worlds);
 const std::string errorToName(EntranceShuffleError err);

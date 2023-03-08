@@ -387,7 +387,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) {
-      if (!ignoreErrors) return ConfigError::INVALID_VALUE;
+      if (!ignoreErrors && root["starting_gear"].As<std::string>() != "None") return ConfigError::INVALID_VALUE;
     } else {
       std::unordered_multiset<GameItem> valid_items = getSupportedStartingItems();
 
@@ -556,6 +556,10 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     for (const auto& item : config.settings.starting_gear) {
             Yaml::Node& node = root["starting_gear"].PushBack();
             node = gameItemToName(item);
+    }
+
+    if (root["starting_gear"].Size() == 0) {
+        root["starting_gear"] = "None";
     }
 
     Yaml::Serialize(root, filePath.c_str());
