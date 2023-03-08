@@ -152,6 +152,7 @@ public:
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::unordered_map<uint8_t, GameItem> chartMappings = {};
+    Settings originalSettings;
 
     uint8_t startingIslandRoomIndex = 44;
     Plandomizer plandomizer;

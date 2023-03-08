@@ -319,24 +319,24 @@ bl onEventBit
 after_skipping_rematch_bosses:
 
 ; Set option preferences
-lis r4, gameInfo_ptr@ha
-lwz r4, gameInfo_ptr@l(r4)
-addi r4, r4, 0x12F0 ; offset for preferences
-lis r5, target_type_preference@ha
-lbz r5, target_type_preference@l(r5)
-stb r5, 0 (r4) ; 0x0 offset is target type
-lis r5, camera_preference@ha
-lbz r5, camera_preference@l(r5)
-stb r5, 1 (r4) ; 0x1 offset is camera preference
-lis r5, first_person_camera_preference@ha
-lbz r5, first_person_camera_preference@l(r5)
-stb r5, 2 (r4) ; 0x2 offset is first-person camera preference
-lis r5, gyroscope_preference@ha
-lbz r5, gyroscope_preference@l(r5)
-stb r5, 5 (r4) ; 0x5 offset is gyroscope preference
-lis r5, ui_display_preference@ha
-lbz r5, ui_display_preference@l(r5)
-stb r5, 7 (r4) ; 0x7 offset is ui display preference
+lis r3, gameInfo_ptr@ha
+lwz r3, gameInfo_ptr@l(r3)
+addi r3, r3, 0x12F0 ; offset for preferences
+lis r4, target_type_preference@ha
+lbz r4, target_type_preference@l(r4)
+stb r4, 0 (r3) ; 0x0 offset is target type
+lis r4, camera_preference@ha
+lbz r4, camera_preference@l(r4)
+stb r4, 1 (r3) ; 0x1 offset is camera preference
+lis r4, first_person_camera_preference@ha
+lbz r4, first_person_camera_preference@l(r4)
+stb r4, 2 (r3) ; 0x2 offset is first-person camera preference
+lis r4, gyroscope_preference@ha
+lbz r4, gyroscope_preference@l(r4)
+stb r4, 5 (r3) ; 0x5 offset is gyroscope preference
+lis r4, ui_display_preference@ha
+lbz r4, ui_display_preference@l(r4)
+stb r4, 7 (r3) ; 0x7 offset is ui display preference
 
 
 lis r12, gameInfo_ptr@ha ; replace the line we overwrote to jump here

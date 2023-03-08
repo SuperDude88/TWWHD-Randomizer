@@ -125,16 +125,16 @@ namespace Utility {
 	{
 		if (resourceFile)
 		{
-			// If this is a resource file and the data has been embedded, then
-			// chop off the data path and put ":/" in front to access the embedded resource file
+			// If this is a resource file and the data has been embedded, then load ity from
+			// the embedded resources file
 			#if defined(QT_GUI) && defined(EMBED_DATA)
-				auto newFilename = ":/" + filename.substr(strlen(DATA_PATH));
-				QResource file(newFilename.c_str());
+				QResource file(filename.c_str());
 				fileContents = file.uncompressedData().toStdString();
 				return 0;
 			#endif
 		} 
 
+		// Otherwise load it normally
 		std::ifstream file(filename);
 		if (!file.is_open())
 		{
