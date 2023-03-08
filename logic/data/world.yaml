@@ -494,6 +494,7 @@
       The Great Sea: Nothing
 
 - Name: Spectacle Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -656,6 +657,7 @@
       Windfall Island: Nothing
 
 - Name: Windfall Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -707,6 +709,7 @@
       Pawprint Isle: Can_Sail_Away
 
 - Name: Pawprint Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -772,6 +775,7 @@
       Dragon Roost Island: Nothing
 
 - Name: Dragon Roost Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -984,6 +988,7 @@
       The Great Sea: Nothing
 
 - Name: Greatfish Beedle Shop
+  Hint Region: The Great Sea
   Exits:
       Greatfish Isle: Nothing
 
@@ -1043,6 +1048,7 @@
       The Great Sea: Nothing
 
 - Name: Tower of the Gods Beedle Shop
+  Hint Region: The Great Sea
   Exits:
       Tower of the Gods Sector: Nothing
 
@@ -1055,6 +1061,7 @@
       The Great Sea: Nothing
 
 - Name: Eastern Triangle Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -1175,6 +1182,7 @@
       The Great Sea: Nothing
 
 - Name: Southern Triangle Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -1328,6 +1336,7 @@
       Shark Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
 
 - Name: Shark Island Beedle Shop
+  Hint Region: The Great Sea
   Exits:
       Shark Island: Nothing
 
@@ -1499,6 +1508,7 @@
       Forest Haven: Nothing
 
 - Name: Forest Haven Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing
@@ -1735,6 +1745,7 @@
       Outset Island: Nothing
 
 - Name: Outset Beedle Shop
+  Hint Region: The Great Sea
   Events:
       Can Buy Bait: Nothing
       Can Buy Hyoi Pears: Nothing

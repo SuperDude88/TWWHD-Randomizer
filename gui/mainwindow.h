@@ -16,12 +16,19 @@
 #include <seedgen/config.hpp>
 #include <logic/Location.hpp>
 #include <logic/World.hpp>
+#include <logic/EntranceShuffle.hpp>
+#include <logic/PoolFunctions.hpp>
 
 #include <tracker/tracker_inventory_button.h>
 #include <tracker/tracker_location_label.h>
 #include <tracker/tracker_area_widget.h>
 
 void delete_and_create_default_config();
+
+#define LOCATION_TRACKER_OVERWORLD 0
+#define LOCATION_TRACKER_SPECIFIC_AREA 1
+#define LOCATION_TRACKER_SPECIFIC_AREA_ENTRANCES 2
+#define LOCATION_TRACKER_ENTRANCE_DESTINATIONS 3
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -80,16 +87,23 @@ private:
     void load_locations();
 
     void initialize_tracker();
-    void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {});
+    void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {}, const std::unordered_map<std::string, std::string>& connectedEntrances = {});
     void autosave_current_tracker();
     void load_tracker_autosave();
     void calculate_own_dungeon_key_locations();
+    void set_location_list_widget_background(const std::string& area);
+    void clear_tracker_labels(QLayout* layout);
+    void set_areas_locations();
+    void set_areas_entrances();
 
 public:
     void switch_to_overworld_tracker();
     void switch_to_area_tracker();
+    void switch_to_entrances_tracker();
+    void switch_to_entrance_destinations_tracker();
     void set_current_tracker_area(const std::string& areaPrefix);
     void update_tracker();
+    void setup_tracker_entrances();
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");
@@ -209,14 +223,41 @@ private slots:
     void tracker_clear_current_item_text();
     void tracker_display_current_area_text(TrackerAreaWidget* currentArea);
     void tracker_clear_current_area_text();
+    void tracker_display_current_entrance(Entrance* entrance);
+    void tracker_show_available_target_entrances(Entrance* entrance);
+    void tracker_change_entrance_connections(Entrance* target);
+    void tracker_disconnect_entrance(Entrance* entrance);
+    void on_location_list_entrances_button_released();
+    void on_entrance_list_close_button_released();
+    void on_entrance_list_locations_button_released();
+    void on_entrance_destination_back_button_released();
 
 private:
     // More Tracker Stuff
+    bool trackerStarted = false;
+    Settings trackerSettings = Settings();
     WorldPool trackerWorlds = {};
     ItemPool trackerInventory = {};
     LocationPool trackerLocations = {};
     std::string currentTrackerArea = "";
-    std::list<TrackerLocationLabel*> currentlyDisplayedLocations = {};
+
+    // Maps area name to the locations in the area. This can dynamically
+    // change when entrance randomizer is on
+    std::unordered_map<std::string, LocationSet> areaLocations = {};
+
+    // Maps dungeon keys to the pool of locations they could possibly appear in
+    // with the Own Dungeon setting
+    std::unordered_map<Item, std::vector<LocationPool>> ownDungeonKeyLocations;
+
+    // Maps island name to randomized entrances on the island
+    std::unordered_map<std::string, std::list<Entrance*>> islandEntrances = {};
+
+    // Maps connected targets to their connected source entrances
+    std::unordered_map<Entrance*, Entrance*> connectedTargets = {};
+
+    EntrancePools targetEntrancePools = {};
+    Entrance* selectedEntrance = nullptr;
+
 
     using TIB = TrackerInventoryButton;
 
@@ -438,53 +479,53 @@ private:
     TIB trackerWTSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "WT Small Key (0/2)"},
                                             {GameItem::WTSmallKey,            "small_key_1_color.png",     "WT Small Key (1/2)"},
                                             {GameItem::WTSmallKey,            "small_key_2_color.png",     "WT Small Key (2/2)"}});
-    TIB trackerWTBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
-                                            {GameItem::WTBigKey,              "big_key_color.png"}});
-    TIB trackerWTDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
-                                            {GameItem::WTDungeonMap,          "map_color.png"}});
-    TIB trackerWTCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
-                                            {GameItem::WTCompass,             "compass_color.png"}});
+    TIB trackerWTBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "WT Big Key"},
+                                            {GameItem::WTBigKey,              "big_key_color.png",         "WT Big Key"}});
+    TIB trackerWTDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png",              "WT Dungeon Map"},
+                                            {GameItem::WTDungeonMap,          "map_color.png",             "WT Dungeon Map"}});
+    TIB trackerWTCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png",          "WT Compass"},
+                                            {GameItem::WTCompass,             "compass_color.png",         "WT Compass"}});
     TIB trackerETSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "ET Small Key (0/3)"},
                                             {GameItem::ETSmallKey,            "small_key_1_color.png",     "ET Small Key (1/3)"},
                                             {GameItem::ETSmallKey,            "small_key_2_color.png",     "ET Small Key (2/3)"},
                                             {GameItem::ETSmallKey,            "small_key_3_color.png",     "ET Small Key (3/3)"}});
-    TIB trackerETBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
-                                            {GameItem::ETBigKey,              "big_key_color.png"}});
-    TIB trackerETDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
-                                            {GameItem::ETDungeonMap,          "map_color.png"}});
-    TIB trackerETCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
-                                            {GameItem::ETCompass,             "compass_color.png"}});
-    TIB trackerFFDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
-                                            {GameItem::FFDungeonMap,          "map_color.png"}});
-    TIB trackerFFCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
-                                            {GameItem::FFCompass,             "compass_color.png"}});
+    TIB trackerETBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "ET Big Key"},
+                                            {GameItem::ETBigKey,              "big_key_color.png",         "ET Big Key"}});
+    TIB trackerETDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png",              "ET Dungeon Map"},
+                                            {GameItem::ETDungeonMap,          "map_color.png",             "ET Dungeon Map"}});
+    TIB trackerETCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png",          "ET Compass"},
+                                            {GameItem::ETCompass,             "compass_color.png",         "ET Compass"}});
+    TIB trackerFFDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png",              "FF Dungeon Map"},
+                                            {GameItem::FFDungeonMap,          "map_color.png",             "FF Dungeon Map"}});
+    TIB trackerFFCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png",          "FF Compass"},
+                                            {GameItem::FFCompass,             "compass_color.png",         "FF Compass"}});
     TIB trackerTOTGSmallKeys         = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "TotG Small Key (0/2)"},
                                             {GameItem::TotGSmallKey,          "small_key_1_color.png",     "TotG Small Key (1/2)"},
                                             {GameItem::TotGSmallKey,          "small_key_2_color.png",     "TotG Small Key (2/2)"}});
-    TIB trackerTOTGBigKey            = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
-                                            {GameItem::TotGBigKey,            "big_key_color.png"}});
-    TIB trackerTOTGDungeonMap        = TIB({{GameItem::NOTHING,               "map_gray.png"},
-                                            {GameItem::TotGDungeonMap,        "map_color.png"}});
-    TIB trackerTOTGCompass           = TIB({{GameItem::NOTHING,               "compass_gray.png"},
-                                            {GameItem::TotGCompass,           "compass_color.png"}});
-    TIB trackerFWSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png"},
-                                            {GameItem::FWSmallKey,            "small_key_1_color.png"}});
-    TIB trackerFWBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
-                                            {GameItem::FWBigKey,              "big_key_color.png"}});
-    TIB trackerFWDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png"},
-                                            {GameItem::FWDungeonMap,          "map_color.png"}});
-    TIB trackerFWCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png"},
-                                            {GameItem::FWCompass,             "compass_color.png"}});
+    TIB trackerTOTGBigKey            = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "TotG Compass"},
+                                            {GameItem::TotGBigKey,            "big_key_color.png",         "TotG Compass"}});
+    TIB trackerTOTGDungeonMap        = TIB({{GameItem::NOTHING,               "map_gray.png",              "TotG Big Key"},
+                                            {GameItem::TotGDungeonMap,        "map_color.png",             "TotG Big Key"}});
+    TIB trackerTOTGCompass           = TIB({{GameItem::NOTHING,               "compass_gray.png",          "TotG Dungeon Map"},
+                                            {GameItem::TotGCompass,           "compass_color.png",         "TotG Dungeon Map"}});
+    TIB trackerFWSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "FW Small Key"},
+                                            {GameItem::FWSmallKey,            "small_key_1_color.png",     "FW Small Key"}});
+    TIB trackerFWBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "FW Big Key"},
+                                            {GameItem::FWBigKey,              "big_key_color.png",         "FW Big Key"}});
+    TIB trackerFWDungeonMap          = TIB({{GameItem::NOTHING,               "map_gray.png",              "FW Dungeon Map"},
+                                            {GameItem::FWDungeonMap,          "map_color.png",             "FW Dungeon Map"}});
+    TIB trackerFWCompass             = TIB({{GameItem::NOTHING,               "compass_gray.png",          "FW Compass"},
+                                            {GameItem::FWCompass,             "compass_color.png",         "FW Compass"}});
     TIB trackerDRCSmallKeys          = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "DRC Small Key (0/4)"},
                                             {GameItem::DRCSmallKey,           "small_key_1_color.png",     "DRC Small Key (1/4)"},
                                             {GameItem::DRCSmallKey,           "small_key_2_color.png",     "DRC Small Key (2/4)"},
                                             {GameItem::DRCSmallKey,           "small_key_3_color.png",     "DRC Small Key (3/4)"},
                                             {GameItem::DRCSmallKey,           "small_key_4_color.png",     "DRC Small Key (4/4)"}});
-    TIB trackerDRCBigKey             = TIB({{GameItem::NOTHING,               "big_key_gray.png"},
-                                            {GameItem::DRCBigKey,             "big_key_color.png"}});
-    TIB trackerDRCDungeonMap         = TIB({{GameItem::NOTHING,               "map_gray.png"},
-                                            {GameItem::DRCDungeonMap,         "map_color.png"}});
-    TIB trackerDRCCompass            = TIB({{GameItem::NOTHING,               "compass_gray.png"},
-                                            {GameItem::DRCCompass,            "compass_color.png"}});
+    TIB trackerDRCBigKey             = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "DRC Big Key"},
+                                            {GameItem::DRCBigKey,             "big_key_color.png",         "DRC Big Key"}});
+    TIB trackerDRCDungeonMap         = TIB({{GameItem::NOTHING,               "map_gray.png",              "DRC Dungeon Map"},
+                                            {GameItem::DRCDungeonMap,         "map_color.png",             "DRC Dungeon Map"}});
+    TIB trackerDRCCompass            = TIB({{GameItem::NOTHING,               "compass_gray.png",          "DRC Compass"},
+                                            {GameItem::DRCCompass,            "compass_color.png",         "DRC Compass"}});
 };
 #endif // MAINWINDOW_H

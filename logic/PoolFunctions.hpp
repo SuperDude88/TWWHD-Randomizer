@@ -92,3 +92,12 @@ bool isNoneOf(First&& first, T&&... t)
 {
     return !((first == t) || ...);
 }
+
+template <typename T>
+struct PointerLess
+{
+    bool operator()(const T * lhs, const T * rhs) const
+    {
+        return *lhs < *rhs;
+    }
+};

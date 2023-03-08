@@ -59,6 +59,8 @@ TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_,
     stackedLayout.addWidget(&locationsRemaining);
     stackedLayout.addWidget(&bossImageWidget);
     setCursor(Qt::PointingHandCursor);
+
+    updateBossImageWidget();
 }
 
 std::string TrackerAreaWidget::getPrefix() const
@@ -71,9 +73,9 @@ void TrackerAreaWidget::setBossLocation(Location* bossLoc)
     boss = bossLoc;
 }
 
-void TrackerAreaWidget::setLocations(LocationPool& locations_)
+void TrackerAreaWidget::setLocations(std::unordered_map<std::string, LocationSet>* areaLocations_)
 {
-    locations = locations_;
+    areaLocations = areaLocations_;
 }
 
 void TrackerAreaWidget::setChart(TrackerInventoryButton* chart)
@@ -85,8 +87,14 @@ void TrackerAreaWidget::setChart(TrackerInventoryButton* chart)
 
 void TrackerAreaWidget::updateArea()
 {
-    totalRemainingLocations = std::count_if(locations.begin(), locations.end(), [](Location* loc){return !loc->marked;});
-    totalAccessibleLocations = std::count_if(locations.begin(), locations.end(), [](Location* loc){return loc->hasBeenFound && !loc->marked;});
+    // Insert an empty set if this area doesn't exist
+    if (!areaLocations->contains(areaPrefix))
+    {
+        areaLocations->insert({areaPrefix, {}});
+    }
+
+    totalRemainingLocations = std::count_if(areaLocations->at(areaPrefix).begin(), areaLocations->at(areaPrefix).end(), [](Location* loc){return !loc->marked;});
+    totalAccessibleLocations = std::count_if(areaLocations->at(areaPrefix).begin(), areaLocations->at(areaPrefix).end(), [](Location* loc){return loc->hasBeenFound && !loc->marked;});
 
     if (totalRemainingLocations == 0 && totalAccessibleLocations == 0)
     {

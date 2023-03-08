@@ -1475,7 +1475,7 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
     {
         for (auto& exit : areaEntry.exits)
         {
-            if ((exit.getEntranceType() == type || type == EntranceType::ALL) && (!onlyPrimary || exit.isPrimary()))
+            if ((isAnyOf(type, exit.getEntranceType(), EntranceType::ALL)) && (!onlyPrimary || exit.isPrimary()) && exit.getEntranceType() != EntranceType::NONE)
             {
                 shufflableEntrances.push_back(&exit);
             }

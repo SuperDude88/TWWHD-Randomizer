@@ -29,6 +29,11 @@ public:
     QStackedLayout stackedLayout = QStackedLayout(this);
     TrackerAreaLabel locationsRemaining = TrackerAreaLabel();
 
+    std::string areaPrefix = "";
+    std::unordered_map<std::string, LocationSet>* areaLocations;
+    int totalRemainingLocations = 0;
+    int totalAccessibleLocations = 0;
+
     // Stuff for other area widgets
     QWidget dungeonItemWidget = QWidget();
     QWidget bossImageWidget = QWidget();
@@ -38,15 +43,11 @@ public:
 
     std::string getPrefix() const;
     void setBossLocation(Location* bossLoc);
-    void setLocations(LocationPool& locations);
+    void setLocations(std::unordered_map<std::string, LocationSet>* locations_);
     void setChart(TrackerInventoryButton* chart);
     void updateArea();
     void updateBossImageWidget();
 
-    std::string areaPrefix = "";
-    LocationPool locations = {};
-    int totalRemainingLocations = 0;
-    int totalAccessibleLocations = 0;
 
 signals:
     void mouse_over_area(TrackerAreaWidget* areaPrefix);
