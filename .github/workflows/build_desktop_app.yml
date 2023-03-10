@@ -1,0 +1,48 @@
+name: Build Desktop App
+
+on:
+  workflow_dispatch:
+
+env:
+  SOURCE_DIR: ${{ github.workspace }}
+  QT_VERSION: 6.3.1
+  BUILD_TYPE: Release
+  ARTIFACT: twwhd-randomizer-windows.zip
+
+jobs:
+ build-desktop-application-windows:
+   name: Build Desktop Application Windows
+   runs-on: windows-latest
+   
+   steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    
+    - name: Get all tags for correct version determination
+      working-directory: ${{ github.workspace }}
+      run: |
+        git fetch --all --tags -f
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.3.1'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        
+    - name: Create build and release directory
+      run: |
+        mkdir ${{ runner.temp }}\build
+        mkdir ${{ runner.temp }}\release
+      
+    - name: Configure CMake
+      env:
+        CMAKE_PREFIX_PATH: ${{ env.Qt6_Dir }}
+      run: |
+        cd ${{ runner.temp }}\build
+        cmake ${{ github.workspace }}\gui -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DEMBED_DATA=True
+        mkdir 
+        cmake --build ${{ runner.temp }}\release --target all
+        
+        
