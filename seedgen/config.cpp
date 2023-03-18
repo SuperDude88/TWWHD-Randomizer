@@ -202,6 +202,8 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
         SET_STR_FIELD_EMPTY_STR_IF_FAIL(root, out, plandomizerFile)
     #endif
 
+    out.configSet = true;
+
     SET_FIELD_EMPTY_STR_IF_FAIL(root, out, seed)
 
     if(root["progression_dungeons"].IsNone()) {
