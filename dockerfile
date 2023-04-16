@@ -1,4 +1,4 @@
-FROM wiiuenv/devkitppc:20221228
+FROM wiiuenv/devkitppc:20230218
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install python3 -y
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 7530dd581887e8330a587601ef9fbf9e60cce9bf && \
+    git checkout 4a98cd4797d3b87a9f38a3999e471d3eebd850f5 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -20,7 +20,7 @@ RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
 # Install libmocha
 RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch  && \
     cd libmocha && \
-    git checkout f3c45c52ad512b31d84f8254b7ad228aa4e0bab9 && \
+    git checkout 49efa4c8386b6bd9655ecce1de0877cb2738f4da && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
