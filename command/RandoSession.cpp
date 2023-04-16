@@ -341,8 +341,8 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         case Fmt::YAZ0:
         {
             if(parentData == nullptr) return false;
-            const uint32_t compressLevel = current->parent->storedFormat == Fmt::ROOT ? 1 : 9;
-            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), compressLevel); err != YAZ0Error::NONE)
+            //const uint32_t compressLevel = current->parent->storedFormat == Fmt::ROOT ? 1 : 9;
+            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), 7); err != YAZ0Error::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;

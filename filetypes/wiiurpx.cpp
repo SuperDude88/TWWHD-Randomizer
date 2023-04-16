@@ -7,7 +7,6 @@
 
 #include "wiiurpx.hpp"
 
-#include <zlib.h>
 #include <vector>
 #include <array>
 #include <fstream>
@@ -19,6 +18,7 @@
 #include <utility/file.hpp>
 #include <utility/common.hpp>
 #include <command/Log.hpp>
+#include <zlib-ng.h>
 
 using eType = Utility::Endian::Type;
 
@@ -191,7 +191,7 @@ namespace FileTypes {
 
                 uint32_t block_size = CHUNK;
                 uint32_t have;
-                z_stream strm;
+                zng_stream strm;
                 char buff_in[CHUNK];
                 char buff_out[CHUNK];
                 strm.zalloc = Z_NULL;
@@ -200,7 +200,7 @@ namespace FileTypes {
                 strm.avail_in = 0;
                 strm.next_in = Z_NULL;
                 int err = Z_OK;
-                if ((err = inflateInit(&strm)) != Z_OK)
+                if ((err = zng_inflateInit(&strm)) != Z_OK)
                 {
                     LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
                 }
@@ -217,7 +217,7 @@ namespace FileTypes {
                     {
                         strm.avail_out = CHUNK;
                         strm.next_out = reinterpret_cast<Bytef*>(buff_out);
-                        err = inflate(&strm, Z_NO_FLUSH);
+                        err = zng_inflate(&strm, Z_NO_FLUSH);
                         if (err != Z_OK && err != Z_BUF_ERROR && err != Z_STREAM_END)
                         {
                             LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
@@ -227,7 +227,7 @@ namespace FileTypes {
                         crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(buff_out), have);
                     }while(strm.avail_out == 0);
                 }
-                if ((err = inflateEnd(&strm)) != Z_OK)
+                if ((err = zng_inflateEnd(&strm)) != Z_OK)
                 {
                     LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
                 }
@@ -429,7 +429,7 @@ namespace FileTypes {
                 uint32_t data_size = entry.sh_size;
                 uint32_t block_size = CHUNK;
                 uint32_t have;
-                z_stream strm;
+                zng_stream strm;
                 std::string buff_in(CHUNK, '\0');
                 std::string buff_out(CHUNK, '\0');
                 strm.zalloc = Z_NULL;
@@ -437,17 +437,19 @@ namespace FileTypes {
                 strm.opaque = Z_NULL;
                 strm.avail_in = 0;
                 strm.next_in = Z_NULL;
+                strm.handle_match = nullptr;
+                strm.handle_match_userdata = nullptr;
                 if(data_size < CHUNK)
                 {
                     block_size = data_size;
-                    deflateInit(&strm, LEVEL);
+                    zng_deflateInit(&strm, LEVEL);
                     in.read(&buff_in[0], block_size);
                     strm.avail_in = in.gcount();
                     crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
                     strm.next_in = reinterpret_cast<Bytef*>(&buff_in[0]);
                     strm.avail_out = CHUNK;
                     strm.next_out = reinterpret_cast<Bytef*>(&buff_out[0]);
-                    deflate(&strm, Z_FINISH);
+                    zng_deflate(&strm, Z_FINISH);
                     have = CHUNK - strm.avail_out;
                     if(have + 4 < block_size)
                     {
@@ -456,11 +458,12 @@ namespace FileTypes {
                         out.write(&buff_out[0], have);
                         entry.sh_size = have + 4;
                         entry.sh_flags |= SHF_RPL_ZLIB;
+                        entry.sh_flags |= SHF_RPL_ZLIB;
                     }
                     else {
                         out.write(&buff_in[0], block_size);
                     }
-                    deflateEnd(&strm);
+                    zng_deflateEnd(&strm);
                 }
                 else
                 {
@@ -470,7 +473,7 @@ namespace FileTypes {
                     auto data_size_BE = Utility::Endian::toPlatform(eType::Big, data_size);
                     out.write(reinterpret_cast<const char*>(&data_size_BE), sizeof(data_size_BE));
 
-                    deflateInit(&strm, LEVEL);
+                    zng_deflateInit(&strm, LEVEL);
                     while(data_size > 0)
                     {
                         block_size = CHUNK;
@@ -488,13 +491,13 @@ namespace FileTypes {
                         do{
                             strm.avail_out = CHUNK;
                             strm.next_out = reinterpret_cast<Bytef*>(&buff_out[0]);
-                            deflate(&strm, flush);
+                            zng_deflate(&strm, flush);
                             have = CHUNK - strm.avail_out;
                             out.write(&buff_out[0], have);
                             compress_size += have;
                         } while(strm.avail_out == 0);
                     }
-                    deflateEnd(&strm);
+                    zng_deflateEnd(&strm);
                     entry.sh_size = compress_size;
                     entry.sh_flags |= SHF_RPL_ZLIB;
                 }
