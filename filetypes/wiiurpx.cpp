@@ -140,9 +140,7 @@ namespace FileTypes {
         std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
         std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
 
-        while (static_cast<uint32_t>(out.tellp()) < shdr_data_elf_offset) {
-            out.put(0);
-        }
+        if(out.tellp() < shdr_data_elf_offset) padToLen(out, shdr_data_elf_offset);
 
         if (!in.seekg(ehdr.e_shoff, std::ios::beg)) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
 
@@ -249,7 +247,7 @@ namespace FileTypes {
                     crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(data), block_size);
                 }
             }
-            while (out.tellp() % 0x40 != 0) out.put(0);
+            padToLen(out, 0x40);
             if(entry.sh_type == SectionType::SHT_RPL_CRCS)
             {
                 crcs[index] = 0;
@@ -395,9 +393,7 @@ namespace FileTypes {
             Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_entsize);
         }
 
-        while(out.tellp() < shdr_data_elf_offset) {
-            out.put('\0');
-        }
+        if(out.tellp() < shdr_data_elf_offset) padToLen(out, shdr_data_elf_offset);
         std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.second.sh_offset < b.second.sh_offset; } );
         for(auto& [index, entry] : shdr_table)
         {

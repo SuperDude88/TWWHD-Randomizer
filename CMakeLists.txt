@@ -66,7 +66,7 @@ target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
 # Put data files together for easier manipulation
 file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
-file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                           # Images and other assets used in patching
+file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data" REGEX "^.*tracker.*$" EXCLUDE)             # Images and other assets used in patching
 file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
 
 if(CMAKE_USE_PTHREADS_INIT AND GET_THREADS)
