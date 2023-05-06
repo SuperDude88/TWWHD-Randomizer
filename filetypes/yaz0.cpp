@@ -96,7 +96,8 @@ public:
     if (dist == 0) {
       // Literal.
       m_group_header.set(7 - m_pending_chunks);
-      m_result.put(uint8_t(lc));
+      const uint8_t temp(lc);
+      m_result.write(reinterpret_cast<const char*>(&temp), 1);
     } else {
       // Back reference.
       constexpr uint32_t ZlibMinMatch = 3;
@@ -126,19 +127,18 @@ private:
     m_pending_chunks = 0;
     m_group_header.reset();
     m_group_header_offset = m_result.tellp();
-    m_result.put(0xFF);
+    m_result.write("\xFF", 1);
   }
 
   void WriteMatch(uint32_t distance, uint32_t length) {
     if (length < 18) {
-      m_result.put(((length - 2) << 4) | uint8_t(distance >> 8));
-      m_result.put(distance);
+        const uint16_t write = ((length - 2) << 12) | distance;
+        m_result.write(reinterpret_cast<const char*>(&write), 2);
     } else {
       // If the match is longer than 18 bytes, 3 bytes are needed to write the match.
-      const size_t actual_length = std::min<size_t>(MaximumMatchLength, length);
-      m_result.put(uint8_t(distance >> 8));
-      m_result.put(uint8_t(distance));
-      m_result.put(uint8_t(actual_length - 0x12));
+      const uint8_t len_to_write = std::min<size_t>(MaximumMatchLength, length) - 0x12;
+      const uint32_t write = (distance << 16) | (len_to_write << 8);
+      m_result.write(reinterpret_cast<const char*>(&write), 3);
     }
   }
 
