@@ -36,5 +36,3 @@ check_rupee_mode_wait:
   rupee_wait:
 	bl itemActionForRupee
 	b 0x02182e5c
-
-.close

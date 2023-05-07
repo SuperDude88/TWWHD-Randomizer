@@ -130,5 +130,3 @@ custom_getSelectItemNo_progressive:
   mtlr r0
   addi sp, sp, 0x10
   blr
-
-.close

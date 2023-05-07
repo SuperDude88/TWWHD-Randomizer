@@ -11,7 +11,7 @@
 
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
-#include <libs/json.hpp>
+#include <libs/yaml.h>
 #include <asm/patches/asm_constants.hpp>
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>
@@ -66,10 +66,9 @@ namespace {
 		if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 		// std::ifstream fptr(file_path, std::ios::in);
 
-		nlohmann::json symbols = nlohmann::json::parse(file_data);
-		for (const auto& symbol : symbols.items()) {
-			const uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
-			custom_symbols[symbol.key()] = address;
+		YAML::Node symbols = YAML::Load(file_data);
+		for (const auto& symbol : symbols) {
+			custom_symbols[symbol.first.as<std::string>()] = symbol.second.as<uint32_t>();
 		}
 
 		return TweakError::NONE;
@@ -81,27 +80,25 @@ TweakError Apply_Patch(const std::string& file_path) {
 	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 	// std::ifstream fptr(file_path, std::ios::in);
 
-	const nlohmann::json patches = nlohmann::json::parse(file_data);
+	const YAML::Node patches = YAML::Load(file_data);
 	RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
 	entry.addAction([patches](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-		for (const auto& patch : patches.items()) {
-			const uint32_t offset = std::stoul(patch.key(), nullptr, 16);
+		for (const auto& patch : patches) {
+			const uint32_t offset = patch.first.as<uint32_t>();
 			offset_t sectionOffset = elfUtil::AddressToOffset(elf, offset);
 			if (!sectionOffset) { //address not in section
 				std::string data;
-				for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
-					const char val = std::stoi(byte, nullptr, 16);
+				for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
+					const char val = byte;
 					data += val;
 				}
 				RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); //add data at the specified offset
 			}
 			else {
-				for (const std::string& byte : patch.value().get<std::vector<std::string>>()) {
-					const uint8_t toWrite = std::stoi(byte, nullptr, 16);
-
-					RPX_ERROR_CHECK(elfUtil::write_u8(elf, sectionOffset, toWrite));
+				for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
+					RPX_ERROR_CHECK(elfUtil::write_u8(elf, sectionOffset, byte));
 					sectionOffset.offset++; //Cycles through the bytes individually, need to increase the offset by one each time
 				}
 			}
@@ -117,19 +114,18 @@ TweakError Apply_Patch(const std::string& file_path) {
 TweakError Add_Relocations(const std::string file_path) {
 	std::string file_data;
 	if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
-	// std::ifstream fptr(file_path, std::ios::in);
 
-	nlohmann::json relocations = nlohmann::json::parse(file_data);
+	YAML::Node relocations = YAML::Load(file_data);
 
 	for (const auto& relocation : relocations) {
-		if(!relocation.contains("r_offset") || !relocation.contains("r_info") || !relocation.contains("r_addend")) {
+		if(!relocation["r_offset"].IsScalar() || !relocation["r_info"].IsScalar() || !relocation["r_addend"].IsScalar()) {
 			LOG_ERR_AND_RETURN(TweakError::RELOCATION_MISSING_KEY);
 		}
 
 		Elf32_Rela reloc;
-		reloc.r_offset = std::stoul(relocation.at("r_offset").get<std::string>(), nullptr, 16);
-		reloc.r_info = std::stoul(relocation.at("r_info").get<std::string>(), nullptr, 16);
-		reloc.r_addend = std::stoi(relocation.at("r_addend").get<std::string>(), nullptr, 16);
+		reloc.r_offset = relocation["r_offset"].as<uint32_t>();
+		reloc.r_info = relocation["r_info"].as<uint32_t>();
+		reloc.r_addend = relocation["r_addend"].as<uint32_t>();
 
 		RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 		entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
@@ -414,7 +410,7 @@ TweakError allow_all_items_to_be_field_items() {
 		return true;
 	});
 
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.json")); //some special stuff because HD silly
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.yaml")); //some special stuff because HD silly
 
 	rpx.addAction([=](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -499,7 +495,7 @@ TweakError remove_ff2_cutscenes() {
 }
 
 TweakError make_items_progressive() {
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_items_progressive_diff.json"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_items_progressive_diff.yaml"));
 
 	const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
@@ -2609,7 +2605,7 @@ TweakError updateCodeSize() {
 }
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
-	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json"));
+	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
 	const std::string seedHash = LogInfo::getSeedHash();
 	const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
@@ -2619,19 +2615,20 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
       return error;
     }
 
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.json"));
-	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.json"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.yaml"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.yaml"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_hint_locations_diff.yaml"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.yaml"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
+	LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.yaml"));
 
-	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/remove_cutscenes_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.json"));
-	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.json"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.yaml"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.yaml"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/remove_cutscenes_reloc.yaml"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.yaml"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.yaml"));
+	LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.yaml"));
 
 	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -2664,19 +2661,19 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 	});
 
 	if (settings.instant_text_boxes) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.json"));
-		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/b_button_skips_text_reloc.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.yaml"));
+		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/b_button_skips_text_reloc.yaml"));
 		TWEAK_ERR_CHECK(make_all_text_instant());
 	}
 	if (settings.reveal_full_sea_chart) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
 	}
 	if (settings.invert_sea_compass_x_axis) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/invert_sea_compass_x_axis_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
 	}
 	if (settings.sword_mode == SwordMode::NoSword) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.json"));
-		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/swordless_reloc.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.yaml"));
+		LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/swordless_reloc.yaml"));
 		g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
 			CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
@@ -2685,7 +2682,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 		});
 	}
 	if (settings.remove_music) {
-		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_music_diff.json"));
+		LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_music_diff.yaml"));
 	}
 	if(settings.chest_type_matches_contents) {
 		TWEAK_ERR_CHECK(replace_ctmc_chest_texture());
@@ -2745,10 +2742,10 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
 	TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
 	if (randomizeItems) {
-    TWEAK_ERR_CHECK(update_text_replacements(world));
-    TWEAK_ERR_CHECK(update_korl_dialog(world));
-    TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
-    TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
+    	TWEAK_ERR_CHECK(update_text_replacements(world));
+    	TWEAK_ERR_CHECK(update_korl_dialog(world));
+    	TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+    	TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
 	}
 	//Run some things after writing items to preserve offsets
 	TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());

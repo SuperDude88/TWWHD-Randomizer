@@ -4,7 +4,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(wwhd_rando C CXX)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -O3") # -Weverything isn't great but other flags don't want to work
-add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0 NO_GZIP=1)
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 if(DEFINED DEVKITPRO)
@@ -58,13 +57,13 @@ add_subdirectory("filetypes")
 add_subdirectory("seedgen")
 add_subdirectory("logic")
 add_subdirectory("nuspack")
-# Modded zlib-ng for fast yaz0
-add_subdirectory("libs/zlib-ng")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
 
+target_link_libraries(wwhd_rando yaml-cpp)
+
 # Put data files together for easier manipulation
-file(COPY "asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
+file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
 file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data" REGEX "^.*tracker.*$" EXCLUDE)             # Images and other assets used in patching
 file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info

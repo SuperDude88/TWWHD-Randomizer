@@ -304,5 +304,3 @@ zero_out_arrow_on_hit_callback:
   
   ; Return
   b 0x0205465C
-
-.close

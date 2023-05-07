@@ -374,4 +374,29 @@ medli_possible_et_spawn_positions:
 .org 0x022e0a5c ; Fishmen
   b 0x022e0a70
 
-.close
+
+
+;TODO: fix these
+; Make it easier to have the Great Deku Tree mark the Koroks on your sea chart.
+; In HD you need to exit Forest Haven while you own Farore's Pearl, talk to a withered tree without forest water, then re-enter and
+; talk to the Deku Tree, specifically choosing the option to ask about Forest Water.
+; We skip a couple of checks and go straight to the dialogue tree so that just talking to the Deku
+; Tree and asking about the Forest Water is enough.
+    ;.org 0x0222C9BC ; In daNpc_De1_c::getMsg
+    ;  b 0x0222CA1C ; Skip straight to the question-asking text
+    ;
+    ;; Change the branching so you can ask about forest water (to mark the map) until withered trees are finished, then use the other options
+    ;.org 0x0222c6d8 ; In daNpc_De1_c::next_msgStatus
+    ;  li r4, 0x102 ; Event bit for watering withered trees
+    ;.org 0x0222c6e8
+    ;  cmpwi r3, 1 ; Invert the branch so you can still ask about KoRL afterwards
+    ;
+    ;
+    ;
+    ;; Make Kogoli (a Rito on Dragon Roost Island) not disappear after Medli is awakened as a sage.
+    ;.org 0x021FCDE4 ; In daNpc_Bm1_c::init_BMD_1(void)
+    ;  ; Normally Kogoli checks event bit 1620 (Medli is in dungeon mode and can be lifted/called)
+    ;  ; and deletes himself if it's set.
+    ;  ; We change him to ignore that bit or otherwise he would not appear at all, since Medli is
+    ;  ; awakened from the start in the randomizer.
+    ;  b 0x021FCDF4
