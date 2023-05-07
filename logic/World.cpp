@@ -1563,8 +1563,6 @@ std::string World::errorToName(WorldLoadingError err)
         return "OPTION_DOES_NOT_EXIST";
     case WorldLoadingError::INCORRECT_ARG_COUNT:
         return "INCORRECT_ARG_COUNT";
-    case WorldLoadingError::EXPECTED_JSON_OBJECT:
-        return "EXPECTED_JSON_OBJECT";
     case WorldLoadingError::AREA_MISSING_KEY:
         return "AREA_MISSING_KEY";
     case WorldLoadingError::LOCATION_MISSING_KEY:
