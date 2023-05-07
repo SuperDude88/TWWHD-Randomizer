@@ -7,5 +7,3 @@
 	blr
 .org 0x025e1944
 	blr
-
-.close

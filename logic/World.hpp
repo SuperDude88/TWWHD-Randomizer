@@ -6,7 +6,7 @@
 #include <unordered_set>
 #include <list>
 
-#include <libs/Yaml.hpp>
+#include <libs/yaml.h>
 #include <logic/Requirements.hpp>
 #include <logic/Area.hpp>
 #include <logic/Location.hpp>
@@ -166,13 +166,13 @@ private:
     WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea);
-    WorldLoadingError loadLocation(Yaml::Node& locationObject);
+    WorldLoadingError loadLocation(const YAML::Node& locationObject);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
     WorldLoadingError loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& loadedLocation);
-    WorldLoadingError loadMacros(Yaml::Node& macroListTree);
-    WorldLoadingError loadArea(Yaml::Node& areaObject);
-    WorldLoadingError loadItem(Yaml::Node& itemObject);
-    WorldLoadingError loadAreaTranslations(Yaml::Node& areaObject);
+    WorldLoadingError loadMacros(const YAML::Node& macroListTree);
+    WorldLoadingError loadArea(const YAML::Node& areaObject);
+    WorldLoadingError loadItem(const YAML::Node& itemObject);
+    WorldLoadingError loadAreaTranslations(const YAML::Node& areaObject);
 
     Settings settings;
     ItemPool itemPool;

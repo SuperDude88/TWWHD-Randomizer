@@ -510,7 +510,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
-        if(Utility::getFileContents(source, dst->data) != 0) return false; //TODO: proper time against rdbuf
+        if(Utility::getFileContents(source.string(), dst->data) != 0) return false; //TODO: proper time against rdbuf
 
         return true;
     });

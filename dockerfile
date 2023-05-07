@@ -6,7 +6,8 @@ ENV BUILD_TYPE=randomizer
 WORKDIR /
 
 # Install python for ASM patches
-RUN apt-get update && apt-get install python3 -y
+COPY ./asm/requirements.txt /scripts/requirements.txt
+RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r /scripts/requirements.txt
 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
@@ -38,7 +39,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
         cd build && \
         rm -rf * && \
         $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
-        make; \
+        make -j$(nproc); \
     else \
         if [ "$BUILD_TYPE" = "asm" ]; then \
             cd asm && \
@@ -53,7 +54,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
                 cd build && \
                 rm -rf * && \
                 $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
-                make; \
+                make -j$(nproc); \
             else \
                 echo "Invalid build type"; \
             fi; \

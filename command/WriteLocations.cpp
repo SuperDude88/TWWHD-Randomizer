@@ -7,8 +7,6 @@
 #include <filesystem>
 #include <algorithm>
 
-#include <libs/json.hpp>
-
 #include <logic/Dungeon.hpp>
 #include <command/RandoSession.hpp>
 #include <command/WWHDStructs.hpp>
@@ -38,20 +36,19 @@ namespace {
 	static std::unordered_map<std::string, uint32_t> custom_symbols;
 
     void Load_Custom_Symbols(const std::string& file_path) {
-		std::string file_data;
-        if (Utility::getFileContents(file_path, file_data, true))
+        std::string file_data;
+        if(Utility::getFileContents(file_path, file_data, true))
         {
             ErrorLog::getInstance().log("ERROR: Failed to load custom symbols when saving items");
             return;
         }
 
-		nlohmann::json symbols = nlohmann::json::parse(file_data);
-		for (const auto& symbol : symbols.items()) {
-			uint32_t address = std::stoul(symbol.value().get<std::string>(), nullptr, 16);
-			custom_symbols[symbol.key()] = address;
-		}
+        YAML::Node symbols = YAML::Load(file_data);
+        for (const auto& symbol : symbols) {
+            custom_symbols[symbol.first.as<std::string>()] = symbol.second.as<uint32_t>();
+        }
 
-		return;
+        return;
 	}
 }
 
@@ -79,20 +76,12 @@ ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
 
 
 
-ModificationError ModifyChest::parseArgs(Yaml::Node& locationObject) {
-    const auto& path = locationObject["Path"].As<std::string>();
-    filePath = std::string(path.data(), path.size());
+ModificationError ModifyChest::parseArgs(const YAML::Node& locationObject) {
+    filePath = locationObject["Path"].as<std::string>();
 
-    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
+    for (const auto& offset : locationObject["Offsets"])
     {
-        Yaml::Node offset = (*offsetIt).second;
-        const auto& offsetStr = offset.As<std::string>();
-        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
-        {
-            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-        }
-        offsets.push_back(offsetValue);
+        offsets.push_back(offset.as<uint32_t>());
     }
 
     return ModificationError::NONE;
@@ -153,19 +142,12 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
 }
 
 
-ModificationError ModifyActor::parseArgs(Yaml::Node& locationObject) {
-    const auto& path = locationObject["Path"].As<std::string>();
-    filePath = std::string(path.data(), path.size());
+ModificationError ModifyActor::parseArgs(const YAML::Node& locationObject) {
+    filePath = locationObject["Path"].as<std::string>();
 
-    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
+    for (const auto& offset : locationObject["Offsets"])
     {
-        Yaml::Node offset = (*offsetIt).second;
-        const auto& offsetStr = offset.As<std::string>();
-        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max()) {
-          LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-        }
-        offsets.push_back(offsetValue);
+        offsets.push_back(offset.as<uint32_t>());
     }
 
     return ModificationError::NONE;
@@ -197,20 +179,12 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifySCOB::parseArgs(Yaml::Node& locationObject) {
-    const auto& path = locationObject["Path"].As<std::string>();
-    filePath = std::string(path.data(), path.size());
+ModificationError ModifySCOB::parseArgs(const YAML::Node& locationObject) {
+    filePath = locationObject["Path"].as<std::string>();
 
-    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
+    for (const auto& offset : locationObject["Offsets"])
     {
-        Yaml::Node offset = (*offsetIt).second;
-        const auto& offsetStr = offset.As<std::string>();
-        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
-        {
-            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-        }
-        offsets.push_back(offsetValue);
+        offsets.push_back(offset.as<uint32_t>());
     }
 
     return ModificationError::NONE;
@@ -242,25 +216,11 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifyEvent::parseArgs(Yaml::Node& locationObject) {
-    const auto& path = locationObject["Path"].As<std::string>();
-    filePath = std::string(path.data(), path.size());
+ModificationError ModifyEvent::parseArgs(const YAML::Node& locationObject) {
+    filePath = locationObject["Path"].as<std::string>();
 
-    std::string offsetStr(locationObject["Offset"].As<std::string>());
-    unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-    if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
-    {
-        LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-    }
-    this->offset = offsetValue;
-
-    offsetStr = locationObject["NameOffset"].As<std::string>();
-    offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-    if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
-    {
-        LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-    }
-    this->nameOffset = offsetValue;
+    this->offset = locationObject["Offset"].as<uint32_t>();
+    this->nameOffset = locationObject["NameOffset"].as<uint32_t>();
 
     return ModificationError::NONE;
 }
@@ -293,17 +253,10 @@ ModificationError ModifyEvent::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifyRPX::parseArgs(Yaml::Node& locationObject) {
-    for (auto offsetIt = locationObject["Offsets"].Begin(); offsetIt != locationObject["Offsets"].End(); offsetIt++)
+ModificationError ModifyRPX::parseArgs(const YAML::Node& locationObject) {
+    for (const auto& offset : locationObject["Offsets"])
     {
-        Yaml::Node offset = (*offsetIt).second;
-        const auto& offsetStr = offset.As<std::string>();
-        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
-        {
-            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-        }
-        offsets.push_back(offsetValue);
+        offsets.push_back(offset.as<uint32_t>());
     }
 
     return ModificationError::NONE;
@@ -329,18 +282,17 @@ ModificationError ModifyRPX::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifySymbol::parseArgs(Yaml::Node& locationObject) {
-    for (auto it = locationObject["SymbolNames"].Begin(); it != locationObject["SymbolNames"].End(); it++)
+ModificationError ModifySymbol::parseArgs(const YAML::Node& locationObject) {
+    for (const auto& symbol : locationObject["SymbolNames"])
     {
-        Yaml::Node symbol = (*it).second;
-        symbolNames.push_back(symbol.As<std::string>());
+        symbolNames.push_back(symbol.as<std::string>());
     }
 
     return ModificationError::NONE;
 }
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
-    if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.json");
+    if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml");
 
     for(const auto& symbol : symbolNames) {
         uint32_t address;
@@ -374,25 +326,12 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
 }
 
 
-ModificationError ModifyBoss::parseArgs(Yaml::Node& locationObject) {
-    if(locationObject["Paths"].Size() != locationObject["Offsets"].Size()) LOG_ERR_AND_RETURN(ModificationError::MISSING_VALUE)
+ModificationError ModifyBoss::parseArgs(const YAML::Node& locationObject) {
+    offsetsWithPath.reserve(locationObject["Paths"].size());
 
-    offsetsWithPath.reserve(locationObject["Paths"].Size());
-
-    for (size_t i = 0; i < locationObject["Paths"].Size(); i++)
+    for (auto path_pair : locationObject["Paths"])
     {
-        std::pair<std::string, uint32_t> offset_with_path;
-
-        std::string offsetStr(locationObject["Offsets"][i].As<std::string>());
-        unsigned long offsetValue = std::strtoul(offsetStr.c_str(), nullptr, 0);
-        if (offsetValue == 0 || offsetValue == std::numeric_limits<unsigned long>::max())
-        {
-            LOG_ERR_AND_RETURN(ModificationError::INVALID_OFFSET)
-        }
-        offset_with_path.first = locationObject["Paths"][i].As<std::string>();
-        offset_with_path.second = offsetValue;
-
-        offsetsWithPath.push_back(offset_with_path);
+        offsetsWithPath.emplace_back(path_pair.first.as<std::string>(), path_pair.second.as<uint32_t>());
     }
 
     return ModificationError::NONE;

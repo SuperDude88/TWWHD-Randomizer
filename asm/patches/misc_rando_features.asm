@@ -393,25 +393,6 @@ custom_damage_multiplier:
 
 
 
-; Stop Old man Ho-Ho from disappearing under some conditions.
-; When HoHo is created
-.org 0x021e5560 ; Don't check if Cabana Octo is defeated
-  li r3, 0
-.org 0x021e5524 ; Don't check if the stone head above Savage Labyrinth is destroyed
-  li r3, 0
-.org 0x021e558c ; Don't check if the Two-Eye Reef Octo is defeated
-  li r3, 0
-
-; When HoHo is executing
-.org 0x021e6924 ; Don't check if Cabana Octo is defeated
-  li r3, 0
-.org 0x021e6900 ; Don't check if the stone head above Savage Labyrinth is destroyed
-  li r3, 0
-.org 0x021e6950 ; Don't check if the Two-Eye Reef Octo is defeated
-  li r3, 0
-
-
-
 ; Change the Deku Leaf so that you can still fan it to create a gust of air when you have zero magic.
 ; In vanilla, you needed at least one magic to fan it, but it didn't consume any magic.
 ; This is done so that the Deku Leaf still has some usefulness when starting without a magic meter.
@@ -580,5 +561,3 @@ set_return_place_as_last_visited_ocean_sector:
 	lbz r5, 0x3E (r5)
 	addi r5, r5, 1
   b 0x025B50DC ; dSv_player_return_place_c::set
-
-.close

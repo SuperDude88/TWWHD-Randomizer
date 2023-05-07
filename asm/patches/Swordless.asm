@@ -99,5 +99,3 @@ remove_temporary_sword_when_loading_stage_in_swordless:
 remove_temporary_sword_when_loading_stage_in_swordless_end:
   lbz r5,0x68(r4) ; Replace the line we overwrote to jump here
   b 0x025b26fc ; Return
-
-.close
