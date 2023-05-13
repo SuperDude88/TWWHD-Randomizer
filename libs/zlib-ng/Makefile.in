@@ -29,8 +29,8 @@ TEST_LIBS=$(LIBNAME1).a
 LDSHARED=$(CC)
 LDSHAREDFLAGS=-shared
 
-VER=1.9.9
-VER1=1
+VER=2.1.0.beta1
+VER1=2
 
 STATICLIB=$(LIBNAME1).a
 SHAREDLIB=$(LIBNAME1).so
@@ -51,11 +51,13 @@ RCOBJS=
 STRIP=
 RANLIB=ranlib
 LDCONFIG=ldconfig
-LDSHAREDLIBC=-lc
+LDSHAREDLIBC=
 EXE=
 
 SRCDIR=.
 INCLUDES=-I$(SRCDIR)
+
+BUILDDIR=.
 
 ARCHDIR=arch/generic
 ARCH_STATIC_OBJS=
@@ -71,12 +73,80 @@ mandir = ${prefix}/share/man
 man3dir = ${mandir}/man3
 pkgconfigdir = ${libdir}/pkgconfig
 
-OBJZ = adler32.o compress.o crc32.o deflate.o deflate_fast.o deflate_medium.o deflate_slow.o functable.o infback.o inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o $(ARCH_STATIC_OBJS)
-OBJG = gzclose.o gzlib.o gzread.o gzwrite.o
+OBJZ = \
+	adler32.o \
+	adler32_fold.o \
+	chunkset.o \
+	compare256.o \
+	compress.o \
+	cpu_features.o \
+	crc32_braid.o \
+	crc32_braid_comb.o \
+	crc32_fold.o \
+	deflate.o \
+	deflate_fast.o \
+	deflate_huff.o \
+	deflate_medium.o \
+	deflate_quick.o \
+	deflate_rle.o \
+	deflate_slow.o \
+	deflate_stored.o \
+	functable.o \
+	infback.o \
+	inflate.o \
+	inftrees.o \
+	insert_string.o \
+	insert_string_roll.o \
+	slide_hash.o \
+	trees.o \
+	uncompr.o \
+	zutil.o \
+	$(ARCH_STATIC_OBJS)
+
+OBJG = \
+	gzlib.o \
+	gzread.o \
+	gzwrite.o
+
+TESTOBJG =
 OBJC = $(OBJZ) $(OBJG)
 
-PIC_OBJZ = adler32.lo compress.lo crc32.lo deflate.lo deflate_fast.lo deflate_medium.lo deflate_slow.lo functable.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo uncompr.lo zutil.lo $(ARCH_SHARED_OBJS)
-PIC_OBJG = gzclose.lo gzlib.lo gzread.lo gzwrite.lo
+PIC_OBJZ = \
+	adler32.lo \
+	adler32_fold.lo \
+	chunkset.lo \
+	compare256.lo \
+	compress.lo \
+	cpu_features.lo \
+	crc32_braid.lo \
+	crc32_braid_comb.lo \
+	crc32_fold.lo \
+	deflate.lo \
+	deflate_fast.lo \
+	deflate_huff.lo \
+	deflate_medium.lo \
+	deflate_quick.lo \
+	deflate_rle.lo \
+	deflate_slow.lo \
+	deflate_stored.lo \
+	functable.lo \
+	infback.lo \
+	inflate.lo \
+	inftrees.lo \
+	insert_string.lo \
+	insert_string_roll.lo \
+	slide_hash.lo \
+	trees.lo \
+	uncompr.lo \
+	zutil.lo \
+	$(ARCH_SHARED_OBJS)
+
+PIC_OBJG = \
+	gzlib.lo \
+	gzread.lo \
+	gzwrite.lo
+
+PIC_TESTOBJG =
 PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
 
 OBJS = $(OBJC)
@@ -85,11 +155,9 @@ PIC_OBJS = $(PIC_OBJC)
 
 all: static shared
 
-static: example$(EXE) minigzip$(EXE) fuzzers makefixed$(EXE) maketrees$(EXE) makecrct$(EXE)
+static: example$(EXE) minigzip$(EXE) makefixed$(EXE) maketrees$(EXE) makecrct$(EXE)
 
 shared: examplesh$(EXE) minigzipsh$(EXE)
-
-all64: example64$(EXE) minigzip64$(EXE)
 
 check: test
 
@@ -110,64 +178,11 @@ $(ARCHDIR)/%.lo: $(SRCDIR)/$(ARCHDIR)/%.c
 test: all
 	$(MAKE) -C test
 
-# This variable is set by configure.
-WITH_FUZZERS=
-
-# By default, use our own standalone_fuzz_target_runner.
-# This runner does no fuzzing, but simply executes the inputs
-# provided via parameters.
-# Run e.g. "make all LIB_FUZZING_ENGINE=/path/to/libFuzzer.a"
-# to link the fuzzer(s) against a real fuzzing engine.
-ifeq (,$(LIB_FUZZING_ENGINE))
-  LIB_FUZZING_ENGINE = standalone_fuzz_target_runner.o
-else
-  # OSS-Fuzz will define its own value for LIB_FUZZING_ENGINE.
-  WITH_FUZZERS=1
-endif
-
-ifeq (1,$(WITH_FUZZERS))
-fuzzers: checksum_fuzzer$(EXE) compress_fuzzer$(EXE) example_small_fuzzer$(EXE) example_large_fuzzer$(EXE) example_flush_fuzzer$(EXE) example_dict_fuzzer$(EXE) minigzip_fuzzer$(EXE)
-else
-fuzzers:
-endif
-
-# The standalone fuzz target runner.
-standalone_fuzz_target_runner.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-checksum_fuzzer.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-compress_fuzzer.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-example_small_fuzzer.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-example_large_fuzzer.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-example_flush_fuzzer.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-example_dict_fuzzer.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-minigzip_fuzzer.o:
-	$(CC) $(CFLAGS) -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
-checksum_fuzzer$(EXE): checksum_fuzzer.o standalone_fuzz_target_runner.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) checksum_fuzzer.o $(STATICLIB) -lpthread
-compress_fuzzer$(EXE): compress_fuzzer.o standalone_fuzz_target_runner.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) compress_fuzzer.o $(STATICLIB) -lpthread
-example_small_fuzzer$(EXE): example_small_fuzzer.o standalone_fuzz_target_runner.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) example_small_fuzzer.o $(STATICLIB) -lpthread
-example_large_fuzzer$(EXE): example_large_fuzzer.o standalone_fuzz_target_runner.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) example_large_fuzzer.o $(STATICLIB) -lpthread
-example_flush_fuzzer$(EXE): example_flush_fuzzer.o standalone_fuzz_target_runner.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) example_flush_fuzzer.o $(STATICLIB) -lpthread
-example_dict_fuzzer$(EXE): example_dict_fuzzer.o standalone_fuzz_target_runner.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) example_dict_fuzzer.o $(STATICLIB) -lpthread
-minigzip_fuzzer$(EXE): minigzip_fuzzer.o standalone_fuzz_target_runner.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ $(LIB_FUZZING_ENGINE) minigzip_fuzzer.o $(OBJG) $(STATICLIB) -lpthread
-
-infcover.o: $(SRCDIR)/test/infcover.c $(SRCDIR)/zlib$(SUFFIX).h zconf$(SUFFIX).h
+infcover.o: $(SRCDIR)/test/infcover.c zlib$(SUFFIX).h zconf$(SUFFIX).h zlib_name_mangling$(SUFFIX).h
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/test/infcover.c
 
 infcover$(EXE): infcover.o $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ infcover.o $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ infcover.o $(STATICLIB)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
@@ -187,12 +202,6 @@ example.o:
 minigzip.o:
 	$(CC) $(CFLAGS) -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $(SRCDIR)/test/minigzip.c
 
-example64.o:
-	$(CC) $(CFLAGS) -DWITH_GZFILEOP -D_FILE_OFFSET_BITS=64 $(INCLUDES) -c -o $@ $(SRCDIR)/test/example.c
-
-minigzip64.o:
-	$(CC) $(CFLAGS) -DWITH_GZFILEOP -D_FILE_OFFSET_BITS=64 $(INCLUDES) -c -o $@ $(SRCDIR)/test/minigzip.c
-
 makefixed.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/makefixed.c
 
@@ -202,8 +211,8 @@ maketrees.o:
 makecrct.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/makecrct.c
 
-zlibrc.o: win32/zlib$(SUFFIX)1.rc
-	$(RC) $(RCFLAGS) -o $@ win32/zlib$(SUFFIX)1.rc
+zlibrc.o: $(SRCDIR)/win32/zlib$(SUFFIX)1.rc
+	$(RC) $(RCFLAGS) -o $@ $(SRCDIR)/win32/zlib$(SUFFIX)1.rc
 
 .SUFFIXES: .lo
 
@@ -213,12 +222,27 @@ zlibrc.o: win32/zlib$(SUFFIX)1.rc
 %.lo: $(SRCDIR)/%.c
 	$(CC) $(SFLAGS) -DPIC $(INCLUDES) -c -o $@ $<
 
-$(OBJG): %.o: $(SRCDIR)/%.c
+gzlib.o: $(SRCDIR)/gzlib.c
 	$(CC) $(CFLAGS) -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
+
+gzlib.lo: $(SRCDIR)/gzlib.c
+	$(CC) $(SFLAGS) -DPIC -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
+
+gzread.o: gzread.c
+	$(CC) $(CFLAGS) -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
+
+gzread.lo: gzread.c
+	$(CC) $(SFLAGS) -DPIC -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
+
+gzwrite.o: $(SRCDIR)/gzwrite.c
+	$(CC) $(CFLAGS) -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
+
+gzwrite.lo: $(SRCDIR)/gzwrite.c
+	$(CC) $(SFLAGS) -DPIC -DWITH_GZFILEOP $(INCLUDES) -c -o $@ $<
 
 $(SHAREDTARGET): $(PIC_OBJS) $(DEFFILE) $(RCOBJS)
 ifneq ($(SHAREDTARGET),)
-	$(LDSHARED) $(LDSHAREDFLAGS) $(LDFLAGS) -o $@ $(DEFFILE) $(PIC_OBJS) $(RCOBJS) $(LDSHAREDLIBC)
+	$(LDSHARED) $(CFLAGS) $(LDSHAREDFLAGS) $(LDFLAGS) -o $@ $(DEFFILE) $(PIC_OBJS) $(RCOBJS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
@@ -229,56 +253,45 @@ ifneq ($(SHAREDLIB),$(SHAREDTARGET))
 endif
 endif
 
-example$(EXE): example.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ example.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+example$(EXE): example.o $(TESTOBJG) $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example.o $(TESTOBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-minigzip$(EXE): minigzip.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ minigzip.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+minigzip$(EXE): minigzip.o $(TESTOBJG) $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ minigzip.o $(TESTOBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-examplesh$(EXE): example.o $(OBJG) $(SHAREDTARGET)
-	$(CC) $(LDFLAGS) -o $@ example.o $(OBJG) $(SHAREDTARGET) $(LDSHAREDLIBC)
+minigzipsh$(EXE): minigzip.o $(PIC_TESTOBJG) $(SHAREDTARGET)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ minigzip.o $(PIC_TESTOBJG) $(SHAREDLIB) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-minigzipsh$(EXE): minigzip.o $(OBJG) $(SHAREDTARGET)
-	$(CC) $(LDFLAGS) -o $@ minigzip.o $(OBJG) $(SHAREDTARGET) $(LDSHAREDLIBC)
+
+examplesh$(EXE): example.o $(PIC_TESTOBJG) $(SHAREDTARGET)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example.o $(PIC_TESTOBJG) $(SHAREDLIB) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-example64$(EXE): example64.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ example64.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+makefixed$(EXE): makefixed.o $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makefixed.o $(TEST_LIBS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-minigzip64$(EXE): minigzip64.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ minigzip64.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+maketrees$(EXE): maketrees.o $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ maketrees.o $(TEST_LIBS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
 
-makefixed$(EXE): makefixed.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ makefixed.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
-ifneq ($(STRIP),)
-	$(STRIP) $@
-endif
-
-maketrees$(EXE): maketrees.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ maketrees.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
-ifneq ($(STRIP),)
-	$(STRIP) $@
-endif
-
-makecrct$(EXE): makecrct.o $(OBJG) $(STATICLIB)
-	$(CC) $(LDFLAGS) -o $@ makecrct.o $(OBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
+makecrct$(EXE): makecrct.o $(STATICLIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makecrct.o $(TEST_LIBS) $(LDSHAREDLIBC)
 ifneq ($(STRIP),)
 	$(STRIP) $@
 endif
@@ -313,19 +326,17 @@ install-static: $(STATICLIB)
 install-libs: install-shared install-static
 	-@if [ ! -d $(DESTDIR)$(man3dir)      ]; then mkdir -p $(DESTDIR)$(man3dir); fi
 	-@if [ ! -d $(DESTDIR)$(pkgconfigdir) ]; then mkdir -p $(DESTDIR)$(pkgconfigdir); fi
-	rm -f $(DESTDIR)$(man3dir)/zlib$(SUFFIX).3
-	cp $(SRCDIR)/zlib.3 $(DESTDIR)$(man3dir)/zlib$(SUFFIX).3
-	chmod 644 $(DESTDIR)$(man3dir)/zlib$(SUFFIX).3
 	rm -f $(DESTDIR)$(pkgconfigdir)/$(PKGFILE)
 	cp $(PKGFILE) $(DESTDIR)$(pkgconfigdir)
 	chmod 644 $(DESTDIR)$(pkgconfigdir)/$(PKGFILE)
 
 install: install-libs
 	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
-	rm -f $(DESTDIR)$(includedir)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h
-	cp $(SRCDIR)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zlib$(SUFFIX).h
+	rm -f $(DESTDIR)$(includedir)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
+	cp zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zlib$(SUFFIX).h
 	cp zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h
-	chmod 644 $(DESTDIR)$(includedir)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h
+	cp zlib_name_mangling$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
+	chmod 644 $(DESTDIR)$(includedir)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
 
 uninstall-static:
 	cd $(DESTDIR)$(libdir) && rm -f $(STATICLIB)
@@ -339,24 +350,15 @@ ifneq ($(IMPORTLIB),)
 endif
 
 uninstall: uninstall-static uninstall-shared
-	cd $(DESTDIR)$(includedir) && rm -f zlib$(SUFFIX).h zconf$(SUFFIX).h
-	cd $(DESTDIR)$(man3dir) && rm -f zlib$(SUFFIX).3
+	cd $(DESTDIR)$(includedir) && rm -f zlib$(SUFFIX).h zconf$(SUFFIX).h zlib_name_mangling$(SUFFIX).h
 	cd $(DESTDIR)$(pkgconfigdir) && rm -f $(PKGFILE)
-
-docs: zlib.3.pdf
-
-zlib.3.pdf: $(SRCDIR)/zlib.3
-	groff -mandoc -f H -T ps $(SRCDIR)/zlib.3 | ps2pdf - zlib.3.pdf
 
 mostlyclean: clean
 clean:
 	@if [ -f $(ARCHDIR)/Makefile ]; then $(MAKE) -C $(ARCHDIR) clean; fi
 	@if [ -f test/Makefile ]; then $(MAKE) -C test clean; fi
 	rm -f *.o *.lo *~ \
-	   example$(EXE) minigzip$(EXE) examplesh$(EXE) minigzipsh$(EXE) \
-	   example64$(EXE) minigzip64$(EXE) \
-	   checksum_fuzzer$(EXE) compress_fuzzer$(EXE) example_small_fuzzer$(EXE) example_large_fuzzer$(EXE) \
-	   example_flush_fuzzer$(EXE) example_dict_fuzzer$(EXE) minigzip_fuzzer$(EXE) \
+	   example$(EXE) minigzip$(EXE) minigzipsh$(EXE) \
 	   infcover makefixed$(EXE) maketrees$(EXE) makecrct$(EXE) \
 	   $(STATICLIB) $(IMPORTLIB) $(SHAREDLIB) $(SHAREDLIBV) $(SHAREDLIBM) \
 	   foo.gz so_locations \
@@ -364,14 +366,14 @@ clean:
 	rm -rf objs
 	rm -f *.gcda *.gcno *.gcov
 	rm -f a.out a.exe
-	rm -f *.pc
 	rm -f *._h
+	rm -rf btmp1 btmp2 pkgtmp1 pkgtmp2
 
 maintainer-clean: distclean
 distclean: clean
 	@if [ -f $(ARCHDIR)/Makefile ]; then $(MAKE) -C $(ARCHDIR) distclean; fi
 	@if [ -f test/Makefile ]; then $(MAKE) -C test distclean; fi
-	rm -f $(PKGFILE) configure.log zconf.h zconf.h.cmakein
+	rm -f $(PKGFILE) configure.log zconf.h zconf.h.cmakein zlib$(SUFFIX).h zlib_name_mangling$(SUFFIX)}.h *.pc
 	-@rm -f .DS_Store
 # Reset Makefile if building inside source tree
 	@if [ -f Makefile.in ]; then \
@@ -384,7 +386,7 @@ distclean: clean
 	grep -v '^#cmakedefine' $(SRCDIR)/zconf.h.in > zconf.h.cmakein &&\
 	touch -r $(SRCDIR)/zconf.h.in zconf.h.cmakein ; fi
 # Cleanup these files if building outside source tree
-	@if [ ! -f zlib.3 ]; then rm -f zlib.3.pdf Makefile; fi
+	@if [ ! -f README.md ]; then rm -f Makefile; fi
 # Remove arch and test directory if building outside source tree
 	@if [ ! -f $(ARCHDIR)/Makefile.in ]; then rm -rf arch; fi
 	@if [ ! -f test/Makefile.in ]; then rm -rf test; fi

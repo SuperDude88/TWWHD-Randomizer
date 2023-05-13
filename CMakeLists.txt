@@ -60,7 +60,7 @@ add_subdirectory("nuspack")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
 
-target_link_libraries(wwhd_rando yaml-cpp)
+target_link_libraries(wwhd_rando yaml-cpp zlib)
 
 # Put data files together for easier manipulation
 file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code

@@ -7,39 +7,36 @@
 #include <coreinit/thread.h>
 #endif
 
-#ifdef DEVKITPRO
 enum struct DataIDs : uint32_t {
+#ifdef DEVKITPRO
     FILE_OP_BUFFER = 0
+#else
+    FILE_OP_BUFFER = 0
+#endif
 };
+
+template<typename T, DataIDs ID>
+class ThreadLocal {
+private:
+#ifdef DEVKITPRO //TODO: somehow unregister data on all threads during destruct?
+    std::list<T> data;
+#else
+    inline static thread_local T data;
 #endif
 
-template<typename T>
-class ThreadLocal {
-#ifdef DEVKITPRO
-    std::list<T> data;
-    const uint32_t id;
-
 public:
-    ThreadLocal(const DataIDs id_) : id(static_cast<std::underlying_type_t<DataIDs>>(id_)) {}
-    ~ThreadLocal() {
-        //TODO: unregister the data on all the threads somehow?
-    }
-
     operator T&() {
+    #ifdef DEVKITPRO
+        const uint32_t& id = static_cast<std::underlying_type_t<DataIDs>>(ID);
         if(OSGetThreadSpecific(id) == nullptr) {
             data.emplace_back();
             OSSetThreadSpecific(id, &data.back());
         }
         return *reinterpret_cast<T*>(OSGetThreadSpecific(id));
-    }
-#else
-    inline static thread_local T data;
-
-public:
-    ThreadLocal() {}
-
-    operator T&() {
+    #else
         return data;
+    #endif
     }
-#endif
+
+    ThreadLocal() {}
 };

@@ -1387,7 +1387,7 @@ TweakError add_pirate_ship_to_windfall() {
 	const uint8_t new_second_scene_wave_index = 0xE;
 	const uint8_t isle_link_0_aw_index = 0x19;
 
-	const uint32_t asoko_bgm_info_ptr = stage_bgm_info_list_start + asoko_spot_id * 0x4;
+	//const uint32_t asoko_bgm_info_ptr = stage_bgm_info_list_start + asoko_spot_id * 0x4;
 	const uint32_t new_second_scene_wave_ptr = second_dynamic_scene_waves_list_start + new_second_scene_wave_index * 2;
 	g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
 		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
