@@ -3,13 +3,19 @@
 #include <chrono>
 #include <utility/string.hpp>
 #include <utility/platform.hpp>
-#ifdef DEVKITPRO
-    #include <coreinit/time.h>
-#endif
 
 template<typename Clock, Utility::Str::StringLiteral Message = "Process took ">
 class Timer {
 public:
+    typename Clock::duration getElapsed() const {
+        end = Clock::now();
+        return end - begin;
+    }
+
+protected:
+    typename Clock::time_point begin;
+    typename Clock::time_point end;
+
     void start() {
         begin = Clock::now();
     }
@@ -18,22 +24,20 @@ public:
         end = Clock::now();
         duration = end - begin;
     }
-
-    void print() {
+    
+    void print() const {
         const std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
-        Utility::platformLog(std::string(msg) + std::to_string(seconds.count()) + " seconds\n");
+        Utility::platformLog(std::string(msg) + (msg.back() == ' ' ? "" : " ") + std::to_string(seconds.count()) + " seconds\n");
     }
 
 private:
-    typename Clock::time_point begin;
-    typename Clock::time_point end;
     typename Clock::duration duration;
 
     static constexpr std::string_view msg = Message;
 };
 
 template<typename Clock, Utility::Str::StringLiteral Message = "Process took ">
-class ScopedTimer : private Timer<Clock, Message> {
+class ScopedTimer : public Timer<Clock, Message> {
 public:
     ScopedTimer() {
         Timer<Clock, Message>::start();
@@ -47,17 +51,11 @@ public:
 
 class ProgramTime {
 private:
-#ifdef DEVKITPRO
-    const OSTime openTime;
-    static OSTime getOpenedTime();
-    static OSTime getElapsedTime();
-#else
-    using TimePoint_t = std::chrono::system_clock::time_point;
+    using TimePoint_t = std::chrono::zoned_time<std::chrono::system_clock::duration>;
 
     const TimePoint_t openTime;
     static TimePoint_t getOpenedTime();
     static TimePoint_t::duration getElapsedTime();
-#endif
 
     ProgramTime();
     ~ProgramTime();

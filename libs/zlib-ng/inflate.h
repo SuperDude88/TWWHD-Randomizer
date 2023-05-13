@@ -1,5 +1,5 @@
 /* inflate.h -- internal inflate state definition
- * Copyright (C) 1995-2016 Mark Adler
+ * Copyright (C) 1995-2019 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -11,10 +11,12 @@
 #ifndef INFLATE_H_
 #define INFLATE_H_
 
-/* define NO_GZIP when compiling if you want to disable gzip header and
-   trailer decoding by inflate().  NO_GZIP would be used to avoid linking in
-   the crc code when it is not needed.  For shared libraries, gzip decoding
-   should be left enabled. */
+#include "adler32_fold.h"
+#include "crc32_fold.h"
+
+/* define NO_GZIP when compiling if you want to disable gzip header and trailer decoding by inflate().
+   NO_GZIP would be used to avoid linking in the crc code when it is not needed.
+   For shared libraries, gzip decoding should be left enabled. */
 #ifndef NO_GZIP
 #  define GUNZIP
 #endif
@@ -101,6 +103,9 @@ struct inflate_state {
     uint32_t whave;             /* valid bytes in the window */
     uint32_t wnext;             /* window write index */
     unsigned char *window;      /* allocated sliding window, if needed */
+
+    struct crc32_fold_s ALIGNED_(16) crc_fold;
+
         /* bit accumulator */
     uint32_t hold;              /* input bit accumulator */
     unsigned bits;              /* number of bits in "in" */
@@ -126,9 +131,10 @@ struct inflate_state {
     int sane;                   /* if false, allow invalid distance too far */
     int back;                   /* bits back of last unprocessed length/lit */
     unsigned was;               /* initial length of match */
+    uint32_t chunksize;         /* size of memory copying chunk */
 };
 
-int ZLIB_INTERNAL inflate_ensure_window(struct inflate_state *state);
-void ZLIB_INTERNAL fixedtables(struct inflate_state *state);
+int Z_INTERNAL PREFIX(inflate_ensure_window)(struct inflate_state *state);
+void Z_INTERNAL PREFIX(fixedtables)(struct inflate_state *state);
 
 #endif /* INFLATE_H_ */

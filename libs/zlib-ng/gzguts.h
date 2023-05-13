@@ -1,7 +1,7 @@
 #ifndef GZGUTS_H_
 #define GZGUTS_H_
 /* gzguts.h -- zlib internal header definitions for gz* operations
- * Copyright (C) 2004, 2005, 2010, 2011, 2012, 2013, 2016 Mark Adler
+ * Copyright (C) 2004-2019 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -15,11 +15,11 @@
 #endif
 
 #if defined(HAVE_VISIBILITY_INTERNAL)
-#  define ZLIB_INTERNAL __attribute__((visibility ("internal")))
+#  define Z_INTERNAL __attribute__((visibility ("internal")))
 #elif defined(HAVE_VISIBILITY_HIDDEN)
-#  define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+#  define Z_INTERNAL __attribute__((visibility ("hidden")))
 #else
-#  define ZLIB_INTERNAL
+#  define Z_INTERNAL
 #endif
 
 #include <stdio.h>
@@ -34,19 +34,12 @@
 #  include "zlib-ng.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #  include <stddef.h>
 #endif
 
-#if !defined(_MSC_VER) || defined(__MINGW__)
-#  include <unistd.h>       /* for lseek(), read(), close(), write(), unlink() */
-#endif
-
-#if defined(_MSC_VER) || defined(WIN32)
+#if defined(_WIN32)
 #  include <io.h>
-#endif
-
-#if defined(_WIN32) || defined(__MINGW__)
 #  define WIDECHAR
 #endif
 
@@ -58,7 +51,7 @@
 #endif
 
 /* In Win32, vsnprintf is available as the "non-ANSI" _vsnprintf. */
-#if !defined(STDC99) && !defined(__CYGWIN__) && !defined(__MINGW__) && defined(WIN32)
+#if !defined(STDC99) && !defined(__CYGWIN__) && !defined(__MINGW__) && defined(_WIN32)
 #  if !defined(vsnprintf)
 #    if !defined(_MSC_VER) || ( defined(_MSC_VER) && _MSC_VER < 1500 )
 #       define vsnprintf _vsnprintf
@@ -81,14 +74,6 @@
 #  define zstrerror() "stdio error (consult errno)"
 #endif
 
-/* provide prototypes for these when building zlib without LFS */
-#if (!defined(_LARGEFILE64_SOURCE) || _LFS64_LARGEFILE-0 == 0) && defined(WITH_GZFILEOP)
-    ZEXTERN gzFile ZEXPORT PREFIX(gzopen64)(const char *, const char *);
-    ZEXTERN z_off64_t ZEXPORT PREFIX(gzseek64)(gzFile, z_off64_t, int);
-    ZEXTERN z_off64_t ZEXPORT PREFIX(gztell64)(gzFile);
-    ZEXTERN z_off64_t ZEXPORT PREFIX(gzoffset64)(gzFile);
-#endif
-
 /* default memLevel */
 #if MAX_MEM_LEVEL >= 8
 #  define DEF_MEM_LEVEL 8
@@ -98,10 +83,8 @@
 
 /* default i/o buffer size -- double this for output when reading (this and
    twice this must be able to fit in an unsigned type) */
-#if defined(S390_DFLTCC_DEFLATE) || defined(S390_DFLTCC_INFLATE)
-#  define GZBUFSIZE 262144  /* DFLTCC works faster with larger buffers */
-#else
-#  define GZBUFSIZE 8192
+#ifndef GZBUFSIZE
+#  define GZBUFSIZE 131072
 #endif
 
 /* gzip modes, also provide a little integrity check on the passed structure */
@@ -152,16 +135,11 @@ typedef struct {
 typedef gz_state *gz_statep;
 
 /* shared functions */
-void ZLIB_INTERNAL gz_error(gz_state *, int, const char *);
+void Z_INTERNAL gz_error(gz_state *, int, const char *);
 
 /* GT_OFF(x), where x is an unsigned value, is true if x > maximum z_off64_t
    value -- needed when comparing unsigned to z_off64_t, which is signed
    (possible z_off64_t types off_t, off64_t, and long are all signed) */
-#ifdef INT_MAX
-#  define GT_OFF(x) (sizeof(int) == sizeof(z_off64_t) && (x) > INT_MAX)
-#else
-unsigned ZLIB_INTERNAL gz_intmax(void);
-#  define GT_OFF(x) (sizeof(int) == sizeof(z_off64_t) && (x) > gz_intmax())
-#endif
+#define GT_OFF(x) (sizeof(int) == sizeof(z_off64_t) && (x) > INT_MAX)
 
 #endif /* GZGUTS_H_ */

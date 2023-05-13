@@ -25,13 +25,8 @@ namespace Utility {
     	return false;
 	};
 	
-	//IMPROVEMENT: better way to make these thread-safe?
 	static constexpr int FILE_BUF_SIZE = 25*1024*1024;
-	#ifdef DEVKITPRO
-	static ThreadLocal<char[FILE_BUF_SIZE]> buf(DataIDs::FILE_OP_BUFFER);
-	#else
-	static ThreadLocal<char[FILE_BUF_SIZE]> buf;
-	#endif
+	static ThreadLocal<char[FILE_BUF_SIZE], DataIDs::FILE_OP_BUFFER> buf;
 
 	bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
 		Utility::platformLog("Copying %s\n", to.string().c_str());

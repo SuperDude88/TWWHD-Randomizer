@@ -1,53 +1,26 @@
-/* insert_string_acle.c -- insert_string variant using ACLE's CRC instructions
+/* insert_string_acle.c -- insert_string integer hash variant using ACLE's CRC instructions
  *
  * Copyright (C) 1995-2013 Jean-loup Gailly and Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  *
  */
 
-#if defined(__ARM_FEATURE_CRC32) && defined(ARM_ACLE_CRC_HASH)
-#include <arm_acle.h>
+#ifdef ARM_ACLE
+#ifndef _MSC_VER
+#  include <arm_acle.h>
+#endif
 #include "../../zbuild.h"
 #include "../../deflate.h"
 
-/* ===========================================================================
- * Insert string str in the dictionary and set match_head to the previous head
- * of the hash chain (the most recent string with same hash key). Return
- * the previous length of the hash chain.
- * IN  assertion: all calls to to INSERT_STRING are made with consecutive
- *    input characters and the first MIN_MATCH bytes of str are valid
- *    (except for the last MIN_MATCH-1 bytes of the input file).
- */
-Pos insert_string_acle(deflate_state *const s, const Pos str, unsigned int count) {
-    Pos p, lp, ret;
+#define HASH_CALC(s, h, val) \
+    h = __crc32w(0, val)
 
-    if (UNLIKELY(count == 0)) {
-        return s->prev[str & s->w_mask];
-    }
+#define HASH_CALC_VAR       h
+#define HASH_CALC_VAR_INIT  uint32_t h = 0
 
-    ret = 0;
-    lp = str + count - 1; /* last position */
+#define UPDATE_HASH         update_hash_acle
+#define INSERT_STRING       insert_string_acle
+#define QUICK_INSERT_STRING quick_insert_string_acle
 
-    for (p = str; p <= lp; p++) {
-        uint32_t val, h, hm;
-        memcpy(&val, &s->window[p], sizeof(val));
-
-        if (s->level >= TRIGGER_LEVEL)
-            val &= 0xFFFFFF;
-
-        h = __crc32w(0, val);
-        hm = h & s->hash_mask;
-
-        Pos head = s->head[hm];
-        if (head != p) {
-            s->prev[p & s->w_mask] = head;
-            s->head[hm] = p;
-            if (p == lp)
-                ret = head;
-        } else if (p == lp) {
-            ret = p;
-        }
-    }
-    return ret;
-}
+#include "../../insert_string_tpl.h"
 #endif

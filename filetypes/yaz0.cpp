@@ -6,9 +6,9 @@
 
 #include <utility/endian.hpp>
 #include <command/Log.hpp>
-#include <zlib-ng.h>
+#include <libs/custom-zlib.h>
 
-constexpr uint32_t READ_CHUNK_SIZE = 4096;
+using eType = Utility::Endian::Type;
 
 struct Yaz0Header 
 {
@@ -132,12 +132,12 @@ private:
 
   void WriteMatch(uint32_t distance, uint32_t length) {
     if (length < 18) {
-        const uint16_t write = ((length - 2) << 12) | distance;
+        const uint16_t write = Utility::Endian::toPlatform<uint16_t>(eType::Big, ((length - 2) << 12) | distance);
         m_result.write(reinterpret_cast<const char*>(&write), 2);
     } else {
       // If the match is longer than 18 bytes, 3 bytes are needed to write the match.
       const uint8_t len_to_write = std::min<size_t>(MaximumMatchLength, length) - 0x12;
-      const uint32_t write = (distance << 16) | (len_to_write << 8);
+      const uint32_t write = Utility::Endian::toPlatform(eType::Big, (distance << 16) | (len_to_write << 8));
       m_result.write(reinterpret_cast<const char*>(&write), 3);
     }
   }

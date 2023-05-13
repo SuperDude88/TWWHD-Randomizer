@@ -297,7 +297,6 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
         else out.settings.sword_mode = SwordMode::StartWithSword;
       }
     }
-    Utility::platformLog("Got sword mode");
 
     if(!root["pig_color"])  {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
@@ -308,7 +307,6 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
         else out.settings.pig_color = PigColor::RANDOM;
       }
     }
-    Utility::platformLog("Got pig color");
 
     if(!root["dungeon_small_keys"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
