@@ -109,19 +109,19 @@ int32_t Z_EXPORT PREFIX(inflateReset2)(PREFIX3(stream) *strm, int32_t windowBits
     /* extract wrap request from windowBits parameter */
     if (windowBits < 0) {
         wrap = 0;
-        if (windowBits < -MAX_WBITS)
+        if (windowBits < -DEF_WBITS)
             return Z_STREAM_ERROR;
         windowBits = -windowBits;
     } else {
         wrap = (windowBits >> 4) + 5;
 #ifdef GUNZIP
         if (windowBits < 48)
-            windowBits &= MAX_WBITS;
+            windowBits &= DEF_WBITS;
 #endif
     }
 
     /* set number of window bits, free window if different */
-    if (windowBits && (windowBits < MIN_WBITS || windowBits > MAX_WBITS))
+    if (windowBits && (windowBits < MIN_WBITS || windowBits > DEF_WBITS))
         return Z_STREAM_ERROR;
     if (state->window != NULL && state->wbits != (unsigned)windowBits) {
         ZFREE_WINDOW(strm, state->window);
@@ -452,7 +452,7 @@ int32_t Z_EXPORT PREFIX(inflate)(PREFIX3(stream) *strm, int32_t flush) {
 #ifdef GUNZIP
             if ((state->wrap & 2) && hold == 0x8b1f) {  /* gzip header */
                 if (state->wbits == 0)
-                    state->wbits = MAX_WBITS;
+                    state->wbits = DEF_WBITS;
                 state->check = CRC32_INITIAL_VALUE;
                 CRC2(state->check, hold);
                 INITBITS();
@@ -477,7 +477,7 @@ int32_t Z_EXPORT PREFIX(inflate)(PREFIX3(stream) *strm, int32_t flush) {
             len = BITS(4) + 8;
             if (state->wbits == 0)
                 state->wbits = len;
-            if (len > MAX_WBITS || len > state->wbits) {
+            if (len > DEF_WBITS || len > state->wbits) {
                 SET_BAD("invalid window size");
                 break;
             }
