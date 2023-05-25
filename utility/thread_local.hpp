@@ -9,7 +9,7 @@
 
 enum struct DataIDs : uint32_t {
 #ifdef DEVKITPRO
-    FILE_OP_BUFFER = 0
+    FILE_OP_BUFFER = OS_THREAD_SPECIFIC_0
 #else
     FILE_OP_BUFFER = 0
 #endif
@@ -27,7 +27,7 @@ private:
 public:
     operator T&() {
     #ifdef DEVKITPRO
-        const uint32_t& id = static_cast<std::underlying_type_t<DataIDs>>(ID);
+        const OSThreadSpecificID& id = static_cast<OSThreadSpecificID>(ID);
         if(OSGetThreadSpecific(id) == nullptr) {
             data.emplace_back();
             OSSetThreadSpecific(id, &data.back());
