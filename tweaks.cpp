@@ -2604,6 +2604,49 @@ TweakError updateCodeSize() {
 	return TweakError::NONE;
 }
 
+
+TweakError fix_needle_rock_island_salvage_flags() {
+  // Salvage flags 0 and 1 for Needle Rock Island are each duplicated in the vanilla game.
+  // There are two light ring salvages, using flags 0 and 1.
+  // There are three gunboat salvages, using flags 0, 1, and 2. 2 is for the golden gunboat.
+  // This causes a bug where you can't get all of these sunken treasures if you salvage the light
+  // rings first, or if you salvage the gunboats first and then reload the room.
+  // So we have to change the flags used by the two light ring salvages so that they don't conflict
+  // with the two non-golden gunboat salvages.
+  
+	RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr@DZX");
+	entry.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+		std::vector<ChunkEntry*> salvages;
+		static const std::unordered_set<std::string> salvage_object_names = {
+			"Salvage\0"s,
+			"SwSlvg\0\0"s,
+			"Salvag2\0"s,
+			"SalvagN\0"s,
+			"SalvagE\0"s,
+			"SalvFM\0\0"s
+		};
+		static const std::unordered_set<uint8_t> types = {2, 3, 4};
+		static const std::unordered_set<uint8_t> flag = {0, 1};
+
+		std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
+		for (ChunkEntry* scob : scobs) {
+			if (salvage_object_names.count(scob->data.substr(0, 8)) > 0 && types.count((scob->data[8] & 0xF0) >> 4) > 0 && flag.count((scob->data[8] & 0x0F) << 4 | (scob->data[9] & 0xF0) >> 4) > 0) {
+				salvages.push_back(scob);
+			}
+		}
+
+		salvages[0]->data[9] = (0x08 << 4) | (salvages[0]->data[9] & ~0xF0);
+		salvages[1]->data[9] = (0x09 << 4) | (salvages[1]->data[9] & ~0xF0);
+
+		return true;
+	});
+
+	return TweakError::NONE;
+}
+
+//IMPROVEMENT: make Hoho face hint islands https://github.com/LagoLunatic/wwrando/commit/32640f65180470a9d157aa177753d47b51b74425
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
 	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -2762,6 +2805,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	TWEAK_ERR_CHECK(show_dungeon_markers_on_chart(world));
 	TWEAK_ERR_CHECK(update_entrance_events());
   	TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere(world));
+  	TWEAK_ERR_CHECK(fix_needle_rock_island_salvage_flags());
 
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());
