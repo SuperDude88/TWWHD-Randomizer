@@ -42,5 +42,3 @@ check_b_button_held:
     subic      r0,r3,0x1
     subfe      r3,r0,r3
     blr
-
-.close

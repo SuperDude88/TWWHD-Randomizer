@@ -13,7 +13,7 @@
 #include <randomizer_thread.hpp>
 #include <option_descriptions.hpp>
 
-#include <libs/Yaml.hpp>
+#include <libs/yaml.h>
 #include <seedgen/seed.hpp>
 #include <seedgen/permalink.hpp>
 #include <seedgen/tracker_permalink.hpp>
@@ -1192,22 +1192,16 @@ void MainWindow::load_locations()
 {   
     std::string locationDataStr;
     Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr, true);
-    locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
-    Yaml::Node locationDataTree;
-    Yaml::Parse(locationDataTree, locationDataStr);
-    for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
+    YAML::Node locationDataTree = YAML::Load(locationDataStr);
+    for (const auto& locationObject : locationDataTree)
     {
-        Yaml::Node& locationObject = (*locationObjectIt).second;
-        std::string name = Utility::Str::RemoveUnicodeReplacements(locationObject["Names"]["English"].As<std::string>());
         locationCategories.push_back({});
-        for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)
+        for (const auto& category : locationObject["Category"])
         {
-            Yaml::Node category = (*categoryIt).second;
-            const std::string& categoryNameStr = category.As<std::string>();
-            const auto& cat = nameToLocationCategory(categoryNameStr);
+            const auto& cat = nameToLocationCategory(category.as<std::string>());
             if (cat == LocationCategory::INVALID)
             {
-                show_warning_dialog("Location \"" + name + "\" has an invalid category name \"" + categoryNameStr + "\"");
+                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + categoryNameStr + "\"");
             }
             locationCategories.back().insert(cat);
         }

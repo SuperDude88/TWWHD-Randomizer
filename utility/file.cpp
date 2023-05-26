@@ -1,9 +1,10 @@
 #include "file.hpp"
 
-#include <mutex>
 #include <regex>
 #include <cstring>
+
 #include <utility/platform.hpp>
+#include <utility/thread_local.hpp>
 
 
 #if defined(QT_GUI) && defined(EMBED_DATA)
@@ -24,12 +25,9 @@ namespace Utility {
     	return false;
 	};
 	
-	//IMPROVEMENT: better way to make these thread-safe?
-	#ifdef DEVKITPRO
-		static constexpr int FILE_BUF_SIZE = 4*1024*1024;
-		static char buf[FILE_BUF_SIZE];
-	#endif
-	static std::mutex bufMutex;
+	static constexpr int FILE_BUF_SIZE = 25*1024*1024;
+	static ThreadLocal<char[FILE_BUF_SIZE], DataIDs::FILE_OP_BUFFER> buf;
+
 	bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
 		Utility::platformLog("Copying %s\n", to.string().c_str());
 		#ifdef DEVKITPRO
@@ -46,7 +44,6 @@ namespace Utility {
 				return false;
 			}
 
-			std::unique_lock<std::mutex> lock(bufMutex);
 			while(src) {
 				src.read(buf, FILE_BUF_SIZE);
 				dst.write(buf, src.gcount());
@@ -135,17 +132,28 @@ namespace Utility {
 		} 
 
 		// Otherwise load it normally
-		std::ifstream file(filename);
+		auto ss = std::stringstream{};
+		if(const auto err = getFileContents(filename, ss); err != 0) return err;
+		fileContents = ss.str();
+	    return 0;
+	}
+
+	// Short function for getting the string data from a file
+	int getFileContents(const std::string& filename, std::stringstream& fileContents)
+	{
+		// Otherwise load it normally
+		std::ifstream file(filename, std::ios::binary);
 		if (!file.is_open())
 		{
 			ErrorLog::getInstance().log("unable to open file \"" + filename + "\"");
 			return 1;
 		}
 
-		// Read and load file contents
-		auto ss = std::ostringstream{};
-		ss << file.rdbuf();
-		fileContents = ss.str();
+		while(file) {
+			file.read(buf, FILE_BUF_SIZE);
+			fileContents.write(buf, file.gcount());
+		}
+
 	    return 0;
 	}
 }

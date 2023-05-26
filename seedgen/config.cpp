@@ -4,7 +4,7 @@
 #include <unordered_set>
 #include <filesystem>
 
-#include <libs/Yaml.hpp>
+#include <libs/yaml.h>
 #include <logic/GameItem.hpp>
 #include <seedgen/random.hpp>
 #include <utility/platform.hpp>
@@ -13,57 +13,57 @@
 
 
 #define GET_FIELD(yaml, name, out) {                                        \
-        if(yaml[#name].IsNone()) {                                          \
+        if(!yaml[#name]) {                                                  \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
-        out = yaml[#name].As<std::string>();                                \
+        out = yaml[#name].as<std::string>();                                \
     }
 
 #define SET_CONFIG_FIELD(yaml, config, name) {                              \
-        if(yaml[#name].IsNone()) {                                          \
+        if(!yaml[#name]) {                                                  \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
-        config.name = yaml[#name].As<std::string>();                        \
+        config.name = yaml[#name].as<std::string>();                        \
     }
 
 #define SET_CONFIG_BOOL_FIELD(yaml, config, name) {                         \
-        if(yaml[#name].IsNone()) {                                          \
+        if(!yaml[#name]) {                                                  \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
-        config.name = yaml[#name].As<bool>();                               \
+        config.name = yaml[#name].as<bool>();                               \
     }
 
 #define SET_FIELD_EMPTY_STR_IF_FAIL(yaml, config, name) {                   \
-        if(yaml[#name].IsNone())                                            \
+        if(!yaml[#name])                                                    \
             config.name = "";                                               \
-        config.name = yaml[#name].As<std::string>();                        \
+        config.name = yaml[#name].as<std::string>();                        \
     }
 
 #define SET_BOOL_FIELD(yaml, config, name) {                                \
-        if(yaml[#name].IsNone()) {                                          \
+        if(!yaml[#name]) {                                                  \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
-        config.settings.name = yaml[#name].As<bool>();                      \
+        config.settings.name = yaml[#name].as<bool>();                      \
     }
 
 #define SET_INT_FIELD(yaml, config, name) {                                 \
-        if(yaml[#name].IsNone()) {                                          \
+        if(!yaml[#name]) {                                                  \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
-        config.settings.name = yaml[#name].As<int>();                       \
+        config.settings.name = yaml[#name].as<int>();                       \
     }
 
 #define SET_STR_FIELD(yaml, config, name) {                                 \
-        if(yaml[#name].IsNone()) {                                          \
+        if(!yaml[#name]) {                                                  \
             Utility::platformLog("\""#name"\" not found in config.yaml\n"); \
             if (!ignoreErrors) return ConfigError::MISSING_KEY;}            \
-        config.settings.name = yaml[#name].As<std::string>();               \
+        config.settings.name = yaml[#name].as<std::string>();               \
     }
 
 #define SET_STR_FIELD_EMPTY_STR_IF_FAIL(yaml, config, name) {               \
-        if(yaml[#name].IsNone())                                            \
+        if(!yaml[#name])                                                    \
             config.settings.name = "";                                      \
-        config.settings.name = yaml[#name].As<std::string>();               \
+        config.settings.name = yaml[#name].as<std::string>();               \
     }
 
 ConfigError createDefaultConfig(const std::string& filePath) {
@@ -180,8 +180,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     if(!file.is_open()) LOG_ERR_AND_RETURN(ConfigError::COULD_NOT_OPEN);
     file.close();
 
-    Yaml::Node root;
-    Yaml::Parse(root, filePath.c_str());
+    YAML::Node root = YAML::LoadFile(filePath);
 
     std::string rando_version, file_version;
     GET_FIELD(root, program_version, rando_version)
@@ -206,10 +205,10 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
     SET_FIELD_EMPTY_STR_IF_FAIL(root, out, seed)
 
-    if(root["progression_dungeons"].IsNone()) {
+    if(!root["progression_dungeons"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].As<std::string>());
+      out.settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].as<std::string>());
       if (out.settings.progression_dungeons == ProgressionDungeons::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.progression_dungeons = ProgressionDungeons::Standard;
@@ -266,7 +265,11 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, skip_rematch_bosses)
     SET_BOOL_FIELD(root, out, invert_sea_compass_x_axis)
     SET_INT_FIELD(root, out, num_race_mode_dungeons)
-    SET_INT_FIELD(root, out, damage_multiplier)
+    if(!root["damage_multiplier"]) {
+      Utility::platformLog("\"damage_multiplier\" not found in config.yaml\n");
+      if (!ignoreErrors) return ConfigError::MISSING_KEY;
+    }
+    out.settings.damage_multiplier = root["damage_multiplier"].as<float>();
     SET_BOOL_FIELD(root, out, chest_type_matches_contents)
 
     SET_BOOL_FIELD(root, out, player_in_casual_clothes)
@@ -287,109 +290,109 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, start_with_random_item)
     SET_BOOL_FIELD(root, out, plandomizer)
 
-    if(root["sword_mode"].IsNone()) {
+    if(!root["sword_mode"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.sword_mode = nameToSwordMode(root["sword_mode"].As<std::string>());
+      out.settings.sword_mode = nameToSwordMode(root["sword_mode"].as<std::string>());
       if (out.settings.sword_mode == SwordMode::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.sword_mode = SwordMode::StartWithSword;
       }
     }
 
-    if(root["pig_color"].IsNone())  {
+    if(!root["pig_color"])  {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.pig_color = nameToPigColor(root["pig_color"].As<std::string>());
+      out.settings.pig_color = nameToPigColor(root["pig_color"].as<std::string>());
       if(out.settings.pig_color == PigColor::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.pig_color = PigColor::RANDOM;
       }
     }
 
-    if(root["dungeon_small_keys"].IsNone()) {
+    if(!root["dungeon_small_keys"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].As<std::string>());
+      out.settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].as<std::string>());
       if (out.settings.dungeon_small_keys == PlacementOption::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.dungeon_small_keys = PlacementOption::Vanilla;
       }
     }
 
-    if(root["dungeon_big_keys"].IsNone()) {
+    if(!root["dungeon_big_keys"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].As<std::string>());
+      out.settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].as<std::string>());
       if (out.settings.dungeon_big_keys == PlacementOption::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.dungeon_big_keys = PlacementOption::Vanilla;
       }
     }
 
-    if(root["dungeon_maps_compasses"].IsNone()) {
+    if(!root["dungeon_maps_compasses"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].As<std::string>());
+      out.settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].as<std::string>());
       if (out.settings.dungeon_maps_compasses == PlacementOption::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.dungeon_maps_compasses = PlacementOption::Vanilla;
       }
     }
 
-    if(root["target_type"].IsNone()) {
+    if(!root["target_type"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.target_type = nameToTargetTypePreference(root["target_type"].As<std::string>());
+      out.settings.target_type = nameToTargetTypePreference(root["target_type"].as<std::string>());
       if (out.settings.target_type == TargetTypePreference::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.target_type = TargetTypePreference::Hold;
       }
     }
 
-    if(root["camera"].IsNone()) {
+    if(!root["camera"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.camera = nameToCameraPreference(root["camera"].As<std::string>());
+      out.settings.camera = nameToCameraPreference(root["camera"].as<std::string>());
       if (out.settings.camera == CameraPreference::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.camera = CameraPreference::Standard;
       }
     }
 
-    if(root["first_person_camera"].IsNone()) {
+    if(!root["first_person_camera"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].As<std::string>());
+      out.settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].as<std::string>());
       if (out.settings.first_person_camera == FirstPersonCameraPreference::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.first_person_camera = FirstPersonCameraPreference::Standard;
       }
     }
 
-    if(root["gyroscope"].IsNone()) {
+    if(!root["gyroscope"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].As<std::string>());
+      out.settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].as<std::string>());
       if (out.settings.gyroscope == GyroscopePreference::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.gyroscope = GyroscopePreference::On;
       }
     }
 
-    if(root["ui_display"].IsNone()) {
+    if(!root["ui_display"]) {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
     } else {
-      out.settings.ui_display = nameToUIDisplayPreference(root["ui_display"].As<std::string>());
+      out.settings.ui_display = nameToUIDisplayPreference(root["ui_display"].as<std::string>());
       if (out.settings.ui_display == UIDisplayPreference::INVALID) {
         if (!ignoreErrors) return ConfigError::INVALID_VALUE;
         else out.settings.ui_display = UIDisplayPreference::On;
       }
     }
 
-    if(root["starting_gear"].IsNone() && !ignoreErrors) return ConfigError::MISSING_KEY;
+    if(!root["starting_gear"] && !ignoreErrors) return ConfigError::MISSING_KEY;
     if(!root["starting_gear"].IsSequence()) {
-      if (!ignoreErrors && root["starting_gear"].As<std::string>() != "None") return ConfigError::INVALID_VALUE;
+      if (!ignoreErrors && root["starting_gear"].as<std::string>() != "None") return ConfigError::INVALID_VALUE;
     } else {
       std::unordered_multiset<GameItem> valid_items = getSupportedStartingItems();
 
@@ -398,9 +401,8 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
       else if (out.settings.sword_mode == SwordMode::StartWithSword) valid_items.erase(valid_items.find(GameItem::ProgressiveSword));
 
       out.settings.starting_gear.clear();
-      for (auto it = root["starting_gear"].Begin(); it != root["starting_gear"].End(); it++) {
-              const Yaml::Node& itemNode = (*it).second;
-              const std::string itemName = itemNode.As<std::string>();
+      for (const auto& itemObject : root["starting_gear"]) {
+              const std::string itemName = itemObject.as<std::string>();
               const GameItem item = nameToGameItem(itemName);
 
               if (valid_items.count(item) == 0) {
@@ -413,14 +415,14 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     }
 
     // Clamp starting spoils
-    std::clamp(out.settings.starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
-    std::clamp(out.settings.starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
-    std::clamp(out.settings.starting_boko_baba_seeds, uint16_t(0), uint16_t(MAXIMUM_STARTING_BOKO_BABA_SEEDS));
-    std::clamp(out.settings.starting_golden_feathers, uint16_t(0), uint16_t(MAXIMUM_STARTING_GOLDEN_FEATHERS));
-    std::clamp(out.settings.starting_knights_crests, uint16_t(0), uint16_t(MAXIMUM_STARTING_KNIGHTS_CRESTS));
-    std::clamp(out.settings.starting_red_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_RED_CHU_JELLYS));
-    std::clamp(out.settings.starting_green_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_GREEN_CHU_JELLYS));
-    std::clamp(out.settings.starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
+    out.settings.starting_joy_pendants = std::clamp(out.settings.starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
+    out.settings.starting_skull_necklaces = std::clamp(out.settings.starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
+    out.settings.starting_boko_baba_seeds = std::clamp(out.settings.starting_boko_baba_seeds, uint16_t(0), uint16_t(MAXIMUM_STARTING_BOKO_BABA_SEEDS));
+    out.settings.starting_golden_feathers = std::clamp(out.settings.starting_golden_feathers, uint16_t(0), uint16_t(MAXIMUM_STARTING_GOLDEN_FEATHERS));
+    out.settings.starting_knights_crests = std::clamp(out.settings.starting_knights_crests, uint16_t(0), uint16_t(MAXIMUM_STARTING_KNIGHTS_CRESTS));
+    out.settings.starting_red_chu_jellys = std::clamp(out.settings.starting_red_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_RED_CHU_JELLYS));
+    out.settings.starting_green_chu_jellys = std::clamp(out.settings.starting_green_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_GREEN_CHU_JELLYS));
+    out.settings.starting_blue_chu_jellys = std::clamp(out.settings.starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     //can still parse file with different rando versions, but will give different item placements
     //return error after parsing so it can warn the user
@@ -453,12 +455,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     }
 
 ConfigError writeToFile(const std::string& filePath, const Config& config) {
-    //Check if we can open the file before parsing because exceptions won't work on console
-    std::ofstream file(filePath);
-    if(!file.is_open()) return ConfigError::COULD_NOT_OPEN;
-    file.close();
-
-    Yaml::Node root;
+    YAML::Node root;
 
     root["program_version"] = RANDOMIZER_VERSION; //Keep track of rando version to give warning (different versions will have different item placements)
     root["file_version"] = CONFIG_VERSION; //Keep track of file version so it can avoid incompatible ones
@@ -554,17 +551,21 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     root["gyroscope"] = GyroscopePreferenceToName(config.settings.gyroscope);
     root["ui_display"] = UIDisplayPreferenceToName(config.settings.ui_display);
 
-    root["starting_gear"] = {};
     for (const auto& item : config.settings.starting_gear) {
-            Yaml::Node& node = root["starting_gear"].PushBack();
-            node = gameItemToName(item);
+      root["starting_gear"].push_back(gameItemToName(item));
     }
 
-    if (root["starting_gear"].Size() == 0) {
-        root["starting_gear"] = "None";
+    if (root["starting_gear"].size() == 0) {
+      root["starting_gear"] = "None";
     }
 
-    Yaml::Serialize(root, filePath.c_str());
+    std::ofstream f(filePath);
+    if (f.is_open() == false)
+    {
+        ErrorLog::getInstance().log("Could not open config at " + filePath);
+        return ConfigError::COULD_NOT_OPEN;
+    }
+    f << root;
 
     return ConfigError::NONE;
 }

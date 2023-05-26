@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 std::string rgb8torgbx8(const std::string& data);

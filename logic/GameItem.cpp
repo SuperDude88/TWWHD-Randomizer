@@ -736,7 +736,7 @@ std::u16string Item::getUTF16Name(const std::string& language /*= "English"*/, c
 		{
 				str += u" for Player " + Utility::Str::toUTF16(std::to_string(world->getWorldId() + 1));
 		}
-		return Utility::Str::RemoveUnicodeReplacements(str);
+		return str;
 }
 
 void Item::setName(const std::string& language, const Text::Type& type, const std::string& name_)
