@@ -839,7 +839,7 @@ public:
 };
 
 int mainRandomize() {
-	using namespace std::chrono_literals;
+	using namespace std::literals::chrono_literals;
 
 	int retVal = 0;
 	{ //timer scope
@@ -880,7 +880,6 @@ int mainRandomize() {
 		// TODO: make things zoom
 		// TODO: do a hundo seed to test everything
 
-		// TODO: text wrapping on drc dungeon map
 		retVal = rando.randomize();
 	} //end timer scope
 

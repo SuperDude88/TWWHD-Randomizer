@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex);

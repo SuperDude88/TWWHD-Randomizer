@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 using namespace std::literals::string_literals; //spooky namespace in header, not sure of workaround

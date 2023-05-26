@@ -1,4 +1,4 @@
-FROM wiiuenv/devkitppc:20221228
+FROM devkitpro/devkitppc:20230501
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
@@ -6,12 +6,13 @@ ENV BUILD_TYPE=randomizer
 WORKDIR /
 
 # Install python for ASM patches
-RUN apt-get update && apt-get install python3 -y
+COPY ./asm/requirements.txt /scripts/requirements.txt
+RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r /scripts/requirements.txt
 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 7530dd581887e8330a587601ef9fbf9e60cce9bf && \
+    git checkout 3ae38b15c71c915aede35ff24e005a8d8411a048 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -20,7 +21,7 @@ RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
 # Install libmocha
 RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch  && \
     cd libmocha && \
-    git checkout f3c45c52ad512b31d84f8254b7ad228aa4e0bab9 && \
+    git checkout 455ecf6997899c7eb6732830bb24607de83736cf && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -38,7 +39,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
         cd build && \
         rm -rf * && \
         $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
-        make; \
+        make -j$(nproc); \
     else \
         if [ "$BUILD_TYPE" = "asm" ]; then \
             cd asm && \
@@ -53,7 +54,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
                 cd build && \
                 rm -rf * && \
                 $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
-                make; \
+                make -j$(nproc); \
             else \
                 echo "Invalid build type"; \
             fi; \

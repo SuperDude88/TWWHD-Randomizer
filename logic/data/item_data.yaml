@@ -3,9 +3,9 @@
     Spanish: Corazón
     French: Cœur
   Pretty Names:
-    English: a |Heart Drop|
-    Spanish: un |Corazón|
-    French: un |Cœur|
+    English: "a |Heart Drop|"
+    Spanish: "un |Corazón|"
+    French: "un |Cœur|"
   Gender:
     English: None
     Spanish: Male
@@ -21,9 +21,9 @@
     Spanish: Rupia Verde
     French: Rubis Vert
   Pretty Names:
-    English: a |Green Rupee|
-    Spanish: una |Rupia Verde|
-    French: un |Rubis Vert|
+    English: "a |Green Rupee|"
+    Spanish: "una |Rupia Verde|"
+    French: "un |Rubis Vert|"
   Gender:
     English: None
     Spanish: Female
@@ -39,9 +39,9 @@
     Spanish: Rupia Azul
     French: Rubis Bleu
   Pretty Names:
-    English: a |Blue Rupee|
-    Spanish: una |Rupia Azul|
-    French: un |Rubis Bleu|
+    English: "a |Blue Rupee|"
+    Spanish: "una |Rupia Azul|"
+    French: "un |Rubis Bleu|"
   Gender:
     English: None
     Spanish: Female
@@ -57,9 +57,9 @@
     Spanish: Rupia Amarilla
     French: Rubis Jaune
   Pretty Names:
-    English: a |Yellow Rupee|
-    Spanish: una |Rupia Amarilla|
-    French: un |Rubis Jaune|
+    English: "a |Yellow Rupee|"
+    Spanish: "una |Rupia Amarilla|"
+    French: "un |Rubis Jaune|"
   Gender:
     English: None
     Spanish: Female
@@ -75,9 +75,9 @@
     Spanish: Rupia Roja
     French: Rubis Rouge
   Pretty Names:
-    English: a |Red Rupee|
-    Spanish: una |Rupia Roja|
-    French: un |Rubis Rouge|
+    English: "a |Red Rupee|"
+    Spanish: "una |Rupia Roja|"
+    French: "un |Rubis Rouge|"
   Gender:
     English: None
     Spanish: Female
@@ -93,9 +93,9 @@
     Spanish: Rupia Púrpura
     French: Rubis Violet
   Pretty Names:
-    English: a |Purple Rupee|
-    Spanish: una |Rupia Púrpura|
-    French: un |Rubis Violet|
+    English: "a |Purple Rupee|"
+    Spanish: "una |Rupia Púrpura|"
+    French: "un |Rubis Violet|"
   Gender:
     English: None
     Spanish: Female
@@ -111,9 +111,9 @@
     Spanish: Orange Rupee
     French: Rubis Orange
   Pretty Names:
-    English: an |Orange Rupee|
-    Spanish: una |Rupia Naranja|
-    French: un |Rubis Orange|
+    English: "an |Orange Rupee|"
+    Spanish: "una |Rupia Naranja|"
+    French: "un |Rubis Orange|"
   Gender:
     English: None
     Spanish: Female
@@ -129,9 +129,9 @@
     Spanish: Pieza de Corazón
     French: Quart de Cœur
   Pretty Names:
-    English: a |Piece of Heart|
-    Spanish: una |Pieza de Corazón|
-    French: un |Quart de Cœur|
+    English: "a |Piece of Heart|"
+    Spanish: "una |Pieza de Corazón|"
+    French: "un |Quart de Cœur|"
   Gender:
     English: None
     Spanish: Female
@@ -147,9 +147,9 @@
     Spanish: Contenedor de Corazón
     French: Réceptacle de Cœur
   Pretty Names:
-    English: a |Heart Container|
-    Spanish: un |Contenedor de Corazón|
-    French: un |Réceptacle de Cœur|
+    English: "a |Heart Container|"
+    Spanish: "un |Contenedor de Corazón|"
+    French: "un |Réceptacle de Cœur|"
   Gender:
     English: None
     Spanish: Male
@@ -165,9 +165,9 @@
     Spanish: Jarra Mágica Pequeña
     French: Petite Jarre Magique
   Pretty Names:
-    English: a |Small Magic Drop|
-    Spanish: una |Jarra Mágica Pequeña|
-    French: une |Petite Jarre Magique|
+    English: "a |Small Magic Drop|"
+    Spanish: "una |Jarra Mágica Pequeña|"
+    French: "une |Petite Jarre Magique|"
   Gender:
     English: None
     Spanish: Female
@@ -183,9 +183,9 @@
     Spanish: Jarra Mágica Grande
     French: Grande Jarre Magique
   Pretty Names:
-    English: a |Large Magic Drop|
-    Spanish: una |Jarra Mágica Grande|
-    French: une |Grande Jarre Magique|
+    English: "a |Large Magic Drop|"
+    Spanish: "una |Jarra Mágica Grande|"
+    French: "une |Grande Jarre Magique|"
   Gender:
     English: None
     Spanish: Female
@@ -201,9 +201,9 @@
     Spanish: Bombas (5)
     French: Bombes (5)
   Pretty Names:
-    English: |Five Bombs|
-    Spanish: |Cinco Bombas|
-    French: |Cinq Bombes|
+    English: "|Five Bombs|"
+    Spanish: "|Cinco Bombas|"
+    French: "|Cinq Bombes|"
   Gender:
     English: None
     Spanish: Female
@@ -219,9 +219,9 @@
     Spanish: Bombas (10)
     French: Bombes (10)
   Pretty Names:
-    English: |Ten Bombs|
-    Spanish: |Diez Bombas|
-    French: |Dix Bombes|
+    English: "|Ten Bombs|"
+    Spanish: "|Diez Bombas|"
+    French: "|Dix Bombes|"
   Gender:
     English: None
     Spanish: Female
@@ -237,9 +237,9 @@
     Spanish: Bombas (20)
     French: Bombes (20)
   Pretty Names:
-    English: |Twenty Bombs|
-    Spanish: |Veinte Bombas|
-    French: |Vingt Bombes|
+    English: "|Twenty Bombs|"
+    Spanish: "|Veinte Bombas|"
+    French: "|Vingt Bombes|"
   Gender:
     English: None
     Spanish: Female
@@ -255,9 +255,9 @@
     Spanish: Bombas (30)
     French: Bombes (30)
   Pretty Names:
-    English: |Thirty Bombs|
-    Spanish: |Treinta Bombas|
-    French: |Trente Bombes|
+    English: "|Thirty Bombs|"
+    Spanish: "|Treinta Bombas|"
+    French: "|Trente Bombes|"
   Gender:
     English: None
     Spanish: Female
@@ -273,9 +273,9 @@
     Spanish: Rupia Plateada
     French: Rubis Argenté
   Pretty Names:
-    English: a |Silver Rupee|
-    Spanish: una |Rupia Plateada|
-    French: un |Rubis Argenté|
+    English: "a |Silver Rupee|"
+    Spanish: "una |Rupia Plateada|"
+    French: "un |Rubis Argenté|"
   Gender:
     English: None
     Spanish: Female
@@ -291,9 +291,9 @@
     Spanish: Flechas (10)
     French: Flèches (10)
   Pretty Names:
-    English: |Ten Arrows|
-    Spanish: |Diez Flechas|
-    French: |Dix Flèches|
+    English: "|Ten Arrows|"
+    Spanish: "|Diez Flechas|"
+    French: "|Dix Flèches|"
   Gender:
     English: None
     Spanish: Female
@@ -309,9 +309,9 @@
     Spanish: Flechas (20)
     French: Flèches (20)
   Pretty Names:
-    English: |Twenty Arrows|
-    Spanish: |Veinte Flechas|
-    French: |Vingt Flèches|
+    English: "|Twenty Arrows|"
+    Spanish: "|Veinte Flechas|"
+    French: "|Vingt Flèches|"
   Gender:
     English: None
     Spanish: Female
@@ -327,9 +327,9 @@
     Spanish: Flechas (30)
     French: Flèches (30)
   Pretty Names:
-    English: |Thirty Arrows|
-    Spanish: |Treinta Flechas|
-    French: |Trente Flèches|
+    English: "|Thirty Arrows|"
+    Spanish: "|Treinta Flechas|"
+    French: "|Trente Flèches|"
   Gender:
     English: None
     Spanish: Female
@@ -345,13 +345,13 @@
     Spanish: Llave Pequeña de la Cueva del Dragón
     French: Petite Clé de la Caverne du Dragon
   Pretty Names:
-    English: a |Dragon Roost Cavern Small Key|
-    Spanish: una |Llave Pequeña de la Cueva del Dragón|
-    French: une |Petite Clé de la Caverne du Dragon|
+    English: "a |Dragon Roost Cavern Small Key|"
+    Spanish: "una |Llave Pequeña de la Cueva del Dragón|"
+    French: "une |Petite Clé de la Caverne du Dragon|"
   Cryptic Names:
-    English: a |key|
-    Spanish: una |llave|
-    French: une |clé|
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
   Gender:
     English: None
     Spanish: Female
@@ -370,13 +370,13 @@
     Spanish: Gran Llave de la Cueva del Dragón
     French: Grande Clé de la Caverne du Dragon
   Pretty Names:
-    English: the |Dragon Roost Cavern Big Key|
-    Spanish: la |Gran Llave de la Cueva del Dragón|
-    French: la |Grande Clé de la Caverne du Dragon|
+    English: "the |Dragon Roost Cavern Big Key|"
+    Spanish: "la |Gran Llave de la Cueva del Dragón|"
+    French: "la |Grande Clé de la Caverne du Dragon|"
   Cryptic Names:
-    English: an |ominous key|
-    Spanish: una |llave siniestra|
-    French: une |clé menaçante|
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
   Gender:
     English: None
     Spanish: Female
@@ -394,13 +394,13 @@
     Spanish: Llave Pequeña
     French: Petite Clé
   Pretty Names:
-    English: a |Small Key|
-    Spanish: una |Llave Pequeña|
-    French: une |Petite Clé|
+    English: "a |Small Key|"
+    Spanish: "una |Llave Pequeña|"
+    French: "une |Petite Clé|"
   Cryptic Names:
-    English: a |key|
-    Spanish: una |llave|
-    French: une |clé|
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
   Gender:
     English: None
     Spanish: Female
@@ -417,9 +417,9 @@
     Spanish: Hada
     French: Fée
   Pretty Names:
-    English: a |Fairy|
-    Spanish: un |Hada|
-    French: une |Fée|
+    English: "a |Fairy|"
+    Spanish: "un |Hada|"
+    French: "une |Fée|"
   Gender:
     English: None
     Spanish: Female
@@ -474,9 +474,9 @@
     Spanish: Rupia Amarilla 2
     French: Rubis Jaune 2
   Pretty Names:
-    English: a |Yellow Rupee|
-    Spanish: una |Rupia Amarilla|
-    French: un |Rubis Jaune|
+    English: "a |Yellow Rupee|"
+    Spanish: "una |Rupia Amarilla|"
+    French: "un |Rubis Jaune|"
   Gender:
     English: None
     Spanish: Female
@@ -492,9 +492,9 @@
     Spanish: Mapa de la Mazmorra de la Cueva del Dragón
     French: Carte du Donjon de la Caverne du Dragon
   Pretty Names:
-    English: the |Dragon Roost Cavern Dungeon Map|
-    Spanish: el |Mapa de la Mazmorra de la Cueva del Dragón|
-    French: la |Carte du Donjon de la Caverne du Dragon|
+    English: "the |Dragon Roost Cavern Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra de la Cueva del Dragón|"
+    French: "la |Carte du Donjon de la Caverne du Dragon|"
   Gender:
     English: None
     Spanish: Female
@@ -511,9 +511,9 @@
     Spanish: Brújula de la Cueva del Dragón
     French: Boussole de la Caverne du Dragon
   Pretty Names:
-    English: the |Dragon Roost Cavern Compass|
-    Spanish: la |Brújula de la Cueva del Dragón|
-    French: la |Boussole de la Caverne du Dragon|
+    English: "the |Dragon Roost Cavern Compass|"
+    Spanish: "la |Brújula de la Cueva del Dragón|"
+    French: "la |Boussole de la Caverne du Dragon|"
   Gender:
     English: None
     Spanish: Female
@@ -530,13 +530,13 @@
     Spanish: Llave Pequeña del Bosque Prohibido
     French: Petite Clé des Bois Défendus
   Pretty Names:
-    English: a |Forbidden Woods Small Key|
-    Spanish: una |Llave Pequeña del Bosque Prohibido|
-    French: une |Petite Clé des Bois Défendus|
+    English: "a |Forbidden Woods Small Key|"
+    Spanish: "una |Llave Pequeña del Bosque Prohibido|"
+    French: "une |Petite Clé des Bois Défendus|"
   Cryptic Names:
-    English: a |key|
-    Spanish: una |llave|
-    French: une |clé|
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
   Gender:
     English: None
     Spanish: Female
@@ -555,9 +555,9 @@
     Spanish: Tres Corazones
     French: Trois Cœurs
   Pretty Names:
-    English: |Three Hearts|
-    Spanish: |Tres Corazones|
-    French: |Trois Cœurs|
+    English: "|Three Hearts|"
+    Spanish: "|Tres Corazones|"
+    French: "|Trois Cœurs|"
   Gender:
     English: None
     Spanish: Male
@@ -573,9 +573,9 @@
     Spanish: Collar de la Felicidad
     French: Pendentif du Bonheur
   Pretty Names:
-    English: a |Joy Pendant|
-    Spanish: un |Collar de la Felicidad|
-    French: un |Pendentif du Bonheur|
+    English: "a |Joy Pendant|"
+    Spanish: "un |Collar de la Felicidad|"
+    French: "un |Pendentif du Bonheur|"
   Gender:
     English: None
     Spanish: Male
@@ -591,9 +591,9 @@
     Spanish: Catalejo
     French: Longue-Vue
   Pretty Names:
-    English: a |Telescope|
-    Spanish: un |Catalejo|
-    French: une |Longue-Vue|
+    English: "a |Telescope|"
+    Spanish: "un |Catalejo|"
+    French: "une |Longue-Vue|"
   Gender:
     English: None
     Spanish: Male
@@ -609,13 +609,13 @@
     Spanish: Botella Tingle
     French: Bouteille de Tingle
   Pretty Names:
-    English: a |Tingle Bottle|
-    Spanish: una |Botella Tingle|
-    French: une |Bouteille de Tingle|
+    English: "a |Tingle Bottle|"
+    Spanish: "una |Botella Tingle|"
+    French: "une |Bouteille de Tingle|"
   Cryptic Names:
-    English: a |device that hasn't worked in 5 years|
-    Spanish: un |dispositivo que no ha funcionado por 5 años|
-    French: un |appareil qui ne fonctionne plus depuis 5 ans|
+    English: "a |device that hasn't worked in 5 years|"
+    Spanish: "un |dispositivo que no ha funcionado por 5 años|"
+    French: "un |appareil qui ne fonctionne plus depuis 5 ans|"
   Gender:
     English: None
     Spanish: Female
@@ -632,13 +632,13 @@
     Spanish: Batuta de los Vientos
     French: Baguette du Vent
   Pretty Names:
-    English: the |Wind Waker|
-    Spanish: la |Batuta de los Vientos|
-    French: la |Baguette du Vent|
+    English: "the |Wind Waker|"
+    Spanish: "la |Batuta de los Vientos|"
+    French: "la |Baguette du Vent|"
   Cryptic Names:
-    English: the |wand of the wind conductor|
-    Spanish: la |batuta que conduce el viento|
-    French: le |bâton conducteur du vent|
+    English: "the |wand of the wind conductor|"
+    Spanish: "la |batuta que conduce el viento|"
+    French: "le |bâton conducteur du vent|"
   Gender:
     English: None
     Spanish: Female
@@ -655,13 +655,13 @@
     Spanish: Caja Luminográfica Progresiva
     French: Boîte à Image Progressive
   Pretty Names:
-    English: a |Progressive Picto Box|
-    Spanish: una |Caja Luminográfica Progresiva|
-    French: une |Boîte à Image Progressive|
+    English: "a |Progressive Picto Box|"
+    Spanish: "una |Caja Luminográfica Progresiva|"
+    French: "une |Boîte à Image Progressive|"
   Cryptic Names:
-    English: an |upgrade for your camera|
-    Spanish: una |mejora para tu cámara|
-    French: une |amélioration pour votre appareil photo|
+    English: "an |upgrade for your camera|"
+    Spanish: "una |mejora para tu cámara|"
+    French: "une |amélioration pour votre appareil photo|"
   Gender:
     English: None
     Spanish: Female
@@ -678,13 +678,13 @@
     Spanish: Bolsa de Trofeos
     French: Sac à Butin
   Pretty Names:
-    English: a |Spoils Bag|
-    Spanish: una |Bolsa de Trofeos|
-    French: un |Sac à Butin|
+    English: "a |Spoils Bag|"
+    Spanish: "una |Bolsa de Trofeos|"
+    French: "un |Sac à Butin|"
   Cryptic Names:
-    English: a |storage for collectibles|
-    Spanish: un |saco para guardar tu coleción|
-    French: une |sacoche pour vos récompenses|
+    English: "a |storage for collectibles|"
+    Spanish: "un |saco para guardar tu coleción|"
+    French: "une |sacoche pour vos récompenses|"
   Gender:
     English: None
     Spanish: Female
@@ -701,13 +701,13 @@
     Spanish: Garra
     French: Grappin-Griffe
   Pretty Names:
-    English: a |Grappling Hook|
-    Spanish: una |Garra|
-    French: un |Grappin-Griffe|
+    English: "a |Grappling Hook|"
+    Spanish: "una |Garra|"
+    French: "un |Grappin-Griffe|"
   Cryptic Names:
-    English: an |item to swing across platforms|
-    Spanish: un |objeto para columpiarse entre plataformas|
-    French: un |objet pour se balancer de plateforme en plateforme|
+    English: "an |item to swing across platforms|"
+    Spanish: "un |objeto para columpiarse entre plataformas|"
+    French: "un |objet pour se balancer de plateforme en plateforme|"
   Gender:
     English: None
     Spanish: Female
@@ -724,9 +724,9 @@
     Spanish: Caja Cromográfica
     French: Boîte à Image DX
   Pretty Names:
-    English: a |Deluxe Picto Box|
-    Spanish: una |Caja Cromográfica|
-    French: une |Boîte à Image DX|
+    English: "a |Deluxe Picto Box|"
+    Spanish: "una |Caja Cromográfica|"
+    French: "une |Boîte à Image DX|"
   Gender:
     English: None
     Spanish: Female
@@ -742,13 +742,13 @@
     Spanish: Arco del Héroe Progresivo
     French: Arc Progressif
   Pretty Names:
-    English: a |Progressive Bow|
-    Spanish: un |Arco del Héroe Progresivo|
-    French: un |Arc Progressif|
+    English: "a |Progressive Bow|"
+    Spanish: "un |Arco del Héroe Progresivo|"
+    French: "un |Arc Progressif|"
   Cryptic Names:
-    English: an |upgrade for your bow|
-    Spanish: una |mejora para tu arco|
-    French: une |amélioration pour votre arc|
+    English: "an |upgrade for your bow|"
+    Spanish: "una |mejora para tu arco|"
+    French: "une |amélioration pour votre arc|"
   Gender:
     English: None
     Spanish: Male
@@ -765,13 +765,13 @@
     Spanish: Brazaletes de Fuerza
     French: Bracelets de Force
   Pretty Names:
-    English: |Power Bracelets|
-    Spanish: los |Brazaletes de Fuerza|
-    French: les |Bracelets de Force|
+    English: "|Power Bracelets|"
+    Spanish: los |Brazaletes de Fuerza|"
+    French: "les |Bracelets de Force|"
   Cryptic Names:
-    English: the |strength to lift heavy rocks|
-    Spanish: la |fuerza para levantar rockas pesadas|
-    French: la |force de soulever de lourds rochers|
+    English: "the |strength to lift heavy rocks|"
+    Spanish: "la |fuerza para levantar rockas pesadas|"
+    French: "la |force de soulever de lourds rochers|"
   Gender:
     English: None
     Spanish: Male
@@ -788,13 +788,13 @@
     Spanish: Botas de Plomo
     French: Bottes de Plomb
   Pretty Names:
-    English: |Iron Boots|
-    Spanish: las |Botas de Plomo|
-    French: les |Bottes de Plomb|
+    English: "|Iron Boots|"
+    Spanish: "las |Botas de Plomo|"
+    French: "les |Bottes de Plomb|"
   Cryptic Names:
-    English: a |very heavy item|
-    Spanish: un |objeto muy pesado|
-    French: un |objet très lourd|
+    English: "a |very heavy item|"
+    Spanish: "un |objeto muy pesado|"
+    French: "un |objet très lourd|"
   Gender:
     English: None
     Spanish: Female
@@ -811,13 +811,13 @@
     Spanish: Aura Mágica
     French: Armure Magique
   Pretty Names:
-    English: |Magic Armor|
-    Spanish: el |Aura Mágica|
-    French: une |Armure Magique|
+    English: "|Magic Armor|"
+    Spanish: "el |Aura Mágica|"
+    French: "une |Armure Magique|"
   Cryptic Names:
-    English: |purple protection|
-    Spanish: una |protección púrpura|
-    French: une |protection violette|
+    English: "|purple protection|"
+    Spanish: "una |protección púrpura|"
+    French: "une |protection violette|"
   Gender:
     English: None
     Spanish: Male # ("Aura mágica") Male. ("Protección púrpura") Female
@@ -834,13 +834,13 @@
     Spanish: Saco de Cebos
     French: Sac à Appâts
   Pretty Names:
-    English: a |Bait Bag|
-    Spanish: un |Saco de Cebos|
-    French: un |Sac à Appâts|
+    English: "a |Bait Bag|"
+    Spanish: "un |Saco de Cebos|"
+    French: "un |Sac à Appâts|"
   Cryptic Names:
-    English: a |storage for food|
-    Spanish: un |saco para guardar alimentos|
-    French: une |sacoche à nourriture|
+    English: "a |storage for food|"
+    Spanish: "un |saco para guardar alimentos|"
+    French: "une |sacoche à nourriture|"
   Gender:
     English: None
     Spanish: Male
@@ -857,13 +857,13 @@
     Spanish: Bumerán
     French: Boomerang
   Pretty Names:
-    English: a |Boomerang|
-    Spanish: un |Bumerán|
-    French: un |Boomerang|
+    English: "a |Boomerang|"
+    Spanish: "un |Bumerán|"
+    French: "un |Boomerang|"
   Cryptic Names:
-    English: an |item that always comes back to you|
-    Spanish: un |objeto que siempre vuelve a tí|
-    French: un |objet qui revient toujours|
+    English: "an |item that always comes back to you|"
+    Spanish: "un |objeto que siempre vuelve a tí|"
+    French: "un |objet qui revient toujours|"
   Gender:
     English: None
     Spanish: Male
@@ -880,13 +880,13 @@
     Spanish: Gancho
     French: Grappin
   Pretty Names:
-    English: a |Hookshot|
-    Spanish: un |Gancho|
-    French: un |Grappin|
+    English: "a |Hookshot|"
+    Spanish: "un |Gancho|"
+    French: "un |Grappin|"
   Cryptic Names:
-    English: an |item that reels|
-    Spanish: un |objeto que se estira y enrolla|
-    French: un |objet qui s'allonge et se rétracte|
+    English: "an |item that reels|"
+    Spanish: "un |objeto que se estira y enrolla|"
+    French: "un |objet qui s'allonge et se rétracte|"
   Gender:
     English: None
     Spanish: Male
@@ -903,13 +903,13 @@
     Spanish: Saca de Cartero
     French: Sac de Facteur
   Pretty Names:
-    English: a |Delivery Bag|
-    Spanish: una |Saca de Cartero|
-    French: un |Sac de Facteur|
+    English: "a |Delivery Bag|"
+    Spanish: "una |Saca de Cartero|"
+    French: "un |Sac de Facteur|"
   Cryptic Names:
-    English: a |storage for letters|
-    Spanish: un |saco para guardar cartas|
-    French: une |sacoche pour vos lettres|
+    English: "a |storage for letters|"
+    Spanish: "un |saco para guardar cartas|"
+    French: "une |sacoche pour vos lettres|"
   Gender:
     English: None
     Spanish: Female # ("Saca de Cartero") Female. ("Saco para guardar cartas") Male
@@ -926,13 +926,13 @@
     Spanish: Bombas
     French: Bombes
   Pretty Names:
-    English: |Bombs|
-    Spanish: las |Bombas|
-    French: les |Bombes|
+    English: "|Bombs|"
+    Spanish: "las |Bombas|"
+    French: "les |Bombes|"
   Cryptic Names:
-    English: an |explosive item|
-    Spanish: un |objeto explosivo|
-    French: un |objet explosif|
+    English: "an |explosive item|"
+    Spanish: "un |objeto explosivo|"
+    French: "un |objet explosif|"
   Gender:
     English: None
     Spanish: Female
@@ -949,8 +949,8 @@
     Spanish: Ropas del Héroe
     French:
   Pretty Names:
-    English: |Heros Clothes|
-    Spanish: las |Ropas del Héroe|
+    English: "|Heros Clothes|"
+    Spanish: "las |Ropas del Héroe|"
     French:
   Gender:
     English: None
@@ -967,13 +967,13 @@
     Spanish: Martillo
     French: Masse
   Pretty Names:
-    English: the |Skull Hammer|
-    Spanish: el |Martillo|
-    French: la |Masse|
+    English: "the |Skull Hammer|"
+    Spanish: "el |Martillo|"
+    French: "la |Masse|"
   Cryptic Names:
-    English: the |hammer of the dead|
-    Spanish: el |martillo de los muertos|
-    French: le |marteau de la mort|
+    English: "the |hammer of the dead|"
+    Spanish: "el |martillo de los muertos|"
+    French: "le |marteau de la mort|"
   Gender:
     English: None
     Spanish: Male
@@ -990,13 +990,13 @@
     Spanish: Hoja Deku
     French: Feuille Mojo
   Pretty Names:
-    English: a |Deku Leaf|
-    Spanish: la |Hoja Deku|
-    French: une |Feuille Mojo|
+    English: "a |Deku Leaf|"
+    Spanish: "la |Hoja Deku|"
+    French: "une |Feuille Mojo|"
   Cryptic Names:
-    English: a |magic leaf|
-    Spanish: una |hoja mágica|
-    French: une |feuille magique|
+    English: "a |magic leaf|"
+    Spanish: "una |hoja mágica|"
+    French: "une |feuille magique|"
   Gender:
     English: None
     Spanish: Female
@@ -1013,9 +1013,9 @@
     Spanish: Flechas de Fuego y Hielo
     French: Flèches de Glace et de Feu
   Pretty Names:
-    English: |Fire Ice Arrows|
-    Spanish: las |Flechas de Fuego y Hielo|
-    French: les |Flèches de Glace et de Feu|
+    English: "|Fire Ice Arrows|"
+    Spanish: "las |Flechas de Fuego y Hielo|"
+    French: "les |Flèches de Glace et de Feu|"
   Gender:
     English: None
     Spanish: Female
@@ -1031,9 +1031,9 @@
     Spanish: Flechas de Luz
     French: Flèche de Lumière
   Pretty Names:
-    English: a |Light Arrow|
-    Spanish: las |Flechas de Luz|
-    French: la |Flèche de Lumière|
+    English: "a |Light Arrow|"
+    Spanish: "las |Flechas de Luz|"
+    French: "la |Flèche de Lumière|"
   Gender:
     English: None
     Spanish: Female
@@ -1049,8 +1049,8 @@
     Spanish: Ropas que solo ven los honestos
     French:
   Pretty Names:
-    English: |Heros New Clothes|
-    Spanish: las |Ropas que solo ven los honestos|
+    English: "|Heros New Clothes|"
+    Spanish: "las |Ropas que solo ven los honestos|"
     French:
   Gender:
     English: None
@@ -1067,13 +1067,13 @@
     Spanish: Espada Progresiva
     French: Epée Progressive
   Pretty Names:
-    English: a |Progressive Sword|
-    Spanish: una |Espada Progresiva|
-    French: une |Epée Progressive|
+    English: "a |Progressive Sword|"
+    Spanish: "una |Espada Progresiva|"
+    French: "une |Epée Progressive|"
   Cryptic Names:
-    English: an |upgrade for your blade|
-    Spanish: una |mejora a tu cuchilla|
-    French: une |amélioration pour votre épée|
+    English: "an |upgrade for your blade|"
+    Spanish: "una |mejora a tu cuchilla|"
+    French: "une |amélioration pour votre épée|"
   Gender:
     English: None
     Spanish: Female
@@ -1090,8 +1090,8 @@
     Spanish: Espada Maestra sin restaurar
     French: Excalibur Affaibli
   Pretty Names:
-    English: the |Master Sword Powerless|
-    Spanish: la |Espada Maestra sin restaurar|
+    English: "the |Master Sword Powerless|"
+    Spanish: "la |Espada Maestra sin restaurar|"
     French:
   Gender:
     English: None
@@ -1108,8 +1108,8 @@
     Spanish: Espada Maestra semi-restaurada
     French: Excalibur Mi-Réanimé
   Pretty Names:
-    English: the |Master Sword Half|
-    Spanish: la |Espada Maestra semi-restaurada|
+    English: "the |Master Sword Half|"
+    Spanish: "la |Espada Maestra semi-restaurada|"
     French:
   Gender:
     English: None
@@ -1126,13 +1126,13 @@
     Spanish: Escudo progresivo
     French: Bouclier Progressif
   Pretty Names:
-    English: a |Progressive Shield|
-    Spanish: un |Escudo progresivo|
-    French: un |Bouclier Progressif|
+    English: "a |Progressive Shield|"
+    Spanish: "un |Escudo progresivo|"
+    French: "un |Bouclier Progressif|"
   Cryptic Names:
-    English: a |defensive item|
-    Spanish: un |objeto de defensa|
-    French: un |objet de défense|
+    English: "a |defensive item|"
+    Spanish: "un |objeto de defensa|"
+    French: "un |objet de défense|"
   Gender:
     English: None
     Spanish: Male
@@ -1148,9 +1148,9 @@
     Spanish: Escudo Espejo
     French: Bouclier Miroir
   Pretty Names:
-    English: the |Mirror Shield|
-    Spanish: el |Escudo Espejo|
-    French: le |Bouclier Miroir|
+    English: "the |Mirror Shield|"
+    Spanish: "el |Escudo Espejo|"
+    French: "le |Bouclier Miroir|"
   Gender:
     English: None
     Spanish: Male
@@ -1166,8 +1166,8 @@
     Spanish: Espada del Héroe Recuperada
     French:
   Pretty Names:
-    English: a |Recovered Heros Sword|
-    Spanish: una |Espada del Héroe Recuperada|
+    English: "a |Recovered Heros Sword|"
+    Spanish: "una |Espada del Héroe Recuperada|"
     French:
   Gender:
     English: None
@@ -1184,9 +1184,9 @@
     Spanish: Espada Maestra Restaurada
     French: Excalibur Réanimé
   Pretty Names:
-    English: a |Master Sword Full|
-    Spanish: la |Espada Maestra Restaurada|
-    French: |Excalibur Réanimé|
+    English: "a |Master Sword Full|"
+    Spanish: "la |Espada Maestra Restaurada|"
+    French: "|Excalibur Réanimé|"
   Gender:
     English: None
     Spanish: Female
@@ -1203,9 +1203,9 @@
     Spanish: Pieza de Corazón 2
     French: Quart de Cœur 2
   Pretty Names:
-    English: a |Piece of Heart|
-    Spanish: una |Pieza de Corazón|
-    French: un |Quart de Cœur|
+    English: "a |Piece of Heart|"
+    Spanish: "una |Pieza de Corazón|"
+    French: "un |Quart de Cœur|"
   Gender:
     English: None
     Spanish: Female
@@ -1221,13 +1221,13 @@
     Spanish: Gran Llave del Bosque Prohibido
     French: Grande Clé des Bois Défendus
   Pretty Names:
-    English: the |Forbidden Woods Big Key|
-    Spanish: la |Gran Llave del Bosque Prohibido|
-    French: la |Grande Clé des Bois Défendus|
+    English: "the |Forbidden Woods Big Key|"
+    Spanish: "la |Gran Llave del Bosque Prohibido|"
+    French: "la |Grande Clé des Bois Défendus|"
   Cryptic Names:
-    English: an |ominous key|
-    Spanish: una |llave siniestra|
-    French: une |clé menaçante|
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
   Gender:
     English: None
     Spanish: Female
@@ -1245,9 +1245,9 @@
     Spanish: Mapa de la Mazmorra del Bosque Prohibido
     French: Carte du Donjon des Bois Défendus
   Pretty Names:
-    English: the |Forbidden Woods Dungeon Map|
-    Spanish: el |Mapa de la Mazmorra del Bosque Prohibido|
-    French: la |Carte du Donjon des Bois Défendus|
+    English: "the |Forbidden Woods Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra del Bosque Prohibido|"
+    French: "la |Carte du Donjon des Bois Défendus|"
   Gender:
     English: None
     Spanish: Male
@@ -1264,9 +1264,9 @@
     Spanish: Amuleto Pirata
     French: Amulette Pirate
   Pretty Names:
-    English: a |Pirates Charm|
-    Spanish: un |Amuleto Pirata|
-    French: une |Amulette Pirate|
+    English: "a |Pirates Charm|"
+    Spanish: "un |Amuleto Pirata|"
+    French: "une |Amulette Pirate|"
   Gender:
     English: None
     Spanish: Male
@@ -1282,9 +1282,9 @@
     Spanish: Amuleto del Héroe
     French: Amulette du Héros
   Pretty Names:
-    English: the |Hero's Charm|
-    Spanish: el |Amuleto del Héroe|
-    French: une |Amulette du Héros|
+    English: "the |Hero's Charm|"
+    Spanish: "el |Amuleto del Héroe|"
+    French: "une |Amulette du Héros|"
   Gender:
     English: None
     Spanish: Male
@@ -1300,9 +1300,9 @@
     Spanish: Colgante Macabro
     French: Collier Macabre
   Pretty Names:
-    English: a |Skull Necklace|
-    Spanish: un |Colgante Macabro|
-    French: un |Collier Macabre|
+    English: "a |Skull Necklace|"
+    Spanish: "un |Colgante Macabro|"
+    French: "un |Collier Macabre|"
   Gender:
     English: None
     Spanish: Male
@@ -1318,9 +1318,9 @@
     Spanish: Semilla de Boko Baba
     French: Graine de Bokobaba
   Pretty Names:
-    English: a |Boko Baba Seed|
-    Spanish: una |Semilla de Boko Baba|
-    French: une |Graine de Bokobaba|
+    English: "a |Boko Baba Seed|"
+    Spanish: "una |Semilla de Boko Baba|"
+    French: "une |Graine de Bokobaba|"
   Gender:
     English: None
     Spanish: Female
@@ -1336,9 +1336,9 @@
     Spanish: Pluma Dorada
     French: Plume d'Or
   Pretty Names:
-    English: a |Golden Feather|
-    Spanish: una |Pluma Dorada|
-    French: une |Plume d'Or|
+    English: "a |Golden Feather|"
+    Spanish: "una |Pluma Dorada|"
+    French: "une |Plume d'Or|"
   Gender:
     English: None
     Spanish: Female
@@ -1354,9 +1354,9 @@
     Spanish: Blasón de Guerrero
     French: Blason d'Epéiste
   Pretty Names:
-    English: a |Knights Crest|
-    Spanish: un |Blasón de Guerrero|
-    French: un |Blason d'Epéiste|
+    English: "a |Knights Crest|"
+    Spanish: "un |Blasón de Guerrero|"
+    French: "un |Blason d'Epéiste|"
   Gender:
     English: None
     Spanish: Male
@@ -1372,9 +1372,9 @@
     Spanish: Jugo de Chuchu Rojo
     French: Gelée Chuchu Rouge
   Pretty Names:
-    English: a |Red Chu Jelly|
-    Spanish: un |Jugo de Chuchu Rojo|
-    French: une |Gelée Chuchu Rouge|
+    English: "a |Red Chu Jelly|"
+    Spanish: "un |Jugo de Chuchu Rojo|"
+    French: "une |Gelée Chuchu Rouge|"
   Gender:
     English: None
     Spanish: Male
@@ -1390,9 +1390,9 @@
     Spanish: Jugo de Chuchu Verde
     French: Gelée Chuchu Verte
   Pretty Names:
-    English: a |Green Chu Jelly|
-    Spanish: un |Jugo de Chuchu Verde|
-    French: une |Gelée Chuchu Verte|
+    English: "a |Green Chu Jelly|"
+    Spanish: "un |Jugo de Chuchu Verde|"
+    French: "une |Gelée Chuchu Verte|"
   Gender:
     English: None
     Spanish: Male
@@ -1408,9 +1408,9 @@
     Spanish: Jugo de Chuchu Azul
     French: Gelée Chuchu Bleue
   Pretty Names:
-    English: a |Blue Chu Jelly|
-    Spanish: un |Jugo de Chuchu Azul|
-    French: une |Gelée Chuchu Bleue|
+    English: "a |Blue Chu Jelly|"
+    Spanish: "un |Jugo de Chuchu Azul|"
+    French: "une |Gelée Chuchu Bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -1426,9 +1426,9 @@
     Spanish: Mapa de la Mazmorra
     French: Carte du Donjon
   Pretty Names:
-    English: a |Dungeon Map|
-    Spanish: un |Mapa de la Mazmorra|
-    French: une |Carte du Donjon|
+    English: "a |Dungeon Map|"
+    Spanish: "un |Mapa de la Mazmorra|"
+    French: "une |Carte du Donjon|"
   Gender:
     English: None
     Spanish: Male
@@ -1444,9 +1444,9 @@
     Spanish: Brújula
     French: Boussole
   Pretty Names:
-    English: a |Compass|
-    Spanish: una |Brújula|
-    French: une |Boussole|
+    English: "a |Compass|"
+    Spanish: "una |Brújula|"
+    French: "une |Boussole|"
   Gender:
     English: None
     Spanish: Female
@@ -1462,13 +1462,13 @@
     Spanish: Gran Llave
     French: Grande Clé
   Pretty Names:
-    English: a |Big Key|
-    Spanish: una |Gran Llave|
-    French: une |Grande Clé|
+    English: "a |Big Key|"
+    Spanish: "una |Gran Llave|"
+    French: "une |Grande Clé|"
   Cryptic Names:
-    English: an |ominous key|
-    Spanish: una |llave siniestra|
-    French: une |clé menaçante|
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
   Gender:
     English: None
     Spanish: Female
@@ -1484,13 +1484,13 @@
     Spanish: Botella
     French: Flacon
   Pretty Names:
-    English: an |Empty Bottle|
-    Spanish: una |Botella|
-    French: un |Flacon|
+    English: "an |Empty Bottle|"
+    Spanish: "una |Botella|"
+    French: "un |Flacon|"
   Cryptic Names:
-    English: a |glass container|
-    Spanish: un |envase de vidrio|
-    French: un |contenant en verre|
+    English: "a |glass container|"
+    Spanish: "un |envase de vidrio|"
+    French: "un |contenant en verre|"
   Gender:
     English: None
     Spanish: Female # ("un") Male. ("una"). Female
@@ -1506,9 +1506,9 @@
     Spanish: Poción Roja
     French: Potion Rouge
   Pretty Names:
-    English: a |Red Potion|
-    Spanish: una |Poción Roja|
-    French: une |Potion Rouge|
+    English: "a |Red Potion|"
+    Spanish: "una |Poción Roja|"
+    French: "une |Potion Rouge|"
   Gender:
     English: None
     Spanish: Female
@@ -1524,9 +1524,9 @@
     Spanish: Poción Verde
     French: Potion Verte
   Pretty Names:
-    English: a |Green Potion|
-    Spanish: una |Poción Verde|
-    French: une |Potion Verte|
+    English: "a |Green Potion|"
+    Spanish: "una |Poción Verde|"
+    French: "une |Potion Verte|"
   Gender:
     English: None
     Spanish: Female
@@ -1542,9 +1542,9 @@
     Spanish: Poción Azul
     French: Potion Bleue
   Pretty Names:
-    English: a |Blue Potion|
-    Spanish: una |Poción Azul|
-    French: une |Potion Bleue|
+    English: "a |Blue Potion|"
+    Spanish: "una |Poción Azul|"
+    French: "une |Potion Bleue|"
   Gender:
     English: None
     Spanish: Female
@@ -1560,9 +1560,9 @@
     Spanish: Sopa de la Abuela (1/2)
     French: Soupe de Mémé (1/2)
   Pretty Names:
-    English: |Elixir Soup Half|
-    Spanish: |Sopa de la Abuela (1/2)|
-    French: la |Soupe de Mémé (1/2)|
+    English: "|Elixir Soup Half|"
+    Spanish: "|Sopa de la Abuela (1/2)|"
+    French: "la |Soupe de Mémé (1/2)|"
   Gender:
     English: None
     Spanish: Female
@@ -1578,9 +1578,9 @@
     Spanish: Sopa de la Abuela
     French: Soupe de Mémé
   Pretty Names:
-    English: |Elixir Soup|
-    Spanish: |Sopa de la Abuela|
-    French: la |Soupe de Mémé|
+    English: "|Elixir Soup|"
+    Spanish: "|Sopa de la Abuela|"
+    French: "la |Soupe de Mémé|"
   Gender:
     English: None
     Spanish: Female
@@ -1596,9 +1596,9 @@
     Spanish: Agua
     French: Eau
   Pretty Names:
-    English: |Bottled Water|
-    Spanish: |Agua|
-    French: de l'|Eau|
+    English: "|Bottled Water|"
+    Spanish: "|Agua|"
+    French: "de l'|Eau|"
   Gender:
     English: None
     Spanish: Male
@@ -1614,9 +1614,9 @@
     Spanish: Hada
     French: Fée
   Pretty Names:
-    English: a |Fairy In Bottle|
-    Spanish: un |Hada|
-    French: une |Fée|
+    English: "a |Fairy In Bottle|"
+    Spanish: "un |Hada|"
+    French: "une |Fée|"
   Gender:
     English: None
     Spanish: Male
@@ -1632,9 +1632,9 @@
     Spanish: Luciérnaga del bosque
     French: Luciole de la Forêt
   Pretty Names:
-    English: a |Forest Firefly|
-    Spanish: una |Luciérnaga del bosque|
-    French: une |Luciole de la Forêt|
+    English: "a |Forest Firefly|"
+    Spanish: "una |Luciérnaga del bosque|"
+    French: "une |Luciole de la Forêt|"
   Gender:
     English: None
     Spanish: Female
@@ -1650,9 +1650,9 @@
     Spanish: Agua del bosque
     French: Eau de la Forêt
   Pretty Names:
-    English: |Forest Water|
-    Spanish: |Agua del bosque|
-    French: de l'|Eau de la Forêt|
+    English: "|Forest Water|"
+    Spanish: "|Agua del bosque|"
+    French: "de l'|Eau de la Forêt|"
   Gender:
     English: None
     Spanish: Male
@@ -1668,9 +1668,9 @@
     Spanish: Brújula del Bosque Prohibido
     French: Boussole des Bois Défendus
   Pretty Names:
-    English: a |Forbidden Woods Compass|
-    Spanish: la |Brújula del Bosque Prohibido|
-    French: la |Boussole des Bois Défendus|
+    English: "a |Forbidden Woods Compass|"
+    Spanish: "la |Brújula del Bosque Prohibido|"
+    French: "la |Boussole des Bois Défendus|"
   Gender:
     English: None
     Spanish: Female
@@ -1687,13 +1687,13 @@
     Spanish: Llave Pequeña de la Torre de los Dioses
     French: Petite Clé de la Tour des Dieux
   Pretty Names:
-    English: a |Tower of the Gods Small Key|
-    Spanish: una |Llave Pequeña de la Torre de los Dioses|
-    French: une |Petite Clé de la Tour des Dieux|
+    English: "a |Tower of the Gods Small Key|"
+    Spanish: "una |Llave Pequeña de la Torre de los Dioses|"
+    French: "une |Petite Clé de la Tour des Dieux|"
   Cryptic Names:
-    English: a |key|
-    Spanish: una |llave|
-    French: une |clé|
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
   Gender:
     English: None
     Spanish: Female
@@ -1712,13 +1712,13 @@
     Spanish: Gran Llave de la torre de los Dioses
     French: Grande Clé de la Tour des Dieux
   Pretty Names:
-    English: the |Tower of the Gods Big Key|
-    Spanish: la |Gran Llave de la torre de los Dioses|
-    French: la |Grande Clé de la Tour des Dieux|
+    English: "the |Tower of the Gods Big Key|"
+    Spanish: "la |Gran Llave de la torre de los Dioses|"
+    French: "la |Grande Clé de la Tour des Dieux|"
   Cryptic Names:
-    English: an |ominous key|
-    Spanish: una |llave siniestra|
-    French: une |clé menaçante|
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
   Gender:
     English: None
     Spanish: Female
@@ -1736,9 +1736,9 @@
     Spanish: Mapa de la Mazmorra de la Torre de los Dioses
     French: Carte du Donjon de la Tour des Dieux
   Pretty Names:
-    English: the |Tower of the Gods Dungeon Map|
-    Spanish: el |Mapa de la Mazmorra de la Torre de los Dioses|
-    French: la |Carte du Donjon de la Tour des Dieux|
+    English: "the |Tower of the Gods Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra de la Torre de los Dioses|"
+    French: "la |Carte du Donjon de la Tour des Dieux|"
   Gender:
     English: None
     Spanish: Male
@@ -1755,9 +1755,9 @@
     Spanish: Brújula de la Torre de los Dioses
     French: Boussole de la Tour des Dieux
   Pretty Names:
-    English: the |Tower of the Gods Compass|
-    Spanish: la |Brújula de la Torre de los Dioses|
-    French: la |Boussole de la Tour des Dieux|
+    English: "the |Tower of the Gods Compass|"
+    Spanish: "la |Brújula de la Torre de los Dioses|"
+    French: "la |Boussole de la Tour des Dieux|"
   Gender:
     English: None
     Spanish: Female
@@ -1774,9 +1774,9 @@
     Spanish: Mapa de la Mazmorra de la Isla del Diablo
     French: Carte du Donjon de la Forteresse Maudite
   Pretty Names:
-    English: the |Forsaken Fortress Dungeon Map|
-    Spanish: el |Mapa de la Mazmorra de la Isla del Diablo|
-    French: la |Carte du Donjon de la Forteresse Maudite|
+    English: "the |Forsaken Fortress Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra de la Isla del Diablo|"
+    French: "la |Carte du Donjon de la Forteresse Maudite|"
   Gender:
     English: None
     Spanish: Male
@@ -1793,9 +1793,9 @@
     Spanish: Brújula de la Isla del Diablo
     French: Boussole de la Forteresse Maudite
   Pretty Names:
-    English: the |Forsaken Fortress Compass|
-    Spanish: la |Brújula de la Isla del Diablo|
-    French: la |Boussole de la Forteresse Maudite|
+    English: "the |Forsaken Fortress Compass|"
+    Spanish: "la |Brújula de la Isla del Diablo|"
+    French: "la |Boussole de la Forteresse Maudite|"
   Gender:
     English: None
     Spanish: Female
@@ -1812,13 +1812,13 @@
     Spanish: Fragmento de la Trifuerza 1
     French: Fragment de la Triforce 1
   Pretty Names:
-    English: |Triforce Shard 1|
-    Spanish: el |Fragmento de la Trifuerza 1|
-    French: le |Fragment de la Triforce 1|
+    English: "|Triforce Shard 1|"
+    Spanish: "el |Fragmento de la Trifuerza 1|"
+    French: "le |Fragment de la Triforce 1|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1834,13 +1834,13 @@
     Spanish: Fragmento de la Trifuerza 2
     French: Fragment de la Triforce 2
   Pretty Names:
-    English: |Triforce Shard 2|
-    Spanish: el |Fragmento de la Trifuerza 2|
-    French: le |Fragment de la Triforce 2|
+    English: "|Triforce Shard 2|"
+    Spanish: "el |Fragmento de la Trifuerza 2|"
+    French: "le |Fragment de la Triforce 2|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1856,13 +1856,13 @@
     Spanish: Fragmento de la Trifuerza 3
     French: Fragment de la Triforce 3
   Pretty Names:
-    English: |Triforce Shard 3|
-    Spanish: el |Fragmento de la Trifuerza 3|
-    French: le |Fragment de la Triforce 3|
+    English: "|Triforce Shard 3|"
+    Spanish: "el |Fragmento de la Trifuerza 3|"
+    French: "le |Fragment de la Triforce 3|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1878,13 +1878,13 @@
     Spanish: Fragmento de la Trifuerza 4
     French: Fragment de la Triforce 4
   Pretty Names:
-    English: |Triforce Shard 4|
-    Spanish: el |Fragmento de la Trifuerza 4|
-    French: le |Fragment de la Triforce 4|
+    English: "|Triforce Shard 4|"
+    Spanish: "el |Fragmento de la Trifuerza 4|"
+    French: "le |Fragment de la Triforce 4|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1900,13 +1900,13 @@
     Spanish: Fragmento de la Trifuerza 5
     French: Fragment de la Triforce 5
   Pretty Names:
-    English: |Triforce Shard 5|
-    Spanish: el |Fragmento de la Trifuerza 5|
-    French: le |Fragment de la Triforce 5|
+    English: "|Triforce Shard 5|"
+    Spanish: "el |Fragmento de la Trifuerza 5|"
+    French: "le |Fragment de la Triforce 5|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1922,13 +1922,13 @@
     Spanish: Fragmento de la Trifuerza 6
     French: Fragment de la Triforce 6
   Pretty Names:
-    English: |Triforce Shard 6|
-    Spanish: el |Fragmento de la Trifuerza 6|
-    French: le |Fragment de la Triforce 6|
+    English: "|Triforce Shard 6|"
+    Spanish: "el |Fragmento de la Trifuerza 6|"
+    French: "le |Fragment de la Triforce 6|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1944,13 +1944,13 @@
     Spanish: Fragmento de la Trifuerza 7
     French: Fragment de la Triforce 7
   Pretty Names:
-    English: |Triforce Shard 7|
-    Spanish: el |Fragmento de la Trifuerza 7|
-    French: le |Fragment de la Triforce 7|
+    English: "|Triforce Shard 7|"
+    Spanish: "el |Fragmento de la Trifuerza 7|"
+    French: "le |Fragment de la Triforce 7|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1966,13 +1966,13 @@
     Spanish: Fragmento de la Trifuerza 8
     French: Fragment de la Triforce 8
   Pretty Names:
-    English: |Triforce Shard 8|
-    Spanish: el |Fragmento de la Trifuerza 8|
-    French: le |Fragment de la Triforce 8|
+    English: "|Triforce Shard 8|"
+    Spanish: "el |Fragmento de la Trifuerza 8|"
+    French: "le |Fragment de la Triforce 8|"
   Cryptic Names:
-    English: a |piece of the power of the gods|
-    Spanish: un |fragmento del poder de los dioses|
-    French: un |fragment d'or|
+    English: "a |piece of the power of the gods|"
+    Spanish: "un |fragmento del poder de los dioses|"
+    French: "un |fragment d'or|"
   Gender:
     English: None
     Spanish: Male
@@ -1988,13 +1988,13 @@
     Spanish: Orbe de Nayru
     French: Perle de Nayru
   Pretty Names:
-    English: |Nayru's Pearl|
-    Spanish: el |Orbe de Nayru|
-    French: la |Perle de Nayru|
+    English: "|Nayru's Pearl|"
+    Spanish: "el |Orbe de Nayru|"
+    French: "la |Perle de Nayru|"
   Cryptic Names:
-    English: a |blue jewel|
-    Spanish: una |perla azul|
-    French: un |joyau bleu|
+    English: "a |blue jewel|"
+    Spanish: "una |perla azul|"
+    French: "un |joyau bleu|"
   Gender:
     English: None
     Spanish: Female
@@ -2010,13 +2010,13 @@
     Spanish: Orbe de Din
     French: Perle de Din
   Pretty Names:
-    English: |Din's Pearl|
-    Spanish: el |Orbe de Din|
-    French: la |Perle de Din|
+    English: "|Din's Pearl|"
+    Spanish: "el |Orbe de Din|"
+    French: "la |Perle de Din|"
   Cryptic Names:
-    English: a |red jewel|
-    Spanish: una |perla roja|
-    French: un |joyau rouge|
+    English: "a |red jewel|"
+    Spanish: "una |perla roja|"
+    French: "un |joyau rouge|"
   Gender:
     English: None
     Spanish: Female
@@ -2032,13 +2032,13 @@
     Spanish: Orbe de Farore
     French: Perle de Farore
   Pretty Names:
-    English: |Farore's Pearl|
-    Spanish: el |Orbe de Farore|
-    French: la |Perle de Farore|
+    English: "|Farore's Pearl|"
+    Spanish: "el |Orbe de Farore|"
+    French: "la |Perle de Farore|"
   Cryptic Names:
-    English: a |green jewel|
-    Spanish: una |perla verde|
-    French: un |joyau vert|
+    English: "a |green jewel|"
+    Spanish: "una |perla verde|"
+    French: "un |joyau vert|"
   Gender:
     English: None
     Spanish: Female
@@ -2054,13 +2054,13 @@
     Spanish: Melodía del Viento
     French: Mélodie du Vent
   Pretty Names:
-    English: the |Wind's Requiem|
-    Spanish: la |Melodía del Viento|
-    French: la |Mélodie du Vent|
+    English: "the |Wind's Requiem|"
+    Spanish: "la |Melodía del Viento|"
+    French: "la |Mélodie du Vent|"
   Cryptic Names:
-    English: the |song of wind|
-    Spanish: la |canción del viento|
-    French: le |thème du vent|
+    English: "the |song of wind|"
+    Spanish: "la |canción del viento|"
+    French: "le |thème du vent|"
   Gender:
     English: None
     Spanish: Female
@@ -2076,13 +2076,13 @@
     Spanish: Melodía del Tornado
     French: Requiem de la Tornade
   Pretty Names:
-    English: the |Ballad of Gales|
-    Spanish: la |Melodía del Tornado|
-    French: le |Requiem de la Tornade|
+    English: "the |Ballad of Gales|"
+    Spanish: "la |Melodía del Tornado|"
+    French: "le |Requiem de la Tornade|"
   Cryptic Names:
-    English: the |song of gales|
-    Spanish: la |canción del tornado|
-    French: le |thème de la tornade|
+    English: "the |song of gales|"
+    Spanish: "la |canción del tornado|"
+    French: "le |thème de la tornade|"
   Gender:
     English: None
     Spanish: Female
@@ -2098,13 +2098,13 @@
     Spanish: Melodía de la Voluntad
     French: Air du Marionnettiste
   Pretty Names:
-    English: the |Command Melody|
-    Spanish: la |Melodía de la Voluntad|
-    French: l'|Air du Marionnettiste|
+    English: "the |Command Melody|"
+    Spanish: "la |Melodía de la Voluntad|"
+    French: l'|Air du Marionnettiste|"
   Cryptic Names:
-    English: the |song of command|
-    Spanish: la |canción del control|
-    French: le |thème du marionnettiste|
+    English: "the |song of command|"
+    Spanish: "la |canción del control|"
+    French: "le |thème du marionnettiste|"
   Gender:
     English: None
     Spanish: Female
@@ -2120,13 +2120,13 @@
     Spanish: Melodía del Espíritu de la Tierra
     French: Hymne du Dieu de la Terre
   Pretty Names:
-    English: the |Earth God's Lyric|
-    Spanish: la |Melodía del Espíritu de la Tierra|
-    French: l'|Hymne du Dieu de la Terre|
+    English: "the |Earth God's Lyric|"
+    Spanish: "la |Melodía del Espíritu de la Tierra|"
+    French: l'|Hymne du Dieu de la Terre|"
   Cryptic Names:
-    English: the |song of the earth's god|
-    Spanish: la |canción del sabio de la tierra|
-    French: le |thème du dieu de la terre|
+    English: "the |song of the earth's god|"
+    Spanish: "la |canción del sabio de la tierra|"
+    French: "le |thème du dieu de la terre|"
   Gender:
     English: None
     Spanish: Female
@@ -2142,13 +2142,13 @@
     Spanish: Melodía del Espíritu del Viento
     French: Hymne du Dieu du Vent
   Pretty Names:
-    English: the |Wind God's Aria|
-    Spanish: la |Melodía del Espíritu del Viento|
-    French: l'|Hymne du Dieu du Vent|
+    English: "the |Wind God's Aria|"
+    Spanish: "la |Melodía del Espíritu del Viento|"
+    French: l'|Hymne du Dieu du Vent|"
   Cryptic Names:
-    English: the |song of the wind's god|
-    Spanish: la |canción del sabio del viento|
-    French: le |thème du dieu du vent|
+    English: "the |song of the wind's god|"
+    Spanish: "la |canción del sabio del viento|"
+    French: "le |thème du dieu du vent|"
   Gender:
     English: None
     Spanish: Female
@@ -2164,13 +2164,13 @@
     Spanish: Melodía del Transcurrir
     French: Chant du Soleil
   Pretty Names:
-    English: the |Song of Passing|
-    Spanish: la |Melodía del Transcurrir|
-    French: le |Chant du Soleil|
+    English: "the |Song of Passing|"
+    Spanish: "la |Melodía del Transcurrir|"
+    French: "le |Chant du Soleil|"
   Cryptic Names:
-    English: the |song of time|
-    Spanish: la |canción del Sol|
-    French: le |thème du soleil|
+    English: "the |song of time|"
+    Spanish: "la |canción del Sol|"
+    French: "le |thème du soleil|"
   Gender:
     English: None
     Spanish: Female
@@ -2186,13 +2186,13 @@
     Spanish: Lave Pequeña del Templo de la Tierra
     French: Petite Clé du Temple de la Terre
   Pretty Names:
-    English: an |Earth Temple Small Key|
-    Spanish: una |Lave Pequeña del Templo de la Tierra|
-    French: une |Petite Clé du Temple de la Terre|
+    English: "an |Earth Temple Small Key|"
+    Spanish: "una |Lave Pequeña del Templo de la Tierra|"
+    French: "une |Petite Clé du Temple de la Terre|"
   Cryptic Names:
-    English: a |key|
-    Spanish: una |llave|
-    French: une |clé|
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
   Gender:
     English: None
     Spanish: Female
@@ -2211,13 +2211,13 @@
     Spanish: Gran Llave del Templo de la Tierra
     French: Grande Clé du Temple de la Terre
   Pretty Names:
-    English: the |Earth Temple Big Key|
-    Spanish: la |Gran Llave del Templo de la Tierra|
-    French: la |Grande Clé du Temple de la Terre|
+    English: "the |Earth Temple Big Key|"
+    Spanish: "la |Gran Llave del Templo de la Tierra|"
+    French: "la |Grande Clé du Temple de la Terre|"
   Cryptic Names:
-    English: an |ominous key|
-    Spanish: una |llave siniestra|
-    French: une |clé menaçante|
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
   Gender:
     English: None
     Spanish: Female
@@ -2235,9 +2235,9 @@
     Spanish: Mapa de la Mazmorra del Templo de la Tierra
     French: Carte du Donjon du Temple de la Terre
   Pretty Names:
-    English: the |Earth Temple Dungeon Map|
-    Spanish: el |Mapa de la Mazmorra del Templo de la Tierra|
-    French: la |Carte du Donjon du Temple de la Terre|
+    English: "the |Earth Temple Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra del Templo de la Tierra|"
+    French: "la |Carte du Donjon du Temple de la Terre|"
   Gender:
     English: None
     Spanish: Male
@@ -2254,9 +2254,9 @@
     Spanish: Brújula del Templo de la Tierra
     French: Boussole du Temple de la Terre
   Pretty Names:
-    English: the |Earth Temple Compass|
-    Spanish: la |Brújula del Templo de la Tierra|
-    French: la |Boussole du Temple de la Terre|
+    English: "the |Earth Temple Compass|"
+    Spanish: "la |Brújula del Templo de la Tierra|"
+    French: "la |Boussole du Temple de la Terre|"
   Gender:
     English: None
     Spanish: Female
@@ -2273,9 +2273,9 @@
     Spanish: Vela Veloz
     French: Voile Rapide
   Pretty Names:
-    English: a |Swift Sail|
-    Spanish: una |Vela Veloz|
-    French: une |Voile Rapide|
+    English: "a |Swift Sail|"
+    Spanish: "una |Vela Veloz|"
+    French: "une |Voile Rapide|"
   Gender:
     English: None
     Spanish: Female
@@ -2291,13 +2291,13 @@
     Spanish: Vela Progresiva
     French: Voile de Bateau Progressive
   Pretty Names:
-    English: a |Progressive Sail|
-    Spanish: una |Vela Progresiva|
-    French: une |Voile de Bateau Progressive|
+    English: "a |Progressive Sail|"
+    Spanish: "una |Vela Progresiva|"
+    French: "une |Voile de Bateau Progressive|"
   Cryptic Names:
-    English: a |wind follower|
-    Spanish: |aquello que sigue el viento|
-    French: une |toile portante|
+    English: "a |wind follower|"
+    Spanish: "|aquello que sigue el viento|"
+    French: "une |toile portante|"
   Gender:
     English: None
     Spanish: Female
@@ -2313,9 +2313,9 @@
     Spanish: Mapa de la Trifuerza 1 Decifrado
     French: Carte de la Triforce 1 Décryptée
   Pretty Names:
-    English: |Triforce Chart 1 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 1 Decifrado|
-    French: la |Carte de la Triforce 1 Décryptée|
+    English: "|Triforce Chart 1 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 1 Decifrado|"
+    French: "la |Carte de la Triforce 1 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2331,9 +2331,9 @@
     Spanish: Mapa de la Trifuerza 2 Decifrado
     French: Carte de la Triforce 2 Décryptée
   Pretty Names:
-    English: |Triforce Chart 2 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 2 Decifrado|
-    French: la |Carte de la Triforce 2 Décryptée|
+    English: "|Triforce Chart 2 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 2 Decifrado|"
+    French: "la |Carte de la Triforce 2 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2349,9 +2349,9 @@
     Spanish: Mapa de la Trifuerza 3 Decifrado
     French: Carte de la Triforce 3 Décryptée
   Pretty Names:
-    English: |Triforce Chart 3 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 3 Decifrado|
-    French: la |Carte de la Triforce 3 Décryptée|
+    English: "|Triforce Chart 3 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 3 Decifrado|"
+    French: "la |Carte de la Triforce 3 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2367,9 +2367,9 @@
     Spanish: Mapa de la Trifuerza 4 Decifrado
     French: Carte de la Triforce 4 Décryptée
   Pretty Names:
-    English: |Triforce Chart 4 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 4 Decifrado|
-    French: la |Carte de la Triforce 4 Décryptée|
+    English: "|Triforce Chart 4 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 4 Decifrado|"
+    French: "la |Carte de la Triforce 4 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2385,9 +2385,9 @@
     Spanish: Mapa de la Trifuerza 5 Decifrado
     French: Carte de la Triforce 5 Décryptée
   Pretty Names:
-    English: |Triforce Chart 5 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 5 Decifrado|
-    French: la |Carte de la Triforce 5 Décryptée|
+    English: "|Triforce Chart 5 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 5 Decifrado|"
+    French: "la |Carte de la Triforce 5 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2403,9 +2403,9 @@
     Spanish: Mapa de la Trifuerza 6 Decifrado
     French: Carte de la Triforce 6 Décryptée
   Pretty Names:
-    English: |Triforce Chart 6 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 6 Decifrado|
-    French: la |Carte de la Triforce 6 Décryptée|
+    English: "|Triforce Chart 6 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 6 Decifrado|"
+    French: "la |Carte de la Triforce 6 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2421,9 +2421,9 @@
     Spanish: Mapa de la Trifuerza 7 Decifrado
     French: Carte de la Triforce 7 Décryptée
   Pretty Names:
-    English: |Triforce Chart 7 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 7 Decifrado|
-    French: la |Carte de la Triforce 7 Décryptée|
+    English: "|Triforce Chart 7 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 7 Decifrado|"
+    French: "la |Carte de la Triforce 7 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2439,9 +2439,9 @@
     Spanish: Mapa de la Trifuerza 8 Decifrado
     French: Carte de la Triforce 8 Décryptée
   Pretty Names:
-    English: |Triforce Chart 8 Deciphered|
-    Spanish: el |Mapa de la Trifuerza 8 Decifrado|
-    French: la |Carte de la Triforce 8 Décryptée|
+    English: "|Triforce Chart 8 Deciphered|"
+    Spanish: "el |Mapa de la Trifuerza 8 Decifrado|"
+    French: "la |Carte de la Triforce 8 Décryptée|"
   Gender:
     English: None
     Spanish: Male
@@ -2457,13 +2457,13 @@
     Spanish: Llave Pequeña del Templo del Viento
     French: Petite Clé du Temple du Vent
   Pretty Names:
-    English: a |Wind Temple Small Key|
-    Spanish: una |Llave Pequeña del Templo del Viento|
-    French: une |Petite Clé du Temple du Vent|
+    English: "a |Wind Temple Small Key|"
+    Spanish: "una |Llave Pequeña del Templo del Viento|"
+    French: "une |Petite Clé du Temple du Vent|"
   Cryptic Names:
-    English: a |key|
-    Spanish: una |llave|
-    French: une |clé|
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
   Gender:
     English: None
     Spanish: Female
@@ -2481,9 +2481,9 @@
     Spanish: Cebo Multiuso
     French: Appât Universel
   Pretty Names:
-    English: |All Purpose Bait|
-    Spanish: un |Cebo Multiuso|
-    French: un |Appât Universel|
+    English: "|All Purpose Bait|"
+    Spanish: "un |Cebo Multiuso|"
+    French: "un |Appât Universel|"
   Gender:
     English: None
     Spanish: Male
@@ -2499,9 +2499,9 @@
     Spanish: Fruto de ajinjín
     French: Fruit Miam Miam
   Pretty Names:
-    English: a |Hyoi Pear|
-    Spanish: un |Fruto de ajinjín|
-    French: un |Fruit Miam Miam|
+    English: "a |Hyoi Pear|"
+    Spanish: "un |Fruto de ajinjín|"
+    French: "un |Fruit Miam Miam|"
   Gender:
     English: None
     Spanish: Male
@@ -2517,13 +2517,13 @@
     Spanish: Gran Llave del Templo del Viento
     French: Grande Clé du Temple du Vent
   Pretty Names:
-    English: the |Wind Temple Big Key|
-    Spanish: la |Gran Llave del Templo del Viento|
-    French: la |Grande Clé du Temple du Vent|
+    English: "the |Wind Temple Big Key|"
+    Spanish: "la |Gran Llave del Templo del Viento|"
+    French: "la |Grande Clé du Temple du Vent|"
   Cryptic Names:
-    English: an |ominous key|
-    Spanish: una |llave siniestra|
-    French: une |clé menaçante|
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
   Gender:
     English: None
     Spanish: Female
@@ -2541,9 +2541,9 @@
     Spanish: Mapa de la Mazmorra del Templo del Viento
     French: Carte du Donjon du Temple du Vent
   Pretty Names:
-    English: the |Wind Temple Dungeon Map|
-    Spanish: el |Mapa de la Mazmorra del Templo del Viento|
-    French: la |Carte du Donjon du Temple du Vent|
+    English: "the |Wind Temple Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra del Templo del Viento|"
+    French: "la |Carte du Donjon du Temple du Vent|"
   Gender:
     English: None
     Spanish: Male
@@ -2560,9 +2560,9 @@
     Spanish: Brújula del Templo del Viento
     French: Boussole du Temple du Vent
   Pretty Names:
-    English: the |Wind Temple Compass|
-    Spanish: la |Brújula del Templo del Viento|
-    French: la |Boussole du Temple du Vent|
+    English: "the |Wind Temple Compass|"
+    Spanish: "la |Brújula del Templo del Viento|"
+    French: "la |Boussole du Temple du Vent|"
   Gender:
     English: None
     Spanish: Female
@@ -2579,9 +2579,9 @@
     Spanish: Flor de Pueblo
     French: Fleur de la Ville
   Pretty Names:
-    English: a |Town Flower|
-    Spanish: una |Flor de Pueblo|
-    French: une |Fleur de la Ville|
+    English: "a |Town Flower|"
+    Spanish: "una |Flor de Pueblo|"
+    French: "une |Fleur de la Ville|"
   Gender:
     English: None
     Spanish: Female
@@ -2597,9 +2597,9 @@
     Spanish: Flores de Mar
     French: Fleur Marine
   Pretty Names:
-    English: a |Sea Flower|
-    Spanish: unas |Flores de Mar|
-    French: une |Fleur Marine|
+    English: "a |Sea Flower|"
+    Spanish: unas |Flores de Mar|"
+    French: "une |Fleur Marine|"
   Gender:
     English: None
     Spanish: Female
@@ -2615,9 +2615,9 @@
     Spanish: Flor del Sur
     French: Fleur du Sud
   Pretty Names:
-    English: an |Exotic Flower|
-    Spanish: una |Flor del Sur|
-    French: une |Fleur du Sud|
+    English: "an |Exotic Flower|"
+    Spanish: "una |Flor del Sur|"
+    French: "une |Fleur du Sud|"
   Gender:
     English: None
     Spanish: Female
@@ -2633,9 +2633,9 @@
     Spanish: Banderín del Héroe
     French: Drapeau du Héros
   Pretty Names:
-    English: a |Heros Flag|
-    Spanish: un |Banderín del Héroe|
-    French: un |Drapeau du Héros|
+    English: "a |Heros Flag|"
+    Spanish: "un |Banderín del Héroe|"
+    French: "un |Drapeau du Héros|"
   Gender:
     English: None
     Spanish: Male
@@ -2651,9 +2651,9 @@
     Spanish: Banderín del Pescador
     French: Drapeau de la Pêche Miraculeuse
   Pretty Names:
-    English: a |Big Catch Flag|
-    Spanish: un |Banderín del Pescador|
-    French: un |Drapeau de la Pêche Miraculeuse|
+    English: "a |Big Catch Flag|"
+    Spanish: "un |Banderín del Pescador|"
+    French: "un |Drapeau de la Pêche Miraculeuse|"
   Gender:
     English: None
     Spanish: Male
@@ -2669,9 +2669,9 @@
     Spanish: Banderín de Saldo
     French: Drapeau des Soldes
   Pretty Names:
-    English: a |Big Sale Flag|
-    Spanish: un |Banderín de Saldo|
-    French: un |Drapeau des Soldes|
+    English: "a |Big Sale Flag|"
+    Spanish: "un |Banderín de Saldo|"
+    French: "un |Drapeau des Soldes|"
   Gender:
     English: None
     Spanish: Male
@@ -2687,9 +2687,9 @@
     Spanish: Molinete
     French: Moulin à Vent
   Pretty Names:
-    English: a |Pinwheel|
-    Spanish: un |Molinete|
-    French: un |Moulin à Vent|
+    English: "a |Pinwheel|"
+    Spanish: "un |Molinete|"
+    French: "un |Moulin à Vent|"
   Gender:
     English: None
     Spanish: Male
@@ -2705,9 +2705,9 @@
     Spanish: Banderín de la Luna
     French: Drapeau du Croissant
   Pretty Names:
-    English: a |Sickle Moon Flag|
-    Spanish: un |Banderín de la Luna|
-    French: un |Drapeau du Croissant|
+    English: "a |Sickle Moon Flag|"
+    Spanish: "un |Banderín de la Luna|"
+    French: "un |Drapeau du Croissant|"
   Gender:
     English: None
     Spanish: Male
@@ -2723,9 +2723,9 @@
     Spanish: Cabezas Fósiles
     French: Statue Ricrâne
   Pretty Names:
-    English: a |Skull Tower Idol|
-    Spanish: unas |Cabezas Fósiles|
-    French: une |Statue Ricrâne|
+    English: "a |Skull Tower Idol|"
+    Spanish: unas |Cabezas Fósiles|"
+    French: "une |Statue Ricrâne|"
   Gender:
     English: None
     Spanish: Female
@@ -2741,9 +2741,9 @@
     Spanish: Fuente de la Doncella
     French: Statue Naïade
   Pretty Names:
-    English: a |Fountain Idol|
-    Spanish: una |Fuente de la Doncella|
-    French: une |Statue Naïade|
+    English: "a |Fountain Idol|"
+    Spanish: "una |Fuente de la Doncella|"
+    French: "une |Statue Naïade|"
   Gender:
     English: None
     Spanish: Female
@@ -2759,9 +2759,9 @@
     Spanish: Efigie del Cartero
     French: Statue du Facteur
   Pretty Names:
-    English: a |Postman Statue|
-    Spanish: una |Efigie del Cartero|
-    French: une |Statue du Facteur|
+    English: "a |Postman Statue|"
+    Spanish: "una |Efigie del Cartero|"
+    French: "une |Statue du Facteur|"
   Gender:
     English: None
     Spanish: Female
@@ -2777,9 +2777,9 @@
     Spanish: Gran Mercader
     French: Statue du Marchand
   Pretty Names:
-    English: a |Shop Guru Statue|
-    Spanish: el |Gran Mercader|
-    French: une |Statue du Marchand|
+    English: "a |Shop Guru Statue|"
+    Spanish: "el |Gran Mercader|"
+    French: "une |Statue du Marchand|"
   Gender:
     English: None
     Spanish: Male
@@ -2795,9 +2795,9 @@
     Spanish: Carta del padre
     French: Lettre de Père
   Pretty Names:
-    English: |Fathers Letter|
-    Spanish: la |Carta del padre|
-    French: la |Lettre de Père|
+    English: "|Fathers Letter|"
+    Spanish: "la |Carta del padre|"
+    French: "la |Lettre de Père|"
   Gender:
     English: None
     Spanish: Female
@@ -2813,13 +2813,13 @@
     Spanish: Carta a Mamá
     French: Lettre à la Mère
   Pretty Names:
-    English: the |Note to Mom|
-    Spanish: la |Carta a Mamá|
-    French: la |Lettre à la Mère|
+    English: "the |Note to Mom|"
+    Spanish: "la |Carta a Mamá|"
+    French: "la |Lettre à la Mère|"
   Cryptic Names:
-    English: the |writings of a letter sorter|
-    Spanish: la |escritura de un repartidor de cartas|
-    French: les |écrits d'un trieur de lettres|
+    English: "the |writings of a letter sorter|"
+    Spanish: "la |escritura de un repartidor de cartas|"
+    French: "les |écrits d'un trieur de lettres|"
   Gender:
     English: None
     Spanish: Female
@@ -2835,13 +2835,13 @@
     Spanish: Carta de Dolores
     French: Lettre de Maggy
   Pretty Names:
-    English: |Maggie's Letter|
-    Spanish: la |Carta de Dolores|
-    French: la |Lettre de Maggy|
+    English: "|Maggie's Letter|"
+    Spanish: "la |Carta de Dolores|"
+    French: "la |Lettre de Maggy|"
   Cryptic Names:
-    English: the |writings of a woman|
-    Spanish: la |escritura de una jovencita|
-    French: les |écrits d'une jeune femme|
+    English: "the |writings of a woman|"
+    Spanish: "la |escritura de una jovencita|"
+    French: "les |écrits d'une jeune femme|"
   Gender:
     English: None
     Spanish: Female
@@ -2860,13 +2860,13 @@
     Spanish: Carta del Moblin
     French: Lettre du Molblin
   Pretty Names:
-    English: the |Moblin's Letter|
-    Spanish: la |Carta del Moblin|
-    French: la |Lettre du Molblin|
+    English: "the |Moblin's Letter|"
+    Spanish: "la |Carta del Moblin|"
+    French: "la |Lettre du Molblin|"
   Cryptic Names:
-    English: the |writings of a creature|
-    Spanish: la |escritura de una creatura|
-    French: les |écrits d'une créature|
+    English: "the |writings of a creature|"
+    Spanish: "la |escritura de una creatura|"
+    French: "les |écrits d'une créature|"
   Gender:
     English: None
     Spanish: Female
@@ -2885,13 +2885,13 @@
     Spanish: Escrituras del Chalé
     French: Titre de Propriété de la Villa
   Pretty Names:
-    English: a |Cabana Deed|
-    Spanish: las |Escrituras del Chalé|
-    French: un |Titre de Propriété de la Villa|
+    English: "a |Cabana Deed|"
+    Spanish: "las |Escrituras del Chalé|"
+    French: "un |Titre de Propriété de la Villa|"
   Cryptic Names:
-    English: a |pass for a private residence|
-    Spanish: un |pase a una propiedad privada|
-    French: un |laissez-passer d'une résidence privée|
+    English: "a |pass for a private residence|"
+    Spanish: "un |pase a una propiedad privada|"
+    French: "un |laissez-passer d'une résidence privée|"
   Gender:
     English: None
     Spanish: Female # ("Escrituras") Female. ("pase"). Male
@@ -2907,9 +2907,9 @@
     Spanish: Cupón de elogios
     French: Ticket Flatteur
   Pretty Names:
-    English: a |Complimentary ID|
-    Spanish: un |Cupón de elogios|
-    French: un |Ticket Flatteur|
+    English: "a |Complimentary ID|"
+    Spanish: "un |Cupón de elogios|"
+    French: "un |Ticket Flatteur|"
   Gender:
     English: None
     Spanish: Male
@@ -2925,9 +2925,9 @@
     Spanish: Cupón de relleno
     French: Ticket de Plein
   Pretty Names:
-    English: a |Fill Up Coupon|
-    Spanish: un |Cupón de relleno|
-    French: un |Ticket de Plein|
+    English: "a |Fill Up Coupon|"
+    Spanish: "un |Cupón de relleno|"
+    French: "un |Ticket de Plein|"
   Gender:
     English: None
     Spanish: Male
@@ -2943,9 +2943,9 @@
     Spanish: Luminografía Legendaria
     French: Photo de Légende
   Pretty Names:
-    English: a |Legendary Pictograph|
-    Spanish: una |Luminografía Legendaria|
-    French: une |Photo de Légende|
+    English: "a |Legendary Pictograph|"
+    Spanish: "una |Luminografía Legendaria|"
+    French: "une |Photo de Légende|"
   Gender:
     English: None
     Spanish: Female
@@ -2961,13 +2961,13 @@
     Spanish: Tingle Draconiano
     French: Statue Tingle du Dragon
   Pretty Names:
-    English: a |Dragon Tingle Statue|
-    Spanish: un |Tingle Draconiano|
-    French: une |Statue Tingle du Dragon|
+    English: "a |Dragon Tingle Statue|"
+    Spanish: "un |Tingle Draconiano|"
+    French: "une |Statue Tingle du Dragon|"
   Cryptic Names:
-    English: a |statue of a fairy|
-    Spanish: una |estatua de un hada|
-    French: une |statue d'une fée|
+    English: "a |statue of a fairy|"
+    Spanish: "una |estatua de un hada|"
+    French: "une |statue d'une fée|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -2986,13 +2986,13 @@
     Spanish: Tingle Prohibido
     French: Statue Tingle Défendue
   Pretty Names:
-    English: a |Forbidden Tingle Statue|
-    Spanish: un |Tingle Prohibido|
-    French: une |Statue Tingle Défendue|
+    English: "a |Forbidden Tingle Statue|"
+    Spanish: "un |Tingle Prohibido|"
+    French: "une |Statue Tingle Défendue|"
   Cryptic Names:
-    English: a |statue of a fairy|
-    Spanish: una |estatua de un hada|
-    French: une |statue d'une fée|
+    English: "a |statue of a fairy|"
+    Spanish: "una |estatua de un hada|"
+    French: "une |statue d'une fée|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -3011,13 +3011,13 @@
     Spanish: Tingle Divino
     French: Statue Tingle Divine
   Pretty Names:
-    English: a |Goddess Tingle Statue|
-    Spanish: un |Tingle Divino|
-    French: une |Statue Tingle Divine|
+    English: "a |Goddess Tingle Statue|"
+    Spanish: "un |Tingle Divino|"
+    French: "une |Statue Tingle Divine|"
   Cryptic Names:
-    English: a |statue of a fairy|
-    Spanish: una |estatua de un hada|
-    French: une |statue d'une fée|
+    English: "a |statue of a fairy|"
+    Spanish: "una |estatua de un hada|"
+    French: "une |statue d'une fée|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -3036,13 +3036,13 @@
     Spanish: Tingle Terrestre
     French: Statue Tingle Terrestre
   Pretty Names:
-    English: an |Earth Tingle Statue|
-    Spanish: un |Tingle Terrestre|
-    French: une |Statue Tingle Terrestre|
+    English: "an |Earth Tingle Statue|"
+    Spanish: "un |Tingle Terrestre|"
+    French: "une |Statue Tingle Terrestre|"
   Cryptic Names:
-    English: a |statue of a fairy|
-    Spanish: una |estatua de un hada|
-    French: une |statue d'une fée|
+    English: "a |statue of a fairy|"
+    Spanish: "una |estatua de un hada|"
+    French: "une |statue d'une fée|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -3061,13 +3061,13 @@
     Spanish: Tingle Eólico
     French: Statue Tingle du Vent
   Pretty Names:
-    English: a |Wind Tingle Statue|
-    Spanish: un |Tingle Eólico|
-    French: une |Statue Tingle du Vent|
+    English: "a |Wind Tingle Statue|"
+    Spanish: "un |Tingle Eólico|"
+    French: "une |Statue Tingle du Vent|"
   Cryptic Names:
-    English: a |statue of a fairy|
-    Spanish: una |estatua de un hada|
-    French: une |statue d'une fée|
+    English: "a |statue of a fairy|"
+    Spanish: "una |estatua de un hada|"
+    French: "une |statue d'une fée|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -3086,9 +3086,9 @@
     Spanish: Ataque Huracán
     French: Attaque Tourbillon
   Pretty Names:
-    English: the |Hurricane Spin|
-    Spanish: el |Ataque Huracán|
-    French: l'|Attaque Tourbillon|
+    English: "the |Hurricane Spin|"
+    Spanish: "el |Ataque Huracán|"
+    French: l'|Attaque Tourbillon|"
   Gender:
     English: None
     Spanish: Male
@@ -3104,13 +3104,13 @@
     Spanish: Zurrón Progresivo
     French: Bourse Progressive
   Pretty Names:
-    English: a |Progressive Wallet|
-    Spanish: un |Zurrón Progresivo|
-    French: une |Bourse Progressive|
+    English: "a |Progressive Wallet|"
+    Spanish: "un |Zurrón Progresivo|"
+    French: "une |Bourse Progressive|"
   Cryptic Names:
-    English: an |upgrade for your Rupee bag|
-    Spanish: una |mejora para tu saco de rupias|
-    French: une |amélioration pour votre bourse|
+    English: "an |upgrade for your Rupee bag|"
+    Spanish: "una |mejora para tu saco de rupias|"
+    French: "une |amélioration pour votre bourse|"
   Gender:
     English: None
     Spanish: Male #("un") Male. ("una"). Female
@@ -3126,9 +3126,9 @@
     Spanish: Zurrón Gigante (5000)
     French: Bourse (5000)
   Pretty Names:
-    English: the |Five Thousand Wallet|
-    Spanish: el |Zurrón Gigante (5000)|
-    French: la |Bourse (5000)|
+    English: "the |Five Thousand Wallet|"
+    Spanish: "el |Zurrón Gigante (5000)|"
+    French: "la |Bourse (5000)|"
   Gender:
     English: None
     Spanish: Male
@@ -3144,13 +3144,13 @@
     Spanish: Saco de Bombas Progresivo
     French: Sac de Bombes Progressif
   Pretty Names:
-    English: a |Progressive Bomb Bag|
-    Spanish: un |Saco de Bombas Progresivo|
-    French: un |Sac de Bombes Progressif|
+    English: "a |Progressive Bomb Bag|"
+    Spanish: "un |Saco de Bombas Progresivo|"
+    French: "un |Sac de Bombes Progressif|"
   Cryptic Names:
-    English: an |upgrade for your bomb bag|
-    Spanish: una |mejora para tu saco de bombas|
-    French: une |amélioration pour votre sac de bombes|
+    English: "an |upgrade for your bomb bag|"
+    Spanish: "una |mejora para tu saco de bombas|"
+    French: "une |amélioration pour votre sac de bombes|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -3166,9 +3166,9 @@
     Spanish: Saco Gigante de Bombas (99)
     French: Sac de Bombes (99)
   Pretty Names:
-    English: a |Ninety Nine Bomb Bag|
-    Spanish: un |Saco Gigante de Bombas (99)|
-    French: le |Sac de Bombes (99)|
+    English: "a |Ninety Nine Bomb Bag|"
+    Spanish: "un |Saco Gigante de Bombas (99)|"
+    French: "le |Sac de Bombes (99)|"
   Gender:
     English: None
     Spanish: Male
@@ -3184,13 +3184,13 @@
     Spanish: Carcaj Progresivo
     French: Carquois Progressif
   Pretty Names:
-    English: a |Progressive Quiver|
-    Spanish: un |Carcaj Progresivo|
-    French: un |Carquois Progressif|
+    English: "a |Progressive Quiver|"
+    Spanish: "un |Carcaj Progresivo|"
+    French: "un |Carquois Progressif|"
   Cryptic Names:
-    English: an |upgrade for your quiver|
-    Spanish: una |mejora para tu estuche de flechas|
-    French: une |amélioration pour votre carquois|
+    English: "an |upgrade for your quiver|"
+    Spanish: "una |mejora para tu estuche de flechas|"
+    French: "une |amélioration pour votre carquois|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
@@ -3210,9 +3210,9 @@
     Spanish: Carcaj Gigante (99)
     French: Carquois (99)
   Pretty Names:
-    English: the |Ninety Nine Quiver|
-    Spanish: un |Carcaj Gigante (99)|
-    French: le |Carquois (99)|
+    English: "the |Ninety Nine Quiver|"
+    Spanish: "un |Carcaj Gigante (99)|"
+    French: "le |Carquois (99)|"
   Gender:
     English: None
     Spanish: Male
@@ -3229,9 +3229,9 @@
     Spanish: Barra de Magia
     French: Energie Magique
   Pretty Names:
-    English: a |Magic Meter|
-    Spanish: una |Barra de Magia|
-    French: de l'|Energie Magique|
+    English: "a |Magic Meter|"
+    Spanish: "una |Barra de Magia|"
+    French: "de l'|Energie Magique|"
   Gender:
     English: None
     Spanish: Female
@@ -3248,13 +3248,13 @@
     Spanish: Barra de Magia Progresiva
     French: Energie Magique Progressive
   Pretty Names:
-    English: a |Progressive Magic Meter|
-    Spanish: una |Barra de Magia Progresiva|
-    French: de l'|Energie Magique Progressive|
+    English: "a |Progressive Magic Meter|"
+    Spanish: "una |Barra de Magia Progresiva|"
+    French: "de l'|Energie Magique Progressive|"
   Cryptic Names:
-    English: an |upgrade for your magic meter|
-    Spanish: una |mejora a tu poder mágico|
-    French: une |amélioration de votre énergie magique|
+    English: "an |upgrade for your magic meter|"
+    Spanish: "una |mejora a tu poder mágico|"
+    French: "une |amélioration de votre énergie magique|"
   Gender:
     English: None
     Spanish: Female
@@ -3270,9 +3270,9 @@
     Spanish: Cincuenta Rupias
     French: Cinquante Rubis
   Pretty Names:
-    English: a |Fifty Rupees|
-    Spanish: |Cincuenta Rupias|
-    French: |Cinquante Rubis|
+    English: "a |Fifty Rupees|"
+    Spanish: "|Cincuenta Rupias|"
+    French: "|Cinquante Rubis|"
   Gender:
     English: None
     Spanish: Female
@@ -3288,9 +3288,9 @@
     Spanish: Cien Rupias
     French: Cent Rubis
   Pretty Names:
-    English: a |Hundred Rupees|
-    Spanish: |Cien Rupias|
-    French: |Cent Rubis|
+    English: "a |Hundred Rupees|"
+    Spanish: "|Cien Rupias|"
+    French: "|Cent Rubis|"
   Gender:
     English: None
     Spanish: Female
@@ -3306,9 +3306,9 @@
     Spanish: Ciento cincuenta Rupias
     French: Cent-Cinquante Rubis
   Pretty Names:
-    English: a |Hundred Fifty Rupees|
-    Spanish: |Ciento cincuenta Rupias|
-    French: |Cent-Cinquante Rubis|
+    English: "a |Hundred Fifty Rupees|"
+    Spanish: "|Ciento cincuenta Rupias|"
+    French: "|Cent-Cinquante Rubis|"
   Gender:
     English: None
     Spanish: Female
@@ -3324,9 +3324,9 @@
     Spanish: Doscientas Rupias
     French: Deux-Cents Rubis
   Pretty Names:
-    English: a |Two Hundred Rupees|
-    Spanish: |Doscientas Rupias|
-    French: |Deux-Cents Rubis|
+    English: "a |Two Hundred Rupees|"
+    Spanish: "|Doscientas Rupias|"
+    French: "|Deux-Cents Rubis|"
   Gender:
     English: None
     Spanish: Female
@@ -3342,9 +3342,9 @@
     Spanish: Doscientas cincuenta Rupias
     French: Deux-Cent-Cinquante Rubis
   Pretty Names:
-    English: a |Two Hundred Fifty Rupees|
-    Spanish: |Doscientas cincuenta Rupias|
-    French: |Deux-Cent-Cinquante Rubis|
+    English: "a |Two Hundred Fifty Rupees|"
+    Spanish: "|Doscientas cincuenta Rupias|"
+    French: "|Deux-Cent-Cinquante Rubis|"
   Gender:
     English: None
     Spanish: Female
@@ -3360,9 +3360,9 @@
     Spanish: Rupia Arcoíris
     French: Rubis Arc-en-Ciel
   Pretty Names:
-    English: a |Rainbow Rupee|
-    Spanish: una |Rupia Arcoíris|
-    French: un |Rubis Arc-en-Ciel|
+    English: "a |Rainbow Rupee|"
+    Spanish: "una |Rupia Arcoíris|"
+    French: "un |Rubis Arc-en-Ciel|"
   Gender:
     English: None
     Spanish: Female
@@ -3378,9 +3378,9 @@
     Spanish: Mapa de Submarinos
     French: Carte des Sous-marins
   Pretty Names:
-    English: a |Submarine Chart|
-    Spanish: un |Mapa de Submarinos|
-    French: une |Carte des Sous-marins|
+    English: "a |Submarine Chart|"
+    Spanish: "un |Mapa de Submarinos|"
+    French: "une |Carte des Sous-marins|"
   Gender:
     English: None
     Spanish: Male
@@ -3396,9 +3396,9 @@
     Spanish: Mapa de Terry
     French: Carte de Terry
   Pretty Names:
-    English: |Beedle's Chart|
-    Spanish: un |Mapa de Terry|
-    French: une |Carte de Terry|
+    English: "|Beedle's Chart|"
+    Spanish: "un |Mapa de Terry|"
+    French: "une |Carte de Terry|"
   Gender:
     English: None
     Spanish: Male
@@ -3414,9 +3414,9 @@
     Spanish: Mapa de Atalayas
     French: Carte des Tours de Guet
   Pretty Names:
-    English: a |Platform Chart|
-    Spanish: un |Mapa de Atalayas|
-    French: une |Carte des Tours de Guet|
+    English: "a |Platform Chart|"
+    Spanish: "un |Mapa de Atalayas|"
+    French: "une |Carte des Tours de Guet|"
   Gender:
     English: None
     Spanish: Male
@@ -3432,9 +3432,9 @@
     Spanish: Mapa de círculos de Luz
     French: Carte des Cercles de Lumière
   Pretty Names:
-    English: a |Light Ring Chart|
-    Spanish: un |Mapa de círculos de Luz|
-    French: une |Carte des Cercles de Lumière|
+    English: "a |Light Ring Chart|"
+    Spanish: "un |Mapa de círculos de Luz|"
+    French: "une |Carte des Cercles de Lumière|"
   Gender:
     English: None
     Spanish: Male
@@ -3450,9 +3450,9 @@
     Spanish: Mapa de Cuevas Secretas
     French: Carte Secrète
   Pretty Names:
-    English: a |Secret Cave Chart|
-    Spanish: un |Mapa de Cuevas Secretas|
-    French: une |Carte Secrète|
+    English: "a |Secret Cave Chart|"
+    Spanish: "un |Mapa de Cuevas Secretas|"
+    French: "une |Carte Secrète|"
   Gender:
     English: None
     Spanish: Male
@@ -3468,9 +3468,9 @@
     Spanish: Mapa Marino de Corazones
     French: Carte Marine des Cœurs
   Pretty Names:
-    English: a |Sea Hearts Chart|
-    Spanish: un |Mapa Marino de Corazones|
-    French: une |Carte Marine des Cœurs|
+    English: "a |Sea Hearts Chart|"
+    Spanish: "un |Mapa Marino de Corazones|"
+    French: "une |Carte Marine des Cœurs|"
   Gender:
     English: None
     Spanish: Male
@@ -3486,9 +3486,9 @@
     Spanish: Mapa Isleño de Corazones
     French: Carte Insulaire des Cœurs
   Pretty Names:
-    English: an |Island Hearts Chart|
-    Spanish: un |Mapa Isleño de Corazones|
-    French: une |Carte Insulaire des Cœurs|
+    English: "an |Island Hearts Chart|"
+    Spanish: "un |Mapa Isleño de Corazones|"
+    French: "une |Carte Insulaire des Cœurs|"
   Gender:
     English: None
     Spanish: Male
@@ -3504,9 +3504,9 @@
     Spanish: Mapa de las Grandes Hadas
     French: Carte des Grandes Fées
   Pretty Names:
-    English: a |Great Fairy Chart|
-    Spanish: un |Mapa de las Grandes Hadas|
-    French: une |Carte des Grandes Fées|
+    English: "a |Great Fairy Chart|"
+    Spanish: "un |Mapa de las Grandes Hadas|"
+    French: "une |Carte des Grandes Fées|"
   Gender:
     English: None
     Spanish: Male
@@ -3522,9 +3522,9 @@
     Spanish: Mapa de Calamares
     French: Carte des Kalamars
   Pretty Names:
-    English: an |Octo Chart|
-    Spanish: un |Mapa de Calamares|
-    French: une |Carte des Kalamars|
+    English: "an |Octo Chart|"
+    Spanish: "un |Mapa de Calamares|"
+    French: "une |Carte des Kalamars|"
   Gender:
     English: None
     Spanish: Male
@@ -3540,9 +3540,9 @@
     Spanish: Mapa A-lu-ci-nante
     French: Super Carte
   Pretty Names:
-    English: an |INcredible Chart|
-    Spanish: un |Mapa A-lu-ci-nante|
-    French: une |Super Carte|
+    English: "an |INcredible Chart|"
+    Spanish: "un |Mapa A-lu-ci-nante|"
+    French: "une |Super Carte|"
   Gender:
     English: None
     Spanish: Male
@@ -3558,13 +3558,13 @@
     Spanish: Mapa del Tesoro 7
     French: Carte au Trésor 7
   Pretty Names:
-    English: |Treasure Chart 7|
-    Spanish: |Mapa del Tesoro 7|
-    French: la |Carte au Trésor 7|
+    English: "|Treasure Chart 7|"
+    Spanish: "|Mapa del Tesoro 7|"
+    French: "la |Carte au Trésor 7|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3580,13 +3580,13 @@
     Spanish: Mapa del Tesoro 27
     French: Carte au Trésor 27
   Pretty Names:
-    English: |Treasure Chart 27|
-    Spanish: |Mapa del Tesoro 27|
-    French: la |Carte au Trésor 27|
+    English: "|Treasure Chart 27|"
+    Spanish: "|Mapa del Tesoro 27|"
+    French: "la |Carte au Trésor 27|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3602,13 +3602,13 @@
     Spanish: Mapa del Tesoro 21
     French: Carte au Trésor 21
   Pretty Names:
-    English: |Treasure Chart 21|
-    Spanish: |Mapa del Tesoro 21|
-    French: la |Carte au Trésor 21|
+    English: "|Treasure Chart 21|"
+    Spanish: "|Mapa del Tesoro 21|"
+    French: "la |Carte au Trésor 21|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3624,13 +3624,13 @@
     Spanish: Mapa del Tesoro 13
     French: Carte au Trésor 13
   Pretty Names:
-    English: |Treasure Chart 13|
-    Spanish: |Mapa del Tesoro 13|
-    French: la |Carte au Trésor 13|
+    English: "|Treasure Chart 13|"
+    Spanish: "|Mapa del Tesoro 13|"
+    French: "la |Carte au Trésor 13|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3646,13 +3646,13 @@
     Spanish: Mapa del Tesoro 32
     French: Carte au Trésor 32
   Pretty Names:
-    English: |Treasure Chart 32|
-    Spanish: |Mapa del Tesoro 32|
-    French: la |Carte au Trésor 32|
+    English: "|Treasure Chart 32|"
+    Spanish: "|Mapa del Tesoro 32|"
+    French: "la |Carte au Trésor 32|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3668,13 +3668,13 @@
     Spanish: Mapa del Tesoro 19
     French: Carte au Trésor 19
   Pretty Names:
-    English: |Treasure Chart 19|
-    Spanish: |Mapa del Tesoro 19|
-    French: la |Carte au Trésor 19|
+    English: "|Treasure Chart 19|"
+    Spanish: "|Mapa del Tesoro 19|"
+    French: "la |Carte au Trésor 19|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3690,13 +3690,13 @@
     Spanish: Mapa del Tesoro 41
     French: Carte au Trésor 41
   Pretty Names:
-    English: |Treasure Chart 41|
-    Spanish: |Mapa del Tesoro 41|
-    French: la |Carte au Trésor 41|
+    English: "|Treasure Chart 41|"
+    Spanish: "|Mapa del Tesoro 41|"
+    French: "la |Carte au Trésor 41|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3712,13 +3712,13 @@
     Spanish: Mapa del Tesoro 26
     French: Carte au Trésor 26
   Pretty Names:
-    English: |Treasure Chart 26|
-    Spanish: |Mapa del Tesoro 26|
-    French: la |Carte au Trésor 26|
+    English: "|Treasure Chart 26|"
+    Spanish: "|Mapa del Tesoro 26|"
+    French: "la |Carte au Trésor 26|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3734,13 +3734,13 @@
     Spanish: Mapa del Tesoro 8
     French: Carte au Trésor 8
   Pretty Names:
-    English: |Treasure Chart 8|
-    Spanish: |Mapa del Tesoro 8|
-    French: la |Carte au Trésor 8|
+    English: "|Treasure Chart 8|"
+    Spanish: "|Mapa del Tesoro 8|"
+    French: "la |Carte au Trésor 8|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3756,13 +3756,13 @@
     Spanish: Mapa del Tesoro 37
     French: Carte au Trésor 37
   Pretty Names:
-    English: |Treasure Chart 37|
-    Spanish: |Mapa del Tesoro 37|
-    French: la |Carte au Trésor 37|
+    English: "|Treasure Chart 37|"
+    Spanish: "|Mapa del Tesoro 37|"
+    French: "la |Carte au Trésor 37|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3778,13 +3778,13 @@
     Spanish: Mapa del Tesoro 25
     French: Carte au Trésor 25
   Pretty Names:
-    English: |Treasure Chart 25|
-    Spanish: |Mapa del Tesoro 25|
-    French: la |Carte au Trésor 25|
+    English: "|Treasure Chart 25|"
+    Spanish: "|Mapa del Tesoro 25|"
+    French: "la |Carte au Trésor 25|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3800,13 +3800,13 @@
     Spanish: Mapa del Tesoro 17
     French: Carte au Trésor 17
   Pretty Names:
-    English: |Treasure Chart 17|
-    Spanish: |Mapa del Tesoro 17|
-    French: la |Carte au Trésor 17|
+    English: "|Treasure Chart 17|"
+    Spanish: "|Mapa del Tesoro 17|"
+    French: "la |Carte au Trésor 17|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3822,13 +3822,13 @@
     Spanish: Mapa del Tesoro 36
     French: Carte au Trésor 36
   Pretty Names:
-    English: |Treasure Chart 36|
-    Spanish: |Mapa del Tesoro 36|
-    French: la |Carte au Trésor 36|
+    English: "|Treasure Chart 36|"
+    Spanish: "|Mapa del Tesoro 36|"
+    French: "la |Carte au Trésor 36|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3844,13 +3844,13 @@
     Spanish: Mapa del Tesoro 22
     French: Carte au Trésor 22
   Pretty Names:
-    English: |Treasure Chart 22|
-    Spanish: |Mapa del Tesoro 22|
-    French: la |Carte au Trésor 22|
+    English: "|Treasure Chart 22|"
+    Spanish: "|Mapa del Tesoro 22|"
+    French: "la |Carte au Trésor 22|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3866,13 +3866,13 @@
     Spanish: Mapa del Tesoro 9
     French: Carte au Trésor 9
   Pretty Names:
-    English: |Treasure Chart 9|
-    Spanish: |Mapa del Tesoro 9|
-    French: la |Carte au Trésor 9|
+    English: "|Treasure Chart 9|"
+    Spanish: "|Mapa del Tesoro 9|"
+    French: "la |Carte au Trésor 9|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3888,13 +3888,13 @@
     Spanish: Mapa del Barco Fantasma
     French: Carte du Vaisseau Fantôme
   Pretty Names:
-    English: the |Ghost Ship Chart|
-    Spanish: el |Mapa del Barco Fantasma|
-    French: la |Carte du Vaisseau Fantôme|
+    English: "the |Ghost Ship Chart|"
+    Spanish: "el |Mapa del Barco Fantasma|"
+    French: "la |Carte du Vaisseau Fantôme|"
   Cryptic Names:
-    English: a |map of fear|
-    Spanish: un |mapa terrorífico|
-    French: une |carte de la peur|
+    English: "a |map of fear|"
+    Spanish: "un |mapa terrorífico|"
+    French: "une |carte de la peur|"
   Gender:
     English: None
     Spanish: Male
@@ -3913,9 +3913,9 @@
     Spanish: Mapa de Tingle
     French: Carte de Tingle
   Pretty Names:
-    English: |Tingle's Chart|
-    Spanish: el |Mapa de Tingle|
-    French: la |Carte de Tingle|
+    English: "|Tingle's Chart|"
+    Spanish: "el |Mapa de Tingle|"
+    French: "la |Carte de Tingle|"
   Gender:
     English: None
     Spanish: Male
@@ -3931,13 +3931,13 @@
     Spanish: Mapa del Tesoro 14
     French: Carte au Trésor 14
   Pretty Names:
-    English: |Treasure Chart 14|
-    Spanish: |Mapa del Tesoro 14|
-    French: la |Carte au Trésor 14|
+    English: "|Treasure Chart 14|"
+    Spanish: "|Mapa del Tesoro 14|"
+    French: "la |Carte au Trésor 14|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3953,13 +3953,13 @@
     Spanish: Mapa del Tesoro 10
     French: Carte au Trésor 10
   Pretty Names:
-    English: |Treasure Chart 10|
-    Spanish: |Mapa del Tesoro 10|
-    French: la |Carte au Trésor 10|
+    English: "|Treasure Chart 10|"
+    Spanish: "|Mapa del Tesoro 10|"
+    French: "la |Carte au Trésor 10|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3975,13 +3975,13 @@
     Spanish: Mapa del Tesoro 40
     French: Carte au Trésor 40
   Pretty Names:
-    English: |Treasure Chart 40|
-    Spanish: |Mapa del Tesoro 40|
-    French: la |Carte au Trésor 40|
+    English: "|Treasure Chart 40|"
+    Spanish: "|Mapa del Tesoro 40|"
+    French: "la |Carte au Trésor 40|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -3997,13 +3997,13 @@
     Spanish: Mapa del Tesoro 3
     French: Carte au Trésor 3
   Pretty Names:
-    English: |Treasure Chart 3|
-    Spanish: |Mapa del Tesoro 3|
-    French: la |Carte au Trésor 3|
+    English: "|Treasure Chart 3|"
+    Spanish: "|Mapa del Tesoro 3|"
+    French: "la |Carte au Trésor 3|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4019,13 +4019,13 @@
     Spanish: Mapa del Tesoro 4
     French: Carte au Trésor 4
   Pretty Names:
-    English: |Treasure Chart 4|
-    Spanish: |Mapa del Tesoro 4|
-    French: la |Carte au Trésor 4|
+    English: "|Treasure Chart 4|"
+    Spanish: "|Mapa del Tesoro 4|"
+    French: "la |Carte au Trésor 4|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4041,13 +4041,13 @@
     Spanish: Mapa del Tesoro 28
     French: Carte au Trésor 28
   Pretty Names:
-    English: |Treasure Chart 28|
-    Spanish: |Mapa del Tesoro 28|
-    French: la |Carte au Trésor 28|
+    English: "|Treasure Chart 28|"
+    Spanish: "|Mapa del Tesoro 28|"
+    French: "la |Carte au Trésor 28|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4063,13 +4063,13 @@
     Spanish: Mapa del Tesoro 16
     French: Carte au Trésor 16
   Pretty Names:
-    English: |Treasure Chart 16|
-    Spanish: |Mapa del Tesoro 16|
-    French: la |Carte au Trésor 16|
+    English: "|Treasure Chart 16|"
+    Spanish: "|Mapa del Tesoro 16|"
+    French: "la |Carte au Trésor 16|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4085,13 +4085,13 @@
     Spanish: Mapa del Tesoro 18
     French: Carte au Trésor 18
   Pretty Names:
-    English: |Treasure Chart 18|
-    Spanish: |Mapa del Tesoro 18|
-    French: la |Carte au Trésor 18|
+    English: "|Treasure Chart 18|"
+    Spanish: "|Mapa del Tesoro 18|"
+    French: "la |Carte au Trésor 18|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4107,13 +4107,13 @@
     Spanish: Mapa del Tesoro 34
     French: Carte au Trésor 34
   Pretty Names:
-    English: |Treasure Chart 34|
-    Spanish: |Mapa del Tesoro 34|
-    French: la |Carte au Trésor 34|
+    English: "|Treasure Chart 34|"
+    Spanish: "|Mapa del Tesoro 34|"
+    French: "la |Carte au Trésor 34|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4129,13 +4129,13 @@
     Spanish: Mapa del Tesoro 29
     French: Carte au Trésor 29
   Pretty Names:
-    English: |Treasure Chart 29|
-    Spanish: |Mapa del Tesoro 29|
-    French: la |Carte au Trésor 29|
+    English: "|Treasure Chart 29|"
+    Spanish: "|Mapa del Tesoro 29|"
+    French: "la |Carte au Trésor 29|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4151,13 +4151,13 @@
     Spanish: Mapa del Tesoro 1
     French: Carte au Trésor 1
   Pretty Names:
-    English: |Treasure Chart 1|
-    Spanish: |Mapa del Tesoro 1|
-    French: la |Carte au Trésor 1|
+    English: "|Treasure Chart 1|"
+    Spanish: "|Mapa del Tesoro 1|"
+    French: "la |Carte au Trésor 1|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4173,13 +4173,13 @@
     Spanish: Mapa del Tesoro 35
     French: Carte au Trésor 35
   Pretty Names:
-    English: |Treasure Chart 35|
-    Spanish: |Mapa del Tesoro 35|
-    French: la |Carte au Trésor 35|
+    English: "|Treasure Chart 35|"
+    Spanish: "|Mapa del Tesoro 35|"
+    French: "la |Carte au Trésor 35|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4195,13 +4195,13 @@
     Spanish: Mapa del Tesoro 12
     French: Carte au Trésor 12
   Pretty Names:
-    English: |Treasure Chart 12|
-    Spanish: |Mapa del Tesoro 12|
-    French: la |Carte au Trésor 12|
+    English: "|Treasure Chart 12|"
+    Spanish: "|Mapa del Tesoro 12|"
+    French: "la |Carte au Trésor 12|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4217,13 +4217,13 @@
     Spanish: Mapa del Tesoro 6
     French: Carte au Trésor 6
   Pretty Names:
-    English: |Treasure Chart 6|
-    Spanish: |Mapa del Tesoro 6|
-    French: la |Carte au Trésor 6|
+    English: "|Treasure Chart 6|"
+    Spanish: "|Mapa del Tesoro 6|"
+    French: "la |Carte au Trésor 6|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4239,13 +4239,13 @@
     Spanish: Mapa del Tesoro 24
     French: Carte au Trésor 24
   Pretty Names:
-    English: |Treasure Chart 24|
-    Spanish: |Mapa del Tesoro 24|
-    French: la |Carte au Trésor 24|
+    English: "|Treasure Chart 24|"
+    Spanish: "|Mapa del Tesoro 24|"
+    French: "la |Carte au Trésor 24|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4261,13 +4261,13 @@
     Spanish: Mapa del Tesoro 39
     French: Carte au Trésor 39
   Pretty Names:
-    English: |Treasure Chart 39|
-    Spanish: |Mapa del Tesoro 39|
-    French: la |Carte au Trésor 39|
+    English: "|Treasure Chart 39|"
+    Spanish: "|Mapa del Tesoro 39|"
+    French: "la |Carte au Trésor 39|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4283,13 +4283,13 @@
     Spanish: Mapa del Tesoro 38
     French: Carte au Trésor 38
   Pretty Names:
-    English: |Treasure Chart 38|
-    Spanish: |Mapa del Tesoro 38|
-    French: la |Carte au Trésor 38|
+    English: "|Treasure Chart 38|"
+    Spanish: "|Mapa del Tesoro 38|"
+    French: "la |Carte au Trésor 38|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4305,13 +4305,13 @@
     Spanish: Mapa del Tesoro 2
     French: Carte au Trésor 2
   Pretty Names:
-    English: |Treasure Chart 2|
-    Spanish: |Mapa del Tesoro 2|
-    French: la |Carte au Trésor 2|
+    English: "|Treasure Chart 2|"
+    Spanish: "|Mapa del Tesoro 2|"
+    French: "la |Carte au Trésor 2|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4327,13 +4327,13 @@
     Spanish: Mapa del Tesoro 33
     French: Carte au Trésor 33
   Pretty Names:
-    English: |Treasure Chart 33|
-    Spanish: |Mapa del Tesoro 33|
-    French: la |Carte au Trésor 33|
+    English: "|Treasure Chart 33|"
+    Spanish: "|Mapa del Tesoro 33|"
+    French: "la |Carte au Trésor 33|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4349,13 +4349,13 @@
     Spanish: Mapa del Tesoro 31
     French: Carte au Trésor 31
   Pretty Names:
-    English: |Treasure Chart 31|
-    Spanish: |Mapa del Tesoro 31|
-    French: la |Carte au Trésor 31|
+    English: "|Treasure Chart 31|"
+    Spanish: "|Mapa del Tesoro 31|"
+    French: "la |Carte au Trésor 31|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4371,13 +4371,13 @@
     Spanish: Mapa del Tesoro 23
     French: Carte au Trésor 23
   Pretty Names:
-    English: |Treasure Chart 23|
-    Spanish: |Mapa del Tesoro 23|
-    French: la |Carte au Trésor 23|
+    English: "|Treasure Chart 23|"
+    Spanish: "|Mapa del Tesoro 23|"
+    French: "la |Carte au Trésor 23|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4393,13 +4393,13 @@
     Spanish: Mapa del Tesoro 5
     French: Carte au Trésor 5
   Pretty Names:
-    English: |Treasure Chart 5|
-    Spanish: |Mapa del Tesoro 5|
-    French: la |Carte au Trésor 5|
+    English: "|Treasure Chart 5|"
+    Spanish: "|Mapa del Tesoro 5|"
+    French: "la |Carte au Trésor 5|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4415,13 +4415,13 @@
     Spanish: Mapa del Tesoro 20
     French: Carte au Trésor 20
   Pretty Names:
-    English: |Treasure Chart 20|
-    Spanish: |Mapa del Tesoro 20|
-    French: la |Carte au Trésor 20|
+    English: "|Treasure Chart 20|"
+    Spanish: "|Mapa del Tesoro 20|"
+    French: "la |Carte au Trésor 20|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4437,13 +4437,13 @@
     Spanish: Mapa del Tesoro 30
     French: Carte au Trésor 30
   Pretty Names:
-    English: |Treasure Chart 30|
-    Spanish: |Mapa del Tesoro 30|
-    French: la |Carte au Trésor 30|
+    English: "|Treasure Chart 30|"
+    Spanish: "|Mapa del Tesoro 30|"
+    French: "la |Carte au Trésor 30|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4459,13 +4459,13 @@
     Spanish: Mapa del Tesoro 15
     French: Carte au Trésor 15
   Pretty Names:
-    English: |Treasure Chart 15|
-    Spanish: |Mapa del Tesoro 15|
-    French: la |Carte au Trésor 15|
+    English: "|Treasure Chart 15|"
+    Spanish: "|Mapa del Tesoro 15|"
+    French: "la |Carte au Trésor 15|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4481,13 +4481,13 @@
     Spanish: Mapa del Tesoro 11
     French: Carte au Trésor 11
   Pretty Names:
-    English: |Treasure Chart 11|
-    Spanish: |Mapa del Tesoro 11|
-    French: la |Carte au Trésor 11|
+    English: "|Treasure Chart 11|"
+    Spanish: "|Mapa del Tesoro 11|"
+    French: "la |Carte au Trésor 11|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4503,13 +4503,13 @@
     Spanish: Mapa del Tesoro 46
     French: Carte au Trésor 46
   Pretty Names:
-    English: |Treasure Chart 46|
-    Spanish: |Mapa del Tesoro 46|
-    French: la |Carte au Trésor 46|
+    English: "|Treasure Chart 46|"
+    Spanish: "|Mapa del Tesoro 46|"
+    French: "la |Carte au Trésor 46|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4525,13 +4525,13 @@
     Spanish: Mapa del Tesoro 45
     French: Carte au Trésor 45
   Pretty Names:
-    English: |Treasure Chart 45|
-    Spanish: |Mapa del Tesoro 45|
-    French: la |Carte au Trésor 45|
+    English: "|Treasure Chart 45|"
+    Spanish: "|Mapa del Tesoro 45|"
+    French: "la |Carte au Trésor 45|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4547,13 +4547,13 @@
     Spanish: Mapa del Tesoro 44
     French: Carte au Trésor 44
   Pretty Names:
-    English: |Treasure Chart 44|
-    Spanish: |Mapa del Tesoro 44|
-    French: la |Carte au Trésor 44|
+    English: "|Treasure Chart 44|"
+    Spanish: "|Mapa del Tesoro 44|"
+    French: "la |Carte au Trésor 44|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4569,13 +4569,13 @@
     Spanish: Mapa de la Trifuerza 3
     French: Carte de la Triforce 3
   Pretty Names:
-    English: |Triforce Chart 3|
-    Spanish: |Mapa de la Trifuerza 3|
-    French: la |Carte de la Triforce 3|
+    English: "|Triforce Chart 3|"
+    Spanish: "|Mapa de la Trifuerza 3|"
+    French: "la |Carte de la Triforce 3|"
   Cryptic Names:
-    English: a |purple map|
-    Spanish: un |mapa púrpura|
-    French: une |carte violette|
+    English: "a |purple map|"
+    Spanish: "un |mapa púrpura|"
+    French: "une |carte violette|"
   Gender:
     English: None
     Spanish: Male
@@ -4591,13 +4591,13 @@
     Spanish: Mapa del Tesoro 43
     French: Carte au Trésor 43
   Pretty Names:
-    English: |Treasure Chart 43|
-    Spanish: |Mapa del Tesoro 43|
-    French: la |Carte au Trésor 43|
+    English: "|Treasure Chart 43|"
+    Spanish: "|Mapa del Tesoro 43|"
+    French: "la |Carte au Trésor 43|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4613,13 +4613,13 @@
     Spanish: Mapa de la Trifuerza 2
     French: Carte de la Triforce 2
   Pretty Names:
-    English: |Triforce Chart 2|
-    Spanish: |Mapa de la Trifuerza 2|
-    French: la |Carte de la Triforce 2|
+    English: "|Triforce Chart 2|"
+    Spanish: "|Mapa de la Trifuerza 2|"
+    French: "la |Carte de la Triforce 2|"
   Cryptic Names:
-    English: a |purple map|
-    Spanish: un |mapa púrpura|
-    French: une |carte violette|
+    English: "a |purple map|"
+    Spanish: "un |mapa púrpura|"
+    French: "une |carte violette|"
   Gender:
     English: None
     Spanish: Male
@@ -4635,13 +4635,13 @@
     Spanish: Mapa del Tesoro 42
     French: Carte au Trésor 42
   Pretty Names:
-    English: |Treasure Chart 42|
-    Spanish: |Mapa del Tesoro 42|
-    French: la |Carte au Trésor 42|
+    English: "|Treasure Chart 42|"
+    Spanish: "|Mapa del Tesoro 42|"
+    French: "la |Carte au Trésor 42|"
   Cryptic Names:
-    English: a |blue map|
-    Spanish: un |mapa azul|
-    French: une |carte bleue|
+    English: "a |blue map|"
+    Spanish: "un |mapa azul|"
+    French: "une |carte bleue|"
   Gender:
     English: None
     Spanish: Male
@@ -4657,13 +4657,13 @@
     Spanish: Mapa de la Trifuerza 1
     French: Carte de la Triforce 1
   Pretty Names:
-    English: |Triforce Chart 1|
-    Spanish: |Mapa de la Trifuerza 1|
-    French: la |Carte de la Triforce 1|
+    English: "|Triforce Chart 1|"
+    Spanish: "|Mapa de la Trifuerza 1|"
+    French: "la |Carte de la Triforce 1|"
   Cryptic Names:
-    English: a |purple map|
-    Spanish: un |mapa púrpura|
-    French: une |carte violette|
+    English: "a |purple map|"
+    Spanish: "un |mapa púrpura|"
+    French: "une |carte violette|"
   Gender:
     English: None
     Spanish: Male

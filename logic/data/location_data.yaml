@@ -305,17 +305,12 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX@ELF
-    - content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
-    - content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
-    - content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+    code/cking.rpx@RPX@ELF: 0x0206C096
+    content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000018AC
+    content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr: 0x000032F4
+    content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr: 0x00003438
   Hint Priority: Sometimes
   Type: Boss
-  Offsets:
-    - 0x0206C096
-    - 0x000018AC
-    - 0x000032F4
-    - 0x00003438
 
 - Names:
     English: Forsaken Fortress Sector - Sunken Treasure
@@ -3621,13 +3616,10 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX@ELF
-    - content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+    code/cking.rpx@RPX@ELF: 0x020F5ED6
+    content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000006C0
   Hint Priority: Sometimes
   Type: Boss
-  Offsets:
-    - 0x020F5ED6
-    - 0x000006C0
 
 - Names:
     English: Forbidden Woods - First Room Chest
@@ -3838,13 +3830,10 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX@ELF
-    - content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+    code/cking.rpx@RPX@ELF: 0x020AF916
+    content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x00000114
   Hint Priority: Sometimes
   Type: Boss
-  Offsets:
-    - 0x020AF916
-    - 0x00000114
 
 - Names:
     English: Tower of the Gods - Hop Across Floating Boxes Chest
@@ -4029,13 +4018,10 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX@ELF
-    - content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+    code/cking.rpx@RPX@ELF: 0x020EFE1B
+    content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000003C0
   Hint Priority: Sometimes
   Type: Boss
-  Offsets:
-    - 0x020EFE1B
-    - 0x000003C0
 
 - Names:
     English: Earth Temple - Warp Pot Room Chest
@@ -4274,13 +4260,10 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX@ELF
-    - content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+    code/cking.rpx@RPX@ELF: 0x020DADDE
+    content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000000C0
   Hint Priority: Sometimes
   Type: Boss
-  Offsets:
-    - 0x020DADDE
-    - 0x000000C0
 
 - Names:
     English: Wind Temple - Between Dirt Patches Chest
@@ -4465,13 +4448,10 @@
   Category:
     - Dungeon
   Paths:
-    - code/cking.rpx@RPX@ELF
-    - content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+    code/cking.rpx@RPX@ELF: 0x021031E7
+    content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x00000114
   Hint Priority: Sometimes
   Type: Boss
-  Offsets:
-    - 0x021031E7
-    - 0x00000114
 
 - Names:
     English: Hyrule Castle - Sword Chamber Chest

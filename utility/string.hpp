@@ -50,10 +50,6 @@ namespace Utility::Str {
       return string + typename T::value_type(0);
     }
 
-    std::string InsertUnicodeReplacements(std::string text);
-    std::string RemoveUnicodeReplacements(std::string text);
-    std::u16string RemoveUnicodeReplacements(std::u16string text);
-
     template<typename T> requires std::integral<T>
     std::string intToHex(const T& i, const bool& base = true)
     {

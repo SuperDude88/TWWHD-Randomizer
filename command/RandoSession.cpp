@@ -236,10 +236,8 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
         break;
         case Fmt::ROOT:
         {
-            std::ifstream input(baseDir / current->element, std::ios::binary);
-            if(!input.is_open()) return false;
             current->data = std::make_unique<GenericFile>();
-            dynamic_cast<GenericFile*>(current->data.get())->data << input.rdbuf();
+            if(Utility::getFileContents((baseDir / current->element).string(), dynamic_cast<GenericFile*>(current->data.get())->data) != 0) return false;
         }
         break;
         case Fmt::EMPTY:
@@ -341,8 +339,8 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         case Fmt::YAZ0:
         {
             if(parentData == nullptr) return false;
-            const uint32_t compressLevel = current->parent->storedFormat == Fmt::ROOT ? 1 : 9;
-            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), compressLevel); err != YAZ0Error::NONE)
+            //const uint32_t compressLevel = current->parent->storedFormat == Fmt::ROOT ? 1 : 9;
+            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), 7); err != YAZ0Error::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;
@@ -459,15 +457,6 @@ RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath&
 std::ifstream RandoSession::openBaseFile(const fspath &relPath) {
     CHECK_INITIALIZED(std::ifstream());
     
-    //const fspath file = outputDir / relPath;
-    //if(!Utility::copy_file(baseDir / relPath, file)) {
-    //    ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
-    //    return std::ifstream();
-    //}
-    //if(!std::filesystem::is_regular_file(file)) {
-    //    ErrorLog::getInstance().log("Could not open " + relPath.string() + " after copy");
-    //    return std::ifstream();
-    //}
     const fspath file = baseDir / relPath;
     if(!std::filesystem::is_regular_file(file)) {
         ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
@@ -518,17 +507,10 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 
     RandoSession::CacheEntry& entry = openGameFile(relPath);
     entry.addAction([source](RandoSession* session, FileType* data) -> int {
-        std::string fileData;
-        if (Utility::getFileContents(source.string(), fileData, true)) {
-            ErrorLog::getInstance().log("Failed to open " + source.string());
-	    	return false;
-        }
-        std::istringstream src(fileData, std::ios::binary);
-
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
-        dst->data << src.rdbuf();
+        if(Utility::getFileContents(source.string(), dst->data) != 0) return false; //TODO: proper time against rdbuf
 
         return true;
     });
@@ -539,13 +521,8 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
 bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file from the base directory (without extracting any data)
     CHECK_INITIALIZED(false);
 
-    const fspath src = baseDir / relPath;
-    const fspath dst = outputDir / relPath;
-    if(!std::filesystem::is_regular_file(src)) {
-        ErrorLog::getInstance().log("Could not restore data, " + relPath.string() + " is not a regular file");
-        return false;
-    }
-    return Utility::copy_file(src, dst);
+    RandoSession::CacheEntry& entry = openGameFile(relPath); //doesn't need actions, open loads from base and resaves to output
+    return true;
 }
 
 bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current) {

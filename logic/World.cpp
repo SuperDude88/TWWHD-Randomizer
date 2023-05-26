@@ -18,7 +18,7 @@
 #include <options.hpp>
 
 // some error checking macros for brevity and since we can't use exceptions
-#define YAML_FIELD_CHECK(ref, key, err) if(ref[key].IsNone()) {lastError << "Unable to find key: \"" << key << '"'; return err;}
+#define YAML_FIELD_CHECK(ref, key, err) if(!ref[key]) {lastError << "Unable to find key: \"" << key << '"'; return err;}
 #define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; LOG_ERR_AND_RETURN(WorldLoadingError::MAPPING_MISMATCH);}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << msg; LOG_ERR_AND_RETURN(err);}
 #define EVENT_CHECK(eventName) if (!eventMap.contains(eventName)) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
@@ -807,36 +807,33 @@ World::WorldLoadingError World::parseMacro(const std::string& macroLogicExpressi
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadMacros(Yaml::Node& macroListTree)
+World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
 {
     WorldLoadingError err = WorldLoadingError::NONE;
     uint32_t macroCount = 0;
 
     // first pass to get all macro names
-    for (auto macroIt = macroListTree.Begin(); macroIt != macroListTree.End(); macroIt++)
+    for (const auto& macro : macroListTree)
     {
-        auto macro = *macroIt;
-        macroNameMap.emplace(macro.first, macroCount++);
+        macroNameMap.emplace(macro.first.as<std::string>(), macroCount++);
     }
-    for (auto macroIt = macroListTree.Begin(); macroIt != macroListTree.End(); macroIt++)
+    for (const auto& macro : macroListTree)
     {
-        auto macro = *macroIt;
         macros.emplace_back();
 
-        std::string logicExpression = macro.second.As<std::string>();
-        if ((err = parseMacro(logicExpression, macros.back())) != WorldLoadingError::NONE)
+        if ((err = parseMacro(macro.second.as<std::string>(), macros.back())) != WorldLoadingError::NONE)
         {
-            lastError << " | Encountered parsing macro of name " << macro.first;
+            lastError << " | Encountered parsing macro of name " << macro.first.as<std::string>();
             return err;
         }
     }
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
+World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
 {
     YAML_FIELD_CHECK(locationObject, "Names", WorldLoadingError::ITEM_MISSING_KEY);
-    std::string location = locationObject["Names"]["English"].As<std::string>();
+    const std::string location = locationObject["Names"]["English"].as<std::string>();
 
     Location& newEntry = locationEntries[location];
     // Sort locations by order of processing
@@ -847,16 +844,15 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
     newEntry.categories.clear();
     for (const auto& language : Text::supported_languages)
     {
-        newEntry.names[language] = Utility::Str::RemoveUnicodeReplacements(locationObject["Names"][language].As<std::string>());
+        newEntry.names[language] = locationObject["Names"][language].as<std::string>();
     }
 
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)
+    for (const auto& category : locationObject["Category"])
     {
-        Yaml::Node category = (*categoryIt).second;
-        const std::string& categoryNameStr = category.As<std::string>();
+        const std::string& categoryNameStr = category.as<std::string>();
         const auto& cat = nameToLocationCategory(categoryNameStr);
         if (cat == LocationCategory::INVALID)
         {
@@ -867,7 +863,7 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         newEntry.categories.insert(cat);
     }
 
-    const std::string& modificationTypeStr = locationObject["Type"].As<std::string>();
+    const std::string& modificationTypeStr = locationObject["Type"].as<std::string>();
     const LocationModificationType modificationType = nameToModificationType(modificationTypeStr);
     if (modificationType == LocationModificationType::INVALID)
     {
@@ -924,44 +920,44 @@ World::WorldLoadingError World::loadLocation(Yaml::Node& locationObject)
         }
     }
 
-    const std::string& itemName = locationObject["Original Item"].As<std::string>();
+    const std::string& itemName = locationObject["Original Item"].as<std::string>();
     newEntry.originalItem = itemEntries[itemName];
     ITEM_VALID_CHECK(
         newEntry.originalItem.getGameItemId(),
         "Error processing location " << location << " in world " << std::to_string(worldId + 1) << ": Item of name " << itemName << " Does Not Exist."
     )
 
-    const std::string& hintPriority = locationObject["Hint Priority"].As<std::string>();
+    const std::string& hintPriority = locationObject["Hint Priority"].as<std::string>();
     newEntry.hintPriority = hintPriority;
 
     // If this location is dependent on beating a dungeon, then add it to the dungeon's
     // list of outside dependent locations
-    if (!locationObject["Dungeon Dependency"].IsNone())
+    if (locationObject["Dungeon Dependency"])
     {
-        const std::string dungeonName = locationObject["Dungeon Dependency"].As<std::string>();
+        const std::string dungeonName = locationObject["Dungeon Dependency"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeonName);
         Dungeon& dungeon = dungeons[dungeonName];
         dungeon.outsideDependentLocations.push_back(newEntry.getName());
         newEntry.hasDungeonDependency = true;
     }
 
-    if (!locationObject["Race Mode Location"].IsNone())
+    if (locationObject["Race Mode Location"])
     {
         newEntry.isRaceModeLocation = true;
     }
 
-    if (!locationObject["Goal Names"].IsNone())
+    if (locationObject["Goal Names"])
     {
         for (const auto& language : Text::supported_languages)
         {
-            newEntry.goalNames[language] = Utility::Str::RemoveUnicodeReplacements(locationObject["Goal Names"][language].As<std::string>());
+            newEntry.goalNames[language] = locationObject["Goal Names"][language].as<std::string>();
         }
     }
 
     // Get the message label for hint locations
-    if (!locationObject["Message Label"].IsNone())
+    if (locationObject["Message Label"])
     {
-        newEntry.messageLabel = locationObject["Message Label"].As<std::string>();
+        newEntry.messageLabel = locationObject["Message Label"].as<std::string>();
     }
 
     return WorldLoadingError::NONE;
@@ -1017,12 +1013,12 @@ World::WorldLoadingError World::loadExit(const std::string& connectedArea, const
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
+World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
 {
     // failure indicated by INVALID type for category
     // maybe change to Optional later if thats determined to work
     // on wii u
-    auto loadedArea = areaObject["Name"].As<std::string>();
+    auto loadedArea = areaObject["Name"].as<std::string>();
     LOG_TO_DEBUG("Now Loading Area " + loadedArea);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << loadedArea << "\" is not defined!");
 
@@ -1031,17 +1027,17 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     WorldLoadingError err = WorldLoadingError::NONE;
 
     // Check to see if this area is assigned to an island
-    if (!areaObject["Island"].IsNone())
+    if (areaObject["Island"])
     {
-        const std::string island = areaObject["Island"].As<std::string>();
+        const std::string island = areaObject["Island"].as<std::string>();
         newEntry.island = island;
         hintRegions[island] = {};
     }
 
     // Check to see if this area is assigned to a dungeon
-    if (!areaObject["Dungeon"].IsNone())
+    if (areaObject["Dungeon"])
     {
-        const std::string dungeon = areaObject["Dungeon"].As<std::string>();
+        const std::string dungeon = areaObject["Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon)
         newEntry.dungeon = dungeon;
         hintRegions[dungeon] = {};
@@ -1049,29 +1045,28 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
 
     // Check to see if this area is the first one in a dungeon. This is important
     // for later finding which island leads to this dungeon in race mode
-    if (!areaObject["Dungeon Entrance Room"].IsNone())
+    if (areaObject["Dungeon Entrance Room"])
     {
-        const std::string dungeon = areaObject["Dungeon Entrance Room"].As<std::string>();
+        const std::string dungeon = areaObject["Dungeon Entrance Room"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon)
         dungeons[dungeon].entranceRoom = loadedArea;
     }
 
     // Check to see if this area is assigned to a hint region
-    if (!areaObject["Hint Region"].IsNone())
+    if (areaObject["Hint Region"])
     {
-        const std::string region = areaObject["Hint Region"].As<std::string>();
+        const std::string region = areaObject["Hint Region"].as<std::string>();
         newEntry.hintRegion = region;
         hintRegions[region] = {};
     }
 
     // load events and their requirements in this area if there are any
-    if (areaObject["Events"].IsMap())
+    if (areaObject["Events"])
     {
-        for (auto locationIt = areaObject["Events"].Begin(); locationIt != areaObject["Events"].End(); locationIt++) {
-            auto location = *locationIt;
+        for (const auto& event : areaObject["Events"]) {
             EventAccess eventOut;
-            const std::string eventName = location.first;
-            const std::string logicExpression = location.second.As<std::string>();
+            const std::string eventName = event.first.as<std::string>();
+            const std::string logicExpression = event.second.as<std::string>();
             err = loadEventRequirement(eventName, logicExpression, eventOut);
             if (err != World::WorldLoadingError::NONE)
             {
@@ -1084,15 +1079,13 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     }
 
     // load locations and their requirements in this area if there are any
-    if (areaObject["Locations"].IsMap())
+    if (areaObject["Locations"])
     {
-        for (auto locationIt = areaObject["Locations"].Begin(); locationIt != areaObject["Locations"].End(); locationIt++) {
-            auto location = *locationIt;
+        for (const auto& location : areaObject["Locations"]) {
             LocationAccess locOut;
-            const std::string locationName = location.first;
+            const std::string locationName = location.first.as<std::string>();
             LOCATION_VALID_CHECK(locationName, "Unknown location name \"" + locationName + "\" when parsing area \"" + loadedArea + "\"");
-            const std::string logicExpression = location.second.As<std::string>();
-            err = loadLocationRequirement(locationName, logicExpression, locOut);
+            err = loadLocationRequirement(locationName, location.second.as<std::string>(), locOut);
             if (err != World::WorldLoadingError::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Got error loading location: ") + World::errorToName(err));
@@ -1127,14 +1120,11 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
 
 
     // load exits in this area if there are any
-    if (areaObject["Exits"].IsMap())
+    if (areaObject["Exits"])
     {
-        for (auto exitIt = areaObject["Exits"].Begin(); exitIt != areaObject["Exits"].End(); exitIt++) {
-            auto exit = *exitIt;
+        for (const auto& exit : areaObject["Exits"]) {
             Entrance exitOut;
-            const std::string connectedAreaName = exit.first;
-            const std::string logicExpression = exit.second.As<std::string>();
-            err = loadExit(connectedAreaName, logicExpression, exitOut, loadedArea);
+            err = loadExit(exit.first.as<std::string>(), exit.second.as<std::string>(), exitOut, loadedArea);
             if (err != World::WorldLoadingError::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Got error loading exit: ") + World::errorToName(err));
@@ -1148,14 +1138,14 @@ World::WorldLoadingError World::loadArea(Yaml::Node& areaObject)
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
+World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
 {
     YAML_FIELD_CHECK(itemObject, "Names", WorldLoadingError::ITEM_MISSING_KEY);
     YAML_FIELD_CHECK(itemObject, "Game Item Id", WorldLoadingError::ITEM_MISSING_KEY);
 
     auto names = itemObject["Names"];
-    const std::string itemName = names["English"].As<std::string>();
-    const GameItem gameItemId = idToGameItem(std::stoul(itemObject["Game Item Id"].As<std::string>(), nullptr, 16));
+    const std::string itemName = names["English"].as<std::string>();
+    const GameItem gameItemId = idToGameItem(itemObject["Game Item Id"].as<uint8_t>());
 
     LOG_TO_DEBUG("Loading item \"" + itemName + "\". Game Item ID to name: " + gameItemToName(gameItemId));
 
@@ -1165,78 +1155,77 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
     // Load item names for all languages
     for (const auto& language : Text::supported_languages)
     {
-        item.setName(language, Text::Type::STANDARD, itemObject["Names"][language].As<std::string>());
+        item.setName(language, Text::Type::STANDARD, itemObject["Names"][language].as<std::string>());
 
-        if (!itemObject["Pretty Names"].IsNone())
+        if (itemObject["Pretty Names"])
         {
-            item.setName(language, Text::Type::PRETTY, itemObject["Pretty Names"][language].As<std::string>());
+            item.setName(language, Text::Type::PRETTY, itemObject["Pretty Names"][language].as<std::string>());
         }
         else
         {
             item.setName(language, Text::Type::PRETTY, item.getUTF8Name(language, Text::Type::STANDARD));
         }
 
-        if (!itemObject["Cryptic Names"].IsNone())
+        if (itemObject["Cryptic Names"])
         {
-            item.setName(language, Text::Type::CRYPTIC, itemObject["Cryptic Names"][language].As<std::string>());
+            item.setName(language, Text::Type::CRYPTIC, itemObject["Cryptic Names"][language].as<std::string>());
         }
         else
         {
             item.setName(language, Text::Type::CRYPTIC, item.getUTF8Name(language, Text::Type::PRETTY));
         }
 
-        if (!itemObject["Gender"].IsNone())
+        if (itemObject["Gender"])
         {
-            itemTranslations[gameItemId][language].gender = Text::string_to_gender(itemObject["Gender"][language].As<std::string>());
+            itemTranslations[gameItemId][language].gender = Text::string_to_gender(itemObject["Gender"][language].as<std::string>());
         }
 
-        if (!itemObject["Plurality"].IsNone())
+        if (itemObject["Plurality"])
         {
-            itemTranslations[gameItemId][language].plurality = Text::string_to_plurality(itemObject["Plurality"][language].As<std::string>());
+            itemTranslations[gameItemId][language].plurality = Text::string_to_plurality(itemObject["Plurality"][language].as<std::string>());
         }
     }
 
-    if (itemObject["Chain Locations"].IsSequence())
+    if (itemObject["Chain Locations"])
     {
-        for (auto it = itemObject["Chain Locations"].Begin(); it != itemObject["Chain Locations"].End(); it++)
+        for (auto location : itemObject["Chain Locations"])
         {
-            const Yaml::Node& locationNode = (*it).second;
-            const std::string locationName = locationNode.As<std::string>();
+            const std::string locationName = location.as<std::string>();
             item.addChainLocation(&locationEntries[locationName]);
             LOG_TO_DEBUG("\"" + locationName + "\" added as chain location for \"" + itemName + "\"");
         }
     }
 
-    if (!itemObject["Small Key Dungeon"].IsNone())
+    if (itemObject["Small Key Dungeon"])
     {
-        const std::string dungeon = itemObject["Small Key Dungeon"].As<std::string>();
+        const std::string dungeon = itemObject["Small Key Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         LOG_TO_DEBUG(itemName + " is small key for " + dungeon);
         dungeons[dungeon].smallKey = itemName;
         // If this is a small key, it also should have a count
         YAML_FIELD_CHECK(itemObject, "Small Key Count", WorldLoadingError::ITEM_MISSING_KEY);
-        dungeons[dungeon].keyCount = itemObject["Small Key Count"].As<int>();
+        dungeons[dungeon].keyCount = itemObject["Small Key Count"].as<int>();
         LOG_TO_DEBUG("Key count: " + std::to_string(dungeons[dungeon].keyCount));
     }
 
-    if (!itemObject["Big Key Dungeon"].IsNone())
+    if (itemObject["Big Key Dungeon"])
     {
-        const std::string dungeon = itemObject["Big Key Dungeon"].As<std::string>();
+        const std::string dungeon = itemObject["Big Key Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         LOG_TO_DEBUG(itemName + " is big key for " + dungeon);
         dungeons[dungeon].bigKey = itemName;
     }
 
-    if (!itemObject["Map Dungeon"].IsNone())
+    if (itemObject["Map Dungeon"])
     {
-        const std::string dungeon = itemObject["Map Dungeon"].As<std::string>();
+        const std::string dungeon = itemObject["Map Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         dungeons[dungeon].map = itemName;
     }
 
-    if (!itemObject["Compass Dungeon"].IsNone())
+    if (itemObject["Compass Dungeon"])
     {
-        const std::string dungeon = itemObject["Compass Dungeon"].As<std::string>();
+        const std::string dungeon = itemObject["Compass Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         dungeons[dungeon].compass = itemName;
     }
@@ -1244,30 +1233,30 @@ World::WorldLoadingError World::loadItem(Yaml::Node& itemObject)
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::loadAreaTranslations(Yaml::Node& areaObject)
+World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObject)
 {
     YAML_FIELD_CHECK(areaObject, "Names", WorldLoadingError::AREA_MISSING_KEY);
 
-    auto areaName = areaObject["Names"]["English"].As<std::string>();
+    auto areaName = areaObject["Names"]["English"].as<std::string>();
     REGION_VALID_CHECK(areaName, "Area \"" << areaName << "\" is not a defined hint region");
 
     // Load area names for all languages
     for (const auto& language : Text::supported_languages)
     {
-        hintRegions[areaName][language].types[Text::Type::STANDARD] = areaObject["Names"][language].As<std::string>();
+        hintRegions[areaName][language].types[Text::Type::STANDARD] = areaObject["Names"][language].as<std::string>();
 
-        if (!areaObject["Pretty Names"].IsNone())
+        if (areaObject["Pretty Names"])
         {
-            hintRegions[areaName][language].types[Text::Type::PRETTY] = areaObject["Pretty Names"][language].As<std::string>();
+            hintRegions[areaName][language].types[Text::Type::PRETTY] = areaObject["Pretty Names"][language].as<std::string>();
         }
         else
         {
             hintRegions[areaName][language].types[Text::Type::PRETTY] = hintRegions[areaName][language].types[Text::Type::STANDARD];
         }
 
-        if (!areaObject["Cryptic Names"].IsNone())
+        if (areaObject["Cryptic Names"])
         {
-            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = areaObject["Cryptic Names"][language].As<std::string>();
+            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = areaObject["Cryptic Names"][language].as<std::string>();
         }
         else
         {
@@ -1323,14 +1312,11 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
 {
     LOG_TO_DEBUG("Loading world");
     // load and parse items
-    Yaml::Node itemDataTree;
     std::string itemData;
     Utility::getFileContents(itemDataPath, itemData, true);
-    itemData = Utility::Str::InsertUnicodeReplacements(itemData);
-    Yaml::Parse(itemDataTree, itemData);
-    for (auto itemIt = itemDataTree.Begin(); itemIt != itemDataTree.End(); itemIt++)
+    YAML::Node itemDataTree = YAML::Load(itemData);
+    for (const auto& item : itemDataTree)
     {
-        Yaml::Node& item = (*itemIt).second;
         auto err = loadItem(item);
         if (err != World::WorldLoadingError::NONE)
         {
@@ -1341,24 +1327,21 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     }
 
     // load world graph
-    Yaml::Node worldDataTree;
     std::string worldData;
     Utility::getFileContents(worldFilePath, worldData, true);
-    Yaml::Parse(worldDataTree, worldData);
+    YAML::Node worldDataTree = YAML::Load(worldData);
     // First pass to get area names
-    for (auto areaIt = worldDataTree.Begin(); areaIt != worldDataTree.End(); areaIt++)
+    for (const auto& area : worldDataTree)
     {
-        Yaml::Node area = (*areaIt).second;
-        auto areaName = area["Name"].As<std::string>();
+        auto areaName = area["Name"].as<std::string>();
         // Construct AreaEntry object (struct) with just the name for now
         areaEntries[areaName] = {areaName};
     }
 
     // Read and parse macros
-    Yaml::Node macroListTree;
     std::string macroListData;
     Utility::getFileContents(macrosFilePath, macroListData, true);
-    Yaml::Parse(macroListTree, macroListData);
+    YAML::Node macroListTree = YAML::Load(macroListData);
     auto err = loadMacros(macroListTree);
     if (err != World::WorldLoadingError::NONE)
     {
@@ -1368,14 +1351,11 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     }
 
     // Read and parse location data
-    Yaml::Node locationDataTree;
     std::string locationData;
     Utility::getFileContents(locationDataPath, locationData, true);
-    locationData = Utility::Str::InsertUnicodeReplacements(locationData);
-    Yaml::Parse(locationDataTree, locationData);
-    for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
+    YAML::Node locationDataTree = YAML::Load(locationData);
+    for (const auto& locationObject : locationDataTree)
     {
-        Yaml::Node& locationObject = (*locationObjectIt).second;
         err = loadLocation(locationObject);
         if (err != World::WorldLoadingError::NONE)
         {
@@ -1386,9 +1366,8 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     }
 
     // Second pass of world graph to load each area's data
-    for (auto areaIt = worldDataTree.Begin(); areaIt != worldDataTree.End(); areaIt++)
+    for (const auto& area : worldDataTree)
     {
-        Yaml::Node area = (*areaIt).second;
         err = loadArea(area);
         if (err != World::WorldLoadingError::NONE)
         {
@@ -1399,14 +1378,11 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     }
 
     // Read and parse area translations for hints/spoiler logs in other languages
-    Yaml::Node areaDataTree;
     std::string areaData;
     Utility::getFileContents(areaDataPath, areaData, true);
-    areaData = Utility::Str::InsertUnicodeReplacements(areaData);
-    Yaml::Parse(areaDataTree, areaData);
-    for (auto areaObjectIt = areaDataTree.Begin(); areaObjectIt != areaDataTree.End(); areaObjectIt++)
+    YAML::Node areaDataTree = YAML::Load(areaData);
+    for (const auto& areaObject : areaDataTree)
     {
-        Yaml::Node& areaObject = (*areaObjectIt).second;
         err = loadAreaTranslations(areaObject);
         if (err != World::WorldLoadingError::NONE)
         {
@@ -1558,8 +1534,7 @@ std::string World::getUTF8HintRegion(const std::string& hintRegion, const std::s
 std::u16string World::getUTF16HintRegion(const std::string& hintRegion, const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RED*/) const
 {
     std::u16string str = Utility::Str::toUTF16(hintRegions.at(hintRegion).at(language).types.at(type));
-    str = Text::apply_name_color(str, color);
-    return Utility::Str::RemoveUnicodeReplacements(str);
+    return Text::apply_name_color(str, color);
 }
 
 std::string World::errorToName(WorldLoadingError err)
@@ -1588,8 +1563,6 @@ std::string World::errorToName(WorldLoadingError err)
         return "OPTION_DOES_NOT_EXIST";
     case WorldLoadingError::INCORRECT_ARG_COUNT:
         return "INCORRECT_ARG_COUNT";
-    case WorldLoadingError::EXPECTED_JSON_OBJECT:
-        return "EXPECTED_JSON_OBJECT";
     case WorldLoadingError::AREA_MISSING_KEY:
         return "AREA_MISSING_KEY";
     case WorldLoadingError::LOCATION_MISSING_KEY:

@@ -11,7 +11,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_compile_definitions(JSON_NOEXCEPTION=1 JSON_USE_IMPLICIT_CONVERSIONS=0)
 add_compile_options(-O3)
 
 add_compile_definitions(QT_GUI=1)
@@ -43,18 +42,6 @@ add_compile_definitions(CONFIG_VERSION="1.0")
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
 
-# zlib for RPX (de)compression
-if(WIN32)
-  # Bundle a zlib static library for Windows
-  set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/../libs/zlib_win/zlibstat.lib")
-  set(ZLIB_INCLUDE_DIR "../libs/zlib_win")
-  add_library(zlib STATIC IMPORTED)
-  set_target_properties(zlib PROPERTIES IMPORTED_LOCATION ${ZLIB_LIBRARY})
-else()
-  include(FindPkgConfig)
-  pkg_check_modules(ZLIB zlib REQUIRED)
-endif()
-
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -79,7 +66,7 @@ if(EMBED_DATA)
   endif()
 else()
   # Put data files together for easier manipulation
-  file(COPY "../asm/custom_symbols.json" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
+  file(COPY "../asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
   file(COPY "../asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
   file(COPY  ../assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                          # Images and other assets used in patching
   file(COPY "../logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
@@ -158,6 +145,8 @@ add_subdirectory("../logic" "logic")
 add_subdirectory("../nuspack" "nuspack")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR}/..)
+
+target_link_libraries(wwhd_rando yaml-cpp)
 
 if(WIN32)
   target_link_libraries(wwhd_rando PRIVATE zlib)
