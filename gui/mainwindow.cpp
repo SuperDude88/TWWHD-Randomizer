@@ -128,16 +128,23 @@ void MainWindow::load_config_into_ui()
     // Load encryption keys if the files exists
     auto encryptionKeyPath = "./encryption.txt";
     std::string encryptionKeyStr;
-    if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+    if (std::filesystem::exists(encryptionKeyPath))
     {
-        ui->encryption_key->setText(encryptionKeyStr.c_str());
+        if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+        {
+            ui->encryption_key->setText(encryptionKeyStr.c_str());
+        }
     }
+
 
     auto commonKeyPath = "./common.txt";
     std::string commonKeyStr;
-    if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+    if (std::filesystem::exists(commonKeyPath))
     {
-        ui->wii_u_common_key->setText(commonKeyStr.c_str());
+        if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+        {
+            ui->wii_u_common_key->setText(commonKeyStr.c_str());
+        }
     }
 }
 
@@ -1194,11 +1201,11 @@ void MainWindow::load_locations()
             const auto& cat = nameToLocationCategory(category.as<std::string>());
             if (cat == LocationCategory::INVALID)
             {
-                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + categoryNameStr + "\"");
+                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + category.as<std::string>() + "\"");
             }
             locationCategories.back().insert(cat);
         }
-        if (!locationObject["Dungeon Dependency"].IsNone())
+        if (locationObject["Dungeon Dependency"])
         {
             locationCategories.back().insert(LocationCategory::Dungeon);
         }

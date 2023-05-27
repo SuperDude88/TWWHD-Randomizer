@@ -28,6 +28,8 @@ struct Config {
     std::string consoleOutputDir;
 
     Settings settings;
+
+    bool configSet = false;
 };
 
 ConfigError createDefaultConfig(const std::string& filePath);
