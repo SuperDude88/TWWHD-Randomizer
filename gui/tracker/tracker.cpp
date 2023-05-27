@@ -10,6 +10,8 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
 
+#include <utility/file.hpp>
+
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
@@ -349,13 +351,13 @@ void MainWindow::load_tracker_autosave()
     }
 
     std::unordered_map<std::string, std::string> entranceConnections = {};
-    auto& connectedEntrances = root["connected_entrances"];
-    if (!connectedEntrances.IsNone())
+    const auto& connectedEntrances = root["connected_entrances"];
+    if (!connectedEntrances.IsNull())
     {
-        for (auto entranceItr = connectedEntrances.Begin(); entranceItr != connectedEntrances.End(); entranceItr++)
+        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
         {
             auto entranceConnection = *entranceItr;
-            entranceConnections[entranceConnection.first] = entranceConnection.second.As<std::string>();
+            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
         }
     }
 
@@ -849,18 +851,14 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
 
 void MainWindow::tracker_change_entrance_connections(Entrance* target)
 {
-    // If this target is currently connected somewhere else
-    // disconnect it before connecting it to the new entrance
-    if (connectedTargets.contains(target))
-    {
-        auto entrance = connectedTargets[target];
-        restoreConnections(entrance, target);
-        connectedTargets.erase(target);
-    }
+    // Disconnect the selected entrance incase it was
+    // previously connected to another target
+    tracker_disconnect_entrance(selectedEntrance);
 
     changeConnections(selectedEntrance, target);
     connectedTargets[target] = selectedEntrance;
 
+    // Update areas and entrances for all islands after changing a connection
     set_areas_locations();
     set_areas_entrances();
     update_tracker_areas_and_autosave();
@@ -878,6 +876,7 @@ void MainWindow::tracker_disconnect_entrance(Entrance* connectedEntrance)
         {
             restoreConnections(entrance, target);
             connectedTargets.erase(target);
+            set_areas_locations();
             set_areas_entrances();
             update_tracker();
             break;
