@@ -1201,11 +1201,11 @@ void MainWindow::load_locations()
             const auto& cat = nameToLocationCategory(category.as<std::string>());
             if (cat == LocationCategory::INVALID)
             {
-                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + categoryNameStr + "\"");
+                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + category.as<std::string>() + "\"");
             }
             locationCategories.back().insert(cat);
         }
-        if (!locationObject["Dungeon Dependency"].IsNone())
+        if (locationObject["Dungeon Dependency"])
         {
             locationCategories.back().insert(LocationCategory::Dungeon);
         }

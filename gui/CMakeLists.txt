@@ -146,15 +146,7 @@ add_subdirectory("../nuspack" "nuspack")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR}/..)
 
-target_link_libraries(wwhd_rando yaml-cpp)
-
-if(WIN32)
-  target_link_libraries(wwhd_rando PRIVATE zlib)
-  target_include_directories(wwhd_rando PRIVATE ${ZLIB_INCLUDE_DIR})
-else()
-  target_link_libraries(wwhd_rando PRIVATE ${ZLIB_LDFLAGS})
-  target_compile_options(wwhd_rando PRIVATE ${ZLIB_CFLAGS})
-endif()
+target_link_libraries(wwhd_rando PRIVATE yaml-cpp zlib)
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(wwhd_rando)

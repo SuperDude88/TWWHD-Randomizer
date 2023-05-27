@@ -10,6 +10,8 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
 
+#include <utility/file.hpp>
+
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
@@ -349,13 +351,13 @@ void MainWindow::load_tracker_autosave()
     }
 
     std::unordered_map<std::string, std::string> entranceConnections = {};
-    auto& connectedEntrances = root["connected_entrances"];
-    if (!connectedEntrances.IsNone())
+    const auto& connectedEntrances = root["connected_entrances"];
+    if (!connectedEntrances.IsNull())
     {
-        for (auto entranceItr = connectedEntrances.Begin(); entranceItr != connectedEntrances.End(); entranceItr++)
+        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
         {
             auto entranceConnection = *entranceItr;
-            entranceConnections[entranceConnection.first] = entranceConnection.second.As<std::string>();
+            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
         }
     }
 
