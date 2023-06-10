@@ -1178,24 +1178,39 @@ TweakError update_korl_dialog(World& world) {
     for (const auto& language: Text::supported_languages) {
       RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
 
-      std::u16string hintLines = u"";
-      size_t i = 0; // counter to know when to add null terminator
+      std::vector<std::u16string> hintLines = {u""};
+      int i = -1; // counter to know when to add null terminator
       for (auto location : world.korlHints) {
         i++;
         std::u16string hint = location->hintText[language];
         hint = Text::word_wrap_string(hint, 43);
-        if (i == world.korlHints.size()) {
-          hint += u'\0'; // add null terminator on last hint before padding
-        }
+		if(i >= 10) {
+        	hintLines.back().back() = u'\0';
+			hintLines.push_back(u"");
+			i = 0;
+		}
         hint = Text::pad_str_4_lines(hint);
-        hintLines += hint;
+        hintLines.back() += hint;
       }
+	  if(hintLines.back().back() != u'\0') hintLines.back().back() = u'\0';
 
-      for (auto label : {"03443", "03444", "03445", "03446", "03447", "03448"}) {
-		entry.addAction([label, hintLines](RandoSession* session, FileType* data) -> int {
+	  if(custom_symbols.count("num_korl_messages") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+	  const uint32_t num_messages_address = custom_symbols.at("num_korl_messages");
+	  g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, num = hintLines.size()](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+	  	RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_messages_address), num));
+
+	  	return true;
+	  });
+
+      for (uint32_t x = 0; x < hintLines.size(); x++) {
+		const std::u16string lines = hintLines[x];
+		const std::string label = "0"s + std::to_string(3443 + x);
+		entry.addAction([label, lines](RandoSession* session, FileType* data) -> int {
 			CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-			msbt.messages_by_label[label].text.message = hintLines;
+			msbt.messages_by_label[label].text.message = lines;
 
 			return true;
 		});
