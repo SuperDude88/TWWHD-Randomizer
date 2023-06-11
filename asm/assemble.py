@@ -96,7 +96,7 @@ try:
   with open(asm_dir + "/symbols_to_relocate.yaml") as f:
     to_relocate = yaml.safe_load(f)
   
-  all_asm_file_paths = glob.glob('./patches/*.asm')
+  all_asm_file_paths = glob.glob(glob.escape(asm_dir) + "/patches/*.asm")
   all_asm_files = [os.path.basename(asm_path).lower() for asm_path in all_asm_file_paths] #lowercase names to make sort more consistent
   all_asm_files.sort()
   
@@ -111,7 +111,7 @@ try:
   next_free_space_id = 1
   
   for patch_filename in all_asm_files:
-      patch_path = os.path.join(".", "patches", patch_filename)
+      patch_path = os.path.join(asm_dir, "patches", patch_filename)
       preprocess_path = os.path.join(temp_dir, "preprocess_" + patch_filename)
 
       command = [
