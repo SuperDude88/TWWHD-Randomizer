@@ -313,7 +313,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "randomize_misc_entrances",
-      "Shuffles around which misc entrances take you into which msic areas. Misc entrances are entrances which do not fall into any of the other categories and include entrances such as those that go in and out of Forest Haven and Dragon Roost Island. Hyrule is not included in this category."
+      "Shuffles around which misc entrances take you into which misc areas. Misc entrances are entrances which do not fall into any of the other categories and include entrances such as those that go in and out of Forest Haven and Dragon Roost Island. Hyrule is not included in this category."
     },
     {
       "mix_pools_combobox",

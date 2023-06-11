@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <set>
-#include <unordered_set>
 #include <list>
+#include <unordered_set>
 #include <unordered_map>
+
 #include <utility/text.hpp>
 
 enum struct GameItem : uint8_t

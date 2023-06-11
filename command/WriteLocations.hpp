@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include <libs/Yaml.hpp>
+#include <libs/yaml.h>
 
 #include <command/RandoSession.hpp>
 #include <command/WWHDStructs.hpp>
@@ -38,7 +38,7 @@ public:
     LocationModification& operator=(LocationModification&& other) = default;
 
     virtual std::unique_ptr<LocationModification> duplicate() const { return std::make_unique<LocationModification>(*this); }
-    virtual ModificationError parseArgs(Yaml::Node& /* locationObject */) { return ModificationError::NONE; }
+    virtual ModificationError parseArgs(const YAML::Node& /* locationObject */) { return ModificationError::NONE; }
     virtual ModificationError writeLocation(const Item& /* item */) { return ModificationError::NONE; }
 };
 
@@ -62,7 +62,7 @@ public:
     ModifyChest& operator=(ModifyChest&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
     static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::unordered_map<std::string, Dungeon>& dungeons_) { isCTMC = isCTMC_; raceMode = raceMode_; dungeons = dungeons_; }
 };
@@ -81,7 +81,7 @@ public:
     ModifyActor& operator=(ModifyActor&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyActor>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
 };
 
@@ -99,7 +99,7 @@ public:
     ModifySCOB& operator=(ModifySCOB&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifySCOB>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
 };
 
@@ -118,7 +118,7 @@ public:
     ModifyEvent& operator=(ModifyEvent&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyEvent>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
 };
 
@@ -135,7 +135,7 @@ public:
     ModifyRPX& operator=(ModifyRPX&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyRPX>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
 };
 
@@ -152,7 +152,7 @@ public:
     ModifySymbol& operator=(ModifySymbol&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifySymbol>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
 };
 
@@ -169,7 +169,7 @@ public:
     ModifyBoss& operator=(ModifyBoss&& other) = default;
 
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyBoss>(*this); }
-    ModificationError parseArgs(Yaml::Node& locationObject) override;
+    ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
 };
 

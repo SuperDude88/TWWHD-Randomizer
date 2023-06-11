@@ -10,6 +10,8 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
 
+#include <utility/file.hpp>
+
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
@@ -246,34 +248,31 @@ void MainWindow::autosave_current_tracker()
     }
 
     // Read it back and add extra tracker data
-    Yaml::Node root;
-    Yaml::Parse(root, APP_SAVE_PATH "tracker_autosave.yaml");
+    std::string autosave;
+    Utility::getFileContents(APP_SAVE_PATH "tracker_autosave.yaml", autosave);
+    YAML::Node root = YAML::Load(autosave);
 
     // Save which locations have been marked
-    root["marked_locations"] = {};
     for (auto loc : trackerWorld.getLocations(true))
     {
         if (loc->marked)
         {
-            Yaml::Node& node = root["marked_locations"].PushBack();
-            node = loc->getName();
+            root["marked_locations"].push_back(loc->getName());
         }
     }
 
-    if (root["marked_locations"].Size() == 0)
+    if (root["marked_locations"].size() == 0)
     {
         root["marked_locations"] = "None";
     }
 
     // Save which items have been marked
-    root["marked_items"] = {};
     for (auto& item : trackerInventory)
     {
-        Yaml::Node& node = root["marked_items"].PushBack();
-        node = gameItemToName(item.getGameItemId());
+        root["marked_items"].push_back(gameItemToName(item.getGameItemId()));
     }
 
-    if (root["marked_items"].Size() == 0)
+    if (root["marked_items"].size() == 0)
     {
         root["marked_items"] = "None";
     }
@@ -284,7 +283,14 @@ void MainWindow::autosave_current_tracker()
         root["connected_entrances"][entrance->getOriginalName()] = target->getReplaces()->getOriginalName();
     }
 
-    Yaml::Serialize(root, APP_SAVE_PATH "tracker_autosave.yaml");
+    std::ofstream f(APP_SAVE_PATH "tracker_autosave.yaml");
+    if (f.is_open() == false)
+    {
+        show_error_dialog("Failed to open tracker_autosave.yaml");
+        return;
+    }
+
+    f << root;
 }
 
 void MainWindow::load_tracker_autosave()
@@ -303,21 +309,20 @@ void MainWindow::load_tracker_autosave()
         return;
     }
 
-    Yaml::Node root;
-    Yaml::Parse(root, APP_SAVE_PATH "tracker_autosave.yaml");
+    std::string autosave;
+    Utility::getFileContents(APP_SAVE_PATH "tracker_autosave.yaml", autosave);
+    YAML::Node root = YAML::Load(autosave);
 
     // Load marked locations
     std::vector<std::string> markedLocations = {};
     if (root["marked_locations"].IsSequence())
     {
-        for (auto it = root["marked_locations"].Begin(); it != root["marked_locations"].End(); it++)
+        for (const auto& locationName : root["marked_locations"])
         {
-            const Yaml::Node& locNode = (*it).second;
-            const std::string locName = locNode.As<std::string>();
-            markedLocations.push_back(locName);
+            markedLocations.push_back(locationName.as<std::string>());
         }
     }
-    else if (!root["marked_locations"].IsNone() && root["marked_locations"].As<std::string>() != "None")
+    else if (root["marked_locations"] && root["marked_locations"].as<std::string>() != "None")
     {
         show_warning_dialog("Unable to load marked locations from tracker autosave");
     }
@@ -327,10 +332,9 @@ void MainWindow::load_tracker_autosave()
     GameItemPool markedItems = {};
     if (root["marked_items"].IsSequence())
     {
-        for (auto it = root["marked_items"].Begin(); it != root["marked_items"].End(); it++)
+        for (const auto& item : root["marked_items"])
         {
-            const Yaml::Node& itemNode = (*it).second;
-            const std::string itemName = itemNode.As<std::string>();
+            const std::string itemName = item.as<std::string>();
             if (nameToGameItem(itemName) != GameItem::INVALID)
             {
                 markedItems.push_back(nameToGameItem(itemName));
@@ -341,19 +345,19 @@ void MainWindow::load_tracker_autosave()
             }
         }
     }
-    else if (!root["marked_items"].IsNone() && root["marked_items"].As<std::string>() != "None")
+    else if (root["marked_items"] && root["marked_items"].as<std::string>() != "None")
     {
         show_warning_dialog("Unable to load marked items from tracker autosave");
     }
 
     std::unordered_map<std::string, std::string> entranceConnections = {};
-    auto& connectedEntrances = root["connected_entrances"];
-    if (!connectedEntrances.IsNone())
+    const auto& connectedEntrances = root["connected_entrances"];
+    if (!connectedEntrances.IsNull())
     {
-        for (auto entranceItr = connectedEntrances.Begin(); entranceItr != connectedEntrances.End(); entranceItr++)
+        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
         {
             auto entranceConnection = *entranceItr;
-            entranceConnections[entranceConnection.first] = entranceConnection.second.As<std::string>();
+            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
         }
     }
 
@@ -847,18 +851,14 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
 
 void MainWindow::tracker_change_entrance_connections(Entrance* target)
 {
-    // If this target is currently connected somewhere else
-    // disconnect it before connecting it to the new entrance
-    if (connectedTargets.contains(target))
-    {
-        auto entrance = connectedTargets[target];
-        restoreConnections(entrance, target);
-        connectedTargets.erase(target);
-    }
+    // Disconnect the selected entrance incase it was
+    // previously connected to another target
+    tracker_disconnect_entrance(selectedEntrance);
 
     changeConnections(selectedEntrance, target);
     connectedTargets[target] = selectedEntrance;
 
+    // Update areas and entrances for all islands after changing a connection
     set_areas_locations();
     set_areas_entrances();
     update_tracker_areas_and_autosave();
@@ -876,6 +876,7 @@ void MainWindow::tracker_disconnect_entrance(Entrance* connectedEntrance)
         {
             restoreConnections(entrance, target);
             connectedTargets.erase(target);
+            set_areas_locations();
             set_areas_entrances();
             update_tracker();
             break;

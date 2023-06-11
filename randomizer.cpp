@@ -797,7 +797,7 @@ public:
     // Repack for console if necessary
     if (config.repack_for_console)
     {
-        UPDATE_DIALOG_LABEL("Repacking for console...\n(This will also take a while)");
+        UPDATE_DIALOG_LABEL("Repacking for console...\n(This will take a while)");
         Utility::platformLog("Repacking for console...\n");
         const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
         const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
@@ -839,7 +839,7 @@ public:
 };
 
 int mainRandomize() {
-	using namespace std::chrono_literals;
+	using namespace std::literals::chrono_literals;
 
 	int retVal = 0;
 	{ //timer scope
@@ -880,7 +880,6 @@ int mainRandomize() {
 		// TODO: make things zoom
 		// TODO: do a hundo seed to test everything
 
-		// TODO: text wrapping on drc dungeon map
 		retVal = rando.randomize();
 	} //end timer scope
 

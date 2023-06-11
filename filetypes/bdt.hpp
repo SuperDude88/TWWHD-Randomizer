@@ -5,8 +5,10 @@
 
 #pragma once
 
+#include <cstdint>
 #include <vector>
 #include <string>
+
 #include <filetypes/baseFiletype.hpp>
 
 

@@ -859,9 +859,6 @@ doc_bandam_blue_potion_slot_item_id:
 	b 0x02230340
 
 
-.org 0x02095be8
-	nop
-
 
 .org 0x02341b0c
 	li r4, 5
@@ -871,5 +868,3 @@ doc_bandam_blue_potion_slot_item_id:
 	bl isSwitch
 .org 0x02341b1c
 	beq 0x02341b90
-
-.close

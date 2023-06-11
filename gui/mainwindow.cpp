@@ -13,7 +13,7 @@
 #include <randomizer_thread.hpp>
 #include <option_descriptions.hpp>
 
-#include <libs/Yaml.hpp>
+#include <libs/yaml.h>
 #include <seedgen/seed.hpp>
 #include <seedgen/permalink.hpp>
 #include <seedgen/tracker_permalink.hpp>
@@ -128,16 +128,23 @@ void MainWindow::load_config_into_ui()
     // Load encryption keys if the files exists
     auto encryptionKeyPath = "./encryption.txt";
     std::string encryptionKeyStr;
-    if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+    if (std::filesystem::exists(encryptionKeyPath))
     {
-        ui->encryption_key->setText(encryptionKeyStr.c_str());
+        if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
+        {
+            ui->encryption_key->setText(encryptionKeyStr.c_str());
+        }
     }
+
 
     auto commonKeyPath = "./common.txt";
     std::string commonKeyStr;
-    if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+    if (std::filesystem::exists(commonKeyPath))
     {
-        ui->wii_u_common_key->setText(commonKeyStr.c_str());
+        if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
+        {
+            ui->wii_u_common_key->setText(commonKeyStr.c_str());
+        }
     }
 }
 
@@ -1068,15 +1075,6 @@ void MainWindow::update_encryption_files()
 
 void MainWindow::on_randomize_button_clicked()
 {
-    // TODO: remove when korl text is fixed
-    int totalNumHints = config.settings.item_hints + config.settings.barren_hints + config.settings.location_hints + config.settings.path_hints;
-    if (config.settings.korl_hints && !config.settings.ho_ho_hints && totalNumHints > 10)
-    {
-        show_warning_dialog("Currently there is a bug where the King of Red Lions will softlock you if he has more than 10 hints. Please reduce the number of hints to 10 or less, or enable Ho-Ho hints as well", "Hint Warning");
-        return;
-    }
-
-
     // Check to make sure the base game and output are directories
     if (!std::filesystem::is_directory(config.gameBaseDir))
     {
@@ -1185,26 +1183,20 @@ void MainWindow::load_locations()
 {   
     std::string locationDataStr;
     Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr, true);
-    locationDataStr = Utility::Str::InsertUnicodeReplacements(locationDataStr);
-    Yaml::Node locationDataTree;
-    Yaml::Parse(locationDataTree, locationDataStr);
-    for (auto locationObjectIt = locationDataTree.Begin(); locationObjectIt != locationDataTree.End(); locationObjectIt++)
+    YAML::Node locationDataTree = YAML::Load(locationDataStr);
+    for (const auto& locationObject : locationDataTree)
     {
-        Yaml::Node& locationObject = (*locationObjectIt).second;
-        std::string name = Utility::Str::RemoveUnicodeReplacements(locationObject["Names"]["English"].As<std::string>());
         locationCategories.push_back({});
-        for (auto categoryIt = locationObject["Category"].Begin(); categoryIt != locationObject["Category"].End(); categoryIt++)
+        for (const auto& category : locationObject["Category"])
         {
-            Yaml::Node category = (*categoryIt).second;
-            const std::string& categoryNameStr = category.As<std::string>();
-            const auto& cat = nameToLocationCategory(categoryNameStr);
+            const auto& cat = nameToLocationCategory(category.as<std::string>());
             if (cat == LocationCategory::INVALID)
             {
-                show_warning_dialog("Location \"" + name + "\" has an invalid category name \"" + categoryNameStr + "\"");
+                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + category.as<std::string>() + "\"");
             }
             locationCategories.back().insert(cat);
         }
-        if (!locationObject["Dungeon Dependency"].IsNone())
+        if (locationObject["Dungeon Dependency"])
         {
             locationCategories.back().insert(LocationCategory::Dungeon);
         }

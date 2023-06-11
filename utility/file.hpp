@@ -142,6 +142,8 @@ namespace Utility
 
 	int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile = false);
 
+	int getFileContents(const std::string& filename, std::stringstream& fileContents);
+
 	#ifdef DEVKITPRO
     inline bool flush_mlc() {
         const int fsaHandle = FSAAddClient(NULL);

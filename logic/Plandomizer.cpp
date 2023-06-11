@@ -20,18 +20,16 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         LOG_TO_DEBUG("Loading Plando data for world " + std::to_string(i + 1))
         plandos[i] = Plandomizer();
         auto& plandomizer = plandos[i];
-        Yaml::Node plandoTree;
-        Yaml::Parse(plandoTree, plandoStr);
-        Yaml::Node plandoLocations;
-        Yaml::Node plandoEntrances;
-        Yaml::Node extraProgressionLocations;
-        Yaml::Node randomStartingItemPool;
+        YAML::Node plandoTree = YAML::Load(plandoStr);
+        YAML::Node plandoLocations;
+        YAML::Node plandoEntrances;
+        YAML::Node extraProgressionLocations;
+        YAML::Node randomStartingItemPool;
         std::string plandoStartingIsland = "";
         std::string worldName = "World " + std::to_string(i + 1);
         // Grab the YAML object which holds the locations for this world.
-        for (auto refIt = plandoTree.Begin(); refIt != plandoTree.End(); refIt++)
+        for (const auto& ref : plandoTree)
         {
-            Yaml::Node& ref = (*refIt).second;
             if (ref[worldName].IsMap())
             {
                 if (ref[worldName]["locations"].IsMap())
@@ -45,7 +43,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                 }
                 if (ref[worldName]["starting island"].IsScalar())
                 {
-                    plandoStartingIsland = ref[worldName]["starting island"].As<std::string>();
+                    plandoStartingIsland = ref[worldName]["starting island"].as<std::string>();
                 }
                 if (ref[worldName]["extra progression locations"].IsSequence())
                 {
@@ -71,26 +69,24 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         }
 
         // Collect extra progression locations first
-        if (!extraProgressionLocations.IsNone())
+        if (extraProgressionLocations)
         {
             LOG_TO_DEBUG("  Extra Progress Locations: ")
-            for (auto locationIt = extraProgressionLocations.Begin(); locationIt != extraProgressionLocations.End(); locationIt++)
+            for (const auto& location : extraProgressionLocations)
             {
-                const Yaml::Node& locationNode = (*locationIt).second;
-                const std::string locationName = locationNode.As<std::string>();
+                const std::string locationName = location.as<std::string>();
                 plandomizer.extraProgressionLocations.insert(locationName);
                 LOG_TO_DEBUG(std::string("    ") + locationName);
             }
         }
 
         // Process random starting item pool
-        if (!randomStartingItemPool.IsNone())
+        if (randomStartingItemPool)
         {
             LOG_TO_DEBUG("  Starting Item Pool: ")
-            for (auto itemIt = randomStartingItemPool.Begin(); itemIt != randomStartingItemPool.End(); itemIt++)
+            for (const auto& item : randomStartingItemPool)
             {
-                const Yaml::Node& itemNode = (*itemIt).second;
-                const std::string itemName = itemNode.As<std::string>();
+                const std::string itemName = item.as<std::string>();
                 const auto gameItem = nameToGameItem(itemName);
                 if (gameItem == GameItem::INVALID)
                 {
@@ -108,12 +104,11 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         }
 
         // Process Locations
-        if (!plandoLocations.IsNone())
+        if (plandoLocations)
         {
-            for (auto locationIt = plandoLocations.Begin(); locationIt != plandoLocations.End(); locationIt++)
+            for (const auto& locationObject : plandoLocations)
             {
-                auto locationObject = *locationIt;
-                if (locationObject.first.empty())
+                if (locationObject.first.IsNull())
                 {
                     ErrorLog::getInstance().log("Plandomizer Error: One of the plando items is missing a location");
                     return PlandomizerError::MISSING_PLANDO_LOCATION;
@@ -125,18 +120,18 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                 std::string itemName;
                 if (locationObject.second.IsMap())
                 {
-                    if (!locationObject.second["item"].IsNone())
+                    if (locationObject.second["item"])
                     {
-                        itemName = locationObject.second["item"].As<std::string>();
+                        itemName = locationObject.second["item"].as<std::string>();
                     }
                     else
                     {
-                        ErrorLog::getInstance().log("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first + "\"");
+                        ErrorLog::getInstance().log("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first.as<std::string>() + "\"");
                         return PlandomizerError::MISSING_ITEM_KEY;
                     }
-                    if (!locationObject.second["world"].IsNone())
+                    if (locationObject.second["world"])
                     {
-                        plandoWorldId = std::stoi(locationObject.second["world"].As<std::string>());
+                        plandoWorldId = std::stoi(locationObject.second["world"].as<std::string>());
                         if (static_cast<size_t>(plandoWorldId) > numWorlds || plandoWorldId < 1)
                         {
                             ErrorLog::getInstance().log("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"");
@@ -150,16 +145,16 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                 // Otherwise treat the value as an item for the same world as the location
                 else
                 {
-                    itemName = locationObject.second.As<std::string>();
+                    itemName = locationObject.second.as<std::string>();
                     if (itemName == "\n" || itemName == "")
                     {
-                        ErrorLog::getInstance().log("Plandomizer Error: Location \"" + locationObject.first + "\" has no plandomized item.");
+                        ErrorLog::getInstance().log("Plandomizer Error: Location \"" + locationObject.first.as<std::string>() + "\" has no plandomized item.");
                         return PlandomizerError::NO_ITEM_AT_LOCATION;
                     }
                 }
 
                 // Get location name
-                std::string locationName = locationObject.first;
+                const std::string locationName = locationObject.first.as<std::string>();
 
                 // Sanitize item name incase the user missed an apostraphe
                 itemName = gameItemToName(nameToGameItem(itemName));
@@ -173,22 +168,17 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         }
 
         // Process Entrances
-        if (!plandoEntrances.IsNone())
+        if (plandoEntrances)
         {
-            for (auto entranceIt = plandoEntrances.Begin(); entranceIt != plandoEntrances.End(); entranceIt++)
+            for (const auto entrance : plandoEntrances)
             {
-                auto entranceObject = *entranceIt;
-                if (entranceObject.first.empty())
+                if (entrance.first.IsNull())
                 {
                     ErrorLog::getInstance().log("Plandomizer Error: One of the plando entrances is missing a parent entrance");
                     return PlandomizerError::MISSING_PARENT_ENTRANCE;
                 }
-                // Process strings of each plando's entrance into their respective entrance
-                // pointers
-                const std::string originalEntranceStr = entranceObject.first;
-                const std::string replacementEntranceStr = entranceObject.second.As<std::string>();
-
-                plandomizer.entrancesStr.insert({originalEntranceStr, replacementEntranceStr});
+                // Process strings of each plando's entrance into their respective entrance pointers
+                plandomizer.entrancesStr.insert({entrance.first.as<std::string>(), entrance.second.as<std::string>()});
             }
         }
     }
