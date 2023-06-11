@@ -17,10 +17,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     
-    - name: Get all tags for correct version determination
-      working-directory: ${{ github.workspace }}
-      run: |
-         git fetch --all --tags -f
+#     - name: Get all tags for correct version determination
+#       working-directory: ${{ github.workspace }}
+#       run: |
+#          git fetch --all --tags -f
     
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
