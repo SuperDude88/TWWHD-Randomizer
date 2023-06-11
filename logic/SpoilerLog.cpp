@@ -332,7 +332,8 @@ void generateNonSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            if (!location->progression)
+            // Don't print blue chu chu locations (yet) or Ho Ho Hint Locations 
+            if (!location->progression && !location->categories.contains(LocationCategory::BlueChuChu) && !location->categories.contains(LocationCategory::HoHoHint))
             {
                 BasicLog::getInstance().log("    " + location->getName(), false);
             }
