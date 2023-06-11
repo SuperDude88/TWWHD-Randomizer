@@ -5,12 +5,11 @@ on:
 
 env:
   SOURCE_DIR: ${{ github.workspace }}
-  QT_VERSION: 6.3.1
+  QT_VERSION: 6.4.2
   BUILD_TYPE: Release
-  ARTIFACT: twwhd-randomizer-windows.zip
 
 jobs:
- build-desktop-application-windows:
+  build-desktop-application-windows:
    name: Build Desktop Application Windows
    runs-on: windows-latest
    
@@ -21,28 +20,35 @@ jobs:
     - name: Get all tags for correct version determination
       working-directory: ${{ github.workspace }}
       run: |
-        git fetch --all --tags -f
+         git fetch --all --tags -f
     
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: '6.3.1'
+        version: ${{ env.QT_VERSION }}
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2019_64'
+        cache: true
+        cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
         
-    - name: Create build and release directory
-      run: |
-        mkdir ${{ runner.temp }}\build
-        mkdir ${{ runner.temp }}\release
-      
     - name: Configure CMake
-      env:
-        CMAKE_PREFIX_PATH: ${{ env.Qt6_Dir }}
+      run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+      
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+      
+    - name: Call windeployqt
+      working-directory: ${{github.workspace}}/build/Release
+      run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
+    
+    - name: Populate artifact folders
       run: |
-        cd ${{ runner.temp }}\build
-        cmake ${{ github.workspace }}\gui -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DEMBED_DATA=True
-        mkdir 
-        cmake --build ${{ runner.temp }}\release --target all
-        
-        
+        mkdir artifacts
+        cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts
+      
+    - name: Save Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: wwhd_rando_windows.zip
+        path: artifacts
