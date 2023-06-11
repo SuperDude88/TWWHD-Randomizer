@@ -1075,15 +1075,6 @@ void MainWindow::update_encryption_files()
 
 void MainWindow::on_randomize_button_clicked()
 {
-    // TODO: remove when korl text is fixed
-    int totalNumHints = config.settings.item_hints + config.settings.barren_hints + config.settings.location_hints + config.settings.path_hints;
-    if (config.settings.korl_hints && !config.settings.ho_ho_hints && totalNumHints > 10)
-    {
-        show_warning_dialog("Currently there is a bug where the King of Red Lions will softlock you if he has more than 10 hints. Please reduce the number of hints to 10 or less, or enable Ho-Ho hints as well", "Hint Warning");
-        return;
-    }
-
-
     // Check to make sure the base game and output are directories
     if (!std::filesystem::is_directory(config.gameBaseDir))
     {
