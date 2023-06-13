@@ -2,6 +2,14 @@ name: Build Desktop App
 
 on:
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type:'
+        required: true
+        type: choice
+        options:
+        - Nightly
+        - Release
 
 env:
   SOURCE_DIR: ${{ github.workspace }}
@@ -50,11 +58,26 @@ jobs:
     
     - name: Populate artifact folders
       run: |
-        mkdir artifacts
-        cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts
+        mkdir artifacts/windows
+        cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts/windows
       
-    - name: Save Artifact
-      uses: actions/upload-artifact@v3
+    - name: Save ZIP Archive
+      uses: thedoctor0/zip-release@0.7.1
       with:
-        name: wwhd_rando_${{env.RANDO_VERSION}}_windows
-        path: artifacts
+        type: 'zip'
+        path: ${{github.workspace}}/artifacts/windows
+        filename: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+
+    - if: $ {{ github.event.inputs.build_type == 'Nightly' }}
+      name: Create Pre-release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        artifacts: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+        prerelease: true
+        commit: ${{ github.sha }}
+        tag: "Nightly-${{ env.SHORT_SHA }}"
+        name: "Nightly-${{ env.SHORT_SHA }}"
+        body: |
+          Please note that these are development builds and may not be entirely stable
+
