@@ -68,7 +68,7 @@ jobs:
         path: ${{github.workspace}}/artifacts/windows
         filename: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
 
-    - if: $ {{ github.event.inputs.build_type == 'Nightly' }}
+    - if: ${{ github.event.inputs.build_type == 'Nightly' }}
       name: Create Pre-release
       uses: ncipollo/release-action@v1.12.0
       with:
