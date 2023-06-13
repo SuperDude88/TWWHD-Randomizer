@@ -60,20 +60,21 @@ jobs:
       run: |
         mkdir artifacts/windows
         cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts/windows
-      
-    - name: Save ZIP Archive
+
+    - if: ${{ github.event.inputs.build_type == 'Nightly' }}  
+      name: Save ZIP Archive Nightly
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
         path: ${{github.workspace}}/artifacts/windows
-        filename: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+        filename: 'wwhd_rando_${{env.RANDO_VERSION}}-${{env.SHORT_SHA}}_windows.zip'
 
     - if: ${{ github.event.inputs.build_type == 'Nightly' }}
-      name: Create Pre-release
+      name: Create Nightly Pre-release
       uses: ncipollo/release-action@v1.12.0
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-        artifacts: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+        artifacts: 'wwhd_rando_${{env.RANDO_VERSION}}-${{env.SHORT_SHA}}_windows.zip'
         prerelease: true
         commit: ${{ github.sha }}
         tag: "Nightly-${{ env.SHORT_SHA }}"
@@ -81,3 +82,21 @@ jobs:
         body: |
           Please note that these are development builds and may not be entirely stable
 
+    - if: ${{ github.event.inputs.build_type == 'Release' }}  
+      name: Save ZIP Archive Release
+      uses: thedoctor0/zip-release@0.7.1
+      with:
+        type: 'zip'
+        path: ${{github.workspace}}/artifacts/windows
+        filename: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+
+    - if: ${{ github.event.inputs.build_type == 'Release' }}
+      name: Create Release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        artifacts: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+        prerelease: false
+        commit: ${{ github.sha }}
+        tag: "${{ env.RANDO_VERSION }}"
+        name: "${{ env.RANDO_VERSION }}"
