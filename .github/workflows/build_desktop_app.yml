@@ -17,11 +17,13 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     
+    # Only works in windows powershell
     - name: Get short SHA
-      run: echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 8))" >> $env:GITHUB_ENV
+      run: echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
 
-    - name: Print short SHA
-      run: echo "Short SHA is ${{ env.SHORT_SHA }}"
+    - name: Insert commit hash into Cmake file
+      working-directory: ${{ github.workspace }}
+      run: ((Get-Content -Path gui/CMakeLists.txt -Raw) -replace 'develop','${{env.SHORT_SHA}}') | Set-Content -Path gui/CMakeLists.txt
 #     - name: Install Qt
 #       uses: jurplel/install-qt-action@v3
 #       with:
