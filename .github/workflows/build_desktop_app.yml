@@ -17,8 +17,32 @@ env:
   BUILD_TYPE: Release
 
 jobs:
+  get-changelog:
+    name: Retrieve Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get Last Nightly
+        id: nightly-version
+        run: |
+          echo "last_nightly=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_ENV
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.0.1
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          base-ref: ${{ env.last_nightly }}
+
+  outputs:
+    changelog: ${{ steps.changelog.outputs.changelog }}
+    last-nightly: ${{ env.last_nightly }}
+
   build-desktop-application-windows:
    name: Build Desktop Application Windows
+   needs: get-changelog
    runs-on: windows-latest
    
    steps:
@@ -80,7 +104,11 @@ jobs:
         tag: "Nightly-${{ env.SHORT_SHA }}"
         name: "Nightly-${{ env.SHORT_SHA }}"
         body: |
-          Please note that these are development builds and may not be entirely stable
+          Please note that these are development builds and may not be entirely stable.
+
+          Changes Since [${{ needs.get-changelog.outputs.last-nightly }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.get-changelog.outputs.last-nightly }}) 🛠:  
+          ${{ needs.get-changelog.outputs.changelog }}
+
 
     - if: ${{ github.event.inputs.build_type == 'Release' }}  
       name: Save ZIP Archive Release
