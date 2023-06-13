@@ -20,9 +20,11 @@ jobs:
     - name: Get all tags for correct version determination
       working-directory: ${{ github.workspace }}
       run: |
-        git_hash=$(git rev-parse --short ${{ github.sha }})
-        echo git_hash
+        echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     
+    - name: Test sha
+      working-directory: ${{ github.workspace }}
+      run: echo $GITHUB_OUTPUT
 #     - name: Install Qt
 #       uses: jurplel/install-qt-action@v3
 #       with:
