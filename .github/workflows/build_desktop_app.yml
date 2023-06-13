@@ -17,12 +17,11 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     
-    - name: Set outputs
-      id: vars
-      run: echo "sha_short=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
-    
-    - name: Test sha
-      run: echo ${{ steps.vars.outputs.sha_short }}
+    - name: Get short SHA
+      run: echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 8))" >> $env:GITHUB_ENV
+
+    - name: Print short SHA
+      run: echo "Short SHA is ${{ env.SHORT_SHA }}"
 #     - name: Install Qt
 #       uses: jurplel/install-qt-action@v3
 #       with:
