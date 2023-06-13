@@ -20,7 +20,7 @@ jobs:
     - name: Get all tags for correct version determination
       working-directory: ${{ github.workspace }}
       run: |
-         git fetch $(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} | sed 's!/! !') --tags -f
+        echo ${{ github.sha }}
     
 #     - name: Install Qt
 #       uses: jurplel/install-qt-action@v3
