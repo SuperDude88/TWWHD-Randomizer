@@ -17,10 +17,9 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     
-    - name: Get all tags for correct version determination
-      working-directory: ${{ github.workspace }}
-      run: |
-        echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+    - name: Set outputs
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     
     - name: Test sha
       working-directory: ${{ github.workspace }}
