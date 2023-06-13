@@ -35,9 +35,9 @@ jobs:
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           base-ref: ${{ env.last_nightly }}
-    # outputs:
-    #   changelog: ${{ steps.changelog.outputs.changelog }}
-    #   last-nightly: ${{ env.last_nightly }}
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      last-nightly: ${{ env.last_nightly }}
 
   build-desktop-application-windows:
    name: Build Desktop Application Windows
