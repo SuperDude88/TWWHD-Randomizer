@@ -24,33 +24,33 @@ jobs:
     - name: Insert commit hash into Cmake file
       working-directory: ${{ github.workspace }}
       run: ((Get-Content -Path gui/CMakeLists.txt -Raw) -replace 'develop','${{env.SHORT_SHA}}') | Set-Content -Path gui/CMakeLists.txt
-#     - name: Install Qt
-#       uses: jurplel/install-qt-action@v3
-#       with:
-#         version: ${{ env.QT_VERSION }}
-#         host: 'windows'
-#         target: 'desktop'
-#         arch: 'win64_msvc2019_64'
-#         cache: true
-#         cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ env.QT_VERSION }}
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        cache: true
+        cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
         
-#     - name: Configure CMake
-#       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+    - name: Configure CMake
+      run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
       
-#     - name: Build
-#       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
       
-#     - name: Call windeployqt
-#       working-directory: ${{github.workspace}}/build/Release
-#       run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
+    - name: Call windeployqt
+      working-directory: ${{github.workspace}}/build/Release
+      run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
     
-#     - name: Populate artifact folders
-#       run: |
-#         mkdir artifacts
-#         cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts
+    - name: Populate artifact folders
+      run: |
+        mkdir artifacts
+        cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts
       
-#     - name: Save Artifact
-#       uses: actions/upload-artifact@v3
-#       with:
-#         name: wwhd_rando_windows
-#         path: artifacts
+    - name: Save Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: wwhd_rando_windows
+        path: artifacts
