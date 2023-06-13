@@ -17,13 +17,17 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     
-    # Only works in windows powershell
-    - name: Get short SHA
-      run: echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
+    # For windows powershell
+    - name: Set variables
+      working-directory: ${{ github.workspace }}
+      run: |
+        echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
+        echo "RANDO_VERSION=$(((Get-Content CMakeLists.txt | Select-String -Pattern 'RANDOMIZER_VERSION="[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_ENV
 
     - name: Insert commit hash into Cmake file
       working-directory: ${{ github.workspace }}
       run: ((Get-Content -Path gui/CMakeLists.txt -Raw) -replace 'develop','${{env.SHORT_SHA}}') | Set-Content -Path gui/CMakeLists.txt
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -52,5 +56,5 @@ jobs:
     - name: Save Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: wwhd_rando_windows
+        name: wwhd_rando_${{env.RANDO_VERSION}}_windows
         path: artifacts
