@@ -89,16 +89,18 @@ jobs:
        working-directory: ${{github.workspace}}/build/Release
        run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
      
-     - name: Populate artifact folders
-       run: |
-         mkdir artifacts/windows
-         cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts
+     - name: Archive release folder
+       uses: thedoctor0/zip-release@0.7.1
+       with:
+         type: 'zip'
+         path: ${{github.workspace}}/build/Release
+         filename: wwhd_rando_windows.zip
  
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
-         path: ${{github.workspace}}/artifacts
-         name: wwhd_rando_windows
+         path: ${{github.workspace}}
+         name: wwhd_rando_windows.zip
 
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
@@ -114,21 +116,16 @@ jobs:
        run: |
          docker build -t rando .
          docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
-
-     - name: Populate artifact folders
-       run: |
-         mkdir artifacts/windows
-         cp ${{github.workspace}}/wwhd_rando_wuhb -r ${{github.workspace}}/artifacts
  
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
-         path: ${{github.workspace}}/artifacts
-         name: wwhd_rando_wuhb
+         path: ${{github.workspace}}/build/wwhd_rando.wuhb
+         name: wwhd_rando.wuhb
 
   create-release:
     name: Create Release
-    needs: [get-changelog, set-variables, build-desktop-application-windows]
+    needs: [get-changelog, set-variables, build-desktop-application-windows, build-wiiu-homebrew-application]
     runs-on: ubuntu-latest
  
     steps:
@@ -139,12 +136,14 @@ jobs:
        name: Rename Artifacts Nightly
        run: |
          ls
-         mv wwhd_rando_windows 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
+         mv wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
+         mv wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
  
      - if: ${{ github.event.inputs.build_type == 'Release' }}
        name: Rename Artifacts Release
        run: |
-         mv wwhd_rando_windows 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
+         mv wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
+         mv wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
  
  
      - if: ${{ github.event.inputs.build_type == 'Nightly' }}
@@ -152,7 +151,7 @@ jobs:
        uses: ncipollo/release-action@v1.12.0
        with:
          token: "${{ secrets.GITHUB_TOKEN }}"
-         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
+         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip,wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
          prerelease: true
          commit: ${{ github.sha }}
          tag: "Nightly-${{ needs.set-variables.outputs.short_sha }}"
@@ -169,7 +168,7 @@ jobs:
        uses: ncipollo/release-action@v1.12.0
        with:
          token: "${{ secrets.GITHUB_TOKEN }}"
-         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
+         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip,wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
          prerelease: false
          commit: ${{ github.sha }}
          tag: "${{ needs.set-variables.outputs.rando_version }}"
