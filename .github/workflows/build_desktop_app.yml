@@ -99,7 +99,7 @@ jobs:
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
-         path: ${{github.workspace}}
+         path: ${{github.workspace}}/wwhd_rando_windows.zip
          name: wwhd_rando_windows.zip
 
   build-wiiu-homebrew-application:
@@ -135,7 +135,7 @@ jobs:
      - if: ${{ github.event.inputs.build_type == 'Nightly' }}
        name: Rename Artifacts Nightly
        run: |
-         ls
+         ls -R
          mv wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
          mv wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
  
