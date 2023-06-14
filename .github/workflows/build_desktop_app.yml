@@ -53,8 +53,8 @@ jobs:
          echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
          echo "RANDO_VERSION=$(((Get-Content CMakeLists.txt | Select-String -Pattern 'RANDOMIZER_VERSION="[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_ENV
     outputs:
-      short_sha: '${{needs.set-variables.outputs.short_sha}}'
-      rando_version: '${{needs.set-variables.outputs.rando_version}}'
+      short_sha: '${{env.SHORT_SHA}}'
+      rando_version: '${{env.RANDO_VERSION}}'
 
   build-desktop-application-windows:
     name: Build Desktop Application Windows
@@ -100,9 +100,35 @@ jobs:
          path: ${{github.workspace}}/artifacts
          name: wwhd_rando_windows
 
+  build-wiiu-homebrew-application:
+    name: Build Wii U Homebrew Application
+    needs: set-variables
+    runs-on: ubuntu-latest
+    
+    steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+    
+     - name: Build App
+       working-directory: ${{github.workspace}}
+       run: |
+         docker build -t rando .
+         docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
+
+     - name: Populate artifact folders
+       run: |
+         mkdir artifacts/windows
+         cp ${{github.workspace}}/wwhd_rando.wuhb -r ${{github.workspace}}/artifacts
+ 
+     - name: Save Artifact
+       uses: actions/upload-artifact@v3
+       with:
+         path: ${{github.workspace}}/artifacts
+         name: wwhd_rando.wuhb
+
   create-release:
     name: Create Release
-    needs: [get-changelog, build-desktop-application-windows]
+    needs: [get-changelog, set-variables, build-desktop-application-windows]
     runs-on: ubuntu-latest
  
     steps:

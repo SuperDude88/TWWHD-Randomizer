@@ -43,6 +43,7 @@ endif()
 # Version strings for RNG and compatibility checks
 add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
 add_compile_definitions(CONFIG_VERSION="1.0")
+add_compile_definitions(COMMIT_HASH="develop")
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
