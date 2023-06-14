@@ -118,13 +118,13 @@ jobs:
      - name: Populate artifact folders
        run: |
          mkdir artifacts/windows
-         cp ${{github.workspace}}/wwhd_rando.wuhb -r ${{github.workspace}}/artifacts
+         cp ${{github.workspace}}/wwhd_rando_wuhb -r ${{github.workspace}}/artifacts
  
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
          path: ${{github.workspace}}/artifacts
-         name: wwhd_rando.wuhb
+         name: wwhd_rando_wuhb
 
   create-release:
     name: Create Release
