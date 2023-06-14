@@ -39,21 +39,28 @@ jobs:
       changelog: ${{ steps.changelog.outputs.changelog }}
       last-nightly: ${{ env.last_nightly }}
 
+  set-variables:
+   name: Set Variables
+   runs-on: windows-latest
+
+   steps:
+    - name: Checkout Project
+      uses: actions/checkout@v3
+
+    - name: Set Variables
+      working-directory: ${{ github.workspace }}
+      run: |
+        echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
+        echo "RANDO_VERSION=$(((Get-Content CMakeLists.txt | Select-String -Pattern 'RANDOMIZER_VERSION="[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_ENV
+
   build-desktop-application-windows:
    name: Build Desktop Application Windows
-   needs: get-changelog
+   needs: set-variables
    runs-on: windows-latest
    
    steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-    
-    # For windows powershell
-    - name: Set variables
-      working-directory: ${{ github.workspace }}
-      run: |
-        echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
-        echo "RANDO_VERSION=$(((Get-Content CMakeLists.txt | Select-String -Pattern 'RANDOMIZER_VERSION="[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_ENV
 
     - name: Insert commit hash into Cmake file
       working-directory: ${{ github.workspace }}
@@ -82,15 +89,33 @@ jobs:
     - name: Populate artifact folders
       run: |
         mkdir artifacts/windows
-        cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts/windows
+        cp ${{github.workspace}}/build/Release/* -r ${{github.workspace}}/artifacts
 
-    - if: ${{ github.event.inputs.build_type == 'Nightly' }}  
-      name: Save ZIP Archive Nightly
-      uses: thedoctor0/zip-release@0.7.1
+    - name: Save Artifact
+      uses: actions/upload-artifact@v3
       with:
-        type: 'zip'
-        path: ${{github.workspace}}/artifacts/windows
-        filename: 'wwhd_rando_${{env.RANDO_VERSION}}-${{env.SHORT_SHA}}_windows.zip'
+        path: ${{github.workspace}}/artifacts
+        name: wwhd_rando_windows
+
+  create-release:
+   name: Create Release
+   needs: get-changelog, build-desktop-application-windows
+   runs-on: ubuntu-latest
+
+   steps:
+    - name: Download All Artifacts
+      uses: actions/download-artifact@v3
+
+    - if: ${{ github.event.inputs.build_type == 'Nightly' }}
+      name: Rename Artifacts Nightly
+      run: |
+        mv wwhd_rando_windows.zip 'wwhd_rando_${{env.RANDO_VERSION}}-${{env.SHORT_SHA}}_windows.zip'
+
+    - if: ${{ github.event.inputs.build_type == 'Release' }}
+      name: Rename Artifacts Release
+      run: |
+        mv wwhd_rando_windows.zip 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+
 
     - if: ${{ github.event.inputs.build_type == 'Nightly' }}
       name: Create Nightly Pre-release
@@ -107,15 +132,7 @@ jobs:
 
           Changes Since [${{ needs.get-changelog.outputs.last-nightly }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.get-changelog.outputs.last-nightly }}) 🛠:  
           ${{ needs.get-changelog.outputs.changelog }}
-
-
-    - if: ${{ github.event.inputs.build_type == 'Release' }}  
-      name: Save ZIP Archive Release
-      uses: thedoctor0/zip-release@0.7.1
-      with:
-        type: 'zip'
-        path: ${{github.workspace}}/artifacts/windows
-        filename: 'wwhd_rando_${{env.RANDO_VERSION}}_windows.zip'
+          
 
     - if: ${{ github.event.inputs.build_type == 'Release' }}
       name: Create Release
