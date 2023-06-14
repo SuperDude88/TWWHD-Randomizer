@@ -136,8 +136,8 @@ jobs:
        name: Rename Artifacts Nightly
        run: |
          ls -R
-         mv wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
-         mv wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
+         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
+         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
  
      - if: ${{ github.event.inputs.build_type == 'Release' }}
        name: Rename Artifacts Release
