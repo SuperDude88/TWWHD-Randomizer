@@ -99,7 +99,7 @@ jobs:
 
   create-release:
    name: Create Release
-   needs: get-changelog, build-desktop-application-windows
+   needs: [get-changelog, build-desktop-application-windows]
    runs-on: ubuntu-latest
 
    steps:
@@ -132,7 +132,7 @@ jobs:
 
           Changes Since [${{ needs.get-changelog.outputs.last-nightly }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.get-changelog.outputs.last-nightly }}) 🛠:  
           ${{ needs.get-changelog.outputs.changelog }}
-          
+
 
     - if: ${{ github.event.inputs.build_type == 'Release' }}
       name: Create Release
