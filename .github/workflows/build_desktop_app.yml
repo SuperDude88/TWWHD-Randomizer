@@ -142,8 +142,8 @@ jobs:
      - if: ${{ github.event.inputs.build_type == 'Release' }}
        name: Rename Artifacts Release
        run: |
-         mv wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
-         mv wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
+         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
+         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
  
  
      - if: ${{ github.event.inputs.build_type == 'Nightly' }}
