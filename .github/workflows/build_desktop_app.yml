@@ -1,0 +1,177 @@
+name: Build Desktop App
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type:'
+        required: true
+        type: choice
+        options:
+        - Nightly
+        - Release
+
+env:
+  SOURCE_DIR: ${{ github.workspace }}
+  QT_VERSION: 6.4.2
+  BUILD_TYPE: Release
+
+jobs:
+  get-changelog:
+    name: Retrieve Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get Last Nightly
+        id: nightly-version
+        run: |
+          echo "last_nightly=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_ENV
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.0.1
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          base-ref: ${{ env.last_nightly }}
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      last-nightly: ${{ env.last_nightly }}
+
+  set-variables:
+    name: Set Variables
+    runs-on: windows-latest
+
+    steps:
+     - name: Checkout Project
+       uses: actions/checkout@v3
+
+     - name: Set Variables
+       working-directory: ${{ github.workspace }}
+       run: |
+         echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
+         echo "RANDO_VERSION=$(((Get-Content CMakeLists.txt | Select-String -Pattern 'RANDOMIZER_VERSION="[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_ENV
+    outputs:
+      short_sha: '${{env.SHORT_SHA}}'
+      rando_version: '${{env.RANDO_VERSION}}'
+
+  build-desktop-application-windows:
+    name: Build Desktop Application Windows
+    needs: set-variables
+    runs-on: windows-latest
+    
+    steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+ 
+     - name: Insert commit hash into Cmake file
+       working-directory: ${{ github.workspace }}
+       run: ((Get-Content -Path gui/CMakeLists.txt -Raw) -replace 'develop','${{needs.set-variables.outputs.short_sha}}') | Set-Content -Path gui/CMakeLists.txt
+ 
+     - name: Install Qt
+       uses: jurplel/install-qt-action@v3
+       with:
+         version: ${{ env.QT_VERSION }}
+         host: 'windows'
+         target: 'desktop'
+         arch: 'win64_msvc2019_64'
+         cache: true
+         cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
+         
+     - name: Configure CMake
+       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       
+     - name: Build
+       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+       
+     - name: Call windeployqt
+       working-directory: ${{github.workspace}}/build/Release
+       run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
+     
+     - name: Archive release folder
+       uses: thedoctor0/zip-release@0.7.1
+       with:
+         type: 'zip'
+         path: ${{github.workspace}}/build/Release
+         filename: wwhd_rando_windows.zip
+ 
+     - name: Save Artifact
+       uses: actions/upload-artifact@v3
+       with:
+         path: ${{github.workspace}}/wwhd_rando_windows.zip
+         name: wwhd_rando_windows.zip
+
+  build-wiiu-homebrew-application:
+    name: Build Wii U Homebrew Application
+    needs: set-variables
+    runs-on: ubuntu-latest
+    
+    steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+    
+     - name: Build App
+       working-directory: ${{github.workspace}}
+       run: |
+         sed -i "s/develop/${{needs.set-variables.outputs.short_sha}}/g" CMakeLists.txt
+         docker build -t rando .
+         docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
+ 
+     - name: Save Artifact
+       uses: actions/upload-artifact@v3
+       with:
+         path: ${{github.workspace}}/build/wwhd_rando.wuhb
+         name: wwhd_rando.wuhb
+
+  create-release:
+    name: Create Release
+    needs: [get-changelog, set-variables, build-desktop-application-windows, build-wiiu-homebrew-application]
+    runs-on: ubuntu-latest
+ 
+    steps:
+     - name: Download All Artifacts
+       uses: actions/download-artifact@v3
+ 
+     - if: ${{ github.event.inputs.build_type == 'Nightly' }}
+       name: Rename Artifacts Nightly
+       run: |
+         ls -R
+         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
+         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
+ 
+     - if: ${{ github.event.inputs.build_type == 'Release' }}
+       name: Rename Artifacts Release
+       run: |
+         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
+         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
+ 
+ 
+     - if: ${{ github.event.inputs.build_type == 'Nightly' }}
+       name: Create Nightly Pre-release
+       uses: ncipollo/release-action@v1.12.0
+       with:
+         token: "${{ secrets.GITHUB_TOKEN }}"
+         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip,wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
+         prerelease: true
+         commit: ${{ github.sha }}
+         tag: "Nightly-${{ needs.set-variables.outputs.short_sha }}"
+         name: "Nightly-${{ needs.set-variables.outputs.short_sha }}"
+         body: |
+           Please note that these are development builds and may not be entirely stable.
+ 
+           Changes Since [${{ needs.get-changelog.outputs.last-nightly }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.get-changelog.outputs.last-nightly }}) 🛠:  
+           ${{ needs.get-changelog.outputs.changelog }}
+ 
+ 
+     - if: ${{ github.event.inputs.build_type == 'Release' }}
+       name: Create Release
+       uses: ncipollo/release-action@v1.12.0
+       with:
+         token: "${{ secrets.GITHUB_TOKEN }}"
+         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip,wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
+         prerelease: false
+         commit: ${{ github.sha }}
+         tag: "${{ needs.set-variables.outputs.rando_version }}"
+         name: "${{ needs.set-variables.outputs.rando_version }}"
+
