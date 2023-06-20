@@ -114,6 +114,7 @@ jobs:
      - name: Build App
        working-directory: ${{github.workspace}}
        run: |
+         sed -i "s/develop/${{needs.set-variables.outputs.short_sha}}/g" CMakeLists.txt
          docker build -t rando .
          docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
  
