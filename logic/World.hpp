@@ -15,6 +15,7 @@
 #include <logic/Entrance.hpp>
 #include <logic/Plandomizer.hpp>
 #include <logic/PoolFunctions.hpp>
+#include <logic/WorldPool.hpp>
 #include <utility/text.hpp>
 
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
@@ -23,8 +24,6 @@
 
 static std::stringstream lastError;
 
-class World;
-using WorldPool = std::vector<World>;
 using LocationPool = std::vector<Location*>;
 using EntrancePool = std::vector<Entrance*>;
 
@@ -140,7 +139,7 @@ public:
     std::map<std::string, AreaEntry> areaEntries = {};
     std::map<std::string, Location> locationEntries = {};
     std::map<GameItem, std::map<std::string, Text::Translation>> itemTranslations; // game item names for all languages, keyed by GameItemId, language, and type
-    std::map<std::string, std::map<std::string, Text::Translation>> hintRegions; // hint region names for all languages, key'd by name, language, and type
+    std::map<std::string, std::map<std::string, Text::Translation>> hintRegions; // hint region names for all languages, keyed by name, language, and type
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::unordered_map<std::string, Dungeon> dungeons = {};
@@ -148,12 +147,13 @@ public:
     std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
     std::list<Location*> korlHints = {};
     std::unordered_map<Location*, std::unordered_set<Location*>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
+    Location* bigOctoFairyHintLocation = nullptr;
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::unordered_map<uint8_t, GameItem> chartMappings = {};
     Settings originalSettings;
 
-    uint8_t startingIslandRoomIndex = 44;
+    uint8_t startingIslandRoomIndex = 44; // Outset Island by default
     Plandomizer plandomizer;
 
 

@@ -1,6 +1,9 @@
 #pragma once
 
-#include <logic/World.hpp>
+#include <logic/WorldPool.hpp>
+
+#include <unordered_map>
+#include <string>
 
 #define HINT_PREFIX_ENGLISH u"They say that "
 #define HINT_PREFIX_SPANISH u"Dicen que "
@@ -9,6 +12,22 @@
 enum struct HintError
 {
     NONE = 0,
+};
+
+enum struct HintType
+{
+    NONE = 0,
+    PATH,
+    BARREN,
+    ITEM,
+    LOCATION,
+};
+
+struct Hint
+{
+    // Message for this location (one for each language)
+    std::unordered_map<std::string, std::u16string> text = {};
+    HintType type = HintType::NONE;
 };
 
 HintError generateHints(WorldPool& worlds);

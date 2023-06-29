@@ -47,7 +47,7 @@ static std::u16string get_english_plurality(Item& item)
 
 TextReplacements generate_text_replacements(World& world)
 {
-  // Get all relevant items
+  // Get all relevant items/locations
   auto& auction5           = world.locationEntries["Windfall Island - Auction 5 Rupee"].currentItem;
   auto& auction40          = world.locationEntries["Windfall Island - Auction 40 Rupee"].currentItem;
   auto& auction60          = world.locationEntries["Windfall Island - Auction 60 Rupee"].currentItem;
@@ -61,6 +61,8 @@ TextReplacements generate_text_replacements(World& world)
   auto& beedle500          = world.locationEntries["Rock Spire Isle - Beedle 500 Rupee Item"].currentItem;
   auto& beedle950          = world.locationEntries["Rock Spire Isle - Beedle 950 Rupee Item"].currentItem;
   auto& beedle900          = world.locationEntries["Rock Spire Isle - Beedle 900 Rupee Item"].currentItem;
+  auto& octoFairyItem      = world.bigOctoFairyHintLocation->currentItem;
+  auto& octoFairyRegion    = *(world.bigOctoFairyHintLocation->hintRegions.begin());
 
   LOG_TO_DEBUG("Calculating text replacement articles/pronouns");
   // Calculate articles for some replacements
@@ -289,6 +291,20 @@ TextReplacements generate_text_replacements(World& world)
                                  TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"¡Acepta " + splooshSecondSpanishConjugation + splooshSecondPrize.getUTF16Name("Spanish") + u'!', 43) + u'\0'},
       {"French",  SOUND(0x8E) + u"Oui, oui!\nMerci l'ami!\n\n\nNous tenons à te faire un cadeau pour\nte remercier de nous avoir protégés.\n\n\n" + word_wrap_string(u"Voici " +
                                 splooshSecondPrize.getUTF16Name("English", Text::Type::PRETTY) + u" qui se transmet depuis fort longtemps sur cette île. Prends-là et surtout ne le dis pas aux anciens!", 43) + u'\0'}}},
+
+     // Great Fairy Big Octo Text
+     {"12015",
+     {{"English", word_wrap_string(TEXT_COLOR_DEFAULT + u"At " + world.getUTF16HintRegion(octoFairyRegion, "English", Text::Type::PRETTY, Text::Color::RED) + u", you will find an item.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_DEFAULT + u"At " + world.getUTF16HintRegion(octoFairyRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED) + u", you will find an item.", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_DEFAULT + u"At " + world.getUTF16HintRegion(octoFairyRegion, "French", Text::Type::PRETTY, Text::Color::RED) + u", you will find an item.", 43) + u'\0'}}},
+     {"12016",
+     {{"English", word_wrap_string(TEXT_COLOR_DEFAULT + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + u", which may help you on your quest.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_DEFAULT + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + u", which may help you on your quest.", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_DEFAULT + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + u", which may help you on your quest.", 43) + u'\0'}}},
+     {"12017",
+     {{"English", word_wrap_string(TEXT_COLOR_DEFAULT + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_DEFAULT + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_DEFAULT + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'}}},
 
      // Rock Spire Shop 500 Rupee Item
      {"12106",

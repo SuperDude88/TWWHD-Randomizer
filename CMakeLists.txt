@@ -10,8 +10,6 @@ if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
   add_compile_options(-O3 -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
-else()
-  add_compile_options(-g)
 endif()
 
 if(GET_THREADS)
@@ -20,6 +18,7 @@ endif()
 
 if(ENABLE_DEBUG)
   message("Debugging is ON")
+  add_compile_options(-g)
   add_compile_definitions(ENABLE_DEBUG)
 endif()
 

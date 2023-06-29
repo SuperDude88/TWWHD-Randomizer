@@ -218,17 +218,7 @@ private:
 		for (uint8_t i = 0; i < 49; i++) {
 			const uint8_t islandNumber = i + 1;
 
-			std::string dzrPath;
-			if (islandNumber == 1 || islandNumber == 11 || islandNumber == 13 || islandNumber == 17 || islandNumber == 23) {
-				dzrPath = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr@DZX";
-			}
-			else if (islandNumber == 9 || islandNumber == 39 || islandNumber == 41 || islandNumber == 44) {
-				dzrPath = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr@DZX";
-			}
-			else {
-				dzrPath = "content/Common/Stage/sea_Room" + std::to_string(islandNumber) + ".szs@YAZ0@SARC@Room" + std::to_string(islandNumber) + ".bfres@BFRES@room.dzr@DZX";
-			}
-
+			std::string dzrPath = get_island_room_dzx_filepath(islandNumber);
 			RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(dzrPath);
 
 			entry.addAction([&worlds, &dzrEntry, i, islandNumber](RandoSession* session, FileType* data) -> int
