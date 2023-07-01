@@ -294,17 +294,17 @@ TextReplacements generate_text_replacements(World& world)
 
      // Great Fairy Big Octo Text
      {"12015",
-     {{"English", word_wrap_string(TEXT_COLOR_DEFAULT + u"At " + world.getUTF16HintRegion(octoFairyRegion, "English", Text::Type::PRETTY, Text::Color::RED) + u", you will find an item.", 43) + u'\0'},
-      {"Spanish", word_wrap_string(TEXT_COLOR_DEFAULT + u"At " + world.getUTF16HintRegion(octoFairyRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED) + u", you will find an item.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_DEFAULT + u"At " + world.getUTF16HintRegion(octoFairyRegion, "French", Text::Type::PRETTY, Text::Color::RED) + u", you will find an item.", 43) + u'\0'}}},
+     {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"At " + world.getUTF16HintRegion(octoFairyRegion, "English", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u", you will find an item.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Encontrarás un objeto en " + world.getUTF16HintRegion(octoFairyRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u".", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"At " + world.getUTF16HintRegion(octoFairyRegion, "French", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u", you will find an item.", 43) + u'\0'}}},
      {"12016",
-     {{"English", word_wrap_string(TEXT_COLOR_DEFAULT + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + u", which may help you on your quest.", 43) + u'\0'},
-      {"Spanish", word_wrap_string(TEXT_COLOR_DEFAULT + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + u", which may help you on your quest.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_DEFAULT + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + u", which may help you on your quest.", 43) + u'\0'}}},
+     {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", que te ayudará en tu aventura.", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'}}},
      {"12017",
-     {{"English", word_wrap_string(TEXT_COLOR_DEFAULT + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
-      {"Spanish", word_wrap_string(TEXT_COLOR_DEFAULT + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_DEFAULT + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'}}},
+     {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Cuándo requieras el uso de tal objeto, dirígete a ese lugar.", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'}}},
 
      // Rock Spire Shop 500 Rupee Item
      {"12106",
