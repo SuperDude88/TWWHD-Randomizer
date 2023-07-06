@@ -9,6 +9,8 @@
 #include <codecvt>
 #include <filesystem>
 #include <algorithm>
+#include <iostream>
+#include <tuple>
 
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
@@ -26,6 +28,7 @@
 #include <filetypes/util/msbtMacros.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
+#include <utility/common.hpp>
 #include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -1254,31 +1257,31 @@ TweakError update_ho_ho_dialog(World& world) {
 
 TweakError rotate_ho_ho_to_face_hints(World& world) {
 
-	// If no ho ho hints, don't do anything
-	if (world.hohoHints.empty()) {
-		return TweakError::NONE;
-	}
+    // If no ho ho hints, don't do anything
+    if (world.hohoHints.empty()) {
+        return TweakError::NONE;
+    }
 
-  	for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
-		std::string island = "";
-		for (auto location : hintLocations) {
-			for (auto region : location->hintRegions) {
-				// If this region is a dungeon, use the dungeon's island instead
-				if (world.dungeons.contains(region)) {
-					region = world.dungeons[region].island;
-				}
+    for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+        std::string island = "";
+        for (auto location : hintLocations) {
+            for (auto region : location->hintRegions) {
+                // If this region is a dungeon, use the dungeon's island instead
+                if (world.dungeons.contains(region)) {
+                    region = world.dungeons[region].island;
+                }
 		
-				if (islandNameToRoomIndex(region) != 0) {
-					island = region;
-				}
-			}
+                if (islandNameToRoomIndex(region) != 0) {
+                    island = region;
+                }
+            }
 		
-			if (island != "") {
-				break;
-			}
-		}
+            if (island != "") {
+                break;
+            }
+        }
 
-		if (island != "") {
+        if (island != "") {
 			LOG_TO_DEBUG("Rotating " + hohoLocation->getName() + " to face " + island);
 			auto islandNumToFace = islandNameToRoomIndex(island);
 			auto hohoIslandNum = islandNameToRoomIndex(*(hohoLocation->hintRegions.begin()));
@@ -2708,6 +2711,110 @@ TweakError fix_needle_rock_island_salvage_flags() {
 	return TweakError::NONE;
 }
 
+TweakError change_tunic_color() {
+
+	RandoSession::CacheEntry& linktex = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
+	linktex.addAction([](RandoSession* session, FileType* data) -> int {
+		CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
+
+		std::string maskFile = "";
+        uint16_t replacementColor = 0xFFFF;
+        uint16_t baseColor = 0x5D89;
+
+        double baseR = (baseColor & 0xF800) >> 11;
+        double baseG = (baseColor & 0x07E0) >> 5;
+        double baseB = (baseColor & 0x001F);
+        auto baseColorHSV = RGBToHSV(baseR / 31.0, baseG / 63.0, baseB / 31.0);
+
+        double replacementR = (replacementColor & 0xF800) >> 11;
+        double replacementG = (replacementColor & 0x07E0) >> 5;
+        double replacementB = (replacementColor & 0x001F);
+        auto replacementColorHSV = RGBToHSV(replacementR / 31.0, replacementG / 63.0, replacementB / 31.0);
+
+        double sChange = replacementColorHSV.S - baseColorHSV.S;
+        double vChange = replacementColorHSV.V - baseColorHSV.V;
+
+		// std::cout << "base: " << baseColorHSV.H << " " << baseColorHSV.S << " " << baseColorHSV.V << std::endl;
+        // std::cout << "replacement: " << replacementColorHSV.H << " " << replacementColorHSV.S << " " << replacementColorHSV.V << std::endl;
+
+		for (auto& texture : bfres.textures) {
+
+			if (texture.name.substr(0, 11) == "linktexS3TC") {
+				if (Utility::getFileContents(DATA_PATH "assets/linktexS3TC_mask.bftex", maskFile, true) != 0) {
+					return false;
+				}
+
+				maskFile = maskFile.substr(0x2000); // Remove header
+
+				for (size_t i = 0; i < maskFile.length(); i += 8) {
+
+                    uint16_t maskColor1 = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i + 2]);
+                    uint16_t maskColor2 = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i]);
+
+                    uint16_t texColor1;
+                    uint16_t texColor2;
+
+					// Using little endian is intenional here
+                    if (i < texture.data.length()) {
+                        texColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
+                        texColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
+                    } else {
+                        texColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
+                        texColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
+                    }
+                    
+                    std::list<std::tuple<uint16_t, size_t, uint16_t>> masksOffsetsColors = {{maskColor1, i, texColor1} , {maskColor2, i + 2, texColor2}};
+
+                    for (auto& [mask, offset, color] : masksOffsetsColors) {
+                        if (mask == 0x00F8) {
+
+							// std::cout << "color: " << Utility::Str::intToHex(color) << std::endl;
+
+                            double curColorR = (color & 0xF800) >> 11;
+                            double curColorG = (color & 0x07E0) >> 5;
+                            double curColorB = (color & 0x001F);
+                            auto curColorHSV = RGBToHSV(curColorR / 31.0, curColorG / 63.0, curColorB / 31.0);
+
+                            if (curColorHSV.S == 0.0) {
+                                // Prevent issues when recoloring black/white/grey parts of a texture where the base color is not black/white/grey.
+                                curColorHSV.S = baseColorHSV.S;
+                            }
+
+                            HSV newColorHSV;
+                            newColorHSV.H = replacementColorHSV.H;
+                            newColorHSV.S = curColorHSV.S + sChange;
+                            newColorHSV.V = curColorHSV.V + vChange;
+                            
+                            newColorHSV.S = std::max(0.0, std::min(1.0, newColorHSV.S));
+                            newColorHSV.V = std::max(0.0, std::min(1.0, newColorHSV.V));
+
+                            // std::cout << "current: " << curColorHSV.H << " " << curColorHSV.S << " " << curColorHSV.V << std::endl;
+                            // std::cout << "new: " << newColorHSV.H << " " << newColorHSV.S << " " << newColorHSV.V << std::endl;
+
+                            auto newColorRGB = HSVToRGB(newColorHSV);
+
+                            uint16_t newColor565 = 0;
+                            newColor565 |= uint16_t(round(newColorRGB.R * 31.0)) << 11;
+                            newColor565 |= uint16_t(round(newColorRGB.G * 63.0)) << 5;
+                            newColor565 |= uint16_t(round(newColorRGB.B * 31.0));
+
+                            if (offset < texture.data.length()) {
+                                texture.data.replace(offset, 2, reinterpret_cast<const char*>(&newColor565), 2);
+                            } else {
+                                texture.mipData.replace(offset - texture.data.length(), 2, reinterpret_cast<const char*>(&newColor565), 2);
+                            }
+                        }
+                    }
+                }
+			}
+		}
+
+		return true;
+	});
+
+	return TweakError::NONE;
+}
+
 std::string get_island_room_dzx_filepath(const uint8_t& islandNum) {
 
 	// Most sea_Room szs files are in content/Common/Stage but some are
@@ -2893,6 +3000,8 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
 	if(world.getSettings().add_shortcut_warps_between_dungeons) {
 		TWEAK_ERR_CHECK(add_cross_dungeon_warps());
 	}
+
+	TWEAK_ERR_CHECK(change_tunic_color());
 
 	return TweakError::NONE;
 }

@@ -273,7 +273,9 @@ namespace FileTypes {
                 LOG_ERR_AND_RETURN(std::get<FRESError>(readFiles));
             }
         }
-        files.insert(files.end(), std::get<std::vector<FileSpec>>(readFiles).begin(), std::get<std::vector<FileSpec>>(readFiles).end());
+        else {
+            files.insert(files.end(), std::get<std::vector<FileSpec>>(readFiles).begin(), std::get<std::vector<FileSpec>>(readFiles).end());
+        }
 
         // sort file specs by offset (may already be sorted by nintendo, but they don't HAVE to be in theory)
         std::sort(files.begin(), files.end(), [](const FileSpec& a, const FileSpec& b) {return a.fileOffset < b.fileOffset; });
