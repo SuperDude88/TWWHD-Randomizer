@@ -10,6 +10,7 @@
 #include <logic/GameItem.hpp>
 #include <logic/Requirements.hpp>
 #include <logic/PoolFunctions.hpp>
+#include <logic/Hints.hpp>
 #include <command/WriteLocations.hpp>
 
 // move this and mod type into location entry or own file?
@@ -89,8 +90,8 @@ struct Location
     // Message Label if this is a hint location
     std::string messageLabel;
 
-    // hint message for this location (one for each language)
-    std::unordered_map<std::string, std::u16string> hintText = {};
+    // Hint for this location
+    Hint hint;
 
     // goal names if this is a race mode location (one for each language)
     std::unordered_map<std::string, std::string> goalNames = {};
@@ -116,7 +117,7 @@ struct Location
         world(nullptr),
         hasBeenFound(false),
         messageLabel(""),
-        hintText({}),
+        hint(Hint()),
         goalNames({}),
         marked(false)
     {
