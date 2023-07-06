@@ -5,15 +5,15 @@
 #include <string>
 
 struct ACTR {
-	std::string name;
-	uint32_t params;
-	float x_pos;
-	float y_pos;
-	float z_pos;
-	uint16_t aux_params_1;
-	uint16_t y_rot;
-	uint16_t aux_params_2;
-	uint16_t enemy_number;
+    std::string name;
+    uint32_t params;
+    float x_pos;
+    float y_pos;
+    float z_pos;
+    uint16_t aux_params_1;
+    uint16_t y_rot;
+    uint16_t aux_params_2;
+    uint16_t enemy_number;
 };
 
 struct SCOB
@@ -29,6 +29,6 @@ namespace WWHDStructs {
     ACTR readACTR(std::istream& in);
     SCOB readSCOB(std::istream& in);
 
-	void writeACTR(std::ostream& out, const ACTR& actr);
-	void writeSCOB(std::ostream& out, const SCOB& scob);
+    void writeACTR(std::ostream& out, const ACTR& actr);
+    void writeSCOB(std::ostream& out, const SCOB& scob);
 }

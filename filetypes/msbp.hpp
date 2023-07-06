@@ -193,8 +193,8 @@ private:
 namespace FileTypes {
 
     class MSBPFile : public FileType {
-	public:
-		CLB1 colorLabels;
+    public:
+        CLB1 colorLabels;
         CLR1 colors;
         ALB1 attributeLabels;
         ATI2 attributeInfo;
@@ -207,16 +207,16 @@ namespace FileTypes {
         SYL3 styles;
         CTI1 sources;
 
-		MSBPFile();
-		static MSBPFile createNew();
-		LMSError loadFromBinary(std::istream& msbp);
-		LMSError loadFromFile(const std::string& filePath);
-		LMSError writeToStream(std::ostream& out);
-		LMSError writeToFile(const std::string& outFilePath);
+        MSBPFile();
+        static MSBPFile createNew();
+        LMSError loadFromBinary(std::istream& msbp);
+        LMSError loadFromFile(const std::string& filePath);
+        LMSError writeToStream(std::ostream& out);
+        LMSError writeToFile(const std::string& outFilePath);
 
-	private:
-		FileHeader header;
+    private:
+        FileHeader header;
 
-		void initNew() override;
-	};
+        void initNew() override;
+    };
 }

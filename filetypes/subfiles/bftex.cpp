@@ -62,11 +62,11 @@ namespace FileTypes::Subfiles {
         switch (err) {
             case FTEXError::NONE:
                 return "NONE";
-	        case FTEXError::REACHED_EOF:
+            case FTEXError::REACHED_EOF:
                 return "REACHED_EOF";
-	        case FTEXError::COULD_NOT_OPEN:
+            case FTEXError::COULD_NOT_OPEN:
                 return "COULD_NOT_OPEN";
-	        case FTEXError::NOT_FTEX:
+            case FTEXError::NOT_FTEX:
                 return "NOT_FTEX";
             case FTEXError::UNSUPPORTED_FORMAT:
                 return "UNSUPPORTED_FORMAT";
@@ -94,9 +94,9 @@ namespace FileTypes::Subfiles {
     }
 
     FTEXFile FTEXFile::createNew() {
-		FTEXFile newFTEX{};
-		newFTEX.initNew();
-		return newFTEX;
+        FTEXFile newFTEX{};
+        newFTEX.initNew();
+        return newFTEX;
     }
 
     FTEXError FTEXFile::loadFromBinary(std::istream& ftex) {

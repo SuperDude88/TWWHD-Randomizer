@@ -48,9 +48,9 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 
             std::ifstream input(pEntry->path, std::ios::binary);
             while(input) {
-				input.read(readBuffer, READ_BUFFER_SIZE);
-				output.write(readBuffer, input.gcount());
-			}
+                input.read(readBuffer, READ_BUFFER_SIZE);
+                output.write(readBuffer, input.gcount());
+            }
 
             uint64_t alignedFileSize = roundUp(entry.fileSize, ALIGNMENT_IN_CONTENT);
 

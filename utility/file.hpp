@@ -6,19 +6,19 @@
 #include <command/Log.hpp>
 
 #ifdef DEVKITPRO
-	#include <sys/stat.h>
-	#include <dirent.h>
-	#include <coreinit/filesystem_fsa.h>
+    #include <sys/stat.h>
+    #include <dirent.h>
+    #include <coreinit/filesystem_fsa.h>
 #endif
 
 namespace Utility
 {
-	//std::filesystem is partially broken on Wii U, these are cross-platform replacements
+    //std::filesystem is partially broken on Wii U, these are cross-platform replacements
 
     inline std::ostream& seek(std::ostream& stream, const std::streamoff& off, const std::ios::seekdir& way = std::ios::beg) {
         //#ifdef DEVKITPRO
-		//Wii U crashes if you seek past eof, most other platforms extend the file
-		//Handle writing the extra padding manually
+        //Wii U crashes if you seek past eof, most other platforms extend the file
+        //Handle writing the extra padding manually
 
         switch(way) {
             case std::ios::cur:
@@ -31,34 +31,34 @@ namespace Utility
                         stream.write(&buffer[0], buffer.size());
                     }
                 }
-				else if ((cur + off) < 0) {
-					//can't seek before start of file, seek to beginning as failsafe
+                else if ((cur + off) < 0) {
+                    //can't seek before start of file, seek to beginning as failsafe
                     return stream.seekp(0, std::ios::beg);
-				}
+                }
                 return stream.seekp(cur + off, std::ios::beg);
             }
             case std::ios::end:
-			//BUG: seek to std::ios::end doesn't seem to work on MLC, find workaround? (relevant uses are currently replaced)
+            //BUG: seek to std::ios::end doesn't seem to work on MLC, find workaround? (relevant uses are currently replaced)
             {
-				stream.seekp(0, std::ios::end);
+                stream.seekp(0, std::ios::end);
                 if(off > 0) {
                     const std::string buffer(off, '\0');
                     stream.write(&buffer[0], buffer.size());
                 }
-				else if((-off) > stream.tellp()) {
-					//Can't seek before start of file, seek to beginning as failsafe
-					return stream.seekp(0, std::ios::beg);
-				}
+                else if((-off) > stream.tellp()) {
+                    //Can't seek before start of file, seek to beginning as failsafe
+                    return stream.seekp(0, std::ios::beg);
+                }
                 return stream.seekp(off, std::ios::end);
             }
-			case std::ios::beg:
+            case std::ios::beg:
                 [[fallthrough]];
-			default:
+            default:
             {
-				if(off < 0) {
-					//can't seek before start of file, seek to beginning as failsafe
-					stream.seekp(0, std::ios::beg);
-				}
+                if(off < 0) {
+                    //can't seek before start of file, seek to beginning as failsafe
+                    stream.seekp(0, std::ios::beg);
+                }
                 stream.seekp(0, std::ios::end);
                 if(stream.tellp() < off) {
                     const std::string buffer(off - stream.tellp(), '\0');
@@ -72,79 +72,79 @@ namespace Utility
         //#endif
     }
 
-	inline bool exists(const std::filesystem::path& fsPath) {
-		#ifdef DEVKITPRO
-			struct stat sbuff;
-    		return stat(fsPath.string().c_str(), &sbuff) == 0;
-		#else
-			return std::filesystem::exists(fsPath);
-		#endif
-	}
+    inline bool exists(const std::filesystem::path& fsPath) {
+        #ifdef DEVKITPRO
+            struct stat sbuff;
+            return stat(fsPath.string().c_str(), &sbuff) == 0;
+        #else
+            return std::filesystem::exists(fsPath);
+        #endif
+    }
 
-	//from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
-	bool isRoot(const std::filesystem::path& fsPath);
+    //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
+    bool isRoot(const std::filesystem::path& fsPath);
 
-	//from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L193
-	inline bool dirExists(const std::filesystem::path& fsPath) {
-		#ifdef DEVKITPRO
-			static struct stat existStat;
-			if (isRoot(fsPath)) return true;
-    		if (lstat(fsPath.string().c_str(), &existStat) == 0 && S_ISDIR(existStat.st_mode)) return true;
-    		return false;
-		#else
-			return std::filesystem::is_directory(fsPath);
-		#endif
-	}
+    //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L193
+    inline bool dirExists(const std::filesystem::path& fsPath) {
+        #ifdef DEVKITPRO
+            static struct stat existStat;
+            if (isRoot(fsPath)) return true;
+            if (lstat(fsPath.string().c_str(), &existStat) == 0 && S_ISDIR(existStat.st_mode)) return true;
+            return false;
+        #else
+            return std::filesystem::is_directory(fsPath);
+        #endif
+    }
 
-	inline bool create_directories(const std::filesystem::path& fsPath) {
-		#ifdef DEVKITPRO
-			std::string temp = fsPath.string();
-			if(temp.back() == '/') temp.pop_back();
-			for(size_t i = 0; i < temp.size(); i++) {
-				if(temp[i] == '/') {
-					const std::string& sub = temp.substr(0, i);
-                	if (!dirExists(sub)) {
-						mkdir(sub.c_str(), ACCESSPERMS);
-					}
-				}
-			}
-			mkdir(temp.c_str(), ACCESSPERMS);
-		#else
-			std::filesystem::create_directories(fsPath);
-		#endif
+    inline bool create_directories(const std::filesystem::path& fsPath) {
+        #ifdef DEVKITPRO
+            std::string temp = fsPath.string();
+            if(temp.back() == '/') temp.pop_back();
+            for(size_t i = 0; i < temp.size(); i++) {
+                if(temp[i] == '/') {
+                    const std::string& sub = temp.substr(0, i);
+                    if (!dirExists(sub)) {
+                        mkdir(sub.c_str(), ACCESSPERMS);
+                    }
+                }
+            }
+            mkdir(temp.c_str(), ACCESSPERMS);
+        #else
+            std::filesystem::create_directories(fsPath);
+        #endif
 
-		return true;
-	}
+        return true;
+    }
 
-	inline bool remove_all(const std::filesystem::path& fsPath) {
-		#ifdef DEVKITPRO
-			for(auto& p : std::filesystem::directory_iterator(fsPath)) {
-				if(std::filesystem::is_directory(p.path())) {
-					if(!std::filesystem::is_empty(p.path())) {
-						if(!Utility::remove_all(p.path())) return false;
-					}
-				}
-				else {
-					std::filesystem::remove(p.path());
-				}
-			}
+    inline bool remove_all(const std::filesystem::path& fsPath) {
+        #ifdef DEVKITPRO
+            for(auto& p : std::filesystem::directory_iterator(fsPath)) {
+                if(std::filesystem::is_directory(p.path())) {
+                    if(!std::filesystem::is_empty(p.path())) {
+                        if(!Utility::remove_all(p.path())) return false;
+                    }
+                }
+                else {
+                    std::filesystem::remove(p.path());
+                }
+            }
 
-			if(!std::filesystem::is_empty(fsPath)) return false;
-			return std::filesystem::remove(fsPath);
-		#else
-			return std::filesystem::remove_all(fsPath);
-		#endif
-	}
+            if(!std::filesystem::is_empty(fsPath)) return false;
+            return std::filesystem::remove(fsPath);
+        #else
+            return std::filesystem::remove_all(fsPath);
+        #endif
+    }
 
-	bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to);
+    bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to);
 
-	bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
+    bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
 
-	int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile = false);
+    int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile = false);
 
-	int getFileContents(const std::string& filename, std::stringstream& fileContents);
+    int getFileContents(const std::string& filename, std::stringstream& fileContents);
 
-	#ifdef DEVKITPRO
+    #ifdef DEVKITPRO
     inline bool flush_mlc() {
         const int fsaHandle = FSAAddClient(NULL);
         if(fsaHandle < 0) {
@@ -163,5 +163,5 @@ namespace Utility
 
         return true;
     }
-	#endif
+    #endif
 }
