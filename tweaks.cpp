@@ -8,6 +8,7 @@
 #include <fstream>
 #include <codecvt>
 #include <filesystem>
+#include <algorithm>
 
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
@@ -158,16 +159,8 @@ TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t 
 }
 
 TweakError change_ship_starting_island(const uint8_t room_index) {
-	std::string path;
-	if (room_index == 1 || room_index == 11 || room_index == 13 || room_index == 17 || room_index == 23) {
-		path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
-	}
-	else if (room_index == 9 || room_index == 39 || room_index == 41 || room_index == 44) {
-		path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
-	}
-	else {
-		path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
-	}
+	std::string path = get_island_room_dzx_filepath(room_index);
+
 	RandoSession::CacheEntry& room = g_session.openGameFile(path);
 	RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
 	room.addAction([&stage](RandoSession* session, FileType* data) -> int {
@@ -1174,108 +1167,163 @@ TweakError shorten_zephos_event() {
 // Korl Hints
 TweakError update_korl_dialog(World& world) {
 
-  if (!world.korlHints.empty()) {
-    for (const auto& language: Text::supported_languages) {
-      RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
+  	if (!world.korlHints.empty()) {
+    	for (const auto& language: Text::supported_languages) {
+      		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
 
-      std::vector<std::u16string> hintLines = {u""};
-      int i = -1; // counter to know when to add null terminator
-      for (auto location : world.korlHints) {
-        i++;
-        std::u16string hint = location->hintText[language];
-        hint = Text::word_wrap_string(hint, 43);
-		if(i >= 10) {
-        	hintLines.back().back() = u'\0';
-			hintLines.push_back(u"");
-			i = 0;
+      		std::vector<std::u16string> hintLines = {u""};
+      		int i = -1; // counter to know when to add null terminator
+      		for (auto location : world.korlHints) {
+        		i++;
+        		std::u16string hint = location->hint.text[language];
+        		hint = Text::word_wrap_string(hint, 43);
+				if(i >= 10) {
+        			hintLines.back().back() = u'\0';
+					hintLines.push_back(u"");
+					i = 0;
+				}
+        		hint = Text::pad_str_4_lines(hint);
+        		hintLines.back() += hint;
+      		}
+	  		if(hintLines.back().back() != u'\0') hintLines.back().back() = u'\0';
+
+			if(custom_symbols.count("num_korl_messages") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+			const uint32_t num_messages_address = custom_symbols.at("num_korl_messages");
+			g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, num = hintLines.size()](RandoSession* session, FileType* data) -> int {
+				CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+				RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_messages_address), num));
+
+				return true;
+	  		});
+
+      		for (uint32_t x = 0; x < hintLines.size(); x++) {
+				const std::u16string lines = hintLines[x];
+				const std::string label = "0"s + std::to_string(3443 + x);
+				entry.addAction([label, lines](RandoSession* session, FileType* data) -> int {
+					CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+					msbt.messages_by_label[label].text.message = lines;
+
+					return true;
+				});
+      		}
 		}
-        hint = Text::pad_str_4_lines(hint);
-        hintLines.back() += hint;
-      }
-	  if(hintLines.back().back() != u'\0') hintLines.back().back() = u'\0';
-
-	  if(custom_symbols.count("num_korl_messages") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-	  const uint32_t num_messages_address = custom_symbols.at("num_korl_messages");
-	  g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, num = hintLines.size()](RandoSession* session, FileType* data) -> int {
-		CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-
-	  	RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_messages_address), num));
-
-	  	return true;
-	  });
-
-      for (uint32_t x = 0; x < hintLines.size(); x++) {
-		const std::u16string lines = hintLines[x];
-		const std::string label = "0"s + std::to_string(3443 + x);
-		entry.addAction([label, lines](RandoSession* session, FileType* data) -> int {
-			CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
-
-			msbt.messages_by_label[label].text.message = lines;
-
-			return true;
-		});
-      }
-    }
-  }
-
+  	}
 	return TweakError::NONE;
 }
 
 // Ho Ho Hints
 TweakError update_ho_ho_dialog(World& world) {
 
-  // If no hint, don't do anything
-  if (world.hohoHints.empty()) {
-      return TweakError::NONE;
-  }
+	// If no ho ho hints, don't do anything
+	if (world.hohoHints.empty()) {
+		return TweakError::NONE;
+	}
 
-  for (const auto& language : Text::supported_languages) {
-    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
-    
-	entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
-    for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
-      std::u16string hintLines = u"";
-      size_t i = 0; // counter to know when to add null terminator
-      for (auto location : hintLocations) {
-        std::u16string hint = u"";
-        if (i == 0) {
-          hint += SOUND(0x0103) u"Ho ho! "s;
-        }
-        i++;
-        hint += location->hintText[language];
-        hint = Text::word_wrap_string(hint, 43);
-        if (i == hintLocations.size()) {
-          hint += u'\0'; // add null terminator on last hint before padding
-        }
-        hint = Text::pad_str_4_lines(hint);
-        hintLines += hint;
-      }
-      hintLines = u"";
-      i = 0; // counter to know when to add null terminator
-      while (i < 20) {
-        std::u16string hint = u"";
-        if (i == 0) {
-          hint += SOUND(0x0103) u"Ho ho! "s;
-        }
-        i++;
-        hint += Utility::Str::toUTF16(std::to_string(i));
-        hint = Text::word_wrap_string(hint, 43);
-        if (i == 19) {
-          hint += u'\0'; // add null terminator on last hint before padding
-        }
-        hint = Text::pad_str_4_lines(hint);
-        hintLines += hint;
-      }
-		CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+  	for (const auto& language : Text::supported_languages) {
+		RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
+		
+		entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
+      		for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+				std::u16string hintLines = u"";
+				size_t i = 0; // counter to know when to add null terminator
+				for (auto location : hintLocations) {
+					std::u16string hint = u"";
+					if (i == 0) {
+						hint += SOUND(0x0103) u"Ho ho! "s;
+					}
+					i++;
+					hint += location->hint.text[language];
+					hint = Text::word_wrap_string(hint, 43);
+					if (i == hintLocations.size()) {
+						hint += u'\0'; // add null terminator on last hint before padding
+					}
+					hint = Text::pad_str_4_lines(hint);
+					hintLines += hint;
+				}
+				CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-		msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
-      }
-
-	  return true;
-	});
-  }
-
+				msbt.messages_by_label[hohoLocation->messageLabel].text.message = hintLines;
+      		}
+	  		return true;
+		});
+  	}
   return TweakError::NONE;
+}
+
+TweakError rotate_ho_ho_to_face_hints(World& world) {
+
+	// If no ho ho hints, don't do anything
+	if (world.hohoHints.empty()) {
+		return TweakError::NONE;
+	}
+
+  	for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+		std::string island = "";
+		for (auto location : hintLocations) {
+			for (auto region : location->hintRegions) {
+				// If this region is a dungeon, use the dungeon's island instead
+				if (world.dungeons.contains(region)) {
+					region = world.dungeons[region].island;
+				}
+		
+				if (islandNameToRoomIndex(region) != 0) {
+					island = region;
+				}
+			}
+		
+			if (island != "") {
+				break;
+			}
+		}
+
+		if (island != "") {
+			LOG_TO_DEBUG("Rotating " + hohoLocation->getName() + " to face " + island);
+			auto islandNumToFace = islandNameToRoomIndex(island);
+			auto hohoIslandNum = islandNameToRoomIndex(*(hohoLocation->hintRegions.begin()));
+
+			std::string filepath = get_island_room_dzx_filepath(hohoIslandNum);
+			RandoSession::CacheEntry& room = g_session.openGameFile(filepath);
+
+			room.addAction([=](RandoSession* session, FileType* data) -> int {
+
+				CAST_ENTRY_TO_FILETYPE(islandDzr, FileTypes::DZXFile, data)
+				auto actors = islandDzr.entries_by_type("ACTR");
+
+				// For each ho ho actor (actor name "Ah"), rotate him to face the destSectorMult
+				for (auto actor : actors) {
+					if (std::strncmp(&actor->data[0], "Ah\x00\x00\x00\x00\x00\x00", 8) == 0) {
+						float hohoX = Utility::Endian::toPlatform(eType::Big, *(float*)&actor->data[0x0C]);
+						float hohoZ = Utility::Endian::toPlatform(eType::Big, *(float*)&actor->data[0x14]);
+						
+						// Calculate coordinates of the island to face
+						auto island = islandNumToFace - 1;
+
+						// Get X and Z
+						int islandX = island % 7;
+						int islandZ = island / 7;
+
+						// Shift X and Z since the origin is the center of the map, not the top left corner
+						islandX -= 3;
+						islandZ -= 3;
+
+						// Multiply by 100k to get actual coordinate values
+						islandX *= 100000;
+						islandZ *= 100000;
+
+						auto angleRad = atan2(islandX - hohoX, islandZ - hohoZ);
+						uint16_t angle = int(angleRad * (0x8000 / M_PI)) % 0x10000;
+
+						Utility::Endian::toPlatform_inplace(eType::Big, angle);
+						actor->data.replace(0x1A, 2, reinterpret_cast<const char*>(&angle), 2);
+					}
+				}
+				return true;
+			});
+		} 
+  	}
+  	return TweakError::NONE;
 }
 
 TweakError set_num_starting_triforce_shards(const uint8_t numShards) {
@@ -2660,7 +2708,26 @@ TweakError fix_needle_rock_island_salvage_flags() {
 	return TweakError::NONE;
 }
 
-//IMPROVEMENT: make Hoho face hint islands https://github.com/LagoLunatic/wwrando/commit/32640f65180470a9d157aa177753d47b51b74425
+std::string get_island_room_dzx_filepath(const uint8_t& islandNum) {
+
+	// Most sea_Room szs files are in content/Common/Stage but some are
+	// in content/Common/Pack/szs_permanent1.pack and content/Common/Pack/szs_permanent2.pack
+	const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
+	const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
+
+	auto islandNumStr = std::to_string(islandNum);
+
+	std::string filepath = "content/Common/Stage/sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
+
+	if (pack1.contains(islandNum)) {
+		filepath = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
+	}
+	else if (pack2.contains(islandNum)) {
+		filepath = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
+	}
+
+	return filepath;
+}
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
 	LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
@@ -2803,6 +2870,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
     	TWEAK_ERR_CHECK(update_text_replacements(world));
     	TWEAK_ERR_CHECK(update_korl_dialog(world));
     	TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+		TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
     	TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
 	}
 	//Run some things after writing items to preserve offsets

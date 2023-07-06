@@ -51,7 +51,7 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
 static std::string getSpoilerFormatHint(Location* location)
 {
     // Get rid of commands in the hint text and then convert to UTF-8
-    std::u16string hintText = location->hintText["English"];
+    std::u16string hintText = location->hint.text["English"];
     for (auto eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
     {
         auto pos = std::string::npos;

@@ -30,26 +30,26 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         // Grab the YAML object which holds the locations for this world.
         for (const auto& ref : plandoTree)
         {
-            if (ref[worldName].IsMap())
+            if (ref[worldName] && ref[worldName].IsMap())
             {
-                if (ref[worldName]["locations"].IsMap())
+                if (ref[worldName]["locations"] && ref[worldName]["locations"].IsMap())
                 {
                     plandoLocations = ref[worldName]["locations"];
                 }
 
-                if (ref[worldName]["entrances"].IsMap())
+                if (ref[worldName]["entrances"] && ref[worldName]["entrances"].IsMap())
                 {
                     plandoEntrances = ref[worldName]["entrances"];
                 }
-                if (ref[worldName]["starting island"].IsScalar())
+                if (ref[worldName]["starting island"] && ref[worldName]["starting island"].IsScalar())
                 {
                     plandoStartingIsland = ref[worldName]["starting island"].as<std::string>();
                 }
-                if (ref[worldName]["extra progression locations"].IsSequence())
+                if (ref[worldName]["extra progression locations"] && ref[worldName]["extra progression locations"].IsSequence())
                 {
                     extraProgressionLocations = ref[worldName]["extra progression locations"];
                 }
-                if (ref[worldName]["random starting item pool"].IsSequence())
+                if (ref[worldName]["random starting item pool"] && ref[worldName]["random starting item pool"].IsSequence())
                 {
                     randomStartingItemPool = ref[worldName]["random starting item pool"];
                 }
