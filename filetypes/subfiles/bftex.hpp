@@ -11,18 +11,18 @@
 #include <filetypes/shared/bfres_structs.hpp>
 
 enum struct [[nodiscard]] FTEXError {
-	NONE = 0,
-	REACHED_EOF,
-	COULD_NOT_OPEN,
-	NOT_FTEX,
+    NONE = 0,
+    REACHED_EOF,
+    COULD_NOT_OPEN,
+    NOT_FTEX,
     UNSUPPORTED_FORMAT,
     UNEXPECTED_VALUE,
     BAD_DDS,
     REPLACEMENT_IMAGE_TOO_LARGE,
     TOO_MANY_MIPS,
     UNSUPPORTED_DEPTH,
-	UNKNOWN,
-	COUNT
+    UNKNOWN,
+    COUNT
 };
 
 struct FTEXHeader {
@@ -72,12 +72,12 @@ namespace FileTypes::Subfiles {
         std::vector<UserData> userData;
 
         FTEXFile();
-		static FTEXFile createNew();
-		FTEXError loadFromBinary(std::istream& ftex);
+        static FTEXFile createNew();
+        FTEXError loadFromBinary(std::istream& ftex);
         FTEXError replaceImageData(const std::string& filePath, const GX2TileMode& tileMode, const uint32_t& swizzle_, const bool& SRGB, const bool& importMips);
         FTEXError writeToStream(std::ostream& out);
-	private:
-		void initNew();
+    private:
+        void initNew();
     };
 }
 

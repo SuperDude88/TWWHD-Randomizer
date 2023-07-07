@@ -16,10 +16,10 @@ bool AppInfo::parseFromXML(const std::filesystem::path& xmlPath) {
 
     const XMLElement* root = app.RootElement();
 
-	OSVersion = std::stoull(root->FirstChildElement("os_version")->GetText(), nullptr, 16);
-	titleID = std::stoull(root->FirstChildElement("title_id")->GetText(), nullptr, 16);
-	titleVer = std::stoul(root->FirstChildElement("title_version")->GetText(), nullptr, 16);
-	sdkVer = std::stoul(root->FirstChildElement("sdk_version")->GetText(), nullptr, 16);
+    OSVersion = std::stoull(root->FirstChildElement("os_version")->GetText(), nullptr, 16);
+    titleID = std::stoull(root->FirstChildElement("title_id")->GetText(), nullptr, 16);
+    titleVer = std::stoul(root->FirstChildElement("title_version")->GetText(), nullptr, 16);
+    sdkVer = std::stoul(root->FirstChildElement("sdk_version")->GetText(), nullptr, 16);
     appType = AppType(std::stoul(root->FirstChildElement("app_type")->GetText(), nullptr, 16));
     groupID = std::stoul(root->FirstChildElement("group_id")->GetText(), nullptr, 16);
     

@@ -13,44 +13,44 @@
 
 
 enum struct [[nodiscard]] FSTError {
-	NONE = 0,
-	COULD_NOT_OPEN,
-	REACHED_EOF,
-	NOT_FST,
+    NONE = 0,
+    COULD_NOT_OPEN,
+    REACHED_EOF,
+    NOT_FST,
     UNEXPECTED_VALUE,
-	UNKNOWN_ENTRY_TYPE,
-	UNKNOWN,
-	COUNT
+    UNKNOWN_ENTRY_TYPE,
+    UNKNOWN,
+    COUNT
 };
 
 struct FSTHeader {
-	char magicFST[4] = "FST";
-	uint32_t headerSize_0x20 = 0x20;
-	uint32_t contentNum = 0;
-	uint8_t hashDisabled = 0;
-	uint8_t padding_0x00[0x13] = {0};
+    char magicFST[4] = "FST";
+    uint32_t headerSize_0x20 = 0x20;
+    uint32_t contentNum = 0;
+    uint8_t hashDisabled = 0;
+    uint8_t padding_0x00[0x13] = {0};
 };
 
 namespace FileTypes {
 
-	const char* FSTErrorGetName(FSTError err);
+    const char* FSTErrorGetName(FSTError err);
 
-	class FSTFile {
-	public:
-		Contents& contents;
-		FSTEntries entries;
-		FSTEntry& root;
+    class FSTFile {
+    public:
+        Contents& contents;
+        FSTEntries entries;
+        FSTEntry& root;
 
-		FSTFile(Contents& contents_) :
-			contents(contents_),
-			root(entries.GetRootEntry())
-		{}
-		
-		void Update();
-		FSTError writeToStream(std::ostream& out);
-		FSTError writeToFile(const std::string& filePath);
+        FSTFile(Contents& contents_) :
+            contents(contents_),
+            root(entries.GetRootEntry())
+        {}
+        
+        void Update();
+        FSTError writeToStream(std::ostream& out);
+        FSTError writeToFile(const std::string& filePath);
 
-	private:
+    private:
         FSTHeader header;
-	};
+    };
 }

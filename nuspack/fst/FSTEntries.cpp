@@ -10,12 +10,12 @@ using eType = Utility::Endian::Type;
 
 
 void FSTEntry::setContent(Content* content_) {
-	content = content_;
-	flags = content_->entriesFlags;
+    content = content_;
+    flags = content_->entriesFlags;
 }
 
 Content* FSTEntry::getContent() {
-	return content;
+    return content;
 }
 
 std::vector<FSTEntry*> FSTEntry::GetFSTEntriesByContent(const Content& content_) const {

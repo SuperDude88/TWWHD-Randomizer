@@ -29,7 +29,7 @@ namespace elfUtil {
 
     uint8_t read_u8(const FileTypes::ELF& in, const offset_t& offset);
 
-	uint16_t read_u16(const FileTypes::ELF& in, const offset_t& offset);
+    uint16_t read_u16(const FileTypes::ELF& in, const offset_t& offset);
 
     uint32_t read_u32(const FileTypes::ELF& in, const offset_t& offset);
 
