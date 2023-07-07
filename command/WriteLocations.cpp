@@ -33,7 +33,7 @@ static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_nam
 
 
 namespace {
-	static std::unordered_map<std::string, uint32_t> custom_symbols;
+    static std::unordered_map<std::string, uint32_t> custom_symbols;
 
     void Load_Custom_Symbols(const std::string& file_path) {
         std::string file_data;
@@ -49,7 +49,7 @@ namespace {
         }
 
         return;
-	}
+    }
 }
 
 

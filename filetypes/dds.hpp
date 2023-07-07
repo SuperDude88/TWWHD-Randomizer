@@ -12,15 +12,15 @@
 
 
 enum struct [[nodiscard]] DDSError {
-	NONE = 0,
-	REACHED_EOF,
-	COULD_NOT_OPEN,
-	NOT_DDS,
+    NONE = 0,
+    REACHED_EOF,
+    COULD_NOT_OPEN,
+    NOT_DDS,
     UNSUPPORTED_FORMAT,
     UNEXPECTED_VALUE,
     INVALID_TEXTURE,
-	UNKNOWN,
-	COUNT
+    UNKNOWN,
+    COUNT
 };
 
 static const std::unordered_set<std::string> dx10_formats = {"BC4U", "BC4S", "BC5U", "BC5S"};
@@ -106,12 +106,12 @@ namespace FileTypes {
         std::array<uint8_t, 4> compSel;
 
         DDSFile();
-		static DDSFile createNew();
-		DDSError loadFromBinary(std::istream& dds, const bool SRGB);
-		DDSError loadFromFile(const std::string& filePath, const bool SRGB = false);
-		DDSError writeToStream(std::ostream& out);
-		DDSError writeToFile(const std::string& outFilePath);
-	private:
-		void initNew();
+        static DDSFile createNew();
+        DDSError loadFromBinary(std::istream& dds, const bool SRGB);
+        DDSError loadFromFile(const std::string& filePath, const bool SRGB = false);
+        DDSError writeToStream(std::ostream& out);
+        DDSError writeToFile(const std::string& outFilePath);
+    private:
+        void initNew();
     };
 }

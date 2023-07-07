@@ -9,17 +9,17 @@
 
 
 enum struct [[nodiscard]] YAZ0Error {
-	NONE = 0,
-	COULD_NOT_OPEN,
-	NOT_YAZ0,
-	ZNG_ERROR,
-	REACHED_EOF,
-	UNKNOWN,
-	COUNT
+    NONE = 0,
+    COULD_NOT_OPEN,
+    NOT_YAZ0,
+    ZNG_ERROR,
+    REACHED_EOF,
+    UNKNOWN,
+    COUNT
 };
 
 namespace FileTypes {
-	const char* YAZ0ErrorGetName(YAZ0Error err);
+    const char* YAZ0ErrorGetName(YAZ0Error err);
 
     YAZ0Error yaz0Decode(std::istream& in, std::ostream& out);
     YAZ0Error yaz0Decode(std::stringstream& in, std::ostream& out);

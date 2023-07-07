@@ -196,23 +196,23 @@ void HashTable::write(std::ostream& out) {
 }
 
 namespace FileTypes {
-	const char* LMSErrorGetName(LMSError err) {
+    const char* LMSErrorGetName(LMSError err) {
         switch(err) {
             case LMSError::NONE:
                 return "NONE";
-	        case LMSError::REACHED_EOF:
+            case LMSError::REACHED_EOF:
                 return "REACHED_EOF";
-	        case LMSError::COULD_NOT_OPEN:
+            case LMSError::COULD_NOT_OPEN:
                 return "COULD_NOT_OPEN";
-	        case LMSError::NOT_MSBT:
+            case LMSError::NOT_MSBT:
                 return "NOT_MSBT";
-	        case LMSError::NOT_MSBP:
+            case LMSError::NOT_MSBP:
                 return "NOT_MSBP";
-	        case LMSError::UNKNOWN_VERSION:
+            case LMSError::UNKNOWN_VERSION:
                 return "UNKNOWN_VERSION";
-	        case LMSError::UNEXPECTED_VALUE:
+            case LMSError::UNEXPECTED_VALUE:
                 return "UNEXPECTED_VALUE";
-	        case LMSError::UNKNOWN_SECTION:
+            case LMSError::UNKNOWN_SECTION:
                 return "UNKNOWN_SECTION";
             default:
                 return "UNKNOWN";

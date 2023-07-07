@@ -26,11 +26,11 @@ public:
     static constexpr uint32_t ALIGNMENT_IN_CONTENT = 0x20;
     static constexpr uint32_t PAD_LEN = 0x8000;
 
-	uint32_t id = 0;
-	uint16_t index = 0;
-	uint16_t type = Type::CONTENT | Type::ENCRYPTED;
-	uint64_t size = 0;
-	SHA1_t hash{0};
+    uint32_t id = 0;
+    uint16_t index = 0;
+    uint16_t type = Type::CONTENT | Type::ENCRYPTED;
+    uint64_t size = 0;
+    SHA1_t hash{0};
 
     uint64_t curFileOffset;
     uint16_t entriesFlags;
