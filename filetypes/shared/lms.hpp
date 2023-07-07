@@ -10,29 +10,29 @@
 
 enum struct [[nodiscard]] LMSError
 {
-	NONE = 0,
-	REACHED_EOF,
-	COULD_NOT_OPEN,
-	NOT_MSBT,
-	NOT_MSBP,
-	UNKNOWN_VERSION,
-	UNEXPECTED_VALUE,
-	UNKNOWN_SECTION,
-	UNKNOWN,
-	COUNT
+    NONE = 0,
+    REACHED_EOF,
+    COULD_NOT_OPEN,
+    NOT_MSBT,
+    NOT_MSBP,
+    UNKNOWN_VERSION,
+    UNEXPECTED_VALUE,
+    UNKNOWN_SECTION,
+    UNKNOWN,
+    COUNT
 };
 
 class FileHeader {
 public:
-	char magic[8];
-	uint16_t byteOrderMarker;
-	uint16_t unknown_0x00;
-	uint8_t encoding;
-	uint8_t version_0x03;
-	uint16_t sectionCount;
-	uint16_t unknown2_0x00;
-	uint32_t fileSize;
-	uint8_t padding_0x00[10];
+    char magic[8];
+    uint16_t byteOrderMarker;
+    uint16_t unknown_0x00;
+    uint8_t encoding;
+    uint8_t version_0x03;
+    uint16_t sectionCount;
+    uint16_t unknown2_0x00;
+    uint32_t fileSize;
+    uint8_t padding_0x00[10];
 
     virtual ~FileHeader() = default;
     virtual LMSError read(std::istream& in);
@@ -41,34 +41,34 @@ public:
 
 class SectionHeader {
 public:
-	char magic[4];
-	uint32_t sectionSize;
+    char magic[4];
+    uint32_t sectionSize;
     
     virtual ~SectionHeader() = default;
     virtual LMSError read(std::istream& in);
     virtual void write(std::ostream& out);
 private:
-	uint8_t padding_0x00[8];
+    uint8_t padding_0x00[8];
 };
 
 struct Label {
-	uint32_t tableIdx = 0;
+    uint32_t tableIdx = 0;
 
-	uint8_t length = 0;
-	std::string string = "";
-	uint32_t itemIndex = 0;
+    uint8_t length = 0;
+    std::string string = "";
+    uint32_t itemIndex = 0;
 };
 
 struct HashTableSlot {
-	uint32_t labelCount = 0;
-	uint32_t labelOffset = 0;
-	std::vector<Label> labels = {};
+    uint32_t labelCount = 0;
+    uint32_t labelOffset = 0;
+    std::vector<Label> labels = {};
 };
 
 class HashTable {
 public:
-	uint32_t entryCount = 0;
-	std::vector<HashTableSlot> tableSlots = {}; // slots variable name conflicts with Qt slots keyword
+    uint32_t entryCount = 0;
+    std::vector<HashTableSlot> tableSlots = {}; // slots variable name conflicts with Qt slots keyword
 
     virtual ~HashTable() = default;
     virtual LMSError read(std::istream& in);
@@ -90,5 +90,5 @@ namespace LMS {
 }
 
 namespace FileTypes {
-	const char* LMSErrorGetName(LMSError err);
+    const char* LMSErrorGetName(LMSError err);
 }

@@ -21,7 +21,7 @@ ContentHashes::ContentHashes(std::istream& file, const bool& hashed) {
     }
     else {
         auto ss = std::ostringstream{};
-	    ss << file.rdbuf();
+        ss << file.rdbuf();
         std::string data = ss.str();
         data.resize(roundUp<size_t>(data.size(), Content::PAD_LEN));
 

@@ -265,15 +265,15 @@ namespace FileTypes {
         switch(err) {
         case FLIMError::NONE:
             return "NONE";
-	    case FLIMError::REACHED_EOF:
+        case FLIMError::REACHED_EOF:
             return "REACHED_EOF";
-	    case FLIMError::COULD_NOT_OPEN:
+        case FLIMError::COULD_NOT_OPEN:
             return "COULD_NOT_OPEN";
-	    case FLIMError::NOT_BFLIM:
+        case FLIMError::NOT_BFLIM:
             return "NOT_BFLIM";
         case FLIMError::UNKNOWN_VERSION:
             return "UNKNOWN_VERSION";
-	    case FLIMError::NOT_IMAG:
+        case FLIMError::NOT_IMAG:
             return "NOT_IMAG";
         case FLIMError::UNSUPPORTED_FORMAT:
             return "UNSUPPORTED_FORMAT";
@@ -290,22 +290,22 @@ namespace FileTypes {
 
     }
 
-	void FLIMFile::initNew() {
+    void FLIMFile::initNew() {
         
-	}
+    }
 
     FLIMFile FLIMFile::createNew() {
-		FLIMFile newFLIM{};
-		newFLIM.initNew();
-		return newFLIM;
+        FLIMFile newFLIM{};
+        newFLIM.initNew();
+        return newFLIM;
     }
     
     FLIMError FLIMFile::loadFromBinary(std::istream& bflim) {
         bflim.seekg(-0x28, std::ios::end);
 
         if (!bflim.read(header.magicFLIM, 4)) {
-			LOG_ERR_AND_RETURN(FLIMError::REACHED_EOF)
-		}
+            LOG_ERR_AND_RETURN(FLIMError::REACHED_EOF)
+        }
         if (std::strncmp(header.magicFLIM, "FLIM", 4) != 0) {
             LOG_ERR_AND_RETURN(FLIMError::NOT_BFLIM)
         }
@@ -341,8 +341,8 @@ namespace FileTypes {
 
 
         if (!bflim.read(info.magicImag, 4)) {
-			LOG_ERR_AND_RETURN(FLIMError::REACHED_EOF)
-		}
+            LOG_ERR_AND_RETURN(FLIMError::REACHED_EOF)
+        }
         if (std::strncmp(info.magicImag, "imag", 4) != 0) {
             LOG_ERR_AND_RETURN(FLIMError::NOT_IMAG)
         }
@@ -388,10 +388,10 @@ namespace FileTypes {
 
     FLIMError FLIMFile::loadFromFile(const std::string& filePath) {
         std::ifstream file(filePath, std::ios::binary);
-		if (!file.is_open()) {
-			LOG_ERR_AND_RETURN(FLIMError::COULD_NOT_OPEN)
-		}
-		return loadFromBinary(file);
+        if (!file.is_open()) {
+            LOG_ERR_AND_RETURN(FLIMError::COULD_NOT_OPEN)
+        }
+        return loadFromBinary(file);
     }
     
     FLIMError FLIMFile::exportAsDDS(const std::string& outPath) {
@@ -785,10 +785,10 @@ namespace FileTypes {
     }
 
     FLIMError FLIMFile::writeToFile(const std::string& outFilePath) {
-		std::ofstream outFile(outFilePath, std::ios::binary);
-		if (!outFile.is_open()) {
-			LOG_ERR_AND_RETURN(FLIMError::COULD_NOT_OPEN)
-		}
-		return writeToStream(outFile);
+        std::ofstream outFile(outFilePath, std::ios::binary);
+        if (!outFile.is_open()) {
+            LOG_ERR_AND_RETURN(FLIMError::COULD_NOT_OPEN)
+        }
+        return writeToStream(outFile);
     }
 }

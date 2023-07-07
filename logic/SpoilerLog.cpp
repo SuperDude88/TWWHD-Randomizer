@@ -108,7 +108,7 @@ void generateSpoilerLog(WorldPool& worlds)
 {
     std::ofstream log(APP_SAVE_PATH + LogInfo::getSeedHash() + " Spoiler Log.txt");
 
-	  Utility::platformLog("Generating spoiler log...\n");
+    Utility::platformLog("Generating spoiler log...\n");
     printBasicInfo(log, worlds);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how

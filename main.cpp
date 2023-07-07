@@ -8,11 +8,10 @@
 
 int main()
 {
-	Utility::platformInit();
+    Utility::platformInit();
     int retVal = mainRandomize();
 
-    if (retVal == 1)
-    {
+    if (retVal == 1) {
         auto message = "An error has occured!\n" + ErrorLog::getInstance().getLastErrors();
         Utility::platformLog(message.c_str());
     }
@@ -23,14 +22,14 @@ int main()
     BasicLog::getInstance().close();
     
     //launch Wii U menu, wait for procUI to do its thing
-	#ifdef DEVKITPRO
-		SYSLaunchMenu();
-		while(Utility::platformIsRunning()) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(33)); //Check ~30 times a second
-		}
-	#endif
+    #ifdef DEVKITPRO
+        SYSLaunchMenu();
+        while(Utility::platformIsRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(33)); //Check ~30 times a second
+        }
+    #endif
     
-	Utility::platformShutdown();
+    Utility::platformShutdown();
     
     return 0;
 }
