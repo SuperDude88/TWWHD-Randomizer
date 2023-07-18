@@ -33,20 +33,6 @@ struct RGBA {
     {}
 };
 
-struct HSV {
-	double H = 0;
-	double S = 0;
-	double V = 0;
-
-	HSV() {}
-
-	HSV(const double& h_, const double& s_, const double& v_) :
-		H(h_),
-		S(s_),
-		V(v_)
-	{}
-};
-
 template<typename T> requires std::is_arithmetic_v<T>
 struct vec2 {
     T X;
@@ -275,9 +261,5 @@ error_enum readPadding(std::istream& in, const unsigned int& len, const char* va
 }
 
 size_t padToLen(std::ostream& out, const unsigned int& len, const char pad = '\x00');
-
-HSV RGBToHSV(const double& r, const double& g, const double& b);
-
-RGBA<double> HSVToRGB(const HSV& hsv);
 
 typedef RGBA<uint8_t> RGBA8;

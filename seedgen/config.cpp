@@ -7,6 +7,7 @@
 #include <libs/yaml.h>
 #include <logic/GameItem.hpp>
 #include <seedgen/random.hpp>
+#include <utility/color.hpp>
 #include <utility/platform.hpp>
 #include <command/Log.hpp>
 
@@ -65,6 +66,39 @@
             config.settings.name = "";                                      \
         config.settings.name = yaml[#name].as<std::string>();               \
     }
+
+// Default colors for every texture
+namespace DefaultColors {
+    std::unordered_map<std::string, std::string> heroColors = {
+        {"Hair",        "FFEF10"},
+        // {"Skin",        "F7DB9C"},
+        // {"Mouth",       "F74963"},
+        // {"Eyes",        "10514A"},
+        // {"Sclera",      "FFFFFF"},
+        // {"Hat",         "5AB24A"},
+        {"Tunic",       "5AB24A"},
+        {"Undershirt",  "ADE342"},
+        // {"Pants",       "FFFFFF"},
+        // {"Boots",       "944908"},
+        // {"Belt",        "633008"},
+        {"Belt Buckle", "FFEF10"},
+    };
+
+    std::unordered_map<std::string, std::string> casualColors = {
+        // {"Hair",        "FFEF10"},
+        // {"Skin",        "F7DB9C"},
+        // {"Mouth",       "F74963"},
+        // {"Eyes",        "10514A"},
+        // {"Sclera",      "FFFFFF"},
+        // {"Hat",         "5AB24A"},
+	      {"Shirt", "4A75AD"},
+        // {"Shirt Emblem", "FFFFD6"},
+        // {"Armbands", "63696B"},
+        // {"Pants", "FFA608"},
+        // {"Shoe Soles", "D6BA39"},
+    };
+} // namespace DefaultColors
+
 
 ConfigError createDefaultConfig(const std::string& filePath) {
     Config conf;
@@ -168,6 +202,8 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.first_person_camera = FirstPersonCameraPreference::Standard;
     conf.settings.gyroscope = GyroscopePreference::On;
     conf.settings.ui_display = UIDisplayPreference::On;
+
+    conf.settings.custom_colors = DefaultColors::heroColors;
 
     LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
 
@@ -402,16 +438,39 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
       out.settings.starting_gear.clear();
       for (const auto& itemObject : root["starting_gear"]) {
-              const std::string itemName = itemObject.as<std::string>();
-              const GameItem item = nameToGameItem(itemName);
+        const std::string itemName = itemObject.as<std::string>();
+        const GameItem item = nameToGameItem(itemName);
 
-              if (valid_items.count(item) == 0) {
-                  ErrorLog::getInstance().log(itemName + " cannot be added to starting inventory");
-                  return ConfigError::INVALID_VALUE;
-              }
-              out.settings.starting_gear.push_back(item);
-              valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
+        if (valid_items.count(item) == 0) {
+            ErrorLog::getInstance().log(itemName + " cannot be added to starting inventory");
+            return ConfigError::INVALID_VALUE;
+        }
+        out.settings.starting_gear.push_back(item);
+        valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
       }
+    }
+
+    if (!root["custom_colors"] && !ignoreErrors) return ConfigError::MISSING_KEY;
+    if (root["custom_colors"].IsMap()) {
+      for (const auto& colorObject : root["custom_colors"]) {
+        
+        auto texture = colorObject.first.as<std::string>();
+        auto color = colorObject.second.as<std::string>();
+
+        // If the color is not valid, replace it withe the texture's default
+        if (!isValidHexColor(color)) {
+          if (out.settings.player_in_casual_clothes && DefaultColors::casualColors.contains(texture)) {
+            color = DefaultColors::casualColors[texture];
+          } else if (!out.settings.player_in_casual_clothes && DefaultColors::heroColors.contains(texture)){
+            color = DefaultColors::heroColors[texture];
+          }
+        }
+
+        out.settings.custom_colors[texture] = color;
+
+      }
+    } else {
+      return ConfigError::INVALID_VALUE;
     }
 
     // Clamp starting spoils
@@ -558,6 +617,10 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     if (root["starting_gear"].size() == 0) {
       root["starting_gear"] = "None";
+    }
+
+    for (const auto& [texture, color] : config.settings.custom_colors) {
+      root["custom_colors"][texture] = color;
     }
 
     std::ofstream f(filePath);

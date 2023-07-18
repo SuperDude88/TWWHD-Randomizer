@@ -280,6 +280,8 @@ struct Settings {
     FirstPersonCameraPreference first_person_camera = FirstPersonCameraPreference::Standard;
     GyroscopePreference gyroscope = GyroscopePreference::On;
     UIDisplayPreference ui_display = UIDisplayPreference::On;
+
+    std::unordered_map<std::string, std::string> custom_colors;
 };
 
 SwordMode nameToSwordMode(const std::string& name);
