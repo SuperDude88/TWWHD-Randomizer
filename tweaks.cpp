@@ -1,14 +1,12 @@
 #include "tweaks.hpp"
 
-#define _USE_MATH_DEFINES
-
-#include <cmath>
 #include <typeinfo>
 #include <memory>
 #include <fstream>
 #include <codecvt>
 #include <filesystem>
 #include <algorithm>
+#include <numbers>
 
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
@@ -799,7 +797,7 @@ TweakError update_name_and_icon() {
         std::stringstream& metaStream = generic.data;
 
         tinyxml2::XMLDocument meta;
-        meta.LoadFile(metaStream);
+        meta.Parse(metaStream.str().c_str(), metaStream.str().size());
 
         tinyxml2::XMLElement* metaRoot = meta.RootElement();
         metaRoot->FirstChildElement("longname_en")->SetText("THE LEGEND OF ZELDA\nThe Wind Waker HD Randomizer");
@@ -828,7 +826,7 @@ TweakError update_name_and_icon() {
         std::stringstream& appStream = generic.data;
 
         tinyxml2::XMLDocument app;
-        app.LoadFile(appStream);
+        app.Parse(appStream.str().c_str(), appStream.str().size());
         tinyxml2::XMLElement* appRoot = app.RootElement();
         appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
         
@@ -1313,7 +1311,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
                         islandZ *= 100000;
 
                         auto angleRad = atan2(islandX - hohoX, islandZ - hohoZ);
-                        uint16_t angle = int(angleRad * (0x8000 / M_PI)) % 0x10000;
+                        uint16_t angle = int(angleRad * (0x8000 / std::numbers::pi)) % 0x10000;
 
                         Utility::Endian::toPlatform_inplace(eType::Big, angle);
                         actor->data.replace(0x1A, 2, reinterpret_cast<const char*>(&angle), 2);
@@ -2643,7 +2641,7 @@ TweakError updateCodeSize() {
         std::stringstream& cosStream = generic.data;
 
         tinyxml2::XMLDocument cos;
-        cos.LoadFile(cosStream);
+        cos.Parse(cosStream.str().c_str(), cosStream.str().size());
         tinyxml2::XMLElement* root = cos.RootElement();
         root->FirstChildElement("max_codesize")->SetText("02080000");
         tinyxml2::XMLPrinter printer;

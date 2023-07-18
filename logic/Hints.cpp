@@ -1,7 +1,5 @@
 #include "Hints.hpp"
 
-#include <cmath>
-
 #include <logic/Search.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <seedgen/random.hpp>
