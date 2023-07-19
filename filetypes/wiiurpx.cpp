@@ -433,8 +433,6 @@ namespace FileTypes {
                 strm.opaque = Z_NULL;
                 strm.avail_in = 0;
                 strm.next_in = Z_NULL;
-                strm.handle_match = nullptr;
-                strm.handle_match_userdata = nullptr;
                 if(data_size < CHUNK)
                 {
                     block_size = data_size;

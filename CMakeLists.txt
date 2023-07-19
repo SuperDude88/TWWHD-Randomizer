@@ -8,7 +8,7 @@ add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
-  add_compile_options(-O3 -flto -Wall)
+  add_compile_options(-Ofast -mcpu=750 -meabi -mhard-float -ffunction-sections -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
 endif()
 
@@ -60,7 +60,7 @@ add_subdirectory("nuspack")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
 
-target_link_libraries(wwhd_rando yaml-cpp zlib)
+target_link_libraries(wwhd_rando tinyxml2 yaml-cpp zlib)
 
 # Put data files together for easier manipulation
 file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code

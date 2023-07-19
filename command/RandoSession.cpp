@@ -40,6 +40,8 @@ static BS::thread_pool workerThreads(3);
 #else
 static BS::thread_pool workerThreads(12);
 #endif
+std::atomic<size_t> total_num_tasks = 0;
+std::atomic<size_t> num_completed_tasks = 0;
 
 static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> str_to_format {
     {"BDT",    RandoSession::CacheEntry::Format::BDT},
@@ -454,18 +456,6 @@ RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath&
     return *getEntry(Utility::Str::split(relPath.string(), '@'));
 }
 
-std::ifstream RandoSession::openBaseFile(const fspath &relPath) {
-    CHECK_INITIALIZED(std::ifstream());
-    
-    const fspath file = baseDir / relPath;
-    if(!std::filesystem::is_regular_file(file)) {
-        ErrorLog::getInstance().log("Could not open original data for " + relPath.string());
-        return std::ifstream();
-    }
-
-    return std::ifstream(file, std::ios::binary);
-}
-
 bool RandoSession::isCached(const RandoSession::fspath& relPath)
 {
     CHECK_INITIALIZED(false);
@@ -578,6 +568,7 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     //delete ourselves if we are the chain root, fileCache won't
     if(current->storedFormat == CacheEntry::Format::ROOT) {
         current->parent->children.erase(filename.string());
+        UPDATE_DIALOG_VALUE(int(100.0f - ((float((total_num_tasks - num_completed_tasks)/float(total_num_tasks))) * 50.0f))); //also update progress bar
     }
 
     return true;
@@ -586,11 +577,10 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
 bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
-    workerThreads.total_task_size = 0;
 
+    total_num_tasks = fileCache->children.size();
     for(auto& [filename, child] : fileCache->children) {
         //has dependency, it will add it when necessary
-        workerThreads.total_task_size++;
         if(child->getNumPrereqs() > 0) {
             continue;
         }
@@ -599,7 +589,6 @@ bool RandoSession::modFiles()
     }
 
     UPDATE_DIALOG_LABEL("Repacking Files...");
-    workerThreads.total_tasks_completed = 0;
 
     workerThreads.wait_for_tasks();
 
@@ -616,4 +605,7 @@ void RandoSession::clearCache()
     fileCache->data = nullptr;
     fileCache->actions.clear();
     fileCache->numPrereqs = 0;
+    
+    total_num_tasks = 0;
+    num_completed_tasks = 0;
 }

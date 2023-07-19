@@ -1,7 +1,5 @@
 #include "Hints.hpp"
 
-#include <cmath>
-
 #include <logic/Search.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <seedgen/random.hpp>
@@ -509,7 +507,7 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     {
         world.bigOctoFairyHintLocation = popRandomElement(possibleItemHintLocations);
         LOG_AND_RETURN_IF_ERR(generateItemHintMessage(world.bigOctoFairyHintLocation));
-        LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as item hint location for big octo fairy")
+        LOG_TO_DEBUG("Chose \"" + world.bigOctoFairyHintLocation->getName() + "\" as item hint location for big octo fairy")
     }
     else
     {
