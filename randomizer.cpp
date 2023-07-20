@@ -34,6 +34,7 @@
 #include <sysapp/title.h>
 #include <platform/wiiutitles.hpp>
 #include <platform/channel.hpp>
+#include <platform/controller.hpp>
 
 static std::vector<Utility::titleEntry> wiiuTitlesList{};
 #endif
@@ -845,6 +846,12 @@ int mainRandomize() {
             }
         }
         conf.close();
+
+        #ifdef DEVKITPRO
+            if(exitForConfig() == true) {
+                return 0;
+            }
+        #endif
 
         Utility::platformLog("Reading config\n");
         ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
