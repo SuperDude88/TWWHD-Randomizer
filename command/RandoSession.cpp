@@ -50,6 +50,8 @@ static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> s
     {"BFRES",  RandoSession::CacheEntry::Format::BFRES},
     {"CHARTS", RandoSession::CacheEntry::Format::CHARTS},
     {"DZX",    RandoSession::CacheEntry::Format::DZX},
+    {"DZR",    RandoSession::CacheEntry::Format::DZX},
+    {"DZS",    RandoSession::CacheEntry::Format::DZX},
     {"ELF",    RandoSession::CacheEntry::Format::ELF},
     {"EVENTS", RandoSession::CacheEntry::Format::EVENTS},
     {"JPC",    RandoSession::CacheEntry::Format::JPC},

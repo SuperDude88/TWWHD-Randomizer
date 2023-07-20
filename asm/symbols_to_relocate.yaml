@@ -33,3 +33,4 @@ camera_preference: .text
 first_person_camera_preference: .text
 gyroscope_preference: .text
 ui_display_preference: .text
+num_korl_messages: .text

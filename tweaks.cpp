@@ -458,7 +458,7 @@ TweakError remove_shop_item_forced_uniqueness_bit() {
 }
 
 TweakError remove_ff2_cutscenes() {
-    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZR");
+    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
 
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -2749,6 +2749,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/remove_cutscenes_reloc.yaml"));
+    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_hint_locations_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.yaml"));

@@ -332,7 +332,7 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", word_wrap_string(TEXT_COLOR_RED + beedle900.getUTF16Name("Spanish") + u"  900 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nParece muy caro, pero ¡créeme que no te arrepentirás!" + TEXT_END},
       {"French",  word_wrap_string(TEXT_COLOR_RED + beedle900.getUTF16Name("French")  + u".  900 Rubis." + TEXT_COLOR_DEFAULT, 43) + u"\nC'est " + beedle900.getUTF16Name("French") + u", n'est-ce pas...\nDonc quel que soit son prix,\nvous parviendrez à l'amortir..." + TEXT_END}}},
      {"12111",
-     {{"English", word_wrap_string(beedle900EnglishPronoun + beedle900.getUTF16Name("English") + beedle900EnglishPlurality + u"just " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
+     {{"English", word_wrap_string(beedle900EnglishPronoun + beedle900.getUTF16Name("English") + beedle900EnglishPlurality + u"just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
       {"Spanish", word_wrap_string(CAPITAL + beedle900SpanishConjugation + beedle900.getUTF16Name("Spanish") + beedle900SpanishPlurality + TEXT_COLOR_RED + u"900 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nCompra... ¡Compra!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
       {"French",  word_wrap_string(beedle900.getUTF16Name("French") + u" seulement " + TEXT_COLOR_RED + u"900 Rubis" + TEXT_COLOR_DEFAULT, 43) + u".\nAcheter!\n" + TWO_CHOICES + u"Oui\nSans façon" + TEXT_END}}},
  };
