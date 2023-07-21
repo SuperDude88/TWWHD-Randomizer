@@ -561,3 +561,8 @@ set_return_place_as_last_visited_ocean_sector:
 	lbz r5, 0x3E (r5)
 	addi r5, r5, 1
   b 0x025B50DC ; dSv_player_return_place_c::set
+
+; Slightly increase the PermanentResource heap size
+; It seems like Nintendo was flying really close to the sun with these and our slightly larger files cause issues
+.org 0x0203f1f8
+  addis r3, r3, 0x0D41 ; Increase heap size by 0x10000 (64KiB)
