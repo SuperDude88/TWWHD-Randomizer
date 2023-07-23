@@ -2709,18 +2709,37 @@ TweakError fix_needle_rock_island_salvage_flags() {
 	return TweakError::NONE;
 }
 
+// Maps each recolor option to the texture files that need recoloring
 static std::unordered_map<std::string, std::list<std::string>> heroTextureMappings = {
+    {"Hair", {"linktexS3TC"}},
+    {"Skin", {"linktexS3TC", "handsS3TC", "mouthS3TC.1", "mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.4", "mouthS3TC.5", "mouthS3TC.6", "mouthS3TC.7", "mouthS3TC.8", "mouthS3TC.9"}},
+    {"Mouth", {"mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.6", "mouthS3TC.7"}},
+    {"Eyes", {"hitomi"}},
+    {"Sclera", {"hitomi"}},
     {"Tunic", {"linktexS3TC"}},
     {"Undershirt", {"linktexS3TC"}},
+    {"Pants", {"linktexS3TC"}},
+    {"Boots", {"linktexS3TC"}},
+    {"Belt", {"linktexS3TC"}},
     {"Belt Buckle", {"linktexS3TC"}},
-    {"Hair", {"linktexS3TC"}},
 };
 
 static std::unordered_map<std::string, std::list<std::string>> casualTextureMappings = {
-    {"Shirt", {"linktexbci4"}}
+    {"Hair", {"linktexbci4", "katsuraS3TC"}},
+    {"Skin", {"linktexbci4", "handsS3TC", "mouthS3TC.1", "mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.4", "mouthS3TC.5", "mouthS3TC.6", "mouthS3TC.7", "mouthS3TC.8", "mouthS3TC.9"}},
+    {"Mouth", {"mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.6", "mouthS3TC.7"}},
+    {"Eyes", {"hitomi"}},
+    {"Sclera", {"hitomi"}},
+    {"Shirt", {"linktexbci4"}},
+    {"Shirt Emblem", {"linktexbci4"}},
+    {"Armbands", {"linktexbci4"}},
+    {"Pants", {"linktexbci4"}},
+    {"Shoes", {"linktexbci4"}},
+    {"Shoe Soles", {"linktexbci4"}},
 };
 
-TweakError change_tunic_color(World& world) {
+// IMPROVEMENT: Better generalize this in the future
+TweakError apply_custom_colors(World& world) {
 
 	RandoSession::CacheEntry& linktex = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
 	linktex.addAction([&](RandoSession* session, FileType* data) -> int {
@@ -2750,15 +2769,21 @@ TweakError change_tunic_color(World& world) {
                     baseColor = hexColorStrTo16Bit(DefaultColors::heroColors[name]);
                 }
 
+                // Don't modify colors if it's not necessary
+                if (baseColor == replacementColor) {
+                    continue;
+                }
+
                 for (auto& textureName : textureNames) {
 
                     if (texture.name.substr(0, textureName.length()) == textureName) {
                         
-                        std::string filename = (world.getSettings().player_in_casual_clothes ? "casual" : "hero") + name + "_mask.bftex";
+                        // Get the data from the mask file
+                        std::string filename = (world.getSettings().player_in_casual_clothes ? "casual" : "hero") + name + "_" + textureName + "_mask.bftex";
 
-                        if (Utility::getFileContents(DATA_PATH "assets/color masks/" + filename, maskFile, true) != 0) {
-                            std::cout << "Could not open " << filename << " mask file" << std::endl;
-                            return false;
+                        if (Utility::getFileContents(DATA_PATH "assets/link color masks/" + filename, maskFile, true) != 0) {
+                            Utility::platformLog("Could not open " + filename + " mask file. Will not be able to recolor " + name);
+                            continue;
                         }
 
                         // Textures are stored using various BCn compression formats
@@ -2778,11 +2803,9 @@ TweakError change_tunic_color(World& world) {
                             // replace or not in the current texture
                             uint16_t maskColor1  = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i]);
                             uint16_t maskColor2  = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i + 2]);
-                            uint32_t maskIndices = Utility::Endian::toPlatform(eType::Big, *(uint32_t*)&maskFile[i + 4]);
 
                             uint16_t texColor1;
                             uint16_t texColor2;
-                            uint32_t texIndices;
 
                             // The most defined texture data is stored in texture.data
                             // All smaller mipmaps are stored in texture.mipData
@@ -2790,87 +2813,61 @@ TweakError change_tunic_color(World& world) {
                             if (i < texture.data.length()) {
                                 texColor1  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
                                 texColor2  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
-                                texIndices = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.data[i + 4]);
-                            } else {
+                            } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
                                 texColor1  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
                                 texColor2  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
-                                texIndices = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.mipData[i + 4 - texture.data.length()]);
                             }
-
-                            // Sometimes the colors are swapped for some reason?
-                            // Check the indices to see if there's any swapping
-                            // and swap the colors if necessary
-                            // for (size_t j = 0; j < 16; j++) {
-
-                            //     uint32_t maskIndex = (maskIndices & (0b11 << (j * 2)));
-                            //     uint32_t texIndex = (texIndices & (0b11 << (j * 2)));
-
-                            //     // If any of the indices match, then they aren't swapped
-                            //     if (maskIndex == texIndex) {
-                            //         break;
-                            //     }
-
-                            //     // If we loop through all indices and find no matches, then they're swapped
-                            //     if (j == 15) {
-                            //         std::swap(maskColor1, maskColor2);
-                            //     }
-                            // }
 
                             std::list<std::tuple<uint16_t, size_t, uint16_t>> masksOffsetsColors = {{maskColor1, i, texColor1} , {maskColor2, i + 2, texColor2}};
 
                             // For the two colors in this iteration
                             for (auto& [mask, offset, curColor] : masksOffsetsColors) {
                                 if (mask == 0x00F8) {
-
                                     auto newColor = colorExchange(baseColor, replacementColor, curColor);
 
                                     if (offset < texture.data.length()) {
                                         texture.data.replace(offset, 2, reinterpret_cast<const char*>(&newColor), 2);
-                                    } else {
+                                    } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
                                         texture.mipData.replace(offset - texture.data.length(), 2, reinterpret_cast<const char*>(&newColor), 2);
                                     }
                                 }
                             }
 
-                            // Swap the new colors around to prevent accidentally triggering the alpha channel if necessary
-                            uint16_t newColor1 = 0;
-                            uint16_t newColor2 = 0;
-                            uint32_t indices = 0;
-                            uint32_t newIndices = 0;
-
-                            if (i < texture.data.length()) {
-                                newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
-                                newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
-                                indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.data[i + 4]);
-                            } else {
-                                newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
-                                newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
-                                indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.mipData[i + 4 - texture.data.length()]);
-                            }
-
-                            if (newColor1 <= newColor2 && (maskColor1 == 0xF8)) {
-
-                                for (size_t j = 0; j < 16; j++) {
-
-                                    uint32_t curIndex = indices & (0b11 << (j * 2));
-                                    
-                                    if (curIndex == 0) {
-                                        curIndex = 1;
-                                    } else if (curIndex == 1) {
-                                        curIndex = 0;
-                                    } else if (curIndex == 2) {
-                                        curIndex = 3;
-                                    } else if (curIndex == 3) {
-                                        curIndex = 2;
-                                    }
-                                    newIndices |= (curIndex << (j * 2));
-                                }
+                            // Check and potentially change pixel indices to avoid accidental transparent colors
+                            if (isAnyOf(0xF8, maskColor1, maskColor2)) {
+                                uint16_t newColor1 = 0;
+                                uint16_t newColor2 = 0;
+                                uint32_t indices = 0;
+                                uint32_t newIndices = 0;
 
                                 if (i < texture.data.length()) {
-                                    texture.data.replace(i, 2, reinterpret_cast<const char*>(&newColor), 2);
-                                    texture.data.replace(i + 4, 4, reinterpret_cast<const char*>(&newIndices), 4);
-                                } else {
-                                    texture.mipData.replace(i + 4 - texture.data.length(), 4, reinterpret_cast<const char*>(&newIndices), 4);
+                                    newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
+                                    newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
+                                    indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.data[i + 4]);
+                                } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
+                                    newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
+                                    newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
+                                    indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.mipData[i + 4 - texture.data.length()]);
+                                }
+
+                                // If the first color is less than the second color,
+                                // change any pixels using index 3 to use index 2
+                                if (newColor1 <= newColor2 && texColor1 > texColor2) {
+
+                                    for (size_t j = 0; j < 32; j += 2) {
+
+                                        uint32_t curIndex = (indices & (0b11 << j)) >> j;
+                                        if (curIndex == 3) {
+                                            curIndex = 2;
+                                        }
+                                        newIndices |= (curIndex << j);
+                                    }
+
+                                    if (i < texture.data.length()) {
+                                        texture.data.replace(i + 4, 4, reinterpret_cast<const char*>(&newIndices), 4);
+                                    } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
+                                        texture.mipData.replace(i + 4 - texture.data.length(), 4, reinterpret_cast<const char*>(&newIndices), 4);
+                                    }
                                 }
                             }
                         }
@@ -3070,7 +3067,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
     }
 
-    TWEAK_ERR_CHECK(change_tunic_color(world));
+    TWEAK_ERR_CHECK(apply_custom_colors(world));
 
     return TweakError::NONE;
 }

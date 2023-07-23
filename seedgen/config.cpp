@@ -71,31 +71,31 @@
 namespace DefaultColors {
     std::unordered_map<std::string, std::string> heroColors = {
         {"Hair",        "FFEF10"},
-        // {"Skin",        "F7DB9C"},
-        // {"Mouth",       "F74963"},
-        // {"Eyes",        "10514A"},
-        // {"Sclera",      "FFFFFF"},
+        {"Skin",        "F7DB9C"},
+        {"Mouth",       "F74963"},
+        {"Eyes",        "10514A"},
+        {"Sclera",      "FFFFFF"},
         // {"Hat",         "5AB24A"},
         {"Tunic",       "5AB24A"},
         {"Undershirt",  "ADE342"},
-        // {"Pants",       "FFFFFF"},
-        // {"Boots",       "944908"},
-        // {"Belt",        "633008"},
+        {"Pants",       "FFFFFF"},
+        {"Boots",       "944908"},
+        {"Belt",        "633008"},
         {"Belt Buckle", "FFEF10"},
     };
 
     std::unordered_map<std::string, std::string> casualColors = {
-        // {"Hair",        "FFEF10"},
-        // {"Skin",        "F7DB9C"},
-        // {"Mouth",       "F74963"},
-        // {"Eyes",        "10514A"},
-        // {"Sclera",      "FFFFFF"},
-        // {"Hat",         "5AB24A"},
+        {"Hair",        "FFEF10"},
+        {"Skin",        "F7DB9C"},
+        {"Mouth",       "F74963"},
+        {"Eyes",        "10514A"},
+        {"Sclera",      "FFFFFF"},
 	      {"Shirt", "4A75AD"},
-        // {"Shirt Emblem", "FFFFD6"},
-        // {"Armbands", "63696B"},
-        // {"Pants", "FFA608"},
-        // {"Shoe Soles", "D6BA39"},
+        {"Shirt Emblem", "FFFFD6"},
+        {"Armbands", "63696B"},
+        {"Pants", "FFA608"},
+        {"Shoes", "63696B"},
+        {"Shoe Soles", "D6BA39"},
     };
 } // namespace DefaultColors
 
