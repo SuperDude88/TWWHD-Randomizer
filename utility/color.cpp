@@ -1,5 +1,7 @@
 #include "color.hpp"
 
+#include <utility/string.hpp>
+
 #include <math.h>
 
 HSV RGBToHSV(const double& r, const double& g, const double& b) {
@@ -42,6 +44,10 @@ HSV RGBToHSV(const double& r, const double& g, const double& b) {
 		}
 	}    
     return out;
+}
+
+HSV RGBToHSV(RGBA<double> color) {
+    return RGBToHSV(color.R, color.G, color.B);
 }
 
 RGBA<double> HSVToRGB(const HSV& hsv) {
@@ -129,6 +135,27 @@ uint16_t hexColorStrTo16Bit(const std::string& hexColor) {
     return colorHSVTo16Bit(colorHSV);
 }
 
+RGBA<double> hexColorStrToRGB(const std::string& hexColor) {
+    auto hex = std::stoi(hexColor, nullptr, 16);
+
+    double r = ((hex & 0xFF0000) >> 16) / 255.0f;
+    double g = ((hex & 0x00FF00) >> 8) / 255.0f;
+    double b = (hex & 0x0000FF) / 255.0f;
+
+    return RGBA<double>(r, g, b, 1);
+}
+
+std::string RGBToHexColorStr(const RGBA<double>& color) {
+    
+    int c = 0;
+
+    c |= int(color.R * 255) << 16;
+    c |= int(color.G * 255) << 8;
+    c |= int(color.B * 255);
+
+    return Utility::Str::intToHex(c, 6, false);
+}
+
 bool isValidHexColor(const std::string& hexColor) {
     return hexColor.find_first_not_of("0123456789ABCDEFabcdef") == std::string_view::npos && hexColor.length() == 6;
 }
@@ -163,3 +190,65 @@ uint16_t colorExchange(const uint16_t& baseColor, const uint16_t& replacementCol
 
     return colorHSVTo16Bit(newColorHSV);
 }
+
+std::string HSVShiftColor(const std::string& hexColor, const int& hShift, const int& vShift) {
+    auto colorRGB = hexColorStrToRGB(hexColor);
+    auto colorHSV = RGBToHSV(colorRGB);
+    int h = colorHSV.H;
+    int s = round(colorHSV.S * 100);
+    int v = round(colorHSV.V * 100);
+
+    h += hShift;
+    h %= 360;
+
+    auto origV = v;
+    v += vShift;
+    if (v < 0) {
+        v = 0;
+    }
+    if (v > 100) {
+        v = 100;
+    }
+    if (v < 30 && origV >= 30) {
+        v = 30;
+    }
+    if (v > 90 and origV <= 90) {
+        v = 90;
+    }
+
+    auto vDiff = v - origV;
+
+    // Instead of shifting saturation separately, we simply make it relative to the value shift.
+    // As value increases we want saturation to decrease and vice versa.
+    // This is because bright colors look bad if they are too saturated, and dark colors look bland if they aren't saturated enough.
+    auto origS = s;
+    if (origS < 15 && vShift > 0) {
+        // For colors that were originally very unsaturated, we want saturation to increase regardless of which direction value is shifting in.
+        if (origV < 30) {
+            // Very dark, nearly black. Needs extra saturation for the change to be noticeable.
+            s += (vShift * 2);
+        } else {
+            // Not that dark, probably grey or whitish.
+            s += vShift;
+        }
+    } else {
+        s -= vDiff;
+    }
+
+    if (s < 0) {
+        s = 0;
+    }
+    if (s > 100) {
+        s = 100;
+    }
+    if (s < 5 && origS >= 5) {
+        s = 5;
+    }
+    if (s > 80 && origS <= 80) {
+        s = 80;
+    }
+
+    auto newColorHSV = HSV(h, s / 100.0f, v / 100.0f);
+    auto newColorRGB = HSVToRGB(newColorHSV);
+    return RGBToHexColorStr(newColorRGB);
+}  

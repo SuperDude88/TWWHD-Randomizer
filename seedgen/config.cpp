@@ -68,8 +68,9 @@
     }
 
 // Default colors for every texture
+// Use list of tuples to keep ordering
 namespace DefaultColors {
-    std::unordered_map<std::string, std::string> heroColors = {
+    std::list<std::tuple<std::string, std::string>> heroColors = {
         {"Hair",        "FFEF10"},
         {"Skin",        "F7DB9C"},
         {"Mouth",       "F74963"},
@@ -84,19 +85,30 @@ namespace DefaultColors {
         {"Belt Buckle", "FFEF10"},
     };
 
-    std::unordered_map<std::string, std::string> casualColors = {
-        {"Hair",        "FFEF10"},
-        {"Skin",        "F7DB9C"},
-        {"Mouth",       "F74963"},
-        {"Eyes",        "10514A"},
-        {"Sclera",      "FFFFFF"},
-	      {"Shirt", "4A75AD"},
+    std::list<std::tuple<std::string, std::string>> casualColors = {
+        {"Hair",         "FFEF10"},
+        {"Skin",         "F7DB9C"},
+        {"Mouth",        "F74963"},
+        {"Eyes",         "10514A"},
+        {"Sclera",       "FFFFFF"},
+	      {"Shirt",        "4A75AD"},
         {"Shirt Emblem", "FFFFD6"},
-        {"Armbands", "63696B"},
-        {"Pants", "FFA608"},
-        {"Shoes", "63696B"},
-        {"Shoe Soles", "D6BA39"},
+        {"Armbands",     "63696B"},
+        {"Pants",        "FFA608"},
+        {"Shoes",        "63696B"},
+        {"Shoe Soles",   "D6BA39"},
     };
+
+    std::unordered_map<std::string, std::string> getDefaultColorsMap(const bool& casualClothes) {
+        std::unordered_map<std::string, std::string> map = {};
+
+        auto colors = casualClothes ? casualColors : heroColors;
+
+        for (auto& [name, color] : colors) {
+            map[name] = color;
+        }
+        return map;
+    }
 } // namespace DefaultColors
 
 
@@ -203,7 +215,9 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.gyroscope = GyroscopePreference::On;
     conf.settings.ui_display = UIDisplayPreference::On;
 
-    conf.settings.custom_colors = DefaultColors::heroColors;
+    for (auto& [name, color] : DefaultColors::heroColors) {
+        conf.settings.custom_colors[name] = color;
+    }
 
     LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
 
@@ -457,20 +471,25 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
         auto texture = colorObject.first.as<std::string>();
         auto color = colorObject.second.as<std::string>();
 
-        // If the color is not valid, replace it withe the texture's default
-        if (!isValidHexColor(color)) {
-          if (out.settings.player_in_casual_clothes && DefaultColors::casualColors.contains(texture)) {
-            color = DefaultColors::casualColors[texture];
-          } else if (!out.settings.player_in_casual_clothes && DefaultColors::heroColors.contains(texture)){
-            color = DefaultColors::heroColors[texture];
-          }
+        // Only accept the color if it's valid
+        if (isValidHexColor(color)) {
+          out.settings.custom_colors[texture] = color;
+        } else if (!ignoreErrors) {
+          Utility::platformLog(color + " is not a valid hex color");
+          return ConfigError::INVALID_VALUE;
         }
-
-        out.settings.custom_colors[texture] = color;
 
       }
     } else {
       return ConfigError::INVALID_VALUE;
+    }
+
+    // Add in defaults for any missing colors
+    auto& colors = out.settings.player_in_casual_clothes ? DefaultColors::casualColors : DefaultColors::heroColors;
+    for (auto& [name, color] : colors) {
+      if (!out.settings.custom_colors.contains(name)) {
+        out.settings.custom_colors[name] = color;
+      }
     }
 
     // Clamp starting spoils

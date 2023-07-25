@@ -81,6 +81,7 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        player_customization.cpp
         randomizer_thread.cpp
         tracker/set_font.h
         tracker/tracker_area_label.h

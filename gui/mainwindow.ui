@@ -10,6 +10,12 @@
     <height>764</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
@@ -63,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1176,7 +1182,7 @@
                 <item>
                  <widget class="QComboBox" name="custom_color_preset">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1218,8 +1224,13 @@
                 <item>
                  <widget class="QComboBox" name="custom_player_model">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
+                  <item>
+                   <property name="text">
+                    <string>Link</string>
+                   </property>
+                  </item>
                  </widget>
                 </item>
                </layout>
@@ -1288,7 +1299,11 @@
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
-                 <layout class="QVBoxLayout" name="custom_colors_layout"/>
+                 <layout class="QVBoxLayout" name="custom_colors_layout">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                 </layout>
                 </item>
                 <item>
                  <spacer name="verticalSpacer">

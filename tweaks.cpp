@@ -2749,8 +2749,8 @@ TweakError apply_custom_colors(World& world) {
         uint16_t baseColor = 0;
         uint16_t replacementColor = 0;
 
+        auto baseColors = DefaultColors::getDefaultColorsMap(world.getSettings().player_in_casual_clothes);
         std::unordered_map<std::string, std::list<std::string>> textureMappings = {};
-
         if (world.getSettings().player_in_casual_clothes) {
             textureMappings = casualTextureMappings;
         } else {
@@ -2762,12 +2762,7 @@ TweakError apply_custom_colors(World& world) {
 
                 auto custom_colors = world.getSettings().custom_colors;
                 replacementColor = hexColorStrTo16Bit(custom_colors[name]);
-
-                if (world.getSettings().player_in_casual_clothes) {
-                    baseColor = hexColorStrTo16Bit(DefaultColors::casualColors[name]);
-                } else {
-                    baseColor = hexColorStrTo16Bit(DefaultColors::heroColors[name]);
-                }
+                baseColor = hexColorStrTo16Bit(baseColors[name]);
 
                 // Don't modify colors if it's not necessary
                 if (baseColor == replacementColor) {
@@ -2782,7 +2777,7 @@ TweakError apply_custom_colors(World& world) {
                         std::string filename = (world.getSettings().player_in_casual_clothes ? "casual" : "hero") + name + "_" + textureName + "_mask.bftex";
 
                         if (Utility::getFileContents(DATA_PATH "assets/link color masks/" + filename, maskFile, true) != 0) {
-                            Utility::platformLog("Could not open " + filename + " mask file. Will not be able to recolor " + name);
+                            Utility::platformLog("Could not open " + filename + " mask file. Will skip recoloring " + name);
                             continue;
                         }
 
