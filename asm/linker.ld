@@ -78,6 +78,11 @@ itemActionForRupee = 0x02180de4;
 
 daObjFtree_talk_main = 0x023472bc;
 
+GetQuadrantAtLocation = 0x02680de0;
+GetWarpQuadrantByIndex = 0x0267a204;
+SetAdjacentWarpButton = 0x02681ad0;
+/* safestring_vtbl_1010394c = 0x1010394c; */
+
 gameInfo_ptr = 0x101f84dc;
 something_button_related = 0x101F5088;
 GTower_str = 0x1005336c;

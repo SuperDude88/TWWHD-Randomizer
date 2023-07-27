@@ -565,4 +565,147 @@ set_return_place_as_last_visited_ocean_sector:
 ; Slightly increase the PermanentResource heap size
 ; It seems like Nintendo was flying really close to the sun with these and our slightly larger files cause issues
 .org 0x0203f1f8
-  addis r3, r3, 0x0D41 ; Increase heap size by 0x10000 (64KiB)
+  addis r3, r3, 0x0D45 ; Increase heap size by 0x50000 (320KiB)
+
+
+
+.org 0x100f7bd0 ; quadrant index for button index 9
+  .int 0
+  
+.org 0x0267b4fc
+  b init_extra_button_location
+.org @NextFreeSpace
+.global init_extra_button_location
+init_extra_button_location:
+  stb r31, 0x10(r6) ; replace line we overwrote
+  li r31, 0xFD ; -3
+  stb r31, 0x12(r6)
+  stb r31, 0x13(r6)
+  b 0x0267b500
+
+.org 0x02681ce0
+  b init_extra_connections
+.org @NextFreeSpace
+.global init_extra_connections
+init_extra_connections:
+  ; Add FF connection to Mother and Child button
+  bl SetAdjacentWarpButton ; replace line we overwrote
+  li r3, 9 ; FF warp index
+  bl GetWarpQuadrantByIndex ; ff warp quadrant
+  addi r4, sp, 0x34
+  stw r3, 0x34(sp)
+  lswi r6, r4, 0x2
+  addi r5, r1, 0x1c
+  mr r4, r30
+  mr r3, r31
+  stswi r6, r5, 0x2
+  li r6, 1
+  bl SetAdjacentWarpButton ; set Mother and Child top-left button to be Forsaken Fortress
+
+  ; Also set up the FF button
+  li r3, 9 ; FF warp index
+  bl GetWarpQuadrantByIndex ; ff warp quadrant
+  addi r4, sp, 0x28
+  stw r3, 0x28(sp)
+  addi r5, sp, 0xA
+  lswi r6, r4, 0x2
+  mr r4, r5
+  mr r3, r31
+  stswi r6, r5, 0x2
+  bl GetQuadrantAtLocation
+  mr. r30, r3
+  beq continue_original_connections
+
+  li r3, 0x1
+  stb r3, 0x9A(r30)
+
+  li r3, 0 ; m&c warp index
+  bl GetWarpQuadrantByIndex ; m&c warp quadrant
+  addi r4, sp, 0x34
+  stw r3, 0x34(sp)
+  lswi r6, r4, 0x2
+  addi r5, r1, 0x1c
+  mr r4, r30
+  mr r3, r31
+  stswi r6, r5, 0x2
+  li r6, 5
+  bl SetAdjacentWarpButton ; set Forsaken Fortress bottom-right button to be Mother and Child
+
+continue_original_connections:
+  b 0x02681ce4 ; jump back
+
+
+.org @NextFreeSpace
+.global custom_warp_button_name
+custom_warp_button_name:
+  .string "L_WarpArea_09"
+  
+.align 2
+
+.org 0x026f0394
+  b load_extra_button_part
+.org @NextFreeSpace
+.global load_extra_button_part
+load_extra_button_part:
+  cmpwi r30, 0xB
+  bge continue_normal_return
+
+  subi r23, r23, 8 ; don't actually increment the offset, we want to loop over the last string twice
+  lis r12, custom_warp_button_name@ha
+  addic r12, r12, custom_warp_button_name@l
+  stw r12, 0x0(r21) ; replace last string's char* to be our new pane name
+  b 0x026f0070 ; loop one more time
+
+continue_normal_return:
+  li r3, 1
+  b 0x026f0398
+
+
+.org 0x0267a264 ; increase number of buttons to search when finding quadrant index -> button index
+  li r9, 0xA
+
+.org 0x026ef340 ; increase number of buttons to loop through when initializing animations
+  li r29, 0xA
+
+.org 0x02681bc8 ; increase number of buttons to zero out
+  li r29, 0xA
+
+.org 0x02678784 ; increase number of buttons to loop through when opening confirmation text
+  li r29, 0xA
+
+
+.org @NextFreeSpace
+.global custom_ff_label
+custom_ff_label:
+  .string "00076"
+
+.align 2
+
+.global custom_ff_label_safestring
+custom_ff_label_safestring:
+  .space 8
+
+.org 0x026d9ce4
+  b set_ff_warp_msg_index
+.org @NextFreeSpace
+.global set_ff_warp_msg_index
+set_ff_warp_msg_index:
+  addi r9, r10, 0x8 ; replace line we overwrote
+  cmpwi r9, 0x12
+  bne not_ff_warp
+  li r9, 0x33 ; index 51
+not_ff_warp:
+  b 0x026d9ce8
+
+.org 0x026d9d28
+  b ff_warp_text_check
+.org @NextFreeSpace
+.global ff_warp_text_check
+ff_warp_text_check:
+  addi r4, sp, 0x8 ; replace line we overwrote
+  cmpwi r9, 0x33 ; ff message index
+  bne not_ff_offset
+  lis r5, custom_ff_label_safestring@ha
+  addic r5, r5, custom_ff_label_safestring@l
+not_ff_offset:
+  b 0x026d9d2c
