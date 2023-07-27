@@ -142,10 +142,10 @@ private:
     static constexpr size_t w_mask = w_size - 1;
     static constexpr size_t window_size = 2 * w_size;
 
-    static constexpr size_t good_match = 8;
-    static constexpr size_t nice_match = 128;
-    static constexpr size_t max_lazy_match = 32;
-    static constexpr size_t max_chain_length = 256;
+    static constexpr size_t good_match = 32;
+    static constexpr size_t nice_match = 258;
+    static constexpr size_t max_lazy_match = 128;
+    static constexpr size_t max_chain_length = 1024;
 
     static constexpr size_t HASH_BITS = 16u; /* log2(HASH_SIZE) */
     static constexpr size_t HASH_SIZE = 65536u; /* number of elements in hash table */
