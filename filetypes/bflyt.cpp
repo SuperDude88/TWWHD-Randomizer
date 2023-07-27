@@ -408,6 +408,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             if (!bflyt.read(reinterpret_cast<char*>(&map.scaleX), sizeof(map.scaleX))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&map.scaleY), sizeof(map.scaleY))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&map.flags), sizeof(map.flags))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
+            if (!bflyt.read(reinterpret_cast<char*>(&map.unk), sizeof(map.unk))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
 
             Utility::Endian::toPlatform_inplace(eType::Big, map.posX);
             Utility::Endian::toPlatform_inplace(eType::Big, map.posY);
@@ -537,6 +538,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             out.write(reinterpret_cast<const char*>(&map.scaleX), sizeof(map.scaleX));
             out.write(reinterpret_cast<const char*>(&map.scaleY), sizeof(map.scaleY));
             out.write(reinterpret_cast<const char*>(&map.flags), sizeof(map.flags));
+            out.write(reinterpret_cast<const char*>(&map.unk), sizeof(map.unk));
         }
 
         setFlag(false, 0x00020000, 17);
@@ -1256,7 +1258,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         if (!bflyt.read(reinterpret_cast<char*>(&frameNum), sizeof(frameNum))) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
         }
-        if (!bflyt.read(reinterpret_cast<char*>(&bitFlags), sizeof(bitFlags))) {
+        if (!bflyt.read(reinterpret_cast<char*>(&wndFlags), sizeof(wndFlags))) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
         }
         if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
@@ -1396,7 +1398,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         out.write(reinterpret_cast<const char*>(&frameSizeTop), sizeof(frameSizeTop));
         out.write(reinterpret_cast<const char*>(&frameSizeBottom), sizeof(frameSizeBottom));
         out.write(reinterpret_cast<const char*>(&frameNum), sizeof(frameNum));
-        out.write(reinterpret_cast<const char*>(&bitFlags), sizeof(bitFlags));
+        out.write(reinterpret_cast<const char*>(&wndFlags), sizeof(wndFlags));
         out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
         Utility::seek(out, 8, std::ios::cur); //skip content and frame table offsets
 
@@ -1496,7 +1498,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         if (!bflyt.read(reinterpret_cast<char*>(&lineAlignment), sizeof(lineAlignment))) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
         }
-        if (!bflyt.read(reinterpret_cast<char*>(&bitflags), sizeof(bitflags))) {
+        if (!bflyt.read(reinterpret_cast<char*>(&txtFlags), sizeof(txtFlags))) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
         }
         if (!bflyt.read(reinterpret_cast<char*>(&padding_0x00), sizeof(padding_0x00))) {
@@ -1599,7 +1601,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             textBoxName.clear();
         }
 
-        if ((bitflags >> 4) & 0x01) { //per char transform flag
+        if ((txtFlags >> 4) & 0x01) { //per char transform flag
             uint32_t transformOffset = 0;
             bflyt.seekg(sectionStart + 0xA0, std::ios::beg);
             if (!bflyt.read(reinterpret_cast<char*>(&transformOffset), sizeof(transformOffset))) {
@@ -1678,7 +1680,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         out.write(reinterpret_cast<const char*>(&fontIndex), sizeof(fontIndex));
         out.write(reinterpret_cast<const char*>(&textAlignment), sizeof(textAlignment));
         out.write(reinterpret_cast<const char*>(&lineAlignment), 1);
-        out.write(reinterpret_cast<const char*>(&bitflags), sizeof(bitflags));
+        out.write(reinterpret_cast<const char*>(&txtFlags), sizeof(txtFlags));
         out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
         out.write(reinterpret_cast<const char*>(&italicTilt), sizeof(italicTilt));
         Utility::seek(out, 4, std::ios::cur); //skip text offset

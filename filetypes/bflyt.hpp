@@ -455,7 +455,7 @@ namespace NintendoWare::Layout {
 		uint16_t fontIndex;
 		uint8_t textAlignment;
 		LineAlignment lineAlignment;
-		uint8_t bitflags;
+		uint8_t txtFlags;
 		float italicTilt;
 		RGBA8 fontColorTop;
 		RGBA8 fontColorBottom;
