@@ -39,10 +39,22 @@ elseif(MASS_TESTING)
   endif()
 endif()
 
-# Version strings for RNG and compatibility checks
-add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
-add_compile_definitions(CONFIG_VERSION="1.0")
-add_compile_definitions(COMMIT_HASH="develop")
+# Versioning
+find_package(Git REQUIRED)
+execute_process(COMMAND "${GIT_EXECUTABLE}" describe --exclude="*" --always --dirty --abbrev=0
+  WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+  OUTPUT_VARIABLE GIT_SHA1
+  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --abbrev=0
+  WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+  OUTPUT_VARIABLE GIT_TAG
+  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if(NOT GIT_TAG)
+  set(GIT_TAG "01.00.00a") # Fallback until we have a release
+endif()
+configure_file(version.hpp.in version.hpp @ONLY)
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
@@ -58,7 +70,7 @@ add_subdirectory("seedgen")
 add_subdirectory("logic")
 add_subdirectory("nuspack")
 
-target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR})
+target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 target_link_libraries(wwhd_rando tinyxml2 yaml-cpp zlib)
 

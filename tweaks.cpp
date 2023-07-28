@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <numbers>
 
+#include <version.hpp>
 #include <text_replacements.hpp>
 #include <libs/tinyxml2.h>
 #include <libs/yaml.h>

@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <filesystem>
 
+#include <version.hpp>
 #include <libs/yaml.h>
 #include <logic/GameItem.hpp>
 #include <seedgen/random.hpp>
