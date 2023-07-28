@@ -34,7 +34,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Race mode locations are also goal locations
-            if (dungeon.isRaceModeDungeon)
+            if (dungeon.isRequiredDungeon)
             {
                 Location* goalLocation = &world.locationEntries[dungeon.raceModeLocation];
                 world.pathLocations[goalLocation] = {};

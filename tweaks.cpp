@@ -2053,7 +2053,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
     std::unordered_set<uint8_t> room_indexes;
     for(const auto& [name, dungeon] : world.dungeons) {
-        if (dungeon.isRaceModeDungeon)
+        if (dungeon.isRequiredDungeon)
         {
             const std::string& islandName = dungeon.island;
             room_indexes.emplace(islandNameToRoomIndex(islandName));

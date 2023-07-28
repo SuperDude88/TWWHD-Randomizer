@@ -388,7 +388,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 auto& dungeonEntranceRoom = dungeon.entranceRoom;
                 auto dungeonIslands = world.getIslands(dungeonEntranceRoom);
 
-                if (dungeon.isRaceModeDungeon)
+                if (dungeon.isRequiredDungeon)
                 {
                     if (dungeonIslands.size() > 1)
                     {
@@ -412,7 +412,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
-                    if (dungeon.isRaceModeDungeon)
+                    if (dungeon.isRequiredDungeon)
                     {
                         raceModeIslands.insert(dungeonIsland);
                     }
