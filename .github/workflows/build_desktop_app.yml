@@ -25,6 +25,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          submodules: true
       - name: Get Last Nightly
         id: nightly-version
         run: |
@@ -64,6 +65,8 @@ jobs:
     steps:
      - name: Checkout Repository
        uses: actions/checkout@v3
+       with:
+         submodules: true
  
      - name: Insert commit hash into Cmake file
        working-directory: ${{ github.workspace }}
@@ -110,6 +113,8 @@ jobs:
     steps:
      - name: Checkout Repository
        uses: actions/checkout@v3
+       with:
+         submodules: true
     
      - name: Build App
        working-directory: ${{github.workspace}}
