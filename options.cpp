@@ -370,7 +370,7 @@ Option nameToSetting(const std::string& name) {
         {"Skip Refights", Option::SkipRefights},
         {"Invert Compass", Option::InvertCompass},
         {"Race Mode", Option::RaceMode},
-        {"Num Race Mode Dungeons", Option::NumRaceModeDungeons},
+        {"Num Required Dungeons", Option::NumRequiredDungeons},
         {"Damage Multiplier", Option::DamageMultiplier},
         {"CTMC", Option::CTMC},
         {"Casual Clothes", Option::CasualClothes},
@@ -461,7 +461,7 @@ std::string settingToName(const Option& setting) {
         {Option::SkipRefights, "Skip Refights"},
         {Option::InvertCompass, "Invert Compass"},
         {Option::RaceMode, "Race Mode"},
-        {Option::NumRaceModeDungeons, "Num Race Mode Dungeons"},
+        {Option::NumRequiredDungeons, "Num Required Dungeons"},
         {Option::DamageMultiplier, "Damage Multiplier"},
         {Option::CTMC, "CTMC"},
         {Option::CasualClothes, "Casual Clothes"},
@@ -605,8 +605,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.skip_rematch_bosses;
         case Option::InvertCompass:
             return settings.invert_sea_compass_x_axis;
-        case Option::NumRaceModeDungeons:
-            return settings.num_race_mode_dungeons;
+        case Option::NumRequiredDungeons:
+            return settings.num_required_dungeons;
         case Option::DamageMultiplier:
             return static_cast<uint8_t>(settings.damage_multiplier);
         case Option::CTMC:
@@ -770,8 +770,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.skip_rematch_bosses = value; return;
         case Option::InvertCompass:
             settings.invert_sea_compass_x_axis = value; return;
-        case Option::NumRaceModeDungeons:
-            settings.num_race_mode_dungeons = value; return;
+        case Option::NumRequiredDungeons:
+            settings.num_required_dungeons = value; return;
         case Option::DamageMultiplier:
             settings.damage_multiplier = value; return;
         case Option::CTMC:

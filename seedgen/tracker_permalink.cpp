@@ -48,7 +48,7 @@ static const std::array<Option, 46> TRACKER_PERMALINK_OPTIONS {
     Option::SwordMode,
     Option::SkipRefights,
     Option::RaceMode,
-    Option::NumRaceModeDungeons,
+    Option::NumRequiredDungeons,
     Option::RandomizeMusic,
     Option::DisableTingleChestsWithTingleBombs,
     Option::RandomizeEnemyPalettes,
@@ -135,7 +135,7 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
             bitsWriter.write(getSetting(settings, option), 8);
         }
         // Special case for race mode dungeons
-        else if (option == Option::NumRaceModeDungeons)
+        else if (option == Option::NumRequiredDungeons)
         {
             bitsWriter.write(getSetting(settings, option) - 1, 8);
         }

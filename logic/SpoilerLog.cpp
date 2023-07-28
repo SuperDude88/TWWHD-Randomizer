@@ -89,7 +89,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
         {
             Option setting = static_cast<Option>(settingInt);
 
-            if (setting == Option::NumShards || setting == Option::NumRaceModeDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+            if (setting == Option::NumShards || setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
                 log << settingToName(setting) << ": " << std::to_string(getSetting(world.getSettings(), setting)) << ", ";
             }

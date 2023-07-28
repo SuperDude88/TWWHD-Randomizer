@@ -131,7 +131,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.sword_mode = SwordMode::StartWithSword;
     conf.settings.skip_rematch_bosses = true;
     conf.settings.invert_sea_compass_x_axis = false;
-    conf.settings.num_race_mode_dungeons = 4;
+    conf.settings.num_required_dungeons = 0;
     conf.settings.damage_multiplier = 2.0f;
     conf.settings.chest_type_matches_contents = false;
 
@@ -264,7 +264,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, add_shortcut_warps_between_dungeons)
     SET_BOOL_FIELD(root, out, skip_rematch_bosses)
     SET_BOOL_FIELD(root, out, invert_sea_compass_x_axis)
-    SET_INT_FIELD(root, out, num_race_mode_dungeons)
+    SET_INT_FIELD(root, out, num_required_dungeons)
     if(!root["damage_multiplier"]) {
       Utility::platformLog("\"damage_multiplier\" not found in config.yaml\n");
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
@@ -518,7 +518,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
     WRITE_SETTING_BOOL_FIELD(root, config, skip_rematch_bosses)
     WRITE_SETTING_BOOL_FIELD(root, config, invert_sea_compass_x_axis)
-    WRITE_NUM_FIELD(root, config, num_race_mode_dungeons)
+    WRITE_NUM_FIELD(root, config, num_required_dungeons)
     WRITE_NUM_FIELD(root, config, damage_multiplier)
     WRITE_SETTING_BOOL_FIELD(root, config, chest_type_matches_contents)
 

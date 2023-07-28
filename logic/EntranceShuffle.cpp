@@ -380,7 +380,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     for (auto& world : worlds)
     {
         auto& settings = world.getSettings();
-        if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_race_mode_dungeons > 0)
+        if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_required_dungeons > 0)
         {
             std::unordered_set<std::string> raceModeIslands = {};
             for (auto& [name, dungeon] : world.dungeons)
