@@ -4,6 +4,7 @@
 #include <set>
 #include <iostream>
 
+#include <version.hpp>
 #include <libs/base64pp.hpp>
 #include <seedgen/packed_bits.hpp>
 
