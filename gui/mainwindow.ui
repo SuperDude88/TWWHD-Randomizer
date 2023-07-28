@@ -465,7 +465,7 @@
                <item row="0" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <item>
-                  <widget class="QLabel" name="label_for_num_race_mode_dungeons">
+                  <widget class="QLabel" name="label_for_num_required_dungeons">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                      <horstretch>0</horstretch>
@@ -478,7 +478,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="num_race_mode_dungeons">
+                  <widget class="QComboBox" name="num_required_dungeons">
                    <property name="maximumSize">
                     <size>
                      <width>40</width>

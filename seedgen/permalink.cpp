@@ -112,7 +112,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::DungeonSmallKeys,
     Option::DungeonBigKeys,
     Option::DungeonMapsAndCompasses,
-    Option::NumRaceModeDungeons,
+    Option::NumRequiredDungeons,
     Option::NumShards,
     Option::RandomCharts,
     Option::CTMC,
@@ -197,7 +197,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
                  option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
-                 option == Option::NumRaceModeDungeons     ||
+                 option == Option::NumRequiredDungeons     ||
                  option == Option::NumShards               ||
                  option == Option::DamageMultiplier)
         {
@@ -330,7 +330,7 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
                  option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
-                 option == Option::NumRaceModeDungeons     ||
+                 option == Option::NumRequiredDungeons     ||
                  option == Option::NumShards               ||
                  option == Option::DamageMultiplier)
         {
