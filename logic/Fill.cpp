@@ -380,7 +380,7 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
             auto dungeonLocations = filterFromPool(worldLocations, [&](const Location* loc){
                 return elementInPool(loc->getName(), dungeon.locations) &&
                           (loc->progression || settings.progression_dungeons == ProgressionDungeons::Disabled ||
-                          (settings.progression_dungeons == ProgressionDungeons::RaceMode && !dungeon.isRaceModeDungeon));});
+                          (settings.progression_dungeons == ProgressionDungeons::RaceMode && !dungeon.isRequiredDungeon));});
 
             // Place small keys and the big key using only items and locations
             // from this world (even in multiworld)
@@ -481,7 +481,7 @@ static FillError randomizeRestrictedDungeonItems(WorldPool& worlds, ItemPool& it
             auto mapsCompasses = filterFromPool(itemPool, [&](const Item& item){return item == map || item == compass;});
 
             bool addItemsToProgressionPool = settings.progression_dungeons == ProgressionDungeons::Standard ||
-                                            (settings.progression_dungeons == ProgressionDungeons::RaceMode && dungeon.isRaceModeDungeon);
+                                            (settings.progression_dungeons == ProgressionDungeons::RaceMode && dungeon.isRequiredDungeon);
 
             if (settings.dungeon_small_keys == PlacementOption::AnyDungeon)
             {
@@ -566,7 +566,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     {
         for (auto& [name, dungeon] : world.dungeons)
         {
-            if (dungeon.isRaceModeDungeon)
+            if (dungeon.isRequiredDungeon)
             {
                 Location* raceModeLocation = &world.locationEntries[dungeon.raceModeLocation];
                 // If this location already has an item placed at it, then skip it

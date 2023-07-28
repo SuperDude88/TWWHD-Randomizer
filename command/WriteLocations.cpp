@@ -123,7 +123,7 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
         // In race mode, only put the dungeon keys for required dungeons in dark wood chests.
         // The other keys go into light wood chests.
         if(raceMode) {
-            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRaceModeDungeon && (dungeon.second.smallKey == item.getName() || dungeon.second.bigKey == item.getName());})){
+            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item.getName() || dungeon.second.bigKey == item.getName());})){
                 LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
                 return ModificationError::NONE;
             }

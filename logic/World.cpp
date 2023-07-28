@@ -423,7 +423,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                                 LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
                             }
                             LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
-                            dungeons[dungeon.name].isRaceModeDungeon = true;
+                            dungeons[dungeon.name].isRequiredDungeon = true;
                             setRaceModeDungeons++;
                             break;
                         }
@@ -445,7 +445,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
             for (const auto& dungeon : dungeonPool)
             {
                 // If this dungeon was already selected, then skip it
-                if (dungeons[dungeon.name].isRaceModeDungeon)
+                if (dungeons[dungeon.name].isRequiredDungeon)
                 {
                     continue;
                 }
@@ -456,7 +456,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
                 {
                     LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
-                    dungeons[dungeon.name].isRaceModeDungeon = true;
+                    dungeons[dungeon.name].isRequiredDungeon = true;
                     setRaceModeDungeons++;
                 }
                 else if (settings.progression_dungeons == ProgressionDungeons::RaceMode)
@@ -510,7 +510,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 }
                 for (auto& [name, dungeon] : dungeons)
                 {
-                    dungeon.isRaceModeDungeon = false;
+                    dungeon.isRequiredDungeon = false;
                 }
 
                 nonProgressRollbacks.clear();
