@@ -462,7 +462,7 @@ TweakError remove_shop_item_forced_uniqueness_bit() {
 }
 
 TweakError remove_ff2_cutscenes() {
-    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZR");
+    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
 
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -2057,7 +2057,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 
     std::unordered_set<uint8_t> room_indexes;
     for(const auto& [name, dungeon] : world.dungeons) {
-        if (dungeon.isRaceModeDungeon)
+        if (dungeon.isRequiredDungeon)
         {
             const std::string& islandName = dungeon.island;
             room_indexes.emplace(islandNameToRoomIndex(islandName));
@@ -2899,6 +2899,44 @@ std::string get_island_room_dzx_filepath(const uint8_t& islandNum) {
     return filepath;
 }
 
+TweakError add_ff_warp_button() {
+    using namespace NintendoWare::Layout;
+
+    for (const auto& language : Text::supported_languages) {
+        RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@WarpMap_00.szs@YAZ0@SARC@blyt/WarpMap_00.bflyt@BFLYT");
+
+        //add another WarpArea pane
+        map.addAction([](RandoSession* sessio, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
+
+            Pane& newPane = layout.rootPane.children[0].duplicateChildPane(4); //L_WarpArea_00
+            prt1& partPane = *dynamic_cast<prt1*>(newPane.pane.get());
+            partPane.name = "L_WarpArea_09";
+            partPane.translation.X = -158.0f;
+            partPane.translation.Y = 198.0f;
+
+            return true;
+        });
+
+        
+        RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+    
+        text.addAction([language](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            const Message& to_copy = msbt.messages_by_label["00075"];
+            //const std::u16string message = messages.at(language);
+            const std::u16string message = u"Warp to " TEXT_COLOR_RED u"Forsaken Fortress" TEXT_COLOR_DEFAULT u"?" TEXT_END;
+            msbt.addMessage("00076", to_copy.attributes, to_copy.style, message);
+
+            return true;
+        });
+    
+    }
+    
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -2921,6 +2959,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/remove_cutscenes_reloc.yaml"));
+    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_hint_locations_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.yaml"));
@@ -2938,6 +2977,18 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         //blockMoveReloc.r_info = 0x00015b0a;
         //blockMoveReloc.r_addend = 0;
         //RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
+        
+        Elf32_Rela str_reloc;
+        str_reloc.r_offset = custom_symbols.at("custom_ff_label_safestring");
+        str_reloc.r_info = 0x00000101;
+        str_reloc.r_addend = custom_symbols.at("custom_ff_label") - 0x02000000;
+        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, str_reloc));
+
+        Elf32_Rela str_vtbl_reloc;
+        str_vtbl_reloc.r_offset = custom_symbols.at("custom_ff_label_safestring") + 4;
+        str_vtbl_reloc.r_info = 0x00000201;
+        str_vtbl_reloc.r_addend = 0x0010394C;
+        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, str_vtbl_reloc));
 
         RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); //would mess with save init
         RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); //would mess with salvage point patch
@@ -3015,8 +3066,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(fix_stone_head_bugs());
     TWEAK_ERR_CHECK(show_tingle_statues_on_quest_screen());
     TWEAK_ERR_CHECK(apply_ingame_preferences(settings));
-    //key bag
-    //bog warp
+    TWEAK_ERR_CHECK(add_ff_warp_button());
     //rat hole visibility
     //failsafe id 0 spawns
 

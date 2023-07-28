@@ -380,7 +380,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
     for (auto& world : worlds)
     {
         auto& settings = world.getSettings();
-        if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_race_mode_dungeons > 0)
+        if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_required_dungeons > 0)
         {
             std::unordered_set<std::string> raceModeIslands = {};
             for (auto& [name, dungeon] : world.dungeons)
@@ -388,7 +388,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 auto& dungeonEntranceRoom = dungeon.entranceRoom;
                 auto dungeonIslands = world.getIslands(dungeonEntranceRoom);
 
-                if (dungeon.isRaceModeDungeon)
+                if (dungeon.isRequiredDungeon)
                 {
                     if (dungeonIslands.size() > 1)
                     {
@@ -412,7 +412,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
 
-                    if (dungeon.isRaceModeDungeon)
+                    if (dungeon.isRequiredDungeon)
                     {
                         raceModeIslands.insert(dungeonIsland);
                     }

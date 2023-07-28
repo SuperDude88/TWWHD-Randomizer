@@ -158,7 +158,7 @@ private slots:
     void on_randomize_charts_stateChanged(int arg1);
     void on_chest_type_matches_contents_stateChanged(int arg1);
     void on_damage_multiplier_valueChanged(int multiplier);
-    void on_num_race_mode_dungeons_currentIndexChanged(int index);
+    void on_num_required_dungeons_currentIndexChanged(int index);
     void on_num_starting_triforce_shards_currentIndexChanged(int index);
 
     // Convenience Tweaks

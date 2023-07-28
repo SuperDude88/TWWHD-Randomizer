@@ -17,7 +17,7 @@ struct Dungeon {
     std::string entranceRoom = "";
     std::string island = "";
     std::string name = "";
-    bool isRaceModeDungeon = false;
+    bool isRequiredDungeon = false;
 };
 
 bool isValidDungeon(const std::string& dungeonName);

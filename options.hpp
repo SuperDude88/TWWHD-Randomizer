@@ -109,7 +109,7 @@ enum struct Option {
     SwordMode,
     Keylunacy,
     RaceMode,
-    NumRaceModeDungeons,
+    NumRequiredDungeons,
     NumShards,
     RandomCharts,
     CTMC,
@@ -251,7 +251,7 @@ struct Settings {
     SwordMode sword_mode = SwordMode::StartWithSword;
     bool skip_rematch_bosses = false;
     bool invert_sea_compass_x_axis = false;
-    uint8_t num_race_mode_dungeons = 3;
+    uint8_t num_required_dungeons = 0;
     float damage_multiplier = 2.0f;
     bool chest_type_matches_contents = false;
 

@@ -38,7 +38,7 @@
 #ifdef DEVKITPRO
 static BS::thread_pool workerThreads(3);
 #else
-static BS::thread_pool workerThreads(12);
+static BS::thread_pool workerThreads(std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 4);
 #endif
 std::atomic<size_t> total_num_tasks = 0;
 std::atomic<size_t> num_completed_tasks = 0;
@@ -50,6 +50,8 @@ static const std::unordered_map<std::string, RandoSession::CacheEntry::Format> s
     {"BFRES",  RandoSession::CacheEntry::Format::BFRES},
     {"CHARTS", RandoSession::CacheEntry::Format::CHARTS},
     {"DZX",    RandoSession::CacheEntry::Format::DZX},
+    {"DZR",    RandoSession::CacheEntry::Format::DZX},
+    {"DZS",    RandoSession::CacheEntry::Format::DZX},
     {"ELF",    RandoSession::CacheEntry::Format::ELF},
     {"EVENTS", RandoSession::CacheEntry::Format::EVENTS},
     {"JPC",    RandoSession::CacheEntry::Format::JPC},
