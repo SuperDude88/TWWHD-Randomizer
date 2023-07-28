@@ -2828,8 +2828,9 @@ TweakError apply_custom_colors(World& world) {
                                 }
                             }
 
-                            // Check and potentially change pixel indices to avoid accidental transparent colors
-                            if (isAnyOf(0xF8, maskColor1, maskColor2)) {
+                            // Check and potentially change pixel indices to avoid 
+                            // accidental transparent colors in BC1 format
+                            if (isAnyOf(0xF8, maskColor1, maskColor2) && texture.format == GX2_SURFACE_FORMAT_SRGB_BC1) {
                                 uint16_t newColor1 = 0;
                                 uint16_t newColor2 = 0;
                                 uint32_t indices = 0;
@@ -2846,7 +2847,8 @@ TweakError apply_custom_colors(World& world) {
                                 }
 
                                 // If the first color is less than the second color,
-                                // change any pixels using index 3 to use index 2
+                                // change any pixels using index 3 to use index 2. Index
+                                // 3 in this case is used to denote transparent pixels
                                 if (newColor1 <= newColor2 && texColor1 > texColor2) {
 
                                     for (size_t j = 0; j < 32; j += 2) {
