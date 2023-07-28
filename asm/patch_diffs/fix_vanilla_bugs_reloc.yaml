@@ -1,1 +1,3 @@
 - {r_addend: 0xEFE8, r_info: 0x204, r_offset: 0x28F9E42}
+- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28F9E82}
+- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28F9E86}

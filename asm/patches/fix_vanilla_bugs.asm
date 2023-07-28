@@ -304,3 +304,39 @@ zero_out_arrow_on_hit_callback:
   
   ; Return
   b 0x0205465C
+
+
+
+; Do not prevent the player from defending with the Skull Hammer when they don't own a shield.
+; Originally, the game only checked if you own a shield to know if it should allow you to defend.
+; Change it to allow defending if you own a shield, or are holding the Skull Hammer in your hands.
+.org 0x023f0a1c ; In daPy_lk_c::checkNextActionFromButton(void)
+  bl check_can_defend
+  cmpwi r3, 0
+
+.org 0x023fb970 ; In daPy_lk_c::setShieldGuard(void)
+  bl check_can_defend
+  cmpwi r3, 0
+
+.org @NextFreeSpace
+; r31 - pointer to the current daPy_lk_c Link player instance
+.global check_can_defend
+check_can_defend:
+  lhz r3, 0x69B0(r31) ; What item the player is holding in their hand
+  cmplwi r3, 0x33 # Skull Hammer
+  beq check_can_defend_return_true ; Always allow defending if holding the Skull Hammer
+  
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
+  lbz r3, 0x2F(r3) ; Currently equipped shield ID
+  cmplwi r3, 0xFF ; No shield equipped
+  bne check_can_defend_return_true ; Also allow defending if you own a shield
+  
+  ; Otherwise, don't allow defending.
+  check_can_defend_return_false:
+  li r3, 0
+  blr
+  
+  check_can_defend_return_true:
+  li r3, 1
+  blr
