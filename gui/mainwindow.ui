@@ -1193,7 +1193,7 @@
                 <item>
                  <widget class="QPushButton" name="randomize_all_custom_colors_together">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>Randomize Colors Orderly</string>
@@ -1203,7 +1203,7 @@
                 <item>
                  <widget class="QPushButton" name="randomize_all_custom_colors_separately">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>Randomize Colors Chaotically</string>

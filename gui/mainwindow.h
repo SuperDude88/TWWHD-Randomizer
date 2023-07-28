@@ -72,8 +72,10 @@ private:
     std::unordered_map<std::string, QPushButton*> customColorSelectorButtons = {};
     std::unordered_map<std::string, QLineEdit*> customColorHexCodeInputs = {};
     std::unordered_map<std::string, QPushButton*> customColorResetButtons = {};
-    // Presets keyed by preset name, hero or casual, and option name
+    // Preset colors keyed by preset name, hero or casual, and option name
     std::unordered_map<std::string, std::unordered_map<std::string, std::unordered_map<std::string, std::string>>> presetColors = {};
+    // Mask Pixels keyed by hero or casual, and option name
+    std::unordered_map<std::string, std::unordered_map<std::string, std::list<std::tuple<int, int>>>> maskPixels = {};
 
     void closeEvent(QCloseEvent *event) override;
     std::tuple<std::string, std::string> get_option_name_and_color_name_from_sender_object_name();
@@ -184,6 +186,7 @@ private slots:
     // Player Customization
     void on_player_in_casual_clothes_stateChanged(int arg1);
     void initialize_color_presets_list();
+    void initialize_mask_pixels();
     void set_color(const std::string& optionName, std::string color, const bool& updatePreview = true, const bool& saveColorAsCustom = true);
     void open_custom_color_chooser();
     bool custom_color_hex_code_changed();
@@ -192,6 +195,9 @@ private slots:
     void randomize_one_custom_color();
     void reset_one_custom_color();
     void update_preview();
+    void on_custom_color_preset_currentIndexChanged(const int &arg1);
+    void on_randomize_all_custom_colors_together_clicked();
+    void on_randomize_all_custom_colors_separately_clicked();
 
     // Advanced Options
     void on_do_not_generate_spoiler_log_stateChanged(int arg1);
@@ -249,8 +255,6 @@ private slots:
     void on_entrance_list_close_button_released();
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
-
-    void on_custom_color_preset_currentTextChanged(const QString &arg1);
 
 private:
     // More Tracker Stuff

@@ -66,9 +66,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Load in config
     setup_mixed_pools_combobox();
     load_locations();
     load_config_into_ui();
+
+    // Set some variables
     encounteredError = false;
     defaultWindowTitle = "Wind Waker HD Randomizer " RANDOMIZER_VERSION "-" COMMIT_HASH;
     this->setWindowTitle(defaultWindowTitle.c_str());
@@ -92,9 +95,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->disable_custom_player_items->setVisible(false);
     ui->disable_custom_player_voice->setVisible(false);
     ui->install_custom_model->setVisible(false);
-
-    // Setup Color Presets
-    initialize_color_presets_list();
 
     // Setup Tracker
     initialize_tracker();
@@ -520,8 +520,11 @@ void MainWindow::apply_config_settings()
     APPLY_SPINBOX_SETTING(config, ui, starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     // Player Customization
+    // Block signal so we don't setup colors twice
+    ui->player_in_casual_clothes->blockSignals(true);
     APPLY_CHECKBOX_SETTING(config, ui, player_in_casual_clothes);
     setup_color_options();
+    ui->player_in_casual_clothes->blockSignals(false);
 
     // Advanced Options
     APPLY_CHECKBOX_SETTING(config, ui, do_not_generate_spoiler_log);

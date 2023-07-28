@@ -2,6 +2,7 @@
 #include "../ui_mainwindow.h"
 
 #include <QColorDialog>
+#include <QImage>
 
 #include <utility/file.hpp>
 #include <utility/color.hpp>
@@ -53,6 +54,32 @@ void MainWindow::initialize_color_presets_list() {
             }
         }
     }
+
+    // Add in default preset also
+    for (auto type : {"hero", "casual"}) {
+        auto defaultColors = DefaultColors::getDefaultColorsMap(!strcmp(type, "casual"));
+        for (auto& [optionName, color] : defaultColors) {
+            presetColors["Default"][type][optionName] = color;
+        }
+    }
+}
+
+void MainWindow::initialize_mask_pixels() {
+    // Store the x and y of each pixel that each maskfile modifies
+    // and lookup the pixels later when making preview modifications
+    for (auto type : {"hero", "casual"}) {
+        auto defaultColors = DefaultColors::getDefaultColorsMap(!strcmp(type, "casual"));
+        for (auto& [optionName, color] : defaultColors) {
+            auto maskImage = QImage(DATA_PATH + QString("assets/link preview/preview_") + type + "_" + QString::fromStdString(optionName) + ".png");
+            for (int x = 0; x < maskImage.width(); x++) {
+                for (int y = 0; y < maskImage.height(); y++) {
+                    if (maskImage.pixelColor(x, y).red() == 255 && maskImage.pixelColor(x, y).blue() == 0) {
+                        maskPixels[type][optionName].emplace_back(x, y);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::set_color(const std::string& optionName, std::string color, const bool& updatePreview, const bool& saveColorAsCustom) {
@@ -68,8 +95,10 @@ void MainWindow::set_color(const std::string& optionName, std::string color, con
         c = std::toupper(c);
     }
 
-    // Set hex line edit with new color
+    // Set hex line edit with new color (without triggering slot)
+    hexInput->blockSignals(true);
     hexInput->setText(QString::fromStdString(color));
+    hexInput->blockSignals(false);
 
     // Determine if color selector text needs to be black or white to properly
     // contrast with the new background color
@@ -99,18 +128,38 @@ void MainWindow::set_color(const std::string& optionName, std::string color, con
         }
     }
 
+    // Hide reset button if color is default
     if (color == defaultColor) {
         resetButton->setVisible(false);
     } else {
         resetButton->setVisible(true);
     }
 
-    if (saveColorAsCustom) {
-        //ui->custom_color_preset->setCurrentText("Custom");
-    }
-
+    // Get previous custom colors to compare against later
+    auto previousCustomColors = config.settings.custom_colors;
     config.settings.custom_colors[colorName] = color;
-    update_preview();
+
+    // Check if the current color combination is equal
+    // to any presets and set the preset (without triggering the slot)
+    ui->custom_color_preset->blockSignals(true);
+    bool foundPreset = false;
+    for (auto& [presetName, types] : presetColors) {
+        auto& curPreset = types[config.settings.player_in_casual_clothes ? "casual" : "hero"];
+        if (config.settings.custom_colors == curPreset) {
+            foundPreset = true;
+            ui->custom_color_preset->setCurrentText(QString::fromStdString(presetName));
+            break;
+        }
+    }
+    if(!foundPreset) {
+        ui->custom_color_preset->setCurrentText(QString::fromStdString("Custom"));
+    }
+    ui->custom_color_preset->blockSignals(false);
+
+    // Update preview if necessary
+    if (updatePreview && config.settings.custom_colors != previousCustomColors) {
+        update_preview();
+    }
 }
 
 void MainWindow::open_custom_color_chooser() {
@@ -134,6 +183,7 @@ void MainWindow::open_custom_color_chooser() {
 }
 
 bool MainWindow::custom_color_hex_code_changed() {
+
     auto [optionName, colorName] = get_option_name_and_color_name_from_sender_object_name();
 
     if (std::string("QLineEdit") != this->sender()->metaObject()->className()) {
@@ -205,7 +255,6 @@ void MainWindow::reset_one_custom_color() {
 }
 
 void MainWindow::setup_color_options() {
-
     auto baseColors = config.settings.player_in_casual_clothes ? DefaultColors::casualColors : DefaultColors::heroColors;
 
     clear_layout(ui->custom_colors_layout);
@@ -213,21 +262,34 @@ void MainWindow::setup_color_options() {
     customColorHexCodeInputs.clear();
     customColorResetButtons.clear();
 
-    // If this is our first time running the function, then use
-    // the colors from the config instead
+    std::string curPreset = ui->custom_color_preset->currentText().toStdString();
+    // If this is our first time running the function, then initialize
+    // color presets and mask pixels. (Tried putting this in the main window
+    // constructor, but it kept crashing for some reason, so it's here instead)
+    // Also read colors from the config into the base colors
     static bool firstTime = true;
     if (firstTime) {
-        for (auto& [customColorName, defaultColor] : baseColors) {
-            if (config.settings.custom_colors.contains(customColorName)) {
-                defaultColor = config.settings.custom_colors[customColorName];
+        for (auto& [optionName, defaultColor] : baseColors) {
+            if (config.settings.custom_colors.contains(optionName)) {
+                defaultColor = config.settings.custom_colors[optionName];
             }
         }
+        initialize_color_presets_list();
+        initialize_mask_pixels();
         firstTime = false;
+    }
+    // If we have a specific preset selected, then keep those colors
+    else if (curPreset != "Custom") {
+        auto colors = presetColors[curPreset][config.settings.player_in_casual_clothes ? "casual" : "hero"];
+        for (auto& [optionName, defaultColor] : baseColors) {
+            defaultColor = colors[optionName];
+        }
     }
 
     config.settings.custom_colors.clear();
 
     for (auto& [customColorName, defaultColor] : baseColors) {
+
         auto optionName = "custom_color_" + customColorName;
         auto colorWidget = new QWidget();
         auto colorLayout = new QHBoxLayout();
@@ -284,10 +346,7 @@ void MainWindow::setup_color_options() {
         set_color(optionName, defaultColor, false, false);
     }
 
-    // If we're on a preset other than custom, be sure to still match it
-    if (ui->custom_color_preset->currentText() != "Custom") {
-        on_custom_color_preset_currentTextChanged(ui->custom_color_preset->currentText());
-    }
+    update_preview();
 }
 
 void MainWindow::update_preview() {
@@ -295,19 +354,92 @@ void MainWindow::update_preview() {
     auto  defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
     auto& currentColors = config.settings.custom_colors;
 
+    auto type = config.settings.player_in_casual_clothes ? "casual" : "hero";
 
+    auto preview = QImage(DATA_PATH + QString("assets/link preview/preview_") + type + ".png");
+
+    for (auto& [optionName, color] : config.settings.custom_colors) {
+
+        auto& defaultColor = defaultColors[optionName];
+        auto baseColor16Bit = hexColorStrTo16Bit(defaultColor);
+        auto replacementColor16Bit = hexColorStrTo16Bit(color);
+
+        if (color != defaultColor) {
+
+            // Use map to keep track of already exchanged colors
+            std::unordered_map<uint16_t, uint16_t> colorReplacements = {};
+            for (auto& [x, y] : maskPixels[type][optionName]) {
+                auto curPixel = preview.pixelColor(x, y);
+                auto curColor16Bit = colorHSVTo16Bit(RGBToHSV(curPixel.redF(), curPixel.greenF(), curPixel.blueF()));
+
+                uint16_t newColor16Bit = 0;
+                // Lookup color if its exchange has already been calculated
+                if (colorReplacements.contains(curColor16Bit)) {
+                    newColor16Bit = colorReplacements[curColor16Bit];
+                } else {
+                    newColor16Bit = colorExchange(baseColor16Bit, replacementColor16Bit, curColor16Bit);
+                    colorReplacements[curColor16Bit] = newColor16Bit;
+                }
+
+                curPixel.setRedF(((  newColor16Bit & 0xF800) >> 11) / 31.0f);
+                curPixel.setGreenF(((newColor16Bit & 0x07E0) >> 5) / 63.0f);
+                curPixel.setBlueF((  newColor16Bit & 0x001F) / 31.0f);
+
+                preview.setPixelColor(x, y, curPixel.convertTo(QColor::Rgb));
+            }
+        }
+    }
+
+    auto pixmap = QPixmap::fromImage(preview);
+    pixmap = pixmap.scaledToWidth(220, Qt::SmoothTransformation);
+
+    ui->custom_model_preview_label->setPixmap(pixmap);
 
 }
 
-void MainWindow::on_custom_color_preset_currentTextChanged(const QString &arg1)
+void MainWindow::on_custom_color_preset_currentIndexChanged(const int &arg1)
 {
-    if (arg1 == "Custom") {
+    auto text = ui->custom_color_preset->currentText();
+
+    if (text == "Custom") {
         return;
     }
 
-    auto& preset = presetColors[arg1.toStdString()][config.settings.player_in_casual_clothes ? "casual" : "hero"];
+    auto& preset = presetColors[text.toStdString()][config.settings.player_in_casual_clothes ? "casual" : "hero"];
     for (auto& [optionName, color] : preset) {
         set_color("custom_color_" + optionName, color, false, false);
     }
+
+    update_preview();
 }
 
+void MainWindow::on_randomize_all_custom_colors_together_clicked()
+{
+    auto defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
+
+    int hShift = rand() % 360;
+    int vShift = (rand() % 81) - 40;
+    for (auto& [customColorName, color] : defaultColors) {
+        auto newColor = HSVShiftColor(color, hShift, vShift);
+
+        std::string optionName = "custom_color_" + customColorName;
+        set_color(optionName, newColor, false);
+    }
+
+    update_preview();
+}
+
+void MainWindow::on_randomize_all_custom_colors_separately_clicked()
+{
+    auto defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
+
+    for (auto& [customColorName, color] : defaultColors) {
+        auto [hShift, vShift] = get_random_h_and_v_shifts_for_custom_color(color);
+        auto newColor = HSVShiftColor(color, hShift, vShift);
+
+        std::string optionName = "custom_color_" + customColorName;
+        set_color(optionName, newColor, false);
+    }
+
+    update_preview();
+}
