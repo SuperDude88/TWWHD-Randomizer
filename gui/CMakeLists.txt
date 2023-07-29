@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 
+if(GITHUB_WORKFLOW)
+  set(CMAKE_C_COMPILER "gcc")
+  set(CMAKE_CXX_COMPILER "g++")
+endif()
+
 project(wwhd_rando VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
