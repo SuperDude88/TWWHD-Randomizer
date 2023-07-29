@@ -88,7 +88,7 @@ jobs:
          version: 13.1.0
 
      - name: Configure CMake
-       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
        
      - name: Build
        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
