@@ -81,15 +81,10 @@ jobs:
          arch: 'win64_msvc2019_64'
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
-         
-     - name: Install MingW-64 with GCC 13.1.0
-       uses: egor-tensin/setup-mingw@v2
-       with:
-         version: 13.1.0
 
      - name: Configure CMake
        shell: bash
-       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
+       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
        
      - name: Build
        shell: bash
