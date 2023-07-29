@@ -81,9 +81,14 @@ jobs:
          arch: 'win64_msvc2019_64'
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
+         
+     - name: Install MingW-64
+       uses: egor-tensin/setup-mingw@v2
+       with:
+         version: 11.0.0
 
      - name: Configure CMake
-       run: cmake -G"Ninja" ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       run: cmake G"MingW Makefiles" ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
        
      - name: Build
        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
