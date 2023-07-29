@@ -1,8 +1,12 @@
-name: Build Desktop App
+name: Build Release
 
 on:
   workflow_dispatch:
     inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
       build_type:
         description: 'Build type:'
         required: true
@@ -39,35 +43,15 @@ jobs:
       changelog: ${{ steps.changelog.outputs.changelog }}
       last-nightly: ${{ env.last_nightly }}
 
-  set-variables:
-    name: Set Variables
-    runs-on: windows-latest
-
-    steps:
-     - name: Checkout Project
-       uses: actions/checkout@v3
-
-     - name: Set Variables
-       working-directory: ${{ github.workspace }}
-       run: |
-         echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 7))" >> $env:GITHUB_ENV
-         echo "RANDO_VERSION=$(((Get-Content CMakeLists.txt | Select-String -Pattern 'RANDOMIZER_VERSION="[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_ENV
-    outputs:
-      short_sha: '${{env.SHORT_SHA}}'
-      rando_version: '${{env.RANDO_VERSION}}'
-
   build-desktop-application-windows:
     name: Build Desktop Application Windows
-    needs: set-variables
     runs-on: windows-latest
     
     steps:
      - name: Checkout Repository
        uses: actions/checkout@v3
- 
-     - name: Insert commit hash into Cmake file
-       working-directory: ${{ github.workspace }}
-       run: ((Get-Content -Path gui/CMakeLists.txt -Raw) -replace 'develop','${{needs.set-variables.outputs.short_sha}}') | Set-Content -Path gui/CMakeLists.txt
+       with:
+         submodules: recursive
  
      - name: Install Qt
        uses: jurplel/install-qt-action@v3
@@ -80,7 +64,7 @@ jobs:
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
      - name: Configure CMake
-       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DRELEASE_TAG=${{inputs.version}}
        
      - name: Build
        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
@@ -104,19 +88,19 @@ jobs:
 
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
-    needs: set-variables
     runs-on: ubuntu-latest
     
     steps:
      - name: Checkout Repository
        uses: actions/checkout@v3
+       with:
+         submodules: recursive
     
      - name: Build App
        working-directory: ${{github.workspace}}
        run: |
-         sed -i "s/develop/${{needs.set-variables.outputs.short_sha}}/g" CMakeLists.txt
          docker build -t rando .
-         docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
+         docker run -i -e BUILD_TYPE=full -e CMAKE_ARGS=-DRELEASE_TAG=${{inputs.version}} -v "$(pwd):/src" rando
  
      - name: Save Artifact
        uses: actions/upload-artifact@v3
@@ -126,25 +110,17 @@ jobs:
 
   create-release:
     name: Create Release
-    needs: [get-changelog, set-variables, build-desktop-application-windows, build-wiiu-homebrew-application]
+    needs: [get-changelog, build-desktop-application-windows, build-wiiu-homebrew-application]
     runs-on: ubuntu-latest
  
     steps:
      - name: Download All Artifacts
        uses: actions/download-artifact@v3
- 
-     - if: ${{ github.event.inputs.build_type == 'Nightly' }}
-       name: Rename Artifacts Nightly
+
+     - name: Rename Artifacts
        run: |
-         ls -R
-         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip'
-         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
- 
-     - if: ${{ github.event.inputs.build_type == 'Release' }}
-       name: Rename Artifacts Release
-       run: |
-         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip'
-         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
+         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{inputs.version}}_windows.zip'
+         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{inputs.version}}.wuhb'
  
  
      - if: ${{ github.event.inputs.build_type == 'Nightly' }}
@@ -152,11 +128,11 @@ jobs:
        uses: ncipollo/release-action@v1.12.0
        with:
          token: "${{ secrets.GITHUB_TOKEN }}"
-         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}_windows.zip,wwhd_rando_${{needs.set-variables.outputs.rando_version}}-${{needs.set-variables.outputs.short_sha}}.wuhb'
+         artifacts: 'wwhd_rando_${{inputs.version}}_windows.zip,wwhd_rando_${{inputs.version}}.wuhb'
          prerelease: true
          commit: ${{ github.sha }}
-         tag: "Nightly-${{ needs.set-variables.outputs.short_sha }}"
-         name: "Nightly-${{ needs.set-variables.outputs.short_sha }}"
+         tag: "${{inputs.version}}"
+         name: "${{inputs.version}}"
          body: |
            Please note that these are development builds and may not be entirely stable.
  
@@ -169,9 +145,8 @@ jobs:
        uses: ncipollo/release-action@v1.12.0
        with:
          token: "${{ secrets.GITHUB_TOKEN }}"
-         artifacts: 'wwhd_rando_${{needs.set-variables.outputs.rando_version}}_windows.zip,wwhd_rando_${{needs.set-variables.outputs.rando_version}}.wuhb'
+         artifacts: 'wwhd_rando_${{inputs.version}}_windows.zip,wwhd_rando_${{inputs.version}}.wuhb'
          prerelease: false
          commit: ${{ github.sha }}
-         tag: "${{ needs.set-variables.outputs.rando_version }}"
-         name: "${{ needs.set-variables.outputs.rando_version }}"
-
+         tag: "${{inputs.version}}"
+         name: "${{inputs.version}}"

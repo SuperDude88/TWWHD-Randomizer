@@ -1,0 +1,90 @@
+name: Build Latest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  SOURCE_DIR: ${{ github.workspace }}
+  QT_VERSION: 6.4.2
+  BUILD_TYPE: Release
+
+jobs:
+  build-desktop-application-windows:
+    name: Build Desktop Application Windows
+    runs-on: windows-latest
+    
+    steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+       with:
+         submodules: recursive
+ 
+     - name: Install Qt
+       uses: jurplel/install-qt-action@v3
+       with:
+         version: ${{ env.QT_VERSION }}
+         host: 'windows'
+         target: 'desktop'
+         arch: 'win64_msvc2019_64'
+         cache: true
+         cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
+         
+     - name: Configure CMake
+       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       
+     - name: Build
+       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+
+     - name: Get Version
+       id: get-version
+       working-directory: ${{github.workspace}}/build
+       run: |
+         echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+       
+     - name: Call windeployqt
+       working-directory: ${{github.workspace}}/build/Release
+       run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
+     
+     - name: Archive release folder
+       uses: thedoctor0/zip-release@0.7.1
+       with:
+         type: 'zip'
+         path: ${{github.workspace}}/build/Release
+         filename: wwhd_rando_windows.zip
+ 
+     - name: Save Artifact
+       uses: actions/upload-artifact@v3
+       with:
+         path: ${{github.workspace}}/wwhd_rando_windows.zip
+         name: wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}.zip
+
+  build-wiiu-homebrew-application:
+    name: Build Wii U Homebrew Application
+    runs-on: ubuntu-latest
+    
+    steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+       with:
+         submodules: recursive
+    
+     - name: Build App
+       working-directory: ${{github.workspace}}
+       run: |
+         docker build -t rando .
+         docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
+
+     - name: Get Version
+       id: get-version
+       working-directory: ${{github.workspace}}/build
+       run: |
+         echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+ 
+     - name: Save Artifact
+       uses: actions/upload-artifact@v3
+       with:
+         path: ${{github.workspace}}/build/wwhd_rando.wuhb
+         name: wwhd_rando_${{steps.get-version.outputs.RANDO_VERSION}}.wuhb
