@@ -41,18 +41,16 @@ endif()
 
 # Versioning
 find_package(Git REQUIRED)
-execute_process(COMMAND "${GIT_EXECUTABLE}" describe --exclude="*" --always --dirty --abbrev=0
-  WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-  OUTPUT_VARIABLE GIT_SHA1
-  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --abbrev=0
-  WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-  OUTPUT_VARIABLE GIT_TAG
-  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-if(NOT GIT_TAG)
-  set(GIT_TAG "01.00.00a") # Fallback until we have a release
+if(DEFINED RELEASE_TAG)
+  # use the new tag we're creating for this release (passed in workflow)
+  set(GIT_TAG "${RELEASE_TAG}")
+else()
+  # get previous tag and commit hash
+  execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --always --dirty --broken
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_TAG
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
 endif()
 configure_file(version.hpp.in version.hpp @ONLY)
 
