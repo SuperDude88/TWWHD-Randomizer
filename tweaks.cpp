@@ -793,7 +793,7 @@ TweakError modify_title_screen() {
 }
 
 TweakError update_name_and_icon() {
-    if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
+    if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga", /*resourceFile = */ true)) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
     RandoSession::CacheEntry& metaEntry = g_session.openGameFile("meta/meta.xml");
     metaEntry.addAction([](RandoSession* session, FileType* data) -> int {
