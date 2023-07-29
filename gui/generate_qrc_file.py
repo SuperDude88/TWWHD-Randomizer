@@ -19,7 +19,6 @@ def main():
         for file in individual_files:
             embed_path = file.replace('../', '')
             qrc.write('        <file alias=\"' + embed_path + '\">' + file + '</file>\n')
-            print(embed_path)
 
         qrc.write('    </qresource>\n')
         qrc.write('</RCC>')

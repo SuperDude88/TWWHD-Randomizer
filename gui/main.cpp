@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QResource>
+#include <QDirIterator>
 
 #include <fstream>
 
@@ -24,6 +25,16 @@ int main(int argc, char *argv[])
     #if defined(EMBED_DATA) && defined(QT_GUI)
         Q_INIT_RESOURCE(data);
     #endif
+
+    std::ofstream f("./files.txt");
+    if (f.is_open()) {
+        QDirIterator it(":", QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            auto filename = it.next().toStdString() + "\n";
+            f.write(filename.data(), filename.length());
+        }
+    }
+    f.close();
 
     QApplication a(argc, argv);
     MainWindow w;
