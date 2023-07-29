@@ -2,6 +2,7 @@ FROM devkitpro/devkitppc:20230625
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
+ENV CMAKE_ARGS=
 
 WORKDIR /
 
@@ -38,7 +39,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
         mkdir -p build && \
         cd build && \
         rm -rf * && \
-        $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+        $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ $CMAKE_ARGS && \
         make -j$(nproc); \
     else \
         if [ "$BUILD_TYPE" = "asm" ]; then \
@@ -53,7 +54,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
                 mkdir -p build && \
                 cd build && \
                 rm -rf * && \
-                $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+                $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ $CMAKE_ARGS && \
                 make -j$(nproc); \
             else \
                 echo "Invalid build type"; \

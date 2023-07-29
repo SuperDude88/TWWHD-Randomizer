@@ -459,7 +459,6 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     YAML::Node root;
 
     root["program_version"] = RANDOMIZER_VERSION; //Keep track of rando version to give warning (different versions will have different item placements)
-    root["commit_hash"] = COMMIT_HASH; //Hash so that we can see exact version a user is using
     root["file_version"] = CONFIG_VERSION; //Keep track of file version so it can avoid incompatible ones
 
     WRITE_CONFIG_FIELD(root, config, gameBaseDir)
