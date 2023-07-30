@@ -855,7 +855,10 @@ int mainRandomize() {
 
         Utility::platformLog("Reading config\n");
         ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
-        if(err != ConfigError::NONE) {
+        if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
+            Utility::platformLog("Warning: config was made using a different randomizer version\nItem placement may be different than expected\n");
+        }
+        else if(err != ConfigError::NONE) {
             ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
             Utility::platformLog("Failed to read config, ERROR: " + errorToName(err) + '\n');
             std::this_thread::sleep_for(3s);
