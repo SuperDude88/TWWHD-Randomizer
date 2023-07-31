@@ -47,8 +47,7 @@ jobs:
        id: get-version
        working-directory: ${{github.workspace}}/build
        run: |
-         ls -R
-         echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+         echo "RANDO_VERSION=$(((Get-Content "../version.hpp" | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
        
      - name: Call windeployqt
        working-directory: ${{github.workspace}}/build/Release
