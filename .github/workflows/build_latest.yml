@@ -29,9 +29,11 @@ jobs:
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
      - name: Configure CMake
+       shell: bash
        run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
        
      - name: Build
+       shell: bash
        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
 
      - name: Get Version
@@ -59,7 +61,7 @@ jobs:
 
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     
     steps:
      - name: Checkout Repository
