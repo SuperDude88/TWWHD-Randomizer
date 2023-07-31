@@ -10,9 +10,16 @@ env:
 jobs:
   build-desktop-application-windows:
     name: Build Desktop Application Windows
-    runs-on: windows-2019
-    
+    runs-on: windows-latest
+
     steps:
+      - name: configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+        minimum-size: 16GB
+        maximum-size: 16GB
+        disk-root: "C:"
+        
      - name: Checkout Repository
        uses: actions/checkout@v3
        with:
