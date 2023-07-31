@@ -29,12 +29,14 @@ jobs:
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
      - name: Configure CMake
+       working-directory: ${{github.workspace}}
        shell: bash
-       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
        
      - name: Build
        shell: bash
-       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+       working-directory: ${{github.workspace}}
+       run: cmake --build build --config ${{env.BUILD_TYPE}} -j
 
      - name: Get Version
        id: get-version
@@ -61,7 +63,7 @@ jobs:
 
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
      - name: Checkout Repository
@@ -77,6 +79,7 @@ jobs:
 
      - name: Get Version
        id: get-version
+       shell: pwsh
        working-directory: ${{github.workspace}}/build
        run: |
          echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
