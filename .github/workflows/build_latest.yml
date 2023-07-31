@@ -30,11 +30,12 @@ jobs:
          
      - name: Configure CMake
        working-directory: ${{github.workspace}}
-       shell: bash
        run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       env:
+         CC: gcc
+         CXX: g++
        
      - name: Build
-       shell: bash
        working-directory: ${{github.workspace}}
        run: cmake --build build --config ${{env.BUILD_TYPE}} -j
 
