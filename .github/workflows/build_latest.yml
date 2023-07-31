@@ -30,7 +30,7 @@ jobs:
          
      - name: Configure CMake
        working-directory: ${{github.workspace}}
-       run: cmake -G "MinGW Makefiles" gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
+       run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
        
      - name: Build
        working-directory: ${{github.workspace}}
