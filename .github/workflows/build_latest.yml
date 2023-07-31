@@ -45,13 +45,17 @@ jobs:
 
      - name: Get Version
        id: get-version
-       working-directory: ${{github.workspace}}/build
+       working-directory: ${{github.workspace}}
        run: |
-         echo "RANDO_VERSION=$(((Get-Content "../version.hpp" | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+         echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.a-z]*"') -Replace '.*("[0-9\.a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
        
      - name: Call windeployqt
-       working-directory: ${{github.workspace}}/build/Release
-       run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
+       working-directory: ${{github.workspace}}/build
+       run: |
+         mkdir Release
+         cp wwhd_rando.exe Release/wwhd_rando.exe
+         cd Release
+         windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
      
      - name: Archive release folder
        uses: thedoctor0/zip-release@0.7.1
