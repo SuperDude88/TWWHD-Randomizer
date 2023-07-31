@@ -13,6 +13,7 @@
 #include <randomizer_thread.hpp>
 #include <option_descriptions.hpp>
 
+#include <version.hpp>
 #include <libs/yaml.h>
 #include <seedgen/seed.hpp>
 #include <seedgen/permalink.hpp>

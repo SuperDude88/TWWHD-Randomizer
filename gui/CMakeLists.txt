@@ -47,7 +47,7 @@ else()
     ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 endif()
-configure_file(version.hpp.in version.hpp @ONLY)
+configure_file("../version.hpp.in" "../version.hpp" @ONLY)
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
