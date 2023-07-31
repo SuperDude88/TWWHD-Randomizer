@@ -34,10 +34,20 @@ elseif(MASS_TESTING)
   add_compile_definitions(MASS_TESTING)
 endif()
 
-# Version strings for RNG and compatibility checks
-add_compile_definitions(RANDOMIZER_VERSION="01.00.00a")
-add_compile_definitions(CONFIG_VERSION="1.0")
-add_compile_definitions(COMMIT_HASH="develop")
+# Versioning
+find_package(Git REQUIRED)
+if(DEFINED RELEASE_TAG)
+  # use the new tag we're creating for this release (passed in workflow)
+  set(GIT_TAG "${RELEASE_TAG}")
+else()
+  # get previous tag and commit hash
+  execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --always --dirty --broken
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_TAG
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+endif()
+configure_file(version.hpp.in version.hpp @ONLY)
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)

@@ -2,6 +2,7 @@ FROM devkitpro/devkitppc:20230625
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
+ENV CMAKE_ARGS=
 
 WORKDIR /
 
@@ -12,7 +13,7 @@ RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 708bd46777d40a3e26b8ed6e5f3cc63012f74ec6 && \
+    git checkout 095a397e7ecccf4742278592d653e59355b60e16 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -38,7 +39,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
         mkdir -p build && \
         cd build && \
         rm -rf * && \
-        $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+        $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ $CMAKE_ARGS && \
         make -j$(nproc); \
     else \
         if [ "$BUILD_TYPE" = "asm" ]; then \
@@ -53,7 +54,7 @@ CMD if [ "$BUILD_TYPE" = "randomizer" ]; then \
                 mkdir -p build && \
                 cd build && \
                 rm -rf * && \
-                $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ && \
+                $DEVKITPRO/portlibs/wiiu/bin/powerpc-eabi-cmake ../ $CMAKE_ARGS && \
                 make -j$(nproc); \
             else \
                 echo "Invalid build type"; \

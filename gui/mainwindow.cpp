@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Set some variables
     encounteredError = false;
-    defaultWindowTitle = "Wind Waker HD Randomizer " RANDOMIZER_VERSION "-" COMMIT_HASH;
+    defaultWindowTitle = "Wind Waker HD Randomizer " RANDOMIZER_VERSION;
     this->setWindowTitle(defaultWindowTitle.c_str());
     update_option_description_text();
     currentPermalink = ui->permalink->text();

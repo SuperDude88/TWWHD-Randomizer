@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 
+#include <version.hpp>
 #include <options.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
