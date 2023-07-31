@@ -13,12 +13,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
-        with:
-        minimum-size: 16GB
-        maximum-size: 16GB
-        disk-root: "C:"
+     - name: Configure Pagefile
+       uses: al-cheb/configure-pagefile-action@v1.2
+       with:
+       minimum-size: 16GB
+       maximum-size: 16GB
+       disk-root: "C:"
 
      - name: Checkout Repository
        uses: actions/checkout@v3
