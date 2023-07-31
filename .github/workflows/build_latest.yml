@@ -24,7 +24,7 @@ jobs:
          version: ${{ env.QT_VERSION }}
          host: 'windows'
          target: 'desktop'
-         arch: 'win64_mingw_64'
+         arch: 'win64_mingw'
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
