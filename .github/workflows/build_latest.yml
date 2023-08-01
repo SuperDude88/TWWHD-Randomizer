@@ -37,8 +37,8 @@ jobs:
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
 
-    #  - name: Run VC
-    #    run: vcvarsall.bat
+     - name: Find it
+       run: ls C:/ -R
 
      - name: Configure CMake
        working-directory: ${{github.workspace}}
