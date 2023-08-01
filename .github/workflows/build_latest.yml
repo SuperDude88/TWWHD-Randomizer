@@ -27,11 +27,6 @@ jobs:
        with:
          submodules: recursive
  
-     - name: Uninstall other C++ compilers
-       run: |
-         choco uninstall mingw --force
-         choco uninstall strawberryperl --force
-
      - name: Install Qt
        uses: jurplel/install-qt-action@v3.2.1
        with:
@@ -42,6 +37,9 @@ jobs:
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
+     - name: See structure
+       run: ls D:\ -R
+
      - name: Configure CMake
        working-directory: ${{github.workspace}}
        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
@@ -58,10 +56,12 @@ jobs:
        
      - name: Call windeployqt
        working-directory: ${{github.workspace}}/build
+       shell: cmd # Setting up environment vars only works properly in cmd
        run: |
          mkdir Release
          cp wwhd_rando.exe Release/wwhd_rando.exe
          cd Release
+         D:\Qt\6.4.2\mingw_64\bin\qtenv2.bat
          windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
      
      - name: Archive release folder
