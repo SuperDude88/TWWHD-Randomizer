@@ -89,6 +89,7 @@ jobs:
        run: |
          docker build -t rando .
          docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
+         ls -R
 
      - name: Get Version
        id: get-version
