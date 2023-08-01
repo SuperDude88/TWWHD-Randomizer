@@ -36,9 +36,6 @@ jobs:
          arch: 'win64_mingw'
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
-         
-     - name: See structure
-       run: ls D:\ -R
 
      - name: Configure CMake
        working-directory: ${{github.workspace}}
@@ -61,7 +58,7 @@ jobs:
          mkdir Release
          cp wwhd_rando.exe Release/wwhd_rando.exe
          cd Release
-         D:\Qt\6.4.2\mingw_64\bin\qtenv2.bat
+         ${{github.workspace}}\Qt\6.4.2\mingw_64\bin\qtenv2.bat
          windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
      
      - name: Archive release folder
