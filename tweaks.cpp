@@ -2707,7 +2707,7 @@ TweakError fix_needle_rock_island_salvage_flags() {
 
         return true;
     });
-	return TweakError::NONE;
+    return TweakError::NONE;
 }
 
 // Maps each recolor option to the texture files that need recoloring
@@ -2742,11 +2742,11 @@ static std::unordered_map<std::string, std::list<std::string>> casualTextureMapp
 // IMPROVEMENT: Better generalize this in the future
 TweakError apply_custom_colors(World& world) {
 
-	RandoSession::CacheEntry& linktex = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
-	linktex.addAction([&](RandoSession* session, FileType* data) -> int {
-		CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
+    RandoSession::CacheEntry& linktex = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
+    linktex.addAction([&](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
 
-		std::string maskFile = "";
+        std::string maskFile = "";
         uint16_t baseColor = 0;
         uint16_t replacementColor = 0;
 
@@ -2758,7 +2758,7 @@ TweakError apply_custom_colors(World& world) {
             textureMappings = heroTextureMappings;
         }
 
-		for (auto& texture : bfres.textures) {
+        for (auto& texture : bfres.textures) {
             for (auto& [name, textureNames] : textureMappings) {
 
                 auto custom_colors = world.getSettings().custom_colors;
@@ -2872,11 +2872,11 @@ TweakError apply_custom_colors(World& world) {
                     }
                 }
             }
-		}
-		return true;
-	});
+        }
+        return true;
+    });
 
-	return TweakError::NONE;
+    return TweakError::NONE;
 }
 
 std::string get_island_room_dzx_filepath(const uint8_t& islandNum) {
