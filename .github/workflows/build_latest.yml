@@ -56,9 +56,10 @@ jobs:
        shell: cmd # Setting up environment vars only works properly in cmd
        run: |
          mkdir Release
-         cp wwhd_rando.exe Release/wwhd_rando.exe
-         cd Release
-         ${{github.workspace}}\..\Qt\6.4.2\mingw_64\bin\qtenv2.bat && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
+         cp wwhd_rando.exe Release\wwhd_rando.exe
+         ${{github.workspace}}\..\Qt\6.4.2\mingw_64\bin\qtenv2.bat && \
+         cd ${{github.workspace}}\build\Release && \
+         windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
          echo "We made it"
      
      - name: Archive release folder
