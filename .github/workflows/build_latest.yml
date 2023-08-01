@@ -41,8 +41,8 @@ jobs:
 
      - name: Find it
        run: |
-         ls "C:\Program Files" -R
-         ls "C:\Program Files (x86)" -R
+         ls "C:\Program Files\Microsoft Visual Studio" -R
+         ls "C:\Program Files (x86)\Microsoft Visual Studio" -R
 
      - name: Configure CMake
        working-directory: ${{github.workspace}}
