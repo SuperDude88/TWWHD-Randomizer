@@ -5,11 +5,11 @@
 #include <math.h>
 
 HSV RGBToHSV(const double& r, const double& g, const double& b) {
-	double min, max, delta;
+    double min, max, delta;
 
-	HSV out;
+    HSV out;
 
-	min = r < g ? r : g;
+    min = r < g ? r : g;
     min = min < b ? min : b;
 
     max = r > g ? r : g;
@@ -18,7 +18,7 @@ HSV RGBToHSV(const double& r, const double& g, const double& b) {
     out.V = max;
     delta = max - min;
 
-	if(max > 0.0) { // NOTE: if Max is == 0, this divide would cause a crash
+    if(max > 0.0) { // NOTE: if Max is == 0, this divide would cause a crash
         out.S = (delta / max);          // s
     } else {
         // if max is 0, then r = g = b = 0              
@@ -26,23 +26,23 @@ HSV RGBToHSV(const double& r, const double& g, const double& b) {
         out.S = 0.0;
     }
 
-	if (delta < 0.001) {
-		out.H = 0.0;
-	} else {
-		if (r >= max)  {
+    if (delta < 0.001) {
+        out.H = 0.0;
+    } else {
+        if (r >= max)  {
             out.H = (g - b) / delta;        // between yellow & magenta
-		} else if (g >= max) {
-			out.H = 2.0 + (b - r) / delta;  // between cyan & yellow
-		} else {
-			out.H = 4.0 + (r - g) / delta;  // between magenta & cyan
-		}
-			
-		out.H *= 60.0;                      // degrees
+        } else if (g >= max) {
+            out.H = 2.0 + (b - r) / delta;  // between cyan & yellow
+        } else {
+            out.H = 4.0 + (r - g) / delta;  // between magenta & cyan
+        }
+            
+        out.H *= 60.0;                      // degrees
 
-		if(out.H < 0.0) {
-			out.H += 360.0;
-		}
-	}    
+        if(out.H < 0.0) {
+            out.H += 360.0;
+        }
+    }    
     return out;
 }
 
@@ -51,7 +51,7 @@ HSV RGBToHSV(RGBA<double> color) {
 }
 
 RGBA<double> HSVToRGB(const HSV& hsv) {
-	double      hh, p, q, t, ff;
+    double      hh, p, q, t, ff;
     long        i;
     RGBA<double> out;
 
