@@ -37,9 +37,11 @@ jobs:
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
 
+#          & "C:\Program Files\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
+
      - name: Find it
        run: |
-         & "C:\Program Files\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
+
          ls C:\Program Files\Microsoft -R
 
      - name: Configure CMake
