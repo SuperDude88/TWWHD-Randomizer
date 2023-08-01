@@ -27,8 +27,13 @@ jobs:
        with:
          submodules: recursive
  
+     - name: Uninstall other C++ compilers
+       run: |
+         choco uninstall mingw --force
+         choco uninstall strawberryperl --force
+
      - name: Install Qt
-       uses: jurplel/install-qt-action@v3
+       uses: jurplel/install-qt-action@v3.2.1
        with:
          version: ${{ env.QT_VERSION }}
          host: 'windows'
