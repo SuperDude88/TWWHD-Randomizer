@@ -41,7 +41,6 @@ jobs:
 
      - name: Find it
        run: |
-
          ls C:\Program Files\Microsoft -R
 
      - name: Configure CMake
