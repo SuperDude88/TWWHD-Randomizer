@@ -37,10 +37,6 @@ jobs:
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
 
-     - name: Find it
-       run: |
-         & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
-
      - name: Configure CMake
        working-directory: ${{github.workspace}}
        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
@@ -61,7 +57,10 @@ jobs:
        run: |
          mkdir Release
          cp wwhd_rando.exe Release\wwhd_rando.exe
-         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64 && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libgcc_s_seh-1.dll Release\libgcc_s_seh-1.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll Release\libstdc++-6.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dll Release\libwinpthread-1.dll
+         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
          echo "We made it"
      
      - name: Archive release folder
