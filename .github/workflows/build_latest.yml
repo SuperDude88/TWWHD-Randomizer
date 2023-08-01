@@ -13,6 +13,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
+     # Increase page size so that the compiler doesn't
+     # run out of memory
      - name: Configure Pagefile
        uses: al-cheb/configure-pagefile-action@v1.3
        with:
@@ -52,16 +54,13 @@ jobs:
      - name: Call windeployqt
        working-directory: ${{github.workspace}}/build
        run: |
-         mkdir Release
-         cp wwhd_rando.exe Release/wwhd_rando.exe
-         cd Release
          windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
      
      - name: Archive release folder
        uses: thedoctor0/zip-release@0.7.1
        with:
          type: 'zip'
-         path: ${{github.workspace}}/build/Release
+         path: ${{github.workspace}}/build
          filename: wwhd_rando_windows.zip
  
      - name: Save Artifact
