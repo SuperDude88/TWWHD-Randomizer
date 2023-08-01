@@ -17,7 +17,7 @@ on:
 
 env:
   SOURCE_DIR: ${{ github.workspace }}
-  QT_VERSION: 6.4.2
+  QT_VERSION: 6.3.1
   BUILD_TYPE: Release
 
 jobs:
@@ -64,26 +64,26 @@ jobs:
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
      - name: Configure CMake
-       run: cmake ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DRELEASE_TAG=${{inputs.version}}
+       run: cmake -G "MinGW Makefiles" ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DRELEASE_TAG=${{inputs.version}}
        
      - name: Build
        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
        
      - name: Call windeployqt
-       working-directory: ${{github.workspace}}/build/Release
-       run: windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
-     
-     - name: Archive release folder
-       uses: thedoctor0/zip-release@0.7.1
-       with:
-         type: 'zip'
-         path: ${{github.workspace}}/build/Release
-         filename: wwhd_rando_windows.zip
+       working-directory: ${{github.workspace}}/build
+       shell: cmd # Setting up environment vars only works properly in cmd?
+       run: |
+         mkdir wwhd_rando_windows_${{inputs.version}}
+         cp wwhd_rando.exe wwhd_rando_windows_${{inputs.version}}\wwhd_rando.exe
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libgcc_s_seh-1.dll wwhd_rando_windows_${{inputs.version}}\libgcc_s_seh-1.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll wwhd_rando_windows_${{inputs.version}}\libstdc++-6.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dllwwhd_rando_windows_${{inputs.version}}\libwinpthread-1.dll
+         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\wwhd_rando_windows_${{inputs.version}} && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
  
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
-         path: ${{github.workspace}}/wwhd_rando_windows.zip
+         path: ${{github.workspace}}/build/wwhd_rando_windows_${{inputs.version}}
          name: wwhd_rando_windows.zip
 
   build-wiiu-homebrew-application:
