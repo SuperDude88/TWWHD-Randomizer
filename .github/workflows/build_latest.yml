@@ -61,7 +61,7 @@ jobs:
        run: |
          mkdir Release
          cp wwhd_rando.exe Release\wwhd_rando.exe
-         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
+         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64 && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
          echo "We made it"
      
      - name: Archive release folder
