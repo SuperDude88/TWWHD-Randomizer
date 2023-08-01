@@ -37,6 +37,9 @@ jobs:
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
 
+     - name: Run VC
+       run: vcvarsall.bat
+
      - name: Configure CMake
        working-directory: ${{github.workspace}}
        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True
@@ -57,7 +60,7 @@ jobs:
        run: |
          mkdir Release
          cp wwhd_rando.exe Release\wwhd_rando.exe
-         ${{github.workspace}}\..\Qt\6.4.2\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
+         ${{github.workspace}}\..\Qt\6.4.2\mingw_64\bin\qtenv2.bat && vcvarsall.bat && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
          echo "We made it"
      
      - name: Archive release folder
