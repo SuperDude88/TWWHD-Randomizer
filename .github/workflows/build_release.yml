@@ -77,7 +77,7 @@ jobs:
          cp wwhd_rando.exe wwhd_rando_windows_${{inputs.version}}\wwhd_rando.exe
          cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libgcc_s_seh-1.dll wwhd_rando_windows_${{inputs.version}}\libgcc_s_seh-1.dll
          cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll wwhd_rando_windows_${{inputs.version}}\libstdc++-6.dll
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dllwwhd_rando_windows_${{inputs.version}}\libwinpthread-1.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dll wwhd_rando_windows_${{inputs.version}}\libwinpthread-1.dll
          ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\wwhd_rando_windows_${{inputs.version}} && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
  
      - name: Save Artifact
