@@ -54,13 +54,16 @@ jobs:
      - name: Call windeployqt
        working-directory: ${{github.workspace}}/build
        run: |
-         windeployqt wwhd_rando.exe --pdb --release --no-translations --no-system-d3d-compiler --no-opengl-sw
+         mkdir Release
+         cp wwhd_rando.exe Release/wwhd_rando.exe
+         cd Release
+         windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
      
      - name: Archive release folder
        uses: thedoctor0/zip-release@0.7.1
        with:
          type: 'zip'
-         path: ${{github.workspace}}/build
+         path: ${{github.workspace}}/build/Release
          filename: wwhd_rando_windows.zip
  
      - name: Save Artifact
