@@ -48,6 +48,15 @@ jobs:
     runs-on: windows-latest
     
     steps:
+     # Increase page size so that the compiler doesn't
+     # run out of memory
+     - name: Configure Pagefile
+       uses: al-cheb/configure-pagefile-action@v1.3
+       with:
+         minimum-size: 16GB
+         maximum-size: 16GB
+         disk-root: "C:"
+         
      - name: Checkout Repository
        uses: actions/checkout@v3
        with:
