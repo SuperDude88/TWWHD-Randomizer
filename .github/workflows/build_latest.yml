@@ -55,25 +55,17 @@ jobs:
        working-directory: ${{github.workspace}}/build
        shell: cmd # Setting up environment vars only works properly in cmd?
        run: |
-         mkdir Release
-         cp wwhd_rando.exe Release\wwhd_rando.exe
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libgcc_s_seh-1.dll Release\libgcc_s_seh-1.dll
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll Release\libstdc++-6.dll
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dll Release\libwinpthread-1.dll
-         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\Release && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
-         echo "We made it"
-     
-     - name: Archive release folder
-       uses: thedoctor0/zip-release@0.7.1
-       with:
-         type: 'zip'
-         path: ${{github.workspace}}/build/Release
-         filename: wwhd_rando_windows.zip
+         mkdir wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}
+         cp wwhd_rando.exe wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}\wwhd_rando.exe
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libgcc_s_seh-1.dll wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}\libgcc_s_seh-1.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}\libstdc++-6.dll
+         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dllwwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}\libwinpthread-1.dll
+         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}} && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
  
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
-         path: ${{github.workspace}}/wwhd_rando_windows.zip
+         path: ${{github.workspace}}\build\wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}
          name: wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}.zip
 
   build-wiiu-homebrew-application:
@@ -91,7 +83,6 @@ jobs:
        run: |
          docker build -t rando .
          docker run -i -e BUILD_TYPE=full -v "$(pwd):/src" rando
-         ls -R
 
      - name: Get Version
        id: get-version
