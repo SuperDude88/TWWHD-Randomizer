@@ -66,7 +66,7 @@ jobs:
        uses: actions/upload-artifact@v3
        with:
          path: ${{github.workspace}}\build\wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}
-         name: wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}.zip
+         name: wwhd_rando_windows_${{steps.get-version.outputs.RANDO_VERSION}}
 
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
