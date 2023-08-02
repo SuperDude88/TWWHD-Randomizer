@@ -89,11 +89,18 @@ jobs:
          cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dll wwhd_rando_windows_${{inputs.version}}\libwinpthread-1.dll
          ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\wwhd_rando_windows_${{inputs.version}} && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
  
+     - name: Archive release folder
+       uses: thedoctor0/zip-release@0.7.1
+       with:
+         type: 'zip'
+         path: ${{github.workspace}}/build/wwhd_rando_windows_${{inputs.version}}
+         filename: wwhd_rando_windows.zip
+
      - name: Save Artifact
        uses: actions/upload-artifact@v3
        with:
-         path: ${{github.workspace}}/build/wwhd_rando_windows_${{inputs.version}}
-         name: wwhd_rando_windows
+         path: ${{github.workspace}}/wwhd_rando_windows.zip
+         name: wwhd_rando_windows.zip
 
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
@@ -129,7 +136,7 @@ jobs:
      - name: Rename Artifacts
        run: |
          ls
-         mv wwhd_rando_windows 'wwhd_rando_${{inputs.version}}_windows.zip'
+         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{inputs.version}}_windows.zip'
          mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{inputs.version}}.wuhb'
  
  
