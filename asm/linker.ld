@@ -90,4 +90,5 @@ Ojhous_str = 0x10003d28;
 y_diff_float = 0x1000efe8;
 some_gfx_ptr = 0x101F8344;
 FUN_025fcb90 = 0x025fcb90;
+original_last_warp_button_name = 0x101092d8;
 current_file_idx = 0x47d4b717; /* Not used in custom asm, but keep it documented if necessary */
