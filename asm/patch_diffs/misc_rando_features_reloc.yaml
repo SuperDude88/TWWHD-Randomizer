@@ -24,5 +24,7 @@
 - {r_addend: 0x1F8344, r_info: 0x204, r_offset: 0x28FA93E}
 - {r_addend: 0x8FA9FC, r_info: 0x106, r_offset: 0x28FAA1A}
 - {r_addend: 0x8FA9FC, r_info: 0x104, r_offset: 0x28FAA1E}
-- {r_addend: 0x8FAA38, r_info: 0x106, r_offset: 0x28FAA62}
-- {r_addend: 0x8FAA38, r_info: 0x104, r_offset: 0x28FAA66}
+- {r_addend: 0x1092D8, r_info: 0x206, r_offset: 0x28FAA3A}
+- {r_addend: 0x1092D8, r_info: 0x204, r_offset: 0x28FAA3E}
+- {r_addend: 0x8FAA54, r_info: 0x106, r_offset: 0x28FAA7E}
+- {r_addend: 0x8FAA54, r_info: 0x104, r_offset: 0x28FAA82}
