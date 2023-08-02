@@ -128,7 +128,8 @@ jobs:
 
      - name: Rename Artifacts
        run: |
-         mv wwhd_rando_windows.zip 'wwhd_rando_${{inputs.version}}_windows.zip'
+         ls
+         mv wwhd_rando_windows 'wwhd_rando_${{inputs.version}}_windows.zip'
          mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{inputs.version}}.wuhb'
  
  
