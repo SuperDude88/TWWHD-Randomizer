@@ -3009,7 +3009,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
     if (settings.instant_text_boxes) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.yaml"));
-        LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/b_button_skips_text_reloc.yaml"));
         TWEAK_ERR_CHECK(make_all_text_instant());
     }
     if (settings.reveal_full_sea_chart) {

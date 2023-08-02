@@ -84,10 +84,10 @@ def get_relocations_for_elf(o_path, start_addr, symbol_addresses):
   
 try:
   # First delete any old patch diffs.
-  for diff_path in glob.glob(glob.escape(asm_dir) + './patch_diffs/*_diff.yaml'):
+  for diff_path in glob.glob(glob.escape(asm_dir) + '/patch_diffs/*_diff.yaml'):
     os.remove(diff_path)
     
-  for reloc_path in glob.glob(glob.escape(asm_dir) + './patch_diffs/*_reloc.yaml'):
+  for reloc_path in glob.glob(glob.escape(asm_dir) + '/patch_diffs/*_reloc.yaml'):
     os.remove(reloc_path)
   
   with open(asm_dir + "/linker.ld") as f:
