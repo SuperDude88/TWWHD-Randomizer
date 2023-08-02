@@ -73,7 +73,9 @@ jobs:
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
          
      - name: Create patch diffs
-       run: python asm/assemble.py
+       run: |
+         pip install requirements.txt
+         python asm/assemble.py
 
      - name: Configure CMake
        run: cmake -G "MinGW Makefiles" ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DRELEASE_TAG=${{inputs.version}}
