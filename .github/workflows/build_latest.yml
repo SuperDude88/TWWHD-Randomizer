@@ -38,7 +38,9 @@ jobs:
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
 
      - name: Create patch diffs
-       run: python asm/assemble.py
+       run: |
+         pip install requirements.txt
+         python asm/assemble.py
 
      - name: Configure CMake
        working-directory: ${{github.workspace}}
