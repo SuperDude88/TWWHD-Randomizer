@@ -162,13 +162,14 @@ init_extra_button_location: 0x28FA950
 init_extra_connections: 0x28FA964
 custom_warp_button_name: 0x28FA9FC
 load_extra_button_part: 0x28FAA0C
-custom_ff_label: 0x28FAA30
-custom_ff_label_safestring: 0x28FAA38
-set_ff_warp_msg_index: 0x28FAA40
-ff_warp_text_check: 0x28FAA54
-check_hyrule_warp_unlocked: 0x28FAA6C
-give_pearl_and_raise_totg_if_necessary: 0x28FAAAC
-give_temporary_sword_during_ganondorf_fight_in_swordless: 0x28FAB48
-give_temporary_sword_in_orcas_house_in_swordless: 0x28FAB9C
-remove_temporary_sword_when_loading_stage_in_swordless: 0x28FABFC
+reset_last_part_string: 0x28FAA30
+custom_ff_label: 0x28FAA4C
+custom_ff_label_safestring: 0x28FAA54
+set_ff_warp_msg_index: 0x28FAA5C
+ff_warp_text_check: 0x28FAA70
+check_hyrule_warp_unlocked: 0x28FAA88
+give_pearl_and_raise_totg_if_necessary: 0x28FAAC8
+give_temporary_sword_during_ganondorf_fight_in_swordless: 0x28FAB64
+give_temporary_sword_in_orcas_house_in_swordless: 0x28FABB8
+remove_temporary_sword_when_loading_stage_in_swordless: 0x28FAC18
 

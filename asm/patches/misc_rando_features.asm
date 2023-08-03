@@ -660,6 +660,24 @@ continue_normal_return:
   li r3, 1
   b 0x026f0398
 
+ ; Add some code to reset the last string after initializing WarpArea parts
+ ; This is needed for the map load properly after reloads (savewarps)
+.org 0x026f034c
+  b reset_last_part_string
+.org @NextFreeSpace
+.global reset_last_part_string
+reset_last_part_string:
+  cmplwi r30, 0xA ; if this is the last part
+  bne continue_normal_check
+
+  lis r5, original_last_warp_button_name@ha
+  addic r5, r5, original_last_warp_button_name@l
+  stw r5, 0x0(r21) ; restore char* so it still loads properly after a savewarp/similar reload
+
+continue_normal_check:
+  cmplw r30, r0 ; replace the line we overwrote:
+  b 0x026f0350
+
 
 .org 0x0267a264 ; increase number of buttons to search when finding quadrant index -> button index
   li r9, 0xA
