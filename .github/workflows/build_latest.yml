@@ -27,6 +27,19 @@ jobs:
        with:
          submodules: recursive
  
+     - name: Get devkitpro
+       run: |
+         git clone https://github.com/devkitPro/wut wut --single-branch
+         cd wut
+         git checkout 095a397e7ecccf4742278592d653e59355b60e16
+         make -j
+         make install
+
+     - name: Create patch diffs
+       run: |
+         pip install PyYAML
+         python asm/assemble.py
+
      - name: Install Qt
        uses: jurplel/install-qt-action@v3.2.1
        with:
@@ -36,11 +49,6 @@ jobs:
          arch: 'win64_mingw'
          cache: true
          cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
-
-     - name: Create patch diffs
-       run: |
-         pip install PyYAML
-         python asm/assemble.py
 
      - name: Configure CMake
        working-directory: ${{github.workspace}}
