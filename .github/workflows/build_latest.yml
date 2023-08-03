@@ -46,12 +46,12 @@ jobs:
          echo "Server = https://pkg.devkitpro.org/packages/windows/$arch/" >> /etc/pacman.conf
          pacman -Syu
          pacman -S wiiu-dev
+         pacman -S python
+         pacman -S pip
 
      - name: Create patch diffs
        shell: msys2 {0}
        run: |
-         pacman -S python
-         pacman -S pip
          pip install PyYAML
          python asm/assemble.py
 
