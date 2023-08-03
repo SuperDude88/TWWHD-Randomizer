@@ -30,10 +30,26 @@ jobs:
      - name: Get MSYS2
        uses: msys2/setup-msys2@v2
 
+     - name: Setup devkitpro
+       shell: msys2 {0}
+       run: |
+         export DEVKITPRO="/opt/devkitpro"
+         export DEVKITARM="/opt/devkitpro/devkitARM"
+         export DEVKITPPC="/opt/devkitpro/devkitPPC"
+         pacman-key --recv BC26F752D25B92CE272E0F44F7FD5492264BB9D0 --keyserver keyserver.ubuntu.com
+         pacman-key --lsign BC26F752D25B92CE272E0F44F7FD5492264BB9D0
+         wget https://pkg.devkitpro.org/devkitpro-keyring.pkg.tar.xz
+         pacman -U devkitpro-keyring.pkg.tar.xz
+         echo "[dkp-libs]" >> /etc/pacman.conf
+         echo "Server = https://pkg.devkitpro.org/packages" >> /etc/pacman.conf
+         echo "[dkp-windows]" >> /etc/pacman.conf
+         echo "Server = https://pkg.devkitpro.org/packages/windows/$arch/" >> /etc/pacman.conf
+         pacman -Syu
+         pacman -S wiiu-dev
+
      - name: Create patch diffs
        shell: msys2 {0}
        run: |
-         pacman -S wiiu-dev
          pacman -S python
          pacman -S pip
          pip install PyYAML
