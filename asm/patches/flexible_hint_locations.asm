@@ -29,7 +29,7 @@
 
 ; Patch the King of Red Lions to string some hint textboxes together
 ; HD messages seem to have a limit of 10 boxes before they get confused and loop around, probably an array size in a related class
-.org 0x02477E40 ; When KoRL opens a textbox
+.org 0x02477e48 ; When KoRL opens a textbox
   b korl_hint_message_checks
 
 .org @NextFreeSpace
@@ -40,6 +40,7 @@ num_korl_messages:
 
 .global korl_hint_message_checks
 korl_hint_message_checks:
+  beq continue_triforce_text
   ; Check if we went through messages already
   lbz r10, 0x3A0(r31)
   cmpwi r10, 0
@@ -63,7 +64,10 @@ korl_hint_message_checks:
     subi r12, r12, 0x1
     stb r12, 0x3A0(r31)
 
-    b 0x02477E44 ; Return
+    b 0x02477e58 ; continue as normal text with our ID
+
+continue_triforce_text:
+  b 0x02477e4c ; continue with message ID 0x1682 (5762)
 
 
 .org 0x024731DC
