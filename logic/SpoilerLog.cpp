@@ -138,7 +138,7 @@ void generateSpoilerLog(WorldPool& worlds)
             log << "Starting Inventory" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ":" << std::endl;
             for (auto& gameItem : world.getSettings().starting_gear)
             {
-                log << "\t" << gameItemToName(gameItem) << std::endl;
+                log << "    " << gameItemToName(gameItem) << std::endl;
             }
             log << std::endl;
         }
@@ -170,12 +170,12 @@ void generateSpoilerLog(WorldPool& worlds)
     int sphere = 0;
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
     {
-        log << "\tSphere " << std::to_string(sphere) << ":" << std::endl;
+        log << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereLocations = *sphereItr;
         sphereLocations.sort([](Location* a, Location* b){return *a < *b;});
         for (auto location : sphereLocations)
         {
-            log << "\t\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+            log << "        " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
         }
     }
     log << std::endl;
@@ -195,12 +195,12 @@ void generateSpoilerLog(WorldPool& worlds)
         {
             continue;
         }
-        log << "\tSphere " << std::to_string(sphere) << ":" << std::endl;
+        log << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereEntrances = *sphereItr;
         sphereEntrances.sort([](Entrance* a, Entrance* b){return *a < *b;});
         for (auto entrance : sphereEntrances)
         {
-            log << "\t\t" << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
+            log << "        " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
         }
     }
     log << std::endl;
@@ -218,7 +218,7 @@ void generateSpoilerLog(WorldPool& worlds)
         std::sort(entrances.begin(), entrances.end(), [](Entrance* a, Entrance* b){return *a < *b;});
         for (auto entrance : entrances)
         {
-            log << "\t" << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
+            log << "    " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
         }
         log << std::endl;
     }
@@ -244,7 +244,7 @@ void generateSpoilerLog(WorldPool& worlds)
         {
             if (!location->categories.contains(LocationCategory::HoHoHint))
             {
-                log << "\t" << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+                log << "    " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
             }
         }
     }
@@ -253,25 +253,43 @@ void generateSpoilerLog(WorldPool& worlds)
     LOG_TO_DEBUG("Hints");
     for (auto& world : worlds)
     {
+        // Don't print "Hints" if there are none
+        if (world.hohoHints.empty() && world.korlHints.empty())
+        {
+            continue;
+        }
+
         log << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
         if (!world.hohoHints.empty())
         {
             for (auto& [hohoLocation, hintLocations] : world.hohoHints)
             {
-                log << "\t" << hohoLocation->getName() << ":" << std::endl;
+                log << "    " << hohoLocation->getName() << ":" << std::endl;
                 for (auto location : hintLocations)
                 {
-                    log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
+                    log << "        " << getSpoilerFormatHint(location);
+                    // Show what item/location was being referred to with each path hint
+                    if (location->hint.type == HintType::PATH) 
+                    {
+                        log << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
+                    }
+                    log << std::endl;
                 }
             }
         }
 
         if (!world.korlHints.empty())
         {
-            log << "\tKoRL Hints:" << std::endl;
+            log << "    KoRL Hints:" << std::endl;
             for (auto location : world.korlHints)
             {
-                log << "\t\t" << getSpoilerFormatHint(location) << std::endl;
+                log << "        " << getSpoilerFormatHint(location);
+                // Show what item/location was being referred to with each path hint
+                if (location->hint.type == HintType::PATH) 
+                {
+                    log << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
+                }
+                log << std::endl;
             }
         }
     }
