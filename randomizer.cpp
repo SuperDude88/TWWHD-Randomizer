@@ -427,6 +427,11 @@ private:
             paths.emplace(filepath);
         }
 
+        // Also include boss rooms
+        for (const std::string& bossStage : {"M_DragB", "kinBOSS", "SirenB", "M_DaiB", "kazeB"}) {
+            paths.emplace("content/Common/Stage/" + bossStage + "_Stage.szs");
+        }
+
         for(const std::string& path : paths) {
             if(g_session.isCached(path)) continue;
             if(!g_session.restoreGameFile(path)) {

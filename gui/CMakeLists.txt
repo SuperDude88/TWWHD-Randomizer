@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_options(-O3)
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 add_compile_definitions(QT_GUI=1)
 
@@ -47,7 +48,7 @@ else()
     ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 endif()
-configure_file(version.hpp.in version.hpp @ONLY)
+configure_file("../version.hpp.in" "../version.hpp" @ONLY)
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
@@ -91,6 +92,7 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        player_customization.cpp
         randomizer_thread.cpp
         tracker/set_font.h
         tracker/tracker_area_label.h

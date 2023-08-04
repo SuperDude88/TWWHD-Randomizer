@@ -1,1 +1,3 @@
-./tinyxml2/tinyxml2.h
+#pragma once
+
+#include "./tinyxml2/tinyxml2.h"

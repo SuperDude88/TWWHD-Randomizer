@@ -1011,10 +1011,5 @@ void MainWindow::set_areas_entrances()
 
 void MainWindow::clear_tracker_labels(QLayout* layout)
 {
-    while (QLayoutItem* item = layout->takeAt(0))
-    {
-        if (QWidget* widget = item->widget())
-            widget->deleteLater();
-        delete item;
-    }
+    clear_layout(layout);
 }

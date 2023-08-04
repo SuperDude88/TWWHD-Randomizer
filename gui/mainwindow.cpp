@@ -13,12 +13,14 @@
 #include <randomizer_thread.hpp>
 #include <option_descriptions.hpp>
 
+#include <version.hpp>
 #include <libs/yaml.h>
 #include <seedgen/seed.hpp>
 #include <seedgen/permalink.hpp>
 #include <seedgen/tracker_permalink.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
+#include <utility/color.hpp>
 
 #define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
 #define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
@@ -65,9 +67,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Load in config
     setup_mixed_pools_combobox();
     load_locations();
     load_config_into_ui();
+
+    // Set some variables
     encounteredError = false;
     defaultWindowTitle = "Wind Waker HD Randomizer " RANDOMIZER_VERSION;
     this->setWindowTitle(defaultWindowTitle.c_str());
@@ -88,6 +93,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->randomize_enemies->setVisible(false);
     ui->randomize_enemy_palettes->setVisible(false);
     ui->randomize_music->setVisible(false);
+    ui->disable_custom_player_items->setVisible(false);
+    ui->disable_custom_player_voice->setVisible(false);
+    ui->install_custom_model->setVisible(false);
 
     // Setup Tracker
     initialize_tracker();
@@ -109,6 +117,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 
     update_encryption_files();
+}
+
+void MainWindow::clear_layout(QLayout* layout) {
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            widget->deleteLater();
+        delete item;
+    }
 }
 
 void MainWindow::load_config_into_ui()
@@ -504,7 +521,11 @@ void MainWindow::apply_config_settings()
     APPLY_SPINBOX_SETTING(config, ui, starting_blue_chu_jellys, uint16_t(0), uint16_t(MAXIMUM_STARTING_BLUE_CHU_JELLYS));
 
     // Player Customization
+    // Block signal so we don't setup colors twice
+    ui->player_in_casual_clothes->blockSignals(true);
     APPLY_CHECKBOX_SETTING(config, ui, player_in_casual_clothes);
+    setup_color_options();
+    ui->player_in_casual_clothes->blockSignals(false);
 
     // Advanced Options
     APPLY_CHECKBOX_SETTING(config, ui, do_not_generate_spoiler_log);
@@ -928,7 +949,10 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_skull_necklaces)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_joy_pendants)
 
 // Player Customization
-DEFINE_STATE_CHANGE_FUNCTION(player_in_casual_clothes)
+void MainWindow::on_player_in_casual_clothes_stateChanged(int arg1) {
+    UPDATE_CONFIG_STATE(config, ui, player_in_casual_clothes);
+    setup_color_options();
+}
 
 // Advanced Options
 DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
@@ -1202,4 +1226,3 @@ void MainWindow::load_locations()
         }
     }
 }
-

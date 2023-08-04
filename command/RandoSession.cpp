@@ -494,15 +494,17 @@ bool RandoSession::isCached(const RandoSession::fspath& relPath)
     return true;
 }
 
-bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath) {
+bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, const bool& resourceFile /* = false*/) {
     CHECK_INITIALIZED(false);
 
     RandoSession::CacheEntry& entry = openGameFile(relPath);
-    entry.addAction([source](RandoSession* session, FileType* data) -> int {
+    entry.addAction([source, resourceFile](RandoSession* session, FileType* data) -> int {
         GenericFile* dst = dynamic_cast<GenericFile*>(data);
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
-        if(Utility::getFileContents(source.string(), dst->data) != 0) return false; //TODO: proper time against rdbuf
+        std::string fileData = "";
+        if(Utility::getFileContents(source.string(), fileData, resourceFile) != 0) return false; //TODO: proper time against rdbuf
+        dst->data.str(fileData); 
 
         return true;
     });

@@ -1,0 +1,116 @@
+# Only non-default colors are specified for each preset
+- Name: Dark Link
+  Colors:
+      hero:
+          Hair: 000000
+          Skin: 000000
+          Mouth: 000000
+          Eyes: FF0000
+          Sclera: 000000
+          Tunic: 000000
+          Undershirt: 000000
+          Pants: 000000
+          Boots: 000000
+          Belt: 000000
+          Belt Buckle: 000000
+      casual:
+          Hair: 000000
+          Skin: 000000
+          Mouth: 000000
+          Eyes: FF0000
+          Sclera: 000000
+          Shirt: 000000
+          Shirt Emblem: 000000
+          Armbands: 000000
+          Pants: 000000
+          Shoes: 000000
+          Shoe Soles: 000000
+
+- Name: Smash Dark Link
+  Colors:
+      hero:
+          Hair: D8D9DB
+          Skin: 736B69
+          Mouth: 736B69
+          Eyes: FF0000
+          Sclera: 000000
+          Tunic: 333333
+          Undershirt: 62656A
+          Pants: 898E91
+          Boots: 464646
+          Belt: A4A09D
+          Belt Buckle: BABB93
+      casual:
+          Hair: D8D9DB
+          Skin: 736B69
+          Mouth: 736B69
+          Eyes: FF0000
+          Sclera: 000000
+          Shirt: 333333
+          Shirt Emblem: D8D9DB
+          Armbands: 63696B
+          Pants: 898E91
+          Shoes: 464646
+          Shoe Soles: 464646
+
+- Name: Green Link
+  Colors:
+      hero:
+          Hair: 9CF543
+      casual:
+          Hair: 9CF543
+          Shirt: 5AB24A
+          Armbands: 638F5A
+          Pants: ADE342
+
+- Name: Red Link
+  Colors:
+      hero:
+          Hair: FF532E
+          Tunic: E52B36
+          Undershirt: E38981
+      casual:
+          Hair: FF532E
+          Shirt: E52B36
+          Armbands: 8F5D5A
+          Pants: E38981
+
+- Name: Blue Link
+  Colors:
+      hero:
+          Hair: 3F64DB
+          Tunic: 698DB9
+          Undershirt: AAD3E0
+      casual:
+          Hair: 3F64DB
+          Shirt: 698DB9
+          Armbands: 5B8391
+          Pants: AAD3E0
+
+- Name: Purple Link
+  Colors:
+      hero:
+          Hair: D649FD
+          Tunic: 9A4F9F
+          Undershirt: CC8FB1
+      casual:
+          Hair: D649FD
+          Shirt: 9A4F9F
+          Armbands: 8B5A8F
+          Pants: CC8FB1
+
+- Name: Shadow Link
+  Colors:
+      hero:
+          Hair: A3338D
+          Tunic: 444444
+          Undershirt: FFFFFF
+          Boots: 392437
+          Belt: 791009
+      casual:
+          Hair: A3338D
+          Shirt: 444444
+          Shirt Emblem: FFFFFF
+          Pants: FFFFFF
+          Shoes: 392437
+          Shoe Soles: 392437

@@ -16,3 +16,4 @@ seedgen/testing_config.yaml
 gui/data.qrc
 
 !./github/workflows/*
+version.hpp
