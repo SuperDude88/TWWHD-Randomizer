@@ -65,8 +65,8 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 // then ignore it because the player already knows where those items are. Also ignore race
                 // mode locations at the end of dungeons because players know those locations are required.
                 if (location->hasKnownVanillaItem ||
-                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys != PlacementOption::OwnDungeon) ||
-                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   != PlacementOption::OwnDungeon) ||
+                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
+                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
                    (location->isRaceModeLocation))
                 {
                     continue;
