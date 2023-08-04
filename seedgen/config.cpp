@@ -8,6 +8,7 @@
 #include <libs/yaml.h>
 #include <logic/GameItem.hpp>
 #include <seedgen/random.hpp>
+#include <utility/color.hpp>
 #include <utility/platform.hpp>
 #include <command/Log.hpp>
 
@@ -66,6 +67,51 @@
             config.settings.name = "";                                      \
         config.settings.name = yaml[#name].as<std::string>();               \
     }
+
+// Default colors for every texture
+// Use list of tuples to keep ordering
+namespace DefaultColors {
+    std::list<std::tuple<std::string, std::string>> heroColors = {
+        {"Hair",        "FFEF10"},
+        {"Skin",        "F7DB9C"},
+        {"Mouth",       "F74963"},
+        {"Eyes",        "10514A"},
+        {"Sclera",      "FFFFFF"},
+        // {"Hat",         "5AB24A"},
+        {"Tunic",       "5AB24A"},
+        {"Undershirt",  "ADE342"},
+        {"Pants",       "FFFFFF"},
+        {"Boots",       "944908"},
+        {"Belt",        "633008"},
+        {"Belt Buckle", "FFEF10"},
+    };
+
+    std::list<std::tuple<std::string, std::string>> casualColors = {
+        {"Hair",         "FFEF10"},
+        {"Skin",         "F7DB9C"},
+        {"Mouth",        "F74963"},
+        {"Eyes",         "10514A"},
+        {"Sclera",       "FFFFFF"},
+	      {"Shirt",        "4A75AD"},
+        {"Shirt Emblem", "FFFFD6"},
+        {"Armbands",     "63696B"},
+        {"Pants",        "FFA608"},
+        {"Shoes",        "63696B"},
+        {"Shoe Soles",   "D6BA39"},
+    };
+
+    std::unordered_map<std::string, std::string> getDefaultColorsMap(const bool& casualClothes) {
+        std::unordered_map<std::string, std::string> map = {};
+
+        auto colors = casualClothes ? casualColors : heroColors;
+
+        for (auto& [name, color] : colors) {
+            map[name] = color;
+        }
+        return map;
+    }
+} // namespace DefaultColors
+
 
 ConfigError createDefaultConfig(const std::string& filePath) {
     Config conf;
@@ -169,6 +215,10 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.first_person_camera = FirstPersonCameraPreference::Standard;
     conf.settings.gyroscope = GyroscopePreference::On;
     conf.settings.ui_display = UIDisplayPreference::On;
+
+    for (auto& [name, color] : DefaultColors::heroColors) {
+        conf.settings.custom_colors[name] = color;
+    }
 
     LOG_AND_RETURN_IF_ERR(writeToFile(filePath, conf))
 
@@ -403,15 +453,43 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
 
       out.settings.starting_gear.clear();
       for (const auto& itemObject : root["starting_gear"]) {
-              const std::string itemName = itemObject.as<std::string>();
-              const GameItem item = nameToGameItem(itemName);
+        const std::string itemName = itemObject.as<std::string>();
+        const GameItem item = nameToGameItem(itemName);
 
-              if (valid_items.count(item) == 0) {
-                  ErrorLog::getInstance().log(itemName + " cannot be added to starting inventory");
-                  return ConfigError::INVALID_VALUE;
-              }
-              out.settings.starting_gear.push_back(item);
-              valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
+        if (valid_items.count(item) == 0) {
+            ErrorLog::getInstance().log(itemName + " cannot be added to starting inventory");
+            return ConfigError::INVALID_VALUE;
+        }
+        out.settings.starting_gear.push_back(item);
+        valid_items.erase(valid_items.find(item)); //remove the item from the set to catch duplicates or too many progressive items
+      }
+    }
+
+    if (!root["custom_colors"] && !ignoreErrors) return ConfigError::MISSING_KEY;
+    if (root["custom_colors"].IsMap()) {
+      for (const auto& colorObject : root["custom_colors"]) {
+        
+        auto texture = colorObject.first.as<std::string>();
+        auto color = colorObject.second.as<std::string>();
+
+        // Only accept the color if it's valid
+        if (isValidHexColor(color)) {
+          out.settings.custom_colors[texture] = color;
+        } else if (!ignoreErrors) {
+          Utility::platformLog(color + " is not a valid hex color");
+          return ConfigError::INVALID_VALUE;
+        }
+
+      }
+    } else {
+      return ConfigError::INVALID_VALUE;
+    }
+
+    // Add in defaults for any missing colors
+    auto& colors = out.settings.player_in_casual_clothes ? DefaultColors::casualColors : DefaultColors::heroColors;
+    for (auto& [name, color] : colors) {
+      if (!out.settings.custom_colors.contains(name)) {
+        out.settings.custom_colors[name] = color;
       }
     }
 
@@ -558,6 +636,10 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
 
     if (root["starting_gear"].size() == 0) {
       root["starting_gear"] = "None";
+    }
+
+    for (const auto& [texture, color] : config.settings.custom_colors) {
+      root["custom_colors"][texture] = color;
     }
 
     std::ofstream f(filePath);

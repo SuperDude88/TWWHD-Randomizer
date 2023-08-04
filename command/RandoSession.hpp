@@ -82,7 +82,7 @@ public:
     void init(const fspath& gameBaseDir, const fspath& randoOutputDir);
     [[nodiscard]] CacheEntry& openGameFile(const fspath& relPath);
     [[nodiscard]] bool isCached(const fspath& relPath);
-    [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath);
+    [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath, const bool& resourceFile = false);
     [[nodiscard]] bool restoreGameFile(const fspath& relPath);
     [[nodiscard]] bool modFiles();
 

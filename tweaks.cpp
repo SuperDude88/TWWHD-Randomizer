@@ -6,6 +6,8 @@
 #include <codecvt>
 #include <filesystem>
 #include <algorithm>
+#include <iostream>
+#include <tuple>
 #include <numbers>
 
 #include <version.hpp>
@@ -25,6 +27,8 @@
 #include <filetypes/util/msbtMacros.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
+#include <utility/common.hpp>
+#include <utility/color.hpp>
 #include <command/Log.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -790,7 +794,7 @@ TweakError modify_title_screen() {
 }
 
 TweakError update_name_and_icon() {
-    if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga")) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
+    if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga", /*resourceFile = */ true)) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
     RandoSession::CacheEntry& metaEntry = g_session.openGameFile("meta/meta.xml");
     metaEntry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -2703,6 +2707,174 @@ TweakError fix_needle_rock_island_salvage_flags() {
 
         return true;
     });
+    return TweakError::NONE;
+}
+
+// Maps each recolor option to the texture files that need recoloring
+static std::unordered_map<std::string, std::list<std::string>> heroTextureMappings = {
+    {"Hair", {"linktexS3TC"}},
+    {"Skin", {"linktexS3TC", "handsS3TC", "mouthS3TC.1", "mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.4", "mouthS3TC.5", "mouthS3TC.6", "mouthS3TC.7", "mouthS3TC.8", "mouthS3TC.9"}},
+    {"Mouth", {"mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.6", "mouthS3TC.7"}},
+    {"Eyes", {"hitomi"}},
+    {"Sclera", {"hitomi"}},
+    {"Tunic", {"linktexS3TC"}},
+    {"Undershirt", {"linktexS3TC"}},
+    {"Pants", {"linktexS3TC"}},
+    {"Boots", {"linktexS3TC"}},
+    {"Belt", {"linktexS3TC"}},
+    {"Belt Buckle", {"linktexS3TC"}},
+};
+
+static std::unordered_map<std::string, std::list<std::string>> casualTextureMappings = {
+    {"Hair", {"linktexbci4", "katsuraS3TC"}},
+    {"Skin", {"linktexbci4", "handsS3TC", "mouthS3TC.1", "mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.4", "mouthS3TC.5", "mouthS3TC.6", "mouthS3TC.7", "mouthS3TC.8", "mouthS3TC.9"}},
+    {"Mouth", {"mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.6", "mouthS3TC.7"}},
+    {"Eyes", {"hitomi"}},
+    {"Sclera", {"hitomi"}},
+    {"Shirt", {"linktexbci4"}},
+    {"Shirt Emblem", {"linktexbci4"}},
+    {"Armbands", {"linktexbci4"}},
+    {"Pants", {"linktexbci4"}},
+    {"Shoes", {"linktexbci4"}},
+    {"Shoe Soles", {"linktexbci4"}},
+};
+
+// IMPROVEMENT: Better generalize this in the future
+TweakError apply_custom_colors(World& world) {
+
+    RandoSession::CacheEntry& linktex = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
+    linktex.addAction([&](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
+
+        std::string maskFile = "";
+        uint16_t baseColor = 0;
+        uint16_t replacementColor = 0;
+
+        auto baseColors = DefaultColors::getDefaultColorsMap(world.getSettings().player_in_casual_clothes);
+        std::unordered_map<std::string, std::list<std::string>> textureMappings = {};
+        if (world.getSettings().player_in_casual_clothes) {
+            textureMappings = casualTextureMappings;
+        } else {
+            textureMappings = heroTextureMappings;
+        }
+
+        for (auto& texture : bfres.textures) {
+            for (auto& [name, textureNames] : textureMappings) {
+
+                auto custom_colors = world.getSettings().custom_colors;
+                replacementColor = hexColorStrTo16Bit(custom_colors[name]);
+                baseColor = hexColorStrTo16Bit(baseColors[name]);
+
+                // Don't modify colors if it's not necessary
+                if (baseColor == replacementColor) {
+                    continue;
+                }
+
+                for (auto& textureName : textureNames) {
+
+                    if (texture.name.substr(0, textureName.length()) == textureName) {
+                        
+                        // Get the data from the mask file
+                        std::string filename = (world.getSettings().player_in_casual_clothes ? "casual" : "hero") + name + "_" + textureName + "_mask.bftex";
+
+                        if (Utility::getFileContents(DATA_PATH "assets/link color masks/" + filename, maskFile, true) != 0) {
+                            Utility::platformLog("Could not open " + filename + " mask file. Will skip recoloring " + name);
+                            continue;
+                        }
+
+                        // Textures are stored using various BCn compression formats
+
+                        // Actual texture data doesn't start until 0x2000, so remove
+                        // everything before that
+                        maskFile = maskFile.substr(0x2000);
+
+                        for (size_t i = 0; i < maskFile.length(); i += 8) {
+                            
+                            // Skip over alpha data in BC3 format
+                            if (texture.format == GX2_SURFACE_FORMAT_SRGB_BC3) {
+                                i += 8;
+                            }
+
+                            // The mask file color tells us if this is a color we should
+                            // replace or not in the current texture
+                            uint16_t maskColor1  = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i]);
+                            uint16_t maskColor2  = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i + 2]);
+
+                            uint16_t texColor1;
+                            uint16_t texColor2;
+
+                            // The most defined texture data is stored in texture.data
+                            // All smaller mipmaps are stored in texture.mipData
+                            // Using little endian here is intentional
+                            if (i < texture.data.length()) {
+                                texColor1  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
+                                texColor2  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
+                            } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
+                                texColor1  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
+                                texColor2  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
+                            }
+
+                            std::list<std::tuple<uint16_t, size_t, uint16_t>> masksOffsetsColors = {{maskColor1, i, texColor1} , {maskColor2, i + 2, texColor2}};
+
+                            // For the two colors in this iteration
+                            for (auto& [mask, offset, curColor] : masksOffsetsColors) {
+                                if (mask == 0x00F8) {
+                                    auto newColor = colorExchange(baseColor, replacementColor, curColor);
+
+                                    if (offset < texture.data.length()) {
+                                        texture.data.replace(offset, 2, reinterpret_cast<const char*>(&newColor), 2);
+                                    } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
+                                        texture.mipData.replace(offset - texture.data.length(), 2, reinterpret_cast<const char*>(&newColor), 2);
+                                    }
+                                }
+                            }
+
+                            // Check and potentially change pixel indices to avoid 
+                            // accidental transparent colors in BC1 format
+                            if (isAnyOf(0xF8, maskColor1, maskColor2) && texture.format == GX2_SURFACE_FORMAT_SRGB_BC1) {
+                                uint16_t newColor1 = 0;
+                                uint16_t newColor2 = 0;
+                                uint32_t indices = 0;
+                                uint32_t newIndices = 0;
+
+                                if (i < texture.data.length()) {
+                                    newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
+                                    newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
+                                    indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.data[i + 4]);
+                                } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
+                                    newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
+                                    newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
+                                    indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.mipData[i + 4 - texture.data.length()]);
+                                }
+
+                                // If the first color is less than the second color,
+                                // change any pixels using index 3 to use index 2. Index
+                                // 3 in this case is used to denote transparent pixels
+                                if (newColor1 <= newColor2 && texColor1 > texColor2) {
+
+                                    for (size_t j = 0; j < 32; j += 2) {
+
+                                        uint32_t curIndex = (indices & (0b11 << j)) >> j;
+                                        if (curIndex == 3) {
+                                            curIndex = 2;
+                                        }
+                                        newIndices |= (curIndex << j);
+                                    }
+
+                                    if (i < texture.data.length()) {
+                                        texture.data.replace(i + 4, 4, reinterpret_cast<const char*>(&newIndices), 4);
+                                    } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
+                                        texture.mipData.replace(i + 4 - texture.data.length(), 4, reinterpret_cast<const char*>(&newIndices), 4);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    });
 
     return TweakError::NONE;
 }
@@ -2941,6 +3113,8 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
     if(world.getSettings().add_shortcut_warps_between_dungeons) {
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
     }
+
+    TWEAK_ERR_CHECK(apply_custom_colors(world));
 
     return TweakError::NONE;
 }

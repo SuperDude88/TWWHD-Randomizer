@@ -1,1 +1,3 @@
-./yaml-cpp/include/yaml-cpp/yaml.h
+#pragma once
+
+#include "./yaml-cpp/include/yaml-cpp/yaml.h"
