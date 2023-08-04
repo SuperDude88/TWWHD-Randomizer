@@ -1,2 +1,2 @@
-- {r_addend: 0x8F9EA4, r_info: 0x106, r_offset: 0x28F9EB2}
-- {r_addend: 0x8F9EA4, r_info: 0x104, r_offset: 0x28F9EB6}
+- {r_addend: 0x8F9EA4, r_info: 0x106, r_offset: 0x28F9EB6}
+- {r_addend: 0x8F9EA4, r_info: 0x104, r_offset: 0x28F9EBA}
