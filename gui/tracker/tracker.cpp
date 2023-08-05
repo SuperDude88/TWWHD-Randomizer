@@ -616,9 +616,50 @@ void MainWindow::update_tracker()
     ui->entrance_scroll_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }
 
+// Under certain circumstances we want to mark certain
+// locations as accessible even if they logically aren't
+void MainWindow::check_special_accessibility_conditions()
+{
+    // If the user has marked a boss location that has chain
+    // locations in the mail, then set those locations as accessible
+    // so the user knows they can go pick them up
+
+    auto& trackerWorld = trackerWorlds[0];
+    auto startingItems = trackerWorld.getStartingItems();
+
+    if (trackerWorld.locationEntries["Forsaken Fortress - Helmaroc King Heart Container"].marked)
+    {
+        auto songOfPassing = Item(GameItem::SongOfPassing, &trackerWorld);
+        if (elementInPool(songOfPassing, trackerInventory) || elementInPool(songOfPassing, startingItems)) {
+            trackerWorld.locationEntries["Mailbox - Letter from Aryll"].hasBeenFound = true;
+
+            if (trackerWorld.areaEntries["Windfall Jail"].isAccessible) {
+                trackerWorld.locationEntries["Mailbox - Letter from Tingle"].hasBeenFound = true;
+            }
+        }
+    }
+
+    if (trackerWorld.locationEntries["Forbidden Woods - Kalle Demos Heart Container"].marked)
+    {
+        trackerWorld.locationEntries["Mailbox - Letter from Orca"].hasBeenFound = true;
+    }
+
+    if (trackerWorld.locationEntries["Earth Temple - Jalhalla Heart Container"].marked)
+    {
+        auto noteToMom = Item(GameItem::NoteToMom, &trackerWorld);
+        auto deliveryBag = Item(GameItem::DeliveryBag, &trackerWorld);
+        if ((elementInPool(noteToMom, trackerInventory)   || elementInPool(noteToMom, startingItems)) &&
+            (elementInPool(deliveryBag, trackerInventory) || elementInPool(deliveryBag, startingItems)))
+        {
+            trackerWorld.locationEntries["Mailbox - Letter from Baito"].hasBeenFound = true;
+        }
+    }
+}
+
 void MainWindow::update_tracker_areas_and_autosave()
 {
     getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations);
+    check_special_accessibility_conditions();
 
     // Apply any own dungeon items after we get the accessible locations
     auto trackerInventoryExtras = trackerInventory;
@@ -650,6 +691,7 @@ void MainWindow::update_tracker_areas_and_autosave()
         if (addedItems)
         {
             getAccessibleLocations(trackerWorlds, trackerInventoryExtras, trackerLocations);
+            check_special_accessibility_conditions();
         }
     }
     while (addedItems);
@@ -736,9 +778,27 @@ void MainWindow::on_entrance_destination_back_button_released()
 
 void MainWindow::on_clear_all_button_released()
 {
+    auto& trackerWorld = trackerWorlds[0];
     for (auto locLabel : ui->location_list_widget->findChildren<TrackerLabel*>())
     {
-        locLabel->get_location()->marked = true;
+        auto loc = locLabel->get_location();
+        loc->marked = true;
+
+        // Clear certain mail locations associated with bosses
+        if (loc->getName() == "Forsaken Fortress - Helmaroc King Heart Container")
+        {
+            trackerWorld.locationEntries["Mailbox - Letter from Aryll"].marked = true;
+            trackerWorld.locationEntries["Mailbox - Letter from Tingle"].marked = true;
+        }
+        else if (loc->getName() == "Forbidden Woods - Kalle Demos Heart Container")
+        {
+            trackerWorld.locationEntries["Mailbox - Letter from Orca"].marked = true;
+        }
+        else if (loc->getName() == "Earth Temple - Jalhalla Heart Container")
+        {
+            trackerWorld.locationEntries["Mailbox - Letter from Baito"].marked = true;
+        }
+
         locLabel->update_colors();
     }
     update_tracker();
