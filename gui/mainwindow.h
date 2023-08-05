@@ -93,7 +93,6 @@ private:
     void update_starting_health_text();
     void update_option_description_text(const std::string& descrption = "");
     void update_permalink();
-    void update_encryption_files();
     void load_locations();
 
     void initialize_tracker();
@@ -241,6 +240,7 @@ private slots:
     void on_start_tracker_button_clicked();
     void on_location_list_close_button_released();
     void on_clear_all_button_released();
+    void check_special_accessibility_conditions();
     void update_tracker_areas_and_autosave();
     void tracker_show_specific_area(std::string areaPrefix);
     void tracker_display_current_item_text(const std::string& currentItem);

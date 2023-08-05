@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1814,58 +1814,24 @@
               <x>10</x>
               <y>40</y>
               <width>891</width>
-              <height>86</height>
+              <height>31</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_10">
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_for_encryption_key">
-               <property name="text">
-                <string>Wind Waker HD ROM Key</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <widget class="QLineEdit" name="encryption_key">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="placeholderText">
-                <string>Key specifically for [USA, NUS]</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_for_wii_u_common_key">
-               <property name="text">
-                <string>Wii U Common Key</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QLineEdit" name="wii_u_common_key">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="placeholderText">
-                <string>&lt;- Google is your friend</string>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="2">
               <widget class="QLineEdit" name="console_output"/>
-             </item>
-             <item row="0" column="3">
-              <widget class="QPushButton" name="console_output_browse_button">
-               <property name="text">
-                <string>Browse</string>
-               </property>
-              </widget>
              </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_for_console_output">
                <property name="text">
                 <string>Console Output Folder</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QPushButton" name="console_output_browse_button">
+               <property name="text">
+                <string>Browse</string>
                </property>
               </widget>
              </item>
@@ -2276,7 +2242,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>311</height>
+                    <height>290</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">

@@ -65,8 +65,8 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 // then ignore it because the player already knows where those items are. Also ignore race
                 // mode locations at the end of dungeons because players know those locations are required.
                 if (location->hasKnownVanillaItem ||
-                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys != PlacementOption::OwnDungeon) ||
-                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   != PlacementOption::OwnDungeon) ||
+                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
+                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
                    (location->isRaceModeLocation))
                 {
                     continue;
@@ -123,6 +123,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
     for (auto& world : worlds)
     {
         std::unordered_set<Item*> potentiallyJunkItems = {};
+        std::unordered_set<Item*> itemsSetAsJunk = {};
         for (auto& [areaName, area] : world.areaEntries)
         {
             // We'll be performing several operations during this loop
@@ -154,6 +155,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
+                        itemsSetAsJunk.insert(&location->currentItem);
                     }
                     else
                     {
@@ -183,6 +185,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
+                    itemsSetAsJunk.insert(item);
                     LOG_TO_DEBUG(item->getName() + " is now junk.");
                 }
             }
@@ -218,6 +221,13 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
             {
                 world.barrenRegions.erase(dungeonName);
             }
+        }
+
+        // Revert items set as junk back to major items so
+        // they still become spiky chests in CTMC
+        for (auto item : itemsSetAsJunk)
+        {
+            item->setAsMajorItem();
         }
 
         #ifdef ENABLE_DEBUG

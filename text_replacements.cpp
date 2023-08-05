@@ -165,18 +165,18 @@ TextReplacements generate_text_replacements(World& world)
 
      // Flyer telling players which items the auction has
      {"00804",
-     {{"English", TEXT_COLOR_DEFAULT + u"Notice: Windfall Auction Tonight!" + TEXT_COLOR_DEFAULT + u"\nBidding starts at dusk. All comers welcome!" + TEXT_COLOR_DEFAULT + u"\n\n\n" +
-                  u"Participate for the chance to win\n" + word_wrap_string(auction5.getUTF16Name("English", Text::Type::PRETTY) + u", " +
-                  auction40.getUTF16Name("English", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("English", Text::Type::PRETTY) + u", " +
-                  auction80.getUTF16Name("English", Text::Type::PRETTY) + u", and " + auction100.getUTF16Name("English", Text::Type::PRETTY) + u'!', 43) + u'\0'},
-      {"Spanish", TEXT_COLOR_RED + u"¡Aviso! Gran subasta de Taura" + TEXT_COLOR_DEFAULT + u"\nHorario: Tras la puesta del sol\n¡Esperamos su visita!" + TEXT_COLOR_DEFAULT + u"\n\n" +
-                  u"¡Participa por una oportunidad de ganar\n" + word_wrap_string(auction5.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " +
-                  auction40.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " +
-                  auction80.getUTF16Name("Spanish", Text::Type::PRETTY) + u", " + spanishAuctionFlyerConjunction + auction100.getUTF16Name("Spanish", Text::Type::PRETTY) + u'!', 43) + u'\0'},
-      {"French",  TEXT_COLOR_DEFAULT + u"Avis: Enchères de Mercantîle." + TEXT_COLOR_DEFAULT + u"\nLes enchères débuteront à la nuit tombée." + TEXT_COLOR_DEFAULT + u"\nVous y êtes cordialement invités." + TEXT_COLOR_DEFAULT + u"\n\n" +
-                  u"Participez pour une chance de gagner\n" + word_wrap_string(auction5.getUTF16Name("French", Text::Type::PRETTY) + u", " +
-                  auction40.getUTF16Name("French", Text::Type::PRETTY) + u", " + auction60.getUTF16Name("French", Text::Type::PRETTY) + u", " +
-                  auction80.getUTF16Name("French", Text::Type::PRETTY) + u", et " + auction100.getUTF16Name("French", Text::Type::PRETTY) + u'!', 43) + u'\0'}}},
+     {{"English", TEXT_COLOR_DEFAULT + u"Notice: Windfall Auction Tonight!" + TEXT_COLOR_DEFAULT + u"\nBidding starts at dusk. All comers welcome!\nParticipate for the chance to win" + TEXT_COLOR_DEFAULT + u"\n\n" +
+                  auction5.getUTF16Name("English", Text::Type::PRETTY) + u",\n" +
+                  auction40.getUTF16Name("English", Text::Type::PRETTY) + u",\n" + auction60.getUTF16Name("English", Text::Type::PRETTY) + u",\n\n\n" +
+                  auction80.getUTF16Name("English", Text::Type::PRETTY) + u", and\n" + auction100.getUTF16Name("English", Text::Type::PRETTY) + u'!' + u'\0'},
+      {"Spanish", TEXT_COLOR_RED + u"¡Aviso! Gran subasta de Taura" + TEXT_COLOR_DEFAULT + u"\nHorario: Tras la puesta del sol\n¡Esperamos su visita!\n¡Participa por una oportunidad de ganar" + TEXT_COLOR_DEFAULT + u"\n" +
+                  auction5.getUTF16Name("Spanish", Text::Type::PRETTY) + u",\n" +
+                  auction40.getUTF16Name("Spanish", Text::Type::PRETTY) + u",\n" + auction60.getUTF16Name("Spanish", Text::Type::PRETTY) + u",\n\n\n" +
+                  auction80.getUTF16Name("Spanish", Text::Type::PRETTY) + u"," + spanishAuctionFlyerConjunction + u"\n" + auction100.getUTF16Name("Spanish", Text::Type::PRETTY) + u'!' + u'\0'},
+      {"French",  TEXT_COLOR_DEFAULT + u"Avis: Enchères de Mercantîle." + TEXT_COLOR_DEFAULT + u"\nLes enchères débuteront à la nuit tombée." + TEXT_COLOR_DEFAULT + u"\nVous y êtes cordialement invités.\nParticipez pour une chance de gagner" + TEXT_COLOR_DEFAULT + u"\n" +
+                  auction5.getUTF16Name("French", Text::Type::PRETTY) + u",\n" +
+                  auction40.getUTF16Name("French", Text::Type::PRETTY) + u",\n" + auction60.getUTF16Name("French", Text::Type::PRETTY) + u",\n\n\n" +
+                  auction80.getUTF16Name("French", Text::Type::PRETTY) + u", et\n" + auction100.getUTF16Name("French", Text::Type::PRETTY) + u'!' + u'\0'}}},
 
      // Swordless Text
      {"01128",

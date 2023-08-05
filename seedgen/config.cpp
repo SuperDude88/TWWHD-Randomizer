@@ -92,7 +92,7 @@ namespace DefaultColors {
         {"Mouth",        "F74963"},
         {"Eyes",         "10514A"},
         {"Sclera",       "FFFFFF"},
-	      {"Shirt",        "4A75AD"},
+        {"Shirt",        "4A75AD"},
         {"Shirt Emblem", "FFFFD6"},
         {"Armbands",     "63696B"},
         {"Pants",        "FFA608"},

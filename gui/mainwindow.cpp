@@ -115,8 +115,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     {
         show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
     }
-
-    update_encryption_files();
 }
 
 void MainWindow::clear_layout(QLayout* layout) {
@@ -140,28 +138,6 @@ void MainWindow::load_config_into_ui()
     else
     {
         apply_config_settings();
-    }
-
-    // Load encryption keys if the files exists
-    auto encryptionKeyPath = "./encryption.txt";
-    std::string encryptionKeyStr;
-    if (std::filesystem::exists(encryptionKeyPath))
-    {
-        if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) != 1)
-        {
-            ui->encryption_key->setText(encryptionKeyStr.c_str());
-        }
-    }
-
-
-    auto commonKeyPath = "./common.txt";
-    std::string commonKeyStr;
-    if (std::filesystem::exists(commonKeyPath))
-    {
-        if (Utility::getFileContents(commonKeyPath, commonKeyStr) != 1)
-        {
-            ui->wii_u_common_key->setText(commonKeyStr.c_str());
-        }
     }
 }
 
@@ -594,10 +570,6 @@ void MainWindow::on_repack_for_console_stateChanged(int arg1)
         ui->label_for_console_output->setVisible(true);
         ui->console_output_browse_button->setVisible(true);
         ui->console_output->setVisible(true);
-        ui->wii_u_common_key->setVisible(true);
-        ui->label_for_wii_u_common_key->setVisible(true);
-        ui->encryption_key->setVisible(true);
-        ui->label_for_encryption_key->setVisible(true);
         config.repack_for_console = true;
     }
     else
@@ -605,10 +577,6 @@ void MainWindow::on_repack_for_console_stateChanged(int arg1)
         ui->label_for_console_output->setVisible(false);
         ui->console_output_browse_button->setVisible(false);
         ui->console_output->setVisible(false);
-        ui->wii_u_common_key->setVisible(false);
-        ui->label_for_wii_u_common_key->setVisible(false);
-        ui->encryption_key->setVisible(false);
-        ui->label_for_encryption_key->setVisible(false);
         config.repack_for_console = false;
     }
 }
@@ -1073,30 +1041,6 @@ void MainWindow::on_reset_settings_to_default_clicked()
     apply_config_settings();
 }
 
-void MainWindow::update_encryption_files()
-{
-    // Write encryption and common keys to separate files so users can share config files without sharing the keys
-    if (ui->encryption_key->text() != "")
-    {
-        std::ofstream file("./encryption.txt");
-        if (file.is_open())
-        {
-            file << ui->encryption_key->text().toStdString();
-            file.close();
-        }
-    }
-
-    if (ui->wii_u_common_key->text() != "")
-    {
-        std::ofstream file("./common.txt");
-        if (file.is_open())
-        {
-            file << ui->wii_u_common_key->text().toStdString();
-            file.close();
-        }
-    }
-}
-
 void MainWindow::on_randomize_button_clicked()
 {
     // Check to make sure the base game and output are directories
@@ -1125,7 +1069,6 @@ void MainWindow::on_randomize_button_clicked()
             show_warning_dialog("Must specify a valid output folder for the repacked console files.", "No console output folder specified");
             return;
         }
-        update_encryption_files();
     }
 
     // Write config to file so that the main randomization algorithm can pick it up
