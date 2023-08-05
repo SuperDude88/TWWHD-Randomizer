@@ -16,3 +16,7 @@ signals:
     void dialogLabelUpdate(const QString& label);
     void errorUpdate(const std::string& msg, const std::string& title = "An error has occured!");
 };
+
+namespace TheMainThread {
+    extern RandomizerThread* mainThread;
+}

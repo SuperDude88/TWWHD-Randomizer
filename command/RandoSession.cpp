@@ -572,7 +572,8 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     //delete ourselves if we are the chain root, fileCache won't
     if(current->storedFormat == CacheEntry::Format::ROOT) {
         current->parent->children.erase(filename.string());
-        UPDATE_DIALOG_VALUE(int(100.0f - ((float((total_num_tasks - num_completed_tasks)/float(total_num_tasks))) * 50.0f))); //also update progress bar
+        num_completed_tasks++;
+        UPDATE_DIALOG_VALUE(int(99.0f - ((float((total_num_tasks - num_completed_tasks)/float(total_num_tasks))) * 50.0f))); //also update progress bar
     }
 
     return true;

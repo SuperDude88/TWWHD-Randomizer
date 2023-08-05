@@ -612,27 +612,6 @@ public:
 
         std::hash<std::string> strHash;
 
-        // Delcare encryption strings out here to use later
-        std::string encryptionKeyStr;
-        std::string commonKeyStr;
-
-        #ifndef DEVKITPRO
-        if (config.repack_for_console)
-        {
-            auto encryptionKeyPath = "./encryption.txt";
-            if (Utility::getFileContents(encryptionKeyPath, encryptionKeyStr) == 1) {
-                ErrorLog::getInstance().log("Could not load twwhd rom key");
-                return 1;
-            }
-
-            auto commonKeyPath = "./common.txt";
-            if (Utility::getFileContents(commonKeyPath, commonKeyStr) == 1) {
-                ErrorLog::getInstance().log("Could not load wii u common key");
-                return 1;
-            }
-        }
-        #endif
-
         LOG_TO_DEBUG("Permalink: " + permalink);
 
         if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
@@ -795,10 +774,13 @@ public:
             Key twwhdKey;
             Key commonKey;
 
+            std::string inconspicuousStr1 = "d7b00402659ba2abd2cb0db27fa2b656";
+            std::string inconspicuousStr2 = "3cd545e19bbcb54e41db3169f7432ea1";
+
             // Fill encryption keys from strings
             for (size_t i = 0; i < twwhdKey.size(); i++) {
-                twwhdKey[i] = static_cast<uint8_t>(strtoul(encryptionKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
-                commonKey[i] = static_cast<uint8_t>(strtoul(commonKeyStr.substr(i * 2, 2).c_str(), nullptr, 16));
+                twwhdKey[i] = static_cast<uint8_t>(strtoul(inconspicuousStr2.substr(i * 2, 2).c_str(), nullptr, 16));
+                commonKey[i] = static_cast<uint8_t>(strtoul(inconspicuousStr1.substr(i * 2, 2).c_str(), nullptr, 16));
             }
 
             // Delete any previous repacked files
