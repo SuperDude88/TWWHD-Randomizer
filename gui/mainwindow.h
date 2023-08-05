@@ -93,7 +93,6 @@ private:
     void update_starting_health_text();
     void update_option_description_text(const std::string& descrption = "");
     void update_permalink();
-    void update_encryption_files();
     void load_locations();
 
     void initialize_tracker();
