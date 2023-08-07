@@ -2819,6 +2819,13 @@ TweakError apply_custom_colors(World& world) {
                             // For the two colors in this iteration
                             for (auto& [mask, offset, curColor] : masksOffsetsColors) {
                                 if (mask == 0x00F8) {
+
+                                    // TEMP FIX: Remove red from really dark base eye colors, otherwise
+                                    // we can get some really light colors back that look weird
+                                    if (name == "Eyes") {
+                                        curColor &= 0x07FF;
+                                    }
+
                                     auto newColor = colorExchange(baseColor, replacementColor, curColor);
 
                                     if (offset < texture.data.length()) {
