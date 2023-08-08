@@ -777,7 +777,6 @@ public:
             std::string inconspicuousStr1 = "d7b00402659ba2abd2cb0db27fa2b656";
 
             for (size_t i = 0; i < key1.size(); i++) {
-                //twwhdKey[i] = static_cast<uint8_t>(strtoul(inconspicuousStr2.substr(i * 2, 2).c_str(), nullptr, 16));
                 key1[i] = static_cast<uint8_t>(strtoul(inconspicuousStr1.substr(i * 2, 2).c_str(), nullptr, 16));
             }
 
