@@ -13,24 +13,24 @@ using namespace Text;
 
 static std::u16string get_spanish_conjugation(Item& item)
 {
-  auto& world = *item.getWorld();
-  if (IS_MALE(item, "Spanish") && IS_SINGULAR(item, "Spanish"))
-  {
-    return u"este ";
-  }
-  else if (IS_MALE(item, "Spanish") && IS_PLURAL(item, "Spanish"))
-  {
-    return u"estos ";
-  }
-  else if (IS_FEMALE(item, "Spanish") && IS_SINGULAR(item, "Spanish"))
-  {
-    return u"esta ";
-  }
-  else if (IS_FEMALE(item, "Spanish") && IS_PLURAL(item, "Spanish"))
-  {
-    return u"estas ";
-  }
-  return u"";
+    auto& world = *item.getWorld();
+    if (IS_MALE(item, "Spanish") && IS_SINGULAR(item, "Spanish"))
+    {
+        return u"este ";
+    }
+    else if (IS_MALE(item, "Spanish") && IS_PLURAL(item, "Spanish"))
+    {
+        return u"estos ";
+    }
+    else if (IS_FEMALE(item, "Spanish") && IS_SINGULAR(item, "Spanish"))
+    {
+        return u"esta ";
+    }
+    else if (IS_FEMALE(item, "Spanish") && IS_PLURAL(item, "Spanish"))
+    {
+        return u"estas ";
+    }
+    return u"";
 }
 
 static std::u16string get_english_pronoun(Item& item)
