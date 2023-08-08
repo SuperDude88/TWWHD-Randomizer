@@ -108,6 +108,9 @@ TextReplacements generate_text_replacements(World& world)
   auto savageFloor50Spanish = savageFloor50.getUTF16Name("Spanish", Type::CRYPTIC, Color::NONE);
   std::u16string spanishSavageConjunction = savageFloor50Spanish[0] == u'i' || savageFloor50Spanish[0] == u'I' ? u" e " : u" y ";
 
+  // French plurality for Big Octo Fairy Hint
+  auto bigOctoFrenchPlurality = IS_SINGULAR(octoFairyItem, "French") ? u"t'aidera" : u"t'aideront";
+
   // Spanish conjugations for sploosh and beedle items
   std::u16string splooshFirstSpanishConjugation = get_spanish_conjugation(splooshFirstPrize);
   std::u16string splooshSecondSpanishConjugation = get_spanish_conjugation(splooshSecondPrize);
@@ -128,6 +131,12 @@ TextReplacements generate_text_replacements(World& world)
   bool swordless = world.getSettings().sword_mode == SwordMode::NoSword;
 
   return {
+     // FF Warp Text
+     {"00076",
+     {{"English", u"Warp to " + TEXT_COLOR_RED + u"Forsaken Fortress" + TEXT_COLOR_DEFAULT + u"?" + TEXT_END},
+      {"Spanish", u"Warp to " + TEXT_COLOR_RED + u"Forsaken Fortress" + TEXT_COLOR_DEFAULT + u"?" + TEXT_END},
+      {"French",  u"Prendre la Tornade vers " + TEXT_COLOR_RED + u"la Forteresse Maudite" + TEXT_COLOR_DEFAULT + u"?" + TEXT_END}}},
+
      // Key Bag
      {"00403",
      {{"English", u"Key Bag\0"s},
@@ -238,6 +247,11 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", beedle20.getUTF16Name("Spanish") + u"  20 Rupias\n¿Te lo llevas?\n" + TWO_CHOICES + u"Sí\nNo\0"s},
       {"French",  beedle20.getUTF16Name("French")  + u"  20 Rubis\nAcheter?\n" + TWO_CHOICES + u"Oui\nSans façon\0"s}}},
 
+     // Beedle Spoil Sell Text
+     {"03957",
+     {{"English", u"I can't buy that! I only buy things that fit\nin a " + TEXT_COLOR_RED + u"Spoils Bag" + TEXT_COLOR_DEFAULT + u".\nAnd no Blue Chu Jelly, either!\n\n\nDon't you have anything else?" + TEXT_END},
+      {"Spanish", u"No te puedo comprar eso...\nEstoy buscando objetos que\nquepan en una " + TEXT_COLOR_RED + u"bolsa de trofeos" + TEXT_COLOR_DEFAULT + u".<>!\n\n\n¿No tienes nada, amiigo?" + TEXT_END},
+      {"French",  u"Je ne peux pas vous acheter ça!\nJe ne peux acheter que les objets\nqui sont rangés dans un " + TEXT_COLOR_RED + u"sac à butin" + TEXT_COLOR_DEFAULT + u".\nEt pas de Gelée Chuchu Bleue non plus!\n\n\nVous n'avez rien d'autre à me proposer?" + TEXT_END}}},
      // Auction Transition Text
      {"07412",
      {{"English", REPLACE(ReplaceTags::AUCTION_ITEM_NAME) + u"!!!" + WAIT(0x1E) + SOUND(0x46) + TEXT_END},
@@ -296,15 +310,15 @@ TextReplacements generate_text_replacements(World& world)
      {"12015",
      {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"At " + world.getUTF16HintRegion(octoFairyRegion, "English", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u", you will find an item.", 43) + u'\0'},
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Encontrarás un objeto en " + world.getUTF16HintRegion(octoFairyRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u".", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"At " + world.getUTF16HintRegion(octoFairyRegion, "French", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u", you will find an item.", 43) + u'\0'}}},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + world.getUTF16HintRegion(octoFairyRegion, "French", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u" détient un objet.", 43) + u'\0'}}},
      {"12016",
      {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'},
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", que te ayudará en tu aventura.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'}}},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", qui " + bigOctoFrenchPlurality + u" dans ton aventure.", 43) + u'\0'}}},
      {"12017",
      {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Cuándo requieras el uso de tal objeto, dirígete a ese lugar.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'}}},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"Lorsque tu auras besoin de cet objet, tu devras te rendre en ce lieu..", 43) + u'\0'}}},
 
      // Rock Spire Shop 500 Rupee Item
      {"12106",

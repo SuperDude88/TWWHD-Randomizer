@@ -2219,22 +2219,6 @@ TweakError add_chest_in_place_master_sword() {
     return TweakError::NONE;
 }
 
-TweakError update_spoil_sell_text() {
-    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
-    entry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
-
-        std::vector<std::u16string> lines = Utility::Str::split(msbt.messages_by_label["03957"].text.message, u'\n');
-        if (lines.size() != 5) LOG_ERR_AND_RETURN_BOOL(TweakError::UNEXPECTED_VALUE); //incorrect number of lines
-        lines[2] = u"And no Blue Chu Jelly, either!";
-        msbt.messages_by_label["03957"].text.message = Utility::Str::merge(lines, u'\n');
-
-        return true;
-    });
-
-    return TweakError::NONE;
-}
-
 TweakError fix_totg_warp_spawn() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr@DZX");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -2934,7 +2918,7 @@ TweakError add_ff_warp_button() {
 
             const Message& to_copy = msbt.messages_by_label["00075"];
             //const std::u16string message = messages.at(language);
-            const std::u16string message = u"Warp to " TEXT_COLOR_RED u"Forsaken Fortress" TEXT_COLOR_DEFAULT u"?" TEXT_END;
+            std::u16string message = u"";
             msbt.addMessage("00076", to_copy.attributes, to_copy.style, message);
 
             return true;
@@ -3066,7 +3050,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(implement_key_bag());
     TWEAK_ERR_CHECK(add_chest_in_place_jabun_cutscene());
     TWEAK_ERR_CHECK(add_chest_in_place_master_sword());
-    TWEAK_ERR_CHECK(update_spoil_sell_text());
     TWEAK_ERR_CHECK(fix_totg_warp_spawn());
     TWEAK_ERR_CHECK(remove_phantom_ganon_req_for_reefs());
     TWEAK_ERR_CHECK(fix_ff_door());
