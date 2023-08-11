@@ -372,7 +372,7 @@ World::WorldLoadingError World::determineProgressionLocations()
 }
 
 // Properly set the dungeons for boss room locations
-// incase boss/miniboss entrances are randomized
+// for race mode incase boss/miniboss entrances are randomized
 World::WorldLoadingError World::setDungeonLocations()
 {
     // Keep track of any unassigned race mode locations
@@ -397,8 +397,15 @@ World::WorldLoadingError World::setDungeonLocations()
                     LOG_TO_DEBUG(loc->getName() + " has been assigned to dungeon " + dungeonName);
                     if (loc->isRaceModeLocation)
                     {
-                        dungeon.raceModeLocation = loc->getName();
-                        dungeon.hasNaturalRaceModeLocation = true;
+                        if (dungeon.raceModeLocation == "") 
+                        {
+                            dungeon.raceModeLocation = loc->getName();
+                            dungeon.hasNaturalRaceModeLocation = true;
+                        }
+                        else
+                        {
+                            unassignedRaceModeLocations.push_back(loc);
+                        }
                     }
                     dungeon.locations.emplace_back(loc->getName());
                     loc->hintRegions.insert(dungeonName);
@@ -413,11 +420,26 @@ World::WorldLoadingError World::setDungeonLocations()
         }
     }
 
+    for (auto loc : unassignedRaceModeLocations)
+    {
+        std::cout << loc->getName() << std::endl;
+    }
+
+    for (auto& [dungeonName, dungeon] : dungeons)
+    {
+
+        if (dungeon.raceModeLocation.empty())
+        {
+            std::cout << dungeonName << std::endl;
+        }
+    }
+
     // For any unassigned race mode locations, randomly 
     // assign them to dungeons that don't have one,
     // but don't list them in the dungeon's locations
     for (auto& [dungeonName, dungeon] : dungeons)
     {
+
         if (dungeon.raceModeLocation.empty())
         {
             dungeon.raceModeLocation = popRandomElement(unassignedRaceModeLocations)->getName();

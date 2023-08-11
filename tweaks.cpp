@@ -2002,28 +2002,70 @@ TweakError add_hint_signs() {
     return TweakError::NONE;
 }
 
-TweakError prevent_door_boulder_softlocks() {
-    RandoSession::CacheEntry& room13 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
+TweakError prevent_reverse_door_softlocks() {
 
-    room13.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(room13, FileTypes::DZXFile, data)
+    // Add switch triggers to remove boulders blocking DRC doors
+    RandoSession::CacheEntry& drc_room13 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
 
-        ChunkEntry& swc00_13 = room13.add_entity("SCOB");
+    drc_room13.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(drc_room13, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_13 = drc_room13.add_entity("SCOB");
         swc00_13.data = "SW_C00\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
 
         return true;
     });
 
-    RandoSession::CacheEntry& room14 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+    RandoSession::CacheEntry& drc_room14 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
     
-    room14.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(room14, FileTypes::DZXFile, data)
+    drc_room14.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(drc_room14, FileTypes::DZXFile, data)
 
-        ChunkEntry& swc00_14 = room14.add_entity("SCOB");
+        ChunkEntry& swc00_14 = drc_room14.add_entity("SCOB");
         swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
 
         return true;
     });
+
+    // Add switch triggers to remove obstacles blocking ET doors if someone enters ET from the boss door loading zone
+    // 1st song stone
+    RandoSession::CacheEntry& et_room10 = g_session.openGameFile("content/Common/Stage/M_Dai_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr@DZX");
+
+    et_room10.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(et_room10, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_10 = et_room10.add_entity("SCOB");
+        swc00_10.data = "SW_C00\x00\x00\x00\x03\xFF\x45\x45\x9F\x05\x90\xC4\xA2\x80\x00\x45\x98\x15\xF3\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x14\x0A\xFF"s;
+
+        return true;
+    });
+
+    // Elephant statue 
+    RandoSession::CacheEntry& et_room14 = g_session.openGameFile("content/Common/Stage/M_Dai_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+
+    et_room14.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(et_room14, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_14 = et_room14.add_entity("SCOB");
+        swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x52\x45\x54\x80\x00\xC4\x96\x00\x00\x46\x16\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x14\x0A\xFF"s;
+
+        return true;
+    });
+
+    // 2nd song stone
+    RandoSession::CacheEntry& et_room15 = g_session.openGameFile("content/Common/Stage/M_Dai_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr@DZX");
+
+    et_room15.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(et_room15, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_15 = et_room15.add_entity("SCOB");
+        swc00_15.data = "SW_C00\x00\x00\x00\x03\xFF\x59\x44\x22\x80\x00\xC4\x8F\xC0\x00\x45\xF0\xA0\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x14\x0A\xFF"s;
+
+        return true;
+    });
+
+
+
 
     return TweakError::NONE;
 }
@@ -3149,7 +3191,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
     TWEAK_ERR_CHECK(add_more_magic_jars());
     TWEAK_ERR_CHECK(add_pirate_ship_to_windfall()); //doesnt fix getting stuck behind door
     TWEAK_ERR_CHECK(add_hint_signs());
-    TWEAK_ERR_CHECK(prevent_door_boulder_softlocks());
+    TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
     TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
     TWEAK_ERR_CHECK(add_boss_door_return_spawns());
     TWEAK_ERR_CHECK(shorten_zephos_event());
