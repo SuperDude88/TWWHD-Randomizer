@@ -278,7 +278,7 @@ private:
     std::unordered_map<Item, std::vector<LocationPool>> ownDungeonKeyLocations;
 
     // Maps island name to randomized entrances on the island
-    std::unordered_map<std::string, std::list<Entrance*>> islandEntrances = {};
+    std::unordered_map<std::string, std::list<Entrance*>> areaEntrances = {};
 
     // Maps connected targets to their connected source entrances
     std::unordered_map<Entrance*, Entrance*> connectedTargets = {};
