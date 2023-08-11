@@ -9,6 +9,8 @@
 enum struct EntranceType
 {
     NONE = 0,
+    BOSS,
+    BOSS_REVERSE,
     DUNGEON,
     DUNGEON_REVERSE,
     CAVE,
@@ -25,6 +27,7 @@ enum struct EntranceType
 
 class Entrance;
 class World;
+class AreaEntry;
 
 class Entrance
 {
@@ -35,8 +38,10 @@ public:
 
     std::string getParentArea() const;
     void setParentArea(const std::string& newParentArea);
+    AreaEntry* getParentAreaEntry();
     std::string getConnectedArea() const;
     void setConnectedArea(const std::string& newConnectedArea);
+    AreaEntry* getConnectedAreaEntry();
     std::string getOriginalConnectedArea() const;
     Requirement& getRequirement();
     void setRequirement(const Requirement newRequirement);
@@ -77,6 +82,8 @@ public:
     bool isShuffled() const;
     void setAsShuffled();
     void setAsUnshuffled();
+    bool isDecoupled() const;
+    void setAsDecoupled();
     World* getWorld();
     void setWorld(World* newWorld);
     std::unordered_set<std::string> getIslands();
@@ -115,6 +122,7 @@ private:
     Entrance* replaces = nullptr;
     Entrance* assumed = nullptr;
     bool shuffled = false;
+    bool decoupled = false;
     World* world = nullptr;
 };
 

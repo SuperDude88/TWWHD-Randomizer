@@ -175,6 +175,7 @@ void massTest(Config& newConfig)
     TEST(settings1, settings1.randomize_misc_entrances, "randomize misc entrances");
     TEST(settings1, settings1.decouple_entrances, "decouple entrances");
     TEST(settings1, settings1.mix_dungeons, "mix dungeons");
+    TEST(settings1, settings1.mix_bosses, "mix bosses");
     TEST(settings1, settings1.mix_caves, "mix caves");
     TEST(settings1, settings1.mix_doors, "mix doors");
     TEST(settings1, settings1.mix_misc, "mix misc");
@@ -190,6 +191,7 @@ void massTest(Config& newConfig)
     TEST(settings2, settings2.mix_misc, "mix misc");
     TEST(settings2, settings2.mix_doors, "mix doors");
     TEST(settings2, settings2.mix_caves, "mix caves");
+    TEST(settings2, settings2.mix_bosses, "mix bosses");
     TEST(settings2, settings2.mix_dungeons, "mix dungeons");
     TEST(settings2, settings2.randomize_misc_entrances, "randomize misc entrances");
     TEST(settings2, settings2.randomize_door_entrances, "randomize door entrances");

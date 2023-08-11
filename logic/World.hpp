@@ -27,8 +27,10 @@ static std::stringstream lastError;
 using LocationPool = std::vector<Location*>;
 using EntrancePool = std::vector<Entrance*>;
 
+struct AreaEntry;
 struct LocationAccess
 {
+    AreaEntry* area = nullptr;
     Location* location = nullptr;
     Requirement requirement;
 };
@@ -108,6 +110,7 @@ public:
     ItemPool& getItemPoolReference();
     ItemPool getStartingItems() const;
     LocationPool getLocations(bool onlyProgression = false);
+    LocationPool getRaceModeLocations() const;
     LocationPool getProgressionLocations();
     size_t getNumOverworldProgressionLocations();
     AreaEntry& getArea(const std::string& area);
@@ -116,13 +119,16 @@ public:
     void addSpoilsToStartingGear();
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
+    WorldLoadingError setDungeonLocations();
     WorldLoadingError determineRaceModeDungeons(WorldPool& worlds);
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
+    std::unordered_set<std::string> getRegions(const std::string& area, const std::string& regionType, const std::unordered_set<std::string>& typesToIgnore = {});
     std::unordered_set<std::string> getIslands(const std::string& area);
+    std::unordered_set<std::string> getDungeons(const std::string& area);
     Dungeon& getDungeon(const std::string& dungeonName);
     WorldLoadingError processPlandomizerLocations(WorldPool& worlds);
     std::string getUTF8HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW) const;
@@ -143,6 +149,7 @@ public:
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::unordered_map<std::string, Dungeon> dungeons = {};
+    LocationPool raceModeLocations = {};
     std::unordered_map<Location*, std::vector<Location*>> pathLocations = {};
     std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
     std::list<Location*> korlHints = {};

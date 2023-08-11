@@ -458,8 +458,8 @@ private:
             const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
             const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
             std::string replacementStage = entrance->getReplaces()->getStageName();
-            const uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
-            const uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
+            uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
+            uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
 
             std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
 
@@ -470,6 +470,12 @@ private:
                 else if (pack2.count(entrance->getFilepathRoomNum()) > 0) {
                     filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
                 }
+            }
+
+            // Room number of 0xFF in the entrance shuffle table indicates
+            // that the SCLS entry is in the stage.dzs file instead of room.dzr
+            if (entrance->getFilepathRoomNum() == 0xFF) {
+                filepath = "content/Common/Stage/" + fileStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";                 
             }
 
             RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
@@ -520,6 +526,27 @@ private:
             {
                 CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
+                // If this is the savewarp exit of a boss room, update it appropriately
+                if (entrance->getEntranceType() == EntranceType::BOSS_REVERSE) {
+                    // If this boss room is accessed via a dungeon then set the savewarp
+                    // as the dungeon entrance
+                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
+                    if (dungeonName != "") {
+                        auto dungeonEntrance = entrance->getWorld()->getDungeon(dungeonName).startingEntrance;
+                        replacementStage = dungeonEntrance->getStageName();
+                        replacementRoom = dungeonEntrance->getRoomNum();
+                        replacementSpawn = dungeonEntrance->getSpawnId();
+
+                    } else if (entrance->isDecoupled()) {
+                        // If the entrance is decoupled, then set the savewarp as the reverse
+                        // of the entrance used to enter the boss room
+                        auto reverse = entrance->getReplaces()->getReverse();
+                        replacementStage = reverse->getStageName();
+                        replacementRoom = reverse->getRoomNum();
+                        replacementSpawn = reverse->getSpawnId();
+                    }
+                }
+
                 const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
                 if(sclsExitIndex > (scls_entries.size() - 1)) {
                     ErrorLog::getInstance().log("SCLS entry index outside of list!");
@@ -548,43 +575,71 @@ private:
 
                 return true;
             });
+        }
 
-            // Update boss room exits appropriately
-            if (entrance->getBossFilepathStageName() != "") {
-                const std::string bossStage = entrance->getBossFilepathStageName();
-                filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
-
-                RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
-                list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
-                    CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
-
-                    auto& settings = entrance->getWorld()->getSettings();
-                    if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
-                        ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
-                        return false;
-                    }
-                    std::shared_ptr<Action> exit2 = event_list.Events_By_Name.at("WARP_WIND_AFTER")->get_actor("DIRECTOR")->actions[2];
-
-                    std::string bossOutStage = entrance->getReplaces()->getBossOutStageName();
-                    uint8_t bossOutRoom = entrance->getReplaces()->getBossOutRoomNum();
-                    uint8_t bossOutSpawn = entrance->getReplaces()->getBossOutSpawnId();
-
-                    // If dungeons are shuffled in a decoupled setting, or if dungeons are mixed with another pool
-                    // that doesn't have boss out stages, then just use the same exit as the one for exiting
-                    // the beginning of the dungeon
-                    if (settings.decouple_entrances || bossOutStage == "") {
-                        bossOutStage = replacementStage;
-                        bossOutRoom = replacementRoom;
-                        bossOutSpawn = replacementSpawn;
-                    }
-
-                    std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = bossOutSpawn;
-                    exit2->properties[1]->value = bossOutStage + "\0";
-                    std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = bossOutRoom;
-
-                    return true;
-                });
+        // Update warp wind exits appropriately
+        std::list<Entrance*> bossReverseEntrances = {};
+        for (auto& [areaName, area] : worlds[0].areaEntries) {
+            for (auto& exit : area.exits) {
+                if (exit.getEntranceType() == EntranceType::BOSS_REVERSE) {
+                    bossReverseEntrances.push_back(&exit);
+                }
             }
+        }
+
+        for (auto entrance : bossReverseEntrances) {
+
+            const std::string fileStage = entrance->getFilepathStage();
+            const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+            std::string replacementStage = entrance->getReplaces()->getStageName();
+            uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
+            uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
+
+            if (!entrance->isDecoupled()) {
+                // If this boss room is connected to a dungeon, then send the player
+                // back out the exit of the dungeon
+                auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
+                if (dungeonName != "") {
+                    auto dungeonExit = entrance->getWorld()->getDungeon(dungeonName).startingEntrance->getReverse();
+
+                    // If dungeon entrances are not mixed, and misc entrances aren't shuffled
+                    // then send players back to the appropriate natural warp wind exit
+                    auto& settings = entrance->getWorld()->getSettings();
+                    if (!settings.mix_dungeons && !settings.randomize_misc_entrances) {
+                        // Get the warp wind exit of the dungeon entrance that was randomized to this dungeon
+                        // If dungeons aren't randomized it'll just return the same one
+                        auto warpWindExit = dungeonExit->getReplaces()->getReverse()->getReplaces()->getReverse();
+                        replacementStage = warpWindExit->getBossOutStageName();
+                        replacementRoom = warpWindExit->getBossOutRoomNum();
+                        replacementSpawn = warpWindExit->getBossOutSpawnId();
+                    } else {
+                        replacementStage = dungeonExit->getReplaces()->getStageName();
+                        replacementRoom = dungeonExit->getReplaces()->getRoomNum();
+                        replacementSpawn = dungeonExit->getReplaces()->getSpawnId();
+                    }
+                } 
+            }
+
+            auto bossStage = entrance->getFilepathStage();
+            const std::string filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
+
+            RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
+            list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
+
+                auto& settings = entrance->getWorld()->getSettings();
+                if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
+                    ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
+                    return false;
+                }
+                std::shared_ptr<Action> exit2 = event_list.Events_By_Name.at("WARP_WIND_AFTER")->get_actor("DIRECTOR")->actions[2];
+
+                std::get<std::vector<int32_t>>(exit2->properties[0]->value)[0] = replacementSpawn;
+                exit2->properties[1]->value = replacementStage + "\0";
+                std::get<std::vector<int32_t>>(exit2->properties[2]->value)[0] = replacementRoom;
+
+                return true;
+            });
         }
 
         return true;

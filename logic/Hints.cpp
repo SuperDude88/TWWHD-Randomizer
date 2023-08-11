@@ -134,7 +134,17 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 // have them
                 if (location->hintRegions.empty())
                 {
-                    location->hintRegions = world.getIslands(areaName);
+                    auto islands = world.getIslands(areaName);
+                    auto dungeons = world.getDungeons(areaName);
+
+                    if (dungeons.size() > 0 && islands.empty())
+                    {
+                        location->hintRegions = dungeons;
+                    }
+                    else
+                    {
+                        location->hintRegions = islands;
+                    }
                 }
                 // If this location is progression, then add its hint regions to
                 // the set of potentially barren regions
@@ -414,13 +424,16 @@ static HintError generateItemHintMessage(Location* location)
 
     size_t totalRegions = 0;
     auto world = location->world;
+    std::unordered_set<std::string> hintRegions = location->hintRegions;
+
+    // If this is an item in a dungeon, use the dungeon's island(s) for the hint instead
+    if (world->dungeons.contains(*hintRegions.begin()))
+    {
+        hintRegions = world->dungeons[*hintRegions.begin()].islands;
+    }
+
     for (auto hintRegion : location->hintRegions)
     {
-        // If this is an item in a dungeon, use the dungeon's island for the hint instead
-        if (world->dungeons.contains(hintRegion))
-        {
-            hintRegion = world->dungeons[hintRegion].island;
-        }
         // Change the formatting depending on how many regions lead to the location
         if (totalRegions == 0)
         {

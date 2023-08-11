@@ -28,6 +28,11 @@ void Entrance::setParentArea(const std::string& newParentArea)
     parentArea = newParentArea;
 }
 
+AreaEntry* Entrance::getParentAreaEntry()
+{
+    return &world->getArea(parentArea);
+}
+
 std::string Entrance::getConnectedArea() const
 {
     return connectedArea;
@@ -40,6 +45,11 @@ void Entrance::setConnectedArea(const std::string& newConnectedArea)
     {
         originalConnectedArea = newConnectedArea;
     }
+}
+
+AreaEntry* Entrance::getConnectedAreaEntry()
+{
+    return &world->getArea(connectedArea);
 }
 
 std::string Entrance::getOriginalConnectedArea() const
@@ -247,6 +257,16 @@ void Entrance::setAsUnshuffled()
     shuffled = false;
 }
 
+bool Entrance::isDecoupled() const
+{
+    return decoupled;
+}
+
+void Entrance::setAsDecoupled()
+{
+    decoupled = true;
+}
+
 World* Entrance::getWorld()
 {
     return world;
@@ -318,6 +338,8 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::NONE, "NONE"},
         {EntranceType::DUNGEON, "DUNGEON"},
         {EntranceType::DUNGEON_REVERSE, "DUNGEON_REVERSE"},
+        {EntranceType::BOSS, "BOSS"},
+        {EntranceType::BOSS_REVERSE, "BOSS_REVERSE"},
         {EntranceType::CAVE, "CAVE"},
         {EntranceType::CAVE_REVERSE, "CAVE_REVERSE"},
         {EntranceType::DOOR, "DOOR"},
@@ -343,6 +365,8 @@ EntranceType entranceTypeToReverse(const EntranceType& type)
         {EntranceType::NONE, EntranceType::NONE},
         {EntranceType::DUNGEON, EntranceType::DUNGEON_REVERSE},
         {EntranceType::DUNGEON_REVERSE, EntranceType::DUNGEON},
+        {EntranceType::BOSS, EntranceType::BOSS_REVERSE},
+        {EntranceType::BOSS_REVERSE, EntranceType::BOSS},
         {EntranceType::CAVE, EntranceType::CAVE_REVERSE},
         {EntranceType::CAVE_REVERSE, EntranceType::CAVE},
         {EntranceType::DOOR, EntranceType::DOOR_REVERSE},

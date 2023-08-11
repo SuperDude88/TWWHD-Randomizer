@@ -156,10 +156,12 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 
     // Entrance Randomizer
     Option::RandomizeDungeonEntrances,
+    Option::RandomizeBossEntrances,
     Option::RandomizeCaveEntrances,
     Option::RandomizeDoorEntrances,
     Option::RandomizeMiscEntrances,
     Option::MixDungeons,
+    Option::MixBosses,
     Option::MixCaves,
     Option::MixDoors,
     Option::MixMisc,

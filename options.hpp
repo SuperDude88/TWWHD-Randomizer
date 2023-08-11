@@ -158,10 +158,12 @@ enum struct Option {
 
     // Entrance Randomizer
     RandomizeDungeonEntrances,
+    RandomizeBossEntrances,
     RandomizeCaveEntrances,
     RandomizeDoorEntrances,
     RandomizeMiscEntrances,
     MixDungeons,
+    MixBosses,
     MixCaves,
     MixDoors,
     MixMisc,
@@ -225,10 +227,12 @@ struct Settings {
     bool randomize_charts = false;
     bool randomize_starting_island = false;
     bool randomize_dungeon_entrances = false;
+    bool randomize_boss_entrances = false;
     bool randomize_cave_entrances = false;
     bool randomize_door_entrances = false;
     bool randomize_misc_entrances = false;
     bool mix_dungeons = false;
+    bool mix_bosses = false;
     bool mix_caves = false;
     bool mix_doors = false;
     bool mix_misc = false;

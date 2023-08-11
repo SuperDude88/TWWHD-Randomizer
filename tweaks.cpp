@@ -1268,7 +1268,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             for (auto region : location->hintRegions) {
                 // If this region is a dungeon, use the dungeon's island instead
                 if (world.dungeons.contains(region)) {
-                    region = world.dungeons[region].island;
+                    region = *world.dungeons[region].islands.begin();
                 }
         
                 if (islandNameToRoomIndex(region) != 0) {
@@ -1626,6 +1626,63 @@ TweakError add_cross_dungeon_warps() {
     drc.addDependent(totg.getParent()); //Want the file above the JPC entry
     drc.addDependent(ff.getParent()); //Want the file above the JPC entry
 
+    return TweakError::NONE;
+}
+
+// Add in return spawns for boss doors which don't have them
+TweakError add_boss_door_return_spawns() {
+    struct BossDoorSpawnData {
+        std::string stage_name;
+        uint8_t room_num;
+        float x, y, z;
+        uint16_t y_rot;
+    };
+
+    std::list<BossDoorSpawnData> newSpawns = {
+        {"M_NewD2", 10,   400.0f,  5950.0f,  -450.0f, 0x0000},
+        {"Siren",   18, -2200.0f,  9245.0f, -9775.0f, 0xC000},
+        {"kaze",    12, 13965.0f, -5060.0f,  9600.0f, 0x8000},
+    };
+
+    for (auto& newSpawn : newSpawns) {
+        RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+        RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Room" + std::to_string(newSpawn.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(newSpawn.room_num) + ".bfres@BFRES@room.dzr@DZX");
+
+        RandoSession::CacheEntry* dzx_for_spawn;
+        dzx_for_spawn = &room;
+        if(newSpawn.stage_name == "M_Dai" || newSpawn.stage_name == "kaze") {
+            dzx_for_spawn = &stage;
+        }
+
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.x);
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.y);
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.z);
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.y_rot);
+
+        dzx_for_spawn->addAction([newSpawn](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(dzx, FileTypes::DZXFile, data)
+
+            ChunkEntry& spawn = dzx.add_entity("PLYR");
+            spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x60"s;
+
+            // Spawn type 6 doesn't work properly for the wind 
+            // temple boss door for some reason, so use 0 instead
+            if (newSpawn.stage_name == "kaze") {
+                spawn.data[0xA] = '\x00';
+            }
+
+            spawn.data.resize(0x20);
+            spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (newSpawn.room_num & 0x3F);
+            spawn.data.replace(0xC, 4, reinterpret_cast<const char*>(&newSpawn.x), 4);
+            spawn.data.replace(0x10, 4, reinterpret_cast<const char*>(&newSpawn.y), 4);
+            spawn.data.replace(0x14, 4, reinterpret_cast<const char*>(&newSpawn.z), 4);
+            spawn.data.replace(0x18, 2, "\x00\x00", 2);
+            spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&newSpawn.y_rot), 2);
+            spawn.data.replace(0x1C, 4, "\xFF\x46\xFF\xFF", 4);
+
+            return true;
+        });
+    }
     return TweakError::NONE;
 }
 
@@ -2060,7 +2117,11 @@ TweakError show_dungeon_markers_on_chart(World& world) {
     for(const auto& [name, dungeon] : world.dungeons) {
         if (dungeon.isRequiredDungeon)
         {
-            const std::string& islandName = dungeon.island;
+            // Get island of associated boss room
+            auto raceModeArea = world.locationEntries[dungeon.raceModeLocation].accessPoints.front()->area->name;
+            auto bossIslands = world.getRegions(raceModeArea, "Islands", /*typesToIgnore =*/{"Dungeons"});
+
+            const std::string& islandName = *bossIslands.begin();
             room_indexes.emplace(islandNameToRoomIndex(islandName));
         }
     }
@@ -3090,6 +3151,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& r
     TWEAK_ERR_CHECK(add_hint_signs());
     TWEAK_ERR_CHECK(prevent_door_boulder_softlocks());
     TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
+    TWEAK_ERR_CHECK(add_boss_door_return_spawns());
     TWEAK_ERR_CHECK(shorten_zephos_event());
     TWEAK_ERR_CHECK(shorten_auction_intro_event());
     TWEAK_ERR_CHECK(add_jabun_obstacles_to_default_layer());
