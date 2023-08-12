@@ -866,6 +866,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::MISC_CRAWLSPACE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MISC_CRAWLSPACE);
+            typesToDecouple.push_back(EntranceType::MISC);
             typesToDecouple.push_back(EntranceType::MISC_CRAWLSPACE);
             typesToDecouple.push_back(EntranceType::MISC_CRAWLSPACE_REVERSE);
         }
