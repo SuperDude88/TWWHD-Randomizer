@@ -771,15 +771,12 @@ public:
             const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
             const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
 
-            Key twwhdKey;
             Key commonKey;
 
             std::string inconspicuousStr1 = "d7b00402659ba2abd2cb0db27fa2b656";
-            std::string inconspicuousStr2 = "3cd545e19bbcb54e41db3169f7432ea1";
 
             // Fill encryption keys from strings
-            for (size_t i = 0; i < twwhdKey.size(); i++) {
-                twwhdKey[i] = static_cast<uint8_t>(strtoul(inconspicuousStr2.substr(i * 2, 2).c_str(), nullptr, 16));
+            for (size_t i = 0; i < commonKey.size(); i++) {
                 commonKey[i] = static_cast<uint8_t>(strtoul(inconspicuousStr1.substr(i * 2, 2).c_str(), nullptr, 16));
             }
 
@@ -789,7 +786,7 @@ public:
             }
 
             // Now repack the files
-            if (createPackage(dirPath, outPath, twwhdKey, commonKey) != PackError::NONE) {
+            if (createPackage(dirPath, outPath, defaultEncryptionKey, commonKey) != PackError::NONE) {
                 ErrorLog::getInstance().log("Failed to create console package");
                 return 1;
             }
