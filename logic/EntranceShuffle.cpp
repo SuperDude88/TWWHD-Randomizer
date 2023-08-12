@@ -11,7 +11,7 @@
 #include <command/Log.hpp>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
-#define CHECK_MIXED_POOL(name, type) if (settings.name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
+#define CHECK_MIXED_POOL(name, type) if (name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
 
 // The entrance randomization algorithm used here is heavily inspired by the entrance
 // randomization algorithm from the Ocarina of Time Randomizer. While the algorithm
@@ -768,15 +768,30 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
 
     auto& settings = world.getSettings();
 
+    // Only consider mixed pools as active if the entrance type and mixed pool setting is on
+    bool mix_dungeons = settings.randomize_dungeon_entrances && settings.mix_dungeons;
+    bool mix_bosses = settings.randomize_boss_entrances && settings.mix_bosses;
+    bool mix_caves = settings.randomize_cave_entrances && settings.mix_caves;
+    bool mix_doors = settings.randomize_door_entrances && settings.mix_doors;
+    bool mix_misc = settings.randomize_misc_entrances && settings.mix_misc;
+
     // Determine how many mixed pools there will be before determining which entrances will be randomized
-    int totalMixedPools = (settings.mix_dungeons ? 1 : 0) +
-                          (settings.mix_bosses ? 1 : 0) +
-                          (settings.mix_caves ? 1 : 0) +
-                          (settings.mix_doors ? 1 : 0) +
-                          (settings.mix_misc ? 1 : 0);
+    int totalMixedPools = (mix_dungeons ? 1 : 0) +
+                          (mix_bosses ? 1 : 0) +
+                          (mix_caves ? 1 : 0) +
+                          (mix_doors ? 1 : 0) +
+                          (mix_misc ? 1 : 0);
 
     // Determine entrance pools based on settings, to be shuffled in the order we set them by
     EntrancePools entrancePools = {};
+
+    // Save pools that we decouple to make code a little cleaner
+    std::list<EntranceType> typesToDecouple = {};
+
+    // Keep track of certain vanilla entrances that we want to manually connect
+    // since we sometimes rely later on assuming that these entrances were set
+    // in the entrance shuffling algorithm
+    std::list<EntranceType> vanillaConnectionTypes = {};
 
     if (settings.randomize_dungeon_entrances)
     {
@@ -784,30 +799,30 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::DUNGEON_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DUNGEON);
-            for (const auto& type : {EntranceType::DUNGEON, EntranceType::DUNGEON_REVERSE})
-            {
-                for (auto entrance : entrancePools[type])
-                {
-                    entrance->setAsDecoupled();
-                }
-            }
+            typesToDecouple.push_back(EntranceType::DUNGEON);
+            typesToDecouple.push_back(EntranceType::DUNGEON_REVERSE);
         }
+    }
+    else
+    {
+        vanillaConnectionTypes.push_back(EntranceType::DUNGEON);
     }
 
     if (settings.randomize_boss_entrances)
     {
         entrancePools[EntranceType::BOSS] = world.getShuffleableEntrances(EntranceType::BOSS, true);
-        if (settings.decouple_entrances)
+        // Only decouple boss entrances when required bosses are off, or if caves/doors/misc entrances are mixed
+        // as well
+        if (settings.decouple_entrances && (settings.num_required_dungeons == 0 || (mix_bosses && (mix_doors || mix_caves || mix_misc))))
         {
             entrancePools[EntranceType::BOSS_REVERSE] = getReverseEntrances(entrancePools, EntranceType::BOSS);
-            for (const auto& type : {EntranceType::BOSS, EntranceType::BOSS_REVERSE})
-            {
-                for (auto entrance : entrancePools[type])
-                {
-                    entrance->setAsDecoupled();
-                }
-            }
+            typesToDecouple.push_back(EntranceType::BOSS);
+            typesToDecouple.push_back(EntranceType::BOSS_REVERSE);
         }
+    }
+    else
+    {
+        vanillaConnectionTypes.push_back(EntranceType::BOSS);
     }
 
     if (settings.randomize_cave_entrances)
@@ -816,13 +831,8 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::CAVE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::CAVE);
-            for (const auto& type : {EntranceType::CAVE, EntranceType::CAVE_REVERSE})
-            {
-                for (auto entrance : entrancePools[type])
-                {
-                    entrance->setAsDecoupled();
-                }
-            }
+            typesToDecouple.push_back(EntranceType::CAVE);
+            typesToDecouple.push_back(EntranceType::CAVE_REVERSE);
         }
         // Don't randomize the cliff plateau upper isles grotto unless entrances are decoupled
         else
@@ -837,13 +847,8 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::DOOR_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DOOR);
-            for (const auto& type : {EntranceType::DOOR, EntranceType::DOOR_REVERSE})
-            {
-                for (auto entrance : entrancePools[type])
-                {
-                    entrance->setAsDecoupled();
-                }
-            }
+            typesToDecouple.push_back(EntranceType::DOOR);
+            typesToDecouple.push_back(EntranceType::DOOR_REVERSE);
         }
     }
 
@@ -861,14 +866,34 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::MISC_CRAWLSPACE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MISC_CRAWLSPACE);
+            typesToDecouple.push_back(EntranceType::MISC_CRAWLSPACE);
+            typesToDecouple.push_back(EntranceType::MISC_CRAWLSPACE_REVERSE);
+        }
+    }
 
-            for (const auto& type : {EntranceType::MISC_CRAWLSPACE, EntranceType::MISC_CRAWLSPACE_REVERSE})
+    // Set marked entrances as decoupled
+    for (const auto& type : typesToDecouple)
+    {
+        for (auto entrance : entrancePools[type])
+        {
+            entrance->setAsDecoupled();
+        }
+    }
+
+    // Assign certain vanilla entrances
+    for (const auto& type : vanillaConnectionTypes)
+    {
+        auto vanillaEntrances = world.getShuffleableEntrances(type, true);
+        for (auto entrance : vanillaEntrances)
+        {
+            auto assumedForward = entrance->assumeReachable();
+            if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
             {
-                for (auto entrance : entrancePools[type])
-                {
-                    entrance->setAsDecoupled();
-                }
+                auto assumedReturn = entrance->getReverse()->assumeReachable();
+                assumedForward->bindTwoWay(assumedReturn);
             }
+            changeConnections(entrance, assumedForward);
+            confirmReplacement(entrance, assumedForward);
         }
     }
 
@@ -881,7 +906,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         CHECK_MIXED_POOL(mix_bosses, EntranceType::BOSS);
         CHECK_MIXED_POOL(mix_doors, EntranceType::DOOR);
         CHECK_MIXED_POOL(mix_caves, EntranceType::CAVE);
-        if (settings.mix_misc)
+        if (mix_misc)
         {
             poolsToMix.insert(EntranceType::MISC);
         }

@@ -2064,9 +2064,6 @@ TweakError prevent_reverse_door_softlocks() {
         return true;
     });
 
-
-
-
     return TweakError::NONE;
 }
 
