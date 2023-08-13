@@ -41,7 +41,7 @@ fully_refill_magic_meter_on_load_save:
 
 ; Animate the 500 rupee to be a rainbow rupee that animates between the colors of all other rupees.
 
-.org 0x021836d4 ; branch to custom code replaces a load from .data, need to remove relocation to keep branch offset intact (.rela.text::0007b6fc)
+.org 0x021836d4
 	b check_animate_rainbow_rupee_color
 ; Manually animate rainbow rupees to cycle through all other rupee colors.
 ; In order to avoid an abrupt change from silver to green when it loops, we make the animation play forward and then backwards before looping, so it's always a smooth transition.

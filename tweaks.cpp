@@ -2952,6 +2952,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_entrances_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_hint_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
