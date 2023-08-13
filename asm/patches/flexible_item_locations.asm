@@ -868,3 +868,10 @@ doc_bandam_blue_potion_slot_item_id:
 	bl isSwitch
 .org 0x02341b1c
 	beq 0x02341b90
+
+
+ ; Most auction items use an event bit to check if they were collected
+ ; However the swift sail (100 rupee auction) doesn't use one, and instead checks if the swift sail is in your inventory
+ ; This would allow you to collect the item multiple times in some cases
+.org 0x10190192 ; Item data for the 100 rupee auction item
+  .short 0x6B01 ; Change it to check an originally unused event bit
