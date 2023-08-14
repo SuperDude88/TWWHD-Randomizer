@@ -76,6 +76,7 @@ subBgmStart_load_data = 0x025e1918;
 itemActionForArrow = 0x021815e8;
 itemActionForRupee = 0x02180de4;
 dStage_changeScene = 0x025c3748;
+/* dSv_restart_c_setRoom = 0x025b9810; */
 
 daObjFtree_talk_main = 0x023472bc;
 
