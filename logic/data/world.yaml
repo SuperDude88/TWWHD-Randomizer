@@ -1472,7 +1472,7 @@
       FW Entrance Platform: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
       Forest Haven Exterior West Lower Ledge: Nothing
       Forest Haven South Isle: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
-      Forest Haven Nintendo GalleryIsle: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
+      Forest Haven Nintendo Gallery Isle: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
       Forest Haven Interior West Upper Ledge: Nothing
 
 - Name: Forest Haven Exterior South Ledge
@@ -1492,7 +1492,7 @@
   Exits:
       FW First Room: Nothing
 
-- Name: Forest Haven Nintendo GalleryIsle
+- Name: Forest Haven Nintendo Gallery Isle
   Island: Forest Haven
   Exits:
       Forest Haven Nintendo Gallery: Nothing
@@ -1500,7 +1500,7 @@
 
 - Name: Forest Haven Nintendo Gallery
   Exits:
-      Forest Haven Nintendo GalleryIsle: Nothing
+      Forest Haven Nintendo Gallery Isle: Nothing
 
 - Name: Forest Haven Waterfall Cave
   Exits:

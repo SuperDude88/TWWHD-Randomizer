@@ -420,20 +420,6 @@ World::WorldLoadingError World::setDungeonLocations()
         }
     }
 
-    for (auto loc : unassignedRaceModeLocations)
-    {
-        std::cout << loc->getName() << std::endl;
-    }
-
-    for (auto& [dungeonName, dungeon] : dungeons)
-    {
-
-        if (dungeon.raceModeLocation.empty())
-        {
-            std::cout << dungeonName << std::endl;
-        }
-    }
-
     // For any unassigned race mode locations, randomly 
     // assign them to dungeons that don't have one,
     // but don't list them in the dungeon's locations

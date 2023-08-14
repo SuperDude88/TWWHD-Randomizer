@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include <logic/Dungeon.hpp>
+#include <logic/Location.hpp>
 #include <command/RandoSession.hpp>
 #include <command/WWHDStructs.hpp>
 #include <command/Log.hpp>
@@ -122,8 +123,12 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
     if(gameItemToName(item.getGameItemId()).ends_with("Key")) {
         // In race mode, only put the dungeon keys for required dungeons in dark wood chests.
         // The other keys go into light wood chests.
+
+        // In some extreme entrance rando situations, traversing through unrequired dungeons may still
+        // be required, so put small/big keys which appear in the playthrough in dark wood chests also
         if(raceMode) {
-            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item.getName() || dungeon.second.bigKey == item.getName());})){
+            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item.getName() || dungeon.second.bigKey == item.getName());}) ||
+              (std::any_of(playthroughLocations.begin(), playthroughLocations.end(), [&item](Location* loc){return loc->currentItem.getGameItemId() == item.getGameItemId();}))){
                 LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
                 return ModificationError::NONE;
             }
