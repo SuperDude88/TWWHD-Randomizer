@@ -3,6 +3,7 @@
 
 #include <map>
 #include <utility>
+#include <iostream>
 
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>
@@ -292,10 +293,12 @@ void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 {
     entrance->connect(targetEntrance->disconnect());
     entrance->setReplaces(targetEntrance->getReplaces());
+    std::cout << "Connecting " << entrance->getOriginalName() << " to " << targetEntrance->getReplaces()->getOriginalName() << std::endl;
     if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
     {
         targetEntrance->getReplaces()->getReverse()->connect(entrance->getReverse()->getAssumed()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(entrance->getReverse());
+        std::cout << "Connecting " << targetEntrance->getReplaces()->getReverse()->getOriginalName() << " to " << entrance->getReverse()->getOriginalName() << std::endl;
     }
 }
 
@@ -598,12 +601,12 @@ static EntranceShuffleError processPlandomizerEntrances(World& world)
         // Sanity check the entrance pointers
         if (originalEntrance == nullptr)
         {
-            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is incorrect.");
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance \"" + originalEntranceStr + "\" is not a known connection.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
         if (replacementEntrance == nullptr)
         {
-            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is incorrect.");
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance \"" + replacementEntranceStr + "\" is not a known connection.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
 
@@ -632,7 +635,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
         // If the entrance doesn't have a type, it's not shuffable
         if (type == EntranceType::NONE)
         {
-            ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\" cannot be shuffled.");
+            ErrorLog::getInstance().log("\"" + entrance->getOriginalName() + "\" is not an in-game entrance that can be shuffled.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
         // Change misc restrictive to misc since restrictive entrances are still in the misc pool
@@ -647,6 +650,12 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             // Check if its reverse is being shuffled if decoupled entrances are off
             if (!entrance->isDecoupled() && entrance->getReverse() != nullptr && entrancePools.contains(entrance->getReverse()->getEntranceType()))
             {
+                // If this entrance has already been connected, throw an error
+                if (entrance->getConnectedArea() != "")
+                {
+                    ErrorLog::getInstance().log("Entrance \"" + entranceToConnect->getOriginalName() + "\" has already been connected. If you previously set the reverse of this entrance, you'll need to enabled the Decouple Entrances setting to plandomize this one also.");
+                    return EntranceShuffleError::PLANDOMIZER_ERROR;
+                }
                 // If so, take the reverse of the entrance and target and attempt to connect them instead
                 entranceToConnect = entrance->getReverse();
                 targetToConnect = target->getReverse();
