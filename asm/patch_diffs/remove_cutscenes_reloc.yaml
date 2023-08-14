@@ -1,6 +1,6 @@
-- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28FAA9E}
-- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28FAAA2}
-- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28FAAEA}
-- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28FAAEE}
-- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28FAB32}
-- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28FAB36}
+- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28FAACE}
+- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28FAAD2}
+- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28FAB1A}
+- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28FAB1E}
+- {r_addend: 0x1F84DC, r_info: 0x206, r_offset: 0x28FAB62}
+- {r_addend: 0x1F84DC, r_info: 0x204, r_offset: 0x28FAB66}
