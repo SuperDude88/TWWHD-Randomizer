@@ -134,7 +134,7 @@ TextReplacements generate_text_replacements(World& world)
      // FF Warp Text
      {"00076",
      {{"English", u"Warp to " + TEXT_COLOR_RED + u"Forsaken Fortress" + TEXT_COLOR_DEFAULT + u"?" + TEXT_END},
-      {"Spanish", u"Warp to " + TEXT_COLOR_RED + u"Forsaken Fortress" + TEXT_COLOR_DEFAULT + u"?" + TEXT_END},
+      {"Spanish", u"¿Quieres ir a este lugar?" + TEXT_END},
       {"French",  u"Prendre la Tornade vers " + TEXT_COLOR_RED + u"la Forteresse Maudite" + TEXT_COLOR_DEFAULT + u"?" + TEXT_END}}},
 
      // Key Bag
@@ -250,7 +250,7 @@ TextReplacements generate_text_replacements(World& world)
      // Beedle Spoil Sell Text
      {"03957",
      {{"English", u"I can't buy that! I only buy things that fit\nin a " + TEXT_COLOR_RED + u"Spoils Bag" + TEXT_COLOR_DEFAULT + u".\nAnd no Blue Chu Jelly, either!\n\n\nDon't you have anything else?" + TEXT_END},
-      {"Spanish", u"No te puedo comprar eso...\nEstoy buscando objetos que\nquepan en una " + TEXT_COLOR_RED + u"bolsa de trofeos" + TEXT_COLOR_DEFAULT + u".<>!\n\n\n¿No tienes nada, amiigo?" + TEXT_END},
+      {"Spanish", u"No te puedo comprar eso...\nEstoy buscando objetos que\nquepan en una " + TEXT_COLOR_RED + u"bolsa de trofeos" + TEXT_COLOR_DEFAULT + u".\n¡Y tampoco Jugo de ChuChu Azul!\n\n\n¿No tienes nada, amiigo?" + TEXT_END},
       {"French",  u"Je ne peux pas vous acheter ça!\nJe ne peux acheter que les objets\nqui sont rangés dans un " + TEXT_COLOR_RED + u"sac à butin" + TEXT_COLOR_DEFAULT + u".\nEt pas de Gelée Chuchu Bleue non plus!\n\n\nVous n'avez rien d'autre à me proposer?" + TEXT_END}}},
      // Auction Transition Text
      {"07412",
