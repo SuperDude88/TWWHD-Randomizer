@@ -63,3 +63,22 @@ crawl_not_forced:
 ;     bl dSv_restart_c_setRoom ; replace the line we overwrote to jump here
 ;     lhz r4, 0x2F8(r31) ; load original X rotation (copy of the spawn point's X rotation)
 ;     stb r4, 0x3(r3) ; store flag to restart
+
+
+; If the game expects you to spawn on KoRL and he is not there, the game will hang
+; Instead, check if the spawn type was 5, and fall back to the type 5 spawn without KoRL if it is
+.org 0x024136a8
+    b boat_spawn_fallback_check
+.org @NextFreeSpace
+.global boat_spawn_fallback_check
+boat_spawn_fallback_check:
+    bne continue_with_boat
+    cmpwi r24, 5 
+    bne continue_with_fail
+    b 0x0241382c
+
+continue_with_fail:
+    b 0x024136ac
+
+continue_with_boat:
+    b 0x024136d0
