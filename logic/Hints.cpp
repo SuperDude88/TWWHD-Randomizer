@@ -525,7 +525,7 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     // Choose one more potential item hint to give to the big octo great fairy.
     // This hint will always be chosen regardless of settings
     // Don't let the great fairy hint at itself
-    filterAndEraseFromPool(possibleItemHintLocations, [](Location* location){return location->hintRegions.size() > 1 || location->getName() == "Two Eye Reef - Big Octo Great Fairy";});
+    filterAndEraseFromPool(possibleItemHintLocations, [](Location* location){return location->hintRegions.size() != 1 || location->getName() == "Two Eye Reef - Big Octo Great Fairy";});
     if (!possibleItemHintLocations.empty())
     {
         world.bigOctoFairyHintLocation = popRandomElement(possibleItemHintLocations);
