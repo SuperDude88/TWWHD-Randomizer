@@ -8,7 +8,6 @@
 #ifdef DEVKITPRO
     #include <sys/stat.h>
     #include <dirent.h>
-    #include <coreinit/filesystem_fsa.h>
 #endif
 
 namespace Utility
@@ -143,25 +142,4 @@ namespace Utility
     int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile = false);
 
     int getFileContents(const std::string& filename, std::stringstream& fileContents);
-
-    #ifdef DEVKITPRO
-    inline bool flush_mlc() {
-        const int fsaHandle = FSAAddClient(NULL);
-        if(fsaHandle < 0) {
-            return false;
-        }
-
-        FSError ret = FSAFlushVolume(fsaHandle, "/vol/storage_mlc01");
-        if(ret != FS_ERROR_OK) {
-            return false;
-        }
-
-        ret = FSADelClient(fsaHandle);
-        if(ret != FS_ERROR_OK) {
-            return false;
-        }
-
-        return true;
-    }
-    #endif
 }

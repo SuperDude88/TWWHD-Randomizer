@@ -32,11 +32,9 @@
 #ifdef DEVKITPRO
 #include <unistd.h> //for chdir
 #include <sysapp/title.h>
-#include <platform/wiiutitles.hpp>
 #include <platform/channel.hpp>
 #include <platform/controller.hpp>
 
-static std::vector<Utility::titleEntry> wiiuTitlesList{};
 #endif
 
 #define SEED_KEY "SEED KEY TEST"
@@ -61,7 +59,7 @@ private:
     unsigned int numPlayers = 1;
     //int playerId = 1;
 
-    [[nodiscard]] bool checkBase() {
+    [[nodiscard]] bool verifyBase() {
         using namespace std::filesystem;
 
         Utility::platformLog("Verifying dump...\n");
@@ -70,32 +68,14 @@ private:
 
         const RandoSession::fspath& base = g_session.getBaseDir();
         if(!is_directory(base / "code") || !is_directory(base / "content") || !is_directory(base / "meta")) {
-            Utility::platformLog("Could not find code/content/meta folders at base directory!\n");
-            //ErrorLog::getInstance().log("Could not find code/content/meta folders at base directory!");
-
-            #ifdef DEVKITPRO
-                //Utility::platformLog("Attempting to dump game\n");
-                if(!SYSCheckTitleExists(0x0005000010143500)) {
-                    Utility::platformLog("Could not find game! You must have a digital install of The Wind Waker HD (NTSC-U / US version).\n");
-                    std::this_thread::sleep_for(std::chrono::seconds(3));
-                    return false;
-                }
-                else {
-                    Utility::platformLog("Invalid game path! Game is installed but the path is different (this should not be possible).\n");
-                    std::this_thread::sleep_for(std::chrono::seconds(3));
-                    return false;
-                }
-            #else
-                // Utility::platformLog("Invalid path: you must specify the path to a decrypted dump of The Wind Waker HD (NTSC-U / US version).\n");
-                ErrorLog::getInstance().log("Invalid base game path: you must specify the path to a\ndecrypted dump of The Wind Waker HD (NTSC-U / US version).");
-                return false;
-            #endif
+            ErrorLog::getInstance().log("Invalid base path: could not find code/content/meta folders at " + base.string() + "!");
+            return false;
         }
 
         //Check the meta.xml for other platforms (+ a sanity check on console)
         tinyxml2::XMLDocument metaXml;
         const RandoSession::fspath& metaPath = g_session.getBaseDir() / "meta/meta.xml";
-        if(!std::filesystem::is_regular_file(metaPath)) {
+        if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
             return false;
         }
@@ -112,45 +92,35 @@ private:
             ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
             ErrorLog::getInstance().log("ID " + titleId);
             ErrorLog::getInstance().log("Name " + nameEn);
-            std::this_thread::sleep_for(std::chrono::seconds(3));
             return false;
         }
 
         const std::string region = root->FirstChildElement("region")->GetText();
         if(region != "00000002") {
-            // Utility::platformLog("Incorrect region - game must be a NTSC-U / US copy\n");
             ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
-            std::this_thread::sleep_for(std::chrono::seconds(3));
             return false;
         }
 
         return true;
     }
 
-    #ifdef DEVKITPRO
-    [[nodiscard]] bool checkOutput() {
-        Utility::platformLog("Checking output channel...\n");
+    [[nodiscard]] bool verifyOutput() {
+        using namespace std::filesystem;
 
-        //Utility::platformLog("Attempting to dump game\n");
-        if(!SYSCheckTitleExists(0x0005000010143599)) {
-            Utility::platformLog("Creating output channel...\n");
-            
-            if(!packFreeChannel()) return false;
-            
-            Utility::platformLog("Installing output channel...\n");
-            if(!installFreeChannel()) return false;
-            
-            Utility::platformLog("Installed channel, copying game data...\n");
-            std::filesystem::remove(g_session.getOutputDir() / "content/filler.txt");
-            if(!Utility::copy(g_session.getBaseDir() / "content", g_session.getOutputDir() / "content")) return false;
+        Utility::platformLog("Verifying output...\n");
+        UPDATE_DIALOG_LABEL("Verifying output...");
+        UPDATE_DIALOG_VALUE(25);
+        
+        const RandoSession::fspath& out = g_session.getOutputDir();
+        if(!is_directory(out / "code") || !is_directory(out / "content") || !is_directory(out / "meta")) {
+            ErrorLog::getInstance().log("Invalid output path: could not find code/content/meta folders at " + out.string() + "!");
+            return false;
         }
-
-        Utility::platformLog("Verifying output channel...\n");
 
         //Double check the meta.xml
         tinyxml2::XMLDocument metaXml;
-        const RandoSession::fspath& metaPath = g_session.getOutputDir() / "meta/meta.xml";
-        if(!std::filesystem::is_regular_file(metaPath)) {
+        const RandoSession::fspath& metaPath = out / "meta/meta.xml";
+        if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
             return false;
         }
@@ -161,25 +131,25 @@ private:
         }
         const tinyxml2::XMLElement* root = metaXml.RootElement();
 
-        const std::string titleId = root->FirstChildElement("title_id")->GetText();
-        if(titleId != "0005000010143599")  {
-            ErrorLog::getInstance().log("meta.xml does not match - custom channel is not valid");
-            ErrorLog::getInstance().log("ID " + titleId);
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-            return false;
-        }
+        //Title ID won't be updated until after the first randomization on PC
+        //But on console it should be correct once the channel is installed
+        #ifdef DEVKITPRO
+            const std::string titleId = root->FirstChildElement("title_id")->GetText();
+            if(titleId != "0005000010143599")  {
+                ErrorLog::getInstance().log("meta.xml does not match - custom channel is not valid");
+                ErrorLog::getInstance().log("ID " + titleId);
+                return false;
+            }
+        #endif
 
         const std::string region = root->FirstChildElement("region")->GetText();
         if(region != "00000002") {
-            // Utility::platformLog("Incorrect region - game must be a NTSC-U / US copy\n");
             ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
-            std::this_thread::sleep_for(std::chrono::seconds(3));
             return false;
         }
 
         return true;
     }
-    #endif
 
     void clearOldLogs() {
         if(std::filesystem::is_regular_file(APP_SAVE_PATH "Debug Log.txt")) {
@@ -645,15 +615,12 @@ public:
             return 0;
         #endif
 
-        if(!checkBase()) {
+        if(!verifyBase()) {
             return 1;
         }
-
-        #ifdef DEVKITPRO
-            if(!checkOutput()) {
-                return 1;
-            }
-        #endif
+        if(!verifyOutput()) {
+            return 1;
+        }
 
         //IMPROVEMENT: custom model things
 
@@ -746,10 +713,7 @@ public:
         }
 
 
-        #ifdef DEVKITPRO
-        // Flush MLC to save changes to disk
-        Utility::flush_mlc();
-        #else
+        #ifndef DEVKITPRO
         // Repack for console if necessary
         if (config.repack_for_console)
         {
@@ -784,17 +748,9 @@ public:
         //done!
         return 0;
     }
-
-    //bool restoreFromBackup() {
-    //    Utility::platformLog("Restoring backup\n");
-
-    //    return Utility::copy(g_session.getBaseDir(), g_session.getOutputDir());
-    //}
 };
 
 int mainRandomize() {
-    using namespace std::literals::chrono_literals;
-
     int retVal = 0;
     { //timer scope
         #ifdef ENABLE_TIMING
@@ -811,8 +767,6 @@ int mainRandomize() {
             if(err != ConfigError::NONE) {
                 ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
 
-                std::this_thread::sleep_for(3s);
-                Utility::platformShutdown();
                 return 1;
             }
         }
@@ -827,15 +781,48 @@ int mainRandomize() {
         Utility::platformLog("Reading config\n");
         ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
         if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
-            Utility::platformLog("Warning: config was made using a different randomizer version\nItem placement may be different than expected\n");
+            Utility::platformLog("Warning: config was made using a different randomizer version\n");
+            Utility::platformLog("Item placement may be different than expected\n");
         }
         else if(err != ConfigError::NONE) {
             ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
             Utility::platformLog("Failed to read config, ERROR: " + errorToName(err) + '\n');
-            std::this_thread::sleep_for(3s);
-            Utility::platformShutdown();
+
             return 1;
         }
+
+        #ifdef DEVKITPRO
+            if(!SYSCheckTitleExists(0x0005000010143500)) {
+                ErrorLog::getInstance().log("Could not find game: you must have a NTSC-U / US copy of TWWHD!");
+                Utility::platformLog("Could not find game: you must have a NTSC-U / US copy of TWWHD!\n");
+
+                return 1;
+            }
+            if(const auto& err = getTitlePath(0x0005000010143500, load.gameBaseDir); err < 0) {
+                return 1;
+            }
+            if(!Utility::mountDeviceAndConvertPath(load.gameBaseDir)) {
+                ErrorLog::getInstance().log("Failed mounting input device!");
+                return 1;
+            }
+            //Utility::platformLog("Got game dir " + load.gameBaseDir.string() + '\n');
+            
+            
+            if(!SYSCheckTitleExists(0x0005000010143599)) {
+                Utility::platformLog("Output channel does not currently exist.\n");
+                if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
+                    return 1;
+                }
+            }
+            if(const auto& err = getTitlePath(0x0005000010143599, load.outputDir); err < 0) {
+                return 1;
+            }
+            if(!Utility::mountDeviceAndConvertPath(load.outputDir)) {
+                ErrorLog::getInstance().log("Failed mounting output device!");
+                return 1;
+            }
+           //Utility::platformLog("Got output dir " + load.outputDir.string() + '\n');
+        #endif
 
         Randomizer rando(load);
 

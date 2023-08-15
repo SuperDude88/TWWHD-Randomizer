@@ -1,32 +1,38 @@
+#include <thread>
 #include <randomizer.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
 #ifdef DEVKITPRO
-    #include <thread>
     #include <sysapp/launch.h>
 #endif
 
-int main()
-{
-    Utility::platformInit();
-    int retVal = mainRandomize();
+int main() {
+    using namespace std::literals::chrono_literals;
 
-    if (retVal == 1) {
-        auto message = "An error has occured!\n" + ErrorLog::getInstance().getLastErrors();
-        Utility::platformLog(message.c_str());
+    if(Utility::platformInit()) {
+        int retVal = mainRandomize();
+
+        if (retVal == 1) {
+            auto message = "An error has occured!\n" + ErrorLog::getInstance().getLastErrors();
+            Utility::platformLog(message.c_str());
+
+            std::this_thread::sleep_for(5s);
+        }
+
+        // Close logs
+        ErrorLog::getInstance().close();
+        DebugLog::getInstance().close();
+        BasicLog::getInstance().close();
     }
-
-    // Close logs
-    ErrorLog::getInstance().close();
-    DebugLog::getInstance().close();
-    BasicLog::getInstance().close();
+    else {
+        Utility::platformLog("Failed to initialize platform!\n");
+        std::this_thread::sleep_for(3s);
+    }
     
     //launch Wii U menu, wait for procUI to do its thing
     #ifdef DEVKITPRO
         SYSLaunchMenu();
-        while(Utility::platformIsRunning()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(33)); //Check ~30 times a second
-        }
+        Utility::waitForPlatformStop();
     #endif
     
     Utility::platformShutdown();

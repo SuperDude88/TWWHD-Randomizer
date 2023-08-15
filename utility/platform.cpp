@@ -1,14 +1,12 @@
 #include "platform.hpp"
 #include <thread>
-#include <csignal>
 #include <mutex>
 
 #ifdef PLATFORM_DKP
     #include <whb/proc.h>
     #include <whb/log.h>
     #include <whb/log_console.h>
-    #include <coreinit/mcp.h>
-    #include <coreinit/thread.h>
+    #include <coreinit/filesystem_fsa.h>
 
     #include <mocha/mocha.h>
 
@@ -16,64 +14,130 @@
 
     static bool whbInit = false;
     static bool mochaOpen = false;
-    static bool systemMLCMounted = false;
-    static std::vector<Utility::titleEntry> wiiuTitlesList{};
+    static bool MLCMounted = false;
+    static bool USBMounted = false;
+    static bool DiscMounted = false;
 #endif 
 
-static bool _platformIsRunning = true;
 static std::mutex printMut;
 
-static void sigHandler(int signal)
-{
-    switch (signal)
-    {
-    case SIGINT:
-#ifdef SIGBREAK
-    case SIGBREAK:
-#endif
-        printf("ctrl+c\n");
-        _platformIsRunning = false;
-        break;
+#ifdef PLATFORM_DKP
+static bool flushMLC() {
+    const int fsaHandle = FSAAddClient(NULL);
+    if(fsaHandle < 0) {
+        return false;
     }
+    FSError ret = FSAFlushVolume(fsaHandle, "/vol/storage_mlc01");
+    if(ret != FS_ERROR_OK) {
+        return false;
+    }
+    ret = FSADelClient(fsaHandle);
+    if(ret != FS_ERROR_OK) {
+        return false;
+    }
+    return true;
 }
 
-#ifdef PLATFORM_DKP
 bool initMocha()
 {
     Utility::platformLog("Starting libmocha...\n");
     
     if(MochaUtilsStatus status = Mocha_InitLibrary(); status != MOCHA_RESULT_SUCCESS) {
         Utility::platformLog("Mocha_InitLibrary() failed\n");
-        Utility::platformShutdown();
         return false;
     }
 
-    Utility::platformLog("attempting to mount mlc\n");
-    if(MochaUtilsStatus status = Mocha_MountFS("storage_mlc01", nullptr, "/vol/storage_mlc01"); status != MOCHA_RESULT_SUCCESS)
-    {
-        Utility::platformLog("Failed to mount mlc: %s\n", Mocha_GetStatusStr(status));
-        OSSleepTicks(OSSecondsToTicks(1));
-        return false;
-    }
-
-    systemMLCMounted = true;
-
-    Utility::platformLog("Mocha initialized, MLC mounted\n");
+    Utility::platformLog("Mocha initialized, storage mounted\n");
     return true;
 }
 
 void closeMocha() {
-    if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
-        Utility::platformLog("Error unmounting mlc: %s\n", Mocha_GetStatusStr(status));
+    if(MLCMounted) {
+        if(!flushMLC()) { //maybe check if we wrote to MLC
+            Utility::platformLog("Could not flush MLC\n");
+        }
+        if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
+            Utility::platformLog("Error unmounting MLC: %s\n", Mocha_GetStatusStr(status));
+        }
+        MLCMounted = false;
     }
-    systemMLCMounted = false;
+
+    if(USBMounted) { //not sure if this needs a flush
+        if(MochaUtilsStatus status = Mocha_UnmountFS("storage_usb01"); status != MOCHA_RESULT_SUCCESS) {
+            Utility::platformLog("Error unmounting USB: %s\n", Mocha_GetStatusStr(status));
+        }
+        USBMounted = false;
+    }
+
+    if(DiscMounted) {
+        if(MochaUtilsStatus status = Mocha_UnmountFS("storage_odd03"); status != MOCHA_RESULT_SUCCESS) {
+            Utility::platformLog("Error unmounting disc: %s\n", Mocha_GetStatusStr(status));
+        }
+        DiscMounted = false;
+    }
 
     if(MochaUtilsStatus status = Mocha_DeInitLibrary(); status != MOCHA_RESULT_SUCCESS) {
         Utility::platformLog("Mocha_DeinitLibrary() failed\n");
-        Utility::platformShutdown();
     }
 
     return;
+}
+
+namespace Utility {
+    bool mountDeviceAndConvertPath(std::filesystem::path& path) {
+        if(path.string().starts_with("/vol/storage_mlc01")) {
+            if(!MLCMounted) {
+                Utility::platformLog("Attempting to mount MLC\n");
+                if(MochaUtilsStatus status = Mocha_MountFS("storage_mlc01", nullptr, "/vol/storage_mlc01"); status != MOCHA_RESULT_SUCCESS)
+                {
+                    Utility::platformLog("Failed to mount MLC: %s\n", Mocha_GetStatusStr(status));
+                    return false;
+                }
+
+                MLCMounted = true;
+            }
+        }
+        else if(path.string().starts_with("/vol/storage_usb01")) {
+            if(!USBMounted) {
+                Utility::platformLog("Attempting to mount USB\n");
+                if(MochaUtilsStatus status = Mocha_MountFS("storage_usb01", nullptr, "/vol/storage_usb01"); status != MOCHA_RESULT_SUCCESS)
+                {
+                    Utility::platformLog("Failed to mount USB: %s\n", Mocha_GetStatusStr(status));
+                    return false;
+                }
+
+                USBMounted = true;
+            }
+        }
+        else if(path.string().starts_with("/vol/storage_odd")) {
+            if(!DiscMounted) {
+                Utility::platformLog("Attempting to mount disc\n");
+                if(MochaUtilsStatus status = Mocha_MountFS("storage_odd03", "/dev/odd03", "/vol/storage_odd_content"); status != MOCHA_RESULT_SUCCESS)
+                {
+                    Utility::platformLog("Failed to mount disc: %s\n", Mocha_GetStatusStr(status));
+                    return false;
+                }
+
+                DiscMounted = true;
+            }
+        }
+        else {
+            return false;
+        }
+
+        //https://github.com/emiyl/dumpling/blob/9290dad8f8d91cc3ef4c4b9602898d244a2a1454/source/app/filesystem.cpp#L130
+        std::string working_path = path.string().substr(5);
+        if (const auto& driveEnd = working_path.find_first_of('/'); driveEnd != std::string::npos) {
+            // Return mount path + the path after it
+            working_path.replace(driveEnd, 1, ":/", 2);
+        } else {
+            // Return just the mount path
+            working_path.append(":");
+        }
+        path = working_path;
+
+        return true;
+    }
 }
 #endif
 
@@ -112,34 +176,12 @@ namespace Utility
         WHBLogConsoleInit();
         whbInit = true;
 
-        // retrieve WiiU title information
-        std::vector<MCPTitleListType> rawTitles{};
-        if(!getRawTitles(rawTitles))
-        {
-            Utility::platformLog("Failed to get raw titles\n");
-            platformShutdown();
-            return false;
-        }
-
         if(!initMocha())
         {
             Utility::platformLog("Failed to init libmocha\n");
-            platformShutdown();
             return false;
         }
         mochaOpen = true;
-
-        if(!loadDetailedTitles(rawTitles, wiiuTitlesList))
-        {
-            Utility::platformLog("Failed to load detailed titles\n");
-            platformShutdown();
-            return false;
-        }
-#else
-        signal(SIGINT, sigHandler);
-#ifdef SIGBREAK
-        signal(SIGBREAK, sigHandler);
-#endif
 #endif
         return true;
     }
@@ -151,15 +193,14 @@ namespace Utility
 #ifdef PLATFORM_DKP
         return WHBProcIsRunning();
 #else
-        return _platformIsRunning;
+        return true; //not sure if it's worth doing anything for this
 #endif
     }
 
     void waitForPlatformStop()
     {
-        while (platformIsRunning())
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        while(platformIsRunning()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(33)); //Check ~30 times a second
         }
     }
 
@@ -172,18 +213,10 @@ namespace Utility
             mochaOpen = false;
         }
 
-        wiiuTitlesList.clear();
-
         if(whbInit) {
             WHBLogConsoleFree();
             WHBProcShutdown();
         }
 #endif
     }
-
-#ifdef PLATFORM_DKP
-    const std::vector<Utility::titleEntry>* getLoadedTitles() {
-        return &wiiuTitlesList;
-    }
-#endif
 }
