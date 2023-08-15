@@ -2610,7 +2610,7 @@ TweakError fix_entrance_params() {
         return true;
     });
 
-    RandoSession::CacheEntry& outset_exit = g_session.openGameFile("content/Common/Stage/Obombh.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    RandoSession::CacheEntry& outset_exit = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr@DZX");
     outset_exit.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
@@ -2620,7 +2620,7 @@ TweakError fix_entrance_params() {
         return true;
     });
 
-    RandoSession::CacheEntry& bomb_shop = g_session.openGameFile("content/Common/Stage/Obombh.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    RandoSession::CacheEntry& bomb_shop = g_session.openGameFile("content/Common/Stage/Obombh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
     bomb_shop.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
