@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
 
 #include <options.hpp>
 
@@ -19,8 +20,8 @@ enum struct [[nodiscard]] ConfigError {
 };
 
 struct Config {
-    std::string gameBaseDir;
-    std::string outputDir;
+    std::filesystem::path gameBaseDir;
+    std::filesystem::path outputDir;
 
     std::string seed;
 

@@ -1,11 +1,9 @@
 #include "channel.hpp"
 
-#include <filesystem>
 #include <string>
 #include <thread>
 #include <chrono>
 
-#include <coreinit/mcp.h>
 #include <coreinit/memory.h>
 #include <coreinit/ios.h>
 
@@ -31,6 +29,21 @@ static const std::filesystem::path SD_ROOT_PATH_MCP = "/vol/app_sd";
 static const std::filesystem::path CHANNEL_DATA_PATH = "temp/data";
 static const std::filesystem::path CHANNEL_OUTPUT_PATH = "temp/install";
 
+
+MCPError getTitlePath(const uint64_t& titleID, std::filesystem::path& outPath) {
+    const int32_t handle = MCP_Open();
+
+    MCPTitleListType info;
+    if(const MCPError err = MCP_GetTitleInfo(handle, titleID, &info); err < 0) {
+        Utility::platformLog("MCP_GetTitleInfo encountered error %08X\n", err);
+        Utility::platformLog("With title ID 0x%016X\n", titleID);
+        return err;
+    }
+    
+    outPath = info.path;
+    return 0;
+}
+
 static int installCompleted = 0;
 static uint32_t installError = 0;
 
@@ -42,8 +55,17 @@ static int IosInstallCallback(unsigned int errorCode, unsigned int * priv_data)
 }
 
 //based on https://github.com/Fangal-Airbag/wup-installer-gx2/blob/Wuhb/src/menu/InstallWindow.cpp#L169
-static bool install(const std::filesystem::path& path) {
+static bool installFreeChannel(const std::filesystem::path& relPath, const MCPInstallTarget& loc) {
     using namespace std::literals::chrono_literals;
+    
+    if(!Utility::dirExists(SD_ROOT_PATH / relPath)) {
+        ErrorLog::getInstance().log("Channel data path is not a directory!");
+        return false;
+    }
+
+    Utility::platformLog("Installing channel...\n");
+
+    const std::filesystem::path path = SD_ROOT_PATH_MCP / relPath;
     
     int result = 0;
     installCompleted = 0;
@@ -83,7 +105,7 @@ static bool install(const std::filesystem::path& path) {
                 result = -3;
                 break;
             }
-            
+
             const uint32_t titleIdHigh = mcpInstallInfo[0];
 
             if (  (titleIdHigh == 0x0005000E)     // game update
@@ -91,7 +113,7 @@ static bool install(const std::filesystem::path& path) {
                || (titleIdHigh == 0x0005000C)     // DLC
                || (titleIdHigh == 0x00050002))    // Demo
             {
-                res = MCP_InstallSetTargetDevice(mcpHandle, MCP_INSTALL_TARGET_MLC);
+                res = MCP_InstallSetTargetDevice(mcpHandle, loc);
                 if(res != 0)
                 {
                     ErrorLog::getInstance().log("MCP_InstallSetTargetDevice " + Utility::Str::intToHex(MCP_GetLastRawError(), 8, true));
@@ -99,7 +121,7 @@ static bool install(const std::filesystem::path& path) {
                     result = -5;
                     break;
                 }
-                res = MCP_InstallSetTargetUsb(mcpHandle, MCP_INSTALL_TARGET_MLC);
+                res = MCP_InstallSetTargetUsb(mcpHandle, loc);
                 if(res != 0)
                 {
                     ErrorLog::getInstance().log("MCP_InstallSetTargetUsb " + Utility::Str::intToHex(MCP_GetLastRawError(), 8, true));
@@ -153,6 +175,9 @@ static bool install(const std::filesystem::path& path) {
                 
                 if(installError != 0)
                 {
+                    if((installError == 0xFFFCFFE9) && (loc == MCPInstallTarget::MCP_INSTALL_TARGET_USB)) {
+                        ErrorLog::getInstance().log(Utility::Str::intToHex(installError, 8, true) + " access failed (no USB storage attached?)");
+                    }
                     if (installError == 0xFFFBF446 || installError == 0xFFFBF43F) {
                         ErrorLog::getInstance().log("Possible missing or bad title.tik file");
                     }
@@ -193,17 +218,18 @@ static bool install(const std::filesystem::path& path) {
     }
 }
 
-static const std::filesystem::path GameBase = "storage_mlc01:/usr/title/00050000/10143500";
 static const std::filesystem::path DataPath = SD_ROOT_PATH / CHANNEL_DATA_PATH;
 
-bool packFreeChannel() {
+static bool packFreeChannel(const std::filesystem::path& baseDir) {
+    Utility::platformLog("Packing channel...\n");
+
     //create necessary folders
     Utility::platformLog("Creating output folder at " + DataPath.string() + '\n');
     Utility::create_directories(DataPath);
 
     //copy over channel data
     Utility::platformLog("Copying channel data\n");
-    Utility::copy(GameBase / "code", DataPath / "code");
+    Utility::copy(baseDir / "code", DataPath / "code");
     std::filesystem::remove(DataPath / "code/title.fst"); //would cause nullptr issues when packing
     std::filesystem::remove(DataPath / "code/title.tmd"); //would cause nullptr issues when packing
 
@@ -213,7 +239,7 @@ bool packFreeChannel() {
     data.write(&str[0], str.size());
     data.close();
 
-    Utility::copy(GameBase / "meta", DataPath / "meta");
+    Utility::copy(baseDir / "meta", DataPath / "meta");
 
     //change the title ID so it gets its own channel
     Utility::platformLog("Modifying XMLs\n");
@@ -244,7 +270,6 @@ bool packFreeChannel() {
     appOut.write(&appStr[0], appStr.size());
     appOut.close();
     
-    //Key twwhdKey;
     //get common key
     Utility::platformLog("Getting keys\n");
     WiiUConsoleOTP otp;
@@ -264,11 +289,23 @@ bool packFreeChannel() {
     return true;
 }
 
-bool installFreeChannel() {
-    if(!Utility::dirExists(SD_ROOT_PATH / CHANNEL_OUTPUT_PATH)) {
-        ErrorLog::getInstance().log("Output path is not a directory!");
+bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallTarget& loc) {
+    Utility::platformLog("Creating output channel...\n");
+    
+    if(!packFreeChannel(baseDir)) return false;
+    
+    if(!installFreeChannel(CHANNEL_OUTPUT_PATH, loc)) return false;
+
+    std::filesystem::path outPath;
+    if(const auto& err = getTitlePath(0x0005000010143599, outPath); err < 0) return false;
+    if(!Utility::mountDeviceAndConvertPath(outPath)) {
+        ErrorLog::getInstance().log("Failed to mount output device");
         return false;
     }
-    Utility::platformLog("Installing channel\n");
-    return install(SD_ROOT_PATH_MCP / CHANNEL_OUTPUT_PATH);
+
+    Utility::platformLog("Installed channel, copying game data...\n");
+    std::filesystem::remove(outPath / "content/filler.txt");
+    if(!Utility::copy(baseDir / "content", outPath / "content")) return false; //might try routing this through RandoSession later
+
+    return true;
 }

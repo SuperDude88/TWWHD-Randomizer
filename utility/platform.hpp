@@ -11,7 +11,6 @@
 
 #ifdef DEVKITPRO
     #define PLATFORM_DKP
-    #include <platform/wiiutitles.hpp>
 #elif defined(_MSC_VER)
     #define PLATFORM_MSVC
 #elif defined(__GNUC__) || defined(__GNUG__)
@@ -36,7 +35,7 @@ namespace Utility
 
     void platformShutdown();
 
-    #ifdef PLATFORM_DKP
-        const std::vector<Utility::titleEntry>* getLoadedTitles();
-    #endif
+#ifdef DEVKITPRO
+    bool mountDeviceAndConvertPath(std::filesystem::path& path);
+#endif
 }

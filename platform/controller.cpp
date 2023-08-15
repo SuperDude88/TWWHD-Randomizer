@@ -6,6 +6,7 @@
 
 #include <utility/platform.hpp>
 
+using namespace std::literals::chrono_literals;
 
 
 bool exitForConfig() {
@@ -24,8 +25,27 @@ bool exitForConfig() {
             return false;
         }
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(17)); //update ~60 times a second
+        std::this_thread::sleep_for(17ms); //update ~60 times a second
     }
 
     return true;
+}
+
+MCPInstallTarget pickInstallLocation() {
+    Utility::platformLog("Press X to install it to console storage\n");
+    Utility::platformLog("Press Y to install it to USB\n");
+    
+    while(true) { //not sure if this should have a timeout
+        VPADStatus status{};
+        VPADRead(VPAD_CHAN_0, &status, 1, nullptr);
+
+        if (status.trigger & VPAD_BUTTON_Y) { // Y gets priority if both are pressed
+            return MCPInstallTarget::MCP_INSTALL_TARGET_USB;
+        }
+        if (status.trigger & VPAD_BUTTON_X) {
+            return MCPInstallTarget::MCP_INSTALL_TARGET_MLC;
+        }
+        
+        std::this_thread::sleep_for(17ms); //update ~60 times a second
+    }
 }
