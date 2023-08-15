@@ -2680,6 +2680,53 @@ TweakError update_entrance_events() {
     return TweakError::NONE;
 }
 
+TweakError fix_entrance_params() {
+    //Some entrances have params that cause issues when they're randomized
+
+    //set our custom param for the crawlspaces so they always have Link crawling
+    RandoSession::CacheEntry& link_ug = g_session.openGameFile("content/Common/Stage/LinkUG_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    link_ug.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+        spawns[1]->data.data()[0x19] |= 0x01; //last byte of X rotation
+
+        return true;
+    });
+
+    RandoSession::CacheEntry& outset_exit = g_session.openGameFile("content/Common/Stage/Obombh.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    outset_exit.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+        spawns[23]->data.data()[0x19] |= 0x01;
+
+        return true;
+    });
+
+    RandoSession::CacheEntry& bomb_shop = g_session.openGameFile("content/Common/Stage/Obombh.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    bomb_shop.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+        spawns[1]->data.data()[0x19] |= 0x01;
+
+        return true;
+    });
+
+    RandoSession::CacheEntry& windfall_exit = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr@DZX");
+    windfall_exit.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+        spawns[2]->data.data()[0x19] |= 0x01;
+
+        return true;
+    });
+
+    return TweakError::NONE;
+}
+
 TweakError replace_ctmc_chest_texture() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Dalways.szs@YAZ0@SARC@Dalways.bfres@BFRES");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -3043,6 +3090,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_entrances_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_hint_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
@@ -3157,6 +3205,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(show_tingle_statues_on_quest_screen());
     TWEAK_ERR_CHECK(apply_ingame_preferences(settings));
     TWEAK_ERR_CHECK(add_ff_warp_button());
+    TWEAK_ERR_CHECK(fix_entrance_params());
     //rat hole visibility
     //failsafe id 0 spawns
 
