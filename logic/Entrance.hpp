@@ -19,8 +19,6 @@ enum struct EntranceType
     DOOR_REVERSE,
     MISC,
     MISC_RESTRICTIVE,
-    MISC_CRAWLSPACE,
-    MISC_CRAWLSPACE_REVERSE,
     MIXED,
     ALL,
 };

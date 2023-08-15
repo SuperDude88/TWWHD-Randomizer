@@ -135,12 +135,9 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     // these entrances we want to attempt randomization with the entrance which goes
     // *to* the dead-end, not *from* it. This significantly reduces the chances
     // of entrance placement failure.
-    //
-    // MISC_CRAWLSPACE is separated for the time being until potential softlocks
-    // with mixing crawlspace/non-crawlspace entrances can be resolved.
     {EntranceType::MISC_RESTRICTIVE, {"Gale Isle",                              "Gale Isle Interior",                      "sea",      4, 0, "Ekaze",    0,     0},
                                      {"Gale Isle Interior",                     "Gale Isle",                               "Ekaze",    0, 1, "sea",      4,     1}},
-    {EntranceType::MISC_CRAWLSPACE,  {"Windfall Island",                        "Windfall Bomb Shop Upper Ledge",          "sea",     11, 2, "Obombh",   0,     1},
+    {EntranceType::MISC_RESTRICTIVE, {"Windfall Island",                        "Windfall Bomb Shop Upper Ledge",          "sea",     11, 2, "Obombh",   0,     1},
                                      {"Windfall Bomb Shop Upper Ledge",         "Windfall Island",                         "Obombh",   0, 2, "sea",     11,     2}},
     {EntranceType::MISC,             {"Dragon Roost Island",                    "Dragon Roost Rito Aerie",                 "sea",     13, 0, "Atorizk",  0,     0},
                                      {"Dragon Roost Rito Aerie",                "Dragon Roost Island",                     "Atorizk",  0, 0, "sea",     13,     1}},
@@ -166,7 +163,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
                                      {"Forest Haven Interior West Upper Ledge", "Forest Haven Exterior West Upper Ledge",  "Omori",    0, 2, "sea",     41,     2}},
     {EntranceType::MISC,             {"Forest Haven Exterior South Ledge",      "Forest Haven Interior South Ledge",       "sea",     41, 4, "Omori",    0,     4},
                                      {"Forest Haven Interior South Ledge",      "Forest Haven Exterior South Ledge",       "Omori",    0, 4, "sea",     41,     4}},
-    {EntranceType::MISC_CRAWLSPACE,  {"Outset Island",                          "Outset Under Link's House",               "sea",     44, 9, "LinkUG",   0,     1},
+    {EntranceType::MISC_RESTRICTIVE, {"Outset Island",                          "Outset Under Link's House",               "sea",     44, 9, "LinkUG",   0,     1},
                                      {"Outset Under Link's House",              "Outset Island",                           "LinkUG",   0, 0, "sea",     44,    11}},
     {EntranceType::MISC_RESTRICTIVE, {"Outset Across Bridge",                   "Outset Forest of Fairies",                "sea",     44, 6, "A_mori",   0,     0},
                                      {"Outset Forest of Fairies",               "Outset Across Bridge",                    "A_mori",   0, 0, "sea",     44,     8}},
@@ -293,12 +290,10 @@ void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 {
     entrance->connect(targetEntrance->disconnect());
     entrance->setReplaces(targetEntrance->getReplaces());
-    std::cout << "Connecting " << entrance->getOriginalName() << " to " << targetEntrance->getReplaces()->getOriginalName() << std::endl;
     if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
     {
         targetEntrance->getReplaces()->getReverse()->connect(entrance->getReverse()->getAssumed()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(entrance->getReverse());
-        std::cout << "Connecting " << targetEntrance->getReplaces()->getReverse()->getOriginalName() << " to " << entrance->getReverse()->getOriginalName() << std::endl;
     }
 }
 
@@ -869,19 +864,13 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, !settings.decouple_entrances);
         addElementsToPool(entrancePools[EntranceType::MISC], miscRestrictiveEntrances);
 
-        // Keep crawlspaces separate for the time-being since spawning in a crawlspace
-        // entrance while standing up can potentially softlock
-        entrancePools[EntranceType::MISC_CRAWLSPACE] = world.getShuffleableEntrances(EntranceType::MISC_CRAWLSPACE, true);
         if (settings.decouple_entrances)
         {
-            entrancePools[EntranceType::MISC_CRAWLSPACE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MISC_CRAWLSPACE);
             typesToDecouple.push_back(EntranceType::MISC);
-            typesToDecouple.push_back(EntranceType::MISC_CRAWLSPACE);
-            typesToDecouple.push_back(EntranceType::MISC_CRAWLSPACE_REVERSE);
         }
     }
 
-    // Set marked entrances as decoupled
+    // Set collected entrance types as decoupled
     for (const auto& type : typesToDecouple)
     {
         for (auto entrance : entrancePools[type])
@@ -890,7 +879,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         }
     }
 
-    // Assign certain vanilla entrances
+    // Assign collected vanilla entrance types
     for (const auto& type : vanillaConnectionTypes)
     {
         auto vanillaEntrances = world.getShuffleableEntrances(type, true);
@@ -924,8 +913,8 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         // For each entrance type, add the entrance to the mixed pool instead
         for (auto& [type, entrancePool] : entrancePools)
         {
-            // Don't re-add the mixed pool to itself and don't mix crawlspaces yet
-            if (poolsToMix.contains(type) && isNoneOf(type, EntranceType::MIXED, EntranceType::MISC_CRAWLSPACE, EntranceType::MISC_CRAWLSPACE_REVERSE))
+            // Don't re-add the mixed pool to itself
+            if (poolsToMix.contains(type) && type != EntranceType::MIXED)
             {
                 addElementsToPool(entrancePools[EntranceType::MIXED], entrancePool);
                 for (auto entrance : entrancePool)

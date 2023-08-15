@@ -346,8 +346,6 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::DOOR_REVERSE, "DOOR_REVERSE"},
         {EntranceType::MISC, "MISC"},
         {EntranceType::MISC_RESTRICTIVE, "MISC_RESTRICTIVE"},
-        {EntranceType::MISC_CRAWLSPACE, "MISC_CRAWLSPACE"},
-        {EntranceType::MISC_CRAWLSPACE_REVERSE, "MISC_CRAWLSPACE_REVERSE"},
         {EntranceType::MIXED, "MIXED"},
         {EntranceType::ALL, "ALL"},
     };
@@ -373,8 +371,6 @@ EntranceType entranceTypeToReverse(const EntranceType& type)
         {EntranceType::DOOR_REVERSE, EntranceType::DOOR},
         {EntranceType::MISC, EntranceType::MISC},
         {EntranceType::MISC_RESTRICTIVE, EntranceType::MISC_RESTRICTIVE},
-        {EntranceType::MISC_CRAWLSPACE, EntranceType::MISC_CRAWLSPACE_REVERSE},
-        {EntranceType::MISC_CRAWLSPACE_REVERSE, EntranceType::MISC_CRAWLSPACE},
         {EntranceType::MIXED, EntranceType::MIXED},
         {EntranceType::ALL, EntranceType::ALL},
     };
