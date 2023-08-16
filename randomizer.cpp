@@ -715,11 +715,20 @@ public:
             return 1;
         }
 
+        // Flatten the playthrough into a single list
+        // so that chests can check it for CTMC
+        std::list<Location*> playthroughLocations = {};
+        for (const auto& sphere : worlds[0].playthroughSpheres) {
+            for (auto loc : sphere) {
+                playthroughLocations.push_back(loc);
+            }
+        }
+
         // Assume 1 world for now, modifying multiple copies needs work
         Utility::platformLog("Saving items...\n");
         UPDATE_DIALOG_VALUE(40);
         UPDATE_DIALOG_LABEL("Saving items...");
-        ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons);
+        ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons, playthroughLocations);
         for (auto& [name, location] : worlds[0].locationEntries) {
             if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
                 ErrorLog::getInstance().log("Failed to save location " + location.getName());
