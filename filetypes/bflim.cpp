@@ -39,10 +39,6 @@ static const std::unordered_map<uint32_t, std::string> supportedFormats {
 
 static const std::unordered_set<uint32_t> BCn_formats = {0x31, 0x431, 0x32, 0x432, 0x33, 0x433, 0x34, 0x35};
 
-void warn_color() {
-    BasicLog::getInstance().log("Warning: colors may break!");
-}
-
 void computeSwizzleTileMode(const uint8_t& in, uint32_t& swizzle, GX2TileMode& tileMode) {
     tileMode = GX2TileMode(in & 0x1F);
     swizzle = ((in >> 5) & 7) << 8;
@@ -648,20 +644,20 @@ namespace FileTypes {
             temp = {0, 0, 0, 5};
             temp2 = {0, 5, 5, 5};
             if (dds.compSel != temp && dds.compSel != temp2) {
-                warn_color();
+                LOG_TO_DEBUG("Warning: colors may break!");
             }
         }
         else if (dds.format_ == 1) {
             temp = {5, 5, 5, 0};
             if (dds.compSel != temp) {
-                warn_color();
+                LOG_TO_DEBUG("Warning: colors may break!");
             }
         }
         else if (dds.format_ == 2 || dds.format_ == 3) {
             temp = {0, 0, 0, 1};
             temp2 = {0, 5, 5, 1};
             if (dds.compSel != temp && dds.compSel != temp2) {
-                warn_color();
+                LOG_TO_DEBUG("Warning: colors may break!");
             }
         }
 
@@ -673,7 +669,7 @@ namespace FileTypes {
                     this->data = swapRB_16bpp(this->data, "rgb565");
                 }
                 else {
-                    warn_color();
+                    LOG_TO_DEBUG("Warning: colors may break!");
                 }
             }
         }
@@ -685,7 +681,7 @@ namespace FileTypes {
                     this->data = swapRB_32bpp(this->data, "rgba8");
                 }
                 else {
-                    warn_color();
+                    LOG_TO_DEBUG("Warning: colors may break!");
                 }
             }
         }
@@ -697,7 +693,7 @@ namespace FileTypes {
                     this->data = swapRB_16bpp(this->data, "rgb5a1");
                 }
                 else {
-                    warn_color();
+                    LOG_TO_DEBUG("Warning: colors may break!");
                 }
             }
         }
@@ -709,7 +705,7 @@ namespace FileTypes {
                     this->data = swapRB_16bpp(this->data, "argb4");
                 }
                 else {
-                    warn_color();
+                    LOG_TO_DEBUG("Warning: colors may break!");
                 }
             }
         }
@@ -726,7 +722,7 @@ namespace FileTypes {
                     }
                 }
                 else {
-                    warn_color();
+                    LOG_TO_DEBUG("Warning: colors may break!");
                 }
             }
         }
