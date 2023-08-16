@@ -3130,18 +3130,18 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     return TweakError::NONE;
 }
 
-TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& randomizeItems) {
+TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool& randomizeItems */) {
     const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
 
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
-    if (randomizeItems) {
+    /* if (randomizeItems) { */
         TWEAK_ERR_CHECK(update_text_replacements(world));
         TWEAK_ERR_CHECK(update_korl_dialog(world));
         TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
         TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
         TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
-    }
+    /* } */
     //Run some things after writing items to preserve offsets
     TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
     TWEAK_ERR_CHECK(add_more_magic_jars());
