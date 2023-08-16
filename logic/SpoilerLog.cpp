@@ -330,23 +330,28 @@ void generateSpoilerLog(WorldPool& worlds)
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    BasicLog::getInstance().log("### Locations that may or may not have progress items in them on this run:", false);
+    std::ofstream log(APP_SAVE_PATH + LogInfo::getSeedHash() + " Non-Spoiler Log.txt");
+
+    Utility::platformLog("Generating non-spoiler log...\n");
+    printBasicInfo(log, worlds);
+
+    log << "### Locations that may or may not have progress items in them on this run:" << std::endl;
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (location->categories.contains(LocationCategory::PlandomizerProgression))
             {
-                BasicLog::getInstance().log("    " + location->getName() + " (Added by Plandomizer)", false);
+                log << "    " + location->getName() + " (Added by Plandomizer)" << std::endl;
             }
             else if (location->progression)
             {
-                BasicLog::getInstance().log("    " + location->getName(), false);
+                log << "    " + location->getName() << std::endl;
             }
         }
     }
 
-    BasicLog::getInstance().log("\n### Locations that cannot have progress items in them on this run:", false);
+    log << std::endl << "### Locations that cannot have progress items in them on this run:" << std::endl;
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
@@ -354,8 +359,10 @@ void generateNonSpoilerLog(WorldPool& worlds)
             // Don't print blue chu chu locations (yet) or Ho Ho Hint Locations 
             if (!location->progression && !location->categories.contains(LocationCategory::BlueChuChu) && !location->categories.contains(LocationCategory::HoHoHint))
             {
-                BasicLog::getInstance().log("    " + location->getName(), false);
+                log << "    " + location->getName() << std::endl;
             }
         }
     }
+
+    log.close();
 }

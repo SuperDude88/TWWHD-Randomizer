@@ -598,7 +598,7 @@ bool RandoSession::modFiles()
     workerThreads.wait_for_tasks();
 
     Utility::platformLog("Finished repacking files\n");
-    BasicLog::getInstance().log("Finished repacking files");
+    LOG_TO_DEBUG("Finished repacking files");
 
     return true;
 }
