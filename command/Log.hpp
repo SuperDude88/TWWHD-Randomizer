@@ -32,21 +32,6 @@ public:
 
 
 
-class BasicLog {
-private:
-    std::ofstream output;
-
-    BasicLog();
-    ~BasicLog();
-public:
-    BasicLog(const BasicLog&) = delete;
-    BasicLog& operator=(const BasicLog&) = delete;
-
-    static BasicLog& getInstance();
-    void log(const std::string& msg, const bool& timestamp = true);
-    void close();
-};
-
 class ErrorLog {
 private:
     static constexpr size_t MAX_ERRORS = 5;

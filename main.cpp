@@ -22,7 +22,6 @@ int main() {
         // Close logs
         ErrorLog::getInstance().close();
         DebugLog::getInstance().close();
-        BasicLog::getInstance().close();
     }
     else {
         Utility::platformLog("Failed to initialize platform!\n");
