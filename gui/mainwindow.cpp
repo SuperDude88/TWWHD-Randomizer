@@ -385,8 +385,8 @@ void MainWindow::update_plandomizer_widget_visbility()
 void MainWindow::apply_config_settings()
 {
     // Directories and Seed
-    ui->base_game_path->setText(config.gameBaseDir.c_str());
-    ui->output_folder->setText(config.outputDir.c_str());
+    ui->base_game_path->setText(config.gameBaseDir.string().c_str());
+    ui->output_folder->setText(config.outputDir.string().c_str());
     APPLY_CONFIG_CHECKBOX_SETTING(config, ui, repack_for_console);
     on_repack_for_console_stateChanged(0); // hide console repacking elements if necessary
     ui->console_output->setText(config.consoleOutputDir.c_str());

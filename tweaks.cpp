@@ -2694,7 +2694,7 @@ TweakError fix_entrance_params() {
         return true;
     });
 
-    RandoSession::CacheEntry& outset_exit = g_session.openGameFile("content/Common/Stage/Obombh.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    RandoSession::CacheEntry& outset_exit = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr@DZX");
     outset_exit.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
@@ -2704,7 +2704,7 @@ TweakError fix_entrance_params() {
         return true;
     });
 
-    RandoSession::CacheEntry& bomb_shop = g_session.openGameFile("content/Common/Stage/Obombh.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+    RandoSession::CacheEntry& bomb_shop = g_session.openGameFile("content/Common/Stage/Obombh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
     bomb_shop.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
@@ -3220,18 +3220,18 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     return TweakError::NONE;
 }
 
-TweakError apply_necessary_post_randomization_tweaks(World& world, const bool& randomizeItems) {
+TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool& randomizeItems */) {
     const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
 
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
-    if (randomizeItems) {
+    /* if (randomizeItems) { */
         TWEAK_ERR_CHECK(update_text_replacements(world));
         TWEAK_ERR_CHECK(update_korl_dialog(world));
         TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
         TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
         TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
-    }
+    /* } */
     //Run some things after writing items to preserve offsets
     TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
     TWEAK_ERR_CHECK(add_more_magic_jars());

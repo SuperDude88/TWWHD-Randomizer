@@ -1,5 +1,5 @@
 # TWWHD-Randomizer
-Game is still unstable because of patches for uncompressed rooms. Readme is subject to change.
+Game may still be unstable until it is more thoroughly tested. Everything here is subject to change.
 
 * [Information](#Information)
   * [Getting Stuck](#Getting-Stuck)
@@ -13,35 +13,34 @@ Game is still unstable because of patches for uncompressed rooms. Readme is subj
 ## Information
 A Randomizer for *The Legend of Zelda: The Wind Waker HD*.
 
-It shuffles all the items, makes the world open from the start, removes most cutscenes, and adds other tweaks to speed up mundane tasks. While most features from the original Wind Waker Randomizer are present, a few are still missing due to the remake's code changes.
-
-Settings are currently changed through the config.yaml. A GUI is planned for a later date.
+It shuffles all the items, makes the world open from the start, removes most cutscenes, and adds other tweaks to speed up mundane tasks. While most features from the original Wind Waker Randomizer are present, a few are still missing due to the remake's changes.
 
 ### Getting Stuck
-If you can not find anywhere to progress, you should first check the spoiler log. The spoiler log is generated in the same folder as the randomizer program (sd:/wiiu/apps/rando) and contains information on everything in the seed.
+If you can not find anywhere to progress, you should first check the spoiler log. The spoiler log is generated in the randomizer's save directory (`sd:/wiiu/save/<8 hex digits> (TWWHD Randomizer)` on console) and contains information on everything in the seed.
 
 If you have checked the log and are still stuck, it is possible you have encountered a [bug](#Reporting-Bugs).
 
 ### Reporting Bugs
-If you seem to have discovered a bug, let us know in our [Discord server](TODO) or by opening an issue. Be sure to share the config file for the seed when reporting a problem.
+If you seem to have discovered a bug, let us know in our [Discord server](TODO) or by opening an issue. Be sure to share the config file (excluding file paths) for the seed when reporting a problem.
 
 ## Setup
 You can download the latest stable version of the randomizer from the releases page. 
 
-This randomizer currently supports the USA version of TWWHD. The European and Japanese versions of the game will not work, nor will the original Wind Waker. The randomizer requires the game to be installed to the console storage (not a USB or SD card). If you have a physical copy, you can create a digital install using [disc2app](https://github.com/koolkdev/disc2app).
+This randomizer currently supports the USA version of TWWHD. The European and Japanese versions of the game will not work, nor will the original Wind Waker.
 
 ### On Console
-Running the randomizer requires a Wii U running Tiramisu. A guide for this can be found [here](https://wiiu.hacks.guide/#/). You must have roughly 3-3.5GB of free space on your SD card for the randomizer's data.
+Running the randomizer requires a Wii U with the Aroma environment and sigpatches. A guide for installing the EnvironmentLoader can be found [here](https://wiiu.hacks.guide/#/). After setting up the EnvironmentLoader, you can download Aroma [here](https://aroma.foryour.cafe/), and add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`.
 
+To generate a patched game, the randomizer requires a digital install of TWWHD (on NAND or USB). In theory it supports discs, but it has not been tested. If you have a physical copy and discs aren't working (expected), you can dump installable files using [wudd](https://github.com/wiiu-env/wudd). You must also have 1.5GB (TODO: check this number, also make the console do it for me) of console space available for the randomizer channel (*\*This storage is reserved after first-time set up*).
 
-Once homebrew is set up, copy the `wwhd_randomizer.rpx` into "sd:/wiiu/apps/rando". Optionally, add a config.yaml for custom settings (a default config will be created if none are present). Run the randomizer from the homebrew menu to patch the game.
+Once homebrew is set up, copy the `wwhd_randomizer.wuhb` into "sd:/wiiu/apps". Run the randomizer from the home menu to patch the game. To change settings, replace or edit the `config.yaml` in the randomizer's save directory (`sd:/wiiu/save/<8 hex digits> (TWWHD Randomizer)`). There is currently no GUI for the homebrew app.
 
-To play the randomized game, you must have a CFW active. This should always be the case as long as you booted homebrew after the Wii U was last restarted.
+To play the randomized game, you must have a CFW/sigpatches active. This should always be the case as long as you loaded Aroma with sigpatches.
 
-The first time it runs, the randomizer will create a backup of the game on your SD card. This can take some time, but only happens once. **Once this folder is created, do not touch it. Deleting or modifying it will force you to reinstall the game from the eShop or disc to play the unmodified version.**
+The first time it runs, the randomizer will create a home menu channel for the randomized game. This can take some time (it needs to transfer all the game data), but only happens once.
 
 ### On Emulator
-This randomizer does not currently have a binary for Windows, Mac, or Linux. The code is cross-platform, but requires you to set the correct paths in the config. The base game must be an unmodified, decrypted USA copy, and the output directory must be another copy of the game that will be overwritten. For faster randomization, you can change the number of threads in [RandoSession.cpp](command/RandoSession.cpp#L120) to match the thread count of your system.
+A version of the randomizer with a GUI is available for Windows (Mac and Linux are untested, broken(?)). The base game must be an unmodified, decrypted USA copy, and the output directory must be another copy of the game that will be overwritten. You can get a compatible dump of the game from a console with [dumpling](https://github.com/emiyl/dumpling).
 
 ### Building
 To build for Wii U, use the dockerfile and run the image.
@@ -54,7 +53,7 @@ docker run -i -e BUILD_TYPE=randomizer -v "$(pwd):/src" <image-tag>
 
 You can also change the build type to "asm" to rebuild the assembly patches, or "full" to build the assembly and the randomizer.
 
-The randomizer program (RPX) will be placed in the build folder.
+The randomizer program (wuhb) will be placed in the build folder.
 
 ## Credits
 All of this was made possible thanks to tremendous help from [csunday95](https://github.com/csunday95) and [gymnast86](https://github.com/gymnast86), along with much bugfixing assistance from the devs at [ForTheUsers](https://fortheusers.org/). Everything here was based on the research and code already written by the [original randomizer team](https://github.com/LagoLunatic/wwrando#credits).
