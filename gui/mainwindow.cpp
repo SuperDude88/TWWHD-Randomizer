@@ -465,8 +465,16 @@ void MainWindow::apply_config_settings()
     APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(80.0f));
 
     auto& num_required_dungeons = config.settings.num_required_dungeons;
-    // Race mode dungeons must be between 1 and 6
-    num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(1), uint8_t(6));
+    // Race mode dungeons must be between 1 and 6 if race mode is enabled
+    if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
+    {
+        num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(1), uint8_t(6));
+    }
+    else
+    {
+        num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(0), uint8_t(6));
+    }
+
     ui->num_required_dungeons->setCurrentIndex(num_required_dungeons);
 
     auto& num_starting_triforce_shards = config.settings.num_starting_triforce_shards;
@@ -674,17 +682,24 @@ DEFINE_STATE_CHANGE_FUNCTION(progression_combat_secret_caves)
 void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
 {
     config.settings.progression_dungeons = nameToProgressionDungeons(arg1.toStdString());
-    update_permalink();
     // Grey out the race mode dungeons combobox if race mode/standard is not selected
     if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
         ui->num_required_dungeons->setEnabled(true);
+        // Change from 0 to 1 if necessary
+        ui->num_required_dungeons->setItemData(0, 0, Qt::UserRole - 1);
+        if (config.settings.num_required_dungeons == 0)
+        {
+            ui->num_required_dungeons->setCurrentIndex(1);
+        }
         ui->label_for_num_required_dungeons->setEnabled(true);
         ui->label_for_num_required_dungeons->setText("Number of Race Mode Dungeons");
+
     }
     else if (config.settings.progression_dungeons == ProgressionDungeons::Standard)
     {
         ui->num_required_dungeons->setEnabled(true);
+        ui->num_required_dungeons->setItemData(0, 33, Qt::UserRole - 1);
         ui->label_for_num_required_dungeons->setEnabled(true);
         ui->label_for_num_required_dungeons->setText("Number of Required Bosses");
     }
@@ -693,6 +708,8 @@ void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
         ui->num_required_dungeons->setEnabled(false);
         ui->label_for_num_required_dungeons->setEnabled(false);
     }
+    update_progress_locations_text();
+    update_permalink();
 }
 
 DEFINE_STATE_CHANGE_FUNCTION(progression_expensive_purchases)
