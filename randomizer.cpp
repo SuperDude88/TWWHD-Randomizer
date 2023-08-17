@@ -910,7 +910,6 @@ int mainRandomize() {
         // IMPROVEMENT: issue with seekp, find better solution than manual padding?
         // TODO: make things zoom
         // TODO: do a hundo seed to test everything
-        // TODO: check for free space with output stuff
 
         retVal = rando.randomize();
     } // End timer scope
