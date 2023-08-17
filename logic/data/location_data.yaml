@@ -331,7 +331,7 @@
 - Names:
     English: Star Island - Blue Chu Chu
     Spanish: Isla Estrella - ChuChu Azul
-    French: Ile Etoilée - 
+    French: Ile Etoilée - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -384,7 +384,7 @@
 - Names:
     English: Northern Fairy Island - Blue Chu Chu
     Spanish: Isla del Hada del Norte - ChuChu Azul
-    French: Ilot Septentrional des Fées - 
+    French: Ilot Septentrional des Fées - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -465,7 +465,7 @@
 - Names:
     English: Crescent Moon Island - Blue Chu Chu North
     Spanish: Isla de la Luna - ChuChu Azul Norte
-    French: F - 
+    French: Ile du Croissant - Blob Bleu du Nord
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -476,7 +476,7 @@
 - Names:
     English: Crescent Moon Island - Blue Chu Chu South
     Spanish: Isla de la Luna - ChuChu Azul Sur
-    French: F - 
+    French: Ile du Croissant - Blob Bleu du Sud
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -584,7 +584,7 @@
 - Names:
     English: Overlook Island - Blue Chu Chu
     Spanish: Isla de las Torres - ChuChu Azul
-    French: F - 
+    French: Ile aux Trois Tours - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -653,7 +653,7 @@
 - Names:
     English: Mother & Child Isles - Blue Chu Chu
     Spanish: Islas Madre e Hija - ChuChu Azul
-    French: F - 
+    French: Ile Geminée - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -718,7 +718,7 @@
 - Names:
     English: Spectacle Island - Blue Chu Chu
     Spanish: Isla Calabaza - ChuChu Azul
-    French: F - 
+    French: Ile des Binocles - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -1299,7 +1299,7 @@
 - Names:
     English: Pawprint Isle - Blue Chu Chu
     Spanish: Isla de la Huella - ChuChu Azul
-    French: F - 
+    French: Pas de Chat - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -1539,7 +1539,7 @@
 - Names:
     English: Western Fairy Island - Blue Chu Chu
     Spanish: Isla del Hada del Oeste - ChuChu Azul
-    French: F - 
+    French: Ilot Occidental des Fées - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -1591,7 +1591,7 @@
 - Names:
     English: Rock Spire Isle - Blue Chu Chu
     Spanish: Isla de los Pilares - ChuChu Azul
-    French: F - 
+    French: Ile de la Rocaille - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -1737,7 +1737,7 @@
 - Names:
     English: Tingle Island - Blue Chu Chu
     Spanish: Isla de Tingle - ChuChu Azul
-    French: F - 
+    French: Ile de Tingle - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -1793,7 +1793,7 @@
 - Names:
     English: Eastern Fairy Island - Blue Chu Chu
     Spanish: Isla del Hada del Este - ChuChu Azul
-    French: F - 
+    French: Ilot Oriental des Fées - Blob Bleu 
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2129,7 +2129,7 @@
 - Names:
     English: Thorned Fairy Island - Blue Chu Chu
     Spanish: Isla del Hada Custodiada - ChuChu Azul
-    French: F - 
+    French: Ilot Epineux des Fées - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2207,7 +2207,7 @@
 - Names:
     English: Needle Rock Isle - Blue Chu Chu
     Spanish: Isla de la Aguja - ChuChu Azul
-    French: F - 
+    French: Serrure de Pierre - Blob Bleu 
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2302,7 +2302,7 @@
 - Names:
     English: Stone Watcher Island - Blue Chu Chu
     Spanish: Isla Cabeza de Piedra - ChuChu Azul
-    French: F - 
+    French: Ile de la Tête de Pierre - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2507,7 +2507,7 @@
 - Names:
     English: Birds Peak Rock - Blue Chu Chu
     Spanish: Isla de los Nidos - ChuChu Azul
-    French: F - 
+    French: Ile aux Nichoirs - Blob Bleu 
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2547,7 +2547,7 @@
 - Names:
     English: Diamond Steppe Island - Blue Chu Chu
     Spanish: Isla Rombo - ChuChu Azul
-    French: F - 
+    French: Ile du Losange - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2655,7 +2655,7 @@
 - Names:
     English: Shark Island - Blue Chu Chu
     Spanish: Isla Tiburón - ChuChu Azul
-    French: F - 
+    French: Ile du Requin - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2695,7 +2695,7 @@
 - Names:
     English: Southern Fairy Island - Blue Chu Chu
     Spanish: Isla del Hada del Sur - ChuChu Azul
-    French: F - 
+    French: Ilot Méridional des Fées - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2885,7 +2885,7 @@
 - Names:
     English: Cliff Plateau Isles - Blue Chu Chu
     Spanish: Islas Conectadas - ChuChu Azul
-    French: F - 
+    French: Saut de Roc - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -2925,7 +2925,7 @@
 - Names:
     English: Horseshoe Island - Blue Chu Chu
     Spanish: Isla Herradura - ChuChu Azul
-    French: Ile du Fer à Cheval - 
+    French: Ile du Fer à Cheval - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -3246,7 +3246,7 @@
 - Names:
     English: Angular Isles - Blue Chu Chu
     Spanish: Islas Cuadri - ChuChu Azul
-    French: Ilots Kif Kif - 
+    French: Ilots Kif Kif - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu
@@ -3286,7 +3286,7 @@
 - Names:
     English: Boating Course - Blue Chu Chu
     Spanish: Zona de regata - ChuChu Azul
-    French: Batodrome - 
+    French: Batodrome - Blob Bleu
   Original Item: Blue Chu Jelly
   Category:
     - Blue Chu Chu

@@ -2460,14 +2460,14 @@ std::string generate_seed() {
     const auto noun_file = Random(0, 2);
     std::string adjective1, adjective2, noun;
 
-    adjective1 = popRandomElement(adjectives);
-    adjective2 = popRandomElement(adjectives);
+    adjective1 = RandomElement(adjectives);
+    adjective2 = RandomElement(adjectives);
 
     if(noun_file == 0) {
-        noun = popRandomElement(names);
+        noun = RandomElement(names);
     }
     else {
-        noun = popRandomElement(nouns);
+        noun = RandomElement(nouns);
     }
 
     adjective1[0] = std::toupper(adjective1[0]);
@@ -2480,8 +2480,8 @@ std::string generate_seed() {
 std::string generate_seed_hash() {
     std::string name1, name2;
 
-    name1 = popRandomElement(short_names);
-    name2 = popRandomElement(short_names);
+    name1 = RandomElement(short_names);
+    name2 = RandomElement(short_names);
 
     name1[0] = std::toupper(name1[0]);
     name2[0] = std::toupper(name2[0]);

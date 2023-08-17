@@ -1268,7 +1268,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             for (auto region : location->hintRegions) {
                 // If this region is a dungeon, use the dungeon's island instead
                 if (world.dungeons.contains(region)) {
-                    region = world.dungeons[region].island;
+                    region = *world.dungeons[region].islands.begin();
                 }
         
                 if (islandNameToRoomIndex(region) != 0) {
@@ -1629,6 +1629,63 @@ TweakError add_cross_dungeon_warps() {
     return TweakError::NONE;
 }
 
+// Add in return spawns for boss doors which don't have them
+TweakError add_boss_door_return_spawns() {
+    struct BossDoorSpawnData {
+        std::string stage_name;
+        uint8_t room_num;
+        float x, y, z;
+        uint16_t y_rot;
+    };
+
+    std::list<BossDoorSpawnData> newSpawns = {
+        {"M_NewD2", 10,   400.0f,  5950.0f,  -450.0f, 0x0000},
+        {"Siren",   18, -2200.0f,  9245.0f, -9775.0f, 0xC000},
+        {"kaze",    12, 13965.0f, -5060.0f,  9600.0f, 0x8000},
+    };
+
+    for (auto& newSpawn : newSpawns) {
+        RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+        RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Room" + std::to_string(newSpawn.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(newSpawn.room_num) + ".bfres@BFRES@room.dzr@DZX");
+
+        RandoSession::CacheEntry* dzx_for_spawn;
+        dzx_for_spawn = &room;
+        if(newSpawn.stage_name == "M_Dai" || newSpawn.stage_name == "kaze") {
+            dzx_for_spawn = &stage;
+        }
+
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.x);
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.y);
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.z);
+        Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.y_rot);
+
+        dzx_for_spawn->addAction([newSpawn](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(dzx, FileTypes::DZXFile, data)
+
+            ChunkEntry& spawn = dzx.add_entity("PLYR");
+            spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x60"s;
+
+            // Spawn type 6 doesn't work properly for the wind 
+            // temple boss door for some reason, so use 0 instead
+            if (newSpawn.stage_name == "kaze") {
+                spawn.data[0xA] = '\x00';
+            }
+
+            spawn.data.resize(0x20);
+            spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (newSpawn.room_num & 0x3F);
+            spawn.data.replace(0xC, 4, reinterpret_cast<const char*>(&newSpawn.x), 4);
+            spawn.data.replace(0x10, 4, reinterpret_cast<const char*>(&newSpawn.y), 4);
+            spawn.data.replace(0x14, 4, reinterpret_cast<const char*>(&newSpawn.z), 4);
+            spawn.data.replace(0x18, 2, "\x00\x00", 2);
+            spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&newSpawn.y_rot), 2);
+            spawn.data.replace(0x1C, 4, "\xFF\x46\xFF\xFF", 4);
+
+            return true;
+        });
+    }
+    return TweakError::NONE;
+}
+
 TweakError remove_makar_kidnapping() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/kaze_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr@DZX");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -1945,25 +2002,64 @@ TweakError add_hint_signs() {
     return TweakError::NONE;
 }
 
-TweakError prevent_door_boulder_softlocks() {
-    RandoSession::CacheEntry& room13 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
+TweakError prevent_reverse_door_softlocks() {
 
-    room13.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(room13, FileTypes::DZXFile, data)
+    // Add switch triggers to remove boulders blocking DRC doors
+    RandoSession::CacheEntry& drc_room13 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
 
-        ChunkEntry& swc00_13 = room13.add_entity("SCOB");
+    drc_room13.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(drc_room13, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_13 = drc_room13.add_entity("SCOB");
         swc00_13.data = "SW_C00\x00\x00\x00\x03\xFF\x05\x45\x24\xB0\x00\x00\x00\x00\x00\x43\x63\x00\x00\x00\x00\xC0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
 
         return true;
     });
 
-    RandoSession::CacheEntry& room14 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+    RandoSession::CacheEntry& drc_room14 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
     
-    room14.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(room14, FileTypes::DZXFile, data)
+    drc_room14.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(drc_room14, FileTypes::DZXFile, data)
 
-        ChunkEntry& swc00_14 = room14.add_entity("SCOB");
+        ChunkEntry& swc00_14 = drc_room14.add_entity("SCOB");
         swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x06\xC5\x7A\x20\x00\x44\xF3\xC0\x00\xC5\x06\xC0\x00\x00\x00\xA0\x00\xFF\xFF\xFF\xFF\x20\x10\x10\xFF"s;
+
+        return true;
+    });
+
+    // Add switch triggers to remove obstacles blocking ET doors if someone enters ET from the boss door loading zone
+    // 1st song stone
+    RandoSession::CacheEntry& et_room10 = g_session.openGameFile("content/Common/Stage/M_Dai_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr@DZX");
+
+    et_room10.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(et_room10, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_10 = et_room10.add_entity("SCOB");
+        swc00_10.data = "SW_C00\x00\x00\x00\x03\xFF\x45\x45\x9F\x05\x90\xC4\xA2\x80\x00\x45\x98\x15\xF3\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x14\x0A\xFF"s;
+
+        return true;
+    });
+
+    // Elephant statue 
+    RandoSession::CacheEntry& et_room14 = g_session.openGameFile("content/Common/Stage/M_Dai_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+
+    et_room14.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(et_room14, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_14 = et_room14.add_entity("SCOB");
+        swc00_14.data = "SW_C00\x00\x00\x00\x03\xFF\x52\x45\x54\x80\x00\xC4\x96\x00\x00\x46\x16\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x14\x0A\xFF"s;
+
+        return true;
+    });
+
+    // 2nd song stone
+    RandoSession::CacheEntry& et_room15 = g_session.openGameFile("content/Common/Stage/M_Dai_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr@DZX");
+
+    et_room15.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(et_room15, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_15 = et_room15.add_entity("SCOB");
+        swc00_15.data = "SW_C00\x00\x00\x00\x03\xFF\x59\x44\x22\x80\x00\xC4\x8F\xC0\x00\x45\xF0\xA0\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x14\x0A\xFF"s;
 
         return true;
     });
@@ -2060,7 +2156,11 @@ TweakError show_dungeon_markers_on_chart(World& world) {
     for(const auto& [name, dungeon] : world.dungeons) {
         if (dungeon.isRequiredDungeon)
         {
-            const std::string& islandName = dungeon.island;
+            // Get island of associated boss room
+            auto raceModeArea = world.locationEntries[dungeon.raceModeLocation].accessPoints.front()->area->name;
+            auto bossIslands = world.getRegions(raceModeArea, "Islands", /*typesToIgnore =*/{"Dungeons"});
+
+            const std::string& islandName = *bossIslands.begin();
             room_indexes.emplace(islandNameToRoomIndex(islandName));
         }
     }
@@ -2212,22 +2312,6 @@ TweakError add_chest_in_place_master_sword() {
         }
 
         dzr.writeToStream(generic.data);
-
-        return true;
-    });
-
-    return TweakError::NONE;
-}
-
-TweakError update_spoil_sell_text() {
-    RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
-    entry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
-
-        std::vector<std::u16string> lines = Utility::Str::split(msbt.messages_by_label["03957"].text.message, u'\n');
-        if (lines.size() != 5) LOG_ERR_AND_RETURN_BOOL(TweakError::UNEXPECTED_VALUE); //incorrect number of lines
-        lines[2] = u"And no Blue Chu Jelly, either!";
-        msbt.messages_by_label["03957"].text.message = Utility::Str::merge(lines, u'\n');
 
         return true;
     });
@@ -2866,6 +2950,13 @@ TweakError apply_custom_colors(World& world) {
                             // For the two colors in this iteration
                             for (auto& [mask, offset, curColor] : masksOffsetsColors) {
                                 if (mask == 0x00F8) {
+
+                                    // TEMP FIX: Remove red from really dark base eye colors, otherwise
+                                    // we can get some really light colors back that look weird
+                                    if (name == "Eyes") {
+                                        curColor &= 0x07FF;
+                                    }
+
                                     auto newColor = colorExchange(baseColor, replacementColor, curColor);
 
                                     if (offset < texture.data.length()) {
@@ -2974,7 +3065,7 @@ TweakError add_ff_warp_button() {
 
             const Message& to_copy = msbt.messages_by_label["00075"];
             //const std::u16string message = messages.at(language);
-            const std::u16string message = u"Warp to " TEXT_COLOR_RED u"Forsaken Fortress" TEXT_COLOR_DEFAULT u"?" TEXT_END;
+            std::u16string message = u"";
             msbt.addMessage("00076", to_copy.attributes, to_copy.style, message);
 
             return true;
@@ -3107,7 +3198,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(implement_key_bag());
     TWEAK_ERR_CHECK(add_chest_in_place_jabun_cutscene());
     TWEAK_ERR_CHECK(add_chest_in_place_master_sword());
-    TWEAK_ERR_CHECK(update_spoil_sell_text());
     TWEAK_ERR_CHECK(fix_totg_warp_spawn());
     TWEAK_ERR_CHECK(remove_phantom_ganon_req_for_reefs());
     TWEAK_ERR_CHECK(fix_ff_door());
@@ -3147,8 +3237,9 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(add_more_magic_jars());
     TWEAK_ERR_CHECK(add_pirate_ship_to_windfall()); //doesnt fix getting stuck behind door
     TWEAK_ERR_CHECK(add_hint_signs());
-    TWEAK_ERR_CHECK(prevent_door_boulder_softlocks());
+    TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
     TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
+    TWEAK_ERR_CHECK(add_boss_door_return_spawns());
     TWEAK_ERR_CHECK(shorten_zephos_event());
     TWEAK_ERR_CHECK(shorten_auction_intro_event());
     TWEAK_ERR_CHECK(add_jabun_obstacles_to_default_layer());

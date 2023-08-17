@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <vector>
 #include <random>
+#include <iostream>
 
 #include <logic/Requirements.hpp>
 #include <logic/PoolFunctions.hpp>
@@ -370,6 +371,71 @@ World::WorldLoadingError World::determineProgressionLocations()
     return WorldLoadingError::NONE;
 }
 
+// Properly set the dungeons for boss room locations
+// for race mode incase boss/miniboss entrances are randomized
+World::WorldLoadingError World::setDungeonLocations()
+{
+    // Keep track of any unassigned race mode locations
+    LocationPool unassignedRaceModeLocations = {};
+
+    for (auto& [areaName, area] : areaEntries)
+    {
+        for (auto& locAcc : area.locations)
+        {
+            auto loc = locAcc.location;
+            if (loc->hintRegions.empty())
+            {
+                auto connectedDungeons = getDungeons(areaName);
+                auto islands = getIslands(areaName);
+                // If the only way to get to this location is through a dungeon
+                // then assign it to that dungeon
+                if (connectedDungeons.size() > 0 && islands.empty())
+                {
+                    auto dungeonName = *(connectedDungeons.begin());
+                    auto& dungeon = getDungeon(dungeonName);
+
+                    LOG_TO_DEBUG(loc->getName() + " has been assigned to dungeon " + dungeonName);
+                    if (loc->isRaceModeLocation)
+                    {
+                        if (dungeon.raceModeLocation == "") 
+                        {
+                            dungeon.raceModeLocation = loc->getName();
+                            dungeon.hasNaturalRaceModeLocation = true;
+                        }
+                        else
+                        {
+                            unassignedRaceModeLocations.push_back(loc);
+                        }
+                    }
+                    dungeon.locations.emplace_back(loc->getName());
+                    loc->hintRegions.insert(dungeonName);
+                    area.dungeon = dungeonName;
+                } 
+                // If the race mode location doesn't have a dungeon, it's unassigned
+                else if (loc->isRaceModeLocation)
+                {
+                    unassignedRaceModeLocations.push_back(loc);
+                }
+            }
+        }
+    }
+
+    // For any unassigned race mode locations, randomly 
+    // assign them to dungeons that don't have one,
+    // but don't list them in the dungeon's locations
+    for (auto& [dungeonName, dungeon] : dungeons)
+    {
+
+        if (dungeon.raceModeLocation.empty())
+        {
+            dungeon.raceModeLocation = popRandomElement(unassignedRaceModeLocations)->getName();
+            LOG_TO_DEBUG("Unconnected race mode location " + dungeon.raceModeLocation + " has been assigned to dungeon " + dungeonName);
+        }
+    }
+
+    return WorldLoadingError::NONE;
+}
+
 World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 {
     if (settings.progression_dungeons != ProgressionDungeons::Disabled || settings.num_required_dungeons > 0)
@@ -413,11 +479,11 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                         bool dungeonLocationForcesRaceMode = !plandomizer.locations.contains(dungeonLocation) ? false : !plandomizer.locations[dungeonLocation].isJunkItem();
                         if (dungeonLocationForcesRaceMode)
                         {
-                            // However, if the dungeon's race mode location is junk then
+                            // However, if the dungeon's naturally assigned race mode location is junk then
                             // that's an error on the user's part.
                             Location* raceModeLocation = &locationEntries[dungeon.raceModeLocation];
                             bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
-                            if (!raceModeLocationIsAcceptable)
+                            if (dungeon.hasNaturalRaceModeLocation && !raceModeLocationIsAcceptable)
                             {
                                 ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
                                 LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
@@ -452,7 +518,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 // If this dungeon has a junk item placed as its race mode
                 // location, then skip it
                 auto raceModeLocation = &locationEntries[dungeon.raceModeLocation];
-                bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem();
+                bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem() || dungeon.hasNaturalRaceModeLocation;
                 if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
                 {
                     LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
@@ -471,6 +537,15 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                         locationEntries[location].progression = false;
                         nonProgressRollbacks.push_back(&locationEntries[location]);
                     }
+
+                    // Dungeons without a naturally assigned race mode location won't
+                    // have their race mode location in their list of locations, so
+                    // manually add it to the non-progress checks
+                    if (!dungeon.hasNaturalRaceModeLocation)
+                    {
+                        nonProgressRollbacks.push_back(&locationEntries[dungeon.raceModeLocation]);
+                    }
+
                     // Also set any progress locations outside the dungeon which
                     // are dependent on beating it as non-progression locations
                     for (auto& location : dungeon.outsideDependentLocations)
@@ -699,6 +774,13 @@ World::WorldLoadingError World::parseRequirementString(const std::string& str, R
             ITEM_VALID_CHECK(argItem, "Game Item of name \"" << itemName << " Does Not Exist");
             req.args.push_back(count);
             req.args.push_back(itemEntries[itemName]);
+            return WorldLoadingError::NONE;
+        }
+
+        // Check Impossible last since it's least likely
+        else if (argStr == "Impossible")
+        {
+            req.type = RequirementType::IMPOSSIBLE;
             return WorldLoadingError::NONE;
         }
 
@@ -944,6 +1026,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
     if (locationObject["Race Mode Location"])
     {
         newEntry.isRaceModeLocation = true;
+        raceModeLocations.push_back(&newEntry);
     }
 
     if (locationObject["Goal Names"])
@@ -1023,6 +1106,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << loadedArea << "\" is not defined!");
 
     AreaEntry& newEntry = getArea(loadedArea);
+    newEntry.name = loadedArea;
     newEntry.worldId = worldId;
     WorldLoadingError err = WorldLoadingError::NONE;
 
@@ -1045,11 +1129,11 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
 
     // Check to see if this area is the first one in a dungeon. This is important
     // for later finding which island leads to this dungeon in race mode
-    if (areaObject["Dungeon Entrance Room"])
+    if (areaObject["Dungeon Starting Room"])
     {
-        const std::string dungeon = areaObject["Dungeon Entrance Room"].as<std::string>();
+        const std::string dungeon = areaObject["Dungeon Starting Room"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon)
-        dungeons[dungeon].entranceRoom = loadedArea;
+        dungeons[dungeon].startingRoom = loadedArea;
     }
 
     // Check to see if this area is assigned to a hint region
@@ -1083,6 +1167,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     {
         for (const auto& location : areaObject["Locations"]) {
             LocationAccess locOut;
+            locOut.area = &newEntry;
             const std::string locationName = location.first.as<std::string>();
             LOCATION_VALID_CHECK(locationName, "Unknown location name \"" + locationName + "\" when parsing area \"" + loadedArea + "\"");
             err = loadLocationRequirement(locationName, location.second.as<std::string>(), locOut);
@@ -1093,16 +1178,12 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             }
             LOG_TO_DEBUG("\tAdding location " + locationName);
             newEntry.locations.push_back(locOut);
+            locationEntries[locationName].accessPoints.push_back(&newEntry.locations.back());
             // If this area is part of a dungeon, then add any locations to that dungeon
             if (newEntry.dungeon != "")
             {
                 dungeons[newEntry.dungeon].locations.push_back(locationName);
                 LOG_TO_DEBUG("\t\tAdding location to dungeon " + newEntry.dungeon);
-                // If it's a race mode location, set it as the dungeon's race mode location
-                if (locationEntries[locationName].isRaceModeLocation)
-                {
-                    dungeons[newEntry.dungeon].raceModeLocation = locationName;
-                }
                 // Also set the location's hint region if the area has any defined
                 // dungeon, island, or general hint region
                 locationEntries[locationName].hintRegions = {newEntry.dungeon};
@@ -1393,13 +1474,25 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
     }
 
     // Once all areas have been loaded, create the entrance lists. This lets us
-    // find assigned islands later
+    // find assigned islands/dungeons later
     for (auto& [name, areaEntry] : areaEntries)
     {
         for (auto& exit : areaEntry.exits)
         {
             exit.connect(exit.getConnectedArea());
             exit.setOriginalName();
+
+            // Set each dungeon's associated starting entrance
+            auto connectedDungeon = exit.getConnectedAreaEntry()->dungeon;
+            auto connectedArea = exit.getConnectedArea();
+            if (areaEntry.dungeon == "" && connectedDungeon != "")
+            {
+                auto& dungeon = dungeons[connectedDungeon];
+                if (dungeon.startingRoom == connectedArea)
+                {
+                    dungeon.startingEntrance = &exit;
+                }   
+            }
         }
     }
 
@@ -1470,11 +1563,11 @@ EntrancePool World::getShuffledEntrances(const EntranceType& type, const bool& o
 // Peforms a breadth first search to find all the islands that lead to the given
 // area. In some cases of entrance randomizer, multiple islands can lead to the
 // same area
-std::unordered_set<std::string> World::getIslands(const std::string& startArea)
+std::unordered_set<std::string> World::getRegions(const std::string& startArea, const std::string& regionType, const std::unordered_set<std::string>& typesToIgnore /*= {}*/)
 {
-    std::unordered_set<std::string> islands = {};
+    std::unordered_set<std::string> regions = {};
     std::unordered_set<std::string> alreadyChecked = {};
-    std::vector<std::string> areaQueue = {startArea};
+    std::list<std::string> areaQueue = {startArea};
 
     while (!areaQueue.empty())
     {
@@ -1484,13 +1577,17 @@ std::unordered_set<std::string> World::getIslands(const std::string& startArea)
 
         auto& areaEntry = getArea(area);
 
-        // Don't search through other dungeons or hint areas
-        if (area != startArea && (areaEntry.dungeon != "" || areaEntry.hintRegion != ""))
+        // Block searching through other regions unless we're
+        // set to ignore them
+        if (area != startArea && 
+           (areaEntry.hintRegion != "" || 
+           (areaEntry.dungeon != "" && regionType == "Islands" && !typesToIgnore.contains("Dungeons")) || 
+           (areaEntry.island != "" && regionType == "Dungeons" && !typesToIgnore.contains("Islands"))))
         {
             continue;
         }
 
-        if (areaEntry.island != "")
+        if (regionType == "Islands" && areaEntry.island != "")
         {
             if (area == startArea)
             {
@@ -1499,23 +1596,44 @@ std::unordered_set<std::string> World::getIslands(const std::string& startArea)
             else
             {
                 // Don't search islands we've already put on the list
-                islands.insert(areaEntry.island);
+                regions.insert(areaEntry.island);
+                continue;
+            }
+        }
+        else if (regionType == "Dungeons" && areaEntry.dungeon != "")
+        {
+            if (area == startArea)
+            {
+                return {areaEntry.dungeon};
+            }
+            else
+            {
+                // Don't search dungeons we've already put on the list
+                regions.insert(areaEntry.dungeon);
                 continue;
             }
         }
 
-        // If this area isn't an island, add its entrances to the queue as long
+        // If this area isn't an island or dungeon, add its entrances to the queue as long
         // as they haven't been checked yet
         for (auto entrance : areaEntry.entrances)
         {
             if (!alreadyChecked.contains(entrance->getParentArea()))
             {
-                areaQueue.push_back(entrance->getParentArea());
+                areaQueue.push_front(entrance->getParentArea());
             }
         }
     }
 
-    return islands;
+    return regions;
+}
+
+std::unordered_set<std::string> World::getIslands(const std::string& startArea) {
+    return getRegions(startArea, "Islands");
+}
+
+std::unordered_set<std::string> World::getDungeons(const std::string& startArea) {
+    return getRegions(startArea, "Dungeons");
 }
 
 Dungeon& World::getDungeon(const std::string& dungeonName)

@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1583,13 +1583,6 @@
                <string>Entrance Randomizer</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_6">
-               <item row="0" column="2">
-                <widget class="QCheckBox" name="randomize_door_entrances">
-                 <property name="text">
-                  <string>Randomize Door Entrances</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="0">
                 <widget class="QCheckBox" name="randomize_dungeon_entrances">
                  <property name="text">
@@ -1597,31 +1590,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
+               <item row="0" column="2">
                 <widget class="QCheckBox" name="randomize_cave_entrances">
                  <property name="text">
                   <string>Randomize Cave Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="3">
-                <widget class="QCheckBox" name="randomize_misc_entrances">
-                 <property name="text">
-                  <string>Randomize Misc Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="decouple_entrances">
-                 <property name="text">
-                  <string>Decouple Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QCheckBox" name="randomize_starting_island">
-                 <property name="text">
-                  <string>Randomize Starting Island</string>
                  </property>
                 </widget>
                </item>
@@ -1645,6 +1617,41 @@
                   </widget>
                  </item>
                 </layout>
+               </item>
+               <item row="0" column="3">
+                <widget class="QCheckBox" name="randomize_door_entrances">
+                 <property name="text">
+                  <string>Randomize Door Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QCheckBox" name="randomize_boss_entrances">
+                 <property name="text">
+                  <string>Randomize Boss Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="decouple_entrances">
+                 <property name="text">
+                  <string>Decouple Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QCheckBox" name="randomize_starting_island">
+                 <property name="text">
+                  <string>Randomize Starting Island</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QCheckBox" name="randomize_misc_entrances">
+                 <property name="text">
+                  <string>Randomize Misc Entrances</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -2242,7 +2249,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>290</height>
+                    <height>311</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">

@@ -156,10 +156,12 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 
     // Entrance Randomizer
     Option::RandomizeDungeonEntrances,
+    Option::RandomizeBossEntrances,
     Option::RandomizeCaveEntrances,
     Option::RandomizeDoorEntrances,
     Option::RandomizeMiscEntrances,
     Option::MixDungeons,
+    Option::MixBosses,
     Option::MixCaves,
     Option::MixDoors,
     Option::MixMisc,
@@ -171,7 +173,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 std::string create_permalink(const Settings& settings, const std::string& seed) {
 
     std::string permalink = "";
-    permalink += RANDOMIZER_VERSION;
+    permalink += std::string(RANDOMIZER_VERSION).substr(0, 3);
     permalink += '\0';
     permalink += seed;
     permalink += '\0';
@@ -294,7 +296,7 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
     seed = permaParts[1];
     std::string optionsBytes = permaParts[2];
 
-    if (version != RANDOMIZER_VERSION)
+    if (version != std::string(RANDOMIZER_VERSION).substr(0, 3))
     {
         return PermalinkError::INVALID_VERSION;
     }

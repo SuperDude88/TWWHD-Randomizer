@@ -66,6 +66,7 @@ LocationCategory nameToLocationCategory(const std::string& name);
 LocationModificationType nameToModificationType(const std::string& name);
 
 class World;
+struct LocationAccess;
 struct Location
 {
     std::unordered_map<std::string, std::string> names = {};
@@ -80,6 +81,7 @@ struct Location
     Item currentItem;
     int sortPriority = -1;
     std::unordered_set<std::string> hintRegions;
+    std::list<LocationAccess*> accessPoints;
     std::string hintPriority = "";
     std::unique_ptr<LocationModification> method;
     World* world = nullptr;
@@ -112,6 +114,7 @@ struct Location
         currentItem(GameItem::INVALID, nullptr),
         sortPriority(-1),
         hintRegions({}),
+        accessPoints({}),
         hintPriority(""),
         method(std::make_unique<LocationModification>()),
         world(nullptr),

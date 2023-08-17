@@ -61,6 +61,7 @@ private:
     QStandardItemModel poolModel;
     QListView eventsByName;
     QStandardItem mix_dungeons;
+    QStandardItem mix_bosses;
     QStandardItem mix_caves;
     QStandardItem mix_doors;
     QStandardItem mix_misc;
@@ -215,6 +216,7 @@ private slots:
 
     // Entrance Randomizer
     void on_randomize_dungeon_entrances_stateChanged(int arg1);
+    void on_randomize_boss_entrances_stateChanged(int arg1);
     void on_randomize_cave_entrances_stateChanged(int arg1);
     void on_randomize_door_entrances_stateChanged(int arg1);
     void on_randomize_misc_entrances_stateChanged(int arg1);
@@ -256,6 +258,8 @@ private slots:
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
 
+
+
 private:
     // More Tracker Stuff
     bool trackerStarted = false;
@@ -274,7 +278,7 @@ private:
     std::unordered_map<Item, std::vector<LocationPool>> ownDungeonKeyLocations;
 
     // Maps island name to randomized entrances on the island
-    std::unordered_map<std::string, std::list<Entrance*>> islandEntrances = {};
+    std::unordered_map<std::string, std::list<Entrance*>> areaEntrances = {};
 
     // Maps connected targets to their connected source entrances
     std::unordered_map<Entrance*, Entrance*> connectedTargets = {};

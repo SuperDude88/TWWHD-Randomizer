@@ -3,6 +3,7 @@
 
 #include <map>
 #include <utility>
+#include <iostream>
 
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>
@@ -11,7 +12,7 @@
 #include <command/Log.hpp>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
-#define CHECK_MIXED_POOL(name, type) if (settings.name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
+#define CHECK_MIXED_POOL(name, type) if (name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
 
 // The entrance randomization algorithm used here is heavily inspired by the entrance
 // randomization algorithm from the Ocarina of Time Randomizer. While the algorithm
@@ -20,7 +21,7 @@
 //
 // https://github.com/TestRunnerSRL/OoT-Randomizer/blob/Dev/EntranceShuffle.py
 
-static std::list<EntranceInfoPair> entranceShuffleTable = {                                                       //-----File path info-----|----entrance info----|------boss stage info------//
+static std::list<EntranceInfoPair> entranceShuffleTable = {                                                       //-----File path info-----|----entrance info----|---boss stage exit info---//
                             // Parent Area                              Connected Area                             stage,   room, scls index,  stage,  room, spawn, boss stage, stage, room, spawn
     {EntranceType::DUNGEON, {"Dragon Roost Pond Past Statues",         "DRC First Room",                           "Adanmae",  0,          2, "M_NewD2",  0,     0},
     /*Dragon Roost Cavern*/ {"DRC First Room",                         "Dragon Roost Pond Past Statues",           "M_NewD2",  0,          0, "Adanmae",  0,     2, "M_DragB", "sea",  13, 211}},
@@ -28,10 +29,21 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     /*Forbidden Woods*/     {"FW First Room",                          "FW Entrance Platform",                     "kindan",   0,          0, "sea",     41,     6, "kinBOSS", "sea",  41,   0}},
     {EntranceType::DUNGEON, {"Tower of the Gods Sector",               "TOTG Entrance Room",                       "sea",     26,          0, "Siren",    0,     0},
     /*Tower of the Gods*/   {"TOTG Entrance Room",                     "Tower of the Gods Sector",                 "Siren",    0,          1, "sea",     26,     2, "SirenB",  "sea",  26,   1}},
-    {EntranceType::DUNGEON, {"Headstone Island Interior",              "ET First Room",                            "Edaichi",  0,          0, "M_Dai",  255,     0},
+    {EntranceType::DUNGEON, {"Headstone Island Interior",              "ET First Room",                            "Edaichi",  0,          0, "M_Dai",    0,     0},
     /*Earth Temple*/        {"ET First Room",                          "Headstone Island Interior",                "M_Dai",    0,          0, "Edaichi",  0,     1, "M_DaiB",  "sea",  45, 229}},
-    {EntranceType::DUNGEON, {"Gale Isle Interior",                     "WT First Room",                            "Ekaze",    0,          0, "kaze",    15,    15},
+    {EntranceType::DUNGEON, {"Gale Isle Interior",                     "WT First Room",                            "Ekaze",    0,          0, "kaze",    12,    70},
     /*Wind Temple*/         {"WT First Room",                          "Gale Isle Interior",                       "kaze",    15,          0, "Ekaze",    0,     1, "kazeB",   "sea",   4, 232}},
+
+    {EntranceType::BOSS,    {"DRC Boss Door Room Across Lava",         "Gohma Battle Arena",                       "M_NewD2", 10,          1, "M_DragB", 0,      0},
+                            {"Gohma Battle Arena",                     "DRC Boss Door Room Across Lava",           "M_DragB", 0xFF,        0, "M_NewD2", 10,    70/* , "M_DragB", "sea",  13, 211 */}},
+    {EntranceType::BOSS,    {"FW Boss Door Room",                      "Kalle Demos Battle Arena",                 "kindan",  16,          0, "kinBOSS",  0,     0},
+                            {"Kalle Demos Battle Arena",               "FW Boss Door Room",                        "kinBOSS", 0xFF,        0, "kindan",  16,     1/* , "kinBOSS", "sea",  41,   0 */}},
+    {EntranceType::BOSS,    {"TOTG Outside Area",                      "Gohdan Battle Arena",                      "Siren",   18,          0, "SirenB",   0,     0},
+                            {"Gohdan Battle Arena",                    "TOTG Outside Area",                        "SirenB",  0xFF,        0, "Siren",   18,    70/* , "SirenB",  "sea",  26,   1 */}},
+    {EntranceType::BOSS,    {"ET Boss Door Room",                      "Jalhalla Battle Arena",                    "M_Dai",   15,          0, "M_DaiB",   0,     0},
+                            {"Jalhalla Battle Arena",                  "ET Boss Door Room",                        "M_DaiB",  0xFF,        0, "M_Dai",   15,    17/* , "M_DaiB",  "sea",  45, 229 */}},
+    {EntranceType::BOSS,    {"WT Three Big Fans Room Past Song Stone", "Molgera Battle Arena",                     "kaze",    12,          0, "kazeB",    0,     0},
+                            {"Molgera Battle Arena",                   "WT Three Big Fans Room Past Song Stone",   "kazeB",   0xFF,        0, "kaze",    12,    70/* , "kazeB",   "sea",   4, 232 */}},
 
     {EntranceType::CAVE,    {"Outset Near Savage Headstone",           "Outset Savage Labyrinth",                  "sea",     44,          8, "Cave09",   0,     0},
                             {"Outset Savage Labyrinth",                "Outset Near Savage Headstone",             "Cave09",   0,          1, "sea",     44,    10}},
@@ -123,12 +135,9 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
     // these entrances we want to attempt randomization with the entrance which goes
     // *to* the dead-end, not *from* it. This significantly reduces the chances
     // of entrance placement failure.
-    //
-    // MISC_CRAWLSPACE is separated for the time being until potential softlocks
-    // with mixing crawlspace/non-crawlspace entrances can be resolved.
     {EntranceType::MISC_RESTRICTIVE, {"Gale Isle",                              "Gale Isle Interior",                      "sea",      4, 0, "Ekaze",    0,     0},
                                      {"Gale Isle Interior",                     "Gale Isle",                               "Ekaze",    0, 1, "sea",      4,     1}},
-    {EntranceType::MISC_CRAWLSPACE,  {"Windfall Island",                        "Windfall Bomb Shop Upper Ledge",          "sea",     11, 2, "Obombh",   0,     1},
+    {EntranceType::MISC_RESTRICTIVE, {"Windfall Island",                        "Windfall Bomb Shop Upper Ledge",          "sea",     11, 2, "Obombh",   0,     1},
                                      {"Windfall Bomb Shop Upper Ledge",         "Windfall Island",                         "Obombh",   0, 2, "sea",     11,     2}},
     {EntranceType::MISC,             {"Dragon Roost Island",                    "Dragon Roost Rito Aerie",                 "sea",     13, 0, "Atorizk",  0,     0},
                                      {"Dragon Roost Rito Aerie",                "Dragon Roost Island",                     "Atorizk",  0, 0, "sea",     13,     1}},
@@ -154,7 +163,7 @@ static std::list<EntranceInfoPair> entranceShuffleTable = {                     
                                      {"Forest Haven Interior West Upper Ledge", "Forest Haven Exterior West Upper Ledge",  "Omori",    0, 2, "sea",     41,     2}},
     {EntranceType::MISC,             {"Forest Haven Exterior South Ledge",      "Forest Haven Interior South Ledge",       "sea",     41, 4, "Omori",    0,     4},
                                      {"Forest Haven Interior South Ledge",      "Forest Haven Exterior South Ledge",       "Omori",    0, 4, "sea",     41,     4}},
-    {EntranceType::MISC_CRAWLSPACE,  {"Outset Island",                          "Outset Under Link's House",               "sea",     44, 9, "LinkUG",   0,     1},
+    {EntranceType::MISC_RESTRICTIVE, {"Outset Island",                          "Outset Under Link's House",               "sea",     44, 9, "LinkUG",   0,     1},
                                      {"Outset Under Link's House",              "Outset Island",                           "LinkUG",   0, 0, "sea",     44,    11}},
     {EntranceType::MISC_RESTRICTIVE, {"Outset Across Bridge",                   "Outset Forest of Fairies",                "sea",     44, 6, "A_mori",   0,     0},
                                      {"Outset Forest of Fairies",               "Outset Across Bridge",                    "A_mori",   0, 0, "sea",     44,     8}},
@@ -253,7 +262,7 @@ static EntrancePool assumeEntrancePool(EntrancePool& entrancePool)
     for (auto entrance : entrancePool)
     {
         auto assumedForward = entrance->assumeReachable();
-        if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
+        if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
         {
             auto assumedReturn = entrance->getReverse()->assumeReachable();
             assumedForward->bindTwoWay(assumedReturn);
@@ -281,7 +290,7 @@ void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 {
     entrance->connect(targetEntrance->disconnect());
     entrance->setReplaces(targetEntrance->getReplaces());
-    if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
+    if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
     {
         targetEntrance->getReplaces()->getReverse()->connect(entrance->getReverse()->getAssumed()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(entrance->getReverse());
@@ -293,7 +302,7 @@ void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
     LOG_TO_DEBUG("Restoring Connection for " + entrance->getOriginalName());
     targetEntrance->connect(entrance->disconnect());
     entrance->setReplaces(nullptr);
-    if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
+    if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
     {
         entrance->getReverse()->getAssumed()->connect(targetEntrance->getReplaces()->getReverse()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(nullptr);
@@ -315,7 +324,7 @@ static void deleteTargetEntrance(Entrance* targetEntrance)
 static void confirmReplacement(Entrance* entrance, Entrance* targetEntrance)
 {
     deleteTargetEntrance(targetEntrance);
-    if (entrance->getReverse() != nullptr && !entrance->getWorld()->getSettings().decouple_entrances)
+    if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
     {
         deleteTargetEntrance(entrance->getReverse()->getAssumed());
     }
@@ -372,54 +381,71 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
             return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
         }
     }
-    // Ensure that all race mode dungeons are assigned to a single island and that
-    // there aren't any other dungeons on those islands. Since quest markers for
-    // race mode dungeons indicate an entire island, we don't want the there to be
-    // multiple dungeons on an island, or multiple islands that lead to the same
-    // race mode dungeon
+
     for (auto& world : worlds)
     {
+        // Ensure that all race mode bosses are assigned to a single island and that
+        // there aren't any other dungeons on those islands. Since quest markers for
+        // race mode bosses indicate an entire island, we don't want the there to be
+        // multiple bosses on an island, or multiple islands that lead to the same
+        // race mode boss
         auto& settings = world.getSettings();
         if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_required_dungeons > 0)
         {
             std::unordered_set<std::string> raceModeIslands = {};
-            for (auto& [name, dungeon] : world.dungeons)
+            for (auto loc : world.raceModeLocations)
             {
-                auto& dungeonEntranceRoom = dungeon.entranceRoom;
-                auto dungeonIslands = world.getIslands(dungeonEntranceRoom);
+                auto raceModeArea = loc->accessPoints.front()->area;
+                auto bossIslands = world.getRegions(raceModeArea->name, "Islands", /*typesToIgnore = */{"Dungeons"}); 
 
-                if (dungeon.isRequiredDungeon)
+                if (bossIslands.size() > 1)
                 {
-                    if (dungeonIslands.size() > 1)
-                    {
-                        #ifdef ENABLE_DEBUG
-                            LOG_TO_DEBUG("Error: More than 1 island leading to race mode dungeon " + name);
-                            for (auto& island : dungeonIslands)
-                            {
-                                LOG_TO_DEBUG("\t" + island);
-                            }
-                        #endif
-                        return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
-                    }
+                    #ifdef ENABLE_DEBUG
+                        LOG_TO_DEBUG("Error: More than 1 island leading to race mode boss room " + raceModeArea->name);
+                        for (auto& island : bossIslands)
+                        {
+                            LOG_TO_DEBUG("\t" + island);
+                        }
+                    #endif
+                    return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
                 }
 
-                if (dungeonIslands.size() == 1)
+                if (bossIslands.size() == 1)
                 {
-                    auto dungeonIsland = *dungeonIslands.begin();
-                    if (raceModeIslands.contains(dungeonIsland))
+                    auto bossIsland = *bossIslands.begin();
+                    if (raceModeIslands.contains(bossIsland))
                     {
-                        LOG_TO_DEBUG("Error: Island " + dungeonIsland + " has an ambiguous race mode dungeon");
+                        LOG_TO_DEBUG("Error: Island " + bossIsland + " has an ambiguous race mode dungeon");
                         return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
                     }
-
-                    if (dungeon.isRequiredDungeon)
-                    {
-                        raceModeIslands.insert(dungeonIsland);
-                    }
+                    raceModeIslands.insert(bossIsland);
                 }
             }
         }
+
+        // Ensure that each dungeon's exit doesn't lead to another's starting room.
+        // Otherwise players could get sandwhiched between two dungeons without the proper items to leave
+        // and not have the ability to savewarp back to the sea.
+        std::unordered_set<Entrance*> dungeonExits = {};
+        std::unordered_set<std::string> dungeonStartingRooms = {};
+        for (auto& [dungeonName, dungeon] : world.dungeons)
+        {
+            if (dungeon.startingRoom != "")
+            {
+                dungeonExits.insert(dungeon.startingEntrance->getReverse());
+                dungeonStartingRooms.insert(dungeon.startingRoom);
+            }
+        }
+
+        for (auto exit : dungeonExits)
+        {
+            if (exit != nullptr && dungeonStartingRooms.contains(exit->getConnectedArea()))
+            {
+                return EntranceShuffleError::DUNGEON_ENTRANCES_CONNECTED;
+            }
+        }
     }
+
     return EntranceShuffleError::NONE;
 }
 
@@ -570,12 +596,12 @@ static EntranceShuffleError processPlandomizerEntrances(World& world)
         // Sanity check the entrance pointers
         if (originalEntrance == nullptr)
         {
-            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + originalEntranceStr + "\" is incorrect.");
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance \"" + originalEntranceStr + "\" is not a known connection.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
         if (replacementEntrance == nullptr)
         {
-            ErrorLog::getInstance().log("Plandomizer Error: Entrance plandomizer string \"" + replacementEntranceStr + "\" is incorrect.");
+            ErrorLog::getInstance().log("Plandomizer Error: Entrance \"" + replacementEntranceStr + "\" is not a known connection.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
 
@@ -604,7 +630,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
         // If the entrance doesn't have a type, it's not shuffable
         if (type == EntranceType::NONE)
         {
-            ErrorLog::getInstance().log("Entrance \"" + entrance->getOriginalName() + "\" cannot be shuffled.");
+            ErrorLog::getInstance().log("\"" + entrance->getOriginalName() + "\" is not an in-game entrance that can be shuffled.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
         // Change misc restrictive to misc since restrictive entrances are still in the misc pool
@@ -617,8 +643,14 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
         if (!entrancePools.contains(type))
         {
             // Check if its reverse is being shuffled if decoupled entrances are off
-            if (!world.getSettings().decouple_entrances && entrance->getReverse() != nullptr && entrancePools.contains(entrance->getReverse()->getEntranceType()))
+            if (!entrance->isDecoupled() && entrance->getReverse() != nullptr && entrancePools.contains(entrance->getReverse()->getEntranceType()))
             {
+                // If this entrance has already been connected, throw an error
+                if (entrance->getConnectedArea() != "")
+                {
+                    ErrorLog::getInstance().log("Entrance \"" + entranceToConnect->getOriginalName() + "\" has already been connected. If you previously set the reverse of this entrance, you'll need to enabled the Decouple Entrances setting to plandomize this one also.");
+                    return EntranceShuffleError::PLANDOMIZER_ERROR;
+                }
                 // If so, take the reverse of the entrance and target and attempt to connect them instead
                 entranceToConnect = entrance->getReverse();
                 targetToConnect = target->getReverse();
@@ -740,11 +772,30 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
 
     auto& settings = world.getSettings();
 
+    // Only consider mixed pools as active if the entrance type and mixed pool setting is on
+    bool mix_dungeons = settings.randomize_dungeon_entrances && settings.mix_dungeons;
+    bool mix_bosses = settings.randomize_boss_entrances && settings.mix_bosses;
+    bool mix_caves = settings.randomize_cave_entrances && settings.mix_caves;
+    bool mix_doors = settings.randomize_door_entrances && settings.mix_doors;
+    bool mix_misc = settings.randomize_misc_entrances && settings.mix_misc;
+
     // Determine how many mixed pools there will be before determining which entrances will be randomized
-    int totalMixedPools = (settings.mix_dungeons ? 1 : 0) + (settings.mix_caves ? 1 : 0) + (settings.mix_doors ? 1 : 0) + (settings.mix_misc ? 1 : 0);
+    int totalMixedPools = (mix_dungeons ? 1 : 0) +
+                          (mix_bosses ? 1 : 0) +
+                          (mix_caves ? 1 : 0) +
+                          (mix_doors ? 1 : 0) +
+                          (mix_misc ? 1 : 0);
 
     // Determine entrance pools based on settings, to be shuffled in the order we set them by
     EntrancePools entrancePools = {};
+
+    // Save pools that we decouple to make code a little cleaner
+    std::list<EntranceType> typesToDecouple = {};
+
+    // Keep track of certain vanilla entrances that we want to manually connect
+    // since we sometimes rely later on assuming that these entrances were set
+    // in the entrance shuffling algorithm
+    std::list<EntranceType> vanillaConnectionTypes = {};
 
     if (settings.randomize_dungeon_entrances)
     {
@@ -752,7 +803,30 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::DUNGEON_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DUNGEON);
+            typesToDecouple.push_back(EntranceType::DUNGEON);
+            typesToDecouple.push_back(EntranceType::DUNGEON_REVERSE);
         }
+    }
+    else
+    {
+        vanillaConnectionTypes.push_back(EntranceType::DUNGEON);
+    }
+
+    if (settings.randomize_boss_entrances)
+    {
+        entrancePools[EntranceType::BOSS] = world.getShuffleableEntrances(EntranceType::BOSS, true);
+        // Only decouple boss entrances when required bosses are off, or if caves/doors/misc entrances are mixed
+        // as well
+        if (settings.decouple_entrances && (settings.num_required_dungeons == 0 || (mix_bosses && (mix_doors || mix_caves || mix_misc))))
+        {
+            entrancePools[EntranceType::BOSS_REVERSE] = getReverseEntrances(entrancePools, EntranceType::BOSS);
+            typesToDecouple.push_back(EntranceType::BOSS);
+            typesToDecouple.push_back(EntranceType::BOSS_REVERSE);
+        }
+    }
+    else
+    {
+        vanillaConnectionTypes.push_back(EntranceType::BOSS);
     }
 
     if (settings.randomize_cave_entrances)
@@ -761,6 +835,8 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::CAVE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::CAVE);
+            typesToDecouple.push_back(EntranceType::CAVE);
+            typesToDecouple.push_back(EntranceType::CAVE_REVERSE);
         }
         // Don't randomize the cliff plateau upper isles grotto unless entrances are decoupled
         else
@@ -775,6 +851,8 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::DOOR_REVERSE] = getReverseEntrances(entrancePools, EntranceType::DOOR);
+            typesToDecouple.push_back(EntranceType::DOOR);
+            typesToDecouple.push_back(EntranceType::DOOR_REVERSE);
         }
     }
 
@@ -786,12 +864,35 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         auto miscRestrictiveEntrances = world.getShuffleableEntrances(EntranceType::MISC_RESTRICTIVE, !settings.decouple_entrances);
         addElementsToPool(entrancePools[EntranceType::MISC], miscRestrictiveEntrances);
 
-        // Keep crawlspaces separate for the time-being since spawning in a crawlspace
-        // entrance while standing up can potentially softlock
-        entrancePools[EntranceType::MISC_CRAWLSPACE] = world.getShuffleableEntrances(EntranceType::MISC_CRAWLSPACE, true);
         if (settings.decouple_entrances)
         {
-            entrancePools[EntranceType::MISC_CRAWLSPACE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MISC_CRAWLSPACE);
+            typesToDecouple.push_back(EntranceType::MISC);
+        }
+    }
+
+    // Set collected entrance types as decoupled
+    for (const auto& type : typesToDecouple)
+    {
+        for (auto entrance : entrancePools[type])
+        {
+            entrance->setAsDecoupled();
+        }
+    }
+
+    // Assign collected vanilla entrance types
+    for (const auto& type : vanillaConnectionTypes)
+    {
+        auto vanillaEntrances = world.getShuffleableEntrances(type, true);
+        for (auto entrance : vanillaEntrances)
+        {
+            auto assumedForward = entrance->assumeReachable();
+            if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
+            {
+                auto assumedReturn = entrance->getReverse()->assumeReachable();
+                assumedForward->bindTwoWay(assumedReturn);
+            }
+            changeConnections(entrance, assumedForward);
+            confirmReplacement(entrance, assumedForward);
         }
     }
 
@@ -801,9 +902,10 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
     if (totalMixedPools > 1)
     {
         CHECK_MIXED_POOL(mix_dungeons, EntranceType::DUNGEON);
+        CHECK_MIXED_POOL(mix_bosses, EntranceType::BOSS);
         CHECK_MIXED_POOL(mix_doors, EntranceType::DOOR);
         CHECK_MIXED_POOL(mix_caves, EntranceType::CAVE);
-        if (settings.mix_misc)
+        if (mix_misc)
         {
             poolsToMix.insert(EntranceType::MISC);
         }
@@ -811,8 +913,8 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         // For each entrance type, add the entrance to the mixed pool instead
         for (auto& [type, entrancePool] : entrancePools)
         {
-            // Don't re-add the mixed pool to itself and don't mix crawlspaces
-            if (poolsToMix.contains(type) && type != EntranceType::MIXED && type != EntranceType::MISC_CRAWLSPACE && type != EntranceType::MISC_CRAWLSPACE_REVERSE)
+            // Don't re-add the mixed pool to itself
+            if (poolsToMix.contains(type) && type != EntranceType::MIXED)
             {
                 addElementsToPool(entrancePools[EntranceType::MIXED], entrancePool);
                 for (auto entrance : entrancePool)
@@ -901,7 +1003,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         auto entrancePools = createEntrancePools(world, poolsToMix);
         auto targetEntrancePools = createTargetEntrances(entrancePools);
 
-        // Shuffle Plandomized entrances at this point
+        // Set Plandomized entrances at this point
         err = setPlandomizerEntrances(world, worlds, entrancePools, targetEntrancePools, poolsToMix);
         if (err != EntranceShuffleError::NONE)
         {
@@ -923,13 +1025,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         // Now set the islands the race mode dungeons are in
         for (auto& [name, dungeon] : world.dungeons)
         {
-            auto islands = world.getIslands(dungeon.entranceRoom);
-            if (islands.empty())
-            {
-                ErrorLog::getInstance().log("ERROR: No Island for dungeon " + name);
-                LOG_ERR_AND_RETURN(EntranceShuffleError::NO_RACE_MODE_ISLAND);
-            }
-            dungeon.island = *islands.begin();
+            dungeon.islands = world.getRegions(dungeon.startingRoom, "Islands", /*typesToIgnore = */{"Dungeons"});
         }
     }
 
@@ -960,12 +1056,16 @@ const std::string errorToName(EntranceShuffleError err)
             return "AMBIGUOUS_RACE_MODE_ISLAND";
         case EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON:
             return "AMBIGUOUS_RACE_MODE_DUNGEON";
+        case EntranceShuffleError::NO_RACE_MODE_ISLAND:
+            return "NO_RACE_MODE_ISLAND";
         case EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS:
             return "NOT_ENOUGH_SPHERE_ZERO_LOCATIONS";
         case EntranceShuffleError::ATTEMPTED_SELF_CONNECTION:
             return "ATTEMPTED_SELF_CONNECTION";
         case EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET:
             return "FAILED_TO_DISCONNECT_TARGET";
+        case EntranceShuffleError::DUNGEON_ENTRANCES_CONNECTED:
+            return "DUNGEON_ENTRANCES_CONNECTED";
         case EntranceShuffleError::PLANDOMIZER_ERROR:
             return "PLANDOMIZER_ERROR";
         default:

@@ -345,6 +345,7 @@ Option nameToSetting(const std::string& name) {
         {"RandomCharts", Option::RandomCharts},
         {"Random Start Island", Option::RandomStartIsland},
         {"Randomize Dungeon Entrances", Option::RandomizeDungeonEntrances},
+        {"Randomize Boss Entrances", Option::RandomizeBossEntrances},
         {"Randomize Cave Entrances", Option::RandomizeCaveEntrances},
         {"Randomize Door Entrances", Option::RandomizeDoorEntrances},
         {"Randomize Misc Entrances", Option::RandomizeMiscEntrances},
@@ -436,6 +437,7 @@ std::string settingToName(const Option& setting) {
         {Option::RandomCharts, "Random Charts"},
         {Option::RandomStartIsland, "Random Start Island"},
         {Option::RandomizeDungeonEntrances, "Randomize Dungeon Entrances"},
+        {Option::RandomizeBossEntrances, "Randomize Boss Entrances"},
         {Option::RandomizeCaveEntrances, "Randomize Cave Entrances"},
         {Option::RandomizeDoorEntrances, "Randomize Door Entrances"},
         {Option::RandomizeMiscEntrances, "Randomize Misc Entrances"},
@@ -557,6 +559,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.randomize_starting_island;
         case Option::RandomizeDungeonEntrances:
             return settings.randomize_dungeon_entrances;
+        case Option::RandomizeBossEntrances:
+            return settings.randomize_boss_entrances;
         case Option::RandomizeCaveEntrances:
             return settings.randomize_cave_entrances;
         case Option::RandomizeDoorEntrances:
@@ -565,6 +569,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.randomize_misc_entrances;
         case Option::MixDungeons:
             return settings.mix_dungeons;
+        case Option::MixBosses:
+            return settings.mix_bosses;
         case Option::MixCaves:
             return settings.mix_caves;
         case Option::MixDoors:
@@ -722,6 +728,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.randomize_starting_island = value; return;
         case Option::RandomizeDungeonEntrances:
             settings.randomize_dungeon_entrances = value; return;
+        case Option::RandomizeBossEntrances:
+            settings.randomize_boss_entrances = value; return;
         case Option::RandomizeCaveEntrances:
             settings.randomize_cave_entrances = value; return;
         case Option::RandomizeDoorEntrances:
@@ -730,6 +738,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.randomize_misc_entrances = value; return;
         case Option::MixDungeons:
             settings.mix_dungeons = value; return;
+        case Option::MixBosses:
+            settings.mix_bosses = value; return;
         case Option::MixCaves:
             settings.mix_caves = value; return;
         case Option::MixDoors:

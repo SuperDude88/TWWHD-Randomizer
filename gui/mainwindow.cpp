@@ -172,8 +172,8 @@ void MainWindow::show_info_dialog(const std::string& msg, const std::string& tit
 void MainWindow::setup_mixed_pools_combobox()
 {
     eventsByName.setModel(&poolModel);
-    poolNames << "Dungeons" << "Caves" << "Doors" << "Misc";
-    poolCheckBoxes << &mix_dungeons << &mix_caves << &mix_doors << &mix_misc;
+    poolNames << "Dungeons" << "Bosses" << "Caves" << "Doors" << "Misc";
+    poolCheckBoxes << &mix_dungeons << &mix_bosses << &mix_caves << &mix_doors << &mix_misc;
     for (size_t i = 0; i < poolNames.size(); i++)
     {
         poolCheckBoxes[i]->setText(poolNames[i]);
@@ -260,6 +260,7 @@ void MainWindow::update_mixed_pools_combobox_option(const QString& pool /*= ""*/
     if (pool != "")
     {
         UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_dungeons);
+        UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_bosses);
         UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_caves);
         UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_doors);
         UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_misc);
@@ -522,10 +523,12 @@ void MainWindow::apply_config_settings()
 
     // Entrance Randomizer
     APPLY_CHECKBOX_SETTING(config, ui, randomize_dungeon_entrances);
+    APPLY_CHECKBOX_SETTING(config, ui, randomize_boss_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_cave_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_door_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_misc_entrances);
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_dungeons);
+    APPLY_MIXED_POOLS_SETTING(config, ui, mix_bosses);
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_caves);
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_doors);
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_misc);
@@ -933,6 +936,7 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(location_hints)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(item_hints)
 
 DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
+DEFINE_STATE_CHANGE_FUNCTION(randomize_boss_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_door_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
