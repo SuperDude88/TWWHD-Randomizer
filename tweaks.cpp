@@ -728,9 +728,9 @@ TweakError modify_title_screen() {
         Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
         newPane.pane->name = "T_Version";
         newPane.pane->name.resize(0x18);
-        dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0';
+        dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0'; //~20-21 characters per line
         dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
-        dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = 0x1C;
+        dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = dynamic_cast<txt1*>(newPane.pane.get())->text.length() * 2; //includes null
         dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
 
         //update "HD" image position
