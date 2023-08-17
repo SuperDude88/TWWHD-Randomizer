@@ -6,6 +6,7 @@
 
 #include <coreinit/memory.h>
 #include <coreinit/ios.h>
+#include <coreinit/filesystem_fsa.h>
 
 #include <mocha/mocha.h>
 
@@ -44,6 +45,43 @@ MCPError getTitlePath(const uint64_t& titleID, std::filesystem::path& outPath) {
     return 0;
 }
 
+bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpace) {
+    static const std::string deviceToPath[2] = {"/vol/storage_mlc01", "/vol/storage_usb01"};
+    if(device < 0 || device > 1) {
+        ErrorLog::getInstance().log("Invalid device for checkEnoughFreeSpace()!");
+        return false;
+    }
+    const std::string& path = deviceToPath[device]; //0 is TARGET_MLC, 1 is TARGET_USB
+
+    const FSAClientHandle handle = FSAAddClient(NULL);
+    if(handle < 0) {
+        ErrorLog::getInstance().log("Failed to add FSA client!");
+        return false;
+    }
+
+    uint64_t freeSize = 0;
+    FSError ret = FSAGetFreeSpaceSize(handle, path.c_str(), &freeSize);
+    if(ret != FS_ERROR_OK) {
+        ErrorLog::getInstance().log("Failed to get free space size!");
+        return false;
+    }
+
+    ret = FSADelClient(handle);
+    if(ret != FS_ERROR_OK) {
+        ErrorLog::getInstance().log("Failed to delete FSA client!");
+        return false;
+    }
+
+    if(freeSize < minSpace) {
+        Utility::platformLog(path + " does not have enough free space!\n");
+        Utility::platformLog("Has " + std::to_string(freeSize) + " free, needs " + std::to_string(minSpace) + '\n');
+        ErrorLog::getInstance().log(path + " does not have enough free space! It needs " + std::to_string(minSpace) + " bytes but has " + std::to_string(freeSize) + "available!");
+        return false;
+    }
+
+    return true;
+}
+
 static int installCompleted = 0;
 static uint32_t installError = 0;
 
@@ -57,7 +95,7 @@ static int IosInstallCallback(unsigned int errorCode, unsigned int * priv_data)
 //based on https://github.com/Fangal-Airbag/wup-installer-gx2/blob/Wuhb/src/menu/InstallWindow.cpp#L169
 static bool installFreeChannel(const std::filesystem::path& relPath, const MCPInstallTarget& loc) {
     using namespace std::literals::chrono_literals;
-    
+
     if(!Utility::dirExists(SD_ROOT_PATH / relPath)) {
         ErrorLog::getInstance().log("Channel data path is not a directory!");
         return false;
@@ -291,6 +329,9 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
 
 bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallTarget& loc) {
     Utility::platformLog("Creating output channel...\n");
+    
+    //channel data needs a little under 2GB
+    if(!checkEnoughFreeSpace(loc, 1024ULL * 1024 * 1024 * 2)) return false; //unsigned literal to avoid overflow warning
     
     if(!packFreeChannel(baseDir)) return false;
     
