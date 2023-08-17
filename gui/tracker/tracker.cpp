@@ -9,8 +9,9 @@
 #include <logic/Search.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
-
 #include <utility/file.hpp>
+
+#include <iostream>
 
 #include <QAbstractButton>
 #include <QMouseEvent>
@@ -602,7 +603,7 @@ void MainWindow::update_tracker()
     clear_tracker_labels(ui->entrance_scroll_layout);
 
     currentPointSize = 12;
-    for (auto& entrance : islandEntrances[currentTrackerArea])
+    for (auto& entrance : areaEntrances[currentTrackerArea])
     {
         auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, nullptr, entrance);
         ui->entrance_scroll_layout->addWidget(newLabel);
@@ -819,7 +820,7 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
     ui->clear_all_button->setVisible(trackerWorlds[0].dungeons.contains(areaPrefix));
 
     // Only show the Entrances button if the island has randomized entrances
-    ui->location_list_entrances_button->setVisible(!islandEntrances[areaPrefix].empty());
+    ui->location_list_entrances_button->setVisible(!areaEntrances[areaPrefix].empty());
 
     // Update the image used for the background of the area location labels
     // Currently this lags the tracker a little bit, so maybe revisit later
@@ -986,7 +987,7 @@ void MainWindow::calculate_own_dungeon_key_locations()
 
 void MainWindow::setup_tracker_entrances()
 {
-    islandEntrances.clear();
+    areaEntrances.clear();
     connectedTargets.clear();
 
     auto& trackerWorld = trackerWorlds[0];
@@ -1009,6 +1010,9 @@ void MainWindow::setup_tracker_entrances()
         for (auto target : targetPool)
         {
             target->setRequirement({RequirementType::IMPOSSIBLE, {}});
+            if (target->getReverse() != nullptr) {
+                target->getReverse()->setRequirement({RequirementType::IMPOSSIBLE, {}});
+            }
         }
     }
 
@@ -1036,11 +1040,20 @@ void MainWindow::set_areas_locations()
                     areaLocations[area.hintRegion].insert(locAccess.location);
                 }
                 else
-                {
+                {   
                     auto islands = trackerWorld.getIslands(name);
-                    for (auto& island : islands)
+                    auto dungeons = trackerWorld.getDungeons(name);
+
+                    if (dungeons.size() > 0 && islands.empty())
                     {
-                        areaLocations[island].insert(locAccess.location);
+                        areaLocations[*dungeons.begin()].insert(locAccess.location);
+                    }
+                    else
+                    {
+                        for (auto& island : islands)
+                        {
+                            areaLocations[island].insert(locAccess.location);
+                        }
                     }
                 }
             }
@@ -1051,7 +1064,7 @@ void MainWindow::set_areas_locations()
 void MainWindow::set_areas_entrances()
 {
     auto& trackerWorld = trackerWorlds[0];
-    islandEntrances.clear();
+    areaEntrances.clear();
 
     // Separate entrances into which islands they belong to
     // Only list non-primary entrances if entrances are decoupled
@@ -1061,10 +1074,19 @@ void MainWindow::set_areas_entrances()
         {
             entrance->setEntranceType(EntranceType::MISC);
         }
-        auto entranceIslands = trackerWorld.getIslands(entrance->getParentArea());
-        for (auto& island : entranceIslands)
+        auto islands = trackerWorld.getIslands(entrance->getParentArea());
+        auto dungeons = trackerWorld.getDungeons(entrance->getParentArea());
+
+        if (dungeons.size() > 0 && islands.empty())
         {
-            islandEntrances[island].push_back(entrance);
+            areaEntrances[*dungeons.begin()].push_back(entrance);
+        }
+        else
+        {
+            for (auto& island : islands)
+            {
+                areaEntrances[island].push_back(entrance);
+            }
         }
     }
 }

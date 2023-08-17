@@ -27,6 +27,7 @@ enum struct [[nodiscard]] ModificationError {
     COUNT
 };
 
+class Location;
 class LocationModification
 {
 public:
@@ -47,6 +48,7 @@ private:
     inline static bool isCTMC = false;
     inline static bool raceMode = false;
     inline static std::unordered_map<std::string, Dungeon> dungeons = {};
+    inline static std::list<Location*> playthroughLocations = {};
 
     std::string filePath;
     std::vector<uint32_t> offsets;
@@ -64,7 +66,7 @@ public:
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
     ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
-    static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::unordered_map<std::string, Dungeon>& dungeons_) { isCTMC = isCTMC_; raceMode = raceMode_; dungeons = dungeons_; }
+    static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::unordered_map<std::string, Dungeon>& dungeons_, const std::list<Location*>& playthroughLocations_) { isCTMC = isCTMC_; raceMode = raceMode_; dungeons = dungeons_; playthroughLocations = playthroughLocations_;}
 };
 
 class ModifyActor : public LocationModification {

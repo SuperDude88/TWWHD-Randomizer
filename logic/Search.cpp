@@ -101,7 +101,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             // of a bound two way entrance to the entrance playthrough for
             // spoiler log simplicity
             bool reverseInPlaythrough = false;
-            if (!worlds[exit.getWorldId()].getSettings().decouple_entrances && exit.getReplaces()->getReverse() != nullptr)
+            if (!exit.isDecoupled() && exit.getReplaces()->getReverse() != nullptr)
             {
                 for (auto& sphere : worlds[0].entranceSpheres)
                 {
@@ -297,11 +297,14 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         for (auto location : accessibleThisIteration)
         {
             accessibleLocations.push_back(location);
-            if (location->currentItem.getGameItemId() != GameItem::INVALID && !location->currentItem.isJunkItem())
+            auto& item = location->currentItem; 
+            if (item.getGameItemId() != GameItem::INVALID && !item.isJunkItem())
             {
-                ownedItems.emplace(location->currentItem.getGameItemId(), location->currentItem.getWorld());
+                ownedItems.emplace(item.getGameItemId(), item.getWorld());
                 // Only add progression locations to the playthrough if they don't have known vanilla items
-                if (searchMode == SearchMode::GeneratePlaythrough && location->progression && (!location->hasKnownVanillaItem || location->currentItem.getGameItemId() == GameItem::GameBeatable))
+                // Also add in dungeon locations which have small/big keys if mixed bosses is on
+                if (searchMode == SearchMode::GeneratePlaythrough && ((location->progression && (!location->hasKnownVanillaItem || item.getGameItemId() == GameItem::GameBeatable)) ||
+                                                                      (location->world->getSettings().mix_bosses && (item.isBigKey() || item.isSmallKey()))))
                 {
                     worlds[0].playthroughSpheres.back().push_back(location);
                 }
@@ -345,12 +348,13 @@ static void pareDownPlaythrough(WorldPool& worlds)
     // after the playthrough calculation
     std::unordered_map<Location*, Item> nonRequiredLocations = {};
     // None of the items in non progress locations should be considered in the playthrough
-    // Temporarily take these items away
+    // Temporarily take these items away, unless they're small/big keys when boss entrances
+    // are mixed
     for (auto& world : worlds)
     {
         for (auto& [name, location] : world.locationEntries)
         {
-            if (!location.progression)
+            if (!location.progression && !(world.getSettings().mix_bosses && (location.currentItem.isBigKey() || location.currentItem.isSmallKey())))
             {
                 nonRequiredLocations.insert({&location, location.currentItem});
                 location.currentItem = {GameItem::INVALID, location.world};

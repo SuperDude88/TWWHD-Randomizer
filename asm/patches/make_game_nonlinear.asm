@@ -110,7 +110,7 @@ reset_makar_position_to_start_of_dungeon:
   ; Search through the list of places Makar can spawn from to see which one corresponds to the player's last spawn ID, if any.
   lis r9, makar_possible_wt_spawn_positions@ha
   addi r9, r9, makar_possible_wt_spawn_positions@l
-  li r0, 5 ; 5 possible spawn points
+  li r0, 6 ; 5 possible spawn points
   mtctr r0
   makar_spawn_point_search_loop_start:
   lbz r0, 0 (r9) ; Spawn ID
@@ -173,6 +173,10 @@ makar_possible_wt_spawn_positions:
   .byte 69, 3
   .short 0x4000
   .float -4146.65, 1100, 47.88
+  ; Boss Door
+  .byte 70, 12
+  .short 0
+  .float 14100, -5062.49, 9300
 
 
 ; When the player enters Earth Temple, reset Medli's position to the starting room, or to near the warp pot the player exited.
@@ -194,7 +198,7 @@ reset_medli_position_to_start_of_dungeon:
   ; Search through the list of places Medli can spawn from to see which one corresponds to the player's last spawn ID, if any.
   lis r9, medli_possible_et_spawn_positions@ha
   addi r9, r9, medli_possible_et_spawn_positions@l
-  li r0, 5 ; 5 possible spawn points
+  li r0, 6 ; 6 possible spawn points
   mtctr r0
   medli_spawn_point_search_loop_start:
   lbz r0, 0 (r9) ; Spawn ID
@@ -257,6 +261,10 @@ medli_possible_et_spawn_positions:
   .byte 69, 1
   .short 0
   .float -8010, 1000, -1508.94
+  ; Boss Door Exit
+  .byte 17, 15
+  .short 0x8000
+  .float -5780, -2300, 9700
 
 
 ; If a Moblin sees you when you have no sword equipped, it will catch you and bring you to the jail cell in FF1.
