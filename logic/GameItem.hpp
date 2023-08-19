@@ -30,20 +30,14 @@ enum struct GameItem : uint8_t
     TenArrows,
     TwentyArrows,
     ThirtyArrows,
-    DRCSmallKey,
-    DRCBigKey,
+    SomethingTingleBottleRelated1, //not sure what this does but the game has extra checks for it
+    SomethingTingleBottleRelated2, //not sure what this does but the game has extra checks for it
     SmallKey,
     Fairy,
 
-    NOTHING, //not an item, uses a free space to represent no item (but not invalid)
-    GameBeatable, // Dummy item to check for game beatability
-    HINT, // Dummy item to represent placing a hint at a hint location
-
     YellowRupee2 = 0x1A, //joke message
-    DRCDungeonMap,
-    DRCCompass,
-    FWSmallKey,
-    ThreeHearts,
+    
+    ThreeHearts = 0x1E,
     JoyPendant,
     Telescope,
     TingleBottle,
@@ -77,9 +71,8 @@ enum struct GameItem : uint8_t
     RecoveredHerosSword,
     MasterSwordFull,
     PieceOfHeart2, //alternate message
-    FWBigKey,
-    FWDungeonMap,
-    PiratesCharm,
+
+    PiratesCharm = 0x42,
     HerosCharm,
 
     SkullNecklace = 0x45,
@@ -103,14 +96,8 @@ enum struct GameItem : uint8_t
     FairyInBottle,
     ForestFirefly,
     ForestWater,
-    FWCompass,
-    TotGSmallKey,
-    TotGBigKey,
-    TotGDungeonMap,
-    TotGCompass,
-    FFDungeonMap,
-    FFCompass,
-    TriforceShard1,
+
+    TriforceShard1 = 0x61,
     TriforceShard2,
     TriforceShard3,
     TriforceShard4,
@@ -128,11 +115,8 @@ enum struct GameItem : uint8_t
     EarthGodsLyric,
     WindGodsAria,
     SongOfPassing,
-    ETSmallKey,
-    ETBigKey,
-    ETDungeonMap,
-    ETCompass,
-    SwiftSail,
+
+    SwiftSail = 0x77,
     ProgressiveSail,
     TriforceChart1Deciphered,
     TriforceChart2Deciphered,
@@ -142,12 +126,9 @@ enum struct GameItem : uint8_t
     TriforceChart6Deciphered,
     TriforceChart7Deciphered,
     TriforceChart8Deciphered,
-    WTSmallKey,
-    AllPurposeBait,
+
+    AllPurposeBait = 0x82,
     HyoiPear,
-    WTBigKey,
-    WTDungeonMap,
-    WTCompass,
 
     TownFlower = 0x8C,
     SeaFlower,
@@ -254,7 +235,35 @@ enum struct GameItem : uint8_t
     TreasureChart42,
     TriforceChart1,
 
-    INVALID
+    //Custom Items
+    DRCSmallKey = 0x40,
+    DRCBigKey = 0x41,
+    DRCDungeonMap = 0x5A,
+    DRCCompass = 0x5B,
+    FWSmallKey = 0x5C,
+    FWBigKey = 0x5D,
+    FWDungeonMap = 0x5E,
+    FWCompass = 0x5F,
+    TotGSmallKey = 0x60,
+    TotGBigKey = 0x73,
+    TotGDungeonMap = 0x74,
+    TotGCompass = 0x75,
+    FFDungeonMap = 0x76,
+    FFCompass = 0x81,
+    ETSmallKey = 0x84,
+    ETBigKey = 0x85,
+    ETDungeonMap = 0x86,
+    ETCompass = 0x87,
+    WTSmallKey = 0x88,
+    WTBigKey = 0x89,
+    WTDungeonMap = 0x8A,
+    WTCompass = 0x8B,
+
+    NOTHING = 0x17, //not an item, uses a free space to represent no item (but not invalid)
+    GameBeatable = 0x18, // Dummy item to check for game beatability
+    HINT = 0x19, // Dummy item to represent placing a hint at a hint location
+
+    INVALID = 0xFF
 };
 
 GameItem nameToGameItem(const std::string& name);

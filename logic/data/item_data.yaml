@@ -341,55 +341,6 @@
   Game Item Id: 0x12
 
 - Names:
-    English: Dragon Roost Cavern Small Key
-    Spanish: Llave Pequeña de la Cueva del Dragón
-    French: Petite Clé de la Caverne du Dragon
-  Pretty Names:
-    English: "a |Dragon Roost Cavern Small Key|"
-    Spanish: "una |Llave Pequeña de la Cueva del Dragón|"
-    French: "une |Petite Clé de la Caverne du Dragon|"
-  Cryptic Names:
-    English: "a |key|"
-    Spanish: "una |llave|"
-    French: "une |clé|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x13
-  Small Key Dungeon: Dragon Roost Cavern
-  Small Key Count: 4
-
-
-- Names:
-    English: Dragon Roost Cavern Big Key
-    Spanish: Gran Llave de la Cueva del Dragón
-    French: Grande Clé de la Caverne du Dragon
-  Pretty Names:
-    English: "the |Dragon Roost Cavern Big Key|"
-    Spanish: "la |Gran Llave de la Cueva del Dragón|"
-    French: "la |Grande Clé de la Caverne du Dragon|"
-  Cryptic Names:
-    English: "an |ominous key|"
-    Spanish: "una |llave siniestra|"
-    French: "une |clé menaçante|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x14
-  Big Key Dungeon: Dragon Roost Cavern
-
-
-- Names:
     English: Small Key
     Spanish: Llave Pequeña
     French: Petite Clé
@@ -430,44 +381,6 @@
     French: Singular
   Game Item Id: 0x16
 
-# Dummy item to represent nothing
-- Names:
-    English: Nothing
-    Spanish:
-    French:
-  Pretty Names:
-    English: Nothing
-    Spanish:
-    French:
-  Gender:
-    English: None
-    Spanish:
-    French:
-  Plurality:
-    English: Singular
-    Spanish:
-    French:
-  Game Item Id: 0x17
-
-# Dummy item to check for game beatability
-- Names:
-    English: Game Beatable
-    Spanish:
-    French:
-  Pretty Names:
-    English: Game Beatable
-    Spanish:
-    French:
-  Gender:
-    English: None
-    Spanish:
-    French:
-  Plurality:
-    English: Singular
-    Spanish:
-    French:
-  Game Item Id: 0x18
-
 # joke message
 - Names:
     English: Yellow Rupee 2
@@ -486,69 +399,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0x1A
-
-- Names:
-    English: Dragon Roost Cavern Dungeon Map
-    Spanish: Mapa de la Mazmorra de la Cueva del Dragón
-    French: Carte du Donjon de la Caverne du Dragon
-  Pretty Names:
-    English: "the |Dragon Roost Cavern Dungeon Map|"
-    Spanish: "el |Mapa de la Mazmorra de la Cueva del Dragón|"
-    French: "la |Carte du Donjon de la Caverne du Dragon|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x1B
-  Map Dungeon: Dragon Roost Cavern
-
-- Names:
-    English: Dragon Roost Cavern Compass
-    Spanish: Brújula de la Cueva del Dragón
-    French: Boussole de la Caverne du Dragon
-  Pretty Names:
-    English: "the |Dragon Roost Cavern Compass|"
-    Spanish: "la |Brújula de la Cueva del Dragón|"
-    French: "la |Boussole de la Caverne du Dragon|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x1C
-  Compass Dungeon: Dragon Roost Cavern
-
-- Names:
-    English: Forbidden Woods Small Key
-    Spanish: Llave Pequeña del Bosque Prohibido
-    French: Petite Clé des Bois Défendus
-  Pretty Names:
-    English: "a |Forbidden Woods Small Key|"
-    Spanish: "una |Llave Pequeña del Bosque Prohibido|"
-    French: "une |Petite Clé des Bois Défendus|"
-  Cryptic Names:
-    English: "a |key|"
-    Spanish: "una |llave|"
-    French: "une |clé|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x1D
-  Small Key Dungeon: Forbidden Woods
-  Small Key Count: 1
-
 
 - Names:
     English: Three Hearts
@@ -1217,49 +1067,6 @@
   Game Item Id: 0x3F
 
 - Names:
-    English: Forbidden Woods Big Key
-    Spanish: Gran Llave del Bosque Prohibido
-    French: Grande Clé des Bois Défendus
-  Pretty Names:
-    English: "the |Forbidden Woods Big Key|"
-    Spanish: "la |Gran Llave del Bosque Prohibido|"
-    French: "la |Grande Clé des Bois Défendus|"
-  Cryptic Names:
-    English: "an |ominous key|"
-    Spanish: "una |llave siniestra|"
-    French: "une |clé menaçante|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x40
-  Big Key Dungeon: Forbidden Woods
-
-
-- Names:
-    English: Forbidden Woods Dungeon Map
-    Spanish: Mapa de la Mazmorra del Bosque Prohibido
-    French: Carte du Donjon des Bois Défendus
-  Pretty Names:
-    English: "the |Forbidden Woods Dungeon Map|"
-    Spanish: "el |Mapa de la Mazmorra del Bosque Prohibido|"
-    French: "la |Carte du Donjon des Bois Défendus|"
-  Gender:
-    English: None
-    Spanish: Male
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x41
-  Map Dungeon: Forbidden Woods
-
-- Names:
     English: Pirates Charm
     Spanish: Amuleto Pirata
     French: Amulette Pirate
@@ -1664,150 +1471,6 @@
   Game Item Id: 0x59
 
 - Names:
-    English: Forbidden Woods Compass
-    Spanish: Brújula del Bosque Prohibido
-    French: Boussole des Bois Défendus
-  Pretty Names:
-    English: "a |Forbidden Woods Compass|"
-    Spanish: "la |Brújula del Bosque Prohibido|"
-    French: "la |Boussole des Bois Défendus|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x5A
-  Compass Dungeon: Forbidden Woods
-
-- Names:
-    English: Tower of the Gods Small Key
-    Spanish: Llave Pequeña de la Torre de los Dioses
-    French: Petite Clé de la Tour des Dieux
-  Pretty Names:
-    English: "a |Tower of the Gods Small Key|"
-    Spanish: "una |Llave Pequeña de la Torre de los Dioses|"
-    French: "une |Petite Clé de la Tour des Dieux|"
-  Cryptic Names:
-    English: "a |key|"
-    Spanish: "una |llave|"
-    French: "une |clé|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x5B
-  Small Key Dungeon: Tower of the Gods
-  Small Key Count: 2
-
-
-- Names:
-    English: Tower of the Gods Big Key
-    Spanish: Gran Llave de la torre de los Dioses
-    French: Grande Clé de la Tour des Dieux
-  Pretty Names:
-    English: "the |Tower of the Gods Big Key|"
-    Spanish: "la |Gran Llave de la torre de los Dioses|"
-    French: "la |Grande Clé de la Tour des Dieux|"
-  Cryptic Names:
-    English: "an |ominous key|"
-    Spanish: "una |llave siniestra|"
-    French: "une |clé menaçante|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x5C
-  Big Key Dungeon: Tower of the Gods
-
-
-- Names:
-    English: Tower of the Gods Dungeon Map
-    Spanish: Mapa de la Mazmorra de la Torre de los Dioses
-    French: Carte du Donjon de la Tour des Dieux
-  Pretty Names:
-    English: "the |Tower of the Gods Dungeon Map|"
-    Spanish: "el |Mapa de la Mazmorra de la Torre de los Dioses|"
-    French: "la |Carte du Donjon de la Tour des Dieux|"
-  Gender:
-    English: None
-    Spanish: Male
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x5D
-  Map Dungeon: Tower of the Gods
-
-- Names:
-    English: Tower of the Gods Compass
-    Spanish: Brújula de la Torre de los Dioses
-    French: Boussole de la Tour des Dieux
-  Pretty Names:
-    English: "the |Tower of the Gods Compass|"
-    Spanish: "la |Brújula de la Torre de los Dioses|"
-    French: "la |Boussole de la Tour des Dieux|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x5E
-  Compass Dungeon: Tower of the Gods
-
-- Names:
-    English: Forsaken Fortress Dungeon Map
-    Spanish: Mapa de la Mazmorra de la Isla del Diablo
-    French: Carte du Donjon de la Forteresse Maudite
-  Pretty Names:
-    English: "the |Forsaken Fortress Dungeon Map|"
-    Spanish: "el |Mapa de la Mazmorra de la Isla del Diablo|"
-    French: "la |Carte du Donjon de la Forteresse Maudite|"
-  Gender:
-    English: None
-    Spanish: Male
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x5F
-  Map Dungeon: Forsaken Fortress
-
-- Names:
-    English: Forsaken Fortress Compass
-    Spanish: Brújula de la Isla del Diablo
-    French: Boussole de la Forteresse Maudite
-  Pretty Names:
-    English: "the |Forsaken Fortress Compass|"
-    Spanish: "la |Brújula de la Isla del Diablo|"
-    French: "la |Boussole de la Forteresse Maudite|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x60
-  Compass Dungeon: Forsaken Fortress
-
-- Names:
     English: Triforce Shard 1
     Spanish: Fragmento de la Trifuerza 1
     French: Fragment de la Triforce 1
@@ -2182,93 +1845,6 @@
   Game Item Id: 0x72
 
 - Names:
-    English: Earth Temple Small Key
-    Spanish: Lave Pequeña del Templo de la Tierra
-    French: Petite Clé du Temple de la Terre
-  Pretty Names:
-    English: "an |Earth Temple Small Key|"
-    Spanish: "una |Lave Pequeña del Templo de la Tierra|"
-    French: "une |Petite Clé du Temple de la Terre|"
-  Cryptic Names:
-    English: "a |key|"
-    Spanish: "una |llave|"
-    French: "une |clé|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x73
-  Small Key Dungeon: Earth Temple
-  Small Key Count: 3
-
-
-- Names:
-    English: Earth Temple Big Key
-    Spanish: Gran Llave del Templo de la Tierra
-    French: Grande Clé du Temple de la Terre
-  Pretty Names:
-    English: "the |Earth Temple Big Key|"
-    Spanish: "la |Gran Llave del Templo de la Tierra|"
-    French: "la |Grande Clé du Temple de la Terre|"
-  Cryptic Names:
-    English: "an |ominous key|"
-    Spanish: "una |llave siniestra|"
-    French: "une |clé menaçante|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x74
-  Big Key Dungeon: Earth Temple
-
-
-- Names:
-    English: Earth Temple Dungeon Map
-    Spanish: Mapa de la Mazmorra del Templo de la Tierra
-    French: Carte du Donjon du Temple de la Terre
-  Pretty Names:
-    English: "the |Earth Temple Dungeon Map|"
-    Spanish: "el |Mapa de la Mazmorra del Templo de la Tierra|"
-    French: "la |Carte du Donjon du Temple de la Terre|"
-  Gender:
-    English: None
-    Spanish: Male
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x75
-  Map Dungeon: Earth Temple
-
-- Names:
-    English: Earth Temple Compass
-    Spanish: Brújula del Templo de la Tierra
-    French: Boussole du Temple de la Terre
-  Pretty Names:
-    English: "the |Earth Temple Compass|"
-    Spanish: "la |Brújula del Templo de la Tierra|"
-    French: "la |Boussole du Temple de la Terre|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x76
-  Compass Dungeon: Earth Temple
-
-- Names:
     English: Swift Sail
     Spanish: Vela Veloz
     French: Voile Rapide
@@ -2453,30 +2029,6 @@
   Game Item Id: 0x80
 
 - Names:
-    English: Wind Temple Small Key
-    Spanish: Llave Pequeña del Templo del Viento
-    French: Petite Clé du Temple du Vent
-  Pretty Names:
-    English: "a |Wind Temple Small Key|"
-    Spanish: "una |Llave Pequeña del Templo del Viento|"
-    French: "une |Petite Clé du Temple du Vent|"
-  Cryptic Names:
-    English: "a |key|"
-    Spanish: "una |llave|"
-    French: "une |clé|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x81
-  Small Key Dungeon: Wind Temple
-  Small Key Count: 2
-
-- Names:
     English: All Purpose Bait
     Spanish: Cebo Multiuso
     French: Appât Universel
@@ -2511,68 +2063,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0x83
-
-- Names:
-    English: Wind Temple Big Key
-    Spanish: Gran Llave del Templo del Viento
-    French: Grande Clé du Temple du Vent
-  Pretty Names:
-    English: "the |Wind Temple Big Key|"
-    Spanish: "la |Gran Llave del Templo del Viento|"
-    French: "la |Grande Clé du Temple du Vent|"
-  Cryptic Names:
-    English: "an |ominous key|"
-    Spanish: "una |llave siniestra|"
-    French: "une |clé menaçante|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x84
-  Big Key Dungeon: Wind Temple
-
-
-- Names:
-    English: Wind Temple Dungeon Map
-    Spanish: Mapa de la Mazmorra del Templo del Viento
-    French: Carte du Donjon du Temple du Vent
-  Pretty Names:
-    English: "the |Wind Temple Dungeon Map|"
-    Spanish: "el |Mapa de la Mazmorra del Templo del Viento|"
-    French: "la |Carte du Donjon du Temple du Vent|"
-  Gender:
-    English: None
-    Spanish: Male
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x85
-  Map Dungeon: Wind Temple
-
-- Names:
-    English: Wind Temple Compass
-    Spanish: Brújula del Templo del Viento
-    French: Boussole du Temple du Vent
-  Pretty Names:
-    English: "the |Wind Temple Compass|"
-    Spanish: "la |Brújula del Templo del Viento|"
-    French: "la |Boussole du Temple du Vent|"
-  Gender:
-    English: None
-    Spanish: Female
-    French: Female
-  Plurality:
-    English: Singular
-    Spanish: Singular
-    French: Singular
-  Game Item Id: 0x86
-  Compass Dungeon: Wind Temple
 
 - Names:
     English: Town Flower
@@ -4673,3 +4163,511 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xFE
+
+# Custom Items
+- Names:
+    English: Dragon Roost Cavern Small Key
+    Spanish: Llave Pequeña de la Cueva del Dragón
+    French: Petite Clé de la Caverne du Dragon
+  Pretty Names:
+    English: "a |Dragon Roost Cavern Small Key|"
+    Spanish: "una |Llave Pequeña de la Cueva del Dragón|"
+    French: "une |Petite Clé de la Caverne du Dragon|"
+  Cryptic Names:
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x40
+  Small Key Dungeon: Dragon Roost Cavern
+  Small Key Count: 4
+
+- Names:
+    English: Dragon Roost Cavern Big Key
+    Spanish: Gran Llave de la Cueva del Dragón
+    French: Grande Clé de la Caverne du Dragon
+  Pretty Names:
+    English: "the |Dragon Roost Cavern Big Key|"
+    Spanish: "la |Gran Llave de la Cueva del Dragón|"
+    French: "la |Grande Clé de la Caverne du Dragon|"
+  Cryptic Names:
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x41
+  Big Key Dungeon: Dragon Roost Cavern
+  
+- Names:
+    English: Dragon Roost Cavern Dungeon Map
+    Spanish: Mapa de la Mazmorra de la Cueva del Dragón
+    French: Carte du Donjon de la Caverne du Dragon
+  Pretty Names:
+    English: "the |Dragon Roost Cavern Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra de la Cueva del Dragón|"
+    French: "la |Carte du Donjon de la Caverne du Dragon|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x5A
+  Map Dungeon: Dragon Roost Cavern
+
+- Names:
+    English: Dragon Roost Cavern Compass
+    Spanish: Brújula de la Cueva del Dragón
+    French: Boussole de la Caverne du Dragon
+  Pretty Names:
+    English: "the |Dragon Roost Cavern Compass|"
+    Spanish: "la |Brújula de la Cueva del Dragón|"
+    French: "la |Boussole de la Caverne du Dragon|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x5B
+  Compass Dungeon: Dragon Roost Cavern
+
+- Names:
+    English: Forbidden Woods Small Key
+    Spanish: Llave Pequeña del Bosque Prohibido
+    French: Petite Clé des Bois Défendus
+  Pretty Names:
+    English: "a |Forbidden Woods Small Key|"
+    Spanish: "una |Llave Pequeña del Bosque Prohibido|"
+    French: "une |Petite Clé des Bois Défendus|"
+  Cryptic Names:
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x5C
+  Small Key Dungeon: Forbidden Woods
+  Small Key Count: 1
+
+- Names:
+    English: Forbidden Woods Big Key
+    Spanish: Gran Llave del Bosque Prohibido
+    French: Grande Clé des Bois Défendus
+  Pretty Names:
+    English: "the |Forbidden Woods Big Key|"
+    Spanish: "la |Gran Llave del Bosque Prohibido|"
+    French: "la |Grande Clé des Bois Défendus|"
+  Cryptic Names:
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x5D
+  Big Key Dungeon: Forbidden Woods
+
+- Names:
+    English: Forbidden Woods Dungeon Map
+    Spanish: Mapa de la Mazmorra del Bosque Prohibido
+    French: Carte du Donjon des Bois Défendus
+  Pretty Names:
+    English: "the |Forbidden Woods Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra del Bosque Prohibido|"
+    French: "la |Carte du Donjon des Bois Défendus|"
+  Gender:
+    English: None
+    Spanish: Male
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x5E
+  Map Dungeon: Forbidden Woods
+
+- Names:
+    English: Forbidden Woods Compass
+    Spanish: Brújula del Bosque Prohibido
+    French: Boussole des Bois Défendus
+  Pretty Names:
+    English: "a |Forbidden Woods Compass|"
+    Spanish: "la |Brújula del Bosque Prohibido|"
+    French: "la |Boussole des Bois Défendus|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x5F
+  Compass Dungeon: Forbidden Woods
+
+- Names:
+    English: Tower of the Gods Small Key
+    Spanish: Llave Pequeña de la Torre de los Dioses
+    French: Petite Clé de la Tour des Dieux
+  Pretty Names:
+    English: "a |Tower of the Gods Small Key|"
+    Spanish: "una |Llave Pequeña de la Torre de los Dioses|"
+    French: "une |Petite Clé de la Tour des Dieux|"
+  Cryptic Names:
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x60
+  Small Key Dungeon: Tower of the Gods
+  Small Key Count: 2
+
+
+- Names:
+    English: Tower of the Gods Big Key
+    Spanish: Gran Llave de la torre de los Dioses
+    French: Grande Clé de la Tour des Dieux
+  Pretty Names:
+    English: "the |Tower of the Gods Big Key|"
+    Spanish: "la |Gran Llave de la torre de los Dioses|"
+    French: "la |Grande Clé de la Tour des Dieux|"
+  Cryptic Names:
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x73
+  Big Key Dungeon: Tower of the Gods
+
+
+- Names:
+    English: Tower of the Gods Dungeon Map
+    Spanish: Mapa de la Mazmorra de la Torre de los Dioses
+    French: Carte du Donjon de la Tour des Dieux
+  Pretty Names:
+    English: "the |Tower of the Gods Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra de la Torre de los Dioses|"
+    French: "la |Carte du Donjon de la Tour des Dieux|"
+  Gender:
+    English: None
+    Spanish: Male
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x74
+  Map Dungeon: Tower of the Gods
+
+- Names:
+    English: Tower of the Gods Compass
+    Spanish: Brújula de la Torre de los Dioses
+    French: Boussole de la Tour des Dieux
+  Pretty Names:
+    English: "the |Tower of the Gods Compass|"
+    Spanish: "la |Brújula de la Torre de los Dioses|"
+    French: "la |Boussole de la Tour des Dieux|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x75
+  Compass Dungeon: Tower of the Gods
+
+- Names:
+    English: Forsaken Fortress Dungeon Map
+    Spanish: Mapa de la Mazmorra de la Isla del Diablo
+    French: Carte du Donjon de la Forteresse Maudite
+  Pretty Names:
+    English: "the |Forsaken Fortress Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra de la Isla del Diablo|"
+    French: "la |Carte du Donjon de la Forteresse Maudite|"
+  Gender:
+    English: None
+    Spanish: Male
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x76
+  Map Dungeon: Forsaken Fortress
+
+- Names:
+    English: Forsaken Fortress Compass
+    Spanish: Brújula de la Isla del Diablo
+    French: Boussole de la Forteresse Maudite
+  Pretty Names:
+    English: "the |Forsaken Fortress Compass|"
+    Spanish: "la |Brújula de la Isla del Diablo|"
+    French: "la |Boussole de la Forteresse Maudite|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x81
+  Compass Dungeon: Forsaken Fortress
+
+- Names:
+    English: Earth Temple Small Key
+    Spanish: Lave Pequeña del Templo de la Tierra
+    French: Petite Clé du Temple de la Terre
+  Pretty Names:
+    English: "an |Earth Temple Small Key|"
+    Spanish: "una |Lave Pequeña del Templo de la Tierra|"
+    French: "une |Petite Clé du Temple de la Terre|"
+  Cryptic Names:
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x84
+  Small Key Dungeon: Earth Temple
+  Small Key Count: 3
+
+
+- Names:
+    English: Earth Temple Big Key
+    Spanish: Gran Llave del Templo de la Tierra
+    French: Grande Clé du Temple de la Terre
+  Pretty Names:
+    English: "the |Earth Temple Big Key|"
+    Spanish: "la |Gran Llave del Templo de la Tierra|"
+    French: "la |Grande Clé du Temple de la Terre|"
+  Cryptic Names:
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x85
+  Big Key Dungeon: Earth Temple
+
+
+- Names:
+    English: Earth Temple Dungeon Map
+    Spanish: Mapa de la Mazmorra del Templo de la Tierra
+    French: Carte du Donjon du Temple de la Terre
+  Pretty Names:
+    English: "the |Earth Temple Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra del Templo de la Tierra|"
+    French: "la |Carte du Donjon du Temple de la Terre|"
+  Gender:
+    English: None
+    Spanish: Male
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x86
+  Map Dungeon: Earth Temple
+
+- Names:
+    English: Earth Temple Compass
+    Spanish: Brújula del Templo de la Tierra
+    French: Boussole du Temple de la Terre
+  Pretty Names:
+    English: "the |Earth Temple Compass|"
+    Spanish: "la |Brújula del Templo de la Tierra|"
+    French: "la |Boussole du Temple de la Terre|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x87
+  Compass Dungeon: Earth Temple
+
+- Names:
+    English: Wind Temple Small Key
+    Spanish: Llave Pequeña del Templo del Viento
+    French: Petite Clé du Temple du Vent
+  Pretty Names:
+    English: "a |Wind Temple Small Key|"
+    Spanish: "una |Llave Pequeña del Templo del Viento|"
+    French: "une |Petite Clé du Temple du Vent|"
+  Cryptic Names:
+    English: "a |key|"
+    Spanish: "una |llave|"
+    French: "une |clé|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x88
+  Small Key Dungeon: Wind Temple
+  Small Key Count: 2
+
+- Names:
+    English: Wind Temple Big Key
+    Spanish: Gran Llave del Templo del Viento
+    French: Grande Clé du Temple du Vent
+  Pretty Names:
+    English: "the |Wind Temple Big Key|"
+    Spanish: "la |Gran Llave del Templo del Viento|"
+    French: "la |Grande Clé du Temple du Vent|"
+  Cryptic Names:
+    English: "an |ominous key|"
+    Spanish: "una |llave siniestra|"
+    French: "une |clé menaçante|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x89
+  Big Key Dungeon: Wind Temple
+
+
+- Names:
+    English: Wind Temple Dungeon Map
+    Spanish: Mapa de la Mazmorra del Templo del Viento
+    French: Carte du Donjon du Temple du Vent
+  Pretty Names:
+    English: "the |Wind Temple Dungeon Map|"
+    Spanish: "el |Mapa de la Mazmorra del Templo del Viento|"
+    French: "la |Carte du Donjon du Temple du Vent|"
+  Gender:
+    English: None
+    Spanish: Male
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x8A
+  Map Dungeon: Wind Temple
+
+- Names:
+    English: Wind Temple Compass
+    Spanish: Brújula del Templo del Viento
+    French: Boussole du Temple du Vent
+  Pretty Names:
+    English: "the |Wind Temple Compass|"
+    Spanish: "la |Brújula del Templo del Viento|"
+    French: "la |Boussole du Temple du Vent|"
+  Gender:
+    English: None
+    Spanish: Female
+    French: Female
+  Plurality:
+    English: Singular
+    Spanish: Singular
+    French: Singular
+  Game Item Id: 0x8B
+  Compass Dungeon: Wind Temple
+
+
+# Dummy item to represent nothing
+- Names:
+    English: Nothing
+    Spanish:
+    French:
+  Pretty Names:
+    English: Nothing
+    Spanish:
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
+  Game Item Id: 0x17
+
+# Dummy item to check for game beatability
+- Names:
+    English: Game Beatable
+    Spanish:
+    French:
+  Pretty Names:
+    English: Game Beatable
+    Spanish:
+    French:
+  Gender:
+    English: None
+    Spanish:
+    French:
+  Plurality:
+    English: Singular
+    Spanish:
+    French:
+  Game Item Id: 0x18
