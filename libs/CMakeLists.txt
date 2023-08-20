@@ -1,13 +1,6 @@
-cmake_minimum_required(VERSION 3.7)
-if(CMAKE_VERSION VERSION_LESS "3.13")
-	if (POLICY CMP0076)
-		cmake_policy(SET CMP0076 OLD)
-	endif()
-	target_sources(wwhd_rando PRIVATE "libs/base64pp.cpp" "libs/AES.cpp" "libs/hashing/sha1.cpp" "libs/hashing/sha256.cpp" "libs/tinyxml2/tinyxml2.cpp")
-else()
-	cmake_policy(SET CMP0076 NEW)
-	target_sources(wwhd_rando PRIVATE base64pp.cpp AES.cpp hashing/sha1.cpp hashing/sha256.cpp tinyxml2/tinyxml2.cpp)
-endif()
+cmake_minimum_required(VERSION 3.13)
+
+target_sources(wwhd_rando PRIVATE base64pp.cpp AES.cpp hashing/sha1.cpp hashing/sha256.cpp)
 
 set(BUILD_SHARED_LIBS OFF)
 
@@ -45,3 +38,5 @@ add_subdirectory("yaml-cpp")
 
 option(tinyxml2_BUILD_TESTING OFF)
 add_subdirectory("tinyxml2")
+
+target_link_libraries(wwhd_rando zlib yaml-cpp tinyxml2)
