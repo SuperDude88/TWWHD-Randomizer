@@ -71,15 +71,6 @@ namespace Utility
         //#endif
     }
 
-    inline bool exists(const std::filesystem::path& fsPath) {
-        #ifdef DEVKITPRO
-            struct stat sbuff;
-            return stat(fsPath.string().c_str(), &sbuff) == 0;
-        #else
-            return std::filesystem::exists(fsPath);
-        #endif
-    }
-
     //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
     bool isRoot(const std::filesystem::path& fsPath);
 
@@ -113,26 +104,6 @@ namespace Utility
         #endif
 
         return true;
-    }
-
-    inline bool remove_all(const std::filesystem::path& fsPath) {
-        #ifdef DEVKITPRO
-            for(auto& p : std::filesystem::directory_iterator(fsPath)) {
-                if(std::filesystem::is_directory(p.path())) {
-                    if(!std::filesystem::is_empty(p.path())) {
-                        if(!Utility::remove_all(p.path())) return false;
-                    }
-                }
-                else {
-                    std::filesystem::remove(p.path());
-                }
-            }
-
-            if(!std::filesystem::is_empty(fsPath)) return false;
-            return std::filesystem::remove(fsPath);
-        #else
-            return std::filesystem::remove_all(fsPath);
-        #endif
     }
 
     bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to);
