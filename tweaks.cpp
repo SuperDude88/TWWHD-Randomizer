@@ -3054,6 +3054,21 @@ TweakError add_ff_warp_button() {
     return TweakError::NONE;
 }
 
+TweakError fix_vanilla_text() {
+    //The spanish text for the 99 quiver says that you can hold up to 99 bombs
+    RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_UsSpanish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+    text.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+        std::u16string& message = msbt.messages_by_label["00277"].text.message;
+        message.replace(message.find(u"bombas"), 6, u"flechas", 7);
+
+        return true;
+    });
+    
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -3184,6 +3199,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(apply_ingame_preferences(settings));
     TWEAK_ERR_CHECK(add_ff_warp_button());
     TWEAK_ERR_CHECK(fix_entrance_params());
+    TWEAK_ERR_CHECK(fix_vanilla_text());
     //rat hole visibility
     //failsafe id 0 spawns
 
