@@ -340,3 +340,39 @@ check_can_defend:
   check_can_defend_return_true:
   li r3, 1
   blr
+
+
+
+; If Zelda aims in the right spot, you can sometimes reflect her light arrow in phase 1 of the Ganondorf fight
+; This still plays the camera animation that normally happens in phase 3
+; If this happens at the end of phase 1, the game also tries to play the cutscene of knocking Zelda down, and she will be frozen briefly when she wakes up for phase 3
+; Don't try to play this cutscene until his health is <=25 (75 -> phase 1, 50 -> phase 2, 25 -> phase 3)
+.org 0x02053BB4 ; in daArrow_c::ShieldReflect
+  b ganondorf_health_check
+.org @NextFreeSpace
+.global ganondorf_health_check
+ganondorf_health_check:
+  lfs f9, 0x314(r12) ; replace the line we overwrote to jump here
+  lbz r10, 0x3A1(r12) ; load his current health
+  cmpwi r10, 0x19
+  bgt skip_reflect_cutscene
+  b 0x02053BB8; continue with cutscene animation
+skip_reflect_cutscene:
+  b 0x02053C54 ; continue as if we weren't targeting Ganondorf (no cutscene)
+
+
+; If Ganondorf gets hit by enough light arrows in phase 3, his health will go down to 0 and he will play a different hit sound
+; This is normally used for the final hit on enemies so it sounds a bit strange (0x02519494 plays the sound)
+.org 0x02519478 ; Runs when enemy is "dead" (based on health), in d_cc_uty::cc_at_check
+  b check_if_ganondorf
+.org @NextFreeSpace
+.global check_if_ganondorf
+check_if_ganondorf:
+  lhz r3, 0x8(r27) ; Load mProcName (actor ID)
+  cmplwi r3, 0xF6 ; Ganondorf actor ID
+  beq force_normal_hit_sound
+  lbz r3, 0x326(r27) ; Replace the line we woverwrote to jump here
+  b 0x0251947C ; Continue with <= 0 health sound
+force_normal_hit_sound:
+  li r29, 0x20 ; Skip some checks that would realize health is 0, load this parameter directly instead
+  b 0x02519700 ; Continue as if he isn't "dead"
