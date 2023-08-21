@@ -1,4 +1,4 @@
-- {r_addend: 0x8FA484, r_info: 0x106, r_offset: 0x28FA40E}
-- {r_addend: 0x8FA484, r_info: 0x104, r_offset: 0x28FA412}
-- {r_addend: 0x8FA570, r_info: 0x106, r_offset: 0x28FA4FA}
-- {r_addend: 0x8FA570, r_info: 0x104, r_offset: 0x28FA4FE}
+- {r_addend: 0x8FA260, r_info: 0x106, r_offset: 0x28FA1EA}
+- {r_addend: 0x8FA260, r_info: 0x104, r_offset: 0x28FA1EE}
+- {r_addend: 0x8FA34C, r_info: 0x106, r_offset: 0x28FA2D6}
+- {r_addend: 0x8FA34C, r_info: 0x104, r_offset: 0x28FA2DA}

@@ -23,15 +23,15 @@ static std::mutex printMut;
 
 #ifdef PLATFORM_DKP
 static bool flushMLC() {
-    const int fsaHandle = FSAAddClient(NULL);
-    if(fsaHandle < 0) {
+    const FSAClientHandle handle = FSAAddClient(NULL);
+    if(handle < 0) {
         return false;
     }
-    FSError ret = FSAFlushVolume(fsaHandle, "/vol/storage_mlc01");
+    FSError ret = FSAFlushVolume(handle, "/vol/storage_mlc01");
     if(ret != FS_ERROR_OK) {
         return false;
     }
-    ret = FSADelClient(fsaHandle);
+    ret = FSADelClient(handle);
     if(ret != FS_ERROR_OK) {
         return false;
     }

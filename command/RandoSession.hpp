@@ -79,22 +79,24 @@ public:
 
     RandoSession();
 
+    void setFirstTimeSetup(const bool& doSetup) { firstTimeSetup = doSetup; }
     void init(const fspath& gameBaseDir, const fspath& randoOutputDir);
     [[nodiscard]] CacheEntry& openGameFile(const fspath& relPath);
-    [[nodiscard]] bool isCached(const fspath& relPath);
     [[nodiscard]] bool copyToGameFile(const fspath& source, const fspath& relPath, const bool& resourceFile = false);
     [[nodiscard]] bool restoreGameFile(const fspath& relPath);
     [[nodiscard]] bool modFiles();
 
-    const fspath& getBaseDir() { return baseDir; }
-    const fspath& getOutputDir() { return outputDir; }
+    const fspath& getBaseDir() const { return baseDir; }
+    const fspath& getOutputDir() const { return outputDir; }
 private:
     std::shared_ptr<CacheEntry> getEntry(const std::vector<std::string>& fileSpec);
     bool extractFile(std::shared_ptr<CacheEntry> current);
     bool repackFile(std::shared_ptr<CacheEntry> current);
     bool handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current);
     void clearCache();
+    bool runFirstTimeSetup();
 
+    bool firstTimeSetup = false;
     bool initialized = false;
     fspath baseDir;
     fspath outputDir;

@@ -458,42 +458,6 @@ RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath&
     return *getEntry(Utility::Str::split(relPath.string(), '@'));
 }
 
-bool RandoSession::isCached(const RandoSession::fspath& relPath)
-{
-    CHECK_INITIALIZED(false);
-    const auto& splitPath = Utility::Str::split(relPath.string(), '@');
-    std::shared_ptr<CacheEntry> curEntry = fileCache;
-
-    std::string key;
-    for(const std::string& element : splitPath) {
-        if (element.compare("RPX") == 0)
-        {
-            key += ".elf";
-        }
-        else if (element.compare("YAZ0") == 0)
-        {
-            key += ".dec";
-        }
-        else if(element.compare("SARC") == 0)
-        {
-            key += ".unpack/";
-        }
-        else if (element.compare("BFRES") == 0)
-        {
-            key += ".res/";
-        }
-        else
-        {
-            key += element;
-        }
-
-        if(curEntry->children.count(key) == 0) return false;
-        curEntry = curEntry->children.at(key);
-    }
-
-    return true;
-}
-
 bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, const bool& resourceFile /* = false*/) {
     CHECK_INITIALIZED(false);
 
@@ -515,7 +479,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, c
 bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file from the base directory (without extracting any data)
     CHECK_INITIALIZED(false);
 
-    RandoSession::CacheEntry& entry = openGameFile(relPath); //doesn't need actions, open loads from base and resaves to output
+    CacheEntry& entry = openGameFile(relPath); //doesn't need actions, open loads from base and resaves to output
     return true;
 }
 
@@ -579,9 +543,96 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     return true;
 }
 
+#ifdef DEVKITPRO
+//based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
+static bool iterate_directory_recursive(RandoSession& session, const std::filesystem::path cur) {
+    DIR* dirHandle = nullptr;
+    if (dirHandle = opendir(cur.string().c_str()); dirHandle == nullptr) {
+        ErrorLog::getInstance().log("Couldn't open directory: " + cur.string());
+        return false;
+    }
+
+    // Loop over directory contents
+    struct dirent* dirEntry;
+    while ((dirEntry = readdir(dirHandle)) != nullptr) {
+        const std::filesystem::path entryPath = cur / dirEntry->d_name;
+        const std::filesystem::path relPath = entryPath.string().substr(session.getBaseDir().string().length() + 1);
+
+        // Use lstat since readdir returns DT_REG for symlinks
+        struct stat fileStat;
+        if (lstat(entryPath.string().c_str(), &fileStat) != 0) {
+            ErrorLog::getInstance().log("Couldn't check what type this file/folder was: " + entryPath.string());
+            return false;
+        }
+
+        if (S_ISLNK(fileStat.st_mode)) {
+            continue;
+        }
+        else if (S_ISREG(fileStat.st_mode)) {
+            // Add file to fileCache
+            RandoSession::CacheEntry& entry = session.openGameFile(relPath);
+        }
+        else if (S_ISDIR(fileStat.st_mode)) {
+            // Ignore root and parent folder entries
+            if (std::strncmp(dirEntry->d_name, ".", 1) == 0 || std::strncmp(dirEntry->d_name, "..", 2) == 0) continue;
+
+            // Create corresponding folder in the output path
+            if(!Utility::create_directories(session.getOutputDir() / relPath)) {
+                ErrorLog::getInstance().log("Failed to create dir: " + (session.getOutputDir() / relPath).string());
+                closedir(dirHandle);
+                return false;
+            }
+
+            // Iterate over all the files in this subdirectory
+            if (!iterate_directory_recursive(session, entryPath)) {
+                ErrorLog::getInstance().log("Failed to iterate dir: " + entryPath.string());
+                closedir(dirHandle);
+                return false;
+            }
+        }
+    }
+
+    closedir(dirHandle);
+    return true;
+}
+#endif
+
+//Only run this on console for the time being, for some reason it takes 3-4x longer than Windows to copy the same folders
+bool RandoSession::runFirstTimeSetup() {
+    //create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
+    #ifdef DEVKITPRO
+        if(!iterate_directory_recursive(*this, baseDir / "content")) { //code and meta folders are handled by channel install
+            return false; 
+        }
+    #else
+        using namespace std::filesystem;
+        for (const directory_entry& entry : recursive_directory_iterator(baseDir))
+        {
+            const fspath relPath = relative(entry.path(), baseDir);
+            if(entry.is_directory()) {
+                if(!create_directory(outputDir / relPath)) return false;
+            }
+            else {
+                CacheEntry& entry = openGameFile(relPath);
+            }
+        }
+    #endif
+
+    return true;
+}
+
 bool RandoSession::modFiles()
 {
     CHECK_INITIALIZED(false);
+
+    if(firstTimeSetup) {
+        UPDATE_DIALOG_LABEL("Running first time setup (this will increase repack time)");
+        Utility::platformLog("Running first time setup (this will increase repack time)\n");
+        if(!runFirstTimeSetup()) {
+            ErrorLog::getInstance().log("Failed to complete first time setup!");
+            return false;
+        }
+    }
 
     total_num_tasks = fileCache->children.size();
     for(auto& [filename, child] : fileCache->children) {

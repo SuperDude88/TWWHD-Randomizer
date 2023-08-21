@@ -2,8 +2,6 @@
 
 #include <typeinfo>
 #include <memory>
-#include <fstream>
-#include <codecvt>
 #include <filesystem>
 #include <algorithm>
 #include <iostream>
@@ -68,7 +66,6 @@ namespace {
     TweakError Load_Custom_Symbols(const std::string& file_path) {
         std::string file_data;
         if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
-        // std::ifstream fptr(file_path, std::ios::in);
 
         YAML::Node symbols = YAML::Load(file_data);
         for (const auto& symbol : symbols) {
@@ -82,7 +79,6 @@ namespace {
 TweakError Apply_Patch(const std::string& file_path) {
     std::string file_data;
     if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
-    // std::ifstream fptr(file_path, std::ios::in);
 
     const YAML::Node patches = YAML::Load(file_data);
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
@@ -406,15 +402,8 @@ TweakError allow_all_items_to_be_field_items() {
         return true;
     });
 
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.yaml")); //some special stuff because HD silly
-
-    rpx.addAction([=](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-            
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0007a2d0, 7), 0x00011ed8)); //Update the Y offset that is being read (.rela.text edit)
-
-        return true;
-    });
+    //execItemGet, mode_wait, and getYOffset had their switch cases optimized out, so their patches are a little more involved in HD
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.yaml")); 
     
     const uint32_t extra_item_data_list_start = 0x101E8674;
     for (unsigned int item_id = 0x00; item_id < 0xFF + 1; item_id++) {
@@ -847,9 +836,9 @@ TweakError update_name_and_icon() {
 
 TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
     struct dungeon_item_info {
-        std::string short_name;
-        std::string base_item_name;
-        uint8_t item_id;
+        const std::string short_name;
+        const std::string base_item_name;
+        const GameItem item_value;
     };
 
     const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
@@ -865,98 +854,87 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         {"WT", "Wind Temple"}
     };
 
-    const std::unordered_map<std::string, uint8_t> item_name_to_id{ {
+    const std::unordered_map<std::string, uint8_t> item_name_to_id = {
         {"Small Key", 0x15},
         {"Dungeon Map", 0x4C},
         {"Compass", 0x4D},
         {"Big Key", 0x4E}
-    } };
-
-    const std::array<dungeon_item_info, 22> dungeon_items{ {
-        {"DRC", "Small Key", 0x13},
-        {"DRC", "Big Key", 0x14},
-        {"DRC", "Dungeon Map", 0x1B},
-        {"DRC", "Compass", 0x1C},
-        {"FW", "Small Key", 0x1D},
-        {"FW", "Big Key", 0x40},
-        {"FW", "Dungeon Map", 0x41},
-        {"FW", "Compass", 0x5A},
-        {"TotG", "Small Key", 0x5B},
-        {"TotG", "Big Key", 0x5C},
-        {"TotG", "Dungeon Map", 0x5D},
-        {"TotG", "Compass", 0x5E},
-        {"FF", "Dungeon Map", 0x5F},
-        {"FF", "Compass", 0x60},
-        {"ET", "Small Key", 0x73},
-        {"ET", "Big Key", 0x74},
-        {"ET", "Dungeon Map", 0x75},
-        {"ET", "Compass", 0x76},
-        {"WT", "Small Key", 0x81}, //0x77 is taken by swift sail in HD
-        {"WT", "Big Key", 0x84},
-        {"WT", "Dungeon Map", 0x85},
-        {"WT", "Compass", 0x86}
-    } };
-
-    const std::unordered_map<uint8_t, std::string> idToFunc = {
-        {0x13, "drc_small_key_item_get_func"},
-        {0x14, "drc_big_key_item_get_func"},
-        {0x1B, "drc_dungeon_map_item_get_func"},
-        {0x1C, "drc_compass_item_get_func"},
-        {0x1D, "fw_small_key_item_get_func"},
-        {0x40, "fw_big_key_item_get_func"},
-        {0x41, "fw_dungeon_map_item_get_func"},
-        {0x5A, "fw_compass_item_get_func"},
-        {0x5B, "totg_small_key_item_get_func"},
-        {0x5C, "totg_big_key_item_get_func"},
-        {0x5D, "totg_dungeon_map_item_get_func"},
-        {0x5E, "totg_compass_item_get_func"},
-        {0x5F, "ff_dungeon_map_item_get_func"},
-        {0x60, "ff_compass_item_get_func"},
-        {0x73, "et_small_key_item_get_func"},
-        {0x74, "et_big_key_item_get_func"},
-        {0x75, "et_dungeon_map_item_get_func"},
-        {0x76, "et_compass_item_get_func"},
-        {0x81, "wt_small_key_item_get_func"},
-        {0x84, "wt_big_key_item_get_func"},
-        {0x85, "wt_dungeon_map_item_get_func"},
-        {0x86, "wt_compass_item_get_func"},
     };
 
-    const std::unordered_map<uint8_t, uint32_t> szs_name_pointers{
+    const std::array<dungeon_item_info, 22> dungeon_items = {{
+        {"DRC", "Small Key", GameItem::DRCSmallKey},
+        {"DRC", "Big Key", GameItem::DRCBigKey},
+        {"DRC", "Dungeon Map", GameItem::DRCDungeonMap},
+        {"DRC", "Compass", GameItem::DRCCompass},
+        {"FW", "Small Key", GameItem::FWSmallKey},
+        {"FW", "Big Key", GameItem::FWBigKey},
+        {"FW", "Dungeon Map", GameItem::FWDungeonMap},
+        {"FW", "Compass", GameItem::FWCompass},
+        {"TotG", "Small Key", GameItem::TotGSmallKey},
+        {"TotG", "Big Key", GameItem::TotGBigKey},
+        {"TotG", "Dungeon Map", GameItem::TotGDungeonMap},
+        {"TotG", "Compass", GameItem::TotGCompass},
+        {"FF", "Dungeon Map", GameItem::FFDungeonMap},
+        {"FF", "Compass", GameItem::FFCompass},
+        {"ET", "Small Key", GameItem::ETSmallKey},
+        {"ET", "Big Key", GameItem::ETBigKey},
+        {"ET", "Dungeon Map", GameItem::ETDungeonMap},
+        {"ET", "Compass", GameItem::ETCompass},
+        {"WT", "Small Key", GameItem::WTSmallKey},
+        {"WT", "Big Key", GameItem::WTBigKey},
+        {"WT", "Dungeon Map", GameItem::WTDungeonMap},
+        {"WT", "Compass", GameItem::WTCompass}
+    }};
+
+    const std::unordered_map<GameItem, std::string> itemToFunc = {
+        {GameItem::DRCSmallKey, "drc_small_key_item_get_func"},
+        {GameItem::DRCBigKey, "drc_big_key_item_get_func"},
+        {GameItem::DRCDungeonMap, "drc_dungeon_map_item_get_func"},
+        {GameItem::DRCCompass, "drc_compass_item_get_func"},
+        {GameItem::FWSmallKey, "fw_small_key_item_get_func"},
+        {GameItem::FWBigKey, "fw_big_key_item_get_func"},
+        {GameItem::FWDungeonMap, "fw_dungeon_map_item_get_func"},
+        {GameItem::FWCompass, "fw_compass_item_get_func"},
+        {GameItem::TotGSmallKey, "totg_small_key_item_get_func"},
+        {GameItem::TotGBigKey, "totg_big_key_item_get_func"},
+        {GameItem::TotGDungeonMap, "totg_dungeon_map_item_get_func"},
+        {GameItem::TotGCompass, "totg_compass_item_get_func"},
+        {GameItem::FFDungeonMap, "ff_dungeon_map_item_get_func"},
+        {GameItem::FFCompass, "ff_compass_item_get_func"},
+        {GameItem::ETSmallKey, "et_small_key_item_get_func"},
+        {GameItem::ETBigKey, "et_big_key_item_get_func"},
+        {GameItem::ETDungeonMap, "et_dungeon_map_item_get_func"},
+        {GameItem::ETCompass, "et_compass_item_get_func"},
+        {GameItem::WTSmallKey, "wt_small_key_item_get_func"},
+        {GameItem::WTBigKey, "wt_big_key_item_get_func"},
+        {GameItem::WTDungeonMap, "wt_dungeon_map_item_get_func"},
+        {GameItem::WTCompass, "wt_compass_item_get_func"},
+    };
+
+    const std::unordered_map<uint8_t, uint32_t> szs_name_pointers = {
         {0x15, 0x1004E448},
         {0x4C, 0x1004E4b8},
         {0x4D, 0x1004E4b0},
         {0x4E, 0x1004E698}
     };
 
+    const std::unordered_map<std::string, std::u16string> messageBegin = {
+      {"English", u"You got "},
+      {"Spanish", u"¡Has conseguido "},
+      {"French", u"Vous obtenez "},
+    };
+
     RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
-
-    // nop some code that would overwrite models (Nintendo added some data to these IDs, maybe related to Tingle bottle?)
-    rpx.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x025527DC), 0x60000000)); // DRC small key field model
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x25527e0), 0x60000000)); // DRC big key field model
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02551E30), 0x60000000)); // DRC big key item resource
-
-        return true;
-    });
-
-      static std::unordered_map<std::string, std::u16string> messageBegin = {
-        {"English", u"You got "},
-        {"Spanish", u"¡Has conseguido "},
-        {"French", u"Vous obtenez "},
-      };
-
     for (const dungeon_item_info& item_data : dungeon_items) {
         const std::string item_name = item_data.short_name + " " + item_data.base_item_name;
+        const uint8_t item_id = static_cast<uint8_t>(item_data.item_value);
         const uint8_t base_item_id = item_name_to_id.at(item_data.base_item_name);
         const std::string dungeon_name = dungeon_names.at(item_data.short_name);
 
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-            RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_pointer + (0xC * item_data.item_id) + 0x8, 9), custom_symbols.at(idToFunc.at(item_data.item_id)) - 0x02000000)); //write to the relocation entries
+            RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_pointer + (0xC * item_id) + 0x8, 9), custom_symbols.at(itemToFunc.at(item_data.item_value)) - 0x02000000)); //write to the relocation entries
 
             return true;
         });
@@ -966,9 +944,9 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
             entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-                const uint32_t message_id = 101 + item_data.item_id;
+                const uint32_t message_id = 101 + item_id;
                 const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
-                std::u16string message = messageBegin[language] + world.itemEntries[dungeon_name + " " + item_data.base_item_name].getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
+                std::u16string message = messageBegin.at(language) + world.itemEntries[dungeon_name + " " + item_data.base_item_name].getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
 
                 message = Text::word_wrap_string(message, 39);
                 msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
@@ -980,8 +958,8 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         const uint32_t item_resources_addr_to_copy_from = item_resources_list_start + base_item_id * 0x24;
         const uint32_t field_item_resources_addr_to_copy_from = field_item_resources_list_start + base_item_id * 0x1C;
 
-        const uint32_t item_resources_addr = item_resources_list_start + item_data.item_id * 0x24;
-        const uint32_t field_item_resources_addr = field_item_resources_list_start + item_data.item_id * 0x1C;
+        const uint32_t item_resources_addr = item_resources_list_start + item_id * 0x24;
+        const uint32_t field_item_resources_addr = field_item_resources_list_start + item_id * 0x1C;
 
         const uint32_t szs_name_pointer = szs_name_pointers.at(base_item_id);
 
@@ -1081,7 +1059,7 @@ TweakError fix_shop_item_y_offsets() {
 
             if (y_offset == 0.0f && ArrowID.count(id) == 0) {
                 // If the item didn't originally have a Y offset we need to give it one so it's not sunken into the pedestal.
-                // Only exception are for items 10 11 and 12 - arrow refill pickups.Those have no Y offset but look fine already.
+                // Only exception are for items 10 11 and 12 - arrow refill pickups. Those have no Y offset but look fine already.
                 static const float new_y_offset = 20.0f;
                 RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, display_data_addr + 0x10), new_y_offset));
             }
@@ -3076,6 +3054,21 @@ TweakError add_ff_warp_button() {
     return TweakError::NONE;
 }
 
+TweakError fix_vanilla_text() {
+    //The spanish text for the 99 quiver says that you can hold up to 99 bombs
+    RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_UsSpanish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+    text.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+        std::u16string& message = msbt.messages_by_label["00277"].text.message;
+        message.replace(message.find(u"bombas"), 6, u"flechas", 7);
+
+        return true;
+    });
+    
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -3206,6 +3199,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(apply_ingame_preferences(settings));
     TWEAK_ERR_CHECK(add_ff_warp_button());
     TWEAK_ERR_CHECK(fix_entrance_params());
+    TWEAK_ERR_CHECK(fix_vanilla_text());
     //rat hole visibility
     //failsafe id 0 spawns
 

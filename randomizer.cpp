@@ -31,11 +31,9 @@
 #include <gui/update_dialog_header.hpp>
 
 #ifdef DEVKITPRO
-#include <unistd.h> //for chdir
 #include <sysapp/title.h>
 #include <platform/channel.hpp>
 #include <platform/controller.hpp>
-
 #endif
 
 #define SEED_KEY "SEED KEY TEST"
@@ -409,7 +407,6 @@ private:
         }
 
         for(const std::string& path : paths) {
-            if(g_session.isCached(path)) continue;
             if(!g_session.restoreGameFile(path)) {
                 ErrorLog::getInstance().log("Failed to restore " + path + '\n');
                 return false;
@@ -762,26 +759,20 @@ public:
         }
 
         // Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
-        // Do this at the end to check if the files were cached
-        // Copying is slow so we skip all the ones we can
+        // restoreGameFile() does not need to check if the file is cached because it only tries to get the cache entry
+        // Getting a cache entry doesn't overwrite anything if the file already had modifications
         Utility::platformLog("Restoring outdated files...\n");
-        if(!g_session.isCached("content/Common/Misc/Misc.szs")) {
-            if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
-                ErrorLog::getInstance().log("Failed to restore Misc.szs!");
-                return 1;
-            }
+        if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
+            ErrorLog::getInstance().log("Failed to restore Misc.szs!");
+            return 1;
         }
-        if(!g_session.isCached("content/Common/Particle/Particle.szs")) {
-            if(!g_session.restoreGameFile("content/Common/Particle/Particle.szs")) {
-                ErrorLog::getInstance().log("Failed to restore Particle.szs!");
-                return 1;
-            }
+        if(!g_session.restoreGameFile("content/Common/Particle/Particle.szs")) {
+            ErrorLog::getInstance().log("Failed to restore Particle.szs!");
+            return 1;
         }
-        if(!g_session.isCached("content/Common/Pack/permanent_3d.pack")) {
-            if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
-                ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
-                return 1;
-            }
+        if(!g_session.restoreGameFile("content/Common/Pack/permanent_3d.pack")) {
+            ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
+            return 1;
         }
         if(!restoreEntrances()) {
             ErrorLog::getInstance().log("Failed to restore entrances!");
@@ -895,6 +886,7 @@ int mainRandomize() {
                 if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
                     return 1;
                 }
+                g_session.setFirstTimeSetup(true);
             }
             if(const auto& err = getTitlePath(0x0005000010143599, load.outputDir); err < 0) {
                 return 1;
@@ -911,7 +903,6 @@ int mainRandomize() {
         // IMPROVEMENT: issue with seekp, find better solution than manual padding?
         // TODO: make things zoom
         // TODO: do a hundo seed to test everything
-        // TODO: check for free space with output stuff
 
         retVal = rando.randomize();
     } // End timer scope
