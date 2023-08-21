@@ -125,4 +125,5 @@ private:
 };
 
 std::string entranceTypeToName(const EntranceType& type);
+EntranceType entranceNameToType(const std::string& name);
 EntranceType entranceTypeToReverse(const EntranceType& type);
