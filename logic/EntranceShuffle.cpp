@@ -10,6 +10,7 @@
 #include <logic/Fill.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
+#include <libs/yaml.h>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
 #define CHECK_MIXED_POOL(name, type) if (name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
@@ -20,158 +21,6 @@
 // it for Ocarina of Time.
 //
 // https://github.com/TestRunnerSRL/OoT-Randomizer/blob/Dev/EntranceShuffle.py
-
-static std::list<EntranceInfoPair> entranceShuffleTable = {                                                       //-----File path info-----|----entrance info----|---boss stage exit info---//
-                            // Parent Area                              Connected Area                             stage,   room, scls index,  stage,  room, spawn, boss stage, stage, room, spawn
-    {EntranceType::DUNGEON, {"Dragon Roost Pond Past Statues",         "DRC First Room",                           "Adanmae",  0,          2, "M_NewD2",  0,     0},
-    /*Dragon Roost Cavern*/ {"DRC First Room",                         "Dragon Roost Pond Past Statues",           "M_NewD2",  0,          0, "Adanmae",  0,     2, "M_DragB", "sea",  13, 211}},
-    {EntranceType::DUNGEON, {"FW Entrance Platform",                   "FW First Room",                            "sea",     41,          6, "kindan",   0,     0},
-    /*Forbidden Woods*/     {"FW First Room",                          "FW Entrance Platform",                     "kindan",   0,          0, "sea",     41,     6, "kinBOSS", "sea",  41,   0}},
-    {EntranceType::DUNGEON, {"Tower of the Gods Sector",               "TOTG Entrance Room",                       "sea",     26,          0, "Siren",    0,     0},
-    /*Tower of the Gods*/   {"TOTG Entrance Room",                     "Tower of the Gods Sector",                 "Siren",    0,          1, "sea",     26,     2, "SirenB",  "sea",  26,   1}},
-    {EntranceType::DUNGEON, {"Headstone Island Interior",              "ET First Room",                            "Edaichi",  0,          0, "M_Dai",    0,     0},
-    /*Earth Temple*/        {"ET First Room",                          "Headstone Island Interior",                "M_Dai",    0,          0, "Edaichi",  0,     1, "M_DaiB",  "sea",  45, 229}},
-    {EntranceType::DUNGEON, {"Gale Isle Interior",                     "WT First Room",                            "Ekaze",    0,          0, "kaze",    12,    70},
-    /*Wind Temple*/         {"WT First Room",                          "Gale Isle Interior",                       "kaze",    15,          0, "Ekaze",    0,     1, "kazeB",   "sea",   4, 232}},
-
-    {EntranceType::BOSS,    {"DRC Boss Door Room Across Lava",         "Gohma Battle Arena",                       "M_NewD2", 10,          1, "M_DragB", 0,      0},
-                            {"Gohma Battle Arena",                     "DRC Boss Door Room Across Lava",           "M_DragB", 0xFF,        0, "M_NewD2", 10,    70/* , "M_DragB", "sea",  13, 211 */}},
-    {EntranceType::BOSS,    {"FW Boss Door Room",                      "Kalle Demos Battle Arena",                 "kindan",  16,          0, "kinBOSS",  0,     0},
-                            {"Kalle Demos Battle Arena",               "FW Boss Door Room",                        "kinBOSS", 0xFF,        0, "kindan",  16,     1/* , "kinBOSS", "sea",  41,   0 */}},
-    {EntranceType::BOSS,    {"TOTG Outside Area",                      "Gohdan Battle Arena",                      "Siren",   18,          0, "SirenB",   0,     0},
-                            {"Gohdan Battle Arena",                    "TOTG Outside Area",                        "SirenB",  0xFF,        0, "Siren",   18,    70/* , "SirenB",  "sea",  26,   1 */}},
-    {EntranceType::BOSS,    {"ET Boss Door Room",                      "Jalhalla Battle Arena",                    "M_Dai",   15,          0, "M_DaiB",   0,     0},
-                            {"Jalhalla Battle Arena",                  "ET Boss Door Room",                        "M_DaiB",  0xFF,        0, "M_Dai",   15,    17/* , "M_DaiB",  "sea",  45, 229 */}},
-    {EntranceType::BOSS,    {"WT Three Big Fans Room Past Song Stone", "Molgera Battle Arena",                     "kaze",    12,          0, "kazeB",    0,     0},
-                            {"Molgera Battle Arena",                   "WT Three Big Fans Room Past Song Stone",   "kazeB",   0xFF,        0, "kaze",    12,    70/* , "kazeB",   "sea",   4, 232 */}},
-
-    {EntranceType::CAVE,    {"Outset Near Savage Headstone",           "Outset Savage Labyrinth",                  "sea",     44,          8, "Cave09",   0,     0},
-                            {"Outset Savage Labyrinth",                "Outset Near Savage Headstone",             "Cave09",   0,          1, "sea",     44,    10}},
-    {EntranceType::CAVE,    {"Dragon Roost Island",                    "Dragon Roost Island Cave",                 "sea",     13,          2, "TF_06",    0,     0},
-                            {"Dragon Roost Island Cave",               "Dragon Roost Island",                      "TF_06",    0,          0, "sea",     13,     5}},
-    {EntranceType::CAVE,    {"Fire Mountain",                          "Fire Mountain Interior",                   "sea",     20,          0, "MiniKaz",  0,     0},
-                            {"Fire Mountain Interior",                 "Fire Mountain",                            "MiniKaz",  0,          0, "sea",     20,     0}},
-    {EntranceType::CAVE,    {"Ice Ring Isle",                          "Ice Ring Interior",                        "sea",     40,          0, "MiniHyo",  0,     0},
-                            {"Ice Ring Interior",                      "Ice Ring Isle",                            "MiniHyo",  0,          0, "sea",     40,     0}},
-    {EntranceType::CAVE,    {"The Cabana",                             "Cabana Labyrinth",                         "Abesso",   0,          1, "TF_04",    0,     0},
-                            {"Cabana Labyrinth",                       "The Cabana",                               "TF_04",    0,          0, "Abesso",   0,     1}},
-    {EntranceType::CAVE,    {"Needle Rock Isle",                       "Needle Rock Cave",                         "sea",     29,          0, "SubD42",   0,     0},
-                            {"Needle Rock Cave",                       "Needle Rock Isle",                         "SubD42",   0,          0, "sea",     29,     5}},
-    {EntranceType::CAVE,    {"Angular Isles Small Isle",               "Angular Isles Cave",                       "sea",     47,          1, "SubD43",   0,     0},
-                            {"Angular Isles Cave",                     "Angular Isles Small Isle",                 "SubD43",   0,          0, "sea",     47,     5}},
-    {EntranceType::CAVE,    {"Boating Course Small Isle",              "Boating Course Cave",                      "sea",     48,          0, "SubD71",   0,     0},
-                            {"Boating Course Cave",                    "Boating Course Small Isle",                "SubD71",   0,          0, "sea",     48,     5}},
-    {EntranceType::CAVE,    {"Stone Watcher Island",                   "Stone Watcher Cave",                       "sea",     31,          0, "TF_01",    0,     0},
-                            {"Stone Watcher Cave",                     "Stone Watcher Island",                     "TF_01",    0,          0, "sea",     31,     1}},
-    {EntranceType::CAVE,    {"Overlook Island Upper Isles",            "Overlook Cave",                            "sea",      7,          0, "TF_02",    0,     0},
-                            {"Overlook Cave",                          "Overlook Island Upper Isles",              "TF_02",    0,          0, "sea",      7,     1}},
-    {EntranceType::CAVE,    {"Birds Peak Rock Behind Bars",            "Birds Peak Rock Cave",                     "sea",     35,          0, "TF_03",    0,     0},
-                            {"Birds Peak Rock Cave",                   "Birds Peak Rock Behind Bars",              "TF_03",    0,          0, "sea",     35,     1}},
-    {EntranceType::CAVE,    {"Pawprint Isle",                          "Pawprint Chu Chu Cave",                    "sea",     12,          0, "TyuTyu",   0,     0},
-                            {"Pawprint Chu Chu Cave",                  "Pawprint Isle",                            "TyuTyu",   0,          0, "sea",     12,     1}},
-    {EntranceType::CAVE,    {"Pawprint Wizzobe Cave Isle",             "Pawprint Wizzobe Cave",                    "sea",     12,          1, "Cave07",   0,     0},
-                            {"Pawprint Wizzobe Cave",                  "Pawprint Wizzobe Cave Isle",               "Cave07",   0,          0, "sea",     12,     5}},
-    {EntranceType::CAVE,    {"Diamond Steppe Upper Island",            "Diamond Steppe Warp Maze",                 "sea",     36,          0, "WarpD",    0,     0},
-                            {"Diamond Steppe Warp Maze",               "Diamond Steppe Upper Island",              "WarpD",    0,          0, "sea",     36,     1}},
-    {EntranceType::CAVE,    {"Bomb Island",                            "Bomb Island Cave",                         "sea",     34,          0, "Cave01",   0,     0},
-                            {"Bomb Island Cave",                       "Bomb Island",                              "Cave01",   0,          0, "sea",     34,     1}},
-    {EntranceType::CAVE,    {"Rock Spire Upper Ledges",                "Rock Spire Cave",                          "sea",     16,          0, "Cave04",   0,     0},
-                            {"Rock Spire Cave",                        "Rock Spire Upper Ledges",                  "Cave04",   0,          0, "sea",     16,     1}},
-    {EntranceType::CAVE,    {"Shark Island",                           "Shark Island Cave",                        "sea",     38,          0, "ITest63",  0,     0},
-                            {"Shark Island Cave",                      "Shark Island",                             "ITest63",  0,          0, "sea",     38,     5}},
-    {EntranceType::CAVE,    {"Cliff Plateau Isles",                    "Cliff Plateau Cave",                       "sea",     42,          0, "Cave03",   0,     0},
-                            {"Cliff Plateau Cave",                     "Cliff Plateau Isles",                      "Cave03",   0,          0, "sea",     42,     2}},
-    {EntranceType::CAVE,    {"Cliff Plateau Highest Isle",             "Cliff Plateau Cave Past Wooden Barrier",   "sea",     42,          1, "Cave03",   0,     1},
-                            {"Cliff Plateau Cave Past Wooden Barrier", "Cliff Plateau Highest Isle",               "Cave03",   0,          1, "sea",     42,     1}},
-    {EntranceType::CAVE,    {"Horseshoe Island Past Tentacles",        "Horseshoe Cave",                           "sea",     43,          0, "Cave05",   0,     0},
-                            {"Horseshoe Cave",                         "Horseshoe Island Past Tentacles",          "Cave05",   0,          0, "sea",     43,     5}},
-    {EntranceType::CAVE,    {"Star Island",                            "Star Island Cave",                         "sea",      2,          0, "Cave02",   0,     0},
-                            {"Star Island Cave",                       "Star Island",                              "Cave02",   0,          0, "sea",      2,     1}},
-
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Jail",                            "sea",     11,          6, "Pnezumi",  0,     0},
-                            {"Windfall Jail",                          "Windfall Island",                          "Pnezumi",  0,          0, "sea",     11,    13}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall School of Joy",                   "sea",     11,         12, "Nitiyou",  0,     0},
-                            {"Windfall School of Joy",                 "Windfall Island",                          "Nitiyou",  0,          0, "sea",     11,    12}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Lenzo's House from Bottom Entry", "sea",     11,         10, "Ocmera",   0,     0},
-                            {"Windfall Lenzo's House Lower",           "Windfall Island",                          "Ocmera",   0,          0, "sea",     11,    10}},
-    {EntranceType::DOOR,    {"Windfall Lenzo's House Upper Ledge",     "Windfall Lenzo's House Upper",             "sea",     11,         11, "Ocmera",   0,     1},
-                            {"Windfall Lenzo's House Upper",           "Windfall Lenzo's House Upper Ledge",       "Ocmera",   0,          1, "sea",     11,    11}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Cafe Bar",                        "sea",     11,          7, "Opub",     0,     0},
-                            {"Windfall Cafe Bar",                      "Windfall Island",                          "Opub",     0,          0, "sea",     11,     6}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Battle Squid Interior",           "sea",     11,          9, "Kaisen",   0,     0},
-                            {"Windfall Battle Squid Interior",         "Windfall Island",                          "Kaisen",   0,          0, "sea",     11,     9}},
-    {EntranceType::DOOR,    {"Windfall Battle Squid Upper Ledge",      "Windfall Battle Squid Interior",           "sea",     11,          8, "Kaisen",   0,     1},
-                            {"Windfall Battle Squid Interior",         "Windfall Battle Squid Upper Ledge",        "Kaisen",   0,          1, "sea",     11,     8}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall House of Wealth Lower",           "sea",     11,          3, "Orichh",   0,     0},
-                            {"Windfall House of Wealth Lower",         "Windfall Island",                          "Orichh",   0,          1, "sea",     11,     3}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall House of Wealth Upper",           "sea",     11,          4, "Orichh",   0,     1},
-                            {"Windfall House of Wealth Upper",         "Windfall Island",                          "Orichh",   0,          2, "sea",     11,     4}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Potion Shop",                     "sea",     11,          5, "Pdrgsh",   0,     0},
-                            {"Windfall Potion Shop",                   "Windfall Island",                          "Pdrgsh",   0,          0, "sea",     11,     7}},
-    {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Bomb Shop",                       "sea",     11,          1, "Obombh",   0,     0},
-                            {"Windfall Bomb Shop",                     "Windfall Island",                          "Obombh",   0,          1, "sea",     11,     1}},
-//  {EntranceType::DOOR,    {"Windfall Island",                        "Windfall Pirate Ship",                     "",        -1,         -1, "",        -1,    -1},
-//                          {"Windfall Pirate Ship",                   "Windfall Island",                          "",        -1,         -1, "",        -1,    -1}},
-    {EntranceType::DOOR,    {"Dragon Roost Rito Aerie",                "Dragon Roost Komali's Room",               "Atorizk",  0,          4, "Comori",   0,     0},
-                            {"Dragon Roost Komali's Room",             "Dragon Roost Rito Aerie",                  "Comori",   0,          0, "Atorizk",  0,     4}},
-    {EntranceType::DOOR,    {"Private Oasis",                          "The Cabana",                               "sea",     33,          0, "Abesso",   0,     0},
-                            {"The Cabana",                             "Private Oasis",                            "Abesso",   0,          0, "sea",     33,     1}},
-    {EntranceType::DOOR,    {"Outset Island",                          "Outset Link's House",                      "sea",     44,          0, "LinkRM",   0,     1},
-                            {"Outset Link's House",                    "Outset Island",                            "LinkRM",   0,          0, "sea",     44,     1}},
-    {EntranceType::DOOR,    {"Outset Island",                          "Outset Orca's House",                      "sea",     44,          1, "Ojhous",   0,     0},
-                            {"Outset Orca's House",                    "Outset Island",                            "Ojhous",   0,          0, "sea",     44,     3}},
-    {EntranceType::DOOR,    {"Outset Island",                          "Outset Sturgeon's House",                  "sea",     44,          2, "Ojhous2",  1,     0},
-                            {"Outset Sturgeon's House",                "Outset Island",                            "Ojhous2",  1,          0, "sea",     44,     2}},
-    {EntranceType::DOOR,    {"Outset Island",                          "Outset Rose's House",                      "sea",     44,          4, "Onobuta",  0,     0},
-                            {"Outset Rose's House",                    "Outset Island",                            "Onobuta",  0,          0, "sea",     44,     4}},
-    {EntranceType::DOOR,    {"Outset Island",                          "Outset Mesa's House",                      "sea",     44,          3, "Omasao",   0,     0},
-                            {"Outset Mesa's House",                    "Outset Island",                            "Omasao",   0,          0, "sea",     44,     7}},
-
-    // MISC Entrances are those which don't fit into any of the above categories,
-    // but which are still interesting for entrance randomizer. These are all
-    // the "open-air" entrances on the overworld (excluding Hyrule).
-    //
-    // MISC_RESTRICTIVE are entrances which mostly lead to dead-ends. When randomizing
-    // these entrances we want to attempt randomization with the entrance which goes
-    // *to* the dead-end, not *from* it. This significantly reduces the chances
-    // of entrance placement failure.
-    {EntranceType::MISC_RESTRICTIVE, {"Gale Isle",                              "Gale Isle Interior",                      "sea",      4, 0, "Ekaze",    0,     0},
-                                     {"Gale Isle Interior",                     "Gale Isle",                               "Ekaze",    0, 1, "sea",      4,     1}},
-    {EntranceType::MISC_RESTRICTIVE, {"Windfall Island",                        "Windfall Bomb Shop Upper Ledge",          "sea",     11, 2, "Obombh",   0,     1},
-                                     {"Windfall Bomb Shop Upper Ledge",         "Windfall Island",                         "Obombh",   0, 2, "sea",     11,     2}},
-    {EntranceType::MISC,             {"Dragon Roost Island",                    "Dragon Roost Rito Aerie",                 "sea",     13, 0, "Atorizk",  0,     0},
-                                     {"Dragon Roost Rito Aerie",                "Dragon Roost Island",                     "Atorizk",  0, 0, "sea",     13,     1}},
-    {EntranceType::MISC,             {"Dragon Roost Island Flight Deck",        "Dragon Roost Rito Aerie",                 "sea",     13, 1, "Atorizk",  0,     1},
-                                     {"Dragon Roost Rito Aerie",                "Dragon Roost Island Flight Deck",         "Atorizk",  0, 1, "sea",     13,     2}},
-    {EntranceType::MISC,             {"Dragon Roost Pond",                      "Dragon Roost Rito Aerie",                 "Adanmae",  0, 0, "Atorizk",  0,     2},
-                                     {"Dragon Roost Rito Aerie",                "Dragon Roost Pond",                       "Atorizk",  0, 2, "Adanmae",  0,     0}},
-    {EntranceType::MISC_RESTRICTIVE, {"Dragon Roost Rito Aerie",                "Dragon Roost Pond Upper Ledge",           "Atorizk",  0, 3, "Adanmae",  0,     1},
-                                     {"Dragon Roost Pond Upper Ledge",          "Dragon Roost Rito Aerie",                 "Adanmae",  0, 1, "Atorizk",  0,     3}},
-    {EntranceType::MISC_RESTRICTIVE, {"Islet of Steel",                         "Islet of Steel Interior",                 "sea",     30, 0, "ShipD",    0,     0},
-                                     {"Islet of Steel Interior",                "Islet of Steel",                          "ShipD",    0, 0, "sea",     30,     1}},
-    {EntranceType::MISC,             {"Forest Haven",                           "Forest Haven Interior",                   "sea",     41, 5, "Omori",    0,     5},
-                                     {"Forest Haven Interior",                  "Forest Haven",                            "Omori",    0, 5, "sea",     41,     5}},
-    {EntranceType::MISC_RESTRICTIVE, {"Forest Haven",                           "Forest Haven Waterfall Cave",             "sea",     41, 7, "Otkura",   0,     0},
-                                     {"Forest Haven Waterfall Cave",            "Forest Haven",                            "Otkura",   0, 0, "sea",     41,     9}},
-    {EntranceType::MISC_RESTRICTIVE, {"Forest Haven Interior",                  "Forest Potion Shop",                      "Omori",    0, 0, "Ocrogh",   0,     0},
-                                     {"Forest Potion Shop",                     "Forest Haven Interior",                   "Ocrogh",   0, 0, "Omori",    0,     0}},
-    {EntranceType::MISC,             {"Forest Haven Exterior North Ledge",      "Forest Haven Interior North Ledge",       "sea",     41, 1, "Omori",    0,     1},
-                                     {"Forest Haven Interior North Ledge",      "Forest Haven Exterior North Ledge",       "Omori",    0, 1, "sea",     41,     1}},
-    {EntranceType::MISC,             {"Forest Haven Exterior West Lower Ledge", "Forest Haven Interior West Lower Ledge",  "sea",     41, 3, "Omori",    0,     3},
-                                     {"Forest Haven Interior West Lower Ledge", "Forest Haven Exterior West Lower Ledge",  "Omori",    0, 3, "sea",     41,     3}},
-    {EntranceType::MISC,             {"Forest Haven Exterior West Upper Ledge", "Forest Haven Interior West Upper Ledge",  "sea",     41, 2, "Omori",    0,     2},
-                                     {"Forest Haven Interior West Upper Ledge", "Forest Haven Exterior West Upper Ledge",  "Omori",    0, 2, "sea",     41,     2}},
-    {EntranceType::MISC,             {"Forest Haven Exterior South Ledge",      "Forest Haven Interior South Ledge",       "sea",     41, 4, "Omori",    0,     4},
-                                     {"Forest Haven Interior South Ledge",      "Forest Haven Exterior South Ledge",       "Omori",    0, 4, "sea",     41,     4}},
-    {EntranceType::MISC_RESTRICTIVE, {"Outset Island",                          "Outset Under Link's House",               "sea",     44, 9, "LinkUG",   0,     1},
-                                     {"Outset Under Link's House",              "Outset Island",                           "LinkUG",   0, 0, "sea",     44,    11}},
-    {EntranceType::MISC_RESTRICTIVE, {"Outset Across Bridge",                   "Outset Forest of Fairies",                "sea",     44, 6, "A_mori",   0,     0},
-                                     {"Outset Forest of Fairies",               "Outset Across Bridge",                    "A_mori",   0, 0, "sea",     44,     8}},
-    {EntranceType::MISC_RESTRICTIVE, {"Outset Island",                          "Outset Jabun's Cave",                     "sea",     44, 7, "Pjavdou",  0,     0},
-                                     {"Outset Jabun's Cave",                    "Outset Island",                           "Pjavdou",  0, 0, "sea",     44,     9}},
-    {EntranceType::MISC_RESTRICTIVE, {"Headstone Island",                       "Headstone Island Interior",               "sea",     45, 0, "Edaichi",  0,     0},
-                                     {"Headstone Island Interior",              "Headstone Island",                        "Edaichi",  0, 1, "sea",     45,     1}},
-};
 
 #ifdef ENABLE_DEBUG
 static void logEntrancePool(EntrancePool& entrancePool, const std::string& poolName)
@@ -208,9 +57,83 @@ static void logMissingLocations(WorldPool& worlds)
 }
 #endif
 
+static std::list<EntranceInfoPair> loadEntranceShuffleTable()
+{
+    std::list<EntranceInfoPair> table = {};
+    YAML::Node entrancePairs = YAML::LoadFile(DATA_PATH "logic/data/entrance_shuffle_table.yaml");
+
+    for (const auto& entrancePair : entrancePairs)
+    {
+        auto type = entranceNameToType(entrancePair["Type"].as<std::string>());
+        auto forward = entrancePair["Forward"].as<std::string>();
+        auto reverse = entrancePair["Return"].as<std::string>();
+
+        auto forwardArgs = Utility::Str::split(forward, ',');
+        auto returnArgs = Utility::Str::split(reverse, ',');
+
+        // Remove leading/trailing spaces
+        for (auto args : {&forwardArgs, &returnArgs})
+        {
+            for (auto& arg : *args)
+            {
+                size_t pos = arg.find(' ');
+                while (pos == 0)
+                {
+                    arg.erase(pos, 1);
+                    pos = arg.find(' ');
+                }
+                pos = arg.rfind(' ');
+                while (pos == arg.length() - 1)
+                {
+                    arg.erase(pos, 1);
+                    pos = arg.rfind(' ');
+                }
+            }
+        }
+
+        // Get data
+        auto parentArea = forwardArgs[0];
+        auto connectedArea = forwardArgs[1];
+        auto filepathStage = forwardArgs[2];
+        uint8_t filepathRoom = atoi(forwardArgs[3].data());
+        uint8_t sclsExitIndex = atoi(forwardArgs[4].data());
+        auto stage = forwardArgs[5];
+        uint8_t room = atoi(forwardArgs[6].data());
+        uint8_t spawn = atoi(forwardArgs[7].data());
+        auto forwardEntrance = EntranceInfo{parentArea, connectedArea, filepathStage, filepathRoom, sclsExitIndex, stage, room, spawn};
+
+        parentArea = returnArgs[0];
+        connectedArea = returnArgs[1];
+        filepathStage = returnArgs[2];
+        filepathRoom = atoi(returnArgs[3].data());
+        sclsExitIndex = atoi(returnArgs[4].data());
+        stage = returnArgs[5];
+        room = atoi(returnArgs[6].data());
+        spawn = atoi(returnArgs[7].data());
+
+        std::string bossFilepathStage = "";
+        std::string bossOutStage = "";
+        uint8_t bossOutRoom = 255;
+        uint8_t bossOutSpawn = 255;
+        if (returnArgs.size() > 8)
+        {
+            bossFilepathStage = returnArgs[8];
+            bossOutStage = returnArgs[9];
+            bossOutRoom = atoi(returnArgs[10].data());
+            bossOutSpawn = atoi(returnArgs[11].data());
+        }
+
+        auto returnEntrance = EntranceInfo{parentArea, connectedArea, filepathStage, filepathRoom, sclsExitIndex, stage, room, spawn, bossFilepathStage, bossOutStage, bossOutRoom, bossOutSpawn};    
+
+        table.push_back(EntranceInfoPair{type, forwardEntrance, returnEntrance});
+    }
+
+    return table;
+}
+
 EntranceShuffleError setAllEntrancesData(World& world)
 {
-    for (auto& [type, forwardEntry, returnEntry] : entranceShuffleTable)
+    for (auto& [type, forwardEntry, returnEntry] : loadEntranceShuffleTable())
     {
         auto forwardEntrance = world.getEntrance(forwardEntry.parentArea, forwardEntry.connectedArea);
         if (forwardEntrance == nullptr)
@@ -342,6 +265,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         #endif
         return EntranceShuffleError::ALL_LOCATIONS_NOT_REACHABLE;
     }
+
     // Ensure that there's at least one sphere zero location available to place an item
     // for the beginning of the seed
     ItemPool noItems = {};
