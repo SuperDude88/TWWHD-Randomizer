@@ -357,6 +357,31 @@ std::string entranceTypeToName(const EntranceType& type)
     return typeNameMap.at(type);
 }
 
+EntranceType entranceNameToType(const std::string& name)
+{
+    std::unordered_map<std::string, EntranceType> nameToType = {
+        {"NONE", EntranceType::NONE},
+        {"BOSS", EntranceType::BOSS},
+        {"BOSS_REVERSE", EntranceType::BOSS_REVERSE},
+        {"DUNGEON", EntranceType::DUNGEON},
+        {"DUNGEON_REVERSE", EntranceType::DUNGEON_REVERSE},
+        {"CAVE", EntranceType::CAVE},
+        {"CAVE_REVERSE", EntranceType::CAVE_REVERSE},
+        {"DOOR", EntranceType::DOOR},
+        {"DOOR_REVERSE", EntranceType::DOOR_REVERSE},
+        {"MISC", EntranceType::MISC},
+        {"MISC_RESTRICTIVE", EntranceType::MISC_RESTRICTIVE},
+        {"MIXED", EntranceType::MIXED},
+        {"ALL", EntranceType::ALL},
+    };
+
+    if (!nameToType.contains(name))
+    {
+        return EntranceType::NONE;
+    }
+    return nameToType.at(name);
+}
+
 EntranceType entranceTypeToReverse(const EntranceType& type)
 {
     std::unordered_map<EntranceType, EntranceType> typeReverseMap = {
