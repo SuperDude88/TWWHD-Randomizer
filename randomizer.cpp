@@ -9,6 +9,7 @@
 #include <thread>
 
 #include <libs/tinyxml2.h>
+#include <libs/zlib-ng/zlib-ng.h>
 #include <seedgen/config.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/seed.hpp>
@@ -668,7 +669,7 @@ public:
         }
 
         // Seed RNG
-        integer_seed = strHash(permalink);
+        integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
 
         Random_Init(integer_seed);
 
