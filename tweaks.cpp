@@ -131,7 +131,17 @@ TweakError Add_Relocations(const std::string file_path) {
         entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
             
-            RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc));
+            if(reloc.r_offset >= 0x10000000) {
+                if(reloc.r_offset >= 0x1018C0C0) {   
+                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); //in the .data section, go in .rela.data
+                }
+                else {
+                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 8, reloc)); //in the .rodata section, go in .rela.rodata
+                }
+            }
+            else {
+                RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc)); //in the .text section, go in .rela.text
+            }
 
             return true;
         });
@@ -1412,6 +1422,32 @@ TweakError add_pirate_ship_to_windfall() {
         ChunkEntry& aryll = shipDzr.add_entity("ACTR");
         aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
 
+        const uint8_t countdown_happening_switch = 0xC0;
+        const uint8_t aryll_opened_door_switch = 0xC1;
+        const uint8_t countdown_not_happening_switch = 0xC2;
+        const uint8_t inside_chest_room_switch = 0xC3;
+        const uint8_t door_should_be_open_switch = 0xC4;
+
+        ChunkEntry& swc00 = shipDzr.add_entity("SCOB");
+        swc00.data = "SW_C00\x00\x00\x00\x00\xFF\xC3\x00\x00\x00\x00\xC4\x09\x80\x00\xC5\x73\xC0\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x40\x24\x40\xFF"s;
+
+        ChunkEntry& swop = shipDzr.add_entity("ACTR");
+        swop.data = "SwOp\x00\x00\x00\x00\x01\xC0\xC2\x13\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x89\x80\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+
+        //for starting the event (hardcode the index because it avoids the file dependency, not great but whatever)
+        ChunkEntry& swop2 = shipDzr.add_entity("ACTR");
+        swop2.data = "SwOp\x00\x00\x00\x00\x02\xC2\xC1\x10\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x73\xC0\x00\x00\x02\x00\x00\x00\x96\xFF\xFF"s;
+        //opening the door
+        ChunkEntry& swop3 = shipDzr.add_entity("ACTR");
+        swop3.data = "SwOp\x00\x00\x00\x00\x02\xC0\xC4\x12\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x54\x80\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+        
+        for (const int layer_num : {2, 3}) {
+            std::vector<ChunkEntry*> actors = shipDzr.entries_by_type_and_layer("ACTR", layer_num);
+            for (ChunkEntry* actor : actors) {
+                if (std::strncmp(&actor->data[0], "Ashut\x00\x00\x00", 8) == 0) actor->data[0xB] = door_should_be_open_switch;
+            }
+        }
+
         return true;
     });
     
@@ -1421,23 +1457,77 @@ TweakError add_pirate_ship_to_windfall() {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
             msbt.messages_by_label["03008"].attributes.soundEffect = 106;
 
+            auto& temp = msbt.messages_by_label["03006"];
+
+            Attributes attributes;
+            attributes.character = 0x3; //Aryll
+            attributes.boxStyle = 0x0;
+            attributes.drawType = 0x1;
+            attributes.screenPos = 0x3;
+            attributes.lineAlignment = 1; //left alignment
+            TSY1Entry tsy;
+            tsy.styleIndex = 0x12A;
+            msbt.addMessage("00849", attributes, tsy, u"Oh! Did you get stuck in there, Big Brother?\0"s);
+            msbt.addMessage("00850", attributes, tsy, u"Don't worry, I'll open the door for you.\0"s);
+
             return true;
         });
     }
 
-    const uint32_t stage_bgm_info_list_start = 0x1018E428;
-    const uint32_t second_dynamic_scene_waves_list_start = 0x1018E2EC;
-    const uint8_t asoko_spot_id = 0xC;
-    const uint8_t new_second_scene_wave_index = 0xE;
-    const uint8_t isle_link_0_aw_index = 0x19;
+    // Add a custom event where Aryll notices if the player got trapped in the chest room after the timer ran out and opens the door for them.
+    RandoSession::CacheEntry& shipEventList = g_session.openGameFile("content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
+    shipEventList.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-    //const uint32_t asoko_bgm_info_ptr = stage_bgm_info_list_start + asoko_spot_id * 0x4;
-    const uint32_t new_second_scene_wave_ptr = second_dynamic_scene_waves_list_start + new_second_scene_wave_index * 2;
+        Event& event = event_list.add_event("AryllOpensDoor");
+        
+        std::shared_ptr<Actor> camera = event.add_actor(event_list, "CAMERA");
+        camera->staff_type = 2;
+        std::shared_ptr<Actor> aryll_actor = event.add_actor(event_list, "Ls1");
+        aryll_actor->staff_type = 0;
+        std::shared_ptr<Actor> link = event.add_actor(event_list, "Link");
+        link->staff_type = 0;
+
+        const Prop eyeProp("Eye", vec3<float>{600.0f, -460.0f, -320.0f});
+        const Prop centerProp("Center", vec3<float>{600.0f, -480.0f, -200.0f});
+        const Prop fovyProp("Fovy", 60.0f);
+        const Prop timerProp("Timer", 30);
+        const std::vector<Prop> props{
+            eyeProp,
+            centerProp,
+            fovyProp,
+            timerProp
+        };
+        std::shared_ptr<Action> act = camera->add_action(event_list, "FIXEDFRM", props);
+        act = aryll_actor->add_action(event_list, "LOK_PLYER", {Prop{"prm_0", 8}});
+        act = aryll_actor->add_action(event_list, "ANM_CHG", {Prop{"AnmNo", 8}});
+        act = aryll_actor->add_action(event_list, "WAIT", {Prop{"Timer", 30}});
+
+        act = aryll_actor->add_action(event_list, "TALK_MSG", {Prop{"msg_num", 849}});
+        act = aryll_actor->add_action(event_list, "ANM_CHG", {Prop{"AnmNo", 4}});
+
+        act = aryll_actor->add_action(event_list, "TALK_MSG", {Prop{"msg_num", 850}});
+        act = aryll_actor->add_action(event_list, "ANM_CHG", {Prop{"AnmNo", 5}});
+
+        act = link->add_action(event_list, "001wait", {});
+
+        event.ending_flags[0] = aryll_actor->actions.back()->flag_id_to_set;
+
+        return true;
+    });
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-        
-        // RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
-        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, new_second_scene_wave_ptr), isle_link_0_aw_index));
+
+        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, 0x101BFFC4), 5));
+
+        return true;
+    });
+    RandoSession::CacheEntry& shipStage = g_session.openGameFile("content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+    shipStage.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(shipDzs, FileTypes::DZXFile, data)
+
+        ChunkEntry& new_evnt = shipDzs.add_entity("EVNT");
+        new_evnt.data = "\xFF" "AryllOpensDoor\x00\xFF\xFF\x00\xFF\xFF\xFF\xFF\xFF"s;
 
         return true;
     });
@@ -3038,13 +3128,11 @@ TweakError add_ff_warp_button() {
         
         RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
     
-        text.addAction([language](RandoSession* session, FileType* data) -> int {
+        text.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
             const Message& to_copy = msbt.messages_by_label["00075"];
-            //const std::u16string message = messages.at(language);
-            std::u16string message = u"";
-            msbt.addMessage("00076", to_copy.attributes, to_copy.style, message);
+            msbt.addMessage("00076", to_copy.attributes, to_copy.style, u"");
 
             return true;
         });
@@ -3088,6 +3176,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/switch_op_diff.yaml"));
 
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.yaml"));
@@ -3096,6 +3185,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.yaml"));
+    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/switch_op_reloc.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3110,18 +3200,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         //blockMoveReloc.r_info = 0x00015b0a;
         //blockMoveReloc.r_addend = 0;
         //RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
-        
-        Elf32_Rela str_reloc;
-        str_reloc.r_offset = custom_symbols.at("custom_ff_label_safestring");
-        str_reloc.r_info = 0x00000101;
-        str_reloc.r_addend = custom_symbols.at("custom_ff_label") - 0x02000000;
-        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, str_reloc));
-
-        Elf32_Rela str_vtbl_reloc;
-        str_vtbl_reloc.r_offset = custom_symbols.at("custom_ff_label_safestring") + 4;
-        str_vtbl_reloc.r_info = 0x00000201;
-        str_vtbl_reloc.r_addend = 0x0010394C;
-        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, str_vtbl_reloc));
 
         RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); //would mess with save init
         RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); //would mess with salvage point patch
@@ -3219,17 +3297,11 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
 
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
-    /* if (randomizeItems) { */
-        TWEAK_ERR_CHECK(update_text_replacements(world));
-        TWEAK_ERR_CHECK(update_korl_dialog(world));
-        TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
-        TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
-        TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
-    /* } */
+
     //Run some things after writing items to preserve offsets
     TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
     TWEAK_ERR_CHECK(add_more_magic_jars());
-    TWEAK_ERR_CHECK(add_pirate_ship_to_windfall()); //doesnt fix getting stuck behind door
+    TWEAK_ERR_CHECK(add_pirate_ship_to_windfall());
     TWEAK_ERR_CHECK(add_hint_signs());
     TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
     TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
@@ -3247,6 +3319,13 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     if(world.getSettings().add_shortcut_warps_between_dungeons) {
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
     }
+    
+    //update text last so everything has a chance to add textboxes
+    TWEAK_ERR_CHECK(update_text_replacements(world));
+    TWEAK_ERR_CHECK(update_korl_dialog(world));
+    TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+    TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
+    TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
 
     TWEAK_ERR_CHECK(apply_custom_colors(world));
 
