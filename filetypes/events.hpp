@@ -106,13 +106,13 @@ public:
     int32_t flag_id_to_set;
     std::vector<std::shared_ptr<Property>> properties;
     std::shared_ptr<Action> next_action; //Pointer because of initialization stuff
+    uint32_t duplicate_id = 0;
 
     EventlistError read(std::istream& in);
     void save_changes(std::ostream& out);
     std::shared_ptr<Property> get_prop(const std::string& prop_name);
     Property& add_property(const std::string& name);
 private:
-    uint32_t duplicate_id = 0;
     int32_t action_index;
     int32_t first_property_index;
     int32_t next_action_index;
