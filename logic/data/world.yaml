@@ -2372,81 +2372,84 @@
 - Name: TOTG Hub Room
   Dungeon: Tower of the Gods
   Locations:
-      Tower of the Gods - Stone Tablet: can_access(TOTG First Statue Room)
+      Tower of the Gods - Stone Tablet: Wind_Waker and ('Can_Bring_East_Servant_of_the_Tower' or 'Can_Bring_West_Servant_of_the_Tower_to_Hub' or 'Can_Bring_North_Servant_of_the_Tower')
   Exits:
-      TOTG First Statue Corridor: Nothing
-      TOTG Second Statue Corridor Near Hub Room: can_access(TOTG First Statue Room)
-      TOTG Third Statue Corridor: Can_Play_CM and can_access(TOTG Second Statue Room Near Statue)
-      TOTG Big Key Room: Can_Play_CM and can_access(TOTG Third Statue Room Past Lasers)
+      TOTG East Servant Corridor: Nothing
+      TOTG West Servant Corridor Near Hub Room: Nothing
+      TOTG North Servant Corridor: Nothing
+      TOTG Big Key Room: Wind_Waker and 'Can_Bring_East_Servant_of_the_Tower' and 'Can_Bring_West_Servant_of_the_Tower_to_Hub' and 'Can_Bring_North_Servant_of_the_Tower'
       TOTG Rising Platforms Room: Nothing
 
-- Name: TOTG First Statue Corridor
+- Name: TOTG East Servant Corridor
   Dungeon: Tower of the Gods
   Exits:
-      TOTG First Statue Room: Nothing
-      TOTG First Statue Corridor Armos Knights Room: Heros_Bow
+      TOTG East Servant Room: Nothing
+      TOTG East Servant Corridor Armos Knights Room: Heros_Bow
       TOTG Hub Room: Nothing
 
-- Name: TOTG First Statue Room
+- Name: TOTG East Servant Room
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring East Servant of the Tower: Nothing
   Exits:
-      TOTG First Statue Corridor: Nothing
+      TOTG East Servant Corridor: Nothing
 
-- Name: TOTG First Statue Corridor Armos Knights Room
+- Name: TOTG East Servant Corridor Armos Knights Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - First Armos Knights Chest: Bombs
   Exits:
-      TOTG First Statue Corridor: Nothing
+      TOTG East Servant Corridor: Nothing
 
-- Name: TOTG Second Statue Corridor Near Hub Room
+- Name: TOTG West Servant Corridor Near Hub Room
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Second Statue Corridor Near Second Statue Room: Heros_Bow or Grappling_Hook
-      TOTG Second Statue Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Corridor Near West Servant Room: Heros_Bow or Grappling_Hook
+      TOTG West Servant Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
       TOTG Hub Room: Nothing
 
-- Name: TOTG Second Statue Corridor Near Second Statue Room
+- Name: TOTG West Servant Corridor Near Mini Boss Room
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Second Statue Room Near Corridor: Nothing
-      TOTG Second Statue Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
-      TOTG Second Statue Corridor Near Hub Room: Heros_Bow or Grappling_Hook
+      TOTG Mini Boss Room: 'Can_Bring_West_Servant_of_the_Tower_to_Corridor'
+      TOTG West Servant Corridor Near Hub Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Corridor Near West Servant Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
 
-- Name: TOTG Second Statue Corridor Near Mini Boss Room
+- Name: TOTG West Servant Corridor Near West Servant Room
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Mini Boss Room:
-          Can_Play_CM and can_access(TOTG Second Statue Room Near Statue) and
-          can_access(TOTG Second Statue Corridor Near Second Statue Room)
-      TOTG Second Statue Corridor Near Hub Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
-      TOTG Second Statue Corridor Near Second Statue Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Room Near Corridor: Nothing
+      TOTG West Servant Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Corridor Near Hub Room: Heros_Bow or Grappling_Hook
 
-- Name: TOTG Second Statue Room Near Corridor
+- Name: TOTG West Servant Room Near Corridor
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Second Statue Corridor Near Second Statue Room: Nothing
-      TOTG Second Statue Room Near Statue: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Corridor Near West Servant Room: Nothing
+      TOTG West Servant Room Near Statue: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
 
-- Name: TOTG Second Statue Room Near Statue
+- Name: TOTG West Servant Room Near Statue
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring West Servant of the Tower to Corridor: Can_Play_CM
+      Can Bring West Servant of the Tower to Hub: Can_Play_CM and Heros_Bow
   Exits:
-      TOTG Second Statue Room Near Corridor: Can_Play_CM
+      TOTG West Servant Room Near Corridor: Can_Play_CM
 
 - Name: TOTG Mini Boss Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Darknut Mini Boss: Can_Defeat_Darknuts
   Exits:
-      TOTG Second Statue Corridor Near Mini Boss Room: Can_Defeat_Darknuts
+      TOTG West Servant Corridor Near Mini Boss Room: Can_Defeat_Darknuts
 
-- Name: TOTG Third Statue Corridor
+- Name: TOTG North Servant Corridor
   Dungeon: Tower of the Gods
   Exits:
       TOTG Hub Room: Nothing
       TOTG Many Moving Platforms Room: Nothing
-      TOTG Third Statue Room: count(2, Tower_of_the_Gods_Small_Key)
-      TOTG Third Statue Corridor Past Bombable Wall: Bombs
+      TOTG North Servant Room: count(2, Tower_of_the_Gods_Small_Key)
+      TOTG North Servant Corridor Past Bombable Wall: Bombs
 
 - Name: TOTG Many Moving Platforms Room
   Dungeon: Tower of the Gods
@@ -2454,31 +2457,33 @@
       Tower of the Gods - Floating Platforms Room Lower Chest: Heros_Bow or Can_Fly_With_Deku_Leaf_Indoors
       Tower of the Gods - Floating Platforms Room Upper Chest: Heros_Bow
   Exits:
-      TOTG Third Statue Corridor: Nothing
+      TOTG North Servant Corridor: Nothing
 
-- Name: TOTG Third Statue Corridor Past Bombable Wall
+- Name: TOTG North Servant Corridor Past Bombable Wall
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Third Statue Corridor Armos Knights Room: Nothing
-      TOTG Third Statue Corridor: Bombs
+      TOTG North Servant Corridor Armos Knights Room: Nothing
+      TOTG North Servant Corridor: Bombs
 
-- Name: TOTG Third Statue Corridor Armos Knights Room
+- Name: TOTG North Servant Corridor Armos Knights Room
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Second Armos Knights Chest: Can_Play_WR
   Exits:
-      TOTG Third Statue Corridor Past Bombable Wall: Nothing
+      TOTG North Servant Corridor Past Bombable Wall: Nothing
 
-- Name: TOTG Third Statue Room
+- Name: TOTG North Servant Room
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Third Statue Room Past Lasers: Can_Fly_With_Deku_Leaf_Indoors
-      TOTG Third Statue Corridor: Nothing
+      TOTG North Servant Room Past Lasers: Can_Fly_With_Deku_Leaf_Indoors
+      TOTG North Servant Corridor: Nothing
 
-- Name: TOTG Third Statue Room Past Lasers
+- Name: TOTG North Servant Room Past Lasers
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring North Servant of the Tower: Can_Play_CM
   Exits:
-      TOTG Third Statue Room: Can_Play_CM
+      TOTG North Servant Room: Can_Play_CM
 
 - Name: TOTG Big Key Room
   Dungeon: Tower of the Gods
