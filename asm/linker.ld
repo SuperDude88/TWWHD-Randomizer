@@ -55,6 +55,7 @@ getTriforceNum = 0x025b7e00;
 dComIfGs_isStageTbox = 0x02520864;
 isTbox = 0x025b8c74;
 
+fopAc_ac_c_ct = 0x025d4ed0;
 fopAcM_createItem = 0x025d8870;
 fopAcM_createItemForPresentDemo = 0x025d7dec;
 fopAcM_orderOtherEventId = 0x025d7a58;

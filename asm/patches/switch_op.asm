@@ -9,6 +9,15 @@ daSwOp_Create:
     stw r0, 0x14(sp)
     stw r31, 0xC(sp)
     mr r31, r3
+    lwz r9, 0x2E4(r31)
+    rlwinm. r9, r9, 0, 0x1C, 0x1C
+    bne custom_construct_code
+    bl fopAc_ac_c_ct
+    ; We *should* override our vtable here with a virtual destructor but I don't think we need to
+    lwz r9, 0x2E4(r31)
+    ori r9, r9, 0x8
+    stw r9, 0x2E4(r31)
+custom_construct_code:
     lwz r9, 0xB0(r3) ; Load parameters
     rlwinm r10, r9, 0, 0x1C, 0x1F ; params & 0x0000000F
 	stb r10, 0x3AD(r3) ; mOperation
