@@ -5,6 +5,9 @@ Ojhous_str: .data
 y_diff_float: .data
 some_gfx_ptr: .data
 original_last_warp_button_name: .data
+safestring_vtbl_1010394c: .data
+g_fpcLf_Method: .data
+g_fopAc_Method: .data
 
 custom_damage_multiplier: .text
 custom_warp_pot_env_color: .text
@@ -36,4 +39,15 @@ gyroscope_preference: .text
 ui_display_preference: .text
 num_korl_messages: .text
 custom_warp_button_name: .text
+custom_warp_button_safestring: .text
+custom_ff_label: .text
 custom_ff_label_safestring: .text
+execute_switch_cases_start: .text
+daSwOp_Create: .text
+daSwOp_Delete: .text
+daSwOp_Execute: .text
+daSwOp_IsDelete: .text
+daSwOp_Draw: .text
+l_daSwOp_Method: .text
+g_profile_SwitchOperator: .text
+custom_l_objectName: .text

@@ -642,6 +642,11 @@ custom_warp_button_name:
   
 .align 2
 
+.global custom_warp_button_safestring
+custom_warp_button_safestring:
+  .long custom_warp_button_name
+  .long safestring_vtbl_1010394c
+
 .org 0x026f0394
   b load_extra_button_part
 .org @NextFreeSpace
@@ -650,33 +655,14 @@ load_extra_button_part:
   cmpwi r30, 0xB
   bge continue_normal_return
 
-  subi r23, r23, 8 ; don't actually increment the offset, we want to loop over the last string twice
-  lis r12, custom_warp_button_name@ha
-  addic r12, r12, custom_warp_button_name@l
-  stw r12, 0x0(r21) ; replace last string's char* to be our new pane name
+  li r23, 0 ; set offset to 0 so we start at index 0 in our list
+  lis r31, custom_warp_button_safestring@ha ; load our own SafeString* into r31
+  addic r31, r31, custom_warp_button_safestring@l
   b 0x026f0070 ; loop one more time
 
 continue_normal_return:
   li r3, 1
   b 0x026f0398
-
- ; Add some code to reset the last string after initializing WarpArea parts
- ; This is needed for the map load properly after reloads (savewarps)
-.org 0x026f034c
-  b reset_last_part_string
-.org @NextFreeSpace
-.global reset_last_part_string
-reset_last_part_string:
-  cmplwi r30, 0xA ; if this is the last part
-  bne continue_normal_check
-
-  lis r5, original_last_warp_button_name@ha
-  addic r5, r5, original_last_warp_button_name@l
-  stw r5, 0x0(r21) ; restore char* so it still loads properly after a savewarp/similar reload
-
-continue_normal_check:
-  cmplw r30, r0 ; replace the line we overwrote:
-  b 0x026f0350
 
 
 .org 0x0267a264 ; increase number of buttons to search when finding quadrant index -> button index
@@ -701,7 +687,8 @@ custom_ff_label:
 
 .global custom_ff_label_safestring
 custom_ff_label_safestring:
-  .space 8
+  .long custom_ff_label
+  .long safestring_vtbl_1010394c
 
 .org 0x026d9ce4
   b set_ff_warp_msg_index
@@ -727,3 +714,90 @@ ff_warp_text_check:
   addic r5, r5, custom_ff_label_safestring@l
 not_ff_offset:
   b 0x026d9d2c
+
+
+
+.global custom_l_objectName
+custom_l_objectName:
+  .byte 'S' ; Actor name
+  .byte 'w'
+  .byte 'O'
+  .byte 'p'
+  .byte 0
+  .byte 0
+  .byte 0
+  .byte 0
+  .short 0x01E4 ; Actor ID
+  .byte 0xFF ; Subtype
+  .byte 0 ; GBA Name
+
+
+; Modify the loops that check the actor names list to also check our custom list, allowing us to add new actors without replacing existing ones.
+; In dStage_searchName
+.org 0x025C10A4
+  li r10, 0 ; Change the loop to count up from zero instead of down from 0x329
+.org 0x025C10D4
+  addi r10, r10, 1 ; Increment instead of decrement
+.org 0x025C10DC
+  b custom_searchName_loop_check ; After loop, no match was found
+.org @NextFreeSpace
+.global custom_searchName_loop_check
+custom_searchName_loop_check:
+  cmplwi r10, 0x329
+  blt continue_normal_search_loop
+  beq read_custom_l_objectName_loop_for_dStage_searchName_switch_from_vanilla_to_custom
+
+  ; If we're past even the indexes for our custom list, end the loop.
+  cmplwi r10, 0x329 + 1 ; Num entries in vanilla list + custom list
+  bge read_custom_l_objectName_loop_for_dStage_searchName_end_loop
+
+read_custom_l_objectName_loop_for_dStage_searchName_switch_from_vanilla_to_custom:
+  ; Replace the pointer to the current entry of the vanilla l_objectName in r31 with a pointer to the start of our custom one.
+  lis r3, custom_l_objectName@ha
+  addi r3, r3, custom_l_objectName@l
+
+continue_normal_search_loop:
+  b 0x025C10AC
+
+read_custom_l_objectName_loop_for_dStage_searchName_end_loop:
+  b 0x025C10E0 ; Return to after the end of the loop
+
+
+; In dStage_getName
+.org 0x025c10f0
+  b set_up_custom_loop_counter
+.org @NextFreeSpace
+.global set_up_custom_loop_counter
+set_up_custom_loop_counter:
+  li r11, 0
+  li r10, 0 ; replace the line we overwrote to jump here
+  b 0x025C10F4 ; jump back
+.org 0x025C112C
+  b increment_custom_loop_counter
+.org @NextFreeSpace
+.global increment_custom_loop_counter
+increment_custom_loop_counter:
+  addi r11, r11, 1
+  addi r12, r12, 0xC ; replace the line we overwrote to jump here
+  b 0x025C1130 ; jump back
+.org 0x025C1140
+  b read_custom_l_objectName_loop_for_dStage_getName
+.org @NextFreeSpace
+.global read_custom_l_objectName_loop_for_dStage_getName
+read_custom_l_objectName_loop_for_dStage_getName:
+  beq has_actor_with_same_proc_name ; replace the line we overwrote to jump here
+  cmplwi r11, 0x329 ; custom loop counter
+  bgt read_custom_l_objectName_loop_for_dStage_getName_end_loop
+read_custom_l_objectName_loop_for_dStage_getName_switch_from_vanilla_to_custom:
+  ; Replace the pointer to the current entry of the vanilla l_objectName in r12 with a pointer to the start of our custom one.
+  lis r12, custom_l_objectName@ha
+  addi r12, r12, custom_l_objectName@l
+  ; Then restart the original loop counter so it loops for our custom list.
+  li r0, 1 ; Num entries in our custom list
+  mtctr r0
+  b 0x025C10FC ; Return to the start of the vanilla loop
+
+has_actor_with_same_proc_name:
+  b 0x025C1144
+read_custom_l_objectName_loop_for_dStage_getName_end_loop:
+  b 0x025C1148 ; Return to after the end of the loop
