@@ -22,12 +22,12 @@
 static std::mutex printMut;
 
 #ifdef PLATFORM_DKP
-static bool flushMLC() {
+static bool flushVolume(const std::string& vol) {
     const FSAClientHandle handle = FSAAddClient(NULL);
     if(handle < 0) {
         return false;
     }
-    FSError ret = FSAFlushVolume(handle, "/vol/storage_mlc01");
+    FSError ret = FSAFlushVolume(handle, vol.c_str());
     if(ret != FS_ERROR_OK) {
         return false;
     }
@@ -53,7 +53,7 @@ bool initMocha()
 
 void closeMocha() {
     if(MLCMounted) {
-        if(!flushMLC()) { //maybe check if we wrote to MLC
+        if(!flushVolume("/vol/storage_mlc01")) { //maybe check if we wrote to MLC
             Utility::platformLog("Could not flush MLC\n");
         }
         if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
@@ -62,7 +62,10 @@ void closeMocha() {
         MLCMounted = false;
     }
 
-    if(USBMounted) { //not sure if this needs a flush
+    if(USBMounted) {
+        if(!flushVolume("/vol/storage_usb01")) { //maybe check if we wrote to USB
+            Utility::platformLog("Could not flush USB\n");
+        }
         if(MochaUtilsStatus status = Mocha_UnmountFS("storage_usb01"); status != MOCHA_RESULT_SUCCESS) {
             Utility::platformLog("Error unmounting USB: %s\n", Mocha_GetStatusStr(status));
         }
