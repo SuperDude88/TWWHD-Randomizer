@@ -640,6 +640,9 @@ TweakError add_chest_in_place_queen_fairy_cutscene() {
 }
 
 TweakError add_more_magic_jars() {
+    //DRC doesn't have any magic since you wouldn't normally have Deku Leaf there
+    //But it can be required in the randomizer, so we make some skulls drop magic
+    //Same thing for arrows
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -653,8 +656,9 @@ TweakError add_more_magic_jars() {
 
             if(skulls.size() < 6) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-            skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
-            skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x10", 0, 4); //arrows in case logic expects you to use them for BK chest
+            skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4); //small magic
+            skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
 
             return true;
         });
@@ -673,27 +677,30 @@ TweakError add_more_magic_jars() {
 
             if(skulls.size() < 11) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-            skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
+            skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
 
             return true;
         });
     }
 
+    //The grass on the small islands behind DRI do not have guaranteed magic
+    //Add grass that will always drop some on each of the islands
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(dri, FileTypes::DZXFile, data)
 
             ChunkEntry& grass1 = dri.add_entity("ACTR");
-            grass1.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+            grass1.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s; //62.50% chance of small magic, 37.50% chance of large magic
             ChunkEntry& grass2 = dri.add_entity("ACTR");
-            grass2.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+            grass2.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s; //62.50% chance of small magic, 37.50% chance of large magic
 
             return true;
         });
     }
 
+    //Add magic to one of the pots outside the TotG miniboss
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -3695,7 +3702,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     if(world.getSettings().add_shortcut_warps_between_dungeons) {
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
     }
-    
+
     //update text last so everything has a chance to add textboxes
     TWEAK_ERR_CHECK(update_text_replacements(world));
     TWEAK_ERR_CHECK(update_korl_dialog(world));
