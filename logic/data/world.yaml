@@ -2302,14 +2302,16 @@
   Dungeon Starting Room: Tower of the Gods
   Exits:
       TOTG East Golden Statue Room: Nothing
-      TOTG Entrance Room Past Gate: can_access(TOTG East Golden Statue Room)
+      TOTG Entrance Room Past Gate: "'Can_Bring_East_Golden_Statue'"
       TOTG Entrance Room past Bombable Walls: Bombs
       TOTG Map Chest Room: Nothing
-      TOTG Entrance Room Past Waterfall: Can_Defeat_Yellow_Chu_Chus and can_access(TOTG West Golden Statue Room)
+      TOTG Entrance Room Past Waterfall: "'Can_Bring_West_Golden_Statue'"
       Tower of the Gods Sector: Nothing
 
 - Name: TOTG East Golden Statue Room
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring East Golden Statue: Nothing
   Exits:
       TOTG Entrance Room: Nothing
 
@@ -2317,7 +2319,7 @@
   Dungeon: Tower of the Gods
   Exits:
       TOTG Hop Across Floating Boxes Room: Nothing
-      TOTG Entrance Room: can_access(TOTG East Golden Statue Room)
+      TOTG Entrance Room: "'Can_Bring_East_Golden_Statue'"
 
 - Name: TOTG Hop Across Floating Boxes Room
   Dungeon: Tower of the Gods
@@ -2352,6 +2354,8 @@
 
 - Name: TOTG West Golden Statue Room
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring West Golden Statue: Can_Defeat_Yellow_Chu_Chus # Need to defeat the chuchus to activate staircase
   Exits:
       TOTG Entrance Room past Bombable Walls: Nothing
 
@@ -2359,7 +2363,7 @@
   Dungeon: Tower of the Gods
   Exits:
       TOTG Rising Platforms Room: Nothing
-      TOTG Entrance Room: can_access(TOTG West Golden Statue Room)
+      TOTG Entrance Room: "'Can Bring West Golden Statue'"
 
 - Name: TOTG Rising Platforms Room
   Dungeon: Tower of the Gods
