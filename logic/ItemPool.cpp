@@ -5,7 +5,7 @@
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 
-static const std::unordered_map<std::string, uint8_t> alwaysItems = {
+static const std::map<std::string, uint8_t> alwaysItems = {
     // Potentially progress items
     {"Wind Waker", 1},
     {"Spoils Bag", 1},
