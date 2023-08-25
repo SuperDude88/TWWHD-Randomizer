@@ -611,7 +611,6 @@ private:
             list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-                auto& settings = entrance->getWorld()->getSettings();
                 if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
                     ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
                     return false;

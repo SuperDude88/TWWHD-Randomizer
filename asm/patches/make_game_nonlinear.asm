@@ -407,3 +407,43 @@ medli_possible_et_spawn_positions:
   ; Normally Kogoli checks event bit 1620 (Medli is in dungeon mode and can be lifted/called) and deletes himself if it's set.
   ; We change him to ignore that bit or otherwise he would not appear at all, since Medli is awakened from the start in the randomizer.
   nop
+
+
+
+ ; Modify the Tower Servants to work in any order
+.org 0x022AC06C ; In daNpc_Os_c::eventOrderCheck
+  ; Prevent the east Servant of the Tower from starting an event when that servant's switch is set.
+  ; This stops the Command Melody stone tablet from disappearing prematurely, and also removes the servant's unnecessary line of dialogue.
+  ; This branch is normally taken for the west and north servants (Os1 and Os2). We modify it to be taken for all servants.
+  b 0x022AC0B4
+.org 0x022AE9C8
+  ; Normally the servants would not keep the light beam they shoot on until even bit 0x1B01 is set, which happens once the north servant is returned.
+  ; Remove this check so the beam is always on for servants that are on their pedestals.
+  nop
+  
+; Normally, the east Servant of the Tower would set event bit 0x2510 to tell the Command Melody stone tablet that it can disappear permanently because the player has finished using it.
+; But we allow that tablet to be used before returning that servant, so we have to change it so the tablet itself sets that event bit.
+.org 0x0235BF38
+  b set_item_obtained_from_totg_tablet_event_bit
+.org @NextFreeSpace
+.global set_item_obtained_from_totg_tablet_event_bit
+set_item_obtained_from_totg_tablet_event_bit:
+  lis r3,gameInfo_ptr@ha
+  lwz r3,gameInfo_ptr@l(r3)
+  addi r3,r3, 0x644
+  li r4, 0x2510 ; Learned Command Melody from the TotG stone tablet
+  bl onEventBit
+  lwz r0, 0x14(sp) ; replace the line we overwrote to jump here
+  b 0x0235BF3C
+; The west and north doors in the TotG hub room usually do not glow until they have been unlocked.
+; But rather than just checking if the door is actually unlocked directly, they are hardcoded to
+; check the vanilla conditions for unlocking them, resulting in them not being properly lit up from the start in the randomizer.
+; We remove these conditions and make them always glow until the corresponding servant behind the door has been returned.
+.org 0x0252C670 ; In dDoor_hkyo_c::proc(dDoor_info_c *)
+  ; For the west door.
+  ; Originally checked if the Command Melody is in your inventory.
+  nop
+.org 0x0252C6A4 ; In dDoor_hkyo_c::proc(dDoor_info_c *)
+  ; For the north door.
+  ; Originally checked if the west servant has been returned.
+  nop

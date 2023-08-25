@@ -41,6 +41,36 @@ namespace FileTypes {
 struct Prop {
     std::string prop_name;
     std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int32_t>, std::string> prop_value;
+
+    Prop() {}
+    Prop(const std::string& name, const std::vector<float>& val) :
+        prop_name(name),
+        prop_value(val)
+    {}
+    Prop(const std::string& name, const float& val) :
+        prop_name(name),
+        prop_value(std::vector<float>{val})
+    {}
+    Prop(const std::string& name, const std::vector<vec3<float>>& val) :
+        prop_name(name),
+        prop_value(val)
+    {}
+    Prop(const std::string& name, const vec3<float>& val) :
+        prop_name(name),
+        prop_value(std::vector<vec3<float>>{val})
+    {}
+    Prop(const std::string& name, const std::vector<int32_t>& val) :
+        prop_name(name),
+        prop_value(val)
+    {}
+    Prop(const std::string& name, const int32_t& val) :
+        prop_name(name),
+        prop_value(std::vector<int32_t>{val})
+    {}
+    Prop(const std::string& name, const std::string& val) :
+        prop_name(name),
+        prop_value(val)
+    {}
 };
 
 class Property {
@@ -76,13 +106,13 @@ public:
     int32_t flag_id_to_set;
     std::vector<std::shared_ptr<Property>> properties;
     std::shared_ptr<Action> next_action; //Pointer because of initialization stuff
+    uint32_t duplicate_id = 0;
 
     EventlistError read(std::istream& in);
     void save_changes(std::ostream& out);
     std::shared_ptr<Property> get_prop(const std::string& prop_name);
     Property& add_property(const std::string& name);
 private:
-    uint32_t duplicate_id = 0;
     int32_t action_index;
     int32_t first_property_index;
     int32_t next_action_index;
@@ -106,7 +136,7 @@ public:
 
     EventlistError read(std::istream& in);
     EventlistError save_changes(std::ostream& out);
-    std::shared_ptr<Action> add_action(const FileTypes::EventList* const list, const std::string& name, const std::vector<Prop>& properties);
+    std::shared_ptr<Action> add_action(const FileTypes::EventList& list, const std::string& name, const std::vector<Prop>& properties);
 private:
     int32_t actor_index;
     int32_t initial_action_index;
@@ -132,7 +162,7 @@ public:
     EventlistError read(std::istream& in);
     void save_changes(std::ostream& out);
     std::shared_ptr<Actor> get_actor(const std::string& name);
-    std::shared_ptr<Actor> add_actor(const FileTypes::EventList* const list, const std::string& name);
+    std::shared_ptr<Actor> add_actor(const FileTypes::EventList& list, const std::string& name);
 private:
     int32_t event_index;
     std::array<int32_t, 0x14> actor_indexes = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };

@@ -44,6 +44,8 @@ isEventBit = 0x025b8b94;
 getEventReg = 0x025b8bb0;
 setEventReg = 0x025b8af4;
 isSwitch = 0x025ba0c0;
+onSwitch = 0x025b9e38;
+offSwitch = 0x025b9f7c;
 onDungeonItem = 0x025b9098;
 onSymbol = 0x025b7cc0;
 isCollect = 0x025b7a2c;
@@ -53,6 +55,7 @@ getTriforceNum = 0x025b7e00;
 dComIfGs_isStageTbox = 0x02520864;
 isTbox = 0x025b8c74;
 
+fopAc_ac_c_ct = 0x025d4ed0;
 fopAcM_createItem = 0x025d8870;
 fopAcM_createItemForPresentDemo = 0x025d7dec;
 fopAcM_orderOtherEventId = 0x025d7a58;
@@ -78,12 +81,15 @@ itemActionForRupee = 0x02180de4;
 dStage_changeScene = 0x025c3748;
 /* dSv_restart_c_setRoom = 0x025b9810; */
 
+getEventIdx = 0x02543f10;
+endCheck = 0x025440c8;
+
 daObjFtree_talk_main = 0x023472bc;
 
 GetQuadrantAtLocation = 0x02680de0;
 GetWarpQuadrantByIndex = 0x0267a204;
 SetAdjacentWarpButton = 0x02681ad0;
-/* safestring_vtbl_1010394c = 0x1010394c; */
+safestring_vtbl_1010394c = 0x1010394c;
 
 gameInfo_ptr = 0x101f84dc;
 something_button_related = 0x101F5088;
@@ -93,4 +99,6 @@ y_diff_float = 0x1000efe8;
 some_gfx_ptr = 0x101F8344;
 FUN_025fcb90 = 0x025fcb90;
 original_last_warp_button_name = 0x101092d8;
+g_fpcLf_Method = 0x101f3bdc;
+g_fopAc_Method = 0x101F3088;
 current_file_idx = 0x47d4b717; /* Not used in custom asm, but keep it documented if necessary */

@@ -57,6 +57,11 @@ struct vec3 {
         Y(val),
         Z(val)
     {}
+    vec3(const T& x_, const T& y_, const T& z_) :
+        X(x_),
+        Y(y_),
+        Z(z_)
+    {}
 };
 
 template<typename T> requires std::is_arithmetic_v<T>

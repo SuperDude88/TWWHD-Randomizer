@@ -131,7 +131,17 @@ TweakError Add_Relocations(const std::string file_path) {
         entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
             
-            RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc));
+            if(reloc.r_offset >= 0x10000000) {
+                if(reloc.r_offset >= 0x1018C0C0) {   
+                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); //in the .data section, go in .rela.data
+                }
+                else {
+                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 8, reloc)); //in the .rodata section, go in .rela.rodata
+                }
+            }
+            else {
+                RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc)); //in the .text section, go in .rela.text
+            }
 
             return true;
         });
@@ -630,6 +640,9 @@ TweakError add_chest_in_place_queen_fairy_cutscene() {
 }
 
 TweakError add_more_magic_jars() {
+    //DRC doesn't have any magic since you wouldn't normally have Deku Leaf there
+    //But it can be required in the randomizer, so we make some skulls drop magic
+    //Same thing for arrows
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -643,8 +656,9 @@ TweakError add_more_magic_jars() {
 
             if(skulls.size() < 6) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-            skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4);
-            skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x10", 0, 4); //arrows in case logic expects you to use them for BK chest
+            skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4); //small magic
+            skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
 
             return true;
         });
@@ -663,27 +677,30 @@ TweakError add_more_magic_jars() {
 
             if(skulls.size() < 11) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
-            skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4);
+            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
+            skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
 
             return true;
         });
     }
 
+    //The grass on the small islands behind DRI do not have guaranteed magic
+    //Add grass that will always drop some on each of the islands
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(dri, FileTypes::DZXFile, data)
 
             ChunkEntry& grass1 = dri.add_entity("ACTR");
-            grass1.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+            grass1.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s; //62.50% chance of small magic, 37.50% chance of large magic
             ChunkEntry& grass2 = dri.add_entity("ACTR");
-            grass2.data = "\x6B\x75\x73\x61\x78\x31\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+            grass2.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s; //62.50% chance of small magic, 37.50% chance of large magic
 
             return true;
         });
     }
 
+    //Add magic to one of the pots outside the TotG miniboss
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -1412,6 +1429,32 @@ TweakError add_pirate_ship_to_windfall() {
         ChunkEntry& aryll = shipDzr.add_entity("ACTR");
         aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
 
+        const uint8_t countdown_happening_switch = 0xC0;
+        const uint8_t aryll_opened_door_switch = 0xC1;
+        const uint8_t countdown_not_happening_switch = 0xC2;
+        const uint8_t inside_chest_room_switch = 0xC3;
+        const uint8_t door_should_be_open_switch = 0xC4;
+
+        ChunkEntry& swc00 = shipDzr.add_entity("SCOB");
+        swc00.data = "SW_C00\x00\x00\x00\x00\xFF\xC3\x00\x00\x00\x00\xC4\x09\x80\x00\xC5\x73\xC0\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x40\x24\x40\xFF"s;
+
+        ChunkEntry& swop = shipDzr.add_entity("ACTR");
+        swop.data = "SwOp\x00\x00\x00\x00\x01\xC0\xC2\x13\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x89\x80\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+
+        //for starting the event (hardcode the index because it avoids the file dependency, not great but whatever)
+        ChunkEntry& swop2 = shipDzr.add_entity("ACTR");
+        swop2.data = "SwOp\x00\x00\x00\x00\x02\xC2\xC1\x10\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x73\xC0\x00\x00\x02\x00\x00\x00\x96\xFF\xFF"s;
+        //opening the door
+        ChunkEntry& swop3 = shipDzr.add_entity("ACTR");
+        swop3.data = "SwOp\x00\x00\x00\x00\x02\xC0\xC4\x12\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x54\x80\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+        
+        for (const int layer_num : {2, 3}) {
+            std::vector<ChunkEntry*> actors = shipDzr.entries_by_type_and_layer("ACTR", layer_num);
+            for (ChunkEntry* actor : actors) {
+                if (std::strncmp(&actor->data[0], "Ashut\x00\x00\x00", 8) == 0) actor->data[0xB] = door_should_be_open_switch;
+            }
+        }
+
         return true;
     });
     
@@ -1421,23 +1464,77 @@ TweakError add_pirate_ship_to_windfall() {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
             msbt.messages_by_label["03008"].attributes.soundEffect = 106;
 
+            auto& temp = msbt.messages_by_label["03006"];
+
+            Attributes attributes;
+            attributes.character = 0x3; //Aryll
+            attributes.boxStyle = 0x0;
+            attributes.drawType = 0x1;
+            attributes.screenPos = 0x3;
+            attributes.lineAlignment = 1; //left alignment
+            TSY1Entry tsy;
+            tsy.styleIndex = 0x12A;
+            msbt.addMessage("00849", attributes, tsy, u"Oh! Did you get stuck in there, Big Brother?\0"s);
+            msbt.addMessage("00850", attributes, tsy, u"Don't worry, I'll open the door for you.\0"s);
+
             return true;
         });
     }
 
-    const uint32_t stage_bgm_info_list_start = 0x1018E428;
-    const uint32_t second_dynamic_scene_waves_list_start = 0x1018E2EC;
-    const uint8_t asoko_spot_id = 0xC;
-    const uint8_t new_second_scene_wave_index = 0xE;
-    const uint8_t isle_link_0_aw_index = 0x19;
+    // Add a custom event where Aryll notices if the player got trapped in the chest room after the timer ran out and opens the door for them.
+    RandoSession::CacheEntry& shipEventList = g_session.openGameFile("content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
+    shipEventList.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-    //const uint32_t asoko_bgm_info_ptr = stage_bgm_info_list_start + asoko_spot_id * 0x4;
-    const uint32_t new_second_scene_wave_ptr = second_dynamic_scene_waves_list_start + new_second_scene_wave_index * 2;
+        Event& event = event_list.add_event("AryllOpensDoor");
+        
+        std::shared_ptr<Actor> camera = event.add_actor(event_list, "CAMERA");
+        camera->staff_type = 2;
+        std::shared_ptr<Actor> aryll_actor = event.add_actor(event_list, "Ls1");
+        aryll_actor->staff_type = 0;
+        std::shared_ptr<Actor> link = event.add_actor(event_list, "Link");
+        link->staff_type = 0;
+
+        const Prop eyeProp("Eye", vec3<float>{600.0f, -460.0f, -320.0f});
+        const Prop centerProp("Center", vec3<float>{600.0f, -480.0f, -200.0f});
+        const Prop fovyProp("Fovy", 60.0f);
+        const Prop timerProp("Timer", 30);
+        const std::vector<Prop> props{
+            eyeProp,
+            centerProp,
+            fovyProp,
+            timerProp
+        };
+        std::shared_ptr<Action> act = camera->add_action(event_list, "FIXEDFRM", props);
+        act = aryll_actor->add_action(event_list, "LOK_PLYER", {Prop{"prm_0", 8}});
+        act = aryll_actor->add_action(event_list, "ANM_CHG", {Prop{"AnmNo", 8}});
+        act = aryll_actor->add_action(event_list, "WAIT", {Prop{"Timer", 30}});
+
+        act = aryll_actor->add_action(event_list, "TALK_MSG", {Prop{"msg_num", 849}});
+        act = aryll_actor->add_action(event_list, "ANM_CHG", {Prop{"AnmNo", 4}});
+
+        act = aryll_actor->add_action(event_list, "TALK_MSG", {Prop{"msg_num", 850}});
+        act = aryll_actor->add_action(event_list, "ANM_CHG", {Prop{"AnmNo", 5}});
+
+        act = link->add_action(event_list, "001wait", {});
+
+        event.ending_flags[0] = aryll_actor->actions.back()->flag_id_to_set;
+
+        return true;
+    });
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-        
-        // RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, asoko_bgm_info_ptr + 3), new_second_scene_wave_index));
-        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, new_second_scene_wave_ptr), isle_link_0_aw_index));
+
+        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, 0x101BFFC4), 5));
+
+        return true;
+    });
+    RandoSession::CacheEntry& shipStage = g_session.openGameFile("content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+    shipStage.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(shipDzs, FileTypes::DZXFile, data)
+
+        ChunkEntry& new_evnt = shipDzs.add_entity("EVNT");
+        new_evnt.data = "\xFF" "AryllOpensDoor\x00\xFF\xFF\x00\xFF\xFF\xFF\xFF\xFF"s;
 
         return true;
     });
@@ -3038,13 +3135,11 @@ TweakError add_ff_warp_button() {
         
         RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
     
-        text.addAction([language](RandoSession* session, FileType* data) -> int {
+        text.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
             const Message& to_copy = msbt.messages_by_label["00075"];
-            //const std::u16string message = messages.at(language);
-            std::u16string message = u"";
-            msbt.addMessage("00076", to_copy.attributes, to_copy.style, message);
+            msbt.addMessage("00076", to_copy.attributes, to_copy.style, u"");
 
             return true;
         });
@@ -3069,6 +3164,381 @@ TweakError fix_vanilla_text() {
     return TweakError::NONE;
 }
 
+TweakError allow_nonlinear_servants_of_the_towers() {
+    // Allow the sections of Tower of the Gods where you bring three Servants of the Tower into the hub room to be done nonlinearly, so you can return the servants in any order.
+    // We change it so the Command Melody tablet appears when any one of the three servants is returned (originally it would only appear when returning the east servant).
+    // We also change the final warp upwards to appear only after all three servants have been returned, *and* the item from the Command Melody tablet has been obtained (since that tablet would softlock the game if it was still there when you try to enter the warp).
+    // However, the various events for the servants being returned do not behave well with these modifications. So we will need to substantially edit these events.
+    RandoSession::CacheEntry& totg = g_session.openGameFile("content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+    RandoSession::CacheEntry& list = g_session.openGameFile("content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
+    RandoSession::CacheEntry& hub_room = g_session.openGameFile("content/Common/Stage/Siren_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr@DZX");
+    
+    totg.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzs, FileTypes::DZXFile, data)
+
+        std::vector<ChunkEntry*> doors = dzs.entries_by_type("TGDR");
+        ChunkEntry* north_door = doors[6];
+        ChunkEntry* west_door = doors[8];
+
+        // Remove the open condition switches from the doors, making them unlocked from the start.
+        north_door->data[0xB] = 0xFF;
+        west_door->data[0xB] = 0xFF;
+        
+        ChunkEntry& tablet_appear_evnt = dzs.add_entity("EVNT");
+        tablet_appear_evnt.data = "\xFF" "hsehi1_appear\x00\x00\xFF\xFF\x00\xFF\xFF\xFF\xFF\xFF"s;
+
+        return true;
+    });
+
+    // Note: In vanilla, 0x29 was not set directly by the east servant.
+    // Instead, the east servant's event caused the tablet to appear, and then after getting
+    // the Command Melody from the tablet, the tablet would set switch 0x29.
+    // We change the east servant to work like the others, and directly set the switch.
+    const uint8_t east_servant_returned_switch = 0x29;
+    const uint8_t west_servant_returned_switch = 0x2A;
+    const uint8_t north_servant_returned_switch = 0x28;
+
+    // These switches should be unused in vanilla TotG.
+    const uint8_t tablet_item_obtained_switch = 0x2B; // Must be contiguous with 0x28-0x2A.
+    const uint8_t any_servant_returned_switch = 0x7E;
+    const uint8_t all_servants_returned_switch = 0x7F;
+
+    const uint8_t original_all_servants_returned_switch = 0x28;
+    
+    // In vanilla, the tablet and the east servant both had their switch set to 0x29.
+    // The east servant would start an event that makes the tablet appear, and then after you
+    // get the Command Melody from the tablet, the tablet would set switch 0x29.
+    // The east servant would check for switch 0x29 to be set, and once it is, start another
+    // event where it tells you about its kin and makes the tablet disappear.
+
+    // We change how this works so that the east servant sets switch 0x29 in its event.
+    // Then we have a custom event that triggers when any of the three servant returned
+    // switches have been set. This custom event makes the tablet appear.
+    // The switch set by the tablet when you get its item is changed to 0x2B (unused in vanilla).
+    // Once all fourth switches are set, the light beam warp appears.
+
+    hub_room.addAction([=](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+        for (ChunkEntry* actor : actors) {
+            if (std::strncmp(&actor->data[0], "Hsh\0\0\0\0\0", 8) == 0) { //stone tablet
+                actor->data[0xB] = tablet_item_obtained_switch; //params & 0x000000FF
+                break;
+            }
+        }
+        for (ChunkEntry* actor : actors) {
+            if (std::strncmp(&actor->data[0], "Ywarp00\0", 8) == 0) { //warp beam
+                actor->data[0xB] = all_servants_returned_switch; //params & 0x000000FF
+                break;
+            }
+        }
+        std::vector<ChunkEntry*> scobs = dzr.entries_by_type("ACTR");
+        for (ChunkEntry* scob : scobs) {
+            if (std::strncmp(&scob->data[0], "kytag00\0", 8) == 0) { //weather trigger
+                scob->data[0x19] = all_servants_returned_switch; //X rotation & 0x00FF
+                break;
+            }
+        }
+        for (ChunkEntry* scob : scobs) {
+            if (std::strncmp(&scob->data[0], "AttTag\0\0", 8) == 0 && scob->data[0xB] == original_all_servants_returned_switch && (scob->data[0xA] & 0x03) == 1) {
+                scob->data[0xB] = all_servants_returned_switch; //params & 0x000000FF
+                break;
+            }
+        }
+
+        return true;
+    });
+
+    // East servant returned.
+    // Make this servant set its switch directly, instead of making the Command Melody tablet appear and then having the tablet set the switch.
+    list.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
+        
+        if(event_list.Events_By_Name.count("Os_Finish") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        std::shared_ptr<Event> os0_finish = event_list.Events_By_Name.at("Os_Finish");
+
+        std::shared_ptr<Actor> os0 = os0_finish->get_actor("Os");
+        if (os0 == nullptr) {
+            LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        }
+        // Remove the tablet.
+        std::erase_if(os0_finish->actors, [](std::shared_ptr<Actor> actor) { return actor->name == "Hsh"; });
+        std::shared_ptr<Actor> timekeeper = os0_finish->get_actor("TIMEKEEPER");
+        if (timekeeper == nullptr) {
+            LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        }
+        std::shared_ptr<Actor> camera = os0_finish->get_actor("CAMERA");
+        if (camera == nullptr) {
+            LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        }
+
+        // Set the switch.
+        std::shared_ptr<Action> set_switch_action = os0->add_action(event_list, "SW_ON", {});
+        os0->actions.pop_back();
+        os0->actions.insert(os0->actions.begin() + 7, set_switch_action);
+        
+        // Do not make the other actors wait for the tablet.
+        os0->actions.back()->starting_flags[0] = -1;
+        timekeeper->actions.end()[-2]->starting_flags[0] = -1;
+        camera->actions[6]->starting_flags[0] = -1;
+        
+        // Remove the final countdown and wait, they won't be used for anything.
+        timekeeper->actions.pop_back();
+        timekeeper->actions.pop_back();
+        
+        // Adjust the camera angle so the beam doesn't pierce the camera.
+        std::shared_ptr<Action> os0_unitrans = camera->actions[3];
+        std::shared_ptr<Property> eye_prop = os0_unitrans->get_prop("Eye");
+        eye_prop->value = std::vector<vec3<float>>{vec3<float>{546.0f, 719.0f, -8789.0f}};
+        std::shared_ptr<Property> center_prop = os0_unitrans->get_prop("Center");
+        center_prop->value = std::vector<vec3<float>>{vec3<float>{783.0f, 582.0f, -9085.0f}};
+        
+        // Do not make the camera look at the tablet appearing.
+        camera->actions.erase(camera->actions.begin() + 7);
+        std::shared_ptr<Action> camera_tablet_fixedfrm_act = camera->actions[6];
+        const std::vector<std::shared_ptr<Property>> camera_tablet_fixedfrm_props =  camera_tablet_fixedfrm_act->properties;
+        camera->actions.erase(camera->actions.begin() + 6);
+
+        // Make it shoot a light beam.
+        std::shared_ptr<Action> finish_action = *std::find_if(os0->actions.begin(), os0->actions.end(), [](std::shared_ptr<Action> act) { return act->name == "FINISH"; });
+        std::shared_ptr<Property> finish_type_prop = finish_action->get_prop("Type");
+        finish_type_prop->value = std::vector<int32_t>{2};
+
+
+
+        // West servant returned.
+        if(event_list.Events_By_Name.count("Os1_Finish") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        std::shared_ptr<Event> os1_finish = event_list.Events_By_Name.at("Os1_Finish");
+
+        std::shared_ptr<Actor> os1 = os1_finish->get_actor("Os1");
+        camera = os1_finish->get_actor("CAMERA");
+        
+        // Make it shoot a light beam.
+        std::vector<std::shared_ptr<Action>> finish_actions;
+        std::for_each(os1->actions.begin(), os1->actions.end(), [&](std::shared_ptr<Action> act) { if(act->name == "FINISH") finish_actions.push_back(act); });
+        finish_type_prop = finish_actions[1]->get_prop("Type");
+        finish_type_prop->value = std::vector<int32_t>{2};
+
+        // Adjust the camera angle so the beam doesn't pierce the camera.
+        std::shared_ptr<Action> os1_unitrans = camera->actions[3];
+        const std::vector<vec3<float>> os1_cam_eye = {vec3<float>{-512.0, 626.0, -8775.0}};
+        const std::vector<vec3<float>> os1_cam_center = {vec3<float>{-790.0, 667.0, -9065.0}};
+        eye_prop = os1_unitrans->get_prop("Eye");
+        eye_prop->value = os1_cam_eye;
+        center_prop = os1_unitrans->get_prop("Center");
+        center_prop->value = os1_cam_center;
+
+        // Remove the camera zooming in on the north door.
+        camera->actions.erase(camera->actions.end() - 2);
+        os1->actions.pop_back();
+        os1_finish->ending_flags[0] = os1->actions.back()->flag_id_to_set;
+
+        // Don't make it wait for the countdown before shooting the beam.
+        // Instead make it wait for the camera zooming in on the servant.
+        std::erase_if(os1->actions, [finish_actions](std::shared_ptr<Action> act) { return act == finish_actions[0]; });
+        finish_actions[1]->starting_flags[0] = (*(camera->actions.end() - 2))->flag_id_to_set;
+
+
+        // After west servant returned.
+        if(event_list.Events_By_Name.count("Os1_Message") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        std::shared_ptr<Event> os1_message = event_list.Events_By_Name.at("Os1_Message");
+        os1 = os1_message->get_actor("Os1");
+        camera = os1_message->get_actor("CAMERA");
+        // Remove all but the last action to effecitvely remove the event.
+        os1->actions.erase(os1->actions.begin(), os1->actions.end() - 1);
+        camera->actions.erase(camera->actions.begin(), camera->actions.end() - 1);
+
+
+
+        // North servant returned.
+        if(event_list.Events_By_Name.count("Os2_Finish") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        std::shared_ptr<Event> os2_finish = event_list.Events_By_Name.at("Os2_Finish");
+
+        // Remove the east and west servants from being a part of this event.
+        std::erase_if(os2_finish->actors, [](std::shared_ptr<Actor> actor) { return actor->name == "Os"; });
+        std::erase_if(os2_finish->actors, [](std::shared_ptr<Actor> actor) { return actor->name == "Os1"; });
+
+        std::shared_ptr<Actor> os2 = os2_finish->get_actor("Os2");
+        camera = os2_finish->get_actor("CAMERA");
+
+        // Do not make the north servant wait for the east servant to finish before it ends the event.
+        std::shared_ptr<Action> os2_sw_on = *std::find_if(os2->actions.begin(), os2->actions.end(), [](std::shared_ptr<Action> act) { return act->name == "SW_ON"; });
+        os2_sw_on->starting_flags[0] = -1;
+
+        // Do not make the camera wait for the west servant to finish before it ends the event.
+        camera->actions.back()->starting_flags[0] = -1;
+
+        // Do not make the camera look at the east and west servants.
+        camera->actions.erase(camera->actions.end() - 3);
+        camera->actions.erase(camera->actions.end() - 2);
+
+        // Adjust the camera angle while the camera is following the platform and the servant up.
+        // Normally it would adjust the angle after the platform is fully up, but we just skip a step.
+        std::shared_ptr<Action> os2_unitrans = camera->actions[3];
+        const std::vector<vec3<float>> os2_cam_eye = {vec3<float>{124.0, 589.0, -9482.0}};
+        const std::vector<vec3<float>> os2_cam_center = {vec3<float>{-7.0, 644.0, -9625.0}};
+        eye_prop = os2_unitrans->get_prop("Eye");
+        eye_prop->value = os2_cam_eye;
+        center_prop =  os2_unitrans->get_prop("Center");
+        center_prop->value = os2_cam_center;
+
+        // Remove the third unitrans, which is when the original event adjusted the camera angle.
+        camera->actions.erase(camera->actions.end() - 1);
+        camera->actions.erase(camera->actions.end() - 1);
+
+        // And don't make the beam shooting action depend on the deleted unitrans.
+        // Instead make it wait for the camera zooming in on the servant.
+        finish_actions.clear();
+        std::for_each(os2->actions.begin(), os2->actions.end(), [&](std::shared_ptr<Action> act) { if(act->name == "FINISH") finish_actions.push_back(act); });
+
+        std::erase_if(os2->actions, [finish_actions](std::shared_ptr<Action> act) { return act == finish_actions[0]; });
+        finish_actions[1]->starting_flags[0] = camera->actions.back()->flag_id_to_set;
+        
+        
+        
+        // Tablet event where you play the Command Melody and get an item.
+        if(event_list.Events_By_Name.count("hsehi1_tact") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        std::shared_ptr<Event> hsehi1_tact = event_list.Events_By_Name.at("hsehi1_tact");
+
+        camera = hsehi1_tact->get_actor("CAMERA");
+        std::shared_ptr<Actor> hsh = hsehi1_tact->get_actor("Hsh");
+        timekeeper = hsehi1_tact->get_actor("TIMEKEEPER");
+        std::shared_ptr<Actor> link = hsehi1_tact->get_actor("Link");
+
+        // Remove the camera zooming in on the west door.
+        camera->actions.pop_back();
+        // Don't make the table wait for the camera to zoom in on the west door.
+        hsh->actions.pop_back();
+        // Make the tablet disappear at the end.
+        hsh->actions.pop_back();
+        std::shared_ptr<Action> tablet_hide_player_act = hsh->add_action(event_list, "Disp", std::vector<Prop>{Prop{"target", "@PLAYER"}, Prop{"disp", "off"}});
+        std::shared_ptr<Action> tablet_delete_action = hsh->add_action(event_list, "Delete", {});
+        // Make the camera zoom in on the tablet while it's disappearing.
+        std::shared_ptr<Action> camera_fixedfrm = camera->add_action(event_list, "FIXEDFRM", std::vector<Prop>{
+          {"Eye", vec3<float>{3.314825f, 690.2266f, -8600.536f}},
+          {"Center", vec3<float>{0.82259f, 677.7084f, -8721.426f}},
+          {"Fovy", 60.0f},
+          {"Timer", 30}
+        });
+        std::shared_ptr<Action> link_get_song_action = link->actions[4]; // 059get_dance
+        camera_fixedfrm->starting_flags[0] = link_get_song_action->flag_id_to_set;
+        tablet_delete_action->starting_flags[0] = camera_fixedfrm->flag_id_to_set;
+        hsh->add_action(event_list, "Disp", std::vector<Prop>{{"target", "@PLAYER"}, {"disp", "on"}});
+        hsh->add_action(event_list, "WAIT", {});
+        hsehi1_tact->ending_flags[0] = hsh->actions.back()->flag_id_to_set;
+
+
+        // Create the custom event that causes the Command Melody tablet to appear.
+        Event& appear_event = event_list.add_event("hsehi1_appear");
+      
+        camera = appear_event.add_actor(event_list, "CAMERA");
+        camera->staff_type = 2;
+      
+        std::shared_ptr<Actor> tablet_actor = appear_event.add_actor(event_list, "Hsh");
+        tablet_actor->staff_type = 0;
+        std::shared_ptr<Action> tablet_wait_action = tablet_actor->add_action(event_list, "WAIT", {});
+      
+        // Make sure Link still animates during the event instead of freezing.
+        link = appear_event.add_actor(event_list, "Link");
+        link->staff_type = 0;
+        link->add_action(event_list, "001n_wait", {});
+      
+        timekeeper = appear_event.add_actor(event_list, "TIMEKEEPER");
+        timekeeper->staff_type = 4;
+        timekeeper->add_action(event_list, "WAIT", {});
+      
+        std::shared_ptr<Action> camera_fixedfrm_action = camera->add_action(event_list, "FIXEDFRM", {});
+        for (const std::shared_ptr<Property> property : camera_tablet_fixedfrm_props) {
+            Property& prop = camera_fixedfrm_action->add_property(property->name);
+            prop.value = property->value;
+        }
+      
+        camera->add_action(event_list, "PAUSE", {});
+      
+        std::shared_ptr<Action> tablet_appear_action = tablet_actor->add_action(event_list, "Appear", {});
+        tablet_appear_action->starting_flags[0] = camera_fixedfrm_action->flag_id_to_set;
+      
+        std::shared_ptr<Action> timekeeper_countdown_90_action = timekeeper->add_action(event_list, "COUNTDOWN", std::vector<Prop>{{"Timer", 90}});
+        timekeeper_countdown_90_action->duplicate_id = 1;
+        timekeeper_countdown_90_action->starting_flags[0] = tablet_appear_action->flag_id_to_set;
+      
+        tablet_wait_action = tablet_actor->add_action(event_list, "WAIT", {});
+        tablet_wait_action->duplicate_id = 1;
+        tablet_wait_action->starting_flags[0] = timekeeper_countdown_90_action->flag_id_to_set;
+      
+        appear_event.ending_flags[0] = tablet_wait_action->flag_id_to_set;
+
+        // Also add SwOps to all four events, with a dummy action. This is so their code still runs during these events, allowing them to seamlessly
+        // start events, instead of having a janky one or two frame delay where the camera tries to zoom back to the player before realizing it needs to go to the tablet.
+        for (std::shared_ptr<Event> event : {os0_finish, os1_finish, os2_finish, hsehi1_tact}) {
+          std::shared_ptr<Actor>swop_actor = event->add_actor(event_list, "SwOp");
+          swop_actor->add_action(event_list, "DUMMY", {});
+        }
+
+        // Also speed up the events where the servants walk to their respective platforms.
+        // They're so slow that it's painful to watch, so we give them a big speed boost.
+        const uint8_t servant_speed_multiplier = 4;
+        const uint8_t platform_speed_multiplier = 2;
+        const uint8_t beam_delay_multiplier = 2;
+        for (std::shared_ptr<Event> finish_event : {os0_finish, os1_finish, os2_finish}) {
+            const std::unordered_set<std::string> servant_names = {"Os", "Os1", "Os2"};
+            const std::unordered_set<std::string> platform_names = {"Hdai1", "Hdai2", "Hdai3"};
+            std::shared_ptr<Actor> servant = *std::find_if(finish_event->actors.begin(), finish_event->actors.end(), [servant_names](std::shared_ptr<Actor> actor) { return servant_names.contains(actor->name); });
+            std::shared_ptr<Actor> platform = *std::find_if(finish_event->actors.begin(), finish_event->actors.end(), [platform_names](std::shared_ptr<Actor> actor) { return platform_names.contains(actor->name); });
+            timekeeper = finish_event->get_actor("TIMEKEEPER");
+            camera = finish_event->get_actor("CAMERA");
+
+            std::shared_ptr<Action> servant_move_action = *std::find_if(servant->actions.begin(), servant->actions.end(), [](std::shared_ptr<Action> act) { return act->name == "MOVE"; });
+            std::shared_ptr<Property> stick_prop = servant_move_action->get_prop("Stick");
+            std::get<std::vector<float>>(stick_prop->value)[0] *= servant_speed_multiplier; // Originally 0.5
+
+            std::shared_ptr<Action> platform_move_action = *std::find_if(platform->actions.begin(), platform->actions.end(), [](std::shared_ptr<Action> act) { return act->name == "MOVE"; });
+            std::shared_ptr<Property> speed_prop = platform_move_action->get_prop("Speed");
+            std::get<std::vector<float>>(speed_prop->value)[0] *= platform_speed_multiplier; // Originally 2.5
+
+            std::vector<std::shared_ptr<Action>> countdown_actions;
+            std::for_each(timekeeper->actions.begin(), timekeeper->actions.end(), [&](std::shared_ptr<Action> act) { if(act->name == "COUNTDOWN") countdown_actions.push_back(act); });
+            std::vector<std::shared_ptr<Property>> countdown_timer_props;
+            for (std::shared_ptr<Action> act : countdown_actions) {
+                std::for_each(act->properties.begin(), act->properties.end(), [&](std::shared_ptr<Property> prop) { if(prop->name == "Timer") countdown_timer_props.push_back(prop); });
+            }
+            std::get<std::vector<int32_t>>(countdown_timer_props[0]->value)[0] /= servant_speed_multiplier; // Originally 60 frames (2s)
+            std::get<std::vector<int32_t>>(countdown_timer_props[1]->value)[0] /= servant_speed_multiplier; // Originally 210 frames (7s)
+            // countdown_timer_props[2] is 10 frames
+            std::get<std::vector<int32_t>>(countdown_timer_props[3]->value)[0] /= beam_delay_multiplier; // Originally 60 frames (2s)
+
+            std::vector<std::shared_ptr<Action>> unitrans_actions;
+            std::for_each(camera->actions.begin(), camera->actions.end(), [&](std::shared_ptr<Action> act) { if(act->name == "UNITRANS") unitrans_actions.push_back(act); });
+            std::vector<std::shared_ptr<Property>> unitrans_timer_props;
+            for (std::shared_ptr<Action> act : unitrans_actions) {
+                std::for_each(act->properties.begin(), act->properties.end(), [&](std::shared_ptr<Property> prop) { if(prop->name == "Timer") unitrans_timer_props.push_back(prop); });
+            }
+            std::get<std::vector<int32_t>>(unitrans_timer_props[0]->value)[0] /= platform_speed_multiplier; // Originally 90 frames (3s)
+            // unitrans_timer_props[1] is 30 frames
+        }
+
+        return true;
+    });
+
+    hub_room.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        // Detect when any servant has been returned and start the tablet event (hardcode evnt index because it avoids a file dependency, not great but whatever).
+        ChunkEntry& swop = dzr.add_entity("ACTR");
+        swop.data = "SwOp\x00\x00\x00\x00\x03\x28\x7E\x02\xC4\x48\x00\x00\x44\x7A\x00\x00\xC6\x0C\xA0\x00\x00\x08\x00\x00\x00\x00\xFF\xFF"s;
+
+        // Detect when all servants have been returned and the tablet item is also obtained, and make the warp appear.
+        ChunkEntry& swop2 = dzr.add_entity("ACTR");
+        swop2.data = "SwOp\x00\x00\x00\x00\x04\x28\x7F\x00\x44\x48\x00\x00\x44\x7A\x00\x00\xC6\x0C\xA0\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+
+        return true;
+    });
+
+    
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -3088,6 +3558,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/switch_op_diff.yaml"));
 
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.yaml"));
@@ -3096,6 +3567,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.yaml"));
     LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.yaml"));
+    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/switch_op_reloc.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3110,18 +3582,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         //blockMoveReloc.r_info = 0x00015b0a;
         //blockMoveReloc.r_addend = 0;
         //RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
-        
-        Elf32_Rela str_reloc;
-        str_reloc.r_offset = custom_symbols.at("custom_ff_label_safestring");
-        str_reloc.r_info = 0x00000101;
-        str_reloc.r_addend = custom_symbols.at("custom_ff_label") - 0x02000000;
-        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, str_reloc));
-
-        Elf32_Rela str_vtbl_reloc;
-        str_vtbl_reloc.r_offset = custom_symbols.at("custom_ff_label_safestring") + 4;
-        str_vtbl_reloc.r_info = 0x00000201;
-        str_vtbl_reloc.r_addend = 0x0010394C;
-        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, str_vtbl_reloc));
 
         RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); //would mess with save init
         RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); //would mess with salvage point patch
@@ -3219,17 +3679,11 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
 
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
-    /* if (randomizeItems) { */
-        TWEAK_ERR_CHECK(update_text_replacements(world));
-        TWEAK_ERR_CHECK(update_korl_dialog(world));
-        TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
-        TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
-        TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
-    /* } */
+
     //Run some things after writing items to preserve offsets
     TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
     TWEAK_ERR_CHECK(add_more_magic_jars());
-    TWEAK_ERR_CHECK(add_pirate_ship_to_windfall()); //doesnt fix getting stuck behind door
+    TWEAK_ERR_CHECK(add_pirate_ship_to_windfall());
     TWEAK_ERR_CHECK(add_hint_signs());
     TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
     TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
@@ -3243,10 +3697,18 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(update_entrance_events());
     TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere(world));
     TWEAK_ERR_CHECK(fix_needle_rock_island_salvage_flags());
+    TWEAK_ERR_CHECK(allow_nonlinear_servants_of_the_towers());
 
     if(world.getSettings().add_shortcut_warps_between_dungeons) {
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
     }
+
+    //update text last so everything has a chance to add textboxes
+    TWEAK_ERR_CHECK(update_text_replacements(world));
+    TWEAK_ERR_CHECK(update_korl_dialog(world));
+    TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
+    TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
+    TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
 
     TWEAK_ERR_CHECK(apply_custom_colors(world));
 
