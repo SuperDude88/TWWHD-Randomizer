@@ -494,30 +494,6 @@ private:
                     return true;
                 });
             }
-            
-            //update Ice Ring's inner grotto exit (might change how this works later)
-            if(fileStage == "MiniHyo") {
-                const std::string innerCavePath = "content/Common/Stage/ITest62_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX";
-                RandoSession::CacheEntry& innerCave = g_session.openGameFile(innerCavePath);
-                innerCave.addAction([entrance, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int {
-                    CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
-
-                    const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
-                    if(0 > (scls_entries.size() - 1)) {
-                        ErrorLog::getInstance().log("SCLS entry index outside of list!");
-                        return false;
-                    }
-
-                    // Update the SCLS entry to match Ice Ring's exit
-                    ChunkEntry* exit = scls_entries[0];
-                    replacementStage.resize(8, '\0');
-                    exit->data.replace(0, 8, replacementStage.c_str(), 8);
-                    exit->data[8] = replacementSpawn;
-                    exit->data[9] = replacementRoom;
-
-                    return true;
-                });
-            }
 
             dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
             {

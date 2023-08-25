@@ -47,6 +47,9 @@
   Forward: Ice Ring Isle,                          Ice Ring Interior,                        sea,     40,          0, MiniHyo,  0,     0
   Return:  Ice Ring Interior,                      Ice Ring Isle,                            MiniHyo,  0,          0, sea,     40,     0
 - Type: CAVE
+  Forward: Ice Ring Interior,                      Ice Ring Inner Cave,                      MiniHyo,  0,          1, ITest62,  0,     0
+  Return:  Ice Ring Inner Cave,                    Ice Ring Isle,                            ITest62,  0,          0, sea,     40,     0
+- Type: CAVE
   Forward: The Cabana,                             Cabana Labyrinth,                         Abesso,   0,          1, TF_04,    0,     0
   Return:  Cabana Labyrinth,                       The Cabana,                               TF_04,    0,          0, Abesso,   0,     1
 - Type: CAVE
