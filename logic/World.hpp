@@ -148,16 +148,16 @@ public:
     std::map<std::string, std::map<std::string, Text::Translation>> hintRegions; // hint region names for all languages, keyed by name, language, and type
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
-    std::unordered_map<std::string, Dungeon> dungeons = {};
+    std::map<std::string, Dungeon> dungeons = {};
     LocationPool raceModeLocations = {};
-    std::unordered_map<Location*, std::vector<Location*>> pathLocations = {};
-    std::unordered_map<std::string, std::unordered_set<Location*>> barrenRegions = {};
+    std::map<Location*, std::vector<Location*>> pathLocations = {};
+    std::map<std::string, std::unordered_set<Location*>> barrenRegions = {};
     std::list<Location*> korlHints = {};
-    std::unordered_map<Location*, std::unordered_set<Location*>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
+    std::map<Location*, std::unordered_set<Location*>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
     Location* bigOctoFairyHintLocation = nullptr;
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
-    std::unordered_map<uint8_t, GameItem> chartMappings = {};
+    std::map<uint8_t, GameItem> chartMappings = {};
     Settings originalSettings;
 
     uint8_t startingIslandRoomIndex = 44; // Outset Island by default
