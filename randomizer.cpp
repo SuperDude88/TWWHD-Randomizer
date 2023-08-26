@@ -434,6 +434,15 @@ private:
             uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
             uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
 
+            // If this is the entrance that spawns the player at Ice Ring Inner Cave -> Ice Ring Isle, then
+            // we want to change it so that it takes from the exit of the first ice ring interior
+            if (entrance->getReplaces()->getOriginalName() == "Ice Ring Inner Cave -> Ice Ring Isle") {
+                auto actualEntrance = worlds[0].getEntrance("Ice Ring Interior", "Ice Ring Isle");
+                replacementStage = actualEntrance->getReplaces()->getStageName();
+                replacementRoom = actualEntrance->getReplaces()->getRoomNum();
+                replacementSpawn = actualEntrance->getReplaces()->getSpawnId();
+            }
+
             std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
 
             if (fileStage == "sea") {
