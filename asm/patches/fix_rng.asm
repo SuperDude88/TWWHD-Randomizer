@@ -4,5 +4,5 @@
   b 0x0206DBBC ; Always make Helmaroc try to land
 .org 0x0206E9B4 ; Checks if a random float is >= 0.25 to decide if he should try a gust attack or peck
   b 0x0206E9C4 ; Always make Helmaroc peck
-.org 0x0206D868 ; Checks if a random float is >= .08 to decide if he should fly around quickly or go out really far
+.org 0x0206D868 ; Checks if a random float is >= 0.8 to decide if he should fly around quickly or go out really far
   nop ; Always do a short fly-around
