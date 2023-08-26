@@ -122,6 +122,7 @@ enum struct Option {
     // Convenince Tweaks
     InvertCompass,
     InstantText,
+    FixRNG,
     RevealSeaChart,
     SkipRefights,
     AddShortcutWarps,
@@ -248,6 +249,7 @@ struct Settings {
     uint8_t location_hints = 0;
 
     bool instant_text_boxes = false;
+    bool fix_rng = false;
     bool reveal_full_sea_chart = false;
     uint8_t num_starting_triforce_shards = 0;
     bool add_shortcut_warps_between_dungeons = false;

@@ -3590,6 +3590,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.yaml"));
         TWEAK_ERR_CHECK(make_all_text_instant());
     }
+    if (settings.fix_rng) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_rng_diff.yaml"));
+    }
     if (settings.reveal_full_sea_chart) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
     }
