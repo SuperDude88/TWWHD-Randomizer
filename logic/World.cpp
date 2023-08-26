@@ -1517,7 +1517,7 @@ Entrance* World::getEntrance(const std::string& parentArea, const std::string& c
 
     for (auto& exit : parentAreaEntry.exits)
     {
-        if (exit.getConnectedArea() == connectedArea)
+        if (exit.getOriginalConnectedArea() == connectedArea)
         {
             return &exit;
         }
