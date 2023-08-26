@@ -77,7 +77,7 @@ file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data" REGEX "^.*tracker.*$" EX
 file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
 
 if(CMAKE_USE_PTHREADS_INIT AND GET_THREADS)
-  target_link_libraries(wwhd_rando Threads::Threads)
+  target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
 endif()
 
 if(DEFINED DEVKITPRO)
