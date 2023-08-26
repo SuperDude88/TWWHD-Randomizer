@@ -39,4 +39,4 @@ add_subdirectory("yaml-cpp")
 option(tinyxml2_BUILD_TESTING OFF)
 add_subdirectory("tinyxml2")
 
-target_link_libraries(wwhd_rando zlib yaml-cpp tinyxml2)
+target_link_libraries(wwhd_rando PRIVATE zlib yaml-cpp tinyxml2)
