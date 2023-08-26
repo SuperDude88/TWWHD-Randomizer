@@ -1,5 +1,4 @@
 from typing import List
-from collections import OrderedDict
 import struct
 import re
 import traceback
@@ -31,12 +30,6 @@ def get_bin(name):
 if not os.path.isfile(get_bin("powerpc-eabi-as")):
   raise Exception(r"Failed to assemble code: Could not find devkitPPC. devkitPPC should be installed to: C:\devkitPro\devkitPPC")
 
-# Allow yaml to dump OrderedDicts for diffs
-yaml.Dumper.add_representer(
-  OrderedDict,
-  lambda dumper, data: dumper.represent_dict(data.items())
-)
-
 # Output integers as hexadecimal
 yaml.Dumper.add_representer(
   int,
@@ -54,13 +47,13 @@ yaml.Dumper.add_representer(
 
 temp_dir = tempfile.mkdtemp()
 
-custom_symbols = OrderedDict()
-to_relocate = OrderedDict()
+custom_symbols = {}
+to_relocate = {}
   
 free_space_start_offset = 0x028f87f4
 next_free_space_offset = free_space_start_offset
   
-section_addresses = OrderedDict({"": 0, ".text": 0x02000000, ".data": 0x10000000})
+section_addresses = {"": 0, ".text": 0x02000000, ".data": 0x10000000}
 
 # only handles relocations for things that are in .text, pointing to .data
 def get_relocations_for_elf(o_path, start_addr, symbol_addresses):
@@ -86,9 +79,6 @@ try:
   # First delete any old patch diffs.
   for diff_path in glob.glob(glob.escape(asm_dir) + '/patch_diffs/*_diff.yaml'):
     os.remove(diff_path)
-    
-  for reloc_path in glob.glob(glob.escape(asm_dir) + '/patch_diffs/*_reloc.yaml'):
-    os.remove(reloc_path)
   
   with open(asm_dir + "/linker.ld") as f:
     linker_script = f.read()
@@ -106,7 +96,7 @@ try:
   all_asm_files.remove("custom_funcs.asm")
   all_asm_files = ["custom_funcs.asm"] + all_asm_files
   
-  code_chunks = OrderedDict()
+  code_chunks = {}
   temp_linker_script = ""
   next_free_space_id = 1
   
@@ -129,7 +119,7 @@ try:
         asm = f.read()
   
       patch_name = os.path.splitext(patch_filename)[0]
-      code_chunks[patch_name] = OrderedDict()
+      code_chunks[patch_name] = {}
       
       most_recent_org_offset = None
       for line in asm.splitlines():
@@ -193,7 +183,7 @@ try:
   temp_linker_script = linker_script + "\n" + temp_linker_script
 
   # populate dict for relocation stuff
-  linker_dict = OrderedDict()
+  linker_dict = {}
   for line in linker_script.splitlines():
       if not line:
           continue
@@ -208,8 +198,9 @@ try:
         print("Generating patch " + patch_name)
         last_patch = patch_filename
       
-      diffs = OrderedDict()
-      relocations_for_patch = []
+      diffs = {}
+      diffs["Data"] = {}
+      diffs["Relocations"] = []
       # Sort code chunks in this patch so that free space chunks come first.
       # This is necessary so non-free-space chunks can branch to the free space chunks.
       def free_space_org_list_sorter(code_chunk_tuple):
@@ -303,7 +294,7 @@ try:
               temp_linker_script += "%s = 0x%08X;\n" % (symbol_name, symbol_address)
               linker_dict[symbol_name] = "0x%08X" % symbol_address
         
-        if org_offset in diffs:
+        if org_offset in diffs["Data"]:
           raise Exception("Duplicate .org directive within a single asm patch: %X" % org_offset)
         
         with open(bin_name, "rb") as f:
@@ -314,11 +305,11 @@ try:
         if using_free_space:
           next_free_space_offset += code_chunk_size_in_bytes
         
-        diffs[org_offset] = list(struct.unpack("B"*code_chunk_size_in_bytes, binary_data))
+        diffs["Data"][org_offset] = list(struct.unpack("B"*code_chunk_size_in_bytes, binary_data))
 
         # generate relocations for the patch
         o_name = os.path.join(temp_dir, "tmp_" + patch_name + "_%08X.o" % org_offset)
-        relocations_for_patch += get_relocations_for_elf(o_name, org_offset, linker_dict)
+        diffs["Relocations"] += get_relocations_for_elf(o_name, org_offset, linker_dict)
 
       diff_path = os.path.join(asm_dir, "patch_diffs", patch_name + "_diff.yaml")
       with open(diff_path, "w", newline='\n') as f:
@@ -327,17 +318,11 @@ try:
           list,
           lambda dumper, data: dumper.represent_sequence(u"tag:yaml.org,2002:seq", data, flow_style=True)
         )
-        f.write(yaml.dump(diffs, Dumper=yaml.Dumper, default_flow_style=False))
+        # Don't include the relocations key if we don't have any
+        if len(diffs["Relocations"]) == 0:
+          diffs.pop("Relocations")
 
-      if len(relocations_for_patch) != 0:
-          reloc_path = os.path.join(asm_dir, "patch_diffs", patch_name + "_reloc.yaml")
-          with open(reloc_path, "w", newline='\n') as f:
-            # Put each reloc on one line
-            yaml.Dumper.add_representer(
-              list,
-              lambda dumper, data: dumper.represent_sequence(u"tag:yaml.org,2002:seq", data, flow_style=False)
-            )
-            f.write(yaml.dump(relocations_for_patch, Dumper=yaml.Dumper, default_flow_style=False))
+        f.write(yaml.dump(diffs, Dumper=yaml.Dumper, default_flow_style=False))
 
   with open(asm_dir + "/custom_symbols.yaml", "w", newline='\n') as f:
     f.write(yaml.dump(custom_symbols, Dumper=yaml.Dumper, default_flow_style=False) + '\n')

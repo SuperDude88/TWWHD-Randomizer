@@ -83,68 +83,64 @@ TweakError Apply_Patch(const std::string& file_path) {
     const YAML::Node patches = YAML::Load(file_data);
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
-    entry.addAction([patches](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-        for (const auto& patch : patches) {
-            const uint32_t offset = patch.first.as<uint32_t>();
-            offset_t sectionOffset = elfUtil::AddressToOffset(elf, offset);
-            if (!sectionOffset) { //address not in section
-                std::string data;
-                for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
-                    const char val = byte;
-                    data += val;
-                }
-                RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); //add data at the specified offset
-            }
-            else {
-                for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
-                    RPX_ERROR_CHECK(elfUtil::write_u8(elf, sectionOffset, byte));
-                    sectionOffset.offset++; //Cycles through the bytes individually, need to increase the offset by one each time
-                }
-            }
-        }
-        
-        return true;
-    });
+    if(!patches["Data"] && !patches["Relocations"]) return TweakError::PATCH_MISSING_KEY;
 
-    return TweakError::NONE;
-}
-
-//only applies relocations for .rela.text
-TweakError Add_Relocations(const std::string file_path) {
-    std::string file_data;
-    if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
-
-    YAML::Node relocations = YAML::Load(file_data);
-
-    for (const auto& relocation : relocations) {
-        if(!relocation["r_offset"].IsScalar() || !relocation["r_info"].IsScalar() || !relocation["r_addend"].IsScalar()) {
-            LOG_ERR_AND_RETURN(TweakError::RELOCATION_MISSING_KEY);
-        }
-
-        Elf32_Rela reloc;
-        reloc.r_offset = relocation["r_offset"].as<uint32_t>();
-        reloc.r_info = relocation["r_info"].as<uint32_t>();
-        reloc.r_addend = relocation["r_addend"].as<uint32_t>();
-
-        RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
-        entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
+    if(patches["Data"]) {
+        entry.addAction([patches](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-            
-            if(reloc.r_offset >= 0x10000000) {
-                if(reloc.r_offset >= 0x1018C0C0) {   
-                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); //in the .data section, go in .rela.data
+            for (const auto& patch : patches["Data"]) {
+                const uint32_t offset = patch.first.as<uint32_t>();
+                offset_t sectionOffset = elfUtil::AddressToOffset(elf, offset);
+                if (!sectionOffset) { //address not in section
+                    std::string data;
+                    for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
+                        const char val = byte;
+                        data += val;
+                    }
+                    RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); //add data at the specified offset
                 }
                 else {
-                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 8, reloc)); //in the .rodata section, go in .rela.rodata
+                    for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
+                        RPX_ERROR_CHECK(elfUtil::write_u8(elf, sectionOffset, byte));
+                        sectionOffset.offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+                    }
                 }
-            }
-            else {
-                RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc)); //in the .text section, go in .rela.text
             }
 
             return true;
         });
+    }
+    
+    if(patches["Relocations"]) {
+        for (const auto& relocation : patches["Relocations"]) {
+            if(!relocation["r_offset"].IsScalar() || !relocation["r_info"].IsScalar() || !relocation["r_addend"].IsScalar()) {
+                LOG_ERR_AND_RETURN(TweakError::RELOCATION_MISSING_KEY);
+            }
+
+            Elf32_Rela reloc;
+            reloc.r_offset = relocation["r_offset"].as<uint32_t>();
+            reloc.r_info = relocation["r_info"].as<uint32_t>();
+            reloc.r_addend = relocation["r_addend"].as<uint32_t>();
+
+            RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+            entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+                if(reloc.r_offset >= 0x10000000) {
+                    if(reloc.r_offset >= 0x1018C0C0) {   
+                        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); //in the .data section, go in .rela.data
+                    }
+                    else {
+                        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 8, reloc)); //in the .rodata section, go in .rela.rodata
+                    }
+                }
+                else {
+                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc)); //in the .text section, go in .rela.text
+                }
+
+                return true;
+            });
+        }
     }
 
     return TweakError::NONE;
@@ -3560,15 +3556,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/switch_op_diff.yaml"));
 
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/custom_funcs_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/make_game_nonlinear_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/remove_cutscenes_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_hint_locations_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/flexible_item_locations_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/misc_rando_features_reloc.yaml"));
-    LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/switch_op_reloc.yaml"));
-
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
@@ -3611,7 +3598,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     }
     if (settings.sword_mode == SwordMode::NoSword) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.yaml"));
-        LOG_AND_RETURN_IF_ERR(Add_Relocations(DATA_PATH "asm/patch_diffs/swordless_reloc.yaml"));
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
