@@ -121,6 +121,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 
     // Convenience Tweaks
     Option::InstantText,
+    Option::FixRNG,
     Option::RevealSeaChart,
     Option::SkipRefights,
     Option::AddShortcutWarps,

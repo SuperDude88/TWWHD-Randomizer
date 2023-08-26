@@ -363,6 +363,7 @@ Option nameToSetting(const std::string& name) {
         {"Item Hints", Option::ItemHints},
         {"Location Hints", Option::LocationHints},
         {"Instant Text", Option::InstantText},
+        {"Fix RNG", Option::FixRNG},
         {"Reveal Sea Chart", Option::RevealSeaChart},
         {"Num Shards", Option::NumShards},
         {"Add Shortcut Warps", Option::AddShortcutWarps},
@@ -455,6 +456,7 @@ std::string settingToName(const Option& setting) {
         {Option::ItemHints, "Item Hints"},
         {Option::LocationHints, "Location Hints"},
         {Option::InstantText, "Instant Text"},
+        {Option::FixRNG, "Fix RNG"},
         {Option::RevealSeaChart, "Reveal Sea Chart"},
         {Option::NumShards, "Num Shards"},
         {Option::AddShortcutWarps, "Add Shortcut Warps"},
@@ -597,6 +599,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.location_hints;
         case Option::InstantText:
             return settings.instant_text_boxes;
+        case Option::FixRNG:
+            return settings.fix_rng;
         case Option::RevealSeaChart:
             return settings.reveal_full_sea_chart;
         case Option::NumShards:
@@ -766,6 +770,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.location_hints = value; return;
         case Option::InstantText:
             settings.instant_text_boxes = value; return;
+        case Option::FixRNG:
+            settings.fix_rng = value; return;
         case Option::RevealSeaChart:
             settings.reveal_full_sea_chart = value; return;
         case Option::NumShards:

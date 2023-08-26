@@ -173,6 +173,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.clearer_hints = false;
 
     conf.settings.instant_text_boxes = true;
+    conf.settings.fix_rng = false;
     conf.settings.reveal_full_sea_chart = true;
     conf.settings.num_starting_triforce_shards = 0;
     conf.settings.add_shortcut_warps_between_dungeons = false;
@@ -316,6 +317,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_INT_FIELD(root, out, location_hints)
 
     SET_BOOL_FIELD(root, out, instant_text_boxes)
+    SET_BOOL_FIELD(root, out, fix_rng)
     SET_BOOL_FIELD(root, out, reveal_full_sea_chart)
     SET_INT_FIELD(root, out, num_starting_triforce_shards)
     SET_BOOL_FIELD(root, out, add_shortcut_warps_between_dungeons)
@@ -599,6 +601,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_NUM_FIELD(root, config, location_hints)
 
     WRITE_SETTING_BOOL_FIELD(root, config, instant_text_boxes)
+    WRITE_SETTING_BOOL_FIELD(root, config, fix_rng)
     WRITE_SETTING_BOOL_FIELD(root, config, reveal_full_sea_chart)
     WRITE_NUM_FIELD(root, config, num_starting_triforce_shards)
     WRITE_SETTING_BOOL_FIELD(root, config, add_shortcut_warps_between_dungeons)
