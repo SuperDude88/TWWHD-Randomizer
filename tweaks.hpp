@@ -10,6 +10,7 @@ extern RandoSession g_session; //defined in randomizer.cpp, shared between a cou
 enum struct [[nodiscard]] TweakError {
     NONE = 0,
     DATA_FILE_MISSING,
+    PATCH_MISSING_KEY,
     RELOCATION_MISSING_KEY,
     FILE_OPEN_FAILED,
     FILE_COPY_FAILED,
