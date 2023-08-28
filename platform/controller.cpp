@@ -10,7 +10,6 @@ using namespace std::literals::chrono_literals;
 
 
 bool exitForConfig() {
-    Utility::platformLog("A config file is available.\n");
     Utility::platformLog("Press A to use this config\n");
     Utility::platformLog("Press B to exit and modify the config\n");
     
