@@ -515,6 +515,7 @@ void MainWindow::apply_config_settings()
     // Advanced Options
     APPLY_CHECKBOX_SETTING(config, ui, do_not_generate_spoiler_log);
     APPLY_CHECKBOX_SETTING(config, ui, start_with_random_item);
+    APPLY_CHECKBOX_SETTING(config, ui, fix_rng);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
     update_plandomizer_widget_visbility();
     ui->plandomizer_path->setText(config.settings.plandomizerFile.c_str());
@@ -830,6 +831,7 @@ DEFINE_STATE_CHANGE_FUNCTION(remove_music)
 //Advanced Options
 DEFINE_STATE_CHANGE_FUNCTION(do_not_generate_spoiler_log)
 DEFINE_STATE_CHANGE_FUNCTION(start_with_random_item)
+DEFINE_STATE_CHANGE_FUNCTION(fix_rng)
 void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
     UPDATE_CONFIG_STATE(config, ui, plandomizer);
