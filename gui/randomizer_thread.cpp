@@ -26,6 +26,7 @@ void RandomizerThread::run()
     if (retVal != 0)
     {
         emit errorUpdate(ErrorLog::getInstance().getLastErrors());
+        ErrorLog::getInstance().clearLastErrors();
     }
 }
 
