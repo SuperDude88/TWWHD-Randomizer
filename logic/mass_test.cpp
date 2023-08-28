@@ -10,6 +10,7 @@
 #include <seedgen/config.hpp>
 #include <command/Log.hpp>
 #include <utility/file.hpp>
+#include <libs/zlib-ng/zlib-ng.h>
 
 Config config;
 #define ERROR_CONFIG_PATH "./error_configs"
@@ -24,8 +25,7 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
     std::cout << " using seed \"" << seed << "\"" << std::endl;
 
     auto permalink = create_permalink(settings, seed);
-    std::hash<std::string> strHash;
-    auto integer_seed = strHash(permalink);
+    auto integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
 
     Random_Init(integer_seed);
 
@@ -61,8 +61,7 @@ static int multiWorldTest(const Settings& settings)
     std::cout << " using seed \"" << seed << "\"" << std::endl;
 
     auto permalink = create_permalink(settings, seed);
-    std::hash<std::string> strHash;
-    auto integer_seed = strHash(permalink);
+    auto integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
 
     Random_Init(integer_seed);
 
@@ -286,8 +285,7 @@ void testSettings(Config& newConfig, int testCount /*= 1*/)
     {
         const std::string seed = std::to_string(Random(0, 10000000));
         auto permalink = create_permalink(config.settings, seed);
-        std::hash<std::string> strHash;
-        auto integer_seed = strHash(permalink);
+        auto integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
 
         std::cout << "Testing with seed \"" << seed << "\"..." << std::flush;
 
