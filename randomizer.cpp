@@ -434,7 +434,6 @@ private:
             uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
             uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
 
-            //TODO: check if this messes with decoupled logic at all?
             // If this is the entrance that spawns the player at Ice Ring Inner Cave -> Ice Ring Isle, then
             // we want to change it so that it takes from the exit of the first ice ring interior
             if (entrance->getReplaces()->getOriginalName() == "Ice Ring Inner Cave -> Ice Ring Isle") {
@@ -634,7 +633,7 @@ public:
             return 0;
         #endif
 
-        std::hash<std::string> strHash;
+        LogInfo::setConfig(load);
 
         LOG_TO_DEBUG("Permalink: " + permalink);
 
@@ -654,8 +653,6 @@ public:
         integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
 
         Random_Init(integer_seed);
-
-        LogInfo::setConfig(config);
         LogInfo::setSeedHash(generate_seed_hash());
 
         // clearOldLogs();
