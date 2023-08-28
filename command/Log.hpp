@@ -49,7 +49,6 @@ public:
     void log(const std::string& msg, const bool& timestamp = true);
     std::string getLastErrors() const;
     void clearLastErrors();
-    void close();
 };
 
 #define LOG_ERR_AND_RETURN(error) { \
@@ -88,7 +87,6 @@ public:
 
     static DebugLog& getInstance();
     void log(const std::string& msg, const bool& timestamp = true);
-    void close();
 };
 
 #ifdef ENABLE_DEBUG

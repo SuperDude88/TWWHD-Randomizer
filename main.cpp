@@ -18,10 +18,6 @@ int main() {
 
             std::this_thread::sleep_for(5s);
         }
-
-        // Close logs
-        ErrorLog::getInstance().close();
-        DebugLog::getInstance().close();
     }
     else {
         Utility::platformLog("Failed to initialize platform!\n");

@@ -59,7 +59,7 @@ ErrorLog::ErrorLog() {
 }
 
 ErrorLog::~ErrorLog() {
-
+    output.close();
 }
 
 ErrorLog& ErrorLog::getInstance() {
@@ -92,45 +92,38 @@ void ErrorLog::clearLastErrors()
     lastErrors.clear();
 }
 
-void ErrorLog::close()
-{
-    output.close();
-}
-
 
 
 DebugLog::DebugLog() {
-    #ifdef ENABLE_DEBUG
-        output.open(APP_SAVE_PATH "Debug Log.txt");
+    output.open(APP_SAVE_PATH "Debug Log.txt");
 
-        output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
+    output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
-        output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-        if (LogInfo::getConfig().configSet)
+    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    if (LogInfo::getConfig().configSet)
+    {
+        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
+        output << "Selected options:" << std::endl << "\t";
+        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
         {
-            output << "Seed: " << LogInfo::getConfig().seed << std::endl;
-            output << "Selected options:" << std::endl << "\t";
-            for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
+            Option setting = static_cast<Option>(settingInt);
+        
+            if (setting == Option::NumShards || setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
-                Option setting = static_cast<Option>(settingInt);
-            
-                if (setting == Option::NumShards || setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
-                {
-                    output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
-                }
-                else
-                {
-                    output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
-                }
+                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+            }
+            else
+            {
+                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
             }
         }
+    }
 
-        output << std::endl << std::endl;
-    #endif
+    output << std::endl << std::endl;
 }
 
 DebugLog::~DebugLog() {
-
+    output.close();
 }
 
 DebugLog& DebugLog::getInstance() {
@@ -139,13 +132,6 @@ DebugLog& DebugLog::getInstance() {
 }
 
 void DebugLog::log(const std::string& msg, const bool& timestamp) {
-    #ifdef ENABLE_DEBUG
-        if(timestamp) output << "[" << ProgramTime::getTimeStr() << "] ";
-        output << msg << std::endl;
-    #endif
-}
-
-void DebugLog::close()
-{
-    output.close();
+    if(timestamp) output << "[" << ProgramTime::getTimeStr() << "] ";
+    output << msg << std::endl;
 }
