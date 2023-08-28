@@ -86,7 +86,7 @@ if(DEFINED DEVKITPRO)
 
   # Use libmocha for filesystem access
   find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
-  target_link_libraries(wwhd_rando "${LIBMOCHA}")
+  target_link_libraries(wwhd_rando PRIVATE "${LIBMOCHA}")
   
   add_compile_definitions(DATA_PATH="/vol/content/" APP_SAVE_PATH="/vol/save/" TEMP_DIR="/vol/save/temp/")
 

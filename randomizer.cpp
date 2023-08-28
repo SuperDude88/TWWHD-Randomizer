@@ -633,7 +633,7 @@ public:
             return 0;
         #endif
 
-        LogInfo::setConfig(load);
+        LogInfo::setConfig(config);
 
         LOG_TO_DEBUG("Permalink: " + permalink);
 
@@ -825,12 +825,6 @@ int mainRandomize() {
         }
         conf.close();
 
-        #ifdef DEVKITPRO
-            if(exitForConfig() == true) {
-                return 0;
-            }
-        #endif
-
         Utility::platformLog("Reading config\n");
         ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
         if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
@@ -839,15 +833,18 @@ int mainRandomize() {
         }
         else if(err != ConfigError::NONE) {
             ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
-            Utility::platformLog("Failed to read config, ERROR: " + errorToName(err) + '\n');
 
             return 1;
         }
 
         #ifdef DEVKITPRO
+            Utility::platformLog("A config file is available with seed \"" + load.seed + "\".\n");
+            if(exitForConfig() == true) {
+                return 0;
+            }
+
             if(!SYSCheckTitleExists(0x0005000010143500)) {
                 ErrorLog::getInstance().log("Could not find game: you must have a NTSC-U / US copy of TWWHD!");
-                Utility::platformLog("Could not find game: you must have a NTSC-U / US copy of TWWHD!\n");
 
                 return 1;
             }
