@@ -260,6 +260,8 @@ private slots:
 
 
 
+    void on_fix_rng_stateChanged(int arg1);
+
 private:
     // More Tracker Stuff
     bool trackerStarted = false;
