@@ -237,7 +237,26 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         // they still become spiky chests in CTMC
         for (auto item : itemsSetAsJunk)
         {
-            item->setAsMajorItem();
+            // If it's a chart though, and the setting for the charts
+            // being progression isn't enabled, keep it as junk
+            if (item->isChartForSunkenTreasure())
+            {
+                if (isAnyOf(item->getGameItemId(), GameItem::TriforceChart1, GameItem::TriforceChart2, GameItem::TriforceChart3))
+                {
+                    if (world.getSettings().progression_triforce_charts)
+                    {
+                        item->setAsMajorItem();
+                    }
+                }
+                else if (world.getSettings().progression_treasure_charts)
+                {
+                    item->setAsMajorItem();
+                }
+            }
+            else
+            {
+                item->setAsMajorItem();
+            }
         }
 
         #ifdef ENABLE_DEBUG
