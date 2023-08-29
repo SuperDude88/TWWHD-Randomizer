@@ -1379,6 +1379,13 @@
                </property>
                <item>
                 <layout class="QGridLayout" name="gridLayout_7">
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="do_not_generate_spoiler_log">
+                   <property name="text">
+                    <string>Do Not Generate Spoiler Log</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="1">
                   <widget class="QWidget" name="widget_9" native="true">
                    <widget class="QCheckBox" name="start_with_random_item">
@@ -1396,13 +1403,6 @@
                    </widget>
                   </widget>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="do_not_generate_spoiler_log">
-                   <property name="text">
-                    <string>Do Not Generate Spoiler Log</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="2">
                   <widget class="QCheckBox" name="plandomizer">
                    <property name="text">
@@ -1411,7 +1411,11 @@
                   </widget>
                  </item>
                  <item row="0" column="3">
-                  <widget class="QWidget" name="widget_2" native="true"/>
+                  <widget class="QCheckBox" name="fix_rng">
+                   <property name="text">
+                    <string>Fix RNG</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -2249,7 +2253,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>311</height>
+                    <height>290</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">

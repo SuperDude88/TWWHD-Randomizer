@@ -14,3 +14,4 @@ misc
 seedgen/testing_config.yaml
 gui/data.qrc
 version.hpp
+build-*
