@@ -1,6 +1,5 @@
 __pycache__
 build/*
-build*
 out/*
 .vs/*
 .cache/*
@@ -14,6 +13,4 @@ logic/data/plandomizer.yaml
 misc
 seedgen/testing_config.yaml
 gui/data.qrc
-
-!./github/workflows/*
 version.hpp
