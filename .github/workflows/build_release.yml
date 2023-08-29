@@ -1,169 +1,37 @@
 name: Build Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version'
-        required: true
-        type: string
-      build_type:
-        description: 'Build type:'
-        required: true
-        type: choice
-        options:
-        - Nightly
-        - Release
-
-env:
-  SOURCE_DIR: ${{ github.workspace }}
-  QT_VERSION: 6.3.1
-  BUILD_TYPE: Release
+  release:
+    types: [published]
 
 jobs:
-  get-changelog:
-    name: Retrieve Changelog
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Get Last Nightly
-        id: nightly-version
-        run: |
-          echo "last_nightly=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_ENV
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v4.0.1
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-          base-ref: ${{ env.last_nightly }}
-    outputs:
-      changelog: ${{ steps.changelog.outputs.changelog }}
-      last-nightly: ${{ env.last_nightly }}
+  build-windows:
+    uses: ./.github/workflows/windows/build_release.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
 
-  build-desktop-application-windows:
-    name: Build Desktop Application Windows
-    runs-on: windows-latest
-    
-    steps:
-     # Increase page size so that the compiler doesn't
-     # run out of memory
-     - name: Configure Pagefile
-       uses: al-cheb/configure-pagefile-action@v1.3
-       with:
-         minimum-size: 16GB
-         maximum-size: 16GB
-         disk-root: "C:"
+  build-wiiu:
+    uses: ./.github/workflows/wiiu/build_release.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
 
-     - name: Checkout Repository
-       uses: actions/checkout@v3
-       with:
-         submodules: recursive
- 
-     - name: Install Qt
-       uses: jurplel/install-qt-action@v3
-       with:
-         version: ${{ env.QT_VERSION }}
-         host: 'windows'
-         target: 'desktop'
-         arch: 'win64_mingw'
-         cache: true
-         cache-key-prefix: install-qt-${{env.QT_VERSION}}-action
-
-     - name: Configure CMake
-       run: cmake -G "MinGW Makefiles" ${{github.workspace}}/gui -B ${{github.workspace}}/build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True -DRELEASE_TAG=${{inputs.version}}
-       
-     - name: Build
-       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
-       
-     - name: Call windeployqt
-       working-directory: ${{github.workspace}}/build
-       shell: cmd # Setting up environment vars only works properly in cmd?
-       run: |
-         mkdir wwhd_rando_windows_${{inputs.version}}
-         cp wwhd_rando.exe wwhd_rando_windows_${{inputs.version}}\wwhd_rando.exe
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libgcc_s_seh-1.dll wwhd_rando_windows_${{inputs.version}}\libgcc_s_seh-1.dll
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll wwhd_rando_windows_${{inputs.version}}\libstdc++-6.dll
-         cp ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dll wwhd_rando_windows_${{inputs.version}}\libwinpthread-1.dll
-         ${{github.workspace}}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{github.workspace}}\build\wwhd_rando_windows_${{inputs.version}} && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
- 
-     - name: Archive release folder
-       uses: thedoctor0/zip-release@0.7.1
-       with:
-         type: 'zip'
-         path: ${{github.workspace}}/build/wwhd_rando_windows_${{inputs.version}}
-         filename: wwhd_rando_windows.zip
-
-     - name: Save Artifact
-       uses: actions/upload-artifact@v3
-       with:
-         path: ${{github.workspace}}/wwhd_rando_windows.zip
-         name: wwhd_rando_windows.zip
-
-  build-wiiu-homebrew-application:
-    name: Build Wii U Homebrew Application
-    runs-on: ubuntu-latest
-    
-    steps:
-     - name: Checkout Repository
-       uses: actions/checkout@v3
-       with:
-         submodules: recursive
-    
-     - name: Build App
-       working-directory: ${{github.workspace}}
-       run: |
-         docker build -t rando .
-         docker run -i -e BUILD_TYPE=full -e CMAKE_ARGS=-DRELEASE_TAG=${{inputs.version}} -v "$(pwd):/src" rando
- 
-     - name: Save Artifact
-       uses: actions/upload-artifact@v3
-       with:
-         path: ${{github.workspace}}/build/wwhd_rando.wuhb
-         name: wwhd_rando.wuhb
-
-  create-release:
-    name: Create Release
-    needs: [get-changelog, build-desktop-application-windows, build-wiiu-homebrew-application]
+  attach-to-release:
+    name: Attach To Release
+    needs: [build-windows, build-wiiu]
     runs-on: ubuntu-latest
  
     steps:
-     - name: Download All Artifacts
+     - name: Download Windows Artifact
        uses: actions/download-artifact@v3
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}_windows.zip # pass name so it doesn't get put in a folder
 
-     - name: Rename Artifacts
-       run: |
-         ls
-         mv wwhd_rando_windows.zip/wwhd_rando_windows.zip 'wwhd_rando_${{inputs.version}}_windows.zip'
-         mv wwhd_rando.wuhb/wwhd_rando.wuhb 'wwhd_rando_${{inputs.version}}.wuhb'
- 
- 
-     - if: ${{ github.event.inputs.build_type == 'Nightly' }}
-       name: Create Nightly Pre-release
-       uses: ncipollo/release-action@v1.12.0
+     - name: Download Wii U Artifact
+       uses: actions/download-artifact@v3
        with:
-         token: "${{ secrets.GITHUB_TOKEN }}"
-         artifacts: 'wwhd_rando_${{inputs.version}}_windows.zip,wwhd_rando_${{inputs.version}}.wuhb'
-         prerelease: true
-         commit: ${{ github.sha }}
-         tag: "${{inputs.version}}"
-         name: "${{inputs.version}}"
-         body: |
-           Please note that these are development builds and may not be entirely stable.
- 
-           Changes Since [${{ needs.get-changelog.outputs.last-nightly }}](https://github.com/${{ github.repository }}/releases/tag/${{ needs.get-changelog.outputs.last-nightly }}) 🛠:  
-           ${{ needs.get-changelog.outputs.changelog }}
- 
- 
-     - if: ${{ github.event.inputs.build_type == 'Release' }}
-       name: Create Release
-       uses: ncipollo/release-action@v1.12.0
-       with:
-         token: "${{ secrets.GITHUB_TOKEN }}"
-         artifacts: 'wwhd_rando_${{inputs.version}}_windows.zip,wwhd_rando_${{inputs.version}}.wuhb'
-         prerelease: false
-         commit: ${{ github.sha }}
-         tag: "${{inputs.version}}"
-         name: "${{inputs.version}}"
+        name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
+
+     - name: Attach Files
+       env:
+        GITHUB_TOKEN: ${{ github.TOKEN }}
+       run: gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}.wuhb

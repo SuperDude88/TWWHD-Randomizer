@@ -1,0 +1,36 @@
+name: Build Release - Wii U
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
+
+env:
+  SOURCE_DIR: ${{ github.workspace }}
+  BUILD_TYPE: Release
+
+jobs:
+  build-wiiu-homebrew-application:
+    name: Build Wii U Homebrew Application
+    runs-on: ubuntu-latest
+    
+    steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+       with:
+         submodules: recursive
+    
+     - name: Build App
+       working-directory: ${{github.workspace}}
+       run: |
+         docker build -t rando .
+         docker run -i -e BUILD_TYPE=full -e CMAKE_ARGS=-DRELEASE_TAG=${{inputs.version}} -v "$(pwd):/src" rando
+ 
+     - name: Save Artifact
+       uses: actions/upload-artifact@v3
+       with:
+         path: ${{github.workspace}}/build/wwhd_rando.wuhb
+         name: wwhd_rando_${{inputs.version}}.wuhb
