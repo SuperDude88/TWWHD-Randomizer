@@ -123,7 +123,7 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         if (world.getSettings().randomize_starting_island)
         {
-            auto startingIsland = world.getArea("Link's Spawn").exits.front().getConnectedArea();
+            auto startingIsland = world.getArea("Link's Spawn")->exits.front().getConnectedArea()->name;
             log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
         }
     }

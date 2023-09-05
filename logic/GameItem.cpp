@@ -5,6 +5,7 @@
 #include <array>
 
 #include <logic/World.hpp>
+#include <logic/PoolFunctions.hpp>
 #include <command/Log.hpp>
 #include <utility/string.hpp>
 #include <filetypes/util/msbtMacros.hpp>
@@ -638,173 +639,178 @@ static std::set<GameItem> bigKeys = {
 
 Item::Item(GameItem gameItemId_, World* world_)
 {
-	gameItemId = gameItemId_;
-	world = world_;
+    gameItemId = gameItemId_;
+    world = world_;
 
-	if (junkItems.contains(gameItemId))
-	{
-			junkItem = true;
-	}
-	else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
-						gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
-	{
-			chartForSunkenTreasure = true;
-	}
-	else if (dungeonItems.contains(gameItemId))
-	{
-			dungeonItem = true;
-	}
+    if (junkItems.contains(gameItemId))
+    {
+        junkItem = true;
+    }
+    else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
+             gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
+    {
+        chartForSunkenTreasure = true;
+    }
+    else if (dungeonItems.contains(gameItemId))
+    {
+        dungeonItem = true;
+    }
 }
 
 Item::Item(std::string itemName_, World* world_)
 {
-	gameItemId = nameToGameItem(itemName_);
-	world = world_;
+    gameItemId = nameToGameItem(itemName_);
+    world = world_;
 
-	if (junkItems.contains(gameItemId))
-	{
-		junkItem = true;
-	}
-	else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
-						gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
-	{
-		chartForSunkenTreasure = true;
-	}
-	else if (dungeonItems.contains(gameItemId))
-	{
-		dungeonItem = true;
-	}
+    if (junkItems.contains(gameItemId))
+    {
+        junkItem = true;
+    }
+    else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
+             gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
+    {
+        chartForSunkenTreasure = true;
+    }
+    else if (dungeonItems.contains(gameItemId))
+    {
+        dungeonItem = true;
+    }
 }
 
 World* Item::getWorld()
 {
-	return world;
+    return world;
 }
 
 int Item::getWorldId() const
 {
-	return world->getWorldId();
+    return world->getWorldId();
 }
 
 void Item::setGameItemId(GameItem newGameItemId)
 {
-	gameItemId = newGameItemId;
+    gameItemId = newGameItemId;
 }
 
 GameItem Item::getGameItemId() const
 {
-	return gameItemId;
+    return gameItemId;
 }
 
 void Item::setDelayedItemId(GameItem newDelayedItemId)
 {
-	delayedGameItemId = newDelayedItemId;
+    delayedGameItemId = newDelayedItemId;
 }
 
 void Item::saveDelayedItemId()
 {
-	gameItemId = delayedGameItemId;
-	delayedGameItemId = GameItem::INVALID;
+    gameItemId = delayedGameItemId;
+    delayedGameItemId = GameItem::INVALID;
 }
 
 std::string Item::getName() const
 {
-	if (world != nullptr)
-	{
-			return world->itemTranslations.at(gameItemId).at("English").types.at(Text::Type::STANDARD);
-	}
-	return gameItemToName(gameItemId);
+    if (world != nullptr)
+    {
+        return world->itemTranslations.at(gameItemId).at("English").types.at(Text::Type::STANDARD);
+    }
+    return gameItemToName(gameItemId);
 }
 
 std::string Item::getUTF8Name(const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RAW*/, const bool& showWorld /*= false*/) const
 {
-	return Utility::Str::toUTF8(getUTF16Name(language, type, color, showWorld));
+    return Utility::Str::toUTF8(getUTF16Name(language, type, color, showWorld));
 }
 
 std::u16string Item::getUTF16Name(const std::string& language /*= "English"*/, const Text::Type& type /*= Text::Type::STANDARD*/, const Text::Color& color /*= Text::Color::RED*/, const bool& showWorld /*= false*/) const
 {
-	std::u16string str = Utility::Str::toUTF16(world->itemTranslations[gameItemId][language].types[type]);
-	str = Text::apply_name_color(str, color);
-	if (showWorld)
-	{
-			str += u" for Player " + Utility::Str::toUTF16(std::to_string(world->getWorldId() + 1));
-	}
-	return str;
+    std::u16string str = Utility::Str::toUTF16(world->itemTranslations[gameItemId][language].types[type]);
+    str = Text::apply_name_color(str, color);
+    if (showWorld)
+    {
+        str += u" for Player " + Utility::Str::toUTF16(std::to_string(world->getWorldId() + 1));
+    }
+    return str;
 }
 
 void Item::setName(const std::string& language, const Text::Type& type, const std::string& name_)
 {
-	world->itemTranslations[gameItemId][language].types[type] = name_;
+    world->itemTranslations[gameItemId][language].types[type] = name_;
 }
 
 void Item::setAsMajorItem()
 {
-	junkItem = false;
-	majorItem = true;
+    junkItem = false;
+    majorItem = true;
 }
 
 bool Item::isMajorItem() const
 {
-	return majorItem;
+    return majorItem;
 }
 
 bool Item::isChartForSunkenTreasure() const
 {
-	return chartForSunkenTreasure;
+    return chartForSunkenTreasure;
 }
 
 void Item::addChainLocation(Location* location)
 {
-	chainLocations.push_back(location);
+    chainLocations.push_back(location);
 }
 
 std::list<Location*>& Item::getChainLocations()
 {
-	return chainLocations;
+    return chainLocations;
 }
 
 void Item::setAsJunkItem()
 {
-	majorItem = false;
-	junkItem = true;
+    majorItem = false;
+    junkItem = true;
 }
 
 bool Item::isJunkItem() const
 {
-	return junkItem;
+    return junkItem;
 }
 
 bool Item::isDungeonItem() const
 {
-	return dungeonItem;
+    return dungeonItem;
 }
 
 bool Item::isMap() const
 {
-	return dungeonMaps.contains(gameItemId);
+    return dungeonMaps.contains(gameItemId);
 }
 
 bool Item::isCompass() const
 {
-	return compasses.contains(gameItemId);
+    return compasses.contains(gameItemId);
 }
 
 bool Item::isSmallKey() const
 {
-	return smallKeys.contains(gameItemId);
+    return smallKeys.contains(gameItemId);
 }
 
 bool Item::isBigKey() const
 {
-	return bigKeys.contains(gameItemId);
+    return bigKeys.contains(gameItemId);
+}
+
+bool Item::isValidItem() const
+{
+    return isNoneOf(gameItemId, GameItem::INVALID, GameItem::NOTHING);
 }
 
 bool Item::operator==(const Item& rhs) const
 {
-	return gameItemId == rhs.gameItemId && world->getWorldId() == rhs.world->getWorldId();
+    return gameItemId == rhs.gameItemId && world->getWorldId() == rhs.world->getWorldId();
 }
 
 bool Item::operator<(const Item& rhs) const
 {
-	return (world->getWorldId() == rhs.world->getWorldId()) ? gameItemId < rhs.gameItemId : world->getWorldId() < rhs.world->getWorldId();
+    return (world->getWorldId() == rhs.world->getWorldId()) ? gameItemId < rhs.gameItemId : world->getWorldId() < rhs.world->getWorldId();
 }

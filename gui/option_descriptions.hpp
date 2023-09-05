@@ -263,6 +263,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "plandomizer",
       "Allows you to select a file which can be used to manually place items in locations, or link specific entrances together in entrance randomizer."
     },
+    {
+      "fix_rng",
+      "Certain RNG elements will have fixed outcomes. This currently only includes the Helmaroc King's attack pattern."
+    },
 
     // Hints
     {

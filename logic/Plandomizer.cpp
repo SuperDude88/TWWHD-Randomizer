@@ -1,5 +1,6 @@
 #include "Plandomizer.hpp"
 
+#include <logic/Area.hpp>
 #include <command/Log.hpp>
 #include <utility/file.hpp>
 

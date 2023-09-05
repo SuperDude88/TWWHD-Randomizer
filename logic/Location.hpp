@@ -80,7 +80,7 @@ struct Location
     Item originalItem;
     Item currentItem;
     int sortPriority = -1;
-    std::unordered_set<std::string> hintRegions;
+    std::list<std::string> hintRegions;
     std::list<LocationAccess*> accessPoints;
     std::string hintPriority = "";
     std::unique_ptr<LocationModification> method;

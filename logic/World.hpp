@@ -5,6 +5,7 @@
 #include <sstream>
 #include <unordered_set>
 #include <list>
+#include <memory>
 
 #include <libs/yaml.h>
 #include <logic/Requirements.hpp>
@@ -26,37 +27,6 @@ static std::stringstream lastError;
 
 using LocationPool = std::vector<Location*>;
 using EntrancePool = std::vector<Entrance*>;
-
-struct AreaEntry;
-struct LocationAccess
-{
-    AreaEntry* area = nullptr;
-    Location* location = nullptr;
-    Requirement requirement;
-};
-
-struct EventAccess
-{
-    EventId event;
-    Requirement requirement;
-    int worldId = -1;
-};
-
-struct AreaEntry
-{
-    std::string name = "";
-    std::string island = "";
-    std::string dungeon = "";
-    std::string hintRegion = "";
-    std::list<EventAccess> events;
-    std::list<LocationAccess> locations;
-    std::list<Entrance> exits;
-    std::list<Entrance*> entrances;
-    int worldId = -1;
-
-    // variables used for the searching algorithm
-    bool isAccessible = false;
-};
 
 
 class World
@@ -87,10 +57,7 @@ public:
         INVALID_MODIFICATION_TYPE,
         INVALID_OFFSET_VALUE,
         INVALID_GAME_ITEM,
-        LOGIC_SYMBOL_DOES_NOT_EXIST,
-        COULD_NOT_DETERMINE_TYPE,
-        SAME_NESTING_LEVEL,
-        EXTRA_OR_MISSING_PARENTHESIS,
+        BAD_REQUIREMENT,
         PLANDOMIZER_ERROR,
         DUNGEON_HAS_NO_RACE_MODE_LOCATION,
         INVALID_DUNGEON_NAME,
@@ -113,7 +80,7 @@ public:
     LocationPool getRaceModeLocations() const;
     LocationPool getProgressionLocations();
     size_t getNumOverworldProgressionLocations();
-    AreaEntry& getArea(const std::string& area);
+    Area* getArea(const std::string& areaName);
 
     void resolveRandomSettings();
     void addSpoilsToStartingGear();
@@ -123,16 +90,17 @@ public:
     WorldLoadingError determineRaceModeDungeons(WorldPool& worlds);
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
+    Entrance* getEntrance(Area* parentArea, Area* connectedArea);
     void removeEntrance(Entrance* entranceToRemove);
     EntrancePool getShuffleableEntrances(const EntranceType& type, const bool& onlyPrimary = false);
     EntrancePool getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary = false);
-    std::unordered_set<std::string> getRegions(const std::string& area, const std::string& regionType, const std::unordered_set<std::string>& typesToIgnore = {});
-    std::unordered_set<std::string> getIslands(const std::string& area);
-    std::unordered_set<std::string> getDungeons(const std::string& area);
     Dungeon& getDungeon(const std::string& dungeonName);
     WorldLoadingError processPlandomizerLocations(WorldPool& worlds);
     std::string getUTF8HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW) const;
     std::u16string getUTF16HintRegion(const std::string& hintRegion, const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RED) const;
+    void addEvent(const std::string& eventName);
+    void addLocation(const std::string& locationName);
+    Item getItem(const std::string& itemName);
 
     // Stuff to help with debugging
     std::string errorToName(WorldLoadingError err);
@@ -141,9 +109,9 @@ public:
 
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
-    std::map<std::string, Item> itemEntries = {};
-    std::map<std::string, AreaEntry> areaEntries = {};
-    std::map<std::string, Location> locationEntries = {};
+    std::map<std::string, Item> itemTable = {};
+    std::map<std::string, std::unique_ptr<Area>> areaTable = {};
+    std::map<std::string, std::unique_ptr<Location>> locationTable = {};
     std::map<GameItem, std::map<std::string, Text::Translation>> itemTranslations; // game item names for all languages, keyed by GameItemId, language, and type
     std::map<std::string, std::map<std::string, Text::Translation>> hintRegions; // hint region names for all languages, keyed by name, language, and type
     std::unordered_map<std::string, EventId> eventMap = {};
@@ -166,11 +134,11 @@ public:
 
 private:
 
-    bool chartLeadsToSunkenTreasure(const Location& location, const std::string& itemPrefix);
+    bool chartLeadsToSunkenTreasure(Location* location, const std::string& itemPrefix);
 
 
-    WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
-    WorldLoadingError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
+    // WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
+    RequirementError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea);
     WorldLoadingError loadLocation(const YAML::Node& locationObject);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);
@@ -185,4 +153,7 @@ private:
     ItemPool startingItems;
     int worldId = -1;
     size_t numWorlds = 1;
+
+public:
+    static int eventCounter;
 };

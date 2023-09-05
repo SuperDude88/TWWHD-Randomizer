@@ -2,6 +2,8 @@
 
 #include <tracker/set_font.h>
 
+#include <logic/Area.hpp>
+
 #include <QMouseEvent>
 
 TrackerLabel::TrackerLabel()
@@ -60,11 +62,11 @@ void TrackerLabel::set_entrance(Entrance* entrance_)
     switch (type)
     {
     case TrackerLabelType::EntranceSource:
-        destination = entrance->getConnectedArea() == "" ? "?" : entrance->getConnectedArea();
-        setText(std::string(entrance->getOriginalConnectedArea() + " -> " + destination).c_str());
+        destination = entrance->getConnectedArea() == nullptr ? "?" : entrance->getConnectedArea()->name;
+        setText(std::string(entrance->getOriginalConnectedArea()->name + " -> " + destination).c_str());
         break;
     case TrackerLabelType::EntranceDestination:
-        setText(std::string(entrance->getConnectedArea()).c_str());
+        setText(entrance->getConnectedArea()->name.c_str());
         break;
     default:
         break;
@@ -146,7 +148,7 @@ void TrackerLabel::update_colors()
         break;
 
     case TrackerLabelType::EntranceSource:
-        if (entrance->getConnectedArea() != "")
+        if (entrance->getConnectedArea())
         {
             setStyleSheet("color: black;");
         }
