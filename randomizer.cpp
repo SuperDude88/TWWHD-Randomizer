@@ -33,7 +33,8 @@
 #ifdef DEVKITPRO
 #include <sysapp/title.h>
 #include <platform/channel.hpp>
-#include <platform/controller.hpp>
+#include <platform/gui/SeedMenu.hpp>
+#include <platform/gui/InstallMenu.hpp>
 #endif
 
 #define SEED_KEY "SEED KEY TEST"
@@ -838,7 +839,15 @@ int mainRandomize() {
         }
 
         #ifdef DEVKITPRO
-            Utility::platformLog("A config file is available with seed \"" + load.seed + "\".\n");
+            if(pickSeed(load.seed)) { //returns true if seed was changed
+                //update saved config with new seed
+                ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", load);
+                if(err != ConfigError::NONE) {
+                    ErrorLog::getInstance().log("Failed to save config, ERROR: " + errorToName(err));
+
+                    return 1;
+                }
+            };
             if(exitForConfig() == true) {
                 return 0;
             }
@@ -859,7 +868,6 @@ int mainRandomize() {
             
             
             if(!SYSCheckTitleExists(0x0005000010143599)) {
-                Utility::platformLog("Output channel does not currently exist.\n");
                 if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
                     return 1;
                 }
