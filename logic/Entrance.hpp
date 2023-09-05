@@ -4,7 +4,6 @@
 #include <unordered_set>
 
 #include <logic/Requirements.hpp>
-#include <logic/Area.hpp>
 
 enum struct EntranceType
 {
@@ -25,22 +24,20 @@ enum struct EntranceType
 
 class Entrance;
 class World;
-class AreaEntry;
+class Area;
 
 class Entrance
 {
 public:
 
     Entrance();
-    Entrance(const std::string& parentArea_, const std::string& connectedArea_, World* world_);
+    Entrance(Area* parentArea_, Area* connectedArea_, World* world_);
 
-    std::string getParentArea() const;
-    void setParentArea(const std::string& newParentArea);
-    AreaEntry* getParentAreaEntry();
-    std::string getConnectedArea() const;
-    void setConnectedArea(const std::string& newConnectedArea);
-    AreaEntry* getConnectedAreaEntry();
-    std::string getOriginalConnectedArea() const;
+    Area* getParentArea() const;
+    void setParentArea(Area* newParentArea);
+    Area* getConnectedArea() const;
+    void setConnectedArea(Area* newConnectedArea);
+    Area* getOriginalConnectedArea() const;
     Requirement& getRequirement();
     void setRequirement(const Requirement newRequirement);
     EntranceType getEntranceType() const;
@@ -84,10 +81,10 @@ public:
     void setAsDecoupled();
     World* getWorld();
     void setWorld(World* newWorld);
-    std::unordered_set<std::string> getIslands();
+    std::list<std::string> findIslands();
 
-    void connect(const std::string& newConnectedArea);
-    std::string disconnect();
+    void connect(Area* newConnectedArea);
+    Area* disconnect();
     void bindTwoWay(Entrance* otherEntrance);
     Entrance* getNewTarget();
     Entrance* assumeReachable();
@@ -96,9 +93,9 @@ public:
 
 private:
 
-    std::string parentArea = "";
-    std::string connectedArea = "";
-    std::string originalConnectedArea = "";
+    Area* parentArea = nullptr;
+    Area* connectedArea = nullptr;
+    Area* originalConnectedArea = nullptr;
     Requirement requirement;
     EntranceType type = EntranceType::NONE;
     bool primary = false;

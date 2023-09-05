@@ -9,9 +9,8 @@
 
 #include <options.hpp>
 #include <logic/GameItem.hpp>
-#include <logic/Area.hpp>
 
-
+class World;
 enum struct RequirementType
 {
     NONE = 0,
@@ -29,6 +28,15 @@ enum struct RequirementType
     INVALID
 };
 
+enum struct RequirementError
+{
+    NONE = 0,
+    EXTRA_OR_MISSING_PARENTHESIS,
+    LOGIC_SYMBOL_DOES_NOT_EXIST,
+    SAME_NESTING_LEVEL,
+    COULD_NOT_DETERMINE_TYPE,
+};
+
 using MacroIndex = size_t;
 using EventId = size_t;
 struct Requirement;
@@ -41,3 +49,5 @@ struct Requirement
 };
 
 std::string printRequirement(Requirement& req, int nestingLevel = 0);
+RequirementError parseRequirementString(const std::string& str, Requirement& req, World* world);
+std::string errorToName(const RequirementError& err);

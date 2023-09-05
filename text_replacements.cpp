@@ -48,21 +48,21 @@ static std::u16string get_english_plurality(Item& item)
 TextReplacements generate_text_replacements(World& world)
 {
   // Get all relevant items/locations
-  auto& auction5           = world.locationEntries["Windfall Island - Auction 5 Rupee"].currentItem;
-  auto& auction40          = world.locationEntries["Windfall Island - Auction 40 Rupee"].currentItem;
-  auto& auction60          = world.locationEntries["Windfall Island - Auction 60 Rupee"].currentItem;
-  auto& auction80          = world.locationEntries["Windfall Island - Auction 80 Rupee"].currentItem;
-  auto& auction100         = world.locationEntries["Windfall Island - Auction 100 Rupee"].currentItem;
-  auto& splooshFirstPrize  = world.locationEntries["Windfall Island - Battle Squid First Prize"].currentItem;
-  auto& splooshSecondPrize = world.locationEntries["Windfall Island - Battle Squid Second Prize"].currentItem;
-  auto& savageFloor30      = world.locationEntries["Outset Island - Savage Labyrinth Floor 30"].currentItem;
-  auto& savageFloor50      = world.locationEntries["Outset Island - Savage Labyrinth Floor 50"].currentItem;
-  auto& beedle20           = world.locationEntries["Great Sea - Beedle Shop 20 Rupee Item"].currentItem;
-  auto& beedle500          = world.locationEntries["Rock Spire Isle - Beedle 500 Rupee Item"].currentItem;
-  auto& beedle950          = world.locationEntries["Rock Spire Isle - Beedle 950 Rupee Item"].currentItem;
-  auto& beedle900          = world.locationEntries["Rock Spire Isle - Beedle 900 Rupee Item"].currentItem;
+  auto& auction5           = world.locationTable["Windfall Island - Auction 5 Rupee"]->currentItem;
+  auto& auction40          = world.locationTable["Windfall Island - Auction 40 Rupee"]->currentItem;
+  auto& auction60          = world.locationTable["Windfall Island - Auction 60 Rupee"]->currentItem;
+  auto& auction80          = world.locationTable["Windfall Island - Auction 80 Rupee"]->currentItem;
+  auto& auction100         = world.locationTable["Windfall Island - Auction 100 Rupee"]->currentItem;
+  auto& splooshFirstPrize  = world.locationTable["Windfall Island - Battle Squid First Prize"]->currentItem;
+  auto& splooshSecondPrize = world.locationTable["Windfall Island - Battle Squid Second Prize"]->currentItem;
+  auto& savageFloor30      = world.locationTable["Outset Island - Savage Labyrinth Floor 30"]->currentItem;
+  auto& savageFloor50      = world.locationTable["Outset Island - Savage Labyrinth Floor 50"]->currentItem;
+  auto& beedle20           = world.locationTable["Great Sea - Beedle Shop 20 Rupee Item"]->currentItem;
+  auto& beedle500          = world.locationTable["Rock Spire Isle - Beedle 500 Rupee Item"]->currentItem;
+  auto& beedle950          = world.locationTable["Rock Spire Isle - Beedle 950 Rupee Item"]->currentItem;
+  auto& beedle900          = world.locationTable["Rock Spire Isle - Beedle 900 Rupee Item"]->currentItem;
   auto& octoFairyItem      = world.bigOctoFairyHintLocation->currentItem;
-  auto& octoFairyRegion    = *(world.bigOctoFairyHintLocation->hintRegions.begin());
+  auto& octoFairyRegion    = world.bigOctoFairyHintLocation->hintRegions.front();
 
   LOG_TO_DEBUG("Calculating text replacement articles/pronouns");
   // Calculate articles for some replacements

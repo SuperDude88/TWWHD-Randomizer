@@ -127,7 +127,7 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
         // In some extreme entrance rando situations, traversing through unrequired dungeons may still
         // be required, so put small/big keys which appear in the playthrough in dark wood chests also
         if(raceMode) {
-            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item.getName() || dungeon.second.bigKey == item.getName());}) ||
+            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item || dungeon.second.bigKey == item);}) ||
               (std::any_of(playthroughLocations.begin(), playthroughLocations.end(), [&item](Location* loc){return loc->currentItem.getGameItemId() == item.getGameItemId();}))){
                 LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
                 return ModificationError::NONE;
