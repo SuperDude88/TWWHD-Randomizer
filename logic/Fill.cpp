@@ -62,7 +62,7 @@ static FillError fillTheRest(WorldPool& worlds, ItemPool& items, LocationPool& l
         if (location->currentItem.getGameItemId() == GameItem::INVALID)
         {
             auto item = getRandomJunk();
-            location->currentItem = worlds[location->world->getWorldId()].itemEntries[item];
+            location->currentItem = location->world->getItem(item);
             LOG_TO_DEBUG("Placed " + item + " at " + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
         }
     }
@@ -275,8 +275,8 @@ void placeVanillaItems(WorldPool& worlds)
         auto& settings = world.getSettings();
 
         // Place the game beatable item at Ganondorf
-        world.locationEntries["Ganon's Tower - Defeat Ganondorf"].currentItem = world.itemEntries["Game Beatable"];
-        world.locationEntries["Ganon's Tower - Defeat Ganondorf"].hasKnownVanillaItem = true;
+        world.locationTable["Ganon's Tower - Defeat Ganondorf"]->currentItem = world.getItem("Game Beatable");
+        world.locationTable["Ganon's Tower - Defeat Ganondorf"]->hasKnownVanillaItem = true;
 
         // Place vanilla items depending on settings and remove placed vanilla items from the item pool
         for (auto location : world.getLocations())
@@ -289,7 +289,7 @@ void placeVanillaItems(WorldPool& worlds)
                 (settings.dungeon_big_keys       == PlacementOption::Vanilla &&  vanillaItem == "Big Key")    ||
                 (settings.dungeon_maps_compasses == PlacementOption::Vanilla && (vanillaItem == "Dungeon Map" || vanillaItem == "Compass")))
                 {
-                    location->currentItem = world.itemEntries[dungeonItemName];
+                    location->currentItem = world.getItem(dungeonItemName);
                     location->hasKnownVanillaItem = true;
                     removeElementFromPool(world.getItemPoolReference(), location->currentItem);
                     LOG_TO_DEBUG("Placed item " + dungeonItemName + " at vanilla location " + locationName);
@@ -297,7 +297,7 @@ void placeVanillaItems(WorldPool& worlds)
 
             if (vanillaItem == "Blue Chu Jelly" /*&& settings.progression_blue_chus*/)
             {
-                location->currentItem = world.itemEntries[vanillaItem];
+                location->currentItem = world.getItem(vanillaItem);
                 location->hasKnownVanillaItem = true;
                 removeElementFromPool(world.getItemPoolReference(), location->currentItem);
                 LOG_TO_DEBUG("Placed item " + vanillaItem + " at vanilla location " + locationName);
@@ -378,25 +378,25 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
             // the dungeon since none of them are progression anyway
             auto worldLocations = world.getLocations();
             auto dungeonLocations = filterFromPool(worldLocations, [&](const Location* loc){
-                return elementInPool(loc->getName(), dungeon.locations) &&
+                return elementInPool(loc, dungeon.locations) &&
                           (loc->progression || settings.progression_dungeons == ProgressionDungeons::Disabled ||
                           (settings.progression_dungeons == ProgressionDungeons::RaceMode && !dungeon.isRequiredDungeon));});
 
             // Place small keys and the big key using only items and locations
             // from this world (even in multiworld)
             ItemPool dungeonPool;
-            if (settings.dungeon_small_keys == PlacementOption::OwnDungeon && dungeon.smallKey != "")
+            if (settings.dungeon_small_keys == PlacementOption::OwnDungeon && dungeon.smallKey.isValidItem())
             {
-                auto& smallKey = world.itemEntries[dungeon.smallKey];
+                auto smallKey = dungeon.smallKey;
                 for (size_t i = 0; i < elementCountInPool(smallKey, itemPool); i++)
                 {
                     dungeonPool.emplace_back(smallKey);
                 }
                 removeElementFromPool(itemPool, smallKey, dungeon.keyCount);
             }
-            if (settings.dungeon_big_keys == PlacementOption::OwnDungeon && dungeon.bigKey != "")
+            if (settings.dungeon_big_keys == PlacementOption::OwnDungeon && dungeon.bigKey.isValidItem())
             {
-                auto& bigKey = world.itemEntries[dungeon.bigKey];
+                auto bigKey = dungeon.bigKey;
                 for (size_t i = 0; i < elementCountInPool(bigKey, itemPool); i++)
                 {
                     dungeonPool.emplace_back(bigKey);
@@ -410,8 +410,8 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
             dungeonPool.clear();
             if (settings.dungeon_maps_compasses == PlacementOption::OwnDungeon)
             {
-                auto& map = world.itemEntries[dungeon.map];
-                auto& compass = world.itemEntries[dungeon.compass];
+                auto map = dungeon.map;
+                auto compass = dungeon.compass;
                 for (size_t i = 0; i < elementCountInPool(map, itemPool); i++)
                 {
                     dungeonPool.emplace_back(map);
@@ -471,10 +471,10 @@ static FillError randomizeRestrictedDungeonItems(WorldPool& worlds, ItemPool& it
         // First gather small keys and big keys into their necessary pools
         for (auto& [name, dungeon] : world.dungeons)
         {
-            auto smallKey = world.itemEntries[dungeon.smallKey];
-            auto bigKey   = world.itemEntries[dungeon.bigKey];
-            auto map      = world.itemEntries[dungeon.map];
-            auto compass  = world.itemEntries[dungeon.compass];
+            auto smallKey = dungeon.smallKey;
+            auto bigKey   = dungeon.bigKey;
+            auto map      = dungeon.map;
+            auto compass  = dungeon.compass;
 
             auto smallKeys     = filterFromPool(itemPool, [&](const Item& item){return item == smallKey;});
             auto bigKeys       = filterFromPool(itemPool, [&](const Item& item){return item == bigKey;});
@@ -568,7 +568,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
         {
             if (dungeon.isRequiredDungeon)
             {
-                Location* raceModeLocation = &world.locationEntries[dungeon.raceModeLocation];
+                auto raceModeLocation = dungeon.raceModeLocation;
                 // If this location already has an item placed at it, then skip it
                 if (raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
                 {
@@ -739,11 +739,11 @@ void clearWorlds(WorldPool& worlds)
 {
     for (auto& world : worlds)
     {
-        for (auto& [name, location] : world.locationEntries)
+        for (auto& [name, location] : world.locationTable)
         {
-            if (!location.plandomized && !location.hasKnownVanillaItem)
+            if (!location->plandomized && !location->hasKnownVanillaItem)
             {
-                location.currentItem = {GameItem::INVALID, nullptr};
+                location->currentItem = {GameItem::INVALID, nullptr};
             }
         }
     }

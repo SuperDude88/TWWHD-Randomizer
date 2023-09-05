@@ -959,7 +959,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
                 const uint32_t message_id = 101 + item_id;
                 const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
-                std::u16string message = messageBegin.at(language) + world.itemEntries[dungeon_name + " " + item_data.base_item_name].getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
+                std::u16string message = messageBegin.at(language) + world.getItem(dungeon_name + " " + item_data.base_item_name).getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
 
                 message = Text::word_wrap_string(message, 39);
                 msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
@@ -1259,7 +1259,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             for (auto region : location->hintRegions) {
                 // If this region is a dungeon, use the dungeon's island instead
                 if (world.dungeons.contains(region)) {
-                    region = *world.dungeons[region].islands.begin();
+                    region = world.dungeons[region].islands.front();
                 }
         
                 if (islandNameToRoomIndex(region) != 0) {
@@ -1275,7 +1275,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
         if (island != "") {
             LOG_TO_DEBUG("Rotating " + hohoLocation->getName() + " to face " + island);
             auto islandNumToFace = islandNameToRoomIndex(island);
-            auto hohoIslandNum = islandNameToRoomIndex(*(hohoLocation->hintRegions.begin()));
+            auto hohoIslandNum = islandNameToRoomIndex(hohoLocation->hintRegions.front());
 
             std::string filepath = get_island_room_dzx_filepath(hohoIslandNum);
             RandoSession::CacheEntry& room = g_session.openGameFile(filepath);
@@ -1816,7 +1816,7 @@ TweakError add_chart_number_to_item_get_messages(World& world) {
 
             // Get the properly formated item name
             auto itemName = gameItemToName(idToGameItem(item_id));
-            const std::u16string u16itemName = world.itemEntries[itemName].getUTF16Name(language, Text::Type::PRETTY);
+            const std::u16string u16itemName = world.getItem(itemName).getUTF16Name(language, Text::Type::PRETTY);
 
             // The message between the "You obtained " and the next '!' will be replaced
             entry.addAction([=](RandoSession* session, FileType* data) -> int {
@@ -2228,10 +2228,10 @@ TweakError show_dungeon_markers_on_chart(World& world) {
         if (dungeon.isRequiredDungeon)
         {
             // Get island of associated boss room
-            auto raceModeArea = world.locationEntries[dungeon.raceModeLocation].accessPoints.front()->area->name;
-            auto bossIslands = world.getRegions(raceModeArea, "Islands", /*typesToIgnore =*/{"Dungeons"});
+            auto raceModeArea = dungeon.raceModeLocation->accessPoints.front()->area;
+            auto bossIslands = raceModeArea->findIslands();
 
-            const std::string& islandName = *bossIslands.begin();
+            const std::string& islandName = bossIslands.front();
             room_indexes.emplace(islandNameToRoomIndex(islandName));
         }
     }
@@ -3664,7 +3664,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 }
 
 TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool& randomizeItems */) {
-    const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn").exits.front().getConnectedArea());
+    const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn")->exits.front().getConnectedArea()->name);
 
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
