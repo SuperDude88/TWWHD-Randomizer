@@ -30,23 +30,22 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Defeat Ganondorf is always a goal location
-        world.pathLocations[&world.locationEntries["Ganon's Tower - Defeat Ganondorf"]] = {};
+        world.pathLocations[world.locationTable["Ganon's Tower - Defeat Ganondorf"].get()] = {};
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Race mode locations are also goal locations
             if (dungeon.isRequiredDungeon)
             {
-                Location* goalLocation = &world.locationEntries[dungeon.raceModeLocation];
-                world.pathLocations[goalLocation] = {};
+                world.pathLocations[dungeon.raceModeLocation] = {};
             }
         }
 
-        for (auto& [name, location] : world.locationEntries)
+        for (auto& [name, location] : world.locationTable)
         {
-            if (!location.progression)
+            if (!location->progression)
             {
-                nonRequiredLocations.insert({&location, location.currentItem});
-                location.currentItem = {GameItem::INVALID, location.world};
+                nonRequiredLocations.insert({location.get(), location->currentItem});
+                location->currentItem = {GameItem::INVALID, location->world};
             }
         }
     }
@@ -124,33 +123,23 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
     {
         std::unordered_set<Item*> potentiallyJunkItems = {};
         std::unordered_set<Item*> itemsSetAsJunk = {};
-        for (auto& [areaName, area] : world.areaEntries)
+        for (auto& [areaName, area] : world.areaTable)
         {
             // We'll be performing several operations during this loop
-            for (auto& locAccess : area.locations)
+            for (auto& locAccess : area->locations)
             {
                 auto location = locAccess.location;
                 // Assign the location its hint regions if it doesn't already
                 // have them
                 if (location->hintRegions.empty())
                 {
-                    auto islands = world.getIslands(areaName);
-                    auto dungeons = world.getDungeons(areaName);
-
-                    if (dungeons.size() > 0 && islands.empty())
-                    {
-                        location->hintRegions = dungeons;
-                    }
-                    else
-                    {
-                        location->hintRegions = islands;
-                    }
+                    location->hintRegions = area->findHintRegions();
                 }
                 // If this location is progression, then add its hint regions to
                 // the set of potentially barren regions
                 if (location->progression && !location->hintRegions.empty())
                 {
-                    world.barrenRegions[*location->hintRegions.begin()] = {};
+                    world.barrenRegions[location->hintRegions.front()] = {};
                 }
 
                 // During this loop we'll also go through and mark certain progressive items as junk items. These
@@ -206,17 +195,17 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         // regions from the barren regions map which have non-junk items at any
         // of their locations. Otherwise add the location to the list of locations
         // in the barren region
-        for (auto& [name, location] : world.locationEntries)
+        for (auto& [name, location] : world.locationTable)
         {
-            for (auto& hintRegion : location.hintRegions)
+            for (auto& hintRegion : location->hintRegions)
             {
-                if (location.progression && !location.currentItem.isJunkItem())
+                if (location->progression && !location->currentItem.isJunkItem())
                 {
                     world.barrenRegions.erase(hintRegion);
                 }
                 else if (world.barrenRegions.contains(hintRegion))
                 {
-                    world.barrenRegions[hintRegion].insert(&location);
+                    world.barrenRegions[hintRegion].insert(location.get());
                 }
             }
         }
@@ -227,7 +216,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         {
             auto& outsideLocations = dungeon.outsideDependentLocations;
             if (world.barrenRegions.contains(dungeonName) &&
-                std::any_of(outsideLocations.begin(), outsideLocations.end(), [&world](std::string& locationName){return !world.locationEntries[locationName].currentItem.isJunkItem();}))
+                std::any_of(outsideLocations.begin(), outsideLocations.end(), [&world](Location* location){return location->currentItem.isJunkItem();}))
             {
                 world.barrenRegions.erase(dungeonName);
             }
@@ -353,7 +342,7 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             // and choose randomly
             if (i == goalLocations.size() && !addedGanonPathLocation)
             {
-                goalLocations.push_back(&world.locationEntries["Ganon's Tower - Defeat Ganondorf"]);
+                goalLocations.push_back(world.locationTable["Ganon's Tower - Defeat Ganondorf"].get());
                 addedGanonPathLocation = true;
             }
 
@@ -443,12 +432,12 @@ static HintError generateItemHintMessage(Location* location)
 
     size_t totalRegions = 0;
     auto world = location->world;
-    std::unordered_set<std::string> hintRegions = location->hintRegions;
+    auto hintRegions = location->hintRegions;
 
     // If this is an item in a dungeon, use the dungeon's island(s) for the hint instead
-    if (world->dungeons.contains(*hintRegions.begin()))
+    if (world->dungeons.contains(hintRegions.front()))
     {
-        hintRegions = world->dungeons[*hintRegions.begin()].islands;
+        hintRegions = world->dungeons[hintRegions.front()].islands;
     }
 
     for (auto hintRegion : location->hintRegions)
@@ -506,24 +495,21 @@ static HintError generateItemHintMessage(Location* location)
 static HintError generateItemHintLocations(World& world, std::vector<Location*>& itemHintLocations)
 {
     auto& settings = world.getSettings();
-    // Since item hints must name a specific island, locations in the below regions can't be item hints
-    std::unordered_set<std::string> invalidItemHintRegions = {"Mailbox", "Great Sea", "Hyrule"};
     // First, make a vector of possible item hint locations
     std::vector<Location*> possibleItemHintLocations = {};
-    for (auto& [name, location] : world.locationEntries)
+    for (auto& [name, location] : world.locationTable)
     {
-        if (location.progression              &&  // if the location is a progression location...
-           !location.currentItem.isJunkItem() &&  // and does not have a junk item...
-           !location.hasKnownVanillaItem      &&  // and does not have a known vanilla item...
-           !location.hasBeenHinted            &&  // and has not been hinted at yet...
-          (!location.currentItem.isSmallKey() || settings.dungeon_small_keys != PlacementOption::OwnDungeon) && // and isn't a small key when small keys are in their own dungeon
-          (!location.currentItem.isBigKey()   || settings.dungeon_big_keys   != PlacementOption::OwnDungeon) && // and isn't a big key when big keys are in their own dungeon
-          (!location.isRaceModeLocation || settings.progression_dungeons == ProgressionDungeons::Standard)   && // and isn't a race mode location when race mode/require bosses is enabled...
-          ( location.hintPriority != "Always" || !world.getSettings().use_always_hints)                      && // and the hint priority is not "Always" when we're using always hints...
-           !std::any_of(location.hintRegions.begin(), location.hintRegions.end(), [&](const std::string& hintRegion){return invalidItemHintRegions.contains(hintRegion);})) // and isn't part of an invalid hint region...
+        if (location->progression              &&  // if the location is a progression location...
+           !location->currentItem.isJunkItem() &&  // and does not have a junk item...
+           !location->hasKnownVanillaItem      &&  // and does not have a known vanilla item...
+           !location->hasBeenHinted            &&  // and has not been hinted at yet...
+          (!location->currentItem.isSmallKey() || settings.dungeon_small_keys != PlacementOption::OwnDungeon) && // and isn't a small key when small keys are in their own dungeon
+          (!location->currentItem.isBigKey()   || settings.dungeon_big_keys   != PlacementOption::OwnDungeon) && // and isn't a big key when big keys are in their own dungeon
+          (!location->isRaceModeLocation || settings.progression_dungeons == ProgressionDungeons::Disabled)   && // and isn't a race mode location when race mode/require bosses is enabled...
+          ( location->hintPriority != "Always" || !world.getSettings().use_always_hints))                        // and the hint priority is not "Always" when we're using always hints...
            {
               // Then the item is a possible item hint location
-              possibleItemHintLocations.push_back(&location);
+              possibleItemHintLocations.push_back(location.get());
            }
     }
 
@@ -576,17 +562,17 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
     std::vector<Location*> sometimesLocations = {};
 
     // Put locations into the always or sometimes categories depending on what their hint priority is
-    for (auto& [name, location] : world.locationEntries)
+    for (auto& [name, location] : world.locationTable)
     {
-        if (location.progression && !location.hasBeenHinted && !location.isRaceModeLocation)
+        if (location->progression && !location->hasBeenHinted && !location->isRaceModeLocation)
         {
-            if (location.hintPriority == "Always")
+            if (location->hintPriority == "Always")
             {
-                alwaysLocations.push_back(&location);
+                alwaysLocations.push_back(location.get());
             }
-            else if (location.hintPriority == "Sometimes")
+            else if (location->hintPriority == "Sometimes")
             {
-                sometimesLocations.push_back(&location);
+                sometimesLocations.push_back(location.get());
             }
         }
     }

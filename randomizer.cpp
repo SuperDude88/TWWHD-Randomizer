@@ -513,7 +513,7 @@ private:
                 if (entrance->getEntranceType() == EntranceType::BOSS_REVERSE) {
                     // If this boss room is accessed via a dungeon then set the savewarp
                     // as the dungeon entrance
-                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
+                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
                     if (dungeonName != "") {
                         auto dungeonEntrance = entrance->getWorld()->getDungeon(dungeonName).startingEntrance;
                         replacementStage = dungeonEntrance->getStageName();
@@ -549,8 +549,8 @@ private:
 
         // Update warp wind exits appropriately
         std::list<Entrance*> bossReverseEntrances = {};
-        for (auto& [areaName, area] : worlds[0].areaEntries) {
-            for (auto& exit : area.exits) {
+        for (auto& [areaName, area] : worlds[0].areaTable) {
+            for (auto& exit : area->exits) {
                 if (exit.getEntranceType() == EntranceType::BOSS_REVERSE) {
                     bossReverseEntrances.push_back(&exit);
                 }
@@ -568,7 +568,7 @@ private:
             if (!entrance->isDecoupled()) {
                 // If this boss room is connected to a dungeon, then send the player
                 // back out the exit of the dungeon
-                auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
+                auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
                 if (dungeonName != "") {
                     auto dungeonExit = entrance->getWorld()->getDungeon(dungeonName).startingEntrance->getReverse();
 
@@ -710,9 +710,9 @@ public:
         UPDATE_DIALOG_VALUE(40);
         UPDATE_DIALOG_LABEL("Saving items...");
         ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons, playthroughLocations);
-        for (auto& [name, location] : worlds[0].locationEntries) {
-            if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
-                ErrorLog::getInstance().log("Failed to save location " + location.getName());
+        for (auto& [name, location] : worlds[0].locationTable) {
+            if (ModificationError err = location->method->writeLocation(location->currentItem); err != ModificationError::NONE) {
+                ErrorLog::getInstance().log("Failed to save location " + location->getName());
                 return 1;
             }
         }
