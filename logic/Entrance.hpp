@@ -11,6 +11,8 @@ enum struct EntranceType
     NONE = 0,
     BOSS,
     BOSS_REVERSE,
+    MINIBOSS,
+    MINIBOSS_REVERSE
     DUNGEON,
     DUNGEON_REVERSE,
     CAVE,
@@ -70,6 +72,8 @@ public:
     void setBossOutRoomNum(uint8_t& newBossOutRoomNum);
     uint8_t getBossOutSpawnId() const;
     void setBossOutSpawnId(uint8_t& newBossOutSpawnId);
+    void setSavewarp(const bool& savewarp_);
+    bool needsSavewarp() const;
     int getWorldId() const;
     void setWorldId(int& newWorldId);
     Entrance* getReverse();
@@ -115,6 +119,7 @@ private:
     std::string bossOutStage = "";
     uint8_t bossOutRoom = 0xFF;
     uint8_t bossOutSpawnId = 0xFF;
+    bool savewarp = false;
     int worldId = -1;
     Entrance* reverse = nullptr;
     Entrance* replaces = nullptr;
