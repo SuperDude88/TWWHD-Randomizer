@@ -207,6 +207,16 @@ void Entrance::setBossOutSpawnId(uint8_t& newBossOutSpawnId)
     bossOutSpawnId = newBossOutSpawnId;
 }
 
+void Entrance::setSavewarp(const bool& savewarp_)
+{
+    savewarp = savewarp_;
+}
+
+bool Entrance::needsSavewarp() const
+{
+    return savewarp;
+}
+
 int Entrance::getWorldId() const
 {
     return worldId;
@@ -338,6 +348,8 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::NONE, "NONE"},
         {EntranceType::DUNGEON, "DUNGEON"},
         {EntranceType::DUNGEON_REVERSE, "DUNGEON_REVERSE"},
+        {EntranceType::MINIBOSS, "MINIBOSS"},
+        {EntranceType::MINIBOSS_REVERSE, "MINIBOSS_REVERSE"},
         {EntranceType::BOSS, "BOSS"},
         {EntranceType::BOSS_REVERSE, "BOSS_REVERSE"},
         {EntranceType::CAVE, "CAVE"},
@@ -363,6 +375,8 @@ EntranceType entranceNameToType(const std::string& name)
         {"NONE", EntranceType::NONE},
         {"BOSS", EntranceType::BOSS},
         {"BOSS_REVERSE", EntranceType::BOSS_REVERSE},
+        {"MINIBOSS", EntranceType::MINIBOSS},
+        {"MINIBOSS_REVERSE", EntranceType::MINIBOSS_REVERSE},
         {"DUNGEON", EntranceType::DUNGEON},
         {"DUNGEON_REVERSE", EntranceType::DUNGEON_REVERSE},
         {"CAVE", EntranceType::CAVE},
@@ -390,6 +404,8 @@ EntranceType entranceTypeToReverse(const EntranceType& type)
         {EntranceType::DUNGEON_REVERSE, EntranceType::DUNGEON},
         {EntranceType::BOSS, EntranceType::BOSS_REVERSE},
         {EntranceType::BOSS_REVERSE, EntranceType::BOSS},
+        {EntranceType::MINIBOSS, EntranceType::MINIBOSS_REVERSE},
+        {EntranceType::MINIBOSS_REVERSE, EntranceType::MINIBOSS},
         {EntranceType::CAVE, EntranceType::CAVE_REVERSE},
         {EntranceType::CAVE_REVERSE, EntranceType::CAVE},
         {EntranceType::DOOR, EntranceType::DOOR_REVERSE},

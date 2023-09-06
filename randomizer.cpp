@@ -401,8 +401,9 @@ private:
             paths.emplace(filepath);
         }
 
-        // Also include boss rooms
-        for (const std::string& bossStage : {"M_DragB", "kinBOSS", "SirenB", "M_DaiB", "kazeB"}) {
+        // Also include boss rooms and miniboss rooms
+        for (const std::string& bossStage : {"M_DragB", "kinBOSS",  "SirenB",  "M_DaiB",  "kazeB", 
+                                             "M_Dra09",  "kinMB", "SirenMB", "M_DaiMB", "kazeMB"}) {
             paths.emplace("content/Common/Stage/" + bossStage + "_Stage.szs");
         }
 
@@ -454,12 +455,6 @@ private:
                 }
             }
 
-            // Room number of 0xFF in the entrance shuffle table indicates
-            // that the SCLS entry is in the stage.dzs file instead of room.dzr
-            if (entrance->getFilepathRoomNum() == 0xFF) {
-                filepath = "content/Common/Stage/" + fileStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";                 
-            }
-
             RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
 
             // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
@@ -504,12 +499,40 @@ private:
                 });
             }
 
-            dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+            // an SCLS Exit index of 255 indicates that there isn't a room file that we want to modify
+            if (sclsExitIndex != 0xFF)
             {
-                CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+                dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+                {
+                    CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+                    const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
+                    if(sclsExitIndex > (scls_entries.size() - 1)) {
+                        ErrorLog::getInstance().log("SCLS entry index outside of list!");
+                        return false;
+                    }
 
-                // If this is the savewarp exit of a boss room, update it appropriately
-                if (entrance->getEntranceType() == EntranceType::BOSS_REVERSE) {
+                    // Update the SCLS entry so that the player gets taken to the new entrance
+                    ChunkEntry* exit = scls_entries[sclsExitIndex];
+                    replacementStage.resize(8, '\0');
+                    exit->data.replace(0, 8, replacementStage.c_str(), 8);
+                    exit->data[8] = replacementSpawn;
+                    exit->data[9] = replacementRoom;
+
+                    return true;
+                });
+            }
+
+            // If this entrance needs a savewarp update, then update the scls entry in the stage.dzs file
+            if (entrance->needsSavewarp())
+            {
+                filepath = "content/Common/Stage/" + fileStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";
+                sclsExitIndex = 0;
+
+                RandoSession::CacheEntry& dzsEntry = g_session.openGameFile(filepath);
+                dzsEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+                {
+                    CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
                     // If this boss room is accessed via a dungeon then set the savewarp
                     // as the dungeon entrance
                     auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
@@ -527,23 +550,24 @@ private:
                         replacementRoom = reverse->getRoomNum();
                         replacementSpawn = reverse->getSpawnId();
                     }
-                }
 
-                const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
-                if(sclsExitIndex > (scls_entries.size() - 1)) {
-                    ErrorLog::getInstance().log("SCLS entry index outside of list!");
-                    return false;
-                }
+                    const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
+                    if(sclsExitIndex > (scls_entries.size() - 1)) {
+                        ErrorLog::getInstance().log("SCLS entry index outside of list!");
+                        return false;
+                    }
 
-                // Update the SCLS entry so that the player gets taken to the new entrance
-                ChunkEntry* exit = scls_entries[sclsExitIndex];
-                replacementStage.resize(8, '\0');
-                exit->data.replace(0, 8, replacementStage.c_str(), 8);
-                exit->data[8] = replacementSpawn;
-                exit->data[9] = replacementRoom;
+                    // Update the SCLS entry so that the player savewarps to the right place
+                    ChunkEntry* exit = scls_entries[sclsExitIndex];
+                    replacementStage.resize(8, '\0');
+                    exit->data.replace(0, 8, replacementStage.c_str(), 8);
+                    exit->data[8] = replacementSpawn;
+                    exit->data[9] = replacementRoom;
 
-                return true;
-            });
+                    return true;
+                });
+            }
+
         }
 
         // Update warp wind exits appropriately
