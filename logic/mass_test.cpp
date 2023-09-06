@@ -36,19 +36,26 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
     WorldPool worlds (worldCount);
     std::vector<Settings> settingsVector (1, settings);
 
+    // Pre-emptively write config incase of crashing
+    std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
+    ConfigError err = writeToFile(errorConfigFilename, config);
+
     int retVal = generateWorlds(worlds, settingsVector);
 
     if (retVal != 0)
     {
-        std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
         std::cout << "Generation after changing setting \"" << settingName << "\" failed.\nSettings saved to \"" << errorConfigFilename << "\"" << std::endl;
-        ConfigError err = writeToFile(errorConfigFilename, config);
         if (err != ConfigError::NONE)
         {
             std::cout << "Could not write error_config to file" << std::endl;
             return 1;
         }
         return 1;
+    }
+    else
+    {
+        // Delete file if there were no errors
+        std::filesystem::remove(errorConfigFilename);
     }
     return 0;
 }
@@ -163,7 +170,7 @@ void massTest(Config& newConfig)
     settings1.item_hints = 5;
     TEST(settings1, settings1.ho_ho_hints, "5 item hints");
     settings1.location_hints = 5;
-    TEST(settings1, settings1.ho_ho_hints, "5 loaction hints");
+    TEST(settings1, settings1.ho_ho_hints, "5 location hints");
     TEST(settings1, settings1.use_always_hints, "use always hints");
     TEST(settings1, settings1.clearer_hints, "clearer hints");
     TEST(settings1, settings1.randomize_charts, "randomize charts");

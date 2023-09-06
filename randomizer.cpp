@@ -33,7 +33,8 @@
 #ifdef DEVKITPRO
 #include <sysapp/title.h>
 #include <platform/channel.hpp>
-#include <platform/controller.hpp>
+#include <platform/gui/SeedMenu.hpp>
+#include <platform/gui/InstallMenu.hpp>
 #endif
 
 #define SEED_KEY "SEED KEY TEST"
@@ -535,7 +536,7 @@ private:
 
                     // If this boss room is accessed via a dungeon then set the savewarp
                     // as the dungeon entrance
-                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
+                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
                     if (dungeonName != "") {
                         auto dungeonEntrance = entrance->getWorld()->getDungeon(dungeonName).startingEntrance;
                         replacementStage = dungeonEntrance->getStageName();
@@ -572,8 +573,8 @@ private:
 
         // Update warp wind exits appropriately
         std::list<Entrance*> bossReverseEntrances = {};
-        for (auto& [areaName, area] : worlds[0].areaEntries) {
-            for (auto& exit : area.exits) {
+        for (auto& [areaName, area] : worlds[0].areaTable) {
+            for (auto& exit : area->exits) {
                 if (exit.getEntranceType() == EntranceType::BOSS_REVERSE) {
                     bossReverseEntrances.push_back(&exit);
                 }
@@ -591,7 +592,7 @@ private:
             if (!entrance->isDecoupled()) {
                 // If this boss room is connected to a dungeon, then send the player
                 // back out the exit of the dungeon
-                auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedAreaEntry()->dungeon;
+                auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
                 if (dungeonName != "") {
                     auto dungeonExit = entrance->getWorld()->getDungeon(dungeonName).startingEntrance->getReverse();
 
@@ -733,9 +734,9 @@ public:
         UPDATE_DIALOG_VALUE(40);
         UPDATE_DIALOG_LABEL("Saving items...");
         ModifyChest::setCTMC(config.settings.chest_type_matches_contents, config.settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons, playthroughLocations);
-        for (auto& [name, location] : worlds[0].locationEntries) {
-            if (ModificationError err = location.method->writeLocation(location.currentItem); err != ModificationError::NONE) {
-                ErrorLog::getInstance().log("Failed to save location " + location.getName());
+        for (auto& [name, location] : worlds[0].locationTable) {
+            if (ModificationError err = location->method->writeLocation(location->currentItem); err != ModificationError::NONE) {
+                ErrorLog::getInstance().log("Failed to save location " + location->getName());
                 return 1;
             }
         }
@@ -862,7 +863,15 @@ int mainRandomize() {
         }
 
         #ifdef DEVKITPRO
-            Utility::platformLog("A config file is available with seed \"" + load.seed + "\".\n");
+            if(pickSeed(load.seed)) { //returns true if seed was changed
+                //update saved config with new seed
+                ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", load);
+                if(err != ConfigError::NONE) {
+                    ErrorLog::getInstance().log("Failed to save config, ERROR: " + errorToName(err));
+
+                    return 1;
+                }
+            };
             if(exitForConfig() == true) {
                 return 0;
             }
@@ -883,7 +892,6 @@ int mainRandomize() {
             
             
             if(!SYSCheckTitleExists(0x0005000010143599)) {
-                Utility::platformLog("Output channel does not currently exist.\n");
                 if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
                     return 1;
                 }

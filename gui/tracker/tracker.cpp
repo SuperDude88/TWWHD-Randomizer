@@ -109,9 +109,9 @@ void MainWindow::initialize_tracker_world(Settings& settings,
 
     for (auto& locName : markedLocations)
     {
-        if (trackerWorld.locationEntries.contains(locName))
+        if (trackerWorld.locationTable.contains(locName))
         {
-            trackerWorld.locationEntries[locName].marked = true;
+            trackerWorld.locationTable[locName]->marked = true;
         }
     }
 
@@ -186,31 +186,31 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         // TODO: figure out some better way to do this than just if/else
         if (areaName == "Dragon Roost Cavern")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Dragon Roost Cavern - Gohma Heart Container"]);
+            area->setBossLocation(trackerWorld.locationTable["Dragon Roost Cavern - Gohma Heart Container"].get());
         }
         else if (areaName == "Forbidden Woods")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Forbidden Woods - Kalle Demos Heart Container"]);
+            area->setBossLocation(trackerWorld.locationTable["Forbidden Woods - Kalle Demos Heart Container"].get());
         }
         else if (areaName == "Tower of the Gods")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Tower of the Gods - Gohdan Heart Container"]);
+            area->setBossLocation(trackerWorld.locationTable["Tower of the Gods - Gohdan Heart Container"].get());
         }
         else if (areaName == "Forsaken Fortress")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Forsaken Fortress - Helmaroc King Heart Container"]);
+            area->setBossLocation(trackerWorld.locationTable["Forsaken Fortress - Helmaroc King Heart Container"].get());
         }
         else if (areaName == "Earth Temple")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Earth Temple - Jalhalla Heart Container"]);
+            area->setBossLocation(trackerWorld.locationTable["Earth Temple - Jalhalla Heart Container"].get());
         }
         else if (areaName == "Wind Temple")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Wind Temple - Molgera Heart Container"]);
+            area->setBossLocation(trackerWorld.locationTable["Wind Temple - Molgera Heart Container"].get());
         }
         else if (areaName == "Ganon's Tower")
         {
-            area->setBossLocation(&trackerWorld.locationEntries["Ganon's Tower - Defeat Ganondorf"]);
+            area->setBossLocation(trackerWorld.locationTable["Ganon's Tower - Defeat Ganondorf"].get());
         }
     }
 }
@@ -628,31 +628,31 @@ void MainWindow::check_special_accessibility_conditions()
     auto& trackerWorld = trackerWorlds[0];
     auto startingItems = trackerWorld.getStartingItems();
 
-    if (trackerWorld.locationEntries["Forsaken Fortress - Helmaroc King Heart Container"].marked)
+    if (trackerWorld.locationTable["Forsaken Fortress - Helmaroc King Heart Container"]->marked)
     {
         auto songOfPassing = Item(GameItem::SongOfPassing, &trackerWorld);
         if (elementInPool(songOfPassing, trackerInventory) || elementInPool(songOfPassing, startingItems)) {
-            trackerWorld.locationEntries["Mailbox - Letter from Aryll"].hasBeenFound = true;
+            trackerWorld.locationTable["Mailbox - Letter from Aryll"]->hasBeenFound = true;
 
-            if (trackerWorld.areaEntries["Windfall Jail"].isAccessible) {
-                trackerWorld.locationEntries["Mailbox - Letter from Tingle"].hasBeenFound = true;
+            if (trackerWorld.areaTable["Windfall Jail"]->isAccessible) {
+                trackerWorld.locationTable["Mailbox - Letter from Tingle"]->hasBeenFound = true;
             }
         }
     }
 
-    if (trackerWorld.locationEntries["Forbidden Woods - Kalle Demos Heart Container"].marked)
+    if (trackerWorld.locationTable["Forbidden Woods - Kalle Demos Heart Container"]->marked)
     {
-        trackerWorld.locationEntries["Mailbox - Letter from Orca"].hasBeenFound = true;
+        trackerWorld.locationTable["Mailbox - Letter from Orca"]->hasBeenFound = true;
     }
 
-    if (trackerWorld.locationEntries["Earth Temple - Jalhalla Heart Container"].marked)
+    if (trackerWorld.locationTable["Earth Temple - Jalhalla Heart Container"]->marked)
     {
         auto noteToMom = Item(GameItem::NoteToMom, &trackerWorld);
         auto deliveryBag = Item(GameItem::DeliveryBag, &trackerWorld);
         if ((elementInPool(noteToMom, trackerInventory)   || elementInPool(noteToMom, startingItems)) &&
             (elementInPool(deliveryBag, trackerInventory) || elementInPool(deliveryBag, startingItems)))
         {
-            trackerWorld.locationEntries["Mailbox - Letter from Baito"].hasBeenFound = true;
+            trackerWorld.locationTable["Mailbox - Letter from Baito"]->hasBeenFound = true;
         }
     }
 }
@@ -788,16 +788,16 @@ void MainWindow::on_clear_all_button_released()
         // Clear certain mail locations associated with bosses
         if (loc->getName() == "Forsaken Fortress - Helmaroc King Heart Container")
         {
-            trackerWorld.locationEntries["Mailbox - Letter from Aryll"].marked = true;
-            trackerWorld.locationEntries["Mailbox - Letter from Tingle"].marked = true;
+            trackerWorld.locationTable["Mailbox - Letter from Aryll"]->marked = true;
+            trackerWorld.locationTable["Mailbox - Letter from Tingle"]->marked = true;
         }
         else if (loc->getName() == "Forbidden Woods - Kalle Demos Heart Container")
         {
-            trackerWorld.locationEntries["Mailbox - Letter from Orca"].marked = true;
+            trackerWorld.locationTable["Mailbox - Letter from Orca"]->marked = true;
         }
         else if (loc->getName() == "Earth Temple - Jalhalla Heart Container")
         {
-            trackerWorld.locationEntries["Mailbox - Letter from Baito"].marked = true;
+            trackerWorld.locationTable["Mailbox - Letter from Baito"]->marked = true;
         }
 
         locLabel->update_colors();
@@ -887,7 +887,7 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
 {
     selectedEntrance = entrance;
 
-    ui->where_did_lead_to_label->setText(std::string("Where did " + entrance->getOriginalConnectedArea() + " lead to?").c_str());
+    ui->where_did_lead_to_label->setText(std::string("Where did " + entrance->getOriginalConnectedArea()->name + " lead to?").c_str());
 
     auto entrance_destination_list_layout = ui->entrance_destination_list_layout;
     clear_tracker_labels(entrance_destination_list_layout);
@@ -897,7 +897,13 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
     for (auto target : targetEntrancePools[entrance->getEntranceType()])
     {
         // Don't list targets that have already been connected somewhere else
-        if (target->getConnectedArea() == "")
+        if (target->getConnectedArea() == nullptr)
+        {
+            continue;
+        }
+        // Don't list the reverse of the target if it's the reverse of the selected entrance
+        // since the entrance randomization algorithm forbids these connections
+        if (target->getReplaces() == selectedEntrance->getReverse())
         {
             continue;
         }
@@ -966,7 +972,7 @@ void MainWindow::calculate_own_dungeon_key_locations()
         std::string dungeonName = "";
         for (auto& [name, dungeon] : trackerWorld.dungeons)
         {
-            if (isAnyOf(key.getName(), dungeon.smallKey, dungeon.bigKey))
+            if (isAnyOf(key, dungeon.smallKey, dungeon.bigKey))
             {
                 dungeonName = name + " - ";
                 break;
@@ -1024,29 +1030,29 @@ void MainWindow::set_areas_locations()
     auto& trackerWorld = trackerWorlds[0];
     areaLocations.clear();
 
-    // Setup each islands locations
-    for (auto& [name, area] : trackerWorld.areaEntries)
+    // Setup each islands/dungeons locations
+    for (auto& [name, area] : trackerWorld.areaTable)
     {
-        for (auto& locAccess : area.locations)
+        for (auto& locAccess : area->locations)
         {
             if (locAccess.location->progression)
             {
-                if (area.dungeon != "")
+                if (area->dungeon != "")
                 {
-                    areaLocations[area.dungeon].insert(locAccess.location);
+                    areaLocations[area->dungeon].insert(locAccess.location);
                 }
-                else if (area.hintRegion != "")
+                else if (area->hintRegion != "")
                 {
-                    areaLocations[area.hintRegion].insert(locAccess.location);
+                    areaLocations[area->hintRegion].insert(locAccess.location);
                 }
                 else
-                {   
-                    auto islands = trackerWorld.getIslands(name);
-                    auto dungeons = trackerWorld.getDungeons(name);
+                {
+                    auto islands = area->findIslands();
+                    auto dungeons = area->findDungeons();
 
-                    if (dungeons.size() > 0 && islands.empty())
+                    if (dungeons.size() > 0)
                     {
-                        areaLocations[*dungeons.begin()].insert(locAccess.location);
+                        areaLocations[dungeons.front()].insert(locAccess.location);
                     }
                     else
                     {
@@ -1066,7 +1072,7 @@ void MainWindow::set_areas_entrances()
     auto& trackerWorld = trackerWorlds[0];
     areaEntrances.clear();
 
-    // Separate entrances into which islands they belong to
+    // Separate entrances into which islands/dungeons they belong to
     // Only list non-primary entrances if entrances are decoupled
     for (auto& entrance : trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances))
     {
@@ -1074,12 +1080,12 @@ void MainWindow::set_areas_entrances()
         {
             entrance->setEntranceType(EntranceType::MISC);
         }
-        auto islands = trackerWorld.getIslands(entrance->getParentArea());
-        auto dungeons = trackerWorld.getDungeons(entrance->getParentArea());
+        auto islands = entrance->getParentArea()->findIslands();
+        auto dungeons = entrance->getParentArea()->findDungeons();
 
-        if (dungeons.size() > 0 && islands.empty())
+        if (dungeons.size() > 0)
         {
-            areaEntrances[*dungeons.begin()].push_back(entrance);
+            areaEntrances[dungeons.front()].push_back(entrance);
         }
         else
         {

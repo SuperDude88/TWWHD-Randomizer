@@ -3,16 +3,15 @@
 #include <mutex>
 
 #ifdef PLATFORM_DKP
-    #include <whb/proc.h>
-    #include <whb/log.h>
-    #include <whb/log_console.h>
+    #include <platform/proc.hpp>
+    #include <platform/gui/screen.hpp>
+    #include <platform/gui/LogConsole.hpp>
     #include <coreinit/filesystem_fsa.h>
 
     #include <mocha/mocha.h>
 
     #define PRINTF_BUFFER_LENGTH 2048
 
-    static bool whbInit = false;
     static bool mochaOpen = false;
     static bool MLCMounted = false;
     static bool USBMounted = false;
@@ -157,8 +156,8 @@ namespace Utility
 #ifdef PLATFORM_DKP
         vsnprintf(buf, PRINTF_BUFFER_LENGTH - 1, f, args);
         
-        WHBLogWrite(buf);
-        WHBLogConsoleDraw();
+        LogConsoleWrite(buf);
+        LogConsoleDraw();
 #else
         vprintf(f, args);
         fflush(stdout); //vscode debug console works better with this
@@ -175,9 +174,8 @@ namespace Utility
     bool platformInit()
     {
 #ifdef PLATFORM_DKP
-        WHBProcInit();
-        WHBLogConsoleInit();
-        whbInit = true;
+        ProcInit();
+        ConsoleScreenInit();
 
         if(!initMocha())
         {
@@ -194,7 +192,7 @@ namespace Utility
     bool platformIsRunning()
     {
 #ifdef PLATFORM_DKP
-        return WHBProcIsRunning();
+        return ProcIsRunning();
 #else
         return true; //not sure if it's worth doing anything for this
 #endif
@@ -202,9 +200,11 @@ namespace Utility
 
     void waitForPlatformStop()
     {
+#ifdef PLATFORM_DKP //only need to wait on console
         while(platformIsRunning()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(33)); //Check ~30 times a second
         }
+#endif
     }
 
     void platformShutdown()
@@ -216,10 +216,8 @@ namespace Utility
             mochaOpen = false;
         }
 
-        if(whbInit) {
-            WHBLogConsoleFree();
-            WHBProcShutdown();
-        }
+        ProcExit();
+        waitForPlatformStop();
 #endif
     }
 }

@@ -1,7 +1,156 @@
 
 #include "Area.hpp"
+#include "PoolFunctions.hpp"
+#include "World.hpp"
+
 #include <unordered_map>
 #include <array>
+
+std::list<std::string> Area::findIslands()
+{
+    std::list<std::string> islands = {};
+    std::unordered_set<Area*> alreadyChecked = {};
+    std::list<Area*> areaQueue = {this};
+
+    while (!areaQueue.empty())
+    {
+        auto area = areaQueue.back();
+        alreadyChecked.insert(area);
+        areaQueue.pop_back();
+
+        // Block searching through areas that have general hint regions
+        if (area->hintRegion != "")
+        {
+            continue;
+        }
+
+        // If we found an island, add it to the list
+        if (area->island != "")
+        {
+            if (!elementInPool(area->island, islands))
+            {
+                islands.push_back(area->island);  
+            }
+            continue;
+        }
+
+        // If this area isn't an island, add its entrances to the queue as long
+        // as they haven't been checked yet
+        for (auto entrance : area->entrances)
+        {
+            if (!alreadyChecked.contains(entrance->getParentArea()))
+            {
+                areaQueue.push_front(entrance->getParentArea());
+            }
+        }
+    }
+
+    return islands;
+}
+
+std::list<std::string> Area::findDungeons()
+{
+    std::list<std::string> dungeons = {};
+    std::unordered_set<Area*> alreadyChecked = {};
+    std::list<Area*> areaQueue = {this};
+
+    while (!areaQueue.empty())
+    {
+        auto area = areaQueue.back();
+        alreadyChecked.insert(area);
+        areaQueue.pop_back();
+
+        // If we found an island or general hint region, then this
+        // area isn't part of a dungeon
+        if (area->hintRegion != "" || area->island != "")
+        {
+            return {};
+        }
+
+        if (area->dungeon != "")
+        {
+            if (!elementInPool(area->dungeon, dungeons))
+            {
+                dungeons.push_back(area->dungeon);
+            }
+            continue;
+        }
+
+        // If this area isn't a dungeon, add its entrances to the queue as long
+        // as they haven't been checked yet
+        for (auto entrance : area->entrances)
+        {
+            if (!alreadyChecked.contains(entrance->getParentArea()))
+            {
+                areaQueue.push_front(entrance->getParentArea());
+            }
+        }
+    }
+    return dungeons;
+}
+
+std::list<std::string> Area::findHintRegions()
+{
+    std::list<std::string> regions = {};
+    std::unordered_set<Area*> alreadyChecked = {};
+    std::list<Area*> areaQueue = {this};
+
+    while (!areaQueue.empty())
+    {
+        auto area = areaQueue.back();
+        alreadyChecked.insert(area);
+        areaQueue.pop_back();
+
+        // If we found an island or general hint region, then this
+        // area isn't part of a dungeon
+        if (area->hintRegion != "")
+        {
+            if (!elementInPool(area->hintRegion, regions))
+            {
+                regions.push_back(area->hintRegion);
+            }
+        }
+
+        if (area->island != "")
+        {
+            if (!elementInPool(area->island, regions))
+            {
+                regions.push_back(area->island);
+            }
+        }
+
+        if (area->dungeon != "")
+        {
+            if (!elementInPool(area->dungeon, regions))
+            {
+                regions.push_back(area->dungeon);
+            }
+        }
+
+        // If this area doesn't have any possible hint regions, add its entrances
+        // to the queue as long as they haven't been checked yet
+        if (area->dungeon == "" && area->hintRegion == "" && area->island == "")
+        {
+            for (auto entrance : area->entrances)
+            {
+                if (!alreadyChecked.contains(entrance->getParentArea()))
+                {
+                    areaQueue.push_front(entrance->getParentArea());
+                }
+            }
+        }
+    }
+
+    // Erase dungeons from the list if we have any islands
+    std::list<std::string> dungeons = {};
+    std::copy_if(regions.begin(), regions.end(), std::back_inserter(dungeons), [&](std::string& region){return this->world->dungeons.contains(region);});
+    if (dungeons.size() < regions.size())
+    {
+        std::remove_if(regions.begin(), regions.end(), [&](std::string& region){return this->world->dungeons.contains(region);});
+    }
+
+    return regions;
+}
 
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
 {

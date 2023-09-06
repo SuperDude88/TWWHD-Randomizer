@@ -2,11 +2,12 @@
 #include "Entrance.hpp"
 
 #include <logic/World.hpp>
+#include <logic/Area.hpp>
 #include <command/Log.hpp>
 
 Entrance::Entrance() {}
 
-Entrance::Entrance(const std::string& parentArea_, const std::string& connectedArea_, World* world_)
+Entrance::Entrance(Area* parentArea_, Area* connectedArea_, World* world_)
 {
     parentArea = parentArea_;
     connectedArea = connectedArea_;
@@ -18,27 +19,22 @@ Entrance::Entrance(const std::string& parentArea_, const std::string& connectedA
     setOriginalName();
 }
 
-std::string Entrance::getParentArea() const
+Area* Entrance::getParentArea() const
 {
     return parentArea;
 }
 
-void Entrance::setParentArea(const std::string& newParentArea)
+void Entrance::setParentArea(Area* newParentArea)
 {
     parentArea = newParentArea;
 }
 
-AreaEntry* Entrance::getParentAreaEntry()
-{
-    return &world->getArea(parentArea);
-}
-
-std::string Entrance::getConnectedArea() const
+Area* Entrance::getConnectedArea() const
 {
     return connectedArea;
 }
 
-void Entrance::setConnectedArea(const std::string& newConnectedArea)
+void Entrance::setConnectedArea(Area* newConnectedArea)
 {
     connectedArea = newConnectedArea;
     if (!alreadySetOriginalConnectedArea)
@@ -47,12 +43,7 @@ void Entrance::setConnectedArea(const std::string& newConnectedArea)
     }
 }
 
-AreaEntry* Entrance::getConnectedAreaEntry()
-{
-    return &world->getArea(connectedArea);
-}
-
-std::string Entrance::getOriginalConnectedArea() const
+Area* Entrance::getOriginalConnectedArea() const
 {
     return originalConnectedArea;
 }
@@ -96,14 +87,14 @@ void Entrance::setOriginalName()
 {
     if (!alreadySetOriginalName)
     {
-        originalName = parentArea + " -> " + connectedArea;
+        originalName = parentArea->name + " -> " + connectedArea->name;
         alreadySetOriginalName = true;
     }
 }
 
 std::string Entrance::getCurrentName() const
 {
-    return parentArea + " -> " + connectedArea;
+    return parentArea->name + " -> " + connectedArea->name;
 }
 
 std::string Entrance::getFilepathStage() const
@@ -287,36 +278,36 @@ void Entrance::setWorld(World* newWorld)
     world = newWorld;
 }
 
-std::unordered_set<std::string> Entrance::getIslands()
+std::list<std::string> Entrance::findIslands()
 {
-    return world->getIslands(parentArea);
+    return parentArea->findIslands();
 }
 
-void Entrance::connect(const std::string& newConnectedArea)
+void Entrance::connect(Area* newConnectedArea)
 {
     connectedArea = newConnectedArea;
-    world->getArea(connectedArea).entrances.push_back(this);
+    connectedArea->entrances.push_back(this);
 }
 
-std::string Entrance::disconnect()
+Area* Entrance::disconnect()
 {
-    world->getArea(connectedArea).entrances.remove(this);
-    std::string previouslyConnected = connectedArea;
-    connectedArea = "";
+    connectedArea->entrances.remove(this);
+    auto previouslyConnected = connectedArea;
+    connectedArea = nullptr;
     return previouslyConnected;
 }
 
 void Entrance::bindTwoWay(Entrance* otherEntrance)
 {
-    reverse = otherEntrance;
+    this->setReverse(otherEntrance);
     otherEntrance->setReverse(this);
 }
 
 Entrance* Entrance::getNewTarget()
 {
-    auto& root = world->getArea("Root");
-    root.exits.emplace_back("Root", connectedArea, world);
-    Entrance& targetEntrance = root.exits.back();
+    auto root = world->getArea("Root");
+    root->exits.emplace_back(root, connectedArea, world);
+    Entrance& targetEntrance = root->exits.back();
     targetEntrance.connect(connectedArea);
     targetEntrance.setReplaces(this);
     return &targetEntrance;

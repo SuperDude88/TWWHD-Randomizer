@@ -6,19 +6,21 @@
 #include <logic/GameItem.hpp>
 
 class Entrance;
+class Area;
+class Location;
 
 struct Dungeon {
     int keyCount = -1;
-    std::string smallKey = "";
-    std::string bigKey = "";
-    std::string map = "";
-    std::string compass = "";
-    std::list<std::string> locations = {};
-    std::list<std::string> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
-    std::string raceModeLocation = "";
-    std::string startingRoom = "";
+    Item smallKey = Item();
+    Item bigKey = Item();
+    Item map = Item();
+    Item compass = Item();
+    std::list<Location*> locations = {};
+    std::list<Location*> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
+    Location* raceModeLocation = nullptr;
+    Area* startingArea = nullptr;
     Entrance* startingEntrance = nullptr;
-    std::unordered_set<std::string> islands = {};
+    std::list<std::string> islands = {};
     std::string name = "";
     bool isRequiredDungeon = false;
     bool hasNaturalRaceModeLocation = false;
