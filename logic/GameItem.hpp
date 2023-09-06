@@ -410,6 +410,7 @@ public:
     bool isCompass() const;
     bool isSmallKey() const;
     bool isBigKey() const;
+    bool isValidItem() const;
     bool operator==(const Item& rhs) const;
     bool operator<(const Item& rhs) const;
 

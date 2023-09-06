@@ -117,15 +117,15 @@ LocationModificationType nameToModificationType(const std::string& name)
 
 bool Location::operator<(const Location& rhs) const
 {
-  if (this->world->getWorldId() != rhs.world->getWorldId())
-  {
-      return this->world->getWorldId() < rhs.world->getWorldId();
-  }
+    if (this->world->getWorldId() != rhs.world->getWorldId())
+    {
+        return this->world->getWorldId() < rhs.world->getWorldId();
+    }
 
-  return this->sortPriority < rhs.sortPriority;
+    return this->sortPriority < rhs.sortPriority;
 }
 
 std::string Location::getName() const
 {
-  return names.at("English");
+    return names.at("English");
 }

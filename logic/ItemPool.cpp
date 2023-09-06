@@ -213,16 +213,16 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
     // Add dungeon items
     for (auto& [name, dungeon] : world->dungeons)
     {
-        if (dungeon.smallKey != "")
+        if (dungeon.smallKey.isValidItem())
         {
-            addElementToPool(completeItemPool, dungeon.smallKey, dungeon.keyCount);
+            addElementToPool(completeItemPool, dungeon.smallKey.getName(), dungeon.keyCount);
         }
-        if (dungeon.bigKey != "")
+        if (dungeon.bigKey.isValidItem())
         {
-            addElementToPool(completeItemPool, dungeon.bigKey);
+            addElementToPool(completeItemPool, dungeon.bigKey.getName());
         }
-        addElementToPool(completeItemPool, dungeon.map);
-        addElementToPool(completeItemPool, dungeon.compass);
+        addElementToPool(completeItemPool, dungeon.map.getName());
+        addElementToPool(completeItemPool, dungeon.compass.getName());
     }
 
     // Add swords and hurricane spin to the pool if we aren't playing in swordless mode

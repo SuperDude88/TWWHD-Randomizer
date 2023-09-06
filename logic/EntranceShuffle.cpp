@@ -39,11 +39,11 @@ static void logMissingLocations(WorldPool& worlds)
     LOG_TO_DEBUG("Missing Locations: [");
     for (auto& world : worlds)
     {
-        for (auto& [name, location] : world.locationEntries)
+        for (auto& [name, location] : world.locationTable)
         {
-            if (!location.hasBeenFound)
+            if (!location->hasBeenFound)
             {
-                LOG_TO_DEBUG("\t" + location.getName());
+                LOG_TO_DEBUG("\t" + location->getName());
                 if (identifier++ < 10)
                 {
                     // world.dumpWorldGraph(std::to_string(identifier));
@@ -190,7 +190,7 @@ static EntrancePool assumeEntrancePool(EntrancePool& entrancePool)
     for (auto entrance : entrancePool)
     {
         auto assumedForward = entrance->assumeReachable();
-        if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
+        if (entrance->getReverse() && !entrance->isDecoupled())
         {
             auto assumedReturn = entrance->getReverse()->assumeReachable();
             assumedForward->bindTwoWay(assumedReturn);
@@ -204,7 +204,7 @@ static EntranceShuffleError checkEntrancesCompatibility(Entrance* entrance, Entr
 {
     // While self-connections are funny, they get old pretty quickly and are more
     // prone to failure for the entrance placement algorithm. So we'll forbid them
-    if (entrance->getReverse() != nullptr)
+    if (entrance->getReverse())
     {
         if (target->getReplaces() == entrance->getReverse())
         {
@@ -218,7 +218,7 @@ void changeConnections(Entrance* entrance, Entrance* targetEntrance)
 {
     entrance->connect(targetEntrance->disconnect());
     entrance->setReplaces(targetEntrance->getReplaces());
-    if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
+    if (entrance->getReverse() && !entrance->isDecoupled())
     {
         targetEntrance->getReplaces()->getReverse()->connect(entrance->getReverse()->getAssumed()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(entrance->getReverse());
@@ -230,7 +230,7 @@ void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
     LOG_TO_DEBUG("Restoring Connection for " + entrance->getOriginalName());
     targetEntrance->connect(entrance->disconnect());
     entrance->setReplaces(nullptr);
-    if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
+    if (entrance->getReverse() && !entrance->isDecoupled())
     {
         entrance->getReverse()->getAssumed()->connect(targetEntrance->getReplaces()->getReverse()->disconnect());
         targetEntrance->getReplaces()->getReverse()->setReplaces(nullptr);
@@ -239,11 +239,11 @@ void restoreConnections(Entrance* entrance, Entrance* targetEntrance)
 
 static void deleteTargetEntrance(Entrance* targetEntrance)
 {
-    if (targetEntrance->getConnectedArea() != "")
+    if (targetEntrance->getConnectedArea())
     {
         targetEntrance->disconnect();
     }
-    if (targetEntrance->getParentArea() != "")
+    if (targetEntrance->getParentArea())
     {
         targetEntrance->getWorld()->removeEntrance(targetEntrance);
     }
@@ -252,7 +252,7 @@ static void deleteTargetEntrance(Entrance* targetEntrance)
 static void confirmReplacement(Entrance* entrance, Entrance* targetEntrance)
 {
     deleteTargetEntrance(targetEntrance);
-    if (entrance->getReverse() != nullptr && !entrance->isDecoupled())
+    if (entrance->getReverse() && !entrance->isDecoupled())
     {
         deleteTargetEntrance(entrance->getReverse()->getAssumed());
     }
@@ -324,13 +324,12 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
             std::unordered_set<std::string> raceModeIslands = {};
             for (auto loc : world.raceModeLocations)
             {
-                auto raceModeArea = loc->accessPoints.front()->area;
-                auto bossIslands = world.getRegions(raceModeArea->name, "Islands", /*typesToIgnore = */{"Dungeons"}); 
+                auto bossIslands = loc->accessPoints.front()->area->findIslands();
 
                 if (bossIslands.size() > 1)
                 {
                     #ifdef ENABLE_DEBUG
-                        LOG_TO_DEBUG("Error: More than 1 island leading to race mode boss room " + raceModeArea->name);
+                        LOG_TO_DEBUG("Error: More than 1 island leading to race mode boss room " + loc->accessPoints.front()->area->name);
                         for (auto& island : bossIslands)
                         {
                             LOG_TO_DEBUG("\t" + island);
@@ -341,7 +340,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
 
                 if (bossIslands.size() == 1)
                 {
-                    auto bossIsland = *bossIslands.begin();
+                    auto& bossIsland = bossIslands.front();
                     if (raceModeIslands.contains(bossIsland))
                     {
                         LOG_TO_DEBUG("Error: Island " + bossIsland + " has an ambiguous race mode dungeon");
@@ -356,19 +355,19 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         // Otherwise players could get sandwhiched between two dungeons without the proper items to leave
         // and not have the ability to savewarp back to the sea.
         std::unordered_set<Entrance*> dungeonExits = {};
-        std::unordered_set<std::string> dungeonStartingRooms = {};
+        std::unordered_set<Area*> dungeonStartingAreas = {};
         for (auto& [dungeonName, dungeon] : world.dungeons)
         {
-            if (dungeon.startingRoom != "")
+            if (dungeon.startingArea)
             {
                 dungeonExits.insert(dungeon.startingEntrance->getReverse());
-                dungeonStartingRooms.insert(dungeon.startingRoom);
+                dungeonStartingAreas.insert(dungeon.startingArea);
             }
         }
 
         for (auto exit : dungeonExits)
         {
-            if (exit != nullptr && dungeonStartingRooms.contains(exit->getConnectedArea()))
+            if (exit && dungeonStartingAreas.contains(exit->getConnectedArea()))
             {
                 return EntranceShuffleError::DUNGEON_ENTRANCES_CONNECTED;
             }
@@ -392,7 +391,7 @@ static EntranceShuffleError replaceEntrance(WorldPool& worlds, Entrance* entranc
     // the attempted connection and try again with a different target.
     if (err != EntranceShuffleError::NONE)
     {
-        if (entrance->getConnectedArea() != "")
+        if (entrance->getConnectedArea())
         {
             restoreConnections(entrance, target);
         }
@@ -417,7 +416,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
     for (auto entrance : entrances)
     {
         EntranceShuffleError err = EntranceShuffleError::NONE;
-        if (entrance->getConnectedArea() != "")
+        if (entrance->getConnectedArea())
         {
             continue;
         }
@@ -426,7 +425,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
         for (auto target : targetEntrances)
         {
             // If the target has already been disconnected, then don't use it again
-            if (target->getConnectedArea() == "")
+            if (target->getConnectedArea() == nullptr)
             {
                 continue;
             }
@@ -437,7 +436,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
             }
         }
 
-        if (entrance->getConnectedArea() == "")
+        if (entrance->getConnectedArea() == nullptr)
         {
             LOG_TO_DEBUG("Could not connect " + entrance->getOriginalName() + ". Error: " + errorToName(err));
             return EntranceShuffleError::NO_MORE_VALID_ENTRANCES;
@@ -447,7 +446,7 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
     // Verify that all targets were disconnected and that we didn't create any closed root loops
     for (auto target : targetEntrances)
     {
-        if (target->getConnectedArea() != "")
+        if (target->getConnectedArea())
         {
             LOG_TO_DEBUG("Error: Target entrance " + target->getCurrentName() + " was never disconnected");
             return EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET;
@@ -550,7 +549,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
     // Now attempt to connect plandomized entrances
     for (auto& [entrance, target] : world.plandomizer.entrances)
     {
-        std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + target->getOriginalConnectedArea() + " from " + target->getParentArea() + "\"";
+        std::string fullConnectionName = "\"" + entrance->getOriginalName() + "\" to \"" + target->getOriginalConnectedArea()->name + " from " + target->getParentArea()->name + "\"";
         LOG_TO_DEBUG("Attempting to set plandomized entrance " + fullConnectionName);
         Entrance* entranceToConnect = entrance;
         Entrance* targetToConnect = target;
@@ -575,7 +574,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             if (!entrance->isDecoupled() && entrance->getReverse() != nullptr && entrancePools.contains(entrance->getReverse()->getEntranceType()))
             {
                 // If this entrance has already been connected, throw an error
-                if (entrance->getConnectedArea() != "")
+                if (entrance->getConnectedArea())
                 {
                     ErrorLog::getInstance().log("Entrance \"" + entranceToConnect->getOriginalName() + "\" has already been connected. If you previously set the reverse of this entrance, you'll need to enabled the Decouple Entrances setting to plandomize this one also.");
                     return EntranceShuffleError::PLANDOMIZER_ERROR;
@@ -623,7 +622,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             }
             if (!validTargetFound)
             {
-                ErrorLog::getInstance().log("Entrance \"" + target->getOriginalConnectedArea() + " from " + target->getParentArea() + "\" is not a valid target for \"" + entrance->getOriginalName() + "\".");
+                ErrorLog::getInstance().log("Entrance \"" + target->getOriginalConnectedArea()->name + " from " + target->getParentArea()->name + "\" is not a valid target for \"" + entrance->getOriginalName() + "\".");
                 return EntranceShuffleError::PLANDOMIZER_ERROR;
             }
         }
@@ -787,7 +786,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         // Don't randomize the cliff plateau upper isles grotto unless entrances are decoupled
         else
         {
-            filterAndEraseFromPool(entrancePools[EntranceType::CAVE], [](Entrance* e){return e->getParentArea() == "Cliff Plateau Highest Isle";});
+            filterAndEraseFromPool(entrancePools[EntranceType::CAVE], [](Entrance* e){return e->getParentArea()->name == "Cliff Plateau Highest Isle";});
         }
     }
 
@@ -926,9 +925,9 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             {
                 return EntranceShuffleError::BAD_LINKS_SPAWN;
             }
-            linksSpawn->setConnectedArea(startingIsland);
-            world.getArea("Outset Island").entrances.remove(linksSpawn);
-            world.getArea(startingIsland).entrances.push_back(linksSpawn);
+            linksSpawn->setConnectedArea(world.getArea(startingIsland));
+            world.getArea("Outset Island")->entrances.remove(linksSpawn);
+            world.getArea(startingIsland)->entrances.push_back(linksSpawn);
         }
 
         // Set entrance data for all entrances, even those we aren't shuffling
@@ -972,7 +971,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         // Now set the islands the race mode dungeons are in
         for (auto& [name, dungeon] : world.dungeons)
         {
-            dungeon.islands = world.getRegions(dungeon.startingRoom, "Islands", /*typesToIgnore = */{"Dungeons"});
+            dungeon.islands = dungeon.startingArea->findIslands();
         }
     }
 
