@@ -2192,7 +2192,6 @@
       FW Cable Ride Above Poison Water Room Lower East: Nothing
 
 - Name: FW Mini Boss Room
-  Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Mothula Mini Boss Chest: Can_Defeat_Winged_Mothulas
   Exits:
@@ -2441,7 +2440,6 @@
       TOTG West Servant Room Near Corridor: Can_Play_CM
 
 - Name: TOTG Mini Boss Room
-  Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Darknut Mini Boss: Can_Defeat_Darknuts
   Exits:
@@ -2596,13 +2594,11 @@
       ET Two Moblins and Poes Room Past Stairs: Can_Defeat_ReDeads
 
 - Name: ET Mini Boss Room
-  Dungeon: Earth Temple
   Exits:
       ET Mini Boss Room Upper Ledge: Can_Defeat_Stalfos
       ET Two Moblins and Poes Room Past Stairs: Can_Aim_Mirror_Shield and can_access(ET Mini Boss Room Upper Ledge)
 
 - Name: ET Mini Boss Room Upper Ledge
-  Dungeon: Earth Temple
   Locations:
       Earth Temple - Stalfos Mini Boss: Nothing
   Exits:
@@ -2856,7 +2852,6 @@
       WT Hub Room Below Fan: can_access(WT Hub Room Upper North Platform)
 
 - Name: WT Mini Boss Room
-  Dungeon: Wind Temple
   Locations:
       Wind Temple - Wizzrobe Mini Boss: Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
   Exits:
