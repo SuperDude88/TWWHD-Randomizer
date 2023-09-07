@@ -404,7 +404,7 @@ private:
 
         // Also include boss rooms and miniboss rooms
         for (const std::string& bossStage : {"M_DragB", "kinBOSS",  "SirenB",  "M_DaiB",  "kazeB", 
-                                             "M_Dra09",  "kinMB", "SirenMB", "M_DaiMB", "kazeMB"}) {
+                                             "M_Dra09",   "kinMB", "SirenMB", "M_DaiMB", "kazeMB"}) {
             paths.emplace("content/Common/Stage/" + bossStage + "_Stage.szs");
         }
 
@@ -431,7 +431,7 @@ private:
         {
             const std::string fileStage = entrance->getFilepathStage();
             const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
-            const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+            uint8_t sclsExitIndex = entrance->getSclsExitIndex();
             std::string replacementStage = entrance->getReplaces()->getStageName();
             uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
             uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
@@ -455,8 +455,6 @@ private:
                     filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
                 }
             }
-
-            RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
 
             // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
             // "MiniKaz" is the Fire Mountain stage name
@@ -503,6 +501,8 @@ private:
             // an SCLS Exit index of 255 indicates that there isn't a room file that we want to modify
             if (sclsExitIndex != 0xFF)
             {
+                RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
+
                 dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
                 {
                     CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -534,9 +534,19 @@ private:
                 {
                     CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
-                    // If this boss room is accessed via a dungeon then set the savewarp
+                    // If this boss/miniboss room is accessed via a dungeon then set the savewarp
                     // as the dungeon entrance
-                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
+                    auto& areaEntrances = entrance->getParentArea()->entrances;
+                    Entrance* replacementForThis = nullptr;
+                    for (auto e : areaEntrances)
+                    {
+                        if (e->getReplaces() == entrance->getReverse())
+                        {
+                            replacementForThis = e;
+                            break;
+                        }
+                    }
+                    std::string dungeonName = replacementForThis->getParentArea()->dungeon;
                     if (dungeonName != "") {
                         auto dungeonEntrance = entrance->getWorld()->getDungeon(dungeonName).startingEntrance;
                         replacementStage = dungeonEntrance->getStageName();
@@ -545,8 +555,8 @@ private:
 
                     } else if (entrance->isDecoupled()) {
                         // If the entrance is decoupled, then set the savewarp as the reverse
-                        // of the entrance used to enter the boss room
-                        auto reverse = entrance->getReplaces()->getReverse();
+                        // of the entrance used to enter the boss/miniboss room
+                        auto reverse = replacementForThis->getReverse();
                         replacementStage = reverse->getStageName();
                         replacementRoom = reverse->getRoomNum();
                         replacementSpawn = reverse->getSpawnId();
@@ -568,7 +578,6 @@ private:
                     return true;
                 });
             }
-
         }
 
         // Update warp wind exits appropriately

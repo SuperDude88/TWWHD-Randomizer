@@ -11,7 +11,7 @@ enum struct EntranceType
     BOSS,
     BOSS_REVERSE,
     MINIBOSS,
-    MINIBOSS_REVERSE
+    MINIBOSS_REVERSE,
     DUNGEON,
     DUNGEON_REVERSE,
     CAVE,
