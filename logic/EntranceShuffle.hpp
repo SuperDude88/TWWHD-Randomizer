@@ -43,7 +43,8 @@ struct EntranceInfoPair
     EntranceType type;
     EntranceInfo forwardEntry;
     EntranceInfo returnEntry;
-    bool savewarp;
+    bool savewarp = false;
+    bool windWarp = false;
 };
 
 using EntrancePools = std::map<EntranceType, EntrancePool>;

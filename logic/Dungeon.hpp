@@ -24,6 +24,12 @@ struct Dungeon {
     std::string name = "";
     bool isRequiredDungeon = false;
     bool hasNaturalRaceModeLocation = false;
+    std::string windWarpExitStage = "";
+    uint8_t windWarpExitRoom = 0;
+    uint8_t windWarpExitSpawn = 0;
+    std::string savewarpStage = "";
+    uint8_t savewarpRoom = 0;
+    uint8_t savewarpSpawn = 0;
 };
 
 bool isValidDungeon(const std::string& dungeonName);

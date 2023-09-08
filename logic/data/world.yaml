@@ -296,11 +296,11 @@
 - Name: Forsaken Fortress Outside Path to Boss
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Outside Path to Boss Past Sidle Gaps: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
-- Name: Forsaken Fortress Outside Path to Boss Past Sidle Gaps
+- Name: Forsaken Fortress Before Boss Door
   Dungeon: Forsaken Fortress
   Exits:
       Helmaroc King Battle Arena: Skull_Hammer
@@ -310,6 +310,8 @@
 - Name: Helmaroc King Battle Arena
   Locations:
       Forsaken Fortress - Helmaroc King Heart Container: Can_Defeat_Helmaroc_King
+  Exits:
+      Forsaken Fortress Before Boss Door: Can_Defeat_Helmaroc_King
 
 - Name: Star Island
   Island: Star Island

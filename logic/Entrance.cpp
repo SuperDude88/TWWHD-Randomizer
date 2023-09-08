@@ -158,46 +158,6 @@ void Entrance::setSpawnId(uint8_t& newSpawnId)
     spawnId = newSpawnId;
 }
 
-std::string Entrance::getBossFilepathStageName() const
-{
-    return bossFilepathStage;
-}
-
-void Entrance::setBossFilepathStageName(std::string newBossOutStageName)
-{
-    bossFilepathStage = std::move(newBossOutStageName);
-}
-
-std::string Entrance::getBossOutStageName() const
-{
-    return bossOutStage;
-}
-
-void Entrance::setBossOutStageName(std::string newBossOutStageName)
-{
-    bossOutStage = std::move(newBossOutStageName);
-}
-
-uint8_t Entrance::getBossOutRoomNum() const
-{
-    return bossOutRoom;
-}
-
-void Entrance::setBossOutRoomNum(uint8_t& newBossOutRoomNum)
-{
-    bossOutRoom = newBossOutRoomNum;
-}
-
-uint8_t Entrance::getBossOutSpawnId() const
-{
-    return bossOutSpawnId;
-}
-
-void Entrance::setBossOutSpawnId(uint8_t& newBossOutSpawnId)
-{
-    bossOutSpawnId = newBossOutSpawnId;
-}
-
 void Entrance::setSavewarp(const bool& savewarp_)
 {
     savewarp = savewarp_;
@@ -206,6 +166,16 @@ void Entrance::setSavewarp(const bool& savewarp_)
 bool Entrance::needsSavewarp() const
 {
     return savewarp;
+}
+
+void Entrance::setWindWarp(const bool& windWarp_)
+{
+    windWarp = windWarp_;
+}
+
+bool Entrance::hasWindWarp() const
+{
+    return windWarp;
 }
 
 int Entrance::getWorldId() const
