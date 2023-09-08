@@ -37,8 +37,6 @@
 #include <platform/gui/InstallMenu.hpp>
 #endif
 
-#define SEED_KEY "SEED KEY TEST"
-
 RandoSession g_session; //declared outside of class for extern stuff
 
 #define FILETYPE_ERROR_CHECK(func) {  \
