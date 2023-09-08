@@ -1459,6 +1459,69 @@
                <string>Hints</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_8">
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="korl_hints">
+                 <property name="text">
+                  <string>Place Hints on King of Red Lions</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <item>
+                  <widget class="QLabel" name="label_for_barren_hints">
+                   <property name="text">
+                    <string>Barren Hints</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="barren_hints">
+                   <property name="maximum">
+                    <number>7</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_4" native="true"/>
+                 </item>
+                </layout>
+               </item>
+               <item row="2" column="3">
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                 <item>
+                  <widget class="QLabel" name="label_for_item_hints">
+                   <property name="text">
+                    <string>Item Hints</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="item_hints">
+                   <property name="maximum">
+                    <number>7</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_7" native="true"/>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="ho_ho_hints">
+                 <property name="text">
+                  <string>Place Hints on Old Man Ho Ho</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QCheckBox" name="clearer_hints">
+                 <property name="text">
+                  <string>Clearer Hints</string>
+                 </property>
+                </widget>
+               </item>
                <item row="2" column="2">
                 <layout class="QHBoxLayout" name="horizontalLayout_15">
                  <item>
@@ -1487,41 +1550,6 @@
                  </item>
                 </layout>
                </item>
-               <item row="1" column="2">
-                <widget class="QCheckBox" name="use_always_hints">
-                 <property name="text">
-                  <string>Use Always Hints</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <layout class="QHBoxLayout" name="horizontalLayout_14">
-                 <item>
-                  <widget class="QLabel" name="label_for_barren_hints">
-                   <property name="text">
-                    <string>Barren Hints</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="barren_hints">
-                   <property name="maximum">
-                    <number>7</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QWidget" name="widget_4" native="true"/>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="ho_ho_hints">
-                 <property name="text">
-                  <string>Place Hints on Old Man Ho Ho</string>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_8">
                  <item>
@@ -1543,38 +1571,10 @@
                  </item>
                 </layout>
                </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="korl_hints">
+               <item row="1" column="2">
+                <widget class="QCheckBox" name="use_always_hints">
                  <property name="text">
-                  <string>Place Hints on King of Red Lions</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="3">
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <item>
-                  <widget class="QLabel" name="label_for_item_hints">
-                   <property name="text">
-                    <string>Item Hints</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="item_hints">
-                   <property name="maximum">
-                    <number>7</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QWidget" name="widget_7" native="true"/>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="3">
-                <widget class="QCheckBox" name="clearer_hints">
-                 <property name="text">
-                  <string>Clearer Hints</string>
+                  <string>Use Always Hints</string>
                  </property>
                 </widget>
                </item>
@@ -1587,6 +1587,9 @@
                <string>Entrance Randomizer</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_6">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
                <item row="0" column="0">
                 <widget class="QCheckBox" name="randomize_dungeon_entrances">
                  <property name="text">
@@ -1594,14 +1597,14 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="2">
-                <widget class="QCheckBox" name="randomize_cave_entrances">
+               <item row="0" column="1">
+                <widget class="QCheckBox" name="randomize_boss_entrances">
                  <property name="text">
-                  <string>Randomize Cave Entrances</string>
+                  <string>Randomize Boss Entrances</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
+               <item row="3" column="0">
                 <layout class="QGridLayout" name="gridLayout_9">
                  <item row="0" column="1">
                   <widget class="QComboBox" name="mix_pools_combobox">
@@ -1622,38 +1625,45 @@
                  </item>
                 </layout>
                </item>
-               <item row="0" column="3">
-                <widget class="QCheckBox" name="randomize_door_entrances">
-                 <property name="text">
-                  <string>Randomize Door Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QCheckBox" name="randomize_boss_entrances">
-                 <property name="text">
-                  <string>Randomize Boss Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
+               <item row="3" column="1">
                 <widget class="QCheckBox" name="decouple_entrances">
                  <property name="text">
                   <string>Decouple Entrances</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="2">
+               <item row="3" column="2">
                 <widget class="QCheckBox" name="randomize_starting_island">
                  <property name="text">
                   <string>Randomize Starting Island</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="3">
+               <item row="2" column="0">
+                <widget class="QCheckBox" name="randomize_cave_entrances">
+                 <property name="text">
+                  <string>Randomize Cave Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QCheckBox" name="randomize_door_entrances">
+                 <property name="text">
+                  <string>Randomize Door Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2">
                 <widget class="QCheckBox" name="randomize_misc_entrances">
                  <property name="text">
                   <string>Randomize Misc Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QCheckBox" name="randomize_miniboss_entrances">
+                 <property name="text">
+                  <string>Randomize Miniboss Entrances</string>
                  </property>
                 </widget>
                </item>
@@ -1798,20 +1808,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QWidget" name="widget_8" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>200</height>
-               </size>
-              </property>
-             </widget>
+             <widget class="QWidget" name="widget_2" native="true"/>
             </item>
            </layout>
           </widget>
@@ -2253,7 +2250,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>290</height>
+                    <height>311</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">

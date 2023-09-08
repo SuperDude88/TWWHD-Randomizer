@@ -1,0 +1,54 @@
+Dragon Roost Cavern:
+  Savewarp:
+    stage: M_NewD2
+    room: 0
+    spawn: 0
+  Wind Warp Exit:
+    stage: sea
+    room: 13
+    spawn: 211
+Forbidden Woods:
+  Savewarp:
+    stage: kindan
+    room: 0
+    spawn: 0
+  Wind Warp Exit:
+    stage: sea
+    room: 41
+    spawn: 0
+Tower of the Gods:
+  Savewarp:
+    stage: Siren
+    room: 0
+    spawn: 0
+  Wind Warp Exit:
+    stage: sea
+    room: 26
+    spawn: 1
+Forsaken Fortress:
+  Savewarp:
+    stage: sea
+    room: 1
+    spawn: 0
+  Wind Warp Exit:
+    stage: sea
+    room: 1
+    spawn: 0
+Earth Temple:
+  Savewarp:
+    stage: M_Dai
+    room: 0
+    spawn: 0
+  Wind Warp Exit:
+    stage: sea
+    room: 45
+    spawn: 229
+Wind Temple:
+  Savewarp:
+    stage: kaze
+    room: 15
+    spawn: 15
+  Wind Warp Exit:
+    stage: sea
+    room: 4
+    spawn: 232

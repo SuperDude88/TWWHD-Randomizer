@@ -1,37 +1,69 @@
 - Type: DUNGEON
-  #                                                                                         //----File path info----|---entrance info---|---boss stage exit info---//
-  #        Parent Area                             Connected Area                            stage, room, scls index, stage, room, spawn, boss stage, stage, room, spawn
+  #                                                                                         //----File path info----|---entrance info---//
+  #        Parent Area                             Connected Area                            stage, room, scls index, stage, room, spawn
   Forward: Dragon Roost Pond Past Statues,         DRC First Room,                           Adanmae,  0,          2, M_NewD2,  0,     0
-  Return:  DRC First Room,                         Dragon Roost Pond Past Statues,           M_NewD2,  0,          0, Adanmae,  0,     2, M_DragB, sea,  13, 211
+  Return:  DRC First Room,                         Dragon Roost Pond Past Statues,           M_NewD2,  0,          0, Adanmae,  0,     2
 - Type: DUNGEON
   Forward: FW Entrance Platform,                   FW First Room,                            sea,     41,          6, kindan,   0,     0
-  Return:  FW First Room,                          FW Entrance Platform,                     kindan,   0,          0, sea,     41,     6, kinBOSS, sea,  41,   0
+  Return:  FW First Room,                          FW Entrance Platform,                     kindan,   0,          0, sea,     41,     6
 - Type: DUNGEON
   Forward: Tower of the Gods Sector,               TOTG Entrance Room,                       sea,     26,          0, Siren,    0,     0
-  Return:  TOTG Entrance Room,                     Tower of the Gods Sector,                 Siren,    0,          1, sea,     26,     2, SirenB,  sea,  26,   1
+  Return:  TOTG Entrance Room,                     Tower of the Gods Sector,                 Siren,    0,          1, sea,     26,     2
 - Type: DUNGEON
   Forward: Headstone Island Interior,              ET First Room,                            Edaichi,  0,          0, M_Dai,    0,     0
-  Return:  ET First Room,                          Headstone Island Interior,                M_Dai,    0,          0, Edaichi,  0,     1, M_DaiB,  sea,  45, 229
+  Return:  ET First Room,                          Headstone Island Interior,                M_Dai,    0,          0, Edaichi,  0,     1
 - Type: DUNGEON
-  Forward: Gale Isle Interior,                     WT First Room,                            Ekaze,    0,          0, kaze,    12,    70
-  Return:  WT First Room,                          Gale Isle Interior,                       kaze,    15,          0, Ekaze,    0,     1, kazeB,   sea,   4, 232
+  Forward: Gale Isle Interior,                     WT First Room,                            Ekaze,    0,          0, kaze,    15,    15
+  Return:  WT First Room,                          Gale Isle Interior,                       kaze,    15,          0, Ekaze,    0,     1
 
 
 - Type: BOSS
   Forward: DRC Boss Door Room Across Lava,         Gohma Battle Arena,                       M_NewD2, 10,          1, M_DragB, 0,      0
-  Return:  Gohma Battle Arena,                     DRC Boss Door Room Across Lava,           M_DragB, 255,         0, M_NewD2, 10,    70
+  Return:  Gohma Battle Arena,                     DRC Boss Door Room Across Lava,           M_DragB, 255,       255, M_NewD2, 10,    70
+  Savewarp: true
+  Wind Warp: true
 - Type: BOSS
   Forward: FW Boss Door Room,                      Kalle Demos Battle Arena,                 kindan,  16,          0, kinBOSS,  0,     0
-  Return:  Kalle Demos Battle Arena,               FW Boss Door Room,                        kinBOSS, 255,         0, kindan,  16,     1
+  Return:  Kalle Demos Battle Arena,               FW Boss Door Room,                        kinBOSS, 255,       255, kindan,  16,     1
+  Savewarp: true
+  Wind Warp: true
 - Type: BOSS
   Forward: TOTG Outside Area,                      Gohdan Battle Arena,                      Siren,   18,          0, SirenB,   0,     0
-  Return:  Gohdan Battle Arena,                    TOTG Outside Area,                        SirenB,  255,         0, Siren,   18,    70
+  Return:  Gohdan Battle Arena,                    TOTG Outside Area,                        SirenB,  255,       255, Siren,   18,    70
+  Savewarp: true
+  Wind Warp: true
+- Type: BOSS
+  Forward: Forsaken Fortress Before Boss Door,     Helmaroc King Battle Arena,               sea,      1,         16, M2tower,  0,    16
+  Return:  Helmaroc King Battle Arena,             Forsaken Fortress Before Boss Door,       M2tower,  0,          1, sea,      1,    70
+  Savewarp: true
 - Type: BOSS
   Forward: ET Boss Door Room,                      Jalhalla Battle Arena,                    M_Dai,   15,          0, M_DaiB,   0,     0
-  Return:  Jalhalla Battle Arena,                  ET Boss Door Room,                        M_DaiB,  255,         0, M_Dai,   15,    17
+  Return:  Jalhalla Battle Arena,                  ET Boss Door Room,                        M_DaiB,   0,          0, M_Dai,   15,    17
+  Savewarp: true
+  Wind Warp: true
 - Type: BOSS
   Forward: WT Three Big Fans Room Past Song Stone, Molgera Battle Arena,                     kaze,    12,          0, kazeB,    0,     0
-  Return:  Molgera Battle Arena,                   WT Three Big Fans Room Past Song Stone,   kazeB,   255,         0, kaze,    12,    70
+  Return:  Molgera Battle Arena,                   WT Three Big Fans Room Past Song Stone,   kazeB,   255,       255, kaze,    12,    70
+  Savewarp: true
+  Wind Warp: true
+
+
+- Type: MINIBOSS
+  Forward: FW Tall Room Before Mini Boss,          FW Mini Boss Room,                        kindan,   9,          0, kinMB,    0,    10
+  Return:  FW Mini Boss Room,                      FW Tall Room Before Mini Boss,            kinMB,   10,          0, kindan,   9,     1
+  Savewarp: true
+- Type: MINIBOSS
+  Forward: TOTG West Servant Corridor Near Mini Boss Room, TOTG Mini Boss Room,              Siren,   14,          0, SirenMB, 23,     0
+  Return:  TOTG Mini Boss Room, TOTG West Servant Corridor Near Mini Boss Room,              SirenMB, 23,          0, Siren,   14,     1
+  Savewarp: true
+- Type: MINIBOSS
+  Forward: ET Two Moblins and Poes Room Past Stairs, ET Mini Boss Room,                      M_Dai,    7,          0, M_DaiMB, 12,     0
+  Return:  ET Mini Boss Room, ET Two Moblins and Poes Room Past Stairs,                      M_DaiMB, 12,          0, M_Dai,    7,     9
+  Savewarp: true
+- Type: MINIBOSS
+  Forward: WT Hub Room Lower Area,                 WT Mini Boss Room,                        kaze,     2,          3, kazeMB,   6,     0
+  Return:  WT Mini Boss Room,                      WT Hub Room Lower Area,                   kazeMB,   6,          0, kaze,     2,    20
+  Savewarp: true
 
 
 - Type: CAVE

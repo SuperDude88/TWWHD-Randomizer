@@ -111,21 +111,11 @@ static std::list<EntranceInfoPair> loadEntranceShuffleTable()
         room = atoi(returnArgs[6].data());
         spawn = atoi(returnArgs[7].data());
 
-        std::string bossFilepathStage = "";
-        std::string bossOutStage = "";
-        uint8_t bossOutRoom = 255;
-        uint8_t bossOutSpawn = 255;
-        if (returnArgs.size() > 8)
-        {
-            bossFilepathStage = returnArgs[8];
-            bossOutStage = returnArgs[9];
-            bossOutRoom = atoi(returnArgs[10].data());
-            bossOutSpawn = atoi(returnArgs[11].data());
-        }
+        auto returnEntrance = EntranceInfo{parentArea, connectedArea, filepathStage, filepathRoom, sclsExitIndex, stage, room, spawn};    
 
-        auto returnEntrance = EntranceInfo{parentArea, connectedArea, filepathStage, filepathRoom, sclsExitIndex, stage, room, spawn, bossFilepathStage, bossOutStage, bossOutRoom, bossOutSpawn};    
-
-        table.push_back(EntranceInfoPair{type, forwardEntrance, returnEntrance});
+        bool savewarp = entrancePair["Savewarp"] ? true : false;
+        bool windWarp = entrancePair["Wind Warp"] ? true : false;
+        table.push_back(EntranceInfoPair{type, forwardEntrance, returnEntrance, savewarp, windWarp});
     }
 
     return table;
@@ -133,7 +123,7 @@ static std::list<EntranceInfoPair> loadEntranceShuffleTable()
 
 EntranceShuffleError setAllEntrancesData(World& world)
 {
-    for (auto& [type, forwardEntry, returnEntry] : loadEntranceShuffleTable())
+    for (auto& [type, forwardEntry, returnEntry, savewarp, windWarp] : loadEntranceShuffleTable())
     {
         auto forwardEntrance = world.getEntrance(forwardEntry.parentArea, forwardEntry.connectedArea);
         if (forwardEntrance == nullptr)
@@ -146,10 +136,6 @@ EntranceShuffleError setAllEntrancesData(World& world)
         forwardEntrance->setStageName(forwardEntry.stage);
         forwardEntrance->setRoomNum(forwardEntry.room);
         forwardEntrance->setSpawnId(forwardEntry.spawnId);
-        forwardEntrance->setBossFilepathStageName(forwardEntry.bossFilepathStage);
-        forwardEntrance->setBossOutStageName(forwardEntry.bossOutStage);
-        forwardEntrance->setBossOutRoomNum(forwardEntry.bossOutRoom);
-        forwardEntrance->setBossOutSpawnId(forwardEntry.bossOutSpawnId);
         forwardEntrance->setEntranceType(type);
         forwardEntrance->setAsPrimary();
         if (returnEntry.parentArea != "")
@@ -165,12 +151,16 @@ EntranceShuffleError setAllEntrancesData(World& world)
             returnEntrance->setStageName(returnEntry.stage);
             returnEntrance->setRoomNum(returnEntry.room);
             returnEntrance->setSpawnId(returnEntry.spawnId);
-            returnEntrance->setBossFilepathStageName(returnEntry.bossFilepathStage);
-            returnEntrance->setBossOutStageName(returnEntry.bossOutStage);
-            returnEntrance->setBossOutRoomNum(returnEntry.bossOutRoom);
-            returnEntrance->setBossOutSpawnId(returnEntry.bossOutSpawnId);
             returnEntrance->setEntranceType(entranceTypeToReverse(type));
             forwardEntrance->bindTwoWay(returnEntrance);
+            if (savewarp)
+            {
+                returnEntrance->setSavewarp(true);
+            }
+            if (windWarp)
+            {
+                returnEntrance->setWindWarp(true);
+            }
         }
     }
     return EntranceShuffleError::NONE;
@@ -698,6 +688,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
     // Only consider mixed pools as active if the entrance type and mixed pool setting is on
     bool mix_dungeons = settings.randomize_dungeon_entrances && settings.mix_dungeons;
     bool mix_bosses = settings.randomize_boss_entrances && settings.mix_bosses;
+    bool mix_minibosses = settings.randomize_miniboss_entrances && settings.mix_minibosses;
     bool mix_caves = settings.randomize_cave_entrances && settings.mix_caves;
     bool mix_doors = settings.randomize_door_entrances && settings.mix_doors;
     bool mix_misc = settings.randomize_misc_entrances && settings.mix_misc;
@@ -705,6 +696,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
     // Determine how many mixed pools there will be before determining which entrances will be randomized
     int totalMixedPools = (mix_dungeons ? 1 : 0) +
                           (mix_bosses ? 1 : 0) +
+                          (mix_minibosses ? 1 : 0) +
                           (mix_caves ? 1 : 0) +
                           (mix_doors ? 1 : 0) +
                           (mix_misc ? 1 : 0);
@@ -750,6 +742,21 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
     else
     {
         vanillaConnectionTypes.push_back(EntranceType::BOSS);
+    }
+
+    if (settings.randomize_miniboss_entrances)
+    {
+        entrancePools[EntranceType::MINIBOSS] = world.getShuffleableEntrances(EntranceType::MINIBOSS, true);
+        if (settings.decouple_entrances)
+        {
+            entrancePools[EntranceType::MINIBOSS_REVERSE] = getReverseEntrances(entrancePools, EntranceType::MINIBOSS);
+            typesToDecouple.push_back(EntranceType::MINIBOSS);
+            typesToDecouple.push_back(EntranceType::MINIBOSS_REVERSE);
+        }
+    }
+    else
+    {
+        vanillaConnectionTypes.push_back(EntranceType::MINIBOSS);
     }
 
     if (settings.randomize_cave_entrances)
@@ -826,6 +833,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
     {
         CHECK_MIXED_POOL(mix_dungeons, EntranceType::DUNGEON);
         CHECK_MIXED_POOL(mix_bosses, EntranceType::BOSS);
+        CHECK_MIXED_POOL(mix_minibosses, EntranceType::MINIBOSS);
         CHECK_MIXED_POOL(mix_doors, EntranceType::DOOR);
         CHECK_MIXED_POOL(mix_caves, EntranceType::CAVE);
         if (mix_misc)
