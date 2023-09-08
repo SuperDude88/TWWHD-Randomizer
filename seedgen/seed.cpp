@@ -4,6 +4,10 @@
 #include <vector>
 
 #include <seedgen/random.hpp>
+#include <seedgen/config.hpp>
+#include <seedgen/permalink.hpp>
+#include <utility/file.hpp>
+#include <libs/zlib-ng/zlib-ng.h>
 
 static std::vector<std::string> adjectives = {
     "able",
@@ -2487,4 +2491,25 @@ std::string generate_seed_hash() {
     name2[0] = std::toupper(name2[0]);
 
     return name1 + " " + name2;
+}
+
+std::string hash_for_seed(const std::string& seed) {
+    Config config;
+    loadFromFile(APP_SAVE_PATH "config.yaml", config);
+    auto permalink = create_permalink(config.settings, seed);
+
+    if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
+
+    // Add the plandomizer file contents to the permalink when plandomzier is enabled
+    if (config.settings.plandomizer) {
+        std::string plandoContents = "";
+        Utility::getFileContents(config.settings.plandomizerFile, plandoContents);
+        permalink += plandoContents;
+    }
+
+    // Seed RNG
+    auto integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
+
+    Random_Init(integer_seed);
+    return generate_seed_hash();
 }
