@@ -1114,6 +1114,7 @@ void MainWindow::on_randomize_button_clicked()
     progressDialog->setWindowFlag(Qt::WindowCloseButtonHint, false);
     progressDialog->setCancelButton(0);
     progressDialog->setValue(0);
+    progressDialog->setMinimumWidth(250);
     progressDialog->setVisible(true);
 
     encounteredError = false;
@@ -1124,6 +1125,7 @@ void MainWindow::on_randomize_button_clicked()
     // Let the randomizer thread update the text and value of the progress dialog
     connect(thread, &RandomizerThread::dialogValueUpdate, progressDialog, &QProgressDialog::setValue);
     connect(thread, &RandomizerThread::dialogLabelUpdate, progressDialog, &QProgressDialog::setLabelText);
+    connect(thread, &RandomizerThread::dialogTitleUpdate, progressDialog, &QProgressDialog::setWindowTitle);
     // If an error happened, let the Main Window know so it can show an error message
     connect(thread, &RandomizerThread::errorUpdate, this, &MainWindow::show_error_dialog);
     thread->start();
