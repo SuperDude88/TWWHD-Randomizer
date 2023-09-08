@@ -14,6 +14,7 @@ public:
 signals:
     void dialogValueUpdate(int val);
     void dialogLabelUpdate(const QString& label);
+    void dialogTitleUpdate(const QString& title);
     void errorUpdate(const std::string& msg, const std::string& title = "An error has occured!");
 };
 

@@ -689,6 +689,8 @@ public:
         Random_Init(integer_seed);
         LogInfo::setSeedHash(generate_seed_hash());
 
+        UPDATE_DIALOG_TITLE("Randomizing - Hash: " + LogInfo::getSeedHash());
+
         // clearOldLogs();
 
         // Create all necessary worlds (for any potential multiworld support in the future)
