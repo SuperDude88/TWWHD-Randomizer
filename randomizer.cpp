@@ -403,8 +403,8 @@ private:
         }
 
         // Also include boss rooms and miniboss rooms
-        for (const std::string& bossStage : {"M_DragB", "kinBOSS",  "SirenB",  "M_DaiB",  "kazeB", 
-                                             "M_Dra09",   "kinMB", "SirenMB", "M_DaiMB", "kazeMB"}) {
+        for (const std::string& bossStage : {"M_DragB", "kinBOSS", "SirenB",  "M_DaiB",  "kazeB", "M2tower",
+                                             "M_Dra09",  "kinMB",  "SirenMB", "M_DaiMB", "kazeMB"}) {
             paths.emplace("content/Common/Stage/" + bossStage + "_Stage.szs");
         }
 
@@ -548,10 +548,10 @@ private:
                     }
                     std::string dungeonName = replacementForThis->getParentArea()->dungeon;
                     if (dungeonName != "") {
-                        auto dungeonEntrance = entrance->getWorld()->getDungeon(dungeonName).startingEntrance;
-                        replacementStage = dungeonEntrance->getStageName();
-                        replacementRoom = dungeonEntrance->getRoomNum();
-                        replacementSpawn = dungeonEntrance->getSpawnId();
+                        auto dungeon = entrance->getWorld()->getDungeon(dungeonName);
+                        replacementStage = dungeon.savewarpStage;
+                        replacementRoom = dungeon.savewarpRoom;
+                        replacementSpawn = dungeon.savewarpSpawn;
 
                     } else if (entrance->isDecoupled()) {
                         // If the entrance is decoupled, then set the savewarp as the reverse
@@ -580,11 +580,11 @@ private:
             }
         }
 
-        // Update warp wind exits appropriately
+        // Update wind warp exits appropriately
         std::list<Entrance*> bossReverseEntrances = {};
         for (auto& [areaName, area] : worlds[0].areaTable) {
             for (auto& exit : area->exits) {
-                if (exit.getEntranceType() == EntranceType::BOSS_REVERSE) {
+                if (exit.hasWindWarp()) {
                     bossReverseEntrances.push_back(&exit);
                 }
             }
@@ -611,10 +611,10 @@ private:
                     if (!settings.mix_dungeons && !settings.randomize_misc_entrances) {
                         // Get the warp wind exit of the dungeon entrance that was randomized to this dungeon
                         // If dungeons aren't randomized it'll just return the same one
-                        auto warpWindExit = dungeonExit->getReplaces()->getReverse()->getReplaces()->getReverse();
-                        replacementStage = warpWindExit->getBossOutStageName();
-                        replacementRoom = warpWindExit->getBossOutRoomNum();
-                        replacementSpawn = warpWindExit->getBossOutSpawnId();
+                        auto dungeon = entrance->getWorld()->getDungeon(dungeonExit->getReplaces()->getReverse()->getOriginalConnectedArea()->dungeon);
+                        replacementStage = dungeon.windWarpExitStage;
+                        replacementRoom = dungeon.windWarpExitRoom;
+                        replacementSpawn = dungeon.windWarpExitSpawn;
                     } else {
                         replacementStage = dungeonExit->getReplaces()->getStageName();
                         replacementRoom = dungeonExit->getReplaces()->getRoomNum();
@@ -759,7 +759,12 @@ public:
             }
         }
 
-        if (config.settings.randomize_cave_entrances || config.settings.randomize_door_entrances || config.settings.randomize_dungeon_entrances || config.settings.randomize_misc_entrances) {
+        if (config.settings.randomize_dungeon_entrances ||
+            config.settings.randomize_boss_entrances ||
+            config.settings.randomize_miniboss_entrances ||
+            config.settings.randomize_cave_entrances ||
+            config.settings.randomize_door_entrances ||
+            config.settings.randomize_misc_entrances) {
             if(!writeEntrances(worlds)) {
                 ErrorLog::getInstance().log("Failed to save entrances!");
                 return 1;

@@ -52,6 +52,7 @@ public:
         MACRO_MISSING_KEY,
         MACRO_MISSING_VAL,
         ITEM_MISSING_KEY,
+        DUNGEON_MISSING_KEY,
         REQUIREMENT_MISSING_KEY,
         INVALID_LOCATION_CATEGORY,
         INVALID_MODIFICATION_TYPE,
@@ -147,6 +148,7 @@ private:
     WorldLoadingError loadArea(const YAML::Node& areaObject);
     WorldLoadingError loadItem(const YAML::Node& itemObject);
     WorldLoadingError loadAreaTranslations(const YAML::Node& areaObject);
+    WorldLoadingError loadDungeonExitInfo();
 
     Settings settings;
     ItemPool itemPool;

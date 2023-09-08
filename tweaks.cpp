@@ -471,13 +471,13 @@ TweakError remove_ff2_cutscenes() {
             }
         }
 
-        std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
-        for (ChunkEntry* exit : exits) {
-            if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) {
-                exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
-                break;
-            }
-        }
+        // std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
+        // for (ChunkEntry* exit : exits) {
+        //     if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) {
+        //         exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
+        //         break;
+        //     }
+        // }
 
         return true;
     });
@@ -1710,19 +1710,21 @@ TweakError add_boss_door_return_spawns() {
     };
 
     std::list<BossDoorSpawnData> newSpawns = {
-        {"M_NewD2", 10,   400.0f,  5950.0f,  -450.0f, 0x0000},
-        {"Siren",   18, -2200.0f,  9245.0f, -9775.0f, 0xC000},
-        {"kaze",    12, 13965.0f, -5060.0f,  9600.0f, 0x8000},
+        {"M_NewD2", 10,     400.0f,  5950.0f,    -450.0f, 0x0000},
+        {"Siren",   18,   -2200.0f,  9245.0f,   -9775.0f, 0xC000},
+        {"sea",      1, -302800.0f,  4544.0f, -304400.0f, 0xD555},
+        {"kaze",    12,   13965.0f, -5060.0f,    9600.0f, 0x8000},
     };
 
     for (auto& newSpawn : newSpawns) {
-        RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
-        RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Room" + std::to_string(newSpawn.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(newSpawn.room_num) + ".bfres@BFRES@room.dzr@DZX");
 
         RandoSession::CacheEntry* dzx_for_spawn;
-        dzx_for_spawn = &room;
-        if(newSpawn.stage_name == "M_Dai" || newSpawn.stage_name == "kaze") {
-            dzx_for_spawn = &stage;
+        if (newSpawn.stage_name == "sea") {
+            dzx_for_spawn = &g_session.openGameFile(get_island_room_dzx_filepath(newSpawn.room_num));
+        } else if (isAnyOf(newSpawn.stage_name, "M_Dai", "kaze")) {
+            dzx_for_spawn = &g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+        } else {
+            dzx_for_spawn = &g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Room" + std::to_string(newSpawn.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(newSpawn.room_num) + ".bfres@BFRES@room.dzr@DZX");;
         }
 
         Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.x);
@@ -1738,7 +1740,8 @@ TweakError add_boss_door_return_spawns() {
 
             // Spawn type 6 doesn't work properly for the wind 
             // temple boss door for some reason, so use 0 instead
-            if (newSpawn.stage_name == "kaze") {
+            // Also use 0 for Forsaken Fortress
+            if (isAnyOf(newSpawn.stage_name, "kaze", "sea")) {
                 spawn.data[0xA] = '\x00';
             }
 
