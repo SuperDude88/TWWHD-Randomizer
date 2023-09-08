@@ -11,11 +11,15 @@ using namespace std::literals::chrono_literals;
 
 bool pickSeed(std::string& current) {
     bool seedChanged = false;
+    std::string seedHash = "";
     while(true) {
+
+        seedHash = hash_for_seed(current);
+
         ScreenClear();
 
-        OSScreenPutFontEx(SCREEN_TV, 0, 0, ("The current seed is \"" + current + "\".\n").c_str());
-        OSScreenPutFontEx(SCREEN_DRC, 0, 0, ("The current seed is \"" + current + "\".\n").c_str());
+        OSScreenPutFontEx(SCREEN_TV, 0, 0, ("The current seed is \"" + current + "\". Hash: " + seedHash + "\n").c_str());
+        OSScreenPutFontEx(SCREEN_DRC, 0, 0, ("The current seed is \"" + current + "\". Hash: " + seedHash + "\n").c_str());
 
         OSScreenPutFontEx(SCREEN_TV, 0, 1, "Press A to continue with this seed\n");
         OSScreenPutFontEx(SCREEN_DRC, 0, 1, "Press A to continue with this seed\n");
