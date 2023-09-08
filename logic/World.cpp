@@ -1064,6 +1064,41 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
     return WorldLoadingError::NONE;
 }
 
+World::WorldLoadingError World::loadDungeonExitInfo()
+{
+    std::string dungeonExitData;
+    Utility::getFileContents(DATA_PATH "logic/data/dungeon_entrance_info.yaml", dungeonExitData, true);
+    YAML::Node dungeonExitTree = YAML::Load(dungeonExitData);
+
+    for (const auto& dungeonExitData : dungeonExitTree)
+    {
+        auto dungeonName = dungeonExitData.first.as<std::string>();
+        auto& dungeon = getDungeon(dungeonName);
+        auto& exitData = dungeonExitData.second;
+        YAML_FIELD_CHECK(exitData, "Savewarp", WorldLoadingError::DUNGEON_MISSING_KEY);
+        YAML_FIELD_CHECK(exitData, "Wind Warp Exit",  WorldLoadingError::DUNGEON_MISSING_KEY);
+
+        auto& savewarpData = exitData["Savewarp"];
+        auto& windWarpData = exitData["Wind Warp Exit"];
+
+        YAML_FIELD_CHECK(savewarpData, "stage", WorldLoadingError::DUNGEON_MISSING_KEY);
+        YAML_FIELD_CHECK(savewarpData, "room", WorldLoadingError::DUNGEON_MISSING_KEY);
+        YAML_FIELD_CHECK(savewarpData, "spawn", WorldLoadingError::DUNGEON_MISSING_KEY);
+        YAML_FIELD_CHECK(windWarpData, "stage", WorldLoadingError::DUNGEON_MISSING_KEY);
+        YAML_FIELD_CHECK(windWarpData, "room", WorldLoadingError::DUNGEON_MISSING_KEY);
+        YAML_FIELD_CHECK(windWarpData, "spawn", WorldLoadingError::DUNGEON_MISSING_KEY);
+
+        dungeon.windWarpExitStage = windWarpData["stage"].as<std::string>();
+        dungeon.windWarpExitRoom = windWarpData["room"].as<uint8_t>();
+        dungeon.windWarpExitSpawn = windWarpData["spawn"].as<uint8_t>();
+        dungeon.savewarpStage = savewarpData["stage"].as<std::string>();
+        dungeon.savewarpRoom = savewarpData["room"].as<uint8_t>();
+        dungeon.savewarpSpawn = savewarpData["spawn"].as<uint8_t>();
+    }
+
+    return WorldLoadingError::NONE;
+}
+
 World::WorldLoadingError World::processPlandomizerLocations(WorldPool& worlds)
 {
     // Process Locations
@@ -1211,6 +1246,15 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
                 }   
             }
         }
+    }
+
+    // Load dungeon wind warp exit info
+    err = loadDungeonExitInfo();
+    if (err != World::WorldLoadingError::NONE)
+    {
+        ErrorLog::getInstance().log(std::string("Got error loading dungeon exit info: ") + errorToName(err));
+        ErrorLog::getInstance().log(getLastErrorDetails());
+        return 1;
     }
 
     return 0;
@@ -1371,6 +1415,8 @@ std::string World::errorToName(WorldLoadingError err)
         return "MACRO_MISSING_VAL";
     case WorldLoadingError::ITEM_MISSING_KEY:
         return "ITEM_MISSING_KEY";
+    case WorldLoadingError::DUNGEON_MISSING_KEY:
+        return "DUNGEON_MISSING_KEY";
     case WorldLoadingError::REQUIREMENT_MISSING_KEY:
         return "REQUIREMENT_MISSING_KEY";
     case WorldLoadingError::INVALID_LOCATION_CATEGORY:

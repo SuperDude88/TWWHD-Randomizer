@@ -62,6 +62,7 @@ private:
     QListView eventsByName;
     QStandardItem mix_dungeons;
     QStandardItem mix_bosses;
+    QStandardItem mix_minibosses;
     QStandardItem mix_caves;
     QStandardItem mix_doors;
     QStandardItem mix_misc;
@@ -204,6 +205,7 @@ private slots:
     void on_start_with_random_item_stateChanged(int arg1);
     void on_plandomizer_stateChanged(int arg1);
     void on_plandomizer_path_browse_button_clicked();
+    void on_fix_rng_stateChanged(int arg1);
 
     // Hints
     void on_ho_ho_hints_stateChanged(int arg1);
@@ -217,6 +219,7 @@ private slots:
     // Entrance Randomizer
     void on_randomize_dungeon_entrances_stateChanged(int arg1);
     void on_randomize_boss_entrances_stateChanged(int arg1);
+    void on_randomize_miniboss_entrances_stateChanged(int arg1);
     void on_randomize_cave_entrances_stateChanged(int arg1);
     void on_randomize_door_entrances_stateChanged(int arg1);
     void on_randomize_misc_entrances_stateChanged(int arg1);
@@ -259,8 +262,6 @@ private slots:
     void on_entrance_destination_back_button_released();
 
 
-
-    void on_fix_rng_stateChanged(int arg1);
 
 private:
     // More Tracker Stuff

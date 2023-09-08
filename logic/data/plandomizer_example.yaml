@@ -65,7 +65,7 @@
 # formats are not interchangable. If you attempt to randomize entrances
 # that don't exist or which aren't supported for shuffling at the current moment,
 # then you'll get a plandomizer error. For a full list of randomizable entrances please see:
-# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/EntranceShuffle.cpp#L24
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/entrance_shuffle_table.yaml
 
 # STARTING ISLAND
 # You can also set the starting island if you want to. For a list of island names, see

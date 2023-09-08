@@ -121,7 +121,6 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 
     // Convenience Tweaks
     Option::InstantText,
-    Option::FixRNG,
     Option::RevealSeaChart,
     Option::SkipRefights,
     Option::AddShortcutWarps,
@@ -144,6 +143,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::NoSpoilerLog,
     Option::StartWithRandomItem,
     Option::Plandomizer,
+    Option::FixRNG,
 
     // Hints
     Option::HoHoHints,
@@ -158,11 +158,13 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     // Entrance Randomizer
     Option::RandomizeDungeonEntrances,
     Option::RandomizeBossEntrances,
+    Option::RandomizeMinibossEntrances,
     Option::RandomizeCaveEntrances,
     Option::RandomizeDoorEntrances,
     Option::RandomizeMiscEntrances,
     Option::MixDungeons,
     Option::MixBosses,
+    Option::MixMinibosses,
     Option::MixCaves,
     Option::MixDoors,
     Option::MixMisc,

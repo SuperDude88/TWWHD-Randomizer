@@ -153,11 +153,13 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.randomize_starting_island = false;
     conf.settings.randomize_dungeon_entrances = false;
     conf.settings.randomize_boss_entrances = false;
+    conf.settings.randomize_miniboss_entrances = false;
     conf.settings.randomize_cave_entrances = false;
     conf.settings.randomize_door_entrances = false;
     conf.settings.randomize_misc_entrances = false;
     conf.settings.mix_dungeons = false;
     conf.settings.mix_bosses = false;
+    conf.settings.mix_minibosses = false;
     conf.settings.mix_caves = false;
     conf.settings.mix_doors = false;
     conf.settings.mix_misc = false;
@@ -297,11 +299,13 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, randomize_starting_island)
     SET_BOOL_FIELD(root, out, randomize_dungeon_entrances)
     SET_BOOL_FIELD(root, out, randomize_boss_entrances)
+    SET_BOOL_FIELD(root, out, randomize_miniboss_entrances)
     SET_BOOL_FIELD(root, out, randomize_cave_entrances)
     SET_BOOL_FIELD(root, out, randomize_door_entrances)
     SET_BOOL_FIELD(root, out, randomize_misc_entrances)
     SET_BOOL_FIELD(root, out, mix_dungeons)
     SET_BOOL_FIELD(root, out, mix_bosses)
+    SET_BOOL_FIELD(root, out, mix_minibosses)
     SET_BOOL_FIELD(root, out, mix_caves)
     SET_BOOL_FIELD(root, out, mix_doors)
     SET_BOOL_FIELD(root, out, mix_misc)
@@ -581,11 +585,13 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_starting_island)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_dungeon_entrances)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_boss_entrances)
+    WRITE_SETTING_BOOL_FIELD(root, config, randomize_miniboss_entrances)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_cave_entrances)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_door_entrances)
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_misc_entrances)
     WRITE_SETTING_BOOL_FIELD(root, config, mix_dungeons)
     WRITE_SETTING_BOOL_FIELD(root, config, mix_bosses)
+    WRITE_SETTING_BOOL_FIELD(root, config, mix_minibosses)
     WRITE_SETTING_BOOL_FIELD(root, config, mix_caves)
     WRITE_SETTING_BOOL_FIELD(root, config, mix_doors)
     WRITE_SETTING_BOOL_FIELD(root, config, mix_misc)

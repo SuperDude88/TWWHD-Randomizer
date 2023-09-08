@@ -402,8 +402,9 @@ private:
             paths.emplace(filepath);
         }
 
-        // Also include boss rooms
-        for (const std::string& bossStage : {"M_DragB", "kinBOSS", "SirenB", "M_DaiB", "kazeB"}) {
+        // Also include boss rooms and miniboss rooms
+        for (const std::string& bossStage : {"M_DragB", "kinBOSS", "SirenB",  "M_DaiB",  "kazeB", "M2tower",
+                                             "M_Dra09",  "kinMB",  "SirenMB", "M_DaiMB", "kazeMB"}) {
             paths.emplace("content/Common/Stage/" + bossStage + "_Stage.szs");
         }
 
@@ -430,7 +431,7 @@ private:
         {
             const std::string fileStage = entrance->getFilepathStage();
             const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
-            const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
+            uint8_t sclsExitIndex = entrance->getSclsExitIndex();
             std::string replacementStage = entrance->getReplaces()->getStageName();
             uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
             uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
@@ -454,14 +455,6 @@ private:
                     filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
                 }
             }
-
-            // Room number of 0xFF in the entrance shuffle table indicates
-            // that the SCLS entry is in the stage.dzs file instead of room.dzr
-            if (entrance->getFilepathRoomNum() == 0xFF) {
-                filepath = "content/Common/Stage/" + fileStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";                 
-            }
-
-            RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
 
             // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
             // "MiniKaz" is the Fire Mountain stage name
@@ -505,53 +498,93 @@ private:
                 });
             }
 
-            dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+            // an SCLS Exit index of 255 indicates that there isn't a room file that we want to modify
+            if (sclsExitIndex != 0xFF)
             {
-                CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+                RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
 
-                // If this is the savewarp exit of a boss room, update it appropriately
-                if (entrance->getEntranceType() == EntranceType::BOSS_REVERSE) {
-                    // If this boss room is accessed via a dungeon then set the savewarp
+                dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+                {
+                    CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+                    const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
+                    if(sclsExitIndex > (scls_entries.size() - 1)) {
+                        ErrorLog::getInstance().log("SCLS entry index outside of list!");
+                        return false;
+                    }
+
+                    // Update the SCLS entry so that the player gets taken to the new entrance
+                    ChunkEntry* exit = scls_entries[sclsExitIndex];
+                    replacementStage.resize(8, '\0');
+                    exit->data.replace(0, 8, replacementStage.c_str(), 8);
+                    exit->data[8] = replacementSpawn;
+                    exit->data[9] = replacementRoom;
+
+                    return true;
+                });
+            }
+
+            // If this entrance needs a savewarp update, then update the scls entry in the stage.dzs file
+            if (entrance->needsSavewarp())
+            {
+                filepath = "content/Common/Stage/" + fileStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";
+                sclsExitIndex = 0;
+
+                RandoSession::CacheEntry& dzsEntry = g_session.openGameFile(filepath);
+                dzsEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+                {
+                    CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+                    // If this boss/miniboss room is accessed via a dungeon then set the savewarp
                     // as the dungeon entrance
-                    auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
+                    auto& areaEntrances = entrance->getParentArea()->entrances;
+                    Entrance* replacementForThis = nullptr;
+                    for (auto e : areaEntrances)
+                    {
+                        if (e->getReplaces() == entrance->getReverse())
+                        {
+                            replacementForThis = e;
+                            break;
+                        }
+                    }
+                    std::string dungeonName = replacementForThis->getParentArea()->dungeon;
                     if (dungeonName != "") {
-                        auto dungeonEntrance = entrance->getWorld()->getDungeon(dungeonName).startingEntrance;
-                        replacementStage = dungeonEntrance->getStageName();
-                        replacementRoom = dungeonEntrance->getRoomNum();
-                        replacementSpawn = dungeonEntrance->getSpawnId();
+                        auto dungeon = entrance->getWorld()->getDungeon(dungeonName);
+                        replacementStage = dungeon.savewarpStage;
+                        replacementRoom = dungeon.savewarpRoom;
+                        replacementSpawn = dungeon.savewarpSpawn;
 
                     } else if (entrance->isDecoupled()) {
                         // If the entrance is decoupled, then set the savewarp as the reverse
-                        // of the entrance used to enter the boss room
-                        auto reverse = entrance->getReplaces()->getReverse();
+                        // of the entrance used to enter the boss/miniboss room
+                        auto reverse = replacementForThis->getReverse();
                         replacementStage = reverse->getStageName();
                         replacementRoom = reverse->getRoomNum();
                         replacementSpawn = reverse->getSpawnId();
                     }
-                }
 
-                const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
-                if(sclsExitIndex > (scls_entries.size() - 1)) {
-                    ErrorLog::getInstance().log("SCLS entry index outside of list!");
-                    return false;
-                }
+                    const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
+                    if(sclsExitIndex > (scls_entries.size() - 1)) {
+                        ErrorLog::getInstance().log("SCLS entry index outside of list!");
+                        return false;
+                    }
 
-                // Update the SCLS entry so that the player gets taken to the new entrance
-                ChunkEntry* exit = scls_entries[sclsExitIndex];
-                replacementStage.resize(8, '\0');
-                exit->data.replace(0, 8, replacementStage.c_str(), 8);
-                exit->data[8] = replacementSpawn;
-                exit->data[9] = replacementRoom;
+                    // Update the SCLS entry so that the player savewarps to the right place
+                    ChunkEntry* exit = scls_entries[sclsExitIndex];
+                    replacementStage.resize(8, '\0');
+                    exit->data.replace(0, 8, replacementStage.c_str(), 8);
+                    exit->data[8] = replacementSpawn;
+                    exit->data[9] = replacementRoom;
 
-                return true;
-            });
+                    return true;
+                });
+            }
         }
 
-        // Update warp wind exits appropriately
+        // Update wind warp exits appropriately
         std::list<Entrance*> bossReverseEntrances = {};
         for (auto& [areaName, area] : worlds[0].areaTable) {
             for (auto& exit : area->exits) {
-                if (exit.getEntranceType() == EntranceType::BOSS_REVERSE) {
+                if (exit.hasWindWarp()) {
                     bossReverseEntrances.push_back(&exit);
                 }
             }
@@ -578,10 +611,10 @@ private:
                     if (!settings.mix_dungeons && !settings.randomize_misc_entrances) {
                         // Get the warp wind exit of the dungeon entrance that was randomized to this dungeon
                         // If dungeons aren't randomized it'll just return the same one
-                        auto warpWindExit = dungeonExit->getReplaces()->getReverse()->getReplaces()->getReverse();
-                        replacementStage = warpWindExit->getBossOutStageName();
-                        replacementRoom = warpWindExit->getBossOutRoomNum();
-                        replacementSpawn = warpWindExit->getBossOutSpawnId();
+                        auto dungeon = entrance->getWorld()->getDungeon(dungeonExit->getReplaces()->getReverse()->getOriginalConnectedArea()->dungeon);
+                        replacementStage = dungeon.windWarpExitStage;
+                        replacementRoom = dungeon.windWarpExitRoom;
+                        replacementSpawn = dungeon.windWarpExitSpawn;
                     } else {
                         replacementStage = dungeonExit->getReplaces()->getStageName();
                         replacementRoom = dungeonExit->getReplaces()->getRoomNum();
@@ -726,7 +759,12 @@ public:
             }
         }
 
-        if (config.settings.randomize_cave_entrances || config.settings.randomize_door_entrances || config.settings.randomize_dungeon_entrances || config.settings.randomize_misc_entrances) {
+        if (config.settings.randomize_dungeon_entrances ||
+            config.settings.randomize_boss_entrances ||
+            config.settings.randomize_miniboss_entrances ||
+            config.settings.randomize_cave_entrances ||
+            config.settings.randomize_door_entrances ||
+            config.settings.randomize_misc_entrances) {
             if(!writeEntrances(worlds)) {
                 ErrorLog::getInstance().log("Failed to save entrances!");
                 return 1;
