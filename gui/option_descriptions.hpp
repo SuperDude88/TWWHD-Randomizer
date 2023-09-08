@@ -308,6 +308,14 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Shuffles around which dungeon entrances take you into which dungeons."
     },
     {
+      "randomize_boss_entrances",
+      "Shuffles around which boss entrances take you to what boss."
+    },
+    {
+      "randomize_miniboss_entrances",
+      "Shuffles around which miniboss entrances take you to what miniboss. The DRC miniboss is not included in this due to having 2 entrances."
+    },
+    {
       "randomize_cave_entrances",
       "Shuffles around which secret cave entrances take you into which secret caves."
     },
