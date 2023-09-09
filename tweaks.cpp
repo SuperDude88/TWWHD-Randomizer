@@ -3032,6 +3032,7 @@ TweakError apply_custom_colors(World& world) {
                                     }
 
                                     auto newColor = colorExchange(baseColor, replacementColor, curColor);
+                                    Utility::Endian::toPlatform_inplace(eType::Little, newColor);
 
                                     if (offset < texture.data.length()) {
                                         texture.data.replace(offset, 2, reinterpret_cast<const char*>(&newColor), 2);
