@@ -1753,6 +1753,12 @@ TweakError add_boss_door_return_spawns() {
             spawn.data.replace(0x18, 2, "\x00\x00", 2);
             spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&newSpawn.y_rot), 2);
             spawn.data.replace(0x1C, 4, "\xFF\x46\xFF\xFF", 4);
+            if(newSpawn.stage_name == "sea") {
+                spawn.data[0x1C] = '\x00'; //use ship spawn ID 0 if this exits to sea
+            }
+            else {
+                spawn.data[0x1C] = '\xFF'; //otherwise don't do anything with KoRL
+            }
 
             return true;
         });
