@@ -15,18 +15,18 @@ namespace WWHDStructs {
         in.read(reinterpret_cast<char*>(&actr.x_pos), sizeof(actr.x_pos));
         in.read(reinterpret_cast<char*>(&actr.y_pos), sizeof(actr.y_pos));
         in.read(reinterpret_cast<char*>(&actr.z_pos), sizeof(actr.z_pos));
-        in.read(reinterpret_cast<char*>(&actr.aux_params_1), sizeof(actr.aux_params_1));
+        in.read(reinterpret_cast<char*>(&actr.x_rot), sizeof(actr.x_rot));
         in.read(reinterpret_cast<char*>(&actr.y_rot), sizeof(actr.y_rot));
-        in.read(reinterpret_cast<char*>(&actr.aux_params_2), sizeof(actr.aux_params_2));
+        in.read(reinterpret_cast<char*>(&actr.z_rot), sizeof(actr.z_rot));
         in.read(reinterpret_cast<char*>(&actr.enemy_number), sizeof(actr.enemy_number));
 
         Utility::Endian::toPlatform_inplace(eType::Big, actr.params);
         Utility::Endian::toPlatform_inplace(eType::Big, actr.x_pos);
         Utility::Endian::toPlatform_inplace(eType::Big, actr.y_pos);
         Utility::Endian::toPlatform_inplace(eType::Big, actr.z_pos);
-        Utility::Endian::toPlatform_inplace(eType::Big, actr.aux_params_1);
+        Utility::Endian::toPlatform_inplace(eType::Big, actr.x_rot);
         Utility::Endian::toPlatform_inplace(eType::Big, actr.y_rot);
-        Utility::Endian::toPlatform_inplace(eType::Big, actr.aux_params_2);
+        Utility::Endian::toPlatform_inplace(eType::Big, actr.z_rot);
         Utility::Endian::toPlatform_inplace(eType::Big, actr.enemy_number);
         return actr;
     }
@@ -48,9 +48,9 @@ namespace WWHDStructs {
         auto x_pos_BE = Utility::Endian::toPlatform(eType::Big, actr.x_pos);
         auto y_pos_BE = Utility::Endian::toPlatform(eType::Big, actr.y_pos);
         auto z_pos_BE = Utility::Endian::toPlatform(eType::Big, actr.z_pos);
-        auto aux_params_1_BE = Utility::Endian::toPlatform(eType::Big, actr.aux_params_1);
+        auto x_rot_BE = Utility::Endian::toPlatform(eType::Big, actr.x_rot);
         auto y_rot_BE = Utility::Endian::toPlatform(eType::Big, actr.y_rot);
-        auto aux_params_2_BE = Utility::Endian::toPlatform(eType::Big, actr.aux_params_2);
+        auto z_rot_BE = Utility::Endian::toPlatform(eType::Big, actr.z_rot);
         auto enemy_number_BE = Utility::Endian::toPlatform(eType::Big, actr.enemy_number);
 
         out.write(&actr.name[0], 8);
@@ -58,9 +58,9 @@ namespace WWHDStructs {
         out.write(reinterpret_cast<const char*>(&x_pos_BE), sizeof(x_pos_BE));
         out.write(reinterpret_cast<const char*>(&y_pos_BE), sizeof(y_pos_BE));
         out.write(reinterpret_cast<const char*>(&z_pos_BE), sizeof(z_pos_BE));
-        out.write(reinterpret_cast<const char*>(&aux_params_1_BE), sizeof(aux_params_1_BE));
+        out.write(reinterpret_cast<const char*>(&x_rot_BE), sizeof(x_rot_BE));
         out.write(reinterpret_cast<const char*>(&y_rot_BE), sizeof(y_rot_BE));
-        out.write(reinterpret_cast<const char*>(&aux_params_2_BE), sizeof(aux_params_2_BE));
+        out.write(reinterpret_cast<const char*>(&z_rot_BE), sizeof(z_rot_BE));
         out.write(reinterpret_cast<const char*>(&enemy_number_BE), sizeof(enemy_number_BE));
 
         return;

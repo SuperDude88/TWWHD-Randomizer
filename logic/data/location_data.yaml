@@ -3419,6 +3419,20 @@
     - 0x00001EA0
 
 - Names:
+    English: Dragon Roost Cavern - Water Jug On Upper Shelf
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000424
+
+- Names:
     English: Dragon Roost Cavern - Boarded Up Chest
     Spanish: Cueva del Dragón - Cofre tras la barricada
     French: Caverne du Dragon - Coffre barricadé
@@ -3525,6 +3539,20 @@
     - 0x00001E00
 
 - Names:
+    English: Dragon Roost Cavern - Pot on Upper Shelf in Pot Room
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_NewD2_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000558
+
+- Names:
     English: Dragon Roost Cavern - Boss Stairs Right Chest
     Spanish: Cueva del Dragón - Cofre Derecho de las gradas del Jefe
     French: Caverne du Dragon - Coffre de droite des escaliers du Boss
@@ -3549,6 +3577,20 @@
   Type: Chest
   Offsets:
     - 0x00001DE0
+
+- Names:
+    English: Dragon Roost Cavern - Boss Stairs Right Pot
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x000004F4
 
 - Names:
     English: Dragon Roost Cavern - Mini Boss
@@ -3648,6 +3690,20 @@
     - 0x000018F4
 
 - Names:
+    English: Forbidden Woods - Pot High Above Hollow Tree
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kindan_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000E80
+
+- Names:
     English: Forbidden Woods - Inside Hollow Tree Chest
     Spanish: Bosque Prohibido - Cofre dentro del árbol hueco
     French: Bois Défendus - Coffre à l'intérieur de l'arbre creux
@@ -3711,6 +3767,20 @@
   Type: Chest
   Offsets:
     - 0x00001954
+
+- Names:
+    English: Forbidden Woods - Highest Pot in Vine Maze
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kindan_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00001D20
 
 - Names:
     English: Forbidden Woods - Tall Room Chest
@@ -3862,6 +3932,20 @@
     - 0x00001944
 
 - Names:
+    English: Tower of the Gods - Pot Behind Bombable Wall
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/Siren_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000218
+
+- Names:
     English: Tower of the Gods - Light Two Torches Chest
     Spanish: Torre de los Dioses - Cofre de las dos antorchas
     French: Tour des Dieux - Coffre des deux torches
@@ -4006,6 +4090,20 @@
     - 0x00001A84
 
 - Names:
+    English: Tower of the Gods - Eastern Pot in Big Key Chest Room
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/Siren_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000234
+
+- Names:
     English: Tower of the Gods - Gohdan Heart Container
     Spanish: Torre de los Dioses - Contenedor de Corazón de Deus Probatur
     French: Tour des Dieux - Réceptacle de Cœur de Gordon
@@ -4043,7 +4141,7 @@
   Original Item: Joy Pendant
   Category:
     - Dungeon
-    - Obscure
+    - Dungeon Secret
   Path: content/Common/Stage/M_Dai_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Actor
@@ -4175,7 +4273,7 @@
   Original Item: Joy Pendant
   Category:
     - Dungeon
-    - Obscure
+    - Dungeon Secret
   Path: content/Common/Stage/M_Dai_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
   Hint Priority: Sometimes
   Type: Actor
@@ -4279,6 +4377,20 @@
     - 0x00000F84
 
 - Names:
+    English: Wind Temple - Behind Stone Head in Hidden Upper Room
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kaze_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x000002E8
+
+- Names:
     English: Wind Temple - Tingle Statue Chest
     Spanish: Templo del Viento - Cofre de la Estatua de Tingle
     French: Temple du Vent - Coffre de la Statue Tingle
@@ -4343,6 +4455,20 @@
   Type: Chest
   Offsets:
     - 0x00000FE4
+
+- Names:
+    English: Wind Temple - Behind Stone Head in Many Cyclones Room
+    Spanish: TODO
+    French: TODO
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kaze_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000790
 
 - Names:
     English: Wind Temple - Hub Room Center Chest

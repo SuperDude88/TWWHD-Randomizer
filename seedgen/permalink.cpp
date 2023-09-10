@@ -106,6 +106,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::ProgressBattlesquid,
     Option::ProgressSavageLabyrinth,
     Option::ProgressIslandPuzzles,
+    Option::ProgressDungeonSecrets,
     Option::ProgressObscure,
 
     // Additional Randomization Options

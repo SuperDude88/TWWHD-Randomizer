@@ -144,6 +144,7 @@ ConfigError createDefaultConfig(const std::string& filePath) {
     conf.settings.progression_battlesquid = false;
     conf.settings.progression_savage_labyrinth = false;
     conf.settings.progression_island_puzzles = false;
+    conf.settings.progression_dungeon_secrets = false;
     conf.settings.progression_obscure = false;
 
     conf.settings.dungeon_small_keys = PlacementOption::OwnDungeon;
@@ -293,6 +294,7 @@ ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreEr
     SET_BOOL_FIELD(root, out, progression_battlesquid)
     SET_BOOL_FIELD(root, out, progression_savage_labyrinth)
     SET_BOOL_FIELD(root, out, progression_island_puzzles)
+    SET_BOOL_FIELD(root, out, progression_dungeon_secrets)
     SET_BOOL_FIELD(root, out, progression_obscure)
 
     SET_BOOL_FIELD(root, out, randomize_charts)
@@ -579,6 +581,7 @@ ConfigError writeToFile(const std::string& filePath, const Config& config) {
     WRITE_SETTING_BOOL_FIELD(root, config, progression_battlesquid)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_savage_labyrinth)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_island_puzzles)
+    WRITE_SETTING_BOOL_FIELD(root, config, progression_dungeon_secrets)
     WRITE_SETTING_BOOL_FIELD(root, config, progression_obscure)
 
     WRITE_SETTING_BOOL_FIELD(root, config, randomize_charts)

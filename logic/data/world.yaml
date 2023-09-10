@@ -1909,6 +1909,7 @@
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Water Jug Alcove Chest: Nothing
+      Dragon Roost Cavern - Water Jug On Upper Shelf: Nothing
   Exits:
       DRC Hub Room Lower Area: Nothing
       DRC Lower Dim Room Bokoblin Area: Nothing
@@ -1987,6 +1988,7 @@
   Dungeon: Dragon Roost Cavern
   Locations:
       Dragon Roost Cavern - Pot Room Chest: Nothing
+      Dragon Roost Cavern - Pot on Upper Shelf in Pot Room: Nothing
   Exits:
       DRC Hub Room Upper Bridge: Nothing
       DRC Magtail Lava Geyser Room: Nothing
@@ -2011,6 +2013,7 @@
   Locations:
       Dragon Roost Cavern - Boss Stairs Right Chest: Nothing
       Dragon Roost Cavern - Boss Stairs Left Chest: Nothing
+      Dragon Roost Cavern - Boss Stairs Right Pot: Nothing
   Exits:
       DRC Boss Door Room Before Lava: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
       Gohma Battle Arena: Dragon_Roost_Cavern_Big_Key
@@ -2098,6 +2101,7 @@
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Boko Baba Climb Chest: Can_Fly_With_Deku_Leaf_Indoors and Can_Defeat_Door_Flowers
+      Forbidden Woods - Pot High Above Hollow Tree: Can_Fly_With_Deku_Leaf_Indoors
   Exits:
       FW Short Cable Ride Room South Side: Nothing
       FW Second Room Ground Path: Nothing
@@ -2169,6 +2173,7 @@
   Locations:
       Forbidden Woods - Vine Maze Left Chest: Nothing
       Forbidden Woods - Vine Maze Right Chest: Nothing
+      Forbidden Woods - Highest Pot in Vine Maze: Can_Fly_With_Deku_Leaf_Indoors
   Exits:
       FW Morth Pit Hallway: Nothing
 
@@ -2333,6 +2338,7 @@
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Chest Behind Bombable Wall: Bombs
+      Tower of the Gods - Pot Behind Bombable Wall: Bombs
   Exits:
       TOTG Entrance Room: Nothing
 
@@ -2493,6 +2499,7 @@
   Dungeon: Tower of the Gods
   Locations:
       Tower of the Gods - Big Key Chest: Nothing
+      Tower of the Gods - Eastern Pot in Big Key Chest Room: Nothing
   Exits:
       TOTG Outside Area: Nothing
       TOTG Hub Room: Nothing
@@ -2753,7 +2760,22 @@
   Dungeon: Wind Temple
   Exits:
       WT Makar Capture Room: Can_Play_CM
-      WT Early Turn Floor Room: Can_Fly_With_Deku_Leaf_Indoors
+      WT Early Turn Floor Room: Nothing
+      WT Early Turn Floor Room Upper Area Far Side: Hookshot
+
+- Name: WT Early Turn Floor Room Upper Area Near Side
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Behind Stone Head in Hidden Upper Room: Hookshot and Iron_Boots
+  Exits:
+      WT Early Turn Floor Room: Iron_Boots
+      WT Early Turn Floor Room Upper Area Far Side: Nothing
+
+- Name: WT Early Turn Floor Room Upper Area Far Side
+  Dungeon: Wind Temple
+  Exits:
+      WT Early Turn Floor Room Upper Area Near Side: Can_Fan_With_Deku_Leaf
+      WT Early Turn Floor Room Past Turn Floor: Nothing
 
 - Name: WT Makar Capture Room
   Dungeon: Wind Temple
@@ -2822,6 +2844,7 @@
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
+      Wind Temple - Behind Stone Head in Many Cyclones Room: Nothing
   Exits:
       WT Hub Room Middle South Platform: Nothing
       WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)

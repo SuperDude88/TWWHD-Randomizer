@@ -65,7 +65,7 @@
 ; Normally when the player takes a boss item drop, it would not set the flag for having taken the current dungeon's boss item, since in vanilla that was handled by the heart container's item get function.
 ; That could allow the player to get the item over and over again since the item never disappears.
 ; So we modify createItemForBoss to pass an item flag to createItem, so that the item properly keeps track of whether it has been taken.
-; We use item flag 15 for all boss items, since that flag is not used by any items in any of the dungeons.
+; We use item pickup flag 0x15 for all boss items, since that flag is not used by any items in any of the dungeons.
 ; (Note that since we're just setting an item flag, the special flag for the dungeon's boss item being taken is never set. But I don't believe that should cause any issues.)
 .org 0x025D8A84
 	li r5, 0x15
@@ -875,3 +875,73 @@ doc_bandam_blue_potion_slot_item_id:
  ; This would allow you to collect the item multiple times in some cases
 .org 0x10190192 ; Item data for the 100 rupee auction item
   .short 0x6B01 ; Change it to check an originally unused event bit
+
+
+
+; Allow pots to drop any item
+; In vanilla, they could only drop certain items, mostly consumables
+; This is because their item ID parameter was between 0x00-0x3F and was passed to fopAcM_createItemFromTable
+; We add a new parameter at Z rotation & 0xFF00 which passes a normal item ID to fopAcM_createItem
+.org 0x024CC08C
+  bl create_pot_item
+.org 0x024CC134
+  bl create_pot_item
+.org @NextFreeSpace
+.global create_pot_item
+create_pot_item:
+  stwu sp, -0x10 (sp)
+  mflr r0
+  stw r0, 0x14 (sp)
+
+  lhz r11, 0x798(r27) ; Copy of Z rotation (pots do a strange thing with this)
+  rlwinm r11, r11, 24, 24, 31 ; Z rotation & 0xFF00
+
+  ; Use the vanilla parameter if our custom ID is invalid (0x00 or 0xFF)
+  cmpwi r11, 0xFF
+  beq create_pot_item_use_original_id
+  cmpwi r11, 0x00
+  beq create_pot_item_use_original_id
+
+create_pot_item_use_custom_id:
+  mr r4, r11 ; Put our custom ID in the ID parameter
+  li r7, 3 ; Don't fade out
+  li r9, 5 ; Item action (5 has a ding sound)
+  bl fopAcM_createItem
+  b return_to_damaged_func
+
+create_pot_item_use_original_id:
+  bl fopAcM_createItemFromTable ; Continue as normal
+
+return_to_damaged_func:
+  lwz r0, 0x14 (sp)
+  mtlr r0
+  addi sp, sp, 0x10
+  blr
+
+
+; Allow stone heads to drop any item, similar to patch for pots
+.org 0x02358A54
+  nop ; Skip useless check if the item ID is 0x3F
+.org 0x02358A8C
+  b create_stone_head_item
+.org @NextFreeSpace
+.global create_stone_head_item
+create_stone_head_item:
+  lhz r11, 0x2F8(r31) ; X rotation
+  clrlwi r11, r11, 24 ; X rotation & 0x00FF
+
+  cmpwi r11, 0xFF
+  beq create_stone_head_use_original_id
+  cmpwi r11, 0x00
+  beq create_stone_head_use_original_id
+
+create_stone_head_item_use_custom_id:
+  mr r4, r11 ; Put our custom ID in the ID parameter
+  li r7, 3 ; Don't fade out
+  li r9, 5 ; Item action (5 has a ding sound)
+  bl fopAcM_createItem
+  b 0x02358A90
+
+create_stone_head_use_original_id:
+  bl fopAcM_createItemFromTable ; Continue as normal
+  b 0x02358A90

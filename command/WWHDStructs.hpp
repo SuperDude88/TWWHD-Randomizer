@@ -10,9 +10,9 @@ struct ACTR {
     float x_pos;
     float y_pos;
     float z_pos;
-    uint16_t aux_params_1;
+    uint16_t x_rot;
     uint16_t y_rot;
-    uint16_t aux_params_2;
+    uint16_t z_rot;
     uint16_t enemy_number;
 };
 

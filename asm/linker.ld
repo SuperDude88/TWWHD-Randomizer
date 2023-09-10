@@ -57,6 +57,7 @@ isTbox = 0x025b8c74;
 
 fopAc_ac_c_ct = 0x025d4ed0;
 fopAcM_createItem = 0x025d8870;
+fopAcM_createItemFromTable = 0x025d8120;
 fopAcM_createItemForPresentDemo = 0x025d7dec;
 fopAcM_orderOtherEventId = 0x025d7a58;
 SoldOutItem = 0x025bcecc;

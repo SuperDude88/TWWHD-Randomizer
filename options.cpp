@@ -338,6 +338,7 @@ Option nameToSetting(const std::string& name) {
         {"Progress Battlesquid", Option::ProgressBattlesquid},
         {"Progress Savage Labyrinth", Option::ProgressSavageLabyrinth},
         {"Progress Island Puzzles", Option::ProgressIslandPuzzles},
+        {"Progress Dungeon Secrets", Option::ProgressDungeonSecrets},
         {"Progress Obscure", Option::ProgressObscure},
         {"Dungeon Small Keys", Option::DungeonSmallKeys},
         {"Dungeon Big Keys", Option::DungeonBigKeys},
@@ -434,6 +435,7 @@ std::string settingToName(const Option& setting) {
         {Option::ProgressBattlesquid, "Progress Battlesquid"},
         {Option::ProgressSavageLabyrinth, "Progress Savage Labyrinth"},
         {Option::ProgressIslandPuzzles, "Progress Island Puzzles"},
+        {Option::ProgressDungeonSecrets, "Progress Dungeon Secrets"},
         {Option::ProgressObscure, "Progress Obscure"},
         {Option::DungeonSmallKeys, "Dungeon Small Keys"},
         {Option::DungeonBigKeys, "Dungeon Big Keys"},
@@ -553,6 +555,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.progression_savage_labyrinth;
         case Option::ProgressIslandPuzzles:
             return settings.progression_island_puzzles;
+        case Option::ProgressDungeonSecrets:
+            return settings.progression_dungeon_secrets;
         case Option::ProgressObscure:
             return settings.progression_obscure;
         case Option::DungeonSmallKeys:
@@ -728,6 +732,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.progression_savage_labyrinth = value; return;
         case Option::ProgressIslandPuzzles:
             settings.progression_island_puzzles = value; return;
+        case Option::ProgressDungeonSecrets:
+            settings.progression_dungeon_secrets = value; return;
         case Option::ProgressObscure:
             settings.progression_obscure = value; return;
         case Option::DungeonSmallKeys:
