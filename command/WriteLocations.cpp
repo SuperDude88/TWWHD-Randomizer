@@ -31,6 +31,26 @@ static const std::unordered_map<std::string, uint32_t> item_id_mask_by_actor_nam
     {"itemFLY\0"s, 0x000000FF}
 };
 
+static const std::unordered_set<std::string> pot_actor_names = {
+    "kotubo\0\0"s,
+    "ootubo1\0"s,
+    "Kmtub\0\0\0"s,
+    "Ktaru\0\0\0"s,
+    "Ostool\0\0"s,
+    "Odokuro\0"s,
+    "Okioke\0\0"s,
+    "Kmi02\0\0\0"s,
+    "Ptubo\0\0\0"s,
+    "KkibaB\0\0"s,
+    "Kmi00\0\0\0"s,
+    "Hbox2S\0\0"s
+};
+
+static const std::unordered_set<std::string> stone_head_actor_names = {
+    "Homen1\0\0"s,
+    "Homen2\0\0"s
+};
+
 
 
 namespace {
@@ -100,8 +120,8 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
 
             if(isCTMC) LOG_AND_RETURN_BOOL_IF_ERR(setCTMCType(chest, item))
 
-            chest.aux_params_2 &= 0x00FF;
-            chest.aux_params_2 |= static_cast<uint16_t>(item.getGameItemId()) << 8;
+            chest.z_rot &= 0x00FF;
+            chest.z_rot |= static_cast<uint16_t>(item.getGameItemId()) << 8;
 
             stream.seekp(offset, std::ios::beg);
             WWHDStructs::writeACTR(stream, chest);
@@ -168,10 +188,30 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
             stream.seekg(offset, std::ios::beg);
             ACTR actor = WWHDStructs::readACTR(stream);
 
-            if (item_id_mask_by_actor_name.count(actor.name) == 0) {
+            if(pot_actor_names.contains(actor.name)) { //special case for pots since they have a custom param
+                if(item.getGameItemId() == GameItem::HeartDrop) {
+                    LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, 0x0000003F, 0x00));
+                }
+                else {
+                    LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, 0x0000003F, 0x3F));
+                }
+                actor.z_rot = (actor.z_rot & ~0xFF00) | (static_cast<uint8_t>(item.getGameItemId()) << 8);
+            }
+            else if(stone_head_actor_names.contains(actor.name)) {
+                if(item.getGameItemId() == GameItem::HeartDrop) {
+                    LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, 0x0003F000, 0x00));
+                }
+                else {
+                    LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, 0x0003F000, 0x3F));
+                }
+                actor.x_rot = (actor.x_rot & ~0x00FF) | static_cast<uint8_t>(item.getGameItemId());
+            }
+            else if (item_id_mask_by_actor_name.contains(actor.name)) {
+                LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
+            }
+            else {
                 LOG_ERR_AND_RETURN_BOOL(ModificationError::UNKNOWN_ACTOR_NAME)
             }
-            LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 
             stream.seekp(offset, std::ios::beg);
             WWHDStructs::writeACTR(stream, actor);

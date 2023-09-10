@@ -352,6 +352,7 @@ World::WorldLoadingError World::determineProgressionLocations()
                    ( category == LocationCategory::BattleSquid       && this->settings.progression_battlesquid)                                ||
                    ( category == LocationCategory::SavageLabyrinth   && this->settings.progression_savage_labyrinth)                           ||
                    ( category == LocationCategory::IslandPuzzle      && this->settings.progression_island_puzzles)                             ||
+                   ( category == LocationCategory::DungeonSecret     && this->settings.progression_dungeon_secrets)                            ||
                    ( category == LocationCategory::Obscure           && this->settings.progression_obscure)                                    ||
                    ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && settings.progression_platforms_rafts) ||
                    ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && settings.progression_big_octos_gunboats);

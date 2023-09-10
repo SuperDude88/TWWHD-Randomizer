@@ -103,6 +103,7 @@ enum struct Option {
     ProgressBattlesquid,
     ProgressSavageLabyrinth,
     ProgressIslandPuzzles,
+    ProgressDungeonSecrets,
     ProgressObscure,
 
     // Additional Randomization Options
@@ -222,6 +223,7 @@ struct Settings {
     bool progression_battlesquid = false;
     bool progression_savage_labyrinth = false;
     bool progression_island_puzzles = false;
+    bool progression_dungeon_secrets = false;
     bool progression_obscure = false;
 
     PlacementOption dungeon_small_keys = PlacementOption::Vanilla;
