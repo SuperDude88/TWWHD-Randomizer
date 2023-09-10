@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build-windows:
-    uses: ./.github/workflows/windows/build_latest.yml
+    uses: ./.github/workflows/build_windows.yml
 
   build-wiiu:
-    uses: ./.github/workflows/wiiu/build_latest.yml
+    uses: ./.github/workflows/build_wiiu.yml
