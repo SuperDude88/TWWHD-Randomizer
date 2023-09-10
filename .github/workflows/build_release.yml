@@ -6,14 +6,16 @@ on:
 
 jobs:
   build-windows:
-    uses: ./.github/workflows/windows/build_release.yml
+    uses: ./.github/workflows/build_windows.yml
     with:
       version: ${{ github.event.release.tag_name }}
+      build_type: Release
 
   build-wiiu:
-    uses: ./.github/workflows/wiiu/build_release.yml
+    uses: ./.github/workflows/build_wiiu.yml
     with:
       version: ${{ github.event.release.tag_name }}
+      build_type: Release
 
   attach-to-release:
     name: Attach To Release
@@ -24,7 +26,7 @@ jobs:
      - name: Download Windows Artifact
        uses: actions/download-artifact@v3
        with:
-        name: wwhd_rando_${{ github.event.release.tag_name }}_windows.zip # pass name so it doesn't get put in a folder
+        name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
      - name: Download Wii U Artifact
        uses: actions/download-artifact@v3
