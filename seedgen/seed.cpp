@@ -2496,6 +2496,10 @@ std::string generate_seed_hash() {
 std::string hash_for_seed(const std::string& seed) {
     Config config;
     loadFromFile(APP_SAVE_PATH "config.yaml", config);
+    return hash_for_seed(seed, config);
+}
+
+std::string hash_for_seed(const std::string& seed, const Config& config) {
     auto permalink = create_permalink(config.settings, seed);
 
     if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
