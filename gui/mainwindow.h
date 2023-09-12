@@ -94,7 +94,7 @@ private:
     void update_plandomizer_widget_visbility();
     void update_starting_health_text();
     void update_option_description_text(const std::string& descrption = "");
-    void update_permalink();
+    void update_permalink_and_seed_hash();
     void load_locations();
 
     void initialize_tracker();
@@ -261,8 +261,6 @@ private slots:
     void on_entrance_list_close_button_released();
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
-
-
 
 private:
     // More Tracker Stuff

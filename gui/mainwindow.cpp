@@ -22,8 +22,8 @@
 #include <utility/file.hpp>
 #include <utility/color.hpp>
 
-#define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink(); update_progress_locations_text();
-#define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink();
+#define UPDATE_CONFIG_STATE(config, ui, name) config.settings.name = ui->name->isChecked(); update_permalink_and_seed_hash(); update_progress_locations_text();
+#define UPDATE_CONFIG_STATE_MIXED_POOLS(config, name) config.settings.name = (name.checkState() == Qt::Checked); update_permalink_and_seed_hash();
 #define APPLY_CHECKBOX_SETTING(config, ui, name) if(config.settings.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 #define APPLY_CONFIG_CHECKBOX_SETTING(config, ui, name) if(config.name) {ui->name->setCheckState(Qt::Checked);} else {ui->name->setCheckState(Qt::Unchecked);}
 #define APPLY_COMBOBOX_SETTING(config, ui, name) ui->name->setCurrentIndex(static_cast<int>(config.settings.name));
@@ -45,7 +45,7 @@
 #define DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(name)        \
     void MainWindow::on_##name##_valueChanged(int arg1) { \
         config.settings.name = arg1;                      \
-        update_permalink();                               \
+        update_permalink_and_seed_hash();                               \
     }
 
 void delete_and_create_default_config()
@@ -617,7 +617,7 @@ void MainWindow::on_generate_seed_button_clicked()
 void MainWindow::on_seed_textChanged(const QString &arg1)
 {
     config.seed = arg1.toStdString();
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 int MainWindow::calculate_total_progress_locations()
@@ -715,7 +715,7 @@ void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
         ui->label_for_num_required_dungeons->setEnabled(false);
     }
     update_progress_locations_text();
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 DEFINE_STATE_CHANGE_FUNCTION(progression_dungeon_secrets)
@@ -782,7 +782,7 @@ void MainWindow::on_sword_mode_currentIndexChanged(int index)
     randomizedGear.sort();
     randomizedGearModel->setStringList(randomizedGear);
     startingGearModel->setStringList(startingGear);
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
@@ -791,39 +791,39 @@ DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
 void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
 {
     config.settings.damage_multiplier = static_cast<float>(multiplier);
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_dungeon_small_keys_currentTextChanged(const QString &arg1)
 {
     config.settings.dungeon_small_keys = nameToPlacementOption(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 
 void MainWindow::on_dungeon_big_keys_currentTextChanged(const QString &arg1)
 {
     config.settings.dungeon_big_keys = nameToPlacementOption(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 
 void MainWindow::on_dungeon_maps_compasses_currentTextChanged(const QString &arg1)
 {
     config.settings.dungeon_maps_compasses = nameToPlacementOption(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_num_starting_triforce_shards_currentIndexChanged(int index)
 {
     config.settings.num_starting_triforce_shards = ui->num_starting_triforce_shards->currentIndex();
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_num_required_dungeons_currentIndexChanged(int index)
 {
     config.settings.num_required_dungeons = ui->num_required_dungeons->currentIndex();
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 // Convenience Tweaks
@@ -841,7 +841,7 @@ DEFINE_STATE_CHANGE_FUNCTION(fix_rng)
 void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
     UPDATE_CONFIG_STATE(config, ui, plandomizer);
-    update_permalink();
+    update_permalink_and_seed_hash();
     update_plandomizer_widget_visbility();
 }
 
@@ -891,7 +891,7 @@ void MainWindow::update_starting_gear()
     {
         config.settings.starting_gear.push_back(nameToGameItem(item.toStdString()));
     }
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_add_gear_clicked()
@@ -920,7 +920,7 @@ void MainWindow::update_starting_health_text()
     std::string message = "Starting Health: " + containersStr + (pieces != 0 ? (" and " + piecesStr) : "");
     ui->current_health->setText(message.c_str());
 
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_starting_hcs_valueChanged(int starting_hcs)
@@ -973,35 +973,35 @@ DEFINE_STATE_CHANGE_FUNCTION(randomize_starting_island)
 void MainWindow::on_target_type_currentTextChanged(const QString &arg1)
 {
     config.settings.target_type = nameToTargetTypePreference(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 
 void MainWindow::on_camera_currentTextChanged(const QString &arg1)
 {
     config.settings.camera = nameToCameraPreference(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 
 void MainWindow::on_first_person_camera_currentTextChanged(const QString &arg1)
 {
     config.settings.first_person_camera = nameToFirstPersonCameraPreference(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 
 void MainWindow::on_gyroscope_currentTextChanged(const QString &arg1)
 {
     config.settings.gyroscope = nameToGyroscopePreference(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 
 void MainWindow::on_ui_display_currentTextChanged(const QString &arg1)
 {
     config.settings.ui_display = nameToUIDisplayPreference(arg1.toStdString());
-    update_permalink();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::update_option_description_text(const std::string& description /*= ""*/)
@@ -1019,11 +1019,14 @@ void MainWindow::update_option_description_text(const std::string& description /
     }
 }
 
-void MainWindow::update_permalink()
+void MainWindow::update_permalink_and_seed_hash()
 {
     ui->permalink->setText(create_permalink(config.settings, config.seed).c_str());
     currentPermalink = ui->permalink->text();
     ui->tracker_permalink->setText(create_tracker_permalink(config.settings, config.seed).c_str());
+
+    // Also update seed hash
+    ui->seed_hash_label->setText(std::string("Seed Hash: " + hash_for_seed(config.seed, config)).c_str());
 }
 
 void MainWindow::on_permalink_textEdited(const QString &newPermalink)
