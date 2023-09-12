@@ -398,6 +398,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, progression_big_octos_gunboats);
     APPLY_CHECKBOX_SETTING(config, ui, progression_combat_secret_caves);
     APPLY_COMBOBOX_SETTING(config, ui, progression_dungeons);
+    APPLY_CHECKBOX_SETTING(config, ui, progression_dungeon_secrets);
     APPLY_CHECKBOX_SETTING(config, ui, progression_expensive_purchases);
     APPLY_CHECKBOX_SETTING(config, ui, progression_eye_reef_chests);
     APPLY_CHECKBOX_SETTING(config, ui, progression_free_gifts);
@@ -629,6 +630,7 @@ int MainWindow::calculate_total_progress_locations()
             if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
             return ( category == LocationCategory::Dungeon           && config.settings.progression_dungeons != ProgressionDungeons::Disabled)        ||
+                   ( category == LocationCategory::DungeonSecret     && config.settings.progression_dungeon_secrets)                                  ||
                    ( category == LocationCategory::GreatFairy        && config.settings.progression_great_fairies)                                    ||
                    ( category == LocationCategory::PuzzleSecretCave  && config.settings.progression_puzzle_secret_caves)                              ||
                    ( category == LocationCategory::CombatSecretCave  && config.settings.progression_combat_secret_caves)                              ||
@@ -716,6 +718,7 @@ void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
     update_permalink();
 }
 
+DEFINE_STATE_CHANGE_FUNCTION(progression_dungeon_secrets)
 DEFINE_STATE_CHANGE_FUNCTION(progression_expensive_purchases)
 DEFINE_STATE_CHANGE_FUNCTION(progression_eye_reef_chests)
 DEFINE_STATE_CHANGE_FUNCTION(progression_free_gifts)

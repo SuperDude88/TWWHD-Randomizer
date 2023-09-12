@@ -131,6 +131,7 @@ private slots:
     void on_progression_big_octos_gunboats_stateChanged(int arg1);
     void on_progression_combat_secret_caves_stateChanged(int arg1);
     void on_progression_dungeons_currentTextChanged(const QString &arg1);
+    void on_progression_dungeon_secrets_stateChanged(int arg1);
     void on_progression_expensive_purchases_stateChanged(int arg1);
     void on_progression_eye_reef_chests_stateChanged(int arg1);
     void on_progression_free_gifts_stateChanged(int arg1);
