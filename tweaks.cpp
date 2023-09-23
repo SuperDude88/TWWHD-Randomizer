@@ -3561,6 +3561,44 @@ TweakError allow_nonlinear_servants_of_the_towers() {
     return TweakError::NONE;
 }
 
+TweakError make_dungeon_joy_pendants_flexible() {
+    // The joy pendant pot in the FW maze room doesn't have an item pickup flag set, which seems accidental
+    // Give it an unused flag so you can only get the item once
+    RandoSession::CacheEntry& maze_room = g_session.openGameFile("content/Common/Stage/kindan_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr@DZX");
+    maze_room.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        ChunkEntry* pot = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER)[0xE0];
+        pot->data[9] = 0x16;
+
+        return true;
+    });
+
+    // The stone heads with joy pendants will stay destroyed until you reload the dungeon, even if you haven't collected the item
+    // This can be confusing and look like a softlock under some circumstances (even though it isn't), so change them to always reappear
+    RandoSession::CacheEntry& turn_floor_room = g_session.openGameFile("content/Common/Stage/kaze_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr@DZX");
+    turn_floor_room.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        ChunkEntry* stone_head = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER)[0x10];
+        stone_head->data[8] = 0xFF;
+
+        return true;
+    });
+
+    RandoSession::CacheEntry& many_cyclones_room = g_session.openGameFile("content/Common/Stage/kaze_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr@DZX");
+    many_cyclones_room.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        ChunkEntry* stone_head = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER)[0x2E];
+        stone_head->data[8] = 0xFF;
+
+        return true;
+    });
+
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -3675,6 +3713,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(add_ff_warp_button());
     TWEAK_ERR_CHECK(fix_entrance_params());
     TWEAK_ERR_CHECK(fix_vanilla_text());
+    TWEAK_ERR_CHECK(make_dungeon_joy_pendants_flexible());
     //rat hole visibility
     //failsafe id 0 spawns
 
