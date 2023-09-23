@@ -1,9 +1,9 @@
 ; Makes functions that play music just return instantly instead.
-.org 0x0202204c
+.org 0x0202204C ; JAIZelBasic::bgmStart
 	blr
-.org 0x0202879c
+.org 0x0202879C ; JAIZelBasic::bgmNowBattle
 	blr
-.org 0x0201de00
+.org 0x0201DE00 ; JAIZelBasic::subBgmStart
 	blr
-.org 0x025e1944
+.org 0x02027F04 ; JAIZelBasic::bgmStreamPlay
 	blr
