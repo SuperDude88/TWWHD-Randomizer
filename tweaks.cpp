@@ -3599,6 +3599,28 @@ TweakError make_dungeon_joy_pendants_flexible() {
     return TweakError::NONE;
 }
 
+TweakError prevent_fairy_island_softlocks() {
+    // Entering Western Fairy Island without solving the puzzle (using glitches) and then leaving will knock Link back into the fountain before he can land
+    // Move out the ring of flames slightly so Link doesn't immediately get hit
+    RandoSession::CacheEntry& wfi_dzr = g_session.openGameFile("content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr@DZX");
+
+    wfi_dzr.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+        
+        std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
+        for (ChunkEntry* spawn : spawns) {
+            if (spawn->data[29] == '\x01') { // find spawn ID 1
+                spawn->data.replace(0xC, 0x4, "\xC8\x9C\x55\x40", 0x0, 0x4); // change X position to -320170.0
+                break;
+            }
+        }
+
+        return true;
+    });
+
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -3714,6 +3736,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(fix_entrance_params());
     TWEAK_ERR_CHECK(fix_vanilla_text());
     TWEAK_ERR_CHECK(make_dungeon_joy_pendants_flexible());
+    TWEAK_ERR_CHECK(prevent_fairy_island_softlocks());
     //rat hole visibility
     //failsafe id 0 spawns
 
