@@ -346,10 +346,11 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
             setSetting(settings, option, value);
         }
         // 3-bit SpinBox options
-        else if (option == Option::PathHints     ||
-                 option == Option::BarrenHints   ||
-                 option == Option::LocationHints ||
-                 option == Option::ItemHints     ||
+        else if (option == Option::ProgressDungeons ||
+                 option == Option::PathHints        ||
+                 option == Option::BarrenHints      ||
+                 option == Option::LocationHints    ||
+                 option == Option::ItemHints        ||
                  option == Option::StartingHC)
         {
             value = bitsReader.read(3);
