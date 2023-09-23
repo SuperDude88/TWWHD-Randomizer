@@ -1486,8 +1486,8 @@ TweakError add_pirate_ship_to_windfall() {
             attributes.lineAlignment = 1; //left alignment
             TSY1Entry tsy;
             tsy.styleIndex = 0x12A;
-            msbt.addMessage("00849", attributes, tsy, u"Oh! Did you get stuck in there, Big Brother?\0"s);
-            msbt.addMessage("00850", attributes, tsy, u"Don't worry, I'll open the door for you.\0"s);
+            msbt.addMessage("00849", attributes, tsy, u""s); // Text set in text_replacements.cpp
+            msbt.addMessage("00850", attributes, tsy, u""s);
 
             return true;
         });
