@@ -208,6 +208,10 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
             }
             else if (item_id_mask_by_actor_name.contains(actor.name)) {
                 LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
+
+                if((actor.name == "item\0\0\0\0"s || actor.name == "itemFLY\0"s) && (actor.params & 0x03000000) == 0) { // uses d_a_item actor, has behavior type 0
+                    setParam(actor, 0x03000000, 3); // set behavior type to 3 (doesn't fade out)
+                }
             }
             else {
                 LOG_ERR_AND_RETURN_BOOL(ModificationError::UNKNOWN_ACTOR_NAME)

@@ -411,20 +411,20 @@ TweakError allow_all_items_to_be_field_items() {
     //execItemGet, mode_wait, and getYOffset had their switch cases optimized out, so their patches are a little more involved in HD
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.yaml")); 
     
-    const uint32_t extra_item_data_list_start = 0x101E8674;
+    const uint32_t item_info_list_start = 0x101E8674;
     for (unsigned int item_id = 0x00; item_id < 0xFF + 1; item_id++) {
-        const uint32_t item_extra_data_entry_addr = extra_item_data_list_start + 4 * item_id;
+        const uint32_t item_info_entry_addr = item_info_list_start + 4 * item_id;
 
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-            const uint8_t original_y_offset = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 1));
+            const uint8_t original_y_offset = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 1));
             if (original_y_offset == 0) {
-                RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 1), 0x28));
+                RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 1), 0x28));
             }
-            uint8_t original_radius = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 2));
+            uint8_t original_radius = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 2));
             if (original_radius == 0) {
-                RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_extra_data_entry_addr + 2), 0x28));
+                RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 2), 0x28));
             }
 
             return true;
@@ -857,6 +857,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
     const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
     const uint32_t item_resources_list_start = 0x101E4674;
     const uint32_t field_item_resources_list_start = 0x101E6A74;
+    const uint32_t item_info_list_start = 0x101E8674;
 
     const std::unordered_map<std::string, std::string> dungeon_names = {
         {"DRC", "Dragon Roost Cavern"},
@@ -996,6 +997,18 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         relocation2.r_info = relocation.r_info; //same as first entry
         relocation2.r_addend = relocation.r_addend; //same as first entry
 
+        // Also update the item info for custom dungeon items to match the vanilla ones
+        // Includes the flag that stops the item from fading out over time
+        uint32_t item_info_value = 0x00282800;
+        if(item_data.base_item_name == "Small Key") {
+            item_info_value = 0x14281E05;
+        }
+        else if(item_data.base_item_name == "Big Key") {
+            item_info_value = 0x00282805;
+        }
+
+        const uint32_t item_info_entry_addr = item_info_list_start + item_id * 4;
+
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
@@ -1021,6 +1034,9 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
             const std::vector<uint8_t> data6 = elfUtil::read_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr_to_copy_from + 0x18), 0x4);
             RPX_ERROR_CHECK(elfUtil::write_bytes(elf, elfUtil::AddressToOffset(elf, field_item_resources_addr + 0x18), data6));
+
+
+            RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr), item_info_value));
 
             return true;
         });
