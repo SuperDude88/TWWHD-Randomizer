@@ -187,6 +187,16 @@ TextReplacements generate_text_replacements(World& world)
                   auction40.getUTF16Name("French", Text::Type::PRETTY) + u",\n" + auction60.getUTF16Name("French", Text::Type::PRETTY) + u",\n\n\n" +
                   auction80.getUTF16Name("French", Text::Type::PRETTY) + u", et\n" + auction100.getUTF16Name("French", Text::Type::PRETTY) + u'!' + u'\0'}}},
 
+     // Aryll Save Text
+     {"00849",
+     {{"English", u"Oh! Did you get stuck in there, Big Brother?\0"s},
+      {"Spanish", u"¡Ah! ¿Te atascaste, Hermanote?\0"s},
+      {"French",  u"FRENCH TRANSLATION NEEDED\0"s}}},
+     {"00850",
+     {{"English", u"Don't worry, I'll open the door for you.\0"s},
+      {"Spanish", u"No pasa nada. Abriré la puerta por ti.\0"s},
+      {"French",  u"FRENCH TRANSLATION NEEDED\0"s}}},
+
      // Swordless Text
      {"01128",
      {{"English", !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\n" +
