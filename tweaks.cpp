@@ -2160,6 +2160,31 @@ TweakError prevent_reverse_door_softlocks() {
         return true;
     });
 
+    // Walls before Boss Key room incase players clip in early
+    // This solves the whole puzzle, so it's a bit cheap and will leave out for now
+    // RandoSession::CacheEntry& et_room17 = g_session.openGameFile("content/Common/Stage/M_Dai_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr@DZX");
+
+    // et_room17.addAction([](RandoSession* session, FileType* data) -> int {
+    //     CAST_ENTRY_TO_FILETYPE(et_room17, FileTypes::DZXFile, data)
+
+    //     ChunkEntry& swc00_17 = et_room17.add_entity("SCOB");
+    //     swc00_17.data = "SW_C00\x00\x00\x00\x03\xFF\x62\xC5\x54\x85\x61\xC5\xB0\x22\x41\x44\x9F\x2A\xD7\x00\x00\x00\x00\x00\x00\xFF\xFF\x5F\xEC\x5F\x04"s;
+
+    //     return true;
+    // });
+
+    // First Song Stone in Wind Temple if players clip past it
+    RandoSession::CacheEntry& wt_room8 = g_session.openGameFile("content/Common/Stage/kaze_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr@DZX");
+
+    wt_room8.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(wt_room8, FileTypes::DZXFile, data)
+
+        ChunkEntry& swc00_8 = wt_room8.add_entity("SCOB");
+        swc00_8.data = "SW_C00\x00\x00\x00\x03\xFF\x1E\x46\x13\xDB\x2A\x44\x85\x9F\x3A\xC0\xF3\x0B\xAC\x00\x00\x00\x00\x00\x00\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+        return true;
+    });
+
     return TweakError::NONE;
 }
 
