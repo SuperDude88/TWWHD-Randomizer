@@ -10,7 +10,7 @@ on:
         type: string
       build_type:
         description: 'Build Type'
-        default: "Debug"
+        default: "Release"
         required: false
         type: string
 
