@@ -609,14 +609,27 @@ private:
                     if (!settings.mix_dungeons && !settings.randomize_misc_entrances) {
                         // Get the warp wind exit of the dungeon entrance that was randomized to this dungeon
                         // If dungeons aren't randomized it'll just return the same one
-                        auto dungeon = entrance->getWorld()->getDungeon(dungeonExit->getReplaces()->getReverse()->getOriginalConnectedArea()->dungeon);
+                        Dungeon dungeon;
+                        if (dungeonName == "Forsaken Fortress") {
+                            dungeon = entrance->getWorld()->getDungeon("Forsaken Fortress");
+                        } else {
+                            dungeon = entrance->getWorld()->getDungeon(dungeonExit->getReplaces()->getReverse()->getOriginalConnectedArea()->dungeon);
+                        }
+                            
                         replacementStage = dungeon.windWarpExitStage;
                         replacementRoom = dungeon.windWarpExitRoom;
                         replacementSpawn = dungeon.windWarpExitSpawn;
                     } else {
-                        replacementStage = dungeonExit->getReplaces()->getStageName();
-                        replacementRoom = dungeonExit->getReplaces()->getRoomNum();
-                        replacementSpawn = dungeonExit->getReplaces()->getSpawnId();
+                        if (dungeonName == "Forsaken Fortress") {
+                            replacementStage = "sea";
+                            replacementRoom = 1;
+                            replacementSpawn = 0;
+                        }
+                        else {
+                            replacementStage = dungeonExit->getReplaces()->getStageName();
+                            replacementRoom = dungeonExit->getReplaces()->getRoomNum();
+                            replacementSpawn = dungeonExit->getReplaces()->getSpawnId();
+                        }
                     }
                 } 
             }

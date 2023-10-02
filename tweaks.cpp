@@ -457,10 +457,10 @@ TweakError remove_shop_item_forced_uniqueness_bit() {
     return TweakError::NONE;
 }
 
-TweakError remove_ff2_cutscenes() {
+TweakError remove_ff2_cutscenes(const bool& randomize_boss_entrances) {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
 
-    entry.addAction([](RandoSession* session, FileType* data) -> int {
+    entry.addAction([&](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
         
         std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
@@ -471,13 +471,15 @@ TweakError remove_ff2_cutscenes() {
             }
         }
 
-        // std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
-        // for (ChunkEntry* exit : exits) {
-        //     if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) {
-        //         exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
-        //         break;
-        //     }
-        // }
+        if (!randomize_boss_entrances) {
+            std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
+            for (ChunkEntry* exit : exits) {
+                if (std::strncmp(&exit->data[0], "M2ganon\x00", 8) == 0) {
+                    exit->data = "sea\x00\x00\x00\x00\x00\x00\x01\x00\xFF"s;
+                    break;
+                }
+            }
+        }
 
         return true;
     });
@@ -3729,7 +3731,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(fix_deku_leaf_model());
     TWEAK_ERR_CHECK(allow_all_items_to_be_field_items());
     TWEAK_ERR_CHECK(remove_shop_item_forced_uniqueness_bit());
-    TWEAK_ERR_CHECK(remove_ff2_cutscenes());
+    TWEAK_ERR_CHECK(remove_ff2_cutscenes(settings.randomize_boss_entrances));
     TWEAK_ERR_CHECK(make_items_progressive());
     TWEAK_ERR_CHECK(add_chest_in_place_medli_gift());
     TWEAK_ERR_CHECK(add_chest_in_place_queen_fairy_cutscene());
