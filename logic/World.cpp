@@ -387,10 +387,8 @@ World::WorldLoadingError World::setDungeonLocations()
             if (loc->hintRegions.empty())
             {
                 auto connectedDungeons = area->findDungeons();
-                auto islands = area->findIslands();
-                // If the only way to get to this location is through a dungeon
-                // then assign it to that dungeon
-                if (connectedDungeons.size() > 0 && islands.empty())
+                auto hintRegions = area->findHintRegions();
+                if (connectedDungeons.size() > 0 && connectedDungeons.size() == hintRegions.size())
                 {
                     auto& dungeonName = connectedDungeons.front();
                     auto& dungeon = getDungeon(dungeonName);
