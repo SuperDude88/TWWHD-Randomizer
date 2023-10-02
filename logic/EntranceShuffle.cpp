@@ -8,6 +8,7 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>
 #include <logic/Fill.hpp>
+#include <utility/file.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 #include <libs/yaml.h>
@@ -59,8 +60,10 @@ static void logMissingLocations(WorldPool& worlds)
 
 static std::list<EntranceInfoPair> loadEntranceShuffleTable()
 {
+    std::string entrancePairsStr = "";
+    Utility::getFileContents(DATA_PATH "logic/data/entrance_shuffle_table.yaml", entrancePairsStr, true);
+    YAML::Node entrancePairs = YAML::Load(entrancePairsStr);
     std::list<EntranceInfoPair> table = {};
-    YAML::Node entrancePairs = YAML::LoadFile(DATA_PATH "logic/data/entrance_shuffle_table.yaml");
 
     for (const auto& entrancePair : entrancePairs)
     {
