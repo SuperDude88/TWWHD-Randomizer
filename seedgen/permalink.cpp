@@ -7,6 +7,7 @@
 #include <version.hpp>
 #include <libs/base64pp.hpp>
 #include <seedgen/packed_bits.hpp>
+#include <command/Log.hpp>
 
 #define BYTES_EXIST_CHECK(value) if (value == 0xFFFFFFFF) return PermalinkError::BAD_PERMALINK;
 
@@ -177,7 +178,11 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 std::string create_permalink(const Settings& settings, const std::string& seed) {
 
     std::string permalink = "";
-    permalink += std::string(RANDOMIZER_VERSION).substr(0, 3);
+    if (std::string(RANDOMIZER_VERSION).length() >= 3) {
+        permalink += std::string(RANDOMIZER_VERSION).substr(0, 3);
+    } else {
+        Utility::platformLog("Could not determine Randomizer version. Please tell a dev if you see this message\n");
+    }
     permalink += '\0';
     permalink += seed;
     permalink += '\0';
