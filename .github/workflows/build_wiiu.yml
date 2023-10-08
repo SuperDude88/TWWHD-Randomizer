@@ -28,7 +28,11 @@ jobs:
           wget https://apt.devkitpro.org/install-devkitpro-pacman
           chmod +x ./install-devkitpro-pacman
           sudo ./install-devkitpro-pacman
-          yes | sudo dkp-pacman -Syu --noconfirm --needed wiiu-dev ppc-portlibs wiiu-portlibs devkitARM
+          yes | sudo --preserve-env dkp-pacman -Scc
+          sudo --preserve-env dkp-pacman -Syyu --noconfirm wiiu-dev
+          sudo --preserve-env dkp-pacman -S --needed ppc-portlibs wiiu-portlibs
+          sudo --preserve-env dkp-pacman -S --needed devkitARM
+          yes | sudo --preserve-env dkp-pacman -Scc
 
       - name: Checkout wut
         uses: actions/checkout@v3
