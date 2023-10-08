@@ -21,8 +21,44 @@ jobs:
   build-wiiu-homebrew-application:
     name: Build Wii U Homebrew Application
     runs-on: ubuntu-latest
-    
+
     steps:
+      - name: Install devkitPPC
+        run: |
+          wget https://apt.devkitpro.org/install-devkitpro-pacman
+          chmod +x ./install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman
+          yes | dkp-pacman -Scc
+          dkp-pacman -Syyu --noconfirm wiiu-dev
+          dkp-pacman -S --needed --noconfirm ppc-portlibs wiiu-portlibs
+          dkp pacman -S --needed --noconfirm devkitARM
+          yes | dkp-pacman -Scc
+
+      - name: Checkout wut
+        uses: actions/checkout@v3
+        with:
+          repository: devkitPro/wut
+          ref: cb9046e776ca89b5ae041e74d6fb05d11989cbef
+          path: wut
+      - name: Install wut
+        working-directory: ${{ github.workspace }}/wut
+        run: |
+          make -j$(nproc)
+          make install
+
+      - name: Checkout libmocha
+        uses: actions/checkout@v3
+        with:
+          repository: wiiu-env/libmocha
+          ref: 049f322e55301e64c90565cace922187f6a1c03a
+          path: libmocha
+      - name: Install libmocha
+        working-directory: ${{ github.workspace }}/libmocha
+        run: |
+          make -j$(nproc)
+          make install
+          mv /opt/devkitpro/wut/usr/include/* /opt/devkitpro/wut/include/ # Hack to put the include/lib file into DKP/wut's native search directories
+
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
@@ -35,12 +71,12 @@ jobs:
       - name: Set Release Flags
         if: inputs.build_type == 'Release' && inputs.version != ''
         run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DRELEASE_TAG=${{ inputs.version }}" >> $GITHUB_ENV
-      
-      - name: Build App
-        working-directory: ${{ github.workspace }}
+
+      - name: Build
         run: |
-          docker build -t rando .
-          docker run -i -e BUILD_TYPE=full -e CMAKE_ARGS="${{ env.EXTRA_CMAKE_FLAGS }}" -v "$(pwd):/src" rando
+          /opt/devkitpro/portlibs/wiiu/bin/powerpc-eabi-cmake -B build ${{ env.EXTRA_CMAKE_FLAGS }}
+          cd build
+          make -j$(nproc)
 
       - name: Get Version
         id: get-version
