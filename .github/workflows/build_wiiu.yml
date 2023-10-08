@@ -28,11 +28,7 @@ jobs:
           wget https://apt.devkitpro.org/install-devkitpro-pacman
           chmod +x ./install-devkitpro-pacman
           sudo ./install-devkitpro-pacman
-          yes | dkp-pacman -Scc
-          dkp-pacman -Syyu --noconfirm wiiu-dev
-          dkp-pacman -S --needed --noconfirm ppc-portlibs wiiu-portlibs
-          dkp pacman -S --needed --noconfirm devkitARM
-          yes | dkp-pacman -Scc
+          yes | sudo dkp-pacman -Syu --noconfirm --needed wiiu-dev ppc-portlibs wiiu-portlibs devkitARM
 
       - name: Checkout wut
         uses: actions/checkout@v3
@@ -43,8 +39,11 @@ jobs:
       - name: Install wut
         working-directory: ${{ github.workspace }}/wut
         run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=${DEVKITPRO}/devkitARM
+          export DEVKITPPC=${DEVKITPRO}/devkitPPC
           make -j$(nproc)
-          make install
+          sudo --preserve-env make install
 
       - name: Checkout libmocha
         uses: actions/checkout@v3
@@ -55,8 +54,11 @@ jobs:
       - name: Install libmocha
         working-directory: ${{ github.workspace }}/libmocha
         run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=${DEVKITPRO}/devkitARM
+          export DEVKITPPC=${DEVKITPRO}/devkitPPC
           make -j$(nproc)
-          make install
+          sudo --preserve-env make install
           mv /opt/devkitpro/wut/usr/include/* /opt/devkitpro/wut/include/ # Hack to put the include/lib file into DKP/wut's native search directories
 
       - name: Checkout Repository
@@ -74,6 +76,9 @@ jobs:
 
       - name: Build
         run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=${DEVKITPRO}/devkitARM
+          export DEVKITPPC=${DEVKITPRO}/devkitPPC
           /opt/devkitpro/portlibs/wiiu/bin/powerpc-eabi-cmake -B build ${{ env.EXTRA_CMAKE_FLAGS }}
           cd build
           make -j$(nproc)
