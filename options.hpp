@@ -17,11 +17,20 @@ constexpr unsigned int MAXIMUM_STARTING_RED_CHU_JELLYS = 15;
 constexpr unsigned int MAXIMUM_STARTING_GREEN_CHU_JELLYS = 15;
 constexpr unsigned int MAXIMUM_STARTING_BLUE_CHU_JELLYS = 15;
 
+constexpr unsigned int MAXIMUM_STARTING_TRIFORCE_SHARDS = 8;
+constexpr unsigned int MAXIMUM_NUM_DUNGEONS = 6;
+constexpr float MAXIMUM_DAMAGE_MULTIPLIER = 80.0f;
+
+constexpr unsigned int MAXIMUM_PATH_HINT_COUNT = 7;
+constexpr unsigned int MAXIMUM_BARREN_HINT_COUNT = 7;
+constexpr unsigned int MAXIMUM_ITEM_HINT_COUNT = 7;
+constexpr unsigned int MAXIMUM_LOCATION_HINT_COUNT = 7;
+
 enum struct PigColor : uint8_t {
-    BLACK = 0,
-    PINK,
-    SPOTTED,
-    RANDOM,
+    Black = 0,
+    Pink,
+    Spotted,
+    Random,
     INVALID
 };
 
@@ -108,8 +117,6 @@ enum struct Option {
 
     // Additional Randomization Options
     SwordMode,
-    Keylunacy,
-    RaceMode,
     NumRequiredDungeons,
     NumShards,
     RandomCharts,
@@ -189,6 +196,8 @@ enum struct Option {
     UIDisplay,
 
     // Dummy options to satisfy tracker permalink
+    RaceMode,
+    Keylunacy,
     RandomizeEntrances,
     SwiftSail,
     DisableTingleChestsWithTingleBombs,
@@ -268,7 +277,7 @@ struct Settings {
     bool chest_type_matches_contents = false;
 
     bool player_in_casual_clothes = false;
-    PigColor pig_color = PigColor::RANDOM;
+    PigColor pig_color = PigColor::Random;
 
     std::vector<GameItem> starting_gear = {};
     uint16_t starting_pohs = 0;

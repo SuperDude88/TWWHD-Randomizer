@@ -43,7 +43,7 @@ namespace Utility::Str {
         return ret;
     }
 
-      template<typename T> requires StringType<T>
+    template<typename T> requires StringType<T>
     T assureNullTermination(const T& string) {
         if(!string.empty() && string.back() == typename T::value_type(0)) return string;
 

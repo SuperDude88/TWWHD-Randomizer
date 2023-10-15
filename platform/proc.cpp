@@ -29,6 +29,8 @@ static void ProcStop() {
 }
 
 bool ProcIsRunning() {
+    if(!running) return running;
+
     ProcUIStatus status;
     if(OSIsMainCore()) {
         status = ProcUIProcessMessages(true);

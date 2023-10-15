@@ -33,8 +33,8 @@
 #ifdef DEVKITPRO
 #include <sysapp/title.h>
 #include <platform/channel.hpp>
-#include <platform/gui/SeedMenu.hpp>
 #include <platform/gui/InstallMenu.hpp>
+#include <platform/gui/SettingsMenu.hpp>
 #endif
 
 RandoSession g_session; //declared outside of class for extern stuff
@@ -878,7 +878,7 @@ int mainRandomize() {
         conf.close();
 
         Utility::platformLog("Reading config\n");
-        ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", load);
+        ConfigError err = load.loadFromFile(APP_SAVE_PATH "config.yaml");
         if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
             Utility::platformLog("Warning: config was made using a different randomizer version\n");
             Utility::platformLog("Item placement may be different than expected\n");
@@ -890,17 +890,8 @@ int mainRandomize() {
         }
 
         #ifdef DEVKITPRO
-            if(pickSeed(load.seed)) { //returns true if seed was changed
-                //update saved config with new seed
-                ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", load);
-                if(err != ConfigError::NONE) {
-                    ErrorLog::getInstance().log("Failed to save config, ERROR: " + errorToName(err));
-
-                    return 1;
-                }
-            };
-            if(exitForConfig() == true) {
-                return 0;
+            if(SettingsMenu::run(load)) {
+                return 0; //TODO: config error code?
             }
 
             if(!SYSCheckTitleExists(0x0005000010143500)) {

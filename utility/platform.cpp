@@ -216,7 +216,9 @@ namespace Utility
             mochaOpen = false;
         }
 
-        ProcExit();
+        if(platformIsRunning()) {
+            ProcExit();
+        }
         waitForPlatformStop();
 #endif
     }

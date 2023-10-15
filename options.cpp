@@ -1,32 +1,32 @@
 #include "options.hpp"
 
-static std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
+static const std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
     {"Start With Sword", SwordMode::StartWithSword},
     {"Random Sword", SwordMode::RandomSword},
     {"No Sword", SwordMode::NoSword},
 };
 
-static std::unordered_map<SwordMode, std::string> swordModeNameMap = {
+static const std::unordered_map<SwordMode, std::string> swordModeNameMap = {
     {SwordMode::StartWithSword, "Start With Sword"},
     {SwordMode::RandomSword, "Random Sword"},
     {SwordMode::NoSword, "No Sword"}
 };
 
-static std::unordered_map<std::string, PigColor> namePigColorMap = {
-    {"BLACK", PigColor::BLACK},
-    {"PINK", PigColor::PINK},
-    {"SPOTTED", PigColor::SPOTTED},
-    {"RANDOM", PigColor::RANDOM}
+static const std::unordered_map<std::string, PigColor> namePigColorMap = {
+    {"Black", PigColor::Black},
+    {"Pink", PigColor::Pink},
+    {"Spotted", PigColor::Spotted},
+    {"Random", PigColor::Random}
 };
 
-static std::unordered_map<PigColor, std::string> pigColorNameMap = {
-    {PigColor::BLACK, "BLACK"},
-    {PigColor::PINK, "PINK"},
-    {PigColor::SPOTTED, "SPOTTED"},
-    {PigColor::RANDOM, "RANDOM"}
+static const std::unordered_map<PigColor, std::string> pigColorNameMap = {
+    {PigColor::Black, "Black"},
+    {PigColor::Pink, "Pink"},
+    {PigColor::Spotted, "Spotted"},
+    {PigColor::Random, "Random"}
 };
 
-static std::unordered_map<PlacementOption, std::string> placementOptionNameMap = {
+static const std::unordered_map<PlacementOption, std::string> placementOptionNameMap = {
     {PlacementOption::Vanilla, "Vanilla"},
     {PlacementOption::OwnDungeon, "Own Dungeon"},
     {PlacementOption::AnyDungeon, "Any Dungeon"},
@@ -34,7 +34,7 @@ static std::unordered_map<PlacementOption, std::string> placementOptionNameMap =
     {PlacementOption::Keysanity, "Keysanity"},
 };
 
-static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap = {
+static const std::unordered_map<std::string, PlacementOption> namePlacementOptionMap = {
     {"Vanilla", PlacementOption::Vanilla},
     {"Own Dungeon", PlacementOption::OwnDungeon},
     {"Any Dungeon", PlacementOption::AnyDungeon},
@@ -42,64 +42,64 @@ static std::unordered_map<std::string, PlacementOption> namePlacementOptionMap =
     {"Keysanity", PlacementOption::Keysanity},
 };
 
-static std::unordered_map<ProgressionDungeons, std::string> progressionDungeonsNameMap = {
+static const std::unordered_map<ProgressionDungeons, std::string> progressionDungeonsNameMap = {
     {ProgressionDungeons::Disabled, "Disabled"},
     {ProgressionDungeons::Standard, "Standard"},
     {ProgressionDungeons::RaceMode, "Race Mode"},
 };
 
-static std::unordered_map<std::string, ProgressionDungeons> nameProgressionDungeonsMap = {
+static const std::unordered_map<std::string, ProgressionDungeons> nameProgressionDungeonsMap = {
     {"Disabled", ProgressionDungeons::Disabled},
     {"Standard", ProgressionDungeons::Standard},
     {"Race Mode", ProgressionDungeons::RaceMode},
 };
 
-static std::unordered_map<TargetTypePreference, std::string> targetTypePreferenceNameMap = {
+static const std::unordered_map<TargetTypePreference, std::string> targetTypePreferenceNameMap = {
     {TargetTypePreference::Hold, "Hold"},
     {TargetTypePreference::Switch, "Switch"},  
 };
 
-static std::unordered_map<std::string, TargetTypePreference> nameTargetTypePreferenceMap = {
+static const std::unordered_map<std::string, TargetTypePreference> nameTargetTypePreferenceMap = {
     {"Hold", TargetTypePreference::Hold},
     {"Switch", TargetTypePreference::Switch},
 };
 
-static std::unordered_map<CameraPreference, std::string> cameraPreferenceNameMap = {
+static const std::unordered_map<CameraPreference, std::string> cameraPreferenceNameMap = {
     {CameraPreference::Standard, "Standard"},
     {CameraPreference::ReverseLeftRight, "Reverse Left/Right"},  
 };
 
-static std::unordered_map<std::string, CameraPreference> nameCameraPreferenceMap = {
+static const std::unordered_map<std::string, CameraPreference> nameCameraPreferenceMap = {
     {"Standard", CameraPreference::Standard},
     {"Reverse Left/Right", CameraPreference::ReverseLeftRight},
 };
 
-static std::unordered_map<FirstPersonCameraPreference, std::string> firstPersonCameraPreferenceNameMap = {
+static const std::unordered_map<FirstPersonCameraPreference, std::string> firstPersonCameraPreferenceNameMap = {
     {FirstPersonCameraPreference::Standard, "Standard"},
     {FirstPersonCameraPreference::ReverseUpDown, "Reverse Up/Down"},  
 };
 
-static std::unordered_map<std::string, FirstPersonCameraPreference> nameFirstPersonCameraPreferenceMap = {
+static const std::unordered_map<std::string, FirstPersonCameraPreference> nameFirstPersonCameraPreferenceMap = {
     {"Standard", FirstPersonCameraPreference::Standard},
     {"Reverse Up/Down", FirstPersonCameraPreference::ReverseUpDown},
 };
 
-static std::unordered_map<GyroscopePreference, std::string> gyroscopePreferenceNameMap = {
+static const std::unordered_map<GyroscopePreference, std::string> gyroscopePreferenceNameMap = {
     {GyroscopePreference::Off, "Off"},
     {GyroscopePreference::On, "On"},  
 };
 
-static std::unordered_map<std::string, GyroscopePreference> nameGyroscopePreferenceMap = {
+static const std::unordered_map<std::string, GyroscopePreference> nameGyroscopePreferenceMap = {
     {"Off", GyroscopePreference::Off},
     {"On", GyroscopePreference::On},
 };
 
-static std::unordered_map<UIDisplayPreference, std::string> uiDisplayPreferenceNameMap = {
+static const std::unordered_map<UIDisplayPreference, std::string> uiDisplayPreferenceNameMap = {
     {UIDisplayPreference::On, "On"},
     {UIDisplayPreference::Off, "Off"},  
 };
 
-static std::unordered_map<std::string, UIDisplayPreference> nameUIDisplayPreferenceMap = {
+static const std::unordered_map<std::string, UIDisplayPreference> nameUIDisplayPreferenceMap = {
     {"On", UIDisplayPreference::On},
     {"Off", UIDisplayPreference::Off},
 };
@@ -375,7 +375,6 @@ Option nameToSetting(const std::string& name) {
         {"Sword Mode", Option::SwordMode},
         {"Skip Refights", Option::SkipRefights},
         {"Invert Compass", Option::InvertCompass},
-        {"Race Mode", Option::RaceMode},
         {"Num Required Dungeons", Option::NumRequiredDungeons},
         {"Damage Multiplier", Option::DamageMultiplier},
         {"CTMC", Option::CTMC},
@@ -472,7 +471,6 @@ std::string settingToName(const Option& setting) {
         {Option::SwordMode, "Sword Mode"},
         {Option::SkipRefights, "Skip Refights"},
         {Option::InvertCompass, "Invert Compass"},
-        {Option::RaceMode, "Race Mode"},
         {Option::NumRequiredDungeons, "Num Required Dungeons"},
         {Option::DamageMultiplier, "Damage Multiplier"},
         {Option::CTMC, "CTMC"},

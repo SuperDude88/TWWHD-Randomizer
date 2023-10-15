@@ -8,7 +8,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     // Progression Locations
     {
       "progression_dungeons",
-      "<b>Disabled</b>: Dungeons will not contain any items necessary to beat the game. <b>Standard</b>: Dungeons may contain items necessary to beat the game. You can set the number of required bosses/dungeons in Additional Randmozation Settings. With this setting certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). <b>Race Mode</b>: Dungeons without a required boss will not contain progress items."
+      "<b>Disabled</b>: Dungeons will not contain any items necessary to beat the game. <b>Standard</b>: Dungeons may contain items necessary to beat the game. You can set the number of required bosses/dungeons in Additional Randomization Settings. With this setting certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). <b>Race Mode</b>: Dungeons without a required boss will not contain progress items."
     },
     {
       "progression_great_fairies",
@@ -100,7 +100,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "progression_obscure",
-      "This controls whether obscure checks can contain progression items (e.g. Kane Windfall gate decorations and Earth Temple freestanding spoils).<br><u>If this is not checked, they will still be randomized</u>, but will only contain optional items you don't need to beat the game."
+      "This controls whether obscure checks can contain progression items (e.g. Kane Windfall gate decorations).<br><u>If this is not checked, they will still be randomized</u>, but will only contain optional items you don't need to beat the game."
     },
 
     // Additional Randomization Options
