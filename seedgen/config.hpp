@@ -19,7 +19,8 @@ enum struct [[nodiscard]] ConfigError {
     COUNT
 };
 
-struct Config {
+class Config {
+public:
     std::filesystem::path gameBaseDir;
     std::filesystem::path outputDir;
 
@@ -31,13 +32,13 @@ struct Config {
     Settings settings;
 
     bool configSet = false;
+    
+
+    ConfigError loadFromFile(const std::string& filePath, bool ignoreErrors = false);
+    ConfigError writeToFile(const std::string& filePath);
 };
 
 ConfigError createDefaultConfig(const std::string& filePath);
-
-ConfigError loadFromFile(const std::string& filePath, Config& out, bool ignoreErrors = false);
-
-ConfigError writeToFile(const std::string& filePath, const Config& config);
 
 std::string errorToName(ConfigError err);
 

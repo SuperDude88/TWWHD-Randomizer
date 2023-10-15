@@ -10,8 +10,7 @@ int main() {
         int retVal = mainRandomize();
 
         if (retVal == 1) {
-            auto message = "An error has occured!\n" + ErrorLog::getInstance().getLastErrors();
-            Utility::platformLog(message.c_str());
+            Utility::platformLog("An error has occured!\n" + ErrorLog::getInstance().getLastErrors());
 
             std::this_thread::sleep_for(5s);
         }

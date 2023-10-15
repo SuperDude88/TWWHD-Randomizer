@@ -6,15 +6,15 @@
 
 #include <platform/gui/screen.hpp>
 
-static constexpr size_t num_lines = 16;
-static constexpr size_t line_length = 128;
+using namespace ScreenSizeData;
 
-using LogLine_t = std::array<char, line_length>;
-static std::array<LogLine_t, num_lines> logLines;
+//TODO: differentiate TV and DRC
+using LogLine_t = std::array<char, tv_line_length>;
+static std::array<LogLine_t, tv_num_lines> logLines;
 static size_t curLine = 0;
 
 static void AddLine(const LogLine_t& line) { //we expect LogLine_t is null-terminated
-    if(curLine == num_lines) {
+    if(curLine == tv_num_lines) {
         for(size_t i = 0; i < logLines.size() - 1; i++) {
             logLines[i] = logLines[i + 1];
         }
