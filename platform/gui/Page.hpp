@@ -136,3 +136,33 @@ public:
     void drawTV() const;
     void drawDRC() const;
 };
+
+class ItemsPage : public EmptyPage {
+private:
+    static constexpr const char* PageName = "Starting Items";
+    static constexpr const char* PageDesc = "Selected items will be given to Link at the start of the game and won't be placed in the world.";
+    static constexpr size_t LIST_HEIGHT = 20;
+
+    enum class Column {
+        LIST = 0,
+        BUTTONS = 1
+    };
+
+    Column curCol = Column::LIST;
+    size_t curRow = 0;
+    size_t listScrollPos = 0;
+
+    std::vector<ItemButton> listButtons; //sorted alphabetically, sometimes has items added/removed
+    std::array<std::unique_ptr<BasicButton>, 10> countButtons;
+
+public:
+    ItemsPage();
+    
+    std::string getName() const { return PageName; }
+    std::string getDesc() const { return PageDesc; }
+
+    void open();
+    bool update(const VPADStatus& stat);
+    void drawTV() const;
+    void drawDRC() const;
+};

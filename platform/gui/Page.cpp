@@ -492,3 +492,275 @@ void AdvancedPage::drawDRC() const {
         OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
     }
 }
+
+
+
+ItemsPage::ItemsPage() {
+    using namespace std::literals::chrono_literals;
+
+    listButtons = {
+        GameItem::BaitBag,
+        GameItem::BalladOfGales,
+        GameItem::Bombs,
+        GameItem::Boomerang,
+        GameItem::CabanaDeed,
+        GameItem::CommandMelody,
+        GameItem::DekuLeaf,
+        GameItem::DeliveryBag,
+        GameItem::DinsPearl,
+        GameItem::DRCBigKey,
+        GameItem::DRCCompass,
+        GameItem::DRCDungeonMap,
+        {GameItem::DRCSmallKey, 1},
+        {GameItem::DRCSmallKey, 2},
+        {GameItem::DRCSmallKey, 3},
+        {GameItem::DRCSmallKey, 4},
+        GameItem::DragonTingleStatue,
+        GameItem::EarthGodsLyric,
+        GameItem::ETBigKey,
+        GameItem::ETCompass,
+        GameItem::ETDungeonMap,
+        {GameItem::ETSmallKey, 1},
+        {GameItem::ETSmallKey, 2},
+        {GameItem::ETSmallKey, 3},
+        GameItem::EarthTingleStatue,
+        GameItem::EmptyBottle,
+        GameItem::FaroresPearl,
+        GameItem::ForbiddenTingleStatue,
+        GameItem::FWBigKey,
+        GameItem::FWCompass,
+        GameItem::FWDungeonMap,
+        GameItem::FWSmallKey,
+        GameItem::FFCompass,
+        GameItem::FFDungeonMap,
+        GameItem::GhostShipChart,
+        GameItem::GoddessTingleStatue,
+        GameItem::GrapplingHook,
+        GameItem::HerosCharm,
+        GameItem::Hookshot,
+        GameItem::HurricaneSpin,
+        GameItem::IronBoots,
+        GameItem::MaggiesLetter,
+        GameItem::MagicArmor,
+        GameItem::MoblinsLetter,
+        GameItem::NayrusPearl,
+        GameItem::NoteToMom,
+        GameItem::PowerBracelets,
+        {GameItem::ProgressiveBombBag, 1},
+        {GameItem::ProgressiveBombBag, 2},
+        {GameItem::ProgressiveBow, 1},
+        {GameItem::ProgressiveBow, 2},
+        {GameItem::ProgressiveBow, 3},
+        {GameItem::ProgressiveMagicMeter, 1},
+        {GameItem::ProgressiveMagicMeter, 2},
+        {GameItem::ProgressivePictoBox, 1},
+        {GameItem::ProgressivePictoBox, 2},
+        {GameItem::ProgressiveQuiver, 1},
+        {GameItem::ProgressiveQuiver, 2},
+        {GameItem::ProgressiveSail, 1}, // technically doesn't need the num check right now, would want it if second sail could be shuffled though
+        {GameItem::ProgressiveShield, 1},
+        {GameItem::ProgressiveShield, 2},
+        {GameItem::ProgressiveWallet, 3},
+        {GameItem::ProgressiveWallet, 4},
+        GameItem::SkullHammer,
+        GameItem::SongOfPassing,
+        GameItem::SpoilsBag,
+        GameItem::Telescope,
+        GameItem::TingleBottle,
+        GameItem::TotGBigKey,
+        GameItem::TotGCompass,
+        GameItem::TotGDungeonMap,
+        {GameItem::TotGSmallKey, 1},
+        {GameItem::TotGSmallKey, 2},
+        GameItem::WindGodsAria,
+        GameItem::WTBigKey,
+        GameItem::WTCompass,
+        GameItem::WTDungeonMap,
+        {GameItem::WTSmallKey, 1},
+        {GameItem::WTSmallKey, 2},
+        GameItem::WindTingleStatue
+    };
+
+    countButtons[0] = std::make_unique<CounterButton>(Option::StartingHP, 250ms, 300ms);
+    countButtons[1] = std::make_unique<CounterButton>(Option::StartingHC, 100ms, 300ms);
+    countButtons[2] = std::make_unique<CounterButton>(Option::StartingJoyPendants, 100ms, 300ms);
+    countButtons[3] = std::make_unique<CounterButton>(Option::StartingSkullNecklaces, 150ms, 300ms);
+    countButtons[4] = std::make_unique<CounterButton>(Option::StartingBokoBabaSeeds, 200ms, 300ms);
+    countButtons[5] = std::make_unique<CounterButton>(Option::StartingGoldenFeathers, 120ms, 300ms);
+    countButtons[6] = std::make_unique<CounterButton>(Option::StartingKnightsCrests, 200ms, 300ms);
+    countButtons[7] = std::make_unique<CounterButton>(Option::StartingRedChuJellys, 130ms, 300ms);
+    countButtons[8] = std::make_unique<CounterButton>(Option::StartingGreenChuJellys, 130ms, 300ms);
+    countButtons[9] = std::make_unique<CounterButton>(Option::StartingBlueChuJellys, 130ms, 300ms);
+}
+
+void ItemsPage::open() {
+    curCol = Column::LIST;
+    curRow = 0;
+    listScrollPos = 0;
+
+    if(getValue(Option::SwordMode) == SwordModeToName(SwordMode::StartWithSword) && std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword) == listButtons.end()) {
+        const auto firstIt = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveWallet); // sword is before wallet in the alphabet
+        if(firstIt != listButtons.end()) { // should always be true
+            listButtons.insert(firstIt, 3, {GameItem::ProgressiveSword}); // add 3 swords
+        }
+    }
+    else {
+        // Swordless - no swords in the game
+        // No starting sword - pointless to add swords since you would need at least 1 (which would just be start with sword)
+        const auto firstIt = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword);
+        if(firstIt != listButtons.end()) {
+            listButtons.erase(firstIt, firstIt + 3); // would have 3 swords to remove
+        }
+    }
+
+    // load the items currently set in the config
+    for(ItemButton& button : listButtons) {
+        button.loadState();
+    }
+}
+
+bool ItemsPage::update(const VPADStatus& stat) {
+    bool moved = false;
+
+    if(stat.trigger & VPAD_BUTTON_LEFT || stat.trigger & VPAD_BUTTON_RIGHT) {
+        switch(curCol) {
+            case Column::LIST:
+                curCol = Column::BUTTONS;
+                curRow = std::clamp<size_t>(curRow, 0, countButtons.size() - 1);
+
+                break;
+            case Column::BUTTONS:
+                curCol = Column::LIST;
+                break;
+        }
+
+        moved = true;
+    }
+
+    if(stat.trigger & VPAD_BUTTON_UP) {
+        switch(curCol) {
+            case Column::LIST:
+                if(curRow <= 0) {
+                    if(listScrollPos <= 0) {
+                        listScrollPos = listButtons.size() - LIST_HEIGHT - 1; // -1 because 0-indexed
+                        curRow = LIST_HEIGHT - 1; // -1 because 0-indexed
+                    }
+                    else {
+                        listScrollPos -= 1;
+                    }
+                }
+                else {
+                    curRow -= 1;
+                }
+
+                break;
+            case Column::BUTTONS:
+                if(curRow <= 0) {
+                    curRow = countButtons.size() - 1; //wrap on top row
+                }
+                else {
+                    curRow -= 1; //up one row
+                }
+
+                break;
+        }
+
+        moved = true;
+    }
+    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+        switch(curCol) {
+            case Column::LIST:
+                if(curRow >= LIST_HEIGHT - 1) {
+                    if(listScrollPos >= listButtons.size() - LIST_HEIGHT - 1) { //-1 for 0-indexing
+                        listScrollPos = 0;
+                        curRow = 0;
+                    }
+                    else {
+                        listScrollPos += 1;
+                    }
+                }
+                else {
+                    curRow += 1;
+                }
+
+                break;
+            case Column::BUTTONS:
+                if(curRow >= countButtons.size() - 1) {
+                    curRow = 0; //wrap on bottom row
+                }
+                else {
+                    curRow += 1; //down one row
+                }
+
+                break;
+        }
+
+        moved = true;
+    }
+
+    bool btnUpdate = false;
+    switch(curCol) {
+        case Column::LIST:
+            if(listButtons[listScrollPos + curRow].update(stat)) {
+                btnUpdate = true;
+
+                //update gear list
+                OptionCB::clearStartingItems();
+                for(const auto& button : listButtons) {
+                    if(button.isEnabled()) {
+                        OptionCB::addStartingItem(button.getItem());
+                    }
+                }
+            }
+
+            break;
+        case Column::BUTTONS:
+            btnUpdate = countButtons[curRow]->update(stat);
+            break;
+    }
+    
+    return moved || btnUpdate;
+}
+
+void ItemsPage::drawTV() const {
+    // draw visible part of the list
+    const size_t listStartCol = 0;
+    for(size_t row = 0; row < LIST_HEIGHT; row++) {
+        listButtons[listScrollPos + row].drawTV(3 + row, 3, 1);
+    }
+
+    // draw second column of buttons
+    const size_t countStartCol = ScreenSizeData::tv_line_length / 2;
+    for(size_t row = 0; row < countButtons.size(); row++) {
+        countButtons[row]->drawTV(3 + row, countStartCol + 1, countStartCol + 1 + 30);
+    }
+    
+    // draw cursor
+    switch(curCol) {
+        case Column::LIST:
+            OSScreenPutFontEx(SCREEN_TV, listStartCol, 3 + curRow, ">");
+
+            break;
+        case Column::BUTTONS:
+            OSScreenPutFontEx(SCREEN_TV, countStartCol, 3 + curRow, ">");
+            break;
+    }
+}
+
+void ItemsPage::drawDRC() const {
+    switch(curCol) {
+        case Column::LIST:
+            listButtons[listScrollPos + curRow].drawDRC();
+
+            break;
+        case Column::BUTTONS:
+            countButtons[curRow]->drawDRC();
+            break;
+    }
+
+    const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
+    const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
+    for(size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
+    }
+}

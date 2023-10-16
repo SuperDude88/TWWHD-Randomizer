@@ -1,6 +1,7 @@
 #pragma once
 
 #include <seedgen/config.hpp>
+#include <logic/GameItem.hpp>
 
 // toggles setting, returns new value to display
 using TriggerCallback = std::string(*)();
@@ -104,6 +105,10 @@ namespace OptionCB {
     //std::string setColors();
 
     std::string invalidCB();
+
+    void clearStartingItems();
+    bool hasStartingItem(const GameItem& item, const size_t& num = 1); //num is for duplicated items
+    void addStartingItem(const GameItem& item);
 
     void setInternal(const Config& in);
     Config getInternal();
