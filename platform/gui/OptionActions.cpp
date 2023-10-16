@@ -1,5 +1,7 @@
 #include "OptionActions.hpp"
 
+#include <algorithm>
+
 #include <seedgen/seed.hpp>
 
 static Config conf;
@@ -428,6 +430,10 @@ namespace OptionCB {
                 break;
         }
 
+        if(conf.settings.sword_mode != StartWithSword) {
+            std::erase(conf.settings.starting_gear, GameItem::ProgressiveSword);
+        }
+
         return SwordModeToName(conf.settings.sword_mode);
     }
 
@@ -739,6 +745,19 @@ namespace OptionCB {
 
     std::string invalidCB() {
         return "";
+    }
+
+
+    void clearStartingItems() {
+        conf.settings.starting_gear.clear();
+    }
+    
+    bool hasStartingItem(const GameItem& item, const size_t& num) {
+        return std::count(conf.settings.starting_gear.begin(), conf.settings.starting_gear.end(), item) >= num;
+    }
+
+    void addStartingItem(const GameItem& item) {
+        conf.settings.starting_gear.push_back(item);
     }
     
 
@@ -1159,7 +1178,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {AddShortcutWarps,           {"Add Warps Between Dungeons",          "Adds new warp pots that act as shortcuts connecting dungeons to each other directly. Each pot must be unlocked before it can be used, so you cannot use them to access dungeons early."}},
         {RemoveMusic,                {"Remove Music",                        "Mutes all in-game music."}},
 
-        {StartingGear,               {"",                                    "test"}},
+        //{StartingGear,               {"",                                    ""}},
         {StartingHP,                 {"Heart Pieces",                        "Number of extra heart pieces that you start with."}},
         {StartingHC,                 {"Heart Containers",                    "Number of extra heart containers that you start with."}},
         {StartingJoyPendants,        {"Joy Pendants",                        "Number of extra joy pendants that you start with."}},

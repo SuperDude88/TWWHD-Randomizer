@@ -16,6 +16,7 @@ SettingsMenu::SettingsMenu() {
     pages[3] = std::make_unique<EntrancePage>();
     pages[4] = std::make_unique<ConveniencePage>();
     pages[5] = std::make_unique<AdvancedPage>();
+    pages[6] = std::make_unique<ItemsPage>();
 }
 
 SettingsMenu::Status SettingsMenu::update() {

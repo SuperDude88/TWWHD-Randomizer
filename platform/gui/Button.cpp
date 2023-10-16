@@ -59,3 +59,33 @@ void CounterButton::drawDRC() const {
         OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
     }
 }
+
+
+bool ItemButton::operator==(const ItemButton& rhs) const {
+    return gameItemToName(item) == gameItemToName(rhs.item);
+}
+
+bool ItemButton::operator==(const GameItem& rhs) const {
+    return gameItemToName(item) == gameItemToName(rhs);
+}
+
+bool ItemButton::update(const VPADStatus& stat) {
+    if(stat.trigger & VPAD_BUTTON_A) {
+        enabled = !enabled;
+
+        return true;
+    }
+
+    return false;
+}
+
+void ItemButton::drawTV(const size_t row, const size_t nameCol, const size_t valCol) const {
+    OSScreenPutFontEx(SCREEN_TV, nameCol, row, gameItemToName(item).c_str());
+
+    const std::string mark = enabled ? "X" : "";
+    OSScreenPutFontEx(SCREEN_TV, valCol, row, mark.c_str());
+}
+
+void ItemButton::drawDRC() const {
+    
+}
