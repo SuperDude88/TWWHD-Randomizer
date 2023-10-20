@@ -110,7 +110,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // Write settings to file when user closes the program
-    ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", config);
+    ConfigError err = config.writeToFile(APP_SAVE_PATH "config.yaml");
     if (err != ConfigError:: NONE)
     {
         show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
@@ -130,7 +130,7 @@ void MainWindow::load_config_into_ui()
 {
     // Ignore errors and just load in whatever we can. The gui will write a proper config file
     // when the user begins randomization
-    ConfigError err = loadFromFile(APP_SAVE_PATH "config.yaml", config, true);
+    ConfigError err = config.loadFromFile(APP_SAVE_PATH "config.yaml", true);
     if (err != ConfigError::NONE)
     {
         show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
@@ -464,24 +464,24 @@ void MainWindow::apply_config_settings()
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_big_keys);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_maps_compasses);
 
-    APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(80.0f));
+    APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(MAXIMUM_DAMAGE_MULTIPLIER));
 
     auto& num_required_dungeons = config.settings.num_required_dungeons;
     // Race mode dungeons must be between 1 and 6 if race mode is enabled
     if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
-        num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(1), uint8_t(6));
+        num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(1), uint8_t(MAXIMUM_NUM_DUNGEONS));
     }
     else
     {
-        num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(0), uint8_t(6));
+        num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(0), uint8_t(MAXIMUM_NUM_DUNGEONS));
     }
 
     ui->num_required_dungeons->setCurrentIndex(num_required_dungeons);
 
     auto& num_starting_triforce_shards = config.settings.num_starting_triforce_shards;
     // Number of starting triforce shards must be between 0 and 8
-    num_starting_triforce_shards = std::clamp(num_starting_triforce_shards, uint8_t(0), uint8_t(8));
+    num_starting_triforce_shards = std::clamp(num_starting_triforce_shards, uint8_t(0), uint8_t(MAXIMUM_STARTING_TRIFORCE_SHARDS));
     ui->num_starting_triforce_shards->setCurrentIndex(num_starting_triforce_shards);
 
     APPLY_CHECKBOX_SETTING(config, ui, randomize_charts);
@@ -527,10 +527,10 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, korl_hints);
     APPLY_CHECKBOX_SETTING(config, ui, use_always_hints);
     APPLY_CHECKBOX_SETTING(config, ui, clearer_hints);
-    APPLY_SPINBOX_SETTING(config, ui, path_hints, uint8_t(0), uint8_t(7));
-    APPLY_SPINBOX_SETTING(config, ui, barren_hints, uint8_t(0), uint8_t(7));
-    APPLY_SPINBOX_SETTING(config, ui, location_hints, uint8_t(0), uint8_t(7));
-    APPLY_SPINBOX_SETTING(config, ui, item_hints, uint8_t(0), uint8_t(7));
+    APPLY_SPINBOX_SETTING(config, ui, path_hints, uint8_t(0), uint8_t(MAXIMUM_PATH_HINT_COUNT));
+    APPLY_SPINBOX_SETTING(config, ui, barren_hints, uint8_t(0), uint8_t(MAXIMUM_BARREN_HINT_COUNT));
+    APPLY_SPINBOX_SETTING(config, ui, location_hints, uint8_t(0), uint8_t(MAXIMUM_LOCATION_HINT_COUNT));
+    APPLY_SPINBOX_SETTING(config, ui, item_hints, uint8_t(0), uint8_t(MAXIMUM_ITEM_HINT_COUNT));
 
     // Entrance Randomizer
     APPLY_CHECKBOX_SETTING(config, ui, randomize_dungeon_entrances);
@@ -1106,7 +1106,7 @@ void MainWindow::on_randomize_button_clicked()
 
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    ConfigError err = writeToFile(APP_SAVE_PATH "config.yaml", config);
+    ConfigError err = config.writeToFile(APP_SAVE_PATH "config.yaml");
     if(err != ConfigError::NONE) {
         show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
         return;
