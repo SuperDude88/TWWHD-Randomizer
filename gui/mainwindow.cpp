@@ -52,7 +52,7 @@ void delete_and_create_default_config()
 {
     std::filesystem::remove(APP_SAVE_PATH "config.yaml");
 
-    ConfigError err = createDefaultConfig(APP_SAVE_PATH "config.yaml");
+    ConfigError err = Config::writeDefault(APP_SAVE_PATH "config.yaml");
     if(err != ConfigError::NONE) {
         QPointer<QMessageBox> messageBox = new QMessageBox();
         auto message = "Failed to create default configuration file\ncode " + std::to_string(static_cast<uint32_t>(err));

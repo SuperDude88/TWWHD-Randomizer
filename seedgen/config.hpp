@@ -32,13 +32,15 @@ public:
     Settings settings;
 
     bool configSet = false;
-    
 
+    Config();
+    
+    void resetDefaults();
     ConfigError loadFromFile(const std::string& filePath, bool ignoreErrors = false);
     ConfigError writeToFile(const std::string& filePath);
+    
+    static ConfigError writeDefault(const std::string& filePath);
 };
-
-ConfigError createDefaultConfig(const std::string& filePath);
 
 std::string errorToName(ConfigError err);
 

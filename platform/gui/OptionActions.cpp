@@ -760,6 +760,9 @@ namespace OptionCB {
         conf.settings.starting_gear.push_back(item);
     }
     
+    void resetInternal() {
+        conf.resetDefaults();
+    }
 
     void setInternal(const Config& in) {
         conf = in;

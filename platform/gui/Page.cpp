@@ -3,22 +3,44 @@
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 
-SeedPage::SeedPage() {}
+SeedPage::SeedPage() {
+    resetTimer();
+}
 
-void SeedPage::open() {}
+void SeedPage::open() {
+    resetTimer();
+}
 
 bool SeedPage::update(const VPADStatus& stat) {
     if (stat.trigger & VPAD_BUTTON_A) {
         OptionCB::changeSeed();
         return true;
     }
-    
-    return false;
+
+    if (!(stat.hold & VPAD_BUTTON_B)) {
+        resetTimer();
+    }
+    else {
+        if(Clock::now() >= resetTime) {
+            OptionCB::resetInternal();
+            resetTimer();
+        }
+    }
+
+    return true;
 }
 
 void SeedPage::drawTV() const {
+    using namespace std::literals::chrono_literals;
+
     OSScreenPutFontEx(SCREEN_TV, 0, 3, ("The current seed is \"" + getSeed() + "\". Hash: " + getSeedHash()).c_str());
     OSScreenPutFontEx(SCREEN_TV, 0, 4, "Press A to generate a new seed");
+    // (total time - (final time - current time)) / (total duration / 10) = fraction of total in 10 increments
+    const std::chrono::milliseconds remaining = 3s - std::chrono::duration_cast<std::chrono::milliseconds>(resetTime - Clock::now());
+    const size_t count = remaining.count() / 300;
+    std::string bar(count, '-');
+    bar.resize(10, ' ');
+    OSScreenPutFontEx(SCREEN_TV, 0, 6, ("Hold B to reset all settings to default [" + bar + "]").c_str());
 }
 
 void SeedPage::drawDRC() const {

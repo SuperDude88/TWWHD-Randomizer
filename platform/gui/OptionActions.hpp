@@ -110,6 +110,7 @@ namespace OptionCB {
     bool hasStartingItem(const GameItem& item, const size_t& num = 1); //num is for duplicated items
     void addStartingItem(const GameItem& item);
 
+    void resetInternal();
     void setInternal(const Config& in);
     Config getInternal();
 }

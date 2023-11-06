@@ -587,9 +587,6 @@ private:
         }
 
         for (auto entrance : bossReverseEntrances) {
-
-            const std::string fileStage = entrance->getFilepathStage();
-            const uint8_t sclsExitIndex = entrance->getSclsExitIndex();
             std::string replacementStage = entrance->getReplaces()->getStageName();
             uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
             uint8_t replacementSpawn = entrance->getReplaces()->getSpawnId();
@@ -856,81 +853,76 @@ public:
 };
 
 int mainRandomize() {
-    int retVal = 0;
-    { //timer scope
-        #ifdef ENABLE_TIMING
-            ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
-        #endif
+    #ifdef ENABLE_TIMING
+        ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
+    #endif
 
-        Config load;
-        std::ifstream conf(APP_SAVE_PATH "config.yaml");
-        if(!conf.is_open()) {
-            Utility::platformLog("Creating default config\n");
-            ConfigError err = createDefaultConfig(APP_SAVE_PATH "config.yaml");
-            if(err != ConfigError::NONE) {
-                ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
+    Config load;
 
-                return 1;
-            }
-        }
-        conf.close();
-
-        Utility::platformLog("Reading config\n");
-        ConfigError err = load.loadFromFile(APP_SAVE_PATH "config.yaml");
-        if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
-            Utility::platformLog("Warning: config was made using a different randomizer version\n");
-            Utility::platformLog("Item placement may be different than expected\n");
-        }
-        else if(err != ConfigError::NONE) {
-            ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
+    std::ifstream conf(APP_SAVE_PATH "config.yaml");
+    if(!conf.is_open()) {
+        Utility::platformLog("Creating default config\n");
+        ConfigError err = Config::writeDefault(APP_SAVE_PATH "config.yaml");
+        if(err != ConfigError::NONE) {
+            ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
 
             return 1;
         }
+    }
+    conf.close();
 
-        #ifdef DEVKITPRO
-            if(SettingsMenu::run(load)) {
-                return 0; //TODO: config error code?
-            }
+    Utility::platformLog("Reading config\n");
+    ConfigError err = load.loadFromFile(APP_SAVE_PATH "config.yaml");
+    if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
+        Utility::platformLog("Warning: config was made using a different randomizer version\n");
+        Utility::platformLog("Item placement may be different than expected\n");
+    }
+    else if(err != ConfigError::NONE) {
+        ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
 
-            if(!SYSCheckTitleExists(0x0005000010143500)) {
-                ErrorLog::getInstance().log("Could not find game: you must have a NTSC-U / US copy of TWWHD!");
+        return 1;
+    }
 
+    #ifdef DEVKITPRO
+        if(SettingsMenu::run(load)) {
+            return 0; //TODO: config error code?
+        }
+
+        if(!SYSCheckTitleExists(0x0005000010143500)) {
+            ErrorLog::getInstance().log("Could not find game: you must have a NTSC-U / US copy of TWWHD!");
+
+            return 1;
+        }
+        if(const auto& err = getTitlePath(0x0005000010143500, load.gameBaseDir); err < 0) {
+            return 1;
+        }
+        if(!Utility::mountDeviceAndConvertPath(load.gameBaseDir)) {
+            ErrorLog::getInstance().log("Failed mounting input device!");
+            return 1;
+        }
+        //Utility::platformLog("Got game dir " + load.gameBaseDir.string() + '\n');
+        
+        
+        if(!SYSCheckTitleExists(0x0005000010143599)) {
+            if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
                 return 1;
             }
-            if(const auto& err = getTitlePath(0x0005000010143500, load.gameBaseDir); err < 0) {
-                return 1;
-            }
-            if(!Utility::mountDeviceAndConvertPath(load.gameBaseDir)) {
-                ErrorLog::getInstance().log("Failed mounting input device!");
-                return 1;
-            }
-            //Utility::platformLog("Got game dir " + load.gameBaseDir.string() + '\n');
-            
-            
-            if(!SYSCheckTitleExists(0x0005000010143599)) {
-                if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
-                    return 1;
-                }
-                g_session.setFirstTimeSetup(true);
-            }
-            if(const auto& err = getTitlePath(0x0005000010143599, load.outputDir); err < 0) {
-                return 1;
-            }
-            if(!Utility::mountDeviceAndConvertPath(load.outputDir)) {
-                ErrorLog::getInstance().log("Failed mounting output device!");
-                return 1;
-            }
-           //Utility::platformLog("Got output dir " + load.outputDir.string() + '\n');
-        #endif
+            g_session.setFirstTimeSetup(true);
+        }
+        if(const auto& err = getTitlePath(0x0005000010143599, load.outputDir); err < 0) {
+            return 1;
+        }
+        if(!Utility::mountDeviceAndConvertPath(load.outputDir)) {
+            ErrorLog::getInstance().log("Failed mounting output device!");
+            return 1;
+        }
+       //Utility::platformLog("Got output dir " + load.outputDir.string() + '\n');
+    #endif
 
-        Randomizer rando(load);
+    Randomizer rando(load);
 
-        // IMPROVEMENT: issue with seekp, find better solution than manual padding?
-        // TODO: make things zoom
-        // TODO: do a hundo seed to test everything
+    // IMPROVEMENT: issue with seekp, find better solution than manual padding?
+    // TODO: make things zoom
 
-        retVal = rando.randomize();
-    } // End timer scope
-
-    return retVal;
+    return rando.randomize();
 }
