@@ -37,8 +37,6 @@
 #include <platform/gui/SettingsMenu.hpp>
 #endif
 
-RandoSession g_session; //declared outside of class for extern stuff
-
 #define FILETYPE_ERROR_CHECK(func) {  \
     if(const auto error = func; error != decltype(error)::NONE) {\
         ErrorLog::getInstance().log(std::string("Encountered ") + &(typeid(error).name()[5]) + " on line " TOSTRING(__LINE__)); \
