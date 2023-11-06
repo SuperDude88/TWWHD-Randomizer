@@ -130,7 +130,7 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
             }
         }
         // ComboBox Options
-        else if (option == Option::SwordMode || option == Option::NumShards)
+        else if (option == Option::NumShards)
         {
             bitsWriter.write(getSetting(settings, option), 8);
         }

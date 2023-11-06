@@ -110,7 +110,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::ProgressObscure,
 
     // Additional Randomization Options
-    Option::SwordMode,
+    Option::RemoveSwords,
     Option::DungeonSmallKeys,
     Option::DungeonBigKeys,
     Option::DungeonMapsAndCompasses,
@@ -201,8 +201,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
             }
         }
         // ComboBox Options (and 8-bit SpinBox options)
-        else if (option == Option::SwordMode               ||
-                 option == Option::DungeonSmallKeys        ||
+        else if (option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
                  option == Option::NumRequiredDungeons     ||
@@ -334,8 +333,7 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
             }
         }
         // ComboBox Options (and 8-bit spinbox options)
-        else if (option == Option::SwordMode               ||
-                 option == Option::DungeonSmallKeys        ||
+        else if (option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
                  option == Option::NumRequiredDungeons     ||

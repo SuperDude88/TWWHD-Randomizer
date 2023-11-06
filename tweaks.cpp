@@ -2001,22 +2001,19 @@ TweakError update_skip_rematch_bosses_game_variable(const bool& skipRefights) {
     return TweakError::NONE;
 }
 
-TweakError update_sword_mode_game_variable(const SwordMode swordMode) {
-    if(custom_symbols.count("sword_mode") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    const uint32_t sword_mode_addr = custom_symbols.at("sword_mode");
+TweakError update_sword_mode_game_variable(const bool& remove_swords) {
+    if(custom_symbols.count("swordless") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    const uint32_t swordless_addr = custom_symbols.at("swordless");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
     entry.addAction([=](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-        if (swordMode == SwordMode::StartWithSword) {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x00));
+        if (remove_swords) {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, swordless_addr), 0x01));
         }
-        else if (swordMode == SwordMode::RandomSword) {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x01));
-        }
-        else if (swordMode == SwordMode::NoSword) {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x02));
+        else {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, swordless_addr), 0x00));
         }
 
         return true;
@@ -3538,7 +3535,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     if (settings.invert_sea_compass_x_axis) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
     }
-    if (settings.sword_mode == SwordMode::NoSword) {
+    if (settings.remove_swords) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.yaml"));
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3594,7 +3591,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     //failsafe id 0 spawns
 
     TWEAK_ERR_CHECK(update_skip_rematch_bosses_game_variable(settings.skip_rematch_bosses));
-    TWEAK_ERR_CHECK(update_sword_mode_game_variable(settings.sword_mode));
+    TWEAK_ERR_CHECK(update_sword_mode_game_variable(settings.remove_swords));
     TWEAK_ERR_CHECK(update_starting_gear(settings.starting_gear));
     if(settings.selectedModel.casual) {
         TWEAK_ERR_CHECK(set_casual_clothes());

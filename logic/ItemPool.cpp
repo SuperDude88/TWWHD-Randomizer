@@ -226,7 +226,7 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
     }
 
     // Add swords and hurricane spin to the pool if we aren't playing in swordless mode
-    if (settings.sword_mode != SwordMode::NoSword)
+    if (!settings.remove_swords)
     {
         addElementToPool(completeItemPool, std::string("Progressive Sword"), 4);
         addElementToPool(completeItemPool, std::string("Hurricane Spin"));
@@ -261,12 +261,6 @@ ItemNamePool generateStartingGameItemPool(const Settings& settings)
         "Wind's Requiem",
         "Progressive Sail"
     };
-
-    // Add in a sword, if the sword mode starts with one
-    if (settings.sword_mode == SwordMode::StartWithSword)
-    {
-        startingItems.push_back("Progressive Sword");
-    }
 
     // Add starting triforce shards
     auto triforceShardsCopy = triforceShards;

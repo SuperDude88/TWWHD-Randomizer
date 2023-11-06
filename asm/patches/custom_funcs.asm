@@ -13,17 +13,11 @@ bl item_func_wind_tact ; Wind Waker
 bl item_func_tact_song1 ; Wind's Requiem
 bl progressive_sail_item_func ; Normal sail
 
-lis r5, sword_mode@ha
-addi r5, r5, sword_mode@l
+lis r5, swordless@ha
+addi r5, r5, swordless@l
 lbz r5, 0 (r5)
-cmpwi r5, 0 ; Start with Sword
-beq start_with_sword
-cmpwi r5, 2 ; Swordless
+cmpwi r5, 1 ; Swordless
 beq break_barrier_for_swordless
-b after_sword_mode_initialization
-
-start_with_sword:
-bl item_func_sword
 b after_sword_mode_initialization
 
 break_barrier_for_swordless:
@@ -382,8 +376,8 @@ num_triforce_shards_to_start_with:
 .global should_start_with_heros_clothes
 should_start_with_heros_clothes:
 .byte 1 ; By default start with the Hero's Clothes
-.global sword_mode
-sword_mode:
+.global swordless
+swordless:
 .byte 0 ; By default Start with Sword
 .global skip_rematch_bosses
 skip_rematch_bosses:

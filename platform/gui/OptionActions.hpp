@@ -69,7 +69,7 @@ namespace OptionCB {
     std::string cycleStartingShards();
     std::string toggleDungeonWarps();
     std::string toggleSpoilerLog();
-    std::string cycleSwordMode();
+    std::string toggleSwords();
     std::string toggleTrials();
     std::string toggleInvertCompass();
     std::string cycleNumDungeons();

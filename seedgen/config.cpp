@@ -141,7 +141,7 @@ void Config::resetDefaults() {
     settings.num_starting_triforce_shards = 0;
     settings.add_shortcut_warps_between_dungeons = false;
     settings.do_not_generate_spoiler_log = false;
-    settings.sword_mode = SwordMode::StartWithSword;
+    settings.remove_swords = false;
     settings.skip_rematch_bosses = true;
     settings.invert_sea_compass_x_axis = false;
     settings.num_required_dungeons = 0;
@@ -151,6 +151,7 @@ void Config::resetDefaults() {
     settings.pig_color = PigColor::Random;
 
     settings.starting_gear = {
+        GameItem::ProgressiveSword,
         GameItem::ProgressiveShield,
         GameItem::BalladOfGales,
         GameItem::SongOfPassing,
@@ -293,6 +294,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     }
     settings.damage_multiplier = root["damage_multiplier"].as<float>();
     SET_BOOL_FIELD(root, chest_type_matches_contents)
+    SET_BOOL_FIELD(root, remove_swords)
 
     SET_INT_FIELD(root, starting_pohs)
     SET_INT_FIELD(root, starting_hcs)
@@ -309,16 +311,6 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     SET_BOOL_FIELD(root, do_not_generate_spoiler_log)
     SET_BOOL_FIELD(root, start_with_random_item)
     SET_BOOL_FIELD(root, plandomizer)
-
-    if(!root["sword_mode"]) {
-      if (!ignoreErrors) return ConfigError::MISSING_KEY;
-    } else {
-      settings.sword_mode = nameToSwordMode(root["sword_mode"].as<std::string>());
-      if (settings.sword_mode == SwordMode::INVALID) {
-        if (!ignoreErrors) return ConfigError::INVALID_VALUE;
-        else settings.sword_mode = SwordMode::StartWithSword;
-      }
-    }
 
     if(!root["pig_color"])  {
       if (!ignoreErrors) return ConfigError::MISSING_KEY;
@@ -417,8 +409,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
       std::unordered_multiset<GameItem> valid_items = getSupportedStartingItems();
 
       // Erase swords if Swordless mode is on, or remove one sword if we're starting with one
-      if(settings.sword_mode == SwordMode::NoSword) valid_items.erase(GameItem::ProgressiveSword);
-      else if (settings.sword_mode == SwordMode::StartWithSword) valid_items.erase(valid_items.find(GameItem::ProgressiveSword));
+      if(settings.remove_swords) valid_items.erase(GameItem::ProgressiveSword);
 
       settings.starting_gear.clear();
       for (const auto& itemObject : root["starting_gear"]) {
@@ -564,6 +555,7 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     WRITE_NUM_FIELD(root, num_required_dungeons)
     WRITE_NUM_FIELD(root, damage_multiplier)
     WRITE_SETTING_BOOL_FIELD(root, chest_type_matches_contents)
+    WRITE_SETTING_BOOL_FIELD(root, remove_swords)
 
     WRITE_NUM_FIELD(root, starting_pohs)
     WRITE_NUM_FIELD(root, starting_hcs)
@@ -582,7 +574,6 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     WRITE_SETTING_BOOL_FIELD(root, plandomizer)
     WRITE_STR_FIELD(root, plandomizerFile)
 
-    root["sword_mode"] = SwordModeToName(settings.sword_mode);
     root["pig_color"] = PigColorToName(settings.pig_color);
     root["dungeon_small_keys"] = PlacementOptionToName(settings.dungeon_small_keys);
     root["dungeon_big_keys"] = PlacementOptionToName(settings.dungeon_big_keys);

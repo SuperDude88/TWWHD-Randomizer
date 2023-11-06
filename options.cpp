@@ -1,17 +1,5 @@
 #include "options.hpp"
 
-static const std::unordered_map<std::string, SwordMode> nameSwordModeMap = {
-    {"Start With Sword", SwordMode::StartWithSword},
-    {"Random Sword", SwordMode::RandomSword},
-    {"No Sword", SwordMode::NoSword},
-};
-
-static const std::unordered_map<SwordMode, std::string> swordModeNameMap = {
-    {SwordMode::StartWithSword, "Start With Sword"},
-    {SwordMode::RandomSword, "Random Sword"},
-    {SwordMode::NoSword, "No Sword"}
-};
-
 static const std::unordered_map<std::string, PigColor> namePigColorMap = {
     {"Black", PigColor::Black},
     {"Pink", PigColor::Pink},
@@ -105,25 +93,6 @@ static const std::unordered_map<std::string, UIDisplayPreference> nameUIDisplayP
 };
 
 
-SwordMode nameToSwordMode(const std::string& name) {
-
-    if (nameSwordModeMap.count(name) == 0)
-    {
-        return SwordMode::INVALID;
-    }
-
-    return nameSwordModeMap.at(name);
-}
-
-std::string SwordModeToName(const SwordMode& mode) {
-
-    if (swordModeNameMap.count(mode) == 0)
-    {
-        return "INVALID";
-    }
-
-    return swordModeNameMap.at(mode);
-}
 
 PigColor nameToPigColor(const std::string& name) {
 
@@ -283,10 +252,6 @@ std::string UIDisplayPreferenceToName(const UIDisplayPreference& preference)
 
 // Make sure there aren't any naming conflicts when adding future settings
 int nameToSettingInt(const std::string& name) {
-    if (nameSwordModeMap.count(name) > 0)
-    {
-        return static_cast<std::underlying_type_t<SwordMode>>(nameSwordModeMap.at(name));
-    }
     if (namePigColorMap.count(name) > 0)
     {
         return static_cast<std::underlying_type_t<PigColor>>(namePigColorMap.at(name));
@@ -373,7 +338,7 @@ Option nameToSetting(const std::string& name) {
         {"Num Shards", Option::NumShards},
         {"Add Shortcut Warps", Option::AddShortcutWarps},
         {"No Spoiler Log", Option::NoSpoilerLog},
-        {"Sword Mode", Option::SwordMode},
+        {"Remove Swords", Option::RemoveSwords},
         {"Skip Refights", Option::SkipRefights},
         {"Invert Compass", Option::InvertCompass},
         {"Num Required Dungeons", Option::NumRequiredDungeons},
@@ -469,7 +434,7 @@ std::string settingToName(const Option& setting) {
         {Option::NumShards, "Num Shards"},
         {Option::AddShortcutWarps, "Add Shortcut Warps"},
         {Option::NoSpoilerLog, "No Spoiler Log"},
-        {Option::SwordMode, "Sword Mode"},
+        {Option::RemoveSwords, "Remove Swords"},
         {Option::SkipRefights, "Skip Refights"},
         {Option::InvertCompass, "Invert Compass"},
         {Option::NumRequiredDungeons, "Num Required Dungeons"},
@@ -623,8 +588,8 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.add_shortcut_warps_between_dungeons;
         case Option::NoSpoilerLog:
             return settings.do_not_generate_spoiler_log;
-        case Option::SwordMode:
-            return static_cast<std::underlying_type_t<SwordMode>>(settings.sword_mode);
+        case Option::RemoveSwords:
+            return settings.remove_swords;
         case Option::SkipRefights:
             return settings.skip_rematch_bosses;
         case Option::InvertCompass:
@@ -800,8 +765,8 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.add_shortcut_warps_between_dungeons = value; return;
         case Option::NoSpoilerLog:
             settings.do_not_generate_spoiler_log = value; return;
-        case Option::SwordMode:
-            settings.sword_mode = static_cast<SwordMode>(value); return;
+        case Option::RemoveSwords:
+            settings.remove_swords = value; return;
         case Option::SkipRefights:
             settings.skip_rematch_bosses = value; return;
         case Option::InvertCompass:
@@ -860,11 +825,7 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
 }
 
 int evaluateOption(const Settings& settings, const std::string& optionStr) {
-    if (nameToSwordMode(optionStr) != SwordMode::INVALID)
-    {
-        return settings.sword_mode == nameToSwordMode(optionStr);
-    }
-    else if (nameToSetting(optionStr) != Option::INVALID)
+    if (nameToSetting(optionStr) != Option::INVALID)
     {
         return getSetting(settings, nameToSetting(optionStr));
     }
