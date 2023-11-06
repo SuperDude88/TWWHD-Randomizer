@@ -35,13 +35,6 @@ enum struct PigColor : uint8_t {
     INVALID
 };
 
-enum struct SwordMode {
-    StartWithSword = 0,
-    RandomSword,
-    NoSword,
-    INVALID
-};
-
 enum struct PlacementOption {
     Vanilla = 0,
     OwnDungeon,
@@ -117,7 +110,7 @@ enum struct Option {
     ProgressObscure,
 
     // Additional Randomization Options
-    SwordMode,
+    RemoveSwords,
     NumRequiredDungeons,
     NumShards,
     RandomCharts,
@@ -197,6 +190,7 @@ enum struct Option {
     UIDisplay,
 
     // Dummy options to satisfy tracker permalink
+    SwordMode,
     RaceMode,
     Keylunacy,
     RandomizeEntrances,
@@ -272,7 +266,7 @@ struct Settings {
     uint8_t num_starting_triforce_shards = 0;
     bool add_shortcut_warps_between_dungeons = false;
     bool do_not_generate_spoiler_log = false;
-    SwordMode sword_mode = SwordMode::StartWithSword;
+    bool remove_swords = false;
     bool skip_rematch_bosses = false;
     bool invert_sea_compass_x_axis = false;
     uint8_t num_required_dungeons = 0;
@@ -306,10 +300,6 @@ struct Settings {
 
     CustomModel selectedModel;
 };
-
-SwordMode nameToSwordMode(const std::string& name);
-
-std::string SwordModeToName(const SwordMode& mode);
 
 PigColor nameToPigColor(const std::string& name);
 

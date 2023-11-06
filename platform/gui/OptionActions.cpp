@@ -416,30 +416,17 @@ namespace OptionCB {
         return fromBool(conf.settings.do_not_generate_spoiler_log);
     }
 
-    std::string cycleSwordMode() {
-        using enum SwordMode;
+    std::string toggleSwords() {
+        conf.settings.remove_swords = !conf.settings.remove_swords;
 
-        switch(conf.settings.sword_mode) {
-            case StartWithSword:
-                conf.settings.sword_mode = RandomSword;
-                break;
-            case RandomSword:
-                conf.settings.sword_mode = NoSword;
-                break;
-            case NoSword:
-                conf.settings.sword_mode = StartWithSword;
-                break;
-            case INVALID:
-            default:
-                conf.settings.sword_mode = StartWithSword;
-                break;
+        if(conf.settings.remove_swords) {
+            std::erase(conf.settings.starting_gear, GameItem::ProgressiveSword); // can't start with swords if we're removing them
+        }
+        else {
+            addStartingItem(GameItem::ProgressiveSword); // start with 1 sword by default
         }
 
-        if(conf.settings.sword_mode != StartWithSword) {
-            std::erase(conf.settings.starting_gear, GameItem::ProgressiveSword);
-        }
-
-        return SwordModeToName(conf.settings.sword_mode);
+        return fromBool(conf.settings.remove_swords);
     }
 
     std::string toggleTrials() {
@@ -916,8 +903,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.add_shortcut_warps_between_dungeons);
         case Option::NoSpoilerLog:
             return fromBool(conf.settings.do_not_generate_spoiler_log);
-        case Option::SwordMode:
-            return SwordModeToName(conf.settings.sword_mode);
+        case Option::RemoveSwords:
+            return fromBool(conf.settings.remove_swords);
         case Option::SkipRefights:
             return fromBool(conf.settings.skip_rematch_bosses);
         case Option::InvertCompass:
@@ -1100,8 +1087,8 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleDungeonWarps;
         case Option::NoSpoilerLog:
             return &toggleSpoilerLog;
-        case Option::SwordMode:
-            return &cycleSwordMode;
+        case Option::RemoveSwords:
+            return &toggleSwords;
         case Option::SkipRefights:
             return &toggleTrials;
         case Option::InvertCompass:
@@ -1192,7 +1179,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {ProgressDungeonSecrets,     {"Dungeon Secrets",                     "Controls whether the 11 secret items hidden in dungeons can be progress items."}},
         {ProgressObscure,            {"Obscure",                             "Controls whether obscure locations can contain progress items (e.g. Kane Windfall gate decorations)."}},
 
-        {SwordMode,                  {"Sword Mode",                          "Controls whether you start with the Hero's Sword, the Hero's Sword is randomized, or if there are no swords in the entire game."}},
+        {RemoveSwords,               {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
         {NumRequiredDungeons,        {"Number of Required Bosses",           "The number of dungeon bosses with required items (applies to \"Standard\" and \"Race Mode\" dungeons)."}},
         {NumShards,                  {"Triforce Shards to Start With",       "The number of triforce shards you start the game with."}},
         {RandomCharts,               {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},

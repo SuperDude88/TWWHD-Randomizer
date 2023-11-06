@@ -89,7 +89,7 @@ ProgressionPage::ProgressionPage() {
     buttonColumns[1][11] = std::make_unique<BasicButton>(Option::DungeonMapsAndCompasses);
     buttonColumns[1][12] = std::make_unique<CounterButton>(Option::NumRequiredDungeons, 250ms, 300ms);
     buttonColumns[1][13] = std::make_unique<CounterButton>(Option::NumShards, 250ms, 300ms);
-    buttonColumns[1][14] = std::make_unique<BasicButton>(Option::SwordMode);
+    buttonColumns[1][14] = std::make_unique<BasicButton>(Option::RemoveSwords);
 }
 
 void ProgressionPage::open() {
@@ -622,18 +622,22 @@ void ItemsPage::open() {
     curRow = 0;
     listScrollPos = 0;
 
-    if(getValue(Option::SwordMode) == SwordModeToName(SwordMode::StartWithSword) && std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword) == listButtons.end()) {
-        const auto firstIt = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveWallet); // sword is before wallet in the alphabet
-        if(firstIt != listButtons.end()) { // should always be true
-            listButtons.insert(firstIt, 3, {GameItem::ProgressiveSword}); // add 3 swords
+    if(getValue(Option::RemoveSwords) == "Disabled") { 
+        // only add swords if they aren't already there
+        if(std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword) == listButtons.end()) {
+            auto it = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveWallet); // sword is before wallet in the alphabet
+            if(it != listButtons.end()) { // should always be true
+                for(size_t count = 1; count <= 4; count++) {
+                    it = listButtons.insert(it, {GameItem::ProgressiveSword, count}); // add 4 swords
+                    it++;
+                }
+            }
         }
     }
     else {
-        // Swordless - no swords in the game
-        // No starting sword - pointless to add swords since you would need at least 1 (which would just be start with sword)
         const auto firstIt = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword);
         if(firstIt != listButtons.end()) {
-            listButtons.erase(firstIt, firstIt + 3); // would have 3 swords to remove
+            listButtons.erase(firstIt, firstIt + 4); // would have 4 swords to remove
         }
     }
 

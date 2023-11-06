@@ -26,7 +26,7 @@ skip_rematch_bosses: .text
 starting_gear: .text
 starting_magic: .text
 starting_quarter_hearts: .text
-sword_mode: .text
+swordless: .text
 withered_tree_item_actor_id: .text
 withered_tree_item_speeds: .text
 withered_tree_launched_flag: .text
