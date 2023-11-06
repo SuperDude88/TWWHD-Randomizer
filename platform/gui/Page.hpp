@@ -19,6 +19,10 @@ class SeedPage : public EmptyPage {
 private:
     static constexpr const char* PageName = "Seed";
     static constexpr const char* PageDesc = "Control the seed used to randomize.";
+    using Clock = std::chrono::high_resolution_clock;
+    Clock::time_point resetTime;
+
+    void resetTimer() { resetTime = Clock::now() + std::chrono::seconds(3); }
 
 public:
     SeedPage();
