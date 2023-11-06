@@ -5,6 +5,7 @@
 
 #include <version.hpp>
 #include <utility/platform.hpp>
+#include <platform/proc.hpp>
 #include <platform/gui/screen.hpp>
 
 static const std::string line_break(ScreenSizeData::tv_line_length, '=');
@@ -20,6 +21,11 @@ SettingsMenu::SettingsMenu() {
     pages[7] = std::make_unique<ColorPage>();
     pages[8] = std::make_unique<MetaPage>();
 }
+
+
+SettingsMenu& SettingsMenu::getInstance() {
+    static SettingsMenu sInstance;
+    return sInstance;
 }
 
 SettingsMenu::Status SettingsMenu::update() {
@@ -87,34 +93,54 @@ void SettingsMenu::drawDRC() const {
     pages[curPage]->drawDRC();
 }
 
+uint32_t SettingsMenu::acquireCB(void*) {
+    // This prevents an occasional (temporary) black screen when exiting the home overlay
+    // I have no idea why
+    ScreenClear();
+    ScreenDraw();
+
+    ScreenClear();
+    getInstance().drawTV();
+    getInstance().drawDRC();
+    ScreenDraw();
+
+    return 0;
+}
+
+uint32_t SettingsMenu::releaseCB(void*) {
+    return 0;
+}
+
+//TODO: investigate using the vpad repeat feature instead of hold delays
 bool SettingsMenu::run(Config& out) {
     using namespace std::literals::chrono_literals;
 
-    static SettingsMenu sInstance;
+    SettingsMenu& sInstance = getInstance();
+
+    // void* arg is in the place of "this" pointer
+    ScopedCallback procCB({2, &SettingsMenu::acquireCB, &SettingsMenu::releaseCB});
+    acquireCB();
 
     OptionCB::setInternal(out);
-    
-    ScreenClear();
-    sInstance.drawTV();
-    sInstance.drawDRC();
-    ScreenDraw();
 
     bool inMenu = true;
-    while(inMenu && Utility::platformIsRunning()) {
-        switch(sInstance.update()) {
-            case Status::CHANGED:
-                ScreenClear();
-                sInstance.drawTV();
-                sInstance.drawDRC();
-                ScreenDraw();
+    while(inMenu && Utility::platformIsRunning()) { // loop until menu or app signals an exit
+        if(ProcIsForeground()) { // only update in foreground
+            switch(sInstance.update()) {
+                case Status::CHANGED:
+                    ScreenClear();
+                    sInstance.drawTV();
+                    sInstance.drawDRC();
+                    ScreenDraw();
 
-                break;
-            case Status::EXIT:
-                inMenu = false;
-                break;
-            case Status::NONE:
-            default:
-                break;
+                    break;
+                case Status::EXIT:
+                    inMenu = false;
+                    break;
+                case Status::NONE:
+                default:
+                    break;
+            }
         }
 
         std::this_thread::sleep_for(17ms); //update ~60 times a second

@@ -22,7 +22,12 @@ private:
     SettingsMenu();
     ~SettingsMenu() {}
 
+    static SettingsMenu& getInstance();
+
     Status update();
     void drawTV() const;
     void drawDRC() const;
+
+    static uint32_t acquireCB(void* = nullptr);
+    static uint32_t releaseCB(void* = nullptr);
 };
