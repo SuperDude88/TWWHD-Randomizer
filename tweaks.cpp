@@ -28,6 +28,7 @@
 #include <utility/common.hpp>
 #include <utility/color.hpp>
 #include <command/Log.hpp>
+#include <command/RandoSession.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
     if(fspath == nullptr) {\

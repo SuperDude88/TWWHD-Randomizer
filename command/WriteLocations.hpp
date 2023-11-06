@@ -12,8 +12,6 @@
 #include <logic/GameItem.hpp>
 #include <logic/Dungeon.hpp>
 
-extern RandoSession g_session;
-
 enum struct [[nodiscard]] ModificationError {
     NONE = 0,
     MISSING_KEY = 0,

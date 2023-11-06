@@ -1,11 +1,8 @@
 #pragma once
 
-#include <command/RandoSession.hpp>
 #include <logic/World.hpp>
 
 
-
-extern RandoSession g_session; //defined in randomizer.cpp, shared between a couple files, cleaner than passing to every patch
 
 enum struct [[nodiscard]] TweakError {
     NONE = 0,

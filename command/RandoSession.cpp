@@ -35,6 +35,8 @@
 
 #define CHECK_INITIALIZED(ret) if(!initialized) { ErrorLog::getInstance().log("Session is not initialized (encountered on line " TOSTRING(__LINE__) ")"); return ret; }
 
+RandoSession g_session; //definition for extern stuff
+
 #ifdef DEVKITPRO
 static BS::thread_pool workerThreads(3);
 #else
