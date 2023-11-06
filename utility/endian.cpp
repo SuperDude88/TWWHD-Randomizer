@@ -64,38 +64,32 @@ namespace Utility::Endian
 
     int64_t byteswap(const int64_t& value)
     {
-        uint64_t result = byteswap(reinterpret_cast<const uint64_t&>(value));
-        return *(reinterpret_cast<int64_t*>(&result));
+        return std::bit_cast<int64_t>(byteswap(std::bit_cast<const uint64_t>(value)));
     }
 
     int32_t byteswap(const int32_t& value)
     {
-        uint32_t result = byteswap(reinterpret_cast<const uint32_t&>(value));
-        return *(reinterpret_cast<int32_t*>(&result));
+        return std::bit_cast<int32_t>(byteswap(std::bit_cast<const uint32_t>(value)));
     }
 
     int16_t byteswap(const int16_t& value)
     {
-        uint16_t result = byteswap(reinterpret_cast<const uint16_t&>(value));
-        return *(reinterpret_cast<int16_t*>(&result));
+        return std::bit_cast<int16_t>(byteswap(std::bit_cast<const uint16_t>(value)));
     }
 
     float byteswap(const float& value)
     {
-        uint32_t result = byteswap(reinterpret_cast<const uint32_t&>(value));
-        return *(reinterpret_cast<float*>(&result));
+        return std::bit_cast<float>(byteswap(std::bit_cast<const uint32_t>(value)));
     }
 
     double byteswap(const double& value)
     {
-        uint64_t result = byteswap(reinterpret_cast<const uint64_t&>(value));
-        return *(reinterpret_cast<double*>(&result));
+        return std::bit_cast<double>(byteswap(std::bit_cast<const uint64_t>(value)));
     }
     
     char16_t byteswap(const char16_t& value)
     {
-        uint16_t result = byteswap(reinterpret_cast<const uint16_t&>(value));
-        return *(reinterpret_cast<char16_t*>(&result));
+        return std::bit_cast<char16_t>(byteswap(std::bit_cast<const uint16_t>(value)));
     }
 
     std::u16string byteswap(const std::u16string& value) {
