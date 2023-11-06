@@ -481,8 +481,22 @@ namespace OptionCB {
 
 
     std::string toggleCasualClothes() {
-        conf.settings.player_in_casual_clothes = !conf.settings.player_in_casual_clothes;
-        return fromBool(conf.settings.player_in_casual_clothes);
+        conf.settings.selectedModel.casual = !conf.settings.selectedModel.casual;
+        return fromBool(conf.settings.selectedModel.casual);
+    }
+    
+    std::string isCasual() {
+        return fromBool(conf.settings.selectedModel.casual);
+    }
+
+    std::string randomizeColorsOrderly() {
+        conf.settings.selectedModel.randomizeOrderly();
+        return "";
+    }
+
+    std::string randomizeColorsChaotically() {
+        conf.settings.selectedModel.randomizeChaotically();
+        return "";
     }
 
     std::string cyclePigColor() {
@@ -907,8 +921,8 @@ std::string getValue(const Option& option) {
             return std::to_string((uint32_t)conf.settings.damage_multiplier);
         case Option::CTMC:
             return fromBool(conf.settings.chest_type_matches_contents);
-        case Option::CasualClothes:
-            return fromBool(conf.settings.player_in_casual_clothes);
+        //case Option::CasualClothes:
+        //    return fromBool(conf.settings.player_in_casual_clothes);
         case Option::PigColor:
             return PigColorToName(conf.settings.pig_color);
         case Option::StartingGear: //placeholder
@@ -951,9 +965,14 @@ std::string getValue(const Option& option) {
             return GyroscopePreferenceToName(conf.settings.gyroscope);
         case Option::UIDisplay:
             return UIDisplayPreferenceToName(conf.settings.ui_display);
+        case Option::INVALID:
         default:
             return "";
     }
+}
+
+CustomModel& getModel() {
+    return conf.settings.selectedModel;
 }
 
 TriggerCallback getCallback(const Option& option) {
@@ -1084,8 +1103,8 @@ TriggerCallback getCallback(const Option& option) {
             return &cycleDamageMultiplier;
         case Option::CTMC:
             return &toggleCTMC;
-        case Option::CasualClothes:
-            return &toggleCasualClothes;
+        //case Option::CasualClothes:
+        //    return &toggleCasualClothes;
         case Option::PigColor:
             return &cyclePigColor;
         case Option::StartingGear: //placeholder
@@ -1128,6 +1147,7 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleGyroPref;
         case Option::UIDisplay:
             return &toggleUIPref;
+        case Option::INVALID:
         default:
             return &invalidCB;
     }
@@ -1221,7 +1241,6 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {DecoupleEntrances,          {"Decouple Entrances",                  "Decouple entrances when shuffling. This means you may not end up where you came from if you go back through an entrance."}},
         {RandomStartIsland,          {"Randomize Starting Island",           "Randomzies which island you start the game on."}},
 
-        {CasualClothes,              {"Casual Clothes",                      "Controls whether the player wears casual clothes (pajamas) instead of the Hero's Clothes"}},
         {PigColor,                   {"Pig Color",                           "Controls the color of the big pig on Outset Island."}},
 
         {DamageMultiplier,           {"Damage Multiplier",                   "Change the damage multiplier used in Hero Mode. By default Hero Mode applies a 2x damage multiplier. This will not affect damage taken in Normal Mode."}},

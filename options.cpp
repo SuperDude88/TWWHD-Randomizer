@@ -378,7 +378,6 @@ Option nameToSetting(const std::string& name) {
         {"Num Required Dungeons", Option::NumRequiredDungeons},
         {"Damage Multiplier", Option::DamageMultiplier},
         {"CTMC", Option::CTMC},
-        {"Casual Clothes", Option::CasualClothes},
         {"Pig Color", Option::PigColor},
         {"Starting Gear", Option::StartingGear},
         {"Starting HP", Option::StartingHP},
@@ -474,7 +473,6 @@ std::string settingToName(const Option& setting) {
         {Option::NumRequiredDungeons, "Num Required Dungeons"},
         {Option::DamageMultiplier, "Damage Multiplier"},
         {Option::CTMC, "CTMC"},
-        {Option::CasualClothes, "Casual Clothes"},
         {Option::PigColor, "PigColor"},
         {Option::StartingGear, "Starting Gear"},
         {Option::StartingHP, "Starting HP"},
@@ -633,8 +631,6 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return static_cast<uint8_t>(settings.damage_multiplier);
         case Option::CTMC:
             return settings.chest_type_matches_contents;
-        case Option::CasualClothes:
-            return settings.player_in_casual_clothes;
         case Option::PigColor:
             return static_cast<std::underlying_type_t<PigColor>>(settings.pig_color);
         case Option::StartingGear: //cant return this like everything else, just here as placeholder
@@ -810,8 +806,6 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.damage_multiplier = value; return;
         case Option::CTMC:
             settings.chest_type_matches_contents = value; return;
-        case Option::CasualClothes:
-            settings.player_in_casual_clothes = value; return;
         case Option::PigColor:
             settings.pig_color = static_cast<PigColor>(value); return;
         case Option::StartingGear: //cant set this like everything else, just here as placeholder

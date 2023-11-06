@@ -17,7 +17,7 @@ public:
 
 private:
     size_t curPage = 0;
-    std::array<std::unique_ptr<EmptyPage>, 7> pages;
+    std::array<std::unique_ptr<EmptyPage>, 9> pages;
 
     SettingsMenu();
     ~SettingsMenu() {}

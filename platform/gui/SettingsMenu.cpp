@@ -17,6 +17,9 @@ SettingsMenu::SettingsMenu() {
     pages[4] = std::make_unique<ConveniencePage>();
     pages[5] = std::make_unique<AdvancedPage>();
     pages[6] = std::make_unique<ItemsPage>();
+    pages[7] = std::make_unique<ColorPage>();
+    pages[8] = std::make_unique<MetaPage>();
+}
 }
 
 SettingsMenu::Status SettingsMenu::update() {

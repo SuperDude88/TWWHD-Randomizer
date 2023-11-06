@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include <logic/GameItem.hpp>
+#include <customizer/model.hpp>
 
 constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 256;
 constexpr unsigned int MAXIMUM_STARTING_HC = 6;
@@ -182,7 +183,6 @@ enum struct Option {
     RandomStartIsland,
 
     // Cosmetics
-    CasualClothes,
     PigColor,
 
 
@@ -276,7 +276,6 @@ struct Settings {
     float damage_multiplier = 2.0f;
     bool chest_type_matches_contents = false;
 
-    bool player_in_casual_clothes = false;
     PigColor pig_color = PigColor::Random;
 
     std::vector<GameItem> starting_gear = {};
@@ -302,7 +301,7 @@ struct Settings {
     GyroscopePreference gyroscope = GyroscopePreference::On;
     UIDisplayPreference ui_display = UIDisplayPreference::On;
 
-    std::unordered_map<std::string, std::string> custom_colors;
+    CustomModel selectedModel;
 };
 
 SwordMode nameToSwordMode(const std::string& name);

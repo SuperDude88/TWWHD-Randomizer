@@ -14,13 +14,17 @@ protected:
     const std::string name;
     const std::string description;
     const TriggerCallback cb;
+    
+    BasicButton(const Option& option_, const std::string& name_, const std::string& desc_, const TriggerCallback& cb_) :
+        option(option_),
+        name(name_),
+        description(desc_),
+        cb(cb_)
+    {}
 
 public:
     BasicButton(const Option& option_) :
-        option(option_),
-        name(getNameDesc(option_).first),
-        description(getNameDesc(option_).second),
-        cb(getCallback(option_))
+        BasicButton(option_, getNameDesc(option_).first, getNameDesc(option_).second, getCallback(option_))
     {}
     virtual ~BasicButton() {}
 
@@ -83,6 +87,22 @@ public:
     inline void loadState() { enabled = OptionCB::hasStartingItem(item, num); }
     inline bool isEnabled() const { return enabled; }
     inline GameItem getItem() const { return item; }
+
+    virtual bool update(const VPADStatus& stat);
+    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
+    virtual void drawDRC() const;
+};
+
+// runs a callback when triggered, can show a value
+class ActionButton : public BasicButton {
+private:
+    const TriggerCallback valueCB;
+public:
+    ActionButton(const std::string& name_, const std::string& desc_, const TriggerCallback& triggerCB_, const TriggerCallback& valueCB_ = &OptionCB::invalidCB) :
+        BasicButton(Option::INVALID, name_, desc_, triggerCB_),
+        valueCB(valueCB_)
+    {}
+    virtual ~ActionButton() {}
 
     virtual bool update(const VPADStatus& stat);
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;

@@ -43,10 +43,3 @@ public:
 };
 
 std::string errorToName(ConfigError err);
-
-namespace DefaultColors {
-    extern std::list<std::tuple<std::string, std::string>> heroColors;
-    extern std::list<std::tuple<std::string, std::string>> casualColors;
-
-    std::unordered_map<std::string, std::string> getDefaultColorsMap(const bool& casualClothes);
-} // namespace DefaultColors

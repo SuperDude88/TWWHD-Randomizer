@@ -110,7 +110,7 @@ namespace Utility
 
     bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
 
-    int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile = false);
+    int getFileContents(const std::filesystem::path& filename, std::string& fileContents, bool resourceFile = false);
 
-    int getFileContents(const std::string& filename, std::stringstream& fileContents);
+    int getFileContents(const std::filesystem::path& filename, std::stringstream& fileContents);
 }
