@@ -52,27 +52,27 @@ namespace Utility::Endian
     concept CanByteswap = sizeof(T) > 1;
 
     template<typename T> requires CanByteswap<T> && (!std::is_enum_v<T>)
-    T toPlatform(const Type& src, const T& value) {
+    constexpr T toPlatform(const Type& src, const T& value) {
         if (src != target) return byteswap(value);
         return value;
     }
 
     //for enums
     template<typename T, typename TBase = std::underlying_type_t<T>> requires CanByteswap<T> && std::is_enum_v<T>
-    T toPlatform(const Type& src, const T& value) {
+    constexpr T toPlatform(const Type& src, const T& value) {
         if (src != target) return static_cast<T>(byteswap(static_cast<TBase>(value)));
         return value;
     }
 
     //doesn't work for enums
     template<typename T> requires CanByteswap<T> && (!std::is_enum_v<T>)
-    void toPlatform_inplace(const Type& src, T& value) {
+    constexpr void toPlatform_inplace(const Type& src, T& value) {
         if (src != target) value = byteswap(value);
     }
 
     //for enums
     template<typename T, typename TBase = std::underlying_type_t<T>> requires CanByteswap<T> && std::is_enum_v<T>
-    void toPlatform_inplace(const Type& src, T& value) {
+    constexpr void toPlatform_inplace(const Type& src, T& value) {
         if (src != target) value = static_cast<T>(byteswap(static_cast<TBase>(value)));
     }
 }
