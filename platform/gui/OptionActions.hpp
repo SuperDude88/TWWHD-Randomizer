@@ -76,6 +76,10 @@ namespace OptionCB {
     std::string toggleCTMC();
 
     std::string toggleCasualClothes();
+    std::string isCasual();
+    std::string randomizeColorsOrderly();
+    std::string randomizeColorsChaotically();
+
     std::string cyclePigColor();
 
     //this one gets special handling
@@ -118,5 +122,6 @@ namespace OptionCB {
 std::string getSeed();
 std::string getSeedHash();
 std::string getValue(const Option& option);
+CustomModel& getModel();
 TriggerCallback getCallback(const Option& option);
 std::pair<std::string, std::string> getNameDesc(const Option& option);

@@ -118,14 +118,14 @@ namespace Utility {
     }
 
     // Short function for getting the string data from a file
-    int getFileContents(const std::string& filename, std::string& fileContents, bool resourceFile /*= false*/)
+    int getFileContents(const std::filesystem::path& filename, std::string& fileContents, bool resourceFile /*= false*/)
     {
         if (resourceFile)
         {
             // If this is a resource file and the data has been embedded, then load ity from
             // the embedded resources file
             #if defined(QT_GUI) && defined(EMBED_DATA)
-                QResource file(filename.c_str());
+                QResource file(filename.string().c_str());
                 fileContents = file.uncompressedData().toStdString();
                 return 0;
             #endif
@@ -139,13 +139,13 @@ namespace Utility {
     }
 
     // Short function for getting the string data from a file
-    int getFileContents(const std::string& filename, std::stringstream& fileContents)
+    int getFileContents(const std::filesystem::path& filename, std::stringstream& fileContents)
     {
         // Otherwise load it normally
         std::ifstream file(filename, std::ios::binary);
         if (!file.is_open())
         {
-            ErrorLog::getInstance().log("unable to open file \"" + filename + "\"");
+            ErrorLog::getInstance().log("unable to open file \"" + filename.string() + "\"");
             return 1;
         }
 

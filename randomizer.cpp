@@ -23,6 +23,7 @@
 #include <command/WriteLocations.hpp>
 #include <command/RandoSession.hpp>
 #include <command/Log.hpp>
+#include <customizer/model.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
 #include <utility/endian.hpp>
@@ -727,6 +728,10 @@ public:
         }
 
         //IMPROVEMENT: custom model things
+        if(config.settings.selectedModel.applyModel() != ModelError::NONE) {
+            ErrorLog::getInstance().log("Failed to apply custom model!");
+            return 1;
+        }
 
         Utility::platformLog("Modifying game code...\n");
         UPDATE_DIALOG_VALUE(30);
@@ -858,6 +863,7 @@ int mainRandomize() {
     #endif
 
     Config load;
+    load.settings.selectedModel.loadFromFolder("Link");
 
     std::ifstream conf(APP_SAVE_PATH "config.yaml");
     if(!conf.is_open()) {

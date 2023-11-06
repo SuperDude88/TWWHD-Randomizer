@@ -54,50 +54,6 @@
         settings.name = yaml[#name].as<std::string>();               \
     }
 
-// Default colors for every texture
-// Use list of tuples to keep ordering
-namespace DefaultColors {
-    std::list<std::tuple<std::string, std::string>> heroColors = {
-        {"Hair",        "FFEF10"},
-        {"Skin",        "F7DB9C"},
-        {"Mouth",       "F74963"},
-        {"Eyes",        "10514A"},
-        {"Sclera",      "FFFFFF"},
-        // {"Hat",         "5AB24A"},
-        {"Tunic",       "5AB24A"},
-        {"Undershirt",  "ADE342"},
-        {"Pants",       "FFFFFF"},
-        {"Boots",       "944908"},
-        {"Belt",        "633008"},
-        {"Belt Buckle", "FFEF10"},
-    };
-
-    std::list<std::tuple<std::string, std::string>> casualColors = {
-        {"Hair",         "FFEF10"},
-        {"Skin",         "F7DB9C"},
-        {"Mouth",        "F74963"},
-        {"Eyes",         "10514A"},
-        {"Sclera",       "FFFFFF"},
-        {"Shirt",        "4A75AD"},
-        {"Shirt Emblem", "FFFFD6"},
-        {"Armbands",     "63696B"},
-        {"Pants",        "FFA608"},
-        {"Shoes",        "63696B"},
-        {"Shoe Soles",   "D6BA39"},
-    };
-
-    std::unordered_map<std::string, std::string> getDefaultColorsMap(const bool& casualClothes) {
-        std::unordered_map<std::string, std::string> map = {};
-
-        auto colors = casualClothes ? casualColors : heroColors;
-
-        for (auto& [name, color] : colors) {
-            map[name] = color;
-        }
-        return map;
-    }
-} // namespace DefaultColors
-
 Config::Config() {
     //resetDefaults();
 
@@ -118,7 +74,6 @@ Config::Config() {
     #endif
 }
 
-    conf.settings.player_in_casual_clothes = false;
 void Config::resetDefaults() {
     //gameBaseDir = "";
     //outputDir = "";
@@ -225,6 +180,8 @@ void Config::resetDefaults() {
     settings.gyroscope = GyroscopePreference::On;
     settings.ui_display = UIDisplayPreference::On;
 
+    settings.selectedModel.casual = false;
+    settings.selectedModel.resetColors();
 
     return;
 }
@@ -334,8 +291,6 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     }
     settings.damage_multiplier = root["damage_multiplier"].as<float>();
     SET_BOOL_FIELD(root, chest_type_matches_contents)
-
-    SET_BOOL_FIELD(root, player_in_casual_clothes)
 
     SET_INT_FIELD(root, starting_pohs)
     SET_INT_FIELD(root, starting_hcs)
@@ -477,31 +432,20 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
       }
     }
 
-    if (!root["custom_colors"] && !ignoreErrors) return ConfigError::MISSING_KEY;
+    settings.selectedModel.casual = root["player_in_casual_clothes"].as<bool>();
+    // only non-default colors are written
     if (root["custom_colors"].IsMap()) {
       for (const auto& colorObject : root["custom_colors"]) {
-        
-        auto texture = colorObject.first.as<std::string>();
-        auto color = colorObject.second.as<std::string>();
+        const std::string texture = colorObject.first.as<std::string>();
+        const std::string color = colorObject.second.as<std::string>();
 
         // Only accept the color if it's valid
         if (isValidHexColor(color)) {
-          settings.custom_colors[texture] = color;
+          settings.selectedModel.setColor(texture, color);
         } else if (!ignoreErrors) {
           Utility::platformLog(color + " is not a valid hex color");
           return ConfigError::INVALID_VALUE;
         }
-
-      }
-    } else {
-      return ConfigError::INVALID_VALUE;
-    }
-
-    // Add in defaults for any missing colors
-    auto& colors = settings.player_in_casual_clothes ? DefaultColors::casualColors : DefaultColors::heroColors;
-    for (auto& [name, color] : colors) {
-      if (!settings.custom_colors.contains(name)) {
-        settings.custom_colors[name] = color;
       }
     }
 
@@ -618,8 +562,6 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     WRITE_NUM_FIELD(root, damage_multiplier)
     WRITE_SETTING_BOOL_FIELD(root, chest_type_matches_contents)
 
-    WRITE_SETTING_BOOL_FIELD(root, player_in_casual_clothes)
-
     WRITE_NUM_FIELD(root, starting_pohs)
     WRITE_NUM_FIELD(root, starting_hcs)
     WRITE_NUM_FIELD(root, starting_joy_pendants)
@@ -656,7 +598,8 @@ ConfigError Config::writeToFile(const std::string& filePath) {
       root["starting_gear"] = "None";
     }
 
-    for (const auto& [texture, color] : settings.custom_colors) {
+    root["player_in_casual_clothes"] = settings.selectedModel.casual;
+    for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
       root["custom_colors"][texture] = color;
     }
 

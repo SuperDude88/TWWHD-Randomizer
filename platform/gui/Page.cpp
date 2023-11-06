@@ -1,5 +1,7 @@
 #include "Page.hpp"
 
+#include <sysapp/switch.h>
+
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 
@@ -348,7 +350,7 @@ ConveniencePage::ConveniencePage() {
     buttonColumns[0][3] = std::make_unique<BasicButton>(Option::RemoveMusic);
     buttonColumns[0][4] = std::make_unique<BasicButton>(Option::Camera);
     buttonColumns[0][5] = std::make_unique<BasicButton>(Option::FirstPersonCamera);
-    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::CasualClothes);
+    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::FirstPersonCamera); //TODO: this
 
     buttonColumns[1][0] = std::make_unique<BasicButton>(Option::AddShortcutWarps);
     buttonColumns[1][1] = std::make_unique<BasicButton>(Option::SkipRefights);
@@ -781,6 +783,221 @@ void ItemsPage::drawDRC() const {
     }
 
     const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
+    const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
+    for(size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
+    }
+}
+
+
+
+ColorPage::ColorPage() {
+    using namespace std::literals::chrono_literals;
+
+    toggles[0] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes.", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
+    toggles[1] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
+    toggles[2] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
+}
+
+void ColorPage::open() {
+    curCol = Column::LIST;
+    curRow = 0;
+    listScrollPos = 0;
+}
+
+bool ColorPage::update(const VPADStatus& stat) {
+    bool moved = false;
+
+    if(stat.trigger & VPAD_BUTTON_LEFT || stat.trigger & VPAD_BUTTON_RIGHT) {
+        switch(curCol) {
+            case Column::LIST:
+                curCol = Column::BUTTONS;
+                curRow = std::clamp<size_t>(curRow, 0, toggles.size() - 1);
+
+                break;
+            case Column::BUTTONS:
+                curCol = Column::LIST;
+                curRow = std::clamp<size_t>(curRow, 0, std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1);
+
+                break;
+        }
+
+        moved = true;
+    }
+
+    if(stat.trigger & VPAD_BUTTON_UP) {
+        switch(curCol) {
+            case Column::LIST:
+                if(curRow <= 0) {
+                    if(listScrollPos <= 0) {
+                        curRow = std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1; // -1 because 0-indexed
+                        if(getModel().getPresets().size() > LIST_HEIGHT) {
+                            listScrollPos = getModel().getPresets().size() - LIST_HEIGHT - 1; // -1 because 0-indexed, TODO: check logic it might break with 21 presets
+                        }
+                    }
+                    else {
+                        listScrollPos -= 1;
+                    }
+                }
+                else {
+                    curRow -= 1;
+                }
+
+                break;
+            case Column::BUTTONS:
+                if(curRow <= 0) {
+                    curRow = toggles.size() - 1; //wrap on top row
+                }
+                else {
+                    curRow -= 1; //up one row
+                }
+
+                break;
+        }
+
+        moved = true;
+    }
+    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+        switch(curCol) {
+            case Column::LIST:
+                if(curRow >= std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1) {
+                    if(getModel().getPresets().size() > LIST_HEIGHT) {
+                        //TODO: check this logic, i think it might break with lists of length 21?
+                        if(listScrollPos >= getModel().getPresets().size() - LIST_HEIGHT - 1) { //-1 for 0-indexing
+                            listScrollPos = 0;
+                            curRow = 0;
+                        }
+                        else {
+                            listScrollPos += 1;
+                        }
+                    }
+                    else {
+                        listScrollPos = 0;
+                        curRow = 0;
+                    }
+                }
+                else {
+                    curRow += 1;
+                }
+
+                break;
+            case Column::BUTTONS:
+                if(curRow >= toggles.size() - 1) {
+                    curRow = 0; //wrap on bottom row
+                }
+                else {
+                    curRow += 1; //down one row
+                }
+
+                break;
+        }
+
+        moved = true;
+    }
+
+    bool btnUpdate = false;
+    switch(curCol) {
+        case Column::LIST:
+            btnUpdate = true;
+
+            if(stat.trigger & VPAD_BUTTON_A) {
+                getModel().loadPreset(listScrollPos + curRow);
+            }
+
+            break;
+        case Column::BUTTONS:
+            btnUpdate = toggles[curRow]->update(stat);
+            break;
+    }
+    
+    return moved || btnUpdate;
+}
+
+void ColorPage::drawTV() const {
+    // draw visible part of the list
+    for(size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
+        OSScreenPutFontEx(SCREEN_TV, 1, 3 + row, getModel().getPresets()[listScrollPos + row].name.c_str());
+    }
+
+    // draw second column of buttons
+    const size_t countStartCol = ScreenSizeData::tv_line_length / 2;
+    for(size_t row = 0; row < toggles.size(); row++) {
+        toggles[row]->drawTV(3 + row, countStartCol + 1, countStartCol + 1 + 30);
+    }
+    
+    // draw cursor
+    switch(curCol) {
+        case Column::LIST:
+            OSScreenPutFontEx(SCREEN_TV, 0, 3 + curRow, ">");
+
+            break;
+        case Column::BUTTONS:
+            OSScreenPutFontEx(SCREEN_TV, countStartCol, 3 + curRow, ">");
+            break;
+    }
+}
+
+void ColorPage::drawDRC() const {
+    switch(curCol) {
+        case Column::LIST:
+            //presets[listScrollPos + curRow].drawDRC();
+
+            break;
+        case Column::BUTTONS:
+            toggles[curRow]->drawDRC();
+            break;
+    }
+
+    const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
+    const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
+    for(size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
+    }
+}
+
+
+
+MetaPage::MetaPage() {}
+
+void MetaPage::open() {}
+
+bool MetaPage::update(const VPADStatus& stat) {
+    //if (stat.trigger & VPAD_BUTTON_A) {
+    //    SysAppBrowserArgs args;
+    //    args.stdArgs.argString = nullptr;
+    //    args.stdArgs.size = 0;
+    //    args.url = GITHUB_URL.data();
+    //    args.urlSize = GITHUB_URL.size();
+    //    SYSSwitchToBrowserForViewer(&args);
+
+    //    return true;
+    //}
+    //if (stat.trigger & VPAD_BUTTON_B) {
+    //    SysAppBrowserArgs args;
+    //    args.stdArgs.argString = nullptr;
+    //    args.stdArgs.size = 0;
+    //    args.url = DISCORD_URL.data();
+    //    args.urlSize = DISCORD_URL.size();
+    //    SYSSwitchToBrowserForViewer(&args);
+
+    //    return true;
+    //}
+    
+    return false;
+}
+
+void MetaPage::drawTV() const {
+    const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in sd:/wiiu/apps/save/ ... (TWWHD Randomizer). Report any issues in the Discord server or create a GitHub issue.", ScreenSizeData::drc_line_length);
+
+    const size_t startLine = 3;
+    for(size_t i = 0; i < lines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_TV, 0, startLine + i, lines[i].c_str());
+    }
+}
+
+void MetaPage::drawDRC() const {
+    const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
+
     const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
     for(size_t i = 0; i < descLines.size(); i++) {
         OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
