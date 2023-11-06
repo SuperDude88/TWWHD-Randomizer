@@ -55,7 +55,7 @@
     }
 
 Config::Config() {
-    //resetDefaults();
+    resetDefaults();
 
     // paths and stuff that reset doesn't cover
     gameBaseDir = "";
@@ -136,6 +136,7 @@ void Config::resetDefaults() {
 
     settings.instant_text_boxes = true;
     settings.fix_rng = false;
+    settings.performance = false;
     settings.reveal_full_sea_chart = true;
     settings.num_starting_triforce_shards = 0;
     settings.add_shortcut_warps_between_dungeons = false;
@@ -279,6 +280,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
 
     SET_BOOL_FIELD(root, instant_text_boxes)
     SET_BOOL_FIELD(root, fix_rng)
+    SET_BOOL_FIELD(root, performance)
     SET_BOOL_FIELD(root, reveal_full_sea_chart)
     SET_INT_FIELD(root, num_starting_triforce_shards)
     SET_BOOL_FIELD(root, add_shortcut_warps_between_dungeons)
@@ -553,6 +555,7 @@ ConfigError Config::writeToFile(const std::string& filePath) {
 
     WRITE_SETTING_BOOL_FIELD(root, instant_text_boxes)
     WRITE_SETTING_BOOL_FIELD(root, fix_rng)
+    WRITE_SETTING_BOOL_FIELD(root, performance)
     WRITE_SETTING_BOOL_FIELD(root, reveal_full_sea_chart)
     WRITE_NUM_FIELD(root, num_starting_triforce_shards)
     WRITE_SETTING_BOOL_FIELD(root, add_shortcut_warps_between_dungeons)

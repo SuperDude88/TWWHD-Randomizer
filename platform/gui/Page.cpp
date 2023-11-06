@@ -350,15 +350,15 @@ ConveniencePage::ConveniencePage() {
     buttonColumns[0][3] = std::make_unique<BasicButton>(Option::RemoveMusic);
     buttonColumns[0][4] = std::make_unique<BasicButton>(Option::Camera);
     buttonColumns[0][5] = std::make_unique<BasicButton>(Option::FirstPersonCamera);
-    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::FirstPersonCamera); //TODO: this
+    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::TargetType);
 
     buttonColumns[1][0] = std::make_unique<BasicButton>(Option::AddShortcutWarps);
     buttonColumns[1][1] = std::make_unique<BasicButton>(Option::SkipRefights);
     buttonColumns[1][2] = std::make_unique<BasicButton>(Option::InvertCompass);
-    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::TargetType);
-    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::Gyroscope);
-    buttonColumns[1][5] = std::make_unique<BasicButton>(Option::UIDisplay);
-    buttonColumns[1][6] = std::make_unique<BasicButton>(Option::PigColor);
+    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::Performance);
+    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::PigColor);
+    buttonColumns[1][5] = std::make_unique<BasicButton>(Option::Gyroscope);
+    buttonColumns[1][6] = std::make_unique<BasicButton>(Option::UIDisplay);
 }
 
 void ConveniencePage::open() {
