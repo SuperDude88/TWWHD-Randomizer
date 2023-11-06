@@ -64,6 +64,7 @@ namespace OptionCB {
 
     std::string toggleInstantText();
     std::string toggleRNG();
+    std::string togglePerformance();
     std::string toggleFullSeaChart();
     std::string cycleStartingShards();
     std::string toggleDungeonWarps();

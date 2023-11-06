@@ -145,6 +145,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::StartWithRandomItem,
     Option::Plandomizer,
     Option::FixRNG,
+    Option::Performance,
 
     // Hints
     Option::HoHoHints,

@@ -2915,7 +2915,7 @@ TweakError updateCodeSize() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00000004, 32), 0x00908B80));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00000004, 32), 0x00909510));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0000001C, 32), 0x00379000));
 
         return true;
@@ -3528,6 +3528,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     }
     if (settings.fix_rng) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_rng_diff.yaml"));
+    }
+    if (settings.performance) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/performance_diff.yaml"));
     }
     if (settings.reveal_full_sea_chart) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.yaml"));

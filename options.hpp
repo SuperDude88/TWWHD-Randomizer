@@ -132,6 +132,7 @@ enum struct Option {
     InvertCompass,
     InstantText,
     FixRNG,
+    Performance,
     RevealSeaChart,
     SkipRefights,
     AddShortcutWarps,
@@ -209,6 +210,7 @@ enum struct Option {
     COUNT
 };
 
+// TODO: fix or remove these defaults
 struct Settings {
     ProgressionDungeons progression_dungeons = ProgressionDungeons::Standard;
     bool progression_great_fairies = false;
@@ -265,6 +267,7 @@ struct Settings {
 
     bool instant_text_boxes = false;
     bool fix_rng = false;
+    bool performance = false;
     bool reveal_full_sea_chart = false;
     uint8_t num_starting_triforce_shards = 0;
     bool add_shortcut_warps_between_dungeons = false;
