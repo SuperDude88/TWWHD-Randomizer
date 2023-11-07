@@ -677,7 +677,7 @@ bool ItemsPage::update(const VPADStatus& stat) {
             case Column::LIST:
                 if(curRow <= 0) {
                     if(listScrollPos <= 0) {
-                        listScrollPos = listButtons.size() - LIST_HEIGHT - 1; // -1 because 0-indexed
+                        listScrollPos = listButtons.size() - LIST_HEIGHT;
                         curRow = LIST_HEIGHT - 1; // -1 because 0-indexed
                     }
                     else {
@@ -706,7 +706,7 @@ bool ItemsPage::update(const VPADStatus& stat) {
         switch(curCol) {
             case Column::LIST:
                 if(curRow >= LIST_HEIGHT - 1) {
-                    if(listScrollPos >= listButtons.size() - LIST_HEIGHT - 1) { //-1 for 0-indexing
+                    if(listScrollPos >= listButtons.size() - LIST_HEIGHT) {
                         listScrollPos = 0;
                         curRow = 0;
                     }
@@ -843,7 +843,7 @@ bool ColorPage::update(const VPADStatus& stat) {
                     if(listScrollPos <= 0) {
                         curRow = std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1; // -1 because 0-indexed
                         if(getModel().getPresets().size() > LIST_HEIGHT) {
-                            listScrollPos = getModel().getPresets().size() - LIST_HEIGHT - 1; // -1 because 0-indexed, TODO: check logic it might break with 21 presets
+                            listScrollPos = getModel().getPresets().size() - LIST_HEIGHT;
                         }
                     }
                     else {
@@ -873,8 +873,7 @@ bool ColorPage::update(const VPADStatus& stat) {
             case Column::LIST:
                 if(curRow >= std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1) {
                     if(getModel().getPresets().size() > LIST_HEIGHT) {
-                        //TODO: check this logic, i think it might break with lists of length 21?
-                        if(listScrollPos >= getModel().getPresets().size() - LIST_HEIGHT - 1) { //-1 for 0-indexing
+                        if(listScrollPos >= getModel().getPresets().size() - LIST_HEIGHT) {
                             listScrollPos = 0;
                             curRow = 0;
                         }
