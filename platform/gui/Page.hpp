@@ -152,7 +152,6 @@ public:
     void drawDRC() const;
 };
 
-//TODO: this
 class ColorPage : public EmptyPage {
 private:
     static constexpr size_t LIST_HEIGHT = 20;
@@ -181,7 +180,6 @@ public:
     void drawDRC() const;
 };
 
-//TODO: This
 class MetaPage : public EmptyPage {
 private:
     // these are too new for the Wii U browser :(
