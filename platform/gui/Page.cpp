@@ -1,5 +1,6 @@
 #include "Page.hpp"
 
+#include <utility/color.hpp>
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 
@@ -921,6 +922,41 @@ bool ColorPage::update(const VPADStatus& stat) {
     return moved || btnUpdate;
 }
 
+static void drawSquare(const uint32_t& color, const uint32_t& x, const uint32_t& y, const uint32_t& size) {
+    for(uint32_t row = 0; row < size; row++) {
+        for(uint32_t col = 0; col < size; col++) {
+            OSScreenPutPixelEx(SCREEN_TV, x + col, y + row, color);
+        }
+    }
+}
+
+static const std::array<std::string, 11> heroTextures = {
+    "Hair",
+    "Skin",
+    "Mouth",
+    "Eyes",
+    "Sclera",
+    "Tunic",
+    "Undershirt",
+    "Pants",
+    "Boots",
+    "Belt",
+    "Belt Buckle",
+};
+static const std::array<std::string, 11> casualTextures = {
+    "Hair",
+    "Skin",
+    "Mouth",
+    "Eyes",
+    "Sclera",
+    "Shirt",
+    "Shirt Emblem",
+    "Armbands",
+    "Pants",
+    "Shoes",
+    "Shoe Soles",
+};
+
 void ColorPage::drawTV() const {
     // draw visible part of the list
     for(size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
@@ -931,6 +967,22 @@ void ColorPage::drawTV() const {
     const size_t countStartCol = ScreenSizeData::tv_line_length / 2;
     for(size_t row = 0; row < toggles.size(); row++) {
         toggles[row]->drawTV(3 + row, countStartCol + 1, countStartCol + 1 + 30);
+    }
+    
+    // draw loaded colors
+    static constexpr uint32_t starting_y_pos = 223;
+    const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
+    for(size_t i = 0; i < textures.size(); i++) {
+        const size_t row = 8 + i;
+        OSScreenPutFontEx(SCREEN_TV, countStartCol + 1, row, textures[i].c_str());
+
+        std::string hexColor = getModel().getColor(textures[i]);
+        for(auto& c : hexColor) {
+            c = std::toupper(c); //capitalize for consistency
+        }
+
+        OSScreenPutFontEx(SCREEN_TV, countStartCol + 1 + 15, row, hexColor.c_str());
+        drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 13 * (countStartCol + 1 + 15 + 6), starting_y_pos + i * 24, 24);
     }
     
     // draw cursor
