@@ -138,7 +138,6 @@ void Config::resetDefaults() {
     settings.fix_rng = false;
     settings.performance = false;
     settings.reveal_full_sea_chart = true;
-    settings.num_starting_triforce_shards = 0;
     settings.add_shortcut_warps_between_dungeons = false;
     settings.do_not_generate_spoiler_log = false;
     settings.remove_swords = false;
@@ -283,7 +282,6 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     SET_BOOL_FIELD(root, fix_rng)
     SET_BOOL_FIELD(root, performance)
     SET_BOOL_FIELD(root, reveal_full_sea_chart)
-    SET_INT_FIELD(root, num_starting_triforce_shards)
     SET_BOOL_FIELD(root, add_shortcut_warps_between_dungeons)
     SET_BOOL_FIELD(root, skip_rematch_bosses)
     SET_BOOL_FIELD(root, invert_sea_compass_x_axis)
@@ -548,7 +546,6 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     WRITE_SETTING_BOOL_FIELD(root, fix_rng)
     WRITE_SETTING_BOOL_FIELD(root, performance)
     WRITE_SETTING_BOOL_FIELD(root, reveal_full_sea_chart)
-    WRITE_NUM_FIELD(root, num_starting_triforce_shards)
     WRITE_SETTING_BOOL_FIELD(root, add_shortcut_warps_between_dungeons)
     WRITE_SETTING_BOOL_FIELD(root, skip_rematch_bosses)
     WRITE_SETTING_BOOL_FIELD(root, invert_sea_compass_x_axis)

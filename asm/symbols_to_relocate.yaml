@@ -17,7 +17,6 @@ doc_bandam_blue_potion_slot_item_id: .text
 dampa_minigame_item_id: .text
 makar_possible_wt_spawn_positions: .text
 medli_possible_et_spawn_positions: .text
-num_triforce_shards_to_start_with: .text
 outset_pig_color: .text
 phantom_ganon_maze_stage_name: .text
 rainbow_rupee_data: .text

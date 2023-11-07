@@ -115,7 +115,6 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::DungeonBigKeys,
     Option::DungeonMapsAndCompasses,
     Option::NumRequiredDungeons,
-    Option::NumShards,
     Option::RandomCharts,
     Option::CTMC,
     Option::DamageMultiplier,
@@ -205,7 +204,6 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
                  option == Option::NumRequiredDungeons     ||
-                 option == Option::NumShards               ||
                  option == Option::DamageMultiplier)
         {
             bitsWriter.write(getSetting(settings, option), 8);
@@ -337,7 +335,6 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
                  option == Option::NumRequiredDungeons     ||
-                 option == Option::NumShards               ||
                  option == Option::DamageMultiplier)
         {
             value = bitsReader.read(8);

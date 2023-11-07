@@ -60,36 +60,36 @@ ProgressionPage::ProgressionPage() {
     using namespace std::literals::chrono_literals;
 
     buttonColumns[0][0] = std::make_unique<BasicButton>(Option::ProgressDungeons);
-    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::ProgressGreatFairies);
-    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ProgressPuzzleCaves);
-    buttonColumns[0][3] = std::make_unique<BasicButton>(Option::ProgressCombatCaves);
-    buttonColumns[0][4] = std::make_unique<BasicButton>(Option::ProgressShortSidequests);
-    buttonColumns[0][5] = std::make_unique<BasicButton>(Option::ProgressLongSidequests);
-    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::ProgressSpoilsTrading);
-    buttonColumns[0][7] = std::make_unique<BasicButton>(Option::ProgressMinigames);
-    buttonColumns[0][8] = std::make_unique<BasicButton>(Option::ProgressFreeGifts);
-    buttonColumns[0][9] = std::make_unique<BasicButton>(Option::ProgressMail);
-    buttonColumns[0][10] = std::make_unique<BasicButton>(Option::ProgressPlatformsRafts);
-    buttonColumns[0][11] = std::make_unique<BasicButton>(Option::ProgressSubmarines);
-    buttonColumns[0][12] = std::make_unique<BasicButton>(Option::ProgressEyeReefs);
-    buttonColumns[0][13] = std::make_unique<BasicButton>(Option::ProgressOctosGunboats);
-    buttonColumns[0][14] = std::make_unique<BasicButton>(Option::ProgressTriforceCharts);
+    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::DungeonSmallKeys);
+    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::DungeonMapsAndCompasses);
+    buttonColumns[0][3] = std::make_unique<BasicButton>(Option::ProgressTingleChests);
+    buttonColumns[0][4] = std::make_unique<BasicButton>(Option::ProgressPuzzleCaves);
+    buttonColumns[0][5] = std::make_unique<BasicButton>(Option::ProgressCombatCaves);
+    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::ProgressShortSidequests);
+    buttonColumns[0][7] = std::make_unique<BasicButton>(Option::ProgressLongSidequests);
+    buttonColumns[0][8] = std::make_unique<BasicButton>(Option::ProgressSpoilsTrading);
+    buttonColumns[0][9] = std::make_unique<BasicButton>(Option::ProgressMinigames);
+    buttonColumns[0][10] = std::make_unique<BasicButton>(Option::ProgressFreeGifts);
+    buttonColumns[0][11] = std::make_unique<BasicButton>(Option::ProgressMail);
+    buttonColumns[0][12] = std::make_unique<BasicButton>(Option::ProgressPlatformsRafts);
+    buttonColumns[0][13] = std::make_unique<BasicButton>(Option::ProgressSubmarines);
+    buttonColumns[0][14] = std::make_unique<BasicButton>(Option::ProgressEyeReefs);
 
-    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::ProgressTreasureCharts);
-    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::ProgressExpPurchases);
-    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::ProgressMisc);
-    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::ProgressTingleChests);
-    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::ProgressBattlesquid);
-    buttonColumns[1][5] = std::make_unique<BasicButton>(Option::ProgressSavageLabyrinth);
-    buttonColumns[1][6] = std::make_unique<BasicButton>(Option::ProgressIslandPuzzles);
-    buttonColumns[1][7] = std::make_unique<BasicButton>(Option::ProgressDungeonSecrets);
+    buttonColumns[1][0] = std::make_unique<CounterButton>(Option::NumRequiredDungeons, 250ms, 300ms);
+    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::DungeonBigKeys);
+    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::ProgressDungeonSecrets);
+    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::ProgressMisc);
+    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::ProgressExpPurchases);
+    buttonColumns[1][5] = std::make_unique<BasicButton>(Option::ProgressBattlesquid);
+    buttonColumns[1][6] = std::make_unique<BasicButton>(Option::ProgressSavageLabyrinth);
+    buttonColumns[1][7] = std::make_unique<BasicButton>(Option::ProgressIslandPuzzles);
     buttonColumns[1][8] = std::make_unique<BasicButton>(Option::ProgressObscure);
-    buttonColumns[1][9] = std::make_unique<BasicButton>(Option::DungeonSmallKeys);
-    buttonColumns[1][10] = std::make_unique<BasicButton>(Option::DungeonBigKeys);
-    buttonColumns[1][11] = std::make_unique<BasicButton>(Option::DungeonMapsAndCompasses);
-    buttonColumns[1][12] = std::make_unique<CounterButton>(Option::NumRequiredDungeons, 250ms, 300ms);
-    buttonColumns[1][13] = std::make_unique<CounterButton>(Option::NumShards, 250ms, 300ms);
-    buttonColumns[1][14] = std::make_unique<BasicButton>(Option::RemoveSwords);
+    buttonColumns[1][9] = std::make_unique<BasicButton>(Option::ProgressGreatFairies);
+    buttonColumns[1][10] = std::make_unique<BasicButton>(Option::RemoveSwords);
+    buttonColumns[1][11] = std::make_unique<BasicButton>(Option::ProgressOctosGunboats);
+    buttonColumns[1][12] = std::make_unique<BasicButton>(Option::ProgressTreasureCharts);
+    buttonColumns[1][13] = std::make_unique<BasicButton>(Option::ProgressTriforceCharts);
+    buttonColumns[1][14] = std::make_unique<BasicButton>(Option::RandomCharts);
 }
 
 void ProgressionPage::open() {
@@ -437,13 +437,11 @@ void ConveniencePage::drawDRC() const {
 AdvancedPage::AdvancedPage() {
     using namespace std::literals::chrono_literals;
 
-    buttonColumns[0][0] = std::make_unique<BasicButton>(Option::RandomCharts);
-    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::NoSpoilerLog);
-    buttonColumns[0][2] = std::make_unique<CounterButton>(Option::DamageMultiplier, 55ms, 250ms);
+    buttonColumns[0][0] = std::make_unique<BasicButton>(Option::NoSpoilerLog);
+    buttonColumns[0][1] = std::make_unique<CounterButton>(Option::DamageMultiplier, 55ms, 250ms);
 
-    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::StartWithRandomItem);
-    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::CTMC);
-    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::Plandomizer);
+    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::CTMC);
+    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::Plandomizer);
 }
 
 void AdvancedPage::open() {
@@ -590,6 +588,14 @@ ItemsPage::ItemsPage() {
         GameItem::SongOfPassing,
         GameItem::SpoilsBag,
         GameItem::Telescope,
+        GameItem::TriforceShard1,
+        GameItem::TriforceShard2,
+        GameItem::TriforceShard3,
+        GameItem::TriforceShard4,
+        GameItem::TriforceShard5,
+        GameItem::TriforceShard6,
+        GameItem::TriforceShard7,
+        GameItem::TriforceShard8,
         GameItem::TingleBottle,
         GameItem::TotGBigKey,
         GameItem::TotGCompass,
@@ -615,6 +621,7 @@ ItemsPage::ItemsPage() {
     countButtons[7] = std::make_unique<CounterButton>(Option::StartingRedChuJellys, 130ms, 300ms);
     countButtons[8] = std::make_unique<CounterButton>(Option::StartingGreenChuJellys, 130ms, 300ms);
     countButtons[9] = std::make_unique<CounterButton>(Option::StartingBlueChuJellys, 130ms, 300ms);
+    countButtons[10] = std::make_unique<BasicButton>(Option::StartWithRandomItem);
 }
 
 void ItemsPage::open() {

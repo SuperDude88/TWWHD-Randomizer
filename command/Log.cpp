@@ -44,7 +44,7 @@ ErrorLog::ErrorLog() {
         {
             Option setting = static_cast<Option>(settingInt);
         
-            if (setting == Option::NumShards || setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+            if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
                 output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
             }
@@ -108,7 +108,7 @@ DebugLog::DebugLog() {
         {
             Option setting = static_cast<Option>(settingInt);
         
-            if (setting == Option::NumShards || setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
+            if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
                 output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
             }

@@ -335,7 +335,6 @@ Option nameToSetting(const std::string& name) {
         {"Fix RNG", Option::FixRNG},
         {"Performance", Option::Performance},
         {"Reveal Sea Chart", Option::RevealSeaChart},
-        {"Num Shards", Option::NumShards},
         {"Add Shortcut Warps", Option::AddShortcutWarps},
         {"No Spoiler Log", Option::NoSpoilerLog},
         {"Remove Swords", Option::RemoveSwords},
@@ -431,7 +430,6 @@ std::string settingToName(const Option& setting) {
         {Option::FixRNG, "Fix RNG"},
         {Option::Performance, "Performance"},
         {Option::RevealSeaChart, "Reveal Sea Chart"},
-        {Option::NumShards, "Num Shards"},
         {Option::AddShortcutWarps, "Add Shortcut Warps"},
         {Option::NoSpoilerLog, "No Spoiler Log"},
         {Option::RemoveSwords, "Remove Swords"},
@@ -582,8 +580,6 @@ uint8_t getSetting(const Settings& settings, const Option& option) {
             return settings.performance;
         case Option::RevealSeaChart:
             return settings.reveal_full_sea_chart;
-        case Option::NumShards:
-            return settings.num_starting_triforce_shards;
         case Option::AddShortcutWarps:
             return settings.add_shortcut_warps_between_dungeons;
         case Option::NoSpoilerLog:
@@ -759,8 +755,6 @@ void setSetting(Settings& settings, const Option& option, const size_t& value)
             settings.performance = value; return;
         case Option::RevealSeaChart:
             settings.reveal_full_sea_chart = value; return;
-        case Option::NumShards:
-            settings.num_starting_triforce_shards = value; return;
         case Option::AddShortcutWarps:
             settings.add_shortcut_warps_between_dungeons = value; return;
         case Option::NoSpoilerLog:

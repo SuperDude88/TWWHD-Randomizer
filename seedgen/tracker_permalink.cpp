@@ -129,11 +129,6 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
                 bitsWriter.write(startingGear.count(item), 2);
             }
         }
-        // ComboBox Options
-        else if (option == Option::NumShards)
-        {
-            bitsWriter.write(getSetting(settings, option), 8);
-        }
         // Special case for race mode dungeons
         else if (option == Option::NumRequiredDungeons)
         {

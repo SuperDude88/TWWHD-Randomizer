@@ -1338,21 +1338,6 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
     return TweakError::NONE;
 }
 
-TweakError set_num_starting_triforce_shards(const uint8_t numShards) {
-    if(custom_symbols.count("num_triforce_shards_to_start_with") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-
-    const uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
-    g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_shards_address, numShards](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-
-        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_shards_address), numShards));
-
-        return true;
-    });
-
-    return TweakError::NONE;
-}
-
 TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers) {
     if(custom_symbols.count("starting_quarter_hearts") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint16_t base_health = 12;
@@ -3561,7 +3546,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(modify_title_screen());
     TWEAK_ERR_CHECK(update_name_and_icon());
     TWEAK_ERR_CHECK(fix_shop_item_y_offsets());
-    TWEAK_ERR_CHECK(set_num_starting_triforce_shards(settings.num_starting_triforce_shards));
     TWEAK_ERR_CHECK(set_starting_health(settings.starting_pohs, settings.starting_hcs));
     TWEAK_ERR_CHECK(set_damage_multiplier(settings.damage_multiplier));
     TWEAK_ERR_CHECK(remove_makar_kidnapping());
