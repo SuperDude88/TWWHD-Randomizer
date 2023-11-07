@@ -1,7 +1,5 @@
 #include "Page.hpp"
 
-#include <sysapp/switch.h>
-
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 
@@ -60,8 +58,8 @@ ProgressionPage::ProgressionPage() {
     using namespace std::literals::chrono_literals;
 
     buttonColumns[0][0] = std::make_unique<BasicButton>(Option::ProgressDungeons);
-    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::DungeonSmallKeys);
-    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::DungeonMapsAndCompasses);
+    buttonColumns[0][1] = std::make_unique<CounterButton>(Option::NumRequiredDungeons, 250ms, 300ms);
+    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ProgressDungeonSecrets);
     buttonColumns[0][3] = std::make_unique<BasicButton>(Option::ProgressTingleChests);
     buttonColumns[0][4] = std::make_unique<BasicButton>(Option::ProgressPuzzleCaves);
     buttonColumns[0][5] = std::make_unique<BasicButton>(Option::ProgressCombatCaves);
@@ -71,21 +69,21 @@ ProgressionPage::ProgressionPage() {
     buttonColumns[0][9] = std::make_unique<BasicButton>(Option::ProgressMinigames);
     buttonColumns[0][10] = std::make_unique<BasicButton>(Option::ProgressFreeGifts);
     buttonColumns[0][11] = std::make_unique<BasicButton>(Option::ProgressMail);
-    buttonColumns[0][12] = std::make_unique<BasicButton>(Option::ProgressPlatformsRafts);
-    buttonColumns[0][13] = std::make_unique<BasicButton>(Option::ProgressSubmarines);
-    buttonColumns[0][14] = std::make_unique<BasicButton>(Option::ProgressEyeReefs);
+    buttonColumns[0][12] = std::make_unique<BasicButton>(Option::ProgressGreatFairies);
+    buttonColumns[0][13] = std::make_unique<BasicButton>(Option::ProgressObscure);
+    buttonColumns[0][14] = std::make_unique<BasicButton>(Option::RemoveSwords);
 
-    buttonColumns[1][0] = std::make_unique<CounterButton>(Option::NumRequiredDungeons, 250ms, 300ms);
+    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::DungeonSmallKeys);
     buttonColumns[1][1] = std::make_unique<BasicButton>(Option::DungeonBigKeys);
-    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::ProgressDungeonSecrets);
+    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::DungeonMapsAndCompasses);
     buttonColumns[1][3] = std::make_unique<BasicButton>(Option::ProgressMisc);
     buttonColumns[1][4] = std::make_unique<BasicButton>(Option::ProgressExpPurchases);
     buttonColumns[1][5] = std::make_unique<BasicButton>(Option::ProgressBattlesquid);
     buttonColumns[1][6] = std::make_unique<BasicButton>(Option::ProgressSavageLabyrinth);
     buttonColumns[1][7] = std::make_unique<BasicButton>(Option::ProgressIslandPuzzles);
-    buttonColumns[1][8] = std::make_unique<BasicButton>(Option::ProgressObscure);
-    buttonColumns[1][9] = std::make_unique<BasicButton>(Option::ProgressGreatFairies);
-    buttonColumns[1][10] = std::make_unique<BasicButton>(Option::RemoveSwords);
+    buttonColumns[1][8] = std::make_unique<BasicButton>(Option::ProgressSubmarines);
+    buttonColumns[1][9] = std::make_unique<BasicButton>(Option::ProgressPlatformsRafts);
+    buttonColumns[1][10] = std::make_unique<BasicButton>(Option::ProgressEyeReefs);
     buttonColumns[1][11] = std::make_unique<BasicButton>(Option::ProgressOctosGunboats);
     buttonColumns[1][12] = std::make_unique<BasicButton>(Option::ProgressTreasureCharts);
     buttonColumns[1][13] = std::make_unique<BasicButton>(Option::ProgressTriforceCharts);
@@ -908,9 +906,9 @@ bool ColorPage::update(const VPADStatus& stat) {
     bool btnUpdate = false;
     switch(curCol) {
         case Column::LIST:
-            btnUpdate = true;
-
             if(stat.trigger & VPAD_BUTTON_A) {
+                btnUpdate = true;
+
                 getModel().loadPreset(listScrollPos + curRow);
             }
 
@@ -950,8 +948,6 @@ void ColorPage::drawTV() const {
 void ColorPage::drawDRC() const {
     switch(curCol) {
         case Column::LIST:
-            //presets[listScrollPos + curRow].drawDRC();
-
             break;
         case Column::BUTTONS:
             toggles[curRow]->drawDRC();
