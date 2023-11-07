@@ -395,17 +395,6 @@ namespace OptionCB {
         return fromBool(conf.settings.reveal_full_sea_chart);
     }
 
-    std::string cycleStartingShards() {
-        if(conf.settings.num_starting_triforce_shards == MAXIMUM_STARTING_TRIFORCE_SHARDS) {
-            conf.settings.num_starting_triforce_shards = 0;
-        }
-        else {
-            conf.settings.num_starting_triforce_shards++;
-        }
-
-        return std::to_string(conf.settings.num_starting_triforce_shards);
-    }
-
     std::string toggleDungeonWarps() {
         conf.settings.add_shortcut_warps_between_dungeons = !conf.settings.add_shortcut_warps_between_dungeons;
         return fromBool(conf.settings.add_shortcut_warps_between_dungeons);
@@ -897,8 +886,6 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.performance);
         case Option::RevealSeaChart:
             return fromBool(conf.settings.reveal_full_sea_chart);
-        case Option::NumShards:
-            return std::to_string(conf.settings.num_starting_triforce_shards);
         case Option::AddShortcutWarps:
             return fromBool(conf.settings.add_shortcut_warps_between_dungeons);
         case Option::NoSpoilerLog:
@@ -1081,8 +1068,6 @@ TriggerCallback getCallback(const Option& option) {
             return &togglePerformance;
         case Option::RevealSeaChart:
             return &toggleFullSeaChart;
-        case Option::NumShards:
-            return &cycleStartingShards;
         case Option::AddShortcutWarps:
             return &toggleDungeonWarps;
         case Option::NoSpoilerLog:
@@ -1181,7 +1166,6 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
 
         {RemoveSwords,               {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
         {NumRequiredDungeons,        {"Number of Required Bosses",           "The number of dungeon bosses with required items (applies to \"Standard\" and \"Race Mode\" dungeons)."}},
-        {NumShards,                  {"Triforce Shards to Start With",       "The number of triforce shards you start the game with."}},
         {RandomCharts,               {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},
         {CTMC,                       {"Chest Type Matches Contents",         "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key Chests. Keys for non-required dungeons in race mode will be in wooden chests."}},
 

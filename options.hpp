@@ -18,7 +18,6 @@ constexpr unsigned int MAXIMUM_STARTING_RED_CHU_JELLYS = 15;
 constexpr unsigned int MAXIMUM_STARTING_GREEN_CHU_JELLYS = 15;
 constexpr unsigned int MAXIMUM_STARTING_BLUE_CHU_JELLYS = 15;
 
-constexpr unsigned int MAXIMUM_STARTING_TRIFORCE_SHARDS = 8;
 constexpr unsigned int MAXIMUM_NUM_DUNGEONS = 6;
 constexpr float MAXIMUM_DAMAGE_MULTIPLIER = 80.0f;
 
@@ -112,7 +111,6 @@ enum struct Option {
     // Additional Randomization Options
     RemoveSwords,
     NumRequiredDungeons,
-    NumShards,
     RandomCharts,
     CTMC,
 
@@ -191,6 +189,7 @@ enum struct Option {
 
     // Dummy options to satisfy tracker permalink
     SwordMode,
+    NumShards,
     RaceMode,
     Keylunacy,
     RandomizeEntrances,
@@ -263,7 +262,6 @@ struct Settings {
     bool fix_rng = false;
     bool performance = false;
     bool reveal_full_sea_chart = false;
-    uint8_t num_starting_triforce_shards = 0;
     bool add_shortcut_warps_between_dungeons = false;
     bool do_not_generate_spoiler_log = false;
     bool remove_swords = false;

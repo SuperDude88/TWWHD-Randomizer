@@ -270,22 +270,11 @@ li r4, 0xFF
 stb r4, 0 (r3) ; 803C4C9C, bitfield of what spoils bag items you've ever owned
 stb r4, 1 (r3) ; 803C4C9D, bitfield of what bait bag items you've ever owned
 
-; Give the player the number of Triforce Shards they want to start with.
-lis r5, num_triforce_shards_to_start_with@ha
-addi r5, r5, num_triforce_shards_to_start_with@l
-lbz r5, 0 (r5) ; Load number of Triforce Shards to start with
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
-addi r3,r3, 0xDE
-; Convert the number of shards to a bitfield with that many bits set.
-; e.g. For 5 shards, ((1 << 5) - 1) results in 0x1F (binary 00011111).
-li r0, 1
-slw r4, r0, r5
-subi r4, r4, 1
-stb r4, 0 (r3) ; Store the bitfield of shards back
-; If the number of starting shards is 8, also set the event flag for seeing the Triforce refuse together.
-cmpwi r5, 8
-blt after_starting_triforce_shards
+lbz r3, 0xDE(r3) ; Bitfield of owned triforce shards
+cmpwi r3, 0b11111111 ; Set the event flag for seeing the Triforce refuse if you have them all
+bne after_starting_triforce_shards
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x644
@@ -370,15 +359,12 @@ mtlr r0
 addi sp, sp, 0x10
 blr
 
-.global num_triforce_shards_to_start_with
-num_triforce_shards_to_start_with:
-.byte 0 ; By default start with no Triforce Shards
 .global should_start_with_heros_clothes
 should_start_with_heros_clothes:
 .byte 1 ; By default start with the Hero's Clothes
 .global swordless
 swordless:
-.byte 0 ; By default Start with Sword
+.byte 0 ; Swords are placed by default
 .global skip_rematch_bosses
 skip_rematch_bosses:
 .byte 1 ; By default skip them
