@@ -40,9 +40,9 @@ namespace Utility::Endian
 
     int16_t byteswap(const int16_t& value);
 
-    float byteswap(const float& value);
+    [[deprecated("Platform may silently set NaN bytes, bit_cast to uint32_t first if possible.")]] float byteswap(const float& value);
 
-    double byteswap(const double& value);
+    [[deprecated("Platform may silently set NaN bytes, bit_cast to uint64_t first if possible.")]] double byteswap(const double& value);
 
     char16_t byteswap(const char16_t& value);
 
