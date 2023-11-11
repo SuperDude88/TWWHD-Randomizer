@@ -549,12 +549,12 @@ TweakError make_items_progressive() {
         return true;
     });
     
-      // Add an item get message for the normal magic meter since it didn't have one in vanilla
-      std::unordered_map<std::string, std::u16string> messages = {
-          {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
-          {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
-          {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
-      };
+    // Add an item get message for the normal magic meter since it didn't have one in vanilla
+    std::unordered_map<std::string, std::u16string> messages = {
+        {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
+        {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
+        {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
+    };
 
     for (const auto& language : Text::supported_languages) {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
@@ -1103,7 +1103,6 @@ TweakError fix_shop_item_y_offsets() {
 }
 
 TweakError update_text_replacements(World& world) {
-
     auto textReplacements = generate_text_replacements(world);
 
     for (auto& [messageLabel, languages] : textReplacements) {
@@ -1378,6 +1377,28 @@ TweakError set_damage_multiplier(const float& multiplier) {
         
         return true;
     });
+
+    // Update the confirmation text
+    for (const auto& language : Text::supported_languages) {
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@SequenceWindow_00_msbt.szs@YAZ0@SARC@SequenceWindow_00.msbt@MSBT");
+        entry.addAction([=](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            static const std::unordered_map<std::string, std::u16string> word_to_replace = {
+                {"English", u"double"s},
+                {"Spanish", u"el doble"s}, //TODO: check this
+                {"French", u"doublés"s}, //TODO: check this
+            };
+
+            std::u16string& message = msbt.messages_by_label["T_Msg_00_hardmode00"].text.message;
+            const std::u16string& replace = word_to_replace.at(language);
+            const std::u16string& replacement = Utility::Str::toUTF16(std::to_string(static_cast<uint8_t>(multiplier)) + "x");
+            message.replace(message.find(replace), replace.size(), replacement);
+
+            return true;
+        });
+    }
+
     return TweakError::NONE;
 }
 
