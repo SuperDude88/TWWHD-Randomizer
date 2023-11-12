@@ -339,6 +339,7 @@ void MainWindow::setup_gear_menus()
                    << "Progressive Sword"
                    << "Progressive Sword"
                    << "Progressive Sword"
+                   << "Progressive Sword"
                    << "Progressive Wallet"
                    << "Progressive Wallet"
                    << "Skull Hammer"
@@ -351,6 +352,14 @@ void MainWindow::setup_gear_menus()
                    << "Tower of the Gods Dungeon Map"
                    << "Tower of the Gods Small Key"
                    << "Tower of the Gods Small Key"
+                   << "Triforce Shard 1"
+                   << "Triforce Shard 2"
+                   << "Triforce Shard 3"
+                   << "Triforce Shard 4"
+                   << "Triforce Shard 5"
+                   << "Triforce Shard 6"
+                   << "Triforce Shard 7"
+                   << "Triforce Shard 8"
                    << "Wind God's Aria"
                    << "Wind Temple Big Key"
                    << "Wind Temple Compass"
@@ -422,7 +431,7 @@ void MainWindow::apply_config_settings()
     setup_gear_menus();
 
     // Starting Gear
-    // Set this up before changing the sword_mode option since that function
+    // Set this up before changing the remove_swords option since that function
     // will emit a signal to change the randomized/starting gear models
     QStringList randomizedGear = randomizedGearModel->stringList();
     QStringList startingGear =  startingGearModel->stringList();
@@ -444,22 +453,7 @@ void MainWindow::apply_config_settings()
     ui->randomized_gear->setModel(randomizedGearModel);
     ui->starting_gear->setModel(startingGearModel);
 
-    // Additional Randomizer Settings
-    auto& sword_mode = config.settings.sword_mode;
-    if (sword_mode == SwordMode::INVALID)
-    {
-        show_warning_dialog("Unknown sword mode.\nSetting as default value Start with Hero's Sword");
-        sword_mode = SwordMode::StartWithSword;
-    }
-    auto index = static_cast<int>(sword_mode);
-    ui->sword_mode->setCurrentIndex(index);
-
-    // Call the index change slot function if the option didn't change from the default
-    if (sword_mode == SwordMode::StartWithSword)
-    {
-        on_sword_mode_currentIndexChanged(index);
-    }
-
+    APPLY_CHECKBOX_SETTING(config, ui, remove_swords);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_small_keys);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_big_keys);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_maps_compasses);
@@ -478,11 +472,6 @@ void MainWindow::apply_config_settings()
     }
 
     ui->num_required_dungeons->setCurrentIndex(num_required_dungeons);
-
-    auto& num_starting_triforce_shards = config.settings.num_starting_triforce_shards;
-    // Number of starting triforce shards must be between 0 and 8
-    num_starting_triforce_shards = std::clamp(num_starting_triforce_shards, uint8_t(0), uint8_t(MAXIMUM_STARTING_TRIFORCE_SHARDS));
-    ui->num_starting_triforce_shards->setCurrentIndex(num_starting_triforce_shards);
 
     APPLY_CHECKBOX_SETTING(config, ui, randomize_charts);
     APPLY_CHECKBOX_SETTING(config, ui, chest_type_matches_contents);
@@ -740,9 +729,9 @@ DEFINE_STATE_CHANGE_FUNCTION(progression_treasure_charts)
 DEFINE_STATE_CHANGE_FUNCTION(progression_triforce_charts)
 
 // Additional Randomization Options
-void MainWindow::on_sword_mode_currentIndexChanged(int index)
+void MainWindow::on_remove_swords_stateChanged(int arg1)
 {
-    config.settings.sword_mode = static_cast<SwordMode>(ui->sword_mode->currentIndex());
+    UPDATE_CONFIG_STATE(config, ui, remove_swords);
 
     // Update randomized/starting gear lists to reflect sword mode
     auto randomizedGear = randomizedGearModel->stringList();
@@ -750,38 +739,37 @@ void MainWindow::on_sword_mode_currentIndexChanged(int index)
 
     int numSwordsInGearMenus = randomizedGear.filter("Progressive Sword").size() + startingGear.filter("Progressive Sword").size();
 
-    // If the player set the option to No Starting Sword or Swordless, remove all swords
-    auto& sword_mode = config.settings.sword_mode;
-    if (sword_mode == SwordMode::RandomSword || sword_mode == SwordMode::NoSword)
+    // Remove all swords if necessary
+    if (config.settings.remove_swords)
     {
         randomizedGear.removeAll("Progressive Sword");
         startingGear.removeAll("Progressive Sword");
+        
+        // Also make sure the hurricane spin is removed with swords
+        randomizedGear.removeAll("Hurricane Spin");
+        startingGear.removeAll("Hurricane Spin");
     }
-    // If the player set the option to Start with Hero's Sword
-    else if (config.settings.sword_mode == SwordMode::StartWithSword)
-    {
-        // Add swords to the randomized gear until there are 3
-        while (numSwordsInGearMenus < 3)
+    // If the player disabled the option to remove swords
+    else {
+        // Add swords to the randomized gear until there are 4
+        while (numSwordsInGearMenus < 4)
         {
             randomizedGear.append("Progressive Sword");
             numSwordsInGearMenus++;
         }
+
+        // Replace hurricane spin if we're including swords
+        if (randomizedGear.filter("Hurricane Spin").size() + startingGear.filter("Hurricane Spin").size() == 0)
+        {
+            randomizedGear.append("Hurricane Spin");
+        }
     }
 
-    // Make sure the hurricane spin is removed when Swordless is enabled
-    if (sword_mode == SwordMode::NoSword)
-    {
-        randomizedGear.removeAll("Hurricane Spin");
-        startingGear.removeAll("Hurricane Spin");
-    }
-    else if (randomizedGear.filter("Hurricane Spin").size() + startingGear.filter("Hurricane Spin").size() == 0)
-    {
-        randomizedGear.append("Hurricane Spin");
-    }
     startingGear.sort();
     randomizedGear.sort();
     randomizedGearModel->setStringList(randomizedGear);
     startingGearModel->setStringList(startingGear);
+
     update_permalink_and_seed_hash();
 }
 
@@ -811,12 +799,6 @@ void MainWindow::on_dungeon_big_keys_currentTextChanged(const QString &arg1)
 void MainWindow::on_dungeon_maps_compasses_currentTextChanged(const QString &arg1)
 {
     config.settings.dungeon_maps_compasses = nameToPlacementOption(arg1.toStdString());
-    update_permalink_and_seed_hash();
-}
-
-void MainWindow::on_num_starting_triforce_shards_currentIndexChanged(int index)
-{
-    config.settings.num_starting_triforce_shards = ui->num_starting_triforce_shards->currentIndex();
     update_permalink_and_seed_hash();
 }
 

@@ -4,7 +4,7 @@
 import os
 
 def main():
-    directories = ['../logic/data', '../asm/patch_diffs', '../assets', '../assets/tracker', '../assets/link preview', '../assets/link color masks']
+    directories = ['../logic/data', '../asm/patch_diffs', '../assets', '../assets/tracker', '../assets/link preview', '../customizer/data']
     individual_files = ['../asm/custom_symbols.yaml']
     with open('data.qrc', 'w') as qrc:
         qrc.write('<RCC>\n')
