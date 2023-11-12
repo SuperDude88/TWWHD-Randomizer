@@ -7,6 +7,7 @@
 .org 0x025b2030
 	b give_temporary_sword_during_ganondorf_fight_in_swordless
 
+; TODO: this seems like it sometimes breaks with hero's sword?
 .org @NextFreeSpace
 .global give_temporary_sword_during_ganondorf_fight_in_swordless
 give_temporary_sword_during_ganondorf_fight_in_swordless:
