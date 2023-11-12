@@ -121,8 +121,8 @@ namespace OptionCB {
     }
 
     std::string toggleMisc() {
-        conf.settings.progression_expensive_purchases = !conf.settings.progression_expensive_purchases;
-        return fromBool(conf.settings.progression_expensive_purchases);
+        conf.settings.progression_misc = !conf.settings.progression_misc;
+        return fromBool(conf.settings.progression_misc);
     }
 
     std::string toggleTingleChests() {
