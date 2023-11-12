@@ -4,7 +4,7 @@
 
 class SettingsMenu {
 public:
-    enum class Status {
+    enum struct Status {
         NONE = 0,
         CHANGED = 1,
         EXIT = 2

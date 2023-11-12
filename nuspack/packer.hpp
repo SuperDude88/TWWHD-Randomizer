@@ -4,7 +4,7 @@
 
 #include <nuspack/crypto/Key.hpp>
 
-enum class [[nodiscard]] PackError {
+enum struct [[nodiscard]] PackError {
     NONE = 0,
     XML_ERROR,
     UNKNOWN,

@@ -15,7 +15,7 @@ struct EventAccess
     World* world = nullptr;
 };
 
-struct Area;
+class Area;
 struct LocationAccess
 {
     Area* area = nullptr;
@@ -23,8 +23,9 @@ struct LocationAccess
     Requirement requirement;
 };
 
-struct Area
+class Area
 {
+public:
     std::string name = "";
     std::string island = "";
     std::string dungeon = "";

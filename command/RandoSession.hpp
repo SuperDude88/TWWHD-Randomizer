@@ -23,7 +23,7 @@ public:
 
     class CacheEntry {
     public:
-        enum class Format {
+        enum struct Format {
             BDT = 0,
             BFLIM,
             BFLYT,

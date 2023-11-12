@@ -379,7 +379,7 @@ static const std::set<GameItem> dungeonItems = {
     GameItem::WTCompass,
 };
 
-struct Location;
+class Location;
 class World;
 class Item
 {
