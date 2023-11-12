@@ -50,3 +50,5 @@ daSwOp_Draw: .text
 l_daSwOp_Method: .text
 g_profile_SwitchOperator: .text
 custom_l_objectName: .text
+molgera_warp_radius: .text
+default_molgera_xz_pos: .text
