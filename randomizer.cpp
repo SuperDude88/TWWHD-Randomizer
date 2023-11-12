@@ -250,6 +250,7 @@ private:
         //Needs to restore data before anything is modified, worlds are generated after pre-randomization tweaks are applied
         //Get around this with a list of the entrance paths
         //Skip anything rando does edit to save time, they get restored during extraction
+        //TODO: maybe just use the entrance shuffle data for this
         static const std::list<std::pair<std::string, uint8_t>> vanillaEntrancePaths = {
             {"Adanmae",  0},
             {"M_NewD2",  0},
@@ -261,6 +262,7 @@ private:
             {"M_Dai",    0},
             {"Ekaze",    0},
             {"kaze",    15},
+            {"kaze",    12},
             //{"sea",     44},
             {"Cave09",   0},
             //{"sea",     13},
