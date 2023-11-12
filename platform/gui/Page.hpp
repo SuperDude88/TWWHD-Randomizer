@@ -128,7 +128,7 @@ class ItemsPage : public EmptyPage {
 private:
     static constexpr size_t LIST_HEIGHT = 20;
 
-    enum class Column {
+    enum struct Column {
         LIST = 0,
         BUTTONS = 1
     };
@@ -156,7 +156,7 @@ class ColorPage : public EmptyPage {
 private:
     static constexpr size_t LIST_HEIGHT = 20;
 
-    enum class Column {
+    enum struct Column {
         LIST = 0,
         BUTTONS = 1
     };

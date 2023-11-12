@@ -21,7 +21,7 @@ enum struct [[nodiscard]] TMDError {
     COUNT
 };
 
-enum class SigType : uint32_t {
+enum struct SigType : uint32_t {
     RSA_2048_SHA256 = 0x00010004,
     RSA_4096_SHA256 = 0x00010003,
     RSA_2048_SHA1   = 0x00010001,
