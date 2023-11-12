@@ -105,8 +105,8 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
 
     // Additional Randomization Options
     {
-      "sword_mode",
-      "Controls whether you start with the Hero's Sword, the Hero's Sword is randomized, or if there are no swords in the entire game.\nSwordless and No Starting Sword are challenge modes, not recommended for your first run. Also, FF's Phantom Ganon is vulnerable to Skull Hammer in Swordless mode only."
+      "remove_swords",
+      "Controls whether swords will be placed throughout the game. When they are removed, FF's Phantom Ganon is made vulnerable to Skull Hammer."
     },
     {
       "dungeon_small_keys",
@@ -127,10 +127,6 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     {
       "num_required_dungeons",
       "Select the number of requried bosses/dungeons.\nRequired dungeon bosses will drop required items (e.g. Triforce Shards).",
-    },
-    {
-      "num_starting_triforce_shards",
-      "Change the number of Triforce Shards you start the game with.<br>The higher you set this, the fewer you will need to find placed randomly."
     },
     {
       "randomize_charts",

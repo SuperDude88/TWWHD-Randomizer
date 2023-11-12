@@ -82,6 +82,7 @@ else()
   file(COPY "../asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
   file(COPY  ../assets DESTINATION "${CMAKE_BINARY_DIR}/data")                                          # Images and other assets used in patching
   file(COPY "../logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
+  file(COPY "../customizer/data" DESTINATION "${CMAKE_BINARY_DIR}/data/customizer")                     # Default model info
 endif()
 
 file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc" "IDI_ICON1 ICON DISCARDABLE \"appicon.ico\"")
@@ -156,6 +157,7 @@ add_subdirectory("../filetypes" "filetypes")
 add_subdirectory("../seedgen" "seedgen")
 add_subdirectory("../logic" "logic")
 add_subdirectory("../nuspack" "nuspack")
+add_subdirectory("../customizer" "customizer")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR}/..)
 
