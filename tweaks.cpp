@@ -27,6 +27,7 @@
 #include <utility/file.hpp>
 #include <utility/common.hpp>
 #include <command/Log.hpp>
+#include <command/GamePath.hpp>
 #include <command/RandoSession.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
@@ -164,7 +165,7 @@ TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t 
 }
 
 TweakError change_ship_starting_island(const uint8_t room_index) {
-    std::string path = get_island_room_dzx_filepath(room_index);
+    const std::string path = getRoomDzrPath("sea", room_index);
 
     RandoSession::CacheEntry& room = g_session.openGameFile(path);
     RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
@@ -1048,17 +1049,8 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 }
 
 TweakError remove_bog_warp_in_cs() {
-    for (uint8_t i = 1; i < 50; i++) {
-        std::string path;
-        if (i == 1 || i == 11 || i == 13 || i == 17 || i == 23) {
-            path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
-        }
-        else if (i == 9 || i == 39 || i == 41 || i == 44) {
-            path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
-        }
-        else {
-            path = "content/Common/Stage/sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
-        }
+    for (uint8_t i = 1; i < 49+1; i++) {
+        const std::string path = getRoomDzrPath("sea", i);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(room_dzr, FileTypes::DZXFile, data)
@@ -1294,7 +1286,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             auto islandNumToFace = islandNameToRoomIndex(island);
             auto hohoIslandNum = islandNameToRoomIndex(hohoLocation->hintRegions.front());
 
-            std::string filepath = get_island_room_dzx_filepath(hohoIslandNum);
+            const std::string filepath = getRoomDzrPath("sea", hohoIslandNum);
             RandoSession::CacheEntry& room = g_session.openGameFile(filepath);
 
             room.addAction([=](RandoSession* session, FileType* data) -> int {
@@ -1744,7 +1736,7 @@ TweakError add_boss_door_return_spawns() {
 
         RandoSession::CacheEntry* dzx_for_spawn;
         if (newSpawn.stage_name == "sea") {
-            dzx_for_spawn = &g_session.openGameFile(get_island_room_dzx_filepath(newSpawn.room_num));
+            dzx_for_spawn = &g_session.openGameFile(getRoomDzrPath("sea", newSpawn.room_num));
         } else if (isAnyOf(newSpawn.stage_name, "M_Dai", "kaze")) {
             dzx_for_spawn = &g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
         } else {
@@ -2463,7 +2455,7 @@ TweakError fix_totg_warp_spawn() {
 TweakError remove_phantom_ganon_req_for_reefs() {
     std::string path;
     for (const uint8_t room_index : {24, 46, 22, 8, 37, 25}) {
-        path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
+        path = getRoomDzrPath("sea", room_index);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -2965,27 +2957,6 @@ TweakError fix_needle_rock_island_salvage_flags() {
         return true;
     });
     return TweakError::NONE;
-}
-
-std::string get_island_room_dzx_filepath(const uint8_t& islandNum) {
-
-    // Most sea_Room szs files are in content/Common/Stage but some are
-    // in content/Common/Pack/szs_permanent1.pack and content/Common/Pack/szs_permanent2.pack
-    const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
-    const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-
-    auto islandNumStr = std::to_string(islandNum);
-
-    std::string filepath = "content/Common/Stage/sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
-
-    if (pack1.contains(islandNum)) {
-        filepath = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
-    }
-    else if (pack2.contains(islandNum)) {
-        filepath = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
-    }
-
-    return filepath;
 }
 
 TweakError add_ff_warp_button() {

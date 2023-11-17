@@ -20,6 +20,7 @@
 #include <filetypes/dzx.hpp>
 #include <filetypes/charts.hpp>
 #include <filetypes/events.hpp>
+#include <command/GamePath.hpp>
 #include <command/WriteLocations.hpp>
 #include <command/RandoSession.hpp>
 #include <command/Log.hpp>
@@ -190,7 +191,7 @@ private:
         for (uint8_t i = 0; i < 49; i++) {
             const uint8_t islandNumber = i + 1;
 
-            std::string dzrPath = get_island_room_dzx_filepath(islandNumber);
+            const std::string dzrPath = getRoomDzrPath("sea", islandNumber);
             RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(dzrPath);
 
             entry.addAction([&worlds, &dzrEntry, i, islandNumber](RandoSession* session, FileType* data) -> int
@@ -246,171 +247,31 @@ private:
         return true;
     }
 
-    [[nodiscard]] bool restoreEntrances() {
-        //Needs to restore data before anything is modified, worlds are generated after pre-randomization tweaks are applied
-        //Get around this with a list of the entrance paths
-        //Skip anything rando does edit to save time, they get restored during extraction
-        //TODO: maybe just use the entrance shuffle data for this
-        static const std::list<std::pair<std::string, uint8_t>> vanillaEntrancePaths = {
-            {"Adanmae",  0},
-            {"M_NewD2",  0},
-            //{"sea",     41},
-            {"kindan",   0},
-            //{"sea",     26},
-            {"Siren",    0},
-            {"Edaichi",  0},
-            {"M_Dai",    0},
-            {"Ekaze",    0},
-            {"kaze",    15},
-            {"kaze",    12},
-            //{"sea",     44},
-            {"Cave09",   0},
-            //{"sea",     13},
-            {"TF_06",    0},
-            //{"sea",     20},
-            {"MiniKaz",  0},
-            //{"sea",     40},
-            {"MiniHyo",  0},
-            {"Abesso",   0},
-            {"TF_04",    0},
-            //{"sea",     29},
-            {"SubD42",   0},
-            //{"sea",     47},
-            {"SubD43",   0},
-            //{"sea",     48},
-            {"SubD71",   0},
-            //{"sea",     31},
-            {"TF_01",    0},
-            //{"sea",      7},
-            {"TF_02",    0},
-            //{"sea",     35},
-            {"TF_03",    0},
-            //{"sea",     12},
-            {"TyuTyu",   0},
-            //{"sea",     12},
-            {"Cave07",   0},
-            //{"sea",     36},
-            {"WarpD",    0},
-            //{"sea",     34},
-            {"Cave01",   0},
-            //{"sea",     16},
-            {"Cave04",   0},
-            //{"sea",     38},
-            {"ITest62",  0},
-            {"ITest63",  0},
-            //{"sea",     42},
-            {"Cave03",   0},
-            //{"sea",     42},
-            {"Cave03",   0},
-            //{"sea",     43},
-            {"Cave05",   0},
-            //{"sea",      2},
-            {"Cave02",   0},
-            //{"sea",     11},
-            {"Pnezumi",  0},
-            //{"sea",     11},
-            {"Nitiyou",  0},
-            //{"sea",     11},
-            {"Ocmera",   0},
-            //{"sea",     11},
-            {"Ocmera",   0},
-            //{"sea",     11},
-            {"Opub",     0},
-            //{"sea",     11},
-            {"Kaisen",   0},
-            //{"sea",     11},
-            {"Kaisen",   0},
-            //{"sea",     11},
-            //{"Orichh",   0},
-            //{"sea",     11},
-            //{"Orichh",   0},
-            //{"sea",     11},
-            {"Pdrgsh",   0},
-            //{"sea",     11},
-            {"Obombh",   0},
-            {"Atorizk",  0},
-            {"Comori",   0},
-            //{"sea",     33},
-            {"Abesso",   0},
-            //{"sea",     44},
-            {"LinkRM",   0},
-            //{"sea",     44},
-            {"Ojhous",   0},
-            //{"sea",     44},
-            {"Ojhous2",  1},
-            //{"sea",     44},
-            {"Onobuta",  0},
-            //{"sea",     44},
-            {"Omasao",   0},
-            //{"sea",      4},
-            {"Ekaze",    0},
-            //{"sea",     11},
-            {"Obombh",   0},
-            //{"sea",     13},
-            {"Atorizk",  0},
-            //{"sea",     13},
-            {"Atorizk",  0},
-            {"Adanmae",  0},
-            {"Atorizk",  0},
-            {"Atorizk",  0},
-            {"Adanmae",  0},
-            //{"sea",     30},
-            {"ShipD",    0},
-            //{"sea",     41},
-            //{"Omori",    0},
-            //{"sea",     41},
-            {"Otkura",   0},
-            //{"Omori",    0},
-            {"Ocrogh",   0},
-            //{"sea",     41},
-            //{"Omori",    0},
-            //{"sea",     41},
-            //{"Omori",    0},
-            //{"sea",     41},
-            //{"Omori",    0},
-            //{"sea",     41},
-            //{"Omori",    0},
-            //{"sea",     44},
-            {"LinkUG",   0},
-            //{"sea",     44},
-            {"A_mori",   0},
-            //{"sea",     44},
-            //{"Pjavdou",  0},
-            //{"sea",     45},
-            {"Edaichi",  0}
-        };
-
-        const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
-        const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-        std::unordered_set<std::string> paths;
-
-        for (const auto& [fileStage, roomNum] : vanillaEntrancePaths)
+    [[nodiscard]] bool restoreEntrances(WorldPool& worlds) {
+        //Go through all the entrances and restore their data so they don't persist across seeds
+        // restoreGameFile() does not need to check if the file is cached because it only tries to get the cache entry
+        // Getting a cache entry doesn't overwrite anything if the file already had modifications
+        const EntrancePool entrances = worlds[0].getShuffleableEntrances(EntranceType::ALL);
+        for (const auto entrance : entrances)
         {
-            const std::string fileRoom = std::to_string(roomNum);
-            const std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs";
+            const std::string fileStage = entrance->getFilepathStage();
+            const uint8_t roomNum = entrance->getFilepathRoomNum();
 
-            if (fileStage == "sea") {
-                if (pack1.count(roomNum) > 0) {
-                    continue; //pack files are edited elsewhere which restores them
-                }
-                else if (pack2.count(roomNum) > 0) {
-                    continue; //pack files are edited elsewhere which restores them
+            if(roomNum != 0xFF && entrance->getSclsExitIndex() != 0xFF) {
+                if(const std::string path = getRoomFilePath(fileStage, roomNum); !g_session.restoreGameFile(path)) {
+                    ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+                    return false;
                 }
             }
 
-            paths.emplace(filepath);
-        }
-
-        // Also include boss rooms and miniboss rooms
-        for (const std::string& bossStage : {"M_DragB", "kinBOSS", "SirenB",  "M_DaiB",  "kazeB", "M2tower",
-                                             "M_Dra09",  "kinMB",  "SirenMB", "M_DaiMB", "kazeMB"}) {
-            paths.emplace("content/Common/Stage/" + bossStage + "_Stage.szs");
-        }
-
-        for(const std::string& path : paths) {
-            if(!g_session.restoreGameFile(path)) {
-                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
-                return false;
+            // Savewarp update -> need to restore SCLS changes to stage.dzs
+            // Warp update -> need to restore changes to event_list.dat (both are in stage archive)
+            if (entrance->needsSavewarp() || entrance->hasWindWarp())
+            {
+                if(const std::string path = getStageFilePath(fileStage); !g_session.restoreGameFile(path)) {
+                    ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+                    return false;
+                }
             }
         }
 
@@ -429,7 +290,6 @@ private:
         for (const auto entrance : entrances)
         {
             const std::string fileStage = entrance->getFilepathStage();
-            const std::string fileRoom = std::to_string(entrance->getFilepathRoomNum());
             uint8_t sclsExitIndex = entrance->getSclsExitIndex();
             std::string replacementStage = entrance->getReplaces()->getStageName();
             uint8_t replacementRoom = entrance->getReplaces()->getRoomNum();
@@ -444,22 +304,14 @@ private:
                 replacementSpawn = actualEntrance->getReplaces()->getSpawnId();
             }
 
-            std::string filepath = "content/Common/Stage/" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
-
-            if (fileStage == "sea") {
-                if (pack1.count(entrance->getFilepathRoomNum()) > 0) {
-                    filepath = "content/Common/Pack/szs_permanent1.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
-                }
-                else if (pack2.count(entrance->getFilepathRoomNum()) > 0) {
-                    filepath = "content/Common/Pack/szs_permanent2.pack@SARC@" + fileStage + "_Room" + fileRoom + ".szs@YAZ0@SARC@Room" + fileRoom + ".bfres@BFRES@room.dzr@DZX";
-                }
-            }
+            std::string filepath = getRoomDzrPath(fileStage, entrance->getFilepathRoomNum());
 
             // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
             // "MiniKaz" is the Fire Mountain stage name
             // "MiniHyo" is the Ice Ring stage name
             if (replacementStage == "MiniKaz" || replacementStage == "MiniHyo") {
-                std::string exitFilepath = "content/Common/Stage/" + replacementStage + "_Room" + std::to_string(replacementRoom) + ".szs@YAZ0@SARC@Room" + std::to_string(replacementRoom) + ".bfres@BFRES@room.dzr@DZX";
+                const std::string exitFilepath = getRoomDzrPath(replacementStage, replacementRoom);
+
                 RandoSession::CacheEntry& exitDzrEntry = g_session.openGameFile(exitFilepath);
                 exitDzrEntry.addAction([entrance, replacementStage](RandoSession* session, FileType* data) -> int {
                     CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -525,10 +377,11 @@ private:
             // If this entrance needs a savewarp update, then update the scls entry in the stage.dzs file
             if (entrance->needsSavewarp())
             {
-                filepath = "content/Common/Stage/" + fileStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";
+                filepath = getStageFilePath(fileStage) + "@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";
+                RandoSession::CacheEntry& dzsEntry = g_session.openGameFile(filepath);
+
                 sclsExitIndex = 0;
 
-                RandoSession::CacheEntry& dzsEntry = g_session.openGameFile(filepath);
                 dzsEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
                 {
                     CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -632,8 +485,7 @@ private:
                 } 
             }
 
-            auto bossStage = entrance->getFilepathStage();
-            const std::string filepath = "content/Common/Stage/" + bossStage + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
+            const std::string filepath = getStageFilePath(entrance->getFilepathStage()) + "@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
 
             RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
             list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
@@ -810,7 +662,7 @@ public:
             ErrorLog::getInstance().log("Failed to restore permanent_3d.pack!");
             return 1;
         }
-        if(!restoreEntrances()) {
+        if(!restoreEntrances(worlds)) {
             ErrorLog::getInstance().log("Failed to restore entrances!");
             return 1;
         }
