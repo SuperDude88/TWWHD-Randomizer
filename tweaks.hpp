@@ -22,8 +22,6 @@ enum struct [[nodiscard]] TweakError {
     COUNT
 };
 
-std::string get_island_room_dzx_filepath(const uint8_t& islandNum);
-
 TweakError apply_necessary_tweaks(const Settings& settings);
 
 TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool& randomizeItems */);
