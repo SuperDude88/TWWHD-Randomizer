@@ -36,6 +36,7 @@
 #include <sysapp/title.h>
 #include <platform/channel.hpp>
 #include <platform/gui/InstallMenu.hpp>
+#include <platform/gui/ConfirmMenu.hpp>
 #include <platform/gui/SettingsMenu.hpp>
 #endif
 
@@ -744,8 +745,13 @@ int mainRandomize() {
     }
 
     #ifdef DEVKITPRO
-        if(SettingsMenu::run(load)) {
-            return 0; //TODO: config error code?
+        while(true) {
+            // returns whether or not to exit
+            if(SettingsMenu::run(load)) {
+                return 0; //TODO: config error code?
+            }
+
+            if(confirmRandomize()) break;
         }
 
         if(!SYSCheckTitleExists(0x0005000010143500)) {
