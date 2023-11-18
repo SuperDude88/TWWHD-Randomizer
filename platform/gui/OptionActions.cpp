@@ -768,6 +768,14 @@ namespace OptionCB {
     }
 }
 
+bool wasUpdated() {
+    return conf.updated;
+}
+
+bool wasConverted() {
+    return conf.converted;
+}
+
 std::string getSeed() {
     return conf.seed;
 }

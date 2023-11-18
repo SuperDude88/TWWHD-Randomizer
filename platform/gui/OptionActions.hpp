@@ -119,6 +119,8 @@ namespace OptionCB {
     Config getInternal();
 }
 
+bool wasUpdated();
+bool wasConverted();
 std::string getSeed();
 std::string getSeedHash();
 std::string getValue(const Option& option);
