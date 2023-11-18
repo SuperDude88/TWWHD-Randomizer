@@ -9,6 +9,15 @@ SeedPage::SeedPage() {
 }
 
 void SeedPage::open() {
+    warnings = "";
+
+    if(wasUpdated()) {
+        warnings += "Config was made using a different randomizer version. Item placements may be different than expected.\n";
+    }
+    if(wasConverted()) {
+        warnings += "Config was converted from an old or incorrect format. Some settings may be different than expected.\n";
+    }
+
     resetTimer();
 }
 
@@ -39,9 +48,15 @@ void SeedPage::drawTV() const {
     // (total time - (final time - current time)) / (total duration / 10) = fraction of total in 10 increments
     const std::chrono::milliseconds remaining = 3s - std::chrono::duration_cast<std::chrono::milliseconds>(resetTime - Clock::now());
     const size_t count = remaining.count() / 300;
-    std::string bar(count, '-');
-    bar.resize(10, ' ');
+    std::string bar(10, ' ');
+    bar.replace(0, count, count, '-');
     OSScreenPutFontEx(SCREEN_TV, 0, 6, ("Hold B to reset all settings to default [" + bar + "]").c_str());
+
+    const std::vector<std::string>& warnLines = wrap_string(warnings, ScreenSizeData::tv_line_length);
+    const size_t startLine = ScreenSizeData::tv_num_lines - 3 - warnLines.size();
+    for(size_t i = 0; i < warnLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_TV, 0, startLine + i, warnLines[i].c_str());
+    }
 }
 
 void SeedPage::drawDRC() const {

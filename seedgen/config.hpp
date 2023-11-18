@@ -14,7 +14,6 @@ enum struct [[nodiscard]] ConfigError {
     DIFFERENT_FILE_VERSION,
     DIFFERENT_RANDO_VERSION,
     INVALID_VALUE,
-    TOO_MANY_OF_ITEM,
     UNKNOWN,
     COUNT
 };
@@ -31,6 +30,8 @@ public:
 
     Settings settings;
 
+    bool converted = false;
+    bool updated = false;
     bool configSet = false;
 
     Config();

@@ -22,6 +22,7 @@ private:
 
     void resetTimer() { resetTime = Clock::now() + std::chrono::seconds(3); }
 
+    std::string warnings;
 public:
     SeedPage();
     

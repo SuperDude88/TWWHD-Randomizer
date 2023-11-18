@@ -6,25 +6,24 @@
 #include <logic/GameItem.hpp>
 #include <customizer/model.hpp>
 
-constexpr unsigned int MAXIMUM_ADDITIONAL_STARTING_ITEMS = 256;
-constexpr unsigned int MAXIMUM_STARTING_HC = 6;
-constexpr unsigned int MAXIMUM_STARTING_HP = 44;
-constexpr unsigned int MAXIMUM_STARTING_JOY_PENDANTS = 40;
-constexpr unsigned int MAXIMUM_STARTING_SKULL_NECKLACES = 23;
-constexpr unsigned int MAXIMUM_STARTING_BOKO_BABA_SEEDS = 10;
-constexpr unsigned int MAXIMUM_STARTING_GOLDEN_FEATHERS = 20;
-constexpr unsigned int MAXIMUM_STARTING_KNIGHTS_CRESTS = 10;
-constexpr unsigned int MAXIMUM_STARTING_RED_CHU_JELLYS = 15;
-constexpr unsigned int MAXIMUM_STARTING_GREEN_CHU_JELLYS = 15;
-constexpr unsigned int MAXIMUM_STARTING_BLUE_CHU_JELLYS = 15;
+constexpr uint16_t MAXIMUM_STARTING_HC = 6;
+constexpr uint16_t MAXIMUM_STARTING_HP = 44;
+constexpr uint16_t MAXIMUM_STARTING_JOY_PENDANTS = 40;
+constexpr uint16_t MAXIMUM_STARTING_SKULL_NECKLACES = 23;
+constexpr uint16_t MAXIMUM_STARTING_BOKO_BABA_SEEDS = 10;
+constexpr uint16_t MAXIMUM_STARTING_GOLDEN_FEATHERS = 20;
+constexpr uint16_t MAXIMUM_STARTING_KNIGHTS_CRESTS = 10;
+constexpr uint16_t MAXIMUM_STARTING_RED_CHU_JELLYS = 15;
+constexpr uint16_t MAXIMUM_STARTING_GREEN_CHU_JELLYS = 15;
+constexpr uint16_t MAXIMUM_STARTING_BLUE_CHU_JELLYS = 15;
 
-constexpr unsigned int MAXIMUM_NUM_DUNGEONS = 6;
+constexpr uint8_t MAXIMUM_NUM_DUNGEONS = 6;
 constexpr float MAXIMUM_DAMAGE_MULTIPLIER = 80.0f;
 
-constexpr unsigned int MAXIMUM_PATH_HINT_COUNT = 7;
-constexpr unsigned int MAXIMUM_BARREN_HINT_COUNT = 7;
-constexpr unsigned int MAXIMUM_ITEM_HINT_COUNT = 7;
-constexpr unsigned int MAXIMUM_LOCATION_HINT_COUNT = 7;
+constexpr uint8_t MAXIMUM_PATH_HINT_COUNT = 7;
+constexpr uint8_t MAXIMUM_BARREN_HINT_COUNT = 7;
+constexpr uint8_t MAXIMUM_ITEM_HINT_COUNT = 7;
+constexpr uint8_t MAXIMUM_LOCATION_HINT_COUNT = 7;
 
 enum struct PigColor : uint8_t {
     Black = 0,

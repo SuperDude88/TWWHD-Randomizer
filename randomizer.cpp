@@ -732,13 +732,13 @@ int mainRandomize() {
     conf.close();
 
     Utility::platformLog("Reading config\n");
-    ConfigError err = load.loadFromFile(APP_SAVE_PATH "config.yaml");
-    if(err == ConfigError::DIFFERENT_RANDO_VERSION) {
-        Utility::platformLog("Warning: config was made using a different randomizer version\n");
-        Utility::platformLog("Item placement may be different than expected\n");
-    }
-    else if(err != ConfigError::NONE) {
-        ErrorLog::getInstance().log("Failed to read config, ERROR: " + errorToName(err));
+    #ifdef DEVKITPRO
+        ConfigError err = load.loadFromFile(APP_SAVE_PATH "config.yaml", true); // ignore errors on console (always attempt to convert)
+    #else
+        ConfigError err = load.loadFromFile(APP_SAVE_PATH "config.yaml");
+    #endif
+    if(err != ConfigError::NONE && err != ConfigError::DIFFERENT_RANDO_VERSION) {
+        ErrorLog::getInstance().log("Failed to read config, error: " + errorToName(err));
 
         return 1;
     }

@@ -122,6 +122,7 @@ bool SettingsMenu::run(Config& out) {
     acquireCB();
 
     OptionCB::setInternal(out);
+    sInstance.pages[sInstance.curPage]->open();
 
     bool inMenu = true;
     while(inMenu && Utility::platformIsRunning()) { // loop until menu or app signals an exit
