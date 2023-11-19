@@ -92,11 +92,11 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 
             if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
-                log << settingToName(setting) << ": " << std::to_string(getSetting(world.getSettings(), setting)) << ", ";
+                log << settingToName(setting) << ": " << std::to_string(world.getSettings().getSetting(setting)) << ", ";
             }
             else
             {
-                log << (getSetting(world.getSettings(), setting) ? settingToName(setting) + ", " : "");
+                log << (world.getSettings().getSetting(setting) ? settingToName(setting) + ", " : "");
             }
         }
         log << std::endl;

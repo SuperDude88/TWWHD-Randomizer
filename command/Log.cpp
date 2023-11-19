@@ -46,11 +46,11 @@ ErrorLog::ErrorLog() {
         
             if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
-                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+                output << settingToName(setting) << ": " << std::to_string(LogInfo::getConfig().settings.getSetting(setting)) << ", ";
             }
             else
             {
-                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+                output << (LogInfo::getConfig().settings.getSetting(setting) ? settingToName(setting) + ", " : "");
             }
         }
     }
@@ -110,11 +110,11 @@ DebugLog::DebugLog() {
         
             if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
             {
-                output << settingToName(setting) << ": " << std::to_string(getSetting(LogInfo::getConfig().settings, setting)) << ", ";
+                output << settingToName(setting) << ": " << std::to_string(LogInfo::getConfig().settings.getSetting(setting)) << ", ";
             }
             else
             {
-                output << (getSetting(LogInfo::getConfig().settings, setting) ? settingToName(setting) + ", " : "");
+                output << (LogInfo::getConfig().settings.getSetting(setting) ? settingToName(setting) + ", " : "");
             }
         }
     }
