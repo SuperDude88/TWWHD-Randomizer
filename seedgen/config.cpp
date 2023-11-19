@@ -191,9 +191,12 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
 
         settings.plandomizerFile = APP_SAVE_PATH "plandomizer.yaml";
     #else
-        GET_FIELD_NO_FAIL(root, "gameBaseDir", gameBaseDir)
-        GET_FIELD_NO_FAIL(root, "outputDir", outputDir)
-        SET_CONFIG_BOOL_FIELD(root, repack_for_console)
+        std::string baseTemp, outTemp;
+        GET_FIELD_NO_FAIL(root, "gameBaseDir", baseTemp)
+        gameBaseDir = baseTemp;
+        GET_FIELD_NO_FAIL(root, "outputDir", outTemp)
+        outputDir = outTemp;
+        GET_FIELD(root, "repack_for_console", repack_for_console)
         GET_FIELD_NO_FAIL(root, "consoleOutputDir", consoleOutputDir)
         GET_FIELD_NO_FAIL(root, "plandomizerFile", settings.plandomizerFile)
     #endif
