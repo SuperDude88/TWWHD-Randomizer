@@ -112,7 +112,7 @@ uint32_t SettingsMenu::releaseCB(void*) {
 }
 
 //TODO: investigate using the vpad repeat feature instead of hold delays
-bool SettingsMenu::run(Config& out) {
+Result SettingsMenu::run(Config& out) {
     using namespace std::literals::chrono_literals;
 
     SettingsMenu& sInstance = getInstance();
@@ -149,12 +149,12 @@ bool SettingsMenu::run(Config& out) {
     
     out = OptionCB::getInternal();
     if(out.writeToFile(APP_SAVE_PATH "config.yaml") != ConfigError::NONE) {
-        return true;
+        return Result::CONFIG_SAVE_FAILED;
     }
 
     if(!Utility::platformIsRunning()) {
-        return true;
+        return Result::EXIT;
     }
 
-    return false;
+    return Result::CONTINUE;
 }

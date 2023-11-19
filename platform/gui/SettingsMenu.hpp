@@ -6,14 +6,20 @@ class SettingsMenu {
 public:
     enum struct Status {
         NONE = 0,
-        CHANGED = 1,
-        EXIT = 2
+        CHANGED,
+        EXIT
+    };
+
+    enum struct Result {
+        CONTINUE = 0,
+        EXIT,
+        CONFIG_SAVE_FAILED
     };
 
     SettingsMenu(const SettingsMenu&) = delete;
     SettingsMenu& operator=(const SettingsMenu&) = delete;
 
-    static bool run(Config& out);
+    static Result run(Config& out);
 
 private:
     size_t curPage = 0;
