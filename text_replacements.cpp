@@ -240,9 +240,9 @@ TextReplacements generate_text_replacements(World& world)
 
      // Korl Text
      {"03443",
-     {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure to explore every corner\nin search of items to help you. Remember\nthat your quest is to defeat Ganondorf.\0"s},
-      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", el océano es todo tuyo.\nAsegúrate de explorar cada rincón\npor objetos que te sean de ayuda. Recuerda,\ntu misión es derrotar a Ganondorf.\0"s},
-      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", l'océan est tout à toi.\nExplore tous ses recoins à la recherche\nd'objets qui t'aideront dans ta quête.\nTa mission est de vaincre Ganondorf!\0"s}}},
+     {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure to explore every corner\nin search of items to help you. Remember\nthat your " TEXT_COLOR_RED u"quest" TEXT_COLOR_DEFAULT u" is to " TEXT_COLOR_RED u"defeat Ganondorf" TEXT_COLOR_DEFAULT u".\0"s},
+      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", el océano es todo tuyo.\nAsegúrate de explorar cada rincón\npor objetos que te sean de ayuda. Recuerda,\ntu " TEXT_COLOR_RED u"misión" TEXT_COLOR_DEFAULT u" es " TEXT_COLOR_RED u"derrotar a Ganondorf" TEXT_COLOR_DEFAULT u".\0"s},
+      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", l'océan est tout à toi.\nExplore tous ses recoins à la recherche\nd'objets qui t'aideront dans ta quête.\nTa " TEXT_COLOR_RED u"mission" TEXT_COLOR_DEFAULT u" est de " TEXT_COLOR_RED u"vaincre Ganondorf" TEXT_COLOR_DEFAULT u"!\0"s}}},
 
      // Beedle Shop 20 Rupee Item
      {"03906",
