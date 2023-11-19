@@ -746,9 +746,17 @@ int mainRandomize() {
 
     #ifdef DEVKITPRO
         while(true) {
-            // returns whether or not to exit
-            if(SettingsMenu::run(load)) {
-                return 0; //TODO: config error code?
+            using Result = SettingsMenu::Result;
+
+            switch(SettingsMenu::run(load)) {
+                case Result::CONTINUE:
+                    break;
+                case Result::CONFIG_SAVE_FAILED:
+                    ErrorLog::getInstance().log("Failed to save config.");
+                    return 1;
+                case Result::EXIT: [[fallthrough]]
+                case default:
+                    return 0;
             }
 
             if(confirmRandomize()) break;
