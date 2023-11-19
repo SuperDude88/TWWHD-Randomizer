@@ -153,12 +153,12 @@ li r4, 0x0310 ; Saw event where Grandma gives you the Hero's Clothes
 bl onEventBit
 
 
-; Set four switch bits (0, 1, 3, 7) for several events that happen in the Fairy Woods on Outset.
+; Set four switch bits (0x0, 0x1, 0x3, 0x7) for several events that happen in the Fairy Woods on Outset.
 ; Setting these switches causes the Tetra hanging from a tree and rescuing her from Bokoblins events to be marked as finished.
-; Also set the switch (9) for having seen the event where you enter the Rito Aerie for the first time and get the Delivery Bag.
-; Also set the switch (8) for having unclogged the pond, since that boulder doesn't respond to normal bombs which would be odd.
-; Also set the the switch (1E) for having seen the intro to the interior of the Forest Haven, where the camera pans up.
-; Also set the the switch (13) for having seen the camera panning towards the treasure chest in Windfall Town Jail.
+; Also set the switch (0x9) for having seen the event where you enter the Rito Aerie for the first time and get the Delivery Bag.
+; Also set the switch (0x8) for having unclogged the pond, since that boulder doesn't respond to normal bombs which would be odd.
+; Also set the the switch (0x1E) for having seen the intro to the interior of the Forest Haven, where the camera pans up.
+; Also set the the switch (0x13) for having seen the camera panning towards the treasure chest in Windfall Town Jail.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x52C
@@ -166,20 +166,20 @@ lis r4, 0x4008
 addi r4, r4, 0x038B
 stw r4, 4 (r3)
 
-; Set two switch bits (3E and 3F) for having unlocked the song tablets in the Earth and Wind Temple entrances.
+; Set two switch bits (0x3E and 0x3F) for having unlocked the song tablets in the Earth and Wind Temple entrances.
 lis r4, 0xC000
 stw r4, 8 (r3)
 
-; Set a switch bit (19) for the event on Greatfish Isle so that the endless night never starts.
+; Set a switch bit (0x19) for the event on Greatfish Isle so that the endless night never starts.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x3a0
 lis r4, 0x0200
 stw r4, 4 (r3)
-; Also set a switch bit (3F) for having seen the Windfall Island intro scene.
+; Also set a switch bit (0x3F) for having seen the Windfall Island intro scene.
 lis r4, 0x8000
 stw r4, 8 (r3)
-; Also set a switch bit (58) for having seen the short event when you enter Forsaken Fortress 2 for the first time.
+; Also set a switch bit (0x58) for having seen the short event when you enter Forsaken Fortress 2 for the first time.
 ; Also set a switch (0x50) for having seen the event where the camera pans around the Flight Control Platform.
 ; Also set a switch (0x47) for having hit the switch at Forest Haven to open up the hatch to the Nintendo Gallery.
 ; Also set a switch (0x5E) for the ladder leading up to the Nintendo Gallery being lowered.
@@ -187,28 +187,30 @@ lis r4, 0x4101
 addi r4, r4, 0x0080
 stw r4, 0xC (r3)
 
-; Set a switch (21) for having seen the gossip stone event in DRC where KoRL tells you about giving bait to rats.
-; Also set a switch (09) for having seen the event where the camera pans up to Valoo when you go outside.
-; Also set a switch (46) for having seen the event where the camera pans around when you first enter DRC.
+; Set a switch (0x09) for having seen the event where the camera pans up to Valoo when you go outside.
+; Also set a switch (0x14) for having seen the event where the camera watches the hanging platform fall after you cut the ropes.
+; Also set a switch (0x21) for having seen the gossip stone event in DRC where KoRL tells you about giving bait to rats.
+; Also set a switch (0x46) for having seen the event where the camera pans around when you first enter DRC.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x40c
-li r4, 0x0200
+lis r4, 0x0010
+ori r4, r4, 0x0200
 stw r4, 4 (r3)
 li r4, 0x0002
 stw r4, 8 (r3)
 li r4, 0x0040
 stw r4, 0xC (r3)
 
-; Set a switch (36) for having seen the event where the camera pans around the first room when you first enter FW.
+; Set a switch (0x36) for having seen the event where the camera pans around the first room when you first enter FW.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x430
 lis r4, 0x0040
 stw r4, 8 (r3)
 
-; Set a switch (2D) for having seen the event where the camera pans around when you go outside at the top of TotG.
-; Also set a switch (63) for having seen the event where the camera pans around the first room when you first enter TotG.
+; Set a switch (0x2D) for having seen the event where the camera pans around when you go outside at the top of TotG.
+; Also set a switch (0x63) for having seen the event where the camera pans around the first room when you first enter TotG.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x454
@@ -217,15 +219,15 @@ stw r4, 8 (r3)
 li r4, 0x0008
 stw r4, 0x10 (r3)
 
-; Set a switch (2A) for having seen the gossip stone event where KoRL tells you Medli shows up on the compass.
+; Set a switch (0x2A) for having seen the gossip stone event where KoRL tells you Medli shows up on the compass.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x478
 li r4, 0x0400
 stw r4, 8 (r3)
 
-; Set a switch (12) for having seen the camera moving around event when you first enter Hyrule.
-; Also set a switch (6) for having completed the Triforce pushable blocks puzzle.
+; Set a switch (0x12) for having seen the camera moving around event when you first enter Hyrule.
+; Also set a switch (0x6) for having completed the Triforce pushable blocks puzzle.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x4e4
@@ -233,12 +235,12 @@ lis r4, 0x0004
 addi r4, r4, 0x0040
 stw r4, 4 (r3)
 
-; Set a switch (0D) for having seen the camera panning around when you first enter Ganon's Tower.
-; Also set a switch (1C) for having seen the camera panning around looking at the 4 lights in the room where you can drop down to the maze.
-; Also set a switch (1D) for having seen the camera panning around looking at the 4 boomerang switches in the room with the warp up to Forsaken Fortress.
-; Also set a switch (1E) for having seen the cutscene before the Puppet Ganon fight.
-; Also set a switch (12) for having seen the cutscene after the Puppet Ganon fight.
-; Also set a switch (1F) for having seen the cutscene before the Ganondorf fight.
+; Set a switch (0x0D) for having seen the camera panning around when you first enter Ganon's Tower.
+; Also set a switch (0x1C) for having seen the camera panning around looking at the 4 lights in the room where you can drop down to the maze.
+; Also set a switch (0x1D) for having seen the camera panning around looking at the 4 boomerang switches in the room with the warp up to Forsaken Fortress.
+; Also set a switch (0x1E) for having seen the cutscene before the Puppet Ganon fight.
+; Also set a switch (0x12) for having seen the cutscene after the Puppet Ganon fight.
+; Also set a switch (0x1F) for having seen the cutscene before the Ganondorf fight.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x4c0
