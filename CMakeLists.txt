@@ -67,6 +67,7 @@ add_subdirectory("filetypes")
 add_subdirectory("seedgen")
 add_subdirectory("logic")
 add_subdirectory("nuspack")
+add_subdirectory("customizer")
 
 target_include_directories(wwhd_rando PUBLIC ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
@@ -75,6 +76,7 @@ file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm") 
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
 file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}/data" REGEX "^.*tracker.*$" EXCLUDE REGEX "^.*link preview.*$" EXCLUDE)             # Images and other assets used in patching
 file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
+file(COPY "customizer/data" DESTINATION "${CMAKE_BINARY_DIR}/data/customizer") # Default model info
 
 if(CMAKE_USE_PTHREADS_INIT AND GET_THREADS)
   target_link_libraries(wwhd_rando PRIVATE Threads::Threads)

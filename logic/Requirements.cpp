@@ -215,10 +215,10 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             return RequirementError::NONE;
         }
         // Then a boolean setting...
-        else if (evaluateOption(world->getSettings(), argStr) != -1)
+        else if (world->getSettings().evaluateOption(argStr) != -1)
         {
             req.type = RequirementType::SETTING;
-            req.args.push_back(evaluateOption(world->getSettings(), argStr));
+            req.args.push_back(world->getSettings().evaluateOption(argStr));
             return RequirementError::NONE;
         }
         // Then a setting that has more than just an on/off option...
@@ -234,7 +234,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
 
             int comparedOption = nameToSettingInt(comparedOptionStr);
             Option setting = nameToSetting(settingName);
-            int actualOption = getSetting(world->getSettings(), setting);
+            int actualOption = world->getSettings().getSetting(setting);
 
             // If the comparison is true
             if ((equalComparison && actualOption == comparedOption) || (!equalComparison && actualOption != comparedOption))

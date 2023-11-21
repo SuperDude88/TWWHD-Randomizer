@@ -17,14 +17,17 @@ public:
 
 class SeedPage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Seed";
-    static constexpr const char* PageDesc = "Control the seed used to randomize.";
+    using Clock = std::chrono::high_resolution_clock;
+    Clock::time_point resetTime;
 
+    void resetTimer() { resetTime = Clock::now() + std::chrono::seconds(3); }
+
+    std::string warnings;
 public:
     SeedPage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Seed"; }
+    std::string getDesc() const { return "Control the seed used to randomize."; }
 
     void open();
     bool update(const VPADStatus& stat);
@@ -34,9 +37,6 @@ public:
 
 class ProgressionPage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Progression";
-    static constexpr const char* PageDesc = "These settings control where progress items can appear.\nDisabled locations will still be randomized, but can only contain optional items you don't need to beat the game.";
-
     size_t curCol = 0;
     size_t curRow = 0;
     std::array<std::array<std::unique_ptr<BasicButton>, 15>, 2> buttonColumns;
@@ -44,8 +44,8 @@ private:
 public:
     ProgressionPage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Progression"; }
+    std::string getDesc() const { return "These settings control where progress items can appear.\nDisabled locations will still be randomized, but can only contain optional items you don't need to beat the game."; }
 
     void open();
     bool update(const VPADStatus& stat);
@@ -55,9 +55,6 @@ public:
 
 class HintsPage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Hints";
-    static constexpr const char* PageDesc = "These settings control the generation and placement of hints.\nEach type of hint will be split evenly across the selected placement options.";
-
     size_t curCol = 0;
     size_t curRow = 0;
     std::array<std::array<std::unique_ptr<BasicButton>, 4>, 2> buttonColumns;
@@ -65,8 +62,8 @@ private:
 public:
     HintsPage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Hints"; }
+    std::string getDesc() const { return "These settings control the generation and placement of hints.\nEach type of hint will be split evenly across the selected placement options."; }
 
     void open();
     bool update(const VPADStatus& stat);
@@ -76,9 +73,6 @@ public:
 
 class EntrancePage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Entrances";
-    static constexpr const char* PageDesc = "These settings control entrance randomization.";
-
     size_t curCol = 0;
     size_t curRow = 0;
     std::array<std::array<std::unique_ptr<BasicButton>, 7>, 2> buttonColumns;
@@ -86,8 +80,8 @@ private:
 public:
     EntrancePage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Entrances"; }
+    std::string getDesc() const { return "These settings control entrance randomization."; }
 
     void open();
     bool update(const VPADStatus& stat);
@@ -97,9 +91,6 @@ public:
 
 class ConveniencePage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Convenience";
-    static constexpr const char* PageDesc = "These settings control convenience tweaks and other customization.";
-
     size_t curCol = 0;
     size_t curRow = 0;
     std::array<std::array<std::unique_ptr<BasicButton>, 7>, 2> buttonColumns;
@@ -107,8 +98,8 @@ private:
 public:
     ConveniencePage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Convenience"; }
+    std::string getDesc() const { return "These settings control convenience tweaks and other customization."; }
 
     void open();
     bool update(const VPADStatus& stat);
@@ -118,18 +109,15 @@ public:
 
 class AdvancedPage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Advanced";
-    static constexpr const char* PageDesc = "Various options that don't fit into the other categories.";
-
     size_t curCol = 0;
     size_t curRow = 0;
-    std::array<std::array<std::unique_ptr<BasicButton>, 3>, 2> buttonColumns;
+    std::array<std::array<std::unique_ptr<BasicButton>, 2>, 2> buttonColumns;
 
 public:
     AdvancedPage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Advanced"; }
+    std::string getDesc() const { return "Various options that don't fit into the other categories."; }
 
     void open();
     bool update(const VPADStatus& stat);
@@ -139,11 +127,9 @@ public:
 
 class ItemsPage : public EmptyPage {
 private:
-    static constexpr const char* PageName = "Starting Items";
-    static constexpr const char* PageDesc = "Selected items will be given to Link at the start of the game and won't be placed in the world.";
     static constexpr size_t LIST_HEIGHT = 20;
 
-    enum class Column {
+    enum struct Column {
         LIST = 0,
         BUTTONS = 1
     };
@@ -153,13 +139,59 @@ private:
     size_t listScrollPos = 0;
 
     std::vector<ItemButton> listButtons; //sorted alphabetically, sometimes has items added/removed
-    std::array<std::unique_ptr<BasicButton>, 10> countButtons;
+    std::array<std::unique_ptr<BasicButton>, 11> countButtons;
 
 public:
     ItemsPage();
     
-    std::string getName() const { return PageName; }
-    std::string getDesc() const { return PageDesc; }
+    std::string getName() const { return "Starting Items"; }
+    std::string getDesc() const { return "Selected items will be given to Link at the start of the game and won't be placed in the world."; }
+
+    void open();
+    bool update(const VPADStatus& stat);
+    void drawTV() const;
+    void drawDRC() const;
+};
+
+class ColorPage : public EmptyPage {
+private:
+    static constexpr size_t LIST_HEIGHT = 20;
+
+    enum struct Column {
+        LIST = 0,
+        BUTTONS = 1
+    };
+
+    Column curCol = Column::LIST;
+    size_t curRow = 0;
+    size_t listScrollPos = 0;
+    size_t selectedListIdx = 0;
+
+    std::array<std::unique_ptr<BasicButton>, 3> toggles;
+
+public:
+    ColorPage();
+    
+    std::string getName() const { return "Colors"; }
+    std::string getDesc() const { return "Controls custom colors that get applied to the player model. Custom models are not yet supported."; }
+
+    void open();
+    bool update(const VPADStatus& stat);
+    void drawTV() const;
+    void drawDRC() const;
+};
+
+class MetaPage : public EmptyPage {
+private:
+    // these are too new for the Wii U browser :(
+    //static inline std::string GITHUB_URL = "https://github.com/SuperDude88/TWWHD-Randomizer";
+    //static inline std::string DISCORD_URL = "https://discord.gg/uvGqsmHNc";
+
+public:
+    MetaPage();
+    
+    std::string getName() const { return "About"; }
+    std::string getDesc() const { return "Patcher info and settings, unrelated to randomization."; }
 
     void open();
     bool update(const VPADStatus& stat);

@@ -127,9 +127,6 @@ TextReplacements generate_text_replacements(World& world)
   //   Spanish: spanish translation,
   //   French:  french translation,
 
-  // Swordless text should only be updated if the player is swordless
-  bool swordless = world.getSettings().sword_mode == SwordMode::NoSword;
-
   return {
      // FF Warp Text
      {"00076",
@@ -199,16 +196,16 @@ TextReplacements generate_text_replacements(World& world)
 
      // Swordless Text
      {"01128",
-     {{"English", !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\n" +
+     {{"English", !world.getSettings().remove_swords ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\n" +
                   u"Even as his ball of fell magic bears down\non you, you can " + TEXT_COLOR_RED + u"knock it back\nwith an empty bottle" + TEXT_COLOR_DEFAULT + u"!\n\n...I am sure you will have a shot at victory!" + TEXT_END)},
-      {"Spanish", !swordless ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", puede que no\ntengas la espada maestra, pero no tengas miedo!\n\n\nEl martillo es todo lo que necesitas\npara aplastar a tus enemigos...\n\n\n" +
+      {"Spanish", !world.getSettings().remove_swords ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", puede que no\ntengas la espada maestra, pero no tengas miedo!\n\n\nEl martillo es todo lo que necesitas\npara aplastar a tus enemigos...\n\n\n" +
                   u"Incluso cuando su bola de magia desciende hacia ti,\n¡puedes " + TEXT_COLOR_RED + u"devolverla con una botella vacía" + TEXT_COLOR_DEFAULT + u"!\n\n...tengo la seguridad de que puedes ganar!" + TEXT_END)},
-      {"French",  !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", tu ne détiens peut-être\npas Excalibur, mais n'ait pas peur!\n\n\nLe marteau de la mort est tout ce dont\ntu as besoin afin de vaincre ton ennemi...\n\n\n" +
+      {"French",  !world.getSettings().remove_swords ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", tu ne détiens peut-être\npas Excalibur, mais n'ait pas peur!\n\n\nLe marteau de la mort est tout ce dont\ntu as besoin afin de vaincre ton ennemi...\n\n\n" +
                   u"Même lorsque son orbe de magie noire\ns'abat sur toi, tu peux " + TEXT_COLOR_RED + u"la renvoyer\navec un flacon" + TEXT_COLOR_DEFAULT + u"!\n\n... Je suis sûr que tu as une chance de victoire!" + TEXT_END)}}},
      {"01590",
-     {{"English", !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!" + TEXT_END)},
-      {"Spanish", !swordless ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"¡No huyas! ¡Confía en el\npoder del Martillo!" + TEXT_END)},
-      {"French",  !swordless ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"!Ne t'enfuis pas! Crois en\nla puissance de la Masse!" + TEXT_END)}}},
+     {{"English", !world.getSettings().remove_swords ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"! Do not run! Trust in the\npower of the Skull Hammer!" + TEXT_END)},
+      {"Spanish", !world.getSettings().remove_swords ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"¡No huyas! ¡Confía en el\npoder del Martillo!" + TEXT_END)},
+      {"French",  !world.getSettings().remove_swords ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"!Ne t'enfuis pas! Crois en\nla puissance de la Masse!" + TEXT_END)}}},
 
      // Savage Labyrinth Hints
      {"00837",
@@ -243,9 +240,9 @@ TextReplacements generate_text_replacements(World& world)
 
      // Korl Text
      {"03443",
-     {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure to explore every corner\nin search of items to help you. Remember\nthat your quest is to defeat Ganondorf.\0"s},
-      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", el océano es todo tuyo.\nAsegúrate de explorar cada rincón\npor objetos que te sean de ayuda. Recuerda,\ntu misión es derrotar a Ganondorf.\0"s},
-      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", l'océan est tout à toi.\nExplore tous ses recoins à la recherche\nd'objets qui t'aideront dans ta quête.\nTa mission est de vaincre Ganondorf!\0"s}}},
+     {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", the sea is all yours.\nMake sure to explore every corner\nin search of items to help you. Remember\nthat your " TEXT_COLOR_RED u"quest" TEXT_COLOR_DEFAULT u" is to " TEXT_COLOR_RED u"defeat Ganondorf" TEXT_COLOR_DEFAULT u".\0"s},
+      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", el océano es todo tuyo.\nAsegúrate de explorar cada rincón\npor objetos que te sean de ayuda. Recuerda,\ntu " TEXT_COLOR_RED u"misión" TEXT_COLOR_DEFAULT u" es " TEXT_COLOR_RED u"derrotar a Ganondorf" TEXT_COLOR_DEFAULT u".\0"s},
+      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", l'océan est tout à toi.\nExplore tous ses recoins à la recherche\nd'objets qui t'aideront dans ta quête.\nTa " TEXT_COLOR_RED u"mission" TEXT_COLOR_DEFAULT u" est de " TEXT_COLOR_RED u"vaincre Ganondorf" TEXT_COLOR_DEFAULT u"!\0"s}}},
 
      // Beedle Shop 20 Rupee Item
      {"03906",

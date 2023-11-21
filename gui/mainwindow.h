@@ -156,12 +156,11 @@ private slots:
     void on_dungeon_small_keys_currentTextChanged(const QString &arg1);
     void on_dungeon_big_keys_currentTextChanged(const QString &arg1);
     void on_dungeon_maps_compasses_currentTextChanged(const QString &arg1);
-    void on_sword_mode_currentIndexChanged(int index);
+    void on_remove_swords_stateChanged(int arg1);
     void on_randomize_charts_stateChanged(int arg1);
     void on_chest_type_matches_contents_stateChanged(int arg1);
     void on_damage_multiplier_valueChanged(int multiplier);
     void on_num_required_dungeons_currentIndexChanged(int index);
-    void on_num_starting_triforce_shards_currentIndexChanged(int index);
 
     // Convenience Tweaks
     void on_invert_sea_compass_x_axis_stateChanged(int arg1);
@@ -193,7 +192,6 @@ private slots:
     void open_custom_color_chooser();
     bool custom_color_hex_code_changed();
     void custom_color_hex_code_finished_editing();
-    std::tuple<int, int> get_random_h_and_v_shifts_for_custom_color(const std::string& color);
     void randomize_one_custom_color();
     void reset_one_custom_color();
     void update_preview();

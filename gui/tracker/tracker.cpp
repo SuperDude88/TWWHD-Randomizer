@@ -241,7 +241,7 @@ void MainWindow::autosave_current_tracker()
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = writeToFile(APP_SAVE_PATH "tracker_autosave.yaml", trackerConfig);
+    auto configErr = trackerConfig.writeToFile(APP_SAVE_PATH "tracker_autosave.yaml");
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + errorToName(configErr));
@@ -303,7 +303,7 @@ void MainWindow::load_tracker_autosave()
     }
 
     Config trackerConfig;
-    auto configErr = loadFromFile(APP_SAVE_PATH "tracker_autosave.yaml", trackerConfig, true);
+    auto configErr = trackerConfig.loadFromFile(APP_SAVE_PATH "tracker_autosave.yaml", true);
     if (configErr != ConfigError::NONE)
     {
         show_warning_dialog("Could not load tracker autosave config\nError: " + errorToName(configErr));

@@ -64,11 +64,11 @@ namespace OptionCB {
 
     std::string toggleInstantText();
     std::string toggleRNG();
+    std::string togglePerformance();
     std::string toggleFullSeaChart();
-    std::string cycleStartingShards();
     std::string toggleDungeonWarps();
     std::string toggleSpoilerLog();
-    std::string cycleSwordMode();
+    std::string toggleSwords();
     std::string toggleTrials();
     std::string toggleInvertCompass();
     std::string cycleNumDungeons();
@@ -76,6 +76,10 @@ namespace OptionCB {
     std::string toggleCTMC();
 
     std::string toggleCasualClothes();
+    std::string isCasual();
+    std::string randomizeColorsOrderly();
+    std::string randomizeColorsChaotically();
+
     std::string cyclePigColor();
 
     //this one gets special handling
@@ -110,12 +114,16 @@ namespace OptionCB {
     bool hasStartingItem(const GameItem& item, const size_t& num = 1); //num is for duplicated items
     void addStartingItem(const GameItem& item);
 
+    void resetInternal();
     void setInternal(const Config& in);
     Config getInternal();
 }
 
+bool wasUpdated();
+bool wasConverted();
 std::string getSeed();
 std::string getSeedHash();
 std::string getValue(const Option& option);
+CustomModel& getModel();
 TriggerCallback getCallback(const Option& option);
 std::pair<std::string, std::string> getNameDesc(const Option& option);

@@ -13,17 +13,11 @@ bl item_func_wind_tact ; Wind Waker
 bl item_func_tact_song1 ; Wind's Requiem
 bl progressive_sail_item_func ; Normal sail
 
-lis r5, sword_mode@ha
-addi r5, r5, sword_mode@l
+lis r5, swordless@ha
+addi r5, r5, swordless@l
 lbz r5, 0 (r5)
-cmpwi r5, 0 ; Start with Sword
-beq start_with_sword
-cmpwi r5, 2 ; Swordless
+cmpwi r5, 1 ; Swordless
 beq break_barrier_for_swordless
-b after_sword_mode_initialization
-
-start_with_sword:
-bl item_func_sword
 b after_sword_mode_initialization
 
 break_barrier_for_swordless:
@@ -93,6 +87,8 @@ li r4, 0x0902 ; SAW_DRAGON_ROOST_ISLAND_INTRO
 bl onEventBit
 li r4, 0x1F40 ; SAW_QUILL_CUTSCENE_ON_DRI
 bl onEventBit
+li r4, 0x0380 ; SAW_MAGMA_PLATFORM_FORM
+bl onEventBit
 li r4, 0x0A80 ; KORL_DINS_PEARL_TEXT_ALLOWING_YOU_TO_ENTER_HIM
 bl onEventBit
 li r4, 0x0901 ; TRIGGERED_MAP_FISH
@@ -157,12 +153,12 @@ li r4, 0x0310 ; Saw event where Grandma gives you the Hero's Clothes
 bl onEventBit
 
 
-; Set four switch bits (0, 1, 3, 7) for several events that happen in the Fairy Woods on Outset.
+; Set four switch bits (0x0, 0x1, 0x3, 0x7) for several events that happen in the Fairy Woods on Outset.
 ; Setting these switches causes the Tetra hanging from a tree and rescuing her from Bokoblins events to be marked as finished.
-; Also set the switch (9) for having seen the event where you enter the Rito Aerie for the first time and get the Delivery Bag.
-; Also set the switch (8) for having unclogged the pond, since that boulder doesn't respond to normal bombs which would be odd.
-; Also set the the switch (1E) for having seen the intro to the interior of the Forest Haven, where the camera pans up.
-; Also set the the switch (13) for having seen the camera panning towards the treasure chest in Windfall Town Jail.
+; Also set the switch (0x9) for having seen the event where you enter the Rito Aerie for the first time and get the Delivery Bag.
+; Also set the switch (0x8) for having unclogged the pond, since that boulder doesn't respond to normal bombs which would be odd.
+; Also set the the switch (0x1E) for having seen the intro to the interior of the Forest Haven, where the camera pans up.
+; Also set the the switch (0x13) for having seen the camera panning towards the treasure chest in Windfall Town Jail.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x52C
@@ -170,20 +166,20 @@ lis r4, 0x4008
 addi r4, r4, 0x038B
 stw r4, 4 (r3)
 
-; Set two switch bits (3E and 3F) for having unlocked the song tablets in the Earth and Wind Temple entrances.
+; Set two switch bits (0x3E and 0x3F) for having unlocked the song tablets in the Earth and Wind Temple entrances.
 lis r4, 0xC000
 stw r4, 8 (r3)
 
-; Set a switch bit (19) for the event on Greatfish Isle so that the endless night never starts.
+; Set a switch bit (0x19) for the event on Greatfish Isle so that the endless night never starts.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x3a0
 lis r4, 0x0200
 stw r4, 4 (r3)
-; Also set a switch bit (3F) for having seen the Windfall Island intro scene.
+; Also set a switch bit (0x3F) for having seen the Windfall Island intro scene.
 lis r4, 0x8000
 stw r4, 8 (r3)
-; Also set a switch bit (58) for having seen the short event when you enter Forsaken Fortress 2 for the first time.
+; Also set a switch bit (0x58) for having seen the short event when you enter Forsaken Fortress 2 for the first time.
 ; Also set a switch (0x50) for having seen the event where the camera pans around the Flight Control Platform.
 ; Also set a switch (0x47) for having hit the switch at Forest Haven to open up the hatch to the Nintendo Gallery.
 ; Also set a switch (0x5E) for the ladder leading up to the Nintendo Gallery being lowered.
@@ -191,28 +187,30 @@ lis r4, 0x4101
 addi r4, r4, 0x0080
 stw r4, 0xC (r3)
 
-; Set a switch (21) for having seen the gossip stone event in DRC where KoRL tells you about giving bait to rats.
-; Also set a switch (09) for having seen the event where the camera pans up to Valoo when you go outside.
-; Also set a switch (46) for having seen the event where the camera pans around when you first enter DRC.
+; Set a switch (0x09) for having seen the event where the camera pans up to Valoo when you go outside.
+; Also set a switch (0x14) for having seen the event where the camera watches the hanging platform fall after you cut the ropes.
+; Also set a switch (0x21) for having seen the gossip stone event in DRC where KoRL tells you about giving bait to rats.
+; Also set a switch (0x46) for having seen the event where the camera pans around when you first enter DRC.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x40c
-li r4, 0x0200
+lis r4, 0x0010
+ori r4, r4, 0x0200
 stw r4, 4 (r3)
 li r4, 0x0002
 stw r4, 8 (r3)
 li r4, 0x0040
 stw r4, 0xC (r3)
 
-; Set a switch (36) for having seen the event where the camera pans around the first room when you first enter FW.
+; Set a switch (0x36) for having seen the event where the camera pans around the first room when you first enter FW.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x430
 lis r4, 0x0040
 stw r4, 8 (r3)
 
-; Set a switch (2D) for having seen the event where the camera pans around when you go outside at the top of TotG.
-; Also set a switch (63) for having seen the event where the camera pans around the first room when you first enter TotG.
+; Set a switch (0x2D) for having seen the event where the camera pans around when you go outside at the top of TotG.
+; Also set a switch (0x63) for having seen the event where the camera pans around the first room when you first enter TotG.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x454
@@ -221,15 +219,15 @@ stw r4, 8 (r3)
 li r4, 0x0008
 stw r4, 0x10 (r3)
 
-; Set a switch (2A) for having seen the gossip stone event where KoRL tells you Medli shows up on the compass.
+; Set a switch (0x2A) for having seen the gossip stone event where KoRL tells you Medli shows up on the compass.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x478
 li r4, 0x0400
 stw r4, 8 (r3)
 
-; Set a switch (12) for having seen the camera moving around event when you first enter Hyrule.
-; Also set a switch (6) for having completed the Triforce pushable blocks puzzle.
+; Set a switch (0x12) for having seen the camera moving around event when you first enter Hyrule.
+; Also set a switch (0x6) for having completed the Triforce pushable blocks puzzle.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x4e4
@@ -237,12 +235,12 @@ lis r4, 0x0004
 addi r4, r4, 0x0040
 stw r4, 4 (r3)
 
-; Set a switch (0D) for having seen the camera panning around when you first enter Ganon's Tower.
-; Also set a switch (1C) for having seen the camera panning around looking at the 4 lights in the room where you can drop down to the maze.
-; Also set a switch (1D) for having seen the camera panning around looking at the 4 boomerang switches in the room with the warp up to Forsaken Fortress.
-; Also set a switch (1E) for having seen the cutscene before the Puppet Ganon fight.
-; Also set a switch (12) for having seen the cutscene after the Puppet Ganon fight.
-; Also set a switch (1F) for having seen the cutscene before the Ganondorf fight.
+; Set a switch (0x0D) for having seen the camera panning around when you first enter Ganon's Tower.
+; Also set a switch (0x1C) for having seen the camera panning around looking at the 4 lights in the room where you can drop down to the maze.
+; Also set a switch (0x1D) for having seen the camera panning around looking at the 4 boomerang switches in the room with the warp up to Forsaken Fortress.
+; Also set a switch (0x1E) for having seen the cutscene before the Puppet Ganon fight.
+; Also set a switch (0x12) for having seen the cutscene after the Puppet Ganon fight.
+; Also set a switch (0x1F) for having seen the cutscene before the Ganondorf fight.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x4c0
@@ -276,22 +274,11 @@ li r4, 0xFF
 stb r4, 0 (r3) ; 803C4C9C, bitfield of what spoils bag items you've ever owned
 stb r4, 1 (r3) ; 803C4C9D, bitfield of what bait bag items you've ever owned
 
-; Give the player the number of Triforce Shards they want to start with.
-lis r5, num_triforce_shards_to_start_with@ha
-addi r5, r5, num_triforce_shards_to_start_with@l
-lbz r5, 0 (r5) ; Load number of Triforce Shards to start with
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
-addi r3,r3, 0xDE
-; Convert the number of shards to a bitfield with that many bits set.
-; e.g. For 5 shards, ((1 << 5) - 1) results in 0x1F (binary 00011111).
-li r0, 1
-slw r4, r0, r5
-subi r4, r4, 1
-stb r4, 0 (r3) ; Store the bitfield of shards back
-; If the number of starting shards is 8, also set the event flag for seeing the Triforce refuse together.
-cmpwi r5, 8
-blt after_starting_triforce_shards
+lbz r3, 0xDE(r3) ; Bitfield of owned triforce shards
+cmpwi r3, 0b11111111 ; Set the event flag for seeing the Triforce refuse if you have them all
+bne after_starting_triforce_shards
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x644
@@ -376,15 +363,12 @@ mtlr r0
 addi sp, sp, 0x10
 blr
 
-.global num_triforce_shards_to_start_with
-num_triforce_shards_to_start_with:
-.byte 0 ; By default start with no Triforce Shards
 .global should_start_with_heros_clothes
 should_start_with_heros_clothes:
 .byte 1 ; By default start with the Hero's Clothes
-.global sword_mode
-sword_mode:
-.byte 0 ; By default Start with Sword
+.global swordless
+swordless:
+.byte 0 ; Swords are placed by default
 .global skip_rematch_bosses
 skip_rematch_bosses:
 .byte 1 ; By default skip them

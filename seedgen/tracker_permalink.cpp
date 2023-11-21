@@ -129,25 +129,20 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
                 bitsWriter.write(startingGear.count(item), 2);
             }
         }
-        // ComboBox Options
-        else if (option == Option::SwordMode || option == Option::NumShards)
-        {
-            bitsWriter.write(getSetting(settings, option), 8);
-        }
         // Special case for race mode dungeons
         else if (option == Option::NumRequiredDungeons)
         {
-            bitsWriter.write(getSetting(settings, option) - 1, 8);
+            bitsWriter.write(settings.getSetting(option) - 1, 8);
         }
         // 3-bit SpinBox options
         else if (option == Option::PathHints || option == Option::BarrenHints || option == Option::LocationHints || option == Option::ItemHints || option == Option::StartingHC)
         {
-            bitsWriter.write(getSetting(settings, option), 3);
+            bitsWriter.write(settings.getSetting(option), 3);
         }
         // 6-bit SpinBox options
         else if (option == Option::StartingHP)
         {
-            bitsWriter.write(getSetting(settings, option), 6);
+            bitsWriter.write(settings.getSetting(option), 6);
         }
         else if (option == Option::SwiftSail  || option == Option::DisableTingleChestsWithTingleBombs || option == Option::WindWakerHD)
         {
@@ -199,7 +194,7 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
         // 1-bit Checkbox options
         else
         {
-            bitsWriter.write(getSetting(settings, option), 1);
+            bitsWriter.write(settings.getSetting(option), 1);
         }
     }
 
