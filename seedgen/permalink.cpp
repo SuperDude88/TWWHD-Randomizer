@@ -251,7 +251,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
 PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std::string& seed)
 {
     // Strip trailing spaces
-    erase_if(b64permalink, [](unsigned char ch){ return std::isspace(ch);});
+    std::erase_if(b64permalink, [](unsigned char ch){ return std::isspace(ch);});
 
     if (b64permalink.empty())
     {

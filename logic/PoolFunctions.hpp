@@ -6,17 +6,12 @@
 #include <vector>
 
 template <typename T, typename Predicate>
-static void erase_if(std::vector<T>& vector, Predicate pred) {
-  vector.erase(std::remove_if(begin(vector), end(vector), pred), end(vector));
-}
-
-template <typename T, typename Predicate>
 std::vector<T> filterFromPool(std::vector<T>& vector, Predicate pred, bool eraseAfterFilter = false) {
   std::vector<T> filteredPool = {};
   std::copy_if(vector.begin(), vector.end(), std::back_inserter(filteredPool), pred);
 
   if (eraseAfterFilter) {
-    erase_if(vector, pred);
+    std::erase_if(vector, pred);
   }
 
   return filteredPool;
