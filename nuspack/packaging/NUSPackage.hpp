@@ -7,7 +7,7 @@
 
 
 
-enum class [[nodiscard]] NUSError {
+enum struct [[nodiscard]] NUSError {
     NONE = 0,
     UNKNOWN,
     COUNT

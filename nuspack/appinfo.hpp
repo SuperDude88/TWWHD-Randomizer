@@ -5,7 +5,7 @@
 #include <filesystem>
 
 //from https://github.com/devkitPro/wut/blob/78300f2693405b86b3482520b95b4a3f826d4e72/include/coreinit/mcp.h#L24
-enum class AppType : uint32_t {
+enum struct AppType : uint32_t {
     GAME_UPDATE            = 0x0800001B,
     GAME_DLC               = 0x0800000E,
     BOOT1                  = 0x10000009,

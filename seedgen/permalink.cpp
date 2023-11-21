@@ -111,12 +111,11 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::ProgressObscure,
 
     // Additional Randomization Options
-    Option::SwordMode,
+    Option::RemoveSwords,
     Option::DungeonSmallKeys,
     Option::DungeonBigKeys,
     Option::DungeonMapsAndCompasses,
     Option::NumRequiredDungeons,
-    Option::NumShards,
     Option::RandomCharts,
     Option::CTMC,
     Option::DamageMultiplier,
@@ -146,6 +145,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::StartWithRandomItem,
     Option::Plandomizer,
     Option::FixRNG,
+    Option::Performance,
 
     // Hints
     Option::HoHoHints,
@@ -205,15 +205,13 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
             }
         }
         // ComboBox Options (and 8-bit SpinBox options)
-        else if (option == Option::SwordMode               ||
-                 option == Option::DungeonSmallKeys        ||
+        else if (option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
                  option == Option::NumRequiredDungeons     ||
-                 option == Option::NumShards               ||
                  option == Option::DamageMultiplier)
         {
-            bitsWriter.write(getSetting(settings, option), 8);
+            bitsWriter.write(settings.getSetting(option), 8);
         }
         // 3-bit SpinBox options
         else if (option == Option::ProgressDungeons ||
@@ -223,7 +221,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
                  option == Option::ItemHints        ||
                  option == Option::StartingHC)
         {
-            bitsWriter.write(getSetting(settings, option), 3);
+            bitsWriter.write(settings.getSetting(option), 3);
         }
         // 6-bit SpinBox options
         else if (option == Option::StartingHP             ||
@@ -236,12 +234,12 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
                  option == Option::StartingGreenChuJellys ||
                  option == Option::StartingBlueChuJellys)
         {
-            bitsWriter.write(getSetting(settings, option), 6);
+            bitsWriter.write(settings.getSetting(option), 6);
         }
         // 1-bit Checkbox options
         else
         {
-            bitsWriter.write(getSetting(settings, option), 1);
+            bitsWriter.write(settings.getSetting(option), 1);
         }
     }
 
@@ -258,7 +256,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
 PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std::string& seed)
 {
     // Strip trailing spaces
-    erase_if(b64permalink, [](unsigned char ch){ return std::isspace(ch);});
+    std::erase_if(b64permalink, [](unsigned char ch){ return std::isspace(ch);});
 
     if (b64permalink.empty())
     {
@@ -338,17 +336,15 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
             }
         }
         // ComboBox Options (and 8-bit spinbox options)
-        else if (option == Option::SwordMode               ||
-                 option == Option::DungeonSmallKeys        ||
+        else if (option == Option::DungeonSmallKeys        ||
                  option == Option::DungeonBigKeys          ||
                  option == Option::DungeonMapsAndCompasses ||
                  option == Option::NumRequiredDungeons     ||
-                 option == Option::NumShards               ||
                  option == Option::DamageMultiplier)
         {
             value = bitsReader.read(8);
             BYTES_EXIST_CHECK(value);
-            setSetting(settings, option, value);
+            settings.setSetting(option, value);
         }
         // 3-bit SpinBox options
         else if (option == Option::ProgressDungeons ||
@@ -360,7 +356,7 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
         {
             value = bitsReader.read(3);
             BYTES_EXIST_CHECK(value);
-            setSetting(settings, option, value);
+            settings.setSetting(option, value);
         }
         // 6-bit SpinBox options
         else if (option == Option::StartingHP             ||
@@ -375,14 +371,14 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
         {
             value = bitsReader.read(6);
             BYTES_EXIST_CHECK(value);
-            setSetting(settings, option, value);
+            settings.setSetting(option, value);
         }
         // 1-bit Checkbox options
         else
         {
             value = bitsReader.read(1);
             BYTES_EXIST_CHECK(value);
-            setSetting(settings, option, value);
+            settings.setSetting(option, value);
         }
     }
     if (bitsReader.current_byte_index != bitsReader.bytes.size() - 1)

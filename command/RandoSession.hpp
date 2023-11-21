@@ -23,7 +23,7 @@ public:
 
     class CacheEntry {
     public:
-        enum class Format {
+        enum struct Format {
             BDT = 0,
             BFLIM,
             BFLYT,
@@ -103,3 +103,5 @@ private:
     
     std::shared_ptr<CacheEntry> fileCache = std::make_shared<CacheEntry>(nullptr, "", CacheEntry::Format::EMPTY);
 };
+
+extern RandoSession g_session; //defined in RandoSession.cpp, shared between a couple files, set up in randomizer.cpp

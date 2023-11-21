@@ -40,9 +40,9 @@ namespace Utility::Endian
 
     int16_t byteswap(const int16_t& value);
 
-    float byteswap(const float& value);
+    [[deprecated("Platform may silently set NaN bytes, bit_cast to uint32_t first if possible.")]] float byteswap(const float& value);
 
-    double byteswap(const double& value);
+    [[deprecated("Platform may silently set NaN bytes, bit_cast to uint64_t first if possible.")]] double byteswap(const double& value);
 
     char16_t byteswap(const char16_t& value);
 
@@ -52,27 +52,27 @@ namespace Utility::Endian
     concept CanByteswap = sizeof(T) > 1;
 
     template<typename T> requires CanByteswap<T> && (!std::is_enum_v<T>)
-    T toPlatform(const Type& src, const T& value) {
+    constexpr T toPlatform(const Type& src, const T& value) {
         if (src != target) return byteswap(value);
         return value;
     }
 
     //for enums
     template<typename T, typename TBase = std::underlying_type_t<T>> requires CanByteswap<T> && std::is_enum_v<T>
-    T toPlatform(const Type& src, const T& value) {
+    constexpr T toPlatform(const Type& src, const T& value) {
         if (src != target) return static_cast<T>(byteswap(static_cast<TBase>(value)));
         return value;
     }
 
     //doesn't work for enums
     template<typename T> requires CanByteswap<T> && (!std::is_enum_v<T>)
-    void toPlatform_inplace(const Type& src, T& value) {
+    constexpr void toPlatform_inplace(const Type& src, T& value) {
         if (src != target) value = byteswap(value);
     }
 
     //for enums
     template<typename T, typename TBase = std::underlying_type_t<T>> requires CanByteswap<T> && std::is_enum_v<T>
-    void toPlatform_inplace(const Type& src, T& value) {
+    constexpr void toPlatform_inplace(const Type& src, T& value) {
         if (src != target) value = static_cast<T>(byteswap(static_cast<TBase>(value)));
     }
 }

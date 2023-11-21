@@ -121,8 +121,8 @@ namespace OptionCB {
     }
 
     std::string toggleMisc() {
-        conf.settings.progression_expensive_purchases = !conf.settings.progression_expensive_purchases;
-        return fromBool(conf.settings.progression_expensive_purchases);
+        conf.settings.progression_misc = !conf.settings.progression_misc;
+        return fromBool(conf.settings.progression_misc);
     }
 
     std::string toggleTingleChests() {
@@ -385,20 +385,14 @@ namespace OptionCB {
         return fromBool(conf.settings.fix_rng);
     }
 
+    std::string togglePerformance() {
+        conf.settings.performance = !conf.settings.performance;
+        return fromBool(conf.settings.performance);
+    }
+
     std::string toggleFullSeaChart() {
         conf.settings.reveal_full_sea_chart = !conf.settings.reveal_full_sea_chart;
         return fromBool(conf.settings.reveal_full_sea_chart);
-    }
-
-    std::string cycleStartingShards() {
-        if(conf.settings.num_starting_triforce_shards == MAXIMUM_STARTING_TRIFORCE_SHARDS) {
-            conf.settings.num_starting_triforce_shards = 0;
-        }
-        else {
-            conf.settings.num_starting_triforce_shards++;
-        }
-
-        return std::to_string(conf.settings.num_starting_triforce_shards);
     }
 
     std::string toggleDungeonWarps() {
@@ -411,30 +405,17 @@ namespace OptionCB {
         return fromBool(conf.settings.do_not_generate_spoiler_log);
     }
 
-    std::string cycleSwordMode() {
-        using enum SwordMode;
+    std::string toggleSwords() {
+        conf.settings.remove_swords = !conf.settings.remove_swords;
 
-        switch(conf.settings.sword_mode) {
-            case StartWithSword:
-                conf.settings.sword_mode = RandomSword;
-                break;
-            case RandomSword:
-                conf.settings.sword_mode = NoSword;
-                break;
-            case NoSword:
-                conf.settings.sword_mode = StartWithSword;
-                break;
-            case INVALID:
-            default:
-                conf.settings.sword_mode = StartWithSword;
-                break;
+        if(conf.settings.remove_swords) {
+            std::erase(conf.settings.starting_gear, GameItem::ProgressiveSword); // can't start with swords if we're removing them
+        }
+        else {
+            addStartingItem(GameItem::ProgressiveSword); // start with 1 sword by default
         }
 
-        if(conf.settings.sword_mode != StartWithSword) {
-            std::erase(conf.settings.starting_gear, GameItem::ProgressiveSword);
-        }
-
-        return SwordModeToName(conf.settings.sword_mode);
+        return fromBool(conf.settings.remove_swords);
     }
 
     std::string toggleTrials() {
@@ -481,8 +462,22 @@ namespace OptionCB {
 
 
     std::string toggleCasualClothes() {
-        conf.settings.player_in_casual_clothes = !conf.settings.player_in_casual_clothes;
-        return fromBool(conf.settings.player_in_casual_clothes);
+        conf.settings.selectedModel.casual = !conf.settings.selectedModel.casual;
+        return fromBool(conf.settings.selectedModel.casual);
+    }
+    
+    std::string isCasual() {
+        return fromBool(conf.settings.selectedModel.casual);
+    }
+
+    std::string randomizeColorsOrderly() {
+        conf.settings.selectedModel.randomizeOrderly();
+        return "";
+    }
+
+    std::string randomizeColorsChaotically() {
+        conf.settings.selectedModel.randomizeChaotically();
+        return "";
     }
 
     std::string cyclePigColor() {
@@ -760,6 +755,9 @@ namespace OptionCB {
         conf.settings.starting_gear.push_back(item);
     }
     
+    void resetInternal() {
+        conf.resetDefaults();
+    }
 
     void setInternal(const Config& in) {
         conf = in;
@@ -768,6 +766,14 @@ namespace OptionCB {
     Config getInternal() {
         return conf;
     }
+}
+
+bool wasUpdated() {
+    return conf.updated;
+}
+
+bool wasConverted() {
+    return conf.converted;
 }
 
 std::string getSeed() {
@@ -884,16 +890,16 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.instant_text_boxes);
         case Option::FixRNG:
             return fromBool(conf.settings.fix_rng);
+        case Option::Performance:
+            return fromBool(conf.settings.performance);
         case Option::RevealSeaChart:
             return fromBool(conf.settings.reveal_full_sea_chart);
-        case Option::NumShards:
-            return std::to_string(conf.settings.num_starting_triforce_shards);
         case Option::AddShortcutWarps:
             return fromBool(conf.settings.add_shortcut_warps_between_dungeons);
         case Option::NoSpoilerLog:
             return fromBool(conf.settings.do_not_generate_spoiler_log);
-        case Option::SwordMode:
-            return SwordModeToName(conf.settings.sword_mode);
+        case Option::RemoveSwords:
+            return fromBool(conf.settings.remove_swords);
         case Option::SkipRefights:
             return fromBool(conf.settings.skip_rematch_bosses);
         case Option::InvertCompass:
@@ -904,8 +910,8 @@ std::string getValue(const Option& option) {
             return std::to_string((uint32_t)conf.settings.damage_multiplier);
         case Option::CTMC:
             return fromBool(conf.settings.chest_type_matches_contents);
-        case Option::CasualClothes:
-            return fromBool(conf.settings.player_in_casual_clothes);
+        //case Option::CasualClothes:
+        //    return fromBool(conf.settings.player_in_casual_clothes);
         case Option::PigColor:
             return PigColorToName(conf.settings.pig_color);
         case Option::StartingGear: //placeholder
@@ -948,9 +954,14 @@ std::string getValue(const Option& option) {
             return GyroscopePreferenceToName(conf.settings.gyroscope);
         case Option::UIDisplay:
             return UIDisplayPreferenceToName(conf.settings.ui_display);
+        case Option::INVALID:
         default:
             return "";
     }
+}
+
+CustomModel& getModel() {
+    return conf.settings.selectedModel;
 }
 
 TriggerCallback getCallback(const Option& option) {
@@ -1061,16 +1072,16 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleInstantText;
         case Option::FixRNG:
             return &toggleRNG;
+        case Option::Performance:
+            return &togglePerformance;
         case Option::RevealSeaChart:
             return &toggleFullSeaChart;
-        case Option::NumShards:
-            return &cycleStartingShards;
         case Option::AddShortcutWarps:
             return &toggleDungeonWarps;
         case Option::NoSpoilerLog:
             return &toggleSpoilerLog;
-        case Option::SwordMode:
-            return &cycleSwordMode;
+        case Option::RemoveSwords:
+            return &toggleSwords;
         case Option::SkipRefights:
             return &toggleTrials;
         case Option::InvertCompass:
@@ -1081,8 +1092,8 @@ TriggerCallback getCallback(const Option& option) {
             return &cycleDamageMultiplier;
         case Option::CTMC:
             return &toggleCTMC;
-        case Option::CasualClothes:
-            return &toggleCasualClothes;
+        //case Option::CasualClothes:
+        //    return &toggleCasualClothes;
         case Option::PigColor:
             return &cyclePigColor;
         case Option::StartingGear: //placeholder
@@ -1125,6 +1136,7 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleGyroPref;
         case Option::UIDisplay:
             return &toggleUIPref;
+        case Option::INVALID:
         default:
             return &invalidCB;
     }
@@ -1160,9 +1172,8 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {ProgressDungeonSecrets,     {"Dungeon Secrets",                     "Controls whether the 11 secret items hidden in dungeons can be progress items."}},
         {ProgressObscure,            {"Obscure",                             "Controls whether obscure locations can contain progress items (e.g. Kane Windfall gate decorations)."}},
 
-        {SwordMode,                  {"Sword Mode",                          "Controls whether you start with the Hero's Sword, the Hero's Sword is randomized, or if there are no swords in the entire game."}},
+        {RemoveSwords,               {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
         {NumRequiredDungeons,        {"Number of Required Bosses",           "The number of dungeon bosses with required items (applies to \"Standard\" and \"Race Mode\" dungeons)."}},
-        {NumShards,                  {"Triforce Shards to Start With",       "The number of triforce shards you start the game with."}},
         {RandomCharts,               {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},
         {CTMC,                       {"Chest Type Matches Contents",         "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key Chests. Keys for non-required dungeons in race mode will be in wooden chests."}},
 
@@ -1173,6 +1184,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {InvertCompass,              {"Invert Sea Compass X-Axis",           "Inverts the east-west direction of the compass that shows while at sea."}},
         {InstantText,                {"Instant Text Boxes",                  "Text appears instantly. The B button is changed to instantly skip through text as long as you hold it down."}},
         {FixRNG,                     {"Fix RNG",                             "Certain RNG elements will have fixed outcomes. Currently only includes Helmaroc King's attacks."}},
+        {Performance,                {"Performance",                         "Adjust game code that causes lag or other performance issues. May come at the cost of visual quality.n\nCurrently only affects particles."}},
         {RevealSeaChart,             {"Reveal Full Sea Chart",               "Start the game with the sea chart fully drawn out."}},
         {SkipRefights,               {"Skip Boss Rematches",                 "Removes the door in Ganon's Tower that only unlocks when you defeat the rematch versios of Gohma, Kalle Demos, Jalhalla, and Molgera."}},
         {AddShortcutWarps,           {"Add Warps Between Dungeons",          "Adds new warp pots that act as shortcuts connecting dungeons to each other directly. Each pot must be unlocked before it can be used, so you cannot use them to access dungeons early."}},
@@ -1218,7 +1230,6 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {DecoupleEntrances,          {"Decouple Entrances",                  "Decouple entrances when shuffling. This means you may not end up where you came from if you go back through an entrance."}},
         {RandomStartIsland,          {"Randomize Starting Island",           "Randomzies which island you start the game on."}},
 
-        {CasualClothes,              {"Casual Clothes",                      "Controls whether the player wears casual clothes (pajamas) instead of the Hero's Clothes"}},
         {PigColor,                   {"Pig Color",                           "Controls the color of the big pig on Outset Island."}},
 
         {DamageMultiplier,           {"Damage Multiplier",                   "Change the damage multiplier used in Hero Mode. By default Hero Mode applies a 2x damage multiplier. This will not affect damage taken in Normal Mode."}},

@@ -14,7 +14,6 @@ enum struct [[nodiscard]] ConfigError {
     DIFFERENT_FILE_VERSION,
     DIFFERENT_RANDO_VERSION,
     INVALID_VALUE,
-    TOO_MANY_OF_ITEM,
     UNKNOWN,
     COUNT
 };
@@ -31,20 +30,17 @@ public:
 
     Settings settings;
 
+    bool converted = false;
+    bool updated = false;
     bool configSet = false;
-    
 
+    Config();
+    
+    void resetDefaults();
     ConfigError loadFromFile(const std::string& filePath, bool ignoreErrors = false);
     ConfigError writeToFile(const std::string& filePath);
+    
+    static ConfigError writeDefault(const std::string& filePath);
 };
 
-ConfigError createDefaultConfig(const std::string& filePath);
-
 std::string errorToName(ConfigError err);
-
-namespace DefaultColors {
-    extern std::list<std::tuple<std::string, std::string>> heroColors;
-    extern std::list<std::tuple<std::string, std::string>> casualColors;
-
-    std::unordered_map<std::string, std::string> getDefaultColorsMap(const bool& casualClothes);
-} // namespace DefaultColors

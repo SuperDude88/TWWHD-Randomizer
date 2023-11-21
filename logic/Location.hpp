@@ -68,8 +68,9 @@ LocationModificationType nameToModificationType(const std::string& name);
 
 class World;
 struct LocationAccess;
-struct Location
+class Location
 {
+public:
     std::unordered_map<std::string, std::string> names = {};
     std::unordered_set<LocationCategory> categories;
     bool progression;

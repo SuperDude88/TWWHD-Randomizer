@@ -376,3 +376,49 @@ check_if_ganondorf:
 force_normal_hit_sound:
   li r29, 0x20 ; Skip some checks that would realize health is 0, load this parameter directly instead
   b 0x02519700 ; Continue as if he isn't "dead"
+
+
+
+; You can sometimes land directly in the Wind Temple warp after defeating Molgera
+; This forces you to go all the way back through the dungeon to collect the item which is slow and annoying
+; Add a check to prevent this
+.org 0x02102ED8 ; where Molgera sets a target position for Link during the cutscene
+   b check_if_inside_warp
+
+.org @NextFreeSpace
+.global molgera_warp_radius
+molgera_warp_radius:
+  .float 450.0
+.global default_xz_pos
+default_molgera_xz_pos:
+  .float 0.0
+  .float 777.0
+
+.global check_if_inside_warp
+check_if_inside_warp:
+  stfs f11, 0x8(r25) ; replace instruction we overwrote to jump here
+
+  ; Warp is centered at 0,0 (X and Z) so we don't need to do any subtraction
+  lfs f1, 0x0(r25) ; target X position
+  lfs f2, 0x8(r25) ; target Z position
+  fmuls f1, f1, f1
+  fmuls f2, f2, f2
+  fadds f1, f1, f2 ; X^2 + Z^2
+  bl sqrtf ; f1 is argument and return value for this
+  lis r3, molgera_warp_radius@ha
+  lfs f2, molgera_warp_radius@l(r3)
+  fcmpo cr0, f1, f2
+  bgt link_not_inside_warp
+
+  ; overwrite the calculated X and Z positions with our own
+  lis r3, default_molgera_xz_pos@ha
+  addi r3, r3, default_molgera_xz_pos@l
+  lfs f1, 0x0(r3)
+  stfs f1, 0x0(r25) ; Store 0.0 to X position
+  lfs f1, 0x4(r3)
+  stfs f1, 0x8(r25) ; Store 500.0 to Z position
+
+  ; Y position is handled later in the original function
+
+link_not_inside_warp:
+  b 0x02102EDC

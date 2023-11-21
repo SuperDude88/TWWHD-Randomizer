@@ -26,8 +26,9 @@
 #include <utility/string.hpp>
 #include <utility/file.hpp>
 #include <utility/common.hpp>
-#include <utility/color.hpp>
 #include <command/Log.hpp>
+#include <command/GamePath.hpp>
+#include <command/RandoSession.hpp>
 
 #define EXTRACT_ERR_CHECK(fspath) { \
     if(fspath == nullptr) {\
@@ -164,7 +165,7 @@ TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t 
 }
 
 TweakError change_ship_starting_island(const uint8_t room_index) {
-    std::string path = get_island_room_dzx_filepath(room_index);
+    const std::string path = getRoomDzrPath("sea", room_index);
 
     RandoSession::CacheEntry& room = g_session.openGameFile(path);
     RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
@@ -549,12 +550,12 @@ TweakError make_items_progressive() {
         return true;
     });
     
-      // Add an item get message for the normal magic meter since it didn't have one in vanilla
-      std::unordered_map<std::string, std::u16string> messages = {
-          {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
-          {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
-          {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
-      };
+    // Add an item get message for the normal magic meter since it didn't have one in vanilla
+    std::unordered_map<std::string, std::u16string> messages = {
+        {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
+        {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
+        {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
+    };
 
     for (const auto& language : Text::supported_languages) {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
@@ -1048,17 +1049,8 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 }
 
 TweakError remove_bog_warp_in_cs() {
-    for (uint8_t i = 1; i < 50; i++) {
-        std::string path;
-        if (i == 1 || i == 11 || i == 13 || i == 17 || i == 23) {
-            path = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
-        }
-        else if (i == 9 || i == 39 || i == 41 || i == 44) {
-            path = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
-        }
-        else {
-            path = "content/Common/Stage/sea_Room" + std::to_string(i) + ".szs@YAZ0@SARC@Room" + std::to_string(i) + ".bfres@BFRES@room.dzr@DZX";
-        }
+    for (uint8_t i = 1; i < 49+1; i++) {
+        const std::string path = getRoomDzrPath("sea", i);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(room_dzr, FileTypes::DZXFile, data)
@@ -1103,7 +1095,6 @@ TweakError fix_shop_item_y_offsets() {
 }
 
 TweakError update_text_replacements(World& world) {
-
     auto textReplacements = generate_text_replacements(world);
 
     for (auto& [messageLabel, languages] : textReplacements) {
@@ -1295,7 +1286,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             auto islandNumToFace = islandNameToRoomIndex(island);
             auto hohoIslandNum = islandNameToRoomIndex(hohoLocation->hintRegions.front());
 
-            std::string filepath = get_island_room_dzx_filepath(hohoIslandNum);
+            const std::string filepath = getRoomDzrPath("sea", hohoIslandNum);
             RandoSession::CacheEntry& room = g_session.openGameFile(filepath);
 
             room.addAction([=](RandoSession* session, FileType* data) -> int {
@@ -1335,21 +1326,6 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             });
         } 
     }
-    return TweakError::NONE;
-}
-
-TweakError set_num_starting_triforce_shards(const uint8_t numShards) {
-    if(custom_symbols.count("num_triforce_shards_to_start_with") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-
-    const uint32_t num_shards_address = custom_symbols.at("num_triforce_shards_to_start_with");
-    g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_shards_address, numShards](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-
-        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_shards_address), numShards));
-
-        return true;
-    });
-
     return TweakError::NONE;
 }
 
@@ -1393,6 +1369,28 @@ TweakError set_damage_multiplier(const float& multiplier) {
         
         return true;
     });
+
+    // Update the confirmation text
+    for (const auto& language : Text::supported_languages) {
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@SequenceWindow_00_msbt.szs@YAZ0@SARC@SequenceWindow_00.msbt@MSBT");
+        entry.addAction([=](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            static const std::unordered_map<std::string, std::u16string> word_to_replace = {
+                {"English", u"double"s},
+                {"Spanish", u"el doble"s}, //TODO: check this
+                {"French", u"doublés"s}, //TODO: check this
+            };
+
+            std::u16string& message = msbt.messages_by_label["T_Msg_00_hardmode00"].text.message;
+            const std::u16string& replace = word_to_replace.at(language);
+            const std::u16string& replacement = Utility::Str::toUTF16(std::to_string(static_cast<uint8_t>(multiplier)) + "x");
+            message.replace(message.find(replace), replace.size(), replacement);
+
+            return true;
+        });
+    }
+
     return TweakError::NONE;
 }
 
@@ -1738,7 +1736,7 @@ TweakError add_boss_door_return_spawns() {
 
         RandoSession::CacheEntry* dzx_for_spawn;
         if (newSpawn.stage_name == "sea") {
-            dzx_for_spawn = &g_session.openGameFile(get_island_room_dzx_filepath(newSpawn.room_num));
+            dzx_for_spawn = &g_session.openGameFile(getRoomDzrPath("sea", newSpawn.room_num));
         } else if (isAnyOf(newSpawn.stage_name, "M_Dai", "kaze")) {
             dzx_for_spawn = &g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
         } else {
@@ -2001,22 +1999,19 @@ TweakError update_skip_rematch_bosses_game_variable(const bool& skipRefights) {
     return TweakError::NONE;
 }
 
-TweakError update_sword_mode_game_variable(const SwordMode swordMode) {
-    if(custom_symbols.count("sword_mode") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    const uint32_t sword_mode_addr = custom_symbols.at("sword_mode");
+TweakError update_sword_mode_game_variable(const bool& remove_swords) {
+    if(custom_symbols.count("swordless") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    const uint32_t swordless_addr = custom_symbols.at("swordless");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
     entry.addAction([=](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-        if (swordMode == SwordMode::StartWithSword) {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x00));
+        if (remove_swords) {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, swordless_addr), 0x01));
         }
-        else if (swordMode == SwordMode::RandomSword) {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x01));
-        }
-        else if (swordMode == SwordMode::NoSword) {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, sword_mode_addr), 0x02));
+        else {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, swordless_addr), 0x00));
         }
 
         return true;
@@ -2460,7 +2455,7 @@ TweakError fix_totg_warp_spawn() {
 TweakError remove_phantom_ganon_req_for_reefs() {
     std::string path;
     for (const uint8_t room_index : {24, 46, 22, 8, 37, 25}) {
-        path = "content/Common/Stage/sea_Room" + std::to_string(room_index) + ".szs@YAZ0@SARC@Room" + std::to_string(room_index) + ".bfres@BFRES@room.dzr@DZX";
+        path = getRoomDzrPath("sea", room_index);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -2915,7 +2910,7 @@ TweakError updateCodeSize() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00000004, 32), 0x00908B80));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00000004, 32), 0x00909510));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0000001C, 32), 0x00379000));
 
         return true;
@@ -2962,204 +2957,6 @@ TweakError fix_needle_rock_island_salvage_flags() {
         return true;
     });
     return TweakError::NONE;
-}
-
-// Maps each recolor option to the texture files that need recoloring
-static std::unordered_map<std::string, std::list<std::string>> heroTextureMappings = {
-    {"Hair", {"linktexS3TC"}},
-    {"Skin", {"linktexS3TC", "handsS3TC", "mouthS3TC.1", "mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.4", "mouthS3TC.5", "mouthS3TC.6", "mouthS3TC.7", "mouthS3TC.8", "mouthS3TC.9"}},
-    {"Mouth", {"mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.6", "mouthS3TC.7"}},
-    {"Eyes", {"hitomi"}},
-    {"Sclera", {"hitomi"}},
-    {"Tunic", {"linktexS3TC"}},
-    {"Undershirt", {"linktexS3TC"}},
-    {"Pants", {"linktexS3TC"}},
-    {"Boots", {"linktexS3TC"}},
-    {"Belt", {"linktexS3TC"}},
-    {"Belt Buckle", {"linktexS3TC"}},
-};
-
-static std::unordered_map<std::string, std::list<std::string>> casualTextureMappings = {
-    {"Hair", {"linktexbci4", "katsuraS3TC"}},
-    {"Skin", {"linktexbci4", "handsS3TC", "mouthS3TC.1", "mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.4", "mouthS3TC.5", "mouthS3TC.6", "mouthS3TC.7", "mouthS3TC.8", "mouthS3TC.9"}},
-    {"Mouth", {"mouthS3TC.2", "mouthS3TC.3", "mouthS3TC.6", "mouthS3TC.7"}},
-    {"Eyes", {"hitomi"}},
-    {"Sclera", {"hitomi"}},
-    {"Shirt", {"linktexbci4"}},
-    {"Shirt Emblem", {"linktexbci4"}},
-    {"Armbands", {"linktexbci4"}},
-    {"Pants", {"linktexbci4"}},
-    {"Shoes", {"linktexbci4"}},
-    {"Shoe Soles", {"linktexbci4"}},
-};
-
-// IMPROVEMENT: Better generalize this in the future
-TweakError apply_custom_colors(World& world) {
-
-    RandoSession::CacheEntry& linktex = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
-    linktex.addAction([&](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
-
-        std::string maskFile = "";
-        uint16_t baseColor = 0;
-        uint16_t replacementColor = 0;
-
-        auto baseColors = DefaultColors::getDefaultColorsMap(world.getSettings().player_in_casual_clothes);
-        std::unordered_map<std::string, std::list<std::string>> textureMappings = {};
-        if (world.getSettings().player_in_casual_clothes) {
-            textureMappings = casualTextureMappings;
-        } else {
-            textureMappings = heroTextureMappings;
-        }
-
-        for (auto& texture : bfres.textures) {
-            for (auto& [name, textureNames] : textureMappings) {
-
-                auto custom_colors = world.getSettings().custom_colors;
-                replacementColor = hexColorStrTo16Bit(custom_colors[name]);
-                baseColor = hexColorStrTo16Bit(baseColors[name]);
-
-                // Don't modify colors if it's not necessary
-                if (baseColor == replacementColor) {
-                    continue;
-                }
-
-                for (auto& textureName : textureNames) {
-
-                    if (texture.name.substr(0, textureName.length()) == textureName) {
-                        
-                        // Get the data from the mask file
-                        std::string filename = (world.getSettings().player_in_casual_clothes ? "casual" : "hero") + name + "_" + textureName + "_mask.bftex";
-
-                        if (Utility::getFileContents(DATA_PATH "assets/link color masks/" + filename, maskFile, true) != 0) {
-                            Utility::platformLog("Could not open " + filename + " mask file. Will skip recoloring " + name);
-                            continue;
-                        }
-
-                        // Textures are stored using various BCn compression formats
-
-                        // Actual texture data doesn't start until 0x2000, so remove
-                        // everything before that
-                        maskFile = maskFile.substr(0x2000);
-
-                        for (size_t i = 0; i < maskFile.length(); i += 8) {
-                            
-                            // Skip over alpha data in BC3 format
-                            if (texture.format == GX2_SURFACE_FORMAT_SRGB_BC3) {
-                                i += 8;
-                            }
-
-                            // The mask file color tells us if this is a color we should
-                            // replace or not in the current texture
-                            uint16_t maskColor1  = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i]);
-                            uint16_t maskColor2  = Utility::Endian::toPlatform(eType::Big, *(uint16_t*)&maskFile[i + 2]);
-
-                            uint16_t texColor1;
-                            uint16_t texColor2;
-
-                            // The most defined texture data is stored in texture.data
-                            // All smaller mipmaps are stored in texture.mipData
-                            // Using little endian here is intentional
-                            if (i < texture.data.length()) {
-                                texColor1  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
-                                texColor2  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
-                            } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
-                                texColor1  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
-                                texColor2  = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
-                            }
-
-                            std::list<std::tuple<uint16_t, size_t, uint16_t>> masksOffsetsColors = {{maskColor1, i, texColor1} , {maskColor2, i + 2, texColor2}};
-
-                            // For the two colors in this iteration
-                            for (auto& [mask, offset, curColor] : masksOffsetsColors) {
-                                if (mask == 0x00F8) {
-
-                                    // TEMP FIX: Remove red from really dark base eye colors, otherwise
-                                    // we can get some really light colors back that look weird
-                                    if (name == "Eyes") {
-                                        curColor &= 0x07FF;
-                                    }
-
-                                    auto newColor = colorExchange(baseColor, replacementColor, curColor);
-                                    Utility::Endian::toPlatform_inplace(eType::Little, newColor);
-
-                                    if (offset < texture.data.length()) {
-                                        texture.data.replace(offset, 2, reinterpret_cast<const char*>(&newColor), 2);
-                                    } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
-                                        texture.mipData.replace(offset - texture.data.length(), 2, reinterpret_cast<const char*>(&newColor), 2);
-                                    }
-                                }
-                            }
-
-                            // Check and potentially change pixel indices to avoid 
-                            // accidental transparent colors in BC1 format
-                            if (isAnyOf(0xF8, maskColor1, maskColor2) && texture.format == GX2_SURFACE_FORMAT_SRGB_BC1) {
-                                uint16_t newColor1 = 0;
-                                uint16_t newColor2 = 0;
-                                uint32_t indices = 0;
-                                uint32_t newIndices = 0;
-
-                                if (i < texture.data.length()) {
-                                    newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i]);
-                                    newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.data[i + 2]);
-                                    indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.data[i + 4]);
-                                } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
-                                    newColor1 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i - texture.data.length()]);
-                                    newColor2 = Utility::Endian::toPlatform(eType::Little, *(uint16_t*)&texture.mipData[i + 2 - texture.data.length()]);
-                                    indices   = Utility::Endian::toPlatform(eType::Little, *(uint32_t*)&texture.mipData[i + 4 - texture.data.length()]);
-                                }
-
-                                // If the first color is less than the second color,
-                                // change any pixels using index 3 to use index 2. Index
-                                // 3 in this case is used to denote transparent pixels
-                                if (newColor1 <= newColor2 && texColor1 > texColor2) {
-
-                                    for (size_t j = 0; j < 32; j += 2) {
-
-                                        uint32_t curIndex = (indices & (0b11 << j)) >> j;
-                                        if (curIndex == 3) {
-                                            curIndex = 2;
-                                        }
-                                        newIndices |= (curIndex << j);
-                                    }
-
-                                    if (i < texture.data.length()) {
-                                        texture.data.replace(i + 4, 4, reinterpret_cast<const char*>(&newIndices), 4);
-                                    } else if (i >= texture.data.length() && i < texture.data.length() + texture.mipData.length()) {
-                                        texture.mipData.replace(i + 4 - texture.data.length(), 4, reinterpret_cast<const char*>(&newIndices), 4);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    });
-
-    return TweakError::NONE;
-}
-
-std::string get_island_room_dzx_filepath(const uint8_t& islandNum) {
-
-    // Most sea_Room szs files are in content/Common/Stage but some are
-    // in content/Common/Pack/szs_permanent1.pack and content/Common/Pack/szs_permanent2.pack
-    const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
-    const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-
-    auto islandNumStr = std::to_string(islandNum);
-
-    std::string filepath = "content/Common/Stage/sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
-
-    if (pack1.contains(islandNum)) {
-        filepath = "content/Common/Pack/szs_permanent1.pack@SARC@sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
-    }
-    else if (pack2.contains(islandNum)) {
-        filepath = "content/Common/Pack/szs_permanent2.pack@SARC@sea_Room" + islandNumStr + ".szs@YAZ0@SARC@Room" + islandNumStr + ".bfres@BFRES@room.dzr@DZX";
-    }
-
-    return filepath;
 }
 
 TweakError add_ff_warp_button() {
@@ -3706,13 +3503,16 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     if (settings.fix_rng) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_rng_diff.yaml"));
     }
+    if (settings.performance) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/performance_diff.yaml"));
+    }
     if (settings.reveal_full_sea_chart) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
     }
     if (settings.invert_sea_compass_x_axis) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
     }
-    if (settings.sword_mode == SwordMode::NoSword) {
+    if (settings.remove_swords) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.yaml"));
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3738,7 +3538,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(modify_title_screen());
     TWEAK_ERR_CHECK(update_name_and_icon());
     TWEAK_ERR_CHECK(fix_shop_item_y_offsets());
-    TWEAK_ERR_CHECK(set_num_starting_triforce_shards(settings.num_starting_triforce_shards));
     TWEAK_ERR_CHECK(set_starting_health(settings.starting_pohs, settings.starting_hcs));
     TWEAK_ERR_CHECK(set_damage_multiplier(settings.damage_multiplier));
     TWEAK_ERR_CHECK(remove_makar_kidnapping());
@@ -3768,9 +3567,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     //failsafe id 0 spawns
 
     TWEAK_ERR_CHECK(update_skip_rematch_bosses_game_variable(settings.skip_rematch_bosses));
-    TWEAK_ERR_CHECK(update_sword_mode_game_variable(settings.sword_mode));
+    TWEAK_ERR_CHECK(update_sword_mode_game_variable(settings.remove_swords));
     TWEAK_ERR_CHECK(update_starting_gear(settings.starting_gear));
-    if(settings.player_in_casual_clothes) {
+    if(settings.selectedModel.casual) {
         TWEAK_ERR_CHECK(set_casual_clothes());
     }
     TWEAK_ERR_CHECK(set_pig_color(settings.pig_color));
@@ -3813,8 +3612,6 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
     TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
     TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
-
-    TWEAK_ERR_CHECK(apply_custom_colors(world));
 
     return TweakError::NONE;
 }
