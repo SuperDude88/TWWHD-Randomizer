@@ -74,8 +74,6 @@ private:
     std::unordered_map<std::string, QPushButton*> customColorSelectorButtons = {};
     std::unordered_map<std::string, QLineEdit*> customColorHexCodeInputs = {};
     std::unordered_map<std::string, QPushButton*> customColorResetButtons = {};
-    // Preset colors keyed by preset name, hero or casual, and option name
-    std::unordered_map<std::string, std::unordered_map<std::string, std::unordered_map<std::string, std::string>>> presetColors = {};
     // Mask Pixels keyed by hero or casual, and option name
     std::unordered_map<std::string, std::unordered_map<std::string, std::list<std::tuple<int, int>>>> maskPixels = {};
 
