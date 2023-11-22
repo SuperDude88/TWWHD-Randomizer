@@ -355,6 +355,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     }
 
     settings.selectedModel.casual = root["player_in_casual_clothes"].as<bool>();
+    settings.selectedModel.modelName = root["custom_player_model"].as<std::string>();
     // only non-default colors are written
     if(root["custom_colors"].IsMap()) {
         for(const auto& colorObject : root["custom_colors"]) {
@@ -371,6 +372,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
             }
         }
     }
+    settings.selectedModel.loadFromFolder();
 
     // clamp numerical settings
     // health
@@ -524,6 +526,7 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     }
 
     SET_FIELD(root, "player_in_casual_clothes", settings.selectedModel.casual)
+    SET_FIELD(root, "custom_player_model", settings.selectedModel.modelName)
     for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
         root["custom_colors"][texture] = color;
     }

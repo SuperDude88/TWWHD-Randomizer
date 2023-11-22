@@ -110,6 +110,7 @@ void Settings::resetDefaults() {
     ui_display = UIDisplayPreference::On;
 
     selectedModel.casual = false;
+    selectedModel.modelName = "Link";
     selectedModel.resetColors();
 
     return;

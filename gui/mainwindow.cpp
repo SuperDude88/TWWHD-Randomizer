@@ -499,7 +499,11 @@ void MainWindow::apply_config_settings()
     // Player Customization
     // Block signal so we don't setup colors twice
     ui->player_in_casual_clothes->blockSignals(true);
-    APPLY_CHECKBOX_SETTING(config, ui, player_in_casual_clothes);
+    if (config.settings.selectedModel.casual) {
+        ui->player_in_casual_clothes->setCheckState(Qt::Checked);
+    } else {
+        ui->player_in_casual_clothes->setCheckState(Qt::Unchecked);
+    }
     setup_color_options();
     ui->player_in_casual_clothes->blockSignals(false);
 
@@ -928,7 +932,7 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_joy_pendants)
 
 // Player Customization
 void MainWindow::on_player_in_casual_clothes_stateChanged(int arg1) {
-    UPDATE_CONFIG_STATE(config, ui, player_in_casual_clothes);
+    config.settings.selectedModel.casual = ui->player_in_casual_clothes->isChecked();
     setup_color_options();
 }
 

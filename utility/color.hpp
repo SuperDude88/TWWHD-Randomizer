@@ -37,3 +37,5 @@ bool isValidHexColor(const std::string& hexColor);
 uint16_t colorExchange(const uint16_t& baseColor, const uint16_t& replacementColor, const uint16_t& curColor);
 
 std::string HSVShiftColor(const std::string& hexColor, const int& hShift, const int& vShift);
+
+std::pair<int, int> get_random_h_and_v_shifts_for_custom_color(const std::string& hexColor);
