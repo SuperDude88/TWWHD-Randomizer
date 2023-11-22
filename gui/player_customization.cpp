@@ -6,6 +6,7 @@
 
 #include <utility/file.hpp>
 #include <utility/color.hpp>
+#include <customizer/model.hpp>
 
 std::tuple<std::string, std::string> MainWindow::get_option_name_and_color_name_from_sender_object_name() {
     std::string objectName = this->sender()->objectName().toStdString();
@@ -24,57 +25,44 @@ std::tuple<std::string, std::string> MainWindow::get_option_name_and_color_name_
 }
 
 void MainWindow::initialize_color_presets_list() {
-    ui->custom_color_preset->addItem("Default");
-    ui->custom_color_preset->addItem("Custom");
+    auto& model = config.settings.selectedModel;
+    auto modelName = ui->custom_player_model->currentText().toStdString();
+    auto err = model.loadFromFolder();
+    if (err != ModelError::NONE) {
+        show_error_dialog("Error when trying to load custom model \"" + modelName + "\": " + errorToName(err));
+        return;
+    }
 
-    // Get data from color_presets.yaml
-    std::string presetDataStr;
-    Utility::getFileContents(DATA_PATH "logic/data/color_presets.yaml", presetDataStr, true);
-    YAML::Node presetDataTree = YAML::Load(presetDataStr);
-
+    ui->custom_color_preset->clear();
     // Loop through and add each preset
-    for (const auto& presetObject : presetDataTree) {
-        auto presetName = presetObject["Name"].as<std::string>();
-        ui->custom_color_preset->addItem(QString::fromStdString(presetName));
-
-        for (auto type : {"hero", "casual"}) {
-            for (const auto& presetColor : presetObject["Colors"][type]) {
-                auto optionName = presetColor.first.as<std::string>();
-                auto optionColor = presetColor.second.as<std::string>();
-
-                presetColors[presetName][type][optionName] = optionColor;
-            }
-
-            // Add in defaults for any unspecified options
-            auto defaultColors = DefaultColors::getDefaultColorsMap(!strcmp(type, "casual"));
-            for (auto& [option, color] : defaultColors) {
-                if (!presetColors[presetName][type].contains(option)) {
-                    presetColors[presetName][type][option] = color;
-                }
-            }
+    // Block the signal so we don't try and change widgets
+    // which don't exist yet
+    ui->custom_color_preset->blockSignals(true);
+    for (const auto& preset : model.getPresets()) {
+        ui->custom_color_preset->addItem(QString::fromStdString(preset.name));
+        // Add Custom directly after Default
+        if (preset.name == "Default") {
+            ui->custom_color_preset->addItem("Custom");
         }
     }
-
-    // Add in default preset also
-    for (auto type : {"hero", "casual"}) {
-        auto defaultColors = DefaultColors::getDefaultColorsMap(!strcmp(type, "casual"));
-        for (auto& [optionName, color] : defaultColors) {
-            presetColors["Default"][type][optionName] = color;
-        }
-    }
+    ui->custom_color_preset->blockSignals(false);
 }
 
 void MainWindow::initialize_mask_pixels() {
     // Store the x and y of each pixel that each maskfile modifies
     // and lookup the pixels later when making preview modifications
-    for (auto type : {"hero", "casual"}) {
-        auto defaultColors = DefaultColors::getDefaultColorsMap(!strcmp(type, "casual"));
-        for (auto& [optionName, color] : defaultColors) {
-            auto maskImage = QImage(DATA_PATH + QString("assets/link preview/preview_") + type + "_" + QString::fromStdString(optionName) + ".png");
+    auto& model = config.settings.selectedModel;
+    auto modelName = ui->custom_player_model->currentText();
+    const auto& defaultPreset = model.getDefaultPreset();
+    maskPixels.clear();
+    for (const auto& type : {"hero", "casual"}) {
+        const auto& colorMap = !strcmp(type, "hero") ? defaultPreset.heroColors : defaultPreset.casualColors;
+        for (const auto& [colorOption, color] : colorMap) {
+            auto maskImage = QImage(DATA_PATH + QString("customizer/data/") + modelName + "/color_preview/preview_" + type + "_" + QString::fromStdString(colorOption) + ".png");
             for (int x = 0; x < maskImage.width(); x++) {
                 for (int y = 0; y < maskImage.height(); y++) {
                     if (maskImage.pixelColor(x, y).red() == 255 && maskImage.pixelColor(x, y).blue() == 0) {
-                        maskPixels[type][optionName].emplace_back(x, y);
+                        maskPixels[type][colorOption].emplace_back(x, y);
                     }
                 }
             }
@@ -84,7 +72,6 @@ void MainWindow::initialize_mask_pixels() {
 
 void MainWindow::set_color(const std::string& optionName, std::string color, const bool& updatePreview, const bool& saveColorAsCustom) {
     auto colorName = optionName.substr(std::string("custom_color_").length());
-
     auto colorButton = customColorSelectorButtons[optionName];
     auto hexInput = customColorHexCodeInputs[optionName];
     auto resetButton = customColorResetButtons[optionName];
@@ -119,9 +106,10 @@ void MainWindow::set_color(const std::string& optionName, std::string color, con
         "color: " + textColor + ";"
     ));
 
-    auto defaultColors = config.settings.player_in_casual_clothes ? DefaultColors::casualColors : DefaultColors::heroColors;
+    auto& model = config.settings.selectedModel;
+    auto defaultColors = model.getDefaultColorsMap();
     std::string defaultColor = "";
-    for (auto& [name, color] : defaultColors) {
+    for (const auto& [name, color] : defaultColors) {
         if (name == colorName) {
             defaultColor = color;
             break;
@@ -136,38 +124,36 @@ void MainWindow::set_color(const std::string& optionName, std::string color, con
     }
 
     // Get previous custom colors to compare against later
-    auto previousCustomColors = config.settings.custom_colors;
-    config.settings.custom_colors[colorName] = color;
+    const auto previousCustomColors = model.getSetColorsMap();
+    model.setColor(colorName, color);
 
     // Check if the current color combination is equal
     // to any presets and set the preset (without triggering the slot)
     ui->custom_color_preset->blockSignals(true);
     bool foundPreset = false;
-    for (auto& [presetName, types] : presetColors) {
-        auto& curPreset = types[config.settings.player_in_casual_clothes ? "casual" : "hero"];
-        if (config.settings.custom_colors == curPreset) {
+    for (const auto& preset : model.getPresets()) {
+        auto modelColors = model.getSetColorsMap();
+        if (model.getSetColorsMap() == preset.heroColors || model.getSetColorsMap() == preset.casualColors) {
             foundPreset = true;
-            ui->custom_color_preset->setCurrentText(QString::fromStdString(presetName));
+            ui->custom_color_preset->setCurrentText(QString::fromStdString(preset.name));
             break;
         }
     }
     if(!foundPreset) {
-        ui->custom_color_preset->setCurrentText(QString::fromStdString("Custom"));
+        ui->custom_color_preset->setCurrentText("Custom");
     }
     ui->custom_color_preset->blockSignals(false);
 
     // Update preview if necessary
-    if (updatePreview && config.settings.custom_colors != previousCustomColors) {
+    if (updatePreview && model.getSetColorsMap() != previousCustomColors) {
         update_preview();
     }
 }
 
 void MainWindow::open_custom_color_chooser() {
     auto optionName = this->sender()->objectName().toStdString();
-
     auto colorName = optionName.substr(std::string("custom_color_").length());
-
-    auto hexColor = config.settings.custom_colors[colorName];
+    auto hexColor = config.settings.selectedModel.getColor(colorName);
     if (!isValidHexColor(hexColor)) {
         return;
     }
@@ -203,39 +189,15 @@ void MainWindow::custom_color_hex_code_finished_editing() {
     auto isValidColor = custom_color_hex_code_changed();
     if (!isValidColor) {
         auto [optionName, colorName] = get_option_name_and_color_name_from_sender_object_name();
-        set_color(optionName, config.settings.custom_colors[colorName]);
+        set_color(optionName, config.settings.selectedModel.getColor(colorName));
     }
-}
-
-std::tuple<int, int> MainWindow::get_random_h_and_v_shifts_for_custom_color(const std::string& hexColor) {
-    auto colorRGB = hexColorStrToRGB(hexColor);
-    auto colorHSV = RGBToHSV(colorRGB);
-
-    int s = round(colorHSV.S * 100);
-    int v = round(colorHSV.V * 100);
-
-    int minVShift = -40;
-    int maxVShift = 40;
-
-    if (s < 10) {
-        // For very unsaturated colors, we want to limit the range of value
-        // randomization to exclude results that wouldn't change anything anyway.
-        // This effectively stops white and black from having a 50% chance to not change at all.
-        minVShift = std::max(-40, 0-v);
-        maxVShift = std::min(40, 100-v);
-    }
-
-    auto hShift = rand() % 360;
-    auto vShift = (rand() % (maxVShift - minVShift)) + minVShift;
-
-    return {hShift, vShift};
 }
 
 void MainWindow::randomize_one_custom_color() {
     auto [optionName, colorName] = get_option_name_and_color_name_from_sender_object_name();
 
-    auto defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
-    auto defaultColor = defaultColors[colorName];
+    const auto& defaultColors = config.settings.selectedModel.getDefaultColorsMap();
+    const auto& defaultColor = defaultColors.at(colorName);
 
     auto [hShift, vShift] = get_random_h_and_v_shifts_for_custom_color(defaultColor);
     auto color = HSVShiftColor(defaultColor, hShift, vShift);
@@ -246,47 +208,44 @@ void MainWindow::randomize_one_custom_color() {
 void MainWindow::reset_one_custom_color() {
     auto [optionName, colorName] = get_option_name_and_color_name_from_sender_object_name();
 
-    auto defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
-    auto defaultColor = defaultColors[colorName];
+    const auto& defaultColors = config.settings.selectedModel.getDefaultColorsMap();
+    const auto& defaultColor = defaultColors.at(colorName);
 
-    if (config.settings.custom_colors[colorName] != defaultColor) {
+    if (config.settings.selectedModel.getColor(colorName) != defaultColor) {
         set_color(optionName, defaultColor);
     }
 }
 
 void MainWindow::setup_color_options() {
-    auto baseColors = config.settings.player_in_casual_clothes ? DefaultColors::casualColors : DefaultColors::heroColors;
+    auto& model = config.settings.selectedModel;
+    auto baseColors = model.getDefaultColorsMap();
 
     clear_layout(ui->custom_colors_layout);
     customColorSelectorButtons.clear();
     customColorHexCodeInputs.clear();
     customColorResetButtons.clear();
 
-    std::string curPreset = ui->custom_color_preset->currentText().toStdString();
-    // If this is our first time running the function, then initialize
-    // color presets and mask pixels. (Tried putting this in the main window
-    // constructor, but it kept crashing for some reason, so it's here instead)
-    // Also read colors from the config into the base colors
-    static bool firstTime = true;
-    if (firstTime) {
+    auto curPreset = ui->custom_color_preset->currentText().toStdString();
+    // If we're changing models, reload the presets and mask pixels
+    static std::string lastModel = "";
+    std::string curModel = model.modelName;
+    if (lastModel != curModel) {
         for (auto& [optionName, defaultColor] : baseColors) {
-            if (config.settings.custom_colors.contains(optionName)) {
-                defaultColor = config.settings.custom_colors[optionName];
+            if (model.getSetColorsMap().contains(optionName)) {
+                defaultColor = model.getColor(optionName);
             }
         }
         initialize_color_presets_list();
         initialize_mask_pixels();
-        firstTime = false;
     }
     // If we have a specific preset selected, then keep those colors
-    else if (curPreset != "Custom") {
-        auto colors = presetColors[curPreset][config.settings.player_in_casual_clothes ? "casual" : "hero"];
+    else if (curPreset != "Custom" && lastModel == curModel) {
+        model.loadPreset(curPreset, true);
+        auto colors = model.getSetColorsMap();
         for (auto& [optionName, defaultColor] : baseColors) {
             defaultColor = colors[optionName];
         }
     }
-
-    config.settings.custom_colors.clear();
 
     for (auto& [customColorName, defaultColor] : baseColors) {
 
@@ -346,19 +305,22 @@ void MainWindow::setup_color_options() {
         set_color(optionName, defaultColor, false, false);
     }
 
+    lastModel = curModel;
     update_preview();
 }
 
 void MainWindow::update_preview() {
 
-    auto  defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
-    auto& currentColors = config.settings.custom_colors;
+    auto& model = config.settings.selectedModel;
 
-    auto type = config.settings.player_in_casual_clothes ? "casual" : "hero";
+    auto  defaultColors = model.getDefaultColorsMap();
+    auto& currentColors = model.getSetColorsMap();
 
-    auto preview = QImage(DATA_PATH + QString("assets/link preview/preview_") + type + ".png");
+    auto type = model.casual ? "casual" : "hero";
 
-    for (auto& [optionName, color] : config.settings.custom_colors) {
+    auto preview = QImage(DATA_PATH + QString("customizer/data/") + QString::fromStdString(model.modelName) + "/color_preview/preview_" + type + ".png");
+
+    for (auto& [optionName, color] : model.getSetColorsMap()) {
 
         auto& defaultColor = defaultColors[optionName];
         auto baseColor16Bit = hexColorStrTo16Bit(defaultColor);
@@ -399,14 +361,27 @@ void MainWindow::update_preview() {
 
 void MainWindow::on_custom_color_preset_currentIndexChanged(const int &arg1)
 {
-    auto text = ui->custom_color_preset->currentText();
+    auto text = ui->custom_color_preset->currentText().toStdString();
 
     if (text == "Custom") {
         return;
     }
 
-    auto& preset = presetColors[text.toStdString()][config.settings.player_in_casual_clothes ? "casual" : "hero"];
-    for (auto& [optionName, color] : preset) {
+    // Get the default colors for the current model and modify them with
+    // the preset
+    auto& model = config.settings.selectedModel;
+    auto presetColors = model.getDefaultColorsMap();
+    for (auto& preset : model.getPresets()) {
+        if (preset.name == text) {
+            auto selectedPreset = model.casual ? preset.casualColors : preset.heroColors;
+            for (auto& [colorName, color] : selectedPreset) {
+                presetColors[colorName] = color;
+            }
+            break;
+        }
+    }
+
+    for (auto& [optionName, color] : presetColors) {
         set_color("custom_color_" + optionName, color, false, false);
     }
 
@@ -415,7 +390,7 @@ void MainWindow::on_custom_color_preset_currentIndexChanged(const int &arg1)
 
 void MainWindow::on_randomize_all_custom_colors_together_clicked()
 {
-    auto defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
+    auto defaultColors = config.settings.selectedModel.getDefaultColorsMap();
 
     int hShift = rand() % 360;
     int vShift = (rand() % 81) - 40;
@@ -431,7 +406,7 @@ void MainWindow::on_randomize_all_custom_colors_together_clicked()
 
 void MainWindow::on_randomize_all_custom_colors_separately_clicked()
 {
-    auto defaultColors = DefaultColors::getDefaultColorsMap(config.settings.player_in_casual_clothes);
+    auto defaultColors = config.settings.selectedModel.getDefaultColorsMap();
 
     for (auto& [customColorName, color] : defaultColors) {
         auto [hShift, vShift] = get_random_h_and_v_shifts_for_custom_color(color);

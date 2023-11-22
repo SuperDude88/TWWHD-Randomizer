@@ -14,10 +14,14 @@
 
 using eType = Utility::Endian::Type;
 
-ModelError CustomModel::loadFromFolder(const std::string& name_) {
-    folder = DATA_PATH "customizer/data/" + name_;
+ModelError CustomModel::loadFromFolder() {
+
+    if (modelName == "") {
+        modelName = "Link";
+    }
+
+    folder = DATA_PATH "customizer/data/" + modelName;
     
-    modelName = name_;
     presets.clear();
 
     std::string metaStr;
@@ -65,6 +69,18 @@ ModelError CustomModel::loadFromFolder(const std::string& name_) {
 
                 preset.casualColors[colorName] = color;
             }
+
+            // Add in defaults for unspecified colors
+            for (auto& [colorName, color] : defaultPreset.heroColors) {
+                if (!preset.heroColors.contains(colorName)) {
+                    preset.heroColors[colorName] = color;
+                }
+            }
+            for (auto& [colorName, color] : defaultPreset.casualColors) {
+                if (!preset.casualColors.contains(colorName)) {
+                    preset.casualColors[colorName] = color;
+                }
+            }
         }
     }
 
@@ -93,6 +109,10 @@ const ColorMap_t& CustomModel::getSetColorsMap() const {
 
 const std::vector<ColorPreset>& CustomModel::getPresets() const {
     return presets;
+}
+
+const ColorPreset& CustomModel::getDefaultPreset() const {
+    return presets[0];
 }
 
 const std::string& CustomModel::getColor(const std::string& name_) const {
@@ -131,28 +151,19 @@ void CustomModel::loadPreset(const size_t& idx) {
     colors = presets[idx];
 }
 
-static std::pair<int, int> get_random_h_and_v_shifts_for_custom_color(const std::string& hexColor) {
-    auto colorRGB = hexColorStrToRGB(hexColor);
-    auto colorHSV = RGBToHSV(colorRGB);
-
-    int s = round(colorHSV.S * 100);
-    int v = round(colorHSV.V * 100);
-
-    int minVShift = -40;
-    int maxVShift = 40;
-
-    if (s < 10) {
-        // For very unsaturated colors, we want to limit the range of value
-        // randomization to exclude results that wouldn't change anything anyway.
-        // This effectively stops white and black from having a 50% chance to not change at all.
-        minVShift = std::max(-40, 0-v);
-        maxVShift = std::min(40, 100-v);
+void CustomModel::loadPreset(const std::string& name, const bool& both /*= true*/) {
+    for (const auto& preset : presets) {
+        if (preset.name == name) {
+            if (both) {
+                colors = preset;
+            } else if (casual) {
+                colors.casualColors = preset.casualColors;
+            } else {
+                colors.heroColors = preset.heroColors;
+            }
+            break;
+        }
     }
-
-    auto hShift = rand() % 360;
-    auto vShift = (rand() % (maxVShift - minVShift)) + minVShift;
-
-    return {hShift, vShift};
 }
 
 void CustomModel::randomizeOrderly() {
@@ -342,4 +353,18 @@ ModelError CustomModel::applyModel() const {
     });
 
     return ModelError::NONE;
+}
+
+std::string errorToName(const ModelError& err) {
+    switch(err)
+    {
+    case ModelError::COULD_NOT_OPEN:
+        return "COULD_NOT_OPEN";
+    case ModelError::UNEXPECTED_VALUE:
+        return "UNEXPECTED_VALUE";
+    case ModelError::MISSING_KEY:
+        return "MISSING_KEY";
+    default:
+        return "UNKNOWN";
+    }
 }

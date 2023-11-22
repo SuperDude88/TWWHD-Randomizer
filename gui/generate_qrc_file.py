@@ -1,10 +1,10 @@
 # Will generate the file data.qrc to be used when embedding data into the
 # static executable for releases. This will only be run if -DEMBED_DATA=True
-# is passed as a flag when building with Cmake.
+# is passed as a flag when building with CMake.
 import os
 
 def main():
-    directories = ['../logic/data', '../asm/patch_diffs', '../assets', '../assets/tracker', '../assets/link preview', '../customizer/data']
+    directories = ['../logic/data', '../asm/patch_diffs', '../assets', '../assets/tracker', '../customizer/data']
     individual_files = ['../asm/custom_symbols.yaml']
     with open('data.qrc', 'w') as qrc:
         qrc.write('<RCC>\n')

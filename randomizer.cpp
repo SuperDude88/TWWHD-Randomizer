@@ -718,8 +718,6 @@ int mainRandomize() {
     #endif
 
     Config load;
-    load.settings.selectedModel.loadFromFolder("Link");
-
     std::ifstream conf(APP_SAVE_PATH "config.yaml");
     if(!conf.is_open()) {
         Utility::platformLog("Creating default config\n");
@@ -754,8 +752,9 @@ int mainRandomize() {
                 case Result::CONFIG_SAVE_FAILED:
                     ErrorLog::getInstance().log("Failed to save config.");
                     return 1;
-                case Result::EXIT: [[fallthrough]]
-                case default:
+                case Result::EXIT:
+                    [[fallthrough]];
+                default:
                     return 0;
             }
 

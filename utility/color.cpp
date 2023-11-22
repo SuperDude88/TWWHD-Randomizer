@@ -252,3 +252,27 @@ std::string HSVShiftColor(const std::string& hexColor, const int& hShift, const 
     auto newColorRGB = HSVToRGB(newColorHSV);
     return RGBToHexColorStr(newColorRGB);
 }  
+
+std::pair<int, int> get_random_h_and_v_shifts_for_custom_color(const std::string& hexColor) {
+    auto colorRGB = hexColorStrToRGB(hexColor);
+    auto colorHSV = RGBToHSV(colorRGB);
+
+    int s = round(colorHSV.S * 100);
+    int v = round(colorHSV.V * 100);
+
+    int minVShift = -40;
+    int maxVShift = 40;
+
+    if (s < 10) {
+        // For very unsaturated colors, we want to limit the range of value
+        // randomization to exclude results that wouldn't change anything anyway.
+        // This effectively stops white and black from having a 50% chance to not change at all.
+        minVShift = std::max(-40, 0-v);
+        maxVShift = std::min(40, 100-v);
+    }
+
+    auto hShift = rand() % 360;
+    auto vShift = (rand() % (maxVShift - minVShift)) + minVShift;
+
+    return {hShift, vShift};
+}
