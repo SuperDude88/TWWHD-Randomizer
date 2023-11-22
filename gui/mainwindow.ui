@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -374,46 +374,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="2">
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                 <item>
-                  <widget class="QLabel" name="label_for_remove_swords">
-                   <property name="text">
-                    <string>Remove Swords</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="remove_swords">
-                   <item>
-                    <property name="text">
-                     <string>Start with Hero's Sword</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>No Starting Sword</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Swordless</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="4" column="2">
-                <widget class="QCheckBox" name="randomize_enemies">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Randomize Enemy Locations</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_20">
                  <item>
@@ -477,6 +437,9 @@
                </item>
                <item row="0" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <property name="spacing">
+                  <number>6</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="label_for_num_required_dungeons">
                    <property name="sizePolicy">
@@ -491,11 +454,20 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QWidget" name="widget" native="true"/>
+                 </item>
+                 <item>
                   <widget class="QComboBox" name="num_required_dungeons">
                    <property name="maximumSize">
                     <size>
                      <width>40</width>
                      <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="baseSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="currentIndex">
@@ -538,20 +510,7 @@
                    </item>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QWidget" name="widget_6" native="true"/>
-                 </item>
                 </layout>
-               </item>
-               <item row="4" column="1">
-                <widget class="QCheckBox" name="randomize_music">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Randomize Music</string>
-                 </property>
-                </widget>
                </item>
                <item row="4" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -607,13 +566,6 @@
                   </widget>
                  </item>
                 </layout>
-               </item>
-               <item row="0" column="3">
-                <widget class="QCheckBox" name="randomize_charts">
-                 <property name="text">
-                  <string>Randomize Charts</string>
-                 </property>
-                </widget>
                </item>
                <item row="0" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_19">
@@ -682,7 +634,7 @@
                  </item>
                 </layout>
                </item>
-               <item row="1" column="2">
+               <item row="1" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_18">
                  <item>
                   <widget class="QLabel" name="label_for_damage_multiplier">
@@ -715,7 +667,41 @@
                  </item>
                 </layout>
                </item>
+               <item row="0" column="2">
+                <widget class="QCheckBox" name="randomize_charts">
+                 <property name="text">
+                  <string>Randomize Charts</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <widget class="QCheckBox" name="randomize_music">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Randomize Music</string>
+                 </property>
+                </widget>
+               </item>
                <item row="1" column="3">
+                <widget class="QCheckBox" name="randomize_enemies">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Randomize Enemy Locations</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QCheckBox" name="remove_swords">
+                 <property name="text">
+                  <string>Remove Swords</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="2">
                 <widget class="QCheckBox" name="chest_type_matches_contents">
                  <property name="text">
                   <string>Chest Type Matches Contents</string>
