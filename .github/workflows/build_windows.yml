@@ -48,8 +48,8 @@ jobs:
           cache: true
           cache-key-prefix: install-qt-${{ env.QT_VERSION }}-action
 
-      - name: Uninstall GCC 12.2.0
-        run: choco uninstall mingw
+      # - name: Uninstall GCC 12.2.0
+      #   run: choco uninstall mingw
 
       - name: Install GCC 11.2.0
         run: choco install mingw --version 11.2.0
