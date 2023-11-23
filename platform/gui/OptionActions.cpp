@@ -1207,7 +1207,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {Plandomizer,                {"Plandomizer",                         "Allows you to provide a file which manually sets item locations and/or entrances."}},
 
         {HoHoHints,                  {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},
-        {KorlHints,                  {"Place Hints on King of Red Lines",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
+        {KorlHints,                  {"Place Hints on King of Red Lions",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
         {ClearerHints,               {"Clearer Hints",                       "When this option is selected, location and item hints will use the standard check or item name, instead of using cryptic hints."}},
         {UseAlwaysHints,             {"Use Always Hints",                    "When the number of location hints is nonzero, certain locations that will always be hinted will take precedence over normal location hints."}},
         {PathHints,                  {"Path Hints",                          "Determines the number of path hints that will be placed."}},
