@@ -71,12 +71,12 @@ ModelError CustomModel::loadFromFolder() {
             }
 
             // Add in defaults for unspecified colors
-            for (auto& [colorName, color] : defaultPreset.heroColors) {
+            for (auto& [colorName, color] : getDefaultPreset().heroColors) {
                 if (!preset.heroColors.contains(colorName)) {
                     preset.heroColors[colorName] = color;
                 }
             }
-            for (auto& [colorName, color] : defaultPreset.casualColors) {
+            for (auto& [colorName, color] : getDefaultPreset().casualColors) {
                 if (!preset.casualColors.contains(colorName)) {
                     preset.casualColors[colorName] = color;
                 }
