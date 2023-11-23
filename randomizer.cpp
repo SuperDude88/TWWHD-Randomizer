@@ -749,13 +749,13 @@ int mainRandomize() {
             switch(SettingsMenu::run(load)) {
                 case Result::CONTINUE:
                     break;
+                case Result::EXIT:
+                    return 0;
                 case Result::CONFIG_SAVE_FAILED:
                     ErrorLog::getInstance().log("Failed to save config.");
-                    return 1;
-                case Result::EXIT:
                     [[fallthrough]];
-                default:
-                    return 0;
+                default: // this shouldn't happen so treat it as an error
+                    return 1;
             }
 
             if(confirmRandomize()) break;

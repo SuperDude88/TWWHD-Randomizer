@@ -112,7 +112,7 @@ uint32_t SettingsMenu::releaseCB(void*) {
 }
 
 //TODO: investigate using the vpad repeat feature instead of hold delays
-Result SettingsMenu::run(Config& out) {
+SettingsMenu::Result SettingsMenu::run(Config& out) {
     using namespace std::literals::chrono_literals;
 
     SettingsMenu& sInstance = getInstance();
