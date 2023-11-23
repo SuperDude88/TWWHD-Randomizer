@@ -2252,6 +2252,13 @@ TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { //make s
 }
 
 TweakError implement_key_bag() {
+    // Add a "unit" string for the big key
+    const std::unordered_map<std::string, std::u16string> messages = {
+        {"English", u" +Big\0"s},
+        {"Spanish", u" TODO: this\0"s},
+        {"French", u" TODO: this\0"s},
+    };
+
     for (const auto& language : Text::supported_languages) {
         RandoSession::CacheEntry& charm = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim@BFLIM");
         
@@ -2259,6 +2266,17 @@ TweakError implement_key_bag() {
             CAST_ENTRY_TO_FILETYPE(pirates_charm, FileTypes::FLIMFile, data)
 
             FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+
+            return true;
+        });
+
+        RandoSession::CacheEntry& units = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@unitString_msbt.szs@YAZ0@SARC@unitString.msbt@MSBT");
+        units.addAction([messages, language](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            const Message& to_copy = msbt.messages_by_label["Unit_Rupee_00"];
+            msbt.addMessage("Unit_Key_00", to_copy.attributes, to_copy.style, u"\0"s);
+            msbt.addMessage("Unit_Key_01", to_copy.attributes, to_copy.style, messages.at(language));
 
             return true;
         });

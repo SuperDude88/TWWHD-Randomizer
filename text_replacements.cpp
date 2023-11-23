@@ -141,23 +141,14 @@ TextReplacements generate_text_replacements(World& world)
       {"French",  u"Sac de Clés\0"s}}},
      {"00603",
      {{"English", u"A handy bag for holding your keys!\nHere's how many you've got with you:\n"s +
-                  u"DRC: \x000E\x0007\x004B\x0000         "s +
-                  u"FW: \x000E\x0007\x004C\x0000         "s +
-                  u"TotG: \x000E\x0007\x004D\x0000     \n"s +
-                  u"ET: \x000E\x0007\x004E\x0000           "s +
-                  u"WT: \x000E\x0007\x004F\x0000     \0"s},
+                  u"DRC: \x000E\x0007\x004B\x0000"s + u"     FW: \x000E\x0007\x004C\x0000"s + u"     TotG: \x000E\x0007\x004D\x0000\n"s +
+                  u"ET: \x000E\x0007\x004E\x0000"s + u"     WT: \x000E\x0007\x004F\x0000\0"s},
       {"Spanish", u"¡Un saco práctico para guardar tus llaves!!\nEstas son las que llevas hasta ahora:\n"s +
-                  u"CdD: \x000E\x0007\x004B\x0000         "s +
-                  u"BP: \x000E\x0007\x004C\x0000        "s +
-                  u"TdlD: \x000E\x0007\x004D\x0000     \n"s +
-                  u"TdlT: \x000E\x0007\x004E\x0000        "s +
-                  u"TdV: \x000E\x0007\x004F\x0000   \0"s},
+                  u"CdD: \x000E\x0007\x004B\x0000"s + u"     BP: \x000E\x0007\x004C\x0000"s + u"     TdlD: \x000E\x0007\x004D\x0000\n"s +
+                  u"TdlT: \x000E\x0007\x004E\x0000"s + u"     TdV: \x000E\x0007\x004F\x0000\0"s},
       {"French",  u"Un sac bien pratique qui contient vos clés!\nVoici combien vous en avez avec vous:\n"s +
-                  u"CdD: \x000E\x0007\x004B\x0000         "s +
-                  u"BD: \x000E\x0007\x004C\x0000        "s +
-                  u"TdD: \x000E\x0007\x004D\x0000     \n"s +
-                  u"TdlT: \x000E\x0007\x004E\x0000        "s +
-                  u"TdV: \x000E\x0007\x004F\x0000   \0"s}}},
+                  u"CdD: \x000E\x0007\x004B\x0000"s + u"     BD: \x000E\x0007\x004C\x0000"s + u"     TdD: \x000E\x0007\x004D\x0000\n"s +
+                  u"TdlT: \x000E\x0007\x004E\x0000"s + u"     TdV: \x000E\x0007\x004F\x0000\0"s}}},
 
      // Tingle Statues
      {"00503",
