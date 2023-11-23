@@ -111,37 +111,37 @@ check_run_new_text_commands:
 	blt check_run_new_text_commands_check_failed
 	cmplwi r0, 0x4F
 	bgt check_run_new_text_commands_check_failed
-  mr r30, r0
-  stwu sp, -0x18(sp)
-  stw r30, 0x10(sp)
-  stw r31, 0x14(sp)
-  stw r29, 0xC(sp)
-  mflr r0
-  stw r0, 0x1C(sp)
-	bl exec_curr_num_keys_text_command
-  b 0x025fdfe4
+
+  mr r6, r0
+  b exec_curr_num_keys_text_command ; Weird return thing that Ghidra calls CALL_RETURN
 
 check_run_new_text_commands_check_failed:
 	li r3, -0x1
 	b 0x02600638 ; jump back
 
 ; Updates the current message string with the number of keys for a certain dungeon.
+; Argument in r6 is the command id
 .global exec_curr_num_keys_text_command
 exec_curr_num_keys_text_command:
-  stwu sp, -0x10 (sp)
+  stwu sp, -0x20(sp)
+  stmw r27, 0xC(sp)
   mflr r0
-  stw r0, 0x14 (sp)
-  mr r13, r6
+  stw r0, 0x24(sp)
+  
   ; Convert the text command ID to the dungeon stage ID.
   ; The text command ID ranges from 0x4B-0x4F, for DRC, FW, TotG, ET, and WT.
   ; The the dungeon stage IDs for those same 5 dungeons range from 3-7.
   ; So just subtract 0x48 to get the right stage ID.
-  addi r6, r30, -0x48
+  addi r6, r6, -0x48
+
+  mr r29, r3
+  mr r30, r4
+  mr r31, r5
 
   lis r9, gameInfo_ptr@ha
   lwz r9, gameInfo_ptr@l(r9)
-  addi r9,r9,0x7bc ; stage ID of the current stage
-  lbz r10, 0 (r9)
+  addi r9, r9, 0x7BC ; stage ID of the current stage
+  lbz r10, 0(r9)
   cmpw r10, r6 ; Check if we're currently in the right dungeon for this key
   beq exec_curr_num_keys_text_command_in_correct_dungeon
 
@@ -149,57 +149,75 @@ exec_curr_num_keys_text_command_not_in_correct_dungeon:
   ; Read the current number of small keys from that dungeon's stage info.
   lis r9, gameInfo_ptr@ha
   lwz r9, gameInfo_ptr@l(r9)
-  addi r9,r9,0x3a0
+  addi r9, r9, 0x3A0
   mulli r6, r6, 0x24 ; Use stage ID of the dungeon as the index, each entry in the list is 0x24 bytes long
   add r9, r9, r6
-  lbz r6, 0x20 (r9) ; Current number of keys for the correct dungeon
-  mr r30, r9 ; Remember the correct stage info pointer for later when we check the big key
-  b exec_curr_num_keys_text_command_after_reading_num_keys
+  b exec_curr_num_keys_text_command_after_getting_stage_info
 
 exec_curr_num_keys_text_command_in_correct_dungeon:
   ; Read the current number of small keys from the currently loaded dungeon info.
   lis r9, gameInfo_ptr@ha
   lwz r9, gameInfo_ptr@l(r9)
-  addi r9,r9,0x798
-  lbz r6, 0x20 (r9) ; Current number of keys for the current dungeon
-  mr r30, r9 ; Remember the correct stage info pointer for later when we check the big key
+  addi r9,r9, 0x798
 
-exec_curr_num_keys_text_command_after_reading_num_keys:
-  li r7, 0
-  li r8, 1
-  bl FUN_025fcb90
+exec_curr_num_keys_text_command_after_getting_stage_info:
+  lbz r6, 0x20(r9) ; Current number of keys for the dungeon
+  mr r28, r9 ; Remember the correct stage info pointer for later when we check the big key
+
+  mr r3, r29 ; this pointer
+  mr r4, r30 ; message pointer
+  mr r5, r31 ; current index in message
+  ; r6 has the number of keys
+  li r7, 0 ; not sure what these do
+  li r8, 1 ; not sure what these do
+  bl replaceItemCount
+  add r31, r31, r3 ; update index in message
+  mr r27, r3 ; keep the return value
 
   ; Check whether the player has the big key or not.
-  lbz r6, 0x21 (r30) ; Bitfield of dungeon-specific flags in the appropriate stage info
+  lbz r6, 0x21 (r28) ; Bitfield of dungeon-specific flags in the appropriate stage info
   rlwinm. r6, r6, 0, 29, 29 ; Extract the has big key bit
-  beq exec_curr_num_keys_text_command_after_appending_big_key_text
+  bne exec_curr_num_keys_text_command_has_big_key
 
-; Do a silly hack to overwrite extra space we add to the message (appending properly is much more complex)
+  lis r6, no_big_key_label_safestring@ha
+  addi r6, r6, no_big_key_label_safestring@l
+  b add_big_key_unit_text
+
 exec_curr_num_keys_text_command_has_big_key:
-  lis r7, key_text_command_has_big_key_text@ha
-  addi r7, r7, key_text_command_has_big_key_text@l
-	addi r13, r13, 0x8
-  li r8, 5
+  lis r6, big_key_label_safestring@ha
+  addi r6, r6, big_key_label_safestring@l
 
-  copy_char_begin:
-    lhz r9, 0(r7)
-    sth r9, 0(r13)
-    addi r13, r13, 2
-    addi r7, r7, 2
-    addi r8, r8, -0x1
-    cmpwi r8, 0
-    ble exec_curr_num_keys_text_command_after_appending_big_key_text
-    b copy_char_begin
+add_big_key_unit_text:
+  mr r3, r29
+  mr r4, r30
+  mr r5, r31
+  ; r6 has pointer to message label
+  bl replaceItemUnit
+  add r3, r27, r3 ; return length of replacements
 
-exec_curr_num_keys_text_command_after_appending_big_key_text:
-  lwz r0, 0x14 (sp)
+  lmw r27, 0xC(sp)
+  lwz r0, 0x24(sp)
   mtlr r0
-  addi sp, sp, 0x10
+  addi sp, sp, 0x20
   blr
 
-.global key_text_command_has_big_key_text
-key_text_command_has_big_key_text:
-  .string "\0 \0+\0B\0i\0g"
+.global no_big_key_label_str
+no_big_key_label_str:
+  .string "Unit_Key_00"
+
+.global big_key_label_str
+big_key_label_str:
+  .string "Unit_Key_01"
+
+.global no_big_key_label_safestring
+no_big_key_label_safestring:
+  .long no_big_key_label_str
+  .long safestring_vtbl_1010394c
+
+.global big_key_label_safestring
+big_key_label_safestring:
+  .long big_key_label_str
+  .long safestring_vtbl_1010394c
 
 .align 2
 

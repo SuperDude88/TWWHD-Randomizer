@@ -30,7 +30,10 @@ withered_tree_item_actor_id: .text
 withered_tree_item_speeds: .text
 withered_tree_launched_flag: .text
 zunari_magic_armor_slot_item_id: .text
-key_text_command_has_big_key_text: .text
+no_big_key_label_str: .text
+no_big_key_label_safestring: .text
+big_key_label_str: .text
+big_key_label_safestring: .text
 target_type_preference: .text
 camera_preference: .text
 first_person_camera_preference: .text
