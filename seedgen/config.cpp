@@ -106,7 +106,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].as<std::string>());
+        settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].as<std::string>("INVALID"));
         if (settings.progression_dungeons == ProgressionDungeons::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -197,7 +197,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.pig_color = nameToPigColor(root["pig_color"].as<std::string>());
+        settings.pig_color = nameToPigColor(root["pig_color"].as<std::string>("INVALID"));
         if(settings.pig_color == PigColor::INVALID) {
             if (!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -212,7 +212,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].as<std::string>());
+        settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].as<std::string>("INVALID"));
         if(settings.dungeon_small_keys == PlacementOption::INVALID) {
             if (!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -227,7 +227,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].as<std::string>());
+        settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].as<std::string>("INVALID"));
         if(settings.dungeon_big_keys == PlacementOption::INVALID) {
             if (!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -242,7 +242,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].as<std::string>());
+        settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].as<std::string>("INVALID"));
         if(settings.dungeon_maps_compasses == PlacementOption::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -257,7 +257,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.target_type = nameToTargetTypePreference(root["target_type"].as<std::string>());
+        settings.target_type = nameToTargetTypePreference(root["target_type"].as<std::string>("INVALID"));
         if(settings.target_type == TargetTypePreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -272,7 +272,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.camera = nameToCameraPreference(root["camera"].as<std::string>());
+        settings.camera = nameToCameraPreference(root["camera"].as<std::string>("INVALID"));
         if(settings.camera == CameraPreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -287,7 +287,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].as<std::string>());
+        settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].as<std::string>("INVALID"));
         if(settings.first_person_camera == FirstPersonCameraPreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -302,7 +302,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].as<std::string>());
+        settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].as<std::string>("INVALID"));
         if(settings.gyroscope == GyroscopePreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -317,7 +317,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.ui_display = nameToUIDisplayPreference(root["ui_display"].as<std::string>());
+        settings.ui_display = nameToUIDisplayPreference(root["ui_display"].as<std::string>("INVALID"));
         if(settings.ui_display == UIDisplayPreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -354,8 +354,9 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         }
     }
 
-    settings.selectedModel.casual = root["player_in_casual_clothes"].as<bool>();
-    settings.selectedModel.modelName = root["custom_player_model"].as<std::string>();
+
+    GET_FIELD(root, "player_in_casual_clothes", settings.selectedModel.casual)
+    GET_FIELD(root, "custom_player_model", settings.selectedModel.modelName)
     // only non-default colors are written
     if(root["custom_colors"].IsMap()) {
         for(const auto& colorObject : root["custom_colors"]) {

@@ -4,6 +4,8 @@
 
 #ifdef PLATFORM_DKP
     #include <platform/proc.hpp>
+    #include <platform/home.hpp>
+    #include <platform/energy_saver.hpp>
     #include <platform/gui/screen.hpp>
     #include <platform/gui/LogConsole.hpp>
     #include <coreinit/filesystem_fsa.h>
@@ -177,6 +179,13 @@ namespace Utility
         ProcInit();
         ConsoleScreenInit();
 
+        initHomeMenu();
+        initEnergySaver();
+
+        setHomeMenuEnable(false);
+        setDim(false);
+        setAPD(false);
+
         if(!initMocha())
         {
             Utility::platformLog("Failed to init libmocha\n");
@@ -215,6 +224,9 @@ namespace Utility
             closeMocha();
             mochaOpen = false;
         }
+
+        resetHomeMenu();
+        resetEnergySaver();
 
         if(platformIsRunning()) {
             ProcExit();

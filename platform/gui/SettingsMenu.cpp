@@ -6,6 +6,8 @@
 #include <version.hpp>
 #include <utility/platform.hpp>
 #include <platform/proc.hpp>
+#include <platform/home.hpp>
+#include <platform/energy_saver.hpp>
 #include <platform/gui/screen.hpp>
 
 static const std::string line_break(ScreenSizeData::tv_line_length, '=');
@@ -112,7 +114,7 @@ uint32_t SettingsMenu::releaseCB(void*) {
 }
 
 //TODO: investigate using the vpad repeat feature instead of hold delays
-Result SettingsMenu::run(Config& out) {
+SettingsMenu::Result SettingsMenu::run(Config& out) {
     using namespace std::literals::chrono_literals;
 
     SettingsMenu& sInstance = getInstance();
@@ -123,6 +125,10 @@ Result SettingsMenu::run(Config& out) {
 
     OptionCB::setInternal(out);
     sInstance.pages[sInstance.curPage]->open();
+
+    setHomeMenuEnable(true);
+    setDim(true);
+    setAPD(true);
 
     bool inMenu = true;
     while(inMenu && Utility::platformIsRunning()) { // loop until menu or app signals an exit
@@ -146,6 +152,11 @@ Result SettingsMenu::run(Config& out) {
 
         std::this_thread::sleep_for(17ms); //update ~60 times a second
     }
+
+
+    setHomeMenuEnable(false);
+    setDim(false);
+    setAPD(false);
     
     out = OptionCB::getInternal();
     if(out.writeToFile(APP_SAVE_PATH "config.yaml") != ConfigError::NONE) {
