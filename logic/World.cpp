@@ -86,6 +86,17 @@ void World::resolveRandomSettings()
             randomStartingItemPool = plandomizer.randomStartingItemPool;
         }
 
+        // Remove items from the pool which we're already starting with
+        filterAndEraseFromPool(randomStartingItemPool, [&](const auto& item){
+            return elementInPool(item, settings.starting_gear);
+        });
+
+        // If we already have all the potential starting items, then don't start with one
+        if (randomStartingItemPool.size() == 0) {
+            LOG_TO_DEBUG("No items to choose from for random starting item");
+            return;
+        }
+
         GameItem startingItem = RandomElement(randomStartingItemPool);
         LOG_TO_DEBUG("Random starting item chosen: " + gameItemToName(startingItem));
         settings.starting_gear.push_back(startingItem);
