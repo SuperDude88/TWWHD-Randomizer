@@ -862,7 +862,7 @@
 
 - Name: Rock Spire Beedle Shop
   Locations:
-      Rock Spire Isle - Beedle 500 Rupee Item: 'Can_Farm_Lots_Of_Rupees'
+      Rock Spire Isle - Beedle 500 Rupee Item: "'Can_Farm_Lots_Of_Rupees'"
       Rock Spire Isle - Beedle 950 Rupee Item: Wallet_Upgrade and 'Can_Farm_Lots_Of_Rupees'
       Rock Spire Isle - Beedle 900 Rupee Item: Wallet_Upgrade and 'Can_Farm_Lots_Of_Rupees'
   Exits:

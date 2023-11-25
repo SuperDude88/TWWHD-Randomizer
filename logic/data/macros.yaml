@@ -55,7 +55,6 @@ Can Farm Joy Pendants: Grappling_Hook and Spoils_Bag
 Can Farm Skull Necklaces: Grappling_Hook and Spoils_Bag
 Can Farm Golden Feathers: Grappling_Hook and Spoils_Bag
 Can Farm Green Chu Jelly: Grappling_Hook and Spoils_Bag
-Can Farm Lots Of Rupees: Nothing
 Can Trade With All Gorons: can_access(Greatfish Isle) and can_access(Mother & Child Isles) and can_access(Bomb Island)
 Can Defeat Bokoblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
 Can Defeat Green Bokoblins: Can_Defeat_Bokoblins
@@ -121,7 +120,7 @@ Can Cut Grass: Heros_Sword or Skull_Hammer or Bombs or Boomerang
 Can Sword Fight With Orca: Heros_Sword or In_Swordless_Mode
 Rematch Bosses Skipped: Skip_Refights
 In Swordless Mode: Remove_Swords
-Outside Swordless Mode: Remove_Swords == false # TODO: not sure if this works
+Outside Swordless Mode: not Remove_Swords
 Chart For Island 1: Treasure_Chart_25
 Chart For Island 2: Treasure_Chart_7
 Chart For Island 3: Treasure_Chart_24
