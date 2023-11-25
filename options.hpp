@@ -145,6 +145,7 @@ enum struct Option {
     NoSpoilerLog,
     StartWithRandomItem,
     RandomItemSlideItem,
+    ClassicMode,
     Plandomizer,
     PlandomizerFile,
 
@@ -288,6 +289,7 @@ public:
 
     bool start_with_random_item;
     bool random_item_slide_item;
+    bool classic_mode;
     bool plandomizer;
     std::string plandomizerFile;
 

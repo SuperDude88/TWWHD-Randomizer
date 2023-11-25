@@ -264,6 +264,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Randomly start with one first-person item to allow item sliding (Grappling Hook, Boomerang, Bow, or Hookshot). This option is aimed at glitch-heavy races where finding one of these items could massively change the outcome."
     },
     {
+      "classic_mode",
+      "Add back behaviors and glitches that were removed in the remake. Currently includes Wind Waker dives and dry storage. Only use these if you know what you are doing!"
+    },
+    {
       "plandomizer",
       "Allows you to select a file which can be used to manually place items in locations, or link specific entrances together in entrance randomizer."
     },

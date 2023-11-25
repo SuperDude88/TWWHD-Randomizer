@@ -201,6 +201,7 @@ private slots:
     void on_do_not_generate_spoiler_log_stateChanged(int arg1);
     void on_start_with_random_item_stateChanged(int arg1);
     void on_random_item_slide_item_stateChanged(int arg1);
+    void on_classic_mode_stateChanged(int arg1);
     void on_plandomizer_stateChanged(int arg1);
     void on_plandomizer_path_browse_button_clicked();
     void on_fix_rng_stateChanged(int arg1);

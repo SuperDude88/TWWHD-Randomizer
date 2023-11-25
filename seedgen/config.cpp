@@ -192,6 +192,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     GET_FIELD(root, "do_not_generate_spoiler_log", settings.do_not_generate_spoiler_log)
     GET_FIELD(root, "start_with_random_item", settings.start_with_random_item)
     GET_FIELD(root, "random_item_slide_item", settings.random_item_slide_item)
+    GET_FIELD(root, "classic_mode", settings.classic_mode)
     GET_FIELD(root, "plandomizer", settings.plandomizer)
 
     if(!root["pig_color"])  {
@@ -507,6 +508,7 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     SET_FIELD(root, "do_not_generate_spoiler_log", settings.do_not_generate_spoiler_log)
     SET_FIELD(root, "start_with_random_item", settings.start_with_random_item)
     SET_FIELD(root, "random_item_slide_item", settings.random_item_slide_item)
+    SET_FIELD(root, "classic_mode", settings.classic_mode)
     SET_FIELD(root, "plandomizer", settings.plandomizer)
     SET_FIELD(root, "plandomizerFile", settings.plandomizerFile)
 

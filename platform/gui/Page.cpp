@@ -453,9 +453,11 @@ AdvancedPage::AdvancedPage() {
 
     buttonColumns[0][0] = std::make_unique<BasicButton>(Option::NoSpoilerLog);
     buttonColumns[0][1] = std::make_unique<CounterButton>(Option::DamageMultiplier, 55ms, 250ms);
+    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ClassicMode);
 
     buttonColumns[1][0] = std::make_unique<BasicButton>(Option::CTMC);
     buttonColumns[1][1] = std::make_unique<BasicButton>(Option::Plandomizer);
+    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::RandomItemSlideItem);
 }
 
 void AdvancedPage::open() {

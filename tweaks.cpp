@@ -3524,6 +3524,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     if (settings.performance) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/performance_diff.yaml"));
     }
+    if (settings.classic_mode) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/classic_features_diff.yaml"));
+    }
     if (settings.reveal_full_sea_chart) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
     }
