@@ -101,6 +101,7 @@ void Settings::resetDefaults() {
     do_not_generate_spoiler_log = false;
     start_with_random_item = false;
     random_item_slide_item = false;
+    classic_mode = false;
     plandomizer = false;
     //settings.plandomizerFile = "";
 
@@ -273,6 +274,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return start_with_random_item;
         case Option::RandomItemSlideItem:
             return random_item_slide_item;
+        case Option::ClassicMode:
+            return classic_mode;
         case Option::Plandomizer:
             return plandomizer;
         case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
@@ -448,6 +451,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             start_with_random_item = value; return;
         case Option::RandomItemSlideItem:
             random_item_slide_item = value; return;
+        case Option::ClassicMode:
+            classic_mode = value; return;
         case Option::Plandomizer:
             plandomizer = value; return;
         case Option::PlandomizerFile: //cant set this like everything else, just here as placeholder
@@ -835,6 +840,7 @@ Option nameToSetting(const std::string& name) {
         {"Remove Music", Option::RemoveMusic},
         {"Start With Random Item", Option::StartWithRandomItem},
         {"Start With Random Item Sliding Item", Option::RandomItemSlideItem},
+        {"Classic Mode", Option::ClassicMode},
         {"Plandomizer", Option::Plandomizer},
         {"Plandomizer File", Option::PlandomizerFile},
         {"Target Type", Option::TargetType},
@@ -931,6 +937,7 @@ std::string settingToName(const Option& setting) {
         {Option::RemoveMusic, "Remove Music"},
         {Option::StartWithRandomItem, "Start With Random Item"},
         {Option::RandomItemSlideItem, "Start With Random Item Sliding Item"},
+        {Option::ClassicMode, "Classic Mode"},
         {Option::Plandomizer, "Plandomizer"},
         {Option::PlandomizerFile, "Plandomizer File"},
         {Option::TargetType, "Target Type"},
