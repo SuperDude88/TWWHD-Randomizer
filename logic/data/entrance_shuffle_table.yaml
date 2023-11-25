@@ -64,6 +64,10 @@
   Forward: WT Hub Room Lower Area,                 WT Mini Boss Room,                        kaze,     2,          3, kazeMB,   6,     0
   Return:  WT Mini Boss Room,                      WT Hub Room Lower Area,                   kazeMB,   6,          0, kaze,     2,    20
   Savewarp: true
+- Type: MINIBOSS
+  Forward: Hyrule Castle Interior,                 Hyrule Castle Sword Chamber,              Hyroom,   0,          2, kenroom,  0,     0
+  Return:  Hyrule Castle Sword Chamber,            Hyrule Castle Interior,                   kenroom,  0,          0, Hyroom,   0,     2
+  Savewarp: true
 
 
 - Type: CAVE
