@@ -94,12 +94,36 @@ void World::resolveRandomSettings()
         // If we already have all the potential starting items, then don't start with one
         if (randomStartingItemPool.size() == 0) {
             LOG_TO_DEBUG("No items to choose from for random starting item");
-            return;
         }
+        else {
+            GameItem startingItem = RandomElement(randomStartingItemPool);
+            LOG_TO_DEBUG("Random starting item chosen: " + gameItemToName(startingItem));
+            settings.starting_gear.push_back(startingItem);
+        }
+    }
+    
 
-        GameItem startingItem = RandomElement(randomStartingItemPool);
-        LOG_TO_DEBUG("Random starting item chosen: " + gameItemToName(startingItem));
-        settings.starting_gear.push_back(startingItem);
+    if (settings.random_item_slide_item)
+    {
+        std::vector<GameItem> randomItemSlidingItemPool = {
+            GameItem::Boomerang,
+            GameItem::ProgressiveBow,
+            GameItem::GrapplingHook,
+            GameItem::Hookshot
+        };
+        
+        // Remove items from the pool which we're already starting with
+        const std::vector<GameItem>& removed = filterAndEraseFromPool(randomItemSlidingItemPool, [&](const auto& item){
+            return elementInPool(item, settings.starting_gear);
+        });
+        if(removed.size() > 0) {
+            LOG_TO_DEBUG("Already starting with an item sliding item, an additional one will not be chosen.");
+        }
+        else {
+            GameItem startingItem = RandomElement(randomItemSlidingItemPool);
+            LOG_TO_DEBUG("Random item sliding item chosen: " + gameItemToName(startingItem));
+            settings.starting_gear.push_back(startingItem);
+        }
     }
 }
 
