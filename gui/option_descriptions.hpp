@@ -260,6 +260,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Randomly start with one extra item, selected uniformly at random from the item pool below.<br>Item Pool: Bait Bag, Bombs, Boomerang, Bow, Deku Leaf, Delivery Bag, Grappling Hook, Hookshot, Picto Box, Power Bracelets, and Skull Hammer."
     },
     {
+      "random_item_slide_item",
+      "Randomly start with one first-person item to allow item sliding (Grappling Hook, Boomerang, Bow, or Hookshot). This option is aimed at glitch-heavy races where finding one of these items could massively change the outcome."
+    },
+    {
       "plandomizer",
       "Allows you to select a file which can be used to manually place items in locations, or link specific entrances together in entrance randomizer."
     },

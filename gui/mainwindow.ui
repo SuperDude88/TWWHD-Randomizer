@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -1297,6 +1297,13 @@
                </property>
                <item>
                 <layout class="QGridLayout" name="gridLayout_7">
+                 <item row="0" column="2">
+                  <widget class="QCheckBox" name="plandomizer">
+                   <property name="text">
+                    <string>Plandomizer</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="0">
                   <widget class="QCheckBox" name="do_not_generate_spoiler_log">
                    <property name="text">
@@ -1321,14 +1328,14 @@
                    </widget>
                   </widget>
                  </item>
-                 <item row="0" column="2">
-                  <widget class="QCheckBox" name="plandomizer">
+                 <item row="1" column="1">
+                  <widget class="QCheckBox" name="random_item_slide_item">
                    <property name="text">
-                    <string>Plandomizer</string>
+                    <string>Start With Random Item Sliding Item</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="3">
+                 <item row="1" column="2">
                   <widget class="QCheckBox" name="fix_rng">
                    <property name="text">
                     <string>Fix RNG</string>

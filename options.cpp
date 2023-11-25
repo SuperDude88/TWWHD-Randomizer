@@ -100,6 +100,7 @@ void Settings::resetDefaults() {
 
     do_not_generate_spoiler_log = false;
     start_with_random_item = false;
+    random_item_slide_item = false;
     plandomizer = false;
     //settings.plandomizerFile = "";
 
@@ -270,6 +271,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return remove_music;
         case Option::StartWithRandomItem:
             return start_with_random_item;
+        case Option::RandomItemSlideItem:
+            return random_item_slide_item;
         case Option::Plandomizer:
             return plandomizer;
         case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
@@ -443,6 +446,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             remove_music = value; return;
         case Option::StartWithRandomItem:
             start_with_random_item = value; return;
+        case Option::RandomItemSlideItem:
+            random_item_slide_item = value; return;
         case Option::Plandomizer:
             plandomizer = value; return;
         case Option::PlandomizerFile: //cant set this like everything else, just here as placeholder
@@ -829,6 +834,7 @@ Option nameToSetting(const std::string& name) {
         {"Starting Blue Chu Jellys", Option::StartingBlueChuJellys},
         {"Remove Music", Option::RemoveMusic},
         {"Start With Random Item", Option::StartWithRandomItem},
+        {"Start With Random Item Sliding Item", Option::RandomItemSlideItem},
         {"Plandomizer", Option::Plandomizer},
         {"Plandomizer File", Option::PlandomizerFile},
         {"Target Type", Option::TargetType},
@@ -924,6 +930,7 @@ std::string settingToName(const Option& setting) {
         {Option::StartingBlueChuJellys, "Starting Blue Chu Jellys"},
         {Option::RemoveMusic, "Remove Music"},
         {Option::StartWithRandomItem, "Start With Random Item"},
+        {Option::RandomItemSlideItem, "Start With Random Item Sliding Item"},
         {Option::Plandomizer, "Plandomizer"},
         {Option::PlandomizerFile, "Plandomizer File"},
         {Option::TargetType, "Target Type"},

@@ -143,6 +143,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     // Advanced Options
     Option::NoSpoilerLog,
     Option::StartWithRandomItem,
+    Option::RandomItemSlideItem,
     Option::Plandomizer,
     Option::FixRNG,
     Option::Performance,

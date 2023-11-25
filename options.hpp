@@ -144,6 +144,7 @@ enum struct Option {
     // Advanced Options
     NoSpoilerLog,
     StartWithRandomItem,
+    RandomItemSlideItem,
     Plandomizer,
     PlandomizerFile,
 
@@ -286,6 +287,7 @@ public:
     bool remove_music;
 
     bool start_with_random_item;
+    bool random_item_slide_item;
     bool plandomizer;
     std::string plandomizerFile;
 

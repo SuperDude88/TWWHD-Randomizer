@@ -629,6 +629,11 @@ namespace OptionCB {
         conf.settings.start_with_random_item = !conf.settings.start_with_random_item;
         return fromBool(conf.settings.start_with_random_item);
     }
+    
+    std::string toggleRandomItemSlideItem() {
+        conf.settings.random_item_slide_item = !conf.settings.random_item_slide_item;
+        return fromBool(conf.settings.random_item_slide_item);
+    }
 
     std::string togglePlandomizer() {
         conf.settings.plandomizer = !conf.settings.plandomizer;
@@ -940,6 +945,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.remove_music);
         case Option::StartWithRandomItem:
             return fromBool(conf.settings.start_with_random_item);
+        case Option::RandomItemSlideItem:
+            return fromBool(conf.settings.random_item_slide_item);
         case Option::Plandomizer:
             return fromBool(conf.settings.plandomizer);
         case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
@@ -1122,6 +1129,8 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleMusic;
         case Option::StartWithRandomItem:
             return &toggleRandomStartItem;
+        case Option::RandomItemSlideItem:
+            return &toggleRandomItemSlideItem;
         case Option::Plandomizer:
             return &togglePlandomizer;
         case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
@@ -1204,6 +1213,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
 
         {NoSpoilerLog,               {"Do Not Generate Spoiler Log",         "Prevents the randomizer from generating a text file containing item placements. This also changes where items are placed in the seed.\nGenerating a spoiler log is highly recommended if you don't intend to use it, in case you get stuck."}},
         {StartWithRandomItem,        {"Start With Random Item",              "Start with one extra item, selected uniformly at random from the pool.\n\nDefault item pool: Bait Bag, Bombs, Boomerang, Bow, Deku Leaf, Delivery Bag, Grappling Hook, Hookshot, Picto Box, Power Bracelets, and Skull Hammer.\nThis pool can be modified with the plandomizer."}},
+        {RandomItemSlideItem,        {"Start With Random Item Sliding Item", "Randomly start with one first-person item to allow item sliding (Grappling Hook, Boomerang, Bow, or Hookshot). This option is aimed at glitch-heavy races where finding one of these items could massively change the outcome. If you already start with one of these items, this setting will *not* add another."}},
         {Plandomizer,                {"Plandomizer",                         "Allows you to provide a file which manually sets item locations and/or entrances."}},
 
         {HoHoHints,                  {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},
