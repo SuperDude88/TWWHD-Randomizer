@@ -230,8 +230,6 @@ private slots:
     void on_reset_settings_to_default_clicked();
     void on_randomize_button_clicked();
     void on_clearer_hints_stateChanged(int arg1);
-    void on_repack_for_console_stateChanged(int arg1);
-    void on_console_output_browse_button_clicked();
     void on_seed_textChanged(const QString &arg1);
     void on_target_type_currentTextChanged(const QString &arg1);
     void on_camera_currentTextChanged(const QString &arg1);

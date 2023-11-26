@@ -38,8 +38,6 @@ Config::Config() {
     gameBaseDir = "";
     outputDir = "";
     seed = "";
-    repack_for_console = false;
-    consoleOutputDir = "";
     settings.plandomizerFile = "";
     
     #ifdef DEVKITPRO
@@ -55,8 +53,6 @@ void Config::resetDefaults() {
     //gameBaseDir = "";
     //outputDir = "";
     //seed = "";
-    //repack_for_console = false;
-    //consoleOutputDir = "";
 
     settings.resetDefaults();
 
@@ -95,8 +91,6 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         gameBaseDir = baseTemp;
         GET_FIELD_NO_FAIL(root, "outputDir", outTemp)
         outputDir = outTemp;
-        GET_FIELD(root, "repack_for_console", repack_for_console)
-        GET_FIELD_NO_FAIL(root, "consoleOutputDir", consoleOutputDir)
         GET_FIELD_NO_FAIL(root, "plandomizerFile", settings.plandomizerFile)
     #endif
 
@@ -428,8 +422,6 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     SET_FIELD(root, "gameBaseDir", gameBaseDir.string())
     SET_FIELD(root, "outputDir", outputDir.string())
     SET_FIELD(root, "seed", seed)
-    SET_FIELD(root, "repack_for_console", repack_for_console)
-    SET_FIELD(root, "consoleOutputDir", consoleOutputDir)
 
     SET_FIELD(root, "progression_dungeons", ProgressionDungeonsToName(settings.progression_dungeons))
     SET_FIELD(root, "progression_great_fairies", settings.progression_great_fairies)

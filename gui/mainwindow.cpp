@@ -397,9 +397,6 @@ void MainWindow::apply_config_settings()
     // Directories and Seed
     ui->base_game_path->setText(config.gameBaseDir.string().c_str());
     ui->output_folder->setText(config.outputDir.string().c_str());
-    APPLY_CONFIG_CHECKBOX_SETTING(config, ui, repack_for_console);
-    on_repack_for_console_stateChanged(0); // hide console repacking elements if necessary
-    ui->console_output->setText(config.consoleOutputDir.c_str());
     ui->seed->setText(config.seed.c_str());
 
     // Progression settings
@@ -571,34 +568,6 @@ void MainWindow::on_output_folder_browse_button_clicked()
     {
         ui->output_folder->setText(dir);
         config.outputDir = dir.toStdString();
-    }
-}
-
-void MainWindow::on_repack_for_console_stateChanged(int arg1)
-{
-    if (ui->repack_for_console->isChecked())
-    {
-        ui->label_for_console_output->setVisible(true);
-        ui->console_output_browse_button->setVisible(true);
-        ui->console_output->setVisible(true);
-        config.repack_for_console = true;
-    }
-    else
-    {
-        ui->label_for_console_output->setVisible(false);
-        ui->console_output_browse_button->setVisible(false);
-        ui->console_output->setVisible(false);
-        config.repack_for_console = false;
-    }
-}
-
-void MainWindow::on_console_output_browse_button_clicked()
-{
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!dir.isEmpty() && !dir.isNull())
-    {
-        ui->console_output->setText(dir);
-        config.consoleOutputDir = dir.toStdString();
     }
 }
 
@@ -1085,15 +1054,6 @@ void MainWindow::on_randomize_button_clicked()
         return;
     }
 
-    if (config.repack_for_console)
-    {
-        if (!std::filesystem::is_directory(config.consoleOutputDir))
-        {
-            show_warning_dialog("Must specify a valid output folder for the repacked console files.", "No console output folder specified");
-            return;
-        }
-    }
-
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
     ConfigError err = config.writeToFile(APP_SAVE_PATH "config.yaml");
@@ -1103,8 +1063,7 @@ void MainWindow::on_randomize_button_clicked()
     }
 
     // Setup the progress dialog for the randomization algorithm
-    int progressTotal = config.repack_for_console ? 200 : 100;
-    QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, progressTotal, this);
+    QPointer<QProgressDialog> progressDialog = new QProgressDialog("Initializing...", "", 0, 100, this);
     progressDialog->setWindowTitle("Randomizing");
     progressDialog->setWindowModality(Qt::WindowModal);
     progressDialog->setWindowFlag(Qt::WindowCloseButtonHint, false);
