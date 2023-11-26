@@ -674,39 +674,6 @@ public:
             return 1;
         }
 
-
-        #ifndef DEVKITPRO
-            // Repack for console if necessary
-            if (config.repack_for_console)
-            {
-                UPDATE_DIALOG_LABEL("Repacking for console...\n(This will take a while)");
-                Utility::platformLog("Repacking for console...\n");
-                const std::filesystem::path dirPath = std::filesystem::path(config.outputDir);
-                const std::filesystem::path outPath = std::filesystem::path(config.consoleOutputDir);
-
-                Key commonKey;
-
-                std::string inconspicuousStr1 = "d7b00402659ba2abd2cb0db27fa2b656";
-
-                // Fill encryption keys from strings
-                for (size_t i = 0; i < commonKey.size(); i++) {
-                    commonKey[i] = static_cast<uint8_t>(strtoul(inconspicuousStr1.substr(i * 2, 2).c_str(), nullptr, 16));
-                }
-
-                // Delete any previous repacked files
-                for (const auto& entry : std::filesystem::directory_iterator(outPath)) {
-                    std::filesystem::remove_all(entry.path());
-                }
-
-                // Now repack the files
-                if (createPackage(dirPath, outPath, defaultEncryptionKey, commonKey) != PackError::NONE) {
-                    ErrorLog::getInstance().log("Failed to create console package");
-                    return 1;
-                }
-            }
-            UPDATE_DIALOG_VALUE(200);
-        #endif
-
         //done!
         return 0;
     }

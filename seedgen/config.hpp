@@ -25,9 +25,6 @@ public:
 
     std::string seed;
 
-    bool repack_for_console;
-    std::string consoleOutputDir;
-
     Settings settings;
 
     bool converted = false;
