@@ -625,6 +625,10 @@ bool RandoSession::runFirstTimeSetup() {
 
 bool RandoSession::modFiles()
 {
+    #ifdef ENABLE_TIMING
+        ScopedTimer<std::chrono::high_resolution_clock, "Repacking took "> timer;
+    #endif
+
     CHECK_INITIALIZED(false);
 
     if(firstTimeSetup) {
