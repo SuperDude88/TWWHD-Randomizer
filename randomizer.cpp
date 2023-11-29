@@ -284,9 +284,6 @@ private:
         UPDATE_DIALOG_VALUE(45);
         UPDATE_DIALOG_LABEL("Saving entrances...");
 
-        const std::unordered_set<uint8_t> pack1 = {0, 1, 11, 13, 17, 23};
-        const std::unordered_set<uint8_t> pack2 = {9, 39, 41, 44};
-
         const EntrancePool entrances = worlds[0].getShuffledEntrances(EntranceType::ALL);
         for (const auto entrance : entrances)
         {

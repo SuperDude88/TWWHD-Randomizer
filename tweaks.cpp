@@ -1370,25 +1370,27 @@ TweakError set_damage_multiplier(const float& multiplier) {
         return true;
     });
 
-    // Update the confirmation text
-    for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@SequenceWindow_00_msbt.szs@YAZ0@SARC@SequenceWindow_00.msbt@MSBT");
-        entry.addAction([=](RandoSession* session, FileType* data) -> int {
-            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+    // Update the hero mode description if we changed the multiplier
+    if(multiplier != 2.0f) {
+        for (const auto& language : Text::supported_languages) {
+            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@SequenceWindow_00_msbt.szs@YAZ0@SARC@SequenceWindow_00.msbt@MSBT");
+            entry.addAction([=](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-            static const std::unordered_map<std::string, std::u16string> word_to_replace = {
-                {"English", u"double"s},
-                {"Spanish", u"el doble"s}, //TODO: check this
-                {"French", u"doublés"s}, //TODO: check this
-            };
+                static const std::unordered_map<std::string, std::u16string> word_to_replace = {
+                    {"English", u"double"s},
+                    {"Spanish", u"el doble"s},
+                    {"French", u"doublés"s},
+                };
 
-            std::u16string& message = msbt.messages_by_label["T_Msg_00_hardmode00"].text.message;
-            const std::u16string& replace = word_to_replace.at(language);
-            const std::u16string& replacement = Utility::Str::toUTF16(std::to_string(static_cast<uint8_t>(multiplier)) + "x");
-            message.replace(message.find(replace), replace.size(), replacement);
+                std::u16string& message = msbt.messages_by_label["T_Msg_00_hardmode00"].text.message;
+                const std::u16string& replace = word_to_replace.at(language);
+                const std::u16string& replacement = Utility::Str::toUTF16(std::to_string(static_cast<uint8_t>(multiplier)) + "x");
+                message.replace(message.find(replace), replace.size(), replacement);
 
-            return true;
-        });
+                return true;
+            });
+        }
     }
 
     return TweakError::NONE;
