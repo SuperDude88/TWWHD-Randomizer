@@ -44,6 +44,8 @@ public:
     void setRequirement(const Requirement newRequirement);
     EntranceType getEntranceType() const;
     void setEntranceType(EntranceType newType);
+    EntranceType getOriginalEntranceType() const;
+    void setOriginalEntranceType(EntranceType newType);
     bool isPrimary() const;
     void setAsPrimary();
     std::string getOriginalName() const;
@@ -96,6 +98,7 @@ private:
     Area* originalConnectedArea = nullptr;
     Requirement requirement;
     EntranceType type = EntranceType::NONE;
+    EntranceType originalType = EntranceType::NONE;
     bool primary = false;
     std::string originalName = "";
     bool alreadySetOriginalName = false;
