@@ -68,6 +68,16 @@ void Entrance::setEntranceType(EntranceType newType)
     type = newType;
 }
 
+EntranceType Entrance::getOriginalEntranceType() const
+{
+    return originalType;
+}
+
+void Entrance::setOriginalEntranceType(EntranceType newType)
+{
+    originalType = newType;
+}
+
 bool Entrance::isPrimary() const
 {
     return primary;
