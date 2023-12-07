@@ -140,6 +140,7 @@ EntranceShuffleError setAllEntrancesData(World& world)
         forwardEntrance->setRoomNum(forwardEntry.room);
         forwardEntrance->setSpawnId(forwardEntry.spawnId);
         forwardEntrance->setEntranceType(type);
+        forwardEntrance->setOriginalEntranceType(type);
         forwardEntrance->setAsPrimary();
         if (returnEntry.parentArea != "")
         {
@@ -155,6 +156,7 @@ EntranceShuffleError setAllEntrancesData(World& world)
             returnEntrance->setRoomNum(returnEntry.room);
             returnEntrance->setSpawnId(returnEntry.spawnId);
             returnEntrance->setEntranceType(entranceTypeToReverse(type));
+            returnEntrance->setOriginalEntranceType(entranceTypeToReverse(type));
             forwardEntrance->bindTwoWay(returnEntrance);
             if (savewarp)
             {
@@ -351,7 +353,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
                 auto dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces();
                 if (dungeonExit)
                 {
-                    if (dungeonExit->isPrimary() && isAnyOf(dungeonExit->getEntranceType(), EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::MINIBOSS))
+                    if (dungeonExit->isPrimary() && isAnyOf(dungeonExit->getOriginalEntranceType(), EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::MINIBOSS))
                     {
                         return EntranceShuffleError::SAVEWARP_SANDWICH;
                     }
