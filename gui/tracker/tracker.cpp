@@ -605,8 +605,26 @@ void MainWindow::update_tracker()
     currentPointSize = 12;
     for (auto& entrance : areaEntrances[currentTrackerArea])
     {
+        // New Horizontal layout to add the label and the disconnect button
+        // if the entrance is connected
+        auto hLayout = new QHBoxLayout();
+
         auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, nullptr, entrance);
-        ui->entrance_scroll_layout->addWidget(newLabel);
+        hLayout->addWidget(newLabel);
+        // If the entrance is connected, give the user a disconnect button
+        if (entrance->getReplaces())
+        {
+            hLayout->setContentsMargins(7, 0, 0, 0);
+            auto disconnectButton = new QPushButton("X");
+            set_font(disconnectButton, "fira_sans", currentPointSize);
+            disconnectButton->setCursor(Qt::PointingHandCursor);
+            disconnectButton->setMaximumWidth(20);
+            disconnectButton->setMaximumHeight(15);
+            connect(disconnectButton, &QPushButton::clicked, this, [&](){MainWindow::tracker_disconnect_entrance(entrance);});
+            hLayout->addWidget(disconnectButton);
+        }
+
+        ui->entrance_scroll_layout->addLayout(hLayout);
         connect(newLabel, &TrackerLabel::entrance_source_label_clicked, this, &MainWindow::tracker_show_available_target_entrances);
         connect(newLabel, &TrackerLabel::entrance_source_label_disconnect, this, &MainWindow::tracker_disconnect_entrance);
         connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
