@@ -339,25 +339,23 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
             }
         }
 
-        // Ensure that each dungeon's exit doesn't lead to another's starting room.
-        // Otherwise players could get sandwhiched between two dungeons without the proper items to leave
-        // and not have the ability to savewarp back to the sea.
-        std::unordered_set<Entrance*> dungeonExits = {};
-        std::unordered_set<Area*> dungeonStartingAreas = {};
+        // Ensure that each dungeon's exit doesn't lead to a place that the player
+        // might need to savewarp out of to escape. For now this is other dungeon entrances,
+        // minibosses, and bosses.
+        // Otherwise players could get sandwiched between two savewarp areas without 
+        // the proper items to leave and not have the ability to savewarp back to the sea.
         for (auto& [dungeonName, dungeon] : world.dungeons)
         {
-            if (dungeon.startingArea)
+            if (dungeon.startingEntrance->getReverse())
             {
-                dungeonExits.insert(dungeon.startingEntrance->getReverse());
-                dungeonStartingAreas.insert(dungeon.startingArea);
-            }
-        }
-
-        for (auto exit : dungeonExits)
-        {
-            if (exit && dungeonStartingAreas.contains(exit->getConnectedArea()))
-            {
-                return EntranceShuffleError::DUNGEON_ENTRANCES_CONNECTED;
+                auto dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces();
+                if (dungeonExit)
+                {
+                    if (dungeonExit->isPrimary() && isAnyOf(dungeonExit->getEntranceType(), EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::MINIBOSS))
+                    {
+                        return EntranceShuffleError::SAVEWARP_SANDWICH;
+                    }
+                }
             }
         }
     }
@@ -998,8 +996,8 @@ const std::string errorToName(EntranceShuffleError err)
             return "ATTEMPTED_SELF_CONNECTION";
         case EntranceShuffleError::FAILED_TO_DISCONNECT_TARGET:
             return "FAILED_TO_DISCONNECT_TARGET";
-        case EntranceShuffleError::DUNGEON_ENTRANCES_CONNECTED:
-            return "DUNGEON_ENTRANCES_CONNECTED";
+        case EntranceShuffleError::SAVEWARP_SANDWICH:
+            return "SAVEWARP_SANDWICH";
         case EntranceShuffleError::PLANDOMIZER_ERROR:
             return "PLANDOMIZER_ERROR";
         default:
