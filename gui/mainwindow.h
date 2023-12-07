@@ -236,7 +236,7 @@ private slots:
     void on_first_person_camera_currentTextChanged(const QString &arg1);
     void on_gyroscope_currentTextChanged(const QString &arg1);
     void on_ui_display_currentTextChanged(const QString &arg1);
-
+    void on_about_button_clicked();
 
     // Tracker
     void on_start_tracker_button_clicked();
@@ -257,6 +257,8 @@ private slots:
     void on_entrance_list_close_button_released();
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
+
+
 
 private:
     // More Tracker Stuff
