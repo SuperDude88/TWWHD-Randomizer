@@ -1153,3 +1153,14 @@ void MainWindow::load_locations()
         }
     }
 }
+
+void MainWindow::on_about_button_clicked()
+{
+    auto message = "Wind Waker HD Randomizer Version " RANDOMIZER_VERSION "<br><br>"
+                   "Created by Superdude88, gymnast86, csunday95, and CrainWWR<br><br>"
+                   "Report issues here:<br><a href=\"https://github.com/SuperDude88/TWWHD-Randomizer/issues\">https://github.com/SuperDude88/TWWHD-Randomizer/issues</a><br><br>"
+                   "Source code:<br><a href=\"https://github.com/SuperDude88/TWWHD-Randomizer\">https://github.com/SuperDude88/TWWHD-Randomizer</a><br><br>"
+                   "Discord Server: TODO";
+    show_info_dialog(message, "About");
+}
+
