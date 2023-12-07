@@ -2641,7 +2641,7 @@
   Dungeon: Earth Temple
   Exits:
       ET Foggy Floormasters Room: Can_Play_CM or Can_Aim_Mirror_Shield
-      ET Poes and Bubbles RoomBehindGrating: Can_Play_CM or Can_Aim_Mirror_Shield
+      ET Poes and Bubbles Room Behind Grating: Can_Play_CM or Can_Aim_Mirror_Shield
       ET Basement Hub Room Upper Ledge: Can_Play_CM or Can_Aim_Mirror_Shield
       ET Hanging Bridge Room: Nothing
 
@@ -2653,7 +2653,7 @@
   Exits:
       ET Basement Hub Room: Nothing
 
-- Name: ET Poes and Bubbles RoomBehindGrating
+- Name: ET Poes and Bubbles Room Behind Grating
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Near Hammer Button Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
@@ -2669,10 +2669,10 @@
 - Name: ET Poes and Bubbles Room
   Dungeon: Earth Temple
   Exits:
-      ET Basement Hub Room Upper Ledge: Nothing
+      ET Basement Hub Room Upper Ledge: count(1, Earth_Temple_Small_Key)
       ET Third Crypt:
           Skull_Hammer and Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
-          and can_access(ET Poes and Bubbles RoomBehindGrating)
+          and can_access(ET Poes and Bubbles Room Behind Grating)
 
 - Name: ET Third Crypt
   Dungeon: Earth Temple
