@@ -118,6 +118,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 void MainWindow::clear_layout(QLayout* layout) {
+
+    // Recursively clear child layouts
+    for (auto nestedLayout : layout->findChildren<QLayout*>())
+    {
+        clear_layout(nestedLayout);
+    }
+
     while (QLayoutItem* item = layout->takeAt(0))
     {
         if (QWidget* widget = item->widget())
