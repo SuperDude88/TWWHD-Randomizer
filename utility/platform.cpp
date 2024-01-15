@@ -74,7 +74,7 @@ void closeMocha() {
     }
 
     if(DiscMounted) {
-        if(MochaUtilsStatus status = Mocha_UnmountFS("storage_odd03"); status != MOCHA_RESULT_SUCCESS) {
+        if(MochaUtilsStatus status = Mocha_UnmountFS("storage_odd_content"); status != MOCHA_RESULT_SUCCESS) {
             Utility::platformLog("Error unmounting disc: %s\n", Mocha_GetStatusStr(status));
         }
         DiscMounted = false;
@@ -116,7 +116,7 @@ namespace Utility {
         else if(path.string().starts_with("/vol/storage_odd")) {
             if(!DiscMounted) {
                 Utility::platformLog("Attempting to mount disc\n");
-                if(MochaUtilsStatus status = Mocha_MountFS("storage_odd03", "/dev/odd03", "/vol/storage_odd_content"); status != MOCHA_RESULT_SUCCESS)
+                if(MochaUtilsStatus status = Mocha_MountFS("storage_odd_content", "/dev/odd03", "/vol/storage_odd_content"); status != MOCHA_RESULT_SUCCESS)
                 {
                     Utility::platformLog("Failed to mount disc: %s\n", Mocha_GetStatusStr(status));
                     return false;
