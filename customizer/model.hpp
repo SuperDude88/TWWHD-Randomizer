@@ -46,10 +46,12 @@ public:
     const ColorPreset& getDefaultPreset() const;
     const std::string& getColor(const std::string& name_) const;
     void setColor(const std::string& name_, const std::string& color_);
+    void resetSingleColor(const std::string& name);
     void resetColors();
 
     void loadPreset(const size_t& idx);
     void loadPreset(const std::string& name, const bool& both = true);
+    void randomizeSingleColor(const std::string& name);
     void randomizeOrderly();
     void randomizeChaotically();
 

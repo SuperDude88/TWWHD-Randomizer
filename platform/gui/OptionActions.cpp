@@ -745,9 +745,6 @@ namespace OptionCB {
 
     }
 
-    //special handling for these too
-    //std::string setColors();
-
     std::string invalidCB() {
         return "";
     }
@@ -974,6 +971,24 @@ std::string getValue(const Option& option) {
     }
 }
 
+namespace ColorCB {
+    std::string randomizeColor(const std::string& name_) {
+        getModel().randomizeSingleColor(name_);
+
+        return "";
+    }
+
+    std::string resetColor(const std::string& name_) {
+        getModel().resetSingleColor(name_);
+
+        return "";
+    }
+
+    std::string invalidCB(const std::string&) {
+        return "";
+    }
+}
+
 CustomModel& getModel() {
     return conf.settings.selectedModel;
 }
@@ -1043,9 +1058,9 @@ TriggerCallback getCallback(const Option& option) {
         case Option::RandomizeDungeonEntrances:
             return &toggleDungeonEntranceShuffle;
         case Option::RandomizeMinibossEntrances:
-            return &toggleBossEntranceShuffle;
-        case Option::RandomizeBossEntrances:
             return &toggleMinibossEntranceShuffle;
+        case Option::RandomizeBossEntrances:
+            return &toggleBossEntranceShuffle;
         case Option::RandomizeCaveEntrances:
             return &toggleCaveEntranceShuffle;
         case Option::RandomizeDoorEntrances:

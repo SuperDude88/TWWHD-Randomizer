@@ -1,6 +1,7 @@
 #pragma once
 
 #include <platform/gui/Button.hpp>
+#include <platform/gui/Keyboard.hpp>
 
 class EmptyPage {
 public:
@@ -155,19 +156,96 @@ public:
 
 class ColorPage : public EmptyPage {
 private:
-    static constexpr size_t LIST_HEIGHT = 20;
-
-    enum struct Column {
-        LIST = 0,
-        BUTTONS = 1
+    enum struct Subpage {
+        PRESETS = 0,
+        COLOR_PICKER = 1
     };
 
-    Column curCol = Column::LIST;
-    size_t curRow = 0;
-    size_t listScrollPos = 0;
-    size_t selectedListIdx = 0;
+    class PresetsSubpage : public EmptyPage {
+    private:
+        ColorPage& parent;
 
-    std::array<std::unique_ptr<BasicButton>, 3> toggles;
+        static constexpr size_t LIST_HEIGHT = 20;
+
+        enum struct Column {
+            LIST = 0,
+            BUTTONS = 1
+        };
+
+        Column curCol = Column::LIST;
+        size_t curRow = 0;
+        size_t listScrollPos = 0;
+        size_t selectedListIdx = 0;
+
+        std::array<std::unique_ptr<BasicButton>, 4> toggles;
+        
+    public:
+        PresetsSubpage(ColorPage& parent_);
+    
+        std::string getName() const { return "Presets"; }
+        std::string getDesc() const { return "Change presets and model options."; }
+
+        void open();
+        bool update(const VPADStatus& stat);
+        void drawTV() const;
+        void drawDRC() const;
+    };
+
+    class ColorPickerSubpage : public EmptyPage {
+    private:
+        ColorPage& parent;
+
+        static constexpr size_t LIST_HEIGHT = 20;
+
+        size_t curCol = 0;
+        size_t curRow = 0;
+        size_t listScrollPos = 0;
+        size_t selectedListIdx = 0;
+
+        HexKeyboard board;
+
+        bool picking = false;
+        void setPicking(const bool& enable_, const std::string& color_ = "") { picking = enable_; }
+
+        std::array<ColorButton, 3> actions;
+        
+    public:
+        ColorPickerSubpage(ColorPage& parent_);
+    
+        std::string getName() const { return "Color List"; }
+        std::string getDesc() const { return "Individually set custom colors."; }
+
+        void open();
+        bool update(const VPADStatus& stat);
+        void drawTV() const;
+        void drawDRC() const;
+
+        bool updateList(const VPADStatus& stat);
+        void drawListTV() const;
+        void drawListDRC() const;
+
+        bool updatePicker(const VPADStatus& stat);
+        void drawPickerTV() const;
+        void drawPickerDRC() const;
+    };
+
+    void setSubpage(const Subpage& sub_) {
+        curSubpage = sub_;
+
+        switch(curSubpage) {
+            case Subpage::PRESETS:
+                presets.open();
+                break;
+            case Subpage::COLOR_PICKER:
+                picker.open();
+                break;
+        }
+    }
+
+    Subpage curSubpage;
+
+    PresetsSubpage presets;
+    ColorPickerSubpage picker;
 
 public:
     ColorPage();

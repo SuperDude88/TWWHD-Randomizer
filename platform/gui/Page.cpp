@@ -818,21 +818,60 @@ void ItemsPage::drawDRC() const {
 
 
 
-ColorPage::ColorPage() {
-    using namespace std::literals::chrono_literals;
+ColorPage::ColorPage() :
+    presets(*this),
+    picker(*this)
+{}
 
+void ColorPage::open() {
+    curSubpage = Subpage::PRESETS;
+}
+
+bool ColorPage::update(const VPADStatus& stat) {
+    switch(curSubpage) {
+        case Subpage::PRESETS:
+            return presets.update(stat);
+        case Subpage::COLOR_PICKER:
+            return picker.update(stat);
+    }
+
+    return false;
+}
+
+void ColorPage::drawTV() const {
+    switch(curSubpage) {
+        case Subpage::PRESETS:
+            return presets.drawTV();
+        case Subpage::COLOR_PICKER:
+            return picker.drawTV();
+    }
+}
+
+void ColorPage::drawDRC() const {
+    switch(curSubpage) {
+        case Subpage::PRESETS:
+            return presets.drawDRC();
+        case Subpage::COLOR_PICKER:
+            return picker.drawDRC();
+    }
+}
+
+ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) : 
+    parent(parent_)
+{
     toggles[0] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes.", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
     toggles[1] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
     toggles[2] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
+    toggles[3] = std::make_unique<FunctionButton>("Select Colors Manually", "", std::bind(&ColorPage::setSubpage, &parent, Subpage::COLOR_PICKER));
 }
 
-void ColorPage::open() {
+void ColorPage::PresetsSubpage::open() {
     curCol = Column::LIST;
     curRow = 0;
     listScrollPos = 0;
 }
 
-bool ColorPage::update(const VPADStatus& stat) {
+bool ColorPage::PresetsSubpage::update(const VPADStatus& stat) {
     bool moved = false;
 
     if(stat.trigger & VPAD_BUTTON_LEFT || stat.trigger & VPAD_BUTTON_RIGHT) {
@@ -974,7 +1013,7 @@ static const std::array<std::string, 11> casualTextures = {
     "Shoe Soles",
 };
 
-void ColorPage::drawTV() const {
+void ColorPage::PresetsSubpage::drawTV() const {
     // draw visible part of the list
     for(size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
         OSScreenPutFontEx(SCREEN_TV, 1, 3 + row, getModel().getPresets()[listScrollPos + row].name.c_str());
@@ -1014,7 +1053,7 @@ void ColorPage::drawTV() const {
     }
 }
 
-void ColorPage::drawDRC() const {
+void ColorPage::PresetsSubpage::drawDRC() const {
     switch(curCol) {
         case Column::LIST:
             break;
@@ -1028,6 +1067,249 @@ void ColorPage::drawDRC() const {
     for(size_t i = 0; i < descLines.size(); i++) {
         OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
     }
+}
+
+ColorPage::ColorPickerSubpage::ColorPickerSubpage(ColorPage& parent_) : 
+    parent(parent_),
+    actions{
+        ColorButton("Random", "", &ColorCB::randomizeColor),
+        ColorButton("Pick", "", std::bind(&ColorPage::ColorPickerSubpage::setPicking, this, true, std::placeholders::_1)), // this is a really stupid way to do this
+        ColorButton("Reset", "", &ColorCB::resetColor)
+    }
+{}
+
+void ColorPage::ColorPickerSubpage::open() {
+    curCol = 0;
+    curRow = 0;
+    listScrollPos = 0;
+
+    setPicking(false);
+}
+
+bool ColorPage::ColorPickerSubpage::update(const VPADStatus& stat) {
+    if(picking) {
+        return updatePicker(stat);
+    }
+    else {
+        return updateList(stat);
+    }
+}
+
+void ColorPage::ColorPickerSubpage::drawTV() const {
+    if(picking) {
+        return drawPickerTV();
+    }
+    else {
+        return drawListTV();
+    }
+}
+
+void ColorPage::ColorPickerSubpage::drawDRC() const {
+    if(picking) {
+        return drawPickerDRC();
+    }
+    else {
+        return drawListDRC();
+    }
+}
+
+bool ColorPage::ColorPickerSubpage::updateList(const VPADStatus& stat) {
+    if (stat.trigger & VPAD_BUTTON_B) {
+        parent.setSubpage(Subpage::PRESETS);
+        return true;
+    }
+
+    bool moved = false;
+    if(stat.trigger & VPAD_BUTTON_LEFT) {
+        if(curCol <= 0) {
+            curCol = actions.size() - 1; //wrap on leftmost row
+        }
+        else {
+            curCol -= 1; //left one row
+        }
+        moved = true;
+    }
+    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+        if(curCol >= actions.size() - 1) {
+            curCol = 0; //wrap on rightmost row
+        }
+        else {
+            curCol += 1; //right one row
+        }
+        moved = true;
+    }
+
+    if(stat.trigger & VPAD_BUTTON_UP) {
+        // technically doesn't matter since they're the same number of textures but if some ever get split this will adjust itself
+        if(getModel().casual) {
+            if(curRow <= 0) {
+                if(listScrollPos <= 0) {
+                    curRow = std::min(LIST_HEIGHT, casualTextures.size()) - 1; // -1 because 0-indexed
+                    if(casualTextures.size() > LIST_HEIGHT) {
+                        listScrollPos = casualTextures.size() - LIST_HEIGHT;
+                    }
+                }
+                else {
+                    listScrollPos -= 1;
+                }
+            }
+            else {
+                curRow -= 1;
+            }
+        }
+        else {
+            if(curRow <= 0) {
+                if(listScrollPos <= 0) {
+                    curRow = std::min(LIST_HEIGHT, heroTextures.size()) - 1; // -1 because 0-indexed
+                    if(heroTextures.size() > LIST_HEIGHT) {
+                        listScrollPos = heroTextures.size() - LIST_HEIGHT;
+                    }
+                }
+                else {
+                    listScrollPos -= 1;
+                }
+            }
+            else {
+                curRow -= 1;
+            }
+        }
+
+        moved = true;
+    }
+    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+        if(getModel().casual) {
+            if(curRow >= std::min(LIST_HEIGHT, casualTextures.size()) - 1) {
+                if(casualTextures.size() > LIST_HEIGHT) {
+                    if(listScrollPos >= casualTextures.size() - LIST_HEIGHT) {
+                        listScrollPos = 0;
+                        curRow = 0;
+                    }
+                    else {
+                        listScrollPos += 1;
+                    }
+                }
+                else {
+                    listScrollPos = 0;
+                    curRow = 0;
+                }
+            }
+            else {
+                curRow += 1;
+            }
+        }
+        else {
+            if(curRow >= std::min(LIST_HEIGHT, heroTextures.size()) - 1) {
+                if(heroTextures.size() > LIST_HEIGHT) {
+                    if(listScrollPos >= heroTextures.size() - LIST_HEIGHT) {
+                        listScrollPos = 0;
+                        curRow = 0;
+                    }
+                    else {
+                        listScrollPos += 1;
+                    }
+                }
+                else {
+                    listScrollPos = 0;
+                    curRow = 0;
+                }
+            }
+            else {
+                curRow += 1;
+            }
+        }
+
+        moved = true;
+    }
+
+    bool btnUpdate = false;
+    if(getModel().casual) {
+        btnUpdate = actions[curCol].update(stat, casualTextures[listScrollPos + curRow]);
+    }
+    else {
+        btnUpdate = actions[curCol].update(stat, heroTextures[listScrollPos + curRow]);
+    }
+    
+    return moved || btnUpdate;
+}
+
+void ColorPage::ColorPickerSubpage::drawListTV() const {
+    static constexpr size_t startCol = 2;
+    static constexpr uint32_t starting_y_pos = 104;
+    const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
+    for(size_t row = 0; row < std::min(LIST_HEIGHT, textures.size()); row++) {
+        OSScreenPutFontEx(SCREEN_TV, startCol, row + 3, textures[listScrollPos + row].c_str());
+
+        std::string hexColor = getModel().getColor(textures[listScrollPos + row]);
+        for(auto& c : hexColor) {
+            c = std::toupper(c); //capitalize for consistency
+        }
+
+        OSScreenPutFontEx(SCREEN_TV, startCol + 13, 3 + row, hexColor.c_str());
+        drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 14 * (startCol + 13 + 7), starting_y_pos + row * 24, 24);
+        
+        actions[0].drawTV(row + 3, startCol + 23, startCol + 23 + 1);
+        actions[1].drawTV(row + 3, startCol + 31, startCol + 31 + 1);
+        actions[2].drawTV(row + 3, startCol + 37, startCol + 37 + 1);
+    }
+    
+    // draw cursor
+    size_t cursorCol = 0;
+    switch(curCol) {
+        case 0:
+            cursorCol = startCol + 23 - 1;
+            break;
+        case 1:
+            cursorCol = startCol + 31 - 1;
+            break;
+        case 2:
+            cursorCol = startCol + 37 - 1;
+            break;
+    }
+
+    OSScreenPutFontEx(SCREEN_TV, cursorCol, 3 + curRow, ">");
+
+    OSScreenPutFontEx(SCREEN_TV, ScreenSizeData::tv_line_length / 2, 3, "Press B to go back.");
+}
+
+void ColorPage::ColorPickerSubpage::drawListDRC() const {}
+
+bool ColorPage::ColorPickerSubpage::updatePicker(const VPADStatus& stat) {
+    if(picking && board.isClosed()) {
+        const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
+
+        const std::string& name = textures[listScrollPos + curRow];
+        board.open(name, "", getModel().getColor(name), 6);
+
+        return true;
+    }
+
+    bool update = board.update(stat);
+    if(board.isClosed()) {
+        if(const std::optional<std::string>& input = board.getInput(); input.has_value()) {
+            std::string color = input.value();
+            color.resize(6, '0');
+            if(getModel().casual) {
+                getModel().setColor(casualTextures[listScrollPos + curRow], color);
+            }
+            else {
+                getModel().setColor(heroTextures[listScrollPos + curRow], color);
+            }
+        }
+
+        setPicking(false);
+
+        return true;
+    }
+
+    return update;
+}
+
+void ColorPage::ColorPickerSubpage::drawPickerTV() const {
+    board.drawTV(3, 0);
+}
+
+void ColorPage::ColorPickerSubpage::drawPickerDRC() const {
+    board.drawDRC();
 }
 
 
