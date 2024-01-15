@@ -115,3 +115,47 @@ void ActionButton::drawDRC() const {
         OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
     }
 }
+
+
+bool ColorButton::update(const VPADStatus& stat, const std::string& colorName) {
+    if(stat.trigger & VPAD_BUTTON_A) {
+        colorCB(colorName);
+
+        return true;
+    }
+
+    return false;
+}
+
+void ColorButton::drawTV(const size_t row, const size_t nameCol, const size_t valCol) const {
+    OSScreenPutFontEx(SCREEN_TV, nameCol, row, name.c_str());
+}
+
+void ColorButton::drawDRC() const {
+    const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
+    for(size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
+    }
+}
+
+
+bool FunctionButton::update(const VPADStatus& stat) {
+    if(stat.trigger & VPAD_BUTTON_A) {
+        triggerCB();
+
+        return true;
+    }
+
+    return false;
+}
+
+void FunctionButton::drawTV(const size_t row, const size_t nameCol, const size_t valCol) const {
+    OSScreenPutFontEx(SCREEN_TV, nameCol, row, name.c_str());
+}
+
+void FunctionButton::drawDRC() const {
+    const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
+    for(size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
+    }
+}

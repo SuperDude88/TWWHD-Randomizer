@@ -3,6 +3,7 @@
 #include <memory>
 #include <unordered_map>
 #include <chrono>
+#include <functional>
 
 #include <vpad/input.h>
 
@@ -103,6 +104,38 @@ public:
         valueCB(valueCB_)
     {}
     virtual ~ActionButton() {}
+
+    virtual bool update(const VPADStatus& stat);
+    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
+    virtual void drawDRC() const;
+};
+
+// modifies a color
+class ColorButton : public BasicButton {
+private:
+    const std::function<void(const std::string&)> colorCB;
+public:
+    ColorButton(const std::string& name_, const std::string& desc_, const std::function<void(const std::string&)>& colorCB_) :
+        BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB),
+        colorCB(colorCB_)
+    {}
+    virtual ~ColorButton() {}
+
+    bool update(const VPADStatus& stat, const std::string& colorName);
+    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
+    virtual void drawDRC() const;
+};
+
+// modifies a color
+class FunctionButton : public BasicButton {
+private:
+    const std::function<void(void)> triggerCB;
+public:
+    FunctionButton(const std::string& name_, const std::string& desc_, const std::function<void(void)>& triggerCB_) :
+        BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB),
+        triggerCB(triggerCB_)
+    {}
+    virtual ~FunctionButton() {}
 
     virtual bool update(const VPADStatus& stat);
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;

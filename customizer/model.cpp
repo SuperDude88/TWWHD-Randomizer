@@ -138,6 +138,15 @@ void CustomModel::setColor(const std::string& name_, const std::string& color_) 
     }
 }
 
+void CustomModel::resetSingleColor(const std::string& name) {
+    if(casual) {
+        colors.casualColors.erase(name);
+    }
+    else {
+        colors.heroColors.erase(name);
+    }
+}
+
 void CustomModel::resetColors() {
     if(casual) {
         colors.casualColors.clear();
@@ -164,6 +173,13 @@ void CustomModel::loadPreset(const std::string& name, const bool& both /*= true*
             break;
         }
     }
+}
+
+void CustomModel::randomizeSingleColor(const std::string& name) {
+    const auto& defaultColor = getDefaultColorsMap().at(name);
+
+    const auto [hShift, vShift] = get_random_h_and_v_shifts_for_custom_color(defaultColor);
+    setColor(name, HSVShiftColor(defaultColor, hShift, vShift));
 }
 
 void CustomModel::randomizeOrderly() {

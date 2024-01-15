@@ -105,9 +105,6 @@ namespace OptionCB {
     std::string toggleGyroPref();
     std::string toggleUIPref();
 
-    //special handling for these too
-    //std::string setColors();
-
     std::string invalidCB();
 
     void clearStartingItems();
@@ -117,6 +114,13 @@ namespace OptionCB {
     void resetInternal();
     void setInternal(const Config& in);
     Config getInternal();
+}
+
+namespace ColorCB {
+    std::string randomizeColor(const std::string& name_);
+    //std::string pickColor(const std::string& name_); //handled as subpage
+    std::string resetColor(const std::string& name_);
+    std::string invalidCB(const std::string&);
 }
 
 bool wasUpdated();
