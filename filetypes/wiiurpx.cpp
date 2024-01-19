@@ -24,31 +24,6 @@ using eType = Utility::Endian::Type;
 
 
 
-namespace {
-    uint32_t crc32_rpx(uint32_t crc, uint8_t* buff, const uint32_t len)
-    {
-        std::array<uint32_t, 256> crc_table;
-        for (uint32_t i = 0; i < 256; i++)
-        {
-            uint32_t c = i;
-            for (uint32_t j = 0; j < 8; j++)
-            {
-                if (c & 1)
-                    c = 0xedb88320L ^ (c >> 1);
-                else
-                    c = c >> 1;
-            }
-            crc_table[i] = c;
-        }
-        crc = ~crc;
-        for (uint32_t i = 0; i < len; i++)
-            crc = (crc >> 8) ^ crc_table[(crc ^ buff[i]) & 0xff];
-        return ~crc;
-    }
-}
-
-
-
 namespace FileTypes {
     const char* RPXErrorGetName(RPXError err) {
         switch (err) {
@@ -222,7 +197,7 @@ namespace FileTypes {
                         }
                         have = CHUNK - strm.avail_out;
                         out.write(buff_out, have);
-                        crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(buff_out), have);
+                        crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(buff_out), have);
                     }while(strm.avail_out == 0);
                 }
                 if ((err = zng_inflateEnd(&strm)) != Z_OK)
@@ -244,7 +219,7 @@ namespace FileTypes {
                     data_size -= block_size;
                     in.read(data, block_size);
                     out.write(data, block_size);
-                    crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(data), block_size);
+                    crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(data), block_size);
                 }
             }
             padToLen(out, 0x40);
@@ -417,7 +392,7 @@ namespace FileTypes {
                     data_size -= block_size;
                     in.read(&data[0], block_size);
                     out.write(&data[0], block_size);
-                    crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(&data[0]), block_size);
+                    crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(&data[0]), block_size);
                 }
             }
             else
@@ -439,7 +414,7 @@ namespace FileTypes {
                     zng_deflateInit(&strm, LEVEL);
                     in.read(&buff_in[0], block_size);
                     strm.avail_in = in.gcount();
-                    crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
+                    crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
                     strm.next_in = reinterpret_cast<Bytef*>(&buff_in[0]);
                     strm.avail_out = CHUNK;
                     strm.next_out = reinterpret_cast<Bytef*>(&buff_out[0]);
@@ -480,7 +455,7 @@ namespace FileTypes {
                         data_size -= block_size;
                         in.read(&buff_in[0], block_size);
                         strm.avail_in = in.gcount();
-                        crcs[index] = crc32_rpx(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
+                        crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
                         strm.next_in = reinterpret_cast<Bytef*>(&buff_in[0]);
                         do{
                             strm.avail_out = CHUNK;
