@@ -25,12 +25,46 @@ void SeedPage::open() {
 void SeedPage::close() {}
 
 bool SeedPage::update() {
-    if (InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(typing_seed || typing_perma) {
+        bool update = board.update();
+        if(board.isClosed()) {
+            if(const std::optional<std::string>& input = board.getInput(); input.has_value()) {
+                const std::string str = input.value();
+                if(typing_seed) {
+                    OptionCB::setSeed(str);
+                }
+                else if(typing_perma) {
+                    OptionCB::loadPermalink(str);
+                }
+            }
+
+            typing_seed = false;
+            typing_perma = false;
+
+            return true;
+        }
+        
+        return update;
+    }
+
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         OptionCB::changeSeed();
         return true;
     }
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_X)) {
+        typing_seed = true;
+        board.open("Seed", "", getSeed(), std::nullopt);
 
-    if (!InputManager::getInstance().held(VPAD_BUTTON_B)) {
+        return true;
+    }
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_Y)) {
+        typing_perma = true;
+        board.open("Permalink", "", "", std::nullopt); // would be annoying to backspace a ton of permalink
+
+        return true;
+    }
+
+    if(!InputManager::getInstance().held(VPAD_BUTTON_B)) {
         resetTimer();
     }
     else {
@@ -45,29 +79,42 @@ bool SeedPage::update() {
 
 void SeedPage::drawTV() const {
     using namespace std::literals::chrono_literals;
+    
+    if(typing_seed || typing_perma) {
+        board.drawTV(3, 0);
+    }
+    else {
+        OSScreenPutFontEx(SCREEN_TV, 0, 3, ("The current seed is \"" + getSeed() + "\". Hash: " + getSeedHash()).c_str());
+        OSScreenPutFontEx(SCREEN_TV, 0, 4, "Press A to generate a new seed, press X to enter manually");
+        OSScreenPutFontEx(SCREEN_TV, 0, 6, ("Permalink: \"" + getPermalink() + "\".").c_str());
+        OSScreenPutFontEx(SCREEN_TV, 0, 7,  "Press Y to enter a new permalink");
 
-    OSScreenPutFontEx(SCREEN_TV, 0, 3, ("The current seed is \"" + getSeed() + "\". Hash: " + getSeedHash()).c_str());
-    OSScreenPutFontEx(SCREEN_TV, 0, 4, "Press A to generate a new seed");
-    // (total time - (final time - current time)) / (total duration / 10) = fraction of total in 10 increments
-    const std::chrono::milliseconds remaining = 3s - std::chrono::duration_cast<std::chrono::milliseconds>(resetTime - Clock::now());
-    const size_t count = remaining.count() / 300;
-    std::string bar(10, ' ');
-    bar.replace(0, count, count, '-');
-    OSScreenPutFontEx(SCREEN_TV, 0, 6, ("Hold B to reset all settings to default [" + bar + "]").c_str());
+        // (total time - (final time - current time)) / (total duration / 10) = fraction of total in 10 increments
+        const std::chrono::milliseconds remaining = 3s - std::chrono::duration_cast<std::chrono::milliseconds>(resetTime - Clock::now());
+        const size_t count = remaining.count() / 300;
+        std::string bar(10, ' ');
+        bar.replace(0, count, count, '-');
+        OSScreenPutFontEx(SCREEN_TV, 0, 9, ("Hold B to reset all settings to default [" + bar + "]").c_str());
 
-    const std::vector<std::string>& warnLines = wrap_string(warnings, ScreenSizeData::tv_line_length);
-    const size_t startLine = ScreenSizeData::tv_num_lines - 3 - warnLines.size();
-    for(size_t i = 0; i < warnLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_TV, 0, startLine + i, warnLines[i].c_str());
+        const std::vector<std::string>& warnLines = wrap_string(warnings, ScreenSizeData::tv_line_length);
+        const size_t startLine = ScreenSizeData::tv_num_lines - 3 - warnLines.size();
+        for(size_t i = 0; i < warnLines.size(); i++) {
+            OSScreenPutFontEx(SCREEN_TV, 0, startLine + i, warnLines[i].c_str());
+        }
     }
 }
 
 void SeedPage::drawDRC() const {
-    const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
+    if(typing_seed || typing_perma) {
+        board.drawDRC();
+    }
+    else {
+        const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
 
-    const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
-    for(size_t i = 0; i < descLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
+        const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
+        for(size_t i = 0; i < descLines.size(); i++) {
+            OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
+        }
     }
 }
 

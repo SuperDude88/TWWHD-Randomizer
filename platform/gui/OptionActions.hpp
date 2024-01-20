@@ -7,7 +7,9 @@
 using TriggerCallback = std::string(*)();
 
 namespace OptionCB {
+    void setSeed(const std::string& seed_);
     void changeSeed();
+    void loadPermalink(const std::string& permalink_);
 
     std::string cycleDungeonMode();
     std::string toggleFairies();
@@ -127,6 +129,7 @@ bool wasUpdated();
 bool wasConverted();
 std::string getSeed();
 std::string getSeedHash();
+std::string getPermalink();
 std::string getValue(const Option& option);
 CustomModel& getModel();
 TriggerCallback getCallback(const Option& option);
