@@ -25,6 +25,7 @@ Can Move Boulders: Bombs or Power_Bracelets
 Can Defeat Door Flowers: Heros_Bow or Boomerang or Bombs or Hookshot
 Can Hit Diamond Switches At Range: Heros_Bow or Boomerang or Hookshot
 Can Destroy Hanging Seeds: Heros_Bow or Boomerang or Bombs or Hookshot
+Can Destroy Leaf Piles: Bombs or Fire_Arrows or Can_Fan_With_Deku_Leaf
 Boats Sail: count(1, Progressive_Sail)
 Swift Sail: count(2, Progressive_Sail)
 Heros Sword: count(1, Progressive_Sword)
