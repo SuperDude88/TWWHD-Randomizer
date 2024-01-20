@@ -35,8 +35,9 @@ after_strcmp_2:
   ; If the player has any sword equipped, don't replace it with the Hero's Sword
   bne give_temporary_sword_during_ganondorf_fight_in_swordless_end
   
-  li r0, 0x38
-  stb r0, 0x2E (r30) ; Set the player's currently equipped sword ID to the regular Hero's Sword
+  ; Using Hero's Sword for the final hit on Ganondorf crashes on HD, so give the Master Sword instead
+  li r0, 0x3E ; Fully Charged Master Sword
+  stb r0, 0x2E (r30) ; Set the player's currently equipped sword ID
   
 give_temporary_sword_during_ganondorf_fight_in_swordless_end:
   bl FUN_025200d4
