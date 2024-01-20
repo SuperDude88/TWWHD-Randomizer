@@ -1,6 +1,7 @@
 #include "Page.hpp"
 
 #include <utility/color.hpp>
+#include <platform/input.hpp>
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 
@@ -21,13 +22,15 @@ void SeedPage::open() {
     resetTimer();
 }
 
-bool SeedPage::update(const VPADStatus& stat) {
-    if (stat.trigger & VPAD_BUTTON_A) {
+void SeedPage::close() {}
+
+bool SeedPage::update() {
+    if (InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         OptionCB::changeSeed();
         return true;
     }
 
-    if (!(stat.hold & VPAD_BUTTON_B)) {
+    if (!InputManager::getInstance().held(VPAD_BUTTON_B)) {
         resetTimer();
     }
     else {
@@ -74,7 +77,7 @@ ProgressionPage::ProgressionPage() {
     using namespace std::literals::chrono_literals;
 
     buttonColumns[0][0] = std::make_unique<BasicButton>(Option::ProgressDungeons);
-    buttonColumns[0][1] = std::make_unique<CounterButton>(Option::NumRequiredDungeons, 250ms, 300ms);
+    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::NumRequiredDungeons, 300ms, 250ms);
     buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ProgressDungeonSecrets);
     buttonColumns[0][3] = std::make_unique<BasicButton>(Option::ProgressTingleChests);
     buttonColumns[0][4] = std::make_unique<BasicButton>(Option::ProgressPuzzleCaves);
@@ -111,10 +114,16 @@ void ProgressionPage::open() {
     curRow = 0;
 }
 
-bool ProgressionPage::update(const VPADStatus& stat) {
+void ProgressionPage::close() {
+    buttonColumns[curCol][curRow]->unhovered();
+}
+
+bool ProgressionPage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
         }
@@ -122,8 +131,12 @@ bool ProgressionPage::update(const VPADStatus& stat) {
             curCol -= 1; //left one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -131,9 +144,13 @@ bool ProgressionPage::update(const VPADStatus& stat) {
             curCol += 1; //right one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
         }
@@ -141,8 +158,12 @@ bool ProgressionPage::update(const VPADStatus& stat) {
             curRow -= 1; //up one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow >= buttonColumns[curCol].size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -150,9 +171,11 @@ bool ProgressionPage::update(const VPADStatus& stat) {
             curRow += 1; //down one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
     
-    return moved || buttonColumns[curCol][curRow]->update(stat);
+    return moved || buttonColumns[curCol][curRow]->update();
 }
 
 void ProgressionPage::drawTV() const {
@@ -187,10 +210,10 @@ HintsPage::HintsPage() {
     buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ClearerHints);
     buttonColumns[0][3] = std::make_unique<BasicButton>(Option::UseAlwaysHints);
 
-    buttonColumns[1][0] = std::make_unique<CounterButton>(Option::PathHints, 300ms, 300ms);
-    buttonColumns[1][1] = std::make_unique<CounterButton>(Option::BarrenHints, 300ms, 300ms);
-    buttonColumns[1][2] = std::make_unique<CounterButton>(Option::ItemHints, 300ms, 300ms);
-    buttonColumns[1][3] = std::make_unique<CounterButton>(Option::LocationHints, 300ms, 300ms);
+    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::PathHints, 300ms, 300ms);
+    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::BarrenHints, 300ms, 300ms);
+    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::ItemHints, 300ms, 300ms);
+    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::LocationHints, 300ms, 300ms);
 }
 
 void HintsPage::open() {
@@ -198,10 +221,15 @@ void HintsPage::open() {
     curRow = 0;
 }
 
-bool HintsPage::update(const VPADStatus& stat) {
+void HintsPage::close() {
+    buttonColumns[curCol][curRow]->unhovered();
+}
+
+bool HintsPage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+        buttonColumns[curCol][curRow]->unhovered();
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
         }
@@ -209,8 +237,11 @@ bool HintsPage::update(const VPADStatus& stat) {
             curCol -= 1; //left one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+        buttonColumns[curCol][curRow]->unhovered();
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -218,9 +249,12 @@ bool HintsPage::update(const VPADStatus& stat) {
             curCol += 1; //right one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+        buttonColumns[curCol][curRow]->unhovered();
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
         }
@@ -228,8 +262,12 @@ bool HintsPage::update(const VPADStatus& stat) {
             curRow -= 1; //up one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow >= buttonColumns[curCol].size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -237,9 +275,11 @@ bool HintsPage::update(const VPADStatus& stat) {
             curRow += 1; //down one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
     
-    return moved || buttonColumns[curCol][curRow]->update(stat);
+    return moved || buttonColumns[curCol][curRow]->update();
 }
 
 void HintsPage::drawTV() const {
@@ -289,10 +329,16 @@ void EntrancePage::open() {
     curRow = 0;
 }
 
-bool EntrancePage::update(const VPADStatus& stat) {
+void EntrancePage::close() {
+    buttonColumns[curCol][curRow]->unhovered();
+}
+
+bool EntrancePage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
         }
@@ -300,8 +346,12 @@ bool EntrancePage::update(const VPADStatus& stat) {
             curCol -= 1; //left one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -309,9 +359,13 @@ bool EntrancePage::update(const VPADStatus& stat) {
             curCol += 1; //right one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
         }
@@ -319,8 +373,12 @@ bool EntrancePage::update(const VPADStatus& stat) {
             curRow -= 1; //up one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow >= buttonColumns[curCol].size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -328,9 +386,11 @@ bool EntrancePage::update(const VPADStatus& stat) {
             curRow += 1; //down one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
     
-    return moved || buttonColumns[curCol][curRow]->update(stat);
+    return moved || buttonColumns[curCol][curRow]->update();
 }
 
 void EntrancePage::drawTV() const {
@@ -380,10 +440,16 @@ void ConveniencePage::open() {
     curRow = 0;
 }
 
-bool ConveniencePage::update(const VPADStatus& stat) {
+void ConveniencePage::close() {
+    buttonColumns[curCol][curRow]->unhovered();
+}
+
+bool ConveniencePage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
         }
@@ -391,8 +457,12 @@ bool ConveniencePage::update(const VPADStatus& stat) {
             curCol -= 1; //left one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -400,9 +470,13 @@ bool ConveniencePage::update(const VPADStatus& stat) {
             curCol += 1; //right one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
         }
@@ -410,8 +484,12 @@ bool ConveniencePage::update(const VPADStatus& stat) {
             curRow -= 1; //up one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow >= buttonColumns[curCol].size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -419,9 +497,11 @@ bool ConveniencePage::update(const VPADStatus& stat) {
             curRow += 1; //down one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
     
-    return moved || buttonColumns[curCol][curRow]->update(stat);
+    return moved || buttonColumns[curCol][curRow]->update();
 }
 
 void ConveniencePage::drawTV() const {
@@ -452,7 +532,7 @@ AdvancedPage::AdvancedPage() {
     using namespace std::literals::chrono_literals;
 
     buttonColumns[0][0] = std::make_unique<BasicButton>(Option::NoSpoilerLog);
-    buttonColumns[0][1] = std::make_unique<CounterButton>(Option::DamageMultiplier, 55ms, 250ms);
+    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::DamageMultiplier, 250ms, 55ms);
     buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ClassicMode);
 
     buttonColumns[1][0] = std::make_unique<BasicButton>(Option::CTMC);
@@ -465,10 +545,16 @@ void AdvancedPage::open() {
     curRow = 0;
 }
 
-bool AdvancedPage::update(const VPADStatus& stat) {
+void AdvancedPage::close() {
+    buttonColumns[curCol][curRow]->unhovered();
+}
+
+bool AdvancedPage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
         }
@@ -476,8 +562,12 @@ bool AdvancedPage::update(const VPADStatus& stat) {
             curCol -= 1; //left one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -485,9 +575,13 @@ bool AdvancedPage::update(const VPADStatus& stat) {
             curCol += 1; //right one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
         }
@@ -495,8 +589,12 @@ bool AdvancedPage::update(const VPADStatus& stat) {
             curRow -= 1; //up one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+        buttonColumns[curCol][curRow]->unhovered();
+
         if(curRow >= buttonColumns[curCol].size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -504,9 +602,11 @@ bool AdvancedPage::update(const VPADStatus& stat) {
             curRow += 1; //down one row
         }
         moved = true;
+
+        buttonColumns[curCol][curRow]->hovered();
     }
     
-    return moved || buttonColumns[curCol][curRow]->update(stat);
+    return moved || buttonColumns[curCol][curRow]->update();
 }
 
 void AdvancedPage::drawTV() const {
@@ -627,16 +727,16 @@ ItemsPage::ItemsPage() {
         GameItem::WindTingleStatue
     };
 
-    countButtons[0] = std::make_unique<CounterButton>(Option::StartingHP, 250ms, 300ms);
-    countButtons[1] = std::make_unique<CounterButton>(Option::StartingHC, 100ms, 300ms);
-    countButtons[2] = std::make_unique<CounterButton>(Option::StartingJoyPendants, 100ms, 300ms);
-    countButtons[3] = std::make_unique<CounterButton>(Option::StartingSkullNecklaces, 150ms, 300ms);
-    countButtons[4] = std::make_unique<CounterButton>(Option::StartingBokoBabaSeeds, 200ms, 300ms);
-    countButtons[5] = std::make_unique<CounterButton>(Option::StartingGoldenFeathers, 120ms, 300ms);
-    countButtons[6] = std::make_unique<CounterButton>(Option::StartingKnightsCrests, 200ms, 300ms);
-    countButtons[7] = std::make_unique<CounterButton>(Option::StartingRedChuJellys, 130ms, 300ms);
-    countButtons[8] = std::make_unique<CounterButton>(Option::StartingGreenChuJellys, 130ms, 300ms);
-    countButtons[9] = std::make_unique<CounterButton>(Option::StartingBlueChuJellys, 130ms, 300ms);
+    countButtons[0] = std::make_unique<BasicButton>(Option::StartingHP, 300ms, 100ms);
+    countButtons[1] = std::make_unique<BasicButton>(Option::StartingHC, 300ms, 250ms);
+    countButtons[2] = std::make_unique<BasicButton>(Option::StartingJoyPendants, 300ms, 100ms);
+    countButtons[3] = std::make_unique<BasicButton>(Option::StartingSkullNecklaces, 300ms, 150ms);
+    countButtons[4] = std::make_unique<BasicButton>(Option::StartingBokoBabaSeeds, 300ms, 200ms);
+    countButtons[5] = std::make_unique<BasicButton>(Option::StartingGoldenFeathers, 300ms, 120ms);
+    countButtons[6] = std::make_unique<BasicButton>(Option::StartingKnightsCrests, 300ms, 200ms);
+    countButtons[7] = std::make_unique<BasicButton>(Option::StartingRedChuJellys, 300ms, 130ms);
+    countButtons[8] = std::make_unique<BasicButton>(Option::StartingGreenChuJellys, 300ms, 130ms);
+    countButtons[9] = std::make_unique<BasicButton>(Option::StartingBlueChuJellys, 300ms, 130ms);
     countButtons[10] = std::make_unique<BasicButton>(Option::StartWithRandomItem);
 }
 
@@ -670,27 +770,45 @@ void ItemsPage::open() {
     }
 }
 
-bool ItemsPage::update(const VPADStatus& stat) {
+void ItemsPage::close() {
+    switch(curCol) {
+        case Column::LIST:
+            listButtons[listScrollPos + curRow].unhovered();
+            break;
+        case Column::BUTTONS:
+            countButtons[curRow]->unhovered();
+            break;
+    }
+}
+
+bool ItemsPage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT || stat.trigger & VPAD_BUTTON_RIGHT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT) || InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
         switch(curCol) {
             case Column::LIST:
+                listButtons[listScrollPos + curRow].unhovered();
                 curCol = Column::BUTTONS;
                 curRow = std::clamp<size_t>(curRow, 0, countButtons.size() - 1);
+                countButtons[curRow]->hovered();
 
                 break;
             case Column::BUTTONS:
+                countButtons[curRow]->unhovered();
                 curCol = Column::LIST;
+                listButtons[listScrollPos + curRow].hovered();
+
                 break;
         }
 
         moved = true;
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
         switch(curCol) {
             case Column::LIST:
+                listButtons[listScrollPos + curRow].unhovered();
+
                 if(curRow <= 0) {
                     if(listScrollPos <= 0) {
                         listScrollPos = listButtons.size() - LIST_HEIGHT;
@@ -704,23 +822,31 @@ bool ItemsPage::update(const VPADStatus& stat) {
                     curRow -= 1;
                 }
 
+                listButtons[listScrollPos + curRow].hovered();
+
                 break;
             case Column::BUTTONS:
+                countButtons[curRow]->unhovered();
+
                 if(curRow <= 0) {
                     curRow = countButtons.size() - 1; //wrap on top row
                 }
                 else {
                     curRow -= 1; //up one row
                 }
+                
+                countButtons[curRow]->hovered();
 
                 break;
         }
 
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
         switch(curCol) {
             case Column::LIST:
+                listButtons[listScrollPos + curRow].unhovered();
+
                 if(curRow >= LIST_HEIGHT - 1) {
                     if(listScrollPos >= listButtons.size() - LIST_HEIGHT) {
                         listScrollPos = 0;
@@ -733,15 +859,21 @@ bool ItemsPage::update(const VPADStatus& stat) {
                 else {
                     curRow += 1;
                 }
+                
+                listButtons[listScrollPos + curRow].hovered();
 
                 break;
             case Column::BUTTONS:
+                countButtons[curRow]->unhovered();
+
                 if(curRow >= countButtons.size() - 1) {
                     curRow = 0; //wrap on bottom row
                 }
                 else {
                     curRow += 1; //down one row
                 }
+                
+                countButtons[curRow]->hovered();
 
                 break;
         }
@@ -752,7 +884,7 @@ bool ItemsPage::update(const VPADStatus& stat) {
     bool btnUpdate = false;
     switch(curCol) {
         case Column::LIST:
-            if(listButtons[listScrollPos + curRow].update(stat)) {
+            if(listButtons[listScrollPos + curRow].update()) {
                 btnUpdate = true;
 
                 //update gear list
@@ -766,7 +898,7 @@ bool ItemsPage::update(const VPADStatus& stat) {
 
             break;
         case Column::BUTTONS:
-            btnUpdate = countButtons[curRow]->update(stat);
+            btnUpdate = countButtons[curRow]->update();
             break;
     }
     
@@ -827,12 +959,14 @@ void ColorPage::open() {
     curSubpage = Subpage::PRESETS;
 }
 
-bool ColorPage::update(const VPADStatus& stat) {
+void ColorPage::close() {}
+
+bool ColorPage::update() {
     switch(curSubpage) {
         case Subpage::PRESETS:
-            return presets.update(stat);
+            return presets.update();
         case Subpage::COLOR_PICKER:
-            return picker.update(stat);
+            return picker.update();
     }
 
     return false;
@@ -871,10 +1005,12 @@ void ColorPage::PresetsSubpage::open() {
     listScrollPos = 0;
 }
 
-bool ColorPage::PresetsSubpage::update(const VPADStatus& stat) {
+void ColorPage::PresetsSubpage::close() {}
+
+bool ColorPage::PresetsSubpage::update() {
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT || stat.trigger & VPAD_BUTTON_RIGHT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT) || InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
         switch(curCol) {
             case Column::LIST:
                 curCol = Column::BUTTONS;
@@ -891,7 +1027,7 @@ bool ColorPage::PresetsSubpage::update(const VPADStatus& stat) {
         moved = true;
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
         switch(curCol) {
             case Column::LIST:
                 if(curRow <= 0) {
@@ -923,7 +1059,7 @@ bool ColorPage::PresetsSubpage::update(const VPADStatus& stat) {
 
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
         switch(curCol) {
             case Column::LIST:
                 if(curRow >= std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1) {
@@ -963,7 +1099,7 @@ bool ColorPage::PresetsSubpage::update(const VPADStatus& stat) {
     bool btnUpdate = false;
     switch(curCol) {
         case Column::LIST:
-            if(stat.trigger & VPAD_BUTTON_A) {
+            if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
                 btnUpdate = true;
 
                 getModel().loadPreset(listScrollPos + curRow);
@@ -971,7 +1107,7 @@ bool ColorPage::PresetsSubpage::update(const VPADStatus& stat) {
 
             break;
         case Column::BUTTONS:
-            btnUpdate = toggles[curRow]->update(stat);
+            btnUpdate = toggles[curRow]->update();
             break;
     }
     
@@ -1086,12 +1222,14 @@ void ColorPage::ColorPickerSubpage::open() {
     setPicking(false);
 }
 
-bool ColorPage::ColorPickerSubpage::update(const VPADStatus& stat) {
+void ColorPage::ColorPickerSubpage::close() {}
+
+bool ColorPage::ColorPickerSubpage::update() {
     if(picking) {
-        return updatePicker(stat);
+        return updatePicker();
     }
     else {
-        return updateList(stat);
+        return updateList();
     }
 }
 
@@ -1113,14 +1251,14 @@ void ColorPage::ColorPickerSubpage::drawDRC() const {
     }
 }
 
-bool ColorPage::ColorPickerSubpage::updateList(const VPADStatus& stat) {
-    if (stat.trigger & VPAD_BUTTON_B) {
+bool ColorPage::ColorPickerSubpage::updateList() {
+    if (InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
         parent.setSubpage(Subpage::PRESETS);
         return true;
     }
 
     bool moved = false;
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
         if(curCol <= 0) {
             curCol = actions.size() - 1; //wrap on leftmost row
         }
@@ -1129,7 +1267,7 @@ bool ColorPage::ColorPickerSubpage::updateList(const VPADStatus& stat) {
         }
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
         if(curCol >= actions.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -1139,7 +1277,7 @@ bool ColorPage::ColorPickerSubpage::updateList(const VPADStatus& stat) {
         moved = true;
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
         // technically doesn't matter since they're the same number of textures but if some ever get split this will adjust itself
         if(getModel().casual) {
             if(curRow <= 0) {
@@ -1176,7 +1314,7 @@ bool ColorPage::ColorPickerSubpage::updateList(const VPADStatus& stat) {
 
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
         if(getModel().casual) {
             if(curRow >= std::min(LIST_HEIGHT, casualTextures.size()) - 1) {
                 if(casualTextures.size() > LIST_HEIGHT) {
@@ -1223,10 +1361,10 @@ bool ColorPage::ColorPickerSubpage::updateList(const VPADStatus& stat) {
 
     bool btnUpdate = false;
     if(getModel().casual) {
-        btnUpdate = actions[curCol].update(stat, casualTextures[listScrollPos + curRow]);
+        btnUpdate = actions[curCol].update(casualTextures[listScrollPos + curRow]);
     }
     else {
-        btnUpdate = actions[curCol].update(stat, heroTextures[listScrollPos + curRow]);
+        btnUpdate = actions[curCol].update(heroTextures[listScrollPos + curRow]);
     }
     
     return moved || btnUpdate;
@@ -1273,7 +1411,7 @@ void ColorPage::ColorPickerSubpage::drawListTV() const {
 
 void ColorPage::ColorPickerSubpage::drawListDRC() const {}
 
-bool ColorPage::ColorPickerSubpage::updatePicker(const VPADStatus& stat) {
+bool ColorPage::ColorPickerSubpage::updatePicker() {
     if(picking && board.isClosed()) {
         const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
 
@@ -1283,7 +1421,7 @@ bool ColorPage::ColorPickerSubpage::updatePicker(const VPADStatus& stat) {
         return true;
     }
 
-    bool update = board.update(stat);
+    bool update = board.update();
     if(board.isClosed()) {
         if(const std::optional<std::string>& input = board.getInput(); input.has_value()) {
             std::string color = input.value();
@@ -1318,8 +1456,10 @@ MetaPage::MetaPage() {}
 
 void MetaPage::open() {}
 
-bool MetaPage::update(const VPADStatus& stat) {
-    //if (stat.trigger & VPAD_BUTTON_A) {
+void MetaPage::close() {}
+
+bool MetaPage::update() {
+    //if (InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
     //    SysAppBrowserArgs args;
     //    args.stdArgs.argString = nullptr;
     //    args.stdArgs.size = 0;
@@ -1329,7 +1469,7 @@ bool MetaPage::update(const VPADStatus& stat) {
 
     //    return true;
     //}
-    //if (stat.trigger & VPAD_BUTTON_B) {
+    //if (InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
     //    SysAppBrowserArgs args;
     //    args.stdArgs.argString = nullptr;
     //    args.stdArgs.size = 0;

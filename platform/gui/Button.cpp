@@ -3,8 +3,16 @@
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 
-bool BasicButton::update(const VPADStatus& stat) {
-    if(stat.trigger & VPAD_BUTTON_A) {
+void BasicButton::hovered() {
+    InputManager::getInstance().setRepeat(VPAD_BUTTON_A, delay, interval);
+}
+
+void BasicButton::unhovered() {
+    InputManager::getInstance().clearRepeat(VPAD_BUTTON_A);
+}
+
+bool BasicButton::update() {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         (*cb)();
 
         return true;
@@ -26,40 +34,6 @@ void BasicButton::drawDRC() const {
 }
 
 
-bool CounterButton::update(const VPADStatus& stat) {
-    using Clock = std::chrono::high_resolution_clock;
-    static Clock::time_point next;
-
-    if(stat.trigger & VPAD_BUTTON_A) {
-        (*cb)();
-        next = Clock::now() + minHold;
-
-        return true;
-    }
-    else if(stat.hold & VPAD_BUTTON_A) {
-        if(Clock::now() >= next) {
-            next = Clock::now() + cycleFreq;
-            (*cb)();
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-void CounterButton::drawTV(const size_t row, const size_t nameCol, const size_t valCol) const {
-    OSScreenPutFontEx(SCREEN_TV, nameCol, row, name.c_str());
-    OSScreenPutFontEx(SCREEN_TV, valCol, row, ("<" + getValue(option) + ">").c_str());
-}
-
-void CounterButton::drawDRC() const {
-    const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
-    for(size_t i = 0; i < descLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
-    }
-}
-
 
 bool ItemButton::operator==(const ItemButton& rhs) const {
     return gameItemToName(item) == gameItemToName(rhs.item);
@@ -69,8 +43,8 @@ bool ItemButton::operator==(const GameItem& rhs) const {
     return gameItemToName(item) == gameItemToName(rhs);
 }
 
-bool ItemButton::update(const VPADStatus& stat) {
-    if(stat.trigger & VPAD_BUTTON_A) {
+bool ItemButton::update() {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         enabled = !enabled;
 
         return true;
@@ -91,8 +65,8 @@ void ItemButton::drawDRC() const {
 }
 
 
-bool ActionButton::update(const VPADStatus& stat) {
-    if(stat.trigger & VPAD_BUTTON_A) {
+bool ActionButton::update() {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         (*cb)();
 
         return true;
@@ -117,8 +91,8 @@ void ActionButton::drawDRC() const {
 }
 
 
-bool ColorButton::update(const VPADStatus& stat, const std::string& colorName) {
-    if(stat.trigger & VPAD_BUTTON_A) {
+bool ColorButton::update(const std::string& colorName) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         colorCB(colorName);
 
         return true;
@@ -139,8 +113,8 @@ void ColorButton::drawDRC() const {
 }
 
 
-bool FunctionButton::update(const VPADStatus& stat) {
-    if(stat.trigger & VPAD_BUTTON_A) {
+bool FunctionButton::update() {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         triggerCB();
 
         return true;

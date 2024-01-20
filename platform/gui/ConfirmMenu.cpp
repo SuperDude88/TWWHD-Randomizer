@@ -2,8 +2,7 @@
 
 #include <thread>
 
-#include <vpad/input.h>
-
+#include <platform/input.hpp>
 #include <platform/gui/screen.hpp>
 #include <platform/gui/OptionActions.hpp>
 
@@ -23,14 +22,16 @@ bool confirmRandomize() {
 
     ScreenDraw();
     
-    while(true) {
-        VPADStatus status{};
-        VPADRead(VPAD_CHAN_0, &status, 1, nullptr);
 
-        if (status.trigger & VPAD_BUTTON_B) { // B gets priority if both are pressed
+    while(true) {
+        if(InputManager::getInstance().poll() != InputError::NONE) {
+            continue;
+        }
+
+        if(InputManager::getInstance().pressed(VPAD_BUTTON_B)) { // B gets priority if both are pressed
             return false;
         }
-        if (status.trigger & VPAD_BUTTON_A) {
+        if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
             return true;
         }
         

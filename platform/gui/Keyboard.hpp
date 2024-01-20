@@ -4,8 +4,6 @@
 #include <optional>
 #include <functional>
 
-#include <vpad/input.h>
-
 class KeyboardKey {
 private:
     const std::string display;
@@ -17,7 +15,7 @@ public:
         cb(cb_)
     {}
     
-    virtual bool update(const VPADStatus& stat);
+    virtual bool update();
     virtual void drawTV(const size_t row, const size_t col, const bool& selected) const;
     virtual void drawDRC() const;
 };
@@ -36,7 +34,7 @@ protected:
     std::string input;
 public:
     virtual void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const size_t& max_) = 0;
-    virtual bool update(const VPADStatus& stat) = 0;
+    virtual bool update() = 0;
     virtual void drawTV(const size_t row, const size_t col) const = 0;
     virtual void drawDRC() const = 0;
 
@@ -60,7 +58,7 @@ public:
     HexKeyboard();
 
     void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const size_t& max_);
-    bool update(const VPADStatus& stat);
+    bool update();
     void drawTV(const size_t row, const size_t col) const;
     void drawDRC() const;
 };

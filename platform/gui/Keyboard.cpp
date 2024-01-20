@@ -1,9 +1,10 @@
 #include "Keyboard.hpp"
 
+#include <platform/input.hpp>
 #include <platform/gui/screen.hpp>
 
-bool KeyboardKey::update(const VPADStatus& stat) {
-    if(stat.trigger & VPAD_BUTTON_A) {
+bool KeyboardKey::update() {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
         cb();
 
         return true;
@@ -76,8 +77,8 @@ void HexKeyboard::open(const std::string& title_, const std::string& desc_, cons
     closed = false;
 }
 
-bool HexKeyboard::update(const VPADStatus& stat) {
-    if(stat.trigger & VPAD_BUTTON_B) {
+bool HexKeyboard::update() {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
         setClose(true);
         setAccept(false);
 
@@ -86,7 +87,7 @@ bool HexKeyboard::update(const VPADStatus& stat) {
 
     bool moved = false;
 
-    if(stat.trigger & VPAD_BUTTON_LEFT) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
         if(curCol <= 0) {
             curCol = keys[0].size() - 1; //wrap on leftmost row
         }
@@ -95,7 +96,7 @@ bool HexKeyboard::update(const VPADStatus& stat) {
         }
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_RIGHT) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
         if(curCol >= keys[0].size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -105,7 +106,7 @@ bool HexKeyboard::update(const VPADStatus& stat) {
         moved = true;
     }
 
-    if(stat.trigger & VPAD_BUTTON_UP) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
         if(curRow <= 0) {
             curRow = keys.size() - 1; //wrap on top
         }
@@ -114,7 +115,7 @@ bool HexKeyboard::update(const VPADStatus& stat) {
         }
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_DOWN) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
         if(curRow >= keys.size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -124,7 +125,7 @@ bool HexKeyboard::update(const VPADStatus& stat) {
         moved = true;
     }
     
-    return moved || keys[curRow][curCol].update(stat);
+    return moved || keys[curRow][curCol].update();
 }
 
 void HexKeyboard::drawTV(const size_t row, const size_t col) const {

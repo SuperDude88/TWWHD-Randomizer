@@ -11,7 +11,8 @@ public:
     virtual std::string getDesc() const = 0;
 
     virtual void open() = 0;
-    virtual bool update(const VPADStatus& stat) = 0;
+    virtual void close() = 0;
+    virtual bool update() = 0;
     virtual void drawTV() const = 0;
     virtual void drawDRC() const = 0;
 };
@@ -31,7 +32,8 @@ public:
     std::string getDesc() const { return "Control the seed used to randomize."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -49,7 +51,8 @@ public:
     std::string getDesc() const { return "These settings control where progress items can appear.\nDisabled locations will still be randomized, but can only contain optional items you don't need to beat the game."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -67,7 +70,8 @@ public:
     std::string getDesc() const { return "These settings control the generation and placement of hints.\nEach type of hint will be split evenly across the selected placement options."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -85,7 +89,8 @@ public:
     std::string getDesc() const { return "These settings control entrance randomization."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -103,7 +108,8 @@ public:
     std::string getDesc() const { return "These settings control convenience tweaks and other customization."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -121,7 +127,8 @@ public:
     std::string getDesc() const { return "Various options that don't fit into the other categories."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -149,7 +156,8 @@ public:
     std::string getDesc() const { return "Selected items will be given to Link at the start of the game and won't be placed in the world."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -186,7 +194,8 @@ private:
         std::string getDesc() const { return "Change presets and model options."; }
 
         void open();
-        bool update(const VPADStatus& stat);
+    void close();
+        bool update();
         void drawTV() const;
         void drawDRC() const;
     };
@@ -216,15 +225,16 @@ private:
         std::string getDesc() const { return "Individually set custom colors."; }
 
         void open();
-        bool update(const VPADStatus& stat);
+        void close();
+        bool update();
         void drawTV() const;
         void drawDRC() const;
 
-        bool updateList(const VPADStatus& stat);
+        bool updateList();
         void drawListTV() const;
         void drawListDRC() const;
 
-        bool updatePicker(const VPADStatus& stat);
+        bool updatePicker();
         void drawPickerTV() const;
         void drawPickerDRC() const;
     };
@@ -234,9 +244,11 @@ private:
 
         switch(curSubpage) {
             case Subpage::PRESETS:
+                picker.close();
                 presets.open();
                 break;
             case Subpage::COLOR_PICKER:
+                presets.close();
                 picker.open();
                 break;
         }
@@ -254,7 +266,8 @@ public:
     std::string getDesc() const { return "Controls custom colors that get applied to the player model. Custom models are not yet supported."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
@@ -272,7 +285,8 @@ public:
     std::string getDesc() const { return "Patcher info and settings, unrelated to randomization."; }
 
     void open();
-    bool update(const VPADStatus& stat);
+    void close();
+    bool update();
     void drawTV() const;
     void drawDRC() const;
 };
