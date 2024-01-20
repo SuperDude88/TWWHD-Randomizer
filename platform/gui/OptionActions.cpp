@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include <seedgen/seed.hpp>
+#include <seedgen/permalink.hpp>
 
 static Config conf;
 
@@ -11,8 +12,16 @@ static std::string fromBool(const bool& b) {
 }
 
 namespace OptionCB {
+    void setSeed(const std::string& seed_) {
+        conf.seed = seed_;
+    }
+
     void changeSeed() {
         conf.seed = generate_seed();
+    }
+
+    void loadPermalink(const std::string& permalink_) {
+        parse_permalink(permalink_, conf.settings, conf.seed);
     }
 
     std::string cycleDungeonMode() {
@@ -789,6 +798,10 @@ std::string getSeed() {
 
 std::string getSeedHash() {
     return hash_for_seed(conf.seed, conf);
+}
+
+std::string getPermalink() {
+    return create_permalink(conf.settings, conf.seed);
 }
 
 std::string getValue(const Option& option) {

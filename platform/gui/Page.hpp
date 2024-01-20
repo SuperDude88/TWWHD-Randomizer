@@ -19,6 +19,10 @@ public:
 
 class SeedPage : public EmptyPage {
 private:
+    bool typing_seed = false;
+    bool typing_perma = false;
+    USKeyboard board;
+
     using Clock = std::chrono::high_resolution_clock;
     Clock::time_point resetTime;
 
