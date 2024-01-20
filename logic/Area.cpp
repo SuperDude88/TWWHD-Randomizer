@@ -146,7 +146,7 @@ std::list<std::string> Area::findHintRegions()
     std::copy_if(regions.begin(), regions.end(), std::back_inserter(dungeons), [&](std::string& region){return this->world->dungeons.contains(region);});
     if (dungeons.size() < regions.size())
     {
-        std::remove_if(regions.begin(), regions.end(), [&](std::string& region){return this->world->dungeons.contains(region);});
+        std::erase_if(regions, [&](std::string& region){return this->world->dungeons.contains(region);});
     }
 
     return regions;
