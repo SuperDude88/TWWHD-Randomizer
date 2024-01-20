@@ -1883,11 +1883,15 @@
 - Name: DRC First Room
   Dungeon: Dragon Roost Cavern
   Dungeon Starting Room: Dragon Roost Cavern
+  Events:
+      Can Open DRC Green Pot: Nothing # already open
   Locations:
       Dragon Roost Cavern - First Room Chest: Nothing
   Exits:
       DRC Hub Room Lower Area: count(1, Dragon_Roost_Cavern_Small_Key)
       Dragon Roost Pond Past Statues: Nothing
+      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'"
+      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: DRC Hub Room Lower Area
   Dungeon: Dragon Roost Cavern
@@ -1976,6 +1980,8 @@
 
 - Name: DRC Hub Room Upper Bridge
   Dungeon: Dragon Roost Cavern
+  Events:
+      Can Open DRC Blue Pot: Nothing # bomb flower
 #   Locations:
 #       Dragon Roost Cavern - Hub Room Tingle Chest: Bombs
   Exits:
@@ -1983,6 +1989,8 @@
       DRC Triple Bokoblin Room: Nothing
       DRC Hub Room Lower Area: Nothing
       DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors
+      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'"
 
 - Name: DRC Triple Bokoblin Room
   Dungeon: Dragon Roost Cavern
@@ -2001,10 +2009,14 @@
 
 - Name: DRC Boss Door Room Before Lava
   Dungeon: Dragon Roost Cavern
+  Events:
+      Can Open DRC Gold Pot: Nothing # bomb flower
   Exits:
       DRC Mini Boss Upper Area: Nothing
       DRC Boss Door Room Across Lava: Grappling_Hook or Hookshot or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
       DRC Magtail Lava Geyser Room: Nothing
+      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'"
+      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: DRC Boss Door Room Across Lava
   Dungeon: Dragon Roost Cavern
@@ -2084,11 +2096,15 @@
 - Name: FW First Room
   Dungeon: Forbidden Woods
   Dungeon Starting Room: Forbidden Woods
+  Events:
+      Can Open FW Green Pot: Nothing # already open
   Locations:
       Forbidden Woods - First Room Chest: Nothing
   Exits:
       FW Second Room South Platform: Nothing
       FW Entrance Platform: Nothing
+      FW Hub Room Upper Area: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'"
+      FW Boss Door Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: FW Second Room South Platform
   Dungeon: Forbidden Woods
@@ -2154,11 +2170,15 @@
 
 - Name: FW Hub Room Upper Area
   Dungeon: Forbidden Woods
+  Events:
+      Can Open FW Blue Pot: Can_Destroy_Leaf_Piles
   Exits:
       FW Morth Pit Hallway: Nothing
       FW Cable Ride Above Poison Water Room Lower West: count(1, Forbidden_Woods_Small_Key)
       FW Hub Room Lower Area: Boomerang
       FW Hub Room Middle Area: Nothing
+      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      FW Boss Door Room: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'"
 
 - Name: FW Morth Pit Hallway
   Dungeon: Forbidden Woods
@@ -2291,10 +2311,13 @@
 - Name: FW Boss Door Room
   Dungeon: Forbidden Woods
   Events:
+      Can Open FW Gold Pot: Nothing # can throw a seed at it
       Can Get Fairies: Nothing
   Exits:
       Kalle Demos Battle Arena: Forbidden_Woods_Big_Key
       FW Mothula Hallway: Nothing
+      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'"
+      FW Hub Room Upper Area: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Kalle Demos Battle Arena
   Boss Room: Forbidden Woods
@@ -2534,12 +2557,16 @@
 
 - Name: ET Map Chest Room
   Dungeon: Earth Temple
+  Events:
+      Can Open ET Green Pot: Nothing # can throw a skull at it
   Locations:
       Earth Temple - Warp Pot Room Chest: Can_Play_CM and Can_Aim_Mirror_Shield
       Earth Temple - Warp Pot Room Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
   Exits:
       ET Giant Statue Room: Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus
       ET Early Two Switches Room: Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus
+      ET Block Push Corridor: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Blue_Pot'"
+      ET Boss Door Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: ET Giant Statue Room
   Dungeon: Earth Temple
@@ -2572,11 +2599,15 @@
 
 - Name: ET Block Push Corridor
   Dungeon: Earth Temple
+  Events:
+      Can Open ET Blue Pot: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
   Locations:
       Earth Temple - Three Blocks Room Chest: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
   Exits:
       ET Two Moblins and Poes Room: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
       ET Chu Chus and Switches Room: Nothing
+      ET Map Chest Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      ET Boss Door Room: "'Can_Open_ET_Blue_Pot' and 'Can_Open_ET_Gold_Pot'"
 
 - Name: ET Two Moblins and Poes Room
   Dungeon: Earth Temple
@@ -2685,11 +2716,14 @@
 - Name: ET Boss Door Room
   Dungeon: Earth Temple
   Events:
+      Can Open ET Gold Pot: Bombs
       Can Get Fairies: Nothing
   Exits:
       ET Many Mirrors Room: Nothing
       Jalhalla Battle Arena: Earth_Temple_Big_Key
       ET Third Crypt: Nothing
+      ET Map Chest Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Gold_Pot'"
+      ET Block Push Corridor: "'Can_Open_ET_Blue_Pot' and 'Can_Open_ET_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: ET Many Mirrors Room
   Dungeon: Earth Temple
@@ -2738,11 +2772,15 @@
 
 - Name: WT First Warp Pot Room Front
   Dungeon: Wind Temple
+  Events:
+      Can Open WT Green Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword # you can get the stalfos to break it but he doesn't respawn on room reload
   Locations:
       Wind Temple - Between Dirt Patches Chest: Can_Play_CM
   Exits:
       WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
       WT First Room: Nothing
+      WT Hub Room Middle South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
+      WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: WT First Warp Pot Room Back
   Dungeon: Wind Temple
@@ -2852,12 +2890,16 @@
 
 - Name: WT Hub Room Middle South Platform
   Dungeon: Wind Temple
+  Events:
+      Can Open WT Blue Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword
   Exits:
       WT Hub Room Compass Chest Platform: Iron_Boots
       WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
       WT Hub Room Middle West Platform: Can_Fly_With_Deku_Leaf_Indoors
       WT Many Cyclones Room West Side: Nothing
       WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
+      WT First Warp Pot Room Front: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'"
 
 - Name: WT Hub Room Compass Chest Platform
   Dungeon: Wind Temple
@@ -2973,9 +3015,12 @@
 - Name: WT Three Big Fans Room Past Song Stone
   Dungeon: Wind Temple
   Events:
+      Can Open WT Gold Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword
       Can Get Fairies: Nothing
   Exits:
       Molgera Battle Arena: Wind_Temple_Big_Key
+      WT First Warp Pot Room Front: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'"
+      WT Hub Room Middle South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Molgera Battle Arena
   Boss Room: Wind Temple
