@@ -2772,12 +2772,19 @@
 
 - Name: WT First Warp Pot Room Front
   Dungeon: Wind Temple
+  Exits:
+      WT First Warp Pot Room Lower Area: Nothing
+      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM # iron boots in case you fall
+      WT First Room: Nothing
+
+- Name: WT First Warp Pot Room Lower Area
+  Dungeon: Wind Temple
   Events:
       Can Open WT Green Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword # you can get the stalfos to break it but he doesn't respawn on room reload
   Locations:
       Wind Temple - Between Dirt Patches Chest: Can_Play_CM
   Exits:
-      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
+      WT First Warp Pot Room Front: Iron_Boots
       WT First Room: Nothing
       WT Hub Room Middle South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
@@ -2785,7 +2792,7 @@
 - Name: WT First Warp Pot Room Back
   Dungeon: Wind Temple
   Exits:
-      WT First Warp Pot Room Front: Iron_Boots
+      WT First Warp Pot Room Lower Area: Nothing
       WT Early Turn Floor Room: Nothing
 
 - Name: WT Early Turn Floor Room
