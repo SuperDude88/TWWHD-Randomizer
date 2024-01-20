@@ -8,6 +8,7 @@
 #include <platform/proc.hpp>
 #include <platform/home.hpp>
 #include <platform/energy_saver.hpp>
+#include <platform/input.hpp>
 #include <platform/gui/screen.hpp>
 
 static const std::string line_break(ScreenSizeData::tv_line_length, '=');
@@ -31,15 +32,20 @@ SettingsMenu& SettingsMenu::getInstance() {
 }
 
 SettingsMenu::Status SettingsMenu::update() {
-    VPADStatus stat{};
-    VPADRead(VPAD_CHAN_0, &stat, 1, nullptr);
+    if(InputManager::getInstance().poll() != InputError::NONE) {
+        return Status::NONE;
+    }
 
-    if(stat.trigger & VPAD_BUTTON_PLUS) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_PLUS)) {
+        pages[curPage]->close();
+
         return Status::EXIT;
     }
 
     bool moved = false;
-    if(stat.trigger & VPAD_BUTTON_ZL) {
+    if(InputManager::getInstance().pressed(VPAD_BUTTON_ZL)) {
+        pages[curPage]->close();
+
         if(curPage <= 0) {
             curPage = pages.size() - 1; //wrap on leftmost page
         }
@@ -48,7 +54,9 @@ SettingsMenu::Status SettingsMenu::update() {
         }
         moved = true;
     }
-    else if(stat.trigger & VPAD_BUTTON_ZR) {
+    else if(InputManager::getInstance().pressed(VPAD_BUTTON_ZR)) {
+        pages[curPage]->close();
+
         if(curPage >= pages.size() - 1) {
             curPage = 0; //wrap on rightmost page
         }
@@ -62,7 +70,7 @@ SettingsMenu::Status SettingsMenu::update() {
         pages[curPage]->open();
     }
     
-    return (moved || pages[curPage]->update(stat)) ? Status::CHANGED : Status::NONE;
+    return (moved || pages[curPage]->update()) ? Status::CHANGED : Status::NONE;
 }
 
 void SettingsMenu::drawTV() const {
@@ -113,7 +121,6 @@ uint32_t SettingsMenu::releaseCB(void*) {
     return 0;
 }
 
-//TODO: investigate using the vpad repeat feature instead of hold delays
 SettingsMenu::Result SettingsMenu::run(Config& out) {
     using namespace std::literals::chrono_literals;
 
@@ -129,6 +136,9 @@ SettingsMenu::Result SettingsMenu::run(Config& out) {
     setHomeMenuEnable(true);
     setDim(true);
     setAPD(true);
+
+    InputManager::getInstance().setRepeat(VPAD_BUTTON_DOWN, 300ms, 200ms);
+    InputManager::getInstance().setRepeat(VPAD_BUTTON_UP, 300ms, 200ms);
 
     bool inMenu = true;
     while(inMenu && Utility::platformIsRunning()) { // loop until menu or app signals an exit

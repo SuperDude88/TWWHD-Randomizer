@@ -5,8 +5,7 @@
 #include <chrono>
 #include <functional>
 
-#include <vpad/input.h>
-
+#include <platform/input.hpp>
 #include <platform/gui/OptionActions.hpp>
 
 class BasicButton {
@@ -15,40 +14,29 @@ protected:
     const std::string name;
     const std::string description;
     const TriggerCallback cb;
+
+    using Duration_t = InputManager::Duration_t;
+    InputManager::Duration_t delay;
+    InputManager::Duration_t interval;
     
-    BasicButton(const Option& option_, const std::string& name_, const std::string& desc_, const TriggerCallback& cb_) :
+    BasicButton(const Option& option_, const std::string& name_, const std::string& desc_, const TriggerCallback& cb_, const Duration_t& delay_, const Duration_t& interval_) :
         option(option_),
         name(name_),
         description(desc_),
-        cb(cb_)
+        cb(cb_),
+        delay(delay_),
+        interval(interval_)
     {}
 
 public:
-    BasicButton(const Option& option_) :
-        BasicButton(option_, getNameDesc(option_).first, getNameDesc(option_).second, getCallback(option_))
+    BasicButton(const Option& option_, const Duration_t& delay_ = Duration_t(-1), const Duration_t& interval_ = Duration_t(-1)) :
+        BasicButton(option_, getNameDesc(option_).first, getNameDesc(option_).second, getCallback(option_), delay_, interval_)
     {}
     virtual ~BasicButton() {}
 
-    virtual bool update(const VPADStatus& stat);
-    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
-    virtual void drawDRC() const;
-};
-
-class CounterButton : public BasicButton {
-protected:
-    using DeltaT_t = std::chrono::milliseconds;
-    DeltaT_t cycleFreq; // time between increments
-    DeltaT_t minHold; // wait period so holding isn't immediate
-
-public:
-    CounterButton(const Option& option_, const DeltaT_t& freq_ = std::chrono::seconds(1), const DeltaT_t& min_ = std::chrono::seconds(0)) :
-        BasicButton(option_),
-        cycleFreq(freq_),
-        minHold(min_)
-    {}
-    virtual ~CounterButton() {}
-
-    virtual bool update(const VPADStatus& stat);
+    virtual void hovered();
+    virtual void unhovered();
+    virtual bool update();
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
     virtual void drawDRC() const;
 };
@@ -89,7 +77,7 @@ public:
     inline bool isEnabled() const { return enabled; }
     inline GameItem getItem() const { return item; }
 
-    virtual bool update(const VPADStatus& stat);
+    virtual bool update();
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
     virtual void drawDRC() const;
 };
@@ -100,12 +88,12 @@ private:
     const TriggerCallback valueCB;
 public:
     ActionButton(const std::string& name_, const std::string& desc_, const TriggerCallback& triggerCB_, const TriggerCallback& valueCB_ = &OptionCB::invalidCB) :
-        BasicButton(Option::INVALID, name_, desc_, triggerCB_),
+        BasicButton(Option::INVALID, name_, desc_, triggerCB_, Duration_t(-1), Duration_t(-1)),
         valueCB(valueCB_)
     {}
     virtual ~ActionButton() {}
 
-    virtual bool update(const VPADStatus& stat);
+    virtual bool update();
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
     virtual void drawDRC() const;
 };
@@ -116,28 +104,27 @@ private:
     const std::function<void(const std::string&)> colorCB;
 public:
     ColorButton(const std::string& name_, const std::string& desc_, const std::function<void(const std::string&)>& colorCB_) :
-        BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB),
+        BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB, Duration_t(-1), Duration_t(-1)),
         colorCB(colorCB_)
     {}
     virtual ~ColorButton() {}
 
-    bool update(const VPADStatus& stat, const std::string& colorName);
+    bool update(const std::string& colorName);
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
     virtual void drawDRC() const;
 };
 
-// modifies a color
 class FunctionButton : public BasicButton {
 private:
     const std::function<void(void)> triggerCB;
 public:
     FunctionButton(const std::string& name_, const std::string& desc_, const std::function<void(void)>& triggerCB_) :
-        BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB),
+        BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB, Duration_t(-1), Duration_t(-1)),
         triggerCB(triggerCB_)
     {}
     virtual ~FunctionButton() {}
 
-    virtual bool update(const VPADStatus& stat);
+    virtual bool update();
     virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
     virtual void drawDRC() const;
 };
