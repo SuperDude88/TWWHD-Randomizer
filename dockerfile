@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 951ac0184d9e288bad5ff7eaf5470177389699cc && \
+    git checkout 1adf4740c77d67bdb51409f7d376183fe07b3985 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -22,7 +22,7 @@ RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
 # Install libmocha
 RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch  && \
     cd libmocha && \
-    git checkout 049f322e55301e64c90565cace922187f6a1c03a && \
+    git checkout 4d0585cdb49964d54313e1fa2f10d37aedf77dac && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
