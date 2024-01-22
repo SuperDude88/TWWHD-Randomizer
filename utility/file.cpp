@@ -122,11 +122,20 @@ namespace Utility {
     {
         if (resourceFile)
         {
-            // If this is a resource file and the data has been embedded, then load ity from
+            // If this is a resource file and the data has been embedded, then load it from
             // the embedded resources file
             #if defined(QT_GUI) && defined(EMBED_DATA)
                 QResource file(filename.string().c_str());
-                fileContents = file.uncompressedData().toStdString();
+                if(!file.isValid()) {
+                    return 1;
+                }
+
+                QByteArray data = file.uncompressedData();
+                if(data.isNull()) {
+                    return 1;
+                }
+
+                fileContents = data.toStdString();
                 return 0;
             #endif
         } 

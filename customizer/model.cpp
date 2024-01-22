@@ -25,7 +25,10 @@ ModelError CustomModel::loadFromFolder() {
     presets.clear();
 
     std::string metaStr;
-    Utility::getFileContents(folder / "metadata.yaml", metaStr, true);
+    if(Utility::getFileContents(folder / "metadata.yaml", metaStr, true) != 0) {
+        return ModelError::COULD_NOT_OPEN;
+    }
+
     YAML::Node metaTree = YAML::Load(metaStr);
 
     if(!metaTree["default_hero_colors"] || !metaTree["default_casual_colors"]) {
@@ -45,11 +48,8 @@ ModelError CustomModel::loadFromFolder() {
     }
 
     casual = metaTree["default_casual"].as<bool>();
-    
-    // TODO: detect from files rather than yaml value
-    if(metaTree["has_presets"].as<bool>()) {
-        std::string presetStr;
-        Utility::getFileContents(folder / "color_presets.yaml", presetStr, true);
+
+    if(std::string presetStr; Utility::getFileContents(folder / "color_presets.yaml", presetStr, true) == 0) {
         YAML::Node presetTree = YAML::Load(presetStr);
 
         // Loop through and add each preset

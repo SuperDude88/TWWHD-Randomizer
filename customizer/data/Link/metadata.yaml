@@ -25,5 +25,4 @@ default_casual_colors:
   Shoes:        63696B
   Shoe Soles:   D6BA39
 
-has_presets: true # should auto-detect based on whether it has a presets file, i just couldn't be bothered to set that up yet
 default_casual: false
