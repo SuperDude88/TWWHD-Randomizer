@@ -63,7 +63,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER="C:\ProgramData\chocolatey\lib\mingw\tools\install\gcc.exe" -DCMAKE_CXX_COMPILER="C:\ProgramData\chocolatey\lib\mingw\tools\install\g++.exe"
+        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
         
       - name: Build
         working-directory: ${{ github.workspace }}
