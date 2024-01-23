@@ -51,9 +51,6 @@ jobs:
       - name: Install GCC 11.2.0
         run: choco install mingw --version 11.2.0
 
-      - name: Put GCC 11.2.0 on Path
-        run: echo "C:\ProgramData\chocolatey\lib\mingw\tools\install" >> $GITHUB_PATH
-
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
         run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DENABLE_DEBUG=True" >> $GITHUB_ENV
@@ -64,7 +61,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
+        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER="C:\ProgramData\chocolatey\lib\mingw\tools\install\gcc.exe" -DCMAKE_CXX_COMPILER="C:\ProgramData\chocolatey\lib\mingw\tools\install\g++.exe"
         
       - name: Build
         working-directory: ${{ github.workspace }}
