@@ -48,12 +48,11 @@ jobs:
           cache: true
           cache-key-prefix: install-qt-${{ env.QT_VERSION }}-action
 
-      - name: Uninstall Current GCC
-        continue-on-error: true # Sometimes a previous installation doesn't exist?
-        run: choco uninstall mingw
-
       - name: Install GCC 11.2.0
         run: choco install mingw --version 11.2.0
+
+      - name: Put GCC 11.2.0 on Path
+        run: echo "C:\ProgramData\chocolatey\lib\mingw\tools\install"
 
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
