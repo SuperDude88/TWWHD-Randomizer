@@ -52,7 +52,7 @@ jobs:
         run: choco install mingw --version 11.2.0
 
       - name: Put GCC 11.2.0 on Path
-        run: echo "C:\ProgramData\chocolatey\lib\mingw\tools\install"
+        run: echo "C:\ProgramData\chocolatey\lib\mingw\tools\install" >> $GITHUB_PATH
 
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
