@@ -10,7 +10,7 @@
 #include <seedgen/config.hpp>
 #include <command/Log.hpp>
 #include <utility/file.hpp>
-#include <libs/zlib-ng/zlib-ng.h>
+#include <libs/zlib-ng.hpp>
 
 Config config;
 #define ERROR_CONFIG_PATH "./error_configs"

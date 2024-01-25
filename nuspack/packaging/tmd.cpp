@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include <libs/hashing/sha256.h>
+#include <libs/hashing.hpp>
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
 #include <utility/common.hpp>

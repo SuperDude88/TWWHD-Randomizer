@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include <libs/yaml.h>
+#include <libs/yaml.hpp>
 
 #include <command/RandoSession.hpp>
 #include <command/WWHDStructs.hpp>

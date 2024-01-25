@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include <nuspack/contents/contents.hpp>
-#include <libs/hashing/sha1.h>
+#include <libs/hashing.hpp>
 #include <utility/file.hpp>
 #include <utility/math.hpp>
 

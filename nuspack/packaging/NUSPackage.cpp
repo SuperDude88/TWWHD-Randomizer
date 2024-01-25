@@ -8,8 +8,7 @@
 #include <nuspack/crypto/Encryption.hpp>
 #include <utility/file.hpp>
 #include <utility/math.hpp>
-#include <libs/hashing/sha1.h>
-#include <libs/hashing/sha256.h>
+#include <libs/hashing.hpp>
 
 
 

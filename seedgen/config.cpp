@@ -5,7 +5,7 @@
 #include <filesystem>
 
 #include <version.hpp>
-#include <libs/yaml.h>
+#include <libs/yaml.hpp>
 #include <logic/GameItem.hpp>
 #include <seedgen/random.hpp>
 #include <utility/color.hpp>

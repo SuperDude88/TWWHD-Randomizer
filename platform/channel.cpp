@@ -10,7 +10,7 @@
 
 #include <mocha/mocha.h>
 
-#include <libs/tinyxml2.h>
+#include <libs/tinyxml2.hpp>
 
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
