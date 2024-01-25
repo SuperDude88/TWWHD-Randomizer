@@ -8,8 +8,8 @@
 #include <vector>
 #include <thread>
 
-#include <libs/tinyxml2.h>
-#include <libs/zlib-ng/zlib-ng.h>
+#include <libs/tinyxml2.hpp>
+#include <libs/zlib-ng.hpp>
 #include <seedgen/config.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/seed.hpp>

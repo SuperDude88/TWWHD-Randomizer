@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-target_sources(wwhd_rando PRIVATE hashing/sha1.cpp hashing/sha256.cpp)
+target_sources(wwhd_rando PRIVATE hash-library/sha1.cpp hash-library/sha256.cpp)
 
 set(BUILD_SHARED_LIBS OFF)
 

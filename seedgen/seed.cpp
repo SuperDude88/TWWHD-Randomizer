@@ -7,7 +7,7 @@
 #include <seedgen/config.hpp>
 #include <seedgen/permalink.hpp>
 #include <utility/file.hpp>
-#include <libs/zlib-ng/zlib-ng.h>
+#include <libs/zlib-ng.hpp>
 
 static std::vector<std::string> adjectives = {
     "able",

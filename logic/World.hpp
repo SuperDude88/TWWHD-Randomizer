@@ -7,7 +7,7 @@
 #include <list>
 #include <memory>
 
-#include <libs/yaml.h>
+#include <libs/yaml.hpp>
 #include <logic/Requirements.hpp>
 #include <logic/Area.hpp>
 #include <logic/Location.hpp>

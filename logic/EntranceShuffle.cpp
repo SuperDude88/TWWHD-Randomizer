@@ -11,7 +11,7 @@
 #include <utility/file.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
-#include <libs/yaml.h>
+#include <libs/yaml.hpp>
 
 #define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
 #define CHECK_MIXED_POOL(name, type) if (name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }

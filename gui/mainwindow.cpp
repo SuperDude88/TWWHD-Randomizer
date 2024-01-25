@@ -14,7 +14,7 @@
 #include <option_descriptions.hpp>
 
 #include <version.hpp>
-#include <libs/yaml.h>
+#include <libs/yaml.hpp>
 #include <seedgen/seed.hpp>
 #include <seedgen/permalink.hpp>
 #include <seedgen/tracker_permalink.hpp>

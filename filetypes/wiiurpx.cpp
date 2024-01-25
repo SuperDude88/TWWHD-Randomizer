@@ -18,7 +18,7 @@
 #include <utility/file.hpp>
 #include <utility/common.hpp>
 #include <command/Log.hpp>
-#include <zlib-ng.h>
+#include <libs/zlib-ng.hpp>
 
 using eType = Utility::Endian::Type;
 

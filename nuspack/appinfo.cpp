@@ -1,6 +1,6 @@
 #include "appinfo.hpp"
 
-#include <libs/tinyxml2.h>
+#include <libs/tinyxml2.hpp>
 #include <command/Log.hpp>
 #include <nuspack/packer.hpp>
 

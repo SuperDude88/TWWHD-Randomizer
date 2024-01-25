@@ -4,7 +4,7 @@
 #include <tuple>
 #include <filesystem>
 
-#include <libs/yaml.h>
+#include <libs/yaml.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <utility/endian.hpp>
 #include <utility/color.hpp>

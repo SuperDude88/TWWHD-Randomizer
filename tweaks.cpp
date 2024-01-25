@@ -10,8 +10,8 @@
 
 #include <version.hpp>
 #include <text_replacements.hpp>
-#include <libs/tinyxml2.h>
-#include <libs/yaml.h>
+#include <libs/tinyxml2.hpp>
+#include <libs/yaml.hpp>
 #include <asm/patches/asm_constants.hpp>
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>

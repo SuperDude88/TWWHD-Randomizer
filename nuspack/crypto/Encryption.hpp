@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <libs/AES.h>
+#include <libs/AES.hpp>
 #include <nuspack/crypto/ContentHashes.hpp>
 #include <nuspack/crypto/IV.hpp>
 #include <nuspack/crypto/Key.hpp>
