@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 
-target_sources(wwhd_rando PRIVATE base64pp.cpp AES.cpp hashing/sha1.cpp hashing/sha256.cpp)
+target_sources(wwhd_rando PRIVATE hashing/sha1.cpp hashing/sha256.cpp)
 
 set(BUILD_SHARED_LIBS OFF)
 
-# Modded zlib-ng for fast yaz0
+# zlib-ng for RPX compression
 option(WITH_GZFILEOP "Compile with support for gzFile related functions" OFF)
 option(ZLIB_COMPAT "Compile with zlib compatible API" OFF)
 option(ZLIB_ENABLE_TESTS "Build test binaries" OFF)
@@ -37,4 +37,8 @@ set_property(TARGET yaml-cpp PROPERTY POSITION_INDEPENDENT_CODE OFF) # yaml-cpp 
 option(tinyxml2_BUILD_TESTING OFF)
 add_subdirectory("tinyxml2")
 
-target_link_libraries(wwhd_rando PRIVATE zlib yaml-cpp tinyxml2)
+add_subdirectory("AES")
+
+add_subdirectory("base64pp")
+
+target_link_libraries(wwhd_rando PRIVATE zlib yaml-cpp tinyxml2 AES base64pp)

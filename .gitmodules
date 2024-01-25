@@ -11,3 +11,9 @@
 [submodule "libs/thread-pool"]
 	path = libs/thread-pool
 	url = https://github.com/bshoshany/thread-pool
+[submodule "libs/AES"]
+	path = libs/AES
+	url = https://github.com/SergeyBel/AES
+[submodule "libs/base64pp"]
+	path = libs/base64pp
+	url = https://github.com/matheusgomes28/base64pp
