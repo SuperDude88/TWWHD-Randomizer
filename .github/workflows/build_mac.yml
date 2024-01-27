@@ -48,7 +48,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
+        run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
 
       - name: Build
         working-directory: ${{ github.workspace }}
