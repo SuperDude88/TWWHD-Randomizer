@@ -363,7 +363,7 @@ World::WorldLoadingError World::determineProgressionLocations()
     {
         // If all of the location categories for a location are set as progression, then this is a location which
         // is allowed to contain progression items (but it won't necessarily get one)
-        if (std::all_of(location->categories.begin(), location->categories.end(), [&](LocationCategory category)
+        if (std::all_of(location->categories.begin(), location->categories.end(), [&location = location, this](LocationCategory category)
         {
             if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
