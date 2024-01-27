@@ -1,0 +1,65 @@
+name: Build - Mac
+
+on: 
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version'
+        default: ''
+        required: false
+        type: string
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+
+env:
+  QT_VERSION: 6.3.1
+  EXTRA_CMAKE_FLAGS: ""
+
+jobs:
+  build-desktop-application-mac:
+    name: Build Desktop Application Mac
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          aqtversion: '==3.1.*'
+          version: '6.3.1'
+          host: 'mac'
+          target: 'desktop'
+          arch: 'clang_64'
+
+      - name: Set Debug Flags
+        if: inputs.build_type == 'Debug'
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DENABLE_DEBUG=True" >> $GITHUB_ENV
+
+      - name: Set Release Flags
+        if: inputs.build_type == 'Release' && inputs.version != ''
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DRELEASE_TAG=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        working-directory: ${{ github.workspace }}
+        run: cmake gui -G "Ninja" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
+
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        run: cmake --build build --config ${{ inputs.build_type }} -j
+
+      - name: Call macdeployqt
+        working-directory: ${{ github.workspace }}/build
+        run: macdeployqt wwhd_rando.app
+
+      - name: Save Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{github.workspace}}\build\wwhd_rando.app
+          name: wwhd_rando_mac
