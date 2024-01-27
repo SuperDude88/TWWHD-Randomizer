@@ -10,4 +10,4 @@ jobs:
   #   uses: ./.github/workflows/build_wiiu.yml
 
   build-mac:
-    uses: ./.github/workflows/build-mac.yml
+    uses: ./.github/workflows/build_mac.yml

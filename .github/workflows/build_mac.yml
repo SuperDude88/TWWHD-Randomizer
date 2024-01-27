@@ -55,11 +55,11 @@ jobs:
         run: cmake --build build --config ${{ inputs.build_type }} -j
 
       - name: Call macdeployqt
-        working-directory: ${{ github.workspace }}/build
-        run: macdeployqt wwhd_rando.app
+        working-directory: ${{ github.workspace }}
+        run: Qt/6.3.1/macos/bin/macdeployqt build/wwhd_rando.app
 
       - name: Save Artifact
         uses: actions/upload-artifact@v3
         with:
-          path: ${{github.workspace}}\build\wwhd_rando.app
+          path: ${{github.workspace}}/build/wwhd_rando.app
           name: wwhd_rando_mac
