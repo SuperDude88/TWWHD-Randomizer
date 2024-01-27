@@ -62,7 +62,11 @@ add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/")
 if (EMBED_DATA)
     add_compile_definitions(DATA_PATH=":/")
 else()
-    add_compile_definitions(DATA_PATH="./data/")
+    if(APPLE)
+        add_compile_definitions(DATA_PATH="../../../data")
+    else()
+        add_compile_definitions(DATA_PATH="./data/")
+    endif()
 endif()
 
 # Embeds the data files into the Qt executable
