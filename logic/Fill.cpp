@@ -377,7 +377,7 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
             // and this isn't a race mode dungeon, then take all locations in
             // the dungeon since none of them are progression anyway
             auto worldLocations = world.getLocations();
-            auto dungeonLocations = filterFromPool(worldLocations, [&](const Location* loc){
+            auto dungeonLocations = filterFromPool(worldLocations, [&dungeon = dungeon, &settings = settings](const Location* loc){
                 return elementInPool(loc, dungeon.locations) &&
                           (loc->progression || settings.progression_dungeons == ProgressionDungeons::Disabled ||
                           (settings.progression_dungeons == ProgressionDungeons::RaceMode && !dungeon.isRequiredDungeon));});
