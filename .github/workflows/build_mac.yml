@@ -56,7 +56,7 @@ jobs:
 
       - name: Call macdeployqt
         working-directory: ${{ github.workspace }}
-        run: ../Qt/6.3.1/macos/bin/macdeployqt build/wwhd_rando.app
+        run: ../Qt/6.6.1/macos/bin/macdeployqt build/wwhd_rando.app
 
       - name: Save Artifact
         uses: actions/upload-artifact@v3
