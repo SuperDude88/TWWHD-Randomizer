@@ -65,6 +65,9 @@ jobs:
         run: |
           echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
 
+      - name: Show Version
+        run: echo ${{ steps.get-version.outputs.RANDO_VERSION }}
+
       # - name: Save Artifact
       #   uses: actions/upload-artifact@v4
       #   with:
