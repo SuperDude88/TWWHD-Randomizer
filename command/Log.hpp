@@ -5,7 +5,6 @@
 #include <list>
 
 #include <seedgen/config.hpp>
-#include <utility/time.hpp>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)

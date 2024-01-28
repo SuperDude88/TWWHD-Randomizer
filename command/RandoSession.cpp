@@ -15,6 +15,7 @@
 #include <utility/string.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
+#include <utility/time.hpp>
 #include <command/Log.hpp>
 
 #include <filetypes/baseFiletype.hpp>
