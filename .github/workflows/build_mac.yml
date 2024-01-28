@@ -1,0 +1,72 @@
+name: Build - Mac
+
+on: 
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version'
+        default: ''
+        required: false
+        type: string
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+
+env:
+  QT_VERSION: 6.3.1
+  EXTRA_CMAKE_FLAGS: ""
+
+jobs:
+  build-desktop-application-mac:
+    name: Build Desktop Application Mac
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          aqtversion: '==3.1.*'
+          version: '${{ env.QT_VERSION }}'
+          host: 'mac'
+          target: 'desktop'
+          arch: 'clang_64'
+
+      - name: Set Debug Flags
+        if: inputs.build_type == 'Debug'
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DENABLE_DEBUG=True" >> $GITHUB_ENV
+
+      - name: Set Release Flags
+        if: inputs.build_type == 'Release' && inputs.version != ''
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DRELEASE_TAG=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        working-directory: ${{ github.workspace }}
+        run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
+
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        run: cmake --build build --config ${{ inputs.build_type }} -j
+
+      - name: Call macdeployqt
+        working-directory: ${{ github.workspace }}/build
+        run: ../../Qt/${{ env.QT_VERSION }}/macos/bin/macdeployqt wwhd_rando.app -dmg
+
+      - name: Get Version
+        id: get-version
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+
+      - name: Save Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{github.workspace}}/build/wwhd_rando.dmg
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac.dmg
