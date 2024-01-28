@@ -1,6 +1,7 @@
 #include "yaz0.hpp"
 
 #include <string>
+#include <cstring>
 #include <bitset>
 
 #include <utility/endian.hpp>

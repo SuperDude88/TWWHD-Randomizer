@@ -8,6 +8,7 @@
 #include <libs/base64pp.hpp>
 #include <seedgen/packed_bits.hpp>
 #include <command/Log.hpp>
+#include <utility/platform.hpp>
 
 #define BYTES_EXIST_CHECK(value) if (value == 0xFFFFFFFF) return PermalinkError::BAD_PERMALINK;
 

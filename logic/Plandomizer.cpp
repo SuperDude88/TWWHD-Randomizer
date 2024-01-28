@@ -3,6 +3,7 @@
 #include <logic/Area.hpp>
 #include <command/Log.hpp>
 #include <utility/file.hpp>
+#include <utility/platform.hpp>
 
 PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plandomizer>& plandos, size_t numWorlds)
 {
