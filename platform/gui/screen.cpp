@@ -7,8 +7,8 @@
 
 static size_t tvBufSize;
 static size_t drcBufSize;
-static void* tvBuf;
-static void* drcBuf;
+static void* tvBuf = nullptr;
+static void* drcBuf = nullptr;
 
 static uint32_t sBackgroundColor = 0x993333FF;
 
@@ -23,6 +23,9 @@ static uint32_t OSScreenAcquired(void* arg = nullptr) {
 
 static uint32_t OSScreenReleased(void* arg = nullptr) {
     // MEM0 is freed by BucketHeap
+
+    tvBuf = nullptr;
+    drcBuf = nullptr;
 
     return 0;
 }
@@ -46,14 +49,23 @@ void SetScreenColor(const uint32_t& col) {
 }
 
 void ScreenClear() {
-    OSScreenClearBufferEx(SCREEN_TV, sBackgroundColor);
-    OSScreenClearBufferEx(SCREEN_DRC, sBackgroundColor);
+    if(tvBuf) {
+        OSScreenClearBufferEx(SCREEN_TV, sBackgroundColor);
+    }
+    
+    if(drcBuf) {
+        OSScreenClearBufferEx(SCREEN_DRC, sBackgroundColor);
+    }
 }
 
 void ScreenDraw() {
-    DCFlushRange(tvBuf, tvBufSize);
-    DCFlushRange(drcBuf, drcBufSize);
-    
-    OSScreenFlipBuffersEx(SCREEN_TV);
-    OSScreenFlipBuffersEx(SCREEN_DRC);
+    if(tvBuf) {
+        DCFlushRange(tvBuf, tvBufSize);
+        OSScreenFlipBuffersEx(SCREEN_TV);
+    }
+
+    if(drcBuf) {
+        DCFlushRange(drcBuf, drcBufSize);
+        OSScreenFlipBuffersEx(SCREEN_DRC);
+    }
 }

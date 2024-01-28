@@ -159,7 +159,10 @@ namespace Utility
         vsnprintf(buf, PRINTF_BUFFER_LENGTH - 1, f, args);
         
         LogConsoleWrite(buf);
-        LogConsoleDraw();
+
+        if(ProcIsForeground()) {
+            LogConsoleDraw();
+        }
 #else
         vprintf(f, args);
         fflush(stdout); //vscode debug console works better with this
