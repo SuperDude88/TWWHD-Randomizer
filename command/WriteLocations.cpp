@@ -98,8 +98,14 @@ ModificationError setParam(ACTR& actor, const uint32_t& mask, T value) {
 
 
 ModificationError ModifyChest::parseArgs(const YAML::Node& locationObject) {
+    if(!locationObject["Path"]) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     filePath = locationObject["Path"].as<std::string>();
 
+    if(!locationObject["Offsets"].IsSequence()) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     for (const auto& offset : locationObject["Offsets"])
     {
         offsets.push_back(offset.as<uint32_t>());
@@ -168,8 +174,14 @@ ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
 
 
 ModificationError ModifyActor::parseArgs(const YAML::Node& locationObject) {
+    if(!locationObject["Path"]) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     filePath = locationObject["Path"].as<std::string>();
 
+    if(!locationObject["Offsets"].IsSequence()) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     for (const auto& offset : locationObject["Offsets"])
     {
         offsets.push_back(offset.as<uint32_t>());
@@ -210,7 +222,7 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
                 LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), static_cast<uint8_t>(item.getGameItemId())))
 
                 if((actor.name == "item\0\0\0\0"s || actor.name == "itemFLY\0"s) && (actor.params & 0x03000000) == 0) { // uses d_a_item actor, has behavior type 0
-                    setParam(actor, 0x03000000, 3); // set behavior type to 3 (doesn't fade out)
+                    LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, 0x03000000, 3)); // set behavior type to 3 (doesn't fade out)
                 }
             }
             else {
@@ -229,8 +241,14 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
 
 
 ModificationError ModifySCOB::parseArgs(const YAML::Node& locationObject) {
+    if(!locationObject["Path"]) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     filePath = locationObject["Path"].as<std::string>();
 
+    if(!locationObject["Offsets"].IsSequence()) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     for (const auto& offset : locationObject["Offsets"])
     {
         offsets.push_back(offset.as<uint32_t>());
@@ -266,9 +284,19 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
 
 
 ModificationError ModifyEvent::parseArgs(const YAML::Node& locationObject) {
+    if(!locationObject["Path"]) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     filePath = locationObject["Path"].as<std::string>();
 
+    if(!locationObject["Offset"]) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     this->offset = locationObject["Offset"].as<uint32_t>();
+    
+    if(!locationObject["NameOffset"]) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     this->nameOffset = locationObject["NameOffset"].as<uint32_t>();
 
     return ModificationError::NONE;
@@ -303,6 +331,9 @@ ModificationError ModifyEvent::writeLocation(const Item& item) {
 
 
 ModificationError ModifyRPX::parseArgs(const YAML::Node& locationObject) {
+    if(!locationObject["Offsets"].IsSequence()) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     for (const auto& offset : locationObject["Offsets"])
     {
         offsets.push_back(offset.as<uint32_t>());
@@ -332,6 +363,9 @@ ModificationError ModifyRPX::writeLocation(const Item& item) {
 
 
 ModificationError ModifySymbol::parseArgs(const YAML::Node& locationObject) {
+    if(!locationObject["SymbolNames"].IsSequence()) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
     for (const auto& symbol : locationObject["SymbolNames"])
     {
         symbolNames.push_back(symbol.as<std::string>());
@@ -376,8 +410,11 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
 
 
 ModificationError ModifyBoss::parseArgs(const YAML::Node& locationObject) {
-    offsetsWithPath.reserve(locationObject["Paths"].size());
+    if(!locationObject["Paths"].IsMap()) {
+        LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
+    }
 
+    offsetsWithPath.reserve(locationObject["Paths"].size());
     for (auto path_pair : locationObject["Paths"])
     {
         offsetsWithPath.emplace_back(path_pair.first.as<std::string>(), path_pair.second.as<uint32_t>());
@@ -430,6 +467,8 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
 
 const char* modErrorToName(ModificationError err) {
     switch (err) {
+        case ModificationError::NONE:
+            return "NONE";
         case ModificationError::MISSING_KEY:
             return "MISSING_KEY";
         case ModificationError::INVALID_OFFSET:

@@ -9,6 +9,7 @@
 #include <utility/endian.hpp>
 #include <utility/color.hpp>
 #include <utility/file.hpp>
+#include <utility/platform.hpp>
 #include <filetypes/bfres.hpp>
 #include <command/RandoSession.hpp>
 

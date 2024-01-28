@@ -18,6 +18,7 @@
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
+#include <utility/time.hpp>
 
 #include <gui/update_dialog_header.hpp>
 
