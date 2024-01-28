@@ -9,6 +9,7 @@
 #include <logic/Search.hpp>
 #include <logic/Fill.hpp>
 #include <utility/file.hpp>
+#include <utility/string.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 #include <libs/yaml.hpp>

@@ -9,6 +9,7 @@
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
+#include <utility/time.hpp>
 
 #define FILL_ERROR_CHECK(func) err = func; if (err != FillError::NONE) {return err;}
 
