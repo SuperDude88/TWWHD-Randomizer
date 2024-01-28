@@ -16,10 +16,16 @@ jobs:
     with:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
+  
+  build-mac:
+    uses: ./.github/workflows/build_mac.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
+      build_type: Release
 
   attach-to-release:
     name: Attach To Release
-    needs: [build-windows, build-wiiu]
+    needs: [build-windows, build-wiiu, build-mac]
     runs-on: ubuntu-latest
  
     steps:
@@ -32,6 +38,11 @@ jobs:
        uses: actions/download-artifact@v3
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
+    
+     - name: Download Mac OS Artifact
+       uses: actions/download-artifact@v3
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
      - name: Attach Files
        env:
