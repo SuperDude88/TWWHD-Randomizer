@@ -14,7 +14,7 @@
 
 enum struct [[nodiscard]] ModificationError {
     NONE = 0,
-    MISSING_KEY = 0,
+    MISSING_KEY,
     INVALID_OFFSET,
     MISSING_VALUE,
     UNKNOWN_ACTOR_NAME,
