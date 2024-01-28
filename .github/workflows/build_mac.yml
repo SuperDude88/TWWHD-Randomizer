@@ -50,13 +50,13 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
 
-      # - name: Build
-      #   working-directory: ${{ github.workspace }}
-      #   run: cmake --build build --config ${{ inputs.build_type }} -j
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        run: cmake --build build --config ${{ inputs.build_type }} -j
 
-      # - name: Call macdeployqt
-      #   working-directory: ${{ github.workspace }}/build
-      #   run: ../../Qt/${{ env.QT_VERSION }}/macos/bin/macdeployqt wwhd_rando.app -dmg
+      - name: Call macdeployqt
+        working-directory: ${{ github.workspace }}/build
+        run: ../../Qt/${{ env.QT_VERSION }}/macos/bin/macdeployqt wwhd_rando.app -dmg
 
       - name: Get Version
         id: get-version
@@ -65,11 +65,8 @@ jobs:
         run: |
           echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
 
-      - name: Show Version
-        run: echo ${{ steps.get-version.outputs.RANDO_VERSION }}
-
-      # - name: Save Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     path: ${{github.workspace}}/build/wwhd_rando.dmg
-      #     name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac.dmg
+      - name: Save Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{github.workspace}}/build/wwhd_rando.dmg
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac.dmg
