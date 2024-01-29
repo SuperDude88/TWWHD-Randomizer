@@ -34,8 +34,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1048</width>
-         <height>590</height>
+         <width>1054</width>
+         <height>646</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2140,7 +2140,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>305</height>
+                    <height>290</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
@@ -2586,33 +2586,6 @@ font-weight: bold;</string>
       </item>
       <item>
        <widget class="QLineEdit" name="permalink"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_17">
-      <item>
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tracker Legacy Permalink (copy into &lt;a href=&quot;https://gymnast86.github.io/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;web tracker&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="textFormat">
-         <enum>Qt::RichText</enum>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-        <property name="textInteractionFlags">
-         <set>Qt::TextBrowserInteraction</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="tracker_permalink">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
       </item>
      </layout>
     </item>
