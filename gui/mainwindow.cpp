@@ -988,6 +988,7 @@ void MainWindow::update_option_description_text(const std::string& description /
 void MainWindow::update_permalink_and_seed_hash()
 {
     ui->permalink->setText(create_permalink(config.settings, config.seed).c_str());
+    currentPermalink = ui->permalink->text();
 
     // Also update seed hash
     ui->seed_hash_label->setText(std::string("Seed Hash: " + hash_for_seed(config.seed, config)).c_str());
