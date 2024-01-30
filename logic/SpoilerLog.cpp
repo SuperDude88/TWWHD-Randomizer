@@ -77,40 +77,22 @@ struct chartComparator {
 
 static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 {
-    log << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
-
-    log << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    log << "Seed: " << LogInfo::getConfig().seed << std::endl;
-
-    // Print options selected for each world
-    for (const auto& world : worlds)
-    {
-        log << ((worlds.size() > 1) ? "Selected options for world " + std::to_string(world.getWorldId() + 1) + ":" : "Selected options:") << std::endl << "\t";
-        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-        {
-            Option setting = static_cast<Option>(settingInt);
-
-            if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
-            {
-                log << settingToName(setting) << ": " << std::to_string(world.getSettings().getSetting(setting)) << ", ";
-            }
-            else
-            {
-                log << (world.getSettings().getSetting(setting) ? settingToName(setting) + ", " : "");
-            }
-        }
-        log << std::endl;
-    }
-
+    log << "# Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
+    log << "# Program opened " << ProgramTime::getDateStr(); //time string ends with \n
     log << std::endl;
+
+    log << "# Settings" << std::endl;
+    Config config = LogInfo::getConfig();
+    log << config.toYaml();
+    log << std::endl << std::endl;
 }
 
 void generateSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log(APP_SAVE_PATH + LogInfo::getSeedHash() + " Spoiler Log.txt");
+    std::ofstream spoilerLog(APP_SAVE_PATH + LogInfo::getSeedHash() + " Spoiler Log.txt");
 
     Utility::platformLog("Generating spoiler log...\n");
-    printBasicInfo(log, worlds);
+    printBasicInfo(spoilerLog, worlds);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
     // many worlds there are.
@@ -124,10 +106,10 @@ void generateSpoilerLog(WorldPool& worlds)
         if (world.getSettings().randomize_starting_island)
         {
             auto startingIsland = world.getArea("Link's Spawn")->exits.front().getConnectedArea()->name;
-            log << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
+            spoilerLog << "Starting Island" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ": " << startingIsland << std::endl;
         }
     }
-    log << std::endl;
+    spoilerLog << std::endl;
 
     LOG_TO_DEBUG("Starting Inventory");
     // Print starting inventory items
@@ -135,12 +117,12 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         if (!world.getSettings().starting_gear.empty())
         {
-            log << "Starting Inventory" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ":" << std::endl;
+            spoilerLog << "Starting Inventory" << ((worlds.size() > 1) ? " for world " + std::to_string(world.getWorldId() + 1) : "") << ":" << std::endl;
             for (auto& gameItem : world.getSettings().starting_gear)
             {
-                log << "    " << gameItemToName(gameItem) << std::endl;
+                spoilerLog << "    " << gameItemToName(gameItem) << std::endl;
             }
-            log << std::endl;
+            spoilerLog << std::endl;
         }
     }
 
@@ -166,26 +148,26 @@ void generateSpoilerLog(WorldPool& worlds)
 
     // Print the playthrough
     LOG_TO_DEBUG("Print Playthrough");
-    log << "Playthrough:" << std::endl;
+    spoilerLog << "Playthrough:" << std::endl;
     int sphere = 0;
     for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
     {
-        log << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
+        spoilerLog << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereLocations = *sphereItr;
         sphereLocations.sort([](Location* a, Location* b){return *a < *b;});
         for (auto location : sphereLocations)
         {
-            log << "        " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+            spoilerLog << "        " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
         }
     }
-    log << std::endl;
+    spoilerLog << std::endl;
 
 
     // Print the randomized entrances/playthrough
     LOG_TO_DEBUG("Print Entrance Playthrough");
     if (longestEntranceLength != 0)
     {
-        log << "Entrance Playthrough:" << std::endl;
+        spoilerLog << "Entrance Playthrough:" << std::endl;
     }
     sphere = 0;
     for (auto sphereItr = entranceSpheres.begin(); sphereItr != entranceSpheres.end(); sphereItr++, sphere++)
@@ -195,15 +177,15 @@ void generateSpoilerLog(WorldPool& worlds)
         {
             continue;
         }
-        log << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
+        spoilerLog << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereEntrances = *sphereItr;
         sphereEntrances.sort([](Entrance* a, Entrance* b){return *a < *b;});
         for (auto entrance : sphereEntrances)
         {
-            log << "        " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
+            spoilerLog << "        " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
         }
     }
-    log << std::endl;
+    spoilerLog << std::endl;
 
     LOG_TO_DEBUG("Entrance Listing");
     for (auto& world : worlds)
@@ -214,17 +196,17 @@ void generateSpoilerLog(WorldPool& worlds)
             continue;
         }
 
-        log << "Entrances for world " << std::to_string(world.getWorldId()) << ":" << std::endl;
+        spoilerLog << "Entrances for world " << std::to_string(world.getWorldId()) << ":" << std::endl;
         std::sort(entrances.begin(), entrances.end(), [](Entrance* a, Entrance* b){return *a < *b;});
         for (auto entrance : entrances)
         {
-            log << "    " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
+            spoilerLog << "    " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
         }
-        log << std::endl;
+        spoilerLog << std::endl;
     }
 
 
-    log << std::endl << "All Locations:" << std::endl;
+    spoilerLog << std::endl << "All Locations:" << std::endl;
     LOG_TO_DEBUG("All Locations");
     // Update the longest location name considering all locations
     for (auto& world : worlds)
@@ -244,11 +226,11 @@ void generateSpoilerLog(WorldPool& worlds)
         {
             if (!location->categories.contains(LocationCategory::HoHoHint))
             {
-                log << "    " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+                spoilerLog << "    " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
             }
         }
     }
-    log << std::endl;
+    spoilerLog << std::endl;
 
     LOG_TO_DEBUG("Hints");
     for (auto& world : worlds)
@@ -259,46 +241,46 @@ void generateSpoilerLog(WorldPool& worlds)
             continue;
         }
 
-        log << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
+        spoilerLog << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
         if (!world.hohoHints.empty())
         {
             for (auto& [hohoLocation, hintLocations] : world.hohoHints)
             {
-                log << "    " << hohoLocation->getName() << ":" << std::endl;
+                spoilerLog << "    " << hohoLocation->getName() << ":" << std::endl;
                 for (auto location : hintLocations)
                 {
-                    log << "        " << getSpoilerFormatHint(location);
+                    spoilerLog << "        " << getSpoilerFormatHint(location);
                     // Show what item/location was being referred to with each path hint
                     if (location->hint.type == HintType::PATH) 
                     {
-                        log << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
+                        spoilerLog << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
                     }
-                    log << std::endl;
+                    spoilerLog << std::endl;
                 }
             }
         }
 
         if (!world.korlHints.empty())
         {
-            log << "    KoRL Hints:" << std::endl;
+            spoilerLog << "    KoRL Hints:" << std::endl;
             for (auto location : world.korlHints)
             {
-                log << "        " << getSpoilerFormatHint(location);
+                spoilerLog << "        " << getSpoilerFormatHint(location);
                 // Show what item/location was being referred to with each path hint
                 if (location->hint.type == HintType::PATH) 
                 {
-                    log << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
+                    spoilerLog << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
                 }
-                log << std::endl;
+                spoilerLog << std::endl;
             }
         }
     }
-    log << std::endl;
+    spoilerLog << std::endl;
 
     LOG_TO_DEBUG("Chart Mappings");
     for (auto& world : worlds)
     {
-        log << "Charts for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
+        spoilerLog << "Charts for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
         std::map<std::string, std::string> spoilerTriforceMappings = {};
         std::map<std::string, std::string, chartComparator> spoilerTreasureMappings = {};
         for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
@@ -317,41 +299,41 @@ void generateSpoilerLog(WorldPool& worlds)
         }
         for (auto& [chart, island] : spoilerTriforceMappings)
         {
-            log << "    " << chart << ":\t" << island << std::endl;
+            spoilerLog << "    " << chart << ":\t" << island << std::endl;
         }
         for (auto& [chart, island] : spoilerTreasureMappings)
         {
-            log << "    " << chart << ":\t" << island << std::endl;
+            spoilerLog << "    " << chart << ":\t" << island << std::endl;
         }
     }
 
-    log.close();
+    spoilerLog.close();
 }
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream log(APP_SAVE_PATH + LogInfo::getSeedHash() + " Non-Spoiler Log.txt");
+    std::ofstream nonSpoilerLog(APP_SAVE_PATH + LogInfo::getSeedHash() + " Non-Spoiler Log.txt");
 
     Utility::platformLog("Generating non-spoiler log...\n");
-    printBasicInfo(log, worlds);
+    printBasicInfo(nonSpoilerLog, worlds);
 
-    log << "### Locations that may or may not have progress items in them on this run:" << std::endl;
+    nonSpoilerLog << "### Locations that may or may not have progress items in them on this run:" << std::endl;
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
         {
             if (location->categories.contains(LocationCategory::PlandomizerProgression))
             {
-                log << "    " + location->getName() + " (Added by Plandomizer)" << std::endl;
+                nonSpoilerLog << "#   " + location->getName() + " (Added by Plandomizer)" << std::endl;
             }
             else if (location->progression)
             {
-                log << "    " + location->getName() << std::endl;
+                nonSpoilerLog << "#   " + location->getName() << std::endl;
             }
         }
     }
 
-    log << std::endl << "### Locations that cannot have progress items in them on this run:" << std::endl;
+    nonSpoilerLog << std::endl << "### Locations that cannot have progress items in them on this run:" << std::endl;
     for (auto& world : worlds)
     {
         for (auto location : world.getLocations())
@@ -359,10 +341,10 @@ void generateNonSpoilerLog(WorldPool& worlds)
             // Don't print blue chu chu locations (yet) or Ho Ho Hint Locations 
             if (!location->progression && !location->categories.contains(LocationCategory::BlueChuChu) && !location->categories.contains(LocationCategory::HoHoHint))
             {
-                log << "    " + location->getName() << std::endl;
+                nonSpoilerLog << "#   " + location->getName() << std::endl;
             }
         }
     }
 
-    log.close();
+    nonSpoilerLog.close();
 }

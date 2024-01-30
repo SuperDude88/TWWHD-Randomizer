@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #include <options.hpp>
-
+#include <libs/yaml.hpp>
 
 
 enum struct [[nodiscard]] ConfigError {
@@ -35,6 +35,7 @@ public:
     
     void resetDefaults();
     ConfigError loadFromFile(const std::string& filePath, bool ignoreErrors = false);
+    YAML::Node toYaml();
     ConfigError writeToFile(const std::string& filePath);
     
     static ConfigError writeDefault(const std::string& filePath);
