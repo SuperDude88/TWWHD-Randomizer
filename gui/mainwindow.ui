@@ -2140,7 +2140,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>290</height>
+                    <height>311</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
@@ -2593,6 +2593,9 @@ font-weight: bold;</string>
      <layout class="QHBoxLayout" name="horizontalLayout_29">
       <item>
        <widget class="QLabel" name="update_checker_label">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Checking for updates to the randomizer...</string>
         </property>
