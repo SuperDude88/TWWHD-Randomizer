@@ -63,7 +63,7 @@ if (EMBED_DATA)
     add_compile_definitions(DATA_PATH=":/")
 else()
     if(APPLE)
-        add_compile_definitions(DATA_PATH="../../../data")
+        add_compile_definitions(DATA_PATH="../../../data/")
     else()
         add_compile_definitions(DATA_PATH="./data/")
     endif()
@@ -89,8 +89,14 @@ else()
   file(COPY "../customizer/data" DESTINATION "${CMAKE_BINARY_DIR}/data/customizer")                     # Default model info
 endif()
 
+# Set Icon on Windows
 file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc" "IDI_ICON1 ICON DISCARDABLE \"appicon.ico\"")
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
+
+# Set Icon on Mac
+set(MACOSX_BUNDLE_ICON_FILE "app.icns")
+set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/app.icns")
+set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 set(PROJECT_SOURCES
         main.cpp
@@ -114,6 +120,7 @@ set(PROJECT_SOURCES
         ../options.cpp
         ../text_replacements.cpp
         ${app_icon_resource_windows}
+        ${app_icon_macos}
         ${PROJECT_SOURCES}
 )
 
