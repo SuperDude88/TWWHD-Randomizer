@@ -6,8 +6,8 @@ jobs:
   build-windows:
     uses: ./.github/workflows/build_windows.yml
 
-  build-wiiu:
-    uses: ./.github/workflows/build_wiiu.yml
+  # build-wiiu:
+  #   uses: ./.github/workflows/build_wiiu.yml
 
-  build-mac:
-    uses: ./.github/workflows/build_mac.yml
+  # build-mac:
+  #   uses: ./.github/workflows/build_mac.yml

@@ -96,5 +96,5 @@ jobs:
       - name: Save Artifact
         uses: actions/upload-artifact@v3
         with:
-          path: ${{github.workspace}}\wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows.zip
+          path: ${{github.workspace}}/build/wwhd_rando_windows
           name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows
