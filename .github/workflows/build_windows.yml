@@ -85,13 +85,6 @@ jobs:
           cp ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libstdc++-6.dll wwhd_rando_windows\libstdc++-6.dll
           cp ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\libwinpthread-1.dll wwhd_rando_windows\libwinpthread-1.dll
           ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{ github.workspace }}\build\wwhd_rando_windows && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
- 
-      - name: Archive release folder
-        uses: thedoctor0/zip-release@0.7.1
-        with:
-          type: 'zip'
-          path: ${{github.workspace}}/build/wwhd_rando_windows
-          filename: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows.zip
 
       - name: Save Artifact
         uses: actions/upload-artifact@v3
