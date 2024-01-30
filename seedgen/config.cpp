@@ -411,9 +411,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     return ConfigError::NONE;
 }
 
-
-
-ConfigError Config::writeToFile(const std::string& filePath) {
+YAML::Node Config::toYaml() {
     YAML::Node root;
 
     SET_FIELD(root, "program_version", RANDOMIZER_VERSION) //Keep track of rando version to give warning (different versions will have different item placements)
@@ -527,6 +525,12 @@ ConfigError Config::writeToFile(const std::string& filePath) {
     for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
         root["custom_colors"][texture] = color;
     }
+
+    return root;
+}
+
+ConfigError Config::writeToFile(const std::string& filePath) {
+    YAML::Node root = toYaml();
 
     std::ofstream f(filePath);
     if (f.is_open() == false)
