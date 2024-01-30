@@ -105,6 +105,18 @@ private:
             return false;
         }
 
+        #ifndef DEVKITPRO
+            // Copy base game to output if necessary
+            const auto& output = config.outputDir;
+            if (!is_directory(output / "code") || !is_directory(output / "content") || !is_directory(output / "meta")) {
+                Utility::platformLog("Copying dump to output...\n");
+                UPDATE_DIALOG_LABEL("Copying dump to output...");
+                copy(base / "code", output / "code", copy_options::recursive);
+                copy(base / "content", output / "content", copy_options::recursive);
+                copy(base / "meta", output / "meta", copy_options::recursive);
+            }
+        #endif
+
         return true;
     }
 
