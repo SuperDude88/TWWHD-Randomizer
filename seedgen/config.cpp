@@ -411,14 +411,16 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     return ConfigError::NONE;
 }
 
-YAML::Node Config::toYaml() {
+YAML::Node Config::toYaml(bool hidePaths) {
     YAML::Node root;
 
     SET_FIELD(root, "program_version", RANDOMIZER_VERSION) //Keep track of rando version to give warning (different versions will have different item placements)
     SET_FIELD(root, "file_version", CONFIG_VERSION) //Keep track of file version so it can avoid incompatible ones
 
-    SET_FIELD(root, "gameBaseDir", gameBaseDir.string())
-    SET_FIELD(root, "outputDir", outputDir.string())
+    if(!hidePaths) {
+        SET_FIELD(root, "gameBaseDir", gameBaseDir.string())
+        SET_FIELD(root, "outputDir", outputDir.string())
+    }
     SET_FIELD(root, "seed", seed)
 
     SET_FIELD(root, "progression_dungeons", ProgressionDungeonsToName(settings.progression_dungeons))
@@ -530,7 +532,7 @@ YAML::Node Config::toYaml() {
 }
 
 ConfigError Config::writeToFile(const std::string& filePath) {
-    YAML::Node root = toYaml();
+    YAML::Node root = toYaml(false);
 
     std::ofstream f(filePath);
     if (f.is_open() == false)
