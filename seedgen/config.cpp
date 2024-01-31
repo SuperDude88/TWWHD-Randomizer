@@ -501,7 +501,6 @@ YAML::Node Config::settingsToYaml() {
     SET_FIELD(root, "random_item_slide_item", settings.random_item_slide_item)
     SET_FIELD(root, "classic_mode", settings.classic_mode)
     SET_FIELD(root, "plandomizer", settings.plandomizer)
-    SET_FIELD(root, "plandomizerFile", settings.plandomizerFile)
 
     SET_FIELD(root, "dungeon_small_keys", PlacementOptionToName(settings.dungeon_small_keys))
     SET_FIELD(root, "dungeon_big_keys", PlacementOptionToName(settings.dungeon_big_keys))
@@ -522,6 +521,7 @@ YAML::Node Config::preferencesToYaml() {
     YAML::Node preferencesRoot;
     SET_FIELD(preferencesRoot, "gameBaseDir", gameBaseDir.string())
     SET_FIELD(preferencesRoot, "outputDir", outputDir.string())
+    SET_FIELD(preferencesRoot, "plandomizerFile", settings.plandomizerFile)
 
     SET_FIELD(preferencesRoot, "pig_color", PigColorToName(settings.pig_color))
 
