@@ -2495,7 +2495,7 @@ std::string generate_seed_hash() {
 
 std::string hash_for_seed(const std::string& seed) {
     Config config;
-    config.loadFromFile(APP_SAVE_PATH "config.yaml");
+    config.loadFromFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
     return hash_for_seed(seed, config);
 }
 

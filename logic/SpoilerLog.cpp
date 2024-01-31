@@ -83,7 +83,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 
     log << "# Settings" << std::endl;
     Config config = LogInfo::getConfig();
-    log << config.toYaml();
+    log << config.settingsToYaml();
     log << std::endl << std::endl;
 }
 
