@@ -14,7 +14,8 @@ int main(int argc, char *argv[])
 
     // Check for config file
     std::ifstream conf(APP_SAVE_PATH "config.yaml");
-    if (!conf.is_open())
+    std::ifstream pref(APP_SAVE_PATH "preferences.yaml");
+    if (!conf.is_open() || !pref.is_open())
     {
         // No config file, create default
         delete_and_create_default_config();

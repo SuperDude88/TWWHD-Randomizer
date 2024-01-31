@@ -34,11 +34,14 @@ public:
     Config();
     
     void resetDefaults();
-    ConfigError loadFromFile(const std::string& filePath, bool ignoreErrors = false);
-    YAML::Node toYaml(bool hidePaths = true);
-    ConfigError writeToFile(const std::string& filePath);
+    ConfigError loadFromFile(const std::string& filePath, const std::string& preferencesPath, bool ignoreErrors = false);
+    YAML::Node settingsToYaml();
+    YAML::Node preferencesToYaml();
+    ConfigError writeSettings(const std::string& filePath);
+    ConfigError writePreferences(const std::string& preferencesPath);
+    ConfigError writeToFile(const std::string& filePath, const std::string& preferencesPath);
     
-    static ConfigError writeDefault(const std::string& filePath);
+    static ConfigError writeDefault(const std::string& filePath, const std::string& preferencesPath);
 };
 
 std::string errorToName(ConfigError err);

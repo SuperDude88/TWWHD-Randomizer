@@ -59,13 +59,16 @@ void Config::resetDefaults() {
     return;
 }
 
-ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors /*= false*/) {
+ConfigError Config::loadFromFile(const std::string& filePath, const std::string& preferencesPath, bool ignoreErrors /*= false*/) {
     // check if we can open the file before parsing because exceptions won't work on console
     std::ifstream file(filePath);
-    if(!file.is_open()) LOG_ERR_AND_RETURN(ConfigError::COULD_NOT_OPEN);
+    std::ifstream preferences(preferencesPath);
+    if(!file.is_open() || !preferences.is_open()) LOG_ERR_AND_RETURN(ConfigError::COULD_NOT_OPEN);
     file.close();
+    preferences.close();
     
     YAML::Node root = YAML::LoadFile(filePath);
+    YAML::Node preferencesRoot = YAML::LoadFile(preferencesPath);
 
     std::string rando_version, file_version;
     GET_FIELD(root, "program_version", rando_version)
@@ -87,11 +90,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
         settings.plandomizerFile = APP_SAVE_PATH "plandomizer.yaml";
     #else
         std::string baseTemp, outTemp;
-        GET_FIELD_NO_FAIL(root, "gameBaseDir", baseTemp)
+        GET_FIELD_NO_FAIL(preferencesRoot, "gameBaseDir", baseTemp)
         gameBaseDir = baseTemp;
-        GET_FIELD_NO_FAIL(root, "outputDir", outTemp)
+        GET_FIELD_NO_FAIL(preferencesRoot, "outputDir", outTemp)
         outputDir = outTemp;
-        GET_FIELD_NO_FAIL(root, "plandomizerFile", settings.plandomizerFile)
+        GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", settings.plandomizerFile)
     #endif
 
     GET_FIELD_NO_FAIL(root, "seed", seed)
@@ -189,11 +192,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     GET_FIELD(root, "classic_mode", settings.classic_mode)
     GET_FIELD(root, "plandomizer", settings.plandomizer)
 
-    if(!root["pig_color"])  {
+    if(!preferencesRoot["pig_color"])  {
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.pig_color = nameToPigColor(root["pig_color"].as<std::string>("INVALID"));
+        settings.pig_color = nameToPigColor(preferencesRoot["pig_color"].as<std::string>("INVALID"));
         if(settings.pig_color == PigColor::INVALID) {
             if (!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -249,11 +252,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
           }
     }
 
-    if(!root["target_type"]) {
+    if(!preferencesRoot["target_type"]) {
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.target_type = nameToTargetTypePreference(root["target_type"].as<std::string>("INVALID"));
+        settings.target_type = nameToTargetTypePreference(preferencesRoot["target_type"].as<std::string>("INVALID"));
         if(settings.target_type == TargetTypePreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -264,11 +267,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
           }
     }
 
-    if(!root["camera"]) {
+    if(!preferencesRoot["camera"]) {
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.camera = nameToCameraPreference(root["camera"].as<std::string>("INVALID"));
+        settings.camera = nameToCameraPreference(preferencesRoot["camera"].as<std::string>("INVALID"));
         if(settings.camera == CameraPreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -279,11 +282,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
           }
     }
 
-    if(!root["first_person_camera"]) {
+    if(!preferencesRoot["first_person_camera"]) {
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.first_person_camera = nameToFirstPersonCameraPreference(root["first_person_camera"].as<std::string>("INVALID"));
+        settings.first_person_camera = nameToFirstPersonCameraPreference(preferencesRoot["first_person_camera"].as<std::string>("INVALID"));
         if(settings.first_person_camera == FirstPersonCameraPreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -294,11 +297,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
           }
     }
 
-    if(!root["gyroscope"]) {
+    if(!preferencesRoot["gyroscope"]) {
         if (!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.gyroscope = nameToGyroscopePreference(root["gyroscope"].as<std::string>("INVALID"));
+        settings.gyroscope = nameToGyroscopePreference(preferencesRoot["gyroscope"].as<std::string>("INVALID"));
         if(settings.gyroscope == GyroscopePreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -309,11 +312,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
           }
     }
 
-    if(!root["ui_display"]) {
+    if(!preferencesRoot["ui_display"]) {
         if(!ignoreErrors) return ConfigError::MISSING_KEY;
     }
     else {
-        settings.ui_display = nameToUIDisplayPreference(root["ui_display"].as<std::string>("INVALID"));
+        settings.ui_display = nameToUIDisplayPreference(preferencesRoot["ui_display"].as<std::string>("INVALID"));
         if(settings.ui_display == UIDisplayPreference::INVALID) {
             if(!ignoreErrors) {
                 return ConfigError::INVALID_VALUE;
@@ -351,11 +354,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     }
 
 
-    GET_FIELD(root, "player_in_casual_clothes", settings.selectedModel.casual)
-    GET_FIELD(root, "custom_player_model", settings.selectedModel.modelName)
+    GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
+    GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
     // only non-default colors are written
-    if(root["custom_colors"].IsMap()) {
-        for(const auto& colorObject : root["custom_colors"]) {
+    if(preferencesRoot["custom_colors"].IsMap()) {
+        for(const auto& colorObject : preferencesRoot["custom_colors"]) {
             const std::string texture = colorObject.first.as<std::string>();
             const std::string color = colorObject.second.as<std::string>();
 
@@ -411,16 +414,12 @@ ConfigError Config::loadFromFile(const std::string& filePath, bool ignoreErrors 
     return ConfigError::NONE;
 }
 
-YAML::Node Config::toYaml(bool hidePaths) {
+YAML::Node Config::settingsToYaml() {
     YAML::Node root;
 
     SET_FIELD(root, "program_version", RANDOMIZER_VERSION) //Keep track of rando version to give warning (different versions will have different item placements)
     SET_FIELD(root, "file_version", CONFIG_VERSION) //Keep track of file version so it can avoid incompatible ones
 
-    if(!hidePaths) {
-        SET_FIELD(root, "gameBaseDir", gameBaseDir.string())
-        SET_FIELD(root, "outputDir", outputDir.string())
-    }
     SET_FIELD(root, "seed", seed)
 
     SET_FIELD(root, "progression_dungeons", ProgressionDungeonsToName(settings.progression_dungeons))
@@ -502,17 +501,10 @@ YAML::Node Config::toYaml(bool hidePaths) {
     SET_FIELD(root, "random_item_slide_item", settings.random_item_slide_item)
     SET_FIELD(root, "classic_mode", settings.classic_mode)
     SET_FIELD(root, "plandomizer", settings.plandomizer)
-    SET_FIELD(root, "plandomizerFile", settings.plandomizerFile)
 
-    SET_FIELD(root, "pig_color", PigColorToName(settings.pig_color))
     SET_FIELD(root, "dungeon_small_keys", PlacementOptionToName(settings.dungeon_small_keys))
     SET_FIELD(root, "dungeon_big_keys", PlacementOptionToName(settings.dungeon_big_keys))
     SET_FIELD(root, "dungeon_maps_compasses", PlacementOptionToName(settings.dungeon_maps_compasses))
-    SET_FIELD(root, "target_type", TargetTypePreferenceToName(settings.target_type))
-    SET_FIELD(root, "camera", CameraPreferenceToName(settings.camera))
-    SET_FIELD(root, "first_person_camera", FirstPersonCameraPreferenceToName(settings.first_person_camera))
-    SET_FIELD(root, "gyroscope", GyroscopePreferenceToName(settings.gyroscope))
-    SET_FIELD(root, "ui_display", UIDisplayPreferenceToName(settings.ui_display))
 
     for (const auto& item : settings.starting_gear) {
         root["starting_gear"].push_back(gameItemToName(item));
@@ -522,18 +514,35 @@ YAML::Node Config::toYaml(bool hidePaths) {
         root["starting_gear"] = "None";
     }
 
-    SET_FIELD(root, "player_in_casual_clothes", settings.selectedModel.casual)
-    SET_FIELD(root, "custom_player_model", settings.selectedModel.modelName)
-    for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
-        root["custom_colors"][texture] = color;
-    }
-
     return root;
 }
 
-ConfigError Config::writeToFile(const std::string& filePath) {
-    YAML::Node root = toYaml(false);
+YAML::Node Config::preferencesToYaml() {
+    YAML::Node preferencesRoot;
+    SET_FIELD(preferencesRoot, "gameBaseDir", gameBaseDir.string())
+    SET_FIELD(preferencesRoot, "outputDir", outputDir.string())
+    SET_FIELD(preferencesRoot, "plandomizerFile", settings.plandomizerFile)
 
+    SET_FIELD(preferencesRoot, "pig_color", PigColorToName(settings.pig_color))
+
+    SET_FIELD(preferencesRoot, "target_type", TargetTypePreferenceToName(settings.target_type))
+    SET_FIELD(preferencesRoot, "camera", CameraPreferenceToName(settings.camera))
+    SET_FIELD(preferencesRoot, "first_person_camera", FirstPersonCameraPreferenceToName(settings.first_person_camera))
+    SET_FIELD(preferencesRoot, "gyroscope", GyroscopePreferenceToName(settings.gyroscope))
+    SET_FIELD(preferencesRoot, "ui_display", UIDisplayPreferenceToName(settings.ui_display))
+
+    SET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
+    SET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
+    for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
+        preferencesRoot["custom_colors"][texture] = color;
+    }
+
+    return preferencesRoot;
+}
+
+ConfigError Config::writeSettings(const std::string& filePath) {
+
+    YAML::Node root = settingsToYaml();
     std::ofstream f(filePath);
     if (f.is_open() == false)
     {
@@ -541,14 +550,48 @@ ConfigError Config::writeToFile(const std::string& filePath) {
         return ConfigError::COULD_NOT_OPEN;
     }
     f << root;
+    f.close();
 
     return ConfigError::NONE;
 }
 
-ConfigError Config::writeDefault(const std::string& filePath) {
+ConfigError Config::writePreferences(const std::string& preferencesPath) {
+
+    YAML::Node preferences = preferencesToYaml();
+    std::ofstream pref(preferencesPath);
+    if (pref.is_open() == false)
+    {
+        ErrorLog::getInstance().log("Could not open preferences at " + preferencesPath);
+        return ConfigError::COULD_NOT_OPEN;
+    }
+    pref << preferences;
+    pref.close();
+
+    return ConfigError::NONE;
+}
+
+ConfigError Config::writeToFile(const std::string& filePath, const std::string& preferencesPath) {
+    LOG_AND_RETURN_IF_ERR(writeSettings(filePath))
+    LOG_AND_RETURN_IF_ERR(writePreferences(preferencesPath))
+    return ConfigError::NONE;
+}
+
+ConfigError Config::writeDefault(const std::string& filePath, const std::string& preferencesPath) {
     Config conf;
 
-    LOG_AND_RETURN_IF_ERR(conf.writeToFile(filePath))
+    // Writes defaults if they don't exist
+    std::ifstream file(filePath);
+    std::ifstream pref(preferencesPath);
+
+    if (file.is_open() == false) {
+        Utility::platformLog("Creating default config\n");
+        LOG_AND_RETURN_IF_ERR(conf.writeSettings(filePath))
+    }
+
+    if (pref.is_open() == false) {
+        Utility::platformLog("Creating default preferences\n");
+        LOG_AND_RETURN_IF_ERR(conf.writePreferences(preferencesPath))
+    }
 
     return ConfigError::NONE;
 }

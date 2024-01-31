@@ -38,7 +38,8 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     // Pre-emptively write config incase of crashing
     std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
-    ConfigError err = config.writeToFile(errorConfigFilename);
+    std::string preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_preferences.yaml";
+    ConfigError err = config.writeToFile(errorConfigFilename, preferencesFilename);
 
     int retVal = generateWorlds(worlds, settingsVector);
 
