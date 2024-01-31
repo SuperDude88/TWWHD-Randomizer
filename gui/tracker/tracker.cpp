@@ -241,7 +241,7 @@ void MainWindow::autosave_current_tracker()
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = trackerConfig.writeToFile(APP_SAVE_PATH "tracker_autosave.yaml");
+    auto configErr = trackerConfig.writeToFile(APP_SAVE_PATH "tracker_autosave.yaml", APP_SAVE_PATH "autosave_preferences.yaml");
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + errorToName(configErr));
@@ -296,14 +296,14 @@ void MainWindow::autosave_current_tracker()
 
 void MainWindow::load_tracker_autosave()
 {
-    if (!std::filesystem::exists(APP_SAVE_PATH "tracker_autosave.yaml"))
+    if (!std::filesystem::exists(APP_SAVE_PATH "tracker_autosave.yaml") || !std::filesystem::exists(APP_SAVE_PATH "autosave_preferences.yaml"))
     {
         // No autosave file, don't try to do anything
         return;
     }
 
     Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(APP_SAVE_PATH "tracker_autosave.yaml", true);
+    auto configErr = trackerConfig.loadFromFile(APP_SAVE_PATH "tracker_autosave.yaml", APP_SAVE_PATH "autosave_preferences.yaml", true);
     if (configErr != ConfigError::NONE)
     {
         show_warning_dialog("Could not load tracker autosave config\nError: " + errorToName(configErr));
