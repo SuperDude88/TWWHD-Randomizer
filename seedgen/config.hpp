@@ -35,7 +35,7 @@ public:
     
     void resetDefaults();
     ConfigError loadFromFile(const std::string& filePath, bool ignoreErrors = false);
-    YAML::Node toYaml();
+    YAML::Node toYaml(bool hidePaths = true);
     ConfigError writeToFile(const std::string& filePath);
     
     static ConfigError writeDefault(const std::string& filePath);
