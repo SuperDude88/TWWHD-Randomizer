@@ -97,6 +97,10 @@ void RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     baseDir = gameBaseDir;
     outputDir = randoOutputDir;
 
+    if(!Utility::dirExists(outputDir)) {
+        Utility::create_directories(outputDir);
+    }
+
     clearCache();
     initialized = true;
     return;
@@ -604,21 +608,20 @@ static bool iterate_directory_recursive(RandoSession& session, const std::filesy
 bool RandoSession::runFirstTimeSetup() {
     //create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
     #ifdef DEVKITPRO
+        Utility::platformLog("Running first time setup (this will increase repack time)\n");
         if(!iterate_directory_recursive(*this, baseDir / "content")) { //code and meta folders are handled by channel install
             return false; 
         }
     #else
-        using namespace std::filesystem;
-        for (const directory_entry& entry : recursive_directory_iterator(baseDir))
-        {
-            const fspath relPath = relative(entry.path(), baseDir);
-            if(entry.is_directory()) {
-                if(!create_directory(outputDir / relPath)) return false;
-            }
-            else {
-                CacheEntry& entry = openGameFile(relPath);
-            }
-        }
+        #ifdef ENABLE_TIMING
+            ScopedTimer<std::chrono::high_resolution_clock, "Copying dump took "> copyTimer;
+        #endif
+ 
+        Utility::platformLog("Copying dump to output...\n");
+        UPDATE_DIALOG_LABEL("Copying dump to output...");
+        std::filesystem::copy(baseDir / "code", outputDir / "code", std::filesystem::copy_options::recursive);
+        std::filesystem::copy(baseDir / "content", outputDir / "content", std::filesystem::copy_options::recursive);
+        std::filesystem::copy(baseDir / "meta", outputDir / "meta", std::filesystem::copy_options::recursive);
     #endif
 
     return true;
@@ -633,8 +636,6 @@ bool RandoSession::modFiles()
     CHECK_INITIALIZED(false);
 
     if(firstTimeSetup) {
-        UPDATE_DIALOG_LABEL("Running first time setup (this will increase repack time)");
-        Utility::platformLog("Running first time setup (this will increase repack time)\n");
         if(!runFirstTimeSetup()) {
             ErrorLog::getInstance().log("Failed to complete first time setup!");
             return false;

@@ -105,18 +105,6 @@ private:
             return false;
         }
 
-        #ifndef DEVKITPRO
-            // Copy base game to output if necessary
-            const auto& output = config.outputDir;
-            if (!is_directory(output / "code") || !is_directory(output / "content") || !is_directory(output / "meta")) {
-                Utility::platformLog("Copying dump to output...\n");
-                UPDATE_DIALOG_LABEL("Copying dump to output...");
-                copy(base / "code", output / "code", copy_options::recursive);
-                copy(base / "content", output / "content", copy_options::recursive);
-                copy(base / "meta", output / "meta", copy_options::recursive);
-            }
-        #endif
-
         return true;
     }
 
@@ -129,8 +117,13 @@ private:
         
         const RandoSession::fspath& out = g_session.getOutputDir();
         if(!is_directory(out / "code") || !is_directory(out / "content") || !is_directory(out / "meta")) {
-            ErrorLog::getInstance().log("Invalid output path: could not find code/content/meta folders at " + out.string() + "!");
-            return false;
+            #ifdef DEVKITPRO // this should all exist on console
+                ErrorLog::getInstance().log("Invalid output path: could not find code/content/meta folders at " + out.string() + "!");
+                return false;
+            #else // copy over the files on desktop
+                g_session.setFirstTimeSetup(true);
+                return true; // skip the rest of the checks, don't error
+            #endif
         }
 
         //Double check the meta.xml
@@ -147,8 +140,8 @@ private:
         }
         const tinyxml2::XMLElement* root = metaXml.RootElement();
 
-        //Title ID won't be updated until after the first randomization on PC
-        //But on console it should be correct once the channel is installed
+        // Title ID won't be updated until after the first randomization on PC so it's not a very useful check
+        // But on console it should be correct once the channel is installed so it's a good sanity check
         #ifdef DEVKITPRO
             const std::string titleId = root->FirstChildElement("title_id")->GetText();
             if(titleId != "0005000010143599")  {
@@ -262,7 +255,7 @@ private:
     }
 
     [[nodiscard]] bool restoreEntrances(WorldPool& worlds) {
-        //Go through all the entrances and restore their data so they don't persist across seeds
+        // Go through all the entrances and restore their data so they don't persist across seeds
         // restoreGameFile() does not need to check if the file is cached because it only tries to get the cache entry
         // Getting a cache entry doesn't overwrite anything if the file already had modifications
         const EntrancePool entrances = worlds[0].getShuffleableEntrances(EntranceType::ALL);
@@ -746,7 +739,6 @@ int mainRandomize() {
             return 1;
         }
         //Utility::platformLog("Got game dir " + load.gameBaseDir.string() + '\n');
-        
         
         if(!SYSCheckTitleExists(0x0005000010143599)) {
             if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
