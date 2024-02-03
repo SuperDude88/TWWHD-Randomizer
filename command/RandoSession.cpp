@@ -97,8 +97,8 @@ void RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     baseDir = gameBaseDir;
     outputDir = randoOutputDir;
 
-    if(!Utility::dirExists(outputDir)) {
-        Utility::create_directories(outputDir);
+    if(!outputDir.empty()) {
+        Utility::create_directories(outputDir); // handles directories that already exist
     }
 
     clearCache();
