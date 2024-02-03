@@ -160,23 +160,6 @@ private:
         return true;
     }
 
-    void clearOldLogs() {
-        if(std::filesystem::is_regular_file(APP_SAVE_PATH "Debug Log.txt")) {
-            std::filesystem::remove(APP_SAVE_PATH "Debug Log.txt");
-        }
-        if(std::filesystem::is_regular_file(APP_SAVE_PATH "Error Log.txt")) {
-            std::filesystem::remove(APP_SAVE_PATH "Error Log.txt");
-        }
-        if(std::filesystem::is_regular_file(APP_SAVE_PATH "Non-Spoiler Log.txt")) {
-            std::filesystem::remove(APP_SAVE_PATH "Non-Spoiler Log.txt");
-        }
-        if(std::filesystem::is_regular_file(APP_SAVE_PATH "Spoiler Log.txt")) {
-            std::filesystem::remove(APP_SAVE_PATH "Spoiler Log.txt");
-        }
-
-        return;
-    }
-
     [[nodiscard]] bool writeCharts(WorldPool& worlds) {
         using namespace std::literals::string_literals;
         using eType = Utility::Endian::Type;
@@ -521,7 +504,6 @@ public:
     }
 
     int randomize() {
-
         // Go through the setting testing process if mass testing is turned on and ignore everything else
         #ifdef MASS_TESTING
             #if TEST_COUNT
@@ -555,8 +537,6 @@ public:
         LogInfo::setSeedHash(generate_seed_hash());
 
         UPDATE_DIALOG_TITLE("Randomizing - Hash: " + LogInfo::getSeedHash());
-
-        // clearOldLogs();
 
         // Create all necessary worlds (for any potential multiworld support in the future)
         WorldPool worlds(numPlayers);
