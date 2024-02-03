@@ -414,9 +414,9 @@ check_if_inside_warp:
   lis r3, default_molgera_xz_pos@ha
   addi r3, r3, default_molgera_xz_pos@l
   lfs f1, 0x0(r3)
-  stfs f1, 0x0(r25) ; Store 0.0 to X position
+  stfs f1, 0x0(r25) ; X position
   lfs f1, 0x4(r3)
-  stfs f1, 0x8(r25) ; Store 500.0 to Z position
+  stfs f1, 0x8(r25) ; Z position
 
   ; Y position is handled later in the original function
 

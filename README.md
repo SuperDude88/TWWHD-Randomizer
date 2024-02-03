@@ -33,10 +33,9 @@ This randomizer currently supports the USA version of TWWHD. The European and Ja
 Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide/#/aroma/getting-started). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
 
 #### Using the Homebrew Application
-The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). If you have a physical copy and discs aren't working yet (expected), you can dump installable files using [wudd](https://github.com/wiiu-env/wudd). You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time set up*).
+The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). Discs have not yet been tested, so you can dump installable files using [wudd](https://github.com/wiiu-env/wudd) if they are not working. You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
 
-Once homebrew is set up, copy the `wwhd_randomizer.wuhb` from the releases page into `sd:/wiiu/apps`. Run the app from the home menu to open the patcher. A few settings (custom colors and manually-entered seed strings) are not fully available in the console GUI.
-
+Once homebrew is set up, copy the `wwhd_randomizer.wuhb` from the releases page into `sd:/wiiu/apps`. Run the app from the home menu to open the patcher.
 
 The first time it runs, the patcher will create a home menu channel for the randomized game. This can take some time (it needs to transfer all the game data), but only happens once.
 
@@ -46,11 +45,9 @@ To play the randomized game, you must have a CFW/sigpatches active. This should 
 ### On Emulator
 This method will require that you have a decrypted USA copy of TWWHD on your computer. The decrypted game consists of a folder with 3 subfolders (`code`, `content`, and `meta`). It is *not* a single file like an `.iso` or a `.wad`. You can dump a disc or digital install from your Wii U with [dumpling](https://github.com/emiyl/dumpling).
 
-Download the latest `wwhd_rando_windows.zip` from the releases page and extract its contents to wherever you wish. At this point we recommend creating a new folder `rando` in the folder where you extracted the application to. This will hold the randomized game. Now, copy the vanilla decrypted game (`code`, `content`, and `meta`) into the `rando` folder. This is so the application doesn't have to copy over the entire game to the `rando` folder every time you generate a seed and significantly reduces generation time. 
+Download the latest randomizer from the [releases page](https://github.com/SuperDude88/TWWHD-Randomizer/releases) and extract its contents to wherever you wish (Windows and Mac are currently supported). After extraction, double-click on the `wwhd_rando` application to open it (`wwhd_rando.exe` on Windows). Set the `Base Game Folder` to the folder which holds your vanilla game and the `Output Folder` to the location you want to place the randomized game. Once you've finished selecting your desired settings, click the `Randomize` button in the bottom-right and wait for the seed generation to finish. Afterwards, you will have the randomized game in the output folder. Note that generating a new seed will overwrite any previous seed in the output folder.
 
-Next, double-click on `wwhd_rando.exe` to open the application. Set the `Base Game Folder` as the folder which holds your vanilla game folder and the `Output Folder` as the `rando` folder we created earlier. Once you've finished selecting your desired settings, click the `Randomize` button in the bottom-right and wait for the seed generation to finish. Afterwards, you will have the randomized game in the `rando` folder. Note that generating a new seed will overwrite the previous seed that was generated.
-
-Open up your emulator of choice (probably CEMU) and add the `rando` folder to the emulator's game paths to have it pick up the randomized game. The randomized game will have an orange, mirrored icon of the vanilla game. Now just click on it in the emulator to load it up. Enjoy! 
+Open up your emulator of choice (probably [Cemu](https://github.com/cemu-project/Cemu)) and add your output folder to the emulator's game paths to have it pick up the randomized game. The randomized game will have an orange, mirrored icon of the vanilla game. Now just click on it in the emulator to load it up. Enjoy!
 
 ### Building
 #### The Wii U Homebrew Application
