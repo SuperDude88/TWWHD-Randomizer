@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <string_view>
 #include <fstream>
 #include <list>
 
@@ -42,7 +41,7 @@ private:
     ErrorLog();
     ~ErrorLog();
 public:
-    static constexpr std::string_view LOG_PATH = APP_SAVE_PATH "Error Log.txt";
+    static inline const std::string LOG_PATH = APP_SAVE_PATH "Error Log.txt";
 
     ErrorLog(const ErrorLog&) = delete;
     ErrorLog& operator=(const ErrorLog&) = delete;
@@ -84,7 +83,7 @@ private:
     DebugLog();
     ~DebugLog();
 public:
-    static constexpr std::string_view LOG_PATH = APP_SAVE_PATH "Debug Log.txt";
+    static inline const std::string LOG_PATH = APP_SAVE_PATH "Debug Log.txt";
 
     DebugLog(const DebugLog&) = delete;
     DebugLog& operator=(const DebugLog&) = delete;
