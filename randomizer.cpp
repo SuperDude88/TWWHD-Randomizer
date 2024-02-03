@@ -116,6 +116,10 @@ private:
         UPDATE_DIALOG_VALUE(25);
         
         const RandoSession::fspath& out = g_session.getOutputDir();
+        if(out.empty() || !is_directory(out)) { // we tried to create this earlier so error if that failed
+            ErrorLog::getInstance().log("Invalid output path: " + out.string() + " is not a valid folder!");
+            return false;
+        }
         if(!is_directory(out / "code") || !is_directory(out / "content") || !is_directory(out / "meta")) {
             #ifdef DEVKITPRO // this should all exist on console
                 ErrorLog::getInstance().log("Invalid output path: could not find code/content/meta folders at " + out.string() + "!");
