@@ -30,7 +30,7 @@ const std::string& LogInfo::getSeedHash() {
 
 
 ErrorLog::ErrorLog() {
-    output.open(APP_SAVE_PATH "Error Log.txt");
+    output.open(LOG_PATH);
 
     output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
@@ -96,7 +96,7 @@ void ErrorLog::clearLastErrors()
 
 
 DebugLog::DebugLog() {
-    output.open(APP_SAVE_PATH "Debug Log.txt");
+    output.open(LOG_PATH);
 
     output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
 
