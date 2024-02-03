@@ -28,14 +28,15 @@ static bool flushVolume(const std::string& vol) {
     if(handle < 0) {
         return false;
     }
-    FSError ret = FSAFlushVolume(handle, vol.c_str());
-    if(ret != FS_ERROR_OK) {
+
+    if(FSAFlushVolume(handle, vol.c_str()) != FS_ERROR_OK) {
         return false;
     }
-    ret = FSADelClient(handle);
-    if(ret != FS_ERROR_OK) {
+
+    if(FSADelClient(handle) != FS_ERROR_OK) {
         return false;
     }
+
     return true;
 }
 

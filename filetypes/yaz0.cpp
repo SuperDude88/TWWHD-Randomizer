@@ -355,20 +355,20 @@ uint32_t Compressor::encode(uint8_t* p_dst, const uint8_t* p_src, uint32_t src_s
 
 namespace FileTypes {
 	const char* YAZ0ErrorGetName(YAZ0Error err) {
-			switch (err) {
-					case YAZ0Error::NONE:
-							return "NONE";
-					case YAZ0Error::COULD_NOT_OPEN:
-							return "COULD_NOT_OPEN";
-					case YAZ0Error::NOT_YAZ0:
-							return "NOT_YAZ0";
-					case YAZ0Error::ZNG_ERROR:
-							return "ZNG_ERROR";
-					case YAZ0Error::REACHED_EOF:
-							return "REACHED_EOF";
-					default:
-							return "UNKNOWN";
-			}
+		switch (err) {
+			case YAZ0Error::NONE:
+				return "NONE";
+			case YAZ0Error::COULD_NOT_OPEN:
+				return "COULD_NOT_OPEN";
+			case YAZ0Error::NOT_YAZ0:
+				return "NOT_YAZ0";
+			case YAZ0Error::ZNG_ERROR:
+				return "ZNG_ERROR";
+			case YAZ0Error::REACHED_EOF:
+				return "REACHED_EOF";
+			default:
+				return "UNKNOWN";
+		}
 	}
 
 	//TODO: not thread-safe, unpacking is currently single threaded (can't use thread_local on Wii U)
@@ -378,62 +378,62 @@ namespace FileTypes {
 
 	YAZ0Error yaz0Decode(std::istream& in, std::ostream& out)
 	{
-			std::string inData{};
+		std::string inData{};
 
-			Yaz0Header header;
+		Yaz0Header header;
 
-			LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
+		LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
-			// IMPROVEMENT: for now we are reading entire file into memory
-			// and allocating a full size output buffer. This can
-			// take up quite a lot of memory, so if it becomes a
-			// problem, we can switch to decoding as chunks. This
-			// will make decoding _slightly_ slower, but much more
-			// memory efficient
+		// IMPROVEMENT: for now we are reading entire file into memory
+		// and allocating a full size output buffer. This can
+		// take up quite a lot of memory, so if it becomes a
+		// problem, we can switch to decoding as chunks. This
+		// will make decoding _slightly_ slower, but much more
+		// memory efficient
 
-			// read rest of file into memory
-			while(in.read(readChunkBuf, STATIC_READ_CHUNK_SIZE))
-			{
-					inData.append(readChunkBuf, in.gcount());
-			}
+		// read rest of file into memory
+		while(in.read(readChunkBuf, STATIC_READ_CHUNK_SIZE))
+		{
 			inData.append(readChunkBuf, in.gcount());
+		}
+		inData.append(readChunkBuf, in.gcount());
 
-			std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
-			if (const YAZ0Error error = yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
-					ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-					return error;
-			}
-			out.write(&outData[0], header.uncompressedSize);
+		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+		if (const YAZ0Error error = yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
+			ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+			return error;
+		}
+		out.write(&outData[0], header.uncompressedSize);
 
-			return YAZ0Error::NONE;
+		return YAZ0Error::NONE;
 	}
 
 	YAZ0Error yaz0Decode(std::stringstream& in, std::ostream& out)
 	{
-			Yaz0Header header;
+		Yaz0Header header;
 
-			LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
+		LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
-			std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
-			if (const YAZ0Error error = yaz0DataDecode(&in.str()[0x10], &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
-					ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-					return error;
-			}
-			out.write(&outData[0], header.uncompressedSize);
+		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+		if (const YAZ0Error error = yaz0DataDecode(&in.str()[0x10], &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
+			ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
+			return error;
+		}
+		out.write(&outData[0], header.uncompressedSize);
 
-			return YAZ0Error::NONE;
+		return YAZ0Error::NONE;
 	}
 	
 	YAZ0Error yaz0Encode(std::stringstream& in, std::ostream& out, uint32_t compressionLevel)
 	{
-			const std::string& inData = in.str();
+		const std::string& inData = in.str();
 
-			Compressor compressor;
-    		std::vector<uint8_t> tmp(16 + roundUp<size_t>(inData.size(), 8) / 8 * 9 - 1);
-			std::vector<uint8_t> work(compressor.getRequiredMemorySize());
-			const uint32_t outSize = compressor.encode(tmp.data(), reinterpret_cast<const uint8_t*>(inData.data()), inData.size(), work.data());
-			out.write(reinterpret_cast<const char*>(tmp.data()), outSize);
+		Compressor compressor;
+    	std::vector<uint8_t> tmp(16 + roundUp<size_t>(inData.size(), 8) / 8 * 9 - 1);
+		std::vector<uint8_t> work(compressor.getRequiredMemorySize());
+		const uint32_t outSize = compressor.encode(tmp.data(), reinterpret_cast<const uint8_t*>(inData.data()), inData.size(), work.data());
+		out.write(reinterpret_cast<const char*>(tmp.data()), outSize);
 
-			return YAZ0Error::NONE;
+		return YAZ0Error::NONE;
 	}
 }
