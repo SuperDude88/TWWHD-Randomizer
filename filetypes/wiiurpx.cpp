@@ -1,24 +1,15 @@
-// Copyright (C) 2016  CBH <maodatouint8_t8@163.com>
-// Licensed under the terms of the GNU GPL, version 3
-// http://www.gnu.org/licenses/gpl-3.0.txt
-
-//Largely pulled from https://github.com/0CBH0/wiiurpxtool
-//Several things are changed to be consistent with other filetypes
-
 #include "wiiurpx.hpp"
 
-#include <vector>
-#include <array>
-#include <fstream>
-#include <algorithm>
 #include <cstring>
 
+#include <algorithm>
+
+#include <libs/zlib-ng.hpp>
 #include <filetypes/shared/elf_structs.hpp>
 #include <utility/endian.hpp>
-#include <utility/file.hpp>
 #include <utility/common.hpp>
+#include <utility/file.hpp>
 #include <command/Log.hpp>
-#include <libs/zlib-ng.hpp>
 
 using eType = Utility::Endian::Type;
 
@@ -33,8 +24,8 @@ namespace FileTypes {
                 return "COULD_NOT_OPEN";
             case RPXError::NOT_RPX:
                 return "NOT_RPX";
-            case RPXError::UNKNOWN_E_TYPE:
-                return "UNKNOWN_E_TYPE";
+            case RPXError::UNEXPECTED_VALUE:
+                return "UNEXPECTED_VALUE";
             case RPXError::ZLIB_ERROR:
                 return "ZLIB_ERROR";
             case RPXError::REACHED_EOF:
@@ -46,470 +37,467 @@ namespace FileTypes {
 
     RPXError rpx_decompress(std::istream& in, std::ostream& out)
     {
-        Elf32_Ehdr ehdr;
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_ident[0]), 0x10)) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (std::strncmp(reinterpret_cast<char*>(&ehdr.e_ident[0]), "\x7F""ELF", 4)) LOG_ERR_AND_RETURN(RPXError::NOT_RPX);
+        Elf32_Ehdr header;
 
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_type), sizeof(ehdr.e_type))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_machine), sizeof(ehdr.e_machine))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_version), sizeof(ehdr.e_version))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_entry), sizeof(ehdr.e_entry))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_phoff), sizeof(ehdr.e_phoff))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shoff), sizeof(ehdr.e_shoff))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_flags), sizeof(ehdr.e_flags))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_ehsize), sizeof(ehdr.e_ehsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_phentsize), sizeof(ehdr.e_phentsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_phnum), sizeof(ehdr.e_phnum))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shentsize), sizeof(ehdr.e_shentsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shnum), sizeof(ehdr.e_shnum))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shstrndx), sizeof(ehdr.e_shstrndx))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_machine);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_version);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_entry);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phoff);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shoff);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_flags);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_ehsize);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phentsize);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phnum);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shentsize);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
-        
-        if (ehdr.e_type != 0xFE01) LOG_ERR_AND_RETURN(RPXError::UNKNOWN_E_TYPE);
-
-        uint32_t shdr_data_elf_offset = ehdr.e_shoff + ehdr.e_shnum * ehdr.e_shentsize;
-        out.write(reinterpret_cast<const char*>(&ehdr.e_ident[0]), 0x10);
-
-        auto e_type = Utility::Endian::toPlatform(eType::Big, ehdr.e_type);
-        auto e_machine = Utility::Endian::toPlatform(eType::Big, ehdr.e_machine);
-        auto e_version = Utility::Endian::toPlatform(eType::Big, ehdr.e_version);
-        auto e_entry = Utility::Endian::toPlatform(eType::Big, ehdr.e_entry);
-        auto e_phoff = Utility::Endian::toPlatform(eType::Big, ehdr.e_phoff);
-        auto e_shoff = Utility::Endian::toPlatform(eType::Big, ehdr.e_shoff);
-        auto e_flags = Utility::Endian::toPlatform(eType::Big, ehdr.e_flags);
-        auto e_ehsize = Utility::Endian::toPlatform(eType::Big, ehdr.e_ehsize);
-        auto e_phentsize = Utility::Endian::toPlatform(eType::Big, ehdr.e_phentsize);
-        auto e_phnum = Utility::Endian::toPlatform(eType::Big, ehdr.e_phnum);
-        auto e_shentsize = Utility::Endian::toPlatform(eType::Big, ehdr.e_shentsize);
-        auto e_shnum = Utility::Endian::toPlatform(eType::Big, ehdr.e_shnum);
-        auto e_shstrndx = Utility::Endian::toPlatform(eType::Big, ehdr.e_shstrndx);
-
-        out.write(reinterpret_cast<const char*>(&e_type), sizeof(e_type));
-        out.write(reinterpret_cast<const char*>(&e_machine), sizeof(e_machine));
-        out.write(reinterpret_cast<const char*>(&e_version), sizeof(e_version));
-        out.write(reinterpret_cast<const char*>(&e_entry), sizeof(e_entry));
-        out.write(reinterpret_cast<const char*>(&e_phoff), sizeof(e_phoff));
-        out.write(reinterpret_cast<const char*>(&e_shoff), sizeof(e_shoff));
-        out.write(reinterpret_cast<const char*>(&e_flags), sizeof(e_flags));
-        out.write(reinterpret_cast<const char*>(&e_ehsize), sizeof(e_ehsize));
-        out.write(reinterpret_cast<const char*>(&e_phentsize), sizeof(e_phentsize));
-        out.write(reinterpret_cast<const char*>(&e_phnum), sizeof(e_phnum));
-        out.write(reinterpret_cast<const char*>(&e_shentsize), sizeof(e_shentsize));
-        out.write(reinterpret_cast<const char*>(&e_shnum), sizeof(e_shnum));
-        out.write(reinterpret_cast<const char*>(&e_shstrndx), sizeof(e_shstrndx));
-        
-        uint32_t crc_data_offset = 0;
-        std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
-        std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
-
-        if(out.tellp() < shdr_data_elf_offset) padToLen(out, shdr_data_elf_offset);
-
-        if (!in.seekg(ehdr.e_shoff, std::ios::beg)) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-
-        for (uint16_t i = 0; i < ehdr.e_shnum; i++)
-        {
-            shdr_table[i].first = i;
-            Elf32_Shdr& shdr_entry = shdr_table[i].second;
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_name), sizeof(shdr_entry.sh_name))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_type), sizeof(shdr_entry.sh_type))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_flags), sizeof(shdr_entry.sh_flags))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_addr), sizeof(shdr_entry.sh_addr))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_offset), sizeof(shdr_entry.sh_offset))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_size), sizeof(shdr_entry.sh_size))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_link), sizeof(shdr_entry.sh_link))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_info), sizeof(shdr_entry.sh_info))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_addralign), sizeof(shdr_entry.sh_addralign))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_entsize), sizeof(shdr_entry.sh_entsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_name);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_type);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_flags);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_addr);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_offset);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_size);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_link);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_info);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_addralign);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_entsize);
+        if(!in.read(reinterpret_cast<char*>(&header.e_ident), sizeof(header.e_ident))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
         }
-        std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.second.sh_offset < b.second.sh_offset; } );
-        for(auto& [index, entry] : shdr_table)
-        {
-            if(entry.sh_offset == 0) continue;
+        if(memcmp(header.e_ident, "\x7F\x45\x4C\x46", 4) != 0) {
+            LOG_ERR_AND_RETURN(RPXError::NOT_RPX);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_type), sizeof(header.e_type))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_machine), sizeof(header.e_machine))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_version), sizeof(header.e_version))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_entry), sizeof(header.e_entry))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_phoff), sizeof(header.e_phoff))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shoff), sizeof(header.e_shoff))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_flags), sizeof(header.e_flags))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_ehsize), sizeof(header.e_ehsize))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_phentsize), sizeof(header.e_phentsize))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_phnum), sizeof(header.e_phnum))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shentsize), sizeof(header.e_shentsize))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shnum), sizeof(header.e_shnum))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shstrndx), sizeof(header.e_shstrndx))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
 
-            if (!in.seekg(entry.sh_offset))
-            {
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_type);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_machine);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_version);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_entry);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_ehsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shstrndx);
+
+        if(header.e_shentsize != 0x28) {
+            LOG_ERR_AND_RETURN(RPXError::UNEXPECTED_VALUE);
+        }
+        in.seekg(header.e_shoff, std::ios::beg);
+
+        std::vector<shdr_index_t> sectionHeaders(header.e_shnum);
+        for(size_t i = 0; i < sectionHeaders.size(); i++) {
+            sectionHeaders[i].first = i;
+            Elf32_Shdr& shdr = sectionHeaders[i].second;
+
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_name), sizeof(shdr.sh_name))) {
                 LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
             }
-            entry.sh_offset = out.tellp();
-            if((entry.sh_flags & SHF_RPL_ZLIB) == SHF_RPL_ZLIB)
-            {
-                uint32_t data_size = entry.sh_size - 4;
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_type), sizeof(shdr.sh_type))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_flags), sizeof(shdr.sh_flags))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_addr), sizeof(shdr.sh_addr))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_offset), sizeof(shdr.sh_offset))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_size), sizeof(shdr.sh_size))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_link), sizeof(shdr.sh_link))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_info), sizeof(shdr.sh_info))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_addralign), sizeof(shdr.sh_addralign))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_entsize), sizeof(shdr.sh_entsize))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
 
-                if (!in.read(reinterpret_cast<char*>(&entry.sh_size), sizeof(entry.sh_size))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-                Utility::Endian::toPlatform_inplace(eType::Big, entry.sh_size);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_name);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_type);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_flags);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addr);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_offset);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_size);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_link);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_info);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addralign);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_entsize);
+        }
+        
+        // sort by offset in the file
+        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
+        Utility::seek(out, header.e_shoff + header.e_shentsize * header.e_shnum);
 
-                uint32_t block_size = CHUNK;
-                uint32_t have;
-                zng_stream strm;
-                char buff_in[CHUNK];
-                char buff_out[CHUNK];
-                strm.zalloc = Z_NULL;
-                strm.zfree = Z_NULL;
-                strm.opaque = Z_NULL;
-                strm.avail_in = 0;
-                strm.next_in = Z_NULL;
-                int err = Z_OK;
-                if ((err = zng_inflateInit(&strm)) != Z_OK)
-                {
+        for(auto& [index, section] : sectionHeaders) {
+            if(section.sh_offset == 0) {
+                continue;
+            }
+
+            in.seekg(section.sh_offset, std::ios::beg);
+
+            section.sh_offset = out.tellp();
+
+            if(section.sh_flags & static_cast<std::underlying_type_t<SectionFlags>>(SectionFlags::SHF_DEFLATED)) {
+                // uncompressed size is stored at the start of each compressed section
+                uint32_t uncompressedSize = 0;
+                if(!in.read(reinterpret_cast<char*>(&uncompressedSize), sizeof(uncompressedSize))) {
+                    LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+                }
+                Utility::Endian::toPlatform_inplace(eType::Big, uncompressedSize);
+                std::string outBuf(uncompressedSize, '\0');
+                
+                std::string sectionData(section.sh_size, '\0');
+                if(!in.read(sectionData.data(), sectionData.size() - sizeof(uncompressedSize))) {
+                    LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+                }
+                
+                size_t bufSize = uncompressedSize;
+                if(zng_uncompress(reinterpret_cast<uint8_t*>(outBuf.data()), &bufSize, reinterpret_cast<const uint8_t*>(sectionData.data()), sectionData.size()) != Z_OK) {
                     LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
                 }
-                while(data_size > 0)
-                {
-                    block_size = CHUNK;
-                    if(data_size<block_size)
-                        block_size = data_size;
-                    data_size -= block_size;
-                    in.read(buff_in, block_size);
-                    strm.avail_in = in.gcount();
-                    strm.next_in = reinterpret_cast<Bytef*>(buff_in);
-                    do
-                    {
-                        strm.avail_out = CHUNK;
-                        strm.next_out = reinterpret_cast<Bytef*>(buff_out);
-                        err = zng_inflate(&strm, Z_NO_FLUSH);
-                        if (err != Z_OK && err != Z_BUF_ERROR && err != Z_STREAM_END)
-                        {
-                            LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
-                        }
-                        have = CHUNK - strm.avail_out;
-                        out.write(buff_out, have);
-                        crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(buff_out), have);
-                    }while(strm.avail_out == 0);
-                }
-                if ((err = zng_inflateEnd(&strm)) != Z_OK)
-                {
-                    LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
-                }
-                entry.sh_flags &= ~SHF_RPL_ZLIB;
+                
+                out.write(outBuf.data(), bufSize);
+                section.sh_size = bufSize;
             }
-            else
-            {
-                uint32_t data_size = entry.sh_size;
-                uint32_t block_size = CHUNK;
-                while(data_size>0)
-                {
-                    char data[CHUNK];
-                    block_size = CHUNK;
-                    if(data_size < block_size)
-                        block_size = data_size;
-                    data_size -= block_size;
-                    in.read(data, block_size);
-                    out.write(data, block_size);
-                    crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(data), block_size);
+            else {
+                std::string sectionData(section.sh_size, '\0');
+                if(!in.read(sectionData.data(), sectionData.size())) {
+                    LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
                 }
+
+                out.write(sectionData.data(), sectionData.size());
             }
+            
             padToLen(out, 0x40);
-            if(entry.sh_type == SectionType::SHT_RPL_CRCS)
-            {
-                crcs[index] = 0;
-                crc_data_offset = entry.sh_offset;
-            }
         }
-        Utility::seek(out, ehdr.e_shoff);
-        std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.first < b.first; } );
-        for (const auto& [index, entry] : shdr_table)
-        {
-            auto sh_name = Utility::Endian::toPlatform(eType::Big, entry.sh_name);
-            auto sh_type = static_cast<uint32_t>(Utility::Endian::toPlatform(eType::Big, entry.sh_type));
-            auto sh_flags = Utility::Endian::toPlatform(eType::Big, entry.sh_flags);
-            auto sh_addr = Utility::Endian::toPlatform(eType::Big, entry.sh_addr);
-            auto sh_offset = Utility::Endian::toPlatform(eType::Big, entry.sh_offset);
-            auto sh_size = Utility::Endian::toPlatform(eType::Big, entry.sh_size);
-            auto sh_link = Utility::Endian::toPlatform(eType::Big, entry.sh_link);
-            auto sh_info = Utility::Endian::toPlatform(eType::Big, entry.sh_info);
-            auto sh_addralign = Utility::Endian::toPlatform(eType::Big, entry.sh_addralign);
-            auto sh_entsize = Utility::Endian::toPlatform(eType::Big, entry.sh_entsize);
+        
+        // Sort again so they are written by index, to update offsets we needed to write the data first
+        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
 
-            out.write(reinterpret_cast<const char*>(&sh_name), sizeof(sh_name));
-            out.write(reinterpret_cast<const char*>(&sh_type), sizeof(sh_type));
-            out.write(reinterpret_cast<const char*>(&sh_flags), sizeof(sh_flags));
-            out.write(reinterpret_cast<const char*>(&sh_addr), sizeof(sh_addr));
-            out.write(reinterpret_cast<const char*>(&sh_offset), sizeof(sh_offset));
-            out.write(reinterpret_cast<const char*>(&sh_size), sizeof(sh_size));
-            out.write(reinterpret_cast<const char*>(&sh_link), sizeof(sh_link));
-            out.write(reinterpret_cast<const char*>(&sh_info), sizeof(sh_info));
-            out.write(reinterpret_cast<const char*>(&sh_addralign), sizeof(sh_addralign));
-            out.write(reinterpret_cast<const char*>(&sh_entsize), sizeof(sh_entsize));
-        }
+        out.seekp(0, std::ios::beg);
         
-        Utility::seek(out, crc_data_offset);
-        for (uint32_t i = 0; i < ehdr.e_shnum; i++) {
-            auto crc = Utility::Endian::toPlatform(eType::Big, crcs[i]);
-            out.write(reinterpret_cast<const char*>(&crc), sizeof(crc));
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_type);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_machine);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_version);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_entry);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_ehsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shstrndx);
+
+        out.write(reinterpret_cast<const char*>(&header.e_ident), sizeof(header.e_ident));
+        out.write(reinterpret_cast<const char*>(&header.e_type), sizeof(header.e_type));
+        out.write(reinterpret_cast<const char*>(&header.e_machine), sizeof(header.e_machine));
+        out.write(reinterpret_cast<const char*>(&header.e_version), sizeof(header.e_version));
+        out.write(reinterpret_cast<const char*>(&header.e_entry), sizeof(header.e_entry));
+        out.write(reinterpret_cast<const char*>(&header.e_phoff), sizeof(header.e_phoff));
+        out.write(reinterpret_cast<const char*>(&header.e_shoff), sizeof(header.e_shoff));
+        out.write(reinterpret_cast<const char*>(&header.e_flags), sizeof(header.e_flags));
+        out.write(reinterpret_cast<const char*>(&header.e_ehsize), sizeof(header.e_ehsize));
+        out.write(reinterpret_cast<const char*>(&header.e_phentsize), sizeof(header.e_phentsize));
+        out.write(reinterpret_cast<const char*>(&header.e_phnum), sizeof(header.e_phnum));
+        out.write(reinterpret_cast<const char*>(&header.e_shentsize), sizeof(header.e_shentsize));
+        out.write(reinterpret_cast<const char*>(&header.e_shnum), sizeof(header.e_shnum));
+        out.write(reinterpret_cast<const char*>(&header.e_shstrndx), sizeof(header.e_shstrndx));
+
+        padToLen(out, 0x40);
+
+        for(auto& [index, shdr] : sectionHeaders) {
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_name);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_type);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_flags);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addr);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_offset);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_size);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_link);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_info);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addralign);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_entsize);
+
+            out.write(reinterpret_cast<const char*>(&shdr.sh_name), sizeof(shdr.sh_name));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_type), sizeof(shdr.sh_type));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_flags), sizeof(shdr.sh_flags));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_addr), sizeof(shdr.sh_addr));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_offset), sizeof(shdr.sh_offset));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_size), sizeof(shdr.sh_size));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_link), sizeof(shdr.sh_link));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_info), sizeof(shdr.sh_info));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_addralign), sizeof(shdr.sh_addralign));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_entsize), sizeof(shdr.sh_entsize));
         }
-        
+
         return RPXError::NONE;
     }
 
     RPXError rpx_compress(std::istream& in, std::ostream& out)
     {
-        Elf32_Ehdr ehdr;
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_ident[0]), 0x10)) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (std::strncmp(reinterpret_cast<char*>(&ehdr.e_ident[0]), "\x7F""ELF", 4)) LOG_ERR_AND_RETURN(RPXError::NOT_RPX);
+        Elf32_Ehdr header;
 
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_type), sizeof(ehdr.e_type))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_machine), sizeof(ehdr.e_machine))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_version), sizeof(ehdr.e_version))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_entry), sizeof(ehdr.e_entry))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_phoff), sizeof(ehdr.e_phoff))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shoff), sizeof(ehdr.e_shoff))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_flags), sizeof(ehdr.e_flags))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_ehsize), sizeof(ehdr.e_ehsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_phentsize), sizeof(ehdr.e_phentsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_phnum), sizeof(ehdr.e_phnum))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shentsize), sizeof(ehdr.e_shentsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shnum), sizeof(ehdr.e_shnum))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-        if (!in.read(reinterpret_cast<char*>(&ehdr.e_shstrndx), sizeof(ehdr.e_shstrndx))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_machine);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_version);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_entry);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phoff);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shoff);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_flags);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_ehsize);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phentsize);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_phnum);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shentsize);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
-
-        if (ehdr.e_type != 0xFE01) LOG_ERR_AND_RETURN(RPXError::UNKNOWN_E_TYPE);
-
-        uint32_t shdr_data_elf_offset = ehdr.e_shoff + ehdr.e_shnum * ehdr.e_shentsize;
-        out.write(reinterpret_cast<const char*>(&ehdr.e_ident[0]), 0x10);
-
-        auto e_type = Utility::Endian::toPlatform(eType::Big, ehdr.e_type);
-        auto e_machine = Utility::Endian::toPlatform(eType::Big, ehdr.e_machine);
-        auto e_version = Utility::Endian::toPlatform(eType::Big, ehdr.e_version);
-        auto e_entry = Utility::Endian::toPlatform(eType::Big, ehdr.e_entry);
-        auto e_phoff = Utility::Endian::toPlatform(eType::Big, ehdr.e_phoff);
-        auto e_shoff = Utility::Endian::toPlatform(eType::Big, ehdr.e_shoff);
-        auto e_flags = Utility::Endian::toPlatform(eType::Big, ehdr.e_flags);
-        auto e_ehsize = Utility::Endian::toPlatform(eType::Big, ehdr.e_ehsize);
-        auto e_phentsize = Utility::Endian::toPlatform(eType::Big, ehdr.e_phentsize);
-        auto e_phnum = Utility::Endian::toPlatform(eType::Big, ehdr.e_phnum);
-        auto e_shentsize = Utility::Endian::toPlatform(eType::Big, ehdr.e_shentsize);
-        auto e_shnum = Utility::Endian::toPlatform(eType::Big, ehdr.e_shnum);
-        auto e_shstrndx = Utility::Endian::toPlatform(eType::Big, ehdr.e_shstrndx);
-
-        out.write(reinterpret_cast<const char*>(&e_type), sizeof(e_type));
-        out.write(reinterpret_cast<const char*>(&e_machine), sizeof(e_machine));
-        out.write(reinterpret_cast<const char*>(&e_version), sizeof(e_version));
-        out.write(reinterpret_cast<const char*>(&e_entry), sizeof(e_entry));
-        out.write(reinterpret_cast<const char*>(&e_phoff), sizeof(e_phoff));
-        out.write(reinterpret_cast<const char*>(&e_shoff), sizeof(e_shoff));
-        out.write(reinterpret_cast<const char*>(&e_flags), sizeof(e_flags));
-        out.write(reinterpret_cast<const char*>(&e_ehsize), sizeof(e_ehsize));
-        out.write(reinterpret_cast<const char*>(&e_phentsize), sizeof(e_phentsize));
-        out.write(reinterpret_cast<const char*>(&e_phnum), sizeof(e_phnum));
-        out.write(reinterpret_cast<const char*>(&e_shentsize), sizeof(e_shentsize));
-        out.write(reinterpret_cast<const char*>(&e_shnum), sizeof(e_shnum));
-        out.write(reinterpret_cast<const char*>(&e_shstrndx), sizeof(e_shstrndx));
-
-        const uint32_t zero = 0x00000000;
-        out.write(reinterpret_cast<const char*>(&zero), 4);
-        out.write(reinterpret_cast<const char*>(&zero), 4);
-        out.write(reinterpret_cast<const char*>(&zero), 4);
-
-        uint32_t crc_data_offset = 0;
-        std::vector<uint32_t> crcs(ehdr.e_shnum, 0);
-        std::vector<shdr_index_t> shdr_table(ehdr.e_shnum);
-        in.seekg(ehdr.e_shoff);
-        for (uint16_t i = 0; i < ehdr.e_shnum; i++)
-        {
-            shdr_table[i].first = i;
-            Elf32_Shdr& shdr_entry = shdr_table[i].second;
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_name), sizeof(shdr_entry.sh_name))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_type), sizeof(shdr_entry.sh_type))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_flags), sizeof(shdr_entry.sh_flags))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_addr), sizeof(shdr_entry.sh_addr))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_offset), sizeof(shdr_entry.sh_offset))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_size), sizeof(shdr_entry.sh_size))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_link), sizeof(shdr_entry.sh_link))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_info), sizeof(shdr_entry.sh_info))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_addralign), sizeof(shdr_entry.sh_addralign))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-            if (!in.read(reinterpret_cast<char*>(&shdr_entry.sh_entsize), sizeof(shdr_entry.sh_entsize))) LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
-
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_name);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_type);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_flags);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_addr);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_offset);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_size);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_link);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_info);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_addralign);
-            Utility::Endian::toPlatform_inplace(eType::Big, shdr_entry.sh_entsize);
+        if(!in.read(reinterpret_cast<char*>(&header.e_ident), sizeof(header.e_ident))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(memcmp(header.e_ident, "\x7F\x45\x4C\x46", 4) != 0) {
+            LOG_ERR_AND_RETURN(RPXError::NOT_RPX);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_type), sizeof(header.e_type))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_machine), sizeof(header.e_machine))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_version), sizeof(header.e_version))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_entry), sizeof(header.e_entry))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_phoff), sizeof(header.e_phoff))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shoff), sizeof(header.e_shoff))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_flags), sizeof(header.e_flags))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_ehsize), sizeof(header.e_ehsize))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_phentsize), sizeof(header.e_phentsize))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_phnum), sizeof(header.e_phnum))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shentsize), sizeof(header.e_shentsize))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shnum), sizeof(header.e_shnum))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+        }
+        if(!in.read(reinterpret_cast<char*>(&header.e_shstrndx), sizeof(header.e_shstrndx))) {
+            LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
         }
 
-        if(out.tellp() < shdr_data_elf_offset) padToLen(out, shdr_data_elf_offset);
-        std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.second.sh_offset < b.second.sh_offset; } );
-        for(auto& [index, entry] : shdr_table)
-        {
-            if(entry.sh_offset == 0) continue;
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_type);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_machine);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_version);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_entry);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_ehsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shstrndx);
 
-            in.seekg(entry.sh_offset);
-            entry.sh_offset = out.tellp();
-            if ((entry.sh_type == SectionType::SHT_RPL_FILEINFO)||
-                (entry.sh_type == SectionType::SHT_RPL_CRCS)||
-                ((entry.sh_flags & SHF_RPL_ZLIB) == SHF_RPL_ZLIB))
-            {
-                uint32_t data_size = entry.sh_size;
-                uint32_t block_size = CHUNK;
-                while(data_size>0)
-                {
-                    std::string data(CHUNK, '\0');
-                    block_size = CHUNK;
-                    if(data_size<block_size) {
-                        block_size = data_size;
-                    }
-                    data_size -= block_size;
-                    in.read(&data[0], block_size);
-                    out.write(&data[0], block_size);
-                    crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(&data[0]), block_size);
-                }
-            }
-            else
-            {
-                uint32_t data_size = entry.sh_size;
-                uint32_t block_size = CHUNK;
-                uint32_t have;
-                zng_stream strm;
-                std::string buff_in(CHUNK, '\0');
-                std::string buff_out(CHUNK, '\0');
-                strm.zalloc = Z_NULL;
-                strm.zfree = Z_NULL;
-                strm.opaque = Z_NULL;
-                strm.avail_in = 0;
-                strm.next_in = Z_NULL;
-                if(data_size < CHUNK)
-                {
-                    block_size = data_size;
-                    zng_deflateInit(&strm, LEVEL);
-                    in.read(&buff_in[0], block_size);
-                    strm.avail_in = in.gcount();
-                    crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
-                    strm.next_in = reinterpret_cast<Bytef*>(&buff_in[0]);
-                    strm.avail_out = CHUNK;
-                    strm.next_out = reinterpret_cast<Bytef*>(&buff_out[0]);
-                    zng_deflate(&strm, Z_FINISH);
-                    have = CHUNK - strm.avail_out;
-                    if(have + 4 < block_size)
-                    {
-                        auto data_size_BE = Utility::Endian::toPlatform(eType::Big, data_size);
-                        out.write(reinterpret_cast<const char*>(&data_size_BE), sizeof(data_size_BE));
-                        out.write(&buff_out[0], have);
-                        entry.sh_size = have + 4;
-                        entry.sh_flags |= SHF_RPL_ZLIB;
-                        entry.sh_flags |= SHF_RPL_ZLIB;
-                    }
-                    else {
-                        out.write(&buff_in[0], block_size);
-                    }
-                    zng_deflateEnd(&strm);
-                }
-                else
-                {
-                    int32_t flush = Z_NO_FLUSH;
-                    uint32_t compress_size = 4;
+        if(header.e_shentsize != 0x28) {
+            LOG_ERR_AND_RETURN(RPXError::UNEXPECTED_VALUE);
+        }
+        in.seekg(header.e_shoff, std::ios::beg);
 
-                    auto data_size_BE = Utility::Endian::toPlatform(eType::Big, data_size);
-                    out.write(reinterpret_cast<const char*>(&data_size_BE), sizeof(data_size_BE));
+        std::vector<shdr_index_t> sectionHeaders(header.e_shnum);
+        for(size_t i = 0; i < sectionHeaders.size(); i++) {
+            sectionHeaders[i].first = i;
+            Elf32_Shdr& shdr = sectionHeaders[i].second;
 
-                    zng_deflateInit(&strm, LEVEL);
-                    while(data_size > 0)
-                    {
-                        block_size = CHUNK;
-                        flush = Z_NO_FLUSH;
-                        if(data_size <= block_size)
-                        {
-                            block_size = data_size;
-                            flush = Z_FINISH;
-                        }
-                        data_size -= block_size;
-                        in.read(&buff_in[0], block_size);
-                        strm.avail_in = in.gcount();
-                        crcs[index] = zng_crc32(crcs[index], reinterpret_cast<uint8_t*>(&buff_in[0]), block_size);
-                        strm.next_in = reinterpret_cast<Bytef*>(&buff_in[0]);
-                        do{
-                            strm.avail_out = CHUNK;
-                            strm.next_out = reinterpret_cast<Bytef*>(&buff_out[0]);
-                            zng_deflate(&strm, flush);
-                            have = CHUNK - strm.avail_out;
-                            out.write(&buff_out[0], have);
-                            compress_size += have;
-                        } while(strm.avail_out == 0);
-                    }
-                    zng_deflateEnd(&strm);
-                    entry.sh_size = compress_size;
-                    entry.sh_flags |= SHF_RPL_ZLIB;
-                }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_name), sizeof(shdr.sh_name))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
             }
-            padToLen(out, 0x40);
-            if(entry.sh_type == SectionType::SHT_RPL_CRCS)
-            {
-                crcs[index] = 0;
-                crc_data_offset = entry.sh_offset;
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_type), sizeof(shdr.sh_type))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
             }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_flags), sizeof(shdr.sh_flags))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_addr), sizeof(shdr.sh_addr))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_offset), sizeof(shdr.sh_offset))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_size), sizeof(shdr.sh_size))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_link), sizeof(shdr.sh_link))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_info), sizeof(shdr.sh_info))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_addralign), sizeof(shdr.sh_addralign))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+            if(!in.read(reinterpret_cast<char*>(&shdr.sh_entsize), sizeof(shdr.sh_entsize))) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_name);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_type);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_flags);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addr);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_offset);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_size);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_link);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_info);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addralign);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_entsize);
         }
         
-        out.seekp(ehdr.e_shoff, std::ios::beg);
-        std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) {return a.first < b.first; } );
-        for (const auto& [index, entry] : shdr_table)
-        {
-            auto sh_name = Utility::Endian::toPlatform(eType::Big, entry.sh_name);
-            auto sh_type = Utility::Endian::toPlatform(eType::Big, entry.sh_type);
-            auto sh_flags = Utility::Endian::toPlatform(eType::Big, entry.sh_flags);
-            auto sh_addr = Utility::Endian::toPlatform(eType::Big, entry.sh_addr);
-            auto sh_offset = Utility::Endian::toPlatform(eType::Big, entry.sh_offset);
-            auto sh_size = Utility::Endian::toPlatform(eType::Big, entry.sh_size);
-            auto sh_link = Utility::Endian::toPlatform(eType::Big, entry.sh_link);
-            auto sh_info = Utility::Endian::toPlatform(eType::Big, entry.sh_info);
-            auto sh_addralign = Utility::Endian::toPlatform(eType::Big, entry.sh_addralign);
-            auto sh_entsize = Utility::Endian::toPlatform(eType::Big, entry.sh_entsize);
+        // sort by offset in the file
+        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
+        Utility::seek(out, 0x40 + header.e_shentsize * header.e_shnum);
 
-            out.write(reinterpret_cast<const char*>(&sh_name), sizeof(sh_name));
-            out.write(reinterpret_cast<const char*>(&sh_type), sizeof(sh_type));
-            out.write(reinterpret_cast<const char*>(&sh_flags), sizeof(sh_flags));
-            out.write(reinterpret_cast<const char*>(&sh_addr), sizeof(sh_addr));
-            out.write(reinterpret_cast<const char*>(&sh_offset), sizeof(sh_offset));
-            out.write(reinterpret_cast<const char*>(&sh_size), sizeof(sh_size));
-            out.write(reinterpret_cast<const char*>(&sh_link), sizeof(sh_link));
-            out.write(reinterpret_cast<const char*>(&sh_info), sizeof(sh_info));
-            out.write(reinterpret_cast<const char*>(&sh_addralign), sizeof(sh_addralign));
-            out.write(reinterpret_cast<const char*>(&sh_entsize), sizeof(sh_entsize));
+        std::vector<uint32_t> crcs(sectionHeaders.size(), 0);
+        for(auto& [index, section] : sectionHeaders) {
+            if(section.sh_offset == 0) {
+                continue;
+            }
+
+            in.seekg(section.sh_offset, std::ios::beg);
+            std::string sectionData(section.sh_size, '\0');
+            if(!in.read(sectionData.data(), sectionData.size())) {
+                LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+            }
+
+            if(section.sh_type != SectionType::SHT_RPL_CRCS) {
+                crcs[index] = zng_crc32(0, reinterpret_cast<const uint8_t*>(sectionData.data()), sectionData.size());
+            }
+            section.sh_offset = out.tellp();
+
+            if(section.sh_flags & static_cast<std::underlying_type_t<SectionFlags>>(SectionFlags::SHF_DEFLATED)) {
+                uint32_t uncompressedSize = sectionData.size();
+
+                std::string outBuf(zng_compressBound(uncompressedSize), '\0');
+
+                size_t bufSize = outBuf.size(); // updated by zng_compress
+                if(zng_compress(reinterpret_cast<uint8_t*>(outBuf.data()), &bufSize, reinterpret_cast<const uint8_t*>(sectionData.data()), sectionData.size()) != Z_OK) {
+                    LOG_ERR_AND_RETURN(RPXError::ZLIB_ERROR);
+                }
+                
+                // uncompressed size is stored at the start of each compressed section
+                Utility::Endian::toPlatform_inplace(eType::Big, uncompressedSize);
+                if(!out.write(reinterpret_cast<const char*>(&uncompressedSize), sizeof(uncompressedSize))) {
+                    LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
+                }
+
+                out.write(outBuf.data(), bufSize);
+                section.sh_size = bufSize + 4; // 32-bit int for uncompressed size is included in the section size
+            }
+            else {
+                out.write(sectionData.data(), sectionData.size());
+            }
+            
+            padToLen(out, 0x40);
         }
 
-        out.seekp(crc_data_offset, std::ios::beg);
-        for (const uint32_t& crc : crcs) {
-            const uint32_t crc_BE = Utility::Endian::toPlatform(eType::Big, crc);
-            out.write(reinterpret_cast<const char*>(&crc_BE), sizeof(crc_BE));
+        // update crcs
+        const auto it = std::find_if(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& hdr) { return hdr.second.sh_type == SectionType::SHT_RPL_CRCS; });
+        if(it == sectionHeaders.end()) {
+            return RPXError::NOT_RPX; // all RPX should have this section
+        }
+        if(it->second.sh_size != crcs.size() * sizeof(uint32_t)) {
+            return RPXError::UNEXPECTED_VALUE;
+        }
+        out.seekp(it->second.sh_offset, std::ios::beg);
+        for(uint32_t& crc : crcs) {
+            Utility::Endian::toPlatform_inplace(eType::Big, crc);
+            out.write(reinterpret_cast<const char*>(&crc), sizeof(crc));
+        }
+        
+        // Sort again so they are written by index, to update offsets we needed to write the data first
+        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
+
+        out.seekp(0, std::ios::beg);
+        
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_type);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_machine);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_version);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_entry);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shoff);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_ehsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_phnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shentsize);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shnum);
+        Utility::Endian::toPlatform_inplace(eType::Big, header.e_shstrndx);
+
+        out.write(reinterpret_cast<const char*>(&header.e_ident), sizeof(header.e_ident));
+        out.write(reinterpret_cast<const char*>(&header.e_type), sizeof(header.e_type));
+        out.write(reinterpret_cast<const char*>(&header.e_machine), sizeof(header.e_machine));
+        out.write(reinterpret_cast<const char*>(&header.e_version), sizeof(header.e_version));
+        out.write(reinterpret_cast<const char*>(&header.e_entry), sizeof(header.e_entry));
+        out.write(reinterpret_cast<const char*>(&header.e_phoff), sizeof(header.e_phoff));
+        out.write(reinterpret_cast<const char*>(&header.e_shoff), sizeof(header.e_shoff));
+        out.write(reinterpret_cast<const char*>(&header.e_flags), sizeof(header.e_flags));
+        out.write(reinterpret_cast<const char*>(&header.e_ehsize), sizeof(header.e_ehsize));
+        out.write(reinterpret_cast<const char*>(&header.e_phentsize), sizeof(header.e_phentsize));
+        out.write(reinterpret_cast<const char*>(&header.e_phnum), sizeof(header.e_phnum));
+        out.write(reinterpret_cast<const char*>(&header.e_shentsize), sizeof(header.e_shentsize));
+        out.write(reinterpret_cast<const char*>(&header.e_shnum), sizeof(header.e_shnum));
+        out.write(reinterpret_cast<const char*>(&header.e_shstrndx), sizeof(header.e_shstrndx));
+
+        padToLen(out, 0x40);
+
+        for(auto& [index, shdr] : sectionHeaders) {
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_name);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_type);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_flags);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addr);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_offset);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_size);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_link);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_info);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_addralign);
+            Utility::Endian::toPlatform_inplace(eType::Big, shdr.sh_entsize);
+
+            out.write(reinterpret_cast<const char*>(&shdr.sh_name), sizeof(shdr.sh_name));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_type), sizeof(shdr.sh_type));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_flags), sizeof(shdr.sh_flags));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_addr), sizeof(shdr.sh_addr));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_offset), sizeof(shdr.sh_offset));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_size), sizeof(shdr.sh_size));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_link), sizeof(shdr.sh_link));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_info), sizeof(shdr.sh_info));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_addralign), sizeof(shdr.sh_addralign));
+            out.write(reinterpret_cast<const char*>(&shdr.sh_entsize), sizeof(shdr.sh_entsize));
         }
 
         return RPXError::NONE;
