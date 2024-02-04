@@ -60,7 +60,8 @@ public:
         void setFinished() { finished = true; }
         bool isFinished() const { return finished; }
         const std::shared_ptr<CacheEntry> getParent() const { return parent; };
-        const std::shared_ptr<CacheEntry> getRoot() const;
+        const std::shared_ptr<CacheEntry> getRoot() const; // NOTE: this only works before fileCache is cleared
+        bool isSibling(const std::shared_ptr<CacheEntry> other) const;
 
     private:
         const std::shared_ptr<CacheEntry> parent = nullptr;

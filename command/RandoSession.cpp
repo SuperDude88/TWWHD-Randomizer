@@ -77,6 +77,12 @@ void RandoSession::CacheEntry::addDependent(std::shared_ptr<CacheEntry> depends)
 
 const std::shared_ptr<RandoSession::CacheEntry> RandoSession::CacheEntry::getRoot() const {
     if(storedFormat == Format::ROOT) {
+        if(!parent->children.contains(element.string())) {
+            ErrorLog::getInstance().log("File cache did not contain element! This is usually because getRoot() was called after clearing the file cache.");
+
+            return nullptr;
+        }
+
         return parent->children.at(element.string());
     }
 
@@ -87,6 +93,21 @@ const std::shared_ptr<RandoSession::CacheEntry> RandoSession::CacheEntry::getRoo
 
     return top;
 }
+
+bool RandoSession::CacheEntry::isSibling(const std::shared_ptr<RandoSession::CacheEntry> other) const {
+    const CacheEntry* thisRoot = this;
+    while(thisRoot->storedFormat != Format::ROOT) {
+        thisRoot = thisRoot->parent.get();
+    }
+
+    const CacheEntry* otherRoot = other.get();
+    while(otherRoot->storedFormat != Format::ROOT) {
+        otherRoot = otherRoot->parent.get();
+    }
+
+    return thisRoot == otherRoot;
+}
+
 
 RandoSession::RandoSession()
 {
@@ -541,7 +562,7 @@ bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEn
         if(dependent->decrementPrereq() > 0) continue; //decrement returns new value
 
         //handle the data
-        if(dependent->getRoot() == current->getRoot()) { //IMPROVEMENT: more precise sibling checks, filename stuff
+        if(current->isSibling(dependent)) { //IMPROVEMENT: more precise sibling checks, filename stuff
             RandoSession::handleChildren(filename / dependent->element, dependent);
         }
         else { //IMPROVEMENT: check entry is root, handle other edge cases
@@ -662,14 +683,15 @@ bool RandoSession::modFiles()
 
         workerThreads.push_task(&RandoSession::handleChildren, this, filename, child);  
     }
+    
+    // uncache everything
+    // do this now so the shared_ptrs free themselves as the tasks finish
+    // this prevents file data from hanging around in RAM (which softlocks on console, probably gets too full)
+    fileCache->children.clear();
 
     UPDATE_DIALOG_LABEL("Repacking Files...");
 
     workerThreads.wait_for_tasks();
-    
-    // uncache everything
-    // getRoot breaks if we do this before the tasks are completed
-    fileCache->children.clear();
 
     Utility::platformLog("Finished repacking files\n");
     LOG_TO_DEBUG("Finished repacking files");
