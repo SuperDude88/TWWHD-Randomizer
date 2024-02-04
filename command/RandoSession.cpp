@@ -502,7 +502,7 @@ bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file fr
     return true;
 }
 
-bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current) {
+bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEntry> current) {
     if(current->parent->parent == nullptr) { //only print start of chain to avoid spam
         Utility::platformLog(std::string("Working on ") + filename.string() + "\n");
     }
@@ -552,9 +552,8 @@ bool RandoSession::handleChildren(const fspath& filename, std::shared_ptr<CacheE
     //clear children once done
     current->children.clear();
 
-    //delete ourselves if we are the chain root, fileCache won't
+    //update progress if this is the root of the chain
     if(current->storedFormat == CacheEntry::Format::ROOT) {
-        current->parent->children.erase(filename.string());
         num_completed_tasks++;
         UPDATE_DIALOG_VALUE(int(99.0f - ((float((total_num_tasks - num_completed_tasks)/float(total_num_tasks))) * 50.0f))); //also update progress bar
     }
@@ -667,6 +666,10 @@ bool RandoSession::modFiles()
     UPDATE_DIALOG_LABEL("Repacking Files...");
 
     workerThreads.wait_for_tasks();
+    
+    // uncache everything
+    // getRoot breaks if we do this before the tasks are completed
+    fileCache->children.clear();
 
     Utility::platformLog("Finished repacking files\n");
     LOG_TO_DEBUG("Finished repacking files");
