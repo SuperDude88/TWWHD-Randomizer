@@ -257,14 +257,14 @@ TweakError fix_deku_leaf_model() {
         CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
-        dzr.loadFromBinary(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
 
         const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
         for (ChunkEntry* actor : actors) {
             if (std::strncmp(&actor->data[0], "itemDek\x00", 8) == 0) actor->data = "item\x00\x00\x00\x00\x01\xFF\x02\x34\xc4\x08\x7d\x81\x45\x9d\x59\xec\xc3\xf5\x8e\xd9\x00\x00\x00\x00\x00\xff\xff\xff"s;
         }
 
-        dzr.writeToStream(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.writeToStream(generic.data));
 
         return true;
     });
@@ -596,12 +596,12 @@ TweakError add_chest_in_place_medli_gift() {
         CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzs;
-        dzs.loadFromBinary(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzs.loadFromBinary(generic.data));
 
         ChunkEntry& chest = dzs.add_entity("TRES");
         chest.data = "takara3\x00\xFF\x20\x08\x80\xc4\xca\x99\xec\x46\x54\x80\x00\x43\x83\x84\x5a\x00\x09\xcc\x16\x0f\xff\xff\xff"s;
 
-        dzs.writeToStream(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzs.writeToStream(generic.data));
     
         return true;
     });
@@ -625,12 +625,12 @@ TweakError add_chest_in_place_queen_fairy_cutscene() {
         CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
-        dzr.loadFromBinary(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
 
         ChunkEntry& chest = dzr.add_entity("TRES");
         chest.data = "takara3\x00\xFF\x20\x0e\x00\xc8\x2f\xcf\xc0\x44\x34\xc0\x00\xc8\x43\x4e\xc0\x00\x09\x10\x00\xa5\xff\xff\xff"s;
 
-        dzr.writeToStream(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.writeToStream(generic.data));
 
         return true;
     });
@@ -1443,10 +1443,10 @@ TweakError add_pirate_ship_to_windfall() {
         ChunkEntry& aryll = shipDzr.add_entity("ACTR");
         aryll.data = "Ls1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x44\x16\x00\x00\xC4\x09\x80\x00\xC3\x48\x00\x00\x00\x00\xC0\x00\x00\x00\xFF\xFF"s;
 
-        const uint8_t countdown_happening_switch = 0xC0;
-        const uint8_t aryll_opened_door_switch = 0xC1;
-        const uint8_t countdown_not_happening_switch = 0xC2;
-        const uint8_t inside_chest_room_switch = 0xC3;
+        //const uint8_t countdown_happening_switch = 0xC0;
+        //const uint8_t aryll_opened_door_switch = 0xC1;
+        //const uint8_t countdown_not_happening_switch = 0xC2;
+        //const uint8_t inside_chest_room_switch = 0xC3;
         const uint8_t door_should_be_open_switch = 0xC4;
 
         ChunkEntry& swc00 = shipDzr.add_entity("SCOB");
@@ -1477,8 +1477,6 @@ TweakError add_pirate_ship_to_windfall() {
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
             msbt.messages_by_label["03008"].attributes.soundEffect = 106;
-
-            auto& temp = msbt.messages_by_label["03006"];
 
             Attributes attributes;
             attributes.character = 0x3; //Aryll
@@ -2343,14 +2341,14 @@ TweakError add_chest_in_place_jabun_cutscene() {
         CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
-        dzr.loadFromBinary(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
 
         ChunkEntry& raft = dzr.add_entity("ACTR");
         ChunkEntry& chest = dzr.add_entity("TRES");
         raft.data = "Ikada\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\xFF\xFF"s;
         chest.data = "takara3\x00\xFF\x2F\xF3\x05\x00\x00\x00\x00\x43\x96\x00\x00\xC3\x48\x00\x00\x00\x00\x80\x00\x05\xFF\xFF\xFF"s;
 
-        dzr.writeToStream(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.writeToStream(generic.data));
 
         return true;
     });
@@ -2422,7 +2420,7 @@ TweakError add_chest_in_place_master_sword() {
         CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
-        dzr.loadFromBinary(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
 
         const std::vector<ChunkEntry*> default_layer_actors = dzr.entries_by_type_and_layer("ACTR", DEFAULT_LAYER);
         dzr.remove_entity(default_layer_actors[5]);
@@ -2449,7 +2447,7 @@ TweakError add_chest_in_place_master_sword() {
             }
         }
 
-        dzr.writeToStream(generic.data);
+        LOG_AND_RETURN_BOOL_IF_ERR(dzr.writeToStream(generic.data));
 
         return true;
     });
@@ -3060,13 +3058,13 @@ TweakError allow_nonlinear_servants_of_the_towers() {
     // Instead, the east servant's event caused the tablet to appear, and then after getting
     // the Command Melody from the tablet, the tablet would set switch 0x29.
     // We change the east servant to work like the others, and directly set the switch.
-    const uint8_t east_servant_returned_switch = 0x29;
-    const uint8_t west_servant_returned_switch = 0x2A;
-    const uint8_t north_servant_returned_switch = 0x28;
+    //const uint8_t east_servant_returned_switch = 0x29;
+    //const uint8_t west_servant_returned_switch = 0x2A;
+    //const uint8_t north_servant_returned_switch = 0x28;
 
     // These switches should be unused in vanilla TotG.
     const uint8_t tablet_item_obtained_switch = 0x2B; // Must be contiguous with 0x28-0x2A.
-    const uint8_t any_servant_returned_switch = 0x7E;
+    //const uint8_t any_servant_returned_switch = 0x7E;
     const uint8_t all_servants_returned_switch = 0x7F;
 
     const uint8_t original_all_servants_returned_switch = 0x28;
@@ -3315,7 +3313,7 @@ TweakError allow_nonlinear_servants_of_the_towers() {
         timekeeper->add_action(event_list, "WAIT", {});
       
         std::shared_ptr<Action> camera_fixedfrm_action = camera->add_action(event_list, "FIXEDFRM", {});
-        for (const std::shared_ptr<Property> property : camera_tablet_fixedfrm_props) {
+        for (const std::shared_ptr<Property>& property : camera_tablet_fixedfrm_props) {
             Property& prop = camera_fixedfrm_action->add_property(property->name);
             prop.value = property->value;
         }
