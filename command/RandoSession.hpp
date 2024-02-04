@@ -54,12 +54,12 @@ public:
         void addAction(Action_t action);
         void addDependent(std::shared_ptr<CacheEntry> depends); //add entry to tree after this one is completed, prevent repack-mod-repack
 
-        inline size_t incrementPrereq() { return ++numPrereqs; }
-        inline size_t decrementPrereq() { return --numPrereqs; }
-        inline size_t getNumPrereqs() const { return numPrereqs; }
-        inline void setFinished() { finished = true; }
-        inline bool isFinished() const { return finished; }
-        inline const std::shared_ptr<CacheEntry> getParent() const { return parent; };
+        size_t incrementPrereq() { return ++numPrereqs; }
+        size_t decrementPrereq() { return --numPrereqs; }
+        size_t getNumPrereqs() const { return numPrereqs; }
+        void setFinished() { finished = true; }
+        bool isFinished() const { return finished; }
+        const std::shared_ptr<CacheEntry> getParent() const { return parent; };
         const std::shared_ptr<CacheEntry> getRoot() const;
 
     private:
@@ -92,7 +92,7 @@ private:
     std::shared_ptr<CacheEntry> getEntry(const std::vector<std::string>& fileSpec);
     bool extractFile(std::shared_ptr<CacheEntry> current);
     bool repackFile(std::shared_ptr<CacheEntry> current);
-    bool handleChildren(const fspath& filename, std::shared_ptr<CacheEntry> current);
+    bool handleChildren(const fspath filename, std::shared_ptr<CacheEntry> current);
     void clearCache();
     bool runFirstTimeSetup();
 
