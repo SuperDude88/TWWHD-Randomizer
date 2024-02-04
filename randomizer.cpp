@@ -502,10 +502,7 @@ public:
     Randomizer(const Config& config_) :
         config(config_),
         permalink(create_permalink(config_.settings, config_.seed))
-    {
-        g_session.init(config.gameBaseDir, config.outputDir);
-        Utility::platformLog("Initialized session\n");
-    }
+    {}
 
     int randomize() {
         // Go through the setting testing process if mass testing is turned on and ignore everything else
@@ -517,6 +514,12 @@ public:
             #endif
             return 0;
         #endif
+        
+        if(!g_session.init(config.gameBaseDir, config.outputDir)) {
+            ErrorLog::getInstance().log("Failed to initialize session");
+            return 1;
+        }
+        Utility::platformLog("Initialized session\n");
 
         LogInfo::setConfig(config);
 

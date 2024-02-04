@@ -93,17 +93,29 @@ RandoSession::RandoSession()
 
 }
 
-void RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir) { //might have more init stuff later
+bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir) {
     baseDir = gameBaseDir;
     outputDir = randoOutputDir;
 
-    if(!outputDir.empty()) {
-        Utility::create_directories(outputDir); // handles directories that already exist
+    if(outputDir.empty()) {
+        ErrorLog::getInstance().log("No output path specified!");
+        return false;
+    }
+
+    if(baseDir == outputDir) {
+        ErrorLog::getInstance().log("Output dir can not be the same as input dir!");
+        return false;
+    }
+
+    if(!Utility::create_directories(outputDir)) { // handles directories that already exist
+        ErrorLog::getInstance().log("Failed to create output folder " + outputDir.string());
+        return false;
     }
 
     clearCache();
     initialized = true;
-    return;
+
+    return true;
 }
 
 bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
