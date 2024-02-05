@@ -2255,7 +2255,7 @@ TweakError implement_key_bag() {
     // Add a "unit" string for the big key
     const std::unordered_map<std::string, std::u16string> messages = {
         {"English", u" +Big\0"s},
-        {"Spanish", u" TODO: this\0"s},
+        {"Spanish", u" +Jefe\0"s},
         {"French", u" TODO: this\0"s},
     };
 
