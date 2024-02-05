@@ -71,11 +71,215 @@
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="tab">
+          <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
-            <string>Randomizer Settings</string>
+            <string>Getting Started</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <layout class="QVBoxLayout" name="verticalLayout_15">
+            <item>
+             <widget class="QTabWidget" name="how_to_randomize_tab">
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="console_tab">
+               <attribute name="title">
+                <string>Console</string>
+               </attribute>
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QGroupBox" name="groupBox_7">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Preparing Homebrew</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_19">
+                   <item>
+                    <widget class="QLabel" name="label_8">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found &lt;a href=&quot;https://wiiu.hacks.guide/#/aroma/getting-started&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;. After following the guide, you will need to add &lt;a href=&quot;https://github.com/marco-calautti/SigpatchesModuleWiiU/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;01_sigpatches.rpx&lt;/span&gt;&lt;/a&gt; to &lt;span style=&quot; font-family:'Courier New';&quot;&gt;/wiiu/environments/aroma/modules/setup&lt;/span&gt; on your SD card. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_8">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Using the Homebrew Application</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_20">
+                   <item>
+                    <widget class="QLabel" name="label_9">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*&lt;span style=&quot; font-style:italic;&quot;&gt;This storage is reserved after the first-time setup&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;Once homebrew is set up, copy &lt;span style=&quot; font-family:'Courier New';&quot;&gt;wwhd_randomizer.wuhb&lt;/span&gt; from the &lt;a href=&quot;https://github.com/SuperDude88/TWWHD-Randomizer/releases/latest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;releases page&lt;/span&gt;&lt;/a&gt; into &lt;span style=&quot; font-family:'Courier New';&quot;&gt;/wiiu/apps&lt;/span&gt; on your SD Card. Run the app from the home menu to open the patcher. &lt;/p&gt;&lt;p&gt;Select the settings you wish to use and then follow the prompts to begin the randomization process. The first time it runs, the patcher will create a home menu channel for the randomized game. This takes some time, but it only happens once. The process of patching the randomized game itself after the new channel is created will also take a few minutes. (*&lt;span style=&quot; font-style:italic;&quot;&gt;Note: Everytime you create a new randomized game, it will overwrite any previous one that existed.)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_9">
+                  <property name="title">
+                   <string>Running the Game</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_21">
+                   <item>
+                    <widget class="QLabel" name="label_10">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To play the randomized game, you must have Aroma active. This should always be the case right after you run the patcher. The randomized channel will have an orange, mirrored icon of the vanilla game. &lt;/p&gt;&lt;p&gt;A tracker is provided for your convenience in this application. Simply click the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Start New Tracker&lt;/span&gt; button in the top right of the tracker tab. Progress made in the tracker is autosaved, so you can close the application and resume progress later if you wish.&lt;/p&gt;&lt;p&gt;You can either set the same settings in the application for the tracker, or you can retrieve the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;config.yaml&lt;/span&gt; file from &lt;code&gt;/wiiu/apps/save/(hex digits)(TWWHD Randomizer)&lt;/code&gt;, close this application,  place the config file in the same folder as this application, and reopen the application to apply the settings automatically.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="emulator_tab">
+               <attribute name="title">
+                <string>Emulator</string>
+               </attribute>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QGroupBox" name="groupBox_10">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Extract the Game</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_16">
+                   <item>
+                    <widget class="QLabel" name="label_5">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Before generating a seed, you need to have a valid extract of the decrypted USA version of the game. The PAL and JP versions will not work, and neither will the original Wind Waker.&lt;/p&gt;&lt;p&gt;The decrypted copy of the game is a folder which contains three subfolders (&lt;span style=&quot; font-family:'Courier New';&quot;&gt;code&lt;/span&gt;, &lt;span style=&quot; font-family:'Courier New';&quot;&gt;content&lt;/span&gt;, and &lt;span style=&quot; font-family:'Courier New';&quot;&gt;meta&lt;/span&gt;). It is &lt;span style=&quot; font-style:italic;&quot;&gt;not&lt;/span&gt; a single file like a &lt;span style=&quot; font-family:'Courier New';&quot;&gt;.iso&lt;/span&gt; or a &lt;span style=&quot; font-family:'Courier New';&quot;&gt;.wad&lt;/span&gt;. You can dump a disc or digital install from your Wii U with &lt;a href=&quot;https://github.com/emiyl/dumpling/releases/latest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;dumpling&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_11">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Generate a Seed</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_17">
+                   <item>
+                    <widget class="QLabel" name="label_6">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After you've obtained your decrypted copy of the game, you need to tell the randomizer where the vanilla game is, as well as where to output the randomized version of the game.&lt;/p&gt;&lt;p&gt;In the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Base Game Folder&lt;/span&gt; field below, browse to and select the folder which contains the decrypted games's three subfolders. In the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Output Folder&lt;/span&gt; field, select the folder where you want the randomized game to appear.&lt;/p&gt;&lt;p&gt;Feel free to go through the settings in the rest of the tabs to customize your experience, and when you're ready, hit the &lt;code&gt;Randomize&lt;/code&gt; button in the bottom right.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_12">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="title">
+                   <string>Running the Seed</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_18">
+                   <item>
+                    <widget class="QLabel" name="label_7">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To play the seed, open up the &lt;a href=&quot;https://github.com/cemu-project/Cemu/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;CEMU Emulator&lt;/span&gt;&lt;/a&gt;. Go to &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Options &amp;gt; General Settings&lt;/span&gt;. At the bottom where you enter game paths, click &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Add&lt;/span&gt; and browse for the output folder where the randomized game is. The randomized game should now appear in the games list. It has an orange icon with the King of Red Lions in it. Now launch the game in CEMU and enjoy!&lt;/p&gt;&lt;p&gt;A tracker is provided for your convenience in this application. Simply click the &lt;code&gt;Start New Tracker&lt;/code&gt; button in the tracker tab. Progress made in the tracker is autosaved, so you can close the application and resume progress later if you wish.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
             <item>
              <layout class="QGridLayout" name="gridLayout">
               <item row="1" column="3">
@@ -131,6 +335,13 @@
               </item>
              </layout>
             </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Randomizer Settings</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <widget class="QGroupBox" name="groupBox">
               <property name="sizePolicy">
