@@ -3473,11 +3473,8 @@ TweakError give_fairy_fountains_distinct_colors() {
             CAST_ENTRY_TO_FILETYPE(dzs, FileTypes::DZXFile, data)
 
             for (ChunkEntry* pale : dzs.entries_by_type("Pale")) {
-                // alpha will be garbage on both of these but it looks cleaner than operator[]/uint8_t casting 6 times
-                RGBA<uint8_t>* old_c0 = reinterpret_cast<RGBA<uint8_t>*>(pale->data[6]);
-                RGBA<uint8_t>* old_k0 = reinterpret_cast<RGBA<uint8_t>*>(pale->data[9]);
-                HSV bg0_c0 = RGBToHSV(old_c0->R, old_c0->G, old_c0->B);
-                HSV bg0_k0 = RGBToHSV(old_k0->R, old_k0->G, old_k0->B);
+                HSV bg0_c0 = RGBToHSV((uint8_t)pale->data[6] / 255.0, (uint8_t)pale->data[7] / 255.0, (uint8_t)pale->data[8] / 255.0);
+                HSV bg0_k0 = RGBToHSV((uint8_t)pale->data[9] / 255.0, (uint8_t)pale->data[10] / 255.0, (uint8_t)pale->data[11] / 255.0);
 
                 bg0_c0.H = hue;
                 bg0_k0.H = hue;
