@@ -34,8 +34,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1054</width>
-         <height>646</height>
+         <width>1048</width>
+         <height>623</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -1988,14 +1988,15 @@
            <widget class="QPushButton" name="start_tracker_button">
             <property name="geometry">
              <rect>
-              <x>890</x>
+              <x>840</x>
               <y>10</y>
-              <width>101</width>
+              <width>181</width>
               <height>24</height>
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">background: white</string>
+             <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
             </property>
             <property name="text">
              <string>Start New Tracker</string>
@@ -2369,7 +2370,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>311</height>
+                    <height>305</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
@@ -2457,6 +2458,9 @@ font-size: 15px;</string>
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">text-align: left;
