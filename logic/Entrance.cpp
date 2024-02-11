@@ -88,8 +88,17 @@ void Entrance::setAsPrimary()
     primary = true;
 }
 
-std::string Entrance::getOriginalName() const
+std::string Entrance::getOriginalName(const bool& arenaExitNameChange /*= false*/)
 {
+    // If this is a reverse boss entrance, change it's name to be more
+    // intuitive as to what entrance it actually is (the wind warp)
+    if (arenaExitNameChange && originalName.substr(0, originalName.find(" -> ")).ends_with("Battle Arena"))
+    {
+        // Change to "Boss Battle Arena -> Boss Battle Arena Exit"
+        return originalName.substr(0, originalName.find(" -> ")) + " -> " + 
+               originalName.substr(0, originalName.find(" -> ")) + " Exit";
+        
+    }
     return originalName;
 }
 
