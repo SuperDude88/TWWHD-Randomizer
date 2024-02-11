@@ -79,7 +79,7 @@
             <item>
              <widget class="QTabWidget" name="how_to_randomize_tab">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="console_tab">
                <attribute name="title">
@@ -113,6 +113,9 @@
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                      </property>
                      <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                     <property name="openExternalLinks">
                       <bool>true</bool>
                      </property>
                     </widget>
@@ -149,6 +152,9 @@
                      <property name="wordWrap">
                       <bool>true</bool>
                      </property>
+                     <property name="openExternalLinks">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -175,6 +181,9 @@
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                      </property>
                      <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                     <property name="openExternalLinks">
                       <bool>true</bool>
                      </property>
                     </widget>
@@ -212,6 +221,9 @@
                      <property name="wordWrap">
                       <bool>true</bool>
                      </property>
+                     <property name="openExternalLinks">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -243,6 +255,9 @@
                      <property name="wordWrap">
                       <bool>true</bool>
                      </property>
+                     <property name="openExternalLinks">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -269,6 +284,9 @@
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                      </property>
                      <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                     <property name="openExternalLinks">
                       <bool>true</bool>
                      </property>
                     </widget>
@@ -2351,7 +2369,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>311</height>
+                    <height>290</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
