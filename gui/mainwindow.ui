@@ -79,7 +79,7 @@
             <item>
              <widget class="QTabWidget" name="how_to_randomize_tab">
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="console_tab">
                <attribute name="title">
@@ -2369,7 +2369,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>290</height>
+                    <height>311</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
