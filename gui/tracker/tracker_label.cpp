@@ -170,6 +170,8 @@ void TrackerLabel::update_colors()
             setStyleSheet("color: blue;");
         }
         break;
+    case TrackerLabelType::EntranceDestination:
+        setStyleSheet("color: black;");
     default:
         break;
     }
