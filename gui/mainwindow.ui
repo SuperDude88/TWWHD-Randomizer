@@ -1988,9 +1988,9 @@
            <widget class="QPushButton" name="start_tracker_button">
             <property name="geometry">
              <rect>
-              <x>840</x>
+              <x>830</x>
               <y>10</y>
-              <width>181</width>
+              <width>211</width>
               <height>24</height>
              </rect>
             </property>
