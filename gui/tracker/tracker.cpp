@@ -891,13 +891,13 @@ void MainWindow::tracker_clear_current_area_text()
 
 void MainWindow::tracker_display_current_entrance(Entrance* entrance)
 {
-    auto entranceName = entrance->getOriginalName();
+    auto entranceName = entrance->getOriginalName(true);
     if (entranceName.starts_with("Root"))
     {
         entranceName = entrance->getReplaces()->getOriginalName();
     }
 
-    // Re-use the are name label for entrance names also
+    // Re-use the area name label for entrance names also
     ui->current_area_name_label->setText(entranceName.c_str());
 }
 
@@ -905,7 +905,17 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
 {
     selectedEntrance = entrance;
 
-    ui->where_did_lead_to_label->setText(std::string("Where did " + entrance->getOriginalConnectedArea()->name + " lead to?").c_str());
+    auto entranceName = entrance->getOriginalName(true);
+    if (entranceName.find("Battle Arena Exit") != std::string::npos)
+    {
+        entranceName = entranceName.substr(0, entranceName.find(" -> ")) + " Exit";
+    }
+    else
+    {
+        entranceName = entrance->getOriginalConnectedArea()->name;
+    }
+
+    ui->where_did_lead_to_label->setText(std::string("Where did " + entranceName + " lead to?").c_str());
 
     auto entrance_destination_list_layout = ui->entrance_destination_list_layout;
     clear_tracker_labels(entrance_destination_list_layout);

@@ -48,7 +48,7 @@ public:
     void setOriginalEntranceType(EntranceType newType);
     bool isPrimary() const;
     void setAsPrimary();
-    std::string getOriginalName() const;
+    std::string getOriginalName(const bool& arenaExitNameChange = false);
     void setOriginalName();
     std::string getCurrentName() const;
     std::string getFilepathStage() const;
