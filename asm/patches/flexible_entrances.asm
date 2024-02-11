@@ -82,3 +82,23 @@ continue_with_fail:
 
 continue_with_boat:
     b 0x024136d0
+
+
+; When you have the map open on the gamepad screen it only "reloads" when transitions like overworld -> dungeon occur
+; When entrances are randomized and you load from a dungeon into another dungeon, it doesn't switch the gamepad map properly and crashes
+; Force a map reload if the dungeon changes (TODO: this fix isn't ideal but it averts the crash for now)
+.org 0x02657F04 ; code that updates the dungeon map pointer
+    b force_map_reload
+.org @NextFreeSpace
+.global force_map_reload
+force_map_reload:
+    lwzx r0, r9, r11 ; replace the line we overwrote to jump here
+    lwz r12, 0x920(r3) ; load current dungeon map pointer
+    cmpw r0, r12
+    beq map_pointer_not_changed
+
+    li r12, 0x0
+    stw r12, 0x64(r8) ; pretend we were just on an overworld map
+
+map_pointer_not_changed:
+    b 0x02657F08 ; continue as normal

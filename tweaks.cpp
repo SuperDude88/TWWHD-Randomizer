@@ -23,6 +23,7 @@
 #include <filetypes/jpc.hpp>
 #include <filetypes/msbt.hpp>
 #include <filetypes/util/msbtMacros.hpp>
+#include <utility/color.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
 #include <utility/common.hpp>
@@ -3463,6 +3464,40 @@ TweakError prevent_fairy_island_softlocks() {
     return TweakError::NONE;
 }
 
+TweakError give_fairy_fountains_distinct_colors() {
+    double hue = 0.0;
+    for (const std::string& stageName : {"Fairy01", "Fairy02", "Fairy03", "Fairy04", "Fairy05", "Fairy06"}) {
+        RandoSession::CacheEntry& fountain = g_session.openGameFile("content/Common/Stage/" + stageName + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+
+        fountain.addAction([hue](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(dzs, FileTypes::DZXFile, data)
+
+            for (ChunkEntry* pale : dzs.entries_by_type("Pale")) {
+                HSV bg0_c0 = RGBToHSV((uint8_t)pale->data[6] / 255.0, (uint8_t)pale->data[7] / 255.0, (uint8_t)pale->data[8] / 255.0);
+                HSV bg0_k0 = RGBToHSV((uint8_t)pale->data[9] / 255.0, (uint8_t)pale->data[10] / 255.0, (uint8_t)pale->data[11] / 255.0);
+
+                bg0_c0.H = hue;
+                bg0_k0.H = hue;
+                const RGBA<double> new_c0 = HSVToRGB(bg0_c0);
+                const RGBA<double> new_k0 = HSVToRGB(bg0_k0);
+
+                pale->data[6] = new_c0.R * 255.0;
+                pale->data[7] = new_c0.G * 255.0;
+                pale->data[8] = new_c0.B * 255.0;
+                pale->data[9] = new_k0.R * 255.0;
+                pale->data[10] = new_k0.G * 255.0;
+                pale->data[11] = new_k0.B * 255.0;
+            }
+
+            return true;
+        });
+
+        hue += 360.0 / 6.0;
+    }
+
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
 
@@ -3584,6 +3619,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(fix_vanilla_text());
     TWEAK_ERR_CHECK(make_dungeon_joy_pendants_flexible());
     TWEAK_ERR_CHECK(prevent_fairy_island_softlocks());
+    TWEAK_ERR_CHECK(give_fairy_fountains_distinct_colors());
     //rat hole visibility
     //failsafe id 0 spawns
 
