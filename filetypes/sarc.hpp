@@ -91,7 +91,7 @@ namespace FileTypes {
         std::vector<File> files; //store as vector to keep insertion order
         uint32_t guessed_alignment;
 
-        void initNew();
+        void initNew() override;
         void guessDefaultAlignment();
     };
 }

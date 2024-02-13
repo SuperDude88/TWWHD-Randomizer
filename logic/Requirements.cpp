@@ -92,6 +92,7 @@ std::string printRequirement(Requirement& req, int nestingLevel /*= 0*/)
         return returnStr;
     case RequirementType::MACRO:
         returnStr += "macro: " + std::to_string(std::get<MacroIndex>(req.args[0])) + "\n";
+        [[fallthrough]];
     default:
         return returnStr;
     }

@@ -221,6 +221,6 @@ namespace FileTypes
 
         mutable std::vector<int32_t> unused_flag_ids;
 
-        void initNew();
+        void initNew() override;
     };
 }

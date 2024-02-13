@@ -45,7 +45,7 @@ namespace FileTypes {
         ELFError writeToFile(const std::string& outFilePath);
     private:
         bool isEmpty = true;
-        void initNew();
+        void initNew() override;
     };
 
 }

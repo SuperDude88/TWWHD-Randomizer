@@ -70,6 +70,6 @@ namespace FileTypes {
         DZXError writeToStream(std::ostream& out);
         DZXError writeToFile(const std::string& outFilePath);
     private:
-        void initNew();
+        void initNew() override;
     };
 }

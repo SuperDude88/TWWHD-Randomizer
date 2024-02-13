@@ -23,11 +23,11 @@ using namespace std::literals::string_literals; //spooky namespace in header, no
 //commands from "ControlTags" group (01)
 #define DRAW_INSTANT                u"\x0E\x01\x00\x00"s
 #define DRAW_CHAR                   u"\x0E\x01\x01\x00"s
-#define WAIT_DISMISS_PROMPT(frames) u"\x0E\x01\x02\x02"s + (char16_t)frames //input frames as int
-#define WAIT_DISMISS(frames)        u"\x0E\x01\x03\x02"s + (char16_t)frames //input frames as int
-#define DISMISS(frames)             u"\x0E\x01\x04\x02"s + (char16_t)frames //input frames as int
-#define STEP(frames)                u"\x0E\x01\x05\x02"s + (char16_t)frames //input frames as int, exact purpose unknown
-#define WAIT(frames)                u"\x0E\x01\x06\x02"s + (char16_t)frames //input frames as int
+#define WAIT_DISMISS_PROMPT(frames) u"\x0E\x01\x02\x02"s + static_cast<char16_t>(frames) //input frames as int
+#define WAIT_DISMISS(frames)        u"\x0E\x01\x03\x02"s + static_cast<char16_t>(frames) //input frames as int
+#define DISMISS(frames)             u"\x0E\x01\x04\x02"s + static_cast<char16_t>(frames) //input frames as int
+#define STEP(frames)                u"\x0E\x01\x05\x02"s + static_cast<char16_t>(frames) //input frames as int, exact purpose unknown
+#define WAIT(frames)                u"\x0E\x01\x06\x02"s + static_cast<char16_t>(frames) //input frames as int
 #define TWO_CHOICES                 u"\x0E\x01\x07\x00"s //two choices in a textbox
 #define THREE_CHOICES               u"\x0E\x01\x08\x00"s //three choices in a textbox
 #define TWO_CHOICES_LEFT            u"\x0E\x01\x09\x00"s //first choice, left side
