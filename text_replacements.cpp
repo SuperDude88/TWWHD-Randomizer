@@ -299,7 +299,7 @@ TextReplacements generate_text_replacements(World& world)
      {"07521",
      {{"English", SOUND(0x8E) + u"Hoorayyy! Yayyy!\nOh, thank you so much, Mr. Sailer!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here... " +
                                 TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"Please accept this " + splooshSecondPrize.getUTF16Name("English") + u'!', 43) + u'\0'},
-      {"Spanish", SOUND(0x8E) + u"¡Viva, viva!\nOh, thank you so much, Mr. Sailer!\n\n\n" + word_wrap_string(u"Esta es nuestra muestra de gratitud. Ha sido pasado de generación en generación, así que no le digas a los ancianos de la isla, está bien? ¡Por favor!" +
+      {"Spanish", SOUND(0x8E) + u"¡Viva, viva!\n¡Gracias, señor, gracias!\n\n\n" + word_wrap_string(u"Esta es nuestra muestra de gratitud. Ha sido pasado de generación en generación, así que no le digas a los ancianos de la isla, está bien? ¡Por favor!" +
                                  TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"¡Acepta " + splooshSecondSpanishConjugation + splooshSecondPrize.getUTF16Name("Spanish") + u'!', 43) + u'\0'},
       {"French",  SOUND(0x8E) + u"Oui, oui!\nMerci l'ami!\n\n\nNous tenons à te faire un cadeau pour\nte remercier de nous avoir protégés.\n\n\n" + word_wrap_string(u"Voici " +
                                 splooshSecondPrize.getUTF16Name("English", Text::Type::PRETTY) + u" qui se transmet depuis fort longtemps sur cette île. Prends-là et surtout ne le dis pas aux anciens!", 43) + u'\0'}}},
