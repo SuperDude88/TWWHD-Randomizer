@@ -16,6 +16,7 @@
 class MSBTHeader : public FileHeader {
 public:
     virtual ~MSBTHeader() override = default;
+
     virtual LMSError read(std::istream& in) override;
     //virtual void write(std::ostream& out) override;
 };
@@ -23,6 +24,7 @@ public:
 class LBL1 : public SectionHeader, public HashTable {
 public:
     virtual ~LBL1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 };
@@ -53,6 +55,7 @@ public:
     std::vector<Attributes> entries;
 
     virtual ~ATR1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
     uint32_t getEntrySize() const { return entrySize; }
@@ -70,6 +73,7 @@ public:
     std::vector<TSY1Entry> entries;
     
     virtual ~TSY1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 };
@@ -85,6 +89,7 @@ public:
     std::vector<TXT2Entry> entries;
     
     virtual ~TXT2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:

@@ -6,8 +6,8 @@
 class FileType {    
     //static_assert(std::is_enum_v<error_enum>, "error_enum must be an enum type");
 public:
-	FileType() {};
-    virtual ~FileType() {};
+    FileType() {}
+    virtual ~FileType() {}
 
 	//virtual error_enum loadFromBinary(std::istream&) = 0;
 	//virtual error_enum loadFromFile(const std::string&) = 0;
@@ -26,5 +26,5 @@ public:
         data(data_)
     {}
 private:
-    void initNew() {};
+    void initNew() override {}
 };

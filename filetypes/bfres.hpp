@@ -115,6 +115,6 @@ namespace FileTypes
     private:
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile);
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::stringstream& newFile);
-        void initNew() override {}; //Needs a more complete implementation to work
+        void initNew() override {} //Needs a more complete implementation to work
     };
 }
