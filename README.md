@@ -21,7 +21,7 @@ If you can not find anywhere to progress, you should first check the spoiler log
 If you have checked the log and are still stuck, it is possible you have encountered a [bug](#Reporting-Bugs).
 
 ### Reporting Bugs
-If you seem to have discovered a bug, let us know in our [Discord server](TODO) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the config file (excluding file paths) for the seed when reporting a problem.
+If you seem to have discovered a bug, let us know in our [Discord server](https://discord.gg/wPvdQ2Krrm) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the config file (excluding file paths) for the seed when reporting a problem.
 
 ## Setup
 You can download the latest stable version of the randomizer from the releases page. 
@@ -67,4 +67,4 @@ The randomizer program (wuhb) will be placed in the build folder.
 To build the Desktop Application, download and install the latest version of [Qt](https://www.qt.io/download-qt-installer-oss). Make sure to install the Desktop MingW Kit when installing. After opening up Qt Creator, select `Open Project` and select the `CMakeLists.txt` file in the `gui` folder of the repo. When prompted to select a kit, select the MingW one you installed earlier. Then press the green play button in the bottom left of the application to build and run the project.
 
 ## Credits
-All of this was made possible thanks to tremendous help from [csunday95](https://github.com/csunday95) and [gymnast86](https://github.com/gymnast86), along with much bugfixing assistance from the devs at [ForTheUsers](https://fortheusers.org/). Everything here was based on the research and code already written by the [original randomizer team](https://github.com/LagoLunatic/wwrando#credits).
+All of this was made possible thanks to tremendous help from [csunday95](https://github.com/csunday95) and [gymnast86](https://github.com/gymnast86), along with much bugfixing assistance from the devs at [ForTheUsers](https://fortheusers.org/). Translations were done by azer67 (French), Cithiel (Spanish), and Nacho (Spanish). Everything here was based on the research and code already written by the [original randomizer team](https://github.com/LagoLunatic/wwrando#credits).
