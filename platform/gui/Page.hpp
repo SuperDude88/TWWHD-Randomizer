@@ -280,7 +280,7 @@ class MetaPage : public EmptyPage {
 private:
     // these are too new for the Wii U browser :(
     //static inline std::string GITHUB_URL = "https://github.com/SuperDude88/TWWHD-Randomizer";
-    //static inline std::string DISCORD_URL = "https://discord.gg/uvGqsmHNc";
+    //static inline std::string DISCORD_URL = "https://discord.gg/wPvdQ2Krrm";
 
 public:
     MetaPage();
