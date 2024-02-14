@@ -179,11 +179,11 @@ TextReplacements generate_text_replacements(World& world)
      {"00849",
      {{"English", u"Oh! Did you get stuck in there, Big Brother?\0"s},
       {"Spanish", u"¡Ah! ¿Te atascaste, Hermanote?\0"s},
-      {"French",  u"FRENCH TRANSLATION NEEDED\0"s}}},
+      {"French",  u"Oh! Es-tu coincé, Grand Frère ?\0"s}}},
      {"00850",
      {{"English", u"Don't worry, I'll open the door for you.\0"s},
       {"Spanish", u"No pasa nada. Abriré la puerta por ti.\0"s},
-      {"French",  u"FRENCH TRANSLATION NEEDED\0"s}}},
+      {"French",  u"Ne t'inquiète pas, je vais te sortir de là.\0"s}}},
 
      // Swordless Text
      {"01128",
