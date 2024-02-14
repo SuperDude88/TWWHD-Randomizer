@@ -82,7 +82,7 @@ public:
     FSTEntry() = default;
     FSTEntry(const bool& root_) : 
         isRoot(root_)
-    {};
+    {}
 
     void setContent(Content* content_);
     Content* getContent();

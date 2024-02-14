@@ -59,11 +59,20 @@ void TrackerLabel::set_entrance(Entrance* entrance_)
     entrance = entrance_;
 
     std::string destination;
+    std::string source;
     switch (type)
     {
     case TrackerLabelType::EntranceSource:
         destination = entrance->getConnectedArea() == nullptr ? "?" : entrance->getConnectedArea()->name;
-        setText(std::string(entrance->getOriginalConnectedArea()->name + " -> " + destination).c_str());
+        if (entrance->getOriginalName(true).find("Battle Arena Exit") != std::string::npos)
+        {
+            source = entrance->getOriginalName(true).substr(0, entrance->getOriginalName(true).find(" -> ")) + " Exit";
+        }
+        else
+        {
+            source = entrance->getOriginalConnectedArea()->name;
+        }
+        setText(std::string(source + " -> " + destination).c_str());
         break;
     case TrackerLabelType::EntranceDestination:
         setText(entrance->getConnectedArea()->name.c_str());
@@ -161,6 +170,8 @@ void TrackerLabel::update_colors()
             setStyleSheet("color: blue;");
         }
         break;
+    case TrackerLabelType::EntranceDestination:
+        setStyleSheet("color: black;");
     default:
         break;
     }

@@ -65,7 +65,7 @@ namespace FileTypes {
 	private:
 		uint32_t num_charts = 0;
 
-		void initNew() override {};
+		void initNew() override {}
 	public:
 
 		std::vector<Chart> charts;

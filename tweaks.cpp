@@ -2,10 +2,8 @@
 
 #include <typeinfo>
 #include <memory>
-#include <filesystem>
 #include <algorithm>
-#include <iostream>
-#include <tuple>
+#include <sstream>
 #include <numbers>
 
 #include <version.hpp>
@@ -26,7 +24,6 @@
 #include <utility/color.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
-#include <utility/common.hpp>
 #include <command/Log.hpp>
 #include <command/GamePath.hpp>
 #include <command/RandoSession.hpp>
@@ -62,23 +59,21 @@
 using eType = Utility::Endian::Type;
 
 
-namespace {
-    static std::unordered_map<std::string, uint32_t> custom_symbols;
+static std::unordered_map<std::string, uint32_t> custom_symbols;
 
-    TweakError Load_Custom_Symbols(const std::string& file_path) {
-        std::string file_data;
-        if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+static TweakError Load_Custom_Symbols(const std::string& file_path) {
+    std::string file_data;
+    if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 
-        YAML::Node symbols = YAML::Load(file_data);
-        for (const auto& symbol : symbols) {
-            custom_symbols[symbol.first.as<std::string>()] = symbol.second.as<uint32_t>();
-        }
-
-        return TweakError::NONE;
+    YAML::Node symbols = YAML::Load(file_data);
+    for (const auto& symbol : symbols) {
+        custom_symbols[symbol.first.as<std::string>()] = symbol.second.as<uint32_t>();
     }
+
+    return TweakError::NONE;
 }
 
-TweakError Apply_Patch(const std::string& file_path) {
+static TweakError Apply_Patch(const std::string& file_path) {
     std::string file_data;
     if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 
@@ -96,8 +91,7 @@ TweakError Apply_Patch(const std::string& file_path) {
                 if (!sectionOffset) { //address not in section
                     std::string data;
                     for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
-                        const char val = byte;
-                        data += val;
+                        data += byte;
                     }
                     RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); //add data at the specified offset
                 }
@@ -124,7 +118,6 @@ TweakError Apply_Patch(const std::string& file_path) {
             reloc.r_info = relocation["r_info"].as<uint32_t>();
             reloc.r_addend = relocation["r_addend"].as<uint32_t>();
 
-            RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
             entry.addAction([reloc](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
@@ -2256,8 +2249,8 @@ TweakError implement_key_bag() {
     // Add a "unit" string for the big key
     const std::unordered_map<std::string, std::u16string> messages = {
         {"English", u" +Big\0"s},
-        {"Spanish", u" TODO: this\0"s},
-        {"French", u" TODO: this\0"s},
+        {"Spanish", u" +Jefe\0"s},
+        {"French", u" +Boss\0"s},
     };
 
     for (const auto& language : Text::supported_languages) {

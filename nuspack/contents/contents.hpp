@@ -42,7 +42,7 @@ public:
 
     inline bool isHashed() const {
         return (type & Type::HASHED) != 0;
-    };
+    }
     
     inline void ResetFileOffset() {
         curFileOffset = 0;

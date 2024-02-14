@@ -372,7 +372,10 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
             }
         }
     }
-    settings.selectedModel.loadFromFolder();
+
+    if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
+        if(!ignoreErrors) return ConfigError::MODEL_ERROR;
+    }
 
     // clamp numerical settings
     // health
@@ -611,6 +614,8 @@ std::string errorToName(ConfigError err) {
             return "DIFFERENT_RANDO_VERSION";
         case ConfigError::INVALID_VALUE:
             return "INVALID_VALUE";
+        case ConfigError::MODEL_ERROR:
+            return "MODEL_ERROR";
         default:
             return "UNKNOWN";
     }

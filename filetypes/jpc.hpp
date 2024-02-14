@@ -513,6 +513,6 @@ namespace FileTypes {
         JPCError writeToStream(std::ostream& out);
         JPCError writeToFile(const std::string& outFilePath);
     private:
-        void initNew();
+        void initNew() override;
     };
 }

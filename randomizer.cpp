@@ -1,15 +1,13 @@
-#include <stdint.h>
-#include <tweaks.hpp>
+#include "randomizer.hpp"
 
-#include <cstring>
-#include <fstream>
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <thread>
 
 #include <libs/tinyxml2.hpp>
 #include <libs/zlib-ng.hpp>
+
+#include <tweaks.hpp>
 #include <seedgen/config.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/seed.hpp>
@@ -24,29 +22,20 @@
 #include <command/WriteLocations.hpp>
 #include <command/RandoSession.hpp>
 #include <command/Log.hpp>
-#include <customizer/model.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
 #include <utility/endian.hpp>
 #include <utility/time.hpp>
-#include <nuspack/packer.hpp>
 
 #include <gui/update_dialog_header.hpp>
 
 #ifdef DEVKITPRO
-#include <sysapp/title.h>
-#include <platform/channel.hpp>
-#include <platform/gui/InstallMenu.hpp>
-#include <platform/gui/ConfirmMenu.hpp>
-#include <platform/gui/SettingsMenu.hpp>
+    #include <sysapp/title.h>
+    #include <platform/channel.hpp>
+    #include <platform/gui/InstallMenu.hpp>
+    #include <platform/gui/ConfirmMenu.hpp>
+    #include <platform/gui/SettingsMenu.hpp>
 #endif
-
-#define FILETYPE_ERROR_CHECK(func) {  \
-    if(const auto error = func; error != decltype(error)::NONE) {\
-        ErrorLog::getInstance().log(std::string("Encountered ") + &(typeid(error).name()[5]) + " on line " TOSTRING(__LINE__)); \
-        return false;  \
-    } \
-}
 
 class Randomizer {
 private:
@@ -345,7 +334,7 @@ private:
             {
                 RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
 
-                dzrEntry.addAction([entrance, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+                dzrEntry.addAction([sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
                 {
                     CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
                     const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
@@ -479,7 +468,7 @@ private:
             const std::string filepath = getStageFilePath(entrance->getFilepathStage()) + "@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
 
             RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
-            list.addAction([entrance, filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
+            list.addAction([filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
                 if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
@@ -538,7 +527,7 @@ public:
         }
 
         // Seed RNG
-        integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
+        integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t*>(permalink.data()), permalink.length());
 
         Random_Init(integer_seed);
         LogInfo::setSeedHash(generate_seed_hash());
