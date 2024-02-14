@@ -1167,7 +1167,7 @@ void MainWindow::on_about_button_clicked()
                    "Created by Superdude88, gymnast86, csunday95, and CrainWWR<br><br>"
                    "Report issues here:<br><a href=\"https://github.com/SuperDude88/TWWHD-Randomizer/issues\">https://github.com/SuperDude88/TWWHD-Randomizer/issues</a><br><br>"
                    "Source code:<br><a href=\"https://github.com/SuperDude88/TWWHD-Randomizer\">https://github.com/SuperDude88/TWWHD-Randomizer</a><br><br>"
-                   "Discord Server: TODO";
+                   "Discord Server: <br><a href=\"https://discord.gg/wPvdQ2Krrm\">https://discord.gg/wPvdQ2Krrm</a><br><br>";
     show_info_dialog(message, "About");
 }
 

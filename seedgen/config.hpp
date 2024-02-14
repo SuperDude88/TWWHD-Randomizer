@@ -14,6 +14,7 @@ enum struct [[nodiscard]] ConfigError {
     DIFFERENT_FILE_VERSION,
     DIFFERENT_RANDO_VERSION,
     INVALID_VALUE,
+    MODEL_ERROR,
     UNKNOWN,
     COUNT
 };

@@ -2905,7 +2905,7 @@
       WT Hub Room Middle West Platform: Can_Fly_With_Deku_Leaf_Indoors
       WT Many Cyclones Room West Side: Nothing
       WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
-      WT First Warp Pot Room Front: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'"
 
 - Name: WT Hub Room Compass Chest Platform
@@ -3026,7 +3026,7 @@
       Can Get Fairies: Nothing
   Exits:
       Molgera Battle Arena: Wind_Temple_Big_Key
-      WT First Warp Pot Room Front: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'"
+      WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'"
       WT Hub Room Middle South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Molgera Battle Arena

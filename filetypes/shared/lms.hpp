@@ -35,6 +35,7 @@ public:
     uint8_t padding_0x00[10];
 
     virtual ~FileHeader() = default;
+
     virtual LMSError read(std::istream& in);
     virtual void write(std::ostream& out);
 };
@@ -45,6 +46,7 @@ public:
     uint32_t sectionSize;
     
     virtual ~SectionHeader() = default;
+
     virtual LMSError read(std::istream& in);
     virtual void write(std::ostream& out);
 private:
@@ -71,6 +73,7 @@ public:
     std::vector<HashTableSlot> tableSlots = {}; // slots variable name conflicts with Qt slots keyword
 
     virtual ~HashTable() = default;
+
     virtual LMSError read(std::istream& in);
     virtual void write(std::ostream& out);
 };

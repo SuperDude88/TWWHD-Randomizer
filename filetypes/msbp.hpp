@@ -13,6 +13,7 @@
 class MSBPHeader : public FileHeader {
 public:
     virtual ~MSBPHeader() override = default;
+
     virtual LMSError read(std::istream& in) override;
     //virtual void write(std::ostream& out) override;
 };
@@ -20,6 +21,7 @@ public:
 class CLB1 : public SectionHeader, public HashTable {
 public:
     virtual ~CLB1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 };
@@ -29,6 +31,7 @@ public:
     std::vector<RGBA8> colors;
 
     virtual ~CLR1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -38,6 +41,7 @@ private:
 class ALB1 : public SectionHeader, public HashTable {
 public:
     virtual ~ALB1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 };
@@ -54,6 +58,7 @@ public:
     std::vector<Attribute> attributes;
 
     virtual ~ATI2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -71,6 +76,7 @@ public:
     std::vector<AttributeList> lists;
 
     virtual ~ALI2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -89,6 +95,7 @@ public:
     std::vector<TagGroup> groups;
 
     virtual ~TGG2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -108,6 +115,7 @@ public:
     std::vector<Tag> tags;
 
     virtual ~TAG2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -132,6 +140,7 @@ public:
     std::vector<TagParameter> params;
 
     virtual ~TGP2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -145,6 +154,7 @@ public:
     std::vector<std::string> names;
 
     virtual ~TGL2() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -156,6 +166,7 @@ private:
 class SLB1 : public SectionHeader, public HashTable {
 public:
     virtual ~SLB1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 };
@@ -172,6 +183,7 @@ public:
     std::vector<Style> styles;
 
     virtual ~SYL3() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:
@@ -183,6 +195,7 @@ public:
     std::vector<std::string> filenames;
 
     virtual ~CTI1() override = default;
+
     virtual LMSError read(std::istream& in) override;
     virtual void write(std::ostream& out) override;
 private:

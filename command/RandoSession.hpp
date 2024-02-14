@@ -59,7 +59,7 @@ public:
         size_t getNumPrereqs() const { return numPrereqs; }
         void setFinished() { finished = true; }
         bool isFinished() const { return finished; }
-        const std::shared_ptr<CacheEntry> getParent() const { return parent; };
+        const std::shared_ptr<CacheEntry> getParent() const { return parent; }
         const std::shared_ptr<CacheEntry> getRoot() const; // NOTE: this only works before fileCache is cleared
         bool isSibling(const std::shared_ptr<CacheEntry> other) const;
 

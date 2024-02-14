@@ -16,7 +16,7 @@ static bool evaluateRequirement(World& world, const Requirement& req, const Item
     uint32_t expectedCount = 0;
     Item item;
     EventId event;
-    std::string eventName;
+
     switch(req.type)
     {
     case RequirementType::NOTHING:
