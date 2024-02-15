@@ -10,8 +10,8 @@
 #include <QFile>
 
 #include <ui_mainwindow.h>
-#include <randomizer_thread.hpp>
-#include <option_descriptions.hpp>
+#include <gui/randomizer_thread.hpp>
+#include <gui/option_descriptions.hpp>
 
 #include <version.hpp>
 #include <libs/yaml.hpp>
@@ -67,6 +67,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Check for existing config file
+    std::ifstream conf(APP_SAVE_PATH "config.yaml");
+    std::ifstream pref(APP_SAVE_PATH "preferences.yaml");
+    if (!conf.is_open() || !pref.is_open())
+    {
+        // No config file, create default
+        delete_and_create_default_config();
+    }
+    conf.close();
+    pref.close();
+    
     // Load in config
     setup_mixed_pools_combobox();
     load_locations();

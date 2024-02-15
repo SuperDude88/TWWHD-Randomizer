@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef QT_GUI
-    #include <randomizer_thread.hpp>
+    #include <gui/randomizer_thread.hpp>
 
     #define UPDATE_DIALOG_VALUE(val)   TheMainThread::mainThread->dialogValueUpdate(val);
     #define UPDATE_DIALOG_LABEL(label) TheMainThread::mainThread->dialogLabelUpdate(std::string(label).c_str());

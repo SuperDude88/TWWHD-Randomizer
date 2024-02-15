@@ -1,9 +1,9 @@
 #include "../mainwindow.h"
 
 #include "../ui_mainwindow.h"
-#include <tracker/tracker_inventory_button.h>
-#include <tracker/tracker_area_widget.h>
-#include <tracker/set_font.h>
+#include <gui/tracker/tracker_inventory_button.h>
+#include <gui/tracker/tracker_area_widget.h>
+#include <gui/tracker/set_font.h>
 
 #include <logic/Fill.hpp>
 #include <logic/Search.hpp>
@@ -449,17 +449,17 @@ void MainWindow::initialize_tracker()
 
     // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
     // depending on if we embed data or not)
-    ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "assets/tracker/background.png);}");
-    ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "assets/tracker/trackerbg.png);}");
+    ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "tracker/data/background.png);}");
+    ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/data/trackerbg.png);}");
     ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
-                                                   "background-image: url(" DATA_PATH "assets/tracker/pearl_holder.png);"
+                                                   "background-image: url(" DATA_PATH "tracker/data/pearl_holder.png);"
                                                    "background-repeat: none;"
                                                    "background-position: center;"
                                                "}");
-    ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "assets/tracker/sea_chart.png);}");
+    ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "tracker/data/sea_chart.png);}");
     set_location_list_widget_background("empty");
-    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png);}");
-    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png);}");
+    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" DATA_PATH "tracker/data/area_empty.png);}");
+    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" DATA_PATH "tracker/data/area_empty.png);}");
     ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
 
@@ -850,7 +850,7 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
 
 void MainWindow::set_location_list_widget_background(const std::string& area)
 {
-    ui->location_list_widget->setStyleSheet(std::string("QWidget#location_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_" + area + ".png);}").c_str());
+    ui->location_list_widget->setStyleSheet(std::string("QWidget#location_list_widget {border-image: url(" DATA_PATH "tracker/data/area_" + area + ".png);}").c_str());
 }
 
 void MainWindow::tracker_display_current_item_text(const std::string& currentItem)

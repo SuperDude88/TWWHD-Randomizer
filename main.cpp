@@ -1,22 +1,47 @@
-#include <thread>
-#include <filesystem>
-#include <randomizer.hpp>
-#include <command/Log.hpp>
-#include <utility/platform.hpp>
+#include <cstdlib>
 
-static void clearOldLogs() {
-    if(std::filesystem::is_regular_file(DebugLog::LOG_PATH)) {
-        std::filesystem::remove(DebugLog::LOG_PATH);
+#ifdef QT_GUI
+    #include <QApplication>
+    #include <QResource>
+    #include <QDirIterator>
+    
+    #include <gui/mainwindow.h>
+#else
+    #include <thread>
+    #include <filesystem>
+
+    #include <utility/platform.hpp>
+    #include <command/Log.hpp>
+    #include <randomizer.hpp>
+
+    static void clearOldLogs() {
+        if(std::filesystem::is_regular_file(DebugLog::LOG_PATH)) {
+            std::filesystem::remove(DebugLog::LOG_PATH);
+        }
+
+        if(std::filesystem::is_regular_file(ErrorLog::LOG_PATH)) {
+            std::filesystem::remove(ErrorLog::LOG_PATH);
+        }
+
+        return;
     }
+#endif
 
-    if(std::filesystem::is_regular_file(ErrorLog::LOG_PATH)) {
-        std::filesystem::remove(ErrorLog::LOG_PATH);
-    }
+int main(int argc, char *argv[]) {
+    // Initialze RNG for choosing random colors (fill algorithm does not use this)
+    srand(time(NULL));
 
-    return;
-}
+#ifdef QT_GUI
+    // Init embedded resources if we're using them
+    #if defined(EMBED_DATA)
+        Q_INIT_RESOURCE(data);
+    #endif
 
-int main() {
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+#else
     using namespace std::literals::chrono_literals;
 
     clearOldLogs(); // clear these when a console/CLI instance is opened (GUI handles this differently)
@@ -38,4 +63,5 @@ int main() {
     Utility::platformShutdown();
     
     return 0;
+#endif
 }
