@@ -119,6 +119,11 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     baseDir = gameBaseDir;
     outputDir = randoOutputDir;
 
+    if(baseDir.empty()) {
+        ErrorLog::getInstance().log("No input path specified!");
+        return false;
+    }
+
     if(outputDir.empty()) {
         ErrorLog::getInstance().log("No output path specified!");
         return false;

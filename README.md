@@ -21,7 +21,7 @@ If you can not find anywhere to progress, you should first check the spoiler log
 If you have checked the log and are still stuck, it is possible you have encountered a [bug](#Reporting-Bugs).
 
 ### Reporting Bugs
-If you seem to have discovered a bug, let us know in our [Discord server](https://discord.gg/wPvdQ2Krrm) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the config file (excluding file paths) for the seed when reporting a problem.
+If you seem to have discovered a bug, let us know in our [Discord server](https://discord.gg/wPvdQ2Krrm) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the config file for the seed when reporting a problem.
 
 ## Setup
 You can download the latest stable version of the randomizer from the releases page. 
