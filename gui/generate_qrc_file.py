@@ -2,23 +2,28 @@
 # executable for releases. This will only be run if -DEMBED_DATA=True
 # is passed as a flag when building with CMake.
 import os
+import sys
+import argparse
 
 def main():
-    directories = ['../logic/data', '../asm/patch_diffs', '../assets', '../customizer']
-    individual_files = ['../asm/custom_symbols.yaml']
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data_dir")
+    args = parser.parse_args(sys.argv[1:])
+
+    data_root = args.data_dir
+    individual_files = []
     with open('data.qrc', 'w') as qrc:
         qrc.write('<RCC>\n')
         qrc.write('    <qresource prefix="/">\n')
-        for directory in directories:
-            for root, dirs, files in os.walk(directory):
-                for file in files:
-                    f = os.path.join(root, file)
-                    if os.path.isfile(f):
-                        f = f.replace('\\', '/')
-                        individual_files.append(f)
+        for root, dirs, files in os.walk(data_root):
+            for file in files:
+                f = os.path.join(root, file)
+                if os.path.isfile(f):
+                    f = f.replace('\\', '/')
+                    individual_files.append(f)
 
         for file in individual_files:
-            embed_path = file.replace('../', '')
+            embed_path = file.replace(data_root, '')
             qrc.write('        <file alias=\"' + embed_path + '\">' + file + '</file>\n')
 
         qrc.write('    </qresource>\n')
