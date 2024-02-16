@@ -64,7 +64,7 @@ You can also change the build type to "asm" to rebuild the assembly patches, or 
 The randomizer program (wuhb) will be placed in the build folder.
 
 #### The Desktop Application
-To build the Desktop Application, download and install the latest version of [Qt](https://www.qt.io/download-qt-installer-oss). Make sure to install the Desktop MingW Kit when installing. After opening up Qt Creator, select `Open Project` and select the `CMakeLists.txt` file in the `gui` folder of the repo. When prompted to select a kit, select the MingW one you installed earlier. Then press the green play button in the bottom left of the application to build and run the project.
+To build the Desktop Application, download and install the latest version of [Qt](https://www.qt.io/download-qt-installer-oss). Make sure to install the correct kit for your platform. After opening up Qt Creator, select `Open Project` and select the `CMakeLists.txt` file in the repo root. When prompted to select a kit, select the one you installed earlier. Define QT_GUI in the project's CMake configuation, then press the green play button in the bottom left of the application to build and run the project.
 
 ## Credits
 All of this was made possible thanks to tremendous help from [csunday95](https://github.com/csunday95) and [gymnast86](https://github.com/gymnast86), along with much bugfixing assistance from the devs at [ForTheUsers](https://fortheusers.org/). Translations were done by azer67 (French), Cithiel (Spanish), and Nacho (Spanish). Everything here was based on the research and code already written by the [original randomizer team](https://github.com/LagoLunatic/wwrando#credits).
