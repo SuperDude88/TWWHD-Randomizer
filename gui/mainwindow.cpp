@@ -547,7 +547,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, randomize_dungeon_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_boss_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_miniboss_entrances);
-    APPLY_CHECKBOX_SETTING(config, ui, randomize_cave_entrances);
+    APPLY_COMBOBOX_SETTING(config, ui, randomize_cave_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_door_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_misc_entrances);
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_dungeons);
@@ -941,7 +941,13 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(item_hints)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_boss_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_miniboss_entrances)
-DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)
+
+void MainWindow::on_randomize_cave_entrances_currentTextChanged(const QString &arg1)
+{
+    config.settings.randomize_cave_entrances = nameToShuffleCaveEntrances(arg1.toStdString());
+    update_permalink_and_seed_hash();
+}
+
 DEFINE_STATE_CHANGE_FUNCTION(randomize_door_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
 // Mixed pools options' states are handled in update_mixed_pools_combobox_option()

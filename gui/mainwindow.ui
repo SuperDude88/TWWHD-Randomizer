@@ -34,8 +34,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1048</width>
-         <height>623</height>
+         <width>1054</width>
+         <height>646</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -1753,9 +1753,6 @@
                <string>Entrance Randomizer</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_6">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetNoConstraint</enum>
-               </property>
                <item row="0" column="0">
                 <widget class="QCheckBox" name="randomize_dungeon_entrances">
                  <property name="text">
@@ -1763,29 +1760,83 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
+               <item row="0" column="1" rowspan="2">
                 <widget class="QCheckBox" name="randomize_boss_entrances">
                  <property name="text">
                   <string>Randomize Boss Entrances</string>
                  </property>
                 </widget>
                </item>
+               <item row="0" column="2" rowspan="2">
+                <widget class="QCheckBox" name="randomize_miniboss_entrances">
+                 <property name="text">
+                  <string>Randomize Miniboss Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" rowspan="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_31">
+                 <item>
+                  <widget class="QLabel" name="label_for_randomize_cave_entrances">
+                   <property name="text">
+                    <string>Randomize Cave Entrances</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="randomize_cave_entrances">
+                   <property name="currentText">
+                    <string>Disabled</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Disabled</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Caves</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Caves and Fairies</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="2" column="1">
+                <widget class="QCheckBox" name="randomize_door_entrances">
+                 <property name="text">
+                  <string>Randomize Door Entrances</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2">
+                <widget class="QCheckBox" name="randomize_misc_entrances">
+                 <property name="text">
+                  <string>Randomize Misc Entrances</string>
+                 </property>
+                </widget>
+               </item>
                <item row="3" column="0">
-                <layout class="QGridLayout" name="gridLayout_9">
-                 <item row="0" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_17">
+                 <item>
+                  <widget class="QLabel" name="label_for_mix_pools_combobox">
+                   <property name="text">
+                    <string>Mix Entrance Pools</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QComboBox" name="mix_pools_combobox">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_for_mix_pools_combobox">
-                   <property name="text">
-                    <string>Mix Entrance Pools</string>
                    </property>
                   </widget>
                  </item>
@@ -1802,34 +1853,6 @@
                 <widget class="QCheckBox" name="randomize_starting_island">
                  <property name="text">
                   <string>Randomize Starting Island</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QCheckBox" name="randomize_cave_entrances">
-                 <property name="text">
-                  <string>Randomize Cave Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QCheckBox" name="randomize_door_entrances">
-                 <property name="text">
-                  <string>Randomize Door Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="2">
-                <widget class="QCheckBox" name="randomize_misc_entrances">
-                 <property name="text">
-                  <string>Randomize Misc Entrances</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QCheckBox" name="randomize_miniboss_entrances">
-                 <property name="text">
-                  <string>Randomize Miniboss Entrances</string>
                  </property>
                 </widget>
                </item>
@@ -2370,7 +2393,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>305</height>
+                    <height>311</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">

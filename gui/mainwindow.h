@@ -219,7 +219,7 @@ private slots:
     void on_randomize_dungeon_entrances_stateChanged(int arg1);
     void on_randomize_boss_entrances_stateChanged(int arg1);
     void on_randomize_miniboss_entrances_stateChanged(int arg1);
-    void on_randomize_cave_entrances_stateChanged(int arg1);
+    void on_randomize_cave_entrances_currentTextChanged(const QString &arg1);
     void on_randomize_door_entrances_stateChanged(int arg1);
     void on_randomize_misc_entrances_stateChanged(int arg1);
     void on_decouple_entrances_stateChanged(int arg1);

@@ -274,9 +274,26 @@ namespace OptionCB {
         return fromBool(conf.settings.randomize_miniboss_entrances);
     }
 
-    std::string toggleCaveEntranceShuffle() {
-        conf.settings.randomize_cave_entrances = !conf.settings.randomize_cave_entrances;
-        return fromBool(conf.settings.randomize_cave_entrances);
+    std::string cycleCaveEntranceShuffle() {
+        using enum ShuffleCaveEntrances;
+
+        switch(conf.settings.randomize_cave_entrances) {
+            case Disabled:
+                conf.settings.randomize_cave_entrances = Caves;
+                break;
+            case Caves:
+                conf.settings.randomize_cave_entrances = CavesFairies;
+                break;
+            case CavesFairies:
+                conf.settings.randomize_cave_entrances = Disabled;
+                break;
+            case INVALID:
+            default:
+                conf.settings.randomize_cave_entrances = Disabled;
+                break;
+        }
+
+        return ShuffleCaveEntrancesToName(conf.settings.randomize_cave_entrances);
     }
 
     std::string toggleDoorEntranceShuffle() {
@@ -871,7 +888,7 @@ std::string getValue(const Option& option) {
         case Option::RandomizeBossEntrances:
             return fromBool(conf.settings.randomize_boss_entrances);
         case Option::RandomizeCaveEntrances:
-            return fromBool(conf.settings.randomize_cave_entrances);
+            return ShuffleCaveEntrancesToName(conf.settings.randomize_cave_entrances);
         case Option::RandomizeDoorEntrances:
             return fromBool(conf.settings.randomize_door_entrances);
         case Option::RandomizeMiscEntrances:
@@ -1075,7 +1092,7 @@ TriggerCallback getCallback(const Option& option) {
         case Option::RandomizeBossEntrances:
             return &toggleBossEntranceShuffle;
         case Option::RandomizeCaveEntrances:
-            return &toggleCaveEntranceShuffle;
+            return &cycleCaveEntranceShuffle;
         case Option::RandomizeDoorEntrances:
             return &toggleDoorEntranceShuffle;
         case Option::RandomizeMiscEntrances:
