@@ -9,5 +9,5 @@ logic/build/*
 logic/.vs/*
 logic/out/*
 */data.qrc
-version.hpp
+CMakeLists.txt.user
 build-*
