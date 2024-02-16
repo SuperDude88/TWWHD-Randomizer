@@ -5,7 +5,7 @@
     #include <QResource>
     #include <QDirIterator>
     
-    #include <gui/mainwindow.h>
+    #include <gui/mainwindow.hpp>
 #else
     #include <thread>
     #include <filesystem>

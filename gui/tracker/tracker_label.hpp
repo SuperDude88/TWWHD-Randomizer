@@ -1,5 +1,4 @@
-#ifndef TRACKERLOCATIONLABEL_H
-#define TRACKERLOCATIONLABEL_H
+#pragma once
 
 #include <QLabel>
 #include <logic/Location.hpp>
@@ -45,5 +44,3 @@ private:
     Location* location = nullptr;
     Entrance* entrance = nullptr;
 };
-
-#endif // TRACKERLOCATIONLABEL_H

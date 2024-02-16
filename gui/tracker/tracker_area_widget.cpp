@@ -1,4 +1,4 @@
-#include "tracker_area_widget.h"
+#include "tracker_area_widget.hpp"
 
 TrackerAreaWidget::TrackerAreaWidget()
 {

@@ -1,9 +1,9 @@
-#include "../mainwindow.h"
-
+#include "../mainwindow.hpp"
 #include "../ui_mainwindow.h"
-#include <gui/tracker/tracker_inventory_button.h>
-#include <gui/tracker/tracker_area_widget.h>
-#include <gui/tracker/set_font.h>
+
+#include <gui/tracker/tracker_inventory_button.hpp>
+#include <gui/tracker/tracker_area_widget.hpp>
+#include <gui/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
 #include <logic/Search.hpp>

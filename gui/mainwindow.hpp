@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QListView>
@@ -11,17 +10,15 @@
 #include <QStandardItemModel>
 #include <QLabel>
 
-#include <filesystem>
-
 #include <seedgen/config.hpp>
 #include <logic/Location.hpp>
 #include <logic/World.hpp>
 #include <logic/EntranceShuffle.hpp>
 #include <logic/PoolFunctions.hpp>
 
-#include <gui/tracker/tracker_inventory_button.h>
-#include <gui/tracker/tracker_label.h>
-#include <gui/tracker/tracker_area_widget.h>
+#include <gui/tracker/tracker_inventory_button.hpp>
+#include <gui/tracker/tracker_label.hpp>
+#include <gui/tracker/tracker_area_widget.hpp>
 
 void delete_and_create_default_config();
 
@@ -556,4 +553,3 @@ private:
     TIB trackerDRCCompass            = TIB({{GameItem::NOTHING,               "compass_gray.png",          "DRC Compass"},
                                             {GameItem::DRCCompass,            "compass_color.png",         "DRC Compass"}});
 };
-#endif // MAINWINDOW_H

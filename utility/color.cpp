@@ -2,7 +2,7 @@
 
 #include <utility/string.hpp>
 
-#include <math.h>
+#include <cmath>
 
 HSV RGBToHSV(const double& r, const double& g, const double& b) {
     double min, max, delta;

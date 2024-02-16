@@ -1,5 +1,4 @@
-#ifndef SET_FONT_H
-#define SET_FONT_H
+#pragma once
 
 #include <QFontDatabase>
 
@@ -19,4 +18,3 @@ void set_font(W* widget, const std::string& font_filename, int point_size)
     }
 
 }
-#endif // SET_FONT_H

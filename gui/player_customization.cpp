@@ -1,8 +1,9 @@
-#include "mainwindow.h"
-#include "../ui_mainwindow.h"
+#include "mainwindow.hpp"
 
 #include <QColorDialog>
 #include <QImage>
+
+#include <ui_mainwindow.h>
 
 #include <utility/file.hpp>
 #include <utility/color.hpp>

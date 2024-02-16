@@ -1,5 +1,4 @@
-#ifndef OPTION_DESCRIPTIONS_HPP
-#define OPTION_DESCRIPTIONS_HPP
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -370,4 +369,3 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Set your in-game preference for the UI Display. This way you don't have to lose time changing it in game during a race."
     },
 };
-#endif // OPTION_DESCRIPTIONS_HPP
