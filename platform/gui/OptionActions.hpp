@@ -44,7 +44,7 @@ namespace OptionCB {
     std::string toggleDungeonEntranceShuffle();
     std::string toggleBossEntranceShuffle();
     std::string toggleMinibossEntranceShuffle();
-    std::string toggleCaveEntranceShuffle();
+    std::string cycleCaveEntranceShuffle();
     std::string toggleDoorEntranceShuffle();
     std::string toggleMiscEntranceShuffle();
     std::string toggleDungeonEntranceMix();

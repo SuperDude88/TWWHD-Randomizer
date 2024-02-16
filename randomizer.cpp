@@ -609,7 +609,7 @@ public:
         if (config.settings.randomize_dungeon_entrances ||
             config.settings.randomize_boss_entrances ||
             config.settings.randomize_miniboss_entrances ||
-            config.settings.randomize_cave_entrances ||
+            config.settings.randomize_cave_entrances != ShuffleCaveEntrances::Disabled ||
             config.settings.randomize_door_entrances ||
             config.settings.randomize_misc_entrances) {
             if(!writeEntrances(worlds)) {

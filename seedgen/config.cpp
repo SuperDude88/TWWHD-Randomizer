@@ -142,7 +142,20 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     GET_FIELD(root, "randomize_dungeon_entrances", settings.randomize_dungeon_entrances)
     GET_FIELD(root, "randomize_boss_entrances", settings.randomize_boss_entrances)
     GET_FIELD(root, "randomize_miniboss_entrances", settings.randomize_miniboss_entrances)
-    GET_FIELD(root, "randomize_cave_entrances", settings.randomize_cave_entrances)
+    if(!root["randomize_cave_entrances"]) {
+        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+    }
+    else {
+        settings.randomize_cave_entrances = nameToShuffleCaveEntrances(root["randomize_cave_entrances"].as<std::string>("INVALID"));
+        if (settings.randomize_cave_entrances == ShuffleCaveEntrances::INVALID) {
+            if(!ignoreErrors) {
+                return ConfigError::INVALID_VALUE;
+            }
+            else {
+                settings.randomize_cave_entrances = ShuffleCaveEntrances::Disabled;
+            }
+        }
+    }
     GET_FIELD(root, "randomize_door_entrances", settings.randomize_door_entrances)
     GET_FIELD(root, "randomize_misc_entrances", settings.randomize_misc_entrances)
     GET_FIELD(root, "mix_dungeons", settings.mix_dungeons)
@@ -455,7 +468,7 @@ YAML::Node Config::settingsToYaml() {
     SET_FIELD(root, "randomize_dungeon_entrances", settings.randomize_dungeon_entrances)
     SET_FIELD(root, "randomize_boss_entrances", settings.randomize_boss_entrances)
     SET_FIELD(root, "randomize_miniboss_entrances", settings.randomize_miniboss_entrances)
-    SET_FIELD(root, "randomize_cave_entrances", settings.randomize_cave_entrances)
+    SET_FIELD(root, "randomize_cave_entrances", ShuffleCaveEntrancesToName(settings.randomize_cave_entrances))
     SET_FIELD(root, "randomize_door_entrances", settings.randomize_door_entrances)
     SET_FIELD(root, "randomize_misc_entrances", settings.randomize_misc_entrances)
     SET_FIELD(root, "mix_dungeons", settings.mix_dungeons)
