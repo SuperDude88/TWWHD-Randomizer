@@ -1157,7 +1157,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 void MainWindow::load_locations()
 {   
     std::string locationDataStr;
-    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr, true);
+    Utility::getFileContents(DATA_PATH "logic/location_data.yaml", locationDataStr, true);
     YAML::Node locationDataTree = YAML::Load(locationDataStr);
     for (const auto& locationObject : locationDataTree)
     {

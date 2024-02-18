@@ -85,7 +85,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       for (auto& world : worlds)
       {
           world.resolveRandomSettings();
-          if (world.loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
+          if (world.loadWorld(DATA_PATH "logic/world.yaml", DATA_PATH "logic/macros.yaml", DATA_PATH "logic/location_data.yaml", DATA_PATH "logic/item_data.yaml", DATA_PATH "logic/area_names.yaml"))
           {
               return 1;
           }

@@ -82,8 +82,8 @@ endif()
 file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
 file(COPY "assets" DESTINATION "${CMAKE_BINARY_DIR}/data")                                         # Assets for the patcher
-file(COPY "logic/data" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
-file(COPY "customizer/data" DESTINATION "${CMAKE_BINARY_DIR}/data/customizer")                     # Default model info
+file(COPY "logic/data/" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
+file(COPY "customizer/data/" DESTINATION "${CMAKE_BINARY_DIR}/data/customizer")                     # Default model info
 
 if(DEFINED QT_GUI)
   message("Building with Qt GUI")
