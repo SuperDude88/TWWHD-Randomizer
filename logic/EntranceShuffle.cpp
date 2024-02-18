@@ -62,7 +62,7 @@ static void logMissingLocations(WorldPool& worlds)
 static std::list<EntranceInfoPair> loadEntranceShuffleTable()
 {
     std::string entrancePairsStr = "";
-    Utility::getFileContents(DATA_PATH "logic/data/entrance_shuffle_table.yaml", entrancePairsStr, true);
+    Utility::getFileContents(DATA_PATH "logic/entrance_shuffle_table.yaml", entrancePairsStr, true);
     YAML::Node entrancePairs = YAML::Load(entrancePairsStr);
     std::list<EntranceInfoPair> table = {};
 

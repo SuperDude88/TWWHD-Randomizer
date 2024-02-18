@@ -59,7 +59,7 @@ void MainWindow::initialize_mask_pixels() {
     for (const auto& type : {"hero", "casual"}) {
         const auto& colorMap = !strcmp(type, "hero") ? defaultPreset.heroColors : defaultPreset.casualColors;
         for (const auto& [colorOption, color] : colorMap) {
-            auto maskImage = QImage(DATA_PATH + QString("customizer/data/") + modelName + "/color_preview/preview_" + type + "_" + QString::fromStdString(colorOption) + ".png");
+            auto maskImage = QImage(DATA_PATH + QString("customizer/") + modelName + "/color_preview/preview_" + type + "_" + QString::fromStdString(colorOption) + ".png");
             for (int x = 0; x < maskImage.width(); x++) {
                 for (int y = 0; y < maskImage.height(); y++) {
                     if (maskImage.pixelColor(x, y).red() == 255 && maskImage.pixelColor(x, y).blue() == 0) {
@@ -319,7 +319,7 @@ void MainWindow::update_preview() {
 
     auto type = model.casual ? "casual" : "hero";
 
-    auto preview = QImage(DATA_PATH + QString("customizer/data/") + QString::fromStdString(model.modelName) + "/color_preview/preview_" + type + ".png");
+    auto preview = QImage(DATA_PATH + QString("customizer/") + QString::fromStdString(model.modelName) + "/color_preview/preview_" + type + ".png");
 
     for (auto& [optionName, color] : model.getSetColorsMap()) {
 

@@ -124,7 +124,7 @@ void TrackerAreaWidget::updateBossImageWidget()
     std::string filename = (boss != nullptr && boss->marked) ? iconFileName + "_dead" : iconFileName;
 
     bossImageWidget.setStyleSheet(std::string(
-                              "background-image: url(" DATA_PATH "tracker/data/" + filename + ".png);"
+                              "background-image: url(" DATA_PATH "tracker/" + filename + ".png);"
                               "background-repeat: none;"
                               "background-position: center;").c_str());
 }

@@ -1101,7 +1101,7 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
 World::WorldLoadingError World::loadDungeonExitInfo()
 {
     std::string dungeonExitData;
-    Utility::getFileContents(DATA_PATH "logic/data/dungeon_entrance_info.yaml", dungeonExitData, true);
+    Utility::getFileContents(DATA_PATH "logic/dungeon_entrance_info.yaml", dungeonExitData, true);
     YAML::Node dungeonExitTree = YAML::Load(dungeonExitData);
 
     for (const auto& dungeonExitData : dungeonExitTree)

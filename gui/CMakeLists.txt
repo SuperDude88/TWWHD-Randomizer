@@ -9,7 +9,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_compile_options(-O3)
 
 # Add UI assets to our data folder
-file(COPY "tracker/data" DESTINATION "${CMAKE_BINARY_DIR}/data/tracker") # Tracker assets
+file(COPY "tracker/data/" DESTINATION "${CMAKE_BINARY_DIR}/data/tracker") # Tracker assets
 
 # Embeds the data files into the Qt executable
 if(DEFINED EMBED_DATA)

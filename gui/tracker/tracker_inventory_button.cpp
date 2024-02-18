@@ -32,7 +32,7 @@ TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventor
 
 void TrackerInventoryButton::updateIcon()
 {
-    setStyleSheet((std::string("background-image: url(" DATA_PATH "tracker/data/" + itemStates[state].filename + ");"
+    setStyleSheet((std::string("background-image: url(" DATA_PATH "tracker/" + itemStates[state].filename + ");"
                                "background-repeat: none;"
                                "background-position: center;").c_str()));
 }
