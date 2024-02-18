@@ -22,7 +22,8 @@
 # NAMES
 # As a general rule, capitalize the first letter of all item names except for
 # the words "to" and "of". "Power Bracelets" is okay. "power bracelets" will be
-# unrecognized. For a full list of location names, please check out:
+# unrecognized. For a full list of item and location names, see
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/item_data.yaml and
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/location_data.yaml
 # or refer to a spoiler log.
 
@@ -69,7 +70,7 @@
 
 # STARTING ISLAND
 # You can also set the starting island if you want to. For a list of island names, see
-# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L68
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L217
 - World 1:
       starting island: Five Eye Reef
 
