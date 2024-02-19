@@ -3,13 +3,15 @@
 #include <cctype>
 #include <vector>
 
+#include <libs/zlib-ng.hpp>
+
+#include <keys/keys.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/config.hpp>
 #include <seedgen/permalink.hpp>
 #include <utility/file.hpp>
-#include <libs/zlib-ng.hpp>
 
-static std::vector<std::string> adjectives = {
+static const std::vector<std::string> adjectives = {
     "able",
     "accommodating",
     "accomplished",
@@ -808,7 +810,7 @@ static std::vector<std::string> adjectives = {
 };
 
 
-static std::vector<std::string> short_names = {
+static const std::vector<std::string> short_names = {
     "link",
     "zelda",
     "medli",
@@ -868,7 +870,7 @@ static std::vector<std::string> short_names = {
     "jabun"
 };
 
-static std::vector<std::string> names = {
+static const std::vector<std::string> names = {
     "link",
     "zelda",
     "medli",
@@ -986,7 +988,7 @@ static std::vector<std::string> names = {
     "jabun"
 };
 
-static std::vector<std::string> nouns = {
+static const std::vector<std::string> nouns = {
     "ability",
     "abode",
     "access",
