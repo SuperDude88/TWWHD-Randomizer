@@ -8,6 +8,7 @@
 #include <libs/zlib-ng.hpp>
 
 #include <tweaks.hpp>
+#include <keys/keys.hpp>
 #include <seedgen/config.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/seed.hpp>
