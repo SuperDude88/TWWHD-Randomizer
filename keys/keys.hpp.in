@@ -1,3 +1,0 @@
-#pragma once
-
-#define SEED_KEY "@SEED_KEY@"

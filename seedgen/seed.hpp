@@ -4,6 +4,8 @@
 
 #include <seedgen/config.hpp>
 
+#define SEED_KEY "SEED KEY TEST"
+
 std::string generate_seed();
 
 std::string generate_seed_hash();
