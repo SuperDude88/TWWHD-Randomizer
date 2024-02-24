@@ -11,7 +11,7 @@ jobs:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
     secrets:
-      seed-key: ${{ secrets.seed-key }}
+      SEED_KEY: ${{ secrets.SEED_KEY }}
 
   build-wiiu:
     uses: ./.github/workflows/build_wiiu.yml
@@ -19,7 +19,7 @@ jobs:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
     secrets:
-      seed-key: ${{ secrets.seed-key }}
+      SEED_KEY: ${{ secrets.SEED_KEY }}
   
   build-mac:
     uses: ./.github/workflows/build_mac.yml
@@ -27,7 +27,7 @@ jobs:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
     secrets:
-      seed-key: ${{ secrets.seed-key }}
+      SEED_KEY: ${{ secrets.SEED_KEY }}
 
   attach-to-release:
     name: Attach To Release
