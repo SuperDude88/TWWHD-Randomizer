@@ -10,18 +10,24 @@ jobs:
     with:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
+    secrets:
+      seed-key: ${{ secrets.seed-key }}
 
   build-wiiu:
     uses: ./.github/workflows/build_wiiu.yml
     with:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
+    secrets:
+      seed-key: ${{ secrets.seed-key }}
   
   build-mac:
     uses: ./.github/workflows/build_mac.yml
     with:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
+    secrets:
+      seed-key: ${{ secrets.seed-key }}
 
   attach-to-release:
     name: Attach To Release
@@ -30,17 +36,17 @@ jobs:
  
     steps:
      - name: Download Windows Artifact
-       uses: actions/download-artifact@v3
+       uses: actions/download-artifact@v4
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
      - name: Download Wii U Artifact
-       uses: actions/download-artifact@v3
+       uses: actions/download-artifact@v4
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
     
      - name: Download Mac OS Artifact
-       uses: actions/download-artifact@v3
+       uses: actions/download-artifact@v4
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
