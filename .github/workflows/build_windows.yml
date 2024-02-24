@@ -13,6 +13,10 @@ on:
         default: "Debug"
         required: false
         type: string
+    secrets:
+      seed-key:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
 
 env:
   QT_VERSION: 6.3.1
@@ -63,6 +67,8 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
+        env:
+          SEED_KEY: ${{ secrets.seed-key }}
         run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
         
       - name: Build

@@ -52,12 +52,15 @@ elseif(MASS_TESTING)
 endif()
 
 # Versioning
-find_package(Git REQUIRED)
 if(DEFINED RELEASE_TAG)
   # Use the new tag we're creating for this release (passed in workflow)
   set(GIT_TAG "${RELEASE_TAG}")
+
+  # Also use the seed key to change item placement when a spoiler log isn't generated
+  set(SEED_KEY "$ENV{SEED_KEY}")
 else()
   # Get previous tag and commit hash
+  find_package(Git REQUIRED)
   execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --always --dirty --broken
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     OUTPUT_VARIABLE GIT_TAG
@@ -65,6 +68,7 @@ else()
   )
 endif()
 configure_file(version.hpp.in version.hpp @ONLY)
+configure_file(keys/keys.hpp.in keys/keys.hpp @ONLY)
 
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
