@@ -30,7 +30,7 @@ This randomizer currently supports the USA version of TWWHD. The European and Ja
 
 ### On Console
 #### Preparing Homebrew
-Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide/#/aroma/getting-started). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
+Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
 
 #### Using the Homebrew Application
 The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). Discs have not yet been tested, so you can dump installable files using [wudd](https://github.com/wiiu-env/wudd) if they are not working. You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
