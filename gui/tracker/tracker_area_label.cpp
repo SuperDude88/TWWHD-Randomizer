@@ -1,6 +1,6 @@
-#include "tracker_area_label.h"
+#include "tracker_area_label.hpp"
 
-#include <tracker/set_font.h>
+#include <gui/tracker/set_font.hpp>
 
 TrackerAreaLabel::TrackerAreaLabel()
 {

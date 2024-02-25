@@ -13,6 +13,10 @@ on:
         default: "Debug"
         required: false
         type: string
+    secrets:
+      SEED_KEY:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
 
 env:
   QT_VERSION: 6.3.1
@@ -27,19 +31,19 @@ jobs:
       # Increase page size so that the compiler doesn't
       # run out of memory
       - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.3
+        uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 16GB
           maximum-size: 16GB
           disk-root: "C:"
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3.2.1
+        uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
           host: 'windows'
@@ -63,7 +67,9 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake gui -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
+        env:
+          SEED_KEY: ${{ secrets.SEED_KEY }}
+        run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
         
       - name: Build
         working-directory: ${{ github.workspace }}
@@ -71,7 +77,7 @@ jobs:
 
       - name: Get Version
         id: get-version
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}/build
         run: |
           echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
         
@@ -87,7 +93,7 @@ jobs:
           ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{ github.workspace }}\build\wwhd_rando_windows && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
 
       - name: Save Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{github.workspace}}/build/wwhd_rando_windows
           name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows

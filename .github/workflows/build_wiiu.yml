@@ -13,6 +13,10 @@ on:
         default: "Debug"
         required: false
         type: string
+    secrets:
+      SEED_KEY:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
 
 env:
   EXTRA_CMAKE_FLAGS: ""
@@ -24,7 +28,7 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -40,7 +44,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           docker build -t rando .
-          docker run --user="$(id --user):$(id --group)" -i -e BUILD_TYPE=randomizer -e CMAKE_ARGS="${{ env.EXTRA_CMAKE_FLAGS }}" -v "$(pwd):/src" rando
+          docker run --user="$(id --user):$(id --group)" -i -e BUILD_TYPE=randomizer -e CMAKE_ARGS="${{ env.EXTRA_CMAKE_FLAGS }}" -e SEED_KEY="${{ secrets.SEED_KEY }}" -v "$(pwd):/src" rando
 
       - name: Get Version
         id: get-version
@@ -50,7 +54,7 @@ jobs:
           echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
 
       - name: Save Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{github.workspace}}/build/wwhd_rando.wuhb
           name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}.wuhb

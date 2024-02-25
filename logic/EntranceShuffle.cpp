@@ -62,7 +62,7 @@ static void logMissingLocations(WorldPool& worlds)
 static std::list<EntranceInfoPair> loadEntranceShuffleTable()
 {
     std::string entrancePairsStr = "";
-    Utility::getFileContents(DATA_PATH "logic/data/entrance_shuffle_table.yaml", entrancePairsStr, true);
+    Utility::getFileContents(DATA_PATH "logic/entrance_shuffle_table.yaml", entrancePairsStr, true);
     YAML::Node entrancePairs = YAML::Load(entrancePairsStr);
     std::list<EntranceInfoPair> table = {};
 
@@ -693,7 +693,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
     bool mix_dungeons = settings.randomize_dungeon_entrances && settings.mix_dungeons;
     bool mix_bosses = settings.randomize_boss_entrances && settings.mix_bosses;
     bool mix_minibosses = settings.randomize_miniboss_entrances && settings.mix_minibosses;
-    bool mix_caves = settings.randomize_cave_entrances && settings.mix_caves;
+    bool mix_caves = settings.randomize_cave_entrances != ShuffleCaveEntrances::Disabled && settings.mix_caves;
     bool mix_doors = settings.randomize_door_entrances && settings.mix_doors;
     bool mix_misc = settings.randomize_misc_entrances && settings.mix_misc;
 
@@ -763,9 +763,16 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         vanillaConnectionTypes.push_back(EntranceType::MINIBOSS);
     }
 
-    if (settings.randomize_cave_entrances)
+    if (settings.randomize_cave_entrances != ShuffleCaveEntrances::Disabled)
     {
         entrancePools[EntranceType::CAVE] = world.getShuffleableEntrances(EntranceType::CAVE, true);
+        
+        // include fairy fountains with caves
+        if(settings.randomize_cave_entrances == ShuffleCaveEntrances::CavesFairies) {
+            auto fairyEntrances = world.getShuffleableEntrances(EntranceType::FAIRY, true);
+            addElementsToPool(entrancePools[EntranceType::CAVE], fairyEntrances);
+        }
+
         if (settings.decouple_entrances)
         {
             entrancePools[EntranceType::CAVE_REVERSE] = getReverseEntrances(entrancePools, EntranceType::CAVE);

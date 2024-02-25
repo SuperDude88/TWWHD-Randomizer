@@ -49,6 +49,13 @@ enum struct ProgressionDungeons {
     INVALID
 };
 
+enum struct ShuffleCaveEntrances {
+    Disabled = 0,
+    Caves,
+    CavesFairies,
+    INVALID
+};
+
 enum struct TargetTypePreference {
     Hold = 0,
     Switch,
@@ -239,7 +246,7 @@ public:
     bool randomize_dungeon_entrances;
     bool randomize_boss_entrances;
     bool randomize_miniboss_entrances;
-    bool randomize_cave_entrances;
+    ShuffleCaveEntrances randomize_cave_entrances;
     bool randomize_door_entrances;
     bool randomize_misc_entrances;
     bool mix_dungeons;
@@ -317,6 +324,9 @@ std::string PlacementOptionToName(const PlacementOption& option);
 
 ProgressionDungeons nameToProgressionDungeons(const std::string& name);
 std::string ProgressionDungeonsToName(const ProgressionDungeons& option);
+
+ShuffleCaveEntrances nameToShuffleCaveEntrances(const std::string& name);
+std::string ShuffleCaveEntrancesToName(const ShuffleCaveEntrances& option);
 
 TargetTypePreference nameToTargetTypePreference(const std::string& name);
 std::string TargetTypePreferenceToName(const TargetTypePreference& preference);

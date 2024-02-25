@@ -1,4 +1,4 @@
-#include "tracker_area_widget.h"
+#include "tracker_area_widget.hpp"
 
 TrackerAreaWidget::TrackerAreaWidget()
 {
@@ -124,7 +124,7 @@ void TrackerAreaWidget::updateBossImageWidget()
     std::string filename = (boss != nullptr && boss->marked) ? iconFileName + "_dead" : iconFileName;
 
     bossImageWidget.setStyleSheet(std::string(
-                              "background-image: url(" DATA_PATH "assets/tracker/" + filename + ".png);"
+                              "background-image: url(" DATA_PATH "tracker/" + filename + ".png);"
                               "background-repeat: none;"
                               "background-position: center;").c_str());
 }

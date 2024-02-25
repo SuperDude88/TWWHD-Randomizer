@@ -21,7 +21,7 @@ If you can not find anywhere to progress, you should first check the spoiler log
 If you have checked the log and are still stuck, it is possible you have encountered a [bug](#Reporting-Bugs).
 
 ### Reporting Bugs
-If you seem to have discovered a bug, let us know in our [Discord server](https://discord.gg/wPvdQ2Krrm) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the config file (excluding file paths) for the seed when reporting a problem.
+If you seem to have discovered a bug, let us know in our [Discord server](https://discord.gg/wPvdQ2Krrm) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the config file for the seed when reporting a problem.
 
 ## Setup
 You can download the latest stable version of the randomizer from the releases page. 
@@ -30,7 +30,7 @@ This randomizer currently supports the USA version of TWWHD. The European and Ja
 
 ### On Console
 #### Preparing Homebrew
-Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide/#/aroma/getting-started). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
+Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
 
 #### Using the Homebrew Application
 The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). Discs have not yet been tested, so you can dump installable files using [wudd](https://github.com/wiiu-env/wudd) if they are not working. You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
@@ -64,7 +64,7 @@ You can also change the build type to "asm" to rebuild the assembly patches, or 
 The randomizer program (wuhb) will be placed in the build folder.
 
 #### The Desktop Application
-To build the Desktop Application, download and install the latest version of [Qt](https://www.qt.io/download-qt-installer-oss). Make sure to install the Desktop MingW Kit when installing. After opening up Qt Creator, select `Open Project` and select the `CMakeLists.txt` file in the `gui` folder of the repo. When prompted to select a kit, select the MingW one you installed earlier. Then press the green play button in the bottom left of the application to build and run the project.
+To build the Desktop Application, download and install the latest version of [Qt](https://www.qt.io/download-qt-installer-oss). Make sure to install the correct kit for your platform. After opening up Qt Creator, select `Open Project` and select the `CMakeLists.txt` file in the repo root. When prompted to select a kit, select the one you installed earlier. Define QT_GUI in the project's CMake configuation, then press the green play button in the bottom left of the application to build and run the project.
 
 ## Credits
 All of this was made possible thanks to tremendous help from [csunday95](https://github.com/csunday95) and [gymnast86](https://github.com/gymnast86), along with much bugfixing assistance from the devs at [ForTheUsers](https://fortheusers.org/). Translations were done by azer67 (French), Cithiel (Spanish), and Nacho (Spanish). Everything here was based on the research and code already written by the [original randomizer team](https://github.com/LagoLunatic/wwrando#credits).

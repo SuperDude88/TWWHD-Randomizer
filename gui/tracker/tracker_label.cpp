@@ -1,6 +1,6 @@
-#include "tracker_label.h"
+#include "tracker_label.hpp"
 
-#include <tracker/set_font.h>
+#include <gui/tracker/set_font.hpp>
 
 #include <logic/Area.hpp>
 

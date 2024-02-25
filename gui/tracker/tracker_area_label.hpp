@@ -1,5 +1,4 @@
-#ifndef TRACKER_AREA_LABEL_H
-#define TRACKER_AREA_LABEL_H
+#pragma once
 
 #include <QLabel>
 
@@ -20,5 +19,3 @@ signals:
 protected:
     void mouseReleaseEvent(QMouseEvent* e) override;
 };
-
-#endif // TRACKER_AREA_LABEL_H

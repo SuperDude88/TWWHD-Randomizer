@@ -136,6 +136,24 @@
 - Type: CAVE
   Forward: Star Island,                            Star Island Cave,                         sea,      2,          0, Cave02,   0,     0
   Return:  Star Island Cave,                       Star Island,                              Cave02,   0,          0, sea,      2,     1
+- Type: FAIRY
+  Forward: Outset Forest of Fairies,               Outset Island - Great Fairy Fountain,     A_mori,   0,          2, Fairy04,  0,     0
+  Return:  Outset Island - Great Fairy Fountain,   Outset Forest of Fairies,                 Fairy04,  0,          0, A_mori,   0,     2
+- Type: FAIRY
+  Forward: Northern Fairy Island, Northern Fairy Island - Great Fairy Fountain,              sea,      3,          0, Fairy01,  0,     0
+  Return:  Northern Fairy Island - Great Fairy Fountain, Northern Fairy Island,              Fairy01,  0,          0, sea,      3,     1
+- Type: FAIRY
+  Forward: Eastern Fairy Island Past Boulder, Eastern Fairy Island - Great Fairy Fountain,   sea,     19,          0, Fairy02,  0,     0
+  Return:  Eastern Fairy Island - Great Fairy Fountain, Eastern Fairy Island Past Boulder,   Fairy02,  0,          0, sea,     19,     1
+- Type: FAIRY
+  Forward: Western Fairy Island Past Flames, Western Fairy Island - Great Fairy Fountain,    sea,     15,          0, Fairy03,  0,     0
+  Return:  Western Fairy Island - Great Fairy Fountain, Western Fairy Island Past Flames,    Fairy03,  0,          0, sea,     15,     1
+- Type: FAIRY
+  Forward: Thorned Fairy Island Past Tentacles, Thorned Fairy Island - Great Fairy Fountain, sea,     28,          0, Fairy05,  0,     0
+  Return:  Thorned Fairy Island - Great Fairy Fountain, Thorned Fairy Island Past Tentacles, Fairy05,  0,          0, sea,     28,     1
+- Type: FAIRY
+  Forward: Southern Fairy Island Behind Wooden Barrier, Southern Fairy Island - Great Fairy Fountain, sea,     39,          0, Fairy06,  0,     0
+  Return:  Southern Fairy Island - Great Fairy Fountain, Southern Fairy Island Behind Wooden Barrier, Fairy06,  0,          0, sea,     39,     1
 
 
 - Type: DOOR

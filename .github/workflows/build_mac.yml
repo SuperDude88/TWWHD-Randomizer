@@ -13,6 +13,10 @@ on:
         default: "Debug"
         required: false
         type: string
+    secrets:
+      SEED_KEY:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
 
 env:
   QT_VERSION: 6.3.1
@@ -48,7 +52,9 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake gui -B build -DGITHUB_WORKFLOW=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
+        env:
+          SEED_KEY: ${{ secrets.SEED_KEY }}
+        run: cmake -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
 
       - name: Build
         working-directory: ${{ github.workspace }}
@@ -61,7 +67,7 @@ jobs:
       - name: Get Version
         id: get-version
         shell: pwsh
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}/build
         run: |
           echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
 

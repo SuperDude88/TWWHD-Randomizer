@@ -1,4 +1,4 @@
-FROM devkitpro/devkitppc:20231110
+FROM devkitpro/devkitppc:20240202
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 1adf4740c77d67bdb51409f7d376183fe07b3985 && \
+    git checkout c1115e51bb16979a04463e2bf2ebc4369a013e67 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
