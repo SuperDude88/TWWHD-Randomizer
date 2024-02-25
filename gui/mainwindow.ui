@@ -2808,6 +2808,93 @@ font-weight: bold;</string>
              <bool>true</bool>
             </property>
            </widget>
+           <widget class="QWidget" name="gridLayoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>550</y>
+              <width>311</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="2" column="1">
+              <widget class="QPushButton" name="stats_color">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Pick Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QPushButton" name="locations_color">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Pick Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="override_stats_color">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Override Statistics Background Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="items_color">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Pick Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="override_items_color">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Override Items Background Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="override_locations_color">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Override Locations Background Color</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </widget>
         </item>
