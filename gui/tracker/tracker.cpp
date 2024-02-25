@@ -16,6 +16,7 @@
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
+#include <QColorDialog>
 
 void MainWindow::initialize_tracker_world(Settings& settings,
                                           const GameItemPool& markedItems,
@@ -821,6 +822,101 @@ void MainWindow::on_clear_all_button_released()
         locLabel->update_colors();
     }
     update_tracker();
+}
+
+void MainWindow::update_items_color() {
+    if(ui->override_items_color->isChecked()) {
+        const std::string r = std::to_string(itemsColor.red());
+        const std::string g = std::to_string(itemsColor.green());
+        const std::string b = std::to_string(itemsColor.blue());
+
+        ui->inventory_widget->setStyleSheet(
+            QString::fromStdString("QWidget#inventory_widget {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
+        );
+    }
+    else {
+        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
+    }
+}
+
+void MainWindow::on_override_items_color_stateChanged(int arg1)
+{
+    update_items_color();
+}
+
+void MainWindow::on_items_color_clicked()
+{
+    QColor color = QColorDialog::getColor(itemsColor, this, "Select color");
+    if (!color.isValid()) {
+        return;
+    }
+
+    itemsColor = color;
+    update_items_color();
+}
+
+void MainWindow::update_locations_color()
+{
+    if(ui->override_locations_color->isChecked()) {
+        const std::string r = std::to_string(locationsColor.red());
+        const std::string g = std::to_string(locationsColor.green());
+        const std::string b = std::to_string(locationsColor.blue());
+
+        ui->other_areas_widget->setStyleSheet(
+            QString::fromStdString("QWidget#other_areas_widget {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
+        );
+    }
+    else {
+        ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
+    }
+}
+
+void MainWindow::on_override_locations_color_stateChanged(int arg1)
+{
+    update_locations_color();
+}
+
+void MainWindow::on_locations_color_clicked()
+{
+    QColor color = QColorDialog::getColor(locationsColor, this, "Select color");
+    if (!color.isValid()) {
+        return;
+    }
+
+    locationsColor = color;
+    update_locations_color();
+}
+
+void MainWindow::update_stats_color()
+{
+    if(ui->override_stats_color->isChecked()) {
+        const std::string r = std::to_string(statsColor.red());
+        const std::string g = std::to_string(statsColor.green());
+        const std::string b = std::to_string(statsColor.blue());
+
+        ui->stat_box->setStyleSheet(
+            QString::fromStdString("QWidget#stat_box {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
+        );
+    }
+    else {
+        ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
+    }
+}
+
+void MainWindow::on_override_stats_color_stateChanged(int arg1)
+{
+    update_stats_color();
+}
+
+void MainWindow::on_stats_color_clicked()
+{
+    QColor color = QColorDialog::getColor(statsColor, this, "Select color");
+    if (!color.isValid()) {
+        return;
+    }
+
+    statsColor = color;
+    update_stats_color();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)

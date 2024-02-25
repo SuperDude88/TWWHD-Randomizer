@@ -255,6 +255,15 @@ private slots:
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
 
+    void update_items_color();
+    void on_override_items_color_stateChanged(int arg1);
+    void on_items_color_clicked();
+    void update_locations_color();
+    void on_override_locations_color_stateChanged(int arg1);
+    void on_locations_color_clicked();
+    void update_stats_color();
+    void on_override_stats_color_stateChanged(int arg1);
+    void on_stats_color_clicked();
 
 
 private:
@@ -283,6 +292,9 @@ private:
     EntrancePools targetEntrancePools = {};
     Entrance* selectedEntrance = nullptr;
 
+    QColor itemsColor = {105, 137, 28, 255};
+    QColor locationsColor = {160, 160, 160, 255};
+    QColor statsColor = {79, 79, 79, 255};
 
     using TIB = TrackerInventoryButton;
 
