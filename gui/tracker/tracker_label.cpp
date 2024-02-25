@@ -123,17 +123,33 @@ void TrackerLabel::mouseReleaseEvent(QMouseEvent* e)
 
 void TrackerLabel::enterEvent(QEnterEvent* e)
 {
-    if (isAnyOf(type, TrackerLabelType::EntranceSource, TrackerLabelType::EntranceDestination))
-    {
-        emit mouse_over_entrance_label(entrance);
+    switch(type) {
+        case TrackerLabelType::Location:
+            emit mouse_over_location_label(location);
+            break;
+        case TrackerLabelType::EntranceSource:
+        case TrackerLabelType::EntranceDestination:
+            emit mouse_over_entrance_label(entrance);
+            break;
+        case TrackerLabelType::NONE:
+        default:
+            break;
     }
 }
 
 void TrackerLabel::leaveEvent(QEvent* e)
 {
-    if (isAnyOf(type, TrackerLabelType::EntranceSource, TrackerLabelType::EntranceDestination))
-    {
-        emit mouse_left_entrance_label();
+    switch(type) {
+        case TrackerLabelType::Location:
+            emit mouse_left_location_label();
+            break;
+        case TrackerLabelType::EntranceSource:
+        case TrackerLabelType::EntranceDestination:
+            emit mouse_left_entrance_label();
+            break;
+        case TrackerLabelType::NONE:
+        default:
+            break;
     }
 }
 

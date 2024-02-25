@@ -246,6 +246,7 @@ private slots:
     void tracker_clear_current_item_text();
     void tracker_display_current_area_text(TrackerAreaWidget* currentArea);
     void tracker_clear_current_area_text();
+    void tracker_display_current_location(Location* location);
     void tracker_display_current_entrance(Entrance* entrance);
     void tracker_show_available_target_entrances(Entrance* entrance);
     void tracker_change_entrance_connections(Entrance* target);
