@@ -448,7 +448,7 @@ namespace FileTypes{
                 std::string filename = absPath.string().substr(absPath.string().find(dirPath) + dirPath.size() + 1); //could use std::filesystem::relative(absPath, dirPath).string(), but gives undefined reference errors with devkitPro stuff
                 // ^ include everything after the dirPath, and exclude 1 extra character for the path separator connecting them
                 filename += '\0'; //add null terminator
-#ifdef _WIN32
+#ifdef WIN32
                 std::replace(filename.begin(), filename.end(), '\\', '/');
 #endif
 

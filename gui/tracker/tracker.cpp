@@ -1,9 +1,9 @@
-#include "../mainwindow.h"
-
+#include "../mainwindow.hpp"
 #include "../ui_mainwindow.h"
-#include <tracker/tracker_inventory_button.h>
-#include <tracker/tracker_area_widget.h>
-#include <tracker/set_font.h>
+
+#include <gui/tracker/tracker_inventory_button.hpp>
+#include <gui/tracker/tracker_area_widget.hpp>
+#include <gui/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
 #include <logic/Search.hpp>
@@ -16,6 +16,7 @@
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
+#include <QColorDialog>
 
 void MainWindow::initialize_tracker_world(Settings& settings,
                                           const GameItemPool& markedItems,
@@ -64,7 +65,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
 
 
     trackerWorld.setSettings(trackerSettings);
-    if (trackerWorld.loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
+    if (trackerWorld.loadWorld(DATA_PATH "logic/world.yaml", DATA_PATH "logic/macros.yaml", DATA_PATH "logic/location_data.yaml", DATA_PATH "logic/item_data.yaml", DATA_PATH "logic/area_names.yaml"))
     {
         show_error_dialog("Could not build world for app tracker");
         return;
@@ -449,17 +450,17 @@ void MainWindow::initialize_tracker()
 
     // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
     // depending on if we embed data or not)
-    ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "assets/tracker/background.png);}");
-    ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "assets/tracker/trackerbg.png);}");
+    ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "tracker/background.png);}");
+    ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
     ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
-                                                   "background-image: url(" DATA_PATH "assets/tracker/pearl_holder.png);"
+                                                   "background-image: url(" DATA_PATH "tracker/pearl_holder.png);"
                                                    "background-repeat: none;"
                                                    "background-position: center;"
                                                "}");
-    ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "assets/tracker/sea_chart.png);}");
+    ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "tracker/sea_chart.png);}");
     set_location_list_widget_background("empty");
-    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png);}");
-    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" DATA_PATH "assets/tracker/area_empty.png);}");
+    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" DATA_PATH "tracker/area_empty.png);}");
+    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" DATA_PATH "tracker/area_empty.png);}");
     ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
 
@@ -823,6 +824,101 @@ void MainWindow::on_clear_all_button_released()
     update_tracker();
 }
 
+void MainWindow::update_items_color() {
+    if(ui->override_items_color->isChecked()) {
+        const std::string r = std::to_string(itemsColor.red());
+        const std::string g = std::to_string(itemsColor.green());
+        const std::string b = std::to_string(itemsColor.blue());
+
+        ui->inventory_widget->setStyleSheet(
+            QString::fromStdString("QWidget#inventory_widget {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
+        );
+    }
+    else {
+        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
+    }
+}
+
+void MainWindow::on_override_items_color_stateChanged(int arg1)
+{
+    update_items_color();
+}
+
+void MainWindow::on_items_color_clicked()
+{
+    QColor color = QColorDialog::getColor(itemsColor, this, "Select color");
+    if (!color.isValid()) {
+        return;
+    }
+
+    itemsColor = color;
+    update_items_color();
+}
+
+void MainWindow::update_locations_color()
+{
+    if(ui->override_locations_color->isChecked()) {
+        const std::string r = std::to_string(locationsColor.red());
+        const std::string g = std::to_string(locationsColor.green());
+        const std::string b = std::to_string(locationsColor.blue());
+
+        ui->other_areas_widget->setStyleSheet(
+            QString::fromStdString("QWidget#other_areas_widget {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
+        );
+    }
+    else {
+        ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
+    }
+}
+
+void MainWindow::on_override_locations_color_stateChanged(int arg1)
+{
+    update_locations_color();
+}
+
+void MainWindow::on_locations_color_clicked()
+{
+    QColor color = QColorDialog::getColor(locationsColor, this, "Select color");
+    if (!color.isValid()) {
+        return;
+    }
+
+    locationsColor = color;
+    update_locations_color();
+}
+
+void MainWindow::update_stats_color()
+{
+    if(ui->override_stats_color->isChecked()) {
+        const std::string r = std::to_string(statsColor.red());
+        const std::string g = std::to_string(statsColor.green());
+        const std::string b = std::to_string(statsColor.blue());
+
+        ui->stat_box->setStyleSheet(
+            QString::fromStdString("QWidget#stat_box {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
+        );
+    }
+    else {
+        ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
+    }
+}
+
+void MainWindow::on_override_stats_color_stateChanged(int arg1)
+{
+    update_stats_color();
+}
+
+void MainWindow::on_stats_color_clicked()
+{
+    QColor color = QColorDialog::getColor(statsColor, this, "Select color");
+    if (!color.isValid()) {
+        return;
+    }
+
+    statsColor = color;
+    update_stats_color();
+}
+
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
 {
     currentTrackerArea = areaPrefix;
@@ -850,7 +946,7 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
 
 void MainWindow::set_location_list_widget_background(const std::string& area)
 {
-    ui->location_list_widget->setStyleSheet(std::string("QWidget#location_list_widget {border-image: url(" DATA_PATH "assets/tracker/area_" + area + ".png);}").c_str());
+    ui->location_list_widget->setStyleSheet(std::string("QWidget#location_list_widget {border-image: url(" DATA_PATH "tracker/area_" + area + ".png);}").c_str());
 }
 
 void MainWindow::tracker_display_current_item_text(const std::string& currentItem)

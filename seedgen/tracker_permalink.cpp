@@ -152,19 +152,19 @@ std::string create_tracker_permalink(const Settings& settings, const std::string
         else if (option == Option::RandomizeEntrances)
         {
             size_t value = 0;
-            if (settings.randomize_dungeon_entrances && !settings.randomize_cave_entrances && !(settings.mix_dungeons && settings.mix_caves))
+            if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances == ShuffleCaveEntrances::Disabled && !(settings.mix_dungeons && settings.mix_caves))
             {
                 value = 1;
             }
-            else if (!settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && !(settings.mix_dungeons && settings.mix_caves))
+            else if (!settings.randomize_dungeon_entrances && settings.randomize_cave_entrances != ShuffleCaveEntrances::Disabled && !(settings.mix_dungeons && settings.mix_caves))
             {
                 value = 2;
             }
-            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && !(settings.mix_dungeons && settings.mix_caves))
+            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances != ShuffleCaveEntrances::Disabled && !(settings.mix_dungeons && settings.mix_caves))
             {
                 value = 3;
             }
-            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances && settings.mix_dungeons && settings.mix_caves)
+            else if (settings.randomize_dungeon_entrances && settings.randomize_cave_entrances != ShuffleCaveEntrances::Disabled && settings.mix_dungeons && settings.mix_caves)
             {
                 value = 4;
             }

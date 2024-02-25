@@ -2,7 +2,7 @@
 
 #include <array>
 #include <cstdint>
-#include <stdint.h>
+#include <cstdint>
 #include <unordered_set>
 #include <string>
 

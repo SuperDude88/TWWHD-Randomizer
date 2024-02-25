@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "mainwindow.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -10,8 +10,8 @@
 #include <QFile>
 
 #include <ui_mainwindow.h>
-#include <randomizer_thread.hpp>
-#include <option_descriptions.hpp>
+#include <gui/randomizer_thread.hpp>
+#include <gui/option_descriptions.hpp>
 
 #include <version.hpp>
 #include <libs/yaml.hpp>
@@ -67,6 +67,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Check for existing config file
+    std::ifstream conf(APP_SAVE_PATH "config.yaml");
+    std::ifstream pref(APP_SAVE_PATH "preferences.yaml");
+    if (!conf.is_open() || !pref.is_open())
+    {
+        // No config file, create default
+        delete_and_create_default_config();
+    }
+    conf.close();
+    pref.close();
+    
     // Load in config
     setup_mixed_pools_combobox();
     load_locations();
@@ -536,7 +547,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, randomize_dungeon_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_boss_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_miniboss_entrances);
-    APPLY_CHECKBOX_SETTING(config, ui, randomize_cave_entrances);
+    APPLY_COMBOBOX_SETTING(config, ui, randomize_cave_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_door_entrances);
     APPLY_CHECKBOX_SETTING(config, ui, randomize_misc_entrances);
     APPLY_MIXED_POOLS_SETTING(config, ui, mix_dungeons);
@@ -930,7 +941,13 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(item_hints)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_dungeon_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_boss_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_miniboss_entrances)
-DEFINE_STATE_CHANGE_FUNCTION(randomize_cave_entrances)
+
+void MainWindow::on_randomize_cave_entrances_currentTextChanged(const QString &arg1)
+{
+    config.settings.randomize_cave_entrances = nameToShuffleCaveEntrances(arg1.toStdString());
+    update_permalink_and_seed_hash();
+}
+
 DEFINE_STATE_CHANGE_FUNCTION(randomize_door_entrances)
 DEFINE_STATE_CHANGE_FUNCTION(randomize_misc_entrances)
 // Mixed pools options' states are handled in update_mixed_pools_combobox_option()
@@ -1140,7 +1157,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 void MainWindow::load_locations()
 {   
     std::string locationDataStr;
-    Utility::getFileContents(DATA_PATH "logic/data/location_data.yaml", locationDataStr, true);
+    Utility::getFileContents(DATA_PATH "logic/location_data.yaml", locationDataStr, true);
     YAML::Node locationDataTree = YAML::Load(locationDataStr);
     for (const auto& locationObject : locationDataTree)
     {

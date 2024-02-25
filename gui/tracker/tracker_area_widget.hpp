@@ -1,13 +1,12 @@
-#ifndef TRACKERAREAWIDGET_H
-#define TRACKERAREAWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QStackedLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 
-#include <tracker/tracker_inventory_button.h>
-#include <tracker/tracker_area_label.h>
+#include <gui/tracker/tracker_inventory_button.hpp>
+#include <gui/tracker/tracker_area_label.hpp>
 
 class TrackerAreaWidget : public QWidget
 {
@@ -58,5 +57,3 @@ protected:
     void leaveEvent(QEvent* e) override;
 
 };
-
-#endif // TRACKERAREAWIDGET_H

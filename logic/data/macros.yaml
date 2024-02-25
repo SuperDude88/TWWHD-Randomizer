@@ -13,7 +13,7 @@ Can Sail Away: (Can_Play_WR and Boats_Sail) or Swift_Sail
 Can Fan With Deku Leaf: Deku_Leaf
 Can Fly With Deku Leaf Indoors: Deku_Leaf and Magic
 Can Fly With Deku Leaf Outdoors: Deku_Leaf and Magic and Can_Play_WR
-Can Use Magic Armor: Magic_Armor and Magic
+Can Use Magic Armor: Magic_Armor # HD uses rupees instead of magic
 Can Use Hurricane Spin: Hurricane_Spin and Magic
 
 # You need to be holding an item in your hand in order to aim your shield around. Otherwise you can only aim it behind you at an angle or straight in front of you.

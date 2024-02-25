@@ -42,7 +42,7 @@ void Settings::resetDefaults() {
     randomize_dungeon_entrances = false;
     randomize_boss_entrances = false;
     randomize_miniboss_entrances = false;
-    randomize_cave_entrances = false;
+    randomize_cave_entrances = ShuffleCaveEntrances::Disabled;
     randomize_door_entrances = false;
     randomize_misc_entrances = false;
     mix_dungeons = false;
@@ -185,7 +185,7 @@ uint8_t Settings::getSetting(const Option& option) const {
         case Option::RandomizeBossEntrances:
             return randomize_boss_entrances;
         case Option::RandomizeCaveEntrances:
-            return randomize_cave_entrances;
+            return static_cast<std::underlying_type_t<ShuffleCaveEntrances>>(randomize_cave_entrances);
         case Option::RandomizeDoorEntrances:
             return randomize_door_entrances;
         case Option::RandomizeMiscEntrances:
@@ -362,7 +362,7 @@ void Settings::setSetting(const Option& option, const size_t& value) {
         case Option::RandomizeMinibossEntrances:
             randomize_miniboss_entrances = value; return;
         case Option::RandomizeCaveEntrances:
-            randomize_cave_entrances = value; return;
+            randomize_cave_entrances = static_cast<ShuffleCaveEntrances>(value); return;
         case Option::RandomizeDoorEntrances:
             randomize_door_entrances = value; return;
         case Option::RandomizeMiscEntrances:
@@ -524,6 +524,18 @@ static const std::unordered_map<std::string, ProgressionDungeons> nameProgressio
     {"Race Mode", ProgressionDungeons::RaceMode},
 };
 
+static const std::unordered_map<ShuffleCaveEntrances, std::string> shuffleCaveEntrancesNameMap = {
+    {ShuffleCaveEntrances::Disabled, "Disabled"},
+    {ShuffleCaveEntrances::Caves, "Caves"},
+    {ShuffleCaveEntrances::CavesFairies, "Caves and Fairies"},
+};
+
+static const std::unordered_map<std::string, ShuffleCaveEntrances> nameShuffleCaveEntrancesMap = {
+    {"Disabled", ShuffleCaveEntrances::Disabled},
+    {"Caves", ShuffleCaveEntrances::Caves},
+    {"Caves and Fairies", ShuffleCaveEntrances::CavesFairies},
+};
+
 static const std::unordered_map<TargetTypePreference, std::string> targetTypePreferenceNameMap = {
     {TargetTypePreference::Hold, "Hold"},
     {TargetTypePreference::Switch, "Switch"},  
@@ -630,6 +642,24 @@ std::string ProgressionDungeonsToName(const ProgressionDungeons& option) {
     }
 
     return progressionDungeonsNameMap.at(option);
+}
+
+ShuffleCaveEntrances nameToShuffleCaveEntrances(const std::string& name) {
+    if (nameShuffleCaveEntrancesMap.count(name) == 0)
+    {
+        return ShuffleCaveEntrances::INVALID;
+    }
+
+    return nameShuffleCaveEntrancesMap.at(name);
+}
+
+std::string ShuffleCaveEntrancesToName(const ShuffleCaveEntrances& option) {
+    if (shuffleCaveEntrancesNameMap.count(option) == 0)
+    {
+        return "INVALID";
+    }
+
+    return shuffleCaveEntrancesNameMap.at(option);
 }
 
 TargetTypePreference nameToTargetTypePreference(const std::string& name)

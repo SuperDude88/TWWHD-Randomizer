@@ -16,6 +16,8 @@ enum struct EntranceType
     DUNGEON_REVERSE,
     CAVE,
     CAVE_REVERSE,
+    FAIRY,
+    FAIRY_REVERSE,
     DOOR,
     DOOR_REVERSE,
     MISC,

@@ -59,7 +59,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           {
              usePlando = true;
              #ifdef DEVKITPRO
-                 plandoFilepath = APP_SAVE_PATH "plandomizer.yaml"; //can't bundle in the romfs, put it in the save directory instead
+                 plandoFilepath = APP_SAVE_PATH "plandomizer.yaml"; // can't bundle in the wuhb, put it in the save directory instead
              #else
                  plandoFilepath = world.getSettings().plandomizerFile;
              #endif
@@ -85,7 +85,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       for (auto& world : worlds)
       {
           world.resolveRandomSettings();
-          if (world.loadWorld(DATA_PATH "logic/data/world.yaml", DATA_PATH "logic/data/macros.yaml", DATA_PATH "logic/data/location_data.yaml", DATA_PATH "logic/data/item_data.yaml", DATA_PATH "logic/data/area_names.yaml"))
+          if (world.loadWorld(DATA_PATH "logic/world.yaml", DATA_PATH "logic/macros.yaml", DATA_PATH "logic/location_data.yaml", DATA_PATH "logic/item_data.yaml", DATA_PATH "logic/area_names.yaml"))
           {
               return 1;
           }

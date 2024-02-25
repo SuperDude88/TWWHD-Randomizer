@@ -11,3 +11,9 @@
 ; Remove that code so dry storage works again
 .org 0x023F22B0
   b 0x023F22E4
+
+; Pausing with the Wind Waker out is useful for tricks with camera lock
+; HD doesn't let you pause until you have at least 1 song
+; Remove this check so you can always pause
+.org 0x0270F058
+  nop

@@ -21,7 +21,7 @@ ModelError CustomModel::loadFromFolder() {
         modelName = "Link";
     }
 
-    folder = DATA_PATH "customizer/data/" + modelName;
+    folder = DATA_PATH "customizer/" + modelName;
     
     presets.clear();
 

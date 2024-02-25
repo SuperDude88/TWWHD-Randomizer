@@ -5,13 +5,9 @@ out/*
 .cache/*
 .vscode/*
 CMakeSettings.json
-asm/temp
 logic/build/*
 logic/.vs/*
 logic/out/*
-logic/data/plandomizer.yaml
-misc
-seedgen/testing_config.yaml
-gui/data.qrc
-version.hpp
+*/data.qrc
+CMakeLists.txt.user
 build-*

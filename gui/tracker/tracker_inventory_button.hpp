@@ -1,5 +1,4 @@
-#ifndef TRACKERINVENTORYBUTTON_H
-#define TRACKERINVENTORYBUTTON_H
+#pragma once
 
 #include <QPushButton>
 #include <QLabel>
@@ -45,6 +44,3 @@ protected:
     void enterEvent(QEnterEvent* e) override;
     void leaveEvent(QEvent* e) override;
 };
-
-
-#endif // TRACKERINVENTORYBUTTON_H

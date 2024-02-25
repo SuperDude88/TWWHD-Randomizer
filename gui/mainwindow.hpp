@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QListView>
@@ -11,17 +10,15 @@
 #include <QStandardItemModel>
 #include <QLabel>
 
-#include <filesystem>
-
 #include <seedgen/config.hpp>
 #include <logic/Location.hpp>
 #include <logic/World.hpp>
 #include <logic/EntranceShuffle.hpp>
 #include <logic/PoolFunctions.hpp>
 
-#include <tracker/tracker_inventory_button.h>
-#include <tracker/tracker_label.h>
-#include <tracker/tracker_area_widget.h>
+#include <gui/tracker/tracker_inventory_button.hpp>
+#include <gui/tracker/tracker_label.hpp>
+#include <gui/tracker/tracker_area_widget.hpp>
 
 void delete_and_create_default_config();
 
@@ -219,7 +216,7 @@ private slots:
     void on_randomize_dungeon_entrances_stateChanged(int arg1);
     void on_randomize_boss_entrances_stateChanged(int arg1);
     void on_randomize_miniboss_entrances_stateChanged(int arg1);
-    void on_randomize_cave_entrances_stateChanged(int arg1);
+    void on_randomize_cave_entrances_currentTextChanged(const QString &arg1);
     void on_randomize_door_entrances_stateChanged(int arg1);
     void on_randomize_misc_entrances_stateChanged(int arg1);
     void on_decouple_entrances_stateChanged(int arg1);
@@ -258,6 +255,15 @@ private slots:
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
 
+    void update_items_color();
+    void on_override_items_color_stateChanged(int arg1);
+    void on_items_color_clicked();
+    void update_locations_color();
+    void on_override_locations_color_stateChanged(int arg1);
+    void on_locations_color_clicked();
+    void update_stats_color();
+    void on_override_stats_color_stateChanged(int arg1);
+    void on_stats_color_clicked();
 
 
 private:
@@ -286,6 +292,9 @@ private:
     EntrancePools targetEntrancePools = {};
     Entrance* selectedEntrance = nullptr;
 
+    QColor itemsColor = {105, 137, 28, 255};
+    QColor locationsColor = {160, 160, 160, 255};
+    QColor statsColor = {79, 79, 79, 255};
 
     using TIB = TrackerInventoryButton;
 
@@ -556,4 +565,3 @@ private:
     TIB trackerDRCCompass            = TIB({{GameItem::NOTHING,               "compass_gray.png",          "DRC Compass"},
                                             {GameItem::DRCCompass,            "compass_color.png",         "DRC Compass"}});
 };
-#endif // MAINWINDOW_H
