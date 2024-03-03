@@ -30,9 +30,8 @@ option(YAML_CPP_BUILD_TOOLS OFF)
 option(YAML_CPP_BUILD_TESTS OFF)
 option(YAML_CPP_INSTALL OFF)
 option(YAML_MSVC_SHARED_RT OFF)
+option(YAML_ENABLE_PIC OFF)
 add_subdirectory("yaml-cpp")
-# Prevent position independent code from generating relocations that Wii U doesn't support
-set_property(TARGET yaml-cpp PROPERTY POSITION_INDEPENDENT_CODE OFF) # yaml-cpp enables this automatically when BUILD_SHARED_LIBS is off, override it here
 
 option(tinyxml2_BUILD_TESTING OFF)
 add_subdirectory("tinyxml2")
