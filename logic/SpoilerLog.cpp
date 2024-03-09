@@ -286,7 +286,7 @@ void generateSpoilerLog(WorldPool& worlds)
         std::map<std::string, std::string, chartComparator> spoilerTreasureMappings = {};
         for (size_t islandRoom = 1; islandRoom < 50; islandRoom++)
         {
-            auto chart = gameItemToName(world.chartMappings[islandRoom - 1]);
+            auto chart = gameItemToName(world.chartMappings[islandRoom]);
             auto island = roomIndexToIslandName(islandRoom);
             if (chart.find("Treasure") != std::string::npos)
             {

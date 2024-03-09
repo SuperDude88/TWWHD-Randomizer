@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <unordered_map>
+#include <map>
 
 #include <libs/yaml.hpp>
 
@@ -11,6 +11,7 @@
 #include <command/WWHDStructs.hpp>
 #include <logic/GameItem.hpp>
 #include <logic/Dungeon.hpp>
+#include <logic/WorldPool.hpp>
 
 enum struct [[nodiscard]] ModificationError {
     NONE = 0,
@@ -174,3 +175,5 @@ public:
 };
 
 const char* modErrorToName(ModificationError err);
+
+[[nodiscard]] bool writeLocations(WorldPool& worlds);
