@@ -3,17 +3,20 @@
 #include <limits>
 #include <type_traits>
 #include <unordered_map>
-#include <fstream>
 #include <filesystem>
 #include <algorithm>
 
-#include <logic/Dungeon.hpp>
-#include <logic/Location.hpp>
+#include <utility/file.hpp>
+#include <utility/platform.hpp>
+#include <filetypes/util/elfUtil.hpp>
 #include <command/RandoSession.hpp>
 #include <command/WWHDStructs.hpp>
 #include <command/Log.hpp>
-#include <filetypes/util/elfUtil.hpp>
-#include <utility/file.hpp>
+#include <logic/Dungeon.hpp>
+#include <logic/Location.hpp>
+#include <logic/World.hpp>
+
+#include <gui/update_dialog_header.hpp>
 
 using namespace std::literals::string_literals;
 
@@ -463,8 +466,6 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
     return ModificationError::NONE;
 }
 
-
-
 const char* modErrorToName(ModificationError err) {
     switch (err) {
         case ModificationError::NONE:
@@ -486,4 +487,31 @@ const char* modErrorToName(ModificationError err) {
         default:
             return "UNKNOWN";
     }
+}
+
+bool writeLocations(WorldPool& worlds) {
+    Utility::platformLog("Saving items...\n");
+    UPDATE_DIALOG_VALUE(40);
+    UPDATE_DIALOG_LABEL("Saving items...");
+
+    // Flatten the playthrough into a single list
+    // so that chests can check it for CTMC
+    std::list<Location*> playthroughLocations = {};
+    for (const auto& sphere : worlds[0].playthroughSpheres) {
+        for (auto loc : sphere) {
+            playthroughLocations.push_back(loc);
+        }
+    }
+
+    const Settings& settings = worlds[0].getSettings();
+    ModifyChest::setCTMC(settings.chest_type_matches_contents, settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons, playthroughLocations);
+
+    for (auto& [name, location] : worlds[0].locationTable) {
+        if (const ModificationError err = location->method->writeLocation(location->currentItem); err != ModificationError::NONE) {
+            ErrorLog::getInstance().log(std::string("Encountered ModificationError::") + modErrorToName(err) + " while saving location " + location->getName());
+            return false;
+        }
+    }
+
+    return true;
 }
