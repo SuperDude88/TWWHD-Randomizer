@@ -9,7 +9,7 @@ InputManager& InputManager::getInstance() {
 InputError InputManager::poll() {
     VPADStatus status{};
     VPADReadError err;
-    if(VPADRead(VPAD_CHAN_0, &status, 1, &err) != 0 && err != VPAD_READ_SUCCESS) {
+    if(VPADRead(VPAD_CHAN_0, &status, 1, &err) == 0 && err != VPAD_READ_SUCCESS) {
         switch(err) {
             case VPAD_READ_NO_SAMPLES:
                 return InputError::NO_SAMPLES;
