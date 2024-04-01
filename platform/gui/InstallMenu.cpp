@@ -25,10 +25,10 @@ MCPInstallTarget pickInstallLocation() {
             continue;
         }
 
-        if(InputManager::getInstance().pressed(VPAD_BUTTON_Y)) { // Y gets priority if both are pressed
+        if(InputManager::getInstance().pressed(ButtonInfo::Y)) { // Y gets priority if both are pressed
             return MCPInstallTarget::MCP_INSTALL_TARGET_USB;
         }
-        if(InputManager::getInstance().pressed(VPAD_BUTTON_X)) {
+        if(InputManager::getInstance().pressed(ButtonInfo::X)) {
             return MCPInstallTarget::MCP_INSTALL_TARGET_MLC;
         }
         

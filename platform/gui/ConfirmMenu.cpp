@@ -28,10 +28,10 @@ bool confirmRandomize() {
             continue;
         }
 
-        if(InputManager::getInstance().pressed(VPAD_BUTTON_B)) { // B gets priority if both are pressed
+        if(InputManager::getInstance().pressed(ButtonInfo::B)) { // B gets priority if both are pressed
             return false;
         }
-        if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+        if(InputManager::getInstance().pressed(ButtonInfo::A)) {
             return true;
         }
         

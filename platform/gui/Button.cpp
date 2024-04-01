@@ -4,15 +4,15 @@
 #include <platform/gui/TextWrap.hpp>
 
 void BasicButton::hovered() {
-    InputManager::getInstance().setRepeat(VPAD_BUTTON_A, delay, interval);
+    InputManager::getInstance().setRepeat(ButtonInfo::A, delay, interval);
 }
 
 void BasicButton::unhovered() {
-    InputManager::getInstance().clearRepeat(VPAD_BUTTON_A);
+    InputManager::getInstance().clearRepeat(ButtonInfo::A);
 }
 
 bool BasicButton::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         (*cb)();
 
         return true;
@@ -44,7 +44,7 @@ bool ItemButton::operator==(const GameItem& rhs) const {
 }
 
 bool ItemButton::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         enabled = !enabled;
 
         return true;
@@ -66,7 +66,7 @@ void ItemButton::drawDRC() const {
 
 
 bool ActionButton::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         (*cb)();
 
         return true;
@@ -92,7 +92,7 @@ void ActionButton::drawDRC() const {
 
 
 bool ColorButton::update(const std::string& colorName) {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         colorCB(colorName);
 
         return true;
@@ -114,7 +114,7 @@ void ColorButton::drawDRC() const {
 
 
 bool FunctionButton::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         triggerCB();
 
         return true;

@@ -36,14 +36,14 @@ SettingsMenu::Status SettingsMenu::update() {
         return Status::NONE;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_PLUS)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::PLUS)) {
         pages[curPage]->close();
 
         return Status::EXIT;
     }
 
     bool moved = false;
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_ZL)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::ZL)) {
         pages[curPage]->close();
 
         if(curPage <= 0) {
@@ -54,7 +54,7 @@ SettingsMenu::Status SettingsMenu::update() {
         }
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_ZR)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::ZR)) {
         pages[curPage]->close();
 
         if(curPage >= pages.size() - 1) {
@@ -137,8 +137,8 @@ SettingsMenu::Result SettingsMenu::run(Config& out) {
     setDim(true);
     setAPD(true);
 
-    InputManager::getInstance().setRepeat(VPAD_BUTTON_DOWN, 300ms, 200ms);
-    InputManager::getInstance().setRepeat(VPAD_BUTTON_UP, 300ms, 200ms);
+    InputManager::getInstance().setRepeat(ButtonInfo::DOWN, 300ms, 200ms);
+    InputManager::getInstance().setRepeat(ButtonInfo::UP, 300ms, 200ms);
 
     bool inMenu = true;
     while(inMenu && Utility::platformIsRunning()) { // loop until menu or app signals an exit
