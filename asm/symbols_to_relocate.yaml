@@ -1,4 +1,5 @@
 gameInfo_ptr: .data
+mStayNo: .data
 something_button_related: .data
 GTower_str: .data
 Ojhous_str: .data

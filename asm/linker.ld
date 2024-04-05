@@ -94,6 +94,7 @@ SetAdjacentWarpButton = 0x02681ad0;
 safestring_vtbl_1010394c = 0x1010394c;
 
 gameInfo_ptr = 0x101f84dc;
+mStayNo = 0x1047e6c8;
 something_button_related = 0x101F5088;
 GTower_str = 0x1005336c;
 Ojhous_str = 0x10003d28;
