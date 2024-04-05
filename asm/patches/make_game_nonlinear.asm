@@ -424,11 +424,43 @@ medli_possible_et_spawn_positions:
   ; This stops the Command Melody stone tablet from disappearing prematurely, and also removes the servant's unnecessary line of dialogue.
   ; This branch is normally taken for the west and north servants (Os1 and Os2). We modify it to be taken for all servants.
   b 0x022AC0B4
-.org 0x022AE9C8
+
+.org 0x022AE9C8 ; In daNpc_os_c::finish02NpcAction(void*)
   ; Normally the servants would not keep the light beam they shoot on until even bit 0x1B01 is set, which happens once the north servant is returned.
   ; Remove this check so the beam is always on for servants that are on their pedestals.
   nop
+
+.org 0x022AC2B8 ; In daNpc_Os_c::execute()
+  ; If the player enters the room of one servant and then leaves and tries to call a different
+  ; servant to become their partner, this normally wouldn't work because the first servant is locked
+  ; in as the current partner until you reload the stage. This could give the appearance of a
+  ; softlock if the player doesn't know you can reload the stage.
+  ; To fix this, we need to unset the current partner when it isn't in the same room as the player.
+  ; To do this, right before daPy_npc_c::check_initialRoom gets called, we insert some custom code:
+  ; If the player is not in the same room as this servant, its home room number wil be reset to -1.
+  ; When that happens, check_initialRoom will return 0, meaning the rest of execute will unset the
+  ; current player partner, if it's currently this servant. That will allow a different servant to
+  ; be set as the partner instead.
+  ; On the other hand, if the player is in the same room as this servant, nothing will happen, and
+  ; this servant will remain as the current partner.
+  b set_inactive_servant_when_player_leaves_room
+.org @NextFreeSpace
+.global set_inactive_servant_when_player_leaves_room
+set_inactive_servant_when_player_leaves_room:
+  lis r3, mStayNo@ha
+  lbz r3, mStayNo@l(r3)
+  lbz r4, 0x326(r30) ; Room number
+  cmpw r3, r4
+  beq set_inactive_servant_when_player_leaves_room_return ; In the same room as the player, no need to become inactive
   
+  li r3, -1
+  stb r3, 0x2FE(r30) ; Set the home room number to -1
+  
+set_inactive_servant_when_player_leaves_room_return:
+  mr r3, r30 ; Replace the line we overwrote to jump here
+  b 0x022AC2BC ; Return to where execute calls check_initialRoom
+
+
 ; Normally, the east Servant of the Tower would set event bit 0x2510 to tell the Command Melody stone tablet that it can disappear permanently because the player has finished using it.
 ; But we allow that tablet to be used before returning that servant, so we have to change it so the tablet itself sets that event bit.
 .org 0x0235BF38
