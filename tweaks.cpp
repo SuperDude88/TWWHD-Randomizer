@@ -1548,31 +1548,31 @@ TweakError add_pirate_ship_to_windfall() {
     return TweakError::NONE;
 }
 
+struct CyclicWarpPotData {
+    std::string stage_name;
+    uint8_t room_num;
+    float x, y, z;
+    uint16_t y_rot;
+    uint8_t event_reg_index;
+};
+
+static const std::array<std::array<CyclicWarpPotData, 3>, 2> loops = {{
+    {{
+        {"M_NewD2", 2, 2185.0f, 0.0f, 590.0f, 0xA000, 2},
+        {"kindan", 1, 986.0f, 3956.43f, 9588.0f, 0xB929, 2},
+        {"Siren", 6, 277.0f, 229.42f, -6669.0f, 0xC000, 2}
+    }},
+    {{
+        {"ma2room", 2, 1556.0f, 728.46f, -7091.0f, 0xEAA6, 5},
+        {"M_Dai", 1, -8010.0f, 1010.0f, -1610.0f, 0, 5},
+        {"kaze", 3, -4333.0f, 1100.0f, 48.0f, 0x4000, 5}
+    }}
+}};
+
 TweakError add_cross_dungeon_warps() {
-    struct CyclicWarpPotData {
-        std::string stage_name;
-        uint8_t room_num;
-        float x, y, z;
-        uint16_t y_rot;
-        uint8_t event_reg_index;
-    };
-
-    std::array<std::array<CyclicWarpPotData, 3>, 2> loops = { {
-        { {
-            {"M_NewD2", 2, 2185.0f, 0.0f, 590.0f, 0xA000, 2},
-            {"kindan", 1, 986.0f, 3956.43f, 9588.0f, 0xB929, 2},
-            {"Siren", 6, 277.0f, 229.42f, -6669.0f, 0xC000, 2}
-        } },
-        { {
-            {"ma2room", 2, 1556.0f, 728.46f, -7091.0f, 0xEAA6, 5},
-            {"M_Dai", 1, -8010.0f, 1010.0f, -1610.0f, 0, 5},
-            {"kaze", 3, -4333.0f, 1100.0f, 48.0f, 0x4000, 5}
-        } }
-    } };
-
-    for(auto& loop : loops) {
+    for(const auto& loop : loops) {
         uint8_t warp_index = 0;
-        for (CyclicWarpPotData& warp : loop) {
+        for (const CyclicWarpPotData& warp : loop) {
             RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
             RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Room" + std::to_string(warp.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(warp.room_num) + ".bfres@BFRES@room.dzr@DZX");
 
@@ -1582,23 +1582,23 @@ TweakError add_cross_dungeon_warps() {
                 dzx_for_spawn = &stage;
             }
 
-            Utility::Endian::toPlatform_inplace(eType::Big, warp.x);
-            Utility::Endian::toPlatform_inplace(eType::Big, warp.y);
-            Utility::Endian::toPlatform_inplace(eType::Big, warp.z);
-            Utility::Endian::toPlatform_inplace(eType::Big, warp.y_rot);
+            const float pos_x = Utility::Endian::toPlatform(eType::Big, warp.x);
+            const float pos_y = Utility::Endian::toPlatform(eType::Big, warp.y);
+            const float pos_z = Utility::Endian::toPlatform(eType::Big, warp.z);
+            const uint16_t y_rot = Utility::Endian::toPlatform(eType::Big, warp.y_rot);
 
-            dzx_for_spawn->addAction([warp](RandoSession* session, FileType* data) -> int {
+            dzx_for_spawn->addAction([warp, pos_x, pos_y, pos_z, y_rot](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(dzx, FileTypes::DZXFile, data)
 
                 ChunkEntry& spawn = dzx.add_entity("PLYR");
                 spawn.data = "Link\x00\x00\x00\x00\xFF\xFF\x70"s;
                 spawn.data.resize(0x20);
                 spawn.data[0xB] = (spawn.data[0xB] & ~0x3F) | (warp.room_num & 0x3F);
-                spawn.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
-                spawn.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
-                spawn.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
+                spawn.data.replace(0xC, 4, reinterpret_cast<const char*>(&pos_x), 4);
+                spawn.data.replace(0x10, 4, reinterpret_cast<const char*>(&pos_y), 4);
+                spawn.data.replace(0x14, 4, reinterpret_cast<const char*>(&pos_z), 4);
                 spawn.data.replace(0x18, 2, "\x00\x00", 2);
-                spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
+                spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&y_rot), 2);
                 spawn.data.replace(0x1C, 4, "\xFF\x45\xFF\xFF", 4);
 
                 std::vector<ChunkEntry*> spawns = dzx.entries_by_type("PLYR");
@@ -1611,7 +1611,7 @@ TweakError add_cross_dungeon_warps() {
                 return true;
             });
 
-            room.addAction([loop, warp, warp_index](RandoSession* session, FileType* data) -> int {
+            room.addAction([loop, warp, warp_index, pos_x, pos_y, pos_z, y_rot](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(room, FileTypes::DZXFile, data)
 
                 std::vector<uint8_t> pot_index_to_exit;
@@ -1639,11 +1639,11 @@ TweakError add_cross_dungeon_warps() {
                 warp_pot.data = "Warpts" + std::to_string(warp_index + 1);
                 warp_pot.data.resize(0x20);
                 warp_pot.data.replace(0x8, 4, reinterpret_cast<const char*>(&params), 4);
-                warp_pot.data.replace(0xC, 4, reinterpret_cast<const char*>(&warp.x), 4);
-                warp_pot.data.replace(0x10, 4, reinterpret_cast<const char*>(&warp.y), 4);
-                warp_pot.data.replace(0x14, 4, reinterpret_cast<const char*>(&warp.z), 4);
+                warp_pot.data.replace(0xC, 4, reinterpret_cast<const char*>(&pos_x), 4);
+                warp_pot.data.replace(0x10, 4, reinterpret_cast<const char*>(&pos_y), 4);
+                warp_pot.data.replace(0x14, 4, reinterpret_cast<const char*>(&pos_z), 4);
                 warp_pot.data.replace(0x18, 2, "\xFF\xFF", 2);
-                warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&warp.y_rot), 2);
+                warp_pot.data.replace(0x1A, 2, reinterpret_cast<const char*>(&y_rot), 2);
                 warp_pot.data.replace(0x1C, 4, "\xFF\xFF\xFF\xFF", 4);
 
                 return true;
@@ -1706,6 +1706,25 @@ TweakError add_cross_dungeon_warps() {
     
     drc.addDependent(totg.getParent()); //Want the file above the JPC entry
     drc.addDependent(ff.getParent()); //Want the file above the JPC entry
+
+    return TweakError::NONE;
+}
+
+TweakError restore_cross_dungeon_warps() {
+    for(const auto& loop : loops) {
+        for (const CyclicWarpPotData& warp : loop) {
+            if(const std::string path = getRoomFilePath(warp.stage_name, warp.room_num); !g_session.restoreGameFile(path)) {
+                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+                return TweakError::FILE_OPEN_FAILED;
+            }
+            if(const std::string path = getStageFilePath(warp.stage_name); !g_session.restoreGameFile(path)) {
+                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+                return TweakError::FILE_OPEN_FAILED;
+            }
+        }
+    }
+
+    // Particle.szs is restored elsewhere
 
     return TweakError::NONE;
 }
@@ -3654,6 +3673,9 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
 
     if(world.getSettings().add_shortcut_warps_between_dungeons) {
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
+    }
+    else {
+        TWEAK_ERR_CHECK(restore_cross_dungeon_warps());
     }
 
     //update text last so everything has a chance to add textboxes

@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 20ef19297e33b1280fef44fc259e8657dca77c1a && \
+    git checkout b38d014a0c497fdf20ae4d04f7773284ccdc039a && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
