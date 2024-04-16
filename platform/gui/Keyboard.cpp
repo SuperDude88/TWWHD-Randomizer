@@ -4,7 +4,7 @@
 #include <platform/gui/screen.hpp>
 
 bool KeyboardKey::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         cb();
 
         return true;
@@ -78,7 +78,7 @@ void HexKeyboard::open(const std::string& title_, const std::string& desc_, cons
 }
 
 bool HexKeyboard::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::B)) {
         setClose(true);
         setAccept(false);
 
@@ -87,7 +87,7 @@ bool HexKeyboard::update() {
 
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         if(curCol <= 0) {
             curCol = keys[0].size() - 1; //wrap on leftmost row
         }
@@ -96,7 +96,7 @@ bool HexKeyboard::update() {
         }
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         if(curCol >= keys[0].size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -106,7 +106,7 @@ bool HexKeyboard::update() {
         moved = true;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         if(curRow <= 0) {
             curRow = keys.size() - 1; //wrap on top
         }
@@ -115,7 +115,7 @@ bool HexKeyboard::update() {
         }
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         if(curRow >= keys.size() - 1) {
             curRow = 0; //wrap on buttom row
         }
@@ -185,7 +185,7 @@ void USKeyboard::open(const std::string& title_, const std::string& desc_, const
 }
 
 bool USKeyboard::update() {
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::B)) {
         setClose(true);
         setAccept(false);
 
@@ -210,7 +210,7 @@ bool USKeyboard::update() {
     }
 
     bool moved = false;
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         if(curCol <= 0) {
             curCol = rows[0].size() - 1; //wrap on leftmost row
         }
@@ -219,7 +219,7 @@ bool USKeyboard::update() {
         }
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         if(curCol >= rows[0].size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -229,7 +229,7 @@ bool USKeyboard::update() {
         moved = true;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         if(curRow <= 0) {
             curRow = numRows - 1; //wrap on top
         }
@@ -238,7 +238,7 @@ bool USKeyboard::update() {
         }
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         if(curRow >= numRows - 1) {
             curRow = 0; //wrap on buttom row
         }

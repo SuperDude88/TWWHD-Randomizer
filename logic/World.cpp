@@ -306,7 +306,7 @@ void World::determineChartMappings()
     {
         auto chart = charts[i];
         size_t sector = i + 1;
-        chartMappings[i] = chart;
+        chartMappings[sector] = chart;
 
         // Set the sunken treasure location as the chain location for each treasure/triforce chart in the itemTable
         auto locationName = roomIndexToIslandName(sector) + " - Sunken Treasure";
@@ -340,7 +340,7 @@ bool World::chartLeadsToSunkenTreasure(Location* location, const std::string& it
         return false;
     }
     auto islandName = location->getName().substr(0, location->getName().find(" - Sunken Treasure"));
-    size_t islandNumber = islandNameToRoomIndex(islandName) - 1;
+    size_t islandNumber = islandNameToRoomIndex(islandName);
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
 
