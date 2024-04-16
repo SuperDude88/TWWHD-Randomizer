@@ -1,6 +1,5 @@
 #include "model.hpp"
 
-#include <list>
 #include <tuple>
 #include <filesystem>
 
@@ -24,6 +23,8 @@ ModelError CustomModel::loadFromFolder() {
     folder = DATA_PATH "customizer/" + modelName;
     
     presets.clear();
+    heroOrdering.clear();
+    casualOrdering.clear();
 
     std::string metaStr;
     if(Utility::getFileContents(folder / "metadata.yaml", metaStr, true) != 0) {
@@ -38,14 +39,22 @@ ModelError CustomModel::loadFromFolder() {
 
     ColorPreset& defaultPreset = presets.emplace_back();
     for (const auto& presetObject : metaTree["default_hero_colors"]) {
-        const std::string colorName = presetObject.first.as<std::string>();
-        const std::string color = presetObject.second.as<std::string>();
-        defaultPreset.heroColors[colorName] = color;
+        for (const auto& presetColor : presetObject)
+        {
+            const std::string colorName = presetColor.first.as<std::string>();
+            const std::string color = presetColor.second.as<std::string>();
+            defaultPreset.heroColors[colorName] = color;
+            heroOrdering.emplace_back(colorName);
+        }
     }
     for (const auto& presetObject : metaTree["default_casual_colors"]) {
-        const std::string colorName = presetObject.first.as<std::string>();
-        const std::string color = presetObject.second.as<std::string>();
-        defaultPreset.casualColors[colorName] = color;
+        for (const auto& presetColor : presetObject)
+        {
+            const std::string colorName = presetColor.first.as<std::string>();
+            const std::string color = presetColor.second.as<std::string>();
+            defaultPreset.casualColors[colorName] = color;
+            casualOrdering.emplace_back(colorName);
+        }
     }
 
     casual = metaTree["default_casual"].as<bool>();
@@ -105,6 +114,15 @@ const ColorMap_t& CustomModel::getSetColorsMap() const {
     }
     else {
         return colors.heroColors;
+    }
+}
+
+const std::list<std::string>& CustomModel::getDefaultColorsOrdering() const {
+    if(casual) {
+        return casualOrdering;
+    }
+    else {
+        return heroOrdering;
     }
 }
 

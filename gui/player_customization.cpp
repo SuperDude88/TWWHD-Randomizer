@@ -248,7 +248,8 @@ void MainWindow::setup_color_options() {
         }
     }
 
-    for (auto& [customColorName, defaultColor] : baseColors) {
+    for (auto& customColorName : model.getDefaultColorsOrdering()) {
+        auto& defaultColor = baseColors[customColorName];
 
         auto optionName = "custom_color_" + customColorName;
         auto colorWidget = new QWidget();

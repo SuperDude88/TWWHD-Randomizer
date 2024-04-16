@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <list>
 #include <filesystem>
 
 enum struct [[nodiscard]] ModelError {
@@ -39,9 +40,13 @@ private:
 public:
     bool casual;
     std::string modelName;
+    // holds ordering of the customizable colors in the gui
+    std::list<std::string> heroOrdering;
+    std::list<std::string> casualOrdering;
 
     const ColorMap_t& getDefaultColorsMap() const;
     const ColorMap_t& getSetColorsMap() const;
+    const std::list<std::string>& getDefaultColorsOrdering() const;
     const std::vector<ColorPreset>& getPresets() const;
     const ColorPreset& getDefaultPreset() const;
     const std::string& getColor(const std::string& name_) const;
