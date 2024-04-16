@@ -49,7 +49,7 @@
 
 
 - Type: MINIBOSS
-  Forward: FW Tall Room Before Mini Boss,          FW Mini Boss Room,                        kindan,   9,          0, kinMB,    0,    10
+  Forward: FW Tall Room Before Mini Boss,          FW Mini Boss Room,                        kindan,   9,          0, kinMB,    10,    0
   Return:  FW Mini Boss Room,                      FW Tall Room Before Mini Boss,            kinMB,   10,          0, kindan,   9,     1
   Savewarp: true
 - Type: MINIBOSS

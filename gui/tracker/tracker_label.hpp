@@ -28,6 +28,8 @@ public:
 
 signals:
     void location_label_clicked();
+    void mouse_over_location_label(Location* location);
+    void mouse_left_location_label();
     void entrance_source_label_clicked(Entrance* entrance);
     void entrance_destination_label_clicked(Entrance* target);
     void entrance_source_label_disconnect(Entrance* entrance);

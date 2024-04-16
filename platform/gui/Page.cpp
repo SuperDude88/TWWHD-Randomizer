@@ -47,24 +47,24 @@ bool SeedPage::update() {
         return update;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
         OptionCB::changeSeed();
         return true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_X)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::X)) {
         typing_seed = true;
         board.open("Seed", "", getSeed(), std::nullopt);
 
         return true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_Y)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::Y)) {
         typing_perma = true;
         board.open("Permalink", "", "", std::nullopt); // would be annoying to backspace a ton of permalink
 
         return true;
     }
 
-    if(!InputManager::getInstance().held(VPAD_BUTTON_B)) {
+    if(!InputManager::getInstance().held(ButtonInfo::B)) {
         resetTimer();
     }
     else {
@@ -168,7 +168,7 @@ void ProgressionPage::close() {
 bool ProgressionPage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
@@ -181,7 +181,7 @@ bool ProgressionPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
@@ -195,7 +195,7 @@ bool ProgressionPage::update() {
         buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
@@ -208,7 +208,7 @@ bool ProgressionPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
@@ -275,7 +275,7 @@ void HintsPage::close() {
 bool HintsPage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
@@ -287,7 +287,7 @@ bool HintsPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
@@ -300,7 +300,7 @@ bool HintsPage::update() {
         buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
@@ -312,7 +312,7 @@ bool HintsPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
@@ -383,7 +383,7 @@ void EntrancePage::close() {
 bool EntrancePage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
@@ -396,7 +396,7 @@ bool EntrancePage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
@@ -410,7 +410,7 @@ bool EntrancePage::update() {
         buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
@@ -423,7 +423,7 @@ bool EntrancePage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
@@ -494,7 +494,7 @@ void ConveniencePage::close() {
 bool ConveniencePage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
@@ -507,7 +507,7 @@ bool ConveniencePage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
@@ -521,7 +521,7 @@ bool ConveniencePage::update() {
         buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
@@ -534,7 +534,7 @@ bool ConveniencePage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
@@ -599,7 +599,7 @@ void AdvancedPage::close() {
 bool AdvancedPage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
@@ -612,7 +612,7 @@ bool AdvancedPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
@@ -626,7 +626,7 @@ bool AdvancedPage::update() {
         buttonColumns[curCol][curRow]->hovered();
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
@@ -639,7 +639,7 @@ bool AdvancedPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
@@ -831,7 +831,7 @@ void ItemsPage::close() {
 bool ItemsPage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT) || InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT) || InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         switch(curCol) {
             case Column::LIST:
                 listButtons[listScrollPos + curRow].unhovered();
@@ -851,7 +851,7 @@ bool ItemsPage::update() {
         moved = true;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         switch(curCol) {
             case Column::LIST:
                 listButtons[listScrollPos + curRow].unhovered();
@@ -889,7 +889,7 @@ bool ItemsPage::update() {
 
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         switch(curCol) {
             case Column::LIST:
                 listButtons[listScrollPos + curRow].unhovered();
@@ -1057,7 +1057,7 @@ void ColorPage::PresetsSubpage::close() {}
 bool ColorPage::PresetsSubpage::update() {
     bool moved = false;
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT) || InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT) || InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         switch(curCol) {
             case Column::LIST:
                 curCol = Column::BUTTONS;
@@ -1074,7 +1074,7 @@ bool ColorPage::PresetsSubpage::update() {
         moved = true;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         switch(curCol) {
             case Column::LIST:
                 if(curRow <= 0) {
@@ -1106,7 +1106,7 @@ bool ColorPage::PresetsSubpage::update() {
 
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         switch(curCol) {
             case Column::LIST:
                 if(curRow >= std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1) {
@@ -1146,7 +1146,7 @@ bool ColorPage::PresetsSubpage::update() {
     bool btnUpdate = false;
     switch(curCol) {
         case Column::LIST:
-            if(InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+            if(InputManager::getInstance().pressed(ButtonInfo::A)) {
                 btnUpdate = true;
 
                 getModel().loadPreset(listScrollPos + curRow);
@@ -1299,13 +1299,13 @@ void ColorPage::ColorPickerSubpage::drawDRC() const {
 }
 
 bool ColorPage::ColorPickerSubpage::updateList() {
-    if (InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
+    if (InputManager::getInstance().pressed(ButtonInfo::B)) {
         parent.setSubpage(Subpage::PRESETS);
         return true;
     }
 
     bool moved = false;
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_LEFT)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         if(curCol <= 0) {
             curCol = actions.size() - 1; //wrap on leftmost row
         }
@@ -1314,7 +1314,7 @@ bool ColorPage::ColorPickerSubpage::updateList() {
         }
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_RIGHT)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         if(curCol >= actions.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -1324,7 +1324,7 @@ bool ColorPage::ColorPickerSubpage::updateList() {
         moved = true;
     }
 
-    if(InputManager::getInstance().pressed(VPAD_BUTTON_UP)) {
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         // technically doesn't matter since they're the same number of textures but if some ever get split this will adjust itself
         if(getModel().casual) {
             if(curRow <= 0) {
@@ -1361,7 +1361,7 @@ bool ColorPage::ColorPickerSubpage::updateList() {
 
         moved = true;
     }
-    else if(InputManager::getInstance().pressed(VPAD_BUTTON_DOWN)) {
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         if(getModel().casual) {
             if(curRow >= std::min(LIST_HEIGHT, casualTextures.size()) - 1) {
                 if(casualTextures.size() > LIST_HEIGHT) {
@@ -1506,7 +1506,7 @@ void MetaPage::open() {}
 void MetaPage::close() {}
 
 bool MetaPage::update() {
-    //if (InputManager::getInstance().pressed(VPAD_BUTTON_A)) {
+    //if (InputManager::getInstance().pressed(ButtonInfo::A)) {
     //    SysAppBrowserArgs args;
     //    args.stdArgs.argString = nullptr;
     //    args.stdArgs.size = 0;
@@ -1516,7 +1516,7 @@ bool MetaPage::update() {
 
     //    return true;
     //}
-    //if (InputManager::getInstance().pressed(VPAD_BUTTON_B)) {
+    //if (InputManager::getInstance().pressed(ButtonInfo::B)) {
     //    SysAppBrowserArgs args;
     //    args.stdArgs.argString = nullptr;
     //    args.stdArgs.size = 0;

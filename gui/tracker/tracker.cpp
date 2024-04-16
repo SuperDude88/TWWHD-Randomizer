@@ -581,6 +581,8 @@ void MainWindow::update_tracker()
         // newLabel->set_location(loc);
         location_list_layout->addWidget(newLabel, row, col);
         connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
+        connect(newLabel, &TrackerLabel::mouse_over_location_label, this, &MainWindow::tracker_display_current_location);
+        connect(newLabel, &TrackerLabel::mouse_left_location_label, this, &MainWindow::tracker_clear_current_area_text);
         row++;
 
         // Maximum of 13 labels per coloumn
@@ -983,6 +985,12 @@ void MainWindow::tracker_clear_current_area_text()
     ui->current_area_remaining_number->setText("");
     ui->current_area_accessible_label->setVisible(false);
     ui->current_area_remaining_label->setVisible(false);
+}
+
+void MainWindow::tracker_display_current_location(Location* location)
+{
+    // Re-use the area name label for location names also
+    ui->current_area_name_label->setText(location->getName().c_str());
 }
 
 void MainWindow::tracker_display_current_entrance(Entrance* entrance)
