@@ -1,28 +1,28 @@
 default_hero_colors:
-  Hair:        FFEF10
-  Skin:        F7DB9C
-  Mouth:       F74963
-  Eyes:        10514A
-  Sclera:      FFFFFF
-  #Hat:        5AB24A
-  Tunic:       5AB24A
-  Undershirt:  ADE342
-  Pants:       FFFFFF
-  Boots:       944908
-  Belt:        633008
-  Belt Buckle: FFEF10
+  - Hair:        FFEF10
+  - Skin:        F7DB9C
+  - Mouth:       F74963
+  - Eyes:        10514A
+  - Sclera:      FFFFFF
+  - #Hat:        5AB24A
+  - Tunic:       5AB24A
+  - Undershirt:  ADE342
+  - Pants:       FFFFFF
+  - Boots:       944908
+  - Belt:        633008
+  - Belt Buckle: FFEF10
   
 default_casual_colors:
-  Hair:         FFEF10
-  Skin:         F7DB9C
-  Mouth:        F74963
-  Eyes:         10514A
-  Sclera:       FFFFFF
-  Shirt:        4A75AD
-  Shirt Emblem: FFFFD6
-  Armbands:     63696B
-  Pants:        FFA608
-  Shoes:        63696B
-  Shoe Soles:   D6BA39
+  - Hair:         FFEF10
+  - Skin:         F7DB9C
+  - Mouth:        F74963
+  - Eyes:         10514A
+  - Sclera:       FFFFFF
+  - Shirt:        4A75AD
+  - Shirt Emblem: FFFFD6
+  - Armbands:     63696B
+  - Pants:        FFA608
+  - Shoes:        63696B
+  - Shoe Soles:   D6BA39
 
 default_casual: false
