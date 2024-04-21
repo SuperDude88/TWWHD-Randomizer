@@ -137,7 +137,7 @@
   Forward: Star Island,                            Star Island Cave,                         sea,      2,          0, Cave02,   0,     0
   Return:  Star Island Cave,                       Star Island,                              Cave02,   0,          0, sea,      2,     1
 - Type: FAIRY
-  Forward: Outset Forest of Fairies,               Outset Island - Great Fairy Fountain,     A_mori,   0,          2, Fairy04,  0,     0
+  Forward: Outset Forest of Fairies,               Outset Island - Great Fairy Fountain,     A_mori,   0,          1, Fairy04,  0,     0
   Return:  Outset Island - Great Fairy Fountain,   Outset Forest of Fairies,                 Fairy04,  0,          0, A_mori,   0,     2
 - Type: FAIRY
   Forward: Northern Fairy Island, Northern Fairy Island - Great Fairy Fountain,              sea,      3,          0, Fairy01,  0,     0
