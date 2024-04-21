@@ -1,6 +1,28 @@
- ; save init needs more research before it can be added
 .org 0x025aece4
 	bl init_save_with_tweaks
+
+; Since save data gets initialized after starting a file, starting hearts/triforce shards/pearls don't appear until you've saved once
+; Add some code to display these properly
+.org 0x026CD978 ; when setting default values for the new file
+  b update_file_select_default_values
+.org @NextFreeSpace
+.global update_file_select_default_values
+update_file_select_default_values:
+  ; r11 has a pointer to dSv_info_c
+  lis r7, starting_quarter_hearts@ha
+  addi r7, r7, starting_quarter_hearts@l
+  lhz r7, 0x0(r7)
+  sth r7, 0x0(r11) ; Store maximum HP (including unfinished heart pieces)
+  rlwinm r7, r7, 0, 0, 29
+  sth r7, 0x2(r11) ; Store current HP (not including unfinished heart pieces)
+
+  ; add our other items (triforce shards, pearls, etc)
+  ; the data gets wiped again before loading the file so this shouldn't cause duplicate items
+  bl init_starting_gear
+
+  lwz r7, 0x48(r30) ; replace the line we overwrote to jump here
+  b 0x026CD98C ; return
+
 
 ; Set initial HP from a custom symbol and also also allow the initial current HP to be rounded down from the initial max HP (for starting with some heart pieces).
 .org 0x025b4dd4
@@ -15,10 +37,10 @@ set_starting_health:
   ; Base address to write health to is still stored in r3 from init__10dSv_save_cFv
   lis r31, starting_quarter_hearts@ha
   addi r31, r31, starting_quarter_hearts@l
-  lhz r11, 0 (r31)
-  sth r11, 0 (r3) ; Store maximum HP (including unfinished heart pieces)
-  rlwinm r11,r11,0,0,29
-  sth r11, 2 (r3) ; Store current HP (not including unfinished heart pieces)
+  lhz r11, 0x0(r31)
+  sth r11, 0x0(r3) ; Store maximum HP (including unfinished heart pieces)
+  rlwinm r11, r11, 0, 0, 29
+  sth r11, 0x2(r3) ; Store current HP (not including unfinished heart pieces)
 
   b 0x025b4dd8
 
