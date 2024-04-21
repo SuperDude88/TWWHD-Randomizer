@@ -1,7 +1,7 @@
 ; These modify places in the game's code to work better with randomized entrances.
 
 ; Quitting auction normally calls dComIfGp_setNextStage(0.0, "sea", 3, 0xb, 0xff, 0, 1, 0) to put you back on Windfall
-; This can be very inconvenient depending on what entrance lead to the auction house
+; This can be very inconvenient depending on what entrance led to the auction house
 ; Instead call dStage_changeScene(1, 0.0, 0, 0) and use the same exit as the door
 ; Then overwrite the exit's wipe type (0xB) with the original auction wipe type (0x0) so the fade out looks correct
 .org 0x0205cb8c

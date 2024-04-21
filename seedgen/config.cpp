@@ -392,7 +392,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
 
     // clamp numerical settings
     // health
-    settings.starting_hcs = std::clamp<uint16_t>(settings.starting_hcs, 0, MAXIMUM_STARTING_HC);
+    settings.starting_hcs = std::clamp<uint16_t>(settings.starting_hcs, 1, MAXIMUM_STARTING_HC);
     settings.starting_pohs = std::clamp<uint16_t>(settings.starting_pohs, 0, MAXIMUM_STARTING_HP);
     settings.damage_multiplier = std::clamp<float>(settings.damage_multiplier, 0, MAXIMUM_DAMAGE_MULTIPLIER);
 

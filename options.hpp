@@ -6,7 +6,7 @@
 #include <logic/GameItem.hpp>
 #include <customizer/model.hpp>
 
-constexpr uint16_t MAXIMUM_STARTING_HC = 6;
+constexpr uint16_t MAXIMUM_STARTING_HC = 9;
 constexpr uint16_t MAXIMUM_STARTING_HP = 44;
 constexpr uint16_t MAXIMUM_STARTING_JOY_PENDANTS = 40;
 constexpr uint16_t MAXIMUM_STARTING_SKULL_NECKLACES = 23;

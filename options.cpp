@@ -87,7 +87,7 @@ void Settings::resetDefaults() {
     };
 
     starting_pohs = 0;
-    starting_hcs = 0;
+    starting_hcs = 3;
     starting_joy_pendants = 0;
     starting_skull_necklaces = 0;
     starting_boko_baba_seeds = 0;

@@ -39,8 +39,44 @@ fully_refill_magic_meter_on_load_save:
   b 0x025ba944 ; Return
 
 
-; Animate the 500 rupee to be a rainbow rupee that animates between the colors of all other rupees.
+; Normally the game will give you at least 3 hearts when you reload a save
+; This is undesirable when starting the game with less than 3 hearts
+; So we need to cap it if your max health is less than 3 hearts
+.org 0x025BAA3C ; when saving a file, after checking if current health is less than 3 hearts
+  b cap_file_restore_health
+.org @NextFreeSpace
+.global cap_file_restore_health
+cap_file_restore_health:
+  lhz r0, 0(r31) ; load max health (r31 has a pointer to dSv_info_c)
+  rlwinm r0, r0, 0, 0, 29 ; round down to nearest full heart (exclude extra heart pieces)
 
+  cmplwi r0, 0xC
+  ble cap_file_restore_health_return ; use the maximum value if it's already < 3 hearts
+  
+  li r0, 0xC ; give 3 hearts
+
+cap_file_restore_health_return:
+  b 0x025BAA40 ; return to store our health value (from r0)
+
+; Also cap the health you're given after a game over
+.org 0x025499EC
+  b cap_game_over_restore_health
+.org @NextFreeSpace
+.global cap_game_over_restore_health
+cap_game_over_restore_health:
+  lhz r0, 0x20(r12) ; load max health (r12 has a pointer to SaveData)
+  rlwinm r0, r0, 0, 0, 29 ; round down to nearest full heart (exclude extra heart pieces)
+
+  cmplwi r0, 0xC
+  ble cap_game_over_restore_health_return ; use the maximum value if it's already <3
+  
+  li r0, 0xC ; give 3 hearts
+
+cap_game_over_restore_health_return:
+  b 0x025499F0 ; return to store our health value (from r0)
+
+
+; Animate the 500 rupee to be a rainbow rupee that animates between the colors of all other rupees.
 .org 0x021836d4
 	b check_animate_rainbow_rupee_color
 ; Manually animate rainbow rupees to cycle through all other rupee colors.

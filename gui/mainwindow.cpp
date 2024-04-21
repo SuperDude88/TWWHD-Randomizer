@@ -501,7 +501,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, remove_music);
 
     // Starting Health
-    APPLY_SPINBOX_SETTING(config, ui, starting_hcs, uint16_t(0), uint16_t(MAXIMUM_STARTING_HC));
+    APPLY_SPINBOX_SETTING(config, ui, starting_hcs, uint16_t(1), uint16_t(MAXIMUM_STARTING_HC));
     APPLY_SPINBOX_SETTING(config, ui, starting_pohs, uint16_t(0), uint16_t(MAXIMUM_STARTING_HP));
     APPLY_SPINBOX_SETTING(config, ui, starting_joy_pendants, uint16_t(0), uint16_t(MAXIMUM_STARTING_JOY_PENDANTS));
     APPLY_SPINBOX_SETTING(config, ui, starting_skull_necklaces, uint16_t(0), uint16_t(MAXIMUM_STARTING_SKULL_NECKLACES));
@@ -886,7 +886,7 @@ void MainWindow::on_remove_gear_clicked()
 
 void MainWindow::update_starting_health_text()
 {
-    int health = 12 + (config.settings.starting_hcs * 4);
+    int health = config.settings.starting_hcs * 4;
     health += config.settings.starting_pohs;
 
     int containers =  health / 4;

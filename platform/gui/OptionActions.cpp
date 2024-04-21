@@ -548,7 +548,7 @@ namespace OptionCB {
 
     std::string cycleStartingHC() {
         if(conf.settings.starting_hcs == MAXIMUM_STARTING_HC) {
-            conf.settings.starting_hcs = 0;
+            conf.settings.starting_hcs = 1;
         }
         else {
             conf.settings.starting_hcs++;

@@ -1325,9 +1325,9 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
 
 TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers) {
     if(custom_symbols.count("starting_quarter_hearts") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    const uint16_t base_health = 12;
-    const uint16_t starting_health = base_health + (heartContainers * 4) + heartPieces;
+    const uint16_t starting_health = (heartContainers * 4) + heartPieces;
     const uint32_t starting_quarter_hearts_address = custom_symbols.at("starting_quarter_hearts");
+
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([starting_quarter_hearts_address, starting_health](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
@@ -1335,6 +1335,10 @@ TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartC
 
         return true;
     });
+
+    if(starting_health < 8) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_low_health_effects_diff.yaml")); 
+    }
 
     return TweakError::NONE;
 }
