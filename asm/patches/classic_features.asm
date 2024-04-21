@@ -17,3 +17,14 @@
 ; Remove this check so you can always pause
 .org 0x0270F058
   nop
+
+
+; HD doesn't let you pause while Link is dead
+; Remove this restriction to match SD behavior
+.org 0x0270D9BC
+  nop
+  
+; HD doesn't let you enter loading zones while Link is dead
+; Remove this restriction to match SD behavior
+.org 0x023FEBC4
+  nop
