@@ -231,8 +231,8 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
     }
 
     // Add appropriate numbers of heart containers and heart pieces
-    int numContainers = 6 - settings.starting_hcs;
-    int numPieces = 44 - settings.starting_pohs;
+    int numContainers = MAXIMUM_STARTING_HC - settings.starting_hcs;
+    int numPieces = MAXIMUM_STARTING_HP - settings.starting_pohs;
     addElementToPool(completeItemPool, std::string("Heart Container"), numContainers);
     addElementToPool(completeItemPool, std::string("Piece of Heart"), numPieces);
 

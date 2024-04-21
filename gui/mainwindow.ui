@@ -1141,11 +1141,14 @@
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
                 <property name="maximum">
-                 <number>6</number>
+                 <number>9</number>
                 </property>
                 <property name="value">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <property name="displayIntegerBase">
                  <number>10</number>
@@ -2393,7 +2396,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>311</height>
+                    <height>290</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
@@ -2814,7 +2817,7 @@ font-weight: bold;</string>
               <x>10</x>
               <y>550</y>
               <width>311</width>
-              <height>61</height>
+              <height>86</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_9">
