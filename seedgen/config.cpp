@@ -366,9 +366,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         }
     }
 
-
-    GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
+    if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
+        if(!ignoreErrors) return ConfigError::MODEL_ERROR;
+    }
+    GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     // only non-default colors are written
     if(preferencesRoot["custom_colors"].IsMap()) {
         for(const auto& colorObject : preferencesRoot["custom_colors"]) {
@@ -384,10 +386,6 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
                 settings.selectedModel.setColor(texture, color);
             }
         }
-    }
-
-    if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
-        if(!ignoreErrors) return ConfigError::MODEL_ERROR;
     }
 
     // clamp numerical settings

@@ -28,11 +28,21 @@ std::tuple<std::string, std::string> MainWindow::get_option_name_and_color_name_
 void MainWindow::initialize_color_presets_list() {
     auto& model = config.settings.selectedModel;
     auto modelName = ui->custom_player_model->currentText().toStdString();
-    auto err = model.loadFromFolder();
-    if (err != ModelError::NONE) {
-        show_error_dialog("Error when trying to load custom model \"" + modelName + "\": " + errorToName(err));
-        return;
+
+    // The first time we initialize the presets we've already
+    // loaded in the model from the config. Skip loading it again
+    // so that we don't overwrite whether or not casual clothes
+    // are enabled
+    static bool firstLoad = true;
+    if (!firstLoad) {
+        auto err = model.loadFromFolder();
+        if (err != ModelError::NONE) {
+            show_error_dialog("Error when trying to load custom model \"" + modelName + "\": " + errorToName(err));
+            return;
+        }
+        
     }
+    firstLoad = false;
 
     ui->custom_color_preset->clear();
     // Loop through and add each preset
