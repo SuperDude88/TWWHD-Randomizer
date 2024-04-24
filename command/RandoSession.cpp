@@ -119,25 +119,28 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     baseDir = gameBaseDir;
     outputDir = randoOutputDir;
 
-    if(baseDir.empty()) {
-        ErrorLog::getInstance().log("No input path specified!");
-        return false;
-    }
+    // Only require input and output paths if we're actually patching
+    #if !defined(FILL_TESTING) && !defined(MASS_TESTING)
+        if(baseDir.empty()) {
+            ErrorLog::getInstance().log("No input path specified!");
+            return false;
+        }
 
-    if(outputDir.empty()) {
-        ErrorLog::getInstance().log("No output path specified!");
-        return false;
-    }
+        if(outputDir.empty()) {
+            ErrorLog::getInstance().log("No output path specified!");
+            return false;
+        }
 
-    if(baseDir == outputDir) {
-        ErrorLog::getInstance().log("Output dir can not be the same as input dir!");
-        return false;
-    }
+        if(baseDir == outputDir) {
+            ErrorLog::getInstance().log("Output dir can not be the same as input dir!");
+            return false;
+        }
 
-    if(!Utility::create_directories(outputDir)) { // handles directories that already exist
-        ErrorLog::getInstance().log("Failed to create output folder " + outputDir.string());
-        return false;
-    }
+        if(!Utility::create_directories(outputDir)) { // handles directories that already exist
+            ErrorLog::getInstance().log("Failed to create output folder " + outputDir.string());
+            return false;
+        }
+    #endif
 
     clearCache();
     initialized = true;

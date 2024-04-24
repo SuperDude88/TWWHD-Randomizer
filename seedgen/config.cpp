@@ -366,9 +366,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         }
     }
 
-
-    GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
+    if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
+        if(!ignoreErrors) return ConfigError::MODEL_ERROR;
+    }
+    GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     // only non-default colors are written
     if(preferencesRoot["custom_colors"].IsMap()) {
         for(const auto& colorObject : preferencesRoot["custom_colors"]) {
@@ -384,10 +386,6 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
                 settings.selectedModel.setColor(texture, color);
             }
         }
-    }
-
-    if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
-        if(!ignoreErrors) return ConfigError::MODEL_ERROR;
     }
 
     // clamp numerical settings
@@ -606,6 +604,11 @@ ConfigError Config::writeDefault(const std::string& filePath, const std::string&
 
     if (pref.is_open() == false) {
         Utility::platformLog("Creating default preferences\n");
+        // load in default link colors
+        if (conf.settings.selectedModel.loadFromFolder() != ModelError::NONE) {
+            Utility::platformLog("Could not load default color perferences\n");
+        }
+        conf.settings.selectedModel.loadPreset(0); // Load default preset
         LOG_AND_RETURN_IF_ERR(conf.writePreferences(preferencesPath))
     }
 

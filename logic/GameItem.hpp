@@ -285,7 +285,6 @@ static const std::set<GameItem> junkItems = {
     GameItem::PurpleRupee,
     GameItem::OrangeRupee,
     GameItem::PieceOfHeart,
-    GameItem::HeartContainer,
     GameItem::SmallMagicDrop,
     GameItem::LargeMagicDrop,
     GameItem::FiveBombs,
@@ -396,6 +395,7 @@ public:
     void saveDelayedItemId();
     void setAsMajorItem();
     bool isMajorItem() const;
+    bool anyInstancesAreMajor() const;
     bool isChartForSunkenTreasure() const;
     void addChainLocation(Location* location);
     std::list<Location*>& getChainLocations();
