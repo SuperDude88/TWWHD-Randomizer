@@ -606,6 +606,11 @@ ConfigError Config::writeDefault(const std::string& filePath, const std::string&
 
     if (pref.is_open() == false) {
         Utility::platformLog("Creating default preferences\n");
+        // load in default link colors
+        if (conf.settings.selectedModel.loadFromFolder() != ModelError::NONE) {
+            Utility::platformLog("Could not load default color perferences\n");
+        }
+        conf.settings.selectedModel.loadPreset(0); // Load default preset
         LOG_AND_RETURN_IF_ERR(conf.writePreferences(preferencesPath))
     }
 
