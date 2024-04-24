@@ -1413,6 +1413,16 @@ Item World::getItem(const std::string& itemName)
     return itemTable[sanitizedName];
 }
 
+bool World::anyOfThisItemIsMajor(const Item& item) const
+{
+    for (const auto& [name, loc] : locationTable) {
+        if (loc->currentItem.isMajorItem() && item == loc->currentItem) {
+            return true;
+        }
+    }
+    return false;
+}
+
 std::string World::errorToName(WorldLoadingError err)
 {
     switch(err)

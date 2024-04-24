@@ -210,11 +210,11 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "starting_pohs",
-      "Amount of extra pieces of heart that you start with."
+      "Amount of extra pieces of heart that you start with. If you start with less than 3 total hearts, and Chest Type Matches Contents is on, then heart containers will be put into metal chests."
     },
     {
       "starting_hcs",
-      "Amount of extra heart containers that you start with."
+      "Amount of heart containers that you start with. If you start with less than 3 total hearts, and Chest Type Matches Contents is on, then heart containers will be put into metal chests."
     },
     {
       "starting_joy_pendants",

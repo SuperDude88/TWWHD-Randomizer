@@ -22,6 +22,7 @@ enum struct RequirementType
     HAS_ITEM,
     EVENT,
     COUNT,
+    HEALTH,
     CAN_ACCESS,
     SETTING,
     MACRO,

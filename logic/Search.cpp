@@ -14,6 +14,8 @@ using EventSet = std::unordered_set<EventId>;
 static bool evaluateRequirement(World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
 {
     uint32_t expectedCount = 0;
+    uint32_t expectedHearts = 0;
+    uint32_t totalHearts = 0;
     Item item;
     EventId event;
 
@@ -58,6 +60,13 @@ static bool evaluateRequirement(World& world, const Requirement& req, const Item
         expectedCount = std::get<int>(req.args[0]);
         item = std::get<Item>(req.args[1]);
         return ownedItems.count(item) >= expectedCount;
+
+    case RequirementType::HEALTH:
+        expectedHearts = std::get<int>(req.args[0]);
+        totalHearts = ownedItems.count(Item(GameItem::HeartContainer, &world)) +
+                      world.getSettings().starting_hcs +
+                      (world.getSettings().starting_pohs / 4);
+        return totalHearts >= expectedHearts;
 
     case RequirementType::CAN_ACCESS:
         return world.getArea(std::get<std::string>(req.args[0]))->isAccessible;

@@ -1343,7 +1343,7 @@
 
 - Name: Shark Island Cave
   Locations:
-      Shark Island - Cave Chest: Can_Defeat_Miniblins
+      Shark Island - Cave Chest: Can_Defeat_Bokoblins and health(3)
   Events:
       Can Farm Knights Crests: Grappling_Hook and Spoils_Bag
   Exits:
@@ -3166,7 +3166,7 @@
 - Name: Ganon's Tower Puppet Ganon Boss Room
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Spire: Light_Arrows and Hookshot and Grappling_Hook and Boomerang
+      Ganon's Tower Spire: Can_Defeat_Puppet_Ganon
 
 - Name: Ganon's Tower Spire
   Hint Region: Ganon's Tower

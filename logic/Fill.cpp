@@ -317,41 +317,58 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
     LOG_TO_DEBUG("Determining Major Items");
     LOG_TO_DEBUG("New Major Items: [");
     auto progressionLocations = filterFromPool(allLocations, [](const Location* location){return location->progression;});
-    shufflePool(itemPool);
+
+    // Combine the item pool as well as all items that have already been placed to test
+    std::vector<Item*> totalItemPool = {};
     for (auto& item : itemPool)
     {
+        totalItemPool.push_back(&item);
+    }
+    for (auto& world : worlds)
+    {
+        for (auto& location : world.getLocations(true))
+        {
+            if (location->currentItem.getGameItemId() != GameItem::INVALID)
+            {
+                totalItemPool.push_back(&location->currentItem);
+            }
+        }
+    }
+
+    shufflePool(totalItemPool);
+    for (auto item : totalItemPool)
+    {
         // Don't check junk items
-        if (!item.isJunkItem())
+        if (!item->isJunkItem())
         {
             // Temporarily take this item out of the pool
-            auto gameItemId = item.getGameItemId();
-            item.setGameItemId(GameItem::NOTHING);
+            auto gameItemId = item->getGameItemId();
+            item->setGameItemId(GameItem::NOTHING);
 
-            auto thisWorldsProgressionLocations = filterFromPool(progressionLocations, [item](const Location* location){return location->world->getWorldId() == item.getWorldId();});
-
-            // If all progress locations in the item's world are not reachable,
+            // If all progress locations are not reachable,
             // set it as a major item and give back it's gameitemId
-            if (!locationsReachable(worlds, itemPool, thisWorldsProgressionLocations, item.getWorldId()))
+            
+            if (!locationsReachable(worlds, itemPool, progressionLocations))
             {
-                item.setAsMajorItem();
-                item.setGameItemId(gameItemId);
-                LOG_TO_DEBUG("\t" + item.getName());
+                item->setAsMajorItem();
+                item->setGameItemId(gameItemId);
+                LOG_TO_DEBUG("\t" + item->getName());
             }
             // Otherwise save the gameItemId to re-apply later once all major items
             // have been determined
             else
             {
-                item.setDelayedItemId(gameItemId);
+                item->setDelayedItemId(gameItemId);
             }
         }
     }
     LOG_TO_DEBUG("]");
     // Re-apply all items which had delayed items set
-    for (auto& item : itemPool)
+    for (auto item : totalItemPool)
     {
-        if (item.getGameItemId() == GameItem::NOTHING)
+        if (item->getGameItemId() == GameItem::NOTHING)
         {
-            item.saveDelayedItemId();
+            item->saveDelayedItemId();
         }
     }
 }

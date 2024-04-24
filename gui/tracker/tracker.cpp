@@ -63,6 +63,8 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         }
     }
 
+    // Give 3 hearts so that all heart checks pass logic
+    trackerSettings.starting_hcs = 3;
 
     trackerWorld.setSettings(trackerSettings);
     if (trackerWorld.loadWorld(DATA_PATH "logic/world.yaml", DATA_PATH "logic/macros.yaml", DATA_PATH "logic/location_data.yaml", DATA_PATH "logic/item_data.yaml", DATA_PATH "logic/area_names.yaml"))
