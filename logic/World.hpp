@@ -102,6 +102,7 @@ public:
     void addEvent(const std::string& eventName);
     void addLocation(const std::string& locationName);
     Item getItem(const std::string& itemName);
+    bool anyOfThisItemIsMajor(const Item& item) const;
 
     // Stuff to help with debugging
     std::string errorToName(WorldLoadingError err);

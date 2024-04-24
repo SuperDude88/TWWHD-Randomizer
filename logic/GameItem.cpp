@@ -757,6 +757,20 @@ bool Item::isMajorItem() const
     return majorItem;
 }
 
+bool Item::anyInstancesAreMajor() const
+{
+    if (majorItem)
+    {
+        return true;
+    }
+
+    if (world)
+    {
+        return world->anyOfThisItemIsMajor(*this);
+    }
+    return false;
+}
+
 bool Item::isChartForSunkenTreasure() const
 {
     return chartForSunkenTreasure;
