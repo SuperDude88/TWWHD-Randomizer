@@ -49,9 +49,10 @@ Double Magic: count(2, Progressive_Magic_Meter)
 All 8 Shards: Triforce_Shard_1 and Triforce_Shard_2 and Triforce_Shard_3 and Triforce_Shard_4 and Triforce_Shard_5 and Triforce_Shard_6 and Triforce_Shard_7 and Triforce_Shard_8
 Can Defeat Phantom Ganon: (Outside_Swordless_Mode and Master_Sword) or (In_Swordless_Mode and Skull_Hammer)
 Can Get Past Hyrule Barrier: In_Swordless_Mode or Full_Power_Master_Sword
-Can Defeat Ganondorf: Heros_Shield and (In_Swordless_Mode or Heros_Sword)
+Can Defeat Puppet Ganon: health(3) and Light_Arrows and Hookshot and Grappling_Hook and Boomerang
+Can Defeat Ganondorf: health(3) and Heros_Shield and (In_Swordless_Mode or Heros_Sword)
 Rescued Aryll: Nothing
-# CanFarmKnightsCrests: This is now an event
+
 Can Farm Joy Pendants: Grappling_Hook and Spoils_Bag
 Can Farm Skull Necklaces: Grappling_Hook and Spoils_Bag
 Can Farm Golden Feathers: Grappling_Hook and Spoils_Bag
@@ -61,9 +62,9 @@ Can Defeat Bokoblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
 Can Defeat Green Bokoblins: Can_Defeat_Bokoblins
 Can Defeat Blue Bokoblins: Can_Defeat_Bokoblins
 Can Defeat Pink Bokoblins: Can_Defeat_Bokoblins
-Can Defeat Moblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
-Can Defeat Darknuts: Heros_Sword or Light_Arrows or Skull_Hammer
-Can Defeat Darknuts Easily: Heros_Sword or Light_Arrows
+Can Defeat Moblins: health(2) and (Heros_Sword or Heros_Bow or Skull_Hammer or Bombs)
+Can Defeat Darknuts: Skull_Hammer or Can_Defeat_Darknuts_Easily
+Can Defeat Darknuts Easily: (health(3) and Heros_Sword) or Light_Arrows
 Can Defeat Mighty Darknuts: Can_Defeat_Darknuts_Easily
 Can Defeat Miniblins: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs or Grappling_Hook or Boomerang
 Can Defeat Miniblins Easily: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs or Boomerang
@@ -92,11 +93,11 @@ Can Defeat Big Octos: Heros_Bow or Bombs or Boomerang
 Can Defeat 12 Eye Big Octos: Light_Arrows or Bombs or Boomerang or (Heros_Bow and 60_Quiver)
 Can Defeat Red Bubbles: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs or (Grappling_Hook and (Hookshot or Can_Fan_With_Deku_Leaf))
 Can Defeat Blue Bubbles: Ice_Arrows or Bombs or ((Heros_Sword or Heros_Bow or Grappling_Hook or Skull_Hammer) and (Hookshot or Can_Fan_With_Deku_Leaf))
-Can Defeat ReDeads: Heros_Sword or Light_Arrows or Bombs or Skull_Hammer
+Can Defeat ReDeads: health(2) and (Heros_Sword or Light_Arrows or Bombs or Skull_Hammer)
 Can Defeat Poes: Nothing
 Can Defeat Poes Without Light Ray: Heros_Sword or Heros_Bow or Hookshot or Skull_Hammer or Bombs or Boomerang or Grappling_Hook
 Can Defeat Jalhalla Poes: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
-Can Defeat Stalfos: Heros_Sword or Light_Arrows or Skull_Hammer or Bombs
+Can Defeat Stalfos: health(2) and (Heros_Sword or Light_Arrows or Skull_Hammer or Bombs)
 Can Defeat Floormasters: Heros_Sword or Heros_Bow
 Can Defeat Morths: Heros_Sword or Heros_Bow or Boomerang or Hookshot
 Can Defeat Rats: Heros_Sword or Heros_Bow or Bombs or Boomerang or Skull_Hammer or Grappling_Hook
@@ -112,7 +113,7 @@ Can Defeat Kalle Demos: Boomerang
 Can Defeat Gohdan: Bombs and (Hookshot or Heros_Bow)
 Can Defeat Helmaroc King: Skull_Hammer
 Can Defeat Jalhalla: Can_Defeat_Jalhalla_Poes and Power_Bracelets and (Can_Aim_Mirror_Shield or Light_Arrows)
-Can Defeat Molgera: Hookshot and (Heros_Sword or Heros_Bow or Boomerang or Grappling_Hook or Skull_Hammer or Bombs)
+Can Defeat Molgera: health(3) and Hookshot and (Heros_Sword or Heros_Bow or Boomerang or Grappling_Hook or Skull_Hammer or Bombs)
 Can Destroy Wooden Barriers: Bombs or Fire_Arrows
 Can Destroy Cannons: Bombs or Boomerang
 Can Cut Down Outset Trees: Skull_Hammer or Boomerang or Heros_Sword
