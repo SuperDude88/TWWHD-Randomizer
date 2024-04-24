@@ -248,7 +248,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             }
             return RequirementError::NONE;
         }
-        // And finally a count...
+        // Then a count...
         else if (argStr.find("count") != std::string::npos)
         {
             req.type = RequirementType::COUNT;
@@ -275,6 +275,16 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             std::string itemName = splitLogicStr[1];
             req.args.push_back(count);
             req.args.push_back(world->getItem(itemName));
+            return RequirementError::NONE;
+        }
+
+        // And finally a health check
+        else if (argStr.find("health") != std::string::npos)
+        {
+            req.type = RequirementType::HEALTH;
+            std::string numHeartsStr (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
+            int numHearts = std::stoi(numHeartsStr);
+            req.args.push_back(numHearts);
             return RequirementError::NONE;
         }
 

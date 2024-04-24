@@ -285,7 +285,6 @@ static const std::set<GameItem> junkItems = {
     GameItem::PurpleRupee,
     GameItem::OrangeRupee,
     GameItem::PieceOfHeart,
-    GameItem::HeartContainer,
     GameItem::SmallMagicDrop,
     GameItem::LargeMagicDrop,
     GameItem::FiveBombs,
