@@ -54,7 +54,7 @@ static std::string getSpoilerFormatHint(Location* location)
 {
     // Get rid of commands in the hint text and then convert to UTF-8
     std::u16string hintText = location->hint.text["English"];
-    for (auto eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
+    for (const auto& eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
     {
         auto pos = std::string::npos;
         while ((pos = hintText.find(eraseText)) != std::string::npos)
@@ -131,9 +131,9 @@ void generateSpoilerLog(WorldPool& worlds)
     size_t longestNameLength = 0;
     size_t longestEntranceLength = 0;
     LOG_TO_DEBUG("Getting Name Lengths");
-    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++)
+    for (auto & playthroughSphere : playthroughSpheres)
     {
-        for (auto location : *sphereItr)
+        for (auto location : playthroughSphere)
         {
             longestNameLength = std::max(longestNameLength, location->getName().length());
         }
@@ -155,7 +155,7 @@ void generateSpoilerLog(WorldPool& worlds)
     {
         spoilerLog << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereLocations = *sphereItr;
-        sphereLocations.sort([](Location* a, Location* b){return *a < *b;});
+        sphereLocations.sort([](const Location* a, const Location* b){return *a < *b;});
         for (auto location : sphereLocations)
         {
             spoilerLog << "        " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
@@ -180,7 +180,7 @@ void generateSpoilerLog(WorldPool& worlds)
         }
         spoilerLog << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereEntrances = *sphereItr;
-        sphereEntrances.sort([](Entrance* a, Entrance* b){return *a < *b;});
+        sphereEntrances.sort([](const Entrance* a, const Entrance* b){return *a < *b;});
         for (auto entrance : sphereEntrances)
         {
             spoilerLog << "        " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
@@ -198,7 +198,7 @@ void generateSpoilerLog(WorldPool& worlds)
         }
 
         spoilerLog << "Entrances for world " << std::to_string(world.getWorldId()) << ":" << std::endl;
-        std::sort(entrances.begin(), entrances.end(), [](Entrance* a, Entrance* b){return *a < *b;});
+        std::ranges::sort(entrances, [](const Entrance* a, const Entrance* b){return *a < *b;});
         for (auto entrance : entrances)
         {
             spoilerLog << "    " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;

@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <unordered_set>
-
 #include <logic/Requirements.hpp>
 
 enum struct EntranceType
@@ -43,7 +41,7 @@ public:
     void setConnectedArea(Area* newConnectedArea);
     Area* getOriginalConnectedArea() const;
     Requirement& getRequirement();
-    void setRequirement(const Requirement newRequirement);
+    void setRequirement(Requirement newRequirement);
     EntranceType getEntranceType() const;
     void setEntranceType(EntranceType newType);
     EntranceType getOriginalEntranceType() const;

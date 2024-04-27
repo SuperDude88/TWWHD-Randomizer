@@ -8,7 +8,6 @@
 
 #include <unordered_map>
 #include <algorithm>
-#include <functional>
 
 
 
@@ -115,7 +114,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
     // all the spaces on the highest nesting level with an arbitrarily chosen delimeter
     // (in this case: '+').
     int nestingLevel = 1;
-    const char delimeter = '+';
+    constexpr char delimeter = '+';
     for (auto& ch : logicStr)
     {
         if (ch == '(')
@@ -171,7 +170,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
     {
 
         std::string argStr = splitLogicStr[0];
-        std::replace(argStr.begin(), argStr.end(), '_', ' ');
+        std::ranges::replace(argStr, '_', ' ');
         // First, see if we have nothing
         if (argStr == "Nothing")
         {
@@ -188,7 +187,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
 
             EventId eventId = world->eventMap[eventName];
 
-            req.args.push_back(eventId);
+            req.args.emplace_back(eventId);
             return RequirementError::NONE;
         }
 
@@ -196,30 +195,30 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         if (world->macroNameMap.contains(argStr))
         {
             req.type = RequirementType::MACRO;
-            req.args.push_back(world->macroNameMap.at(argStr));
+            req.args.emplace_back(world->macroNameMap.at(argStr));
             return RequirementError::NONE;
         }
         // Then an item...
-        else if (nameToGameItem(argStr) != GameItem::INVALID)
+        if (nameToGameItem(argStr) != GameItem::INVALID)
         {
             req.type = RequirementType::HAS_ITEM;
-            req.args.push_back(world->getItem(argStr));
+            req.args.emplace_back(world->getItem(argStr));
             return RequirementError::NONE;
         }
         // Then a can_access check...
-        else if (argStr.find("can access") != std::string::npos)
+        if (argStr.find("can access") != std::string::npos)
         {
             req.type = RequirementType::CAN_ACCESS;
             std::string areaName (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
             auto area = world->getArea(areaName);
-            req.args.push_back(area->name);
+            req.args.emplace_back(area->name);
             return RequirementError::NONE;
         }
         // Then a boolean setting...
         else if (world->getSettings().evaluateOption(argStr) != -1)
         {
             req.type = RequirementType::SETTING;
-            req.args.push_back(world->getSettings().evaluateOption(argStr));
+            req.args.emplace_back(world->getSettings().evaluateOption(argStr));
             return RequirementError::NONE;
         }
         // Then a setting that has more than just an on/off option...
@@ -240,11 +239,11 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             // If the comparison is true
             if ((equalComparison && actualOption == comparedOption) || (!equalComparison && actualOption != comparedOption))
             {
-                req.args.push_back(true);
+                req.args.emplace_back(true);
             }
             else
             {
-                req.args.push_back(false);
+                req.args.emplace_back(false);
             }
             return RequirementError::NONE;
         }
@@ -273,8 +272,8 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             // Get the arguments
             int count = std::stoi(splitLogicStr[0]);
             std::string itemName = splitLogicStr[1];
-            req.args.push_back(count);
-            req.args.push_back(world->getItem(itemName));
+            req.args.emplace_back(count);
+            req.args.emplace_back(world->getItem(itemName));
             return RequirementError::NONE;
         }
 
@@ -284,7 +283,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             req.type = RequirementType::HEALTH;
             std::string numHeartsStr (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
             int numHearts = std::stoi(numHeartsStr);
-            req.args.push_back(numHearts);
+            req.args.emplace_back(numHearts);
             return RequirementError::NONE;
         }
 
@@ -344,8 +343,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         {
             req.type = RequirementType::AND;
         }
-        else if (orType)
-        {
+        else {
             req.type = RequirementType::OR;
         }
 

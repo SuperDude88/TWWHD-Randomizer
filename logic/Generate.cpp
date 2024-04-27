@@ -10,7 +10,6 @@
 
 #include <logic/Plandomizer.hpp>
 #include <logic/World.hpp>
-#include <logic/ItemPool.hpp>
 #include <logic/Fill.hpp>
 #include <logic/SpoilerLog.hpp>
 #include <logic/Hints.hpp>

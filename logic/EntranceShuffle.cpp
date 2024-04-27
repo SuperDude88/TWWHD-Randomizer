@@ -249,7 +249,7 @@ static void confirmReplacement(Entrance* entrance, Entrance* targetEntrance)
     }
 }
 
-static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entrancePlaced, ItemPool& itemPool)
+static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* entrancePlaced, ItemPool& itemPool)
 {
     LOG_TO_DEBUG("Validating World");
     // Ensure that all item locations are still reachable within the given world
@@ -277,7 +277,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         // }
         LOG_TO_DEBUG("]");
     #endif
-    if (locs.size() == 0)
+    if (locs.empty())
     {
         LOG_TO_DEBUG("Error: Not enough sphere zero locations to place items");
         return EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS;
@@ -351,8 +351,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, Entrance* entranceP
         {
             if (dungeon.startingEntrance->getReverse())
             {
-                auto dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces();
-                if (dungeonExit)
+                if (const auto dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces())
                 {
                     if (dungeonExit->isPrimary() && isAnyOf(dungeonExit->getOriginalEntranceType(), EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::MINIBOSS))
                     {
@@ -386,7 +385,7 @@ static EntranceShuffleError replaceEntrance(WorldPool& worlds, Entrance* entranc
         }
         return err;
     }
-    rollbacks.push_back({entrance, target});
+    rollbacks.emplace_back(entrance, target);
     return EntranceShuffleError::NONE;
 }
 
@@ -529,7 +528,7 @@ static EntranceShuffleError processPlandomizerEntrances(World& world)
     return EntranceShuffleError::NONE;
 }
 
-static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& worlds, EntrancePools& entrancePools, EntrancePools& targetEntrancePools, std::set<EntranceType>& poolsToMix)
+static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& worlds, EntrancePools& entrancePools, EntrancePools& targetEntrancePools, const std::set<EntranceType>& poolsToMix)
 {
     LOG_TO_DEBUG("Now placing plandomized entrances");
     ItemPool completeItemPool = {};
@@ -782,7 +781,7 @@ EntrancePools createEntrancePools(World& world, std::set<EntranceType>& poolsToM
         // Don't randomize the cliff plateau upper isles grotto unless entrances are decoupled
         else
         {
-            filterAndEraseFromPool(entrancePools[EntranceType::CAVE], [](Entrance* e){return e->getParentArea()->name == "Cliff Plateau Highest Isle";});
+            filterAndEraseFromPool(entrancePools[EntranceType::CAVE], [](const Entrance* e){return e->getParentArea()->name == "Cliff Plateau Highest Isle";});
         }
     }
 

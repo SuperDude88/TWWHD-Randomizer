@@ -5,7 +5,7 @@
 #include <logic/Area.hpp>
 #include <command/Log.hpp>
 
-Entrance::Entrance() {}
+Entrance::Entrance() = default;
 
 Entrance::Entrance(Area* parentArea_, Area* connectedArea_, World* world_)
 {
@@ -55,7 +55,7 @@ Requirement& Entrance::getRequirement()
 
 void Entrance::setRequirement(const Requirement newRequirement)
 {
-    requirement = std::move(newRequirement);
+    requirement = newRequirement;
 }
 
 EntranceType Entrance::getEntranceType() const

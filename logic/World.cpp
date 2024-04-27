@@ -32,10 +32,7 @@
 
 int World::eventCounter = 0;
 
-World::World()
-{
-
-}
+World::World() = default;
 
 World::World(size_t numWorlds_)
 {
@@ -45,7 +42,7 @@ World::World(size_t numWorlds_)
 // Potentially set different settings for different worlds
 void World::setSettings(const Settings& settings_)
 {
-    settings = std::move(settings_);
+    settings = settings_;
     originalSettings = settings;
     addSpoilsToStartingGear();
 }
@@ -59,7 +56,7 @@ void World::resolveRandomSettings()
 {
     if (settings.pig_color == PigColor::Random)
     {
-        settings.pig_color = PigColor(Random(0, 3));
+        settings.pig_color = static_cast<PigColor>(Random(0, 3));
         LOG_TO_DEBUG("Random pig color chosen: " + PigColorToName(settings.pig_color));
     }
 
@@ -92,7 +89,7 @@ void World::resolveRandomSettings()
         });
 
         // If we already have all the potential starting items, then don't start with one
-        if (randomStartingItemPool.size() == 0) {
+        if (randomStartingItemPool.empty()) {
             LOG_TO_DEBUG("No items to choose from for random starting item");
         }
         else {
@@ -116,7 +113,7 @@ void World::resolveRandomSettings()
         const std::vector<GameItem>& removed = filterAndEraseFromPool(randomItemSlidingItemPool, [&](const auto& item){
             return elementInPool(item, settings.starting_gear);
         });
-        if(removed.size() > 0) {
+        if(!removed.empty()) {
             LOG_TO_DEBUG("Already starting with an item sliding item, an additional one will not be chosen.");
         }
         else {
@@ -130,7 +127,7 @@ void World::resolveRandomSettings()
 void World::addSpoilsToStartingGear()
 {
     // Short helper function for adding the spoils to the starting_gear
-    auto addSpoils = [&](uint16_t& setting, const GameItem& gameItem){
+    auto addSpoils = [&](const uint16_t& setting, const GameItem& gameItem){
         for (uint16_t i = 0; i < setting; i++)
         {
             settings.starting_gear.push_back(gameItem);
@@ -170,7 +167,7 @@ World::WorldLoadingError World::setItemPools()
         ITEM_VALID_CHECK(nameToGameItem(item), item + " is not defined");
         startingItems.push_back(getItem(item));
         // If a starting item is in the main item pool, replace it with some junk
-        auto itemPoolItr = std::find(gameItemPool.begin(), gameItemPool.end(), item);
+        auto itemPoolItr = std::ranges::find(gameItemPool, item);
         if (itemPoolItr != gameItemPool.end())
         {
             auto junk = getRandomJunk();
@@ -224,7 +221,7 @@ LocationPool World::getProgressionLocations()
 
 size_t World::getNumOverworldProgressionLocations()
 {
-    return std::count_if(locationTable.begin(), locationTable.end(), [](auto& pair){return pair.second->progression && !pair.second->categories.contains(LocationCategory::Dungeon);});
+    return std::ranges::count_if(locationTable, [](auto& pair){return pair.second->progression && !pair.second->categories.contains(LocationCategory::Dungeon);});
 }
 
 Area* World::getArea(const std::string& area)
@@ -363,7 +360,7 @@ World::WorldLoadingError World::determineProgressionLocations()
     {
         // If all of the location categories for a location are set as progression, then this is a location which
         // is allowed to contain progression items (but it won't necessarily get one)
-        if (std::all_of(location->categories.begin(), location->categories.end(), [&location = location, this](LocationCategory category)
+        if (std::ranges::all_of(location->categories, [&location = location, this](LocationCategory category)
         {
             if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
@@ -423,7 +420,7 @@ World::WorldLoadingError World::setDungeonLocations()
             {
                 auto connectedDungeons = area->findDungeons();
                 auto hintRegions = area->findHintRegions();
-                if (connectedDungeons.size() > 0 && connectedDungeons.size() == hintRegions.size())
+                if (!connectedDungeons.empty() && connectedDungeons.size() == hintRegions.size())
                 {
                     auto& dungeonName = connectedDungeons.front();
                     auto& dungeon = getDungeon(dungeonName);
@@ -509,8 +506,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
                     for (auto dungeonLocation : allDungeonLocations)
                     {
-                        bool dungeonLocationForcesRaceMode = !plandomizer.locations.contains(dungeonLocation) ? false : !plandomizer.locations[dungeonLocation].isJunkItem();
-                        if (dungeonLocationForcesRaceMode)
+                        if (!plandomizer.locations.contains(dungeonLocation) || !plandomizer.locations[dungeonLocation].isJunkItem())
                         {
                             // However, if the dungeon's naturally assigned race mode location is junk then
                             // that's an error on the user's part.
@@ -662,7 +658,7 @@ World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
 World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
 {
     YAML_FIELD_CHECK(locationObject, "Names", WorldLoadingError::ITEM_MISSING_KEY);
-    const std::string locationName = locationObject["Names"]["English"].as<std::string>();
+    const auto locationName = locationObject["Names"]["English"].as<std::string>();
 
     addLocation(locationName);
     Location* location = locationTable[locationName].get();
@@ -764,7 +760,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
     // list of outside dependent locations
     if (locationObject["Dungeon Dependency"])
     {
-        const std::string dungeonName = locationObject["Dungeon Dependency"].as<std::string>();
+        const auto dungeonName = locationObject["Dungeon Dependency"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeonName);
         Dungeon& dungeon = dungeons[dungeonName];
         dungeon.outsideDependentLocations.push_back(location);
@@ -861,7 +857,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     // Check to see if this area is assigned to an island
     if (areaObject["Island"])
     {
-        const std::string island = areaObject["Island"].as<std::string>();
+        const auto island = areaObject["Island"].as<std::string>();
         area->island = island;
         hintRegions[island] = {};
     }
@@ -869,7 +865,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     // Check to see if this area is assigned to a dungeon
     if (areaObject["Dungeon"])
     {
-        const std::string dungeon = areaObject["Dungeon"].as<std::string>();
+        const auto dungeon = areaObject["Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon)
         area->dungeon = dungeon;
         hintRegions[dungeon] = {};
@@ -879,7 +875,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     // for later finding which island leads to this dungeon in race mode
     if (areaObject["Dungeon Starting Room"])
     {
-        const std::string dungeon = areaObject["Dungeon Starting Room"].as<std::string>();
+        const auto dungeon = areaObject["Dungeon Starting Room"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon)
         dungeons[dungeon].startingArea = area;
     }
@@ -887,7 +883,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     // Check to see if this area is assigned to a hint region
     if (areaObject["Hint Region"])
     {
-        const std::string region = areaObject["Hint Region"].as<std::string>();
+        const auto region = areaObject["Hint Region"].as<std::string>();
         area->hintRegion = region;
         hintRegions[region] = {};
     }
@@ -897,8 +893,8 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     {
         for (const auto& event : areaObject["Events"]) {
             EventAccess eventOut;
-            const std::string eventName = event.first.as<std::string>();
-            const std::string logicExpression = event.second.as<std::string>();
+            const auto eventName = event.first.as<std::string>();
+            const auto logicExpression = event.second.as<std::string>();
             err = loadEventRequirement(eventName, logicExpression, eventOut);
             if (err != WorldLoadingError::NONE)
             {
@@ -916,7 +912,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
         for (const auto& locationNode : areaObject["Locations"]) {
             LocationAccess locOut;
             locOut.area = area;
-            const std::string locationName = locationNode.first.as<std::string>();
+            const auto locationName = locationNode.first.as<std::string>();
             LOCATION_VALID_CHECK(locationName, "Unknown location name \"" + locationName + "\" when parsing area \"" + loadedArea + "\"");
             err = loadLocationRequirement(locationName, locationNode.second.as<std::string>(), locOut);
             if (err != WorldLoadingError::NONE)
@@ -974,7 +970,7 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
     YAML_FIELD_CHECK(itemObject, "Game Item Id", WorldLoadingError::ITEM_MISSING_KEY);
 
     auto names = itemObject["Names"];
-    const std::string itemName = names["English"].as<std::string>();
+    const auto itemName = names["English"].as<std::string>();
     const GameItem gameItemId = idToGameItem(itemObject["Game Item Id"].as<uint8_t>());
 
     LOG_TO_DEBUG("Loading item \"" + itemName + "\". Game Item ID to name: " + gameItemToName(gameItemId));
@@ -1020,7 +1016,7 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
     {
         for (auto location : itemObject["Chain Locations"])
         {
-            const std::string locationName = location.as<std::string>();
+            const auto locationName = location.as<std::string>();
             addLocation(locationName);
             item.addChainLocation(locationTable[locationName].get());
             LOG_TO_DEBUG("\"" + locationName + "\" added as chain location for \"" + itemName + "\"");
@@ -1029,7 +1025,7 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
 
     if (itemObject["Small Key Dungeon"])
     {
-        const std::string dungeon = itemObject["Small Key Dungeon"].as<std::string>();
+        const auto dungeon = itemObject["Small Key Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         LOG_TO_DEBUG(itemName + " is small key for " + dungeon);
         dungeons[dungeon].smallKey = getItem(itemName);
@@ -1041,7 +1037,7 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
 
     if (itemObject["Big Key Dungeon"])
     {
-        const std::string dungeon = itemObject["Big Key Dungeon"].as<std::string>();
+        const auto dungeon = itemObject["Big Key Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         LOG_TO_DEBUG(itemName + " is big key for " + dungeon);
         dungeons[dungeon].bigKey = getItem(itemName);
@@ -1049,14 +1045,14 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
 
     if (itemObject["Map Dungeon"])
     {
-        const std::string dungeon = itemObject["Map Dungeon"].as<std::string>();
+        const auto dungeon = itemObject["Map Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         dungeons[dungeon].map = getItem(itemName);
     }
 
     if (itemObject["Compass Dungeon"])
     {
-        const std::string dungeon = itemObject["Compass Dungeon"].as<std::string>();
+        const auto dungeon = itemObject["Compass Dungeon"].as<std::string>();
         VALID_DUNGEON_CHECK(dungeon);
         dungeons[dungeon].compass = getItem(itemName);
     }
@@ -1331,7 +1327,7 @@ Entrance* World::getEntrance(Area* parentArea, Area* connectedArea)
 void World::removeEntrance(Entrance* entranceToRemove)
 {
     std::list<Entrance>& areaExits = getArea(entranceToRemove->getParentArea()->name)->exits;
-    std::erase_if(areaExits, [entranceToRemove](Entrance& entrance)
+    std::erase_if(areaExits, [entranceToRemove](const Entrance& entrance)
     {
         return &entrance == entranceToRemove;
     });
@@ -1358,7 +1354,7 @@ EntrancePool World::getShuffleableEntrances(const EntranceType& type, const bool
 EntrancePool World::getShuffledEntrances(const EntranceType& type, const bool& onlyPrimary /*= false*/)
 {
     auto entrances = getShuffleableEntrances(type, onlyPrimary);
-    return filterFromPool(entrances, [](Entrance* e){return e->isShuffled();});
+    return filterFromPool(entrances, [](const Entrance* e){return e->isShuffled();});
 }
 
 Dungeon& World::getDungeon(const std::string& dungeonName)
@@ -1528,7 +1524,7 @@ void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits
         // Make edge connections between areas and their locations
         for (const auto& locAccess : area->locations) {
             std::string connectedLocation = locAccess.location->getName();
-            std::replace(connectedLocation.begin(), connectedLocation.end(), '&', 'A');
+            std::ranges::replace(connectedLocation, '&', 'A');
             std::string itemAtLocation = locAccess.location->currentItem.getName();
             color = locAccess.location->hasBeenFound ? "\"black\"" : "\"red\"";
             if (parentName != "INVALID" && connectedLocation != "INVALID"){
