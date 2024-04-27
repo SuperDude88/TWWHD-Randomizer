@@ -32,7 +32,7 @@ class Entrance
 {
 public:
 
-    Entrance();
+    Entrance() = default;
     Entrance(Area* parentArea_, Area* connectedArea_, World* world_);
 
     Area* getParentArea() const;
@@ -41,14 +41,14 @@ public:
     void setConnectedArea(Area* newConnectedArea);
     Area* getOriginalConnectedArea() const;
     Requirement& getRequirement();
-    void setRequirement(Requirement newRequirement);
+    void setRequirement(const Requirement newRequirement);
     EntranceType getEntranceType() const;
     void setEntranceType(EntranceType newType);
     EntranceType getOriginalEntranceType() const;
     void setOriginalEntranceType(EntranceType newType);
     bool isPrimary() const;
     void setAsPrimary();
-    std::string getOriginalName(const bool& arenaExitNameChange = false);
+    std::string getOriginalName(const bool& arenaExitNameChange = false) const;
     void setOriginalName();
     std::string getCurrentName() const;
     std::string getFilepathStage() const;

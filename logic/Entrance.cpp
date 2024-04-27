@@ -5,17 +5,15 @@
 #include <logic/Area.hpp>
 #include <command/Log.hpp>
 
-Entrance::Entrance() = default;
-
-Entrance::Entrance(Area* parentArea_, Area* connectedArea_, World* world_)
+Entrance::Entrance(Area* parentArea_, Area* connectedArea_, World* world_) :
+    parentArea(parentArea_),
+    connectedArea(connectedArea_),
+    originalConnectedArea(connectedArea_),
+    requirement(RequirementType::NOTHING, {}),
+    alreadySetOriginalConnectedArea(true),
+    world(world_)
 {
-    parentArea = parentArea_;
-    connectedArea = connectedArea_;
-    originalConnectedArea = connectedArea_;
-    alreadySetOriginalConnectedArea = true;
-    world = world_;
     worldId = world->getWorldId();
-    requirement = {RequirementType::NOTHING, {}};
     setOriginalName();
 }
 
@@ -88,7 +86,7 @@ void Entrance::setAsPrimary()
     primary = true;
 }
 
-std::string Entrance::getOriginalName(const bool& arenaExitNameChange /*= false*/)
+std::string Entrance::getOriginalName(const bool& arenaExitNameChange /*= false*/) const
 {
     // If this is a reverse boss entrance, change it's name to be more
     // intuitive as to what entrance it actually is (the wind warp)

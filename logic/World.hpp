@@ -65,9 +65,10 @@ public:
         COUNT
     };
 
-    World();
-
-    explicit World(size_t numWorlds_);
+    World() = default;
+    explicit World(size_t numWorlds_) :
+        numWorlds(numWorlds_)
+    {}
 
     void setSettings(const Settings& settings);
     const Settings& getSettings() const;
@@ -155,7 +156,7 @@ private:
     ItemPool itemPool;
     ItemPool startingItems;
     int worldId = -1;
-    size_t numWorlds = 1;
+    const size_t numWorlds = 1;
 
 public:
     static int eventCounter;

@@ -32,13 +32,6 @@
 
 int World::eventCounter = 0;
 
-World::World() = default;
-
-World::World(size_t numWorlds_)
-{
-    numWorlds = numWorlds_;
-}
-
 // Potentially set different settings for different worlds
 void World::setSettings(const Settings& settings_)
 {

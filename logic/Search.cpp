@@ -408,11 +408,11 @@ static void pareDownPlaythrough(WorldPool& worlds)
 
     // Now do the same process for the entrances to pare down the entrance playthrough
     std::unordered_map<Entrance*, Area*> nonRequiredEntrances = {};
-    for (auto & entranceSphere : std::ranges::reverse_view(entranceSpheres))
+    for (std::list<Entrance*>& entranceSphere : std::ranges::reverse_view(entranceSpheres))
     {
         for (auto entranceItr = entranceSphere.begin(); entranceItr != entranceSphere.end(); )
         {
-            auto entrance = *entranceItr;
+            Entrance* entrance = *entranceItr;
             // Disconnect the entrance and then see if the world is still beatable
             auto connectedArea = entrance->disconnect();
             if (gameBeatable(worlds))

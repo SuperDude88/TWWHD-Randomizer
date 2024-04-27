@@ -131,7 +131,7 @@ std::list<std::string> Area::findHintRegions()
         // to the queue as long as they haven't been checked yet
         if (area->dungeon == "" && area->hintRegion == "" && area->island == "")
         {
-            for (const auto entrance : area->entrances)
+            for (const Entrance* entrance : area->entrances)
             {
                 if (!alreadyChecked.contains(entrance->getParentArea()))
                 {
