@@ -353,7 +353,7 @@ bl convert_progressive_item_id
 bl execItemGet
 lbzu r3, 1(r31)
 init_starting_gear_check_continue_loop:
-cmplwi r3, MAXIMUM_ADDITIONAL_STARTING_ITEMS - 1
+cmplwi r3, 0xFF ; check for terminator
 bne+ init_starting_gear_begin_loop
 
 end_init_starting_gear:
