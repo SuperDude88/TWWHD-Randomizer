@@ -59,7 +59,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         }
 
         // Process starting island
-        if (plandoStartingIsland != "")
+        if (!plandoStartingIsland.empty())
         {
             plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
             if (plandomizer.startingIslandRoomIndex == 0)
@@ -76,7 +76,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
             LOG_TO_DEBUG("  Extra Progress Locations: ")
             for (const auto& location : extraProgressionLocations)
             {
-                const std::string locationName = location.as<std::string>();
+                const auto locationName = location.as<std::string>();
                 plandomizer.extraProgressionLocations.insert(locationName);
                 LOG_TO_DEBUG(std::string("    ") + locationName);
             }
@@ -88,7 +88,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
             LOG_TO_DEBUG("  Starting Item Pool: ")
             for (const auto& item : randomStartingItemPool)
             {
-                const std::string itemName = item.as<std::string>();
+                const auto itemName = item.as<std::string>();
                 const auto gameItem = nameToGameItem(itemName);
                 if (gameItem == GameItem::INVALID)
                 {
@@ -128,7 +128,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                     }
                     else
                     {
-                        ErrorLog::getInstance().log("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first.as<std::string>() + "\"");
+                        ErrorLog::getInstance().log(R"(Plandomizer Error: Missing key "item" in location ")" + locationObject.first.as<std::string>() + "\"");
                         return PlandomizerError::MISSING_ITEM_KEY;
                     }
                     if (locationObject.second["world"])
@@ -148,7 +148,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                 else
                 {
                     itemName = locationObject.second.as<std::string>();
-                    if (itemName == "\n" || itemName == "")
+                    if (itemName == "\n" || itemName.empty())
                     {
                         ErrorLog::getInstance().log("Plandomizer Error: Location \"" + locationObject.first.as<std::string>() + "\" has no plandomized item.");
                         return PlandomizerError::NO_ITEM_AT_LOCATION;
@@ -156,7 +156,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                 }
 
                 // Get location name
-                const std::string locationName = locationObject.first.as<std::string>();
+                const auto locationName = locationObject.first.as<std::string>();
 
                 // Sanitize item name incase the user missed an apostraphe
                 itemName = gameItemToName(nameToGameItem(itemName));

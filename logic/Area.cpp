@@ -131,7 +131,7 @@ std::list<std::string> Area::findHintRegions()
         // to the queue as long as they haven't been checked yet
         if (area->dungeon == "" && area->hintRegion == "" && area->island == "")
         {
-            for (auto entrance : area->entrances)
+            for (const auto entrance : area->entrances)
             {
                 if (!alreadyChecked.contains(entrance->getParentArea()))
                 {
@@ -143,10 +143,10 @@ std::list<std::string> Area::findHintRegions()
 
     // Erase dungeons from the list if we have any islands
     std::list<std::string> dungeons = {};
-    std::copy_if(regions.begin(), regions.end(), std::back_inserter(dungeons), [&](std::string& region){return this->world->dungeons.contains(region);});
+    std::ranges::copy_if(regions, std::back_inserter(dungeons), [&](const std::string& region){return this->world->dungeons.contains(region);});
     if (dungeons.size() < regions.size())
     {
-        std::erase_if(regions, [&](std::string& region){return this->world->dungeons.contains(region);});
+        std::erase_if(regions, [&](const std::string& region){return this->world->dungeons.contains(region);});
     }
 
     return regions;

@@ -2,6 +2,7 @@
 #include "Search.hpp"
 
 #include <list>
+#include <ranges>
 #include <unordered_set>
 #include <algorithm>
 
@@ -28,21 +29,19 @@ static bool evaluateRequirement(World& world, const Requirement& req, const Item
         return false;
 
     case RequirementType::OR:
-        return std::any_of(
-            req.args.begin(),
-            req.args.end(),
-            [&](const Requirement::Argument& arg){
-                return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
-            }
+        return std::ranges::any_of(req.args
+                                   ,
+                                   [&](const Requirement::Argument& arg){
+                                       return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
+                                   }
         );
 
     case RequirementType::AND:
-        return std::all_of(
-            req.args.begin(),
-            req.args.end(),
-            [&](const Requirement::Argument& arg){
-                return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
-            }
+        return std::ranges::all_of(req.args
+                                   ,
+                                   [&](const Requirement::Argument& arg){
+                                       return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
+                                   }
         );
 
     case RequirementType::NOT:
@@ -114,7 +113,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             {
                 for (auto& sphere : worlds[0].entranceSpheres)
                 {
-                    if (std::find(sphere.begin(), sphere.end(), exit.getReplaces()->getReverse()) != sphere.end())
+                    if (std::ranges::find(sphere, exit.getReplaces()->getReverse()) != sphere.end())
                     {
                         reverseInPlaythrough = true;
                         break;
@@ -210,8 +209,8 @@ static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, Item
         // push_back an empty sphere if we're generating the playthroughs
         if (searchMode == SearchMode::GeneratePlaythrough)
         {
-            worlds[0].playthroughSpheres.push_back({});
-            worlds[0].entranceSpheres.push_back({});
+            worlds[0].playthroughSpheres.emplace_back();
+            worlds[0].entranceSpheres.emplace_back();
         }
 
         // Variable to keep track of making logical progress. We want to keep
@@ -409,9 +408,8 @@ static void pareDownPlaythrough(WorldPool& worlds)
 
     // Now do the same process for the entrances to pare down the entrance playthrough
     std::unordered_map<Entrance*, Area*> nonRequiredEntrances = {};
-    for (auto entranceSphereItr = entranceSpheres.rbegin(); entranceSphereItr != entranceSpheres.rend(); entranceSphereItr++)
+    for (auto & entranceSphere : std::ranges::reverse_view(entranceSpheres))
     {
-        auto& entranceSphere = *entranceSphereItr;
         for (auto entranceItr = entranceSphere.begin(); entranceItr != entranceSphere.end(); )
         {
             auto entrance = *entranceItr;
@@ -472,7 +470,7 @@ bool locationsReachable(WorldPool& worlds, ItemPool& items, LocationPool& locati
 {
     auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
     // Check if every location in locationsToCheck is in accessibleLocations
-    return std::all_of(locationsToCheck.begin(), locationsToCheck.end(), [&](const Location* loc){
+    return std::ranges::all_of(locationsToCheck, [&](const Location* loc){
         bool inPool = elementInPool(loc, accessibleLocations);
         if (!inPool)
         {

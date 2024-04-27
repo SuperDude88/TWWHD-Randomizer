@@ -3,12 +3,10 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 #include <unordered_set>
 #include <unordered_map>
 
 #include <logic/GameItem.hpp>
-#include <logic/Requirements.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <logic/Hints.hpp>
 #include <command/WriteLocations.hpp>
