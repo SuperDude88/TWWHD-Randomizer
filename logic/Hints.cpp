@@ -150,7 +150,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 if (location->progression && !chainLocations.empty())
                 {
                     // If all of this item's chain locations are junk, then this item is also junk
-                    if (std::ranges::all_of(chainLocations, [](Location* loc){return loc->currentItem.isJunkItem();}))
+                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
@@ -178,9 +178,9 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         do
         {
             newJunkItems = false;
-            for (auto item : potentiallyJunkItems)
+            for (Item* item : potentiallyJunkItems)
             {
-                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](Location* loc){return loc->currentItem.isJunkItem();}))
+                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
@@ -431,15 +431,16 @@ static HintError generateItemHintMessage(Location* location)
     std::u16string frenchRegionText = u"";
 
     size_t totalRegions = 0;
-    auto world = location->world;
+    const World* const world = location->world;
+    std::list<std::string> hintRegions = location->hintRegions;
 
     // If this is an item in a dungeon, use the dungeon's island(s) for the hint instead
-    if (auto hintRegions = location->hintRegions; world->dungeons.contains(hintRegions.front()))
+    if (world->dungeons.contains(hintRegions.front()))
     {
-        hintRegions = world->dungeons[hintRegions.front()].islands;
+        hintRegions = world->dungeons.at(hintRegions.front()).islands;
     }
 
-    for (const auto& hintRegion : location->hintRegions)
+    for (const std::string& hintRegion : hintRegions)
     {
         // Change the formatting depending on how many regions lead to the location
         if (totalRegions == 0)
@@ -448,14 +449,14 @@ static HintError generateItemHintMessage(Location* location)
             spanishRegionText += world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
             frenchRegionText += world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::RED);
         }
-        else if (totalRegions == location->hintRegions.size() - 1 && location->hintRegions.size() == 2)
+        else if (totalRegions == hintRegions.size() - 1 && hintRegions.size() == 2)
         {
             englishRegionText += u" and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::RED);
             auto spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
             spanishRegionText += ((spanishRegion[0] == u'I' || spanishRegion[0] == u'i') ? u" y " : u" e ") + spanishRegion;
             frenchRegionText += u" et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::RED);
         }
-        else if (totalRegions == location->hintRegions.size() - 1)
+        else if (totalRegions == hintRegions.size() - 1)
         {
             englishRegionText += u", and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::RED);
             auto spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
@@ -529,7 +530,7 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     // Choose one more potential item hint to give to the big octo great fairy.
     // This hint will always be chosen regardless of settings
     // Don't let the great fairy hint at itself
-    filterAndEraseFromPool(possibleItemHintLocations, [](const Location* location){return location->hintRegions.size() != 1 || location->getName() == "Two Eye Reef - Big Octo Great Fairy";});
+    filterAndEraseFromPool(possibleItemHintLocations, [](const Location* location){ return location->hintRegions.size() != 1 || location->getName() == "Two Eye Reef - Big Octo Great Fairy"; });
     if (!possibleItemHintLocations.empty())
     {
         world.bigOctoFairyHintLocation = popRandomElement(possibleItemHintLocations);
@@ -624,7 +625,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
     size_t hintsPerHoHo = locations.size() / 10;
 
     auto hohoLocations = world.getLocations();
-    filterAndEraseFromPool(hohoLocations, [](const Location* location){return !location->categories.contains(LocationCategory::HoHoHint);});
+    filterAndEraseFromPool(hohoLocations, [](const Location* location){ return !location->categories.contains(LocationCategory::HoHoHint); });
 
     // Keep retrying until Ho Ho hints are successfully placed, or until we run out
     // of retries

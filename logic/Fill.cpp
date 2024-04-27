@@ -97,10 +97,10 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
     {
         successfullyPlacedItems = false;
         #if ENABLE_DEBUG
-        for (auto loc : accessibleLocations)
-        {
-            LOG_TO_DEBUG("  " + loc->getName());
-        }
+            for (const Location* loc : accessibleLocations)
+            {
+                LOG_TO_DEBUG("  " + loc->getName());
+            }
         #endif
         // Filter out already accessible locations
         filterAndEraseFromPool(allowedLocations, [accessibleLocations](const Location* loc){return elementInPool(loc, accessibleLocations);});

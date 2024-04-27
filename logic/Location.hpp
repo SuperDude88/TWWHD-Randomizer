@@ -123,8 +123,7 @@ public:
         hint(Hint()),
         goalNames({}),
         marked(false)
-    {
-    }
+    {}
     ~Location() = default;
     Location(const Location& loc) = delete;
     Location& operator=(const Location&) = delete;

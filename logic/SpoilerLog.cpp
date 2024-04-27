@@ -54,7 +54,7 @@ static std::string getSpoilerFormatHint(Location* location)
 {
     // Get rid of commands in the hint text and then convert to UTF-8
     std::u16string hintText = location->hint.text["English"];
-    for (const auto& eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
+    for (const std::u16string& eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT})
     {
         auto pos = std::string::npos;
         while ((pos = hintText.find(eraseText)) != std::string::npos)
@@ -131,17 +131,17 @@ void generateSpoilerLog(WorldPool& worlds)
     size_t longestNameLength = 0;
     size_t longestEntranceLength = 0;
     LOG_TO_DEBUG("Getting Name Lengths");
-    for (auto & playthroughSphere : playthroughSpheres)
+    for (const std::list<Location*>& playthroughSphere : playthroughSpheres)
     {
-        for (auto location : playthroughSphere)
+        for (const Location* location : playthroughSphere)
         {
             longestNameLength = std::max(longestNameLength, location->getName().length());
         }
     }
-    for (auto& world : worlds)
+    for (World& world : worlds)
     {
-        auto entrances = world.getShuffledEntrances(EntranceType::ALL, false);
-        for (auto entrance : entrances)
+        const EntrancePool entrances = world.getShuffledEntrances(EntranceType::ALL, false);
+        for (const Entrance* entrance : entrances)
         {
             longestEntranceLength = std::max(longestEntranceLength, entrance->getOriginalName().length());
         }

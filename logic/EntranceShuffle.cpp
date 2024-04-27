@@ -351,7 +351,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
         {
             if (dungeon.startingEntrance->getReverse())
             {
-                if (const auto dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces())
+                if (const Entrance* dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces(); dungeonExit != nullptr)
                 {
                     if (dungeonExit->isPrimary() && isAnyOf(dungeonExit->getOriginalEntranceType(), EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::MINIBOSS))
                     {

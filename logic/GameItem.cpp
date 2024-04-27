@@ -642,11 +642,10 @@ static std::set<GameItem> bigKeys = {
         GameItem::WTBigKey,
 };
 
-Item::Item(GameItem gameItemId_, World* world_)
+Item::Item(GameItem gameItemId_, World* world_) :
+    gameItemId(gameItemId_),
+    world(world_)
 {
-    gameItemId = gameItemId_;
-    world = world_;
-
     if (junkItems.contains(gameItemId))
     {
         junkItem = true;
@@ -662,11 +661,10 @@ Item::Item(GameItem gameItemId_, World* world_)
     }
 }
 
-Item::Item(std::string itemName_, World* world_)
+Item::Item(std::string itemName_, World* world_) :
+    gameItemId(nameToGameItem(itemName_)),
+    world(world_)
 {
-    gameItemId = nameToGameItem(itemName_);
-    world = world_;
-
     if (junkItems.contains(gameItemId))
     {
         junkItem = true;

@@ -76,7 +76,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
             LOG_TO_DEBUG("  Extra Progress Locations: ")
             for (const auto& location : extraProgressionLocations)
             {
-                const auto locationName = location.as<std::string>();
+                const std::string locationName = location.as<std::string>();
                 plandomizer.extraProgressionLocations.insert(locationName);
                 LOG_TO_DEBUG(std::string("    ") + locationName);
             }
@@ -88,8 +88,8 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
             LOG_TO_DEBUG("  Starting Item Pool: ")
             for (const auto& item : randomStartingItemPool)
             {
-                const auto itemName = item.as<std::string>();
-                const auto gameItem = nameToGameItem(itemName);
+                const std::string itemName = item.as<std::string>();
+                const GameItem gameItem = nameToGameItem(itemName);
                 if (gameItem == GameItem::INVALID)
                 {
                     ErrorLog::getInstance().log("Plandomizer Error: Unknown item name \"" + itemName + "\" in random starting item pool");
@@ -156,7 +156,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                 }
 
                 // Get location name
-                const auto locationName = locationObject.first.as<std::string>();
+                const std::string locationName = locationObject.first.as<std::string>();
 
                 // Sanitize item name incase the user missed an apostraphe
                 itemName = gameItemToName(nameToGameItem(itemName));
