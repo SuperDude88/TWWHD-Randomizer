@@ -2,14 +2,11 @@
 #include "GameItem.hpp"
 
 #include <unordered_map>
-#include <array>
 
 #include <logic/World.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <command/Log.hpp>
 #include <utility/string.hpp>
-#include <filetypes/util/msbtMacros.hpp>
-
 GameItem nameToGameItem(const std::string& name)
 {
     static std::unordered_map<std::string, GameItem> nameItemMap = {

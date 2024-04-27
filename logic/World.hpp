@@ -15,7 +15,6 @@
 #include <logic/Dungeon.hpp>
 #include <logic/Entrance.hpp>
 #include <logic/Plandomizer.hpp>
-#include <logic/PoolFunctions.hpp>
 #include <logic/WorldPool.hpp>
 #include <utility/text.hpp>
 
@@ -67,7 +66,8 @@ public:
     };
 
     World();
-    World(size_t numWorlds_);
+
+    explicit World(size_t numWorlds_);
 
     void setSettings(const Settings& settings);
     const Settings& getSettings() const;

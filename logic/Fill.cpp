@@ -96,10 +96,12 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
     while (accessibleLocations.size() < openLocations * worlds.size() || !successfullyPlacedItems)
     {
         successfullyPlacedItems = false;
+        #if ENABLE_DEBUG
         for (auto loc : accessibleLocations)
         {
             LOG_TO_DEBUG("  " + loc->getName());
         }
+        #endif
         // Filter out already accessible locations
         filterAndEraseFromPool(allowedLocations, [accessibleLocations](const Location* loc){return elementInPool(loc, accessibleLocations);});
         shufflePool(itemsToPlace);
@@ -118,7 +120,7 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
             {
                 // increment the indices, starting with an attempt at the last one
                 // and moving back to increment previous indices if necessary.
-                for (size_t i = indices.size() - 1; i >= 0; i--)
+                for (size_t i = indices.size() - 1; i >= 0; i--) // loop is infinite due to uints
                 {
                     size_t max = itemsToPlace.size() - (indices.size() - i);
 
@@ -146,7 +148,7 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
                 }
 
 
-                if (getAccessibleLocations(worlds, newForwardItems, allowedLocations).size() > 0)
+                if (!getAccessibleLocations(worlds, newForwardItems, allowedLocations).empty())
                 {
                     addElementsToPool(forwardPlacedItems, newForwardItems);
                     fastFill(newForwardItems, accessibleLocations);
@@ -284,7 +286,7 @@ void placeVanillaItems(WorldPool& worlds)
         {
             auto vanillaItem = location->originalItem.getName();
             auto locationName = location->getName();
-            std::string dungeonItemName = locationName.substr(0, locationName.find("-")) + vanillaItem;
+            std::string dungeonItemName = locationName.substr(0, locationName.find('-')) + vanillaItem;
 
             if ((settings.dungeon_small_keys     == PlacementOption::Vanilla &&  vanillaItem == "Small Key")  ||
                 (settings.dungeon_big_keys       == PlacementOption::Vanilla &&  vanillaItem == "Big Key")    ||
@@ -563,7 +565,7 @@ static FillError handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
     return FillError::NONE;
 }
 
-static void generateRaceModeItems(LocationPool& raceModeLocations, ItemPool& raceModeItems, ItemPool& itemsToChooseFrom, ItemPool& mainItemPool)
+static void generateRaceModeItems(const LocationPool& raceModeLocations, ItemPool& raceModeItems, ItemPool& itemsToChooseFrom, ItemPool& mainItemPool)
 {
     shufflePool(itemsToChooseFrom);
     while (!itemsToChooseFrom.empty() && raceModeItems.size() < raceModeLocations.size())
@@ -710,7 +712,7 @@ FillError fill(WorldPool& worlds)
     }
 
     // Filter out hint locations from allLocations
-    filterAndEraseFromPool(allLocations, [](Location* loc){return loc->categories.contains(LocationCategory::HoHoHint);});
+    filterAndEraseFromPool(allLocations, [](const Location* loc){return loc->categories.contains(LocationCategory::HoHoHint);});
 
     determineMajorItems(worlds, itemPool, allLocations);
     FILL_ERROR_CHECK(placeNonProgressLocationPlandomizerItems(worlds, itemPool));
