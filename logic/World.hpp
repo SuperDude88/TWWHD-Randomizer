@@ -156,7 +156,7 @@ private:
     ItemPool itemPool;
     ItemPool startingItems;
     int worldId = -1;
-    const size_t numWorlds = 1;
+    size_t numWorlds = 1;
 
 public:
     static int eventCounter;
