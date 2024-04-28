@@ -137,7 +137,7 @@ private:
 bool Compressor::search(Match& match, int32_t pos, const Context& context) {
 	const uint8_t* cmp2 = context.p_buffer + context._4;
 
-	int32_t v0 = context._4 > 0x1000 ? int32_t(context._4 - 0x1000) : -1;
+	int32_t v0 = context._4 > 0x1000 ? static_cast<int32_t>(context._4 - 0x1000) : -1;
 
 	int32_t cmp_pos = 2;
 	match.len = cmp_pos;
@@ -191,11 +191,11 @@ uint32_t Compressor::encode(uint8_t* p_dst, const uint8_t* p_src, uint32_t src_s
 
 	context.p_buffer = p_work;
 
-	context.p_work_1 = (int32_t*)(p_work + cWorkSize0);
-	memset(context.p_work_1, uint8_t(-1), cWorkSize1);
+	context.p_work_1 = reinterpret_cast<int32_t *>(p_work + cWorkSize0);
+	memset(context.p_work_1, static_cast<uint8_t>(-1), cWorkSize1);
 
-	context.p_work_2 = (int32_t*)(p_work + (cWorkSize0 + cWorkSize1));
-	memset(context.p_work_2, uint8_t(-1), cWorkSize2);
+	context.p_work_2 = reinterpret_cast<int32_t *>(p_work + (cWorkSize0 + cWorkSize1));
+	memset(context.p_work_2, static_cast<uint8_t>(-1), cWorkSize2);
 
 	context._4 = 0;
 
@@ -264,13 +264,13 @@ uint32_t Compressor::encode(uint8_t* p_dst, const uint8_t* p_src, uint32_t src_s
 				uint8_t high = (match.pos - 1) >> 8;
 
 				if (match.len < 18) {
-					temp_buffer[temp_size++] = uint8_t((match.len - 2) << 4) | high;
+					temp_buffer[temp_size++] = static_cast<uint8_t>((match.len - 2) << 4) | high;
 					temp_buffer[temp_size++] = low;
 				}
 				else {
 					temp_buffer[temp_size++] = high;
 					temp_buffer[temp_size++] = low;
-					temp_buffer[temp_size++] = uint8_t(match.len) - 18;
+					temp_buffer[temp_size++] = static_cast<uint8_t>(match.len) - 18;
 				}
 
 				context.buffer_size -= match.len - v1;
@@ -380,7 +380,7 @@ namespace FileTypes {
 	{
 		std::string inData{};
 
-		Yaz0Header header;
+		Yaz0Header header{};
 
 		LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
@@ -399,6 +399,7 @@ namespace FileTypes {
 		inData.append(readChunkBuf, in.gcount());
 
 		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+		// CLion claims this is always false
 		if (const YAZ0Error error = yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
 			ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
 			return error;
@@ -410,7 +411,7 @@ namespace FileTypes {
 
 	YAZ0Error yaz0Decode(std::stringstream& in, std::ostream& out)
 	{
-		Yaz0Header header;
+		Yaz0Header header{};
 
 		LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
@@ -424,14 +425,12 @@ namespace FileTypes {
 		return YAZ0Error::NONE;
 	}
 	
-	YAZ0Error yaz0Encode(std::stringstream& in, std::ostream& out, uint32_t compressionLevel)
+	YAZ0Error yaz0Encode(const std::stringstream& in, std::ostream& out, uint32_t compressionLevel)
 	{
 		const std::string& inData = in.str();
-
-		Compressor compressor;
     	std::vector<uint8_t> tmp(16 + roundUp<size_t>(inData.size(), 8) / 8 * 9 - 1);
-		std::vector<uint8_t> work(compressor.getRequiredMemorySize());
-		const uint32_t outSize = compressor.encode(tmp.data(), reinterpret_cast<const uint8_t*>(inData.data()), inData.size(), work.data());
+		std::vector<uint8_t> work(Compressor::getRequiredMemorySize());
+		const uint32_t outSize = Compressor::encode(tmp.data(), reinterpret_cast<const uint8_t*>(inData.data()), inData.size(), work.data());
 		out.write(reinterpret_cast<const char*>(tmp.data()), outSize);
 
 		return YAZ0Error::NONE;

@@ -14,7 +14,7 @@ using eType = Utility::Endian::Type;
 
 namespace FileTypes {
 
-	const char* BDTErrorGetName(BDTError err) {
+	const char* BDTErrorGetName(const BDTError err) {
 		switch (err) {
 			case BDTError::NONE:
 				return "NONE";

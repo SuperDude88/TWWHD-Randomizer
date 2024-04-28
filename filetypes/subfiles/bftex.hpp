@@ -71,7 +71,7 @@ namespace FileTypes::Subfiles {
         std::string mipData;
         std::vector<UserData> userData;
 
-        FTEXFile();
+        FTEXFile() = default;
         static FTEXFile createNew();
         FTEXError loadFromBinary(std::istream& ftex);
         FTEXError replaceImageData(const std::string& filePath, const GX2TileMode& tileMode, const uint32_t& swizzle_, const bool& SRGB, const bool& importMips);

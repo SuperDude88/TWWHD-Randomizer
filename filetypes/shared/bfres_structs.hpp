@@ -2,9 +2,7 @@
 
 #include <vector>
 #include <variant>
-#include <fstream>
 #include <concepts>
-#include <limits>
 
 #include <utility/endian.hpp>
 
@@ -13,7 +11,7 @@ class RelOffset {
 public:
     T offset;
 
-    operator T() { return offset; }
+    explicit operator T() { return offset; }
 
     bool isRelNonzero() const {
         return relOffset != 0;

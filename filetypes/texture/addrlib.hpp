@@ -1,9 +1,7 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
 #include <cstdint>
-#include <unordered_set>
 #include <string>
 
 #include <filetypes/shared/gx2.hpp>
@@ -21,7 +19,7 @@ struct tileInfo {
 
 struct surfaceIn {
     uint32_t size = 0;
-    GX2TileMode tileMode = GX2TileMode::GX2_TILE_MODE_DEFAULT;
+    GX2TileMode tileMode = GX2_TILE_MODE_DEFAULT;
     uint32_t format = 0;
     uint32_t bpp = 0;
     uint32_t numSamples = 0;
@@ -42,7 +40,7 @@ struct surfaceOut {
     uint32_t height = 0;
     uint32_t depth = 0;
     int64_t surfSize = 0;
-    GX2TileMode tileMode = GX2TileMode::GX2_TILE_MODE_DEFAULT;
+    GX2TileMode tileMode = GX2_TILE_MODE_DEFAULT;
     uint32_t baseAlign = 0;
     uint32_t pitchAlign = 0;
     uint32_t heightAlign = 0;

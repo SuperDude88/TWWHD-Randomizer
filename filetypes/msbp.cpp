@@ -36,8 +36,6 @@ void CLB1::write(std::ostream &out) {
     SectionHeader::write(out);
     HashTable::write(out);
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError CLR1::read(std::istream &in) {
@@ -76,8 +74,6 @@ void CLR1::write(std::ostream &out) {
         writeRGBA(out, color);
     }
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError ALB1::read(std::istream &in) {
@@ -97,8 +93,6 @@ void ALB1::write(std::ostream &out) {
     SectionHeader::write(out);
     HashTable::write(out);
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError ATI2::read(std::istream &in) {
@@ -163,8 +157,6 @@ void ATI2::write(std::ostream &out) {
         out.write(reinterpret_cast<const char*>(&attr.atrOffset), sizeof(attr.atrOffset));
     }
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError ALI2::read(std::istream &in) {
@@ -255,8 +247,6 @@ void ALI2::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError TGG2::read(std::istream &in) {
@@ -351,8 +341,6 @@ void TGG2::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError TAG2::read(std::istream &in) {
@@ -447,8 +435,6 @@ void TAG2::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError TGP2::read(std::istream &in) {
@@ -562,8 +548,6 @@ void TGP2::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError TGL2::read(std::istream &in) {
@@ -628,8 +612,6 @@ void TGL2::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError SLB1::read(std::istream &in) {
@@ -649,8 +631,6 @@ void SLB1::write(std::ostream &out) {
     SectionHeader::write(out);
     HashTable::write(out);
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError SYL3::read(std::istream &in) {
@@ -667,7 +647,7 @@ LMSError SYL3::read(std::istream &in) {
     Utility::Endian::toPlatform_inplace(eType::Big, numStyles);
 
     styles.reserve(numStyles);
-    for (uint16_t i = 0; i < numStyles; i++) {
+    for (uint32_t i = 0; i < numStyles; i++) {
         Style& style = styles.emplace_back();
         if (!in.read(reinterpret_cast<char*>(&style.regionWidth), sizeof(style.regionWidth)))
         {
@@ -716,8 +696,6 @@ void SYL3::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError CTI1::read(std::istream &in) {
@@ -735,7 +713,7 @@ LMSError CTI1::read(std::istream &in) {
 
     offsets.reserve(entryCount);
     filenames.reserve(entryCount);
-    for (uint16_t i = 0; i < entryCount; i++) {
+    for (uint32_t i = 0; i < entryCount; i++) {
         uint32_t& offset = offsets.emplace_back();
         if (!in.read(reinterpret_cast<char*>(&offset), sizeof(offset)))
         {
@@ -745,7 +723,7 @@ LMSError CTI1::read(std::istream &in) {
         Utility::Endian::toPlatform_inplace(eType::Big, offset);
     }
 
-    for (uint16_t i = 0; i < entryCount; i++) {
+    for (uint32_t i = 0; i < entryCount; i++) {
         std::string& name = filenames.emplace_back();
         
         name = readNullTerminatedStr(in, in.tellg());
@@ -774,14 +752,9 @@ void CTI1::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 namespace FileTypes {
-    MSBPFile::MSBPFile() {
-        
-    }
 
     void MSBPFile::initNew() {
         memcpy(&header.magic, "MsgPrjBn", 8);

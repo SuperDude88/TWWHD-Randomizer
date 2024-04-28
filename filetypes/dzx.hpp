@@ -7,7 +7,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <unordered_map>
 
 #include <filetypes/baseFiletype.hpp>
 
@@ -46,7 +45,7 @@ public:
     unsigned int entry_size = 0;
     std::vector<ChunkEntry> entries;
 
-    DZXError read(std::istream& data, const unsigned int offset);
+    DZXError read(std::istream& data, unsigned int offset);
     DZXError save_changes(std::ostream& out);
 };
 
@@ -59,12 +58,12 @@ namespace FileTypes {
         uint32_t num_chunks;
         std::vector<Chunk> chunks;
 
-        DZXFile();
+        DZXFile() = default;
         static DZXFile createNew();
         DZXError loadFromBinary(std::istream& dzx);
         DZXError loadFromFile(const std::string& filePath);
         std::vector<ChunkEntry*> entries_by_type(const std::string& chunk_type); //return vector of pointers so we can edit the chunk data
-        std::vector<ChunkEntry*> entries_by_type_and_layer(const std::string& chunk_type, const unsigned int layer);
+        std::vector<ChunkEntry*> entries_by_type_and_layer(const std::string& chunk_type, unsigned int layer);
         ChunkEntry& add_entity(const std::string&, const unsigned int layer = DEFAULT_LAYER);
         void remove_entity(ChunkEntry* entity);
         DZXError writeToStream(std::ostream& out);

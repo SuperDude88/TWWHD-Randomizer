@@ -6,7 +6,6 @@
 
 #include <string>
 #include <vector>
-#include <fstream>
 #include <filetypes/subfiles/bftex.hpp>
 #include <filetypes/baseFiletype.hpp>
 

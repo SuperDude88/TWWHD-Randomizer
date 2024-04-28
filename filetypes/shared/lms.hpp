@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <fstream>
 
 //LMS is LibMessageStudio, Nintendo's small library for message data
 //Includes MSBT, MSBP, and MSBF files (only MSBT and MSBP are present in WWHD)

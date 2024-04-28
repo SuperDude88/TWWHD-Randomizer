@@ -15,9 +15,7 @@ namespace elfUtil {
         if (memAddress <= address && address < memAddress + sectionLen) {
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address) { //calculates offset into section, returns first value as section index and second as offset

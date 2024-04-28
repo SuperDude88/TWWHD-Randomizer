@@ -98,14 +98,14 @@ namespace FileTypes {
 
     class DDSFile {
     public:
-        DDSHeader header;
+        DDSHeader header{};
         std::string data;
 
-        uint32_t format_;
-        uint32_t size;
-        std::array<uint8_t, 4> compSel;
+        uint32_t format_{};
+        uint32_t size{};
+        std::array<uint8_t, 4> compSel{};
 
-        DDSFile();
+        DDSFile() = default;
         static DDSFile createNew();
         DDSError loadFromBinary(std::istream& dds, const bool SRGB);
         DDSError loadFromFile(const std::string& filePath, const bool SRGB = false);

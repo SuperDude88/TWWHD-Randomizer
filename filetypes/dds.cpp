@@ -28,7 +28,7 @@ static const std::unordered_map<uint32_t, uint8_t> a4l4_masks = {{0xf, 0}, {0xf0
 
 //This might be super unsafe, no idea
 template<typename T> requires std::is_enum_v<T>
-inline T operator |(T a, T b) {
+T operator |(T a, T b) {
     return static_cast<T>(static_cast<std::underlying_type_t<T>>(a) | static_cast<std::underlying_type_t<T>>(b));
 }
 
@@ -68,10 +68,6 @@ namespace FileTypes {
 	        default:
                 return "UNKNOWN";
         }
-    }
-
-    DDSFile::DDSFile() {
-
     }
 
 	void DDSFile::initNew() {
@@ -285,17 +281,17 @@ namespace FileTypes {
 
             if(luminance) {
                 if(has_alpha) {
-                    if(a8l8_masks.count(ch0) > 0 && a8l8_masks.count(ch1) > 0 && a8l8_masks.count(ch2) > 0 && a8l8_masks.count(ch3) > 0 && bpp == 2) {
+                    if(a8l8_masks.contains(ch0) && a8l8_masks.contains(ch1) && a8l8_masks.contains(ch2) && a8l8_masks.contains(ch3) && bpp == 2) {
                         format_ = 7;
                         compSel = {a8l8_masks.at(ch0), a8l8_masks.at(ch1), a8l8_masks.at(ch2), a8l8_masks.at(ch3)};
                     }
-                    else if(a4l4_masks.count(ch0) > 0 && a4l4_masks.count(ch1) > 0 && a4l4_masks.count(ch2) > 0 && a4l4_masks.count(ch3) > 0 && bpp == 1) {
+                    else if(a4l4_masks.contains(ch0) && a4l4_masks.contains(ch1) && a4l4_masks.contains(ch2) && a4l4_masks.contains(ch3) && bpp == 1) {
                         format_ = 2;
                         compSel = {a4l4_masks.at(ch0), a4l4_masks.at(ch1), a4l4_masks.at(ch2), a4l4_masks.at(ch3)};
                     }
                 }
                 else {
-                    if(l8_masks.count(ch0) > 0 && l8_masks.count(ch1) > 0 && l8_masks.count(ch2) > 0 && l8_masks.count(ch3) > 0 && bpp == 1) {
+                    if(l8_masks.contains(ch0) && l8_masks.contains(ch1) && l8_masks.contains(ch2) && l8_masks.contains(ch3) && bpp == 1) {
                         format_ = 1;
                         compSel = {l8_masks.at(ch0), l8_masks.at(ch1), l8_masks.at(ch2), l8_masks.at(ch3)};
                     }
@@ -304,34 +300,34 @@ namespace FileTypes {
             else if(rgb) {
                 if(has_alpha) {
                     if(bpp == 4) {
-                        if(abgr8_masks.count(ch0) > 0 && abgr8_masks.count(ch1) > 0 && abgr8_masks.count(ch2) > 0 && abgr8_masks.count(ch3) > 0) {
+                        if(abgr8_masks.contains(ch0) && abgr8_masks.contains(ch1) && abgr8_masks.contains(ch2) && abgr8_masks.contains(ch3)) {
                             format_ = 0x1A;
                             if(SRGB) format_ = 0x41A;
                             compSel = {abgr8_masks.at(ch0), abgr8_masks.at(ch1), abgr8_masks.at(ch2), abgr8_masks.at(ch3)};
                         }
-                        else if(a2rgb10_masks.count(ch0) > 0 && a2rgb10_masks.count(ch1) > 0 && a2rgb10_masks.count(ch2) > 0 && a2rgb10_masks.count(ch3) > 0) {
+                        else if(a2rgb10_masks.contains(ch0) && a2rgb10_masks.contains(ch1) && a2rgb10_masks.contains(ch2) && a2rgb10_masks.contains(ch3)) {
                             format_ = 0x19;
                             compSel = {a2rgb10_masks.at(ch0), a2rgb10_masks.at(ch1), a2rgb10_masks.at(ch2), a2rgb10_masks.at(ch3)};
                         }
                     }
                     else if (bpp == 2) {
-                        if(a1bgr5_masks.count(ch0) > 0 && a1bgr5_masks.count(ch1) > 0 && a1bgr5_masks.count(ch2) > 0 && a1bgr5_masks.count(ch3) > 0) {
+                        if(a1bgr5_masks.contains(ch0) && a1bgr5_masks.contains(ch1) && a1bgr5_masks.contains(ch2) && a1bgr5_masks.contains(ch3)) {
                             format_ = 0xA;
                             compSel = {a1bgr5_masks.at(ch0), a1bgr5_masks.at(ch1), a1bgr5_masks.at(ch2), a1bgr5_masks.at(ch3)};
                         }
-                        else if(abgr4_masks.count(ch0) > 0 && abgr4_masks.count(ch1) > 0 && abgr4_masks.count(ch2) > 0 && abgr4_masks.count(ch3) > 0) {
+                        else if(abgr4_masks.contains(ch0) && abgr4_masks.contains(ch1) && abgr4_masks.contains(ch2) && abgr4_masks.contains(ch3)) {
                             format_ = 0xB;
                             compSel = {abgr4_masks.at(ch0), abgr4_masks.at(ch1), abgr4_masks.at(ch2), abgr4_masks.at(ch3)};
                         }
                     }
                 }
                 else {
-                    if(bgr8_masks.count(ch0) > 0 && bgr8_masks.count(ch1) > 0 && bgr8_masks.count(ch2) > 0 && ch3 == 0 && bpp == 3) {
+                    if(bgr8_masks.contains(ch0) && bgr8_masks.contains(ch1) && bgr8_masks.contains(ch2) && ch3 == 0 && bpp == 3) {
                         format_ = 0x1A;
                         if(SRGB) format_ = 0x41A;
                         compSel = {bgr8_masks.at(ch0), bgr8_masks.at(ch1), bgr8_masks.at(ch2), 3};
                     }
-                    else if(bgr565_masks.count(ch0) > 0 && bgr565_masks.count(ch1) > 0 && bgr565_masks.count(ch2) > 0 && bgr565_masks.count(ch3) > 0 && bpp == 2) {
+                    else if(bgr565_masks.contains(ch0) && bgr565_masks.contains(ch1) && bgr565_masks.contains(ch2) && bgr565_masks.contains(ch3) && bpp == 2) {
                         format_ = 9;
                         compSel = {bgr565_masks.at(ch0), bgr565_masks.at(ch1), bgr565_masks.at(ch2), bgr565_masks.at(ch3)};
                     }

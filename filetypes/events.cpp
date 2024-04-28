@@ -68,7 +68,7 @@ void Property::save_changes(std::ostream& out) {
     Utility::Endian::toPlatform_inplace(eType::Big, next_property_index);
     out.write(reinterpret_cast<const char*>(&next_property_index), 4);
     out.write(zero_initialized_runtime_data, sizeof(zero_initialized_runtime_data));
-    return;
+
 }
 
 EventlistError Action::read(std::istream& in) {
@@ -131,7 +131,7 @@ void Action::save_changes(std::ostream& out) {
 
     Utility::Endian::toPlatform_inplace(eType::Big, flag_id_to_set);
     out.write(reinterpret_cast<const char*>(&flag_id_to_set), 4);
-    if (properties.size() == 0) {
+    if (properties.empty()) {
         first_property_index = -1;
     }
     else {
@@ -149,14 +149,12 @@ void Action::save_changes(std::ostream& out) {
     Utility::Endian::toPlatform_inplace(eType::Big, next_action_index);
     out.write(reinterpret_cast<const char*>(&next_action_index), 4);
     out.write(zero_initialized_runtime_data, sizeof(zero_initialized_runtime_data));
-    
-    return;
 }
 
 std::shared_ptr<Property> Action::get_prop(const std::string& prop_name) {
-    for (unsigned int i = 0; i < properties.size(); i++) {
-        if (properties[i]->name == prop_name) {
-            return properties[i];
+    for (auto & propertie : properties) {
+        if (propertie->name == prop_name) {
+            return propertie;
         }
     }
     return nullptr;
@@ -202,7 +200,7 @@ EventlistError Actor::read(std::istream& in) {
 }
 
 EventlistError Actor::save_changes(std::ostream& out) {
-    if (actions.size() == 0) {
+    if (actions.empty()) {
         LOG_ERR_AND_RETURN(EventlistError::CANNOT_SAVE_ACTOR_WITH_NO_ACTIONS);
     }
     
@@ -346,7 +344,6 @@ void Event::save_changes(std::ostream& out) {
 
     out.write(reinterpret_cast<const char*>(&play_jingle), 1);
     out.write(zero_initialized_runtime_data, sizeof(zero_initialized_runtime_data));
-    return;
 }
 
 std::shared_ptr<Actor> Event::get_actor(const std::string& name) {
@@ -399,10 +396,6 @@ namespace FileTypes
             default:
                 return "UNKNOWN";
         }
-    }
-
-    EventList::EventList() {
-    
     }
 
     void EventList::initNew() {
@@ -520,7 +513,7 @@ namespace FileTypes
         for (uint32_t event_index = 0; event_index < num_events; event_index++) {
             std::shared_ptr<Event> event = Events.emplace_back(std::make_shared<Event>());
             LOG_AND_RETURN_IF_ERR(event->read(in));
-            if (Events_By_Name.find(event->name) != Events_By_Name.end()) {
+            if (Events_By_Name.contains(event->name)) {
                 LOG_ERR_AND_RETURN(EventlistError::DUPLICATE_EVENT_NAME);
             }
             
@@ -590,7 +583,7 @@ namespace FileTypes
             }
         }
 
-        for (auto property : All_Properties) {
+        for (const auto& property : All_Properties) {
             if (property->data_type == 0) {
                 std::vector<float>& value = property->value.emplace<std::vector<float>>();
                 value.reserve(property->data_size); //Minimize copies
@@ -624,7 +617,7 @@ namespace FileTypes
             }
         }
 
-        for (auto action : All_Actions) { //Populate properties for each action
+        for (const auto& action : All_Actions) { //Populate properties for each action
             if (action->first_property_index == -1) {
                 continue;
             }
@@ -640,7 +633,7 @@ namespace FileTypes
             property->next_property = nullptr; //index is -1, no next property
         }
 
-        for (auto actor : All_Actors) { //Fill each actor's list of actions before we add them to the events because they don't update both instances if we do this after
+        for (const auto& actor : All_Actors) { //Fill each actor's list of actions before we add them to the events because they don't update both instances if we do this after
             actor->initial_action = All_Actions[actor->initial_action_index];
             actor->actions.push_back(actor->initial_action);
             std::shared_ptr<Action> action = actor->initial_action;
@@ -653,7 +646,7 @@ namespace FileTypes
             action->next_action = nullptr;
         }
 
-        for (auto event : Events) {
+        for (const auto& event : Events) {
             bool found_blank = false;
             for (const int32_t actor_index : event->actor_indexes) {
                 if (actor_index == -1) {
@@ -675,11 +668,11 @@ namespace FileTypes
             unused_flag_ids.push_back(i);
         }
 
-        for (auto event : Events) {
-            for (auto actor : event->actors) {
-                unused_flag_ids.erase(std::remove(unused_flag_ids.begin(), unused_flag_ids.end(), actor->flag_id_to_set), unused_flag_ids.end());
-                for (auto action : actor->actions) {
-                    unused_flag_ids.erase(std::remove(unused_flag_ids.begin(), unused_flag_ids.end(), action->flag_id_to_set), unused_flag_ids.end());
+        for (const auto& event : Events) {
+            for (const auto& actor : event->actors) {
+                std::erase(unused_flag_ids, actor->flag_id_to_set);
+                for (const auto& action : actor->actions) {
+                    std::erase(unused_flag_ids, action->flag_id_to_set);
                 }
             }
         }
@@ -699,7 +692,7 @@ namespace FileTypes
 
         event_list_offset = offset;
         num_events = Events_By_Name.size();
-        for (uint32_t i = 0; i < num_events; i++) {
+        for (int32_t i = 0; i < num_events; i++) {
             auto event = Events[i];
             event->event_index = i;
 
@@ -710,7 +703,7 @@ namespace FileTypes
 
         actor_list_offset = offset;
         num_actors = All_Actors.size();
-        for (uint32_t i = 0; i < num_actors; i++) {
+        for (int32_t i = 0; i < num_actors; i++) {
             auto actor = All_Actors[i];
             actor->actor_index = i;
 
@@ -732,7 +725,7 @@ namespace FileTypes
 
         action_list_offset = offset;
         num_actions = All_Actions.size();
-        for (uint32_t i = 0; i < num_actions; i++) {
+        for (int32_t i = 0; i < num_actions; i++) {
             auto action = All_Actions[i];
             action->action_index = i;
 
@@ -752,14 +745,13 @@ namespace FileTypes
 
         property_list_offset = offset;
         num_properties = All_Properties.size();
-        for (uint32_t i = 0; i < num_properties; i++) {
+        for (int32_t i = 0; i < num_properties; i++) {
             auto property = All_Properties[i];
             property->property_index = i;
 
             offset += Property::DATA_SIZE;
 
-            const auto& property_value = property->value;
-            if (property_value.index() != 3) {
+            if (const auto& property_value = property->value; property_value.index() != 3) {
                 if (property_value.index() == 0) {
                     property->data_size = std::get<std::vector<float>>(property_value).size();
                     property->data_type = 0;
@@ -822,7 +814,7 @@ namespace FileTypes
         }
 
         string_list_offset = offset;
-        for (auto property : All_Properties) {
+        for (const auto& property : All_Properties) {
             if (property->data_type == 4) {
                 uint32_t new_relative_string_offset = offset - string_list_offset;
 
@@ -875,16 +867,16 @@ namespace FileTypes
         out.write(reinterpret_cast<const char*>(&string_list_total_size), 4);
         out.write(padding, 8);
 
-        for (auto event : Events) {
+        for (const auto& event : Events) {
             event->save_changes(out);
         }
-        for (auto actor : All_Actors) {
+        for (const auto& actor : All_Actors) {
             LOG_AND_RETURN_IF_ERR(actor->save_changes(out));
         }
-        for (auto action : All_Actions) {
+        for (const auto& action : All_Actions) {
             action->save_changes(out);
         }
-        for (auto property : All_Properties) {
+        for (const auto& property : All_Properties) {
             property->save_changes(out);
         }
 
@@ -907,7 +899,7 @@ namespace FileTypes
     }
 
     std::optional<int32_t> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
-        if (unused_flag_ids.size() == 0) {
+        if (unused_flag_ids.empty()) {
             return std::nullopt;
         }
         int32_t flag_id = unused_flag_ids[0];

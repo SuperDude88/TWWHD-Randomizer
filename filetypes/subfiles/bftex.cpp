@@ -85,10 +85,6 @@ namespace FileTypes::Subfiles {
         }
     }
 
-    FTEXFile::FTEXFile() {
-        
-    }
-
     void FTEXFile::initNew() {
         
     }
@@ -171,8 +167,8 @@ namespace FileTypes::Subfiles {
         {
             LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
         }
-        for(unsigned int i = 0; i < mipOffsets.size(); i++) {
-            if (!ftex.read(reinterpret_cast<char*>(&mipOffsets[i]), sizeof(mipOffsets[i])))
+        for(unsigned int & mipOffset : mipOffsets) {
+            if (!ftex.read(reinterpret_cast<char*>(&mipOffset), sizeof(mipOffset)))
             {
                 LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
             }
@@ -197,8 +193,8 @@ namespace FileTypes::Subfiles {
         {
             LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
         }
-        for(unsigned int i = 0; i < texRegs.size(); i++) {
-            if (!ftex.read(reinterpret_cast<char*>(&texRegs[i]), sizeof(texRegs[i])))
+        for(unsigned int & texReg : texRegs) {
+            if (!ftex.read(reinterpret_cast<char*>(&texReg), sizeof(texReg)))
             {
                 LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
             }
@@ -290,7 +286,7 @@ namespace FileTypes::Subfiles {
             LOG_ERR_AND_RETURN(FTEXError::BAD_DDS);
         }
 
-        if(supportedFormats.count(dds.format_) == 0) {
+        if(!supportedFormats.contains(dds.format_)) {
             LOG_ERR_AND_RETURN(FTEXError::UNSUPPORTED_FORMAT);
         }
 
@@ -307,10 +303,10 @@ namespace FileTypes::Subfiles {
         }
 
         uint32_t bpp = surfaceGetBitsPerPixel(dds.format_) / 8;
-        auto surfInfo = getSurfaceInfo(GX2SurfaceFormat(dds.format_), dds.header.width, dds.header.height, GX2SurfaceDim(1), GX2SurfaceDim(1), tileMode, GX2AAMode(0), 0);
+        auto surfInfo = getSurfaceInfo(static_cast<GX2SurfaceFormat>(dds.format_), dds.header.width, dds.header.height, GX2_SURFACE_DIM_TEXTURE_2D, GX2_SURFACE_DIM_TEXTURE_2D, tileMode, GX2_AA_MODE1X, 0);
 
         if(surfInfo.depth != 1) LOG_ERR_AND_RETURN(FTEXError::UNSUPPORTED_DEPTH);
-        if((uint64_t)surfInfo.surfSize > data.size()) LOG_ERR_AND_RETURN(FTEXError::REPLACEMENT_IMAGE_TOO_LARGE);
+        if(static_cast<uint64_t>(surfInfo.surfSize) > data.size()) LOG_ERR_AND_RETURN(FTEXError::REPLACEMENT_IMAGE_TOO_LARGE);
 
         uint32_t s = 0xd0000 | swizzle_ << 8;
         if(tileMode == 1 || tileMode == 2 || tileMode == 3 || tileMode == 16) {
@@ -318,7 +314,7 @@ namespace FileTypes::Subfiles {
         }
 
         uint32_t blkWidth, blkHeight;
-        if(BCn_formats.count(dds.format_) > 0) {
+        if(BCn_formats.contains(dds.format_)) {
             blkWidth = 4;
             blkHeight = 4;
         }
@@ -340,7 +336,7 @@ namespace FileTypes::Subfiles {
             uint32_t height_ = std::max<uint32_t>(1, height >> mipLevel);
 
             if(mipLevel) {
-                auto surfInfo2 = getSurfaceInfo(GX2SurfaceFormat(dds.format_), dds.header.width, dds.header.height, 1, GX2SurfaceDim(1), tileMode, GX2AAMode(0), mipLevel);
+                auto surfInfo2 = getSurfaceInfo(static_cast<GX2SurfaceFormat>(dds.format_), dds.header.width, dds.header.height, 1, GX2_SURFACE_DIM_TEXTURE_2D, tileMode, GX2_AA_MODE1X, mipLevel);
                 if(mipLevel == 1) {
                     mipOffsets_.push_back(surfInfo2.surfSize);
                 }
@@ -362,17 +358,17 @@ namespace FileTypes::Subfiles {
                 break;
             }
 
-            result.push_back(dataAlignBytes + swizzleSurf(width_, height_, 1, GX2SurfaceFormat(dds.format_), aaMode, use, surfInfo.tileMode, s, surfInfo.pitch, surfInfo.bpp, 0, 0, data_, true));
+            result.push_back(dataAlignBytes + swizzleSurf(width_, height_, 1, static_cast<GX2SurfaceFormat>(dds.format_), aaMode, use, surfInfo.tileMode, s, surfInfo.pitch, surfInfo.bpp, 0, 0, data_, true));
         }
         
-        dimension = GX2SurfaceDim(1);
+        dimension = GX2_SURFACE_DIM_TEXTURE_2D;
         width = dds.header.width;
         height = dds.header.height;
         depth = 1;
         mipCount = mipLevel + 1;
-        format = GX2SurfaceFormat(dds.format_);
-        aaMode = GX2AAMode(0);
-        use = GX2SurfaceUse(1);
+        format = static_cast<GX2SurfaceFormat>(dds.format_);
+        aaMode = GX2_AA_MODE1X;
+        use = GX2_SURFACE_USE_TEXTURE;
         this->tileMode = tileMode;
         swizzle = s;
         alignment = surfInfo.baseAlign;

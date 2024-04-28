@@ -309,7 +309,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         texRefs.reserve(texCount);
         for (unsigned int i = 0; i < texCount; i++) {
-            texRef ref;
+            texRef ref{};
             if (!bflyt.read(reinterpret_cast<char*>(&ref.nameIndex), sizeof(ref.nameIndex))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&ref.wrapModeU), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&ref.wrapModeV), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -338,7 +338,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         texCoordGens.reserve(texCoordGenCount);
         for (unsigned int i = 0; i < texCoordGenCount; i++) {
-            texCoordGen coordGen;
+            texCoordGen coordGen{};
             if (!bflyt.read(reinterpret_cast<char*>(&coordGen.matrix), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&coordGen.source), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&coordGen.unk), sizeof(coordGen.unk))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -348,7 +348,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         tevStages.reserve(tevStageCount);
         for (unsigned int i = 0; i < tevStageCount; i++) {
-            tevStage stage;
+            tevStage stage{};
             if (!bflyt.read(reinterpret_cast<char*>(&stage.colorMode), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&stage.alphaMode), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&stage.padding_0x00), sizeof(stage.padding_0x00))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -357,7 +357,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
 
         if (enableAlphaCompare) {
-            alphaCompare compare;
+            alphaCompare compare{};
             if (!bflyt.read(reinterpret_cast<char*>(&compare.compareMode), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&compare.unk), 3)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&compare.value), sizeof(compare.value))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -368,7 +368,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
 
         if (enableBlend) {
-            blendMode blend;
+            blendMode blend{};
             if (!bflyt.read(reinterpret_cast<char*>(&blend.blendOp), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&blend.sourceFactor), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&blend.destFactor), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -378,7 +378,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
 
         if (blendLogic) {
-            blendMode blend;
+            blendMode blend{};
             if (!bflyt.read(reinterpret_cast<char*>(&blend.blendOp), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&blend.sourceFactor), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&blend.destFactor), 1)) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -388,7 +388,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
 
         if (indParams) {
-            indirectParam param;
+            indirectParam param{};
             if (!bflyt.read(reinterpret_cast<char*>(&param.rotation), sizeof(param.rotation))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&param.scaleX), sizeof(param.scaleX))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&param.scaleY), sizeof(param.scaleY))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -402,7 +402,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         projectionMaps.reserve(projMapCount);
         for (unsigned int i = 0; i < projMapCount; i++) {
-            projectionMap map;
+            projectionMap map{};
             if (!bflyt.read(reinterpret_cast<char*>(&map.posX), sizeof(map.posX))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&map.posY), sizeof(map.posY))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             if (!bflyt.read(reinterpret_cast<char*>(&map.scaleX), sizeof(map.scaleX))) LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
@@ -984,7 +984,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         for (unsigned int i = 0; i < numPanes; i++) {
             std::string paneName;
             paneName.resize(0x18);
-            if (!bflyt.read(reinterpret_cast<char*>(&paneName[0]), 0x18)) {
+            if (!bflyt.read(&paneName[0], 0x18)) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             }
 
@@ -1056,7 +1056,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             out.write(&paneName[0], 0x18);
         }
 
-        if (children.size() > 0) {
+        if (!children.empty()) {
             uint32_t size = 0x8;
             Utility::Endian::toPlatform_inplace(eType::Big, size);
 
@@ -1074,10 +1074,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
 
         return FLYTError::NONE;
-    }
-    
-    PaneBase::~PaneBase() {
-
     }
 
     FLYTError PaneBase::read(std::istream& bflyt) {
@@ -1160,11 +1156,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         return FLYTError::NONE;
     }
 
-
-    pan1::~pan1() {
-
-    }
-
     FLYTError pan1::read(std::istream& bflyt) {
         std::streamoff sectionStart = bflyt.tellg();
 
@@ -1190,10 +1181,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
     }
 
 
-    bnd1::~bnd1() {
-
-    }
-
     FLYTError bnd1::read(std::istream& bflyt) {
         std::streamoff sectionStart = bflyt.tellg();
 
@@ -1216,11 +1203,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
     FLYTError bnd1::save_changes(std::ostream& out) {
         LOG_AND_RETURN_IF_ERR(PaneBase::save_changes(out));
         return FLYTError::NONE;
-    }
-
-
-    wnd1::~wnd1() {
-
     }
 
     FLYTError wnd1::read(std::istream& bflyt) {
@@ -1348,7 +1330,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         for (const uint32_t& frameOffset : frameTable) {
             bflyt.seekg(sectionStart + frameOffset, std::ios::beg);
 
-            windowFrame frame;
+            windowFrame frame{};
             if (!bflyt.read(reinterpret_cast<char*>(&frame.matIndex), sizeof(frame.matIndex))) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             }
@@ -1467,10 +1449,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         return FLYTError::NONE;
     }
 
-
-    txt1::~txt1() {
-
-    }
 
     FLYTError txt1::read(std::istream& bflyt) {
         std::streamoff sectionStart = bflyt.tellg();
@@ -1612,7 +1590,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             charTransformOffset = transformOffset;
 
             bflyt.seekg(sectionStart + transformOffset);
-            perCharTransform transform;
+            perCharTransform transform{};
             if (!bflyt.read(reinterpret_cast<char*>(&transform.curveTimeOffset), sizeof(transform.curveTimeOffset))) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF)
             }
@@ -1766,11 +1744,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         return FLYTError::NONE;
     }
 
-
-    pic1::~pic1() {
-
-    }
-
     FLYTError pic1::read(std::istream& bflyt) {
         std::streamoff sectionStart = bflyt.tellg();
         
@@ -1891,10 +1864,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
     }
 
-
-    prt1::~prt1() {
-
-    }
 
     FLYTError prt1::read(std::istream& bflyt) {
         std::streamoff sectionStart = bflyt.tellg();
@@ -2083,11 +2052,6 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
     }
 }
 
-
-Pane::Pane() {
-    
-}
-
 FLYTError Pane::read(std::istream& bflyt) {
     userData = std::nullopt;
 
@@ -2185,7 +2149,7 @@ FLYTError Pane::save_changes(std::ostream& out, uint16_t& sectionNum) {
         LOG_AND_RETURN_IF_ERR(userData.value().save_changes(out));
     }
 
-    if (children.size() > 0) {
+    if (!children.empty()) {
         uint32_t size = 0x8;
         Utility::Endian::toPlatform_inplace(eType::Big, size);
 
@@ -2230,10 +2194,6 @@ namespace FileTypes {
         }
     }
 
-    FLYTFile::FLYTFile() {
-
-    }
-
     void FLYTFile::initNew() {
         memcpy(header.magicFLYT, "FLYT", 4);
         header.byteOrderMarker = 0xFEFF;
@@ -2254,10 +2214,7 @@ namespace FileTypes {
         materials = std::nullopt;
         container = std::nullopt;
         userData = std::nullopt;
-
-        //init rootPane and rootGroup?
-        return;
-    }
+   }
 
     FLYTFile FLYTFile::createNew() {
         FLYTFile newFLYT{};
@@ -2327,7 +2284,7 @@ namespace FileTypes {
             bflyt.seekg(-4, std::ios::cur); //seek back to start of the section
         }
 
-        while (sections.count(magic) > 0) {
+        while (sections.contains(magic)) {
             if (magic == "usd1") {
                 LOG_AND_RETURN_IF_ERR(userData.emplace().read(bflyt));
             }

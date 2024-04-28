@@ -30,7 +30,7 @@ public:
 	uint16_t salvage_y_pos = 0;
 
 	ChartError read(std::istream& in);
-	void save_changes(std::ostream& out);
+	void save_changes(std::ostream& out) const;
 };
 
 class Chart {
@@ -53,7 +53,7 @@ public:
 	void save_changes(std::ostream& out);
 
 	uint8_t getIslandNumber() const;
-	ChartError setIslandNumber(const uint8_t num);
+	ChartError setIslandNumber(uint8_t num);
 	GameItem getItem() const;
 };
 
@@ -74,7 +74,5 @@ namespace FileTypes {
 		ChartError loadFromFile(const std::string& filePath);
 		ChartError writeToStream(std::ostream& out);
 		ChartError writeToFile(const std::string& filePath);
-		Chart& find_chart_by_chart_number(const uint8_t chart_number);
-		Chart& find_chart_for_island_number(const uint8_t island_number);
 	};
 }
