@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include <vector>
-#include <variant>
 #include <string>
-#include <fstream>
 #include <filetypes/shared/gx2.hpp>
 #include <filetypes/baseFiletype.hpp>
 
@@ -59,11 +56,11 @@ namespace FileTypes {
 
     class FLIMFile : public FileType {
     public:
-        FLIMHeader header;
-        ImageInfo info;
+        FLIMHeader header{};
+        ImageInfo info{};
         std::string data;
 
-        FLIMFile();
+        FLIMFile() = default;
 		static FLIMFile createNew();
 		FLIMError loadFromBinary(std::istream& bflim);
 		FLIMError loadFromFile(const std::string& filePath);

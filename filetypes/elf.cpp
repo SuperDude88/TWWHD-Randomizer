@@ -12,7 +12,7 @@ using eType = Utility::Endian::Type;
 
 namespace FileTypes {
 
-    const char* ELFErrorGetName(ELFError err) {
+    const char* ELFErrorGetName(const ELFError err) {
         switch (err) {
             case ELFError::NONE:
                 return "NONE";
@@ -37,10 +37,6 @@ namespace FileTypes {
         }
     }
 
-    ELF::ELF() {
-    
-    }
-
     void ELF::initNew() {
         isEmpty = false;
         memcpy(ehdr.e_ident, "\x7F\x45\x4C\x46\x01\x02\x01\xCA\xFE\x00\x00\x00\x00\x00\x00\x00", 0x10);
@@ -59,7 +55,6 @@ namespace FileTypes {
         ehdr.e_shstrndx = 0x1e;
 
         shdr_table = {};
-        return;
     }
 
     ELF ELF::createNew() {
@@ -190,7 +185,7 @@ namespace FileTypes {
                     LOG_ERR_AND_RETURN(ELFError::NOBITS_SECTION_NOT_EMPTY); //Offset in file should always be 0
                 }
             }
-            shdr_table.push_back({ i, shdr });
+            shdr_table.emplace_back( i, shdr );
         }
 
         isEmpty = false;
@@ -212,7 +207,7 @@ namespace FileTypes {
         }
 
         //Assume items are sorted by index, always should be
-        if (shdr_table[index].second.data.size() == 0) { //Can't append data to an empty section
+        if (shdr_table[index].second.data.empty()) { //Can't append data to an empty section
             LOG_ERR_AND_RETURN(ELFError::SECTION_DATA_NOT_LOADED);
         }
 
@@ -227,7 +222,7 @@ namespace FileTypes {
         }
 
         //Assume items are sorted by index, always should be
-        if (shdr_table[index].second.data.size() == 0) { //Wouldn't append data to a section that didn't already have some
+        if (shdr_table[index].second.data.empty()) { //Wouldn't append data to a section that didn't already have some
             LOG_ERR_AND_RETURN(ELFError::SECTION_DATA_NOT_LOADED);
         }
         const uint32_t sectionOffset = startAddr - shdr_table[index].second.sh_addr;
@@ -286,7 +281,7 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
 
-        std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
+        std::ranges::sort(shdr_table, [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
 
         Utility::seek(out, ehdr.e_shoff + ehdr.e_shentsize * ehdr.e_shnum, std::ios::beg);
         for (auto& [index, section] : shdr_table) {
@@ -299,7 +294,7 @@ namespace FileTypes {
             }
         }
         //Sort again so they are written by index, to update offsets we needed to write the data first
-        std::sort(shdr_table.begin(), shdr_table.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
+        std::ranges::sort(shdr_table, [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
 
         Utility::seek(out, ehdr.e_shoff, std::ios::beg);
         for (auto& [index, section] : shdr_table) {

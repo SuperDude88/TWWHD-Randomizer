@@ -40,17 +40,15 @@ static const std::unordered_map<uint32_t, std::string> supportedFormats {
 static const std::unordered_set<uint32_t> BCn_formats = {0x31, 0x431, 0x32, 0x432, 0x33, 0x433, 0x34, 0x35};
 
 void computeSwizzleTileMode(const uint8_t& in, uint32_t& swizzle, GX2TileMode& tileMode) {
-    tileMode = GX2TileMode(in & 0x1F);
+    tileMode = static_cast<GX2TileMode>(in & 0x1F);
     swizzle = ((in >> 5) & 7) << 8;
     if (tileMode != 1 && tileMode != 2 && tileMode != 3 && tileMode != 16) {
         swizzle |= 0xd0000;
     }
-
-    return;
 }
 
-uint8_t computeSwizzleTileMode(uint8_t swizzle, GX2TileMode tileMode) {
-    return uint8_t(swizzle << 5) | static_cast<uint8_t>(tileMode);
+uint8_t computeSwizzleTileMode(const uint8_t swizzle, const GX2TileMode tileMode) {
+    return static_cast<uint8_t>(swizzle << 5 | tileMode);
 }
 
 bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint32_t& width, const uint32_t& height, const std::variant<std::string, uint32_t>& format_, const std::array<uint8_t, 4>& compSel, const uint32_t& size_, const bool& compressed) {
@@ -64,8 +62,7 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
     bool has_alpha = true;
 
     if(format_.index() == 1) {
-        uint32_t format = std::get<uint32_t>(format_);
-        if (format == 28) { // ABGR8
+        if (uint32_t format = std::get<uint32_t>(format_); format == 28) { // ABGR8
             RGB = true;
             compSels = {{0, 0x000000ff}, {1, 0x0000ff00}, {2, 0x00ff0000}, {3, 0xff000000}, {5, 0}};
             fmtbpp = 4;
@@ -122,10 +119,10 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
         caps |= 0x00000008 | 0x00400000;
     }
 
-    bool a;
     uint32_t pflags;
     uint32_t size = size_;
     if(!compressed) {
+        bool a;
         flags |= 0x00000008;
 
         a = false;
@@ -169,48 +166,48 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
         else if (format == "BC3") {
             fourcc = "DXT5";
         }
-        else if (dx10_formats.count(format)) {
+        else if (dx10_formats.contains(format)) {
             fourcc = "DX10";
         }
     }
 
     std::memcpy(out.magicDDS, "DDS ", 4);
     out.headerSize_0x7C = 0x7C;
-    out.flags = DDSFlags(flags);
+    out.flags = static_cast<DDSFlags>(flags);
     out.height = height;
     out.width = width;
     out.size = size;
     out.numMips = num_mipmaps;
     out.reserved = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     out.pixelFormat.headerSize_0x20 = 0x20;
-    out.pixelFormat.flags = PixelFormatFlags(pflags);
+    out.pixelFormat.flags = static_cast<PixelFormatFlags>(pflags);
 
     std::memcpy(out.pixelFormat.fourcc, "\0\0\0\0", 4);
     if(compressed) {
         std::memcpy(out.pixelFormat.fourcc, &fourcc[0], 4);
     }
     else {
-        out.pixelFormat.RGBBitCount = (fmtbpp << 3);
+        out.pixelFormat.RGBBitCount = fmtbpp << 3;
 
-        if (compSels.count(compSel[0]) > 0) {
+        if (compSels.contains(compSel[0])) {
             out.pixelFormat.RBitMask = compSels[compSel[0]];
         }
         else {
             out.pixelFormat.RBitMask = compSels[0];
         }
-        if (compSels.count(compSel[1]) > 0) {
+        if (compSels.contains(compSel[1])) {
             out.pixelFormat.GBitMask = compSels[compSel[1]];
         }
         else {
             out.pixelFormat.GBitMask = compSels[1];
         }
-        if (compSels.count(compSel[2]) > 0) {
+        if (compSels.contains(compSel[2])) {
             out.pixelFormat.BBitMask = compSels[compSel[2]];
         }
         else {
             out.pixelFormat.BBitMask = compSels[2];
         }
-        if (compSels.count(compSel[3]) > 0) {
+        if (compSels.contains(compSel[3])) {
             out.pixelFormat.ABitMask = compSels[compSel[3]];
         }
         else {
@@ -218,32 +215,31 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
         }
     }
 
-    out.caps = DDSCaps(caps);
+    out.caps = static_cast<DDSCaps>(caps);
     out.caps4 = 0x00000000;
     out.reserved2 = 0x00000000;
 
     if(format_.index() == 0) {
-        std::string format = std::get<std::string>(format_);
-        if (format == "BC4U") {
-            out.caps2 = DDSCaps2(0x50000000);
+        if (std::string format = std::get<std::string>(format_); format == "BC4U") {
+            out.caps2 = static_cast<DDSCaps2>(0x50000000);
             out.caps3 = 0x03000000;
             out.caps4 = 0x00000000;
             out.reserved2 = 0x01000000;
         }
         else if (format == "BC4S") {
-            out.caps2 = DDSCaps2(0x51000000);
+            out.caps2 = static_cast<DDSCaps2>(0x51000000);
             out.caps3 = 0x03000000;
             out.caps4 = 0x00000000;
             out.reserved2 = 0x01000000;
         }
         else if (format == "BC5U") {
-            out.caps2 = DDSCaps2(0x53000000);
+            out.caps2 = static_cast<DDSCaps2>(0x53000000);
             out.caps3 = 0x03000000;
             out.caps4 = 0x00000000;
             out.reserved2 = 0x01000000;
         }
         else if (format == "BC5S") {
-            out.caps2 = DDSCaps2(0x54000000);
+            out.caps2 = static_cast<DDSCaps2>(0x54000000);
             out.caps3 = 0x03000000;
             out.caps4 = 0x00000000;
             out.reserved2 = 0x01000000;
@@ -280,10 +276,6 @@ namespace FileTypes {
         default:
             return "UNKNOWN";
         }
-    }
-
-    FLIMFile::FLIMFile() {
-
     }
 
     void FLIMFile::initNew() {
@@ -393,7 +385,7 @@ namespace FileTypes {
     FLIMError FLIMFile::exportAsDDS(const std::string& outPath) {
         uint32_t format;
         std::string format_;
-        std::array<uint8_t, 4> compSel;
+        std::array<uint8_t, 4> compSel{};
 
         if (info.format == 0x00) {
             format = 0x01;
@@ -482,8 +474,8 @@ namespace FileTypes {
             LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
         }
 
-        auto surfOut = getSurfaceInfo(GX2SurfaceFormat(format), info.width, info.height, 1, GX2SurfaceDim(1), info.tileMode, GX2AAMode(0), 0);
-    
+        auto surfOut = getSurfaceInfo(static_cast<GX2SurfaceFormat>(format), info.width, info.height, 1, GX2_SURFACE_DIM_TEXTURE_2D , info.tileMode, GX2_AA_MODE1X, 0);
+
         uint32_t tilingDepth = surfOut.depth;
         if(surfOut.tileMode == 3) {
             tilingDepth = tilingDepth / 4;
@@ -531,14 +523,14 @@ namespace FileTypes {
         else if (format == 0x34) {
             ddsFormat = "BC4U";
         }
-        else if (format == 0x35) {
+        else { // 0x35 Case is the only remaining case from the earlier if statments
             ddsFormat = "BC5U";
         }
 
-        std::string result = swizzleSurf(info.width, info.height, 1, GX2SurfaceFormat(format), GX2AAMode(0), GX2SurfaceUse(1), surfOut.tileMode, info.swizzle, surfOut.pitch, surfOut.bpp, 0, 0, this->data, false);
+        std::string result = swizzleSurf(info.width, info.height, 1, static_cast<GX2SurfaceFormat>(format), GX2_AA_MODE1X, GX2_SURFACE_USE_TEXTURE, surfOut.tileMode, info.swizzle, surfOut.pitch, surfOut.bpp, 0, 0, this->data, false);
         uint32_t size;
 
-        if(BCn_formats.count(format) > 0) {
+        if(BCn_formats.contains(format)) {
             size = ((info.width + 3) >> 2) * ((info.height + 3) >> 2) * (surfaceGetBitsPerPixel(format) >> 3);
         }
         else {
@@ -546,7 +538,7 @@ namespace FileTypes {
         }
 
         DDSFile file;
-        generateDDSHeader(file.header, 1, info.width, info.height, ddsFormat, compSel, size, (BCn_formats.count(format) > 0));
+        generateDDSHeader(file.header, 1, info.width, info.height, ddsFormat, compSel, size, BCn_formats.contains(format));
         file.data = result.substr(0, size);
         file.format_ = format;
         file.size = size;
@@ -568,7 +560,7 @@ namespace FileTypes {
             LOG_ERR_AND_RETURN(FLIMError::BAD_DDS);
         }
 
-        if(supportedFormats.count(dds.format_) == 0) {
+        if(!supportedFormats.contains(dds.format_)) {
             LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
         }
 
@@ -579,11 +571,11 @@ namespace FileTypes {
         }
 
         if(tileMode == 0) {
-            tileMode = getDefaultGX2TileMode(GX2SurfaceDim(1), dds.header.width, dds.header.height,
-                    1, GX2SurfaceFormat(1), GX2AAMode(0), GX2SurfaceUse(1));
+            tileMode = getDefaultGX2TileMode(GX2_SURFACE_DIM_TEXTURE_2D, dds.header.width, dds.header.height,
+                    1, GX2_SURFACE_FORMAT_UNORM_R8, GX2_AA_MODE1X, GX2_SURFACE_USE_TEXTURE);
         }
 
-        auto surfOut = getSurfaceInfo(GX2SurfaceFormat(dds.format_), dds.header.width, dds.header.height, 1, GX2SurfaceDim(1), tileMode, GX2AAMode(0), 0);
+        auto surfOut = getSurfaceInfo(static_cast<GX2SurfaceFormat>(dds.format_), dds.header.width, dds.header.height, 1, GX2_SURFACE_DIM_TEXTURE_2D, tileMode, GX2_AA_MODE1X, 0);
         uint32_t alignment = surfOut.baseAlign;
 
         uint32_t padSize = surfOut.surfSize - dds.size;
@@ -602,18 +594,18 @@ namespace FileTypes {
         uint32_t s = swizzle_ << 8;
         if (tileMode != 1 && tileMode != 2 && tileMode != 3 && tileMode != 16) s |= 0xd0000;
 
-        this->data = swizzleSurf(dds.header.width, dds.header.height, 1, GX2SurfaceFormat(dds.format_), GX2AAMode(0), GX2SurfaceUse(1), surfOut.tileMode, s, surfOut.pitch, surfOut.bpp, 0, 0, dds.data, true);
+        this->data = swizzleSurf(dds.header.width, dds.header.height, 1, static_cast<GX2SurfaceFormat>(dds.format_), GX2_AA_MODE1X, GX2_SURFACE_USE_TEXTURE, surfOut.tileMode, s, surfOut.pitch, surfOut.bpp, 0, 0, dds.data, true);
 
         if (dds.format_ == 1) {
             if (dds.compSel[3] == 0) dds.format_ = 1;
             else dds.format_ = 0;
         }
         else if (dds.format_ == 0x1a) {
-            if (std::find(dds.compSel.begin(), dds.compSel.end(), 5) != dds.compSel.end()) dds.format_ = 6;
+            if (std::ranges::find(dds.compSel, 5) != dds.compSel.end()) dds.format_ = 6;
             else dds.format_ = 9;
         }
         else if (dds.format_ == 0x31) {
-            if (std::strncmp(dds.header.pixelFormat.fourcc, "ETC1", 4)) dds.format_ = 0xa;
+            if (std::strncmp(dds.header.pixelFormat.fourcc, "ETC1", 4) != 0) dds.format_ = 0xa;
             else dds.format_ = 0xc;
         }
         else {
@@ -634,7 +626,7 @@ namespace FileTypes {
                 {0x19, 0x18}
             };
 
-            if(fmt.count(dds.format_) == 0) LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
+            if(!fmt.contains(dds.format_)) LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
             dds.format_ = fmt.at(dds.format_);
         }
 
@@ -732,7 +724,7 @@ namespace FileTypes {
         info.width = dds.header.width;
         info.height = dds.header.height;
         info.alignment = alignment;
-        info.format = GX2SurfaceFormat(dds.format_);
+        info.format = static_cast<GX2SurfaceFormat>(dds.format_);
         
         info.tile_swizzle = swizzle_tileMode;
         computeSwizzleTileMode(info.tile_swizzle, info.swizzle, info.tileMode);
