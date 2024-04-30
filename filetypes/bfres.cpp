@@ -33,15 +33,13 @@ namespace {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
         Utility::Endian::toPlatform_inplace(eType::Big, len);
-
+        // Check out std::getline(bfres, out, '\0')
         if (out = readNullTerminatedStr(bfres, offset); out.empty()) {
     		LOG_ERR_AND_RETURN(FRESError::REACHED_EOF); //empty string means it could not read a character from file
     	}
-        else {
-            out.pop_back(); //remove null terminator because it breaks length
-            if (len != out.length()) LOG_ERR_AND_RETURN(FRESError::STRING_LEN_MISMATCH);
-    		return FRESError::NONE;
-    	}
+        out.pop_back(); //remove null terminator because it breaks length (Might no longer be needed with getline?
+        if (len != out.length()) LOG_ERR_AND_RETURN(FRESError::STRING_LEN_MISMATCH);
+        return FRESError::NONE;
     }
 
     FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {

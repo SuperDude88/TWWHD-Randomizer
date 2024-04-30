@@ -40,8 +40,6 @@ void LBL1::write(std::ostream &out) {
     SectionHeader::write(out);
     HashTable::write(out);
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError ATR1::read(std::istream &in) {
@@ -173,8 +171,6 @@ void ATR1::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError TSY1::read(std::istream &in) {
@@ -208,8 +204,6 @@ void TSY1::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 LMSError TXT2::read(std::istream &in) {
@@ -283,14 +277,9 @@ void TXT2::write(std::ostream &out) {
     }
 
     padToLen(out, 16, '\xab');
-
-    return;
 }
 
 namespace FileTypes {
-    MSBTFile::MSBTFile() {
-        
-    }
 
     void MSBTFile::initNew() {
         memcpy(&header.magic, "MsgStdBn", 8);

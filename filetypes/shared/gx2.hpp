@@ -537,13 +537,13 @@ enum GX2TileMode : uint32_t
    GX2_TILE_MODE_TILED_2D_THICK           = 7,
    GX2_TILE_MODE_TILED_2B_THIN1           = 8,
    GX2_TILE_MODE_TILED_2B_THIN2           = 9,
-   GX2_TILE_MODE_TILED_2B_THIN4           = 10,
-   GX2_TILE_MODE_TILED_2B_THICK           = 11,
-   GX2_TILE_MODE_TILED_3D_THIN1           = 12,
-   GX2_TILE_MODE_TILED_3D_THICK           = 13,
-   GX2_TILE_MODE_TILED_3B_THIN1           = 14,
-   GX2_TILE_MODE_TILED_3B_THICK           = 15,
-   GX2_TILE_MODE_LINEAR_SPECIAL           = 16,
+   GX2_TILE_MODE_TILED_2B_THIN4           = 0xA,
+   GX2_TILE_MODE_TILED_2B_THICK           = 0xB,
+   GX2_TILE_MODE_TILED_3D_THIN1           = 0xC,
+   GX2_TILE_MODE_TILED_3D_THICK           = 0xD,
+   GX2_TILE_MODE_TILED_3B_THIN1           = 0xE,
+   GX2_TILE_MODE_TILED_3B_THICK           = 0xF,
+   GX2_TILE_MODE_LINEAR_SPECIAL           = 0x10,
 };
 
 enum GX2TVRenderMode : uint32_t

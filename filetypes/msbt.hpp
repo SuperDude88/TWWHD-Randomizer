@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include <fstream>
 
 #include <filetypes/shared/lms.hpp>
 #include <filetypes/baseFiletype.hpp>
@@ -15,18 +14,18 @@
 
 class MSBTHeader : public FileHeader {
 public:
-    virtual ~MSBTHeader() override = default;
+    ~MSBTHeader() override = default;
 
-    virtual LMSError read(std::istream& in) override;
+    LMSError read(std::istream& in) override;
     //virtual void write(std::ostream& out) override;
 };
 
 class LBL1 : public SectionHeader, public HashTable {
 public:
-    virtual ~LBL1() override = default;
+    ~LBL1() override = default;
 
-    virtual LMSError read(std::istream& in) override;
-    virtual void write(std::ostream& out) override;
+    LMSError read(std::istream& in) override;
+    void write(std::ostream& out) override;
 };
 
 struct Attributes {
@@ -54,10 +53,10 @@ class ATR1 : public SectionHeader {
 public:
     std::vector<Attributes> entries;
 
-    virtual ~ATR1() override = default;
+    ~ATR1() override = default;
 
-    virtual LMSError read(std::istream& in) override;
-    virtual void write(std::ostream& out) override;
+    LMSError read(std::istream& in) override;
+    void write(std::ostream& out) override;
     uint32_t getEntrySize() const { return entrySize; }
 private:
     uint32_t entryCount;
@@ -72,10 +71,10 @@ class TSY1 : public SectionHeader {
 public:
     std::vector<TSY1Entry> entries;
     
-    virtual ~TSY1() override = default;
+    ~TSY1() override = default;
 
-    virtual LMSError read(std::istream& in) override;
-    virtual void write(std::ostream& out) override;
+    LMSError read(std::istream& in) override;
+    void write(std::ostream& out) override;
 };
 
 struct TXT2Entry {
@@ -88,10 +87,10 @@ class TXT2 : public SectionHeader {
 public:
     std::vector<TXT2Entry> entries;
     
-    virtual ~TXT2() override = default;
+    ~TXT2() override = default;
 
-    virtual LMSError read(std::istream& in) override;
-    virtual void write(std::ostream& out) override;
+    LMSError read(std::istream& in) override;
+    void write(std::ostream& out) override;
 private:
     uint32_t entryCount;
 };
@@ -109,7 +108,7 @@ namespace FileTypes {
     public:
         std::unordered_map<std::string, Message> messages_by_label;
 
-        MSBTFile();
+        MSBTFile() = default;
         static MSBTFile createNew();
         LMSError loadFromBinary(std::istream& msbt);
         LMSError loadFromFile(const std::string& filePath);
