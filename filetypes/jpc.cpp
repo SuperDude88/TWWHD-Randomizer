@@ -39,8 +39,6 @@ void writeColorTable(std::ostream& out, const std::vector<JParticle::ColorAnimat
         out.write(reinterpret_cast<const char*>(&time), sizeof(time));
         writeRGBA(out, keyframe.color);
     }
-
-    return;
 }
 
 
@@ -339,15 +337,15 @@ namespace JParticle {
         }
         colorPrmAnimDataOff += numPaddingBytes;
 
-        if (colorEnvAnimData.size() > 0) colorEnvAnimDataOff = colorPrmAnimDataOff + (colorPrmAnimData.size() * 0x6);
+        if (colorEnvAnimData.empty()) colorEnvAnimDataOff = colorPrmAnimDataOff + colorPrmAnimData.size() * 0x6;
         numPaddingBytes = 4 - (colorEnvAnimDataOff % 4);
         if (numPaddingBytes == 4) {
             numPaddingBytes = 0;
         }
         colorEnvAnimDataOff += numPaddingBytes;
 
-        if (colorPrmAnimData.size() == 0) colorPrmAnimDataOff = 0;
-        if (colorEnvAnimData.size() == 0) colorEnvAnimDataOff = 0;
+        if (colorPrmAnimData.empty()) colorPrmAnimDataOff = 0;
+        if (colorEnvAnimData.empty()) colorEnvAnimDataOff = 0;
 
         Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnimDataOff);
         Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnimDataOff);
@@ -370,16 +368,17 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, colorAnimMaxFrm);
 
         colorFlags = (colorFlags & ~0x70) | ((static_cast<uint8_t>(colorCalcIdxType) & 0x07) << 4);
-        colorFlags = (colorFlags & ~0x02) | ((0x0 << 1) & 0x2);
-        if (colorPrmAnimData.size() > 0) colorFlags = (colorFlags & ~0x02) | ((0x1 << 1) & 0x2);
-        colorFlags = (colorFlags & ~0x08) | ((0x0 << 3) & 0x8);
-        if (colorEnvAnimData.size() > 0) colorFlags = (colorFlags & ~0x08) | ((0x1 << 3) & 0x8);
+        colorFlags &= ~0x02;
+        if (colorPrmAnimData.empty()) colorFlags |= 0x2;
+        colorFlags &= ~0x08;
+        if (colorEnvAnimData.empty()) colorFlags |= 0x8;
 
         texFlags = (texFlags & ~0x28) | ((static_cast<uint8_t>(texCalcIdxType) & 0x07) << 2);
-        texFlags = (texFlags & ~0x01) | (0x0 & 0x1);
-        if (texIdxAnimData.size() > 0) texFlags = (texFlags & ~0x01) | (0x1);
+        texFlags &= ~0x01;
+        if (texIdxAnimData.empty()) texFlags |= 0x1;
 
-        texFlags = (texFlags & ~0x02) | ((isEnableTexture & 1) << 1);
+        texFlags &= ~0x02;
+    	if(isEnableTexture) texFlags |= 0x2;
 
         out.write(reinterpret_cast<const char*>(&blendModeFlags), sizeof(blendModeFlags));
         out.write(reinterpret_cast<const char*>(&alphaCompareFlags), sizeof(alphaCompareFlags));
@@ -1034,7 +1033,7 @@ namespace JParticle {
         texIDs.clear();
         texIDs.reserve(texFilenames.size());
         for (const std::string& filename : texFilenames) {
-            if (textures.count(filename) == 0) LOG_ERR_AND_RETURN(JPCError::MISSING_TEXTURE);
+            if (!textures.contains(filename)) LOG_ERR_AND_RETURN(JPCError::MISSING_TEXTURE);
 
             texIDs.push_back(textures.at(filename));
         }
@@ -1089,9 +1088,9 @@ JPCError Particle::read(std::istream& jpc) {
     Utility::Endian::toPlatform_inplace(eType::Big, size);
     Utility::Endian::toPlatform_inplace(eType::Big, particle_id);
 
-    char magic[4];
     for (uint32_t i = 0; i < num_chunks; i++) {
-        unsigned int numPaddingBytes = 0x20 - (jpc.tellg() % 0x20);
+	    char magic[4];
+	    unsigned int numPaddingBytes = 0x20 - (jpc.tellg() % 0x20);
         if (numPaddingBytes == 0x20) {
             numPaddingBytes = 0;
         }
@@ -1254,10 +1253,6 @@ namespace FileTypes {
 		}
 	}
 
-	JPC::JPC() {
-
-	}
-
 	void JPC::initNew() {
 		memcpy(magicJPAC, "JPAC1-00", 8);
 		num_particles = 0;
@@ -1302,9 +1297,9 @@ namespace FileTypes {
 			LOG_AND_RETURN_IF_ERR(readPadding<JPCError>(jpc, 0x20));
 		}
 
-		char magic[4];
 		std::vector<std::string> texFilenames;
 		for (uint16_t i = 0; i < num_textures; i++) {
+			char magic[4];
 			if (!jpc.read(magic, 4)) {
 				LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 			}
@@ -1340,7 +1335,7 @@ namespace FileTypes {
 	}
 
 	JPCError JPC::addParticle(const Particle& particle) {
-		if (particle_index_by_id.count(particle.particle_id) > 0) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_PARTICLE_ID);
+		if (particle_index_by_id.contains(particle.particle_id)) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_PARTICLE_ID);
 
 		particle_index_by_id[particle.particle_id] = particles.size();
 		particles.push_back(particle);
@@ -1349,7 +1344,7 @@ namespace FileTypes {
 	}
 
 	JPCError JPC::replaceParticle(const Particle& particle) {
-		if (particle_index_by_id.count(particle.particle_id) == 0) LOG_ERR_AND_RETURN(JPCError::MISSING_PARTICLE);
+		if (!particle_index_by_id.contains(particle.particle_id)) LOG_ERR_AND_RETURN(JPCError::MISSING_PARTICLE);
 
 		particles[particle_index_by_id[particle.particle_id]] = particle;
 
@@ -1359,7 +1354,7 @@ namespace FileTypes {
 	JPCError JPC::addTexture(const std::string& filename) {
 		std::string filenamePad = filename;
 		filenamePad.resize(0x14, '\0');
-		if (textures.count(filenamePad) > 0) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_FILENAME);
+		if (textures.contains(filenamePad)) LOG_ERR_AND_RETURN(JPCError::DUPLICATE_FILENAME);
 
 		const size_t nextIndex = textures.size();
 		textures[filenamePad] = nextIndex;

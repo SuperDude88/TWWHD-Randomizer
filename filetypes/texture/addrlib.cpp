@@ -1,11 +1,12 @@
 #include "addrlib.hpp"
 
+#include <unordered_set>
 
 
-static const std::unordered_set<GX2SurfaceFormat> BCn_formats = {
-    GX2SurfaceFormat(0x31), GX2SurfaceFormat(0x431), GX2SurfaceFormat(0x32), GX2SurfaceFormat(0x432),
-    GX2SurfaceFormat(0x33), GX2SurfaceFormat(0x433), GX2SurfaceFormat(0x34), GX2SurfaceFormat(0x234),
-    GX2SurfaceFormat(0x35), GX2SurfaceFormat(0x235),
+static const std::unordered_set BCn_formats = {
+    GX2_SURFACE_FORMAT_UNORM_BC1, GX2_SURFACE_FORMAT_SRGB_BC1, GX2_SURFACE_FORMAT_UNORM_BC2, GX2_SURFACE_FORMAT_SRGB_BC2,
+    GX2_SURFACE_FORMAT_UNORM_BC3, GX2_SURFACE_FORMAT_SRGB_BC3, GX2_SURFACE_FORMAT_UNORM_BC4, GX2_SURFACE_FORMAT_SNORM_BC4,
+    GX2_SURFACE_FORMAT_UNORM_BC5, GX2_SURFACE_FORMAT_SNORM_BC5,
 };
 
 const std::array<uint8_t, 256> formatHwInfo = {
@@ -192,11 +193,10 @@ uint32_t computeSurfaceBankSwappedWidth(GX2TileMode tileMode, uint32_t bpp, uint
     }
 
     uint32_t bytesPerSample = 8 * bpp;
-    uint32_t samplesPerTile;
     uint32_t slicesPerTile;
 
     if(bytesPerSample != 0) {
-        samplesPerTile = 2048 / bytesPerSample;
+        uint32_t samplesPerTile = 2048 / bytesPerSample;
         slicesPerTile = std::max<uint32_t>(1, numSamples / samplesPerTile);
     }
     else {
@@ -274,7 +274,6 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
     uint64_t samplesPerSlice;
     uint64_t numSampleSplits;
     uint64_t sampleSlice;
-    uint64_t tileSliceBits;
 
     if(numSamples <= 1 || microTileBytes <= 2048) {
         samplesPerSlice = numSamples;
@@ -286,7 +285,7 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
         numSampleSplits = numSamples / samplesPerSlice;
         numSamples = samplesPerSlice;
 
-        tileSliceBits = microTileBits / numSampleSplits;
+        uint64_t tileSliceBits = microTileBits / numSampleSplits;
         sampleSlice = elemOffset / tileSliceBits;
         elemOffset %= tileSliceBits;
     }
@@ -341,12 +340,12 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
     return (bank << 9) | (pipe << 8) | (totalOffset & 255) | ((totalOffset & -256) << 3);
 }
 
-std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use, GX2TileMode tileMode, uint32_t swizzle_, uint32_t pitch, uint32_t bitsPerPixel, uint32_t slice, uint32_t sample, std::string& data, bool swizzle) {
+std::string swizzleSurf(uint32_t width, uint32_t height, const uint32_t depth, const GX2SurfaceFormat format_, const GX2AAMode aa, const GX2SurfaceUse use, GX2TileMode tileMode, const uint32_t swizzle_, const uint32_t pitch, const uint32_t bitsPerPixel, const uint32_t slice, const uint32_t sample, const std::string& data, const bool swizzle) {
     uint32_t bytesPerPixel = bitsPerPixel / 8;
 
     std::string result(data.size(), '\0');
 
-    if(BCn_formats.count(format_) > 0) {
+    if(BCn_formats.contains(format_)) {
         width = (width + 3) / 4;
         height = (height + 3) / 4;
     }
@@ -359,14 +358,14 @@ std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2Surf
     uint64_t pos;
     for(uint32_t y = 0; y < height; y++) {
         for(uint32_t x = 0; x < width; x++) {
-            if(tileMode == GX2TileMode::GX2_TILE_MODE_DEFAULT || tileMode == GX2TileMode::GX2_TILE_MODE_LINEAR_ALIGNED) {
+            if(tileMode == GX2_TILE_MODE_DEFAULT || tileMode == GX2_TILE_MODE_LINEAR_ALIGNED) {
                 pos = computeSurfaceAddrFromCoordLinear(x, y, slice, sample, bytesPerPixel, pitch, height, depth);
             }
-            else if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_1D_THIN1 || tileMode == GX2TileMode::GX2_TILE_MODE_TILED_1D_THICK) {
-                pos = computeSurfaceAddrFromCoordMicroTiled(x, y, slice, bitsPerPixel, pitch, height, tileMode, bool(use & 4));
+            else if(tileMode == GX2_TILE_MODE_TILED_1D_THIN1 || tileMode == GX2_TILE_MODE_TILED_1D_THICK) {
+                pos = computeSurfaceAddrFromCoordMicroTiled(x, y, slice, bitsPerPixel, pitch, height, tileMode, static_cast<bool>(use & 4));
             }
             else {
-                pos = computeSurfaceAddrFromCoordMacroTiled(x, y, slice, sample, bitsPerPixel, pitch, height, 1 << aa, tileMode, bool(use & 4), pipeSwizzle, bankSwizzle);
+                pos = computeSurfaceAddrFromCoordMacroTiled(x, y, slice, sample, bitsPerPixel, pitch, height, 1 << aa, tileMode, static_cast<bool>(use & 4), pipeSwizzle, bankSwizzle);
             }
 
             uint32_t pos_ = (y * width + x) * bytesPerPixel;
@@ -497,9 +496,6 @@ uint32_t hwlComputeMipLevel(surfaceIn& in) {
 }
 
 void computeMipLevel(surfaceIn& in) {
-    uint32_t slices = 0;
-    uint32_t height = 0;
-    uint32_t width = 0;
     uint32_t hwlHandled = 0;
 
     if((49 <= in.format) && (in.format <= 55) && (!in.mipLevel || ((in.flags >> 12) & 1))) {
@@ -509,6 +505,9 @@ void computeMipLevel(surfaceIn& in) {
 
     hwlHandled = hwlComputeMipLevel(in);
     if(!hwlHandled && in.mipLevel && ((in.flags >> 12) & 1)) {
+        uint32_t width = 0;
+        uint32_t height = 0;
+        uint32_t slices = 0;
         width = std::max<uint32_t>(1, in.width >> in.mipLevel);
         height = std::max<uint32_t>(1, in.height >> in.mipLevel);
         slices = std::max<uint32_t>(1, in.numSlices);
@@ -530,26 +529,22 @@ void computeMipLevel(surfaceIn& in) {
 }
 
 GX2TileMode convertToNonBankSwappedMode(GX2TileMode tileMode) {
-    if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_2B_THIN1) {
-        return GX2TileMode(4);
+    switch (tileMode) {
+        case GX2_TILE_MODE_TILED_2B_THIN1:
+            return GX2_TILE_MODE_TILED_2D_THIN1;
+        case GX2_TILE_MODE_TILED_2B_THIN2:
+            return GX2_TILE_MODE_TILED_2D_THIN2;
+        case GX2_TILE_MODE_TILED_2B_THIN4:
+            return GX2_TILE_MODE_TILED_2D_THIN4;
+        case GX2_TILE_MODE_TILED_2B_THICK:
+            return GX2_TILE_MODE_TILED_2D_THICK;
+        case GX2_TILE_MODE_TILED_3B_THIN1:
+            return GX2_TILE_MODE_TILED_3D_THIN1;
+        case GX2_TILE_MODE_TILED_3B_THICK:
+            return GX2_TILE_MODE_TILED_3D_THICK;
+        default:
+            return tileMode;
     }
-    else if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_2B_THIN2) {
-        return GX2TileMode(5);
-    }
-    else if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_2B_THIN4) {
-        return GX2TileMode(6);
-    }
-    else if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_2B_THICK) {
-        return GX2TileMode(7);
-    }
-    else if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_3B_THIN1) {
-        return GX2TileMode(12);
-    }
-    else if(tileMode == GX2TileMode::GX2_TILE_MODE_TILED_3B_THICK) {
-        return GX2TileMode(13);
-    }
-
-    return tileMode;
 }
 
 uint32_t computeSurfaceTileSlices(GX2TileMode tileMode, uint32_t bpp, uint32_t numSamples) {
@@ -560,9 +555,8 @@ uint32_t computeSurfaceTileSlices(GX2TileMode tileMode, uint32_t bpp, uint32_t n
         numSamples = 4;
     }
 
-    if(bytePerSample) {
-        uint32_t samplePerTile = 2048 / bytePerSample;
-        if(samplePerTile) {
+    if(bytePerSample != 0) {
+        if(const uint32_t samplePerTile = 2048 / bytePerSample; samplePerTile != 0) {
             tileSlices = std::max<uint32_t>(1, numSamples / samplePerTile);
         }
     }
@@ -616,8 +610,8 @@ uint32_t computeSurfaceMipLevelTileMode(GX2TileMode baseTileMode, uint32_t bpp, 
     uint32_t heighta = nextPow2(height);
     uint32_t numSlicesa = nextPow2(numSlices);
 
-    expTileMode = convertToNonBankSwappedMode(GX2TileMode(expTileMode));
-    uint32_t thickness = computeSurfaceThickness(GX2TileMode(expTileMode));
+    expTileMode = convertToNonBankSwappedMode(static_cast<GX2TileMode>(expTileMode));
+    uint32_t thickness = computeSurfaceThickness(static_cast<GX2TileMode>(expTileMode));
     uint32_t microTileBytes = (numSamples * bpp * (thickness << 6) + 7) >> 3;
 
     if (microTileBytes < 256) {
@@ -662,7 +656,7 @@ uint32_t computeSurfaceMipLevelTileMode(GX2TileMode baseTileMode, uint32_t bpp, 
     }
 
     return computeSurfaceMipLevelTileMode(
-        GX2TileMode(expTileMode),
+        static_cast<GX2TileMode>(expTileMode),
         bpp,
         level,
         widtha,
@@ -670,7 +664,7 @@ uint32_t computeSurfaceMipLevelTileMode(GX2TileMode baseTileMode, uint32_t bpp, 
         numSlicesa,
         numSamples,
         isDepth,
-        1);
+        true);
 }
 
 void padDimensions(GX2TileMode tileMode, uint32_t padDims, bool isCube, uint32_t pitchAlign, uint32_t heightAlign, uint32_t sliceAlign, uint32_t& expPitch, uint32_t& expHeight, uint32_t& expNumSlices) {
@@ -699,8 +693,7 @@ void padDimensions(GX2TileMode tileMode, uint32_t padDims, bool isCube, uint32_t
         }
     }
 
-    return;
-}
+    }
 
 uint32_t adjustPitchAlignment(uint32_t flags, uint32_t pitchAlign) {
     if ((flags >> 13) & 1) {
@@ -730,8 +723,6 @@ void computeSurfaceAlignmentsLinear(GX2TileMode tileMode, uint32_t bpp, uint32_t
         heightAlign = 1;
     }
     pitchAlign = adjustPitchAlignment(flags, pitchAlign);
-
-    return;
 }
 
 uint32_t computeSurfaceInfoLinear(surfaceOut& pOut, GX2TileMode tileMode, uint32_t bpp, uint32_t numSamples, uint32_t pitch, uint32_t height, uint32_t numSlices, uint32_t mipLevel, uint32_t padDims, uint32_t flags, uint32_t& expPitch, uint32_t& expHeight, uint32_t& expNumSlices) {
@@ -801,8 +792,6 @@ void computeSurfaceAlignmentsMicroTiled(GX2TileMode tileMode, uint32_t bpp, uint
     heightAlign = 8;
 
     pitchAlign = adjustPitchAlignment(flags, pitchAlign);
-
-    return;
 }
 
 uint32_t computeSurfaceInfoMicroTiled(surfaceOut& pOut, GX2TileMode tileMode, uint32_t bpp, uint32_t numSamples, uint32_t pitch, uint32_t height, uint32_t numSlices, uint32_t mipLevel, uint32_t padDims, uint32_t flags, uint32_t& expPitch, uint32_t& expHeight, uint32_t& expNumSlices) {
@@ -839,13 +828,13 @@ uint32_t computeSurfaceInfoMicroTiled(surfaceOut& pOut, GX2TileMode tileMode, ui
     uint32_t baseAlign, pitchAlign, heightAlign;
 
     computeSurfaceAlignmentsMicroTiled(
-        GX2TileMode(expTileMode),
+        static_cast<GX2TileMode>(expTileMode),
         bpp,
         flags,
         numSamples, baseAlign, pitchAlign, heightAlign);
 
     padDimensions(
-        GX2TileMode(expTileMode),
+        static_cast<GX2TileMode>(expTileMode),
         padDims,
         (flags >> 4) & 1,
         pitchAlign,
@@ -856,7 +845,7 @@ uint32_t computeSurfaceInfoMicroTiled(surfaceOut& pOut, GX2TileMode tileMode, ui
     pOut.height = expHeight;
     pOut.depth = expNumSlices;
     pOut.surfSize = (expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8;
-    pOut.tileMode = GX2TileMode(expTileMode);
+    pOut.tileMode = static_cast<GX2TileMode>(expTileMode);
     pOut.baseAlign = baseAlign;
     pOut.pitchAlign = pitchAlign;
     pOut.heightAlign = heightAlign;
@@ -899,8 +888,6 @@ void computeSurfaceAlignmentsMacroTiled(GX2TileMode tileMode, uint32_t bpp, uint
         numSlicesPerMicroTile = microTileBytes / 2048;
     }
     baseAlign = baseAlign / numSlicesPerMicroTile;
-
-    return;
 }
 
 uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX2TileMode baseTileMode, uint32_t bpp, uint32_t numSamples, uint32_t pitch, uint32_t height, uint32_t numSlices, uint32_t mipLevel, uint32_t padDims, uint32_t flags, uint32_t& expPitch, uint32_t& expHeight, uint32_t& expNumSlices) {
@@ -955,7 +942,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
         pOut.height = expHeight;
         pOut.depth = expNumSlices;
         pOut.surfSize = (expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8;
-        pOut.tileMode = GX2TileMode(expTileMode);
+        pOut.tileMode = static_cast<GX2TileMode>(expTileMode);
         pOut.baseAlign = baseAlign;
         pOut.pitchAlign = pitchAlign;
         pOut.heightAlign = heightAlign;
@@ -979,7 +966,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
 
             result = computeSurfaceInfoMicroTiled(
                 pOut,
-                GX2TileMode(2),
+                GX2_TILE_MODE_TILED_1D_THIN1,
                 bpp,
                 numSamples,
                 pitch,
@@ -1013,7 +1000,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
             pOut.height = expHeight;
             pOut.depth = expNumSlices;
             pOut.surfSize = (expHeight * expPitch * expNumSlices * bpp * numSamples + 7) / 8;
-            pOut.tileMode = GX2TileMode(expTileMode);
+            pOut.tileMode = static_cast<GX2TileMode>(expTileMode);
             pOut.baseAlign = baseAlign;
             pOut.pitchAlign = pitchAlign;
             pOut.heightAlign = heightAlign;
@@ -1025,7 +1012,7 @@ uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX
     return result;
 }
 
-uint32_t ComputeSurfaceInfoEx(surfaceIn& in, surfaceOut& out) {
+uint32_t ComputeSurfaceInfoEx(const surfaceIn& in, surfaceOut& out) {
     auto tileMode = in.tileMode;
     auto bpp = in.bpp;
     auto numSamples = std::max<uint32_t>(1, in.numSamples);
@@ -1045,7 +1032,7 @@ uint32_t ComputeSurfaceInfoEx(surfaceIn& in, surfaceOut& out) {
         tileMode = convertToNonBankSwappedMode(tileMode);
     }
     else {
-        tileMode = GX2TileMode(computeSurfaceMipLevelTileMode(
+        tileMode = static_cast<GX2TileMode>(computeSurfaceMipLevelTileMode(
             tileMode,
             bpp,
             mipLevel,
@@ -1054,7 +1041,7 @@ uint32_t ComputeSurfaceInfoEx(surfaceIn& in, surfaceOut& out) {
             numSlices,
             numSamples,
             (flags >> 1) & 1,
-            0));
+            false));
     }
     if (tileMode == 0 || tileMode == 1) {
         uint32_t expPitch, expHeight, expNumSlices;
@@ -1148,13 +1135,13 @@ uint32_t restoreSurfaceInfo(surfaceOut& pOut, uint32_t elemMode, uint32_t expand
 
 void computeSurfaceInfo(surfaceIn& aSurfIn, surfaceOut& pSurfOut) {
     uint32_t returnCode = 0;
-    uint8_t elemMode = 0;
 
     if(aSurfIn.bpp > 0x80) {
         returnCode = 3;
     }
 
     if(returnCode == 0) {
+        uint8_t elemMode = 0;
         computeMipLevel(aSurfIn);
 
         uint32_t width = aSurfIn.width;
@@ -1210,17 +1197,16 @@ void computeSurfaceInfo(surfaceIn& aSurfIn, surfaceOut& pSurfOut) {
 }
 
 surfaceOut getSurfaceInfo(GX2SurfaceFormat surfaceFormat, uint32_t surfaceWidth, uint32_t surfaceHeight, uint32_t surfaceDepth, GX2SurfaceDim surfaceDim, GX2TileMode surfaceTileMode, GX2AAMode surfaceAA, uint32_t level) {
-    GX2SurfaceDim dim = GX2SurfaceDim(0);
-    uint32_t width = 0;
-    uint32_t blockSize = 0;
-    uint32_t numSamples = 0;
+    auto dim = GX2_SURFACE_DIM_TEXTURE_1D;
     uint32_t hwFormat = 0;
 
-    surfaceIn aSurfIn;
     surfaceOut pSurfOut;
 
     hwFormat = surfaceFormat & 0x3F;
-    if(surfaceTileMode == GX2TileMode::GX2_TILE_MODE_LINEAR_SPECIAL) {
+    if(surfaceTileMode == GX2_TILE_MODE_LINEAR_SPECIAL) {
+        uint32_t width = 0;
+        uint32_t numSamples = 0;
+        uint32_t blockSize = 0;
         numSamples = 1 << surfaceAA;
     
         if(hwFormat < 0x31 || hwFormat > 0x35) {
@@ -1284,8 +1270,9 @@ surfaceOut getSurfaceInfo(GX2SurfaceFormat surfaceFormat, uint32_t surfaceWidth,
         pSurfOut.sliceTileMax = (pSurfOut.height * pSurfOut.pitch >> 6) - 1;
     }
     else {
+        surfaceIn aSurfIn;
         aSurfIn.size = 60;
-        aSurfIn.tileMode = GX2TileMode(surfaceTileMode & 0xF);
+        aSurfIn.tileMode = static_cast<GX2TileMode>(surfaceTileMode & 0xF);
         aSurfIn.format = hwFormat;
         aSurfIn.bpp = formatHwInfo[hwFormat * 4];
         aSurfIn.numSamples = 1 << surfaceAA;
@@ -1343,25 +1330,25 @@ surfaceOut getSurfaceInfo(GX2SurfaceFormat surfaceFormat, uint32_t surfaceWidth,
 
 GX2TileMode getDefaultGX2TileMode(GX2SurfaceDim dim, uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use) {
 
-    GX2TileMode tileMode = GX2TileMode::GX2_TILE_MODE_LINEAR_ALIGNED;
+    GX2TileMode tileMode = GX2_TILE_MODE_LINEAR_ALIGNED;
     bool isDepthBuffer(use & 4);
     bool isColorBuffer(use & 2);
 
     if (dim || aa || isDepthBuffer) {
         if (dim != 2 || isColorBuffer) {
-            tileMode = GX2TileMode(4);
+            tileMode = GX2_TILE_MODE_TILED_2D_THIN1;
         }
         else {
-            tileMode = GX2TileMode(7);
+            tileMode = GX2_TILE_MODE_TILED_2D_THICK;
         }
 
         auto surfOut = getSurfaceInfo(format_, width, height, depth, dim, tileMode, aa, 0);
         if (width < surfOut.pitchAlign && height < surfOut.heightAlign) {
             if (tileMode == 7) {
-                tileMode = GX2TileMode(3);
+                tileMode = GX2_TILE_MODE_TILED_1D_THICK;
             }
             else {
-                tileMode = GX2TileMode(2);
+                tileMode = GX2_TILE_MODE_TILED_1D_THIN1;
             }
         }
     }

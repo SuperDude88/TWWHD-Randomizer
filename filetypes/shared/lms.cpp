@@ -71,8 +71,6 @@ void FileHeader::write(std::ostream& out) {
     out.write(reinterpret_cast<const char*>(&unknown2_0x00), sizeof(unknown2_0x00));
     out.write(reinterpret_cast<const char*>(&fileSize), sizeof(fileSize));
     out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
-
-    return;
 }
 
 LMSError SectionHeader::read(std::istream &in) {
@@ -96,8 +94,6 @@ void SectionHeader::write(std::ostream &out) {
     out.write(magic, 4);
     out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
     out.write(reinterpret_cast<const char*>(&padding_0x00), sizeof(padding_0x00));
-
-    return;
 }
 
 LMSError HashTable::read(std::istream& in) {
@@ -172,7 +168,7 @@ void HashTable::write(std::ostream& out) {
         out.write(reinterpret_cast<const char*>(&entry.labelCount), sizeof(entry.labelCount));
         out.write(reinterpret_cast<const char*>(&entry.labelOffset), sizeof(entry.labelOffset));
 
-        std::sort(entry.labels.begin(), entry.labels.end(), [](const Label& a, const Label& b) {
+        std::ranges::sort(entry.labels, [](const Label& a, const Label& b) {
             return a.itemIndex < b.itemIndex;
         });
         Utility::Endian::toPlatform_inplace(eType::Big, entry.labelOffset);
@@ -191,8 +187,6 @@ void HashTable::write(std::ostream& out) {
 
         i++;
     }
-
-    return;
 }
 
 namespace FileTypes {

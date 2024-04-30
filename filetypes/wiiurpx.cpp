@@ -37,7 +37,7 @@ namespace FileTypes {
 
     RPXError rpx_decompress(std::istream& in, std::ostream& out)
     {
-        Elf32_Ehdr header;
+        Elf32_Ehdr header{};
 
         if(!in.read(reinterpret_cast<char*>(&header.e_ident), sizeof(header.e_ident))) {
             LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
@@ -153,7 +153,7 @@ namespace FileTypes {
         }
         
         // sort by offset in the file
-        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
+        std::ranges::sort(sectionHeaders, [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
         Utility::seek(out, header.e_shoff + header.e_shentsize * header.e_shnum);
 
         for(auto& [index, section] : sectionHeaders) {
@@ -200,7 +200,7 @@ namespace FileTypes {
         }
         
         // Sort again so they are written by index, to update offsets we needed to write the data first
-        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
+        std::ranges::sort(sectionHeaders, [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
 
         out.seekp(0, std::ios::beg);
         
@@ -264,7 +264,7 @@ namespace FileTypes {
 
     RPXError rpx_compress(std::istream& in, std::ostream& out)
     {
-        Elf32_Ehdr header;
+        Elf32_Ehdr header{};
 
         if(!in.read(reinterpret_cast<char*>(&header.e_ident), sizeof(header.e_ident))) {
             LOG_ERR_AND_RETURN(RPXError::REACHED_EOF);
@@ -380,7 +380,7 @@ namespace FileTypes {
         }
         
         // sort by offset in the file
-        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
+        std::ranges::sort(sectionHeaders, [](const shdr_index_t& a, const shdr_index_t& b) { return a.second.sh_offset < b.second.sh_offset; });
         Utility::seek(out, 0x40 + header.e_shentsize * header.e_shnum);
 
         std::vector<uint32_t> crcs(sectionHeaders.size(), 0);
@@ -427,7 +427,7 @@ namespace FileTypes {
         }
 
         // update crcs
-        const auto it = std::find_if(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& hdr) { return hdr.second.sh_type == SectionType::SHT_RPL_CRCS; });
+        const auto it = std::ranges::find_if(sectionHeaders, [](const shdr_index_t& hdr) { return hdr.second.sh_type == SectionType::SHT_RPL_CRCS; });
         if(it == sectionHeaders.end()) {
             return RPXError::NOT_RPX; // all RPX should have this section
         }
@@ -441,7 +441,7 @@ namespace FileTypes {
         }
         
         // Sort again so they are written by index, to update offsets we needed to write the data first
-        std::sort(sectionHeaders.begin(), sectionHeaders.end(), [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
+        std::ranges::sort(sectionHeaders, [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
 
         out.seekp(0, std::ios::beg);
         

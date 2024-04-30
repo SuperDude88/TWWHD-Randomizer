@@ -34,9 +34,9 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	Utility::Endian::toPlatform_inplace(eType::Big, first_entry_offset);
 	
 	if (std::strncmp("TRE", &type[0], 3) == 0) {
-		char layer_char = type[3];
+		const char layer_char = type[3];
 		layer = DEFAULT_LAYER;
-		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
+		if (layer_char_to_layer_index.contains(layer_char)) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
 		else if (layer_char != 'S') { //Should always be 'S' if it is not a unique layer char
@@ -45,9 +45,9 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		type = "TRES";
 	}
 	else if (std::strncmp("ACT", &type[0], 3) == 0) {
-		char layer_char = type[3];
+		const char layer_char = type[3];
 		layer = DEFAULT_LAYER;
-		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
+		if (layer_char_to_layer_index.contains(layer_char)) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
 		else if (layer_char != 'R') { //Should always be 'R' if it is not a unique layer char
@@ -56,9 +56,9 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		type = "ACTR";
 	}
 	else if (std::strncmp("SCO", &type[0], 3) == 0) {
-		char layer_char = type[3];
+		const char layer_char = type[3];
 		layer = DEFAULT_LAYER;
-		if (layer_char_to_layer_index.find(layer_char) != layer_char_to_layer_index.end()) {
+		if (layer_char_to_layer_index.contains(layer_char)) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
 		else if (layer_char != 'B') { //Should always be 'B' if it is not a unique layer char
@@ -67,7 +67,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		type = "SCOB";
 	}
 
-	if (size_by_type.count(type) == 0) {
+	if (!size_by_type.contains(type)) {
 		LOG_ERR_AND_RETURN(DZXError::UNKNOWN_CHUNK);
 	}
 	entry_size = size_by_type.at(type);
@@ -163,10 +163,6 @@ namespace FileTypes {
 		}
 	}
 
-	DZXFile::DZXFile() {
-		
-	}
-
 	void DZXFile::initNew() {
 		num_chunks = 0;
 		chunks = {};
@@ -252,12 +248,11 @@ namespace FileTypes {
 		size_t len = entity->data.size();
 		entity->data.clear();
 		entity->data.resize(len, '\x00'); //clear entity, replace it with null data
-		return;
 	}
 
 	DZXError DZXFile::writeToStream(std::ostream& out) {
 		for (auto it = chunks.begin(); it != chunks.end(); it++) {
-			if((*it).entries.size() == 0) it = chunks.erase(it); //remove empty chunks
+			if(it->entries.empty()) it = chunks.erase(it); //remove empty chunks
 		}
 		num_chunks = chunks.size();
 		if (num_chunks == 0) {
@@ -271,21 +266,14 @@ namespace FileTypes {
 		}
 		
 		for (Chunk& chunk : chunks) {
-			int padding_size = 4 - out.tellp() % 4;
-			if (padding_size == 4) {
-				padding_size = 0;
-			}
-			for (int byte = 0; byte < padding_size; byte++) { //pad to nearest 4 bytes
-				out.write("\xFF", 1);
-			}
-
+			padToLen(out, 0x4, '\xFF');
 			chunk.first_entry_offset = out.tellp();
 			Utility::seek(out, chunk.offset + 8, std::ios::beg);
 			const auto first_entry_offset = Utility::Endian::toPlatform(eType::Big, chunk.first_entry_offset);
 			out.write(reinterpret_cast<const char*>(&first_entry_offset), 4);
 
 			Utility::seek(out, chunk.first_entry_offset, std::ios::beg);
-			if (chunk.entries.size() == 0) {
+			if (chunk.entries.empty()) {
 				LOG_ERR_AND_RETURN(DZXError::CHUNK_NO_ENTRIES);
 			}
 			if (std::strncmp("RTBL", &chunk.type[0], 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently

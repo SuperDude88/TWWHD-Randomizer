@@ -7,7 +7,7 @@
 
 using eType = Utility::Endian::Type;
 
-static const std::array<GameItem, 49> island_num_to_item = {
+static constexpr std::array<GameItem, 49> island_num_to_item = {
     GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
     GameItem::TreasureChart7,  // Sector 2 Star Island
     GameItem::TreasureChart24, // etc...
@@ -81,7 +81,7 @@ ChartError ChartPos::read(std::istream& in) {
 	return ChartError::NONE;
 }
 
-void ChartPos::save_changes(std::ostream& out) {
+void ChartPos::save_changes(std::ostream& out) const {
 	uint16_t tex_x = Utility::Endian::toPlatform(eType::Big, tex_x_offset);
 	uint16_t tex_y = Utility::Endian::toPlatform(eType::Big, tex_y_offset);
 	uint16_t salvage_x = Utility::Endian::toPlatform(eType::Big, salvage_x_pos);
@@ -91,8 +91,6 @@ void ChartPos::save_changes(std::ostream& out) {
 	out.write(reinterpret_cast<const char*>(&tex_y), sizeof(tex_y));
 	out.write(reinterpret_cast<const char*>(&salvage_x), sizeof(salvage_x));
 	out.write(reinterpret_cast<const char*>(&salvage_y), sizeof(salvage_y));
-
-	return;
 }
 
 
@@ -153,7 +151,7 @@ ChartError Chart::setIslandNumber(const uint8_t value) {
 		LOG_ERR_AND_RETURN(ChartError::INVALID_NUMBER);
 	}
 
-	uint8_t island_index = value - 1;
+	const uint8_t island_index = value - 1;
 	sector_x = (island_index % 7) - 3;
 	sector_y = (island_index / 7) - 3;
 
@@ -163,7 +161,7 @@ ChartError Chart::setIslandNumber(const uint8_t value) {
 }
 
 GameItem Chart::getItem() const {
-	if (number < 1 || number > 49) {
+	if (number == 0 || number > 49) {
 		return GameItem::INVALID;
 	}
 	return item_name;
@@ -173,7 +171,7 @@ GameItem Chart::getItem() const {
 
 namespace FileTypes {
 
-	const char* ChartErrorGetName(ChartError err) {
+	const char* ChartErrorGetName(const ChartError err) {
 		switch (err) {
 			case ChartError::NONE:
 				return "NONE";
@@ -230,15 +228,5 @@ namespace FileTypes {
 			LOG_ERR_AND_RETURN(ChartError::COULD_NOT_OPEN);
 		}
 		return writeToStream(file);
-	}
-
-	Chart& ChartList::find_chart_by_chart_number(const uint8_t chart_number) {
-		auto it = std::find_if(charts.begin(), charts.end(), [chart_number](const Chart& chart) {return chart.number == chart_number; });
-		return *it;
-	}
-
-	Chart& ChartList::find_chart_for_island_number(const uint8_t island_number) {
-		auto it = std::find_if(charts.begin(), charts.end(), [island_number](const Chart& chart) {return (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 6) && chart.getIslandNumber() == island_number; });
-		return *it;
 	}
 }

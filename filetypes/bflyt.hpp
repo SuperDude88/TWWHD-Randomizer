@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <fstream>
 #include <vector>
 #include <string>
 #include <optional>
@@ -370,21 +369,22 @@ namespace NintendoWare::Layout {
 		vec2<float> scale;
 		float width;
 		float height;
-		virtual ~PaneBase();
+		virtual ~PaneBase() = default;
 		virtual FLYTError read(std::istream& bflyt);
 		virtual std::unique_ptr<PaneBase> clonePane();
 		virtual FLYTError save_changes(std::ostream& out);
 	};
 	class pan1 : public PaneBase {
-	public:	
-		~pan1() override;
+	public:
+		~pan1() = default;
+
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
 	class bnd1 : public PaneBase {
 	public:	
-		~bnd1() override;
+		~bnd1() = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -423,7 +423,7 @@ namespace NintendoWare::Layout {
 		uint8_t wndFlags;
 		windowContent content;
 		std::vector<windowFrame> frames;
-		~wnd1() override;
+		~wnd1() = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -473,7 +473,7 @@ namespace NintendoWare::Layout {
 		std::u16string text;
 		std::string textBoxName;
 		std::optional<perCharTransform> charTransform;
-		~txt1() override;
+		~txt1() = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -489,7 +489,7 @@ namespace NintendoWare::Layout {
 		RGBA8 vertexColorBR;
 		uint16_t matIndex;
 		std::vector<UVCoords> coords;
-		~pic1() override;
+		~pic1() = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -544,7 +544,7 @@ public:
 	std::optional<NintendoWare::Layout::usd1> userData;
 	std::vector<Pane> children;
 
-	Pane();
+	Pane() = default;
 
 	FLYTError read(std::istream& bflyt);
 	Pane& duplicateChildPane(const unsigned int originalIndex);
@@ -568,7 +568,7 @@ namespace FileTypes {
 		Pane rootPane; //all panes are children of root
 		NintendoWare::Layout::grp1 rootGroup;
 
-		FLYTFile();
+		FLYTFile() = default;
 
 		static FLYTFile createNew();
 		FLYTError loadFromBinary(std::istream& bflyt);
