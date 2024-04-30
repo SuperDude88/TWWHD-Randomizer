@@ -27,7 +27,7 @@ void Content::Update(const std::vector<FSTEntry*>& entries) {
     }
 }
 
-static constexpr size_t MAX_SSTREAM_SIZE = 1024 * 1024 * 500;
+static constexpr std::streamsize MAX_SSTREAM_SIZE = 1024 * 1024 * 500;
 static constexpr size_t READ_BUFFER_SIZE = 1024 * 1024 * 8;
 static char readBuffer[READ_BUFFER_SIZE];
 

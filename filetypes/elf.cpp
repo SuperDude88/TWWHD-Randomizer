@@ -185,7 +185,7 @@ namespace FileTypes {
                     LOG_ERR_AND_RETURN(ELFError::NOBITS_SECTION_NOT_EMPTY); //Offset in file should always be 0
                 }
             }
-            shdr_table.emplace_back( i, shdr );
+            shdr_table.emplace_back(i, shdr);
         }
 
         isEmpty = false;
@@ -201,7 +201,7 @@ namespace FileTypes {
         return loadFromBinary(file);
     }
 
-    ELFError ELF::extend_section(const uint16_t index, const std::string& newData) { //newData is data to append, not replace
+    ELFError ELF::extend_section(uint16_t index, const std::string& newData) { //newData is data to append, not replace
         if (isEmpty == true) {
             LOG_ERR_AND_RETURN(ELFError::HEADER_DATA_NOT_LOADED);
         }
@@ -216,7 +216,7 @@ namespace FileTypes {
         return ELFError::NONE;
     }
 
-    ELFError ELF::extend_section(const uint16_t index, const uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
+    ELFError ELF::extend_section(uint16_t index, uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
         if (isEmpty == true) {
             LOG_ERR_AND_RETURN(ELFError::HEADER_DATA_NOT_LOADED);
         }

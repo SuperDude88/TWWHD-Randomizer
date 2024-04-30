@@ -62,48 +62,58 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
     bool has_alpha = true;
 
     if(format_.index() == 1) {
-        if (uint32_t format = std::get<uint32_t>(format_); format == 28) { // ABGR8
-            RGB = true;
-            compSels = {{0, 0x000000ff}, {1, 0x0000ff00}, {2, 0x00ff0000}, {3, 0xff000000}, {5, 0}};
-            fmtbpp = 4;
-        }
-        else if (format == 24) { // A2RGB10
-            RGB = true;
-            compSels = {{0, 0x3ff00000}, {1, 0x000ffc00}, {2, 0x000003ff}, {3, 0xc0000000}, {5, 0}};
-            fmtbpp = 4;
-        }
-        else if (format == 85) { // BGR565
-            RGB = true;
-            compSels = {{0, 0x0000001f}, {1, 0x000007e0}, {2, 0x0000f800}, {3, 0}, {5, 0}};
-            fmtbpp = 2;
-            has_alpha = false;
-        }
-        else if (format == 86) { // A1BGR5
-            RGB = true;
-            compSels = {{0, 0x0000001f}, {1, 0x000003e0}, {2, 0x00007c00}, {3, 0x00008000}, {5, 0}};
-            fmtbpp = 2;
-        }
-        else if (format == 115) { // ABGR4
-            RGB = true;
-            compSels = {{0, 0x0000000f}, {1, 0x000000f0}, {2, 0x00000f00}, {3, 0x0000f000}, {5, 0}};
-            fmtbpp = 2;
-        }
-        else if (format == 61) { // L8
-            luminance = true;
-            compSels = {{0, 0x000000ff}, {1, 0}, {2, 0}, {3, 0}, {5, 0}};
-            fmtbpp = 1;
+        switch(std::get<uint32_t>(format_)) {
+            case 28: // ABGR8
+                RGB = true;
+                compSels = {{0, 0x000000ff}, {1, 0x0000ff00}, {2, 0x00ff0000}, {3, 0xff000000}, {5, 0}};
+                fmtbpp = 4;
 
-            if (compSel[3] != 0) has_alpha = false;
-        }
-        else if (format == 49) { // A8L8
-            luminance = true;
-            compSels = {{0, 0x000000ff}, {1, 0x0000ff00}, {2, 0}, {3, 0}, {5, 0}};
-            fmtbpp = 2;
-        }
-        else if (format == 112) { // A4L4
-            luminance = true;
-            compSels = {{0, 0x0000000f}, {1, 0x000000f0}, {2, 0}, {3, 0}, {5, 0}};
-            fmtbpp = 1;
+                break;
+            case 24: // A2RGB10
+                RGB = true;
+                compSels = {{0, 0x3ff00000}, {1, 0x000ffc00}, {2, 0x000003ff}, {3, 0xc0000000}, {5, 0}};
+                fmtbpp = 4;
+
+                break;
+            case 85: // BGR565
+                RGB = true;
+                compSels = {{0, 0x0000001f}, {1, 0x000007e0}, {2, 0x0000f800}, {3, 0}, {5, 0}};
+                fmtbpp = 2;
+                has_alpha = false;
+
+                break;
+            case 86: // A1BGR5
+                RGB = true;
+                compSels = {{0, 0x0000001f}, {1, 0x000003e0}, {2, 0x00007c00}, {3, 0x00008000}, {5, 0}};
+                fmtbpp = 2;
+
+                break;
+            case 115: // ABGR4
+                RGB = true;
+                compSels = {{0, 0x0000000f}, {1, 0x000000f0}, {2, 0x00000f00}, {3, 0x0000f000}, {5, 0}};
+                fmtbpp = 2;
+
+                break;
+            case 61: // L8
+                luminance = true;
+                compSels = {{0, 0x000000ff}, {1, 0}, {2, 0}, {3, 0}, {5, 0}};
+                fmtbpp = 1;
+
+                if (compSel[3] != 0) has_alpha = false;
+
+                break;
+            case 49: // A8L8
+                luminance = true;
+                compSels = {{0, 0x000000ff}, {1, 0x0000ff00}, {2, 0}, {3, 0}, {5, 0}};
+                fmtbpp = 2;
+
+                break;
+            case 112: // A4L4
+                luminance = true;
+                compSels = {{0, 0x0000000f}, {1, 0x000000f0}, {2, 0}, {3, 0}, {5, 0}};
+                fmtbpp = 1;
+
+                break;
         }
     }
 
@@ -195,18 +205,21 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
         else {
             out.pixelFormat.RBitMask = compSels[0];
         }
+
         if (compSels.contains(compSel[1])) {
             out.pixelFormat.GBitMask = compSels[compSel[1]];
         }
         else {
             out.pixelFormat.GBitMask = compSels[1];
         }
+
         if (compSels.contains(compSel[2])) {
             out.pixelFormat.BBitMask = compSels[compSel[2]];
         }
         else {
             out.pixelFormat.BBitMask = compSels[2];
         }
+
         if (compSels.contains(compSel[3])) {
             out.pixelFormat.ABitMask = compSels[compSel[3]];
         }
@@ -387,91 +400,114 @@ namespace FileTypes {
         std::string format_;
         std::array<uint8_t, 4> compSel{};
 
-        if (info.format == 0x00) {
-            format = 0x01;
-            compSel = {0, 0, 0, 5};
-        }
-        else if (info.format == 0x01) {
-            format = 0x01;
-            compSel = {5, 5, 5, 0};
-        }
-        else if (info.format == 0x02) {
-            format = 0x02;
-            compSel = {0, 0, 0, 1};
-        }
-        else if (info.format == 0x03) {
-            format = 0x07;
-            compSel = {0, 0, 0, 1};
-        }
-        else if (info.format == 0x05 || info.format == 0x19) {
-            format = 0x08;
-            compSel = {2, 1, 0, 5};
-        }
-        else if (info.format == 0x06) {
-            format = 0x1a;
-            compSel = {0, 1, 2, 5};
-        }
-        else if (info.format == 0x07) {
-            format = 0x0a;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x08) {
-            format = 0x0b;
-            compSel = {2, 1, 0, 3};
-        }
-        else if (info.format == 0x09) {
-            format = 0x1a;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x0a) {
-            format = 0x31;
-            format_ = "ETC1";
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x0C) {
-            format = 0x31;
-            format_ = "BC1";
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x0D) {
-            format = 0x32;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x0E) {
-            format = 0x33;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format  == 0x0F || info.format == 0x10) {
-            format = 0x34;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x11) {
-            format = 0x35;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x14) {
-            format = 0x41a;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x15) {
-            format = 0x431;
-            format_ = "BC1";
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x16) {
-            format = 0x432;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x17) {
-            format = 0x433;
-            compSel = {0, 1, 2, 3};
-        }
-        else if (info.format == 0x18) {
-            format = 0x19;
-            compSel = {0, 1, 2, 3};
-        }
-        else {
-            LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
+        switch(info.format) {
+            case 0x00:
+                format = 0x01;
+                compSel = {0, 0, 0, 5};
+
+                break;
+            case 0x01:
+                format = 0x01;
+                compSel = {5, 5, 5, 0};
+
+                break;
+            case 0x02:
+                format = 0x02;
+                compSel = {0, 0, 0, 1};
+
+                break;
+            case 0x03:
+                format = 0x07;
+                compSel = {0, 0, 0, 1};
+
+                break;
+            case 0x05:
+            case 0x19:
+                format = 0x08;
+                compSel = {2, 1, 0, 5};
+
+                break;
+            case 0x06:
+                format = 0x1a;
+                compSel = {0, 1, 2, 5};
+
+                break;
+            case 0x07:
+                format = 0x0a;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x08:
+                format = 0x0b;
+                compSel = {2, 1, 0, 3};
+
+                break;
+            case 0x09:
+                format = 0x1a;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x0a:
+                format = 0x31;
+                format_ = "ETC1";
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x0C:
+                format = 0x31;
+                format_ = "BC1";
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x0D:
+                format = 0x32;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x0E:
+                format = 0x33;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x0F:
+            case 0x10:
+                format = 0x34;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x11:
+                format = 0x35;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x14:
+                format = 0x41a;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x15:
+                format = 0x431;
+                format_ = "BC1";
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x16:
+                format = 0x432;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x17:
+                format = 0x433;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            case 0x18:
+                format = 0x19;
+                compSel = {0, 1, 2, 3};
+
+                break;
+            default:
+                LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT);
         }
 
         auto surfOut = getSurfaceInfo(static_cast<GX2SurfaceFormat>(format), info.width, info.height, 1, GX2_SURFACE_DIM_TEXTURE_2D , info.tileMode, GX2_AA_MODE1X, 0);
@@ -487,44 +523,49 @@ namespace FileTypes {
         }
 
         std::variant<std::string, uint32_t> ddsFormat;
-        if (format == 0x01) {
-            ddsFormat = 61U;
-        }
-        else if (format == 0x02) {
-            ddsFormat = 112U;
-        }
-        else if (format == 0x07) {
-            ddsFormat = 49U;
-        }
-        else if (format == 0x08) {
-            ddsFormat = 85U;
-        }
-        else if (format == 0x0a) {
-            ddsFormat = 86U;
-        }
-        else if (format == 0x0b) {
-            ddsFormat = 115U;
-        }
-        else if (format == 0x1a || format == 0x41a) {
-            ddsFormat = 28U;
-        }
-        else if (format == 0x19) {
-            ddsFormat = 24U;
-        }
-        else if (format == 0x31 || format == 0x431) {
-            ddsFormat = format_;
-        }
-        else if (format == 0x32 || format == 0x432) {
-            ddsFormat = "BC2";
-        }
-        else if (format == 0x33 || format == 0x433) {
-            ddsFormat = "BC3";
-        }
-        else if (format == 0x34) {
-            ddsFormat = "BC4U";
-        }
-        else { // 0x35 Case is the only remaining case from the earlier if statments
-            ddsFormat = "BC5U";
+            switch(format == 0x01) {
+                ddsFormat = 61U;
+                break;
+            case 0x02:
+                ddsFormat = 112U;
+                break;
+            case 0x07:
+                ddsFormat = 49U;
+                break;
+            case 0x08:
+                ddsFormat = 85U;
+                break;
+            case 0x0a:
+                ddsFormat = 86U;
+                break;
+            case 0x0b:
+                ddsFormat = 115U;
+                break;
+            case 0x1a:
+            case 0x41a:
+                ddsFormat = 28U;
+                break;
+            case 0x19:
+                ddsFormat = 24U;
+                break;
+            case 0x31:
+            case 0x431:
+                ddsFormat = format_;
+                break;
+            case 0x32:
+            case 0x432:
+                ddsFormat = "BC2";
+                break;
+            case 0x33:
+            case 0x433:
+                ddsFormat = "BC3";
+                break;
+            case 0x34:
+                ddsFormat = "BC4U";
+                break;
+            case 0x35:
+                ddsFormat = "BC5U";
+                break;
         }
 
         std::string result = swizzleSurf(info.width, info.height, 1, static_cast<GX2SurfaceFormat>(format), GX2_AA_MODE1X, GX2_SURFACE_USE_TEXTURE, surfOut.tileMode, info.swizzle, surfOut.pitch, surfOut.bpp, 0, 0, this->data, false);

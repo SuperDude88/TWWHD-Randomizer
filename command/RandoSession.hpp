@@ -13,7 +13,7 @@
 
 
 #define CAST_ENTRY_TO_FILETYPE(var, type, data)   \
-    {const auto temp = dynamic_cast<type*>(data); if(temp == nullptr) return 0;}  \
+    if(dynamic_cast<type*>(data) == nullptr) return 0;  \
     type& var = *dynamic_cast<type*>(data);
 
 class RandoSession

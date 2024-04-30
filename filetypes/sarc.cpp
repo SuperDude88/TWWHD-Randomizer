@@ -214,7 +214,7 @@ namespace FileTypes{
     }
 
     SARCFile::File* SARCFile::getFile(const std::string& filename) {
-        if (file_index_by_name.contains(filename)) {
+        if (!file_index_by_name.contains(filename)) {
             return nullptr;
         }
         return &files[file_index_by_name.at(filename)];
