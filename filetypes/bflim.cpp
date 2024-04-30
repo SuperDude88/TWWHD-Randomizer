@@ -523,7 +523,8 @@ namespace FileTypes {
         }
 
         std::variant<std::string, uint32_t> ddsFormat;
-            switch(format == 0x01) {
+        switch(format) {
+            case 0x01:
                 ddsFormat = 61U;
                 break;
             case 0x02:

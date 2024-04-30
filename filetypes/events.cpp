@@ -692,9 +692,9 @@ namespace FileTypes
 
         event_list_offset = offset;
         num_events = Events_By_Name.size();
-        for (int32_t i = 0; i < num_events; i++) {
+        for (uint32_t i = 0; i < num_events; i++) {
             auto event = Events[i];
-            event->event_index = i;
+            event->event_index = static_cast<int32_t>(i);
 
             offset += Event::DATA_SIZE;
 
@@ -703,9 +703,9 @@ namespace FileTypes
 
         actor_list_offset = offset;
         num_actors = All_Actors.size();
-        for (int32_t i = 0; i < num_actors; i++) {
+        for (uint32_t i = 0; i < num_actors; i++) {
             auto actor = All_Actors[i];
-            actor->actor_index = i;
+            actor->actor_index = static_cast<int32_t>(i);
 
             offset += Actor::DATA_SIZE;
 
@@ -725,9 +725,9 @@ namespace FileTypes
 
         action_list_offset = offset;
         num_actions = All_Actions.size();
-        for (int32_t i = 0; i < num_actions; i++) {
+        for (uint32_t i = 0; i < num_actions; i++) {
             auto action = All_Actions[i];
-            action->action_index = i;
+            action->action_index = static_cast<int32_t>(i);
 
             offset += Action::DATA_SIZE;
 
@@ -745,9 +745,9 @@ namespace FileTypes
 
         property_list_offset = offset;
         num_properties = All_Properties.size();
-        for (int32_t i = 0; i < num_properties; i++) {
+        for (uint32_t i = 0; i < num_properties; i++) {
             auto property = All_Properties[i];
-            property->property_index = i;
+            property->property_index = static_cast<int32_t>(i);
 
             offset += Property::DATA_SIZE;
 
@@ -799,7 +799,7 @@ namespace FileTypes
         num_floats = All_Floats.size();
         for (float& float_val : All_Floats) {
             Utility::seek(out, offset, std::ios::beg);
-            uint32_t value = reinterpret_cast<uint32_t&>(float_val); //byteswap as uint32 because casting it back to float in reversed order can make it NaN and change the value
+            uint32_t value = std::bit_cast<const uint32_t>(float_val); //byteswap as uint32 because casting it back to float in reversed order can make it NaN and change the value
             Utility::Endian::toPlatform_inplace(eType::Big, value);
             out.write(reinterpret_cast<const char*>(&value), 4);
             offset += 4;

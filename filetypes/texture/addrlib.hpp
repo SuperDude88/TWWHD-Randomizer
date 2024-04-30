@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <cstdint>
 #include <string>
 
 #include <filetypes/shared/gx2.hpp>
@@ -86,7 +85,7 @@ uint64_t computeSurfaceAddrFromCoordMicroTiled(uint32_t x, uint32_t y, uint32_t 
 
 uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t slice, uint32_t sample, uint32_t bpp, uint32_t pitch, uint32_t height, uint32_t numSamples, GX2TileMode tileMode, bool isDepth, uint32_t pipeSwizzle, uint32_t bankSwizzle);
 
-std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use, GX2TileMode tileMode, uint32_t swizzle_, uint32_t pitch, uint32_t bitsPerPixel, uint32_t slice, uint32_t sample, std::string& data, bool swizzle);
+std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use, GX2TileMode tileMode, uint32_t swizzle_, uint32_t pitch, uint32_t bitsPerPixel, uint32_t slice, uint32_t sample, const std::string& data, bool swizzle);
 
 uint32_t powTwoAlign(uint32_t x, uint32_t align);
 
@@ -122,7 +121,7 @@ void computeSurfaceAlignmentsMacroTiled(GX2TileMode tileMode, uint32_t bpp, uint
 
 uint32_t computeSurfaceInfoMacroTiled(surfaceOut& pOut, GX2TileMode tileMode, GX2TileMode baseTileMode, uint32_t bpp, uint32_t numSamples, uint32_t pitch, uint32_t height, uint32_t numSlices, uint32_t mipLevel, uint32_t padDims, uint32_t flags, uint32_t& expPitch, uint32_t& expHeight, uint32_t& expNumSlices);
 
-uint32_t ComputeSurfaceInfoEx(surfaceIn& in, surfaceOut& out);
+uint32_t ComputeSurfaceInfoEx(const surfaceIn& in, surfaceOut& out);
 
 uint32_t restoreSurfaceInfo(surfaceOut& pOut, uint32_t elemMode, uint32_t expandX, uint32_t expandY, uint32_t bpp);
 

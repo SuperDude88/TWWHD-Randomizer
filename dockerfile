@@ -1,4 +1,4 @@
-FROM devkitpro/devkitppc:20240422
+FROM devkitpro/devkitppc:20240428
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer

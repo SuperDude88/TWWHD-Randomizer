@@ -3,6 +3,7 @@
 #include <vector>
 #include <variant>
 #include <concepts>
+#include <fstream>
 
 #include <utility/endian.hpp>
 
