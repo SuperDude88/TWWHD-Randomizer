@@ -54,7 +54,7 @@ namespace FileTypes {
 
     const char* FLIMErrorGetName(FLIMError err);
 
-    class FLIMFile : public FileType {
+    class FLIMFile final : public FileType {
     public:
         FLIMHeader header{};
         ImageInfo info{};

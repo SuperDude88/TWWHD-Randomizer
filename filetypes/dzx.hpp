@@ -53,7 +53,7 @@ namespace FileTypes {
 
     const char* DZXErrorGetName(DZXError err);
 
-    class DZXFile : public FileType {
+    class DZXFile final : public FileType {
     public:
         uint32_t num_chunks;
         std::vector<Chunk> chunks;

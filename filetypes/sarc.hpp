@@ -64,7 +64,7 @@ struct SFNT {
 namespace FileTypes {
     const char* SARCErrorGetName(SARCError err);
 
-    class SARCFile : public FileType {
+    class SARCFile final : public FileType {
     public:
         struct File {
             std::string name;

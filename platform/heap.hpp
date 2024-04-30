@@ -7,8 +7,8 @@ private:
     static constexpr uint32_t FRAME_HEAP_TAG = 0x000DECAF;
     MEMHeapHandle heap = NULL;
 
-    BucketHeap() {}
-    ~BucketHeap() {}
+    BucketHeap() = default;
+    ~BucketHeap() = default;
 
 public:
     static BucketHeap& getInstance();
@@ -30,8 +30,8 @@ private:
     static constexpr uint32_t FRAME_HEAP_TAG = 0x000DECAF;
     MEMHeapHandle heap = NULL;
 
-    ForegroundHeap() {}
-    ~ForegroundHeap() {}
+    ForegroundHeap() = default;
+    ~ForegroundHeap() = default;
 
     static MEMHeapHandle& getHeap();
 

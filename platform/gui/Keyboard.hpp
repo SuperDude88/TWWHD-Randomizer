@@ -43,8 +43,8 @@ protected:
     virtual void eraseCharacter();
 
 public:
-    Keyboard() {}
-    virtual ~Keyboard() {}
+    Keyboard() = default;
+    virtual ~Keyboard() = default;
 
     virtual void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const std::optional<size_t>& max_) = 0;
     virtual bool update() = 0;
@@ -55,7 +55,7 @@ public:
     virtual std::optional<std::string> getInput() const;
 };
 
-class HexKeyboard : public Keyboard {
+class HexKeyboard final : public Keyboard {
 private:
     size_t curRow = 0;
     size_t curCol = 0;
@@ -63,15 +63,15 @@ private:
 
 public:
     HexKeyboard();
-    ~HexKeyboard() {}
+    ~HexKeyboard() override = default;
 
-    void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const std::optional<size_t>& max_);
-    bool update();
-    void drawTV(const size_t row, const size_t col) const;
-    void drawDRC() const;
+    void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const std::optional<size_t>& max_) override;
+    bool update() override;
+    void drawTV(const size_t row, const size_t col) const override;
+    void drawDRC() const override;
 };
 
-class USKeyboard : public Keyboard {
+class USKeyboard final : public Keyboard {
 private:
     enum Keyset {
         LOWERCASE = 0,
@@ -106,10 +106,10 @@ private:
 
 public:
     USKeyboard();
-    ~USKeyboard() {}
+    ~USKeyboard() override = default;
 
-    void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const std::optional<size_t>& max_);
-    bool update();
-    void drawTV(const size_t row, const size_t col) const;
-    void drawDRC() const;
+    void open(const std::string& title_, const std::string& desc_, const std::string& curVal_, const std::optional<size_t>& max_) override;
+    bool update() override;
+    void drawTV(const size_t row, const size_t col) const override;
+    void drawDRC() const override;
 };

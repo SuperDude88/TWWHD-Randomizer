@@ -10,7 +10,7 @@
 
 
 
-class MSBPHeader : public FileHeader {
+class MSBPHeader final : public FileHeader {
 public:
     ~MSBPHeader() override = default;
 
@@ -18,7 +18,7 @@ public:
     //virtual void write(std::ostream& out) override;
 };
 
-class CLB1 : public SectionHeader, public HashTable {
+class CLB1 final : public SectionHeader, public HashTable {
 public:
     ~CLB1() override = default;
 
@@ -26,7 +26,7 @@ public:
     void write(std::ostream& out) override;
 };
 
-class CLR1 : public SectionHeader {
+class CLR1 final : public SectionHeader {
 public:
     std::vector<RGBA8> colors;
 
@@ -38,7 +38,7 @@ private:
     uint32_t entryCount;
 };
 
-class ALB1 : public SectionHeader, public HashTable {
+class ALB1 final : public SectionHeader, public HashTable {
 public:
     ~ALB1() override = default;
 
@@ -53,7 +53,7 @@ struct Attribute {
     uint32_t atrOffset; //Location in the text attribute struct
 };
 
-class ATI2 : public SectionHeader {
+class ATI2 final : public SectionHeader {
 public:
     std::vector<Attribute> attributes;
 
@@ -71,7 +71,7 @@ struct AttributeList {
     std::vector<std::string> itemNames;
 };
 
-class ALI2 : public SectionHeader {
+class ALI2 final : public SectionHeader {
 public:
     std::vector<AttributeList> lists;
 
@@ -90,7 +90,7 @@ struct TagGroup {
     std::string groupName;
 };
 
-class TGG2 : public SectionHeader {
+class TGG2 final : public SectionHeader {
 public:
     std::vector<TagGroup> groups;
 
@@ -110,7 +110,7 @@ struct Tag {
     std::string tagName;
 };
 
-class TAG2 : public SectionHeader {
+class TAG2 final : public SectionHeader {
 public:
     std::vector<Tag> tags;
 
@@ -135,7 +135,7 @@ struct TagParameter {
     std::vector<uint16_t> itemIndexes; //in TGL2 block
 };
 
-class TGP2 : public SectionHeader {
+class TGP2 final : public SectionHeader {
 public:
     std::vector<TagParameter> params;
 
@@ -149,7 +149,7 @@ private:
     std::vector<uint32_t> offsets;
 };
 
-class TGL2 : public SectionHeader {
+class TGL2 final : public SectionHeader {
 public:
     std::vector<std::string> names;
 
@@ -163,7 +163,7 @@ private:
     std::vector<uint32_t> offsets;
 };
 
-class SLB1 : public SectionHeader, public HashTable {
+class SLB1 final : public SectionHeader, public HashTable {
 public:
     ~SLB1() override = default;
 
@@ -178,7 +178,7 @@ struct Style {
     uint32_t baseColorIdx;
 };
 
-class SYL3 : public SectionHeader {
+class SYL3 final : public SectionHeader {
 public:
     std::vector<Style> styles;
 
@@ -190,7 +190,7 @@ private:
     uint32_t numStyles;
 };
 
-class CTI1 : public SectionHeader {
+class CTI1 final : public SectionHeader {
 public:
     std::vector<std::string> filenames;
 
@@ -205,7 +205,7 @@ private:
 
 namespace FileTypes {
 
-    class MSBPFile : public FileType {
+    class MSBPFile final : public FileType {
     public:
         CLB1 colorLabels;
         CLR1 colors;

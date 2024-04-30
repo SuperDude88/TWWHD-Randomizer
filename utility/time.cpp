@@ -10,8 +10,6 @@ ProgramTime::ProgramTime() :
     openTime(system_clock::now())
 {}
 
-ProgramTime::~ProgramTime() {}
-
 ProgramTime& ProgramTime::getInstance() {
     static ProgramTime s_Instance;
     return s_Instance;

@@ -193,7 +193,7 @@ private:
 namespace FileTypes {
     const char *EventlistErrorGetName(EventlistError err);
 
-    class EventList : public FileType {
+    class EventList final : public FileType {
     public:
         static constexpr int32_t TOTAL_NUM_FLAGS = 0x2800; //could be a define?
 

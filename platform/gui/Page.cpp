@@ -1499,7 +1499,7 @@ void ColorPage::ColorPickerSubpage::drawPickerDRC() const {
 
 
 
-MetaPage::MetaPage() {}
+MetaPage::MetaPage() = default;
 
 void MetaPage::open() {}
 

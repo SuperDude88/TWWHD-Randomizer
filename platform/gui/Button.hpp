@@ -32,7 +32,7 @@ public:
     BasicButton(const Option& option_, const Duration_t& delay_ = Duration_t(-1), const Duration_t& interval_ = Duration_t(-1)) :
         BasicButton(option_, getNameDesc(option_).first, getNameDesc(option_).second, getCallback(option_), delay_, interval_)
     {}
-    virtual ~BasicButton() {}
+    virtual ~BasicButton() = default;
 
     virtual void hovered();
     virtual void unhovered();
@@ -41,7 +41,7 @@ public:
     virtual void drawDRC() const;
 };
 
-class ItemButton : public BasicButton {
+class ItemButton final : public BasicButton {
 protected:
     const GameItem item;
     const size_t num; // how many of this item is needed before the button is enabled
@@ -53,7 +53,7 @@ public:
         item(item_),
         num(num_)
     {}
-    virtual ~ItemButton() {}
+    ~ItemButton() override = default;
     
     // Only need to define this here since none of the others get put in vectors
     // Need this since const members implicity delete assignment operators
@@ -77,13 +77,13 @@ public:
     inline bool isEnabled() const { return enabled; }
     inline GameItem getItem() const { return item; }
 
-    virtual bool update();
-    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
-    virtual void drawDRC() const;
+    bool update() override;
+    void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;
+    void drawDRC() const override;
 };
 
 // runs a callback when triggered, can show a value
-class ActionButton : public BasicButton {
+class ActionButton final : public BasicButton {
 private:
     const TriggerCallback valueCB;
 public:
@@ -91,15 +91,15 @@ public:
         BasicButton(Option::INVALID, name_, desc_, triggerCB_, Duration_t(-1), Duration_t(-1)),
         valueCB(valueCB_)
     {}
-    virtual ~ActionButton() {}
+    ~ActionButton() = default;
 
-    virtual bool update();
-    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
-    virtual void drawDRC() const;
+    bool update() override;
+    void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;
+    void drawDRC() const override;
 };
 
 // modifies a color
-class ColorButton : public BasicButton {
+class ColorButton final : public BasicButton {
 private:
     const std::function<void(const std::string&)> colorCB;
 public:
@@ -107,14 +107,14 @@ public:
         BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB, Duration_t(-1), Duration_t(-1)),
         colorCB(colorCB_)
     {}
-    virtual ~ColorButton() {}
+    ~ColorButton() = default;
 
     bool update(const std::string& colorName);
-    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
-    virtual void drawDRC() const;
+    void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;
+    void drawDRC() const override;
 };
 
-class FunctionButton : public BasicButton {
+class FunctionButton final : public BasicButton {
 private:
     const std::function<void(void)> triggerCB;
 public:
@@ -122,9 +122,9 @@ public:
         BasicButton(Option::INVALID, name_, desc_, OptionCB::invalidCB, Duration_t(-1), Duration_t(-1)),
         triggerCB(triggerCB_)
     {}
-    virtual ~FunctionButton() {}
+    ~FunctionButton() = default;
 
-    virtual bool update();
-    virtual void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const;
-    virtual void drawDRC() const;
+    bool update() override;
+    void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;
+    void drawDRC() const override;
 };

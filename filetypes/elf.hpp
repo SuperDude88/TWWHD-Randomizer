@@ -29,7 +29,7 @@ namespace FileTypes {
 
     const char* ELFErrorGetName(ELFError err);
 
-    class ELF : public FileType {
+    class ELF final : public FileType {
     public:
         Elf32_Ehdr ehdr;
         std::vector<shdr_index_t> shdr_table;

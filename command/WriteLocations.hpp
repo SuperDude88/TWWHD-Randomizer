@@ -30,8 +30,8 @@ class Location;
 class LocationModification
 {
 public:
-    LocationModification() {}
-    virtual ~LocationModification() {}
+    LocationModification() = default;
+    virtual ~LocationModification() = default;
     LocationModification(const LocationModification& other) = default;
     LocationModification& operator=(const LocationModification& other) = default;
     LocationModification(LocationModification&& other) = default;
@@ -42,7 +42,7 @@ public:
     virtual ModificationError writeLocation(const Item& /* item */) { return ModificationError::NONE; }
 };
 
-class ModifyChest : public LocationModification {
+class ModifyChest final : public LocationModification {
 private:
     inline static bool isCTMC = false;
     inline static bool raceMode = false;
@@ -55,8 +55,8 @@ private:
     ModificationError setCTMCType(ACTR& chest, const Item& item);
 public:
 
-    ModifyChest() {}
-    ~ModifyChest() override {}
+    ModifyChest() = default;
+    ~ModifyChest() override = default;
     ModifyChest(const ModifyChest& other) = default;
     ModifyChest& operator=(const ModifyChest& other) = default;
     ModifyChest(ModifyChest&& other) = default;
@@ -68,14 +68,14 @@ public:
     static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::map<std::string, Dungeon>& dungeons_, const std::list<Location*>& playthroughLocations_) { isCTMC = isCTMC_; raceMode = raceMode_; dungeons = dungeons_; playthroughLocations = playthroughLocations_;}
 };
 
-class ModifyActor : public LocationModification {
+class ModifyActor final : public LocationModification {
 private:
     std::string filePath;
     std::vector<uint32_t> offsets;
 
 public:
-    ModifyActor() {}
-    ~ModifyActor() override {}
+    ModifyActor() = default;
+    ~ModifyActor() override = default;
     ModifyActor(const ModifyActor& other) = default;
     ModifyActor& operator=(const ModifyActor& other) = default;
     ModifyActor(ModifyActor&& other) = default;
@@ -86,14 +86,14 @@ public:
     ModificationError writeLocation(const Item& item) override;
 };
 
-class ModifySCOB : public LocationModification {
+class ModifySCOB final : public LocationModification {
 private:
     std::string filePath;
     std::vector<uint32_t> offsets;
 
 public:
-    ModifySCOB() {}
-    ~ModifySCOB() override {}
+    ModifySCOB() = default;
+    ~ModifySCOB() override = default;
     ModifySCOB(const ModifySCOB& other) = default;
     ModifySCOB& operator=(const ModifySCOB& other) = default;
     ModifySCOB(ModifySCOB&& other) = default;
@@ -104,15 +104,15 @@ public:
     ModificationError writeLocation(const Item& item) override;
 };
 
-class ModifyEvent : public LocationModification {
+class ModifyEvent final : public LocationModification {
 private:
     std::string filePath;
     uint32_t offset;
     uint32_t nameOffset;
 
 public:
-    ModifyEvent() {}
-    ~ModifyEvent() override {}
+    ModifyEvent() = default;
+    ~ModifyEvent() override = default;
     ModifyEvent(const ModifyEvent& other) = default;
     ModifyEvent& operator=(const ModifyEvent& other) = default;
     ModifyEvent(ModifyEvent&& other) = default;
@@ -123,13 +123,13 @@ public:
     ModificationError writeLocation(const Item& item) override;
 };
 
-class ModifyRPX : public LocationModification {
+class ModifyRPX final : public LocationModification {
 private:
     std::vector<uint32_t> offsets;
 
 public:
-    ModifyRPX() {}
-    ~ModifyRPX() override {}
+    ModifyRPX() = default;
+    ~ModifyRPX() override = default;
     ModifyRPX(const ModifyRPX& other) = default;
     ModifyRPX& operator=(const ModifyRPX& other) = default;
     ModifyRPX(ModifyRPX&& other) = default;
@@ -140,13 +140,13 @@ public:
     ModificationError writeLocation(const Item& item) override;
 };
 
-class ModifySymbol : public LocationModification {
+class ModifySymbol final : public LocationModification {
 private:
     std::vector<std::string> symbolNames;
 
 public:
-    ModifySymbol() {}
-    ~ModifySymbol() override {}
+    ModifySymbol() = default;
+    ~ModifySymbol() override = default;
     ModifySymbol(const ModifySymbol& other) = default;
     ModifySymbol& operator=(const ModifySymbol& other) = default;
     ModifySymbol(ModifySymbol&& other) = default;
@@ -157,13 +157,13 @@ public:
     ModificationError writeLocation(const Item& item) override;
 };
 
-class ModifyBoss : public LocationModification {
+class ModifyBoss final : public LocationModification {
 private:
     std::vector<std::pair<std::string, uint32_t>> offsetsWithPath;
 
 public:
-    ModifyBoss() {}
-    ~ModifyBoss() override {}
+    ModifyBoss() = default;
+    ~ModifyBoss() override = default;
     ModifyBoss(const ModifyBoss& other) = default;
     ModifyBoss& operator=(const ModifyBoss& other) = default;
     ModifyBoss(ModifyBoss&& other) = default;
