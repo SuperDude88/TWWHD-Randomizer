@@ -104,7 +104,7 @@ public:
     void addLocation(const std::string& locationName);
     Item getItem(const std::string& itemName);
     bool anyOfThisItemIsMajor(const Item& item) const;
-
+    bool isHighDefinition() const;
     // Stuff to help with debugging
     std::string errorToName(WorldLoadingError err);
     std::string getLastErrorDetails();
@@ -157,6 +157,7 @@ private:
     ItemPool startingItems;
     int worldId = -1;
     size_t numWorlds = 1;
+    bool highDefinition = true;
 
 public:
     static int eventCounter;

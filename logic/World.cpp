@@ -1411,6 +1411,10 @@ bool World::anyOfThisItemIsMajor(const Item& item) const
     }
     return false;
 }
+inline bool World::isHighDefinition() const {
+    return highDefinition;
+}
+
 
 std::string World::errorToName(WorldLoadingError err)
 {
