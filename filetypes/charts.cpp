@@ -146,7 +146,7 @@ uint8_t Chart::getIslandNumber() const {
 	return island_number;
 }
 
-ChartError Chart::setIslandNumber(const uint8_t value) {
+ChartError Chart::setIslandNumber(uint8_t value) {
 	if (number < 1 || number > 49) {
 		LOG_ERR_AND_RETURN(ChartError::INVALID_NUMBER);
 	}

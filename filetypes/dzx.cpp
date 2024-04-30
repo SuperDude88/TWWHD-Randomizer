@@ -213,7 +213,7 @@ namespace FileTypes {
 		return entries;
 	}
 
-	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string& chunk_type, const unsigned int layer) {
+	std::vector<ChunkEntry*> DZXFile::entries_by_type_and_layer(const std::string& chunk_type, unsigned int layer) {
 		std::vector<ChunkEntry*> entries;
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {

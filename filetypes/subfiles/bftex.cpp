@@ -167,7 +167,7 @@ namespace FileTypes::Subfiles {
         {
             LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
         }
-        for(unsigned int & mipOffset : mipOffsets) {
+        for(uint32_t& mipOffset : mipOffsets) {
             if (!ftex.read(reinterpret_cast<char*>(&mipOffset), sizeof(mipOffset)))
             {
                 LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
@@ -193,7 +193,7 @@ namespace FileTypes::Subfiles {
         {
             LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);
         }
-        for(unsigned int & texReg : texRegs) {
+        for(uint32_t& texReg : texRegs) {
             if (!ftex.read(reinterpret_cast<char*>(&texReg), sizeof(texReg)))
             {
                 LOG_ERR_AND_RETURN(FTEXError::REACHED_EOF);

@@ -42,33 +42,37 @@ struct Prop {
 
     Prop() = default;
 
-    Prop(std::string name, const std::vector<float> &val) : prop_name(std::move(name)),
-                                                            prop_value(val) {
-    }
+    Prop(std::string name, const std::vector<float> &val) :
+        prop_name(std::move(name)),
+        prop_value(val)
+    {}
+    Prop(std::string name, const float &val) :
+        prop_name(std::move(name)),
+        prop_value(std::vector<float>{val})
+    {}
 
-    Prop(std::string name, const float &val) : prop_name(std::move(name)),
-                                               prop_value(std::vector<float>{val}) {
-    }
+    Prop(std::string name, const std::vector<vec3<float>> &val) :
+        prop_name(std::move(name)),
+        prop_value(val)
+    {}
+    Prop(std::string name, const vec3<float> &val) :
+        prop_name(std::move(name)),
+        prop_value(std::vector<vec3<float>>{val})
+    {}
 
-    Prop(std::string name, const std::vector<vec3<float>> &val) : prop_name(std::move(name)),
-                                                                  prop_value(val) {
-    }
+    Prop(std::string name, const std::vector<int32_t> &val) :
+        prop_name(std::move(name)),
+        prop_value(val)
+    {}
+    Prop(std::string name, const int32_t &val) :
+        prop_name(std::move(name)),
+        prop_value(std::vector<int32_t>{val})
+    {}
 
-    Prop(std::string name, const vec3<float> &val) : prop_name(std::move(name)),
-                                                     prop_value(std::vector<vec3<float>>{val}) {
-    }
-
-    Prop(std::string name, const std::vector<int32_t> &val) : prop_name(std::move(name)),
-                                                              prop_value(val) {
-    }
-
-    Prop(std::string name, const int32_t &val) : prop_name(std::move(name)),
-                                                 prop_value(std::vector<int32_t>{val}) {
-    }
-
-    Prop(std::string name, const std::string &val) : prop_name(std::move(name)),
-                                                     prop_value(val) {
-    }
+    Prop(std::string name, const std::string &val) :
+        prop_name(std::move(name)),
+        prop_value(val)
+    {}
 };
 
 class Property {
@@ -80,7 +84,6 @@ public:
     std::variant<std::vector<float>, std::vector<vec3<float>>, std::vector<int>, std::string> value;
 
     EventlistError read(std::istream &in);
-
     void save_changes(std::ostream &out);
 
 private:
@@ -109,11 +112,9 @@ public:
     uint32_t duplicate_id = 0;
 
     EventlistError read(std::istream &in);
-
     void save_changes(std::ostream &out);
 
     std::shared_ptr<Property> get_prop(const std::string &prop_name);
-
     Property &add_property(const std::string &name);
 
 private:
@@ -139,7 +140,6 @@ public:
     std::shared_ptr<Action> initial_action;
 
     EventlistError read(std::istream &in);
-
     EventlistError save_changes(std::ostream &out);
 
     std::shared_ptr<Action> add_action(const FileTypes::EventList &list, const std::string &name,
@@ -170,11 +170,9 @@ public:
     std::vector<std::shared_ptr<Actor>> actors;
 
     EventlistError read(std::istream &in);
-
     void save_changes(std::ostream &out);
 
     std::shared_ptr<Actor> get_actor(const std::string &name);
-
     std::shared_ptr<Actor> add_actor(const FileTypes::EventList &list, const std::string &name);
 
 private:
@@ -204,17 +202,12 @@ namespace FileTypes {
         EventList() = default;
 
         static EventList createNew();
-
         EventlistError loadFromBinary(std::istream &in);
-
         EventlistError loadFromFile(const std::string &filePath);
-
         EventlistError writeToStream(std::ostream &out);
-
         EventlistError writeToFile(const std::string &outFilePath);
 
         Event &add_event(const std::string &name);
-
         std::optional<int32_t> get_unused_flag_id() const;
 
     private:

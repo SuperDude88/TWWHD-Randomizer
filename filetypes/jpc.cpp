@@ -337,7 +337,7 @@ namespace JParticle {
         }
         colorPrmAnimDataOff += numPaddingBytes;
 
-        if (colorEnvAnimData.empty()) colorEnvAnimDataOff = colorPrmAnimDataOff + colorPrmAnimData.size() * 0x6;
+        if (!colorEnvAnimData.empty()) colorEnvAnimDataOff = colorPrmAnimDataOff + colorPrmAnimData.size() * 0x6;
         numPaddingBytes = 4 - (colorEnvAnimDataOff % 4);
         if (numPaddingBytes == 4) {
             numPaddingBytes = 0;
@@ -369,9 +369,9 @@ namespace JParticle {
 
         colorFlags = (colorFlags & ~0x70) | ((static_cast<uint8_t>(colorCalcIdxType) & 0x07) << 4);
         colorFlags &= ~0x02;
-        if (colorPrmAnimData.empty()) colorFlags |= 0x2;
+        if (!colorPrmAnimData.empty()) colorFlags |= 0x2;
         colorFlags &= ~0x08;
-        if (colorEnvAnimData.empty()) colorFlags |= 0x8;
+        if (!colorEnvAnimData.empty()) colorFlags |= 0x8;
 
         texFlags = (texFlags & ~0x28) | ((static_cast<uint8_t>(texCalcIdxType) & 0x07) << 2);
         texFlags &= ~0x01;

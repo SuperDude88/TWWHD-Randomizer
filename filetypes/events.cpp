@@ -152,9 +152,9 @@ void Action::save_changes(std::ostream& out) {
 }
 
 std::shared_ptr<Property> Action::get_prop(const std::string& prop_name) {
-    for (auto & propertie : properties) {
-        if (propertie->name == prop_name) {
-            return propertie;
+    for (std::shared_ptr<Property>& property : properties) {
+        if (property->name == prop_name) {
+            return property;
         }
     }
     return nullptr;
