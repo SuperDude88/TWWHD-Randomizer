@@ -492,7 +492,7 @@ namespace FileTypes {
 
     const char* JPCErrorGetName(JPCError err);
 
-    class JPC : public FileType {
+    class JPC final : public FileType {
     public:
         char magicJPAC[8];
         uint16_t num_particles;

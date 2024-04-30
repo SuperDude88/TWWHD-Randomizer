@@ -68,7 +68,8 @@ private:
     static TimePoint_t::duration getElapsedTime();
 
     ProgramTime();
-    ~ProgramTime();
+    ~ProgramTime() = default;
+
 public:
     ProgramTime(const ProgramTime&) = delete;
     ProgramTime& operator=(const ProgramTime&) = delete;

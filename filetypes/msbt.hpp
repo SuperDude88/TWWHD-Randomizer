@@ -12,7 +12,7 @@
 
 
 
-class MSBTHeader : public FileHeader {
+class MSBTHeader final : public FileHeader {
 public:
     ~MSBTHeader() override = default;
 
@@ -20,7 +20,7 @@ public:
     //virtual void write(std::ostream& out) override;
 };
 
-class LBL1 : public SectionHeader, public HashTable {
+class LBL1 final : public SectionHeader, public HashTable {
 public:
     ~LBL1() override = default;
 
@@ -49,7 +49,7 @@ struct Attributes {
     uint8_t mctTester = 0; //internally "MCT Tester", unknown purpose, seemingly cut off by attribute entry length
 };
 
-class ATR1 : public SectionHeader {
+class ATR1 final : public SectionHeader {
 public:
     std::vector<Attributes> entries;
 
@@ -67,7 +67,7 @@ struct TSY1Entry {
     uint32_t styleIndex; //Index in the MSBP style list
 };
 
-class TSY1 : public SectionHeader {
+class TSY1 final : public SectionHeader {
 public:
     std::vector<TSY1Entry> entries;
     
@@ -83,7 +83,7 @@ struct TXT2Entry {
     std::u16string message;
 };
 
-class TXT2 : public SectionHeader {
+class TXT2 final : public SectionHeader {
 public:
     std::vector<TXT2Entry> entries;
     
@@ -103,8 +103,7 @@ struct Message {
 };
 
 namespace FileTypes {
-    
-    class MSBTFile : public FileType {
+    class MSBTFile final : public FileType {
     public:
         std::unordered_map<std::string, Message> messages_by_label;
 

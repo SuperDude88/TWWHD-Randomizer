@@ -374,17 +374,17 @@ namespace NintendoWare::Layout {
 		virtual std::unique_ptr<PaneBase> clonePane();
 		virtual FLYTError save_changes(std::ostream& out);
 	};
-	class pan1 : public PaneBase {
+	class pan1 final : public PaneBase {
 	public:
-		~pan1() = default;
+		~pan1() override = default;
 
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
-	class bnd1 : public PaneBase {
+	class bnd1 final : public PaneBase {
 	public:	
-		~bnd1() = default;
+		~bnd1() override = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -404,7 +404,7 @@ namespace NintendoWare::Layout {
 		uint8_t texFlip;
 		uint8_t padding_0x00;
 	};
-	class wnd1 : public PaneBase {
+	class wnd1 final : public PaneBase {
 	private:
 		uint8_t padding_0x00[2];
 		uint32_t contentOffset;
@@ -423,7 +423,7 @@ namespace NintendoWare::Layout {
 		uint8_t wndFlags;
 		windowContent content;
 		std::vector<windowFrame> frames;
-		~wnd1() = default;
+		~wnd1() override = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -436,7 +436,7 @@ namespace NintendoWare::Layout {
 		uint8_t hasAnimInfo;
 		uint8_t padding_0x00;
 	};
-	class txt1 : public PaneBase {
+	class txt1 final : public PaneBase {
 	private:
 		uint8_t padding_0x00;
 		uint32_t textOffset;
@@ -473,12 +473,12 @@ namespace NintendoWare::Layout {
 		std::u16string text;
 		std::string textBoxName;
 		std::optional<perCharTransform> charTransform;
-		~txt1() = default;
+		~txt1() override = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
 	};
-	class pic1 : public PaneBase {
+	class pic1 final : public PaneBase {
 	private:
 		uint8_t padding_0x00;
 		uint8_t numCoords;
@@ -489,7 +489,7 @@ namespace NintendoWare::Layout {
 		RGBA8 vertexColorBR;
 		uint16_t matIndex;
 		std::vector<UVCoords> coords;
-		~pic1() = default;
+		~pic1() override = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -509,7 +509,7 @@ namespace NintendoWare::Layout {
 		partProperty() = default;
 		partProperty(const partProperty& property); //define this manually to deepcopy unique_ptr
 	};
-	class prt1 : public PaneBase {
+	class prt1 final : public PaneBase {
 	private:
 		uint32_t propCount;
 	public:
@@ -517,7 +517,7 @@ namespace NintendoWare::Layout {
 		float magnifyY;
 		std::vector<partProperty> properties;
 		std::string lytFilename;
-		~prt1() override;
+		~prt1() override = default;
 		FLYTError read(std::istream& bflyt) override;
 		std::unique_ptr<PaneBase> clonePane() override;
 		FLYTError save_changes(std::ostream& out) override;
@@ -555,7 +555,7 @@ namespace FileTypes {
 
 	const char* FLYTErrorGetName(FLYTError err);
 
-	class FLYTFile : public FileType {
+	class FLYTFile final : public FileType {
 	public:
 		FLYTHeader header;
 		NintendoWare::Layout::lyt1 LYT1;

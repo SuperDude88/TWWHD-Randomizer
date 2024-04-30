@@ -5,7 +5,7 @@
 
 class EmptyPage {
 public:
-    virtual ~EmptyPage() {}
+    virtual ~EmptyPage() = default;
 
     virtual std::string getName() const = 0;
     virtual std::string getDesc() const = 0;
@@ -17,7 +17,7 @@ public:
     virtual void drawDRC() const = 0;
 };
 
-class SeedPage : public EmptyPage {
+class SeedPage final: public EmptyPage {
 private:
     bool typing_seed = false;
     bool typing_perma = false;
@@ -32,17 +32,17 @@ private:
 public:
     SeedPage();
     
-    std::string getName() const { return "Seed"; }
-    std::string getDesc() const { return "Control the seed used to randomize."; }
+    std::string getName() const override { return "Seed"; }
+    std::string getDesc() const override { return "Control the seed used to randomize."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class ProgressionPage : public EmptyPage {
+class ProgressionPage final: public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -51,17 +51,17 @@ private:
 public:
     ProgressionPage();
     
-    std::string getName() const { return "Progression"; }
-    std::string getDesc() const { return "These settings control where progress items can appear.\nDisabled locations will still be randomized, but can only contain optional items you don't need to beat the game."; }
+    std::string getName() const override { return "Progression"; }
+    std::string getDesc() const override { return "These settings control where progress items can appear.\nDisabled locations will still be randomized, but can only contain optional items you don't need to beat the game."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class HintsPage : public EmptyPage {
+class HintsPage final: public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -70,17 +70,17 @@ private:
 public:
     HintsPage();
     
-    std::string getName() const { return "Hints"; }
-    std::string getDesc() const { return "These settings control the generation and placement of hints.\nEach type of hint will be split evenly across the selected placement options."; }
+    std::string getName() const override { return "Hints"; }
+    std::string getDesc() const override { return "These settings control the generation and placement of hints.\nEach type of hint will be split evenly across the selected placement options."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class EntrancePage : public EmptyPage {
+class EntrancePage final: public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -89,17 +89,17 @@ private:
 public:
     EntrancePage();
     
-    std::string getName() const { return "Entrances"; }
-    std::string getDesc() const { return "These settings control entrance randomization."; }
+    std::string getName() const override { return "Entrances"; }
+    std::string getDesc() const override { return "These settings control entrance randomization."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class ConveniencePage : public EmptyPage {
+class ConveniencePage final: public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -108,17 +108,17 @@ private:
 public:
     ConveniencePage();
     
-    std::string getName() const { return "Convenience"; }
-    std::string getDesc() const { return "These settings control convenience tweaks and other customization."; }
+    std::string getName() const override { return "Convenience"; }
+    std::string getDesc() const override { return "These settings control convenience tweaks and other customization."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class AdvancedPage : public EmptyPage {
+class AdvancedPage final: public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -127,17 +127,17 @@ private:
 public:
     AdvancedPage();
     
-    std::string getName() const { return "Advanced"; }
-    std::string getDesc() const { return "Various options that don't fit into the other categories."; }
+    std::string getName() const override { return "Advanced"; }
+    std::string getDesc() const override { return "Various options that don't fit into the other categories."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class ItemsPage : public EmptyPage {
+class ItemsPage final: public EmptyPage {
 private:
     static constexpr size_t LIST_HEIGHT = 20;
 
@@ -156,24 +156,24 @@ private:
 public:
     ItemsPage();
     
-    std::string getName() const { return "Starting Items"; }
-    std::string getDesc() const { return "Selected items will be given to Link at the start of the game and won't be placed in the world."; }
+    std::string getName() const override { return "Starting Items"; }
+    std::string getDesc() const override { return "Selected items will be given to Link at the start of the game and won't be placed in the world."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class ColorPage : public EmptyPage {
+class ColorPage final: public EmptyPage {
 private:
     enum struct Subpage {
         PRESETS = 0,
         COLOR_PICKER = 1
     };
 
-    class PresetsSubpage : public EmptyPage {
+    class PresetsSubpage final: public EmptyPage {
     private:
         ColorPage& parent;
 
@@ -194,17 +194,17 @@ private:
     public:
         PresetsSubpage(ColorPage& parent_);
     
-        std::string getName() const { return "Presets"; }
-        std::string getDesc() const { return "Change presets and model options."; }
+        std::string getName() const override { return "Presets"; }
+        std::string getDesc() const override { return "Change presets and model options."; }
 
-        void open();
-    void close();
-        bool update();
-        void drawTV() const;
-        void drawDRC() const;
+        void open() override;
+        void close() override;
+        bool update() override;
+        void drawTV() const override;
+        void drawDRC() const override;
     };
 
-    class ColorPickerSubpage : public EmptyPage {
+    class ColorPickerSubpage final: public EmptyPage {
     private:
         ColorPage& parent;
 
@@ -225,14 +225,14 @@ private:
     public:
         ColorPickerSubpage(ColorPage& parent_);
     
-        std::string getName() const { return "Color List"; }
-        std::string getDesc() const { return "Individually set custom colors."; }
+        std::string getName() const override { return "Color List"; }
+        std::string getDesc() const override { return "Individually set custom colors."; }
 
-        void open();
-        void close();
-        bool update();
-        void drawTV() const;
-        void drawDRC() const;
+        void open() override;
+        void close() override;
+        bool update() override;
+        void drawTV() const override;
+        void drawDRC() const override;
 
         bool updateList();
         void drawListTV() const;
@@ -266,17 +266,17 @@ private:
 public:
     ColorPage();
     
-    std::string getName() const { return "Colors"; }
-    std::string getDesc() const { return "Controls custom colors that get applied to the player model. Custom models are not yet supported."; }
+    std::string getName() const override { return "Colors"; }
+    std::string getDesc() const override { return "Controls custom colors that get applied to the player model. Custom models are not yet supported."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };
 
-class MetaPage : public EmptyPage {
+class MetaPage final: public EmptyPage {
 private:
     // these are too new for the Wii U browser :(
     //static inline std::string GITHUB_URL = "https://github.com/SuperDude88/TWWHD-Randomizer";
@@ -285,12 +285,12 @@ private:
 public:
     MetaPage();
     
-    std::string getName() const { return "About"; }
-    std::string getDesc() const { return "Patcher info and settings, unrelated to randomization."; }
+    std::string getName() const override { return "About"; }
+    std::string getDesc() const override { return "Patcher info and settings, unrelated to randomization."; }
 
-    void open();
-    void close();
-    bool update();
-    void drawTV() const;
-    void drawDRC() const;
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
 };

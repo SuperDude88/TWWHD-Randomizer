@@ -56,7 +56,7 @@ struct ButtonInfo {
 class InputManager {
 private:
     InputManager();
-    ~InputManager() {}
+    ~InputManager() = default;
 
 public:
     using Clock_t = std::chrono::high_resolution_clock;

@@ -7,7 +7,7 @@ struct HSV {
 	double S = 0;
 	double V = 0;
 
-	HSV() {}
+	HSV() = default;
 
 	HSV(const double& h_, const double& s_, const double& v_) :
 		H(h_),

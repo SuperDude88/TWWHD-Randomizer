@@ -16,7 +16,7 @@ protected:
 	virtual void initNew() = 0;
 };
 
-class GenericFile : public FileType {
+class GenericFile final : public FileType {
 public:
     std::stringstream data;
 

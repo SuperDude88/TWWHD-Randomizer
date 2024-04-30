@@ -78,7 +78,7 @@ namespace FileTypes
     const char* FRESErrorGetName(FRESError err);
 
 
-    class resFile : public FileType {
+    class resFile final : public FileType {
     public:
         struct FileSpec
         {

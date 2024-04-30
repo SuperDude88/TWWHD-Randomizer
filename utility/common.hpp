@@ -16,7 +16,7 @@ struct RGBA {
     T B = 0;
     T A = std::numeric_limits<T>::max();
 
-    RGBA() {}
+    RGBA() = default;
 
     RGBA(const T& val, const T& alpha) :
         R(val),
@@ -38,7 +38,7 @@ struct vec2 {
     T X;
     T Y;
 
-    vec2() {}
+    vec2() = default;
     vec2(const T& val) :
         X(val),
         Y(val)
@@ -51,7 +51,7 @@ struct vec3 {
     T Y;
     T Z;
 
-    vec3() {}
+    vec3() = default;
     vec3(const T& val) :
         X(val),
         Y(val),
@@ -71,7 +71,7 @@ struct vec4 {
     T C;
     T D;
 
-    vec4() {}
+    vec4() = default;
     vec4(const T& val) :
         A(val),
         B(val),

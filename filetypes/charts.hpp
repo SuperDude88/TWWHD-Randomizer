@@ -61,7 +61,7 @@ namespace FileTypes {
 
 	const char* ChartErrorGetName(ChartError err);
 
-	class ChartList : public FileType {
+	class ChartList final : public FileType {
 	private:
 		uint32_t num_charts = 0;
 

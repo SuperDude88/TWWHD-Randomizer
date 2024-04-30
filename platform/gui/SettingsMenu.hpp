@@ -26,7 +26,7 @@ private:
     std::array<std::unique_ptr<EmptyPage>, 9> pages;
 
     SettingsMenu();
-    ~SettingsMenu() {}
+    ~SettingsMenu() = default;
 
     static SettingsMenu& getInstance();
 

@@ -38,5 +38,5 @@ public:
     #endif
     }
 
-    ThreadLocal() {}
+    ThreadLocal() = default;
 };

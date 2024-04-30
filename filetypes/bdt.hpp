@@ -26,7 +26,7 @@ namespace FileTypes {
 
 	const char* BDTErrorGetName(BDTError err);
 
-	class BDTFile : public FileType {
+	class BDTFile final : public FileType {
 	public:
 		struct FileSpec {
 		    uint32_t offset;
