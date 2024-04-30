@@ -24,5 +24,5 @@ namespace FileTypes {
     YAZ0Error yaz0Decode(std::istream& in, std::ostream& out);
     YAZ0Error yaz0Decode(std::stringstream& in, std::ostream& out);
     //YAZ0Error yaz0Encode(std::istream& in, std::ostream& out, uint32_t compressionLevel = 9);
-    YAZ0Error yaz0Encode(std::stringstream& in, std::ostream& out, uint32_t compressionLevel = 9);
+    YAZ0Error yaz0Encode(const std::stringstream& in, std::ostream& out, uint32_t compressionLevel = 9);
 }

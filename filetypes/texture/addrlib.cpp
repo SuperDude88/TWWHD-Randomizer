@@ -1,5 +1,6 @@
 #include "addrlib.hpp"
 
+#include <array>
 #include <unordered_set>
 
 
@@ -340,7 +341,7 @@ uint64_t computeSurfaceAddrFromCoordMacroTiled(uint32_t x, uint32_t y, uint32_t 
     return (bank << 9) | (pipe << 8) | (totalOffset & 255) | ((totalOffset & -256) << 3);
 }
 
-std::string swizzleSurf(uint32_t width, uint32_t height, const uint32_t depth, const GX2SurfaceFormat format_, const GX2AAMode aa, const GX2SurfaceUse use, GX2TileMode tileMode, const uint32_t swizzle_, const uint32_t pitch, const uint32_t bitsPerPixel, const uint32_t slice, const uint32_t sample, const std::string& data, const bool swizzle) {
+std::string swizzleSurf(uint32_t width, uint32_t height, uint32_t depth, GX2SurfaceFormat format_, GX2AAMode aa, GX2SurfaceUse use, GX2TileMode tileMode, uint32_t swizzle_, uint32_t pitch, uint32_t bitsPerPixel, uint32_t slice, uint32_t sample, const std::string& data, bool swizzle) {
     uint32_t bytesPerPixel = bitsPerPixel / 8;
 
     std::string result(data.size(), '\0');
