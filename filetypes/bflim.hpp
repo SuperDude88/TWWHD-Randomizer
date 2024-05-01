@@ -69,6 +69,6 @@ namespace FileTypes {
 		FLIMError writeToStream(std::ostream& out);
 		FLIMError writeToFile(const std::string& outFilePath);
 	private:
-		void initNew();
+		void initNew() override;
     };
 }
