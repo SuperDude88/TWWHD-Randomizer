@@ -97,6 +97,21 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", settings.plandomizerFile)
     #endif
 
+    if(!root["game_version"]) {
+        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+    }
+    else {
+        settings.game_version = nameToGameVersion(root["game_version"].as<std::string>("INVALID"));
+        if (settings.game_version == GameVersion::INVALID) {
+            if(!ignoreErrors) {
+                return ConfigError::INVALID_VALUE;
+            }
+            else {
+                settings.game_version = GameVersion::HD;
+            }
+        }
+    }
+
     GET_FIELD_NO_FAIL(root, "seed", seed)
 
     if(!root["progression_dungeons"]) {
@@ -433,6 +448,8 @@ YAML::Node Config::settingsToYaml() {
 
     SET_FIELD(root, "program_version", RANDOMIZER_VERSION) //Keep track of rando version to give warning (different versions will have different item placements)
     SET_FIELD(root, "file_version", CONFIG_VERSION) //Keep track of file version so it can avoid incompatible ones
+
+    SET_FIELD(root, "game_version", GameVersionToName(settings.game_version))
 
     SET_FIELD(root, "seed", seed)
 
