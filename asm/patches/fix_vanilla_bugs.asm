@@ -422,3 +422,27 @@ check_if_inside_warp:
 
 link_not_inside_warp:
   b 0x02102EDC
+
+
+
+; In vanilla, the barrier breaking cutscene will crash if you don't have 8 triforce shards because the layer is wrong
+; This becomes an issue if decoupled entrance randomizer gives you access to Hyrule before you get all the shards
+; Add the triforce requirement to the barrier itself to prevent the crash
+.org 0x023238E4
+  b check_barrier_triforce_requirement
+.org @NextFreeSpace
+.global check_barrier_triforce_requirement
+check_barrier_triforce_requirement:
+  lis r3, gameInfo_ptr@ha
+  lwz r3,gameInfo_ptr@l(r3)
+  addi r3, r3, 0xD4
+  bl getTriforceNum
+
+  cmpwi r3, 8
+  blt barrier_does_not_have_triforce
+
+  bl FUN_025200d4 ; replace the line we overwrote to jump here
+  b 0x023238E8 ; continue checking the other conditions
+
+barrier_does_not_have_triforce:
+  b 0x0232393C ; continue without breaking the barrier
