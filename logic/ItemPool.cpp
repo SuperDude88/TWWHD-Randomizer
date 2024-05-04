@@ -3,6 +3,7 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/World.hpp>
 #include <seedgen/random.hpp>
+#include <command/Log.hpp>
 
 static const std::map<std::string, uint8_t> alwaysItems = {
     // Potentially progress items

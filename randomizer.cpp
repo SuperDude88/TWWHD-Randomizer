@@ -16,10 +16,6 @@
 #include <logic/SpoilerLog.hpp>
 #include <logic/Generate.hpp>
 #include <logic/mass_test.hpp>
-#include <filetypes/dzx.hpp>
-#include <filetypes/charts.hpp>
-#include <filetypes/events.hpp>
-#include <command/GamePath.hpp>
 #include <command/WriteLocations.hpp>
 #include <command/WriteEntrances.hpp>
 #include <command/WriteCharts.hpp>
@@ -27,7 +23,6 @@
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>
-#include <utility/endian.hpp>
 #include <utility/time.hpp>
 
 #include <gui/update_dialog_header.hpp>
