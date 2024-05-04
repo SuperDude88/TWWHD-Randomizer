@@ -86,8 +86,19 @@ enum struct UIDisplayPreference {
     INVALID,
 };
 
+// internal for now, here so Crain can do what he wants with it
+enum struct GameVersion {
+    HD = 0,
+    SD,
+    INVALID
+};
+
 enum struct Option {
     INVALID = 0,
+
+    // Internal
+    GameVersion,
+
     // Progression
     ProgressDungeons,
     ProgressGreatFairies,
@@ -213,6 +224,8 @@ enum struct Option {
 
 class Settings {
 public:
+    GameVersion game_version;
+
     ProgressionDungeons progression_dungeons;
     bool progression_great_fairies;
     bool progression_puzzle_secret_caves;
@@ -316,8 +329,11 @@ public:
     int evaluateOption(const std::string& optionStr) const;
 };
 
+GameVersion nameToGameVersion(const std::string& name);
+std::string GameVersionToName(const GameVersion& version);
+
 PigColor nameToPigColor(const std::string& name);
-std::string PigColorToName(const PigColor& name);
+std::string PigColorToName(const PigColor& color);
 
 PlacementOption nameToPlacementOption(const std::string& name);
 std::string PlacementOptionToName(const PlacementOption& option);

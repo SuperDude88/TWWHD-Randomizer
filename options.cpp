@@ -9,6 +9,8 @@ Settings::Settings() {
 }
 
 void Settings::resetDefaults() {
+    game_version = GameVersion::HD;
+
     progression_dungeons = ProgressionDungeons::Standard;
     progression_great_fairies = true;
     progression_puzzle_secret_caves = true;
@@ -120,6 +122,8 @@ void Settings::resetDefaults() {
 
 uint8_t Settings::getSetting(const Option& option) const {
     switch (option) {
+        case Option::GameVersion:
+            return static_cast<std::underlying_type_t<GameVersion>>(game_version);
         case Option::ProgressDungeons:
             return static_cast<std::underlying_type_t<ProgressionDungeons>>(progression_dungeons);
         case Option::ProgressGreatFairies:
@@ -297,6 +301,8 @@ uint8_t Settings::getSetting(const Option& option) const {
 
 void Settings::setSetting(const Option& option, const size_t& value) {
     switch (option) {
+        case Option::GameVersion:
+            game_version = static_cast<GameVersion>(value); return;
         case Option::ProgressDungeons:
             progression_dungeons = static_cast<ProgressionDungeons>(value); return;
         case Option::ProgressGreatFairies:
@@ -482,6 +488,16 @@ int Settings::evaluateOption(const std::string& optionStr) const {
     return -1;
 }
 
+static const std::unordered_map<std::string, GameVersion> nameGameVersionMap = {
+    {"HD", GameVersion::HD},
+    {"SD", GameVersion::SD}
+};
+
+static const std::unordered_map<GameVersion, std::string> gameVersionNameMap = {
+    {GameVersion::HD, "HD"},
+    {GameVersion::SD, "SD"}
+};
+
 static const std::unordered_map<std::string, PigColor> namePigColorMap = {
     {"Black", PigColor::Black},
     {"Pink", PigColor::Pink},
@@ -588,206 +604,223 @@ static const std::unordered_map<std::string, UIDisplayPreference> nameUIDisplayP
 
 
 
-PigColor nameToPigColor(const std::string& name) {
-
-    if (namePigColorMap.count(name) == 0)
+GameVersion nameToGameVersion(const std::string& name) {
+    if (nameGameVersionMap.contains(name))
     {
-        return PigColor::INVALID;
+        return nameGameVersionMap.at(name);
     }
 
-    return namePigColorMap.at(name);
+    return GameVersion::INVALID;
 }
 
-std::string PigColorToName(const PigColor& name) {
-
-    if (pigColorNameMap.count(name) == 0)
+std::string GameVersionToName(const GameVersion& version) {
+    if (gameVersionNameMap.contains(version))
     {
-        return "INVALID";
+        return gameVersionNameMap.at(version);
     }
 
-    return pigColorNameMap.at(name);
+    return "INVALID";
+}
+
+PigColor nameToPigColor(const std::string& name) {
+    if (namePigColorMap.contains(name))
+    {
+        return namePigColorMap.at(name);
+    }
+
+    return PigColor::INVALID;
+}
+
+std::string PigColorToName(const PigColor& color) {
+    if (pigColorNameMap.contains(color))
+    {
+        return pigColorNameMap.at(color);
+    }
+
+    return "INVALID";
 }
 
 PlacementOption nameToPlacementOption(const std::string& name) {
-    if (namePlacementOptionMap.count(name) == 0)
+    if (namePlacementOptionMap.contains(name))
     {
-        return PlacementOption::INVALID;
+        return namePlacementOptionMap.at(name);
     }
 
-    return namePlacementOptionMap.at(name);
+    return PlacementOption::INVALID;
 }
 
 std::string PlacementOptionToName(const PlacementOption& option) {
-    if (placementOptionNameMap.count(option) == 0)
+    if (placementOptionNameMap.contains(option))
     {
-        return "INVALID";
+        return placementOptionNameMap.at(option);
     }
 
-    return placementOptionNameMap.at(option);
+    return "INVALID";
 }
 
 ProgressionDungeons nameToProgressionDungeons(const std::string& name) {
-    if (nameProgressionDungeonsMap.count(name) == 0)
+    if (nameProgressionDungeonsMap.contains(name))
     {
-        return ProgressionDungeons::INVALID;
+        return nameProgressionDungeonsMap.at(name);
     }
 
-    return nameProgressionDungeonsMap.at(name);
+    return ProgressionDungeons::INVALID;
 }
 
 std::string ProgressionDungeonsToName(const ProgressionDungeons& option) {
-    if (progressionDungeonsNameMap.count(option) == 0)
+    if (progressionDungeonsNameMap.contains(option))
     {
-        return "INVALID";
+        return progressionDungeonsNameMap.at(option);
     }
 
-    return progressionDungeonsNameMap.at(option);
+    return "INVALID";
 }
 
 ShuffleCaveEntrances nameToShuffleCaveEntrances(const std::string& name) {
-    if (nameShuffleCaveEntrancesMap.count(name) == 0)
+    if (nameShuffleCaveEntrancesMap.contains(name))
     {
-        return ShuffleCaveEntrances::INVALID;
+        return nameShuffleCaveEntrancesMap.at(name);
     }
 
-    return nameShuffleCaveEntrancesMap.at(name);
+    return ShuffleCaveEntrances::INVALID;
 }
 
 std::string ShuffleCaveEntrancesToName(const ShuffleCaveEntrances& option) {
-    if (shuffleCaveEntrancesNameMap.count(option) == 0)
+    if (shuffleCaveEntrancesNameMap.contains(option))
     {
-        return "INVALID";
+        return shuffleCaveEntrancesNameMap.at(option);
     }
 
-    return shuffleCaveEntrancesNameMap.at(option);
+    return "INVALID";
 }
 
 TargetTypePreference nameToTargetTypePreference(const std::string& name)
 {
-    if (nameTargetTypePreferenceMap.count(name) == 0)
+    if (nameTargetTypePreferenceMap.contains(name))
     {
-        return TargetTypePreference::INVALID;
+        return nameTargetTypePreferenceMap.at(name);
     }
 
-    return nameTargetTypePreferenceMap.at(name);
+    return TargetTypePreference::INVALID;
 }
 
 std::string TargetTypePreferenceToName(const TargetTypePreference& preference)
 {
-    if (targetTypePreferenceNameMap.count(preference) == 0)
+    if (targetTypePreferenceNameMap.contains(preference))
     {
-        return "INVALID";
+        return targetTypePreferenceNameMap.at(preference);
     }
 
-    return targetTypePreferenceNameMap.at(preference);
+    return "INVALID";
 }
 
 CameraPreference nameToCameraPreference(const std::string& name)
 {
-    if (nameCameraPreferenceMap.count(name) == 0)
+    if (nameCameraPreferenceMap.contains(name))
     {
-        return CameraPreference::INVALID;
+        return nameCameraPreferenceMap.at(name);
     }
 
-    return nameCameraPreferenceMap.at(name);
+    return CameraPreference::INVALID;
 }
 
 std::string CameraPreferenceToName(const CameraPreference& preference)
 {
-    if (cameraPreferenceNameMap.count(preference) == 0)
+    if (cameraPreferenceNameMap.contains(preference))
     {
-        return "INVALID";
+        return cameraPreferenceNameMap.at(preference);
     }
 
-    return cameraPreferenceNameMap.at(preference);
+    return "INVALID";
 }
 
 FirstPersonCameraPreference nameToFirstPersonCameraPreference(const std::string& name)
 {
-    if (nameFirstPersonCameraPreferenceMap.count(name) == 0)
+    if (nameFirstPersonCameraPreferenceMap.contains(name))
     {
-        return FirstPersonCameraPreference::INVALID;
+        return nameFirstPersonCameraPreferenceMap.at(name);
     }
 
-    return nameFirstPersonCameraPreferenceMap.at(name);
+    return FirstPersonCameraPreference::INVALID;
 }
 
 std::string FirstPersonCameraPreferenceToName(const FirstPersonCameraPreference& preference)
 {
-    if (firstPersonCameraPreferenceNameMap.count(preference) == 0)
+    if (firstPersonCameraPreferenceNameMap.contains(preference))
     {
-        return "INVALID";
+        return firstPersonCameraPreferenceNameMap.at(preference);
     }
 
-    return firstPersonCameraPreferenceNameMap.at(preference);
+    return "INVALID";
 }
 
 GyroscopePreference nameToGyroscopePreference(const std::string& name)
 {
-    if (nameGyroscopePreferenceMap.count(name) == 0)
+    if (nameGyroscopePreferenceMap.contains(name))
     {
-        return GyroscopePreference::INVALID;
+        return nameGyroscopePreferenceMap.at(name);
     }
 
-    return nameGyroscopePreferenceMap.at(name);
+    return GyroscopePreference::INVALID;
 }
 
 std::string GyroscopePreferenceToName(const GyroscopePreference& preference)
 {
-    if (gyroscopePreferenceNameMap.count(preference) == 0)
+    if (gyroscopePreferenceNameMap.contains(preference))
     {
-        return "INVALID";
+        return gyroscopePreferenceNameMap.at(preference);
     }
 
-    return gyroscopePreferenceNameMap.at(preference);
+    return "INVALID";
 }
 
 UIDisplayPreference nameToUIDisplayPreference(const std::string& name)
 {
-    if (nameUIDisplayPreferenceMap.count(name) == 0)
+    if (nameUIDisplayPreferenceMap.contains(name))
     {
-        return UIDisplayPreference::INVALID;
+        return nameUIDisplayPreferenceMap.at(name);
     }
 
-    return nameUIDisplayPreferenceMap.at(name);
+    return UIDisplayPreference::INVALID;
 }
 
 std::string UIDisplayPreferenceToName(const UIDisplayPreference& preference)
 {
-    if (uiDisplayPreferenceNameMap.count(preference) == 0)
+    if (uiDisplayPreferenceNameMap.contains(preference))
     {
-        return "INVALID";
+        return uiDisplayPreferenceNameMap.at(preference);
     }
 
-    return uiDisplayPreferenceNameMap.at(preference);
+    return "INVALID";
 }
 
 // Make sure there aren't any naming conflicts when adding future settings
 int nameToSettingInt(const std::string& name) {
-    if (namePigColorMap.count(name) > 0)
+    if (namePigColorMap.contains(name))
     {
         return static_cast<std::underlying_type_t<PigColor>>(namePigColorMap.at(name));
     }
-    if (nameTargetTypePreferenceMap.count(name) > 0)
+    if (nameTargetTypePreferenceMap.contains(name))
     {
         return static_cast<std::underlying_type_t<TargetTypePreference>>(nameTargetTypePreferenceMap.at(name));
     }
-    if (nameCameraPreferenceMap.count(name) > 0)
+    if (nameCameraPreferenceMap.contains(name))
     {
         return static_cast<std::underlying_type_t<CameraPreference>>(nameCameraPreferenceMap.at(name));
     }
-    if (nameFirstPersonCameraPreferenceMap.count(name) > 0)
+    if (nameFirstPersonCameraPreferenceMap.contains(name))
     {
         return static_cast<std::underlying_type_t<FirstPersonCameraPreference>>(nameFirstPersonCameraPreferenceMap.at(name));
     }
-    if (nameGyroscopePreferenceMap.count(name) > 0)
+    if (nameGyroscopePreferenceMap.contains(name))
     {
         return static_cast<std::underlying_type_t<GyroscopePreference>>(nameGyroscopePreferenceMap.at(name));
     }
-    if (nameUIDisplayPreferenceMap.count(name) > 0)
+    if (nameUIDisplayPreferenceMap.contains(name))
     {
         return static_cast<std::underlying_type_t<UIDisplayPreference>>(nameUIDisplayPreferenceMap.at(name));
     }
+
     return 0;
 }
 
@@ -880,12 +913,12 @@ Option nameToSetting(const std::string& name) {
         {"UI Display", Option::UIDisplay},
     };
 
-    if (optionNameMap.count(name) == 0)
+    if (optionNameMap.contains(name))
     {
-        return Option::INVALID;
+        return optionNameMap.at(name);
     }
 
-    return optionNameMap.at(name);
+    return Option::INVALID;
 }
 
 std::string settingToName(const Option& setting) {
@@ -977,10 +1010,10 @@ std::string settingToName(const Option& setting) {
         {Option::UIDisplay, "UI Display"},
     };
 
-    if (optionNameMap.count(setting) == 0)
+    if (optionNameMap.contains(setting))
     {
-        return "Invalid Option";
+        return optionNameMap.at(setting);
     }
 
-    return optionNameMap.at(setting);
+    return "Invalid Option";
 }
