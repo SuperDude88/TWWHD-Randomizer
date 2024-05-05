@@ -128,7 +128,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
                     }
                     else
                     {
-                        ErrorLog::getInstance().log(R"(Plandomizer Error: Missing key "item" in location ")" + locationObject.first.as<std::string>() + "\"");
+                        ErrorLog::getInstance().log("Plandomizer Error: Missing key \"item\" in location \"" + locationObject.first.as<std::string>() + "\"");
                         return PlandomizerError::MISSING_ITEM_KEY;
                     }
                     if (locationObject.second["world"])

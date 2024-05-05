@@ -1,6 +1,7 @@
 #include "seed.hpp"
 
 #include <cctype>
+#include <string>
 #include <vector>
 
 #include <libs/zlib-ng.hpp>
@@ -2495,14 +2496,8 @@ std::string generate_seed_hash() {
     return name1 + " " + name2;
 }
 
-std::string hash_for_seed(const std::string& seed) {
-    Config config;
-    config.loadFromFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
-    return hash_for_seed(seed, config);
-}
-
-std::string hash_for_seed(const std::string& seed, const Config& config) {
-    auto permalink = create_permalink(config.settings, seed);
+std::string hash_for_config(const Config& config) {
+    std::string permalink = create_permalink(config.settings, config.seed);
 
     if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
 
@@ -2514,7 +2509,7 @@ std::string hash_for_seed(const std::string& seed, const Config& config) {
     }
 
     // Seed RNG
-    auto integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
+    uint32_t integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
 
     Random_Init(integer_seed);
     return generate_seed_hash();
