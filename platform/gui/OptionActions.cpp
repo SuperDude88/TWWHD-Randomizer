@@ -814,7 +814,7 @@ std::string getSeed() {
 }
 
 std::string getSeedHash() {
-    return hash_for_seed(conf.seed, conf);
+    return hash_for_config(conf);
 }
 
 std::string getPermalink() {

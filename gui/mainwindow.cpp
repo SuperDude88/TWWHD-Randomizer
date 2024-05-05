@@ -1009,7 +1009,7 @@ void MainWindow::update_permalink_and_seed_hash()
     currentPermalink = ui->permalink->text();
 
     // Also update seed hash
-    ui->seed_hash_label->setText(std::string("Seed Hash: " + hash_for_seed(config.seed, config)).c_str());
+    ui->seed_hash_label->setText(std::string("Seed Hash: " + hash_for_config(config)).c_str());
 }
 
 void MainWindow::on_permalink_textEdited(const QString &newPermalink)
