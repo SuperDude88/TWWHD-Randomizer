@@ -371,7 +371,7 @@ namespace FileTypes {
 		}
 	}
 
-	//TODO: not thread-safe, unpacking is currently single threaded (can't use thread_local on Wii U)
+	//TODO: not thread-safe
 	//larger buffer is faster, but too large for stack
 	constexpr uint32_t STATIC_READ_CHUNK_SIZE = 1024 * 1024 * 2;
 	static char readChunkBuf[STATIC_READ_CHUNK_SIZE];

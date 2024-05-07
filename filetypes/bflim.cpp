@@ -148,10 +148,8 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
             pflags = 0x00000040;
         }
         else {  // Not possible
-          {
             ErrorLog::getInstance().log("Could not generate DDS header!");
             return false;
-          }
         }
         if (has_alpha && !a) {
             pflags |= 0x00000001;
