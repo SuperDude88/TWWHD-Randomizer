@@ -121,7 +121,7 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
     RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
     file.addAction([this, item](RandoSession* session, FileType* data) -> int {
         for (const uint32_t& offset : this->offsets) {
-            CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+            CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)
             std::stringstream& stream = generic.data;
 
             stream.seekg(offset, std::ios::beg);
@@ -196,7 +196,7 @@ ModificationError ModifyActor::parseArgs(const YAML::Node& locationObject) {
 ModificationError ModifyActor::writeLocation(const Item& item) {
     RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
     file.addAction([this, item](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)
         std::stringstream& stream = generic.data;
 
         for (const uint32_t& offset : this->offsets) {
@@ -263,7 +263,7 @@ ModificationError ModifySCOB::parseArgs(const YAML::Node& locationObject) {
 ModificationError ModifySCOB::writeLocation(const Item& item) {
     RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
     file.addAction([this, item](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)
         std::stringstream& stream = generic.data;
 
         for (const uint32_t& offset : this->offsets) {
@@ -308,7 +308,7 @@ ModificationError ModifyEvent::parseArgs(const YAML::Node& locationObject) {
 ModificationError ModifyEvent::writeLocation(const Item& item) {
     RandoSession::CacheEntry& file = g_session.openGameFile(filePath);
     file.addAction([this, item](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)
         std::stringstream& stream = generic.data;
         
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
@@ -447,7 +447,7 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
         else {
             RandoSession::CacheEntry& file = g_session.openGameFile(path);
             file.addAction([offset = offset, itemID](RandoSession* session, FileType* data) -> int {
-                CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)
+                CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)
                 std::stringstream& stream = generic.data;
                 
                 stream.seekg(offset, std::ios::beg);

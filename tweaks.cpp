@@ -248,7 +248,7 @@ TweakError fix_deku_leaf_model() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
     entry.addAction([](RandoSession* session, FileType* data) -> int 
     {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -587,7 +587,7 @@ TweakError add_ganons_tower_warp_to_ff2() {
 TweakError add_chest_in_place_medli_gift() {
     RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
     stage.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzs;
         LOG_AND_RETURN_BOOL_IF_ERR(dzs.loadFromBinary(generic.data));
@@ -616,7 +616,7 @@ TweakError add_chest_in_place_medli_gift() {
 TweakError add_chest_in_place_queen_fairy_cutscene() {
     RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr");
     room.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -797,7 +797,7 @@ TweakError update_name_and_icon() {
 
     RandoSession::CacheEntry& metaEntry = g_session.openGameFile("meta/meta.xml");
     metaEntry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)\
         std::stringstream& metaStream = generic.data;
 
         tinyxml2::XMLDocument meta;
@@ -826,7 +826,7 @@ TweakError update_name_and_icon() {
     
     RandoSession::CacheEntry& appEntry = g_session.openGameFile("code/app.xml");
     appEntry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)\
         std::stringstream& appStream = generic.data;
 
         tinyxml2::XMLDocument app;
@@ -2355,7 +2355,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 TweakError add_chest_in_place_jabun_cutscene() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -2434,7 +2434,7 @@ TweakError remove_jabun_stone_door_event() {
 TweakError add_chest_in_place_master_sword() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -2523,7 +2523,7 @@ TweakError fix_ff_door() {
         static constexpr int32_t face_index = 0x1493;
         static constexpr uint16_t new_prop_index = 0x0011;
 
-        CAST_ENTRY_TO_FILETYPE(file, GenericFile, data)
+        CAST_ENTRY_TO_FILETYPE(file, RawFile, data)
         std::stringstream& stream = file.data;
 
         stream.seekg(0xC, std::ios::beg);
@@ -2924,7 +2924,7 @@ TweakError updateCodeSize() {
     //Increase the max codesize in cos.xml to load all our code
     RandoSession::CacheEntry& cosEntry = g_session.openGameFile("code/cos.xml");
     cosEntry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, GenericFile, data)\
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)\
         std::stringstream& cosStream = generic.data;
 
         tinyxml2::XMLDocument cos;

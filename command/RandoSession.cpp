@@ -150,7 +150,7 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
 
 bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
 {
-    GenericFile* parentData = dynamic_cast<GenericFile*>(current->parent->data.get());
+    RawFile* parentData = dynamic_cast<RawFile*>(current->parent->data.get());
 
     using Fmt = CacheEntry::Format;
     switch(current->storedFormat) {
@@ -234,8 +234,8 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
         case Fmt::RPX:
         {
             if(parentData == nullptr) return false;
-            current->data = std::make_unique<GenericFile>();
-            if (RPXError err = FileTypes::rpx_decompress(parentData->data, dynamic_cast<GenericFile*>(current->data.get())->data); err != RPXError::NONE)
+            current->data = std::make_unique<RawFile>();
+            if (RPXError err = FileTypes::rpx_decompress(parentData->data, dynamic_cast<RawFile*>(current->data.get())->data); err != RPXError::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;
@@ -252,8 +252,8 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
         case Fmt::YAZ0:
         {
             if(parentData == nullptr) return false;
-            current->data = std::make_unique<GenericFile>();
-            if (YAZ0Error err = FileTypes::yaz0Decode(parentData->data, dynamic_cast<GenericFile*>(current->data.get())->data); err != YAZ0Error::NONE)
+            current->data = std::make_unique<RawFile>();
+            if (YAZ0Error err = FileTypes::yaz0Decode(parentData->data, dynamic_cast<RawFile*>(current->data.get())->data); err != YAZ0Error::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;
@@ -269,7 +269,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
                     return false;
                 }
 
-                current->data = std::make_unique<GenericFile>(file->data);
+                current->data = std::make_unique<RawFile>(file->data);
             }
             else if (current->parent->storedFormat == Fmt::BFRES) {
                 const auto& files = dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->files;
@@ -280,7 +280,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
                 }
 
                 const std::string& resData = dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->fileData;
-                current->data = std::make_unique<GenericFile>(resData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
+                current->data = std::make_unique<RawFile>(resData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
             }
             else {
                 return false; //what
@@ -289,8 +289,8 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
         break;
         case Fmt::ROOT:
         {
-            current->data = std::make_unique<GenericFile>();
-            if(Utility::getFileContents((baseDir / current->element).string(), dynamic_cast<GenericFile*>(current->data.get())->data) != 0) return false;
+            current->data = std::make_unique<RawFile>();
+            if(Utility::getFileContents((baseDir / current->element).string(), dynamic_cast<RawFile*>(current->data.get())->data) != 0) return false;
         }
         break;
         case Fmt::EMPTY:
@@ -305,7 +305,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
 
 bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
 {
-    GenericFile* parentData = dynamic_cast<GenericFile*>(current->parent->data.get());
+    RawFile* parentData = dynamic_cast<RawFile*>(current->parent->data.get());
 
     using Fmt = CacheEntry::Format;
     switch(current->storedFormat) {
@@ -376,7 +376,7 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         case Fmt::RPX:
         {
             if(parentData == nullptr) return false;
-            if (RPXError err = FileTypes::rpx_compress(dynamic_cast<GenericFile*>(current->data.get())->data.seekg(0, std::ios::beg), parentData->data.seekp(0, std::ios::beg)); err != RPXError::NONE)
+            if (RPXError err = FileTypes::rpx_compress(dynamic_cast<RawFile*>(current->data.get())->data.seekg(0, std::ios::beg), parentData->data.seekp(0, std::ios::beg)); err != RPXError::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered RPXError on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;
@@ -393,7 +393,7 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         {
             if(parentData == nullptr) return false;
             //const uint32_t compressLevel = current->parent->storedFormat == Fmt::ROOT ? 1 : 9;
-            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<GenericFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), 7); err != YAZ0Error::NONE)
+            if (YAZ0Error err = FileTypes::yaz0Encode(dynamic_cast<RawFile*>(current->data.get())->data, parentData->data.seekp(0, std::ios::beg), 7); err != YAZ0Error::NONE)
             {
                 ErrorLog::getInstance().log(std::string("Encountered YAZ0Error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
                 return false;
@@ -409,7 +409,7 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
                     return false;
                 }
 
-                file->replaceFile(current->element.string() + '\0', dynamic_cast<GenericFile*>(current->data.get())->data);
+                file->replaceFile(current->element.string() + '\0', dynamic_cast<RawFile*>(current->data.get())->data);
             }
             else if (current->parent->storedFormat == Fmt::BFRES) {
                 FileTypes::resFile* file = dynamic_cast<FileTypes::resFile*>(current->parent->data.get());
@@ -418,7 +418,7 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
                     return false;
                 }
 
-                file->replaceEmbeddedFile(current->element.string(), dynamic_cast<GenericFile*>(current->data.get())->data);
+                file->replaceEmbeddedFile(current->element.string(), dynamic_cast<RawFile*>(current->data.get())->data);
             }
         }
         return true;
@@ -426,7 +426,7 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         {
             std::ofstream output(outputDir / current->element, std::ios::binary);
             if(!output.is_open()) return false;
-            const std::string& data = dynamic_cast<GenericFile*>(current->data.get())->data.str();
+            const std::string& data = dynamic_cast<RawFile*>(current->data.get())->data.str();
             output.write(&data[0], data.size());
         }
         return true;
@@ -512,7 +512,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, c
 
     RandoSession::CacheEntry& entry = openGameFile(relPath);
     entry.addAction([source, resourceFile](RandoSession* session, FileType* data) -> int {
-        GenericFile* dst = dynamic_cast<GenericFile*>(data);
+        RawFile* dst = dynamic_cast<RawFile*>(data);
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
         std::string fileData = "";
@@ -540,7 +540,7 @@ bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEn
     if(!extractFile(current)) return false;
 
     //has mods to stream (item location edits), handle these before filetype stuff
-    if(current->children.size() == 1 && current->actions.size() != 0 && dynamic_cast<GenericFile*>(current->data.get()) != nullptr) {
+    if(current->children.size() == 1 && current->actions.size() != 0 && dynamic_cast<RawFile*>(current->data.get()) != nullptr) {
         for(auto& action : current->actions) {
             action(this, current->data.get());
         }

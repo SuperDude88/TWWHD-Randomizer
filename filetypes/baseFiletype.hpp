@@ -16,12 +16,12 @@ protected:
 	virtual void initNew() = 0;
 };
 
-class GenericFile final : public FileType {
+class RawFile final : public FileType {
 public:
     std::stringstream data;
 
-    GenericFile() = default;
-    explicit GenericFile(const std::string& data_) :
+    RawFile() = default;
+    explicit RawFile(const std::string& data_) :
         data(data_)
     {}
 private:
