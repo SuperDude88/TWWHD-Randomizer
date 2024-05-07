@@ -30,6 +30,14 @@ RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single
 
 # Hack to put the include/lib file into DKP/wut's native search directories
 RUN mv /opt/devkitpro/wut/usr/include/* /opt/devkitpro/wut/include/
+# Install librpxloader
+RUN git clone --recursive https://github.com/wiiu-env/librpxloader librpxloader --single-branch  && \
+    cd librpxloader && \
+    git checkout 64787ea63d5d8a8e693e1a37bd837a93b3edd005 && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && \
+    rm -rf librpxloader
 
 # Things for building
 VOLUME /src

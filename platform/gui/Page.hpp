@@ -281,9 +281,12 @@ private:
     // these are too new for the Wii U browser :(
     //static inline std::string GITHUB_URL = "https://github.com/SuperDude88/TWWHD-Randomizer";
     //static inline std::string DISCORD_URL = "https://discord.gg/wPvdQ2Krrm";
+    bool rpxLoaderInit = false;
+    std::string savePath = "sd:/wiiu/apps/save/ ... (TWWHD Randomizer)";
 
 public:
     MetaPage();
+    ~MetaPage();
     
     std::string getName() const override { return "About"; }
     std::string getDesc() const override { return "Patcher info and settings, unrelated to randomization."; }
