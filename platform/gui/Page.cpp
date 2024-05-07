@@ -1577,8 +1577,6 @@ bool MetaPage::update() {
     return false;
 }
 
-// TODO: use libcontentredirection to get the proper save path on the SD
-// TODO: add note (not here, bottom of all pages) to look at gamepad screen for descriptions/more info
 void MetaPage::drawTV() const {
     const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in " + savePath + ".\nReport any issues in the Discord server or create a GitHub issue.", ScreenSizeData::tv_line_length);
 
