@@ -2541,8 +2541,6 @@ TweakError fix_ff_door() {
     return TweakError::NONE;
 }
 
-//add bog warp
-
 //rat hole culling
 
 //not needed until enemy rando is a thing

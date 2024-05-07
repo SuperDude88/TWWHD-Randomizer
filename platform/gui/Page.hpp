@@ -17,7 +17,7 @@ public:
     virtual void drawDRC() const = 0;
 };
 
-class SeedPage final: public EmptyPage {
+class SeedPage final : public EmptyPage {
 private:
     bool typing_seed = false;
     bool typing_perma = false;
@@ -42,7 +42,7 @@ public:
     void drawDRC() const override;
 };
 
-class ProgressionPage final: public EmptyPage {
+class ProgressionPage final : public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -61,7 +61,7 @@ public:
     void drawDRC() const override;
 };
 
-class HintsPage final: public EmptyPage {
+class HintsPage final : public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -80,7 +80,7 @@ public:
     void drawDRC() const override;
 };
 
-class EntrancePage final: public EmptyPage {
+class EntrancePage final : public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -99,7 +99,7 @@ public:
     void drawDRC() const override;
 };
 
-class ConveniencePage final: public EmptyPage {
+class ConveniencePage final : public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -118,7 +118,7 @@ public:
     void drawDRC() const override;
 };
 
-class AdvancedPage final: public EmptyPage {
+class AdvancedPage final : public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
@@ -137,7 +137,7 @@ public:
     void drawDRC() const override;
 };
 
-class ItemsPage final: public EmptyPage {
+class ItemsPage final : public EmptyPage {
 private:
     static constexpr size_t LIST_HEIGHT = 20;
 
@@ -166,14 +166,14 @@ public:
     void drawDRC() const override;
 };
 
-class ColorPage final: public EmptyPage {
+class ColorPage final : public EmptyPage {
 private:
     enum struct Subpage {
         PRESETS = 0,
         COLOR_PICKER = 1
     };
 
-    class PresetsSubpage final: public EmptyPage {
+    class PresetsSubpage final : public EmptyPage {
     private:
         ColorPage& parent;
 
@@ -204,7 +204,7 @@ private:
         void drawDRC() const override;
     };
 
-    class ColorPickerSubpage final: public EmptyPage {
+    class ColorPickerSubpage final : public EmptyPage {
     private:
         ColorPage& parent;
 
@@ -276,7 +276,7 @@ public:
     void drawDRC() const override;
 };
 
-class MetaPage final: public EmptyPage {
+class MetaPage final : public EmptyPage {
 private:
     // these are too new for the Wii U browser :(
     //static inline std::string GITHUB_URL = "https://github.com/SuperDude88/TWWHD-Randomizer";

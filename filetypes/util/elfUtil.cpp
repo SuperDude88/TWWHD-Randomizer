@@ -113,13 +113,11 @@ namespace elfUtil {
     }
 
     std::vector<uint8_t> read_bytes(const FileTypes::ELF& in, const offset_t& offset, const size_t& numBytes) {
-        uint8_t buffer = 0x0;
         std::vector<uint8_t> bytes;
 
         bytes.reserve(numBytes); //avoid reallocations
         for (size_t i = 0; i < numBytes; i++) {
-            buffer = *reinterpret_cast<const uint8_t*>(&in.shdr_table[offset.shdrIdx].second.data[offset.offset + i]);
-            bytes.push_back(buffer);
+            bytes.emplace_back(static_cast<uint8_t>(in.shdr_table[offset.shdrIdx].second.data[offset.offset + i]));
         }
 
         return bytes;
