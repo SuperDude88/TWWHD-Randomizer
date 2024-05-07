@@ -4,6 +4,11 @@
 #include <platform/input.hpp>
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
+#include <command/Log.hpp>
+
+#ifdef USE_LIBRPXLOADER
+    #include <rpxloader/rpxloader.h>
+#endif
 
 SeedPage::SeedPage() {
     resetTimer();
@@ -1499,7 +1504,49 @@ void ColorPage::ColorPickerSubpage::drawPickerDRC() const {
 
 
 
-MetaPage::MetaPage() = default;
+MetaPage::MetaPage() {
+    using namespace std::literals::string_literals;
+
+    #ifdef USE_LIBRPXLOADER
+        uint32_t version;
+        if(const RPXLoaderStatus err = RPXLoader_GetVersion(&version); err != RPX_LOADER_RESULT_SUCCESS) {
+            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetVersion encountered error " + std::to_string(err));
+            return;
+        }
+        
+        if(version < 3) {
+            LOG_TO_DEBUG("Displaying fallback save path, librpxloader is outdated.");
+            return;
+        }
+
+        if(const RPXLoaderStatus err = RPXLoader_InitLibrary(); err != RPX_LOADER_RESULT_SUCCESS) {
+            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_InitLibrary encountered error " + std::to_string(err));
+            return;
+        }
+        rpxLoaderInit = true;
+
+        std::array<char, 128> pathBuf{}; // probably bigger than necessary
+        if(const RPXLoaderStatus err = RPXLoader_GetPathOfSaveRedirection(pathBuf.data(), pathBuf.size()); err != RPX_LOADER_RESULT_SUCCESS) {
+            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetPathOfSaveRedirection encountered error " + std::to_string(err));
+            return;
+        }
+
+        savePath = "sd:/"s + pathBuf.data();
+    #endif
+}
+
+MetaPage::~MetaPage() {
+    #ifdef USE_LIBRPXLOADER
+        if(rpxLoaderInit) {
+            if(const RPXLoaderStatus err = RPXLoader_DeInitLibrary(); err != RPX_LOADER_RESULT_SUCCESS) {
+                LOG_TO_DEBUG("RPXLoader_DeInitLibrary encountered error " + std::to_string(err));
+                return;
+            }
+
+            rpxLoaderInit = false;
+        }
+    #endif
+}
 
 void MetaPage::open() {}
 
@@ -1530,8 +1577,10 @@ bool MetaPage::update() {
     return false;
 }
 
+// TODO: use libcontentredirection to get the proper save path on the SD
+// TODO: add note (not here, bottom of all pages) to look at gamepad screen for descriptions/more info
 void MetaPage::drawTV() const {
-    const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in sd:/wiiu/apps/save/ ... (TWWHD Randomizer). Report any issues in the Discord server or create a GitHub issue.", ScreenSizeData::drc_line_length);
+    const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in " + savePath + ".\nReport any issues in the Discord server or create a GitHub issue.", ScreenSizeData::tv_line_length);
 
     const size_t startLine = 3;
     for(size_t i = 0; i < lines.size(); i++) {
