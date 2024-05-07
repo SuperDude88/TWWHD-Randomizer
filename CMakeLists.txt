@@ -126,6 +126,7 @@ if(DEFINED DEVKITPRO)
 
   # Use libmocha for filesystem access
   find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
+  target_include_directories(wwhd_rando PRIVATE "${DEVKITPRO}/wut/usr/include")
   target_link_libraries(wwhd_rando PRIVATE "${LIBMOCHA}")
   
   wut_create_rpx(wwhd_rando)
