@@ -175,8 +175,8 @@ namespace JParticle {
         char magic[4];
         uint32_t sectionSize;
         uint32_t flags;
+
     public:
-        JParticle::EmitFlags emitFlags;
         JParticle::VolumeType volumeType;
         float volumeSweep;
         float volumeMinRad;
@@ -224,7 +224,9 @@ namespace JParticle {
         uint32_t flags;
         uint8_t colorFlags;
         uint8_t texFlags;
+
     public:
+        // https://github.com/zeldaret/tww/blob/af61ba5f0a7826ad3e8f8da16441188266b79cdb/include/JSystem/JParticle/JPABaseShape.h#L137
         JParticle::ShapeType shapeType;
         JParticle::DirType dirType;
         JParticle::RotType rotType;
@@ -232,10 +234,8 @@ namespace JParticle {
         vec2<float> baseSize;
         float tilingS;
         float tilingT;
-        bool isDrawFwdAhead;
-        bool isDrawPrntAhead;
-        // stopDrawParent is in SSP1 in JPA1
-        // isNoDrawChild does not exist in JPA1
+        bool listOrder;
+        bool childOrder;
 
         //TEV / PE Settings
         uint8_t colorInSelect;
@@ -253,7 +253,7 @@ namespace JParticle {
         JParticle::CalcIdxType texCalcIdxType;
         uint8_t texIdx;
         std::vector<uint8_t> texIdxAnimData;
-        uint8_t texIdxLoopOfstMask;
+        int16_t texLoopOffset;
 
         //Texture coordinate animation
         bool isEnableProjection;
@@ -273,7 +273,7 @@ namespace JParticle {
         std::vector<ColorAnimationKeyframe> colorPrmAnimData; //somethign iwth durations?
         std::vector<ColorAnimationKeyframe> colorEnvAnimData; //somethign iwth durations?
         uint16_t colorAnimMaxFrm;
-        uint8_t colorLoopOfstMask;
+        int16_t colorLoopOffset;
 
 
 
@@ -286,6 +286,7 @@ namespace JParticle {
         char magic[4];
         uint32_t sectionSize;
         uint32_t flags;
+
     public:
         bool isEnableScale;
         bool isDiffXY;
@@ -297,8 +298,8 @@ namespace JParticle {
         bool isEnableAlpha;
         bool isEnableSinWave;
         JParticle::CalcAlphaWaveType alphaWaveType;
-        bool anmTypeX;
-        bool anmTypeY;
+        uint8_t anmTypeX;
+        uint8_t anmTypeY;
         uint8_t pivotX;
         uint8_t pivotY;
         float scaleInTiming;
@@ -333,6 +334,7 @@ namespace JParticle {
         char magic[4];
         uint32_t sectionSize;
         uint32_t flags;
+
     public:
         JParticle::IndTextureMode indTextureMode;
         float p00, p01, p02, p10, p11, p12, scale;
@@ -351,6 +353,7 @@ namespace JParticle {
         char magic[4];
         uint32_t sectionSize;
         uint32_t flags;
+
     public:
         bool isInheritedScale;
         bool isInheritedRGB;
@@ -393,6 +396,7 @@ namespace JParticle {
         char magic[4];
         uint32_t sectionSize;
         uint32_t flags;
+
     public:
         JParticle::FieldStatusFlag statusFlag;
         JParticle::FieldType type;
@@ -433,6 +437,7 @@ namespace JParticle {
     private:
         char magic[4];
         uint32_t sectionSize;
+
     public:
         JParticle::KeyType keyType;
         std::vector<CurveKeyframe> keys;
@@ -448,6 +453,7 @@ namespace JParticle {
         char magic[4];
         uint32_t sectionSize;
         std::vector<uint16_t> texIDs;
+
     public:
         std::vector<std::string> texFilenames;
 
@@ -512,6 +518,7 @@ namespace FileTypes {
         JPCError addTexture(const std::string& filename);
         JPCError writeToStream(std::ostream& out);
         JPCError writeToFile(const std::string& outFilePath);
+
     private:
         void initNew() override;
     };

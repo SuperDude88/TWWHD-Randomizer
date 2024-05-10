@@ -1,7 +1,6 @@
 #include "jpc.hpp"
 
 #include <cstring>
-#include <algorithm>
 
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
@@ -56,7 +55,6 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-        emitFlags = static_cast<EmitFlags>(flags & 0xFF);
         volumeType = static_cast<VolumeType>((flags >> 8) & 0x07);
 
         if (!jpc.read(reinterpret_cast<char*>(&volumeSweep), sizeof(volumeSweep))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -126,8 +124,8 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldn't need to update?
         Utility::seek(out, 4, std::ios::cur);
 
-        flags = (flags & 0xFFFFFF00) | (static_cast<uint8_t>(emitFlags) & 0x000000FF);
-        flags = (flags & 0xFFFF00FF) | ((static_cast<uint8_t>(volumeType) & 0x000000FF) << 8);
+        flags &= ~0x700;
+        flags |= (static_cast<uint8_t>(volumeType) & 0x07) << 8;
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
         out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
@@ -217,12 +215,12 @@ namespace JParticle {
 
         colorInSelect = (flags >> 0xF) & 0x07;
         alphaInSelect = (flags >> 0x12) & 0x1;
-        isEnableTexScrollAnm = (flags & 0x01000000) != 0;
-        isDrawPrntAhead = (flags & 0x00400000) != 0;
-        isDrawFwdAhead = (flags & 0x00200000) != 0;
-        isEnableProjection = (flags & 0x00100000) != 0;
-        isGlblTexAnm = (flags & 0x00004000) != 0;
-        isGlblClrAnm = (flags & 0x00001000) != 0;
+        isEnableTexScrollAnm = flags & 0x01000000;
+        childOrder = flags & 0x00400000;
+        listOrder = flags & 0x00200000;
+        isEnableProjection = flags & 0x00100000;
+        isGlblTexAnm = flags & 0x00004000;
+        isGlblClrAnm = flags & 0x00001000;
 
         uint16_t colorPrmAnimDataOff;
         uint16_t colorEnvAnimDataOff;
@@ -237,8 +235,8 @@ namespace JParticle {
 
         Utility::Endian::toPlatform_inplace(eType::Big, anmRndm);
 
-        colorLoopOfstMask = -((flags >> 0x0B) & 0x01);
-        texIdxLoopOfstMask = -((flags >> 0x0D) & 0x01);
+        colorLoopOffset = (flags & 0x00000800) ? 0xFFFF : 0;
+        texLoopOffset = (flags & 0x00002000) ? 0xFFFF : 0;
 
         uint8_t texIdxAnimCount;
         uint8_t colorPrmAnimDataCount;
@@ -280,20 +278,20 @@ namespace JParticle {
 
         Utility::Endian::toPlatform_inplace(eType::Big, texIncRot);
 
-        if ((texFlags & 0x00000001) != 0) {
+        if (texFlags & 0x00000001) {
             for (uint8_t i = 0; i < texIdxAnimCount; i++) {
                 uint8_t& val = texIdxAnimData.emplace_back();
                 if (!jpc.read(reinterpret_cast<char*>(&val), sizeof(val))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
             }
         }
 
-        isEnableTexture = (texFlags & 0x00000002) != 0;
+        isEnableTexture = texFlags & 0x00000002;
 
-        if ((colorFlags & 0x02) != 0) {
+        if (colorFlags & 0x02) {
             if (colorPrmAnimData = readColorTable(jpc, sectionStart + colorPrmAnimDataOff, colorPrmAnimDataCount); colorPrmAnimData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         }
 
-        if ((colorFlags & 0x08) != 0) {
+        if (colorFlags & 0x08) {
             if (colorEnvAnimData = readColorTable(jpc, sectionStart + colorEnvAnimDataOff, colorEnvAnimDataCount); colorEnvAnimData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         }
 
@@ -307,21 +305,23 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
-        flags = (flags & ~0x00038000) | ((colorInSelect & 0x7) << 0xF);
-        flags = (flags & ~0x00040000) | ((alphaInSelect & 0x1) << 0x12);
-        flags = (flags & ~0x01000000) | ((isEnableTexScrollAnm & 0x1) << 0x18);
-        flags = (flags & ~0x00400000) | ((isDrawPrntAhead & 0x1) << 0x16);
-        flags = (flags & ~0x00200000) | ((isDrawFwdAhead & 0x1) << 0x15);
-        flags = (flags & ~0x00100000) | ((isEnableProjection & 0x1) << 0x14);
-        flags = (flags & ~0x00004000) | ((isGlblTexAnm & 0x1) << 0xE);
-        flags = (flags & ~0x00001000) | ((isGlblClrAnm & 0x1) << 0xC);
-        flags = (flags & ~0x00000800) | ((-colorLoopOfstMask & 0x1) << 0xB);
-        flags = (flags & ~0x00002000) | ((-texIdxLoopOfstMask & 0x1) << 0xD);
+        // reset all the flags we are about to set
+        flags &= ~(0x0177FFFF); // = ~(0x38000 | 0x40000 | 0x1000000 | 0x400000 | 0x200000 | 0x100000 | 0x4000 | 0x1000 | 0x800 | 0x2000 | 0xF | 0x70 | 0x380 | 0x400)
+        flags |= (colorInSelect & 0x7) << 0xF;
+        flags |= (alphaInSelect & 0x1) << 0x12;
+        if(isEnableTexScrollAnm) flags |= 0x01000000;
+        if(childOrder) flags |= 0x00400000;
+        if(listOrder) flags |= 0x00200000;
+        if(isEnableProjection) flags |= 0x00100000;
+        if(isGlblTexAnm) flags |= 0x00004000;
+        if(isGlblClrAnm) flags |= 0x00001000;
+        if(colorLoopOffset != 0) flags |= 0x00000800;
+        if(texLoopOffset != 0) flags |= 0x00002000;
 
-        flags = (flags & ~0x0000000F) | ((static_cast<uint8_t>(shapeType) & 0xF) << 0x0);
-        flags = (flags & ~0x00000070) | ((static_cast<uint8_t>(dirType) & 0x7) << 0x4);
-        flags = (flags & ~0x00000380) | ((static_cast<uint8_t>(rotType) & 0x7) << 0x7);
-        flags = (flags & ~0x00000400) | ((static_cast<uint8_t>(planeType) & 0x1) << 0xA);
+        flags = static_cast<uint8_t>(shapeType) & 0xF;
+        flags = (static_cast<uint8_t>(dirType) & 0x7) << 0x4;
+        flags = (static_cast<uint8_t>(rotType) & 0x7) << 0x7;
+        flags = (static_cast<uint8_t>(planeType) & 0x1) << 0xA;
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
@@ -367,17 +367,14 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, blendModeFlags);
         Utility::Endian::toPlatform_inplace(eType::Big, colorAnimMaxFrm);
 
-        colorFlags = (colorFlags & ~0x70) | ((static_cast<uint8_t>(colorCalcIdxType) & 0x07) << 4);
-        colorFlags &= ~0x02;
+        colorFlags &= ~0x0000007A; // = ~(0x70 | 0x8 | 0x2)
+        colorFlags |= (static_cast<uint8_t>(colorCalcIdxType) & 0x07) << 4;
         if (!colorPrmAnimData.empty()) colorFlags |= 0x2;
-        colorFlags &= ~0x08;
         if (!colorEnvAnimData.empty()) colorFlags |= 0x8;
 
-        texFlags = (texFlags & ~0x28) | ((static_cast<uint8_t>(texCalcIdxType) & 0x07) << 2);
-        texFlags &= ~0x01;
+        texFlags &= ~0x1F; // = ~(0x1C | 0x2 | 0x1)
+        texFlags |=(static_cast<uint8_t>(texCalcIdxType) & 0x07) << 2;
         if (texIdxAnimData.empty()) texFlags |= 0x1;
-
-        texFlags &= ~0x02;
     	if(isEnableTexture) texFlags |= 0x2;
 
         out.write(reinterpret_cast<const char*>(&blendModeFlags), sizeof(blendModeFlags));
@@ -416,12 +413,12 @@ namespace JParticle {
         }
         padToLen(out, 4);
 
-        if ((colorFlags & 0x02) != 0) {
+        if (colorFlags & 0x02) {
             writeColorTable(out, colorPrmAnimData);
         }
         padToLen(out, 4);
 
-        if ((colorFlags & 0x08) != 0) {
+        if (colorFlags & 0x08) {
             writeColorTable(out, colorEnvAnimData);
         }
 
@@ -441,20 +438,20 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
-        isEnableScale = (flags & 0x00000100) != 0;
-        isDiffXY = (flags & 0x00000200) != 0;
-        isEnableScaleAnmY = (flags & 0x00000400) != 0;
-        isEnableScaleAnmX = (flags & 0x00000800) != 0;
-        isEnableScaleBySpeedY = (flags & 0x00001000) != 0;
-        isEnableScaleBySpeedX = (flags & 0x00002000) != 0;
-        isEnableAlpha = (flags & 0x00000001) != 0;
-        isEnableSinWave = (flags & 0x00000002) != 0;
-        isEnableRotate = (flags & 0x01000000) != 0;
+        isEnableScale = flags & 0x00000100;
+        isDiffXY = flags & 0x00000200;
+        isEnableScaleAnmY = flags & 0x00000400;
+        isEnableScaleAnmX = flags & 0x00000800;
+        isEnableScaleBySpeedY = flags & 0x00001000;
+        isEnableScaleBySpeedX = flags & 0x00002000;
+        isEnableAlpha = flags & 0x00000001;
+        isEnableSinWave = flags & 0x00000002;
+        isEnableRotate = flags & 0x01000000;
 
         alphaWaveType = static_cast<CalcAlphaWaveType>((flags >> 0x02) & 0x03);
 
-        anmTypeX = ((flags >> 0x12) & 0x01) != 0;
-        anmTypeY = ((flags >> 0x13) & 0x01) != 0;
+        anmTypeX = (flags >> 0x12) & 0x01;
+        anmTypeY = (flags >> 0x13) & 0x01;
         pivotX = (flags >> 0x0E) & 0x03;
         pivotY = (flags >> 0x10) & 0x03;
 
@@ -521,24 +518,21 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
-        flags = (flags & ~0x00000100) | ((isEnableScale & 0x1) << 0x8);
-        flags = (flags & ~0x00000200) | ((isDiffXY & 0x1) << 0x9);
-
-        flags = (flags & ~0x00000400) | ((isEnableScaleAnmY & 0x1) << 0xA);
-        flags = (flags & ~0x00000800) | ((isEnableScaleAnmX & 0x1) << 0xB);
-        flags = (flags & ~0x00040000) | ((anmTypeX & 0x1) << 0x12);
-        flags = (flags & ~0x00080000) | ((anmTypeY & 0x1) << 0x13);
-
-        flags = (flags & ~0x00001000) | ((isEnableScaleBySpeedY & 0x1) << 0xC);
-        flags = (flags & ~0x00002000) | ((isEnableScaleBySpeedX & 0x1) << 0xD);
-        flags = (flags & ~0x00000001) | (isEnableAlpha & 0x1);
-        flags = (flags & ~0x00000002) | ((isEnableSinWave & 0x1) << 0x1);
-        flags = (flags & ~0x01000000) | ((isEnableRotate & 0x1) << 0x18);
-
-        flags = (flags & ~0x0000000C) | ((static_cast<uint8_t>(alphaWaveType) & 0x3) << 0x2);
-
-        flags = (flags & ~0x0000C000) | ((pivotX & 0x3) << 0x0E);
-        flags = (flags & ~0x00030000) | ((pivotY & 0x3) << 0x10);
+        flags &= ~(0x010FFF0F); // = ~(0x100 | 0x200 | 0x400 | 0x800 | 0x40000 | 0x80000 | 0x1000 | 0x2000 | 0x1 | 0x2 | 0x1000000 | 0xC | 0xC000 | 0x30000)
+        if(isEnableScale) flags |= 0x00000100;
+        if(isDiffXY) flags |= 0x00000200;
+        if(isEnableScaleAnmY) flags |= 0x00000400;
+        if(isEnableScaleAnmX) flags |= 0x00000800;
+        if(isEnableScaleBySpeedY) flags |= 0x00001000;
+        if(isEnableScaleBySpeedX) flags |= 0x00002000;
+        if(isEnableAlpha) flags |= 0x00000001;
+        if(isEnableSinWave) flags |= 0x00000002;
+        if(isEnableRotate) flags |= 0x01000000;
+        flags |= (static_cast<uint8_t>(alphaWaveType) & 0x3) << 0x2;
+        flags |= (anmTypeX & 0x1) << 0x12;
+        flags |= (anmTypeY & 0x1) << 0x13;
+        flags |= (pivotX & 0x3) << 0x0E;
+        flags |= (pivotY & 0x3) << 0x10;
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
@@ -634,7 +628,7 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&subTextureID), sizeof(subTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&secondTextureIndex), sizeof(secondTextureIndex))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-        useSecondTex = (flags & 0x00000100) != 0;
+        useSecondTex = flags & 0x00000100;
 
         return JPCError::NONE;
     }
@@ -646,8 +640,9 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
-        flags = (flags & ~0x00000003) | (static_cast<uint8_t>(indTextureMode) & 0x00000003);
-        flags = (flags & ~0x00000100) | ((useSecondTex & 0x1) << 8);
+        flags &= ~0x103; // = ~(0x100 | 0x3)
+        flags |= static_cast<uint8_t>(indTextureMode) & 0x00000003;
+        if(useSecondTex) flags |= 0x100;
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
@@ -698,7 +693,7 @@ namespace JParticle {
             planeType = PlaneType::X;
         }
 
-        isDrawParent = (flags & 0x00080000) != 0;
+        isDrawParent = flags & 0x00080000;
 
         if (!jpc.read(reinterpret_cast<char*>(&posRndm), sizeof(posRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&baseVel), sizeof(baseVel))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -714,13 +709,13 @@ namespace JParticle {
 
         if (!jpc.read(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-        isEnableRotate = (flags & 0x01000000) != 0;
-        isEnableAlphaOut = (flags & 0x00800000) != 0;
-        isEnableScaleOut = (flags & 0x00400000) != 0;
-        isEnableField = (flags & 0x00200000) != 0;
-        isInheritedRGB = (flags & 0x00040000) != 0;
-        isInheritedAlpha = (flags & 0x00020000) != 0;
-        isInheritedScale = (flags & 0x00010000) != 0;
+        isEnableRotate = flags & 0x01000000;
+        isEnableAlphaOut = flags & 0x00800000;
+        isEnableScaleOut = flags & 0x00400000;
+        isEnableField = flags & 0x00200000;
+        isInheritedRGB = flags & 0x00040000;
+        isInheritedAlpha = flags & 0x00020000;
+        isInheritedScale = flags & 0x00010000;
 
         if (!jpc.read(reinterpret_cast<char*>(&inheritScale), sizeof(inheritScale))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&inheritAlpha), sizeof(inheritAlpha))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -753,19 +748,20 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
-        flags = (flags & ~0x01000000) | ((isEnableRotate & 0x1) << 0x18);
-        flags = (flags & ~0x00800000) | ((isEnableAlphaOut & 0x1) << 0x17);
-        flags = (flags & ~0x00400000) | ((isEnableScaleOut & 0x1) << 0x16);
-        flags = (flags & ~0x00200000) | ((isEnableField & 0x1) << 0x15);
-        flags = (flags & ~0x00080000) | ((isDrawParent & 0x1) << 0x13);
-        flags = (flags & ~0x00040000) | ((isInheritedRGB & 0x1) << 0x12);
-        flags = (flags & ~0x00020000) | ((isInheritedAlpha & 0x1) << 0x11);
-        flags = (flags & ~0x00010000) | ((isInheritedScale & 0x1) << 0x10);
+        flags &= ~0x01EF07FF; // ~(0x1000000 | 0x800000 | 0x400000 | 0x200000 | 0x80000 | 0x40000 | 0x20000 | 0x10000 | 0xF | 0x70 | 0x380 | 0x400)
+        if(isEnableRotate) flags |= 0x1000000;
+        if(isEnableAlphaOut) flags |= 0x800000;
+        if(isEnableScaleOut) flags |= 0x400000;
+        if(isEnableField) flags |= 0x200000;
+        if(isDrawParent) flags |= 0x80000;
+        if(isInheritedRGB) flags |= 0x40000;
+        if(isInheritedAlpha) flags |= 0x20000;
+        if(isInheritedScale) flags |= 0x10000;
 
-        flags = (flags & ~0x0000000F) | ((static_cast<uint8_t>(shapeType) & 0xF) << 0x0);
-        flags = (flags & ~0x00000070) | ((static_cast<uint8_t>(dirType) & 0x7) << 0x4);
-        flags = (flags & ~0x00000380) | ((static_cast<uint8_t>(rotType) & 0x7) << 0x7);
-        flags = (flags & ~0x00000400) | ((static_cast<uint8_t>(planeType) & 0x1) << 0xA);
+        flags |= static_cast<uint8_t>(shapeType) & 0xF;
+        flags |= (static_cast<uint8_t>(dirType) & 0x7) << 0x4;
+        flags |= (static_cast<uint8_t>(rotType) & 0x7) << 0x7;
+        flags |= (static_cast<uint8_t>(planeType) & 0x1) << 0xA;
 
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
@@ -887,9 +883,10 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
-        flags = (flags & ~0x00FF0000) | (static_cast<uint8_t>(statusFlag) << 0x10);
-        flags = (flags & ~0x00000300) | ((static_cast<uint8_t>(addType) & 0x3) << 0x8);
-        flags = (flags & ~0x0000000F) | (static_cast<uint8_t>(type) & 0xF);
+        flags &= ~0x00FF030F; // = ~(0xFF0000 | 0x300 | 0xF)
+        flags |= static_cast<uint8_t>(statusFlag) << 0x10;
+        flags |= (static_cast<uint8_t>(addType) & 0x3) << 0x8;
+        flags |= static_cast<uint8_t>(type) & 0xF;
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
