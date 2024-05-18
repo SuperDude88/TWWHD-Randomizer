@@ -183,21 +183,21 @@ static InputError mapWPAD(const KPADStatus& stat, ButtonInfo& out) {
             for(size_t bitIdx = 0; bitIdx < sizeof(WPADNunchukButton) * 8; bitIdx++) {
                 const WPADNunchukButton button = static_cast<WPADNunchukButton>(1 << bitIdx);
 
-                if(stat.nunchuck.trigger & button) {
+                if(stat.nunchuk.trigger & button) {
                     if(!nunchukMapping.contains(button)) {
                         LOG_ERR_AND_RETURN(InputError::INVALID_MAPPING);
                     }
 
                     out.trigger |= nunchukMapping.at(button);
                 }
-                if(stat.nunchuck.hold & button) {
+                if(stat.nunchuk.hold & button) {
                     if(!nunchukMapping.contains(button)) {
                         LOG_ERR_AND_RETURN(InputError::INVALID_MAPPING);
                     }
 
                     out.hold |= nunchukMapping.at(button);
                 }
-                if(stat.nunchuck.release & button) {
+                if(stat.nunchuk.release & button) {
                     if(!nunchukMapping.contains(button)) {
                         LOG_ERR_AND_RETURN(InputError::INVALID_MAPPING);
                     }
