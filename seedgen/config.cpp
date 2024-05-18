@@ -432,7 +432,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
 
     // can still use a file from a different rando version but it will give different item placements
     // handle this at the end so it can warn the user but everything still loads
-    if(std::string(RANDOMIZER_VERSION) != rando_version) {
+    if(rando_version != RANDOMIZER_VERSION) {
         updated = true;
 
         Utility::platformLog("Warning: config was made using a different randomizer version\n");

@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <set>
-#include <iostream>
 
 #include <version.hpp>
 #include <libs/base64pp.hpp>
@@ -181,11 +180,11 @@ static const std::vector<Option> PERMALINK_OPTIONS {
 std::string create_permalink(const Settings& settings, const std::string& seed) {
 
     std::string permalink = "";
-    if (std::string(RANDOMIZER_VERSION).length() >= 3) {
-        permalink += std::string(RANDOMIZER_VERSION).substr(0, 3);
-    } else {
+    if (std::string(RANDOMIZER_VERSION).empty()) {
         Utility::platformLog("Could not determine Randomizer version. Please tell a dev if you see this message\n");
     }
+    
+    permalink += RANDOMIZER_VERSION;
     permalink += '\0';
     permalink += seed;
     permalink += '\0';
@@ -265,7 +264,7 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
     {
         return PermalinkError::NONE;
     }
-    auto permalink = b64_decode(b64permalink);
+    std::string permalink = b64_decode(b64permalink);
     // Empty string gets returned if there was an error
     if (permalink == "")
     {
@@ -295,23 +294,26 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
 
     if (permaParts.size() != 3)
     {
-        for (auto& str : permaParts)
+        std::string errorStr = "Bad permalink, parts: ";
+        for (const std::string& part : permaParts)
         {
-            std::cout << str << std::endl;
+            errorStr += part + ", ";
         }
+        ErrorLog::getInstance().log(errorStr);
+
         return PermalinkError::BAD_PERMALINK;
     }
 
-    std::string version = permaParts[0];
+    const std::string version = permaParts[0];
     seed = permaParts[1];
-    std::string optionsBytes = permaParts[2];
+    const std::string optionsBytes = permaParts[2];
 
-    if (version != std::string(RANDOMIZER_VERSION).substr(0, 3))
+    if (version != RANDOMIZER_VERSION)
     {
         return PermalinkError::INVALID_VERSION;
     }
 
-    std::vector<char> bytes (optionsBytes.begin(), optionsBytes.end());
+    std::vector<char> bytes(optionsBytes.begin(), optionsBytes.end());
     auto bitsReader = PackedBitsReader(bytes);
 
     for(const auto& option : PERMALINK_OPTIONS) {
