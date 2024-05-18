@@ -1535,79 +1535,48 @@
               <property name="title">
                <string>Advanced Options</string>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_11">
-               <property name="spacing">
-                <number>6</number>
-               </property>
-               <property name="topMargin">
-                <number>9</number>
-               </property>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_7">
-                 <item row="0" column="2">
-                  <widget class="QCheckBox" name="plandomizer">
-                   <property name="text">
-                    <string>Plandomizer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="do_not_generate_spoiler_log">
-                   <property name="text">
-                    <string>Do Not Generate Spoiler Log</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QCheckBox" name="fix_rng">
-                   <property name="text">
-                    <string>Fix RNG</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QCheckBox" name="random_item_slide_item">
-                   <property name="text">
-                    <string>Start With Random Item Sliding Item</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="classic_mode">
-                   <property name="text">
-                    <string>Classic Mode</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QCheckBox" name="start_with_random_item">
-                   <property name="text">
-                    <string>Start With Random Item</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="do_not_generate_spoiler_log">
+                 <property name="text">
+                  <string>Do Not Generate Spoiler Log</string>
+                 </property>
+                </widget>
                </item>
-               <item>
+               <item row="2" column="1">
+                <widget class="QCheckBox" name="fix_rng">
+                 <property name="text">
+                  <string>Fix RNG</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QCheckBox" name="random_item_slide_item">
+                 <property name="text">
+                  <string>Start With Random Item Sliding Item</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0" colspan="2">
                 <layout class="QGridLayout" name="plandomizer_file_layout">
                  <property name="sizeConstraint">
                   <enum>QLayout::SetNoConstraint</enum>
                  </property>
-                 <item row="0" column="0">
+                 <item row="0" column="1">
                   <widget class="QLabel" name="plandomizer_label">
                    <property name="text">
                     <string>Plandomizer File</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="2">
+                 <item row="0" column="3">
                   <widget class="QPushButton" name="plandomizer_path_browse_button">
                    <property name="text">
                     <string>Browse</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
+                 <item row="0" column="2">
                   <widget class="QLineEdit" name="plandomizer_path">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1617,7 +1586,35 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="plandomizer">
+                   <property name="text">
+                    <string>Plandomizer</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
+               </item>
+               <item row="2" column="0">
+                <widget class="QCheckBox" name="performance">
+                 <property name="text">
+                  <string>Performance</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="classic_mode">
+                 <property name="text">
+                  <string>Classic Mode</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QCheckBox" name="start_with_random_item">
+                 <property name="text">
+                  <string>Start With Random Item</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -2396,7 +2393,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>290</height>
+                    <height>311</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">

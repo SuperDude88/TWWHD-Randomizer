@@ -120,12 +120,8 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "<b>Vanilla</b>: Maps/Compasses will appear in their vanilla locations. <b>Own Dungeon</b>: Maps/Compasses can only appear in their respective dungeon. <b>Any Dungeon</b>: Maps/Compasses can only appear in dungeon locations. <b>Overworld</b>: Maps/Compasses can only appear in non-dungeon locations. <b>Keysanity</b>: Maps/Compasses can appear anywhere."
     },
     {
-      "race_mode",
-      "In Race Mode, certain randomly chosen dungeon bosses will drop required items (e.g. Triforce Shards). Nothing in the other dungeons will ever be required.\nYou can see which islands have the required dungeons on them by opening the sea chart and checking which islands have blue quest markers.",
-    },
-    {
       "num_required_dungeons",
-      "Select the number of requried bosses/dungeons.\nRequired dungeon bosses will drop required items (e.g. Triforce Shards).",
+      "Select the number of requried bosses/dungeons. Required dungeon bosses will drop required items (e.g. Triforce Shards).",
     },
     {
       "randomize_charts",
@@ -133,7 +129,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "chest_type_matches_contents",
-      "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key chests. Keys for non-required dungeons in race mode will be in wooden chests."
+      "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable. Key chests are dark wood chests that use a custom texture based on Big Key chests. Keys for non-required dungeons in race mode will be in wooden chests."
     },
     {
       "damage_multiplier",
@@ -152,7 +148,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
 
     {
       "add_shortcut_warps_between_dungeons",
-      "Adds new warp pots that act as shortcuts connecting dungeons to each other directly. (DRC, FW, TotG, and separately FF, ET, WT.)\nEach pot must be unlocked before it can be used, so you cannot use them to access dungeons you wouldn't already have access to."
+      "Adds new warp pots that act as shortcuts connecting dungeons to each other directly (DRC, FW, TotG, and separately FF, ET, WT). Each pot must be unlocked before it can be used, so you cannot use them to access dungeons you wouldn't already have access to."
     },
     {
       "skip_rematch_bosses",
@@ -274,6 +270,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "fix_rng",
       "Certain RNG elements will have fixed outcomes. This currently only includes the Helmaroc King's attack pattern."
     },
+    {
+      "performance",
+      "Mostly recommended for console users. Adjusts game code that causes performance issues, but may come at the cost of visual quality. Currently only affects particles."
+    },
 
     // Hints
     {
@@ -286,19 +286,19 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "path_hints",
-      "Determines the number of path hints that will be placed in the game, distributed using the selected hint placement options.\nIf multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
+      "Determines the number of path hints that will be placed in the game, distributed using the selected hint placement options.<br>If multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
     },
     {
       "barren_hints",
-      "Determines the number of barren hints that will be placed in the game, distributed using the selected hint placement options.\nIf multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
+      "Determines the number of barren hints that will be placed in the game, distributed using the selected hint placement options.<br>If multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
     },
     {
       "location_hints",
-      "Determines the number of location hints that will be placed in the game, distributed using the selected hint placement options.\nIf multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
+      "Determines the number of location hints that will be placed in the game, distributed using the selected hint placement options.<br>If multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
     },
     {
       "item_hints",
-      "Determines the number of item hints that will be placed in the game, distributed using the selected hint placement options.\nIf multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
+      "Determines the number of item hints that will be placed in the game, distributed using the selected hint placement options.<br>If multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
     },
     {
       "clearer_hints",
