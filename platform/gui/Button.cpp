@@ -29,7 +29,7 @@ void BasicButton::drawTV(const size_t row, const size_t nameCol, const size_t va
 void BasicButton::drawDRC() const {
     const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
     for(size_t i = 0; i < descLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
+        OSScreenPutFontEx(SCREEN_DRC, 0, 2 + i, descLines[i].c_str());
     }
 }
 
@@ -86,7 +86,7 @@ void ActionButton::drawTV(const size_t row, const size_t nameCol, const size_t v
 void ActionButton::drawDRC() const {
     const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
     for(size_t i = 0; i < descLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
+        OSScreenPutFontEx(SCREEN_DRC, 0, 2 + i, descLines[i].c_str());
     }
 }
 
@@ -108,7 +108,7 @@ void ColorButton::drawTV(const size_t row, const size_t nameCol, const size_t va
 void ColorButton::drawDRC() const {
     const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
     for(size_t i = 0; i < descLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
+        OSScreenPutFontEx(SCREEN_DRC, 0, 2 + i, descLines[i].c_str());
     }
 }
 
@@ -130,6 +130,6 @@ void FunctionButton::drawTV(const size_t row, const size_t nameCol, const size_t
 void FunctionButton::drawDRC() const {
     const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
     for(size_t i = 0; i < descLines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_DRC, 0, i, descLines[i].c_str());
+        OSScreenPutFontEx(SCREEN_DRC, 0, 2 + i, descLines[i].c_str());
     }
 }
