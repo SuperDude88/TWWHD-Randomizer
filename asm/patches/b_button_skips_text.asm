@@ -24,3 +24,15 @@
 
 .org 0x026ba644
     lwz r0, 0x50(r3)
+
+; Normally the game checks if the continue icon is done appearing before letting you close the textbox
+; The animation is a little bit strange if you end it early but it's much faster
+.org 0x026F7EA0
+    nop ; always move straight to the waiting state
+
+; It also checks if the icon is done disappearing before starting the next textbox
+; Remove that check too
+.org 0x026F802C
+    nop
+
+; 0x026014F4 checks the textbox draw type attribute (putting this here for reference)
