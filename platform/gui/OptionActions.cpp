@@ -1247,7 +1247,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {InvertCompass,              {"Invert Sea Compass X-Axis",           "Inverts the east-west direction of the compass that shows while at sea."}},
         {InstantText,                {"Instant Text Boxes",                  "Text appears instantly. The B button is changed to instantly skip through text as long as you hold it down."}},
         {FixRNG,                     {"Fix RNG",                             "Certain RNG elements will have fixed outcomes. Currently only includes Helmaroc King's attacks."}},
-        {Performance,                {"Performance",                         "Adjust game code that causes lag or other performance issues. May come at the cost of visual quality.n\nCurrently only affects particles."}},
+        {Performance,                {"Performance",                         "Adjust game code that causes lag or other performance issues. May come at the cost of visual quality.\nCurrently only affects particles."}},
         {RevealSeaChart,             {"Reveal Full Sea Chart",               "Start the game with the sea chart fully drawn out."}},
         {SkipRefights,               {"Skip Boss Rematches",                 "Removes the door in Ganon's Tower that only unlocks when you defeat the rematch versios of Gohma, Kalle Demos, Jalhalla, and Molgera."}},
         {AddShortcutWarps,           {"Add Warps Between Dungeons",          "Adds new warp pots that act as shortcuts connecting dungeons to each other directly. Each pot must be unlocked before it can be used, so you cannot use them to access dungeons early."}},
