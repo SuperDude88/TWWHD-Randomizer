@@ -15,8 +15,8 @@ MCPInstallTarget pickInstallLocation() {
 
     OSScreenPutFontEx(SCREEN_TV, 0, 1, "Press X to install it to console storage\n");
     OSScreenPutFontEx(SCREEN_DRC, 0, 1, "Press X to install it to console storage\n");
-    OSScreenPutFontEx(SCREEN_TV, 0, 2, "Press Y to install it to USB\n");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 2, "Press Y to install it to USB\n");
+    OSScreenPutFontEx(SCREEN_TV, 0, 2, "Press Y to install it to USB (recommended)\n");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 2, "Press Y to install it to USB (recommended)\n");
 
     ScreenDraw();
     

@@ -100,6 +100,8 @@ void SettingsMenu::drawTV() const {
 }
 
 void SettingsMenu::drawDRC() const {
+    OSScreenPutFontEx(SCREEN_DRC, 0, 0, "Look at the TV for the patcher menu.");
+
     pages[curPage]->drawDRC();
 }
 
