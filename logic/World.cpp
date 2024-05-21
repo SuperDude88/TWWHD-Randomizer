@@ -874,6 +874,21 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
         VALID_DUNGEON_CHECK(dungeon)
         dungeons[dungeon].startingArea = area;
     }
+    // If this is a dungeon area, but not the starting entrance, add a logical
+    // exit to the dungeon entrance to mimic savewarping
+    else if (areaObject["Dungeon"])
+    {
+        auto startingArea = this->getDungeon(area->dungeon).startingArea;
+        Entrance exitOut;
+        err = loadExit(startingArea->name, "Nothing", exitOut, loadedArea);
+        if (err != WorldLoadingError::NONE)
+        {
+            ErrorLog::getInstance().log(std::string("Got error loading exit: ") + errorToName(err));
+            return err;
+        }
+        LOG_TO_DEBUG("\tAdding exit -> " + exitOut.getConnectedArea()->name + " (Savewarp)");
+        area->exits.push_back(exitOut);
+    }
 
     // Check to see if this area is assigned to a hint region
     if (areaObject["Hint Region"])
