@@ -41,7 +41,7 @@ private:
     std::string permalink;
     size_t integer_seed;
 
-    #ifdef FILL_TESTING
+    #ifdef DRY_RUN
         bool dryRun = true;
     #else
         bool dryRun = false;

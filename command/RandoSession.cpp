@@ -120,7 +120,7 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     outputDir = randoOutputDir;
 
     // Only require input and output paths if we're actually patching
-    #if !defined(FILL_TESTING) && !defined(MASS_TESTING)
+    #if !defined(DRY_RUN) && !defined(MASS_TESTING)
         if(baseDir.empty()) {
             ErrorLog::getInstance().log("No input path specified!");
             return false;
