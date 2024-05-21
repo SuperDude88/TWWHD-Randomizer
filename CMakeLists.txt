@@ -36,10 +36,10 @@ if(ENABLE_TIMING)
   add_compile_definitions(ENABLE_TIMING)
 endif()
 
-if(FILL_TESTING)
-  message("Configuring for Fill Testing")
+if(DRY_RUN)
+  message("Game patching will be skipped")
 
-  add_compile_definitions(FILL_TESTING)
+  add_compile_definitions(DRY_RUN)
 elseif(MASS_TESTING)
   message("Configuring for Mass Testing")
 
