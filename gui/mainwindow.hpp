@@ -117,7 +117,9 @@ private slots:
     void update_mixed_pools_combobox_option(const QString& text = "");
     void update_mixed_pools_on_text_click(const QModelIndex&);
     void on_base_game_path_browse_button_clicked();
+    void on_base_game_path_textChanged(const QString &arg1);
     void on_output_folder_browse_button_clicked();
+    void on_output_folder_textChanged(const QString &arg1);
     void on_generate_seed_button_clicked();
 
 
