@@ -581,6 +581,11 @@ void MainWindow::on_base_game_path_browse_button_clicked()
     }
 }
 
+void MainWindow::on_base_game_path_textChanged(const QString &arg1)
+{
+    config.gameBaseDir = arg1.toStdString();
+}
+
 void MainWindow::on_output_folder_browse_button_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -591,11 +596,15 @@ void MainWindow::on_output_folder_browse_button_clicked()
     }
 }
 
+void MainWindow::on_output_folder_textChanged(const QString &arg1)
+{
+    config.outputDir = arg1.toStdString();
+}
+
 void MainWindow::on_generate_seed_button_clicked()
 {
-    std::string seed = generate_seed();
-    config.seed = seed;
-    ui->seed->setText(seed.c_str());
+    config.seed = generate_seed();
+    ui->seed->setText(config.seed.c_str());
 }
 
 void MainWindow::on_seed_textChanged(const QString &arg1)
