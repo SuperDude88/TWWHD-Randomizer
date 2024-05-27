@@ -3,7 +3,6 @@
 #include <limits>
 #include <type_traits>
 #include <unordered_map>
-#include <filesystem>
 #include <algorithm>
 
 #include <utility/file.hpp>

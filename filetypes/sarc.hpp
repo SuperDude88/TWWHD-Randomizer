@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include <filesystem>
-#include <fstream>
+#include <cstdint>
 #include <vector>
 #include <unordered_map>
 #include <string>

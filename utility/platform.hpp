@@ -1,16 +1,11 @@
 #pragma once
 
 #include <string>
-#include <vector>
-#include <filesystem>
-#include <fstream>
-#include <cstdarg>
-#include <cstdio>
-#include <cstdint>
-#include <cstring>
 
 #ifdef DEVKITPRO
     #define PLATFORM_DKP
+
+    #include <filesystem>
 #elif defined(_MSC_VER)
     #define PLATFORM_MSVC
 #elif defined(__GNUC__) || defined(__GNUG__)

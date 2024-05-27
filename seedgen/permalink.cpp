@@ -195,7 +195,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
 
         // Handle starting gear
         if (option == Option::StartingGear) {
-            std::multiset<GameItem> startingGear  (settings.starting_gear.begin(), settings.starting_gear.end());
+            std::multiset<GameItem> startingGear(settings.starting_gear.begin(), settings.starting_gear.end());
             for (size_t i = 0; i < REGULAR_ITEMS.size(); i++)
             {
                 size_t bit = startingGear.contains(REGULAR_ITEMS[i]);

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <filetypes/shared/lms.hpp>
-#include <utility/common.hpp>
+#include <utility/color.hpp>
 #include <filetypes/baseFiletype.hpp>
 
 

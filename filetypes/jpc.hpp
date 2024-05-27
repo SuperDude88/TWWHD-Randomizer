@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <fstream>
 
+#include <utility/color.hpp>
 #include <utility/common.hpp>
 #include <filetypes/baseFiletype.hpp>
 
