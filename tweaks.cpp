@@ -950,14 +950,17 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
             return true;
         });
         
+        // Get the item out here, since trying to get it in the action causing a seg fault sometimes
+        auto dungeon_item = world.getItem(dungeon_name + " " + item_data.base_item_name);
+
         for (const auto& language : Text::supported_languages) {
             RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
-            entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
+            entry.addAction([=](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
                 const uint32_t message_id = 101 + item_id;
                 const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
-                std::u16string message = messageBegin.at(language) + world.getItem(dungeon_name + " " + item_data.base_item_name).getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
+                std::u16string message = messageBegin.at(language) + dungeon_item.getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
 
                 message = Text::word_wrap_string(message, 39);
                 msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
