@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include <utility/endian.hpp>
+#include <utility/common.hpp>
 #include <command/Log.hpp>
 
 using eType = Utility::Endian::Type;

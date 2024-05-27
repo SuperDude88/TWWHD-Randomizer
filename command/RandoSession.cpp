@@ -1,6 +1,7 @@
 #include "RandoSession.hpp"
 
 
+#include <cstring>
 #include <algorithm>
 #include <functional>
 #include <filesystem>

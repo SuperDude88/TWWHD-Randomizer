@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
 
 #include <logic/GameItem.hpp>
 #include <customizer/model.hpp>

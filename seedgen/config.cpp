@@ -74,7 +74,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     GET_FIELD(root, "program_version", rando_version)
     GET_FIELD(root, "file_version", file_version)
 
-    if(std::string(CONFIG_VERSION) != file_version) {
+    if(file_version != CONFIG_VERSION) {
         converted = true;
 
         Utility::platformLog("Attempted to load config version " + file_version + ", current version is " CONFIG_VERSION);

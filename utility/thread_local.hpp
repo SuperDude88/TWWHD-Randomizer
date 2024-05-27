@@ -1,6 +1,5 @@
 #pragma once
 
-#include <thread>
 #ifdef DEVKITPRO
 #include <cstdint>
 #include <list>

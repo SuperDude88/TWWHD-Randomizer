@@ -1,4 +1,5 @@
 #include "platform.hpp"
+
 #include <thread>
 #include <mutex>
 
