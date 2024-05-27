@@ -782,9 +782,9 @@ TweakError modify_title_screen() {
     rpx.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101f7048), 0x3fb33333)); //scale
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101f7044), 0x40100000)); //possibly particle size, JP changes it for its larger title text
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x10108280), 0xc2180000)); //vertical position
+        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7048), 1.4f)); //scale
+        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7044), 2.25f)); //possibly particle size, JP changes it for its larger title text
+        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x10108280), -38.0f)); //vertical position
 
         return true;
     });
