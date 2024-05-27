@@ -7,7 +7,7 @@ on:
 jobs:
   run-logic-tests:
     name: Run Logic Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
@@ -25,5 +25,5 @@ jobs:
 
       - name: Run Tests
         working-directory: ${{ github.workspace }}/build
-        run: ./wwhd_rando
+        run: ./wwhd_rando.exe
         
