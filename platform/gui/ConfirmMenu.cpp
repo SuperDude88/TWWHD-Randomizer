@@ -15,10 +15,10 @@ bool confirmRandomize() {
     OSScreenPutFontEx(SCREEN_TV, 0, 0, ("Preparing to patch with seed \"" + getSeed() + "\" and hash \"" + getSeedHash() + "\".").c_str());
     OSScreenPutFontEx(SCREEN_DRC, 0, 0, "Look at the TV for more information.");
 
-    OSScreenPutFontEx(SCREEN_TV, 0, 2, "Press A to continue with randomization.\n");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 2, "Press A to continue with randomization.\n");
-    OSScreenPutFontEx(SCREEN_TV, 0, 3, "Press B to go back.\n");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 3, "Press B to go back.\n");
+    OSScreenPutFontEx(SCREEN_TV, 0, 2, "Press A to continue with randomization.");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 2, "Press A to continue with randomization.");
+    OSScreenPutFontEx(SCREEN_TV, 0, 3, "Press B to go back.");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 3, "Press B to go back.");
 
     ScreenDraw();
     

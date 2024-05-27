@@ -10,6 +10,7 @@
 #include <variant>
 #include <memory>
 
+#include <utility/color.hpp>
 #include <utility/common.hpp>
 #include <filetypes/baseFiletype.hpp>
 

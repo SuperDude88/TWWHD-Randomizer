@@ -1,5 +1,7 @@
 #include "options.hpp"
 
+#include <unordered_map>
+
 
 Settings::Settings() {
     resetDefaults();

@@ -36,8 +36,8 @@ MCPError getTitlePath(const uint64_t& titleID, std::filesystem::path& outPath) {
 
     MCPTitleListType info;
     if(const MCPError err = MCP_GetTitleInfo(handle, titleID, &info); err < 0) {
-        Utility::platformLog("MCP_GetTitleInfo encountered error %08X\n", err);
-        Utility::platformLog("With title ID 0x%016X\n", titleID);
+        Utility::platformLog("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8, true));
+        Utility::platformLog("With title ID " + Utility::Str::intToHex(titleID, 16, true));
         return err;
     }
     
@@ -73,8 +73,8 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
     }
 
     if(freeSize < minSpace) {
-        Utility::platformLog(path + " does not have enough free space!\n");
-        Utility::platformLog("Has " + std::to_string(freeSize) + " free, needs " + std::to_string(minSpace) + '\n');
+        Utility::platformLog(path + " does not have enough free space!");
+        Utility::platformLog("Has " + std::to_string(freeSize) + " free, needs " + std::to_string(minSpace));
         ErrorLog::getInstance().log(path + " does not have enough free space! It needs " + std::to_string(minSpace) + " bytes but has " + std::to_string(freeSize) + "available!");
         return false;
     }
@@ -101,7 +101,7 @@ static bool installFreeChannel(const std::filesystem::path& relPath, const MCPIn
         return false;
     }
 
-    Utility::platformLog("Installing channel...\n");
+    Utility::platformLog("Installing channel...");
 
     const std::filesystem::path path = SD_ROOT_PATH_MCP / relPath;
     
@@ -259,14 +259,14 @@ static bool installFreeChannel(const std::filesystem::path& relPath, const MCPIn
 static const std::filesystem::path DataPath = SD_ROOT_PATH / CHANNEL_DATA_PATH;
 
 static bool packFreeChannel(const std::filesystem::path& baseDir) {
-    Utility::platformLog("Packing channel...\n");
+    Utility::platformLog("Packing channel...");
 
     //create necessary folders
-    Utility::platformLog("Creating output folder at " + DataPath.string() + '\n');
+    Utility::platformLog("Creating output folder at " + DataPath.string());
     Utility::create_directories(DataPath);
 
     //copy over channel data
-    Utility::platformLog("Copying channel data\n");
+    Utility::platformLog("Copying channel data");
     Utility::copy(baseDir / "code", DataPath / "code");
     std::filesystem::remove(DataPath / "code/title.fst"); //would cause nullptr issues when packing
     std::filesystem::remove(DataPath / "code/title.tmd"); //would cause nullptr issues when packing
@@ -280,7 +280,7 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     Utility::copy(baseDir / "meta", DataPath / "meta");
 
     //change the title ID so it gets its own channel
-    Utility::platformLog("Modifying XMLs\n");
+    Utility::platformLog("Modifying XMLs");
     tinyxml2::XMLPrinter printer;
 
     tinyxml2::XMLDocument meta;
@@ -309,7 +309,7 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     appOut.close();
     
     //get common key
-    Utility::platformLog("Getting keys\n");
+    Utility::platformLog("Getting keys");
     WiiUConsoleOTP otp;
     Mocha_ReadOTP(&otp);
 
@@ -317,7 +317,7 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     std::copy(otp.wiiUBank.wiiUCommonKey, otp.wiiUBank.wiiUCommonKey + 0x10, commonKey.begin());
 
     //pack the channel
-    Utility::platformLog("Creating package\n");
+    Utility::platformLog("Creating package");
     if(createPackage(DataPath, SD_ROOT_PATH / CHANNEL_OUTPUT_PATH, defaultEncryptionKey, commonKey) != PackError::NONE)
     {
         ErrorLog::getInstance().log("Failed to create console package");
@@ -328,7 +328,7 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
 }
 
 bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallTarget& loc) {
-    Utility::platformLog("Creating output channel...\n");
+    Utility::platformLog("Creating output channel...");
     
     //channel data needs a little under 2GB
     if(!checkEnoughFreeSpace(loc, 1024ULL * 1024 * 1024 * 2)) return false; //unsigned literal to avoid overflow warning
@@ -344,9 +344,7 @@ bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallT
         return false;
     }
 
-    //this gets routed through RandoSession as first time setup
-    //Utility::platformLog("Installed channel, copying game data...\n");
-    //if(!Utility::copy(baseDir / "content", outPath / "content")) return false;
+    // Game data gets copied through RandoSession as first time setup
     std::filesystem::remove(outPath / "content/filler.txt");
 
     return true;

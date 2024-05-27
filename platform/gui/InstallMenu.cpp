@@ -10,13 +10,13 @@ using namespace std::literals::chrono_literals;
 MCPInstallTarget pickInstallLocation() {
     ScreenClear();
 
-    OSScreenPutFontEx(SCREEN_TV, 0, 0, "Output channel does not currently exist.\n");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 0, "Output channel does not currently exist.\n");
+    OSScreenPutFontEx(SCREEN_TV, 0, 0, "Output channel does not currently exist");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 0, "Output channel does not currently exist.");
 
-    OSScreenPutFontEx(SCREEN_TV, 0, 1, "Press X to install it to console storage\n");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 1, "Press X to install it to console storage\n");
-    OSScreenPutFontEx(SCREEN_TV, 0, 2, "Press Y to install it to USB (recommended)\n");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 2, "Press Y to install it to USB (recommended)\n");
+    OSScreenPutFontEx(SCREEN_TV, 0, 1, "Press X to install it to console storage");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 1, "Press X to install it to console storage");
+    OSScreenPutFontEx(SCREEN_TV, 0, 2, "Press Y to install it to USB (recommended)");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 2, "Press Y to install it to USB (recommended)");
 
     ScreenDraw();
     
