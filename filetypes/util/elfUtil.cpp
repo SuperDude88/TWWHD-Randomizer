@@ -79,7 +79,7 @@ namespace elfUtil {
     }
 
     ELFError write_float(FileTypes::ELF& out, const offset_t& offset, const float& data) {
-        const float toWrite = Utility::Endian::toPlatform(eType::Big, data);
+        const uint32_t toWrite = Utility::Endian::toPlatform(eType::Big, std::bit_cast<const uint32_t>(data));
         
         CHECK_OFFSET_RANGES(out, offset);
         out.shdr_table[offset.shdrIdx].second.data.replace(offset.offset, 4, reinterpret_cast<const char*>(&toWrite), 4);
