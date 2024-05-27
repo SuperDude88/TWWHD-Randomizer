@@ -17,7 +17,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake -G "MinGW Makefiles" -B build -DLOGIC_TESTS=True 
+        run: cmake -B build -DLOGIC_TESTS=True 
       
       - name: Build
         working-directory: ${{ github.workspace }}
