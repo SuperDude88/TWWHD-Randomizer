@@ -15,7 +15,7 @@
 #include <seedgen/permalink.hpp>
 #include <logic/SpoilerLog.hpp>
 #include <logic/Generate.hpp>
-#include <logic/mass_test.hpp>
+#include <logic/LogicTests.hpp>
 #include <command/WriteLocations.hpp>
 #include <command/WriteEntrances.hpp>
 #include <command/WriteCharts.hpp>
@@ -159,11 +159,11 @@ public:
 
     int randomize() {
         // Go through the setting testing process if mass testing is turned on and ignore everything else
-        #ifdef MASS_TESTING
+        #ifdef LOGIC_TESTS
             #if TEST_COUNT
                 testSettings(config, TEST_COUNT);
             #else
-                massTest(config);
+                runLogicTests(config);
             #endif
             return 0;
         #endif

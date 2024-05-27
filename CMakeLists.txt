@@ -40,10 +40,12 @@ if(DRY_RUN)
   message("Game patching will be skipped")
 
   add_compile_definitions(DRY_RUN)
-elseif(MASS_TESTING)
-  message("Configuring for Mass Testing")
+endif()
 
-  add_compile_definitions(MASS_TESTING)
+if(LOGIC_TESTS)
+  message("Configuring for Logic Tests")
+
+  add_compile_definitions(LOGIC_TESTS)
 
   if(TEST_COUNT)
     message("Test Count: " ${TEST_COUNT})
@@ -74,14 +76,6 @@ configure_file(keys/keys.hpp.in keys/keys.hpp @ONLY)
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
 
-if(GET_THREADS)
-  find_package(Threads REQUIRED)
-
-  if(CMAKE_USE_PTHREADS_INIT)
-    target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
-  endif()
-endif()
-
 # Put data files together for easier manipulation
 file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
@@ -106,6 +100,14 @@ if(DEFINED QT_GUI)
   add_subdirectory("gui")
 else()
   add_executable(wwhd_rando main.cpp)
+endif()
+
+if(GET_THREADS)
+  find_package(Threads REQUIRED)
+
+  if(CMAKE_USE_PTHREADS_INIT)
+    target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
+  endif()
 endif()
 
 target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
