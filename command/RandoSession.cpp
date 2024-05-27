@@ -646,7 +646,6 @@ static bool iterate_directory_recursive(RandoSession& session, const std::filesy
 }
 #endif
 
-//Only run this on console for the time being, for some reason it takes 3-4x longer than Windows to copy the same folders
 bool RandoSession::runFirstTimeSetup() {
     //create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
     #ifdef DEVKITPRO

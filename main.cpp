@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
         int retVal = mainRandomize();
 
         if (retVal == 1) {
-            Utility::platformLog("An error has occured!\n" + ErrorLog::getInstance().getLastErrors());
+            Utility::platformLog("An error has occured! See the error log for details.\n" + ErrorLog::getInstance().getLastErrors());
 
             std::this_thread::sleep_for(5s);
         }

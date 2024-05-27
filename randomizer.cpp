@@ -205,8 +205,6 @@ public:
         Utility::platformLog("Randomizing...");
         UPDATE_DIALOG_VALUE(5);
         if (generateWorlds(worlds, settingsVector) != 0) {
-            // generating worlds failed
-            // Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.");
             return 1;
         }
 
@@ -241,13 +239,14 @@ public:
         }
 
         // Assume 1 world for now, modifying multiple copies needs work
+        // These work directly on the data stream so RandoSession applies them first
         if(!writeLocations(worlds)) {
             ErrorLog::getInstance().log("Failed to save items!");
             return 1;
         }
 
-        // Write charts after saving our items so the hardcoded offsets don't change
-        // Charts + entrances look through the actor list so offsets don't matter for these
+        // Charts/entrances work through the actor list, which is applied after any stream modifications
+        // This prevents them from interfering with the hardcoded item offsets
         if(config.settings.randomize_charts) {
             if(!writeCharts(worlds)) {
                 ErrorLog::getInstance().log("Failed to save charts!");
@@ -363,7 +362,6 @@ int mainRandomize() {
             ErrorLog::getInstance().log("Failed mounting input device!");
             return 1;
         }
-        //Utility::platformLog("Got game dir " + load.gameBaseDir.string());
         
         if(!SYSCheckTitleExists(0x0005000010143599)) {
             if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
@@ -378,7 +376,6 @@ int mainRandomize() {
             ErrorLog::getInstance().log("Failed mounting output device!");
             return 1;
         }
-       //Utility::platformLog("Got output dir " + load.outputDir.string());
     #endif
 
     Randomizer rando(load);
