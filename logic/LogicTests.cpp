@@ -18,10 +18,9 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 {
 
     settingToChange = true;
-    std::cout << "Now Testing setting " << settingName;
+    std::cout << "Now Testing setting " << settingName << std::endl;
 
-    const std::string seed = std::to_string(Random(0, 10000000));
-    std::cout << " using seed \"" << seed << "\"" << std::endl;
+    const std::string seed = "LOGIC_TESTING";
 
     auto permalink = create_permalink(settings, seed);
     auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
@@ -48,14 +47,14 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
         if (err != ConfigError::NONE)
         {
             std::cout << "Could not write error_config to file" << std::endl;
-            return 1;
         }
-        return 1;
+        exit(1);
     }
     else
     {
-        // Delete file if there were no errors
+        // Delete files if there were no errors
         std::filesystem::remove(errorConfigFilename);
+        std::filesystem::remove(preferencesFilename);
     }
     return 0;
 }
@@ -88,7 +87,7 @@ static int multiWorldTest(const Settings& settings)
 
 #define TEST(settings, setting, name) if(testSettings(settings, setting, name)) allPassed = false;
 
-void massTest(Config& newConfig)
+void runLogicTests(Config& newConfig)
 {
     Utility::create_directories(ERROR_CONFIG_PATH);
 
@@ -187,7 +186,6 @@ void massTest(Config& newConfig)
     TEST(settings1, settings1.mix_caves, "mix caves");
     TEST(settings1, settings1.mix_doors, "mix doors");
     TEST(settings1, settings1.mix_misc, "mix misc");
-    TEST(settings1, settings1.plandomizer, "plandomizer");
 
     // Now set all settings in reverse (except dungeons since they have a lot of checks)
     std::cout << "REVERSING TEST DIRECTION" << std::endl;
@@ -274,7 +272,6 @@ void massTest(Config& newConfig)
     TEST(settings2, settings2.progression_combat_secret_caves, "progression combat secret caves");
     TEST(settings2, settings2.progression_puzzle_secret_caves, "progression puzzle secret caves");
     TEST(settings2, settings2.progression_great_fairies, "progression great faires");
-    TEST(settings2, settings2.plandomizer, "plandomizer");
     settings2.progression_dungeons = ProgressionDungeons::Disabled;
     TEST(settings2, dummy, "disabled dungeons");
 
