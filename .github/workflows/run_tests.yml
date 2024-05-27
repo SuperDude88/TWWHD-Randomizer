@@ -1,0 +1,29 @@
+name: Run Logic Tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  run-logic-tests:
+    name: Run Logic Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure CMake
+        working-directory: ${{ github.workspace }}
+        run: cmake -G "MinGW Makefiles" -B build -DLOGIC_TESTS=True 
+      
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        run: cmake --build build -j
+
+      - name: Run Tests
+        working-directory: ${{ github.workspace }}/build
+        run: ./wwhd_rando
+        
