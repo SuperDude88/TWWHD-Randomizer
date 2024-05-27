@@ -10,6 +10,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # Increase page size so that the compiler doesn't
+      # run out of memory
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.4
+        with:
+          minimum-size: 16GB
+          maximum-size: 16GB
+          disk-root: "C:"
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -17,7 +26,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
-        run: cmake -B build -DLOGIC_TESTS=True 
+        run: cmake -G "MinGW Makefiles" -B build -DLOGIC_TESTS=True
       
       - name: Build
         working-directory: ${{ github.workspace }}
