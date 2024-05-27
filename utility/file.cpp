@@ -29,7 +29,7 @@ namespace Utility {
     static ThreadLocal<char[FILE_BUF_SIZE], DataIDs::FILE_OP_BUFFER> buf;
 
     bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
-        Utility::platformLog("Copying %s\n", to.string().c_str());
+        Utility::platformLog("Copying " + to.string());
         #ifdef DEVKITPRO
             //use a buffer to speed up file copying
 

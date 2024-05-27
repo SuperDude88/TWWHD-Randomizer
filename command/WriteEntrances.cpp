@@ -42,7 +42,7 @@ bool restoreEntrances(WorldPool& worlds) {
 }
 
 bool writeEntrances(WorldPool& worlds) {
-    Utility::platformLog("Saving entrances...\n");
+    Utility::platformLog("Saving entrances...");
     UPDATE_DIALOG_VALUE(45);
     UPDATE_DIALOG_LABEL("Saving entrances...");
 

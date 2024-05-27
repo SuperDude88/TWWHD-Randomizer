@@ -67,7 +67,7 @@ LMSError ATR1::read(std::istream &in) {
     entries.reserve(entryCount);
     for (uint32_t i = 0; i < entryCount; i++) {
         Attributes& attributes = entries.emplace_back();
-        if (!in.read(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character))) //need to read fields individually, otherwise most do not get populated properly
+        if (!in.read(reinterpret_cast<char*>(&attributes.character), sizeof(attributes.character)))
         {
             LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         }

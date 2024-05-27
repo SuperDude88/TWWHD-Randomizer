@@ -12,7 +12,7 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
     std::string plandoStr;
     if (Utility::getFileContents(plandoFilepath, plandoStr) != 0)
     {
-        Utility::platformLog("Will skip using plando file\n");
+        Utility::platformLog("Will skip using plando file");
         return PlandomizerError::NONE;
     }
 

@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <fstream>
 
+#include <utility/color.hpp>
 #include <utility/common.hpp>
 #include <filetypes/baseFiletype.hpp>
 
@@ -270,8 +271,8 @@ namespace JParticle {
         JParticle::CalcIdxType colorCalcIdxType;
         RGBA8 colorPrm;
         RGBA8 colorEnv;
-        std::vector<ColorAnimationKeyframe> colorPrmAnimData; //somethign iwth durations?
-        std::vector<ColorAnimationKeyframe> colorEnvAnimData; //somethign iwth durations?
+        std::vector<ColorAnimationKeyframe> colorPrmAnimData; // something with durations?
+        std::vector<ColorAnimationKeyframe> colorEnvAnimData; // something with durations?
         uint16_t colorAnimMaxFrm;
         int16_t colorLoopOffset;
 

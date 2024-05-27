@@ -37,66 +37,55 @@ namespace {
         if (out = readNullTerminatedStr(bfres, offset); out.empty()) {
     		LOG_ERR_AND_RETURN(FRESError::REACHED_EOF); //empty string means it could not read a character from file
     	}
-        out.pop_back(); //remove null terminator because it breaks length (Might no longer be needed with getline?
+        out.pop_back(); //remove null terminator because it breaks length
         if (len != out.length()) LOG_ERR_AND_RETURN(FRESError::STRING_LEN_MISMATCH);
         return FRESError::NONE;
     }
 
     FRESError readFRESHeader(std::istream& bfres, FRESHeader& hdr) {
-        // magicFRES
         if (!bfres.read(hdr.magicFRES, 4)) LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         if (std::strncmp(hdr.magicFRES, "FRES", 4) != 0)
         {
             LOG_ERR_AND_RETURN(FRESError::NOT_FRES);
         }
-        // version number, doesn't affect much
         if (!bfres.read(reinterpret_cast<char*>(&hdr.version), sizeof(hdr.version)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // byteOrderMarker
         if (!bfres.read(reinterpret_cast<char*>(&hdr.byteOrderMarker), sizeof(hdr.byteOrderMarker)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // headerLength_0x10
         if (!bfres.read(reinterpret_cast<char*>(&hdr.headerLength_0x10), sizeof(hdr.headerLength_0x10)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // fileSize
         if (!bfres.read(reinterpret_cast<char*>(&hdr.fileSize), sizeof(hdr.fileSize)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // fileAlignment
         if (!bfres.read(reinterpret_cast<char*>(&hdr.fileAlignment), sizeof(hdr.fileAlignment)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // nameOffset
         if (!bfres.read(reinterpret_cast<char*>(&hdr.nameOffset), sizeof(hdr.nameOffset)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // stringTableSize
         if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableSize), sizeof(hdr.stringTableSize)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // stringTableOffset
         if (!bfres.read(reinterpret_cast<char*>(&hdr.stringTableOffset), sizeof(hdr.stringTableOffset)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
-        // Index group info
         for (int i = 0; i < 12; i++) {
             if (!bfres.read(reinterpret_cast<char*>(&hdr.groupOffsets[i]), sizeof(hdr.groupOffsets[i])))
             {
                 LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
             }
             Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupOffsets[i]);
-            //calculate global offset
         }
         for (int i = 0; i < 12; i++) {
             if (!bfres.read(reinterpret_cast<char*>(&hdr.groupCounts[i]), sizeof(hdr.groupCounts[i])))
@@ -105,7 +94,6 @@ namespace {
             }
             Utility::Endian::toPlatform_inplace(eType::Big, hdr.groupCounts[i]);
         }
-        // userPointer
         if (!bfres.read(reinterpret_cast<char*>(&hdr.userPointer), sizeof(hdr.userPointer)))
         {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);

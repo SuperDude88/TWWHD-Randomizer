@@ -17,7 +17,7 @@
 // falls back to current value if the key is not present + errors are ignored
 #define GET_FIELD(yaml, key, out)	                         			\
     if(!yaml[key]) {                                                  	\
-        Utility::platformLog("\"" key "\" not found in config.yaml\n"); \
+        Utility::platformLog("\"" key "\" not found in config.yaml");   \
         if (!ignoreErrors) {											\
             return ConfigError::MISSING_KEY;							\
         }																\
@@ -74,10 +74,10 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     GET_FIELD(root, "program_version", rando_version)
     GET_FIELD(root, "file_version", file_version)
 
-    if(std::string(CONFIG_VERSION) != file_version) {
+    if(file_version != CONFIG_VERSION) {
         converted = true;
 
-        Utility::platformLog("Attempted to load config version " + file_version + ", current version is " CONFIG_VERSION "\n");
+        Utility::platformLog("Attempted to load config version " + file_version + ", current version is " CONFIG_VERSION);
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_FILE_VERSION);
     }
 
@@ -435,8 +435,8 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     if(rando_version != RANDOMIZER_VERSION) {
         updated = true;
 
-        Utility::platformLog("Warning: config was made using a different randomizer version\n");
-        Utility::platformLog("Item placement may be different than expected\n");
+        Utility::platformLog("Warning: config was made using a different randomizer version");
+        Utility::platformLog("Item placement may be different than expected");
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_RANDO_VERSION);
     }
 
@@ -615,15 +615,15 @@ ConfigError Config::writeDefault(const std::string& filePath, const std::string&
     std::ifstream pref(preferencesPath);
 
     if (file.is_open() == false) {
-        Utility::platformLog("Creating default config\n");
+        Utility::platformLog("Creating default config");
         LOG_AND_RETURN_IF_ERR(conf.writeSettings(filePath))
     }
 
     if (pref.is_open() == false) {
-        Utility::platformLog("Creating default preferences\n");
+        Utility::platformLog("Creating default preferences");
         // load in default link colors
         if (conf.settings.selectedModel.loadFromFolder() != ModelError::NONE) {
-            Utility::platformLog("Could not load default color perferences\n");
+            Utility::platformLog("Could not load default color perferences");
         }
         conf.settings.selectedModel.loadPreset(0); // Load default preset
         LOG_AND_RETURN_IF_ERR(conf.writePreferences(preferencesPath))

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
+#include <filesystem>
 
 #include <utility/endian.hpp>
 #include <utility/common.hpp>

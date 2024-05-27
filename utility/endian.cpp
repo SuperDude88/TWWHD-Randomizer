@@ -23,7 +23,7 @@ namespace Utility::Endian
                 return Type::Little;
             }
             else {
-                Utility::platformLog("Warning: Could not determine endianness!\n");
+                Utility::platformLog("Warning: Could not determine endianness!");
                 Utility::platformLog("Using little endian as default");
                 return Type::Little;
             }

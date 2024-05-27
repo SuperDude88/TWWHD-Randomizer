@@ -92,7 +92,7 @@ void generateSpoilerLog(WorldPool& worlds)
 {
     std::ofstream spoilerLog(APP_SAVE_PATH + LogInfo::getSeedHash() + " Spoiler Log.txt");
 
-    Utility::platformLog("Generating spoiler log...\n");
+    Utility::platformLog("Generating spoiler log...");
     printBasicInfo(spoilerLog, worlds);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
@@ -315,7 +315,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
 {
     std::ofstream nonSpoilerLog(APP_SAVE_PATH + LogInfo::getSeedHash() + " Non-Spoiler Log.txt");
 
-    Utility::platformLog("Generating non-spoiler log...\n");
+    Utility::platformLog("Generating non-spoiler log...");
     printBasicInfo(nonSpoilerLog, worlds);
 
     nonSpoilerLog << "### Locations that may or may not have progress items in them on this run:" << std::endl;
