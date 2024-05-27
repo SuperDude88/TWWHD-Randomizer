@@ -534,7 +534,7 @@ bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file fr
 
 bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEntry> current) {
     if(current->parent->parent == nullptr) { //only print start of chain to avoid spam
-        Utility::platformLog(std::string("Working on ") + filename.string() + "\n");
+        Utility::platformLog("Working on " + filename.string());
     }
     //extract this level, move down tree
     if(!extractFile(current)) return false;
@@ -649,7 +649,7 @@ static bool iterate_directory_recursive(RandoSession& session, const std::filesy
 bool RandoSession::runFirstTimeSetup() {
     //create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
     #ifdef DEVKITPRO
-        Utility::platformLog("Running first time setup (this will increase repack time)\n");
+        Utility::platformLog("Running first time setup (this will increase repack time)");
         if(!iterate_directory_recursive(*this, baseDir / "content")) { //code and meta folders are handled by channel install
             return false; 
         }
@@ -658,7 +658,7 @@ bool RandoSession::runFirstTimeSetup() {
             ScopedTimer<std::chrono::high_resolution_clock, "Copying dump took "> copyTimer;
         #endif
  
-        Utility::platformLog("Copying dump to output...\n");
+        Utility::platformLog("Copying dump to output...");
         UPDATE_DIALOG_LABEL("Copying dump to output...");
         std::filesystem::copy(baseDir / "code", outputDir / "code", std::filesystem::copy_options::recursive);
         std::filesystem::copy(baseDir / "content", outputDir / "content", std::filesystem::copy_options::recursive);
@@ -702,7 +702,7 @@ bool RandoSession::modFiles()
 
     workerThreads.wait_for_tasks();
 
-    Utility::platformLog("Finished repacking files\n");
+    Utility::platformLog("Finished repacking files");
     LOG_TO_DEBUG("Finished repacking files");
 
     return true;

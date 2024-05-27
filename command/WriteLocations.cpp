@@ -490,7 +490,7 @@ const char* modErrorToName(ModificationError err) {
 }
 
 bool writeLocations(WorldPool& worlds) {
-    Utility::platformLog("Saving items...\n");
+    Utility::platformLog("Saving items...");
     UPDATE_DIALOG_VALUE(40);
     UPDATE_DIALOG_LABEL("Saving items...");
 

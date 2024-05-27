@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         }
     }
     else {
-        Utility::platformLog("Failed to initialize platform!\n");
+        Utility::platformLog("Failed to initialize platform!");
         std::this_thread::sleep_for(3s);
     }
 

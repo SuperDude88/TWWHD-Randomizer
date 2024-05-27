@@ -181,7 +181,7 @@ std::string create_permalink(const Settings& settings, const std::string& seed) 
 
     std::string permalink = "";
     if (std::string(RANDOMIZER_VERSION).empty()) {
-        Utility::platformLog("Could not determine Randomizer version. Please tell a dev if you see this message\n");
+        Utility::platformLog("Could not determine Randomizer version. Please tell a dev if you see this message");
     }
     
     permalink += RANDOMIZER_VERSION;

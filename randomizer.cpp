@@ -53,7 +53,7 @@ private:
     [[nodiscard]] bool verifyBase() {
         using namespace std::filesystem;
 
-        Utility::platformLog("Verifying dump...\n");
+        Utility::platformLog("Verifying dump...");
         UPDATE_DIALOG_LABEL("Verifying dump...");
         UPDATE_DIALOG_VALUE(25);
 
@@ -98,7 +98,7 @@ private:
     [[nodiscard]] bool verifyOutput() {
         using namespace std::filesystem;
 
-        Utility::platformLog("Verifying output...\n");
+        Utility::platformLog("Verifying output...");
         UPDATE_DIALOG_LABEL("Verifying output...");
         UPDATE_DIALOG_VALUE(25);
         
@@ -172,7 +172,7 @@ public:
             ErrorLog::getInstance().log("Failed to initialize session");
             return 1;
         }
-        Utility::platformLog("Initialized session\n");
+        Utility::platformLog("Initialized session");
 
         LogInfo::setConfig(config);
 
@@ -202,11 +202,11 @@ public:
         WorldPool worlds(numPlayers);
         std::vector<Settings> settingsVector (numPlayers, config.settings);
 
-        Utility::platformLog("Randomizing...\n");
+        Utility::platformLog("Randomizing...");
         UPDATE_DIALOG_VALUE(5);
         if (generateWorlds(worlds, settingsVector) != 0) {
             // generating worlds failed
-            // Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.\n");
+            // Utility::platformLog("An Error occurred when attempting to generate the worlds. Please see the Error Log for details.");
             return 1;
         }
 
@@ -231,7 +231,7 @@ public:
             return 1;
         }
 
-        Utility::platformLog("Modifying game code...\n");
+        Utility::platformLog("Modifying game code...");
         UPDATE_DIALOG_VALUE(30);
         UPDATE_DIALOG_LABEL("Modifying game code...");
         // TODO: update worlds indexing for multiworld eventually
@@ -267,7 +267,7 @@ public:
             }
         }
 
-        Utility::platformLog("Applying final patches...\n");
+        Utility::platformLog("Applying final patches...");
         UPDATE_DIALOG_VALUE(50);
         UPDATE_DIALOG_LABEL("Applying final patches...");
         if(TweakError err = apply_necessary_post_randomization_tweaks(worlds[0]/* , randomizeItems */); err != TweakError::NONE) {
@@ -278,7 +278,7 @@ public:
         // Restore files that aren't changed (chart list, entrances, etc) so they don't persist across seeds
         // restoreGameFile() does not need to check if the file is cached because it only tries to get the cache entry
         // Getting a cache entry doesn't overwrite anything if the file already had modifications
-        Utility::platformLog("Restoring outdated files...\n");
+        Utility::platformLog("Restoring outdated files...");
         if(!g_session.restoreGameFile("content/Common/Misc/Misc.szs")) {
             ErrorLog::getInstance().log("Failed to restore Misc.szs!");
             return 1;
@@ -296,7 +296,7 @@ public:
             return 1;
         }
 
-        Utility::platformLog("Preparing to edit files...\n");
+        Utility::platformLog("Preparing to edit files...");
         if(!g_session.modFiles()) {
             ErrorLog::getInstance().log("Failed to edit file cache!");
             return 1;
@@ -320,7 +320,7 @@ int mainRandomize() {
         return 1;
     }
 
-    Utility::platformLog("Reading config\n");
+    Utility::platformLog("Reading config");
     #ifdef DEVKITPRO
         err = load.loadFromFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml", true); // ignore errors on console (always attempt to convert)
     #else
@@ -363,7 +363,7 @@ int mainRandomize() {
             ErrorLog::getInstance().log("Failed mounting input device!");
             return 1;
         }
-        //Utility::platformLog("Got game dir " + load.gameBaseDir.string() + '\n');
+        //Utility::platformLog("Got game dir " + load.gameBaseDir.string());
         
         if(!SYSCheckTitleExists(0x0005000010143599)) {
             if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
@@ -378,7 +378,7 @@ int mainRandomize() {
             ErrorLog::getInstance().log("Failed mounting output device!");
             return 1;
         }
-       //Utility::platformLog("Got output dir " + load.outputDir.string() + '\n');
+       //Utility::platformLog("Got output dir " + load.outputDir.string());
     #endif
 
     Randomizer rando(load);
