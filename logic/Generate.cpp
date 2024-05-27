@@ -34,7 +34,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s" : ""));
       UPDATE_DIALOG_LABEL("Building World");
   #endif
-  int buildRetryCount = 10;
+  int buildRetryCount = 20;
   EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
   int fillAttemptCount = 0;
   bool successfulFill = false;
