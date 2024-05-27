@@ -18,53 +18,67 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 {
 
     settingToChange = true;
-    std::cout << "Now Testing setting " << settingName << std::endl;
+    std::cout << "Now Testing setting " << settingName;
 
-    const std::string seed = "LOGIC_TESTING";
+    int successes = 0;
+    int attempts = 10;
 
-    auto permalink = create_permalink(settings, seed);
-    auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
-
-    Random_Init(integer_seed);
-
-    config.settings = settings;
-    config.seed = seed;
-
-    int worldCount = 1;
-    WorldPool worlds (worldCount);
-    std::vector<Settings> settingsVector (1, settings);
-
-    // Pre-emptively write config incase of crashing
-    std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
-    std::string preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_preferences.yaml";
-    ConfigError err = config.writeToFile(errorConfigFilename, preferencesFilename);
-
-    int retVal = generateWorlds(worlds, settingsVector);
-
-    if (retVal != 0)
+    for (int i = 0; i < attempts; i++)
     {
-        std::cout << "Generation after changing setting \"" << settingName << "\" failed.\nSettings saved to \"" << errorConfigFilename << "\"" << std::endl;
-        if (err != ConfigError::NONE)
+        const std::string seed = "LOGIC_TESTING_SEED" + std::to_string(i);
+
+        auto permalink = create_permalink(settings, seed);
+        auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
+
+        Random_Init(integer_seed);
+
+        config.settings = settings;
+        config.seed = seed;
+
+        int worldCount = 1;
+        WorldPool worlds (worldCount);
+        std::vector<Settings> settingsVector (1, settings);
+
+        // Pre-emptively write config incase of crashing
+        std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
+        std::string preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_preferences.yaml";
+        ConfigError err = config.writeToFile(errorConfigFilename, preferencesFilename);
+
+        int retVal = generateWorlds(worlds, settingsVector);
+
+        if (retVal == 0)
         {
-            std::cout << "Could not write error_config to file" << std::endl;
+            std::cout << ".";
+            successes += 1;
+            // Delete files if there were no errors
+            std::filesystem::remove(errorConfigFilename);
+            std::filesystem::remove(preferencesFilename);
         }
+        else
+        {
+            std::cout << "F";
+        }
+    }
+
+    int successRate = static_cast<float>(successes) / static_cast<float>(attempts) * 100.0f;
+    std::cout << "Success Rate: " << std::to_string(successRate) << "%" << std::endl;
+
+    // Somewhat arbitrarily chosen, but ideally even the most prone to failing settings
+    // shouldn't fail this much
+    if (successes < 7)
+    {
+        std::cout << "Success rate after changing setting \"" << settingName << "\" is too poor.\nSettings saved to error_configs folder" << std::endl;
         exit(1);
     }
-    else
-    {
-        // Delete files if there were no errors
-        std::filesystem::remove(errorConfigFilename);
-        std::filesystem::remove(preferencesFilename);
-    }
+
     return 0;
 }
 
 static int multiWorldTest(const Settings& settings)
 {
-    std::cout << "Now testing multiworld generation";
+    std::cout << "Now testing multiworld generation" << std::endl;
 
-    const std::string seed = std::to_string(Random(0, 10000000));
-    std::cout << " using seed \"" << seed << "\"" << std::endl;
+    const std::string seed = "LOGIC_TESTING_SEED";
 
     auto permalink = create_permalink(settings, seed);
     auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
@@ -80,7 +94,7 @@ static int multiWorldTest(const Settings& settings)
     if (retVal != 0)
     {
         std::cout << "Generation after multiworld test failed." << std::endl;
-        return 1;
+        exit(1);
     }
     return 0;
 }
@@ -277,10 +291,7 @@ void runLogicTests(Config& newConfig)
 
     multiWorldTest(settings1);
 
-    if (allPassed)
-    {
-        std::cout << "All settings tests passed" << std::endl;
-    }
+    std::cout << "Success rate acceptable" << std::endl;
 }
 
 // Tests how often a settings configuration succeeds
