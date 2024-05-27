@@ -344,9 +344,7 @@ bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallT
         return false;
     }
 
-    //this gets routed through RandoSession as first time setup
-    //Utility::platformLog("Installed channel, copying game data...");
-    //if(!Utility::copy(baseDir / "content", outPath / "content")) return false;
+    // Game data gets copied through RandoSession as first time setup
     std::filesystem::remove(outPath / "content/filler.txt");
 
     return true;

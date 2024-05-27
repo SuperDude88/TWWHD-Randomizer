@@ -24,7 +24,8 @@ enum struct [[nodiscard]] FRESError
     COUNT
 };
 
-//Only embedded files are currently implemented
+// Only textures and embedded files are currently implemented
+// Changes are limited to ones that do not require shifting the rest of the file
 
 struct EmbeddedFileSpec {
     unsigned int location; //Used to deal with relative offsets, not a part of the file data
@@ -103,7 +104,7 @@ namespace FileTypes
 
         resFile();
         //static FRESFile createNew(); //Needs more complete implementation to be usable
-        FRESError loadFromBinary(std::istream& bfres); //Only does embedded files for now
+        FRESError loadFromBinary(std::istream& bfres); // Only does embedded files and textures for now
         FRESError loadFromFile(const std::string& filePath);
         FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFilename);
         FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);

@@ -2735,8 +2735,6 @@ TweakError remove_minor_pan_cs() {
     return TweakError::NONE;
 }
 
-//custom actors?
-
 TweakError fix_stone_head_bugs() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3654,7 +3652,6 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));
 
-    //Run some things after writing items to preserve offsets
     TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
     TWEAK_ERR_CHECK(add_more_magic_jars());
     TWEAK_ERR_CHECK(add_pirate_ship_to_windfall());
