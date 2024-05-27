@@ -1531,5 +1531,5 @@ void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits
 
     worldGraph << "}";
     worldGraph.close();
-    Utility::platformLog("Dumped world graph at " + fullFilename + '\n');
+    Utility::platformLog("Dumped world graph at " + fullFilename);
 }

@@ -23,8 +23,6 @@
 
 namespace Utility
 {
-    void platformLog(const char* f, ...);
-
     void platformLog(const std::string& str);
 
     bool platformInit();

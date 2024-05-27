@@ -31,7 +31,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player
   #ifndef MASS_TESTING
-      Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s\n" : "\n"));
+      Utility::platformLog(std::string("Building World") + (worlds.size() > 1 ? "s" : ""));
       UPDATE_DIALOG_LABEL("Building World");
   #endif
   int buildRetryCount = 10;
@@ -181,7 +181,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       FillError fillError = FillError::NONE;
       #ifndef MASS_TESTING
           std::string message = std::string("Filling World") + (worlds.size() > 1 ? "s" : "") + (fillAttemptCount++ > 0 ? " (Attempt " + std::to_string(fillAttemptCount) + ")" : "");
-          Utility::platformLog(message + "\n");
+          Utility::platformLog(message);
           UPDATE_DIALOG_VALUE(10);
           UPDATE_DIALOG_LABEL(message.c_str());
       #endif
@@ -236,14 +236,14 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   }
 
   #ifndef MASS_TESTING
-      Utility::platformLog("Generating Playthrough\n");
+      Utility::platformLog("Generating Playthrough");
       UPDATE_DIALOG_VALUE(15);
       UPDATE_DIALOG_LABEL("Generating Playthrough");
   #endif
   generatePlaythrough(worlds);
 
   #ifndef MASS_TESTING
-      Utility::platformLog("Generating Hints\n");
+      Utility::platformLog("Generating Hints");
       UPDATE_DIALOG_VALUE(20);
       UPDATE_DIALOG_LABEL("Generating Hints");
   #endif

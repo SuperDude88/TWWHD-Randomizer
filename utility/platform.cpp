@@ -42,47 +42,47 @@ static bool flushVolume(const std::string& vol) {
 
 bool initMocha()
 {
-    Utility::platformLog("Starting libmocha...\n");
+    Utility::platformLog("Starting libmocha...");
     
     if(MochaUtilsStatus status = Mocha_InitLibrary(); status != MOCHA_RESULT_SUCCESS) {
-        Utility::platformLog("Mocha_InitLibrary() failed\n");
+        Utility::platformLog("Mocha_InitLibrary() failed");
         return false;
     }
 
-    Utility::platformLog("Mocha initialized, storage mounted\n");
+    Utility::platformLog("Mocha initialized, storage mounted");
     return true;
 }
 
 void closeMocha() {
     if(MLCMounted) {
         if(!flushVolume("/vol/storage_mlc01")) { //maybe check if we wrote to MLC
-            Utility::platformLog("Could not flush MLC\n");
+            Utility::platformLog("Could not flush MLC");
         }
         if(MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
-            Utility::platformLog("Error unmounting MLC: %s\n", Mocha_GetStatusStr(status));
+            Utility::platformLog(std::string("Error unmounting MLC: ") + Mocha_GetStatusStr(status));
         }
         MLCMounted = false;
     }
 
     if(USBMounted) {
         if(!flushVolume("/vol/storage_usb01")) { //maybe check if we wrote to USB
-            Utility::platformLog("Could not flush USB\n");
+            Utility::platformLog("Could not flush USB");
         }
         if(MochaUtilsStatus status = Mocha_UnmountFS("storage_usb01"); status != MOCHA_RESULT_SUCCESS) {
-            Utility::platformLog("Error unmounting USB: %s\n", Mocha_GetStatusStr(status));
+            Utility::platformLog(std::string("Error unmounting USB: ") + Mocha_GetStatusStr(status));
         }
         USBMounted = false;
     }
 
     if(DiscMounted) {
         if(MochaUtilsStatus status = Mocha_UnmountFS("storage_odd_content"); status != MOCHA_RESULT_SUCCESS) {
-            Utility::platformLog("Error unmounting disc: %s\n", Mocha_GetStatusStr(status));
+            Utility::platformLog(std::string("Error unmounting disc: ") + Mocha_GetStatusStr(status));
         }
         DiscMounted = false;
     }
 
     if(MochaUtilsStatus status = Mocha_DeInitLibrary(); status != MOCHA_RESULT_SUCCESS) {
-        Utility::platformLog("Mocha_DeinitLibrary() failed\n");
+        Utility::platformLog("Mocha_DeinitLibrary() failed");
     }
 
     return;
@@ -92,10 +92,10 @@ namespace Utility {
     bool mountDeviceAndConvertPath(std::filesystem::path& path) {
         if(path.string().starts_with("/vol/storage_mlc01")) {
             if(!MLCMounted) {
-                Utility::platformLog("Attempting to mount MLC\n");
+                Utility::platformLog("Attempting to mount MLC");
                 if(MochaUtilsStatus status = Mocha_MountFS("storage_mlc01", nullptr, "/vol/storage_mlc01"); status != MOCHA_RESULT_SUCCESS)
                 {
-                    Utility::platformLog("Failed to mount MLC: %s\n", Mocha_GetStatusStr(status));
+                    Utility::platformLog(std::string("Failed to mount MLC: ") + Mocha_GetStatusStr(status));
                     return false;
                 }
 
@@ -104,10 +104,10 @@ namespace Utility {
         }
         else if(path.string().starts_with("/vol/storage_usb01")) {
             if(!USBMounted) {
-                Utility::platformLog("Attempting to mount USB\n");
+                Utility::platformLog("Attempting to mount USB");
                 if(MochaUtilsStatus status = Mocha_MountFS("storage_usb01", nullptr, "/vol/storage_usb01"); status != MOCHA_RESULT_SUCCESS)
                 {
-                    Utility::platformLog("Failed to mount USB: %s\n", Mocha_GetStatusStr(status));
+                    Utility::platformLog(std::string("Failed to mount USB: ") + Mocha_GetStatusStr(status));
                     return false;
                 }
 
@@ -116,10 +116,10 @@ namespace Utility {
         }
         else if(path.string().starts_with("/vol/storage_odd")) {
             if(!DiscMounted) {
-                Utility::platformLog("Attempting to mount disc\n");
+                Utility::platformLog("Attempting to mount disc");
                 if(MochaUtilsStatus status = Mocha_MountFS("storage_odd_content", "/dev/odd03", "/vol/storage_odd_content"); status != MOCHA_RESULT_SUCCESS)
                 {
-                    Utility::platformLog("Failed to mount disc: %s\n", Mocha_GetStatusStr(status));
+                    Utility::platformLog(std::string("Failed to mount disc: ") + Mocha_GetStatusStr(status));
                     return false;
                 }
 
@@ -148,33 +148,20 @@ namespace Utility {
 
 namespace Utility
 {
-    void platformLog(const char* f, ...)
-    {
-#ifdef PLATFORM_DKP
-        char buf[PRINTF_BUFFER_LENGTH];
-#endif
-        va_list args;
-        va_start(args, f);
-        std::unique_lock<std::mutex> lock(printMut);
-#ifdef PLATFORM_DKP
-        vsnprintf(buf, PRINTF_BUFFER_LENGTH - 1, f, args);
-        
-        LogConsoleWrite(buf);
-
-        if(ProcIsForeground()) {
-            LogConsoleDraw();
-        }
-#else
-        vprintf(f, args);
-        fflush(stdout); //vscode debug console works better with this
-#endif
-        lock.unlock();
-        va_end(args);
-    }
-
     void platformLog(const std::string& str)
     {
-        platformLog(str.c_str());
+        std::unique_lock<std::mutex> lock(printMut);
+        #ifdef PLATFORM_DKP
+            LogConsoleWrite(str.c_str());
+
+            if(ProcIsForeground()) {
+                LogConsoleDraw();
+            }
+        #else
+            printf("%s\n", str.c_str());
+            fflush(stdout); //vscode debug console works better with this
+        #endif
+        lock.unlock();
     }
 
     bool platformInit()
@@ -192,7 +179,7 @@ namespace Utility
 
         if(!initMocha())
         {
-            Utility::platformLog("Failed to init libmocha\n");
+            Utility::platformLog("Failed to init libmocha");
             return false;
         }
         mochaOpen = true;

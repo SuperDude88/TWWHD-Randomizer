@@ -16,7 +16,7 @@ bool writeCharts(const WorldPool& worlds) {
     using namespace std::literals::string_literals;
     using eType = Utility::Endian::Type;
 
-    Utility::platformLog("Saving randomized charts...\n");
+    Utility::platformLog("Saving randomized charts...");
     UPDATE_DIALOG_LABEL("Saving randomized charts...");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin@CHARTS");

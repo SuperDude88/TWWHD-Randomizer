@@ -29,7 +29,7 @@ protected:
     void print() const {
         const std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
 
-        Utility::platformLog(std::string(msg) + (msg.back() == ' ' ? "" : " ") + std::to_string(seconds.count()) + " seconds\n");
+        Utility::platformLog(std::string(msg) + (msg.back() == ' ' ? "" : " ") + std::to_string(seconds.count()) + " seconds");
         LOG_TO_DEBUG(std::string(msg) + (msg.back() == ' ' ? "" : " ") + std::to_string(seconds.count()) + " seconds\n");
     }
 
