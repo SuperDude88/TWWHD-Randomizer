@@ -446,3 +446,34 @@ check_barrier_triforce_requirement:
 
 barrier_does_not_have_triforce:
   b 0x0232393C ; continue without breaking the barrier
+
+
+
+; In WWHD, going through a load trigger with a morth stuck to you causes a bug known as "morth glitch"
+; Morth glitch makes it so that rolling no longer gets morths off of Link, and you need to bonk into a wall or spin attack the morths instead
+; Going through more load triggers can lead to "advanced morth glitch," where morths do not grab onto Link at all
+
+; The morth actor uses several global counters, including KS_ALL_COUNT (total number of morths) and KUTTUKU_ALL_COUNT (number of morths stuck to Link)
+; When morths are created, the KS_ALL_COUNT variable is only incremented under certain circumstances, and it does not occur for all morths
+; For all morths, however, the delete function still decrements the counter, causing KS_ALL_COUNT to become a progressively more negative number
+; The delete function also checks if KS_ALL_COUNT is exactly equal to zero, and if it is, resets KUTTUKU_ALL_COUNT
+; Because KS_ALL_COUNT is negative, KUTTUKU_ALL_COUNT is never reset to 0
+; When a morth grabs onto Link, it checks if KUTTUKU_ALL_COUNT is zero, and sets some instance variable to true if it is
+; This seems to allow Link to roll the morth off, but because KUTTUKU_ALL_COUNT isn't reset to 0, this flag stops getting set properly
+; In SD, the morth's REL is reloaded after each loading trigger (which happens to reset the counter), but HD does not reload the code so the issue manifests
+.org 0x021A9F04 ; in daKS_Delete
+  b check_should_decrement_morth_counter
+.org @NextFreeSpace
+.global check_should_decrement_morth_counter
+check_should_decrement_morth_counter:
+  lbz r3, 0xD(r31) ; Get the create status of the morth
+  cmpwi r3, 0x2 ; Status 0x2 is cPhs_NEXT_e (set for morths that are fully created, no errors)
+  beq decrement_morth_counter
+
+  ; Morth was not fully created, skip decrementing
+  b 0x021A9F30
+
+  ; Morth was fully created
+decrement_morth_counter:
+  subic. r11, r11, 0x1
+  b 0x021A9F08
