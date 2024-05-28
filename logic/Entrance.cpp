@@ -9,12 +9,14 @@ Entrance::Entrance(Area* parentArea_, Area* connectedArea_, World* world_) :
     parentArea(parentArea_),
     connectedArea(connectedArea_),
     originalConnectedArea(connectedArea_),
-    requirement(RequirementType::NOTHING, {}),
     alreadySetOriginalConnectedArea(true),
     world(world_)
 {
     worldId = world->getWorldId();
     setOriginalName();
+    requirement = Requirement();
+    requirement.type = RequirementType::NOTHING;
+    requirement.args = {};
 }
 
 Area* Entrance::getParentArea() const
