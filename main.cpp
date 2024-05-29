@@ -15,12 +15,12 @@
     #include <randomizer.hpp>
 
     static void clearOldLogs() {
-        if(std::filesystem::is_regular_file(DebugLog::LOG_PATH)) {
-            std::filesystem::remove(DebugLog::LOG_PATH);
+        if(std::filesystem::is_regular_file(Utility::get_app_save_path() + "Debug Log.txt")) {
+            std::filesystem::remove(Utility::get_app_save_path() + "Debug Log.txt");
         }
 
-        if(std::filesystem::is_regular_file(ErrorLog::LOG_PATH)) {
-            std::filesystem::remove(ErrorLog::LOG_PATH);
+        if(std::filesystem::is_regular_file(Utility::get_app_save_path() + "Error Log.txt")) {
+            std::filesystem::remove(Utility::get_app_save_path() + "Error Log.txt");
         }
 
         return;
