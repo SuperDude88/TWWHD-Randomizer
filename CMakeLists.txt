@@ -16,6 +16,9 @@ else()
 
   if(APPLE)
     add_compile_options(-fexperimental-library)
+    if(MAC_APP_DIRS)
+      add_compile_definitions(MAC_APP_DIRS)
+    endif()
   endif()
 
   if(NOT DEFINED EMBED_DATA)

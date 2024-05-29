@@ -313,7 +313,7 @@ int mainRandomize() {
 
     Config load;
     // Create default configs/preferences if they don't exist
-    ConfigError err = Config::writeDefault(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
+    ConfigError err = Config::writeDefault(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml");
     if(err != ConfigError::NONE) {
         ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
         return 1;
@@ -321,9 +321,9 @@ int mainRandomize() {
 
     Utility::platformLog("Reading config");
     #ifdef DEVKITPRO
-        err = load.loadFromFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml", true); // ignore errors on console (always attempt to convert)
+        err = load.loadFromFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml", true); // ignore errors on console (always attempt to convert)
     #else
-        err = load.loadFromFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
+        err = load.loadFromFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml");
     #endif
     if(err != ConfigError::NONE && err != ConfigError::DIFFERENT_RANDO_VERSION) {
         ErrorLog::getInstance().log("Failed to read config, error: " + errorToName(err));
