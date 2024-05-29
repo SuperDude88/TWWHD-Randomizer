@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -1147,6 +1147,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_hcs">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
@@ -1173,6 +1179,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_pohs">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>44</number>
                 </property>
@@ -1213,6 +1225,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_red_chu_jellys">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>15</number>
                 </property>
@@ -1220,6 +1238,12 @@
               </item>
               <item>
                <widget class="QLabel" name="label_for_starting_green_chu_jellys">
+                <property name="minimumSize">
+                 <size>
+                  <width>89</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Green Chu Jellys</string>
                 </property>
@@ -1227,6 +1251,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_green_chu_jellys">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>15</number>
                 </property>
@@ -1241,6 +1271,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_blue_chu_jellys">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>15</number>
                 </property>
@@ -1272,6 +1308,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_joy_pendants">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>40</number>
                 </property>
@@ -1286,6 +1328,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_golden_feathers">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>20</number>
                 </property>
@@ -1300,6 +1348,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_skull_necklaces">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>23</number>
                 </property>
@@ -1314,6 +1368,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="starting_boko_baba_seeds">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>10</number>
                 </property>
@@ -1321,13 +1381,28 @@
               </item>
               <item>
                <widget class="QLabel" name="label_for_starting_knights_crests">
+                <property name="minimumSize">
+                 <size>
+                  <width>78</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Knights Crests</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QSpinBox" name="starting_knights_crests">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximum">
                  <number>10</number>
                 </property>
