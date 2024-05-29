@@ -98,8 +98,13 @@ if(DEFINED QT_GUI)
 
   add_compile_definitions(QT_GUI)
 
+  # Set Icon on Mac (has to be done out here)
+  set(MACOSX_BUNDLE_ICON_FILE "app.icns")
+  set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/gui/app.icns")
+  set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
   if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(wwhd_rando main.cpp)
+    qt_add_executable(wwhd_rando MACOSX_BUNDLE main.cpp ${app_icon_macos})
   else()
     add_executable(wwhd_rando main.cpp)
   endif()
