@@ -50,9 +50,9 @@
 
 void delete_and_create_default_config()
 {
-    std::filesystem::remove(APP_SAVE_PATH "config.yaml");
+    std::filesystem::remove(Utility::get_app_save_path() +  "config.yaml");
 
-    ConfigError err = Config::writeDefault(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
+    ConfigError err = Config::writeDefault(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml");
     if(err != ConfigError::NONE) {
         QPointer<QMessageBox> messageBox = new QMessageBox();
         auto message = "Failed to create default configuration file\ncode " + std::to_string(static_cast<uint32_t>(err));
@@ -68,8 +68,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Check for existing config file
-    std::ifstream conf(APP_SAVE_PATH "config.yaml");
-    std::ifstream pref(APP_SAVE_PATH "preferences.yaml");
+    std::ifstream conf(Utility::get_app_save_path() +  "config.yaml");
+    std::ifstream pref(Utility::get_app_save_path() +  "preferences.yaml");
     if (!conf.is_open() || !pref.is_open())
     {
         // No config file, create default
@@ -122,7 +122,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // Write settings to file when user closes the program
-    ConfigError err = config.writeToFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
+    ConfigError err = config.writeToFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml");
     if (err != ConfigError:: NONE)
     {
         show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
@@ -149,7 +149,7 @@ void MainWindow::load_config_into_ui()
 {
     // Ignore errors and just load in whatever we can. The gui will write a proper config file
     // when the user begins randomization
-    ConfigError err = config.loadFromFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml", true);
+    ConfigError err = config.loadFromFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml", true);
     if (err != ConfigError::NONE)
     {
         show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
@@ -1091,7 +1091,7 @@ void MainWindow::on_randomize_button_clicked()
 
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    ConfigError err = config.writeToFile(APP_SAVE_PATH "config.yaml", APP_SAVE_PATH "preferences.yaml");
+    ConfigError err = config.writeToFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_app_save_path() +  "preferences.yaml");
     if(err != ConfigError::NONE) {
         show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
         return;

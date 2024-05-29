@@ -45,7 +45,7 @@ Config::Config() {
         /* out.gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500"; */
         /* out.outputDir = "storage_mlc01:/usr/title/00050000/10143599"; */
 
-        settings.plandomizerFile = APP_SAVE_PATH "plandomizer.yaml";
+        settings.plandomizerFile = Utility::get_app_save_path() +  "plandomizer.yaml";
     #endif
 }
 
@@ -87,7 +87,7 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         /* out.gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500"; */
         /* out.outputDir = "storage_mlc01:/usr/title/00050000/10143599"; */
 
-        settings.plandomizerFile = APP_SAVE_PATH "plandomizer.yaml";
+        settings.plandomizerFile = Utility::get_app_save_path() +  "plandomizer.yaml";
     #else
         std::string baseTemp, outTemp;
         GET_FIELD_NO_FAIL(preferencesRoot, "gameBaseDir", baseTemp)

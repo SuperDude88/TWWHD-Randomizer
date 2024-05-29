@@ -143,7 +143,7 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
         }
     #endif
 
-    if (!Utility::create_directories(LOGS_PATH)) {
+    if (!Utility::create_directories(Utility::get_logs_path())) {
         ErrorLog::getInstance().log("Failed to create logs folder");
         return false;
     }

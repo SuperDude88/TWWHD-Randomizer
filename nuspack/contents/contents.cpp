@@ -33,7 +33,7 @@ static char readBuffer[READ_BUFFER_SIZE];
 
 std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 {
-    const std::filesystem::path& tmpPath = std::filesystem::path(TEMP_DIR) / (Utility::Str::intToHex(id, 8, false) + ".dec");
+    const std::filesystem::path& tmpPath = std::filesystem::path(Utility::get_temp_dir()) / (Utility::Str::intToHex(id, 8, false) + ".dec");
     std::stringstream output;
     std::ofstream outFile;
 
@@ -119,7 +119,7 @@ void Content::PackContentToFile(const std::filesystem::path& outputDir, Encrypti
     //delete derypted file, we're done with it
     if(decryptedStream.index() == 1) {
         std::get<1>(decryptedStream).close();
-        std::filesystem::remove(std::filesystem::path(TEMP_DIR) / (Utility::Str::intToHex(id, 8, false) + ".dec"));
+        std::filesystem::remove(std::filesystem::path(Utility::get_temp_dir()) / (Utility::Str::intToHex(id, 8, false) + ".dec"));
     }
 }
 
