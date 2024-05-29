@@ -14,6 +14,10 @@ if(DEFINED DEVKITPRO)
 else()
   add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/" LOGS_PATH="./logs/")
 
+  if(APPLE)
+    add_compile_options(-fexperimental-library)
+  endif()
+
   if(NOT DEFINED EMBED_DATA)
     if(APPLE)
       add_compile_definitions(DATA_PATH="../../../data/")
