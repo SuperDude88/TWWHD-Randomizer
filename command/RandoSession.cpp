@@ -669,7 +669,7 @@ bool RandoSession::runFirstTimeSetup() {
         std::filesystem::copy(baseDir / "content", outputDir / "content", std::filesystem::copy_options::recursive);
         std::filesystem::copy(baseDir / "meta", outputDir / "meta", std::filesystem::copy_options::recursive);
     #endif
-
+    setFirstTimeSetup(false);
     return true;
 }
 
