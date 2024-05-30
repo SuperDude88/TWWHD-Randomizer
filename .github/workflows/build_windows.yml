@@ -1,23 +1,28 @@
 name: Build - Windows
 
 on:
-  - workflow_dispatch
-  - workflow_call:
-      inputs:
-        version:
-          description: 'Version'
-          default: ''
-          required: false
-          type: string
-        build_type:
-          description: 'Build Type'
-          default: "Debug"
-          required: false
-          type: string
-      secrets:
-        SEED_KEY:
-          description: 'Key used to complicate the seed string in release builds'
-          required: false
+  workflow_dispatch:
+    build_type:
+    description: 'Build Type'
+    default: "Debug"
+    required: false
+    type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version'
+        default: ''
+        required: false
+        type: string
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+    secrets:
+      SEED_KEY:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
 
 env:
   QT_VERSION: 6.7.1
