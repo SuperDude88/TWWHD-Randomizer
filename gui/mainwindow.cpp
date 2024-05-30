@@ -741,40 +741,32 @@ void MainWindow::on_remove_swords_stateChanged(int arg1)
     auto randomizedGear = randomizedGearModel->stringList();
     auto startingGear = startingGearModel->stringList();
 
-    int numSwordsInGearMenus = randomizedGear.filter("Progressive Sword").size() + startingGear.filter("Progressive Sword").size();
+    // Remove all swords
+    randomizedGear.removeAll("Progressive Sword");
+    startingGear.removeAll("Progressive Sword");
+    
+    // Also make sure the hurricane spin is removed with swords
+    randomizedGear.removeAll("Hurricane Spin");
+    startingGear.removeAll("Hurricane Spin");
 
-    // Remove all swords if necessary
-    if (config.settings.remove_swords)
-    {
-        randomizedGear.removeAll("Progressive Sword");
-        startingGear.removeAll("Progressive Sword");
-        
-        // Also make sure the hurricane spin is removed with swords
-        randomizedGear.removeAll("Hurricane Spin");
-        startingGear.removeAll("Hurricane Spin");
-    }
     // If the player disabled the option to remove swords
-    else {
-        // Add swords to the randomized gear until there are 4
-        while (numSwordsInGearMenus < 4)
+    if (!config.remove_swords) {
+        // Add swords back to the randomized and starting gear
+        for (int i = 0; i < 3; i++)
         {
             randomizedGear.append("Progressive Sword");
-            numSwordsInGearMenus++;
         }
+        startingGear.append("Progressive Sword");
 
-        // Replace hurricane spin if we're including swords
-        if (randomizedGear.filter("Hurricane Spin").size() + startingGear.filter("Hurricane Spin").size() == 0)
-        {
-            randomizedGear.append("Hurricane Spin");
-        }
+        // Add back Hurricane Spin
+        randomizedGear.append("Hurricane Spin");
     }
 
     startingGear.sort();
     randomizedGear.sort();
     randomizedGearModel->setStringList(randomizedGear);
     startingGearModel->setStringList(startingGear);
-
-    update_permalink_and_seed_hash();
+    update_starting_gear();
 }
 
 DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
