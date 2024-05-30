@@ -5,6 +5,7 @@
 
 #include <version.hpp>
 #include <utility/platform.hpp>
+#include <utility/path.hpp>
 #include <platform/proc.hpp>
 #include <platform/home.hpp>
 #include <platform/energy_saver.hpp>
