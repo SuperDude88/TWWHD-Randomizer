@@ -2,11 +2,12 @@ name: Build - Windows
 
 on:
   workflow_dispatch:
-    build_type:
-      description: 'Build Type'
-      default: "Debug"
-      required: false
-      type: string
+    inputs:
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
   workflow_call:
     inputs:
       version:
