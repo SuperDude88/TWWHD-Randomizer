@@ -36,11 +36,25 @@ void BasicButton::drawDRC() const {
 
 
 bool ItemButton::operator==(const ItemButton& rhs) const {
-    return gameItemToName(item) == gameItemToName(rhs.item);
+    return item == rhs.item && num == rhs.num;
 }
 
 bool ItemButton::operator==(const GameItem& rhs) const {
-    return gameItemToName(item) == gameItemToName(rhs);
+    return item == rhs;
+}
+
+bool ItemButton::operator<(const ItemButton& rhs) const {
+    // first check alphabetical ordering
+    if(gameItemToName(item) < gameItemToName(rhs.item)) {
+        return true;
+    }
+
+    // if the items are the same, then check number of duplicates required
+    if(item == rhs.item && num < rhs.num) {
+        return true;
+    }
+
+    return false; // was later in the alphabet or required more duplicates
 }
 
 bool ItemButton::update() {
