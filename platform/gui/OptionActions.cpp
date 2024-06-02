@@ -436,6 +436,7 @@ namespace OptionCB {
 
         if(conf.settings.remove_swords) {
             std::erase(conf.settings.starting_gear, GameItem::ProgressiveSword); // can't start with swords if we're removing them
+            std::erase(conf.settings.starting_gear, GameItem::HurricaneSpin); // also take out hurricane spin if necessary
         }
         else {
             addStartingItem(GameItem::ProgressiveSword); // start with 1 sword by default

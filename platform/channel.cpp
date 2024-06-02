@@ -205,7 +205,7 @@ static bool installFreeChannel(const std::filesystem::path& relPath, const MCPIn
                         //
                         //messageBox->setProgress(percent);
                         //messageBox->setProgressBarInfo(message);
-                        Utility::platformLog("Channel " + std::to_string(percent) + "%% installed");
+                        Utility::platformLog("Channel " + std::to_string(percent) + "% installed");
                     }
                     
                     std::this_thread::sleep_for(500ms);

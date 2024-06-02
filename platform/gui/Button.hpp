@@ -69,6 +69,7 @@ public:
 
     bool operator==(const ItemButton& rhs) const;
     bool operator==(const GameItem& rhs) const;
+    bool operator<(const ItemButton& rhs) const;
 
     // checks the current state in the config
     // we can't use this to update buttons because you could enable the second instance before the first, and the first would appear selected instead since the count is only 1
