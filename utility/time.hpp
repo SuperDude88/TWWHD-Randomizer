@@ -54,18 +54,13 @@ public:
 
 class ProgramTime {
 private:
-//gcc __cpp_lib_chrono is 201611L despite having time zones? (https://en.cppreference.com/w/cpp/feature_test#Library_features)
-//just check for <format> since that's the only error I've been getting
-#if __has_include(<format>) && !defined(__APPLE__)
-    using TimePoint_t = std::chrono::zoned_time<std::chrono::system_clock::duration>;
-    #define USE_CXX_20_TIME
-#else
-    using TimePoint_t = std::chrono::system_clock::time_point;
-#endif
+    using Clock_t = std::chrono::system_clock;
+    using TimePoint_t = Clock_t::time_point;
+    using Duration_t = Clock_t::duration;
 
     const TimePoint_t openTime;
     static TimePoint_t getOpenedTime();
-    static TimePoint_t::duration getElapsedTime();
+    static Duration_t getElapsedTime();
 
     ProgramTime();
     ~ProgramTime() = default;

@@ -1,13 +1,10 @@
 #include "time.hpp"
 
-
 using namespace std::chrono;
 using namespace std::literals::chrono_literals;
 
-
-
 ProgramTime::ProgramTime() :
-    openTime(system_clock::now())
+    openTime(Clock_t::now())
 {}
 
 ProgramTime& ProgramTime::getInstance() {
@@ -19,16 +16,15 @@ ProgramTime::TimePoint_t ProgramTime::getOpenedTime() {
     return getInstance().openTime;
 }
 
-#ifdef USE_CXX_20_TIME
+ProgramTime::Duration_t ProgramTime::getElapsedTime() {
+    return Clock_t::now() - getOpenedTime();
+}
+
+#if __has_include(<format>)
     #include <format>
 
-    ProgramTime::TimePoint_t::duration ProgramTime::getElapsedTime() {
-        return system_clock::now() - getOpenedTime().get_sys_time();
-    }
-
     std::string ProgramTime::getDateStr() {
-        const zoned_time opened(current_zone(), getOpenedTime());
-        return std::format("{0:%a %b %d %Y %I:%M:%S %p} {1:%Z%n}", round<seconds>(opened.get_local_time()), opened); //TODO: fix wii u timezone being wrong
+        return std::format("{0:%a, %b %d, %Y, %I:%M:%S %p%n}", round<seconds>(getOpenedTime()));
     }
 
     std::string ProgramTime::getTimeStr() {
@@ -38,12 +34,8 @@ ProgramTime::TimePoint_t ProgramTime::getOpenedTime() {
     #include <sstream>
     #include <mutex>
 
-    ProgramTime::TimePoint_t::duration ProgramTime::getElapsedTime() {
-        return system_clock::now() - getOpenedTime();
-    }
-
     std::string ProgramTime::getDateStr() {
-        const time_t point = system_clock::to_time_t(ProgramTime::getOpenedTime());
+        const time_t point = Clock_t::to_time_t(ProgramTime::getOpenedTime());
 
         static std::mutex localtimeMut; //std::ctime is not thread safe
         std::unique_lock<std::mutex> lock(localtimeMut);
@@ -51,9 +43,9 @@ ProgramTime::TimePoint_t ProgramTime::getOpenedTime() {
     }
 
     std::string ProgramTime::getTimeStr() {
-        TimePoint_t::duration duration = getElapsedTime();
+        Duration_t duration = getElapsedTime();
         std::stringstream ret;
-        ret <<  std::setfill('0');
+        ret << std::setfill('0');
 
         const hours hr = duration_cast<hours>(duration);
         ret << std::setw(2) << hr.count() << ":";

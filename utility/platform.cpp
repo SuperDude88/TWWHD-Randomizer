@@ -50,7 +50,7 @@ bool initMocha()
         return false;
     }
 
-    Utility::platformLog("Mocha initialized, storage mounted");
+    Utility::platformLog("Mocha initialized");
     return true;
 }
 
