@@ -5,6 +5,7 @@
 #include <list>
 
 #include <seedgen/config.hpp>
+#include <utility/path.hpp>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
@@ -41,7 +42,7 @@ private:
     ErrorLog();
     ~ErrorLog();
 public:
-    static inline const std::string LOG_PATH = APP_SAVE_PATH "Error Log.txt";
+    const std::string LOG_PATH = Utility::get_app_save_path() + "Error Log.txt";
 
     ErrorLog(const ErrorLog&) = delete;
     ErrorLog& operator=(const ErrorLog&) = delete;
@@ -83,7 +84,7 @@ private:
     DebugLog();
     ~DebugLog();
 public:
-    static inline const std::string LOG_PATH = APP_SAVE_PATH "Debug Log.txt";
+    const std::string LOG_PATH = Utility::get_app_save_path() + "Debug Log.txt";
 
     DebugLog(const DebugLog&) = delete;
     DebugLog& operator=(const DebugLog&) = delete;

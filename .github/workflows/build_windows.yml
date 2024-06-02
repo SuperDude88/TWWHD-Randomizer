@@ -1,6 +1,13 @@
 name: Build - Windows
 
-on: 
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
   workflow_call:
     inputs:
       version:
@@ -19,7 +26,7 @@ on:
         required: false
 
 env:
-  QT_VERSION: 6.3.1
+  QT_VERSION: 6.7.1
   EXTRA_CMAKE_FLAGS: ""
 
 jobs:
@@ -43,7 +50,7 @@ jobs:
           submodules: recursive
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
           host: 'windows'
@@ -59,7 +66,7 @@ jobs:
 
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
-        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DENABLE_DEBUG=True" >> $GITHUB_ENV
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }}" >> $GITHUB_ENV
 
       - name: Set Release Flags
         if: inputs.build_type == 'Release' && inputs.version != ''

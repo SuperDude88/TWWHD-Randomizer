@@ -121,7 +121,7 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     outputDir = randoOutputDir;
 
     // Only require input and output paths if we're actually patching
-    #if !defined(FILL_TESTING) && !defined(MASS_TESTING)
+    #if !defined(DRY_RUN) && !defined(LOGIC_TESTS)
         if(baseDir.empty()) {
             ErrorLog::getInstance().log("No input path specified!");
             return false;
@@ -142,6 +142,11 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
             return false;
         }
     #endif
+
+    if (!Utility::create_directories(Utility::get_logs_path())) {
+        ErrorLog::getInstance().log("Failed to create logs folder");
+        return false;
+    }
 
     clearCache();
     initialized = true;
@@ -664,7 +669,7 @@ bool RandoSession::runFirstTimeSetup() {
         std::filesystem::copy(baseDir / "content", outputDir / "content", std::filesystem::copy_options::recursive);
         std::filesystem::copy(baseDir / "meta", outputDir / "meta", std::filesystem::copy_options::recursive);
     #endif
-
+    setFirstTimeSetup(false);
     return true;
 }
 

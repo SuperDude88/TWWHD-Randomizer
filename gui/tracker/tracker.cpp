@@ -244,7 +244,7 @@ void MainWindow::autosave_current_tracker()
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = trackerConfig.writeToFile(APP_SAVE_PATH "tracker_autosave.yaml", APP_SAVE_PATH "autosave_preferences.yaml");
+    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_app_save_path() +  "autosave_preferences.yaml");
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + errorToName(configErr));
@@ -253,7 +253,7 @@ void MainWindow::autosave_current_tracker()
 
     // Read it back and add extra tracker data
     std::string autosave;
-    Utility::getFileContents(APP_SAVE_PATH "tracker_autosave.yaml", autosave);
+    Utility::getFileContents(Utility::get_app_save_path() +  "tracker_autosave.yaml", autosave);
     YAML::Node root = YAML::Load(autosave);
 
     // Save which locations have been marked
@@ -287,7 +287,7 @@ void MainWindow::autosave_current_tracker()
         root["connected_entrances"][entrance->getOriginalName()] = target->getReplaces()->getOriginalName();
     }
 
-    std::ofstream f(APP_SAVE_PATH "tracker_autosave.yaml");
+    std::ofstream f(Utility::get_app_save_path() +  "tracker_autosave.yaml");
     if (f.is_open() == false)
     {
         show_error_dialog("Failed to open tracker_autosave.yaml");
@@ -299,14 +299,14 @@ void MainWindow::autosave_current_tracker()
 
 void MainWindow::load_tracker_autosave()
 {
-    if (!std::filesystem::exists(APP_SAVE_PATH "tracker_autosave.yaml") || !std::filesystem::exists(APP_SAVE_PATH "autosave_preferences.yaml"))
+    if (!std::filesystem::exists(Utility::get_app_save_path() +  "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_app_save_path() +  "autosave_preferences.yaml"))
     {
         // No autosave file, don't try to do anything
         return;
     }
 
     Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(APP_SAVE_PATH "tracker_autosave.yaml", APP_SAVE_PATH "autosave_preferences.yaml", true);
+    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_app_save_path() +  "autosave_preferences.yaml", true);
     if (configErr != ConfigError::NONE)
     {
         show_warning_dialog("Could not load tracker autosave config\nError: " + errorToName(configErr));
@@ -314,7 +314,7 @@ void MainWindow::load_tracker_autosave()
     }
 
     std::string autosave;
-    Utility::getFileContents(APP_SAVE_PATH "tracker_autosave.yaml", autosave);
+    Utility::getFileContents(Utility::get_app_save_path() +  "tracker_autosave.yaml", autosave);
     YAML::Node root = YAML::Load(autosave);
 
     // Load marked locations

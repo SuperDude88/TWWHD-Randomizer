@@ -8,11 +8,18 @@ project(wwhd_rando VERSION 0.1 LANGUAGES C CXX) # not sure how to handle this ve
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 if(DEFINED DEVKITPRO)
-  add_compile_definitions(DEVKITPRO DATA_PATH="/vol/content/" APP_SAVE_PATH="/vol/save/" TEMP_DIR="/vol/save/temp/")
+  add_compile_definitions(DEVKITPRO DATA_PATH="/vol/content/" APP_SAVE_PATH="/vol/save/" TEMP_DIR="/vol/save/temp/" LOGS_PATH="/vol/save/logs/")
   add_compile_options(-Ofast -mcpu=750 -meabi -mhard-float -ffunction-sections -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
 else()
-  add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/")
+  add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/" LOGS_PATH="./logs/")
+
+  if(APPLE)
+    add_compile_options(-fexperimental-library)
+    if(MAC_APP_DIRS)
+      add_compile_definitions(MAC_APP_DIRS)
+    endif()
+  endif()
 
   if(NOT DEFINED EMBED_DATA)
     if(APPLE)
@@ -36,14 +43,16 @@ if(ENABLE_TIMING)
   add_compile_definitions(ENABLE_TIMING)
 endif()
 
-if(FILL_TESTING)
-  message("Configuring for Fill Testing")
+if(DRY_RUN)
+  message("Game patching will be skipped")
 
-  add_compile_definitions(FILL_TESTING)
-elseif(MASS_TESTING)
-  message("Configuring for Mass Testing")
+  add_compile_definitions(DRY_RUN)
+endif()
 
-  add_compile_definitions(MASS_TESTING)
+if(LOGIC_TESTS)
+  message("Configuring for Logic Tests")
+
+  add_compile_definitions(LOGIC_TESTS)
 
   if(TEST_COUNT)
     message("Test Count: " ${TEST_COUNT})
@@ -74,14 +83,6 @@ configure_file(keys/keys.hpp.in keys/keys.hpp @ONLY)
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
 
-if(GET_THREADS)
-  find_package(Threads REQUIRED)
-
-  if(CMAKE_USE_PTHREADS_INIT)
-    target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
-  endif()
-endif()
-
 # Put data files together for easier manipulation
 file(COPY "asm/custom_symbols.yaml" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                    # Custom symbols for inserted code
 file(COPY "asm/patch_diffs" DESTINATION "${CMAKE_BINARY_DIR}/data/asm")                            # Diffs for precompiled ASM patches
@@ -97,8 +98,13 @@ if(DEFINED QT_GUI)
 
   add_compile_definitions(QT_GUI)
 
+  # Set Icon on Mac (has to be done out here)
+  set(MACOSX_BUNDLE_ICON_FILE "app.icns")
+  set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/gui/app.icns")
+  set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
   if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(wwhd_rando main.cpp)
+    qt_add_executable(wwhd_rando MACOSX_BUNDLE main.cpp ${app_icon_macos})
   else()
     add_executable(wwhd_rando main.cpp)
   endif()
@@ -106,6 +112,14 @@ if(DEFINED QT_GUI)
   add_subdirectory("gui")
 else()
   add_executable(wwhd_rando main.cpp)
+endif()
+
+if(GET_THREADS)
+  find_package(Threads REQUIRED)
+
+  if(CMAKE_USE_PTHREADS_INIT)
+    target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
+  endif()
 endif()
 
 target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
