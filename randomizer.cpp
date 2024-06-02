@@ -42,9 +42,9 @@ private:
     size_t integer_seed;
 
     #ifdef DRY_RUN
-        bool dryRun = true;
+        const bool dryRun = true;
     #else
-        bool dryRun = false;
+        const bool dryRun = false;
     #endif
     //bool randomizeItems = true; not currently used
     unsigned int numPlayers = 1;
@@ -168,11 +168,14 @@ public:
             return 0;
         #endif
         
-        if(!g_session.init(config.gameBaseDir, config.outputDir)) {
-            ErrorLog::getInstance().log("Failed to initialize session");
-            return 1;
+        // Only set up the session if we actually need it
+        if(!dryRun) {
+            if(!g_session.init(config.gameBaseDir, config.outputDir)) {
+                ErrorLog::getInstance().log("Failed to initialize session");
+                return 1;
+            }
+            Utility::platformLog("Initialized session");
         }
-        Utility::platformLog("Initialized session");
 
         LogInfo::setConfig(config);
 
@@ -310,6 +313,12 @@ int mainRandomize() {
     #ifdef ENABLE_TIMING
         ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
     #endif
+    
+    // Make sure we have a logs folder
+    if (!Utility::create_directories(Utility::get_logs_path())) {
+        ErrorLog::getInstance().log("Failed to create logs folder");
+        return 1;
+    }
 
     Config load;
     // Create default configs/preferences if they don't exist

@@ -120,31 +120,23 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     baseDir = gameBaseDir;
     outputDir = randoOutputDir;
 
-    // Only require input and output paths if we're actually patching
-    #if !defined(DRY_RUN) && !defined(LOGIC_TESTS)
-        if(baseDir.empty()) {
-            ErrorLog::getInstance().log("No input path specified!");
-            return false;
-        }
+    if(baseDir.empty()) {
+        ErrorLog::getInstance().log("No input path specified!");
+        return false;
+    }
 
-        if(outputDir.empty()) {
-            ErrorLog::getInstance().log("No output path specified!");
-            return false;
-        }
+    if(outputDir.empty()) {
+        ErrorLog::getInstance().log("No output path specified!");
+        return false;
+    }
 
-        if(baseDir == outputDir) {
-            ErrorLog::getInstance().log("Output dir can not be the same as input dir!");
-            return false;
-        }
+    if(baseDir == outputDir) {
+        ErrorLog::getInstance().log("Output dir can not be the same as input dir!");
+        return false;
+    }
 
-        if(!Utility::create_directories(outputDir)) { // handles directories that already exist
-            ErrorLog::getInstance().log("Failed to create output folder " + outputDir.string());
-            return false;
-        }
-    #endif
-
-    if (!Utility::create_directories(Utility::get_logs_path())) {
-        ErrorLog::getInstance().log("Failed to create logs folder");
+    if(!Utility::create_directories(outputDir)) { // handles directories that already exist
+        ErrorLog::getInstance().log("Failed to create output folder " + outputDir.string());
         return false;
     }
 
@@ -652,8 +644,8 @@ static bool iterate_directory_recursive(RandoSession& session, const std::filesy
 #endif
 
 bool RandoSession::runFirstTimeSetup() {
-    //create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
     #ifdef DEVKITPRO
+        // create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
         Utility::platformLog("Running first time setup (this will increase repack time)");
         if(!iterate_directory_recursive(*this, baseDir / "content")) { //code and meta folders are handled by channel install
             return false; 
@@ -669,7 +661,9 @@ bool RandoSession::runFirstTimeSetup() {
         std::filesystem::copy(baseDir / "content", outputDir / "content", std::filesystem::copy_options::recursive);
         std::filesystem::copy(baseDir / "meta", outputDir / "meta", std::filesystem::copy_options::recursive);
     #endif
+
     setFirstTimeSetup(false);
+
     return true;
 }
 
