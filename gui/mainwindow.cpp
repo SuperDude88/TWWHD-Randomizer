@@ -750,7 +750,7 @@ void MainWindow::on_remove_swords_stateChanged(int arg1)
     startingGear.removeAll("Hurricane Spin");
 
     // If the player disabled the option to remove swords
-    if (!config.remove_swords) {
+    if (!config.settings.remove_swords) {
         // Add swords back to the randomized and starting gear
         for (int i = 0; i < 3; i++)
         {
