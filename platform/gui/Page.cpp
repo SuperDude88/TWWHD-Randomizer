@@ -800,21 +800,22 @@ void ItemsPage::open() {
     if(getValue(Option::RemoveSwords) == "Disabled") { 
         // only add swords if they aren't already there
         if(std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword) == listButtons.end()) {
-            auto it = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveWallet); // sword is before wallet in the alphabet
-            if(it != listButtons.end()) { // should always be true
-                for(size_t count = 1; count <= 4; count++) {
-                    it = listButtons.insert(it, {GameItem::ProgressiveSword, count}); // add 4 swords
-                    it++;
-                }
+            for(size_t count = 1; count <= 4; count++) {
+                listButtons.emplace_back(GameItem::ProgressiveSword, count); // add 4 swords
             }
+        }
+        // do the same for hurricane spin
+        if(std::find(listButtons.begin(), listButtons.end(), GameItem::HurricaneSpin) == listButtons.end()) {
+            listButtons.emplace_back(GameItem::HurricaneSpin); // add hurricane spin
         }
     }
     else {
-        const auto firstIt = std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword);
-        if(firstIt != listButtons.end()) {
-            listButtons.erase(firstIt, firstIt + 4); // would have 4 swords to remove
-        }
+        std::erase(listButtons, GameItem::ProgressiveSword); // erase all swords
+        std::erase(listButtons, GameItem::HurricaneSpin); // erase hurricane spin
     }
+    
+    // make sure our buttons are in order
+    std::sort(listButtons.begin(), listButtons.end());
 
     // load the items currently set in the config
     for(ItemButton& button : listButtons) {
