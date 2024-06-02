@@ -65,7 +65,7 @@ jobs:
 
       - name: Build
         working-directory: ${{ github.workspace }}
-        run: cmake --build build --config Release -j
+        run: cmake --build build --config ${{ inputs.build_type }} -j
 
       - name: Call macdeployqt
         working-directory: ${{ github.workspace }}/build
