@@ -8,23 +8,10 @@
     #include <gui/mainwindow.hpp>
 #else
     #include <thread>
-    #include <filesystem>
 
     #include <utility/platform.hpp>
     #include <command/Log.hpp>
     #include <randomizer.hpp>
-
-    static void clearOldLogs() {
-        if(std::filesystem::is_regular_file(Utility::get_app_save_path() + "Debug Log.txt")) {
-            std::filesystem::remove(Utility::get_app_save_path() + "Debug Log.txt");
-        }
-
-        if(std::filesystem::is_regular_file(Utility::get_app_save_path() + "Error Log.txt")) {
-            std::filesystem::remove(Utility::get_app_save_path() + "Error Log.txt");
-        }
-
-        return;
-    }
 #endif
 
 int main(int argc, char *argv[]) {
@@ -43,8 +30,6 @@ int main(int argc, char *argv[]) {
     return a.exec();
 #else
     using namespace std::literals::chrono_literals;
-
-    clearOldLogs(); // clear these when a console/CLI instance is opened (GUI handles this differently)
 
     if(Utility::platformInit()) {
         int retVal = mainRandomize();
