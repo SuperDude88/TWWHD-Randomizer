@@ -1,6 +1,13 @@
 name: Build - Wii U
 
 on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
   workflow_call:
     inputs:
       version:
