@@ -652,7 +652,7 @@ bool RandoSession::runFirstTimeSetup() {
         }
     #else
         #ifdef ENABLE_TIMING
-            ScopedTimer<std::chrono::high_resolution_clock, "Copying dump took "> copyTimer;
+            ScopedTimer<"Copying dump took "> copyTimer;
         #endif
  
         Utility::platformLog("Copying dump to output...");
@@ -670,7 +670,7 @@ bool RandoSession::runFirstTimeSetup() {
 bool RandoSession::modFiles()
 {
     #ifdef ENABLE_TIMING
-        ScopedTimer<std::chrono::high_resolution_clock, "Repacking took "> timer;
+        ScopedTimer<"Repacking took "> timer;
     #endif
 
     CHECK_INITIALIZED(false);

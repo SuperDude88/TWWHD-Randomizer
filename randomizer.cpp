@@ -311,7 +311,7 @@ public:
 
 int mainRandomize() {
     #ifdef ENABLE_TIMING
-        ScopedTimer<std::chrono::high_resolution_clock, "Total process took "> timer;
+        ScopedTimer<"Total process took "> timer;
     #endif
     
     // Make sure we have a logs folder

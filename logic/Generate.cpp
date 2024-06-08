@@ -26,7 +26,7 @@
 int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 {
   #ifdef ENABLE_TIMING
-      ScopedTimer<std::chrono::high_resolution_clock, "Building and Filling took "> timer;
+      ScopedTimer<"Building and Filling took ", std::chrono::milliseconds> timer;
   #endif
   // Build worlds on a per-world basis incase we ever support different world graphs
   // per player

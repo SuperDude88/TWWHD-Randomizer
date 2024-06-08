@@ -5,7 +5,11 @@
 #include <utility/string.hpp>
 #include <utility/platform.hpp>
 
-template<typename Clock, Utility::Str::StringLiteral Message = "Process took ">
+template<typename T>
+concept DurationType = std::same_as<T, std::chrono::duration<typename T::rep, typename T::period>>;
+
+template<Utility::Str::StringLiteral Message = "Process took ", typename Units = std::chrono::seconds, typename Clock = std::chrono::high_resolution_clock>
+requires DurationType<Units> && std::chrono::is_clock_v<Clock>
 class Timer {
 public:
     typename Clock::duration getElapsed() const {
@@ -27,28 +31,30 @@ protected:
     }
     
     void print() const {
-        const std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+        std::stringstream message;
+        message << stem << (stem.back() == ' ' ? "" : " ") << std::chrono::duration_cast<Units>(duration);
 
-        Utility::platformLog(std::string(msg) + (msg.back() == ' ' ? "" : " ") + std::to_string(seconds.count()) + " seconds");
-        LOG_TO_DEBUG(std::string(msg) + (msg.back() == ' ' ? "" : " ") + std::to_string(seconds.count()) + " seconds\n");
+        Utility::platformLog(message.str());
+        LOG_TO_DEBUG(message.str() + '\n');
     }
 
 private:
     typename Clock::duration duration;
 
-    static constexpr std::string_view msg = Message;
+    static constexpr std::string_view stem = Message;
 };
 
-template<typename Clock, Utility::Str::StringLiteral Message = "Process took ">
-class ScopedTimer : public Timer<Clock, Message> {
+template<Utility::Str::StringLiteral Message = "Process took ", typename Units = std::chrono::seconds, typename Clock = std::chrono::high_resolution_clock>
+requires DurationType<Units> && std::chrono::is_clock_v<Clock>
+class ScopedTimer : public Timer<Message, Units, Clock> {
 public:
     ScopedTimer() {
-        Timer<Clock, Message>::start();
+        Timer<Message, Units, Clock>::start();
     }
 
     ~ScopedTimer() {
-        Timer<Clock, Message>::stop();
-        Timer<Clock, Message>::print();
+        Timer<Message, Units, Clock>::stop();
+        Timer<Message, Units, Clock>::print();
     }
 };
 

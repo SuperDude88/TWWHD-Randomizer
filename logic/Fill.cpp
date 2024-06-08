@@ -698,7 +698,7 @@ FillError fill(WorldPool& worlds)
 {
     // Time how long the fill takes
     #ifdef ENABLE_TIMING
-        ScopedTimer<std::chrono::high_resolution_clock, "Fill took "> timer;
+        ScopedTimer<"Fill took ", std::chrono::milliseconds> timer;
     #endif
     FillError err;
     ItemPool itemPool;
