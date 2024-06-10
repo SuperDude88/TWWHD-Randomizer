@@ -9,7 +9,7 @@ template<typename T>
 concept DurationType = std::same_as<T, std::chrono::duration<typename T::rep, typename T::period>>;
 
 template<Utility::Str::StringLiteral Message = "Process took ", typename Units = std::chrono::seconds, typename Clock = std::chrono::high_resolution_clock>
-requires DurationType<Units> && std::chrono::is_clock_v<Clock>
+requires DurationType<Units>
 class Timer {
 public:
     typename Clock::duration getElapsed() const {
@@ -45,7 +45,7 @@ private:
 };
 
 template<Utility::Str::StringLiteral Message = "Process took ", typename Units = std::chrono::seconds, typename Clock = std::chrono::high_resolution_clock>
-requires DurationType<Units> && std::chrono::is_clock_v<Clock>
+requires DurationType<Units>
 class ScopedTimer : public Timer<Message, Units, Clock> {
 public:
     ScopedTimer() {
