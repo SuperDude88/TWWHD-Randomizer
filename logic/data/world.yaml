@@ -1,0 +1,3174 @@
+# This file contains the listings for each predefined logical area. Areas can contain
+# Events, Locations, and Exits.
+#
+# Events are logic variables which become true when their requirement string evaluates
+# to true and are surrounded with single quotes when used in other logic statements
+# (unlike macros which are defined in macros.yaml). It's possible to add new events
+# to the logic simply by defining them in an area and then using them in whichever
+# logic statements you wish. No modifications to the code are necessary.
+#
+# Locations are places which can contain randomized items. Adding new locations
+# here will require adding them in location_data.yaml as well.
+#
+# Exits define how the areas of the world graph connect to each other. Each exit
+# is a one way connection, so when making new areas remember to define the exit
+# connections both ways if applicable. New areas can be defined without having to
+# modify the code.
+#
+# Each dungeon in the world graph is at least defined on a room by room basis
+# (although in many cases rooms are split up into multiple parts). This is to
+# help simplify glitched logic should anybody ever want to write it, and if
+# anybody ever wants to go to the effort of splicing dungeon rooms together,
+# that's logically supported as well.
+#
+# The following logical operators/functions are available for logic statements:
+# - and
+# - or
+# - not
+# - count(<number>, <item>)
+# - can_access(<area name>)
+
+- Name: Root
+  Exits:
+      Link's Spawn: Nothing
+
+- Name: Link's Spawn
+  Exits:
+      Outset Island: Nothing
+
+- Name: Mailbox Checks
+  Hint Region: Mailbox
+  Locations:
+      Mailbox - Letter from Hoskit's Girlfriend: Can_Farm_Golden_Feathers and Can_Play_SoP and Spoils_Bag and can_access(Dragon Roost Rito Aerie)
+      Mailbox - Letter from Baito's Mother: Can_Play_SoP and Note_to_Mom and Delivery_Bag
+      Mailbox - Letter from Baito: Can_Defeat_Jalhalla and can_access(Jalhalla Battle Arena) and Note_to_Mom and Delivery_Bag
+      Mailbox - Letter from Komali's Father: Farores_Pearl
+      Mailbox - Letter Advertising Bombs: Bombs
+      Mailbox - Letter Advertising Rock Spire Shop Ship: Wallet_Upgrade
+      Mailbox - Beedle's Silver Membership Reward: Can_Play_SoP and (Bait_Bag or Bombs or Heros_Bow or Empty_Bottle)
+      Mailbox - Beedle's Gold Membership Reward: Can_Play_SoP and (Bait_Bag or Bombs or Heros_Bow or Empty_Bottle)
+      Mailbox - Letter from Orca: Can_Defeat_Kalle_Demos and can_access(Kalle Demos Battle Arena)
+      Mailbox - Letter from Grandma: Can_Play_SoP and can_access(Outset Link's House) and Empty_Bottle and 'Can_Get_Fairies'
+      Mailbox - Letter from Aryll: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP
+      Mailbox - Letter from Tingle: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP and 'RescuedTingle'
+
+- Name: The Great Sea
+  Hint Region: The Great Sea
+  Locations:
+      Great Sea - Salvage Corp Gift: Can_Sail_Away
+      Great Sea - Cyclos: Can_Sail_Away and Heros_Bow
+      Great Sea - Goron Trading Reward: Can_Trade_With_All_Gorons and Rescued_Aryll and Delivery_Bag
+      Great Sea - Withered Trees:
+          Can_Play_BoG and Empty_Bottle and can_access(Forest Haven Interior)
+          and can_access(Star Island) and can_access(Mother & Child Isles) and can_access(Eastern Fairy Island)
+          and can_access(Greatfish Isle) and can_access(Needle Rock Isle) and can_access(Private Oasis)
+          and can_access(Shark Island) and can_access(Cliff Plateau Highest Isle)
+  Exits:
+      Forsaken Fortress Sector: Can_Sail_Away
+      Star Island: Can_Sail_Away
+      Northern Fairy Island: Can_Sail_Away
+      Gale Isle: Can_Sail_Away
+      Crescent Moon Island: Can_Sail_Away
+      Seven Star Isles: Can_Sail_Away
+      Overlook Island: Can_Sail_Away
+      Four Eye Reef: Can_Sail_Away
+      Mother & Child Isles: Can_Sail_Away
+      Mother & Child Inside Mother Isle: Can_Play_BoG
+      Spectacle Island: Can_Sail_Away
+      Windfall Island: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 5s
+      Pawprint Isle: Can_Sail_Away
+      Dragon Roost Island: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 5s
+      Flight Control Platform: Can_Sail_Away
+      Western Fairy Island: Can_Sail_Away
+      Rock Spire Isle: Can_Sail_Away
+      Tingle Island: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 10s
+      Northern Triangle Island: Can_Sail_Away
+      Eastern Fairy Island: Can_Sail_Away
+      Fire Mountain: Can_Sail_Away
+      Star Belt Archipelago: Can_Sail_Away
+      Three Eye Reef: Can_Sail_Away
+      Greatfish Isle: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 35s
+      Cyclops Reef: Can_Sail_Away
+      Six Eye Reef: Can_Sail_Away
+      Tower of the Gods Sector: Can_Sail_Away
+      Eastern Triangle Island: Can_Sail_Away
+      Thorned Fairy Island: Can_Sail_Away
+      Needle Rock Isle: Can_Sail_Away
+      Islet of Steel: Can_Sail_Away
+      Stone Watcher Island: Can_Sail_Away
+      Southern Triangle Island: Can_Sail_Away
+      Private Oasis: Can_Sail_Away
+      Bomb Island: Can_Sail_Away
+      Birds Peak Rock: Can_Sail_Away
+      Diamond Steppe Island: Can_Sail_Away
+      Five Eye Reef: Can_Sail_Away
+      Shark Island: Can_Sail_Away
+      Southern Fairy Island: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 10s
+      Ice Ring Isle: Can_Sail_Away
+      Forest Haven: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 5s
+      Cliff Plateau Isles: Can_Sail_Away
+      Horseshoe Island: Can_Sail_Away
+      Outset Island: Can_Sail_Away or Can_Play_BoG # Consider warping and cruising to islands since it only takes about 40s
+      Headstone Island: Can_Sail_Away
+      Two Eye Reef: Can_Sail_Away
+      Angular Isles: Can_Sail_Away
+      Boating Course: Can_Sail_Away
+      Five Star Isles: Can_Sail_Away
+      Ghost Ship Interior: Can_Sail_Away and Can_Play_BoG and Can_Play_SoP and Ghost_Ship_Chart
+
+- Name: Forsaken Fortress Sector
+  Island: Forsaken Fortress Sector
+  Locations:
+      Forsaken Fortress Sector - Sunken Treasure: Grappling_Hook and Chart_For_Island_1
+      Forsaken Fortress Sector - Old Man Ho Ho: Nothing
+  Exits:
+      Forsaken Fortress Inner Courtyard: Bombs
+      The Great Sea: Nothing
+
+- Name: Forsaken Fortress Inner Courtyard
+  Dungeon: Forsaken Fortress
+  Dungeon Starting Room: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Phantom Ganon: Can_Defeat_Phantom_Ganon
+  Exits:
+      Forsaken Fortress Barrel Storage Room Lower: Can_Defeat_Phantom_Ganon
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Can_Fly_With_Deku_Leaf_Outdoors
+      Forsaken Fortress Up Switch Back Stairs: Skull_Hammer
+      Forsaken Fortress Sector: Bombs
+      The Great Sea: Can_Play_BoG and Can_Sail_Away
+
+- Name: Forsaken Fortress Barrel Storage Room Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress North Hallway Lower: Nothing
+      Forsaken Fortress Northwest Hallway Lower: Skull_Hammer
+
+- Name: Forsaken Fortress North Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Mess Hall Lower: Skull_Hammer
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+
+- Name: Forsaken Fortress Mess Hall Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress East Hallway Lower: Nothing
+      Forsaken Fortress North Hallway Lower: Skull_Hammer
+
+- Name: Forsaken Fortress East Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Mess Hall Lower: Nothing
+      Forsaken Fortress Jail Cell Lower: Nothing
+
+- Name: Forsaken Fortress Jail Cell Lower
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Inside Lower Jail Cell: Nothing
+  Exits:
+      Forsaken Fortress East Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Northwest Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Boat Room Lower: Nothing
+      Forsaken Fortress Barrel Storage Room Lower: Skull_Hammer
+
+- Name: Forsaken Fortress Boat Room Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Southwest Hallway Lower: Nothing
+      Forsaken Fortress Northwest Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Southwest Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Sleeping Quarters: Nothing
+      Forsaken Fortress Boat Room Lower: Nothing
+
+- Name: Forsaken Fortress Sleeping Quarters
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest on Bed: Nothing
+  Exits:
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+      Forsaken Fortress South Hallway Upper: Nothing
+      Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Can_Fly_With_Deku_Leaf_Indoors and Skull_Hammer
+      Forsaken Fortress Southwest Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Sleeping Quarters Outside Ledge
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Sleeping Quarters: Can_Defeat_Phantom_Ganon
+
+- Name: Forsaken Fortress South Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+      Forsaken Fortress Jail Cell Upper: Nothing
+      Forsaken Fortress Sleeping Quarters: Nothing
+
+- Name: Forsaken Fortress Up Switch Back Stairs
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper: Nothing
+      Forsaken Fortress South Hallway Upper: Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Mess Hall Upper East: Nothing
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+
+- Name: Forsaken Fortress Jail Cell Upper
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Outside Upper Jail Cell: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+  Exits:
+      Forsaken Fortress Jail Cell Lower: Nothing
+      Forsaken Fortress South Hallway Upper: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Mess Hall Upper East
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
+  Exits:
+      Forsaken Fortress Mess Hall Upper West: Skull_Hammer and Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Mess Hall Lower: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Mess Hall Upper West
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress North Hallway Upper: Nothing
+      Forsaken Fortress Mess Hall Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper East: Skull_Hammer and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+
+- Name: Forsaken Fortress North Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Barrel Storage Room Upper East: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Mess Hall Upper West: Nothing
+
+- Name: Forsaken Fortress Barrel Storage Room Upper East
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Barrel Storage Room Upper West: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+      Forsaken Fortress North Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Barrel Storage Room Upper West
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Northwest Hallway Upper: Nothing
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+      Forsaken Fortress Barrel Storage Room Upper East: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Forsaken Fortress Northwest Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Boat Room Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Barrel Storage Room Upper West: Nothing
+
+- Name: Forsaken Fortress Boat Room Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Boat Room Lower: Nothing
+      Forsaken Fortress Outside Path to Boss: Nothing
+      Forsaken Fortress Northwest Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Southwest Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Boat Room Upper: Nothing
+
+- Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Sleeping Quarters: Skull_Hammer
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Outside Path to Boss
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Boat Room Upper: Nothing
+
+- Name: Forsaken Fortress Before Boss Door
+  Dungeon: Forsaken Fortress
+  Exits:
+      Helmaroc King Battle Arena: Skull_Hammer
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+
+- Name: Helmaroc King Battle Arena
+  Locations:
+      Forsaken Fortress - Helmaroc King Heart Container: Can_Defeat_Helmaroc_King
+  Exits:
+      Forsaken Fortress Before Boss Door: Can_Defeat_Helmaroc_King
+
+- Name: Star Island
+  Island: Star Island
+  Locations:
+      Star Island - Blue Chu Chu: Can_Move_Boulders and Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Star Island - Sunken Treasure: Chart_For_Island_2 and Grappling_Hook
+  Exits:
+      Star Island Cave: Can_Move_Boulders
+      The Great Sea: Nothing
+      Star Island Lookout Platform: Can_Sail_Away
+
+- Name: Star Island Lookout Platform
+  Island: Star Island
+  Locations:
+      Star Island - Lookout Platform Chest: Nothing
+  Exits:
+      Star Island: Can_Sail_Away
+
+- Name: Star Island Cave
+  Locations:
+      Star Island - Cave Chest: Can_Defeat_Magtails
+  Exits:
+      Star Island: Nothing
+
+- Name: Northern Fairy Island
+  Island: Northern Fairy Island
+  Locations:
+      Northern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Northern Fairy Island - Sunken Treasure: Chart_For_Island_3 and Grappling_Hook
+      Northern Fairy Island - Old Man Ho Ho: Nothing
+  Exits:
+      Northern Fairy Island - Great Fairy Fountain: Nothing
+      Northern Fairy Island Submarine Exterior: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Northern Fairy Island Submarine Exterior
+  Island: Northern Fairy Island
+  Exits:
+      Northern Fairy Island Submarine Interior: Nothing
+      Northern Fairy Island: Can_Sail_Away
+
+- Name: Northern Fairy Island Submarine Interior
+  Locations:
+      Northern Fairy Island - Submarine Chest: Nothing
+  Exits:
+      Northern Fairy Island Submarine Exterior: Nothing
+
+- Name: Northern Fairy Island - Great Fairy Fountain
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Northern Fairy Island - Great Fairy: Nothing
+  Exits:
+      Northern Fairy Island: Nothing
+
+- Name: Gale Isle
+  Island: Gale Isle
+  Locations:
+      Gale Isle - Sunken Treasure: Chart_For_Island_4 and Grappling_Hook
+  Exits:
+      The Great Sea: Nothing
+      Gale Isle Interior: Skull_Hammer and Iron_Boots
+
+- Name: Gale Isle Interior
+  Exits:
+      Gale Isle: Nothing
+      WT First Room: Nothing
+
+- Name: Crescent Moon Island
+  Island: Crescent Moon Island
+  Locations:
+      Crescent Moon Island - Chest on Island: Nothing
+      Crescent Moon Island - Blue Chu Chu North: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Crescent Moon Island - Blue Chu Chu South: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Crescent Moon Island - Sunken Treasure: Chart_For_Island_5 and Grappling_Hook
+      Crescent Moon Island - Old Man Ho Ho: Nothing
+  Exits:
+      Crescent Moon Submarine Exterior: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Crescent Moon Submarine Exterior
+  Island: Crescent Moon Island
+  Exits:
+      Crescent Moon Submarine Interior: Nothing
+      Crescent Moon Island: Can_Sail_Away
+
+- Name: Crescent Moon Submarine Interior
+  Locations:
+      Crescent Moon Island - Submarine Chest: Can_Defeat_Miniblins
+  Exits:
+      Crescent Moon Submarine Exterior: Nothing
+
+- Name: Seven Star Isles
+  Island: Seven Star Isles
+  Locations:
+      Seven Star Isles - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
+      Seven Star Isles - Sunken Treasure: Chart_For_Island_6 and Grappling_Hook and Bombs
+  Exits:
+      Seven Star Lookout Platforms: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Seven Star Lookout Platforms
+  Island: Seven Star Isles
+  Locations:
+      Seven Star Isles - Center Lookout Platform Chest: Nothing
+      Seven Star Isles - Northern Lookout Platform Chest: Nothing
+      Seven Star Isles - Southern Lookout Platform Chest: Can_Defeat_Wizzrobes_At_Range
+  Exits:
+      Seven Star Isles: Can_Sail_Away
+
+- Name: Overlook Island
+  Island: Overlook Island
+  Locations:
+      Overlook Island - Sunken Treasure: Chart_For_Island_7 and Grappling_Hook
+  Exits:
+      The Great Sea: Nothing
+      Overlook Island Upper Isles: Hookshot
+
+- Name: Overlook Island Upper Isles
+  Island: Overlook Island
+  Exits:
+      Overlook Cave: Nothing
+      Overlook Island Upper Isles Chu Platform: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      Overlook Island: Nothing
+
+- Name: Overlook Island Upper Isles Chu Platform
+  Island : Overlook Island
+  Locations:
+      Overlook Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+  Exits:
+      Overlook Island: Nothing
+
+- Name: Overlook Cave
+  Locations:
+      Overlook Island - Cave Chest:
+          Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Red_Chu_Chus
+          and Can_Defeat_Green_Chu_Chus and Can_Defeat_Keese and Can_Defeat_Fire_Keese and Can_Defeat_Morths
+          and Can_Defeat_Kargarocs and Can_Defeat_Darknuts and Can_Play_WR
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag and Can_Defeat_Darknuts_Easily
+      Can Farm Lots Of Rupees: (Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Red_Chu_Chus
+          and Can_Defeat_Green_Chu_Chus and Can_Defeat_Keese and Can_Defeat_Fire_Keese and Can_Defeat_Morths
+          and Can_Defeat_Kargarocs) or Skull_Hammer # spawn darknuts to break pillars
+  Exits:
+      Overlook Island Upper Isles: Nothing
+
+- Name: Four Eye Reef
+  Island: Four Eye Reef
+  Locations:
+      Four Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
+      Four Eye Reef - Sunken Treasure: Chart_For_Island_8 and Grappling_Hook and Bombs
+  Exits:
+      The Great Sea: Nothing
+
+- Name: Mother & Child Isles
+  Island: Mother & Child Isles
+  Locations:
+      Mother & Child Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Mother & Child Isles - Sunken Treasure: Chart_For_Island_9 and Grappling_Hook
+  Exits:
+      The Great Sea: Nothing
+
+- Name: Mother & Child Inside Mother Isle
+  Island: Mother & Child Isles
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Mother & Child Isles - Inside Mother Isle: Nothing
+
+- Name: Spectacle Island
+  Island: Spectacle Island
+  Locations:
+      Spectacle Island - Barrel Shooting First Prize: Nothing
+      Spectacle Island - Barrel Shooting Second Prize: Nothing
+      Spectacle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Spectacle Island - Sunken Treasure: Chart_For_Island_10 and Grappling_Hook
+  Exits:
+      Spectacle Beedle Shop: Nothing
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Spectacle Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Spectacle Island: Nothing
+
+- Name: Windfall Island
+  Island: Windfall Island
+  Events:
+      Activate Windmill: Can_Play_WR
+      Can Farm Lots Of Rupees: Nothing
+  Locations:
+      Windfall Island - Ivan Catch Killer Bees: can_access(Windfall School of Joy)
+      Windfall Island - Transparent Chest: Fire_Arrows and 'Activate_Windmill' and (Hookshot or Can_Fly_With_Deku_Leaf_Outdoors)
+      Windfall Island - Tott Teach Rhythm: Wind_Waker
+      Windfall Island - Zunari Exotic Flower: Rescued_Aryll and Delivery_Bag and can_access(Greatfish Isle)
+      Windfall Island - Sam Decorate Island: Rescued_Aryll and Delivery_Bag
+      Windfall Island - Kane Decorate Shop Guru: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
+      Windfall Island - Kane Decorate Postman Statue: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
+      Windfall Island - Kane Decorate Six Flags: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
+      Windfall Island - Kane Decorate Six Idols: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
+      Windfall Island - Mila Catch Thief: Rescued_Aryll
+      Windfall Island - Dampa Pig Minigame: Rescued_Aryll and Can_Farm_Skull_Necklaces and Spoils_Bag
+      Windfall Island - Pompie & Vera Secret Meeting Photo: can_access(Windfall Lenzo's House Upper) and 'Can_Start_Lenzo_Quest'
+      Windfall Island - Kamo Full Moon Picture: Deluxe_Picto_Box and Can_Play_SoP
+      Windfall Island - Mineco Miss Windfall Picture: Deluxe_Picto_Box
+      Windfall Island - Sunken Treasure: Chart_For_Island_11 and Grappling_Hook
+  Exits:
+      Windfall Jail: Nothing
+      Windfall School of Joy: Nothing
+      Windfall Lenzo's House from Bottom Entry: Nothing
+      Windfall Lenzo's House Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors or ('Activate_Windmill' and (Heros_Sword or Skull_Hammer))
+      Windfall Cafe Bar: Nothing
+      Windfall Battle Squid Interior: Nothing
+      Windfall Battle Squid Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors or ('Activate_Windmill' and (Heros_Sword or Skull_Hammer))
+      Windfall House of Wealth Lower: Nothing
+      Windfall House of Wealth Upper: Nothing
+      Windfall Potion Shop: Nothing
+      Windfall Bomb Shop: Nothing
+      Windfall Bomb Shop Upper Ledge: Nothing
+      Windfall Pirate Ship: Nothing
+      Windfall Beedle Shop: Nothing
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Windfall Jail
+  Events:
+      RescuedTingle: Nothing
+  Locations:
+      Windfall Island - Tingle First Gift: Nothing
+      Windfall Island - Tingle Second Gift: Nothing
+      Windfall Island - Windfall Jail Maze Chest: Nothing
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall School of Joy
+  Locations:
+      Windfall Island - Mrs. Marie Catch Killer Bees: can_access(Windfall Island)
+      Windfall Island - Mrs. Marie 1 Joy Pendant: Spoils_Bag and can_access(Windfall Island)
+      Windfall Island - Mrs. Marie 21 Joy Pendant: Spoils_Bag and Can_Farm_Joy_Pendants and can_access(Windfall Island)
+      Windfall Island - Mrs. Marie 40 Joy Pendant: Spoils_Bag and Can_Farm_Joy_Pendants and can_access(Windfall Island)
+  Exits:
+      Windfall Island: Nothing
+
+# This intermidiate area is necessary for making sure Link can access Lenzo's House
+# specifically from the bottom (and not from the top and dropping down)
+- Name: Windfall Lenzo's House from Bottom Entry
+  Events:
+      Can Start Lenzo Quest: Picto_Box
+  Exits:
+      Windfall Lenzo's House Lower: Nothing
+
+- Name: Windfall Lenzo's House Lower
+  Locations:
+      Windfall Island - Lenzo Become Assistant: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'Can_Start_Lenzo_Quest'
+      Windfall Island - Lenzo Bring Forest Firefly: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'Can_Start_Lenzo_Quest' and Empty_Bottle and can_access(Forest Haven Interior)
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall Lenzo's House Upper
+  Locations:
+      Windfall Island - Lenzo House Left Chest: Nothing
+      Windfall Island - Lenzo House Right Chest: Nothing
+  Exits:
+      Windfall Lenzo's House Lower: Nothing
+      Windfall Lenzo's House Upper Ledge: Nothing
+
+- Name: Windfall Lenzo's House Upper Ledge
+  Island: Windfall Island
+  Exits:
+      Windfall Lenzo's House Upper: Picto_Box and 'Can_Start_Lenzo_Quest'
+      Windfall Island: Nothing
+
+- Name: Windfall Cafe Bar
+  Locations:
+      Windfall Island - Cafe Postman Delivery: Rescued_Aryll and Delivery_Bag and Maggies_Letter and can_access(Windfall House of Wealth Upper)
+      Windfall Island - Linda and Anton: Deluxe_Picto_Box and Can_Play_SoP and can_access(Windfall Island) and can_access(Windfall Lenzo's House Lower)
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall Battle Squid Interior
+  Locations:
+      Windfall Island - Battle Squid First Prize: Nothing
+      Windfall Island - Battle Squid Second Prize: Nothing
+      Windfall Island - Battle Squid Under 20 Prize: Nothing
+  Exits:
+      Windfall Island: Nothing
+      Windfall Battle Squid Upper Ledge: Nothing
+
+- Name: Windfall Battle Squid Upper Ledge
+  Island: Windfall Island
+  Locations:
+      Windfall Island - Kreeb Light the Lighthouse: Fire_Arrows and 'Activate_Windmill'
+  Exits:
+      Windfall Island: Nothing
+      Windfall Battle Squid Interior: Nothing
+
+- Name: Windfall House of Wealth Lower
+  Locations:
+      Windfall Island - Auction 5 Rupee: Nothing
+      Windfall Island - Auction 40 Rupee: Nothing
+      Windfall Island - Auction 60 Rupee: Nothing
+      Windfall Island - Auction 80 Rupee: Nothing
+      Windfall Island - Auction 100 Rupee: Nothing
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall House of Wealth Upper
+  Locations:
+      Windfall Island - House of Wealth Chest: Nothing
+      Windfall Island - Maggie's Father Give 20 Skull Necklaces: Rescued_Aryll and Spoils_Bag and Can_Farm_Skull_Necklaces
+      Windfall Island - Maggie Free Item: Rescued_Aryll
+      Windfall Island - Maggie Delivery Reward: Rescued_Aryll and Delivery_Bag and Moblins_Letter
+  Exits:
+      Windfall House of Wealth Lower: Nothing
+      Windfall Island: Nothing
+
+- Name: Windfall Potion Shop
+  Locations:
+      Windfall Island - Potion Shop 15 Green Chu: Can_Farm_Green_Chu_Jelly
+      Windfall Island - Potion Shop 15 Blue Chu:  Spoils_Bag and count(15, Blue_Chu_Jelly)
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall Bomb Shop
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall Bomb Shop Upper Ledge
+  Exits:
+      Windfall Bomb Shop: Nothing
+      Windfall Island: Nothing
+
+- Name: Windfall Pirate Ship
+  Locations:
+      Windfall Island - Pirate Ship Chest: Nothing
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Windfall Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Exits:
+      Windfall Island: Nothing
+
+- Name: Pawprint Isle
+  Island: Pawprint Isle
+  Locations:
+      Pawprint Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Pawprint Isle - Sunken Treasure: Chart_For_Island_12 and Grappling_Hook
+  Exits:
+      Pawprint Chu Chu Cave: Nothing
+      Pawprint Wizzobe Cave Isle: Hookshot
+      Pawprint Lookout Platform: Can_Sail_Away
+      Pawprint Beedle Shop: Nothing
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Pawprint Chu Chu Cave
+  Locations:
+      Pawprint Isle - Chu Chu Cave Chest: Nothing
+      Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder: Can_Move_Boulders
+      Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder: Can_Move_Boulders
+      Pawprint Isle - Chu Chu Cave Chest Scale Wall: Grappling_Hook
+  Exits:
+      Pawprint Isle: Nothing
+
+- Name: Pawprint Wizzobe Cave Isle
+  Island: Pawprint Isle
+  Exits:
+      Pawprint Wizzobe Cave: Nothing
+      Pawprint Isle: Nothing
+
+- Name: Pawprint Wizzobe Cave
+  Locations:
+      Pawprint Isle - Wizzrobe Cave Chest:
+          Can_Defeat_Wizzrobes_At_Range and Can_Defeat_Fire_Keese and
+          Can_Defeat_Magtails and Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus and
+          Can_Defeat_Yellow_Chu_Chus and Can_Defeat_Red_Bubbles and Can_Remove_Peahat_Armor
+  Exits:
+      Pawprint Wizzobe Cave Isle: Nothing
+
+- Name: Pawprint Lookout Platform
+  Island: Pawprint Isle
+  Locations:
+      Pawprint Isle - Lookout Platform Defeat Enemies: Nothing
+  Exits:
+      Pawprint Isle: Can_Sail_Away
+
+- Name: Pawprint Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Pawprint Isle: Nothing
+
+- Name: Dragon Roost Island
+  Island: Dragon Roost Island
+  Locations:
+      Dragon Roost Island - Wind Shrine: Wind_Waker
+      Dragon Roost Island - Boulder Chest: Heros_Bow or Bombs or Boomerang or (Bait_Bag and 'Can_Buy_Hyoi_Pears')
+      Dragon Roost Island - Sunken Treasure: Chart_For_Island_13 and Grappling_Hook
+  Exits:
+      Dragon Roost Rito Aerie: Nothing
+      Dragon Roost Island Cave: Can_Move_Boulders
+      Dragon Roost Beedle Shop: Nothing
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Dragon Roost Rito Aerie
+  Locations:
+      Dragon Roost Island - Hoskit Give 20 Golden Feathers: Spoils_Bag and Can_Farm_Golden_Feathers
+      Dragon Roost Island - Baito Mail Game: Nothing
+  Exits:
+      Dragon Roost Island: Nothing
+      Dragon Roost Pond: Nothing
+      Dragon Roost Pond Upper Ledge: Nothing
+      Dragon Roost Island Flight Deck: Nothing
+      Dragon Roost Komali's Room: Nothing
+
+- Name: Dragon Roost Pond
+  Exits:
+      Dragon Roost Rito Aerie: Nothing
+      Dragon Roost Pond Past Statues: Nothing
+
+- Name: Dragon Roost Pond Past Statues
+  Exits:
+      Dragon Roost Pond: Bombs or Can_Fly_With_Deku_Leaf_Indoors
+      DRC First Room: Nothing
+
+- Name: Dragon Roost Pond Upper Ledge
+  Exits:
+      Dragon Roost Rito Aerie: Nothing
+
+- Name: Dragon Roost Island Flight Deck
+  Island: Dragon Roost Island
+  Locations:
+      Dragon Roost Island - Fly Across Platforms Around Island: Can_Fly_With_Deku_Leaf_Outdoors and (Can_Cut_Grass or Double_Magic)
+  Exits:
+      Dragon Roost Island: Nothing
+      Dragon Roost Rito Aerie: Nothing
+
+- Name: Dragon Roost Komali's Room
+  Exits:
+      Dragon Roost Rito Aerie: Nothing
+
+- Name: Dragon Roost Island Cave
+  Locations:
+      Dragon Roost Island - Cave Chest: Can_Defeat_Keese and Can_Defeat_Red_Chu_Chus
+  Exits:
+      Dragon Roost Island: Nothing
+
+- Name: Dragon Roost Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Dragon Roost Island: Nothing
+
+- Name: Flight Control Platform
+  Island: Flight Control Platform
+  Locations:
+      Flight Control Platform - First Prize: Can_Fly_With_Deku_Leaf_Outdoors and Double_Magic
+      Flight Control Platform - Sunken Treasure: Chart_For_Island_14 and Grappling_Hook
+      Flight Control Platform - Old Man Ho Ho: Nothing
+  Exits:
+      Flight Control Platform Submarine Exterior: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Flight Control Platform Submarine Exterior
+  Island: Flight Control Platform
+  Exits:
+      Flight Control Platform Submarine Interior: Nothing
+      Flight Control Platform: Can_Sail_Away
+
+- Name: Flight Control Platform Submarine Interior
+  Locations:
+      Flight Control Platform - Submarine Chest:
+          Can_Defeat_Wizzrobes and Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus and
+          Can_Defeat_Miniblins and Can_Defeat_Wizzrobes_At_Range
+  Exits:
+      Flight Control Platform Submarine Exterior: Nothing
+
+- Name: Western Fairy Island
+  Island: Western Fairy Island
+  Locations:
+      Western Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Western Fairy Island - Sunken Treasure: Chart_For_Island_15 and Grappling_Hook
+  Exits:
+      Western Fairy Island Past Flames: Skull_Hammer
+      Western Fairy Lookout Platform: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Western Fairy Island Past Flames
+  Island: Western Fairy Island
+  Exits:
+      Western Fairy Island - Great Fairy Fountain: Nothing
+
+- Name: Western Fairy Island - Great Fairy Fountain
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Western Fairy Island - Great Fairy: Nothing
+  Exits:
+      Western Fairy Island Past Flames: Nothing
+
+- Name: Western Fairy Lookout Platform
+  Island: Western Fairy Island
+  Locations:
+      Western Fairy Island - Lookout Platform Chest: Nothing
+  Exits:
+      Western Fairy Island: Nothing
+
+- Name: Rock Spire Isle
+  Island: Rock Spire Isle
+  Locations:
+      Rock Spire Isle - Defeat Southeast Gunboat: Bombs and Grappling_Hook
+      Rock Spire Isle - Sunken Treasure: Chart_For_Island_16 and Grappling_Hook
+  Exits:
+      Rock Spire Beedle Shop: Nothing
+      Rock Spire Upper Ledges: Bombs
+      Rock Spire Platforms: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Rock Spire Upper Ledges
+  Island: Rock Spire Isle
+  Locations:
+      Rock Spire Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+  Exits:
+      Rock Spire Cave: Nothing
+      Rock Spire Isle: Nothing
+
+- Name: Rock Spire Beedle Shop
+  Locations:
+      Rock Spire Isle - Beedle 500 Rupee Item: "'Can_Farm_Lots_Of_Rupees'"
+      Rock Spire Isle - Beedle 950 Rupee Item: Wallet_Upgrade and 'Can_Farm_Lots_Of_Rupees'
+      Rock Spire Isle - Beedle 900 Rupee Item: Wallet_Upgrade and 'Can_Farm_Lots_Of_Rupees'
+  Exits:
+      Rock Spire Isle: Nothing
+
+- Name: Rock Spire Platforms
+  Locations:
+      Rock Spire Isle - Western Lookout Platform Destroy Cannons: Can_Destroy_Cannons and Can_Fly_With_Deku_Leaf_Outdoors
+      Rock Spire Isle - Eastern Lookout Platform Destroy Cannons: Can_Destroy_Cannons and Can_Fly_With_Deku_Leaf_Outdoors
+      Rock Spire Isle - Center Lookout Platform Chest: Nothing
+  Exits:
+      Rock Spire Isle: Can_Sail_Away
+
+- Name: Rock Spire Cave
+  Locations:
+      Rock Spire Isle - Cave Chest: Nothing
+  Exits:
+      Rock Spire Upper Ledges: Nothing
+
+- Name: Tingle Island
+  Island: Tingle Island
+  Locations:
+      Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue and 'RescuedTingle'
+      Tingle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
+      Tingle Island - Sunken Treasure: Chart_For_Island_17 and Grappling_Hook
+  Exits:
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Northern Triangle Island
+  Island: Northern Triangle Island
+  Locations:
+      Northern Triangle Island - Sunken Treasure: Chart_For_Island_18 and Grappling_Hook
+  Exits:
+      The Great Sea: Nothing
+
+- Name: Eastern Fairy Island
+  Island: Eastern Fairy Island
+  Locations:
+      Eastern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Eastern Fairy Island - Sunken Treasure: Chart_For_Island_19 and Grappling_Hook
+  Exits:
+      Eastern Fairy Island Past Boulder: Can_Move_Boulders
+      Eastern Fairy Lookout Platform: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Eastern Fairy Island Past Boulder
+  Island: Eastern Fairy Island
+  Exits:
+      Eastern Fairy Island - Great Fairy Fountain: Nothing
+      Eastern Fairy Island: Can_Move_Boulders
+
+- Name: Eastern Fairy Island - Great Fairy Fountain
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Eastern Fairy Island - Great Fairy: Nothing
+  Exits:
+      Eastern Fairy Island Past Boulder: Nothing
+
+- Name: Eastern Fairy Lookout Platform
+  Island: Eastern Fairy Island
+  Locations:
+      Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies: Can_Destroy_Cannons
+  Exits:
+      Eastern Fairy Island: Can_Sail_Away
+
+- Name: Fire Mountain
+  Island: Fire Mountain
+  Locations:
+      Fire Mountain - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
+      Fire Mountain - Sunken Treasure: Chart_For_Island_20 and Grappling_Hook
+  Exits:
+      Fire Mountain Interior: Ice_Arrows
+      Fire Mountain Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Fire Mountain Interior
+  Locations:
+      Fire Mountain - Interior Chest: Can_Defeat_Magtails
+  Exits:
+      Fire Mountain: Nothing
+
+- Name: Fire Mountain Lookout Platform
+  Island: Fire Mountain
+  Locations:
+      Fire Mountain - Lookout Platform Chest: Nothing
+      Fire Mountain - Lookout Platform Destroy Cannons: Can_Destroy_Cannons
+  Exits:
+      Fire Mountain: Can_Sail_Away
+
+- Name: Star Belt Archipelago
+  Island: Star Belt Archipelago
+  Locations:
+      Star Belt Archipelago - Sunken Treasure: Chart_For_Island_21 and Grappling_Hook
+  Exits:
+      Star Belt Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Star Belt Lookout Platform
+  Island: Star Belt Archipelago
+  Locations:
+      Star Belt Archipelago - Lookout Platform Chest: Nothing
+  Exits:
+      Star Belt Archipelago: Can_Sail_Away
+
+- Name: Three Eye Reef
+  Island: Three Eye Reef
+  Locations:
+      Three Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
+      Three Eye Reef - Sunken Treasure: Chart_For_Island_22 and Grappling_Hook
+  Exits:
+      The Great Sea: Nothing
+
+- Name: Greatfish Isle
+  Island: Greatfish Isle
+  Locations:
+      Greatfish Isle - Hidden Chest: Can_Fly_With_Deku_Leaf_Outdoors
+      Greatfish Isle - Sunken Treasure: Chart_For_Island_23 and Grappling_Hook
+  Exits:
+      Greatfish Beedle Shop: Nothing
+      The Great Sea: Nothing
+
+- Name: Greatfish Beedle Shop
+  Hint Region: The Great Sea
+  Exits:
+      Greatfish Isle: Nothing
+
+- Name: Cyclops Reef
+  Island: Cyclops Reef
+  Locations:
+      Cyclops Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
+      Cyclops Reef - Sunken Treasure: Chart_For_Island_24 and Grappling_Hook and Bombs
+  Exits:
+      Cyclops Reef Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Cyclops Reef Lookout Platform
+  Island: Cyclops Reef
+  Locations:
+      Cyclops Reef - Lookout Platform Defeat Enemies: Nothing
+  Exits:
+      Cyclops Reef: Can_Sail_Away
+
+- Name: Six Eye Reef
+  Island: Six Eye Reef
+  Locations:
+      Six Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
+      Six Eye Reef - Sunken Treasure: Chart_For_Island_25 and Grappling_Hook and Bombs
+  Exits:
+      Six Eye Reef Submarine Exterior: Can_Sail_Away
+      Six Eye Reef Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Six Eye Reef Submarine Exterior
+  Island: Six Eye Reef
+  Exits:
+      Six Eye Reef Submarine Interior: Nothing
+      Six Eye Reef: Can_Sail_Away
+
+- Name: Six Eye Reef Submarine Interior
+  Locations:
+      Six Eye Reef - Submarine Chest: Nothing
+  Exits:
+      Six Eye Reef Submarine Exterior: Nothing
+
+- Name: Six Eye Reef Lookout Platform
+  Island: Six Eye Reef
+  Locations:
+      Six Eye Reef - Lookout Platform Destroy Cannons: Can_Destroy_Cannons
+  Exits:
+      Six Eye Reef: Can_Sail_Away
+
+- Name: Tower of the Gods Sector
+  Island: Tower of the Gods Sector
+  Locations:
+      Tower of the Gods Sector - Sunken Treasure: Chart_For_Island_26 and Grappling_Hook
+  Exits:
+      TOTG Entrance Room: Dins_Pearl and Farores_Pearl and Nayrus_Pearl
+      Hyrule Castle Front: All_8_Shards
+      Tower of the Gods Beedle Shop: Nothing
+      The Great Sea: Nothing
+
+- Name: Tower of the Gods Beedle Shop
+  Hint Region: The Great Sea
+  Exits:
+      Tower of the Gods Sector: Nothing
+
+- Name: Eastern Triangle Island
+  Island: Eastern Triangle Island
+  Locations:
+      Eastern Triangle Island - Sunken Treasure: Chart_For_Island_27 and Grappling_Hook
+  Exits:
+      Eastern Triangle Beedle Shop: Nothing
+      The Great Sea: Nothing
+
+- Name: Eastern Triangle Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Eastern Triangle Island: Nothing
+
+- Name: Thorned Fairy Island
+  Island: Thorned Fairy Island
+  Locations:
+      Thorned Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Thorned Fairy Island - Sunken Treasure: Chart_For_Island_28 and Grappling_Hook
+  Exits:
+      Thorned Fairy Island Past Tentacles: Skull_Hammer
+      Thorned Fairy Lookout Platforms: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Thorned Fairy Island Past Tentacles
+  Island: Thorned Fairy Island
+  Exits:
+      Thorned Fairy Island - Great Fairy Fountain: Can_Sail_Away
+
+- Name: Thorned Fairy Island - Great Fairy Fountain
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Thorned Fairy Island - Great Fairy: Nothing
+  Exits:
+      Thorned Fairy Island Past Tentacles: Nothing
+
+- Name: Thorned Fairy Lookout Platforms
+  Island: Thorned Fairy Island
+  Locations:
+      Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons: Can_Destroy_Cannons
+      Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies: Can_Fly_With_Deku_Leaf_Outdoors
+  Exits:
+      Thorned Fairy Island: Can_Sail_Away
+
+- Name: Needle Rock Isle
+  Island: Needle Rock Isle
+  Locations:
+      Needle Rock Isle - Chest: Bait_Bag and 'Can_Buy_Hyoi_Pears'
+      Needle Rock Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Needle Rock Isle - Golden Gunboat: Bombs and Grappling_Hook
+      Needle Rock Isle - Sunken Treasure: Chart_For_Island_29 and Grappling_Hook
+  Exits:
+      Needle Rock Cave: Fire_Arrows
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Needle Rock Cave
+  Locations:
+      Needle Rock Isle - Cave Chest: Fire_Arrows
+  Exits:
+      Needle Rock Isle: Nothing
+
+- Name: Islet of Steel
+  Island: Islet of Steel
+  Locations:
+      Islet of Steel - Sunken Treasure: Chart_For_Island_30 and Grappling_Hook
+  Exits:
+      Islet of Steel Interior: Bombs
+      Islet of Steel Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Islet of Steel Interior
+  Locations:
+      Islet of Steel - Interior Chest: Can_Play_WR
+  Events:
+      Can Farm Lots Of Rupees: Nothing
+  Exits:
+      Islet of Steel: Nothing
+
+- Name: Islet of Steel Lookout Platform
+  Island: Islet of Steel
+  Locations:
+      Islet of Steel - Lookout Platform Defeat Enemies: Can_Defeat_Wizzrobes_At_Range
+  Exits:
+      Islet of Steel: Can_Sail_Away
+
+- Name: Stone Watcher Island
+  Island: Stone Watcher Island
+  Locations:
+      Stone Watcher Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Stone Watcher Island - Sunken Treasure: Chart_For_Island_31 and Grappling_Hook
+      Stone Watcher Island - Old Man Ho Ho: Nothing
+  Exits:
+      Stone Watcher Cave: Power_Bracelets
+      Stone Watcher Lookout Platform: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Stone Watcher Cave
+  Locations:
+      Stone Watcher Island - Cave Chest: Can_Defeat_Armos and Can_Defeat_Wizzrobes and Can_Defeat_Darknuts and Can_Play_WR
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag and Can_Defeat_Darknuts_Easily
+      Can Farm Lots Of Rupees: (Can_Defeat_Armos and Can_Defeat_Wizzrobes) or Skull_Hammer # spawn darknuts to break pillars
+  Exits:
+      Stone Watcher Island: Nothing
+
+- Name: Stone Watcher Lookout Platform
+  Island: Stone Watcher Island
+  Locations:
+      Stone Watcher Island - Lookout Platform Chest: Nothing
+      Stone Watcher Island - Lookout Platform Destroy Cannons: Can_Destroy_Cannons
+  Exits:
+      Stone Watcher Island: Can_Sail_Away
+
+- Name: Southern Triangle Island
+  Island: Southern Triangle Island
+  Locations:
+      Southern Triangle Island - Sunken Treasure: Chart_For_Island_32 and Grappling_Hook and Can_Defeat_Seahats
+  Exits:
+      Southern Triangle Beedle Shop: Nothing
+      The Great Sea: Nothing
+
+- Name: Southern Triangle Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Southern Triangle Island: Nothing
+
+- Name: Private Oasis
+  Island: Private Oasis
+  Locations:
+      Private Oasis - Top of Waterfall Chest: Can_Fly_With_Deku_Leaf_Outdoors or Hookshot
+      Private Oasis - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
+      Private Oasis - Sunken Treasure: Chart_For_Island_33 and Grappling_Hook
+      Private Oasis - Old Man Ho Ho: Nothing
+  Exits:
+      The Cabana: Delivery_Bag and Cabana_Deed
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: The Cabana
+  Exits:
+      Cabana Labyrinth: Grappling_Hook
+      Private Oasis: Delivery_Bag and Cabana_Deed
+
+- Name: Cabana Labyrinth
+  Locations:
+      Private Oasis - Cabana Labyrinth Lower Floor Chest: Skull_Hammer
+      Private Oasis - Cabana Labyrinth Upper Floor Chest: Skull_Hammer and Can_Play_WR
+  Exits:
+      The Cabana: Nothing
+
+- Name: Bomb Island
+  Island: Bomb Island
+  Locations:
+      Bomb Island - Sunken Treasure: Chart_For_Island_34 and Grappling_Hook
+      Bomb Island - Old Man Ho Ho: Nothing
+  Exits:
+      Bomb Island Cave: Can_Move_Boulders
+      Bomb Island Submarine Exterior: Can_Sail_Away
+      Bomb Island Lookout Platform: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Bomb Island Cave
+  Locations:
+      Bomb Island - Cave Chest: Can_Stun_Magtails
+  Exits:
+      Bomb Island: Nothing
+
+- Name: Bomb Island Submarine Exterior
+  Island: Bomb Island
+  Exits:
+      Bomb Island Submarine Interior: Nothing
+      Bomb Island: Can_Sail_Away
+
+- Name: Bomb Island Submarine Interior
+  Locations:
+      Bomb Island - Submarine Chest: Nothing
+  Exits:
+      Bomb Island Submarine Exterior: Nothing
+
+- Name: Bomb Island Lookout Platform
+  Island: Bomb Island
+  Locations:
+      Bomb Island - Lookout Platform Defeat Enemies: Nothing
+  Exits:
+      Bomb Island: Can_Sail_Away
+
+- Name: Birds Peak Rock
+  Island: Birds Peak Rock
+  Locations:
+      Birds Peak Rock - Sunken Treasure: Chart_For_Island_35 and Grappling_Hook
+  Exits:
+      Birds Peak Rock Behind Bars: Bait_Bag and 'Can_Buy_Hyoi_Pears'
+      Birds Peak Rock Upper Isle: Grappling_Hook
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Birds Peak Rock Upper Isle
+  Island: Birds Peak Rock
+  Locations:
+      Birds Peak Rock - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+
+- Name: Birds Peak Rock Behind Bars
+  Island: Birds Peak Rock
+  Exits:
+      Birds Peak Rock Cave: Nothing
+
+- Name: Birds Peak Rock Cave
+  Locations:
+      Birds Peak Rock - Cave Chest: Can_Play_WR
+  Events:
+      Can Farm Lots Of Rupees: Nothing
+  Exits:
+      Birds Peak Rock Behind Bars: Nothing
+
+- Name: Diamond Steppe Island
+  Island: Diamond Steppe Island
+  Locations:
+      Diamond Steppe Island - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
+      Diamond Steppe Island - Sunken Treasure: Chart_For_Island_36 and Grappling_Hook
+  Exits:
+      Diamond Steppe Upper Island: Hookshot
+      The Great Sea: Nothing
+
+- Name: Diamond Steppe Upper Island
+  Island: Diamond Steppe Island
+  Locations:
+      Diamond Steppe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+  Exits:
+      Diamond Steppe Warp Maze: Nothing
+      Diamond Steppe Island: Nothing
+
+- Name: Diamond Steppe Warp Maze
+  Locations:
+      Diamond Steppe Island - Maze First Chest: Nothing
+      Diamond Steppe Island - Maze Second Chest: Nothing
+  Exits:
+      Diamond Steppe Upper Island: Nothing
+
+- Name: Five Eye Reef
+  Island: Five Eye Reef
+  Locations:
+      Five Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
+      Five Eye Reef - Sunken Treasure: Chart_For_Island_37 and Grappling_Hook and Can_Destroy_Cannons
+  Exits:
+      Five Eye Reef Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Five Eye Reef Lookout Platform
+  Island: Five Eye Reef
+  Locations:
+      Five Eye Reef - Lookout Platform Chest: Nothing
+  Exits:
+      Five Eye Reef: Can_Sail_Away
+
+- Name: Shark Island
+  Island: Shark Island
+  Locations:
+      Shark Island - Sunken Treasure: Chart_For_Island_38 and Grappling_Hook
+  Exits:
+      Shark Island Cave: Skull_Hammer and Iron_Boots
+      Shark Island Upper Isle: Skull_Hammer and Iron_Boots and Can_Fly_With_Deku_Leaf_Outdoors
+      Shark Island Beedle Shop: Nothing
+      The Great Sea: Nothing
+
+- Name: Shark Island Upper Isle
+  Island: Shark Island
+  Locations:
+      Shark Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+
+- Name: Shark Island Beedle Shop
+  Hint Region: The Great Sea
+  Exits:
+      Shark Island: Nothing
+
+- Name: Shark Island Cave
+  Locations:
+      Shark Island - Cave Chest: Can_Defeat_Bokoblins and health(3)
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag
+  Exits:
+      Shark Island: Nothing
+
+- Name: Southern Fairy Island
+  Island: Southern Fairy Island
+  Locations:
+      Southern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Southern Fairy Island - Sunken Treasure: Chart_For_Island_39 and Grappling_Hook
+  Exits:
+      Southern Fairy Island Behind Wooden Barrier: Can_Destroy_Wooden_Barriers
+      Southern Fairy Lookout Platforms: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Southern Fairy Island Behind Wooden Barrier
+  Island: Southern Fairy Island
+  Exits:
+      Southern Fairy Island - Great Fairy Fountain: Nothing
+
+- Name: Southern Fairy Island - Great Fairy Fountain
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Southern Fairy Island - Great Fairy: Nothing
+  Exits:
+      Southern Fairy Island Behind Wooden Barrier: Nothing
+
+- Name: Southern Fairy Lookout Platforms
+  Island: Southern Fairy Island
+  Locations:
+      Southern Fairy Island - Lookout Platform Destroy Northwest Cannons: Can_Destroy_Cannons and Can_Fly_With_Deku_Leaf_Outdoors
+      Southern Fairy Island - Lookout Platform Destroy Southeast Cannons: Can_Destroy_Cannons and Can_Fly_With_Deku_Leaf_Outdoors
+  Exits:
+      Southern Fairy Island: Can_Sail_Away
+
+- Name: Ice Ring Isle
+  Island: Ice Ring Isle
+  Locations:
+      Ice Ring Isle - Frozen Chest: Fire_Arrows
+      Ice Ring Isle - Sunken Treasure: Chart_For_Island_40 and Grappling_Hook
+  Exits:
+      The Great Sea: Nothing
+      Ice Ring Interior: Fire_Arrows
+
+- Name: Ice Ring Interior
+  Locations:
+      Ice Ring Isle - Interior Chest: Nothing
+  Exits:
+      Ice Ring Isle: Nothing
+      Ice Ring Inner Cave: Iron_Boots
+
+- Name: Ice Ring Inner Cave
+  Locations:
+      Ice Ring Isle - Inner Cave Chest: Fire_Arrows
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag
+  Exits:
+      Ice Ring Isle: Nothing
+
+- Name: Forest Haven
+  Island: Forest Haven
+  Locations:
+      Forest Haven - Sunken Treasure: Chart_For_Island_41 and Grappling_Hook
+  Exits:
+      Forest Haven Interior: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
+      Forest Haven Waterfall Cave: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
+      Forest Haven Beedle Shop: Nothing
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Forest Haven Interior
+  Exits:
+      Forest Haven: Nothing
+      Forest Potion Shop: Nothing
+      Forest Haven Interior Upper Baba Buds: Grappling_Hook
+      Forest Haven Interior West Lower Ledge: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Forest Potion Shop
+  Exits:
+      Forest Haven Interior: Nothing
+
+- Name: Forest Haven Interior Upper Baba Buds
+  Locations:
+      Forest Haven - On Tree Branch: Nothing
+  Exits:
+      Forest Haven Interior North Ledge: Can_Fly_With_Deku_Leaf_Indoors
+      Forest Haven Interior West Upper Ledge: Can_Fly_With_Deku_Leaf_Indoors
+      Forest Haven Interior South Ledge: Can_Fly_With_Deku_Leaf_Indoors
+      Forest Haven Interior: Nothing
+
+- Name: Forest Haven Interior North Ledge
+  Exits:
+      Forest Haven Exterior North Ledge: Nothing
+      Forest Haven Interior Upper Baba Buds: Nothing
+
+- Name: Forest Haven Interior West Lower Ledge
+  Exits:
+      Forest Haven Exterior West Lower Ledge: Nothing
+      Forest Haven Interior: Nothing
+
+- Name: Forest Haven Interior West Upper Ledge
+  Exits:
+      Forest Haven Exterior West Upper Ledge: Nothing
+      Forest Haven Interior West Lower Ledge: Nothing
+      Forest Haven Interior Upper Baba Buds: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Forest Haven Interior South Ledge
+  Exits:
+      Forest Haven Exterior South Ledge: Nothing
+      Forest Haven Interior Upper Baba Buds: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Forest Haven Exterior North Ledge
+  Island: Forest Haven
+  Exits:
+      Forest Haven Exterior West Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors
+      Forest Haven Interior North Ledge: Nothing
+
+- Name: Forest Haven Exterior West Lower Ledge
+  Island: Forest Haven
+  Exits:
+      Forest Haven Interior West Lower Ledge: Nothing
+
+- Name: Forest Haven Exterior West Upper Ledge
+  Island: Forest Haven
+  Exits:
+      FW Entrance Platform: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
+      Forest Haven Exterior West Lower Ledge: Nothing
+      Forest Haven South Isle: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
+      Forest Haven Nintendo Gallery Isle: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
+      Forest Haven Interior West Upper Ledge: Nothing
+
+- Name: Forest Haven Exterior South Ledge
+  Island: Forest Haven
+  Exits:
+      Forest Haven South Isle: Can_Fly_With_Deku_Leaf_Outdoors and Can_Cut_Grass
+      Forest Haven Exterior West Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors
+      Forest Haven Interior South Ledge: Nothing
+
+- Name: Forest Haven South Isle
+  Island: Forest Haven
+  Locations:
+      Forest Haven - Chest on Small Island: Nothing
+
+- Name: FW Entrance Platform
+  Island: Forest Haven
+  Exits:
+      FW First Room: Nothing
+
+- Name: Forest Haven Nintendo Gallery Isle
+  Island: Forest Haven
+  Exits:
+      Forest Haven Nintendo Gallery: Nothing
+      Forest Haven: Nothing
+
+- Name: Forest Haven Nintendo Gallery
+  Exits:
+      Forest Haven Nintendo Gallery Isle: Nothing
+
+- Name: Forest Haven Waterfall Cave
+  Exits:
+      Forest Haven: Nothing
+
+- Name: Forest Haven Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Forest Haven: Nothing
+
+- Name: Cliff Plateau Isles
+  Island: Cliff Plateau Isles
+  Locations:
+      Cliff Plateau Isles - Sunken Treasure: Chart_For_Island_42 and Grappling_Hook
+  Exits:
+      Cliff Plateau Cave: Nothing
+      Cliff Plateau Lookout Platform: Can_Sail_Away
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Cliff Plateau Cave
+  Locations:
+      Cliff Plateau Isles - Cave Chest: Can_Defeat_Boko_Babas
+  Exits:
+      Cliff Plateau Isles: Nothing
+      Cliff Plateau Cave Past Wooden Barrier: Can_Defeat_Boko_Babas and Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Cliff Plateau Cave Past Wooden Barrier
+  Exits:
+      Cliff Plateau Highest Isle: Nothing
+      Cliff Plateau Cave: Can_Destroy_Wooden_Barriers
+
+- Name: Cliff Plateau Highest Isle
+  Island: Cliff Plateau Isles
+  Locations:
+      Cliff Plateau Isles - Highest Isle Chest: Nothing
+      Cliff Plateau Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+  Exits:
+      Cliff Plateau Cave Past Wooden Barrier: Nothing
+      Cliff Plateau Isles: Nothing
+
+- Name: Cliff Plateau Lookout Platform
+  Island: Cliff Plateau Isles
+  Locations:
+      Cliff Plateau Isles - Lookout Platform Chest: Nothing
+  Exits:
+      Cliff Plateau Isles: Can_Sail_Away
+
+- Name: Horseshoe Island
+  Island: Horseshoe Island
+  Locations:
+      Horseshoe Island - Sunken Treasure: Chart_For_Island_43 and Grappling_Hook
+  Exits:
+      Horseshoe Island Past Tentacles: Can_Fan_With_Deku_Leaf
+      Horseshoe Lookout Platforms: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Horseshoe Island Past Tentacles
+  Island: Horseshoe Island
+  Locations:
+      Horseshoe Island - Play Golf: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      Horseshoe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Horseshoe Island - Old Man Ho Ho: Nothing
+  Exits:
+      Horseshoe Island: Nothing
+      Horseshoe Cave: Nothing
+
+- Name: Horseshoe Cave
+  Locations:
+      Horseshoe Island - Cave Chest: Can_Defeat_Mothulas and Can_Defeat_Winged_Mothulas
+  Exits:
+      Horseshoe Island Past Tentacles: Nothing
+
+- Name: Horseshoe Lookout Platforms
+  Island: Horseshoe Island
+  Locations:
+      Horseshoe Island - Northwestern Lookout Platform Chest: Nothing
+      Horseshoe Island - Southeastern Lookout Platform Chest: Nothing
+  Exits:
+      Horseshoe Island: Can_Sail_Away
+
+- Name: Outset Island
+  Island: Outset Island
+  Locations:
+      Outset Island - Dig up Black Soil: Power_Bracelets and Bait_Bag and 'Can_Buy_Bait'
+      Outset Island - Sunken Treasure: Chart_For_Island_44 and Grappling_Hook
+  Exits:
+      Outset Link's House: Nothing
+      Outset Under Link's House: Nothing
+      Outset Orca's House: Nothing
+      Outset Sturgeon's House: Nothing
+      Outset Rose's House: Nothing
+      Outset Rose's Attic: Nothing
+      Outset Mesa's House: Can_Play_SoP
+      Outset Near Bridge: Can_Cut_Down_Outset_Trees
+      Outset Near Savage Headstone: Hookshot
+      Outset Jabun's Cave: Bombs
+      Outset Beedle Shop: Nothing
+      Mailbox Checks: Nothing
+      The Great Sea: Nothing
+
+- Name: Outset Link's House
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Under Link's House
+  Locations:
+      Outset Island - Under Link's House: Nothing
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Orca's House
+  Locations:
+      Outset Island - Orca Give 10 Knight's Crests: Spoils_Bag and 'Can_Farm_Knights_Crests' and Can_Sword_Fight_With_Orca and Magic
+      Outset Island - Orca Hit 500 Times: Can_Sword_Fight_With_Orca
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Sturgeon's House
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Rose's House
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Rose's Attic
+  Exits:
+      Outset Rose's House: Nothing
+
+- Name: Outset Mesa's House
+  Locations:
+      Outset Island - Mesa's House Chest: Nothing
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Near Bridge
+  Island: Outset Island
+  Locations:
+      Outset Island - Old Man Ho Ho: Nothing
+  Exits:
+      Outset Island: Nothing
+      Outset Across Bridge: Can_Fly_With_Deku_Leaf_Outdoors
+
+- Name: Outset Across Bridge
+  Island: Outset Island
+  Exits:
+      Outset Island: Nothing
+      Outset Forest of Fairies: Nothing
+      Outset Near Savage Headstone: Can_Fly_With_Deku_Leaf_Outdoors
+
+- Name: Outset Near Savage Headstone
+  Island: Outset Island
+  Exits:
+      Outset Island: Nothing
+      Outset Savage Labyrinth: Power_Bracelets
+
+- Name: Outset Forest of Fairies
+  Exits:
+      Outset Across Bridge: Nothing
+      Outset Island - Great Fairy Fountain: Can_Move_Boulders
+
+- Name: Outset Island - Great Fairy Fountain
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Outset Island - Great Fairy: Nothing
+  Exits:
+      Outset Forest of Fairies: Nothing
+
+- Name: Outset Savage Labyrinth
+  Events:
+      Can Get Fairies: Nothing
+  Exits:
+      Outset Near Savage Headstone: Nothing
+      # The last condition for having grappling hook or a melee weapon is to avoid cases where your only weapon for damaging most enemies is bow or bombs and you run out of arrows or bombs. Grappling hook can be used to steal ammo from enemies.
+      # The following floors don't have requirements listed because you can trick enemies into hitting each other, pick up one of their dropped weapons, and kill the enemies with the weapon:
+      # * Floor 4 (4x Green Bokoblins)
+      # * Floor 9 (4x Green Bokoblins, 2x Fire Keese)
+      # * Floor 10 (2x Moblins)
+      # * Floor 15 (4x Green Bokoblins)
+      # * Floor 18 (4x Blue Bokoblins, 4x Green ChuChus)
+      # * Floor 19 (2x Green Bokoblins, 3x Mothulas)
+      # * Floor 27 (2x Green Bokoblins, 1x Darknut)
+      Outset Savage Floor 30: Can_Defeat_Keese and
+          Can_Defeat_Miniblins and
+          Can_Defeat_Red_Chu_Chus and
+          Can_Defeat_Magtails and
+          Can_Defeat_Fire_Keese and
+          Can_Defeat_Peahats and
+          Can_Defeat_Green_Chu_Chus and
+          Can_Defeat_Boko_Babas and
+          Can_Defeat_Mothulas and
+          Can_Defeat_Winged_Mothulas and
+          Can_Defeat_Wizzrobes and
+          Can_Defeat_Armos and
+          Can_Defeat_Yellow_Chu_Chus and
+          Can_Defeat_Red_Bubbles and
+          Can_Defeat_Darknuts and
+          (Grappling_Hook or Heros_Sword or Skull_Hammer)
+
+- Name: Outset Savage Floor 30
+  Locations:
+      Outset Island - Savage Labyrinth Floor 30: Can_Play_WR
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag
+  Exits:
+      Outset Near Savage Headstone: Can_Play_WR
+      # 2 of the 3 Wizzrobes on floor 48 never seem to come down to ground level, but it doesn't matter since you can throw the swords the Darknuts drop at them to kill them.
+      # The following floors don't have requirements listed because you can trick enemies into hitting each other, pick up one of their dropped weapons, and kill the enemies with the weapon:
+      # * Floor 37 (2x Moblins, 3x ReDeads)
+      # * Floor 39 (2x Moblins, 5x Poes)
+      # * Floor 45 (16x Bokoblins)
+      # * Floor 47 (3x Moblins, 2x Darknuts)
+      Outset Savage Floor 50: Can_Aim_Mirror_Shield and
+          Can_Defeat_ReDeads and
+          Can_Defeat_Blue_Bubbles and
+          Can_Defeat_Dark_Chu_Chus_With_Light_Ray and
+          Can_Defeat_Poes and
+          Can_Defeat_Stalfos and
+          Can_Defeat_Darknuts and
+          Can_Defeat_Winged_Mothulas and
+          Can_Defeat_Wizzrobes and
+          Skull_Hammer
+
+- Name: Outset Savage Floor 50
+  Locations:
+      Outset Island - Savage Labyrinth Floor 50: Nothing
+  Exits:
+      Outset Near Savage Headstone: Nothing
+
+- Name: Outset Jabun's Cave
+  Locations:
+      Outset Island - Jabun's Cave Chest: Nothing
+  Exits:
+      Outset Island: Nothing
+
+- Name: Outset Beedle Shop
+  Hint Region: The Great Sea
+  Events:
+      Can Buy Bait: Nothing
+      Can Buy Hyoi Pears: Nothing
+  Locations:
+      Great Sea - Beedle Shop 20 Rupee Item: Nothing
+  Exits:
+      Outset Island: Nothing
+
+- Name: Headstone Island
+  Island: Headstone Island
+  Locations:
+      Headstone Island - Top of Island: Bait_Bag and 'Can_Buy_Hyoi_Pears'
+      Headstone Island - Sunken Treasure: Chart_For_Island_45 and Grappling_Hook
+  Exits:
+      Headstone Island Interior: Power_Bracelets
+      Headstone Island Submarine Exterior: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Headstone Island Interior
+  Exits:
+      ET First Room: Nothing
+      Headstone Island: Nothing
+
+- Name: Headstone Island Submarine Exterior
+  Island: Headstone Island
+  Exits:
+      Headstone Island Submarine Interior: Nothing
+      Headstone Island: Can_Sail_Away
+
+- Name: Headstone Island Submarine Interior
+  Locations:
+      Headstone Island - Submarine Chest: Can_Defeat_Bombchus
+  Exits:
+      Headstone Island Submarine Exterior: Can_Defeat_Bombchus
+
+- Name: Two Eye Reef
+  Island: Two Eye Reef
+  Locations:
+      Two Eye Reef - Destroy Cannons and Gunboats: Bombs and Can_Fly_With_Deku_Leaf_Outdoors
+      Two Eye Reef - Big Octo Great Fairy: Can_Defeat_Big_Octos
+      Two Eye Reef - Sunken Treasure: Chart_For_Island_46 and Grappling_Hook and Bombs
+      Two Eye Reef - Old Man Ho Ho: Nothing
+  Exits:
+      Two Eye Reef Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Two Eye Reef Lookout Platform
+  Island: Two Eye Reef
+  Locations:
+      Two Eye Reef - Lookout Platform Chest: Nothing
+  Exits:
+      Two Eye Reef: Can_Sail_Away
+
+- Name: Angular Isles
+  Island: Angular Isles
+  Locations:
+      Angular Isles - Peak Chest: Nothing
+      Angular Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Angular Isles - Sunken Treasure: Chart_For_Island_47 and Grappling_Hook
+  Exits:
+      Angular Isles Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      The Great Sea: Nothing
+
+- Name: Angular Isles Small Isle
+  Island: Angular Isles
+  Exits:
+      Angular Isles Cave: Nothing
+      Angular Isles: Nothing
+
+- Name: Angular Isles Cave
+  Locations:
+      Angular Isles - Cave Chest: Can_Aim_Mirror_Shield and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+  Exits:
+      Angular Isles Small Isle: Nothing
+
+- Name: Boating Course
+  Island: Boating Course
+  Locations:
+      Boating Course - Raft Chest: Nothing
+      Boating Course - Sunken Treasure: Chart_For_Island_48 and Grappling_Hook
+  Exits:
+      Boating Course Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
+      The Great Sea: Nothing
+
+- Name: Boating Course Small Isle
+  Island: Boating Course
+  Locations:
+      Boating Course - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+  Exits:
+      Boating Course Cave: Nothing
+      Boating Course: Nothing
+
+- Name: Boating Course Cave
+  Locations:
+      Boating Course - Cave Chest: Can_Hit_Diamond_Switches_At_Range and Can_Defeat_Miniblins_Easily
+  Exits:
+      Boating Course Small Isle: Nothing
+
+- Name: Five Star Isles
+  Island: Five Star Isles
+  Locations:
+      Five Star Isles - Sunken Treasure: Chart_For_Island_49 and Grappling_Hook
+  Exits:
+      Five Star Submarine Exterior: Can_Sail_Away
+      Five Star Lookout Platform: Can_Sail_Away
+      The Great Sea: Nothing
+
+- Name: Five Star Submarine Exterior
+  Island: Five Star Isles
+  Locations:
+      Five Star Isles - Raft Chest: Nothing
+  Exits:
+      Five Star Submarine Interior: Nothing
+      Five Star Isles: Can_Sail_Away
+
+- Name: Five Star Submarine Interior
+  Locations:
+      Five Star Isles - Submarine Chest: Nothing
+  Exits:
+      Five Star Submarine Exterior: Nothing
+
+- Name: Five Star Lookout Platform
+  Island: Five Star Isles
+  Locations:
+      Five Star Isles - Lookout Platform Destroy Cannons: Can_Destroy_Cannons
+  Exits:
+      Five Star Isles: Can_Sail_Away
+
+- Name: Ghost Ship Interior
+  Hint Region: The Great Sea # This will have to be changed if we ever randomize the ghost ship entrance
+  Locations:
+      Great Sea - Ghost Ship Chest: Can_Defeat_Wizzrobes and Can_Defeat_Poes and Can_Defeat_ReDeads and Can_Defeat_Stalfos
+
+- Name: DRC First Room
+  Dungeon: Dragon Roost Cavern
+  Dungeon Starting Room: Dragon Roost Cavern
+  Events:
+      Can Open DRC Green Pot: Nothing # already open
+  Locations:
+      Dragon Roost Cavern - First Room Chest: Nothing
+  Exits:
+      DRC Hub Room Lower Area: count(1, Dragon_Roost_Cavern_Small_Key)
+      Dragon Roost Pond Past Statues: Nothing
+      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'"
+      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+
+- Name: DRC Hub Room Lower Area
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Map Chest Room: Nothing
+      DRC Hub Room Lower Area Near Dim Room: Can_Fly_With_Deku_Leaf_Indoors or Can_Move_Boulders
+      DRC Switch Behind Wooden Barrier Room: count(2, Dragon_Roost_Cavern_Small_Key)
+      DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows or
+          (can_access(DRC Hub Room Highest Platform) and Can_Cut_Down_Hanging_DRC_Platform)
+      DRC First Room: Nothing
+
+- Name: DRC Hub Room Lower Area Near Dim Room
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Hub Room Lower Area: Nothing
+      DRC Lower Dim Room Chu Chu Area: Nothing
+
+- Name: DRC Map Chest Room
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Water Jug Alcove Chest: Nothing
+      Dragon Roost Cavern - Water Jug On Upper Shelf: Nothing
+  Exits:
+      DRC Hub Room Lower Area: Nothing
+      DRC Lower Dim Room Bokoblin Area: Nothing
+
+- Name: DRC Lower Dim Room Bokoblin Area
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Map Chest Room: Nothing
+      DRC Lower Dim Room Chu Chu Area: Nothing
+
+- Name: DRC Lower Dim Room Chu Chu Area
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Boarded Up Chest: Can_Destroy_Wooden_Barriers or can_access(DRC Lower Dim Room Bokoblin Area)
+  Exits:
+      DRC Hub Room Lower Area Near Dim Room: Nothing
+      DRC Lower Dim Room Bokoblin Area: Can_Destroy_Wooden_Barriers
+
+- Name: DRC Switch Behind Wooden Barrier Room
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Swing Across Lava Chest: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+  Exits:
+      DRC Hub Room Lower Area: Nothing
+      DRC Outside Lower Area: Nothing
+
+- Name: DRC Outside Lower Area
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Switch Behind Wooden Barrier Room: Nothing
+      DRC Rat Room: Nothing
+
+- Name: DRC Rat Room
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Rat Room Chest: Nothing
+      Dragon Roost Cavern - Rat Room Boarded Up Chest: Nothing
+  Exits:
+      DRC Outside Lower Area: Nothing
+      DRC Outside Upper Area: count(3, Dragon_Roost_Cavern_Small_Key)
+
+- Name: DRC Outside Upper Area
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Bird's Nest: Nothing
+  Exits:
+      DRC Dark Room Chest Area: count(4, Dragon_Roost_Cavern_Small_Key)
+      DRC Rat Room: Nothing
+      DRC Outside Lower Area: Can_Fly_With_Deku_Leaf_Outdoors
+
+- Name: DRC Dark Room Chest Area
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Dark Room Chest: Nothing
+  Exits:
+      DRC Dark Room Past Wooden Barrier: Nothing
+      DRC Outside Upper Area: count(1, Dragon_Roost_Cavern_Small_Key)
+
+- Name: DRC Dark Room Past Wooden Barrier
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Dark Room Chest Area: Can_Destroy_Wooden_Barriers
+      DRC Hub Room Upper Bridge: Fire_Arrows or can_access(DRC Dark Room Chest Area)
+
+- Name: DRC Hub Room Upper Bridge
+  Dungeon: Dragon Roost Cavern
+  Events:
+      Can Open DRC Blue Pot: Nothing # bomb flower
+#   Locations:
+#       Dragon Roost Cavern - Hub Room Tingle Chest: Bombs
+  Exits:
+      DRC Dark Room Past Wooden Barrier: Nothing
+      DRC Triple Bokoblin Room: Nothing
+      DRC Hub Room Lower Area: Nothing
+      DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors
+      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'"
+
+- Name: DRC Triple Bokoblin Room
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Pot Room Chest: Nothing
+      Dragon Roost Cavern - Pot on Upper Shelf in Pot Room: Nothing
+  Exits:
+      DRC Hub Room Upper Bridge: Nothing
+      DRC Magtail Lava Geyser Room: Nothing
+
+- Name: DRC Magtail Lava Geyser Room
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Boss Door Room Before Lava: Nothing
+      DRC Triple Bokoblin Room: Nothing
+
+- Name: DRC Boss Door Room Before Lava
+  Dungeon: Dragon Roost Cavern
+  Events:
+      Can Open DRC Gold Pot: Nothing # bomb flower
+  Exits:
+      DRC Mini Boss Upper Area: Nothing
+      DRC Boss Door Room Across Lava: Grappling_Hook or Hookshot or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
+      DRC Magtail Lava Geyser Room: Nothing
+      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'"
+      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+
+- Name: DRC Boss Door Room Across Lava
+  Dungeon: Dragon Roost Cavern
+  Events:
+      Can Get Fairies: Nothing
+  Locations:
+      Dragon Roost Cavern - Boss Stairs Right Chest: Nothing
+      Dragon Roost Cavern - Boss Stairs Left Chest: Nothing
+      Dragon Roost Cavern - Boss Stairs Right Pot: Nothing
+  Exits:
+      DRC Boss Door Room Before Lava: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
+      Gohma Battle Arena: Dragon_Roost_Cavern_Big_Key
+
+- Name: DRC Mini Boss Upper Area
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Mini Boss: Nothing
+  Exits:
+      DRC Boss Door Room Before Lava: Nothing
+      DRC Mini Boss Lower Area: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
+
+- Name: DRC Mini Boss Lower Area
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Rope Bridge Underpass Room: Nothing
+      DRC Mini Boss Upper Area: Grappling_Hook
+
+- Name: DRC Rope Bridge Underpass Room
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Under Rope Bridge Chest: Nothing
+  Exits:
+      DRC Hub Room Highest Platform: Nothing
+      DRC Mini Boss Lower Area: Nothing
+
+- Name: DRC Hub Room Highest Platform
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Rope Bridge Underpass Room: Nothing
+      DRC Hub Room Upper Bridge: Can_Fly_With_Deku_Leaf_Indoors
+      DRC Hub Room Lower Area: Nothing
+
+- Name: DRC Hub Room Mouth Area
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Hub Room Lower Area: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      DRC Before Big Key Room Upper: Grappling_Hook
+
+- Name: DRC Before Big Key Room Upper
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Tingle Statue Chest: Bombs and (Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors)
+  Exits:
+      DRC Hub Room Mouth Area: Nothing
+      DRC Before Big Key Room Lower: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: DRC Before Big Key Room Lower
+  Dungeon: Dragon Roost Cavern
+  Exits:
+      DRC Big Key Room: Nothing
+      DRC Before Big Key Room Upper: Grappling_Hook
+
+- Name: DRC Big Key Room
+  Dungeon: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Big Key Chest: Can_Stun_Magtails
+  Exits:
+      DRC Before Big Key Room Lower: Nothing
+
+- Name: Gohma Battle Arena
+  Boss Room: Dragon Roost Cavern
+  Locations:
+      Dragon Roost Cavern - Gohma Heart Container: Grappling_Hook
+  Exits: 
+      DRC Boss Door Room Across Lava: Grappling_Hook
+
+- Name: FW First Room
+  Dungeon: Forbidden Woods
+  Dungeon Starting Room: Forbidden Woods
+  Events:
+      Can Open FW Green Pot: Nothing # already open
+  Locations:
+      Forbidden Woods - First Room Chest: Nothing
+  Exits:
+      FW Second Room South Platform: Nothing
+      FW Entrance Platform: Nothing
+      FW Hub Room Upper Area: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'"
+      FW Boss Door Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+
+- Name: FW Second Room South Platform
+  Dungeon: Forbidden Woods
+  Exits:
+      FW First Room: Nothing
+      FW Second Room Ground Path: Nothing
+      FW Second Room North Platform: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Second Room North Platform
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Boko Baba Climb Chest: Can_Fly_With_Deku_Leaf_Indoors and Can_Defeat_Door_Flowers
+      Forbidden Woods - Pot High Above Hollow Tree: Can_Fly_With_Deku_Leaf_Indoors
+  Exits:
+      FW Short Cable Ride Room South Side: Nothing
+      FW Second Room Ground Path: Nothing
+
+- Name: FW Second Room Ground Path
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Inside Hollow Tree Chest: Can_Defeat_Door_Flowers or Can_Defeat_Boko_Babas
+  Exits:
+      FW Second Room South Platform: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Short Cable Ride Room South Side
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Short Cable Ride Room North Side: Can_Fly_With_Deku_Leaf_Indoors
+      FW Second Room North Platform: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Short Cable Ride Room North Side
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Hole in Tree Room Near Lower Door: Nothing
+      FW Short Cable Ride Room South Side: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Hole in Tree Room Near Lower Door
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Short Cable Ride Room North Side: Nothing
+      FW Hole in Tree Room Near Upper Door: Can_Defeat_Boko_Babas
+
+- Name: FW Hole in Tree Room Near Upper Door
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Hole In Tree Chest: Can_Fly_With_Deku_Leaf_Indoors
+  Exits:
+      FW Vine Circle Hallway: Can_Defeat_Boko_Babas
+      FW Hole in Tree Room Near Lower Door: Nothing
+
+- Name: FW Vine Circle Hallway
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Hole in Tree Room Near Upper Door: Nothing
+      FW Hub Room Middle Area: Can_Fly_With_Deku_Leaf_Indoors or Can_Defeat_Door_Flowers
+
+- Name: FW Hub Room Middle Area
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Hub Room Upper Area: Grappling_Hook
+      FW Mothula Hallway: Can_Defeat_Door_Flowers or can_access(FW Hub Room Upper Area)
+      FW Vine Circle Hallway: Nothing
+
+- Name: FW Hub Room Upper Area
+  Dungeon: Forbidden Woods
+  Events:
+      Can Open FW Blue Pot: Can_Destroy_Leaf_Piles
+  Exits:
+      FW Morth Pit Hallway: Nothing
+      FW Cable Ride Above Poison Water Room Lower West: count(1, Forbidden_Woods_Small_Key)
+      FW Hub Room Lower Area: Boomerang
+      FW Hub Room Middle Area: Nothing
+      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      FW Boss Door Room: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'"
+
+- Name: FW Morth Pit Hallway
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Morth Pit Chest: Nothing
+  Exits:
+      FW Vine Maze Room: Nothing
+      FW Hub Room Middle Area: Nothing
+
+- Name: FW Vine Maze Room
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Vine Maze Left Chest: Nothing
+      Forbidden Woods - Vine Maze Right Chest: Nothing
+      Forbidden Woods - Highest Pot in Vine Maze: Can_Fly_With_Deku_Leaf_Indoors
+  Exits:
+      FW Morth Pit Hallway: Nothing
+
+- Name: FW Cable Ride Above Poison Water Room Lower West
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Cable Ride Above Poison Water Room Lower East: Can_Fly_With_Deku_Leaf_Indoors
+      FW Hub Room Upper Area: Nothing
+
+- Name: FW Cable Ride Above Poison Water Room Lower East
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Tall Room Before Mini Boss: Nothing
+      FW Cable Ride Above Poison Water Room Lower West: Nothing
+
+- Name: FW Tall Room Before Mini Boss
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Tall Room Chest: Grappling_Hook
+  Exits:
+      FW Mini Boss Room: Nothing
+      FW Cable Ride Above Poison Water Room Upper East: Can_Defeat_Door_Flowers
+      FW Cable Ride Above Poison Water Room Lower East: Nothing
+
+- Name: FW Mini Boss Room
+  Locations:
+      Forbidden Woods - Mothula Mini Boss Chest: Can_Defeat_Winged_Mothulas
+  Exits:
+      FW Tall Room Before Mini Boss: Boomerang
+
+- Name: FW Cable Ride Above Poison Water Room Upper East
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Cable Ride Above Poison Water Room Upper West: Can_Destroy_Hanging_Seeds and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+      FW Cable Ride Above Poison Water Room Lower East: Nothing
+      FW Tall Room Before Mini Boss: Nothing
+
+- Name: FW Cable Ride Above Poison Water Room Upper West
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Past Seeds Hanging by Vines Chest: Nothing
+  Exits:
+      FW Cable Ride Above Poison Water Room Upper East: Can_Fly_With_Deku_Leaf_Indoors and Can_Destroy_Hanging_Seeds
+      FW Cable Ride Above Poison Water Room Lower West: Nothing
+      FW Hub Room Highest Platform: Nothing
+
+- Name: FW Hub Room Highest Platform
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Cable Ride Above Poison Water Room Upper West: Nothing
+      FW Hub Room Upper Area: Nothing
+
+- Name: FW Hub Room Lower Area
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Forked Hallway Lower: Nothing
+      FW Hub Room Middle Area: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Forked Hallway Lower
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Poison River Room Before River: Nothing
+      FW Hub Room Lower Area: Nothing
+
+- Name: FW Poison River Room Before River
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Chest Across Hanging Flower: Nothing
+  Exits:
+      FW Poison River Room After River: Boomerang and Can_Fly_With_Deku_Leaf_Indoors
+      FW Tingle Chest Room: Boomerang or Can_Destroy_Wooden_Barriers
+      FW Forked Hallway Lower: Nothing
+
+- Name: FW Poison River Room After River
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Poison River Room Before River: Nothing
+      FW Big Key Room: Nothing
+
+- Name: FW Tingle Chest Room
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Tingle Statue Chest: Bombs
+      Forbidden Woods - Locked Tree Trunk Chest: Can_Defeat_Boko_Babas and (Fire_Arrows or Bombs or Can_Fly_With_Deku_Leaf_Indoors)
+  Exits:
+      FW Poison River Room Before River: Nothing
+
+- Name: FW Big Key Room
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Big Key Chest: Boomerang
+  Exits:
+      FW Big Key Room Higher Ledge: Grappling_Hook
+
+- Name: FW Big Key Room Higher Ledge
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Forked Hallway Higher Ledge: Boomerang and Can_Defeat_Moblins and can_access(FW Big Key Room)
+      FW Big Key Room: Nothing
+
+- Name: FW Forked Hallway Higher Ledge
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Forked Hallway Lower: Nothing
+      FW Big Key Room Higher Ledge: Nothing
+
+- Name: FW Mothula Hallway
+  Dungeon: Forbidden Woods
+  Locations:
+      Forbidden Woods - Double Mothula Room Chest: Can_Defeat_Mothulas
+  Exits:
+      FW Boss Door Room: Can_Defeat_Mothulas
+      FW Hub Room Middle Area: Can_Defeat_Mothulas
+
+- Name: FW Boss Door Room
+  Dungeon: Forbidden Woods
+  Events:
+      Can Open FW Gold Pot: Nothing # can throw a seed at it
+      Can Get Fairies: Nothing
+  Exits:
+      Kalle Demos Battle Arena: Forbidden_Woods_Big_Key
+      FW Mothula Hallway: Nothing
+      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'"
+      FW Hub Room Upper Area: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+
+- Name: Kalle Demos Battle Arena
+  Boss Room: Forbidden Woods
+  Locations:
+      Forbidden Woods - Kalle Demos Heart Container: Can_Defeat_Kalle_Demos
+  Exits:
+      FW Boss Door Room: Can_Defeat_Kalle_Demos
+
+- Name: TOTG Entrance Room
+  Dungeon: Tower of the Gods
+  Dungeon Starting Room: Tower of the Gods
+  Exits:
+      TOTG East Golden Statue Room: Nothing
+      TOTG Entrance Room Past Gate: "'Can_Bring_East_Golden_Statue'"
+      TOTG Entrance Room past Bombable Walls: Bombs
+      TOTG Map Chest Room: Nothing
+      TOTG Entrance Room Past Waterfall: "'Can_Bring_West_Golden_Statue'"
+      Tower of the Gods Sector: Nothing
+
+- Name: TOTG East Golden Statue Room
+  Dungeon: Tower of the Gods
+  Events:
+      Can Bring East Golden Statue: Nothing
+  Exits:
+      TOTG Entrance Room: Nothing
+
+- Name: TOTG Entrance Room Past Gate
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG Hop Across Floating Boxes Room: Nothing
+      TOTG Entrance Room: "'Can_Bring_East_Golden_Statue'"
+
+- Name: TOTG Hop Across Floating Boxes Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Hop Across Floating Boxes Chest: Nothing
+  Exits:
+      TOTG Entrance Room Past Gate: Nothing
+
+- Name: TOTG Map Chest Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Chest Behind Bombable Wall: Bombs
+      Tower of the Gods - Pot Behind Bombable Wall: Bombs
+  Exits:
+      TOTG Entrance Room: Nothing
+
+- Name: TOTG Entrance Room past Bombable Walls
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Light Two Torches Chest: Nothing
+  Exits:
+      TOTG Skulls Room: Nothing
+      TOTG West Golden Statue Room: count(1, Tower_of_the_Gods_Small_Key)
+      TOTG Entrance Room: Bombs
+
+- Name: TOTG Skulls Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Skull Room Chest: Nothing
+      Tower of the Gods - Shoot Eye Above Skulls Chest: Heros_Bow
+  Exits:
+      TOTG Entrance Room past Bombable Walls: Nothing
+
+- Name: TOTG West Golden Statue Room
+  Dungeon: Tower of the Gods
+  Events:
+      Can Bring West Golden Statue: Can_Defeat_Yellow_Chu_Chus # Need to defeat the chuchus to activate staircase
+  Exits:
+      TOTG Entrance Room past Bombable Walls: Nothing
+
+- Name: TOTG Entrance Room Past Waterfall
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG Rising Platforms Room: Nothing
+      TOTG Entrance Room: "'Can Bring West Golden Statue'"
+
+- Name: TOTG Rising Platforms Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Tingle Statue Chest: Bombs
+  Exits:
+      TOTG Hub Room: Nothing
+      TOTG Entrance Room Past Waterfall: Nothing
+
+- Name: TOTG Hub Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Stone Tablet: Wind_Waker and ('Can_Bring_East_Servant_of_the_Tower' or 'Can_Bring_West_Servant_of_the_Tower_to_Hub' or 'Can_Bring_North_Servant_of_the_Tower')
+  Exits:
+      TOTG East Servant Corridor: Nothing
+      TOTG West Servant Corridor Near Hub Room: Nothing
+      TOTG North Servant Corridor: Nothing
+      TOTG Big Key Room: Wind_Waker and 'Can_Bring_East_Servant_of_the_Tower' and 'Can_Bring_West_Servant_of_the_Tower_to_Hub' and 'Can_Bring_North_Servant_of_the_Tower'
+      TOTG Rising Platforms Room: Nothing
+
+- Name: TOTG East Servant Corridor
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG East Servant Room: Nothing
+      TOTG East Servant Corridor Armos Knights Room: Heros_Bow
+      TOTG Hub Room: Nothing
+
+- Name: TOTG East Servant Room
+  Dungeon: Tower of the Gods
+  Events:
+      Can Bring East Servant of the Tower: Nothing
+  Exits:
+      TOTG East Servant Corridor: Nothing
+
+- Name: TOTG East Servant Corridor Armos Knights Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - First Armos Knights Chest: Bombs
+  Exits:
+      TOTG East Servant Corridor: Nothing
+
+- Name: TOTG West Servant Corridor Near Hub Room
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG West Servant Corridor Near West Servant Room: Heros_Bow or Grappling_Hook
+      TOTG West Servant Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG Hub Room: Nothing
+
+- Name: TOTG West Servant Corridor Near Mini Boss Room
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG Mini Boss Room: "'Can_Bring_West_Servant_of_the_Tower_to_Corridor'"
+      TOTG West Servant Corridor Near Hub Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Corridor Near West Servant Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: TOTG West Servant Corridor Near West Servant Room
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG West Servant Room Near Corridor: Nothing
+      TOTG West Servant Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+      TOTG West Servant Corridor Near Hub Room: Heros_Bow or Grappling_Hook
+
+- Name: TOTG West Servant Room Near Corridor
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG West Servant Corridor Near West Servant Room: Nothing
+      TOTG West Servant Room Near Statue: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: TOTG West Servant Room Near Statue
+  Dungeon: Tower of the Gods
+  Events:
+      Can Bring West Servant of the Tower to Corridor: Can_Play_CM # Only need to get back out of the room with the statue
+      Can Bring West Servant of the Tower to Hub: Can_Play_CM and Heros_Bow # Also need bow to start the moving platforms and carry statue across
+  Exits:
+      TOTG West Servant Room Near Corridor: Can_Play_CM
+
+- Name: TOTG Mini Boss Room
+  Locations:
+      Tower of the Gods - Darknut Mini Boss: Can_Defeat_Darknuts
+  Exits:
+      TOTG West Servant Corridor Near Mini Boss Room: Can_Defeat_Darknuts
+
+- Name: TOTG North Servant Corridor
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG Hub Room: Nothing
+      TOTG Many Moving Platforms Room: Nothing
+      TOTG North Servant Room: count(2, Tower_of_the_Gods_Small_Key)
+      TOTG North Servant Corridor Past Bombable Wall: Bombs
+
+- Name: TOTG Many Moving Platforms Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Floating Platforms Room Lower Chest: Heros_Bow or Can_Fly_With_Deku_Leaf_Indoors
+      Tower of the Gods - Floating Platforms Room Upper Chest: Heros_Bow
+  Exits:
+      TOTG North Servant Corridor: Nothing
+
+- Name: TOTG North Servant Corridor Past Bombable Wall
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG North Servant Corridor Armos Knights Room: Nothing
+      TOTG North Servant Corridor: Bombs
+
+- Name: TOTG North Servant Corridor Armos Knights Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Second Armos Knights Chest: Can_Play_WR
+  Exits:
+      TOTG North Servant Corridor Past Bombable Wall: Nothing
+
+- Name: TOTG North Servant Room
+  Dungeon: Tower of the Gods
+  Exits:
+      TOTG North Servant Room Past Lasers: Can_Fly_With_Deku_Leaf_Indoors
+      TOTG North Servant Corridor: Nothing
+
+- Name: TOTG North Servant Room Past Lasers
+  Dungeon: Tower of the Gods
+  Events:
+      Can Bring North Servant of the Tower: Can_Play_CM
+  Exits:
+      TOTG North Servant Room: Can_Play_CM
+
+- Name: TOTG Big Key Room
+  Dungeon: Tower of the Gods
+  Locations:
+      Tower of the Gods - Big Key Chest: Nothing
+      Tower of the Gods - Eastern Pot in Big Key Chest Room: Nothing
+  Exits:
+      TOTG Outside Area: Nothing
+      TOTG Hub Room: Nothing
+
+- Name: TOTG Outside Area
+  Dungeon: Tower of the Gods
+  Events:
+      Can Get Fairies: Nothing
+  Exits:
+      TOTG Big Key Room: Nothing
+      Gohdan Battle Arena: Tower_of_the_Gods_Big_Key
+
+- Name: Gohdan Battle Arena
+  Boss Room: Tower of the Gods
+  Locations:
+      Tower of the Gods - Gohdan Heart Container: Can_Defeat_Gohdan
+  Exits:
+      TOTG Outside Area: Can_Defeat_Gohdan
+
+- Name: ET First Room
+  Dungeon: Earth Temple
+  Dungeon Starting Room: Earth Temple
+  Exits:
+      ET Early Two Switches Room: Nothing
+      Headstone Island Interior: Nothing
+
+- Name: ET Early Two Switches Room
+  Dungeon: Earth Temple
+  Exits:
+      ET Map Chest Room: Can_Play_CM
+      ET First Room: Nothing
+
+- Name: ET Map Chest Room
+  Dungeon: Earth Temple
+  Events:
+      Can Open ET Green Pot: Nothing # can throw a skull at it
+  Locations:
+      Earth Temple - Warp Pot Room Chest: Can_Play_CM and Can_Aim_Mirror_Shield
+      Earth Temple - Warp Pot Room Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
+  Exits:
+      ET Giant Statue Room: Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus
+      ET Early Two Switches Room: Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus
+      ET Block Push Corridor: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Blue_Pot'"
+      ET Boss Door Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+
+- Name: ET Giant Statue Room
+  Dungeon: Earth Temple
+  Exits:
+      ET First Crypt: Skull_Hammer and Can_Play_CM
+      ET Chu Chus and Switches Room: count(2, Earth_Temple_Small_Key)
+      ET Giant Statue Room Under Statue: Can_Play_CM and Can_Aim_Mirror_Shield
+      ET Map Chest Room: Nothing
+
+- Name: ET First Crypt
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - First Crypt Chest: Power_Bracelets and Can_Play_CM
+  Exits:
+      ET Small Room South of First Crypt: Nothing
+      ET Giant Statue Room: Nothing
+
+- Name: ET Small Room South of First Crypt
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Chest Behind Destructable Wall: Can_Aim_Mirror_Shield
+  Exits:
+      ET First Crypt: Nothing
+
+- Name: ET Chu Chus and Switches Room
+  Dungeon: Earth Temple
+  Exits:
+      ET Block Push Corridor: Power_Bracelets and Fire_Arrows
+      ET Giant Statue Room: Nothing
+
+- Name: ET Block Push Corridor
+  Dungeon: Earth Temple
+  Events:
+      Can Open ET Blue Pot: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
+  Locations:
+      Earth Temple - Three Blocks Room Chest: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
+  Exits:
+      ET Two Moblins and Poes Room: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
+      ET Chu Chus and Switches Room: Nothing
+      ET Map Chest Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      ET Boss Door Room: "'Can_Open_ET_Blue_Pot' and 'Can_Open_ET_Gold_Pot'"
+
+- Name: ET Two Moblins and Poes Room
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Behind Statues Chest: Can_Play_CM or Can_Aim_Mirror_Shield
+  Exits:
+      ET Two Moblins and Poes Room Past Stairs:
+          Can_Defeat_Moblins and Can_Defeat_Poes and (Can_Play_CM
+          or Can_Aim_Mirror_Shield)
+      ET Two Moblins and Poes Room Past Light Wall: Can_Play_CM or Can_Aim_Mirror_Shield
+      ET Block Push Corridor: Nothing
+
+- Name: ET Two Moblins and Poes Room Past Stairs
+  Dungeon: Earth Temple
+  Exits:
+      ET Second Crypt: Nothing
+      ET Mini Boss Room: count(3, Earth_Temple_Small_Key)
+
+- Name: ET Second Crypt
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Second Crypt Casket: Can_Defeat_ReDeads
+  Exits:
+      ET Two Moblins and Poes Room Past Stairs: Can_Defeat_ReDeads
+
+- Name: ET Mini Boss Room
+  Exits:
+      ET Mini Boss Room Upper Ledge: Can_Defeat_Stalfos
+      ET Two Moblins and Poes Room Past Stairs: Can_Aim_Mirror_Shield and can_access(ET Mini Boss Room Upper Ledge)
+
+- Name: ET Mini Boss Room Upper Ledge
+  Locations:
+      Earth Temple - Stalfos Mini Boss: Nothing
+  Exits:
+      ET Mini Boss Room: Nothing
+
+- Name: ET Two Moblins and Poes Room Past Light Wall
+  Dungeon: Earth Temple
+  Exits:
+      ET Giant Statue Room Upper Ledge: Nothing
+
+- Name: ET Giant Statue Room Upper Ledge
+  Dungeon: Earth Temple
+  Exits:
+      ET Two Moblins and Poes Room Past Light Wall: Nothing
+      ET Giant Statue Room: Nothing
+
+- Name: ET Giant Statue Room Under Statue
+  Dungeon: Earth Temple
+  Exits:
+      ET Hanging Bridge Room: Nothing
+
+- Name: ET Hanging Bridge Room
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Tingle Statue Chest: Bombs
+  Exits:
+      ET Basement Hub Room: Can_Play_EGL
+      ET Giant Statue Room Under Statue: Nothing
+
+- Name: ET Basement Hub Room
+  Dungeon: Earth Temple
+  Exits:
+      ET Foggy Floormasters Room: Can_Play_CM or Can_Aim_Mirror_Shield
+      ET Poes and Bubbles Room Behind Grating: Can_Play_CM or Can_Aim_Mirror_Shield
+      ET Basement Hub Room Upper Ledge: Can_Play_CM or Can_Aim_Mirror_Shield
+      ET Hanging Bridge Room: Nothing
+
+- Name: ET Foggy Floormasters Room
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Foggy Floormaster Room End Chest: Nothing
+      Earth Temple - Kill All Floormasters Chest: Can_Defeat_Floormasters
+  Exits:
+      ET Basement Hub Room: Nothing
+
+- Name: ET Poes and Bubbles Room Behind Grating
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Near Hammer Button Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
+  Exits:
+      ET Basement Hub Room: Nothing
+
+- Name: ET Basement Hub Room Upper Ledge
+  Dungeon: Earth Temple
+  Exits:
+      ET Poes and Bubbles Room: count(3, Earth_Temple_Small_Key)
+      ET Basement Hub Room: Nothing
+
+- Name: ET Poes and Bubbles Room
+  Dungeon: Earth Temple
+  Exits:
+      ET Basement Hub Room Upper Ledge: count(1, Earth_Temple_Small_Key)
+      ET Third Crypt:
+          Skull_Hammer and Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
+          and can_access(ET Poes and Bubbles Room Behind Grating)
+
+- Name: ET Third Crypt
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Third Crypt Chest: Nothing
+  Exits:
+      ET Poes and Bubbles Room: Nothing
+      ET Boss Door Room: Can_Play_EGL
+
+- Name: ET Boss Door Room
+  Dungeon: Earth Temple
+  Events:
+      Can Open ET Gold Pot: Bombs
+      Can Get Fairies: Nothing
+  Exits:
+      ET Many Mirrors Room: Nothing
+      Jalhalla Battle Arena: Earth_Temple_Big_Key
+      ET Third Crypt: Nothing
+      ET Map Chest Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Gold_Pot'"
+      ET Block Push Corridor: "'Can_Open_ET_Blue_Pot' and 'Can_Open_ET_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+
+- Name: ET Many Mirrors Room
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Many Mirrors Room Right Chest: Can_Play_CM
+      Earth Temple - Many Mirrors Room Left Chest: Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
+  Exits:
+      ET Big Key Chest Room: Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
+      ET Many Mirrors Room Past Light Wall: Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
+      ET Boss Door Room: Nothing
+
+- Name: ET Big Key Chest Room
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Big Key Chest: Can_Defeat_Blue_Bubbles and Can_Defeat_Darknuts
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag and Can_Defeat_Darknuts_Easily
+  Exits:
+      ET Many Mirrors Room: Nothing
+
+- Name: ET Many Mirrors Room Past Light Wall
+  Dungeon: Earth Temple
+  Exits:
+      ET Triple Stalfos Room: Nothing
+
+- Name: ET Triple Stalfos Room
+  Dungeon: Earth Temple
+  Locations:
+      Earth Temple - Stalfos Crypt Room Chest: Can_Aim_Mirror_Shield and Can_Defeat_Stalfos
+  Exits:
+      ET Many Mirrors Room Past Light Wall: Nothing
+
+- Name: Jalhalla Battle Arena
+  Boss Room: Earth Temple
+  Locations:
+      Earth Temple - Jalhalla Heart Container: Can_Defeat_Jalhalla
+  Exits:
+      ET Boss Door Room: Can_Defeat_Jalhalla
+
+- Name: WT First Room
+  Dungeon: Wind Temple
+  Dungeon Starting Room: Wind Temple
+  Exits:
+      WT First Warp Pot Room Front: Nothing
+      Gale Isle Interior: Nothing
+
+- Name: WT First Warp Pot Room Front
+  Dungeon: Wind Temple
+  Exits:
+      WT First Warp Pot Room Lower Area: Nothing
+      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM # iron boots in case you fall
+      WT First Room: Nothing
+
+- Name: WT First Warp Pot Room Lower Area
+  Dungeon: Wind Temple
+  Events:
+      Can Open WT Green Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword # you can get the stalfos to break it but he doesn't respawn on room reload
+  Locations:
+      Wind Temple - Between Dirt Patches Chest: Can_Play_CM
+  Exits:
+      WT First Warp Pot Room Front: Iron_Boots
+      WT First Room: Nothing
+      WT Hub Room Middle South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
+      WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+
+- Name: WT First Warp Pot Room Back
+  Dungeon: Wind Temple
+  Exits:
+      WT First Warp Pot Room Lower Area: Nothing
+      WT Early Turn Floor Room: Nothing
+
+- Name: WT Early Turn Floor Room
+  Dungeon: Wind Temple
+  Exits:
+      WT First Warp Pot Room Back: Nothing
+      WT Early Turn Floor Room Past Turn Floor: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: WT Early Turn Floor Room Past Turn Floor
+  Dungeon: Wind Temple
+  Exits:
+      WT Makar Capture Room: Can_Play_CM
+      WT Early Turn Floor Room: Nothing
+      WT Early Turn Floor Room Upper Area Far Side: Hookshot
+
+- Name: WT Early Turn Floor Room Upper Area Near Side
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Behind Stone Head in Hidden Upper Room: Hookshot and Iron_Boots
+  Exits:
+      WT Early Turn Floor Room: Iron_Boots
+      WT Early Turn Floor Room Upper Area Far Side: Nothing
+
+- Name: WT Early Turn Floor Room Upper Area Far Side
+  Dungeon: Wind Temple
+  Exits:
+      WT Early Turn Floor Room Upper Area Near Side: Can_Fan_With_Deku_Leaf
+      WT Early Turn Floor Room Past Turn Floor: Nothing
+
+- Name: WT Makar Capture Room
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Tingle Statue Chest: Bombs
+  Exits:
+      WT Hub Room Middle West Platform: Can_Play_CM
+      WT Makar Capture Room Upper Platform: Hookshot and Can_Play_CM and Can_Defeat_Wizzrobes_At_Range
+      WT Early Turn Floor Room Past Turn Floor: Nothing
+
+- Name: WT Hub Room Middle West Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Middle North platform: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Compass Chest Platform: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+      WT Makar Capture Room: Nothing
+
+- Name: WT Hub Room Middle North platform
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Behind Stone Head Chest: Hookshot and Iron_Boots
+  Exits:
+      WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Compass Chest Platform: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+      WT Hub Room Middle West Platform: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: WT Hub Room Middle East Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Song Stone and Turn Platform Near Hub Room: Nothing
+      WT Hub Room Middle North platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Lower Area: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+
+- Name: WT Song Stone and Turn Platform Near Hub Room
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Middle East Platform: Nothing
+      WT Song Stone and Turn Platform Near Cyclones Room: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: WT Song Stone and Turn Platform Near Cyclones Room
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Left Alcove Chest: Nothing
+  Exits:
+      WT Many Cyclones Room East Side: Nothing
+      WT Big Key Chest Room: Can_Play_WGA
+      WT Song Stone and Turn Platform Near Hub Room: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: WT Big Key Chest Room
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Big Key Chest: Can_Defeat_Darknuts
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag and Can_Defeat_Darknuts_Easily
+  Exits:
+      WT Song Stone and Turn Platform Near Cyclones Room: Can_Defeat_Darknuts
+
+- Name: WT Many Cyclones Room East Side
+  Dungeon: Wind Temple
+  Exits:
+      WT Many Cyclones Room West Side: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
+      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
+      WT Song Stone and Turn Platform Near Cyclones Room: Nothing
+
+- Name: WT Many Cyclones Room West Side
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
+      Wind Temple - Behind Stone Head in Many Cyclones Room: Nothing
+  Exits:
+      WT Hub Room Middle South Platform: Nothing
+      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
+      WT Many Cyclones Room East Side: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: WT Hub Room Middle South Platform
+  Dungeon: Wind Temple
+  Events:
+      Can Open WT Blue Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword
+  Exits:
+      WT Hub Room Compass Chest Platform: Iron_Boots
+      WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Middle West Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Many Cyclones Room West Side: Nothing
+      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
+      WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'"
+
+- Name: WT Hub Room Compass Chest Platform
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Hub Room Center Chest: Nothing
+  Exits:
+      WT Hub Room Lower Area: Nothing
+      WT Hub Room Middle West Platform: Hookshot and Iron_Boots
+
+- Name: WT Hub Room Lower Area
+  Dungeon: Wind Temple
+  Exits:
+      WT Cracked Floors Room: Nothing
+      WT Mini Boss Room: count(2, Wind_Temple_Small_Key)
+      WT Hub Room Compass Chest Platform: Hookshot and Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
+      WT Hub Room Below Fan: can_access(WT Hub Room Upper North Platform)
+
+- Name: WT Mini Boss Room
+  Locations:
+      Wind Temple - Wizzrobe Mini Boss: Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
+  Exits:
+      WT Hub Room Lower Area: Hookshot and Skull_Hammer and Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
+
+- Name: WT Cracked Floors Room
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Spike Wall Room First Chest: Iron_Boots
+      Wind Temple - Spike Wall Room Destroy Floors: Iron_Boots and Can_Defeat_Floormasters
+  Exits:
+      WT Hub Room Lower Area: Nothing
+
+- Name: WT Makar Capture Room Upper Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Makar Capture Room: Nothing
+      WT Blue Bubbles Room: Nothing
+
+- Name: WT Blue Bubbles Room
+  Dungeon: Wind Temple
+  Exits:
+      WT Blue Bubbles Room Upper Ledge: Hookshot and Can_Play_CM and Can_Defeat_Blue_Bubbles
+      WT Makar Capture Room Upper Platform: Nothing
+
+- Name: WT Blue Bubbles Room Upper Ledge
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Upper North Platform: Nothing
+      WT Blue Bubbles Room: Nothing
+
+- Name: WT Hub Room Upper North Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Upper East Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Middle North platform: Nothing
+      WT Blue Bubbles Room Upper Ledge: Nothing
+
+- Name: WT Hub Room Upper East Platform
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Hub Room Top Chest: Nothing
+  Exits:
+      WT Hub Room Middle East Platform: Nothing
+
+- Name: WT Hub Room Upper South Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Seven Armos Room: Nothing
+      WT Hub Room Upper East Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Middle South Platform: Nothing
+
+- Name: WT Seven Armos Room
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Behind Armos Chest: Can_Defeat_Armos
+  Exits:
+      WT Hub Room Upper South Platform: Can_Defeat_Armos
+
+- Name: WT Hub Room Below Fan
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Lower Area: Nothing
+      WT Tall Basement Room: count(2, Wind_Temple_Small_Key)
+
+- Name: WT Tall Basement Room
+  Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Kill All Basement Room Enemies:
+          Hookshot and Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and
+          Can_Defeat_Blue_Bubbles and Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Morths
+  Exits:
+      WT Hub Room Below Fan: Nothing
+      WT Long Narrow Room: Hookshot and Iron_Boots
+
+- Name: WT Long Narrow Room
+  Dungeon: Wind Temple
+  Exits:
+      WT Long Narrow Room Past Gap: Hookshot and Can_Play_CM
+      WT Tall Basement Room: Nothing
+
+- Name: WT Long Narrow Room Past Gap
+  Dungeon: Wind Temple
+  Exits:
+      WT Long Narrow Room: Can_Fly_With_Deku_Leaf_Indoors
+      WT Three Big Fans Room: Nothing
+
+- Name: WT Three Big Fans Room
+  Dungeon: Wind Temple
+  Exits:
+      WT Three Big Fans Room Past Song Stone: Iron_Boots and Can_Play_WGA
+      WT Long Narrow Room Past Gap: Nothing
+
+- Name: WT Three Big Fans Room Past Song Stone
+  Dungeon: Wind Temple
+  Events:
+      Can Open WT Gold Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword
+      Can Get Fairies: Nothing
+  Exits:
+      Molgera Battle Arena: Wind_Temple_Big_Key
+      WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'"
+      WT Hub Room Middle South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+
+- Name: Molgera Battle Arena
+  Boss Room: Wind Temple
+  Locations:
+      Wind Temple - Molgera Heart Container: Can_Defeat_Molgera
+  Exits:
+      WT Three Big Fans Room Past Song Stone: Can_Defeat_Molgera
+
+- Name: Hyrule Castle Front
+  Hint Region: Hyrule
+  Exits:
+      Tower of the Gods Sector: Nothing
+      Hyrule Castle Interior: Nothing
+
+- Name: Hyrule Castle Interior
+  Hint Region: Hyrule
+  Events:
+      Can Farm Knights Crests: Grappling_Hook and Spoils_Bag
+  Exits:
+      Hyrule Castle Sword Chamber: Nothing
+      Hyrule Castle Bridge: Nothing
+      Hyrule Castle Front: Nothing
+
+- Name: Hyrule Castle Sword Chamber
+  Hint Region: Hyrule
+  Locations:
+      Hyrule Castle - Sword Chamber Chest: Can_Defeat_Mighty_Darknuts
+  Exits:
+      Hyrule Castle Interior: Nothing
+
+- Name: Hyrule Castle Bridge
+  Hint Region: Hyrule
+  Exits:
+      Hyrule Field Path: Can_Get_Past_Hyrule_Barrier
+      Hyrule Castle Interior: Nothing
+
+- Name: Hyrule Field Path
+  Hint Region: Hyrule
+  Exits:
+      Hyrule Field Path Past Broken Bridge: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      Hyrule Castle Bridge: Nothing
+
+- Name: Hyrule Field Path Past Broken Bridge
+  Hint Region: Hyrule
+  Exits:
+      Ganon's Tower Trials Hub: Nothing
+      Hyrule Field Path: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Ganon's Tower Trials Hub
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower DRC Trial: Nothing
+      Ganon's Tower FW Trial: Nothing
+      Ganon's Tower ET Trial: Nothing
+      Ganon's Tower WT Trial: Nothing
+      Ganon's Tower First Staircase: Rematch_Bosses_Skipped or
+          (Can_Defeat_Gohma and can_access(Ganon's Tower Gohma Refight) and
+          Can_Defeat_Kalle_Demos and can_access(Ganon's Tower Kalle Demos Refight) and
+          Can_Defeat_Jalhalla and can_access(Ganon's Tower Jalhalla Refight) and
+          Can_Defeat_Molgera and can_access(Ganon's Tower Molgera Refight))
+      Hyrule Field Path Past Broken Bridge: Nothing
+
+- Name: Ganon's Tower DRC Trial
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Gohma Refight: Grappling_Hook and Can_Fly_With_Deku_Leaf_Indoors
+      Ganon's Tower Trials Hub: Nothing
+
+- Name: Ganon's Tower Gohma Refight
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Trials Hub: Can_Defeat_Gohma
+
+- Name: Ganon's Tower FW Trial
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Kalle Demos Refight: Can_Fan_With_Deku_Leaf and Can_Fly_With_Deku_Leaf_Indoors
+      Ganon's Tower Trials Hub: Nothing
+
+- Name: Ganon's Tower Kalle Demos Refight
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Trials Hub: Can_Defeat_Kalle_Demos
+
+- Name: Ganon's Tower ET Trial
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Jalhalla Refight: Can_Aim_Mirror_Shield
+      Ganon's Tower Trials Hub: Nothing
+
+- Name: Ganon's Tower Jalhalla Refight
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Trials Hub: Can_Defeat_Jalhalla
+
+- Name: Ganon's Tower WT Trial
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Molgera Refight: Hookshot and Can_Fly_With_Deku_Leaf_Indoors
+      Ganon's Tower Trials Hub: Nothing
+
+- Name: Ganon's Tower Molgera Refight
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Trials Hub: Can_Defeat_Molgera
+
+- Name: Ganon's Tower First Staircase
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Middle Hub Room: Nothing
+      Ganon's Tower Trials Hub: Nothing
+
+- Name: Ganon's Tower Middle Hub Room
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Phantom Ganon Maze: Nothing
+      Forsaken Fortress Inner Courtyard: Boomerang
+      Ganon's Tower Final Staircase: Light_Arrows
+      Ganon's Tower First Staircase: Nothing
+
+- Name: Ganon's Tower Phantom Ganon Maze
+  Hint Region: Ganon's Tower
+  Locations:
+      Ganon's Tower - Maze Chest: Can_Defeat_Phantom_Ganon
+  Events:
+      Can Farm Lots Of Rupees: Can_Defeat_Phantom_Ganon # defeat phg to reach maze rooms with rupees
+  Exits:
+      Ganon's Tower Middle Hub Room: Can_Defeat_Phantom_Ganon
+
+- Name: Ganon's Tower Final Staircase
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Room: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
+      Ganon's Tower Middle Hub Room: Nothing
+
+- Name: Ganon's Tower Puppet Ganon Boss Room
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Spire: Can_Defeat_Puppet_Ganon
+
+- Name: Ganon's Tower Spire
+  Hint Region: Ganon's Tower
+  Locations:
+      Ganon's Tower - Defeat Ganondorf: Can_Defeat_Ganondorf

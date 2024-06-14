@@ -1,0 +1,67 @@
+name: Build - Wii U
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version'
+        default: ''
+        required: false
+        type: string
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+    secrets:
+      SEED_KEY:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
+
+env:
+  EXTRA_CMAKE_FLAGS: ""
+
+jobs:
+  build-wiiu-homebrew-application:
+    name: Build Wii U Homebrew Application
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set Debug Flags
+        if: inputs.build_type == 'Debug'
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }}" >> $GITHUB_ENV
+ 
+      - name: Set Release Flags
+        if: inputs.build_type == 'Release' && inputs.version != ''
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DRELEASE_TAG=${{ inputs.version }}" >> $GITHUB_ENV
+      
+      - name: Build App
+        working-directory: ${{ github.workspace }}
+        run: |
+          docker build -t rando .
+          docker run --user="$(id --user):$(id --group)" -i -e BUILD_TYPE=randomizer -e CMAKE_ARGS="${{ env.EXTRA_CMAKE_FLAGS }}" -e SEED_KEY="${{ secrets.SEED_KEY }}" -v "$(pwd):/src" rando
+
+      - name: Get Version
+        id: get-version
+        shell: pwsh
+        working-directory: ${{ github.workspace }}/build
+        run: |
+          echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+
+      - name: Save Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{github.workspace}}/build/wwhd_rando.wuhb
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}.wuhb

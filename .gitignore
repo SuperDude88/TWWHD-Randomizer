@@ -1,0 +1,13 @@
+__pycache__
+build/*
+out/*
+.vs/*
+.cache/*
+.vscode/*
+CMakeSettings.json
+logic/build/*
+logic/.vs/*
+logic/out/*
+*/data.qrc
+CMakeLists.txt.user
+build-*

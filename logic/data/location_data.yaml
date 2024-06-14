@@ -1,0 +1,4739 @@
+- Names:
+    English: Mailbox - Letter from Hoskit's Girlfriend
+    Spanish: Buzón de correo - Carta de la novia de Hoskit
+    French: Boîte aux Lettres - Lattre de la copine d'Odelf
+  Original Item: Piece of Heart 2
+  Category:
+    - Mail
+    - Spoils Trading
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031584
+
+- Names:
+    English: Mailbox - Letter from Baito's Mother
+    Spanish: Buzón de correo - Carta de la madre de Novi
+    French: Boîte aux Lettres - Lettre de la maman du Commis de la Poste
+  Original Item: Piece of Heart
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1003150C
+    - 0x1003156C
+
+- Names:
+    English: Mailbox - Letter from Baito
+    Spanish: Buzón de correo - Carta de Novi
+    French: Boîte aux Lettres - Lettre du Commis de la Poste
+  Original Item: Red Rupee
+  Dungeon Dependency: Earth Temple
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031590
+
+- Names:
+    English: Mailbox - Letter from Komali's Father
+    Spanish: Buzón de correo - Carta del padre de Komali
+    French: Boîte aux Lettres - Lettre du père de Scaff
+  Original Item: Piece of Heart
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031518
+
+- Names:
+    English: Mailbox - Letter Advertising Bombs
+    Spanish: Buzón de correo - Carta promocional de Bombas
+    French: Boîte aux Lettres - Lettre promotionnelle des Bombes
+  Original Item: Beedle's Chart
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031524
+
+- Names:
+    English: Mailbox - Letter Advertising Rock Spire Shop Ship
+    Spanish: Buzón de correo - Anuncio de la tienda en la Isla de los Pilares
+    French: Boîte aux Lettres - Lettre promotionnelle de la Boutique Terry de l'Ile de la Rocaille
+  Original Item: Green Rupee
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031548
+
+- Names:
+    English: Mailbox - Beedle's Silver Membership Reward
+    Spanish: Buzón de correo - Membresía de Plata de Terry
+    French: Boîte aux Lettres - Membre d'Argent de la Boutique de Terry
+  Original Item: Complimentary ID
+  Category:
+    - Junk
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031578
+
+- Names:
+    English: Mailbox - Beedle's Gold Membership Reward
+    Spanish: Buzón de correo - Membresía de Oro de Terry
+    French: Boîte aux Lettres - Membre d'Honneur de la Boutique de Terry
+  Original Item: Fill Up Coupon
+  Category:
+    - Junk
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1003159C
+
+- Names:
+    English: Mailbox - Letter from Orca
+    Spanish: Buzón de correo - Carta de Orca
+    French: Boîte aux Lettres - Lettre d'Orco
+  Original Item: Red Rupee
+  Dungeon Dependency: Forbidden Woods
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031530
+
+- Names:
+    English: Mailbox - Letter from Grandma
+    Spanish: Buzón de correo - Carta del la Abuela
+    French: Boîte aux Lettres - Lettre de Mémé
+  Original Item: Red Rupee
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1003153C
+
+- Names:
+    English: Mailbox - Letter from Aryll
+    Spanish: Buzón de correo - Carta de Abril
+    French: Boîte aux Lettres - Lettre d'Arielle
+  Original Item: Red Rupee
+  Dungeon Dependency: Forsaken Fortress
+  Category:
+    - Mail
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031560
+
+- Names:
+    English: Mailbox - Letter from Tingle
+    Spanish: Buzón de correo - Carta de Tingle
+    French: Boîte aux Lettres - Lettre de Tingle
+  Original Item: INcredible Chart
+  Dungeon Dependency: Forsaken Fortress
+  Category:
+    - Mail
+    - Expensive Purchase
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10031554
+
+- Names:
+    English: Great Sea - Beedle Shop 20 Rupee Item
+    Spanish: Gran mar - Objeto de 20 rupias en la tienda de Terry
+    French: Océan - Objet à 20 rubis de la Boutique de Terry
+  Original Item: Bait Bag
+  Category:
+    - Misc
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101EAEA7
+    - 0x02212C67
+    - 0x02215443
+
+- Names:
+    English: Great Sea - Salvage Corp Gift
+    Spanish: Gran mar - Obsequio del Equipo Nautilus
+    French: Océan - Cadeau de l'Equipage Nautilus
+  Original Item: Treasure Chart 34
+  Category:
+    - Free Gift
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C63BF
+
+- Names:
+    English: Great Sea - Cyclos
+    Spanish: Gran mar - Cyclos
+    French: Océan - Cyclos
+  Original Item: Ballad of Gales
+  Category:
+    - Misc
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x000A82F3
+  NameOffset: 0x0005AE20
+
+- Names:
+    English: Great Sea - Goron Trading Reward
+    Spanish: Gran mar - Recompensa de intercambio con Gorons
+    French: Océan - Récompense des Echanges Commerciaux des Gorons
+  Original Item: Piece of Heart
+  Category:
+    - Long Side Quest
+    - Expensive Purchase
+  Hint Priority: Always
+  Type: RPX
+  Offsets:
+    - 0x101C546F
+
+- Names:
+    English: Great Sea - Withered Trees
+    Spanish: Gran mar - Árboles secos
+    French: Océan - Arbres desséchés
+  Original Item: Piece of Heart
+  Category:
+    - Long Side Quest
+  Hint Priority: Always
+  Type: RPX
+  Offsets:
+    - 0x02347C2B
+    - 0x02347AAB
+
+- Names:
+    English: Great Sea - Ghost Ship Chest
+    Spanish: Gran Mar - Cofre del Barco Fantasma
+    French: Océan - Coffre du Vaisseau Fantôme
+  Original Item: Triforce Shard 4
+  Category:
+    - Misc
+  Path: content/Common/Stage/PShip_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000DAC
+
+- Names:
+    English: Forsaken Fortress - Phantom Ganon
+    Spanish: Isla del Diablo - Ganon Fantasma
+    French: Forteresse Maudite - Fantôme de Ganon
+  Original Item: Skull Hammer
+  Category:
+    - Dungeon
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002838
+
+- Names:
+    English: Forsaken Fortress - Chest Inside Lower Jail Cell
+    Spanish: Isla del Diablo - Cofre en la Celda Inferior
+    French: Forteresse Maudite - Coffre dans la cellule du RDC
+  Original Item: Piece of Heart
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000A80
+
+- Names:
+    English: Forsaken Fortress - Chest on Bed
+    Spanish: Isla del Diablo - Cofre en la cama
+    French: Forteresse Maudite - Coffre sur le lit
+  Original Item: Yellow Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000A40
+
+- Names:
+    English: Forsaken Fortress - Chest Outside Upper Jail Cell
+    Spanish: Isla del Diablo - Cofre fuera de la Celda Superior
+    French: Forteresse Maudite - Coffre à l'extérieur de la cellule du 1e étage
+  Original Item: Dungeon Map
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000A20
+
+- Names:
+    English: Forsaken Fortress - Chest Guarded by Bokoblin
+    Spanish: Isla del Diablo - Cofre protegido por un Bokoblin
+    French: Forteresse Maudite - Coffre gardé par un Bokoblin
+  Original Item: Compass
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/ma2room_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000A60
+
+- Names:
+    English: Forsaken Fortress - Helmaroc King Heart Container
+    Spanish: Isla del Diablo - Contenedor de corazón de Kranos
+    French: Forteresse Maudite - Réceptacle de Cœur du Roi Cuirasse
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Names:
+    English: Helmaroc King
+    Spanish: Kranos
+    French: Roi Cuirasse
+  Category:
+    - Dungeon
+  Paths:
+    code/cking.rpx@RPX@ELF: 0x0206C096
+    content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000018AC
+    content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr: 0x000032F4
+    content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr: 0x00003438
+  Hint Priority: Sometimes
+  Type: Boss
+
+- Names:
+    English: Forsaken Fortress Sector - Sunken Treasure
+    Spanish: Sector de la Isla del Diablo - Tesoro Hundido
+    French: Secteur de la Forteresse Maudite - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002298
+    - 0x00002400
+    - 0x00002424
+    - 0x00002448
+
+- Names:
+    English: Star Island - Blue Chu Chu
+    Spanish: Isla Estrella - ChuChu Azul
+    French: Ile Etoilée - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Star Island - Lookout Platform Chest
+    Spanish: Isla Estrella - Cofre en la Atalaya
+    French: Ile Etoilée - Coffre de la tour de guet
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000030DC
+
+- Names:
+    English: Star Island - Cave Chest
+    Spanish: Isla Estrella - Cofre en la Cueva
+    French: Ile Etoilée - Coffre de la grotte
+  Original Item: Piece of Heart
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/Cave02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000210
+
+- Names:
+    English: Star Island - Sunken Treasure
+    Spanish: Isla Estrella - Tesoro Sumergido
+    French: Ile Etoilée - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00003004
+    - 0x00003028
+    - 0x0000304C
+    - 0x00003070
+
+- Names:
+    English: Northern Fairy Island - Blue Chu Chu
+    Spanish: Isla del Hada del Norte - ChuChu Azul
+    French: Ilot Septentrional des Fées - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Northern Fairy Island - Submarine Chest
+    Spanish: Isla del Hada del Norte - Cofre del Submarino
+    French: Ilot Septentrional des Fées - Coffre du sous-marin
+  Original Item: Treasure Chart 22
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000004B0
+
+- Names:
+    English: Northern Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Norte - Gran Hada
+    French: Ilot Septentrional des Fées - Grande Fée
+  Original Item: Progressive Wallet
+  Category:
+    - Great Fairy
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02095B2F
+
+- Names:
+    English: Northern Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Norte - Tesoro Sumergido
+    French: Ilot Septentrional des Fées - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000013BC
+    - 0x000013E0
+    - 0x00001404
+    - 0x00001428
+
+- Names:
+    English: Gale Isle - Sunken Treasure
+    Spanish: Isla del Viento - Tesoro Sumergido
+    French: Ile du Vent - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room4.szs@YAZ0@SARC@Room4.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001CD4
+    - 0x00001CF8
+    - 0x00001D1C
+    - 0x00001D40
+
+- Names:
+    English: Crescent Moon Island - Chest on Island
+    Spanish: Isla de la Luna - Cofre sobre la Isla
+    French: Ile du Croissant - Coffre sur l'île
+  Original Item: Treasure Chart 10
+  Category:
+    - Misc
+  Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000980
+
+- Names:
+    English: Crescent Moon Island - Blue Chu Chu North
+    Spanish: Isla de la Luna - ChuChu Azul Norte
+    French: Ile du Croissant - Blob Bleu du Nord
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Crescent Moon Island - Blue Chu Chu South
+    Spanish: Isla de la Luna - ChuChu Azul Sur
+    French: Ile du Croissant - Blob Bleu du Sud
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Crescent Moon Island - Submarine Chest
+    Spanish: Isla de la Luna - Cofre del Submarino
+    French: Ile du Croissant - Coffre du sous-marin
+  Original Item: Treasure Chart 9
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000664
+
+- Names:
+    English: Crescent Moon Island - Sunken Treasure
+    Spanish: Isla de la Luna - Tesoro Sumergido
+    French: Ile du Croissant - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000008A8
+    - 0x000008CC
+    - 0x000008F0
+    - 0x00000914
+
+- Names:
+    English: Seven Star Isles - Big Octo
+    Spanish: Isla Osa Mayor - Bigocto
+    French: Archipel Ursa Major - Kalamar
+  Original Item: Piece of Heart
+  Category:
+    - Big Octo
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001278
+
+- Names:
+    English: Seven Star Isles - Center Lookout Platform Chest
+    Spanish: Isla Osa Mayor - Cofre en Atalaya Central
+    French: Archipel Ursa Major - Coffre de la tour de guet centrale
+  Original Item: Red Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001568
+
+- Names:
+    English: Seven Star Isles - Northern Lookout Platform Chest
+    Spanish: Isla Osa Mayor - Cofre en Atalaya Norte
+    French: Archipel Ursa Major - Coffre de la tour de guet du Nord
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001548
+
+- Names:
+    English: Seven Star Isles - Southern Lookout Platform Chest
+    Spanish: Isla Osa Mayor - Cofre en Atalaya Sur
+    French: Archipel Ursa Major - Coffre de la tour de guet du Sud
+  Original Item: Treasure Chart 16
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001588
+
+- Names:
+    English: Seven Star Isles - Sunken Treasure
+    Spanish: Isla Osa Mayor - Tesoro Sumergido
+    French: Archipel Ursa Major - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001398
+    - 0x000013BC
+    - 0x000013E0
+    - 0x00001404
+
+- Names:
+    English: Overlook Island - Blue Chu Chu
+    Spanish: Isla de las Torres - ChuChu Azul
+    French: Ile aux Trois Tours - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Overlook Island - Cave Chest
+    Spanish: Isla de las Torres - Cofre en la Cueva
+    French: Ile aux Trois Tours - Coffre de la grotte
+  Original Item: Triforce Shard 8
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/TF_02_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000484
+
+- Names:
+    English: Overlook Island - Sunken Treasure
+    Spanish: Isla de las Torres - Tesoro Sumergido
+    French: Ile aux Trois Tours - Trésor englouti
+  Original Item: Secret Cave Chart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001548
+    - 0x0000156C
+    - 0x00001590
+    - 0x000015B4
+
+- Names:
+    English: Four Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Dos - Tesoro Sumergido
+    French: Ile de la Face Quatre - Vaincre les navires de guerre et les canons
+  Original Item: Treasure Chart 19
+  Category:
+    - Eye Reef Chests
+  Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001FD4
+
+- Names:
+    English: Four Eye Reef - Sunken Treasure
+    Spanish: Islas del Cuatro - Tesoro Sumergido
+    French: Ile de la Face Quatre - Trésor englouti
+  Original Item: Great Fairy Chart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001EFC
+    - 0x00001F20
+    - 0x00001F44
+    - 0x00001F68
+
+- Names:
+    English: Mother & Child Isles - Blue Chu Chu
+    Spanish: Islas Madre e Hija - ChuChu Azul
+    French: Ile Geminée - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Mother & Child Isles - Inside Mother Isle
+    Spanish: Islas Madre e Hija - Dentro de la Isla Madre
+    French: Ile Geminée - A l'intérieur de la grande île
+  Original Item: Fire Ice Arrows
+  Category:
+    - Misc
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001BB0
+
+- Names:
+    English: Mother & Child Isles - Sunken Treasure
+    Spanish: Islas Madre e Hija - Tesoro Sumergido
+    French: Ile Geminée - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001968
+    - 0x0000198C
+    - 0x000019B0
+    - 0x000019D4
+
+- Names:
+    English: Spectacle Island - Barrel Shooting First Prize
+    Spanish: Isla Calabaza - Primer Premio en Tiro al Barril
+    French: Ile des Binocles - Première Récompense du Stand de Tir
+  Original Item: Piece of Heart
+  Category:
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1001C194
+    - 0x1001C195
+
+- Names:
+    English: Spectacle Island - Barrel Shooting Second Prize
+    Spanish: Isla Calabaza - Segundo Premio en Tiro al Barril
+    French: Ile des Binocles - Deuxième Récompense du Stand de Tir
+  Original Item: Treasure Chart 17
+  Category:
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1001C196
+
+- Names:
+    English: Spectacle Island - Blue Chu Chu
+    Spanish: Isla Calabaza - ChuChu Azul
+    French: Ile des Binocles - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Spectacle Island - Sunken Treasure
+    Spanish: Isla Calabaza - Tesoro Sumergido
+    French: Ile des Binocles - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000BF0
+    - 0x00000C14
+    - 0x00000C38
+    - 0x00000C5C
+
+- Names:
+    English: Windfall Island - Tingle First Gift
+    Spanish: Isla Taura - Primer Regalo de Tingle
+    French: Mercantîle - Premier Cadeau de Tingle
+  Original Item: Tingle Bottle
+  Category:
+    - Free Gift
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x022E98EF
+
+- Names:
+    English: Windfall Island - Tingle Second Gift
+    Spanish: Isla Taura - Segundo Regalo de Tingle
+    French: Mercantîle - Deuxième Cadeau de Tingle
+  Original Item: Tingle's Chart
+  Category:
+    - Free Gift
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x022E9923
+
+- Names:
+    English: Windfall Island - Windfall Jail Maze Chest
+    Spanish: Isla Taura - Cofre del Laberinto en la Cárcel
+    French: Mercantîle - Coffre du labyrinthe de la prison
+  Original Item: Progressive Picto Box
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/Pnezumi_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000094C
+
+- Names:
+    English: Windfall Island - Potion Shop 15 Green Chu
+    Spanish: Isla Taura - Farmacia ChuChu 15 Jugos de Chuchu Verde
+    French: Mercantîle - 15 Gelées Chuchu Vertes au Magasin de Potion
+  Original Item: Green Potion
+  Category:
+    - Spoils Trading
+  Hint Priority: Sometimes
+  Type: Custom_Symbol
+  SymbolNames:
+    - doc_bandam_green_potion_slot_item_id
+
+- Names:
+    English: Windfall Island - Potion Shop 15 Blue Chu
+    Spanish: Isla Taura - Farmacia ChuChu 15 Jugos de Chuchu Azul
+    French: Mercantîle - 15 Gelées Chuchu Bleues au Magasin de Potion
+  Original Item: Blue Potion
+  Category:
+    - Spoils Trading
+    - Long Side Quest
+  Hint Priority: Always
+  Type: Custom_Symbol
+  SymbolNames:
+    - doc_bandam_blue_potion_slot_item_id
+
+- Names:
+    English: Windfall Island - Ivan Catch Killer Bees
+    Spanish: Isla Taura - Atrapar Abejas Asesinas (Iván)
+    French: Mercantîle - Cache-cache des Abeilles Tueuses (Ivan)
+  Original Item: Piece of Heart
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02298BFF
+
+- Names:
+    English: Windfall Island - Mrs. Marie Catch Killer Bees
+    Spanish: Isla Taura - Atrapar Abejas Asesinas (Señorita María)
+    French: Mercantîle - Cache-cache des Abeilles Tueuses (Mrs Mary)
+  Original Item: Purple Rupee
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x0223FC7F
+
+- Names:
+    English: Windfall Island - Mrs. Marie 1 Joy Pendant
+    Spanish: Isla Taura - Señorita María 1 Collar de la Felicidad
+    French: Mercantîle - 1 Pendentif du Bonheur pour Mrs Mary
+  Original Item: Red Rupee
+  Category:
+    - Spoils Trading
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x0223FD93
+
+- Names:
+    English: Windfall Island - Mrs. Marie 21 Joy Pendant
+    Spanish: Isla Taura - Señorita María 21 Collares de la Felicidad
+    French: Mercantîle - 21 Pendentifs du Bonheur pour Mrs Mary
+  Original Item: Cabana Deed
+  Category:
+    - Spoils Trading
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x0223FDC3
+
+- Names:
+    English: Windfall Island - Mrs. Marie 40 Joy Pendant
+    Spanish: Isla Taura - Señorita María 40 Collares de la Felicidad
+    French: Mercantîle - 40 Pendentifs du Bonheur pour Mrs Mary
+  Original Item: Treasure Chart 45
+  Category:
+    - Spoils Trading
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x0223FEBB
+
+- Names:
+    English: Windfall Island - Lenzo House Left Chest
+    Spanish: Isla Taura - Casa de Don Obturo Cofre Izquierdo
+    French: Mercantîle - Coffre de gauche de la maison d'Autofocus
+  Original Item: Treasure Chart 29
+  Category:
+    - Short Side Quest
+  Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000910
+
+- Names:
+    English: Windfall Island - Lenzo House Right Chest
+    Spanish: Isla Taura - Casa de Don Obturo Cofre Derecho
+    French: Mercantîle - Coffre de droite de la maison d'Autofocus
+  Original Item: Purple Rupee
+  Category:
+    - Short Side Quest
+  Path: content/Common/Stage/Ocmera_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000930
+
+- Names:
+    English: Windfall Island - Lenzo Become Assistant
+    Spanish: Isla Taura - Convertirse en el Asistente de Don Obturo
+    French: Mercantîle - Devenir l'Assistant d'Autofocus
+  Original Item: Progressive Picto Box
+  Category:
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x022CFA77
+
+- Names:
+    English: Windfall Island - Lenzo Bring Forest Firefly
+    Spanish: Isla Taura - Llevar Luciérnaga del Bosque a Don Obturo
+    French: Mercantîle - Apporter une Luciole de la Forêt à Autofocus
+  Original Item: Joy Pendant
+  Category:
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x022CFAAB
+
+- Names:
+    English: Windfall Island - House of Wealth Chest
+    Spanish: Isla Taura - Cofre Casa de la Riqueza
+    French: Mercantîle - Coffre de la Maison de la Richesse
+  Original Item: Red Rupee
+  Category:
+    - Misc
+  Path: content/Common/Stage/Orichh_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000008C0
+
+- Names:
+    English: Windfall Island - Maggie's Father Give 20 Skull Necklaces
+    Spanish: Isla Taura - Padre de Dolores 20 Colgantes Macabros
+    French: Mercantîle - 20 Colliers Macabres pour le père de Maggy
+  Original Item: Treasure Chart 2
+  Category:
+    - Spoils Trading
+  Path: content/Common/Stage/Orichh_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x0002C99F
+  NameOffset: 0x0001BBC0
+
+- Names:
+    English: Windfall Island - Maggie Free Item
+    Spanish: Isla Taura - Objeto de Dolores
+    French: Mercantîle - Objet donné par Maggy
+  Original Item: Maggie's Letter
+  Category:
+    - Free Gift
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x0227C2A3
+
+- Names:
+    English: Windfall Island - Maggie Delivery Reward
+    Spanish: Isla Taura - Entregar carta a Dolores
+    French: Mercantîle - Délivrer la lettre à Maggy
+  Original Item: Piece of Heart
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x0227C2DF
+
+- Names:
+    English: Windfall Island - Cafe Postman Delivery
+    Spanish: Isla Taura - Café Bar Entrega del Cartero
+    French: Mercantîle - Courrier délivré au Café-Bar
+  Original Item: Moblin's Letter
+  Category:
+    - Short Side Quest
+  Path: content/Common/Stage/Opub_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x00022443
+  NameOffset: 0x0000B440
+
+
+- Names:
+    English: Windfall Island - Kreeb Light the Lighthouse
+    Spanish: Isla Taura - Prender el Faro (Chapó)
+    French: Mercantîle - Rallumer le phare pour Vince
+  Original Item: Piece of Heart
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C39AB
+
+- Names:
+    English: Windfall Island - Transparent Chest
+    Spanish: Isla Taura - Cofre Trasparente
+    French: Mercantîle - Coffre transparant
+  Original Item: Piece of Heart
+  Category:
+    - Short Side Quest
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000038AC
+    - 0x000039F4
+    - 0x00003F40
+
+- Names:
+    English: Windfall Island - Tott Teach Rhythm
+    Spanish: Isla Taura - Baile de Rafael
+    French: Mercantîle - Danse de Johnny
+  Original Item: Song of Passing
+  Category:
+    - Free Gift
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x000A835F
+  NameOffset: 0x0005B910
+
+- Names:
+    English: Windfall Island - Pirate Ship Chest
+    Spanish: Isla Taura - Cofre del Barco Pirata
+    French: Mercantîle - Coffre du Bateau Pirate
+  Original Item: Bombs
+  Category:
+    - Minigame
+  Path: content/Common/Stage/Asoko_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000754
+    - 0x00000774
+
+- Names:
+    English: Windfall Island - Auction 5 Rupee
+    Spanish: Isla Taura - Subasta 5 Rupias
+    French: Mercantîle - Enchère à 5 Rubis
+  Original Item: Treasure Chart 18
+  Category:
+    - Expensive Purchase
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10190175
+
+- Names:
+    English: Windfall Island - Auction 40 Rupee
+    Spanish: Isla Taura - Subasta 40 Rupias
+    French: Mercantîle - Enchère à 40 Rubis
+  Original Item: Joy Pendant
+  Category:
+    - Expensive Purchase
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1019016D
+
+- Names:
+    English: Windfall Island - Auction 60 Rupee
+    Spanish: Isla Taura - Subasta 60 Rupias
+    French: Mercantîle - Enchère à 60 Rubis
+  Original Item: Treasure Chart 38
+  Category:
+    - Expensive Purchase
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1019017D
+
+- Names:
+    English: Windfall Island - Auction 80 Rupee
+    Spanish: Isla Taura - Subasta 80 Rupias
+    French: Mercantîle - Enchère à 80 Rubis
+  Original Item: Piece of Heart
+  Category:
+    - Expensive Purchase
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x10190185
+
+- Names:
+    English: Windfall Island - Auction 100 Rupee
+    Spanish: Isla Taura - Subasta 100 Rupias
+    French: Mercantîle - Enchère à 100 Rubis
+  Original Item: Swift Sail
+  Category:
+    - Expensive Purchase
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x1019018D
+
+- Names:
+    English: Windfall Island - Zunari Exotic Flower
+    Spanish: Isla Taura - Flor del Sur a Zunari
+    French: Mercantîle - Fleur du Sud à Naglagla
+  Original Item: Magic Armor
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: Custom_Symbol
+  SymbolNames:
+    - zunari_magic_armor_slot_item_id
+    - "@0x022da5a7"
+    - "@0x022da95b"
+
+- Names:
+    English: Windfall Island - Sam Decorate Island
+    Spanish: Isla Taura - Decorar la Isla (Sam)
+    French: Mercantîle - Décorer l'île pour Pat
+  Original Item: Piece of Heart
+  Category:
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C399B
+
+- Names:
+    English: Windfall Island - Kane Decorate Shop Guru
+    Spanish: Isla Taura - Decorar con El Gran Mercader (Quejo)
+    French: Mercantîle - Statue du Marchand pour Joe
+  Original Item: Purple Rupee
+  Category:
+    - Obscure
+    - Expensive Purchase
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C3873
+
+- Names:
+    English: Windfall Island - Kane Decorate Postman Statue
+    Spanish: Isla Taura - Decorar con Efigie del Cartero (Quejo)
+    French: Mercantîle - Statue du Facteur pour Joe
+  Original Item: Purple Rupee
+  Category:
+    - Obscure
+    - Expensive Purchase
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C3877
+
+- Names:
+    English: Windfall Island - Kane Decorate Six Flags
+    Spanish: Isla Taura - Decorar con Seis Banderas (Quejo)
+    French: Mercantîle - Six Drapeaux pour Joe
+  Original Item: Red Rupee
+  Category:
+    - Obscure
+    - Expensive Purchase
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C387B
+
+- Names:
+    English: Windfall Island - Kane Decorate Six Idols
+    Spanish: Isla Taura - Decorar con Seis Efigies de la Doncella (Quejo)
+    French: Mercantîle - Six Statues pour Joe
+  Original Item: Red Rupee
+  Category:
+    - Obscure
+    - Expensive Purchase
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C387F
+
+- Names:
+    English: Windfall Island - Mila Catch Thief
+    Spanish: Isla Taura - Atrapar Mila Ladrona
+    French: Mercantîle - Mina la voleuse
+  Original Item: Empty Bottle
+  Category:
+    - Short Side Quest
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x000A72AF
+  NameOffset: 0x00038190
+
+- Names:
+    English: Windfall Island - Battle Squid First Prize
+    Spanish: Isla Taura - Primer Premio en Hunde la Flota
+    French: Mercantîle - Premier Prix de la Bataille Navale
+  Original Item: Piece of Heart
+  Category:
+    - Battle Squid
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02267187
+
+- Names:
+    English: Windfall Island - Battle Squid Second Prize
+    Spanish: Isla Taura - Segundo Premio en Hunde la Flota
+    French: Mercantîle - Deuxième Prix de la Bataille Navale
+  Original Item: Treasure Chart 7
+  Category:
+    - Battle Squid
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02267197
+
+- Names:
+    English: Windfall Island - Battle Squid Under 20 Prize
+    Spanish: Isla Taura - Hunde la Flota en menos de 20 tiros
+    French: Mercantîle - Moins de 20 tirs à la Bataille Navale
+  Original Item: Treasure Chart 23
+  Category:
+    - Battle Squid
+  Hint Priority: Always
+  Type: RPX
+  Offsets:
+    - 0x02267367
+
+- Names:
+    English: Windfall Island - Dampa Pig Minigame
+    Spanish: Isla Taura - Minijuego Cerdos Bellota
+    French: Mercantîle - Mini-jeu des cochons de Tchen
+  Original Item: Treasure Chart 42
+  Category:
+    - Minigame
+  Hint Priority: Sometimes
+  Type: Custom_Symbol
+  SymbolNames:
+    - dampa_minigame_item_id
+
+- Names:
+    English: Windfall Island - Pompie & Vera Secret Meeting Photo
+    Spanish: Isla Taura - Foto Secreta Majura y Clotilde
+    French: Mercantîle - Image de la rencontre secrète pour Olga et Vera
+  Original Item: Treasure Chart 24
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C399F
+
+- Names:
+    English: Windfall Island - Kamo Full Moon Picture
+    Spanish: Isla Taura - Foto Luna llena Cameo
+    French: Mercantîle - Image de la Pleine Lune pour Camille
+  Original Item: Treasure Chart 31
+  Category:
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C39AF
+
+- Names:
+    English: Windfall Island - Mineco Miss Windfall Picture
+    Spanish: Isla Taura - Foto Señorita Isla Taura Vanessa
+    French: Mercantîle - Image de Miss Mercantîle Geneviève
+  Original Item: Treasure Chart 33
+  Category:
+    - Short Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C39A3
+
+- Names:
+    English: Windfall Island - Linda and Anton
+    Spanish: Isla Taura - Foto Linda y Antón
+    French: Mercantîle - Linda et Anton
+  Original Item: Piece of Heart
+  Category:
+    - Long Side Quest
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101C39A7
+
+- Names:
+    English: Windfall Island - Sunken Treasure
+    Spanish: Isla Taura - Tesoro Sumergido
+    French: Mercantîle - Trésor englouti
+  Original Item: Purple Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room11.szs@YAZ0@SARC@Room11.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00003138
+    - 0x0000315C
+    - 0x00003180
+    - 0x000031A4
+
+- Names:
+    English: Pawprint Isle - Blue Chu Chu
+    Spanish: Isla de la Huella - ChuChu Azul
+    French: Pas de Chat - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus
+    French: Pas de Chat - Coffre de la Grotte des Blobs
+  Original Item: Piece of Heart
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000210
+
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest Behind Left Boulder
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus detrás de la Roca Izquierda
+    French: Pas de Chat - Coffre derrière la rocher de gauche de la Grotte des Blobs
+  Original Item: Purple Rupee
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001D0
+
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest Behind Right Boulder
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus detrás de la Roca Derecha
+    French: Pas de Chat - Coffre derrière le rocher de droite de la Grotte des Blobs
+  Original Item: Joy Pendant
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001F0
+
+- Names:
+    English: Pawprint Isle - Chu Chu Cave Chest Scale Wall
+    Spanish: Isla de la Huella - Cofre en la Cueva de ChuChus subiendo la Pared
+    French: Pas de Chat - Coffre en haut du mur de la Grotte des Blobs
+  Original Item: Red Rupee
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TyuTyu_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001B0
+
+- Names:
+    English: Pawprint Isle - Wizzrobe Cave Chest
+    Spanish: Isla de la Huella - Cofre en la Cueva de los Invocantis
+    French: Pas de Chat - Coffre de la Grotte des Sorciers
+  Original Item: Treasure Chart 46
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/Cave07_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000210
+
+- Names:
+    English: Pawprint Isle - Lookout Platform Defeat Enemies
+    Spanish: Isla de la Huella - Derrotar enemigos en la Atalaya
+    French: Pas de Chat - Vaincre les ennemis de la tour de guet
+  Original Item: Red Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002CF0
+
+- Names:
+    English: Pawprint Isle - Sunken Treasure
+    Spanish: Isla de la Huella - Tesoro Sumergido
+    French: Pas de Chat - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002B40
+    - 0x00002B64
+    - 0x00002B88
+    - 0x00002BAC
+
+- Names:
+    English: Dragon Roost Island - Wind Shrine
+    Spanish: Isla del Dragón - Altar del Viento
+    French: Ile du Dragon - Stèle du Vent
+  Original Item: Wind's Requiem
+  Category:
+    - Misc
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x000A8163
+  NameOffset: 0x00058F80
+
+- Names:
+    English: Dragon Roost Island - Boulder Chest
+    Spanish: Isla del Dragón - Cofre en la Roca al Suroeste
+    French: Ile du Dragon - Coffre sur le rocher
+  Original Item: Silver Rupee
+  Category:
+    - Island Puzzle
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002BAC
+
+- Names:
+    English: Dragon Roost Island - Hoskit Give 20 Golden Feathers
+    Spanish: Isla del Dragón - Joskitt 20 Plumas Doradas
+    French: Ile du Dragon - 20 Plumes d'Or pour Odelf
+  Original Item: Orange Rupee
+  Category:
+    - Spoils Trading
+  Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x0001FC3B
+  NameOffset: 0x00008760
+
+- Names:
+    English: Dragon Roost Island - Baito Mail Game
+    Spanish: Isla del Dragón - Novi Minijuego del Correo
+    French: Ile du Dragon - Mini-jeu du tri du Commis de la Poste
+  Original Item: Note to Mom
+  Category:
+    - Minigame
+  Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x0001FC4B
+  NameOffset: 0x00008A80
+
+- Names:
+    English: Dragon Roost Island - Fly Across Platforms Around Island
+    Spanish: Isla del Dragón - Volar a las Plataformas al rededor de la Isla
+    French: Ile du Dragon - Planer autour de l'île
+  Original Item: Orange Rupee
+  Category:
+    - Island Puzzle
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002BCC
+
+- Names:
+    English: Dragon Roost Island - Cave Chest
+    Spanish: Isla del Dragón - Cofre en la Cueva
+    French: Ile du Dragon - Coffre de la grotte
+  Original Item: Purple Rupee
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/TF_06_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000950
+
+- Names:
+    English: Dragon Roost Island - Sunken Treasure
+    Spanish: Isla del Dragón - Tesoro Sumergido
+    French: Ile du Dragon - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002900
+    - 0x00002924
+    - 0x00002948
+    - 0x0000296C
+
+- Names:
+    English: Flight Control Platform - First Prize
+    Spanish: Andamio de vuelo - Primer Premio
+    French: Tour de l'Envol - Récompense du concours
+  Original Item: Piece of Heart
+  Category:
+    - Minigame
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x022065FB
+
+- Names:
+    English: Flight Control Platform - Submarine Chest
+    Spanish: Andamio de vuelo - Cofre del Submarino
+    French: Tour de l'Envol - Coffre du sous-marin
+  Original Item: Platform Chart
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000006C8
+
+- Names:
+    English: Flight Control Platform - Sunken Treasure
+    Spanish: Andamio de vuelo - Tesoro Sumergido
+    French: Tour de l'Envol - Trésor englouti
+  Original Item: Island Hearts Chart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001120
+    - 0x00001144
+    - 0x00001168
+    - 0x0000118C
+
+- Names:
+    English: Western Fairy Island - Blue Chu Chu
+    Spanish: Isla del Hada del Oeste - ChuChu Azul
+    French: Ilot Occidental des Fées - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Western Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Oeste - Gran Hada
+    French: Ilot Occidental des Fées - Grande Fée
+  Original Item: Progressive Quiver
+  Category:
+    - Great Fairy
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02095B7F
+
+- Names:
+    English: Western Fairy Island - Lookout Platform Chest
+    Spanish: Isla del Hada del Oeste - Cofre en la Atalaya
+    French: Ilot Occidental des Fées - Coffre de la tour de guet
+  Original Item: Skull Necklace
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001758
+
+- Names:
+    English: Western Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Oeste - Tesoro Sumergido
+    French: Ilot Occidental des Fées - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001680
+    - 0x000016A4
+    - 0x000016C8
+    - 0x000016EC
+
+- Names:
+    English: Rock Spire Isle - Blue Chu Chu
+    Spanish: Isla de los Pilares - ChuChu Azul
+    French: Ile de la Rocaille - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Rock Spire Isle - Defeat Southeast Gunboat
+    Spanish: Isla de los Pilares - Derrotar Buque de Guerra al Suroeste
+    French: Ile de la Rocaille - Vaincre le navire de guerre au Sud
+  Original Item: Piece of Heart
+  Category:
+    - Gunboat
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001A84
+
+- Names:
+    English: Rock Spire Isle - Beedle 500 Rupee Item
+    Spanish: Isla de los Pilares - Objeto por 500 Rupias en la Tienda de Terry
+    French: Ile de la Rocaille - Objet à 500 Rubis de la Boutique de Terry
+  Original Item: Empty Bottle
+  Category:
+    - Expensive Purchase
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101EAF57
+    - 0x0221557F
+    - 0x022155BB
+
+- Names:
+    English: Rock Spire Isle - Beedle 950 Rupee Item
+    Spanish: Isla de los Pilares - Objeto por 950 Rupias en la Tienda de Terry
+    French: Ile de la Rocaille - Objet à 950 Rubis de la Boutique de Terry
+  Original Item: Piece of Heart
+  Category:
+    - Expensive Purchase
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101EAF67
+    - 0x02215587
+    - 0x022155AF
+
+- Names:
+    English: Rock Spire Isle - Beedle 900 Rupee Item
+    Spanish: Isla de los Pilares - Objeto por 900 Rupias en la Tienda de Terry
+    French: Ile de la Rocaille - Objet à 900 Rubis de la Boutique de Terry
+  Original Item: Treasure Chart 4
+  Category:
+    - Expensive Purchase
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x101EAF77
+    - 0x0221558F
+    - 0x022155C3
+
+- Names:
+    English: Rock Spire Isle - Western Lookout Platform Destroy Cannons
+    Spanish: Isla de los Pilares - Destruir Cañones en Atalaya Oeste
+    French: Ile de la Rocaille - Détruire les canons de la tour de guet de l'Ouest
+  Original Item: Orange Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001CE8
+
+- Names:
+    English: Rock Spire Isle - Eastern Lookout Platform Destroy Cannons
+    Spanish: Isla de los Pilares - Destruir Cañones en Atalaya Este
+    French: Ile de la Rocaille - Détruire les canons de la tour de guet de l'Est
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001D08
+
+- Names:
+    English: Rock Spire Isle - Center Lookout Platform Chest
+    Spanish: Isla de los Pilares - Cofre en Atalaya Central
+    French: Ile de la Rocaille - Coffre de la tour de guet centrale
+  Original Item: Red Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001D28
+
+- Names:
+    English: Rock Spire Isle - Cave Chest
+    Spanish: Isla de los Pilares - Cofre en la Cueva
+    French: Ile de la Rocaille - Coffre de la grotte
+  Original Item: Treasure Chart 37
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/Cave04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000240
+
+- Names:
+    English: Rock Spire Isle - Sunken Treasure
+    Spanish: Isla de los Pilares - Tesoro Sumergido
+    French: Ile de la Rocaille - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001BA4
+    - 0x00001BC8
+    - 0x00001BEC
+    - 0x00001C10
+
+- Names:
+    English: Tingle Island - Ankle All Statues Reward
+    Spanish: Isla de Tingle - Recompenza por todas las Estatua de Tingle (Angle)
+    French: Ile de Tingle - Récompense des 5 Statues Tingle par Dingle
+  Original Item: Rainbow Rupee
+  Category:
+    - Misc
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x022E9973
+
+- Names:
+    English: Tingle Island - Blue Chu Chu
+    Spanish: Isla de Tingle - ChuChu Azul
+    French: Ile de Tingle - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Tingle Island - Big Octo
+    Spanish: Isla de Tingle - Bigocto
+    French: Ile de Tingle - Kalamar
+  Original Item: Piece of Heart
+  Category:
+    - Big Octo
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000BD0
+
+- Names:
+    English: Tingle Island - Sunken Treasure
+    Spanish: Isla de Tingle - Tesoro Sumergido
+    French: Ile de Tingle - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000D38
+    - 0x00000D5C
+    - 0x00000D80
+    - 0x00000DA4
+
+- Names:
+    English: Northern Triangle Island - Sunken Treasure
+    Spanish: Isla Triángulo del Norte - Tesoro Sumergido
+    French: Ile Triangulaire du Nord - Trésor englouti
+  Original Item: Octo Chart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000009C0
+    - 0x000009E4
+    - 0x00000A08
+    - 0x00000A2C
+
+- Names:
+    English: Eastern Fairy Island - Blue Chu Chu
+    Spanish: Isla del Hada del Este - ChuChu Azul
+    French: Ilot Oriental des Fées - Blob Bleu 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Eastern Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Este - Gran Hada
+    French: Ilot Oriental des Fées - Grande Fée
+  Original Item: Progressive Bomb Bag
+  Category:
+    - Great Fairy
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02095B57
+
+- Names:
+    English: Eastern Fairy Island - Lookout Platform Defeat Cannons and Enemies
+    Spanish: Isla del Hada del Este - Derrotar enemigos y cañones en la Atalaya
+    French: Ilot Oriental des Fées - Vaincre les ennemis et les canons de la tour de guet
+  Original Item: Boko Baba Seed
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001574
+
+- Names:
+    English: Eastern Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Este - Tesoro Sumergido
+    French: Ilot Oriental des Fées - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room19.szs@YAZ0@SARC@Room19.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001478
+    - 0x0000149C
+    - 0x000014C0
+    - 0x000014E4
+
+- Names:
+    English: Fire Mountain - Big Octo
+    Spanish: Isla del Volcán - Bigocto
+    French: Montagne de Feu - Kalamar
+  Original Item: Orange Rupee
+  Category:
+    - Big Octo
+  Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000EC8
+
+- Names:
+    English: Fire Mountain - Interior Chest
+    Spanish: Isla del Volcán - Cofre interior
+    French: Montagne de Feu - Coffre intérieur
+  Original Item: Power Bracelets
+  Category:
+    - Puzzle Secret Cave
+    - Combat Secret Cave
+  Path: content/Common/Stage/MiniKaz_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001C8
+
+- Names:
+    English: Fire Mountain - Lookout Platform Chest
+    Spanish: Isla del Volcán - Cofre en la Atalaya
+    French: Montagne de Feu - Coffre de la tour de guet
+  Original Item: Yellow Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000114C
+
+- Names:
+    English: Fire Mountain - Lookout Platform Destroy Cannons
+    Spanish: Isla del Volcán - Destruir Cañones en la Atalaya
+    French: Montagne de Feu - Détruire les canons de la tour de guet
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000112C
+
+- Names:
+    English: Fire Mountain - Sunken Treasure
+    Spanish: Isla del Volcán - Tesoro Sumergido
+    French: Montagne de Feu - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001030
+    - 0x00001054
+    - 0x00001078
+    - 0x0000109C
+
+- Names:
+    English: Star Belt Archipelago - Lookout Platform Chest
+    Spanish: Isla Orión - Cofre en la Atalaya
+    French: Archipel d'Orion - Coffre de la tour de guet
+  Original Item: Treasure Chart 44
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000013C0
+
+- Names:
+    English: Star Belt Archipelago - Sunken Treasure
+    Spanish: Isla Orión - Tesoro Sumergido
+    French: Archipel d'Orion - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room21.szs@YAZ0@SARC@Room21.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000012E8
+    - 0x0000130C
+    - 0x00001330
+    - 0x00001354
+
+- Names:
+    English: Three Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Tres - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Trois - Vaincre les navires de guerre et les canons
+  Original Item: Treasure Chart 32
+  Category:
+    - Eye Reef Chests
+  Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000022A4
+
+- Names:
+    English: Three Eye Reef - Sunken Treasure
+    Spanish: Islas del Tres - Tesoro Sumergido
+    French: Ile de la Face Trois - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room22.szs@YAZ0@SARC@Room22.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002118
+    - 0x0000213C
+    - 0x00002160
+    - 0x00002184
+
+- Names:
+    English: Greatfish Isle - Hidden Chest
+    Spanish: Islas Pez Volador - Cofre Escondido
+    French: Ile du Poisson - Coffre caché
+  Original Item: Piece of Heart
+  Category:
+    - Island Puzzle
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001D78
+
+- Names:
+    English: Greatfish Isle - Sunken Treasure
+    Spanish: Islas Pez Volador - Tesoro Sumergido
+    French: Ile du Poisson - Trésor englouti
+  Original Item: Triforce Shard 1
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent1.pack@SARC@sea_Room23.szs@YAZ0@SARC@Room23.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001A60
+    - 0x00001A84
+    - 0x00001AA8
+    - 0x00001ACC
+
+- Names:
+    English: Cyclops Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Uno - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Une - Vaincre les navires de guerre et les canons
+  Original Item: Treasure Chart 21
+  Category:
+    - Eye Reef Chests
+  Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000279C
+
+- Names:
+    English: Cyclops Reef - Sunken Treasure
+    Spanish: Islas del Uno - Tesoro Sumergido
+    French: Ile de la Face Une - Trésor englouti
+  Original Item: Light Ring Chart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000026C4
+    - 0x000026E8
+    - 0x0000270C
+    - 0x00002730
+
+- Names:
+    English: Cyclops Reef - Lookout Platform Defeat Enemies
+    Spanish: Islas del Uno - Derrotar Enemigos y Cañones en la Atalaya
+    French: Ile de la Face Une - Vaincre les ennemis de la tour de guet
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room24.szs@YAZ0@SARC@Room24.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000027BC
+
+- Names:
+    English: Six Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Seis - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Six - Vaincre les navires de guerre et les canons
+  Original Item: Treasure Chart 26
+  Category:
+    - Eye Reef Chests
+  Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002C30
+
+- Names:
+    English: Six Eye Reef - Submarine Chest
+    Spanish: Islas del Seis - Cofre del Submarino
+    French: Ile de la Face Six - Coffre du sous-marin
+  Original Item: Piece of Heart
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000053C
+
+- Names:
+    English: Six Eye Reef - Lookout Platform Destroy Cannons
+    Spanish: Islas del Seis - Destruir Cañones en la Atalaya
+    French: Ile de la Face Six - Détruire les canons de la tour de guet
+  Original Item: Skull Necklace
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002C50
+
+- Names:
+    English: Six Eye Reef - Sunken Treasure
+    Spanish: Islas del Seis - Tesoro Sumergido
+    French: Ile de la Face Six - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room25.szs@YAZ0@SARC@Room25.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002AA4
+    - 0x00002AC8
+    - 0x00002AEC
+    - 0x00002B10
+
+- Names:
+    English: Tower of the Gods Sector - Sunken Treasure
+    Spanish: Sector de la Torre de los Dioses - Tesoro Sumergido
+    French: Secteur de la Tour des Dieux - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room26.szs@YAZ0@SARC@Room26.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000006A4
+    - 0x000006C8
+    - 0x000006EC
+    - 0x00000710
+
+- Names:
+    English: Eastern Triangle Island - Sunken Treasure
+    Spanish: Isla Triángulo del Este - Tesoro Sumergido
+    French: Ile Triangulaire de l'Est - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room27.szs@YAZ0@SARC@Room27.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000DEC
+    - 0x00000E10
+    - 0x00000E34
+    - 0x00000E58
+
+- Names:
+    English: Thorned Fairy Island - Blue Chu Chu
+    Spanish: Isla del Hada Custodiada - ChuChu Azul
+    French: Ilot Epineux des Fées - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Thorned Fairy Island - Great Fairy
+    Spanish: Isla del Hada Custodiada - Gran Hada
+    French: Ilot Epineux des Fées - Grande Fée
+  Original Item: Progressive Quiver
+  Category:
+    - Great Fairy
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02095B77
+
+- Names:
+    English: Thorned Fairy Island - Northeastern Lookout Platform Destroy Cannons
+    Spanish: Isla del Hada Custodiada - Destruir Cañones en Atalaya Noreste
+    French: Ilot Epineux des Fées - Détruire les canons de la tour de guet du Nord-Est
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001B80
+
+- Names:
+    English: Thorned Fairy Island - Southwestern Lookout Platform Defeat Enemies
+    Spanish: Isla del Hada Custodiada - Derrotar Enemigos en Atalaya Suroeste
+    French: Ilot Epineux des Fées - Vaincre les ennemis de la tour de guet du Sud-Ouest
+  Original Item: Boko Baba Seed
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001BA0
+
+- Names:
+    English: Thorned Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada Custodiada - Tesoro Sumergido
+    French: Ilot Epineux des Fées - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room28.szs@YAZ0@SARC@Room28.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001A84
+    - 0x00001AA8
+    - 0x00001ACC
+    - 0x00001AF0
+
+- Names:
+    English: Needle Rock Isle - Chest
+    Spanish: Isla de la Aguja - Cofre en la Isla
+    French: Serrure de Pierre - Coffre de l'île
+  Original Item: Piece of Heart
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002224
+
+- Names:
+    English: Needle Rock Isle - Blue Chu Chu
+    Spanish: Isla de la Aguja - ChuChu Azul
+    French: Serrure de Pierre - Blob Bleu 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Needle Rock Isle - Golden Gunboat
+    Spanish: Isla de la Aguja - Buque de Guerra Dorado
+    French: Serrure de Pierre - Navire de guerre doré
+  Original Item: Triforce Chart 3
+  Category:
+    - Gunboat
+  Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002194
+
+- Names:
+    English: Needle Rock Isle - Cave Chest
+    Spanish: Isla de la Aguja - Cofre en la Cueva
+    French: Serrure de Pierre - Coffre de la grotte
+  Original Item: Orange Rupee
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/SubD42_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000020C
+
+- Names:
+    English: Needle Rock Isle - Sunken Treasure
+    Spanish: Isla de la Aguja - Tesoro Sumergido
+    French: Serrure de Pierre - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room29.szs@YAZ0@SARC@Room29.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002098
+    - 0x000020BC
+    - 0x000020E0
+    - 0x00002104
+
+- Names:
+    English: Islet of Steel - Interior Chest
+    Spanish: Isla de Hierro - Cofre interior
+    French: Canonnière - Coffre intérieur
+  Original Item: Triforce Chart 1
+  Category:
+    - Misc
+  Path: content/Common/Stage/ShipD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001B8
+
+- Names:
+    English: Islet of Steel - Lookout Platform Defeat Enemies
+    Spanish: Isla de Hierro - Derrotar Enemigos en la Atalaya
+    French: Canonnière - Vaincre les ennemis de la tour de guet
+  Original Item: Skull Necklace
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000DD8
+
+- Names:
+    English: Islet of Steel - Sunken Treasure
+    Spanish: Isla de Hierro - Tesoro Sumergido
+    French: Canonnière - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room30.szs@YAZ0@SARC@Room30.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000C70
+    - 0x00000C94
+    - 0x00000CB8
+    - 0x00000CDC
+
+- Names:
+    English: Stone Watcher Island - Blue Chu Chu
+    Spanish: Isla Cabeza de Piedra - ChuChu Azul
+    French: Ile de la Tête de Pierre - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Stone Watcher Island - Cave Chest
+    Spanish: Isla Cabeza de Piedra - Cofre en la Cueva
+    French: Ile de la Tête de Pierre - Coffre de la grotte
+  Original Item: Triforce Shard 7
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/TF_01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000484
+
+- Names:
+    English: Stone Watcher Island - Lookout Platform Chest
+    Spanish: Isla Cabeza de Piedra - Cofre en la Atalaya
+    French: Ile de la Tête de Pierre - Coffre de la tour de guet
+  Original Item: Red Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002460
+
+- Names:
+    English: Stone Watcher Island - Lookout Platform Destroy Cannons
+    Spanish: Isla Cabeza de Piedra - Destruir Cañones en la Atalaya
+    French: Ile de la Tête de Pierre - Détruire les canons de la tour de guet
+  Original Item: Piece of Heart
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002440
+
+- Names:
+    English: Stone Watcher Island - Sunken Treasure
+    Spanish: Isla Cabeza de Piedra - Tesoro Sumergido
+    French: Ile de la Tête de Pierre - Trésor englouti
+  Original Item: Triforce Shard 3
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room31.szs@YAZ0@SARC@Room31.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000022FC
+    - 0x00002320
+    - 0x00002344
+    - 0x00002368
+
+- Names:
+    English: Southern Triangle Island - Sunken Treasure
+    Spanish: Isla Triángulo del Sur - Tesoro Sumergido
+    French: Ile Triangulaire du Sud - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room32.szs@YAZ0@SARC@Room32.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000AC0
+    - 0x00000AE4
+    - 0x00000B08
+    - 0x00000B2C
+
+- Names:
+    English: Private Oasis - Top of Waterfall Chest
+    Spanish: Isla de Quién - Cofre en la cumbre de la cascada
+    French: Ile de Qui-ça - Coffre au sommet de la cascade
+  Original Item: Treasure Chart 27
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002628
+
+- Names:
+    English: Private Oasis - Big Octo
+    Spanish: Isla de Quién - Bigocto
+    French: Ile de Qui-ça - Kalamar
+  Original Item: Orange Rupee
+  Category:
+    - Big Octo
+  Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000025E0
+
+- Names:
+    English: Private Oasis - Cabana Labyrinth Lower Floor Chest
+    Spanish: Isla de Quién - Cofre del Laberinto Piso Inferior
+    French: Ile de Qui-ça - Coffre au sous-sol du labyrinthe
+  Original Item: Orange Rupee
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000274
+
+- Names:
+    English: Private Oasis - Cabana Labyrinth Upper Floor Chest
+    Spanish: Isla de Quién - Cofre del Laberinto Piso Superior
+    French: Ile de Qui-ça - Coffre au RDC du labyrinthe
+  Original Item: Triforce Shard 2
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TF_04_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000254
+
+- Names:
+    English: Private Oasis - Sunken Treasure
+    Spanish: Isla de Quién - Tesoro Sumergido
+    French: Ile de Qui-ça - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room33.szs@YAZ0@SARC@Room33.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x0000240C
+    - 0x00002430
+    - 0x00002454
+    - 0x00002478
+
+- Names:
+    English: Bomb Island - Cave Chest
+    Spanish: Isla Bomba - Cofre en la Cueva
+    French: Ile de la Bombe - Coffre de la grotte
+  Original Item: Piece of Heart
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/Cave01_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000278
+
+- Names:
+    English: Bomb Island - Submarine Chest
+    Spanish: Isla Bomba - Cofre del Submarino
+    French: Ile de la Bombe - Coffre du sous-marin
+  Original Item: Empty Bottle
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000004A4
+
+- Names:
+    English: Bomb Island - Lookout Platform Defeat Enemies
+    Spanish: Isla Bomba - Derrotar Enemigos en la Atalaya
+    French: Ile de la Bombe - Vaincre les ennemis de la tour de guet
+  Original Item: Red Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002110
+
+- Names:
+    English: Bomb Island - Sunken Treasure
+    Spanish: Isla Bomba - Tesoro Sumergido
+    French: Ile de la Bombe - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room34.szs@YAZ0@SARC@Room34.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001FCC
+    - 0x00001FF0
+    - 0x00002014
+    - 0x00002038
+
+- Names:
+    English: Birds Peak Rock - Blue Chu Chu
+    Spanish: Isla de los Nidos - ChuChu Azul
+    French: Ile aux Nichoirs - Blob Bleu 
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Birds Peak Rock - Cave Chest
+    Spanish: Isla de los Nidos - Cofre en la Cueva
+    French: Ile aux Nichoirs - Coffre intérieur
+  Original Item: Triforce Chart 3
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/TF_03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000018C
+
+- Names:
+    English: Birds Peak Rock - Sunken Treasure
+    Spanish: Isla de los Nidos - Tesoro Sumergido
+    French: Ile aux Nichoirs - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room35.szs@YAZ0@SARC@Room35.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000015B8
+    - 0x000015DC
+    - 0x00001600
+    - 0x00001624
+
+- Names:
+    English: Diamond Steppe Island - Blue Chu Chu
+    Spanish: Isla Rombo - ChuChu Azul
+    French: Ile du Losange - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Diamond Steppe Island - Big Octo
+    Spanish: Isla Rombo - Bigocto
+    French: Ile du Losange - Kalamar
+  Original Item: Orange Rupee
+  Category:
+    - Big Octo
+  Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x0000166C
+
+- Names:
+    English: Diamond Steppe Island - Maze First Chest
+    Spanish: Isla Rombo - Primer Cofre del Laberinto
+    French: Ile du Losange - Premier Coffre du labyrinthe
+  Original Item: Joy Pendant
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001E8
+
+- Names:
+    English: Diamond Steppe Island - Maze Second Chest
+    Spanish: Isla Rombo - Segundo Cofre del Laberinto
+    French: Ile du Losange - Deuxième Coffre du labyrinthe
+  Original Item: Ghost Ship Chart
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/WarpD_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001C8
+
+- Names:
+    English: Diamond Steppe Island - Sunken Treasure
+    Spanish: Isla Rombo - Tesoro Sumergido
+    French: Ile du Losange - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room36.szs@YAZ0@SARC@Room36.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x0000178C
+    - 0x000017B0
+    - 0x000017D4
+    - 0x000017F8
+
+- Names:
+    English: Five Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Cinco - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Cinq - Vaincre les navires de guerre et les canons
+  Original Item: Treasure Chart 41
+  Category:
+    - Eye Reef Chests
+  Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002E00
+
+- Names:
+    English: Five Eye Reef - Lookout Platform Chest
+    Spanish: Islas del Cinco - Cofre en la Atalaya
+    French: Ile de la Face Cinq - Coffre de la tour de guet
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00002E20
+
+- Names:
+    English: Five Eye Reef - Sunken Treasure
+    Spanish: Islas del Cinco - Tesoro Sumergido
+    French: Ile de la Face Cinq - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room37.szs@YAZ0@SARC@Room37.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002C2C
+    - 0x00002C50
+    - 0x00002C74
+    - 0x00002C98
+
+- Names:
+    English: Shark Island - Blue Chu Chu
+    Spanish: Isla Tiburón - ChuChu Azul
+    French: Ile du Requin - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Shark Island - Cave Chest
+    Spanish: Isla Tiburón - Cofre en la Cueva
+    French: Ile du Requin - Coffre de la grotte
+  Original Item: Silver Rupee
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/ITest63_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Always
+  Type: Chest
+  Offsets:
+    - 0x00000210
+
+- Names:
+    English: Shark Island - Sunken Treasure
+    Spanish: Isla Tiburón - Tesoro Sumergido
+    French: Ile du Requin - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room38.szs@YAZ0@SARC@Room38.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001550
+    - 0x00001574
+    - 0x00001598
+    - 0x000015BC
+
+- Names:
+    English: Southern Fairy Island - Blue Chu Chu
+    Spanish: Isla del Hada del Sur - ChuChu Azul
+    French: Ilot Méridional des Fées - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Southern Fairy Island - Great Fairy
+    Spanish: Isla del Hada del Sur - Gran Hada
+    French: Ilot Méridional des Fées - Grande Fée
+  Original Item: Progressive Bomb Bag
+  Category:
+    - Great Fairy
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02095B4F
+
+- Names:
+    English: Southern Fairy Island - Lookout Platform Destroy Northwest Cannons
+    Spanish: Isla del Hada del Sur - Destruir Cañones de Atalaya Noroeste
+    French: Ilot Méridional des Fées - Détruire les canons de la tour de guet du Nord-Ouest
+  Original Item: Treasure Chart 40
+  Category:
+    - Platform
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000213C
+
+- Names:
+    English: Southern Fairy Island - Lookout Platform Destroy Southeast Cannons
+    Spanish: Isla del Hada del Sur - Destruir Cañones de Atalaya Sureste
+    French: Ilot Méridional des Fées - Détruire les canons de la tour de guet du Sud-Est
+  Original Item: Skull Necklace
+  Category:
+    - Platform
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000215C
+
+- Names:
+    English: Southern Fairy Island - Sunken Treasure
+    Spanish: Isla del Hada del Sur - Tesoro Sumergido
+    French: Ilot Méridional des Fées - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room39.szs@YAZ0@SARC@Room39.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002040
+    - 0x00002064
+    - 0x00002088
+    - 0x000020AC
+
+- Names:
+    English: Ice Ring Isle - Frozen Chest
+    Spanish: Isla del Hielo - Cofre Congelado
+    French: Ile Gelée - Coffre gelé
+  Original Item: Treasure Chart 36
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001494
+
+- Names:
+    English: Ice Ring Isle - Interior Chest
+    Spanish: Isla del Hielo - Cofre interior
+    French: Ile Gelée - Coffre intérieur
+  Original Item: Iron Boots
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/MiniHyo_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000020C
+
+- Names:
+    English: Ice Ring Isle - Inner Cave Chest
+    Spanish: Isla del Hielo - Cofre en la Cueva Interior
+    French: Ile Gelée - Coffre de la grotte intérieure
+  Original Item: Orange Rupee
+  Category:
+    - Puzzle Secret Cave
+    - Combat Secret Cave
+  Path: content/Common/Stage/ITest62_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000210
+
+- Names:
+    English: Ice Ring Isle - Sunken Treasure
+    Spanish: Isla del Hielo - Tesoro Sumergido
+    French: Ile Gelée - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room40.szs@YAZ0@SARC@Room40.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x000012C0
+    - 0x000012E4
+    - 0x00001308
+    - 0x0000132C
+
+- Names:
+    English: Forest Haven - On Tree Branch
+    Spanish: Isla del Bosque - En la rama del Árbol Deku
+    French: Ile aux Forêts - Sur la branche d'arbre
+  Original Item: Deku Leaf
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00001E04
+    - 0x000020C4
+
+- Names:
+    English: Forest Haven - Chest on Small Island
+    Spanish: Isla del Bosque - Cofre en la Isla Pequeña
+    French: Ile aux Forêts - Coffre de la Petite Ile
+  Original Item: Treasure Chart 3
+  Category:
+    - Island Puzzle
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00004088
+
+- Names:
+    English: Forest Haven - Sunken Treasure
+    Spanish: Isla del Bosque - Tesoro Sumergido
+    French: Ile aux Forêts - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00003D28
+    - 0x00003D4C
+    - 0x00003D70
+    - 0x00003D94
+
+- Names:
+    English: Cliff Plateau Isles - Cave Chest
+    Spanish: Islas Conectadas - Cofre en la Cueva
+    French: Saut de Roc - Coffre de la grotte
+  Original Item: Joy Pendant
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/Cave03_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000020C
+
+- Names:
+    English: Cliff Plateau Isles - Highest Isle Chest
+    Spanish: Islas Conectadas - Cofre en la Isla más alta
+    French: Saut de Roc - Coffre sur la Haute Ile
+  Original Item: Treasure Chart 25
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000183C
+
+- Names:
+    English: Cliff Plateau Isles - Blue Chu Chu
+    Spanish: Islas Conectadas - ChuChu Azul
+    French: Saut de Roc - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Cliff Plateau Isles - Lookout Platform Chest
+    Spanish: Islas Conectadas - Cofre en la Atalaya
+    French: Saut de Roc - Coffre de la tour de guet
+  Original Item: Boko Baba Seed
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000185C
+
+- Names:
+    English: Cliff Plateau Isles - Sunken Treasure
+    Spanish: Islas Conectadas - Tesoro Sumergido
+    French: Saut de Roc - Trésor englouti
+  Original Item: Triforce Shard 5
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room42.szs@YAZ0@SARC@Room42.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001500
+    - 0x00001524
+    - 0x00001548
+    - 0x0000156C
+
+- Names:
+    English: Horseshoe Island - Blue Chu Chu
+    Spanish: Isla Herradura - ChuChu Azul
+    French: Ile du Fer à Cheval - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Horseshoe Island - Play Golf
+    Spanish: Isla Herradura - Jugar Golf
+    French: Ile du Fer à Cheval - Jouer au Golf
+  Original Item: Treasure Chart 28
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001F74
+
+- Names:
+    English: Horseshoe Island - Cave Chest
+    Spanish: Isla Herradura - Cofre en la Cueva
+    French: Ile du Fer à Cheval - Coffre de la grotte
+  Original Item: Treasure Chart 8
+  Category:
+    - Combat Secret Cave
+  Path: content/Common/Stage/Cave05_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001B0
+
+- Names:
+    English: Horseshoe Island - Northwestern Lookout Platform Chest
+    Spanish: Isla Herradura - Cofre en Atalaya Noroeste
+    French: Ile du Fer à Cheval - Coffre de la tour de guet du Nord-Ouest
+  Original Item: Treasure Chart 43
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001F94
+
+- Names:
+    English: Horseshoe Island - Southeastern Lookout Platform Chest
+    Spanish: Isla Herradura - Cofre en Atalaya Sureste
+    French: Ile du Fer à Cheval - Coffre de la tour de guet du Sud-Est
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001FB4
+
+- Names:
+    English: Horseshoe Island - Sunken Treasure
+    Spanish: Isla Herradura - Tesoro Sumergido
+    French: Ile du Fer à Cheval - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room43.szs@YAZ0@SARC@Room43.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001CEC
+    - 0x00001D10
+    - 0x00001D34
+    - 0x00001D58
+
+- Names:
+    English: Outset Island - Under Link's House
+    Spanish: Isla Initia - Bajo la casa de la Abuela
+    French: Ile de l'Aurore - Sous la Maison de Mémé
+  Original Item: Orange Rupee
+  Category:
+    - Misc
+  Path: content/Common/Stage/LinkUG_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000008DC
+
+- Names:
+    English: Outset Island - Mesa's House Chest
+    Spanish: Isla Initia - Cofre en la Casa de Pablo
+    French: Ile de l'Aurore - Coffre de la Maison d'André
+  Original Item: Red Rupee
+  Category:
+    - Misc
+  Path: content/Common/Stage/Omasao_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000008E8
+
+- Names:
+    English: Outset Island - Orca Give 10 Knight's Crests
+    Spanish: Isla Initia - Orca 10 Blasones de Guerrero
+    French: Ile de l'Aurore - 10 Blasons d'Epeiste pour Orco
+  Original Item: Hurricane Spin
+  Category:
+    - Spoils Trading
+  Path: content/Common/Stage/Ojhous_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x0002D61B
+  NameOffset: 0x0000FA40
+
+- Names:
+    English: Outset Island - Great Fairy
+    Spanish: Isla Initia - Gran Hada
+    French: Ile de l'Aurore - Grande Fée
+  Original Item: Progressive Wallet
+  Category:
+    - Great Fairy
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02095B27
+
+- Names:
+    English: Outset Island - Jabun's Cave Chest
+    Spanish: Isla Initia - Cofre en la Cueva de Yabú
+    French: Ile de l'Aurore - Coffre de la caverne de Jabu
+  Original Item: Nayru's Pearl
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000001C4
+
+- Names:
+    English: Outset Island - Dig up Black Soil
+    Spanish: Isla Initia - Cavar suelo negro
+    French: Ile de l'Aurore - Creuser avec Link le Cochon
+  Original Item: Piece of Heart
+  Category:
+    - Island Puzzle
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00003AD4
+
+- Names:
+    English: Outset Island - Orca Hit 500 Times
+    Spanish: Isla Initia - Entrenamiento de Orca 500 Golpes
+    French: Ile de l'Aurore - Frapper Orco 500 fois
+  Original Item: Piece of Heart
+  Category:
+    - Junk
+  Hint Priority: Sometimes
+  Type: RPX
+  Offsets:
+    - 0x02258737
+
+- Names:
+    English: Outset Island - Savage Labyrinth Floor 30
+    Spanish: Isla Initia - Cripta de los Mounstros Piso 30
+    French: Ile de l'Aurore - 30e étage de la Crypte Magique
+  Original Item: Triforce Shard 6
+  Category:
+    - Savage Labyrinth
+  Path: content/Common/Stage/Cave09_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000348
+
+- Names:
+    English: Outset Island - Savage Labyrinth Floor 50
+    Spanish: Isla Initia - Cripta de los Mounstros Piso 50
+    French: Ile de l'Aurore - 50e étage de la Crypte Magique
+  Original Item: Hero's Charm
+  Category:
+    - Savage Labyrinth
+  Path: content/Common/Stage/Cave10_Room20.szs@YAZ0@SARC@Room20.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000178
+
+- Names:
+    English: Outset Island - Sunken Treasure
+    Spanish: Isla Initia - Tesoro Sumergido
+    French: Ile de l'Aurore - Trésor englouti
+  Original Item: Triforce Shard 6
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00003558
+    - 0x0000357C
+    - 0x000035A0
+    - 0x000035C4
+
+- Names:
+    English: Headstone Island - Top of Island
+    Spanish: Isla de la Tierra - Cumbre de la Isla
+    French: Ile de la Terre - Sommet de l'Ile
+  Original Item: Piece of Heart
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000D4C
+
+- Names:
+    English: Headstone Island - Submarine Chest
+    Spanish: Isla de la Tierra - Cofre del Submarino
+    French: Ile de la Terre - Coffre du sous-marin
+  Original Item: Treasure Chart 14
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room5.szs@YAZ0@SARC@Room5.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000003F4
+
+- Names:
+    English: Headstone Island - Sunken Treasure
+    Spanish: Isla de la Tierra - Tesoro Sumergido
+    French: Ile de la Terre - Trésor englouti
+  Original Item: Silver Rupee
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room45.szs@YAZ0@SARC@Room45.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001564
+    - 0x00001588
+    - 0x000015AC
+    - 0x000015D0
+
+- Names:
+    English: Two Eye Reef - Destroy Cannons and Gunboats
+    Spanish: Islas del Dos - Destruir Cañones y Buques de Guerra
+    French: Ile de la Face Deux - Vaincre les navires de guerre et les canons
+  Original Item: Treasure Chart 13
+  Category:
+    - Eye Reef Chests
+  Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000272C
+
+- Names:
+    English: Two Eye Reef - Big Octo Great Fairy
+    Spanish: Islas del Dos - Gran Hada del Bigocto
+    French: Ile de la Face Deux - Grande Fée du Kalamar
+  Original Item: Progressive Magic Meter
+  Category:
+    - Big Octo
+    - Great Fairy
+  Path: content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x000A6B9F
+  NameOffset: 0x00026170
+
+- Names:
+    English: Two Eye Reef - Lookout Platform Chest
+    Spanish: Islas del Dos - Cofre en la Atalaya
+    French: Ile de la Face Deux - Coffre de la tour de guet
+  Original Item: Purple Rupee
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000274C
+
+- Names:
+    English: Two Eye Reef - Sunken Treasure
+    Spanish: Islas del Dos - Tesoro Sumergido
+    French: Ile de la Face Deux - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room46.szs@YAZ0@SARC@Room46.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00002510
+    - 0x00002534
+    - 0x00002558
+    - 0x0000257C
+
+- Names:
+    English: Angular Isles - Peak Chest
+    Spanish: Islas Cuadri - Cofre en la Cumbre
+    French: Ilots Kif Kif - Coffre au sommet
+  Original Item: Piece of Heart
+  Category:
+    - Island Puzzle
+  Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000830
+
+- Names:
+    English: Angular Isles - Blue Chu Chu
+    Spanish: Islas Cuadri - ChuChu Azul
+    French: Ilots Kif Kif - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Angular Isles - Cave Chest
+    Spanish: Islas Cuadri - Cofre en la Cueva
+    French: Ilots Kif Kif - Coffre de la grotte
+  Original Item: Silver Rupee
+  Category:
+    - Puzzle Secret Cave
+  Path: content/Common/Stage/SubD43_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000254
+
+- Names:
+    English: Angular Isles - Sunken Treasure
+    Spanish: Islas Cuadri - Tesoro Sumergido
+    French: Ilots Kif Kif - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room47.szs@YAZ0@SARC@Room47.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000734
+    - 0x00000758
+    - 0x0000077C
+    - 0x000007A0
+
+- Names:
+    English: Boating Course - Blue Chu Chu
+    Spanish: Zona de regata - ChuChu Azul
+    French: Batodrome - Blob Bleu
+  Original Item: Blue Chu Jelly
+  Category:
+    - Blue Chu Chu
+  Hint Priority: Sometimes
+  Type: Do Nothing
+  # Add more here later
+
+- Names:
+    English: Boating Course - Raft Chest
+    Spanish: Zona de regata - Cofre en la Balsa
+    French: Batodrome - Coffre du radeau
+  Original Item: Boko Baba Seed
+  Category:
+    - Raft
+  Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000F94
+
+- Names:
+    English: Boating Course - Cave Chest
+    Spanish: Zona de regata - Cofre en la Cueva
+    French: Batodrome -Coffre de la grotte
+  Original Item: Submarine Chart
+  Category:
+    - Puzzle Secret Cave
+    - Combat Secret Cave
+  Path: content/Common/Stage/SubD71_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000210
+
+- Names:
+    English: Boating Course - Sunken Treasure
+    Spanish: Zona de regata - Tesoro Sumergido
+    French: Batodrome - Trésor englouti
+  Original Item: Sea Hearts Chart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room48.szs@YAZ0@SARC@Room48.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00000E98
+    - 0x00000EBC
+    - 0x00000EE0
+    - 0x00000F04
+
+- Names:
+    English: Five Star Isles - Raft Chest
+    Spanish: Isla Casiopea - Cofre en la Balsa
+    French: Archipel de Cassiopée - Coffre du radeau
+  Original Item: Red Rupee
+  Category:
+    - Raft
+  Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000147C
+
+- Names:
+    English: Five Star Isles - Submarine Chest
+    Spanish: Isla Casiopea - Cofre del Submarino
+    French: Archipel de Cassiopée - Coffre du sous-marin
+  Original Item: Piece of Heart
+  Category:
+    - Submarine
+  Path: content/Common/Stage/Abship_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000004C8
+
+- Names:
+    English: Five Star Isles - Lookout Platform Destroy Cannons
+    Spanish: Isla Casiopea - Destruir Cañones en la Atalaya
+    French: Archipel de Cassiopée - Détruire les canons de la tour de guet
+  Original Item: Golden Feather
+  Category:
+    - Platform
+  Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000149C
+
+- Names:
+    English: Five Star Isles - Sunken Treasure
+    Spanish: Isla Casiopea - Tesoro Sumergido
+    French: Archipel de Cassiopée - Trésor englouti
+  Original Item: Piece of Heart
+  Category:
+    - Sunken Treasure
+  Path: content/Common/Stage/sea_Room49.szs@YAZ0@SARC@Room49.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: SCOB
+  Offsets:
+    - 0x00001338
+    - 0x0000135C
+    - 0x00001380
+    - 0x000013A4
+
+- Names:
+    English: Dragon Roost Cavern - First Room Chest
+    Spanish: Cueva del Dragón - Cofre en el primer cuarto
+    French: Caverne du Dragon - Coffre de l'entrée
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001E40
+
+- Names:
+    English: Dragon Roost Cavern - Water Jug Alcove Chest
+    Spanish: Cueva del Dragón - Cofre en alcova de jarrones de agua
+    French: Caverne du Dragon - Coffre de l'alcôve des pots d'eau
+  Original Item: Dungeon Map
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001EA0
+
+- Names:
+    English: Dragon Roost Cavern - Water Jug On Upper Shelf
+    Spanish: Cueda del Dragón - Jarrón de Agua en Repisa Superior
+    French: Caverne du Dragon - Jarre d'eau sur l'étagère supérieure
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_NewD2_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000424
+
+- Names:
+    English: Dragon Roost Cavern - Boarded Up Chest
+    Spanish: Cueva del Dragón - Cofre tras la barricada
+    French: Caverne du Dragon - Coffre barricadé
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001E60
+
+- Names:
+    English: Dragon Roost Cavern - Swing Across Lava Chest
+    Spanish: Cueva del Dragón - Cofre através de la lava
+    French: Caverne du Dragon - Coffre de l'autre côté de la lave
+  Original Item: Treasure Chart 11
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001EE0
+
+- Names:
+    English: Dragon Roost Cavern - Rat Room Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto de las ratas
+    French: Caverne du Dragon - Coffre de la Salle des Rats
+  Original Item: Compass
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001E80
+
+- Names:
+    English: Dragon Roost Cavern - Rat Room Boarded Up Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto de las ratas tras la barricada
+    French: Caverne du Dragon - Coffre barricadé de la Salle des Rats
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001F00
+
+- Names:
+    English: Dragon Roost Cavern - Bird's Nest
+    Spanish: Cueva del Dragón - Nido de pájaro
+    French: Caverne du Dragon - Nid du Condor
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000BC8
+
+- Names:
+    English: Dragon Roost Cavern - Dark Room Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto oscuro
+    French: Caverne du Dragon - Coffre de la salle sombre
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001E20
+
+# Re-enable check when we confirm it exists
+# - Names:
+#     English: Dragon Roost Cavern - Hub Room Tingle Chest
+#     Spanish: Cueva del Dragón - Cofre en la sala principal
+#     French: Caverne du Dragon - Coffre de Tingle de la salle principale
+#   Original Item: Yellow Rupee
+#   Category:
+#     - Dungeon
+#     - Tingle Chest
+#   Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+#   Hint Priority: Sometimes
+#   Type: Chest
+#   Offsets:
+#     - 0x00001F40
+
+- Names:
+    English: Dragon Roost Cavern - Pot Room Chest
+    Spanish: Cueva del Dragón - Cofre en el cuarto de los jarrones
+    French: Caverne du Dragon - Coffre de la salle des pots
+  Original Item: Treasure Chart 39
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001E00
+
+- Names:
+    English: Dragon Roost Cavern - Pot on Upper Shelf in Pot Room
+    Spanish: Cueva del Dragón - Jarrón en Repisa Superior en Cuarto de los Jarrones
+    French: Caverne du Dragon - Pot de l'étagère de la salle des pots
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_NewD2_Room6.szs@YAZ0@SARC@Room6.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000558
+
+- Names:
+    English: Dragon Roost Cavern - Boss Stairs Right Chest
+    Spanish: Cueva del Dragón - Cofre Derecho de las gradas del Jefe
+    French: Caverne du Dragon - Coffre de droite des escaliers du Boss
+  Original Item: Knights Crest
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001DC0
+
+- Names:
+    English: Dragon Roost Cavern - Boss Stairs Left Chest
+    Spanish: Cueva del Dragón - Cofre Izquierdo de las gradas del Jefe
+    French: Caverne du Dragon - Coffre de gauche des escaliers du Boss
+  Original Item: Yellow Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001DE0
+
+- Names:
+    English: Dragon Roost Cavern - Boss Stairs Right Pot
+    Spanish: Cueva del Dragón - Jarrón derecho en Gradas del Jefe
+    French: Caverne du Dragon - Pot de droite des escaliers du Boss
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x000004F4
+
+- Names:
+    English: Dragon Roost Cavern - Mini Boss
+    Spanish: Cueva del Dragón - Minijefe
+    French: Caverne du Dragon - Mini-Boss
+  Original Item: Grappling Hook
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000688
+
+- Names:
+    English: Dragon Roost Cavern - Under Rope Bridge Chest
+    Spanish: Cueva del Dragón - Cofre bajo el puente de cuerdas
+    French: Caverne du Dragon - Coffre sous le pont de corde
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001EC0
+
+- Names:
+    English: Dragon Roost Cavern - Tingle Statue Chest
+    Spanish: Cueva del Dragón - Cofre de la Estatua de Tingle
+    French: Caverne du Dragon - Coffre de la Statue Tingle
+  Original Item: Dragon Tingle Statue
+  Category:
+    - Dungeon
+    - Tingle Chest
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001F20
+
+- Names:
+    English: Dragon Roost Cavern - Big Key Chest
+    Spanish: Cueva del Dragón - Cofre de la Gran Llave
+    French: Caverne du Dragon - Coffre de la Grande Clé
+  Original Item:  Big Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_NewD2_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001DA0
+
+- Names:
+    English: Dragon Roost Cavern - Gohma Heart Container
+    Spanish: Cueva del Dragón - Contenedor de Corazón de Gohma
+    French: Caverne du Dragon - Réceptacle de Cœur de Gohma
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Names:
+    English: Gohma
+    Spanish: Gohma
+    French: Gohma
+  Category:
+    - Dungeon
+  Paths:
+    code/cking.rpx@RPX@ELF: 0x020F5ED6
+    content/Common/Stage/M_DragB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000006C0
+  Hint Priority: Sometimes
+  Type: Boss
+
+- Names:
+    English: Forbidden Woods - First Room Chest
+    Spanish: Bosque Prohibido - Cofre en el primer cuarto
+    French: Bois Défendus - Coffre de l'entrée
+  Original Item: Dungeon Map
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001934
+
+- Names:
+    English: Forbidden Woods - Boko Baba Climb Chest
+    Spanish: Bosque Prohibido - Cofre subiendo las Boko Babas
+    French: Bois Défendus - Coffre de la montée par Bud Baba
+  Original Item: Treasure Chart 1
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000018F4
+
+- Names:
+    English: Forbidden Woods - Pot High Above Hollow Tree
+    Spanish: Bosque Prohibido - Jarrón en la cima de la sala de Árbol Hueco
+    French: Bois Défendus - Pot de la cime de l'arbre creux
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kindan_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000E80
+
+- Names:
+    English: Forbidden Woods - Inside Hollow Tree Chest
+    Spanish: Bosque Prohibido - Cofre dentro del árbol hueco
+    French: Bois Défendus - Coffre à l'intérieur de l'arbre creux
+  Original Item: Knights Crest
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001914
+
+- Names:
+    English: Forbidden Woods - Hole In Tree Chest
+    Spanish: Bosque Prohibido - Cofre en el hueco del árbol
+    French: Bois Défendus - Coffre du trou de l'arbre
+  Original Item: Red Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001974
+
+- Names:
+    English: Forbidden Woods - Morth Pit Chest
+    Spanish: Bosque Prohibido - Cofre en la fosa de Abrojos
+    French: Bois Défendus - Coffre de la fosse aux Chardons
+  Original Item: Yellow Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A74
+
+- Names:
+    English: Forbidden Woods - Vine Maze Left Chest
+    Spanish: Bosque Prohibido - Cofre Izquierdo en el laberinto de plantas espinosas
+    French: Bois Défendus - Coffre de gauche du labyrinthe des plantes grimpantes
+  Original Item: Compass
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019B4
+
+- Names:
+    English: Forbidden Woods - Vine Maze Right Chest
+    Spanish: Bosque Prohibido - Cofre Derecho en el laberinto de plantas espinosas
+    French: Bois Défendus - Coffre de droite du labyrinthe des plantes grimpantes
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001954
+
+- Names:
+    English: Forbidden Woods - Highest Pot in Vine Maze
+    Spanish: Bosque Prohibido - Jarrón más alto en el Laberinto de Plantas Espinosas
+    French: Bois Défendus - Pot supérieur du labyrinthe des plantes grimpantes
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kindan_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00001D20
+
+- Names:
+    English: Forbidden Woods - Tall Room Chest
+    Spanish: Bosque Prohibido - Cofre en el cuarto alto
+    French: Bois Défendus - Coffre de la haute pièce
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A14
+
+- Names:
+    English: Forbidden Woods - Mothula Mini Boss Chest
+    Spanish: Bosque Prohibido - Minijefe Polillántula Grande
+    French: Bois Défendus - Mini-Boss Mite
+  Original Item: Boomerang
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kinMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000004AC
+
+- Names:
+    English: Forbidden Woods - Past Seeds Hanging by Vines Chest
+    Spanish: Bosque Prohibido - Cofre detrás de las nueces colgadas
+    French: Bois Défendus - Coffre derrière les noix pendus
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A54
+
+- Names:
+    English: Forbidden Woods - Chest Across Hanging Flower
+    Spanish: Bosque Prohibido - Cofre através de la flor colgante
+    French: Bois Défendus - Coffre derrière la fleur pendue
+  Original Item: Yellow Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A94
+
+- Names:
+    English: Forbidden Woods - Tingle Statue Chest
+    Spanish: Bosque Prohibido - Cofre de la Estatua de Tingle
+    French: Bois Défendus - Coffre de la Statue Tingle
+  Original Item: Forbidden Tingle Statue
+  Category:
+    - Dungeon
+    - Tingle Chest
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001AB4
+
+- Names:
+    English: Forbidden Woods - Locked Tree Trunk Chest
+    Spanish: Bosque Prohibido - Cofre en el tronco cerrado
+    French: Bois Défendus - Coffre du tronc d'arbre verrouillé
+  Original Item: Treasure Chart 15
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019D4
+
+- Names:
+    English: Forbidden Woods - Big Key Chest
+    Spanish: Bosque Prohibido - Cofre de la Gran Llave
+    French: Bois Défendus - Coffre de la Grande Clé
+  Original Item: Big Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019F4
+
+- Names:
+    English: Forbidden Woods - Double Mothula Room Chest
+    Spanish: Bosque Prohibido - Cofre de las dos Polillántulas
+    French: Bois Défendus - Coffre de la Salle aux deux Mites
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kindan_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A34
+
+- Names:
+    English: Forbidden Woods - Kalle Demos Heart Container
+    Spanish: Bosque Prohibido - Contenedor de Corazón de Vilipendulia
+    French: Bois Défendus - Réceptacle de Cœur de Karle Demos
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Names:
+    English: Kalle Demos
+    Spanish: Vilipendulia
+    French: Karle Demos
+  Category:
+    - Dungeon
+  Paths:
+    code/cking.rpx@RPX@ELF: 0x020AF916
+    content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x00000114
+  Hint Priority: Sometimes
+  Type: Boss
+
+- Names:
+    English: Tower of the Gods - Hop Across Floating Boxes Chest
+    Spanish: Torre de los Dioses - Cofre pasando las cajas flotantes
+    French: Tour des Dieux - Coffre de la traversée par caisses flottantes
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001924
+
+- Names:
+    English: Tower of the Gods - Chest Behind Bombable Wall
+    Spanish: Torre de los Dioses - Cofre tras la pared agrietada
+    French: Tour des Dieux - Coffre derrière le Mur Fissuré
+  Original Item: Dungeon Map
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001944
+
+- Names:
+    English: Tower of the Gods - Pot Behind Bombable Wall
+    Spanish: Torre de los Dioses - Jarrón tras la Pared Agrietada
+    French: Tour des Dieux - Pot derrière le Mur Fissuré
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/Siren_Room3.szs@YAZ0@SARC@Room3.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000218
+
+- Names:
+    English: Tower of the Gods - Light Two Torches Chest
+    Spanish: Torre de los Dioses - Cofre de las dos antorchas
+    French: Tour des Dieux - Coffre des deux torches
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019C4
+
+- Names:
+    English: Tower of the Gods - Skull Room Chest
+    Spanish: Torre de los Dioses - Cofre en el cuarto de los Bubbles
+    French: Tour des Dieux - Coffre de la Salle du Tetdoss
+  Original Item: Compass
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001964
+
+- Names:
+    English: Tower of the Gods - Shoot Eye Above Skulls Chest
+    Spanish: Torre de los Dioses - Cofre al disparar ojo en el cuarto de los Bubbles
+    French: Tour des Dieux - Coffre de l'interrupteur œil de la Salle du Tetdoss
+  Original Item: Treasure Chart 6
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019E4
+
+- Names:
+    English: Tower of the Gods - Tingle Statue Chest
+    Spanish: Torre de los Dioses - Cofre de la Estatua de Tingle
+    French: Tour des Dieux - Coffre de la Statue Tingle
+  Original Item: Goddess Tingle Statue
+  Category:
+    - Dungeon
+    - Tingle Chest
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A64
+
+- Names:
+    English: Tower of the Gods - Stone Tablet
+    Spanish: Torre de los Dioses - Lápida
+    French: Tour des Dieux - Stèle de Pierre
+  Original Item: Command Melody
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
+  Hint Priority: Sometimes
+  Type: Event
+  Offset: 0x00030E17
+  NameOffset: 0x0001E660
+
+- Names:
+    English: Tower of the Gods - First Armos Knights Chest
+    Spanish: Torre de los Dioses - Cofre de los primeros Caballeros Armos
+    French: Tour des Dieux - Premier Coffre des Grands Armos
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019A4
+
+- Names:
+    English: Tower of the Gods - Darknut Mini Boss
+    Spanish: Torre de los Dioses - Minijefe Ferrus
+    French: Tour des Dieux - Mini-Boss Darknut
+  Original Item: Progressive Bow
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/SirenMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000520
+
+- Names:
+    English: Tower of the Gods - Floating Platforms Room Lower Chest
+    Spanish: Torre de los Dioses - Plataformas flotantes Cofre Superior
+    French: Tour des Dieux - Coffre inférieur de la Salle aux Platefomes
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A24
+
+- Names:
+    English: Tower of the Gods - Floating Platforms Room Upper Chest
+    Spanish: Torre de los Dioses - Plataformas flotantes Cofre Inferior
+    French: Tour des Dieux - Coffre supérieur de la Salle aux Plateformes
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A44
+
+- Names:
+    English: Tower of the Gods - Second Armos Knights Chest
+    Spanish: Torre de los Dioses - Cofre de los segundos Caballeros Armos
+    French: Tour des Dieux - Deuxième Coffre des Grands Armos
+  Original Item: Treasure Chart 30
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A04
+
+- Names:
+    English: Tower of the Gods - Big Key Chest
+    Spanish: Torre de los Dioses - Cofre de la Gran Llave
+    French: Tour des Dieux - Coffre de la Grande Clé
+  Original Item: Big Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/Siren_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A84
+
+- Names:
+    English: Tower of the Gods - Eastern Pot in Big Key Chest Room
+    Spanish: Torre de los Dioses - Jarrón en Zona Este de la habitación de la Gran Llave
+    French: Tour des Dieux - Pot de l'Est de la Salle du Coffre de la Grande Clé
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/Siren_Room17.szs@YAZ0@SARC@Room17.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000234
+
+- Names:
+    English: Tower of the Gods - Gohdan Heart Container
+    Spanish: Torre de los Dioses - Contenedor de Corazón de Deus Probatur
+    French: Tour des Dieux - Réceptacle de Cœur de Gordon
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Names:
+    English: Gohdan
+    Spanish: Deus Probatur
+    French: Gordon
+  Category:
+    - Dungeon
+  Paths:
+    code/cking.rpx@RPX@ELF: 0x020EFE1B
+    content/Common/Stage/SirenB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000003C0
+  Hint Priority: Sometimes
+  Type: Boss
+
+- Names:
+    English: Earth Temple - Warp Pot Room Chest
+    Spanish: Templo de la Tierra - Cofre del cuarto con la vasija trasportadora
+    French: Temple de la Terre - Coffre de la Salle des Blobs
+  Original Item: Dungeon Map
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001988
+
+- Names:
+    English: Earth Temple - Warp Pot Room Behind Curtain
+    Spanish: Templo de la Tierra - Detrás de la cortina en la sala de los Chuchus
+    French: Temple de la Terre - Derrière le Rideau de la Salle des Blobs
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_Dai_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000414
+
+- Names:
+    English: Earth Temple - First Crypt Chest
+    Spanish: Templo de la Tierra - Cofre de la primera cripta
+    French: Temple de la Terre - Coffre de la première crypte
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019A8
+
+- Names:
+    English: Earth Temple - Chest Behind Destructable Wall
+    Spanish: Templo de la Tierra - Cofre tras la pared agrietada
+    French: Temple de la Terre - Coffre derrière le Mur Fissuré
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001AC8
+
+- Names:
+    English: Earth Temple - Three Blocks Room Chest
+    Spanish: Templo de la Tierra - Cofre en el cuarto de los 3 bloques
+    French: Temple de la Terre - Coffre de la Salle aux Trois Blocs
+  Original Item: Compass
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019C8
+
+- Names:
+    English: Earth Temple - Behind Statues Chest
+    Spanish: Templo de la Tierra - Cofre detrás de las estatuas
+    French: Temple de la Terre - Coffre derrière les statues
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000019E8
+
+- Names:
+    English: Earth Temple - Second Crypt Casket
+    Spanish: Templo de la Tierra - Ataúd en la segunda cripta
+    French: Temple de la Terre - Sarcophage de la deuxième crypte
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Room8.szs@YAZ0@SARC@Room8.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000234
+
+- Names:
+    English: Earth Temple - Stalfos Mini Boss
+    Spanish: Templo de la Tierra - Minijefe Stalfos
+    French: Temple de la Terre - Mini-Boss Stalfos
+  Original Item: Mirror Shield
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_DaiMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x0000063C
+
+- Names:
+    English: Earth Temple - Tingle Statue Chest
+    Spanish: Templo de la Tierra - Cofre de la Estatua de Tingle
+    French: Temple de la Terre - Coffre de la Statue Tingle
+  Original Item: Earth Tingle Statue
+  Category:
+    - Dungeon
+    - Tingle Chest
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001B28
+
+- Names:
+    English: Earth Temple - Foggy Floormaster Room End Chest
+    Spanish: Templo de la Tierra - Cofre al fondo del cuarto nublado del Floormaster
+    French: Temple de la Terre - Coffre de la Salle brumeuse des Mains
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A08
+
+- Names:
+    English: Earth Temple - Kill All Floormasters Chest
+    Spanish: Templo de la Tierra - Derrotar a todos los Floormasters
+    French: Temple de la Terre - Vaincre toutes les Mains
+  Original Item: Treasure Chart 20
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001AA8
+
+- Names:
+    English: Earth Temple - Near Hammer Button Behind Curtain
+    Spanish: Templo de la Tierra - Detrás de la cortina cerca del botón del Martillo
+    French: Temple de la Terre - Derrière le Rideau près du bouton de la Masse
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/M_Dai_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000490
+
+- Names:
+    English: Earth Temple - Third Crypt Chest
+    Spanish: Templo de la Tierra - Cofre en la tercera cripta
+    French: Temple de la Terre - Coffre de la troisième crypte
+  Original Item: Red Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A28
+
+- Names:
+    English: Earth Temple - Many Mirrors Room Right Chest
+    Spanish: Templo de la Tierra - Cofre derecho en la sala de los espejos
+    French: Temple de la Terre - Coffre de droite de la Salle des Miroirs
+  Original Item: Purple Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A68
+
+- Names:
+    English: Earth Temple - Many Mirrors Room Left Chest
+    Spanish: Templo de la Tierra - Cofre izquierdo en la sala de los espejos
+    French: Temple de la Terre - Coffre de gauche de la Salle des Miroirs
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A88
+
+- Names:
+    English: Earth Temple - Big Key Chest
+    Spanish: Templo de la Tierra - Cofre de la Gran Llave
+    French: Temple de la Terre - Coffre de la Grande Clé
+  Original Item: Big Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001A48
+
+- Names:
+    English: Earth Temple - Stalfos Crypt Room Chest
+    Spanish: Templo de la Tierra - Cofre en la Cripta del Stalfos
+    French: Temple de la Terre - Coffre de la crypte des Stalfos
+  Original Item: Treasure Chart 12
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/M_Dai_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001AE8
+
+- Names:
+    English: Earth Temple - Jalhalla Heart Container
+    Spanish: Templo de la Tierra - Contenedor de Corazón de Fati Triputis
+    French: Temple de la Terre - Réceptacle de Cœur de Jay Harla
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Names:
+    English: Jalhalla
+    Spanish: Fati Triputis
+    French: Jay Harla
+  Category:
+    - Dungeon
+  Paths:
+    code/cking.rpx@RPX@ELF: 0x020DADDE
+    content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000000C0
+  Hint Priority: Sometimes
+  Type: Boss
+
+- Names:
+    English: Wind Temple - Between Dirt Patches Chest
+    Spanish: Templo del Viento - Cofre entre los parches de tierra
+    French: Temple du Vent - Coffre entre les deux arbres
+  Original Item: Orange Rupee
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000F84
+
+- Names:
+    English: Wind Temple - Behind Stone Head in Hidden Upper Room
+    Spanish: Templo del Viento - Tras Cabeza de Piedra en Sala Superior Secreta
+    French: Temple du Vent - Derrière la Tête de Pierre de la Salle Supérieure Secrète
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kaze_Room1.szs@YAZ0@SARC@Room1.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x000002E8
+
+- Names:
+    English: Wind Temple - Tingle Statue Chest
+    Spanish: Templo del Viento - Cofre de la Estatua de Tingle
+    French: Temple du Vent - Coffre de la Statue Tingle
+  Original Item: Wind Tingle Statue
+  Category:
+    - Dungeon
+    - Tingle Chest
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001064
+
+- Names:
+    English: Wind Temple - Behind Stone Head Chest
+    Spanish: Templo del Viento - Cofre tras la cabeza de piedra
+    French: Temple du Vent - Coffre derrière la Tête de Pierre
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000FA4
+
+- Names:
+    English: Wind Temple - Left Alcove Chest
+    Spanish: Templo del Viento - Cofre de la alcova izquierda
+    French: Temple du Vent - Coffre de l'alcôve de gauche
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000F64
+
+- Names:
+    English: Wind Temple - Big Key Chest
+    Spanish: Templo del Viento - Cofre de la Gran Llave
+    French: Temple du Vent - Coffre de la Grande Clé
+  Original Item: Big Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000F24
+
+- Names:
+    English: Wind Temple - Cyclones Room Chest
+    Spanish: Templo del Viento - Cofre en la sala de los ciclones
+    French: Temple du Vent - Coffre de la Salle des Cyclones
+  Original Item: Dungeon Map
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000FE4
+
+- Names:
+    English: Wind Temple - Behind Stone Head in Many Cyclones Room
+    Spanish: Templo del Viento - Tras Cabeza de Piedra en Sala de los Ciclones
+    French: Temple du Vent - Derrière la Tête de Pierre de la Salle des Cyclones
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+    - Dungeon Secret
+  Path: content/Common/Stage/kaze_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Actor
+  Offsets:
+    - 0x00000790
+
+- Names:
+    English: Wind Temple - Hub Room Center Chest
+    Spanish: Templo del Viento - Cofre en el centro de la sala principal
+    French: Temple du Vent - Coffre de la Salle Centrale
+  Original Item: Compass
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001024
+
+- Names:
+    English: Wind Temple - Wizzrobe Mini Boss
+    Spanish: Templo del Viento - Minijefe Invocantis Maestro
+    French: Temple du Vent - Mini-Boss Sorcier
+  Original Item: Hookshot
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kazeMB_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000002D8
+
+- Names:
+    English: Wind Temple - Spike Wall Room First Chest
+    Spanish: Templo del Viento - Primer Cofre en el cuarto de los picos
+    French: Temple du Vent - Premier Coffre de la Salle des Pointes
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000F44
+
+- Names:
+    English: Wind Temple - Spike Wall Room Destroy Floors
+    Spanish: Templo del Viento - Destruir el suelo agrietado en el cuarto de los picos
+    French: Temple du Vent - Détruire les plaques au sol de la Salle des Pointes
+  Original Item: Treasure Chart 35
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000FC4
+
+- Names:
+    English: Wind Temple - Hub Room Top Chest
+    Spanish: Templo del Viento - Cofre Superior en la sala principal
+    French: Temple du Vent - Coffre au sommet de la Salle Centrale
+  Original Item: Joy Pendant
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000EE4
+
+- Names:
+    English: Wind Temple - Behind Armos Chest
+    Spanish: Templo del Viento - Cofre detrás de los Armos
+    French: Temple du Vent - Coffre des Armos
+  Original Item: Small Key
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00000F04
+
+- Names:
+    English: Wind Temple - Kill All Basement Room Enemies
+    Spanish: Templo del Viento - Derrotar todos los enemigos del sótano
+    French: Temple du Vent - Vaincre les ennemis du Sous-Sol
+  Original Item: Treasure Chart 5
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/kaze_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x00001004
+
+- Names:
+    English: Wind Temple - Molgera Heart Container
+    Spanish: Templo del Viento - Contenedor de Corazón de Verminus
+    French: Temple du Vent - Réceptacle de Cœur de Gayla
+  Original Item: Heart Container
+  Race Mode Location: true
+  Goal Names:
+    English: Molgera
+    Spanish: Verminus
+    French: Gayla
+  Category:
+    - Dungeon
+  Paths:
+    code/cking.rpx@RPX@ELF: 0x021031E7
+    content/Common/Stage/kazeB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x00000114
+  Hint Priority: Sometimes
+  Type: Boss
+
+- Names:
+    English: Hyrule Castle - Sword Chamber Chest
+    Spanish: Castillo de Hyrule - Cofre en la cámara de la Espada Maestra
+    French: Château d'Hyrule - Coffre de la Chambre d'Excalibur
+  Original Item: Master Sword Powerless
+  Category:
+    - Misc
+  Path: content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr
+  Hint Priority: Sometimes
+  Type: Chest
+  Offsets:
+    - 0x000013A8
+
+- Names:
+    English: Ganon's Tower - Maze Chest
+    Spanish: Torre de Ganon - Cofre del Laberinto
+    French: Château de Ganon - Coffre du labyrinthe
+  Original Item: Light Arrow
+  Category:
+    - Dungeon
+  Path: content/Common/Stage/GanonJ_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs
+  Hint Priority: Always
+  Type: Chest
+  Offsets:
+    - 0x00000858
+
+- Names:
+    English: Ganon's Tower - Defeat Ganondorf
+    Spanish: Torre de Ganon - Derrotar a Ganondorf
+    French: Château de Ganon - Vaincre Ganondorf
+  Original Item: Game Beatable
+  Goal Names:
+    English: Ganondorf
+    Spanish: Ganondorf
+    French: Ganondorf
+  Category:
+    - Always Progression
+  Hint Priority: Never
+  Type: Do Nothing
+
+- Names:
+    English: Forsaken Fortress Sector - Old Man Ho Ho
+    Spanish: Sector de la Isla del Diablo - Don Avisto
+    French: Secteur de la Forteresse Maudite - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14004
+
+- Names:
+    English: Northern Fairy Island - Old Man Ho Ho
+    Spanish: Isla del Hada del Norte - Don Avisto
+    French: Ilot Septentrional des Fées - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14007
+
+- Names:
+    English: Crescent Moon Island - Old Man Ho Ho
+    Spanish: Isla Luna Creciente - Don Avisto
+    French: Ile du Croissant - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14005
+
+- Names:
+    English: Flight Control Platform - Old Man Ho Ho
+    Spanish: Andamio de Vuelo - Don Avisto
+    French: Tour de l'Envol - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14002
+
+- Names:
+    English: Stone Watcher Island - Old Man Ho Ho
+    Spanish: Isla Cabeza de Piedra - Don Avisto
+    French: Ile de la Tête de Pierre - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14009
+
+- Names:
+    English: Private Oasis - Old Man Ho Ho
+    Spanish: Isla de Quién - Don Avisto
+    French: Ile de Qui-ça - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14006
+
+- Names:
+    English: Bomb Island - Old Man Ho Ho
+    Spanish: Isla Bomba - Don Avisto
+    French: Ile de la Bombe - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14001
+
+- Names:
+    English: Horseshoe Island - Old Man Ho Ho
+    Spanish: Isla Herradura - Don Avisto
+    French: Ile du Fer à Cheval - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14008
+
+- Names:
+    English: Outset Island - Old Man Ho Ho
+    Spanish: Isla Initia - Don Avisto
+    French: Ile de l'Aurore - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14003
+
+- Names:
+    English: Two Eye Reef - Old Man Ho Ho
+    Spanish: Islas del dos - Don Avisto
+    French: Ile de la Face Deux - Biggle
+  Original Item: Nothing
+  Category:
+    - Ho Ho Hint
+  Hint Priority: Never
+  Type: Do Nothing
+  Message Label: 14010
