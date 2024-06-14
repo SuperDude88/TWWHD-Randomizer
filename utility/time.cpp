@@ -20,7 +20,7 @@ ProgramTime::Duration_t ProgramTime::getElapsedTime() {
     return Clock_t::now() - getOpenedTime();
 }
 
-#if __has_include(<format>)
+#if __has_include(<format>) && !defined(__APPLE__)
     #include <format>
 
     std::string ProgramTime::getDateStr() {
