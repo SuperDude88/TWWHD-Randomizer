@@ -318,10 +318,10 @@ namespace JParticle {
         if(colorLoopOffset != 0) flags |= 0x00000800;
         if(texLoopOffset != 0) flags |= 0x00002000;
 
-        flags = static_cast<uint8_t>(shapeType) & 0xF;
-        flags = (static_cast<uint8_t>(dirType) & 0x7) << 0x4;
-        flags = (static_cast<uint8_t>(rotType) & 0x7) << 0x7;
-        flags = (static_cast<uint8_t>(planeType) & 0x1) << 0xA;
+        flags |= static_cast<uint8_t>(shapeType) & 0xF;
+        flags |= (static_cast<uint8_t>(dirType) & 0x7) << 0x4;
+        flags |= (static_cast<uint8_t>(rotType) & 0x7) << 0x7;
+        flags |= (static_cast<uint8_t>(planeType) & 0x1) << 0xA;
 
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
@@ -374,8 +374,8 @@ namespace JParticle {
 
         texFlags &= ~0x1F; // = ~(0x1C | 0x2 | 0x1)
         texFlags |=(static_cast<uint8_t>(texCalcIdxType) & 0x07) << 2;
-        if (texIdxAnimData.empty()) texFlags |= 0x1;
-    	if(isEnableTexture) texFlags |= 0x2;
+        if (!texIdxAnimData.empty()) texFlags |= 0x1;
+    	if (isEnableTexture) texFlags |= 0x2;
 
         out.write(reinterpret_cast<const char*>(&blendModeFlags), sizeof(blendModeFlags));
         out.write(reinterpret_cast<const char*>(&alphaCompareFlags), sizeof(alphaCompareFlags));
