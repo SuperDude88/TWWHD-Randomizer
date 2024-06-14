@@ -98,6 +98,7 @@ public:
     static InputManager& getInstance();
 
     InputError poll();
+    bool anyButtonPressed();
     bool pressed(const Buttons_t& buttons);
     bool held(const Buttons_t& buttons);
     bool released(const Buttons_t& buttons);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-target_sources(wwhd_rando PRIVATE screen.cpp LogConsole.cpp ConfirmMenu.cpp InstallMenu.cpp SettingsMenu.cpp Page.cpp Button.cpp OptionActions.cpp TextWrap.cpp Keyboard.cpp)
+target_sources(wwhd_rando PRIVATE screen.cpp LogConsole.cpp ConfirmMenu.cpp InstallMenu.cpp ExitMenu.cpp SettingsMenu.cpp Page.cpp Button.cpp OptionActions.cpp TextWrap.cpp Keyboard.cpp)
 
 # Use librpxloader to get the redirected save path
 find_library(LIBRPXLOADER rpxloader HINTS "${DEVKITPRO}/wums/lib")

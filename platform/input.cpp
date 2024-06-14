@@ -375,6 +375,10 @@ InputError InputManager::poll() {
     return InputError::NONE;
 }
 
+bool InputManager::anyButtonPressed() {
+    return current.trigger != 0;
+}
+
 bool InputManager::pressed(const Buttons_t& buttons) {
     return current.trigger & buttons;
 }

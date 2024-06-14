@@ -6,6 +6,10 @@
     #include <QDirIterator>
     
     #include <gui/mainwindow.hpp>
+#elif defined(DEVKITPRO)
+    #include <utility/platform.hpp>
+    #include <platform/gui/ExitMenu.hpp>
+    #include <randomizer.hpp>
 #else
     #include <thread>
 
@@ -28,6 +32,26 @@ int main(int argc, char *argv[]) {
     MainWindow w;
     w.show();
     return a.exec();
+#elif defined(DEVKITPRO)
+    ExitMode mode;
+
+    if(!Utility::platformInit()) {
+        mode = ExitMode::PLATFORM_ERROR;
+    }
+    else if(const int retVal = mainRandomize(); retVal == 0) {
+        mode = ExitMode::RANDOMIZATION_COMPLETE;
+    }
+    else {
+        mode = ExitMode::RANDOMIZATION_ERROR;
+    }
+
+    if(Utility::platformIsRunning()) {
+        waitForExitConfirm(mode);
+    }
+
+    Utility::platformShutdown();
+    
+    return 0;
 #else
     using namespace std::literals::chrono_literals;
 
