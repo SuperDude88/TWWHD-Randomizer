@@ -69,7 +69,15 @@ jobs:
 
       - name: Call macdeployqt
         working-directory: ${{ github.workspace }}/build
-        run: ../../Qt/${{ env.QT_VERSION }}/macos/bin/macdeployqt wwhd_rando.app -dmg
+        run: ../../Qt/${{ env.QT_VERSION }}/macos/bin/macdeployqt wwhd_rando.app
+
+      - name: Create DMG
+        working-directory: ${{ github.workspace }}/build
+        run: |
+          mkdir dmg_contents
+          cp ../gui/mac_user_instructions.txt ./dmg_contents/READ_THIS_FIRST.txt
+          cp wwhd_rando.app ./dmg_contents/wwhd_rando.app
+          hdiutil create -srcfolder ./dmg_contents wwhd_rando
 
       - name: Get Version
         id: get-version
