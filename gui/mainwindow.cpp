@@ -8,6 +8,7 @@
 #include <QResource>
 #include <QDirIterator>
 #include <QFile>
+#include <QDesktopServices>
 
 #include <ui_mainwindow.h>
 #include <gui/randomizer_thread.hpp>
@@ -1116,7 +1117,7 @@ void MainWindow::on_randomize_button_clicked()
     // Only show the finish confirmation if there was no error
     if (!encounteredError)
     {
-        show_info_dialog("Randomization complete.\n\nIf you get stuck, check the progression spoiler log in the folder where this program is.", "Randomization complete");
+        show_info_dialog("Randomization complete.\n\nIf you get stuck, check the progression spoiler log in the logs folder.", "Randomization complete");
     }
 
 }
@@ -1189,5 +1190,11 @@ void MainWindow::on_about_button_clicked()
                    "Source code:<br><a href=\"https://github.com/SuperDude88/TWWHD-Randomizer\">https://github.com/SuperDude88/TWWHD-Randomizer</a><br><br>"
                    "Discord Server: <br><a href=\"https://discord.gg/wPvdQ2Krrm\">https://discord.gg/wPvdQ2Krrm</a><br><br>";
     show_info_dialog(message, "About");
+}
+
+
+void MainWindow::on_open_logs_folder_button_clicked()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Utility::get_logs_path().c_str()));
 }
 

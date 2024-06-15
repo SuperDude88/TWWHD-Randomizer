@@ -270,6 +270,8 @@ private slots:
     void on_stats_color_clicked();
 
 
+    void on_open_logs_folder_button_clicked();
+
 private:
     // More Tracker Stuff
     bool trackerStarted = false;
