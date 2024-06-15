@@ -10,8 +10,8 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**Config**
-The config file used to generate the seed (folder paths can be excluded).
+**Spoiler Log**
+The spoiler log for the seed. If you do not have the spoiler log, provide the non-spoiler log instead (it also contains the config for the seed).
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -24,7 +24,7 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Video**
-If applicable, add video/screenshots to help explain your problem. Videos are particularly helpful since they can show what lead up to the bug.
+If applicable, add video/screenshots to help explain your problem. Videos are particularly helpful since they can show what led up to the bug.
 
 **Platform:**
  - Patcher version and platform
