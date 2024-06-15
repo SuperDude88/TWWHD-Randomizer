@@ -76,7 +76,7 @@ jobs:
         run: |
           mkdir dmg_contents
           cp ../gui/mac_user_instructions.txt ./dmg_contents/READ_THIS_FIRST.txt
-          cp wwhd_rando.app ./dmg_contents/wwhd_rando.app
+          cp -R wwhd_rando.app ./dmg_contents/wwhd_rando.app
           hdiutil create -srcfolder ./dmg_contents wwhd_rando
 
       - name: Get Version
