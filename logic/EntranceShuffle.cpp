@@ -353,7 +353,9 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
             {
                 if (const Entrance* dungeonExit = dungeon.startingEntrance->getReverse()->getReplaces(); dungeonExit != nullptr)
                 {
-                    if (dungeonExit->isPrimary() && isAnyOf(dungeonExit->getOriginalEntranceType(), EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::MINIBOSS))
+                    // Dungeon reverse entrances are fine since those leave dungeons
+                    if (isAnyOf(dungeonExit->getOriginalEntranceType(), 
+                        EntranceType::DUNGEON, EntranceType::BOSS, EntranceType::BOSS_REVERSE, EntranceType::MINIBOSS, EntranceType::MINIBOSS_REVERSE))
                     {
                         return EntranceShuffleError::SAVEWARP_SANDWICH;
                     }
