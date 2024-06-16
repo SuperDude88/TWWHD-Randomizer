@@ -1283,7 +1283,7 @@ int World::loadWorld(const std::string& worldFilePath, const std::string& macros
                 if (dungeon.startingArea == connectedArea)
                 {
                     dungeon.startingEntrance = &exit;
-                }   
+                }
             }
         }
     }

@@ -7,7 +7,7 @@
 #include <version.hpp>
 #include <libs/yaml.hpp>
 #include <logic/GameItem.hpp>
-#include <seedgen/random.hpp>
+#include <seedgen/seed.hpp>
 #include <utility/color.hpp>
 #include <utility/platform.hpp>
 #include <command/Log.hpp>
@@ -616,7 +616,7 @@ ConfigError Config::writeDefault(const std::string& filePath, const std::string&
 
     if (file.is_open() == false) {
         Utility::platformLog("Creating default config");
-        conf.seed = std::to_string(Random(0, 0xFFFFFFFF));
+        conf.seed = generate_seed();
         LOG_AND_RETURN_IF_ERR(conf.writeSettings(filePath))
     }
 

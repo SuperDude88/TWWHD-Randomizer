@@ -313,7 +313,7 @@ int mainRandomize() {
     #ifdef ENABLE_TIMING
         ScopedTimer<"Total process took "> timer;
     #endif
-    
+
     // Make sure we have a logs folder
     if (!Utility::create_directories(Utility::get_logs_path())) {
         ErrorLog::getInstance().log("Failed to create logs folder");

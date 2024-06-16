@@ -42,7 +42,7 @@ HSV RGBToHSV(const double& r, const double& g, const double& b) {
         if(out.H < 0.0) {
             out.H += 360.0;
         }
-    }    
+    }
     return out;
 }
 
@@ -251,7 +251,7 @@ std::string HSVShiftColor(const std::string& hexColor, const int& hShift, const 
     auto newColorHSV = HSV(h, s / 100.0f, v / 100.0f);
     auto newColorRGB = HSVToRGB(newColorHSV);
     return RGBToHexColorStr(newColorRGB);
-}  
+}
 
 std::pair<int, int> get_random_h_and_v_shifts_for_custom_color(const std::string& hexColor) {
     auto colorRGB = hexColorStrToRGB(hexColor);

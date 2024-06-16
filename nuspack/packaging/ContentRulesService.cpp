@@ -30,7 +30,7 @@ Content* setNewContentRecursiveRule(std::string path, const std::string& pattern
                 result = targetContents.GetNewContent(rule.details);
                 child.setContent(result);
             }
-        }           
+        }
     }
 
     if(result != nullptr){            
@@ -78,7 +78,7 @@ bool setContentRecursiveRule(std::string path, const std::string& pattern, FSTEn
                 child.setContent(cur_content);
                 result = true;
             }
-        }           
+        }
     }
 
     if(result) {
