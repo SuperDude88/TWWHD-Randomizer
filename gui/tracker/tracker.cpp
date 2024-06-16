@@ -99,7 +99,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
                 }
             }
         }
-    }
+    }  
 
     trackerLocations = trackerWorld.getLocations(true);
 
@@ -216,6 +216,10 @@ void MainWindow::initialize_tracker_world(Settings& settings,
             area->setBossLocation(trackerWorld.locationTable["Ganon's Tower - Defeat Ganondorf"].get());
         }
     }
+
+    // Update areas and entrances for all islands
+    set_areas_locations();
+    set_areas_entrances();
 }
 
 void MainWindow::on_start_tracker_button_clicked()

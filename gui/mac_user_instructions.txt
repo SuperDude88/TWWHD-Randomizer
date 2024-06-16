@@ -1,0 +1,16 @@
+Hello Mac User. Before you begin using the Wind Waker HD Randomizer there are some things to know:
+
+1. You computer likely will not trust the randomizer because it isn't signed by a "trusted" developer.
+   If this is the case, go to *System Settings* > *Privacy and Security* > scroll down and click the 
+   option to allow the app to open anyway.
+
+   Alternatively, if you get an error saying that the application is damaged, it's likely been put
+   into quarantine by your computer. If this is the case, open up a terminal in the same directory
+   as the randomizer application and type in the following command:
+
+   xattr -d com.apple.quarantine wwhd_rando.app
+
+2. Running the application by double-clicking it normally may result in the program crashing when
+   you click the randomize button. To prevent this from happening, right click the application and
+   select *Show Package Contents*. Then navigate to Contents/MacOS/ and instead double-click the
+   wwhd_rando executable inside the folder. This will ensure that the randomizer doesn't crash. 

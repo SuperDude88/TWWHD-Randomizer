@@ -616,6 +616,7 @@ ConfigError Config::writeDefault(const std::string& filePath, const std::string&
 
     if (file.is_open() == false) {
         Utility::platformLog("Creating default config");
+        conf.seed = std::to_string(Random(0, 0xFFFFFFFF));
         LOG_AND_RETURN_IF_ERR(conf.writeSettings(filePath))
     }
 
