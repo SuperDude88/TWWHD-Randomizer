@@ -50,9 +50,15 @@ jobs:
     #    with:
     #     name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
+     - name: Zip windows file
+       uses: montudor/action-zip@v1
+         args: zip -qq -r wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}_windows
+
      - name: Attach Files
        env:
         GITHUB_TOKEN: ${{ github.TOKEN }}
        run: |
          ls -R
-         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows wwhd_rando_${{ github.event.release.tag_name }}.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
+         mv wwhd_rando_${{ github.event.release.tag_name }}.wuhb/wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}.wuhb
+         mv wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg/wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
+         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
