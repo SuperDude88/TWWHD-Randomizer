@@ -1,4 +1,5 @@
 #pragma once
+
 #include <seedgen/config.hpp>
 
 std::string generate_seed();

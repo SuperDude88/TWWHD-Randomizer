@@ -3519,10 +3519,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     const std::string seedHash = LogInfo::getSeedHash();
     const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
 
-    if (const TweakError error = updateCodeSize(); error != TweakError::NONE) {
-        ErrorLog::getInstance().log(std::string("Encountered error in tweak ") + "updateCodeSize()");
-        return error;
-    }
+    TWEAK_ERR_CHECK(updateCodeSize());
 
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.yaml"));

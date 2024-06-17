@@ -99,7 +99,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
                 }
             }
         }
-    }  
+    }
 
     trackerLocations = trackerWorld.getLocations(true);
 
