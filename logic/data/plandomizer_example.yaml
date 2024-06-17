@@ -6,18 +6,18 @@
 
 # All plandomized elements must be under a "World 1" element at the start of the
 # plandomizer file like this
-- World 1:
-      # ...everything else...
+World 1:
+    # ...everything else...
 
 # LOCATIONS
 # All plandomized locations are defined under a "locations" element and consist
 # of the location name followed by a colon(:) and the item name you want placed
 # at that location. The following example places Bombs at Windfall Island - Maggie Free Item
 # and Power Bracelets at Wind Temple - Wizzrobe Mini Boss.
-- World 1:
-      locations:
-          Windfall Island - Maggie Free Item: Bombs
-          Wind Temple - Wizzrobe Mini Boss: Power Bracelets
+World 1:
+    locations:
+        Windfall Island - Maggie Free Item: Bombs
+        Wind Temple - Wizzrobe Mini Boss: Power Bracelets
 
 # NAMES
 # As a general rule, capitalize the first letter of all item names except for
@@ -37,7 +37,7 @@
 # if you have race mode enabled and have the number of race mode dungeons set to 2,
 # then placing a Progressive Bow at Earth Temple - Stalfos Mini Boss will automatically
 # make Earth Temple one of the two race mode dungeons:
-    Earth Temple - Stalfos Mini Boss: Progressive Bow
+Earth Temple - Stalfos Mini Boss: Progressive Bow
 # If you place major items in more dungeons than you have set as the number of
 # dungeons for race mode, you'll get a Plandomizer Error and the seed won't generate.
 #
@@ -56,10 +56,10 @@
 # switches the entrances between Link and Orca's houses on Outset Island. Note that
 # when plandomizing entrances, the entrance randomizer setting for the entrances you're
 # attempting to plandomize must be turned on.
-- World 1:
-      entrances:
-          Outset Island -> Outset Link's House: Outset Orca's House from Outset Island
-          Outset Island -> Outset Orca's House: Outset Link's House from Outset Island
+World 1:
+    entrances:
+        Outset Island -> Outset Link's House: Outset Orca's House from Outset Island
+        Outset Island -> Outset Orca's House: Outset Link's House from Outset Island
 # The original entrance must be in the format "<first area> -> <second area>", and
 # the replacement entrance must be in the format "<second area> from <first area>".
 # The spaces around the arrow and the word "from" are important to include. These
@@ -71,8 +71,8 @@
 # STARTING ISLAND
 # You can also set the starting island if you want to. For a list of island names, see
 # https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L217
-- World 1:
-      starting island: Five Eye Reef
+World 1:
+    starting island: Five Eye Reef
 
 # EXTRA PROGRESSION LOCATIONS
 # For more fine-tuned control over which locations are in logic, you can specify extra
@@ -80,10 +80,12 @@
 # element. For example, if we don't have spoils trading or long sidequests enabled
 # but we still want to have the Windfall potion sellers checks as potential
 # progression locations, we can type:
-- World 1:
-      extra progression locations:
+World 1:
+    extra progression locations:
         - Windfall Island - Potion Shop 15 Blue Chu
         - Windfall Island - Potion Shop 15 Green Chu
+
+# Alternatively, to disable specific locations, you can plandomizer junk on them
 
 # MULTIWORLD PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
 # and is not actively being developed, but the filling algorithm was made to support
@@ -93,22 +95,22 @@
 # the locations will be for. For example, if we want place the Telescope at
 # Outset Island - Under Link's House in World 1 and the Bait Bag at
 # Gale Isle - Sunken Treasure in World 2, then we'd type
-- World 1:
-      locations:
-          Outset Island - Under Link's House: Telescope
-  World 2:
-      locations:
-          Gale Isle - Sunken Treasure: Bait Bag
+World 1:
+    locations:
+        Outset Island - Under Link's House: Telescope
+World 2:
+    locations:
+        Gale Isle - Sunken Treasure: Bait Bag
 # Using this format, the item being plandomized will be for the world that the
 # location is currently under. If we want to specify the item for a different
 # world we can use the "item" and "world" elements to do so. For example, if we want
 # to place Bombs for World 1 at World 2's Hyrule Castle - Sword Chamber Chest
 # and the Hero's Charm for World 1 at World 2's Ganon's Tower - Maze Chest we would type:
-- World 2:
-      locations:
-          Hyrule Castle - Sword Chamber Chest:
-              item: Bombs
-              world: 1
-          Ganon's Tower - Maze Chest:
-              item: Hero's Charm
-              world: 1
+World 2:
+    locations:
+        Hyrule Castle - Sword Chamber Chest:
+            item: Bombs
+            world: 1
+        Ganon's Tower - Maze Chest:
+            item: Hero's Charm
+            world: 1
