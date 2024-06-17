@@ -35,6 +35,10 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
+    # Will make the later gh release command work
+     - name: Checkout Repository
+       uses: actions/checkout@v4
+
      - name: Create Folder for Windows Files
        run: mkdir wwhd_rando_${{ github.event.release.tag_name }}_windows
 
