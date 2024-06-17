@@ -2560,7 +2560,7 @@
   Events:
       Can Open ET Green Pot: Nothing # can throw a skull at it
   Locations:
-      Earth Temple - Warp Pot Room Chest: Can_Play_CM and Can_Aim_Mirror_Shield
+      Earth Temple - Warp Pot Room Chest: Can_Play_CM or Can_Aim_Mirror_Shield
       Earth Temple - Warp Pot Room Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
   Exits:
       ET Giant Statue Room: Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus
