@@ -40,8 +40,8 @@ jobs:
 
      - name: Download Artifacts
        uses: actions/download-artifact@v4
-       path: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
        with:
+        path: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
         name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
      - name: Download Wii U Artifact
