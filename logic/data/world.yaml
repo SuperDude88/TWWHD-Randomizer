@@ -2889,7 +2889,7 @@
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
-      Wind Temple - Behind Stone Head in Many Cyclones Room: Nothing
+      Wind Temple - Behind Stone Head in Many Cyclones Room: Hookshot and Iron_Boots
   Exits:
       WT Hub Room Middle South Platform: Nothing
       WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
