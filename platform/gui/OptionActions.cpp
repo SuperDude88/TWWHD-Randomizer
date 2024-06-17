@@ -1217,7 +1217,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {ProgressCombatCaves,        {"Combat Secret Caves",                 "Controls whether combat-focused secret caves can contain progress items."}},
         {ProgressShortSidequests,    {"Short Sidequests",                    "Controls whether sidequests that can be completed quickly can reward progress items."}},
         {ProgressLongSidequests,     {"Long Sidequests",                     "Controls whether long sidequests (e.g. Lenzo's assistant, withered trees, goron trading) can reward progress items."}},
-        {ProgressSpoilsTrading,      {"Spoils Trading",                      "Controls whether the items given by Great Fairies can be progress items."}},
+        {ProgressSpoilsTrading,      {"Spoils Trading",                      "Controls whether the items you get by trading in spoils to NPCs can be progress items."}},
         {ProgressMinigames,          {"Minigames",                           "Controls whether most minigames can reward progress items (auction, mail sorting, barrel shooting, bird-man contest)."}},
         {ProgressFreeGifts,          {"Free Gifts",                          "Controls whether gifts freely given by NPCs can be progress items (Tott, Salvage Corp, imprisoned Tingle)."}},
         {ProgressMail,               {"Mail",                                "Controls whether mail can contain progress items."}},
