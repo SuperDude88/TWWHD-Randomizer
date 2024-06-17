@@ -77,6 +77,8 @@ jobs:
           mkdir dmg_contents
           cp ../gui/mac_user_instructions.txt ./dmg_contents/READ_THIS_FIRST.txt
           cp -R wwhd_rando.app ./dmg_contents/wwhd_rando.app
+          echo killing...; sudo pkill -9 XProtect >/dev/null || true;
+          echo waiting...; while pgrep XProtect; do sleep 3; done;
           hdiutil create -srcfolder ./dmg_contents wwhd_rando
 
       - name: Get Version
