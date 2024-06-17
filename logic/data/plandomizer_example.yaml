@@ -23,8 +23,8 @@
 # As a general rule, capitalize the first letter of all item names except for
 # the words "to" and "of". "Power Bracelets" is okay. "power bracelets" will be
 # unrecognized. For a full list of item and location names, see
-# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/item_data.yaml and
-# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/location_data.yaml
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/main/logic/data/item_data.yaml and
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/main/logic/data/location_data.yaml
 # or refer to a spoiler log.
 
 # PROGRESS_LOCATIONS
@@ -66,11 +66,11 @@
 # formats are not interchangable. If you attempt to randomize entrances
 # that don't exist or which aren't supported for shuffling at the current moment,
 # then you'll get a plandomizer error. For a full list of randomizable entrances please see:
-# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/data/entrance_shuffle_table.yaml
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/main/logic/data/entrance_shuffle_table.yaml
 
 # STARTING ISLAND
 # You can also set the starting island if you want to. For a list of island names, see
-# https://github.com/SuperDude88/TWWHD-Randomizer/blob/dev-2/logic/Area.cpp#L217
+# https://github.com/SuperDude88/TWWHD-Randomizer/blob/d76d357e37fabc5369779d54ef479f1c52c8a95a/logic/Area.cpp#L217
 - World 1:
       starting island: Five Eye Reef
 
@@ -84,6 +84,17 @@
       extra progression locations:
         - Windfall Island - Potion Shop 15 Blue Chu
         - Windfall Island - Potion Shop 15 Green Chu
+
+# RANDOM STARTING ITEMS
+# If "Start With Random Item" is enabled, you can override the pool it picks from.
+# By default, the pool includes the Bait Bag, Bombs, Boomerang, Bow, Deku Leaf,
+# Delivery Bag, Grappling Hook, Hookshot, Picto Box, Power Bracelets, and Skull Hammer.
+# If instead we only want to start with a random bag, we can type:
+- World 1:
+      random starting item pool:
+        - Delivery Bag
+        - Bait Bag
+        - Spoils Bag
 
 # MULTIWORLD PLANDOMIZER (Note: currently multiworld is not an option in the randomizer
 # and is not actively being developed, but the filling algorithm was made to support
