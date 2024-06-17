@@ -35,9 +35,17 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-     - name: Download Windows Artifact
+    # Will make the later gh release command work
+     - name: Checkout Repository
+       uses: actions/checkout@v4
+
+     - name: Create Folder for Windows Files
+       run: mkdir wwhd_rando_${{ github.event.release.tag_name }}_windows
+
+     - name: Download Artifacts
        uses: actions/download-artifact@v4
        with:
+        path: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
         name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
      - name: Download Wii U Artifact
@@ -50,7 +58,16 @@ jobs:
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
+     - name: Zip windows file
+       uses: montudor/action-zip@v1
+       with:
+         args: zip -qq -r wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}_windows
+
      - name: Attach Files
        env:
         GITHUB_TOKEN: ${{ github.TOKEN }}
-       run: gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}.wuhb
+       run: |
+         ls -R
+         mv wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}.wuhb
+         mv wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
+         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg

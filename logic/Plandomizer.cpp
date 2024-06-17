@@ -29,32 +29,29 @@ PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plando
         YAML::Node randomStartingItemPool;
         std::string plandoStartingIsland = "";
         std::string worldName = "World " + std::to_string(i + 1);
-        // Grab the YAML object which holds the locations for this world.
-        for (const auto& ref : plandoTree)
+        // Grab the YAML object which holds the plando info for this world.
+        if (plandoTree[worldName] && plandoTree[worldName].IsMap())
         {
-            if (ref[worldName] && ref[worldName].IsMap())
+            if (plandoTree[worldName]["locations"] && plandoTree[worldName]["locations"].IsMap())
             {
-                if (ref[worldName]["locations"] && ref[worldName]["locations"].IsMap())
-                {
-                    plandoLocations = ref[worldName]["locations"];
-                }
+                plandoLocations = plandoTree[worldName]["locations"];
+            }
 
-                if (ref[worldName]["entrances"] && ref[worldName]["entrances"].IsMap())
-                {
-                    plandoEntrances = ref[worldName]["entrances"];
-                }
-                if (ref[worldName]["starting island"] && ref[worldName]["starting island"].IsScalar())
-                {
-                    plandoStartingIsland = ref[worldName]["starting island"].as<std::string>();
-                }
-                if (ref[worldName]["extra progression locations"] && ref[worldName]["extra progression locations"].IsSequence())
-                {
-                    extraProgressionLocations = ref[worldName]["extra progression locations"];
-                }
-                if (ref[worldName]["random starting item pool"] && ref[worldName]["random starting item pool"].IsSequence())
-                {
-                    randomStartingItemPool = ref[worldName]["random starting item pool"];
-                }
+            if (plandoTree[worldName]["entrances"] && plandoTree[worldName]["entrances"].IsMap())
+            {
+                plandoEntrances = plandoTree[worldName]["entrances"];
+            }
+            if (plandoTree[worldName]["starting island"] && plandoTree[worldName]["starting island"].IsScalar())
+            {
+                plandoStartingIsland = plandoTree[worldName]["starting island"].as<std::string>();
+            }
+            if (plandoTree[worldName]["extra progression locations"] && plandoTree[worldName]["extra progression locations"].IsSequence())
+            {
+                extraProgressionLocations = plandoTree[worldName]["extra progression locations"];
+            }
+            if (plandoTree[worldName]["random starting item pool"] && plandoTree[worldName]["random starting item pool"].IsSequence())
+            {
+                randomStartingItemPool = plandoTree[worldName]["random starting item pool"];
             }
         }
 
