@@ -35,20 +35,24 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
+     - name: Create Folder for Windows Files
+       run: mkdir wwhd_rando_${{ github.event.release.tag_name }}_windows
+
      - name: Download Artifacts
        uses: actions/download-artifact@v4
-    #    with:
-    #     name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
+       working-directory: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
-    #  - name: Download Wii U Artifact
-    #    uses: actions/download-artifact@v4
-    #    with:
-    #     name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
+     - name: Download Wii U Artifact
+       uses: actions/download-artifact@v4
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
     
-    #  - name: Download Mac OS Artifact
-    #    uses: actions/download-artifact@v4
-    #    with:
-    #     name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
+     - name: Download Mac OS Artifact
+       uses: actions/download-artifact@v4
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
      - name: Zip windows file
        uses: montudor/action-zip@v1
@@ -60,6 +64,6 @@ jobs:
         GITHUB_TOKEN: ${{ github.TOKEN }}
        run: |
          ls -R
-         mv wwhd_rando_${{ github.event.release.tag_name }}.wuhb/wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}.wuhb
-         mv wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg/wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
+         mv wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}.wuhb
+         mv wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
          gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
