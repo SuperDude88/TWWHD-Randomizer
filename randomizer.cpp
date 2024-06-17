@@ -187,7 +187,7 @@ public:
         if (config.settings.plandomizer) {
             std::string plandoContents;
             if (Utility::getFileContents(config.settings.plandomizerFile, plandoContents) != 0) {
-                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + config.settings.plandomizerFile);
+                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + config.settings.plandomizerFile.string());
                 return 1;
             }
             permalink += plandoContents;
