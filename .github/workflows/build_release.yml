@@ -35,20 +35,20 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-     - name: Download Windows Artifact
+     - name: Download Artifacts
        uses: actions/download-artifact@v4
-       with:
-        name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
+    #    with:
+    #     name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
-     - name: Download Wii U Artifact
-       uses: actions/download-artifact@v4
-       with:
-        name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
+    #  - name: Download Wii U Artifact
+    #    uses: actions/download-artifact@v4
+    #    with:
+    #     name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
     
-     - name: Download Mac OS Artifact
-       uses: actions/download-artifact@v4
-       with:
-        name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
+    #  - name: Download Mac OS Artifact
+    #    uses: actions/download-artifact@v4
+    #    with:
+    #     name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
      - name: Attach Files
        env:
