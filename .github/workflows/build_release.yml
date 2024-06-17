@@ -42,7 +42,7 @@ jobs:
      - name: Create Folder for Windows Files
        run: mkdir wwhd_rando_${{ github.event.release.tag_name }}_windows
 
-     - name: Download Artifacts
+     - name: Download Windows Artifact
        uses: actions/download-artifact@v4
        with:
         path: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
