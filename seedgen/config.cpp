@@ -93,11 +93,11 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     #else
         std::string baseTemp, outTemp, plandoTemp;
         GET_FIELD_NO_FAIL(preferencesRoot, "gameBaseDir", baseTemp)
-        gameBaseDir = baseTemp == "" ? u"" : Utility::Str::toUTF16(baseTemp);
+        gameBaseDir = Utility::Str::toUTF16(baseTemp);
         GET_FIELD_NO_FAIL(preferencesRoot, "outputDir", outTemp)
-        outputDir = outTemp == "" ? u"" : Utility::Str::toUTF16(outTemp);
+        outputDir = Utility::Str::toUTF16(outTemp);
         GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", plandoTemp)
-        settings.plandomizerFile = plandoTemp == "" ? u"" : Utility::Str::toUTF16(plandoTemp);
+        settings.plandomizerFile = Utility::Str::toUTF16(plandoTemp);
     #endif
 
     if(!root["game_version"]) {
