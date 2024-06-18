@@ -84,7 +84,7 @@ private:
         if(tinyxml2::XMLError err = metaXml.LoadFile(metafp); err != tinyxml2::XMLError::XML_SUCCESS) {
             fclose(metafp);
         #else
-        if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.wstring().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
+        if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
         #endif
             ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
             return false;
