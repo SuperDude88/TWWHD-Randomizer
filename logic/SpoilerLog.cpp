@@ -84,6 +84,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 
     log << "# Settings" << std::endl;
     Config config = LogInfo::getConfig();
+    log << "Permalink: " << config.permalink << std::endl;
     log << config.settingsToYaml();
     log << std::endl << std::endl;
 }

@@ -8,6 +8,7 @@
 #include <libs/yaml.hpp>
 #include <logic/GameItem.hpp>
 #include <seedgen/seed.hpp>
+#include <seedgen/permalink.hpp>
 #include <utility/color.hpp>
 #include <utility/platform.hpp>
 #include <utility/string.hpp>
@@ -441,6 +442,8 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         Utility::platformLog("Item placement may be different than expected");
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_RANDO_VERSION);
     }
+
+    permalink = create_permalink(settings, seed);
 
     return ConfigError::NONE;
 }
