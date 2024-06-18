@@ -9,6 +9,8 @@ namespace Utility::Str {
     //can't use codecvt on Wii U, deprecated in c++17 and g++ hates it
     //Borrowed from https://docs.microsoft.com/en-us/cpp/standard-library/codecvt-class?view=msvc-170#out
     std::string toUTF8(const std::u16string& str) {
+        if(str.empty()) return "";
+
         std::string ret;
         ret.resize(str.size());
         char* pszNext;
@@ -24,6 +26,8 @@ namespace Utility::Str {
 
     std::u16string toUTF16(const std::string& str)
     {
+        if(str.empty()) return u"";
+
         std::u16string ret;
         ret.resize(str.size());
         const char* pszNext;
@@ -37,7 +41,7 @@ namespace Utility::Str {
 
         // Remove extra null terminators that may have been created from multi-byte
         // UTF-8 characters
-        while (ret[ret.size() - 1] == u'\0')
+        while(ret.size() > 0 && ret[ret.size() - 1] == u'\0')
         {
             ret.pop_back();
         }
