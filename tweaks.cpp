@@ -1187,12 +1187,12 @@ TweakError update_korl_dialog(World& world) {
             }
             if(hintLines.back().back() != u'\0') hintLines.back().back() = u'\0';
 
-            if(custom_symbols.count("num_korl_messages") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-            const uint32_t num_messages_address = custom_symbols.at("num_korl_messages");
-            g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, num = hintLines.size()](RandoSession* session, FileType* data) -> int {
+            if(custom_symbols.count("last_korl_hint_message_number") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+            const uint32_t num_messages_address = custom_symbols.at("last_korl_hint_message_number");
+            g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, numExtra = hintLines.size() - 1](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-                RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, num_messages_address), num));
+                RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, num_messages_address), 3443 + numExtra));
 
                 return true;
             });
