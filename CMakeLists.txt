@@ -14,6 +14,10 @@ if(DEFINED DEVKITPRO)
 else()
   add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/" LOGS_PATH="./logs/")
 
+  if(WIN32)
+    add_compile_definitions(_GLIBCXX_FILESYSTEM_IS_WINDOWS)
+  endif()
+
   if(APPLE)
     add_compile_options(-fexperimental-library)
     if(MAC_APP_DIRS)

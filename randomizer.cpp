@@ -71,10 +71,28 @@ private:
             return false;
         }
 
-        if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
+        // Have to get the file pointer this way for tinyxml on windows
+        // to account for special characters
+        #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+        FILE* metafp;
+        const wchar_t* path = metaPath.wstring().c_str();
+        errno_t err = _wfopen_s(&metafp, path, L"rb");
+        if (!metafp) {
+            ErrorLog::getInstance().log("Could not open meta.xml");
+            return false;
+        }
+        if(tinyxml2::XMLError err = metaXml.LoadFile(metafp); err != tinyxml2::XMLError::XML_SUCCESS) {
+            fclose(metafp);
+        #else
+        if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.wstring().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
+        #endif
             ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
             return false;
         }
+        #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+        fclose(metafp);
+        #endif
+
         const tinyxml2::XMLElement* root = metaXml.RootElement();
 
         const std::string titleId = root->FirstChildElement("title_id")->GetText();
