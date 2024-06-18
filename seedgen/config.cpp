@@ -8,8 +8,10 @@
 #include <libs/yaml.hpp>
 #include <logic/GameItem.hpp>
 #include <seedgen/seed.hpp>
+#include <seedgen/permalink.hpp>
 #include <utility/color.hpp>
 #include <utility/platform.hpp>
+#include <utility/string.hpp>
 #include <command/Log.hpp>
 
 
@@ -35,10 +37,10 @@ Config::Config() {
     resetDefaults();
 
     // paths and stuff that reset doesn't cover
-    gameBaseDir = "";
-    outputDir = "";
+    gameBaseDir = u"";
+    outputDir = u"";
     seed = "";
-    settings.plandomizerFile = "";
+    settings.plandomizerFile = u"";
     
     #ifdef DEVKITPRO
         // these are managed by the title system on console
@@ -89,12 +91,13 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
 
         settings.plandomizerFile = Utility::get_app_save_path() +  "plandomizer.yaml";
     #else
-        std::string baseTemp, outTemp;
+        std::string baseTemp, outTemp, plandoTemp;
         GET_FIELD_NO_FAIL(preferencesRoot, "gameBaseDir", baseTemp)
-        gameBaseDir = baseTemp;
+        gameBaseDir = Utility::Str::toUTF16(baseTemp);
         GET_FIELD_NO_FAIL(preferencesRoot, "outputDir", outTemp)
-        outputDir = outTemp;
-        GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", settings.plandomizerFile)
+        outputDir = Utility::Str::toUTF16(outTemp);
+        GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", plandoTemp)
+        settings.plandomizerFile = Utility::Str::toUTF16(plandoTemp);
     #endif
 
     if(!root["game_version"]) {
@@ -440,6 +443,8 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_RANDO_VERSION);
     }
 
+    permalink = create_permalink(settings, seed);
+
     return ConfigError::NONE;
 }
 
@@ -552,7 +557,7 @@ YAML::Node Config::preferencesToYaml() {
     YAML::Node preferencesRoot;
     SET_FIELD(preferencesRoot, "gameBaseDir", gameBaseDir.string())
     SET_FIELD(preferencesRoot, "outputDir", outputDir.string())
-    SET_FIELD(preferencesRoot, "plandomizerFile", settings.plandomizerFile)
+    SET_FIELD(preferencesRoot, "plandomizerFile", settings.plandomizerFile.string())
 
     SET_FIELD(preferencesRoot, "pig_color", PigColorToName(settings.pig_color))
 

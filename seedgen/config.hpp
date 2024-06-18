@@ -25,8 +25,8 @@ public:
     std::filesystem::path outputDir;
 
     std::string seed;
-
     Settings settings;
+    std::string permalink;
 
     bool converted = false;
     bool updated = false;

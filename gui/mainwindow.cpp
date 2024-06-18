@@ -533,7 +533,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, fix_rng);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
     update_plandomizer_widget_visbility();
-    ui->plandomizer_path->setText(config.settings.plandomizerFile.c_str());
+    ui->plandomizer_path->setText(config.settings.plandomizerFile.string().c_str());
 
     // Hints
     APPLY_CHECKBOX_SETTING(config, ui, ho_ho_hints);
@@ -578,13 +578,13 @@ void MainWindow::on_base_game_path_browse_button_clicked()
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->base_game_path->setText(dir);
-        config.gameBaseDir = dir.toStdString();
+        config.gameBaseDir = dir.toStdU16String();
     }
 }
 
 void MainWindow::on_base_game_path_textChanged(const QString &arg1)
 {
-    config.gameBaseDir = arg1.toStdString();
+    config.gameBaseDir = arg1.toStdU16String();
 }
 
 void MainWindow::on_output_folder_browse_button_clicked()

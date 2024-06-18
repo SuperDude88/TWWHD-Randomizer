@@ -288,7 +288,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
         case Fmt::ROOT:
         {
             current->data = std::make_unique<RawFile>();
-            if(Utility::getFileContents((baseDir / current->element).string(), dynamic_cast<RawFile*>(current->data.get())->data) != 0) return false;
+            if(Utility::getFileContents((baseDir / current->element), dynamic_cast<RawFile*>(current->data.get())->data) != 0) return false;
         }
         break;
         case Fmt::EMPTY:

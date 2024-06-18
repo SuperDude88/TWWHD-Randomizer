@@ -310,7 +310,7 @@ public:
     bool random_item_slide_item;
     bool classic_mode;
     bool plandomizer;
-    std::string plandomizerFile;
+    std::filesystem::path plandomizerFile;
 
     TargetTypePreference target_type;
     CameraPreference camera;
