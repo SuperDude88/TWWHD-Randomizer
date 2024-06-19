@@ -1171,25 +1171,32 @@ TweakError update_korl_dialog(World& world) {
         for (const auto& language: Text::supported_languages) {
             RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
 
-            std::vector<std::u16string> hintLines = {u""};
-            int i = -1; // counter to know when to add null terminator
+            std::vector<std::u16string> hintMessages = {u""};
+            size_t curLine = 0;
             for (auto location : world.korlHints) {
-                i++;
                 std::u16string hint = location->hint.text[language];
-                hint = Text::word_wrap_string(hint, 43);
-                    if(i >= 10) {
-                        hintLines.back().back() = u'\0';
-                        hintLines.push_back(u"");
-                        i = 0;
-                    }
+                hint = Text::word_wrap_string(hint, 42); // wrap shorter lines, some edge cases are still too wide with 43
                 hint = Text::pad_str_4_lines(hint);
-                hintLines.back() += hint;
+                const size_t numLines = std::count(hint.begin(), hint.end(), u'\n'); // 4 for most hints, 8+ for long hints with multiple textboxes
+
+                // if we would have >10 textboxes
+                if(curLine + numLines > 40) {
+                    hintMessages.back().back() = u'\0'; // add null terminator
+                    hintMessages.emplace_back(); // start a new hint message
+                    curLine = 0; // restart line counter
+                }
+
+                hintMessages.back() += hint; // add hint to back of current message
+                curLine += numLines; // add hint lines to count
             }
-            if(hintLines.back().back() != u'\0') hintLines.back().back() = u'\0';
+
+            if(hintMessages.back().back() != u'\0') {
+                hintMessages.back().back() = u'\0';
+            }
 
             if(custom_symbols.count("last_korl_hint_message_number") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
             const uint32_t num_messages_address = custom_symbols.at("last_korl_hint_message_number");
-            g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, numExtra = hintLines.size() - 1](RandoSession* session, FileType* data) -> int {
+            g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, numExtra = hintMessages.size() - 1](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
                 RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, num_messages_address), 3443 + numExtra));
@@ -1197,13 +1204,13 @@ TweakError update_korl_dialog(World& world) {
                 return true;
             });
 
-            for (uint32_t x = 0; x < hintLines.size(); x++) {
-                const std::u16string lines = hintLines[x];
+            for (uint32_t x = 0; x < hintMessages.size(); x++) {
+                const std::u16string msg = hintMessages[x];
                 const std::string label = "0"s + std::to_string(3443 + x);
-                entry.addAction([label, lines](RandoSession* session, FileType* data) -> int {
+                entry.addAction([label, msg](RandoSession* session, FileType* data) -> int {
                     CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
-                    msbt.messages_by_label[label].text.message = lines;
+                    msbt.messages_by_label[label].text.message = msg;
 
                     return true;
                 });
