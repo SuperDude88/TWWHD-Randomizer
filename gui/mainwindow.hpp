@@ -121,6 +121,7 @@ private slots:
     void on_output_folder_browse_button_clicked();
     void on_output_folder_textChanged(const QString &arg1);
     void on_generate_seed_button_clicked();
+    void on_open_logs_folder_button_clicked();
 
 
     // Progression Locations
@@ -268,9 +269,7 @@ private slots:
     void update_stats_color();
     void on_override_stats_color_stateChanged(int arg1);
     void on_stats_color_clicked();
-
-
-    void on_open_logs_folder_button_clicked();
+    void on_show_location_logic_stateChanged(int arg1);
 
 private:
     // More Tracker Stuff

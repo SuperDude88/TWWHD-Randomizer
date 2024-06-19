@@ -25,6 +25,7 @@ public:
     Entrance* get_entrance() const;
     void update_colors();
     void mark_location();
+    void updateShowLogic(int show);
 
 signals:
     void location_label_clicked();
@@ -45,4 +46,5 @@ private:
     TrackerLabelType type = TrackerLabelType::NONE;
     Location* location = nullptr;
     Entrance* entrance = nullptr;
+    bool showLogic = true;
 };

@@ -162,7 +162,7 @@ void TrackerLabel::update_colors()
         {
             setStyleSheet("color: black; text-decoration: line-through;");
         }
-        else if (!location->hasBeenFound)
+        else if (!location->hasBeenFound && showLogic)
         {
             setStyleSheet("color: red;");
         }
@@ -193,4 +193,10 @@ void TrackerLabel::update_colors()
     }
 
 
+}
+
+void TrackerLabel::updateShowLogic(int show)
+{
+    showLogic = show ? true : false;
+    update_colors();
 }

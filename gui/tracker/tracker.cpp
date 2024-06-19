@@ -303,7 +303,7 @@ void MainWindow::autosave_current_tracker()
 
     autosave_file << root;
 
-    // Save colors back to autosave preferences
+    // Save colors back to tracker_preferences
     std::string preferences;
     Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
@@ -321,6 +321,9 @@ void MainWindow::autosave_current_tracker()
             }
         }
     }
+
+    // Save show location logic to preferences also
+    pref["show_location_logic"] = ui->show_location_logic->isChecked();
 
     std::ofstream preferences_file(Utility::get_preferences_path() +  "tracker_preferences.yaml");
     if (preferences_file.is_open() == false)
@@ -407,6 +410,7 @@ void MainWindow::load_tracker_autosave()
     Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
 
+    // Color override preferences
     for (auto& [name, color, override_checkbox_name] : color_preferences)
     {
         QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(override_checkbox_name);
@@ -422,6 +426,12 @@ void MainWindow::load_tracker_autosave()
                 override_checkbox->setChecked(true);
             }
         }
+    }
+
+    // Show Location Logic preference
+    if (pref["show_location_logic"])
+    {
+        ui->show_location_logic->setChecked(pref["show_location_logic"].as<bool>());
     }
 
     update_tracker();
@@ -637,6 +647,7 @@ void MainWindow::update_tracker()
     for (auto& loc : areaLocations[currentTrackerArea])
     {
         auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, loc);
+        newLabel->updateShowLogic(ui->show_location_logic->isChecked());
         // newLabel->set_location(loc);
         location_list_layout->addWidget(newLabel, row, col);
         connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
@@ -981,6 +992,24 @@ void MainWindow::on_stats_color_clicked()
 
     statsColor = color;
     update_stats_color();
+}
+
+void MainWindow::on_show_location_logic_stateChanged(int arg1)
+{
+    // Only make the locations in logic visible if we're showing logic
+    ui->locations_accessible_label->setVisible(arg1);
+    ui->locations_accessible_number->setVisible(arg1);
+
+    // Update showing logic for all tracker labels
+    for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
+    {
+        child->updateShowLogic(arg1);
+    }
+    for (auto child : ui->tracker_tab->findChildren<TrackerLabel*>())
+    {
+        child->updateShowLogic(arg1);
+    }
+    autosave_current_tracker();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
