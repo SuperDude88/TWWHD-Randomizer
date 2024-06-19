@@ -93,11 +93,18 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     #else
         std::string baseTemp, outTemp, plandoTemp;
         GET_FIELD_NO_FAIL(preferencesRoot, "gameBaseDir", baseTemp)
-        gameBaseDir = Utility::Str::toUTF16(baseTemp);
         GET_FIELD_NO_FAIL(preferencesRoot, "outputDir", outTemp)
-        outputDir = Utility::Str::toUTF16(outTemp);
         GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", plandoTemp)
-        settings.plandomizerFile = Utility::Str::toUTF16(plandoTemp);
+        // Convert to utf16 if we compiled with GCC
+        #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+            gameBaseDir = Utility::Str::toUTF16(baseTemp);
+            outputDir = Utility::Str::toUTF16(outTemp);
+            settings.plandomizerFile = Utility::Str::toUTF16(plandoTemp);
+        #else
+            gameBaseDir = baseTemp;
+            outputDir = outTemp;
+            settings.plandomizerFile = plandoTemp;
+        #endif
     #endif
 
     if(!root["game_version"]) {
