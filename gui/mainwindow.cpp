@@ -415,8 +415,14 @@ void MainWindow::update_plandomizer_widget_visbility()
 void MainWindow::apply_config_settings()
 {
     // Directories and Seed
-    ui->base_game_path->setText(config.gameBaseDir.string().c_str());
-    ui->output_folder->setText(config.outputDir.string().c_str());
+    #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+        ui->base_game_path->setText(config.gameBaseDir.string().c_str());
+        ui->output_folder->setText(config.outputDir.string().c_str());
+    #else
+        ui->base_game_path->setText(QString::fromLocal8Bit(config.gameBaseDir.string()));
+        ui->output_folder->setText(QString::fromLocal8Bit(config.outputDir.string()));
+    #endif
+
     ui->seed->setText(config.seed.c_str());
 
     // Progression settings

@@ -14,7 +14,7 @@ if(DEFINED DEVKITPRO)
 else()
   add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/" LOGS_PATH="./logs/")
 
-  if(WIN32)
+  if(WIN32 AND CMAKE_COMPILER_IS_GNU<LANG>)
     add_compile_definitions(_GLIBCXX_FILESYSTEM_IS_WINDOWS)
   endif()
 
