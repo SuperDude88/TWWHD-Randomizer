@@ -100,7 +100,7 @@ void TrackerAreaWidget::updateArea()
     {
         locationsRemaining.setStyleSheet("color: black;");
     }
-    else if (totalAccessibleLocations == 0)
+    else if (totalAccessibleLocations == 0 && showLogic)
     {
         locationsRemaining.setStyleSheet("color: red;");
     }
@@ -109,7 +109,15 @@ void TrackerAreaWidget::updateArea()
         locationsRemaining.setStyleSheet("color: blue;");
     }
 
-    std::string locationsRemainingText = std::to_string(totalAccessibleLocations) + "/" + std::to_string(totalRemainingLocations);
+    std::string locationsRemainingText = "";
+    if (showLogic)
+    {
+        locationsRemainingText = std::to_string(totalAccessibleLocations) + "/" + std::to_string(totalRemainingLocations);
+    }
+    else
+    {
+        locationsRemainingText = std::to_string(totalRemainingLocations);
+    }
     locationsRemaining.setText(locationsRemainingText.c_str());
 
     updateBossImageWidget();
@@ -127,6 +135,12 @@ void TrackerAreaWidget::updateBossImageWidget()
                               "background-image: url(" DATA_PATH "tracker/" + filename + ".png);"
                               "background-repeat: none;"
                               "background-position: center;").c_str());
+}
+
+void TrackerAreaWidget::updateShowLogic(int show)
+{
+    showLogic = show ? true : false;
+    updateArea();
 }
 
 void TrackerAreaWidget::enterEvent(QEnterEvent* e)

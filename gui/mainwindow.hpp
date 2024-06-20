@@ -121,6 +121,7 @@ private slots:
     void on_output_folder_browse_button_clicked();
     void on_output_folder_textChanged(const QString &arg1);
     void on_generate_seed_button_clicked();
+    void on_open_logs_folder_button_clicked();
 
 
     // Progression Locations
@@ -268,9 +269,7 @@ private slots:
     void update_stats_color();
     void on_override_stats_color_stateChanged(int arg1);
     void on_stats_color_clicked();
-
-
-    void on_open_logs_folder_button_clicked();
+    void on_show_location_logic_stateChanged(int arg1);
 
 private:
     // More Tracker Stuff
@@ -301,6 +300,11 @@ private:
     QColor itemsColor = {105, 137, 28, 255};
     QColor locationsColor = {160, 160, 160, 255};
     QColor statsColor = {79, 79, 79, 255};
+    std::list<std::tuple<std::string, QColor*, QString>> color_preferences = {
+      {"items_color", &itemsColor, "override_items_color"},
+      {"locations_color", &locationsColor, "override_locations_color"},
+      {"stats_color", &statsColor, "override_stats_color"},
+    };
 
     using TIB = TrackerInventoryButton;
 

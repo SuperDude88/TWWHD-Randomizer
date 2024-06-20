@@ -32,6 +32,7 @@ public:
     std::unordered_map<std::string, LocationSet>* areaLocations;
     int totalRemainingLocations = 0;
     int totalAccessibleLocations = 0;
+    bool showLogic = true;
 
     // Stuff for other area widgets
     QWidget dungeonItemWidget = QWidget();
@@ -46,7 +47,7 @@ public:
     void setChart(TrackerInventoryButton* chart);
     void updateArea();
     void updateBossImageWidget();
-
+    void updateShowLogic(int show);
 
 signals:
     void mouse_over_area(TrackerAreaWidget* areaPrefix);

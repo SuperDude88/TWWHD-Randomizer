@@ -10,6 +10,8 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
 #include <utility/file.hpp>
+#include <utility/string.hpp>
+#include <utility/color.hpp>
 
 #include <iostream>
 
@@ -248,7 +250,7 @@ void MainWindow::autosave_current_tracker()
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_app_save_path() +  "autosave_preferences.yaml");
+    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_preferences_path() +  "tracker_preferences.yaml");
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + errorToName(configErr));
@@ -291,26 +293,58 @@ void MainWindow::autosave_current_tracker()
         root["connected_entrances"][entrance->getOriginalName()] = target->getReplaces()->getOriginalName();
     }
 
-    std::ofstream f(Utility::get_app_save_path() +  "tracker_autosave.yaml");
-    if (f.is_open() == false)
+
+    std::ofstream autosave_file(Utility::get_app_save_path() +  "tracker_autosave.yaml");
+    if (autosave_file.is_open() == false)
     {
         show_error_dialog("Failed to open tracker_autosave.yaml");
         return;
     }
 
-    f << root;
+    autosave_file << root;
+
+    // Save colors back to tracker_preferences
+    std::string preferences;
+    Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
+    YAML::Node pref = YAML::Load(preferences);
+
+    for (auto& [name, color, override_checkbox_name] : color_preferences)
+    {
+        pref[name] = "None";
+        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(override_checkbox_name);
+        if (override_checkbox && override_checkbox->isChecked())
+        {
+            const auto hexStr = Utility::Str::intToHex(color->red(), 2, false) + Utility::Str::intToHex(color->green(), 2, false) + Utility::Str::intToHex(color->blue(), 2, false);
+            if (isValidHexColor(hexStr))
+            {
+                pref[name] =  hexStr;
+            }
+        }
+    }
+
+    // Save show location logic to preferences also
+    pref["show_location_logic"] = ui->show_location_logic->isChecked();
+
+    std::ofstream preferences_file(Utility::get_preferences_path() +  "tracker_preferences.yaml");
+    if (preferences_file.is_open() == false)
+    {
+        show_error_dialog("Failed to open tracker_preferences.yaml");
+        return;
+    }
+
+    preferences_file << pref;
 }
 
 void MainWindow::load_tracker_autosave()
 {
-    if (!std::filesystem::exists(Utility::get_app_save_path() +  "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_app_save_path() +  "autosave_preferences.yaml"))
+    if (!std::filesystem::exists(Utility::get_app_save_path() +  "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_preferences_path() +  "tracker_preferences.yaml"))
     {
         // No autosave file, don't try to do anything
         return;
     }
 
     Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_app_save_path() +  "autosave_preferences.yaml", true);
+    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_preferences_path() +  "tracker_preferences.yaml", true);
     if (configErr != ConfigError::NONE)
     {
         show_warning_dialog("Could not load tracker autosave config\nError: " + errorToName(configErr));
@@ -370,6 +404,35 @@ void MainWindow::load_tracker_autosave()
     }
 
     initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections);
+
+    // Load tracker preferences
+    std::string preferences;
+    Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
+    YAML::Node pref = YAML::Load(preferences);
+
+    // Color override preferences
+    for (auto& [name, color, override_checkbox_name] : color_preferences)
+    {
+        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(override_checkbox_name);
+        if (pref[name] && pref[name].as<std::string>() != "None")
+        {
+            auto hexColor = pref[name].as<std::string>();
+            if (isValidHexColor(hexColor))
+            {
+                auto colorRGB = hexColorStrToRGB(hexColor);
+                color->setRedF(colorRGB.R);
+                color->setGreenF(colorRGB.G);
+                color->setBlueF(colorRGB.B);
+                override_checkbox->setChecked(true);
+            }
+        }
+    }
+
+    // Show Location Logic preference
+    if (pref["show_location_logic"])
+    {
+        ui->show_location_logic->setChecked(pref["show_location_logic"].as<bool>());
+    }
 
     update_tracker();
 }
@@ -584,6 +647,7 @@ void MainWindow::update_tracker()
     for (auto& loc : areaLocations[currentTrackerArea])
     {
         auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, loc);
+        newLabel->updateShowLogic(ui->show_location_logic->isChecked());
         // newLabel->set_location(loc);
         location_list_layout->addWidget(newLabel, row, col);
         connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
@@ -845,6 +909,7 @@ void MainWindow::update_items_color() {
     else {
         ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
     }
+    autosave_current_tracker();
 }
 
 void MainWindow::on_override_items_color_stateChanged(int arg1)
@@ -877,6 +942,7 @@ void MainWindow::update_locations_color()
     else {
         ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     }
+    autosave_current_tracker();
 }
 
 void MainWindow::on_override_locations_color_stateChanged(int arg1)
@@ -909,6 +975,7 @@ void MainWindow::update_stats_color()
     else {
         ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
     }
+    autosave_current_tracker();
 }
 
 void MainWindow::on_override_stats_color_stateChanged(int arg1)
@@ -925,6 +992,24 @@ void MainWindow::on_stats_color_clicked()
 
     statsColor = color;
     update_stats_color();
+}
+
+void MainWindow::on_show_location_logic_stateChanged(int arg1)
+{
+    // Only make the locations in logic visible if we're showing logic
+    ui->locations_accessible_label->setVisible(arg1);
+    ui->locations_accessible_number->setVisible(arg1);
+
+    // Update showing logic for all tracker labels
+    for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
+    {
+        child->updateShowLogic(arg1);
+    }
+    for (auto child : ui->tracker_tab->findChildren<TrackerLabel*>())
+    {
+        child->updateShowLogic(arg1);
+    }
+    autosave_current_tracker();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
@@ -1214,9 +1299,20 @@ void MainWindow::set_areas_entrances()
     // Only list non-primary entrances if entrances are decoupled
     for (auto& entrance : trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances))
     {
+        // Set Misc Restrictive Entrances as Misc so that they get properly picked up
         if (entrance->getEntranceType() == EntranceType::MISC_RESTRICTIVE)
         {
             entrance->setEntranceType(EntranceType::MISC);
+        }
+        // Same thing for Fairy Fountains as Caves
+        if (entrance->getEntranceType() == EntranceType::FAIRY)
+        {
+            entrance->setEntranceType(EntranceType::CAVE);
+        }
+        // And for the Reverse
+        if (entrance->getEntranceType() == EntranceType::FAIRY_REVERSE)
+        {
+            entrance->setEntranceType(EntranceType::CAVE_REVERSE);
         }
         auto islands = entrance->getParentArea()->findIslands();
         auto dungeons = entrance->getParentArea()->findDungeons();
