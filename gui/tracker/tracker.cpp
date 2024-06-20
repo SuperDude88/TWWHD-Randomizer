@@ -1272,10 +1272,15 @@ void MainWindow::set_areas_locations()
                 {
                     auto islands = area->findIslands();
                     auto dungeons = area->findDungeons();
+                    auto hintRegions = area->findHintRegions();
 
                     if (dungeons.size() > 0)
                     {
                         areaLocations[dungeons.front()].insert(locAccess.location);
+                    }
+                    else if (hintRegions.size() > 0)
+                    {
+                        areaLocations[hintRegions.front()].insert(locAccess.location);
                     }
                     else
                     {
@@ -1316,10 +1321,15 @@ void MainWindow::set_areas_entrances()
         }
         auto islands = entrance->getParentArea()->findIslands();
         auto dungeons = entrance->getParentArea()->findDungeons();
+        auto hintRegions = entrance->getParentArea()->findHintRegions();
 
         if (dungeons.size() > 0)
         {
             areaEntrances[dungeons.front()].push_back(entrance);
+        }
+        else if (hintRegions.size() > 0)
+        {
+            areaEntrances[hintRegions.front()].push_back(entrance);
         }
         else
         {
