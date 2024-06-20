@@ -308,17 +308,13 @@ void MainWindow::autosave_current_tracker()
     Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
 
-    for (auto& [name, color, override_checkbox_name] : color_preferences)
+    for (const auto& [name, color] : color_preferences)
     {
         pref[name] = "None";
-        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(override_checkbox_name);
+        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(QString::fromStdString("override_" + name));
         if (override_checkbox && override_checkbox->isChecked())
         {
-            const auto hexStr = Utility::Str::intToHex(color->red(), 2, false) + Utility::Str::intToHex(color->green(), 2, false) + Utility::Str::intToHex(color->blue(), 2, false);
-            if (isValidHexColor(hexStr))
-            {
-                pref[name] =  hexStr;
-            }
+            pref[name] =  color.name().toStdString(); // name() returns #RRGGBB
         }
     }
 
@@ -411,20 +407,14 @@ void MainWindow::load_tracker_autosave()
     YAML::Node pref = YAML::Load(preferences);
 
     // Color override preferences
-    for (auto& [name, color, override_checkbox_name] : color_preferences)
+    for (auto& [name, color] : color_preferences)
     {
-        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(override_checkbox_name);
+        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(QString::fromStdString("override_" + name));
         if (pref[name] && pref[name].as<std::string>() != "None")
         {
-            auto hexColor = pref[name].as<std::string>();
-            if (isValidHexColor(hexColor))
-            {
-                auto colorRGB = hexColorStrToRGB(hexColor);
-                color->setRedF(colorRGB.R);
-                color->setGreenF(colorRGB.G);
-                color->setBlueF(colorRGB.B);
-                override_checkbox->setChecked(true);
-            }
+            // setNamedColor is deprecated after Qt 6.6, if we update we should switch to fromString
+            color.setNamedColor(QString::fromStdString(pref[name].as<std::string>()));
+            override_checkbox->setChecked(true);
         }
     }
 
@@ -898,13 +888,7 @@ void MainWindow::on_clear_all_button_released()
 
 void MainWindow::update_items_color() {
     if(ui->override_items_color->isChecked()) {
-        const std::string r = std::to_string(itemsColor.red());
-        const std::string g = std::to_string(itemsColor.green());
-        const std::string b = std::to_string(itemsColor.blue());
-
-        ui->inventory_widget->setStyleSheet(
-            QString::fromStdString("QWidget#inventory_widget {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
-        );
+        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {background-color: " + color_preferences["items_color"].name() + "}");
     }
     else {
         ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
@@ -919,6 +903,7 @@ void MainWindow::on_override_items_color_stateChanged(int arg1)
 
 void MainWindow::on_items_color_clicked()
 {
+    QColor& itemsColor = color_preferences["items_color"];
     QColor color = QColorDialog::getColor(itemsColor, this, "Select color");
     if (!color.isValid()) {
         return;
@@ -931,13 +916,7 @@ void MainWindow::on_items_color_clicked()
 void MainWindow::update_locations_color()
 {
     if(ui->override_locations_color->isChecked()) {
-        const std::string r = std::to_string(locationsColor.red());
-        const std::string g = std::to_string(locationsColor.green());
-        const std::string b = std::to_string(locationsColor.blue());
-
-        ui->other_areas_widget->setStyleSheet(
-            QString::fromStdString("QWidget#other_areas_widget {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
-        );
+        ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: " + color_preferences["locations_color"].name() + "}");
     }
     else {
         ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
@@ -952,6 +931,7 @@ void MainWindow::on_override_locations_color_stateChanged(int arg1)
 
 void MainWindow::on_locations_color_clicked()
 {
+    QColor& locationsColor = color_preferences["locations_color"];
     QColor color = QColorDialog::getColor(locationsColor, this, "Select color");
     if (!color.isValid()) {
         return;
@@ -964,13 +944,7 @@ void MainWindow::on_locations_color_clicked()
 void MainWindow::update_stats_color()
 {
     if(ui->override_stats_color->isChecked()) {
-        const std::string r = std::to_string(statsColor.red());
-        const std::string g = std::to_string(statsColor.green());
-        const std::string b = std::to_string(statsColor.blue());
-
-        ui->stat_box->setStyleSheet(
-            QString::fromStdString("QWidget#stat_box {background-color: rgb(" + r + ", " + g + ", " + b + ");}")
-        );
+        ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: " + color_preferences["stats_color"].name() + "}");
     }
     else {
         ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
@@ -985,6 +959,7 @@ void MainWindow::on_override_stats_color_stateChanged(int arg1)
 
 void MainWindow::on_stats_color_clicked()
 {
+    QColor& statsColor = color_preferences["stats_color"];
     QColor color = QColorDialog::getColor(statsColor, this, "Select color");
     if (!color.isValid()) {
         return;

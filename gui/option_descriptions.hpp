@@ -79,7 +79,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "progression_tingle_chests",
-      "Tingle Chests that are hidden in dungeons and must be bombed to make them appear. (2 in DRC, 1 each in FW, TotG, ET, and WT).<br><u>If this is not checked, they will still be randomized</u>, but will only contain optional items you don't need to beat the game."
+      "Tingle Chests that are hidden in dungeons and must be bombed to make them appear (1 each in DRC, FW, TotG, ET, and WT).<br><u>If this is not checked, they will still be randomized</u>, but will only contain optional items you don't need to beat the game."
     },
     {
       "progression_battlesquid",
