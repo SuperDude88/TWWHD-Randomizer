@@ -1299,9 +1299,20 @@ void MainWindow::set_areas_entrances()
     // Only list non-primary entrances if entrances are decoupled
     for (auto& entrance : trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances))
     {
+        // Set Misc Restrictive Entrances as Misc so that they get properly picked up
         if (entrance->getEntranceType() == EntranceType::MISC_RESTRICTIVE)
         {
             entrance->setEntranceType(EntranceType::MISC);
+        }
+        // Same thing for Fairy Fountains as Caves
+        if (entrance->getEntranceType() == EntranceType::FAIRY)
+        {
+            entrance->setEntranceType(EntranceType::CAVE);
+        }
+        // And for the Reverse
+        if (entrance->getEntranceType() == EntranceType::FAIRY_REVERSE)
+        {
+            entrance->setEntranceType(EntranceType::CAVE_REVERSE);
         }
         auto islands = entrance->getParentArea()->findIslands();
         auto dungeons = entrance->getParentArea()->findDungeons();
