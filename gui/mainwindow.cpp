@@ -1048,23 +1048,21 @@ void MainWindow::on_permalink_textEdited(const QString &newPermalink)
 
 void MainWindow::on_reset_settings_to_default_clicked()
 {
+    // Keep anything that's in preferences.yaml saved
+    auto oldConfig = config;
+
     delete_and_create_default_config();
 
-    // Don't reset any paths the user has specified
-    auto previousGameBaseDir = config.gameBaseDir;
-    auto previousOutputDir = config.outputDir;
-    auto previousSeed = config.seed;
-    auto previousPlandomizerFile = config.settings.plandomizerFile;
+    auto err = oldConfig.writePreferences(Utility::get_preferences_path() + "preferences.yaml");
+    if (err != ConfigError::NONE)
+    {
+        show_warning_dialog("Could not keep preferences when resetting all settings.\nYou will have to reset your preferences (model colors, in-game options, and paths).");
+    }
 
-    // Load new config
     load_config_into_ui();
 
-    // Restore previous paths
-    config.gameBaseDir = previousGameBaseDir;
-    config.outputDir = previousOutputDir;
-    config.seed = previousSeed;
-    config.settings.plandomizerFile = previousPlandomizerFile;
-    apply_config_settings();
+    // Also keep the previous seed
+    ui->seed->setText(oldConfig.seed.c_str());
 }
 
 void MainWindow::on_randomize_button_clicked()
