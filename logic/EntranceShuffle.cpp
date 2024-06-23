@@ -156,8 +156,8 @@ EntranceShuffleError setAllEntrancesData(World& world)
             returnEntrance->setStageName(returnEntry.stage);
             returnEntrance->setRoomNum(returnEntry.room);
             returnEntrance->setSpawnId(returnEntry.spawnId);
-            returnEntrance->setEntranceType(entranceTypeToReverse(type));
-            returnEntrance->setOriginalEntranceType(entranceTypeToReverse(type));
+            returnEntrance->setEntranceType(entranceTypeToReverse(type, false));
+            returnEntrance->setOriginalEntranceType(entranceTypeToReverse(type, false));
             forwardEntrance->bindTwoWay(returnEntrance);
             if (savewarp)
             {

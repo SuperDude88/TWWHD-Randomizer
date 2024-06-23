@@ -384,8 +384,13 @@ EntranceType entranceNameToType(const std::string& name)
     return nameToType.at(name);
 }
 
-EntranceType entranceTypeToReverse(const EntranceType& type)
+EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse /*= true*/)
 {
+    if (!miscReverse && type == EntranceType::MISC)
+    {
+        return EntranceType::MISC;
+    }
+
     std::unordered_map<EntranceType, EntranceType> typeReverseMap = {
         {EntranceType::NONE, EntranceType::NONE},
         {EntranceType::DUNGEON, EntranceType::DUNGEON_REVERSE},
