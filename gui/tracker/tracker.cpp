@@ -919,9 +919,16 @@ void MainWindow::on_clear_all_button_released()
 void MainWindow::update_items_color() {
     if(ui->override_items_color->isChecked()) {
         ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {background-color: " + color_preferences["items_color"].name() + "}");
+        ui->inventory_widget_pearls->setStyleSheet("");
     }
     else {
         ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
+        // Only display the pearl holder if we're using the default background
+        ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
+                                                   "background-image: url(" DATA_PATH "tracker/pearl_holder.png);"
+                                                   "background-repeat: none;"
+                                                   "background-position: center;"
+                                                   "}");
     }
     autosave_current_tracker();
 }
