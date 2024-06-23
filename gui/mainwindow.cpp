@@ -1081,6 +1081,14 @@ void MainWindow::on_randomize_button_clicked()
         show_warning_dialog("Must specify a valid output folder for the randomized files.", "No output folder specified");
         return;
     }
+
+    // Check to make sure the output directory is not the same or a sub directory of the base game
+    if (config.outputDir.string().starts_with(config.gameBaseDir.string()))
+    {
+        show_warning_dialog("The output folder cannot be within the base game folder. Please select a different output folder.", "Bad output folder");
+        return;
+    }
+
     // And check to make sure the plando path leads to a file
     if (config.settings.plandomizer && (!std::filesystem::exists(config.settings.plandomizerFile) || std::filesystem::is_directory(config.settings.plandomizerFile)))
     {

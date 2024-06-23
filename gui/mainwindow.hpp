@@ -387,14 +387,14 @@ private:
                                             {GameItem::FaroresPearl,          "pearl_farores_color.png"}});
     TIB trackerNayrusPearl           = TIB({{GameItem::NOTHING,               "pearl_nayrus_gray.png"},
                                             {GameItem::NayrusPearl,           "pearl_nayrus_color.png"}});
-    TIB trackerTriforceShards        = TIB({{GameItem::NOTHING,               "triforce0.png",                       "Triforce Shard (0/8)"},
-                                            {GameItem::TriforceShard1,        "triforce1.png",                       "Triforce Shard (1/8)"},
-                                            {GameItem::TriforceShard2,        "triforce2.png",                       "Triforce Shard (2/8)"},
-                                            {GameItem::TriforceShard3,        "triforce3.png",                       "Triforce Shard (3/8)"},
-                                            {GameItem::TriforceShard4,        "triforce4.png",                       "Triforce Shard (4/8)"},
-                                            {GameItem::TriforceShard5,        "triforce5.png",                       "Triforce Shard (5/8)"},
-                                            {GameItem::TriforceShard6,        "triforce6.png",                       "Triforce Shard (6/8)"},
-                                            {GameItem::TriforceShard7,        "triforce7.png",                       "Triforce Shard (7/8)"},
+    TIB trackerTriforceShards        = TIB({{GameItem::NOTHING,               "triforce_gray.png",                       "Triforce Shard (0/8)"},
+                                            {GameItem::TriforceShard1,        "triforce_1b.png",                       "Triforce Shard (1/8)"},
+                                            {GameItem::TriforceShard2,        "triforce_2b.png",                       "Triforce Shard (2/8)"},
+                                            {GameItem::TriforceShard3,        "triforce_3b.png",                       "Triforce Shard (3/8)"},
+                                            {GameItem::TriforceShard4,        "triforce_4b.png",                       "Triforce Shard (4/8)"},
+                                            {GameItem::TriforceShard5,        "triforce_5b.png",                       "Triforce Shard (5/8)"},
+                                            {GameItem::TriforceShard6,        "triforce_6b.png",                       "Triforce Shard (6/8)"},
+                                            {GameItem::TriforceShard7,        "triforce_7b.png",                       "Triforce Shard (7/8)"},
                                             {GameItem::TriforceShard8,        "triforce8.png",                       "Triforce of Courage"}});
     TIB trackerTingleStatues         = TIB({{GameItem::NOTHING,               "tingle_statue_gray.png",              "Tingle Statue (0/5)"},
                                             {GameItem::DragonTingleStatue,    "tingle_statue_1_color.png",           "Tingle Statue (1/5)"},

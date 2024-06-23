@@ -519,7 +519,7 @@
       Windfall Island - Kane Decorate Postman Statue: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
       Windfall Island - Kane Decorate Six Flags: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
       Windfall Island - Kane Decorate Six Idols: Rescued_Aryll and Delivery_Bag and Can_Trade_With_All_Gorons
-      Windfall Island - Mila Catch Thief: Rescued_Aryll
+      Windfall Island - Mila Catch Thief: Rescued_Aryll and Can_Play_SoP
       Windfall Island - Dampa Pig Minigame: Rescued_Aryll and Can_Farm_Skull_Necklaces and Spoils_Bag
       Windfall Island - Pompie & Vera Secret Meeting Photo: can_access(Windfall Lenzo's House Upper) and 'Can_Start_Lenzo_Quest'
       Windfall Island - Kamo Full Moon Picture: Deluxe_Picto_Box and Can_Play_SoP
@@ -3053,7 +3053,6 @@
       Hyrule Castle Front: Nothing
 
 - Name: Hyrule Castle Sword Chamber
-  Hint Region: Hyrule
   Locations:
       Hyrule Castle - Sword Chamber Chest: Can_Defeat_Mighty_Darknuts
   Exits:

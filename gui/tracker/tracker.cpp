@@ -1,5 +1,6 @@
-#include "../mainwindow.hpp"
 #include "../ui_mainwindow.h"
+#include "../mainwindow.hpp"
+
 
 #include <gui/tracker/tracker_inventory_button.hpp>
 #include <gui/tracker/tracker_area_widget.hpp>
@@ -85,7 +86,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     setup_tracker_entrances();
 
     // Connect autosaved entrances
-    auto shuffledEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances);
+    auto shuffledEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL);
     for (auto entrance : shuffledEntrances)
     {
         auto entranceStr = entrance->getOriginalName();
@@ -182,10 +183,11 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     }
 
 
-    // Set locations for each area
+    // Set locations/entrances for each area
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
     {
         area->setLocations(&areaLocations);
+        area->setEntrances(&areaEntrances);
 
         std::string areaName = area->getPrefix();
         // TODO: figure out some better way to do this than just if/else
@@ -665,34 +667,62 @@ void MainWindow::update_tracker()
     // Clear previous labels from the entrances widget
     clear_tracker_labels(ui->entrance_scroll_layout);
 
-    currentPointSize = 12;
-    for (auto& entrance : areaEntrances[currentTrackerArea])
+    // Pare down which entrances are shown to be more intuitive
+    auto& trackerWorld = trackerWorlds[0];
+
+    std::list<Area*> regionEntranceParents = {};
+    for (auto e : areaEntrances[currentTrackerArea])
     {
-        // New Horizontal layout to add the label and the disconnect button
-        // if the entrance is connected
-        auto hLayout = new QHBoxLayout();
-
-        auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, nullptr, entrance);
-        hLayout->addWidget(newLabel);
-        // If the entrance is connected, give the user a disconnect button
-        if (entrance->getReplaces())
+        if (e->getParentArea()->getRegion() == currentTrackerArea && !elementInPool(e->getParentArea(), regionEntranceParents))
         {
-            hLayout->setContentsMargins(7, 0, 0, 0);
-            auto disconnectButton = new QPushButton("X");
-            set_font(disconnectButton, "fira_sans", currentPointSize);
-            disconnectButton->setCursor(Qt::PointingHandCursor);
-            disconnectButton->setMaximumWidth(20);
-            disconnectButton->setMaximumHeight(15);
-            connect(disconnectButton, &QPushButton::clicked, this, [&](){MainWindow::tracker_disconnect_entrance(entrance);});
-            hLayout->addWidget(disconnectButton);
+            regionEntranceParents.push_front(e->getParentArea());
         }
-
-        ui->entrance_scroll_layout->addLayout(hLayout);
-        connect(newLabel, &TrackerLabel::entrance_source_label_clicked, this, &MainWindow::tracker_show_available_target_entrances);
-        connect(newLabel, &TrackerLabel::entrance_source_label_disconnect, this, &MainWindow::tracker_disconnect_entrance);
-        connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
-        connect(newLabel, &TrackerLabel::mouse_left_entrance_label, this, &MainWindow::tracker_clear_current_area_text);
     }
+
+    auto area = trackerWorld.getArea(currentTrackerArea);
+    if (!area && regionEntranceParents.size() > 0)
+    {
+        area = regionEntranceParents.front();
+    }
+    auto shuffledEntrances = area ? area->findShuffledEntrances(regionEntranceParents) : std::list<std::list<Entrance*>>();
+
+    currentPointSize = 12;
+    for (auto& sphere : shuffledEntrances)
+    {
+        for (auto& entrance : sphere)
+        {
+            // If this entrance is not part of this areas entrances, then don't show it
+            if (!elementInPool(entrance, areaEntrances[currentTrackerArea]))
+            {
+                continue;
+            }
+            // New Horizontal layout to add the label and the disconnect button
+            // if the entrance is connected
+            auto hLayout = new QHBoxLayout();
+
+            auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, nullptr, entrance);
+            hLayout->addWidget(newLabel);
+            // If the entrance is connected, give the user a disconnect button
+            if (entrance->getReplaces())
+            {
+                hLayout->setContentsMargins(7, 0, 0, 0);
+                auto disconnectButton = new QPushButton("X");
+                set_font(disconnectButton, "fira_sans", currentPointSize);
+                disconnectButton->setCursor(Qt::PointingHandCursor);
+                disconnectButton->setMaximumWidth(20);
+                disconnectButton->setMaximumHeight(15);
+                connect(disconnectButton, &QPushButton::clicked, this, [&,entrance=entrance](){MainWindow::tracker_disconnect_entrance(entrance);});
+                hLayout->addWidget(disconnectButton);
+            }
+
+            ui->entrance_scroll_layout->addLayout(hLayout);
+            connect(newLabel, &TrackerLabel::entrance_source_label_clicked, this, &MainWindow::tracker_show_available_target_entrances);
+            connect(newLabel, &TrackerLabel::entrance_source_label_disconnect, this, &MainWindow::tracker_disconnect_entrance);
+            connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
+            connect(newLabel, &TrackerLabel::mouse_left_entrance_label, this, &MainWindow::tracker_clear_current_area_text);
+        }
+    }
+
 
     // Add vertical spacer to push labels up
     ui->entrance_scroll_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
@@ -889,9 +919,16 @@ void MainWindow::on_clear_all_button_released()
 void MainWindow::update_items_color() {
     if(ui->override_items_color->isChecked()) {
         ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {background-color: " + color_preferences["items_color"].name() + "}");
+        ui->inventory_widget_pearls->setStyleSheet("");
     }
     else {
         ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
+        // Only display the pearl holder if we're using the default background
+        ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
+                                                   "background-image: url(" DATA_PATH "tracker/pearl_holder.png);"
+                                                   "background-repeat: none;"
+                                                   "background-position: center;"
+                                                   "}");
     }
     autosave_current_tracker();
 }
@@ -1137,14 +1174,14 @@ void MainWindow::tracker_disconnect_entrance(Entrance* connectedEntrance)
 {
     for (auto& [target, entrance] : connectedTargets)
     {
-        if (entrance == connectedEntrance)
+        if (entrance == connectedEntrance || (!entrance->isDecoupled() && entrance->getReplaces()->getReverse() == connectedEntrance))
         {
             restoreConnections(entrance, target);
             connectedTargets.erase(target);
             set_areas_locations();
             set_areas_entrances();
             update_tracker();
-            break;
+            return;
         }
     }
 }
@@ -1207,6 +1244,23 @@ void MainWindow::setup_tracker_entrances()
     auto entrancePools = createEntrancePools(trackerWorld, poolsToMix);
     targetEntrancePools = createTargetEntrances(entrancePools);
 
+    // If entrances are not decoupled, then create the reverse pools for each type in the case
+    // that users want to connect some in the opposite direction
+    auto& settings = trackerWorld.getSettings();
+    if (!settings.decouple_entrances)
+    {
+        for (auto& [type, targetPool] : targetEntrancePools)
+        {
+            EntrancePool reverseTargetPool = {};
+            for (auto target : targetEntrancePools[type])
+            {
+                reverseTargetPool.push_back(target->getReplaces()->getReverse()->getAssumed());
+                target->getReplaces()->getReverse()->setEntranceType(entranceTypeToReverse(type));
+            }
+            targetEntrancePools[entranceTypeToReverse(type)] = reverseTargetPool;
+        }
+    }
+
     // Prevent access to target entrances so that some locations don't show
     // up as reachable
     for (auto& [type, targetPool] : targetEntrancePools)
@@ -1231,6 +1285,11 @@ void MainWindow::set_areas_locations()
     // Setup each islands/dungeons locations
     for (auto& [name, area] : trackerWorld.areaTable)
     {
+        if (trackerWorld.dungeons.contains(name))
+        {
+            continue;
+        }
+
         for (auto& locAccess : area->locations)
         {
             if (locAccess.location->progression)
@@ -1245,19 +1304,10 @@ void MainWindow::set_areas_locations()
                 }
                 else
                 {
-                    auto islands = area->findIslands();
-                    auto dungeons = area->findDungeons();
-
-                    if (dungeons.size() > 0)
+                    auto regions = area->findHintRegions();
+                    for (auto& region : regions)
                     {
-                        areaLocations[dungeons.front()].insert(locAccess.location);
-                    }
-                    else
-                    {
-                        for (auto& island : islands)
-                        {
-                            areaLocations[island].insert(locAccess.location);
-                        }
+                        areaLocations[region].insert(locAccess.location);
                     }
                 }
             }
@@ -1271,9 +1321,8 @@ void MainWindow::set_areas_entrances()
     areaEntrances.clear();
 
     // Separate entrances into which islands/dungeons they belong to
-    // Only list non-primary entrances if entrances are decoupled
-    for (auto& entrance : trackerWorld.getShuffledEntrances(EntranceType::ALL, !trackerWorld.getSettings().decouple_entrances))
-    {
+    for (auto& entrance : trackerWorld.getShuffledEntrances(EntranceType::ALL))
+    {    
         // Set Misc Restrictive Entrances as Misc so that they get properly picked up
         if (entrance->getEntranceType() == EntranceType::MISC_RESTRICTIVE)
         {
@@ -1289,19 +1338,11 @@ void MainWindow::set_areas_entrances()
         {
             entrance->setEntranceType(EntranceType::CAVE_REVERSE);
         }
-        auto islands = entrance->getParentArea()->findIslands();
-        auto dungeons = entrance->getParentArea()->findDungeons();
 
-        if (dungeons.size() > 0)
+        auto regions = entrance->getParentArea()->findHintRegions();
+        for (auto& region : regions)
         {
-            areaEntrances[dungeons.front()].push_back(entrance);
-        }
-        else
-        {
-            for (auto& island : islands)
-            {
-                areaEntrances[island].push_back(entrance);
-            }
+            areaEntrances[region].push_back(entrance);
         }
     }
 }

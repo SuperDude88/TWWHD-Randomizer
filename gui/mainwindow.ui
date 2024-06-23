@@ -2544,24 +2544,6 @@ font-size: 15px;</string>
                <property name="verticalSpacing">
                 <number>0</number>
                </property>
-               <item row="5" column="0" alignment="Qt::AlignHCenter">
-                <widget class="QLabel" name="where_did_lead_to_label">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">text-align: left;
-color: black;
-font-size: 15px;</string>
-                 </property>
-                 <property name="text">
-                  <string>Where did lead to?</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="0">
                 <layout class="QHBoxLayout" name="entrance_destination_list_top_buttons">
                  <property name="spacing">
@@ -2604,7 +2586,7 @@ font-size: 15px;</string>
                  <property name="minimumSize">
                   <size>
                    <width>360</width>
-                   <height>291</height>
+                   <height>0</height>
                   </size>
                  </property>
                  <property name="styleSheet">
@@ -2646,6 +2628,30 @@ font-size: 15px;</string>
                    </property>
                   </layout>
                  </widget>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="where_did_lead_to_label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">text-align: left;
+color: black;
+font-size: 15px;</string>
+                 </property>
+                 <property name="text">
+                  <string>Where did lead to?</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
               </layout>

@@ -30,6 +30,7 @@ public:
 
     std::string areaPrefix = "";
     std::unordered_map<std::string, LocationSet>* areaLocations;
+    std::unordered_map<std::string, std::list<Entrance*>>* areaEntrances;
     int totalRemainingLocations = 0;
     int totalAccessibleLocations = 0;
     bool showLogic = true;
@@ -44,6 +45,7 @@ public:
     std::string getPrefix() const;
     void setBossLocation(Location* bossLoc);
     void setLocations(std::unordered_map<std::string, LocationSet>* locations_);
+    void setEntrances(std::unordered_map<std::string, std::list<Entrance*>>* entrances_);
     void setChart(TrackerInventoryButton* chart);
     void updateArea();
     void updateBossImageWidget();

@@ -226,6 +226,7 @@ Area* World::getArea(const std::string& area)
         auto message = "ERROR: Area \"" + area + "\" is not defined!";
         LOG_TO_DEBUG(message);
         ErrorLog::getInstance().log(message);
+        return nullptr;
     }
     return areaTable[area].get();
 }
