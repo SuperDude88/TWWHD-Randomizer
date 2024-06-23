@@ -340,7 +340,9 @@ std::string entranceTypeToName(const EntranceType& type)
         {EntranceType::DOOR_REVERSE, "DOOR_REVERSE"},
         {EntranceType::MISC, "MISC"},
         {EntranceType::MISC_RESTRICTIVE, "MISC_RESTRICTIVE"},
+        {EntranceType::MISC_REVERSE, "MISC_REVERSE"},
         {EntranceType::MIXED, "MIXED"},
+        {EntranceType::MIXED_REVERSE, "MIXED_REVERSE"},
         {EntranceType::ALL, "ALL"},
     };
 
@@ -369,7 +371,9 @@ EntranceType entranceNameToType(const std::string& name)
         {"DOOR_REVERSE", EntranceType::DOOR_REVERSE},
         {"MISC", EntranceType::MISC},
         {"MISC_RESTRICTIVE", EntranceType::MISC_RESTRICTIVE},
+        {"MISC_REVERSE", EntranceType::MISC_REVERSE},
         {"MIXED", EntranceType::MIXED},
+        {"MIXED_REVERSE", EntranceType::MIXED_REVERSE},
         {"ALL", EntranceType::ALL},
     };
 
@@ -396,9 +400,11 @@ EntranceType entranceTypeToReverse(const EntranceType& type)
         {EntranceType::FAIRY_REVERSE, EntranceType::FAIRY},
         {EntranceType::DOOR, EntranceType::DOOR_REVERSE},
         {EntranceType::DOOR_REVERSE, EntranceType::DOOR},
-        {EntranceType::MISC, EntranceType::MISC},
+        {EntranceType::MISC, EntranceType::MISC_REVERSE},
+        {EntranceType::MISC_REVERSE, EntranceType::MISC},
         {EntranceType::MISC_RESTRICTIVE, EntranceType::MISC_RESTRICTIVE},
-        {EntranceType::MIXED, EntranceType::MIXED},
+        {EntranceType::MIXED, EntranceType::MIXED_REVERSE},
+        {EntranceType::MIXED_REVERSE, EntranceType::MIXED},
         {EntranceType::ALL, EntranceType::ALL},
     };
 

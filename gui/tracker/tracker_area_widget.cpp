@@ -78,6 +78,11 @@ void TrackerAreaWidget::setLocations(std::unordered_map<std::string, LocationSet
     areaLocations = areaLocations_;
 }
 
+void TrackerAreaWidget::setEntrances(std::unordered_map<std::string, std::list<Entrance*>>* areaEntrances_)
+{
+    areaEntrances = areaEntrances_;
+}
+
 void TrackerAreaWidget::setChart(TrackerInventoryButton* chart)
 {
     chart->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -109,10 +114,23 @@ void TrackerAreaWidget::updateArea()
         locationsRemaining.setStyleSheet("color: blue;");
     }
 
+    // Change formatting slightly depending on if the island has
+    // undiscovered entrances or not
+    int undiscoveredEntrances = !areaEntrances->contains(areaPrefix) ? 0 :
+                                    std::count_if(areaEntrances->at(areaPrefix).begin(), areaEntrances->at(areaPrefix).end(), [](Entrance* e){return e->getConnectedArea() == nullptr;});
+
     std::string locationsRemainingText = "";
-    if (showLogic)
+    if (showLogic && !undiscoveredEntrances)
     {
-        locationsRemainingText = std::to_string(totalAccessibleLocations) + "/" + std::to_string(totalRemainingLocations);
+        locationsRemainingText = std::to_string(totalAccessibleLocations)+ "/" + std::to_string(totalRemainingLocations);
+    }
+    else if (showLogic && undiscoveredEntrances)
+    {
+        locationsRemainingText = std::to_string(totalAccessibleLocations) + "/?";
+    }
+    else if (!showLogic && undiscoveredEntrances)
+    {
+        locationsRemainingText = std::to_string(totalRemainingLocations) + "?";
     }
     else
     {

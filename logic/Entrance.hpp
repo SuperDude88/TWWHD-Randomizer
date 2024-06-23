@@ -20,7 +20,9 @@ enum struct EntranceType
     DOOR_REVERSE,
     MISC,
     MISC_RESTRICTIVE,
+    MISC_REVERSE, // For tracker ease
     MIXED,
+    MIXED_REVERSE, // For tracker ease
     ALL,
 };
 

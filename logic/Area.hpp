@@ -39,9 +39,11 @@ public:
     // variables used for the searching algorithm
     bool isAccessible = false;
 
+    std::string getRegion();
     std::list<std::string> findIslands();
-    std::list<std::string> findHintRegions();
+    std::list<std::string> findHintRegions(bool onlyNonIslands = false);
     std::list<std::string> findDungeons();
+    std::list<std::list<Entrance*>> findShuffledEntrances(const std::list<Area*>& startingQueue = {});
 };
 
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex);

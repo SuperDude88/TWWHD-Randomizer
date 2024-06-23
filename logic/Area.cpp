@@ -6,6 +6,16 @@
 #include <unordered_map>
 #include <array>
 
+#include <iostream>
+
+std::string Area::getRegion()
+{
+    if (!island.empty()) return island;
+    if (!dungeon.empty()) return dungeon;
+    if (!hintRegion.empty()) return hintRegion;
+    return "";
+}
+
 std::list<std::string> Area::findIslands()
 {
     std::list<std::string> islands = {};
@@ -89,7 +99,7 @@ std::list<std::string> Area::findDungeons()
     return dungeons;
 }
 
-std::list<std::string> Area::findHintRegions()
+std::list<std::string> Area::findHintRegions(bool onlyNonIslands /* = false */)
 {
     std::list<std::string> regions = {};
     std::unordered_set<Area*> alreadyChecked = {};
@@ -111,7 +121,7 @@ std::list<std::string> Area::findHintRegions()
             }
         }
 
-        if (area->island != "")
+        if (area->island != "" && !onlyNonIslands)
         {
             if (!elementInPool(area->island, regions))
             {
@@ -141,7 +151,7 @@ std::list<std::string> Area::findHintRegions()
         }
     }
 
-    // Erase dungeons from the list if we have any islands
+    // Erase dungeons from the list if we have any islands or other hint regions
     std::list<std::string> dungeons = {};
     std::ranges::copy_if(regions, std::back_inserter(dungeons), [&](const std::string& region){return this->world->dungeons.contains(region);});
     if (dungeons.size() < regions.size())
@@ -150,6 +160,91 @@ std::list<std::string> Area::findHintRegions()
     }
 
     return regions;
+}
+
+// Performs a breadth first search to find all the shuffled entrances
+// within a given area. The area must have its own defined island, hint region, or dungeon
+// Returns the shuffled entrances in the order they were discovered by shuffled entrance spheres
+std::list<std::list<Entrance*>> Area::findShuffledEntrances(const std::list<Area*>& startingQueue /* = {} */)
+{
+    // Don't search if this area doesn't have a hard assigned region
+    if (this->getRegion().empty()) return {};
+
+    
+
+    std::list<std::list<Entrance*>> shuffledEntrances = {};
+    std::unordered_set<Area*> alreadyCheckedAreas = {};
+    std::unordered_set<Entrance*> alreadyCheckedEntrances = {};
+    std::list<Area*> areaQueue = startingQueue;
+    if (areaQueue.empty())
+    {
+        areaQueue.push_front(this);
+    }
+
+    std::list<Entrance*> entrancesToTry = {};
+    do
+    {
+        entrancesToTry.clear();
+        for (auto area : areaQueue)
+        {
+            for (auto& e : area->exits)
+            {   
+                auto entrance = &e;
+                if (alreadyCheckedEntrances.contains(entrance))
+                {
+                    continue;
+                }
+                // Only add entrances which fit the following criteria:
+                // - The entrance is shuffled
+                // - The entrance is decoupled OR the entrance isn't connected OR the entrance's replaced reverse hasn't been added yet
+                if (entrance->isShuffled())
+                {
+                    if (entrance->isDecoupled() || 
+                     entrance->getReplaces() == nullptr || 
+                     !alreadyCheckedEntrances.contains(entrance->getReplaces()->getReverse()))
+                    {
+                        entrancesToTry.push_back(entrance);
+                    }
+                }
+                else
+                {
+                    auto connectedArea = entrance->getConnectedArea();
+                    if (connectedArea)
+                    {
+                        if (!alreadyCheckedAreas.contains(connectedArea) && (connectedArea->getRegion() == this->getRegion() || connectedArea->getRegion().empty()))
+                        {
+                            areaQueue.push_back(connectedArea);
+                            alreadyCheckedAreas.insert(connectedArea);
+                        }
+                    }
+                }
+                alreadyCheckedEntrances.insert(entrance);
+            }
+        }
+        areaQueue.clear();
+
+        if (!entrancesToTry.empty())
+        {
+            shuffledEntrances.push_back(entrancesToTry);
+        }
+
+        // Gather all the new areas we can find to try for shuffled entrances
+        for (auto entrance : entrancesToTry)
+        {
+            auto connectedArea = entrance->getConnectedArea();
+            if (connectedArea)
+            {
+                if (!alreadyCheckedAreas.contains(connectedArea) && (connectedArea->getRegion() == this->getRegion() || connectedArea->getRegion().empty()))
+                {
+                    areaQueue.push_back(connectedArea);
+                    alreadyCheckedAreas.insert(connectedArea);
+                }
+            }
+        }
+        
+    } while (!entrancesToTry.empty());
+
+    return shuffledEntrances;
 }
 
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
