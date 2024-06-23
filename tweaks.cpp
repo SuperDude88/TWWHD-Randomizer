@@ -2870,6 +2870,11 @@ TweakError fix_entrance_params() {
         const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
         spawns[1]->data.data()[0x19] |= 0x01;
 
+        // also update the crawlspace exit to have a different fade type
+        // for some reason fades 4 and 5 break sometimes
+        const std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
+        exits[2]->data.data()[0xA] = 9;
+
         return true;
     });
 
@@ -2879,6 +2884,11 @@ TweakError fix_entrance_params() {
 
         const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
         spawns[2]->data.data()[0x19] |= 0x01;
+
+        // also update the crawlspace exit to have a different fade type
+        // for some reason fades 4 and 5 break sometimes
+        const std::vector<ChunkEntry*> exits = dzr.entries_by_type("SCLS");
+        exits[2]->data.data()[0xA] = 0;
 
         return true;
     });
