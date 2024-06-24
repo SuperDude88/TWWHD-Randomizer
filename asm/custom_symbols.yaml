@@ -58,6 +58,7 @@ daSwOp__eventStartCheck: 0x28FAFD0
 daSwOp__isCondition: 0x28FAD74
 daSwOp__timerCountdown: 0x28FAF1C
 dampa_minigame_item_id: 0x28FA01C
+default_molgera_xz_pos: 0x28F9C64
 doc_bandam_blue_potion_slot_item_id: 0x28FA251
 doc_bandam_check_new_potion_and_give_free_item: 0x28FA1F4
 doc_bandam_green_potion_slot_item_id: 0x28FA250
