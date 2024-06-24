@@ -118,7 +118,7 @@ namespace Utility {
         else if(path.string().starts_with("/vol/storage_odd")) {
             if(!DiscMounted) {
                 Utility::platformLog("Attempting to mount disc");
-                if(MochaUtilsStatus status = Mocha_MountFS("storage_odd_content", "/dev/odd03", "/vol/storage_odd_content"); status != MOCHA_RESULT_SUCCESS)
+                if(MochaUtilsStatus status = Mocha_MountFS("storage_odd03", "/dev/odd03", "/vol/storage_odd_content"); status != MOCHA_RESULT_SUCCESS)
                 {
                     Utility::platformLog(std::string("Failed to mount disc: ") + Mocha_GetStatusStr(status));
                     return false;

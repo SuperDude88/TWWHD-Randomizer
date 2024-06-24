@@ -24,9 +24,16 @@ namespace Utility {
 
         return false;
     };
-    
+
     static constexpr int FILE_BUF_SIZE = 25*1024*1024;
-    static ThreadLocal<char[FILE_BUF_SIZE], DataIDs::FILE_OP_BUFFER> buf;
+    class AlignedBufferWrapper {
+        private:
+            alignas(0x40) char buffer[FILE_BUF_SIZE];
+
+        public:
+            char* getBuffer() { return buffer; }
+    };
+    static ThreadLocal<AlignedBufferWrapper, DataIDs::FILE_OP_BUFFER> buf;
 
     bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
         Utility::platformLog("Copying " + to.string());
@@ -45,8 +52,8 @@ namespace Utility {
             }
 
             while(src) {
-                src.read(buf, FILE_BUF_SIZE);
-                dst.write(buf, src.gcount());
+                src.read(buf.get().getBuffer(), FILE_BUF_SIZE);
+                dst.write(buf.get().getBuffer(), src.gcount());
             }
             return true;
         #else
@@ -159,8 +166,8 @@ namespace Utility {
         }
 
         while(file) {
-            file.read(buf, FILE_BUF_SIZE);
-            fileContents.write(buf, file.gcount());
+            file.read(buf.get().getBuffer(), FILE_BUF_SIZE);
+            fileContents.write(buf.get().getBuffer(), file.gcount());
         }
 
         return 0;
