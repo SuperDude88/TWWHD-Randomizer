@@ -262,29 +262,47 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     Utility::platformLog("Packing channel...");
 
     //create necessary folders
-    Utility::platformLog("Creating output folder at " + DataPath.string());
-    Utility::create_directories(DataPath);
+    Utility::platformLog("Creating data folder at " + DataPath.string());
+    if(!Utility::create_directories(DataPath)) {
+        ErrorLog::getInstance().log("Failed to create data folder " + DataPath.string());
+        return false;
+    }
 
     //copy over channel data
     Utility::platformLog("Copying channel data");
-    Utility::copy(baseDir / "code", DataPath / "code");
+    if(!Utility::copy(baseDir / "code", DataPath / "code")) {
+        ErrorLog::getInstance().log("Failed to copy code folder " + (baseDir / "code").string());
+        return false;
+    }
     std::filesystem::remove(DataPath / "code/title.fst"); //would cause nullptr issues when packing
     std::filesystem::remove(DataPath / "code/title.tmd"); //would cause nullptr issues when packing
 
-    Utility::create_directories(DataPath / "content"); //don't encrypt all the data, we can copy it over much faster
+    if(!Utility::create_directories(DataPath / "content")) { //don't encrypt all the data, we can copy it over much faster
+        ErrorLog::getInstance().log("Failed to create content folder " + (DataPath / "content").string());
+        return false;
+    }
     std::ofstream data(DataPath / "content" / "filler.txt", std::ios::binary);
+    if(!data.is_open()) {
+        ErrorLog::getInstance().log("Failed to open filler content " + (DataPath / "content" / "filler.txt").string());
+    }
     const std::string str("This is filler data so things don't break!");
     data.write(&str[0], str.size());
     data.close();
 
-    Utility::copy(baseDir / "meta", DataPath / "meta");
+    if(!Utility::copy(baseDir / "meta", DataPath / "meta")) {
+        ErrorLog::getInstance().log("Failed to copy meta folder " + (baseDir / "meta").string());
+        return false;
+    }
 
     //change the title ID so it gets its own channel
     Utility::platformLog("Modifying XMLs");
     tinyxml2::XMLPrinter printer;
 
     tinyxml2::XMLDocument meta;
-    meta.LoadFile((DataPath / "meta" / "meta.xml").string().c_str());
+    if(tinyxml2::XMLError err = meta.LoadFile((DataPath / "meta" / "meta.xml").string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", got error " + std::to_string(err));
+        return false;
+    }
 
     tinyxml2::XMLElement* metaRoot = meta.RootElement();
     metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
@@ -297,7 +315,10 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     printer.ClearBuffer();
 
     tinyxml2::XMLDocument app;
-    app.LoadFile((DataPath / "code" / "app.xml").string().c_str());
+    if(tinyxml2::XMLError err = app.LoadFile((DataPath / "code" / "app.xml").string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", got error " + std::to_string(err));
+        return false;
+    }
 
     tinyxml2::XMLElement* appRoot = app.RootElement();
     appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
@@ -311,7 +332,10 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     //get common key
     Utility::platformLog("Getting keys");
     WiiUConsoleOTP otp;
-    Mocha_ReadOTP(&otp);
+    if(MochaUtilsStatus status = Mocha_ReadOTP(&otp); status != MOCHA_RESULT_SUCCESS) {
+        ErrorLog::getInstance().log(std::string("Mocha_ReadOTP() returned error ") + Mocha_GetStatusStr(status));
+        return false;
+    }
 
     Key commonKey;
     std::copy(otp.wiiUBank.wiiUCommonKey, otp.wiiUBank.wiiUCommonKey + 0x10, commonKey.begin());
