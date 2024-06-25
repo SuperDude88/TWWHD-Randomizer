@@ -252,10 +252,11 @@ void MainWindow::setup_color_options() {
     // If we have a specific preset selected, then keep those colors
     else if (curPreset != "Custom" && lastModel == curModel) {
         model.loadPreset(curPreset, true);
-        auto colors = model.getSetColorsMap();
-        for (auto& [optionName, defaultColor] : baseColors) {
-            defaultColor = colors[optionName];
-        }
+    }
+
+    auto colors = model.getSetColorsMap();
+    for (auto& [optionName, defaultColor] : baseColors) {
+        defaultColor = colors[optionName];
     }
 
     for (auto& customColorName : model.getDefaultColorsOrdering()) {
