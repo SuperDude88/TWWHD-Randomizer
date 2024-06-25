@@ -24,7 +24,7 @@ private:
 #endif
 
 public:
-    operator T&() {
+    T& get() {
     #ifdef DEVKITPRO
         const OSThreadSpecificID& id = static_cast<OSThreadSpecificID>(ID);
         if(OSGetThreadSpecific(id) == nullptr) {

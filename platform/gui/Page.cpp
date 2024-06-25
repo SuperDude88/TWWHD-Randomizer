@@ -91,15 +91,19 @@ void SeedPage::drawTV() const {
     else {
         OSScreenPutFontEx(SCREEN_TV, 0, 3, ("The current seed is \"" + getSeed() + "\". Hash: " + getSeedHash()).c_str());
         OSScreenPutFontEx(SCREEN_TV, 0, 4, "Press A to generate a new seed, press X to enter manually");
-        OSScreenPutFontEx(SCREEN_TV, 0, 6, ("Permalink: \"" + getPermalink() + "\".").c_str());
-        OSScreenPutFontEx(SCREEN_TV, 0, 7,  "Press Y to enter a new permalink");
+
+        const std::vector<std::string>& permaLines = wrap_string("Permalink: \"" + getPermalink() + "\".", ScreenSizeData::tv_line_length);
+        for(size_t i = 0; i < permaLines.size(); i++) {
+            OSScreenPutFontEx(SCREEN_TV, 0, 6 + i, permaLines[i].c_str());
+        }
+        OSScreenPutFontEx(SCREEN_TV, 0, 6 + permaLines.size(),  "Press Y to enter a new permalink");
 
         // (total time - (final time - current time)) / (total duration / 10) = fraction of total in 10 increments
         const std::chrono::milliseconds remaining = 3s - std::chrono::duration_cast<std::chrono::milliseconds>(resetTime - Clock::now());
         const size_t count = remaining.count() / 300;
         std::string bar(10, ' ');
         bar.replace(0, count, count, '-');
-        OSScreenPutFontEx(SCREEN_TV, 0, 9, ("Hold B to reset all settings to default [" + bar + "]").c_str());
+        OSScreenPutFontEx(SCREEN_TV, 0, 6 + permaLines.size() + 2, ("Hold B to reset all settings to default [" + bar + "]").c_str());
 
         const std::vector<std::string>& warnLines = wrap_string(warnings, ScreenSizeData::tv_line_length);
         const size_t startLine = ScreenSizeData::tv_num_lines - 3 - warnLines.size();

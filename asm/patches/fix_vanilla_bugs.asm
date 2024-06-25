@@ -389,7 +389,7 @@ force_normal_hit_sound:
 .global molgera_warp_radius
 molgera_warp_radius:
   .float 450.0
-.global default_xz_pos
+.global default_molgera_xz_pos
 default_molgera_xz_pos:
   .float 0.0
   .float 777.0
