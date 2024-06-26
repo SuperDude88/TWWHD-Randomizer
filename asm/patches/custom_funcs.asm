@@ -135,6 +135,10 @@ li r4, 0x1610 ; Makar is in dungeon mode and can be lifted/called
 bl onEventBit
 li r4, 0x3440 ; Saw event where Makar calls to you from within jail
 bl onEventBit
+li r4, 0x1520 ; Saw the rising platform below the Wind Temple hub room fan go down
+bl onEventBit
+li r4, 0x1540 ; Saw the rising platform below the Wind Temple hub room fan go up
+bl onEventBit
 li r4, 0x3A20 ; Fishman and KoRL talked about Forsaken Fortress after you beat Molgera
 bl onEventBit
 li r4, 0x2D08 ; HYRULE_3_WARP_CUTSCENE
