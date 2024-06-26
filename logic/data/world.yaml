@@ -508,11 +508,11 @@
 - Name: Windfall Island
   Island: Windfall Island
   Events:
-      Activate Windmill: Can_Play_WR
+      Activate Ferris Wheel: Can_Play_WR
       Can Farm Lots Of Rupees: Nothing
   Locations:
       Windfall Island - Ivan Catch Killer Bees: can_access(Windfall School of Joy)
-      Windfall Island - Transparent Chest: Fire_Arrows and 'Activate_Windmill' and (Hookshot or Can_Fly_With_Deku_Leaf_Outdoors)
+      Windfall Island - Transparent Chest: "'Can_Light_Windfall_Lighthouse' and (Hookshot or Can_Fly_With_Deku_Leaf_Outdoors)"
       Windfall Island - Tott Teach Rhythm: Wind_Waker
       Windfall Island - Zunari Exotic Flower: Rescued_Aryll and Delivery_Bag and can_access(Greatfish Isle)
       Windfall Island - Sam Decorate Island: Rescued_Aryll and Delivery_Bag
@@ -527,13 +527,14 @@
       Windfall Island - Minenco Miss Windfall Picture: Deluxe_Picto_Box
       Windfall Island - Sunken Treasure: Chart_For_Island_11 and Grappling_Hook
   Exits:
+      Windfall Island Riding Ferris Wheel: "'Activate_Ferris_Wheel' and (Can_Fly_With_Deku_Leaf_Outdoors or Heros_Sword or Skull_Hammer)" # can fly from the area with the ferris wheel switch
       Windfall Jail: Nothing
       Windfall School of Joy: Nothing
       Windfall Lenzo's House from Bottom Entry: Nothing
-      Windfall Lenzo's House Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors or ('Activate_Windmill' and (Heros_Sword or Skull_Hammer))
+      Windfall Lenzo's House Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors
       Windfall Cafe Bar: Nothing
       Windfall Battle Squid Interior: Nothing
-      Windfall Battle Squid Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors or ('Activate_Windmill' and (Heros_Sword or Skull_Hammer))
+      Windfall Battle Squid Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors # can fly from the area with the ferris wheel switch
       Windfall House of Wealth Lower: Nothing
       Windfall House of Wealth Upper: Nothing
       Windfall Potion Shop: Nothing
@@ -543,6 +544,14 @@
       Windfall Beedle Shop: Nothing
       Mailbox Checks: Nothing
       The Great Sea: Nothing
+
+- Name: Windfall Island Riding Ferris Wheel # specifically the moving wheel
+  Events:
+      Can Light Windfall Lighthouse: Fire_Arrows and Can_Play_SoP
+  Exits:
+      Windfall Island: Nothing
+      Windfall Lenzo's House Upper Ledge: Nothing
+      Windfall Battle Squid Upper Ledge: Nothing
 
 - Name: Windfall Jail
   Events:
@@ -611,11 +620,11 @@
 - Name: Windfall Battle Squid Upper Ledge
   Island: Windfall Island
   Locations:
-      Windfall Island - Kreeb Light the Lighthouse: Fire_Arrows and 'Activate_Windmill'
+      Windfall Island - Kreeb Light the Lighthouse: "'Can_Light_Windfall_Lighthouse'"
   Exits:
       Windfall Island: Nothing
       Windfall Battle Squid Interior: Nothing
-      Windfall Lenzo's House Upper Ledge: "'Activate_Windmill'"
+      Windfall Island Riding Ferris Wheel: "'Activate_Ferris_Wheel'"
 
 - Name: Windfall House of Wealth Lower
   Locations:
