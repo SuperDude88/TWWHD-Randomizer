@@ -642,8 +642,13 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
             auto itemAtLocation = location->currentItem;
             location->currentItem = Item(GameItem::INVALID, &world);
 
+            // Find all accessible locations without the item
             ItemPool noItems = {};
             auto accessibleHoHoLocations = getAccessibleLocations(worlds, noItems, hohoLocations);
+
+            // Give back the item
+            location->currentItem = itemAtLocation;
+
             // Erase Ho Ho locations which already have the desired number of hints
             filterAndEraseFromPool(accessibleHoHoLocations, [&](Location* hoho){return world.hohoHints[hoho].size() >= hintsPerHoHo || world.hohoHints[hoho].contains(location);});
 
@@ -655,9 +660,6 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
             auto hohoLocation = RandomElement(accessibleHoHoLocations);
             world.hohoHints[hohoLocation].insert(location);
             LOG_TO_DEBUG("\"" + hohoLocation->getName() + "\" now hints to \"" + location->getName() + "\"");
-
-            // Give back the item
-            location->currentItem = itemAtLocation;
         }
 
         // If we went through and couldn't place all the hints, flag a failure and
