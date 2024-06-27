@@ -947,7 +947,7 @@
   Locations:
       Fire Mountain - Interior Chest: Can_Defeat_Magtails
   Exits:
-      Fire Mountain: Nothing
+      Fire Mountain: Can_Defeat_Magtails and (Power_Bracelets or Ice_Arrows) # need to open the chest for the warp to appear, lava platforms disappear shortly after you first step on them
 
 - Name: Fire Mountain Lookout Platform
   Island: Fire Mountain
@@ -1395,7 +1395,7 @@
   Locations:
       Ice Ring Isle - Interior Chest: Nothing
   Exits:
-      Ice Ring Isle: Nothing
+      Ice Ring Isle: Iron_Boots or Grappling_Hook # need to open the chest for the warp to appear, can jump down and climb back with grapple or iron boots through the wind
       Ice Ring Inner Cave: Iron_Boots
 
 - Name: Ice Ring Inner Cave
