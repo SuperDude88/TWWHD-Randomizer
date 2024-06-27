@@ -25,7 +25,7 @@ public:
     Entrance* get_entrance() const;
     void update_colors();
     void mark_location();
-    void updateShowLogic(int show);
+    void updateShowLogic(int show, bool started);
 
 signals:
     void location_label_clicked();

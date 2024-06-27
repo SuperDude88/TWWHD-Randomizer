@@ -49,7 +49,7 @@ public:
     void setChart(TrackerInventoryButton* chart);
     void updateArea();
     void updateBossImageWidget();
-    void updateShowLogic(int show);
+    void updateShowLogic(int show, bool started);
 
 signals:
     void mouse_over_area(TrackerAreaWidget* areaPrefix);

@@ -195,8 +195,10 @@ void TrackerLabel::update_colors()
 
 }
 
-void TrackerLabel::updateShowLogic(int show)
+void TrackerLabel::updateShowLogic(int show, bool started)
 {
     showLogic = show ? true : false;
-    update_colors();
+    if(started) {
+        update_colors();
+    }
 }

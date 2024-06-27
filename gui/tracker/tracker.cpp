@@ -639,7 +639,7 @@ void MainWindow::update_tracker()
     for (auto& loc : areaLocations[currentTrackerArea])
     {
         auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, loc);
-        newLabel->updateShowLogic(ui->show_location_logic->isChecked());
+        newLabel->updateShowLogic(ui->show_location_logic->isChecked(), trackerStarted);
         // newLabel->set_location(loc);
         location_list_layout->addWidget(newLabel, row, col);
         connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
@@ -1015,12 +1015,13 @@ void MainWindow::on_show_location_logic_stateChanged(int arg1)
     // Update showing logic for all tracker labels
     for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
     {
-        child->updateShowLogic(arg1);
+        child->updateShowLogic(arg1, trackerStarted);
     }
     for (auto child : ui->tracker_tab->findChildren<TrackerLabel*>())
     {
-        child->updateShowLogic(arg1);
+        child->updateShowLogic(arg1, trackerStarted);
     }
+
     autosave_current_tracker();
 }
 

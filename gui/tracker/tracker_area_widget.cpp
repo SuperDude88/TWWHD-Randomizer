@@ -155,10 +155,12 @@ void TrackerAreaWidget::updateBossImageWidget()
                               "background-position: center;").c_str());
 }
 
-void TrackerAreaWidget::updateShowLogic(int show)
+void TrackerAreaWidget::updateShowLogic(int show, bool started)
 {
     showLogic = show ? true : false;
-    updateArea();
+    if(started) {
+        updateArea();
+    }
 }
 
 void TrackerAreaWidget::enterEvent(QEnterEvent* e)
