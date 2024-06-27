@@ -2787,7 +2787,7 @@
   Dungeon: Wind Temple
   Exits:
       WT First Warp Pot Room Lower Area: Nothing
-      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM # iron boots in case you fall
+      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
       WT First Room: Nothing
 
 - Name: WT First Warp Pot Room Lower Area
@@ -2798,8 +2798,7 @@
       Wind Temple - Between Dirt Patches Chest: Can_Play_CM
   Exits:
       WT First Warp Pot Room Front: Iron_Boots
-      WT First Room: Nothing
-      WT Hub Room Middle South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
+      WT Hub Room First Floor South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: WT First Warp Pot Room Back
@@ -2840,38 +2839,53 @@
   Locations:
       Wind Temple - Tingle Statue Chest: Bombs
   Exits:
-      WT Hub Room Middle West Platform: Can_Play_CM
+      WT Hub Room First Floor West Platform: Can_Play_CM
       WT Makar Capture Room Upper Platform: Hookshot and Can_Play_CM and Can_Defeat_Wizzrobes_At_Range
       WT Early Turn Floor Room Past Turn Floor: Nothing
 
-- Name: WT Hub Room Middle West Platform
+# Some of these connections are weird but it still works out
+# For instance, the logic might see it as possible to traverse directly from the First Floor West Platform to First Floor East Platform
+# While this technically isn't possible, it is possible to go from West -> North -> East with no extra requirements
+# Is a tradeoff but it simplifies some much more annoying hub room logic with fan activation
+- Name: WT Hub Room Above First Floor Grate
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Middle North platform: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Compass Chest Platform: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+      WT Hub Room First Floor North Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor South Platform: Can_Fly_With_Deku_Leaf_Indoors and 'Can_Start_WT_Hub_Room_Fan'
+      WT Hub Room First Floor West Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor East Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Second Floor South Platform: Can_Fly_With_Deku_Leaf_Indoors and 'Can_Start_WT_Hub_Room_Fan'
+      WT Hub Room Second Floor East Platform: Can_Fly_With_Deku_Leaf_Indoors and 'Can_Start_WT_Hub_Room_Fan'
+      WT Hub Room Basement Above Fan: "'Can_Open_WT_Hub_Room_1F_Grate'"
+
+- Name: WT Hub Room First Floor West Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Above First Floor Grate: Nothing
+      WT Hub Room First Floor North Platform: Hookshot and 'Can_Open_WT_Hub_Room_1F_Grate' # leaf is accounted for by "WT Hub Room Above First Floor Grate"
+      WT Hub Room Compass Chest Platform: "'Can_Open_WT_Hub_Room_1F_Grate'" # can drop down onto the platform
       WT Makar Capture Room: Nothing
 
-- Name: WT Hub Room Middle North platform
+- Name: WT Hub Room First Floor North Platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Behind Stone Head Chest: Hookshot and Iron_Boots
   Exits:
-      WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Compass Chest Platform: Iron_Boots and can_access(WT Hub Room Middle South Platform)
-      WT Hub Room Middle West Platform: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Above First Floor Grate: Nothing
+      WT Hub Room First Floor West Platform: Hookshot and 'Can_Open_WT_Hub_Room_1F_Grate'
+      WT Hub Room Compass Chest Platform: "'Can_Open_WT_Hub_Room_1F_Grate'" # can drop down the platforms
 
-- Name: WT Hub Room Middle East Platform
+- Name: WT Hub Room First Floor East Platform
   Dungeon: Wind Temple
   Exits:
       WT Song Stone and Turn Platform Near Hub Room: Nothing
-      WT Hub Room Middle North platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Lower Area: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+      WT Hub Room Above First Floor Grate: Nothing
 
 - Name: WT Song Stone and Turn Platform Near Hub Room
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Middle East Platform: Nothing
-      WT Song Stone and Turn Platform Near Cyclones Room: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor East Platform: Nothing
+      WT Song Stone and Turn Platform Near Cyclones Room: Iron_Boots and Can_Fan_With_Deku_Leaf
 
 - Name: WT Song Stone and Turn Platform Near Cyclones Room
   Dungeon: Wind Temple
@@ -2880,7 +2894,7 @@
   Exits:
       WT Many Cyclones Room East Side: Nothing
       WT Big Key Chest Room: Can_Play_WGA
-      WT Song Stone and Turn Platform Near Hub Room: Can_Fly_With_Deku_Leaf_Indoors
+      WT Song Stone and Turn Platform Near Hub Room: Can_Fan_With_Deku_Leaf
 
 - Name: WT Big Key Chest Room
   Dungeon: Wind Temple
@@ -2893,31 +2907,28 @@
 
 - Name: WT Many Cyclones Room East Side
   Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
   Exits:
       WT Many Cyclones Room West Side: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
       WT Song Stone and Turn Platform Near Cyclones Room: Nothing
 
 - Name: WT Many Cyclones Room West Side
   Dungeon: Wind Temple
   Locations:
-      Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
       Wind Temple - Behind Stone Head in Many Cyclones Room: Hookshot and Iron_Boots
   Exits:
-      WT Hub Room Middle South Platform: Nothing
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
-      WT Many Cyclones Room East Side: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor South Platform: Nothing
+      WT Many Cyclones Room East Side: Nothing # there's vines to climb back up
 
-- Name: WT Hub Room Middle South Platform
+- Name: WT Hub Room First Floor South Platform
   Dungeon: Wind Temple
   Events:
       Can Open WT Blue Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword
+      Can Open WT Hub Room 1F Grate: Iron_Boots
   Exits:
-      WT Hub Room Compass Chest Platform: Iron_Boots
-      WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Middle West Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Above First Floor Grate: Nothing
       WT Many Cyclones Room West Side: Nothing
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
       WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'"
 
@@ -2926,23 +2937,26 @@
   Locations:
       Wind Temple - Hub Room Center Chest: Nothing
   Exits:
-      WT Hub Room Lower Area: Nothing
-      WT Hub Room Middle West Platform: Hookshot and Iron_Boots
+      WT Hub Room Basement Above Fan: Nothing
+      WT Hub Room First Floor West Platform: Hookshot and Iron_Boots and 'Can_Open_WT_Hub_Room_1F_Grate''
+      WT Hub Room First Floor North Platform: Hookshot and Iron_Boots and 'Can_Open_WT_Hub_Room_1F_Grate''
 
-- Name: WT Hub Room Lower Area
+- Name: WT Hub Room Basement Above Fan
   Dungeon: Wind Temple
+  Events:
+      Can Start WT Hub Room Fan: Can_Play_CM
   Exits:
       WT Cracked Floors Room: Nothing
       WT Mini Boss Room: count(2, Wind_Temple_Small_Key)
-      WT Hub Room Compass Chest Platform: Hookshot and Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
-      WT Hub Room Below Fan: can_access(WT Hub Room Upper North Platform)
+      WT Hub Room Compass Chest Platform: (Hookshot or 'Can_Start_WT_Hub_Room_Fan') and Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Above First Floor Grate: "'Can_Open_WT_Hub_Room_1F_Grate' and 'Can_Start_WT_Hub_Room_Fan'"
+      WT Hub Room Basement Below Fan: "'Can_Open_WT_Hub_Room_Fan_Grate'"
 
 - Name: WT Mini Boss Room
   Locations:
       Wind Temple - Wizzrobe Mini Boss: Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
   Exits:
-      WT Hub Room Lower Area: Hookshot and Skull_Hammer and Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
+      WT Hub Room Basement Above Fan: Hookshot and Skull_Hammer
 
 - Name: WT Cracked Floors Room
   Dungeon: Wind Temple
@@ -2950,7 +2964,7 @@
       Wind Temple - Spike Wall Room First Chest: Iron_Boots
       Wind Temple - Spike Wall Room Destroy Floors: Iron_Boots and Can_Defeat_Floormasters
   Exits:
-      WT Hub Room Lower Area: Nothing
+      WT Hub Room Basement Above Fan: Nothing
 
 - Name: WT Makar Capture Room Upper Platform
   Dungeon: Wind Temple
@@ -2967,41 +2981,41 @@
 - Name: WT Blue Bubbles Room Upper Ledge
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Upper North Platform: Nothing
+      WT Hub Room Second Floor North Platform: Nothing
       WT Blue Bubbles Room: Nothing
 
-- Name: WT Hub Room Upper North Platform
+- Name: WT Hub Room Second Floor North Platform
   Dungeon: Wind Temple
+  Events:
+      Can Open WT Hub Room Fan Grate: Nothing
   Exits:
-      WT Hub Room Upper East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Middle North platform: Nothing
+      WT Hub Room Above First Floor Grate: Nothing
       WT Blue Bubbles Room Upper Ledge: Nothing
 
-- Name: WT Hub Room Upper East Platform
+- Name: WT Hub Room Second Floor East Platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Hub Room Top Chest: Nothing
   Exits:
-      WT Hub Room Middle East Platform: Nothing
+      WT Hub Room Above First Floor Grate: Nothing
 
-- Name: WT Hub Room Upper South Platform
+- Name: WT Hub Room Second Floor South Platform
   Dungeon: Wind Temple
   Exits:
       WT Seven Armos Room: Nothing
-      WT Hub Room Upper East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Middle South Platform: Nothing
+      WT Hub Room Above First Floor Grate: Nothing
 
 - Name: WT Seven Armos Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Behind Armos Chest: Can_Defeat_Armos
   Exits:
-      WT Hub Room Upper South Platform: Can_Defeat_Armos
+      WT Hub Room Second Floor South Platform: Can_Defeat_Armos
 
-- Name: WT Hub Room Below Fan
+- Name: WT Hub Room Basement Below Fan
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Lower Area: Nothing
+      WT Hub Room Basement Above Fan: Nothing
       WT Tall Basement Room: count(2, Wind_Temple_Small_Key)
 
 - Name: WT Tall Basement Room
@@ -3011,7 +3025,7 @@
           Hookshot and Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and
           Can_Defeat_Blue_Bubbles and Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Morths
   Exits:
-      WT Hub Room Below Fan: Nothing
+      WT Hub Room Basement Below Fan: Nothing
       WT Long Narrow Room: Hookshot and Iron_Boots
 
 - Name: WT Long Narrow Room
@@ -3023,7 +3037,7 @@
 - Name: WT Long Narrow Room Past Gap
   Dungeon: Wind Temple
   Exits:
-      WT Long Narrow Room: Can_Fly_With_Deku_Leaf_Indoors
+      WT Long Narrow Room: Nothing # there are vines you can climb to get back up
       WT Three Big Fans Room: Nothing
 
 - Name: WT Three Big Fans Room
@@ -3040,7 +3054,7 @@
   Exits:
       Molgera Battle Arena: Wind_Temple_Big_Key
       WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'"
-      WT Hub Room Middle South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+      WT Hub Room First Floor South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Molgera Battle Arena
   Boss Room: Wind Temple
