@@ -539,7 +539,10 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
     }
     else
     {
-        LOG_TO_DEBUG("No possible item hints for big octo fairy. Skipping")
+        // This item may not be helpful but we need something to fill the text
+        // And it mirrors her vanilla hint at the Fairy Queen in M&C
+        world.bigOctoFairyHintLocation = world.locationTable["Mother & Child Isles - Inside Mother Isle"].get();
+        LOG_TO_DEBUG("No possible item hints for big octo fairy. Falling back to Mother & Child Isles - Inside Mother Isle")
     }
 
     return HintError::NONE;
