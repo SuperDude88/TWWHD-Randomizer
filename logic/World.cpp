@@ -402,7 +402,7 @@ World::WorldLoadingError World::determineProgressionLocations()
 
 // Properly set the dungeons for boss room locations
 // for race mode incase boss/miniboss entrances are randomized
-World::WorldLoadingError World::setDungeonLocations()
+World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
 {
     // Keep track of any unassigned race mode locations
     LocationPool unassignedRaceModeLocations = {};
@@ -457,6 +457,47 @@ World::WorldLoadingError World::setDungeonLocations()
         {
             dungeon.raceModeLocation = popRandomElement(unassignedRaceModeLocations);
             LOG_TO_DEBUG("Unconnected race mode location " + dungeon.raceModeLocation->getName() + " has been assigned to dungeon " + dungeonName);
+        }
+    }
+
+    // Also set each dungeon's outsideDependentLocations.
+    // To do this, we'll disconnect all entrances into
+    // each dungeon and test to see which locations are
+    // not available without entering the dungeon
+    for (auto& [dungeonName, dungeon] : dungeons)
+    {
+        // Disconnect any entrances into this dungeon
+        std::unordered_map<Entrance*, Area*> disconnectedEntrances = {};
+        for (auto& [name, area] : areaTable)
+        {
+            for (auto& entrance : area->exits)
+            {
+                if (entrance.getConnectedArea() && entrance.getConnectedArea()->dungeon == dungeonName)
+                {
+                    disconnectedEntrances[&entrance] = entrance.disconnect();
+                }
+            }
+        }
+
+        // Get locations which are now accessible
+        ItemPool itemPool;
+        GET_COMPLETE_ITEM_POOL(itemPool, worlds)
+        auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, itemPool);
+
+        // Set unaccessible progression locations as outside dependent
+        for (auto& [locName, location] : locationTable)
+        {
+            if (!elementInPool(location.get(), accessibleLocations) && !elementInPool(location.get(), dungeon.locations) && location->progression)
+            {
+                LOG_TO_DEBUG(locName + " is now an outside dependent location of dungeon " + dungeonName);
+                dungeon.outsideDependentLocations.push_back(location.get());
+            }
+        }
+
+        // Reconnect disconnected entrances
+        for (auto& [entrance, area] : disconnectedEntrances)
+        {
+            entrance->connect(area);
         }
     }
 
@@ -572,7 +613,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     }
 
                     // Also set any progress locations outside the dungeon which
-                    // are dependent on beating it as non-progression locations
+                    // are dependent on accessing it as non-progression locations
                     for (auto location : dungeon.outsideDependentLocations)
                     {
                         if (location->progression)
@@ -751,17 +792,6 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
 
     const std::string& hintPriority = locationObject["Hint Priority"].as<std::string>();
     location->hintPriority = hintPriority;
-
-    // If this location is dependent on beating a dungeon, then add it to the dungeon's
-    // list of outside dependent locations
-    if (locationObject["Dungeon Dependency"])
-    {
-        const auto dungeonName = locationObject["Dungeon Dependency"].as<std::string>();
-        VALID_DUNGEON_CHECK(dungeonName);
-        Dungeon& dungeon = dungeons[dungeonName];
-        dungeon.outsideDependentLocations.push_back(location);
-        location->hasDungeonDependency = true;
-    }
 
     if (locationObject["Race Mode Location"])
     {
@@ -1522,7 +1552,7 @@ void World::dumpWorldGraph(const std::string& filename, bool onlyRandomizedExits
         // Make edge connections defined by exits
         for (const auto& exit : area->exits) {
             // Only dump shuffled exits if set
-            if (!exit.isShuffled() && onlyRandomizedExits)
+            if ((!exit.isShuffled() && onlyRandomizedExits) || !exit.getConnectedArea())
             {
                 continue;
             }

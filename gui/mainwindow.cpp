@@ -1187,10 +1187,6 @@ void MainWindow::load_locations()
             }
             locationCategories.back().insert(cat);
         }
-        if (locationObject["Dungeon Dependency"])
-        {
-            locationCategories.back().insert(LocationCategory::Dungeon);
-        }
     }
 }
 

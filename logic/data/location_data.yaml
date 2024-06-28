@@ -29,9 +29,9 @@
     Spanish: Buzón de correo - Carta de Novi
     French: Boîte aux Lettres - Lettre du Commis de la Poste
   Original Item: Red Rupee
-  Dungeon Dependency: Earth Temple
   Category:
     - Mail
+    - Dungeon # Requires Beating Jalhalla
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -102,9 +102,9 @@
     Spanish: Buzón de correo - Carta de Orca
     French: Boîte aux Lettres - Lettre d'Orco
   Original Item: Red Rupee
-  Dungeon Dependency: Forbidden Woods
   Category:
     - Mail
+    - Dungeon # Requires beating Kalle Demos
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -127,9 +127,9 @@
     Spanish: Buzón de correo - Carta de Abril
     French: Boîte aux Lettres - Lettre d'Arielle
   Original Item: Red Rupee
-  Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
+    - Dungeon # Requires beating Helmaroc King
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -140,10 +140,10 @@
     Spanish: Buzón de correo - Carta de Tingle
     French: Boîte aux Lettres - Lettre de Tingle
   Original Item: INcredible Chart
-  Dungeon Dependency: Forsaken Fortress
   Category:
     - Mail
     - Expensive Purchase
+    - Dungeon # Requires beating Helmaroc King
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
