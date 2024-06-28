@@ -156,7 +156,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
 // Argument 2 is a copy of the passed in ItemPool since we want to modify
 // it locally. If worldToSearch is not -1 then only the world with that worldId
 // will be searched.
-static LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch = -1)
+LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch /* = -1 */)
 {
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)

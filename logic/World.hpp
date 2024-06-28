@@ -86,7 +86,7 @@ public:
     void addSpoilsToStartingGear();
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
-    WorldLoadingError setDungeonLocations();
+    WorldLoadingError setDungeonLocations(WorldPool& worlds);
     WorldLoadingError determineRaceModeDungeons(WorldPool& worlds);
     int loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
