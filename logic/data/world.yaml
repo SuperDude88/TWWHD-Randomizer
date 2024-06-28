@@ -2407,12 +2407,12 @@
 - Name: TOTG Hub Room
   Dungeon: Tower of the Gods
   Locations:
-      Tower of the Gods - Stone Tablet: Wind_Waker and ('Can_Bring_East_Servant_of_the_Tower' or 'Can_Bring_West_Servant_of_the_Tower_to_Hub' or 'Can_Bring_North_Servant_of_the_Tower')
+      Tower of the Gods - Stone Tablet: Wind_Waker and ('Can_Bring_East_Servant_of_the_Tower' or 'Can_Bring_West_Servant_of_the_Tower' or 'Can_Bring_North_Servant_of_the_Tower')
   Exits:
       TOTG East Servant Corridor: Nothing
       TOTG West Servant Corridor Near Hub Room: Nothing
       TOTG North Servant Corridor: Nothing
-      TOTG Big Key Room: Wind_Waker and 'Can_Bring_East_Servant_of_the_Tower' and 'Can_Bring_West_Servant_of_the_Tower_to_Hub' and 'Can_Bring_North_Servant_of_the_Tower'
+      TOTG Big Key Room: Wind_Waker and 'Can_Bring_East_Servant_of_the_Tower' and 'Can_Bring_West_Servant_of_the_Tower' and 'Can_Bring_North_Servant_of_the_Tower'
       TOTG Rising Platforms Room: Nothing
 
 - Name: TOTG East Servant Corridor
@@ -2438,6 +2438,8 @@
 
 - Name: TOTG West Servant Corridor Near Hub Room
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring Statue to TOTG Miniboss Switch: Heros_Bow # Can bring an Armos statue across the moving platforms
   Exits:
       TOTG West Servant Corridor Near West Servant Room: Heros_Bow or Grappling_Hook
       TOTG West Servant Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
@@ -2446,7 +2448,7 @@
 - Name: TOTG West Servant Corridor Near Mini Boss Room
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Mini Boss Room: "'Can_Bring_West_Servant_of_the_Tower_to_Corridor'"
+      TOTG Mini Boss Room: "'Can_Bring_Statue_to_TOTG_Miniboss_Switch'"
       TOTG West Servant Corridor Near Hub Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
       TOTG West Servant Corridor Near West Servant Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
 
@@ -2466,8 +2468,8 @@
 - Name: TOTG West Servant Room Near Statue
   Dungeon: Tower of the Gods
   Events:
-      Can Bring West Servant of the Tower to Corridor: Can_Play_CM # Only need to get back out of the room with the statue
-      Can Bring West Servant of the Tower to Hub: Can_Play_CM and Heros_Bow # Also need bow to start the moving platforms and carry statue across
+      Can Bring Statue to TOTG Miniboss Switch: Can_Play_CM # Only need to get back out of the room with the statue
+      Can Bring West Servant of the Tower: Can_Play_CM and Heros_Bow # Also need bow to start the moving platforms and carry statue across
   Exits:
       TOTG West Servant Room Near Corridor: Can_Play_CM
 
