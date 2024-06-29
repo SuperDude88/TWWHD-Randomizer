@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <iostream>
+#include <logic/flatten/bits.hpp>
 
 #ifdef QT_GUI
     #include <QApplication>
@@ -71,6 +73,9 @@ int main(int argc, char *argv[]) {
 
     Utility::platformShutdown();
     
+    BitVector bits = BitVector();
+    std::cout << bits.isEmpty() << std::endl;
+
     return 0;
 #endif
 }
