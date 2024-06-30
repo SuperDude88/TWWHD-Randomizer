@@ -506,7 +506,7 @@ World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
 
 World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 {
-    if (settings.progression_dungeons != ProgressionDungeons::Disabled || settings.num_required_dungeons > 0)
+    if (settings.progression_dungeons != ProgressionDungeons::Disabled)
     {
         std::vector<Dungeon> dungeonPool = {};
         for (auto& [name, dungeon] : dungeons)
