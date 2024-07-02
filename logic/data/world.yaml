@@ -298,7 +298,7 @@
 - Name: Forsaken Fortress Outside Path to Boss
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
@@ -307,7 +307,7 @@
   Exits:
       Helmaroc King Battle Arena: Skull_Hammer
       Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
 
 - Name: Helmaroc King Battle Arena
   Locations:
