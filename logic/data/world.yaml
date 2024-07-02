@@ -154,6 +154,8 @@
   Exits:
       Forsaken Fortress East Hallway Lower: Nothing
       Forsaken Fortress North Hallway Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper East: Hookshot # can hookshot the chest after climbing the ladder
+      Forsaken Fortress Mess Hall Upper West: Skull_Hammer # can jump to the platform after climbing the ladder, need hammer to get past the pegs
 
 - Name: Forsaken Fortress East Hallway Lower
   Dungeon: Forsaken Fortress
@@ -2202,7 +2204,7 @@
   Dungeon: Forbidden Woods
   Exits:
       FW Cable Ride Above Poison Water Room Lower East: Can_Fly_With_Deku_Leaf_Indoors
-      FW Hub Room Upper Area: Nothing
+      FW Hub Room Upper Area: count(1, Forbidden_Woods_Small_Key)
 
 - Name: FW Cable Ride Above Poison Water Room Lower East
   Dungeon: Forbidden Woods
