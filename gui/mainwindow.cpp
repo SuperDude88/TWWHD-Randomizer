@@ -1042,6 +1042,7 @@ void MainWindow::on_permalink_textEdited(const QString &newPermalink)
         return;
     }
     currentPermalink = newPermalink;
+    config.settings.selectedModel = oldConfig.settings.selectedModel; // don't reset custom model when parsing permalink
     apply_config_settings();
 }
 
