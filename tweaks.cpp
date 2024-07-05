@@ -2810,6 +2810,7 @@ TweakError update_entrance_events() {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
         const ChunkEntry* waterfall = dzr.entries_by_type("SCLS")[7];
+        //ChunkEntry* gallery = dzr.entries_by_type("SCLS")[8]; // not currently randomized
 
         entry.addAction([waterfall = *waterfall](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
@@ -2817,9 +2818,15 @@ TweakError update_entrance_events() {
             if(event_list.Events_By_Name.count("fall") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
             std::shared_ptr<Action> loadRoom = event_list.Events_By_Name.at("fall")->get_actor("DIRECTOR")->actions[1];
             if(loadRoom == nullptr) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
-            loadRoom->properties[0]->value = waterfall.data.substr(0, 8).c_str();
-            std::get<std::string>(loadRoom->properties[0]->value) += '\0';
-            std::get<std::vector<int32_t>>(loadRoom->properties[1]->value)[0] = waterfall.data[9];
+            loadRoom->get_prop("Stage")->value = waterfall.data.substr(0, 8);
+            std::get<std::vector<int32_t>>(loadRoom->get_prop("StartCode")->value)[0] = waterfall.data[8]; // spawn ID
+            std::get<std::vector<int32_t>>(loadRoom->get_prop("RoomNo")->value)[0] = waterfall.data[9];
+
+            // The Nintendo Gallery entrance isn't currently randomized, this can patch it if it is ever shuffled
+            //std::shared_ptr<Action> next2 = event_list.Events_By_Name.at("nitendo")->get_actor("DIRECTOR")->actions[1];
+            //next2->get_prop("Stage")->value = gallery.data.substr(0, 8);
+            //std::get<std::vector<int32_t>>(next2->get_prop("StartCode")->value)[0] = gallery.data[8]; // spawn ID
+            //std::get<std::vector<int32_t>>(next2->get_prop("RoomNo")->value)[0] = gallery.data[9];
 
             return true;
         });
@@ -2828,13 +2835,6 @@ TweakError update_entrance_events() {
     });
 
     dzr.addDependent(entry.getRoot());
-
-    //This entrance isn't randomized yet, code can be used to patch it if it is ever shuffled
-    //ChunkEntry* gallery = dzr.entries_by_type("SCLS")[8];
-    //std::shared_ptr<Action> next2 = event_list.Events_By_Name.at("nitendo")->get_actor("DIRECTOR")->actions[1];
-    //next2->properties[0]->value = gallery->data.c_str();
-    //std::get<std::string>(next2->properties[0]->value) += '\0';
-    //std::get<std::vector<int32_t>>(next2->properties[1]->value)[0] = gallery->data[9];
 
     return TweakError::NONE;
 }
