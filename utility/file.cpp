@@ -1,8 +1,10 @@
 #include "file.hpp"
 
-#include <regex>
 #include <cstring>
+#include <regex>
+#include <filesystem>
 
+#include <command/Log.hpp>
 #include <utility/platform.hpp>
 #include <utility/thread_local.hpp>
 
@@ -13,7 +15,7 @@
 #endif
 
 namespace Utility {
-    bool isRoot(const std::filesystem::path& fsPath) {
+    bool isRoot(const fspath& fsPath) {
         static const std::regex rootFilesystem(R"(^fs:\/vol\/[^\/:]+\/?$)");
 
         const std::string path = fsPath.string();
@@ -35,7 +37,7 @@ namespace Utility {
     };
     static ThreadLocal<AlignedBufferWrapper, DataIDs::FILE_OP_BUFFER> buf;
 
-    bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
+    bool copy_file(const fspath& from, const fspath& to) {
         Utility::platformLog("Copying " + to.string());
         #ifdef DEVKITPRO
             //use a buffer to speed up file copying
@@ -67,7 +69,7 @@ namespace Utility {
         #endif
     }
 
-    bool copy(const std::filesystem::path& from, const std::filesystem::path& to) {
+    bool copy(const fspath& from, const fspath& to) {
         #ifdef DEVKITPRO
             //based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
 
@@ -125,7 +127,7 @@ namespace Utility {
     }
 
     // Short function for getting the string data from a file
-    int getFileContents(const std::filesystem::path& filename, std::string& fileContents, bool resourceFile /*= false*/)
+    int getFileContents(const fspath& filename, std::string& fileContents, bool resourceFile /*= false*/)
     {
         if (resourceFile)
         {
@@ -155,7 +157,7 @@ namespace Utility {
     }
 
     // Short function for getting the string data from a file
-    int getFileContents(const std::filesystem::path& filename, std::stringstream& fileContents)
+    int getFileContents(const fspath& filename, std::stringstream& fileContents)
     {
         // Otherwise load it normally
         std::ifstream file(filename, std::ios::binary);

@@ -2,7 +2,8 @@
 
 #include <cstdint>
 #include <array>
-#include <filesystem>
+
+#include <utility/path.hpp>
 
 //from https://github.com/devkitPro/wut/blob/78300f2693405b86b3482520b95b4a3f826d4e72/include/coreinit/mcp.h#L24
 enum struct AppType : uint32_t {
@@ -56,5 +57,5 @@ public:
     std::array<uint8_t, 32> osMask{0};
     uint64_t common_id = 0;
 
-    bool parseFromXML(const std::filesystem::path& xmlPath);
+    bool parseFromXML(const fspath& xmlPath);
 };

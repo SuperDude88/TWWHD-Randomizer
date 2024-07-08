@@ -206,7 +206,7 @@ namespace FileTypes{
         return SARCError::NONE;
     }
 
-    SARCError SARCFile::loadFromFile(const std::string& filePath) {
+    SARCError SARCFile::loadFromFile(const fspath& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);
@@ -309,7 +309,7 @@ namespace FileTypes{
         return SARCError::NONE;
     }
 
-    SARCError SARCFile::writeToFile(const std::string& outFilePath) {
+    SARCError SARCFile::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if (!outFile.is_open()) {
             LOG_ERR_AND_RETURN(SARCError::COULD_NOT_OPEN);
@@ -317,10 +317,10 @@ namespace FileTypes{
         return writeToStream(outFile);
     }
 
-    SARCError SARCFile::extractToDir(const std::string& dirPath) const {
+    SARCError SARCFile::extractToDir(const fspath& dirPath) const {
         for (const File& file : files)
         {
-            const std::filesystem::path path = dirPath + '/' + file.name;
+            const fspath path = dirPath / file.name;
             Utility::create_directories(path.parent_path()); //handle any folder structure stuff contained in the SARC
             std::ofstream outFile(path, std::ios::binary);
             if (!outFile.is_open())
@@ -342,7 +342,7 @@ namespace FileTypes{
         return SARCError::NONE;
     }
 
-    SARCError SARCFile::replaceFile(const std::string& filename, const std::string& newFilePath) {
+    SARCError SARCFile::replaceFile(const std::string& filename, const fspath& newFilePath) {
         const size_t& fileIndex = file_index_by_name.at(filename);
         uint32_t curDataOffset = 0;
         {
@@ -387,13 +387,13 @@ namespace FileTypes{
         return SARCError::NONE;
     }
 
-    SARCError SARCFile::rebuildFromDir(const std::string& dirPath) {
+    SARCError SARCFile::rebuildFromDir(const fspath& dirPath) {
         //rebuild using the original filename list (so extraneous unpacked stuff isnt added accidentally)
 
         uint32_t curDataOffset = 0;
         for (unsigned int i = 0; i < nameTable.filenames.size(); i++) {
             const std::string& filename = nameTable.filenames[i];
-            std::filesystem::path absPath = dirPath + '/' + filename;
+            fspath absPath = dirPath / filename;
             uint32_t fileSize = std::filesystem::file_size(absPath);
             SFATNode& node = fileTable.nodes[i];
 
@@ -428,7 +428,7 @@ namespace FileTypes{
         return SARCError::NONE;
     }
 
-    SARCError SARCFile::buildFromDir(const std::string& dirPath) { //needs some implementation updates to work completely from a new sarc
+    SARCError SARCFile::buildFromDir(const fspath& dirPath) { //needs some implementation updates to work completely from a new sarc
         fileTable.numFiles = 0;
         fileTable.nodes.clear();
         nameTable.filenames.clear();
@@ -438,13 +438,9 @@ namespace FileTypes{
         uint32_t curNameOffset = 0;
         for (const auto& path : std::filesystem::recursive_directory_iterator(dirPath)) {
             if (path.is_regular_file()) {
-                const std::filesystem::path& absPath = path.path();
-                std::string filename = absPath.string().substr(absPath.string().find(dirPath) + dirPath.size() + 1); //could use std::filesystem::relative(absPath, dirPath).string(), but gives undefined reference errors with devkitPro stuff
-                // ^ include everything after the dirPath, and exclude 1 extra character for the path separator connecting them
+                const fspath& absPath = path.path();
+                std::string filename = std::filesystem::relative(absPath, dirPath).generic_string();
                 filename += '\0'; //add null terminator
-#ifdef WIN32
-                std::replace(filename.begin(), filename.end(), '\\', '/');
-#endif
 
                 uint32_t fileSize = std::filesystem::file_size(absPath);
                 SFATNode& node = fileTable.nodes.emplace_back();

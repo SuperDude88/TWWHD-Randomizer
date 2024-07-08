@@ -1,5 +1,7 @@
 #include "tracker_area_widget.hpp"
 
+#include <gui/tracker/tracker_data.hpp>
+
 TrackerAreaWidget::TrackerAreaWidget()
 {
 
@@ -148,11 +150,11 @@ void TrackerAreaWidget::updateBossImageWidget()
         return;
     }
     std::string filename = (boss != nullptr && boss->marked) ? iconFileName + "_dead" : iconFileName;
+    filename += ".png";
 
-    bossImageWidget.setStyleSheet(std::string(
-                              "background-image: url(" DATA_PATH "tracker/" + filename + ".png);"
-                              "background-repeat: none;"
-                              "background-position: center;").c_str());
+    bossImageWidget.setStyleSheet("background-image: url(" + getTrackerAssetPath(filename) + ");"
+                                + "background-repeat: none;"
+                                + "background-position: center;");
 }
 
 void TrackerAreaWidget::updateShowLogic(int show, bool started)

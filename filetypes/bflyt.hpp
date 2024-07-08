@@ -573,9 +573,9 @@ namespace FileTypes {
 
 		static FLYTFile createNew();
 		FLYTError loadFromBinary(std::istream& bflyt);
-		FLYTError loadFromFile(const std::string& filePath);
+		FLYTError loadFromFile(const fspath& filePath);
 		FLYTError writeToStream(std::ostream& out);
-		FLYTError writeToFile(const std::string& outFilePath);
+		FLYTError writeToFile(const fspath& outFilePath);
 	private:
 		void initNew() override;
 	};

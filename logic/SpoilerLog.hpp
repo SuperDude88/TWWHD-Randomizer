@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <logic/Search.hpp>
+#include <logic/WorldPool.hpp>
 
 void generateSpoilerLog(WorldPool& worlds);
 void generateNonSpoilerLog(WorldPool& worlds);

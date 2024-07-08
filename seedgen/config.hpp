@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
-#include <filesystem>
+
+#include <libs/yaml.hpp>
 
 #include <options.hpp>
-#include <libs/yaml.hpp>
+#include <utility/path.hpp>
 
 
 enum struct [[nodiscard]] ConfigError {
@@ -21,8 +22,8 @@ enum struct [[nodiscard]] ConfigError {
 
 class Config {
 public:
-    std::filesystem::path gameBaseDir;
-    std::filesystem::path outputDir;
+    fspath gameBaseDir;
+    fspath outputDir;
 
     std::string seed;
     Settings settings;
@@ -35,14 +36,14 @@ public:
     Config();
     
     void resetDefaults();
-    ConfigError loadFromFile(const std::string& filePath, const std::string& preferencesPath, bool ignoreErrors = false);
+    ConfigError loadFromFile(const fspath& filePath, const fspath& preferencesPath, bool ignoreErrors = false);
     YAML::Node settingsToYaml();
     YAML::Node preferencesToYaml();
-    ConfigError writeSettings(const std::string& filePath);
-    ConfigError writePreferences(const std::string& preferencesPath);
-    ConfigError writeToFile(const std::string& filePath, const std::string& preferencesPath);
+    ConfigError writeSettings(const fspath& filePath);
+    ConfigError writePreferences(const fspath& preferencesPath);
+    ConfigError writeToFile(const fspath& filePath, const fspath& preferencesPath);
     
-    static ConfigError writeDefault(const std::string& filePath, const std::string& preferencesPath);
+    static ConfigError writeDefault(const fspath& filePath, const fspath& preferencesPath);
 };
 
 std::string errorToName(ConfigError err);

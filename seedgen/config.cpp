@@ -1,8 +1,6 @@
 #include "config.hpp"
 
 #include <fstream>
-#include <unordered_set>
-#include <filesystem>
 
 #include <version.hpp>
 #include <libs/yaml.hpp>
@@ -47,7 +45,7 @@ Config::Config() {
         /* out.gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500"; */
         /* out.outputDir = "storage_mlc01:/usr/title/00050000/10143599"; */
 
-        settings.plandomizerFile = Utility::get_app_save_path() +  "plandomizer.yaml";
+        settings.plandomizerFile = Utility::get_app_save_path() / "plandomizer.yaml";
     #endif
 }
 
@@ -61,7 +59,7 @@ void Config::resetDefaults() {
     return;
 }
 
-ConfigError Config::loadFromFile(const std::string& filePath, const std::string& preferencesPath, bool ignoreErrors /*= false*/) {
+ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferencesPath, bool ignoreErrors /*= false*/) {
     // check if we can open the file before parsing because exceptions won't work on console
     std::ifstream file(filePath);
     std::ifstream preferences(preferencesPath);
@@ -69,8 +67,8 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
     file.close();
     preferences.close();
     
-    YAML::Node root = YAML::LoadFile(filePath);
-    YAML::Node preferencesRoot = YAML::LoadFile(preferencesPath);
+    YAML::Node root = LoadYAML(filePath);
+    YAML::Node preferencesRoot = LoadYAML(preferencesPath);
 
     std::string rando_version, file_version;
     GET_FIELD(root, "program_version", rando_version)
@@ -89,22 +87,16 @@ ConfigError Config::loadFromFile(const std::string& filePath, const std::string&
         /* out.gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500"; */
         /* out.outputDir = "storage_mlc01:/usr/title/00050000/10143599"; */
 
-        settings.plandomizerFile = Utility::get_app_save_path() +  "plandomizer.yaml";
+        settings.plandomizerFile = Utility::get_app_save_path() / "plandomizer.yaml";
     #else
         std::string baseTemp, outTemp, plandoTemp;
         GET_FIELD_NO_FAIL(preferencesRoot, "gameBaseDir", baseTemp)
         GET_FIELD_NO_FAIL(preferencesRoot, "outputDir", outTemp)
         GET_FIELD_NO_FAIL(preferencesRoot, "plandomizerFile", plandoTemp)
-        // Convert to utf16 if we compiled with GCC
-        #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
-            gameBaseDir = Utility::Str::toUTF16(baseTemp);
-            outputDir = Utility::Str::toUTF16(outTemp);
-            settings.plandomizerFile = Utility::Str::toUTF16(plandoTemp);
-        #else
-            gameBaseDir = baseTemp;
-            outputDir = outTemp;
-            settings.plandomizerFile = plandoTemp;
-        #endif
+        // convert these in case they have special characters, prevents special character issues on Windows
+        gameBaseDir = Utility::Str::toUTF16(baseTemp);
+        outputDir = Utility::Str::toUTF16(outTemp);
+        settings.plandomizerFile = Utility::Str::toUTF16(plandoTemp);
     #endif
 
     if(!root["game_version"]) {
@@ -583,13 +575,13 @@ YAML::Node Config::preferencesToYaml() {
     return preferencesRoot;
 }
 
-ConfigError Config::writeSettings(const std::string& filePath) {
+ConfigError Config::writeSettings(const fspath& filePath) {
 
     YAML::Node root = settingsToYaml();
     std::ofstream f(filePath);
     if (f.is_open() == false)
     {
-        ErrorLog::getInstance().log("Could not open config at " + filePath);
+        ErrorLog::getInstance().log("Could not open config at " + filePath.string());
         return ConfigError::COULD_NOT_OPEN;
     }
     f << root;
@@ -598,13 +590,13 @@ ConfigError Config::writeSettings(const std::string& filePath) {
     return ConfigError::NONE;
 }
 
-ConfigError Config::writePreferences(const std::string& preferencesPath) {
+ConfigError Config::writePreferences(const fspath& preferencesPath) {
 
     YAML::Node preferences = preferencesToYaml();
     std::ofstream pref(preferencesPath);
     if (pref.is_open() == false)
     {
-        ErrorLog::getInstance().log("Could not open preferences at " + preferencesPath);
+        ErrorLog::getInstance().log("Could not open preferences at " + preferencesPath.string());
         return ConfigError::COULD_NOT_OPEN;
     }
     pref << preferences;
@@ -613,13 +605,13 @@ ConfigError Config::writePreferences(const std::string& preferencesPath) {
     return ConfigError::NONE;
 }
 
-ConfigError Config::writeToFile(const std::string& filePath, const std::string& preferencesPath) {
+ConfigError Config::writeToFile(const fspath& filePath, const fspath& preferencesPath) {
     LOG_AND_RETURN_IF_ERR(writeSettings(filePath))
     LOG_AND_RETURN_IF_ERR(writePreferences(preferencesPath))
     return ConfigError::NONE;
 }
 
-ConfigError Config::writeDefault(const std::string& filePath, const std::string& preferencesPath) {
+ConfigError Config::writeDefault(const fspath& filePath, const fspath& preferencesPath) {
     Config conf;
 
     // Writes defaults if they don't exist

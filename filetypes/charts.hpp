@@ -71,8 +71,8 @@ namespace FileTypes {
 		std::vector<Chart> charts;
 
 		ChartError loadFromBinary(std::istream& in);
-		ChartError loadFromFile(const std::string& filePath);
+		ChartError loadFromFile(const fspath& filePath);
 		ChartError writeToStream(std::ostream& out);
-		ChartError writeToFile(const std::string& filePath);
+		ChartError writeToFile(const fspath& filePath);
 	};
 }

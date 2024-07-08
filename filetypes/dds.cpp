@@ -368,7 +368,7 @@ namespace FileTypes {
         return DDSError::NONE;
     }
 
-    DDSError DDSFile::loadFromFile(const std::string& filePath, const bool SRGB) {
+    DDSError DDSFile::loadFromFile(const fspath& filePath, const bool SRGB) {
         std::string fileData;
         if (Utility::getFileContents(filePath, fileData, true)) LOG_ERR_AND_RETURN(DDSError::COULD_NOT_OPEN);
 
@@ -428,7 +428,7 @@ namespace FileTypes {
         return DDSError::NONE;
     }
 
-	DDSError DDSFile::writeToFile(const std::string& outFilePath) {
+	DDSError DDSFile::writeToFile(const fspath& outFilePath) {
         std::ofstream file(outFilePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(DDSError::COULD_NOT_OPEN);

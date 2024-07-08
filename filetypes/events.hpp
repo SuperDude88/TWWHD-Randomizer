@@ -202,12 +202,12 @@ namespace FileTypes {
         EventList() = default;
 
         static EventList createNew();
-        EventlistError loadFromBinary(std::istream &in);
-        EventlistError loadFromFile(const std::string &filePath);
-        EventlistError writeToStream(std::ostream &out);
-        EventlistError writeToFile(const std::string &outFilePath);
+        EventlistError loadFromBinary(std::istream& in);
+        EventlistError loadFromFile(const fspath& filePath);
+        EventlistError writeToStream(std::ostream& out);
+        EventlistError writeToFile(const fspath& outFilePath);
 
-        Event &add_event(const std::string &name);
+        Event &add_event(const std::string& name);
         std::optional<int32_t> get_unused_flag_id() const;
 
     private:

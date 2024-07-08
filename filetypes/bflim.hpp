@@ -63,11 +63,11 @@ namespace FileTypes {
         FLIMFile() = default;
 		static FLIMFile createNew();
 		FLIMError loadFromBinary(std::istream& bflim);
-		FLIMError loadFromFile(const std::string& filePath);
-        FLIMError exportAsDDS(const std::string& outPath);
-        FLIMError replaceWithDDS(const std::string& filename, GX2TileMode tileMode, uint8_t swizzle_, bool SRGB);
+		FLIMError loadFromFile(const fspath& filePath);
+		FLIMError exportAsDDS(const fspath& outPath);
+		FLIMError replaceWithDDS(const fspath& filename, GX2TileMode tileMode, uint8_t swizzle_, bool SRGB);
 		FLIMError writeToStream(std::ostream& out);
-		FLIMError writeToFile(const std::string& outFilePath);
+		FLIMError writeToFile(const fspath& outFilePath);
 	private:
 		void initNew() override;
     };

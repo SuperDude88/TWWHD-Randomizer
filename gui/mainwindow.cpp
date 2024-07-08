@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <filesystem>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -51,9 +52,9 @@
 
 void delete_and_create_default_config()
 {
-    std::filesystem::remove(Utility::get_app_save_path() +  "config.yaml");
+    std::filesystem::remove(Utility::get_app_save_path() / "config.yaml");
 
-    ConfigError err = Config::writeDefault(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml");
+    ConfigError err = Config::writeDefault(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if(err != ConfigError::NONE) {
         QPointer<QMessageBox> messageBox = new QMessageBox();
         auto message = "Failed to create default configuration file\ncode " + std::to_string(static_cast<uint32_t>(err));
@@ -69,8 +70,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Check for existing config file
-    std::ifstream conf(Utility::get_app_save_path() +  "config.yaml");
-    std::ifstream pref(Utility::get_preferences_path() +  "preferences.yaml");
+    std::ifstream conf(Utility::get_app_save_path() / "config.yaml");
+    std::ifstream pref(Utility::get_app_save_path() / "preferences.yaml");
     if (!conf.is_open() || !pref.is_open())
     {
         // No config file, create default
@@ -123,7 +124,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // Write settings to file when user closes the program
-    ConfigError err = config.writeToFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml");
+    ConfigError err = config.writeToFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if (err != ConfigError:: NONE)
     {
         show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
@@ -150,7 +151,7 @@ void MainWindow::load_config_into_ui()
 {
     // Ignore errors and just load in whatever we can. The gui will write a proper config file
     // when the user begins randomization
-    ConfigError err = config.loadFromFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml", true);
+    ConfigError err = config.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml", true);
     if (err != ConfigError::NONE)
     {
         show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
@@ -415,15 +416,9 @@ void MainWindow::update_plandomizer_widget_visbility()
 void MainWindow::apply_config_settings()
 {
     // Directories and Seed
-    #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
-        ui->base_game_path->setText(config.gameBaseDir.string().c_str());
-        ui->output_folder->setText(config.outputDir.string().c_str());
-    #else
-        ui->base_game_path->setText(QString::fromLocal8Bit(config.gameBaseDir.string()));
-        ui->output_folder->setText(QString::fromLocal8Bit(config.outputDir.string()));
-    #endif
-
-    ui->seed->setText(config.seed.c_str());
+    ui->base_game_path->setText(Utility::toQString(config.gameBaseDir));
+    ui->output_folder->setText(Utility::toQString(config.outputDir));
+    ui->seed->setText(QString::fromStdString(config.seed));
 
     // Progression settings
     APPLY_CHECKBOX_SETTING(config, ui, progression_battlesquid);
@@ -1054,7 +1049,7 @@ void MainWindow::on_reset_settings_to_default_clicked()
 
     delete_and_create_default_config();
 
-    auto err = oldConfig.writePreferences(Utility::get_preferences_path() + "preferences.yaml");
+    auto err = oldConfig.writePreferences(Utility::get_app_save_path() / "preferences.yaml");
     if (err != ConfigError::NONE)
     {
         show_warning_dialog("Could not keep preferences when resetting all settings.\nYou will have to reset your preferences (model colors, in-game options, and paths).");
@@ -1097,7 +1092,7 @@ void MainWindow::on_randomize_button_clicked()
 
     // Write config to file so that the main randomization algorithm can pick it up
     // and to keep compatibility with non-gui version
-    ConfigError err = config.writeToFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml");
+    ConfigError err = config.writeToFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if(err != ConfigError::NONE) {
         show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
         return;
@@ -1174,7 +1169,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 void MainWindow::load_locations()
 {   
     std::string locationDataStr;
-    Utility::getFileContents(DATA_PATH "logic/location_data.yaml", locationDataStr, true);
+    Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
     YAML::Node locationDataTree = YAML::Load(locationDataStr);
     for (const auto& locationObject : locationDataTree)
     {
@@ -1204,6 +1199,6 @@ void MainWindow::on_about_button_clicked()
 
 void MainWindow::on_open_logs_folder_button_clicked()
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(Utility::get_logs_path().c_str()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Utility::toQString(Utility::get_logs_path())));
 }
 

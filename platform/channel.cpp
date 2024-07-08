@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <filesystem>
 
 #include <coreinit/memory.h>
 #include <coreinit/ios.h>
@@ -25,13 +26,13 @@
 
 extern "C" MCPError MCP_GetLastRawError(void);
 
-static const std::filesystem::path SD_ROOT_PATH = "fs:/vol/external01";
-static const std::filesystem::path SD_ROOT_PATH_MCP = "/vol/app_sd";
-static const std::filesystem::path CHANNEL_DATA_PATH = "temp/data";
-static const std::filesystem::path CHANNEL_OUTPUT_PATH = "temp/install";
+static const fspath SD_ROOT_PATH = "fs:/vol/external01";
+static const fspath SD_ROOT_PATH_MCP = "/vol/app_sd";
+static const fspath CHANNEL_DATA_PATH = "temp/data";
+static const fspath CHANNEL_OUTPUT_PATH = "temp/install";
 
 
-MCPError getTitlePath(const uint64_t& titleID, std::filesystem::path& outPath) {
+MCPError getTitlePath(const uint64_t& titleID, fspath& outPath) {
     const int32_t handle = MCP_Open();
 
     MCPTitleListType info;
@@ -93,7 +94,7 @@ static int IosInstallCallback(unsigned int errorCode, unsigned int * priv_data)
 }
 
 //based on https://github.com/Fangal-Airbag/wup-installer-gx2/blob/Wuhb/src/menu/InstallWindow.cpp#L169
-static bool installFreeChannel(const std::filesystem::path& relPath, const MCPInstallTarget& loc) {
+static bool installFreeChannel(const fspath& relPath, const MCPInstallTarget& loc) {
     using namespace std::literals::chrono_literals;
 
     if(!Utility::dirExists(SD_ROOT_PATH / relPath)) {
@@ -103,7 +104,7 @@ static bool installFreeChannel(const std::filesystem::path& relPath, const MCPIn
 
     Utility::platformLog("Installing channel...");
 
-    const std::filesystem::path path = SD_ROOT_PATH_MCP / relPath;
+    const fspath path = SD_ROOT_PATH_MCP / relPath;
     
     int result = 0;
     installCompleted = 0;
@@ -256,9 +257,9 @@ static bool installFreeChannel(const std::filesystem::path& relPath, const MCPIn
     }
 }
 
-static const std::filesystem::path DataPath = SD_ROOT_PATH / CHANNEL_DATA_PATH;
+static const fspath DataPath = SD_ROOT_PATH / CHANNEL_DATA_PATH;
 
-static bool packFreeChannel(const std::filesystem::path& baseDir) {
+static bool packFreeChannel(const fspath& baseDir) {
     Utility::platformLog("Packing channel...");
 
     //create necessary folders
@@ -351,7 +352,7 @@ static bool packFreeChannel(const std::filesystem::path& baseDir) {
     return true;
 }
 
-bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallTarget& loc) {
+bool createOutputChannel(const fspath& baseDir, const MCPInstallTarget& loc) {
     Utility::platformLog("Creating output channel...");
     
     //channel data needs a little under 2GB
@@ -361,7 +362,7 @@ bool createOutputChannel(const std::filesystem::path& baseDir, const MCPInstallT
     
     if(!installFreeChannel(CHANNEL_OUTPUT_PATH, loc)) return false;
 
-    std::filesystem::path outPath;
+    fspath outPath;
     if(const auto& err = getTitlePath(0x0005000010143599, outPath); err < 0) return false;
     if(!Utility::mountDeviceAndConvertPath(outPath)) {
         ErrorLog::getInstance().log("Failed to mount output device");

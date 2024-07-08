@@ -21,8 +21,8 @@ bool restoreEntrances(WorldPool& worlds) {
         const std::string fileStage = entrance->getFilepathStage();
         const uint8_t roomNum = entrance->getFilepathRoomNum();
         if(roomNum != 0xFF && entrance->getSclsExitIndex() != 0xFF) {
-            if(const std::string path = getRoomFilePath(fileStage, roomNum); !g_session.restoreGameFile(path)) {
-                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+            if(const fspath path = getRoomFilePath(fileStage, roomNum); !g_session.restoreGameFile(path)) {
+                ErrorLog::getInstance().log("Failed to restore " + path.string() + '\n');
                 return false;
             }
         }
@@ -31,8 +31,8 @@ bool restoreEntrances(WorldPool& worlds) {
         // Warp update -> need to restore changes to event_list.dat (both are in stage archive)
         if (entrance->needsSavewarp() || entrance->hasWindWarp())
         {
-            if(const std::string path = getStageFilePath(fileStage); !g_session.restoreGameFile(path)) {
-                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+            if(const fspath path = getStageFilePath(fileStage); !g_session.restoreGameFile(path)) {
+                ErrorLog::getInstance().log("Failed to restore " + path.string() + '\n');
                 return false;
             }
         }
@@ -64,12 +64,12 @@ bool writeEntrances(WorldPool& worlds) {
             replacementSpawn = actualEntrance->getReplaces()->getSpawnId();
         }
 
-        std::string filepath = getRoomDzrPath(fileStage, entrance->getFilepathRoomNum());
+        fspath filepath = getRoomDzrPath(fileStage, entrance->getFilepathRoomNum());
         // Modify the kill triggers inside Fire Mountain and Ice Ring to act appropriately
         // "MiniKaz" is the Fire Mountain stage name
         // "MiniHyo" is the Ice Ring stage name
         if (replacementStage == "MiniKaz" || replacementStage == "MiniHyo") {
-            const std::string exitFilepath = getRoomDzrPath(replacementStage, replacementRoom);
+            const fspath exitFilepath = getRoomDzrPath(replacementStage, replacementRoom);
             RandoSession::CacheEntry& exitDzrEntry = g_session.openGameFile(exitFilepath);
             exitDzrEntry.addAction([entrance, replacementStage](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -131,7 +131,7 @@ bool writeEntrances(WorldPool& worlds) {
         // If this entrance needs a savewarp update, then update the scls entry in the stage.dzs file
         if (entrance->needsSavewarp())
         {
-            filepath = getStageFilePath(fileStage) + "@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX";
+            filepath = getStageFilePath(fileStage).concat("@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
             RandoSession::CacheEntry& dzsEntry = g_session.openGameFile(filepath);
             //sclsExitIndex = 0;
             dzsEntry.addAction([entrance, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
@@ -235,13 +235,13 @@ bool writeEntrances(WorldPool& worlds) {
             } 
         }
 
-        const std::string filepath = getStageFilePath(entrance->getFilepathStage()) + "@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS";
+        const fspath filepath = getStageFilePath(entrance->getFilepathStage()).concat("@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
         RandoSession::CacheEntry& list = g_session.openGameFile(filepath);
         list.addAction([filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
             if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
-                ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath);
+                ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath.string());
                 return false;
             }
 

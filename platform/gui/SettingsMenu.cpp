@@ -172,7 +172,7 @@ SettingsMenu::Result SettingsMenu::run(Config& out) {
     setAPD(false);
     
     out = OptionCB::getInternal();
-    if(out.writeToFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml") != ConfigError::NONE) {
+    if(out.writeToFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml") != ConfigError::NONE) {
         return Result::CONFIG_SAVE_FAILED;
     }
 

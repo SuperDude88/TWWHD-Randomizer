@@ -1,8 +1,8 @@
 #include "randomizer.hpp"
 
-#include <filesystem>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include <libs/tinyxml2.hpp>
 #include <libs/zlib-ng.hpp>
@@ -22,6 +22,7 @@
 #include <command/RandoSession.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
+#include <utility/path.hpp>
 #include <utility/file.hpp>
 #include <utility/time.hpp>
 
@@ -57,7 +58,7 @@ private:
         UPDATE_DIALOG_LABEL("Verifying dump...");
         UPDATE_DIALOG_VALUE(25);
 
-        const RandoSession::fspath& base = g_session.getBaseDir();
+        const fspath& base = g_session.getBaseDir();
         if(!is_directory(base / "code") || !is_directory(base / "content") || !is_directory(base / "meta")) {
             ErrorLog::getInstance().log("Invalid base path: could not find code/content/meta folders at " + base.string() + "!");
             return false;
@@ -65,33 +66,16 @@ private:
 
         //Check the meta.xml for other platforms (+ a sanity check on console)
         tinyxml2::XMLDocument metaXml;
-        const RandoSession::fspath& metaPath = g_session.getBaseDir() / "meta/meta.xml";
+        const fspath& metaPath = g_session.getBaseDir() / "meta/meta.xml";
         if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
             return false;
         }
 
-        // Have to get the file pointer this way for tinyxml on windows
-        // to account for special characters
-        #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
-        FILE* metafp;
-        const wchar_t* path = metaPath.wstring().c_str();
-        errno_t err = _wfopen_s(&metafp, path, L"rb");
-        if (!metafp) {
-            ErrorLog::getInstance().log("Could not open meta.xml");
+        if(tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
+            ErrorLog::getInstance().log("Could not parse input's meta.xml, got error " + std::to_string(err));
             return false;
         }
-        if(tinyxml2::XMLError err = metaXml.LoadFile(metafp); err != tinyxml2::XMLError::XML_SUCCESS) {
-            fclose(metafp);
-        #else
-        if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
-        #endif
-            ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
-            return false;
-        }
-        #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
-        fclose(metafp);
-        #endif
 
         const tinyxml2::XMLElement* root = metaXml.RootElement();
 
@@ -120,7 +104,7 @@ private:
         UPDATE_DIALOG_LABEL("Verifying output...");
         UPDATE_DIALOG_VALUE(25);
         
-        const RandoSession::fspath& out = g_session.getOutputDir();
+        const fspath& out = g_session.getOutputDir();
         if(out.empty() || !is_directory(out)) { // we tried to create this earlier so error if that failed
             ErrorLog::getInstance().log("Invalid output path: " + out.string() + " is not a valid folder!");
             return false;
@@ -137,14 +121,14 @@ private:
 
         //Double check the meta.xml
         tinyxml2::XMLDocument metaXml;
-        const RandoSession::fspath& metaPath = out / "meta/meta.xml";
+        const fspath& metaPath = out / "meta/meta.xml";
         if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
             return false;
         }
 
         if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
-            ErrorLog::getInstance().log("Could not parse meta.xml, got error " + std::to_string(err));
+            ErrorLog::getInstance().log("Could not parse output's meta.xml, got error " + std::to_string(err));
             return false;
         }
         const tinyxml2::XMLElement* root = metaXml.RootElement();
@@ -340,7 +324,7 @@ int mainRandomize() {
 
     Config load;
     // Create default configs/preferences if they don't exist
-    ConfigError err = Config::writeDefault(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml");
+    ConfigError err = Config::writeDefault(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if(err != ConfigError::NONE) {
         ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
         return 1;
@@ -348,9 +332,9 @@ int mainRandomize() {
 
     Utility::platformLog("Reading config");
     #ifdef DEVKITPRO
-        err = load.loadFromFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml", true); // ignore errors on console (always attempt to convert)
+        err = load.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml", true); // ignore errors on console (always attempt to convert)
     #else
-        err = load.loadFromFile(Utility::get_app_save_path() +  "config.yaml", Utility::get_preferences_path() +  "preferences.yaml");
+        err = load.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     #endif
     if(err != ConfigError::NONE && err != ConfigError::DIFFERENT_RANDO_VERSION) {
         ErrorLog::getInstance().log("Failed to read config, error: " + errorToName(err));

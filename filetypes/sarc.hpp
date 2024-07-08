@@ -73,15 +73,15 @@ namespace FileTypes {
         SARCFile() = default;
         static SARCFile createNew();
         SARCError loadFromBinary(std::istream& sarc);
-        SARCError loadFromFile(const std::string& filePath);
+        SARCError loadFromFile(const fspath& filePath);
         File* getFile(const std::string& filename);
         SARCError writeToStream(std::ostream& out);
-        SARCError writeToFile(const std::string& outFilePath);
-        SARCError extractToDir(const std::string& dirPath) const;
+        SARCError writeToFile(const fspath& outFilePath);
+        SARCError extractToDir(const fspath& dirPath) const;
         SARCError replaceFile(const std::string& filename, const std::stringstream& newData);
-        SARCError replaceFile(const std::string& filename, const std::string& newFilePath);
-        SARCError rebuildFromDir(const std::string& dirPath);
-        SARCError buildFromDir(const std::string& dirPath); //partly untested, should work though
+        SARCError replaceFile(const std::string& filename, const fspath& newFilePath);
+        SARCError rebuildFromDir(const fspath& dirPath);
+        SARCError buildFromDir(const fspath& dirPath); //partly untested, should work though
     private:
         SARCHeader header;
         SFAT fileTable;

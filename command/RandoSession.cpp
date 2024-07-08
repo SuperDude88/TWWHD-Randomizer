@@ -499,7 +499,7 @@ std::shared_ptr<RandoSession::CacheEntry> RandoSession::getEntry(const std::vect
     return parentEntry;
 }
 
-RandoSession::CacheEntry& RandoSession::openGameFile(const RandoSession::fspath& relPath)
+RandoSession::CacheEntry& RandoSession::openGameFile(const fspath& relPath)
 {
     //CHECK_INITIALIZED(nullptr);
     return *getEntry(Utility::Str::split(relPath.string(), '@'));
@@ -591,7 +591,7 @@ bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEn
 
 #ifdef DEVKITPRO
 //based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
-static bool iterate_directory_recursive(RandoSession& session, const std::filesystem::path cur) {
+static bool iterate_directory_recursive(RandoSession& session, const fspath cur) {
     DIR* dirHandle = nullptr;
     if (dirHandle = opendir(cur.string().c_str()); dirHandle == nullptr) {
         ErrorLog::getInstance().log("Couldn't open directory: " + cur.string());
@@ -601,8 +601,8 @@ static bool iterate_directory_recursive(RandoSession& session, const std::filesy
     // Loop over directory contents
     struct dirent* dirEntry;
     while ((dirEntry = readdir(dirHandle)) != nullptr) {
-        const std::filesystem::path entryPath = cur / dirEntry->d_name;
-        const std::filesystem::path relPath = entryPath.string().substr(session.getBaseDir().string().length() + 1);
+        const fspath entryPath = cur / dirEntry->d_name;
+        const fspath relPath = entryPath.string().substr(session.getBaseDir().string().length() + 1);
 
         // Use lstat since readdir returns DT_REG for symlinks
         struct stat fileStat;

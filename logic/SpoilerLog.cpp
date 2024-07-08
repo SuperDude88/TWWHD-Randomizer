@@ -7,8 +7,9 @@
 #include <version.hpp>
 #include <options.hpp>
 #include <command/Log.hpp>
-#include <utility/platform.hpp>
+#include <logic/World.hpp>
 #include <filetypes/util/msbtMacros.hpp>
+#include <utility/platform.hpp>
 #include <utility/string.hpp>
 #include <utility/time.hpp>
 
@@ -91,7 +92,7 @@ static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
 
 void generateSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream spoilerLog(Utility::get_logs_path() + LogInfo::getSeedHash() + " Spoiler Log.txt");
+    std::ofstream spoilerLog(Utility::get_logs_path() / (LogInfo::getSeedHash() + " Spoiler Log.txt"));
 
     Utility::platformLog("Generating spoiler log...");
     printBasicInfo(spoilerLog, worlds);
@@ -314,7 +315,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
 void generateNonSpoilerLog(WorldPool& worlds)
 {
-    std::ofstream nonSpoilerLog(Utility::get_logs_path() + LogInfo::getSeedHash() + " Non-Spoiler Log.txt");
+    std::ofstream nonSpoilerLog(Utility::get_logs_path() / (LogInfo::getSeedHash() + " Non-Spoiler Log.txt"));
 
     Utility::platformLog("Generating non-spoiler log...");
     printBasicInfo(nonSpoilerLog, worlds);

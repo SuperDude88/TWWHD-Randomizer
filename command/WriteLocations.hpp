@@ -49,7 +49,7 @@ private:
     inline static std::map<std::string, Dungeon> dungeons = {};
     inline static std::list<Location*> playthroughLocations = {};
 
-    std::string filePath;
+    fspath filePath;
     std::vector<uint32_t> offsets;
 
     ModificationError setCTMCType(ACTR& chest, const Item& item);
@@ -70,7 +70,7 @@ public:
 
 class ModifyActor final : public LocationModification {
 private:
-    std::string filePath;
+    fspath filePath;
     std::vector<uint32_t> offsets;
 
 public:
@@ -88,7 +88,7 @@ public:
 
 class ModifySCOB final : public LocationModification {
 private:
-    std::string filePath;
+    fspath filePath;
     std::vector<uint32_t> offsets;
 
 public:
@@ -106,7 +106,7 @@ public:
 
 class ModifyEvent final : public LocationModification {
 private:
-    std::string filePath;
+    fspath filePath;
     uint32_t offset;
     uint32_t nameOffset;
 
@@ -159,7 +159,7 @@ public:
 
 class ModifyBoss final : public LocationModification {
 private:
-    std::vector<std::pair<std::string, uint32_t>> offsetsWithPath;
+    std::vector<std::pair<fspath, uint32_t>> offsetsWithPath;
 
 public:
     ModifyBoss() = default;

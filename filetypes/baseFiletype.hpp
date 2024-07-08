@@ -1,6 +1,9 @@
 #pragma once
+
 #include <typeinfo>
 #include <sstream>
+
+#include <utility/path.hpp>
 
 class FileType {    
     //static_assert(std::is_enum_v<error_enum>, "error_enum must be an enum type");
@@ -9,9 +12,9 @@ public:
     virtual ~FileType() = default;
 
 	//virtual error_enum loadFromBinary(std::istream&) = 0;
-	//virtual error_enum loadFromFile(const std::string&) = 0;
+	//virtual error_enum loadFromFile(const fspath&) = 0;
 	//virtual error_enum writeToStream(std::ostream&) = 0;
-	//virtual error_enum writeToFile(const std::string&) = 0;
+	//virtual error_enum writeToFile(const fspath&) = 0;
 protected:
 	virtual void initNew() = 0;
 };

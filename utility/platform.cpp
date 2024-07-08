@@ -90,7 +90,7 @@ void closeMocha() {
 }
 
 namespace Utility {
-    bool mountDeviceAndConvertPath(std::filesystem::path& path) {
+    bool mountDeviceAndConvertPath(fspath& path) {
         if(path.string().starts_with("/vol/storage_mlc01")) {
             if(!MLCMounted) {
                 Utility::platformLog("Attempting to mount MLC");

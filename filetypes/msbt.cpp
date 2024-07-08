@@ -333,7 +333,7 @@ namespace FileTypes {
         return LMSError::NONE;
     }
 
-    LMSError MSBTFile::loadFromFile(const std::string& filePath) {
+    LMSError MSBTFile::loadFromFile(const fspath& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(LMSError::COULD_NOT_OPEN);
@@ -410,7 +410,7 @@ namespace FileTypes {
         return LMSError::NONE;
     }
 
-    LMSError MSBTFile::writeToFile(const std::string& outFilePath) {
+    LMSError MSBTFile::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary | std::ios::out);
         if (!outFile.is_open()) {
             LOG_ERR_AND_RETURN(LMSError::COULD_NOT_OPEN);

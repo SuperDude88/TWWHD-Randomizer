@@ -15,7 +15,7 @@
 static SHA1 sha1;
 static SHA256 sha256;
 
-void readFiles(const std::filesystem::path& dir, FSTEntry& parent, const bool& notInNUS = false) {
+void readFiles(const fspath& dir, FSTEntry& parent, const bool& notInNUS = false) {
     for(auto item : std::filesystem::directory_iterator(dir)) {
         if(std::filesystem::is_regular_file(item)) {
             FSTEntry& child = parent.children.emplace_back();
@@ -54,14 +54,13 @@ NUSPackage::NUSPackage(const PackageConfig& config) :
     tmd.update(config.info);
 }
 
-void NUSPackage::PackContents(const std::filesystem::path& out) {
-    Utility::create_directories(Utility::get_temp_dir());
+void NUSPackage::PackContents(const fspath& out) {
     Utility::create_directories(out);
 
     Encryption encryption = tmd.getEncryption();
     fst.contents.PackContents(out, encryption);
 
-    std::filesystem::path fstPath = out / "00000000.app";
+    const fspath fstPath = out / "00000000.app";
     std::stringstream fstStream;
     fst.writeToStream(fstStream);
     Utility::seek(fstStream, roundUp<size_t>(fstStream.tellp(), 0x8000), std::ios::beg);

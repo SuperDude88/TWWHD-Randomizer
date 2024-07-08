@@ -5,7 +5,7 @@
 #include <utility/file.hpp>
 #include <utility/platform.hpp>
 
-PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plandomizer>& plandos, size_t numWorlds)
+PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Plandomizer>& plandos, size_t numWorlds)
 {
     LOG_TO_DEBUG("Loading plandomzier file");
 

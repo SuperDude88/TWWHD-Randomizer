@@ -1,7 +1,6 @@
 #pragma once
 
-#include <filesystem>
-
+#include <utility/path.hpp>
 #include <nuspack/crypto/Key.hpp>
 
 enum struct [[nodiscard]] PackError {
@@ -13,4 +12,4 @@ enum struct [[nodiscard]] PackError {
 
 const char* packErrorGetName(PackError err);
 
-PackError createPackage(const std::filesystem::path& dirPath, const std::filesystem::path& out, const Key& encryptionKey = defaultEncryptionKey, const Key& encryptKeyWith = defaultEncryptWithKey);
+PackError createPackage(const fspath& dirPath, const fspath& out, const Key& encryptionKey = defaultEncryptionKey, const Key& encryptKeyWith = defaultEncryptWithKey);

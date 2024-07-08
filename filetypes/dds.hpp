@@ -6,8 +6,9 @@
 #include <string>
 #include <array>
 #include <fstream>
-#include <type_traits>
 #include <unordered_set>
+
+#include <utility/path.hpp>
 
 
 
@@ -22,8 +23,6 @@ enum struct [[nodiscard]] DDSError {
     UNKNOWN,
     COUNT
 };
-
-static const std::unordered_set<std::string> dx10_formats = {"BC4U", "BC4S", "BC5U", "BC5S"};
 
 enum struct DDSFlags : uint32_t {
     CAPS = 0x1,
@@ -90,6 +89,8 @@ struct DDSHeader {
     uint32_t caps3;
     uint32_t caps4;
     uint32_t reserved2;
+
+    static inline const std::unordered_set<std::string> dx10_formats = {"BC4U", "BC4S", "BC5U", "BC5S"};
 };
 
 namespace FileTypes {
@@ -108,9 +109,9 @@ namespace FileTypes {
         DDSFile() = default;
         static DDSFile createNew();
         DDSError loadFromBinary(std::istream& dds, const bool SRGB);
-        DDSError loadFromFile(const std::string& filePath, const bool SRGB = false);
+        DDSError loadFromFile(const fspath& filePath, const bool SRGB = false);
         DDSError writeToStream(std::ostream& out);
-        DDSError writeToFile(const std::string& outFilePath);
+        DDSError writeToFile(const fspath& outFilePath);
     private:
         void initNew();
     };

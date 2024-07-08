@@ -110,10 +110,10 @@ namespace FileTypes {
         MSBTFile() = default;
         static MSBTFile createNew();
         LMSError loadFromBinary(std::istream& msbt);
-        LMSError loadFromFile(const std::string& filePath);
+        LMSError loadFromFile(const fspath& filePath);
         Message& addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message);
         LMSError writeToStream(std::ostream& out);
-        LMSError writeToFile(const std::string& outFilePath);
+        LMSError writeToFile(const fspath& outFilePath);
 
     private:
         FileHeader header;

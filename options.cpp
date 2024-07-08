@@ -7,7 +7,7 @@ Settings::Settings() {
     resetDefaults();
 
     // paths aren't covered by resets
-    plandomizerFile = u"";
+    plandomizerFile.clear();
 }
 
 void Settings::resetDefaults() {

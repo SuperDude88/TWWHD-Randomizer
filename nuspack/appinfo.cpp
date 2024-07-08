@@ -6,7 +6,7 @@
 
 
 
-bool AppInfo::parseFromXML(const std::filesystem::path& xmlPath) {
+bool AppInfo::parseFromXML(const fspath& xmlPath) {
     using namespace tinyxml2;
 
     XMLDocument app;

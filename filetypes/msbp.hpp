@@ -223,9 +223,9 @@ namespace FileTypes {
         MSBPFile() = default;
         static MSBPFile createNew();
         LMSError loadFromBinary(std::istream& msbp);
-        LMSError loadFromFile(const std::string& filePath);
+        LMSError loadFromFile(const fspath& filePath);
         LMSError writeToStream(std::ostream& out);
-        LMSError writeToFile(const std::string& outFilePath);
+        LMSError writeToFile(const fspath& outFilePath);
 
     private:
         FileHeader header;

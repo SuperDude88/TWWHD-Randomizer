@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <utility/path.hpp>
 #include <logic/GameItem.hpp>
 #include <logic/Entrance.hpp>
 #include <logic/Location.hpp>
@@ -41,5 +42,5 @@ struct Plandomizer
     uint8_t startingIslandRoomIndex = 0;
 };
 
-PlandomizerError loadPlandomizer(std::string& plandoFilepath, std::vector<Plandomizer>& plandos, size_t numWorlds);
+PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Plandomizer>& plandos, size_t numWorlds);
 std::string errorToName(PlandomizerError err);

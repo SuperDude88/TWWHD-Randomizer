@@ -1323,7 +1323,7 @@ namespace FileTypes {
 		return JPCError::NONE;
 	}
 
-	JPCError JPC::loadFromFile(const std::string& filePath) {
+	JPCError JPC::loadFromFile(const fspath& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(JPCError::COULD_NOT_OPEN);
@@ -1389,7 +1389,7 @@ namespace FileTypes {
 		return JPCError::NONE;
 	}
 
-	JPCError JPC::writeToFile(const std::string& outFilePath) {
+	JPCError JPC::writeToFile(const fspath& outFilePath) {
 		std::ofstream outFile(outFilePath, std::ios::binary);
 		if (!outFile.is_open()) {
 			LOG_ERR_AND_RETURN(JPCError::COULD_NOT_OPEN);

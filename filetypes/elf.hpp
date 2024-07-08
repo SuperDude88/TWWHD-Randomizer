@@ -37,11 +37,11 @@ namespace FileTypes {
         ELF() = default;
         static ELF createNew();
         ELFError loadFromBinary(std::istream& elf);
-        ELFError loadFromFile(const std::string& filePath);
+        ELFError loadFromFile(const fspath& filePath);
         ELFError extend_section(uint16_t index, const std::string& newData);
         ELFError extend_section(uint16_t index, uint32_t startAddr, const std::string& newData);
         ELFError writeToStream(std::ostream& out);
-        ELFError writeToFile(const std::string& outFilePath);
+        ELFError writeToFile(const fspath& outFilePath);
     private:
         bool isEmpty = true;
         void initNew() override;

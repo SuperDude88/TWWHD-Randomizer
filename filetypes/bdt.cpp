@@ -67,7 +67,7 @@ namespace FileTypes {
 		return BDTError::NONE;
 	}
 
-	BDTError BDTFile::loadFromFile(const std::string& filePath) {
+	BDTError BDTFile::loadFromFile(const fspath& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(BDTError::COULD_NOT_OPEN);
@@ -106,7 +106,7 @@ namespace FileTypes {
 		return BDTError::NONE;
 	}
 
-	BDTError BDTFile::writeToFile(const std::string& filePath) {
+	BDTError BDTFile::writeToFile(const fspath& filePath) {
 		std::ofstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(BDTError::COULD_NOT_OPEN);

@@ -513,12 +513,12 @@ namespace FileTypes {
         JPC() = default;
         static JPC createNew();
         JPCError loadFromBinary(std::istream& jpc);
-        JPCError loadFromFile(const std::string& filePath);
+        JPCError loadFromFile(const fspath& filePath);
         JPCError addParticle(const Particle& particle);
         JPCError replaceParticle(const Particle& particle);
         JPCError addTexture(const std::string& filename);
         JPCError writeToStream(std::ostream& out);
-        JPCError writeToFile(const std::string& outFilePath);
+        JPCError writeToFile(const fspath& outFilePath);
 
     private:
         void initNew() override;

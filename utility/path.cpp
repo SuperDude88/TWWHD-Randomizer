@@ -1,60 +1,73 @@
-#include <utility/path.hpp>
-#include <version.hpp>
+#include "utility/path.hpp"
 
-#if defined(__APPLE__) && defined(QT_GUI) && defined(MAC_APP_DIRS)
-#include <QStandardPaths>
-#include <filesystem>
+#include <version.hpp>
+#include <utility/file.hpp>
+
+#if defined(QT_GUI)
+    #if defined(__APPLE__)
+        #include <QStandardPaths>
+    #else
+        #include <QCoreApplication>
+    #endif
 #endif
 
 namespace Utility {
-std::string get_app_save_path()
-{
-    #if defined(__APPLE__) && defined(QT_GUI) && defined(MAC_APP_DIRS)
-        std::string path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString() + "/" + RANDOMIZER_VERSION + std::string(APP_SAVE_PATH).substr(1);
-        if (!std::filesystem::exists(path))
-        {
-            std::filesystem::create_directories(path);
-        }
-        return path;
-    #else
-        return APP_SAVE_PATH;
-    #endif
-}
-
-std::string get_preferences_path()
-{
-#if defined(__APPLE__) && defined(QT_GUI) && defined(MAC_APP_DIRS)
-    std::string path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString() + "/" + std::string(APP_SAVE_PATH).substr(1);
-    if (!std::filesystem::exists(path))
-    {
-        std::filesystem::create_directories(path);
+    fspath get_data_path() {
+        #if defined(QT_GUI)
+            #if defined(EMBED_DATA)
+                return ":/";
+            #else
+                return QCoreApplication::applicationDirPath() + "/data/";
+            #endif
+        #elif defined(DEVKITPRO)
+            return "/vol/content/";
+        #elif defined(APPLE)
+            return "../../../data/";
+        #else
+            return "./data/";
+        #endif
     }
-    return path;
-#else
-    return APP_SAVE_PATH;
-#endif
-}
 
-std::string get_logs_path()
-{
-    #if defined(__APPLE__) && defined(QT_GUI) && defined(MAC_APP_DIRS)
-        std::string path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString() + "/" + RANDOMIZER_VERSION + std::string(LOGS_PATH).substr(1);
-        if (!std::filesystem::exists(path))
+    fspath get_app_save_path() {
+        fspath path;
+        #if defined(__APPLE__) && defined(QT_GUI)
+            path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdU32String();
+        #elif defined(QT_GUI)
+            path = QCoreApplication::applicationDirPath().toStdU32String();
+        #elif defined(DEVKITPRO)
+            return "/vol/save/";
+        #else
+            return "./";
+        #endif
+        
+        if (!std::filesystem::is_directory(path))
         {
-            std::filesystem::create_directories(path);
+            Utility::create_directories(path);
         }
-        return path;
-    #else
-        return LOGS_PATH;
-    #endif
-}
 
-std::string get_temp_dir()
-{
-    #if defined(__APPLE__) && defined(QT_GUI) && defined(MAC_APP_PATHS)
-        return QStandardPaths::writableLocation(QStandardPaths::TempLocation).toStdString();
-    #else
-        return TEMP_DIR;
-    #endif
-}
+        return path;
+    }
+
+    fspath get_logs_path() {
+        const fspath path = get_app_save_path() / "logs/";
+
+        if (!std::filesystem::is_directory(path))
+        {
+            Utility::create_directories(path);
+        }
+
+        return path;
+    }
+
+    fspath get_temp_dir() {
+        // could get the OS-provided temp folder with Qt but it might be harder to find and debug should we use it for anything
+        const fspath path = get_app_save_path() / "temp/";
+
+        if (!std::filesystem::is_directory(path))
+        {
+            Utility::create_directories(path);
+        }
+
+        return path;
+    }
 }
