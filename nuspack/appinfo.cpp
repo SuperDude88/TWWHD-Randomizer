@@ -10,7 +10,7 @@ bool AppInfo::parseFromXML(const fspath& xmlPath) {
     using namespace tinyxml2;
 
     XMLDocument app;
-    if(XMLError err = app.LoadFile(xmlPath.string().c_str()); err != XMLError::XML_SUCCESS) {
+    if(XMLError err = LoadXML(app, xmlPath); err != XMLError::XML_SUCCESS) {
         return false;
     }
 

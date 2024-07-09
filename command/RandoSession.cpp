@@ -136,7 +136,7 @@ bool RandoSession::init(const fspath& gameBaseDir, const fspath& randoOutputDir)
     }
 
     if(!Utility::create_directories(outputDir)) { // handles directories that already exist
-        ErrorLog::getInstance().log("Failed to create output folder " + outputDir.string());
+        ErrorLog::getInstance().log("Failed to create output folder " + Utility::toUtf8String(outputDir));
         return false;
     }
 
@@ -514,7 +514,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, c
         if(dst == nullptr) return false;
         dst->data.str(std::string()); //clear data so we overwrite it
         std::string fileData = "";
-        if(Utility::getFileContents(source.string(), fileData, resourceFile) != 0) return false; //TODO: proper time against rdbuf
+        if(Utility::getFileContents(source, fileData, resourceFile) != 0) return false; //TODO: proper time against rdbuf
         dst->data.str(fileData); 
 
         return true;

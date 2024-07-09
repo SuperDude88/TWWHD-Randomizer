@@ -401,7 +401,7 @@ namespace FileTypes{
             entry.name = filename;
             entry.data.resize(fileSize);
 
-            std::ifstream inFile(absPath.string(), std::ios::binary);
+            std::ifstream inFile(absPath, std::ios::binary);
             if (!inFile.read(&entry.data[0], fileSize)) {
                 LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
             }
@@ -455,7 +455,7 @@ namespace FileTypes{
                 if (numPaddingBytes == 4) numPaddingBytes = 0;
                 curDataOffset += numPaddingBytes; //add name padding
 
-                std::ifstream inFile(absPath.string(), std::ios::binary);
+                std::ifstream inFile(absPath, std::ios::binary);
                 if (!inFile.read(&entry.data[0], fileSize)) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
             }
         }

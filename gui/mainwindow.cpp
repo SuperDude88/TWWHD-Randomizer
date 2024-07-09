@@ -534,7 +534,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, fix_rng);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
     update_plandomizer_widget_visbility();
-    ui->plandomizer_path->setText(config.settings.plandomizerFile.string().c_str());
+    ui->plandomizer_path->setText(Utility::toQString(config.settings.plandomizerFile));
 
     // Hints
     APPLY_CHECKBOX_SETTING(config, ui, ho_ho_hints);
@@ -579,13 +579,13 @@ void MainWindow::on_base_game_path_browse_button_clicked()
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->base_game_path->setText(dir);
-        config.gameBaseDir = dir.toStdU16String();
+        config.gameBaseDir = dir.toStdU32String();
     }
 }
 
 void MainWindow::on_base_game_path_textChanged(const QString &arg1)
 {
-    config.gameBaseDir = arg1.toStdU16String();
+    config.gameBaseDir = arg1.toStdU32String();
 }
 
 void MainWindow::on_output_folder_browse_button_clicked()
@@ -594,13 +594,13 @@ void MainWindow::on_output_folder_browse_button_clicked()
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->output_folder->setText(dir);
-        config.outputDir = dir.toStdString();
+        config.outputDir = dir.toStdU32String();
     }
 }
 
 void MainWindow::on_output_folder_textChanged(const QString &arg1)
 {
-    config.outputDir = arg1.toStdString();
+    config.outputDir = arg1.toStdU32String();
 }
 
 void MainWindow::on_generate_seed_button_clicked()
@@ -1077,7 +1077,7 @@ void MainWindow::on_randomize_button_clicked()
     }
 
     // Check to make sure the output directory is not the same or a sub directory of the base game
-    if (config.outputDir.string().starts_with(config.gameBaseDir.string()))
+    if (config.outputDir.u32string().starts_with(config.gameBaseDir.u32string()))
     {
         show_warning_dialog("The output folder cannot be within the base game folder. Please select a different output folder.", "Bad output folder");
         return;

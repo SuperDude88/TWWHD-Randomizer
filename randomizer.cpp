@@ -60,7 +60,7 @@ private:
 
         const fspath& base = g_session.getBaseDir();
         if(!is_directory(base / "code") || !is_directory(base / "content") || !is_directory(base / "meta")) {
-            ErrorLog::getInstance().log("Invalid base path: could not find code/content/meta folders at " + base.string() + "!");
+            ErrorLog::getInstance().log("Invalid base path: could not find code/content/meta folders at " + Utility::toUtf8String(base) + "!");
             return false;
         }
 
@@ -106,7 +106,7 @@ private:
         
         const fspath& out = g_session.getOutputDir();
         if(out.empty() || !is_directory(out)) { // we tried to create this earlier so error if that failed
-            ErrorLog::getInstance().log("Invalid output path: " + out.string() + " is not a valid folder!");
+            ErrorLog::getInstance().log("Invalid output path: " + Utility::toUtf8String(out) + " is not a valid folder!");
             return false;
         }
         if(!is_directory(out / "code") || !is_directory(out / "content") || !is_directory(out / "meta")) {
@@ -127,7 +127,7 @@ private:
             return false;
         }
 
-        if(tinyxml2::XMLError err = metaXml.LoadFile(metaPath.string().c_str()); err != tinyxml2::XMLError::XML_SUCCESS) {
+        if(tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
             ErrorLog::getInstance().log("Could not parse output's meta.xml, got error " + std::to_string(err));
             return false;
         }
@@ -189,7 +189,7 @@ public:
         if (config.settings.plandomizer) {
             std::string plandoContents;
             if (Utility::getFileContents(config.settings.plandomizerFile, plandoContents) != 0) {
-                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + config.settings.plandomizerFile.string());
+                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + Utility::toUtf8String(config.settings.plandomizerFile));
                 return 1;
             }
             permalink += plandoContents;

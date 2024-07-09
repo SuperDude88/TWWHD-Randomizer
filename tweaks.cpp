@@ -2623,7 +2623,7 @@ TweakError fix_ff_door() {
         std::string path = "content/Common/Stage/" + spawn_info.stage_name + "_Room" + std::to_string(spawn_info.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(spawn_info.room_num) + ".bfres@BFRES@room.dzr";
         RandoSession::fspath filePath = g_session.openGameFile(path);
         FileTypes::DZXFile room_dzr;
-        room_dzr.loadFromBinary(filePath.string());
+        room_dzr.loadFromBinary(filePath);
 
         std::vector<ChunkEntry*> spawns = room_dzr.entries_by_type("PLYR");
 
@@ -2635,14 +2635,14 @@ TweakError fix_ff_door() {
             }
         }
 
-        room_dzr.writeToStream(filePath.string());
+        room_dzr.writeToStream(filePath);
     }
 
     for (const spawn_data& spawn_info : spawns_to_create) {
         std::string path = "content/Common/Stage/" + spawn_info.stage_name + "_Room" + std::to_string(spawn_info.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(spawn_info.room_num) + ".bfres@BFRES@room.dzr";
         RandoSession::fspath filePath = g_session.openGameFile(path);
         FileTypes::DZXFile room_dzr;
-        room_dzr.loadFromBinary(filePath.string());
+        room_dzr.loadFromBinary(filePath);
 
         std::vector<ChunkEntry*> doors = room_dzr.entries_by_type("TGDR");
 

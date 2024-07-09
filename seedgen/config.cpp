@@ -554,9 +554,9 @@ YAML::Node Config::settingsToYaml() {
 
 YAML::Node Config::preferencesToYaml() {
     YAML::Node preferencesRoot;
-    SET_FIELD(preferencesRoot, "gameBaseDir", gameBaseDir.string())
-    SET_FIELD(preferencesRoot, "outputDir", outputDir.string())
-    SET_FIELD(preferencesRoot, "plandomizerFile", settings.plandomizerFile.string())
+    SET_FIELD(preferencesRoot, "gameBaseDir", Utility::toUtf8String(gameBaseDir))
+    SET_FIELD(preferencesRoot, "outputDir", Utility::toUtf8String(outputDir))
+    SET_FIELD(preferencesRoot, "plandomizerFile", Utility::toUtf8String(settings.plandomizerFile))
 
     SET_FIELD(preferencesRoot, "pig_color", PigColorToName(settings.pig_color))
 
@@ -581,7 +581,7 @@ ConfigError Config::writeSettings(const fspath& filePath) {
     std::ofstream f(filePath);
     if (f.is_open() == false)
     {
-        ErrorLog::getInstance().log("Could not open config at " + filePath.string());
+        ErrorLog::getInstance().log("Could not open config at " + Utility::toUtf8String(filePath));
         return ConfigError::COULD_NOT_OPEN;
     }
     f << root;
@@ -596,7 +596,7 @@ ConfigError Config::writePreferences(const fspath& preferencesPath) {
     std::ofstream pref(preferencesPath);
     if (pref.is_open() == false)
     {
-        ErrorLog::getInstance().log("Could not open preferences at " + preferencesPath.string());
+        ErrorLog::getInstance().log("Could not open preferences at " + Utility::toUtf8String(preferencesPath));
         return ConfigError::COULD_NOT_OPEN;
     }
     pref << preferences;

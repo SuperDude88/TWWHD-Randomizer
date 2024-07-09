@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include <command/Log.hpp>
+#include <utility/path.hpp>
 #include <utility/platform.hpp>
 #include <utility/thread_local.hpp>
 
@@ -38,7 +39,7 @@ namespace Utility {
     static ThreadLocal<AlignedBufferWrapper, DataIDs::FILE_OP_BUFFER> buf;
 
     bool copy_file(const fspath& from, const fspath& to) {
-        Utility::platformLog("Copying " + to.string());
+        Utility::platformLog("Copying " + Utility::toUtf8String(to));
         #ifdef DEVKITPRO
             //use a buffer to speed up file copying
 
@@ -134,7 +135,7 @@ namespace Utility {
             // If this is a resource file and the data has been embedded, then load it from
             // the embedded resources file
             #if defined(QT_GUI) && defined(EMBED_DATA)
-                QResource file(filename.string().c_str());
+                QResource file(Utility::toQString(filename));
                 if(!file.isValid()) {
                     return 1;
                 }
@@ -163,7 +164,7 @@ namespace Utility {
         std::ifstream file(filename, std::ios::binary);
         if (!file.is_open())
         {
-            ErrorLog::getInstance().log("unable to open file \"" + filename.string() + "\"");
+            ErrorLog::getInstance().log("Unable to open file \"" + Utility::toUtf8String(filename) + "\"");
             return 1;
         }
 
