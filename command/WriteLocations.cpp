@@ -58,7 +58,7 @@ static const std::unordered_set<std::string> stone_head_actor_names = {
 namespace {
     static std::unordered_map<std::string, uint32_t> custom_symbols;
 
-    void Load_Custom_Symbols(const std::string& file_path) {
+    void Load_Custom_Symbols(const fspath& file_path) {
         std::string file_data;
         if(Utility::getFileContents(file_path, file_data, true))
         {
@@ -377,7 +377,7 @@ ModificationError ModifySymbol::parseArgs(const YAML::Node& locationObject) {
 }
 
 ModificationError ModifySymbol::writeLocation(const Item& item) {
-    if (custom_symbols.size() == 0) Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml");
+    if (custom_symbols.size() == 0) Load_Custom_Symbols(Utility::get_data_path() / "asm/custom_symbols.yaml");
 
     for(const auto& symbol : symbolNames) {
         uint32_t address;

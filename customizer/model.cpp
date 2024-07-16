@@ -1,7 +1,6 @@
 #include "model.hpp"
 
 #include <tuple>
-#include <filesystem>
 
 #include <libs/yaml.hpp>
 #include <logic/PoolFunctions.hpp>
@@ -20,7 +19,7 @@ ModelError CustomModel::loadFromFolder() {
         modelName = "Link";
     }
 
-    folder = DATA_PATH "customizer/" + modelName;
+    folder = Utility::get_data_path() / "customizer" / modelName;
     
     presets.clear();
     heroOrdering.clear();

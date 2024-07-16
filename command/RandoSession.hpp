@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -8,6 +7,7 @@
 #include <functional>
 #include <atomic>
 
+#include <utility/path.hpp>
 #include <filetypes/baseFiletype.hpp>
 
 
@@ -19,8 +19,6 @@
 class RandoSession
 {
 public:
-    using fspath = std::filesystem::path;
-
     class CacheEntry {
     public:
         enum struct Format {

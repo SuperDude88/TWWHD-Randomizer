@@ -2,6 +2,7 @@
 
 #include <nuspack/contents/contents.hpp>
 #include <nuspack/packaging/fst.hpp>
+#include <command/Log.hpp>
 #include <utility/endian.hpp>
 #include <utility/file.hpp>
 

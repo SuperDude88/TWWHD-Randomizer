@@ -1138,7 +1138,7 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
 World::WorldLoadingError World::loadDungeonExitInfo()
 {
     std::string dungeonExitData;
-    Utility::getFileContents(DATA_PATH "logic/dungeon_entrance_info.yaml", dungeonExitData, true);
+    Utility::getFileContents(Utility::get_data_path() / "logic/dungeon_entrance_info.yaml", dungeonExitData, true);
     YAML::Node dungeonExitTree = YAML::Load(dungeonExitData);
 
     for (const auto& dungeonExitData : dungeonExitTree)
@@ -1211,7 +1211,7 @@ World::WorldLoadingError World::processPlandomizerLocations(WorldPool& worlds)
 }
 
 // Load the world based on the given world graph file, macros file, loation data file, item data file, and area data file
-int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath)
+int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, const fspath& locationDataPath, const fspath& itemDataPath, const fspath& areaDataPath)
 {
     LOG_TO_DEBUG("Loading world");
     // load and parse items

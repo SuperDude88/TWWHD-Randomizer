@@ -5,8 +5,8 @@
 #pragma once
 
 #include <fstream>
-#include <string>
 
+#include <utility/path.hpp>
 #include <nuspack/fst/FSTEntries.hpp>
 #include <nuspack/contents/contents.hpp>
 
@@ -48,7 +48,7 @@ namespace FileTypes {
         
         void Update();
         FSTError writeToStream(std::ostream& out);
-        FSTError writeToFile(const std::string& filePath);
+        FSTError writeToFile(const fspath& filePath);
 
     private:
         FSTHeader header;

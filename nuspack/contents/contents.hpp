@@ -6,8 +6,8 @@
 #include <sstream>
 #include <list>
 #include <cstdint>
-#include <filesystem>
 
+#include <utility/path.hpp>
 #include <nuspack/crypto/Encryption.hpp>
 #include <nuspack/packaging/ContentDetails.hpp>
 #include <nuspack/types.hpp>
@@ -69,7 +69,7 @@ public:
 
     uint64_t GetOffsetForFileAndIncrease(const FSTEntry& entry);
     void Update(const std::vector<FSTEntry*>& entries);
-    void PackContentToFile(const std::filesystem::path&  outputDir, Encryption& encryption);
+    void PackContentToFile(const fspath& outputDir, Encryption& encryption);
     uint64_t writeFSTContentHeader(std::ostream& out, const uint64_t& oldOffset);
     void writeToStream(std::ostream& out);
 
@@ -92,7 +92,7 @@ public:
     void DeleteContent(const size_t& idx);
     void ResetFileOffsets();
     void Update(const FSTEntries& entries);
-    void PackContents(const std::filesystem::path& out, Encryption& encryption);
+    void PackContents(const fspath& out, Encryption& encryption);
     void writeFSTContentHeader(std::ostream& out);
     void writeToStream(std::ostream& out);
 

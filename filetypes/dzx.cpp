@@ -193,7 +193,7 @@ namespace FileTypes {
 		return DZXError::NONE;
 	}
 
-	DZXError DZXFile::loadFromFile(const std::string& filePath) {
+	DZXError DZXFile::loadFromFile(const fspath& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(DZXError::COULD_NOT_OPEN);
@@ -309,7 +309,7 @@ namespace FileTypes {
 		return DZXError::NONE;
 	}
 
-	DZXError DZXFile::writeToFile(const std::string& outFilePath) {
+	DZXError DZXFile::writeToFile(const fspath& outFilePath) {
 		std::ofstream outFile(outFilePath, std::ios::binary);
 		if (!outFile.is_open()) {
 			LOG_ERR_AND_RETURN(DZXError::COULD_NOT_OPEN);

@@ -4,8 +4,8 @@
 #pragma once
 
 #include <array>
-#include <string>
 
+#include <utility/path.hpp>
 #include <nuspack/packaging/ticket.hpp>
 #include <nuspack/appinfo.hpp>
 #include <nuspack/crypto/Encryption.hpp>
@@ -65,10 +65,10 @@ namespace FileTypes {
         {}
 
         TMDError loadFromBinary(std::istream& in);
-        TMDError loadFromFile(const std::string& filePath);
+        TMDError loadFromFile(const fspath& filePath);
         void update(const AppInfo& info);
         TMDError writeToStream(std::ostream& out);
-        TMDError writeToFile(const std::string& filePath);
+        TMDError writeToFile(const fspath& filePath);
         Encryption getEncryption();
         void UpdateContentInfoHash();
         

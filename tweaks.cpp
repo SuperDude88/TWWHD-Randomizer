@@ -28,8 +28,8 @@
 #include <command/GamePath.hpp>
 #include <command/RandoSession.hpp>
 
-#define EXTRACT_ERR_CHECK(fspath) { \
-    if(fspath == nullptr) {\
+#define EXTRACT_ERR_CHECK(path) { \
+    if(path == nullptr) {\
         ErrorLog::getInstance().log(std::string("Failed to open file on line ") + std::to_string(__LINE__)); \
         return TweakError::FILE_OPEN_FAILED;  \
     } \
@@ -61,7 +61,7 @@ using eType = Utility::Endian::Type;
 
 static std::unordered_map<std::string, uint32_t> custom_symbols;
 
-static TweakError Load_Custom_Symbols(const std::string& file_path) {
+static TweakError Load_Custom_Symbols(const fspath& file_path) {
     std::string file_data;
     if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 
@@ -73,7 +73,7 @@ static TweakError Load_Custom_Symbols(const std::string& file_path) {
     return TweakError::NONE;
 }
 
-static TweakError Apply_Patch(const std::string& file_path) {
+static TweakError Apply_Patch(const fspath& file_path) {
     std::string file_data;
     if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
 
@@ -159,7 +159,7 @@ TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t 
 }
 
 TweakError change_ship_starting_island(const uint8_t room_index) {
-    const std::string path = getRoomDzrPath("sea", room_index);
+    const fspath path = getRoomDzrPath("sea", room_index);
 
     RandoSession::CacheEntry& room = g_session.openGameFile(path);
     RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
@@ -198,7 +198,7 @@ TweakError change_ship_starting_island(const uint8_t room_index) {
 
 TweakError make_all_text_instant() {
     for (const auto& language : Text::supported_languages) {
-        const RandoSession::fspath paths[4] = {
+        const fspath paths[4] = {
         "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT",
         "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT",
         "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt@MSBT",
@@ -429,7 +429,7 @@ TweakError allow_all_items_to_be_field_items() {
     });
 
     //execItemGet, mode_wait, and getYOffset had their switch cases optimized out, so their patches are a little more involved in HD
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/field_items_diff.yaml")); 
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/field_items_diff.yaml")); 
     
     const uint32_t item_info_list_start = 0x101E8674;
     for (unsigned int item_id = 0x00; item_id < 0xFF + 1; item_id++) {
@@ -508,7 +508,7 @@ TweakError remove_ff2_cutscenes(const bool& randomize_boss_entrances) {
 }
 
 TweakError make_items_progressive() {
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_items_progressive_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_items_progressive_diff.yaml"));
 
     const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
@@ -777,7 +777,7 @@ TweakError modify_title_screen() {
     tEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(title, FileTypes::FLIMFile, data)
         
-        FILETYPE_ERROR_CHECK(title.replaceWithDDS(DATA_PATH "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+        FILETYPE_ERROR_CHECK(title.replaceWithDDS(Utility::get_data_path() / "assets/Title.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
         return true;
     });
@@ -787,7 +787,7 @@ TweakError modify_title_screen() {
     sEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(subtitle, FileTypes::FLIMFile, data)
         
-        FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(DATA_PATH "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+        FILETYPE_ERROR_CHECK(subtitle.replaceWithDDS(Utility::get_data_path() / "assets/Subtitle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
         return true;
     });
@@ -797,7 +797,7 @@ TweakError modify_title_screen() {
     mEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(mask, FileTypes::FLIMFile, data)
         
-        FILETYPE_ERROR_CHECK(mask.replaceWithDDS(DATA_PATH "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
+        FILETYPE_ERROR_CHECK(mask.replaceWithDDS(Utility::get_data_path() / "assets/SubtitleMask.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 
         return true;
     });
@@ -818,7 +818,7 @@ TweakError modify_title_screen() {
 }
 
 TweakError update_name_and_icon() {
-    if(!g_session.copyToGameFile(DATA_PATH "assets/iconTex.tga", "meta/iconTex.tga", /*resourceFile = */ true)) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
+    if(!g_session.copyToGameFile(Utility::get_data_path() / "assets/iconTex.tga", "meta/iconTex.tga", /*resourceFile = */ true)) LOG_ERR_AND_RETURN(TweakError::FILE_COPY_FAILED);
 
     RandoSession::CacheEntry& metaEntry = g_session.openGameFile("meta/meta.xml");
     metaEntry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -1072,7 +1072,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
 TweakError remove_bog_warp_in_cs() {
     for (uint8_t i = 1; i < 49+1; i++) {
-        const std::string path = getRoomDzrPath("sea", i);
+        const fspath path = getRoomDzrPath("sea", i);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(room_dzr, FileTypes::DZXFile, data)
@@ -1135,7 +1135,7 @@ TweakError update_text_replacements(World& world) {
                 messageNum = "4";
             }
 
-            std::string filePath = std::string("content/Common/Pack/permanent_2d_Us") + language + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt@MSBT";
+            fspath filePath = std::string("content/Common/Pack/permanent_2d_Us") + language + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt@MSBT";
             RandoSession::CacheEntry& entry = g_session.openGameFile(filePath);
             entry.addAction([language, messageLabel = messageLabel, languages = languages](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
@@ -1315,7 +1315,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
             auto islandNumToFace = islandNameToRoomIndex(island);
             auto hohoIslandNum = islandNameToRoomIndex(hohoLocation->hintRegions.front());
 
-            const std::string filepath = getRoomDzrPath("sea", hohoIslandNum);
+            const fspath filepath = getRoomDzrPath("sea", hohoIslandNum);
             RandoSession::CacheEntry& room = g_session.openGameFile(filepath);
 
             room.addAction([=](RandoSession* session, FileType* data) -> int {
@@ -1372,7 +1372,7 @@ TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartC
     });
 
     if(starting_health < 8) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_low_health_effects_diff.yaml")); 
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_low_health_effects_diff.yaml")); 
     }
 
     return TweakError::NONE;
@@ -1612,8 +1612,8 @@ TweakError add_cross_dungeon_warps() {
     for(const auto& loop : loops) {
         uint8_t warp_index = 0;
         for (const CyclicWarpPotData& warp : loop) {
-            RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
-            RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Stage/" + warp.stage_name + "_Room" + std::to_string(warp.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(warp.room_num) + ".bfres@BFRES@room.dzr@DZX");
+            RandoSession::CacheEntry& stage = g_session.openGameFile(getStageFilePath(warp.stage_name).concat("@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX"));
+            RandoSession::CacheEntry& room = g_session.openGameFile(getRoomDzrPath(warp.stage_name, warp.room_num));
 
             RandoSession::CacheEntry* dzx_for_spawn;
             dzx_for_spawn = &room;
@@ -1752,12 +1752,12 @@ TweakError add_cross_dungeon_warps() {
 TweakError restore_cross_dungeon_warps() {
     for(const auto& loop : loops) {
         for (const CyclicWarpPotData& warp : loop) {
-            if(const std::string path = getRoomFilePath(warp.stage_name, warp.room_num); !g_session.restoreGameFile(path)) {
-                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+            if(const fspath path = getRoomFilePath(warp.stage_name, warp.room_num); !g_session.restoreGameFile(path)) {
+                ErrorLog::getInstance().log("Failed to restore " + path.string() + '\n');
                 return TweakError::FILE_OPEN_FAILED;
             }
-            if(const std::string path = getStageFilePath(warp.stage_name); !g_session.restoreGameFile(path)) {
-                ErrorLog::getInstance().log("Failed to restore " + path + '\n');
+            if(const fspath path = getStageFilePath(warp.stage_name); !g_session.restoreGameFile(path)) {
+                ErrorLog::getInstance().log("Failed to restore " + path.string() + '\n');
                 return TweakError::FILE_OPEN_FAILED;
             }
         }
@@ -1787,12 +1787,10 @@ TweakError add_boss_door_return_spawns() {
     for (auto& newSpawn : newSpawns) {
 
         RandoSession::CacheEntry* dzx_for_spawn;
-        if (newSpawn.stage_name == "sea") {
-            dzx_for_spawn = &g_session.openGameFile(getRoomDzrPath("sea", newSpawn.room_num));
-        } else if (isAnyOf(newSpawn.stage_name, "M_Dai", "kaze")) {
-            dzx_for_spawn = &g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
+        if(isAnyOf(newSpawn.stage_name, "M_Dai", "kaze")) {
+            dzx_for_spawn = &g_session.openGameFile(getStageFilePath(newSpawn.stage_name).concat("@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX"));
         } else {
-            dzx_for_spawn = &g_session.openGameFile("content/Common/Stage/" + newSpawn.stage_name + "_Room" + std::to_string(newSpawn.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(newSpawn.room_num) + ".bfres@BFRES@room.dzr@DZX");;
+            dzx_for_spawn = &g_session.openGameFile(getRoomDzrPath(newSpawn.stage_name, newSpawn.room_num));
         }
 
         Utility::Endian::toPlatform_inplace(eType::Big, newSpawn.x);
@@ -2317,7 +2315,7 @@ TweakError implement_key_bag() {
         charm.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(pirates_charm, FileTypes::FLIMFile, data)
 
-            FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(DATA_PATH "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+            FILETYPE_ERROR_CHECK(pirates_charm.replaceWithDDS(Utility::get_data_path() / "assets/KeyBag.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
             return true;
         });
@@ -2523,9 +2521,8 @@ TweakError fix_totg_warp_spawn() {
 }
 
 TweakError remove_phantom_ganon_req_for_reefs() {
-    std::string path;
     for (const uint8_t room_index : {24, 46, 22, 8, 37, 25}) {
-        path = getRoomDzrPath("sea", room_index);
+        const fspath path = getRoomDzrPath("sea", room_index);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -2651,7 +2648,7 @@ TweakError fix_ff_door() {
         std::string path = "content/Common/Stage/" + spawn_info.stage_name + "_Room" + std::to_string(spawn_info.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(spawn_info.room_num) + ".bfres@BFRES@room.dzr";
         RandoSession::fspath filePath = g_session.openGameFile(path);
         FileTypes::DZXFile room_dzr;
-        room_dzr.loadFromBinary(filePath.string());
+        room_dzr.loadFromBinary(filePath);
 
         std::vector<ChunkEntry*> spawns = room_dzr.entries_by_type("PLYR");
 
@@ -2663,14 +2660,14 @@ TweakError fix_ff_door() {
             }
         }
 
-        room_dzr.writeToStream(filePath.string());
+        room_dzr.writeToStream(filePath);
     }
 
     for (const spawn_data& spawn_info : spawns_to_create) {
         std::string path = "content/Common/Stage/" + spawn_info.stage_name + "_Room" + std::to_string(spawn_info.room_num) + ".szs@YAZ0@SARC@Room" + std::to_string(spawn_info.room_num) + ".bfres@BFRES@room.dzr";
         RandoSession::fspath filePath = g_session.openGameFile(path);
         FileTypes::DZXFile room_dzr;
-        room_dzr.loadFromBinary(filePath.string());
+        room_dzr.loadFromBinary(filePath);
 
         std::vector<ChunkEntry*> doors = room_dzr.entries_by_type("TGDR");
 
@@ -2712,35 +2709,29 @@ TweakError fix_ff_door() {
 TweakError remove_minor_pan_cs() {
     struct pan_cs_info {
         std::string stage_name;
-        std::string szs_suffix;
+        int roomNum;
         uint8_t evnt_index;
     };
 
     const std::array<pan_cs_info, 7> panning_cs{
         {
-            {"M_NewD2", "Room2", 4},
-            {"kindan", "Stage", 2},
-            {"Siren", "Room18", 2},
-            {"M_Dai", "Room3", 7},
-            {"sea", "Room41", 19},
-            {"sea", "Room41", 22},
-            {"sea", "Room41", 23}
+            {"M_NewD2", 2, 4},
+            {"kindan", -1, 2},
+            {"Siren", 18, 2},
+            {"M_Dai", 3, 7},
+            {"sea", 41, 19},
+            {"sea", 41, 22},
+            {"sea", 41, 23}
         }
     };
 
-    std::string path;
     for (const pan_cs_info& cs_info : panning_cs) {
-        if (cs_info.stage_name == "sea") {
-            path = "content/Common/Pack/szs_permanent2.pack@SARC@" + cs_info.stage_name + "_" + cs_info.szs_suffix + ".szs@YAZ0@SARC" + "@" + cs_info.szs_suffix + ".bfres@BFRES@room.dzr@DZX"; //hardcoding permanent2 because that's all this patch needs and coding more would be annoying
+        fspath path;
+        if(cs_info.roomNum != -1) {
+            path = getRoomDzrPath(cs_info.stage_name, cs_info.roomNum);
         }
         else {
-            path = "content/Common/Stage/" + cs_info.stage_name + "_" + cs_info.szs_suffix + ".szs@YAZ0@SARC";
-            if (cs_info.szs_suffix == "Stage") {
-                path = path + "@Stage.bfres@BFRES@stage.dzs@DZX";
-            }
-            else {
-                path = path + "@" + cs_info.szs_suffix + ".bfres@BFRES@room.dzr@DZX";
-            }
+            path = getStageFilePath(cs_info.stage_name).concat("@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
         }
 
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
@@ -2790,7 +2781,7 @@ TweakError show_tingle_statues_on_quest_screen() {
         RandoSession::CacheEntry& icon = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim@BFLIM");
         icon.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(tingle, FileTypes::FLIMFile, data)
-            FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(DATA_PATH "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
+            FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(Utility::get_data_path() / "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
 
             return true;
         });
@@ -2798,7 +2789,7 @@ TweakError show_tingle_statues_on_quest_screen() {
         RandoSession::CacheEntry& shadow = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim@BFLIM");
         shadow.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(shadow, FileTypes::FLIMFile, data)
-            FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(DATA_PATH "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
+            FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(Utility::get_data_path() / "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
 
             return true;
         });
@@ -2926,7 +2917,7 @@ TweakError replace_ctmc_chest_texture() {
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
 
-        FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(DATA_PATH "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_TILED_2D_THIN1, 0, true, true));
+        FILETYPE_ERROR_CHECK(bfres.textures[3].replaceImageData(Utility::get_data_path() / "assets/KeyChest.dds", GX2TileMode::GX2_TILE_MODE_TILED_2D_THIN1, 0, true, true));
 
         return true;
     });
@@ -3556,22 +3547,22 @@ TweakError give_fairy_fountains_distinct_colors() {
 }
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
-    LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(DATA_PATH "asm/custom_symbols.yaml"));
+    LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(Utility::get_data_path() / "asm/custom_symbols.yaml"));
 
     const std::string seedHash = LogInfo::getSeedHash();
     const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
 
     TWEAK_ERR_CHECK(updateCodeSize());
 
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/custom_funcs_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_cutscenes_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_entrances_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_hint_locations_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/flexible_item_locations_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/misc_rando_features_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/switch_op_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/custom_funcs_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_cutscenes_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_entrances_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_hint_locations_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_item_locations_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/misc_rando_features_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_op_diff.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3604,26 +3595,26 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     });
 
     if (settings.instant_text_boxes) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/b_button_skips_text_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/b_button_skips_text_diff.yaml"));
         TWEAK_ERR_CHECK(make_all_text_instant());
     }
     if (settings.fix_rng) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/fix_rng_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_rng_diff.yaml"));
     }
     if (settings.performance) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/performance_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/performance_diff.yaml"));
     }
     if (settings.classic_mode) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/classic_features_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/classic_features_diff.yaml"));
     }
     if (settings.reveal_full_sea_chart) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
     }
     if (settings.invert_sea_compass_x_axis) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
     }
     if (settings.remove_swords) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/swordless_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/swordless_diff.yaml"));
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
@@ -3632,7 +3623,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         });
     }
     if (settings.remove_music) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(DATA_PATH "asm/patch_diffs/remove_music_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_music_diff.yaml"));
     }
     if(settings.chest_type_matches_contents) {
         TWEAK_ERR_CHECK(replace_ctmc_chest_texture());

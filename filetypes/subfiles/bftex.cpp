@@ -276,7 +276,7 @@ namespace FileTypes::Subfiles {
         return FTEXError::NONE;
     }
 
-    FTEXError FTEXFile::replaceImageData(const std::string& filePath, const GX2TileMode& tileMode, const uint32_t& swizzle_, const bool& SRGB, const bool& importMips) {
+    FTEXError FTEXFile::replaceImageData(const fspath& filePath, const GX2TileMode& tileMode, const uint32_t& swizzle_, const bool& SRGB, const bool& importMips) {
         FileTypes::DDSFile dds;
         if(DDSError err = dds.loadFromFile(filePath, SRGB); err != DDSError::NONE) {
             LOG_ERR_AND_RETURN(FTEXError::BAD_DDS);

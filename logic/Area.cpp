@@ -1,12 +1,12 @@
 
 #include "Area.hpp"
-#include "PoolFunctions.hpp"
-#include "World.hpp"
 
+#include <iostream>
 #include <unordered_map>
 #include <array>
 
-#include <iostream>
+#include <logic/PoolFunctions.hpp>
+#include <logic/World.hpp>
 
 std::string Area::getRegion()
 {

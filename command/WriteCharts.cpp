@@ -31,7 +31,7 @@ bool writeCharts(const WorldPool& worlds) {
     };
 
     for (uint8_t islandNumber = 1; islandNumber <= 49; islandNumber++) {
-        const std::string dzrPath = getRoomDzrPath("sea", islandNumber);
+        const fspath dzrPath = getRoomDzrPath("sea", islandNumber);
         RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(dzrPath);
 
         entry.addAction([&worlds, &dzrEntry, islandNumber](RandoSession* session, FileType* data) -> int

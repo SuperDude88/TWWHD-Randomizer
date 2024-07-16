@@ -2308,7 +2308,7 @@ namespace FileTypes {
         return FLYTError::NONE;
     }
 
-    FLYTError FLYTFile::loadFromFile(const std::string& filePath) {
+    FLYTError FLYTFile::loadFromFile(const fspath& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(FLYTError::COULD_NOT_OPEN)
@@ -2369,7 +2369,7 @@ namespace FileTypes {
         return FLYTError::NONE;
     }
 
-    FLYTError FLYTFile::writeToFile(const std::string& outFilePath) {
+    FLYTError FLYTFile::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if (!outFile.is_open()) {
             LOG_ERR_AND_RETURN(FLYTError::COULD_NOT_OPEN)

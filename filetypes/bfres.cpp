@@ -2,7 +2,6 @@
 
 #include <cstring>
 #include <algorithm>
-#include <filesystem>
 #include <variant>
 
 #include <utility/endian.hpp>
@@ -321,7 +320,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::loadFromFile(const std::string& filePath) {
+    FRESError resFile::loadFromFile(const fspath& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
@@ -372,7 +371,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceEmbeddedFile(const std::string& fileName, const std::string& newFilename) {
+    FRESError resFile::replaceEmbeddedFile(const std::string& fileName, const fspath& newFilename) {
         GroupHeader group;
         group.groupLength = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C]);
         group.entryCount = *reinterpret_cast<int32_t*>(&fileData[0x20 + (11 * 0x4) + fresHeader.groupOffsets[11] - 0x6C] + 4);
@@ -487,16 +486,16 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::replaceFromDir(const std::string& dirPath) {
+    FRESError resFile::replaceFromDir(const fspath& dirPath) {
         for (const auto& file : files) {
-            LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(file.fileName, dirPath + file.fileName));
+            LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(file.fileName, dirPath / file.fileName));
         }
         return FRESError::NONE;
     }
 
-    FRESError resFile::extractToDir(const std::string& dirPath) const {
+    FRESError resFile::extractToDir(const fspath& dirPath) const {
         for (const FileSpec& file : files) {
-            std::ofstream outFile(dirPath + '/' + file.fileName, std::ios::binary);
+            std::ofstream outFile(dirPath / file.fileName, std::ios::binary);
             if (!outFile.is_open()) {
                 LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
             }
@@ -521,7 +520,7 @@ namespace FileTypes {
         return FRESError::NONE;
     }
 
-    FRESError resFile::writeToFile(const std::string& outFilePath) {
+    FRESError resFile::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if (!outFile.is_open()) {
             LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);

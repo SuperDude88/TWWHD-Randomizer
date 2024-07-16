@@ -20,7 +20,7 @@ public:
 
     FileTypes::FSTFile fst;
     FileTypes::TMDFile tmd;
-    std::string outputDir;
+    fspath outputDir;
 
     NUSPackage() = delete;
     NUSPackage(const PackageConfig& config); //do all the things in a constructor to force no copy/move
@@ -32,5 +32,5 @@ public:
     NUSPackage& operator=(const NUSPackage& other) = delete;
     NUSPackage& operator=(NUSPackage&& other) = delete;
 
-    void PackContents(const std::filesystem::path& out);
+    void PackContents(const fspath& out);
 };

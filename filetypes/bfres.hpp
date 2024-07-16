@@ -105,13 +105,13 @@ namespace FileTypes
         resFile();
         //static FRESFile createNew(); //Needs more complete implementation to be usable
         FRESError loadFromBinary(std::istream& bfres); // Only does embedded files and textures for now
-        FRESError loadFromFile(const std::string& filePath);
-        FRESError replaceEmbeddedFile(const std::string& fileName, const std::string& newFilename);
+        FRESError loadFromFile(const fspath& filePath);
+        FRESError replaceEmbeddedFile(const std::string& fileName, const fspath& newFilename);
         FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);
-        FRESError replaceFromDir(const std::string& dirPath);
-        FRESError extractToDir(const std::string& dirPath) const; //Only does embedded files for now
+        FRESError replaceFromDir(const fspath& dirPath);
+        FRESError extractToDir(const fspath& dirPath) const; //Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
-        FRESError writeToFile(const std::string& outFilePath);
+        FRESError writeToFile(const fspath& outFilePath);
     private:
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile);
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::stringstream& newFile);

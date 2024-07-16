@@ -60,7 +60,7 @@ namespace FileTypes {
         return FSTError::NONE;
     }
 
-    FSTError FSTFile::writeToFile(const std::string& filePath) {
+    FSTError FSTFile::writeToFile(const fspath& filePath) {
         std::ofstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(FSTError::COULD_NOT_OPEN);

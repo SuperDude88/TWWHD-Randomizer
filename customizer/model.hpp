@@ -4,7 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <list>
-#include <filesystem>
+
+#include <utility/path.hpp>
 
 enum struct [[nodiscard]] ModelError {
     NONE = 0,
@@ -31,7 +32,7 @@ public:
 
 class CustomModel {
 private:
-    std::filesystem::path folder;
+    fspath folder;
 
     std::vector<ColorPreset> presets;
 
