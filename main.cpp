@@ -19,7 +19,7 @@
 #endif
 
 int main(int argc, char *argv[]) {
-    // Initialze RNG for choosing random colors (fill algorithm does not use this)
+    // Initialze RNG for choosing random colors and seed strings (fill algorithm does not use this)
     srand(time(NULL));
 
 #ifdef QT_GUI

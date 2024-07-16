@@ -2464,17 +2464,17 @@ static const std::vector<std::string> nouns = {
 };
 
 std::string generate_seed() {
-    const auto noun_file = Random(0, 2);
+    const auto noun_file = rand() % 2;
     std::string adjective1, adjective2, noun;
 
-    adjective1 = RandomElement(adjectives);
-    adjective2 = RandomElement(adjectives);
+    adjective1 = adjectives[rand() % adjectives.size()];
+    adjective2 = adjectives[rand() % adjectives.size()];
 
     if(noun_file == 0) {
-        noun = RandomElement(names);
+        noun = names[rand() % names.size()];
     }
     else {
-        noun = RandomElement(nouns);
+        noun = nouns[rand() % nouns.size()];
     }
 
     adjective1[0] = std::toupper(adjective1[0]);
