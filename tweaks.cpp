@@ -221,11 +221,37 @@ TweakError make_all_text_instant() {
                         wait = String.find(u"\x0e\x01\x06\x02"s);
                     }
 
-                    std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
-                    if (label == "07726" || label == "02488") wait_dismiss = std::u16string::npos; //exclude messages that are broken by removing the command
-                    while (wait_dismiss != std::u16string::npos) {
-                        String.erase(wait_dismiss, 5);
-                        wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
+                    // Most of these waits are in cutscenes like the credits
+                    // Removing them forces you to advance the text yourself which is undesirable
+                    // So only apply it to a few instances
+                    static const std::unordered_set<std::string> wait_dismiss_to_remove = {
+                        // Healing Grandma text
+                        "02034",
+                        "02039",
+                        "02040",
+                        // Tingle's text
+                        "03522",
+                        "04316",
+                        // Beedle's text
+                        "03956",
+                        // Hollo's text
+                        "05162",
+                        // Auction text
+                        "07416",
+                        // Killer Bees' text
+                        "09935",
+                        // Dampa's text
+                        "12920",
+                        // Flight Control Platform text
+                        "10930",
+                    };
+
+                    if(wait_dismiss_to_remove.contains(label)) {
+                        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
+                        while (wait_dismiss != std::u16string::npos) {
+                            String.erase(wait_dismiss, 5);
+                            wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
+                        }
                     }
 
                     std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
@@ -233,10 +259,9 @@ TweakError make_all_text_instant() {
                         String.erase(wait_dismiss_prompt, 5);
                         wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
                     }
-            
                 }
             
-            return 1;
+                return true;
             });
         }
     }
