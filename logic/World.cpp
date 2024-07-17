@@ -543,12 +543,12 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
                     for (auto dungeonLocation : allDungeonLocations)
                     {
-                        if (!plandomizer.locations.contains(dungeonLocation) || !plandomizer.locations[dungeonLocation].isJunkItem())
+                        if (plandomizer.locations.contains(dungeonLocation) && !plandomizer.locations[dungeonLocation].isJunkItem())
                         {
                             // However, if the dungeon's naturally assigned race mode location is junk then
                             // that's an error on the user's part.
                             Location* raceModeLocation = dungeon.raceModeLocation;
-                            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
+                            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[dungeonLocation].isJunkItem();
                             if (dungeon.hasNaturalRaceModeLocation && !raceModeLocationIsAcceptable)
                             {
                                 ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
