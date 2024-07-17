@@ -70,6 +70,20 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     trackerSettings.starting_hcs = 3;
 
     trackerWorld.setSettings(trackerSettings);
+
+    if(trackerWorld.getSettings().plandomizer)
+    {
+        std::vector<Plandomizer> plandos(1);
+        PlandomizerError err = loadPlandomizer(trackerWorld.getSettings().plandomizerFile, plandos, 1);
+        if (err != PlandomizerError::NONE)
+        {
+            show_warning_dialog("Could not load provided plandomizer file. Continuing without plandomizer data.");
+        }
+        else {
+            trackerWorld.plandomizer = plandos[0];
+        }
+    }
+
     if (trackerWorld.loadWorld(Utility::get_data_path() / "logic/world.yaml", Utility::get_data_path() / "logic/macros.yaml", Utility::get_data_path() / "logic/location_data.yaml", Utility::get_data_path() / "logic/item_data.yaml", Utility::get_data_path() / "logic/area_names.yaml"))
     {
         show_error_dialog("Could not build world for app tracker");

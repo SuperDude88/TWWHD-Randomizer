@@ -834,7 +834,7 @@ void MainWindow::on_plandomizer_path_browse_button_clicked()
     if (!fileName.isEmpty() && !fileName.isNull())
     {
         ui->plandomizer_path->setText(fileName);
-        config.settings.plandomizerFile = fileName.toStdString();
+        config.settings.plandomizerFile = fileName.toStdU32String();
     }
 }
 
