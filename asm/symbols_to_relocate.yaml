@@ -9,6 +9,7 @@ original_last_warp_button_name: .data
 safestring_vtbl_1010394c: .data
 g_fpcLf_Method: .data
 g_fopAc_Method: .data
+shopItems_setData_FoodAll: .data
 
 custom_damage_multiplier: .text
 custom_warp_pot_env_color: .text
