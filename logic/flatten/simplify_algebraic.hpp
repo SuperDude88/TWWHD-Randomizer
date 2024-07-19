@@ -29,7 +29,7 @@ struct FoundKernel
     BitVector coKernel;
 };
 
-Requirement DNFToExpr(const BitIndex& bitIndex, DNF& dnf);
+Requirement DNFToExpr(BitIndex& bitIndex, DNF dnf);
 
 Requirement createAnd(std::vector<Requirement> terms);
 
@@ -174,6 +174,9 @@ template<typename Container>
 std::vector<Requirement> lookupRequirements(BitIndex& bitIndex, Container r)
 {
     std::vector<Requirement> reqs;
-    std::transform(r.begin(), r.end(), reqs.end(), [&](const auto& bit){return bitIndex.reverseIndex[bit];});
+    for (auto& bit : r)
+    {
+        reqs.push_back(bitIndex.reverseIndex[bit]);
+    }
     return reqs;
 }

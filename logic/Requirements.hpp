@@ -47,6 +47,6 @@ struct Requirement
     std::vector<Argument> args;
 };
 
-std::string printRequirement(Requirement& req, int nestingLevel = 0);
+std::string printRequirement(const Requirement& req, int nestingLevel = 0);
 RequirementError parseRequirementString(const std::string& str, Requirement& req, World* world);
 std::string errorToName(const RequirementError& err);

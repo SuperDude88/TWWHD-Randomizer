@@ -187,7 +187,14 @@ DNF DNF::and_(const DNF& other)
             d.push_back(t1 | t2);
         }
     }
-    return DNF(d);
+
+    // Dedup incase things are getting too big
+    DNF dnf = DNF(d);
+    if (d.size() > 500)
+    {
+        dnf = dnf.dedup();
+    }
+    return dnf;
 }
 
 int BitIndex::bump()

@@ -292,7 +292,13 @@ std::vector<FoundKernel> findKernels(const std::vector<BitVector>& cubes,
         }
 
         std::vector<BitVector> s = {};
-        std::copy_if(cubes.begin(), cubes.end(), s.end(), [=](const auto& c){return c.test(bit);});
+        for (auto& c : cubes)
+        {
+            if (c.test(bit))
+            {
+                s.push_back(c);
+            }
+        }
 
         if (s.size() >= 2)
         {

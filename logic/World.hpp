@@ -110,6 +110,7 @@ public:
 
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
+    std::unordered_map<MacroIndex, std::string> macroNames;
     std::map<std::string, Item> itemTable = {};
     std::map<std::string, std::unique_ptr<Area>> areaTable = {};
     std::map<std::string, std::unique_ptr<Location>> locationTable = {};

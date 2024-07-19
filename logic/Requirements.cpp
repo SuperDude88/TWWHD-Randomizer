@@ -8,7 +8,7 @@
 
 #include <unordered_map>
 #include <algorithm>
-
+#include <iostream>
 
 
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
@@ -43,51 +43,86 @@ static std::string tabs(int numTabs)
     return returnStr;
 }
 
-std::string printRequirement(Requirement& req, int nestingLevel /*= 0*/)
+std::string printRequirement(const Requirement& req, int nestingLevel /*= 0*/)
 {
     std::string returnStr = "";
     uint32_t expectedCount = 0;
     Item item;
     Requirement nestedReq;
-    returnStr += tabs(nestingLevel);
+    // returnStr += tabs(nestingLevel);
     switch(req.type)
     {
+    case RequirementType::NOTHING:
+        return "Nothing";
+    case RequirementType::IMPOSSIBLE:
+        return "Impossible";
     case RequirementType::OR:
-        returnStr += "or\n";
-        for (Requirement::Argument& arg : req.args)
+        if (nestingLevel > 0)
+        {
+            returnStr += "(";
+        }
+        for (const Requirement::Argument& arg : req.args)
         {
             nestedReq = std::get<Requirement>(arg);
             returnStr += printRequirement(nestedReq, nestingLevel + 1);
+            returnStr += " or ";
+        }
+        // pop off the last " or "
+        for (auto i = 0; i < 4; i++)
+        {
+            returnStr.pop_back();
+        }
+        if (nestingLevel > 0)
+        {
+            returnStr += ")";
         }
         return returnStr;
     case RequirementType::AND:
-        returnStr += "and\n";
-        for (Requirement::Argument& arg : req.args)
+        if (nestingLevel > 0)
+        {
+            returnStr += "(";
+        }
+        for (const Requirement::Argument& arg : req.args)
         {
             nestedReq = std::get<Requirement>(arg);
             returnStr += printRequirement(nestedReq, nestingLevel + 1);
+            returnStr += " and ";
+        }
+        // pop off the last " and "
+        for (auto i = 0; i < 5; i++)
+        {
+            returnStr.pop_back();
+        }
+        if (nestingLevel > 0)
+        {
+            returnStr += ")";
         }
         return returnStr;
     case RequirementType::NOT:
-        returnStr += "not\n";
-        returnStr += printRequirement(std::get<Requirement>(req.args[0]), nestingLevel + 1);
+        returnStr += "(not " + printRequirement(std::get<Requirement>(req.args[0]), nestingLevel + 1) + ")";
+        return returnStr;
+    case RequirementType::EVENT:
+        returnStr += "event: ";
+        returnStr += std::to_string(std::get<EventId>(req.args[0]));
         return returnStr;
     case RequirementType::HAS_ITEM:
         item = std::get<Item>(req.args[0]);
-        returnStr += item.getName() + "\n";
+        returnStr += item.getName();
         return returnStr;
     case RequirementType::COUNT:
-        returnStr += "count: ";
         expectedCount = std::get<int>(req.args[0]);
         item = std::get<Item>(req.args[1]);
-        returnStr += std::to_string(expectedCount) + " " + item.getName() + "\n";
+        returnStr += item.getName() + " x" + std::to_string(expectedCount);
         return returnStr;
     case RequirementType::CAN_ACCESS:
         returnStr += "can_access: " + std::get<std::string>(req.args[0]) + "\n";
         return returnStr;
     case RequirementType::SETTING:
         // Settings are resolved to a true/false value when building the world
-        returnStr += "setting: " + std::to_string(std::get<int>(req.args[0])) + "\n";
+        returnStr += std::to_string(std::get<int>(req.args[0]));
+        return returnStr;
+    case RequirementType::HEALTH:
+        returnStr += "health(" + std::to_string(std::get<int>(req.args[0])) + ")";
         return returnStr;
     case RequirementType::MACRO:
         returnStr += "macro: " + std::to_string(std::get<MacroIndex>(req.args[0])) + "\n";
@@ -217,8 +252,14 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         // Then a boolean setting...
         else if (world->getSettings().evaluateOption(argStr) != -1)
         {
-            req.type = RequirementType::SETTING;
-            req.args.emplace_back(world->getSettings().evaluateOption(argStr));
+            if (world->getSettings().evaluateOption(argStr))
+            {
+                req.type == RequirementType::NOTHING;
+            }
+            else
+            {
+                req.type == RequirementType::IMPOSSIBLE;
+            }
             return RequirementError::NONE;
         }
         // Then a setting that has more than just an on/off option...
@@ -316,6 +357,16 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             }
             // Evaluate the deeper expression and add it to the requirement object if it's valid
             if ((err = parseRequirementString(reqStr, std::get<Requirement>(req.args.back()), world)) != RequirementError::NONE) return err;
+
+            if (std::get<Requirement>(req.args.back()).type == RequirementType::NOTHING)
+            {
+                req.type = RequirementType::IMPOSSIBLE;
+            }
+            else
+            {
+                req.type = RequirementType::NOTHING;
+            }
+            return RequirementError::NONE;
         }
         else
         {
