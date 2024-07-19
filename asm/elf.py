@@ -1,11 +1,6 @@
-# Mostly copied from the SD rando code, reads sections to generate relocations
-
-from enum import Enum
+from enum import IntEnum
 import struct
 from io import BytesIO
-from collections import OrderedDict
-
-
 
 def read_bytes(data, offset, length):
   data.seek(offset)
@@ -81,11 +76,11 @@ class ELF:
     for section in self.sections:
       section.name = read_str_until_null_character(self.data, section_header_string_table_offset+section.name_offset)
     
-    self.sections_by_name = OrderedDict()
+    self.sections_by_name = {}
     for section in self.sections:
       self.sections_by_name[section.name] = section
     
-    self.relocations = OrderedDict()
+    self.relocations = {}
     for section in self.sections:
       if section.type == ELFSectionType.SHT_RELA:
         self.relocations[section.name] = []
@@ -94,7 +89,7 @@ class ELF:
           relocation.read(self.data, section.section_offset + i*ELFRelocation.ENTRY_SIZE)
           self.relocations[section.name].append(relocation)
     
-    self.symbols = OrderedDict()
+    self.symbols = {}
     for section in self.sections:
       if section.type == ELFSectionType.SHT_SYMTAB:
         self.symbols[section.name] = []
@@ -135,7 +130,7 @@ class ELFRelocation:
     
     self.relocation_offset = read_u32(elf_data, self.offset + 0x00)
     info = read_u32(elf_data, self.offset + 0x04)
-    self.type = info & 0x000000FF
+    self.type = ELFRelocationType(info & 0x000000FF)
     self.symbol_index = (info & 0xFFFFFF00) >> 8
     self.addend = read_u32(elf_data, self.offset + 0x08)
 
@@ -148,11 +143,13 @@ class ELFSymbol:
     self.name_offset = read_u32(elf_data, self.offset + 0x00)
     self.address = read_u32(elf_data, self.offset + 0x04)
     self.size = read_u32(elf_data, self.offset + 0x08)
-    self.info = read_u8(elf_data, self.offset + 0x0C) # lower nibble is type, upper is binding
+    info = read_u8(elf_data, self.offset + 0x0C)
+    self.type = ElfSymbolType(info & 0x0F)
+    self.binding = ElfSymbolBinding((info & 0xF0) >> 4)
     self.other = read_u8(elf_data, self.offset + 0x0D)
     self.section_index = read_u16(elf_data, self.offset + 0x0E)
 
-class ELFSectionType(Enum):
+class ELFSectionType(IntEnum):
   SHT_NULL = 0x0
   SHT_PROGBITS = 0x1
   SHT_SYMTAB = 0x2
@@ -173,3 +170,72 @@ class ELFSectionType(Enum):
   SHT_NUM = 0x13
   
   UNK_1 = 0x6FFFFFF5
+
+class ELFSectionFlags(IntEnum):
+  SHF_WRITE            = 0x00000001
+  SHF_ALLOC            = 0x00000002
+  SHF_EXECINSTR        = 0x00000004
+  SHF_MERGE            = 0x00000010
+  SHF_STRINGS          = 0x00000020
+  SHF_INFO_LINK        = 0x00000040
+  SHF_LINK_ORDER       = 0x00000080
+  SHF_OS_NONCONFORMING = 0x00000100
+  SHF_GROUP            = 0x00000200
+  SHF_TLS              = 0x00000400
+  SHF_MASKOS           = 0x0FF00000
+  SHF_MASKPROC         = 0xF0000000
+  SHF_ORDERED          = 0x04000000
+  SHF_EXCLUDE          = 0x08000000
+
+class ELFRelocationType(IntEnum):
+  R_PPC_NONE = 0x00
+  R_PPC_ADDR32 = 0x01
+  R_PPC_ADDR24 = 0x02
+  R_PPC_ADDR16 = 0x03
+  R_PPC_ADDR16_LO = 0x04
+  R_PPC_ADDR16_HI = 0x05
+  R_PPC_ADDR16_HA = 0x06
+  R_PPC_ADDR14 = 0x07
+  R_PPC_ADDR14_BRTAKEN = 0x08
+  R_PPC_ADDR14_BRNTAKEN = 0x09
+  R_PPC_REL24 = 0x0A
+  R_PPC_REL14 = 0x0B
+  R_PPC_REL14_BRTAKEN = 0x0C
+  R_PPC_REL14_BRNTAKEN = 0x0D
+  
+  R_PPC_REL32 = 0x1A
+
+class ELFSymbolSpecialSection(IntEnum):
+  SHN_UNDEF     = 0x0000
+  SHN_LORESERVE = 0xFF00
+  SHN_LOPROC    = 0xFF00
+  SHN_HIPROC    = 0xFF1F
+  SHN_LOOS      = 0xFF20
+  SHN_HIOS      = 0xFF3F
+  SHN_ABS       = 0xFFF1
+  SHN_COMMON    = 0xFFF2
+  SHN_XINDEX    = 0xFFFF
+  SHN_HIRESERVE = 0xFFFF
+
+class ElfSymbolType(IntEnum):
+  STT_NOTYPE         = 0
+  STT_OBJECT         = 1
+  STT_FUNC           = 2
+  STT_SECTION        = 3
+  STT_FILE           = 4
+  STT_COMMON         = 5
+  STT_TLS            = 6
+  STT_LOOS           = 10
+  STT_HIOS           = 12
+  STT_LOPROC         = 13
+  STT_SPARC_REGISTER = 13
+  STT_HIPROC         = 15
+
+class ElfSymbolBinding(IntEnum):
+  STB_LOCAL  = 0
+  STB_GLOBAL = 1
+  STB_WEAK   = 2
+  STB_LOOS   = 10
+  STB_HIOS   = 12
+  STB_LOPROC = 13
+  STB_HIPROC = 15
