@@ -248,9 +248,6 @@ QString TrackerLabel::getTooltipText()
     }
 
     QString returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
-    #ifdef __APPLE__
-    // returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0; font-size: 15px;\"><li>";
-    #endif
     for (auto i = 0; i < text.size(); i++)
     {
         auto str = text[i];
