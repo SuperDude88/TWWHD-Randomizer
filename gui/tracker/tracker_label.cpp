@@ -326,7 +326,7 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
         {
             auto& arg = req.args[i];
             nestedReq = std::get<Requirement>(arg);
-            // Shorten the triforce if it appears (kind of stupid we have to do this in 2 places, but oh well
+            // Shorten the triforce if it appears (kind of stupid we have to do this in 2 places, but oh well)
             if (nestedReq.type == RequirementType::HAS_ITEM && std::get<Item>(nestedReq.args[0]).getGameItemId() == GameItem::TriforceShard1)
             {
                 if (req.args.size() > i + 7)
@@ -370,8 +370,6 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
             returnStr.prepend("(");
             returnStr += ")";
         }
-        // Shorten the triforce
-
         return returnStr;
     case RequirementType::HAS_ITEM:
         // Determine if the user has marked this item

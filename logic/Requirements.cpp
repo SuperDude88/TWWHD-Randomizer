@@ -8,7 +8,6 @@
 
 #include <unordered_map>
 #include <algorithm>
-#include <iostream>
 
 
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
