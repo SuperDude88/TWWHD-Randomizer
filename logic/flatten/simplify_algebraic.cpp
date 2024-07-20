@@ -348,7 +348,7 @@ std::pair<std::vector<BitVector>, std::vector<BitVector>> algebraicDivision(cons
     {
         // get a list of all cubes that this can be divided by
         std::vector<BitVector> c = {};
-        std::copy_if(expr.begin(), expr.end(), c.begin(), [=](const auto& e){return divCube.isSubsetOf(e);});
+        std::copy_if(expr.begin(), expr.end(), std::back_inserter(c), [=](const auto& e){return divCube.isSubsetOf(e);});
 
         if (c.empty())
         {
@@ -374,7 +374,7 @@ std::pair<std::vector<BitVector>, std::vector<BitVector>> algebraicDivision(cons
         {
             // this is literally set intersection, NOT an OR or an AND
             std::vector<BitVector> newQuot = {};
-            std::copy_if(quot.begin(), quot.end(), newQuot.begin(), [=](const auto& qc){
+            std::copy_if(quot.begin(), quot.end(), std::back_inserter(newQuot), [=](const auto& qc){
                 return std::any_of(c.begin(), c.end(), [=](const auto& cc){
                     return cc.equals(qc);
                 });
@@ -399,7 +399,7 @@ std::pair<std::vector<BitVector>, std::vector<BitVector>> algebraicDivision(cons
     DNF product = DNF(quotBits).and_(DNF(divisorBits)).dedup();
 
     std::vector<BitVector> remainder = {};
-    std::copy_if(expr.begin(), expr.end(), remainder.end(), [=](const auto& e){
+    std::copy_if(expr.begin(), expr.end(), std::back_inserter(remainder), [=](const auto& e){
         return std::none_of(product.terms.begin(), product.terms.end(), [=](const auto& productTerm){
             return includedIn(productTerm, e.bitset);
         });

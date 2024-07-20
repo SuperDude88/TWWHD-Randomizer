@@ -49,7 +49,7 @@ void genRectangles(std::vector<int>& rows,
     {
         // Find the ones in this row
         std::vector<int> ones = {};
-        std::copy_if(cols.begin(), cols.end(), ones.end(), [=](const int& c){return matrix[row][c];});
+        std::copy_if(cols.begin(), cols.end(), std::back_inserter(ones), [=](const int& c){return matrix[row][c];});
         // if this row has ones and there's no other row that
         // has ones in the same positions, this row is part of
         // a trivial row prime rectangle
@@ -67,7 +67,7 @@ void genRectangles(std::vector<int>& rows,
     {
         // Same as above
         std::vector<int> ones = {};
-        std::copy_if(rows.begin(), rows.end(), ones.end(), [=](const int& r){return matrix[r][col];});
+        std::copy_if(rows.begin(), rows.end(), std::back_inserter(ones), [=](const int& r){return matrix[r][col];});
 
         if (!ones.empty() and std::none_of(rows.begin(), rows.end(), [=](const int& c){
             return c != col && std::all_of(ones.begin(), ones.end(), [=](const int& r){
@@ -122,7 +122,7 @@ void genRectanglesRecursive(std::vector<int>& allRows,
             // rectangle in the recursive case, this shrinks the rectangle, otherwise
             // it creates the first rectangle
             std::vector<int> rect1Rows;
-            std::copy_if(allRows.begin(), allRows.end(), rect1Rows.begin(), [=](const int& row){return matrix[row][c];});
+            std::copy_if(allRows.begin(), allRows.end(), std::back_inserter(rect1Rows), [=](const int& row){return matrix[row][c];});
             std::vector<int> rect1Cols = rectCols;
 
             bool prune = false;
