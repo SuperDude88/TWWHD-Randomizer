@@ -61,7 +61,7 @@ void BitVector::or_(const BitVector& other)
 
 bool BitVector::isSubsetOf(const BitVector& other) const
 {
-    return (bitset | other.bitset) == bitset;
+    return (bitset | other.bitset) == other.bitset;
 }
 
 bool BitVector::equals(const BitVector& other) const
