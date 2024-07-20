@@ -677,6 +677,7 @@ World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
     // first pass to get all macro names
     for (const auto& macro : macroListTree)
     {
+        macroStrings.emplace(macro.first.as<std::string>(), macro.second.as<std::string>());
         macroNameMap.emplace(macro.first.as<std::string>(), macroCount);
         macroNames.emplace(macroCount, macro.first.as<std::string>());
         macroCount++;

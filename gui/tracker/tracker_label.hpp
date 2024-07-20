@@ -12,12 +12,14 @@ enum struct TrackerLabelType
     EntranceDestination
 };
 
+class MainWindow;
+
 class TrackerLabel : public QLabel
 {
     Q_OBJECT
 public:
-    TrackerLabel();
-    TrackerLabel(TrackerLabelType type_, int pointSize, Location* location = nullptr, Entrance* entrance = nullptr);
+    TrackerLabel() = default;
+    TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow = nullptr, Location* location = nullptr, Entrance* entrance = nullptr);
 
     void set_location(Location* loc);
     Location* get_location() const;
@@ -26,6 +28,9 @@ public:
     void update_colors();
     void mark_location();
     void updateShowLogic(int show, bool started);
+    void showLogicTooltip();
+    QString getTooltipText();
+    QString formatRequirement(const Requirement& req, const bool& isTopLevel = false);
 
 signals:
     void location_label_clicked();
@@ -39,11 +44,13 @@ signals:
 
 protected:
     void mouseReleaseEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
     void enterEvent(QEnterEvent* e) override;
     void leaveEvent(QEvent* e) override;
 
 private:
     TrackerLabelType type = TrackerLabelType::NONE;
+    MainWindow* mainWindow = nullptr;
     Location* location = nullptr;
     Entrance* entrance = nullptr;
     bool showLogic = true;

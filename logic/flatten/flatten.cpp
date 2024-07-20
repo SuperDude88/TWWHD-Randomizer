@@ -243,14 +243,6 @@ DNF evaluatePartialRequirement(BitIndex& bitIndex, const Requirement& req, Flatt
         area = search->world->getArea(std::get<std::string>(req.args[0]));
         return search->areaExprs[area];
 
-    case RequirementType::MACRO:
-        // This will always be true for the time being
-        if (search->world->macroNames[std::get<MacroIndex>(req.args[0])] == "Can Sail Away")
-        {
-            return DNF::True();
-        }
-        macro = search->world->macros[std::get<MacroIndex>(req.args[0])];
-        return evaluatePartialRequirement(bitIndex, macro, search);
     case RequirementType::NONE:
     default:
         // actually needs to be some error state?

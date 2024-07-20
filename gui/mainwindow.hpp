@@ -21,6 +21,7 @@
 #include <gui/tracker/tracker_area_widget.hpp>
 
 void delete_and_create_default_config();
+QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow);
 
 #define LOCATION_TRACKER_OVERWORLD 0
 #define LOCATION_TRACKER_SPECIFIC_AREA 1
@@ -274,9 +275,11 @@ private slots:
 private:
     // More Tracker Stuff
     bool trackerStarted = false;
+public: // To access when generating logic tooltips
     Settings trackerSettings = Settings();
     WorldPool trackerWorlds = {};
     ItemPool trackerInventory = {};
+private:
     LocationPool trackerLocations = {};
     std::string currentTrackerArea = "";
 

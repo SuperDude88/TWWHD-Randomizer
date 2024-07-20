@@ -120,8 +120,8 @@ Can Cut Down Outset Trees: Skull_Hammer or Boomerang or Heros_Sword
 Can Cut Down Hanging DRC Platform: Heros_Sword or Heros_Bow or Skull_Hammer or Bombs
 Can Cut Grass: Heros_Sword or Skull_Hammer or Bombs or Boomerang
 Can Sword Fight With Orca: Heros_Sword or In_Swordless_Mode
-In Swordless Mode: Remove_Swords
-Outside Swordless Mode: not Remove_Swords
+In Swordless Mode: Remove_Swords == true
+Outside Swordless Mode: Remove_Swords == false
 Chart For Island 1: Treasure_Chart_25
 Chart For Island 2: Treasure_Chart_7
 Chart For Island 3: Treasure_Chart_24

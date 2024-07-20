@@ -10,6 +10,7 @@
 #include <logic/Search.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
+#include <logic/flatten/flatten.hpp>
 #include <utility/file.hpp>
 #include <utility/string.hpp>
 #include <utility/color.hpp>
@@ -638,7 +639,7 @@ void MainWindow::update_tracker()
     int currentPointSize = 12;
     for (auto& loc : areaLocations[currentTrackerArea])
     {
-        auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, loc);
+        auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, this, loc);
         newLabel->updateShowLogic(ui->show_location_logic->isChecked(), trackerStarted);
         // newLabel->set_location(loc);
         location_list_layout->addWidget(newLabel, row, col);
@@ -700,7 +701,7 @@ void MainWindow::update_tracker()
             // if the entrance is connected
             auto hLayout = new QHBoxLayout();
 
-            auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, nullptr, entrance);
+            auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, this, nullptr, entrance);
             hLayout->addWidget(newLabel);
             // If the entrance is connected, give the user a disconnect button
             if (entrance->getReplaces())
@@ -807,6 +808,10 @@ void MainWindow::update_tracker_areas_and_autosave()
         }
     }
     while (addedItems);
+
+    // Set computed requirements for each location
+    auto flattenSearch = FlattenSearch(&trackerWorlds[0]);
+    flattenSearch.doSearch();
 
     // Update each areas information
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
@@ -1143,7 +1148,7 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
         {
             continue;
         }
-        auto newLabel = new TrackerLabel(TrackerLabelType::EntranceDestination, currentPointSize, nullptr, target);
+        auto newLabel = new TrackerLabel(TrackerLabelType::EntranceDestination, currentPointSize, this, nullptr, target);
         ui->entrance_targets_scroll_layout->addWidget(newLabel);
         connect(newLabel, &TrackerLabel::entrance_destination_label_clicked, this, &MainWindow::tracker_change_entrance_connections);
         connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
@@ -1351,4 +1356,108 @@ void MainWindow::set_areas_entrances()
 void MainWindow::clear_tracker_labels(QLayout* layout)
 {
     clear_layout(layout);
+}
+
+QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow)
+{
+    switch(item.getGameItemId())
+    {
+    case GameItem::ProgressiveSword:
+        switch(count)
+        {
+        case 1:
+            return "Hero's Sword";
+        case 2:
+            return "Master Sword";
+        case 3:
+            return "Master Sword (Half-Power)";
+        case 4:
+            return "Master Sword (Full-Power)";
+        }
+    case GameItem::ProgressiveSail:
+        switch(count)
+        {
+        case 1:
+            return "Sail";
+        case 2:
+            return "Swift Sail";
+        }
+    case GameItem::ProgressiveShield:
+        switch(count)
+        {
+        case 1:
+            return "Hero's Shield";
+        case 2:
+            return "Mirror Shield";
+        }
+    case GameItem::ProgressiveBow:
+        switch(count)
+        {
+        case 1:
+            return "Hero's Bow";
+        case 2:
+            return "Fire & Ice Arrows";
+        case 3:
+            return "Light Arrows";
+        }
+    case GameItem::ProgressiveMagicMeter:
+        switch(count)
+        {
+        case 1:
+            return "Magic";
+        case 2:
+            return "Double Magic";
+        }
+    case GameItem::ProgressiveWallet:
+        switch(count)
+        {
+        case 1:
+            return "Wallet (1000)";
+        case 2:
+            return "Wallet (5000)";
+        }
+    case GameItem::ProgressivePictoBox:
+        switch(count)
+        {
+        case 1:
+            return "Picto Box";
+        case 2:
+            return "Deluxe Picto Box";
+        }
+    case GameItem::ProgressiveBombBag:
+        switch(count)
+        {
+        case 1:
+            return "Bomb Bag (60)";
+        case 2:
+            return "Bomb Bag (99)";
+        }
+    case GameItem::ProgressiveQuiver:
+        switch(count)
+        {
+        case 1:
+            return "Quiver (60)";
+        case 2:
+            return "Quiver (99)";
+        }
+    default:
+        switch(count)
+        {
+        case 1:
+            // Change the name of the chart if randomize charts is on
+            if (item.isChartForSunkenTreasure() && mainWindow->trackerSettings.randomize_charts)
+            {
+                for (auto& [islandNum, chart] : item.getWorld()->chartMappings)
+                {
+                    if (item.getGameItemId() == chart)
+                    {
+                        return std::string("Chart for " + roomIndexToIslandName(islandNum)).c_str();
+                    }
+                }
+            }
+            return QString(item.getName().c_str());
+        default:
+            return QString(item.getName().c_str()) + " x" + QString::number(count);
+        }
+    }
 }
