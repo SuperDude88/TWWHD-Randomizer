@@ -42,7 +42,7 @@ private:
     ErrorLog();
     ~ErrorLog();
 public:
-    const std::string LOG_PATH = Utility::get_app_save_path() + "Error Log.txt";
+    const fspath LOG_PATH = Utility::get_app_save_path() / "Error Log.txt";
 
     ErrorLog(const ErrorLog&) = delete;
     ErrorLog& operator=(const ErrorLog&) = delete;
@@ -84,7 +84,7 @@ private:
     DebugLog();
     ~DebugLog();
 public:
-    const std::string LOG_PATH = Utility::get_app_save_path() + "Debug Log.txt";
+    const fspath LOG_PATH = Utility::get_app_save_path() / "Debug Log.txt";
 
     DebugLog(const DebugLog&) = delete;
     DebugLog& operator=(const DebugLog&) = delete;

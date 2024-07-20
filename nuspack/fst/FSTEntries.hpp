@@ -5,8 +5,8 @@
 #include <vector>
 #include <variant>
 #include <unordered_map>
-#include <filesystem>
 
+#include <utility/path.hpp>
 #include <utility/string.hpp>
 
 class Content; //forward declare, circular include issue
@@ -56,7 +56,7 @@ public:
     };
 
     std::string name;
-    std::filesystem::path path;
+    fspath path;
     FSTEntry* parent = nullptr;
     std::list<FSTEntry> children;
 

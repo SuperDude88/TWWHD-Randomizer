@@ -193,7 +193,7 @@ namespace FileTypes {
         return ELFError::NONE;
     }
 
-    ELFError ELF::loadFromFile(const std::string& filePath) {
+    ELFError ELF::loadFromFile(const fspath& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if(!file.is_open()) {
             LOG_ERR_AND_RETURN(ELFError::COULD_NOT_OPEN);
@@ -324,7 +324,7 @@ namespace FileTypes {
         return ELFError::NONE;
     }
 
-    ELFError ELF::writeToFile(const std::string& outFilePath) {
+    ELFError ELF::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if(!outFile.is_open()) {
             LOG_ERR_AND_RETURN(ELFError::COULD_NOT_OPEN);

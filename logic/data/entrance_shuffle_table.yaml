@@ -110,8 +110,8 @@
   Forward: Pawprint Isle,                          Pawprint Chu Chu Cave,                    sea,     12,          0, TyuTyu,   0,     0
   Return:  Pawprint Chu Chu Cave,                  Pawprint Isle,                            TyuTyu,   0,          0, sea,     12,     1
 - Type: CAVE
-  Forward: Pawprint Wizzobe Cave Isle,             Pawprint Wizzobe Cave,                    sea,     12,          1, Cave07,   0,     0
-  Return:  Pawprint Wizzobe Cave,                  Pawprint Wizzobe Cave Isle,               Cave07,   0,          0, sea,     12,     5
+  Forward: Pawprint Wizzrobe Cave Isle,            Pawprint Wizzrobe Cave,                   sea,     12,          1, Cave07,   0,     0
+  Return:  Pawprint Wizzrobe Cave,                 Pawprint Wizzrobe Cave Isle,              Cave07,   0,          0, sea,     12,     5
 - Type: CAVE
   Forward: Diamond Steppe Upper Island,            Diamond Steppe Warp Maze,                 sea,     36,          0, WarpD,    0,     0
   Return:  Diamond Steppe Warp Maze,               Diamond Steppe Upper Island,              WarpD,    0,          0, sea,     36,     1

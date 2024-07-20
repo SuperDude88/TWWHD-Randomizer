@@ -549,12 +549,12 @@ private:
     TIB trackerTOTGSmallKeys         = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "TotG Small Key (0/2)"},
                                             {GameItem::TotGSmallKey,          "small_key_1_color.png",     "TotG Small Key (1/2)"},
                                             {GameItem::TotGSmallKey,          "small_key_2_color.png",     "TotG Small Key (2/2)"}});
-    TIB trackerTOTGBigKey            = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "TotG Compass"},
-                                            {GameItem::TotGBigKey,            "big_key_color.png",         "TotG Compass"}});
-    TIB trackerTOTGDungeonMap        = TIB({{GameItem::NOTHING,               "map_gray.png",              "TotG Big Key"},
-                                            {GameItem::TotGDungeonMap,        "map_color.png",             "TotG Big Key"}});
-    TIB trackerTOTGCompass           = TIB({{GameItem::NOTHING,               "compass_gray.png",          "TotG Dungeon Map"},
-                                            {GameItem::TotGCompass,           "compass_color.png",         "TotG Dungeon Map"}});
+    TIB trackerTOTGBigKey            = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "TotG Big Key"},
+                                            {GameItem::TotGBigKey,            "big_key_color.png",         "TotG Big Key"}});
+    TIB trackerTOTGDungeonMap        = TIB({{GameItem::NOTHING,               "map_gray.png",              "TotG Dungeon Map"},
+                                            {GameItem::TotGDungeonMap,        "map_color.png",             "TotG Dungeon Map"}});
+    TIB trackerTOTGCompass           = TIB({{GameItem::NOTHING,               "compass_gray.png",          "TotG Compass"},
+                                            {GameItem::TotGCompass,           "compass_color.png",         "TotG Compass"}});
     TIB trackerFWSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "FW Small Key"},
                                             {GameItem::FWSmallKey,            "small_key_1_color.png",     "FW Small Key"}});
     TIB trackerFWBigKey              = TIB({{GameItem::NOTHING,               "big_key_gray.png",          "FW Big Key"},

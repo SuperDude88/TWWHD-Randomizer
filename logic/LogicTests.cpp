@@ -1,15 +1,17 @@
 #include <string>
-#include <fstream>
 #include <iostream>
-#include <cstdio>
+#include <cstdlib>
 #include <vector>
+#include <filesystem>
+
+#include <libs/zlib-ng.hpp>
 
 #include <logic/Generate.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/permalink.hpp>
 #include <seedgen/config.hpp>
+#include <utility/path.hpp>
 #include <utility/file.hpp>
-#include <libs/zlib-ng.hpp>
 
 Config config;
 #define ERROR_CONFIG_PATH "./error_configs"
@@ -40,8 +42,8 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
         std::vector<Settings> settingsVector (1, settings);
 
         // Pre-emptively write config incase of crashing
-        std::string errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
-        std::string preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_preferences.yaml";
+        const fspath errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
+        const fspath preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_preferences.yaml";
         ConfigError err = config.writeToFile(errorConfigFilename, preferencesFilename);
 
         int retVal = generateWorlds(worlds, settingsVector);

@@ -202,7 +202,7 @@ namespace FileTypes {
 		return ChartError::NONE;
 	}
 
-	ChartError ChartList::loadFromFile(const std::string& filePath) {
+	ChartError ChartList::loadFromFile(const fspath& filePath) {
 		std::ifstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(ChartError::COULD_NOT_OPEN);
@@ -222,7 +222,7 @@ namespace FileTypes {
 		return ChartError::NONE;
 	}
 
-	ChartError ChartList::writeToFile(const std::string& filePath) {
+	ChartError ChartList::writeToFile(const fspath& filePath) {
 		std::ofstream file(filePath, std::ios::binary);
 		if (!file.is_open()) {
 			LOG_ERR_AND_RETURN(ChartError::COULD_NOT_OPEN);

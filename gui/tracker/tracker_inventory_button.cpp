@@ -1,6 +1,6 @@
 #include "tracker_inventory_button.hpp"
 
-#include <iostream>
+#include <gui/tracker/tracker_data.hpp>
 
 TrackerInventoryButton::TrackerInventoryButton() {}
 
@@ -32,9 +32,9 @@ TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventor
 
 void TrackerInventoryButton::updateIcon()
 {
-    setStyleSheet((std::string("background-image: url(" DATA_PATH "tracker/" + itemStates[state].filename + ");"
-                               "background-repeat: none;"
-                               "background-position: center;").c_str()));
+    setStyleSheet("background-image: url(" + getTrackerAssetPath(itemStates[state].filename) + ");"
+                + "background-repeat: none;"
+                + "background-position: center;");
 }
 
 void TrackerInventoryButton::removeCurrentItem()

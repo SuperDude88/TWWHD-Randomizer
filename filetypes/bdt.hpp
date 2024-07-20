@@ -36,9 +36,9 @@ namespace FileTypes {
         std::vector<std::string> files;
 
 		BDTError loadFromBinary(std::istream& in);
-		BDTError loadFromFile(const std::string& filePath);
+		BDTError loadFromFile(const fspath& filePath);
 		BDTError writeToStream(std::ostream& out);
-		BDTError writeToFile(const std::string& filePath);
+		BDTError writeToFile(const fspath& filePath);
 	private:
 		uint32_t numFiles;
 		std::vector<FileSpec> fileInfo;

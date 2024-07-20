@@ -477,3 +477,65 @@ check_should_decrement_morth_counter:
 decrement_morth_counter:
   subic. r11, r11, 0x1
   b 0x021A9F08
+
+
+
+; The d-pad indicator in the top left assumes you get Wind Waker -> Grappling Hook -> Bombs in order and displays the icons based on that
+; If you get the items out of order, it will also show the previous ones even if you do not have them (it's only visual but still wrong)
+
+; Change how the item flags are set to fix this
+; r0 is reset to be 0 at the start of the function
+.org 0x026DD5C8 ; when you have bombs
+  ori r0, r0, 0b100
+  nop ; don't store flags/return yet
+  nop
+.org 0x026DD5E0 ; when you have the grappling hook
+  ori r0, r0, 0b10
+  nop ; don't store flags/return yet
+  nop
+.org 0x026DD5F4 ; when checking for the wind waker
+  bne 0x026DD5FC ; always store the flags even if we don't have the wind waker
+  ori r0, r0, 0b1
+
+; Change how the item flags are read when the icons are appearing
+.org 0x026DD704 ; when checking for the grappling hook
+  andi. r4, r11, 0b10 ; mask out the flag for grapple (r4 is overwritten right after, just a throwaway while we set condition register)
+.org 0x026DD70C ; when branching based on the grapple flag
+  beq 0x026DD714
+.org 0x026DD724 ; when checking for bombs
+  andi. r4, r0, 0b100 ; mask out the flag for bombs (r4 is overwritten right after, just a throwaway while we set condition register)
+.org 0x026DD72C ; when branching based on the bombs flag
+  beq 0x026DD734
+
+; Change the default/invalid state
+.org 0x026DDA38
+  li r11, 0b1000
+
+; Change how the show/hide animations are played based on the flags
+; This won't handle the case where we don't have wind waker, but that isnt applicable to rando yet anyways
+; TODO: modify this to work without having the wind waker (may require modifying the layout animations)
+; Old flags are in r0, current flags are in r12
+.org 0x026DD8B8
+  stw r11, 0x60(r31) ; replace a line we will overwrite
+  xor r0, r0, r12 ; get the flags that changed
+  andi. r11, r0, 0b10 ; check if the grapple flag changed
+  beq dpad_check_bombs_flags ; flag not changed
+  andi. r11, r12, 0b10 ; check if the current flags have grapple
+  li r11, 0x1 ; animation to show grapple
+  bne dpad_store_grapple_anim
+  li r11, 0x3 ; animation to hide grapple
+dpad_store_grapple_anim:
+  stw r11, 0x5C(r31) ; store to the grapple animation
+
+dpad_check_bombs_flags:
+  andi. r11, r0, 0b100 ; check if the bombs flag changed
+  beq dpad_play_item_animations ; flag not changed
+  andi. r11, r12, 0b100 ; check if the current flags have bombs
+  li r11, 0x2 ; animation to show bombs
+  bne dpad_store_bombs_anim
+  li r11, 0x4 ; animation to hide bombs
+dpad_store_bombs_anim:
+  stw r11, 0x60(r31) ; store to the bombs animation
+
+dpad_play_item_animations:
+  b 0x026DD938

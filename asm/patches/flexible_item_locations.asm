@@ -120,12 +120,7 @@
 ; Normally Beedle checks if you've bought the Bait Bag by actually checking if you own the Bait Bag item.
 ; That method is problematic for many items that can get randomized into that shop slot, including progressive items.
 ; So we change the functions he calls to set the slot as sold out and check if it's sold out to custom functions.
-; These custom functions use bit 40 of byte 803C4CBF, which was originally unused, to keep track of this.
-.org 0x02215450
-	bl set_shop_item_in_bait_bag_slot_sold_out
-.org 0x02212C74
-	bl check_shop_item_in_bait_bag_slot_sold_out
-
+; These custom functions use event bit 0x6902, which was originally unused, to keep track of this.
 .org @NextFreeSpace
 .global set_shop_item_in_bait_bag_slot_sold_out
 set_shop_item_in_bait_bag_slot_sold_out:
@@ -136,7 +131,7 @@ set_shop_item_in_bait_bag_slot_sold_out:
   ; First call the regular SoldOutItem function with the given arguments since we overwrote a call to that in order to call this custom function.
   bl SoldOutItem
   
-  ; Set event bit 6902 (bit 02 of byte 803C5295).
+  ; Set event bit 0x6902
   ; This bit was unused in the base game, but we repurpose it to keep track of whether you've purchased whatever item is in the Bait Bag slot of Beedle's shop.
   lis r3, gameInfo_ptr@ha
   lwz r3, gameInfo_ptr@l(r3)
@@ -165,6 +160,66 @@ check_shop_item_in_bait_bag_slot_sold_out:
   mtlr r0
   addi sp, sp, 0x10
   blr
+
+; When buying an item, Beedle normally checks the item ID to determine if you're buying the bait bag
+; When the bait bag slot is randomized to bait or a pear, buying the item from another item slot still triggers the sold out condition
+; Replace the condition to properly check for the bait bag slot
+.org 0x0221543C
+  bl check_buying_beedle_20_item
+  cmpwi r3, 1
+.org @NextFreeSpace
+.global check_buying_beedle_20_item
+check_buying_beedle_20_item:
+  stwu sp, -0x10 (sp)
+  mflr r0
+  stw r0, 0x14 (sp)
+
+  ; r3 contains a pointer to this->mShopItems
+  ; r27 contains the this pointer
+  lha r3, 0(r3) ; Load the selected item index
+  cmpwi r3, 0 ; First item slot
+  bne not_beedle_20_item
+  lbz r3, 0x99F(r27) ; Get the shop index
+  cmplwi r3, 0x4 ; Shop index 4 (10 arrows / 30 arrows / bait)
+  beq not_beedle_20_item
+  cmplwi r3, 0x5 ; Shop index 5 (30 arrows / 30 bombs / red potion)
+  beq not_beedle_20_item
+  bl check_shop_item_in_bait_bag_slot_sold_out ; Whether we already bought the 20 item
+  cmpwi r3, 0
+  li r3, 1
+  beq return_is_buying_beedle_20_item ; Didn't buy the item yet
+
+not_beedle_20_item:
+  li r3, 0
+  
+return_is_buying_beedle_20_item:
+  lwz r0, 0x14 (sp)
+  mtlr r0
+  addi sp, sp, 0x10
+  blr
+
+.org 0x02215450
+	bl set_shop_item_in_bait_bag_slot_sold_out
+
+; While loading his items, Beedle's shop normally checks the item ID to determine if this is the Bait Bag shop slot
+; If it is the bait bag slot and you have the bait bag, it looks later in its item table for an alternative item to put there
+; If the item is randomized to All-Purpose bait, the second item slot will also trigger this condition, and look for an alternate second slot
+; There is no alternate for the second slot, though, so it tries to load a null pointer and crashes
+; Instead give it a full set of alternate items, and switch the whole set once the Bait Bag item is obtained
+.org 0x101BD558 ; Inside Item_set_data3
+  .long shopItems_setData_FoodAll ; Add bait as the alternate slot 2 item
+.org 0x02212C64 ; Inside daNpc_Bs1_c::createShopList
+  ; Overwrite the existing item ID conditions
+  mr r20, r23 ; Copy the loop counter to r20 (other parts of the function expect this)
+  lbz r3, 0x99F(r26) ; Get the shop index
+  cmplwi r3, 0x4 ; Shop index 4 (10 arrows / 30 arrows / bait)
+  beq 0x02212CAC + 8 ; Continue with normal items
+  cmplwi r3, 0x5 ; Shop index 5 (30 arrows / 30 bombs / red potion)
+  beq 0x02212CAC ; Continue with normal items
+  bl check_shop_item_in_bait_bag_slot_sold_out
+  cmpwi r3, 0
+  beq 0x02212CAC ; Didn't get the 20 rupee item yet, continue as normal
+  b 0x02212C9C ; Did get the 20 rupee item, use alternate items
 
 
 ; Three items are spawned by a call to fastCreateItem:

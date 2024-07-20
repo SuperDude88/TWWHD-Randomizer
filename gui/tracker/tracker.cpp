@@ -1,6 +1,12 @@
 #include "../ui_mainwindow.h"
 #include "../mainwindow.hpp"
 
+#include <QAbstractButton>
+#include <QMouseEvent>
+#include <QMessageBox>
+#include <QColorDialog>
+
+#include <filesystem>
 
 #include <gui/tracker/tracker_inventory_button.hpp>
 #include <gui/tracker/tracker_area_widget.hpp>
@@ -11,16 +17,10 @@
 #include <logic/PoolFunctions.hpp>
 #include <logic/EntranceShuffle.hpp>
 #include <logic/flatten/flatten.hpp>
+#include <utility/path.hpp>
 #include <utility/file.hpp>
 #include <utility/string.hpp>
 #include <utility/color.hpp>
-
-#include <iostream>
-
-#include <QAbstractButton>
-#include <QMouseEvent>
-#include <QMessageBox>
-#include <QColorDialog>
 
 void MainWindow::initialize_tracker_world(Settings& settings,
                                           const GameItemPool& markedItems,
@@ -71,7 +71,21 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     trackerSettings.starting_hcs = 3;
 
     trackerWorld.setSettings(trackerSettings);
-    if (trackerWorld.loadWorld(DATA_PATH "logic/world.yaml", DATA_PATH "logic/macros.yaml", DATA_PATH "logic/location_data.yaml", DATA_PATH "logic/item_data.yaml", DATA_PATH "logic/area_names.yaml"))
+
+    if(trackerWorld.getSettings().plandomizer)
+    {
+        std::vector<Plandomizer> plandos(1);
+        PlandomizerError err = loadPlandomizer(trackerWorld.getSettings().plandomizerFile, plandos, 1);
+        if (err != PlandomizerError::NONE)
+        {
+            show_warning_dialog("Could not load provided plandomizer file. Continuing without plandomizer data.");
+        }
+        else {
+            trackerWorld.plandomizer = plandos[0];
+        }
+    }
+
+    if (trackerWorld.loadWorld(Utility::get_data_path() / "logic/world.yaml", Utility::get_data_path() / "logic/macros.yaml", Utility::get_data_path() / "logic/location_data.yaml", Utility::get_data_path() / "logic/item_data.yaml", Utility::get_data_path() / "logic/area_names.yaml"))
     {
         show_error_dialog("Could not build world for app tracker");
         return;
@@ -253,7 +267,7 @@ void MainWindow::autosave_current_tracker()
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_preferences_path() +  "tracker_preferences.yaml");
+    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() / "tracker_autosave.yaml", Utility::get_app_save_path() / "tracker_preferences.yaml");
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + errorToName(configErr));
@@ -262,7 +276,7 @@ void MainWindow::autosave_current_tracker()
 
     // Read it back and add extra tracker data
     std::string autosave;
-    Utility::getFileContents(Utility::get_app_save_path() +  "tracker_autosave.yaml", autosave);
+    Utility::getFileContents(Utility::get_app_save_path() / "tracker_autosave.yaml", autosave);
     YAML::Node root = YAML::Load(autosave);
 
     // Save which locations have been marked
@@ -297,7 +311,7 @@ void MainWindow::autosave_current_tracker()
     }
 
 
-    std::ofstream autosave_file(Utility::get_app_save_path() +  "tracker_autosave.yaml");
+    std::ofstream autosave_file(Utility::get_app_save_path() / "tracker_autosave.yaml");
     if (autosave_file.is_open() == false)
     {
         show_error_dialog("Failed to open tracker_autosave.yaml");
@@ -308,7 +322,7 @@ void MainWindow::autosave_current_tracker()
 
     // Save colors back to tracker_preferences
     std::string preferences;
-    Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
+    Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
 
     for (const auto& [name, color] : color_preferences)
@@ -324,7 +338,7 @@ void MainWindow::autosave_current_tracker()
     // Save show location logic to preferences also
     pref["show_location_logic"] = ui->show_location_logic->isChecked();
 
-    std::ofstream preferences_file(Utility::get_preferences_path() +  "tracker_preferences.yaml");
+    std::ofstream preferences_file(Utility::get_app_save_path() / "tracker_preferences.yaml");
     if (preferences_file.is_open() == false)
     {
         show_error_dialog("Failed to open tracker_preferences.yaml");
@@ -336,14 +350,14 @@ void MainWindow::autosave_current_tracker()
 
 void MainWindow::load_tracker_autosave()
 {
-    if (!std::filesystem::exists(Utility::get_app_save_path() +  "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_preferences_path() +  "tracker_preferences.yaml"))
+    if (!std::filesystem::exists(Utility::get_app_save_path() / "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
     {
         // No autosave file, don't try to do anything
         return;
     }
 
     Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() +  "tracker_autosave.yaml", Utility::get_preferences_path() +  "tracker_preferences.yaml", true);
+    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() / "tracker_autosave.yaml", Utility::get_app_save_path() / "tracker_preferences.yaml", true);
     if (configErr != ConfigError::NONE)
     {
         show_warning_dialog("Could not load tracker autosave config\nError: " + errorToName(configErr));
@@ -351,7 +365,7 @@ void MainWindow::load_tracker_autosave()
     }
 
     std::string autosave;
-    Utility::getFileContents(Utility::get_app_save_path() +  "tracker_autosave.yaml", autosave);
+    Utility::getFileContents(Utility::get_app_save_path() / "tracker_autosave.yaml", autosave);
     YAML::Node root = YAML::Load(autosave);
 
     // Load marked locations
@@ -406,7 +420,7 @@ void MainWindow::load_tracker_autosave()
 
     // Load tracker preferences
     std::string preferences;
-    Utility::getFileContents(Utility::get_preferences_path() +  "tracker_preferences.yaml", preferences);
+    Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
 
     // Color override preferences
@@ -512,17 +526,17 @@ void MainWindow::initialize_tracker()
 
     // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
     // depending on if we embed data or not)
-    ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" DATA_PATH "tracker/background.png);}");
-    ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
+    ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" + getTrackerAssetPath("background.png") + ");}");
+    ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" + getTrackerAssetPath("trackerbg.png") + ");}");
     ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
-                                                   "background-image: url(" DATA_PATH "tracker/pearl_holder.png);"
+                                                   "background-image: url(" + getTrackerAssetPath("pearl_holder.png") + ");"
                                                    "background-repeat: none;"
                                                    "background-position: center;"
                                                "}");
-    ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" DATA_PATH "tracker/sea_chart.png);}");
+    ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" + getTrackerAssetPath("sea_chart.png") + ");}");
     set_location_list_widget_background("empty");
-    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" DATA_PATH "tracker/area_empty.png);}");
-    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" DATA_PATH "tracker/area_empty.png);}");
+    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
+    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
     ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
 
@@ -927,10 +941,10 @@ void MainWindow::update_items_color() {
         ui->inventory_widget_pearls->setStyleSheet("");
     }
     else {
-        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" DATA_PATH "tracker/trackerbg.png);}");
+        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {border-image: url(" + getTrackerAssetPath("trackerbg.png") + ");}");
         // Only display the pearl holder if we're using the default background
         ui->inventory_widget_pearls->setStyleSheet("QWidget#inventory_widget_pearls {"
-                                                   "background-image: url(" DATA_PATH "tracker/pearl_holder.png);"
+                                                   "background-image: url(" + getTrackerAssetPath("pearl_holder.png") + ");"
                                                    "background-repeat: none;"
                                                    "background-position: center;"
                                                    "}");
@@ -1057,7 +1071,7 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
 
 void MainWindow::set_location_list_widget_background(const std::string& area)
 {
-    ui->location_list_widget->setStyleSheet(std::string("QWidget#location_list_widget {border-image: url(" DATA_PATH "tracker/area_" + area + ".png);}").c_str());
+    ui->location_list_widget->setStyleSheet("QWidget#location_list_widget {border-image: url(" + getTrackerAssetPath("area_" + area + ".png") + ");}");
 }
 
 void MainWindow::tracker_display_current_item_text(const std::string& currentItem)

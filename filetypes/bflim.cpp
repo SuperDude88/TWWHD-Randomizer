@@ -174,7 +174,7 @@ bool generateDDSHeader(DDSHeader& out, const uint32_t& num_mipmaps_, const uint3
         else if (format == "BC3") {
             fourcc = "DXT5";
         }
-        else if (dx10_formats.contains(format)) {
+        else if (DDSHeader::dx10_formats.contains(format)) {
             fourcc = "DX10";
         }
     }
@@ -385,7 +385,7 @@ namespace FileTypes {
         return FLIMError::NONE;
     }
 
-    FLIMError FLIMFile::loadFromFile(const std::string& filePath) {
+    FLIMError FLIMFile::loadFromFile(const fspath& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(FLIMError::COULD_NOT_OPEN)
@@ -393,7 +393,7 @@ namespace FileTypes {
         return loadFromBinary(file);
     }
     
-    FLIMError FLIMFile::exportAsDDS(const std::string& outPath) {
+    FLIMError FLIMFile::exportAsDDS(const fspath& outPath) {
         uint32_t format;
         std::string format_;
         std::array<uint8_t, 4> compSel{};
@@ -590,7 +590,7 @@ namespace FileTypes {
         return FLIMError::NONE;
     }
 
-    FLIMError FLIMFile::replaceWithDDS(const std::string& filename, GX2TileMode tileMode, uint8_t swizzle_, bool SRGB) {
+    FLIMError FLIMFile::replaceWithDDS(const fspath& filename, GX2TileMode tileMode, uint8_t swizzle_, bool SRGB) {
         FileTypes::DDSFile dds;
         if(DDSError err = dds.loadFromFile(filename, SRGB); err != DDSError::NONE) {
             LOG_ERR_AND_RETURN(FLIMError::BAD_DDS);
@@ -812,7 +812,7 @@ namespace FileTypes {
         return FLIMError::NONE;
     }
 
-    FLIMError FLIMFile::writeToFile(const std::string& outFilePath) {
+    FLIMError FLIMFile::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if (!outFile.is_open()) {
             LOG_ERR_AND_RETURN(FLIMError::COULD_NOT_OPEN)

@@ -5,6 +5,7 @@
 
 #include <ui_mainwindow.h>
 
+#include <utility/path.hpp>
 #include <utility/file.hpp>
 #include <utility/color.hpp>
 #include <customizer/model.hpp>
@@ -23,6 +24,11 @@ std::tuple<std::string, std::string> MainWindow::get_option_name_and_color_name_
 
     auto colorName = optionName.substr(strlen("custom_color_"));
     return {optionName, colorName};
+}
+
+static QString getPreviewImagePath(const std::string& modelName, const std::string& type, const std::string& colorOption) {
+    const std::string filename = "preview_" + type + (colorOption.empty() ? "" : ("_" + colorOption)) + ".png";
+    return Utility::toQString(Utility::get_data_path() / "customizer" / modelName / "color_preview" / filename);
 }
 
 void MainWindow::initialize_color_presets_list() {
@@ -63,13 +69,13 @@ void MainWindow::initialize_mask_pixels() {
     // Store the x and y of each pixel that each maskfile modifies
     // and lookup the pixels later when making preview modifications
     auto& model = config.settings.selectedModel;
-    auto modelName = ui->custom_player_model->currentText();
+    std::string modelName = ui->custom_player_model->currentText().toStdString();
     const auto& defaultPreset = model.getDefaultPreset();
     maskPixels.clear();
-    for (const auto& type : {"hero", "casual"}) {
-        const auto& colorMap = !strcmp(type, "hero") ? defaultPreset.heroColors : defaultPreset.casualColors;
+    for (const std::string& type : {"hero", "casual"}) {
+        const auto& colorMap = type == "hero" ? defaultPreset.heroColors : defaultPreset.casualColors;
         for (const auto& [colorOption, color] : colorMap) {
-            auto maskImage = QImage(DATA_PATH + QString("customizer/") + modelName + "/color_preview/preview_" + type + "_" + QString::fromStdString(colorOption) + ".png");
+            auto maskImage = QImage(getPreviewImagePath(modelName, type, colorOption));
             for (int x = 0; x < maskImage.width(); x++) {
                 for (int y = 0; y < maskImage.height(); y++) {
                     if (maskImage.pixelColor(x, y).red() == 255 && maskImage.pixelColor(x, y).blue() == 0) {
@@ -252,11 +258,11 @@ void MainWindow::setup_color_options() {
     // If we have a specific preset selected, then keep those colors
     else if (curPreset != "Custom" && lastModel == curModel) {
         model.loadPreset(curPreset, true);
-    }
 
-    auto colors = model.getSetColorsMap();
-    for (auto& [optionName, defaultColor] : baseColors) {
-        defaultColor = colors[optionName];
+        auto colors = model.getSetColorsMap();
+        for (auto& [optionName, defaultColor] : baseColors) {
+            defaultColor = colors[optionName];
+        }
     }
 
     for (auto& customColorName : model.getDefaultColorsOrdering()) {
@@ -331,7 +337,7 @@ void MainWindow::update_preview() {
 
     auto type = model.casual ? "casual" : "hero";
 
-    auto preview = QImage(DATA_PATH + QString("customizer/") + QString::fromStdString(model.modelName) + "/color_preview/preview_" + type + ".png");
+    auto preview = QImage(getPreviewImagePath(model.modelName, type, ""));
 
     for (auto& [optionName, color] : model.getSetColorsMap()) {
 

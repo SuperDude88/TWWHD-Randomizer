@@ -434,7 +434,7 @@ namespace FileTypes
         return newEventList;
     }
 
-    EventlistError EventList::loadFromFile(const std::string& filePath) {
+    EventlistError EventList::loadFromFile(const fspath& filePath) {
     
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
@@ -883,7 +883,7 @@ namespace FileTypes
         return EventlistError::NONE;
     }
 
-    EventlistError EventList::writeToFile(const std::string& outFilePath) {
+    EventlistError EventList::writeToFile(const fspath& outFilePath) {
         std::ofstream outFile(outFilePath, std::ios::binary);
         if(!outFile.is_open()) {
             LOG_ERR_AND_RETURN(EventlistError::COULD_NOT_OPEN);

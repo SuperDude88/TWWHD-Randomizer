@@ -8,30 +8,11 @@ project(wwhd_rando VERSION 0.1 LANGUAGES C CXX) # not sure how to handle this ve
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 if(DEFINED DEVKITPRO)
-  add_compile_definitions(DEVKITPRO DATA_PATH="/vol/content/" APP_SAVE_PATH="/vol/save/" TEMP_DIR="/vol/save/temp/" LOGS_PATH="/vol/save/logs/")
+  add_compile_definitions(DEVKITPRO)
   add_compile_options(-Ofast -mcpu=750 -meabi -mhard-float -ffunction-sections -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
-else()
-  add_compile_definitions(APP_SAVE_PATH="./" TEMP_DIR="./temp/" LOGS_PATH="./logs/")
-
-  if(WIN32 AND CMAKE_COMPILER_IS_GNU<LANG>)
-    add_compile_definitions(_GLIBCXX_FILESYSTEM_IS_WINDOWS)
-  endif()
-
-  if(APPLE)
-    add_compile_options(-fexperimental-library)
-    if(MAC_APP_DIRS)
-      add_compile_definitions(MAC_APP_DIRS)
-    endif()
-  endif()
-
-  if(NOT DEFINED EMBED_DATA)
-    if(APPLE)
-      add_compile_definitions(DATA_PATH="../../../data/")
-    else()
-      add_compile_definitions(DATA_PATH="./data/")
-    endif()
-  endif()
+elseif(APPLE)
+  add_compile_options(-fexperimental-library)
 endif()
 
 if(ENABLE_DEBUG)

@@ -61,13 +61,13 @@ namespace FileTypes {
         DZXFile() = default;
         static DZXFile createNew();
         DZXError loadFromBinary(std::istream& dzx);
-        DZXError loadFromFile(const std::string& filePath);
+        DZXError loadFromFile(const fspath& filePath);
         std::vector<ChunkEntry*> entries_by_type(const std::string& chunk_type); //return vector of pointers so we can edit the chunk data
         std::vector<ChunkEntry*> entries_by_type_and_layer(const std::string& chunk_type, unsigned int layer);
         ChunkEntry& add_entity(const std::string&, const unsigned int layer = DEFAULT_LAYER);
         void remove_entity(ChunkEntry* entity);
         DZXError writeToStream(std::ostream& out);
-        DZXError writeToFile(const std::string& outFilePath);
+        DZXError writeToFile(const fspath& outFilePath);
     private:
         void initNew() override;
     };

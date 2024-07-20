@@ -326,7 +326,7 @@ medli_possible_et_spawn_positions:
 
 
 ; Make Komali disappear from his room from the start, instead of waiting until after you own Din's Pearl.
-; This is so there aren't two Komali's in the game at the same time.
+; This is so there aren't two Komalis in the game at the same time.
 .org 0x02227da4
 	li r31, 0
 	b 0x02227de0
@@ -487,3 +487,10 @@ set_item_obtained_from_totg_tablet_event_bit:
   ; For the north door.
   ; Originally checked if the west servant has been returned.
   nop
+
+
+
+; Normally Grandma's music only plays after you have obtained the shield and before you have healed her
+; Change it to always play until you heal her
+.org 0x02026D3C ; branch normally taken if you have a shield
+  b 0x02026D60 ; make it unconditional

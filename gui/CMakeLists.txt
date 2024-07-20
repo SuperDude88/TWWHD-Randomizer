@@ -24,8 +24,6 @@ if(DEFINED EMBED_DATA)
   else()
     target_sources(wwhd_rando PRIVATE data.qrc)
   endif()
-
-  target_compile_definitions(wwhd_rando PRIVATE DATA_PATH=":/")
 endif()
 
 # Set Icon on Windows

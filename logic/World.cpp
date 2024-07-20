@@ -506,7 +506,7 @@ World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
 
 World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 {
-    if (settings.progression_dungeons != ProgressionDungeons::Disabled || settings.num_required_dungeons > 0)
+    if (settings.progression_dungeons != ProgressionDungeons::Disabled)
     {
         std::vector<Dungeon> dungeonPool = {};
         for (auto& [name, dungeon] : dungeons)
@@ -543,12 +543,12 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
                     for (auto dungeonLocation : allDungeonLocations)
                     {
-                        if (!plandomizer.locations.contains(dungeonLocation) || !plandomizer.locations[dungeonLocation].isJunkItem())
+                        if (plandomizer.locations.contains(dungeonLocation) && !plandomizer.locations[dungeonLocation].isJunkItem())
                         {
                             // However, if the dungeon's naturally assigned race mode location is junk then
                             // that's an error on the user's part.
                             Location* raceModeLocation = dungeon.raceModeLocation;
-                            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? true : !plandomizer.locations[dungeonLocation].isJunkItem();
+                            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[dungeonLocation].isJunkItem();
                             if (dungeon.hasNaturalRaceModeLocation && !raceModeLocationIsAcceptable)
                             {
                                 ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
@@ -1142,7 +1142,7 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
 World::WorldLoadingError World::loadDungeonExitInfo()
 {
     std::string dungeonExitData;
-    Utility::getFileContents(DATA_PATH "logic/dungeon_entrance_info.yaml", dungeonExitData, true);
+    Utility::getFileContents(Utility::get_data_path() / "logic/dungeon_entrance_info.yaml", dungeonExitData, true);
     YAML::Node dungeonExitTree = YAML::Load(dungeonExitData);
 
     for (const auto& dungeonExitData : dungeonExitTree)
@@ -1215,7 +1215,7 @@ World::WorldLoadingError World::processPlandomizerLocations(WorldPool& worlds)
 }
 
 // Load the world based on the given world graph file, macros file, loation data file, item data file, and area data file
-int World::loadWorld(const std::string& worldFilePath, const std::string& macrosFilePath, const std::string& locationDataPath, const std::string& itemDataPath, const std::string& areaDataPath)
+int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, const fspath& locationDataPath, const fspath& itemDataPath, const fspath& areaDataPath)
 {
     LOG_TO_DEBUG("Loading world");
     // load and parse items

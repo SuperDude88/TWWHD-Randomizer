@@ -33,7 +33,7 @@ static char readBuffer[READ_BUFFER_SIZE];
 
 std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 {
-    const std::filesystem::path& tmpPath = std::filesystem::path(Utility::get_temp_dir()) / (Utility::Str::intToHex(id, 8, false) + ".dec");
+    const fspath& tmpPath = Utility::get_temp_dir() / (Utility::Str::intToHex(id, 8, false) + ".dec");
     std::stringstream output;
     std::ofstream outFile;
 
@@ -92,7 +92,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
     }
 }
 
-void Content::PackContentToFile(const std::filesystem::path& outputDir, Encryption& encryption) {
+void Content::PackContentToFile(const fspath& outputDir, Encryption& encryption) {
     //At first we need to create the decrypted file.
     auto decryptedStream = PackDecrypted();
 
@@ -104,14 +104,14 @@ void Content::PackContentToFile(const std::filesystem::path& outputDir, Encrypti
 
     if (contentHashes.h3Hashes.size() > 0)
     {
-        const std::filesystem::path h3Path = outputDir / (Utility::Str::intToHex(id, 8, false) + ".h3");
+        const fspath h3Path = outputDir / (Utility::Str::intToHex(id, 8, false) + ".h3");
     
         std::ofstream hashOut(h3Path, std::ios::binary);
         contentHashes.SaveH3ToFile(hashOut);
     }
     hash = contentHashes.TMDHash;
     
-    const std::filesystem::path outputFilePath = outputDir / (Utility::Str::intToHex(id, 8, false) + ".app");
+    const fspath outputFilePath = outputDir / (Utility::Str::intToHex(id, 8, false) + ".app");
     std::ofstream output(outputFilePath, std::ios::binary);
     file.clear();
     size = PackEncrypted(file, output, contentHashes, encryption);
@@ -119,7 +119,7 @@ void Content::PackContentToFile(const std::filesystem::path& outputDir, Encrypti
     //delete derypted file, we're done with it
     if(decryptedStream.index() == 1) {
         std::get<1>(decryptedStream).close();
-        std::filesystem::remove(std::filesystem::path(Utility::get_temp_dir()) / (Utility::Str::intToHex(id, 8, false) + ".dec"));
+        std::filesystem::remove(Utility::get_temp_dir() / (Utility::Str::intToHex(id, 8, false) + ".dec"));
     }
 }
 
@@ -222,7 +222,7 @@ void Contents::Update(const FSTEntries& entries) {
     }
 }
 
-void Contents::PackContents(const std::filesystem::path& out, Encryption& encryption) {
+void Contents::PackContents(const fspath& out, Encryption& encryption) {
     for(Content& content : contents) {
         if(!content.isFSTContent) {
             content.PackContentToFile(out, encryption);

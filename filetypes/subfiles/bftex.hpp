@@ -7,6 +7,7 @@
 #include <array>
 #include <vector>
 
+#include <utility/path.hpp>
 #include <filetypes/shared/gx2.hpp>
 #include <filetypes/shared/bfres_structs.hpp>
 
@@ -74,7 +75,7 @@ namespace FileTypes::Subfiles {
         FTEXFile() = default;
         static FTEXFile createNew();
         FTEXError loadFromBinary(std::istream& ftex);
-        FTEXError replaceImageData(const std::string& filePath, const GX2TileMode& tileMode, const uint32_t& swizzle_, const bool& SRGB, const bool& importMips);
+        FTEXError replaceImageData(const fspath& filePath, const GX2TileMode& tileMode, const uint32_t& swizzle_, const bool& SRGB, const bool& importMips);
         FTEXError writeToStream(std::ostream& out);
     private:
         void initNew();

@@ -4,7 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-#include <command/Log.hpp>
+
+#include <utility/path.hpp>
 
 #ifdef DEVKITPRO
     #include <sys/stat.h>
@@ -73,10 +74,10 @@ namespace Utility
     }
 
     //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
-    bool isRoot(const std::filesystem::path& fsPath);
+    bool isRoot(const fspath& fsPath);
 
     //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L193
-    inline bool dirExists(const std::filesystem::path& fsPath) {
+    inline bool dirExists(const fspath& fsPath) {
         #ifdef DEVKITPRO
             static struct stat existStat;
             if (isRoot(fsPath)) return true;
@@ -87,7 +88,7 @@ namespace Utility
         #endif
     }
 
-    inline bool create_directories(const std::filesystem::path& fsPath) {
+    inline bool create_directories(const fspath& fsPath) {
         #ifdef DEVKITPRO
             std::string temp = fsPath.string();
             if(temp.back() == '/') temp.pop_back();
@@ -107,11 +108,11 @@ namespace Utility
         return true;
     }
 
-    bool copy_file(const std::filesystem::path& from, const std::filesystem::path& to);
+    bool copy_file(const fspath& from, const fspath& to);
 
-    bool copy(const std::filesystem::path& from, const std::filesystem::path& to);
+    bool copy(const fspath& from, const fspath& to);
 
-    int getFileContents(const std::filesystem::path& filename, std::string& fileContents, bool resourceFile = false);
+    int getFileContents(const fspath& filename, std::string& fileContents, bool resourceFile = false);
 
-    int getFileContents(const std::filesystem::path& filename, std::stringstream& fileContents);
+    int getFileContents(const fspath& filename, std::stringstream& fileContents);
 }

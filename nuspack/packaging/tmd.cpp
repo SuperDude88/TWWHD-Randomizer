@@ -85,7 +85,7 @@ namespace FileTypes {
         return TMDError::NONE;
     }
 
-    TMDError TMDFile::writeToFile(const std::string& filePath) {
+    TMDError TMDFile::writeToFile(const fspath& filePath) {
         std::ofstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             LOG_ERR_AND_RETURN(TMDError::COULD_NOT_OPEN);

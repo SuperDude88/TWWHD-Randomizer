@@ -2,20 +2,17 @@
 #include "Generate.hpp"
 
 #include <string>
-#include <unordered_set>
-#include <unordered_map>
-#include <fstream>
-#include <filesystem>
-#include <chrono>
 
 #include <logic/Plandomizer.hpp>
 #include <logic/World.hpp>
 #include <logic/Fill.hpp>
+#include <logic/Search.hpp>
 #include <logic/SpoilerLog.hpp>
 #include <logic/Hints.hpp>
 #include <logic/EntranceShuffle.hpp>
 #include <seedgen/random.hpp>
 #include <command/Log.hpp>
+#include <utility/path.hpp>
 #include <utility/platform.hpp>
 #include <utility/time.hpp>
 
@@ -50,19 +47,15 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 
       // Load plando data if any worlds have plandomizer enabled
       // Choose the filepath from the first world which has it enabled
-      std::string plandoFilepath = "";
+      fspath plandoFilepath = "";
       bool usePlando = false;
       for (auto& world : worlds)
       {
           if (world.getSettings().plandomizer)
           {
-             usePlando = true;
-             #ifdef DEVKITPRO
-                 plandoFilepath = Utility::get_app_save_path() +  "plandomizer.yaml"; // can't bundle in the wuhb, put it in the save directory instead
-             #else
-                 plandoFilepath = world.getSettings().plandomizerFile.string();
-             #endif
-             break;
+              usePlando = true;
+              plandoFilepath = world.getSettings().plandomizerFile;
+              break;
           }
       }
 
@@ -84,7 +77,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       for (auto& world : worlds)
       {
           world.resolveRandomSettings();
-          if (world.loadWorld(DATA_PATH "logic/world.yaml", DATA_PATH "logic/macros.yaml", DATA_PATH "logic/location_data.yaml", DATA_PATH "logic/item_data.yaml", DATA_PATH "logic/area_names.yaml"))
+          if (world.loadWorld(Utility::get_data_path() / "logic/world.yaml", Utility::get_data_path() / "logic/macros.yaml", Utility::get_data_path() / "logic/location_data.yaml", Utility::get_data_path() / "logic/item_data.yaml", Utility::get_data_path() / "logic/area_names.yaml"))
           {
               return 1;
           }

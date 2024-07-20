@@ -153,6 +153,8 @@
   Exits:
       Forsaken Fortress East Hallway Lower: Nothing
       Forsaken Fortress North Hallway Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper East: Hookshot # can hookshot the chest after climbing the ladder
+      Forsaken Fortress Mess Hall Upper West: Skull_Hammer # can jump to the platform after climbing the ladder, need hammer to get past the pegs
 
 - Name: Forsaken Fortress East Hallway Lower
   Dungeon: Forsaken Fortress
@@ -295,7 +297,7 @@
 - Name: Forsaken Fortress Outside Path to Boss
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
@@ -304,7 +306,7 @@
   Exits:
       Helmaroc King Battle Arena: Skull_Hammer
       Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook
+      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
 
 - Name: Helmaroc King Battle Arena
   Locations:
@@ -672,7 +674,7 @@
       Pawprint Isle - Sunken Treasure: Chart_For_Island_12 and Grappling_Hook
   Exits:
       Pawprint Chu Chu Cave: Nothing
-      Pawprint Wizzobe Cave Isle: Hookshot
+      Pawprint Wizzrobe Cave Isle: Hookshot
       Pawprint Lookout Platform: Can_Sail_Away
       Pawprint Beedle Shop: Nothing
       Mailbox Checks: Nothing
@@ -687,20 +689,20 @@
   Exits:
       Pawprint Isle: Nothing
 
-- Name: Pawprint Wizzobe Cave Isle
+- Name: Pawprint Wizzrobe Cave Isle
   Island: Pawprint Isle
   Exits:
-      Pawprint Wizzobe Cave: Nothing
+      Pawprint Wizzrobe Cave: Nothing
       Pawprint Isle: Nothing
 
-- Name: Pawprint Wizzobe Cave
+- Name: Pawprint Wizzrobe Cave
   Locations:
       Pawprint Isle - Wizzrobe Cave Chest:
           Can_Defeat_Wizzrobes_At_Range and Can_Defeat_Fire_Keese and
           Can_Defeat_Magtails and Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus and
           Can_Defeat_Yellow_Chu_Chus and Can_Defeat_Red_Bubbles and Can_Remove_Peahat_Armor
   Exits:
-      Pawprint Wizzobe Cave Isle: Nothing
+      Pawprint Wizzrobe Cave Isle: Nothing
 
 - Name: Pawprint Lookout Platform
   Island: Pawprint Isle
@@ -2201,7 +2203,7 @@
   Dungeon: Forbidden Woods
   Exits:
       FW Cable Ride Above Poison Water Room Lower East: Can_Fly_With_Deku_Leaf_Indoors
-      FW Hub Room Upper Area: Nothing
+      FW Hub Room Upper Area: count(1, Forbidden_Woods_Small_Key)
 
 - Name: FW Cable Ride Above Poison Water Room Lower East
   Dungeon: Forbidden Woods
@@ -2406,12 +2408,12 @@
 - Name: TOTG Hub Room
   Dungeon: Tower of the Gods
   Locations:
-      Tower of the Gods - Stone Tablet: Wind_Waker and ('Can_Bring_East_Servant_of_the_Tower' or 'Can_Bring_West_Servant_of_the_Tower_to_Hub' or 'Can_Bring_North_Servant_of_the_Tower')
+      Tower of the Gods - Stone Tablet: Wind_Waker and ('Can_Bring_East_Servant_of_the_Tower' or 'Can_Bring_West_Servant_of_the_Tower' or 'Can_Bring_North_Servant_of_the_Tower')
   Exits:
       TOTG East Servant Corridor: Nothing
       TOTG West Servant Corridor Near Hub Room: Nothing
       TOTG North Servant Corridor: Nothing
-      TOTG Big Key Room: Wind_Waker and 'Can_Bring_East_Servant_of_the_Tower' and 'Can_Bring_West_Servant_of_the_Tower_to_Hub' and 'Can_Bring_North_Servant_of_the_Tower'
+      TOTG Big Key Room: Wind_Waker and 'Can_Bring_East_Servant_of_the_Tower' and 'Can_Bring_West_Servant_of_the_Tower' and 'Can_Bring_North_Servant_of_the_Tower'
       TOTG Rising Platforms Room: Nothing
 
 - Name: TOTG East Servant Corridor
@@ -2437,6 +2439,8 @@
 
 - Name: TOTG West Servant Corridor Near Hub Room
   Dungeon: Tower of the Gods
+  Events:
+      Can Bring Statue to TOTG Miniboss Switch: Heros_Bow # Can bring an Armos statue across the moving platforms
   Exits:
       TOTG West Servant Corridor Near West Servant Room: Heros_Bow or Grappling_Hook
       TOTG West Servant Corridor Near Mini Boss Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
@@ -2445,7 +2449,7 @@
 - Name: TOTG West Servant Corridor Near Mini Boss Room
   Dungeon: Tower of the Gods
   Exits:
-      TOTG Mini Boss Room: "'Can_Bring_West_Servant_of_the_Tower_to_Corridor'"
+      TOTG Mini Boss Room: "'Can_Bring_Statue_to_TOTG_Miniboss_Switch'"
       TOTG West Servant Corridor Near Hub Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
       TOTG West Servant Corridor Near West Servant Room: Grappling_Hook or Can_Fly_With_Deku_Leaf_Indoors
 
@@ -2465,8 +2469,8 @@
 - Name: TOTG West Servant Room Near Statue
   Dungeon: Tower of the Gods
   Events:
-      Can Bring West Servant of the Tower to Corridor: Can_Play_CM # Only need to get back out of the room with the statue
-      Can Bring West Servant of the Tower to Hub: Can_Play_CM and Heros_Bow # Also need bow to start the moving platforms and carry statue across
+      Can Bring Statue to TOTG Miniboss Switch: Can_Play_CM # Only need to get back out of the room with the statue
+      Can Bring West Servant of the Tower: Can_Play_CM and Heros_Bow # Also need bow to start the moving platforms and carry statue across
   Exits:
       TOTG West Servant Room Near Corridor: Can_Play_CM
 

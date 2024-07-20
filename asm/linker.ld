@@ -105,4 +105,5 @@ replaceItemUnit = 0x025fce5c;
 original_last_warp_button_name = 0x101092d8;
 g_fpcLf_Method = 0x101f3bdc;
 g_fopAc_Method = 0x101F3088;
+shopItems_setData_FoodAll = 0x101EB850;
 current_file_idx = 0x47d4b717; /* Not used in custom asm, but keep it documented if necessary */
