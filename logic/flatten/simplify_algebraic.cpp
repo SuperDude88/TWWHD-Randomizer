@@ -330,7 +330,7 @@ std::vector<FoundKernel> findKernels(const std::vector<BitVector>& cubes,
         return seenCo.equals(coKernelPath);
     }))
     {
-        kernels.push_back(FoundKernel(cubes, coKernelPath));
+        kernels.push_back(FoundKernel{cubes, coKernelPath});
     }
 
     return kernels;

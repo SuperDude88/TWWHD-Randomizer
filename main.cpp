@@ -72,9 +72,6 @@ int main(int argc, char *argv[]) {
     }
 
     Utility::platformShutdown();
-    
-    BitVector bits = BitVector();
-    std::cout << bits.isEmpty() << std::endl;
 
     return 0;
 #endif

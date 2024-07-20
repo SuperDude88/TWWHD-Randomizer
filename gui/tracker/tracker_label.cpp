@@ -8,7 +8,12 @@
 #include <QMouseEvent>
 #include <QToolTip>
 
-
+#ifdef __APPLE__
+#define TOOLTIP_UNMET "orange"
+#else
+#define TOOLTIP_UNMET "red"
+#endif
+#define TOOLTIP_MET "blue"
 
 TrackerLabel::TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow_, Location* location_, Entrance* entrance_) : type(type_), mainWindow(mainWindow_)
 {
@@ -243,6 +248,9 @@ QString TrackerLabel::getTooltipText()
     }
 
     QString returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
+    #ifdef __APPLE__
+    // returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0; font-size: 15px;\"><li>";
+    #endif
     for (auto i = 0; i < text.size(); i++)
     {
         auto str = text[i];
@@ -250,14 +258,14 @@ QString TrackerLabel::getTooltipText()
         // If we're listing the whole triforce, combine it into 1 item
         if (str.contains("Triforce Shard 1") && text.size() > i + 7 && text[i + 7].contains("Triforce Shard 8"))
         {
-            QString color = "dodgerblue";
+            QString color = TOOLTIP_MET;
             // Color the text red if we don't have even 1 shard
             for (auto j = i; j <= i + 7; j++)
             {
                 auto& shard = text[j];
-                if (shard.contains("red"))
+                if (shard.contains(TOOLTIP_UNMET))
                 {
-                    color = "red";
+                    color = TOOLTIP_UNMET;
                     break;
                 }
             }
@@ -290,9 +298,9 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
     switch(req.type)
     {
     case RequirementType::NOTHING:
-        return "<span style=\"color:dodgerblue\">Nothing</span>";
+        return "<span style=\"color:" TOOLTIP_MET "\">Nothing</span>";
     case RequirementType::IMPOSSIBLE:
-        return "<span style=\"color:red\">Impossible (please discover an entrance first)</span>";
+        return "<span style=\"color:" TOOLTIP_UNMET "\">Impossible (please discover an entrance first)</span>";
     case RequirementType::OR:
         for (const auto& arg : req.args)
         {
@@ -329,13 +337,13 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
                     auto& lastShard = std::get<Requirement>(req.args[i + 7]);
                     if (lastShard.type == RequirementType::HAS_ITEM && std::get<Item>(lastShard.args[0]).getGameItemId() == GameItem::TriforceShard8)
                     {
-                        QString color = "dodgerblue";
+                        QString color = TOOLTIP_MET;
                         for (auto j = i; j <= i + 7; j++)
                         {
                             auto& shardArg = std::get<Requirement>(req.args[j]);
-                            if (formatRequirement(shardArg).contains("red"))
+                            if (formatRequirement(shardArg).contains(TOOLTIP_UNMET))
                             {
-                                color = "red";
+                                color = TOOLTIP_UNMET;
                                 break;
                             }
                         }
@@ -371,12 +379,12 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
     case RequirementType::HAS_ITEM:
         // Determine if the user has marked this item
         item = std::get<Item>(req.args[0]);
-        color = elementInPool(item, mainWindow->trackerInventory) || elementInPool(item, mainWindow->trackerWorlds[0].getStartingItems()) ? "dodgerblue" : "red";
+        color = elementInPool(item, mainWindow->trackerInventory) || elementInPool(item, mainWindow->trackerWorlds[0].getStartingItems()) ? TOOLTIP_MET : TOOLTIP_UNMET;
         return "<span style=\"color:" + color + "\">" + prettyTrackerName(item, 1, mainWindow) + "</span>";
     case RequirementType::COUNT:
         expectedCount = std::get<int>(req.args[0]);
         item = std::get<Item>(req.args[1]);
-        color = elementCountInPool(item, mainWindow->trackerInventory) + elementCountInPool(item, mainWindow->trackerWorlds[0].getStartingItems()) >= expectedCount ? "dodgerblue" : "red";
+        color = elementCountInPool(item, mainWindow->trackerInventory) + elementCountInPool(item, mainWindow->trackerWorlds[0].getStartingItems()) >= expectedCount ? TOOLTIP_MET : TOOLTIP_UNMET;
         return "<span style=\"color:" + color + "\">" + prettyTrackerName(item, expectedCount, mainWindow) + "</span>";
     default:
         return returnStr;

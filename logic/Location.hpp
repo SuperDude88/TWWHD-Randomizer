@@ -86,7 +86,7 @@ public:
     std::string hintPriority = "";
     std::unique_ptr<LocationModification> method;
     World* world = nullptr;
-    Requirement computedRequirement = Requirement(RequirementType::IMPOSSIBLE, {});
+    Requirement computedRequirement = Requirement{RequirementType::IMPOSSIBLE, {}};
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;

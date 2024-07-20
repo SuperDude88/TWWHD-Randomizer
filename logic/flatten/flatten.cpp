@@ -229,11 +229,11 @@ DNF evaluatePartialRequirement(BitIndex& bitIndex, const Requirement& req, Flatt
             Requirement newReq;
             if (i == 1)
             {
-                newReq = Requirement(RequirementType::HAS_ITEM, {item});
+                newReq = Requirement{RequirementType::HAS_ITEM, {item}};
             }
             else
             {
-                newReq = Requirement(RequirementType::COUNT, {i, item});
+                newReq = Requirement{RequirementType::COUNT, {i, item}};
             }
             bits[bitIndex.reqBit(newReq)] = 1;
         }
