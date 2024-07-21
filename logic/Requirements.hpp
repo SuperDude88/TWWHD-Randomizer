@@ -16,7 +16,6 @@ enum struct RequirementType
     IMPOSSIBLE,
     OR,
     AND,
-    NOT,
     HAS_ITEM,
     EVENT,
     COUNT,
@@ -38,6 +37,8 @@ enum struct RequirementError
 
 using MacroIndex = size_t;
 using EventId = size_t;
+using ItemMultiSet = std::unordered_multiset<Item>;
+using EventSet = std::unordered_set<EventId>;
 struct Requirement;
 
 struct Requirement
@@ -45,8 +46,12 @@ struct Requirement
     using Argument = std::variant<int, size_t, std::string, Requirement, GameItem, Option, Item>;
     RequirementType type = RequirementType::INVALID;
     std::vector<Argument> args;
+
+    void simplifyParenthesis();
+    void sortArgs();
 };
 
-std::string printRequirement(Requirement& req, int nestingLevel = 0);
+bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSet* ownedItems, const EventSet* ownedEvents);
+std::string printRequirement(const Requirement& req, World* world, int nestingLevel = 0);
 RequirementError parseRequirementString(const std::string& str, Requirement& req, World* world);
 std::string errorToName(const RequirementError& err);

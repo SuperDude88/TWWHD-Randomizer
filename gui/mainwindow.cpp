@@ -1201,4 +1201,3 @@ void MainWindow::on_open_logs_folder_button_clicked()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(Utility::toQString(Utility::get_logs_path())));
 }
-

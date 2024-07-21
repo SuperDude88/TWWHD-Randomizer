@@ -9,84 +9,6 @@
 #include <logic/PoolFunctions.hpp>
 #include <command/Log.hpp>
 
-using ItemMultiSet = std::unordered_multiset<Item>;
-using EventSet = std::unordered_set<EventId>;
-
-static bool evaluateRequirement(World& world, const Requirement& req, const ItemMultiSet& ownedItems, const EventSet& ownedEvents)
-{
-    uint32_t expectedCount = 0;
-    uint32_t expectedHearts = 0;
-    uint32_t totalHearts = 0;
-    Item item;
-    EventId event;
-
-    switch(req.type)
-    {
-    case RequirementType::NOTHING:
-        return true;
-
-    case RequirementType::IMPOSSIBLE:
-        return false;
-
-    case RequirementType::OR:
-        return std::ranges::any_of(req.args
-                                   ,
-                                   [&](const Requirement::Argument& arg){
-                                       return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
-                                   }
-        );
-
-    case RequirementType::AND:
-        return std::ranges::all_of(req.args
-                                   ,
-                                   [&](const Requirement::Argument& arg){
-                                       return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
-                                   }
-        );
-
-    case RequirementType::NOT:
-        return !evaluateRequirement(world, std::get<Requirement>(req.args[0]), ownedItems, ownedEvents);
-
-    case RequirementType::HAS_ITEM:
-        item = std::get<Item>(req.args[0]);
-        return ownedItems.contains(item);
-
-    case RequirementType::EVENT:
-        event = std::get<EventId>(req.args[0]);
-        return ownedEvents.contains(event);
-
-    case RequirementType::COUNT:
-        expectedCount = std::get<int>(req.args[0]);
-        item = std::get<Item>(req.args[1]);
-        return ownedItems.count(item) >= expectedCount;
-
-    case RequirementType::HEALTH:
-        expectedHearts = std::get<int>(req.args[0]);
-        totalHearts = ownedItems.count(Item(GameItem::HeartContainer, &world)) +
-                      world.getSettings().starting_hcs +
-                      (world.getSettings().starting_pohs / 4);
-        return totalHearts >= expectedHearts;
-
-    case RequirementType::CAN_ACCESS:
-        return world.getArea(std::get<std::string>(req.args[0]))->isAccessible;
-
-    case RequirementType::SETTING:
-        // Settings are resolved to a true/false value when building the world
-        return std::get<int>(req.args[0]);
-
-    case RequirementType::MACRO:
-        return evaluateRequirement(world, world.macros[std::get<MacroIndex>(req.args[0])], ownedItems, ownedEvents);
-
-    case RequirementType::NONE:
-    default:
-        // actually needs to be some error state?
-        return false;
-    }
-    return false;
-}
-
-
-
 // Recursively explore new areas based on the given areaEntry
 void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, Area* area, std::list<EventAccess*>& eventsToTry, std::list<Entrance*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
 {
@@ -121,7 +43,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
                 }
             }
 
-            if (!reverseInPlaythrough && evaluateRequirement(*exit.getWorld(), exit.getRequirement(), ownedItems, ownedEvents))
+            if (!reverseInPlaythrough && evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
             {
                 worlds[0].entranceSpheres.back().push_back(&exit);
             }
@@ -132,7 +54,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
         // is ignored since it won't matter for logical access
         if (!connectedArea->isAccessible)
         {
-            if (evaluateRequirement(*exit.getWorld(), exit.getRequirement(), ownedItems, ownedEvents))
+            if (evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
             {
                 connectedArea->isAccessible = true;
                 explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
@@ -226,7 +148,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
                 eventItr = eventsToTry.erase(eventItr);
                 continue;
             }
-            if (evaluateRequirement(*eventAccess->world, eventAccess->requirement, ownedItems, ownedEvents))
+            if (evaluateRequirement(eventAccess->world, eventAccess->requirement, &ownedItems, &ownedEvents))
             {
                 newThingsFound = true;
                 eventItr = eventsToTry.erase(eventItr);
@@ -245,7 +167,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
         {
             auto exit = *exitItr;
-            if (evaluateRequirement(*exit->getWorld(), exit->getRequirement(), ownedItems, ownedEvents)) {
+            if (evaluateRequirement(exit->getWorld(), exit->getRequirement(), &ownedItems, &ownedEvents)) {
 
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
@@ -286,7 +208,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
                 locItr = locationsToTry.erase(locItr);
                 continue;
             }
-            if (evaluateRequirement(*location->world, locAccess->requirement, ownedItems, ownedEvents))
+            if (evaluateRequirement(location->world, locAccess->requirement, &ownedItems, &ownedEvents))
             {
                 newThingsFound = true;
                 location->hasBeenFound = true;

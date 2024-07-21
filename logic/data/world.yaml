@@ -24,7 +24,6 @@
 # The following logical operators/functions are available for logic statements:
 # - and
 # - or
-# - not
 # - count(<number>, <item>)
 # - can_access(<area name>)
 
@@ -3087,7 +3086,7 @@
       Ganon's Tower FW Trial: Nothing
       Ganon's Tower ET Trial: Nothing
       Ganon's Tower WT Trial: Nothing
-      Ganon's Tower First Staircase: Rematch_Bosses_Skipped or
+      Ganon's Tower First Staircase: Skip_Refights == true or
           (Can_Defeat_Gohma and can_access(Ganon's Tower Gohma Refight) and
           Can_Defeat_Kalle_Demos and can_access(Ganon's Tower Kalle Demos Refight) and
           Can_Defeat_Jalhalla and can_access(Ganon's Tower Jalhalla Refight) and
@@ -3148,7 +3147,7 @@
   Hint Region: Ganon's Tower
   Exits:
       Ganon's Tower Phantom Ganon Maze: Nothing
-      Forsaken Fortress Inner Courtyard: Boomerang
+      # Forsaken Fortress Inner Courtyard: Boomerang
       Ganon's Tower Final Staircase: Light_Arrows
       Ganon's Tower First Staircase: Nothing
 

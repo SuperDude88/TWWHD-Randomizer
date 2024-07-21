@@ -9,6 +9,7 @@
 #include <logic/GameItem.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <logic/Hints.hpp>
+#include <logic/Requirements.hpp>
 #include <command/WriteLocations.hpp>
 
 // move this and mod type into location entry or own file?
@@ -85,6 +86,7 @@ public:
     std::string hintPriority = "";
     std::unique_ptr<LocationModification> method;
     World* world = nullptr;
+    Requirement computedRequirement = Requirement{RequirementType::IMPOSSIBLE, {}};
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;

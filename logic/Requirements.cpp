@@ -10,11 +10,9 @@
 #include <algorithm>
 
 
-
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"or", RequirementType::OR},
     {"and", RequirementType::AND},
-    {"not", RequirementType::NOT},
     {"has_item", RequirementType::HAS_ITEM},
     {"count", RequirementType::COUNT},
     {"can_access", RequirementType::CAN_ACCESS},
@@ -25,13 +23,75 @@ static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
 static std::unordered_map<RequirementType, std::string> typeToNameMap = {
     {RequirementType::OR, "or"},
     {RequirementType::AND, "and"},
-    {RequirementType::NOT, "not"},
     {RequirementType::HAS_ITEM, "has_item"},
     {RequirementType::COUNT, "count"},
     {RequirementType::CAN_ACCESS, "can_access"},
     {RequirementType::SETTING, "setting"},
     {RequirementType::MACRO, "macro"},
 };
+
+bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSet* ownedItems, const EventSet* ownedEvents)
+{
+    uint32_t expectedCount = 0;
+    uint32_t expectedHearts = 0;
+    uint32_t totalHearts = 0;
+    Item item;
+    EventId event;
+
+    switch(req.type)
+    {
+    case RequirementType::NOTHING:
+        return true;
+
+    case RequirementType::IMPOSSIBLE:
+        return false;
+
+    case RequirementType::OR:
+        return std::ranges::any_of(req.args
+                                   ,
+                                   [&](const Requirement::Argument& arg){
+                                       return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
+                                   }
+        );
+
+    case RequirementType::AND:
+        return std::ranges::all_of(req.args
+                                   ,
+                                   [&](const Requirement::Argument& arg){
+                                       return evaluateRequirement(world, std::get<Requirement>(arg), ownedItems, ownedEvents);
+                                   }
+        );
+
+    case RequirementType::HAS_ITEM:
+        item = std::get<Item>(req.args[0]);
+        return ownedItems->contains(item);
+
+    case RequirementType::EVENT:
+        event = std::get<EventId>(req.args[0]);
+        return ownedEvents->contains(event);
+
+    case RequirementType::COUNT:
+        expectedCount = std::get<int>(req.args[0]);
+        item = std::get<Item>(req.args[1]);
+        return ownedItems->count(item) >= expectedCount;
+
+    case RequirementType::HEALTH:
+        expectedHearts = std::get<int>(req.args[0]);
+        totalHearts = ownedItems->count(Item(GameItem::HeartContainer, world)) +
+                      world->getSettings().starting_hcs +
+                      (world->getSettings().starting_pohs / 4);
+        return totalHearts >= expectedHearts;
+
+    case RequirementType::CAN_ACCESS:
+        return world->getArea(std::get<std::string>(req.args[0]))->isAccessible;
+
+    case RequirementType::NONE:
+    default:
+        // actually needs to be some error state?
+        return false;
+    }
+    return false;
+}
 
 static std::string tabs(int numTabs)
 {
@@ -43,54 +103,86 @@ static std::string tabs(int numTabs)
     return returnStr;
 }
 
-std::string printRequirement(Requirement& req, int nestingLevel /*= 0*/)
+std::string printRequirement(const Requirement& req, World* world, int nestingLevel /*= 0*/)
 {
     std::string returnStr = "";
     uint32_t expectedCount = 0;
     Item item;
     Requirement nestedReq;
-    returnStr += tabs(nestingLevel);
+    // returnStr += tabs(nestingLevel);
     switch(req.type)
     {
+    case RequirementType::NOTHING:
+        return "Nothing";
+    case RequirementType::IMPOSSIBLE:
+        return "Impossible";
     case RequirementType::OR:
-        returnStr += "or\n";
-        for (Requirement::Argument& arg : req.args)
+        if (nestingLevel > 0)
+        {
+            returnStr += "(";
+        }
+        for (const Requirement::Argument& arg : req.args)
         {
             nestedReq = std::get<Requirement>(arg);
-            returnStr += printRequirement(nestedReq, nestingLevel + 1);
+            returnStr += printRequirement(nestedReq, world, nestingLevel + 1);
+            returnStr += " or ";
+        }
+        // pop off the last " or "
+        for (auto i = 0; i < 4; i++)
+        {
+            returnStr.pop_back();
+        }
+        if (nestingLevel > 0)
+        {
+            returnStr += ")";
         }
         return returnStr;
     case RequirementType::AND:
-        returnStr += "and\n";
-        for (Requirement::Argument& arg : req.args)
+        if (nestingLevel > 0)
+        {
+            returnStr += "(";
+        }
+        for (const Requirement::Argument& arg : req.args)
         {
             nestedReq = std::get<Requirement>(arg);
-            returnStr += printRequirement(nestedReq, nestingLevel + 1);
+            returnStr += printRequirement(nestedReq, world, nestingLevel + 1);
+            returnStr += " and ";
+        }
+        // pop off the last " and "
+        for (auto i = 0; i < 5; i++)
+        {
+            returnStr.pop_back();
+        }
+        if (nestingLevel > 0)
+        {
+            returnStr += ")";
         }
         return returnStr;
-    case RequirementType::NOT:
-        returnStr += "not\n";
-        returnStr += printRequirement(std::get<Requirement>(req.args[0]), nestingLevel + 1);
+    case RequirementType::EVENT:
+        returnStr += "event: ";
+        returnStr += std::to_string(std::get<EventId>(req.args[0]));
         return returnStr;
     case RequirementType::HAS_ITEM:
         item = std::get<Item>(req.args[0]);
-        returnStr += item.getName() + "\n";
+        returnStr += item.getName();
         return returnStr;
     case RequirementType::COUNT:
-        returnStr += "count: ";
         expectedCount = std::get<int>(req.args[0]);
         item = std::get<Item>(req.args[1]);
-        returnStr += std::to_string(expectedCount) + " " + item.getName() + "\n";
+        returnStr += item.getName() + " x" + std::to_string(expectedCount);
         return returnStr;
     case RequirementType::CAN_ACCESS:
-        returnStr += "can_access: " + std::get<std::string>(req.args[0]) + "\n";
+        returnStr += "can_access: " + std::get<std::string>(req.args[0]);
         return returnStr;
     case RequirementType::SETTING:
         // Settings are resolved to a true/false value when building the world
-        returnStr += "setting: " + std::to_string(std::get<int>(req.args[0])) + "\n";
+        returnStr += std::to_string(std::get<int>(req.args[0]));
+        return returnStr;
+    case RequirementType::HEALTH:
+        returnStr += "health(" + std::to_string(std::get<int>(req.args[0])) + ")";
         return returnStr;
     case RequirementType::MACRO:
-        returnStr += "macro: " + std::to_string(std::get<MacroIndex>(req.args[0])) + "\n";
+        returnStr += "macro: " + printRequirement(world->macros[std::get<MacroIndex>(req.args[0])], world, nestingLevel);
         [[fallthrough]];
     default:
         return returnStr;
@@ -192,10 +284,17 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         }
 
         // Then a macro...
-        if (world->macroNameMap.contains(argStr))
+        if (world->macroStrings.contains(argStr))
         {
-            req.type = RequirementType::MACRO;
-            req.args.emplace_back(world->macroNameMap.at(argStr));
+            // For now just return true for Can_Sail_Away to not clutter tracker requirements
+            if (argStr == "Can Sail Away")
+            {
+                req.type = RequirementType::NOTHING;
+                return RequirementError::NONE;
+            }
+
+            // Evaluate the deeper expression and add it to the requirement object if it's valid
+            if ((err = parseRequirementString(world->macroStrings[argStr], req, world)) != RequirementError::NONE) return err;
             return RequirementError::NONE;
         }
         // Then an item...
@@ -214,17 +313,9 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             req.args.emplace_back(area->name);
             return RequirementError::NONE;
         }
-        // Then a boolean setting...
-        else if (world->getSettings().evaluateOption(argStr) != -1)
-        {
-            req.type = RequirementType::SETTING;
-            req.args.emplace_back(world->getSettings().evaluateOption(argStr));
-            return RequirementError::NONE;
-        }
-        // Then a setting that has more than just an on/off option...
+        // Then a setting...
         else if (argStr.find("!=") != std::string::npos || argStr.find("==") != std::string::npos)
         {
-            req.type = RequirementType::SETTING;
             bool equalComparison = argStr.find("==") != std::string::npos;
 
             // Split up the comparison using the second comparison character (which will always be '=')
@@ -232,18 +323,30 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             std::string comparedOptionStr (argStr.begin() + (compPos + 1), argStr.end());
             std::string settingName (argStr.begin(), argStr.begin() + (compPos - 1));
 
-            int comparedOption = nameToSettingInt(comparedOptionStr);
-            Option setting = nameToSetting(settingName);
-            int actualOption = world->getSettings().getSetting(setting);
+            int comparedOption = -1;
+            int actualOption = -1;
+            Option setting;
+
+            if (world->getSettings().evaluateOption(settingName) != -1)
+            {
+                actualOption = world->getSettings().evaluateOption(settingName);
+                comparedOption = comparedOptionStr == "true" ? 1 : 0;
+            }
+            else
+            {
+                comparedOption = nameToSettingInt(comparedOptionStr);
+                setting = nameToSetting(settingName);
+                actualOption = world->getSettings().getSetting(setting);
+            }
 
             // If the comparison is true
             if ((equalComparison && actualOption == comparedOption) || (!equalComparison && actualOption != comparedOption))
             {
-                req.args.emplace_back(true);
+                req.type = RequirementType::NOTHING;
             }
             else
             {
-                req.args.emplace_back(false);
+                req.type = RequirementType::IMPOSSIBLE;
             }
             return RequirementError::NONE;
         }
@@ -298,30 +401,11 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         return RequirementError::LOGIC_SYMBOL_DOES_NOT_EXIST;
     }
 
-    // If our expression has two parts, then the only type of requirement
-    // that can currently be is a "not" requirement
+    // If our expression has two parts, then we don't know what that is
     if (splitLogicStr.size() == 2)
-    {
-        if (splitLogicStr[0] == "not")
-        {
-            req.type = RequirementType::NOT;
-            req.args.emplace_back(Requirement());
-            // The second part of the not expression is another expression
-            // so we have to evaluate that one as well.
-            auto reqStr = splitLogicStr[1];
-            // Get rid of parenthesis around the expression if it has them
-            if (reqStr[0] == '(')
-            {
-                reqStr = reqStr.substr(1, reqStr.length() - 2);
-            }
-            // Evaluate the deeper expression and add it to the requirement object if it's valid
-            if ((err = parseRequirementString(reqStr, std::get<Requirement>(req.args.back()), world)) != RequirementError::NONE) return err;
-        }
-        else
         {
             ErrorLog::getInstance().log("Unrecognized 2 part expression: " + str);
             return RequirementError::LOGIC_SYMBOL_DOES_NOT_EXIST;
-        }
     }
 
     // If we have more than two parts to our expression, then we have either "and"
@@ -386,6 +470,48 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
     {
         ErrorLog::getInstance().log("Could not determine logical operator type from expression: \"" + str + "\"");
         return RequirementError::COULD_NOT_DETERMINE_TYPE;
+    }
+}
+
+// Recursively merges ANDs nested within ANDs and ORs nested within ORs
+void Requirement::simplifyParenthesis()
+{
+    if (type == RequirementType::AND || type == RequirementType::OR)
+    {
+        for (auto i = 0; i < args.size(); i++)
+        {
+            auto& nestedArg = std::get<Requirement>(args[i]);
+            nestedArg.simplifyParenthesis();
+            if (nestedArg.type == type)
+            {
+                for (auto& arg : nestedArg.args)
+                {
+                    args.push_back(arg);
+                }
+                args.erase(args.begin() + i);
+                i--;
+            }
+        }
+    }
+}
+
+// Sorts requirements in AND and OR requirements
+void Requirement::sortArgs()
+{
+    auto sortFunction = [](const Requirement::Argument& a_, const Requirement::Argument& b_)
+    {
+        auto& a = std::get<Requirement>(a_);
+        auto& b = std::get<Requirement>(b_);
+        return a.args.size() < b.args.size();
+    };
+
+    if (type == RequirementType::AND || type == RequirementType::OR)
+    {
+        for (auto& arg : args)
+        {
+            std::get<Requirement>(arg).sortArgs();
+        }
+        std::sort(args.begin(), args.end(), sortFunction);
     }
 }
 

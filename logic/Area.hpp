@@ -12,6 +12,7 @@ struct EventAccess
 {
     EventId event;
     Requirement requirement;
+    Area* area = nullptr;
     World* world = nullptr;
 };
 

@@ -677,7 +677,10 @@ World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
     // first pass to get all macro names
     for (const auto& macro : macroListTree)
     {
-        macroNameMap.emplace(macro.first.as<std::string>(), macroCount++);
+        macroStrings.emplace(macro.first.as<std::string>(), macro.second.as<std::string>());
+        macroNameMap.emplace(macro.first.as<std::string>(), macroCount);
+        macroNames.emplace(macroCount, macro.first.as<std::string>());
+        macroCount++;
     }
     for (const auto& macro : macroListTree)
     {
@@ -943,6 +946,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
                 return err;
             }
             LOG_TO_DEBUG("\tAdding event " + eventName);
+            eventOut.area = area;
             area->events.push_back(eventOut);
         }
     }

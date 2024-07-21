@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     }
 
     Utility::platformShutdown();
-    
+
     return 0;
 #endif
 }

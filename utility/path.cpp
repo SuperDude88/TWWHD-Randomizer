@@ -17,7 +17,7 @@ namespace Utility {
             #if defined(EMBED_DATA)
                 return ":/";
             #else
-                return QCoreApplication::applicationDirPath() + "/data/";
+                return QString(QCoreApplication::applicationDirPath() + "/data/").toStdString().c_str();
             #endif
         #elif defined(DEVKITPRO)
             return "/vol/content/";
