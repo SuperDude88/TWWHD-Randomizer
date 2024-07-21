@@ -240,7 +240,8 @@ QString TrackerLabel::getTooltipText()
     case RequirementType::AND:
         for (auto& arg : req.args)
         {
-            text.push_back(formatRequirement(std::get<Requirement>(arg), true));
+            auto& argReq = std::get<Requirement>(arg);
+            text.push_back(formatRequirement(argReq, true));
         }
         break;
     default:

@@ -85,6 +85,8 @@ void FlattenSearch::doSearch()
 
         // Step 3: simplify
         world->locationTable[locName]->computedRequirement = DNFToExpr(bitIndex, expr.dedup());
+        world->locationTable[locName]->computedRequirement.simplifyParenthesis();
+        world->locationTable[locName]->computedRequirement.sortArgs();
     }
 }
 

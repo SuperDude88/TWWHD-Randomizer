@@ -473,6 +473,48 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
     }
 }
 
+// Recursively merges ANDs nested within ANDs and ORs nested within ORs
+void Requirement::simplifyParenthesis()
+{
+    if (type == RequirementType::AND || type == RequirementType::OR)
+    {
+        for (auto i = 0; i < args.size(); i++)
+        {
+            auto& nestedArg = std::get<Requirement>(args[i]);
+            nestedArg.simplifyParenthesis();
+            if (nestedArg.type == type)
+            {
+                for (auto& arg : nestedArg.args)
+                {
+                    args.push_back(arg);
+                }
+                args.erase(args.begin() + i);
+                i--;
+            }
+        }
+    }
+}
+
+// Sorts requirements in AND and OR requirements
+void Requirement::sortArgs()
+{
+    auto sortFunction = [](const Requirement::Argument& a_, const Requirement::Argument& b_)
+    {
+        auto& a = std::get<Requirement>(a_);
+        auto& b = std::get<Requirement>(b_);
+        return a.args.size() < b.args.size();
+    };
+
+    if (type == RequirementType::AND || type == RequirementType::OR)
+    {
+        for (auto& arg : args)
+        {
+            std::get<Requirement>(arg).sortArgs();
+        }
+        std::sort(args.begin(), args.end(), sortFunction);
+    }
+}
+
 std::string errorToName(const RequirementError& err)
 {
     switch (err)
