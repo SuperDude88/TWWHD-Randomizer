@@ -183,6 +183,10 @@ void TrackerLabel::update_colors()
         {
             setStyleSheet("color: red;");
         }
+        else if (!location->progression)
+        {
+            setStyleSheet("color: olive;");
+        }
         else
         {
             setStyleSheet("color: blue;");

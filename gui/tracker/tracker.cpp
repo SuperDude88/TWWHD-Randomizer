@@ -119,7 +119,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         }
     }
 
-    trackerLocations = trackerWorld.getLocations(true);
+    trackerLocations = trackerWorld.getProgressionLocations();
 
     set_areas_locations();
 
@@ -280,7 +280,7 @@ void MainWindow::autosave_current_tracker()
     YAML::Node root = YAML::Load(autosave);
 
     // Save which locations have been marked
-    for (auto loc : trackerWorld.getLocations(true))
+    for (auto loc : trackerWorld.getLocations())
     {
         if (loc->marked)
         {
@@ -335,8 +335,9 @@ void MainWindow::autosave_current_tracker()
         }
     }
 
-    // Save show location logic to preferences also
+    // Save other preferences
     pref["show_location_logic"] = ui->show_location_logic->isChecked();
+    pref["show_nonprogress_locations"] = ui->show_nonprogress_locations->isChecked();
 
     std::ofstream preferences_file(Utility::get_app_save_path() / "tracker_preferences.yaml");
     if (preferences_file.is_open() == false)
@@ -439,6 +440,12 @@ void MainWindow::load_tracker_autosave()
     if (pref["show_location_logic"])
     {
         ui->show_location_logic->setChecked(pref["show_location_logic"].as<bool>());
+    }
+
+    // Show Non-Progress Locations preference
+    if (pref["show_nonprogress_locations"])
+    {
+        ui->show_nonprogress_locations->setChecked(pref["show_nonprogress_locations"].as<bool>());
     }
 
     update_tracker();
@@ -837,8 +844,13 @@ void MainWindow::update_tracker_areas_and_autosave()
     int checkedLocations = 0;
     int accessibleLocations = 0;
     int remainingLocations = 0;
-    for (auto loc : trackerLocations)
+    for (auto loc : trackerWorlds[0].getLocations(!ui->show_nonprogress_locations->isChecked()))
     {
+        // Don't do anything with hint locations
+        if (loc->categories.contains(LocationCategory::HoHoHint) || loc->categories.contains(LocationCategory::BlueChuChu))
+        {
+            continue;
+        }
         if (loc->marked)
         {
             checkedLocations++;
@@ -1042,6 +1054,17 @@ void MainWindow::on_show_location_logic_stateChanged(int arg1)
     }
 
     autosave_current_tracker();
+}
+
+void MainWindow::on_show_nonprogress_locations_stateChanged(int arg1)
+{
+    // Update showing nonprogress locations for all areas
+    for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
+    {
+        child->updateShowNonprogress(arg1, trackerStarted);
+    }
+    set_areas_locations();
+    update_tracker();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
@@ -1312,22 +1335,26 @@ void MainWindow::set_areas_locations()
 
         for (auto& locAccess : area->locations)
         {
-            if (locAccess.location->progression)
+            auto& location = locAccess.location;
+            // Don't add Ho Ho locations or Blue Chus for now
+            if ((location->progression || ui->show_nonprogress_locations->isChecked()) &&
+                !location->categories.contains(LocationCategory::HoHoHint) &&
+                !location->categories.contains(LocationCategory::BlueChuChu))
             {
                 if (area->dungeon != "")
                 {
-                    areaLocations[area->dungeon].insert(locAccess.location);
+                    areaLocations[area->dungeon].insert(location);
                 }
                 else if (area->hintRegion != "")
                 {
-                    areaLocations[area->hintRegion].insert(locAccess.location);
+                    areaLocations[area->hintRegion].insert(location);
                 }
                 else
                 {
                     auto regions = area->findHintRegions();
                     for (auto& region : regions)
                     {
-                        areaLocations[region].insert(locAccess.location);
+                        areaLocations[region].insert(location);
                     }
                 }
             }

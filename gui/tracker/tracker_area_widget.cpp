@@ -101,7 +101,10 @@ void TrackerAreaWidget::updateArea()
     }
 
     totalRemainingLocations = std::count_if(areaLocations->at(areaPrefix).begin(), areaLocations->at(areaPrefix).end(), [](Location* loc){return !loc->marked;});
+    auto remainingProgressLocations = std::count_if(areaLocations->at(areaPrefix).begin(), areaLocations->at(areaPrefix).end(), [](Location* loc){return !loc->marked && loc->progression;});
     totalAccessibleLocations = std::count_if(areaLocations->at(areaPrefix).begin(), areaLocations->at(areaPrefix).end(), [](Location* loc){return loc->hasBeenFound && !loc->marked;});
+    auto accessibleNonProgressLocations = std::count_if(areaLocations->at(areaPrefix).begin(), areaLocations->at(areaPrefix).end(), [](Location* loc){return loc->hasBeenFound && !loc->marked && !loc->progression;});
+    auto accessibleProgressLocations = totalAccessibleLocations - accessibleNonProgressLocations;
 
     if (totalRemainingLocations == 0 && totalAccessibleLocations == 0)
     {
@@ -110,6 +113,10 @@ void TrackerAreaWidget::updateArea()
     else if (totalAccessibleLocations == 0 && showLogic)
     {
         locationsRemaining.setStyleSheet("color: red;");
+    }
+    else if (showNonprogress && ((accessibleProgressLocations == 0 && showLogic) || (remainingProgressLocations == 0 && !showLogic)))
+    {
+        locationsRemaining.setStyleSheet("color: olive");
     }
     else
     {
@@ -160,7 +167,17 @@ void TrackerAreaWidget::updateBossImageWidget()
 void TrackerAreaWidget::updateShowLogic(int show, bool started)
 {
     showLogic = show ? true : false;
-    if(started) {
+    if(started)
+    {
+        updateArea();
+    }
+}
+
+void TrackerAreaWidget::updateShowNonprogress(int show, bool started)
+{
+    showNonprogress = show ? true : false;
+    if (started)
+    {
         updateArea();
     }
 }

@@ -271,6 +271,7 @@ private slots:
     void on_override_stats_color_stateChanged(int arg1);
     void on_stats_color_clicked();
     void on_show_location_logic_stateChanged(int arg1);
+    void on_show_nonprogress_locations_stateChanged(int arg1);
 
 private:
     // More Tracker Stuff
