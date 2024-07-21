@@ -3021,7 +3021,7 @@ color: lightgray</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="3" column="0">
               <spacer name="verticalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -3033,6 +3033,17 @@ color: lightgray</string>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="show_nonprogress_locations">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Show Non-Progress Locations</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

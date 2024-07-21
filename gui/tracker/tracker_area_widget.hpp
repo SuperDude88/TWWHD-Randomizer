@@ -34,6 +34,7 @@ public:
     int totalRemainingLocations = 0;
     int totalAccessibleLocations = 0;
     bool showLogic = true;
+    bool showNonprogress = false;
 
     // Stuff for other area widgets
     QWidget dungeonItemWidget = QWidget();
@@ -50,6 +51,7 @@ public:
     void updateArea();
     void updateBossImageWidget();
     void updateShowLogic(int show, bool started);
+    void updateShowNonprogress(int show, bool started);
 
 signals:
     void mouse_over_area(TrackerAreaWidget* areaPrefix);
