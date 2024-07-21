@@ -1,6 +1,4 @@
 #include <cstdlib>
-#include <iostream>
-#include <logic/flatten/bits.hpp>
 
 #ifdef QT_GUI
     #include <QApplication>
