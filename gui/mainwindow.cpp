@@ -579,13 +579,13 @@ void MainWindow::on_base_game_path_browse_button_clicked()
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->base_game_path->setText(dir);
-        config.gameBaseDir = dir.toStdU32String();
+        config.gameBaseDir = Utility::fromQString(dir);
     }
 }
 
 void MainWindow::on_base_game_path_textChanged(const QString &arg1)
 {
-    config.gameBaseDir = arg1.toStdU32String();
+    config.gameBaseDir = Utility::fromQString(arg1);
 }
 
 void MainWindow::on_output_folder_browse_button_clicked()
@@ -594,13 +594,13 @@ void MainWindow::on_output_folder_browse_button_clicked()
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->output_folder->setText(dir);
-        config.outputDir = dir.toStdU32String();
+        config.outputDir = Utility::fromQString(dir);
     }
 }
 
 void MainWindow::on_output_folder_textChanged(const QString &arg1)
 {
-    config.outputDir = arg1.toStdU32String();
+    config.outputDir = Utility::fromQString(arg1);
 }
 
 void MainWindow::on_generate_seed_button_clicked()
@@ -834,7 +834,7 @@ void MainWindow::on_plandomizer_path_browse_button_clicked()
     if (!fileName.isEmpty() && !fileName.isNull())
     {
         ui->plandomizer_path->setText(fileName);
-        config.settings.plandomizerFile = fileName.toStdU32String();
+        config.settings.plandomizerFile = Utility::fromQString(fileName);
     }
 }
 
