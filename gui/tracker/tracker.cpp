@@ -462,6 +462,7 @@ void MainWindow::initialize_tracker()
     set_font(ui->entrance_list_close_button,     "fira_sans", 14);
     set_font(ui->entrance_list_locations_button, "fira_sans", 14);
     set_font(ui->entrance_destination_back_button, "fira_sans", 14);
+    set_font(ui->chart_list_back_button,         "fira_sans", 14);
     set_font(ui->where_did_lead_to_label,        "fira_sans", 14);
     set_font(ui->current_area_name_label,        "fira_sans", 15);
     set_font(ui->current_area_accessible_number, "fira_sans", 11);
@@ -531,6 +532,18 @@ void MainWindow::initialize_tracker()
     SET_BUTTON_TO_LAYOUT(trackerProgressiveWallet,     inventory_layout_bottom_right, 1, 2);
     SET_BUTTON_TO_LAYOUT(trackerProgressiveMagicMeter, inventory_layout_bottom_right, 1, 3);
 
+    // Set charts in the chart list
+    for (auto i = 1; i <= 49; i++)
+    {
+        auto chartName = i <= 46 ? "Treasure Chart " + std::to_string(i) : "Triforce Chart " + std::to_string(i - 46);
+        auto chartGameItem = nameToGameItem(chartName);
+        // This technically results in dangling pointers, but they're still kept by the widgets and this function
+        // will only ever be run once per execution of the application, so it should never result in any memory leaks
+        auto chartButton = new TIB({{GameItem::NOTHING, ""}, {chartGameItem, ""}}, nullptr, /*onlytext = */true);
+        set_font(chartButton, "fira_sans", 9);
+        SET_BUTTON_TO_LAYOUT(*chartButton, chart_list_layout, (i - 1) % 17, (i - 1) / 17);
+    }
+
     // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
     // depending on if we embed data or not)
     ui->tracker_tab->setStyleSheet("QWidget#tracker_tab {background-image: url(" + getTrackerAssetPath("background.png") + ");}");
@@ -541,6 +554,7 @@ void MainWindow::initialize_tracker()
                                                    "background-position: center;"
                                                "}");
     ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" + getTrackerAssetPath("sea_chart.png") + ");}");
+    ui->chart_list_widget->setStyleSheet("QWidget#chart_list_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
     set_location_list_widget_background("empty");
     ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
     ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
@@ -617,6 +631,18 @@ void MainWindow::initialize_tracker()
         inventoryButton->trackerWorld = &trackerWorlds[0];
         connect(inventoryButton, &TrackerInventoryButton::inventory_button_pressed, this, &MainWindow::update_tracker);
         connect(inventoryButton, &TrackerInventoryButton::mouse_over_item, this, &MainWindow::tracker_display_current_item_text);
+
+        // Set inventory button duplicates (just for charts on the overworld map and in the chart list for now)
+        for (auto potentialDuplicate : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
+        {
+            // If the first real item in the buttons' itemState's gameItem matches,
+            // then this is a button which is tracking the same item. This will also
+            // add each button to itself, but that doesn't really matter.
+            if (potentialDuplicate->itemStates[1].gameItem == inventoryButton->itemStates[1].gameItem)
+            {
+                inventoryButton->duplicates.insert(potentialDuplicate);
+            }
+        }
     }
 
     // Connect clicking area widgets to showing the checks in that area
@@ -893,6 +919,11 @@ void MainWindow::switch_to_entrance_destinations_tracker()
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_ENTRANCE_DESTINATIONS);
 }
 
+void MainWindow::switch_to_chart_list_tracker()
+{
+    ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_CHART_LIST);
+}
+
 void MainWindow::on_location_list_entrances_button_released()
 {
     switch_to_entrances_tracker();
@@ -945,6 +976,11 @@ void MainWindow::on_clear_all_button_released()
         locLabel->update_colors();
     }
     update_tracker();
+}
+
+void MainWindow::on_chart_list_back_button_released()
+{
+    switch_to_overworld_tracker();
 }
 
 void MainWindow::update_items_color() {
@@ -1065,6 +1101,11 @@ void MainWindow::on_show_nonprogress_locations_stateChanged(int arg1)
     }
     set_areas_locations();
     update_tracker();
+}
+
+void MainWindow::on_open_chart_list_button_clicked()
+{
+    switch_to_chart_list_tracker();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)

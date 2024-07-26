@@ -18,13 +18,15 @@ class TrackerInventoryButton : public QLabel
     Q_OBJECT
 public:
     TrackerInventoryButton();
-    TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr );
+    TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr, bool onlyText_ = false );
 
     std::vector<TrackerInventoryItem> itemStates = {};
     int state = 0;
     std::unordered_set<int> forbiddenStates = {};
     World* trackerWorld = nullptr;
     ItemPool* trackerInventory = nullptr;
+    bool onlyText = false;
+    std::unordered_set<TrackerInventoryButton*> duplicates = {};
 
     void updateIcon();
     void removeCurrentItem();

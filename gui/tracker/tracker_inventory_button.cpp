@@ -4,9 +4,10 @@
 
 TrackerInventoryButton::TrackerInventoryButton() {}
 
-TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent) :
+TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent, bool onlyText_) :
     QLabel("", parent),
-    itemStates(itemStates_)
+    itemStates(itemStates_),
+    onlyText(onlyText_)
 {
     state = 0;
     setCursor(Qt::PointingHandCursor);
@@ -28,13 +29,35 @@ TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventor
             }
         }
     }
+
+    // Set text if this is a text only button
+    if (onlyText)
+    {
+        setText(itemStates[state].trackerLabelStr.c_str());
+    }
 }
 
 void TrackerInventoryButton::updateIcon()
 {
-    setStyleSheet("background-image: url(" + getTrackerAssetPath(itemStates[state].filename) + ");"
-                + "background-repeat: none;"
-                + "background-position: center;");
+    // If this is a text button (currently only on the chart list)
+    // then style it's colors properly
+    if (onlyText)
+    {
+        if (itemStates[state].gameItem == GameItem::NOTHING)
+        {
+            setStyleSheet("color: blue;");
+        }
+        else
+        {
+            setStyleSheet("color: black; text-decoration: line-through;");
+        }
+    }
+    else
+    {
+        setStyleSheet("background-image: url(" + getTrackerAssetPath(itemStates[state].filename) + ");"
+                    + "background-repeat: none;"
+                    + "background-position: center;");
+    }
 }
 
 void TrackerInventoryButton::removeCurrentItem()
@@ -119,6 +142,15 @@ void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
     updateIcon();
     emit inventory_button_pressed();
     emit mouse_over_item(itemStates[state].trackerLabelStr);
+
+    // Update duplicate buttons to the proper state. This is
+    // mainly just for charts on the chart list and their
+    // corresponding chart buttons on the map
+    for (auto duplicate : duplicates)
+    {
+        duplicate->state = state;
+        duplicate->updateIcon();
+    }
 }
 
 void TrackerInventoryButton::enterEvent(QEnterEvent* e)

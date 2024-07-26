@@ -27,6 +27,7 @@ QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow);
 #define LOCATION_TRACKER_SPECIFIC_AREA 1
 #define LOCATION_TRACKER_SPECIFIC_AREA_ENTRANCES 2
 #define LOCATION_TRACKER_ENTRANCE_DESTINATIONS 3
+#define LOCATION_TRACKER_CHART_LIST 4
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -108,6 +109,7 @@ public:
     void switch_to_area_tracker();
     void switch_to_entrances_tracker();
     void switch_to_entrance_destinations_tracker();
+    void switch_to_chart_list_tracker();
     void set_current_tracker_area(const std::string& areaPrefix);
     void update_tracker();
     void setup_tracker_entrances();
@@ -260,6 +262,7 @@ private slots:
     void on_entrance_list_close_button_released();
     void on_entrance_list_locations_button_released();
     void on_entrance_destination_back_button_released();
+    void on_chart_list_back_button_released();
 
     void update_items_color();
     void on_override_items_color_stateChanged(int arg1);
@@ -271,7 +274,8 @@ private slots:
     void on_override_stats_color_stateChanged(int arg1);
     void on_stats_color_clicked();
     void on_show_location_logic_stateChanged(int arg1);
-    void on_show_nonprogress_locations_stateChanged(int arg1);
+    void on_show_nonprogress_locations_stateChanged(int arg1);   
+    void on_open_chart_list_button_clicked();
 
 private:
     // More Tracker Stuff
