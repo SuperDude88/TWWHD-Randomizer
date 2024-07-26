@@ -17,7 +17,7 @@ namespace Utility {
             #if defined(EMBED_DATA)
                 return ":/";
             #else
-                return QString(QCoreApplication::applicationDirPath() + "/data/").toStdString().c_str();
+                return fromQString(QCoreApplication::applicationDirPath()) / "data/";
             #endif
         #elif defined(DEVKITPRO)
             return "/vol/content/";
@@ -31,9 +31,9 @@ namespace Utility {
     fspath get_app_save_path() {
         fspath path;
         #if defined(__APPLE__) && defined(QT_GUI)
-            path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdU32String();
+            path = fromQString(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
         #elif defined(QT_GUI)
-            path = QCoreApplication::applicationDirPath().toStdU32String();
+            path = fromQString(QCoreApplication::applicationDirPath());
         #elif defined(DEVKITPRO)
             return "/vol/save/";
         #else

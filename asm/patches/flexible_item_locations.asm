@@ -213,7 +213,7 @@ return_is_buying_beedle_20_item:
   mr r20, r23 ; Copy the loop counter to r20 (other parts of the function expect this)
   lbz r3, 0x99F(r26) ; Get the shop index
   cmplwi r3, 0x4 ; Shop index 4 (10 arrows / 30 arrows / bait)
-  beq 0x02212CAC + 8 ; Continue with normal items
+  beq 0x02212CAC ; Continue with normal items
   cmplwi r3, 0x5 ; Shop index 5 (30 arrows / 30 bombs / red potion)
   beq 0x02212CAC ; Continue with normal items
   bl check_shop_item_in_bait_bag_slot_sold_out

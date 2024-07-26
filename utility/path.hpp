@@ -27,5 +27,6 @@ namespace Utility {
         // Use a wide string type to cover Windows where paths are UTF-16 encoded (and hopefully still be fine on other platforms)
         // Also use the "generic" version with '/' separators because the Windows '\' breaks some paths
         inline QString toQString(const fspath& path) { return QString::fromStdU32String(path.generic_u32string()); }
+        inline fspath fromQString(const QString& path) { return path.toStdU32String(); }
     #endif
 }
