@@ -366,6 +366,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
         // erase swords if they are not being placed
         if(settings.remove_swords) {
             valid_items.erase(GameItem::ProgressiveSword);
+            valid_items.erase(GameItem::HurricaneSpin);
         }
 
         settings.starting_gear.clear();
