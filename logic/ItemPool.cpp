@@ -256,6 +256,10 @@ ItemNamePool generateStartingGameItemPool(const Settings& settings)
     {
         startingItems.push_back(gameItemToName(item));
     }
+    
+    // The shuffle code loops over this pool in order and replaces any duplicates in the main pool with junk
+    // This sort guarantees the order of starting items in the config will not affect randomization
+    std::ranges::sort(startingItems);
 
     return startingItems;
 }
