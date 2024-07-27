@@ -367,3 +367,127 @@ uint8_t islandNameToRoomIndex(const std::string& islandName)
 
     return islandAreaMap[islandName];
 }
+
+uint8_t chartToRoomIndex(const GameItem& chart)
+{
+    std::unordered_map<GameItem, uint8_t> charts = {
+        {GameItem::TreasureChart25, 1}, // Sector 1 Forsaken Fortress
+        {GameItem::TreasureChart7,  2}, // Sector 2 Star Island
+        {GameItem::TreasureChart24, 3}, // etc...
+        {GameItem::TreasureChart42, 4},
+        {GameItem::TreasureChart11, 5},
+        {GameItem::TreasureChart45, 6},
+        {GameItem::TreasureChart13, 7},
+        {GameItem::TreasureChart41, 8},
+        {GameItem::TreasureChart29, 9},
+        {GameItem::TreasureChart22, 10},
+        {GameItem::TreasureChart18, 11},
+        {GameItem::TreasureChart30, 12},
+        {GameItem::TreasureChart39, 13},
+        {GameItem::TreasureChart19, 14},
+        {GameItem::TreasureChart8,  15},
+        {GameItem::TreasureChart2,  16},
+        {GameItem::TreasureChart10, 17},
+        {GameItem::TreasureChart26, 18},
+        {GameItem::TreasureChart3,  19},
+        {GameItem::TreasureChart37, 20},
+        {GameItem::TreasureChart27, 21},
+        {GameItem::TreasureChart38, 22},
+        {GameItem::TriforceChart1,  23},
+        {GameItem::TreasureChart21, 24},
+        {GameItem::TreasureChart6,  25},
+        {GameItem::TreasureChart14, 26},
+        {GameItem::TreasureChart34, 27},
+        {GameItem::TreasureChart5,  28},
+        {GameItem::TreasureChart28, 29},
+        {GameItem::TreasureChart35, 30},
+        {GameItem::TriforceChart2,  31},
+        {GameItem::TreasureChart44, 32},
+        {GameItem::TreasureChart1,  33},
+        {GameItem::TreasureChart20, 34},
+        {GameItem::TreasureChart36, 35},
+        {GameItem::TreasureChart23, 36},
+        {GameItem::TreasureChart12, 37},
+        {GameItem::TreasureChart16, 38},
+        {GameItem::TreasureChart4,  39},
+        {GameItem::TreasureChart17, 40},
+        {GameItem::TreasureChart31, 41},
+        {GameItem::TriforceChart3,  42},
+        {GameItem::TreasureChart9,  43},
+        {GameItem::TreasureChart43, 44},
+        {GameItem::TreasureChart40, 45},
+        {GameItem::TreasureChart46, 46},
+        {GameItem::TreasureChart15, 47},
+        {GameItem::TreasureChart32, 48},
+        {GameItem::TreasureChart33, 49}, // Sector 49 Five Star Isles
+    };
+
+    if (!charts.contains(chart))
+    {
+        return 0;
+    }
+
+    return charts[chart];
+}
+
+GameItem roomIndexToChart(const uint8_t& room)
+{
+    std::unordered_map<uint8_t, GameItem> rooms = {
+        {1,  GameItem::TreasureChart25}, // Sector 1 Forsaken Fortress
+        {2,  GameItem::TreasureChart7 }, // Sector 2 Star Island
+        {3,  GameItem::TreasureChart24}, // etc...
+        {4,  GameItem::TreasureChart42},
+        {5,  GameItem::TreasureChart11},
+        {6,  GameItem::TreasureChart45},
+        {7,  GameItem::TreasureChart13},
+        {8,  GameItem::TreasureChart41},
+        {9,  GameItem::TreasureChart29},
+        {10, GameItem::TreasureChart22},
+        {11, GameItem::TreasureChart18},
+        {12, GameItem::TreasureChart30},
+        {13, GameItem::TreasureChart39},
+        {14, GameItem::TreasureChart19},
+        {15, GameItem::TreasureChart8 },
+        {16, GameItem::TreasureChart2 },
+        {17, GameItem::TreasureChart10},
+        {18, GameItem::TreasureChart26},
+        {19, GameItem::TreasureChart3 },
+        {20, GameItem::TreasureChart37},
+        {21, GameItem::TreasureChart27},
+        {22, GameItem::TreasureChart38},
+        {23, GameItem::TriforceChart1 },
+        {24, GameItem::TreasureChart21},
+        {25, GameItem::TreasureChart6 },
+        {26, GameItem::TreasureChart14},
+        {27, GameItem::TreasureChart34},
+        {28, GameItem::TreasureChart5 },
+        {29, GameItem::TreasureChart28},
+        {30, GameItem::TreasureChart35},
+        {31, GameItem::TriforceChart2 },
+        {32, GameItem::TreasureChart44},
+        {33, GameItem::TreasureChart1 },
+        {34, GameItem::TreasureChart20},
+        {35, GameItem::TreasureChart36},
+        {36, GameItem::TreasureChart23},
+        {37, GameItem::TreasureChart12},
+        {38, GameItem::TreasureChart16},
+        {39, GameItem::TreasureChart4 },
+        {40, GameItem::TreasureChart17},
+        {41, GameItem::TreasureChart31},
+        {42, GameItem::TriforceChart3 },
+        {43, GameItem::TreasureChart9 },
+        {44, GameItem::TreasureChart43},
+        {45, GameItem::TreasureChart40},
+        {46, GameItem::TreasureChart46},
+        {47, GameItem::TreasureChart15},
+        {48, GameItem::TreasureChart32},
+        {49, GameItem::TreasureChart33}, // Sector 49 Five Star Isles
+    };
+
+    if (!rooms.contains(room))
+    {
+        return GameItem::INVALID;
+    }
+
+    return rooms[room];
+}

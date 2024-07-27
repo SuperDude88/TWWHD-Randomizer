@@ -629,6 +629,7 @@ void MainWindow::initialize_tracker()
     {
         inventoryButton->trackerInventory = &trackerInventory;
         inventoryButton->trackerWorld = &trackerWorlds[0];
+        inventoryButton->mainWindow = this;
         connect(inventoryButton, &TrackerInventoryButton::inventory_button_pressed, this, &MainWindow::update_tracker);
         connect(inventoryButton, &TrackerInventoryButton::mouse_over_item, this, &MainWindow::tracker_display_current_item_text);
 

@@ -13,12 +13,14 @@ struct TrackerInventoryItem {
     std::string trackerLabelStr = "";
 };
 
+class MainWindow;
+
 class TrackerInventoryButton : public QLabel
 {
     Q_OBJECT
 public:
     TrackerInventoryButton();
-    TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr, bool onlyText_ = false );
+    TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr, bool onlyText_ = false, MainWindow* mainWindow_ = nullptr );
 
     std::vector<TrackerInventoryItem> itemStates = {};
     int state = 0;
@@ -26,6 +28,7 @@ public:
     World* trackerWorld = nullptr;
     ItemPool* trackerInventory = nullptr;
     bool onlyText = false;
+    MainWindow* mainWindow = nullptr;
     std::unordered_set<TrackerInventoryButton*> duplicates = {};
 
     void updateIcon();
@@ -36,6 +39,9 @@ public:
 
     void addForbiddenState(int state);
 
+    bool onChartListWhenRandomCharts();
+    void showChartTooltip();
+
 signals:
     void inventory_button_pressed();
     void mouse_over_item(const std::string& currentItem);
@@ -43,6 +49,7 @@ signals:
 
 protected:
     void mouseReleaseEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
     void enterEvent(QEnterEvent* e) override;
     void leaveEvent(QEvent* e) override;
 };
