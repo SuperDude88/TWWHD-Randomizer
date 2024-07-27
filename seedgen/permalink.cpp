@@ -353,11 +353,12 @@ PermalinkError parse_permalink(std::string b64permalink, Settings& settings, std
             settings.setSetting(option, value);
         }
         // 3-bit SpinBox options
-        else if (option == Option::ProgressDungeons ||
-                 option == Option::PathHints        ||
-                 option == Option::BarrenHints      ||
-                 option == Option::LocationHints    ||
-                 option == Option::ItemHints        ||
+        else if (option == Option::ProgressDungeons       ||
+                 option == Option::RandomizeCaveEntrances ||
+                 option == Option::PathHints              ||
+                 option == Option::BarrenHints            ||
+                 option == Option::LocationHints          ||
+                 option == Option::ItemHints              ||
                  option == Option::StartingHC)
         {
             value = bitsReader.read(3);
