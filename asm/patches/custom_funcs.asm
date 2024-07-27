@@ -163,10 +163,11 @@ bl onEventBit
 ; Also set the switch (0x8) for having unclogged the pond, since that boulder doesn't respond to normal bombs which would be odd.
 ; Also set the the switch (0x1E) for having seen the intro to the interior of the Forest Haven, where the camera pans up.
 ; Also set the the switch (0x13) for having seen the camera panning towards the treasure chest in Windfall Town Jail.
+; Also set the the switch (0x14) for having seen the camera pan around the Windfall Cafe.
 lis r3,gameInfo_ptr@ha
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x52C
-lis r4, 0x4008
+lis r4, 0x4018
 addi r4, r4, 0x038B
 stw r4, 4 (r3)
 
