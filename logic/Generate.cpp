@@ -161,10 +161,13 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           continue;
       }
 
+      // Now that all entrances have been randomized, we can flatten the world's
+      // logic requirements for some useful operations later on
       // Determine race mode dungeons after entrance randomizer to ensure we pick
       // dungeons which can be properly reached depending on any entrance rando settings
       for (auto& world : worlds)
       {
+          world.flattenLogicRequirements();
           WORLD_LOADING_ERROR_CHECK(world.setDungeonLocations(worlds));
           WORLD_LOADING_ERROR_CHECK(world.determineRaceModeDungeons(worlds));
       }

@@ -87,6 +87,7 @@ public:
     std::unique_ptr<LocationModification> method;
     World* world = nullptr;
     Requirement computedRequirement = Requirement{RequirementType::IMPOSSIBLE, {}};
+    std::unordered_set<GameItem> itemsInComputedRequirement = {};
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;

@@ -394,10 +394,9 @@ public:
     void saveDelayedItemId();
     void setAsMajorItem();
     bool isMajorItem() const;
-    bool anyInstancesAreMajor() const;
     bool isChartForSunkenTreasure() const;
     void addChainLocation(Location* location);
-    std::list<Location*>& getChainLocations();
+    std::unordered_set<Location*> getChainLocations() const;
     std::string getName() const;
     std::string getUTF8Name(const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RAW, const bool& showWorld = false) const;
     std::u16string getUTF16Name(const std::string& language = "English", const Text::Type& type = Text::Type::STANDARD, const Text::Color& color = Text::Color::RED, const bool& showWorld = false) const;
@@ -418,7 +417,7 @@ private:
     GameItem delayedGameItemId = GameItem::INVALID;
     bool majorItem = false;
     bool chartForSunkenTreasure = false;
-    std::list<Location*> chainLocations = {};
+    std::unordered_set<Location*> chainLocations = {};
     bool dungeonItem = false;
     bool junkItem = false;
     World* world = nullptr; // The world that this item is *FOR*

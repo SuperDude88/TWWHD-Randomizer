@@ -752,19 +752,6 @@ bool Item::isMajorItem() const
     return majorItem;
 }
 
-bool Item::anyInstancesAreMajor() const
-{
-    if (majorItem)
-    {
-        return true;
-    }
-
-    if (world)
-    {
-        return world->anyOfThisItemIsMajor(*this);
-    }
-    return false;
-}
 
 bool Item::isChartForSunkenTreasure() const
 {
@@ -773,10 +760,10 @@ bool Item::isChartForSunkenTreasure() const
 
 void Item::addChainLocation(Location* location)
 {
-    chainLocations.push_back(location);
+    chainLocations.insert(location);
 }
 
-std::list<Location*>& Item::getChainLocations()
+std::unordered_set<Location*> Item::getChainLocations() const
 {
     return chainLocations;
 }

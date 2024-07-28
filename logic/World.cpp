@@ -11,6 +11,7 @@
 #include <logic/Requirements.hpp>
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>
+#include <logic/flatten/flatten.hpp>
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
 #include <utility/string.hpp>
@@ -197,6 +198,11 @@ ItemPool World::getStartingItems() const
     return startingItems;
 }
 
+int World::getStartingHeartCount() const
+{
+    return settings.starting_hcs + (settings.starting_pohs / 4);
+}
+
 LocationPool World::getLocations(bool onlyProgression /*= false*/)
 {
     LocationPool locations = {};
@@ -254,23 +260,11 @@ void World::determineChartMappings()
         size_t sector = i + 1;
         chartMappings[sector] = chart;
 
-        // Set the sunken treasure location as the chain location for each treasure/triforce chart in the itemTable
-        auto locationName = roomIndexToIslandName(sector) + " - Sunken Treasure";
-        auto chartName = gameItemToName(chart);
-        if (!locationTable.contains(locationName))
-        {
-            ErrorLog::getInstance().log("\"" + locationName + "\" is not a known sunken treasure location");
-        }
-        if (!itemTable.contains(chartName))
-        {
-            ErrorLog::getInstance().log("\"" + chartName + "\" is not a known treasure chart item");
-        }
-        auto location = locationTable[locationName].get();
-        itemTable[chartName].addChainLocation(location);
         // Change the macro for this island's chart to the one at this index in the array.
         // "Chart For Island <sector number>" macros are type "HAS_ITEM" and have
         // one argument which is the chart Item.
-        LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + gameItemToName(chart));
+        auto chartName = gameItemToName(chart);
+        LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + chartName);
         macros[macroNameMap.at("Chart For Island " + std::to_string(sector))].args[0] = itemTable[chartName];
     }
     LOG_TO_DEBUG("]");
@@ -1010,17 +1004,6 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
         }
     }
 
-    if (itemObject["Chain Locations"])
-    {
-        for (auto location : itemObject["Chain Locations"])
-        {
-            const auto locationName = location.as<std::string>();
-            addLocation(locationName);
-            item.addChainLocation(locationTable[locationName].get());
-            LOG_TO_DEBUG("\"" + locationName + "\" added as chain location for \"" + itemName + "\"");
-        }
-    }
-
     if (itemObject["Small Key Dungeon"])
     {
         const auto dungeon = itemObject["Small Key Dungeon"].as<std::string>();
@@ -1407,14 +1390,56 @@ Item World::getItem(const std::string& itemName)
     return itemTable[sanitizedName];
 }
 
-bool World::anyOfThisItemIsMajor(const Item& item) const
-{
-    for (const auto& [name, loc] : locationTable) {
-        if (loc->currentItem.isMajorItem() && item == loc->currentItem) {
-            return true;
+// Perform a flattening search for this world.
+// This will set a simplified single requirement statement
+// for each location. This will then be used to calculate
+// each item's chain locations as well as the set of items
+// that could potentially be requiredto access any given location.
+// This info is useful for calculating intuitive hint and ctmc data.
+// TODO: It can also be used for faster filling in the future if desired
+// although the filling is pretty fast currently so it's probably not
+// necessary.
+void World::flattenLogicRequirements()
+{       
+    // Run the flattening search. The search
+    // will set the simplified requirement for
+    // each location
+    auto flatten = FlattenSearch(this);
+    flatten.doSearch();
+
+    // For each location, note down any item
+    // that appears in it's simplified requirement
+    // and store that as a potential item requirement
+    // for this location.
+    for (auto& [name, loc] : locationTable)
+    {
+        loc->itemsInComputedRequirement = loc->computedRequirement.getItems();
+
+        // For each item listed, set this location as a chain
+        // location of the item
+        for (auto& gameItem : loc->itemsInComputedRequirement)
+        {
+            // Make an exception for hearts, which will only appear
+            // in spiky chests if the player starts with less than 3
+            if (getStartingHeartCount() >= 3 && (gameItem == GameItem::HeartContainer || gameItem == GameItem::PieceOfHeart))
+            {
+                continue;
+            }
+            itemTable[gameItemToName(gameItem)].addChainLocation(loc.get());
         }
     }
-    return false;
+
+    // Properly set the chain locations for each item in the item pools as well
+    for (auto pool : {&itemPool, &startingItems})
+    {
+        for (auto& item : *pool)
+        {
+            for (auto loc : itemTable[gameItemToName(item.getGameItemId())].getChainLocations())
+            {
+                item.addChainLocation(loc);
+            }
+        }
+    }
 }
 
 std::string World::errorToName(WorldLoadingError err)

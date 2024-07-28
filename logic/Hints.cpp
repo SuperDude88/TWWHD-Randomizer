@@ -142,12 +142,12 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                     world.barrenRegions[location->hintRegions.front()] = {};
                 }
 
-                // During this loop we'll also go through and mark certain progressive items as junk items. These
-                // are "chain" items whose sole purpose is to unlock another check. Here they will
-                // be marked as junk if the location they unlock contains junk. If the location they unlock
-                // is not junk, then we'll put it into the potentially junk items set to check for later
-                auto& chainLocations = location->currentItem.getChainLocations();
-                if (location->progression && !chainLocations.empty())
+                // During this loop we'll also go through and mark certain items as junk items.
+                // For the purposes of barren hints, if a major item cannot possibly lead to any
+                // required items, then it will not block the region it's in from being considered
+                // barren.
+                auto chainLocations = location->currentItem.getChainLocations();
+                if (!chainLocations.empty())
                 {
                     // If all of this item's chain locations are junk, then this item is also junk
                     if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
@@ -219,32 +219,6 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 std::ranges::any_of(outsideLocations, [](const Location* location){return location->currentItem.isJunkItem();}))
             {
                 world.barrenRegions.erase(dungeonName);
-            }
-        }
-
-        // Revert items set as junk back to major items so
-        // they still become spiky chests in CTMC
-        for (auto item : itemsSetAsJunk)
-        {
-            // If it's a chart though, and the setting for the charts
-            // being progression isn't enabled, keep it as junk
-            if (item->isChartForSunkenTreasure())
-            {
-                if (isAnyOf(item->getGameItemId(), GameItem::TriforceChart1, GameItem::TriforceChart2, GameItem::TriforceChart3))
-                {
-                    if (world.getSettings().progression_triforce_charts)
-                    {
-                        item->setAsMajorItem();
-                    }
-                }
-                else if (world.getSettings().progression_treasure_charts)
-                {
-                    item->setAsMajorItem();
-                }
-            }
-            else
-            {
-                item->setAsMajorItem();
             }
         }
 

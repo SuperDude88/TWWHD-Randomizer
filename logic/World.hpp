@@ -75,6 +75,7 @@ public:
     ItemPool getItemPool() const;
     ItemPool& getItemPoolReference();
     ItemPool getStartingItems() const;
+    int getStartingHeartCount() const;
     LocationPool getLocations(bool onlyProgression = false);
     LocationPool getRaceModeLocations() const;
     LocationPool getProgressionLocations();
@@ -100,7 +101,7 @@ public:
     void addEvent(const std::string& eventName);
     void addLocation(const std::string& locationName);
     Item getItem(const std::string& itemName);
-    bool anyOfThisItemIsMajor(const Item& item) const;
+    void flattenLogicRequirements();
 
     // Stuff to help with debugging
     std::string errorToName(WorldLoadingError err);
