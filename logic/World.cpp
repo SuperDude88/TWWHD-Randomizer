@@ -234,60 +234,13 @@ Area* World::getArea(const std::string& area)
 void World::determineChartMappings()
 {
     LOG_TO_DEBUG("Determining Chart Mappings");
-    // The ordering of this array corresponds each treasure/triforce chart with
-    // the island sector it's located in and the name of the sunken treasure location
-    // in that room
-    std::array<GameItem, 49> charts = {
-        GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
-        GameItem::TreasureChart7,  // Sector 2 Star Island
-        GameItem::TreasureChart24, // etc...
-        GameItem::TreasureChart42,
-        GameItem::TreasureChart11,
-        GameItem::TreasureChart45,
-        GameItem::TreasureChart13,
-        GameItem::TreasureChart41,
-        GameItem::TreasureChart29,
-        GameItem::TreasureChart22,
-        GameItem::TreasureChart18,
-        GameItem::TreasureChart30,
-        GameItem::TreasureChart39,
-        GameItem::TreasureChart19,
-        GameItem::TreasureChart8,
-        GameItem::TreasureChart2,
-        GameItem::TreasureChart10,
-        GameItem::TreasureChart26,
-        GameItem::TreasureChart3,
-        GameItem::TreasureChart37,
-        GameItem::TreasureChart27,
-        GameItem::TreasureChart38,
-        GameItem::TriforceChart1,
-        GameItem::TreasureChart21,
-        GameItem::TreasureChart6,
-        GameItem::TreasureChart14,
-        GameItem::TreasureChart34,
-        GameItem::TreasureChart5,
-        GameItem::TreasureChart28,
-        GameItem::TreasureChart35,
-        GameItem::TriforceChart2,
-        GameItem::TreasureChart44,
-        GameItem::TreasureChart1,
-        GameItem::TreasureChart20,
-        GameItem::TreasureChart36,
-        GameItem::TreasureChart23,
-        GameItem::TreasureChart12,
-        GameItem::TreasureChart16,
-        GameItem::TreasureChart4,
-        GameItem::TreasureChart17,
-        GameItem::TreasureChart31,
-        GameItem::TriforceChart3,
-        GameItem::TreasureChart9,
-        GameItem::TreasureChart43,
-        GameItem::TreasureChart40,
-        GameItem::TreasureChart46,
-        GameItem::TreasureChart15,
-        GameItem::TreasureChart32,
-        GameItem::TreasureChart33 // Sector 49 Five Star Isles
-    };
+
+    // Create a vector of charts in the vanilla order
+    std::vector<GameItem> charts = {};
+    for (auto i = 0; i < 49; i++)
+    {
+        charts.push_back(roomIndexToChart(i));
+    }
 
     // Only shuffle around the charts if we're randomizing them
     if (settings.randomize_charts)
@@ -295,7 +248,7 @@ void World::determineChartMappings()
         shufflePool(charts);
     }
     LOG_TO_DEBUG("[");
-    for (size_t i = 0; i < charts.size(); i++)
+    for (auto i = 0; i < charts.size(); i++)
     {
         auto chart = charts[i];
         size_t sector = i + 1;

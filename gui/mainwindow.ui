@@ -2227,7 +2227,7 @@ color: lightgray</string>
              </rect>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="overworld_page">
              <property name="cursor">
@@ -2657,6 +2657,77 @@ font-size: 15px;</string>
               </layout>
              </widget>
             </widget>
+            <widget class="QWidget" name="chart_list_page">
+             <widget class="QWidget" name="chart_list_widget" native="true">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>364</width>
+                <height>346</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_14">
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>2</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="chart_list_top_buttons">
+                 <item>
+                  <widget class="QPushButton" name="chart_list_back_button">
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">text-align: left;
+color: black;
+font-size: 15px;</string>
+                   </property>
+                   <property name="text">
+                    <string>X Close</string>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <layout class="QGridLayout" name="chart_list_layout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                </layout>
+               </item>
+               <item row="2" column="0">
+                <spacer name="chart_list_spacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
            </widget>
            <widget class="QWidget" name="other_areas_widget" native="true">
             <property name="geometry">
@@ -3003,25 +3074,11 @@ color: lightgray</string>
               <x>820</x>
               <y>550</y>
               <width>221</width>
-              <height>80</height>
+              <height>88</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_10">
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="show_location_logic">
-               <property name="styleSheet">
-                <string notr="true">background: rgba(79, 79, 79, 0.85);
-color: lightgray</string>
-               </property>
-               <property name="text">
-                <string>Show Location Logic</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <spacer name="verticalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -3042,6 +3099,31 @@ color: lightgray</string>
                </property>
                <property name="text">
                 <string>Show Non-Progress Locations</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="show_location_logic">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Show Location Logic</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QPushButton" name="open_chart_list_button">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>View Charts</string>
                </property>
               </widget>
              </item>
