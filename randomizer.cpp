@@ -8,11 +8,9 @@
 #include <libs/zlib-ng.hpp>
 
 #include <tweaks.hpp>
-#include <keys/keys.hpp>
 #include <seedgen/config.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/seed.hpp>
-#include <seedgen/permalink.hpp>
 #include <logic/SpoilerLog.hpp>
 #include <logic/Generate.hpp>
 #include <logic/LogicTests.hpp>
@@ -39,8 +37,6 @@
 class Randomizer {
 private:
     Config config;
-    std::string permalink;
-    size_t integer_seed;
 
     #ifdef DRY_RUN
         const bool dryRun = true;
@@ -155,8 +151,7 @@ private:
 
 public:
     Randomizer(const Config& config_) :
-        config(config_),
-        permalink(create_permalink(config_.settings, config_.seed))
+        config(config_)
     {}
 
     int randomize() {
@@ -181,24 +176,17 @@ public:
 
         LogInfo::setConfig(config);
 
-        LOG_TO_DEBUG("Permalink: " + permalink);
-
-        if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
-
-        // Add the plandomizer file contents to the permalink when plandomzier is enabled
-        if (config.settings.plandomizer) {
-            std::string plandoContents;
-            if (Utility::getFileContents(config.settings.plandomizerFile, plandoContents) != 0) {
-                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + Utility::toUtf8String(config.settings.plandomizerFile));
-                return 1;
-            }
-            permalink += plandoContents;
-        }
+        LOG_TO_DEBUG("Permalink: " + config.getPermalink());
 
         // Seed RNG
-        integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t*>(permalink.data()), permalink.length());
-
+        const std::string permalink = config.getPermalink(true);
+        if(permalink.empty()) {
+            ErrorLog::getInstance().log("Could not generate permalink for RNG seeding.");
+            return 1;
+        }
+        const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
         Random_Init(integer_seed);
+
         LogInfo::setSeedHash(generate_seed_hash());
 
         UPDATE_DIALOG_TITLE("Randomizing - Hash: " + LogInfo::getSeedHash());
@@ -326,7 +314,7 @@ int mainRandomize() {
     // Create default configs/preferences if they don't exist
     ConfigError err = Config::writeDefault(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if(err != ConfigError::NONE) {
-        ErrorLog::getInstance().log("Failed to create config, ERROR: " + errorToName(err));
+        ErrorLog::getInstance().log("Failed to create config, ERROR: " + ConfigErrorGetName(err));
         return 1;
     }
 
@@ -337,7 +325,7 @@ int mainRandomize() {
         err = load.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     #endif
     if(err != ConfigError::NONE && err != ConfigError::DIFFERENT_RANDO_VERSION) {
-        ErrorLog::getInstance().log("Failed to read config, error: " + errorToName(err));
+        ErrorLog::getInstance().log("Failed to read config, error: " + ConfigErrorGetName(err));
 
         return 1;
     }

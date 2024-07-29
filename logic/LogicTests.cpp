@@ -8,7 +8,6 @@
 
 #include <logic/Generate.hpp>
 #include <seedgen/random.hpp>
-#include <seedgen/permalink.hpp>
 #include <seedgen/config.hpp>
 #include <utility/path.hpp>
 #include <utility/file.hpp>
@@ -27,23 +26,20 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
 
     for (int i = 0; i < attempts; i++)
     {
-        const std::string seed = "LOGIC_TESTING_SEED" + std::to_string(i);
-
-        auto permalink = create_permalink(settings, seed);
-        auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
-
-        Random_Init(integer_seed);
-
+        config.seed = "LOGIC_TESTING_SEED" + std::to_string(i);
         config.settings = settings;
-        config.seed = seed;
+
+        const std::string permalink = config.getPermalink();
+        const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t *>(permalink.data()), permalink.length());
+        Random_Init(integer_seed);
 
         int worldCount = 1;
         WorldPool worlds (worldCount);
         std::vector<Settings> settingsVector (1, settings);
 
         // Pre-emptively write config incase of crashing
-        const fspath errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_config.yaml";
-        const fspath preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + seed + "_error_preferences.yaml";
+        const fspath errorConfigFilename = ERROR_CONFIG_PATH "/" + settingName + " " + config.seed + "_error_config.yaml";
+        const fspath preferencesFilename = ERROR_CONFIG_PATH "/" + settingName + " " + config.seed + "_error_preferences.yaml";
         ConfigError err = config.writeToFile(errorConfigFilename, preferencesFilename);
 
         int retVal = generateWorlds(worlds, settingsVector);
@@ -80,10 +76,11 @@ static int multiWorldTest(const Settings& settings)
 {
     std::cout << "Now testing multiworld generation" << std::endl;
 
-    const std::string seed = "LOGIC_TESTING_SEED";
-
-    auto permalink = create_permalink(settings, seed);
-    auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
+    Config localConf;
+    localConf.seed = "LOGIC_TESTING_SEED";
+    localConf.settings = settings;
+    const std::string permalink = localConf.getPermalink();
+    const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
 
     Random_Init(integer_seed);
 
@@ -303,15 +300,13 @@ void testSettings(Config& newConfig, int testCount /*= 1*/)
     int successfulTests = 0;
     for (int i = 0; i < testCount; i++)
     {
-        const std::string seed = std::to_string(Random(0, 10000000));
-        auto permalink = create_permalink(config.settings, seed);
-        auto integer_seed = zng_crc32(0L, reinterpret_cast<uint8_t *>(permalink.data()), permalink.length());
+        config.seed = std::to_string(Random(0, 10000000));
+        const std::string permalink = config.getPermalink();
+        const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
 
-        std::cout << "Testing with seed \"" << seed << "\"..." << std::flush;
+        std::cout << "Testing with seed \"" << config.seed << "\"..." << std::flush;
 
         Random_Init(integer_seed);
-
-        config.seed = seed;
 
         int worldCount = 1;
         WorldPool worlds (worldCount);
