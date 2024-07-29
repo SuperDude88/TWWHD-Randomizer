@@ -205,19 +205,6 @@ enum struct Option {
     Gyroscope,
     UIDisplay,
 
-    // Dummy options to satisfy tracker permalink
-    SwordMode,
-    NumShards,
-    RaceMode,
-    Keylunacy,
-    RandomizeEntrances,
-    SwiftSail,
-    DisableTingleChestsWithTingleBombs,
-    RandomizeEnemyPalettes,
-    RandomizeEnemies,
-    RandomizeMusic,
-    InvertCameraXAxis,
-    WindWakerHD,
     COUNT
 };
 
