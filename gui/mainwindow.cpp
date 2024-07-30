@@ -18,8 +18,6 @@
 #include <version.hpp>
 #include <libs/yaml.hpp>
 #include <seedgen/seed.hpp>
-#include <seedgen/permalink.hpp>
-#include <seedgen/tracker_permalink.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
 #include <utility/color.hpp>
@@ -127,7 +125,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     ConfigError err = config.writeToFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if (err != ConfigError:: NONE)
     {
-        show_error_dialog("Settings could not be saved\nCode: " + errorToName(err));
+        show_error_dialog("Settings could not be saved\nCode: " + ConfigErrorGetName(err));
     }
 }
 
@@ -154,7 +152,7 @@ void MainWindow::load_config_into_ui()
     ConfigError err = config.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml", true);
     if (err != ConfigError::NONE)
     {
-        show_error_dialog("Failed to load settings file\ncode " + errorToName(err));
+        show_error_dialog("Failed to load settings file\ncode " + ConfigErrorGetName(err));
     }
     else
     {
@@ -570,7 +568,7 @@ void MainWindow::apply_config_settings()
     APPLY_COMBOBOX_SETTING(config, ui, ui_display);
 
     // Permalink
-    ui->permalink->setText(create_permalink(config.settings, config.seed).c_str());
+    ui->permalink->setText(QString::fromStdString(config.getPermalink()));
 }
 
 void MainWindow::on_base_game_path_browse_button_clicked()
@@ -1010,34 +1008,30 @@ void MainWindow::update_option_description_text(const std::string& description /
 
 void MainWindow::update_permalink_and_seed_hash()
 {
-    ui->permalink->setText(create_permalink(config.settings, config.seed).c_str());
+    ui->permalink->setText(QString::fromStdString(config.getPermalink()));
     currentPermalink = ui->permalink->text();
 
     // Also update seed hash
-    ui->seed_hash_label->setText(std::string("Seed Hash: " + hash_for_config(config)).c_str());
+    ui->seed_hash_label->setText(QString::fromStdString("Seed Hash: " + hash_for_config(config)));
 }
 
 void MainWindow::on_permalink_textEdited(const QString &newPermalink)
 {
-    Config oldConfig = config;
-
-    PermalinkError err = parse_permalink(newPermalink.toStdString(), config.settings, config.seed);
+    // loadPermalink keeps the old config if there is an error
+    const PermalinkError err = config.loadPermalink(newPermalink.toStdString());
     if (err == PermalinkError::INVALID_VERSION)
     {
         show_error_dialog("The permalink you pasted does not match the current version of the randomizer.");
-        config = oldConfig;
         ui->permalink->setText(currentPermalink);
         return;
     }
-    else if (err == PermalinkError::BAD_PERMALINK)
+    else if (err != PermalinkError::NONE)
     {
         show_error_dialog("The permalink you pasted is invalid.");
-        config = oldConfig;
         ui->permalink->setText(currentPermalink);
         return;
     }
     currentPermalink = newPermalink;
-    config.settings.selectedModel = oldConfig.settings.selectedModel; // don't reset custom model when parsing permalink
     apply_config_settings();
 }
 
@@ -1094,7 +1088,7 @@ void MainWindow::on_randomize_button_clicked()
     // and to keep compatibility with non-gui version
     ConfigError err = config.writeToFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if(err != ConfigError::NONE) {
-        show_error_dialog("Failed to write config.yaml\ncode " + errorToName(err));
+        show_error_dialog("Failed to write config.yaml\ncode " + ConfigErrorGetName(err));
         return;
     }
 

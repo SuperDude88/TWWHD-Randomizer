@@ -1,12 +1,17 @@
 #include "config.hpp"
+#include "options.hpp"
 
 #include <fstream>
+#include <set>
+
+#include <libs/yaml.hpp>
+#include <libs/base64pp.hpp>
 
 #include <version.hpp>
-#include <libs/yaml.hpp>
+#include <keys/keys.hpp>
 #include <logic/GameItem.hpp>
 #include <seedgen/seed.hpp>
-#include <seedgen/permalink.hpp>
+#include <seedgen/packed_bits.hpp>
 #include <utility/color.hpp>
 #include <utility/platform.hpp>
 #include <utility/string.hpp>
@@ -443,8 +448,6 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::DIFFERENT_RANDO_VERSION);
     }
 
-    permalink = create_permalink(settings, seed);
-
     return ConfigError::NONE;
 }
 
@@ -612,6 +615,438 @@ ConfigError Config::writeToFile(const fspath& filePath, const fspath& preference
     return ConfigError::NONE;
 }
 
+static const std::vector<GameItem> REGULAR_ITEMS = {
+    GameItem::BaitBag,
+    GameItem::BalladOfGales,
+    GameItem::Bombs,
+    GameItem::Boomerang,
+    GameItem::CabanaDeed,
+    GameItem::CommandMelody,
+    GameItem::DekuLeaf,
+    GameItem::DeliveryBag,
+    GameItem::DinsPearl,
+    GameItem::EarthGodsLyric,
+    GameItem::EmptyBottle,
+    GameItem::FaroresPearl,
+    GameItem::GhostShipChart,
+    GameItem::GrapplingHook,
+    GameItem::HerosCharm,
+    GameItem::Hookshot,
+    GameItem::HurricaneSpin,
+    GameItem::IronBoots,
+    GameItem::MaggiesLetter,
+    GameItem::MagicArmor,
+    GameItem::MoblinsLetter,
+    GameItem::NayrusPearl,
+    GameItem::NoteToMom,
+    GameItem::PowerBracelets,
+    GameItem::SkullHammer,
+    GameItem::SongOfPassing,
+    GameItem::SpoilsBag,
+    GameItem::Telescope,
+    GameItem::TingleBottle,
+    GameItem::WindGodsAria,
+    GameItem::DRCBigKey,
+    GameItem::DRCCompass,
+    GameItem::DRCDungeonMap,
+    GameItem::FWBigKey,
+    GameItem::FWCompass,
+    GameItem::FWDungeonMap,
+    GameItem::TotGBigKey,
+    GameItem::TotGCompass,
+    GameItem::TotGDungeonMap,
+    GameItem::ETBigKey,
+    GameItem::ETCompass,
+    GameItem::ETDungeonMap,
+    GameItem::WTBigKey,
+    GameItem::WTCompass,
+    GameItem::WTDungeonMap,
+    GameItem::FFCompass,
+    GameItem::FFDungeonMap,
+    GameItem::DragonTingleStatue,
+    GameItem::ForbiddenTingleStatue,
+    GameItem::GoddessTingleStatue,
+    GameItem::EarthTingleStatue,
+    GameItem::WindTingleStatue,
+    GameItem::TriforceShard1,
+    GameItem::TriforceShard2,
+    GameItem::TriforceShard3,
+    GameItem::TriforceShard4,
+    GameItem::TriforceShard5,
+    GameItem::TriforceShard6,
+    GameItem::TriforceShard7,
+    GameItem::TriforceShard8,
+};
+
+static const std::vector<GameItem> PROGRESSIVE_ITEMS = {
+    GameItem::ProgressiveBombBag,
+    GameItem::ProgressiveBow,
+    GameItem::ProgressiveMagicMeter,
+    GameItem::ProgressivePictoBox,
+    GameItem::ProgressiveQuiver,
+    GameItem::ProgressiveShield,
+    GameItem::ProgressiveSword,
+    GameItem::ProgressiveSail,
+    GameItem::ProgressiveWallet,
+    GameItem::DRCSmallKey,
+    GameItem::FWSmallKey,
+    GameItem::TotGSmallKey,
+    GameItem::ETSmallKey,
+    GameItem::WTSmallKey,
+};
+
+// These are options that should affect seed generation even with the same seed
+static const std::vector<Option> PERMALINK_OPTIONS {
+    // Progression
+    Option::ProgressDungeons,
+    Option::ProgressGreatFairies,
+    Option::ProgressPuzzleCaves,
+    Option::ProgressCombatCaves,
+    Option::ProgressShortSidequests,
+    Option::ProgressLongSidequests,
+    Option::ProgressSpoilsTrading,
+    Option::ProgressMinigames,
+    Option::ProgressFreeGifts,
+    Option::ProgressMail,
+    Option::ProgressPlatformsRafts,
+    Option::ProgressSubmarines,
+    Option::ProgressEyeReefs,
+    Option::ProgressOctosGunboats,
+    Option::ProgressTriforceCharts,
+    Option::ProgressTreasureCharts,
+    Option::ProgressExpPurchases,
+    Option::ProgressMisc,
+    Option::ProgressTingleChests,
+    Option::ProgressBattlesquid,
+    Option::ProgressSavageLabyrinth,
+    Option::ProgressIslandPuzzles,
+    Option::ProgressDungeonSecrets,
+    Option::ProgressObscure,
+
+    // Additional Randomization Options
+    Option::RemoveSwords,
+    Option::DungeonSmallKeys,
+    Option::DungeonBigKeys,
+    Option::DungeonMapsAndCompasses,
+    Option::NumRequiredDungeons,
+    Option::RandomCharts,
+    Option::CTMC,
+    Option::DamageMultiplier,
+
+    // Convenience Tweaks
+    Option::InstantText,
+    Option::RevealSeaChart,
+    Option::SkipRefights,
+    Option::AddShortcutWarps,
+    Option::RemoveMusic,
+
+    // Starting Gear
+    Option::StartingGear,
+    Option::StartingHC,
+    Option::StartingHP,
+    Option::StartingJoyPendants,
+    Option::StartingSkullNecklaces,
+    Option::StartingBokoBabaSeeds,
+    Option::StartingGoldenFeathers,
+    Option::StartingKnightsCrests,
+    Option::StartingRedChuJellys,
+    Option::StartingGreenChuJellys,
+    Option::StartingBlueChuJellys,
+
+    // Advanced Options
+    Option::NoSpoilerLog,
+    Option::StartWithRandomItem,
+    Option::RandomItemSlideItem,
+    Option::ClassicMode,
+    Option::Plandomizer,
+    Option::FixRNG,
+    Option::Performance,
+
+    // Hints
+    Option::HoHoHints,
+    Option::KorlHints,
+    Option::PathHints,
+    Option::BarrenHints,
+    Option::ItemHints,
+    Option::LocationHints,
+    Option::UseAlwaysHints,
+    Option::ClearerHints,
+
+    // Entrance Randomizer
+    Option::RandomizeDungeonEntrances,
+    Option::RandomizeBossEntrances,
+    Option::RandomizeMinibossEntrances,
+    Option::RandomizeCaveEntrances,
+    Option::RandomizeDoorEntrances,
+    Option::RandomizeMiscEntrances,
+    Option::MixDungeons,
+    Option::MixBosses,
+    Option::MixMinibosses,
+    Option::MixCaves,
+    Option::MixDoors,
+    Option::MixMisc,
+    Option::DecoupleEntrances,
+    Option::RandomStartIsland,
+
+};
+
+static size_t getOptionBitCount(const Option& option) {
+    switch(option) {
+        case Option::DungeonSmallKeys:
+        case Option::DungeonBigKeys:
+        case Option::DungeonMapsAndCompasses:
+        case Option::NumRequiredDungeons:
+        case Option::DamageMultiplier:
+            return 8; // ComboBox Options (and 8-bit SpinBox options)
+        case Option::ProgressDungeons:
+        case Option::RandomizeCaveEntrances:
+        case Option::PathHints:
+        case Option::BarrenHints:
+        case Option::LocationHints:
+        case Option::ItemHints:
+        case Option::StartingHC:
+            return 3; // 3-bit SpinBox options
+        case Option::StartingHP:
+        case Option::StartingJoyPendants:
+        case Option::StartingSkullNecklaces:
+        case Option::StartingBokoBabaSeeds:
+        case Option::StartingGoldenFeathers:
+        case Option::StartingKnightsCrests:
+        case Option::StartingRedChuJellys:
+        case Option::StartingGreenChuJellys:
+        case Option::StartingBlueChuJellys:
+            return 6; // 6-bit SpinBox options
+        case Option::ProgressGreatFairies:
+        case Option::ProgressPuzzleCaves:
+        case Option::ProgressCombatCaves:
+        case Option::ProgressShortSidequests:
+        case Option::ProgressLongSidequests:
+        case Option::ProgressSpoilsTrading:
+        case Option::ProgressMinigames:
+        case Option::ProgressFreeGifts:
+        case Option::ProgressMail:
+        case Option::ProgressPlatformsRafts:
+        case Option::ProgressSubmarines:
+        case Option::ProgressEyeReefs:
+        case Option::ProgressOctosGunboats:
+        case Option::ProgressTriforceCharts:
+        case Option::ProgressTreasureCharts:
+        case Option::ProgressExpPurchases:
+        case Option::ProgressMisc:
+        case Option::ProgressTingleChests:
+        case Option::ProgressBattlesquid:
+        case Option::ProgressSavageLabyrinth:
+        case Option::ProgressIslandPuzzles:
+        case Option::ProgressDungeonSecrets:
+        case Option::ProgressObscure:
+        case Option::RemoveSwords:
+        case Option::RandomCharts:
+        case Option::CTMC:
+        case Option::InstantText:
+        case Option::RevealSeaChart:
+        case Option::SkipRefights:
+        case Option::AddShortcutWarps:
+        case Option::RemoveMusic:
+        case Option::NoSpoilerLog:
+        case Option::StartWithRandomItem:
+        case Option::RandomItemSlideItem:
+        case Option::ClassicMode:
+        case Option::Plandomizer:
+        case Option::FixRNG:
+        case Option::Performance:
+        case Option::HoHoHints:
+        case Option::KorlHints:
+        case Option::UseAlwaysHints:
+        case Option::ClearerHints:
+        case Option::RandomizeDungeonEntrances:
+        case Option::RandomizeBossEntrances:
+        case Option::RandomizeMinibossEntrances:
+        case Option::RandomizeDoorEntrances:
+        case Option::RandomizeMiscEntrances:
+        case Option::MixDungeons:
+        case Option::MixBosses:
+        case Option::MixMinibosses:
+        case Option::MixCaves:
+        case Option::MixDoors:
+        case Option::MixMisc:
+        case Option::DecoupleEntrances:
+        case Option::RandomStartIsland:
+            return 1; // 1-bit Checkbox options
+        case Option::StartingGear:
+        case Option::INVALID:
+        default:
+            return static_cast<size_t>(-1); // Invalid or needs special handling
+    }
+}
+
+#define BYTES_EXIST_CHECK(value) if (value == static_cast<size_t>(-1)) return PermalinkError::COULD_NOT_READ;
+
+PermalinkError Config::loadPermalink(std::string b64permalink) {
+    Config load = *this;
+
+    load.converted = false;
+    load.updated = false;
+    load.configSet = false;
+
+    // Strip trailing spaces
+    std::erase_if(b64permalink, [](unsigned char ch){ return std::isspace(ch); });
+
+    if (b64permalink.empty()) {
+        return PermalinkError::EMPTY;
+    }
+
+    std::string permalink = b64_decode(b64permalink);
+    // Empty string gets returned if there was an error
+    if (permalink == "") {
+        return PermalinkError::BAD_ENCODING;
+    }
+
+    // Split the string into 3 parts along the null terminator delimiter
+    // 1st part - Version string
+    // 2nd part - seed string
+    // 3rd part - packed bits representing settings
+    std::vector<std::string> permaParts = {};
+    const char delimiter = '\0';
+    size_t pos = permalink.find(delimiter);
+    while (pos != std::string::npos) {
+        if (permaParts.size() != 2) {
+            permaParts.push_back(permalink.substr(0, pos));
+            permalink.erase(0, pos + 1);
+        }
+        else {
+            permaParts.push_back(permalink);
+            break;
+        }
+
+        pos = permalink.find(delimiter);
+    }
+
+    if (permaParts.size() != 3) {
+        std::string errorStr = "Bad permalink, parts: ";
+        for (const std::string& part : permaParts) {
+            errorStr += part + ", ";
+        }
+        ErrorLog::getInstance().log(errorStr);
+
+        return PermalinkError::MISSING_PARTS;
+    }
+
+    const std::string version = permaParts[0];
+    load.seed = permaParts[1];
+    const std::string optionsBytes = permaParts[2];
+
+    if (version != RANDOMIZER_VERSION) {
+        return PermalinkError::INVALID_VERSION;
+    }
+
+    const std::vector<char> bytes(optionsBytes.begin(), optionsBytes.end());
+    PackedBitsReader bitsReader(bytes);
+
+    for(const Option& option : PERMALINK_OPTIONS) {
+        if(option == Option::StartingGear) {
+            load.settings.starting_gear.clear();
+            for (size_t i = 0; i < REGULAR_ITEMS.size(); i++) {
+                const size_t value = bitsReader.read(1);
+                BYTES_EXIST_CHECK(value);
+                if (value == 1) {
+                    load.settings.starting_gear.push_back(REGULAR_ITEMS[i]);
+                }
+            }
+            for (const GameItem& item : PROGRESSIVE_ITEMS) {
+                const size_t value = bitsReader.read(3);
+                BYTES_EXIST_CHECK(value);
+                for (size_t i = 0; i < value; i++) {
+                    load.settings.starting_gear.push_back(item);
+                }
+            }
+        }
+        else {
+            const size_t len = getOptionBitCount(option);
+            if(len == static_cast<size_t>(-1)) {
+                return PermalinkError::UNHANDLED_OPTION;
+            }
+
+            const size_t value = bitsReader.read(len);
+            BYTES_EXIST_CHECK(value);
+            load.settings.setSetting(option, value);
+        }
+    }
+
+    if (bitsReader.current_byte_index != bitsReader.bytes.size() - 1) {
+        return PermalinkError::INCORRECT_LENGTH;
+    }
+
+    // Only overwrite our current config if there were no errors
+    load.configSet = true;
+    *this = load;
+
+    return PermalinkError::NONE;
+}
+
+
+std::string Config::getPermalink(const bool& internal /* = false */) const {
+    std::string permalink = "";
+    if (std::string(RANDOMIZER_VERSION).empty()) {
+        Utility::platformLog("Could not determine Randomizer version. Please tell a dev if you see this message.");
+    }
+    
+    permalink += RANDOMIZER_VERSION;
+    permalink += '\0';
+    permalink += seed;
+    permalink += '\0';
+
+    // Pack the settings up
+    PackedBitsWriter bitsWriter;
+    for(const Option& option : PERMALINK_OPTIONS) {
+        if(option == Option::StartingGear) {
+            const std::multiset<GameItem> startingGear(settings.starting_gear.begin(), settings.starting_gear.end());
+
+            for (size_t i = 0; i < REGULAR_ITEMS.size(); i++)
+            {
+                const size_t bit = startingGear.contains(REGULAR_ITEMS[i]);
+                bitsWriter.write(bit, 1);
+            }
+            for (const GameItem& item : PROGRESSIVE_ITEMS)
+            {
+                bitsWriter.write(startingGear.count(item), 3);
+            }
+        }
+        else {
+            const size_t len = getOptionBitCount(option);
+            if(len == static_cast<size_t>(-1)) {
+                Utility::platformLog("Unhandled option " + settingToName(option) + ". Please tell a dev if you see this message.");
+                return "";
+            }
+
+            bitsWriter.write(settings.getSetting(option), len);
+        }
+    }
+
+    // Add the packed bits to the permalink
+    bitsWriter.flush();
+    for (const auto& byte : bitsWriter.bytes) {
+        permalink += byte;
+    }
+
+    permalink = b64_encode(permalink);
+    
+    if(internal) {
+        if(settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
+
+        // Add the plandomizer file contents to the permalink when plandomzier is enabled
+        if (settings.plandomizer) {
+            std::string plandoContents;
+            if (Utility::getFileContents(settings.plandomizerFile, plandoContents) != 0) {
+                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + Utility::toUtf8String(settings.plandomizerFile));
+                return "";
+            }
+            permalink += plandoContents;
+        }
+    }
+
+    return permalink;
+}
+
 ConfigError Config::writeDefault(const fspath& filePath, const fspath& preferencesPath) {
     Config conf;
 
@@ -638,9 +1073,8 @@ ConfigError Config::writeDefault(const fspath& filePath, const fspath& preferenc
     return ConfigError::NONE;
 }
 
-std::string errorToName(ConfigError err) {
-    switch (err)
-    {
+std::string ConfigErrorGetName(ConfigError err) {
+    switch (err) {
         case ConfigError::NONE:
             return "NONE";
         case ConfigError::COULD_NOT_OPEN:
@@ -651,10 +1085,35 @@ std::string errorToName(ConfigError err) {
             return "DIFFERENT_FILE_VERSION";
         case ConfigError::DIFFERENT_RANDO_VERSION:
             return "DIFFERENT_RANDO_VERSION";
+        case ConfigError::BAD_PERMALINK:
+            return "BAD_PERMALINK";
         case ConfigError::INVALID_VALUE:
             return "INVALID_VALUE";
         case ConfigError::MODEL_ERROR:
             return "MODEL_ERROR";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+std::string PermalinkErrorGetName(PermalinkError err) {
+    switch (err) {
+        case PermalinkError::NONE:
+            return "NONE";
+        case PermalinkError::EMPTY:
+            return "EMPTY";
+        case PermalinkError::BAD_ENCODING:
+            return "BAD_ENCODING";
+        case PermalinkError::MISSING_PARTS:
+            return "MISSING_PARTS";
+        case PermalinkError::INVALID_VERSION:
+            return "INVALID_VERSION";
+        case PermalinkError::INCORRECT_LENGTH:
+            return "INCORRECT_LENGTH";
+        case PermalinkError::COULD_NOT_READ:
+            return "COULD_NOT_READ";
+        case PermalinkError::UNHANDLED_OPTION:
+            return "UNHANDLED_OPTION";
         default:
             return "UNKNOWN";
     }

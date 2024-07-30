@@ -54,7 +54,7 @@ public:
 class PackedBitsReader
 {
 public:
-    PackedBitsReader(std::vector<char>& bytes_) : bytes(bytes_) {}
+    PackedBitsReader(const std::vector<char>& bytes_) : bytes(bytes_) {}
     ~PackedBitsReader() = default;
 
     size_t current_bit_index = 0;
@@ -88,7 +88,7 @@ public:
 
             if (current_byte_index >= bytes.size())
             {
-                return 0xFFFFFFFF;
+                return static_cast<size_t>(-1);
             }
 
             size_t current_byte = bytes[current_byte_index];

@@ -6,10 +6,8 @@
 
 #include <libs/zlib-ng.hpp>
 
-#include <keys/keys.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/config.hpp>
-#include <seedgen/permalink.hpp>
 #include <utility/file.hpp>
 
 static const std::vector<std::string> adjectives = {
@@ -2497,20 +2495,11 @@ std::string generate_seed_hash() {
 }
 
 std::string hash_for_config(const Config& config) {
-    std::string permalink = create_permalink(config.settings, config.seed);
-
-    if(config.settings.do_not_generate_spoiler_log) permalink += SEED_KEY;
-
-    // Add the plandomizer file contents to the permalink when plandomzier is enabled
-    if (config.settings.plandomizer) {
-        std::string plandoContents = "";
-        Utility::getFileContents(config.settings.plandomizerFile, plandoContents);
-        permalink += plandoContents;
-    }
+    const std::string permalink = config.getPermalink(true);
 
     // Seed RNG
-    uint32_t integer_seed = zng_crc32(0L, (uint8_t*)permalink.data(), permalink.length());
-
+    const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
     Random_Init(integer_seed);
+
     return generate_seed_hash();
 }

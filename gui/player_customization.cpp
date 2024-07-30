@@ -126,11 +126,8 @@ void MainWindow::set_color(const std::string& optionName, std::string color, con
     auto& model = config.settings.selectedModel;
     auto defaultColors = model.getDefaultColorsMap();
     std::string defaultColor = "";
-    for (const auto& [name, color] : defaultColors) {
-        if (name == colorName) {
-            defaultColor = color;
-            break;
-        }
+    if(defaultColors.contains(colorName)) {
+        defaultColor = defaultColors.at(colorName);
     }
 
     // Hide reset button if color is default
@@ -235,7 +232,6 @@ void MainWindow::reset_one_custom_color() {
 
 void MainWindow::setup_color_options() {
     auto& model = config.settings.selectedModel;
-    auto baseColors = model.getDefaultColorsMap();
 
     clear_layout(ui->custom_colors_layout);
     customColorSelectorButtons.clear();
@@ -247,26 +243,16 @@ void MainWindow::setup_color_options() {
     static std::string lastModel = "";
     std::string curModel = model.modelName;
     if (lastModel != curModel) {
-        for (auto& [optionName, defaultColor] : baseColors) {
-            if (model.getSetColorsMap().contains(optionName)) {
-                defaultColor = model.getColor(optionName);
-            }
-        }
         initialize_color_presets_list();
         initialize_mask_pixels();
     }
     // If we have a specific preset selected, then keep those colors
     else if (curPreset != "Custom" && lastModel == curModel) {
         model.loadPreset(curPreset, true);
-
-        auto colors = model.getSetColorsMap();
-        for (auto& [optionName, defaultColor] : baseColors) {
-            defaultColor = colors[optionName];
-        }
     }
 
     for (auto& customColorName : model.getDefaultColorsOrdering()) {
-        auto& defaultColor = baseColors[customColorName];
+        auto& color = model.getColor(customColorName);
 
         auto optionName = "custom_color_" + customColorName;
         auto colorWidget = new QWidget();
@@ -281,7 +267,7 @@ void MainWindow::setup_color_options() {
 
         // Color Hex Code Input
         auto colorHexCodeInput = new QLineEdit();
-        colorHexCodeInput->setText(QString::fromStdString(defaultColor));
+        colorHexCodeInput->setText(QString::fromStdString(color));
         colorHexCodeInput->setObjectName(QString::fromStdString(optionName + "_hex_code_input"));
         colorHexCodeInput->setFixedWidth(QFontMetrics(QFont()).horizontalAdvance("CCCCCC") + 5);
         colorHexCodeInput->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
@@ -321,7 +307,7 @@ void MainWindow::setup_color_options() {
         connect(colorResetButton, &QPushButton::clicked, this, &MainWindow::reset_one_custom_color);
 
         ui->custom_colors_layout->addWidget(colorWidget);
-        set_color(optionName, defaultColor, false, false);
+        set_color(optionName, color, false, false);
     }
 
     lastModel = curModel;
@@ -386,22 +372,10 @@ void MainWindow::on_custom_color_preset_currentIndexChanged(const int &arg1)
         return;
     }
 
-    // Get the default colors for the current model and modify them with
-    // the preset
     auto& model = config.settings.selectedModel;
-    auto presetColors = model.getDefaultColorsMap();
-    for (auto& preset : model.getPresets()) {
-        if (preset.name == text) {
-            auto selectedPreset = model.casual ? preset.casualColors : preset.heroColors;
-            for (auto& [colorName, color] : selectedPreset) {
-                presetColors[colorName] = color;
-            }
-            break;
-        }
-    }
-
-    for (auto& [optionName, color] : presetColors) {
-        set_color("custom_color_" + optionName, color, false, false);
+    model.loadPreset(text, true);
+    for (const std::string& optionName : model.getDefaultColorsOrdering()) {
+        set_color("custom_color_" + optionName, model.getColor(optionName), false, false);
     }
 
     update_preview();
