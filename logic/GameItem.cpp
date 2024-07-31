@@ -809,6 +809,13 @@ bool Item::isValidItem() const
     return isNoneOf(gameItemId, GameItem::INVALID, GameItem::NOTHING);
 }
 
+bool Item::canBeInBarrenRegion() const
+{
+    return isJunkItem() ||
+           (isSmallKey() && world->getSettings().dungeon_small_keys == PlacementOption::OwnDungeon) ||
+           (isBigKey() && world->getSettings().dungeon_big_keys == PlacementOption::OwnDungeon);
+}
+
 bool Item::operator==(const Item& rhs) const
 {
     return gameItemId == rhs.gameItemId && world->getWorldId() == rhs.world->getWorldId();

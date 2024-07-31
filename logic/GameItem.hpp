@@ -409,6 +409,7 @@ public:
     bool isSmallKey() const;
     bool isBigKey() const;
     bool isValidItem() const;
+    bool canBeInBarrenRegion() const;
     bool operator==(const Item& rhs) const;
     bool operator<(const Item& rhs) const;
 

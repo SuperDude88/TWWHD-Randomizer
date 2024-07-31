@@ -429,6 +429,13 @@ World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
         // Get locations which are now accessible
         ItemPool itemPool;
         GET_COMPLETE_ITEM_POOL(itemPool, worlds)
+
+        // If the race mode location already has an item at it because of plandomizer, collect the item
+        if (dungeon.raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
+        {
+            itemPool.push_back(dungeon.raceModeLocation->currentItem);
+        }
+
         auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, itemPool);
 
         // Set unaccessible progression locations as outside dependent
@@ -1430,9 +1437,21 @@ void World::flattenLogicRequirements()
     }
 
     // Properly set the chain locations for each item in the item pools as well
+    // as any already placed items
     for (auto pool : {&itemPool, &startingItems})
     {
         for (auto& item : *pool)
+        {
+            for (auto loc : itemTable[gameItemToName(item.getGameItemId())].getChainLocations())
+            {
+                item.addChainLocation(loc);
+            }
+        }
+    }
+    for (auto& [name, loc] : locationTable)
+    {
+        auto& item = loc->currentItem;
+        if (item.getGameItemId() != GameItem::INVALID)
         {
             for (auto loc : itemTable[gameItemToName(item.getGameItemId())].getChainLocations())
             {

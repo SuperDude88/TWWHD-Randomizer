@@ -122,7 +122,6 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
     for (auto& world : worlds)
     {
         std::unordered_set<Item*> potentiallyJunkItems = {};
-        std::unordered_set<Item*> itemsSetAsJunk = {};
         for (auto& [areaName, area] : world.areaTable)
         {
             // We'll be performing several operations during this loop
@@ -149,12 +148,11 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 auto chainLocations = location->currentItem.getChainLocations();
                 if (!chainLocations.empty())
                 {
-                    // If all of this item's chain locations are junk, then this item is also junk
-                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
+                    // If all of this item's chain locations' items can be in barren regions, then this item is junk
+                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->currentItem.canBeInBarrenRegion(); }))
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
-                        itemsSetAsJunk.insert(&location->currentItem);
                     }
                     else
                     {
@@ -180,11 +178,10 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
             newJunkItems = false;
             for (Item* item : potentiallyJunkItems)
             {
-                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
+                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return loc->currentItem.canBeInBarrenRegion(); }))
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
-                    itemsSetAsJunk.insert(item);
                     LOG_TO_DEBUG(item->getName() + " is now junk.");
                 }
             }
@@ -194,31 +191,54 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         // Now loop through all the progression locations again and remove any
         // regions from the barren regions map which have non-junk items at any
         // of their locations. Otherwise add the location to the list of locations
-        // in the barren region
+        // in the barren region. For barren hints, dungeons within islands also
+        // count as being part of the island.
         for (auto& [name, location] : world.locationTable)
         {
-            for (auto& hintRegion : location->hintRegions)
+            // Locations which have known items should not block a region from being barren
+            if (location->progression && !location->hasKnownVanillaItem &&
+              !(location->isRaceModeLocation && world.getSettings().progression_dungeons != ProgressionDungeons::Disabled))
             {
-                if (location->progression && !location->currentItem.isJunkItem())
+                for (auto& locAccess : location->accessPoints)
                 {
-                    world.barrenRegions.erase(hintRegion);
-                }
-                else if (world.barrenRegions.contains(hintRegion))
-                {
-                    world.barrenRegions[hintRegion].insert(location.get());
+                    auto area = locAccess->area;
+                    auto generalHintRegions = area->findHintRegions(/*onlyNonIslands = */true);
+                    auto islands = area->findIslands();
+                    for (auto hintRegions : {generalHintRegions, islands})
+                    {
+                        for (auto& hintRegion : hintRegions)
+                        {
+                            if (world.barrenRegions.contains(hintRegion))
+                            {
+                                if (location->currentItem.canBeInBarrenRegion())
+                                {
+                                    world.barrenRegions[hintRegion].insert(location.get());
+                                }
+                                else
+                                {
+                                    LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + location->currentItem.getName() + " at location " + location->getName());
+                                    world.barrenRegions.erase(hintRegion);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        // If any dungeon is barren, check to make sure all its dungeon dependency locations
-        // are also barren. Otherwise, remove it from the list
+        // If a dungeon is barren, but has a non-junk item at any of it's
+        // outside dependent locations, then it shouldn't be considered barren
         for (auto& [dungeonName, dungeon] : world.dungeons)
         {
-            auto& outsideLocations = dungeon.outsideDependentLocations;
-            if (world.barrenRegions.contains(dungeonName) &&
-                std::ranges::any_of(outsideLocations, [](const Location* location){return location->currentItem.isJunkItem();}))
+            if (world.barrenRegions.contains(dungeonName))
             {
-                world.barrenRegions.erase(dungeonName);
+                for (auto loc : dungeon.outsideDependentLocations)
+                {
+                    if (!loc->currentItem.canBeInBarrenRegion())
+                    {
+                        LOG_TO_DEBUG(dungeonName + " removed from barren pool due to " + loc->currentItem.getName() + " at outside location " + loc->getName());
+                    }
+                }
             }
         }
 
@@ -389,9 +409,24 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
         barrenHintLocations.push_back(*world.barrenRegions[barrenRegion].begin());
         LOG_TO_DEBUG("Chose \"" + barrenRegion + "\" as a hinted barren region");
 
-        // Reform the distribution without the region we just chose
-        barrenDistributions.erase(barrenDistributions.begin() + regionIndex);
-        barrenPool.erase(barrenPool.begin() + regionIndex);
+        // Erase any potential barren regions if any of their locations have already
+        // been hinted at. This means that if we've hinted a dungeon barren, then
+        // we can't also hint the island the dungeon is on as barren (and vice versa)
+        // Basically, there should be no overlapping of the regions that are hinted
+        // barren.
+        for (auto j = 0; j < barrenPool.size(); j++)
+        {
+            auto& pool = world.barrenRegions[barrenPool[j]];
+            if (std::ranges::any_of(pool, [](auto loc){return loc->hasBeenHinted;}))
+            {
+                // Reform the distribution without this region
+                LOG_TO_DEBUG("Removed " + barrenPool[j] + " from barren pool.");
+                barrenDistributions.erase(barrenDistributions.begin() + j);
+                barrenPool.erase(barrenPool.begin() + j);
+                j--;
+            }
+        }
+
         barrenDistribution = std::discrete_distribution<size_t>(barrenDistributions.begin(), barrenDistributions.end());
     }
 
