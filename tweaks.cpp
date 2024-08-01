@@ -14,6 +14,7 @@
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>
 #include <filetypes/bfres.hpp>
+#include <filetypes/charts.hpp>
 #include <filetypes/dzx.hpp>
 #include <filetypes/elf.hpp>
 #include <filetypes/util/elfUtil.hpp>
@@ -3491,7 +3492,7 @@ TweakError make_dungeon_joy_pendants_flexible() {
 }
 
 TweakError prevent_fairy_island_softlocks() {
-    // Entering Western Fairy Island without solving the puzzle (using glitches) and then leaving will knock Link back into the fountain before he can land
+    // Exiting Western Fairy Island without previously solving the puzzle (decoupled entrances) will knock Link back into the fountain before he can land
     // Move out the ring of flames slightly so Link doesn't immediately get hit
     RandoSession::CacheEntry& wfi_dzr = g_session.openGameFile("content/Common/Stage/sea_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr@DZX");
 
@@ -3542,6 +3543,41 @@ TweakError give_fairy_fountains_distinct_colors() {
 
         hue += 360.0 / 6.0;
     }
+
+    return TweakError::NONE;
+}
+
+TweakError fix_second_quest_locations() {
+    // The Outset chart's salvage point is inside the whirlpool in NG+, locking it behind bombs
+    // Logic does not account for this (normal files never require bombs) so it could be problematic in rare cases
+    RandoSession::CacheEntry& outset = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room44.szs@YAZ0@SARC@Room44.bfres@BFRES@room.dzr@DZX");
+    outset.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        const std::vector<ChunkEntry*> scobs = dzr.entries_by_type_and_layer("SCOB", DEFAULT_LAYER);
+        for(const size_t& salvage_scob_index : {21, 49, 50, 51, 55}) {
+            float& x_pos = *reinterpret_cast<float*>(&scobs[salvage_scob_index]->data.data()[0xC]);
+            Utility::Endian::toPlatform_inplace(eType::Big, x_pos);
+            x_pos += 7000.0f;
+            Utility::Endian::toPlatform_inplace(eType::Big, x_pos);
+        }
+
+        return true;
+    });
+
+    RandoSession::CacheEntry& charts = g_session.openGameFile("content/Common/Misc/Misc.szs@YAZ0@SARC@Misc.bfres@BFRES@cmapdat.bin@CHARTS");
+    charts.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(charts, FileTypes::ChartList, data)
+
+        const auto outset_chart = std::find_if(charts.charts.begin(), charts.charts.end(), [&](const Chart& chart) { return chart.getIslandNumber() == 44; });
+        if(outset_chart == charts.charts.end()) return false;
+
+        // Update the texture location to match the new salvage point
+        ChartPos& pos = outset_chart->possible_positions[3]; // NG+ chart set
+        pos.salvage_x_pos += 7000;
+
+        return true;
+    });
 
     return TweakError::NONE;
 }
@@ -3702,6 +3738,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(allow_dungeon_items_to_appear_anywhere(world));
     TWEAK_ERR_CHECK(fix_needle_rock_island_salvage_flags());
     TWEAK_ERR_CHECK(allow_nonlinear_servants_of_the_towers());
+    TWEAK_ERR_CHECK(fix_second_quest_locations());
 
     if(world.getSettings().add_shortcut_warps_between_dungeons) {
         TWEAK_ERR_CHECK(add_cross_dungeon_warps());
