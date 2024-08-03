@@ -5,6 +5,7 @@
     #include <QResource>
     #include <QDirIterator>
     
+    #include <gui/palette.hpp>
     #include <gui/mainwindow.hpp>
 #elif defined(DEVKITPRO)
     #include <utility/platform.hpp>
@@ -28,7 +29,10 @@ int main(int argc, char *argv[]) {
         Q_INIT_RESOURCE(data);
     #endif
 
+    QApplication::setStyle("Fusion");
+
     QApplication a(argc, argv);
+    QApplication::setPalette(getColorPalette());
     MainWindow w;
     w.show();
     return a.exec();

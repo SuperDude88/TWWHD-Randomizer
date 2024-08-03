@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->randomize_enemies->setVisible(false);
     ui->randomize_enemy_palettes->setVisible(false);
     ui->randomize_music->setVisible(false);
-    ui->update_checker_label->setVisible(false);
+    //ui->update_checker_label->setVisible(false);
     ui->disable_custom_player_items->setVisible(false);
     ui->disable_custom_player_voice->setVisible(false);
     ui->install_custom_model->setVisible(false);

@@ -82,10 +82,10 @@ ChartError ChartPos::read(std::istream& in) {
 }
 
 void ChartPos::save_changes(std::ostream& out) const {
-	uint16_t tex_x = Utility::Endian::toPlatform(eType::Big, tex_x_offset);
-	uint16_t tex_y = Utility::Endian::toPlatform(eType::Big, tex_y_offset);
-	uint16_t salvage_x = Utility::Endian::toPlatform(eType::Big, salvage_x_pos);
-	uint16_t salvage_y = Utility::Endian::toPlatform(eType::Big, salvage_y_pos);
+	const uint16_t tex_x = Utility::Endian::toPlatform(eType::Big, tex_x_offset);
+	const uint16_t tex_y = Utility::Endian::toPlatform(eType::Big, tex_y_offset);
+	const uint16_t salvage_x = Utility::Endian::toPlatform(eType::Big, salvage_x_pos);
+	const uint16_t salvage_y = Utility::Endian::toPlatform(eType::Big, salvage_y_pos);
 
 	out.write(reinterpret_cast<const char*>(&tex_x), sizeof(tex_x));
 	out.write(reinterpret_cast<const char*>(&tex_y), sizeof(tex_y));
@@ -121,9 +121,7 @@ ChartError Chart::read(std::istream& in) {
 		possible_positions[i] = pos;
 	}
 
-	island_number = sector_x + 3 + ((sector_y + 3) * 7) + 1;
-
-	if(number >= 1 && number <= 49) item_name = island_num_to_item[island_number - 1];
+	if(number >= 1 && number <= 49) item_name = island_num_to_item[getIslandNumber() - 1];
 
 	return ChartError::NONE;
 }
@@ -143,19 +141,17 @@ void Chart::save_changes(std::ostream& out) {
 }
 
 uint8_t Chart::getIslandNumber() const {
-	return island_number;
+	return (sector_x + 3) + ((sector_y + 3) * 7) + 1;
 }
 
-ChartError Chart::setIslandNumber(uint8_t value) {
-	if (number < 1 || number > 49) {
+ChartError Chart::setIslandNumber(uint8_t islandNum) {
+	if (islandNum < 1 || islandNum > 49) {
 		LOG_ERR_AND_RETURN(ChartError::INVALID_NUMBER);
 	}
 
-	const uint8_t island_index = value - 1;
+	const uint8_t island_index = islandNum - 1;
 	sector_x = (island_index % 7) - 3;
 	sector_y = (island_index / 7) - 3;
-
-	island_number = sector_x + 3 + (sector_y + 3) * 7 + 1;
 
 	return ChartError::NONE;
 }

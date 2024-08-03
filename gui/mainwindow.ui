@@ -35,7 +35,7 @@
          <x>0</x>
          <y>0</y>
          <width>1054</width>
-         <height>662</height>
+         <height>654</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -316,9 +316,6 @@
               <item row="0" column="2">
                <widget class="QLineEdit" name="base_game_path"/>
               </item>
-              <item row="4" column="2">
-               <widget class="QLineEdit" name="seed"/>
-              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label">
                 <property name="text">
@@ -329,24 +326,10 @@
               <item row="1" column="2">
                <widget class="QLineEdit" name="output_folder"/>
               </item>
-              <item row="4" column="3">
-               <widget class="QPushButton" name="generate_seed_button">
-                <property name="text">
-                 <string>New seed</string>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="3">
                <widget class="QPushButton" name="base_game_path_browse_button">
                 <property name="text">
                  <string>Browse</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Seed (optional)</string>
                 </property>
                </widget>
               </item>
@@ -2742,7 +2725,7 @@ font-size: 15px;</string>
               <x>10</x>
               <y>365</y>
               <width>1028</width>
-              <height>181</height>
+              <height>161</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -2992,7 +2975,7 @@ font-weight: bold;</string>
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>550</y>
+              <y>540</y>
               <width>311</width>
               <height>86</height>
              </rect>
@@ -3079,7 +3062,7 @@ color: lightgray</string>
             <property name="geometry">
              <rect>
               <x>820</x>
-              <y>550</y>
+              <y>540</y>
               <width>221</width>
               <height>88</height>
              </rect>
@@ -3160,6 +3143,55 @@ color: lightgray</string>
      </widget>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_29">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Seed (optional)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="seed"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generate_seed_button">
+        <property name="text">
+         <string>New seed</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="seed_hash_label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>135</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>135</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Seed Hash:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="QLabel" name="label_4">
@@ -3170,33 +3202,6 @@ color: lightgray</string>
       </item>
       <item>
        <widget class="QLineEdit" name="permalink"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_29">
-      <item>
-       <widget class="QLabel" name="update_checker_label">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Checking for updates to the randomizer...</string>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="seed_hash_label">
-        <property name="text">
-         <string>Seed Hash:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
       </item>
      </layout>
     </item>

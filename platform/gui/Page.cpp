@@ -261,17 +261,18 @@ void ProgressionPage::drawDRC() const {
 HintsPage::HintsPage() {
     using namespace std::literals::chrono_literals;
 
-    buttonColumns[0][0] = std::make_unique<BasicButton>(Option::HoHoHints);
-    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::KorlHints);
-    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ClearerHints);
-    buttonColumns[0][3] = std::make_unique<BasicButton>(Option::UseAlwaysHints);
-    buttonColumns[0][4] = std::make_unique<BasicButton>(Option::HintImportance);
+    // we can't use an initializer list for a vector<unique_ptr> because of copy/move issues
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HoHoHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::KorlHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ClearerHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::UseAlwaysHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HintImportance));
 
-    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::PathHints, 300ms, 300ms);
-    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::BarrenHints, 300ms, 300ms);
-    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::ItemHints, 300ms, 300ms);
-    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::LocationHints, 300ms, 300ms);
-    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::INVALID);
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::PathHints, 300ms, 300ms));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::BarrenHints, 300ms, 300ms));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::ItemHints, 300ms, 300ms));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::LocationHints, 300ms, 300ms));
+
 }
 
 void HintsPage::open() {
@@ -295,8 +296,6 @@ bool HintsPage::update() {
             curCol -= 1; //left one row
         }
         moved = true;
-
-        buttonColumns[curCol][curRow]->hovered();
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
@@ -307,6 +306,11 @@ bool HintsPage::update() {
             curCol += 1; //right one row
         }
         moved = true;
+    }
+
+    if(moved) {
+        curCol = std::clamp<size_t>(curCol, 0, buttonColumns.size() - 1);
+        curRow = std::clamp<size_t>(curRow, 0, buttonColumns[curCol].size() - 1);
 
         buttonColumns[curCol][curRow]->hovered();
     }
@@ -320,8 +324,6 @@ bool HintsPage::update() {
             curRow -= 1; //up one row
         }
         moved = true;
-
-        buttonColumns[curCol][curRow]->hovered();
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
@@ -333,10 +335,15 @@ bool HintsPage::update() {
             curRow += 1; //down one row
         }
         moved = true;
+    }
+
+    if(moved) {
+        curCol = std::clamp<size_t>(curCol, 0, buttonColumns.size() - 1);
+        curRow = std::clamp<size_t>(curRow, 0, buttonColumns[curCol].size() - 1);
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    
+
     return moved || buttonColumns[curCol][curRow]->update();
 }
 

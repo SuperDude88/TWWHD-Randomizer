@@ -39,16 +39,15 @@ bool writeCharts(const WorldPool& worlds) {
             CAST_ENTRY_TO_FILETYPE(charts, FileTypes::ChartList, data)
             static const auto original_charts = charts.charts;
 
-            const Chart& original_chart = *std::find_if(original_charts.begin(), original_charts.end(), [islandNumber](const Chart& chart) {return (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 5 || chart.type == 6 || chart.type == 8) && chart.getIslandNumber() == islandNumber; });
+            const Chart& original_chart = *std::find_if(original_charts.begin(), original_charts.end(), [islandNumber](const Chart& chart) { return (chart.type == 0 || chart.type == 1 || chart.type == 2 || chart.type == 5 || chart.type == 6 || chart.type == 8) && chart.getIslandNumber() == islandNumber; });
             const GameItem new_chart_item = worlds[0].chartMappings.at(islandNumber);
-            const auto new_chart = std::find_if(charts.charts.begin(), charts.charts.end(), [&](const Chart& chart) {return chart.getItem() == new_chart_item;});
+            const auto new_chart = std::find_if(charts.charts.begin(), charts.charts.end(), [&](const Chart& chart) { return chart.getItem() == new_chart_item; });
             if(new_chart == charts.charts.end()) return false;
 
             new_chart->texture_id = original_chart.texture_id;
             new_chart->sector_x = original_chart.sector_x;
             new_chart->sector_y = original_chart.sector_y;
 
-            //Probably not needed on HD since they removed chart sets, but update anyway
             for(uint8_t pos_index = 0; pos_index < 4; pos_index++) {
                 ChartPos& new_pos = new_chart->possible_positions[pos_index];
                 const ChartPos& original_pos = original_chart.possible_positions[pos_index];

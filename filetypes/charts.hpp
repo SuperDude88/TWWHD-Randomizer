@@ -35,7 +35,6 @@ public:
 
 class Chart {
 private:
-	uint8_t island_number = 0;
 	GameItem item_name = GameItem::INVALID;
 
 public:		
@@ -53,7 +52,7 @@ public:
 	void save_changes(std::ostream& out);
 
 	uint8_t getIslandNumber() const;
-	ChartError setIslandNumber(uint8_t num);
+	ChartError setIslandNumber(uint8_t islandNum);
 	GameItem getItem() const;
 };
 
