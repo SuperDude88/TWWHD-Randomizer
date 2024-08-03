@@ -65,6 +65,7 @@ void Settings::resetDefaults() {
     location_hints = false;
     use_always_hints = false;
     clearer_hints = false;
+    hint_importance = false;
 
     instant_text_boxes = true;
     fix_rng = false;
@@ -218,6 +219,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return clearer_hints;
         case Option::UseAlwaysHints:
             return use_always_hints;
+        case Option::HintImportance:
+            return hint_importance;
         case Option::PathHints:
             return path_hints;
         case Option::BarrenHints:
@@ -397,6 +400,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             clearer_hints = value; return;
         case Option::UseAlwaysHints:
             use_always_hints = value; return;
+        case Option::HintImportance:
+            hint_importance = value; return;
         case Option::PathHints:
             path_hints = value; return;
         case Option::BarrenHints:
@@ -874,6 +879,7 @@ Option nameToSetting(const std::string& name) {
         {"Korl Hints", Option::KorlHints},
         {"Clearer Hints", Option::ClearerHints},
         {"Use Always Hints", Option::UseAlwaysHints},
+        {"Hint Importance", Option::HintImportance},
         {"Path ints", Option::PathHints},
         {"Barren Hints", Option::BarrenHints},
         {"Item Hints", Option::ItemHints},
@@ -971,6 +977,7 @@ std::string settingToName(const Option& setting) {
         {Option::KorlHints, "Korl Hints"},
         {Option::ClearerHints, "Clearer Hints"},
         {Option::UseAlwaysHints, "Use Always Hints"},
+        {Option::HintImportance, "Hint Importance"},
         {Option::PathHints, "Path Hints"},
         {Option::BarrenHints, "Barren Hints"},
         {Option::ItemHints, "Item Hints"},

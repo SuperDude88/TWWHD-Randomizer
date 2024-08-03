@@ -5,6 +5,7 @@
 #include <string>
 
 #include <logic/World.hpp>
+#include <filetypes/util/msbtMacros.hpp>
 
 LocationCategory nameToLocationCategory(const std::string& name)
 {
@@ -128,4 +129,57 @@ bool Location::operator<(const Location& rhs) const
 std::string Location::getName() const
 {
     return names.at("English");
+}
+
+std::u16string Location::generateImportanceText(const std::string& language)
+{
+    auto& item = currentItem;
+
+    std::u16string required = u"required";
+    std::u16string possiblyRequired = u"possibly required";
+    std::u16string notRequired = u"not required";
+
+    if (language == "Spanish")
+    {
+        required = u"requerido";
+        possiblyRequired = u"posiblemente requerido";
+        notRequired = u"no requerido";
+    }
+    else if (language == "French")
+    {
+        // TODO
+    }
+
+    // Get all the progression chain locations for this location's item
+    auto chainLocations = item.getChainLocations();
+    for (auto loc : item.getChainLocations())
+    {
+        if (!loc->progression)
+        {
+            chainLocations.erase(loc);
+        }
+    }
+
+    // If this item was always junk, or has no progression chain locations, or if hint importance is off
+    // then we won't generate any hint importance text for it
+    if (item.wasAlwaysJunkItem() || chainLocations.empty() || !world->getSettings().hint_importance)
+    {
+        return u"";
+    }
+
+    // If this item is on the path to Ganondorf, then it is required
+    auto& requiredLocations = world->pathLocations[world->locationTable["Ganon's Tower - Defeat Ganondorf"].get()];
+    if (elementInPool(this, requiredLocations))
+    {
+        return u" (" + TEXT_COLOR_GREEN + required + TEXT_COLOR_DEFAULT + u")";
+    }
+
+    // If this item can be in a barren region, then it's not required
+    if (item.canBeInBarrenRegion())
+    {
+        return u" (" + TEXT_COLOR_GRAY + notRequired + TEXT_COLOR_DEFAULT + u")";
+    }
+
+    // If the item doesn't fall into required or not required, then it's possibly required
+    return u" (" + TEXT_COLOR_YELLOW + possiblyRequired + TEXT_COLOR_DEFAULT + u")";
 }

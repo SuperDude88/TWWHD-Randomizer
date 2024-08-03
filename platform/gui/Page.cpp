@@ -265,11 +265,13 @@ HintsPage::HintsPage() {
     buttonColumns[0][1] = std::make_unique<BasicButton>(Option::KorlHints);
     buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ClearerHints);
     buttonColumns[0][3] = std::make_unique<BasicButton>(Option::UseAlwaysHints);
+    buttonColumns[0][4] = std::make_unique<BasicButton>(Option::HintImportance);
 
     buttonColumns[1][0] = std::make_unique<BasicButton>(Option::PathHints, 300ms, 300ms);
     buttonColumns[1][1] = std::make_unique<BasicButton>(Option::BarrenHints, 300ms, 300ms);
     buttonColumns[1][2] = std::make_unique<BasicButton>(Option::ItemHints, 300ms, 300ms);
     buttonColumns[1][3] = std::make_unique<BasicButton>(Option::LocationHints, 300ms, 300ms);
+    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::INVALID);
 }
 
 void HintsPage::open() {

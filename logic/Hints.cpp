@@ -60,16 +60,6 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
             for (auto location : sphere)
             {
                 auto itemAtLocation = location->currentItem;
-                // If this location has a small or big key and the key is known to be within the dungeon,
-                // then ignore it because the player already knows where those items are. Also ignore race
-                // mode locations at the end of dungeons because players know those locations are required.
-                if (location->hasKnownVanillaItem ||
-                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
-                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
-                   (location->isRaceModeLocation))
-                {
-                    continue;
-                }
 
                 // Take the item away from the location
                 location->currentItem = Item(GameItem::INVALID, location->world);
@@ -148,8 +138,8 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 auto chainLocations = location->currentItem.getChainLocations();
                 if (!chainLocations.empty())
                 {
-                    // If all of this item's chain locations' items can be in barren regions, then this item is junk
-                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->currentItem.canBeInBarrenRegion(); }))
+                    // If all of this item's chain locations' items can be in barren regions (or are nonprogression locations), then this item is junk
+                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return !loc->progression || loc->currentItem.canBeInBarrenRegion(); }))
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
@@ -178,7 +168,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
             newJunkItems = false;
             for (Item* item : potentiallyJunkItems)
             {
-                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return loc->currentItem.canBeInBarrenRegion(); }))
+                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return !loc->progression || loc->currentItem.canBeInBarrenRegion(); }))
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
@@ -349,7 +339,19 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             goalLocation = RandomElement(goalLocations);
         }
 
-        auto hintLocation = getHintableLocation(world.pathLocations[goalLocation]);
+        auto possiblePathLocations = world.pathLocations[goalLocation];
+
+        // Filter out race mode locations, known vanilla items, and known
+        // keys in dungeons from possible path locations
+        filterAndEraseFromPool(possiblePathLocations, [settings = world.getSettings()](auto location){
+            auto& item = location->currentItem;
+            return (location->hasKnownVanillaItem ||
+                   (item.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
+                   (item.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
+                   (location->isRaceModeLocation));
+        });
+
+        auto hintLocation = getHintableLocation(possiblePathLocations);
         if (hintLocation == nullptr)
         {
             LOG_TO_DEBUG("No more path locations for " + goalLocation->getName());
@@ -487,16 +489,20 @@ static HintError generateItemHintMessage(Location* location)
     auto textType = world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
     auto& item = location->currentItem;
 
-    std::u16string englishHintedItem = item.getUTF16Name("English", textType, Text::Color::CYAN);
-    std::u16string spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::CYAN);
-    std::u16string frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::CYAN);
+    auto englishHintedItem = item.getUTF16Name("English", textType, Text::Color::CYAN);
+    auto spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::CYAN);
+    auto frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::CYAN);
+
+    auto englishItemImportance = location->generateImportanceText("English");
+    auto spanishItemImportance = location->generateImportanceText("Spanish");
+    auto frenchItemImportance = location->generateImportanceText("French");
 
     // Angular Isles and Forbidden Woods should use the plural tense in French even if they're a single area being referred to
     std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" détiendrait "s : u" détiendraient "s;
 
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + u" can be found at "s + englishRegionText + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + u" se encuentra en "s + spanishRegionText + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + u"."s;
+    location->hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + englishItemImportance + u" can be found at "s + englishRegionText + u"."s;
+    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + spanishItemImportance + u" se encuentra en "s + spanishRegionText + u"."s;
+    location->hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + frenchItemImportance + u"."s;
     location->hint.type = HintType::ITEM;
     return HintError::NONE;
 }
@@ -531,6 +537,7 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
             break;
         }
         auto hintLocation = popRandomElement(possibleItemHintLocations);
+        hintLocation->hasBeenHinted = true;
         itemHintLocations.push_back(hintLocation);
         LOG_AND_RETURN_IF_ERR(generateItemHintMessage(hintLocation));
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as item hint location");
@@ -560,9 +567,24 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
 static HintError generateLocationHintMessage(Location* location)
 {
     auto& item = location->currentItem;
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["English"]) + TEXT_COLOR_DEFAULT + u" rewards " + item.getUTF16Name("English", Text::Type::PRETTY, Text::Color::RED) + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["Spanish"]) + TEXT_COLOR_DEFAULT + u" otorgará " + item.getUTF16Name("Spanish", Text::Type::PRETTY, Text::Color::RED) + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["French"]) + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + item.getUTF16Name("French", Text::Type::PRETTY, Text::Color::RED) + u"."s;
+
+    auto englishLocation = Utility::Str::toUTF16(location->names["English"]);
+    auto spanishLocation = Utility::Str::toUTF16(location->names["Spanish"]);
+    auto frenchLocation = Utility::Str::toUTF16(location->names["French"]);
+
+    // Determine if the item's direct name or the cryptic text should be used
+    auto textType = location->world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
+    auto englishHintedItem = item.getUTF16Name("English", textType, Text::Color::RED);
+    auto spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::RED);
+    auto frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::RED);
+
+    auto englishItemImportance = location->generateImportanceText("English");
+    auto spanishItemImportance = location->generateImportanceText("Spanish");
+    auto frenchItemImportance = location->generateImportanceText("French");
+
+    location->hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + englishLocation + TEXT_COLOR_DEFAULT + u" rewards " + englishHintedItem + englishItemImportance + u"."s;
+    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + spanishLocation + TEXT_COLOR_DEFAULT + u" otorgará " + spanishHintedItem + spanishItemImportance + u"."s;
+    location->hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + frenchLocation + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + frenchHintedItem + frenchItemImportance + u"."s;
     location->hint.type = HintType::LOCATION;
     return HintError::NONE;
 }

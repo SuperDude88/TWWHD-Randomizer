@@ -59,6 +59,7 @@ namespace OptionCB {
     std::string toggleKorlHints();
     std::string toggleClearHints();
     std::string toggleAlwaysHints();
+    std::string toggleHintImportance();
     std::string cyclePathHints();
     std::string cycleBarrenHints();
     std::string cycleItemHints();

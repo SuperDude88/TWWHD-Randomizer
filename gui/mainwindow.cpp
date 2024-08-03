@@ -539,6 +539,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, korl_hints);
     APPLY_CHECKBOX_SETTING(config, ui, use_always_hints);
     APPLY_CHECKBOX_SETTING(config, ui, clearer_hints);
+    APPLY_CHECKBOX_SETTING(config, ui, hint_importance);
     APPLY_SPINBOX_SETTING(config, ui, path_hints, uint8_t(0), uint8_t(MAXIMUM_PATH_HINT_COUNT));
     APPLY_SPINBOX_SETTING(config, ui, barren_hints, uint8_t(0), uint8_t(MAXIMUM_BARREN_HINT_COUNT));
     APPLY_SPINBOX_SETTING(config, ui, location_hints, uint8_t(0), uint8_t(MAXIMUM_LOCATION_HINT_COUNT));
@@ -936,6 +937,7 @@ DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
 DEFINE_STATE_CHANGE_FUNCTION(korl_hints)
 DEFINE_STATE_CHANGE_FUNCTION(use_always_hints)
 DEFINE_STATE_CHANGE_FUNCTION(clearer_hints)
+DEFINE_STATE_CHANGE_FUNCTION(hint_importance)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(path_hints)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(barren_hints)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(location_hints)

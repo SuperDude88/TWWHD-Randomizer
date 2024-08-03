@@ -646,8 +646,9 @@ Item::Item(GameItem gameItemId_, World* world_) :
     gameItemId(gameItemId_),
     world(world_)
 {
-    if (junkItems.contains(gameItemId))
+    if (junkItems.contains(gameItemId) || (isAnyOf(gameItemId, GameItem::HeartContainer, GameItem::PieceOfHeart) && world && world->getStartingHeartCount() >= 3))
     {
+        originallyJunk = true;
         junkItem = true;
     }
     else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
@@ -662,22 +663,9 @@ Item::Item(GameItem gameItemId_, World* world_) :
 }
 
 Item::Item(std::string itemName_, World* world_) :
-    gameItemId(nameToGameItem(itemName_)),
-    world(world_)
+    Item(nameToGameItem(itemName_), world_)
 {
-    if (junkItems.contains(gameItemId))
-    {
-        junkItem = true;
-    }
-    else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
-             gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
-    {
-        chartForSunkenTreasure = true;
-    }
-    else if (dungeonItems.contains(gameItemId))
-    {
-        dungeonItem = true;
-    }
+
 }
 
 World* Item::getWorld()
@@ -777,6 +765,11 @@ void Item::setAsJunkItem()
 bool Item::isJunkItem() const
 {
     return junkItem;
+}
+
+bool Item::wasAlwaysJunkItem() const
+{
+    return originallyJunk;
 }
 
 bool Item::isDungeonItem() const

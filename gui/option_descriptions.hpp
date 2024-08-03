@@ -308,6 +308,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "use_always_hints",
       "When the number of location hints is nonzero, certain locations that will always be hinted at will take precedence over normal location hints.",
     },
+    {
+      "hint_importance",
+      "When this option is selected, item and location hints will also indicate if the hinted item is required, possibly required, or not required.<br>Only progress items will have these additions; non-progress items are trivially not required.",
+    },
 
     // Entrance Randomizer
     {

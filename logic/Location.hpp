@@ -135,6 +135,7 @@ public:
     bool operator<(const Location& rhs) const;
 
     std::string getName() const;
+    std::u16string generateImportanceText(const std::string& language);
 };
 
 using LocationSet = std::set<Location*, PointerLess<Location>>;

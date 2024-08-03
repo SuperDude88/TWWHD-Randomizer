@@ -1437,7 +1437,7 @@ void World::flattenLogicRequirements()
     }
 
     // Properly set the chain locations for each item in the item pools as well
-    // as any already placed items
+    // as any already placed items, and dungeon's associated items
     for (auto pool : {&itemPool, &startingItems})
     {
         for (auto& item : *pool)
@@ -1456,6 +1456,23 @@ void World::flattenLogicRequirements()
             for (auto loc : itemTable[gameItemToName(item.getGameItemId())].getChainLocations())
             {
                 item.addChainLocation(loc);
+            }
+        }
+    }
+    for (auto& [name, dungeon] : dungeons)
+    {
+        if (dungeon.smallKey.getGameItemId() != GameItem::INVALID)
+        {
+            for (auto loc : itemTable[gameItemToName(dungeon.smallKey.getGameItemId())].getChainLocations())
+            {
+                dungeon.smallKey.addChainLocation(loc);
+            }
+        }
+        if (dungeon.bigKey.getGameItemId() != GameItem::INVALID)
+        {
+            for (auto loc : itemTable[gameItemToName(dungeon.bigKey.getGameItemId())].getChainLocations())
+            {
+                dungeon.bigKey.addChainLocation(loc);
             }
         }
     }

@@ -403,6 +403,7 @@ public:
     void setName(const std::string& language, const Text::Type& type, const std::string& name_);
     void setAsJunkItem();
     bool isJunkItem() const;
+    bool wasAlwaysJunkItem() const;
     bool isDungeonItem() const;
     bool isMap() const;
     bool isCompass() const;
@@ -421,6 +422,7 @@ private:
     std::unordered_set<Location*> chainLocations = {};
     bool dungeonItem = false;
     bool junkItem = false;
+    bool originallyJunk = false;
     World* world = nullptr; // The world that this item is *FOR*
 };
 

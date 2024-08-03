@@ -121,6 +121,22 @@ TextReplacements generate_text_replacements(World& world)
   std::u16string beedle950SpanishPlurality = IS_SINGULAR(beedle950, "Spanish") ? u" cuesta " : u" cuestan ";
   std::u16string beedle900SpanishPlurality = IS_SINGULAR(beedle900, "Spanish") ? u" cuesta " : u" cuestan ";
 
+  // Hint Importance for Savage Labyrinth and Big Octo Fairy items
+  auto& savageFloor30Loc = world.locationTable["Outset Island - Savage Labyrinth Floor 30"];
+  auto& savageFloor50Loc = world.locationTable["Outset Island - Savage Labyrinth Floor 50"];
+
+  auto savageFloor30EnglishImportance = savageFloor30Loc->generateImportanceText("English");
+  auto savageFloor30SpanishImportance = savageFloor30Loc->generateImportanceText("Spanish");
+  auto savageFloor30FrenchImportance = savageFloor30Loc->generateImportanceText("French");
+
+  auto savageFloor50EnglishImportance = savageFloor50Loc->generateImportanceText("English");
+  auto savageFloor50SpanishImportance = savageFloor50Loc->generateImportanceText("Spanish");
+  auto savageFloor50FrenchImportance = savageFloor50Loc->generateImportanceText("French");
+
+  auto bigOctoFairyEnglishImportance = world.bigOctoFairyHintLocation->generateImportanceText("English");
+  auto bigOctoFairySpanishImportance = world.bigOctoFairyHintLocation->generateImportanceText("Spanish");
+  auto bigOctoFairyFrenchImportance = world.bigOctoFairyHintLocation->generateImportanceText("French");
+
   // Format for text replacements:
   // Message Label,
   //   English: english translation,
@@ -201,11 +217,11 @@ TextReplacements generate_text_replacements(World& world)
      // Savage Labyrinth Hints
      {"00837",
      {{"English", u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"The Savage Labyrinth" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
-                  word_wrap_string(u"Deep in the never-ending darkness, the way to " + savageFloor30.getUTF16Name("English", Text::Type::CRYPTIC) + u" and " + savageFloor50.getUTF16Name("English", Text::Type::CRYPTIC) + u" await.", 39) + TEXT_END},
+                  word_wrap_string(u"Deep in the never-ending darkness, the way to " + savageFloor30.getUTF16Name("English", Text::Type::CRYPTIC) + savageFloor30EnglishImportance + u" and " + savageFloor50.getUTF16Name("English", Text::Type::CRYPTIC) + savageFloor50EnglishImportance + u" await.", 39) + TEXT_END},
       {"Spanish", u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"Cripta de los Mounstros" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
-                  word_wrap_string(u"En las profundidades de la interminable oscuridad, el camino hacia " + savageFloor30.getUTF16Name("Spanish", Text::Type::CRYPTIC) + spanishSavageConjunction + savageFloor50.getUTF16Name("Spanish", Text::Type::CRYPTIC) + u" esperan.", 39) + TEXT_END},
+                  word_wrap_string(u"En las profundidades de la interminable oscuridad, el camino hacia " + savageFloor30.getUTF16Name("Spanish", Text::Type::CRYPTIC) + savageFloor30SpanishImportance + spanishSavageConjunction + savageFloor50.getUTF16Name("Spanish", Text::Type::CRYPTIC) + savageFloor50SpanishImportance + u" esperan.", 39) + TEXT_END},
       {"French",  u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"La Crypte Magique" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
-                  word_wrap_string(u"Au plus profond des ténèbres sans fin, le chemin vers " + savageFloor30.getUTF16Name("French", Text::Type::CRYPTIC) + u" et " + savageFloor50.getUTF16Name("French", Text::Type::CRYPTIC) + u" attendent.", 39) + TEXT_END}}},
+                  word_wrap_string(u"Au plus profond des ténèbres sans fin, le chemin vers " + savageFloor30.getUTF16Name("French", Text::Type::CRYPTIC) + savageFloor30FrenchImportance + u" et " + savageFloor50.getUTF16Name("French", Text::Type::CRYPTIC) + savageFloor50FrenchImportance + u" attendent.", 39) + TEXT_END}}},
 
      // Aryll Pirate Ship Text
      {"03008",
@@ -310,9 +326,9 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Encontrarás un objeto en " + world.getUTF16HintRegion(octoFairyRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u".", 43) + u'\0'},
       {"French",  word_wrap_string(TEXT_COLOR_CYAN + world.getUTF16HintRegion(octoFairyRegion, "French", Text::Type::PRETTY, Text::Color::RED) + TEXT_COLOR_CYAN + u" détient un objet.", 43) + u'\0'}}},
      {"12016",
-     {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'},
-      {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", que te ayudará en tu aventura.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + TEXT_COLOR_CYAN + u", qui " + bigOctoFrenchPlurality + u" dans ton aventure.", 43) + u'\0'}}},
+     {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + bigOctoFairyEnglishImportance + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'},
+      {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + bigOctoFairySpanishImportance + TEXT_COLOR_CYAN + u", que te ayudará en tu aventura.", 43) + u'\0'},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + bigOctoFairyFrenchImportance + TEXT_COLOR_CYAN + u", qui " + bigOctoFrenchPlurality + u" dans ton aventure.", 43) + u'\0'}}},
      {"12017",
      {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Cuándo requieras el uso de tal objeto, dirígete a ese lugar.", 43) + u'\0'},
