@@ -237,7 +237,7 @@ void World::determineChartMappings()
 
     // Create a vector of charts in the vanilla order
     std::vector<GameItem> charts = {};
-    for (auto i = 0; i < 49; i++)
+    for (auto i = 1; i <= 49; i++) // first island index is 1 (room 0 is sea floor)
     {
         charts.push_back(roomIndexToChart(i));
     }
