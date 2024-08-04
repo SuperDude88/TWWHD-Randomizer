@@ -266,6 +266,7 @@ HintsPage::HintsPage() {
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::KorlHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ClearerHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::UseAlwaysHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HintImportance));
 
     buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::PathHints, 300ms, 300ms));
     buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::BarrenHints, 300ms, 300ms));

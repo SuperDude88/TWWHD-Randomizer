@@ -49,6 +49,7 @@ struct Requirement
 
     void simplifyParenthesis();
     void sortArgs();
+    std::unordered_set<GameItem> getItems();
 };
 
 bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSet* ownedItems, const EventSet* ownedEvents);

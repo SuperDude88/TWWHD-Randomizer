@@ -143,7 +143,10 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
 }
 
 ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
-    if(item.anyInstancesAreMajor() && !gameItemToName(item.getGameItemId()).ends_with("Key")) {
+    // If any of this item's chain locations are progression, then put the item
+    // into a spiky chest
+    if(std::ranges::any_of(item.getChainLocations(), [](auto location){return location->progression;}) && 
+      !gameItemToName(item.getGameItemId()).ends_with("Key")) {
         LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(2))) // Metal chests for progress items (excluding keys)
         return ModificationError::NONE;
     }

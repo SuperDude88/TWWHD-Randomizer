@@ -2341,9 +2341,6 @@
     Spanish: Singular
     French: Singular # Singular (lettre), Plural (écrits)
   Game Item Id: 0x9A
-  Chain Locations:
-    - Windfall Island - Cafe Postman Delivery
-
 
 - Names:
     English: Moblin's Letter
@@ -2366,9 +2363,6 @@
     Spanish: Singular
     French: Singular # Singular (lettre), Plural (écrits)
   Game Item Id: 0x9B
-  Chain Locations:
-    - Windfall Island - Maggie Delivery Reward
-
 
 - Names:
     English: Cabana Deed
@@ -2467,9 +2461,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xA3
-  Chain Locations:
-    - Tingle Island - Ankle All Statues Reward
-
 
 - Names:
     English: Forbidden Tingle Statue
@@ -2492,9 +2483,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xA4
-  Chain Locations:
-    - Tingle Island - Ankle All Statues Reward
-
 
 - Names:
     English: Goddess Tingle Statue
@@ -2517,9 +2505,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xA5
-  Chain Locations:
-    - Tingle Island - Ankle All Statues Reward
-
 
 - Names:
     English: Earth Tingle Statue
@@ -2542,9 +2527,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xA6
-  Chain Locations:
-    - Tingle Island - Ankle All Statues Reward
-
 
 - Names:
     English: Wind Tingle Statue
@@ -2567,9 +2549,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xA7
-  Chain Locations:
-    - Tingle Island - Ankle All Statues Reward
-
 
 - Names:
     English: Hurricane Spin
@@ -2690,10 +2669,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xAF
-  Chain Locations: # Quiver is potentially progression for 12 eye octos
-    - Seven Star Isles - Big Octo
-    - Tingle Island - Big Octo
-
 
 - Names:
     English: Ninety Nine Quiver
@@ -3394,9 +3369,6 @@
     Spanish: Singular
     French: Singular
   Game Item Id: 0xDB
-  Chain Locations:
-    - Great Sea - Ghost Ship Chest
-
 
 - Names:
     English: Tingle's Chart

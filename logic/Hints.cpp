@@ -60,16 +60,6 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
             for (auto location : sphere)
             {
                 auto itemAtLocation = location->currentItem;
-                // If this location has a small or big key and the key is known to be within the dungeon,
-                // then ignore it because the player already knows where those items are. Also ignore race
-                // mode locations at the end of dungeons because players know those locations are required.
-                if (location->hasKnownVanillaItem ||
-                   (itemAtLocation.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
-                   (itemAtLocation.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
-                   (location->isRaceModeLocation))
-                {
-                    continue;
-                }
 
                 // Take the item away from the location
                 location->currentItem = Item(GameItem::INVALID, location->world);
@@ -122,7 +112,6 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
     for (auto& world : worlds)
     {
         std::unordered_set<Item*> potentiallyJunkItems = {};
-        std::unordered_set<Item*> itemsSetAsJunk = {};
         for (auto& [areaName, area] : world.areaTable)
         {
             // We'll be performing several operations during this loop
@@ -139,22 +128,29 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 // the set of potentially barren regions
                 if (location->progression && !location->hintRegions.empty())
                 {
-                    world.barrenRegions[location->hintRegions.front()] = {};
+                    for (auto& region : location->hintRegions)
+                    {
+                        // Don't add ganon's tower to the list
+                        if (region == "Ganon's Tower")
+                        {
+                            continue;
+                        }
+                        world.barrenRegions[region] = {};
+                    }
                 }
 
-                // During this loop we'll also go through and mark certain progressive items as junk items. These
-                // are "chain" items whose sole purpose is to unlock another check. Here they will
-                // be marked as junk if the location they unlock contains junk. If the location they unlock
-                // is not junk, then we'll put it into the potentially junk items set to check for later
-                auto& chainLocations = location->currentItem.getChainLocations();
-                if (location->progression && !chainLocations.empty())
+                // During this loop we'll also go through and mark certain items as junk items.
+                // For the purposes of barren hints, if a major item cannot possibly lead to any
+                // required items, then it will not block the region it's in from being considered
+                // barren.
+                auto chainLocations = location->currentItem.getChainLocations();
+                if (!chainLocations.empty())
                 {
-                    // If all of this item's chain locations are junk, then this item is also junk
-                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
+                    // If all of this item's chain locations' items can be in barren regions (or are nonprogression locations), then this item is junk
+                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return !loc->progression || loc->currentItem.canBeInBarrenRegion(); }))
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
-                        itemsSetAsJunk.insert(&location->currentItem);
                     }
                     else
                     {
@@ -180,11 +176,10 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
             newJunkItems = false;
             for (Item* item : potentiallyJunkItems)
             {
-                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return loc->currentItem.isJunkItem(); }))
+                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return !loc->progression || loc->currentItem.canBeInBarrenRegion(); }))
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
-                    itemsSetAsJunk.insert(item);
                     LOG_TO_DEBUG(item->getName() + " is now junk.");
                 }
             }
@@ -194,57 +189,54 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         // Now loop through all the progression locations again and remove any
         // regions from the barren regions map which have non-junk items at any
         // of their locations. Otherwise add the location to the list of locations
-        // in the barren region
+        // in the barren region. For barren hints, dungeons within islands also
+        // count as being part of the island.
         for (auto& [name, location] : world.locationTable)
         {
-            for (auto& hintRegion : location->hintRegions)
+            // Locations which have known items should not block a region from being barren
+            if (location->progression && !location->hasKnownVanillaItem &&
+              !(location->isRaceModeLocation && world.getSettings().progression_dungeons != ProgressionDungeons::Disabled))
             {
-                if (location->progression && !location->currentItem.isJunkItem())
+                for (auto& locAccess : location->accessPoints)
                 {
-                    world.barrenRegions.erase(hintRegion);
-                }
-                else if (world.barrenRegions.contains(hintRegion))
-                {
-                    world.barrenRegions[hintRegion].insert(location.get());
-                }
-            }
-        }
-
-        // If any dungeon is barren, check to make sure all its dungeon dependency locations
-        // are also barren. Otherwise, remove it from the list
-        for (auto& [dungeonName, dungeon] : world.dungeons)
-        {
-            auto& outsideLocations = dungeon.outsideDependentLocations;
-            if (world.barrenRegions.contains(dungeonName) &&
-                std::ranges::any_of(outsideLocations, [](const Location* location){return location->currentItem.isJunkItem();}))
-            {
-                world.barrenRegions.erase(dungeonName);
-            }
-        }
-
-        // Revert items set as junk back to major items so
-        // they still become spiky chests in CTMC
-        for (auto item : itemsSetAsJunk)
-        {
-            // If it's a chart though, and the setting for the charts
-            // being progression isn't enabled, keep it as junk
-            if (item->isChartForSunkenTreasure())
-            {
-                if (isAnyOf(item->getGameItemId(), GameItem::TriforceChart1, GameItem::TriforceChart2, GameItem::TriforceChart3))
-                {
-                    if (world.getSettings().progression_triforce_charts)
+                    auto area = locAccess->area;
+                    auto generalHintRegions = area->findHintRegions(/*onlyNonIslands = */true);
+                    auto islands = area->findIslands();
+                    for (auto hintRegions : {generalHintRegions, islands})
                     {
-                        item->setAsMajorItem();
+                        for (auto& hintRegion : hintRegions)
+                        {
+                            if (world.barrenRegions.contains(hintRegion))
+                            {
+                                if (location->currentItem.canBeInBarrenRegion())
+                                {
+                                    world.barrenRegions[hintRegion].insert(location.get());
+                                }
+                                else
+                                {
+                                    LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + location->currentItem.getName() + " at location " + location->getName());
+                                    world.barrenRegions.erase(hintRegion);
+                                }
+                            }
+                        }
                     }
                 }
-                else if (world.getSettings().progression_treasure_charts)
-                {
-                    item->setAsMajorItem();
-                }
             }
-            else
+        }
+
+        // If a dungeon is barren, but has a non-junk item at any of it's
+        // outside dependent locations, then it shouldn't be considered barren
+        for (auto& [dungeonName, dungeon] : world.dungeons)
+        {
+            if (world.barrenRegions.contains(dungeonName))
             {
-                item->setAsMajorItem();
+                for (auto loc : dungeon.outsideDependentLocations)
+                {
+                    if (!loc->currentItem.canBeInBarrenRegion())
+                    {
+                        LOG_TO_DEBUG(dungeonName + " removed from barren pool due to " + loc->currentItem.getName() + " at outside location " + loc->getName());
+                    }
+                }
             }
         }
 
@@ -355,7 +347,19 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             goalLocation = RandomElement(goalLocations);
         }
 
-        auto hintLocation = getHintableLocation(world.pathLocations[goalLocation]);
+        auto possiblePathLocations = world.pathLocations[goalLocation];
+
+        // Filter out race mode locations, known vanilla items, and known
+        // keys in dungeons from possible path locations
+        filterAndEraseFromPool(possiblePathLocations, [settings = world.getSettings()](auto location){
+            auto& item = location->currentItem;
+            return (location->hasKnownVanillaItem ||
+                   (item.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
+                   (item.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
+                   (location->isRaceModeLocation));
+        });
+
+        auto hintLocation = getHintableLocation(possiblePathLocations);
         if (hintLocation == nullptr)
         {
             LOG_TO_DEBUG("No more path locations for " + goalLocation->getName());
@@ -415,9 +419,24 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
         barrenHintLocations.push_back(*world.barrenRegions[barrenRegion].begin());
         LOG_TO_DEBUG("Chose \"" + barrenRegion + "\" as a hinted barren region");
 
-        // Reform the distribution without the region we just chose
-        barrenDistributions.erase(barrenDistributions.begin() + regionIndex);
-        barrenPool.erase(barrenPool.begin() + regionIndex);
+        // Erase any potential barren regions if any of their locations have already
+        // been hinted at. This means that if we've hinted a dungeon barren, then
+        // we can't also hint the island the dungeon is on as barren (and vice versa)
+        // Basically, there should be no overlapping of the regions that are hinted
+        // barren.
+        for (auto j = 0; j < barrenPool.size(); j++)
+        {
+            auto& pool = world.barrenRegions[barrenPool[j]];
+            if (std::ranges::any_of(pool, [](auto loc){return loc->hasBeenHinted;}))
+            {
+                // Reform the distribution without this region
+                LOG_TO_DEBUG("Removed " + barrenPool[j] + " from barren pool.");
+                barrenDistributions.erase(barrenDistributions.begin() + j);
+                barrenPool.erase(barrenPool.begin() + j);
+                j--;
+            }
+        }
+
         barrenDistribution = std::discrete_distribution<size_t>(barrenDistributions.begin(), barrenDistributions.end());
     }
 
@@ -478,16 +497,20 @@ static HintError generateItemHintMessage(Location* location)
     auto textType = world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
     auto& item = location->currentItem;
 
-    std::u16string englishHintedItem = item.getUTF16Name("English", textType, Text::Color::CYAN);
-    std::u16string spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::CYAN);
-    std::u16string frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::CYAN);
+    auto englishHintedItem = item.getUTF16Name("English", textType, Text::Color::CYAN);
+    auto spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::CYAN);
+    auto frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::CYAN);
+
+    auto englishItemImportance = location->generateImportanceText("English");
+    auto spanishItemImportance = location->generateImportanceText("Spanish");
+    auto frenchItemImportance = location->generateImportanceText("French");
 
     // Angular Isles and Forbidden Woods should use the plural tense in French even if they're a single area being referred to
     std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" détiendrait "s : u" détiendraient "s;
 
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + u" can be found at "s + englishRegionText + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + u" se encuentra en "s + spanishRegionText + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + u"."s;
+    location->hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + englishItemImportance + u" can be found at "s + englishRegionText + u"."s;
+    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + spanishItemImportance + u" se encuentra en "s + spanishRegionText + u"."s;
+    location->hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + frenchItemImportance + u"."s;
     location->hint.type = HintType::ITEM;
     return HintError::NONE;
 }
@@ -522,6 +545,7 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
             break;
         }
         auto hintLocation = popRandomElement(possibleItemHintLocations);
+        hintLocation->hasBeenHinted = true;
         itemHintLocations.push_back(hintLocation);
         LOG_AND_RETURN_IF_ERR(generateItemHintMessage(hintLocation));
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as item hint location");
@@ -551,9 +575,24 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
 static HintError generateLocationHintMessage(Location* location)
 {
     auto& item = location->currentItem;
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["English"]) + TEXT_COLOR_DEFAULT + u" rewards " + item.getUTF16Name("English", Text::Type::PRETTY, Text::Color::RED) + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["Spanish"]) + TEXT_COLOR_DEFAULT + u" otorgará " + item.getUTF16Name("Spanish", Text::Type::PRETTY, Text::Color::RED) + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["French"]) + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + item.getUTF16Name("French", Text::Type::PRETTY, Text::Color::RED) + u"."s;
+
+    auto englishLocation = Utility::Str::toUTF16(location->names["English"]);
+    auto spanishLocation = Utility::Str::toUTF16(location->names["Spanish"]);
+    auto frenchLocation = Utility::Str::toUTF16(location->names["French"]);
+
+    // Determine if the item's direct name or the cryptic text should be used
+    auto textType = location->world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
+    auto englishHintedItem = item.getUTF16Name("English", textType, Text::Color::RED);
+    auto spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::RED);
+    auto frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::RED);
+
+    auto englishItemImportance = location->generateImportanceText("English");
+    auto spanishItemImportance = location->generateImportanceText("Spanish");
+    auto frenchItemImportance = location->generateImportanceText("French");
+
+    location->hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + englishLocation + TEXT_COLOR_DEFAULT + u" rewards " + englishHintedItem + englishItemImportance + u"."s;
+    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + spanishLocation + TEXT_COLOR_DEFAULT + u" otorgará " + spanishHintedItem + spanishItemImportance + u"."s;
+    location->hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + frenchLocation + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + frenchHintedItem + frenchItemImportance + u"."s;
     location->hint.type = HintType::LOCATION;
     return HintError::NONE;
 }

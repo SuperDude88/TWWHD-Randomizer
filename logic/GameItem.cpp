@@ -646,8 +646,9 @@ Item::Item(GameItem gameItemId_, World* world_) :
     gameItemId(gameItemId_),
     world(world_)
 {
-    if (junkItems.contains(gameItemId))
+    if (junkItems.contains(gameItemId) || (isAnyOf(gameItemId, GameItem::HeartContainer, GameItem::PieceOfHeart) && world && world->getStartingHeartCount() >= 3))
     {
+        originallyJunk = true;
         junkItem = true;
     }
     else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
@@ -662,22 +663,9 @@ Item::Item(GameItem gameItemId_, World* world_) :
 }
 
 Item::Item(std::string itemName_, World* world_) :
-    gameItemId(nameToGameItem(itemName_)),
-    world(world_)
+    Item(nameToGameItem(itemName_), world_)
 {
-    if (junkItems.contains(gameItemId))
-    {
-        junkItem = true;
-    }
-    else if (gameItemId >= GameItem::TreasureChart7 && gameItemId <= GameItem::TriforceChart1 &&
-             gameItemId != GameItem::GhostShipChart && gameItemId != GameItem::TinglesChart)
-    {
-        chartForSunkenTreasure = true;
-    }
-    else if (dungeonItems.contains(gameItemId))
-    {
-        dungeonItem = true;
-    }
+
 }
 
 World* Item::getWorld()
@@ -752,19 +740,6 @@ bool Item::isMajorItem() const
     return majorItem;
 }
 
-bool Item::anyInstancesAreMajor() const
-{
-    if (majorItem)
-    {
-        return true;
-    }
-
-    if (world)
-    {
-        return world->anyOfThisItemIsMajor(*this);
-    }
-    return false;
-}
 
 bool Item::isChartForSunkenTreasure() const
 {
@@ -773,10 +748,10 @@ bool Item::isChartForSunkenTreasure() const
 
 void Item::addChainLocation(Location* location)
 {
-    chainLocations.push_back(location);
+    chainLocations.insert(location);
 }
 
-std::list<Location*>& Item::getChainLocations()
+std::unordered_set<Location*> Item::getChainLocations() const
 {
     return chainLocations;
 }
@@ -790,6 +765,11 @@ void Item::setAsJunkItem()
 bool Item::isJunkItem() const
 {
     return junkItem;
+}
+
+bool Item::wasAlwaysJunkItem() const
+{
+    return originallyJunk;
 }
 
 bool Item::isDungeonItem() const
@@ -820,6 +800,13 @@ bool Item::isBigKey() const
 bool Item::isValidItem() const
 {
     return isNoneOf(gameItemId, GameItem::INVALID, GameItem::NOTHING);
+}
+
+bool Item::canBeInBarrenRegion() const
+{
+    return isJunkItem() ||
+           (isSmallKey() && world->getSettings().dungeon_small_keys == PlacementOption::OwnDungeon) ||
+           (isBigKey() && world->getSettings().dungeon_big_keys == PlacementOption::OwnDungeon);
 }
 
 bool Item::operator==(const Item& rhs) const

@@ -87,6 +87,7 @@ public:
     std::unique_ptr<LocationModification> method;
     World* world = nullptr;
     Requirement computedRequirement = Requirement{RequirementType::IMPOSSIBLE, {}};
+    std::unordered_set<GameItem> itemsInComputedRequirement = {};
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
@@ -134,6 +135,7 @@ public:
     bool operator<(const Location& rhs) const;
 
     std::string getName() const;
+    std::u16string generateImportanceText(const std::string& language);
 };
 
 using LocationSet = std::set<Location*, PointerLess<Location>>;

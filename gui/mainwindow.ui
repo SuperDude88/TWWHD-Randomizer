@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -1704,66 +1704,31 @@
                <string>Hints</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_8">
+               <item row="2" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <item>
+                  <widget class="QLabel" name="label_for_path_hints">
+                   <property name="text">
+                    <string>Path Hints</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="path_hints">
+                   <property name="maximum">
+                    <number>7</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_3" native="true"/>
+                 </item>
+                </layout>
+               </item>
                <item row="1" column="1">
                 <widget class="QCheckBox" name="korl_hints">
                  <property name="text">
                   <string>Place Hints on King of Red Lions</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <layout class="QHBoxLayout" name="horizontalLayout_14">
-                 <item>
-                  <widget class="QLabel" name="label_for_barren_hints">
-                   <property name="text">
-                    <string>Barren Hints</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="barren_hints">
-                   <property name="maximum">
-                    <number>7</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QWidget" name="widget_4" native="true"/>
-                 </item>
-                </layout>
-               </item>
-               <item row="2" column="3">
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <item>
-                  <widget class="QLabel" name="label_for_item_hints">
-                   <property name="text">
-                    <string>Item Hints</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="item_hints">
-                   <property name="maximum">
-                    <number>7</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QWidget" name="widget_7" native="true"/>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="ho_ho_hints">
-                 <property name="text">
-                  <string>Place Hints on Old Man Ho Ho</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QCheckBox" name="clearer_hints">
-                 <property name="text">
-                  <string>Clearer Hints</string>
                  </property>
                 </widget>
                </item>
@@ -1795,31 +1760,73 @@
                  </item>
                 </layout>
                </item>
-               <item row="2" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item row="2" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
                  <item>
-                  <widget class="QLabel" name="label_for_path_hints">
+                  <widget class="QLabel" name="label_for_barren_hints">
                    <property name="text">
-                    <string>Path Hints</string>
+                    <string>Barren Hints</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSpinBox" name="path_hints">
+                  <widget class="QSpinBox" name="barren_hints">
                    <property name="maximum">
                     <number>7</number>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="widget_3" native="true"/>
+                  <widget class="QWidget" name="widget_4" native="true"/>
                  </item>
                 </layout>
                </item>
-               <item row="1" column="2">
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="ho_ho_hints">
+                 <property name="text">
+                  <string>Place Hints on Old Man Ho Ho</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="3">
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                 <item>
+                  <widget class="QLabel" name="label_for_item_hints">
+                   <property name="text">
+                    <string>Item Hints</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="item_hints">
+                   <property name="maximum">
+                    <number>7</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_7" native="true"/>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="0">
                 <widget class="QCheckBox" name="use_always_hints">
                  <property name="text">
                   <string>Use Always Hints</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QCheckBox" name="clearer_hints">
+                 <property name="text">
+                  <string>Clearer Hints</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QCheckBox" name="hint_importance">
+                 <property name="text">
+                  <string>Hint Importance</string>
                  </property>
                 </widget>
                </item>

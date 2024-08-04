@@ -171,6 +171,7 @@ enum struct Option {
     KorlHints,
     ClearerHints,
     UseAlwaysHints,
+    HintImportance,
     PathHints,
     BarrenHints,
     ItemHints,
@@ -260,6 +261,7 @@ public:
     bool korl_hints;
     bool clearer_hints;
     bool use_always_hints;
+    bool hint_importance;
     uint8_t path_hints;
     uint8_t barren_hints;
     uint8_t item_hints;

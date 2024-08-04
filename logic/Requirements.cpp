@@ -515,6 +515,39 @@ void Requirement::sortArgs()
     }
 }
 
+// Returns a set of all items that are listed in this requirement
+std::unordered_set<GameItem> Requirement::getItems()
+{
+    int expectedHearts;
+    Item item;
+    std::unordered_set<GameItem> items = {};
+    switch(type)
+    {
+    case RequirementType::OR:
+    case RequirementType::AND:
+        for (auto& arg : args)
+        {
+            auto argItems = std::get<Requirement>(arg).getItems();
+            items.insert(argItems.begin(), argItems.end());
+        }
+        break;
+    case RequirementType::HAS_ITEM:
+        item = std::get<Item>(args[0]);
+        items.insert(item.getGameItemId());
+        break;
+    case RequirementType::COUNT:
+        item = std::get<Item>(args[1]);
+        items.insert(item.getGameItemId());
+        break;
+    case RequirementType::HEALTH:
+        items.insert({GameItem::HeartContainer, GameItem::PieceOfHeart});
+        break;
+    default:
+        return items;
+    }
+    return items;
+}
+
 std::string errorToName(const RequirementError& err)
 {
     switch (err)

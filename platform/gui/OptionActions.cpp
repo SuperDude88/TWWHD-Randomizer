@@ -355,6 +355,11 @@ namespace OptionCB {
         return fromBool(conf.settings.use_always_hints);
     }
 
+    std::string toggleHintImportance() {
+        conf.settings.hint_importance = !conf.settings.hint_importance;
+        return fromBool(conf.settings.hint_importance);
+    }
+
     std::string cyclePathHints() {
         if(conf.settings.path_hints == MAXIMUM_PATH_HINT_COUNT) {
             conf.settings.path_hints = 0;
@@ -915,6 +920,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.clearer_hints);
         case Option::UseAlwaysHints:
             return fromBool(conf.settings.use_always_hints);
+        case Option::HintImportance:
+            return fromBool(conf.settings.hint_importance);
         case Option::PathHints:
             return std::to_string(conf.settings.path_hints);
         case Option::BarrenHints:
@@ -1119,6 +1126,8 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleClearHints;
         case Option::UseAlwaysHints:
             return &toggleAlwaysHints;
+        case Option::HintImportance:
+            return &toggleHintImportance;
         case Option::PathHints:
             return &cyclePathHints;
         case Option::BarrenHints:
@@ -1275,6 +1284,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {KorlHints,                  {"Place Hints on King of Red Lions",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
         {ClearerHints,               {"Clearer Hints",                       "When this option is selected, location and item hints will use the standard check or item name, instead of using cryptic hints."}},
         {UseAlwaysHints,             {"Use Always Hints",                    "When the number of location hints is nonzero, certain locations that will always be hinted will take precedence over normal location hints."}},
+        {HintImportance,             {"Hint Importance",                     "When this option is selected, item and location hints will also indicate if the hinted item is required, possibly required, or not required. Only progress items will have these additions; non-progress items are trivially not required."}},
         {PathHints,                  {"Path Hints",                          "Determines the number of path hints that will be placed."}},
         {BarrenHints,                {"Barren Hints",                        "Determines the number of barren hints that will be placed."}},
         {ItemHints,                  {"Item Hints",                          "Determines the number of location hints that will be placed."}},

@@ -192,6 +192,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "korl_hints", settings.korl_hints)
     GET_FIELD(root, "clearer_hints", settings.clearer_hints)
     GET_FIELD(root, "use_always_hints", settings.use_always_hints)
+    GET_FIELD(root, "hint_importance", settings.hint_importance)
     GET_FIELD(root, "path_hints", settings.path_hints)
     GET_FIELD(root, "barren_hints", settings.barren_hints)
     GET_FIELD(root, "item_hints", settings.item_hints)
@@ -506,6 +507,7 @@ YAML::Node Config::settingsToYaml() {
     SET_FIELD(root, "korl_hints", settings.korl_hints)
     SET_FIELD(root, "clearer_hints", settings.clearer_hints)
     SET_FIELD(root, "use_always_hints", settings.use_always_hints)
+    SET_FIELD(root, "hint_importance", settings.hint_importance)
     SET_FIELD(root, "path_hints", static_cast<uint32_t>(settings.path_hints)) // cast because uint8_t has a weird yaml output
     SET_FIELD(root, "barren_hints", static_cast<uint32_t>(settings.barren_hints)) // cast because uint8_t has a weird yaml output
     SET_FIELD(root, "item_hints", static_cast<uint32_t>(settings.item_hints)) // cast because uint8_t has a weird yaml output
@@ -771,6 +773,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::LocationHints,
     Option::UseAlwaysHints,
     Option::ClearerHints,
+    Option::HintImportance,
 
     // Entrance Randomizer
     Option::RandomizeDungeonEntrances,
@@ -858,6 +861,7 @@ static size_t getOptionBitCount(const Option& option) {
         case Option::KorlHints:
         case Option::UseAlwaysHints:
         case Option::ClearerHints:
+        case Option::HintImportance:
         case Option::RandomizeDungeonEntrances:
         case Option::RandomizeBossEntrances:
         case Option::RandomizeMinibossEntrances:
