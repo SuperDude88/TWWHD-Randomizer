@@ -128,7 +128,15 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 // the set of potentially barren regions
                 if (location->progression && !location->hintRegions.empty())
                 {
-                    world.barrenRegions[location->hintRegions.front()] = {};
+                    for (auto& region : location->hintRegions)
+                    {
+                        // Don't add ganon's tower to the list
+                        if (region == "Ganon's Tower")
+                        {
+                            continue;
+                        }
+                        world.barrenRegions[region] = {};
+                    }
                 }
 
                 // During this loop we'll also go through and mark certain items as junk items.
