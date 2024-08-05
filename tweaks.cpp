@@ -3592,6 +3592,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/custom_funcs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_all_figurines_obtainable_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_cutscenes_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_entrances_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_hint_locations_diff.yaml"));

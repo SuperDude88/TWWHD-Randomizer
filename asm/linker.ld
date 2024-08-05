@@ -43,13 +43,15 @@ onEventBit = 0x025b8b68;
 isEventBit = 0x025b8b94;
 getEventReg = 0x025b8bb0;
 setEventReg = 0x025b8af4;
-isSwitch = 0x025ba0c0;
+isSwitch = 0x025ba0c0; /* dSv_info_c::isSwitch */
 onSwitch = 0x025b9e38;
 offSwitch = 0x025b9f7c;
+dSv_membit_c_isSwitch = 0x025b8dc8; /* dSv_memBit_c::isSwitch */
 onDungeonItem = 0x025b9098;
 onSymbol = 0x025b7cc0;
 isCollect = 0x025b7a2c;
 onCollect = 0x025b7944;
+isTact = 0x025B7B10;
 isStageBossEnemy = 0x02520a84;
 getTriforceNum = 0x025b7e00;
 dComIfGs_isStageTbox = 0x02520864;
@@ -87,6 +89,10 @@ getEventIdx = 0x02543f10;
 endCheck = 0x025440c8;
 
 daObjFtree_talk_main = 0x023472bc;
+
+dSnap_PhotoIndex2TableIndex = 0x025BD600;
+isFigureGet = 0x0229FE28;
+setFigure = 0x0229FF88;
 
 GetQuadrantAtLocation = 0x02680de0;
 GetWarpQuadrantByIndex = 0x0267a204;
