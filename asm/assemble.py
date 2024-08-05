@@ -154,25 +154,24 @@ def try_fix_nonlocal_relocation(bin_name, elf_relocation, elf_symbol):
   elf_relocation.addend = absolute_symbol_address - section_addresses[base_section_index]
 
   # This shouldn't be necessary but it makes things easier to validate
-  match elf_relocation.type:
-    case ELFRelocationType.R_PPC_ADDR32:
-      with open(bin_name, "r+b") as f:
-        write_u32(f, relative_relocation_offset, absolute_symbol_address)
-    case ELFRelocationType.R_PPC_ADDR16_LO:
-      with open(bin_name, "r+b") as f:
-        write_u16(f, relative_relocation_offset, absolute_symbol_address & 0x0000FFFF)
-    case ELFRelocationType.R_PPC_ADDR16_HI:
-      with open(bin_name, "r+b") as f:
-        write_u16(f, relative_relocation_offset, (absolute_symbol_address >> 16) & 0x0000FFFF)
-    case ELFRelocationType.R_PPC_ADDR16_HA:
-      with open(bin_name, "r+b") as f:
-        if absolute_symbol_address & 0x8000: # adjust for lower halfword being treated as signed
-          adjusted_address = ((absolute_symbol_address >> 16) + 1) & 0x0000FFFF
-        else:
-          adjusted_address = (absolute_symbol_address >> 16) & 0x0000FFFF
-        write_u16(f, relative_relocation_offset, adjusted_address)
-    case _:
-      raise Exception("Unexpected non-local relocation type %X" % (elf_relocation.type))
+  if elf_relocation.type == ELFRelocationType.R_PPC_ADDR32:
+    with open(bin_name, "r+b") as f:
+      write_u32(f, relative_relocation_offset, absolute_symbol_address)
+  elif elf_relocation.type == ELFRelocationType.R_PPC_ADDR16_LO:
+    with open(bin_name, "r+b") as f:
+      write_u16(f, relative_relocation_offset, absolute_symbol_address & 0x0000FFFF)
+  elif elf_relocation.type == ELFRelocationType.R_PPC_ADDR16_HI:
+    with open(bin_name, "r+b") as f:
+      write_u16(f, relative_relocation_offset, (absolute_symbol_address >> 16) & 0x0000FFFF)
+  elif elf_relocation.type == ELFRelocationType.R_PPC_ADDR16_HA:
+    with open(bin_name, "r+b") as f:
+      if absolute_symbol_address & 0x8000: # adjust for lower halfword being treated as signed
+        adjusted_address = ((absolute_symbol_address >> 16) + 1) & 0x0000FFFF
+      else:
+        adjusted_address = (absolute_symbol_address >> 16) & 0x0000FFFF
+      write_u16(f, relative_relocation_offset, adjusted_address)
+  else:
+    raise Exception("Unexpected non-local relocation type %X" % (elf_relocation.type))
 
   return True
 
