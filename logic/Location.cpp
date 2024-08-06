@@ -36,11 +36,9 @@ LocationCategory nameToLocationCategory(const std::string& name)
         {"Blue Chu Chu", LocationCategory::BlueChuChu},
         {"Dungeon Secret", LocationCategory::DungeonSecret},
         {"Obscure", LocationCategory::Obscure},
-        {"Junk", LocationCategory::Junk},
         {"Other", LocationCategory::Other},
         {"Always Progression", LocationCategory::AlwaysProgression},
         {"Ho Ho Hint", LocationCategory::HoHoHint},
-        {"Plandomizer Progression", LocationCategory::PlandomizerProgression},
     };
 
     if (!categoryNameMap.contains(name))
@@ -80,11 +78,9 @@ std::string locationCategoryToName(LocationCategory category)
         {LocationCategory::BlueChuChu, "Blue Chu Chu"},
         {LocationCategory::DungeonSecret,  "Dungeon Secret"},
         {LocationCategory::Obscure,  "Obscure"},
-        {LocationCategory::Junk, "Junk"},
         {LocationCategory::Other, "Other"},
         {LocationCategory::AlwaysProgression, "Always Progression"},
         {LocationCategory::HoHoHint, "Ho Ho Hint"},
-        {LocationCategory::PlandomizerProgression, "Plandomizer Progression"},
     };
 
     if (!nameCategoryMap.contains(category))

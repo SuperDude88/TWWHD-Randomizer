@@ -24,7 +24,7 @@
     <item>
      <widget class="QScrollArea" name="scrollArea">
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -63,13 +63,13 @@
            </sizepolicy>
           </property>
           <property name="contextMenuPolicy">
-           <enum>Qt::DefaultContextMenu</enum>
+           <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -116,7 +116,7 @@
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found &lt;a href=&quot;https://wiiu.hacks.guide&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;. After following the guide, you will need to add &lt;a href=&quot;https://github.com/marco-calautti/SigpatchesModuleWiiU/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;01_sigpatches.rpx&lt;/span&gt;&lt;/a&gt; to &lt;span style=&quot; font-family:'Courier New';&quot;&gt;/wiiu/environments/aroma/modules/setup&lt;/span&gt; on your SD card. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
@@ -153,7 +153,7 @@
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*&lt;span style=&quot; font-style:italic;&quot;&gt;This storage is reserved after the first-time setup&lt;/span&gt;).&lt;/p&gt;&lt;p&gt;Once homebrew is set up, copy &lt;span style=&quot; font-family:'Courier New';&quot;&gt;wwhd_randomizer.wuhb&lt;/span&gt; from the &lt;a href=&quot;https://github.com/SuperDude88/TWWHD-Randomizer/releases/latest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;releases page&lt;/span&gt;&lt;/a&gt; into &lt;span style=&quot; font-family:'Courier New';&quot;&gt;/wiiu/apps&lt;/span&gt; on your SD Card. Run the app from the home menu to open the patcher. &lt;/p&gt;&lt;p&gt;Select the settings you wish to use and then follow the prompts to begin the randomization process. The first time it runs, the patcher will create a home menu channel for the randomized game. This takes some time, but it only happens once. The process of patching the randomized game itself after the new channel is created will also take a few minutes. (*&lt;span style=&quot; font-style:italic;&quot;&gt;Note: Everytime you create a new randomized game, it will overwrite any previous one that existed.)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
@@ -184,7 +184,7 @@
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To play the randomized game, you must have Aroma active. This should always be the case right after you run the patcher. The randomized channel will have an orange, mirrored icon of the vanilla game. &lt;/p&gt;&lt;p&gt;A tracker is provided for your convenience in this application. Simply click the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Start New Tracker&lt;/span&gt; button in the top right of the tracker tab. Progress made in the tracker is autosaved, so you can close the application and resume progress later if you wish.&lt;/p&gt;&lt;p&gt;You can either set the same settings in the application for the tracker, or you can retrieve the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;config.yaml&lt;/span&gt; file from &lt;code&gt;/wiiu/apps/save/(hex digits)(TWWHD Randomizer)&lt;/code&gt;, close this application,  place the config file in the same folder as this application, and reopen the application to apply the settings automatically.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
@@ -222,7 +222,7 @@
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Before generating a seed, you need to have a valid extract of the decrypted USA version of the game. The PAL and JP versions will not work, and neither will the original Wind Waker.&lt;/p&gt;&lt;p&gt;The decrypted copy of the game is a folder which contains three subfolders (&lt;span style=&quot; font-family:'Courier New';&quot;&gt;code&lt;/span&gt;, &lt;span style=&quot; font-family:'Courier New';&quot;&gt;content&lt;/span&gt;, and &lt;span style=&quot; font-family:'Courier New';&quot;&gt;meta&lt;/span&gt;). It is &lt;span style=&quot; font-style:italic;&quot;&gt;not&lt;/span&gt; a single file like a &lt;span style=&quot; font-family:'Courier New';&quot;&gt;.iso&lt;/span&gt; or a &lt;span style=&quot; font-family:'Courier New';&quot;&gt;.wad&lt;/span&gt;. You can dump a disc or digital install from your Wii U with &lt;a href=&quot;https://github.com/emiyl/dumpling/releases/latest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;dumpling&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
@@ -247,7 +247,7 @@
                    <string>Generate a Seed</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_17">
                    <item>
@@ -256,7 +256,7 @@
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After you've obtained your decrypted copy of the game, you need to tell the randomizer where the vanilla game is, as well as where to output the randomized version of the game.&lt;/p&gt;&lt;p&gt;In the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Base Game Folder&lt;/span&gt; field below, browse to and select the folder which contains the decrypted games's three subfolders. In the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Output Folder&lt;/span&gt; field, select the folder where you want the randomized game to appear.&lt;/p&gt;&lt;p&gt;Feel free to go through the settings in the rest of the tabs to customize your experience, and when you're ready, hit the &lt;code&gt;Randomize&lt;/code&gt; button in the bottom right.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
@@ -287,7 +287,7 @@
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;To play the seed, open up the &lt;a href=&quot;https://github.com/cemu-project/Cemu/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;CEMU Emulator&lt;/span&gt;&lt;/a&gt;. Go to &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Options &amp;gt; General Settings&lt;/span&gt;. At the bottom where you enter game paths, click &lt;span style=&quot; font-family:'Courier New';&quot;&gt;Add&lt;/span&gt; and browse for the output folder where the randomized game is. The randomized game should now appear in the games list. It has an orange icon with the King of Red Lions in it. Now launch the game in CEMU and enjoy!&lt;/p&gt;&lt;p&gt;A tracker is provided for your convenience in this application. Simply click the &lt;code&gt;Start New Tracker&lt;/code&gt; button in the tracker tab. Progress made in the tracker is autosaved, so you can close the application and resume progress later if you wish.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
@@ -344,7 +344,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tab">
+          <widget class="QWidget" name="randomizer_settings_tab">
            <attribute name="title">
             <string>Randomizer Settings</string>
            </attribute>
@@ -368,7 +368,7 @@
               </property>
               <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0" rowminimumheight="0,0,0,0,0,0,0,0,0,0">
                <property name="sizeConstraint">
-                <enum>QLayout::SetDefaultConstraint</enum>
+                <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                </property>
                <item row="9" column="3">
                 <widget class="QCheckBox" name="progression_obscure">
@@ -894,7 +894,7 @@
                     </size>
                    </property>
                    <property name="buttonSymbols">
-                    <enum>QAbstractSpinBox::UpDownArrows</enum>
+                    <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
                    </property>
                    <property name="suffix">
                     <string>x</string>
@@ -1015,7 +1015,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tab_3">
+          <widget class="QWidget" name="starting_items_tab">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -1024,7 +1024,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_10">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="10,1,10">
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_8">
                 <item>
@@ -1037,10 +1037,10 @@
                 <item>
                  <widget class="QListView" name="randomized_gear">
                   <property name="editTriggers">
-                   <set>QAbstractItemView::NoEditTriggers</set>
+                   <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
                   </property>
                   <property name="selectionMode">
-                   <enum>QAbstractItemView::ExtendedSelection</enum>
+                   <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
                   </property>
                  </widget>
                 </item>
@@ -1051,7 +1051,7 @@
                 <item>
                  <spacer name="verticalSpacer_3">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -1069,6 +1069,12 @@
                     <height>80</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>80</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>&lt;-</string>
                   </property>
@@ -1082,6 +1088,12 @@
                     <height>80</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>80</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>-&gt;</string>
                   </property>
@@ -1090,7 +1102,7 @@
                 <item>
                  <spacer name="verticalSpacer_4">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -1114,10 +1126,10 @@
                 <item>
                  <widget class="QListView" name="starting_gear">
                   <property name="editTriggers">
-                   <set>QAbstractItemView::NoEditTriggers</set>
+                   <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
                   </property>
                   <property name="selectionMode">
-                   <enum>QAbstractItemView::ExtendedSelection</enum>
+                   <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
                   </property>
                  </widget>
                 </item>
@@ -1143,7 +1155,7 @@
                  </size>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="minimum">
                  <number>1</number>
@@ -1195,7 +1207,7 @@
               <item>
                <spacer name="horizontalSpacer_3">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1278,7 +1290,7 @@
               <item>
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1380,7 +1392,7 @@
                  <string>Knights Crests</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                 </property>
                </widget>
               </item>
@@ -1401,7 +1413,114 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tab_2">
+          <widget class="QWidget" name="excluded_locations_tab">
+           <attribute name="title">
+            <string>Excluded Locations</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_32" stretch="10,1,10">
+              <item>
+               <layout class="QVBoxLayout" name="progression_locations_layout">
+                <item>
+                 <widget class="QLabel" name="progression_locations_label">
+                  <property name="text">
+                   <string>Progression Locations</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QListView" name="progression_locations"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="excluded_locations_middle_layout">
+                <item>
+                 <spacer name="verticalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="remove_locations">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>80</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>&lt;-</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="add_locations">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>80</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>-&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="excluded_locations_layout">
+                <item>
+                 <widget class="QLabel" name="excluded_locations_label">
+                  <property name="text">
+                   <string>Excluded Locations</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QListView" name="excluded_locations"/>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="player_customization_tab">
            <attribute name="title">
             <string>Player Customization</string>
            </attribute>
@@ -1518,6 +1637,12 @@
             </item>
             <item>
              <widget class="QLabel" name="custom_model_comment">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>810</width>
@@ -1533,7 +1658,7 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0">
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
@@ -1543,50 +1668,46 @@
                   </property>
                  </layout>
                 </item>
-                <item>
-                 <spacer name="verticalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                </layout>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_6">
                 <item>
                  <widget class="QLabel" name="custom_model_preview_label">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::Shape::NoFrame</enum>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
                  </widget>
                 </item>
-                <item>
-                 <spacer name="verticalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                </layout>
               </item>
              </layout>
             </item>
+            <item>
+             <spacer name="verticalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Orientation::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tab_4">
+          <widget class="QWidget" name="advanced_options_tab">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1633,7 +1754,7 @@
                <item row="6" column="0" colspan="2">
                 <layout class="QGridLayout" name="plandomizer_file_layout">
                  <property name="sizeConstraint">
-                  <enum>QLayout::SetNoConstraint</enum>
+                  <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
                  </property>
                  <item row="0" column="1">
                   <widget class="QLabel" name="plandomizer_label">
@@ -2364,7 +2485,7 @@ font-size: 15px;</string>
                <item row="4" column="0">
                 <spacer name="location_list_spacer">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -2377,7 +2498,7 @@ font-size: 15px;</string>
                <item row="3" column="0">
                 <layout class="QGridLayout" name="specific_locations_layout">
                  <property name="sizeConstraint">
-                  <enum>QLayout::SetFixedSize</enum>
+                  <enum>QLayout::SizeConstraint::SetFixedSize</enum>
                  </property>
                  <property name="spacing">
                   <number>2</number>
@@ -2465,10 +2586,10 @@ font-size: 15px;</string>
                   <string notr="true">background: transparent;</string>
                  </property>
                  <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
+                  <enum>QFrame::Shape::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
+                  <enum>QFrame::Shadow::Plain</enum>
                  </property>
                  <property name="widgetResizable">
                   <bool>true</bool>
@@ -2540,7 +2661,7 @@ font-size: 15px;</string>
                   <number>6</number>
                  </property>
                  <property name="sizeConstraint">
-                  <enum>QLayout::SetMaximumSize</enum>
+                  <enum>QLayout::SizeConstraint::SetMaximumSize</enum>
                  </property>
                  <item>
                   <widget class="QPushButton" name="entrance_destination_back_button">
@@ -2583,10 +2704,10 @@ font-size: 15px;</string>
                   <string notr="true">background: transparent;</string>
                  </property>
                  <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
+                  <enum>QFrame::Shape::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
+                  <enum>QFrame::Shadow::Plain</enum>
                  </property>
                  <property name="widgetResizable">
                   <bool>true</bool>
@@ -2637,7 +2758,7 @@ font-size: 15px;</string>
                   <string>Where did lead to?</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignCenter</set>
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -2698,14 +2819,14 @@ font-size: 15px;</string>
                <item row="1" column="0">
                 <layout class="QGridLayout" name="chart_list_layout">
                  <property name="sizeConstraint">
-                  <enum>QLayout::SetDefaultConstraint</enum>
+                  <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                  </property>
                 </layout>
                </item>
                <item row="2" column="0">
                 <spacer name="chart_list_spacer">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -2769,7 +2890,7 @@ font-weight: bold;</string>
                 <string>0</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -2801,7 +2922,7 @@ font-weight: bold;</string>
                 <string>0</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -2815,7 +2936,7 @@ font-weight: bold;</string>
                 <string>0</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -2867,7 +2988,7 @@ font-weight: bold;</string>
              <string/>
             </property>
             <property name="alignment">
-             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+             <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -2927,7 +3048,7 @@ font-weight: bold;</string>
              <string/>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
            </widget>
            <widget class="QLabel" name="current_area_remaining_number">
@@ -2946,7 +3067,7 @@ font-weight: bold;</string>
              <string/>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
            </widget>
            <widget class="QLabel" name="current_item_label">
@@ -2965,7 +3086,7 @@ font-weight: bold;</string>
              <string/>
             </property>
             <property name="alignment">
-             <set>Qt::AlignHCenter|Qt::AlignTop</set>
+             <set>Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignTop</set>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -3071,7 +3192,7 @@ color: lightgray</string>
              <item row="4" column="0">
               <spacer name="verticalSpacer_5">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -3185,7 +3306,7 @@ color: lightgray</string>
          <string>Seed Hash:</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -3203,6 +3324,20 @@ color: lightgray</string>
       <item>
        <widget class="QLineEdit" name="permalink"/>
       </item>
+      <item>
+       <widget class="QPushButton" name="copy_permalink">
+        <property name="text">
+         <string>Copy</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="paste_permalink">
+        <property name="text">
+         <string>Paste</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -3217,7 +3352,7 @@ color: lightgray</string>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -3237,7 +3372,7 @@ color: lightgray</string>
       <item>
        <spacer name="horizontalSpacer_5">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -3263,7 +3398,7 @@ color: lightgray</string>
       <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>

@@ -286,17 +286,6 @@ bool World::chartLeadsToSunkenTreasure(Location* location, const std::string& it
 
 World::WorldLoadingError World::determineProgressionLocations()
 {
-    // Process extra plandomizer progression locations
-    for (auto& locationName : plandomizer.extraProgressionLocations)
-    {
-        if (!locationTable.contains(locationName))
-        {
-            ErrorLog::getInstance().log("Plandomizer Error: Extra progress location \"" + locationName + "\" is not recognized");
-            return WorldLoadingError::PLANDOMIZER_ERROR;
-        }
-        // Add the plandomizer progression category to this location
-        locationTable[locationName]->categories.insert(LocationCategory::PlandomizerProgression);
-    }
 
     LOG_TO_DEBUG("Progression Locations: [");
     for (auto& [name, location] : locationTable)
@@ -305,7 +294,6 @@ World::WorldLoadingError World::determineProgressionLocations()
         // is allowed to contain progression items (but it won't necessarily get one)
         if (std::ranges::all_of(location->categories, [&location = location, this](LocationCategory category)
         {
-            if (category == LocationCategory::Junk) return false;
             if (category == LocationCategory::AlwaysProgression) return true;
             return ( category == LocationCategory::Dungeon           && this->settings.progression_dungeons != ProgressionDungeons::Disabled)  ||
                    ( category == LocationCategory::GreatFairy        && this->settings.progression_great_fairies)                              ||
@@ -331,19 +319,21 @@ World::WorldLoadingError World::determineProgressionLocations()
                    ( category == LocationCategory::Obscure           && this->settings.progression_obscure)                                    ||
                    ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && settings.progression_platforms_rafts) ||
                    ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && settings.progression_big_octos_gunboats);
-        }) && (!location->hasDungeonDependency || settings.progression_dungeons != ProgressionDungeons::Disabled))
+        }) && (!location->hasDungeonDependency || settings.progression_dungeons != ProgressionDungeons::Disabled)
+           && (!this->settings.excluded_locations.contains(name)))
         {
             LOG_TO_DEBUG("\t" + name);
-            location->progression = true;
-            
-        }
-        else if (location->categories.contains(LocationCategory::PlandomizerProgression))
-        {
-            LOG_TO_DEBUG("\t" + name + " (Added by Plandomizer)");
             location->progression = true;
         }
     }
     LOG_TO_DEBUG("]");
+    LOG_TO_DEBUG("Manually Excluded Locations: [")
+    for (const auto& locName : this->settings.excluded_locations)
+    {
+        LOG_TO_DEBUG("\t" + locName);
+    }
+    LOG_TO_DEBUG("]")
+
     return WorldLoadingError::NONE;
 }
 

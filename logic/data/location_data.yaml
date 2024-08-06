@@ -79,7 +79,9 @@
     French: Boîte aux Lettres - Membre d'Argent de la Boutique de Terry
   Original Item: Complimentary ID
   Category:
-    - Junk
+    - Mail
+    - Expensive Purchase
+    - Obscure
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -91,7 +93,9 @@
     French: Boîte aux Lettres - Membre d'Honneur de la Boutique de Terry
   Original Item: Fill Up Coupon
   Category:
-    - Junk
+    - Mail
+    - Expensive Purchase
+    - Obscure
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -3092,7 +3096,7 @@
     French: Ile de l'Aurore - Frapper Orco 500 fois
   Original Item: Piece of Heart
   Category:
-    - Junk
+    - Obscure
   Hint Priority: Sometimes
   Type: RPX
   Offsets:

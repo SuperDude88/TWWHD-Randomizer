@@ -50,8 +50,10 @@ protected:
 private:
     Ui::MainWindow *ui;
     Config config;
-    QStringListModel* randomizedGearModel;
-    QStringListModel* startingGearModel;
+    QStringListModel* randomizedGearModel = nullptr;
+    QStringListModel* startingGearModel = nullptr;
+    QStringListModel* progressionLocationsModel = nullptr;
+    QStringListModel* excludedLocationsModel = nullptr;
 
     // Variables for setting the mixed pools
     // combobox as we want
@@ -69,7 +71,7 @@ private:
     std::string defaultWindowTitle;
     QString currentPermalink;
     bool encounteredError;
-    std::list<std::set<LocationCategory>> locationCategories = {};
+    std::unordered_map<std::string, std::set<LocationCategory>> locationCategories = {};
     std::unordered_map<std::string, QPushButton*> customColorSelectorButtons = {};
     std::unordered_map<std::string, QLineEdit*> customColorHexCodeInputs = {};
     std::unordered_map<std::string, QPushButton*> customColorResetButtons = {};
@@ -81,13 +83,16 @@ private:
     void clear_layout(QLayout* layout);
     void load_config_into_ui();
     void setup_gear_menus();
+    void setup_location_menus();
     void setup_color_options();
     void setup_mixed_pools_combobox();
     void apply_config_settings();
     int  calculate_total_progress_locations();
     void update_progress_locations_text();
     void swap_selected_gear(QListView* gearFrom, QStringListModel* gearTo);
+    void swap_selected_locations(QListView* locsFrom, QStringListModel* locsTo);
     void update_starting_gear();
+    void update_excluded_locations();
     void update_plandomizer_widget_visbility();
     void update_starting_health_text();
     void update_option_description_text(const std::string& descrption = "");
@@ -185,6 +190,10 @@ private slots:
     void on_starting_skull_necklaces_valueChanged(int arg1);
     void on_starting_joy_pendants_valueChanged(int arg1);
 
+    // Excluded Locations
+    void on_remove_locations_clicked();
+    void on_add_locations_clicked();
+
     // Player Customization
     void on_player_in_casual_clothes_stateChanged(int arg1);
     void initialize_color_presets_list();
@@ -277,6 +286,10 @@ private slots:
     void on_show_location_logic_stateChanged(int arg1);
     void on_show_nonprogress_locations_stateChanged(int arg1);   
     void on_open_chart_list_button_clicked();
+
+    void on_copy_permalink_clicked();
+
+    void on_paste_permalink_clicked();
 
 private:
     // More Tracker Stuff

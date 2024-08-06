@@ -10,6 +10,7 @@
 #include <QDirIterator>
 #include <QFile>
 #include <QDesktopServices>
+#include <QClipboard>
 
 #include <ui_mainwindow.h>
 #include <gui/randomizer_thread.hpp>
@@ -394,6 +395,30 @@ void MainWindow::setup_gear_menus()
     ui->starting_gear->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
+void MainWindow::setup_location_menus()
+{
+    progressionLocationsModel = new QStringListModel(this);
+    excludedLocationsModel = new QStringListModel(this);
+
+    QStringList progressLocations;
+    auto allLocations = getAllLocationsNames();
+    for (const auto& locName : allLocations)
+    {
+        // Don't expose certain locations to the user
+        if (locName.ends_with("Defeat Ganondorf"))
+        {
+            continue;
+        }
+        progressLocations << QString::fromStdString(locName);
+    }
+
+    progressionLocationsModel->setStringList(progressLocations);
+    ui->progression_locations->setModel(progressionLocationsModel);
+    ui->excluded_locations->setModel(excludedLocationsModel);
+    ui->progression_locations->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->excluded_locations->setSelectionMode(QAbstractItemView::ExtendedSelection);
+}
+
 void MainWindow::update_plandomizer_widget_visbility()
 {
     // Hide plandomizer input widgets when plandomizer isn't checked
@@ -445,6 +470,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, progression_triforce_charts);
 
     setup_gear_menus();
+    setup_location_menus();
 
     // Starting Gear
     // Set this up before changing the remove_swords option since that function
@@ -468,6 +494,27 @@ void MainWindow::apply_config_settings()
     startingGearModel->setStringList(startingGear);
     ui->randomized_gear->setModel(randomizedGearModel);
     ui->starting_gear->setModel(startingGearModel);
+
+
+    // Excluded Locations
+    QStringList progressionLocations = progressionLocationsModel->stringList();
+    QStringList excludedLocations = excludedLocationsModel->stringList();
+    // Remove each excluded location from the progression locations
+    for (const auto& locName : config.settings.excluded_locations)
+    {
+        auto index = progressionLocations.indexOf(locName.c_str());
+        if (index != -1)
+        {
+            progressionLocations.removeAt(index);
+        }
+        // Also add the location to the excluded locations
+        excludedLocations << locName.c_str();
+    }
+    progressionLocationsModel->setStringList(progressionLocations);
+    excludedLocationsModel->setStringList(excludedLocations);
+    ui->progression_locations->setModel(progressionLocationsModel);
+    ui->excluded_locations->setModel(excludedLocationsModel);
+
 
     APPLY_CHECKBOX_SETTING(config, ui, remove_swords);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_small_keys);
@@ -617,39 +664,54 @@ void MainWindow::on_seed_textChanged(const QString &arg1)
 int MainWindow::calculate_total_progress_locations()
 {
     int totalProgressionLocations = 0;
-    for (auto& categorySet : locationCategories)
+    std::list<QListView*> views = {ui->excluded_locations, ui->progression_locations};
+    for (auto view : views)
     {
-        if (std::all_of(categorySet.begin(), categorySet.end(), [this](LocationCategory category)
+        auto model = view->model();
+        if (model == nullptr)
         {
-            if (category == LocationCategory::Junk) return false;
-            if (category == LocationCategory::AlwaysProgression) return true;
-            return ( category == LocationCategory::Dungeon           && config.settings.progression_dungeons != ProgressionDungeons::Disabled)        ||
-                   ( category == LocationCategory::DungeonSecret     && config.settings.progression_dungeon_secrets)                                  ||
-                   ( category == LocationCategory::GreatFairy        && config.settings.progression_great_fairies)                                    ||
-                   ( category == LocationCategory::PuzzleSecretCave  && config.settings.progression_puzzle_secret_caves)                              ||
-                   ( category == LocationCategory::CombatSecretCave  && config.settings.progression_combat_secret_caves)                              ||
-                   ( category == LocationCategory::ShortSideQuest    && config.settings.progression_short_sidequests)                                 ||
-                   ( category == LocationCategory::LongSideQuest     && config.settings.progression_long_sidequests)                                  ||
-                   ( category == LocationCategory::SpoilsTrading     && config.settings.progression_spoils_trading)                                   ||
-                   ( category == LocationCategory::Minigame          && config.settings.progression_minigames)                                        ||
-                   ( category == LocationCategory::FreeGift          && config.settings.progression_free_gifts)                                       ||
-                   ( category == LocationCategory::Mail              && config.settings.progression_mail)                                             ||
-                   ( category == LocationCategory::Submarine         && config.settings.progression_submarines)                                       ||
-                   ( category == LocationCategory::EyeReefChests     && config.settings.progression_eye_reef_chests)                                  ||
-                   ( category == LocationCategory::SunkenTreasure    && config.settings.progression_triforce_charts)                                  ||
-                   ( category == LocationCategory::SunkenTreasure    && config.settings.progression_treasure_charts)                                  ||
-                   ( category == LocationCategory::ExpensivePurchase && config.settings.progression_expensive_purchases)                              ||
-                   ( category == LocationCategory::Misc              && config.settings.progression_misc)                                             ||
-                   ( category == LocationCategory::TingleChest       && config.settings.progression_tingle_chests)                                    ||
-                   ( category == LocationCategory::BattleSquid       && config.settings.progression_battlesquid)                                      ||
-                   ( category == LocationCategory::SavageLabyrinth   && config.settings.progression_savage_labyrinth)                                 ||
-                   ( category == LocationCategory::IslandPuzzle      && config.settings.progression_island_puzzles)                                   ||
-                   ( category == LocationCategory::Obscure           && config.settings.progression_obscure)                                          ||
-                   ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && config.settings.progression_platforms_rafts) ||
-                   ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && config.settings.progression_big_octos_gunboats);
-        }))
+            continue;
+        }
+        for (auto row = 0; row < model->rowCount(); row++)
         {
-            totalProgressionLocations++;
+            auto locName = model->data(model->index(row, 0)).toString().toStdString();
+            auto& categorySet = locationCategories[locName];
+            if (std::all_of(categorySet.begin(), categorySet.end(), [this](LocationCategory category)
+                {
+                    if (category == LocationCategory::AlwaysProgression) return true;
+                    return ( category == LocationCategory::Dungeon           && config.settings.progression_dungeons != ProgressionDungeons::Disabled)        ||
+                           ( category == LocationCategory::DungeonSecret     && config.settings.progression_dungeon_secrets)                                  ||
+                           ( category == LocationCategory::GreatFairy        && config.settings.progression_great_fairies)                                    ||
+                           ( category == LocationCategory::PuzzleSecretCave  && config.settings.progression_puzzle_secret_caves)                              ||
+                           ( category == LocationCategory::CombatSecretCave  && config.settings.progression_combat_secret_caves)                              ||
+                           ( category == LocationCategory::ShortSideQuest    && config.settings.progression_short_sidequests)                                 ||
+                           ( category == LocationCategory::LongSideQuest     && config.settings.progression_long_sidequests)                                  ||
+                           ( category == LocationCategory::SpoilsTrading     && config.settings.progression_spoils_trading)                                   ||
+                           ( category == LocationCategory::Minigame          && config.settings.progression_minigames)                                        ||
+                           ( category == LocationCategory::FreeGift          && config.settings.progression_free_gifts)                                       ||
+                           ( category == LocationCategory::Mail              && config.settings.progression_mail)                                             ||
+                           ( category == LocationCategory::Submarine         && config.settings.progression_submarines)                                       ||
+                           ( category == LocationCategory::EyeReefChests     && config.settings.progression_eye_reef_chests)                                  ||
+                           ( category == LocationCategory::SunkenTreasure    && config.settings.progression_triforce_charts)                                  ||
+                           ( category == LocationCategory::SunkenTreasure    && config.settings.progression_treasure_charts)                                  ||
+                           ( category == LocationCategory::ExpensivePurchase && config.settings.progression_expensive_purchases)                              ||
+                           ( category == LocationCategory::Misc              && config.settings.progression_misc)                                             ||
+                           ( category == LocationCategory::TingleChest       && config.settings.progression_tingle_chests)                                    ||
+                           ( category == LocationCategory::BattleSquid       && config.settings.progression_battlesquid)                                      ||
+                           ( category == LocationCategory::SavageLabyrinth   && config.settings.progression_savage_labyrinth)                                 ||
+                           ( category == LocationCategory::IslandPuzzle      && config.settings.progression_island_puzzles)                                   ||
+                           ( category == LocationCategory::Obscure           && config.settings.progression_obscure)                                          ||
+                           ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && config.settings.progression_platforms_rafts) ||
+                           ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && config.settings.progression_big_octos_gunboats);
+                }))
+            {
+                totalProgressionLocations++;
+                view->setRowHidden(row, false);
+            }
+            else
+            {
+                view->setRowHidden(row, true);
+            }
         }
     }
 
@@ -926,6 +988,58 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_boko_baba_seeds)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_skull_necklaces)
 DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_joy_pendants)
 
+// Excluded Locations
+void MainWindow::swap_selected_locations(QListView* locsFrom, QStringListModel* locsTo)
+{
+    // Add selected items to the gear and
+    // put all selected rows into a list for sorting
+    QStringList list = locsTo->stringList();
+    std::list<int> selectedRows = {};
+    for (auto& index : locsFrom->selectionModel()->selectedIndexes())
+    {
+        list << index.data().toString();
+        selectedRows.push_back(index.row());
+    }
+    list.sort();
+
+    // Set the sorted strings as the new starting gear list
+    locsTo->setStringList(list);
+
+    // Remove rows from the randomized gear list in reverse order
+    // to not invalidate row positions as we go
+    selectedRows.sort();
+    selectedRows.reverse();
+    for (auto& row : selectedRows)
+    {
+        locsFrom->model()->removeRow(row);
+    }
+}
+
+void MainWindow::update_excluded_locations()
+{
+    // Clear config excluded locations and re-add everything in the excluded locations QListView
+    config.settings.excluded_locations.clear();
+    auto excludedLocationsList = excludedLocationsModel->stringList();
+    for (auto& locName : excludedLocationsList)
+    {
+        config.settings.excluded_locations.insert(locName.toStdString());
+    }
+    update_permalink_and_seed_hash();
+    calculate_total_progress_locations();
+}
+
+void MainWindow::on_remove_locations_clicked()
+{
+    swap_selected_locations(ui->excluded_locations, progressionLocationsModel);
+    update_excluded_locations();
+}
+
+void MainWindow::on_add_locations_clicked()
+{
+    swap_selected_locations(ui->progression_locations, excludedLocationsModel);
+    update_excluded_locations();
+}
+
 // Player Customization
 void MainWindow::on_player_in_casual_clothes_stateChanged(int arg1) {
     config.settings.selectedModel.casual = ui->player_in_casual_clothes->isChecked();
@@ -1169,15 +1283,16 @@ void MainWindow::load_locations()
     YAML::Node locationDataTree = YAML::Load(locationDataStr);
     for (const auto& locationObject : locationDataTree)
     {
-        locationCategories.push_back({});
+        auto locName = locationObject["Names"]["English"].as<std::string>();
+        locationCategories[locName] = {};
         for (const auto& category : locationObject["Category"])
         {
             const auto& cat = nameToLocationCategory(category.as<std::string>());
             if (cat == LocationCategory::INVALID)
             {
-                show_warning_dialog("Location \"" + locationObject["Names"]["English"].as<std::string>() + "\" has an invalid category name \"" + category.as<std::string>() + "\"");
+                show_warning_dialog("Location \"" + locName + "\" has an invalid category name \"" + category.as<std::string>() + "\"");
             }
-            locationCategories.back().insert(cat);
+            locationCategories[locName].insert(cat);
         }
     }
 }
@@ -1197,3 +1312,17 @@ void MainWindow::on_open_logs_folder_button_clicked()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(Utility::toQString(Utility::get_logs_path())));
 }
+
+void MainWindow::on_copy_permalink_clicked()
+{
+    auto permalink = ui->permalink->text();
+    QGuiApplication::clipboard()->setText(permalink);
+}
+
+
+void MainWindow::on_paste_permalink_clicked()
+{
+    auto permalink = QGuiApplication::clipboard()->text();
+    on_permalink_textEdited(permalink);
+}
+
