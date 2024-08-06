@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -2338,7 +2338,7 @@ color: lightgray</string>
              </rect>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="overworld_page">
              <property name="cursor">
@@ -2394,13 +2394,19 @@ color: lightgray</string>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>364</width>
+                <height>346</height>
+               </size>
+              </property>
               <property name="cursor">
                <cursorShape>ArrowCursor</cursorShape>
               </property>
               <property name="styleSheet">
                <string notr="true"/>
               </property>
-              <layout class="QGridLayout" name="location_list_layout">
+              <layout class="QGridLayout" name="location_list_layout" rowstretch="0,0,0">
                <property name="leftMargin">
                 <number>2</number>
                </property>
@@ -2421,6 +2427,9 @@ color: lightgray</string>
                </property>
                <item row="0" column="0">
                 <layout class="QHBoxLayout" name="top_button_layout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+                 </property>
                  <item>
                   <widget class="QPushButton" name="location_list_close_button">
                    <property name="cursor">
@@ -2482,28 +2491,48 @@ font-size: 15px;</string>
                  </item>
                 </layout>
                </item>
-               <item row="4" column="0">
-                <spacer name="location_list_spacer">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
+               <item row="1" column="0">
+                <widget class="QScrollArea" name="specific_locations_scroll_area">
+                 <property name="styleSheet">
+                  <string notr="true">background: transparent;</string>
                  </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
+                 <property name="frameShape">
+                  <enum>QFrame::Shape::NoFrame</enum>
                  </property>
-                </spacer>
-               </item>
-               <item row="3" column="0">
-                <layout class="QGridLayout" name="specific_locations_layout">
-                 <property name="sizeConstraint">
-                  <enum>QLayout::SizeConstraint::SetFixedSize</enum>
+                 <property name="frameShadow">
+                  <enum>QFrame::Shadow::Plain</enum>
                  </property>
-                 <property name="spacing">
-                  <number>2</number>
+                 <property name="widgetResizable">
+                  <bool>true</bool>
                  </property>
-                </layout>
+                 <widget class="QWidget" name="specific_locations_widget">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>360</width>
+                    <height>313</height>
+                   </rect>
+                  </property>
+                  <layout class="QGridLayout" name="specific_locations_layout">
+                   <property name="leftMargin">
+                    <number>2</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>2</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>2</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>2</number>
+                   </property>
+                   <property name="spacing">
+                    <number>1</number>
+                   </property>
+                  </layout>
+                 </widget>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -2518,7 +2547,7 @@ font-size: 15px;</string>
                 <height>346</height>
                </rect>
               </property>
-              <layout class="QGridLayout" name="gridLayout_13">
+              <layout class="QGridLayout" name="gridLayout_13" rowstretch="1,20">
                <property name="leftMargin">
                 <number>2</number>
                </property>
@@ -2536,6 +2565,9 @@ font-size: 15px;</string>
                </property>
                <item row="0" column="0">
                 <layout class="QHBoxLayout" name="entrance_list_top_buttons_layout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SizeConstraint::SetMaximumSize</enum>
+                 </property>
                  <item>
                   <widget class="QPushButton" name="entrance_list_close_button">
                    <property name="cursor">
@@ -2576,6 +2608,12 @@ font-size: 15px;</string>
                </item>
                <item row="1" column="0">
                 <widget class="QScrollArea" name="entrance_scroll_area">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>360</width>
@@ -2822,19 +2860,6 @@ font-size: 15px;</string>
                   <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                  </property>
                 </layout>
-               </item>
-               <item row="2" column="0">
-                <spacer name="chart_list_spacer">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
               </layout>
              </widget>
