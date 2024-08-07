@@ -463,6 +463,12 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 ErrorLog::getInstance().log("Dungeon \"" + dungeon.name + "\" has no set race mode location");
                 LOG_ERR_AND_RETURN(WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION);
             }
+            // If the race mode location is excluded, then don't choose this dungeon
+            if (!dungeon.raceModeLocation->progression)
+            {
+                LOG_TO_DEBUG("Dungeon \"" + dungeon.name + "\" won't be chosen as a required dungeon due to a non-progression race mode location");
+                continue;
+            }
             dungeonPool.push_back(dungeon);
         }
 
