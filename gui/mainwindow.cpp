@@ -1245,14 +1245,13 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
     if (event->type() == QEvent::Enter)
     {
         auto optionName = target->objectName();
-
         if (optionName.startsWith("label_for_"))
         {
             optionName = optionName.replace("label_for_", "");
         }
         // This is the name of a line edit within a spinbox. Change the name to
         // it's parent's name so that we get the correct description.
-        else if (optionName == "qt_spinbox_lineedit")
+        else if (optionName == "qt_spinbox_lineedit" || optionName == "qt_scrollarea_viewport")
         {
             optionName = target->parent()->objectName();
         }
