@@ -78,6 +78,44 @@ void ItemButton::drawDRC() const {
     
 }
 
+bool LocationButton::operator==(const LocationButton& rhs) const {
+    return locName == rhs.locName;
+}
+
+bool LocationButton::operator==(const std::string& rhs) const {
+    return locName == rhs;
+}
+
+bool LocationButton::operator<(const LocationButton& rhs) const {
+    // check alphabetical ordering
+    if(locName < rhs.locName) {
+        return true;
+    }
+
+    return false; // was later in the alphabet
+}
+
+bool LocationButton::update() {
+    if(InputManager::getInstance().pressed(ButtonInfo::A)) {
+        enabled = !enabled;
+
+        return true;
+    }
+
+    return false;
+}
+
+void LocationButton::drawTV(const size_t row, const size_t nameCol, const size_t valCol) const {
+    OSScreenPutFontEx(SCREEN_TV, nameCol, row, locName.c_str());
+
+    const std::string mark = enabled ? "X" : "";
+    OSScreenPutFontEx(SCREEN_TV, valCol, row, mark.c_str());
+}
+
+void LocationButton::drawDRC() const {
+    
+}
+
 
 bool ActionButton::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::A)) {

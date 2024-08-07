@@ -4,6 +4,9 @@
 #include <platform/gui/Keyboard.hpp>
 
 class EmptyPage {
+protected:
+    static constexpr size_t PAGE_FIRST_ROW = 4;
+
 public:
     virtual ~EmptyPage() = default;
 
@@ -158,6 +161,29 @@ public:
     
     std::string getName() const override { return "Starting Items"; }
     std::string getDesc() const override { return "Selected items will be given to Link at the start of the game and won't be placed in the world."; }
+
+    void open() override;
+    void close() override;
+    bool update() override;
+    void drawTV() const override;
+    void drawDRC() const override;
+};
+
+class LocationsPage final : public EmptyPage {
+private:
+    static constexpr size_t LIST_HEIGHT = 20;
+
+    size_t curRow = 0;
+    size_t listScrollPos = 0;
+
+    std::vector<LocationButton> listButtons;
+    std::map<std::string, std::set<LocationCategory>> locationCategories;
+
+public:
+    LocationsPage();
+    
+    std::string getName() const override { return "Excluded Locations"; }
+    std::string getDesc() const override { return "Selected locations will be excluded. Excluded locations will be guarenteed to contain junk items."; }
 
     void open() override;
     void close() override;

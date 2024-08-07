@@ -792,7 +792,50 @@ namespace OptionCB {
     void addStartingItem(const GameItem& item) {
         conf.settings.starting_gear.push_back(item);
     }
+
+    void clearExcludedLocations() {
+        conf.settings.excluded_locations.clear();
+    }
+
+    bool hasExcludedLocation(const std::string& locName) {
+        return conf.settings.excluded_locations.contains(locName);
+    }
+
+    void addExcludedLocation(const std::string& locName) {
+        conf.settings.excluded_locations.insert(locName);
+    }
     
+    bool hasAllCategories(const std::set<LocationCategory>& locationCategories) {
+        return std::all_of(locationCategories.begin(), locationCategories.end(), [&](const LocationCategory& category)
+        {
+            if (category == LocationCategory::AlwaysProgression) return true;
+            return ( category == LocationCategory::Dungeon           && conf.settings.progression_dungeons != ProgressionDungeons::Disabled)        ||
+                   ( category == LocationCategory::DungeonSecret     && conf.settings.progression_dungeon_secrets)                                  ||
+                   ( category == LocationCategory::GreatFairy        && conf.settings.progression_great_fairies)                                    ||
+                   ( category == LocationCategory::PuzzleSecretCave  && conf.settings.progression_puzzle_secret_caves)                              ||
+                   ( category == LocationCategory::CombatSecretCave  && conf.settings.progression_combat_secret_caves)                              ||
+                   ( category == LocationCategory::ShortSideQuest    && conf.settings.progression_short_sidequests)                                 ||
+                   ( category == LocationCategory::LongSideQuest     && conf.settings.progression_long_sidequests)                                  ||
+                   ( category == LocationCategory::SpoilsTrading     && conf.settings.progression_spoils_trading)                                   ||
+                   ( category == LocationCategory::Minigame          && conf.settings.progression_minigames)                                        ||
+                   ( category == LocationCategory::FreeGift          && conf.settings.progression_free_gifts)                                       ||
+                   ( category == LocationCategory::Mail              && conf.settings.progression_mail)                                             ||
+                   ( category == LocationCategory::Submarine         && conf.settings.progression_submarines)                                       ||
+                   ( category == LocationCategory::EyeReefChests     && conf.settings.progression_eye_reef_chests)                                  ||
+                   ( category == LocationCategory::SunkenTreasure    && conf.settings.progression_triforce_charts)                                  ||
+                   ( category == LocationCategory::SunkenTreasure    && conf.settings.progression_treasure_charts)                                  ||
+                   ( category == LocationCategory::ExpensivePurchase && conf.settings.progression_expensive_purchases)                              ||
+                   ( category == LocationCategory::Misc              && conf.settings.progression_misc)                                             ||
+                   ( category == LocationCategory::TingleChest       && conf.settings.progression_tingle_chests)                                    ||
+                   ( category == LocationCategory::BattleSquid       && conf.settings.progression_battlesquid)                                      ||
+                   ( category == LocationCategory::SavageLabyrinth   && conf.settings.progression_savage_labyrinth)                                 ||
+                   ( category == LocationCategory::IslandPuzzle      && conf.settings.progression_island_puzzles)                                   ||
+                   ( category == LocationCategory::Obscure           && conf.settings.progression_obscure)                                          ||
+                   ((category == LocationCategory::Platform || category == LocationCategory::Raft)    && conf.settings.progression_platforms_rafts) ||
+                   ((category == LocationCategory::BigOcto  || category == LocationCategory::Gunboat) && conf.settings.progression_big_octos_gunboats);
+        });
+    }
+
     void resetInternal() {
         conf.resetDefaults();
     }

@@ -19,11 +19,12 @@ SettingsMenu::SettingsMenu() {
     pages[1] = std::make_unique<ProgressionPage>();
     pages[2] = std::make_unique<HintsPage>();
     pages[3] = std::make_unique<EntrancePage>();
-    pages[4] = std::make_unique<ConveniencePage>();
-    pages[5] = std::make_unique<AdvancedPage>();
-    pages[6] = std::make_unique<ItemsPage>();
-    pages[7] = std::make_unique<ColorPage>();
-    pages[8] = std::make_unique<MetaPage>();
+    pages[4] = std::make_unique<ItemsPage>(); 
+    pages[5] = std::make_unique<LocationsPage>(); 
+    pages[6] = std::make_unique<ConveniencePage>();
+    pages[7] = std::make_unique<AdvancedPage>();
+    pages[8] = std::make_unique<ColorPage>();
+    pages[9] = std::make_unique<MetaPage>();
 }
 
 
@@ -75,23 +76,36 @@ SettingsMenu::Status SettingsMenu::update() {
 }
 
 void SettingsMenu::drawTV() const {
-    std::string header;
-    for(size_t i = 0; i < pages.size(); i++) {
+    std::string headerFirstLine;
+    // 
+    for(size_t i = 0; i < 7; i++) {
         if(i == curPage) {
-            header += '<' + pages[i]->getName() + '>';
+            headerFirstLine += '<' + pages[i]->getName() + '>';
         }
         else {
-            header += ' ' + pages[i]->getName() + ' ';
+            headerFirstLine += ' ' + pages[i]->getName() + ' ';
+        }
+        headerFirstLine += '|';
+    }
+
+    std::string headerSecondLine;
+    for(size_t i = 7; i < pages.size(); i++) {
+        if(i == curPage) {
+            headerSecondLine += '<' + pages[i]->getName() + '>';
+        }
+        else {
+            headerSecondLine += ' ' + pages[i]->getName() + ' ';
         }
 
         //not the last item
         if(i + 1 != pages.size()) {
-            header += '|';
+            headerSecondLine += '|';
         }
     }
 
-    OSScreenPutFontEx(SCREEN_TV, 0, 0, header.c_str());
-    OSScreenPutFontEx(SCREEN_TV, 0, 1, line_break.c_str());
+    OSScreenPutFontEx(SCREEN_TV, 0, 0, headerFirstLine.c_str());
+    OSScreenPutFontEx(SCREEN_TV, 0, 1, headerSecondLine.c_str());
+    OSScreenPutFontEx(SCREEN_TV, 0, 2, line_break.c_str());
     
     pages[curPage]->drawTV();
 
