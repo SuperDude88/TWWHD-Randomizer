@@ -8,6 +8,8 @@
 #include <platform/input.hpp>
 #include <platform/gui/OptionActions.hpp>
 
+#include <logic/Location.hpp>
+
 class BasicButton {
 protected:
     const Option option;
@@ -77,6 +79,48 @@ public:
     inline void loadState() { enabled = OptionCB::hasStartingItem(item, num); }
     inline bool isEnabled() const { return enabled; }
     inline GameItem getItem() const { return item; }
+
+    bool update() override;
+    void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;
+    void drawDRC() const override;
+};
+
+class LocationButton final : public BasicButton {
+protected:
+    const std::string locName;
+    const std::set<LocationCategory> locationCategories;
+    bool enabled;
+
+public:
+    LocationButton(const std::string& locName_, const std::set<LocationCategory>& locationCategories_) :
+        BasicButton(Option::ExcludedLocations),
+        locName(locName_),
+        locationCategories(locationCategories_)
+    {}
+    ~LocationButton() override = default;
+
+    // Only need to define this here since none of the others get put in vectors
+    // Need this since const members implicity delete assignment operators
+    // Even though C++20 gave us these functions to get around it
+    LocationButton& operator=(const LocationButton& rhs) {
+        if(this != &rhs) {
+            std::destroy_at(this);
+            std::construct_at(this, rhs);
+        }
+
+        return *this;
+    }
+
+    bool operator==(const LocationButton& rhs) const;
+    bool operator==(const std::string& rhs) const;
+    bool operator<(const LocationButton& rhs) const;
+
+    // checks the current state in the config
+    // we can't use this to update buttons because you could enable the second instance before the first, and the first would appear selected instead since the count is only 1
+    // so we only use it while loading the page, and have the buttons track themselves after that
+    inline void loadState() { enabled = OptionCB::hasExcludedLocation(locName); }
+    inline bool isEnabled() const { return enabled; }
+    inline std::string getLocationName() const { return locName; }
 
     bool update() override;
     void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;

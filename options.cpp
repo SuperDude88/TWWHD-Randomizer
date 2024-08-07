@@ -2,6 +2,9 @@
 
 #include <unordered_map>
 
+#include <utility/file.hpp>
+#include <utility/platform.hpp>
+#include <libs/yaml.hpp>
 
 Settings::Settings() {
     resetDefaults();
@@ -90,6 +93,8 @@ void Settings::resetDefaults() {
         GameItem::ProgressiveMagicMeter,
         GameItem::ProgressiveSail
     };
+
+    excluded_locations = getDefaultExcludedLocations();
 
     starting_pohs = 0;
     starting_hcs = 3;
@@ -255,7 +260,9 @@ uint8_t Settings::getSetting(const Option& option) const {
             return chest_type_matches_contents;
         case Option::PigColor:
             return static_cast<std::underlying_type_t<PigColor>>(pig_color);
-        case Option::StartingGear: //cant return this like everything else, just here as placeholder
+        //cant return these like everything else, just here as placeholder
+        case Option::StartingGear:
+        case Option::ExcludedLocations:
             return 0;
         case Option::StartingHP:
             return starting_pohs;
@@ -436,7 +443,9 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             chest_type_matches_contents = value; return;
         case Option::PigColor:
             pig_color = static_cast<PigColor>(value); return;
-        case Option::StartingGear: //cant set this like everything else, just here as placeholder
+        //cant set these like everything else, just here as placeholder
+        case Option::StartingGear: 
+        case Option::ExcludedLocations:
             return;
         case Option::StartingHP:
             starting_pohs = value; return;
@@ -898,6 +907,7 @@ Option nameToSetting(const std::string& name) {
         {"CTMC", Option::CTMC},
         {"Pig Color", Option::PigColor},
         {"Starting Gear", Option::StartingGear},
+        {"Excluded Locations", Option::ExcludedLocations},
         {"Starting HP", Option::StartingHP},
         {"Starting HC", Option::StartingHC},
         {"Starting Joy Pendants", Option::StartingJoyPendants},
@@ -996,6 +1006,7 @@ std::string settingToName(const Option& setting) {
         {Option::CTMC, "CTMC"},
         {Option::PigColor, "PigColor"},
         {Option::StartingGear, "Starting Gear"},
+        {Option::ExcludedLocations, "Excluded Locations"},
         {Option::StartingHP, "Starting HP"},
         {Option::StartingHC, "Starting HC"},
         {Option::StartingJoyPendants, "Starting Joy Pendants"},
@@ -1025,4 +1036,34 @@ std::string settingToName(const Option& setting) {
     }
 
     return "Invalid Option";
+}
+
+std::set<std::string> getDefaultExcludedLocations()
+{
+    return {
+        "Mailbox - Beedle's Gold Membership Reward",
+        "Mailbox - Beedle's Silver Membership Reward",
+        "Outset Island - Orca Hit 500 Times",
+    };
+}
+
+std::set<std::string> getAllLocationsNames()
+{
+    std::set<std::string> locNames = {};
+    std::string locationDataStr;
+    Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
+    YAML::Node locationDataTree = YAML::Load(locationDataStr);
+    for (const auto& locationObject : locationDataTree)
+    {
+        if (locationObject["Names"] && locationObject["Names"]["English"])
+        {
+            locNames.insert(locationObject["Names"]["English"].as<std::string>());
+        }
+        else
+        {
+            Utility::platformLog("Some location object is missing a name in location_data.yaml");
+        }
+    }
+
+    return locNames;
 }

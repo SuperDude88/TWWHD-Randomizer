@@ -25,7 +25,6 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
         YAML::Node plandoTree = YAML::Load(plandoStr);
         YAML::Node plandoLocations;
         YAML::Node plandoEntrances;
-        YAML::Node extraProgressionLocations;
         YAML::Node randomStartingItemPool;
         std::string plandoStartingIsland = "";
         std::string worldName = "World " + std::to_string(i + 1);
@@ -45,10 +44,6 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
             {
                 plandoStartingIsland = plandoTree[worldName]["starting island"].as<std::string>();
             }
-            if (plandoTree[worldName]["extra progression locations"] && plandoTree[worldName]["extra progression locations"].IsSequence())
-            {
-                extraProgressionLocations = plandoTree[worldName]["extra progression locations"];
-            }
             if (plandoTree[worldName]["random starting item pool"] && plandoTree[worldName]["random starting item pool"].IsSequence())
             {
                 randomStartingItemPool = plandoTree[worldName]["random starting item pool"];
@@ -65,18 +60,6 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                 return PlandomizerError::BAD_STARTING_ISLAND;
             }
             LOG_TO_DEBUG("  Setting starting island to " + plandoStartingIsland);
-        }
-
-        // Collect extra progression locations first
-        if (extraProgressionLocations)
-        {
-            LOG_TO_DEBUG("  Extra Progress Locations: ")
-            for (const auto& location : extraProgressionLocations)
-            {
-                const std::string locationName = location.as<std::string>();
-                plandomizer.extraProgressionLocations.insert(locationName);
-                LOG_TO_DEBUG(std::string("    ") + locationName);
-            }
         }
 
         // Process random starting item pool

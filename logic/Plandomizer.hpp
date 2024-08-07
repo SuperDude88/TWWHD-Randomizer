@@ -35,7 +35,6 @@ struct Plandomizer
     // the world building process
     std::unordered_map<std::string, std::string> entrancesStr = {};
     std::unordered_map<std::string, PlandomizerItem> locationsStr = {};
-    std::unordered_set<std::string> extraProgressionLocations = {};
     std::unordered_map<Location*, Item> locations = {};
     std::unordered_map<Entrance*, Entrance*> entrances = {};
     std::vector<GameItem> randomStartingItemPool = {};

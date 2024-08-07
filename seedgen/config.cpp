@@ -390,6 +390,17 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
         }
     }
 
+    if(!root["excluded_locations"] || (!root["excluded_locations"].IsSequence() && root["excluded_locations"].as<std::string>() != "None")) {
+        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+    }
+    else {
+        settings.excluded_locations.clear();
+        for (const auto& locObject : root["excluded_locations"]) {
+            const auto locName = locObject.as<std::string>();
+            settings.excluded_locations.insert(locName);
+        }
+    }
+
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
     if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
         if(!ignoreErrors) return ConfigError::MODEL_ERROR;
@@ -553,6 +564,14 @@ YAML::Node Config::settingsToYaml() {
 
     if (root["starting_gear"].size() == 0) {
         root["starting_gear"] = "None";
+    }
+
+    for (const auto& locName : settings.excluded_locations) {
+        root["excluded_locations"].push_back(locName);
+    }
+
+    if (root["excluded_locations"].size() == 0) {
+        root["excluded_locations"] = "None";
     }
 
     return root;
@@ -755,6 +774,9 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::StartingGreenChuJellys,
     Option::StartingBlueChuJellys,
 
+    // Excluded Locations
+    Option::ExcludedLocations,
+
     // Advanced Options
     Option::NoSpoilerLog,
     Option::StartWithRandomItem,
@@ -877,6 +899,7 @@ static size_t getOptionBitCount(const Option& option) {
         case Option::RandomStartIsland:
             return 1; // 1-bit Checkbox options
         case Option::StartingGear:
+        case Option::ExcludedLocations:
         case Option::INVALID:
         default:
             return static_cast<size_t>(-1); // Invalid or needs special handling
@@ -964,6 +987,17 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
                 }
             }
         }
+        else if(option == Option::ExcludedLocations) {
+            load.settings.excluded_locations.clear();
+            auto locations = getAllLocationsNames();
+            for (const auto& locName: locations) {
+                const auto value = bitsReader.read(1);
+                BYTES_EXIST_CHECK(value);
+                if (value == 1){
+                    load.settings.excluded_locations.insert(locName);
+                }
+            }
+        }
         else {
             const size_t len = getOptionBitCount(option);
             if(len == static_cast<size_t>(-1)) {
@@ -1013,6 +1047,13 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
             for (const GameItem& item : PROGRESSIVE_ITEMS)
             {
                 bitsWriter.write(startingGear.count(item), 3);
+            }
+        }
+        else if(option == Option::ExcludedLocations) {
+            auto locations = getAllLocationsNames();
+            for (const auto& locName : locations) {
+                const size_t bit = settings.excluded_locations.contains(locName);
+                bitsWriter.write(bit, 1);
             }
         }
         else {

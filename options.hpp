@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 
 #include <logic/GameItem.hpp>
 #include <customizer/model.hpp>
@@ -158,6 +159,9 @@ enum struct Option {
     StartingGreenChuJellys,
     StartingBlueChuJellys,
 
+    // Excluded Locations
+    ExcludedLocations,
+
     // Advanced Options
     NoSpoilerLog,
     StartWithRandomItem,
@@ -283,6 +287,7 @@ public:
     PigColor pig_color;
 
     std::vector<GameItem> starting_gear;
+    std::set<std::string> excluded_locations;
     uint16_t starting_pohs;
     uint16_t starting_hcs;
     uint16_t starting_joy_pendants;
@@ -350,3 +355,6 @@ std::string UIDisplayPreferenceToName(const UIDisplayPreference& preference);
 int nameToSettingInt(const std::string& name);
 Option nameToSetting(const std::string& name);
 std::string settingToName(const Option& setting);
+
+std::set<std::string> getDefaultExcludedLocations();
+std::set<std::string> getAllLocationsNames();

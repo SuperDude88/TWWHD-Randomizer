@@ -5,6 +5,7 @@
 #include <platform/gui/screen.hpp>
 #include <platform/gui/TextWrap.hpp>
 #include <command/Log.hpp>
+#include <options.hpp>
 
 #ifdef USE_LIBRPXLOADER
     #include <rpxloader/rpxloader.h>
@@ -86,11 +87,11 @@ void SeedPage::drawTV() const {
     using namespace std::literals::chrono_literals;
     
     if(typing_seed || typing_perma) {
-        board.drawTV(3, 0);
+        board.drawTV(PAGE_FIRST_ROW, 0);
     }
     else {
-        OSScreenPutFontEx(SCREEN_TV, 0, 3, ("The current seed is \"" + getSeed() + "\". Hash: " + getSeedHash()).c_str());
-        OSScreenPutFontEx(SCREEN_TV, 0, 4, "Press A to generate a new seed, press X to enter manually");
+        OSScreenPutFontEx(SCREEN_TV, 0, PAGE_FIRST_ROW, ("The current seed is \"" + getSeed() + "\". Hash: " + getSeedHash()).c_str());
+        OSScreenPutFontEx(SCREEN_TV, 0, PAGE_FIRST_ROW + 1, "Press A to generate a new seed, press X to enter manually");
 
         const std::vector<std::string>& permaLines = wrap_string("Permalink: \"" + getPermalink() + "\".", ScreenSizeData::tv_line_length);
         for(size_t i = 0; i < permaLines.size(); i++) {
@@ -239,11 +240,11 @@ void ProgressionPage::drawTV() const {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
             //save 1 extra space for the cursor beside a button
-            buttonColumns[col][row]->drawTV(3 + row, startCol + 1, startCol + 1 + 30);
+            buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
 
-    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, 3 + curRow, ">");
+    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, PAGE_FIRST_ROW + curRow, ">");
 }
 
 void ProgressionPage::drawDRC() const {
@@ -352,11 +353,11 @@ void HintsPage::drawTV() const {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
             //save 1 extra space for the cursor beside a button
-            buttonColumns[col][row]->drawTV(3 + row, startCol + 1, startCol + 1 + 34);
+            buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 34);
         }
     }
 
-    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, 3 + curRow, ">");
+    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, PAGE_FIRST_ROW + curRow, ">");
 }
 
 void HintsPage::drawDRC() const {
@@ -463,11 +464,11 @@ void EntrancePage::drawTV() const {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
             //save 1 extra space for the cursor beside a button
-            buttonColumns[col][row]->drawTV(3 + row, startCol + 1, startCol + 1 + 30);
+            buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
 
-    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, 3 + curRow, ">");
+    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, PAGE_FIRST_ROW + curRow, ">");
 }
 
 void EntrancePage::drawDRC() const {
@@ -574,11 +575,11 @@ void ConveniencePage::drawTV() const {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
             //save 1 extra space for the cursor beside a button
-            buttonColumns[col][row]->drawTV(3 + row, startCol + 1, startCol + 1 + 30);
+            buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
 
-    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, 3 + curRow, ">");
+    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, PAGE_FIRST_ROW + curRow, ">");
 }
 
 void ConveniencePage::drawDRC() const {
@@ -679,11 +680,11 @@ void AdvancedPage::drawTV() const {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
             //save 1 extra space for the cursor beside a button
-            buttonColumns[col][row]->drawTV(3 + row, startCol + 1, startCol + 1 + 30);
+            buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
 
-    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, 3 + curRow, ">");
+    OSScreenPutFontEx(SCREEN_TV, (ScreenSizeData::tv_line_length / buttonColumns.size()) * curCol, PAGE_FIRST_ROW + curRow, ">");
 }
 
 void AdvancedPage::drawDRC() const {
@@ -975,23 +976,23 @@ void ItemsPage::drawTV() const {
     // draw visible part of the list
     const size_t listStartCol = 0;
     for(size_t row = 0; row < LIST_HEIGHT; row++) {
-        listButtons[listScrollPos + row].drawTV(3 + row, 3, 1);
+        listButtons[listScrollPos + row].drawTV(PAGE_FIRST_ROW + row, 3, 1);
     }
 
     // draw second column of buttons
     const size_t countStartCol = ScreenSizeData::tv_line_length / 2;
     for(size_t row = 0; row < countButtons.size(); row++) {
-        countButtons[row]->drawTV(3 + row, countStartCol + 1, countStartCol + 1 + 30);
+        countButtons[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
     }
     
     // draw cursor
     switch(curCol) {
         case Column::LIST:
-            OSScreenPutFontEx(SCREEN_TV, listStartCol, 3 + curRow, ">");
+            OSScreenPutFontEx(SCREEN_TV, listStartCol, PAGE_FIRST_ROW + curRow, ">");
 
             break;
         case Column::BUTTONS:
-            OSScreenPutFontEx(SCREEN_TV, countStartCol, 3 + curRow, ">");
+            OSScreenPutFontEx(SCREEN_TV, countStartCol, PAGE_FIRST_ROW + curRow, ">");
             break;
     }
 }
@@ -1014,7 +1015,132 @@ void ItemsPage::drawDRC() const {
     }
 }
 
+LocationsPage::LocationsPage() {
+    // Read location_data.yaml and map each location to the categories
+    // it has
+    std::string locationDataStr;
+    Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
+    YAML::Node locationDataTree = YAML::Load(locationDataStr);
+    for (const auto& locationObject : locationDataTree)
+    {
+        auto locName = locationObject["Names"]["English"].as<std::string>();
+        locationCategories[locName] = {};
+        for (const auto& category : locationObject["Category"])
+        {
+            const auto& cat = nameToLocationCategory(category.as<std::string>());
+            // Ignore invalid categories. Those should've been caught in testing
+            // and erroring here won't help anything
+            if (cat == LocationCategory::INVALID)
+            {
+                continue;
+            }
+            locationCategories[locName].insert(cat);
+        }
+    }
+}
 
+void LocationsPage::open() {
+    // Clear and reset the list whenever we open the page
+    curRow = 0;
+    listScrollPos = 0;
+
+    listButtons.clear();
+    // Names are already sorted alphabetically due to being
+    // in a std::map
+    for (const auto& [locName, categories] : locationCategories) {
+        if (OptionCB::hasAllCategories(categories) && locName != "Ganon's Tower - Defeat Ganondorf")
+        {
+            listButtons.emplace_back(locName, categories);
+            listButtons.back().loadState();
+        }
+    }
+}
+
+void LocationsPage::close() {
+    listButtons[listScrollPos + curRow].unhovered();
+}
+
+bool LocationsPage::update() {
+    bool moved = false;
+
+    if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
+        listButtons[listScrollPos + curRow].unhovered();
+
+        if(curRow <= 0) {
+            if(listScrollPos <= 0) {
+                listScrollPos = listButtons.size() - LIST_HEIGHT;
+                curRow = LIST_HEIGHT - 1; // -1 because 0-indexed
+            }
+            else {
+                listScrollPos -= 1;
+            }
+        }
+        else {
+            curRow -= 1;
+        }
+
+        listButtons[listScrollPos + curRow].hovered();
+
+        moved = true;
+    }
+    else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
+
+        listButtons[listScrollPos + curRow].unhovered();
+
+        if(curRow >= LIST_HEIGHT - 1) {
+            if(listScrollPos >= listButtons.size() - LIST_HEIGHT) {
+                listScrollPos = 0;
+                curRow = 0;
+            }
+            else {
+                listScrollPos += 1;
+            }
+        }
+        else {
+            curRow += 1;
+        }
+        
+        listButtons[listScrollPos + curRow].hovered();
+
+        moved = true;
+    }
+
+    bool btnUpdate = false;
+    if(listButtons[listScrollPos + curRow].update()) {
+        btnUpdate = true;
+
+        //update excluded locations
+        OptionCB::clearExcludedLocations();
+        for(const auto& button : listButtons) {
+            if(button.isEnabled()) {
+                OptionCB::addExcludedLocation(button.getLocationName());
+            }
+        }
+    }
+    
+    return moved || btnUpdate;
+}
+
+void LocationsPage::drawTV() const {
+    // draw visible part of the list
+    const size_t listStartCol = 0;
+    for(size_t row = 0; row < LIST_HEIGHT; row++) {
+        listButtons[listScrollPos + row].drawTV(PAGE_FIRST_ROW + row, 3, 1);
+    }
+    
+    // draw cursor
+    OSScreenPutFontEx(SCREEN_TV, listStartCol, PAGE_FIRST_ROW + curRow, ">");
+}
+
+void LocationsPage::drawDRC() const {
+    listButtons[listScrollPos + curRow].drawDRC();
+
+    const std::vector<std::string>& descLines = wrap_string(getDesc(), ScreenSizeData::drc_line_length);
+    const size_t startLine = ScreenSizeData::drc_num_lines - descLines.size();
+    for(size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, startLine + i, descLines[i].c_str());
+    }
+}
 
 ColorPage::ColorPage() :
     presets(*this),
@@ -1218,20 +1344,20 @@ static const std::array<std::string, 11> casualTextures = {
 void ColorPage::PresetsSubpage::drawTV() const {
     // draw visible part of the list
     for(size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
-        OSScreenPutFontEx(SCREEN_TV, 1, 3 + row, getModel().getPresets()[listScrollPos + row].name.c_str());
+        OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW + row, getModel().getPresets()[listScrollPos + row].name.c_str());
     }
 
     // draw second column of buttons
     const size_t countStartCol = ScreenSizeData::tv_line_length / 2;
     for(size_t row = 0; row < toggles.size(); row++) {
-        toggles[row]->drawTV(3 + row, countStartCol + 1, countStartCol + 1 + 30);
+        toggles[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
     }
     
     // draw loaded colors
-    static constexpr uint32_t starting_y_pos = 223;
+    static constexpr uint32_t starting_y_pos = 247;
     const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
     for(size_t i = 0; i < textures.size(); i++) {
-        const size_t row = 8 + i;
+        const size_t row = PAGE_FIRST_ROW + 5 + i;
         OSScreenPutFontEx(SCREEN_TV, countStartCol + 1, row, textures[i].c_str());
 
         std::string hexColor = getModel().getColor(textures[i]);
@@ -1246,11 +1372,11 @@ void ColorPage::PresetsSubpage::drawTV() const {
     // draw cursor
     switch(curCol) {
         case Column::LIST:
-            OSScreenPutFontEx(SCREEN_TV, 0, 3 + curRow, ">");
+            OSScreenPutFontEx(SCREEN_TV, 0, PAGE_FIRST_ROW + curRow, ">");
 
             break;
         case Column::BUTTONS:
-            OSScreenPutFontEx(SCREEN_TV, countStartCol, 3 + curRow, ">");
+            OSScreenPutFontEx(SCREEN_TV, countStartCol, PAGE_FIRST_ROW + curRow, ">");
             break;
     }
 }
@@ -1438,22 +1564,22 @@ bool ColorPage::ColorPickerSubpage::updateList() {
 
 void ColorPage::ColorPickerSubpage::drawListTV() const {
     static constexpr size_t startCol = 2;
-    static constexpr uint32_t starting_y_pos = 104;
+    static constexpr uint32_t starting_y_pos = 128;
     const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
     for(size_t row = 0; row < std::min(LIST_HEIGHT, textures.size()); row++) {
-        OSScreenPutFontEx(SCREEN_TV, startCol, row + 3, textures[listScrollPos + row].c_str());
+        OSScreenPutFontEx(SCREEN_TV, startCol, row + PAGE_FIRST_ROW, textures[listScrollPos + row].c_str());
 
         std::string hexColor = getModel().getColor(textures[listScrollPos + row]);
         for(auto& c : hexColor) {
             c = std::toupper(c); //capitalize for consistency
         }
 
-        OSScreenPutFontEx(SCREEN_TV, startCol + 13, 3 + row, hexColor.c_str());
+        OSScreenPutFontEx(SCREEN_TV, startCol + 13, PAGE_FIRST_ROW + row, hexColor.c_str());
         drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 14 * (startCol + 13 + 7), starting_y_pos + row * 24, 24);
         
-        actions[0].drawTV(row + 3, startCol + 23, startCol + 23 + 1);
-        actions[1].drawTV(row + 3, startCol + 31, startCol + 31 + 1);
-        actions[2].drawTV(row + 3, startCol + 37, startCol + 37 + 1);
+        actions[0].drawTV(row + PAGE_FIRST_ROW, startCol + 23, startCol + 23 + 1);
+        actions[1].drawTV(row + PAGE_FIRST_ROW, startCol + 31, startCol + 31 + 1);
+        actions[2].drawTV(row + PAGE_FIRST_ROW, startCol + 37, startCol + 37 + 1);
     }
     
     // draw cursor
@@ -1470,9 +1596,9 @@ void ColorPage::ColorPickerSubpage::drawListTV() const {
             break;
     }
 
-    OSScreenPutFontEx(SCREEN_TV, cursorCol, 3 + curRow, ">");
+    OSScreenPutFontEx(SCREEN_TV, cursorCol, PAGE_FIRST_ROW + curRow, ">");
 
-    OSScreenPutFontEx(SCREEN_TV, ScreenSizeData::tv_line_length / 2, 3, "Press B to go back.");
+    OSScreenPutFontEx(SCREEN_TV, ScreenSizeData::tv_line_length / 2, PAGE_FIRST_ROW, "Press B to go back.");
 }
 
 void ColorPage::ColorPickerSubpage::drawListDRC() const {}
@@ -1509,7 +1635,7 @@ bool ColorPage::ColorPickerSubpage::updatePicker() {
 }
 
 void ColorPage::ColorPickerSubpage::drawPickerTV() const {
-    board.drawTV(3, 0);
+    board.drawTV(PAGE_FIRST_ROW, 0);
 }
 
 void ColorPage::ColorPickerSubpage::drawPickerDRC() const {
@@ -1594,9 +1720,8 @@ bool MetaPage::update() {
 void MetaPage::drawTV() const {
     const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in " + savePath + ".\nReport any issues in the Discord server or create a GitHub issue.", ScreenSizeData::tv_line_length);
 
-    const size_t startLine = 3;
     for(size_t i = 0; i < lines.size(); i++) {
-        OSScreenPutFontEx(SCREEN_TV, 0, startLine + i, lines[i].c_str());
+        OSScreenPutFontEx(SCREEN_TV, 0, PAGE_FIRST_ROW + i, lines[i].c_str());
     }
 }
 

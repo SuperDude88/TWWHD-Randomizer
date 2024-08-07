@@ -325,11 +325,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
     {
         for (auto location : world.getLocations())
         {
-            if (location->categories.contains(LocationCategory::PlandomizerProgression))
-            {
-                nonSpoilerLog << "#   " + location->getName() + " (Added by Plandomizer)" << std::endl;
-            }
-            else if (location->progression)
+            if (location->progression)
             {
                 nonSpoilerLog << "#   " + location->getName() << std::endl;
             }

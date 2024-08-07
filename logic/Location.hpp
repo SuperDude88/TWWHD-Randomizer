@@ -42,11 +42,9 @@ enum struct LocationCategory
     BlueChuChu,
     DungeonSecret,
     Obscure, // <-- the good stuff :)
-    Junk,
     Other,
     AlwaysProgression,
     HoHoHint,
-    PlandomizerProgression,
 };
 
 enum struct LocationModificationType

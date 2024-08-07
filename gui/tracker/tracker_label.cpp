@@ -13,7 +13,7 @@
 #else
 #define TOOLTIP_UNMET "red"
 #endif
-#define TOOLTIP_MET "blue"
+#define TOOLTIP_MET "dodgerblue"
 
 TrackerLabel::TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow_, Location* location_, Entrance* entrance_) : type(type_), mainWindow(mainWindow_)
 {

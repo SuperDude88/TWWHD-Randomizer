@@ -2,6 +2,7 @@
 
 #include <seedgen/config.hpp>
 #include <logic/GameItem.hpp>
+#include <logic/Location.hpp>
 
 // toggles setting, returns new value to display
 using TriggerCallback = std::string(*)();
@@ -113,6 +114,10 @@ namespace OptionCB {
     void clearStartingItems();
     bool hasStartingItem(const GameItem& item, const size_t& num = 1); //num is for duplicated items
     void addStartingItem(const GameItem& item);
+    void clearExcludedLocations();
+    bool hasExcludedLocation(const std::string& locName);
+    void addExcludedLocation(const std::string& locName);
+    bool hasAllCategories(const std::set<LocationCategory>& locationCategories);
 
     void resetInternal();
     void setInternal(const Config& in);

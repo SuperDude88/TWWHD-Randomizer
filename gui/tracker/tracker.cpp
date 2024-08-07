@@ -712,6 +712,7 @@ void MainWindow::update_tracker()
             currentPointSize -= 2;
         }
     }
+    location_list_layout->addItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding), location_list_layout->rowCount(), 0);
 
     // Clear previous labels from the entrances widget
     clear_tracker_labels(ui->entrance_scroll_layout);
