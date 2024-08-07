@@ -205,6 +205,14 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Items that will be in Link's inventory at the start of a new game."
     },
     {
+      "progression_locations",
+      "Randomized locations that can have progress items."
+    },
+    {
+      "excluded_locations",
+      "Randomized locations that cannot have progress items."
+    },
+    {
       "starting_pohs",
       "Amount of extra pieces of heart that you start with. If you start with less than 3 total hearts, and Chest Type Matches Contents is on, then heart containers will be put into metal chests."
     },
