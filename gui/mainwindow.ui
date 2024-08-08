@@ -2406,7 +2406,7 @@ color: lightgray</string>
               <property name="styleSheet">
                <string notr="true"/>
               </property>
-              <layout class="QGridLayout" name="location_list_layout" rowstretch="0,0,0">
+              <layout class="QGridLayout" name="location_list_layout" rowstretch="0,0">
                <property name="leftMargin">
                 <number>2</number>
                </property>
@@ -2454,7 +2454,7 @@ font-size: 15px;</string>
                     <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">text-align: right;
+                    <string notr="true">text-align: center;
 color: black;
 font-size: 15px;</string>
                    </property>
@@ -2638,7 +2638,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>311</height>
+                    <height>290</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_scroll_layout">
@@ -2756,7 +2756,7 @@ font-size: 15px;</string>
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>291</height>
+                    <height>30</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_targets_scroll_layout">

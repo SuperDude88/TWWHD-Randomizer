@@ -1121,9 +1121,6 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
     switch_to_area_tracker();
     update_tracker();
 
-    // Only show the Clear All option if this is a dungeon
-    ui->clear_all_button->setVisible(trackerWorlds[0].dungeons.contains(areaPrefix));
-
     // Only show the Entrances button if the island has randomized entrances
     ui->location_list_entrances_button->setVisible(!areaEntrances[areaPrefix].empty());
 
