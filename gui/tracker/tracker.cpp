@@ -10,6 +10,7 @@
 
 #include <gui/tracker/tracker_inventory_button.hpp>
 #include <gui/tracker/tracker_area_widget.hpp>
+#include <gui/tracker/tracker_preferences_dialog.hpp>
 #include <gui/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
@@ -320,24 +321,21 @@ void MainWindow::autosave_current_tracker()
 
     autosave_file << root;
 
-    // Save colors back to tracker_preferences
+    // Save preferences back to tracker_preferences
     std::string preferences;
     Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
 
-    for (const auto& [name, color] : color_preferences)
-    {
-        pref[name] = "None";
-        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(QString::fromStdString("override_" + name));
-        if (override_checkbox && override_checkbox->isChecked())
-        {
-            pref[name] =  color.name().toStdString(); // name() returns #RRGGBB
-        }
-    }
-
-    // Save other preferences
-    pref["show_location_logic"] = ui->show_location_logic->isChecked();
-    pref["show_nonprogress_locations"] = ui->show_nonprogress_locations->isChecked();
+    pref["show_location_logic"] = trackerPreferences.showLocationLogic;
+    pref["show_nonprogress_locations"] = trackerPreferences.showNonProgressLocations;
+    pref["right_click_clear_all"] = trackerPreferences.rightClickClearAll;
+    pref["clear_all_includes_dungeon_mail"] = trackerPreferences.clearAllIncludesDungeonMail;
+    pref["override_items_color"] = trackerPreferences.overrideItemsColor;
+    pref["override_locations_color"] = trackerPreferences.overrideLocationsColor;
+    pref["override_stats_color"] = trackerPreferences.overrideStatsColor;
+    pref["items_color"] = trackerPreferences.itemsColor.name().toStdString();
+    pref["locations_color"] = trackerPreferences.locationsColor.name().toStdString();
+    pref["stats_color"] = trackerPreferences.statsColor.name().toStdString();
 
     std::ofstream preferences_file(Utility::get_app_save_path() / "tracker_preferences.yaml");
     if (preferences_file.is_open() == false)
@@ -347,6 +345,7 @@ void MainWindow::autosave_current_tracker()
     }
 
     preferences_file << pref;
+    preferences_file.close();
 }
 
 void MainWindow::load_tracker_autosave()
@@ -425,27 +424,55 @@ void MainWindow::load_tracker_autosave()
     YAML::Node pref = YAML::Load(preferences);
 
     // Color override preferences
-    for (auto& [name, color] : color_preferences)
+    if (pref["items_color"])
     {
-        QCheckBox* override_checkbox = ui->tracker_tab->findChild<QCheckBox*>(QString::fromStdString("override_" + name));
-        if (pref[name] && pref[name].as<std::string>() != "None")
-        {
-            // setNamedColor is deprecated after Qt 6.6, if we update we should switch to fromString
-            color.setNamedColor(QString::fromStdString(pref[name].as<std::string>()));
-            override_checkbox->setChecked(true);
-        }
+        trackerPreferences.itemsColor.setNamedColor(QString::fromStdString(pref["items_color"].as<std::string>()));
     }
 
-    // Show Location Logic preference
+    if (pref["locations_color"])
+    {
+        trackerPreferences.itemsColor.setNamedColor(QString::fromStdString(pref["locations_color"].as<std::string>()));
+    }
+
+    if (pref["stats_color"])
+    {
+        trackerPreferences.itemsColor.setNamedColor(QString::fromStdString(pref["stats_color"].as<std::string>()));
+    }
+
+    if (pref["override_items_color"])
+    {
+        trackerPreferences.overrideItemsColor = pref["override_items_color"].as<bool>();
+    }
+
+    if (pref["override_locations_color"])
+    {
+        trackerPreferences.overrideLocationsColor = pref["override_locations_color"].as<bool>();
+    }
+
+    if (pref["override_stats_color"])
+    {
+        trackerPreferences.overrideStatsColor = pref["override_stats_color"].as<bool>();
+    }
+
+    // Boolean preferences
     if (pref["show_location_logic"])
     {
-        ui->show_location_logic->setChecked(pref["show_location_logic"].as<bool>());
+        trackerPreferences.showLocationLogic = pref["show_location_logic"].as<bool>();
     }
 
-    // Show Non-Progress Locations preference
     if (pref["show_nonprogress_locations"])
     {
-        ui->show_nonprogress_locations->setChecked(pref["show_nonprogress_locations"].as<bool>());
+        trackerPreferences.showNonProgressLocations = pref["show_nonprogress_locations"].as<bool>();
+    }
+
+    if (pref["right_click_clear_all"])
+    {
+        trackerPreferences.rightClickClearAll = pref["right_click_clear_all"].as<bool>();
+    }
+
+    if (pref["clear_all_includes_dungeon_mail"])
+    {
+        trackerPreferences.clearAllIncludesDungeonMail = pref["clear_all_includes_dungeon_mail"].as<bool>();
     }
 
     update_tracker();
@@ -646,10 +673,12 @@ void MainWindow::initialize_tracker()
         }
     }
 
-    // Connect clicking area widgets to showing the checks in that area
+    // Connect left-clicking area widgets to showing the checks in that area
+    // and right-clicking area widgets to clearing all that areas locations
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaLabel*>())
     {
         connect(area, &TrackerAreaLabel::area_label_clicked, this, &MainWindow::tracker_show_specific_area);
+        connect(area, &TrackerAreaLabel::area_label_right_clicked, this, &MainWindow::tracker_area_right_clicked);
     }
 
     // Connect hovering over an area widget to showing the areas info in the side label
@@ -688,7 +717,7 @@ void MainWindow::update_tracker()
     for (auto& loc : areaLocations[currentTrackerArea])
     {
         auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, this, loc);
-        newLabel->updateShowLogic(ui->show_location_logic->isChecked(), trackerStarted);
+        newLabel->updateShowLogic(trackerPreferences.showLocationLogic, trackerStarted);
         // newLabel->set_location(loc);
         location_list_layout->addWidget(newLabel, row, col);
         connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
@@ -872,7 +901,7 @@ void MainWindow::update_tracker_areas_and_autosave()
     int checkedLocations = 0;
     int accessibleLocations = 0;
     int remainingLocations = 0;
-    for (auto loc : trackerWorlds[0].getLocations(!ui->show_nonprogress_locations->isChecked()))
+    for (auto loc : trackerWorlds[0].getLocations(!trackerPreferences.showNonProgressLocations))
     {
         // Don't do anything with hint locations
         if (loc->categories.contains(LocationCategory::HoHoHint) || loc->categories.contains(LocationCategory::BlueChuChu))
@@ -904,6 +933,7 @@ void MainWindow::update_tracker_areas_and_autosave()
 void MainWindow::switch_to_overworld_tracker()
 {
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_OVERWORLD);
+    currentTrackerArea = "";
 }
 
 void MainWindow::switch_to_area_tracker()
@@ -954,30 +984,7 @@ void MainWindow::on_entrance_destination_back_button_released()
 
 void MainWindow::on_clear_all_button_released()
 {
-    auto& trackerWorld = trackerWorlds[0];
-    for (auto locLabel : ui->location_list_widget->findChildren<TrackerLabel*>())
-    {
-        auto loc = locLabel->get_location();
-        loc->marked = true;
-
-        // Clear certain mail locations associated with bosses
-        if (loc->getName() == "Forsaken Fortress - Helmaroc King Heart Container")
-        {
-            trackerWorld.locationTable["Mailbox - Letter from Aryll"]->marked = true;
-            trackerWorld.locationTable["Mailbox - Letter from Tingle"]->marked = true;
-        }
-        else if (loc->getName() == "Forbidden Woods - Kalle Demos Heart Container")
-        {
-            trackerWorld.locationTable["Mailbox - Letter from Orca"]->marked = true;
-        }
-        else if (loc->getName() == "Earth Temple - Jalhalla Heart Container")
-        {
-            trackerWorld.locationTable["Mailbox - Letter from Baito"]->marked = true;
-        }
-
-        locLabel->update_colors();
-    }
-    update_tracker();
+    tracker_clear_specific_area(currentTrackerArea);
 }
 
 void MainWindow::on_chart_list_back_button_released()
@@ -986,8 +993,8 @@ void MainWindow::on_chart_list_back_button_released()
 }
 
 void MainWindow::update_items_color() {
-    if(ui->override_items_color->isChecked()) {
-        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {background-color: " + color_preferences["items_color"].name() + "}");
+    if(trackerPreferences.overrideItemsColor) {
+        ui->inventory_widget->setStyleSheet("QWidget#inventory_widget {background-color: " + trackerPreferences.itemsColor.name() + "}");
         ui->inventory_widget_pearls->setStyleSheet("");
     }
     else {
@@ -1002,27 +1009,10 @@ void MainWindow::update_items_color() {
     autosave_current_tracker();
 }
 
-void MainWindow::on_override_items_color_stateChanged(int arg1)
-{
-    update_items_color();
-}
-
-void MainWindow::on_items_color_clicked()
-{
-    QColor& itemsColor = color_preferences["items_color"];
-    QColor color = QColorDialog::getColor(itemsColor, this, "Select color");
-    if (!color.isValid()) {
-        return;
-    }
-
-    itemsColor = color;
-    update_items_color();
-}
-
 void MainWindow::update_locations_color()
 {
-    if(ui->override_locations_color->isChecked()) {
-        ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: " + color_preferences["locations_color"].name() + "}");
+    if(trackerPreferences.overrideLocationsColor) {
+        ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: " + trackerPreferences.locationsColor.name() + "}");
     }
     else {
         ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
@@ -1030,27 +1020,10 @@ void MainWindow::update_locations_color()
     autosave_current_tracker();
 }
 
-void MainWindow::on_override_locations_color_stateChanged(int arg1)
-{
-    update_locations_color();
-}
-
-void MainWindow::on_locations_color_clicked()
-{
-    QColor& locationsColor = color_preferences["locations_color"];
-    QColor color = QColorDialog::getColor(locationsColor, this, "Select color");
-    if (!color.isValid()) {
-        return;
-    }
-
-    locationsColor = color;
-    update_locations_color();
-}
-
 void MainWindow::update_stats_color()
 {
-    if(ui->override_stats_color->isChecked()) {
-        ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: " + color_preferences["stats_color"].name() + "}");
+    if(trackerPreferences.overrideStatsColor) {
+        ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: " + trackerPreferences.statsColor.name() + "}");
     }
     else {
         ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
@@ -1058,56 +1031,33 @@ void MainWindow::update_stats_color()
     autosave_current_tracker();
 }
 
-void MainWindow::on_override_stats_color_stateChanged(int arg1)
-{
-    update_stats_color();
-}
-
-void MainWindow::on_stats_color_clicked()
-{
-    QColor& statsColor = color_preferences["stats_color"];
-    QColor color = QColorDialog::getColor(statsColor, this, "Select color");
-    if (!color.isValid()) {
-        return;
-    }
-
-    statsColor = color;
-    update_stats_color();
-}
-
-void MainWindow::on_show_location_logic_stateChanged(int arg1)
-{
-    // Only make the locations in logic visible if we're showing logic
-    ui->locations_accessible_label->setVisible(arg1);
-    ui->locations_accessible_number->setVisible(arg1);
-
-    // Update showing logic for all tracker labels
-    for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
-    {
-        child->updateShowLogic(arg1, trackerStarted);
-    }
-    for (auto child : ui->tracker_tab->findChildren<TrackerLabel*>())
-    {
-        child->updateShowLogic(arg1, trackerStarted);
-    }
-
-    autosave_current_tracker();
-}
-
-void MainWindow::on_show_nonprogress_locations_stateChanged(int arg1)
-{
-    // Update showing nonprogress locations for all areas
-    for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
-    {
-        child->updateShowNonprogress(arg1, trackerStarted);
-    }
-    set_areas_locations();
-    update_tracker();
-}
-
 void MainWindow::on_open_chart_list_button_clicked()
 {
     switch_to_chart_list_tracker();
+}
+
+void MainWindow::on_open_tracker_settings_button_clicked()
+{
+    // Make sure we can only open one settings window at a time
+    if (!prefDialog)
+    {
+        prefDialog = new TrackerPreferencesDialog(this);
+        prefDialog->setWindowTitle("Tracker Settings");
+        prefDialog->setAttribute(Qt::WA_DeleteOnClose);
+        // Reset our pointer when the dialog closes
+        connect(prefDialog, &QDialog::finished, this, &MainWindow::tracker_preferences_closed);
+        prefDialog->show();
+    }
+    else
+    {
+        // If the window already exists, raise it above the main window
+        prefDialog->raise();
+    }
+}
+
+void MainWindow::tracker_preferences_closed(int resault)
+{
+    prefDialog = nullptr;
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
@@ -1115,7 +1065,7 @@ void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
     currentTrackerArea = areaPrefix;
 }
 
-void MainWindow::tracker_show_specific_area(std::string areaPrefix)
+void MainWindow::tracker_show_specific_area(const std::string& areaPrefix)
 {
     set_current_tracker_area(areaPrefix);
     switch_to_area_tracker();
@@ -1130,6 +1080,48 @@ void MainWindow::tracker_show_specific_area(std::string areaPrefix)
     // std::transform(areaPrefix.begin(), areaPrefix.end(), areaPrefix.begin(), [](char& c){return std::tolower(c);});
     // std::erase(areaPrefix, '\'');
     // set_location_list_widget_background(areaPrefix);
+}
+
+void MainWindow::tracker_clear_specific_area(const std::string& areaPrefix)
+{
+    auto& trackerWorld = trackerWorlds[0];
+    for (auto loc : areaLocations[areaPrefix])
+    {
+        loc->marked = true;
+        // Clear certain mail locations associated with bosses
+        if (trackerPreferences.clearAllIncludesDungeonMail)
+        {
+            if (loc->getName() == "Forsaken Fortress - Helmaroc King Heart Container")
+            {
+                trackerWorld.locationTable["Mailbox - Letter from Aryll"]->marked = true;
+                trackerWorld.locationTable["Mailbox - Letter from Tingle"]->marked = true;
+            }
+            else if (loc->getName() == "Forbidden Woods - Kalle Demos Heart Container")
+            {
+                trackerWorld.locationTable["Mailbox - Letter from Orca"]->marked = true;
+            }
+            else if (loc->getName() == "Earth Temple - Jalhalla Heart Container")
+            {
+                trackerWorld.locationTable["Mailbox - Letter from Baito"]->marked = true;
+            }
+        }
+    }
+
+    // Update any labels currently being shown
+    for (auto locLabel : ui->location_list_widget->findChildren<TrackerLabel*>())
+    {
+        locLabel->update_colors();
+    }
+
+    update_tracker();
+}
+
+void MainWindow::tracker_area_right_clicked(const std::string& areaPrefix)
+{
+    if (trackerPreferences.rightClickClearAll)
+    {
+        tracker_clear_specific_area(areaPrefix);
+    }
 }
 
 void MainWindow::set_location_list_widget_background(const std::string& area)
@@ -1377,7 +1369,7 @@ void MainWindow::set_areas_locations()
         {
             auto& location = locAccess.location;
             // Don't add Ho Ho locations or Blue Chus for now
-            if ((location->progression || ui->show_nonprogress_locations->isChecked()) &&
+            if ((location->progression || trackerPreferences.showNonProgressLocations) &&
                 !location->categories.contains(LocationCategory::HoHoHint) &&
                 !location->categories.contains(LocationCategory::BlueChuChu))
             {

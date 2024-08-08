@@ -120,6 +120,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+Ui::MainWindow* MainWindow::getUI()
+{
+    return ui;
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // Write settings to file when user closes the program
@@ -1324,4 +1330,3 @@ void MainWindow::on_paste_permalink_clicked()
     auto permalink = QGuiApplication::clipboard()->text();
     on_permalink_textEdited(permalink);
 }
-
