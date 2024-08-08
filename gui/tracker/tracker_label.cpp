@@ -140,6 +140,7 @@ void TrackerLabel::mouseMoveEvent(QMouseEvent* e)
 
 void TrackerLabel::enterEvent(QEnterEvent* e)
 {
+    mouseEnterPosition = e->position().toPoint();
     switch(type) {
         case TrackerLabelType::Location:
             emit mouse_over_location_label(location);
@@ -231,7 +232,9 @@ void TrackerLabel::showLogicTooltip()
     {
         return;
     }
-    auto coords = mapToGlobal(QPoint(width() / 2 - 45, height() - 15));
+    // Use the position where the mouse entered the label to know
+    // where to display the tooltip.
+    auto coords = mapToGlobal(QPoint(mouseEnterPosition.x() + 30, height() - 15));
     QToolTip::showText(coords, getTooltipText());
 }
 
@@ -252,7 +255,17 @@ QString TrackerLabel::getTooltipText()
         text.push_back(formatRequirement(req, true));
     }
 
-    QString returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
+    // TEMP FIX
+    // For some reason, calling QToolTip::showText with the exact
+    // same text that was previously used causes a delay when showing
+    // it again. To prevent this we'll switch the bottom margin of the
+    // tooltip between 0 and 1 each time so there's always a text
+    // difference that users won't be able to detect.
+    // TODO: look into if there's a proper solution to this
+    static QString marginBottom = "0";
+    marginBottom = (marginBottom == "0") ? "1" : "0";
+
+    QString returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
     for (auto i = 0; i < text.size(); i++)
     {
         auto str = text[i];

@@ -54,4 +54,5 @@ private:
     Location* location = nullptr;
     Entrance* entrance = nullptr;
     bool showLogic = true;
+    QPoint mouseEnterPosition = QPoint();
 };
