@@ -431,27 +431,30 @@ void MainWindow::load_tracker_autosave()
 
     if (pref["locations_color"])
     {
-        trackerPreferences.itemsColor.setNamedColor(QString::fromStdString(pref["locations_color"].as<std::string>()));
+        trackerPreferences.locationsColor.setNamedColor(QString::fromStdString(pref["locations_color"].as<std::string>()));
     }
 
     if (pref["stats_color"])
     {
-        trackerPreferences.itemsColor.setNamedColor(QString::fromStdString(pref["stats_color"].as<std::string>()));
+        trackerPreferences.statsColor.setNamedColor(QString::fromStdString(pref["stats_color"].as<std::string>()));
     }
 
     if (pref["override_items_color"])
     {
         trackerPreferences.overrideItemsColor = pref["override_items_color"].as<bool>();
+        update_items_color();
     }
 
     if (pref["override_locations_color"])
     {
         trackerPreferences.overrideLocationsColor = pref["override_locations_color"].as<bool>();
+        update_locations_color();
     }
 
     if (pref["override_stats_color"])
     {
         trackerPreferences.overrideStatsColor = pref["override_stats_color"].as<bool>();
+        update_stats_color();
     }
 
     // Boolean preferences
