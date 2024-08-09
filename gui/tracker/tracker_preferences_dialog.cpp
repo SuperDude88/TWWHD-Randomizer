@@ -17,16 +17,17 @@ TrackerPreferencesDialog::TrackerPreferencesDialog(MainWindow* main_) : main(mai
 
 void TrackerPreferencesDialog::on_show_location_logic_stateChanged(int arg1)
 {
+    auto ui = main->getUI();
     // Only make the locations in logic visible if we're showing logic
-    main->getUI()->locations_accessible_label->setVisible(arg1);
-    main->getUI()->locations_accessible_number->setVisible(arg1);
+    ui->locations_accessible_label->setVisible(arg1);
+    ui->locations_accessible_number->setVisible(arg1);
 
     // Update showing logic for all tracker labels
-    for (auto child : main->getUI()->tracker_tab->findChildren<TrackerAreaWidget*>())
+    for (auto child : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
     {
         child->updateShowLogic(arg1, main->trackerStarted);
     }
-    for (auto child : main->getUI()->tracker_tab->findChildren<TrackerLabel*>())
+    for (auto child : ui->tracker_tab->findChildren<TrackerLabel*>())
     {
         child->updateShowLogic(arg1, main->trackerStarted);
     }

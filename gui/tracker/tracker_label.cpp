@@ -131,6 +131,7 @@ void TrackerLabel::mouseMoveEvent(QMouseEvent* e)
     switch(type)
     {
     case TrackerLabelType::Location:
+    case TrackerLabelType::EntranceSource:
         showLogicTooltip();
         break;
     default:
@@ -199,10 +200,10 @@ void TrackerLabel::update_colors()
         {
             setStyleSheet("color: black;");
         }
-    //    else if (!entrance->hasBeenFound)
-    //    {
-    //        setStyleSheet("color: red;");
-    //    }
+        else if (!entrance->hasBeenFound() && showLogic)
+        {
+            setStyleSheet("color: red;");
+        }
         else
         {
             setStyleSheet("color: blue;");
@@ -240,7 +241,18 @@ void TrackerLabel::showLogicTooltip()
 
 QString TrackerLabel::getTooltipText()
 {
-    auto& req = location->computedRequirement;
+    Requirement req;
+    switch (type)
+    {
+    case TrackerLabelType::Location:
+        req = location->computedRequirement;
+        break;
+    case TrackerLabelType::EntranceSource:
+        req = entrance->getComputedRequirement();
+        break;
+    default:
+        break;
+    }
     std::vector<QString> text = {};
     switch (req.type)
     {

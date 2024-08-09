@@ -83,6 +83,11 @@ public:
     void setAsDecoupled();
     World* getWorld();
     void setWorld(World* newWorld);
+    Requirement getComputedRequirement() const;
+    void setComputedRequirement(const Requirement& req);
+    bool hasBeenFound() const;
+    void setFound(const bool& found_);
+
     std::list<std::string> findIslands();
 
     void connect(Area* newConnectedArea);
@@ -120,6 +125,10 @@ private:
     bool shuffled = false;
     bool decoupled = false;
     World* world = nullptr;
+
+    // Tracker things
+    Requirement computedRequirement;
+    bool found = false;
 };
 
 std::string entranceTypeToName(const EntranceType& type);

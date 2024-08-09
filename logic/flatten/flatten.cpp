@@ -88,6 +88,19 @@ void FlattenSearch::doSearch()
         world->locationTable[locName]->computedRequirement.simplifyParenthesis();
         world->locationTable[locName]->computedRequirement.sortArgs();
     }
+
+    // Do the same for any shuffled entrances so that we can give them tooltips in the tracker
+    for (auto& [name, area] : world->areaTable)
+    {
+        for (auto& exit : area->exits)
+        {
+            if (exit.isShuffled())
+            {
+                auto expr = areaExprs[area.get()].and_(evaluatePartialRequirement(bitIndex, exit.getRequirement(), this));
+                exit.setComputedRequirement(DNFToExpr(bitIndex, expr.dedup()));
+            }
+        }
+    }
 }
 
 // Check for a thing in area whether its logical dependencies

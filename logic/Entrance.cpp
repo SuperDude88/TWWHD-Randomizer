@@ -267,6 +267,28 @@ void Entrance::setWorld(World* newWorld)
     world = newWorld;
 }
 
+Requirement Entrance::getComputedRequirement() const
+{
+    return computedRequirement;
+}
+
+void Entrance::setComputedRequirement(const Requirement& req)
+{
+    computedRequirement = req;
+    computedRequirement.simplifyParenthesis();
+    computedRequirement.sortArgs();
+}
+
+bool Entrance::hasBeenFound() const
+{
+    return found;
+}
+
+void Entrance::setFound(const bool& found_)
+{
+    found = found_;
+}
+
 std::list<std::string> Entrance::findIslands()
 {
     return parentArea->findIslands();
