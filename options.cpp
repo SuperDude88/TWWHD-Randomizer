@@ -1047,21 +1047,26 @@ std::set<std::string> getDefaultExcludedLocations()
     };
 }
 
-std::set<std::string> getAllLocationsNames()
+const std::set<std::string>& getAllLocationsNames()
 {
-    std::set<std::string> locNames = {};
-    std::string locationDataStr;
-    Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
-    YAML::Node locationDataTree = YAML::Load(locationDataStr);
-    for (const auto& locationObject : locationDataTree)
-    {
-        if (locationObject["Names"] && locationObject["Names"]["English"])
+    static std::set<std::string> locNames = {};
+
+    // Only parse the locations file on the first call
+    // The data folder is read-only for most builds, and it shouldn't be changing anyways
+    if(locNames.empty()) {
+        std::string locationDataStr;
+        Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
+        YAML::Node locationDataTree = YAML::Load(locationDataStr);
+        for (const auto& locationObject : locationDataTree)
         {
-            locNames.insert(locationObject["Names"]["English"].as<std::string>());
-        }
-        else
-        {
-            Utility::platformLog("Some location object is missing a name in location_data.yaml");
+            if (locationObject["Names"] && locationObject["Names"]["English"])
+            {
+                locNames.insert(locationObject["Names"]["English"].as<std::string>());
+            }
+            else
+            {
+                Utility::platformLog("Some location object is missing a name in location_data.yaml");
+            }
         }
     }
 
