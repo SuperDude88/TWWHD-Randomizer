@@ -989,7 +989,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         }
         else if(option == Option::ExcludedLocations) {
             load.settings.excluded_locations.clear();
-            auto locations = getAllLocationsNames();
+            const auto& locations = getAllLocationsNames();
             for (const auto& locName: locations) {
                 const auto value = bitsReader.read(1);
                 BYTES_EXIST_CHECK(value);
@@ -1050,7 +1050,7 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
             }
         }
         else if(option == Option::ExcludedLocations) {
-            auto locations = getAllLocationsNames();
+            const auto& locations = getAllLocationsNames();
             for (const auto& locName : locations) {
                 const size_t bit = settings.excluded_locations.contains(locName);
                 bitsWriter.write(bit, 1);
