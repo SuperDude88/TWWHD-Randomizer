@@ -930,6 +930,8 @@ void MainWindow::update_tracker_areas_and_autosave()
     ui->locations_accessible_number->setText(std::to_string(accessibleLocations).c_str());
     ui->locations_remaining_number->setText(std::to_string(remainingLocations).c_str());
 
+    calculate_entrance_paths();
+
     autosave_current_tracker();
 }
 
@@ -1425,6 +1427,58 @@ void MainWindow::set_areas_entrances()
         for (auto& region : regions)
         {
             areaEntrances[region].push_back(entrance);
+        }
+    }
+}
+
+void MainWindow::calculate_entrance_paths()
+{
+    auto& trackerWorld = trackerWorlds[0];
+    // Recalculate entrance paths
+    entrancePathsByLocation.clear();
+
+    // Only calculate paths for areas that have
+    // randomized entrances
+    for (const auto& [region, entrances] : areaEntrances)
+    {
+        auto area = trackerWorld.getArea(region);
+        if (region == "Hyrule")
+        {
+            area = trackerWorld.getArea("Hyrule Castle Interior");
+        }
+        if (area != nullptr)
+        {
+            auto paths = area->findEntrancePaths();
+            entrancePaths[region] = paths;
+            for (auto& [subarea, curPath] : paths)
+            {
+                for (auto& locAcc : subarea->locations)
+                {
+                    auto loc = locAcc.location;
+                    // Don't bother with non-progression locations
+                    if (!loc->progression)
+                    {
+                        continue;
+                    }
+                    // If this location doesn't have a set path yet, always put
+                    // one in
+                    if (!entrancePathsByLocation.contains(loc))
+                    {
+                        entrancePathsByLocation[loc] = curPath;
+                    }
+                    // Otherwise, only replace the previous path if the current path
+                    // has better logicality or has the same logicality and is shorter
+                    // in path size
+                    else
+                    {
+                        auto& prevPath = entrancePathsByLocation[loc];
+                        if ((curPath.logicality > prevPath.logicality) || (curPath.logicality == prevPath.logicality && curPath.list.size() < prevPath.list.size()))
+                        {
+                            prevPath = curPath;
+                        }
+                    }
+                }
+            }
         }
     }
 }

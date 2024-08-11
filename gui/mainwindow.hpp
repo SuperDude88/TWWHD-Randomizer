@@ -112,6 +112,7 @@ private:
 public:
     void set_areas_locations();
     void set_areas_entrances();
+    void calculate_entrance_paths();
     void switch_to_overworld_tracker();
     void switch_to_area_tracker();
     void switch_to_entrances_tracker();
@@ -293,9 +294,15 @@ public:
     Settings trackerSettings = Settings();
     WorldPool trackerWorlds = {};
     ItemPool trackerInventory = {};
+    std::string currentTrackerArea = "";
+
+    // Maps each area to the shortest entrance path it has to each sub region
+    std::unordered_map<std::string, std::unordered_map<Area*, EntrancePath>> entrancePaths = {};
+    // Maps each location to its shortest path
+    std::unordered_map<Location*, EntrancePath> entrancePathsByLocation = {};
 private:
     LocationPool trackerLocations = {};
-    std::string currentTrackerArea = "";
+
 
     // Maps area name to the locations in the area. This can dynamically
     // change when entrance randomizer is on

@@ -21,7 +21,6 @@ TrackerLabel::TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* ma
     set_font(this, "fira_sans", pointSize);
     setWordWrap(true);
     setCursor(Qt::PointingHandCursor);
-    setMouseTracking(true);
 
     switch (type)
     {
@@ -132,7 +131,6 @@ void TrackerLabel::mouseMoveEvent(QMouseEvent* e)
     {
     case TrackerLabelType::Location:
     case TrackerLabelType::EntranceSource:
-        showLogicTooltip();
         break;
     default:
         break;
@@ -145,8 +143,10 @@ void TrackerLabel::enterEvent(QEnterEvent* e)
     switch(type) {
         case TrackerLabelType::Location:
             emit mouse_over_location_label(location);
+            showLogicTooltip();
             break;
         case TrackerLabelType::EntranceSource:
+            showLogicTooltip();
         case TrackerLabelType::EntranceDestination:
             emit mouse_over_entrance_label(entrance);
             break;
@@ -158,6 +158,7 @@ void TrackerLabel::enterEvent(QEnterEvent* e)
 
 void TrackerLabel::leaveEvent(QEvent* e)
 {
+    QToolTip::hideText();
     switch(type) {
         case TrackerLabelType::Location:
             emit mouse_left_location_label();
@@ -236,7 +237,7 @@ void TrackerLabel::showLogicTooltip()
     // Use the position where the mouse entered the label to know
     // where to display the tooltip.
     auto coords = mapToGlobal(QPoint(mouseEnterPosition.x() + 30, height() - 15));
-    QToolTip::showText(coords, getTooltipText());
+    QToolTip::showText(coords, getTooltipText(), nullptr, {}, 120000); // Set timer for 2 minutes
 }
 
 QString TrackerLabel::getTooltipText()
@@ -277,7 +278,81 @@ QString TrackerLabel::getTooltipText()
     static QString marginBottom = "0";
     marginBottom = (marginBottom == "0") ? "1" : "0";
 
-    QString returnStr = "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
+    QString returnStr = "";
+
+    // First, list the entrance path for this location if there is one
+    EntrancePath entrancePath = {};
+    if (type == TrackerLabelType::Location)
+    {
+        // By default, show whatever the shortest logical path to
+        // the location is
+        entrancePath = mainWindow->entrancePathsByLocation[location];
+        if (mainWindow->currentTrackerArea != "")
+        {
+            auto& entrancePaths = mainWindow->entrancePaths[mainWindow->currentTrackerArea];
+            for (auto locAcc : location->accessPoints)
+            {
+                // Use a different path if there's one with better logicality, or one with
+                // the same logicality, but on the current island or with a smaller size
+                if (entrancePaths.contains(locAcc->area) &&
+                        (entrancePaths[locAcc->area].logicality > entrancePath.logicality ||
+                        (entrancePaths[locAcc->area].logicality == entrancePath.logicality && entrancePaths[locAcc->area].list.size() <= entrancePath.list.size())))
+                {
+                    entrancePath = entrancePaths[locAcc->area];
+                }
+            }
+        }
+    }
+    else if (type == TrackerLabelType::EntranceSource)
+    {
+        // If we have a source entrance, get the entrance path
+        // to the area this entrance is in
+        auto area = entrance->getParentArea();
+        bool pathSet = false;
+        auto& entrancePaths = mainWindow->entrancePaths[mainWindow->currentTrackerArea];
+
+        if (mainWindow->currentTrackerArea != "" && entrancePaths.contains(area))
+        {
+            entrancePath = entrancePaths[area];
+        }
+        else
+        {
+            // Iteraively compare all the paths so that we end
+            // up with the shortest, most logical one
+            for (auto& [region, paths] : mainWindow->entrancePaths)
+            {
+                // If the entrance path hasn't been set yet, or if the current path
+                // is more logical, or if it has the same logicality, but is smaller in size
+                if (paths.contains(area) &&
+                        (!pathSet || entrancePath.logicality > paths[area].logicality ||
+                        (paths[area].list.size() < entrancePath.list.size() && entrancePath.logicality == paths[area].logicality)
+                        ))
+                {
+                    entrancePath = paths[area];
+                    pathSet = true;
+                }
+            }
+        }
+    }
+
+    if (!entrancePath.list.empty())
+    {
+        returnStr = "Entrance Path:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
+        auto counter = 0;
+        for (auto e : entrancePath.list)
+        {
+            counter++;
+            returnStr += e->getOriginalName(true).c_str();
+            if (counter < entrancePath.list.size())
+            {
+                returnStr += "</li><li>";
+            }
+        }
+        returnStr += "</li></ul><hr>";
+    }
+
+    // Add in item requirements
+    returnStr += "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
     for (auto i = 0; i < text.size(); i++)
     {
         auto str = text[i];

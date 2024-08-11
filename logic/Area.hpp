@@ -45,6 +45,7 @@ public:
     std::list<std::string> findHintRegions(bool onlyNonIslands = false);
     std::list<std::string> findDungeons();
     std::list<std::list<Entrance*>> findShuffledEntrances(const std::list<Area*>& startingQueue = {});
+    std::unordered_map<Area*, EntrancePath> findEntrancePaths();
 };
 
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex);
