@@ -67,6 +67,7 @@ namespace OptionCB {
     std::string cycleLocationHints();
 
     std::string toggleInstantText();
+    std::string toggleQuietSwiftSail();
     std::string toggleRNG();
     std::string togglePerformance();
     std::string toggleFullSeaChart();

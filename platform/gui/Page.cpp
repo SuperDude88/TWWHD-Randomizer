@@ -484,21 +484,22 @@ void EntrancePage::drawDRC() const {
 
 
 ConveniencePage::ConveniencePage() {
-    buttonColumns[0][0] = std::make_unique<BasicButton>(Option::InstantText);
-    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::FixRNG);
-    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::RevealSeaChart);
-    buttonColumns[0][3] = std::make_unique<BasicButton>(Option::RemoveMusic);
-    buttonColumns[0][4] = std::make_unique<BasicButton>(Option::Camera);
-    buttonColumns[0][5] = std::make_unique<BasicButton>(Option::FirstPersonCamera);
-    buttonColumns[0][6] = std::make_unique<BasicButton>(Option::TargetType);
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::InstantText));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::QuietSwiftSail));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::FixRNG));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::RevealSeaChart));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::RemoveMusic));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::Camera));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::FirstPersonCamera));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::TargetType));
 
-    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::AddShortcutWarps);
-    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::SkipRefights);
-    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::InvertCompass);
-    buttonColumns[1][3] = std::make_unique<BasicButton>(Option::Performance);
-    buttonColumns[1][4] = std::make_unique<BasicButton>(Option::PigColor);
-    buttonColumns[1][5] = std::make_unique<BasicButton>(Option::Gyroscope);
-    buttonColumns[1][6] = std::make_unique<BasicButton>(Option::UIDisplay);
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::AddShortcutWarps));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::SkipRefights));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::InvertCompass));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::Performance));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::PigColor));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::Gyroscope));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::UIDisplay));
 }
 
 void ConveniencePage::open() {
@@ -515,7 +516,6 @@ bool ConveniencePage::update() {
 
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
-
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; //wrap on leftmost row
         }
@@ -523,12 +523,9 @@ bool ConveniencePage::update() {
             curCol -= 1; //left one row
         }
         moved = true;
-
-        buttonColumns[curCol][curRow]->hovered();
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
-
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; //wrap on rightmost row
         }
@@ -536,13 +533,17 @@ bool ConveniencePage::update() {
             curCol += 1; //right one row
         }
         moved = true;
+    }
+
+    if(moved) {
+        curCol = std::clamp<size_t>(curCol, 0, buttonColumns.size() - 1);
+        curRow = std::clamp<size_t>(curRow, 0, buttonColumns[curCol].size() - 1);
 
         buttonColumns[curCol][curRow]->hovered();
     }
 
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
-
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; //wrap on top
         }
@@ -550,8 +551,6 @@ bool ConveniencePage::update() {
             curRow -= 1; //up one row
         }
         moved = true;
-
-        buttonColumns[curCol][curRow]->hovered();
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
@@ -563,10 +562,15 @@ bool ConveniencePage::update() {
             curRow += 1; //down one row
         }
         moved = true;
+    }
+
+    if(moved) {
+        curCol = std::clamp<size_t>(curCol, 0, buttonColumns.size() - 1);
+        curRow = std::clamp<size_t>(curRow, 0, buttonColumns[curCol].size() - 1);
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    
+
     return moved || buttonColumns[curCol][curRow]->update();
 }
 

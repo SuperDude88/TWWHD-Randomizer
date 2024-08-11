@@ -3635,6 +3635,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/b_button_skips_text_diff.yaml"));
         TWEAK_ERR_CHECK(make_all_text_instant());
     }
+    if (settings.quiet_swift_sail) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/quiet_swift_sail_diff.yaml"));
+    }
     if (settings.fix_rng) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_rng_diff.yaml"));
     }

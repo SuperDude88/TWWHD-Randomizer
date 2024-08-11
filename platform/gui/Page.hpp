@@ -106,7 +106,7 @@ class ConveniencePage final : public EmptyPage {
 private:
     size_t curCol = 0;
     size_t curRow = 0;
-    std::array<std::array<std::unique_ptr<BasicButton>, 7>, 2> buttonColumns;
+    std::array<std::vector<std::unique_ptr<BasicButton>>, 2> buttonColumns;
 
 public:
     ConveniencePage();

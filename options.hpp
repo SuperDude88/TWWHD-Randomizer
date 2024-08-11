@@ -139,6 +139,7 @@ enum struct Option {
     // Convenince Tweaks
     InvertCompass,
     InstantText,
+    QuietSwiftSail,
     FixRNG,
     Performance,
     RevealSeaChart,
@@ -272,6 +273,7 @@ public:
     uint8_t location_hints;
 
     bool instant_text_boxes;
+    bool quiet_swift_sail;
     bool fix_rng;
     bool performance;
     bool reveal_full_sea_chart;

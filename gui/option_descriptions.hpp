@@ -142,6 +142,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Text appears instantly.<br>Also, the B button is changed to instantly skip through text as long as you hold it down."
     },
     {
+      "quiet_swift_sail",
+      "Mute the \"pwing\" sound when pulling out the swift sail."
+    },
+    {
       "reveal_full_sea_chart",
       "Start the game with the sea chart fully drawn out."
     },

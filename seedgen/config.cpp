@@ -199,6 +199,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "location_hints", settings.location_hints)
 
     GET_FIELD(root, "instant_text_boxes", settings.instant_text_boxes)
+    GET_FIELD(root, "quiet_swift_sail", settings.quiet_swift_sail)
     GET_FIELD(root, "fix_rng", settings.fix_rng)
     GET_FIELD(root, "performance", settings.performance)
     GET_FIELD(root, "reveal_full_sea_chart", settings.reveal_full_sea_chart)
@@ -525,6 +526,7 @@ YAML::Node Config::settingsToYaml() {
     SET_FIELD(root, "location_hints", static_cast<uint32_t>(settings.location_hints)) // cast because uint8_t has a weird yaml output
 
     SET_FIELD(root, "instant_text_boxes", settings.instant_text_boxes)
+    SET_FIELD(root, "quiet_swift_sail", settings.quiet_swift_sail)
     SET_FIELD(root, "fix_rng", settings.fix_rng)
     SET_FIELD(root, "performance", settings.performance)
     SET_FIELD(root, "reveal_full_sea_chart", settings.reveal_full_sea_chart)
