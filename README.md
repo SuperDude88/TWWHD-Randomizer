@@ -16,7 +16,7 @@ A Randomizer for *The Legend of Zelda: The Wind Waker HD*.
 It shuffles all the items, makes the world open from the start, removes most cutscenes, and adds other tweaks to speed up mundane tasks. While most features from the [original Wind Waker Randomizer](https://github.com/LagoLunatic/wwrando) are present, some are yet to be ported due to the remake's changes.
 
 ### Getting Stuck
-If you can not find anywhere to progress, you should first check the spoiler log. The spoiler log is generated in the randomizer's save directory (`sd:/wiiu/save/<8 hex digits> (TWWHD Randomizer)` on console) and contains information on everything in the seed.
+If you can not find anywhere to progress, you should first check the spoiler log. The spoiler log is generated in the randomizer's save directory (`sd:/wiiu/apps/save/<8 hex digits> (TWWHD Randomizer)` on console) and contains information on everything in the seed.
 
 If you have checked the log and are still stuck, it is possible you have encountered a [bug](#Reporting-Bugs).
 
@@ -24,7 +24,7 @@ If you have checked the log and are still stuck, it is possible you have encount
 If you seem to have discovered a bug, let us know in our [Discord server](https://discord.gg/wPvdQ2Krrm) or by [opening an issue](https://github.com/SuperDude88/TWWHD-Randomizer/issues). Be sure to share the spoiler log for the seed when reporting a problem.
 
 ## Setup
-You can download the latest stable version of the randomizer from the releases page. 
+You can download the latest stable version of the randomizer from the [releases page](https://github.com/SuperDude88/TWWHD-Randomizer/releases). 
 
 This randomizer currently supports the USA version of TWWHD. The European and Japanese versions of the game will not work, nor will the original Wind Waker.
 
