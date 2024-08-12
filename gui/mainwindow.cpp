@@ -542,6 +542,7 @@ void MainWindow::apply_config_settings()
     // Convenience Tweaks
     APPLY_CHECKBOX_SETTING(config, ui, invert_sea_compass_x_axis);
     APPLY_CHECKBOX_SETTING(config, ui, instant_text_boxes);
+    APPLY_CHECKBOX_SETTING(config, ui, quiet_swift_sail);
     APPLY_CHECKBOX_SETTING(config, ui, reveal_full_sea_chart);
     APPLY_CHECKBOX_SETTING(config, ui, skip_rematch_bosses);
     APPLY_CHECKBOX_SETTING(config, ui, add_shortcut_warps_between_dungeons);
@@ -870,6 +871,7 @@ void MainWindow::on_num_required_dungeons_currentIndexChanged(int index)
 // Convenience Tweaks
 DEFINE_STATE_CHANGE_FUNCTION(invert_sea_compass_x_axis)
 DEFINE_STATE_CHANGE_FUNCTION(instant_text_boxes)
+DEFINE_STATE_CHANGE_FUNCTION(quiet_swift_sail)
 DEFINE_STATE_CHANGE_FUNCTION(reveal_full_sea_chart)
 DEFINE_STATE_CHANGE_FUNCTION(skip_rematch_bosses)
 DEFINE_STATE_CHANGE_FUNCTION(add_shortcut_warps_between_dungeons)

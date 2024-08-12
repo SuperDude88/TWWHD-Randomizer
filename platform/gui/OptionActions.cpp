@@ -410,6 +410,11 @@ namespace OptionCB {
         return fromBool(conf.settings.instant_text_boxes);
     }
 
+    std::string toggleQuietSwiftSail() {
+        conf.settings.quiet_swift_sail = !conf.settings.quiet_swift_sail;
+        return fromBool(conf.settings.quiet_swift_sail);
+    }
+
     std::string toggleRNG() {
         conf.settings.fix_rng = !conf.settings.fix_rng;
         return fromBool(conf.settings.fix_rng);
@@ -975,6 +980,8 @@ std::string getValue(const Option& option) {
             return std::to_string(conf.settings.location_hints);
         case Option::InstantText:
             return fromBool(conf.settings.instant_text_boxes);
+        case Option::QuietSwiftSail:
+            return fromBool(conf.settings.quiet_swift_sail);
         case Option::FixRNG:
             return fromBool(conf.settings.fix_rng);
         case Option::Performance:
@@ -1181,6 +1188,8 @@ TriggerCallback getCallback(const Option& option) {
             return &cycleLocationHints;
         case Option::InstantText:
             return &toggleInstantText;
+        case Option::QuietSwiftSail:
+            return &toggleQuietSwiftSail;
         case Option::FixRNG:
             return &toggleRNG;
         case Option::Performance:
@@ -1298,6 +1307,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
 
         {InvertCompass,              {"Invert Sea Compass X-Axis",           "Inverts the east-west direction of the compass that shows while at sea."}},
         {InstantText,                {"Instant Text Boxes",                  "Text appears instantly. The B button is changed to instantly skip through text as long as you hold it down."}},
+        {QuietSwiftSail,             {"Quiet Swift Sail",                    "Mute the \"pwing\" sound when pulling out the swift sail."}},
         {FixRNG,                     {"Fix RNG",                             "Certain RNG elements will have fixed outcomes. Currently only includes Helmaroc King's attacks."}},
         {Performance,                {"Performance",                         "Adjust game code that causes lag or other performance issues. May come at the cost of visual quality.\nCurrently only affects particles."}},
         {RevealSeaChart,             {"Reveal Full Sea Chart",               "Start the game with the sea chart fully drawn out."}},

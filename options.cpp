@@ -71,6 +71,7 @@ void Settings::resetDefaults() {
     hint_importance = false;
 
     instant_text_boxes = true;
+    quiet_swift_sail = false;
     fix_rng = false;
     performance = false;
     reveal_full_sea_chart = true;
@@ -236,6 +237,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return location_hints;
         case Option::InstantText:
             return instant_text_boxes;
+        case Option::QuietSwiftSail:
+            return quiet_swift_sail;
         case Option::FixRNG:
             return fix_rng;
         case Option::Performance:
@@ -419,6 +422,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             location_hints = value; return;
         case Option::InstantText:
             instant_text_boxes = value; return;
+        case Option::QuietSwiftSail:
+            quiet_swift_sail = value; return;
         case Option::FixRNG:
             fix_rng = value; return;
         case Option::Performance:
@@ -894,6 +899,7 @@ Option nameToSetting(const std::string& name) {
         {"Item Hints", Option::ItemHints},
         {"Location Hints", Option::LocationHints},
         {"Instant Text", Option::InstantText},
+        {"Quiet Swift Sail", Option::QuietSwiftSail},
         {"Fix RNG", Option::FixRNG},
         {"Performance", Option::Performance},
         {"Reveal Sea Chart", Option::RevealSeaChart},
@@ -993,6 +999,7 @@ std::string settingToName(const Option& setting) {
         {Option::ItemHints, "Item Hints"},
         {Option::LocationHints, "Location Hints"},
         {Option::InstantText, "Instant Text"},
+        {Option::QuietSwiftSail, "Quiet Swift Sail"},
         {Option::FixRNG, "Fix RNG"},
         {Option::Performance, "Performance"},
         {Option::RevealSeaChart, "Reveal Sea Chart"},
