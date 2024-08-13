@@ -31,6 +31,8 @@ public:
     void showLogicTooltip();
     QString getTooltipText();
     QString formatRequirement(const Requirement& req, const bool& isTopLevel = false);
+    QString formatEntrancePath(const EntrancePath& path, const QString& headerText = "Entrance Path");
+    QString getUsefulInformationText();
 
 signals:
     void location_label_clicked();

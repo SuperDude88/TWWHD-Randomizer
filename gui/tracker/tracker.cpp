@@ -711,40 +711,45 @@ void MainWindow::update_tracker()
     }
 
     // Clear previous labels from the locations widget
-    auto location_list_layout = ui->specific_locations_layout;
-    clear_tracker_labels(location_list_layout);
+    auto right_layout = ui->specific_locations_right_layout;
+    auto left_layout = ui->specific_locations_left_layout;
+    clear_tracker_labels(right_layout);
+    clear_tracker_labels(left_layout);
 
-    int row = 0;
-    int col = 0;
+    // If we have more than 14 locations to list, we'll split the listing
+    // into 2 columns
+    auto numLocations = areaLocations[currentTrackerArea].size();
     int currentPointSize = 12;
+    if (numLocations > 14)
+    {
+        currentPointSize = 10;
+    }
+
+    int counter = 0;
     for (auto& loc : areaLocations[currentTrackerArea])
     {
         auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, this, loc);
         newLabel->updateShowLogic(trackerPreferences.showLocationLogic, trackerStarted);
-        // newLabel->set_location(loc);
-        location_list_layout->addWidget(newLabel, row, col);
         connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
         connect(newLabel, &TrackerLabel::mouse_over_location_label, this, &MainWindow::tracker_display_current_location);
         connect(newLabel, &TrackerLabel::mouse_left_location_label, this, &MainWindow::tracker_clear_current_area_text);
-        row++;
 
-        // Maximum of 13 labels per coloumn
-        if (row > 13)
+        if (numLocations > 14 && counter > numLocations / 2)
         {
-            col++;
-            row = 0;
-
-            // When a new column is created subtract 2 from the font point size
-            for (auto label : ui->location_list_widget->findChildren<TrackerLabel*>())
-            {
-                auto labelFont = label->font();
-                labelFont.setPointSize(labelFont.pointSize() - 2);
-                label->setFont(labelFont);
-            }
-            currentPointSize -= 2;
+            right_layout->addWidget(newLabel);
         }
+        else
+        {
+            left_layout->addWidget(newLabel);
+        }
+
+        counter++;
     }
-    location_list_layout->addItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding), location_list_layout->rowCount(), 0);
+    left_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    if (numLocations > 14)
+    {
+        right_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    }
 
     // Clear previous labels from the entrances widget
     clear_tracker_labels(ui->entrance_scroll_layout);

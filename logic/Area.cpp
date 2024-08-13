@@ -251,7 +251,7 @@ std::list<std::list<Entrance*>> Area::findShuffledEntrances(const std::list<Area
 // This should only be called from Islands or general hint regions (e.g. Hyrule)
 std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
 {
-    std::unordered_map<Area*, EntrancePath> paths = {{this, {{}, PathLogicality::Full}}};
+    std::unordered_map<Area*, EntrancePath> paths = {{this, {{}, EntrancePath::Logicality::Full}}};
     std::unordered_map<Area*, int> dists = {{this, 0}};
     std::list<Area*> queue = {this};
     std::list<Entrance*> nextDistanceEntrances = {};
@@ -290,9 +290,9 @@ std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
                 // has all of the shuffled entrances in it logically available, but there's
                 // some non-shuffled entrance after them all which is not logically
                 // accessible
-                if (paths[nextArea].logicality == PathLogicality::Full && !e.hasBeenFound())
+                if (paths[nextArea].logicality == EntrancePath::Logicality::Full && !e.hasBeenFound())
                 {
-                    paths[nextArea].logicality = PathLogicality::Partial;
+                    paths[nextArea].logicality = EntrancePath::Logicality::Partial;
                 }
                 dists[nextArea] = curShuffledEntranceDistance;
                 queue.push_back(nextArea);
@@ -325,9 +325,9 @@ std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
                 // entrance to add onto it, then it becomes fully nonlogical because
                 // some entrance before the final shuffled one is not able to be
                 // logically traversed.
-                if (paths[nextArea].logicality == PathLogicality::Partial)
+                if (paths[nextArea].logicality == EntrancePath::Logicality::Partial)
                 {
-                    paths[nextArea].logicality = PathLogicality::None;
+                    paths[nextArea].logicality = EntrancePath::Logicality::None;
                 }
                 dists[nextArea] = curShuffledEntranceDistance;
                 queue.push_back(nextArea);

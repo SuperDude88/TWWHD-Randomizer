@@ -30,6 +30,7 @@ public:
     bool onlyText = false;
     MainWindow* mainWindow = nullptr;
     std::unordered_set<TrackerInventoryButton*> duplicates = {};
+    QPoint mouseEnterPosition = QPoint();
 
     void updateIcon();
     void removeCurrentItem();

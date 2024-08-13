@@ -135,13 +135,16 @@ std::string entranceTypeToName(const EntranceType& type);
 EntranceType entranceNameToType(const std::string& name);
 EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse = true);
 
-enum PathLogicality {
-    None,
-    Partial,
-    Full,
-};
-
 struct EntrancePath {
+
+    enum Logicality {
+        None,
+        Partial,
+        Full,
+    };
+
     std::list<Entrance*> list = {};
-    PathLogicality logicality = PathLogicality::Full;
+    Logicality logicality = Logicality::Full;
+
+    bool isBetterThan(const EntrancePath& other, const std::string& curArea = "");
 };

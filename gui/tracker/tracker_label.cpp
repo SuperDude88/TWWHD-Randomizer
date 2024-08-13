@@ -242,6 +242,77 @@ void TrackerLabel::showLogicTooltip()
 
 QString TrackerLabel::getTooltipText()
 {
+    // Calling QToolTip::showText with the same text that was
+    // previously used won't update the position of the tooltip.
+    // This can be an issue for consecutive labels that have
+    // the same requirement text, so everytime we generate
+    // new requirement text, we'll alternate the bottom margin
+    // between 0 and 1 so that the tooltip text is always different
+    static QString marginBottom = "0";
+    marginBottom = (marginBottom == "0") ? "1" : "0";
+
+    QString returnStr = "";
+
+    // First, list the entrance path for this location if there is one
+    EntrancePath entrancePath = {{}, EntrancePath::Logicality::None};
+    auto& currentArea = mainWindow->currentTrackerArea;
+    if (type == TrackerLabelType::Location)
+    {
+        if (mainWindow->entrancePathsByLocation.contains(location) && currentArea != "")
+        {
+            // By default, show whatever the shortest logical path to
+            // the location is
+            entrancePath = mainWindow->entrancePathsByLocation[location];
+            auto& entrancePaths = mainWindow->entrancePaths[currentArea];
+            for (auto locAcc : location->accessPoints)
+            {
+                // If there's a better path that we can show, use that one
+                // instead
+                if (entrancePaths.contains(locAcc->area))
+                {
+                    auto& newPath = entrancePaths[locAcc->area];
+                    if (newPath.isBetterThan(entrancePath, currentArea))
+                    {
+                        entrancePath = newPath;
+                    }
+                }
+            }
+        }
+    }
+    else if (type == TrackerLabelType::EntranceSource)
+    {
+        // If we have a source entrance, get the entrance path
+        // to the area this entrance is in
+        auto area = entrance->getParentArea();
+        auto& entrancePaths = mainWindow->entrancePaths[currentArea];
+
+        if (currentArea != "" && entrancePaths.contains(area))
+        {
+            entrancePath = entrancePaths[area];
+        }
+        else
+        {
+            // Iteratively compare all the paths so that we end
+            // up with the shortest, most logical one
+            for (auto& [region, paths] : mainWindow->entrancePaths)
+            {
+                // If this entrance path is better than the current one, set it
+                if (paths.contains(area) && paths[area].isBetterThan(entrancePath, currentArea))
+                {
+                    entrancePath = paths[area];
+                }
+            }
+        }
+    }
+
+    // Get the formatted entrance path
+    returnStr += formatEntrancePath(entrancePath);
+
+    // Show special text for some locations to remind users of
+    // potentially useful information regarding the location
+    returnStr += getUsefulInformationText();
+
+    // Get the requirement we're generating text for
     Requirement req;
     switch (type)
     {
@@ -254,6 +325,10 @@ QString TrackerLabel::getTooltipText()
     default:
         break;
     }
+
+    // Generate the text for the requirement.
+    // If the outermost requirement is an AND,
+    // then split up the arguments of the AND.
     std::vector<QString> text = {};
     switch (req.type)
     {
@@ -268,90 +343,7 @@ QString TrackerLabel::getTooltipText()
         text.push_back(formatRequirement(req, true));
     }
 
-    // TEMP FIX
-    // For some reason, calling QToolTip::showText with the exact
-    // same text that was previously used causes a delay when showing
-    // it again. To prevent this we'll switch the bottom margin of the
-    // tooltip between 0 and 1 each time so there's always a text
-    // difference that users won't be able to detect.
-    // TODO: look into if there's a proper solution to this
-    static QString marginBottom = "0";
-    marginBottom = (marginBottom == "0") ? "1" : "0";
-
-    QString returnStr = "";
-
-    // First, list the entrance path for this location if there is one
-    EntrancePath entrancePath = {};
-    if (type == TrackerLabelType::Location)
-    {
-        // By default, show whatever the shortest logical path to
-        // the location is
-        entrancePath = mainWindow->entrancePathsByLocation[location];
-        if (mainWindow->currentTrackerArea != "")
-        {
-            auto& entrancePaths = mainWindow->entrancePaths[mainWindow->currentTrackerArea];
-            for (auto locAcc : location->accessPoints)
-            {
-                // Use a different path if there's one with better logicality, or one with
-                // the same logicality, but on the current island or with a smaller size
-                if (entrancePaths.contains(locAcc->area) &&
-                        (entrancePaths[locAcc->area].logicality > entrancePath.logicality ||
-                        (entrancePaths[locAcc->area].logicality == entrancePath.logicality && entrancePaths[locAcc->area].list.size() <= entrancePath.list.size())))
-                {
-                    entrancePath = entrancePaths[locAcc->area];
-                }
-            }
-        }
-    }
-    else if (type == TrackerLabelType::EntranceSource)
-    {
-        // If we have a source entrance, get the entrance path
-        // to the area this entrance is in
-        auto area = entrance->getParentArea();
-        bool pathSet = false;
-        auto& entrancePaths = mainWindow->entrancePaths[mainWindow->currentTrackerArea];
-
-        if (mainWindow->currentTrackerArea != "" && entrancePaths.contains(area))
-        {
-            entrancePath = entrancePaths[area];
-        }
-        else
-        {
-            // Iteraively compare all the paths so that we end
-            // up with the shortest, most logical one
-            for (auto& [region, paths] : mainWindow->entrancePaths)
-            {
-                // If the entrance path hasn't been set yet, or if the current path
-                // is more logical, or if it has the same logicality, but is smaller in size
-                if (paths.contains(area) &&
-                        (!pathSet || entrancePath.logicality > paths[area].logicality ||
-                        (paths[area].list.size() < entrancePath.list.size() && entrancePath.logicality == paths[area].logicality)
-                        ))
-                {
-                    entrancePath = paths[area];
-                    pathSet = true;
-                }
-            }
-        }
-    }
-
-    if (!entrancePath.list.empty())
-    {
-        returnStr = "Entrance Path:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
-        auto counter = 0;
-        for (auto e : entrancePath.list)
-        {
-            counter++;
-            returnStr += e->getOriginalName(true).c_str();
-            if (counter < entrancePath.list.size())
-            {
-                returnStr += "</li><li>";
-            }
-        }
-        returnStr += "</li></ul><hr>";
-    }
-
-    // Add in item requirements
+    // Add in item requirements text
     returnStr += "Item Requirements:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
     for (auto i = 0; i < text.size(); i++)
     {
@@ -389,6 +381,7 @@ QString TrackerLabel::getTooltipText()
     return returnStr;
 }
 
+// Format an item requirement into bullet points
 QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTopLevel /*= false*/)
 {
     QString returnStr = "";
@@ -489,4 +482,63 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
     default:
         return returnStr;
     }
+}
+
+// Format an entrance path into bullet points
+QString TrackerLabel::formatEntrancePath(const EntrancePath& path, const QString& headerText /*= "Entrance Path"*/)
+{
+    QString returnStr = "";
+    if (!path.list.empty())
+    {
+        returnStr = headerText + ":<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
+        auto counter = 0;
+        for (auto e : path.list)
+        {
+            counter++;
+            returnStr += e->getOriginalName(true).c_str();
+            if (counter < path.list.size())
+            {
+                returnStr += "</li><li>";
+            }
+        }
+        returnStr += "</li></ul><hr>";
+    }
+    return returnStr;
+}
+
+QString TrackerLabel::getUsefulInformationText()
+{
+    auto& currentArea = mainWindow->currentTrackerArea;
+    // Anonymous helper function
+    auto formatData = [&](const std::string& noteMsg,
+                          std::set<std::string>& areaNames)
+    {
+        QString formatStr = QString::fromStdString(noteMsg);
+        for (const auto& areaName : areaNames)
+        {
+            EntrancePath bestPath = {{}, EntrancePath::Logicality::None};
+            auto pathArea = mainWindow->trackerWorlds[0].getArea(areaName);
+            for (auto& [area, paths] : mainWindow->entrancePaths)
+            {
+                if (paths.contains(pathArea) && paths[pathArea].isBetterThan(bestPath, currentArea))
+                {
+                    bestPath = paths[pathArea];
+                }
+            }
+
+            if (bestPath.list.size() > 0 && bestPath.logicality > EntrancePath::Logicality::None)
+            {
+                formatStr += formatEntrancePath(bestPath, std::string("Entrance Path to " + areaName).c_str());
+            }
+        }
+
+        return formatStr;
+    };
+
+    QString returnStr = "";
+    if (type == TrackerLabelType::Location && location && location->trackerNote != "")
+    {
+        returnStr += formatData(location->trackerNote, location->trackerNoteAreas);
+    }
+    return returnStr;
 }

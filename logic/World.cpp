@@ -766,6 +766,23 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
         location->messageLabel = locationObject["Message Label"].as<std::string>();
     }
 
+    // Get the tracker note and note areas for this location if it has them
+    if (locationObject["Tracker Data"])
+    {
+        if (locationObject["Tracker Data"]["Note"])
+        {
+            location->trackerNote = locationObject["Tracker Data"]["Note"].as<std::string>("");
+        }
+        if (locationObject["Tracker Data"]["Note Areas"])
+        {
+            for (const auto& area : locationObject["Tracker Data"]["Note Areas"])
+            {
+                auto areaStr = area.as<std::string>("");
+                location->trackerNoteAreas.insert(areaStr);
+            }
+        }
+    }
+
     return WorldLoadingError::NONE;
 }
 

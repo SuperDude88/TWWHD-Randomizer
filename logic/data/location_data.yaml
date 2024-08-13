@@ -36,6 +36,10 @@
   Type: RPX
   Offsets:
     - 0x10031590
+  Tracker Data:
+    Note: This location requires defeating Jalhalla.<hr>
+    Note Areas: 
+      - Jalhalla Battle Arena
 
 - Names:
     English: Mailbox - Letter from Komali's Father
@@ -113,6 +117,10 @@
   Type: RPX
   Offsets:
     - 0x10031530
+  Tracker Data:
+    Note: This location requires defeating Kalle Demos.<hr>
+    Note Areas: 
+      - Kalle Demos Battle Arena
 
 - Names:
     English: Mailbox - Letter from Grandma
@@ -125,6 +133,10 @@
   Type: RPX
   Offsets:
     - 0x1003153C
+  Tracker Data:
+    Note: This location requires healing Grandma with a fairy.<hr>
+    Note Areas: 
+      - Outset Link's House
 
 - Names:
     English: Mailbox - Letter from Aryll
@@ -138,6 +150,10 @@
   Type: RPX
   Offsets:
     - 0x10031560
+  Tracker Data:
+    Note: This location requires defeating the Helmaroc King.<hr>
+    Note Areas: 
+      - Helmaroc King Battle Arena
 
 - Names:
     English: Mailbox - Letter from Tingle
@@ -152,6 +168,11 @@
   Type: RPX
   Offsets:
     - 0x10031554
+  Tracker Data:
+    Note: This location requires defeating the Helmaroc King and freeing Tingle from the Windfall Jail.<hr>
+    Note Areas: 
+      - Helmaroc King Battle Arena
+      - Windfall Jail
 
 - Names:
     English: Great Sea - Beedle Shop 20 Rupee Item
@@ -817,6 +838,10 @@
   Type: RPX
   Offsets:
     - 0x02298BFF
+  Tracker Data:
+    Note: This location requires talking to Mrs. Marie at the Windfall School of Joy.<hr>
+    Note Areas: 
+      - Windfall School of Joy
 
 - Names:
     English: Windfall Island - Mrs. Marie Catch Killer Bees
@@ -915,6 +940,10 @@
   Type: RPX
   Offsets:
     - 0x022CFAAB
+  Tracker Data:
+    Note: This location requires bottling a forest firefly from Forest Haven.<hr>
+    Note Areas: 
+      - Forest Haven Interior
 
 - Names:
     English: Windfall Island - House of Wealth Chest
@@ -978,6 +1007,10 @@
   Type: Event
   Offset: 0x00022443
   NameOffset: 0x0000B440
+  Tracker Data:
+    Note: This location requires mailing Maggie's Letter and then<br>watching the postman cutscene in the House of Wealth.<hr>
+    Note Areas: 
+      - House of Wealth Upper
 
 
 - Names:
@@ -1254,6 +1287,10 @@
   Type: RPX
   Offsets:
     - 0x101C399F
+  Tracker Data:
+    Note: This location requires taking a photo of Lenzo and Minenco after<br>entering Lenzo's house from the top door.<hr>
+    Note Areas: 
+      - Windfall Lenzo's House Upper
 
 - Names:
     English: Windfall Island - Kamo Full Moon Picture
@@ -1744,6 +1781,10 @@
   Type: RPX
   Offsets:
     - 0x022E9973
+  Tracker Data:
+    Note: This location requires freeing Tingle from the Windfall Jail.<hr>
+    Note Areas: 
+      - Windfall Jail
 
 - Names:
     English: Tingle Island - Blue Chu Chu

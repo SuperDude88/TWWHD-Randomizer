@@ -101,6 +101,8 @@ public:
 
     // Tracker properties
     bool marked;
+    std::string trackerNote;
+    std::set<std::string> trackerNoteAreas;
 
     Location() :
         names({}),

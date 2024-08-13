@@ -2530,6 +2530,12 @@ font-size: 15px;</string>
                    <property name="spacing">
                     <number>1</number>
                    </property>
+                   <item row="0" column="0">
+                    <layout class="QVBoxLayout" name="specific_locations_left_layout"/>
+                   </item>
+                   <item row="0" column="1">
+                    <layout class="QVBoxLayout" name="specific_locations_right_layout"/>
+                   </item>
                   </layout>
                  </widget>
                 </widget>

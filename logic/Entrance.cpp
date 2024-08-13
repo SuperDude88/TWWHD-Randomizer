@@ -443,3 +443,42 @@ EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse /*
     }
     return typeReverseMap.at(type);
 }
+
+// Decides if the current entrance path is better than the one passed in based on
+// certain criteria
+bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& curArea)
+{
+    // If this path has better logicality, or is empty, then it's always better
+    if (logicality > other.logicality || list.empty())
+    {
+        return true;
+    }
+
+    // If the other list is empty, it's always better
+    if (other.list.empty())
+    {
+        return false;
+    }
+
+    // If this path has the same logicality, then evaluate other criteria
+    if (logicality == other.logicality)
+    {
+        auto thisStartArea = list.front()->getParentArea()->getRegion();
+        auto otherStartArea = other.list.front()->getParentArea()->getRegion();
+
+        // If this start area matches the current area, and the other start area does not,
+        // then this path is better the other one. This takes priority over list size
+        if (thisStartArea == curArea && otherStartArea != curArea)
+        {
+            return true;
+        }
+
+        // If the other list is smaller than this one, then the other one is better
+        if (other.list.size() < other.list.size() && thisStartArea != curArea)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
