@@ -516,6 +516,7 @@ QString TrackerLabel::getUsefulInformationText()
         QString formatStr = QString::fromStdString(noteMsg);
         for (const auto& areaName : areaNames)
         {
+            // Loop through and find the best path to this area
             EntrancePath bestPath = {{}, EntrancePath::Logicality::None};
             auto pathArea = mainWindow->trackerWorlds[0].getArea(areaName);
             for (auto& [area, paths] : mainWindow->entrancePaths)
@@ -526,6 +527,7 @@ QString TrackerLabel::getUsefulInformationText()
                 }
             }
 
+            // Don't display an entrance path if we didn't find any
             if (bestPath.list.size() > 0 && bestPath.logicality > EntrancePath::Logicality::None)
             {
                 formatStr += formatEntrancePath(bestPath, std::string("Entrance Path to " + areaName).c_str());
