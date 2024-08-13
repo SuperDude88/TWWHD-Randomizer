@@ -175,6 +175,7 @@ private slots:
     // Convenience Tweaks
     void on_invert_sea_compass_x_axis_stateChanged(int arg1);
     void on_instant_text_boxes_stateChanged(int arg1);
+    void on_quiet_swift_sail_stateChanged(int arg1);
     void on_reveal_full_sea_chart_stateChanged(int arg1);
     void on_skip_rematch_bosses_stateChanged(int arg1);
     void on_add_shortcut_warps_between_dungeons_stateChanged(int arg1);
