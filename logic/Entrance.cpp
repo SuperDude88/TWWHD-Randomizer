@@ -454,7 +454,13 @@ bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& cu
         return true;
     }
 
-    // If the other list is empty, it's always better
+    // If the other list is empty and has no logicality, this path is always better
+    if (other.list.empty() && other.logicality == EntrancePath::Logicality::None)
+    {
+        return true;
+    }
+
+    // If the other list is empty (and it doesn't have no logicality), then it's always better
     if (other.list.empty())
     {
         return false;

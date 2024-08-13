@@ -528,7 +528,7 @@ QString TrackerLabel::getUsefulInformationText()
             }
 
             // Don't display an entrance path if we didn't find any
-            if (bestPath.list.size() > 0 && bestPath.logicality > EntrancePath::Logicality::None)
+            if (bestPath.list.size() > 0 || bestPath.logicality > EntrancePath::Logicality::None)
             {
                 formatStr += formatEntrancePath(bestPath, std::string("Entrance Path to " + areaName).c_str());
             }
