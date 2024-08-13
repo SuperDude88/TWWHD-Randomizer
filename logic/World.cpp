@@ -198,6 +198,11 @@ ItemPool World::getStartingItems() const
     return startingItems;
 }
 
+ItemPool& World::getStartingItemsReference()
+{
+    return startingItems;
+}
+
 int World::getStartingHeartCount() const
 {
     return settings.starting_hcs + (settings.starting_pohs / 4);

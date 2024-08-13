@@ -94,6 +94,27 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     trackerWorld.determineChartMappings();
     trackerWorld.determineProgressionLocations();
     trackerWorld.setItemPools();
+
+    // Tingle Statues have to be set manually since they can
+    // be started with in any order
+    auto& startingInventory = trackerWorld.getStartingItemsReference();
+    std::vector<Item> tingleStatues = {
+        Item(GameItem::DragonTingleStatue, &trackerWorld),
+        Item(GameItem::ForbiddenTingleStatue, &trackerWorld),
+        Item(GameItem::GoddessTingleStatue, &trackerWorld),
+        Item(GameItem::EarthTingleStatue, &trackerWorld),
+        Item(GameItem::WindTingleStatue, &trackerWorld),
+    };
+
+    auto startingTingleStatues = std::count_if(startingInventory.begin(), startingInventory.end(), [&](Item& item){
+        return elementInPool(item, tingleStatues);
+    });
+    removeElementsFromPool(startingInventory, tingleStatues);
+    for (int i = 0; i < startingTingleStatues; i++)
+    {
+        addElementToPool(startingInventory, tingleStatues[i]);
+    }
+
     placeVanillaItems(trackerWorlds);
 
     // Reset trackerSettings.randomize_charts so we can check it later
@@ -139,29 +160,8 @@ void MainWindow::initialize_tracker_world(Settings& settings,
 
     calculate_own_dungeon_key_locations();
 
-    auto startingInventory = trackerWorld.getStartingItems();
-
     // Update inventory gui to have starting items
     //
-    // Tingle Statues have to be set manually since they can
-    // be obtained in any order
-    std::vector<Item> tingleStatues = {
-        Item(GameItem::DragonTingleStatue, &trackerWorld),
-        Item(GameItem::ForbiddenTingleStatue, &trackerWorld),
-        Item(GameItem::GoddessTingleStatue, &trackerWorld),
-        Item(GameItem::EarthTingleStatue, &trackerWorld),
-        Item(GameItem::WindTingleStatue, &trackerWorld),
-    };
-
-    auto startingTingleStatues = std::count_if(startingInventory.begin(), startingInventory.end(), [&](Item& item){
-            return elementInPool(item, tingleStatues);
-    });
-    removeElementsFromPool(startingInventory, tingleStatues);
-    for (int i = 0; i < startingTingleStatues; i++)
-    {
-        addElementToPool(startingInventory, tingleStatues[i]);
-    }
-
     auto startingInventoryCopy = startingInventory;
     auto trackerInventoryCopy = trackerInventory;
 
