@@ -48,6 +48,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-tags: true
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
