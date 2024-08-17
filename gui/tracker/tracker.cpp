@@ -1280,8 +1280,8 @@ void MainWindow::calculate_own_dungeon_key_locations()
     ownDungeonKeyLocations.clear();
     auto& trackerWorld = trackerWorlds[0];
 
-    bool smallKeys = trackerWorld.getSettings().dungeon_big_keys == PlacementOption::OwnDungeon;
-    bool bigKeys = trackerWorld.getSettings().dungeon_small_keys == PlacementOption::OwnDungeon;
+    bool smallKeys = trackerWorld.getSettings().dungeon_small_keys == PlacementOption::OwnDungeon;
+    bool bigKeys = trackerWorld.getSettings().dungeon_big_keys == PlacementOption::OwnDungeon;
 
     auto itemPool = trackerWorld.getItemPool();
     auto keys = filterAndEraseFromPool(itemPool, [&](Item& item){return (item.isSmallKey() && smallKeys) || (item.isBigKey() && bigKeys);});
