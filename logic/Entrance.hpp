@@ -135,8 +135,23 @@ std::string entranceTypeToName(const EntranceType& type);
 EntranceType entranceNameToType(const std::string& name);
 EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse = true);
 
+// An entrance path stores the list of randomzied entrances along a logical path.
+// This is meant to be used with the tracker to display entrance paths to locations
+// that require using randomized entrances. Note that only the randomized entrances
+// along a path are stored in the list.
 struct EntrancePath {
 
+    // Logicality indicates "how in logic" a specific entrance path is
+    //
+    // None    = There is at least one entrance (randomized or not) in the path 
+    //           *before* the last randomzied entrance that is not logically
+    //           traversable with the current inventory
+    // Partial = All connections up through and including the last randomized
+    //           entrance are in logic, but there is some connection after the
+    //           last randomized entrance that isn't logically traversable with the
+    //           current inventory.
+    // Full    = All connections within the entrance path are logically traversable
+    //           with the current inventory
     enum Logicality {
         None,
         Partial,
@@ -147,4 +162,5 @@ struct EntrancePath {
     Logicality logicality = Logicality::Full;
 
     bool isBetterThan(const EntrancePath& other, const std::string& curArea = "");
+    std::string to_string() const;
 };

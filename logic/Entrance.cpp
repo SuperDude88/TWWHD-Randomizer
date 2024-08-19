@@ -445,11 +445,14 @@ EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse /*
 }
 
 // Decides if the current entrance path is better than the one passed in based on
-// certain criteria
+// certain criteria. This is used to determine what entrance path should be shown
+// to a user when they hover over locations/entrances in the tracker. Generally, the
+// shortest, most logical path should be shown. However, if there is a longer, equally
+// logical path through the currently selected area, then that one will be shown instead
 bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& curArea)
 {
-    // If this path has better logicality, or is empty, then it's always better
-    if (logicality > other.logicality || list.empty())
+    // If this path has better logicality then it's always better
+    if (logicality > other.logicality)
     {
         return true;
     }
@@ -460,7 +463,8 @@ bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& cu
         return true;
     }
 
-    // If the other list is empty (and it doesn't have no logicality), then it's always better
+    // If the other list is empty (and it doesn't have no logicality), then it's always better.
+    // At this point, the other path either has equal or better logicality than this path
     if (other.list.empty())
     {
         return false;
@@ -472,19 +476,30 @@ bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& cu
         auto thisStartArea = list.front()->getParentArea()->getRegion();
         auto otherStartArea = other.list.front()->getParentArea()->getRegion();
 
-        // If this start area matches the current area, and the other start area does not,
-        // then this path is better the other one. This takes priority over list size
+        // If this path's start area matches the current area, and the other path's start area does not,
+        // then this path is better than the other one. This takes priority over list size
         if (thisStartArea == curArea && otherStartArea != curArea)
         {
             return true;
         }
 
-        // If the other list is smaller than this one, then the other one is better
-        if (other.list.size() < other.list.size() && thisStartArea != curArea)
+        // If this list is smaller than the other one, and the other path's start area does not equal
+        // the current area, or this path's start area is the current area, then this list is better
+        if (list.size() < other.list.size() && (otherStartArea != curArea || thisStartArea == curArea))
         {
             return true;
         }
     }
 
     return false;
+}
+
+std::string EntrancePath::to_string() const
+{
+    std::string returnStr = "";
+    for (const auto& entrance : list)
+    {
+        returnStr += entrance->getOriginalName() + "\n";
+    }
+    return returnStr;
 }

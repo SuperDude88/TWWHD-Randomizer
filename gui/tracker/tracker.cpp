@@ -1451,17 +1451,23 @@ void MainWindow::calculate_entrance_paths()
         {
             area = trackerWorld.getArea("Hyrule Castle Interior");
         }
+        if (region == "Forsaken Fortress")
+        {
+            area = trackerWorld.getArea("Forsaken Fortress Sector");
+        }
         if (area != nullptr)
         {
             auto paths = area->findEntrancePaths();
             entrancePaths[region] = paths;
             for (auto& [subarea, curPath] : paths)
             {
+                //std::cout << subarea->name << std::endl;
                 for (auto& locAcc : subarea->locations)
                 {
                     auto loc = locAcc.location;
-                    // Don't bother with non-progression locations
-                    if (!loc->progression)
+                    // Don't bother with non-progression locations if show
+                    // nonprogress locations is off
+                    if (!loc->progression && !trackerPreferences.showNonProgressLocations)
                     {
                         continue;
                     }
@@ -1472,12 +1478,11 @@ void MainWindow::calculate_entrance_paths()
                         entrancePathsByLocation[loc] = curPath;
                     }
                     // Otherwise, only replace the previous path if the current path
-                    // has better logicality or has the same logicality and is shorter
-                    // in path size
+                    // is better
                     else
                     {
                         auto& prevPath = entrancePathsByLocation[loc];
-                        if ((curPath.logicality > prevPath.logicality) || (curPath.logicality == prevPath.logicality && curPath.list.size() < prevPath.list.size()))
+                        if (curPath.isBetterThan(prevPath))
                         {
                             prevPath = curPath;
                         }
