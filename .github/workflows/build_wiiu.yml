@@ -51,7 +51,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           docker build -t rando .
-          docker run --user="$(id --user):$(id --group)" -i -e BUILD_TYPE=randomizer -e CMAKE_ARGS="${{ env.EXTRA_CMAKE_FLAGS }}" -e SEED_KEY="${{ secrets.SEED_KEY }}" -v "$(pwd):/src" rando
+          docker run --user="$(id --user):$(id --group)" -i -e BUILD_TYPE=randomizer -e CMAKE_ARGS="$EXTRA_CMAKE_FLAGS" -e SEED_KEY="${{ secrets.SEED_KEY }}" -v "$(pwd):/src" rando
 
       - name: Get Version
         id: get-version
