@@ -51,7 +51,7 @@ jobs:
 
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
-        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }}" >> $GITHUB_ENV
+        run: echo "EXTRA_CMAKE_FLAGS=${{ env.EXTRA_CMAKE_FLAGS }} -DENABLE_DEBUG=True" >> $GITHUB_ENV
 
       - name: Set Release Flags
         if: inputs.build_type == 'Release' && inputs.version != ''
