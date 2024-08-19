@@ -70,13 +70,13 @@ jobs:
 
       - name: Set Release Flags
         if: inputs.build_type == 'Release' && inputs.version != ''
-        run: echo "EXTRA_CMAKE_FLAGS=-DRELEASE_TAG=${{ inputs.version }} ${{ env.EXTRA_CMAKE_FLAGS }}" >> $GITHUB_ENV
+        run: echo "EXTRA_CMAKE_FLAGS=-DRELEASE_TAG=${{ inputs.version }} ${{ env.EXTRA_CMAKE_FLAGS }}" >> $env:GITHUB_ENV
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}
         env:
           SEED_KEY: ${{ secrets.SEED_KEY }}
-        run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True "$EXTRA_CMAKE_FLAGS"
+        run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
         
       - name: Build
         working-directory: ${{ github.workspace }}
