@@ -69,15 +69,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Check for existing config file
-    std::ifstream conf(Utility::get_app_save_path() / "config.yaml");
-    std::ifstream pref(Utility::get_app_save_path() / "preferences.yaml");
-    if (!conf.is_open() || !pref.is_open())
+    if (!std::filesystem::is_regular_file(Utility::get_app_save_path() / "config.yaml") || !std::filesystem::is_regular_file(Utility::get_app_save_path() / "preferences.yaml"))
     {
         // No config file, create default
         delete_and_create_default_config();
     }
-    conf.close();
-    pref.close();
     
     // Load in config
     setup_mixed_pools_combobox();
