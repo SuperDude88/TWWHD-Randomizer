@@ -1061,7 +1061,7 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
         else {
             const size_t len = getOptionBitCount(option);
             if(len == static_cast<size_t>(-1)) {
-                Utility::platformLog("Unhandled option " + settingToName(option) + ". Please tell a dev if you see this message.");
+                ErrorLog::getInstance().log("Unhandled option " + settingToName(option) + "");
                 return "";
             }
 
@@ -1084,7 +1084,7 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
         if (settings.plandomizer) {
             std::string plandoContents;
             if (Utility::getFileContents(settings.plandomizerFile, plandoContents) != 0) {
-                ErrorLog::getInstance().log("Could not find plandomizer file at\n" + Utility::toUtf8String(settings.plandomizerFile));
+                ErrorLog::getInstance().log("Could not find plandomizer file at " + Utility::toUtf8String(settings.plandomizerFile));
                 return "";
             }
             permalink += plandoContents;

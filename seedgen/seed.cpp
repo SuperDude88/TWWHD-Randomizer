@@ -6,6 +6,7 @@
 
 #include <libs/zlib-ng.hpp>
 
+#include <command/Log.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/config.hpp>
 #include <utility/file.hpp>
@@ -2496,6 +2497,10 @@ std::string generate_seed_hash() {
 
 std::string hash_for_config(const Config& config) {
     const std::string permalink = config.getPermalink(true);
+    if(permalink.empty()) {
+        ErrorLog::getInstance().log("Could not generate permalink for seed hash.");
+        return "";
+    }
 
     // Seed RNG
     const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());

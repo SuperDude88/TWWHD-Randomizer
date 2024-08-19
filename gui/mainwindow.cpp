@@ -886,10 +886,20 @@ DEFINE_STATE_CHANGE_FUNCTION(performance)
 DEFINE_STATE_CHANGE_FUNCTION(fix_rng)
 void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
-    UPDATE_CONFIG_STATE(config, ui, plandomizer);
-    update_permalink_and_seed_hash();
+    config.settings.plandomizer = ui->plandomizer->isChecked();
+
     update_plandomizer_widget_visbility();
+
+    //TODO: avoid this on startup
+    if(config.settings.plandomizer && config.settings.plandomizerFile.empty()) {
+        on_plandomizer_path_browse_button_clicked();
+    }
+
+    update_permalink_and_seed_hash();
+    update_progress_locations_text();
 }
+
+//TODO: handle typing into the plando filepath
 
 void MainWindow::on_plandomizer_path_browse_button_clicked()
 {
@@ -1130,7 +1140,17 @@ void MainWindow::update_permalink_and_seed_hash()
     currentPermalink = ui->permalink->text();
 
     // Also update seed hash
-    ui->seed_hash_label->setText(QString::fromStdString("Seed Hash: " + hash_for_config(config)));
+    const std::string hash = hash_for_config(config);
+    // It would be good to show this error more than once in case of different errors
+    // but loading a config with something wrong would spam the error on startup
+    // TODO: find a better way to not spam this on startup (ex. plando on, empty plando path)
+    static bool shown = false;
+    if(hash.empty() && !shown) {
+        shown = true;
+        show_warning_dialog("Could not get seed hash.\nPlease tell a dev and provide the error log if you see this message.");
+    }
+
+    ui->seed_hash_label->setText(QString::fromStdString("Seed Hash: " + hash));
 }
 
 void MainWindow::on_permalink_textEdited(const QString &newPermalink)
@@ -1326,4 +1346,3 @@ void MainWindow::on_paste_permalink_clicked()
     auto permalink = QGuiApplication::clipboard()->text();
     on_permalink_textEdited(permalink);
 }
-
