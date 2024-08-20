@@ -122,6 +122,7 @@ public:
     void update_tracker();
     void setup_tracker_entrances();
     void autosave_current_tracker();
+    void filter_entrance_list(const QString& filter);
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");
@@ -280,11 +281,15 @@ private slots:
     void on_location_list_entrances_button_released();
     void on_entrance_list_close_button_released();
     void on_entrance_list_locations_button_released();
+    void on_source_entrance_filter_lineedit_textChanged(const QString &arg1);
     void on_entrance_destination_back_button_released();
+    void on_target_entrance_filter_lineedit_textChanged(const QString &arg1);
     void on_chart_list_back_button_released();
     void on_open_chart_list_button_clicked();
     void on_open_tracker_settings_button_clicked();
     void tracker_preferences_closed(int result);
+    void on_view_all_entrances_button_clicked();
+
 
 public:
     void update_items_color();

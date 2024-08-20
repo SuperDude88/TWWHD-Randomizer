@@ -473,6 +473,12 @@ bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& cu
     // If this path has the same logicality, then evaluate other criteria
     if (logicality == other.logicality)
     {
+        // If this list is empty, it's always better
+        if (list.empty())
+        {
+            return true;
+        }
+
         auto thisStartArea = list.front()->getParentArea()->getRegion();
         auto otherStartArea = other.list.front()->getParentArea()->getRegion();
 

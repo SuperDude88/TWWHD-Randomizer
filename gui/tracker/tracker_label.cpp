@@ -93,6 +93,16 @@ Entrance* TrackerLabel::get_entrance() const
     return entrance;
 }
 
+void TrackerLabel::set_disconnect_button(QPushButton* button)
+{
+    disconnectButton = button;
+}
+
+QPushButton* TrackerLabel::get_disconnect_button() const
+{
+    return disconnectButton;
+}
+
 void TrackerLabel::mark_location()
 {
     location->marked = !location->marked;
@@ -284,23 +294,14 @@ QString TrackerLabel::getTooltipText()
         // If we have a source entrance, get the entrance path
         // to the area this entrance is in
         auto area = entrance->getParentArea();
-        auto& entrancePaths = mainWindow->entrancePaths[currentArea];
-
-        if (currentArea != "" && entrancePaths.contains(area))
+        // Iteratively compare all the paths so that we end
+        // up with the shortest, most logical one
+        for (auto& [region, paths] : mainWindow->entrancePaths)
         {
-            entrancePath = entrancePaths[area];
-        }
-        else
-        {
-            // Iteratively compare all the paths so that we end
-            // up with the shortest, most logical one
-            for (auto& [region, paths] : mainWindow->entrancePaths)
+            // If this entrance path is better than the current one, set it
+            if (paths.contains(area) && paths[area].isBetterThan(entrancePath, currentArea))
             {
-                // If this entrance path is better than the current one, set it
-                if (paths.contains(area) && paths[area].isBetterThan(entrancePath, currentArea))
-                {
-                    entrancePath = paths[area];
-                }
+                entrancePath = paths[area];
             }
         }
     }

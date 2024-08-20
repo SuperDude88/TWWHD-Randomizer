@@ -182,7 +182,6 @@ void generateSpoilerLog(WorldPool& worlds)
         }
         spoilerLog << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
         auto& sphereEntrances = *sphereItr;
-        sphereEntrances.sort(PointerLess<Entrance>());
         for (auto entrance : sphereEntrances)
         {
             spoilerLog << "        " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;
@@ -200,7 +199,7 @@ void generateSpoilerLog(WorldPool& worlds)
         }
 
         spoilerLog << "Entrances for world " << std::to_string(world.getWorldId()) << ":" << std::endl;
-        std::ranges::sort(entrances, PointerLess<Entrance>());
+        std::ranges::sort(entrances, [](auto lhs, auto rhs){return lhs->getOriginalName() < rhs->getOriginalName();});
         for (auto entrance : entrances)
         {
             spoilerLog << "    " << getSpoilerFormatEntrance(entrance, longestEntranceLength, worlds) << std::endl;

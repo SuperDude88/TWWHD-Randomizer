@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QLabel>
+#include <QPushButton>
 #include <logic/Location.hpp>
 #include <logic/Entrance.hpp>
 
@@ -25,6 +26,8 @@ public:
     Location* get_location() const;
     void set_entrance(Entrance* entrance_);
     Entrance* get_entrance() const;
+    void set_disconnect_button(QPushButton* button);
+    QPushButton* get_disconnect_button() const;
     void update_colors();
     void mark_location();
     void updateShowLogic(int show, bool started);
@@ -57,4 +60,5 @@ private:
     Entrance* entrance = nullptr;
     bool showLogic = true;
     QPoint mouseEnterPosition = QPoint();
+    QPushButton* disconnectButton = nullptr;
 };

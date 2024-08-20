@@ -491,7 +491,11 @@ void MainWindow::initialize_tracker()
     set_font(ui->clear_all_button,               "fira_sans", 14);
     set_font(ui->entrance_list_close_button,     "fira_sans", 14);
     set_font(ui->entrance_list_locations_button, "fira_sans", 14);
+    set_font(ui->source_entrance_filter_label,   "fira_sans", 14);
+    set_font(ui->source_entrance_filter_lineedit,"fira_sans", 11);
     set_font(ui->entrance_destination_back_button, "fira_sans", 14);
+    set_font(ui->target_entrance_filter_label,   "fira_sans", 14);
+    set_font(ui->target_entrance_filter_lineedit,"fira_sans", 11);
     set_font(ui->chart_list_back_button,         "fira_sans", 14);
     set_font(ui->where_did_lead_to_label,        "fira_sans", 14);
     set_font(ui->current_area_name_label,        "fira_sans", 15);
@@ -704,6 +708,8 @@ void MainWindow::update_tracker()
 
     update_tracker_areas_and_autosave();
 
+    auto& trackerWorld = trackerWorlds[0];
+
     // Only update the widget we're displaying
     if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
     {
@@ -716,70 +722,89 @@ void MainWindow::update_tracker()
     clear_tracker_labels(right_layout);
     clear_tracker_labels(left_layout);
 
-    // If we have more than 14 locations to list, we'll split the listing
-    // into 2 columns
-    auto numLocations = areaLocations[currentTrackerArea].size();
-    int currentPointSize = 12;
-    if (numLocations > 14)
+    // Only try displaying locations if the current area has locations
+    if (areaLocations.contains(currentTrackerArea))
     {
-        currentPointSize = 10;
-    }
-
-    int counter = 0;
-    for (auto& loc : areaLocations[currentTrackerArea])
-    {
-        auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, this, loc);
-        newLabel->updateShowLogic(trackerPreferences.showLocationLogic, trackerStarted);
-        connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
-        connect(newLabel, &TrackerLabel::mouse_over_location_label, this, &MainWindow::tracker_display_current_location);
-        connect(newLabel, &TrackerLabel::mouse_left_location_label, this, &MainWindow::tracker_clear_current_area_text);
-
-        if (numLocations > 14 && counter > numLocations / 2)
+        // If we have more than 14 locations to list, we'll split the listing
+        // into 2 columns
+        auto numLocations = areaLocations[currentTrackerArea].size();
+        int currentPointSize = 12;
+        if (numLocations > 14)
         {
-            right_layout->addWidget(newLabel);
-        }
-        else
-        {
-            left_layout->addWidget(newLabel);
+            currentPointSize = 10;
         }
 
-        counter++;
+        int counter = 0;
+        for (auto& loc : areaLocations[currentTrackerArea])
+        {
+            auto newLabel = new TrackerLabel(TrackerLabelType::Location, currentPointSize, this, loc);
+            newLabel->updateShowLogic(trackerPreferences.showLocationLogic, trackerStarted);
+            connect(newLabel, &TrackerLabel::location_label_clicked, this, &MainWindow::update_tracker);
+            connect(newLabel, &TrackerLabel::mouse_over_location_label, this, &MainWindow::tracker_display_current_location);
+            connect(newLabel, &TrackerLabel::mouse_left_location_label, this, &MainWindow::tracker_clear_current_area_text);
+
+            if (numLocations > 14 && counter > numLocations / 2)
+            {
+                right_layout->addWidget(newLabel);
+            }
+            else
+            {
+                left_layout->addWidget(newLabel);
+            }
+
+            counter++;
+        }
+        left_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+        if (numLocations > 14)
+        {
+            right_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+        }
     }
-    left_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    if (numLocations > 14)
-    {
-        right_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    }
+
 
     // Clear previous labels from the entrances widget
     clear_tracker_labels(ui->entrance_scroll_layout);
 
-    // Pare down which entrances are shown to be more intuitive
-    auto& trackerWorld = trackerWorlds[0];
-
-    std::list<Area*> regionEntranceParents = {};
-    for (auto e : areaEntrances[currentTrackerArea])
+    // Only show entrances if the current area has entrances
+    std::list<std::list<Entrance*>> shuffledEntrances = {};
+    if (areaEntrances.contains(currentTrackerArea))
     {
-        if (e->getParentArea()->getRegion() == currentTrackerArea && !elementInPool(e->getParentArea(), regionEntranceParents))
+        // Pare down which entrances are shown to be more intuitive
+        std::list<Area*> regionEntranceParents = {};
+        for (auto e : areaEntrances[currentTrackerArea])
         {
-            regionEntranceParents.push_front(e->getParentArea());
+            if (e->getParentArea()->getRegion() == currentTrackerArea && !elementInPool(e->getParentArea(), regionEntranceParents))
+            {
+                regionEntranceParents.push_front(e->getParentArea());
+            }
+        }
+
+        auto area = trackerWorld.getArea(currentTrackerArea);
+        if (!area && regionEntranceParents.size() > 0)
+        {
+            area = regionEntranceParents.front();
+        }
+        shuffledEntrances = area ? area->findShuffledEntrances(regionEntranceParents) : std::list<std::list<Entrance*>>();
+    }
+
+    // If the current tracker area is empty, then show all entrances
+    if (currentTrackerArea == "")
+    {
+        auto allShuffleableEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, false);
+        shuffledEntrances = {{}};
+        for (auto& entrance : allShuffleableEntrances)
+        {
+            shuffledEntrances.front().push_back(entrance);
         }
     }
 
-    auto area = trackerWorld.getArea(currentTrackerArea);
-    if (!area && regionEntranceParents.size() > 0)
-    {
-        area = regionEntranceParents.front();
-    }
-    auto shuffledEntrances = area ? area->findShuffledEntrances(regionEntranceParents) : std::list<std::list<Entrance*>>();
-
-    currentPointSize = 12;
+    int currentPointSize = 12;
     for (auto& sphere : shuffledEntrances)
     {
         for (auto& entrance : sphere)
         {
             // If this entrance is not part of this areas entrances, then don't show it
-            if (!elementInPool(entrance, areaEntrances[currentTrackerArea]))
+            if (currentTrackerArea != "" && !elementInPool(entrance, areaEntrances[currentTrackerArea]))
             {
                 continue;
             }
@@ -800,6 +825,7 @@ void MainWindow::update_tracker()
                 disconnectButton->setMaximumHeight(15);
                 connect(disconnectButton, &QPushButton::clicked, this, [&,entrance=entrance](){MainWindow::tracker_disconnect_entrance(entrance);});
                 hLayout->addWidget(disconnectButton);
+                newLabel->set_disconnect_button(disconnectButton);
             }
 
             ui->entrance_scroll_layout->addLayout(hLayout);
@@ -954,11 +980,15 @@ void MainWindow::switch_to_area_tracker()
 void MainWindow::switch_to_entrances_tracker()
 {
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA_ENTRANCES);
+    ui->entrance_list_locations_button->setVisible(currentTrackerArea != "");
+    ui->source_entrance_filter_lineedit->setFocus();
 }
 
 void MainWindow::switch_to_entrance_destinations_tracker()
 {
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_ENTRANCE_DESTINATIONS);
+    ui->target_entrance_filter_lineedit->setText("");
+    ui->target_entrance_filter_lineedit->setFocus();
 }
 
 void MainWindow::switch_to_chart_list_tracker()
@@ -986,10 +1016,50 @@ void MainWindow::on_entrance_list_locations_button_released()
     switch_to_area_tracker();
 }
 
+void MainWindow::on_source_entrance_filter_lineedit_textChanged(const QString &arg1)
+{
+    filter_entrance_list(arg1.toLower());
+}
+
+
 void MainWindow::on_entrance_destination_back_button_released()
 {
     switch_to_entrances_tracker();
     selectedEntrance = nullptr;
+}
+
+void MainWindow::on_target_entrance_filter_lineedit_textChanged(const QString &arg1)
+{
+    filter_entrance_list(arg1.toLower());
+}
+
+void MainWindow::filter_entrance_list(const QString& filter)
+{
+    // Hide entrance labels which don't fit the filter
+    for (auto targetLabel : ui->tracker_locations_widget->findChildren<TrackerLabel*>())
+    {
+        if (targetLabel->get_entrance())
+        {
+            auto entranceName = QString::fromStdString(targetLabel->get_entrance()->getOriginalName(true)).toLower();
+            auto disconnectButton = targetLabel->get_disconnect_button();
+            if (entranceName.contains(filter))
+            {
+                targetLabel->show();
+                if (disconnectButton)
+                {
+                    disconnectButton->show();
+                }
+            }
+            else
+            {
+                targetLabel->hide();
+                if (disconnectButton)
+                {
+                    disconnectButton->hide();
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::on_clear_all_button_released()
@@ -1068,6 +1138,13 @@ void MainWindow::on_open_tracker_settings_button_clicked()
 void MainWindow::tracker_preferences_closed(int resault)
 {
     prefDialog = nullptr;
+}
+
+void MainWindow::on_view_all_entrances_button_clicked()
+{
+    set_current_tracker_area("");
+    switch_to_entrances_tracker();
+    update_tracker();
 }
 
 void MainWindow::set_current_tracker_area(const std::string& areaPrefix)
@@ -1461,7 +1538,6 @@ void MainWindow::calculate_entrance_paths()
             entrancePaths[region] = paths;
             for (auto& [subarea, curPath] : paths)
             {
-                //std::cout << subarea->name << std::endl;
                 for (auto& locAcc : subarea->locations)
                 {
                     auto loc = locAcc.location;
