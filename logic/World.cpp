@@ -55,6 +55,10 @@ void World::resolveRandomSettings()
         settings.pig_color = static_cast<PigColor>(Random(0, 3));
         LOG_TO_DEBUG("Random pig color chosen: " + PigColorToName(settings.pig_color));
     }
+    else {
+        // Make sure the RNG is in the same spot regardless of the pig color setting
+        GetGenerator().discard(1);
+    }
 
     if (settings.start_with_random_item)
     {
