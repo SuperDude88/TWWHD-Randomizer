@@ -37,8 +37,7 @@ MCPError getTitlePath(const uint64_t& titleID, fspath& outPath) {
 
     MCPTitleListType info;
     if(const MCPError err = MCP_GetTitleInfo(handle, titleID, &info); err < 0) {
-        Utility::platformLog("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8, true));
-        Utility::platformLog("With title ID " + Utility::Str::intToHex(titleID, 16, true));
+        ErrorLog::getInstance().log("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8, true) + " with title ID " + Utility::Str::intToHex(titleID, 16, true));
         return err;
     }
     
@@ -355,8 +354,8 @@ static bool packFreeChannel(const fspath& baseDir) {
 bool createOutputChannel(const fspath& baseDir, const MCPInstallTarget& loc) {
     Utility::platformLog("Creating output channel...");
     
-    //channel data needs a little under 2GB
-    if(!checkEnoughFreeSpace(loc, 1024ULL * 1024 * 1024 * 2)) return false; //unsigned literal to avoid overflow warning
+    // Channel data needs a little under 2GB
+    if(!checkEnoughFreeSpace(loc, 1024ULL * 1024 * 1024 * 2)) return false; // Unsigned literal to avoid overflow warning
     
     if(!packFreeChannel(baseDir)) return false;
     
