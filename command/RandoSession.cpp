@@ -80,7 +80,7 @@ void RandoSession::CacheEntry::addDependent(std::shared_ptr<CacheEntry> depends)
 const std::shared_ptr<RandoSession::CacheEntry> RandoSession::CacheEntry::getRoot() const {
     if(storedFormat == Format::ROOT) {
         if(!parent->children.contains(element.string())) {
-            ErrorLog::getInstance().log("File cache did not contain element! This is usually because getRoot() was called after clearing the file cache.");
+            ErrorLog::getInstance().log("File cache did not contain element \"" + element.string() + "\"! This is usually because getRoot() was called after clearing the file cache.");
 
             return nullptr;
         }

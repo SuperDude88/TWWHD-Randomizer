@@ -653,7 +653,7 @@ static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, Ite
             if (item.isMajorItem())
             {
                 ErrorLog::getInstance().log("Attempted to plandomize major item \"" + gameItemToName(item.getGameItemId()) + "\" in non-progress location \"" + location->getName() + "\"");
-                ErrorLog::getInstance().log("\nPlandomizing major items in non-progress locations is not allowed.");
+                ErrorLog::getInstance().log("Plandomizing major items in non-progress locations is not allowed.");
                 return FillError::PLANDOMIZER_ERROR;
             }
         }
@@ -675,8 +675,8 @@ FillError validateEnoughLocations(WorldPool& worlds)
     if (majorItems.size() > progressionLocations.size())
     {
         ErrorLog::getInstance().clearLastErrors();
-        ErrorLog::getInstance().log(std::string("Major Items: ") + std::to_string(majorItems.size()));
-        ErrorLog::getInstance().log(std::string("Available Progression Locations: ") + std::to_string(progressionLocations.size()));
+        ErrorLog::getInstance().log("Major Items: " + std::to_string(majorItems.size()));
+        ErrorLog::getInstance().log("Available Progression Locations: " + std::to_string(progressionLocations.size()));
         ErrorLog::getInstance().log("Please select more places for progress items to appear.");
 
         #ifdef ENABLE_DEBUG

@@ -1,5 +1,4 @@
 #include "config.hpp"
-#include "options.hpp"
 
 #include <fstream>
 #include <set>
@@ -8,6 +7,7 @@
 #include <libs/base64pp.hpp>
 
 #include <version.hpp>
+#include <options.hpp>
 #include <keys/keys.hpp>
 #include <logic/GameItem.hpp>
 #include <seedgen/seed.hpp>
@@ -992,7 +992,12 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         }
         else if(option == Option::ExcludedLocations) {
             load.settings.excluded_locations.clear();
+
             const auto& locations = getAllLocationsNames();
+            if(locations.empty()) {
+                return PermalinkError::COULD_NOT_LOAD_LOCATIONS;
+            }
+
             for (const auto& locName: locations) {
                 const auto value = bitsReader.read(1);
                 BYTES_EXIST_CHECK(value);
@@ -1054,6 +1059,11 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
         }
         else if(option == Option::ExcludedLocations) {
             const auto& locations = getAllLocationsNames();
+            if(locations.empty()) {
+                ErrorLog::getInstance().log("Could not load location names for permalink");
+                return "";
+            }
+
             for (const auto& locName : locations) {
                 const size_t bit = settings.excluded_locations.contains(locName);
                 bitsWriter.write(bit, 1);
@@ -1166,6 +1176,8 @@ std::string PermalinkErrorGetName(PermalinkError err) {
             return "COULD_NOT_READ";
         case PermalinkError::UNHANDLED_OPTION:
             return "UNHANDLED_OPTION";
+        case PermalinkError::COULD_NOT_LOAD_LOCATIONS:
+            return "COULD_NOT_LOAD_LOCATIONS";
         default:
             return "UNKNOWN";
     }

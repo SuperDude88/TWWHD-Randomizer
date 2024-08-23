@@ -397,7 +397,11 @@ void MainWindow::setup_location_menus()
     excludedLocationsModel = new QStringListModel(this);
 
     QStringList progressLocations;
-    auto allLocations = getAllLocationsNames();
+    const auto& allLocations = getAllLocationsNames();
+    if(allLocations.empty()) {
+        show_error_dialog("Failed to load location names, check the error log for details.");
+    }
+
     for (const auto& locName : allLocations)
     {
         // Don't expose certain locations to the user

@@ -10,6 +10,6 @@ enum struct [[nodiscard]] PackError {
     COUNT,
 };
 
-const char* packErrorGetName(PackError err);
+std::string packErrorGetName(PackError err);
 
 PackError createPackage(const fspath& dirPath, const fspath& out, const Key& encryptionKey = defaultEncryptionKey, const Key& encryptKeyWith = defaultEncryptWithKey);

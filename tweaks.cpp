@@ -29,13 +29,6 @@
 #include <command/GamePath.hpp>
 #include <command/RandoSession.hpp>
 
-#define EXTRACT_ERR_CHECK(path) { \
-    if(path == nullptr) {\
-        ErrorLog::getInstance().log(std::string("Failed to open file on line ") + std::to_string(__LINE__)); \
-        return TweakError::FILE_OPEN_FAILED;  \
-    } \
-}
-
 #define FILETYPE_ERROR_CHECK(func) {  \
     if(const auto error = func; error != decltype(error)::NONE) {\
         ErrorLog::getInstance().log(std::string("Encountered ") + &(typeid(error).name()[5]) + " on line " TOSTRING(__LINE__)); \
@@ -3759,4 +3752,37 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));
 
     return TweakError::NONE;
+}
+
+std::string errorGetName(TweakError err) {
+    switch(err) {
+        case TweakError::NONE:
+            return "NONE";
+        case TweakError::DATA_FILE_MISSING:
+            return "DATA_FILE_MISSING";
+        case TweakError::PATCH_MISSING_KEY:
+            return "PATCH_MISSING_KEY";
+        case TweakError::RELOCATION_MISSING_KEY:
+            return "RELOCATION_MISSING_KEY";
+        case TweakError::FILE_OPEN_FAILED:
+            return "FILE_OPEN_FAILED";
+        case TweakError::FILE_COPY_FAILED:
+            return "FILE_COPY_FAILED";
+        case TweakError::FILE_SAVE_FAILED:
+            return "FILE_SAVE_FAILED";
+        case TweakError::RPX_OPERATION_FAILED:
+            return "RPX_OPERATION_FAILED";
+        case TweakError::FILETYPE_ERROR:
+            return "FILETYPE_ERROR";
+        case TweakError::MISSING_SYMBOL:
+            return "MISSING_SYMBOL";
+        case TweakError::MISSING_EVENT:
+            return "MISSING_EVENT";
+        case TweakError::MISSING_ENTITY:
+            return "MISSING_ENTITY";
+        case TweakError::UNEXPECTED_VALUE:
+            return "UNEXPECTED_VALUE";
+        default:
+            return "UNKNOWN";
+    }
 }

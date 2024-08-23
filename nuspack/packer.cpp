@@ -19,3 +19,14 @@ PackError createPackage(const fspath& dirPath, const fspath& out, const Key& enc
 
     return PackError::NONE;
 }
+
+std::string packErrorGetName(PackError err) {
+    switch(err) {
+        case PackError::NONE:
+            return "NONE";
+        case PackError::XML_ERROR:
+            return "XML_ERROR";
+        default:
+            return "UNKNOWN";
+    }
+}

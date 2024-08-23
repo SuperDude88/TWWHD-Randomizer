@@ -217,8 +217,8 @@ public:
         }
 
         //IMPROVEMENT: custom model things
-        if(config.settings.selectedModel.applyModel() != ModelError::NONE) {
-            ErrorLog::getInstance().log("Failed to apply custom model!");
+        if(const ModelError err = config.settings.selectedModel.applyModel(); err != ModelError::NONE) {
+            ErrorLog::getInstance().log("Failed to apply custom model, error " + errorToName(err));
             return 1;
         }
 
@@ -226,8 +226,8 @@ public:
         UPDATE_DIALOG_VALUE(30);
         UPDATE_DIALOG_LABEL("Modifying game code...");
         // TODO: update worlds indexing for multiworld eventually
-        if(TweakError err = apply_necessary_tweaks(worlds[0].getSettings()); err != TweakError::NONE) {
-            ErrorLog::getInstance().log("Encountered error in pre-randomization tweaks!");
+        if(const TweakError err = apply_necessary_tweaks(worlds[0].getSettings()); err != TweakError::NONE) {
+            ErrorLog::getInstance().log("Encountered " + errorGetName(err) + " in pre-randomization tweaks!");
             return 1;
         }
 
@@ -262,8 +262,8 @@ public:
         Utility::platformLog("Applying final patches...");
         UPDATE_DIALOG_VALUE(50);
         UPDATE_DIALOG_LABEL("Applying final patches...");
-        if(TweakError err = apply_necessary_post_randomization_tweaks(worlds[0]/* , randomizeItems */); err != TweakError::NONE) {
-            ErrorLog::getInstance().log("Encountered error in post-randomization tweaks!");
+        if(const TweakError err = apply_necessary_post_randomization_tweaks(worlds[0]/* , randomizeItems */); err != TweakError::NONE) {
+            ErrorLog::getInstance().log("Encountered " + errorGetName(err) + " in post-randomization tweaks!");
             return 1;
         }
 
@@ -314,7 +314,7 @@ int mainRandomize() {
     // Create default configs/preferences if they don't exist
     ConfigError err = Config::writeDefault(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     if(err != ConfigError::NONE) {
-        ErrorLog::getInstance().log("Failed to create config, ERROR: " + ConfigErrorGetName(err));
+        ErrorLog::getInstance().log("Failed to create config, error " + ConfigErrorGetName(err));
         return 1;
     }
 
@@ -325,7 +325,7 @@ int mainRandomize() {
         err = load.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml");
     #endif
     if(err != ConfigError::NONE && err != ConfigError::DIFFERENT_RANDO_VERSION) {
-        ErrorLog::getInstance().log("Failed to read config, error: " + ConfigErrorGetName(err));
+        ErrorLog::getInstance().log("Failed to read config, error " + ConfigErrorGetName(err));
 
         return 1;
     }

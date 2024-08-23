@@ -403,7 +403,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
 
     // If our expression has two parts, then we don't know what that is
     if (splitLogicStr.size() == 2)
-        {
+    {
             ErrorLog::getInstance().log("Unrecognized 2 part expression: " + str);
             return RequirementError::LOGIC_SYMBOL_DOES_NOT_EXIST;
     }

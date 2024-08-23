@@ -174,6 +174,6 @@ public:
     ModificationError writeLocation(const Item& item) override;
 };
 
-const char* modErrorToName(ModificationError err);
+std::string modErrorToName(ModificationError err);
 
 [[nodiscard]] bool writeLocations(WorldPool& worlds);
