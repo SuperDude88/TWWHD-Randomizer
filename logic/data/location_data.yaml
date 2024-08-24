@@ -10,6 +10,10 @@
   Type: RPX
   Offsets:
     - 0x10031584
+  Tracker Data:
+    Note: This location requires giving Hoskit 20 Golden Feathers.<hr>
+    Note Areas: 
+      - Dragon Roost Rito Aerie 
 
 - Names:
     English: Mailbox - Letter from Baito's Mother
@@ -928,6 +932,10 @@
   Type: RPX
   Offsets:
     - 0x022CFA77
+  Tracker Data:
+    Note: This location requires taking pictures of Garrickson and Anton on Windfall Island, as well as Gossack in the Windfall Cafe.<hr>
+    Note Areas: 
+      - Windfall Cafe Bar
 
 - Names:
     English: Windfall Island - Lenzo Bring Forest Firefly
