@@ -240,6 +240,43 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     // Update areas and entrances for all islands
     set_areas_locations();
     set_areas_entrances();
+
+    // Setup the display of randomized entrances
+    auto allShuffleableEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, false);
+
+    int currentPointSize = 12;
+    for (auto& entrance : shuffledEntrances)
+    {
+        // New Horizontal layout to add the label and the disconnect button
+        auto hLayout = new QHBoxLayout();
+
+        auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, this, nullptr, entrance);
+        hLayout->addWidget(newLabel);
+
+        hLayout->setContentsMargins(7, 0, 0, 0);
+        auto disconnectButton = new QPushButton("X");
+        set_font(disconnectButton, "fira_sans", currentPointSize);
+        disconnectButton->setCursor(Qt::PointingHandCursor);
+        disconnectButton->setMaximumWidth(20);
+        disconnectButton->setMaximumHeight(15);
+        connect(disconnectButton, &QPushButton::clicked, this, [&,entrance=entrance](){MainWindow::tracker_disconnect_entrance(entrance);});
+        hLayout->addWidget(disconnectButton);
+        newLabel->set_disconnect_button(disconnectButton);
+        // Hide the disconnect button if this entrance is not connected
+        if (!entrance->getReplaces())
+        {
+            disconnectButton->setVisible(false);
+        }
+
+        ui->entrance_scroll_layout->addLayout(hLayout);
+        connect(newLabel, &TrackerLabel::entrance_source_label_clicked, this, &MainWindow::tracker_show_available_target_entrances);
+        connect(newLabel, &TrackerLabel::entrance_source_label_disconnect, this, &MainWindow::tracker_disconnect_entrance);
+        connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
+        connect(newLabel, &TrackerLabel::mouse_left_entrance_label, this, &MainWindow::tracker_clear_current_area_text);
+    }
+
+    // Add vertical spacer to push labels up
+    ui->entrance_scroll_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }
 
 void MainWindow::on_start_tracker_button_clicked()
@@ -761,30 +798,28 @@ void MainWindow::update_tracker()
         }
     }
 
-
-    // Clear previous labels from the entrances widget
-    clear_tracker_labels(ui->entrance_scroll_layout);
-
-    // Only show entrances if the current area has entrances
+    // Pare down which entrances are shown to be more intuitive
     std::list<std::list<Entrance*>> shuffledEntrances = {};
     if (areaEntrances.contains(currentTrackerArea))
     {
-        // Pare down which entrances are shown to be more intuitive
-        std::list<Area*> regionEntranceParents = {};
+        // Gather all of the regions which have the current area as their
+        // hardcoded region. These are the area's entrance parents.
+        std::list<Area*> areaEntranceParents = {};
         for (auto e : areaEntrances[currentTrackerArea])
         {
-            if (e->getParentArea()->getRegion() == currentTrackerArea && !elementInPool(e->getParentArea(), regionEntranceParents))
+            if (e->getParentArea()->getRegion() == currentTrackerArea && !elementInPool(e->getParentArea(), areaEntranceParents))
             {
-                regionEntranceParents.push_front(e->getParentArea());
+                areaEntranceParents.push_front(e->getParentArea());
             }
         }
 
         auto area = trackerWorld.getArea(currentTrackerArea);
-        if (!area && regionEntranceParents.size() > 0)
+        if (!area && areaEntranceParents.size() > 0)
         {
-            area = regionEntranceParents.front();
+            area = areaEntranceParents.front();
         }
-        shuffledEntrances = area ? area->findShuffledEntrances(regionEntranceParents) : std::list<std::list<Entrance*>>();
+        // Use the area entrance parents to find all shuffled entrances in this area
+        shuffledEntrances = area ? area->findShuffledEntrances(areaEntranceParents) : std::list<std::list<Entrance*>>();
     }
 
     // If the current tracker area is empty, then show all entrances
@@ -798,47 +833,43 @@ void MainWindow::update_tracker()
         }
     }
 
-    int currentPointSize = 12;
+    // First, hide all entrances
+    auto entranceLabels = ui->entrance_scroll_widget->findChildren<TrackerLabel*>();
+    for (auto& entranceLabel : entranceLabels)
+    {
+        auto entrance = entranceLabel->get_entrance();
+        if (entrance)
+        {
+            entrance->setHidden(true);
+        }
+    }
+
+    // Then set all collected entrances as unhidden
     for (auto& sphere : shuffledEntrances)
     {
         for (auto& entrance : sphere)
         {
-            // If this entrance is not part of this areas entrances, then don't show it
-            if (currentTrackerArea != "" && !elementInPool(entrance, areaEntrances[currentTrackerArea]))
-            {
-                continue;
-            }
-            // New Horizontal layout to add the label and the disconnect button
-            // if the entrance is connected
-            auto hLayout = new QHBoxLayout();
-
-            auto newLabel = new TrackerLabel(TrackerLabelType::EntranceSource, currentPointSize, this, nullptr, entrance);
-            hLayout->addWidget(newLabel);
-            // If the entrance is connected, give the user a disconnect button
-            if (entrance->getReplaces())
-            {
-                hLayout->setContentsMargins(7, 0, 0, 0);
-                auto disconnectButton = new QPushButton("X");
-                set_font(disconnectButton, "fira_sans", currentPointSize);
-                disconnectButton->setCursor(Qt::PointingHandCursor);
-                disconnectButton->setMaximumWidth(20);
-                disconnectButton->setMaximumHeight(15);
-                connect(disconnectButton, &QPushButton::clicked, this, [&,entrance=entrance](){MainWindow::tracker_disconnect_entrance(entrance);});
-                hLayout->addWidget(disconnectButton);
-                newLabel->set_disconnect_button(disconnectButton);
-            }
-
-            ui->entrance_scroll_layout->addLayout(hLayout);
-            connect(newLabel, &TrackerLabel::entrance_source_label_clicked, this, &MainWindow::tracker_show_available_target_entrances);
-            connect(newLabel, &TrackerLabel::entrance_source_label_disconnect, this, &MainWindow::tracker_disconnect_entrance);
-            connect(newLabel, &TrackerLabel::mouse_over_entrance_label, this, &MainWindow::tracker_display_current_entrance);
-            connect(newLabel, &TrackerLabel::mouse_left_entrance_label, this, &MainWindow::tracker_clear_current_area_text);
+            entrance->setHidden(false);
         }
     }
 
-
-    // Add vertical spacer to push labels up
-    ui->entrance_scroll_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    // Only show the unhidden entrances
+    for (auto& entranceLabel : entranceLabels)
+    {
+        auto entrance = entranceLabel->get_entrance();
+        if (entrance)
+        {
+            if (entrance->isHidden())
+            {
+                entranceLabel->hideAll();
+            }
+            else
+            {
+                entranceLabel->showAll();
+                entranceLabel->update_colors();
+            }
+        }
+    }
 }
 
 // Under certain circumstances we want to mark certain
@@ -1041,22 +1072,13 @@ void MainWindow::filter_entrance_list(const QString& filter)
         if (targetLabel->get_entrance())
         {
             auto entranceName = QString::fromStdString(targetLabel->get_entrance()->getOriginalName(true)).toLower();
-            auto disconnectButton = targetLabel->get_disconnect_button();
-            if (entranceName.contains(filter))
+            if (!targetLabel->get_entrance()->isHidden() && entranceName.contains(filter))
             {
-                targetLabel->show();
-                if (disconnectButton)
-                {
-                    disconnectButton->show();
-                }
+                targetLabel->showAll();
             }
             else
             {
-                targetLabel->hide();
-                if (disconnectButton)
-                {
-                    disconnectButton->hide();
-                }
+                targetLabel->hideAll();
             }
         }
     }
@@ -1327,6 +1349,16 @@ void MainWindow::tracker_change_entrance_connections(Entrance* target)
     set_areas_entrances();
     update_tracker_areas_and_autosave();
 
+    // Change the text of the label for entrance we just connected
+    for (auto entranceLabel : ui->entrance_scroll_widget->findChildren<TrackerLabel*>())
+    {
+        if (entranceLabel->get_entrance() == selectedEntrance)
+        {
+            entranceLabel->update_entrance_text();
+            break;
+        }
+    }
+
     selectedEntrance = nullptr;
     switch_to_entrances_tracker();
     update_tracker();
@@ -1343,6 +1375,18 @@ void MainWindow::tracker_disconnect_entrance(Entrance* connectedEntrance)
             set_areas_locations();
             set_areas_entrances();
             update_tracker();
+            // Change the text of the label for entrance we just connected
+            for (auto entranceLabel : ui->entrance_scroll_widget->findChildren<TrackerLabel*>())
+            {
+                if (entranceLabel->get_entrance() == connectedEntrance)
+                {
+                    entranceLabel->update_entrance_text();
+                    // Hide and show the entrance to hide the disconnect button
+                    entranceLabel->hideAll();
+                    entranceLabel->showAll();
+                    break;
+                }
+            }
             return;
         }
     }

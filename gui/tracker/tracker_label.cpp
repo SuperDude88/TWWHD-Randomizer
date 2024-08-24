@@ -61,7 +61,16 @@ Location* TrackerLabel::get_location() const
 void TrackerLabel::set_entrance(Entrance* entrance_)
 {
     entrance = entrance_;
+    update_entrance_text();
+}
 
+Entrance* TrackerLabel::get_entrance() const
+{
+    return entrance;
+}
+
+void TrackerLabel::update_entrance_text()
+{
     std::string destination;
     std::string source;
     switch (type)
@@ -86,11 +95,6 @@ void TrackerLabel::set_entrance(Entrance* entrance_)
     }
 
     update_colors();
-}
-
-Entrance* TrackerLabel::get_entrance() const
-{
-    return entrance;
 }
 
 void TrackerLabel::set_disconnect_button(QPushButton* button)
@@ -544,4 +548,27 @@ QString TrackerLabel::getUsefulInformationText()
         returnStr += formatData(location->trackerNote, location->trackerNoteAreas);
     }
     return returnStr;
+}
+
+// Will show this widget as well as the disconnect button if it
+// has one
+void TrackerLabel::showAll()
+{
+    this->setVisible(true);
+    // Only show the disconnect button if we have an entrance to disconnect
+    if (disconnectButton && entrance && entrance->getReplaces())
+    {
+        disconnectButton->setVisible(true);
+    }
+}
+
+// Will hide this widget as well as the disconnect button if it
+// has one
+void TrackerLabel::hideAll()
+{
+    this->setVisible(false);
+    if (disconnectButton)
+    {
+        disconnectButton->setVisible(false);
+    }
 }

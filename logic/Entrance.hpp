@@ -87,6 +87,8 @@ public:
     void setComputedRequirement(const Requirement& req);
     bool hasBeenFound() const;
     void setFound(const bool& found_);
+    bool isHidden() const;
+    void setHidden(const bool& hidden_);
 
     std::list<std::string> findIslands();
 
@@ -129,6 +131,7 @@ private:
     // Tracker things
     Requirement computedRequirement;
     bool found = false;
+    bool hidden = false;
 };
 
 std::string entranceTypeToName(const EntranceType& type);

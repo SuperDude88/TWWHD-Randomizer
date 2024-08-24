@@ -26,6 +26,7 @@ public:
     Location* get_location() const;
     void set_entrance(Entrance* entrance_);
     Entrance* get_entrance() const;
+    void update_entrance_text();
     void set_disconnect_button(QPushButton* button);
     QPushButton* get_disconnect_button() const;
     void update_colors();
@@ -36,6 +37,8 @@ public:
     QString formatRequirement(const Requirement& req, const bool& isTopLevel = false);
     QString formatEntrancePath(const EntrancePath& path, const QString& headerText = "Entrance Path");
     QString getUsefulInformationText();
+    void showAll();
+    void hideAll();
 
 signals:
     void location_label_clicked();

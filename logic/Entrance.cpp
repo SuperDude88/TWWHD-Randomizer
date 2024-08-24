@@ -289,6 +289,16 @@ void Entrance::setFound(const bool& found_)
     found = found_;
 }
 
+bool Entrance::isHidden() const
+{
+    return hidden;
+}
+
+void Entrance::setHidden(const bool& hidden_)
+{
+    hidden = hidden_;
+}
+
 std::list<std::string> Entrance::findIslands()
 {
     return parentArea->findIslands();
