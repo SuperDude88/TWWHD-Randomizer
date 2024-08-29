@@ -1067,12 +1067,33 @@ void MainWindow::on_target_entrance_filter_lineedit_textChanged(const QString &a
 void MainWindow::filter_entrance_list(const QString& filter)
 {
     // Hide entrance labels which don't fit the filter
+    // The labels should be shown if any part of the entrance's original name
+    // or the area it's connected to, fit the filter
     for (auto targetLabel : ui->tracker_locations_widget->findChildren<TrackerLabel*>())
     {
-        if (targetLabel->get_entrance())
+        auto entrance = targetLabel->get_entrance();
+        if (entrance)
         {
-            auto entranceName = QString::fromStdString(targetLabel->get_entrance()->getOriginalName(true)).toLower();
-            if (!targetLabel->get_entrance()->isHidden() && entranceName.contains(filter))
+            auto entranceName = QString::fromStdString(entrance->getOriginalName(true)).toLower();
+            QString connectedAreaName = "";
+
+            // If this is a target entrance, use the original name of the entrance this target
+            // was created from to filter for. This allows us to more easily filter for target
+            // entrances that all lead to the same area
+            if (entranceName.startsWith("root -> "))
+            {
+                entranceName = QString::fromStdString(entrance->getReplaces()->getOriginalName(true)).toLower();
+            }
+
+            // If this entrance is connected to another area, include that in the filter.
+            // This allows us to filter for which entrances are connected to an area
+            if (entrance->getConnectedArea())
+            {
+                connectedAreaName = QString::fromStdString(entrance->getConnectedArea()->name);
+            }
+
+            // Check the filter
+            if (!entrance->isHidden() && (entranceName.contains(filter) || connectedAreaName.contains(filter)))
             {
                 targetLabel->showAll();
             }
