@@ -26,3 +26,4 @@ TweakError apply_necessary_tweaks(const Settings& settings);
 
 TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool& randomizeItems */);
 
+std::string errorGetName(TweakError err);

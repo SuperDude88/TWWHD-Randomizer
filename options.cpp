@@ -2,9 +2,11 @@
 
 #include <unordered_map>
 
+#include <libs/yaml.hpp>
+
+#include <command/Log.hpp>
 #include <utility/file.hpp>
 #include <utility/platform.hpp>
-#include <libs/yaml.hpp>
 
 Settings::Settings() {
     resetDefaults();
@@ -1062,7 +1064,11 @@ const std::set<std::string>& getAllLocationsNames()
     // The data folder is read-only for most builds, and it shouldn't be changing anyways
     if(locNames.empty()) {
         std::string locationDataStr;
-        Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
+        if(Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true) != 0) {
+            ErrorLog::getInstance().log("Failed to open location_data.yaml to load location names");
+            return locNames;
+        }
+
         YAML::Node locationDataTree = YAML::Load(locationDataStr);
         for (const auto& locationObject : locationDataTree)
         {
@@ -1072,7 +1078,9 @@ const std::set<std::string>& getAllLocationsNames()
             }
             else
             {
-                Utility::platformLog("Some location object is missing a name in location_data.yaml");
+                ErrorLog::getInstance().log("Location object missing name in location_data.yaml");
+                locNames.clear();
+                return locNames;
             }
         }
     }

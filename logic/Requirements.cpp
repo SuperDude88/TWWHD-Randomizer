@@ -403,7 +403,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
 
     // If our expression has two parts, then we don't know what that is
     if (splitLogicStr.size() == 2)
-        {
+    {
             ErrorLog::getInstance().log("Unrecognized 2 part expression: " + str);
             return RequirementError::LOGIC_SYMBOL_DOES_NOT_EXIST;
     }
@@ -480,7 +480,11 @@ void Requirement::simplifyParenthesis()
     {
         for (auto i = 0; i < args.size(); i++)
         {
-            auto& nestedArg = std::get<Requirement>(args[i]);
+            // Make a copy of the nested argument before using it
+            // Doing push_back or erase later will reallocate the vector
+            // and invalidate the reference
+            Requirement nestedArg = std::get<Requirement>(args[i]);
+
             nestedArg.simplifyParenthesis();
             if (nestedArg.type == type)
             {
@@ -488,6 +492,7 @@ void Requirement::simplifyParenthesis()
                 {
                     args.push_back(arg);
                 }
+
                 args.erase(args.begin() + i);
                 i--;
             }

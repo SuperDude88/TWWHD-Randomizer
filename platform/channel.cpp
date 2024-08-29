@@ -37,8 +37,7 @@ MCPError getTitlePath(const uint64_t& titleID, fspath& outPath) {
 
     MCPTitleListType info;
     if(const MCPError err = MCP_GetTitleInfo(handle, titleID, &info); err < 0) {
-        Utility::platformLog("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8, true));
-        Utility::platformLog("With title ID " + Utility::Str::intToHex(titleID, 16, true));
+        ErrorLog::getInstance().log("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8, true) + " with title ID " + Utility::Str::intToHex(titleID, 16, true));
         return err;
     }
     
@@ -63,13 +62,13 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
     uint64_t freeSize = 0;
     FSError ret = FSAGetFreeSpaceSize(handle, path.c_str(), &freeSize);
     if(ret != FS_ERROR_OK) {
-        ErrorLog::getInstance().log("Failed to get free space size!");
+        ErrorLog::getInstance().log("Failed to get free space size, error " + std::to_string(ret));
         return false;
     }
 
     ret = FSADelClient(handle);
     if(ret != FS_ERROR_OK) {
-        ErrorLog::getInstance().log("Failed to delete FSA client!");
+        ErrorLog::getInstance().log("Failed to delete FSA client, error " + std::to_string(ret));
         return false;
     }
 
@@ -227,7 +226,7 @@ static bool installFreeChannel(const fspath& relPath, const MCPInstallTarget& lo
                         ErrorLog::getInstance().log("Possible not enough memory on target device");
                     }
                     else if (installError == 0xFFFFF825) {
-                        ErrorLog::getInstance().log("Possible bad SD card.  Reformat (32k blocks) or replace");
+                        ErrorLog::getInstance().log("Possible bad SD card. Reformat (32k blocks) or replace");
                     }
                     else if ((installError & 0xFFFF0000) == 0xFFFB0000) {
                         ErrorLog::getInstance().log("Verify WUP files are correct & complete. DLC/E-shop require Sig Patch");
@@ -343,9 +342,9 @@ static bool packFreeChannel(const fspath& baseDir) {
 
     //pack the channel
     Utility::platformLog("Creating package");
-    if(createPackage(DataPath, SD_ROOT_PATH / CHANNEL_OUTPUT_PATH, defaultEncryptionKey, commonKey) != PackError::NONE)
+    if(const PackError err = createPackage(DataPath, SD_ROOT_PATH / CHANNEL_OUTPUT_PATH, defaultEncryptionKey, commonKey); err != PackError::NONE)
     {
-        ErrorLog::getInstance().log("Failed to create console package");
+        ErrorLog::getInstance().log("Failed to create console package, error " + packErrorGetName(err));
         return false;
     }
 
@@ -355,8 +354,8 @@ static bool packFreeChannel(const fspath& baseDir) {
 bool createOutputChannel(const fspath& baseDir, const MCPInstallTarget& loc) {
     Utility::platformLog("Creating output channel...");
     
-    //channel data needs a little under 2GB
-    if(!checkEnoughFreeSpace(loc, 1024ULL * 1024 * 1024 * 2)) return false; //unsigned literal to avoid overflow warning
+    // Channel data needs a little under 2GB
+    if(!checkEnoughFreeSpace(loc, 1024ULL * 1024 * 1024 * 2)) return false; // Unsigned literal to avoid overflow warning
     
     if(!packFreeChannel(baseDir)) return false;
     

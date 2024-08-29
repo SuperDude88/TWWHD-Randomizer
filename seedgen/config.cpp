@@ -1,5 +1,4 @@
 #include "config.hpp"
-#include "options.hpp"
 
 #include <fstream>
 #include <set>
@@ -8,6 +7,7 @@
 #include <libs/base64pp.hpp>
 
 #include <version.hpp>
+#include <options.hpp>
 #include <keys/keys.hpp>
 #include <logic/GameItem.hpp>
 #include <seedgen/seed.hpp>
@@ -20,16 +20,17 @@
 
 
 // falls back to current value if the key is not present + errors are ignored
-#define GET_FIELD(yaml, key, out)	                         			\
-    if(!yaml[key]) {                                                  	\
-        Utility::platformLog("\"" key "\" not found in config.yaml");   \
-        if (!ignoreErrors) {											\
-            return ConfigError::MISSING_KEY;							\
-        }																\
-        else {															\
-            converted = true;											\
-        }																\
-    }            														\
+#define GET_FIELD(yaml, key, out)                                               \
+    if(!yaml[key]) {                                                            \
+        if (!ignoreErrors) {                                                    \
+            ErrorLog::getInstance().log("\"" key "\" not found in config.yaml");\
+            LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);                       \
+        }                                                                       \
+        else {                                                                  \
+            Utility::platformLog("\"" key "\" not found in config.yaml");       \
+            converted = true;                                                   \
+        }                                                                       \
+    }                                                                           \
     out = yaml[key].as<decltype(out)>(out);
 
 #define GET_FIELD_NO_FAIL(yaml, key, out) out = yaml[key].as<decltype(out)>(out);
@@ -991,7 +992,12 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         }
         else if(option == Option::ExcludedLocations) {
             load.settings.excluded_locations.clear();
+
             const auto& locations = getAllLocationsNames();
+            if(locations.empty()) {
+                return PermalinkError::COULD_NOT_LOAD_LOCATIONS;
+            }
+
             for (const auto& locName: locations) {
                 const auto value = bitsReader.read(1);
                 BYTES_EXIST_CHECK(value);
@@ -1053,6 +1059,11 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
         }
         else if(option == Option::ExcludedLocations) {
             const auto& locations = getAllLocationsNames();
+            if(locations.empty()) {
+                ErrorLog::getInstance().log("Could not load location names for permalink");
+                return "";
+            }
+
             for (const auto& locName : locations) {
                 const size_t bit = settings.excluded_locations.contains(locName);
                 bitsWriter.write(bit, 1);
@@ -1061,7 +1072,7 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
         else {
             const size_t len = getOptionBitCount(option);
             if(len == static_cast<size_t>(-1)) {
-                ErrorLog::getInstance().log("Unhandled option " + settingToName(option) + "");
+                ErrorLog::getInstance().log("Unhandled option " + settingToName(option));
                 return "";
             }
 
@@ -1103,17 +1114,21 @@ ConfigError Config::writeDefault(const fspath& filePath, const fspath& preferenc
 
     if (file.is_open() == false) {
         Utility::platformLog("Creating default config");
+
         conf.seed = generate_seed();
         LOG_AND_RETURN_IF_ERR(conf.writeSettings(filePath))
     }
 
     if (pref.is_open() == false) {
         Utility::platformLog("Creating default preferences");
-        // load in default link colors
-        if (conf.settings.selectedModel.loadFromFolder() != ModelError::NONE) {
-            Utility::platformLog("Could not load default color perferences");
+
+        // Load in default link colors
+        if (const ModelError err = conf.settings.selectedModel.loadFromFolder(); err != ModelError::NONE) {
+            ErrorLog::getInstance().log("Failed to load default colors, error " + errorToName(err));
+            LOG_ERR_AND_RETURN(ConfigError::MODEL_ERROR);
         }
         conf.settings.selectedModel.loadPreset(0); // Load default preset
+
         LOG_AND_RETURN_IF_ERR(conf.writePreferences(preferencesPath))
     }
 
@@ -1161,6 +1176,8 @@ std::string PermalinkErrorGetName(PermalinkError err) {
             return "COULD_NOT_READ";
         case PermalinkError::UNHANDLED_OPTION:
             return "UNHANDLED_OPTION";
+        case PermalinkError::COULD_NOT_LOAD_LOCATIONS:
+            return "COULD_NOT_LOAD_LOCATIONS";
         default:
             return "UNKNOWN";
     }

@@ -399,11 +399,7 @@ namespace FileTypes {
 		inData.append(readChunkBuf, in.gcount());
 
 		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
-		// CLion claims this is always false
-		if (const YAZ0Error error = yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
-			ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-			return error;
-		}
+		LOG_AND_RETURN_IF_ERR(yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize));
 		out.write(&outData[0], header.uncompressedSize);
 
 		return YAZ0Error::NONE;
@@ -416,10 +412,7 @@ namespace FileTypes {
 		LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
 		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
-		if (const YAZ0Error error = yaz0DataDecode(&in.str()[0x10], &outData[0], header.uncompressedSize); error != YAZ0Error::NONE) {
-			ErrorLog::getInstance().log(std ::string("Encountered error on line " TOSTRING(__LINE__) " of ") + __FILENAME__);
-			return error;
-		}
+		LOG_AND_RETURN_IF_ERR(yaz0DataDecode(&in.str()[0x10], &outData[0], header.uncompressedSize));
 		out.write(&outData[0], header.uncompressedSize);
 
 		return YAZ0Error::NONE;

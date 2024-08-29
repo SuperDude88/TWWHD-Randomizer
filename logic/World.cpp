@@ -893,7 +893,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
         err = loadExit(startingArea->name, "Nothing", exitOut, loadedArea);
         if (err != WorldLoadingError::NONE)
         {
-            ErrorLog::getInstance().log(std::string("Got error loading exit: ") + errorToName(err));
+            ErrorLog::getInstance().log("Got error loading exit: " + errorToName(err));
             return err;
         }
         LOG_TO_DEBUG("\tAdding exit -> " + exitOut.getConnectedArea()->name + " (Savewarp)");
@@ -918,7 +918,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             err = loadEventRequirement(eventName, logicExpression, eventOut);
             if (err != WorldLoadingError::NONE)
             {
-                ErrorLog::getInstance().log(std::string("Got error loading event: ") + errorToName(err));
+                ErrorLog::getInstance().log("Got error loading event " + eventName + ": " + errorToName(err));
                 return err;
             }
             LOG_TO_DEBUG("\tAdding event " + eventName);
@@ -938,7 +938,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             err = loadLocationRequirement(locationName, locationNode.second.as<std::string>(), locOut);
             if (err != WorldLoadingError::NONE)
             {
-                ErrorLog::getInstance().log(std::string("Got error loading location: ") + errorToName(err));
+                ErrorLog::getInstance().log("Got error loading location " + locationName + ": " + errorToName(err));
                 return err;
             }
             LOG_TO_DEBUG("\tAdding location " + locationName);
@@ -974,7 +974,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             err = loadExit(exit.first.as<std::string>(), exit.second.as<std::string>(), exitOut, loadedArea);
             if (err != WorldLoadingError::NONE)
             {
-                ErrorLog::getInstance().log(std::string("Got error loading exit: ") + errorToName(err));
+                ErrorLog::getInstance().log("Got error loading exit: " + errorToName(err));
                 return err;
             }
             LOG_TO_DEBUG("\tAdding exit -> " + exitOut.getConnectedArea()->name);
@@ -1192,7 +1192,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
         auto err = loadItem(item);
         if (err != World::WorldLoadingError::NONE)
         {
-            ErrorLog::getInstance().log(std::string("Got error loading item: ") + errorToName(err));
+            ErrorLog::getInstance().log("Got error loading item: " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
             return 1;
         }
@@ -1232,7 +1232,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
         err = loadLocation(locationObject);
         if (err != World::WorldLoadingError::NONE)
         {
-            ErrorLog::getInstance().log(std::string("Got error loading location: ") + errorToName(err));
+            ErrorLog::getInstance().log("Got error loading location: " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
             return 1;
         }
@@ -1259,7 +1259,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
         err = loadAreaTranslations(areaObject);
         if (err != World::WorldLoadingError::NONE)
         {
-            ErrorLog::getInstance().log(std::string("Got error loading area translations: ") + errorToName(err));
+            ErrorLog::getInstance().log("Got error loading area translations: " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
             return 1;
         }
@@ -1292,7 +1292,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     err = loadDungeonExitInfo();
     if (err != World::WorldLoadingError::NONE)
     {
-        ErrorLog::getInstance().log(std::string("Got error loading dungeon exit info: ") + errorToName(err));
+        ErrorLog::getInstance().log("Got error loading dungeon exit info: " + errorToName(err));
         ErrorLog::getInstance().log(getLastErrorDetails());
         return 1;
     }

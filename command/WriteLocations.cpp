@@ -468,7 +468,7 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
     return ModificationError::NONE;
 }
 
-const char* modErrorToName(ModificationError err) {
+std::string modErrorToName(ModificationError err) {
     switch (err) {
         case ModificationError::NONE:
             return "NONE";
@@ -510,7 +510,7 @@ bool writeLocations(WorldPool& worlds) {
 
     for (auto& [name, location] : worlds[0].locationTable) {
         if (const ModificationError err = location->method->writeLocation(location->currentItem); err != ModificationError::NONE) {
-            ErrorLog::getInstance().log(std::string("Encountered ModificationError::") + modErrorToName(err) + " while saving location " + location->getName());
+            ErrorLog::getInstance().log("Encountered ModificationError::" + modErrorToName(err) + " while saving location " + location->getName());
             return false;
         }
     }

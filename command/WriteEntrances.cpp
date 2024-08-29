@@ -107,13 +107,13 @@ bool writeEntrances(WorldPool& worlds) {
         if (sclsExitIndex != 0xFF)
         {
             RandoSession::CacheEntry& dzrEntry = g_session.openGameFile(filepath);
-            dzrEntry.addAction([sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+            dzrEntry.addAction([fileStage, sclsExitIndex, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
             {
                 CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
                 const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
                 if(sclsExitIndex > (scls_entries.size() - 1)) {
-                    ErrorLog::getInstance().log("SCLS entry index outside of list!");
+                    ErrorLog::getInstance().log("SCLS entry index " + std::to_string(sclsExitIndex) + " outside of list in " + fileStage);
                     return false;
                 }
 
@@ -134,7 +134,7 @@ bool writeEntrances(WorldPool& worlds) {
             filepath = getStageFilePath(fileStage).concat("@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
             RandoSession::CacheEntry& dzsEntry = g_session.openGameFile(filepath);
             //sclsExitIndex = 0;
-            dzsEntry.addAction([entrance, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
+            dzsEntry.addAction([fileStage, entrance, replacementStage, replacementRoom, replacementSpawn](RandoSession* session, FileType* data) mutable -> int
             {
                 CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
@@ -168,7 +168,7 @@ bool writeEntrances(WorldPool& worlds) {
 
                 const std::vector<ChunkEntry*> scls_entries = dzr.entries_by_type("SCLS");
                 if(scls_entries.size() == 0) {
-                    ErrorLog::getInstance().log("Stage dzs missing savewarp exit!");
+                    ErrorLog::getInstance().log(fileStage + " stage dzs missing savewarp exit!");
                     return false;
                 }
 

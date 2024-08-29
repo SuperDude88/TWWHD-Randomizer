@@ -143,7 +143,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           // Return early for errors which can't be resolved by re-shuffling
           if (entranceErr == EntranceShuffleError::BAD_ENTRANCE_SHUFFLE_TABLE_ENTRY || entranceErr == EntranceShuffleError::BAD_LINKS_SPAWN || entranceErr == EntranceShuffleError::PLANDOMIZER_ERROR)
           {
-              ErrorLog::getInstance().log("Error Code: " + errorToName(entranceErr));
+              ErrorLog::getInstance().log("Entrance shuffle error: " + errorToName(entranceErr));
               return 1;
           }
 
