@@ -9,13 +9,11 @@
 #include <utility/platform.hpp>
 
 Settings::Settings() {
-    resetDefaults();
-
-    // paths aren't covered by resets
-    plandomizerFile.clear();
+    resetDefaultSettings();
+    resetDefaultPreferences(true);
 }
 
-void Settings::resetDefaults() {
+void Settings::resetDefaultSettings() {
     game_version = GameVersion::HD;
 
     progression_dungeons = ProgressionDungeons::Standard;
@@ -86,8 +84,6 @@ void Settings::resetDefaults() {
     damage_multiplier = 2.0f;
     chest_type_matches_contents = false;
 
-    pig_color = PigColor::Random;
-
     starting_gear = {
         GameItem::ProgressiveSword,
         GameItem::ProgressiveShield,
@@ -116,7 +112,20 @@ void Settings::resetDefaults() {
     random_item_slide_item = false;
     classic_mode = false;
     plandomizer = false;
-    //settings.plandomizerFile = "";
+
+    return;
+}
+
+void Settings::resetDefaultPreferences(const bool& paths) {
+    if(paths) {
+        #ifdef DEVKITPRO
+            plandomizerFile = Utility::get_app_save_path() / "plandomizer.yaml";
+        #else
+            plandomizerFile.clear();
+        #endif
+    }
+
+    pig_color = PigColor::Random;
 
     target_type = TargetTypePreference::Hold;
     camera = CameraPreference::Standard;

@@ -317,7 +317,8 @@ public:
     CustomModel selectedModel;
 
     Settings();
-    void resetDefaults();
+    void resetDefaultSettings();
+    void resetDefaultPreferences(const bool& paths = false);
 
     uint8_t getSetting(const Option& option) const;
     void setSetting(const Option& option, const size_t& value);

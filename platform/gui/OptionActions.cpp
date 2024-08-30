@@ -842,7 +842,7 @@ namespace OptionCB {
     }
 
     void resetInternal() {
-        conf.resetDefaults();
+        conf.resetDefaultSettings();
     }
 
     void setInternal(const Config& in) {

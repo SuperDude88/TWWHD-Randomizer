@@ -1182,21 +1182,8 @@ void MainWindow::on_permalink_textEdited(const QString &newPermalink)
 
 void MainWindow::on_reset_settings_to_default_clicked()
 {
-    // Keep anything that's in preferences.yaml saved
-    auto oldConfig = config;
-
-    delete_and_create_default_config();
-
-    auto err = oldConfig.writePreferences(Utility::get_app_save_path() / "preferences.yaml");
-    if (err != ConfigError::NONE)
-    {
-        show_warning_dialog("Could not keep preferences when resetting all settings.\nYou will have to reset your preferences (model colors, in-game options, and paths).");
-    }
-
-    load_config_into_ui();
-
-    // Also keep the previous seed
-    ui->seed->setText(oldConfig.seed.c_str());
+    config.resetDefaultSettings();
+    apply_config_settings();
 }
 
 void MainWindow::on_randomize_button_clicked()

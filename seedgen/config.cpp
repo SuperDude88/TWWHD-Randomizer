@@ -38,29 +38,30 @@
 #define SET_FIELD(yaml, key, value) yaml[key] = value;
 
 Config::Config() {
-    resetDefaults();
-
-    // paths and stuff that reset doesn't cover
-    gameBaseDir = u"";
-    outputDir = u"";
-    seed = "";
-    settings.plandomizerFile = u"";
-    
-    #ifdef DEVKITPRO
-        // these are managed by the title system on console
-        /* out.gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500"; */
-        /* out.outputDir = "storage_mlc01:/usr/title/00050000/10143599"; */
-
-        settings.plandomizerFile = Utility::get_app_save_path() / "plandomizer.yaml";
-    #endif
+    resetDefaultSettings();
+    resetDefaultPreferences(true);
 }
 
-void Config::resetDefaults() {
-    //gameBaseDir = "";
-    //outputDir = "";
-    //seed = "";
+void Config::resetDefaultSettings() {
+    settings.resetDefaultSettings();
 
-    settings.resetDefaults();
+    return;
+}
+
+void Config::resetDefaultPreferences(const bool& paths) {
+    settings.resetDefaultPreferences(paths);
+
+    if(paths) {
+        // paths and stuff that settings don't cover
+        #ifdef DEVKITPRO
+            // these are managed by the title system on console
+            /* gameBaseDir = "storage_mlc01:/usr/title/00050000/10143500"; */
+            /* outputDir = "storage_mlc01:/usr/title/00050000/10143599"; */
+        #else
+            gameBaseDir.clear();
+            outputDir.clear();
+        #endif
+    }
 
     return;
 }

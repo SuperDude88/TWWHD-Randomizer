@@ -49,7 +49,8 @@ public:
 
     Config();
     
-    void resetDefaults();
+    void resetDefaultSettings();
+    void resetDefaultPreferences(const bool& paths = false);
     ConfigError loadFromFile(const fspath& filePath, const fspath& preferencesPath, bool ignoreErrors = false);
     YAML::Node settingsToYaml();
     YAML::Node preferencesToYaml();
