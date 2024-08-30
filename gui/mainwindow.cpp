@@ -628,7 +628,7 @@ void MainWindow::apply_config_settings()
 
 void MainWindow::on_base_game_path_browse_button_clicked()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Base Game Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->base_game_path->setText(dir);
@@ -643,7 +643,7 @@ void MainWindow::on_base_game_path_textChanged(const QString &arg1)
 
 void MainWindow::on_output_folder_browse_button_clicked()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Output Folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty() && !dir.isNull())
     {
         ui->output_folder->setText(dir);
@@ -905,8 +905,6 @@ void MainWindow::on_plandomizer_stateChanged(int arg1)
     update_progress_locations_text();
 }
 
-//TODO: handle typing into the plando filepath
-
 void MainWindow::on_plandomizer_path_browse_button_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Plandomzier File"), QDir::current().absolutePath());
@@ -914,7 +912,13 @@ void MainWindow::on_plandomizer_path_browse_button_clicked()
     {
         ui->plandomizer_path->setText(fileName);
         config.settings.plandomizerFile = Utility::fromQString(fileName);
+        update_permalink_and_seed_hash();
     }
+}
+
+void MainWindow::on_plandomizer_path_editingFinished() {
+    config.settings.plandomizerFile = Utility::fromQString(ui->plandomizer_path->text());
+    update_permalink_and_seed_hash();
 }
 
 // Starting Gear

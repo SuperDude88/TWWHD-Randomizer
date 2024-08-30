@@ -223,6 +223,7 @@ private slots:
     void on_performance_stateChanged(int arg1);
     void on_plandomizer_stateChanged(int arg1);
     void on_plandomizer_path_browse_button_clicked();
+    void on_plandomizer_path_editingFinished();
     void on_fix_rng_stateChanged(int arg1);
 
     // Hints
