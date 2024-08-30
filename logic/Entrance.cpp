@@ -267,6 +267,38 @@ void Entrance::setWorld(World* newWorld)
     world = newWorld;
 }
 
+Requirement Entrance::getComputedRequirement() const
+{
+    return computedRequirement;
+}
+
+void Entrance::setComputedRequirement(const Requirement& req)
+{
+    computedRequirement = req;
+    computedRequirement.simplifyParenthesis();
+    computedRequirement.sortArgs();
+}
+
+bool Entrance::hasBeenFound() const
+{
+    return found;
+}
+
+void Entrance::setFound(const bool& found_)
+{
+    found = found_;
+}
+
+bool Entrance::isHidden() const
+{
+    return hidden;
+}
+
+void Entrance::setHidden(const bool& hidden_)
+{
+    hidden = hidden_;
+}
+
 std::list<std::string> Entrance::findIslands()
 {
     return parentArea->findIslands();
@@ -420,4 +452,70 @@ EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse /*
         return EntranceType::NONE;
     }
     return typeReverseMap.at(type);
+}
+
+// Decides if the current entrance path is better than the one passed in based on
+// certain criteria. This is used to determine what entrance path should be shown
+// to a user when they hover over locations/entrances in the tracker. Generally, the
+// shortest, most logical path should be shown. However, if there is a longer, equally
+// logical path through the currently selected area, then that one will be shown instead
+bool EntrancePath::isBetterThan(const EntrancePath& other, const std::string& curArea)
+{
+    // If this path has better logicality then it's always better
+    if (logicality > other.logicality)
+    {
+        return true;
+    }
+
+    // If the other list is empty and has no logicality, this path is always better
+    if (other.list.empty() && other.logicality == EntrancePath::Logicality::None)
+    {
+        return true;
+    }
+
+    // If the other list is empty (and it doesn't have no logicality), then it's always better.
+    // At this point, the other path either has equal or better logicality than this path
+    if (other.list.empty())
+    {
+        return false;
+    }
+
+    // If this path has the same logicality, then evaluate other criteria
+    if (logicality == other.logicality)
+    {
+        // If this list is empty, it's always better
+        if (list.empty())
+        {
+            return true;
+        }
+
+        auto thisStartArea = list.front()->getParentArea()->getRegion();
+        auto otherStartArea = other.list.front()->getParentArea()->getRegion();
+
+        // If this path's start area matches the current area, and the other path's start area does not,
+        // then this path is better than the other one. This takes priority over list size
+        if (thisStartArea == curArea && otherStartArea != curArea)
+        {
+            return true;
+        }
+
+        // If this list is smaller than the other one, and the other path's start area does not equal
+        // the current area, or this path's start area is the current area, then this list is better
+        if (list.size() < other.list.size() && (otherStartArea != curArea || thisStartArea == curArea))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+std::string EntrancePath::to_string() const
+{
+    std::string returnStr = "";
+    for (const auto& entrance : list)
+    {
+        returnStr += entrance->getOriginalName() + "\n";
+    }
+    return returnStr;
 }

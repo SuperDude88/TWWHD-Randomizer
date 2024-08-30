@@ -30,7 +30,12 @@ endif()
 file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc" "IDI_ICON1 ICON DISCARDABLE \"appicon.ico\"")
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
 
-target_sources(wwhd_rando PRIVATE mainwindow.cpp mainwindow.ui player_customization.cpp randomizer_thread.cpp palette.cpp tracker/tracker_area_label.cpp tracker/tracker_area_widget.cpp tracker/tracker_inventory_button.cpp tracker/tracker_label.cpp tracker/tracker.cpp ${app_icon_resource_windows} ${app_icon_macos})
+target_sources(wwhd_rando PRIVATE mainwindow.cpp mainwindow.ui player_customization.cpp
+                                  randomizer_thread.cpp palette.cpp tracker/tracker_area_label.cpp
+                                  tracker/tracker_area_widget.cpp tracker/tracker_inventory_button.cpp
+                                  tracker/tracker_label.cpp tracker/tracker.cpp
+                                  tracker/tracker_preferences_dialog.ui tracker/tracker_preferences_dialog.cpp
+                                  ${app_icon_resource_windows} ${app_icon_macos})
 
 target_link_libraries(wwhd_rando PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
