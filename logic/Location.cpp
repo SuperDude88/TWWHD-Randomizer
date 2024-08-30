@@ -124,7 +124,11 @@ bool Location::operator<(const Location& rhs) const
 
 std::string Location::getName() const
 {
-    return names.at("English");
+    if (names.contains("English"))
+    {
+        return names.at("English");
+    }
+    return "Names not loaded?";
 }
 
 std::u16string Location::generateImportanceText(const std::string& language)

@@ -21,6 +21,11 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
         // If the exit is disconnected, then ignore it
         if (exit.getConnectedArea() == nullptr)
         {
+            // Evaluate the exit still for tracker purposes
+            if (!exit.hasBeenFound() && evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
+            {
+                exit.setFound(true);
+            }
             continue;
         }
         // If we're generating the playthrough, evaluate the entrance requirement
@@ -56,6 +61,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
         {
             if (evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
             {
+                exit.setFound(true);
                 connectedArea->isAccessible = true;
                 explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
             }
@@ -65,6 +71,11 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
                 // consider them until the next sphere of iteration
                 exitsToTry.push_front(&exit);
             }
+        }
+        // If this exit hasn't been found, but is now found, mark it as such (for the tracker)
+        else if (!exit.hasBeenFound() && evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
+        {
+            exit.setFound(true);
         }
     }
     for (auto& locAccess : area->locations)
@@ -114,6 +125,10 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         for (auto& [name, area] : world.areaTable)
         {
             area->isAccessible = false;
+            for (auto& exit : area->exits)
+            {
+                exit.setFound(false);
+            }
         }
 
         for (auto& [name, location] : world.locationTable)
@@ -168,7 +183,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         {
             auto exit = *exitItr;
             if (evaluateRequirement(exit->getWorld(), exit->getRequirement(), &ownedItems, &ownedEvents)) {
-
+                exit->setFound(true);
                 // Erase the exit from the list of exits if we've met its requirement
                 exitItr = exitsToTry.erase(exitItr);
                 if (exit->getConnectedArea() == nullptr)

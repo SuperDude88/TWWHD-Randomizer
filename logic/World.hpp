@@ -75,6 +75,7 @@ public:
     ItemPool getItemPool() const;
     ItemPool& getItemPoolReference();
     ItemPool getStartingItems() const;
+    ItemPool& getStartingItemsReference();
     int getStartingHeartCount() const;
     LocationPool getLocations(bool onlyProgression = false);
     LocationPool getRaceModeLocations() const;

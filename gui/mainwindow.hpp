@@ -16,6 +16,8 @@
 #include <logic/EntranceShuffle.hpp>
 #include <logic/PoolFunctions.hpp>
 
+#include <gui/tracker/tracker_preferences.hpp>
+#include <gui/tracker/tracker_preferences_dialog.hpp>
 #include <gui/tracker/tracker_inventory_button.hpp>
 #include <gui/tracker/tracker_label.hpp>
 #include <gui/tracker/tracker_area_widget.hpp>
@@ -43,6 +45,7 @@ public:
 
     void show_warning_dialog(const std::string& s, const std::string& title = "");
     void show_info_dialog(const std::string& s, const std::string& title = "");
+    Ui::MainWindow* getUI();
 
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;
@@ -101,15 +104,15 @@ private:
 
     void initialize_tracker();
     void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {}, const std::unordered_map<std::string, std::string>& connectedEntrances = {});
-    void autosave_current_tracker();
     void load_tracker_autosave();
     void calculate_own_dungeon_key_locations();
     void set_location_list_widget_background(const std::string& area);
     void clear_tracker_labels(QLayout* layout);
-    void set_areas_locations();
-    void set_areas_entrances();
 
 public:
+    void set_areas_locations();
+    void set_areas_entrances();
+    void calculate_entrance_paths();
     void switch_to_overworld_tracker();
     void switch_to_area_tracker();
     void switch_to_entrances_tracker();
@@ -118,6 +121,8 @@ public:
     void set_current_tracker_area(const std::string& areaPrefix);
     void update_tracker();
     void setup_tracker_entrances();
+    void autosave_current_tracker();
+    void filter_entrance_list(const QString& filter);
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");
@@ -241,6 +246,8 @@ private slots:
 
     // General
     void on_permalink_textEdited(const QString &arg1);
+    void on_copy_permalink_clicked();
+    void on_paste_permalink_clicked();
     void on_reset_settings_to_default_clicked();
     void on_randomize_button_clicked();
     void on_clearer_hints_stateChanged(int arg1);
@@ -259,7 +266,9 @@ private slots:
     void on_clear_all_button_released();
     void check_special_accessibility_conditions();
     void update_tracker_areas_and_autosave();
-    void tracker_show_specific_area(std::string areaPrefix);
+    void tracker_show_specific_area(const std::string& areaPrefix);
+    void tracker_area_right_clicked(const std::string& areaPrefix);
+    void tracker_clear_specific_area(const std::string& areaPrefix);
     void tracker_display_current_item_text(const std::string& currentItem);
     void tracker_clear_current_item_text();
     void tracker_display_current_area_text(TrackerAreaWidget* currentArea);
@@ -272,36 +281,34 @@ private slots:
     void on_location_list_entrances_button_released();
     void on_entrance_list_close_button_released();
     void on_entrance_list_locations_button_released();
+    void on_source_entrance_filter_lineedit_textChanged(const QString &arg1);
     void on_entrance_destination_back_button_released();
+    void on_target_entrance_filter_lineedit_textChanged(const QString &arg1);
     void on_chart_list_back_button_released();
-
-    void update_items_color();
-    void on_override_items_color_stateChanged(int arg1);
-    void on_items_color_clicked();
-    void update_locations_color();
-    void on_override_locations_color_stateChanged(int arg1);
-    void on_locations_color_clicked();
-    void update_stats_color();
-    void on_override_stats_color_stateChanged(int arg1);
-    void on_stats_color_clicked();
-    void on_show_location_logic_stateChanged(int arg1);
-    void on_show_nonprogress_locations_stateChanged(int arg1);   
     void on_open_chart_list_button_clicked();
+    void on_open_tracker_settings_button_clicked();
+    void tracker_preferences_closed(int result);
+    void on_view_all_entrances_button_clicked();
 
-    void on_copy_permalink_clicked();
 
-    void on_paste_permalink_clicked();
-
-private:
-    // More Tracker Stuff
+public:
+    void update_items_color();
+    void update_locations_color();
+    void update_stats_color();
     bool trackerStarted = false;
-public: // To access when generating logic tooltips
+    TrackerPreferences trackerPreferences;
     Settings trackerSettings = Settings();
     WorldPool trackerWorlds = {};
     ItemPool trackerInventory = {};
+    std::string currentTrackerArea = "";
+
+    // Maps each area to the shortest entrance path it has to each sub region
+    std::unordered_map<std::string, std::unordered_map<Area*, EntrancePath>> entrancePaths = {};
+    // Maps each location to its shortest path
+    std::unordered_map<Location*, EntrancePath> entrancePathsByLocation = {};
 private:
     LocationPool trackerLocations = {};
-    std::string currentTrackerArea = "";
+
 
     // Maps area name to the locations in the area. This can dynamically
     // change when entrance randomizer is on
@@ -320,11 +327,7 @@ private:
     EntrancePools targetEntrancePools = {};
     Entrance* selectedEntrance = nullptr;
 
-    std::unordered_map<std::string, QColor> color_preferences = {
-      {"items_color", {105, 137, 28, 255}},
-      {"locations_color", {160, 160, 160, 255}},
-      {"stats_color", {79, 79, 79, 255}},
-    };
+    TrackerPreferencesDialog* prefDialog = nullptr;
 
     using TIB = TrackerInventoryButton;
 

@@ -247,6 +247,98 @@ std::list<std::list<Entrance*>> Area::findShuffledEntrances(const std::list<Area
     return shuffledEntrances;
 }
 
+// Finds the shortest path of *shuffled* entrances from this area to all sub-areas.
+// This should only be called from Islands or general hint regions (e.g. Hyrule)
+std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
+{
+    std::unordered_map<Area*, EntrancePath> paths = {{this, {{}, EntrancePath::Logicality::Full}}};
+    std::unordered_map<Area*, int> dists = {{this, 0}};
+    std::list<Area*> queue = {this};
+    std::list<Entrance*> nextDistanceEntrances = {};
+    int curShuffledEntranceDistance = 0;
+
+    auto region = this->island;
+    if (region.empty()) region = this->hintRegion;
+    if (region.empty()) return paths;
+
+    while (!queue.empty())
+    {
+        auto area = queue.front();
+        queue.pop_front();
+
+        for (auto& e : area->exits)
+        {
+            auto nextArea = e.getConnectedArea();
+            // If this entrance is not connected, or if this is another island/Hyrule/The Great Sea,
+            // then don't try to find a path with this entrance.
+            if (nextArea == nullptr || (islandNameToRoomIndex(nextArea->name) != 0) || nextArea->hintRegion == "Hyrule" || nextArea->name == "The Great Sea")
+            {
+                continue;
+            }
+
+            // If this entrance is shuffled, put it into the list of entrances to
+            // try for the next iteration of entrance distances
+            if (e.isShuffled())
+            {
+                nextDistanceEntrances.push_back(&e);
+            }
+            else if (!dists.contains(nextArea) || dists[nextArea] > curShuffledEntranceDistance)
+            {
+                paths[nextArea] = paths[area];
+                // If this non-shuffled entrance has not been found, mark the path we take
+                // with it as partially logical. A partially logical path is one that
+                // has all of the shuffled entrances in it logically available, but there's
+                // some non-shuffled entrance after them all which is not logically
+                // accessible
+                if (paths[nextArea].logicality == EntrancePath::Logicality::Full && !e.hasBeenFound())
+                {
+                    paths[nextArea].logicality = EntrancePath::Logicality::Partial;
+                }
+                dists[nextArea] = curShuffledEntranceDistance;
+                queue.push_back(nextArea);
+            }
+        }
+
+        // Once the queue is empty, put in all the areas for the next shuffle distance
+        // based on the shuffled entrances we've found so far
+        if (queue.empty())
+        {
+            curShuffledEntranceDistance++;
+            for (auto e : nextDistanceEntrances)
+            {
+                auto nextArea = e->getConnectedArea();
+                auto parentArea = e->getParentArea();
+
+                // Don't bother queueing the area if it already is inserted and has a distance
+                // less than or equal to the current distance
+                if (islandNameToRoomIndex(nextArea->name) != 0 || nextArea->hintRegion == "Hyrule" || 
+                     (dists.contains(nextArea) && dists[nextArea] <= curShuffledEntranceDistance))
+                {
+                    continue;
+                }
+
+                // Add the new shuffled entrance to the list of entrances on this path
+                paths[nextArea] = paths[parentArea];
+                paths[nextArea].list.push_back(e);
+                
+                // If this path is partially logical and we've found another shuffled
+                // entrance to add onto it, then it becomes fully nonlogical because
+                // some entrance before the final shuffled one is not able to be
+                // logically traversed.
+                if (paths[nextArea].logicality == EntrancePath::Logicality::Partial)
+                {
+                    paths[nextArea].logicality = EntrancePath::Logicality::None;
+                }
+                dists[nextArea] = curShuffledEntranceDistance;
+                queue.push_back(nextArea);
+            }
+            nextDistanceEntrances.clear();
+        }
+    }
+
+    return paths;
+}
+
 std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
 {
     // Island room number corresponds with index in the below array

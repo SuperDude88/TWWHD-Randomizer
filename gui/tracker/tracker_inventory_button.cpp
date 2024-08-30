@@ -123,7 +123,7 @@ bool TrackerInventoryButton::onChartListWhenRandomCharts()
 
 void TrackerInventoryButton::showChartTooltip()
 {
-    auto coords = mapToGlobal(QPoint(width() / 2, height() - 15));
+    auto coords = mapToGlobal(QPoint(mouseEnterPosition.x() + 30, height() - 15));
     auto text = std::string("Chart leads to<br><b>") + roomIndexToIslandName(chartToRoomIndex(itemStates[1].gameItem)) + "</b>";
     QToolTip::showText(coords, text.c_str());
 }
@@ -188,6 +188,7 @@ void TrackerInventoryButton::mouseMoveEvent(QMouseEvent* e)
 
 void TrackerInventoryButton::enterEvent(QEnterEvent* e)
 {
+    mouseEnterPosition = e->position().toPoint();
     if (!onChartListWhenRandomCharts())
     {
         emit mouse_over_item(itemStates[state].trackerLabelStr);

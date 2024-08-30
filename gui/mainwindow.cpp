@@ -116,6 +116,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+Ui::MainWindow* MainWindow::getUI()
+{
+    return ui;
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // Write settings to file when user closes the program

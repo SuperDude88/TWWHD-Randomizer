@@ -14,7 +14,8 @@ public:
     std::string areaPrefix = "";
 
 signals:
-    void area_label_clicked(std::string areaPrefix_);
+    void area_label_clicked(const std::string& areaPrefix_);
+    void area_label_right_clicked(const std::string& areaPrefix_);
 
 protected:
     void mouseReleaseEvent(QMouseEvent* e) override;
