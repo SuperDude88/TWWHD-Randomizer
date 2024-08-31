@@ -3,7 +3,7 @@
 #include <thread>
 
 #include <platform/input.hpp>
-#include <platform/gui/screen.hpp>
+#include <gui/wiiu/screen.hpp>
 
 using namespace std::literals::chrono_literals;
 

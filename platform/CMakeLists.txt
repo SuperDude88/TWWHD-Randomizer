@@ -10,5 +10,3 @@ else()
 	cmake_policy(SET CMP0076 NEW)
 	target_sources(wwhd_rando PRIVATE channel.cpp proc.cpp heap.cpp home.cpp energy_saver.cpp input.cpp)
 endif()
-
-add_subdirectory("gui")

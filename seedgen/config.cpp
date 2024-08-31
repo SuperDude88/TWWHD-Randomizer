@@ -466,7 +466,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     return ConfigError::NONE;
 }
 
-YAML::Node Config::settingsToYaml() {
+YAML::Node Config::settingsToYaml() const {
     YAML::Node root;
 
     SET_FIELD(root, "program_version", RANDOMIZER_VERSION) //Keep track of rando version to give warning (different versions will have different item placements)
@@ -581,7 +581,7 @@ YAML::Node Config::settingsToYaml() {
     return root;
 }
 
-YAML::Node Config::preferencesToYaml() {
+YAML::Node Config::preferencesToYaml() const {
     YAML::Node preferencesRoot;
     SET_FIELD(preferencesRoot, "gameBaseDir", Utility::toUtf8String(gameBaseDir))
     SET_FIELD(preferencesRoot, "outputDir", Utility::toUtf8String(outputDir))
@@ -604,7 +604,7 @@ YAML::Node Config::preferencesToYaml() {
     return preferencesRoot;
 }
 
-ConfigError Config::writeSettings(const fspath& filePath) {
+ConfigError Config::writeSettings(const fspath& filePath) const {
 
     YAML::Node root = settingsToYaml();
     std::ofstream f(filePath);
@@ -619,7 +619,7 @@ ConfigError Config::writeSettings(const fspath& filePath) {
     return ConfigError::NONE;
 }
 
-ConfigError Config::writePreferences(const fspath& preferencesPath) {
+ConfigError Config::writePreferences(const fspath& preferencesPath) const {
 
     YAML::Node preferences = preferencesToYaml();
     std::ofstream pref(preferencesPath);
@@ -634,7 +634,7 @@ ConfigError Config::writePreferences(const fspath& preferencesPath) {
     return ConfigError::NONE;
 }
 
-ConfigError Config::writeToFile(const fspath& filePath, const fspath& preferencesPath) {
+ConfigError Config::writeToFile(const fspath& filePath, const fspath& preferencesPath) const {
     LOG_AND_RETURN_IF_ERR(writeSettings(filePath))
     LOG_AND_RETURN_IF_ERR(writePreferences(preferencesPath))
     return ConfigError::NONE;

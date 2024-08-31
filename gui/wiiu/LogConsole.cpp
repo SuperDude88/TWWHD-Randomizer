@@ -4,7 +4,7 @@
 #include <cstring>
 #include <array>
 
-#include <platform/gui/screen.hpp>
+#include <gui/wiiu/screen.hpp>
 
 using namespace ScreenSizeData;
 

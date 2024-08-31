@@ -1,6 +1,6 @@
 #include "tracker_area_widget.hpp"
 
-#include <gui/tracker/tracker_data.hpp>
+#include <gui/desktop/tracker/tracker_data.hpp>
 
 TrackerAreaWidget::TrackerAreaWidget()
 {

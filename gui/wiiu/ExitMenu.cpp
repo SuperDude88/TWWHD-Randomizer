@@ -5,11 +5,15 @@
 #include <command/Log.hpp>
 #include <utility/platform.hpp>
 #include <platform/input.hpp>
-#include <platform/gui/screen.hpp>
+#include <gui/wiiu/screen.hpp>
 
 using namespace std::literals::chrono_literals;
 
 void waitForExitConfirm(const ExitMode& mode) {
+    if(mode == ExitMode::IMMEDIATE) {
+        return;
+    }
+
     ScreenClear();
 
     switch(mode) {
@@ -18,6 +22,11 @@ void waitForExitConfirm(const ExitMode& mode) {
             OSScreenPutFontEx(SCREEN_DRC, 0, 0, "Failed to initialize platform, check the error log for details.");
             OSScreenPutFontEx(SCREEN_TV, 0, 1, "Press any button to exit.");
             OSScreenPutFontEx(SCREEN_DRC, 0, 1, "Press any button to exit.");
+
+            break;
+        case ExitMode::GUI_ERROR:
+            OSScreenPutFontEx(SCREEN_TV, 0, 0, ("GUI encountered an error, check the error log for details.\n" + ErrorLog::getInstance().getLastErrors() + "\nPress any button to exit.").c_str());
+            OSScreenPutFontEx(SCREEN_DRC, 0, 0, ("GUI encountered an error, check the error log for details.\n" + ErrorLog::getInstance().getLastErrors() + "\nPress any button to exit.").c_str());
 
             break;
         case ExitMode::RANDOMIZATION_COMPLETE:

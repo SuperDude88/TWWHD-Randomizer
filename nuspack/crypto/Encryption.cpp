@@ -4,7 +4,7 @@
 #include <utility/math.hpp>
 #include <nuspack/contents/contents.hpp>
 
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 
 using eType = Utility::Endian::Type;
 

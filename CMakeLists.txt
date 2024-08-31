@@ -85,7 +85,7 @@ if(DEFINED QT_GUI)
 
   # Set Icon on Mac (has to be done out here)
   set(MACOSX_BUNDLE_ICON_FILE "app.icns")
-  set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/gui/app.icns")
+  set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/gui/desktop/app.icns")
   set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
   if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -94,7 +94,7 @@ if(DEFINED QT_GUI)
     add_executable(wwhd_rando main.cpp)
   endif()
 
-  add_subdirectory("gui")
+  add_subdirectory("gui/desktop")
 else()
   add_executable(wwhd_rando main.cpp)
 endif()
@@ -122,6 +122,7 @@ target_include_directories(wwhd_rando PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY
 if(DEFINED DEVKITPRO)
   # Some code specific to Wii U
   add_subdirectory("platform")
+  add_subdirectory("gui/wiiu")
 
   # Use libmocha for filesystem access
   find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")

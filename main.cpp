@@ -4,13 +4,26 @@
     #include <QApplication>
     #include <QResource>
     #include <QDirIterator>
-    
-    #include <gui/palette.hpp>
-    #include <gui/mainwindow.hpp>
+
+    #include <gui/desktop/palette.hpp>
+    #include <gui/desktop/mainwindow.hpp>
 #elif defined(DEVKITPRO)
+    #include <gui/wiiu/SettingsMenu.hpp>
+    #include <gui/wiiu/ExitMenu.hpp>
+
     #include <utility/platform.hpp>
-    #include <platform/gui/ExitMenu.hpp>
+    #include <command/Log.hpp>
     #include <randomizer.hpp>
+
+    static int endApplication(const ExitMode& mode) {
+        if(Utility::platformIsRunning()) {
+            waitForExitConfirm(mode);
+        }
+
+        Utility::platformShutdown();
+
+        return 0;
+    }
 #else
     #include <thread>
 
@@ -35,27 +48,31 @@ int main(int argc, char *argv[]) {
     QApplication::setPalette(getColorPalette());
     MainWindow w;
     w.show();
+
     return a.exec();
 #elif defined(DEVKITPRO)
-    ExitMode mode;
-
     if(!Utility::platformInit()) {
-        mode = ExitMode::PLATFORM_ERROR;
-    }
-    else if(const int retVal = mainRandomize(); retVal == 0) {
-        mode = ExitMode::RANDOMIZATION_COMPLETE;
-    }
-    else {
-        mode = ExitMode::RANDOMIZATION_ERROR;
+        return endApplication(ExitMode::PLATFORM_ERROR);
     }
 
-    if(Utility::platformIsRunning()) {
-        waitForExitConfirm(mode);
+    using Result = SettingsMenu::Result;
+    switch(SettingsMenu::run()) {
+        case Result::CONTINUE:
+            break;
+        case Result::EXIT:
+            return endApplication(ExitMode::IMMEDIATE);
+        case Result::CONFIG_ERROR:
+            ErrorLog::getInstance().log("Error saving/loading config file.");
+            [[fallthrough]];
+        default: // this shouldn't happen so treat it as an error
+            return endApplication(ExitMode::GUI_ERROR);
     }
 
-    Utility::platformShutdown();
-    
-    return 0;
+    if(const int retVal = mainRandomize(); retVal != 0) {
+        return endApplication(ExitMode::RANDOMIZATION_ERROR);
+    }
+
+    return endApplication(ExitMode::RANDOMIZATION_COMPLETE);
 #else
     using namespace std::literals::chrono_literals;
 

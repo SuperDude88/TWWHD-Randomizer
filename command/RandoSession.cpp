@@ -12,7 +12,7 @@
 
 #include <libs/BS_thread_pool.hpp>
 
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 #include <utility/string.hpp>
 #include <utility/platform.hpp>
 #include <utility/file.hpp>

@@ -1,27 +1,27 @@
 #pragma once
 
-#include <platform/gui/Page.hpp>
+#include <gui/wiiu/Page.hpp>
 
 class SettingsMenu {
 public:
+    enum struct Result {
+        CONTINUE = 0,
+        EXIT,
+        CONFIG_ERROR
+    };
+
+    SettingsMenu(const SettingsMenu&) = delete;
+    SettingsMenu& operator=(const SettingsMenu&) = delete;
+
+    static Result run();
+
+private:
     enum struct Status {
         NONE = 0,
         CHANGED,
         EXIT
     };
 
-    enum struct Result {
-        CONTINUE = 0,
-        EXIT,
-        CONFIG_SAVE_FAILED
-    };
-
-    SettingsMenu(const SettingsMenu&) = delete;
-    SettingsMenu& operator=(const SettingsMenu&) = delete;
-
-    static Result run(Config& out);
-
-private:
     size_t curPage = 0;
     std::array<std::unique_ptr<EmptyPage>, 10> pages;
 

@@ -5,8 +5,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-#include <gui/tracker/tracker_inventory_button.hpp>
-#include <gui/tracker/tracker_area_label.hpp>
+#include <gui/desktop/tracker/tracker_inventory_button.hpp>
+#include <gui/desktop/tracker/tracker_area_label.hpp>
 
 class TrackerAreaWidget : public QWidget
 {

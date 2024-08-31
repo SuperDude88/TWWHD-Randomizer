@@ -2,8 +2,8 @@
 
 #include <utility/color.hpp>
 #include <platform/input.hpp>
-#include <platform/gui/screen.hpp>
-#include <platform/gui/TextWrap.hpp>
+#include <gui/wiiu/screen.hpp>
+#include <gui/wiiu/TextWrap.hpp>
 #include <command/Log.hpp>
 #include <options.hpp>
 
@@ -72,15 +72,19 @@ bool SeedPage::update() {
 
     if(!InputManager::getInstance().held(ButtonInfo::B)) {
         resetTimer();
+
+        return true;
     }
     else {
         if(Clock::now() >= resetTime) {
             OptionCB::resetInternal();
             resetTimer();
         }
+
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 void SeedPage::drawTV() const {

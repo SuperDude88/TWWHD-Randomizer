@@ -24,14 +24,12 @@
 #include <utility/file.hpp>
 #include <utility/time.hpp>
 
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 
 #ifdef DEVKITPRO
     #include <sysapp/title.h>
     #include <platform/channel.hpp>
-    #include <platform/gui/InstallMenu.hpp>
-    #include <platform/gui/ConfirmMenu.hpp>
-    #include <platform/gui/SettingsMenu.hpp>
+    #include <gui/wiiu/InstallMenu.hpp>
 #endif
 
 class Randomizer {
@@ -331,24 +329,6 @@ int mainRandomize() {
     }
 
     #ifdef DEVKITPRO
-        while(true) {
-            using Result = SettingsMenu::Result;
-
-            switch(SettingsMenu::run(load)) {
-                case Result::CONTINUE:
-                    break;
-                case Result::EXIT:
-                    return 0;
-                case Result::CONFIG_SAVE_FAILED:
-                    ErrorLog::getInstance().log("Failed to save config.");
-                    [[fallthrough]];
-                default: // this shouldn't happen so treat it as an error
-                    return 1;
-            }
-
-            if(confirmRandomize()) break;
-        }
-
         if(!SYSCheckTitleExists(0x0005000010143500)) {
             ErrorLog::getInstance().log("Could not find game: you must have a NTSC-U / US copy of TWWHD!");
 

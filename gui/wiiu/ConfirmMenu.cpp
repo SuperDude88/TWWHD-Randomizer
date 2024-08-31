@@ -3,8 +3,8 @@
 #include <thread>
 
 #include <platform/input.hpp>
-#include <platform/gui/screen.hpp>
-#include <platform/gui/OptionActions.hpp>
+#include <gui/wiiu/screen.hpp>
+#include <gui/wiiu/OptionActions.hpp>
 
 using namespace std::literals::chrono_literals;
 
