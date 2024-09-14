@@ -10,8 +10,9 @@ check_low_health_full:
   lwz r3, gameInfo_ptr@l(r3)
   lhz r3, 0x20(r3) ; load max health
 
-  cmplwi r3, 4 ; Only need to check the case where max health is 1 heart (2 hearts is next lowest and that has no beep already)
-  beq skip_low_health_beep
+  ; If max health is below 2 hearts, health can appear full and the beep will still play
+  cmplwi r3, 8 ; 8 health -> 2 hearts
+  blt skip_low_health_beep ; Skip sound if we have less than 2 max hearts
   
   mr r3, r31 ; replace the instruction we overwrote to jump here
   b 0x0202440C ; continue and play sound
