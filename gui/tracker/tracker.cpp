@@ -161,24 +161,28 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     calculate_own_dungeon_key_locations();
 
     // Update inventory gui to have starting items
-    //
     auto startingInventoryCopy = startingInventory;
     auto trackerInventoryCopy = trackerInventory;
+
+    // Make sure our buttons start at 0
+    // This is done before any buttons are updated so duplicates are not set then reset in a later iteration
+    for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
+    {
+        inventoryButton->setState(0);
+        inventoryButton->clearForbiddenStates();
+    }
 
     // Update buttons with starting inventory items
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
     {
-        inventoryButton->state = 0;
-        inventoryButton->forbiddenStates.clear();
-
         // Update button with starting items first to set forbidden states
         for (auto& itemState : inventoryButton->itemStates)
         {
             auto item = Item(itemState.gameItem, &trackerWorld);
             if (itemState.gameItem != GameItem::NOTHING && elementInPool(item, startingInventoryCopy))
             {
-                inventoryButton->addForbiddenState(inventoryButton->state);
-                inventoryButton->state++;
+                inventoryButton->addForbiddenState(inventoryButton->getState());
+                inventoryButton->setState(inventoryButton->getState() + 1);
                 removeElementFromPool(startingInventoryCopy, item);
             }
         }
@@ -189,7 +193,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
             auto item = Item(itemState.gameItem, &trackerWorld);
             if (itemState.gameItem != GameItem::NOTHING && elementInPool(item, trackerInventoryCopy))
             {
-                inventoryButton->state++;
+                inventoryButton->setState(inventoryButton->getState() + 1);
                 removeElementFromPool(trackerInventoryCopy, item);
             }
         }
@@ -197,7 +201,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         // Then update the icon
         inventoryButton->updateIcon();
     }
-
 
     // Set locations/entrances for each area
     for (auto area : ui->tracker_tab->findChildren<TrackerAreaWidget*>())
@@ -708,9 +711,9 @@ void MainWindow::initialize_tracker()
         for (auto potentialDuplicate : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
         {
             // If the first real item in the buttons' itemState's gameItem matches,
-            // then this is a button which is tracking the same item. This will also
-            // add each button to itself, but that doesn't really matter.
-            if (potentialDuplicate->itemStates[1].gameItem == inventoryButton->itemStates[1].gameItem)
+            // then this is a button which is tracking the same item. Also
+            // compare the pointers to avoid labeling itself as a duplicate.
+            if (potentialDuplicate != inventoryButton && potentialDuplicate->itemStates[1].gameItem == inventoryButton->itemStates[1].gameItem)
             {
                 inventoryButton->duplicates.insert(potentialDuplicate);
             }

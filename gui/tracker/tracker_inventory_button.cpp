@@ -111,9 +111,27 @@ void TrackerInventoryButton::addAllItems()
     }
 }
 
+void TrackerInventoryButton::clearForbiddenStates() {
+    forbiddenStates.clear();
+
+    updateDuplicates();
+}
+
 void TrackerInventoryButton::addForbiddenState(int state)
 {
     forbiddenStates.insert(state);
+
+    updateDuplicates();
+}
+
+int TrackerInventoryButton::getState() {
+    return state;
+}
+
+void TrackerInventoryButton::setState(int state_) {
+    this->state = state_;
+
+    updateDuplicates();
 }
 
 bool TrackerInventoryButton::onChartListWhenRandomCharts()
@@ -165,17 +183,7 @@ void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
         emit mouse_over_item(itemStates[state].trackerLabelStr);
     }
 
-    // Update duplicate buttons to the proper state. This is
-    // mainly just for charts on the chart list and their
-    // corresponding chart buttons on the map
-    for (auto duplicate : duplicates)
-    {
-        if (!duplicate->onChartListWhenRandomCharts() && !onChartListWhenRandomCharts())
-        {
-            duplicate->state = state;
-            duplicate->updateIcon();
-        }
-    }
+    updateDuplicates();
 }
 
 void TrackerInventoryButton::mouseMoveEvent(QMouseEvent* e)
@@ -200,3 +208,16 @@ void TrackerInventoryButton::leaveEvent(QEvent* e)
     emit mouse_over_item("");
 }
 
+void TrackerInventoryButton::updateDuplicates() {
+    // Update duplicate buttons to the proper state. This is
+    // mainly just for charts on the chart list and their
+    // corresponding chart buttons on the map
+    for (auto duplicate : duplicates)
+    {
+        if (!duplicate->onChartListWhenRandomCharts() && !onChartListWhenRandomCharts())
+        {
+            duplicate->state = state;
+            duplicate->updateIcon();
+        }
+    }
+}

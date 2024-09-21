@@ -23,8 +23,6 @@ public:
     TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr, bool onlyText_ = false, MainWindow* mainWindow_ = nullptr );
 
     std::vector<TrackerInventoryItem> itemStates = {};
-    int state = 0;
-    std::unordered_set<int> forbiddenStates = {};
     World* trackerWorld = nullptr;
     ItemPool* trackerInventory = nullptr;
     bool onlyText = false;
@@ -38,7 +36,11 @@ public:
     void removeAllItems();
     void addAllItems();
 
+    void clearForbiddenStates();
     void addForbiddenState(int state);
+
+    int getState();
+    void setState(int state_);
 
     bool onChartListWhenRandomCharts();
     void showChartTooltip();
@@ -53,4 +55,10 @@ protected:
     void mouseMoveEvent(QMouseEvent* e) override;
     void enterEvent(QEnterEvent* e) override;
     void leaveEvent(QEvent* e) override;
+
+private:
+    int state = 0;
+    std::unordered_set<int> forbiddenStates = {};
+
+    void updateDuplicates();
 };
