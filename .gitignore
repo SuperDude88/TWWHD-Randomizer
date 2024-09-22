@@ -8,6 +8,6 @@ CMakeSettings.json
 logic/build/*
 logic/.vs/*
 logic/out/*
-*/data.qrc
+*data.qrc
 CMakeLists.txt.user
 build-*

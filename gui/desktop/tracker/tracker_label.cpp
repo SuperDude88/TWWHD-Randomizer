@@ -1,7 +1,7 @@
 #include "tracker_label.hpp"
 
-#include <gui/tracker/set_font.hpp>
-#include <gui/mainwindow.hpp>
+#include <gui/desktop/tracker/set_font.hpp>
+#include <gui/desktop/mainwindow.hpp>
 
 #include <logic/Area.hpp>
 

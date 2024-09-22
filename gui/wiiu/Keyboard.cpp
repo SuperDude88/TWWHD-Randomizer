@@ -1,7 +1,7 @@
 #include "Keyboard.hpp"
 
 #include <platform/input.hpp>
-#include <platform/gui/screen.hpp>
+#include <gui/wiiu/screen.hpp>
 
 bool KeyboardKey::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::A)) {

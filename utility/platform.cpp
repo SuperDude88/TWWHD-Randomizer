@@ -9,8 +9,8 @@
     #include <platform/proc.hpp>
     #include <platform/home.hpp>
     #include <platform/energy_saver.hpp>
-    #include <platform/gui/screen.hpp>
-    #include <platform/gui/LogConsole.hpp>
+    #include <gui/wiiu/screen.hpp>
+    #include <gui/wiiu/LogConsole.hpp>
     #include <coreinit/filesystem_fsa.h>
 
     #include <mocha/mocha.h>

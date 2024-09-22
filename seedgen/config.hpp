@@ -52,11 +52,11 @@ public:
     void resetDefaultSettings();
     void resetDefaultPreferences(const bool& paths = false);
     ConfigError loadFromFile(const fspath& filePath, const fspath& preferencesPath, bool ignoreErrors = false);
-    YAML::Node settingsToYaml();
-    YAML::Node preferencesToYaml();
-    ConfigError writeSettings(const fspath& filePath);
-    ConfigError writePreferences(const fspath& preferencesPath);
-    ConfigError writeToFile(const fspath& filePath, const fspath& preferencesPath);
+    YAML::Node settingsToYaml() const;
+    YAML::Node preferencesToYaml() const;
+    ConfigError writeSettings(const fspath& filePath) const;
+    ConfigError writePreferences(const fspath& preferencesPath) const;
+    ConfigError writeToFile(const fspath& filePath, const fspath& preferencesPath) const;
 
     PermalinkError loadPermalink(std::string b64permalink);
     std::string getPermalink(const bool& internal = false) const;

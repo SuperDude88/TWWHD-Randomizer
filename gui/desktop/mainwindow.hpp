@@ -16,11 +16,11 @@
 #include <logic/EntranceShuffle.hpp>
 #include <logic/PoolFunctions.hpp>
 
-#include <gui/tracker/tracker_preferences.hpp>
-#include <gui/tracker/tracker_preferences_dialog.hpp>
-#include <gui/tracker/tracker_inventory_button.hpp>
-#include <gui/tracker/tracker_label.hpp>
-#include <gui/tracker/tracker_area_widget.hpp>
+#include <gui/desktop/tracker/tracker_preferences.hpp>
+#include <gui/desktop/tracker/tracker_preferences_dialog.hpp>
+#include <gui/desktop/tracker/tracker_inventory_button.hpp>
+#include <gui/desktop/tracker/tracker_label.hpp>
+#include <gui/desktop/tracker/tracker_area_widget.hpp>
 
 void delete_and_create_default_config();
 QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow);

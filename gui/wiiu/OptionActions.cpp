@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <utility/platform.hpp>
+#include <command/Log.hpp>
 #include <seedgen/seed.hpp>
 
 static Config conf;
@@ -845,11 +847,16 @@ namespace OptionCB {
         conf.resetDefaultSettings();
     }
 
-    void setInternal(const Config& in) {
-        conf = in;
+    ConfigError loadConfig() {
+        LOG_AND_RETURN_IF_ERR(Config::writeDefault(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml"));
+
+        Utility::platformLog("Loading config into UI");
+        LOG_AND_RETURN_IF_ERR(conf.loadFromFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml", true)); // ignore errors, attempt to convert
+
+        return ConfigError::NONE;
     }
     
-    Config getInternal() {
+    const Config& getInternal() {
         return conf;
     }
 }

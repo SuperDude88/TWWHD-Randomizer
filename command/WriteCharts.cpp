@@ -10,7 +10,7 @@
 #include <command/RandoSession.hpp>
 #include <command/GamePath.hpp>
 
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 
 bool writeCharts(const WorldPool& worlds) {
     using namespace std::literals::string_literals;

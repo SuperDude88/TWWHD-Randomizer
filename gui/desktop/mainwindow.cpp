@@ -13,8 +13,8 @@
 #include <QClipboard>
 
 #include <ui_mainwindow.h>
-#include <gui/randomizer_thread.hpp>
-#include <gui/option_descriptions.hpp>
+#include <gui/desktop/randomizer_thread.hpp>
+#include <gui/desktop/option_descriptions.hpp>
 
 #include <version.hpp>
 #include <libs/yaml.hpp>

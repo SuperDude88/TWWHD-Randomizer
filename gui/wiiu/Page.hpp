@@ -1,7 +1,7 @@
 #pragma once
 
-#include <platform/gui/Button.hpp>
-#include <platform/gui/Keyboard.hpp>
+#include <gui/wiiu/Button.hpp>
+#include <gui/wiiu/Keyboard.hpp>
 
 class EmptyPage {
 protected:

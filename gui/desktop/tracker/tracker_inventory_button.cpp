@@ -1,7 +1,7 @@
 #include "tracker_inventory_button.hpp"
 
-#include <gui/tracker/tracker_data.hpp>
-#include <gui/mainwindow.hpp>
+#include <gui/desktop/tracker/tracker_data.hpp>
+#include <gui/desktop/mainwindow.hpp>
 
 #include <QToolTip>
 

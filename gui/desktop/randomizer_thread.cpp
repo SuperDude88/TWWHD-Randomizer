@@ -6,7 +6,7 @@
 
 #include <randomizer.hpp>
 #include <command/Log.hpp>
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 
 RandomizerThread::RandomizerThread()
 {

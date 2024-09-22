@@ -1,7 +1,7 @@
 #include "Button.hpp"
 
-#include <platform/gui/screen.hpp>
-#include <platform/gui/TextWrap.hpp>
+#include <gui/wiiu/screen.hpp>
+#include <gui/wiiu/TextWrap.hpp>
 
 void BasicButton::hovered() {
     InputManager::getInstance().setRepeat(ButtonInfo::A, delay, interval);

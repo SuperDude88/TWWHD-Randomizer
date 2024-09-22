@@ -1,6 +1,6 @@
 #include "tracker_area_label.hpp"
 
-#include <gui/tracker/set_font.hpp>
+#include <gui/desktop/tracker/set_font.hpp>
 
 #include <QMouseEvent>
 

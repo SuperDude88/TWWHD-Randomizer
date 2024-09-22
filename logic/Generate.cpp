@@ -16,7 +16,7 @@
 #include <utility/platform.hpp>
 #include <utility/time.hpp>
 
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 
 #define WORLD_LOADING_ERROR_CHECK(err) if (err != World::WorldLoadingError::NONE) {ErrorLog::getInstance().log(world.getLastErrorDetails()); return 1;}
 

@@ -6,7 +6,7 @@
 #include <functional>
 
 #include <platform/input.hpp>
-#include <platform/gui/OptionActions.hpp>
+#include <gui/wiiu/OptionActions.hpp>
 
 #include <logic/Location.hpp>
 

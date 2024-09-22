@@ -121,8 +121,8 @@ namespace OptionCB {
     bool hasAllCategories(const std::set<LocationCategory>& locationCategories);
 
     void resetInternal();
-    void setInternal(const Config& in);
-    Config getInternal();
+    ConfigError loadConfig();
+    const Config& getInternal();
 }
 
 namespace ColorCB {

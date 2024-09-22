@@ -2,7 +2,7 @@
 
 #include <QFontDatabase>
 
-#include <gui/tracker/tracker_data.hpp>
+#include <gui/desktop/tracker/tracker_data.hpp>
 
 template<typename W>
 void set_font(W* widget, const std::string& font_filename, int point_size)

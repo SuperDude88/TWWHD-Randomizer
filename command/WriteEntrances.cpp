@@ -9,7 +9,7 @@
 #include <command/GamePath.hpp>
 #include <command/RandoSession.hpp>
 
-#include <gui/update_dialog_header.hpp>
+#include <gui/desktop/update_dialog_header.hpp>
 
 bool restoreEntrances(WorldPool& worlds) {
     // Go through all the entrances and restore their data so they don't persist across seeds

@@ -8,10 +8,10 @@
 
 #include <filesystem>
 
-#include <gui/tracker/tracker_inventory_button.hpp>
-#include <gui/tracker/tracker_area_widget.hpp>
-#include <gui/tracker/tracker_preferences_dialog.hpp>
-#include <gui/tracker/set_font.hpp>
+#include <gui/desktop/tracker/tracker_inventory_button.hpp>
+#include <gui/desktop/tracker/tracker_area_widget.hpp>
+#include <gui/desktop/tracker/tracker_preferences_dialog.hpp>
+#include <gui/desktop/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
 #include <logic/Search.hpp>
