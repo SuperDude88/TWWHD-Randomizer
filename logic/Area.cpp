@@ -1,7 +1,6 @@
 
 #include "Area.hpp"
 
-#include <iostream>
 #include <unordered_map>
 #include <array>
 
@@ -462,7 +461,7 @@ uint8_t islandNameToRoomIndex(const std::string& islandName)
 
 uint8_t chartToRoomIndex(const GameItem& chart)
 {
-    std::unordered_map<GameItem, uint8_t> charts = {
+    static const std::unordered_map<GameItem, uint8_t> charts = {
         {GameItem::TreasureChart25, 1}, // Sector 1 Forsaken Fortress
         {GameItem::TreasureChart7,  2}, // Sector 2 Star Island
         {GameItem::TreasureChart24, 3}, // etc...
@@ -519,12 +518,12 @@ uint8_t chartToRoomIndex(const GameItem& chart)
         return 0;
     }
 
-    return charts[chart];
+    return charts.at(chart);
 }
 
 GameItem roomIndexToChart(const uint8_t& room)
 {
-    std::unordered_map<uint8_t, GameItem> rooms = {
+    static const std::unordered_map<uint8_t, GameItem> rooms = {
         {1,  GameItem::TreasureChart25}, // Sector 1 Forsaken Fortress
         {2,  GameItem::TreasureChart7 }, // Sector 2 Star Island
         {3,  GameItem::TreasureChart24}, // etc...
@@ -581,5 +580,5 @@ GameItem roomIndexToChart(const uint8_t& room)
         return GameItem::INVALID;
     }
 
-    return rooms[room];
+    return rooms.at(room);
 }

@@ -466,17 +466,17 @@ void MainWindow::load_tracker_autosave()
     // Color override preferences
     if (pref["items_color"])
     {
-        trackerPreferences.itemsColor.setNamedColor(QString::fromStdString(pref["items_color"].as<std::string>()));
+        trackerPreferences.itemsColor = QColor::fromString(QString::fromStdString(pref["items_color"].as<std::string>()));
     }
 
     if (pref["locations_color"])
     {
-        trackerPreferences.locationsColor.setNamedColor(QString::fromStdString(pref["locations_color"].as<std::string>()));
+        trackerPreferences.locationsColor = QColor::fromString(QString::fromStdString(pref["locations_color"].as<std::string>()));
     }
 
     if (pref["stats_color"])
     {
-        trackerPreferences.statsColor.setNamedColor(QString::fromStdString(pref["stats_color"].as<std::string>()));
+        trackerPreferences.statsColor = QColor::fromString(QString::fromStdString(pref["stats_color"].as<std::string>()));
     }
 
     if (pref["override_items_color"])
@@ -1591,15 +1591,19 @@ void MainWindow::calculate_entrance_paths()
     // randomized entrances
     for (const auto& [region, entrances] : areaEntrances)
     {
-        auto area = trackerWorld.getArea(region);
+        Area* area = nullptr;
         if (region == "Hyrule")
         {
             area = trackerWorld.getArea("Hyrule Castle Interior");
         }
-        if (region == "Forsaken Fortress")
+        else if (region == "Forsaken Fortress")
         {
             area = trackerWorld.getArea("Forsaken Fortress Sector");
         }
+        else {
+            area = trackerWorld.getArea(region);
+        }
+
         if (area != nullptr)
         {
             auto paths = area->findEntrancePaths();
