@@ -144,7 +144,7 @@ SettingsMenu::Result SettingsMenu::run() {
     using namespace std::literals::chrono_literals;
 
     SettingsMenu& sInstance = getInstance();
-
+    Utility::get_model_path();
     if(const ConfigError err = OptionCB::loadConfig(); err != ConfigError::NONE) {
         ErrorLog::getInstance().log("Failed to prepare config, ERROR: " + ConfigErrorGetName(err));
         LOG_ERR_AND_RETURN(Result::CONFIG_ERROR);
@@ -165,6 +165,7 @@ SettingsMenu::Result SettingsMenu::run() {
 
     bool inMenu = true;
     while(inMenu && Utility::platformIsRunning()) { // loop until menu or app signals an exit
+        
         if(ProcIsForeground()) { // only update in foreground
             switch(sInstance.update()) {
                 case Status::CHANGED:
@@ -191,7 +192,7 @@ SettingsMenu::Result SettingsMenu::run() {
     setHomeMenuEnable(false);
     setDim(false);
     setAPD(false);
-
+    
     if(OptionCB::getInternal().writeToFile(Utility::get_app_save_path() / "config.yaml", Utility::get_app_save_path() / "preferences.yaml") != ConfigError::NONE) {
         LOG_ERR_AND_RETURN(Result::CONFIG_ERROR);
     }

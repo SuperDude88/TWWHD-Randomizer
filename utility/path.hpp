@@ -12,6 +12,7 @@ namespace Utility {
     fspath get_data_path();
     fspath get_app_save_path();
     fspath get_logs_path();
+    fspath get_model_path();
     fspath get_temp_dir();
 
     // On Windows, fspath.string() will throw an exception if the character requires some kind of Unicode/non-ANSI representation

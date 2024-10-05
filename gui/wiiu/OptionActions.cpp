@@ -507,6 +507,14 @@ namespace OptionCB {
     std::string isCasual() {
         return fromBool(conf.settings.selectedModel.casual);
     }
+    std::string toggleCustomModel() {
+        conf.settings.selectedModel.custom = !conf.settings.selectedModel.custom;
+        return fromBool(conf.settings.selectedModel.custom);
+    }
+
+    std::string customModel() {
+        return fromBool(conf.settings.selectedModel.custom);
+    }
 
     std::string randomizeColorsOrderly() {
         conf.settings.selectedModel.randomizeOrderly();

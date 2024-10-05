@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>6</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -959,30 +959,10 @@
                <string>Convenience Tweaks</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="skip_rematch_bosses">
+               <item row="0" column="4">
+                <widget class="QCheckBox" name="quiet_swift_sail">
                  <property name="text">
-                  <string>Skip Boss Rematches</string>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="add_shortcut_warps_between_dungeons">
-                 <property name="text">
-                  <string>Add Shortcut Warps Between Dungeons</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QCheckBox" name="instant_text_boxes">
-                 <property name="text">
-                  <string>Instant Text Boxes</string>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
+                  <string>Quiet Swift Sail</string>
                  </property>
                 </widget>
                </item>
@@ -1003,10 +983,13 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="3">
-                <widget class="QCheckBox" name="quiet_swift_sail">
+               <item row="0" column="1">
+                <widget class="QCheckBox" name="instant_text_boxes">
                  <property name="text">
-                  <string>Quiet Swift Sail</string>
+                  <string>Instant Text Boxes</string>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -1014,6 +997,23 @@
                 <widget class="QCheckBox" name="remove_music">
                  <property name="text">
                   <string>Remove Music</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="add_shortcut_warps_between_dungeons">
+                 <property name="text">
+                  <string>Add Shortcut Warps Between Dungeons</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="skip_rematch_bosses">
+                 <property name="text">
+                  <string>Skip Boss Rematches</string>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -1533,6 +1533,13 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
+             <widget class="QPushButton" name="install_custom_model">
+              <property name="text">
+               <string>Install Custom Model</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <layout class="QGridLayout" name="gridLayout_5">
               <item row="2" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -1611,7 +1618,7 @@
                 <item>
                  <widget class="QCheckBox" name="disable_custom_player_voice">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>Disable Custom Voice</string>
@@ -1621,7 +1628,7 @@
                 <item>
                  <widget class="QCheckBox" name="disable_custom_player_items">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>Disable Custom Items</string>
@@ -1629,16 +1636,6 @@
                  </widget>
                 </item>
                </layout>
-              </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="QPushButton" name="install_custom_model">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Install a Custom Model or Model Pack</string>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -2790,7 +2787,7 @@ font-size: 15px;
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>265</height>
+                    <height>267</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_targets_scroll_layout">

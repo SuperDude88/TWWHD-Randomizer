@@ -102,9 +102,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->randomize_enemy_palettes->setVisible(false);
     ui->randomize_music->setVisible(false);
     //ui->update_checker_label->setVisible(false);
-    ui->disable_custom_player_items->setVisible(false);
-    ui->disable_custom_player_voice->setVisible(false);
-    ui->install_custom_model->setVisible(false);
+    //ui->disable_custom_player_items->setVisible(false);
+    //ui->disable_custom_player_voice->setVisible(false);
+    //ui->install_custom_model->setVisible(false);
 
     // Setup Tracker
     initialize_tracker();
@@ -1343,3 +1343,16 @@ void MainWindow::on_paste_permalink_clicked()
     auto permalink = QGuiApplication::clipboard()->text();
     on_permalink_textEdited(permalink);
 }
+
+void MainWindow::on_install_custom_model_clicked()
+{
+    QString dirstr = QFileDialog::getExistingDirectory(this, tr("Choose the custom model folder"), QDir::current().absolutePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dirstr.isEmpty() && !dirstr.isNull())
+    {
+        QDir dir(dirstr);
+        foreach (QString f, dir.entryList(QDir::Files)) {
+            QFile::copy(dirstr + QDir::separator() + f, QCoreApplication::applicationDirPath()+ QDir::separator() + "model"+ QDir::separator() + f);
+        }
+    }
+}
+

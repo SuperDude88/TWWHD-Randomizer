@@ -9,6 +9,8 @@
 #include <utility/file.hpp>
 #include <utility/platform.hpp>
 #include <filetypes/bfres.hpp>
+#include <filetypes/baseFiletype.hpp>
+#include <filetypes/sarc.hpp>
 #include <command/RandoSession.hpp>
 
 using eType = Utility::Endian::Type;
@@ -252,6 +254,8 @@ static const std::unordered_map<std::string, std::list<std::string>> casualTextu
 ModelError CustomModel::applyModel() const {
     RandoSession::CacheEntry& link = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
     link.addAction([&](RandoSession* session, FileType* data) -> int {
+        Utility::platformLog("guess not");
+
         CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
 
         std::string maskFile = "";
@@ -386,6 +390,27 @@ ModelError CustomModel::applyModel() const {
         return true;
     });
 
+    return ModelError::NONE;
+}
+
+ModelError CustomModel::customModel() const {
+
+    RandoSession::CacheEntry& link = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC");
+    Utility::platformLog("Patching voice_0.aw...");
+    if (!g_session.copyToGameFile(Utility::get_model_path() / "voice_0.aw", "content/Cafe/US/AudioRes/JAudioRes/Banks/voice_0.aw")) {
+        Utility::platformLog("Couldn't modify voice_0.aw");
+    }
+    Utility::platformLog("Patching Jailnit.aaf...");
+    if (!g_session.copyToGameFile(Utility::get_model_path() / "Jailnit.aaf", "content/Cafe/US/AudioRes/JAudioRes/Jailnit.aaf")) {
+        Utility::platformLog("Couldn't modify Jailnit.aaf");
+    }
+    Utility::platformLog("Patching Link.szs...");
+    if (!g_session.copyToGameFile(Utility::get_model_path() / "Link.szs", "content/Common/Pack/permanent_3d.pack@SARC@Link.szs")) {
+        Utility::platformLog("Couldn't apply custom model!");
+        return ModelError::COULD_NOT_OPEN;
+    }
+    Utility::platformLog("Applied custom model!");
+    
     return ModelError::NONE;
 }
 

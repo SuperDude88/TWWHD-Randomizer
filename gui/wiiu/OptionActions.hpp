@@ -82,6 +82,8 @@ namespace OptionCB {
 
     std::string toggleCasualClothes();
     std::string isCasual();
+    std::string toggleCustomModel();
+    std::string customModel();
     std::string randomizeColorsOrderly();
     std::string randomizeColorsChaotically();
 

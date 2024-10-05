@@ -292,6 +292,8 @@ private slots:
     void on_view_all_entrances_button_clicked();
 
 
+    void on_install_custom_model_clicked();
+
 public:
     void update_items_color();
     void update_locations_color();

@@ -213,12 +213,20 @@ public:
         if(!verifyOutput()) {
             return 1;
         }
-
-        //IMPROVEMENT: custom model things
-        if(const ModelError err = config.settings.selectedModel.applyModel(); err != ModelError::NONE) {
-            ErrorLog::getInstance().log("Failed to apply custom model, error " + errorToName(err));
-            return 1;
+        if (!config.settings.selectedModel.custom) {
+            //IMPROVEMENT: custom model things
+            if (const ModelError err = config.settings.selectedModel.applyModel(); err != ModelError::NONE) {
+                ErrorLog::getInstance().log("Failed to apply custom model, error " + errorToName(err));
+                return 1;
+            }
         }
+        else {
+            if (const ModelError err = config.settings.selectedModel.customModel(); err != ModelError::NONE) {
+                ErrorLog::getInstance().log("Failed to apply custom model, error " + errorToName(err));
+                return 1;
+            }
+        }
+        
 
         Utility::platformLog("Modifying game code...");
         UPDATE_DIALOG_VALUE(30);

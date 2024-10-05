@@ -403,12 +403,14 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
             settings.excluded_locations.insert(locName);
         }
     }
-
+    Utility::get_model_path();
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
+
     if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
         if(!ignoreErrors) return ConfigError::MODEL_ERROR;
     }
     GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
+    GET_FIELD(preferencesRoot, "custom_model_bool", settings.selectedModel.custom)
     // only non-default colors are written
     if(preferencesRoot["custom_colors"].IsMap()) {
         for(const auto& colorObject : preferencesRoot["custom_colors"]) {
@@ -597,6 +599,7 @@ YAML::Node Config::preferencesToYaml() const {
 
     SET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     SET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
+    SET_FIELD(preferencesRoot, "custom_model_bool", settings.selectedModel.custom)
     for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
         preferencesRoot["custom_colors"][texture] = color;
     }

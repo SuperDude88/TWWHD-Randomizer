@@ -40,6 +40,7 @@ private:
 
 public:
     bool casual;
+    bool custom;
     std::string modelName;
     // holds ordering of the customizable colors in the gui
     std::list<std::string> heroOrdering;
@@ -63,6 +64,7 @@ public:
 
     ModelError loadFromFolder();
     ModelError applyModel() const;
+    ModelError customModel() const;
 };
 
 std::string errorToName(const ModelError& err);

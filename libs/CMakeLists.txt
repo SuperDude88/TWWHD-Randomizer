@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-target_sources(wwhd_rando PRIVATE hash-library/sha1.cpp hash-library/sha256.cpp)
+target_sources(wwhd_rando_t4b PRIVATE hash-library/sha1.cpp hash-library/sha256.cpp)
 
 set(BUILD_SHARED_LIBS OFF)
 
@@ -40,4 +40,4 @@ add_subdirectory("AES")
 
 add_subdirectory("base64pp")
 
-target_link_libraries(wwhd_rando PRIVATE zlib yaml-cpp tinyxml2 AES base64pp)
+target_link_libraries(wwhd_rando_t4b PRIVATE zlib yaml-cpp tinyxml2 AES base64pp)
