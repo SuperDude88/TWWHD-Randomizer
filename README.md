@@ -32,7 +32,7 @@ Make sure you followed the instructions for the official build. We will need pre
 
 Go to the latest release for this branch. Copy `wwhd_randomizer_t4b.wuhb` into your SD card at `sd:\wiiu\apps`. You will see the build on your home screen (the one with farore's pearl). Run it once to generate all the files, then exit to the main menu.
 
-Access your SD card and go to `sd:/wiiu/apps/save/<8 hex digits> (TWWHD Randomizer T4B)`. You will find another folder inside called `model`. In here you want to put the `Link.szs`, (optionnal) `JaiInit.aaf` and (optionnal) `voice_0.aw` files you extracted earlier. You can now open the app on your Wii U again
+Access your SD card and go to `sd:/wiiu/apps/save/<8 hex digits> (TWWHD Randomizer T4B)`. You will find another folder inside called `model`. In here you want to put the `Link.szs`, optionnaly `JaiInit.aaf` and optionnaly `voice_0.aw` files you extracted earlier. You can now open the app on your Wii U again
 
 In the Colors tab, you will find the toggle for custom models. Make sure it is enabled, then you can randomize your game.
 
