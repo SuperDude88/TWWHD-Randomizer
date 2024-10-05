@@ -17,15 +17,15 @@ Copy those files in a separate folder. If you have `permanent_3d.pack` and not `
 ### Extracting Link.szs from permanent_3d.pack
 Download [Toolbox](https://github.com/KillzXGaming/Switch-Toolbox/releases/tag/Final). Extract the zip file somewhere, then run `Toolbox.exe`. Drag and drop the `permanent_3d.pack` file inside Toolbox's window.
 
-![1](https://imgur.com/LcQGo0k)
+![1](https://i.imgur.com/LcQGo0k.png)
 
 Click on the Plus icon on the left of the folder. Scroll down until you find Link.szs and right click on it. Select "Export Raw Data".
 
-![2](https://imgur.com/pISwYHr)
+![2](https://i.imgur.com/pISwYHr.png)
 
 Save the file in the same folder as the other files. You can delete `permanent_3d.pack` now.
 
-![3](https://imgur.com/pISwYHr)
+![3](https://i.imgur.com/pISwYHr.png)
 
 ### On console 
 Make sure you followed the instructions for the official build. We will need pretty much everything the official build installs to be already installed on the wii u.
