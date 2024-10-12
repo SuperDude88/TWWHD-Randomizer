@@ -264,6 +264,7 @@ big_key_label_safestring:
 
 
 
+; In daPy_lk_c::playerInit
 .org 0x024126b8
 	bl check_player_in_casual_clothes
 	cmpwi r3, 0
@@ -294,6 +295,11 @@ check_player_in_casual_clothes:
   mtlr r0
   addi sp, sp, 0x10
   blr
+
+; In some J3DPacketS-related function, affects reflection in Puppet Ganon's room
+.org 0x02083028
+  bl check_player_in_casual_clothes
+  cmpwi r3, 0
 
 
 ; Make Aryll always wear her pirate outfit, not just in Second Quest.
