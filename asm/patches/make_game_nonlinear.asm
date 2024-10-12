@@ -331,6 +331,12 @@ medli_possible_et_spawn_positions:
 	li r31, 0
 	b 0x02227de0
 
+; Never lock Komali's door because it is kinda confusing, especially with entrance rando
+; In vanilla, it locks once you get Din's pearl and unlocks when you trigger a room transition *without* a stage reload
+; This makes it look like it is temporarily locked until you sail away + return to DRI later, but in rando it's not clear at all
+.org 0x021A4B4C
+  beq 0x021A4C28
+
 
 ; Prevent the lava outside the entrance to DRC from solidifying once you own Din's Pearl.
 ; This is so the puzzle with throwing the bomb flowers doesn't become pointless.
