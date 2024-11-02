@@ -816,13 +816,14 @@ void MainWindow::update_tracker()
             }
         }
 
-        auto area = trackerWorld.getArea(currentTrackerArea);
-        if (!area && areaEntranceParents.size() > 0)
-        {
-            area = areaEntranceParents.front();
-        }
         // Use the area entrance parents to find all shuffled entrances in this area
-        shuffledEntrances = area ? area->findShuffledEntrances(areaEntranceParents) : std::list<std::list<Entrance*>>();
+        if (trackerWorld.areaTable.contains(currentTrackerArea))
+        {
+            shuffledEntrances = trackerWorld.getArea(currentTrackerArea)->findShuffledEntrances(areaEntranceParents);
+        }
+        else if(areaEntranceParents.size() > 0) {
+            shuffledEntrances = areaEntranceParents.front()->findShuffledEntrances(areaEntranceParents);
+        }
     }
 
     // If the current tracker area is empty, then show all entrances
@@ -1600,7 +1601,7 @@ void MainWindow::calculate_entrance_paths()
         {
             area = trackerWorld.getArea("Forsaken Fortress Sector");
         }
-        else {
+        else if(trackerWorld.areaTable.contains(region)) {
             area = trackerWorld.getArea(region);
         }
 
