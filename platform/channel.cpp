@@ -61,7 +61,11 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
 
     uint64_t freeSize = 0;
     FSError ret = FSAGetFreeSpaceSize(handle, path.c_str(), &freeSize);
-    if(ret != FS_ERROR_OK) {
+    if(ret == FS_ERROR_STORAGE_FULL) {
+        ErrorLog::getInstance().log("Storage device " + path + " is full!");
+        return false;
+    }
+    else if(ret != FS_ERROR_OK) {
         ErrorLog::getInstance().log("Failed to get free space size, error " + std::to_string(ret));
         return false;
     }
