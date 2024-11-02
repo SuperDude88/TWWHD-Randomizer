@@ -304,7 +304,7 @@ static bool packFreeChannel(const fspath& baseDir) {
 
     tinyxml2::XMLDocument meta;
     if(const tinyxml2::XMLError err = LoadXML(meta, DataPath / "meta" / "meta.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
-        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", " + metaXml.ErrorStr());
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", " + meta.ErrorStr());
         return false;
     }
 
@@ -320,7 +320,7 @@ static bool packFreeChannel(const fspath& baseDir) {
 
     tinyxml2::XMLDocument app;
     if(const tinyxml2::XMLError err = LoadXML(app, DataPath / "code" / "app.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
-        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", " + metaXml.ErrorStr());
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", " + app.ErrorStr());
         return false;
     }
 
