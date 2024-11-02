@@ -107,13 +107,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     #endif
 
     if(!root["game_version"]) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.game_version = nameToGameVersion(root["game_version"].as<std::string>("INVALID"));
         if (settings.game_version == GameVersion::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.game_version = GameVersion::HD;
@@ -124,13 +124,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD_NO_FAIL(root, "seed", seed)
 
     if(!root["progression_dungeons"]) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.progression_dungeons = nameToProgressionDungeons(root["progression_dungeons"].as<std::string>("INVALID"));
         if (settings.progression_dungeons == ProgressionDungeons::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.progression_dungeons = ProgressionDungeons::Standard;
@@ -167,13 +167,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "randomize_boss_entrances", settings.randomize_boss_entrances)
     GET_FIELD(root, "randomize_miniboss_entrances", settings.randomize_miniboss_entrances)
     if(!root["randomize_cave_entrances"]) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.randomize_cave_entrances = nameToShuffleCaveEntrances(root["randomize_cave_entrances"].as<std::string>("INVALID"));
         if (settings.randomize_cave_entrances == ShuffleCaveEntrances::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.randomize_cave_entrances = ShuffleCaveEntrances::Disabled;
@@ -232,13 +232,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "plandomizer", settings.plandomizer)
 
     if(!preferencesRoot["pig_color"])  {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.pig_color = nameToPigColor(preferencesRoot["pig_color"].as<std::string>("INVALID"));
         if(settings.pig_color == PigColor::INVALID) {
             if (!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.pig_color = PigColor::Random;
@@ -247,13 +247,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!root["dungeon_small_keys"]) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.dungeon_small_keys = nameToPlacementOption(root["dungeon_small_keys"].as<std::string>("INVALID"));
         if(settings.dungeon_small_keys == PlacementOption::INVALID) {
             if (!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.dungeon_small_keys = PlacementOption::Vanilla;
@@ -262,13 +262,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!root["dungeon_big_keys"]) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.dungeon_big_keys = nameToPlacementOption(root["dungeon_big_keys"].as<std::string>("INVALID"));
         if(settings.dungeon_big_keys == PlacementOption::INVALID) {
             if (!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.dungeon_big_keys = PlacementOption::Vanilla;
@@ -277,13 +277,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!root["dungeon_maps_compasses"]) {
-        if (!ignoreErrors) return ConfigError::MISSING_KEY;
+        if (!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.dungeon_maps_compasses = nameToPlacementOption(root["dungeon_maps_compasses"].as<std::string>("INVALID"));
         if(settings.dungeon_maps_compasses == PlacementOption::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.dungeon_maps_compasses = PlacementOption::Vanilla;
@@ -292,13 +292,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!preferencesRoot["target_type"]) {
-        if (!ignoreErrors) return ConfigError::MISSING_KEY;
+        if (!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.target_type = nameToTargetTypePreference(preferencesRoot["target_type"].as<std::string>("INVALID"));
         if(settings.target_type == TargetTypePreference::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.target_type = TargetTypePreference::Hold;
@@ -307,13 +307,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!preferencesRoot["camera"]) {
-        if (!ignoreErrors) return ConfigError::MISSING_KEY;
+        if (!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.camera = nameToCameraPreference(preferencesRoot["camera"].as<std::string>("INVALID"));
         if(settings.camera == CameraPreference::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.camera = CameraPreference::Standard;
@@ -322,13 +322,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!preferencesRoot["first_person_camera"]) {
-        if (!ignoreErrors) return ConfigError::MISSING_KEY;
+        if (!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.first_person_camera = nameToFirstPersonCameraPreference(preferencesRoot["first_person_camera"].as<std::string>("INVALID"));
         if(settings.first_person_camera == FirstPersonCameraPreference::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.first_person_camera = FirstPersonCameraPreference::Standard;
@@ -337,13 +337,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!preferencesRoot["gyroscope"]) {
-        if (!ignoreErrors) return ConfigError::MISSING_KEY;
+        if (!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.gyroscope = nameToGyroscopePreference(preferencesRoot["gyroscope"].as<std::string>("INVALID"));
         if(settings.gyroscope == GyroscopePreference::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.gyroscope = GyroscopePreference::On;
@@ -352,13 +352,13 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!preferencesRoot["ui_display"]) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.ui_display = nameToUIDisplayPreference(preferencesRoot["ui_display"].as<std::string>("INVALID"));
         if(settings.ui_display == UIDisplayPreference::INVALID) {
             if(!ignoreErrors) {
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.ui_display = UIDisplayPreference::On;
@@ -367,7 +367,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!root["starting_gear"] || (!root["starting_gear"].IsSequence() && root["starting_gear"].as<std::string>() != "None")) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         std::unordered_multiset<GameItem> valid_items = getSupportedStartingItems();
@@ -385,7 +385,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
 
             if(!valid_items.contains(item)) {
                 ErrorLog::getInstance().log(itemName + " cannot be added to starting inventory");
-                return ConfigError::INVALID_VALUE;
+                LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
 
             settings.starting_gear.push_back(item);
@@ -394,7 +394,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     }
 
     if(!root["excluded_locations"] || (!root["excluded_locations"].IsSequence() && root["excluded_locations"].as<std::string>() != "None")) {
-        if(!ignoreErrors) return ConfigError::MISSING_KEY;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
     else {
         settings.excluded_locations.clear();
@@ -406,7 +406,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
 
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
     if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
-        if(!ignoreErrors) return ConfigError::MODEL_ERROR;
+        if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MODEL_ERROR);
     }
     GET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     // only non-default colors are written
@@ -418,7 +418,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
             // only accept the color if it's valid
             if(!isValidHexColor(color)) {
                 Utility::platformLog(color + " is not a valid hex color");
-                if(!ignoreErrors) return ConfigError::INVALID_VALUE;
+                if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::INVALID_VALUE);
             }
             else {
                 settings.selectedModel.setColor(texture, color);
@@ -910,7 +910,7 @@ static size_t getOptionBitCount(const Option& option) {
     }
 }
 
-#define BYTES_EXIST_CHECK(value) if (value == static_cast<size_t>(-1)) return PermalinkError::COULD_NOT_READ;
+#define BYTES_EXIST_CHECK(value) if (value == static_cast<size_t>(-1)) LOG_ERR_AND_RETURN(PermalinkError::COULD_NOT_READ);
 
 PermalinkError Config::loadPermalink(std::string b64permalink) {
     Config load = *this;
@@ -923,13 +923,13 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
     std::erase_if(b64permalink, [](unsigned char ch){ return std::isspace(ch); });
 
     if (b64permalink.empty()) {
-        return PermalinkError::EMPTY;
+        LOG_ERR_AND_RETURN(PermalinkError::EMPTY);
     }
 
     std::string permalink = b64_decode(b64permalink);
     // Empty string gets returned if there was an error
     if (permalink == "") {
-        return PermalinkError::BAD_ENCODING;
+        LOG_ERR_AND_RETURN(PermalinkError::BAD_ENCODING);
     }
 
     // Split the string into 3 parts along the null terminator delimiter
@@ -959,7 +959,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         }
         ErrorLog::getInstance().log(errorStr);
 
-        return PermalinkError::MISSING_PARTS;
+        LOG_ERR_AND_RETURN(PermalinkError::MISSING_PARTS);
     }
 
     const std::string version = permaParts[0];
@@ -967,7 +967,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
     const std::string optionsBytes = permaParts[2];
 
     if (version != RANDOMIZER_VERSION) {
-        return PermalinkError::INVALID_VERSION;
+        LOG_ERR_AND_RETURN(PermalinkError::INVALID_VERSION);
     }
 
     const std::vector<char> bytes(optionsBytes.begin(), optionsBytes.end());
@@ -996,7 +996,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
 
             const auto& locations = getAllLocationsNames();
             if(locations.empty()) {
-                return PermalinkError::COULD_NOT_LOAD_LOCATIONS;
+                LOG_ERR_AND_RETURN(PermalinkError::COULD_NOT_LOAD_LOCATIONS);
             }
 
             for (const auto& locName: locations) {
@@ -1010,7 +1010,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         else {
             const size_t len = getOptionBitCount(option);
             if(len == static_cast<size_t>(-1)) {
-                return PermalinkError::UNHANDLED_OPTION;
+                LOG_ERR_AND_RETURN(PermalinkError::UNHANDLED_OPTION);
             }
 
             const size_t value = bitsReader.read(len);
@@ -1020,7 +1020,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
     }
 
     if (bitsReader.current_byte_index != bitsReader.bytes.size() - 1) {
-        return PermalinkError::INCORRECT_LENGTH;
+        LOG_ERR_AND_RETURN(PermalinkError::INCORRECT_LENGTH);
     }
 
     // Only overwrite our current config if there were no errors
