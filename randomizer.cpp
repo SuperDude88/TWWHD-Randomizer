@@ -120,13 +120,13 @@ private:
         }
 
         //Double check the meta.xml
-        tinyxml2::XMLDocument metaXml;
         const fspath& metaPath = out / "meta/meta.xml";
         if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
             return false;
         }
 
+        tinyxml2::XMLDocument metaXml;
         if(const tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
             ErrorLog::getInstance().log(std::string("Could not parse output's meta.xml, ") + metaXml.ErrorStr());
             return false;
