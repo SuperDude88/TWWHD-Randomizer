@@ -299,8 +299,8 @@ static bool packFreeChannel(const fspath& baseDir) {
     tinyxml2::XMLPrinter printer;
 
     tinyxml2::XMLDocument meta;
-    if(tinyxml2::XMLError err = LoadXML(meta, DataPath / "meta" / "meta.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
-        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", got error " + std::to_string(err));
+    if(const tinyxml2::XMLError err = LoadXML(meta, DataPath / "meta" / "meta.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", " + metaXml.ErrorStr());
         return false;
     }
 
@@ -315,8 +315,8 @@ static bool packFreeChannel(const fspath& baseDir) {
     printer.ClearBuffer();
 
     tinyxml2::XMLDocument app;
-    if(tinyxml2::XMLError err = LoadXML(app, DataPath / "code" / "app.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
-        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", got error " + std::to_string(err));
+    if(const tinyxml2::XMLError err = LoadXML(app, DataPath / "code" / "app.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", " + metaXml.ErrorStr());
         return false;
     }
 

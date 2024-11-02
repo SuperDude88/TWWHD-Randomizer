@@ -59,15 +59,15 @@ private:
         }
 
         //Check the meta.xml for other platforms (+ a sanity check on console)
-        tinyxml2::XMLDocument metaXml;
         const fspath& metaPath = g_session.getBaseDir() / "meta/meta.xml";
         if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
             return false;
         }
 
-        if(tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
-            ErrorLog::getInstance().log("Could not parse input's meta.xml, got error " + std::to_string(err));
+        tinyxml2::XMLDocument metaXml;
+        if(const tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
+            ErrorLog::getInstance().log(std::string("Could not parse input's meta.xml, ") + metaXml.ErrorStr());
             return false;
         }
 
@@ -76,9 +76,15 @@ private:
         const std::string titleId = root->FirstChildElement("title_id")->GetText();
         const std::string nameEn = root->FirstChildElement("longname_en")->GetText();
         if(titleId != "0005000010143500" || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {
-            ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
-            ErrorLog::getInstance().log("ID " + titleId);
-            ErrorLog::getInstance().log("Name " + nameEn);
+            if(titleId == "0005000010143400" || titleId == "0005000010143600") {
+                ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
+            }
+            else {
+                ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
+                ErrorLog::getInstance().log("ID " + titleId);
+                ErrorLog::getInstance().log("Name " + nameEn);
+            }
+
             return false;
         }
 
@@ -121,8 +127,8 @@ private:
             return false;
         }
 
-        if(tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
-            ErrorLog::getInstance().log("Could not parse output's meta.xml, got error " + std::to_string(err));
+        if(const tinyxml2::XMLError err = LoadXML(metaXml, metaPath); err != tinyxml2::XMLError::XML_SUCCESS) {
+            ErrorLog::getInstance().log(std::string("Could not parse output's meta.xml, ") + metaXml.ErrorStr());
             return false;
         }
         const tinyxml2::XMLElement* root = metaXml.RootElement();
