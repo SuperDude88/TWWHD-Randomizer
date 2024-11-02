@@ -2114,7 +2114,7 @@
   Exits:
       FW Second Room South Platform: Nothing
       FW Entrance Platform: Nothing
-      FW Hub Room Upper Area: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'"
+      FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'"
       FW Boss Door Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: FW Second Room South Platform
@@ -2143,14 +2143,14 @@
 - Name: FW Short Cable Ride Room South Side
   Dungeon: Forbidden Woods
   Exits:
-      FW Short Cable Ride Room North Side: Can_Fly_With_Deku_Leaf_Indoors
-      FW Second Room North Platform: Can_Fly_With_Deku_Leaf_Indoors
+      FW Short Cable Ride Room North Side: Can_Fan_With_Deku_Leaf
+      FW Second Room North Platform: Nothing
 
 - Name: FW Short Cable Ride Room North Side
   Dungeon: Forbidden Woods
   Exits:
       FW Hole in Tree Room Near Lower Door: Nothing
-      FW Short Cable Ride Room South Side: Can_Fly_With_Deku_Leaf_Indoors
+      FW Short Cable Ride Room South Side: Can_Fan_With_Deku_Leaf
 
 - Name: FW Hole in Tree Room Near Lower Door
   Dungeon: Forbidden Woods
@@ -2161,7 +2161,7 @@
 - Name: FW Hole in Tree Room Near Upper Door
   Dungeon: Forbidden Woods
   Locations:
-      Forbidden Woods - Hole In Tree Chest: Can_Fly_With_Deku_Leaf_Indoors
+      Forbidden Woods - Hole In Tree Chest: Can_Fly_With_Deku_Leaf_Indoors # you can drop down and do this with no extra items but it's obscure
   Exits:
       FW Vine Circle Hallway: Can_Defeat_Boko_Babas
       FW Hole in Tree Room Near Lower Door: Nothing
@@ -2170,24 +2170,33 @@
   Dungeon: Forbidden Woods
   Exits:
       FW Hole in Tree Room Near Upper Door: Nothing
-      FW Hub Room Middle Area: Can_Fly_With_Deku_Leaf_Indoors or Can_Defeat_Door_Flowers
+      FW Hub Room Third Floor Lower: Can_Fan_With_Deku_Leaf or Can_Defeat_Door_Flowers
 
-- Name: FW Hub Room Middle Area
+- Name: FW Hub Room Third Floor Lower
   Dungeon: Forbidden Woods
   Exits:
-      FW Hub Room Upper Area: Grappling_Hook
-      FW Mothula Hallway: Can_Defeat_Door_Flowers or can_access(FW Hub Room Upper Area)
+      FW Hub Room Third Floor Upper: Grappling_Hook
+      FW Hub Room Second Floor: Nothing
       FW Vine Circle Hallway: Nothing
 
-- Name: FW Hub Room Upper Area
+- Name: FW Hub Room Third Floor Upper
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Hub Room Third Floor Upper West Platform: Can_Fly_With_Deku_Leaf_Indoors # if you cut down the blue flower before traveling here you need leaf
+      FW Cable Ride Above Poison Water Room Lower South: count(1, Forbidden_Woods_Small_Key)
+      FW Hub Room Third Floor Lower: Grappling_Hook # can not jump to here if you cut down the blue flower first
+      FW Hub Room Second Floor: Nothing
+
+- Name: FW Hub Room Third Floor Upper West Platform # by Morth Pit Hallway
   Dungeon: Forbidden Woods
   Events:
       Can Open FW Blue Pot: Can_Destroy_Leaf_Piles
   Exits:
-      FW Morth Pit Hallway: Nothing
-      FW Cable Ride Above Poison Water Room Lower West: count(1, Forbidden_Woods_Small_Key)
-      FW Hub Room Lower Area: Boomerang
-      FW Hub Room Middle Area: Nothing
+      FW Morth Pit Hallway: Can_Defeat_Door_Flowers # can't bring the nut over if the flower is cut down
+      FW Hub Room Third Floor Upper: Can_Fly_With_Deku_Leaf_Indoors # if you cut down the blue flower you need leaf
+      FW Hub Room Third Floor Lower: Nothing # can jump from warp pot ledge
+      FW Hub Room Second Floor: Nothing
+      FW Hub Room First Floor: Boomerang
       FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       FW Boss Door Room: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'"
 
@@ -2197,7 +2206,7 @@
       Forbidden Woods - Morth Pit Chest: Nothing
   Exits:
       FW Vine Maze Room: Nothing
-      FW Hub Room Middle Area: Nothing
+      FW Hub Room Third Floor Upper West Platform: Nothing
 
 - Name: FW Vine Maze Room
   Dungeon: Forbidden Woods
@@ -2208,17 +2217,17 @@
   Exits:
       FW Morth Pit Hallway: Nothing
 
-- Name: FW Cable Ride Above Poison Water Room Lower West
+- Name: FW Cable Ride Above Poison Water Room Lower South
   Dungeon: Forbidden Woods
   Exits:
-      FW Cable Ride Above Poison Water Room Lower East: Can_Fly_With_Deku_Leaf_Indoors
-      FW Hub Room Upper Area: count(1, Forbidden_Woods_Small_Key)
+      FW Cable Ride Above Poison Water Room Lower North: Can_Fly_With_Deku_Leaf_Indoors
+      FW Hub Room Third Floor Upper: count(1, Forbidden_Woods_Small_Key)
 
-- Name: FW Cable Ride Above Poison Water Room Lower East
+- Name: FW Cable Ride Above Poison Water Room Lower North
   Dungeon: Forbidden Woods
   Exits:
       FW Tall Room Before Mini Boss: Nothing
-      FW Cable Ride Above Poison Water Room Lower West: Nothing
+      FW Cable Ride Above Poison Water Room Lower South: Nothing
 
 - Name: FW Tall Room Before Mini Boss
   Dungeon: Forbidden Woods
@@ -2226,8 +2235,8 @@
       Forbidden Woods - Tall Room Chest: Grappling_Hook
   Exits:
       FW Mini Boss Room: Nothing
-      FW Cable Ride Above Poison Water Room Upper East: Can_Defeat_Door_Flowers
-      FW Cable Ride Above Poison Water Room Lower East: Nothing
+      FW Cable Ride Above Poison Water Room Upper North: Can_Defeat_Door_Flowers
+      FW Cable Ride Above Poison Water Room Lower North: Nothing
 
 - Name: FW Mini Boss Room
   Locations:
@@ -2235,47 +2244,54 @@
   Exits:
       FW Tall Room Before Mini Boss: Boomerang
 
-- Name: FW Cable Ride Above Poison Water Room Upper East
+- Name: FW Cable Ride Above Poison Water Room Upper North
   Dungeon: Forbidden Woods
   Exits:
-      FW Cable Ride Above Poison Water Room Upper West: Can_Destroy_Hanging_Seeds and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
-      FW Cable Ride Above Poison Water Room Lower East: Nothing
+      FW Cable Ride Above Poison Water Room Upper South: Can_Destroy_Hanging_Seeds and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+      FW Cable Ride Above Poison Water Room Lower North: Nothing # drop down onto the moving platform below
       FW Tall Room Before Mini Boss: Nothing
 
-- Name: FW Cable Ride Above Poison Water Room Upper West
+- Name: FW Cable Ride Above Poison Water Room Upper South
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Past Seeds Hanging by Vines Chest: Nothing
   Exits:
-      FW Cable Ride Above Poison Water Room Upper East: Can_Fly_With_Deku_Leaf_Indoors and Can_Destroy_Hanging_Seeds
-      FW Cable Ride Above Poison Water Room Lower West: Nothing
+      FW Cable Ride Above Poison Water Room Upper North: Can_Fly_With_Deku_Leaf_Indoors and Can_Destroy_Hanging_Seeds
+      FW Cable Ride Above Poison Water Room Lower South: Nothing
       FW Hub Room Highest Platform: Nothing
 
 - Name: FW Hub Room Highest Platform
   Dungeon: Forbidden Woods
   Exits:
-      FW Cable Ride Above Poison Water Room Upper West: Nothing
-      FW Hub Room Upper Area: Nothing
+      FW Cable Ride Above Poison Water Room Upper South: Nothing
+      FW Hub Room Third Floor Upper: Nothing
+      FW Hub Room First Floor: Boomerang
 
-- Name: FW Hub Room Lower Area
+- Name: FW Hub Room Second Floor
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Mothula Hallway: Can_Defeat_Door_Flowers or can_access(FW Hub Room Third Floor Upper)
+      FW Hub Room Third Floor Lower: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Hub Room First Floor
   Dungeon: Forbidden Woods
   Exits:
       FW Forked Hallway Lower: Nothing
-      FW Hub Room Middle Area: Can_Fly_With_Deku_Leaf_Indoors
+      FW Hub Room Second Floor: Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: FW Forked Hallway Lower
   Dungeon: Forbidden Woods
   Exits:
       FW Poison River Room Before River: Nothing
-      FW Hub Room Lower Area: Nothing
+      FW Hub Room First Floor: Nothing
 
 - Name: FW Poison River Room Before River
   Dungeon: Forbidden Woods
   Locations:
-      Forbidden Woods - Chest Across Hanging Flower: Nothing
+      Forbidden Woods - Chest Across Hanging Flower: Nothing # can reload the room after cutting down the flower
   Exits:
-      FW Poison River Room After River: Boomerang and Can_Fly_With_Deku_Leaf_Indoors
-      FW Tingle Chest Room: Boomerang or Can_Destroy_Wooden_Barriers
+      FW Poison River Room After River: (Boomerang or Heros_Sword) and Can_Fan_With_Deku_Leaf # can spin attack the vines on the flower
+      FW Tingle Chest Room: (Boomerang or Heros_Sword) or Can_Destroy_Wooden_Barriers
       FW Forked Hallway Lower: Nothing
 
 - Name: FW Poison River Room After River
@@ -2287,8 +2303,8 @@
 - Name: FW Tingle Chest Room
   Dungeon: Forbidden Woods
   Locations:
-      Forbidden Woods - Tingle Statue Chest: Bombs
-      Forbidden Woods - Locked Tree Trunk Chest: Can_Defeat_Boko_Babas and (Fire_Arrows or Bombs or Can_Fly_With_Deku_Leaf_Indoors)
+      Forbidden Woods - Tingle Statue Chest: Bombs # can also use the bomb flower but it's pretty obscure so not in logic
+      Forbidden Woods - Locked Tree Trunk Chest: Bombs or Fire_Arrows or (Can_Defeat_Boko_Babas_At_Range and Can_Fly_With_Deku_Leaf_Indoors)
   Exits:
       FW Poison River Room Before River: Nothing
 
@@ -2302,7 +2318,7 @@
 - Name: FW Big Key Room Higher Ledge
   Dungeon: Forbidden Woods
   Exits:
-      FW Forked Hallway Higher Ledge: Boomerang and Can_Defeat_Moblins and can_access(FW Big Key Room)
+      FW Forked Hallway Higher Ledge: Boomerang and Can_Defeat_Moblins
       FW Big Key Room: Nothing
 
 - Name: FW Forked Hallway Higher Ledge
@@ -2317,7 +2333,7 @@
       Forbidden Woods - Double Mothula Room Chest: Can_Defeat_Mothulas
   Exits:
       FW Boss Door Room: Can_Defeat_Mothulas
-      FW Hub Room Middle Area: Can_Defeat_Mothulas
+      FW Hub Room Second Floor: Can_Defeat_Mothulas
 
 - Name: FW Boss Door Room
   Dungeon: Forbidden Woods
@@ -2328,7 +2344,7 @@
       Kalle Demos Battle Arena: Forbidden_Woods_Big_Key
       FW Mothula Hallway: Nothing
       FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'"
-      FW Hub Room Upper Area: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+      FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Kalle Demos Battle Arena
   Boss Room: Forbidden Woods
@@ -2787,7 +2803,6 @@
   Dungeon: Wind Temple
   Exits:
       WT First Warp Pot Room Lower Area: Nothing
-      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
       WT First Room: Nothing
 
 - Name: WT First Warp Pot Room Lower Area
@@ -2798,6 +2813,7 @@
       Wind Temple - Between Dirt Patches Chest: Can_Play_CM
   Exits:
       WT First Warp Pot Room Front: Iron_Boots
+      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
       WT Hub Room First Floor South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
