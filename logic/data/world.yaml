@@ -133,8 +133,7 @@
       Forsaken Fortress Barrel Storage Room Lower: Can_Defeat_Phantom_Ganon
       Forsaken Fortress Sleeping Quarters Outside Ledge: Can_Fly_With_Deku_Leaf_Outdoors
       Forsaken Fortress Up Switch Back Stairs: Skull_Hammer
-      Forsaken Fortress Sector: Bombs
-      The Great Sea: Can_Play_BoG and Can_Sail_Away
+      Forsaken Fortress Sector: Bombs or Can_Play_BoG
 
 - Name: Forsaken Fortress Barrel Storage Room Lower
   Dungeon: Forsaken Fortress
@@ -482,6 +481,8 @@
       Can Get Fairies: Nothing
   Locations:
       Mother & Child Isles - Inside Mother Isle: Nothing
+  Exits:
+      The Great Sea: Can_Play_BoG
 
 - Name: Spectacle Island
   Island: Spectacle Island
