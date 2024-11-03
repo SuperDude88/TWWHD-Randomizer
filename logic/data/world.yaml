@@ -3202,13 +3202,48 @@
 - Name: Ganon's Tower Final Staircase
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Puppet Ganon Boss Room: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
+      Ganon's Tower Puppet Ganon Boss Arena: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
       Ganon's Tower Middle Hub Room: Nothing
 
-- Name: Ganon's Tower Puppet Ganon Boss Room
+- Name: Ganon's Tower Puppet Ganon Boss Arena
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Spire: Can_Defeat_Puppet_Ganon
+      Ganon's Tower Puppet Ganon Boss Arena Side Shelves: Hookshot
+      Ganon's Tower Puppet Ganon Boss Room Lowest Platform: Can_Defeat_Puppet_Ganon
+      Ganon's Tower Puppet Ganon Boss Room Morth Platform: "'Can_Open_PG_Warp_Pot'"
+
+- Name: Ganon's Tower Puppet Ganon Boss Arena Side Shelves
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Lowest Platform
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Pot Platform: Grappling_Hook
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Pot Platform
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Morth Platform: Grappling_Hook
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Morth Platform
+  Hint Region: Ganon's Tower
+  Events:
+      Can Open PG Warp Pot: Nothing # Can throw a pot at it
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Pot Platform: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Highest Platform: Hookshot
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Highest Platform
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Highest Platform: Nothing
+      Ganon's Tower Spire: Nothing
 
 - Name: Ganon's Tower Spire
   Hint Region: Ganon's Tower
