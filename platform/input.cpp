@@ -264,8 +264,11 @@ static InputError mapWPAD(const KPADStatus& stat, ButtonInfo& out) {
             }
 
             break;
+        case WPAD_EXT_UNKNOWN:
+            LOG_TO_DEBUG("WPAD extension unknown/still connecting");
+            break;
         default:
-            ErrorLog::getInstance().log("Unknown WPAD extension type: " + std::to_string(stat.extensionType));
+            LOG_TO_DEBUG("Unknown WPAD extension type: " + std::to_string(stat.extensionType));
             LOG_ERR_AND_RETURN(InputError::INVALID_CONTROLLER);
     }
 
