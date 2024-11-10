@@ -266,8 +266,11 @@ enum struct GameItem : uint8_t
 };
 
 GameItem nameToGameItem(const std::string& name);
-
 std::string gameItemToName(GameItem item);
+
+// Only matches for non-randomized charts
+uint8_t chartToDefaultRoomNum(const GameItem& chart);
+GameItem roomNumToDefaultChart(const uint8_t& room);
 
 GameItem idToGameItem(uint8_t id);
 
