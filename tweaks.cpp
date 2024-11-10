@@ -152,8 +152,8 @@ TweakError set_new_game_starting_location(const uint8_t spawn_id, const uint8_t 
     return TweakError::NONE;
 }
 
-TweakError change_ship_starting_island(const uint8_t room_index) {
-    const fspath path = getRoomDzrPath("sea", room_index);
+TweakError change_ship_starting_island(const uint8_t room_num) {
+    const fspath path = getRoomDzrPath("sea", room_num);
 
     RandoSession::CacheEntry& room = g_session.openGameFile(path);
     RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs@DZX");
@@ -1294,7 +1294,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
                     region = world.dungeons[region].islands.front();
                 }
         
-                if (islandNameToRoomIndex(region) != 0) {
+                if (islandNameToRoomNum(region) != 0) {
                     island = region;
                 }
             }
@@ -1306,8 +1306,8 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
 
         if (island != "") {
             LOG_TO_DEBUG("Rotating " + hohoLocation->getName() + " to face " + island);
-            auto islandNumToFace = islandNameToRoomIndex(island);
-            auto hohoIslandNum = islandNameToRoomIndex(hohoLocation->hintRegions.front());
+            auto islandNumToFace = islandNameToRoomNum(island);
+            auto hohoIslandNum = islandNameToRoomNum(hohoLocation->hintRegions.front());
 
             const fspath filepath = getRoomDzrPath("sea", hohoIslandNum);
             RandoSession::CacheEntry& room = g_session.openGameFile(filepath);
@@ -2332,7 +2332,7 @@ TweakError implement_key_bag() {
 TweakError show_dungeon_markers_on_chart(World& world) {
     using namespace NintendoWare::Layout;
 
-    std::unordered_set<uint8_t> room_indexes;
+    std::unordered_set<uint8_t> room_numbers;
     for(const auto& [name, dungeon] : world.dungeons) {
         if (dungeon.isRequiredDungeon)
         {
@@ -2341,21 +2341,21 @@ TweakError show_dungeon_markers_on_chart(World& world) {
             auto bossIslands = raceModeArea->findIslands();
 
             const std::string& islandName = bossIslands.front();
-            room_indexes.emplace(islandNameToRoomIndex(islandName));
+            room_numbers.emplace(islandNameToRoomNum(islandName));
         }
     }
 
     for (const auto& language : Text::supported_languages) {
         RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt@BFLYT");
 
-        map.addAction([room_indexes](RandoSession* session, FileType* data) -> int {
+        map.addAction([room_numbers](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(map, FileTypes::FLYTFile, data)
 
             std::vector<size_t> quest_marker_indexes = {
                 144, 145, 146, 147, 148, 149, 150, 151
             };
 
-            for(const uint8_t& index : room_indexes) {
+            for(const uint8_t& index : room_numbers) {
                 const uint32_t column = (index - 1) % 7;
                 const uint32_t row = (index - 1) / 7;
                 const float x_pos = (column * 73.0f) - 148.0f;
@@ -2515,8 +2515,8 @@ TweakError fix_totg_warp_spawn() {
 }
 
 TweakError remove_phantom_ganon_req_for_reefs() {
-    for (const uint8_t room_index : {24, 46, 22, 8, 37, 25}) {
-        const fspath path = getRoomDzrPath("sea", room_index);
+    for (const uint8_t room_num : {24, 46, 22, 8, 37, 25}) {
+        const fspath path = getRoomDzrPath("sea", room_num);
         RandoSession::CacheEntry& entry = g_session.openGameFile(path);
         
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -3713,7 +3713,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 }
 
 TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool& randomizeItems */) {
-    const uint8_t startIsland = islandNameToRoomIndex(world.getArea("Link's Spawn")->exits.front().getConnectedArea()->name);
+    const uint8_t startIsland = islandNameToRoomNum(world.getArea("Link's Spawn")->exits.front().getConnectedArea()->name);
 
     TWEAK_ERR_CHECK(set_new_game_starting_location(0, startIsland));
     TWEAK_ERR_CHECK(change_ship_starting_island(startIsland));

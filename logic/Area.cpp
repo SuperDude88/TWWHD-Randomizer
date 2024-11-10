@@ -270,7 +270,7 @@ std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
             auto nextArea = e.getConnectedArea();
             // If this entrance is not connected, or if this is another island/Hyrule/The Great Sea,
             // then don't try to find a path with this entrance.
-            if (nextArea == nullptr || (islandNameToRoomIndex(nextArea->name) != 0) || nextArea->hintRegion == "Hyrule" || nextArea->name == "The Great Sea")
+            if (nextArea == nullptr || (islandNameToRoomNum(nextArea->name) != 0) || nextArea->hintRegion == "Hyrule" || nextArea->name == "The Great Sea")
             {
                 continue;
             }
@@ -310,7 +310,7 @@ std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
 
                 // Don't bother queueing the area if it already is inserted and has a distance
                 // less than or equal to the current distance
-                if (islandNameToRoomIndex(nextArea->name) != 0 || nextArea->hintRegion == "Hyrule" || 
+                if (islandNameToRoomNum(nextArea->name) != 0 || nextArea->hintRegion == "Hyrule" || 
                      (dists.contains(nextArea) && dists[nextArea] <= curShuffledEntranceDistance))
                 {
                     continue;
@@ -338,7 +338,7 @@ std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
     return paths;
 }
 
-std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
+std::string roomNumToIslandName(const uint8_t& startingIslandRoomNum)
 {
     // Island room number corresponds with index in the below array
     static const std::array<std::string, 50> startingIslandAreaArray = {
@@ -394,10 +394,14 @@ std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex)
         "Five Star Isles",
     };
 
-    return startingIslandAreaArray[startingIslandRoomIndex];
+    if(startingIslandRoomNum <= 0 || startingIslandRoomNum >= 49) {
+        return "INVALID";
+    }
+
+    return startingIslandAreaArray[startingIslandRoomNum];
 }
 
-uint8_t islandNameToRoomIndex(const std::string& islandName)
+uint8_t islandNameToRoomNum(const std::string& islandName)
 {
     static const std::unordered_map<std::string, uint8_t> islandAreaMap = {
         {"Forsaken Fortress Sector", 1},

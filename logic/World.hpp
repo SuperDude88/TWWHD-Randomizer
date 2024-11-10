@@ -132,7 +132,7 @@ public:
     std::map<uint8_t, GameItem> chartMappings = {};
     Settings originalSettings;
 
-    uint8_t startingIslandRoomIndex = 44; // Outset Island by default
+    uint8_t startingIslandRoomNum = 44; // Outset Island by default
     Plandomizer plandomizer;
 
 

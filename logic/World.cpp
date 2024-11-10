@@ -289,7 +289,7 @@ bool World::chartLeadsToSunkenTreasure(Location* location, const std::string& it
         return false;
     }
     auto islandName = location->getName().substr(0, location->getName().find(" - Sunken Treasure"));
-    size_t islandNumber = islandNameToRoomIndex(islandName);
+    size_t islandNumber = islandNameToRoomNum(islandName);
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
 

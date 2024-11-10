@@ -1740,7 +1740,7 @@ QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow)
                 {
                     if (item.getGameItemId() == chart)
                     {
-                        return std::string("Chart for " + roomIndexToIslandName(islandNum)).c_str();
+                        return std::string("Chart for " + roomNumToIslandName(islandNum)).c_str();
                     }
                 }
             }

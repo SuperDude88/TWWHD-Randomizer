@@ -657,7 +657,7 @@ static void SetShuffledEntrances(EntrancePools& entrancePools) {
 // {
 //     LOG_TO_DEBUG("Resetting entrance connections");
 //     // Reset random starting island
-//     auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
+//     auto startingIsland = roomNumToIslandName(world.startingIslandRoomNum);
 //
 //     // Set original starting island in the world graph
 //     auto linksSpawn = world.getEntrance("Link's Spawn", startingIsland);
@@ -668,7 +668,7 @@ static void SetShuffledEntrances(EntrancePools& entrancePools) {
 //     linksSpawn->setConnectedArea("Outset Island");
 //     world.getArea(startingIsland).entrances.remove(linksSpawn);
 //     world.getArea("Outset Island").entrances.push_back(linksSpawn);
-//     world.startingIslandRoomIndex = 44;
+//     world.startingIslandRoomNum = 44;
 //
 //     // Reset all entrances that were shuffled
 //     auto shuffledEntrances = world.getShuffledEntrances(EntranceType::ALL);
@@ -899,22 +899,22 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
     {
         auto& settings = world.getSettings();
         // Set random starting island (either if the settings is set, or one is plandomized)
-        if (settings.randomize_starting_island || world.plandomizer.startingIslandRoomIndex != 0)
+        if (settings.randomize_starting_island || world.plandomizer.startingIslandRoomNum != 0)
         {
 
             // Set plandomizer island if there is one
-            if (world.plandomizer.startingIslandRoomIndex != 0 && world.plandomizer.startingIslandRoomIndex < 50)
+            if (world.plandomizer.startingIslandRoomNum != 0 && world.plandomizer.startingIslandRoomNum < 50)
             {
-                world.startingIslandRoomIndex = world.plandomizer.startingIslandRoomIndex;
+                world.startingIslandRoomNum = world.plandomizer.startingIslandRoomNum;
             }
             else
             {
                 // Rooms 2 - 49 include every island except Forsaken Fortress
-                world.startingIslandRoomIndex = Random(2, 50);
+                world.startingIslandRoomNum = Random(2, 50);
             }
 
-            auto startingIsland = roomIndexToIslandName(world.startingIslandRoomIndex);
-            LOG_TO_DEBUG("starting island: \"" + startingIsland + "\" index: " + std::to_string(world.startingIslandRoomIndex));
+            auto startingIsland = roomNumToIslandName(world.startingIslandRoomNum);
+            LOG_TO_DEBUG("starting island: \"" + startingIsland + "\" index: " + std::to_string(world.startingIslandRoomNum));
 
             // Set the new starting island in the world graph
             auto linksSpawn = world.getEntrance("Link's Spawn", "Outset Island");
