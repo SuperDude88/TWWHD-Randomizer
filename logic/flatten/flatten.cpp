@@ -233,6 +233,9 @@ DNF evaluatePartialRequirement(BitIndex& bitIndex, const Requirement& req, Flatt
         event = std::get<EventId>(req.args[0]);
         return search->eventExprs[event];
 
+    case RequirementType::MACRO:
+        return evaluatePartialRequirement(bitIndex, search->world->macros[std::get<MacroIndex>(req.args[0])], search);
+
     // count requirements frequently have to unify with weaker terms,
     // so a count requirement always requires all lesser item counts too.
     // this ensures redundant terms can be eliminated
