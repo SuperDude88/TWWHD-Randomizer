@@ -85,6 +85,9 @@ bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSe
     case RequirementType::CAN_ACCESS:
         return world->getArea(std::get<std::string>(req.args[0]))->isAccessible;
 
+    case RequirementType::MACRO:
+        return evaluateRequirement(world, world->macros[std::get<MacroIndex>(req.args[0])], ownedItems, ownedEvents);
+
     case RequirementType::NONE:
     default:
         // actually needs to be some error state?
@@ -293,8 +296,8 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
                 return RequirementError::NONE;
             }
 
-            // Evaluate the deeper expression and add it to the requirement object if it's valid
-            if ((err = parseRequirementString(world->macroStrings[argStr], req, world)) != RequirementError::NONE) return err;
+            req.type = RequirementType::MACRO;
+            req.args.emplace_back(world->macroNameMap.at(argStr));
             return RequirementError::NONE;
         }
         // Then an item...
@@ -521,18 +524,19 @@ void Requirement::sortArgs()
 }
 
 // Returns a set of all items that are listed in this requirement
-std::unordered_set<GameItem> Requirement::getItems()
+std::unordered_set<GameItem> Requirement::getItems(World* world)
 {
     int expectedHearts;
     Item item;
     std::unordered_set<GameItem> items = {};
+    std::unordered_set<GameItem> argItems = {};
     switch(type)
     {
     case RequirementType::OR:
     case RequirementType::AND:
         for (auto& arg : args)
         {
-            auto argItems = std::get<Requirement>(arg).getItems();
+            argItems = std::get<Requirement>(arg).getItems(world);
             items.insert(argItems.begin(), argItems.end());
         }
         break;
@@ -546,6 +550,10 @@ std::unordered_set<GameItem> Requirement::getItems()
         break;
     case RequirementType::HEALTH:
         items.insert({GameItem::HeartContainer, GameItem::PieceOfHeart});
+        break;
+    case RequirementType::MACRO:
+        argItems = world->macros[std::get<MacroIndex>(args[0])].getItems(world);
+        items.insert(argItems.begin(), argItems.end());
         break;
     default:
         return items;

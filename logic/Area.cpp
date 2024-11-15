@@ -394,7 +394,7 @@ std::string roomNumToIslandName(const uint8_t& startingIslandRoomNum)
         "Five Star Isles",
     };
 
-    if(startingIslandRoomNum <= 0 || startingIslandRoomNum >= 49) {
+    if(startingIslandRoomNum <= 0 || startingIslandRoomNum >= 50) {
         return "INVALID";
     }
 
