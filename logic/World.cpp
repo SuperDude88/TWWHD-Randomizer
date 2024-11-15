@@ -1442,7 +1442,7 @@ void World::flattenLogicRequirements()
     // for this location.
     for (auto& [name, loc] : locationTable)
     {
-        loc->itemsInComputedRequirement = loc->computedRequirement.getItems();
+        loc->itemsInComputedRequirement = loc->computedRequirement.getItems(this);
 
         // For each item listed, set this location as a chain
         // location of the item
