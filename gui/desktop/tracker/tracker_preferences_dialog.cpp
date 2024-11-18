@@ -3,6 +3,7 @@
 #include "../mainwindow.hpp"
 
 #include <QColorDialog>
+#include <QFileDialog>
 
 TrackerPreferencesDialog::TrackerPreferencesDialog(MainWindow* main_) : main(main_) {
     ui.setupUi(this);
@@ -33,7 +34,7 @@ void TrackerPreferencesDialog::on_show_location_logic_stateChanged(int arg1)
     }
 
     main->trackerPreferences.showLocationLogic = arg1;
-    main->autosave_current_tracker();
+    main->autosave_current_tracker_preferences(); //TODO: error handling?
 }
 
 
@@ -121,3 +122,21 @@ void TrackerPreferencesDialog::on_pick_statistics_background_color_clicked()
     main->update_stats_color();
 }
 
+void TrackerPreferencesDialog::on_tracker_save_path_browse_button_clicked() {
+    QString dir = QFileDialog::getSaveFileName(this, tr("Choose Tracker Save"), QDir::current().absolutePath(), "Tracker Saves (*.yaml)", nullptr, QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty() && !dir.isNull())
+    {
+        main->trackerPreferences.autosaveFilePath = Utility::fromQString(dir);
+        main->autosave_current_tracker();
+    }
+}
+
+void TrackerPreferencesDialog::on_tracker_load_path_browse_button_clicked() {
+    QString dir = QFileDialog::getOpenFileName(this, tr("Choose Tracker Save"), QDir::current().absolutePath(), "Tracker Saves (*.yaml)", nullptr, QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty() && !dir.isNull())
+    {
+        main->trackerPreferences.autosaveFilePath = Utility::fromQString(dir);
+        main->autosave_current_tracker_preferences();
+        main->load_tracker_autosave();
+    }
+}

@@ -293,6 +293,8 @@ void MainWindow::on_start_tracker_button_clicked()
         return;
     }
 
+    trackerPreferences.autosaveFilePath = Utility::get_app_save_path() / "tracker_autosave.yaml";
+
     initialize_tracker_world(config.settings);
 
     // Get the first search iteration
@@ -303,21 +305,31 @@ void MainWindow::on_start_tracker_button_clicked()
 
 void MainWindow::autosave_current_tracker()
 {
+    if(!autosave_current_tracker_config()) {
+        // error?
+    }
+    if(!autosave_current_tracker_preferences()) {
+        // error?
+    }
+}
+
+bool MainWindow::autosave_current_tracker_config()
+{
     auto& trackerWorld = trackerWorlds[0];
 
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() / "tracker_autosave.yaml", Utility::get_app_save_path() / "tracker_preferences.yaml");
+    auto configErr = trackerConfig.writeSettings(trackerPreferences.autosaveFilePath);
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + ConfigErrorGetName(configErr));
-        return;
+        return false;
     }
 
     // Read it back and add extra tracker data
     std::string autosave;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_autosave.yaml", autosave);
+    Utility::getFileContents(trackerPreferences.autosaveFilePath, autosave);
     YAML::Node root = YAML::Load(autosave);
 
     // Save which locations have been marked
@@ -352,14 +364,30 @@ void MainWindow::autosave_current_tracker()
     }
 
 
-    std::ofstream autosave_file(Utility::get_app_save_path() / "tracker_autosave.yaml");
+    std::ofstream autosave_file(trackerPreferences.autosaveFilePath);
     if (autosave_file.is_open() == false)
     {
-        show_error_dialog("Failed to open tracker_autosave.yaml");
-        return;
+        show_error_dialog("Failed to open " + Utility::toUtf8String(trackerPreferences.autosaveFilePath));
+        return false;
     }
 
     autosave_file << root;
+    autosave_file.close();
+
+    return true;
+}
+
+bool MainWindow::autosave_current_tracker_preferences()
+{
+    Config trackerConfig;
+    trackerConfig.settings = trackerSettings;
+    // Save current config
+    auto configErr = trackerConfig.writePreferences(Utility::get_app_save_path() / "tracker_preferences.yaml");
+    if (configErr != ConfigError::NONE)
+    {
+        show_error_dialog("Could not save tracker preferences to file\n Error: " + ConfigErrorGetName(configErr));
+        return false;
+    }
 
     // Save preferences back to tracker_preferences
     std::string preferences;
@@ -376,92 +404,38 @@ void MainWindow::autosave_current_tracker()
     pref["items_color"] = trackerPreferences.itemsColor.name().toStdString();
     pref["locations_color"] = trackerPreferences.locationsColor.name().toStdString();
     pref["stats_color"] = trackerPreferences.statsColor.name().toStdString();
+    pref["autosave_file_override"] = Utility::toUtf8String(trackerPreferences.autosaveFilePath);
 
     std::ofstream preferences_file(Utility::get_app_save_path() / "tracker_preferences.yaml");
     if (preferences_file.is_open() == false)
     {
         show_error_dialog("Failed to open tracker_preferences.yaml");
-        return;
+        return false;
     }
 
     preferences_file << pref;
     preferences_file.close();
+
+    return true;
 }
 
 void MainWindow::load_tracker_autosave()
 {
-    if (!std::filesystem::exists(Utility::get_app_save_path() / "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
-    {
+    // Load tracker preferences
+    std::string preferences;
+    if(Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences) != 0) {
         // No autosave file, don't try to do anything
         return;
     }
-
-    Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() / "tracker_autosave.yaml", Utility::get_app_save_path() / "tracker_preferences.yaml", true);
-    if (configErr != ConfigError::NONE)
-    {
-        show_warning_dialog("Could not load tracker autosave config\nError: " + ConfigErrorGetName(configErr));
-        return;
-    }
-
-    std::string autosave;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_autosave.yaml", autosave);
-    YAML::Node root = YAML::Load(autosave);
-
-    // Load marked locations
-    std::vector<std::string> markedLocations = {};
-    if (root["marked_locations"].IsSequence())
-    {
-        for (const auto& locationName : root["marked_locations"])
-        {
-            markedLocations.push_back(locationName.as<std::string>());
-        }
-    }
-    else if (root["marked_locations"] && root["marked_locations"].as<std::string>() != "None")
-    {
-        show_warning_dialog("Unable to load marked locations from tracker autosave");
-    }
-
-
-    // Load marked items
-    GameItemPool markedItems = {};
-    if (root["marked_items"].IsSequence())
-    {
-        for (const auto& item : root["marked_items"])
-        {
-            const std::string itemName = item.as<std::string>();
-            if (nameToGameItem(itemName) != GameItem::INVALID)
-            {
-                markedItems.push_back(nameToGameItem(itemName));
-            }
-            else
-            {
-                show_warning_dialog("Unknown item \"" + itemName + "\" in tracker autosave file");
-            }
-        }
-    }
-    else if (root["marked_items"] && root["marked_items"].as<std::string>() != "None")
-    {
-        show_warning_dialog("Unable to load marked items from tracker autosave");
-    }
-
-    std::unordered_map<std::string, std::string> entranceConnections = {};
-    const auto& connectedEntrances = root["connected_entrances"];
-    if (!connectedEntrances.IsNull())
-    {
-        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
-        {
-            auto entranceConnection = *entranceItr;
-            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
-        }
-    }
-
-    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections);
-
-    // Load tracker preferences
-    std::string preferences;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
+
+    // Last saved tracker location
+    if(pref["autosave_file_override"]) {
+        trackerPreferences.autosaveFilePath = Utility::Str::toUTF16(pref["autosave_file_override"].as<std::string>());
+    }
+    else {
+        trackerPreferences.autosaveFilePath = Utility::get_app_save_path() / "tracker_autosave.yaml";
+    }
 
     // Color override preferences
     if (pref["items_color"])
@@ -517,6 +491,74 @@ void MainWindow::load_tracker_autosave()
     {
         trackerPreferences.clearAllIncludesDungeonMail = pref["clear_all_includes_dungeon_mail"].as<bool>();
     }
+
+    if (!std::filesystem::exists(trackerPreferences.autosaveFilePath) || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
+    {
+        // No autosave file, don't try to do anything
+        return;
+    }
+
+    Config trackerConfig;
+    auto configErr = trackerConfig.loadFromFile(trackerPreferences.autosaveFilePath, Utility::get_app_save_path() / "tracker_preferences.yaml", true);
+    if (configErr != ConfigError::NONE)
+    {
+        show_warning_dialog("Could not load tracker autosave config\nError: " + ConfigErrorGetName(configErr));
+        return;
+    }
+
+    std::string autosave;
+    Utility::getFileContents(trackerPreferences.autosaveFilePath, autosave);
+    YAML::Node root = YAML::Load(autosave);
+
+    // Load marked locations
+    std::vector<std::string> markedLocations = {};
+    if (root["marked_locations"].IsSequence())
+    {
+        for (const auto& locationName : root["marked_locations"])
+        {
+            markedLocations.push_back(locationName.as<std::string>());
+        }
+    }
+    else if (root["marked_locations"] && root["marked_locations"].as<std::string>() != "None")
+    {
+        show_warning_dialog("Unable to load marked locations from tracker autosave");
+    }
+
+
+    // Load marked items
+    GameItemPool markedItems = {};
+    if (root["marked_items"].IsSequence())
+    {
+        for (const auto& item : root["marked_items"])
+        {
+            const std::string itemName = item.as<std::string>();
+            if (nameToGameItem(itemName) != GameItem::INVALID)
+            {
+                markedItems.push_back(nameToGameItem(itemName));
+            }
+            else
+            {
+                show_warning_dialog("Unknown item \"" + itemName + "\" in tracker autosave file");
+            }
+        }
+    }
+    else if (root["marked_items"] && root["marked_items"].as<std::string>() != "None")
+    {
+        show_warning_dialog("Unable to load marked items from tracker autosave");
+    }
+
+    std::unordered_map<std::string, std::string> entranceConnections = {};
+    const auto& connectedEntrances = root["connected_entrances"];
+    if (!connectedEntrances.IsNull())
+    {
+        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
+        {
+            auto entranceConnection = *entranceItr;
+            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
+        }
+    }
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections);
 
     update_tracker();
 }
@@ -1133,7 +1175,7 @@ void MainWindow::update_items_color() {
                                                    "background-position: center;"
                                                    "}");
     }
-    autosave_current_tracker();
+    autosave_current_tracker_preferences(); // TODO: handle error?
 }
 
 void MainWindow::update_locations_color()
@@ -1144,7 +1186,7 @@ void MainWindow::update_locations_color()
     else {
         ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     }
-    autosave_current_tracker();
+    autosave_current_tracker_preferences(); // TODO: handle error?
 }
 
 void MainWindow::update_stats_color()
@@ -1155,7 +1197,7 @@ void MainWindow::update_stats_color()
     else {
         ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
     }
-    autosave_current_tracker();
+    autosave_current_tracker_preferences(); // TODO: handle error?
 }
 
 void MainWindow::on_open_chart_list_button_clicked()

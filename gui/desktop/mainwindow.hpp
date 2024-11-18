@@ -104,7 +104,6 @@ private:
 
     void initialize_tracker();
     void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {}, const std::unordered_map<std::string, std::string>& connectedEntrances = {});
-    void load_tracker_autosave();
     void calculate_own_dungeon_key_locations();
     void set_location_list_widget_background(const std::string& area);
     void clear_tracker_labels(QLayout* layout);
@@ -121,7 +120,10 @@ public:
     void set_current_tracker_area(const std::string& areaPrefix);
     void update_tracker();
     void setup_tracker_entrances();
+    void load_tracker_autosave();
     void autosave_current_tracker();
+    bool autosave_current_tracker_config();
+    bool autosave_current_tracker_preferences();
     void filter_entrance_list(const QString& filter);
 
 private slots:

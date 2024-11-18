@@ -2,7 +2,10 @@
 
 #include <QColor>
 
+#include <utility/path.hpp>
+
 struct TrackerPreferences {
+    fspath autosaveFilePath;
     bool showLocationLogic = true;
     bool showNonProgressLocations = false;
     bool rightClickClearAll = true;
