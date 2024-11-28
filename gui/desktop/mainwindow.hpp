@@ -130,6 +130,7 @@ public:
     bool isChartMapped(GameItem chart);
     void mapChart(GameItem chart, uint8_t islandNum);
     bool isIslandMappedToChart(uint8_t island);
+    uint8_t islandForChart(GameItem chart);
     GameItem chartForIsland(uint8_t islandNum);
 
 private slots:
