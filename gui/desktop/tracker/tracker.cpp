@@ -1151,10 +1151,10 @@ bool MainWindow::isChartMapped(GameItem chart) {
 void MainWindow::mapChart(GameItem chart, uint8_t islandNum) {
     if(isIslandMappedToChart(islandNum)) {
         std::erase_if(mappedCharts, [islandNum](const auto& mapping) { return mapping.second == islandNum; });
+        trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].args[0] = Item(trackerWorlds[0].chartMappings[islandNum], &trackerWorlds[0]);
     }
 
     mappedCharts[chart] = islandNum;
-    trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].type = RequirementType::HAS_ITEM;
     trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].args[0] = Item(chart, &trackerWorlds[0]);
 }
 
@@ -1309,7 +1309,7 @@ void MainWindow::tracker_give_and_map_chart(TrackerLabel* label, GameItem chart)
             if(trackerSettings.randomize_charts && mappedCharts.contains(chart)) {
                 const uint8_t oldIsland = mappedCharts.at(chart);
                 mappedCharts.erase(chart);
-                //trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(oldIsland))].type = RequirementType::IMPOSSIBLE;
+                trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(oldIsland))].args[0] = Item(trackerWorlds[0].chartMappings[oldIsland], &trackerWorlds[0]);
             }
         }
     }
