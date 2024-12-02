@@ -83,6 +83,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
 
     trackerWorld.determineChartMappings();
     // Use loaded chart mappings
+    mappedCharts.clear();
     if(trackerSettings.randomize_charts) {
         for(const auto& [chart, island] : chartMappings) {
             mapChart(chart, island);
