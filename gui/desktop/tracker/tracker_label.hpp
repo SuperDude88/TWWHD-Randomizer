@@ -10,7 +10,8 @@ enum struct TrackerLabelType
     NONE = 0,
     Location,
     EntranceSource,
-    EntranceDestination
+    EntranceDestination,
+    Chart
 };
 
 class MainWindow;
@@ -20,7 +21,7 @@ class TrackerLabel : public QLabel
     Q_OBJECT
 public:
     TrackerLabel() = default;
-    TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow = nullptr, Location* location = nullptr, Entrance* entrance = nullptr);
+    TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow = nullptr, Location* location = nullptr, Entrance* entrance = nullptr, GameItem chart_ = GameItem::INVALID);
 
     void set_location(Location* loc);
     Location* get_location() const;
@@ -29,6 +30,8 @@ public:
     void update_entrance_text();
     void set_disconnect_button(QPushButton* button);
     QPushButton* get_disconnect_button() const;
+    void set_chart(GameItem chart_);
+    GameItem get_chart() const;
     void update_colors();
     void mark_location();
     void updateShowLogic(int show, bool started);
@@ -49,6 +52,9 @@ signals:
     void entrance_source_label_disconnect(Entrance* entrance);
     void mouse_over_entrance_label(Entrance* entrance);
     void mouse_left_entrance_label();
+    void chart_label_clicked(TrackerLabel* label, GameItem chart);
+    void mouse_over_chart_label(const std::string& currentItem);
+    void mouse_left_chart_label();
 
 protected:
     void mouseReleaseEvent(QMouseEvent* e) override;
@@ -61,6 +67,7 @@ private:
     MainWindow* mainWindow = nullptr;
     Location* location = nullptr;
     Entrance* entrance = nullptr;
+    GameItem chart = GameItem::INVALID;
     bool showLogic = true;
     QPoint mouseEnterPosition = QPoint();
     QPushButton* disconnectButton = nullptr;
