@@ -47,7 +47,7 @@ void TrackerInventoryButton::updateIcon()
 
 void TrackerInventoryButton::removeCurrentItem()
 {
-    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1) && !onChartListWhenRandomCharts())
+    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1))
     {
         removeElementFromPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
     }
@@ -55,7 +55,7 @@ void TrackerInventoryButton::removeCurrentItem()
 
 void TrackerInventoryButton::addCurrentItem()
 {
-    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1) && !onChartListWhenRandomCharts())
+    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1))
     {
         addElementToPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
     }
@@ -65,7 +65,7 @@ void TrackerInventoryButton::removeAllItems()
 {
     for (size_t i = 0; i < itemStates.size(); i++)
     {
-        if (forbiddenStates.contains(i-1) || onChartListWhenRandomCharts())
+        if (forbiddenStates.contains(i-1))
         {
             continue;
         }
@@ -79,7 +79,7 @@ void TrackerInventoryButton::addAllItems()
 {
     for (size_t i = 0; i < itemStates.size(); i++)
     {
-        if (forbiddenStates.contains(i-1) || onChartListWhenRandomCharts())
+        if (forbiddenStates.contains(i-1))
         {
             continue;
         }
@@ -91,15 +91,11 @@ void TrackerInventoryButton::addAllItems()
 
 void TrackerInventoryButton::clearForbiddenStates() {
     forbiddenStates.clear();
-
-    updateDuplicates();
 }
 
 void TrackerInventoryButton::addForbiddenState(int state)
 {
     forbiddenStates.insert(state);
-
-    updateDuplicates();
 }
 
 int TrackerInventoryButton::getState() {
@@ -108,20 +104,6 @@ int TrackerInventoryButton::getState() {
 
 void TrackerInventoryButton::setState(int state_) {
     this->state = state_;
-
-    updateDuplicates();
-}
-
-bool TrackerInventoryButton::onChartListWhenRandomCharts()
-{
-    return mainWindow && mainWindow->trackerSettings.randomize_charts && Item(itemStates[1].gameItem, nullptr).isChartForSunkenTreasure();
-}
-
-void TrackerInventoryButton::showChartTooltip()
-{
-    auto coords = mapToGlobal(QPoint(mouseEnterPosition.x() + 30, height() - 15));
-    auto text = std::string("Chart leads to<br><b>") + roomNumToIslandName(chartToDefaultRoomNum(itemStates[1].gameItem)) + "</b>";
-    QToolTip::showText(coords, text.c_str());
 }
 
 void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
@@ -156,48 +138,21 @@ void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
     }
     updateIcon();
     emit inventory_button_pressed();
-    if (!onChartListWhenRandomCharts())
-    {
-        emit mouse_over_item(itemStates[state].trackerLabelStr);
-    }
-
-    updateDuplicates();
+    emit mouse_over_item(itemStates[state].trackerLabelStr);
 }
 
 void TrackerInventoryButton::mouseMoveEvent(QMouseEvent* e)
-{
-    if (Item(itemStates[1].gameItem, nullptr).isChartForSunkenTreasure() && mainWindow && !mainWindow->trackerSettings.randomize_charts)
-    {
-        showChartTooltip();
-    }
-}
+{}
 
 void TrackerInventoryButton::enterEvent(QEnterEvent* e)
 {
     mouseEnterPosition = e->position().toPoint();
-    if (!onChartListWhenRandomCharts())
-    {
-        emit mouse_over_item(itemStates[state].trackerLabelStr);
-    }
+    emit mouse_over_item(itemStates[state].trackerLabelStr);
 }
 
 void TrackerInventoryButton::leaveEvent(QEvent* e)
 {
     emit mouse_over_item("");
-}
-
-void TrackerInventoryButton::updateDuplicates() {
-    // Update duplicate buttons to the proper state. This is
-    // mainly just for charts on the chart list and their
-    // corresponding chart buttons on the map
-    for (auto duplicate : duplicates)
-    {
-        if (!duplicate->onChartListWhenRandomCharts() && !onChartListWhenRandomCharts())
-        {
-            duplicate->state = state;
-            duplicate->updateIcon();
-        }
-    }
 }
 
 TrackerChartButton::TrackerChartButton(const uint8_t& island, MainWindow* mainWindow_, QWidget* parent) :

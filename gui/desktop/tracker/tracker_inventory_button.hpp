@@ -27,7 +27,6 @@ public:
     World* trackerWorld = nullptr;
     ItemPool* trackerInventory = nullptr;
     MainWindow* mainWindow = nullptr;
-    std::unordered_set<TrackerInventoryButton*> duplicates = {};
     QPoint mouseEnterPosition = QPoint();
 
     void updateIcon();
@@ -41,9 +40,6 @@ public:
 
     int getState();
     void setState(int state_);
-
-    bool onChartListWhenRandomCharts();
-    void showChartTooltip();
 
 signals:
     void inventory_button_pressed();
@@ -59,8 +55,6 @@ protected:
 private:
     int state = 0;
     std::unordered_set<int> forbiddenStates = {};
-
-    void updateDuplicates();
 };
 
 

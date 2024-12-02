@@ -169,7 +169,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     auto trackerInventoryCopy = trackerInventory;
 
     // Make sure our buttons start at 0
-    // This is done before any buttons are updated so duplicates are not set then reset in a later iteration
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
     {
         inventoryButton->setState(0);
@@ -735,18 +734,6 @@ void MainWindow::initialize_tracker()
         inventoryButton->mainWindow = this;
         connect(inventoryButton, &TrackerInventoryButton::inventory_button_pressed, this, &MainWindow::update_tracker);
         connect(inventoryButton, &TrackerInventoryButton::mouse_over_item, this, &MainWindow::tracker_display_current_item_text);
-
-        // Set inventory button duplicates (just for charts on the overworld map and in the chart list for now)
-        for (auto potentialDuplicate : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
-        {
-            // If the first real item in the buttons' itemState's gameItem matches,
-            // then this is a button which is tracking the same item. Also
-            // compare the pointers to avoid labeling itself as a duplicate.
-            if (potentialDuplicate != inventoryButton && potentialDuplicate->itemStates[1].gameItem == inventoryButton->itemStates[1].gameItem)
-            {
-                inventoryButton->duplicates.insert(potentialDuplicate);
-            }
-        }
     }
 
     // Connect left-clicking area widgets to showing the checks in that area
