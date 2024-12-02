@@ -426,6 +426,16 @@ QString TrackerLabel::getTooltipText()
             // Skip over the rest of the shards
             i += 7;
         }
+        else if(str == "<span>RANDOMIZED CHART PLACEHOLDER</span>") {
+            const std::string island = mainWindow->trackerWorlds[0].getArea(mainWindow->currentTrackerArea)->island;
+            const uint8_t islandNum = islandNameToRoomNum(island);
+            if(!mainWindow->isIslandMappedToChart(islandNum)) {
+                str = std::string("<span style=\"color:" TOOLTIP_UNMET "\">Chart for " + island + "</span>").c_str();
+            }
+            else {
+                str = std::string("<span style=\"color:" TOOLTIP_MET "\">" + gameItemToName(mainWindow->chartForIsland(islandNum)) + " -> " + island + "</span>").c_str();
+            }
+        }
         if (str.size() == 0)
         {
             continue;
@@ -531,6 +541,14 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
     case RequirementType::HAS_ITEM:
         // Determine if the user has marked this item
         item = std::get<Item>(req.args[0]);
+
+        // Special case for randomized charts: this requires some knowledge of the island this requirement is for
+        // so put a placeholder we can handle higher in the tooltip code (in TrackerLabel::getTooltipText)
+        // There's probably better ways to do this, but this was easy enough for now
+        if(mainWindow->trackerSettings.randomize_charts && item.isChartForSunkenTreasure()) {
+            return "<span>RANDOMIZED CHART PLACEHOLDER</span>";
+        }
+
         color = elementInPool(item, mainWindow->trackerInventory) || elementInPool(item, mainWindow->trackerWorlds[0].getStartingItems()) ? TOOLTIP_MET : TOOLTIP_UNMET;
         return "<span style=\"color:" + color + "\">" + prettyTrackerName(item, 1, mainWindow) + "</span>";
     case RequirementType::COUNT:

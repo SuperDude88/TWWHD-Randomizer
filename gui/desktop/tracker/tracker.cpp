@@ -907,7 +907,7 @@ void MainWindow::update_tracker()
 }
 
 // Under certain circumstances we want to mark certain
-// locations as accessible even if they logically aren't
+// locations as accessible even if they logically aren't (and vice versa)
 void MainWindow::check_special_accessibility_conditions()
 {
     // If the user has marked a boss location that has chain
@@ -942,6 +942,16 @@ void MainWindow::check_special_accessibility_conditions()
             (elementInPool(deliveryBag, trackerInventory) || elementInPool(deliveryBag, startingItems)))
         {
             trackerWorld.locationTable["Mailbox - Letter from Baito"]->hasBeenFound = true;
+        }
+    }
+
+    // If chart randomization is on, the tracker logic uses the world's chart mappings and not just the tracked ones
+    // That can leak the mappings, so set the location as inaccessible as long as its chart mapping is not tracked
+    if(trackerSettings.randomize_charts) {
+        for(size_t i = 1; i < 50; i++) {
+            if(!isIslandMappedToChart(i)) {
+                trackerWorld.locationTable[roomNumToIslandName(i) + " - Sunken Treasure"]->hasBeenFound = false;
+            }
         }
     }
 }
