@@ -48,8 +48,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     selectedChartIsland = 0;
     if (settings.randomize_charts)
     {
-        mappedCharts = chartMappings;
-
         // With charts shuffled the required ones can be on any island
         // So for tracker purposes, treat all 49 charts as potentially progress
         if (trackerSettings.progression_treasure_charts || trackerSettings.progression_triforce_charts)
@@ -58,13 +56,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
             trackerSettings.progression_triforce_charts = true;
         }
     }
-    else {
-        mappedCharts.clear();
-        for(size_t i = 1; i < 50; i++) {
-            mapChart(roomNumToDefaultChart(i), i);
-        }
-    }
-    //TODO: update logic macros
 
     // Give 3 hearts so that all heart checks pass logic
     trackerSettings.starting_hcs = 3;
@@ -89,7 +80,21 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         show_error_dialog("Could not build world for app tracker");
         return;
     }
+
     trackerWorld.determineChartMappings();
+    // Use loaded chart mappings
+    if(trackerSettings.randomize_charts) {
+        for(const auto& [chart, island] : chartMappings) {
+            mapChart(chart, island);
+        }
+    }
+    // Otherwise map like vanilla
+    else {
+        for(size_t i = 1; i < 50; i++) {
+            mapChart(roomNumToDefaultChart(i), i);
+        }
+    }
+
     trackerWorld.determineProgressionLocations();
     trackerWorld.setItemPools();
 
@@ -564,20 +569,19 @@ void MainWindow::load_tracker_autosave()
         }
     }
 
+    // Load saved mappings
     std::map<GameItem, uint8_t> chartMappings = {};
     const auto& charts = root["mapped_charts"];
-
-    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings);
-
-    // Update the world with our loaded chart macros
-    if (!charts.IsNull())
+    if(charts.IsMap())
     {
         for (auto chartItr = charts.begin(); chartItr != charts.end(); chartItr++)
         {
             auto chartMapping = *chartItr;
-            mapChart(nameToGameItem(chartMapping.first.as<std::string>()), islandNameToRoomNum(chartMapping.second.as<std::string>()));
+            chartMappings[nameToGameItem(chartMapping.first.as<std::string>())] = islandNameToRoomNum(chartMapping.second.as<std::string>());
         }
     }
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings);
 
     update_tracker();
 }

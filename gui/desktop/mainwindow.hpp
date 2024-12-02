@@ -340,6 +340,7 @@ private:
     Entrance* selectedEntrance = nullptr;
 
     // Maps room numbers to their (randomized) chart
+    //TODO: make this entire system less sketchy
     std::map<GameItem, uint8_t> mappedCharts = {};
     uint8_t selectedChartIsland = 0;
 
