@@ -566,16 +566,18 @@ void MainWindow::load_tracker_autosave()
 
     std::map<GameItem, uint8_t> chartMappings = {};
     const auto& charts = root["mapped_charts"];
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings);
+
+    // Update the world with our loaded chart macros
     if (!charts.IsNull())
     {
         for (auto chartItr = charts.begin(); chartItr != charts.end(); chartItr++)
         {
             auto chartMapping = *chartItr;
-            chartMappings[nameToGameItem(chartMapping.first.as<std::string>())] = islandNameToRoomNum(chartMapping.second.as<std::string>());
+            mapChart(nameToGameItem(chartMapping.first.as<std::string>()), islandNameToRoomNum(chartMapping.second.as<std::string>()));
         }
     }
-
-    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings);
 
     update_tracker();
 }
