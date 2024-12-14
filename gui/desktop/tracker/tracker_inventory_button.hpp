@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <logic/World.hpp>
+#include "logic/GameItem.hpp"
 
 #define INVENTORY_BUTTON_SIZE 50
 
@@ -20,14 +21,12 @@ class TrackerInventoryButton : public QLabel
     Q_OBJECT
 public:
     TrackerInventoryButton();
-    TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr, bool onlyText_ = false, MainWindow* mainWindow_ = nullptr );
+    TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent = nullptr, MainWindow* mainWindow_ = nullptr );
 
     std::vector<TrackerInventoryItem> itemStates = {};
     World* trackerWorld = nullptr;
     ItemPool* trackerInventory = nullptr;
-    bool onlyText = false;
     MainWindow* mainWindow = nullptr;
-    std::unordered_set<TrackerInventoryButton*> duplicates = {};
     QPoint mouseEnterPosition = QPoint();
 
     void updateIcon();
@@ -41,9 +40,6 @@ public:
 
     int getState();
     void setState(int state_);
-
-    bool onChartListWhenRandomCharts();
-    void showChartTooltip();
 
 signals:
     void inventory_button_pressed();
@@ -59,6 +55,31 @@ protected:
 private:
     int state = 0;
     std::unordered_set<int> forbiddenStates = {};
+};
 
-    void updateDuplicates();
+
+class TrackerChartButton : public QLabel
+{
+    Q_OBJECT
+public:
+    TrackerChartButton(const uint8_t& island, MainWindow* mainWindow_, QWidget* parent = nullptr);
+
+    MainWindow* mainWindow = nullptr;
+    QPoint mouseEnterPosition = QPoint();
+
+    void updateIcon();
+
+signals:
+    void chart_map_button_pressed(uint8_t islandNum);
+    void mouse_over_item(const std::string& currentItem);
+    void mouse_left_item();
+
+protected:
+    void mouseReleaseEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
+    void enterEvent(QEnterEvent* e) override;
+    void leaveEvent(QEvent* e) override;
+
+private:
+    const uint8_t islandNum;
 };

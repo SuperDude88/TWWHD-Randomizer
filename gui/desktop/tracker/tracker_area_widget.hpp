@@ -15,7 +15,7 @@ public:
     TrackerAreaWidget();
 
     // Island Widgets constructor
-    TrackerAreaWidget(const std::string& areaPrefix_, TrackerInventoryButton* chart);
+    TrackerAreaWidget(const std::string& areaPrefix_, TrackerChartButton* chart);
 
     // Other Areas constructor
     TrackerAreaWidget(const std::string& areaPrefix_,
@@ -47,7 +47,7 @@ public:
     void setBossLocation(Location* bossLoc);
     void setLocations(std::unordered_map<std::string, LocationSet>* locations_);
     void setEntrances(std::unordered_map<std::string, std::list<Entrance*>>* entrances_);
-    void setChart(TrackerInventoryButton* chart);
+    void setChart(TrackerChartButton* chart);
     void updateArea();
     void updateBossImageWidget();
     void updateShowLogic(int show, bool started);

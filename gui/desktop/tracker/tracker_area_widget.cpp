@@ -7,7 +7,7 @@ TrackerAreaWidget::TrackerAreaWidget()
 
 }
 
-TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_, TrackerInventoryButton* chart) : areaPrefix(areaPrefix_)
+TrackerAreaWidget::TrackerAreaWidget(const std::string& areaPrefix_, TrackerChartButton* chart) : areaPrefix(areaPrefix_)
 {
     QWidget();
     locationsRemaining.areaPrefix = areaPrefix_;
@@ -85,7 +85,7 @@ void TrackerAreaWidget::setEntrances(std::unordered_map<std::string, std::list<E
     areaEntrances = areaEntrances_;
 }
 
-void TrackerAreaWidget::setChart(TrackerInventoryButton* chart)
+void TrackerAreaWidget::setChart(TrackerChartButton* chart)
 {
     chart->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     chart->setFixedSize(14, 14);

@@ -1,7 +1,6 @@
 #include "mainwindow.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <filesystem>
 
 #include <QMessageBox>
