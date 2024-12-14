@@ -168,8 +168,13 @@ void TrackerChartButton::updateIcon()
 {
     std::string chartState = "treasure_chart_closed.png";
     if(mainWindow->trackerSettings.randomize_charts) {
-        if(mainWindow->isIslandMappedToChart(islandNum)) {
-            chartState = "treasure_chart_open.png";
+        if(const GameItem chart = mainWindow->chartForIsland(islandNum); chart != GameItem::INVALID) {
+            if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+                chartState = "triforce_chart_open.png";
+            }
+            else {
+                chartState = "treasure_chart_open.png";
+            }
         }
     }
     else if(const GameItem chart = roomNumToDefaultChart(islandNum); elementInPool(Item(chart, &mainWindow->trackerWorlds[0]), mainWindow->trackerInventory)) {
