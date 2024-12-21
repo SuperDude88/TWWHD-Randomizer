@@ -2,6 +2,7 @@
 
 #include <logic/Entrance.hpp>
 #include <logic/Area.hpp>
+#include <logic/World.hpp>
 #include <logic/flatten/simplify_algebraic.hpp>
 
 #include <functional>
