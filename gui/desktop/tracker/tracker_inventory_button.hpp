@@ -4,7 +4,6 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <logic/World.hpp>
-#include "logic/GameItem.hpp"
 
 #define INVENTORY_BUTTON_SIZE 50
 

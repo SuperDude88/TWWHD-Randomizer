@@ -15,7 +15,6 @@
 #include <logic/World.hpp>
 #include <logic/EntranceShuffle.hpp>
 #include <logic/PoolFunctions.hpp>
-#include <logic/GameItem.hpp>
 
 #include <gui/desktop/tracker/tracker_preferences.hpp>
 #include <gui/desktop/tracker/tracker_preferences_dialog.hpp>

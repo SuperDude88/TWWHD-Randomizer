@@ -2,12 +2,8 @@
 
 #include <gui/desktop/tracker/tracker_data.hpp>
 #include <gui/desktop/mainwindow.hpp>
-#include "logic/Area.hpp"
-#include "logic/GameItem.hpp"
 
 #include <QToolTip>
-
-#include <iostream>
 
 TrackerInventoryButton::TrackerInventoryButton() {}
 

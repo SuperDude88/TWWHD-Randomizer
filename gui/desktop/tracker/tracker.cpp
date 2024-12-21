@@ -1,19 +1,18 @@
-#include "../ui_mainwindow.h"
 #include "../mainwindow.hpp"
-#include "logic/Area.hpp"
-#include "logic/GameItem.hpp"
-#include "tracker_label.hpp"
 
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <QMessageBox>
 #include <QColorDialog>
 
+#include <../ui_mainwindow.h>
+
 #include <filesystem>
 
 #include <gui/desktop/tracker/tracker_inventory_button.hpp>
 #include <gui/desktop/tracker/tracker_area_widget.hpp>
 #include <gui/desktop/tracker/tracker_preferences_dialog.hpp>
+#include <gui/desktop/tracker/tracker_label.hpp>
 #include <gui/desktop/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
@@ -120,9 +119,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     }
 
     placeVanillaItems(trackerWorlds);
-
-    //// Reset trackerSettings.randomize_charts so we can check it later
-    //trackerSettings.randomize_charts = settings.randomize_charts;
 
     setup_tracker_entrances();
 
@@ -318,7 +314,6 @@ void MainWindow::autosave_current_tracker()
 
 bool MainWindow::autosave_current_tracker_config()
 {
-    //TODO: save chart mappings
     auto& trackerWorld = trackerWorlds[0];
 
     Config trackerConfig;

@@ -1,9 +1,10 @@
 #include "tracker_preferences_dialog.hpp"
-#include "../ui_mainwindow.h"
-#include "../mainwindow.hpp"
 
 #include <QColorDialog>
 #include <QFileDialog>
+
+#include <../ui_mainwindow.h>
+#include <gui/desktop/mainwindow.hpp>
 
 TrackerPreferencesDialog::TrackerPreferencesDialog(MainWindow* main_) : main(main_) {
     ui.setupUi(this);

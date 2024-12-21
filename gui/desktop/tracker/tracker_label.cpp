@@ -2,7 +2,6 @@
 
 #include <gui/desktop/tracker/set_font.hpp>
 #include <gui/desktop/mainwindow.hpp>
-#include "logic/GameItem.hpp"
 
 #include <logic/Area.hpp>
 
