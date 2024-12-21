@@ -11,13 +11,13 @@ FlattenSearch::FlattenSearch(World* world_) {
         for (auto& exit : area->exits)
         {
             auto visit = visitor(&exit, this);
-            visitReq(exit.getRequirement(), visit);
+            visitReq(exit.getRequirement(), visit, world);
         }
 
         for (auto& event : area->events)
         {
             auto visit = visitor(&event, this);
-            visitReq(event.requirement, visit);
+            visitReq(event.requirement, visit, world);
         }
     }
 
