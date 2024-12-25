@@ -443,6 +443,22 @@ void MainWindow::update_plandomizer_widget_visbility()
 
 void MainWindow::apply_config_settings()
 {
+    // Validate the state of plando options to avoid seed hash errors
+    if(config.settings.plandomizer && !std::filesystem::is_regular_file(config.settings.plandomizerFile)) {
+        QMessageBox confirmDialog;
+        confirmDialog.setText("No valid plandomizer file was found. Select a new one?");
+        confirmDialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        switch(confirmDialog.exec()) {
+            case QMessageBox::Yes:
+            default:
+                on_plandomizer_path_browse_button_clicked();
+                break;
+            case QMessageBox::No:
+                config.settings.plandomizer = false;
+                config.settings.plandomizerFile.clear();
+        }
+    }
+
     // Directories and Seed
     ui->base_game_path->setText(Utility::toQString(config.gameBaseDir));
     ui->output_folder->setText(Utility::toQString(config.outputDir));
@@ -895,13 +911,24 @@ void MainWindow::on_plandomizer_stateChanged(int arg1)
 
     update_plandomizer_widget_visbility();
 
-    //TODO: avoid this on startup
     if(config.settings.plandomizer && config.settings.plandomizerFile.empty()) {
         on_plandomizer_path_browse_button_clicked();
     }
 
     update_permalink_and_seed_hash();
     update_progress_locations_text();
+}
+
+void MainWindow::validate_plandomizer_path() {
+    if(!std::filesystem::is_regular_file(config.settings.plandomizerFile)) {
+        // Can't rely just on setCheckState to update the config
+        // If the box was already unchecked (i.e. when loading)
+        // it won't actually "change" -> config won't update
+        ui->plandomizer->setCheckState(Qt::Unchecked);
+        config.settings.plandomizer = false;
+        config.settings.plandomizerFile.clear();
+        update_plandomizer_widget_visbility();
+    }
 }
 
 void MainWindow::on_plandomizer_path_browse_button_clicked()
@@ -911,12 +938,14 @@ void MainWindow::on_plandomizer_path_browse_button_clicked()
     {
         ui->plandomizer_path->setText(fileName);
         config.settings.plandomizerFile = Utility::fromQString(fileName);
-        update_permalink_and_seed_hash();
     }
+    validate_plandomizer_path();
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_plandomizer_path_editingFinished() {
     config.settings.plandomizerFile = Utility::fromQString(ui->plandomizer_path->text());
+    validate_plandomizer_path();
     update_permalink_and_seed_hash();
 }
 
@@ -1150,12 +1179,7 @@ void MainWindow::update_permalink_and_seed_hash()
 
     // Also update seed hash
     const std::string hash = hash_for_config(config);
-    // It would be good to show this error more than once in case of different errors
-    // but loading a config with something wrong would spam the error on startup
-    // TODO: find a better way to not spam this on startup (ex. plando on, empty plando path)
-    static bool shown = false;
-    if(hash.empty() && !shown) {
-        shown = true;
+    if(hash.empty()) {
         show_warning_dialog("Could not get seed hash.\nPlease tell a dev and provide the error log if you see this message.");
     }
 
