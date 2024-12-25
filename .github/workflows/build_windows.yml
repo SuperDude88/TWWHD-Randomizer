@@ -26,7 +26,7 @@ on:
         required: false
 
 env:
-  QT_VERSION: 6.7.1
+  QT_VERSION: 6.8.1
   EXTRA_CMAKE_FLAGS: ""
 
 jobs:
@@ -55,14 +55,9 @@ jobs:
           version: ${{ env.QT_VERSION }}
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_mingw'
+          arch: 'win64_msvc2022_64'
           cache: true
           cache-key-prefix: install-qt-${{ env.QT_VERSION }}-action
-
-      - name: Install GCC 11.2.0
-        uses: egor-tensin/setup-mingw@v2.2.0
-        with:
-          version: 11.2.0
 
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
@@ -76,7 +71,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           SEED_KEY: ${{ secrets.SEED_KEY }}
-        run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True "${{ env.EXTRA_CMAKE_FLAGS }}"
+        run: cmake -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True "${{ env.EXTRA_CMAKE_FLAGS }}"
         
       - name: Build
         working-directory: ${{ github.workspace }}
