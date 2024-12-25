@@ -1633,7 +1633,7 @@
   Island: Horseshoe Island
   Locations:
       Horseshoe Island - Play Golf: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
-      Horseshoe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Horseshoe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus # Can also use the nut (for obscure tricks later)
       Horseshoe Island - Old Man Ho Ho: Nothing
   Exits:
       Horseshoe Island: Nothing
@@ -2663,10 +2663,10 @@
   Locations:
       Earth Temple - First Crypt Chest: Power_Bracelets and (Can_Play_CM or Can_Aim_Mirror_Shield)
   Exits:
-      ET Small Room South of First Crypt: Nothing
+      ET Small Room West of First Crypt: Nothing
       ET Giant Statue Room: Nothing
 
-- Name: ET Small Room South of First Crypt
+- Name: ET Small Room West of First Crypt
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Chest Behind Destructable Wall: Can_Aim_Mirror_Shield
