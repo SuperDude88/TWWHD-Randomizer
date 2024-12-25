@@ -135,13 +135,47 @@
       Forsaken Fortress Up Switch Back Stairs: Skull_Hammer
       Forsaken Fortress Sector: Bombs or Can_Play_BoG
 
+- Name: Forsaken Fortress Sleeping Quarters Outside Ledge
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Sleeping Quarters: Can_Defeat_Phantom_Ganon
+
+- Name: Forsaken Fortress Sleeping Quarters
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest on Bed: Nothing
+  Exits:
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Can_Fly_With_Deku_Leaf_Indoors and Skull_Hammer
+      Forsaken Fortress Northwest Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Northwest Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Sleeping Quarters: Nothing
+      Forsaken Fortress Boat Room Lower: Nothing
+
+- Name: Forsaken Fortress Boat Room Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Northwest Hallway Lower: Nothing
+      Forsaken Fortress Northeast Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Northeast Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Boat Room Lower: Nothing
+      Forsaken Fortress Barrel Storage Room Lower: Skull_Hammer
+
 - Name: Forsaken Fortress Barrel Storage Room Lower
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress North Hallway Lower: Nothing
-      Forsaken Fortress Northwest Hallway Lower: Skull_Hammer
+      Forsaken Fortress Southeast Hallway Lower: Nothing
+      Forsaken Fortress Northeast Hallway Lower: Skull_Hammer
 
-- Name: Forsaken Fortress North Hallway Lower
+- Name: Forsaken Fortress Southeast Hallway Lower
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Mess Hall Lower: Skull_Hammer
@@ -150,12 +184,12 @@
 - Name: Forsaken Fortress Mess Hall Lower
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress East Hallway Lower: Nothing
-      Forsaken Fortress North Hallway Lower: Skull_Hammer
-      Forsaken Fortress Mess Hall Upper East: Hookshot # can hookshot the chest after climbing the ladder
-      Forsaken Fortress Mess Hall Upper West: Skull_Hammer # can jump to the platform after climbing the ladder, need hammer to get past the pegs
+      Forsaken Fortress South Hallway Lower: Nothing
+      Forsaken Fortress Southeast Hallway Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper South: Hookshot # can hookshot the chest after climbing the ladder
+      Forsaken Fortress Mess Hall Upper North: Skull_Hammer # can jump to the platform after climbing the ladder, need hammer to get past the pegs
 
-- Name: Forsaken Fortress East Hallway Lower
+- Name: Forsaken Fortress South Hallway Lower
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Mess Hall Lower: Nothing
@@ -166,146 +200,164 @@
   Locations:
       Forsaken Fortress - Chest Inside Lower Jail Cell: Nothing
   Exits:
-      Forsaken Fortress East Hallway Lower: Nothing
+      Forsaken Fortress South Hallway Lower: Nothing
 
-- Name: Forsaken Fortress Northwest Hallway Lower
+- Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Boat Room Lower: Nothing
-      Forsaken Fortress Barrel Storage Room Lower: Skull_Hammer
-
-- Name: Forsaken Fortress Boat Room Lower
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Southwest Hallway Lower: Nothing
-      Forsaken Fortress Northwest Hallway Lower: Nothing
-
-- Name: Forsaken Fortress Southwest Hallway Lower
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Sleeping Quarters: Nothing
-      Forsaken Fortress Boat Room Lower: Nothing
-
-- Name: Forsaken Fortress Sleeping Quarters
-  Dungeon: Forsaken Fortress
-  Locations:
-      Forsaken Fortress - Chest on Bed: Nothing
-  Exits:
-      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
-      Forsaken Fortress South Hallway Upper: Nothing
-      Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Can_Fly_With_Deku_Leaf_Indoors and Skull_Hammer
-      Forsaken Fortress Southwest Hallway Lower: Nothing
-
-- Name: Forsaken Fortress Sleeping Quarters Outside Ledge
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Sleeping Quarters: Can_Defeat_Phantom_Ganon
-
-- Name: Forsaken Fortress South Hallway Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Up Switch Back Stairs: Nothing
-      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
-      Forsaken Fortress Jail Cell Upper: Nothing
-      Forsaken Fortress Sleeping Quarters: Nothing
-
-- Name: Forsaken Fortress Up Switch Back Stairs
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Jail Cell Upper: Nothing
-      Forsaken Fortress South Hallway Upper: Can_Fly_With_Deku_Leaf_Indoors
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Mess Hall Upper East: Nothing
-      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
-
-- Name: Forsaken Fortress Jail Cell Upper
-  Dungeon: Forsaken Fortress
-  Locations:
-      Forsaken Fortress - Chest Outside Upper Jail Cell: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
-  Exits:
-      Forsaken Fortress Jail Cell Lower: Nothing
-      Forsaken Fortress South Hallway Upper: Nothing
-      Forsaken Fortress Up Switch Back Stairs: Nothing
-
-- Name: Forsaken Fortress Mess Hall Upper East
-  Dungeon: Forsaken Fortress
-  Locations:
-      Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
-  Exits:
-      Forsaken Fortress Mess Hall Upper West: Skull_Hammer and Can_Fly_With_Deku_Leaf_Indoors
-      Forsaken Fortress Mess Hall Lower: Nothing
-      Forsaken Fortress Up Switch Back Stairs: Nothing
-
-- Name: Forsaken Fortress Mess Hall Upper West
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress North Hallway Upper: Nothing
-      Forsaken Fortress Mess Hall Lower: Skull_Hammer
-      Forsaken Fortress Mess Hall Upper East: Skull_Hammer and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
-
-- Name: Forsaken Fortress North Hallway Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Barrel Storage Room Upper East: Nothing
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Mess Hall Upper West: Nothing
-
-- Name: Forsaken Fortress Barrel Storage Room Upper East
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Barrel Storage Room Upper West: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
-      Forsaken Fortress Barrel Storage Room Lower: Nothing
-      Forsaken Fortress North Hallway Upper: Nothing
-
-- Name: Forsaken Fortress Barrel Storage Room Upper West
-  Dungeon: Forsaken Fortress
-  Exits:
+      Forsaken Fortress Sleeping Quarters: Skull_Hammer
       Forsaken Fortress Northwest Hallway Upper: Nothing
-      Forsaken Fortress Barrel Storage Room Lower: Nothing
-      Forsaken Fortress Barrel Storage Room Upper East: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: Forsaken Fortress Northwest Hallway Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Boat Room Upper: Nothing
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Barrel Storage Room Upper West: Nothing
-
-- Name: Forsaken Fortress Boat Room Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Southwest Hallway Upper: Nothing
-      Forsaken Fortress Boat Room Lower: Nothing
-      Forsaken Fortress Outside Path to Boss: Nothing
-      Forsaken Fortress Northwest Hallway Upper: Nothing
-
-- Name: Forsaken Fortress Southwest Hallway Upper
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
-- Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
+- Name: Forsaken Fortress Boat Room Upper
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Sleeping Quarters: Skull_Hammer
+      Forsaken Fortress Northwest Hallway Upper: Nothing
+      Forsaken Fortress Boat Room Lower: Nothing
+      Forsaken Fortress Outside Path to Boss: Nothing
+      Forsaken Fortress Northeast Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Northeast Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Boat Room Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Barrel Storage Room Upper North: Nothing
+
+- Name: Forsaken Fortress Barrel Storage Room Upper North
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Barrel Storage Room Upper South: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+      Forsaken Fortress Northeast Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Barrel Storage Room Upper South
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Southeast Hallway Upper: Nothing
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+      Forsaken Fortress Barrel Storage Room Upper North: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Forsaken Fortress Southeast Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Barrel Storage Room Upper South: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Mess Hall Upper North: Nothing
+      Forsaken Fortress Southeast Searchlight: Nothing
+
+- Name: Forsaken Fortress Southeast Searchlight
+  Dungeon: Forsaken Fortress
+  Events:
+      Can Disable Southeast Searchlight: Can_Defeat_Bokoblins
+  Exits:
+      Forsaken Fortress Southeast Hallway Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Mess Hall Upper North
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Southeast Hallway Upper: Nothing
+      Forsaken Fortress Mess Hall Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper South: Skull_Hammer and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+
+- Name: Forsaken Fortress Mess Hall Upper South
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
+  Exits:
+      Forsaken Fortress Mess Hall Upper North: Skull_Hammer and Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Mess Hall Lower: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Up Switch Back Stairs
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper East: Nothing
       Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Mess Hall Upper South: Nothing
+      Forsaken Fortress Southwest Searchlight: Nothing
+      Forsaken Fortress West Searchlight: Nothing
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+
+- Name: Forsaken Fortress Southwest Searchlight
+  Dungeon: Forsaken Fortress
+  Events:
+      Can Disable Southwest Searchlight: Can_Defeat_Bokoblins
+  Exits:
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress West Searchlight
+  Dungeon: Forsaken Fortress
+  Events:
+      Can Disable West Searchlight: Can_Defeat_Bokoblins
+  Exits:
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+
+- Name: Forsaken Fortress Jail Cell Upper East
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper West: Can_Fly_With_Deku_Leaf_Indoors or Hookshot
+      Forsaken Fortress Jail Cell Lower: Nothing
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Jail Cell Upper West
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Outside Upper Jail Cell: Nothing
+  Exits:
+      Forsaken Fortress Jail Cell Upper East: Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Jail Cell Lower: Nothing
+
+- Name: Forsaken Fortress Southwest Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper East: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Sleeping Quarters: Nothing
 
 - Name: Forsaken Fortress Outside Path to Boss
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
+      Forsaken Fortress Before First Sidle Gap: Skull_Hammer
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
+
+- Name: Forsaken Fortress Before First Sidle Gap
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Before Second Sidle Gap: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Southeast Hallway Upper: Nothing # Can jump down
+      Forsaken Fortress Outside Path to Boss: Skull_Hammer
+
+- Name: Forsaken Fortress Before Second Sidle Gap
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or 'Can_Disable_Southeast_Searchlight'
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Southeast Hallway Upper: Nothing # Can jump down
+      Forsaken Fortress Before First Sidle Gap: Nothing
 
 - Name: Forsaken Fortress Before Boss Door
   Dungeon: Forsaken Fortress
   Exits:
       Helmaroc King Battle Arena: Skull_Hammer
       Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
+      Forsaken Fortress Before Second Sidle Gap: Nothing # Can jump back across the platforms
 
 - Name: Helmaroc King Battle Arena
   Locations:
