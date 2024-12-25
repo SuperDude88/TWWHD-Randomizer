@@ -26,7 +26,7 @@ on:
         required: false
 
 env:
-  QT_VERSION: 6.8.1
+  QT_VERSION: 6.7.1
   EXTRA_CMAKE_FLAGS: ""
 
 jobs:

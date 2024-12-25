@@ -83,13 +83,6 @@ if(DEFINED QT_GUI)
 
   add_compile_definitions(QT_GUI)
 
-  if(${QT_VERSION_MINOR} GREATER_EQUAL 8)
-    # Qt 6.8.0+ enables a bunch of "hardening" flags
-    # Stack protector causes linking issues if we don't match the flag
-    add_compile_options(-fstack-protector-strong)
-    add_link_options(-lssp)
-  endif()
-
   # Set Icon on Mac (has to be done out here)
   set(MACOSX_BUNDLE_ICON_FILE "app.icns")
   set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/gui/desktop/app.icns")
